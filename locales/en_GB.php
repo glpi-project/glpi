@@ -1309,6 +1309,8 @@ $LANG['Menu'][17]="Reservations";
 $LANG['Menu'][18]="Tools";
 $LANG['Menu'][19]="Knowledge base";
 $LANG['Menu'][20]="FAQ";
+
+/// TODO After is ok for migration to gettext
 $LANG['Menu'][21]="Cartridges";
 $LANG['Menu'][22]="Contacts";
 $LANG['Menu'][23]="Suppliers";
@@ -1321,7 +1323,6 @@ $LANG['Menu'][30]="Logs";
 $LANG['Menu'][31]="Simplified interface";
 $LANG['Menu'][32]="Consumables";
 $LANG['Menu'][34]="Phones";
-/// TODO After is ok for migration to gettext
 $LANG['Menu'][35]="Profiles";
 $LANG['Menu'][36]="Groups";
 $LANG['Menu'][37]="Entities";

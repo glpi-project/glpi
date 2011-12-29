@@ -140,7 +140,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header($LANG['Menu'][25],$_SERVER['PHP_SELF'],"financial","contract");
+   Html::header(Contract::getTypeName(2), $_SERVER['PHP_SELF'], "financial", "contract");
    $contract->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }

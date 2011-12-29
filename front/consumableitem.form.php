@@ -90,7 +90,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
+   Html::header(_n('Consumable', 'Consumables'), $_SERVER['PHP_SELF'], "inventory", "consumable");
    $constype->showForm($_GET["id"]);
    Html::footer();
 }

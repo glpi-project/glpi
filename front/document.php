@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("document", "r");
 
-Html::header($LANG['Menu'][27],$_SERVER['PHP_SELF'],"financial","document");
+Html::header(_n('Document', 'Documents', 2), $_SERVER['PHP_SELF'], "financial", "document");
 
 Search::show('Document');
 

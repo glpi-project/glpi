@@ -114,7 +114,7 @@ if (isset($_REQUEST['getvcard'])) {
    Html::back();
 
 } else {
-   Html::header($LANG['Menu'][22],$_SERVER['PHP_SELF'],"financial","contact");
+   Html::header(Contact::getTypeName(2), $_SERVER['PHP_SELF'], "financial", "contact");
    $contact->showForm($_GET["id"],'');
    Html::footer();
 }

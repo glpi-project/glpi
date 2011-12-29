@@ -75,11 +75,12 @@ class CronTaskLog extends CommonDBTM{
                $ong = array();
                $ong[1] = $LANG['Menu'][13]; // Stat
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $ong[2] = self::createTabEntry($LANG['Menu'][30],
-                                              countElementsInTable($this->getTable(),
-                                                                   "crontasks_id = '".$item->getID()."'"));
+                  $ong[2] = self::createTabEntry(_n('Log', 'Logs', 2),
+                                                 countElementsInTable($this->getTable(),
+                                                                      "crontasks_id
+                                                                           = '".$item->getID()."'"));
                } else {
-                  $ong[2] = $LANG['Menu'][30];
+                  $ong[2] = _n('Log', 'Logs', 2);
                }
                return $ong;
          }

@@ -1034,7 +1034,7 @@ class Html {
 
 
       if (Session::haveRight("cartridge","r")) {
-         $menu['inventory']['content']['cartridge']['title']      = $LANG['Menu'][21];
+         $menu['inventory']['content']['cartridge']['title']      = _n('Cartridge', 'Cartridges', 2);
          $menu['inventory']['content']['cartridge']['shortcut']   = '';
          $menu['inventory']['content']['cartridge']['page']       = '/front/cartridgeitem.php';
          $menu['inventory']['content']['cartridge']['links']['search']
@@ -1048,11 +1048,11 @@ class Html {
 
 
       if (Session::haveRight("consumable","r")) {
-         $menu['inventory']['content']['consumable']['title']     = $LANG['Menu'][32];
-         $menu['inventory']['content']['consumable']['shortcut']  = '';
-         $menu['inventory']['content']['consumable']['page']      = '/front/consumableitem.php';
+         $menu['inventory']['content']['consumable']['title']    = _n('Consumable', 'Consumables', 2);
+         $menu['inventory']['content']['consumable']['shortcut'] = '';
+         $menu['inventory']['content']['consumable']['page']     = '/front/consumableitem.php';
          $menu['inventory']['content']['consumable']['links']['search']
-                                                                  = '/front/consumableitem.php';
+                                                                 = '/front/consumableitem.php';
 
          if (Session::haveRight("consumable","w")) {
             $menu['inventory']['content']['consumable']['links']['add']
@@ -1065,7 +1065,7 @@ class Html {
 
 
       if (Session::haveRight("phone","r")) {
-         $menu['inventory']['content']['phone']['title']           = $LANG['Menu'][34];
+         $menu['inventory']['content']['phone']['title']           = _n('Phone', 'Phones', 2);
          $menu['inventory']['content']['phone']['shortcut']        = '';
          $menu['inventory']['content']['phone']['page']            = '/front/phone.php';
          $menu['inventory']['content']['phone']['links']['search'] = '/front/phone.php';
@@ -1081,7 +1081,7 @@ class Html {
 
 
       if ($showstate) {
-         $menu['inventory']['content']['state']['title']            = $LANG['Menu'][28];
+         $menu['inventory']['content']['state']['title']            = _n('Status', 'Status', 2);
          $menu['inventory']['content']['state']['shortcut']         = '';
          $menu['inventory']['content']['state']['page']             = '/front/states.php';
          $menu['inventory']['content']['state']['links']['search']  = '/front/states.php';
@@ -1198,7 +1198,7 @@ class Html {
 
 
       // FINANCIAL
-      $menu['financial']['title'] = $LANG['Menu'][26];
+      $menu['financial']['title'] = __('Management');
 
       if (Session::haveRight("budget", "r")) {
          $menu['financial']['default'] = '/front/budget.php';
@@ -1217,13 +1217,14 @@ class Html {
       }
 
       if (Session::haveRight("contact_enterprise", "r")) {
-         $menu['financial']['content']['supplier']['title']           = $LANG['Menu'][23];
-         $menu['financial']['content']['supplier']['shortcut']        = '';
-         $menu['financial']['content']['supplier']['page']            = '/front/supplier.php';
-         $menu['financial']['content']['supplier']['links']['search'] = '/front/supplier.php';
+         $menu['financial']['content']['supplier']['title']       = _n('Supplier', 'Suppliers', 2);
+         $menu['financial']['content']['supplier']['shortcut']    = '';
+         $menu['financial']['content']['supplier']['page']        = '/front/supplier.php';
+         $menu['financial']['content']['supplier']['links']['search']
+                                                                  = '/front/supplier.php';
 
 
-         $menu['financial']['content']['contact']['title']           = $LANG['Menu'][22];
+         $menu['financial']['content']['contact']['title']           = _n('Contact', 'Contacts', 2);
          $menu['financial']['content']['contact']['shortcut']        = '';
          $menu['financial']['content']['contact']['page']            = '/front/contact.php';
          $menu['financial']['content']['contact']['links']['search'] = '/front/contact.php';
@@ -1236,10 +1237,11 @@ class Html {
 
 
       if (Session::haveRight("contract", "r")) {
-         $menu['financial']['content']['contract']['title']           = $LANG['Menu'][25];
-         $menu['financial']['content']['contract']['shortcut']        = '';
-         $menu['financial']['content']['contract']['page']            = '/front/contract.php';
-         $menu['financial']['content']['contract']['links']['search'] = '/front/contract.php';
+         $menu['financial']['content']['contract']['title']       = _n('Contract', 'Contracts', 2);
+         $menu['financial']['content']['contract']['shortcut']    = '';
+         $menu['financial']['content']['contract']['page']        = '/front/contract.php';
+         $menu['financial']['content']['contract']['links']['search']
+                                                                  = '/front/contract.php';
 
          if (Session::haveRight("contract", "w")) {
             $menu['financial']['content']['contract']['links']['add']
@@ -1251,10 +1253,11 @@ class Html {
 
 
       if (Session::haveRight("document", "r")) {
-         $menu['financial']['content']['document']['title']           = $LANG['Menu'][27];
-         $menu['financial']['content']['document']['shortcut']        = 'd';
-         $menu['financial']['content']['document']['page']            = '/front/document.php';
-         $menu['financial']['content']['document']['links']['search'] = '/front/document.php';
+         $menu['financial']['content']['document']['title']       = _n('Document', 'Documents', 2);
+         $menu['financial']['content']['document']['shortcut']    = 'd';
+         $menu['financial']['content']['document']['page']        = '/front/document.php';
+         $menu['financial']['content']['document']['links']['search']
+                                                                  = '/front/document.php';
 
          if (Session::haveRight("document","w")) {
             $menu['financial']['content']['document']['links']['add'] = '/front/document.form.php';
@@ -1746,7 +1749,7 @@ class Html {
 
 
       if (Session::haveRight("logs","r")) {
-         $menu['admin']['content']['log']['title']    = $LANG['Menu'][30];
+         $menu['admin']['content']['log']['title']    = _n('Log', 'Logs', 2);
          $menu['admin']['content']['log']['shortcut'] = '';
          $menu['admin']['content']['log']['page']     = '/front/event.php';
       }

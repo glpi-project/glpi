@@ -54,9 +54,9 @@ if (empty($_POST) || count($_POST) == 0) {
 if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
    Html::nullHeader(_n('Ticket','Tickets',2));
 } else if ($_POST["_from_helpdesk"]) {
-   Html::helpHeader($LANG['Menu'][31],'',$_SESSION["glpiname"]);
+   Html::helpHeader(__('Simplified interface'), '', $_SESSION["glpiname"]);
 } else {
-   Html::header($LANG['Menu'][31],'',$_SESSION["glpiname"],"maintain","tracking");
+   Html::header(__('Simplified interface'), '', $_SESSION["glpiname"], "maintain", "tracking");
 }
 
 if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
@@ -104,5 +104,4 @@ if (isset($_POST['add'])) {
    Ticket::showFormHelpdesk(Session::getLoginUserID());
    Html::helpFooter();
 }
-
 ?>

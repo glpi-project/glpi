@@ -45,7 +45,6 @@ class Contact extends CommonDBTM{
    public $dohistory = true;
 
    static function getTypeName($nb=0) {
-
       return _n('Contact', 'Contacts', $nb);
    }
 

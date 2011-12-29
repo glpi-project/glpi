@@ -46,16 +46,11 @@ class Consumable extends CommonDBTM {
 
    // From CommonDBTM
    protected $forward_entity_to = array('Infocom');
-   var $no_form_page = false;
+   var $no_form_page            = false;
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>0) {
-         return $LANG['Menu'][32];
-      }
-      return $LANG['consumables'][0];
+      return _n('Consumable', 'Consumables', $nb);
    }
 
 
@@ -617,15 +612,15 @@ class Consumable extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate && Session::haveRight("consumable","r")) {
          switch ($item->getType()) {
             case 'ConsumableItem' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['Menu'][32], self::countForConsumableItem($item));
+                  return self::createTabEntry(self::getTypeName(2),
+                                              self::countForConsumableItem($item));
                }
-               return $LANG['Menu'][32];
+               return self::getTypeName(2);
          }
       }
       return '';

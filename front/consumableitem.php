@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("consumable", "r");
 
-Html::header($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
+Html::header(Consumable::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "consumable");
 
 if (isset($_GET["synthese"])) {
    Consumable::showSummary();

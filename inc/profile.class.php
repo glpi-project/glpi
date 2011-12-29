@@ -91,13 +91,12 @@ class Profile extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
             case __CLASS__ :
                if ($item->fields['interface']=='helpdesk') {
-                  $ong[1] = $LANG['Menu'][31]; // Helpdesk
+                  $ong[1] = __('Simplified interface'); // Helpdesk
 
                } else {
                   $ong[2] = __('Inventory/Management/Tools');
@@ -652,15 +651,15 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['Menu'][2]."</td><td>";
       self::dropdownNoneReadWrite("printer", $this->fields["printer"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][21]."</td><td>";
+      echo "<td>"._n('Cartridge', 'Cartridges', 2)."</td><td>";
       self::dropdownNoneReadWrite("cartridge", $this->fields["cartridge"], 1, 1, 1);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Menu'][32]."</td><td>";
+      echo "<td>"._n('Consumable', 'Consumables', 2)."</td><td>";
       self::dropdownNoneReadWrite("consumable", $this->fields["consumable"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][34]."</td><td>";
+      echo "<td>"._n('Phone', 'Phones', 2)."</td><td>";
       self::dropdownNoneReadWrite("phone", $this->fields["phone"], 1, 1, 1);
       echo "</td>";
       echo "<td>".$LANG['Menu'][16]."</td><td>";
@@ -674,21 +673,21 @@ class Profile extends CommonDBTM {
       echo "<td colspan='4'>&nbsp;</td></tr>";
 
       // Gestion / Management
-      echo "<tr class='tab_bg_1'><th colspan='6'>".$LANG['Menu'][26]."</th></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='6'>".__('Management')."</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Menu'][22]." / ".$LANG['Menu'][23]."</td><td>";
+      echo "<td>"._n('Contacts', 'Contacts', 2)." / "._n('Supplier', 'Suppliers', 2)."</td><td>";
       self::dropdownNoneReadWrite("contact_enterprise", $this->fields["contact_enterprise"], 1, 1,
                                   1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][27]."</td><td>";
+      echo "<td>"._n('Document', 'Documents', 2)."</td><td>";
       self::dropdownNoneReadWrite("document", $this->fields["document"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][25]."</td><td>";
+      echo "<td>"._n('Contract', 'Contracts', 2)."</td><td>";
       self::dropdownNoneReadWrite("contract", $this->fields["contract"], 1, 1, 1);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][24]."</td><td>";
+      echo "<tr class='tab_bg_2'><td>".__('Financial and administratives informations')."</td><td>";
       self::dropdownNoneReadWrite("infocom", $this->fields["infocom"], 1, 1, 1);
       echo "</td>";
       echo "<td>".$LANG['financial'][87]."</td><td colspan='3'>";
@@ -1171,7 +1170,7 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['Menu'][12]."</td><td>";
       self::dropdownNoneReadWrite("backup", $this->fields["backup"], 1, 0, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][30]."</td><td>";
+      echo "<td>"._n('Log', 'Logs', 2)."</td><td>";
       self::dropdownNoneReadWrite("logs", $this->fields["logs"], 1, 1, 0);
       echo "</td>";
 
@@ -1412,17 +1411,17 @@ class Profile extends CommonDBTM {
 
       $tab[26]['table']    = $this->getTable();
       $tab[26]['field']    = 'cartridge';
-      $tab[26]['name']     = $LANG['Menu'][21];
+      $tab[26]['name']     = _n('Cartridge', 'Cartridges', 2);
       $tab[26]['datatype'] = 'right';
 
       $tab[27]['table']    = $this->getTable();
       $tab[27]['field']    = 'consumable';
-      $tab[27]['name']     = $LANG['Menu'][32];
+      $tab[27]['name']     = _n('Consumable', 'Consumables', 2);
       $tab[27]['datatype'] = 'right';
 
       $tab[28]['table']    = $this->getTable();
       $tab[28]['field']    = 'phone';
-      $tab[28]['name']     = $LANG['Menu'][34];
+      $tab[28]['name']     = _n('Phone', 'Phones', 2);
       $tab[28]['datatype'] = 'right';
 
       $tab[29]['table']    = $this->getTable();
@@ -1435,7 +1434,7 @@ class Profile extends CommonDBTM {
       $tab[29]['name']     = $LANG['Internet'][0];
       $tab[29]['datatype'] = 'right';
 
-      $tab['management'] = $LANG['Menu'][26];
+      $tab['management']   = __('Management');
 
       $tab[30]['table']    = $this->getTable();
       $tab[30]['field']    = 'contact_enterprise';
@@ -1444,17 +1443,17 @@ class Profile extends CommonDBTM {
 
       $tab[31]['table']    = $this->getTable();
       $tab[31]['field']    = 'document';
-      $tab[31]['name']     = $LANG['Menu'][27];
+      $tab[31]['name']     = _n('Document', 'Documents', 2);
       $tab[31]['datatype'] = 'right';
 
       $tab[32]['table']    = $this->getTable();
       $tab[32]['field']    = 'contract';
-      $tab[32]['name']     = $LANG['Menu'][25];
+      $tab[32]['name']     = _n('Contract', 'Contracts', 2);
       $tab[32]['datatype'] = 'right';
 
       $tab[33]['table']    = $this->getTable();
       $tab[33]['field']    = 'infocom';
-      $tab[33]['name']     = $LANG['Menu'][24];
+      $tab[33]['name']     = __('Financial and administratives informations');
       $tab[33]['datatype'] = 'right';
 
       $tab[101]['table']    = $this->getTable();
@@ -1640,7 +1639,7 @@ class Profile extends CommonDBTM {
 
       $tab[61]['table']    = $this->getTable();
       $tab[61]['field']    = 'logs';
-      $tab[61]['name']     = $LANG['Menu'][30];
+      $tab[61]['name']     = _n('Log', 'Logs', 2);
       $tab[61]['datatype'] = 'right';
 
       $tab[62]['table']    = $this->getTable();
@@ -1970,14 +1969,13 @@ class Profile extends CommonDBTM {
 
 
    static function getInterfaceName($value) {
-      global $LANG;
 
       switch ($value) {
          case 'central' :
             return __('Standard interface');
 
          case 'helpdesk' :
-            return $LANG['Menu'][31];
+            return __('Simplified interface');
       }
    }
 }

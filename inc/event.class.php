@@ -39,10 +39,8 @@ if (!defined('GLPI_ROOT')) {
 // Event class
 class Event extends CommonDBTM {
 
-   static function getTypeName() {
-      global $LANG;
-
-      return $LANG['Menu'][30];
+   static function getTypeName($nb=0) {
+      return _n('Log', 'Logs', $nb);
    }
 
 
@@ -127,13 +125,13 @@ class Event extends CommonDBTM {
                           'maintain'     => __('Assistance'),
                           'planning'     => Toolbox::ucfirst($LANG['log'][16]),
                           'tools'        => $LANG['Menu'][18],
-                          'financial'    => $LANG['Menu'][26],
+                          'financial'    => __('Management'),
                           'login'        => $LANG['log'][55],
                           'setup'        => __('Setup'),
                           'security'     => $LANG['log'][66],
                           'reservation'  => $LANG['log'][42],
                           'cron'         => $LANG['log'][59],
-                          'document'     => $LANG['Menu'][27],
+                          'document'     => _n('Document', 'Documents', 2),
                           'notification' => _n('Notification', 'Notifications',2),
                           'plugin'       => __('Plugins'));
 

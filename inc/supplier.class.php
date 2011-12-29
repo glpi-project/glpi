@@ -49,16 +49,9 @@ class Supplier extends CommonDBTM {
     * Name of the type
     *
     * @param $nb : number of item in the type
-    *
-    * @return $LANG
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['Menu'][23];
-      }
-      return $LANG['financial'][26];
+      return _n('Supplier', 'Suppliers', $nb);
    }
 
 
@@ -89,7 +82,6 @@ class Supplier extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG,$CFG_GLPI;
 
       $ong = array();
       $this->addStandardTab('Contact_Supplier', $ong, $options);
