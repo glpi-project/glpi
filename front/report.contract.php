@@ -61,7 +61,7 @@ echo "<option value='NetworkEquipment'>".$LANG['help'][26]."</option>";
 echo "<option value='Monitor'>".$LANG['Menu'][3]."</option>";
 echo "<option value='Peripheral'>".$LANG['Menu'][16]."</option>";
 echo "<option value='Software'>".$LANG['Menu'][4]."</option>";
-echo "<option value='Phone'>".$LANG['Menu'][34]."</option>";
+echo "<option value='Phone'>"._n('Phone', 'Phones', 2)."</option>";
 echo "</select></p> </td> ";
 
 echo "<td class='center' width='200'>";

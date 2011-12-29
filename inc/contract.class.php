@@ -45,12 +45,7 @@ class Contract extends CommonDBTM {
    public $dohistory = true;
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['Menu'][25];
-      }
-      return $LANG['financial'][1];
+      return _n('Contract', 'Contracts', $nb);
    }
 
 
@@ -279,7 +274,7 @@ class Contract extends CommonDBTM {
 
       $tab = array();
 
-      $tab['contract'] = $LANG['Menu'][25];
+      $tab['contract'] = self::getTypeName(2);
 
       $joinparams = array('beforejoin' => array('table'      => 'glpi_contracts_items',
                                                 'joinparams' => array('jointype' => 'itemtype_item')));

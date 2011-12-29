@@ -87,7 +87,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header($LANG['Menu'][23],'',"financial","supplier");
+   Html::header(Supplier::getTypeName(2), '', "financial", "supplier");
    $ent->showForm($_GET["id"]);
    Html::footer();
 }

@@ -41,12 +41,11 @@ if (!defined('GLPI_ROOT')) {
 class Phone extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory=true;
+   public $dohistory            = true;
    protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
       //TRANS: Test of comment for translation (mark : //TRANS)
       return _n('Phone','Phones',$nb);
@@ -64,7 +63,6 @@ class Phone extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG, $CFG_GLPI;
 
       $ong = array();
       $this->addStandardTab('Computer_Item', $ong, $options);
@@ -201,9 +199,12 @@ class Phone extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf('%1$s%2$s',__('Name'),(isset($options['withtemplate']) && $options['withtemplate']?"*":""))."</td>";
+      echo "<td>".sprintf('%1$s%2$s',__('Name'),
+                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
+           "</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["name"], "name", (isset($options['withtemplate']) && $options['withtemplate']==2),
+      $objectName = autoName($this->fields["name"], "name",
+                             (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
@@ -263,9 +264,11 @@ class Phone extends CommonDBTM {
       echo "<td>".__('Alternate username')."&nbsp;:</td><td>";
       Html::autocompletionTextField($this, "contact");
       echo "</td>";
-      echo "<td>".__('Inventory number').(isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>";
+      echo "<td>".__('Inventory number').
+                  (isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["otherserial"], "otherserial",(isset($options['withtemplate']) && $options['withtemplate']==2),
+      $objectName = autoName($this->fields["otherserial"], "otherserial",
+                             (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, 'otherserial', array('value' => $objectName));
       echo "</td></tr>\n";
@@ -509,5 +512,4 @@ class Phone extends CommonDBTM {
    }
 
 }
-
 ?>

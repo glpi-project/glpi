@@ -101,12 +101,14 @@ class Infocom extends CommonDBChild {
 
             default :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['Menu'][26],
+                  return self::createTabEntry(__('Management'),
                                               countElementsInTable('glpi_infocoms',
-                                                                   "`itemtype` = '".$item->getType()."'
-                                                                     AND `items_id` = '".$item->getID()."'"));
+                                                                   "`itemtype`
+                                                                           = '".$item->getType()."'
+                                                                      AND `items_id`
+                                                                           = '".$item->getID()."'"));
                }
-               return $LANG['Menu'][26];
+               return __('Management');
          }
       }
       return '';

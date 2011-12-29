@@ -639,7 +639,7 @@ class Dropdown {
                                  'VirtualMachineSystem' => VirtualMachineSystem::getTypeName(2),
                                  'VirtualMachineState'  => VirtualMachineState::getTypeName(2)),
 
-                        $LANG['Menu'][26]
+                        __('Management')
                         => array('DocumentCategory' => DocumentCategory::getTypeName(2),
                                  'DocumentType'     => DocumentType::getTypeName(2)),
 

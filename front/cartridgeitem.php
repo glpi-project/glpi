@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("cartridge", "r");
 
-Html::header($LANG['Menu'][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
+Html::header(_n('Cartridge', 'Cartridges', 2), $_SERVER['PHP_SELF'], "inventory", "cartridge");
 
 Search::show('CartridgeItem');
 

@@ -62,21 +62,22 @@ class Contact_Supplier extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate && Session::haveRight("contact_enterprise","r")) {
          switch ($item->getType()) {
             case 'Supplier' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['Menu'][22], self::countForSupplier($item));
+                  return self::createTabEntry(_n('Contact', 'Contacts', 2),
+                                              self::countForSupplier($item));
                }
-               return $LANG['Menu'][22];
+               return _n('Contact', 'Contacts', 2);
 
             case 'Contact' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['Menu'][23], self::countForContact($item));
+                  return self::createTabEntry(_n('Supplier', 'Suppliers', 2),
+                                              self::countForContact($item));
                }
-               return $LANG['Menu'][23];
+               return _n('Supplier', 'Suppliers', 2);
          }
       }
       return '';

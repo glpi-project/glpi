@@ -40,7 +40,7 @@ Session::checkRight("reservation_helpdesk", "1");
 $rr = new Reservation();
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-   Html::helpHeader($LANG['Menu'][31],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+   Html::helpHeader(__('Simplified interface'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
 } else {
    Html::header($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
 }

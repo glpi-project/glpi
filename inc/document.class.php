@@ -48,12 +48,7 @@ class Document extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['Menu'][27];
-      }
-      return $LANG['document'][18];
+      return _n('Document', 'Documents', $nb);
    }
 
 
@@ -70,6 +65,7 @@ class Document extends CommonDBTM {
 
 
    function canCreateItem() {
+
       // From Ticket Document Tab => check right to add followup.
       if (isset($this->fields['tickets_id'])
           && $this->fields['tickets_id']>0) {
@@ -118,7 +114,6 @@ class Document extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       // Can exist for template
       if (Session::haveRight("document","r")
@@ -126,9 +121,9 @@ class Document extends CommonDBTM {
           || $item->getType()=='KnowbaseItem') {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['Menu'][27], Document_Item::countForItem($item));
+            return self::createTabEntry(self::getTypeName(2), Document_Item::countForItem($item));
          }
-         return $LANG['Menu'][27];
+         return self::getTypeName(2);
       }
       return '';
    }
@@ -1353,7 +1348,7 @@ class Document extends CommonDBTM {
          // Don't use this for document associated to document
          // To not loose navigation list for current document
          if ($item->getType() != 'Document') {
-            Session::initNavigateListItems('Document', 
+            Session::initNavigateListItems('Document',
                   //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                   sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
          }

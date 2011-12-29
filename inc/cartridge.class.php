@@ -765,21 +765,21 @@ class Cartridge extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate && Session::haveRight("cartridge","r"))
          switch ($item->getType()) {
             case 'Printer' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['Menu'][21], self::countForPrinter($item));
+                  return self::createTabEntry(self::getTypeName(2), self::countForPrinter($item));
                }
-               return $LANG['Menu'][21];
+               return self::getTypeName(2);
 
             case 'CartridgeItem' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['Menu'][21], self::countForCartridgeItem($item));
+                  return self::createTabEntry(self::getTypeName(2),
+                                              self::countForCartridgeItem($item));
                }
-               return $LANG['Menu'][21];
+               return self::getTypeName(2);
       }
       return '';
    }

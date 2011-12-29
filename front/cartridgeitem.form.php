@@ -56,7 +56,8 @@ if (isset($_POST["add"])) {
    $cartype->check($_POST["id"],'w');
 
    if ($cartype->delete($_POST)) {
-      Event::log($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($_POST["id"], "cartridges", 4, "inventory",
+                 $_SESSION["glpiname"]." ".$LANG['log'][22]);
    }
    $cartype->redirectToList();
 
@@ -64,7 +65,8 @@ if (isset($_POST["add"])) {
    $cartype->check($_POST["id"],'w');
 
    if ($cartype->restore($_POST)) {
-      Event::log($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+      Event::log($_POST["id"], "cartridges", 4, "inventory",
+                 $_SESSION["glpiname"]." ".$LANG['log'][23]);
    }
    $cartype->redirectToList();
 
@@ -72,7 +74,8 @@ if (isset($_POST["add"])) {
    $cartype->check($_POST["id"],'w');
 
    if ($cartype->delete($_POST,1)) {
-      Event::log($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+      Event::log($_POST["id"], "cartridges", 4, "inventory",
+                 $_SESSION["glpiname"]." ".$LANG['log'][24]);
    }
    $cartype->redirectToList();
 
@@ -80,7 +83,8 @@ if (isset($_POST["add"])) {
    $cartype->check($_POST["id"],'w');
 
    if ($cartype->update($_POST)) {
-      Event::log($_POST["id"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+      Event::log($_POST["id"], "cartridges", 4, "inventory",
+                 $_SESSION["glpiname"]." ".$LANG['log'][21]);
    }
    Html::back();
 
@@ -89,7 +93,7 @@ if (isset($_POST["add"])) {
 
    if ($cartype->addCompatibleType($_POST["tID"],$_POST["printermodels_id"])) {
       Event::log($_POST["tID"], "cartridges", 4, "inventory",
-               $_SESSION["glpiname"]." ".$LANG['log'][30]);
+                 $_SESSION["glpiname"]." ".$LANG['log'][30]);
    }
    Html::back();
 
@@ -98,12 +102,12 @@ if (isset($_POST["add"])) {
 
    if ($cartype->deleteCompatibleType($_GET["id"])) {
       Event::log($_GET["tID"], "cartridges", 4, "inventory",
-               $_SESSION["glpiname"]." ".$LANG['log'][31]);
+                 $_SESSION["glpiname"]." ".$LANG['log'][31]);
    }
    Html::back();
 
 } else {
-   Html::header($LANG['Menu'][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
+   Html::header(_n('Cartridge', 'Cartridges', 2), $_SERVER['PHP_SELF'], "inventory", "cartridge");
    $cartype->showForm($_GET["id"]);
    Html::footer();
 }
