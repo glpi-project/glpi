@@ -35,7 +35,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-Html::header($LANG['Menu'][13], $_SERVER['PHP_SELF'], "maintain", "stat");
+Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "maintain", "stat");
 
 Session::checkRight("statistic", "1");
 

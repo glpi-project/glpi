@@ -4831,7 +4831,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    }
 
    $tables = array('glpi_infocoms'           => $LANG['financial'][3],
-                   'glpi_reservationitems'   => $LANG['Menu'][17],
+                   'glpi_reservationitems'   => _n('Reservation', 'Reservations', 2),
                    'glpi_networkports'       => _n('Network port', 'Network ports', 2));
    foreach ($tables as $table => $label) {
       // Migrate infocoms entity information

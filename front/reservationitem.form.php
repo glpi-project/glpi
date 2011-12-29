@@ -61,7 +61,7 @@ if (isset($_REQUEST["add"])) {
    Html::back();
 
 } else {
-   Html::header($LANG['Menu'][17], $_SERVER['PHP_SELF'], "utils", "reservation");
+   Html::header(_n('Reservation', 'Reservations', 2), $_SERVER['PHP_SELF'], "utils", "reservation");
    $ri->showForm($_GET["id"]);
 }
 

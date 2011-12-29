@@ -999,7 +999,7 @@ class Html {
 
 
       if (Session::haveRight("peripheral","r")) {
-         $menu['inventory']['content']['peripheral']['title']           = $LANG['Menu'][16];
+         $menu['inventory']['content']['peripheral']['title']           = _n('Device', 'Devices', 2);
          $menu['inventory']['content']['peripheral']['shortcut']        = '';
          $menu['inventory']['content']['peripheral']['page']            = '/front/peripheral.php';
          $menu['inventory']['content']['peripheral']['links']['search'] = '/front/peripheral.php';
@@ -1175,7 +1175,7 @@ class Html {
       }
 
       if (Session::haveRight("statistic","1")) {
-         $menu['maintain']['content']['stat']['title']    = $LANG['Menu'][13];
+         $menu['maintain']['content']['stat']['title']    = __('Statistics');
          $menu['maintain']['content']['stat']['shortcut'] = 'a';
          $menu['maintain']['content']['stat']['page']     = '/front/stat.php';
       }
@@ -1264,7 +1264,7 @@ class Html {
 
 
       // UTILS
-      $menu['utils']['title'] = $LANG['Menu'][18];
+      $menu['utils']['title'] = __('Tools');
 
       $menu['utils']['default'] = '/front/reminder.php';
 
@@ -1275,7 +1275,7 @@ class Html {
 
       if (Session::haveRight("knowbase","r") || Session::haveRight("faq","r")) {
          if (Session::haveRight("knowbase","r")) {
-            $menu['utils']['content']['knowbase']['title']        = $LANG['Menu'][19];
+            $menu['utils']['content']['knowbase']['title']        = __('Knowledge base');
          } else {
             $menu['utils']['content']['knowbase']['title']        = $LANG['knowbase'][1];
          }
@@ -1293,8 +1293,8 @@ class Html {
 
       if (Session::haveRight("reservation_helpdesk","1")
           || Session::haveRight("reservation_central","r")) {
-         $menu['utils']['content']['reservation']['title']            = $LANG['Menu'][17];
-         $menu['utils']['content']['reservation']['shortcut']         = 'r';
+         $menu['utils']['content']['reservation']['title']     = _n('Reservation', 'Reservations', 2);
+         $menu['utils']['content']['reservation']['shortcut']  = 'r';
 
          $menu['utils']['content']['reservation']['page']             = '/front/reservationitem.php';
          $menu['utils']['content']['reservation']['links']['search']  = '/front/reservationitem.php';
@@ -1310,20 +1310,28 @@ class Html {
 
 
       if ($CFG_GLPI["use_ocs_mode"] && Session::haveRight("ocsng","w")) {
-         $menu['utils']['content']['ocsng']['title']                      = __('OCSNG');
-         $menu['utils']['content']['ocsng']['page']                       = '/front/ocsng.php';
+         $menu['utils']['content']['ocsng']['title']  = __('OCSNG');
+         $menu['utils']['content']['ocsng']['page']   = '/front/ocsng.php';
 
-         $menu['utils']['content']['ocsng']['options']['import']['title'] = __('Import new computers');
-         $menu['utils']['content']['ocsng']['options']['import']['page']  = '/front/ocsng.import.php';
+         $menu['utils']['content']['ocsng']['options']['import']['title']
+                                          = __('Import new computers');
+         $menu['utils']['content']['ocsng']['options']['import']['page']
+                                          = '/front/ocsng.import.php';
 
-         $menu['utils']['content']['ocsng']['options']['sync']['title']   = __('Synchronize computers already imported');
-         $menu['utils']['content']['ocsng']['options']['sync']['page']    = '/front/ocsng.sync.php';
+         $menu['utils']['content']['ocsng']['options']['sync']['title']
+                                          = __('Synchronize computers already imported');
+         $menu['utils']['content']['ocsng']['options']['sync']['page']
+                                          = '/front/ocsng.sync.php';
 
-         $menu['utils']['content']['ocsng']['options']['clean']['title']  = __('Clean links between GLPI and OCSNG');
-         $menu['utils']['content']['ocsng']['options']['clean']['page']   = '/front/ocsng.clean.php';
+         $menu['utils']['content']['ocsng']['options']['clean']['title']
+                                          = __('Clean links between GLPI and OCSNG');
+         $menu['utils']['content']['ocsng']['options']['clean']['page']
+                                          = '/front/ocsng.clean.php';
 
-         $menu['utils']['content']['ocsng']['options']['link']['title']   = __('Link new OCS computers to existing GLPI computers');
-         $menu['utils']['content']['ocsng']['options']['link']['page']    = '/front/ocsng.link.php';
+         $menu['utils']['content']['ocsng']['options']['link']['title']
+                                          = __('Link new OCS computers to existing GLPI computers');
+         $menu['utils']['content']['ocsng']['options']['link']['page']
+                                          = '/front/ocsng.link.php';
 
       }
 
@@ -1395,12 +1403,12 @@ class Html {
 
 
       /// ADMINISTRATION
-      $menu['admin']['title'] = $LANG['Menu'][15];
+      $menu['admin']['title'] = __('Administration');
 
       if (Session::haveRight("user","r")) {
          $menu['admin']['default'] = '/front/user.php';
 
-         $menu['admin']['content']['user']['title']           = $LANG['Menu'][14];
+         $menu['admin']['content']['user']['title']           = _n('User', 'Users', 2);
          $menu['admin']['content']['user']['shortcut']        = 'u';
          $menu['admin']['content']['user']['page']            = '/front/user.php';
          $menu['admin']['content']['user']['links']['search'] = '/front/user.php';
@@ -1409,7 +1417,8 @@ class Html {
             $menu['admin']['content']['user']['links']['add'] = "/front/user.form.php";
          }
 
-        $menu['admin']['content']['user']['options']['ldap']['title'] = $LANG['Menu'][9];
+        $menu['admin']['content']['user']['options']['ldap']['title'] = _n('LDAP directory',
+                                                                           'LDAP directories', 2);
         $menu['admin']['content']['user']['options']['ldap']['page']  = "/front/ldap.php";
       }
 
@@ -1422,7 +1431,8 @@ class Html {
 
          if (Session::haveRight("group","w")) {
             $menu['admin']['content']['group']['links']['add']             = "/front/group.form.php";
-            $menu['admin']['content']['group']['options']['ldap']['title'] = $LANG['Menu'][9];
+            $menu['admin']['content']['group']['options']['ldap']['title'] = _n('LDAP directory',
+                                                                                'LDAP directories', 2);
             $menu['admin']['content']['group']['options']['ldap']['page']  = "/front/ldap.group.php";
          }
       }
@@ -1739,7 +1749,7 @@ class Html {
       }
 
       if (Session::haveRight("backup","w")) {
-         $menu['admin']['content']['backup']['title']    = $LANG['Menu'][12];
+         $menu['admin']['content']['backup']['title']    = __('Maintenance');
          $menu['admin']['content']['backup']['shortcut'] = '';
          $menu['admin']['content']['backup']['page']     = '/front/backup.php';
       }
@@ -1876,14 +1886,19 @@ class Html {
          $menu['config']['content']['extauth']['title'] = $LANG['login'][10];
          $menu['config']['content']['extauth']['page']  = '/front/setup.auth.php';
 
-         $menu['config']['content']['extauth']['options']['ldap']['title'] = $LANG['Menu'][9];
+         $menu['config']['content']['extauth']['options']['ldap']['title'] = _n('LDAP directory',
+                                                                                'LDAP directories', 2);
          $menu['config']['content']['extauth']['options']['ldap']['page']  = '/front/authldap.php';
 
-         $menu['config']['content']['extauth']['options']['imap']['title'] = $LANG['Menu'][10];
-         $menu['config']['content']['extauth']['options']['imap']['page']  = '/front/authmail.php';
+         $menu['config']['content']['extauth']['options']['imap']['title']
+                                                            = _n('Mail server', 'Mail servers', 2);
+         $menu['config']['content']['extauth']['options']['imap']['page']
+                                                            = '/front/authmail.php';
 
-         $menu['config']['content']['extauth']['options']['others']['title'] = __('Others');
-         $menu['config']['content']['extauth']['options']['others']['page']  = '/front/auth.others.php';
+         $menu['config']['content']['extauth']['options']['others']['title']
+                                                                        = __('Others');
+         $menu['config']['content']['extauth']['options']['others']['page']
+                                                                        = '/front/auth.others.php';
 
          $menu['config']['content']['extauth']['options']['settings']['title'] = __('Setup');
          $menu['config']['content']['extauth']['options']['settings']['page']
@@ -1945,7 +1960,7 @@ class Html {
 
 
       // Special items
-      $menu['preference']['title']   = $LANG['Menu'][11];
+      $menu['preference']['title']   = __('Settings');
       $menu['preference']['default'] = '/front/preference.php';
 
 
@@ -1985,7 +2000,7 @@ class Html {
             __('Help')."</a></li>";
 
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
-                 $LANG['Menu'][11]."\">".$LANG['Menu'][11]."</a></li>";
+                 __('Settings')."\">".__('Settings')."</a></li>";
 
       echo "</ul>";
       echo "<div class='sep'></div>";
@@ -2508,7 +2523,7 @@ class Html {
                  "' target='_blank' title=\"".__s('Help')."\"> ".__('Help').
            "</a></li>";
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
-                  $LANG['Menu'][11]."\">".$LANG['Menu'][11]."</a></li>\n";
+                  __('Settings')."\">".__('Settings')."</a></li>\n";
 
       echo "</ul>";
       echo "<div class='sep'></div>";
@@ -2551,7 +2566,8 @@ class Html {
       if (Session::haveRight("reservation_helpdesk","1")) {
          echo "<li id='menu4'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php' title=\"".
-                $LANG['Menu'][17]."\" class='itemP'>".$LANG['Menu'][17]."</a>";
+                _n('Reservation', 'Reservations', 2)."\" class='itemP'>".
+                _n('Reservation', 'Reservations', 2)."</a>";
          echo "</li>";
       }
 
@@ -2559,7 +2575,7 @@ class Html {
       if (Session::haveRight("faq","r")) {
          echo "<li id='menu5' >";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php' title=\"".
-                $LANG['knowbase'][1]."\" class='itemP'>".$LANG['Menu'][20]."</a>";
+                $LANG['knowbase'][1]."\" class='itemP'>".__('FAQ')."</a>";
          echo "</li>";
       }
 

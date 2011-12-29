@@ -124,7 +124,7 @@ class Event extends CommonDBTM {
                           'tracking'     => $LANG['Menu'][5],
                           'maintain'     => __('Assistance'),
                           'planning'     => Toolbox::ucfirst($LANG['log'][16]),
-                          'tools'        => $LANG['Menu'][18],
+                          'tools'        => __('Tools'),
                           'financial'    => __('Management'),
                           'login'        => $LANG['log'][55],
                           'setup'        => __('Setup'),

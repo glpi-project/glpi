@@ -58,12 +58,7 @@ class AuthLDAP extends CommonDBTM {
    public $dohistory = true;
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['Menu'][9];
-      }
-      return $LANG['login'][2];
+      return _n('LDAP directory', 'LDAP directories', $nb);
    }
 
 
@@ -1006,7 +1001,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<tr><th>".(!$_SESSION['ldap_import']['mode']?__('Import')
                                                               :$LANG['ldap'][15])."</th>";
             $num = 0;
-            echo Search::showHeaderItem(Search::HTML_OUTPUT, $LANG['Menu'][14], $num,
+            echo Search::showHeaderItem(Search::HTML_OUTPUT, _n('User', 'Users', 2), $num,
                                         $_SERVER['PHP_SELF'].
                                                 "?order=".($values['order']=="DESC"?"ASC":"DESC"));
             echo "<th>".__('Last update in the LDAP directory')."</th>";
@@ -2589,7 +2584,7 @@ class AuthLDAP extends CommonDBTM {
       if (!$withtemplate && $item->can($item->getField('id'),'r')) {
          $ong = array();
          $ong[1] = __('Main');    // test connexion
-         $ong[2]  = $LANG['Menu'][14];    // params for user
+         $ong[2]  = _n('User', 'Users', 2);
          $ong[3]  = _n('Group', 'Groups', 2);
          $ong[4]  = $LANG['entity'][0];   // params for entity config
          $ong[5]  = $LANG['entity'][14];  // params for entity advanced config

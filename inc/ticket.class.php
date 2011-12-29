@@ -396,7 +396,7 @@ class Ticket extends CommonITILObject {
                $ong[3] = __('Satisfaction');
             }
             if (Session::haveRight('observe_ticket','1')) {
-               $ong[4] = $LANG['Menu'][13];
+               $ong[4] = __('Statistics');
             }
             return $ong;
 

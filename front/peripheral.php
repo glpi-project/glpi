@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("peripheral", "r");
 
-Html::header($LANG['Menu'][16],$_SERVER['PHP_SELF'],"inventory","peripheral");
+Html::header(_n('Device', 'Devices', 2), $_SERVER['PHP_SELF'], "inventory", "peripheral");
 
 Search::show('Peripheral');
 

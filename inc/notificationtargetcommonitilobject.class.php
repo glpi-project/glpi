@@ -769,7 +769,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.solution.type'         => $LANG['job'][48],
                     $objettype.'.solution.description'  => $LANG['jobresolution'][1],
                     $objettype.'.observerusers'         => $LANG['common'][104]." - ".
-                                                            $LANG['Menu'][14]);
+                                                            _n('User', 'Users', 2));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,

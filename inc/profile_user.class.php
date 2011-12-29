@@ -734,7 +734,6 @@ class Profile_User extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          $nb = 0;
@@ -746,7 +745,7 @@ class Profile_User extends CommonDBTM {
                      $nb = countElementsInTable($this->getTable(),
                                                 "entities_id = '".$item->getID()."'");
                   }
-                  return self::createTabEntry($LANG['Menu'][14], $nb);
+                  return self::createTabEntry(_n('User', 'Users', 2), $nb);
                }
                break;
 
@@ -762,7 +761,7 @@ class Profile_User extends CommonDBTM {
                                                                            $_SESSION['glpiactiveentities'],
                                                                            true));
                   }
-                  return self::createTabEntry($LANG['Menu'][14], $nb);
+                  return self::createTabEntry(_n('User', 'Users', 2), $nb);
                }
                break;
 

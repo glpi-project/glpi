@@ -131,7 +131,7 @@ echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][4]." :</td>";
 echo "<td class='right'>$number_of_software &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
 echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][3]." :</td>";
 echo "<td class='right'>$number_of_monitors &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
-echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][16]." :</td>";
+echo "<tr class='tab_bg_2'><td>"._n('Device', 'Devices', 2)."</td>";
 echo "<td class='right'>$number_of_peripherals &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
 echo "<tr class='tab_bg_2'><td>"._n('Phone', 'Phones', 2)."</td>";
 echo "<td class='right'>$number_of_phones &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
@@ -233,7 +233,7 @@ while ($data=$DB->fetch_assoc($result)) {
 }
 
 echo "<tr><td colspan='2' height=10></td></tr>";
-echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][16]."&nbsp;:</td></tr>";
+echo "<tr class='tab_bg_1'><td colspan='2' class='b'>"._n('Device', 'Devices', 2)."</td></tr>";
 
 # 4. Get some more number data (Peripherals)
 

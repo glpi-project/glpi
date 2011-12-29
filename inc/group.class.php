@@ -239,7 +239,7 @@ class Group extends CommonTreeDropdown {
       echo "<td>";
       dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][14]."&nbsp;:&nbsp;&nbsp;";
+      echo "<td>"._n('User  ', 'Users  ', 2);
       dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
       echo "</td></tr>";
 

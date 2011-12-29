@@ -181,7 +181,7 @@ class Problem extends CommonITILObject {
                $ong = array (1 => __('Analysis'),         // Analysis
                              2 => $LANG['jobresolution'][2]);  // Solution
                if (Session::haveRight('observe_ticket','1')) {
-                  $ong[4] = $LANG['Menu'][13];
+                  $ong[4] = __('Statistics');
                }
                return $ong;
          }
@@ -189,9 +189,9 @@ class Problem extends CommonITILObject {
 
       switch ($item->getType()) {
          case __CLASS__ :
-            return array(1 => __('Analysis'),         // Analysis
+            return array(1 => __('Analysis'),
                          2 => $LANG['jobresolution'][2],    // Solution
-                         4 => $LANG['Menu'][13]);           // Stats
+                         4 => __('Statistics'));
       }
       return '';
    }
