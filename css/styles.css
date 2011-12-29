@@ -394,7 +394,7 @@ td { }
 }
 
 .tab_cadre_fixe, .tab_cadre_fixehov {
-   margin: 0 auto 10px auto;
+   margin: 0px auto 5px auto;
    -moz-border-radius: 4px;
    -webkit-border-radius: 4px;
    -o-border-radius: 4px;
