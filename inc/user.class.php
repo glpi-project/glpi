@@ -2531,7 +2531,8 @@ class User extends CommonDBTM {
                        `glpi_groups`.`name`
                 FROM `glpi_groups_users`
                 LEFT JOIN `glpi_groups` ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
-                WHERE `glpi_groups_users`.`users_id` = '$ID'";
+                WHERE `glpi_groups_users`.`users_id` = '$ID'
+                      AND `glpi_groups_users`.`groups_id` > 0";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
 
