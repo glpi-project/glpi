@@ -46,7 +46,6 @@ class Planning {
     * @param $value status ID
    **/
    static function getState($value) {
-      global $LANG;
 
       switch ($value) {
          case 0 :
@@ -68,7 +67,6 @@ class Planning {
     * @param $value default value
    **/
    static function dropdownState($name, $value='') {
-      global $LANG;
 
       echo "<select name='$name' id='$name'>";
       echo "<option value='0'".($value==0?" selected ":"").">".__('Information')."</option>";
@@ -87,7 +85,7 @@ class Planning {
     * @param $except array of items which not be into account array('Reminder'=>array(1,2,id_of_items))
    **/
    static function checkAlreadyPlanned($users_id, $begin, $end, $except=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $planned = false;
       $message = '';
@@ -276,7 +274,8 @@ class Planning {
     * @return Nothing (display function)
    **/
    static function checkAvailability($who, $begin='', $end='') {
-      global $LANG, $CFG_GLPI, $DB;
+      global $CFG_GLPI, $DB;
+
       if (empty($who)) {
          return false;
       }
@@ -449,7 +448,7 @@ class Planning {
     * @return Nothing (display function)
    **/
    static function show($who, $who_group, $when, $type) {
-      global $LANG, $CFG_GLPI, $DB;
+      global $CFG_GLPI, $DB;
 
       if (!Session::haveRight("show_planning","1")
           && !Session::haveRight("show_all_planning","1")) {
@@ -743,7 +742,7 @@ class Planning {
     * @return Nothing (display function)
    **/
    static function displayPlanningItem($val, $who, $type="", $complete=0) {
-      global $CFG_GLPI, $LANG, $PLUGIN_HOOKS;
+      global $CFG_GLPI, $PLUGIN_HOOKS;
 
       $color = "#e4e4e4";
       if (isset($val["state"])) {
@@ -813,7 +812,7 @@ class Planning {
     * @return Nothing (display function)
    **/
    static function showCentral($who) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if (!Session::haveRight("show_planning","1") || $who<=0) {
          return false;
@@ -862,7 +861,8 @@ class Planning {
       ksort($interv);
 
       echo "<table class='tab_cadrehov'><tr><th>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?uID=$who'>".__('Your planning')."</a>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?uID=$who'>".__('Your planning').
+           "</a>";
       echo "</th></tr>";
       $type = '';
       if (count($interv)>0) {

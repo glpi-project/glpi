@@ -53,7 +53,6 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
 
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
-      global $LANG;
 
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'>\n";
@@ -100,7 +99,6 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
 
    static function showForItemHeader() {
-      global $LANG;
 
       echo "<th>" . __('Interface') . "</th>\n";
       echo "<th>" . __('MAC') . "</th>\n";
@@ -118,7 +116,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       echo "<td>";
       $compdev = new Computer_Device();
       $device  = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
-                                                   $this->fields['computers_devicenetworkcards_id']);
+                                                         $this->fields['computers_devicenetworkcards_id']);
       if ($device) {
          echo $device->getLink();
       } else {
@@ -153,7 +151,6 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');

@@ -456,7 +456,7 @@ class Plugin extends CommonDBTM {
                              "</a>";
                      }
                   } else {
-                  
+
                      $missing = '';
                      if (!function_exists("plugin_".$plug['directory']."_install")) {
                         $missing .= "plugin_".$plug['directory']."_install";
@@ -747,7 +747,7 @@ class Plugin extends CommonDBTM {
     * @return nothing
    **/
    static function migrateItemType ($types=array(), $glpitables=array(), $plugtables=array()) {
-      global $DB, $LANG;
+      global $DB;
 
       $typetoname = array(0  => "",// For tickets
                           1  => "Computer",

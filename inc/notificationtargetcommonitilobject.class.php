@@ -504,7 +504,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @param $options array
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $events    = $this->getAllEvents();
       $objettype = strtolower($this->obj->getType());
@@ -531,7 +531,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($event == 'validation' && isset($options['validation_status'])) {
          $this->datas["##$objettype.action##"]
                      //TRANS: %s id the state of the approval
-                      = sprintf(__('Approval - %s'),TicketValidation::getStatus($options['validation_status']));
+                      = sprintf(__('Approval - %s'),
+                                TicketValidation::getStatus($options['validation_status']));
       } else {
          $this->datas["##$objettype.action##"] = $events[$event];
       }
@@ -548,7 +549,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
    function getDatasForObject(CommonDBTM $item, $simple=false) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $objettype = strtolower($item->getType());
 
@@ -570,7 +571,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                                         $this->getEntity());
 
       $datas["##$objettype.storestatus##"]  = $item->getField('status');
-      $datas["##$objettype.status##"]       = CommonITILObject::getGenericStatus($item->getType(),$item->getField('status'));
+      $datas["##$objettype.status##"]
+                           = CommonITILObject::getGenericStatus($item->getType(),
+                                                                $item->getField('status'));
 
       $datas["##$objettype.urgency##"]
                            = CommonITILObject::getUrgencyName($item->getField('urgency'));

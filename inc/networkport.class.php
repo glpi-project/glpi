@@ -71,8 +71,6 @@ class NetworkPort extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Network device', 'Network devices', $nb);
    }
 
@@ -466,7 +464,7 @@ class NetworkPort extends CommonDBChild {
 
 
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if (!isset($options['several'])) {
          $options['several'] = false;
@@ -571,7 +569,6 @@ class NetworkPort extends CommonDBChild {
 
 
    static function getSearchOptionsToAdd($itemtype) {
-      global $LANG;
 
       $tab = array();
 
@@ -780,7 +777,7 @@ class NetworkPort extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       // Can exists on template
       if (Session::haveRight('networking','r')) {

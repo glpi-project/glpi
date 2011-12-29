@@ -56,12 +56,8 @@ class Problem extends CommonITILObject {
     * Name of the type
     *
     * @param $nb : number of item in the type
-    *
-    * @return $LANG
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Problem', 'Problems', $nb);
    }
 
@@ -235,7 +231,6 @@ class Problem extends CommonITILObject {
 
 
    function defineTabs($options=array()) {
-      global $LANG, $CFG_GLPI, $DB;
 
       // show related tickets and changes
       $ong['empty'] = $this->getTypeName(1);
@@ -266,7 +261,6 @@ class Problem extends CommonITILObject {
 
 
    function prepareInputForUpdate($input) {
-      global $LANG, $CFG_GLPI;
 
       // Get problem : need for comparison
 //       $this->getFromDB($input['id']);
@@ -278,14 +272,12 @@ class Problem extends CommonITILObject {
 
 
    function pre_updateInDB() {
-      global $LANG, $CFG_GLPI;
-
       parent::pre_updateInDB();
    }
 
 
    function post_updateItem($history=1) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $donotif = false;
 
@@ -326,7 +318,6 @@ class Problem extends CommonITILObject {
 
 
    function prepareInputForAdd($input) {
-      global $CFG_GLPI, $LANG;
 
       $input =  parent::prepareInputForAdd($input);
 
@@ -343,7 +334,7 @@ class Problem extends CommonITILObject {
 
 
    function post_addItem() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       parent::post_addItem();
 
@@ -989,7 +980,6 @@ class Problem extends CommonITILObject {
     * Form to add an analysis to a problem
    **/
    function showAnalysisForm() {
-      global $LANG, $CFG_GLPI;
 
       $this->check($this->getField('id'), 'r');
       $canedit = $this->can($this->getField('id'), 'w');

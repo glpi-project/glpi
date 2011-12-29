@@ -48,7 +48,8 @@ class NotificationTargetReservation extends NotificationTarget {
       global $LANG;
 
       if ($event != 'alert') {
-         $this->addTarget(Notification::ITEM_TECH_IN_CHARGE, __('Technician in charge of the hardware'));
+         $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,
+                          __('Technician in charge of the hardware'));
          $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE, $LANG['common'][109]);
          $this->addTarget(Notification::ITEM_USER, $LANG['mailing'][137]);
          $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
@@ -57,7 +58,7 @@ class NotificationTargetReservation extends NotificationTarget {
 
 
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       //----------- Reservation infos -------------- //
       $events = $this->getAllEvents();

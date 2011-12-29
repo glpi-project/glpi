@@ -35,8 +35,6 @@ if (!defined('GLPI_ROOT')) {
 class NotificationTargetFieldUnicity extends NotificationTarget {
 
    function getEvents() {
-      global $LANG;
-
       return array('refuse' => __('Alert on duplicate record'));
    }
 

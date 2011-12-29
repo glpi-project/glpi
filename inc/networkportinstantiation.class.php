@@ -221,7 +221,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $recursiveItems list of the items on which this port is attached
    **/
    function showNetworkCardField(NetworkPort $netport, $options=array(), $recursiveItems) {
-      global $LANG, $DB;
+      global $DB;
 
       echo "<td>" . __('"Network Card') . "</td>\n</td>";
       echo "<td>";
@@ -284,7 +284,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 </script>\n";
 
             if (count($deviceNames) > 0) {
-               $options = array('value' => $this->fields['computers_devicenetworkcards_id'],
+               $options = array('value'     => $this->fields['computers_devicenetworkcards_id'],
                                 'on_change' => 'updateForm(this.options[this.selectedIndex].value)');
                Dropdown::showFromArray('computers_devicenetworkcards_id', $deviceNames, $options);
             } else {
@@ -308,7 +308,6 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $options the option given to NetworkPort::showForm
    **/
    function showMacField(NetworkPort $netport, $options=array()) {
-      global $LANG;
 
       // Show device MAC adresses
       echo "<td>" . __('MAC') ."</td>\n<td>";
@@ -326,7 +325,6 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $recursiveItems list of the items on which this port is attached
    **/
    function showNetpointField(NetworkPort $netport, $options=array(), $recursiveItems) {
-      global $LANG;
 
       echo "<td>" . __('Network outlet') . "&nbsp;: </td>\n";
       echo "<td>";

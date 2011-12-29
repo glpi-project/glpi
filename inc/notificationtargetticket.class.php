@@ -200,7 +200,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
 
    function getDatasForObject(CommonDBTM $item, $simple=false) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       // Common ITIL datas
       $datas = parent::getDatasForObject($item, $simple);
@@ -230,10 +230,10 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                $datas['##ticket.autoclose##'] = $autoclose_value;
                $datas['##lang.ticket.autoclosewarning##']
                            //TRANS: %s is the number of day before auto closing
-                           = sprintf(_n('Without a reply, the ticket will be automatically closed after %s day',
-                                        'Without a reply, the ticket will be automatically closed after %s days',
-                                        $autoclose_value),
-                                     $autoclose_value);
+                  = sprintf(_n('Without a reply, the ticket will be automatically closed after %s day',
+                               'Without a reply, the ticket will be automatically closed after %s days',
+                               $autoclose_value),
+                            $autoclose_value);
       }
 
       $datas['##ticket.sla##'] = '';

@@ -35,8 +35,6 @@ if (!defined('GLPI_ROOT')) {
 class NotificationTargetInfocom extends NotificationTarget {
 
    function getEvents() {
-      global $LANG;
-
       return array('alert' => __('Alarms on financial and administrative informations'));
    }
 
@@ -45,7 +43,7 @@ class NotificationTargetInfocom extends NotificationTarget {
     * Get all data needed for template processing
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $events = $this->getAllEvents();
 
@@ -61,7 +59,8 @@ class NotificationTargetInfocom extends NotificationTarget {
          $tmp['##infocom.expirationdate##'] = $item['warrantyexpiration'];
          $tmp['##infocom.url##']            = urldecode($CFG_GLPI["url_base"].
                                                         "/index.php?redirect=".
-                                                        strtolower($item['itemtype'])."_".$item['items_id']."_4");
+                                                        strtolower($item['itemtype'])."_".
+                                                        $item['items_id']."_4");
          $this->datas['infocoms'][] = $tmp;
       }
 

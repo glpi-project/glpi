@@ -42,7 +42,6 @@ class Preference extends CommonGLPI {
    }
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
 
@@ -55,5 +54,4 @@ class Preference extends CommonGLPI {
       return $ong;
    }
 }
-
 ?>

@@ -45,9 +45,8 @@ class NotificationMailSetting extends CommonDBTM {
 
    protected $displaylist = false;
 
-   static function getTypeName() {
-      global $LANG;
 
+   static function getTypeName() {
       return __('Email followups configuration');
    }
 
@@ -62,7 +61,6 @@ class NotificationMailSetting extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG, $CFG_GLPI;
 
       switch ($item->getType()) {
          case __CLASS__ :
@@ -74,7 +72,6 @@ class NotificationMailSetting extends CommonDBTM {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      global $CFG_GLPI;
 
       if($item->getType() == __CLASS__) {
          switch ($tabnum) {
@@ -99,7 +96,7 @@ class NotificationMailSetting extends CommonDBTM {
     *
    **/
    function showForm($ID, $options=array()) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!Session::haveRight("config", "w")) {
          return false;
@@ -172,7 +169,7 @@ class NotificationMailSetting extends CommonDBTM {
          echo " </td></tr>";
          if (!function_exists('mail')) {
              echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-             echo "<span class='red'>" . __('The PHP mail function is unknown or is not activated on your system.') . 
+             echo "<span class='red'>" . __('The PHP mail function is unknown or is not activated on your system.') .
                   "</span><br>". __('The use of a SMTP is needed.') . "</td></tr>";
          }
 

@@ -37,7 +37,6 @@ class NotificationTargetDBConnection extends NotificationTarget {
    //Overwrite the function in NotificationTarget because there's only one target to be notified
 
    function getNotificationTargets($entity) {
-      global $LANG;
 
       $this->addProfilesToTargets();
       $this->addGroupsToTargets($entity);
@@ -46,8 +45,6 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
 
    function getEvents() {
-      global $LANG;
-
       return array('desynchronization' => __('Desynchronization MySQL replication'));
    }
 
@@ -73,7 +70,6 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
 
    function getTags() {
-      global $LANG;
 
       $tags = array('dbconnection.delay' => __('Difference between master and slave'));
 
@@ -85,8 +81,10 @@ class NotificationTargetDBConnection extends NotificationTarget {
       }
 
       //Tags with just lang
-      $tags = array('dbconnection.title' => __('Slave database out of sync!'),
-                    'dbconnection.delay' => __('The slave base is desynchronized. The difference is of:'));
+      $tags = array('dbconnection.title'
+                                 => __('Slave database out of sync!'),
+                    'dbconnection.delay'
+                                 => __('The slave base is desynchronized. The difference is of:'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

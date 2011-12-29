@@ -44,7 +44,6 @@ class Netpoint extends CommonDropdown {
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array(array('name'  => 'locations_id',
                          'label' => __('Location'),
@@ -54,8 +53,6 @@ class Netpoint extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Network outlet', 'Network outlets', $nb);
    }
 
@@ -76,7 +73,6 @@ class Netpoint extends CommonDropdown {
     * @return array of search option
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab  = parent::getSearchOptions();
 
@@ -126,7 +122,7 @@ class Netpoint extends CommonDropdown {
     */
    static function dropdownNetpoint($myname, $value=0, $locations_id=-1, $display_comment=1,
                                     $entity_restrict=-1, $devtype=-1) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $rand          = mt_rand();
       $name          = "------";
@@ -151,10 +147,9 @@ class Netpoint extends CommonDropdown {
             $nb = countElementsInTable("glpi_netpoints", "locations_id=$locations_id ");
          } else {
             $nb = countElementsInTable("glpi_netpoints",
-                                       "locations_id=0 ".getEntitiesRestrictRequest(" AND ",
-                                                                                    "glpi_netpoints",
-                                                                                    '',
-                                                                                    $entity_restrict));
+                                       "locations_id=0 ".
+                                          getEntitiesRestrictRequest(" AND ", "glpi_netpoints",
+                                                                     '', $entity_restrict));
          }
          if ($nb > $CFG_GLPI["ajax_limit_count"]) {
             $use_ajax = true;
@@ -246,7 +241,6 @@ class Netpoint extends CommonDropdown {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -254,7 +248,8 @@ class Netpoint extends CommonDropdown {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(_n('Network outlet', 'Network outlets', 2),
                                               countElementsInTable($this->getTable(),
-                                                                   "locations_id = '".$item->getID()."'"));
+                                                                   "locations_id
+                                                                        = '".$item->getID()."'"));
                }
                return _n('Network outlet', 'Network outlets', 2);
          }
@@ -280,7 +275,7 @@ class Netpoint extends CommonDropdown {
     * @return Nothing (display)
    **/
    static function showForLocation($item) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $ID = $item->getField('id');
       $netpoint = new self();
@@ -325,8 +320,9 @@ class Netpoint extends CommonDropdown {
                        'LIMIT'        => $_SESSION['glpilist_limit']);
 
          Session::initNavigateListItems('Netpoint',
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
+         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
+                                                $item->getName()));
 
          foreach ($DB->request('glpi_netpoints', $crit) as $data) {
             Session::addToNavigateListItems('Netpoint',$data["id"]);
