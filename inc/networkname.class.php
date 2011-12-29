@@ -119,7 +119,7 @@ class NetworkName extends FQDNLabel {
     *@return Nothing (display)
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if (!Session::haveRight("internet", "r")) {
          return false;
@@ -185,7 +185,6 @@ class NetworkName extends FQDNLabel {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
@@ -445,7 +444,7 @@ class NetworkName extends FQDNLabel {
     * @param $withtemplate integer : withtemplate param
    **/
    static function showForItem(CommonGLPI $item, $fromForm, $withtemplate=false) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $query = "SELECT `id`
                 FROM `glpi_networknames`
@@ -508,7 +507,7 @@ class NetworkName extends FQDNLabel {
     * @param $withtemplate integer : withtemplate param
    **/
    static function showForItemForm(CommonGLPI $item, $withtemplate=0) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $items_id = $item->getID();
       $itemtype = $item->getType();
@@ -555,7 +554,7 @@ class NetworkName extends FQDNLabel {
     * @param $withtemplate integer : withtemplate param
     **/
    static function showForInternetElement(CommonGLPI $internetElement, $withtemplate=0) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $elementToDisplay = new NetworkName();
       $internetElement->check($internetElement->getID(), 'r');
@@ -592,8 +591,10 @@ class NetworkName extends FQDNLabel {
 
 
          Session::initNavigateListItems($internetElement->getType(),
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$elementToDisplay->getTypeName(1), $internetElement->getName()));
+         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                $elementToDisplay->getTypeName(1),
+                                                $internetElement->getName()));
 
          $query = "SELECT *
                    FROM `".$elementToDisplay->getTable()."`
@@ -636,7 +637,6 @@ class NetworkName extends FQDNLabel {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if ($item->getID() && $item->can($item->getField('id'),'r')) {
          if ($_SESSION['glpishow_count_on_tabs']) {

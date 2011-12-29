@@ -100,14 +100,11 @@ class Notification extends CommonDBTM {
    public $dohistory = true;
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Notification', 'Notifications',$nb);
    }
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('NotificationTarget', $ong, $options);

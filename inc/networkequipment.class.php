@@ -49,12 +49,8 @@ class NetworkEquipment extends CommonDBTM {
     * Name of the type
     *
     * @param $nb : number of item in the type
-    *
-    * @return $LANG
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Network device', 'Network devices', $nb);
    }
 
@@ -70,7 +66,6 @@ class NetworkEquipment extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('NetworkName', $ong, $options);

@@ -221,7 +221,7 @@ class NotificationTarget extends CommonDBChild {
     * @param $notification the Notification object
    **/
    function showNotificationTargets(Notification $notification) {
-      global $LANG, $DB;
+      global $DB;
 
       if ($notification->getField('itemtype') != '') {
          $notifications_id = $notification->fields['id'];
@@ -264,7 +264,8 @@ class NotificationTarget extends CommonDBChild {
                    ORDER BY `prof`";
 
          foreach ($DB->request($query) as $data) {
-            $options .= "<option value='" . $data["id"] . "'>" . sprintf(__('Profile: %s'),$data["prof"]). "</option>";
+            $options .= "<option value='".$data["id"]."'>".sprintf(__('Profile: %s'), $data["prof"]).
+                        "</option>";
 
             if (isset($this->notification_targets[Notification::PROFILE_TYPE."_".$data["items_id"]])) {
                unset($this->notification_targets[Notification::PROFILE_TYPE."_".$data["items_id"]]);
@@ -284,8 +285,8 @@ class NotificationTarget extends CommonDBChild {
 
          foreach ($DB->request($query) as $data) {
             //TRANS: %s is the name of the group
-            $options .= "<option value='" . $data["id"] . "'>" .
-                         sprintf(__('Group: %s'), $data["name"]) . "</option>";
+            $options .= "<option value='".$data["id"]."'>".sprintf(__('Group: %s'), $data["name"]).
+                        "</option>";
 
             if (isset($this->notification_targets[Notification::GROUP_TYPE."_".$data["items_id"]])) {
                unset($this->notification_targets[Notification::GROUP_TYPE."_".$data["items_id"]]);
@@ -572,17 +573,17 @@ class NotificationTarget extends CommonDBChild {
 
 
    function addProfilesToTargets() {
-      global $LANG, $DB;
+      global $DB;
 
       foreach ($DB->request('glpi_profiles') as $data) {
-         $this->addTarget($data["id"], sprintf(__('Profile: %s'),$data["name"]),
+         $this->addTarget($data["id"], sprintf(__('Profile: %s'), $data["name"]),
                           Notification::PROFILE_TYPE);
       }
    }
 
 
    function addGroupsToTargets($entity) {
-      global $LANG, $DB;
+      global $DB;
 
       // Filter groups which can be notified and have members (as notifications are sent to members)
       $query = "SELECT `id`, `name`
@@ -612,13 +613,11 @@ class NotificationTarget extends CommonDBChild {
     * @param $entity the entity on which the event is raised
    **/
    function getNotificationTargets($entity) {
-      global $LANG;
 
       if (Session::haveRight("config", "w")) {
          $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
       }
-      $this->addTarget(Notification::ENTITY_ADMINISTRATOR,
-                       __('Entity administrator'));
+      $this->addTarget(Notification::ENTITY_ADMINISTRATOR, __('Entity administrator'));
 
       $this->addProfilesToTargets();
       $this->addGroupsToTargets($entity);
@@ -898,7 +897,7 @@ class NotificationTarget extends CommonDBChild {
 
 
    function &getForTemplate($event, $options) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $this->datas = array();
       $this->addTagToList(array('tag'   => 'glpi.url',
@@ -970,7 +969,8 @@ class NotificationTarget extends CommonDBChild {
          switch ($item->getType()) {
             case 'Group' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Notification', 'Notifications',2), self::countForGroup($item));
+                  return self::createTabEntry(_n('Notification', 'Notifications',2),
+                                              self::countForGroup($item));
                }
                return _n('Notification', 'Notifications',2);
 
@@ -978,7 +978,8 @@ class NotificationTarget extends CommonDBChild {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry($LANG['mailing'][121],
                                               countElementsInTable($this->getTable(),
-                                                                   "notifications_id = '".$item->getID()."'"));
+                                                                   "notifications_id
+                                                                        = '".$item->getID()."'"));
                }
                return $LANG['mailing'][121];
          }
@@ -1050,11 +1051,12 @@ class NotificationTarget extends CommonDBChild {
          echo "<th>".NotificationTemplate::getTypeName()."</th></tr>";
 
          $notif = new Notification();
-         
-         Session::initNavigateListItems('Notification', 
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$group->getTypeName(1), $group->getName()));
-         
+
+         Session::initNavigateListItems('Notification',
+         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'), $group->getTypeName(1),
+                                                $group->getName()));
+
          foreach ($req as $data) {
             Session::addToNavigateListItems('Notification', $data['id']);
 
@@ -1067,9 +1069,11 @@ class NotificationTarget extends CommonDBChild {
                   echo $tmp->getTypeName();
                }
                echo "</td><td>".Notification::getMode($notif->getField('mode'));
-               echo "</td><td>".NotificationEvent::getEventName($itemtype, $notif->getField('event'));
-               echo "</td><td>".Dropdown::getDropdownName('glpi_notificationtemplates',
-                                                          $notif->getField('notificationtemplates_id'));
+               echo "</td><td>".NotificationEvent::getEventName($itemtype,
+                                                                $notif->getField('event'));
+               echo "</td>".
+                    "<td>".Dropdown::getDropdownName('glpi_notificationtemplates',
+                                                     $notif->getField('notificationtemplates_id'));
                echo "</td></tr>";
             }
          }

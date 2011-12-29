@@ -64,7 +64,6 @@ class Profile_User extends CommonDBTM {
 
 
    function prepareInputForAdd($input) {
-      global $LANG;
 
       if (!isset($input['profiles_id'])
           || $input['profiles_id'] <= 0
@@ -209,7 +208,7 @@ class Profile_User extends CommonDBTM {
     * @param $entity Entity object
    **/
    static function showForEntity(Entity $entity) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB;
 
 
       $ID = $entity->getField('id');
@@ -263,8 +262,9 @@ class Profile_User extends CommonDBTM {
       if ($DB->numrows($result)>0) {
 
          Session::initNavigateListItems('User',
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$entity->getTypeName(1), $entity->getName()));
+         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'), $entity->getTypeName(1),
+                                                $entity->getName()));
 
          while ($data=$DB->fetch_array($result)) {
             echo "<tr><th colspan='$headerspan'>".sprintf(__('Profile: %s'),$data["name"]);
@@ -357,7 +357,7 @@ class Profile_User extends CommonDBTM {
     * @param $prof object
    **/
    static function showForProfile(Profile $prof) {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB;
 
       $ID      = $prof->fields['id'];
       $canedit = Session::haveRight("user", "w");

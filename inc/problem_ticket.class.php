@@ -47,9 +47,8 @@ class Problem_Ticket extends CommonDBRelation{
 
    var $checks_only_for_itemtype1 = true;
 
-   static function getTypeName($nb=0) {
-      global $LANG;
 
+   static function getTypeName($nb=0) {
       return _n('Link Ticket/Problem','Links Ticket/Problem',$nb);
    }
 

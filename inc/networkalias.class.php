@@ -118,7 +118,6 @@ class NetworkAlias extends FQDNLabel {
     *@return Nothing (display)
    **/
    function showForm ($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
 
       if (!Session::haveRight("internet", "r")) {
          return false;
@@ -182,7 +181,7 @@ class NetworkAlias extends FQDNLabel {
     *@return Nothing (display)
    **/
    static function showForNetworkName($networkNameID, $fromForm, $withtemplate=0) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $query = "SELECT *
                 FROM `glpi_networkaliases`
@@ -238,7 +237,6 @@ class NetworkAlias extends FQDNLabel {
     * @param $withtemplate integer : withtemplate param
    **/
    static function showForNetworkNameForm(CommonGLPI $item, $withtemplate=0) {
-      global $DB, $CFG_GLPI, $LANG;
 
       $alias = new NetworkAlias();
 
@@ -271,9 +269,9 @@ class NetworkAlias extends FQDNLabel {
     *
    **/
    static function showForFQDN(CommonGLPI $item, $withtemplate) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB;
 
-      $alias    = new NetworkAlias();
+      $alias   = new NetworkAlias();
       $address = new NetworkName();
       $item->check($item->getID(), 'r');
       $canedit = $item->can($item->getID(), 'w');
@@ -305,14 +303,15 @@ class NetworkAlias extends FQDNLabel {
          echo "<th><a href='javascript:reloadTab(\"order=alias\");'>".self::getTypeName().
               "</a></th>"; // Alias
          echo "<th><a href='javascript:reloadTab(\"order=realname\");'>".__("Computer's name").
-              "</a></th>"; 
-         echo "<th>".__('Comments')."</th>"; 
+              "</a></th>";
+         echo "<th>".__('Comments')."</th>";
          echo "</tr>\n";
 
-         Session::initNavigateListItems($item->getType(), 
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$alias->getTypeName(1), $item->fields['name']));
-         
+         Session::initNavigateListItems($item->getType(),
+         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'), $alias->getTypeName(1),
+                                                $item->fields['name']));
+
          $query = "SELECT `glpi_networkaliases`.`id` AS alias_id,
                           `glpi_networkaliases`.`name` AS alias,
                           `glpi_networknames`.`id` AS address_id,
@@ -358,7 +357,6 @@ class NetworkAlias extends FQDNLabel {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if ($item->getID() && $item->can($item->getField('id'),'r')) {
          if ($_SESSION['glpishow_count_on_tabs']) {

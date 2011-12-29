@@ -45,13 +45,11 @@ class Printer  extends CommonDBTM {
    protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
 
-/**
- * Name of the type
- *
- * @param $nb : number of item in the type
- *
- * @return $LANG
- */
+   /**
+    * Name of the type
+    *
+    * @param $nb : number of item in the type
+   **/
    static function getTypeName($nb=0) {
       global $LANG;
 
@@ -73,7 +71,6 @@ class Printer  extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG, $CFG_GLPI;
 
       $ong = array();
       $this->addStandardTab('Cartridge', $ong, $options);

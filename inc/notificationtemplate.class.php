@@ -55,7 +55,6 @@ class NotificationTemplate extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('NotificationTemplateTranslation', $ong, $options);
@@ -132,7 +131,6 @@ class NotificationTemplate extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');
@@ -150,10 +148,10 @@ class NotificationTemplate extends CommonDBTM {
       $tab[4]['datatype']      = 'itemtypename';
       $tab[4]['massiveaction'] = false;
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[16]['table']        = $this->getTable();
+      $tab[16]['field']        = 'comment';
+      $tab[16]['name']         = __('Comments');
+      $tab[16]['datatype']     = 'text';
 
       return $tab;
    }

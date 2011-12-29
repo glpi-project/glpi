@@ -35,8 +35,6 @@ if (!defined('GLPI_ROOT')) {
 class NotificationTargetUser extends NotificationTarget {
 
    function getEvents() {
-      global $LANG;
-
       return array('passwordforget' => __('Forgot your password?'));
    }
 
@@ -68,7 +66,7 @@ class NotificationTargetUser extends NotificationTarget {
     * Get all data needed for template processing
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $events = $this->getEvents();
 
@@ -77,10 +75,11 @@ class NotificationTargetUser extends NotificationTarget {
       $this->datas['##user.firstname##'] = $this->obj->getField("firstname");
       $this->datas['##user.token##']     = $this->obj->getField("password_forget_token");
 
-      $this->datas['##user.action##']            = $events[$event];
-      $this->datas['##user.passwordforgeturl##'] = urldecode($CFG_GLPI["url_base"].
-                                                             "/front/lostpassword.php?password_forget_token=".
-                                                             $this->obj->getField("password_forget_token"));
+      $this->datas['##user.action##']  = $events[$event];
+      $this->datas['##user.passwordforgeturl##']
+                                       = urldecode($CFG_GLPI["url_base"].
+                                                   "/front/lostpassword.php?password_forget_token=".
+                                                   $this->obj->getField("password_forget_token"));
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
