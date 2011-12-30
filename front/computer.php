@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("computer", "r");
 
-Html::header($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
+Html::header(_n('Computer', 'Computers', 2), $_SERVER['PHP_SELF'], "inventory", "computer");
 
 Search::show('Computer');
 

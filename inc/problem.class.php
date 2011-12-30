@@ -168,14 +168,14 @@ class Problem extends CommonITILObject {
 //                   $nb = countElementsInTable('glpi_changes_problems',
 //                                              "`changes_id` = '".$item->getID()."'");
 //                }
-//                return self::createTabEntry($LANG['Menu'][7], $nb);
+//                return self::createTabEntry(self::getTypeName(2), $nb);
 
             case 'Ticket' :
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable('glpi_problems_tickets',
                                              "`tickets_id` = '".$item->getID()."'");
                }
-               return self::createTabEntry($LANG['Menu'][7], $nb);
+               return self::createTabEntry(self::getTypeName(2), $nb);
 
             case __CLASS__ :
                $ong = array (1 => __('Analysis'),         // Analysis

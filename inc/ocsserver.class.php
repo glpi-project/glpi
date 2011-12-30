@@ -223,7 +223,7 @@ class OcsServer extends CommonDBTM {
       echo "<br><div class='center'>";
       echo "<form name='formconfig' action=\"$target\" method='post'>";
       echo "<table class='tab_cadre_fixe'>\n";
-      echo "<tr><th><input type='hidden' name='id' value='$ID'>".__('General informations'). "</th>\n";
+      echo "<tr><th><input type='hidden' name='id' value='$ID'>".__('General informations')."</th>\n";
       echo "<th>&nbsp;" . Toolbox::ucfirst($LANG['log'][18]) . "&nbsp;</th>\n";
       echo "<th>&nbsp;" . __('OCSNG administrative information') . "&nbsp;</th></tr>\n";
 
@@ -252,7 +252,8 @@ class OcsServer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . __('Manufacturer') . " </td>\n<td>";
-      Dropdown::showYesNo("import_general_manufacturer", $this->fields["import_general_manufacturer"]);
+      Dropdown::showYesNo("import_general_manufacturer",
+                          $this->fields["import_general_manufacturer"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . __('Type') . " </td>\n<td>";
@@ -348,7 +349,7 @@ class OcsServer extends CommonDBTM {
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . __('Alternate username number') . " </td>\n";
+      echo "<tr class='tab_bg_2'><td class='center'>". __('Alternate username number')."</td>\n";
       echo "<td><select name='import_contact_num'>\n";
       echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "contact_num");
@@ -396,16 +397,18 @@ class OcsServer extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . __('Web address of the OCSNG console');
       echo "<input type='hidden' name='id' value='$ID'>" . " </td>\n";
-      echo "<td><input type='text' size='30' name='ocs_url' value=\"" . $this->fields["ocs_url"] ."\">";
+      echo "<td><input type='text' size='30' name='ocs_url' value=\"".$this->fields["ocs_url"]."\">";
       echo "</td></tr>\n";
 
       echo "<tr><th colspan='2'>" . __('Import options') . "</th></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . __('Limit the import to the following tags (separator $, nothing for all)') . " </td>\n";
+      echo "<tr class='tab_bg_2'><td class='center'>".
+            __('Limit the import to the following tags (separator $, nothing for all)')." </td>\n";
       echo "<td><input type='text' size='30' name='tag_limit' value='".$this->fields["tag_limit"]."'>";
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . __('Exclude the following tags (separator $, nothing for all)') . " </td>\n";
+      echo "<tr class='tab_bg_2'><td class='center'>" .
+            __('Exclude the following tags (separator $, nothing for all)') . " </td>\n";
       echo "<td><input type='text' size='30' name='tag_exclude' value='".
                  $this->fields["tag_exclude"]."'></td></tr>\n";
 
@@ -414,7 +417,7 @@ class OcsServer extends CommonDBTM {
                                     'value'  => $this->fields["states_id_default"]));
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . __('Behavior when disconnecting') . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>". __('Behavior when disconnecting')."</td>\n<td>";
       Dropdown::showFromArray("deconnection_behavior", array(''       => __('Preserve'),
                                                              "trash"  => __('Delete'),
                                                              "delete" => __('Purge')),
@@ -438,15 +441,15 @@ class OcsServer extends CommonDBTM {
       Dropdown::showFromArray("import_periph", $import_array, array('value' => $periph));
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][3] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>". _n('Monitor', 'Monitors', 2)."</td>\n<td>";
       Dropdown::showFromArray("import_monitor", $import_array2, array('value' => $monitor));
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][2] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>"._n('Printer', 'Printers', 2)."</td>\n<td>";
       Dropdown::showFromArray("import_printer", $import_array, array('value' => $printer));
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][4] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>". _n('Software', 'Software', 2)."</td>\n<td>";
       $import_array = array("0" => $LANG['mailgate'][8],
                             "1" => __('Unit import'));
       Dropdown::showFromArray("import_software", $import_array, array('value' => $software));
@@ -456,7 +459,8 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_disk", $this->fields["import_disk"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . __('Use the OCSNG software dictionary') . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>". __('Use the OCSNG software dictionary').
+           "</td>\n<td>";
       Dropdown::showYesNo("use_soft_dict", $this->fields["use_soft_dict"]);
       echo "</td></tr>\n";
 
@@ -470,26 +474,28 @@ class OcsServer extends CommonDBTM {
          echo "</td></tr>\n";
       }
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . __('Number of items to synchronize via the automatic OCSNG action') . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" .
+            __('Number of items to synchronize via the automatic OCSNG action') . " </td>\n<td>";
       Dropdown::showInteger('cron_sync_number', $this->fields["cron_sync_number"], 1, 100, 1,
                             array(0 => __('None')));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td class='center'>".__('Behavior to the deletion of a computer in OCSNG')."</td>";
+      echo "<tr class='tab_bg_2'>".
+           "<td class='center'>".__('Behavior to the deletion of a computer in OCSNG')."</td>";
       echo "<td>";
       $actions[0] = Dropdown::EMPTY_VALUE;
       $actions[1] = $LANG['ldap'][47];
       foreach (getAllDatasFromTable('glpi_states') as $state) {
-         $actions['STATE_'.$state['id']] = sprintf(__('Change to state %s'),$state['name']);
+         $actions['STATE_'.$state['id']] = sprintf(__('Change to state %s'), $state['name']);
       }
       Dropdown::showFromArray('deleted_behavior', $actions,
                               array('value' => $this->fields['deleted_behavior']));
 
       echo "</table>\n";
 
-      echo "<br>" . __('No import: the plugin will not import these elements');
-      echo "<br>" . __('Global import: everything is imported but the material is globally managed (without double blooms)');
-      echo "<br>" . __("Unit import: everything is imported 'as-is'");
+      echo "<br>". __('No import: the plugin will not import these elements');
+      echo "<br>". __('Global import: everything is imported but the material is globally managed (without double blooms)');
+      echo "<br>". __("Unit import: everything is imported 'as-is'");
 
       echo "<p class='submit'><input type='submit' name='update_server' class='submit' value='" .
              __s('Update') . "'></p>";

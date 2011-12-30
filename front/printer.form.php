@@ -79,7 +79,8 @@ if (isset($_POST["add"])) {
    $print->check($_REQUEST["id"],'d');
 
    $print->delete($_REQUEST,1);
-   Event::log($_REQUEST["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   Event::log($_REQUEST["id"], "printers", 4, "inventory",
+              $_SESSION["glpiname"]." ".$LANG['log'][24]);
    $print->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -97,7 +98,7 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_GET["id"]);
 
 } else {
-   Html::header($LANG['Menu'][2],$_SERVER['PHP_SELF'],"inventory","printer");
+   Html::header(Printer::getTypeName(2), $_SERVER['PHP_SELF'], "inventory","printer");
    $print->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }

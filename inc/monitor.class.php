@@ -45,13 +45,11 @@ class Monitor extends CommonDBTM {
    protected $forward_entity_to = array('Infocom', 'ReservationItem');
 
 
-/**
- * Name of the type
- *
- * @param $nb : number of item in the type
- *
- * @return $LANG
-**/
+   /**
+    * Name of the type
+    *
+    * @param $nb : number of item in the type
+   **/
    static function getTypeName($nb=0) {
       return _n('Monitor', 'Monitors', $nb);
    }

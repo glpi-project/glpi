@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("printer", "r");
 
-Html::header($LANG['Menu'][2],$_SERVER['PHP_SELF'],"inventory","printer");
+Html::header(_n('Printer', 'Printers', 2), $_SERVER['PHP_SELF'], "inventory", "printer");
 
 Search::show('Printer');
 

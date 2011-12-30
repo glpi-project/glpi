@@ -934,7 +934,7 @@ class Html {
       if (Session::haveRight("computer","r")) {
          $menu['inventory']['default'] = '/front/computer.php';
 
-         $menu['inventory']['content']['computer']['title']           = $LANG['Menu'][0];
+         $menu['inventory']['content']['computer']['title']           = Computer::getTypeName(2);
          $menu['inventory']['content']['computer']['shortcut']        = 'o';
          $menu['inventory']['content']['computer']['page']            = '/front/computer.php';
          $menu['inventory']['content']['computer']['links']['search'] = '/front/computer.php';
@@ -950,7 +950,7 @@ class Html {
 
 
       if (Session::haveRight("monitor","r")) {
-         $menu['inventory']['content']['monitor']['title']           = $LANG['Menu'][3];
+         $menu['inventory']['content']['monitor']['title']           = Monitor::getTypeName(2);
          $menu['inventory']['content']['monitor']['shortcut']        = '';
          $menu['inventory']['content']['monitor']['page']            = '/front/monitor.php';
          $menu['inventory']['content']['monitor']['links']['search'] = '/front/monitor.php';
@@ -966,7 +966,7 @@ class Html {
 
 
       if (Session::haveRight("software","r")) {
-         $menu['inventory']['content']['software']['title']           = $LANG['Menu'][4];
+         $menu['inventory']['content']['software']['title']           = Software::getTypeName(2);
          $menu['inventory']['content']['software']['shortcut']        = 's';
          $menu['inventory']['content']['software']['page']            = '/front/software.php';
          $menu['inventory']['content']['software']['links']['search'] = '/front/software.php';
@@ -982,7 +982,7 @@ class Html {
 
 
       if (Session::haveRight("networking","r")) {
-         $menu['inventory']['content']['networking']['title']     = $LANG['Menu'][1];
+         $menu['inventory']['content']['networking']['title']     = Network::getTypeName(2);
          $menu['inventory']['content']['networking']['shortcut']  = '';
          $menu['inventory']['content']['networking']['page']      = '/front/networkequipment.php';
          $menu['inventory']['content']['networking']['links']['search']
@@ -1015,7 +1015,7 @@ class Html {
 
 
       if (Session::haveRight("printer","r")) {
-         $menu['inventory']['content']['printer']['title']           = $LANG['Menu'][2];
+         $menu['inventory']['content']['printer']['title']           = Printer::getTypeName(2);
          $menu['inventory']['content']['printer']['shortcut']        = '';
          $menu['inventory']['content']['printer']['page']            = '/front/printer.php';
          $menu['inventory']['content']['printer']['links']['search'] = '/front/printer.php';
@@ -1096,7 +1096,7 @@ class Html {
 
          $menu['maintain']['default'] = '/front/ticket.php';
 
-         $menu['maintain']['content']['ticket']['title']           = $LANG['Menu'][5];
+         $menu['maintain']['content']['ticket']['title']           = Ticket::getTypeName(2);
          $menu['maintain']['content']['ticket']['shortcut']        = 't';
          $menu['maintain']['content']['ticket']['page']            = '/front/ticket.php';
          $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
@@ -1147,7 +1147,7 @@ class Html {
       }
 
       if (Session::haveRight("show_all_problem","1") || Session::haveRight("show_my_problem","1")) {
-         $menu['maintain']['content']['problem']['title']           = $LANG['Menu'][7];
+         $menu['maintain']['content']['problem']['title']           = Problem::getTypeName(2);
          $menu['maintain']['content']['problem']['shortcut']        = '';
          $menu['maintain']['content']['problem']['page']            = '/front/problem.php';
          $menu['maintain']['content']['problem']['links']['search'] = '/front/problem.php';
@@ -1157,7 +1157,7 @@ class Html {
       }
 
 //       if (Session::haveRight("show_all_change","1") || Session::haveRight("show_my_change","1")) {
-//          $menu['maintain']['content']['change']['title']           = $LANG['Menu'][8];
+//          $menu['maintain']['content']['change']['title']           = Change::getTypeName(2);
 //          $menu['maintain']['content']['change']['shortcut']        = '';
 //          $menu['maintain']['content']['change']['page']            = '/front/change.php';
 //          $menu['maintain']['content']['change']['links']['search'] = '/front/change.php';
@@ -1300,7 +1300,7 @@ class Html {
 
 
       if (Session::haveRight("reports","r")) {
-         $menu['utils']['content']['report']['title']    = $LANG['Menu'][6];
+         $menu['utils']['content']['report']['title']    = Report::getTypeName(2);
          $menu['utils']['content']['report']['shortcut'] = 'e';
          $menu['utils']['content']['report']['page']     = '/front/report.php';
       }
@@ -1511,7 +1511,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['software']['title']
-                           = $LANG['Menu'][4];
+                           = Software::getTypeName(2);
             $menu['admin']['content']['dictionnary']['options']['software']['page']
                            = '/front/ruledictionnarysoftware.php';
             $menu['admin']['content']['dictionnary']['options']['software']['links']['search']
@@ -1628,7 +1628,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.printer']['title']
-                           = _n('Printer type', 'Printer types', 2);
+                           = PrinterType::getTypeName(2);
             $menu['admin']['content']['dictionnary']['options']['type.printer']['page']
                            = '/front/ruledictionnaryprintertype.php';
             $menu['admin']['content']['dictionnary']['options']['type.printer']['links']['search']
@@ -1641,7 +1641,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.peripheral']['title']
-                           = _n('Devices type', 'Devices types', 2);
+                           = PeripheralType::getTypeName(2);
             $menu['admin']['content']['dictionnary']['options']['type.peripheral']['page']
                            = '/front/ruledictionnaryperipheraltype.php';
             $menu['admin']['content']['dictionnary']['options']['type.peripheral']['links']['search']
@@ -1654,7 +1654,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.networking']['title']
-                           = _n('Networking equipment type', 'Networking equipment types', 2);
+                           = NetworkEquipmentType::getTypeName(2);
             $menu['admin']['content']['dictionnary']['options']['type.networking']['page']
                            = '/front/ruledictionnarynetworkequipmenttype.php';
             $menu['admin']['content']['dictionnary']['options']['type.networking']['links']['search']
@@ -1667,7 +1667,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.phone']['title']
-                           = _n('Phone type', 'Phones types', 2);
+                           = PhoneType::getTypeName(2);
             $menu['admin']['content']['dictionnary']['options']['type.phone']['page']
                            = '/front/ruledictionnaryphonetype.php';
             $menu['admin']['content']['dictionnary']['options']['type.phone']['links']['search']
@@ -1717,7 +1717,7 @@ class Html {
             }
 
             $menu['admin']['content']['dictionnary']['options']['printer']['title']
-                           = _n('Printer','Printers',2);
+                           = Printer::getTypeName(2);
             $menu['admin']['content']['dictionnary']['options']['printer']['page']
                            = '/front/ruledictionnaryprinter.php';
             $menu['admin']['content']['dictionnary']['options']['printer']['links']['search']
@@ -1822,10 +1822,10 @@ class Html {
 
       if (($CFG_GLPI['use_mailing'] && Session::haveRight("notification","r"))
           || Session::haveRight("config","w")) {
-         $menu['config']['content']['mailing']['title'] = _n('Notification', 'Notifications',2);
+         $menu['config']['content']['mailing']['title'] = Notification::getTypeName(2);
          $menu['config']['content']['mailing']['page']  = '/front/setup.notification.php';
          $menu['config']['content']['mailing']['options']['notification']['title']
-                                                        = _n('Notification', 'Notifications',2);
+                                                        = Notification::getTypeName(2);
          $menu['config']['content']['mailing']['options']['notification']['page']
                                                         = '/front/notification.php';
          $menu['config']['content']['mailing']['options']['notification']['links']['add']
@@ -1836,7 +1836,7 @@ class Html {
 
 
       if (Session::haveRight("sla","r")) {
-         $menu['config']['content']['sla']['title']           = _n('SLA', 'SLAs', 2);
+         $menu['config']['content']['sla']['title']           = SLA::getTypeName();
          $menu['config']['content']['sla']['page']            = '/front/sla.php';
          $menu['config']['content']['sla']['links']['search'] = "/front/sla.php";
          if (Session::haveRight("sla","w")) {
@@ -1881,19 +1881,14 @@ class Html {
          $menu['config']['content']['extauth']['title'] = $LANG['login'][10];
          $menu['config']['content']['extauth']['page']  = '/front/setup.auth.php';
 
-         $menu['config']['content']['extauth']['options']['ldap']['title'] = _n('LDAP directory',
-                                                                                'LDAP directories', 2);
+         $menu['config']['content']['extauth']['options']['ldap']['title'] = AuthLDAP::getTypeName(2);
          $menu['config']['content']['extauth']['options']['ldap']['page']  = '/front/authldap.php';
 
-         $menu['config']['content']['extauth']['options']['imap']['title']
-                                                            = _n('Mail server', 'Mail servers', 2);
-         $menu['config']['content']['extauth']['options']['imap']['page']
-                                                            = '/front/authmail.php';
+         $menu['config']['content']['extauth']['options']['imap']['title'] = AuthMail::getTypeName(2);
+         $menu['config']['content']['extauth']['options']['imap']['page']  = '/front/authmail.php';
 
-         $menu['config']['content']['extauth']['options']['others']['title']
-                                                                        = __('Others');
-         $menu['config']['content']['extauth']['options']['others']['page']
-                                                                        = '/front/auth.others.php';
+         $menu['config']['content']['extauth']['options']['others']['title'] = __('Others');
+         $menu['config']['content']['extauth']['options']['others']['page']  = '/front/auth.others.php';
 
          $menu['config']['content']['extauth']['options']['settings']['title'] = __('Setup');
          $menu['config']['content']['extauth']['options']['settings']['page']
@@ -1935,11 +1930,10 @@ class Html {
 
 
       if (Session::haveRight("link","r")) {
-         $menu['config']['content']['link']['title']  = _n('External link', 'External links',2);
-         $menu['config']['content']['link']['page']   = '/front/link.php';
-         $menu['config']['content']['link']['hide']   = true;
-         $menu['config']['content']['link']['links']['search']
-                                                      = '/front/link.php';
+         $menu['config']['content']['link']['title']           = Link::getTypeName(2);
+         $menu['config']['content']['link']['page']            = '/front/link.php';
+         $menu['config']['content']['link']['hide']            = true;
+         $menu['config']['content']['link']['links']['search'] = '/front/link.php';
 
          if (Session::haveRight("link","w")) {
             $menu['config']['content']['link']['links']['add'] = "/front/link.form.php";
@@ -2297,7 +2291,8 @@ class Html {
       echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
              "/front/popup.php?popup=load_bookmark' ,'glpibookmarks', 'height=500, width=".
              (Bookmark::WIDTH+250).", top=100, left=100, scrollbars=yes' );w.focus();\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark')."\"  alt=\"".__s('Load a bookmark')."\">";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark').
+             "\"  alt=\"".__s('Load a bookmark')."\">";
       echo "</a></li>";
 
       /// MENU ALL
@@ -2648,7 +2643,8 @@ class Html {
 
          $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".
                          Toolbox::append_params($opt,'&amp;');
-         $pic_validate = "<a href='$url_validate'><img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
+         $pic_validate = "<a href='$url_validate'>".
+                         "<img title=\"".__s('Ticket waiting for your approval')."\" alt=\"".
                            __s('Ticket waiting for your approval')."\" src='".
                            $CFG_GLPI["root_doc"]."/pics/menu_showall.png'></a>";
          echo "<li>$pic_validate</li>\n";
@@ -2669,7 +2665,8 @@ class Html {
       echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
              "/front/popup.php?popup=load_bookmark' ,'glpibookmarks', 'height=400, width=600, ".
              "top=100, left=100, scrollbars=yes' );w.focus();\">";
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark')."\" alt=\"".__s('Load a bookmark')."\">";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".__s('Load a bookmark').
+             "\" alt=\"".__s('Load a bookmark')."\">";
       echo "</a></li>";
 
       // check user id : header used for display messages when session logout

@@ -35,7 +35,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("reports", "r");
 
-Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
 
 Report::title();
 

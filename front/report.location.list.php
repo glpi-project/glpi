@@ -33,13 +33,14 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkRight("reports", "r");
 
 if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
-   Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+   Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
 
    Report::title();
 
    // Titre
    $name = Dropdown::getDropdownName("glpi_locations",$_POST["locations_id"]);
-   echo "<div class='center'><h2>".sprintf(__('Network report by location: %s'),$name)." </h2><br></div>";
+   echo "<div class='center'><h2>".sprintf(__('Network report by location: %s'),$name)."</h2><br>".
+        "</div>";
 
    $query = "SELECT `glpi_netpoints`.`name` AS prise, `glpi_networkports`.`name` AS port,
                     `glpi_networkports`.`ip`, `glpi_networkports`.`mac`,

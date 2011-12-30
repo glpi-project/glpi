@@ -39,10 +39,11 @@ Report::title();
 
 // Titre
 if (isset($_POST["switch"]) && $_POST["switch"]) {
-   Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+   Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
 
    $name = Dropdown::getDropdownName("glpi_networkequipments",$_POST["switch"]);
-   echo "<div class='center'><h2>".sprintf(__('Network report by hardware: %s'),$name)."</h2></div><br>";
+   echo "<div class='center'><h2>".sprintf(__('Network report by hardware: %s'),$name)."</h2></div>".
+        "<br>";
 
    $query = "SELECT `glpi_networkports`.`name` AS port, `glpi_networkports`.`ip`AS ip,
                     `glpi_networkports`.`mac` AS mac, `glpi_networkports`.`id` AS IDport,

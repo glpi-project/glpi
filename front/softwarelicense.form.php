@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
+   Html::header(_n('Software', 'Software', 2), $_SERVER['PHP_SELF'], "inventory", "software");
    $license->showForm($_GET["id"], array('softwares_id' => $_GET["softwares_id"]));
    Html::footer();
 }

@@ -252,7 +252,7 @@ class Item_Problem extends CommonDBRelation{
                   $nb += countElementsInTable('glpi_items_problems',
                                               " (`itemtype`,`items_id`) IN (" . $subquery . ")");
                }
-               return self::createTabEntry($LANG['Menu'][7], $nb);
+               return self::createTabEntry(_n('Problem', 'Problems', 2), $nb);
          }
       }
       return '';

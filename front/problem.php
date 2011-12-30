@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkSeveralRightsOr(array('show_all_problem' => '1',
                                     'show_my_problem'  => '1'));
 
-Html::header($LANG['Menu'][7], '', "maintain", "problem");
+Html::header(_n('Problem', 'Problems', 2), '', "maintain", "problem");
 
 Search::show('Problem');
 

@@ -46,6 +46,11 @@ class Report {
    var $notable = false;
 
 
+   static function getTypeName($nb=0) {
+      return _n('Report', 'Reports', $nb);
+   }
+
+
    static function title() {
       global $PLUGIN_HOOKS, $CFG_GLPI;
 
