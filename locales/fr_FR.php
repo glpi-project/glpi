@@ -251,6 +251,12 @@ $LANG['change'][13] = "Abandonné";
 $LANG['change'][14] = "Revue";
 
 
+$LANG['choice'][0] = "Non";
+$LANG['choice'][1] = "Oui";
+$LANG['choice'][2] = "ou";
+$LANG['choice'][3] = "et";
+
+
 $LANG['common'][0]   = "Sans nom";
 $LANG['common'][1]   = "Matériel";
 $LANG['common'][2]   = "ID";

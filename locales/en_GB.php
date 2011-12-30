@@ -228,6 +228,11 @@ $LANG['change'][12]="Applied";
 $LANG['change'][13]="Abandonned";
 $LANG['change'][14]="Review";
 
+$LANG['choice'][0]="No";
+$LANG['choice'][1]="Yes";
+$LANG['choice'][2]="or";
+$LANG['choice'][3]="and";
+
 
 $LANG['common'][0]="Without name";
 $LANG['common'][1]="Item";
