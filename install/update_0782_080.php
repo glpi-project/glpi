@@ -87,7 +87,7 @@ function update0782to080() {
    }
 
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Calendar'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Calendar')); // Updating schema
 
    $default_calendar_id = 0;
    if (!TableExists('glpi_calendars')) {
@@ -199,7 +199,7 @@ function update0782to080() {
       $DB->queryOrDie($query, "0.80 create glpi_calendars_holidays");
    }
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'SLA'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'SLA')); // Updating schema
 
 
    if (!TableExists('glpi_slas')) {
@@ -313,7 +313,7 @@ function update0782to080() {
       $DB->queryOrDie($query, "0.80 populate glpi_crontasks for slaticket");
    }
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'PasswordForget'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'PasswordForget')); // Updating schema
 
    $migration->addField("glpi_users", "token", "char( 40 ) NULL DEFAULT ''");
    $migration->addField("glpi_users", "tokendate", "datetime NULL DEFAULT NULL");
@@ -362,7 +362,7 @@ function update0782to080() {
       }
    }
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Ticket'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Ticket')); // Updating schema
 
    $migration->addField("glpi_tickets", "ticket_waiting_duration", "INT( 11 ) NOT NULL DEFAULT 0");
 
@@ -462,7 +462,7 @@ function update0782to080() {
    $migration->dropField("glpi_tickettasks", "realtime");
 
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Software'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Software')); // Updating schema
 
    if ($migration->addField("glpi_softwareversions", "operatingsystems_id",
                             "INT( 11 ) NOT NULL DEFAULT '0'")) {
@@ -582,7 +582,7 @@ function update0782to080() {
    }
 
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s')), 'Common'); // Updating schema
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Common')); // Updating schema
 
    $migration->addField("glpi_softwarelicenses", "date_mod", "DATETIME NULL");
    $migration->addKey("glpi_softwarelicenses", "date_mod");
@@ -779,7 +779,7 @@ function update0782to080() {
    $migration->addField("glpi_configs", "url_maxlength",
                         "int(11) NOT NULL DEFAULT '30' AFTER `list_limit_max`");
 
-   $migration->displayMessage(sprintf(__('Data migration - %s')), 'Multi user group for tickets');
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'Multi user group for tickets'));
 
    if (!TableExists('glpi_groups_tickets')) {
       $query = "CREATE TABLE `glpi_groups_tickets` (
@@ -942,7 +942,7 @@ function update0782to080() {
    }
 
 
-   $migration->displayMessage(sprintf(__('Data migration - %s')),'passwords encryption');
+   $migration->displayMessage(sprintf(__('Data migration - %s'),'passwords encryption'));
 
    if ($migration->addField('glpi_configs', 'proxy_passwd',
                             'varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL')) {
@@ -1142,7 +1142,7 @@ function update0782to080() {
    }
 
 
-   $migration->displayMessage(sprintf(__('Data migration - %s')), 'rule ticket migration');
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'rule ticket migration'));
    $changes['RuleTicket'] = array('users_id'         => '_users_id_requester',
                                   'groups_id'        => '_groups_id_requester',
                                   'users_id_assign'  => '_users_id_assign',
@@ -1484,7 +1484,7 @@ function update0782to080() {
    $DB->queryOrDie($query, "0.80 clean glpi_ticketvalidations");
 
    // Keep it at the end
-   $migration->displayMessage(sprintf(__('Data migration - %s')), 'glpi_displaypreferences');
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $query = "SELECT DISTINCT users_id

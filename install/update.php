@@ -146,7 +146,7 @@ function displayMigrationMessage ($id, $msg="") {
       $fin = time();
       $tps = Html::timestampToString($fin-$deb);
       echo "<script type='text/javascript'>document.getElementById('migration_message_$id').innerHTML =
-             '<p class=\"center\">$msg ($tps)</p>';</script>\n";
+             '<p class=\"center\" >$msg ($tps)</p>';</script>\n";
    }
    Html::glpi_flush();
 }
