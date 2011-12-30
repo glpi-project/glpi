@@ -556,7 +556,7 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != "") {
    if (is_file($path."/".$_GET["delfile"])) {
       unlink($path."/".$_GET["delfile"]);
       // TRANS: %s is a file name
-      echo "<div class ='center spaced'>"._sprintf(__('%s deleted'), $filename)."</div>";
+      echo "<div class ='center spaced'>".sprintf(__('%s deleted'), $filename)."</div>";
    }
 }
 

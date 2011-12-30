@@ -224,7 +224,7 @@ abstract class FQDNLabel extends CommonDBChild {
          return array();
       }
 
-      foreach (self::getIDsByLabelAndFQDNID($fqdn, $fqdns_id) as $class => $IDs) {
+      foreach (self::getIDsByLabelAndFQDNID($label, $fqdns_id) as $class => $IDs) {
          $FQDNlabel = new $class();
          foreach ($IDs as $ID) {
             if ($FQDNlabel->getFromDB($ID)) {
