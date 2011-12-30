@@ -953,7 +953,7 @@ class Config extends CommonDBTM {
       }
       echo wordwrap($msg."\n", $width, "\n\t");
 
-      $msg = $LANG['Menu'][4].": ";
+      $msg = _n('Software', 'Software', 2);
       if (isset($_SERVER["SERVER_SOFTWARE"])) {
          $msg .= $_SERVER["SERVER_SOFTWARE"];
       }

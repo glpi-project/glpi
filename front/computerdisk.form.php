@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
+   Html::header(Computer::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "computer");
    $disk->showForm($_GET["id"], array('computers_id' => $_GET["computers_id"]));
    Html::footer();
 }

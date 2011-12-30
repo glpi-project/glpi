@@ -37,13 +37,13 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("reports", "r");
 
-Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
 
 Report::title();
 
 # Title
 
-echo "<span class='big b'>GLPI ".$LANG['Menu'][6]."</span><br><br>";
+echo "<span class='big b'>GLPI ".Report::getTypeName(2)."</span><br><br>";
 
 # 1. Get some number data
 
@@ -121,15 +121,15 @@ $number_of_phones = $DB->result($result,0,0);
 # 2. Spew out the data in a table
 
 echo "<table class='tab_cadre' width='80%'>";
-echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][0]." :</td>";
+echo "<tr class='tab_bg_2'><td>"._n('Computer', 'Computers', 2)."</td>";
 echo "<td class='right'>$number_of_computers &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
-echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][2]." :</td>";
+echo "<tr class='tab_bg_2'><td>"._n('Printer', 'Printers', 2)."</td>";
 echo "<td class='right'>$number_of_printers &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
-echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][1]." :</td>";
+echo "<tr class='tab_bg_2'><td>"._n('Network', 'Networks', 2)."</td>";
 echo "<td class='right'>$number_of_networking &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
-echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][4]." :</td>";
+echo "<tr class='tab_bg_2'><td>"._n('Software', 'Software', 2)."</td>";
 echo "<td class='right'>$number_of_software &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
-echo "<tr class='tab_bg_2'><td>".$LANG['Menu'][3]." :</td>";
+echo "<tr class='tab_bg_2'><td>"._n('Monitor', 'Monitors', 2)."</td>";
 echo "<td class='right'>$number_of_monitors &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
 echo "<tr class='tab_bg_2'><td>"._n('Device', 'Devices', 2)."</td>";
 echo "<td class='right'>$number_of_peripherals &nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
@@ -160,7 +160,7 @@ while ($data=$DB->fetch_assoc($result)) {
 }
 
 echo "<tr><td colspan='2' height=10></td></tr>";
-echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][1]."&nbsp;:</td></tr>";
+echo "<tr class='tab_bg_1'><td colspan='2' class='b'>"._n('Network', 'Networks', 2)."</td></tr>";
 
 # 4. Get some more number data (Networking)
 
@@ -183,7 +183,7 @@ while ($data=$DB->fetch_assoc($result)) {
 }
 
 echo "<tr><td colspan='2' height=10></td></tr>";
-echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][3]."&nbsp;:</td></tr>";
+echo "<tr class='tab_bg_1'><td colspan='2' class='b'>"._n('Monitor', 'Monitors', 2)."</td></tr>";
 
 # 4. Get some more number data (Monitor)
 
@@ -208,7 +208,7 @@ while ($data=$DB->fetch_assoc($result)) {
 }
 
 echo "<tr><td colspan='2' height=10></td></tr>";
-echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".$LANG['Menu'][2]."&nbsp;:</td></tr>";
+echo "<tr class='tab_bg_1'><td colspan='2' class='b'>"._n('Printer', 'Printers', 2)."</td></tr>";
 
 # 4. Get some more number data (Printers)
 

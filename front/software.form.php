@@ -81,7 +81,8 @@ if (isset($_POST["add"])) {
    $soft->check($_REQUEST["id"],'d');
 
    $soft->delete($_REQUEST,1);
-   Event::log($_REQUEST["id"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   Event::log($_REQUEST["id"], "software", 4, "inventory",
+              $_SESSION["glpiname"]." ".$LANG['log'][24]);
    $soft->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -92,7 +93,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["mergesoftware"])) {
-   Html::popHeader($LANG['Menu'][4]);
+   Html::popHeader(Software::getTypeName(2));
 
    if (isset($_POST["id"])
        && isset($_POST["item"])
@@ -105,7 +106,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
+   Html::header(Software::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "software");
    $soft->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }

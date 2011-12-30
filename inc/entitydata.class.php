@@ -475,7 +475,7 @@ class EntityData extends CommonDBChild {
                               array('value' => $entitydata->getField('autofill_warranty_date')));
       echo "</td><td colspan='2'></td></tr>";
 
-      echo "<tr><th colspan='4'>".$LANG['Menu'][4]."</th></tr>";
+      echo "<tr><th colspan='4'>"._n('Software', 'Software', 2)."</th></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('Entity for software creation') . "</td>";
       echo "<td>";

@@ -158,7 +158,7 @@ class Problem_Ticket extends CommonDBRelation{
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='9'>".$LANG['Menu'][7]."&nbsp;-&nbsp;";
+      echo "<tr><th colspan='9'>"._n('Problem - ', 'Problems - ', 2);
       echo "<a href='".Toolbox::getItemTypeFormURL('Problem')."?tickets_id=$ID'>".
             __('Create a problem from this ticket')."</a>";
       echo "</th></tr>";

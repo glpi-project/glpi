@@ -672,7 +672,7 @@ class Dropdown {
                                  'FQDN'               => FQDN::getTypeName(2),
                                  'WifiNetwork'        => WifiNetwork::getTypeName(2)),
 
-                        $LANG['Menu'][4]
+                        __('Software')
                         => array('SoftwareCategory' => SoftwareCategory::getTypeName(2)),
 
                         __('User')

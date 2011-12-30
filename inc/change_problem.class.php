@@ -84,7 +84,7 @@ class Change_Problem extends CommonDBRelation{
       $colspan = 1;
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".$LANG['Menu'][8]."&nbsp;-&nbsp;";
+      echo "<tr><th colspan='2'>"._n('Change - ', 'Changes - ', 2);
       echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?problems_id=$ID'>";
       _e('Create a change from this problem');
       echo "</a>";
@@ -172,7 +172,7 @@ class Change_Problem extends CommonDBRelation{
       $colspan = 1;
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".$LANG['Menu'][7]."</th></tr>";
+      echo "<tr><th colspan='2'>"._n('Problem', 'Problems', 2)."</th></tr>";
       echo "<tr><th colspan='2'>".__('Title')."</th>";
       echo "</tr>";
 

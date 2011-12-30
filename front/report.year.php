@@ -36,7 +36,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 Session::checkRight("reports", "r");
 
-Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
+Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
 
 Report::title();
 
@@ -54,10 +54,10 @@ echo "<td width='150' class='center'>";
 echo "<p class='b'>".__('Item type')."</p> ";
 echo "<p><select name='item_type[]' size='8' multiple>";
 echo "<option value='0' selected>".__('All')."</option>";
-echo "<option value='Computer'>".$LANG['Menu'][0]."</option>";
-echo "<option value='Printer'>".$LANG['Menu'][2]."</option>";
+echo "<option value='Computer'>"._n('Computer', 'Computers', 2)."</option>";
+echo "<option value='Printer'>"._n('Printer', 'Printers', 2)."</option>";
 echo "<option value='NetworkEquipment'>".$LANG['help'][26]."</option>";
-echo "<option value='Monitor'>".$LANG['Menu'][3]."</option>";
+echo "<option value='Monitor'>"._n('Monitor', 'Monitors', 2)."</option>";
 echo "<option value='Peripheral'>"._n('Device', 'Devices', 2)."</option>";
 echo "<option value='SoftwareLicense'>"._n('License', 'Licenses', 2)."</option>";
 echo "<option value='Phone'>"._n('Phone', 'Phones', 2)."</option>";

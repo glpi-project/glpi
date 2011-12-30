@@ -171,9 +171,9 @@ if (isset($_POST["add"])) {
 
 if (isset($_GET["id"]) && $_GET["id"]>0) {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      Html::helpHeader($LANG['Menu'][5],'',$_SESSION["glpiname"]);
+      Html::helpHeader(Ticket::getTypeName(2), '', $_SESSION["glpiname"]);
    } else {
-      Html::header($LANG['Menu'][5],'',"maintain","ticket");
+      Html::header(Ticket::getTypeName(2), '', "maintain", "ticket");
    }
 
    $available_options = array('load_kb_sol');

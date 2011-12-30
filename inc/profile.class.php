@@ -634,21 +634,21 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Inventory')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Menu'][0]."</td><td>";
+      echo "<td>"._n('Computer', 'Computers', 2)."</td><td>";
       self::dropdownNoneReadWrite("computer", $this->fields["computer"], 1, 1,1 );
       echo "</td>";
-      echo "<td>".$LANG['Menu'][3]."</td><td>";
+      echo "<td>"._n('Monitor', 'Monitors', 2)."</td><td>";
       self::dropdownNoneReadWrite("monitor", $this->fields["monitor"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][4]."</td><td>";
+      echo "<td>"._n('Software', 'Software', 2)."</td><td>";
       self::dropdownNoneReadWrite("software", $this->fields["software"], 1, 1, 1);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Menu'][1]."</td><td>";
+      echo "<td>"._n('Network', 'Networks', 2)."</td><td>";
       self::dropdownNoneReadWrite("networking", $this->fields["networking"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][2]."</td><td>";
+      echo "<td>"._n('Printer', 'Printers', 2)."</td><td>";
       self::dropdownNoneReadWrite("printer", $this->fields["printer"], 1, 1, 1);
       echo "</td>";
       echo "<td>"._n('Cartridge', 'Cartridges', 2)."</td><td>";
@@ -712,7 +712,7 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['knowbase'][1]."</td><td>";
       self::dropdownNoneReadWrite("faq", $this->fields["faq"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][6]."</td><td>";
+      echo "<td>"._n('Report', 'Reports', 2)."</td><td>";
       self::dropdownNoneReadWrite("reports", $this->fields["reports"], 1, 1, 0);
       echo "</td>";
       echo "<td>"._n('Reservation', 'Reservations', 2)."</td><td>";
@@ -957,8 +957,8 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("show_all_planning", $this->fields["show_all_planning"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>".$LANG['Menu'][7]/*." / ".$LANG['Menu'][8]*/."</th>";
-      echo "</tr>\n";
+      echo "<tr class='tab_bg_5'><th colspan='6'>"._n('Problem', 'Problems', 2)/*." / "._n('Change', 'Changes', 2)*/;
+      echo "</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Update all problems')."</td><td>";
@@ -1381,22 +1381,22 @@ class Profile extends CommonDBTM {
 
       $tab[20]['table']    = $this->getTable();
       $tab[20]['field']    = 'computer';
-      $tab[20]['name']     = $LANG['Menu'][0];
+      $tab[20]['name']     = _n('Computer', 'Computers', 2);
       $tab[20]['datatype'] = 'right';
 
       $tab[21]['table']    = $this->getTable();
       $tab[21]['field']    = 'monitor';
-      $tab[21]['name']     = $LANG['Menu'][3];
+      $tab[21]['name']     = _n('Monitor', 'Monitors', 2);
       $tab[21]['datatype'] = 'right';
 
       $tab[22]['table']    = $this->getTable();
       $tab[22]['field']    = 'software';
-      $tab[22]['name']     = $LANG['Menu'][4];
+      $tab[22]['name']     = _n('Software', 'Software', 2);
       $tab[22]['datatype'] = 'right';
 
       $tab[23]['table']    = $this->getTable();
       $tab[23]['field']    = 'networking';
-      $tab[23]['name']     = $LANG['Menu'][1];
+      $tab[23]['name']     = _n('Network', 'Networks', 2);
       $tab[23]['datatype'] = 'right';
 
       $tab[24]['table']    = $this->getTable();
@@ -1485,7 +1485,7 @@ class Profile extends CommonDBTM {
 
       $tab[38]['table']    = $this->getTable();
       $tab[38]['field']    = 'reports';
-      $tab[38]['name']     = $LANG['Menu'][6];
+      $tab[38]['name']     = _n('Report', 'Reports', 2);
       $tab[38]['datatype'] = 'right';
 
       $tab[39]['table']    = $this->getTable();

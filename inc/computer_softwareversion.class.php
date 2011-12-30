@@ -239,7 +239,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                           INNER JOIN `glpi_computers`
                               ON (`glpi_computers_softwareversions`.`computers_id`
                                     = `glpi_computers`.`id`)
-                          WHERE `glpi_computers_softwareversions`.`softwareversions_id` = '$searchID'" .
+                          WHERE `glpi_computers_softwareversions`.`softwareversions_id` = '$searchID'".
                                 getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                                 AND `glpi_computers`.`is_deleted` = '0'
                                 AND `glpi_computers`.`is_template` = '0'";
@@ -314,8 +314,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
 
             Session::initNavigateListItems('Computer',
-                  //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                  sprintf(__('%1$s = %2$s'),$soft->getTypeName(1), $title));
+            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                           sprintf(__('%1$s = %2$s'), $soft->getTypeName(1), $title));
 
 
             $sort_img="<img src='".$CFG_GLPI["root_doc"]."/pics/".
@@ -345,14 +345,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             if ($showEntity) {
                echo "<th>".(strstr($sort,"entity")?$sort_img:"").
                     "<a href='javascript:reloadTab(\"sort=entity,compname&amp;order=".
-                      ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['entity'][0]."</a></th>";
+                      ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['entity'][0].
+                    "</a></th>";
             }
             echo "<th>".($sort=="`serial`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Serial number')."</a></th>";
             echo "<th>".($sort=="`otherserial`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=otherserial&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Inventory number')."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Inventory number').
+                 "</a></th>";
             echo "<th>".(strstr($sort,"`location`")?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=location,compname&amp;order=".
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Location')."</a></th>";
@@ -367,7 +369,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('User')."</a></th>";
             echo "<th>".($sort=="`lname`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=lname&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>"._n('License', 'Licenses', 2)."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>"._n('License', 'Licenses', 2).
+                 "</a></th>";
             echo "</tr>\n";
 
             do {
@@ -547,7 +550,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<tr class='tab_bg_1'><td class='center' colspan='3'>";
          echo "<form method='post' action='".
                 $CFG_GLPI["root_doc"]."/front/computer_softwareversion.form.php'>";
-         echo $LANG['Menu'][4]."&nbsp;:&nbsp;";
+         echo _n('Software', 'Software', 2);
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
          echo "<input type='submit' name='install' value=\"".__s('Install')."\" class='submit'>";
@@ -573,11 +576,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
 
       Session::initNavigateListItems('Software',
-            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-            sprintf(__('%1$s = %2$s'),$comp->getTypeName(1), $comp->getName()));
+      //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                     sprintf(__('%1$s = %2$s'),
+                                             $comp->getTypeName(1), $comp->getName()));
       Session::initNavigateListItems('SoftwareLicense',
-            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-            sprintf(__('%1$s = %2$s'),$comp->getTypeName(1), $comp->getName()));
+      //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                     sprintf(__('%1$s = %2$s'),
+                                             $comp->getTypeName(1), $comp->getName()));
 
       $installed = array();
       if ($DB->numrows($result)) {
@@ -1039,7 +1044,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(Software::getTypeName(2),
                                               countElementsInTable('glpi_computers_softwareversions',
-                                                                   "computers_id = '".$item->getID()."'"));
+                                                                   "computers_id
+                                                                        = '".$item->getID()."'"));
                }
                return Software::getTypeName(2);
             }

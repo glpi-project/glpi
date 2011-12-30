@@ -153,7 +153,7 @@ function update0713to072() {
    }
 
    // Software Updates
-   displayMigrationMessage("072", $LANG['Menu'][4]); // Software
+   displayMigrationMessage("072", _n('Software', 'Software', 2));
 
    // Make software recursive
    if (!FieldExists("glpi_software", "recursive")) {
@@ -505,7 +505,7 @@ function update0713to072() {
    }
 
 
-   displayMigrationMessage("072", $LANG['Menu'][4]); // Software
+   displayMigrationMessage("072", _n('Software', 'Software', 2));
 
    // If migration run more than once
    if (!FieldExists("glpi_softwareversions", "state")) {

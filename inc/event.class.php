@@ -121,7 +121,7 @@ class Event extends CommonDBTM {
                            'rules'       => $LANG['log'][65]);
 
       $logService = array('inventory'    => __('Inventory'),
-                          'tracking'     => $LANG['Menu'][5],
+                          'tracking'     => _n('Ticket', 'Tickets', 2),
                           'maintain'     => __('Assistance'),
                           'planning'     => Toolbox::ucfirst($LANG['log'][16]),
                           'tools'        => __('Tools'),
