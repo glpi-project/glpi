@@ -153,7 +153,7 @@ class Change_Ticket extends CommonDBRelation{
     * @param $ticket Ticket object
    **/
    static function showForTicket(Ticket $ticket) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $ID = $ticket->getField('id');
       if (!$ticket->can($ID,'r')) {
@@ -188,8 +188,9 @@ class Change_Ticket extends CommonDBRelation{
       $used = array();
       if ($DB->numrows($result) >0) {
          Session::initNavigateListItems('Change',
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$ticket->getTypeName(1), $ticket->fields["name"]));
+         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                $ticket->getTypeName(1), $ticket->fields["name"]));
 
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];

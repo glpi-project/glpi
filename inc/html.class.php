@@ -934,7 +934,7 @@ class Html {
       if (Session::haveRight("computer","r")) {
          $menu['inventory']['default'] = '/front/computer.php';
 
-         $menu['inventory']['content']['computer']['title']           = Computer::getTypeName(2);
+         $menu['inventory']['content']['computer']['title']           = _n('Computer', 'Computers', 2);
          $menu['inventory']['content']['computer']['shortcut']        = 'o';
          $menu['inventory']['content']['computer']['page']            = '/front/computer.php';
          $menu['inventory']['content']['computer']['links']['search'] = '/front/computer.php';
@@ -950,7 +950,7 @@ class Html {
 
 
       if (Session::haveRight("monitor","r")) {
-         $menu['inventory']['content']['monitor']['title']           = Monitor::getTypeName(2);
+         $menu['inventory']['content']['monitor']['title']           = _n('Monitor', 'Monitors', 2);
          $menu['inventory']['content']['monitor']['shortcut']        = '';
          $menu['inventory']['content']['monitor']['page']            = '/front/monitor.php';
          $menu['inventory']['content']['monitor']['links']['search'] = '/front/monitor.php';
@@ -966,7 +966,7 @@ class Html {
 
 
       if (Session::haveRight("software","r")) {
-         $menu['inventory']['content']['software']['title']           = Software::getTypeName(2);
+         $menu['inventory']['content']['software']['title']           = _n('Software', 'Software', 2);
          $menu['inventory']['content']['software']['shortcut']        = 's';
          $menu['inventory']['content']['software']['page']            = '/front/software.php';
          $menu['inventory']['content']['software']['links']['search'] = '/front/software.php';
@@ -982,7 +982,7 @@ class Html {
 
 
       if (Session::haveRight("networking","r")) {
-         $menu['inventory']['content']['networking']['title']     = Network::getTypeName(2);
+         $menu['inventory']['content']['networking']['title']     = _n('Network', 'Networks', 2);
          $menu['inventory']['content']['networking']['shortcut']  = '';
          $menu['inventory']['content']['networking']['page']      = '/front/networkequipment.php';
          $menu['inventory']['content']['networking']['links']['search']
@@ -999,7 +999,7 @@ class Html {
 
 
       if (Session::haveRight("peripheral","r")) {
-         $menu['inventory']['content']['peripheral']['title']           = Peripheral::getTypeName(2);
+         $menu['inventory']['content']['peripheral']['title']           = _n('Device', 'Devices', 2);
          $menu['inventory']['content']['peripheral']['shortcut']        = '';
          $menu['inventory']['content']['peripheral']['page']            = '/front/peripheral.php';
          $menu['inventory']['content']['peripheral']['links']['search'] = '/front/peripheral.php';
@@ -1015,7 +1015,7 @@ class Html {
 
 
       if (Session::haveRight("printer","r")) {
-         $menu['inventory']['content']['printer']['title']           = Printer::getTypeName(2);
+         $menu['inventory']['content']['printer']['title']           = _n('Printer', 'Printers', 2);
          $menu['inventory']['content']['printer']['shortcut']        = '';
          $menu['inventory']['content']['printer']['page']            = '/front/printer.php';
          $menu['inventory']['content']['printer']['links']['search'] = '/front/printer.php';
@@ -1031,7 +1031,7 @@ class Html {
 
 
       if (Session::haveRight("cartridge","r")) {
-         $menu['inventory']['content']['cartridge']['title']      = Cartridge::getTypeName(2);
+         $menu['inventory']['content']['cartridge']['title']      = _n('Cartridge', 'Cartridges', 2);
          $menu['inventory']['content']['cartridge']['shortcut']   = '';
          $menu['inventory']['content']['cartridge']['page']       = '/front/cartridgeitem.php';
          $menu['inventory']['content']['cartridge']['links']['search']
@@ -1045,7 +1045,7 @@ class Html {
 
 
       if (Session::haveRight("consumable","r")) {
-         $menu['inventory']['content']['consumable']['title']    = Consumable::getTypeName(2);
+         $menu['inventory']['content']['consumable']['title']    = _n('Consumable', 'Consumables', 2);
          $menu['inventory']['content']['consumable']['shortcut'] = '';
          $menu['inventory']['content']['consumable']['page']     = '/front/consumableitem.php';
          $menu['inventory']['content']['consumable']['links']['search']
@@ -1062,7 +1062,7 @@ class Html {
 
 
       if (Session::haveRight("phone","r")) {
-         $menu['inventory']['content']['phone']['title']           = Phone::getTypeName(2);
+         $menu['inventory']['content']['phone']['title']           = _n('Phone', 'Phones', 2);
          $menu['inventory']['content']['phone']['shortcut']        = '';
          $menu['inventory']['content']['phone']['page']            = '/front/phone.php';
          $menu['inventory']['content']['phone']['links']['search'] = '/front/phone.php';
@@ -1096,7 +1096,7 @@ class Html {
 
          $menu['maintain']['default'] = '/front/ticket.php';
 
-         $menu['maintain']['content']['ticket']['title']           = Ticket::getTypeName(2);
+         $menu['maintain']['content']['ticket']['title']           = _n('Ticket', 'Tickets', 2);
          $menu['maintain']['content']['ticket']['shortcut']        = 't';
          $menu['maintain']['content']['ticket']['page']            = '/front/ticket.php';
          $menu['maintain']['content']['ticket']['links']['search'] = '/front/ticket.php';
@@ -1147,7 +1147,7 @@ class Html {
       }
 
       if (Session::haveRight("show_all_problem","1") || Session::haveRight("show_my_problem","1")) {
-         $menu['maintain']['content']['problem']['title']           = Problem::getTypeName(2);
+         $menu['maintain']['content']['problem']['title']           = _n('Problem', 'Problems', 2);
          $menu['maintain']['content']['problem']['shortcut']        = '';
          $menu['maintain']['content']['problem']['page']            = '/front/problem.php';
          $menu['maintain']['content']['problem']['links']['search'] = '/front/problem.php';
@@ -1157,7 +1157,7 @@ class Html {
       }
 
 //       if (Session::haveRight("show_all_change","1") || Session::haveRight("show_my_change","1")) {
-//          $menu['maintain']['content']['change']['title']           = Change::getTypeName(2);
+//          $menu['maintain']['content']['change']['title']           = _n('Change', 'Changes', 2);
 //          $menu['maintain']['content']['change']['shortcut']        = '';
 //          $menu['maintain']['content']['change']['page']            = '/front/change.php';
 //          $menu['maintain']['content']['change']['links']['search'] = '/front/change.php';
@@ -1214,13 +1214,14 @@ class Html {
       }
 
       if (Session::haveRight("contact_enterprise", "r")) {
-         $menu['financial']['content']['supplier']['title']             = Supplier::getTypeName(2);
-         $menu['financial']['content']['supplier']['shortcut']          = '';
-         $menu['financial']['content']['supplier']['page']              = '/front/supplier.php';
-         $menu['financial']['content']['supplier']['links']['search']   = '/front/supplier.php';
+         $menu['financial']['content']['supplier']['title']       = _n('Supplier', 'Suppliers', 2);
+         $menu['financial']['content']['supplier']['shortcut']    = '';
+         $menu['financial']['content']['supplier']['page']        = '/front/supplier.php';
+         $menu['financial']['content']['supplier']['links']['search']
+                                                                  = '/front/supplier.php';
 
 
-         $menu['financial']['content']['contact']['title']           = Contact::getTypeName(2);
+         $menu['financial']['content']['contact']['title']           = _n('Contact', 'Contacts', 2);
          $menu['financial']['content']['contact']['shortcut']        = '';
          $menu['financial']['content']['contact']['page']            = '/front/contact.php';
          $menu['financial']['content']['contact']['links']['search'] = '/front/contact.php';
@@ -1233,10 +1234,11 @@ class Html {
 
 
       if (Session::haveRight("contract", "r")) {
-         $menu['financial']['content']['contract']['title']             = Contract::getTypeName(2);
-         $menu['financial']['content']['contract']['shortcut']          = '';
-         $menu['financial']['content']['contract']['page']              = '/front/contract.php';
-         $menu['financial']['content']['contract']['links']['search']   = '/front/contract.php';
+         $menu['financial']['content']['contract']['title']       = _n('Contract', 'Contracts', 2);
+         $menu['financial']['content']['contract']['shortcut']    = '';
+         $menu['financial']['content']['contract']['page']        = '/front/contract.php';
+         $menu['financial']['content']['contract']['links']['search']
+                                                                  = '/front/contract.php';
 
          if (Session::haveRight("contract", "w")) {
             $menu['financial']['content']['contract']['links']['add']
@@ -1248,10 +1250,11 @@ class Html {
 
 
       if (Session::haveRight("document", "r")) {
-         $menu['financial']['content']['document']['title']             = Document::getTypeName(2);
-         $menu['financial']['content']['document']['shortcut']          = 'd';
-         $menu['financial']['content']['document']['page']              = '/front/document.php';
-         $menu['financial']['content']['document']['links']['search']   = '/front/document.php';
+         $menu['financial']['content']['document']['title']       = _n('Document', 'Computers', 2);
+         $menu['financial']['content']['document']['shortcut']    = 'd';
+         $menu['financial']['content']['document']['page']        = '/front/document.php';
+         $menu['financial']['content']['document']['links']['search']
+                                                                  = '/front/document.php';
 
          if (Session::haveRight("document","w")) {
             $menu['financial']['content']['document']['links']['add'] = '/front/document.form.php';
@@ -1265,7 +1268,7 @@ class Html {
 
       $menu['utils']['default'] = '/front/reminder.php';
 
-      $menu['utils']['content']['reminder']['title']           = Reminder::getTypeName(2);
+      $menu['utils']['content']['reminder']['title']           = _n('Reminder', 'Reminders', 2);
       $menu['utils']['content']['reminder']['page']            = '/front/reminder.php';
       $menu['utils']['content']['reminder']['links']['search'] = '/front/reminder.php';
       $menu['utils']['content']['reminder']['links']['add']    = '/front/reminder.form.php';
@@ -1290,8 +1293,8 @@ class Html {
 
       if (Session::haveRight("reservation_helpdesk","1")
           || Session::haveRight("reservation_central","r")) {
-         $menu['utils']['content']['reservation']['title']           = Reservation::getTypeName(2);
-         $menu['utils']['content']['reservation']['shortcut']        = 'r';
+         $menu['utils']['content']['reservation']['title']     = _n('Reservation', 'Reservations', 2);
+         $menu['utils']['content']['reservation']['shortcut']  = 'r';
 
          $menu['utils']['content']['reservation']['page']             = '/front/reservationitem.php';
          $menu['utils']['content']['reservation']['links']['search']  = '/front/reservationitem.php';
@@ -1300,7 +1303,7 @@ class Html {
 
 
       if (Session::haveRight("reports","r")) {
-         $menu['utils']['content']['report']['title']    = Report::getTypeName(2);
+         $menu['utils']['content']['report']['title']    = _n('Report', 'Reports', 2);
          $menu['utils']['content']['report']['shortcut'] = 'e';
          $menu['utils']['content']['report']['page']     = '/front/report.php';
       }
@@ -1405,7 +1408,7 @@ class Html {
       if (Session::haveRight("user","r")) {
          $menu['admin']['default'] = '/front/user.php';
 
-         $menu['admin']['content']['user']['title']           = User::getTypeName(2);
+         $menu['admin']['content']['user']['title']           = _n('User', 'Users', 2);
          $menu['admin']['content']['user']['shortcut']        = 'u';
          $menu['admin']['content']['user']['page']            = '/front/user.php';
          $menu['admin']['content']['user']['links']['search'] = '/front/user.php';
@@ -1414,27 +1417,29 @@ class Html {
             $menu['admin']['content']['user']['links']['add'] = "/front/user.form.php";
          }
 
-        $menu['admin']['content']['user']['options']['ldap']['title'] = AuthLDAP::getTypeName(2);
+        $menu['admin']['content']['user']['options']['ldap']['title'] = _n('LDAP directory',
+                                                                           'LDAP directories', 2);
         $menu['admin']['content']['user']['options']['ldap']['page']  = "/front/ldap.php";
       }
 
 
       if (Session::haveRight("group","r")) {
-         $menu['admin']['content']['group']['title']           = Group::getTypeName(2);
+         $menu['admin']['content']['group']['title']           = _n('Group', 'Groups', 2);
          $menu['admin']['content']['group']['shortcut']        = 'g';
          $menu['admin']['content']['group']['page']            = '/front/group.php';
          $menu['admin']['content']['group']['links']['search'] = '/front/group.php';
 
          if (Session::haveRight("group","w")) {
             $menu['admin']['content']['group']['links']['add']             = "/front/group.form.php";
-            $menu['admin']['content']['group']['options']['ldap']['title'] = AuthLDAP::getTypeName(2);
+            $menu['admin']['content']['group']['options']['ldap']['title'] = _n('LDAP directory',
+                                                                                'LDAP directories', 2);
             $menu['admin']['content']['group']['options']['ldap']['page']  = "/front/ldap.group.php";
          }
       }
 
 
       if (Session::haveRight("entity","r")) {
-         $menu['admin']['content']['entity']['title']           = Entity::getTypeName(2);
+         $menu['admin']['content']['entity']['title']           = _n('Entity', 'Entities', 2);
          $menu['admin']['content']['entity']['shortcut']        = '';
          $menu['admin']['content']['entity']['page']            = '/front/entity.php';
          $menu['admin']['content']['entity']['links']['search'] = '/front/entity.php';
@@ -1448,7 +1453,7 @@ class Html {
           || Session::haveRight("rule_softwarecategories","r")
           || Session::haveRight("rule_mailcollector","r")) {
 
-         $menu['admin']['content']['rule']['title']    = Rule::getTypeName(2);
+         $menu['admin']['content']['rule']['title']    = _n('Rule', 'Rules', 2);
          $menu['admin']['content']['rule']['shortcut'] = '';
          $menu['admin']['content']['rule']['page']     = '/front/rule.php';
 
@@ -1498,7 +1503,7 @@ class Html {
 
          if ($sector=='admin' && $item == 'dictionnary') {
             $menu['admin']['content']['dictionnary']['options']['manufacturers']['title']
-                           = Manufacturer::getTypeName(2);
+                           = _n('Manufacturer', 'Manufacturers', 2);
             $menu['admin']['content']['dictionnary']['options']['manufacturers']['page']
                            = '/front/ruledictionnarymanufacturer.php';
             $menu['admin']['content']['dictionnary']['options']['manufacturers']['links']['search']
@@ -1511,7 +1516,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['software']['title']
-                           = Software::getTypeName(2);
+                           = _n('Software', 'Software', 2);
             $menu['admin']['content']['dictionnary']['options']['software']['page']
                            = '/front/ruledictionnarysoftware.php';
             $menu['admin']['content']['dictionnary']['options']['software']['links']['search']
@@ -1524,7 +1529,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.computer']['title']
-                           = ComputerModel::getTypeName(2);
+                           = _n('Computers model', 'Computers models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.computer']['page']
                            = '/front/ruledictionnarycomputermodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.computer']['links']['search']
@@ -1537,7 +1542,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.monitor']['title']
-                           = MonitorModel::getTypeName(2);
+                           = _n('Monitors model', 'Monitors madels', 2);
             $menu['admin']['content']['dictionnary']['options']['model.monitor']['page']
                            = '/front/ruledictionnarymonitormodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.monitor']['links']['search']
@@ -1550,7 +1555,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.printer']['title']
-                           = PrinterModel::getTypeName(2);
+                           = _n('Printers model', 'Printers models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.printer']['page']
                            = '/front/ruledictionnaryprintermodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.printer']['links']['search']
@@ -1563,7 +1568,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.peripheral']['title']
-                           = PeripheralModel::getTypeName(2);
+                           = _n('Peripherals model', 'Peripherals models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.peripheral']['page']
                            = '/front/ruledictionnaryperipheralmodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.peripheral']['links']['search']
@@ -1576,7 +1581,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.networking']['title']
-                           = NetworkEquipmentModel::getTypeName(2);
+                           = _n('Networking equipment model', 'Networking equipment models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.networking']['page']
                            = '/front/ruledictionnarynetworkequipmentmodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.networking']['links']['search']
@@ -1589,7 +1594,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.phone']['title']
-                           = PhoneModel::getTypeName(2);
+                           = _n('Phones model', 'Phones models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.phone']['page']
                            = '/front/ruledictionnaryphonemodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.phone']['links']['search']
@@ -1602,7 +1607,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.computer']['title']
-                           = ComputerType::getTypeName(2);
+                           = _n('Computers type', 'Computers types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.computer']['page']
                            = '/front/ruledictionnarycomputertype.php';
             $menu['admin']['content']['dictionnary']['options']['type.computer']['links']['search']
@@ -1615,7 +1620,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.monitor']['title']
-                           = MonitorType::getTypeName(2);
+                           = _n('Monitors type', 'Monitors types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.monitor']['page']
                            = '/front/ruledictionnarymonitortype.php';
             $menu['admin']['content']['dictionnary']['options']['type.monitor']['links']['search']
@@ -1628,7 +1633,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.printer']['title']
-                           = PrinterType::getTypeName(2);
+                           = _n('Printers type', 'Printers types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.printer']['page']
                            = '/front/ruledictionnaryprintertype.php';
             $menu['admin']['content']['dictionnary']['options']['type.printer']['links']['search']
@@ -1641,7 +1646,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.peripheral']['title']
-                           = PeripheralType::getTypeName(2);
+                           = _n('Peripherals type', 'Peripherals types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.peripheral']['page']
                            = '/front/ruledictionnaryperipheraltype.php';
             $menu['admin']['content']['dictionnary']['options']['type.peripheral']['links']['search']
@@ -1654,7 +1659,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.networking']['title']
-                           = NetworkEquipmentType::getTypeName(2);
+                           = _n('Networking equipment type', 'Networking equipment types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.networking']['page']
                            = '/front/ruledictionnarynetworkequipmenttype.php';
             $menu['admin']['content']['dictionnary']['options']['type.networking']['links']['search']
@@ -1667,7 +1672,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.phone']['title']
-                           = PhoneType::getTypeName(2);
+                           = _n('Phones type', 'Phones types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.phone']['page']
                            = '/front/ruledictionnaryphonetype.php';
             $menu['admin']['content']['dictionnary']['options']['type.phone']['links']['search']
@@ -1717,7 +1722,7 @@ class Html {
             }
 
             $menu['admin']['content']['dictionnary']['options']['printer']['title']
-                           = Printer::getTypeName(2);
+                           = _n('Printer', 'Printers', 2);
             $menu['admin']['content']['dictionnary']['options']['printer']['page']
                            = '/front/ruledictionnaryprinter.php';
             $menu['admin']['content']['dictionnary']['options']['printer']['links']['search']
@@ -1733,7 +1738,7 @@ class Html {
 
 
       if (Session::haveRight("profile","r")) {
-         $menu['admin']['content']['profile']['title']           = Profile::getTypeName(2);
+         $menu['admin']['content']['profile']['title']           = _n('Profile', 'Profiles', 2);
          $menu['admin']['content']['profile']['shortcut']        = '';
          $menu['admin']['content']['profile']['page']            = '/front/profile.php';
          $menu['admin']['content']['profile']['links']['search'] = "/front/profile.php";
@@ -1822,10 +1827,10 @@ class Html {
 
       if (($CFG_GLPI['use_mailing'] && Session::haveRight("notification","r"))
           || Session::haveRight("config","w")) {
-         $menu['config']['content']['mailing']['title'] = Notification::getTypeName(2);
+         $menu['config']['content']['mailing']['title'] = _n('Notification', 'NotificationS', 2);
          $menu['config']['content']['mailing']['page']  = '/front/setup.notification.php';
          $menu['config']['content']['mailing']['options']['notification']['title']
-                                                        = Notification::getTypeName(2);
+                                                        = _n('Notification', 'NotificationS', 2);
          $menu['config']['content']['mailing']['options']['notification']['page']
                                                         = '/front/notification.php';
          $menu['config']['content']['mailing']['options']['notification']['links']['add']
@@ -1836,7 +1841,7 @@ class Html {
 
 
       if (Session::haveRight("sla","r")) {
-         $menu['config']['content']['sla']['title']           = SLA::getTypeName();
+         $menu['config']['content']['sla']['title']           = _n('SLA', 'SLA');
          $menu['config']['content']['sla']['page']            = '/front/sla.php';
          $menu['config']['content']['sla']['links']['search'] = "/front/sla.php";
          if (Session::haveRight("sla","w")) {
@@ -1881,10 +1886,12 @@ class Html {
          $menu['config']['content']['extauth']['title'] = $LANG['login'][10];
          $menu['config']['content']['extauth']['page']  = '/front/setup.auth.php';
 
-         $menu['config']['content']['extauth']['options']['ldap']['title'] = AuthLDAP::getTypeName(2);
+         $menu['config']['content']['extauth']['options']['ldap']['title'] = _n('LDAP directory',
+                                                                                'LDAP directories', 2);
          $menu['config']['content']['extauth']['options']['ldap']['page']  = '/front/authldap.php';
 
-         $menu['config']['content']['extauth']['options']['imap']['title'] = AuthMail::getTypeName(2);
+         $menu['config']['content']['extauth']['options']['imap']['title'] = _n('LDAP directory',
+                                                                                'LDAP directories', 2);
          $menu['config']['content']['extauth']['options']['imap']['page']  = '/front/authmail.php';
 
          $menu['config']['content']['extauth']['options']['others']['title'] = __('Others');
@@ -1908,7 +1915,7 @@ class Html {
                break;
          }
 
-         $menu['config']['content']['mailcollector']['title'] = MailCollector::getTypeName(2);
+         $menu['config']['content']['mailcollector']['title'] = _n('Receiver', 'Receivers', 2);
          $menu['config']['content']['mailcollector']['page']  = '/front/mailcollector.php';
 
          if (Toolbox::canUseImapPop()) {
@@ -1930,7 +1937,8 @@ class Html {
 
 
       if (Session::haveRight("link","r")) {
-         $menu['config']['content']['link']['title']           = Link::getTypeName(2);
+         $menu['config']['content']['link']['title']           = _n('External link',
+                                                                    'External links', 2);
          $menu['config']['content']['link']['page']            = '/front/link.php';
          $menu['config']['content']['link']['hide']            = true;
          $menu['config']['content']['link']['links']['search'] = '/front/link.php';
