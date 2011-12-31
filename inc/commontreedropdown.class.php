@@ -362,7 +362,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<div class='firstbloc'>";
          echo "<form action='".$link."' method='post'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='3'>".$LANG['common'][93]."</th></tr>";
+         echo "<tr><th colspan='3'>".__('New child heading')."</th></tr>";
 
          echo "<tr class='tab_bg_1'><td>".__('Name')."</td><td>";
          Html::autocompletionTextField($this, "name", array('value' => ''));

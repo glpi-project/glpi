@@ -480,7 +480,7 @@ class Problem extends CommonITILObject {
       $tab[64]['table']         = 'glpi_users';
       $tab[64]['field']         = 'name';
       $tab[64]['linkfield']     = 'users_id_lastupdater';
-      $tab[64]['name']          = $LANG['common'][101];
+      $tab[64]['name']          = __('Last edit by');
       $tab[64]['massiveaction'] = false;
 
       $tab[65]['table']         = 'glpi_items_problems';
@@ -804,7 +804,7 @@ class Problem extends CommonITILObject {
 
       echo "</td></tr>";
       if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".$LANG['common'][95]." &nbsp;:</span></td><td>";
+         echo "<tr><td><span class='tracking_small'>".__('By')."</span></td><td>";
          User::dropdown(array('name'   => 'users_id_recipient',
                               'value'  => $this->fields["users_id_recipient"],
                               'entity' => $this->fields["entities_id"],
@@ -821,8 +821,7 @@ class Problem extends CommonITILObject {
          echo "<tr><td><span class='tracking_small'>".__('Last update')."</span></td>";
          echo "<td><span class='tracking_small'>".Html::convDateTime($this->fields["date_mod"])."\n";
          if ($this->fields['users_id_lastupdater']>0) {
-            echo $LANG['common'][95]."&nbsp;";
-            echo getUserName($this->fields["users_id_lastupdater"], $showuserlink);
+            printf(__('By %s'), getUserName($this->fields["users_id_lastupdater"], $showuserlink));
          }
          echo "</span>";
          echo "</td></tr>";

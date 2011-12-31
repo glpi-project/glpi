@@ -80,7 +80,7 @@ class Budget extends CommonDropdown{
          switch ($item->getType()) {
             case __CLASS__ :
                return array (1 => __('Main'),
-                             2 => $LANG['common'][96]);
+                             2 => __('Items'));
          }
       }
       return '';

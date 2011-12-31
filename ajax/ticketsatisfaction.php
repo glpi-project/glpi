@@ -84,7 +84,7 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
                "[TICKETTYPE_NAME] [SOLUTIONTYPE_ID] [SOLUTIONTYPE_NAME] ".
                "[SLA_ID] [SLA_NAME] [SLALEVEL_ID] [SLALEVEL_NAME]</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td colspan='1'>" . $LANG['common'][94] . "&nbsp;:&nbsp;</td>";
+         echo "<tr class='tab_bg_1'><td colspan='1'>" . __('URL') . "</td>";
          echo "<td>";
          Html::autocompletionTextField($entity, "inquest_URL");
          echo "</td></tr>";

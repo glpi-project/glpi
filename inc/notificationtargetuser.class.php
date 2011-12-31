@@ -97,7 +97,7 @@ class NotificationTargetUser extends NotificationTarget {
                     'user.realname'          => __('Name'),
                     'user.firstname'         => __('First name'),
                     'user.token'             => __('Token'),
-                    'user.passwordforgeturl' => $LANG['common'][94],
+                    'user.passwordforgeturl' => __('URL'),
                     'user.action'            => $LANG['mailing'][119],
                      );
       foreach ($tags as $tag => $label) {

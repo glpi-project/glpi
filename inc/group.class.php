@@ -235,7 +235,7 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
-      echo "<td>".$LANG['common'][96]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('Items')."</td>";
       echo "<td>";
       dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
       echo "</td>";

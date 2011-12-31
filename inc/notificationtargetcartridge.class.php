@@ -78,7 +78,7 @@ class NotificationTargetCartridge extends NotificationTarget {
                     'cartridge.reference' => $LANG['consumables'][2],
                     'cartridge.item'      => $LANG['financial'][104],
                     'cartridge.remaining' => __('Remaining'),
-                    'cartridge.url'       => $LANG['common'][94],
+                    'cartridge.url'       => __('URL'),
                     'cartridge.entity'    => $LANG['entity'][0]);
 
       foreach ($tags as $tag => $label) {

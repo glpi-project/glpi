@@ -3259,8 +3259,7 @@ class Ticket extends CommonITILObject {
          echo "<tr><td><span class='tracking_small'>".__('Last update')."</span></td>";
          echo "<td><span class='tracking_small'>".Html::convDateTime($this->fields["date_mod"])."\n";
          if ($this->fields['users_id_lastupdater']>0) {
-            echo $LANG['common'][95]."&nbsp;";
-            echo getUserName($this->fields["users_id_lastupdater"], $showuserlink);
+            printf(__('By %s'), getUserName($this->fields["users_id_lastupdater"], $showuserlink));
          }
          echo "</span>";
          echo "</td></tr>";

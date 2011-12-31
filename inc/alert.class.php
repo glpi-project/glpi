@@ -88,7 +88,7 @@ class Alert extends CommonDBTM {
       }
 
       if (isset($options['inherit_parent']) && $options['inherit_parent']) {
-         $times[EntityData::CONFIG_PARENT] = $LANG['common'][102];
+         $times[EntityData::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
       $times[EntityData::CONFIG_NEVER] = __('Never');
@@ -110,7 +110,7 @@ class Alert extends CommonDBTM {
       }
 
       if (isset($options['inherit_parent']) && $options['inherit_parent']) {
-         $times[EntityData::CONFIG_PARENT] = $LANG['common'][102];
+         $times[EntityData::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
       $times[0] = __('No');
@@ -133,7 +133,7 @@ class Alert extends CommonDBTM {
       }
 
       if (isset($options['inherit_parent']) && $options['inherit_parent']) {
-         $p['toadd'][-2] = $LANG['common'][102];
+         $p['toadd'][-2] = __('Inheritance of the parent entity');
       }
 
       foreach ($options as $key=>$val) {

@@ -240,7 +240,7 @@ class Item_Problem extends CommonDBRelation{
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Problem' :
-               return $LANG['common'][96];
+               return __('Items');
 
             default :
                // Direct one

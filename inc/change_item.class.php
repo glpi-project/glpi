@@ -239,7 +239,7 @@ class Change_Item extends CommonDBRelation{
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Change' :
-               return $LANG['common'][96];
+               return __('Items');
          }
       }
       return '';

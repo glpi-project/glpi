@@ -379,7 +379,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::ITEM_USER, $LANG['mailing'][137]);
          $this->addTarget(Notification::ASSIGN_GROUP, __('Group in charge of the ticket'));
          $this->addTarget(Notification::OBSERVER_GROUP, __('Watcher group'));
-         $this->addTarget(Notification::OBSERVER, $LANG['common'][104]);
+         $this->addTarget(Notification::OBSERVER, __('Watcher'));
          $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP,
                           __('Watcher group manager'));
       }
@@ -762,14 +762,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.assigntousers'         => $LANG['job'][5]." - ".$LANG['job'][3],
                     $objettype.'.assigntosupplier'      => $LANG['job'][5]." - ".
                                                             $LANG['financial'][26],
-                    $objettype.'.groups'                => __('Requester group'),
-                    $objettype.'.observergroups'        => $LANG['common'][104]." - ".
-                                                            $LANG['Menu'][36],
+                    $objettype.'.groups'                => __('Requester groups'),
+                    $objettype.'.observergroups'        => __('Watcher groups'),
                     $objettype.'.assigntogroups'        => $LANG['job'][5]." - ".$LANG['Menu'][36],
                     $objettype.'.solution.type'         => $LANG['job'][48],
                     $objettype.'.solution.description'  => $LANG['jobresolution'][1],
-                    $objettype.'.observerusers'         => $LANG['common'][104]." - ".
-                                                            _n('User', 'Users', 2));
+                    $objettype.'.observerusers'         => __('Watchers'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,
