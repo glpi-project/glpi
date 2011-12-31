@@ -1710,7 +1710,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[22]['linkfield'] = 'users_id_recipient';
       $tab[22]['name']      = __('Writer');
 
-      $tab['observer'] = $LANG['common'][104];
+      $tab['observer'] = __('Watcher');
 
       $tab[66]['table']         = 'glpi_users';
       $tab[66]['field']         = 'name';
@@ -2149,7 +2149,7 @@ abstract class CommonITILObject extends CommonDBTM {
       // Manage actors : requester and assign
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th rowspan='2' width='10%'>".$LANG['common'][103]."&nbsp;:</th>";
+      echo "<th rowspan='2' width='10%'>".__('Actors')."&nbsp;:</th>";
       echo "<th width='30%'>".$LANG['job'][4];
       $rand_requester = -1;
       $candeleterequester    = false;
@@ -2164,7 +2164,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "</th>";
 
-      echo "<th width='30%'>".$LANG['common'][104];
+      echo "<th width='30%'>".__('Watcher');
       $rand_observer = -1;
       $candeleteobserver    = false;
 
@@ -2684,7 +2684,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>".$LANG['common'][99]."</th></tr>";
+      echo "<tr><th colspan='2'>".__('Dates')."</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>".__('Opening date')."</td>";
       echo "<td>".Html::convDateTime($this->fields['date'])."</td></tr>";
@@ -2702,7 +2702,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<td>".Html::convDateTime($this->fields['closedate'])."</td></tr>";
       }
 
-      echo "<tr><th colspan='2'>".$LANG['common'][100]."</th></tr>";
+      echo "<tr><th colspan='2'>".__('Times')."</th></tr>";
 
       if (isset($this->fields['takeintoaccount_delay_stat'])) {
          echo "<tr class='tab_bg_2'><td>".__('Take into account')."</td><td>";

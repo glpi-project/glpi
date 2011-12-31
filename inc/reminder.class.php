@@ -532,7 +532,7 @@ class Reminder extends CommonDBTM {
          echo $this->fields['name'];
       }
       echo "</td>\n";
-      echo "<td>".$LANG['common'][95]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('By')."</td>";
       echo "<td>";
       echo getUserName($this->fields["users_id"]);
       if (!$ID) {
@@ -755,7 +755,7 @@ class Reminder extends CommonDBTM {
       $img      = "rdv_private.png"; // default icon for reminder
 
       if ($val["users_id"] != Session::getLoginUserID()) {
-         $users_id = "<br>".$LANG['common'][95]."&nbsp;: ".getUserName($val["users_id"]);
+         $users_id = "<br>".sprintf(__('By %s'), getUserName($val["users_id"]));
          $img      = "rdv_public.png";
       }
 

@@ -131,9 +131,9 @@ class Contract_Item extends CommonDBRelation{
          switch ($item->getType()) {
             case 'Contract' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['common'][96], self::countForContract($item));
+                  return self::createTabEntry(__('Items'), self::countForContract($item));
                }
-               return $LANG['common'][96];
+               return __('Items');
 
             default :
                if ($_SESSION['glpishow_count_on_tabs']

@@ -417,7 +417,7 @@ class EntityData extends CommonDBChild {
 
       $options[0] = $LANG['financial'][113];
       if ($ID > 0) {
-         $options[self::CONFIG_PARENT] = $LANG['common'][102];
+         $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
       foreach (getAllDatasFromTable('glpi_states') as $state) {
@@ -468,7 +468,7 @@ class EntityData extends CommonDBChild {
                        Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
                        Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'));
       if ($ID > 0) {
-         $options[self::CONFIG_PARENT] = $LANG['common'][102];
+         $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
       Dropdown::showFromArray('autofill_warranty_date', $options,
@@ -482,7 +482,7 @@ class EntityData extends CommonDBChild {
 
       $toadd = array(self::CONFIG_NEVER => $LANG['common'][110]); // Keep software in PC entity
       if ($ID > 0) {
-         $toadd[self::CONFIG_PARENT] = $LANG['common'][102];
+         $toadd[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
       $entities = array($entitydata->fields['entities_id']);
       foreach (getAncestorsOf('glpi_entities',  $entitydata->fields['entities_id']) as $ent) {
@@ -758,7 +758,7 @@ class EntityData extends CommonDBChild {
       echo "<td colspan='2'>";
       $toadd = array();
       if ($ID != 0) {
-         $toadd = array(self::CONFIG_PARENT => $LANG['common'][102]);
+         $toadd = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'));
       }
 
       $options = array('value' => $entdata->fields["tickettemplates_id"],
@@ -785,7 +785,7 @@ class EntityData extends CommonDBChild {
                        'emptylabel' => __('24/7'));
 
       if ($ID) {
-         $options['toadd'] = array(self::CONFIG_PARENT => $LANG['common'][102]);
+         $options['toadd'] = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'));
       }
       Dropdown::show('Calendar', $options);
 
@@ -806,7 +806,7 @@ class EntityData extends CommonDBChild {
       echo "<td colspan='2'>";
       $toadd = array();
       if ($ID != 0) {
-         $toadd = array(self::CONFIG_PARENT => $LANG['common'][102]);
+         $toadd = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'));
       }
       Ticket::dropdownType('tickettype', array('value' => $entdata->fields["tickettype"],
                                                'toadd'  =>$toadd));
@@ -842,7 +842,7 @@ class EntityData extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td colspan='2'>".__('Automatic closing of solved tickets after (day(s))')."</td>";
       echo "<td colspan='2'>";
-      $autoclose = array(self::CONFIG_PARENT => $LANG['common'][102],
+      $autoclose = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                          self::CONFIG_NEVER  => __('Never'));
       if ($ID == 0) {
          unset($autoclose[self::CONFIG_PARENT]);
@@ -871,7 +871,7 @@ class EntityData extends CommonDBChild {
       echo "<td colspan='2'>";
 
       /// no inquest case = rate 0
-      $typeinquest = array(self::CONFIG_PARENT  => $LANG['common'][102],
+      $typeinquest = array(self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
                            1                    => __('Internal survey'),
                            2                    => __('External survey'));
 
@@ -1188,9 +1188,8 @@ class EntityData extends CommonDBChild {
     * @return array or string
     */
    static function getAutoAssignMode($val=NULL) {
-      global $LANG;
 
-      $tab = array(self::CONFIG_PARENT                  => $LANG['common'][102],
+      $tab = array(self::CONFIG_PARENT                  => __('Inheritance of the parent entity'),
                    self::CONFIG_NEVER                   => __('No'),
                    self::AUTO_ASSIGN_HARDWARE_CATEGORY  => __('Based on the item then the category'),
                    self::AUTO_ASSIGN_CATEGORY_HARDWARE  => __('Based on the category then the item'));
@@ -1216,14 +1215,14 @@ class EntityData extends CommonDBChild {
          case 'use_contracts_alert' :
          case 'use_infocoms_alert' :
             if ($values[$field] == self::CONFIG_PARENT) {
-               return $LANG['common'][102];
+               return __('Inheritance of the parent entity');
             }
             return Dropdown::getYesNo($values[$field]);
 
          case 'use_reservations_alert' :
             switch ($values[$field]) {
                case self::CONFIG_PARENT :
-                  return $LANG['common'][102];
+                  return __('Inheritance of the parent entity');
 
                case 0 :
                   return __('Never');
@@ -1234,7 +1233,7 @@ class EntityData extends CommonDBChild {
          case 'consumables_alert_repeat' :
             switch ($values[$field]) {
                case self::CONFIG_PARENT :
-                  return $LANG['common'][102];
+                  return __('Inheritance of the parent entity');
 
                case self::CONFIG_NEVER :
                   return __('Never');
@@ -1259,7 +1258,7 @@ class EntityData extends CommonDBChild {
          case 'autoclose_delay' :   // 0 means immediatly
             switch ($values[$field]) {
                case self::CONFIG_PARENT :
-                  return $LANG['common'][102];
+                  return __('Inheritance of the parent entity');
 
                case self::CONFIG_NEVER :
                   return __('Never');
@@ -1272,7 +1271,7 @@ class EntityData extends CommonDBChild {
          case 'calendars_id' :
             switch ($values[$field]) {
                case self::CONFIG_PARENT :
-                  return $LANG['common'][102];
+                  return __('Inheritance of the parent entity');
 
                case 0 :
                   return __('24/7');
@@ -1281,7 +1280,7 @@ class EntityData extends CommonDBChild {
 
          case 'tickettype' :
             if ($values[$field] == self::CONFIG_PARENT) {
-               return $LANG['common'][102];
+               return __('Inheritance of the parent entity');
             }
             return Ticket::getTicketTypeName($values[$field]);
 
@@ -1292,7 +1291,7 @@ class EntityData extends CommonDBChild {
          case 'autofill_warranty_date' :
             switch ($values[$field]) {
                case self::CONFIG_PARENT :
-                  return $LANG['common'][102];
+                  return __('Inheritance of the parent entity');
 
                case Infocom::COPY_WARRANTY_DATE :
                   return __('Copy the start date of warranty');
@@ -1319,13 +1318,13 @@ class EntityData extends CommonDBChild {
 
          case 'inquest_config' :
             if ($values[$field] == self::CONFIG_PARENT) {
-               return $LANG['common'][102];
+               return __('Inheritance of the parent entity');
             }
             return TicketSatisfaction::getTypeInquestName($values[$field]);
 
          case 'tickettemplates_id' :
             if ($values[$field] == self::CONFIG_PARENT) {
-               return $LANG['common'][102];
+               return __('Inheritance of the parent entity');
             }
             return Dropdown::getDropdownName('glpi_tickettemplates', $values[$field]);
 
@@ -1340,7 +1339,7 @@ class EntityData extends CommonDBChild {
                return $LANG['common'][110];
             }
             if ($values[$field] == self::CONFIG_PARENT) {
-               return $LANG['common'][102];
+               return __('Inheritance of the parent entity');
             }
             return Dropdown::getDropdownName('glpi_entities', $values[$field]);
 

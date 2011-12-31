@@ -615,7 +615,7 @@ class Reservation extends CommonDBChild {
          echo "<input type='hidden' name='users_id' value='".Session::getLoginUserID()."'>";
 
       } else {
-         echo "<tr class='tab_bg_2'><td>".$LANG['common'][95]."&nbsp;:</td>";
+         echo "<tr class='tab_bg_2'><td>".__('By')."</td>";
          echo "<td>";
          if (empty($ID)) {
             User::dropdown(array('value'  => Session::getLoginUserID(),
@@ -863,7 +863,7 @@ class Reservation extends CommonDBChild {
          } else {
             echo "<tr><th>".__('Start date')."</th>";
             echo "<th>".__('End date')."</th>";
-            echo "<th>".$LANG['common'][95]."</th>";
+            echo "<th>".__('By')."</th>";
             echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
             while ($data=$DB->fetch_assoc($result)) {
@@ -910,7 +910,7 @@ class Reservation extends CommonDBChild {
          } else {
             echo "<tr><th>".__('Start date')."</th>";
             echo "<th>".__('End date')."</th>";
-            echo "<th>".$LANG['common'][95]."</th>";
+            echo "<th>".__('By')."</th>";
             echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
             while ($data=$DB->fetch_assoc($result)) {
@@ -973,7 +973,7 @@ class Reservation extends CommonDBChild {
          echo "<tr><th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
          echo "<th>".__('Item')."</th>";
-         echo "<th>".$LANG['common'][95]."</th>";
+         echo "<th>".__('By')."</th>";
          echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
          while ($data=$DB->fetch_assoc($result)) {
@@ -1028,7 +1028,7 @@ class Reservation extends CommonDBChild {
          echo "<tr><th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
          echo "<th>".__('Item')."</th>";
-         echo "<th>".$LANG['common'][95]."</th>";
+         echo "<th>".__('By')."</th>";
          echo "<th>".__('Comments')."</th><th>&nbsp;</th></tr>\n";
 
          while ($data=$DB->fetch_assoc($result)) {

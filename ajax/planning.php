@@ -68,19 +68,19 @@ echo "<table class='tab_cadre'>";
 $rand_user = mt_rand();
 
 if (isset($_POST["users_id"]) && isset($_POST["entity"])) {
-   echo "<tr class='tab_bg_2'><td>".$LANG['common'][95]."&nbsp;:&nbsp;</td>";
+   echo "<tr class='tab_bg_2'><td>".__('By')."</td>";
    echo "<td class='center'>";
    $params = array('name'   => "plan[users_id]",
                    'value'  => $_POST["users_id"],
                    'right'  => "own_ticket",
                    'rand'   => $rand_user,
                    'entity' => $_POST["entity"]);
-   
+
    $params['toupdate'] = array('value_fieldname' => 'users_id',
                               'to_update'        => "user_available$rand_user",
                               'url'              => $CFG_GLPI["root_doc"]."/ajax/planningcheck.php");
 
-   
+
    User::dropdown($params);
    echo "</td></tr>\n";
 }

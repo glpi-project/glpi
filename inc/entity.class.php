@@ -500,7 +500,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[46]['table']         = 'glpi_entitydatas';
       $tab[46]['field']         = 'inquest_URL';
-      $tab[46]['name']          = $LANG['common'][94];
+      $tab[46]['name']          = __('URL');
       $tab[46]['massiveaction'] = false;
       $tab[46]['joinparams']    = array('jointype' => 'child');
       $tab[46]['datatype']      = 'string';

@@ -80,7 +80,7 @@ class NotificationTargetCrontask extends NotificationTarget {
       global $LANG;
 
       $tags = array('crontask.action'      => $LANG['crontask'][17],
-                    'crontask.url'         => $LANG['common'][94],
+                    'crontask.url'         => __('URL'),
                     'crontask.name'        => __('Name'),
                     'crontask.description' => $LANG['joblist'][6]);
 

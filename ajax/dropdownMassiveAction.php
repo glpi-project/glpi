@@ -112,7 +112,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "add_actor" :
          $types            = array(0                           => Dropdown::EMPTY_VALUE,
                                    CommonITILObject::REQUESTER => $LANG['job'][4],
-                                   CommonITILObject::OBSERVER  => $LANG['common'][104],
+                                   CommonITILObject::OBSERVER  => __('Watcher'),
                                    CommonITILObject::ASSIGN    => $LANG['job'][5]);
          $rand             = Dropdown::showFromArray('actortype', $types);
 
