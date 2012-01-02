@@ -131,6 +131,10 @@ sup {
    color:green;
 }
 
+.yellow {
+   color:yellow;
+}
+
 
 .deleted {
    background-color:#cf9b9b;
@@ -241,6 +245,7 @@ textarea, input {
    color: black;
    border: 1px solid #888888;
    font-size: 11px;
+   
 }
 
 input {
@@ -262,23 +267,41 @@ input[type="file"] {
 
 input.submit {
    font-size: 11px;
-   border: 1px solid #888888;
-   background-color:#eeeeee;
    cursor:pointer;
-   background:  url("../pics/fond_form.png") repeat-x; 
-   -moz-box-shadow: 0px 1px 3px;
-   -webkit-box-shadow: 0px 1px 3px ;
-   box-shadow: 0px 1px 3px ;
+   height: auto;
+   font: bold 12px Arial, Helvetica;
+   color: #8f5a0a;
+   background-color: #ffb94b;
+   background-image: -webkit-gradient(linear, left top, left bottom, from(#fddb6f), to(#ffb94b));
+   background-image: -webkit-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: -moz-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: -ms-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: -o-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: linear-gradient(top, #fddb6f, #ffb94b);
    -moz-border-radius: 3px;
    -webkit-border-radius: 3px;
    border-radius: 3px;
-   height: auto;
+   text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+   -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+   -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+   box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;    
+   border-width: 1px;
+   border-style: solid;
+   border-color: #d69e31 #e3a037 #d5982d #e3a037
+   
 }
 
 input.submit:hover {
+  
    border: 1px inset #888888;
-   background-color:#ffffff;
-   background:  url("../pics/fond_form_on.png") repeat-x; 
+   background-color: #fddb6f;
+   background-image: -webkit-gradient(linear, left top, left bottom, from(#ffb94b), to(#fddb6f));
+   background-image: -webkit-linear-gradient(top, #ffb94b, #fddb6f);
+   background-image: -moz-linear-gradient(top, #ffb94b, #fddb6f);
+   background-image: -ms-linear-gradient(top, #ffb94b, #fddb6f);
+   background-image: -o-linear-gradient(top, #ffb94b, #fddb6f);
+   background-image: linear-gradient(top, #ffb94b, #fddb6f);
+
 }
 
 
@@ -1247,6 +1270,7 @@ div#c_preference a:hover{
    text-decoration: underline;
 }
 
+
 div#c_recherche {
    height: 21px;
    text-align: right;
@@ -1263,18 +1287,24 @@ div#c_recherche form {
 }
 
 div#c_recherche form div#champRecherche input {
-   border: 1px solid #000;
+   border: none;
    height: 14px;
    font-family: 'Bitstream Vera Sans', arial, Tahoma, 'Sans serif';
    font-size: 11px;
+   	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
 }
 
 div#c_recherche form div#boutonRecherche {
-   float: right;
-   border: 1px solid #000;
+   position: absolute;
+	right: 0px;
+	top: 0px;
+   border: none;
    height: 14px;
    width: 14px;
    overflow: hidden;
+   
 }
 
 div#c_recherche form div#boutonRecherche input {
@@ -1286,6 +1316,7 @@ div#c_recherche form div#boutonRecherche input {
    position: relative;
    right: 2px;
 }
+
 
 div#c_menu {
    height: 41px;
@@ -1317,7 +1348,7 @@ ul#menu a.itemP, ul#menu a.itemP1 {
 ul#menu ul.ssmenu {
    position: relative;
    top: 5px;
-   width: 108px;
+  /* width: 108px;*/
    border: 1px solid #CC9900;
    background: url("../pics/fd_ssmenu.png") 0 0 repeat;
    display: none;
@@ -1327,15 +1358,20 @@ ul#menu ul.ssmenu {
    -moz-box-shadow: 0px 0px 4px #000000;
    -webkit-box-shadow: 0px 0px 4px #000000;
    box-shadow: 0px 0px 4px #000000;	
+   
+   
 }
 
 ul#menu ul li {
    list-style: none;
-   text-align: center;
+   text-align: left;
    border-bottom: 1px solid #CC9900;
    line-height: 20px;
    font-size: 0.9em;
+   padding: 5px 5px 5px 5px;	
 }
+
+
 
 ul#menu ul li:last-child {
    border-bottom: 0px;
@@ -1349,78 +1385,83 @@ ul#menu ul li a {
    height: 100%;
 }
 
+
+
+
+
 ul#menu ul li a:hover {
-   background: url("../pics/fd_nav2.png") 0 0 repeat;
+   background: #D0D99D;
+   
 }
 
 ul#menu li#menu1 {
    float: left;
-   width: 110px;
+   width: 130px;
 }
 
 ul#menu li#menu1 ul.ssmenu {
    position: relative;
-   width: 110px;
+   width: 130px;
 }
 
 ul#menu li#menu2 {
    float: left;
-   width: 110px;
+   width: 130px;
 }
 
 ul#menu li#menu2 ul.ssmenu {
    position: relative;
-   width: 110px;
+   width: 130px;
 }
 
 ul#menu li#menu3 {
    float: left;
-   width: 110px;
+   width: 130px;
 }
 
 ul#menu li#menu3 ul.ssmenu {
    position: relative;
-   width: 110px;
+   width: 130px;
 }
 
 ul#menu li#menu4 {
    float: left;
-   width: 110px;
+   width: 130px;
 }
 
 ul#menu li#menu4 ul.ssmenu {
    position: relative;
-   width: 110px;
+   width: 130px;
 }
 
 ul#menu li#menu5 {
    float: left;
-   width: 110px;
+   width: 130px;
 }
 
 ul#menu li#menu5 ul.ssmenu {
    position: relative;
-   width: 110px;
+   width: 130px;
 }
 
 ul#menu li#menu6 {
    float: left;
-   width: 110px;
+   width: 135px;
 }
 
 ul#menu li#menu6 ul.ssmenu {
    position: relative;
-   width: 110px;
+   width: 135px;
 }
 
 ul#menu li#menu7 {
    float: left;
-   width: 110px;
+   width: 135px;
 }
 
 ul#menu li#menu7 ul.ssmenu {
    position: relative;
-   width: 110px;
+   width: 135px;
 }
 
 div#header div#c_logo {
@@ -1440,7 +1481,7 @@ div#header div#c_logo a {
 }
 
 div#c_ssmenu1 {
-   background: url("../pics/fd_nav2.png") 0 0 repeat-x;
+   background: #D0D99D;
    height: 24px;
    clear: both;
    font-size: 0.8em;
@@ -1470,7 +1511,7 @@ div#c_ssmenu1 ul li a:hover {
 div#c_ssmenu2 {
    position: relative;
    z-index: 5;
-   background: url("../pics/fd_nav3.png") 0 0 repeat-x;
+   /*background: url("../pics/fd_nav3.png") 0 0 repeat-x;*/
    height: 28px;
    clear: both;
    font-size: 0.9em; 
@@ -1498,40 +1539,6 @@ div#c_ssmenu2  a.here {
    font-size:14px;
 }
 
-div#show_entities {
-   display: none;
-   position: absolute;
-   top:20px;
-   left:1px;
-   border: 1px solid  #CC9900;
-   background: url("../pics/fd_hoverlink.png") 0 0 repeat;
-   -moz-border-radius: 5px;
-   -webkit-border-radius: 5px;
-   -o-border-radius: 5px;
-   padding: 5px;
-   font-size: 11px;
-   text-align: left;
-   z-index:1000;
-}
-
-div#show_entities_long {
-   display: none;
-   position: absolute;
-   top:20px;
-   left:1px;
-   border: 1px solid  #CC9900;
-   background: url("../pics/fd_hoverlink.png") 0 0 repeat;
-   -moz-border-radius: 5px;
-   -webkit-border-radius: 5px;
-   -o-border-radius: 5px;
-   padding: 5px;
-   font-size: 11px;
-   text-align: left;
-   z-index:1000;     
-   overflow:scroll;
-   height:300px;
-   width:300px;
-}
 
 div#show_all_menu {
    display: none;
@@ -1553,6 +1560,33 @@ div#show_all_menu {
 }
 
 
+div#show_all_menu .tab_bg_1 {
+	 background: #E1CC7B;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	font-size: 12px;
+}
+
+div#show_all_menu a {
+	color: #7F7F7F;
+	display: inline-block;
+	padding: 2px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+}
+div#show_all_menu a:hover {
+	background-color: #D0D99D;
+}
+
+div#show_all_menu .tab_bg_1 a {
+	color: #000000!important;	
+}
+
+div#show_all_menu .tab_bg_1 a:hover {
+	background: transparent;
+}
 
 /* ################--------------- Footer  ---------------#################### */
 
