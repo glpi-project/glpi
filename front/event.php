@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("logs", "r");
 
-Html::header(Event::getTypenName(2), $_SERVER['PHP_SELF'], "admin", "log");
+Html::header(Event::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "log");
 
 // Show last events
 if (isset($_GET["order"])) {
