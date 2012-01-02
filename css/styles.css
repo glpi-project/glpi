@@ -304,6 +304,10 @@ input.submit:hover {
 
 }
 
+input.save {
+
+
+} 
 
 .entity_select {
    border-left: 1px solid #C0CAD4;
