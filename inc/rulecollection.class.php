@@ -316,14 +316,14 @@ class RuleCollection extends CommonDBTM {
 
 
    function showEngineSummary() {
-      global $LANG;
 
       echo "<table class='tab_cadre_fixe'><tr><th>";
 
       //Display informations about the how the rules engine process the rules
       if ($this->stop_on_first_match) {
          //The engine stop on the first matched rule
-         echo "<span class='center b'>".__('The engine stops on the first checked rule.')."</span><br>";
+         echo "<span class='center b'>".__('The engine stops on the first checked rule.').
+              "</span><br>";
 
       } else {
          //The engine process all the rules
@@ -332,7 +332,8 @@ class RuleCollection extends CommonDBTM {
 
       if ($this->use_output_rule_process_as_next_input) {
          //The engine keep the result of a rule to be processed further
-         echo "<span class='center b'>".__('The engine passes the result of a rule to the following ones.')."</span><br>";
+         echo "<span class='center b'>".
+                __('The engine passes the result of a rule to the following ones.')."</span><br>";
       }
       echo "</th></tr>";
       echo "</table>\n";

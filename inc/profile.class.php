@@ -998,6 +998,7 @@ class Profile extends CommonDBTM {
       echo "</div>";
    }
 
+
    /**
    * Print the Life Cycles form for the current profile
    *
@@ -1005,7 +1006,6 @@ class Profile extends CommonDBTM {
    * @param $closeform boolean close the form
    **/
    function showFormLifeCycle($openform=true, $closeform=true) {
-      global $LANG,$CFG_GLPI;
 
       $ID = $this->fields['id'];
       $target = $this->getFormURL();
@@ -1117,6 +1117,8 @@ class Profile extends CommonDBTM {
       }
       echo "</div>";
    }
+
+
    /**
     * Print the central form for a profile
     *
@@ -1124,7 +1126,6 @@ class Profile extends CommonDBTM {
     * @param $closeform boolean close the form
    **/
    function showFormAdmin($openform=true, $closeform=true) {
-      global $LANG;
 
       $ID = $this->fields['id'];
       $target = $this->getFormURL();
@@ -1147,7 +1148,7 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('User', 'Users', 2)."</td><td>";
       self::dropdownNoneReadWrite("user", $this->fields["user"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['Menu'][36]."</td><td>";
+      echo "<td>"._n('Group', 'Groups', 2)."</td><td>";
       self::dropdownNoneReadWrite("group", $this->fields["group"], 1, 1, 1);
       echo "</td>";
       echo "<td>".__('Method for user authentication and synchronization')."</td><td>";
@@ -1401,7 +1402,7 @@ class Profile extends CommonDBTM {
 
       $tab[24]['table']    = $this->getTable();
       $tab[24]['field']    = 'printer';
-      $tab[24]['name']     = $LANG['Menu'][2];
+      $tab[24]['name']     = _n('Network', 'Networks',2);
       $tab[24]['datatype'] = 'right';
 
       $tab[25]['table']    = $this->getTable();
@@ -1624,7 +1625,7 @@ class Profile extends CommonDBTM {
 
       $tab[58]['table']    = $this->getTable();
       $tab[58]['field']    = 'group';
-      $tab[58]['name']     = $LANG['Menu'][36];
+      $tab[58]['name']     = self::getTypeName(2);
       $tab[58]['datatype'] = 'right';
 
       $tab[59]['table']    = $this->getTable();
@@ -1644,7 +1645,7 @@ class Profile extends CommonDBTM {
 
       $tab[62]['table']    = $this->getTable();
       $tab[62]['field']    = 'backup';
-      $tab[62]['name']     = $LANG['Menu'][12];
+      $tab[62]['name']     = __('Maintenance');
       $tab[62]['datatype'] = 'right';
 
       $tab['ticket'] = __('Assistance');

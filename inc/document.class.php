@@ -137,7 +137,6 @@ class Document extends CommonDBTM {
 
 
    function defineTabs($options=array()) {
-      global $LANG;
 
       $ong = array();
       $this->addStandardTab('Document_Item', $ong, $options);
@@ -379,7 +378,6 @@ class Document extends CommonDBTM {
     * Get max upload size from php config
    **/
    static function getMaxUploadSize() {
-      global $LANG;
 
       $max_size  = Toolbox::return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
       $max_size /= 1024*1024;
@@ -1493,7 +1491,7 @@ class Document extends CommonDBTM {
     * @return nothing (print out an HTML select box)
    **/
    static function dropdown($options=array()) {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
 
       $p['name']   = 'documents_id';
@@ -1553,5 +1551,4 @@ class Document extends CommonDBTM {
    }
 
 }
-
 ?>

@@ -540,7 +540,6 @@ class Reservation extends CommonDBChild {
     *     - date date for creation process
    **/
    function showForm($ID, $options=array()) {
-      global $LANG;
 
       if (!Session::haveRight("reservation_helpdesk","1")) {
          return false;
@@ -824,7 +823,7 @@ class Reservation extends CommonDBChild {
     * @param $withtemplate integer : withtemplate param
    **/
    static function showForItem(CommonDBTM $item, $withtemplate='') {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $resaID = 0;
       if (!Session::haveRight("reservation_central", "r")) {
@@ -879,7 +878,8 @@ class Reservation extends CommonDBChild {
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
                      $ri->fields['id']."&amp;mois_courant=$mois&amp;annee_courante=$annee' title=\"".
                      __s('See planning')."\">";
-               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
+               echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''>".
+                    "</a>";
                echo "</td></tr>\n";
             }
          }
@@ -942,7 +942,7 @@ class Reservation extends CommonDBChild {
     * @param $ID ID a the user
    **/
    static function showForUser($ID) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $resaID = 0;
 
@@ -1066,5 +1066,4 @@ class Reservation extends CommonDBChild {
 
 
 }
-
 ?>

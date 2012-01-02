@@ -764,7 +764,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                             $LANG['financial'][26],
                     $objettype.'.groups'                => __('Requester groups'),
                     $objettype.'.observergroups'        => __('Watcher groups'),
-                    $objettype.'.assigntogroups'        => $LANG['job'][5]." - ".$LANG['Menu'][36],
+                    $objettype.'.assigntogroups'        => __('Assigned to groups'),
                     $objettype.'.solution.type'         => $LANG['job'][48],
                     $objettype.'.solution.description'  => $LANG['jobresolution'][1],
                     $objettype.'.observerusers'         => __('Watchers'));

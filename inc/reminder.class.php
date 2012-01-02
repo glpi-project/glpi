@@ -748,7 +748,7 @@ class Reminder extends CommonDBTM {
     * @return Nothing (display function)
     **/
    static function displayPlanningItem($val, $who, $type="", $complete=0) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $rand     = mt_rand();
       $users_id = "";  // show users_id reminder
@@ -759,8 +759,8 @@ class Reminder extends CommonDBTM {
          $img      = "rdv_public.png";
       }
 
-      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title=\""._n('Reminder','Reminders',1).
-             "\">&nbsp;";
+      echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title=\"".
+             _n('Reminder','Reminders',1)."\">&nbsp;";
       echo "<a id='reminder_".$val["reminders_id"].$rand."' href='".
              $CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$val["reminders_id"]."'>";
 

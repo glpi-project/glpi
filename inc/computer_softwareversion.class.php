@@ -513,7 +513,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @return nothing
    **/
    static function showForComputer(Computer $comp, $withtemplate = '') {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("software", "r")) {
          return false;
