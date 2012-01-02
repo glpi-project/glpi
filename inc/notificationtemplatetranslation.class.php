@@ -175,8 +175,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
       }
 
       echo "<div class='center' id='tabsbody'>";
-      
-      Session::initNavigateListItems('NotificationTemplateTranslation', 
+
+      Session::initNavigateListItems('NotificationTemplateTranslation',
             //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
             sprintf(__('%1$s = %2$s'),$template->getTypeName(1), $template->getName()));
 
@@ -340,7 +340,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -348,7 +347,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(self::getTypeName(2),
                                               countElementsInTable($this->getTable(),
-                                                                   "notificationtemplates_id = '".$item->getID()."'"));
+                                                                   "notificationtemplates_id
+                                                                        = '".$item->getID()."'"));
                }
                return self::getTypeName(2);
          }

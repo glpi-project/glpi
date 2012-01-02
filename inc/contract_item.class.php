@@ -124,7 +124,7 @@ class Contract_Item extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       // Can exists on template
       if (Session::haveRight("contract","r")) {

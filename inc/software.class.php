@@ -813,7 +813,7 @@ class Software extends CommonDBTM {
     * @return boolean about success
    **/
    function merge($item) {
-      global $DB, $LANG;
+      global $DB;
 
       $ID = $this->getField('id');
 
@@ -897,5 +897,4 @@ class Software extends CommonDBTM {
 
 
 }
-
 ?>

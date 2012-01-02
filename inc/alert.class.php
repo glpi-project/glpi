@@ -79,7 +79,6 @@ class Alert extends CommonDBTM {
 
 
    static function dropdown($options=array()) {
-      global $LANG;
 
       if (!isset($options['value'])) {
          $value = 0;
@@ -101,7 +100,6 @@ class Alert extends CommonDBTM {
 
 
    static function dropdownYesNo($options = array()) {
-      global $LANG;
 
       if (!isset($options['value'])) {
          $value = 0;
@@ -121,7 +119,6 @@ class Alert extends CommonDBTM {
 
 
    static function dropdownIntegerNever($name, $value, $options=array()) {
-      global $LANG;
 
       $p['max']   = 100;
       $p['step']  = 1;

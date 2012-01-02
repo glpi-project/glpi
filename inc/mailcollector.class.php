@@ -1385,13 +1385,13 @@ class MailCollector  extends CommonDBTM {
 
 
   function title() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (countElementsInTable($this->getTable())) {
          $buttons = array();
          $buttons["notimportedemail.php"] = __('List of not imported emails');
-         Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", __('List of not imported emails'),
-                            '', $buttons);
+         Html::displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png",
+                            __('List of not imported emails'), '', $buttons);
       }
    }
 

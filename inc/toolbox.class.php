@@ -900,7 +900,7 @@ class Toolbox {
     * @return string explaining the result
    **/
    static function checkNewVersionAvailable($auto=true, $messageafterredirect=false) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!$auto && !Session::haveRight("check_update","r")) {
          return false;
@@ -1221,7 +1221,7 @@ class Toolbox {
     * @return content of the page (or empty)
    **/
    static function getURLContent ($url, &$msgerr=NULL, $rec=0) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $content = "";
       $taburl  = parse_url($url);
@@ -1243,7 +1243,8 @@ class Toolbox {
          } else {
             if (isset($msgerr)) {
                //TRANS: %s is the error string
-               $msgerr = sprintf(__('Connection failed. If you use a proxy, please configure it. (%s)'),$errstr); 
+               $msgerr = sprintf(__('Connection failed. If you use a proxy, please configure it. (%s)'),
+                                 $errstr);
             }
             return "";
          }
@@ -1262,7 +1263,7 @@ class Toolbox {
          } else {
             if (isset($msgerr)) {
                //TRANS: %s is the error string
-               $msgerr = sprintf(__('Failed to connect to the proxy server (%s)'),$errstr); 
+               $msgerr = sprintf(__('Failed to connect to the proxy server (%s)'),$errstr);
             }
             return "";
          }
@@ -1330,7 +1331,7 @@ class Toolbox {
             $msgerr = __('No data available on the web site');
          } else {
             //TRANS: %s is the error string
-            $msgerr = sprintf(__('Impossible to connect to site (%s)'),$errstr); 
+            $msgerr = sprintf(__('Impossible to connect to site (%s)'),$errstr);
          }
       }
       return $content;
@@ -1554,7 +1555,6 @@ class Toolbox {
 
 
    static function showMailServerConfig($value) {
-      global $LANG;
 
       if (!Session::haveRight("config", "w")) {
          return false;
@@ -1604,7 +1604,7 @@ class Toolbox {
       echo "<input type=hidden name=imap_string value='".$value."'>";
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>" . __('Incoming mail folder (optional, often INBOX)') . "</td>";
+      echo "<tr class='tab_bg_1'><td>". __('Incoming mail folder (optional, often INBOX)')."</td>";
       echo "<td><input size='30' type='text' name='server_mailbox' value=\"" . $mailbox . "\" >";
       echo "</td></tr>\n";
 

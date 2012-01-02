@@ -88,7 +88,6 @@ class Infocom extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       // Can exists on template
       if (Session::haveRight("infocom","r")) {
