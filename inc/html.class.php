@@ -2007,7 +2007,7 @@ class Html {
       echo "<div id='c_recherche' >\n";
       echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
       echo "<div id='boutonRecherche'>";
-      echo "<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/ok2.png' value='OK' title=\"".
+      echo "<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/search.png' value='OK' title=\"".
              __s('Post')."\"  alt=\"".__s('Post')."\"></div>";
       echo "<div id='champRecherche'><input size='15' type='text' name='globalsearch' value='".
              __s('Search')."' onfocus=\"this.value='';\"></div>";
