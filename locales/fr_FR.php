@@ -1497,7 +1497,7 @@ $LANG['mailing'][142] = "Tâches";
 $LANG['mailing'][144] = "Historique";
 $LANG['mailing'][145] = "Liste de valeurs";
 $LANG['mailing'][146] = "Valeur unique";
-$LANG['mailing'][147] = "Valeur(s) possible(s)";
+$LANG['mailing'][147] = "Valeurs possibles";
 
 
 $LANG['Menu'][0]  = "Ordinateurs";

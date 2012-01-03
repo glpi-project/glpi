@@ -42,10 +42,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['mailing'][109];
-      }
-      return $LANG['mailing'][126];
+      return _n('Template translation', 'Template translations', $nb);
    }
 
 
@@ -55,7 +52,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       if ($this->getField('language') != '') {
          $toadd = $CFG_GLPI['languages'][$this->getField('language')][0];
       } else {
-         $toadd = $LANG['mailing'][126];
+         $toadd = _n('Template translation', 'Template translations', 1);
       }
 
       return $toadd;
@@ -119,7 +116,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
              "/front/popup.php?popup=list_notificationtags&amp;sub_type=".
              $template->getField('itemtype')."' ,
              'glpipopup', 'height=400, width=1000, top=100, left=100,".
-             " scrollbars=yes' );w.focus();\">".$LANG['mailing'][138]."</a></td></tr>";
+             " scrollbars=yes' );w.focus();\">".__('List of available tags')."</a></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Language') . "</td><td colspan='3'>";
@@ -142,13 +139,16 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>";
-      echo $LANG['mailing'][115]. ' '.$LANG['mailing'][117]."&nbsp;:<br>(".$LANG['mailing'][128].")";
+      _e('Email text body');
+      echo "<br>".__('(leave the field empty for a generation from HTML)');
       echo "</td><td colspan='3'>";
       echo "<textarea cols='100' rows='15' name='content_text' >".$this->fields["content_text"];
       echo "</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" .$LANG['mailing'][115]. ' '.$LANG['mailing'][116]."&nbsp;:</td><td colspan='3'>";
+      echo "<td>" ;
+      _e('Email HTML body');
+      echo "</td><td colspan='3'>";
       echo "<textarea cols='100' rows='15' name='content_html'>".$this->fields["content_html"];
       echo "</textarea>";
       echo "<input type='hidden' name='notificationtemplates_id' value='".
@@ -171,7 +171,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       if ($canedit) {
          echo "<div class='center'>".
               "<a href='".Toolbox::getItemTypeFormURL('NotificationTemplateTranslation').
-                "?notificationtemplates_id=".$nID."'>". $LANG['mailing'][124]."</a></div><br>";
+                "?notificationtemplates_id=".$nID."'>". __('Add a new translation')."</a></div><br>";
       }
 
       echo "<div class='center' id='tabsbody'>";
@@ -199,7 +199,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
                echo $CFG_GLPI['languages'][$data['language']][0];
 
             } else {
-               echo $LANG['mailing'][125];
+               _e('Default translation');
             }
 
             echo "</a></td></tr>";
@@ -253,13 +253,13 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'content_html';
-      $tab[3]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][116];
+      $tab[3]['name']          = __('Email HTML body');
       $tab[3]['datatype']      = 'text';
       $tab[3]['massiveaction'] = false;
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'content_text';
-      $tab[4]['name']          = $LANG['mailing'][115]. ' '. $LANG['mailing'][117];
+      $tab[4]['name']          = __('Email text body');
       $tab[4]['datatype']      = 'text';
       $tab[4]['massiveaction'] = false;
 
@@ -289,11 +289,11 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th>".$LANG['mailing'][140]."</th>
-                <th>".$LANG['mailing'][139]."</th>
-                <th>".$LANG['mailing'][119]."</th>
+      echo "<tr><th>".__('Tag')."</th>
+                <th>".__('Label')."</th>
+                <th>".__('Event')."</th>
                 <th>".__('Type')."</th>
-                <th>".$LANG['mailing'][147]."</th>
+                <th>".__('Possible values')."</th>
             </tr>";
 
       $tags = array();
@@ -316,9 +316,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
          $action = '';
 
          if ($values['foreach']) {
-            $action = $LANG['mailing'][145];
+            $action = __('List of values');
          } else {
-            $action = $LANG['mailing'][146];
+            $action = __('Single value');
          }
 
          if (!empty($values['allowed_values'])) {
@@ -328,9 +328,13 @@ class NotificationTemplateTranslation extends CommonDBChild {
          }
 
          echo "<tr class='tab_bg_1'><td>".$tag."</td>
-               <td>".($values['type']==NotificationTarget::TAG_LANGUAGE?$LANG['mailing'][139].' : ':'').
-               $values['label']."</td>
-               <td>$event</td>
+               <td>";
+               if ($values['type']==NotificationTarget::TAG_LANGUAGE) {
+                  echo sprintf(__('Label: %s'), $values['label']);
+               } else {
+                  echo $values['label'];
+               }
+               echo "</td><td>$event</td>
                <td>".$action."</td>
                <td>$allowed_values</td>
                </tr>";
