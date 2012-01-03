@@ -353,7 +353,7 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['devices'][25]." : "."\"". $data["new_value"]."\"";
+                  $tmp['change'] = sprintf(__('Add a component : %s'), $data["new_value"]);
                   break;
 
                case self::HISTORY_UPDATE_DEVICE :
@@ -372,7 +372,7 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['devices'][26]." : "."\"". $data["old_value"]."\"";
+                  $tmp['change'] = sprintf(__('Deletion of a component : %s'), $data["old_value"]);
                   break;
 
                case self::HISTORY_INSTALL_SOFTWARE :

@@ -40,13 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class DevicePci extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['devices'][21];
-      }
-      return $LANG['devices'][27];
+      return _n('Other Component', 'Other Components', $nb);
    }
-}
 
+}
 ?>

@@ -40,33 +40,26 @@ if (!defined('GLPI_ROOT')) {
 class DeviceMotherboard extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['devices'][8];
-      }
-      return $LANG['devices'][5];
+      return _n('System Board', 'System Boards', $nb);
    }
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'chipset',
-                                     'label' => $LANG['device_moboard'][0],
+                                     'label' => __('Chipset'),
                                      'type'  => 'text')));
    }
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'chipset';
-      $tab[11]['name']     = $LANG['device_moboard'][0];
+      $tab[11]['name']     = __('Chipset');
       $tab[11]['datatype'] = 'text';
 
       return $tab;
@@ -79,12 +72,11 @@ class DeviceMotherboard extends CommonDevice {
     * @return array
    **/
    function getFormData() {
-      global $LANG;
 
       $data['label'] = $data['value'] = array();
 
       if (!empty($this->fields["chipset"])) {
-         $data['label'][] = $LANG['device_moboard'][0];
+         $data['label'][] = __('Chipset');
          $data['value'][] = $this->fields["chipset"];
       }
 
@@ -92,5 +84,4 @@ class DeviceMotherboard extends CommonDevice {
    }
 
 }
-
 ?>

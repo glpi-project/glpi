@@ -40,21 +40,15 @@ if (!defined('GLPI_ROOT')) {
 class DeviceControl extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['devices'][20];
-      }
-      return $LANG['devices'][17];
+      return _n('Controller', 'Controllers', $nb);
    }
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'is_raid',
-                                     'label' => $LANG['device_control'][0],
+                                     'label' => __('RAID'),
                                      'type'  => 'bool'),
                                array('name'  => 'interfacetypes_id',
                                      'label' => __('Interface'),
@@ -63,13 +57,12 @@ class DeviceControl extends CommonDevice {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'is_raid';
-      $tab[12]['name']     = $LANG['device_control'][0];
+      $tab[12]['name']     = __('RAID');
       $tab[12]['datatype'] = 'bool';
 
       $tab[14]['table']    = 'glpi_interfacetypes';
@@ -86,12 +79,11 @@ class DeviceControl extends CommonDevice {
     * @return array
    **/
    function getFormData() {
-      global $LANG;
 
       $data['label'] = $data['value'] = array();
 
       if ($this->fields["is_raid"]) {
-         $data['label'][] = $LANG['device_control'][0];
+         $data['label'][] = __('RAID');
          $data['value'][] = Dropdown::getYesNo($this->fields["is_raid"]);
       }
       if ($this->fields["interfacetypes_id"]) {
@@ -104,5 +96,4 @@ class DeviceControl extends CommonDevice {
    }
 
 }
-
 ?>

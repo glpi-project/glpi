@@ -40,35 +40,27 @@ if (!defined('GLPI_ROOT')) {
 class DeviceHardDrive extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['devices'][12];
-      }
-      return $LANG['devices'][1];
+      return _n('Hard Drive', 'Hard Drives', $nb);
    }
 
 
    static function getSpecifityLabel() {
-      global $LANG;
-
-      return array('specificity' => $LANG['device_hdd'][4]);
+      return array('specificity' => __('Capacity'));
    }
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'specif_default',
-                                     'label' => $LANG['device_hdd'][4]." ".$LANG['devices'][24],
+                                     'label' => __('Capacity by default'),
                                      'type'  => 'text',
                                      'unit'  => __('Mio')),
                                array('name'  => 'rpm',
-                                     'label' => $LANG['device_hdd'][0],
+                                     'label' => __('Rpm'),
                                      'type'  => 'text'),
                                array('name'  => 'cache',
-                                     'label' => $LANG['device_hdd'][1],
+                                     'label' => __('Cache'),
                                      'type'  => 'text',
                                      'unit'  => __('Mio')),
                                array('name'  => 'interfacetypes_id',
@@ -78,23 +70,22 @@ class DeviceHardDrive extends CommonDevice {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'specif_default';
-      $tab[11]['name']     = $LANG['device_hdd'][4]." ".$LANG['devices'][24];
+      $tab[11]['name']     = __('Capacity by default');
       $tab[11]['datatype'] = 'text';
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'rpm';
-      $tab[12]['name']     = $LANG['device_hdd'][0];
+      $tab[12]['name']     = __('Rpm');
       $tab[12]['datatype'] = 'text';
 
       $tab[13]['table']    = $this->getTable();
       $tab[13]['field']    = 'cache';
-      $tab[13]['name']     = $LANG['device_hdd'][1];
+      $tab[13]['name']     = __('Cache');
       $tab[13]['datatype'] = 'text';
 
       $tab[14]['table']    = 'glpi_interfacetypes';
@@ -111,12 +102,11 @@ class DeviceHardDrive extends CommonDevice {
     * @return array
    **/
    function getFormData() {
-      global $LANG;
 
       $data['label'] = $data['value'] = array();
 
       if (!empty($this->fields["rpm"])) {
-         $data['label'][] = $LANG['device_hdd'][0];
+         $data['label'][] = __('Rpm');
          $data['value'][] = $this->fields["rpm"];
       }
 
@@ -127,16 +117,15 @@ class DeviceHardDrive extends CommonDevice {
       }
 
       if (!empty($this->fields["cache"])) {
-         $data['label'][] = $LANG['device_hdd'][1];
+         $data['label'][] = __('Cache');
          $data['value'][] = $this->fields["cache"];
       }
       // Specificity
-      $data['label'][] = $LANG['device_hdd'][4];
+      $data['label'][] = __('Capacity');
       $data['size']    = 10;
 
       return $data;
    }
 
 }
-
 ?>

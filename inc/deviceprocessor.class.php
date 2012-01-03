@@ -40,50 +40,41 @@ if (!defined('GLPI_ROOT')) {
 class DeviceProcessor extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['devices'][9];
-      }
-      return $LANG['devices'][4];
+      return _n('Processor', 'Processors', $nb);
    }
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'specif_default',
-                                     'label' => $LANG['device_ram'][1]." ".$LANG['devices'][24],
+                                     'label' => __('Frequency by default'),
                                      'type'  => 'text',
                                      'unit'  => __('MHz')),
                                array('name'  => 'frequence',
-                                     'label' => $LANG['device_ram'][1],
+                                     'label' => __('Frequency'),
                                      'type'  => 'text',
                                      'unit'  => __('MHz'))));
    }
 
 
    static function getSpecifityLabel() {
-      global $LANG;
-
-      return array('specificity' => $LANG['device_ram'][1]);
+      return array('specificity' => __('Frequency'));
    }
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'specif_default';
-      $tab[11]['name']     = $LANG['device_ram'][1]." ".$LANG['devices'][24];
+      $tab[11]['name']     = __('Frequency by default');
       $tab[11]['datatype'] = 'text';
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'frequence';
-      $tab[12]['name']     = $LANG['device_ram'][1];
+      $tab[12]['name']     = __('Frequency');
       $tab[12]['datatype'] = 'text';
 
       return $tab;
@@ -105,12 +96,11 @@ class DeviceProcessor extends CommonDevice {
     * @return array
    **/
    function getFormData() {
-      global $LANG;
 
       $data['label'] = $data['value'] = array();
 
       // Specificity
-      $data['label'][] = $LANG['device_ram'][1];
+      $data['label'][] = __('Frequency');
       $data['size']    = 10;
 
       return $data;

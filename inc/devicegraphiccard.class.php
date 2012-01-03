@@ -40,28 +40,20 @@ if (!defined('GLPI_ROOT')) {
 class DeviceGraphicCard extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['devices'][13];
-      }
-      return $LANG['devices'][2];
+      return _n('Graphics Card', 'Graphics Cards', $nb);
    }
 
 
    static function getSpecifityLabel() {
-      global $LANG;
-
-      return array('specificity' => $LANG['devices'][6]);
+      return array('specificity' => __('Memory'));
    }
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'specif_default',
-                                     'label' => $LANG['devices'][6]." ".$LANG['devices'][24],
+                                     'label' => __('Memory by default'),
                                      'type'  => 'text',
                                      'unit'  => __('Mio')),
                                array('name'  => 'interfacetypes_id',
@@ -71,13 +63,12 @@ class DeviceGraphicCard extends CommonDevice {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'specif_default';
-      $tab[12]['name']     = $LANG['devices'][6]." ".$LANG['devices'][24];
+      $tab[12]['name']     = __('Memory by default');
       $tab[12]['datatype'] = 'text';
 
       $tab[14]['table'] = 'glpi_interfacetypes';
@@ -94,7 +85,6 @@ class DeviceGraphicCard extends CommonDevice {
     * @return array
    **/
    function getFormData() {
-      global $LANG;
 
       $data['label'] = $data['value'] = array();
       if ($this->fields["interfacetypes_id"]) {
@@ -103,12 +93,11 @@ class DeviceGraphicCard extends CommonDevice {
                                                       $this->fields["interfacetypes_id"]);
       }
       // Specificity
-      $data['label'][] = $LANG['devices'][6];
+      $data['label'][] = __('Memory');
       $data['size']    = 10;
 
       return $data;
    }
 
 }
-
 ?>
