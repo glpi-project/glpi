@@ -1632,14 +1632,14 @@ class User extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>" ;
-          
+
          //TRANS: %s is the date
          echo sprintf(__('Last update on %s'), HTML::convDateTime($this->fields["date_mod"]));
 
          echo "<br>";
-         
+
          echo sprintf(__('Last login on %s'), HTML::convDateTime($this->fields["last_login"]));
-         
+
          echo "</td><td colspan='2'class='center'>";
 
          if ($ID > 0) {
@@ -2771,7 +2771,7 @@ class User extends CommonDBTM {
     * Show form for password recovery
    **/
    static function showPasswordForgetChangeForm($token) {
-      global $LANG, $CFG_GLPI, $DB;
+      global $CFG_GLPI, $DB;
 
       // Verif token.
       $token_ok = false;
@@ -2897,7 +2897,7 @@ class User extends CommonDBTM {
     * @return nothing : send email or display error message
    **/
    function forgetPassword($email) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       echo "<div class='center'>";
       if ($this->getFromDBbyEmail($email)) {

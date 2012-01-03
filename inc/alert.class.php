@@ -189,7 +189,7 @@ class Alert extends CommonDBTM {
 
 
    static function displayLastAlert($itemtype, $items_id) {
-      global $DB, $LANG;
+      global $DB;
 
       if ($items_id) {
          $query = "SELECT `date`
@@ -201,8 +201,8 @@ class Alert extends CommonDBTM {
          $result = $DB->query($query);
          if ($DB->numrows($result) > 0) {
             //TRANS: %s is the date
-            echo sprintf(__('Alert sent on %s'), 
-                        Html::convDateTime($DB->result($result, 0, 'date')));
+            echo sprintf(__('Alert sent on %s'),
+                         Html::convDateTime($DB->result($result, 0, 'date')));
          }
       }
    }

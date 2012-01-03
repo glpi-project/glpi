@@ -123,7 +123,7 @@ class NotificationMailSetting extends CommonDBTM {
 
 
    function showFormMailServerConfig() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       echo "<div>";
       echo "<form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";

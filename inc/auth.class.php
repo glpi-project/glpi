@@ -87,7 +87,7 @@ class Auth {
     *
    **/
    function userExists($options=array()) {
-      global $DB, $LANG;
+      global $DB;
 
       $query = "SELECT *
                 FROM `glpi_users`
@@ -233,7 +233,7 @@ class Auth {
     * @return boolean : user in GLPI DB with the right password
    **/
    function connection_db($name, $password) {
-      global $DB, $LANG;
+      global $DB;
 
       // sanity check... we prevent empty passwords...
       if (empty($password)) {
@@ -619,7 +619,7 @@ class Auth {
    *@return Nothing (display)
    */
    static function dropdown($options=array()) {
-      global $LANG, $DB;
+      global $DB;
 
       $p['name']  = 'auths_id';
       $p['value'] = 0;
@@ -664,7 +664,6 @@ class Auth {
     * @return string
     */
    static function getMethodName($authtype, $auths_id, $link=0, $name='') {
-      global $LANG;
 
       switch ($authtype) {
          case self::LDAP :
@@ -687,9 +686,10 @@ class Auth {
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {
-                  //TRANS: %1$s is the auth method type, %2$s an optional method type %3$s the name of the opt method
-                  return sprintf(__('%1$s + %2$s: %3$s'), 
-                                    __('CAS'), 
+                  //TRANS: %1$s is the auth method type, %2$s an optional method type
+                  //       %3$s the name of the opt method
+                  return sprintf(__('%1$s + %2$s: %3$s'),
+                                    __('CAS'),
                                     $auth->getTypeName(1),$auth->getLink());
                }
             }
@@ -699,9 +699,10 @@ class Auth {
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {
-                  //TRANS: %1$s is the auth method type, %2$s an optional method type %3$s the name of the opt method
+                  //TRANS: %1$s is the auth method type, %2$s an optional method type
+                  //       %3$s the name of the opt method
                   return sprintf(__('%1$s + %2$s: %3$s'),
-                                    __('x509 certificate authentication'), 
+                                    __('x509 certificate authentication'),
                                     $auth->getTypeName(1),$auth->getLink());
                }
             }
@@ -711,9 +712,10 @@ class Auth {
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {
-                  //TRANS: %1$s is the auth method type, %2$s an optional method type %3$s the name of the opt method
+                  //TRANS: %1$s is the auth method type, %2$s an optional method type
+                  //       %3$s the name of the opt method
                   return sprintf(__('%1$s + %2$s: %3$s'),
-                                    __('Other'), 
+                                    __('Other'),
                                     $auth->getTypeName(1),$auth->getLink());
                }
             }

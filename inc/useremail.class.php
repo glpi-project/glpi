@@ -159,7 +159,7 @@ class UserEmail  extends CommonDBChild {
     * @return nothing
    **/
    static function showForUser(User $user) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $users_id = $user->getID();
 

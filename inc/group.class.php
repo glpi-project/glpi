@@ -92,7 +92,6 @@ class Group extends CommonTreeDropdown {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate && Session::haveRight("group","r")) {
          switch ($item->getType()) {

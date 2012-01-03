@@ -268,13 +268,13 @@ abstract class CommonDBChild extends CommonDBTM {
     * @since version 0.84
    **/
    function prepareInputForAdd($input) {
-      global $LANG;
 
       $item = self::getItemFromArray($input);
 
       // Invalidate the element if it is not attached to an item although it must
       if ($this->mustBeAttached && ($item == false)) {
-         Session::addMessageAfterRedirect(__('Operation performed partially successful'), INFO, true);
+         Session::addMessageAfterRedirect(__('Operation performed partially successful'), INFO,
+                                          true);
          return false;
       }
 
@@ -299,7 +299,8 @@ abstract class CommonDBChild extends CommonDBTM {
       // TODO : must we apply this filter for the update ?
       // Return invalidate the element if it must be attached but it won't
       if ($this->mustBeAttached && ($item === false)) {
-         Session::addMessageAfterRedirect(__('Operation performed partially successful'), INFO, true);
+         Session::addMessageAfterRedirect(__('Operation performed partially successful'), INFO,
+                                          true);
          return false;
       }
 
@@ -417,5 +418,4 @@ abstract class CommonDBChild extends CommonDBTM {
    }
 
 }
-
 ?>
