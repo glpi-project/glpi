@@ -1843,7 +1843,7 @@ class Profile extends CommonDBTM {
 //
 //       $tab[116]['table']    = $this->getTable();
 //       $tab[116]['field']    = 'show_all_change';
-//       $tab[116]['name']     = _('See all changes')_;
+//       $tab[116]['name']     = __('See all changes');
 //       $tab[116]['datatype'] = 'bool';
 //
 //       $tab[117]['table']    = $this->getTable();

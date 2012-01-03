@@ -1225,7 +1225,7 @@ class KnowbaseItem extends CommonDBTM {
 
       echo "<div class='firstbloc'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</th></tr>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</th></tr>";
       echo "<tr class='tab_bg_2'><td width='100px'>";
 
       $types = array( 'Group', 'Profile', 'User');

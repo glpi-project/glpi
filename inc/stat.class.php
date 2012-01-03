@@ -372,7 +372,7 @@ class Stat {
                                           $header_num);
                echo Search::showHeaderItem($output_type, __('Answered'),
                                           $header_num);
-               echo Search::showHeaderItem($output_type, _('Average'),
+               echo Search::showHeaderItem($output_type, __('Average'),
                                           $header_num);
             }
          }

@@ -340,9 +340,6 @@ $LANG['common'][102]="Inheritance of the parent entity";
 $LANG['common'][103]="Actors";
 $LANG['common'][104]="Watcher";
 $LANG['common'][105]="Alert";
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['common'][106]="At least one field has an incorrect value";
 $LANG['common'][107]="Average";
 $LANG['common'][108]="Remote access key";
@@ -358,6 +355,9 @@ $LANG['common'][117]="Operation performed partially successful";
 $LANG['common'][118]="Failed operation";
 $LANG['common'][119]="failure(s)";
 $LANG['common'][121]="authorizations problem(s)";
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['common'][123]="Delegatee";
 
 $LANG['computers'][0]="Volume";

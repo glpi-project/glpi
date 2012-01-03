@@ -541,7 +541,7 @@ class Reminder extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['common'][113]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('Visibility')."</td>";
       echo "<td>";
       echo '<table><tr><td>';
       echo __('Begin').'</td><td>';
@@ -946,7 +946,7 @@ class Reminder extends CommonDBTM {
 
       echo "<div class='firstbloc'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</tr>";
+      echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";
       echo "<tr><td class='tab_bg_2' width='100px'>";
 
       $types = array( 'Group', 'Profile', 'User');
