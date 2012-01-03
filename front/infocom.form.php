@@ -41,7 +41,8 @@ if (isset($_GET["add"])) {
    $ic->check(-1,'w',$_GET);
 
    $newID = $ic->add($_GET, false);
-   Event::log($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+   Event::log($newID, "infocom", 4, "financial", 
+               sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $newID));
    Html::back();
 
 } else if (isset($_POST["delete"])) {

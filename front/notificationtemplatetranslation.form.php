@@ -48,7 +48,7 @@ if (isset($_POST["add"])) {
    $newID = $language->add($_POST);
 
    Event::log($newID, "notificationtemplates", 4, "notification",
-              $_SESSION["glpiname"]." ".$LANG['log'][20]." : ".$_POST["language"].".");
+              sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
 
 } else if (isset($_POST["delete"])) {

@@ -102,7 +102,8 @@ if (isset($_POST["delete_criteria"])) {
    $rulecollection->checkGlobal('w');
 
    $newID = $rule->add($_POST);
-   Event::log($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+   Event::log($newID, "rules", 4, "setup", 
+      sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $newID));
    Html::redirect($_SERVER['HTTP_REFERER']."?id=$newID");
 
 } else if (isset($_POST["delete"])) {

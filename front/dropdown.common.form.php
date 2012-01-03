@@ -60,10 +60,10 @@ if (isset($_POST["add"])) {
       $dropdown->refreshParentInfos();
       if ($dropdown instanceof CommonDevice) {
          Event::log($newID, get_class($dropdown), 4, "inventory",
-                    $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["designation"].".");
+                     sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["designation"]));
       } else {
          Event::log($newID, get_class($dropdown), 4, "setup",
-                    $_SESSION["glpiname"]." added ".$_POST["name"].".");
+                     sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
       }
    }
    Html::back();

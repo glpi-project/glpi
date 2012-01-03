@@ -79,7 +79,8 @@ if ($_GET["id"] == "new") {
    $kb->check(-1,'w',$_POST);
 
    $newID = $kb->add($_POST);
-   Event::log($newID, "knowbaseitem", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+   Event::log($newID, "knowbaseitem", 5, "tools", 
+               sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $ewID));
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
 
 } else if (isset($_POST["update"])) {

@@ -48,7 +48,7 @@ if (isset($_POST["add"])) {
    $group->check(-1,'w',$_POST);
    if ($newID=$group->add($_POST)) {
       Event::log($newID, "groups", 4, "setup",
-                 $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+                 sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    }
    Html::back();
 

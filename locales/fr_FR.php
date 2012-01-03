@@ -1269,10 +1269,10 @@ $LANG['log'][1]   = "système";
 
 $LANG['log'][16]  = "planning";
 
-$LANG['log'][18]  = "composants";
+$LANG['log'][18]  = "Composants";
 
-$LANG['log'][20]  = "ajout de l'élément";
-$LANG['log'][21]  = "mise à jour de l'élément";
+$LANG['log'][20]  = "Ajout de l'élément";
+$LANG['log'][21]  = "Mise à jour de l'élément";
 $LANG['log'][22]  = "suppression de l'élément";
 $LANG['log'][23]  = "restauration de l'élément";
 $LANG['log'][24]  = "purge de l'élément";
@@ -1289,7 +1289,7 @@ $LANG['log'][34]  = "ajout lien avec fournisseur";
 $LANG['log'][35]  = "suppression lien avec fournisseur";
 
 $LANG['log'][40]  = "connexion de l'IP";
-$LANG['log'][41]  = "échec de connexion";
+$LANG['log'][41]  = "Échec de connexion";
 $LANG['log'][42]  = "Réservation";
 
 $LANG['log'][44]  = "Intitulé";
