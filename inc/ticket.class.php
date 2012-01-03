@@ -706,7 +706,7 @@ class Ticket extends CommonDBTM {
                        && $input['_ticket_requester']['alternative_email'])
                       || $input['_ticket_requester']['users_id']>0) {
                      $ticket_user = new Ticket_User();
-                     if ($ticket_user->can(-1,'w',$input['_ticket_requester'])) {
+                     if (isset($input['_auto_update']) || $ticket_user->can(-1,'w',$input['_ticket_requester'])) {
                         $ticket_user->add($input['_ticket_requester']);
                         $input['_forcenotif'] = true;
                      }
@@ -715,7 +715,7 @@ class Ticket extends CommonDBTM {
 
                case "group" :
                   $group_ticket = new Group_Ticket();
-                  if ($group_ticket->can(-1,'w',$input['_ticket_requester'])) {
+                  if (isset($input['_auto_update']) || $group_ticket->can(-1,'w',$input['_ticket_requester'])) {
                      $group_ticket->add($input['_ticket_requester']);
                      $input['_forcenotif'] = true;
                   }
@@ -742,7 +742,7 @@ class Ticket extends CommonDBTM {
                        && $input['_ticket_observer']['alternative_email'])
                       || $input['_ticket_observer']['users_id']>0) {
                      $ticket_user = new Ticket_User();
-                     if ($ticket_user->can(-1,'w',$input['_ticket_observer'])) {
+                     if (isset($input['_auto_update']) || $ticket_user->can(-1,'w',$input['_ticket_observer'])) {
                         $ticket_user->add($input['_ticket_observer']);
                         $input['_forcenotif'] = true;
                      }
@@ -751,7 +751,7 @@ class Ticket extends CommonDBTM {
 
                case "group" :
                   $group_ticket = new Group_Ticket();
-                  if ($group_ticket->can(-1,'w',$input['_ticket_observer'])) {
+                  if (isset($input['_auto_update']) || $group_ticket->can(-1,'w',$input['_ticket_observer'])) {
                      $group_ticket->add($input['_ticket_observer']);
                      $input['_forcenotif'] = true;
                   }
@@ -768,7 +768,7 @@ class Ticket extends CommonDBTM {
             switch ($input['_ticket_assign']['_type']) {
                case "user" :
                   $ticket_user = new Ticket_User();
-                  if ($ticket_user->can(-1,'w',$input['_ticket_assign'])) {
+                  if (isset($input['_auto_update']) || $ticket_user->can(-1,'w',$input['_ticket_assign'])) {
                      $ticket_user->add($input['_ticket_assign']);
                      $input['_forcenotif'] = true;
                      if ((!isset($input['status']) && $this->fields['status']=='new')
@@ -780,7 +780,7 @@ class Ticket extends CommonDBTM {
 
                case "group" :
                   $group_ticket = new Group_Ticket();
-                  if ($group_ticket->can(-1,'w',$input['_ticket_assign'])) {
+                  if (isset($input['_auto_update']) || $group_ticket->can(-1,'w',$input['_ticket_assign'])) {
                      $group_ticket->add($input['_ticket_assign']);
                      $input['_forcenotif'] = true;
                      if ((!isset($input['status']) && $this->fields['status']=='new')
