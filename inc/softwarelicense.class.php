@@ -691,7 +691,7 @@ class SoftwareLicense extends CommonDBTM {
    function getUnicityFieldsToDisplayInErrorMessage() {
       global $LANG;
 
-      return array('id'           => $LANG['login'][6],
+      return array('id'           => __('ID'),
                    'serial'       => __('Serial number'),
                    'entities_id'  => $LANG['entity'][0],
                    'softwares_id' => $LANG['help'][31]);

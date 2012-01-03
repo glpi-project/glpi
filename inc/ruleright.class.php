@@ -279,7 +279,7 @@ class RuleRight extends Rule {
       if (!count($criterias)) {
          $criterias['LDAP_SERVER']['table']     = 'glpi_authldaps';
          $criterias['LDAP_SERVER']['field']     = 'name';
-         $criterias['LDAP_SERVER']['name']      = $LANG['login'][2];
+         $criterias['LDAP_SERVER']['name']      = __('LDAP directory');
          $criterias['LDAP_SERVER']['linkfield'] = '';
          $criterias['LDAP_SERVER']['type']      = 'dropdown';
          $criterias['LDAP_SERVER']['virtual']   = true;
@@ -287,7 +287,7 @@ class RuleRight extends Rule {
 
          $criterias['MAIL_SERVER']['table']     = 'glpi_authmails';
          $criterias['MAIL_SERVER']['field']     = 'name';
-         $criterias['MAIL_SERVER']['name']      = $LANG['login'][3];
+         $criterias['MAIL_SERVER']['name']      = __('Email server');
          $criterias['MAIL_SERVER']['linkfield'] = '';
          $criterias['MAIL_SERVER']['type']      = 'dropdown';
          $criterias['MAIL_SERVER']['virtual']   = true;

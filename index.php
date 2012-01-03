@@ -61,7 +61,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" '.
          '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'."\n";
    echo '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">';
-   echo '<head><title>GLPI - '.$LANG['login'][10].'</title>'."\n";
+   echo '<head><title>'.__('GLPI - Authentication').'</title>'."\n";
    echo '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>'."\n";
    echo '<meta http-equiv="Content-Script-Type" content="text/javascript"/>'."\n";
    echo '<link rel="shortcut icon" type="images/x-icon" href="'.$CFG_GLPI["root_doc"].
@@ -100,12 +100,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'">';
    }
    echo "<fieldset>";
-   echo '<legend>'.$LANG['login'][10].'</legend>';
-   echo '<div class="row"><span class="label"><label>'.$LANG['login'][6].' :  </label></span>';
+   echo '<legend>'.__('Authentication').'</legend>';
+   echo '<div class="row"><span class="label"><label>'.__('Login').'</label></span>';
    echo '<span class="formw"><input type="text" name="login_name" id="login_name" size="15" />';
    echo '</span></div>';
 
-   echo '<div class="row"><span class="label"><label>'.$LANG['login'][7].' : </label></span>';
+   echo '<div class="row"><span class="label"><label>'.__('Password').'</label></span>';
    echo '<span class="formw">';
    echo '<input type="password" name="login_password" id="login_password" size="15" /></span></div>';
 
@@ -124,13 +124,13 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    echo "<div class='error'>";
    echo "<noscript><p>";
-   echo $LANG['login'][26];
+   echo __('You must activate the JavaScript function of your navigator');
    echo "</p></noscript>";
 
    if (isset($_GET['error'])) {
       switch ($_GET['error']) {
          case 1 : // cookie error
-            echo $LANG['login'][27];
+            _e('You must accept cookies to reach this application');
             break;
 
          case 2 : // GLPI_SESSION_DIR not writable

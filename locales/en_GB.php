@@ -1175,12 +1175,14 @@ $LANG['log'][120]="deletion of a link between tickets";
 $LANG['log'][122]="deletion of an actor to the ticket";
 $LANG['log'][123]="trying to add an item that already exists";
 
+/// TODO After is ok for migration to gettext
+
 $LANG['login'][0]="Last login";
 $LANG['login'][1]="Log in again";
 $LANG['login'][2]="LDAP directory";
 $LANG['login'][3]="Email server";
 $LANG['login'][4]="CAS";
-$LANG['login'][5]="Access Denied";
+$LANG['login'][5]="Access denied";
 $LANG['login'][6]="Login";
 $LANG['login'][7]="Password";
 $LANG['login'][8]="Empty login or password";
@@ -1224,8 +1226,6 @@ $LANG['mailgate'][12]="Unable to affect the email to an entity";
 $LANG['mailgate'][13]="Reason of rejection";
 $LANG['mailgate'][14]="Email not found. Impossible import";
 $LANG['mailgate'][16]="Re:";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['mailing'][0]="----------------------------------------------------------";
 $LANG['mailing'][1]="======================================================================";

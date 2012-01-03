@@ -94,7 +94,7 @@ if ($auth->Login($_POST['login_name'], $_POST['login_password'],
    echo '<div class="center b">' . $auth->getErr() . '<br><br>';
    // Logout whit noAUto to manage auto_login with errors
    echo '<a href="' . $CFG_GLPI["root_doc"] . '/logout.php?noAUTO=1'.
-         str_replace("?","&",$REDIRECT).'">' .$LANG['login'][1] . '</a></div>';
+         str_replace("?","&",$REDIRECT).'">' .__('Log in again') . '</a></div>';
    Html::nullFooter();
    exit();
 }

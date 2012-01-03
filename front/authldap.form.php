@@ -54,9 +54,9 @@ if (isset($_POST["update"])) {
    if ($_POST["name"] != "") {
       if ($newID = $config_ldap->add($_POST)) {
          if (AuthLdap::testLDAPConnection($newID)) {
-            Session::addMessageAfterRedirect($LANG['login'][22]);
+            Session::addMessageAfterRedirect(__('Test successful'));
          } else {
-            Session::addMessageAfterRedirect($LANG['login'][23], false, ERROR);
+            Session::addMessageAfterRedirect(__('Test failed'), false, ERROR);
          }
          Html::redirect($CFG_GLPI["root_doc"] . "/front/authldap.php?next=extauth_ldap&id=".$newID);
       }
@@ -73,11 +73,15 @@ if (isset($_POST["update"])) {
    $ldap->getFromDB($_POST["id"]);
 
    if (AuthLdap::testLDAPConnection($_POST["id"])) {
-      $_SESSION["LDAP_TEST_MESSAGE"] = $LANG['login'][22].
-                                       " (".$LANG['ldap'][21]." : ".$ldap->fields["name"].")";
+      // %s is the description of the test
+      $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test successful: %s'), 
+      // %s is the name of the LDAP main server
+                                               sprintf(__('Main server %s'),$ldap->fields["name"]));
    } else {
-      $_SESSION["LDAP_TEST_MESSAGE"] = $LANG['login'][23].
-                                       " (".$LANG['ldap'][21]." : ".$ldap->fields["name"].")";
+      // %s is the description of the test
+      $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test failed: %s'), 
+      // %s is the name of the LDAP main server
+                                               sprintf(__('Main server %s'),$ldap->fields["name"]));
    }
    Html::back();
 
@@ -87,11 +91,15 @@ if (isset($_POST["update"])) {
       $replicate->getFromDB($replicate_id);
 
       if (AuthLdap::testLDAPConnection($_POST["id"],$replicate_id)) {
-         $_SESSION["LDAP_TEST_MESSAGE"] = $LANG['login'][22].
-                                          " (".$LANG['ldap'][19]." : ".$replicate->fields["name"].")";
+         // %s is the description of the test
+         $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test successful: %s'), 
+         // %s is the name of the LDAP main server
+                                               sprintf(__('Replicate %s'),$ldap->fields["name"]));
       } else {
-         $_SESSION["LDAP_TEST_MESSAGE"] = $LANG['login'][23].
-                                          " (".$LANG['ldap'][19]." : ".$replicate->fields["name"].")";
+         // %s is the description of the test
+         $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test failed: %s'), 
+         // %s is the name of the LDAP main server
+                                               sprintf(__('Replicate %s'),$ldap->fields["name"]));
       }
    }
    Html::back();

@@ -227,11 +227,11 @@ class MailCollector  extends CommonDBTM {
       echo "<td><input size='30' type='text' name='refused' value=\"" . $this->fields['refused'] . "\" >";
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['login'][6]."</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Login')."</td><td>";
       Html::autocompletionTextField($this, "login");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['login'][7]."</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Password')."</td>";
       echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='off'>";
       if ($ID > 0) {
          echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
@@ -300,7 +300,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'login';
-      $tab[4]['name']          = $LANG['login'][6];
+      $tab[4]['name']          = __('Login');
       $tab[4]['massiveaction'] = false;
       $tab[4]['datatype']      = 'string';
 
@@ -1364,8 +1364,8 @@ class MailCollector  extends CommonDBTM {
       foreach ($DB->request('glpi_mailcollectors') as $mc) {
          $msg = "\t".__('Name').':"'.$mc['name'].'"  ';
          $msg .= " ". sprintf(__('Server: %s'), $mc['host']);
-         $msg .= " ".$LANG['login'][6].':"'.$mc['login'].'"';
-         $msg .= " ".$LANG['login'][7].':'.
+         $msg .= " ".__('Login').':"'.$mc['login'].'"';
+         $msg .= " ".__('Password').':'.
                  (empty($mc['passwd'])?__('No'):__('Yes'));
          $msg .= " ".__('Active').':'.Dropdown::getYesNo($mc['is_active']);
          echo wordwrap($msg."\n", $width, "\n\t\t");

@@ -57,7 +57,7 @@ if (isset($_POST[$parent->getForeignKeyField()])
    $item->showForm($_POST["id"], array('parent' => $parent));
 
 } else {
-   echo $LANG['login'][5];
+   _e('Access denied');
 }
 
 Html::ajaxFooter();
