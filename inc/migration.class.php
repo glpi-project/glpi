@@ -41,12 +41,16 @@ class Migration {
 
    function __construct($ver) {
       global $LANG;
+      
+      $this->deb = time();
+      $this->setVersion($ver);
+   }
 
+   function setVersion($ver) {
       // begin of global message
       echo "<div id='migration_message_$ver'>
             <p class='center'>".$LANG['rulesengine'][90]."</p></div>";
 
-      $this->deb = time();
       $this->version = $ver;
    }
 
