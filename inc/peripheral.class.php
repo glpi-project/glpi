@@ -175,7 +175,7 @@ class Peripheral  extends CommonDBTM {
     * @return boolean item found
     **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $target       = $this->getFormURL();
       $withtemplate = '';
@@ -352,112 +352,111 @@ class Peripheral  extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']             = __('Characteristics');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false;
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
 
       $tab+=Location::getSearchOptionsToAdd();
 
-      $tab[4]['table'] = 'glpi_peripheraltypes';
-      $tab[4]['field'] = 'name';
-      $tab[4]['name']  = __('Type');
+      $tab[4]['table']           = 'glpi_peripheraltypes';
+      $tab[4]['field']           = 'name';
+      $tab[4]['name']            = __('Type');
 
-      $tab[40]['table'] = 'glpi_peripheralmodels';
-      $tab[40]['field'] = 'name';
-      $tab[40]['name']  = __('Model');
+      $tab[40]['table']          = 'glpi_peripheralmodels';
+      $tab[40]['field']          = 'name';
+      $tab[40]['name']           = __('Model');
 
-      $tab[31]['table'] = 'glpi_states';
-      $tab[31]['field'] = 'completename';
-      $tab[31]['name']  = __('Status');
+      $tab[31]['table']          = 'glpi_states';
+      $tab[31]['field']          = 'completename';
+      $tab[31]['name']           = __('Status');
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'serial';
-      $tab[5]['name']      = __('Serial number');
-      $tab[5]['datatype']  = 'string';
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'serial';
+      $tab[5]['name']            = __('Serial number');
+      $tab[5]['datatype']        = 'string';
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'otherserial';
-      $tab[6]['name']      = __('Inventory number');
-      $tab[6]['datatype']  = 'string';
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'otherserial';
+      $tab[6]['name']            = __('Inventory number');
+      $tab[6]['datatype']        = 'string';
 
-      $tab[7]['table']     = $this->getTable();
-      $tab[7]['field']     = 'contact';
-      $tab[7]['name']      = __('Alternate username');
-      $tab[7]['datatype']  = 'string';
+      $tab[7]['table']           = $this->getTable();
+      $tab[7]['field']           = 'contact';
+      $tab[7]['name']            = __('Alternate username');
+      $tab[7]['datatype']        = 'string';
 
-      $tab[8]['table']     = $this->getTable();
-      $tab[8]['field']     = 'contact_num';
-      $tab[8]['name']      = __('Alternate username number');
-      $tab[8]['datatype']  = 'string';
+      $tab[8]['table']           = $this->getTable();
+      $tab[8]['field']           = 'contact_num';
+      $tab[8]['name']            = __('Alternate username number');
+      $tab[8]['datatype']        = 'string';
 
-      $tab[70]['table'] = 'glpi_users';
-      $tab[70]['field'] = 'name';
-      $tab[70]['name']  = __('User');
+      $tab[70]['table']          = 'glpi_users';
+      $tab[70]['field']          = 'name';
+      $tab[70]['name']           = __('User');
 
-      $tab[71]['table']     = 'glpi_groups';
-      $tab[71]['field']     = 'completename';
-      $tab[71]['name']      = __('Group');
-      $tab[71]['condition'] = '`is_itemgroup`';
+      $tab[71]['table']          = 'glpi_groups';
+      $tab[71]['field']          = 'completename';
+      $tab[71]['name']           = __('Group');
+      $tab[71]['condition']      = '`is_itemgroup`';
 
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
-      $tab[90]['table']         = $this->getTable();
-      $tab[90]['field']         = 'notepad';
-      $tab[90]['name']          = __('Notes');
-      $tab[90]['massiveaction'] = false;
+      $tab[90]['table']          = $this->getTable();
+      $tab[90]['field']          = 'notepad';
+      $tab[90]['name']           = __('Notes');
+      $tab[90]['massiveaction']  = false;
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'brand';
-      $tab[11]['name']     = __('Brand');
-      $tab[11]['datatype'] = 'string';
+      $tab[11]['table']          = $this->getTable();
+      $tab[11]['field']          = 'brand';
+      $tab[11]['name']           = __('Brand');
+      $tab[11]['datatype']       = 'string';
 
-      $tab[23]['table'] = 'glpi_manufacturers';
-      $tab[23]['field'] = 'name';
-      $tab[23]['name']  = __('Manufacturer');
+      $tab[23]['table']          = 'glpi_manufacturers';
+      $tab[23]['field']          = 'name';
+      $tab[23]['name']           = __('Manufacturer');
 
-      $tab[24]['table']     = 'glpi_users';
-      $tab[24]['field']     = 'name';
-      $tab[24]['linkfield'] = 'users_id_tech';
-      $tab[24]['name']      = __('Technician in charge of the hardware');
+      $tab[24]['table']          = 'glpi_users';
+      $tab[24]['field']          = 'name';
+      $tab[24]['linkfield']      = 'users_id_tech';
+      $tab[24]['name']           = __('Technician in charge of the hardware');
 
-      $tab[49]['table']     = 'glpi_groups';
-      $tab[49]['field']     = 'completename';
-      $tab[49]['linkfield'] = 'groups_id_tech';
-      $tab[49]['name']      = __('Group in charge of the hardware');
-      $tab[49]['condition'] = '`is_assign`';
+      $tab[49]['table']          = 'glpi_groups';
+      $tab[49]['field']          = 'completename';
+      $tab[49]['linkfield']      = 'groups_id_tech';
+      $tab[49]['name']           = __('Group in charge of the hardware');
+      $tab[49]['condition']      = '`is_assign`';
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
-      $tab[80]['massiveaction'] = false;
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['massiveaction']  = false;
 
-      $tab[82]['table']         = $this->getTable();
-      $tab[82]['field']         = 'is_global';
-      $tab[82]['name']          = __('Global management');
-      $tab[82]['datatype']      = 'bool';
-      $tab[82]['massiveaction'] = false;
+      $tab[82]['table']          = $this->getTable();
+      $tab[82]['field']          = 'is_global';
+      $tab[82]['name']           = __('Global management');
+      $tab[82]['datatype']       = 'bool';
+      $tab[82]['massiveaction']  = false;
 
       return $tab;
    }

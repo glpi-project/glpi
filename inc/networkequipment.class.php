@@ -220,7 +220,6 @@ class NetworkEquipment extends CommonDBTM {
     *@return boolean item found
    **/
    function showForm($ID, $options=array()) {
-      global $LANG;
 
       // Show device or blank form
 

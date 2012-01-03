@@ -35,8 +35,6 @@ if (!defined('GLPI_ROOT')) {
 class NotificationTargetConsumable extends NotificationTarget {
 
    function getEvents() {
-      global $LANG;
-
       return array('alert' => __('Consumables alarm'));
    }
 

@@ -115,7 +115,7 @@ class Notification extends CommonDBTM {
 
 
    function showForm($ID, $options=array()) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -283,7 +283,6 @@ class Notification extends CommonDBTM {
     * @param $value the default value for the dropdown
     */
    static function dropdownMode($value) {
-      global $LANG;
 
       $modes['mail'] = __('Email');
       Dropdown::showFromArray('mode', $modes, array('value' => $value));
@@ -297,8 +296,6 @@ class Notification extends CommonDBTM {
     * @return the mode's label
     */
    static function getMode($mode) {
-      global $LANG;
-
       return __('Email');
    }
 

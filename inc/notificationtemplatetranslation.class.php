@@ -40,14 +40,12 @@ class NotificationTemplateTranslation extends CommonDBChild {
    public $dohistory = true;
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Template translation', 'Template translations', $nb);
    }
 
 
    function getName($with_comment=0) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
 
       if ($this->getField('language') != '') {
          $toadd = $CFG_GLPI['languages'][$this->getField('language')][0];
@@ -282,7 +280,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    static function showAvailableTags($itemtype) {
-      global $LANG;
 
       $target = NotificationTarget::getInstanceByType($itemtype);
       $target->getTags();

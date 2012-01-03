@@ -84,7 +84,6 @@ class RuleMailCollector extends Rule {
 
 
    function getCriterias() {
-      global $LANG;
 
       $criterias = array();
 
@@ -187,11 +186,10 @@ class RuleMailCollector extends Rule {
 
 
    function getActions() {
-      global $LANG;
 
       $actions = array();
 
-      $actions['entities_id']['name']  = $LANG['entity'][0];
+      $actions['entities_id']['name']  = __('Entity');
       $actions['entities_id']['type']  = 'dropdown';
       $actions['entities_id']['table'] = 'glpi_entities';
 

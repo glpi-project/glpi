@@ -180,28 +180,27 @@ class SoftwareVersion extends CommonDBChild {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']       = __('Characteristics');
 
       $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'name';
       $tab[2]['name']      = __('Name');
       $tab[2]['datatype']  = 'string';
 
-      $tab[4]['table'] = 'glpi_operatingsystems';
-      $tab[4]['field'] = 'name';
-      $tab[4]['name']  = __('Operating system');
+      $tab[4]['table']     = 'glpi_operatingsystems';
+      $tab[4]['field']     = 'name';
+      $tab[4]['name']      = __('Operating system');
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
       $tab[16]['name']     = __('Comments');
       $tab[16]['datatype'] = 'text';
 
-      $tab[31]['table'] = 'glpi_states';
-      $tab[31]['field'] = 'completename';
-      $tab[31]['name']  = __('Status');
+      $tab[31]['table']    = 'glpi_states';
+      $tab[31]['field']    = 'completename';
+      $tab[31]['name']     = __('Status');
 
       return $tab;
    }
@@ -253,7 +252,7 @@ class SoftwareVersion extends CommonDBChild {
     * @return nothing
    **/
    static function showForSoftware($soft) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $softwares_id = $soft->getField('id');
 
@@ -272,8 +271,9 @@ class SoftwareVersion extends CommonDBChild {
                 ORDER BY `name`";
 
       Session::initNavigateListItems('SoftwareVersion',
-            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-            sprintf(__('%1$s = %2$s'),$soft->getTypeName(1), $soft->getName()));
+            //TRANS : %1$s is the itemtype name,
+            //       %2$s is the name of the item (used for headings of a list)
+            sprintf(__('%1$s = %2$s'), $soft->getTypeName(1), $soft->getName()));
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {

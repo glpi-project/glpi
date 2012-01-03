@@ -2722,7 +2722,7 @@ class CommonDBTM extends CommonGLPI {
     * @return true if item can be written in DB, false if not
    **/
    function checkUnicity($add=false, $options=array()) {
-      global $LANG, $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $p['unicity_error_message']  = true;
       $p['add_event_on_duplicate'] = true;

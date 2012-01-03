@@ -94,27 +94,26 @@ class ReservationItem extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
 
-      $tab[4]['table']        = $this->getTable();
-      $tab[4]['field']        = 'comment';
-      $tab[4]['name']         = __('Comments');
-      $tab[4]['datatype']     = 'text';
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'comment';
+      $tab[4]['name']            = __('Comments');
+      $tab[4]['datatype']        = 'text';
 
-      $tab['common']          = __('Characteristics');
+      $tab['common']             = __('Characteristics');
 
-      $tab[1]['table']         = 'reservation_types';
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']           = 'reservation_types';
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['massiveaction']   = false;
 
-      $tab[2]['table']         = 'reservation_types';
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']           = 'reservation_types';
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
 
       $tab += Location::getSearchOptionsToAdd();
 

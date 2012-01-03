@@ -40,10 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class Filesystem extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('File system', 'File systems', $nb);
    }
-}
 
+}
 ?>
