@@ -45,6 +45,7 @@ function update0803to083() {
    $ADDTODISPLAYPREF = array();
 
    $migration->displayTitle($LANG['install'][4]." -> 0.83");
+   $migration->setVersion('0.83')
 
    $backup_tables = false;
    $newtables     = array(/*'glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',

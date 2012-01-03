@@ -181,6 +181,8 @@ function update083to084() {
    $ADDTODISPLAYPREF = array();
 
    $migration->displayTitle($LANG['install'][4]." -> 0.84");
+   $migration->setVersion('0.84')
+
 
    // Add the internet field and copy rights from networking
    $migration->addField('glpi_profiles', 'internet', 'char', array('after'  => 'networking',
