@@ -559,7 +559,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.numberoftasks'         => $LANG['mailing'][122],
                     'ticket.numberoflinkedtickets' => $LANG['job'][55]." - ".$LANG['tracking'][29],
                     'ticket.numberofproblems'      => $LANG['Menu'][7]." - ".$LANG['tracking'][29],
-                    'ticket.nocategoryassigned'    => $LANG['mailing'][100],
                     'ticket.action'                => $LANG['mailing'][119],
                     'ticket.autoclose'             => $LANG['entity'][18],
                     'ticket.globalvalidation'      => $LANG['validation'][25]
