@@ -348,7 +348,7 @@ class Group extends CommonTreeDropdown {
 
       $tab[71]['table']         = 'glpi_users';
       $tab[71]['field']         = 'name';
-      $tab[71]['name']          = $LANG['common'][123];
+      $tab[71]['name']          = __('Delegatee');
       $tab[71]['itemlink_type'] = 'User';
       $tab[71]['forcegroupby']  = true;
       $tab[71]['joinparams']    = array('beforejoin'
