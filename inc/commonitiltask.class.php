@@ -83,10 +83,8 @@ abstract class CommonITILTask  extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['mailing'][142];
-      }
-      return $LANG['job'][7];
+      return _n('Task', 'Tasks', $nb);
+      
    }
 
 
@@ -102,10 +100,10 @@ abstract class CommonITILTask  extends CommonDBTM {
                                    OR `users_id` = '" . Session::getLoginUserID() . "') ";
             }
 
-            return self::createTabEntry($LANG['mailing'][142],
+            return self::createTabEntry(_n('Task', 'Tasks', 2),
                                         countElementsInTable($this->getTable(), $restrict));
          }
-         return $LANG['mailing'][142];
+         return _n('Task', 'Tasks', 2);
       }
       return '';
    }
@@ -366,11 +364,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['job'][9];
+      $tab['common'] = __('Characteristics');
 
       $tab[1]['table'] = $this->getTable();
       $tab[1]['field'] = 'content';
-      $tab[1]['name']  = $LANG['job'][7]." - ".$LANG['joblist'][6];
+      $tab[1]['name']  = $LANG['joblist'][6];
 
       $tab[2]['table']        = 'glpi_taskcategories';
       $tab[2]['field']        = 'name';

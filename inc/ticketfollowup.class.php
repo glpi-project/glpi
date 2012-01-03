@@ -54,10 +54,7 @@ class TicketFollowup  extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['mailing'][141];
-      }
-      return $LANG['job'][9];
+      return _n('Followup', 'Followups', $nb);
    }
 
 
@@ -178,11 +175,11 @@ class TicketFollowup  extends CommonDBTM {
       if ($item->getType() == 'Ticket') {
          if (Session::haveRight('observe_ticket','1')){
             if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry($LANG['mailing'][141],
+               return self::createTabEntry(_n('Followup', 'Followups', 2),
                                            countElementsInTable('glpi_ticketfollowups',
                                                                 "`tickets_id` = '".$item->getID()."'"));
             }
-            return $LANG['mailing'][141];
+            return _n('Followup', 'Followups', 2);
          }
       }
       return '';
@@ -718,15 +715,15 @@ class TicketFollowup  extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['job'][9];
+      $tab['common'] = __('Characteristics');
 
       $tab[1]['table'] = $this->getTable();
       $tab[1]['field'] = 'content';
-      $tab[1]['name']  = $LANG['job'][9]." - ".$LANG['joblist'][6];
+      $tab[1]['name']  = $LANG['joblist'][6];
 
       $tab[2]['table']        = 'glpi_requesttypes';
       $tab[2]['field']        = 'name';
-      $tab[2]['name']         = $LANG['job'][9]." - ".$LANG['job'][44];
+      $tab[2]['name']         = $LANG['job'][44];
       $tab[2]['forcegroupby'] = true;
 
       $tab[3]['table']    = $this->getTable();

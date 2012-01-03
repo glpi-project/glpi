@@ -393,7 +393,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       if ($event=='update_task' || $event=='add_task' || $event=='delete_task') {
          $this->addTarget(Notification::TASK_ASSIGN_TECH,
-                          $LANG['job'][7]." - ".$LANG['job'][6]);
+                          __('Technician in charge of the task'));
          $this->addTarget(Notification::TASK_AUTHOR, __('Task author'));
       }
 
