@@ -42,10 +42,7 @@ class Filesystem extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['dropdown'][19];
-      }
-      return $LANG['computers'][4];
+      return _n('File system', 'File systems', $nb);
    }
 }
 

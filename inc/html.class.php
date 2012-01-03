@@ -1684,7 +1684,7 @@ class Html {
             }
 
 
-            $menu['admin']['content']['dictionnary']['options']['os']['title'] = $LANG['computers'][9];
+            $menu['admin']['content']['dictionnary']['options']['os']['title'] = __('Operating system');
             $menu['admin']['content']['dictionnary']['options']['os']['page']
                            = '/front/ruledictionnaryoperatingsystem.php';
             $menu['admin']['content']['dictionnary']['options']['os']['links']['search']

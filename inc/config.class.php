@@ -937,7 +937,7 @@ class Config extends CommonDBTM {
       echo "<tr><th>" . __('Server') . "</th></tr>\n";
 
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
-      echo wordwrap($LANG['computers'][9]."&nbsp;: ".php_uname()."\n", $width, "\n\t");
+      echo wordwrap(__('Operating system')." : ".php_uname()."\n", $width, "\n\t");
       $exts = get_loaded_extensions();
       sort($exts);
       echo wordwrap("PHP ".phpversion()." (".implode(', ',$exts).")\n", $width, "\n\t");

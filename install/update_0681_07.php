@@ -1409,13 +1409,13 @@ function update0681to07() {
    if (!FieldExists("glpi_computers", "os_license_number")) {
       $query = "ALTER TABLE `glpi_computers`
                 ADD COLUMN `os_license_number` VARCHAR( 255 ) NULL DEFAULT NULL AFTER os_sp";
-      $DB->queryOrDie($query, "0.7 alter glpi_computers field " . $LANG['computers'][10]);
+      $DB->queryOrDie($query, "0.7 alter glpi_computers field " . __('Serial of the operating system'));
    }
 
    if (!FieldExists("glpi_computers", "os_license_id")) {
       $query = "ALTER TABLE `glpi_computers`
                 ADD COLUMN `os_license_id` VARCHAR( 255 ) NULL DEFAULT NULL AFTER os_license_number";
-      $DB->queryOrDie($query, "0.7 alter glpi_computers field " . $LANG['computers'][10]);
+      $DB->queryOrDie($query, "0.7 alter glpi_computers field " . __('Product ID of the operating system'));
    }
 
    if (!FieldExists("glpi_ocs_config", "import_os_serial")) {

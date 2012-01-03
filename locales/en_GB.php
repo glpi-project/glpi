@@ -357,9 +357,6 @@ $LANG['common'][119]="failure(s)";
 $LANG['common'][121]="authorizations problem(s)";
 $LANG['common'][123]="Delegatee";
 
-/// TODO Before is ok for migration to gettext
-
-
 $LANG['computers'][0]="Volume";
 $LANG['computers'][1]="Free percentage";
 $LANG['computers'][2]="Free size";
@@ -372,6 +369,9 @@ $LANG['computers'][8]="Volumes";
 $LANG['computers'][9]="Operating system";
 $LANG['computers'][10]="Serial of the operating system";
 $LANG['computers'][11]="Product ID of the operating system";
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['computers'][14]="Inserted";
 $LANG['computers'][23]="Memory Type";
 $LANG['computers'][24]="Memory (MB)";

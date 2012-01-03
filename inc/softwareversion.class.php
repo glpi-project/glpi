@@ -159,7 +159,7 @@ class SoftwareVersion extends CommonDBChild {
       Html::autocompletionTextField($this,"name");
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['computers'][9] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Operating system') . "</td><td>";
       Dropdown::show('OperatingSystem', array('value' => $this->fields["operatingsystems_id"]));
       echo "</td></tr>\n";
 
@@ -192,7 +192,7 @@ class SoftwareVersion extends CommonDBChild {
 
       $tab[4]['table'] = 'glpi_operatingsystems';
       $tab[4]['field'] = 'name';
-      $tab[4]['name']  = $LANG['computers'][9];
+      $tab[4]['name']  = __('Operating system');
 
       $tab[16]['table']    = $this->getTable();
       $tab[16]['field']    = 'comment';
@@ -278,11 +278,11 @@ class SoftwareVersion extends CommonDBChild {
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
             echo "<table class='tab_cadre'><tr>";
-            echo "<th>&nbsp;"._n('Version', 'Versions',2)."</th>";
-            echo "<th>&nbsp;".__('Status')."</th>";
-            echo "<th>&nbsp;".$LANG['computers'][9]."&nbsp;</th>";
-            echo "<th>&nbsp;"._n('Installation', 'Installations', 2)."</th>";
-            echo "<th>&nbsp;".__('Comments')."&nbsp;</th>";
+            echo "<th>"._n('Version', 'Versions',2)."</th>";
+            echo "<th>".__('Status')."</th>";
+            echo "<th>".__('Operating system')."</th>";
+            echo "<th>"._n('Installation', 'Installations', 2)."</th>";
+            echo "<th>".__('Comments')."</th>";
             echo "</tr>\n";
 
             for ($tot=$nb=0 ; $data=$DB->fetch_assoc($result) ; $tot+=$nb) {
