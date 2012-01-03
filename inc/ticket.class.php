@@ -1105,24 +1105,29 @@ class Ticket extends CommonITILObject {
          case EntityData::AUTO_ASSIGN_CATEGORY_HARDWARE :
             // Auto assign tech/group from Category
             if ($input['itilcategories_id']>0
-                && (!$input['_users_id_assign'] || !$input['_groups_id_assign'])) {
+                && ((!isset($input['_users_id_assign']) || !$input['_users_id_assign'])
+                    || (!isset($input['_groups_id_assign']) || !$input['_groups_id_assign']))) {
 
                $cat = new ITILCategory();
                $cat->getFromDB($input['itilcategories_id']);
-               if (!$input['_users_id_assign'] && $cat->isField('users_id')) {
+               if ((!isset($input['_users_id_assign']) || !$input['_users_id_assign'])
+                      && $cat->isField('users_id')) {
                   $input['_users_id_assign'] = $cat->getField('users_id');
                }
-               if (!$input['_groups_id_assign'] && $cat->isField('groups_id')) {
+               if ((!isset($input['_groups_id_assign']) || !$input['_groups_id_assign'])
+                   && $cat->isField('groups_id')) {
                   $input['_groups_id_assign'] = $cat->getField('groups_id');
                }
             }
             if ($item!=NULL) {
                // Auto assign tech from item
-               if ($input['_users_id_assign']==0 && $item->isField('users_id_tech')) {
+               if ((!isset($input['_users_id_assign']) || $input['_users_id_assign']==0)
+                   && $item->isField('users_id_tech')) {
                   $input['_users_id_assign'] = $item->getField('users_id_tech');
                }
                // Auto assign group from item
-               if ($input['_groups_id_assign']==0 && $item->isField('groups_id_tech')) {
+               if ((!isset($input['_groups_id_assign']) || $input['_groups_id_assign']==0)
+                   && $item->isField('groups_id_tech')) {
                   $input['_groups_id_assign'] = $item->getField('groups_id_tech');
                }
             }
