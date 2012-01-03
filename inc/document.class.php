@@ -351,18 +351,18 @@ class Document extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['document'][3]."&nbsp;:</td>";
+      echo "<td>".__('Heading')."</td>";
       echo "<td>";
       Dropdown::show('DocumentCategory', array('value' => $this->fields["documentcategories_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['document'][4]."&nbsp;:</td>";
+      echo "<td>".__('MIME Type')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "mime");
 
       if ($ID>0) {
-         echo "</td><td>".$LANG['document'][1]."&nbsp;:</td>";
+         echo "</td><td>".__('Checksum (SHA1)')."</td>";
          echo "<td>".$this->fields["sha1sum"];
       }
       echo "</td></tr>";
@@ -670,7 +670,7 @@ class Document extends CommonDBTM {
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'filename';
-      $tab[3]['name']          = $LANG['document'][2];
+      $tab[3]['name']          = __('File');
       $tab[3]['massiveaction'] = false;
       $tab[3]['datatype']      = 'string';
 
@@ -682,7 +682,7 @@ class Document extends CommonDBTM {
 
       $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'mime';
-      $tab[5]['name']      = $LANG['document'][4];
+      $tab[5]['name']      = __('MIME Type');
       $tab[5]['datatype']  = 'string';
 
       $tab[16]['table']    = $this->getTable();
@@ -697,7 +697,7 @@ class Document extends CommonDBTM {
 
       $tab[7]['table']  = 'glpi_documentcategories';
       $tab[7]['field']  = 'name';
-      $tab[7]['name']   = $LANG['document'][3];
+      $tab[7]['name']   = __('Heading');
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
@@ -717,7 +717,7 @@ class Document extends CommonDBTM {
 
       $tab[20]['table']         = $this->getTable();
       $tab[20]['field']         = 'sha1sum';
-      $tab[20]['name']          = $LANG['document'][1];
+      $tab[20]['name']          = __('Checksum (SHA1)');
       $tab[20]['massiveaction'] = false;
 
       $tab[72]['table']         = 'glpi_documents_items';
@@ -1330,10 +1330,10 @@ class Document extends CommonDBTM {
       if ($number > 0) {
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".$LANG['entity'][0]."</th>";
-         echo "<th>".$LANG['document'][2]."</th>";
+         echo "<th>".__('File')."</th>";
          echo "<th>".$LANG['document'][33]."</th>";
-         echo "<th>".$LANG['document'][3]."</th>";
-         echo "<th>".$LANG['document'][4]."</th>";
+         echo "<th>".__('Heading')."</th>";
+         echo "<th>".__('MIME Type')."</th>";
 
          if ($withtemplate<2) {
             echo "<th>&nbsp;</th>";
@@ -1437,7 +1437,7 @@ class Document extends CommonDBTM {
 //            echo "<th class='right'>".$LANG['document'][6]."&nbsp :</th>";
 
             echo "<td class='center' colspan='2'>";
-            echo $LANG['document'][3]."&nbsp:";
+            _e('Heading');
             Dropdown::show('DocumentCategory',array('entity' => $entities));
             echo "</td>";
             echo "<td class='center' colspan='3'>";
@@ -1467,7 +1467,7 @@ class Document extends CommonDBTM {
                                     'used'   => $used));
                echo "</td><td colspan='2' class='center'>";
                echo "<input type='submit' name='adddocumentitem' value=\"".
-                      $LANG['document'][5]."\" class='submit'>";
+                      __('Associate an existing document')."\" class='submit'>";
                echo "</td>";
                echo "</tr>";
             }

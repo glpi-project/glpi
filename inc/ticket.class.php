@@ -2959,7 +2959,7 @@ class Ticket extends CommonITILObject {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:&nbsp;";
+      echo "<td>".sprintf(__('File (%s)', Document::getMaxUploadSize()));
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt='".
              __s('Help')."' onclick=\"window.open('".$CFG_GLPI["root_doc"].
              "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
@@ -3755,7 +3755,7 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       // Permit to add doc when creating a ticket
       if (!$ID) {
-         echo "<th>".$LANG['document'][2]." (".Document::getMaxUploadSize().")&nbsp;:&nbsp;";
+         echo "<th>".sprintf(__('File (%s)', Document::getMaxUploadSize()));
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
                __s('Help')."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
                "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";

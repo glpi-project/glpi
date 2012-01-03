@@ -973,7 +973,7 @@ class Reminder extends CommonDBTM {
          echo "<th>&nbsp;</th>";
       }
       echo "<th>".__('Type')."</th>";
-      echo "<th>"._n('Recipient', 'Recipients', $nb)."</th>";
+      echo "<th>"._n('Recipient', 'Recipients', 2)."</th>";
       echo "</tr>";
 
       // Users
