@@ -790,7 +790,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       //Tags with just lang
       $tags = array($objettype.'.days'               => __('day(s)'),
                     $objettype.'.attribution'        => $LANG['job'][5],
-                    $objettype.'.nocategoryassigned' => $LANG['mailing'][100]);
+                    $objettype.'.nocategoryassigned' => __('No defined category'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

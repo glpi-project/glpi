@@ -1535,7 +1535,7 @@ class Dropdown {
                   break;
 
                case 'NotImportedEmail':
-                     echo "<option value='delete_email'>".$LANG['mailing'][133]."</option>";
+                     echo "<option value='delete_email'>".__('Delete emails')."</option>";
                      echo "<option value='import_email'>".__('Import')."</option>";
                   break;
 

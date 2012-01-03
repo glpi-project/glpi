@@ -1252,7 +1252,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<th>&nbsp;</th>";
       }
       echo "<th>".__('Type')."</th>";
-      echo "<th>".$LANG['mailing'][121]."</th>";
+      echo "<th>"._n('Recipient', 'Recipients', 2)."</th>";
       echo "</tr>";
 
       // Users

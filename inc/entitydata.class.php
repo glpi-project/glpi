@@ -212,22 +212,22 @@ class EntityData extends CommonDBChild {
       echo "<tr><th colspan='4'>".$LANG['financial'][44]."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['help'][35]."&nbsp;:&nbsp;</td>";
+      echo "<td>".$LANG['help'][35]."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "phonenumber");
       echo "</td>";
-      echo "<td rowspan='7'>".$LANG['financial'][44]."&nbsp;:&nbsp;</td>";
+      echo "<td rowspan='7'>".$LANG['financial'][44]."</td>";
       echo "<td rowspan='7'>";
       echo "<textarea cols='45' rows='8' name='address'>". $entdata->fields["address"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][30]."&nbsp;:&nbsp;</td>";
+      echo "<td>".$LANG['financial'][30]."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "fax");
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][45]."&nbsp;:&nbsp;</td>";
+      echo "<td>".$LANG['financial'][45]."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "website");
       echo "</td></tr>";
@@ -239,21 +239,21 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][100]."&nbsp;:&nbsp;</td>";
+      echo "<td>".$LANG['financial'][100]."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata,"postcode", array('size' => 7));
-      echo "&nbsp;".$LANG['financial'][101]."&nbsp;:&nbsp;";
+      echo "&nbsp;".$LANG['financial'][101]."";
       Html::autocompletionTextField($entdata, "town", array('size' => 27));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][102]."&nbsp;:&nbsp;</td>";
+      echo "<td>".$LANG['financial'][102]."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "state");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][103]."&nbsp;:&nbsp;</td>";
+      echo "<td>".$LANG['financial'][103]."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "country");
       echo "</td></tr>";
@@ -315,21 +315,21 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_1'><td colspan='2' class='center'>".$LANG['entity'][26]."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['entity'][13]."&nbsp;:&nbsp;</td>";
+      echo "<td>".$LANG['entity'][13]."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "tag", array('size' => 100));
       echo "</td></tr>";
 
       if (Toolbox::canUseLdap()) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['entity'][12]."&nbsp;:&nbsp;</td>";
+         echo "<td>".$LANG['entity'][12]."</td>";
          echo "<td>";
          Html::autocompletionTextField($entdata, "ldap_dn", array('size' => 100));
          echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['entity'][27]."&nbsp;:&nbsp;</td>";
+      echo "<td>".$LANG['entity'][27]."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "mail_domain", array('size' => 100));
       echo "</td></tr>";
@@ -338,7 +338,7 @@ class EntityData extends CommonDBChild {
          echo "<tr><th colspan='2'>".$LANG['entity'][24]."</th></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['entity'][15]."&nbsp;:&nbsp;</td>";
+         echo "<td>".$LANG['entity'][15]."</td>";
          echo "<td>";
          Dropdown::show('AuthLDAP', array('value'      => $entdata->fields['authldaps_id'],
                                           'emptylabel' => $LANG['ldap'][44],
@@ -346,7 +346,7 @@ class EntityData extends CommonDBChild {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['entity'][25]."&nbsp;:&nbsp;</td>";
+         echo "<td>".$LANG['entity'][25]."</td>";
          echo "<td>";
          Html::autocompletionTextField($entdata, 'entity_ldapfilter', array('size' => 100));
          echo "</td></tr>";
@@ -575,7 +575,7 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['mailing'][2]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('Prefix for notifications')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entitynotification, "notification_subject_tag");
       echo "</td>";
@@ -754,7 +754,7 @@ class EntityData extends CommonDBChild {
       }
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['job'][58]."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['job'][58]."</td>";
       echo "<td colspan='2'>";
       $toadd = array();
       if ($ID != 0) {
@@ -779,7 +779,7 @@ class EntityData extends CommonDBChild {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>".__('Calendar')."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>".__('Calendar')."</td>";
       echo "<td colspan='2'>";
       $options = array('value'      => $entdata->fields["calendars_id"],
                        'emptylabel' => __('24/7'));
@@ -802,7 +802,7 @@ class EntityData extends CommonDBChild {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][28]."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][28]."</td>";
       echo "<td colspan='2'>";
       $toadd = array();
       if ($ID != 0) {
@@ -867,7 +867,7 @@ class EntityData extends CommonDBChild {
 
       echo "<tr><th colspan='4'>".$LANG['entity'][19]."</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][19]."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][19]."</td>";
       echo "<td colspan='2'>";
 
       /// no inquest case = rate 0

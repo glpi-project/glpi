@@ -606,7 +606,7 @@ class Reminder extends CommonDBTM {
       }
       echo "</td><td colspan='2'></td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td>".Toolbox::ucfirst($LANG['mailing'][117])."&nbsp;:&nbsp;</td>".
+      echo "<tr class='tab_bg_2'><td>".__('Description')."</td>".
            "<td colspan='3'>";
 
       if ($canedit) {
@@ -973,7 +973,7 @@ class Reminder extends CommonDBTM {
          echo "<th>&nbsp;</th>";
       }
       echo "<th>".__('Type')."</th>";
-      echo "<th>".$LANG['mailing'][121]."</th>";
+      echo "<th>"._n('Recipient', 'Recipients', $nb)."</th>";
       echo "</tr>";
 
       // Users

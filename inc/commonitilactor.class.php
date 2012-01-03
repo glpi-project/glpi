@@ -141,7 +141,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       echo "<br><form method='post' action='".$CFG_GLPI['root_doc']."/front/popup.php'>";
       echo "<div class='center'>";
       echo "<table class='tab_cadre'>";
-      echo "<tr class='tab_bg_2'><td>".$item->getTypeName()."&nbsp;:</td>";
+      echo "<tr class='tab_bg_2'><td>".$item->getTypeName()."</td>";
       echo "<td>";
       if ($item->getFromDB($this->fields[$this->getItilObjectForeignKey()])) {
          echo $item->getField('name');
@@ -158,12 +158,12 @@ abstract class CommonITILActor extends CommonDBRelation {
       echo "<tr class='tab_bg_2'><td>".__('User')."</td>";
       echo "<td>".$user->getName()."</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['job'][19]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['job'][19]."</td>";
       echo "<td>";
       Dropdown::showYesNo('use_notification', $this->fields['use_notification']);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['mailing'][118]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Email')."</td>";
       echo "<td>";
       if (count($emails) ==  1
           && !empty($default_email)

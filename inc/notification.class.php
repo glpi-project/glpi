@@ -162,17 +162,17 @@ class Notification extends CommonDBTM {
                                     $params);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][120] . "&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Notification method') . "</td>";
       echo "<td>";
       self::dropdownMode($this->fields['mode']);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][119] . "&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>" . _n('Event', 'Events', 1) . "</td>";
       echo "<td><span id='show_events'>";
       NotificationEvent::dropdownEvents($this->fields['itemtype'],$this->fields['event']);
       echo "</span></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['mailing'][112] . "&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>" . _n('Notification template', 'Notification templates', 1) . "</td>";
       echo "<td><span id='show_templates'>";
       NotificationTemplate::dropdownTemplates('notificationtemplates_id', $this->fields['itemtype'],
                                               $this->fields['notificationtemplates_id']);
@@ -199,17 +199,17 @@ class Notification extends CommonDBTM {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'event';
-      $tab[2]['name']          = $LANG['mailing'][119];
+      $tab[2]['name']          = _n('Event', 'Events', 1);
       $tab[2]['massiveaction'] = false;
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'mode';
-      $tab[3]['name']          = $LANG['mailing'][120];
+      $tab[3]['name']          = __('Notification method');
       $tab[3]['massiveaction'] = false;
 
       $tab[4]['table']         = 'glpi_notificationtemplates';
       $tab[4]['field']         = 'name';
-      $tab[4]['name']          = $LANG['mailing'][113];
+      $tab[4]['name']          = _n('Notification template', 'Notification templates', 2);
       $tab[4]['datatype']      = 'itemlink';
       $tab[4]['itemlink_type'] = 'NotificationTemplate';
 
@@ -285,7 +285,7 @@ class Notification extends CommonDBTM {
    static function dropdownMode($value) {
       global $LANG;
 
-      $modes['mail'] = $LANG['mailing'][118];
+      $modes['mail'] = __('Email');
       Dropdown::showFromArray('mode', $modes, array('value' => $value));
    }
 
@@ -299,7 +299,7 @@ class Notification extends CommonDBTM {
    static function getMode($mode) {
       global $LANG;
 
-      return $LANG['mailing'][118];
+      return __('Email');
    }
 
 

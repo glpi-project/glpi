@@ -68,12 +68,12 @@ class NotImportedEmail extends CommonDBTM {
       $tab = array();
       $tab[1]['table']         = 'glpi_notimportedemails';
       $tab[1]['field']         = 'from';
-      $tab[1]['name']          = $LANG['mailing'][132].' : '.$LANG['mailing'][130];
+      $tab[1]['name']          = __('From email header');
       $tab[1]['massiveaction'] = false;
 
       $tab[2]['table']         = 'glpi_notimportedemails';
       $tab[2]['field']         = 'to';
-      $tab[2]['name']          = $LANG['mailing'][132].' : '.$LANG['mailing'][131];
+      $tab[2]['name']          = __('To email header');
       $tab[2]['massiveaction'] = false;
 
       $tab[3]['table']         = 'glpi_notimportedemails';
@@ -89,7 +89,7 @@ class NotImportedEmail extends CommonDBTM {
 
       $tab[5]['table']         = 'glpi_notimportedemails';
       $tab[5]['field']         = 'messageid';
-      $tab[5]['name']          = $LANG['mailing'][132].' : messageid';
+      $tab[5]['name']          = __('Message-ID email header');
       $tab[5]['massiveaction'] = false;
 
       $tab[6]['table'] = 'glpi_users';

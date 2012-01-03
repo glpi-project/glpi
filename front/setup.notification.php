@@ -69,7 +69,7 @@ if (!$CFG_GLPI['use_mailing']) {
          echo "<tr class='tab_bg_1'><td class='center'><a href='notificationmailsetting.form.php'>" .
                __('Email followups configuration') ."</a></td></tr>";
             echo "<tr class='tab_bg_1'><td class='center'><a href='notificationtemplate.php'>" .
-                  $LANG['mailing'][113] ."</a></td> </tr>";
+                  _n('Notification template', 'Notification templates', 2) ."</a></td> </tr>";
       }
 
       if (Session::haveRight("notification","r") && $CFG_GLPI['use_mailing']) {

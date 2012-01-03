@@ -37,7 +37,7 @@ class NotificationTargetCartridge extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array('alert' => $LANG['mailing'][33]);
+      return array('alert' => __('Cartridges alarm'));
    }
 
    /**
@@ -74,7 +74,7 @@ class NotificationTargetCartridge extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('cartridge.action'    => $LANG['mailing'][119],
+      $tags = array('cartridge.action'    => _n('Event', 'Events', 1),
                     'cartridge.reference' => $LANG['consumables'][2],
                     'cartridge.item'      => $LANG['financial'][104],
                     'cartridge.remaining' => __('Remaining'),

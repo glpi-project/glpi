@@ -37,7 +37,7 @@ class NotificationTargetConsumable extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array('alert' => $LANG['mailing'][36]);
+      return array('alert' => __('Consumables alarm'));
    }
 
 
@@ -76,7 +76,7 @@ class NotificationTargetConsumable extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('consumable.action'    => $LANG['mailing'][119],
+      $tags = array('consumable.action'    => _n('Event', 'Events', 1),
                     'consumable.reference' => $LANG['consumables'][2],
                     'consumable.item'      => $LANG['financial'][104],
                     'consumable.remaining' => __('Remaining'),

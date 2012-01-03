@@ -68,7 +68,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header($LANG['mailing'][113], $_SERVER['PHP_SELF'], "config", "mailing",
+   Html::header(_n('Notification template', 'Notification templates', 2), 
+                $_SERVER['PHP_SELF'], "config", "mailing",
                 "notificationtemplate");
 
    if ($_GET["id"] == '') {
