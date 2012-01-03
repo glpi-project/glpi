@@ -304,68 +304,68 @@ class RuleTicket extends Rule {
       global $LANG;
 
       $actions = array();
-      $actions['itilcategories_id']['name']  = __('Category');
-      $actions['itilcategories_id']['type']  = 'dropdown';
-      $actions['itilcategories_id']['table'] = 'glpi_itilcategories';
+      $actions['itilcategories_id']['name']           = __('Category');
+      $actions['itilcategories_id']['type']           = 'dropdown';
+      $actions['itilcategories_id']['table']          = 'glpi_itilcategories';
 
-      $actions['type']['name']      = __('Type');
-      $actions['type']['table']     = 'glpi_tickets';
-      $actions['type']['type']      = 'dropdown_tickettype';
+      $actions['type']['name']                        = __('Type');
+      $actions['type']['table']                       = 'glpi_tickets';
+      $actions['type']['type']                        = 'dropdown_tickettype';
 
 
-      $actions['_users_id_requester']['name'] = __('Requester user');
-      $actions['_users_id_requester']['type'] = 'dropdown_users';
+      $actions['_users_id_requester']['name']         = __('Requester user');
+      $actions['_users_id_requester']['type']         = 'dropdown_users';
 
-      $actions['_groups_id_requester']['name']  = __('Requester group');
-      $actions['_groups_id_requester']['type']  = 'dropdown';
-      $actions['_groups_id_requester']['table'] = 'glpi_groups';
+      $actions['_groups_id_requester']['name']        = __('Requester group');
+      $actions['_groups_id_requester']['type']        = 'dropdown';
+      $actions['_groups_id_requester']['table']       = 'glpi_groups';
 
-      $actions['_users_id_assign']['name'] = $LANG['job'][5]." - ".$LANG['job'][6];
-      $actions['_users_id_assign']['type'] = 'dropdown_assign';
+      $actions['_users_id_assign']['name']            = $LANG['job'][5]." - ".$LANG['job'][6];
+      $actions['_users_id_assign']['type']            = 'dropdown_assign';
 
-      $actions['_groups_id_assign']['table'] = 'glpi_groups';
-      $actions['_groups_id_assign']['name']  = __('Technician group');
-      $actions['_groups_id_assign']['type']  = 'dropdown';
+      $actions['_groups_id_assign']['table']          = 'glpi_groups';
+      $actions['_groups_id_assign']['name']           = __('Technician group');
+      $actions['_groups_id_assign']['type']           = 'dropdown';
 
-      $actions['suppliers_id_assign']['table'] = 'glpi_suppliers';
-      $actions['suppliers_id_assign']['name']  = $LANG['job'][5]." - ".$LANG['financial'][26];
-      $actions['suppliers_id_assign']['type']  = 'dropdown';
+      $actions['suppliers_id_assign']['table']        = 'glpi_suppliers';
+      $actions['suppliers_id_assign']['name']         = $LANG['job'][5]." - ".$LANG['financial'][26];
+      $actions['suppliers_id_assign']['type']         = 'dropdown';
 
-      $actions['_users_id_observer']['name'] = __('Watcher user');
-      $actions['_users_id_observer']['type'] = 'dropdown_users';
+      $actions['_users_id_observer']['name']          = __('Watcher user');
+      $actions['_users_id_observer']['type']          = 'dropdown_users';
 
-      $actions['_groups_id_observer']['table'] = 'glpi_groups';
-      $actions['_groups_id_observer']['name']  = __('Watcher group');
-      $actions['_groups_id_observer']['type']  = 'dropdown';
+      $actions['_groups_id_observer']['table']        = 'glpi_groups';
+      $actions['_groups_id_observer']['name']         = __('Watcher group');
+      $actions['_groups_id_observer']['type']         = 'dropdown';
 
-      $actions['urgency']['name'] = $LANG['joblist'][29];
-      $actions['urgency']['type'] = 'dropdown_urgency';
+      $actions['urgency']['name']                     = $LANG['joblist'][29];
+      $actions['urgency']['type']                     = 'dropdown_urgency';
 
-      $actions['impact']['name'] = $LANG['joblist'][30];
-      $actions['impact']['type'] = 'dropdown_impact';
+      $actions['impact']['name']                      = $LANG['joblist'][30];
+      $actions['impact']['type']                      = 'dropdown_impact';
 
-      $actions['priority']['name']          = $LANG['joblist'][2];
-      $actions['priority']['type']          = 'dropdown_priority';
-      $actions['priority']['force_actions'] = array('assign', 'compute');
+      $actions['priority']['name']                    = $LANG['joblist'][2];
+      $actions['priority']['type']                    = 'dropdown_priority';
+      $actions['priority']['force_actions']           = array('assign', 'compute');
 
-      $actions['status']['name'] = $LANG['joblist'][0];
-      $actions['status']['type'] = 'dropdown_status';
+      $actions['status']['name']                      = $LANG['joblist'][0];
+      $actions['status']['type']                      = 'dropdown_status';
 
-      $actions['affectobject']['name']          = $LANG['document'][14];
-      $actions['affectobject']['type']          = 'text';
-      $actions['affectobject']['force_actions'] = array('affectbyip', 'affectbyfqdn', 'affectbymac');
+      $actions['affectobject']['name']                = __('Associated element');
+      $actions['affectobject']['type']                = 'text';
+      $actions['affectobject']['force_actions']       = array('affectbyip', 'affectbyfqdn',
+                                                              'affectbymac');
 
-      $actions['slas_id']['table'] = 'glpi_slas';
-      $actions['slas_id']['name']  = __('SLA');
-      $actions['slas_id']['type']  = 'dropdown';
+      $actions['slas_id']['table']                    = 'glpi_slas';
+      $actions['slas_id']['name']                     = __('SLA');
+      $actions['slas_id']['type']                     = 'dropdown';
 
-      $actions['users_id_validate']['name']          = __('Send an approval request');
-      $actions['users_id_validate']['type']          = 'dropdown_users_validate';
-      $actions['users_id_validate']['force_actions'] = array('add_validation');
+      $actions['users_id_validate']['name']           = __('Send an approval request');
+      $actions['users_id_validate']['type']           = 'dropdown_users_validate';
+      $actions['users_id_validate']['force_actions']  = array('add_validation');
 
       return $actions;
    }
 
 }
-
 ?>

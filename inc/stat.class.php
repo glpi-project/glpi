@@ -1343,9 +1343,9 @@ class Stat {
          echo Search::showHeader($output_type, $end_display-$start+1, 2, 1);
          $header_num = 1;
          echo Search::showNewLine($output_type);
-         echo Search::showHeaderItem($output_type, $LANG['document'][14], $header_num);
+         echo Search::showHeaderItem($output_type, _('Associated element'), $header_num);
          if ($view_entities) {
-            echo Search::showHeaderItem($output_type, $LANG['entity'][0], $header_num);
+            echo Search::showHeaderItem($output_type, __('Entity'), $header_num);
          }
          echo Search::showHeaderItem($output_type, __('Number of tickets'), $header_num);
          echo Search::showEndLine($output_type);

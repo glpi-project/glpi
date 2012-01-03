@@ -971,8 +971,9 @@ class Planning {
 
             if (isset($val["tickets_id"])) {
                $vevent->setProperty("summary",
-                                    _n('Ticket','Tickets',1)." # ".$val["tickets_id"]." ".
-                                       $LANG['document'][14]." # ".$val["device"]);
+                  // TRANS: %1s is the ticket, %2s is the device
+                                    printf(__('Ticket # %1s associated to element # %2s'),
+                                           $val["tickets_id"], $val["device"]));
             } else if (isset($val["name"])) {
                $vevent->setProperty( "summary", $val["name"] );
             }

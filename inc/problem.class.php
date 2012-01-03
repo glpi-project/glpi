@@ -1080,7 +1080,7 @@ class Problem extends CommonITILObject {
       $items[$LANG['joblist'][2]]   = "glpi_problems.priority";
       $items[$LANG['job'][4]]       = "glpi_problems.users_id";
       $items[$LANG['joblist'][4]]   = "glpi_problems.users_id_assign";
-//       $items[$LANG['document'][14]] = "glpi_problems.itemtype, glpi_tickets.items_id";
+//       $items[__('Associated element')] = "glpi_problems.itemtype, glpi_tickets.items_id";
       $items[__('Category')]        = "glpi_itilcategories.completename";
       $items[__('Title')]           = "glpi_problems.name";
 

@@ -40,16 +40,15 @@ if (!defined('GLPI_ROOT')) {
 class DocumentType  extends CommonDropdown {
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array(array('name'  => 'icon',
-                         'label' => $LANG['document'][10],
+                         'label' => __('Icon'),
                          'type'  => 'icon'),
                    array('name'  => 'is_uploadable',
-                         'label' => $LANG['document'][11],
+                         'label' => __('Authorized download'),
                          'type'  => 'bool'),
                    array('name'  => 'ext',
-                         'label' => $LANG['document'][9],
+                         'label' => __('Extension'),
                          'type'  => 'text'),
                    array('name'  => 'mime',
                          'label' => __('MIME Type'),
@@ -58,12 +57,7 @@ class DocumentType  extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['document'][8];
-      }
-      return $LANG['document'][7];
+      return _n('Document Type', 'Document Types', $nb);
    }
 
 
@@ -73,27 +67,26 @@ class DocumentType  extends CommonDropdown {
     * @return array of search option
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
-      $tab[3]['table'] = $this->getTable();
-      $tab[3]['field'] = 'ext';
-      $tab[3]['name']  = $LANG['document'][9];
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'ext';
+      $tab[3]['name']            = __('Extension');
 
-      $tab[6]['table']         = $this->getTable();
-      $tab[6]['field']         = 'icon';
-      $tab[6]['name']          = $LANG['document'][10];
-      $tab[6]['massiveaction'] = false;
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'icon';
+      $tab[6]['name']            = __('Icon');
+      $tab[6]['massiveaction']   = false;
 
-      $tab[4]['table'] = $this->getTable();
-      $tab[4]['field'] = 'mime';
-      $tab[4]['name']  = __('MIME Type');
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'mime';
+      $tab[4]['name']            = __('MIME Type');
 
-      $tab[5]['table']    = $this->getTable();
-      $tab[5]['field']    = 'is_uploadable';
-      $tab[5]['name']     = $LANG['document'][15];
-      $tab[5]['datatype'] = 'bool';
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'is_uploadable';
+      $tab[5]['name']            = __('Download');
+      $tab[5]['datatype']        = 'bool';
 
       return $tab;
    }

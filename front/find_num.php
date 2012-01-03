@@ -89,7 +89,7 @@ if (isset($_POST["send"])) {
    echo " <tr class='tab_bg3'>";
    echo " <td class='center b' width='30%'>".__('Alternate username')."</td>";
    echo " <td class='center b' width='20%'>".$LANG['help'][24]."</td>";
-   echo " <td class='center b' width='30%'>".$LANG['document'][14]."</td>";
+   echo " <td class='center b' width='30%'>".__('Associated element')."</td>";
    echo " <td class='center b' width='5%'>".__('ID')."</td>";
    echo " <td class='center b' width='10%'>".__('Serial number')."</td>";
    echo " <td class='center b' width='10%'>".__('Inventory number')."</td>";

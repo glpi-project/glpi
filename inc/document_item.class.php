@@ -127,13 +127,11 @@ class Document_Item extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
-
       if (Session::haveRight('document', 'r')) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['document'][19], self::countForDocument($item));
+            return self::createTabEntry(__('Associated items'), self::countForDocument($item));
          }
-         return $LANG['document'][19];
+         return __('Associated items');
       }
       return '';
    }
