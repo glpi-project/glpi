@@ -47,6 +47,7 @@ class Migration {
    }
 
    function setVersion($ver) {
+      global $LANG;
       // begin of global message
       echo "<div id='migration_message_$ver'>
             <p class='center'>".$LANG['rulesengine'][90]."</p></div>";
