@@ -327,6 +327,9 @@ class TicketRecurrent extends CommonDropdown {
             $input['due_date'] = Html::computeGenericDateTimeSearch($predefined['due_date'], false,
                                                                     $createtime);
          }
+         // Set entity
+         $input['entities_id'] = $data['entities_id'];
+         
          $ticket = new Ticket();
          $ticket->add($input);
       }
