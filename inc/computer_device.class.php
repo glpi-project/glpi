@@ -220,7 +220,7 @@ class Computer_Device extends CommonDBTM {
 
       $numberOfPreviousItem = 0;
       foreach ($devtypes as $itemtype) {
-         Session::initNavigateListItems($itemtype, 
+         Session::initNavigateListItems($itemtype,
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$computer->getTypeName(1), $computer->getName()));
 
@@ -348,7 +348,7 @@ class Computer_Device extends CommonDBTM {
          }
 
          echo "<tr><td colspan='$global_colspan' class='tab_bg_1 center'>";
-         echo $LANG['devices'][0]."&nbsp;: ";
+         _e('Add a new component');
          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</tr></table></form>";

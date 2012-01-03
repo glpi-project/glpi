@@ -40,41 +40,34 @@ if (!defined('GLPI_ROOT')) {
 class DevicePowerSupply extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['devices'][16];
-      }
-      return $LANG['devices'][23];
+      return _n('Power Supply', 'Power Supplies', $nb);
    }
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'is_atx',
-                                     'label' => $LANG['device_power'][1],
+                                     'label' => __('ATX'),
                                      'type'  => 'bool'),
                                array('name'  => 'power',
-                                     'label' => $LANG['device_power'][0],
+                                     'label' => __('Power'),
                                      'type'  => 'text')));
    }
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'is_atx';
-      $tab[11]['name']     = $LANG['device_power'][1];
+      $tab[11]['name']     = __('ATX');
       $tab[11]['datatype'] = 'bool';
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'power';
-      $tab[12]['name']     = $LANG['device_power'][0];
+      $tab[12]['name']     = __('Power');
       $tab[12]['datatype'] = 'text';
 
       return $tab;
@@ -87,22 +80,20 @@ class DevicePowerSupply extends CommonDevice {
     * @return array
    **/
    function getFormData() {
-      global $LANG;
 
       $data['label'] = $data['value'] = array();
 
       if ($this->fields["is_atx"]) {
-         $data['label'][] = $LANG['device_power'][1];
+         $data['label'][] = __('ATX');
          $data['value'][] = Dropdown::getYesNo($this->fields["is_atx"]);
       }
 
       if (!empty($this->fields["power"])) {
-         $data['label'][] = $LANG['device_power'][0];
+         $data['label'][] = __('Power');
          $data['value'][] = $this->fields["power"];
       }
       return $data;
    }
 
 }
-
 ?>

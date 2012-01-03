@@ -40,24 +40,18 @@ if (!defined('GLPI_ROOT')) {
 class DeviceDrive extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['devices'][19];
-      }
-      return $LANG['devices'][18];
+      return _n('Drive', 'Drives', $nb);
    }
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'is_writer',
-                                     'label' => $LANG['device_drive'][0],
+                                     'label' => __('Writing ability'),
                                      'type'  => 'bool'),
                                array('name'  => 'speed',
-                                     'label' => $LANG['device_drive'][1],
+                                     'label' => $__('Speed'),
                                      'type'  => 'text'),
                                array('name'  => 'interfacetypes_id',
                                      'label' => __('Interface'),
@@ -66,18 +60,17 @@ class DeviceDrive extends CommonDevice {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'is_writer';
-      $tab[12]['name']     = $LANG['device_drive'][0];
+      $tab[12]['name']     = __('Writing ability');
       $tab[12]['datatype'] = 'bool';
 
       $tab[13]['table']    = $this->getTable();
       $tab[13]['field']    = 'speed';
-      $tab[13]['name']     = $LANG['device_drive'][1];
+      $tab[13]['name']     = __('Speed');
       $tab[13]['datatype'] = 'text';
 
       $tab[14]['table'] = 'glpi_interfacetypes';
@@ -94,17 +87,16 @@ class DeviceDrive extends CommonDevice {
     * @return array
    **/
    function getFormData() {
-      global $LANG;
 
       $data['label'] = $data['value'] = array();
 
       if ($this->fields["is_writer"]) {
-         $data['label'][] = $LANG['device_drive'][0];
+         $data['label'][] = __('Writing ability');
          $data['value'][] = Dropdown::getYesNo($this->fields["is_writer"]);
       }
 
       if (!empty($this->fields["speed"])) {
-         $data['label'][] = $LANG['device_drive'][1];
+         $data['label'][] = __('Speed');
          $data['value'][] = $this->fields["speed"];
       }
 
@@ -118,5 +110,4 @@ class DeviceDrive extends CommonDevice {
    }
 
 }
-
 ?>

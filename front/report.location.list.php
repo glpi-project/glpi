@@ -63,10 +63,10 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
       echo "<th>".__('Switch')."</th>";
       echo "<th>".__('IP')."</th>";
       echo "<th>".__('Hardware ports')."</th>";
-      echo "<th>".$LANG['device_iface'][2]."</th>";
+      echo "<th>".__('MAC address')."</th>";
       echo "<th>".__('Device ports')."</th>";
       echo "<th>".__('IP')."</th>";
-      echo "<th>".$LANG['device_iface'][2]."</th>";
+      echo "<th>".__('MAC address')."</th>";
       echo "<th>".__('Connected devices')."</th></tr>";
 
       while ($ligne = $DB->fetch_array($result)) {

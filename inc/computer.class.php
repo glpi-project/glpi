@@ -860,7 +860,7 @@ class Computer extends CommonDBTM {
 
       $tab[7]['table']         = 'glpi_deviceprocessors';
       $tab[7]['field']         = 'designation';
-      $tab[7]['name']          = $LANG['devices'][4];
+      $tab[7]['name']          = __('Processor');
       $tab[7]['forcegroupby']  = true;
       $tab[7]['usehaving']     = true;
       $tab[7]['massiveaction'] = false;
@@ -912,7 +912,7 @@ class Computer extends CommonDBTM {
 
       $tab[12]['table']         = 'glpi_devicesoundcards';
       $tab[12]['field']         = 'designation';
-      $tab[12]['name']          = $LANG['devices'][7];
+      $tab[12]['name']          = __('Soundcard');
       $tab[12]['forcegroupby']  = true;
       $tab[12]['massiveaction'] = false;
       $tab[12]['joinparams']    = array('beforejoin'
@@ -921,7 +921,7 @@ class Computer extends CommonDBTM {
 
       $tab[13]['table']         = 'glpi_devicegraphiccards';
       $tab[13]['field']         = 'designation';
-      $tab[13]['name']          = $LANG['devices'][2];
+      $tab[13]['name']          = __('Graphics Card');
       $tab[13]['forcegroupby']  = true;
       $tab[13]['massiveaction'] = false;
       $tab[13]['joinparams']    = array('beforejoin'
@@ -930,7 +930,7 @@ class Computer extends CommonDBTM {
 
       $tab[14]['table']         = 'glpi_devicemotherboards';
       $tab[14]['field']         = 'designation';
-      $tab[14]['name']          = $LANG['devices'][5];
+      $tab[14]['name']          = __('System Board');
       $tab[14]['forcegroupby']  = true;
       $tab[14]['massiveaction'] = false;
       $tab[14]['joinparams']    = array('beforejoin'
@@ -961,7 +961,7 @@ class Computer extends CommonDBTM {
 
       $tab[39]['table']         = 'glpi_devicepowersupplies';
       $tab[39]['field']         = 'designation';
-      $tab[39]['name']          = $LANG['devices'][23];
+      $tab[39]['name']          = __('Power Supply');
       $tab[39]['forcegroupby']  = true;
       $tab[39]['usehaving']     = true;
       $tab[39]['massiveaction'] = false;
@@ -1142,7 +1142,7 @@ class Computer extends CommonDBTM {
 
       $tab[165]['table']         = 'glpi_computervirtualmachines';
       $tab[165]['field']         = 'ram';
-      $tab[165]['name']          = $LANG['computers'][57]." : ".$LANG['devices'][6];
+      $tab[165]['name']          = __('Memory of virtual machines');
       $tab[165]['forcegroupby']  = true;
       $tab[165]['massiveaction'] = false;
       $tab[165]['joinparams']    = array('jointype' => 'child');

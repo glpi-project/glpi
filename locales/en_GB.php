@@ -487,6 +487,8 @@ $LANG['crontask'][60]="System lock";
 $LANG['crontask'][61]="Disabled plugin";
 $LANG['crontask'][62]="Elements";
 
+/// TODO Before is ok for migration to gettext
+/// begin gettext for yllen
 $LANG['devices'][0]="Add a new component";
 $LANG['devices'][1]="Hard Drive";
 $LANG['devices'][2]="Graphics Card";
@@ -537,6 +539,8 @@ $LANG['device_power'][1]="ATX";
 
 $LANG['device_ram'][1]="Frequency";
 $LANG['device_ram'][2]="Size";
+/// TODO Before is ok for migration to gettext
+///end gettext for yllen
 
 $LANG['document'][1]="Checksum (SHA1)";
 $LANG['document'][2]="File";
@@ -1300,7 +1304,6 @@ $LANG['Menu'][5]="Tickets";
 $LANG['Menu'][6]="Reports";
 $LANG['Menu'][7]="Problems";
 $LANG['Menu'][8]="Changes";
-
 $LANG['Menu'][9]="LDAP directories";
 $LANG['Menu'][10]="Mail servers";
 $LANG['Menu'][11]="Settings";
@@ -1334,7 +1337,6 @@ $LANG['Menu'][40]="Bookmarks";
 $LANG['Menu'][41]="Checks";
 $LANG['Menu'][42]="Agendas";
 $LANG['Menu'][43]="SLAs";
-
 
 
 $LANG['monitors'][14]="Microphone";

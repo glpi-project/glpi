@@ -40,33 +40,26 @@ if (!defined('GLPI_ROOT')) {
 class DeviceCase extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['devices'][22];
-      }
-      return $LANG['devices'][15];
+      return _n('Case', 'Cases', $nb);
    }
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'devicecasetypes_id',
-                                     'label' => $LANG['device_case'][0],
+                                     'label' => __('Size'),
                                      'type'  => 'dropdownValue')));
    }
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[12]['table'] = 'glpi_devicecasetypes';
       $tab[12]['field'] = 'name';
-      $tab[12]['name']  = $LANG['device_case'][0];
+      $tab[12]['name']  = __('Size');
 
       return $tab;
    }
@@ -78,11 +71,10 @@ class DeviceCase extends CommonDevice {
     * @return array
    **/
    function getFormData() {
-      global $LANG;
 
       $data['label'] = $data['value'] = array();
       if ($this->fields["devicecasetypes_id"]) {
-         $data['label'][] = $LANG['device_case'][0];
+         $data['label'][] = __('Size');
          $data['value'][] = Dropdown::getDropdownName("glpi_devicecasetypes",
                                                       $this->fields["devicecasetypes_id"]);
       }
@@ -90,5 +82,4 @@ class DeviceCase extends CommonDevice {
    }
 
 }
-
 ?>

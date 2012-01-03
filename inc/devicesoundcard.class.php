@@ -40,17 +40,11 @@ if (!defined('GLPI_ROOT')) {
 class DeviceSoundCard extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['devices'][14];
-      }
-      return $LANG['devices'][7];
+      return _n('Soundcard', 'Soundcards', $nb);
    }
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'type',
@@ -60,7 +54,6 @@ class DeviceSoundCard extends CommonDevice {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
@@ -79,7 +72,6 @@ class DeviceSoundCard extends CommonDevice {
     * @return array
    **/
    function getFormData() {
-      global $LANG;
 
       $data['label'] = $data['value'] = array();
 
@@ -92,5 +84,4 @@ class DeviceSoundCard extends CommonDevice {
    }
 
 }
-
 ?>

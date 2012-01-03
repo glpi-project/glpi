@@ -40,49 +40,39 @@ if (!defined('GLPI_ROOT')) {
 class DeviceNetworkCard extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['devices'][10];
-      }
-      return $LANG['devices'][3];
+      return _n('Network Card', 'Network Cards', $nb);
    }
 
 
    static function getSpecifityLabel() {
-      global $LANG;
-
-      return array('specificity' => $LANG['device_iface'][2]);
+      return array('specificity' => __('MAC address'));
    }
 
 
    function getAdditionalFields() {
-      global $LANG;
-
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'specif_default',
-                                     'label' => $LANG['device_iface'][2]." ".$LANG['devices'][24],
+                                     'label' => __('MAC address by default'),
                                      'type'  => 'text'),
                                array('name'  => 'bandwidth',
-                                     'label' => $LANG['device_iface'][0],
+                                     'label' => __('Flow'),
                                      'type'  => 'text')));
    }
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'specif_default';
-      $tab[11]['name']     = $LANG['device_iface'][2]." ".$LANG['devices'][24];
+      $tab[11]['name']     = __('MAC address by default');
       $tab[11]['datatype'] = 'text';
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'bandwidth';
-      $tab[12]['name']     = $LANG['device_iface'][0];
+      $tab[12]['name']     = __('Flow');
       $tab[12]['datatype'] = 'text';
 
       return $tab;
@@ -95,17 +85,16 @@ class DeviceNetworkCard extends CommonDevice {
     * @return array
    **/
    function getFormData() {
-      global $LANG;
 
       $data['label'] = $data['value'] = array();
 
       if (!empty($this->fields["bandwidth"])) {
-         $data['label'][] = $LANG['device_iface'][0];
+         $data['label'][] = __('Flow');
          $data['value'][] = $this->fields["bandwidth"];
       }
 
       // Specificity
-      $data['label'][] = $LANG['device_iface'][2];
+      $data['label'][] = __('MAC address');
       $data['size']    = 18;
 
       return $data;

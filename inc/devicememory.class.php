@@ -40,32 +40,24 @@ if (!defined('GLPI_ROOT')) {
 class DeviceMemory extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['devices'][11];
-      }
-      return $LANG['devices'][6];
+      return _n('Memory', 'Memories', $nb);
    }
 
 
    static function getSpecifityLabel() {
-      global $LANG;
-
-      return array('specificity' => $LANG['device_ram'][2]);
+      return array('specificity' => __('Size'));
    }
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array_merge(parent::getAdditionalFields(),
                          array(array('name'  => 'specif_default',
-                                     'label' => $LANG['device_ram'][2]." ".$LANG['devices'][24],
+                                     'label' => __('Size by default'),
                                      'type'  => 'text',
                                      'unit'  => __('Mio')),
                                array('name'  => 'frequence',
-                                     'label' => $LANG['device_ram'][1],
+                                     'label' => __('Frequency'),
                                      'type'  => 'text',
                                      'unit'  => __('MHz')),
                                array('name'  => 'devicememorytypes_id',
@@ -75,18 +67,17 @@ class DeviceMemory extends CommonDevice {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'specif_default';
-      $tab[11]['name']     = $LANG['device_ram'][2]." ".$LANG['devices'][24];
+      $tab[11]['name']     = __('Size by default');
       $tab[11]['datatype'] = 'text';
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'frequence';
-      $tab[12]['name']     = $LANG['device_ram'][1];
+      $tab[12]['name']     = __('Frequency');
       $tab[12]['datatype'] = 'text';
 
       $tab[13]['table'] = 'glpi_devicememorytypes';
@@ -103,7 +94,6 @@ class DeviceMemory extends CommonDevice {
     * @return array
    **/
    function getFormData() {
-      global $LANG;
 
       $data['label'] = $data['value'] = array();
 
@@ -114,17 +104,16 @@ class DeviceMemory extends CommonDevice {
       }
 
       if (!empty($this->fields["frequence"])) {
-         $data['label'][] = $LANG['device_ram'][1];
+         $data['label'][] = __('Frequency');
          $data['value'][] = $this->fields["frequence"];
       }
 
       // Specificity
-      $data['label'][] = $LANG['device_ram'][2];
+      $data['label'][] = __('Size');
       $data['size']    = 10;
 
       return $data;
    }
 
 }
-
 ?>
