@@ -116,8 +116,8 @@ class Event extends CommonDBTM {
       $logItemtype = array('system'      => $LANG['log'][1],
                            'devices'     => _n('Component', 'Components', 2),
                            'planning'    => $LANG['log'][16],
-                           'reservation' => _n('Reservation', 'Reservations', 2);
-                           'dropdown'    => _n('Dropdown', 'Dropdowns', $nb);
+                           'reservation' => _n('Reservation', 'Reservations', 2),
+                           'dropdown'    => _n('Dropdown', 'Dropdowns', 2),
                            'rules'       => _n('Rule', 'Rules', 2));
 
       $logService = array('inventory'    => __('Inventory'),
@@ -129,7 +129,7 @@ class Event extends CommonDBTM {
                           'login'        => __('Connection'),
                           'setup'        => __('Setup'),
                           'security'     => __('Security'),
-                          'reservation'  => _n('Reservation', 'Reservations', 2);
+                          'reservation'  => _n('Reservation', 'Reservations', 2),
                           'cron'         => _n('Automatic action', 'Automatic actions', 2),
                           'document'     => _n('Document', 'Documents', 2),
                           'notification' => _n('Notification', 'Notifications',2),
@@ -204,7 +204,7 @@ class Event extends CommonDBTM {
       }
 
 
-      /// TODO : do not work with RTL language. 
+      /// TODO : do not work with RTL language.
       /// review log system to be able to do that (store action user)
       // Query Database
       $query = "SELECT *
