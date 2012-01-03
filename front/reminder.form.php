@@ -45,7 +45,8 @@ if (isset($_POST["add"])) {
    $remind->check(-1,'w',$_POST);
 
    $newID = $remind->add($_POST);
-   Event::log($newID, "reminder", 4, "tools", $_SESSION["glpiname"]." added ".$_POST["name"].".");
+   Event::log($newID, "reminder", 4, "tools", 
+               sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
 
 } else if (isset($_POST["delete"])) {

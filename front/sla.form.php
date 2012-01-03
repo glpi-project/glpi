@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
    $newID = $sla->add($_POST);
 
    Event::log($newID, "slas", 4, "setup",
-              $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+              sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/sla.php");
 
 } else if (isset($_POST["delete"])) {

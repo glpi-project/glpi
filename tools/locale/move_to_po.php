@@ -96,6 +96,8 @@ if ($pot && $po) {
 
       if (preg_match('/^msgid_plural "(.*)"$/',$content,$reg)) {
          $current_string_plural = $reg[1];
+         $sing_trans = '';
+         $plural_trans = '';
       }
 
       if (preg_match('/^"(.*)"$/',$content,$reg)) {
@@ -109,23 +111,32 @@ if ($pot && $po) {
          if (strlen($reg[1]) == 0) { //Singular
             $translation = search_in_dict($current_string);
             $content     = "msgstr \"$translation\"\n";
-             echo '+'.$current_string."+\n";
-             echo "$translation\n";
+//              echo '+'.$current_string."+\n";
+//              echo "$translation\n";
          } else {
+            
             switch ($reg[1]) {
                case "0" : // Singular
 //                   echo '+'.$current_string."+\n";
-                  $translation = search_in_dict($current_string);
+                  $sing_trans = search_in_dict($current_string);
 //                   echo "$translation\n";
                   break;
 
                case "1" : // Plural
 //                   echo '++'.$current_string."++\n";
-                  $translation = search_in_dict($current_string_plural);
+                  $plural_trans = search_in_dict($current_string_plural);
 //                   echo "$translation\n";
                   break;
             }
-            $content = "msgstr[".$reg[1]."] \"$translation\"\n";
+            
+            if ($reg[1] == "1") {
+               if (empty($sing_trans) || !empty($plural_trans)) {
+                  $sing_trans = '';
+                  $plural_trans = '';
+               }
+               $content = "msgstr[0] \"$sing_trans\"\n";
+               $content = "msgstr[1] \"$plural_trans\"\n";
+            }
          }
       }
      // Standard replacement
@@ -156,7 +167,7 @@ function search_in_dict($string) {
       $string = $reg[2];
       $right  = $reg[3];
    }
-    echo $left.' <- '.$string.' -> '.$right."\n";
+//     echo $left.' <- '.$string.' -> '.$right."\n";
    foreach ($REFLANG as $mod => $data) {
       foreach ($data as $key => $val) {
          // Search same case without punc

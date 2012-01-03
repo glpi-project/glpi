@@ -56,9 +56,9 @@ abstract class CommonDevice extends CommonDropdown {
                $table = getTableForItemType('Computer_'.$type);
                $nb   += countElementsInTable($table, "computers_id = '".$item->getID()."'");
             }
-            return self::createTabEntry(Toolbox::ucfirst($LANG['log'][18]), $nb);
+            return self::createTabEntry(_n('Component', 'Components', 2), $nb);
          }
-         return Toolbox::ucfirst($LANG['log'][18]);
+         return _n('Component', 'Components', 2);
       }
       return '';
    }
@@ -107,7 +107,7 @@ abstract class CommonDevice extends CommonDropdown {
    function title() {
       global $LANG;
 
-      Dropdown::showItemTypeMenu(Toolbox::ucfirst($LANG['log'][18]),
+      Dropdown::showItemTypeMenu(_n('Component', 'Components', 2),
                                  Dropdown::getDeviceItemTypes(), $this->getSearchURL());
    }
 

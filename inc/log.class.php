@@ -337,7 +337,7 @@ class Log extends CommonDBTM {
             // Yes it is an internal device
             switch ($data["linked_action"]) {
                case self::HISTORY_CREATE_ITEM :
-                  $tmp['change'] = $LANG['log'][20];
+                  $tmp['change'] = __('add the item');
                   break;
 
                case self::HISTORY_DELETE_ITEM :

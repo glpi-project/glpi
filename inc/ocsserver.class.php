@@ -224,7 +224,7 @@ class OcsServer extends CommonDBTM {
       echo "<form name='formconfig' action=\"$target\" method='post'>";
       echo "<table class='tab_cadre_fixe'>\n";
       echo "<tr><th><input type='hidden' name='id' value='$ID'>".__('General informations')."</th>\n";
-      echo "<th>&nbsp;" . Toolbox::ucfirst($LANG['log'][18]) . "&nbsp;</th>\n";
+      echo "<th>&nbsp;" . _n('Component', 'Components', 2) . "</th>\n";
       echo "<th>&nbsp;" . __('OCSNG administrative information') . "&nbsp;</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>\n";

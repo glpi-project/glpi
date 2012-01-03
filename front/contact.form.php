@@ -56,7 +56,7 @@ if (isset($_REQUEST['getvcard'])) {
 
    if ($newID = $contact->add($_POST)) {
       Event::log($newID, "contacts", 4, "financial",
-               $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+               sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    }
    Html::back();
 

@@ -114,7 +114,7 @@ class Event extends CommonDBTM {
       }
 
       $logItemtype = array('system'      => $LANG['log'][1],
-                           'devices'     => $LANG['log'][18],
+                           'devices'     => _n('Component', 'Components', 2),
                            'planning'    => $LANG['log'][16],
                            'reservation' => $LANG['log'][42],
                            'dropdown'    => $LANG['log'][44],
@@ -203,10 +203,13 @@ class Event extends CommonDBTM {
          $usersearch = $user." ";
       }
 
+
+      /// TODO : do not work with RTL language. 
+      /// review log system to be able to do that (store action user)
       // Query Database
       $query = "SELECT *
                 FROM `glpi_events`
-                WHERE `message` LIKE '".$usersearch.addslashes($LANG['log'][20])."%'
+                WHERE `message` LIKE '".$usersearch.addslashes(__('add the item'))."%'
                 ORDER BY `date` DESC
                 LIMIT 0,".intval($_SESSION['glpilist_limit']);
 

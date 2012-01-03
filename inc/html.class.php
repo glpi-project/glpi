@@ -1799,7 +1799,7 @@ class Html {
 
 
       if (Session::haveRight("device","w")) {
-         $menu['config']['content']['device']['title'] = Toolbox::ucfirst($LANG['log'][18]);
+         $menu['config']['content']['device']['title'] = _n('Component', 'Components', 2);
          $menu['config']['content']['device']['page']  = '/front/device.php';
 
          if ($item=="device") {

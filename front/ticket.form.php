@@ -104,19 +104,6 @@ if (isset($_POST["add"])) {
                  $_SESSION["glpiname"]." ".$LANG['log'][23]." ".$track->getField('name'));
    }
    $track->redirectToList();
-/*
-} else if (isset($_POST['add']) || isset($_POST['add_close']) || isset($_POST['add_reopen'])) {
-   Session::checkSeveralRightsOr(array('add_followups'     => '1',
-                                       'global_add_followups' => '1',
-                                       'show_assign_ticket' => '1'));
-   $newID = $fup->add($_POST);
-
-   Event::log($_POST["tickets_id"], "ticket", 4, "tracking",
-              $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
-   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".
-               $_POST["tickets_id"]."&glpi_tab=1&itemtype=Ticket");
-
-*/
 
 } else if (isset($_POST['sla_delete'])) {
    $track->check($_POST["id"],'w');

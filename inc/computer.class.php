@@ -856,7 +856,7 @@ class Computer extends CommonDBTM {
       $tab[80]['name']  = $LANG['entity'][0];
 
 
-      $tab['periph'] = Toolbox::ucfirst($LANG['log'][18]);
+      $tab['periph'] = _n('Component', 'Components', 2);
 
       $tab[7]['table']         = 'glpi_deviceprocessors';
       $tab[7]['field']         = 'designation';

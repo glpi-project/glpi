@@ -1289,7 +1289,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".Toolbox::ucfirst($LANG['log'][18])."</td><td>";
+      echo "<td>"._n('Component', 'Components', 2)."</td><td>";
       self::dropdownNoneReadWrite("device", $this->fields["device"], 1, 0, 1);
       echo "</td>";
       echo "<td>".__('Dropdowns')."</td><td>";
@@ -1518,7 +1518,7 @@ class Profile extends CommonDBTM {
 
       $tab[44]['table']    = $this->getTable();
       $tab[44]['field']    = 'device';
-      $tab[44]['name']     = Toolbox::ucfirst($LANG['log'][18]);
+      $tab[44]['name']     = _n('Component', 'Components', 2);
       $tab[44]['datatype'] = 'right';
 
       $tab[106]['table']    = $this->getTable();

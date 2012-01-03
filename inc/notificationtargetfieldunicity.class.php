@@ -46,7 +46,7 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
       global $LANG;
 
       //User who tries to add or update an item in DB
-      $action = ($options['action_user']?$LANG['log'][20]:$LANG['log'][21]);
+      $action = ($options['action_user']?__('Add the item'):__('Update the item'));
       $this->datas['##unicity.action_type##'] = $action;
       $this->datas['##unicity.action_user##'] = $options['action_user'];
       $this->datas['##unicity.message##']     = $options['message'];

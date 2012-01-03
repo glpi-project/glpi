@@ -529,7 +529,7 @@ class MailCollector  extends CommonDBTM {
 
          } else {
             if ($display) {
-               Session::addMessageAfterRedirect($LANG['log'][41], false, ERROR);
+               Session::addMessageAfterRedirect(__('Connection failed'), false, ERROR);
             } else {
                return "Could not connect to mailgate server";
             }

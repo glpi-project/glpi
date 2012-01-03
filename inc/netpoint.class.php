@@ -101,7 +101,8 @@ class Netpoint extends CommonDropdown {
          $input["name"] = $input["_before"].$i.$input["_after"];
          $this->add($input);
       }
-      Event::log(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
+      Event::log(0, "dropdown", 5, "setup", 
+            sprintf(__('%1$s add several netpoints'), $_SESSION["glpiname"], $_POST["name"]));
       Ajax::refreshDropdownPopupInMainWindow();
    }
 

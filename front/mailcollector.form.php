@@ -48,7 +48,7 @@ if (isset($_POST["add"])) {
    $newID = $mailgate->add($_POST);
 
    Event::log($newID, "mailcollector", 4, "setup",
-              $_SESSION["glpiname"]." added ".$_POST["name"].".");
+              sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
 
 } else if (isset($_POST["delete"])) {

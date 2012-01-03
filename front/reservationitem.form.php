@@ -43,8 +43,8 @@ $ri = new ReservationItem();
 if (isset($_REQUEST["add"])) {
    if ($newID = $ri->add($_REQUEST)) {
       Event::log($newID, "reservationitem", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_REQUEST["itemtype"]."-".
-                     $_REQUEST["items_id"].".");
+                  sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], 
+                              $_REQUEST["itemtype"]."-".$_REQUEST["items_id"]));
    }
    Html::back();
 

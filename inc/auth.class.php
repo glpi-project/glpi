@@ -589,12 +589,20 @@ class Auth {
          $ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));
 
          if ($this->auth_succeded) {
-            $logged = (GLPI_DEMO_MODE ? "logged in" : $LANG['log'][40]);
-            Event::log(-1, "system", 3, "login", $login_name . " $logged: " . $ip);
+            if (GLPI_DEMO_MODE) {
+               Event::log(-1, "system", 3, "login", $login_name . " logged in: " . $ip);           
+            } else {
+               //TRANS: %1$s is the login of the user and %2$s its IP address
+               Event::log(-1, "system", 3, "login", sprintf(__('Login of %1$s from IP %2$s'),$login_name, $ip));
+            }
 
          } else {
-            $logged = (GLPI_DEMO_MODE ? "connection failed" : $LANG['log'][41]);
-            Event::log(-1, "system", 1, "login", $logged . ": " . $login_name . " ($ip)");
+            if (GLPI_DEMO_MODE) {
+               Event::log(-1, "system", 3, "login", "login", "connection failed: " . $login_name . " ($ip)");           
+            } else {
+               //TRANS: %1$s is the login of the user and %2$s its IP address
+               Event::log(-1, "system", 3, "login", sprintf(__('Failed login for %1$s from IP %2$s'),$login_name, $ip));
+            }
          }
       }
 

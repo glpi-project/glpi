@@ -2965,7 +2965,7 @@ class User extends CommonDBTM {
             }
 
          } else {
-            echo $LANG['log'][41];
+            _e('Connection failed');
          }
 
          echo "</td></tr>\n";

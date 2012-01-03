@@ -57,7 +57,7 @@ if (isset($_POST["add"])) {
 
    $newID = $peripheral->add($_POST);
    Event::log($newID, "peripherals", 4, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+              sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
 
 } else if (isset($_POST["delete"])) {

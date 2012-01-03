@@ -48,7 +48,7 @@ if (isset($_POST["add"])) {
 
    $newID = $transfer->add($_POST);
    Event::log($newID, "transfers", 4, "setup",
-              $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
+              sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
 
 } else if (isset($_POST["delete"])) {
