@@ -132,12 +132,11 @@ class RuleRightCollection extends RuleCollection {
     * @param $value default value
    **/
    function displayActionByName($name, $value) {
-      global $LANG;
 
       echo "<tr class='tab_bg_2'>";
       switch ($name) {
          case "entity" :
-            echo "<td class='center'>".$LANG['entity'][0]." </td>\n";
+            echo "<td class='center'>".__('Entity')." </td>\n";
             echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $value)."</td>";
             break;
 

@@ -166,10 +166,9 @@ class Alert extends CommonDBTM {
     * @return array or string
     */
    static function getAlertName($val=NULL) {
-      global $LANG;
 
       $tmp[0] = Dropdown::EMPTY_VALUE;
-      $tmp[pow(2, self::END)] = $LANG['financial'][80];
+      $tmp[pow(2, self::END)] = __('Warranty expiration date');
 
       if (is_null($val)) {
          return $tmp;

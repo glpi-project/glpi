@@ -94,11 +94,10 @@ class SlaLevel_Ticket extends CommonDBTM {
     * @return arrray of informations
    **/
    static function cronInfo($name) {
-      global $LANG;
 
       switch ($name) {
          case 'slaticket' :
-            return array('description' => $LANG['crontask'][16]);
+            return array('description' => __('Automatic actions of SLA'));
       }
       return array();
    }

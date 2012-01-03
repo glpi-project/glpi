@@ -165,7 +165,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
 
 
    static function testNotification() {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
 
       $mmail = new NotificationMail();
       $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
@@ -177,7 +177,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       $mmail->Body    = __('This is a test email.')."\n-- \n".$CFG_GLPI["mailing_signature"];
 
       if (!$mmail->Send()) {
-         Session::addMessageAfterRedirect(__('Failed to send test email to administrator'), false, ERROR);
+         Session::addMessageAfterRedirect(__('Failed to send test email to administrator'), false,
+                                          ERROR);
       } else {
          Session::addMessageAfterRedirect(__('Test email sent to administrator'));
       }
@@ -209,7 +210,6 @@ class NotificationMail extends phpmailer implements NotificationInterface {
 
 
    function sendNotification($options=array()) {
-      global $LANG;
 
       $mmail = new self();
       $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
@@ -243,7 +243,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
          Session::addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo, true);
       } else {
          //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
-         Toolbox::logInFile("mail",sprintf(__('An email was sent to %1$s: %2$s'), $options['to'], $options['subject']."\n"));
+         Toolbox::logInFile("mail", sprintf(__('An email was sent to %1$s: %2$s'), $options['to'],
+                                            $options['subject']."\n"));
       }
 
       $mmail->ClearAddresses();

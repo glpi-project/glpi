@@ -114,7 +114,7 @@ class Ocslink extends CommonDBTM {
 
 
    static function editLock(Computer $comp) {
-      global $DB, $LANG;
+      global $DB;
 
       $ID     = $comp->getID();
       $target = Toolbox::getItemTypeFormURL(__CLASS__);
@@ -139,7 +139,7 @@ class Ocslink extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo "<input type='hidden' name='resynch_id' value='" . $data["id"] . "'>";
             echo "<input class=submit type='submit' name='force_ocs_resynch' value=\"" .
-                   $LANG['ldap'][11] . "\">";
+                   __('Force synchronization') . "\">";
             echo "</form>\n";
             echo "</td><tr>";
          }

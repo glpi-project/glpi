@@ -69,7 +69,7 @@ class Change_Ticket extends CommonDBRelation{
     * @param $change Change object
    **/
    static function showForChange(Change $change) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $ID = $change->getField('id');
       if (!$change->can($ID,'r')) {
@@ -86,7 +86,7 @@ class Change_Ticket extends CommonDBRelation{
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".__('Title')."</th>";
       if ($change->isRecursive()) {
-         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<th>".__('Entity')."</th>";
          $colspan++;
       }
       echo "</tr>";

@@ -42,9 +42,6 @@ if (!defined('GLPI_ROOT')) {
 class NotificationEvent extends CommonDBTM {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-
       return _n('Event', 'Events', $nb);
    }
 
@@ -181,7 +178,6 @@ class NotificationEvent extends CommonDBTM {
     * @param $options array
    **/
    static function debugEvent($item, $options=array()) {
-      global $LANG;
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -193,8 +189,10 @@ class NotificationEvent extends CommonDBTM {
          $events = $target->getAllEvents();
 
          if (count($events)>0) {
-            echo "<tr><th>"._n('Event', 'Events', 2).'</th><th>'._n('Recipient', 'Recipients', 2)."</th>";
-            echo "<th>"._n('Notification template', 'Notification templates', 2).'</th><th>'._n('Email', 'Emails', 2)."</th></tr>";
+            echo "<tr><th>"._n('Event', 'Events', 2).'</th><th>'._n('Recipient', 'Recipients', 2).
+                 "</th>";
+            echo "<th>"._n('Notification template', 'Notification templates', 2)."</th>".
+                 "<th>"._n('Email', 'Emails', 2)."</th></tr>";
 
             foreach ($events as $event => $label) {
                self::raiseEvent($event, $item, $options, $label);

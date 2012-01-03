@@ -292,7 +292,6 @@ abstract class CommonDBChild extends CommonDBTM {
     * @since version 0.84
    **/
    function prepareInputForUpdate($input) {
-      global $LANG;
 
       $item = self::getItemFromArray($input);
 

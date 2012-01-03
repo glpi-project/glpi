@@ -125,7 +125,6 @@ class RuleCriteria extends CommonDBChild {
    **/
 /// TODO Delete : no more used
 //    function getValueToMatch($condition, &$initValue) {
-//       global $LANG;
 //
 //       $type = $this->getType();
 //
@@ -145,7 +144,7 @@ class RuleCriteria extends CommonDBChild {
 //                   return $item->getTypeName();
 //                } else {
 //                   if (empty($initValue)) {
-//                      return $LANG['help'][30];
+//                      return __('General');
 //                   }
 //                }
 //                break;

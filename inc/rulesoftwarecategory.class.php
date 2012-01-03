@@ -60,11 +60,10 @@ class RuleSoftwareCategory extends Rule {
 
 
    function getCriterias() {
-      global $LANG;
 
       $criterias = array();
       $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = $LANG['help'][31];
+      $criterias['name']['name']  = _n('Software', 'Software', 2);
       $criterias['name']['table'] = 'glpi_softwares';
 
       $criterias['manufacturer']['field'] = 'name';

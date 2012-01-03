@@ -53,14 +53,11 @@ class NotImportedEmail extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Refused email', 'Refused emails', $nb);
    }
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab[1]['table']         = 'glpi_notimportedemails';
@@ -89,9 +86,9 @@ class NotImportedEmail extends CommonDBTM {
       $tab[5]['name']          = __('Message-ID email header');
       $tab[5]['massiveaction'] = false;
 
-      $tab[6]['table'] = 'glpi_users';
-      $tab[6]['field'] = 'name';
-      $tab[6]['name']  = $LANG['job'][4];
+      $tab[6]['table']          = 'glpi_users';
+      $tab[6]['field']          = 'name';
+      $tab[6]['name']           = __('Requester');
 
       $tab[16]['table']         = 'glpi_notimportedemails';
       $tab[16]['field']         = 'reason';
@@ -118,7 +115,6 @@ class NotImportedEmail extends CommonDBTM {
 
 
    static function getReason($reason_id) {
-      global $LANG;
 
       switch ($reason_id) {
          case self::MATCH_NO_RULE :
@@ -133,5 +129,4 @@ class NotImportedEmail extends CommonDBTM {
    }
 
 }
-
 ?>
