@@ -1153,6 +1153,9 @@ $LANG['log'][86]="modification of licence";
 $LANG['log'][87]="licence's deletion";
 $LANG['log'][88]="adding cartridges";
 $LANG['log'][89]="adding consumables";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['log'][90]="deletion of a cartridge";
 $LANG['log'][91]="deletion of a consumable";
 $LANG['log'][92]="restoration of a cartridge";
@@ -1161,8 +1164,8 @@ $LANG['log'][94]="cartridge's update";
 $LANG['log'][95]="cartridge's installation";
 $LANG['log'][96]="cartridge's uninstallation";
 $LANG['log'][97]="consumable out for the user";
-$LANG['log'][98]="add an element";
-$LANG['log'][99]="modification of an item";
+$LANG['log'][98]="add an item";
+$LANG['log'][99]="update of an item";
 $LANG['log'][100]="deletion of an item";
 $LANG['log'][110]="software installation";
 $LANG['log'][111]="software uninstallation";
@@ -1176,8 +1179,6 @@ $LANG['log'][118]="dissociation of a license and computers";
 $LANG['log'][120]="deletion of a link between tickets";
 $LANG['log'][122]="deletion of an actor to the ticket";
 $LANG['log'][123]="trying to add an item that already exists";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['login'][0]="Last login";
 $LANG['login'][1]="Log in again";

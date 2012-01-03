@@ -353,7 +353,8 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = sprintf(__('Add a component : %s'), $data["new_value"]);
+                  //TRANS: %s is the component name
+                  $tmp['change'] = sprintf(__('Add a component: %s'), $data["new_value"]);
                   break;
 
                case self::HISTORY_UPDATE_DEVICE :
@@ -372,16 +373,19 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = sprintf(__('Deletion of a component : %s'), $data["old_value"]);
+                  //TRANS: %s is the component name
+                  $tmp['change'] = sprintf(__('Deletion of a component: %s'), $data["old_value"]);
                   break;
 
                case self::HISTORY_INSTALL_SOFTWARE :
                   $tmp['field']  = $LANG['help'][31];
+                  //TRANS: %s is the software name                  
                   $tmp['change'] = sprintf(__('Install software: "%s"'), $data["new_value"]);
                   break;
 
                case self::HISTORY_UNINSTALL_SOFTWARE :
                   $tmp['field']  = $LANG['help'][31];
+                  //TRANS: %s is the software name                  
                   $tmp['change'] = sprintf(__('Install software: "%s"'), $data["old_value"]);
                   break;
 
@@ -453,7 +457,8 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][32]." : "."\"". $data["new_value"]."\"";
+                  //TRANS: %s is the item name                  
+                  $tmp['change'] = sprintf(__('add a link with an item: %s'),"\"". $data["old_value"]."\"");
                   break;
 
                case self::HISTORY_DEL_RELATION :
@@ -461,7 +466,8 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][33]." : "."\"". $data["old_value"]."\"";
+                  //TRANS: %s is the item name                  
+                  $tmp['change'] = sprintf(__('deletion of a link with an item: %s'),"\"". $data["old_value"]."\"");
                   break;
 
                case self::HISTORY_ADD_SUBITEM :
@@ -469,7 +475,9 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][98]." : ".$tmp['field']." (".$data["new_value"].")";
+                  //TRANS: %s is the item name                  
+                  $tmp['change'] = sprintf(__('add an item: %s'),$tmp['field']." (".$data["new_value"].")");
+                  
                   break;
 
                case self::HISTORY_UPDATE_SUBITEM :
@@ -477,7 +485,8 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][99]." : ".$tmp['field']." (".$data["new_value"].")";
+                  //TRANS: %s is the item name                  
+                  $tmp['change'] = sprintf(__('update an item: %s'),$tmp['field']." (".$data["new_value"].")");
                   break;
 
                case self::HISTORY_DELETE_SUBITEM :
@@ -485,7 +494,8 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][100]." : ".$tmp['field']." (".$data["old_value"].")";
+                  //TRANS: %s is the item name                  
+                  $tmp['change'] = sprintf(__('deletion of an item: %s'),$tmp['field']." (".$data["old_value"].")");
                   break;
 
             }
