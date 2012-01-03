@@ -178,7 +178,9 @@ class TicketTask  extends CommonDBTM {
       Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
                    HISTORY_DELETE_SUBITEM);
 
-      $options = array('task_id' => $this->fields["id"]);
+      $options = array('task_id'     => $this->fields["id"], 
+                        // Force is_private with data / not available
+                        'is_private' => $this->fields['is_private']);
       NotificationEvent::raiseEvent('delete_task', $job, $options);
    }
 
@@ -216,7 +218,8 @@ class TicketTask  extends CommonDBTM {
             $update_done = true;
 
             if ($CFG_GLPI["use_mailing"] && (in_array("content",$this->updates))) {
-               $options = array('task_id' => $this->fields["id"]);
+               $options = array('task_id'    => $this->fields["id"],
+                                'is_private' => $this->fields['is_private']);
                NotificationEvent::raiseEvent('update_task', $job, $options);
                $mailsend = true;
             }
@@ -356,7 +359,8 @@ class TicketTask  extends CommonDBTM {
       }
 
       if ($donotif) {
-         $options = array('task_id' => $this->fields["id"]);
+         $options = array('task_id'    => $this->fields["id"],
+                          'is_private' => $this->fields['is_private']);
          NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
       }
 
