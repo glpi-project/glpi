@@ -45,7 +45,7 @@ function update080to0801() {
    $ADDTODISPLAYPREF = array();
 
    $migration->displayTitle($LANG['install'][4]." -> 0.80.1");
-   $migration->setVersion('0.80.1')
+   $migration->setVersion('0.80.1');
 
    // Clean duplicates
    $query = "SELECT COUNT(*) AS CPT, `tickets_id`, `type`, `groups_id`
