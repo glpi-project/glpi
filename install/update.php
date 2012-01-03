@@ -395,8 +395,8 @@ function location_create_new($split_char, $add_first) {
 function showLocationUpdateForm() {
    global $DB, $LANG, $CFG_GLPI;
 
-   if ((TableExists ("glpi_dropdown_locations") && FieldExists("glpi_dropdown_locations", "parentID"))
-       || (TableExists ("glpi_locations") && FieldExists("glpi_locations", "locations_id"))) {
+   if ((TableExists ("glpi_dropdown_locations") && FieldExists("glpi_dropdown_locations", "parentID", false))
+       || (TableExists ("glpi_locations") && FieldExists("glpi_locations", "locations_id", false))) {
       updateTreeDropdown();
       return true;
    }
@@ -479,7 +479,7 @@ function test_connect() {
 function changeVarcharToID($table1, $table2, $chps) {
    global $DB,$LANG;
 
-   if (!FieldExists($table2, "ID")) {
+   if (!FieldExists($table2, "ID", false)) {
       $query = " ALTER TABLE `$table2`
                  ADD `ID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST";
       $DB->query($query) or die("".$LANG['update'][90].$DB->error());
@@ -803,7 +803,7 @@ function updateTreeDropdown() {
 
    // Update Tree dropdown
    if (TableExists("glpi_dropdown_locations")
-       && !FieldExists("glpi_dropdown_locations", "completename")) {
+       && !FieldExists("glpi_dropdown_locations", "completename", false)) {
       $query = "ALTER TABLE `glpi_dropdown_locations`
                 ADD `completename` TEXT NOT NULL ";
       $DB->query($query)
@@ -811,14 +811,14 @@ function updateTreeDropdown() {
    }
 
    if (TableExists("glpi_dropdown_kbcategories")
-       && !FieldExists("glpi_dropdown_kbcategories", "completename")) {
+       && !FieldExists("glpi_dropdown_kbcategories", "completename", false)) {
       $query = "ALTER TABLE `glpi_dropdown_kbcategories`
                 ADD `completename` TEXT NOT NULL ";
       $DB->query($query)
       or die("0.6 add completename in dropdown_kbcategories ".$LANG['update'][90].$DB->error());
    }
 
-   if (TableExists("glpi_locations") && !FieldExists("glpi_locations", "completename")) {
+   if (TableExists("glpi_locations") && !FieldExists("glpi_locations", "completename", false)) {
       $query = "ALTER TABLE `glpi_locations`
                 ADD `completename` TEXT NOT NULL ";
       $DB->query($query)
@@ -826,7 +826,7 @@ function updateTreeDropdown() {
    }
 
    if (TableExists("glpi_knowbaseitemcategories")
-       && !FieldExists("glpi_knowbaseitemcategories", "completename")) {
+       && !FieldExists("glpi_knowbaseitemcategories", "completename", false)) {
       $query = "ALTER TABLE `glpi_knowbaseitemcategories`
                 ADD `completename` TEXT NOT NULL ";
       $DB->query($query)

@@ -140,7 +140,7 @@ function update0803to083() {
       $DB->query($query) or die("0.83 create glpi_problems " . $LANG['update'][90] . $DB->error());
       $ADDTODISPLAYPREF['Problem'] = array(21,12,19,15,3,7,18);
    }
-   if (FieldExists('glpi_tickets','ticket_waiting_duration')) {
+   if (FieldExists('glpi_tickets','ticket_waiting_duration', false)) {
      $migration->changeField('glpi_tickets', 'ticket_waiting_duration', 'waiting_duration',
                            'integer');
    }
@@ -854,7 +854,7 @@ function update0803to083() {
    }
    // Manage migration : populate is_default=1
    // and is_dynamic depending of authldap config / authtype / auths_id
-   if (FieldExists("glpi_users", 'email')) {
+   if (FieldExists("glpi_users", 'email', false)) {
       $query = "SELECT *
                 FROM `glpi_users`
                 WHERE `email` <> '' AND `email` IS NOT NULL";
@@ -917,7 +917,7 @@ function update0803to083() {
    $migration->addKey("glpi_groups_users", "is_manager");
    $migration->migrationOneTable('glpi_groups_users');
 
-   if (FieldExists("glpi_groups", 'users_id')) {
+   if (FieldExists("glpi_groups", 'users_id', false)) {
       $query = "SELECT *
                 FROM `glpi_groups`
                 WHERE `users_id` > 0";
@@ -1549,7 +1549,7 @@ function update0803to083() {
    }
 
    /// Migrate datas for is_helpdesk_visible : add all helpdesk profiles / drop field is_helpdesk_visible
-   if (FieldExists("glpi_reminders", 'is_helpdesk_visible')) {
+   if (FieldExists("glpi_reminders", 'is_helpdesk_visible', false)) {
       $query = "SELECT `id`
                 FROM `glpi_reminders`
                 WHERE `is_helpdesk_visible` = 1";
@@ -1582,7 +1582,7 @@ function update0803to083() {
    }
 
    // Migrate datas for entities + drop fields : is_private / entities_id / is_recursive
-   if (FieldExists("glpi_reminders", 'is_private')) {
+   if (FieldExists("glpi_reminders", 'is_private', false)) {
 
       $query = "SELECT *
                 FROM `glpi_reminders`
@@ -1678,7 +1678,7 @@ function update0803to083() {
    }
 
    /// Migrate datas for entities_id / is_recursive
-   if (FieldExists("glpi_knowbaseitems", 'entities_id')) {
+   if (FieldExists("glpi_knowbaseitems", 'entities_id', false)) {
       $query = "SELECT *
                 FROM `glpi_knowbaseitems`";
 
@@ -1754,7 +1754,7 @@ function update0803to083() {
    $field0 = array('calendars_id', 'tickettype', 'inquest_config');
 
    foreach ($field0 as $field_0) {
-      if (FieldExists("glpi_entitydatas", $field_0) ) {
+      if (FieldExists("glpi_entitydatas", $field_0, false) ) {
          $query = "UPDATE `glpi_entitydatas`
                    SET `$field_0` = '-2'
                    WHERE `$field_0` = '0'";
@@ -1781,7 +1781,7 @@ function update0803to083() {
                         'autofill_order_date', 'autofill_use_date');
 
    foreach ($fieldparent as $field_parent) {
-      if (FieldExists("glpi_entitydatas", $field_parent)) {
+      if (FieldExists("glpi_entitydatas", $field_parent, false)) {
          $query = "UPDATE `glpi_entitydatas`
                    SET `$field_parent` = -2
                    WHERE `$field_parent` = -1";
@@ -1816,8 +1816,8 @@ function update0803to083() {
          if ($data = $DB->fetch_assoc($result)) {
 
             foreach ($fieldconfig as $field_config) {
-               if (FieldExists("glpi_entitydatas", $field_config)
-                   && FieldExists("glpi_configs", $field_config)) {
+               if (FieldExists("glpi_entitydatas", $field_config, false)
+                   && FieldExists("glpi_configs", $field_config, false)) {
                   // value of general config
                   $query = "UPDATE `glpi_entitydatas`
                             SET `$field_config` = '".$data[$field_config]."'
@@ -1832,7 +1832,7 @@ function update0803to083() {
                   $migration->dropField("glpi_configs", $field_config);
                }
             }
-            if (FieldExists("glpi_entitydatas", "auto_assign_mode")) {
+            if (FieldExists("glpi_entitydatas", "auto_assign_mode", false)) {
                // new value for never
                $query = "UPDATE `glpi_entitydatas`
                          SET `auto_assign_mode` = -10
@@ -1856,8 +1856,8 @@ function update0803to083() {
       if ($DB->numrows($result) > 0) {
          if ($data = $DB->fetch_assoc($result)) {
             foreach ($fieldconfig as $field_config) {
-               if (FieldExists("glpi_configs", $field_config)
-                   && !FieldExists("glpi_entitydatas", $field_config)) {
+               if (FieldExists("glpi_configs", $field_config, false)
+                   && !FieldExists("glpi_entitydatas", $field_config, false)) {
                   // add config fields in entitydatas
                   $migration-> addField("glpi_entitydatas", $field_config, 'integer',
                                         array('update' => $data[$field_config],

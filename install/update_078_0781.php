@@ -71,7 +71,7 @@ function update078to0781($output='HTML') {
                continue;
             }
             $do_recursive=false;
-            if (FieldExists($itemtable,'is_recursive')) {
+            if (FieldExists($itemtable,'is_recursive', false)) {
                $do_recursive=true;
             }
             foreach ($entities as $entID => $val) {
@@ -118,7 +118,7 @@ function update078to0781($output='HTML') {
    $DB->query($query) or die("0.78.1 update ticket global_validation state");
 
 
-   if (!FieldExists('glpi_knowbaseitemcategories','entities_id')) {
+   if (!FieldExists('glpi_knowbaseitemcategories','entities_id', false)) {
       $query = "ALTER TABLE `glpi_knowbaseitemcategories`
                     ADD `entities_id` INT NOT NULL DEFAULT '0' AFTER `id`,
                     ADD `is_recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `entities_id`,

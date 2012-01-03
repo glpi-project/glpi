@@ -360,7 +360,7 @@ if (TableExists("glpi_configs")) {
    $config_table = "glpi_configs";
 }
 
-if (!FieldExists($config_table,"utf8_conv")) {
+if (!FieldExists($config_table,"utf8_conv", false)) {
    $conv_utf8 = true;
 } else {
    $query = "SELECT `utf8_conv`

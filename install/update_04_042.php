@@ -66,14 +66,14 @@ function update04to042() {
       $DB->query($query) or die("4202 ".$LANG['update'][90].$DB->error());
    }
 
-   if (!FieldExists("glpi_tracking","device_type")) {
+   if (!FieldExists("glpi_tracking","device_type", false)) {
       $query = "ALTER TABLE `glpi_tracking`
                 ADD `device_type` INT DEFAULT '1' NOT NULL AFTER `assign` ";
       $DB->query($query) or die("4203 ".$LANG['update'][90].$DB->error());
    }
 
    // Ajout language par defaut
-   if (!FieldExists("glpi_config","default_language")) {
+   if (!FieldExists("glpi_config","default_language", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `default_language` VARCHAR(255) DEFAULT 'english' NOT NULL ";
       $DB->query($query) or die("4204 ".$LANG['update'][90].$DB->error());
