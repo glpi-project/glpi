@@ -80,9 +80,12 @@ if (!$DB->connected) {
 class CliMigration extends Migration {
 
    function __construct($ver) {
-      global $LANG;
+      $this->deb = time();
+      $this->setVersion($ver);
+   }
 
-      $this->deb     = time();
+
+   function setVersion($ver) {
       $this->version = $ver;
    }
 
