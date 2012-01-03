@@ -3768,7 +3768,7 @@ class Ticket extends CommonITILObject {
 
       } else {
          echo "<th colspan='2'>";
-         echo $LANG['document'][20].'&nbsp;:&nbsp;'.Document_Item::countForItem($this);
+         echo sprintf(__('%s associated documents') ,Document_Item::countForItem($this));
          echo "</th>";
       }
 

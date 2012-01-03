@@ -1166,7 +1166,8 @@ abstract class CommonITILObject extends CommonDBTM {
          } else if (!empty($_FILES['filename']['name'])
                     && isset($_FILES['filename']['error'])
                     && $_FILES['filename']['error']) {
-            Session::addMessageAfterRedirect($LANG['document'][46], false, ERROR);
+            Session::addMessageAfterRedirect(__('Failed to send the file (probably too large)'),
+                                             false, ERROR);
          }
       }
       unset ($_FILES);

@@ -44,22 +44,22 @@ $doc = new Document();
 
 if (isset($_GET['docid'])) { // docid for document
    if (!$doc->getFromDB($_GET['docid'])) {
-      Html::displayErrorAndDie($LANG['document'][43],true);
+      Html::displayErrorAndDie(__('Unknown File'), true);
    }
 
    if (!file_exists(GLPI_DOC_DIR."/".$doc->fields['filepath'])) {
-      Html::displayErrorAndDie($LANG['document'][38],true); // Not found
+      Html::displayErrorAndDie(__('File not found'), true); // Not found
 
    } else if ($doc->canViewFile($_GET)) {
       if ($doc->fields['sha1sum']
           && $doc->fields['sha1sum'] != sha1_file(GLPI_DOC_DIR."/".$doc->fields['filepath'])) {
 
-         Html::displayErrorAndDie($LANG['document'][49],true); // Doc alterated
+         Html::displayErrorAndDie(__('File is altered (bad checksum)'), true); // Doc alterated
       } else {
          $doc->send();
       }
    } else {
-      Html::displayErrorAndDie($LANG['document'][45],true); // No right
+      Html::displayErrorAndDie(__('Unauthorized access to this file'), true); // No right
    }
 
 } else if (isset($_GET["file"])) { // for other file
@@ -73,10 +73,10 @@ if (isset($_GET['docid'])) { // docid for document
       if ($send && file_exists(GLPI_DOC_DIR."/".$_GET["file"])) {
          Toolbox::sendFile(GLPI_DOC_DIR."/".$_GET["file"], $splitter[1]);
       } else {
-         Html::displayErrorAndDie($LANG['document'][45],true);
+         Html::displayErrorAndDie(__('Unauthorized access to this file'), true);
       }
    } else {
-      Html::displayErrorAndDie($LANG['document'][44],true);
+      Html::displayErrorAndDie(__('Invalid Filename'), true);
    }
 }
 ?>

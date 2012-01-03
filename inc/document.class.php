@@ -102,11 +102,12 @@ class Document extends CommonDBTM {
                                      "`sha1sum`='".$this->fields["sha1sum"]."'")<=1) {
 
             if (unlink(GLPI_DOC_DIR."/".$this->fields["filepath"])) {
-               Session::addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".
-                                                $this->fields["filepath"]);
+               Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
+                                                         GLPI_DOC_DIR."/".$this->fields["filepath"]));
             } else {
-               Session::addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".
-                                                $this->fields["filepath"], false, ERROR);
+               Session::addMessageAfterRedirect(sprintf(__('Failed to delete the file %s'),
+                                                        GLPI_DOC_DIR."/".$this->fields["filepath"]),
+                                                false, ERROR);
             }
          }
       }
@@ -214,7 +215,7 @@ class Document extends CommonDBTM {
                        'entities_id'=>$input['entities_id']);
          foreach ($DB->request($this->getTable(), $crit) as $data) {
             $link=$this->getFormURL();
-            Session::addMessageAfterRedirect($LANG['document'][48].
+            Session::addMessageAfterRedirect(__('"A document with that filename has already been attached to (another) record').
                "&nbsp;: <a href=\"".$link."?id=".
                      $data['id']."\">".$data['name']."</a>",
                false, ERROR, true);
@@ -301,7 +302,7 @@ class Document extends CommonDBTM {
       if ($ID>0) {
          echo "<tr><th colspan='2'>";
          if ($this->fields["users_id"]>0) {
-            echo $LANG['document'][42]." ".getUserName($this->fields["users_id"],1);
+            echo sprintf(__('Added by %s'), getUserName($this->fields["users_id"], 1));
          } else {
             echo "&nbsp;";
          }
@@ -326,7 +327,7 @@ class Document extends CommonDBTM {
 
       if ($ID>0) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['document'][22]."&nbsp;:</td>";
+         echo "<td>".__('Current File')."</td>";
          echo "<td>".$this->getDownloadLink('',45);
          echo "<input type='hidden' name='current_filepath' value='".$this->fields["filepath"]."'>";
          echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
@@ -339,13 +340,13 @@ class Document extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['document'][36]."&nbsp;:</td>";
+      echo "<td>".__('Use a FTP installed file')."</td>";
       echo "<td>";
       $this->showUploadedFilesDropdown("upload_file");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['document'][33]."&nbsp;:</td>";
+      echo "<td>".__('Web Link')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "link");
       echo "</td></tr>";
@@ -654,80 +655,80 @@ class Document extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']             = __('Characteristics');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false;
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'filename';
-      $tab[3]['name']          = __('File');
-      $tab[3]['massiveaction'] = false;
-      $tab[3]['datatype']      = 'string';
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'filename';
+      $tab[3]['name']            = __('File');
+      $tab[3]['massiveaction']   = false;
+      $tab[3]['datatype']        = 'string';
 
-      $tab[4]['table']    = $this->getTable();
-      $tab[4]['field']    = 'link';
-      $tab[4]['name']     = $LANG['document'][33];
-      $tab[4]['datatype'] = 'weblink';
-      $tab[4]['datatype'] = 'string';
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'link';
+      $tab[4]['name']            = __('Web Link');
+      $tab[4]['datatype']        = 'weblink';
+      $tab[4]['datatype']        = 'string';
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'mime';
-      $tab[5]['name']      = __('MIME Type');
-      $tab[5]['datatype']  = 'string';
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'mime';
+      $tab[5]['name']            = __('MIME Type');
+      $tab[5]['datatype']        = 'string';
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
-      $tab[90]['table']         = $this->getTable();
-      $tab[90]['field']         = 'notepad';
-      $tab[90]['name']          = __('Notes');
-      $tab[90]['massiveaction'] = false;
+      $tab[90]['table']          = $this->getTable();
+      $tab[90]['field']          = 'notepad';
+      $tab[90]['name']           = __('Notes');
+      $tab[90]['massiveaction']   = false;
 
-      $tab[7]['table']  = 'glpi_documentcategories';
-      $tab[7]['field']  = 'name';
-      $tab[7]['name']   = __('Heading');
+      $tab[7]['table']           = 'glpi_documentcategories';
+      $tab[7]['field']           = 'name';
+      $tab[7]['name']            = __('Heading');
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
-      $tab[80]['massiveaction'] = false;
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['massiveaction']  = false;
 
-      $tab[86]['table']    = $this->getTable();
-      $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = $LANG['entity'][9];
-      $tab[86]['datatype'] = 'bool';
+      $tab[86]['table']          = $this->getTable();
+      $tab[86]['field']          = 'is_recursive';
+      $tab[86]['name']           = $LANG['entity'][9];
+      $tab[86]['datatype']       = 'bool';
 
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
 
-      $tab[20]['table']         = $this->getTable();
-      $tab[20]['field']         = 'sha1sum';
-      $tab[20]['name']          = __('Checksum (SHA1)');
-      $tab[20]['massiveaction'] = false;
+      $tab[20]['table']          = $this->getTable();
+      $tab[20]['field']          = 'sha1sum';
+      $tab[20]['name']           = __('Checksum (SHA1)');
+      $tab[20]['massiveaction']  = false;
 
-      $tab[72]['table']         = 'glpi_documents_items';
-      $tab[72]['field']         = 'count';
-      $tab[72]['name']          = __('Number of associated items');
-      $tab[72]['forcegroupby']  = true;
-      $tab[72]['usehaving']     = true;
-      $tab[72]['datatype']      = 'number';
-      $tab[72]['massiveaction'] = false;
-      $tab[72]['joinparams']    = array('jointype' => 'child');
+      $tab[72]['table']          = 'glpi_documents_items';
+      $tab[72]['field']          = 'count';
+      $tab[72]['name']           = __('Number of associated items');
+      $tab[72]['forcegroupby']   = true;
+      $tab[72]['usehaving']      = true;
+      $tab[72]['datatype']       = 'number';
+      $tab[72]['massiveaction']  = false;
+      $tab[72]['joinparams']     = array('jointype' => 'child');
 
       return $tab;
    }
@@ -975,12 +976,13 @@ class Document extends CommonDBTM {
       $fullpath = GLPI_DOC_DIR."/_uploads/".$filename;
 
       if (!is_dir(GLPI_DOC_DIR."/_uploads")) {
-         Session::addMessageAfterRedirect($LANG['document'][35], false, ERROR);
+         Session::addMessageAfterRedirect(__s("Upload directory doesn't exist"), false, ERROR);
          return false;
       }
 
       if (!is_file($fullpath)) {
-         Session::addMessageAfterRedirect($LANG['document'][38]."&nbsp;: ".$fullpath, false, ERROR);
+         Session::addMessageAfterRedirect(sprintf(__('File %s not found.'), $fullpath),
+                                          false, ERROR);
          return false;
       }
       $sha1sum  = sha1_file($fullpath);
@@ -999,10 +1001,13 @@ class Document extends CommonDBTM {
                      "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".$input['current_filepath'])."'")<=1) {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
-            Session::addMessageAfterRedirect($LANG['document'][24]." ".$input['current_filename']);
+            Session::addMessageAfterRedirectsprintf(__('Succesful deletion of the file %s'),
+                                                     $input['current_filename']);
          } else {
-            Session::addMessageAfterRedirect($LANG['document'][25]." ".$input['current_filename'].
-                                              " (".GLPI_DOC_DIR."/".$input['current_filepath'].")",
+            // TRANS: %1s is the curent filename, %2s is its directory
+            Session::addMessageAfterRedirect(sprintf(__('Failed to delete the file %1s (%2s)'),
+                                                     $input['current_filename'],
+                                                     GLPI_DOC_DIR."/".$input['current_filepath']),
                                              false, ERROR);
          }
       }
@@ -1019,17 +1024,17 @@ class Document extends CommonDBTM {
       if (is_writable(GLPI_DOC_DIR."/_uploads/") && is_writable ($fullpath)) { // Move if allowed
 
          if (self::renameForce($fullpath, GLPI_DOC_DIR."/".$new_path)) {
-            Session::addMessageAfterRedirect($LANG['document'][39]);
+            Session::addMessageAfterRedirect(__('Document move succeeded.'));
          } else {
-            Session::addMessageAfterRedirect($LANG['document'][40], false, ERROR);
+            Session::addMessageAfterRedirect(__('File move failed.'), false, ERROR);
             return false;
          }
 
       } else { // Copy (will overwrite dest file is present)
          if (copy($fullpath, GLPI_DOC_DIR."/".$new_path)) {
-            Session::addMessageAfterRedirect($LANG['document'][41]);
+            Session::addMessageAfterRedirect(__('Document copy succeeded.'));
          } else {
-            Session::addMessageAfterRedirect($LANG['document'][40], false, ERROR);
+            Session::addMessageAfterRedirect(__('File move failed'), false, ERROR);
             return false;
          }
       }
@@ -1059,11 +1064,11 @@ class Document extends CommonDBTM {
          switch ($FILEDESC['error']) {
             case 1 :
             case 2 :
-               Session::addMessageAfterRedirect($LANG['document'][23], false, ERROR);
+               Session::addMessageAfterRedirect(__s('File too large to be added.'), false, ERROR);
                break;
 
             case 4 :
-//                Session::addMessageAfterRedirect($LANG['document'][28],false,ERROR);
+//                Session::addMessageAfterRedirect(__s('No file specified.'),false,ERROR);
                break;
          }
 
@@ -1085,10 +1090,13 @@ class Document extends CommonDBTM {
                      "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".$input['current_filepath'])."'")<=1) {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
-            Session::addMessageAfterRedirect($LANG['document'][24]." ".$input['current_filename']);
+            Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
+                                                     $input['current_filename']));
          } else {
-            Session::addMessageAfterRedirect($LANG['document'][25]." ".$input['current_filename'].
-                                              " (".GLPI_DOC_DIR."/".$input['current_filepath'].")",
+            // TRANS: %1s is the curent filename, %2s is its directory
+            Session::addMessageAfterRedirect(sprintf(__('Failed to delete the file %1s (%2s)'),
+                                                     $input['current_filename'],
+                                                     GLPI_DOC_DIR."/".$input['current_filepath']),
                                              false, ERROR);
          }
       }
@@ -1100,7 +1108,7 @@ class Document extends CommonDBTM {
 
       // Move uploaded file
       if (self::renameForce($FILEDESC['tmp_name'], GLPI_DOC_DIR."/".$path)) {
-         Session::addMessageAfterRedirect($LANG['document'][26]);
+         Session::addMessageAfterRedirect(__s('The file is valid. Upload is successful.'));
          // For display
          $input['filename'] = addslashes($FILEDESC['name']);
          // Storage path
@@ -1109,7 +1117,8 @@ class Document extends CommonDBTM {
          $input['sha1sum']  = $sha1sum;
          return true;
       }
-      Session::addMessageAfterRedirect($LANG['document'][27], false, ERROR);
+      Session::addMessageAfterRedirect(__s('Potential upload attack or file too large. Moving temporary file failed.'),
+                                       false, ERROR);
       return false;
    }
 
@@ -1126,7 +1135,7 @@ class Document extends CommonDBTM {
       global $CFG_GLPI, $LANG;
 
       if (empty($dir)) {
-         $message = $LANG['document'][32];
+         $message = __('Unauthorized file type');
 
          if (Session::haveRight('dropdown','r')) {
             $dt = new DocumentType();
@@ -1138,18 +1147,21 @@ class Document extends CommonDBTM {
       }
 
       if (!is_dir(GLPI_DOC_DIR)) {
-         Session::addMessageAfterRedirect($LANG['document'][31]." ".GLPI_DOC_DIR, false, ERROR);
+         Session::addMessageAfterRedirect(sprintf(__("The directory %s doesn't exist."),
+                                                  GLPI_DOC_DIR),
+                                          false, ERROR);
          return '';
       }
       $subdir = $dir.'/'.substr($sha1sum,0,2);
 
       if (!is_dir(GLPI_DOC_DIR."/".$subdir) && @mkdir(GLPI_DOC_DIR."/".$subdir,0777,true)) {
-         Session::addMessageAfterRedirect($LANG['document'][34]." ".GLPI_DOC_DIR."/".$subdir);
+         Session::addMessageAfterRedirect(sprintf(__('Create the directory %s'),
+                                                  GLPI_DOC_DIR."/".$subdir));
       }
 
       if (!is_dir(GLPI_DOC_DIR."/".$subdir)) {
-         Session::addMessageAfterRedirect($LANG['document'][29]." ".GLPI_DOC_DIR."/".$subdir." ".
-                                           $LANG['document'][30],
+         Session::addMessageAfterRedirect(sprintf(__('Failed to create the directory %s. Verify that you have the correct permission'),
+                                                  GLPI_DOC_DIR."/".$subdir),
                                           false, ERROR);
          return '';
       }
@@ -1190,11 +1202,11 @@ class Document extends CommonDBTM {
             echo "</select>";
 
          } else {
-            echo $LANG['document'][37];
+           _e('No file available');
          }
 
       } else {
-         echo $LANG['document'][35];
+         _e("Upload directory doesn't exist");
       }
    }
 
@@ -1231,7 +1243,7 @@ class Document extends CommonDBTM {
     * @param $withtemplate
    **/
    static function showAssociated(CommonDBTM $item, $withtemplate='') {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $ID = $item->getField('id');
 
@@ -1319,17 +1331,17 @@ class Document extends CommonDBTM {
       if ($number==0) {
          _e('No associated document');
       } else if ($number==1) {
-         echo $LANG['document'][21];
+         echo _n('Associated document', 'Associated documents', 1);
       } else {
-         echo $LANG['document'][20];
+         echo _n('Associated document', 'Associated documents', 2);
       }
 
       echo "</th></tr>";
       if ($number > 0) {
          echo "<tr><th>".__('Name')."</th>";
-         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<th>".__('Entity')."</th>";
          echo "<th>".__('File')."</th>";
-         echo "<th>".$LANG['document'][33]."</th>";
+         echo "<th>".__('Web Link')."</th>";
          echo "<th>".__('Heading')."</th>";
          echo "<th>".__('MIME Type')."</th>";
 

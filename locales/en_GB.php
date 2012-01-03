@@ -559,9 +559,6 @@ $LANG['document'][16]="Add a document";
 $LANG['document'][17]="No associated document";
 $LANG['document'][18]="Document";
 $LANG['document'][19]="Associated items";
-/// TODO Before is ok for migration to gettext
-///end gettext for yllen
-
 $LANG['document'][20]="Associated documents";
 $LANG['document'][21]="Associated document";
 $LANG['document'][22]="Current File";
@@ -591,6 +588,9 @@ $LANG['document'][45]="Unauthorized access to this file";
 $LANG['document'][46]="Failed to send the file (probably too large)";
 $LANG['document'][48]="A document with that filename has already been attached to (another) record";
 $LANG['document'][49]="File is altered (bad checksum)";
+/// TODO Before is ok for migration to gettext
+///end gettext for yllen
+
 
 $LANG['dropdown'][1]="Locations";
 $LANG['dropdown'][2]="Manufacturers";
