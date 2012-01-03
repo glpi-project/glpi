@@ -235,11 +235,11 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_general_name", $this->fields["import_general_name"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][9] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Operating system') . " </td>\n<td>";
       Dropdown::showYesNo("import_general_os", $this->fields["import_general_os"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][10] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('Serial of the operating system') . " </td>\n<td>";
       Dropdown::showYesNo("import_os_serial", $this->fields["import_os_serial"]);
       echo "</td></tr>\n";
 
@@ -455,7 +455,7 @@ class OcsServer extends CommonDBTM {
       Dropdown::showFromArray("import_software", $import_array, array('value' => $software));
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['computers'][8] . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . _n('Volume', 'Volumes', 2) . " </td>\n<td>";
       Dropdown::showYesNo("import_disk", $this->fields["import_disk"]);
       echo "</td></tr>\n";
 
@@ -2947,11 +2947,11 @@ class OcsServer extends CommonDBTM {
                    "contact_num"                    => __('Alternate username number'),
                    "domains_id"                     => __('Domain'),
                    "networks_id"                    => __('Network'),
-                   "operatingsystems_id"            => $LANG['computers'][9],
+                   "operatingsystems_id"            => __('Operating system'),
                    "operatingsystemservicepacks_id" => $LANG['computers'][53],
                    "operatingsystemversions_id"     => $LANG['computers'][52],
-                   "os_license_number"              => $LANG['computers'][10],
-                   "os_licenseid"                   => $LANG['computers'][11],
+                   "os_license_number"              => __('Serial of the operating system'),
+                   "os_licenseid"                   => __('Product ID of the operating system'),
                    "users_id"                       => __('User'),
                    "locations_id"                   => __('Location'),
                    "groups_id"                      => __('Group'));

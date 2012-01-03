@@ -569,7 +569,7 @@ class Computer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][9]."&nbsp;:</td>";
+      echo "<td>".__('Operating system')."</td>";
       echo "<td>";
       Dropdown::show('OperatingSystem', array('value' => $this->fields["operatingsystems_id"]));
       echo "</td></tr>\n";
@@ -589,13 +589,13 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][11]."&nbsp;:</td>";
+      echo "<td>".__('Product ID of the operating system')."</td>";
       echo "<td >";
       Html::autocompletionTextField($this, 'os_licenseid');
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][10]."&nbsp;:</td>";
+      echo "<td>".__('Serial of the operating system')."</td>";
       echo "<td >";
       Html::autocompletionTextField($this, 'os_license_number');
       echo "</td></tr>\n";
@@ -756,7 +756,7 @@ class Computer extends CommonDBTM {
 
       $tab[45]['table'] = 'glpi_operatingsystems';
       $tab[45]['field'] = 'name';
-      $tab[45]['name']  = $LANG['computers'][9];
+      $tab[45]['name']  = __('Operating system');
 
       $tab[46]['table'] = 'glpi_operatingsystemversions';
       $tab[46]['field'] = 'name';
@@ -772,11 +772,11 @@ class Computer extends CommonDBTM {
 
       $tab[43]['table'] = $this->getTable();
       $tab[43]['field'] = 'os_license_number';
-      $tab[43]['name']  = $LANG['computers'][10];
+      $tab[43]['name']  = __('Serial of the operating system');
 
       $tab[44]['table'] = $this->getTable();
       $tab[44]['field'] = 'os_licenseid';
-      $tab[44]['name']  = $LANG['computers'][11];
+      $tab[44]['name']  = __('Product ID of the operating system');
 
       $tab[47]['table'] = $this->getTable();
       $tab[47]['field'] = 'uuid';
@@ -969,7 +969,7 @@ class Computer extends CommonDBTM {
                                         => array('table'      => 'glpi_computers_devicepowersupplies',
                                                  'joinparams' => array('jointype' => 'child')));
 
-      $tab['disk'] = $LANG['computers'][8];
+      $tab['disk'] = _n('Volume', 'Volumes', 2);
 
       $tab[156]['table']         = 'glpi_computerdisks';
       $tab[156]['field']         = 'name';
@@ -980,7 +980,7 @@ class Computer extends CommonDBTM {
 
       $tab[150]['table']         = 'glpi_computerdisks';
       $tab[150]['field']         = 'totalsize';
-      $tab[150]['name']          = $LANG['computers'][3];
+      $tab[150]['name']          = __('Global size');
       $tab[150]['forcegroupby']  = true;
       $tab[150]['usehaving']     = true;
       $tab[150]['datatype']      = 'number';
@@ -990,7 +990,7 @@ class Computer extends CommonDBTM {
 
       $tab[151]['table']         = 'glpi_computerdisks';
       $tab[151]['field']         = 'freesize';
-      $tab[151]['name']          = $LANG['computers'][2];
+      $tab[151]['name']          = __('Free size');
       $tab[151]['forcegroupby']  = true;
       $tab[151]['datatype']      = 'number';
       $tab[151]['width']         = 1000;
@@ -999,7 +999,7 @@ class Computer extends CommonDBTM {
 
       $tab[152]['table']         = 'glpi_computerdisks';
       $tab[152]['field']         = 'freepercent';
-      $tab[152]['name']          = $LANG['computers'][1];
+      $tab[152]['name']          = __('Free percentage');
       $tab[152]['forcegroupby']  = true;
       $tab[152]['datatype']      = 'decimal';
       $tab[152]['width']         = 2;
@@ -1010,21 +1010,21 @@ class Computer extends CommonDBTM {
 
       $tab[153]['table']         = 'glpi_computerdisks';
       $tab[153]['field']         = 'mountpoint';
-      $tab[153]['name']          = $LANG['computers'][5];
+      $tab[153]['name']          = __('Mount point');
       $tab[153]['forcegroupby']  = true;
       $tab[153]['massiveaction'] = false;
       $tab[153]['joinparams']    = array('jointype' => 'child');
 
       $tab[154]['table']         = 'glpi_computerdisks';
       $tab[154]['field']         = 'device';
-      $tab[154]['name']          = $LANG['computers'][6];
+      $tab[154]['name']          = __('Partition');
       $tab[154]['forcegroupby']  = true;
       $tab[154]['massiveaction'] = false;
       $tab[154]['joinparams']    = array('jointype' => 'child');
 
       $tab[155]['table']         = 'glpi_filesystems';
       $tab[155]['field']         = 'name';
-      $tab[155]['name']          = $LANG['computers'][4];
+      $tab[155]['name']          = __('File system');
       $tab[155]['forcegroupby']  = true;
       $tab[155]['massiveaction'] = false;
       $tab[155]['joinparams']    = array('beforejoin'

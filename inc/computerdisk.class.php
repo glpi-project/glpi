@@ -48,10 +48,7 @@ class ComputerDisk extends CommonDBChild {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['computers'][8];
-      }
-      return $LANG['computers'][0];
+      return _n('Volume', 'Volumes', $nb);
    }
 
 
@@ -93,11 +90,11 @@ class ComputerDisk extends CommonDBChild {
       // can exists for template
       if ($item->getType() == 'Computer' && Session::haveRight("computer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['computers'][8],
+            return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable('glpi_computerdisks',
                                                              "computers_id = '".$item->getID()."'"));
          }
-         return $LANG['computers'][8];
+         return self::getTypeName(2);
       }
       return '';
    }
@@ -161,27 +158,27 @@ class ComputerDisk extends CommonDBChild {
       echo "<td>".__('Name')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
-      echo "</td><td>".$LANG['computers'][6]."&nbsp;:</td>";
+      echo "</td><td>".__('Partition')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "device");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][5]."&nbsp;:</td>";
+      echo "<td>".__('Mount point')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "mountpoint");
-      echo "</td><td>".$LANG['computers'][4]."&nbsp;:</td>";
+      echo "</td><td>".__('File system')."</td>";
       echo "<td>";
       Dropdown::show('FileSystem', array('value' => $this->fields["filesystems_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][3]."&nbsp;:</td>";
+      echo "<td>".__('Global size')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "totalsize");
       echo "&nbsp;".__('Mio')."</td>";
 
-      echo "<td>".$LANG['computers'][2]."&nbsp;:</td>";
+      echo "<td>".__('Free size')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "freesize");
       echo "&nbsp;".__('Mio')."</td></tr>";
@@ -224,24 +221,20 @@ class ComputerDisk extends CommonDBChild {
       if ($result=$DB->query($query)) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='7'>";
-         if ($DB->numrows($result)==1) {
-            echo $LANG['computers'][0];
-         } else {
-            echo $LANG['computers'][8];
-         }
+         echo _n('Volume', 'Volumes', $DB->numrows($result));
          echo "</th></tr>";
 
          if ($DB->numrows($result)) {
             echo "<tr><th>".__('Name')."</th>";
-            echo "<th>".$LANG['computers'][6]."</th>";
-            echo "<th>".$LANG['computers'][5]."</th>";
-            echo "<th>".$LANG['computers'][4]."</th>";
-            echo "<th>".$LANG['computers'][3]."</th>";
-            echo "<th>".$LANG['computers'][2]."</th>";
-            echo "<th>".$LANG['computers'][1]."</th>";
+            echo "<th>".__('Partition')."</th>";
+            echo "<th>".__('Mount point')."</th>";
+            echo "<th>".__('File system')."</th>";
+            echo "<th>".__('Global size')."</th>";
+            echo "<th>".__('Free size')."</th>";
+            echo "<th>".__('Free percentage')."</th>";
             echo "</tr>";
 
-         Session::initNavigateListItems('ComputerDisk', 
+         Session::initNavigateListItems('ComputerDisk',
                //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$comp->getTypeName(1), $comp->getName()));
 
@@ -280,7 +273,7 @@ class ComputerDisk extends CommonDBChild {
          if ($canedit &&!(!empty($withtemplate) && $withtemplate == 2)) {
             echo "<tr class='tab_bg_2'><th colspan='7'>";
             echo "<a href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
-                   $withtemplate."'>".$LANG['computers'][7]."</a></th></tr>";
+                   $withtemplate."'>".__('Add a volume')."</a></th></tr>";
          }
          echo "</table>";
       }

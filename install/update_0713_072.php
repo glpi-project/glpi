@@ -642,7 +642,7 @@ function update0713to072() {
       $DB->queryOrDie($query, "0.72 add cache_max_size in glpi_config");
    }
 
-   displayMigrationMessage("072", $LANG['computers'][8]); // Volumes
+   displayMigrationMessage("072", _n('Volume', 'Volumes', 2));
 
    if (!TableExists("glpi_dropdown_filesystems")) {
       $query = "CREATE TABLE `glpi_dropdown_filesystems` (
