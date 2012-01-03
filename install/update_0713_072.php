@@ -282,7 +282,7 @@ function update0713to072() {
                                       `glpi_infocoms`.`ID` AS infocomID
                                FROM `glpi_licenses`
                                LEFT JOIN `glpi_infocoms`
-                                  ON (`glpi_infocoms.device_type` = '9999'
+                                  ON (`glpi_infocoms`.`device_type` = '9999'
                                       AND `glpi_infocoms`.`FK_device` = `glpi_licenses`.`ID`)
                                WHERE `sID` = '".$soft['ID']."'
                                ORDER BY `ID`";
@@ -496,7 +496,7 @@ function update0713to072() {
                                    (`type` ,`num` ,`rank` ,
                                     `FK_users`)
                             VALUES ('".SOFTWARE_TYPE."', '163', '".$rank++."',
-                                    '".$data['FK_users']."';";
+                                    '".$data['FK_users']."');";
                   $DB->query($query);
                }
             }
