@@ -41,7 +41,8 @@ if (isset($_POST["add"])) {
    $right->check(-1,'w',$_POST);
    if ($right->add($_POST)) {
       Event::log($_POST["users_id"], "users", 4, "setup",
-                  $_SESSION["glpiname"]." ".$LANG['log'][61]);
+               //TRANS: %s is the user login
+               sprintf(__('%s adds a user to an entity'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -58,10 +59,12 @@ if (isset($_POST["add"])) {
       if (isset($_POST["entities_id"])) {
          // From entity tab
          Event::log($_POST["entities_id"], "entity", 4, "setup",
-                    $_SESSION["glpiname"]." ".$LANG['log'][62]);
+                     //TRANS: %s is the user login
+                     sprintf(__('%s deletes a user from an entity'), $_SESSION["glpiname"]));
       } else if (isset($_POST["users_id"])) {
          Event::log($_POST["users_id"], "users", 4, "setup",
-                    $_SESSION["glpiname"]." ".$LANG['log'][62]);
+                     //TRANS: %s is the user login
+                     sprintf(__('%s deletes a user from an entity'), $_SESSION["glpiname"]));
       }
    }
    Html::back();

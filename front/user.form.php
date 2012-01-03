@@ -120,7 +120,8 @@ if (isset($_REQUEST['getvcard'])) {
    $groupuser->check(-1,'w',$_POST);
    if ($groupuser->add($_POST)) {
       Event::log($_POST["users_id"], "users", 4, "setup",
-                 $_SESSION["glpiname"]." ".$LANG['log'][48]);
+               //TRANS: %s is the user login
+               sprintf(__('%s adds a user to a group'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -132,7 +133,9 @@ if (isset($_REQUEST['getvcard'])) {
          }
       }
    }
-   Event::log($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
+   Event::log($_POST["users_id"], "users", 4, "setup", 
+               //TRANS: %s is the user login
+               sprintf(__('%s deletes users from a group'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["change_auth_method"])) {

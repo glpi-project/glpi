@@ -1297,8 +1297,8 @@ $LANG['log'][45]  = "Réussie";
 $LANG['log'][46]  = "Échouée";
 
 $LANG['log'][48]  = "ajout utilisateur au groupe";
-$LANG['log'][49]  = "suppression utilisateur au groupe";
-$LANG['log'][50]  = "modification utilisateur au groupe";
+$LANG['log'][49]  = "suppression d'un utilisateur à un groupe";
+$LANG['log'][50]  = "modification d'un utilisateur dans un groupe";
 $LANG['log'][51]  = "ajout d'un champ caché";
 $LANG['log'][52]  = "suppression d'un champ caché";
 $LANG['log'][55]  = "Connexion";

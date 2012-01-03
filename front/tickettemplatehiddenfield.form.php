@@ -39,7 +39,8 @@ if (isset($_POST["add"])) {
 
    if ($item->add($_POST)) {
       Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",
-                 $_SESSION["glpiname"]." ".$LANG['log'][51]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s adds hidden fields'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -54,7 +55,8 @@ if (isset($_POST["add"])) {
          }
       }
       Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",
-                 $_SESSION["glpiname"]." ".$LANG['log'][52]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s deletes hidden fields'), $_SESSION["glpiname"]));
    }
    Html::back();
 
