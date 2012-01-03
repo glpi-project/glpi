@@ -50,7 +50,7 @@ if (isset($_POST["add"])) {
    if ($newID=$alias->add($_POST)) {
       Ajax::refreshPopupTab();
       Event::log($newID, $alias->getType(), 4, "setup",
-                     sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
+                     sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    }
    Html::back();
 

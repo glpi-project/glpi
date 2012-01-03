@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
          $name = $_FILES['filename']['name'];
       }
       Event::log($newID, "documents", 4, "document",
-               sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
+               sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    }
 
    Html::back();

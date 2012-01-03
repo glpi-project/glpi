@@ -59,7 +59,9 @@ if (isset($_POST["add"])) {
       $np->splitInputForElements($_POST);
       $np->add($_POST);
       $np->updateDependencies(1);
-      Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][70]);
+      Event::log(0, "networkport", 5, "inventory", 
+               //TRANS: %s is the user login
+               sprintf(__('%s adds a network port'),$_SESSION["glpiname"]));
       Html::back();
 
    } else {
@@ -85,8 +87,9 @@ if (isset($_POST["add"])) {
             $np->updateDependencies(1);
          }
       }
-      Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".
-                 ($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)."  ".$LANG['log'][71]);
+      Event::log(0, "networkport", 5, "inventory", 
+               //TRANS: %s is the user login
+               sprintf(__('%s adds several network ports'),$_SESSION["glpiname"]));
       Html::back();
    }
 
@@ -94,7 +97,8 @@ if (isset($_POST["add"])) {
    $np->check($_POST['id'],'d');
    $np->delete($_POST);
    Event::log($_POST['id'], "networkport", 5, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][73]);
+               //TRANS: %s is the user login
+               sprintf(__('%s deletes a network port'),$_SESSION["glpiname"]));
 
    if ($item = getItemForItemtype($np->fields['itemtype'])) {
       Html::redirect($item->getFormURL().'?id='.$np->fields['items_id']);
@@ -111,7 +115,10 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][74]);
+   Event::log(0, "networkport", 5, "inventory", 
+               //TRANS: %s is the user login
+               sprintf(__('%s deletes several network ports'),$_SESSION["glpiname"]));
+
    Html::back();
 
 }
@@ -130,7 +137,10 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][75]);
+   Event::log(0, "networkport", 5, "inventory",                
+               //TRANS: %s is the user login
+               sprintf(__('%s move several network ports'),$_SESSION["glpiname"]));
+
    Html::back();
 
 }*/ else if (isset($_POST["update"])) {
@@ -177,7 +187,9 @@ if (isset($_POST["add"])) {
             $npv->assignVlan($port_id, $_POST["vlans_id"], (isset($_POST['tagged']) ? '1' : '0'));
          }
       }
-      Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][78]);
+      Event::log(0, "networkport", 5, "inventory", 
+               //TRANS: %s is the user login
+               sprintf(__('%s associates a VLAN to several network ports'),$_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -187,7 +199,10 @@ if (isset($_POST["add"])) {
    if (isset($_POST["vlans_id"]) && $_POST["vlans_id"] >0) {
       $npv->assignVlan($_POST["networkports_id"], $_POST["vlans_id"],
                        (isset($_POST['tagged']) ? '1' : '0'));
-      Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][77]);
+      Event::log(0, "networkport", 5, "inventory", 
+               //TRANS: %s is the user login
+               sprintf(__('%s associates a VLAN to a network port'),$_SESSION["glpiname"]));
+      
    }
    Html::back();
 
@@ -203,7 +218,9 @@ if (isset($_POST["add"])) {
             }
          }
       }
-      Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][80]);
+      Event::log(0, "networkport", 5, "inventory", 
+               //TRANS: %s is the user login
+               sprintf(__('%s dissociates a VLAN on several network ports'),$_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -211,7 +228,9 @@ if (isset($_POST["add"])) {
    $npv->check($_GET['id'],'d');
 
    $npv->unassignVlanbyID($_GET['id']);
-   Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][79]);
+   Event::log(0, "networkport", 5, "inventory", 
+               //TRANS: %s is the user login
+               sprintf(__('%s dissociates a VLAN on a network port'),$_SESSION["glpiname"]));
    Html::back();
 
 } else {

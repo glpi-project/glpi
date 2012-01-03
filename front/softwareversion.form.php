@@ -51,7 +51,8 @@ if (isset($_POST["add"])) {
 
    if ($newID = $version->add($_POST)) {
       Event::log($_POST['softwares_id'], "software", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][82]." $newID.");
+                  //TRANS: %s is the user login, %2$s is the version id
+                  sprintf(__('%1$s adds version %2$s'), $_SESSION["glpiname"], $newID));
       Html::redirect($CFG_GLPI["root_doc"]."/front/software.form.php?id=".
                   $version->fields['softwares_id']);
    }
@@ -62,7 +63,8 @@ if (isset($_POST["add"])) {
 
    $version->delete($_POST);
    Event::log($version->fields['softwares_id'], "software", 4, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][84]." ".$_POST["id"]);
+                  //TRANS: %s is the user login, %2$s is the version id
+                  sprintf(__('%1$s deletes version %2$s'), $_SESSION["glpiname"], $_POST["id"]));
    $version->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -70,7 +72,8 @@ if (isset($_POST["add"])) {
 
    $version->update($_POST);
    Event::log($version->fields['softwares_id'], "software", 4, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][83]." ".$_POST["id"]);
+                  //TRANS: %s is the user login, %2$s is the version id
+                  sprintf(__('%1$s updates version %2$s'), $_SESSION["glpiname"], $_POST["id"]));
    Html::back();
 
 } else {

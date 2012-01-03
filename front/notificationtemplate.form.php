@@ -47,7 +47,7 @@ if (isset($_POST["add"])) {
 
    $newID = $notificationtemplate->add($_POST);
    Event::log($newID, "notificationtemplates", 4, "notification",
-              sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
+              sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
 
    $language = new NotificationTemplateTranslation();
    $url = Toolbox::getItemTypeFormURL('NotificationTemplateTranslation',true);
