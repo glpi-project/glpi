@@ -1010,14 +1010,15 @@ if (isset($_POST["action"])
    $message = __('Operation successful');
    // All failed. operations failed
    if ($nbok == 0) {
-      $message = $LANG['common'][118];
+      $message = __('Failed operation');
       if ($nbnoright) {
-         $message .= " ($nbnoright ".$LANG['common'][121].", $nbko ".$LANG['common'][119].")";
+         //TRANS: %$1d and %$2d are numbers
+         $message .= "<br>(".sprintf(__('%1$d authorizations problem(s), %2$d failure(s)', $nbnoright, $nbko)).")";
       }
    } else if ($nbnoright || $nbko) {
       // Partial success
-      $message = $LANG['common'][117];
-      $message .= " ($nbnoright ".$LANG['common'][121].", $nbko ".$LANG['common'][119].")";
+      $message = __('Operation performed partially successful');
+         $message .= "<br>(".sprintf(__('%1$d authorizations problem(s), %2$d failure(s)', $nbnoright, $nbko)).")";
    }
    Session::addMessageAfterRedirect($message);
    Html::redirect($REDIRECT);

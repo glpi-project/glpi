@@ -831,9 +831,9 @@ class Config extends CommonDBTM {
 
       // Only for user
       if (array_key_exists('personal_token', $data)) {
-         echo "<tr class='tab_bg_1'><th colspan='4'>". $LANG['common'][108] ."</th></tr>";
+         echo "<tr class='tab_bg_1'><th colspan='4'>". __('Remote access key') ."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][108] . "";
+         echo "<tr class='tab_bg_1'><td>" . __('Remote access key');
          if (!empty($data["personal_token"])) {
             //TRANS: %s is the generation date
             echo "<br>".sprintf(__('generated on %s'), Html::convDateTime($data["personal_token_date"]));

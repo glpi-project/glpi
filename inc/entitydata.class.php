@@ -480,7 +480,7 @@ class EntityData extends CommonDBChild {
       echo "<td> " . __('Entity for software creation') . "</td>";
       echo "<td>";
 
-      $toadd = array(self::CONFIG_NEVER => $LANG['common'][110]); // Keep software in PC entity
+      $toadd = array(self::CONFIG_NEVER => __('No change of entity')); // Keep software in PC entity
       if ($ID > 0) {
          $toadd[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
@@ -1336,7 +1336,7 @@ class EntityData extends CommonDBChild {
 
          case 'entities_id_software' :
             if ($values[$field] == self::CONFIG_NEVER) {
-               return $LANG['common'][110];
+               return __('No change of entity');
             }
             if ($values[$field] == self::CONFIG_PARENT) {
                return __('Inheritance of the parent entity');

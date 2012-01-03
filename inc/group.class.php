@@ -105,10 +105,10 @@ class Group extends CommonTreeDropdown {
                $ong[4] = self::createTabEntry($this->getTypeName(2), $nb);
 
                if ($item->getField('is_itemgroup')) {
-                  $ong[1] = $LANG['common'][111];
+                  $ong[1] = __('Used Items');
                }
                if ($item->getField('is_assign')) {
-                  $ong[2] = $LANG['common'][112];
+                  $ong[2] = __('Managed Items');
                }
                if ($item->getField('is_usergroup')
                    && Session::haveRight('config', 'r')
@@ -517,11 +517,11 @@ class Group extends CommonTreeDropdown {
       if ($tech) {
          $types = $CFG_GLPI['linkgroup_tech_types'];
          $field = 'groups_id_tech';
-         $title = $LANG['common'][112];
+         $title = __('Managed Items');
       } else {
          $types = $CFG_GLPI['linkgroup_types'];
          $field = 'groups_id';
-         $title = $LANG['common'][111];
+         $title = __('Used Items');
       }
 
       $tree = Session::getSavedOption(__CLASS__, 'tree', 0);

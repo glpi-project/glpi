@@ -265,7 +265,7 @@ class Software extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][109]."&nbsp;:</td>";
+      echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
       Dropdown::show('Group', array('name'      => 'groups_id_tech',
                                     'value'     => $this->fields['groups_id_tech'],
@@ -387,7 +387,7 @@ class Software extends CommonDBTM {
       $tab[49]['table']     = 'glpi_groups';
       $tab[49]['field']     = 'completename';
       $tab[49]['linkfield'] = 'groups_id_tech';
-      $tab[49]['name']      = $LANG['common'][109];
+      $tab[49]['name']      = __('Group in charge of the hardware');
       $tab[49]['condition'] = '`is_assign`';
 
       $tab[70]['table'] = 'glpi_users';

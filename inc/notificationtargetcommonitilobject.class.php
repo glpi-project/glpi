@@ -372,7 +372,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP,
                           __('Requester group manager'));
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE, __('Technician in charge of the hardware'));
-         $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE, $LANG['common'][109]);
+         $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE, __('Group in charge of the hardware'));
          $this->addTarget(Notification::ASSIGN_TECH, __('Technician in charge of this ticket'));
          $this->addTarget(Notification::REQUESTER_GROUP, __('Requester group'));
          $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
