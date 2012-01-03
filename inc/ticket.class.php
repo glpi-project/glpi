@@ -1746,11 +1746,11 @@ class Ticket extends CommonITILObject {
 
 
 
-      $tab['followup'] = $LANG['mailing'][141];
+      $tab['followup'] = _n('Followup', 'Followups', 2);
 
       $tab[25]['table']         = 'glpi_ticketfollowups';
       $tab[25]['field']         = 'content';
-      $tab[25]['name']          = $LANG['job'][9]." - ".$LANG['joblist'][6];
+      $tab[25]['name']          = __('Followup description');
       $tab[25]['forcegroupby']  = true;
       $tab[25]['splititems']    = true;
       $tab[25]['massiveaction'] = false;
@@ -1767,7 +1767,7 @@ class Ticket extends CommonITILObject {
 
       $tab[29]['table']         = 'glpi_requesttypes';
       $tab[29]['field']         = 'name';
-      $tab[29]['name']          = $LANG['job'][9]." - ".$LANG['job'][44];
+      $tab[29]['name']          = __('Followup request source');
       $tab[29]['forcegroupby']  = true;
       $tab[29]['massiveaction'] = false;
       $tab[29]['joinparams']    = array('beforejoin'
@@ -1825,7 +1825,7 @@ class Ticket extends CommonITILObject {
                                                           Ticket_Ticket::DUPLICATE_WITH);
 
 
-         $tab['task'] = $LANG['job'][7];
+         $tab['task'] = _n('Task', 'Tasks', 2);
 
          $tab[26]['table']         = 'glpi_tickettasks';
          $tab[26]['field']         = 'content';

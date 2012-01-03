@@ -642,8 +642,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       }
 
      //Foreach global tags
-     $tags = array('followups'     => $LANG['mailing'][141],
-                   'tasks'         => $LANG['mailing'][142],
+     $tags = array('followups'     => _n('Followup', 'Followups', 2),
+                   'tasks'         => _n('Task', 'Tasks', 2),
                    'validations'   => _n('Approval','Approvals',2),
                    'linkedtickets' => $LANG['job'][55],
                    'problems'      => _n('Problem', 'Problems', 2));

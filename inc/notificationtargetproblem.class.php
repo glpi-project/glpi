@@ -233,7 +233,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       }
 
       //Foreach global tags
-      $tags = array('tasks'    => $LANG['mailing'][142],
+      $tags = array('tasks'    => _n('Task', 'Tasks', 2),
                     'tickets'  => _n('Ticket', 'Tickets', 2),
                     'items'    => __('Items'));
 

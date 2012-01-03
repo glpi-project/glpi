@@ -520,11 +520,11 @@ class Problem extends CommonITILObject {
       $tab[90]['massiveaction'] = false;
 
 
-      $tab['task'] = $LANG['job'][7];
+      $tab['task'] = _n('Task', 'Tasks', 2);
 
       $tab[26]['table']         = 'glpi_problemtasks';
       $tab[26]['field']         = 'content';
-      $tab[26]['name']          = $LANG['job'][7]." - ".$LANG['joblist'][6];
+      $tab[26]['name']          = __('Task description');
       $tab[26]['forcegroupby']  = true;
       $tab[26]['splititems']    = true;
       $tab[26]['massiveaction'] = false;
