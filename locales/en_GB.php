@@ -546,8 +546,6 @@ $LANG['document'][2]="File";
 $LANG['document'][3]="Heading";
 $LANG['document'][4]="MIME Type";
 $LANG['document'][5]="Associate an existing document";
-/// TODO Before is ok for migration to gettext
-///end gettext for yllen
 $LANG['document'][6]="Add a new file";
 $LANG['document'][7]="Document Type";
 $LANG['document'][8]="Document Types";
@@ -561,6 +559,9 @@ $LANG['document'][16]="Add a document";
 $LANG['document'][17]="No associated document";
 $LANG['document'][18]="Document";
 $LANG['document'][19]="Associated items";
+/// TODO Before is ok for migration to gettext
+///end gettext for yllen
+
 $LANG['document'][20]="Associated documents";
 $LANG['document'][21]="Associated document";
 $LANG['document'][22]="Current File";

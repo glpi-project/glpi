@@ -172,7 +172,7 @@ class Document extends CommonDBTM {
          if ($item->getFromDB($input["items_id"])) {
             $name = $item->getNameID();
          }
-         $input["name"] = addslashes(Html::resume_text($LANG['document'][18]." $typename - ".$name,
+         $input["name"] = addslashes(Html::resume_text(__('Document')." $typename - ".$name,
                                                        200));
          $create_from_item = true;
       }
@@ -766,13 +766,11 @@ class Document extends CommonDBTM {
       echo "<tr><th colspan='".($canedit?6:5)."'>";
 
       if ($DB->numrows($result)==0) {
-         echo $LANG['document'][13];
-
+         _e('No associated element');
       } else if ($DB->numrows($result)==1) {
-         echo $LANG['document'][14];
-
+         _e('Associated element');
       } else {
-         echo $LANG['document'][19];
+         _e('Associated items');
       }
 
       echo "</th></tr><tr>";
@@ -1319,7 +1317,7 @@ class Document extends CommonDBTM {
       echo "<tr><th colspan='7'>";
 
       if ($number==0) {
-         echo $LANG['document'][17];
+         _e('No associated document');
       } else if ($number==1) {
          echo $LANG['document'][21];
       } else {
@@ -1347,8 +1345,10 @@ class Document extends CommonDBTM {
          // To not loose navigation list for current document
          if ($item->getType() != 'Document') {
             Session::initNavigateListItems('Document',
-                  //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                  sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
+                  //TRANS : %1$s is the itemtype name,
+                  //        %2$s is the name of the item (used for headings of a list)
+                                           sprintf(__('%1$s = %2$s'),
+                                                   $item->getTypeName(1), $item->getName()));
          }
 
          $document = new Document();
@@ -1434,11 +1434,11 @@ class Document extends CommonDBTM {
             $nb = $DB->result($result,0,0);
 
             echo "<tr class='tab_bg_1'>";
-//            echo "<th class='right'>".$LANG['document'][6]."&nbsp :</th>";
+//            echo "<th class='right'>".__('Add a new file')."</th>";
 
             echo "<td class='center' colspan='2'>";
             _e('Heading');
-            Dropdown::show('DocumentCategory',array('entity' => $entities));
+            Dropdown::show('DocumentCategory', array('entity' => $entities));
             echo "</td>";
             echo "<td class='center' colspan='3'>";
             echo "<input type='hidden' name='entities_id' value='$entity'>";
@@ -1447,13 +1447,14 @@ class Document extends CommonDBTM {
             echo "<input type='hidden' name='items_id' value='$ID'>";
             if ($item->getType()=='Ticket') {
                echo "<input type='hidden' name='tickets_id' value='$ID'>";
-               echo "<input type='hidden' name='documentcategories_id' value='".$CFG_GLPI["documentcategories_id_forticket"]."'>";
+               echo "<input type='hidden' name='documentcategories_id' value='".
+                      $CFG_GLPI["documentcategories_id_forticket"]."'>";
             }
             echo "<input type='file' name='filename' size='25'>&nbsp;";
             echo "(".self::getMaxUploadSize().")&nbsp;";
             echo "</td>";
             echo "<td colspan='2' class='center'>";
-            echo "<input type='submit' name='add' value=\"".$LANG['document'][6]."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__('Add a new file')."\" class='submit'>";
             echo "</td></tr>";
 
             if ($item->getType() == 'Document') {
