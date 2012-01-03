@@ -288,7 +288,7 @@ class RuleTicket extends Rule {
 
       $criterias['_mailgate']['table']     = 'glpi_mailcollectors';
       $criterias['_mailgate']['field']     = 'name';
-      $criterias['_mailgate']['name']      = $LANG['mailgate'][0];
+      $criterias['_mailgate']['name']      = __('Mails receiver');
       $criterias['_mailgate']['linkfield'] = '_mailgate';
       $criterias['_mailgate']['type']      = 'dropdown';
 

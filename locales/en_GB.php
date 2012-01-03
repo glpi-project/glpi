@@ -1209,7 +1209,7 @@ $LANG['login'][32]="Authentication on GLPI database";
 $LANG['login'][33]="Authentication on mail server";
 
 $LANG['mailgate'][0]="Mails receiver";
-$LANG['mailgate'][1]="Emails refused";
+$LANG['mailgate'][1]="Refused emails";
 $LANG['mailgate'][2]="Get email tickets now";
 $LANG['mailgate'][3]="Number of available and retrieved emails";
 $LANG['mailgate'][4]="mbstring extension not found. Warning with charsets used.";
@@ -1218,10 +1218,10 @@ $LANG['mailgate'][6]="Too large attached file";
 $LANG['mailgate'][7]="Maximum size of each file imported by the mail receiver";
 $LANG['mailgate'][8]="No import";
 $LANG['mailgate'][9]="Your email could not be processed.\nIf the problem persists, contact the administrator";
-$LANG['mailgate'][10]="Email refused";
+$LANG['mailgate'][10]="Refused email";
 $LANG['mailgate'][11]="Process of emails import";
 $LANG['mailgate'][12]="Unable to affect the email to an entity";
-$LANG['mailgate'][13]="Reason of rebuff";
+$LANG['mailgate'][13]="Reason of rejection";
 $LANG['mailgate'][14]="Email not found. Impossible import";
 $LANG['mailgate'][16]="Re:";
 

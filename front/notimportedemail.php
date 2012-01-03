@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "r");
 
-Html::header($LANG['mailgate'][11],$_SERVER['PHP_SELF'],"config","mailcollector","rejectedemails");
+Html::header(_n('Refused email', 'Refused emails', 2),$_SERVER['PHP_SELF'],"config","mailcollector","rejectedemails");
 
 Search::show('NotImportedEmail');
 
