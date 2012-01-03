@@ -1500,7 +1500,7 @@ class Dropdown {
                   }
 
                   if (Session::haveRight("user_authtype","w")) {
-                     echo "<option value='change_authtype'>".$LANG['login'][30]."</option>";
+                     echo "<option value='change_authtype'>".__('Change of the authentication method')."</option>";
                      echo "<option value='force_user_ldap_update'>".$LANG['ldap'][11]."</option>";
                   }
                   break;

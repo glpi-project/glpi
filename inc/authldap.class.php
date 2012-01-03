@@ -287,7 +287,7 @@ class AuthLDAP extends CommonDBTM {
 
       } else {
          echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>" . $LANG['login'][2] . "</th></tr>";
+         echo "<tr><th colspan='2'>" . __('LDAP directory') . "</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<p class='red'>" . __("The LDAP extension of your PHP parser isn't installed") . "</p>";
          echo "<p>" . __('Impossible to use LDAP as external source of connection') . "</p></td></tr></table></div>";
@@ -1877,7 +1877,7 @@ class AuthLDAP extends CommonDBTM {
                }
             }
          }
-         Session::addMessageAfterRedirect($LANG['login'][15], false, ERROR);
+         Session::addMessageAfterRedirect(__('User not found or several users found'), false, ERROR);
 
       } else {
          Session::addMessageAfterRedirect(__('Unable to add. The user already exists.'), false, ERROR);
@@ -2268,7 +2268,7 @@ class AuthLDAP extends CommonDBTM {
                 && $_SESSION['ldap_import']['authldaps_id'] > 0) {
 
                $field_counter = 0;
-               $fields = array('login_field'     => $LANG['login'][6],
+               $fields = array('login_field'     => __('Login'),
                                'email1_field'    => __('Email'),
                                'email2_field'    => __('Email 2'),
                                'email3_field'    => __('Email 3'),

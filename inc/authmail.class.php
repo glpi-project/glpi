@@ -88,7 +88,7 @@ class AuthMail extends CommonDBTM {
       global $LANG;
 
       $tab = array();
-      $tab['common'] = $LANG['login'][3];
+      $tab['common'] = __('Email server');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -214,12 +214,12 @@ class AuthMail extends CommonDBTM {
          echo "<form method='post' action='".$this->getFormURL()."'>";
          echo "<input type='hidden' name='imap_string' value=\"".$this->fields['connect_string']."\">";
          echo "<div class='center'><table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>" . $LANG['login'][21] . "</th></tr>";
+         echo "<tr><th colspan='2'>" . __('Test connection to email server') . "</th></tr>";
 
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['login'][6] . "</td>";
+         echo "<tr class='tab_bg_2'><td class='center'>" . __('Login') . "</td>";
          echo "<td><input size='30' type='text' name='imap_login' value=''></td></tr>";
 
-         echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['login'][7] . "</td>";
+         echo "<tr class='tab_bg_2'><td class='center'>" . __('Password') . "</td>";
          echo "<td><input size='30' type='password' name='imap_password' value=''
                     autocomplete='off'></td></tr>";
 

@@ -425,7 +425,7 @@ class Config extends CommonDBTM {
       echo "<div class='center' id='tabsbody'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>" . $LANG['login'][10] . "</th></tr>";
+      echo "<tr><th colspan='4'>" . __('Authentication') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('Automatically add users from an external authentication source') . "</td><td>";
@@ -435,7 +435,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['ldap'][45] . "&nbsp;:</td><td>";
+      echo "<td> " . $LANG['ldap'][45] . "</td><td>";
       AuthLDap::dropdownUserDeletedActions($CFG_GLPI["user_deleted_ldap"]);
       echo "</td><td> " . __('GLPI server time zone') . "</td><td>";
       Dropdown::showGMT("time_offset", $CFG_GLPI["time_offset"]);
@@ -479,16 +479,16 @@ class Config extends CommonDBTM {
          $host = $DBSlave->dbhost;
       }
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['install'][30] . "&nbsp;:</td>";
+      echo "<td>" . $LANG['install'][30] . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbhost' size='40' value='$host'></td>";
       echo "<td>" . __('Database') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbdefault' value='".$DBSlave->dbdefault."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['install'][31] . "&nbsp;:</td>";
+      echo "<td>" . $LANG['install'][31] . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbuser' value='".$DBSlave->dbuser."'></td>";
-      echo "<td>" . $LANG['install'][32] . "&nbsp;:</td>";
+      echo "<td>" . $LANG['install'][32] . "</td>";
       echo "<td><input type='password' name='_dbreplicate_dbpassword' value='".
                  $DBSlave->dbpassword."'>";
       echo "</td></tr>";
@@ -582,7 +582,7 @@ class Config extends CommonDBTM {
       echo "<input type='hidden' name='_matrix' value='1'></th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='b right' colspan='2'>".$LANG['joblist'][30]."&nbsp;:</td>";
+      echo "<td class='b right' colspan='2'>".$LANG['joblist'][30]."</td>";
 
       for ($impact=5, $msg=47 ; $impact>=1 ; $impact--, $msg++) {
          echo "<td>".$LANG['help'][$msg]."&nbsp;: ";
@@ -760,7 +760,7 @@ class Config extends CommonDBTM {
       } else {
          echo "<td colspan='2'></td>";
       }
-      echo "<td>" . ($userpref?__('Language'):__('Default language')) . "&nbsp;:</td><td>";
+      echo "<td>" . ($userpref?__('Language'):__('Default language')) . "</td><td>";
       if (Session::haveRight("config","w") || !GLPI_DEMO_MODE) {
          Dropdown::showLanguages("language", array('value' => $data["language"]));
       } else {
@@ -780,7 +780,7 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td>" . __('Private tasks by default') . "</td><td>";
          Dropdown::showYesNo("task_private", $data["task_private"]);
-         echo "</td><td> " . $LANG['job'][44] . "&nbsp;:</td><td>";
+         echo "</td><td> " . $LANG['job'][44] . "</td><td>";
          Dropdown::show('RequestType', array('value' => $data["default_requesttypes_id"],
                                              'name'  => "default_requesttypes_id"));
          echo "</td></tr>";
@@ -833,7 +833,7 @@ class Config extends CommonDBTM {
       if (array_key_exists('personal_token', $data)) {
          echo "<tr class='tab_bg_1'><th colspan='4'>". $LANG['common'][108] ."</th></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][108] . "&nbsp;:";
+         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][108] . "";
          if (!empty($data["personal_token"])) {
             //TRANS: %s is the generation date
             echo "<br>".sprintf(__('generated on %s'), Html::convDateTime($data["personal_token_date"]));
@@ -885,7 +885,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('Logs in files (SQL, email, automatic action...)') . "</td><td>";
       Dropdown::showYesNo("use_log_in_files", $CFG_GLPI["use_log_in_files"]);
-      echo "</td><td> " . __('Active') . "&nbsp;:</td><td>";
+      echo "</td><td> " . __('Active') . "</td><td>";
       $active = DBConnection::isDBSlaveActive();
       Dropdown::showYesNo("_dbslave_status", $active);
       echo "</td></tr>";
@@ -903,9 +903,9 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['login'][6] . "&nbsp;:</td>";
+      echo "<td>" . __('Login') . "</td>";
       echo "<td><input type='text' name='proxy_user' value='".$CFG_GLPI["proxy_user"]."'></td>";
-      echo "<td>" . $LANG['login'][7] . "&nbsp;:</td>";
+      echo "<td>" . __('Password') . "</td>";
       echo "<td><input type='password' name='proxy_passwd' value='' autocomplete='off'>";
       echo "<br><input type='checkbox' name='_blank_proxy_passwd'>&nbsp;".__('Clear');
 

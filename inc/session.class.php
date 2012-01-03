@@ -133,17 +133,17 @@ class Session {
 
                if (!isset($_SESSION["glpiactiveprofile"]["interface"])) {
                   $auth->auth_succeded = false;
-                  $auth->addToError($LANG['login'][25]);
+                  $auth->addToError(__("You don't have right to connect"));
                }
 
             } else {
                $auth->auth_succeded = false;
-               $auth->addToError($LANG['login'][20]);
+               $auth->addToError(__('You do not have access to this application because your account was deactivated or removed'));
             }
 
          } else {
             $auth->auth_succeded = false;
-            $auth->addToError($LANG['login'][25]);
+            $auth->addToError(__("You don't have right to connect"));
          }
       }
    }

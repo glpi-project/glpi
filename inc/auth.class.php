@@ -105,7 +105,7 @@ class Auth {
 
       $result = $DB->query($query);
       if ($DB->numrows($result) == 0) {
-         $this->addToError($LANG['login'][12]);
+         $this->addToError(__('Incorrect username or password'));
          return 0;
 
       } else {
@@ -195,14 +195,14 @@ class Auth {
             if (Plugin::doHookFunction("restrict_ldap_auth", $dn)) {
                return $dn;
             } else {
-               $this->addToError($LANG['login'][11]);
+               $this->addToError(__('User not authorized to connect in GLPI'));
                //Use is present by has no right to connect because of a plugin
                return false;
             }
 
          } else {
             // Incorrect login
-            $this->addToError($LANG['login'][12]);
+            $this->addToError(__('Incorrect username or password'));
             //Use is not present anymore in the directory!
             if ($dn == '') {
                $this->user_deleted_ldap = true;
@@ -237,7 +237,7 @@ class Auth {
 
       // sanity check... we prevent empty passwords...
       if (empty($password)) {
-         $this->addToError($LANG['login'][13]);
+         $this->addToError(__('Password field is empty'));
          return false;
       }
 
@@ -247,7 +247,7 @@ class Auth {
       $result = $DB->query($query);
 
       if (!$result) {
-         $this->addToError($LANG['login'][12]);
+         $this->addToError(__('Incorrect username or password'));
          return false;
       }
       if ($result) {
@@ -274,7 +274,7 @@ class Auth {
                return true;
             }
          }
-         $this->addToError($LANG['login'][12]);
+         $this->addToError(__('Incorrect username or password'));
          return false;
       }
       $this->addToError("#".$DB->errno().": ".$DB->error());
@@ -468,14 +468,14 @@ class Auth {
             $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
 
          } else {
-            $this->addToError($LANG['login'][8]);
+            $this->addToError(__('Empty login or password'));
          }
       }
 
       // If not already auth
       if (!$this->auth_succeded) {
          if (empty($login_name) || empty($login_password)) {
-            $this->addToError($LANG['login'][8]);
+            $this->addToError(__('Empty login or password'));
          } else {
             // exists=0 -> no exist
             // exists=1 -> exist with password
@@ -560,7 +560,7 @@ class Auth {
 
          if ($DB->isSlave()) {
             if (!$this->user_present) { // Can't add in slave mode
-               $this->addToError($LANG['login'][11]);
+               $this->addToError(__('User not authorized to connect in GLPI'));
                $this->auth_succeded = false;
             }
          } else {
@@ -577,7 +577,7 @@ class Auth {
                $this->user->add($input);
             } else {
                // Auto add not enable so auth failed
-               $this->addToError($LANG['login'][11]);
+               $this->addToError(__('User not authorized to connect in GLPI'));
                $this->auth_succeded = false;
             }
          }
@@ -630,14 +630,14 @@ class Auth {
       }
 
       $methods[0]             = Dropdown::EMPTY_VALUE;
-      $methods[self::DB_GLPI] = $LANG['login'][32];
+      $methods[self::DB_GLPI] = __('Authentication on GLPI database');
 
       $sql = "SELECT COUNT(*) AS cpt
               FROM `glpi_authldaps`";
       $result = $DB->query($sql);
 
       if ($DB->result($result, 0, "cpt") > 0) {
-         $methods[self::LDAP]     = $LANG['login'][31];
+         $methods[self::LDAP]     = __('Authentication on a LDAP directory');
          $methods[self::EXTERNAL] = __('External authentications');
       }
 
@@ -646,7 +646,7 @@ class Auth {
       $result = $DB->query($sql);
 
       if ($DB->result($result,0,"cpt") > 0) {
-         $methods[self::MAIL] = $LANG['login'][33];
+         $methods[self::MAIL] = __('Authentication on mail server');
       }
 
       return Dropdown::showFromArray($p['name'], $methods, $p);
@@ -670,52 +670,60 @@ class Auth {
          case self::LDAP :
             $auth = new AuthLdap();
             if ($auth->getFromDB($auths_id)) {
-               return $auth->getTypeName(1) . "&nbsp;" . $auth->getLink();
+               //TRANS: %1$s is the auth method type, %2$s the auth method name or link
+               return sprintf(__('%1$s: %2$s'),$auth->getTypeName(1),$auth->getLink());
             }
-            return $LANG['login'][2]."&nbsp;$name";
+            return sprintf(__('%1$s: %2$s'),__('LDAP directory'),$name);
 
          case self::MAIL :
             $auth = new AuthMail();
             if ($auth->getFromDB($auths_id)) {
-               return $auth->getTypeName() . "&nbsp;" . $auth->getLink();
+               //TRANS: %1$s is the auth method type, %2$s the auth method name or link
+               return sprintf(__('%1$s: %2$s'),$auth->getTypeName(1),$auth->getLink());
             }
-            return $LANG['login'][3]."&nbsp;$name";
+            return sprintf(__('%1$s: %2$s'),__('Email server'),$name);
 
          case self::CAS :
-            $out = $LANG['login'][4];
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {
-                  $out .= " + ".$auth->getTypeName() . "&nbsp;" . $auth->getLink();
+                  //TRANS: %1$s is the auth method type, %2$s an optional method type %3$s the name of the opt method
+                  return sprintf(__('%1$s + %2$s: %3$s'), 
+                                    __('CAS'), 
+                                    $auth->getTypeName(1),$auth->getLink());
                }
             }
-            return $out;
+            return __('CAS');
 
          case self::X509 :
-            $out = __('x509 certificate authentication');
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {
-                  $out .= " + ".$auth->getTypeName() . "&nbsp;" . $auth->getLink();
+                  //TRANS: %1$s is the auth method type, %2$s an optional method type %3$s the name of the opt method
+                  return sprintf(__('%1$s + %2$s: %3$s'),
+                                    __('x509 certificate authentication'), 
+                                    $auth->getTypeName(1),$auth->getLink());
                }
             }
-            return $out;
+            return __('x509 certificate authentication');
 
          case self::EXTERNAL :
-            $out = __('Other');
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {
-                  $out .= " + ".$auth->getTypeName() . "&nbsp;" . $auth->getLink();
+                  //TRANS: %1$s is the auth method type, %2$s an optional method type %3$s the name of the opt method
+                  return sprintf(__('%1$s + %2$s: %3$s'),
+                                    __('Other'), 
+                                    $auth->getTypeName(1),$auth->getLink());
                }
             }
-            return $out;
+            return __('Other');
 
          case self::DB_GLPI :
-            return $LANG['login'][18];
+            return __('GLPI internal database');
 
          case self::NOT_YET_AUTHENTIFIED :
-            return $LANG['login'][9];
+            return __('Not yet authenticated');
       }
       return '';
    }
@@ -923,7 +931,7 @@ class Auth {
 
          echo "<div class='spaced'>";
          echo "<table class='tab_cadre'>";
-         echo "<tr><th>".$LANG['login'][30]."&nbsp:&nbsp;</th></tr>";
+         echo "<tr><th>".__('Change of the authentication method')."</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>";
          $rand             = self::dropdown(array('name' => 'authtype'));
          $paramsmassaction = array('authtype' => '__VALUE__',
@@ -1031,7 +1039,7 @@ class Auth {
       echo "</td></tr>\n";
 
       // Autres config
-      echo "<tr><th>" . $LANG['login'][19]."</th>/th>";
+      echo "<tr><th>" . __('Other authentication sent in the HTTP request')."</th>/th>";
       if (!empty($CFG_GLPI["existing_auth_server_field"])) {
          _e('Enabled');
       }

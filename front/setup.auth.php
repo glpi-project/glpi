@@ -62,7 +62,7 @@ if (Toolbox::canUseImapPop()) {
    echo "<p>".__('Impossible to use email server as external source of connection').'</p>';
 }
 echo "</td> </tr>";
-echo "<tr class='tab_bg_1'><td class='center'><a href='auth.others.php'>" . $LANG['login'][17] .
+echo "<tr class='tab_bg_1'><td class='center'><a href='auth.others.php'>" . __('Others authentication methods') .
       "</a></td></tr>";
 echo "</table>";
 

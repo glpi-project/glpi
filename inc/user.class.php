@@ -1540,8 +1540,8 @@ class User extends CommonDBTM {
             echo "<td>" . __('Authentication') . "</td><td>";
             echo Auth::getMethodName($this->fields["authtype"], $this->fields["auths_id"]);
             if (!empty($this->fields["date_sync"])) {
-               echo '<br>'.$LANG['login'][29].'&nbsp;: '.
-                    HTML::convDateTime($this->fields["date_sync"]);
+               //TRANS: %s is the date of last sync
+               echo '<br>'.sprintf(__('Last synchronization on %s'), HTML::convDateTime($this->fields["date_sync"]));
             }
 
             echo "</td>";
@@ -1631,18 +1631,15 @@ class User extends CommonDBTM {
          }
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' class='center'>" . $LANG['login'][24] . "&nbsp;: ";
+         echo "<td colspan='2' class='center'>" ;
+          
+         //TRANS: %s is the date
+         echo sprintf(__('Last update on %s'), HTML::convDateTime($this->fields["date_mod"]));
 
-         if (!empty($this->fields["date_mod"])) {
-            echo HTML::convDateTime($this->fields["date_mod"]);
-         }
-
-         echo "<br>" . $LANG['login'][0] . "&nbsp;: ";
-
-         if (!empty($this->fields["last_login"])) {
-            echo HTML::convDateTime($this->fields["last_login"]);
-         }
-
+         echo "<br>";
+         
+         echo sprintf(__('Last login on %s'), HTML::convDateTime($this->fields["last_login"]));
+         
          echo "</td><td colspan='2'class='center'>";
 
          if ($ID > 0) {
@@ -1969,28 +1966,28 @@ class User extends CommonDBTM {
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'last_login';
-      $tab[14]['name']          = $LANG['login'][0];
+      $tab[14]['name']          = __('Last login');
       $tab[14]['datatype']      = 'datetime';
       $tab[14]['massiveaction'] = false;
 
       $tab[15]['table']         = 'glpi_auth_tables';
       $tab[15]['field']         = 'name';
       $tab[15]['linkfield']     = 'auths_id';
-      $tab[15]['name']          = $LANG['login'][10];
+      $tab[15]['name']          = __('Authentication');
       $tab[15]['searchtype']    = 'contains';
       $tab[15]['massiveaction'] = false;
 
       $tab[30]['table']         = 'glpi_authldaps';
       $tab[30]['field']         = 'name';
       $tab[30]['linkfield']     = 'auths_id';
-      $tab[30]['name']          = $LANG['login'][10]." - ".$LANG['login'][2];
+      $tab[30]['name']          = __('LDAP directory for authentication');
       $tab[30]['massiveaction'] = false;
       $tab[30]['joinparams']    = array('condition' => "AND REFTABLE.`authtype` = ".Auth::LDAP);
 
       $tab[31]['table']         = 'glpi_authmails';
       $tab[31]['field']         = 'name';
       $tab[31]['linkfield']     = 'auths_id';
-      $tab[31]['name']          = $LANG['login'][10]." - ".$LANG['login'][3];
+      $tab[31]['name']          = __('Email server for authentication');
       $tab[31]['massiveaction'] = false;
       $tab[31]['joinparams']    = array('condition' => "AND REFTABLE.`authtype` = ".Auth::MAIL);
 
@@ -2032,7 +2029,7 @@ class User extends CommonDBTM {
       $tab[23]['table']         = $this->getTable();
       $tab[23]['field']         = 'date_sync';
       $tab[23]['datatype']      = 'datetime';
-      $tab[23]['name']          = $LANG['login'][29];
+      $tab[23]['name']          = __('Last synchronization');
       $tab[23]['massiveaction'] = false;
 
       $tab[80]['table']         = 'glpi_complete_entities';
@@ -2425,7 +2422,7 @@ class User extends CommonDBTM {
       echo "<table class='tab_cadre'>\n";
       echo "<tr><th colspan='4'>".__('Automatically add a user of an external source')."</th></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['login'][6]."</td>\n";
+      echo "<tr class='tab_bg_1'><td>".__('Login')."</td>\n";
       echo "<td><input type='text' name='login'></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -2803,7 +2800,7 @@ class User extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . _n('Email', 'Emails', 1)."</td>";
          echo "<td><input type='text' name='email' value='' size='60'></td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['login'][7]."</td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Password')."</td>";
          echo "<td><input type='password' name='password' value='' size='20' autocomplete='off'>";
          echo "</td></tr>";
 
@@ -2944,7 +2941,7 @@ class User extends CommonDBTM {
       }
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>".$LANG['login'][2]."</th></tr>";
+      echo "<tr><th colspan='4'>".__('LDAP directory')."</th></tr>";
 
       echo "<tr class='tab_bg_2'><td>".$LANG['ldap'][26]."&nbsp;:</td>";
       echo "<td>".$this->fields['user_dn']."</td></tr>\n";
@@ -2996,7 +2993,7 @@ class User extends CommonDBTM {
    function getUnicityFieldsToDisplayInErrorMessage() {
       global $LANG;
 
-      return array('id'          => $LANG['login'][6],
+      return array('id'          => __('ID'),
                    'entities_id' => $LANG['entity'][0]);
    }
 

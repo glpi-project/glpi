@@ -427,13 +427,13 @@ class Html {
 
       if (!$HEADER_LOADED) {
          if (!isset($_SESSION["glpiactiveprofile"]["interface"])) {
-            self::nullHeader($LANG['login'][5]);
+            self::nullHeader(__('Access denied'));
 
          } else if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-            self::header($LANG['login'][5]);
+            self::header(__('Access denied'));
 
          } else if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-            self::helpHeader($LANG['login'][5]);
+            self::helpHeader(__('Access denied'));
          }
       }
       echo "<div class='center'><br><br>";
@@ -598,13 +598,13 @@ class Html {
 
       if (!$HEADER_LOADED) {
          if ($minimal || !isset($_SESSION["glpiactiveprofile"]["interface"])) {
-            self::nullHeader($LANG['login'][5], '');
+            self::nullHeader(__('Access denied'), '');
 
          } else if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-            self::header($LANG['login'][5], '');
+            self::header(__('Access denied'), '');
 
          } else if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-            self::helpHeader($LANG['login'][5], '');
+            self::helpHeader(__('Access denied'), '');
          }
       }
       echo "<div class='center'><br><br>";
@@ -1883,7 +1883,7 @@ class Html {
          $menu['config']['content']['mailing']['options']['notificationtemplate']['links']['search']
                         = '/front/notificationtemplate.php';
 
-         $menu['config']['content']['extauth']['title'] = $LANG['login'][10];
+         $menu['config']['content']['extauth']['title'] = __('Authentication');
          $menu['config']['content']['extauth']['page']  = '/front/setup.auth.php';
 
          $menu['config']['content']['extauth']['options']['ldap']['title'] = _n('LDAP directory',
