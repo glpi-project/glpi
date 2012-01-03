@@ -1136,6 +1136,9 @@ $LANG['log'][65]="rule";
 $LANG['log'][66]="Security";
 $LANG['log'][67]="deletion of a target";
 $LANG['log'][68]="add a target";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['log'][70]="add network port";
 $LANG['log'][71]="add several network ports";
 $LANG['log'][73]="deletion of a network port";
@@ -1146,16 +1149,13 @@ $LANG['log'][78]="associate a VLAN to several ports";
 $LANG['log'][79]="vlan dissociated from a network port";
 $LANG['log'][80]="dissociation of a VLAN from multiple network ports";
 $LANG['log'][82]="add version";
-$LANG['log'][83]="modification of version";
+$LANG['log'][83]="update version";
 $LANG['log'][84]="version's deletion";
 $LANG['log'][85]="add license";
 $LANG['log'][86]="modification of licence";
 $LANG['log'][87]="licence's deletion";
 $LANG['log'][88]="adding cartridges";
 $LANG['log'][89]="adding consumables";
-
-/// TODO After is ok for migration to gettext
-
 $LANG['log'][90]="deletion of a cartridge";
 $LANG['log'][91]="deletion of a consumable";
 $LANG['log'][92]="restoration of a cartridge";

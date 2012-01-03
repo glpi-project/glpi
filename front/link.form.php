@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
 
    $newID = $link->add($_POST);
    Event::log($newID, "links", 4, "setup", 
-                     sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
+                     sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::redirect(Toolbox::getItemTypeFormURL('Link')."?id=".$newID);
 
 } else if (isset($_POST["delete"])) {

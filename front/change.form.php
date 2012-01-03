@@ -47,7 +47,7 @@ if (isset($_POST["add"])) {
 
    $newID = $change->add($_POST);
    Event::log($newID, "change", 4, "maintain",
-              sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
+              sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
 
 } else if (isset($_POST["delete"])) {
@@ -86,7 +86,7 @@ if (isset($_POST["add"])) {
    $change_user->delete($_REQUEST);
 
    Event::log($_REQUEST['changes_id'], "change", 4,
-              "maintain", sprintf(__('%s delete an actor'), $_SESSION["glpiname"]));
+              "maintain", sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_REQUEST['changes_id']);
 
 } else if (isset($_REQUEST['delete_group'])) {
@@ -95,7 +95,7 @@ if (isset($_POST["add"])) {
    $group_ticket->delete($_REQUEST);
 
    Event::log($_REQUEST['changes_id'], "change", 4, "maintain",
-              sprintf(__('%s delete an actor'), $_SESSION["glpiname"]));
+              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_REQUEST['changes_id']);
 
 } else {

@@ -121,7 +121,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
                //TRANS: %s is the user login 
-              sprintf(__('%s delete link between tickets'), $_SESSION["glpiname"]));
+              sprintf(__('%s deletes link between tickets'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
 
 } else if (isset($_REQUEST['delete_user'])) {
@@ -131,7 +131,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_REQUEST['tickets_id'], "ticket", 4,
                //TRANS: %s is the user login 
-              "tracking", sprintf(__('%s delete an actor'), $_SESSION["glpiname"]));
+              "tracking", sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
 
 } else if (isset($_REQUEST['delete_group'])) {
@@ -140,7 +140,7 @@ if (isset($_POST["add"])) {
    $group_ticket->delete($_REQUEST);
 
    Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
-              sprintf(__('%s delete an actor'), $_SESSION["glpiname"]));
+              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
 
 } else if (isset($_REQUEST['addme_observer'])) {

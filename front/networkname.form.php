@@ -69,7 +69,9 @@ if (isset($_POST["add"])) {
       $node = new $_POST['itemtype']();
       $node->check($_POST['items_id'],'w');
       NetworkName::affectAddress($_POST['addressID'], $_POST['items_id'], $_POST['itemtype']);
-      Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][79]);
+      Event::log(0, "networkport", 5, "inventory", 
+               //TRANS: %s is the user login
+               sprintf(__('%s associates a network name to an item'),$_SESSION["glpiname"]));
       Html::back();
    } else {
       Html::displayNotFoundError();
@@ -85,7 +87,8 @@ if (isset($_POST["add"])) {
       $nn->check($_GET['id'],'w');
       NetworkName::unaffectAddressByID($_GET['id']);
       Event::log($nn->getID(), $nn->getType(), 5, "inventory",
-                 $_SESSION["glpiname"]."  ".$LANG['log'][79]);
+               //TRANS: %s is the user login
+               sprintf(__('%s dissociates a network name to an item'),$_SESSION["glpiname"]));
    }
    Html::back();
 

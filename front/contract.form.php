@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
 
    if ($newID = $contract->add($_POST)) {
       Event::log($newID, "contracts", 4, "financial",
-               sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
+               sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    }
    Html::back();
 

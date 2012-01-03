@@ -50,7 +50,8 @@ if (isset($_POST["add"])) {
 
    $newID = $license->add($_POST);
    Event::log($_POST['softwares_id'], "software", 4, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][85]." $newID.");
+               //TRANS: %s is the user login, %2$s is the license id
+               sprintf(__('%1$s adds license %2$s'), $_SESSION["glpiname"], $newID));
    Html::back();
 
 } else if (isset($_POST["delete"])) {
@@ -58,7 +59,8 @@ if (isset($_POST["add"])) {
 
    $license->delete($_POST);
    Event::log($license->fields['softwares_id'], "software", 4, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][87]." ".$_POST["id"]);
+               //TRANS: %s is the user login, %2$s is the license id
+               sprintf(__('%1$s deletes license %2$s'), $_SESSION["glpiname"], $_POST["id"]));
    $license->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -66,7 +68,8 @@ if (isset($_POST["add"])) {
 
    $license->update($_POST);
    Event::log($license->fields['softwares_id'], "software", 4, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][86]." ".$_POST["id"]);
+               //TRANS: %s is the user login, %2$s is the license id
+               sprintf(__('%1$s updates license %2$s'), $_SESSION["glpiname"], $_POST["id"]));
    Html::back();
 
 } else {

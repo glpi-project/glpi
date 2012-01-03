@@ -768,7 +768,7 @@ class Ticket extends CommonITILObject {
             $validation->add($values);
 
             Event::log($this->fields['id'], "ticket", 4, "tracking",
-                  sprintf(__('%1$s update the item %2%s'), $_SESSION["glpiname"], $this->fields['id']));
+                  sprintf(__('%1$s updates the item %2%s'), $_SESSION["glpiname"], $this->fields['id']));
          }
       }
 
@@ -1135,7 +1135,7 @@ class Ticket extends CommonITILObject {
 
       // Log this event
       Event::log($this->fields['id'], "ticket", 4, "tracking",
-                  sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $this->fields['id']));
+                  sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $this->fields['id']));
 
       if (isset($this->input["_followup"])
           && is_array($this->input["_followup"])
@@ -1239,7 +1239,7 @@ class Ticket extends CommonITILObject {
             $validation->add($values);
 
             Event::log($this->fields['id'], "ticket", 4, "tracking",
-                       sprintf(__('%1$s update the item %2%s'), $_SESSION["glpiname"], $this->fields['id']));
+                       sprintf(__('%1$s updates the item %2%s'), $_SESSION["glpiname"], $this->fields['id']));
          }
       }
 

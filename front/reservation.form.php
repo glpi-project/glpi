@@ -109,7 +109,7 @@ if (isset($_POST["update"])) {
 
       if ($_POST['_ok']) {
          Event::log($_POST["reservationitems_id"], "reservation", 4, "inventory",
-                    sprintf(__('%1$s add the item %2%s'), $_SESSION["glpiname"], $_POST["_ok"]));
+                    sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["_ok"]));
       } else {
          $all_ok = false;
       }
