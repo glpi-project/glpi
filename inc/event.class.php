@@ -117,7 +117,7 @@ class Event extends CommonDBTM {
                            'devices'     => _n('Component', 'Components', 2),
                            'planning'    => $LANG['log'][16],
                            'reservation' => _n('Reservation', 'Reservations', 2),
-                           'dropdown'    => _n('Dropdown', 'Dropdowns', 2),
+                           'dropdown'    => _n('Dropdown', 'Dropdowns', $nb),
                            'rules'       => _n('Rule', 'Rules', 2));
 
       $logService = array('inventory'    => __('Inventory'),
