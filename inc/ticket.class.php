@@ -3897,6 +3897,8 @@ class Ticket extends CommonITILObject {
                             AND `glpi_tickets_users`.`type` = '".parent::REQUESTER."') ";
       $search_assign   = " (`glpi_tickets_users`.`users_id` = '".Session::getLoginUserID()."'
                             AND `glpi_tickets_users`.`type` = '".parent::ASSIGN."')";
+      $is_deleted      = " `glpi_tickets`.`is_deleted` = 0 ";
+
 
       if ($showgrouptickets) {
          $search_users_id = " 0 = 1 ";
@@ -3923,19 +3925,19 @@ class Ticket extends CommonITILObject {
 
       switch ($status) {
          case "waiting" : // on affiche les tickets en attente
-            $query .= "WHERE ($search_assign)
+            $query .= "WHERE $is_deleted AND ($search_assign)
                              AND `status` = 'waiting' ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "process" : // on affiche les tickets planifiés ou assignés au user
-            $query .= "WHERE ( $search_assign )
+            $query .= "WHERE $is_deleted AND ( $search_assign )
                              AND (`status` IN ('plan','assign')) ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "toapprove" : // on affiche les tickets planifiés ou assignés au user
-            $query .= "WHERE (`status` = 'solved')
+            $query .= "WHERE $is_deleted AND (`status` = 'solved')
                              AND ($search_users_id";
             if (!$showgrouptickets) {
                $query .= " OR `glpi_tickets`.users_id_recipient = '".Session::getLoginUserID()."' ";
@@ -3947,13 +3949,13 @@ class Ticket extends CommonITILObject {
          case "tovalidate" : // on affiche les tickets à valider
             $query .= " LEFT JOIN `glpi_ticketvalidations`
                            ON (`glpi_tickets`.`id` = `glpi_ticketvalidations`.`tickets_id`)
-                        WHERE `users_id_validate` = '".Session::getLoginUserID()."'
+                        WHERE $is_deleted AND `users_id_validate` = '".Session::getLoginUserID()."'
                               AND `glpi_ticketvalidations`.`status` = 'waiting' ".
                               getEntitiesRestrictRequest("AND", "glpi_tickets");
             break;
 
          case "rejected" : // on affiche les tickets rejetés
-            $query .= "WHERE ($search_assign)
+            $query .= "WHERE $is_deleted AND ($search_assign)
                              AND `status` <> 'closed'
                              AND `global_validation` = 'rejected' ".
                              getEntitiesRestrictRequest("AND", "glpi_tickets");
@@ -3964,7 +3966,7 @@ class Ticket extends CommonITILObject {
                // à quelqu'un d'autre (exclut les self-tickets)
 
          default :
-            $query .= "WHERE ($search_users_id)
+            $query .= "WHERE $is_deleted AND ($search_users_id)
                             AND (`status` IN ('new', 'plan', 'assign', 'waiting'))
                             AND NOT ( $search_assign ) ".
                             getEntitiesRestrictRequest("AND","glpi_tickets");
