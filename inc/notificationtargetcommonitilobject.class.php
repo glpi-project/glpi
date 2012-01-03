@@ -800,7 +800,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       //Tags without lang
-      $tags = array($objettype.'.urlapprove'  => $LANG['document'][33].' '.$LANG['job'][51],
+      $tags = array($objettype.'.urlapprove'  => __('Web Link to approval of the solution'),
                     $objettype.'.log.date'    => __('Historical: date'),
                     $objettype.'.log.user'    => __('Historical: user'),
                     $objettype.'.log.field'   => __('Historical: field'),

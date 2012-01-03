@@ -409,7 +409,7 @@ class Auth {
     * @return boolean (success)
     */
    function Login($login_name, $login_password, $noauto=false) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $this->getAuthMethods();
       $this->user_present  = 1;
@@ -590,7 +590,7 @@ class Auth {
 
          if ($this->auth_succeded) {
             if (GLPI_DEMO_MODE) {
-               Event::log(-1, "system", 3, "login", $login_name . " logged in: " . $ip);           
+               Event::log(-1, "system", 3, "login", $login_name . " logged in: " . $ip);
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
                Event::log(-1, "system", 3, "login", sprintf(__('Login of %1$s from IP %2$s'),$login_name, $ip));
@@ -598,7 +598,7 @@ class Auth {
 
          } else {
             if (GLPI_DEMO_MODE) {
-               Event::log(-1, "system", 3, "login", "login", "connection failed: " . $login_name . " ($ip)");           
+               Event::log(-1, "system", 3, "login", "login", "connection failed: " . $login_name . " ($ip)");
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
                Event::log(-1, "system", 3, "login", sprintf(__('Failed login for %1$s from IP %2$s'),$login_name, $ip));

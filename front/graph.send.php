@@ -49,7 +49,7 @@ if ($uid=Session::getLoginUserID(false) && isset($_GET["file"])) {
 
       Toolbox::sendFile(GLPI_GRAPH_DIR."/".$_GET["file"], 'glpi.'.$extension);
    } else {
-      Html::displayErrorAndDie($LANG['document'][45],true);
+      Html::displayErrorAndDie(__('Unauthorized access to this file'), true);
    }
 }
 ?>

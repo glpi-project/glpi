@@ -243,13 +243,13 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
    // set_magic_quotes_runtime(0);
 
    if (!file_exists($dumpFile)) {
-      echo $LANG['document'][38]."&nbsp;: $dumpFile<br>";
+      echo sprintf(__('File %s not found.'), $dumpFile)."<br>";
       return false;
    }
    $fileHandle = fopen($dumpFile, "rb");
 
    if (!$fileHandle) {
-      echo $LANG['document'][45]."&nbsp;: $dumpFile<br>";
+      echo sprintf(__('Unauthorized access to te file %s'), $dumpFile)."<br>";
       return false;
    }
 
@@ -319,7 +319,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    $fileHandle = fopen($dumpFile, "a");
 
    if (!$fileHandle) {
-      echo $LANG['document'][45]."&nbsp;: $dumpFile<br>";
+      echo sprintf(__('Unauthorized access to te file %s'), $dumpFile)."<br>";
       return false;
    }
 
