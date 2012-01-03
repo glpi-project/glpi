@@ -376,7 +376,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::ASSIGN_TECH, __('Technician in charge of this ticket'));
          $this->addTarget(Notification::REQUESTER_GROUP, __('Requester group'));
          $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
-         $this->addTarget(Notification::ITEM_USER, $LANG['mailing'][137]);
+         $this->addTarget(Notification::ITEM_USER, __('Hardware user'));
          $this->addTarget(Notification::ASSIGN_GROUP, __('Group in charge of the ticket'));
          $this->addTarget(Notification::OBSERVER_GROUP, __('Watcher group'));
          $this->addTarget(Notification::OBSERVER, __('Watcher'));
@@ -777,7 +777,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       //Foreach global tags
-      $tags = array('log'      => $LANG['mailing'][144],
+      $tags = array('log'      => __('Historical'),
                     'authors'  => $LANG['job'][18]);
 
       foreach ($tags as $tag => $label) {

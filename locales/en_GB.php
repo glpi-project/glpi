@@ -1280,15 +1280,17 @@ $LANG['mailing'][136]="Reservation expired";
 $LANG['mailing'][137]="Hardware user";
 $LANG['mailing'][138]="List of available tags";
 $LANG['mailing'][139]="Label";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['mailing'][140]="Tag";
 $LANG['mailing'][141]="Followups";
 $LANG['mailing'][142]="Tasks";
 $LANG['mailing'][144]="Historical";
 $LANG['mailing'][145]="List of values";
 $LANG['mailing'][146]="Single value";
-$LANG['mailing'][147]="Possible value(s)";
+$LANG['mailing'][147]="Possible values";
 
-/// TODO After is ok for migration to gettext
 $LANG['Menu'][0]="Computers";
 $LANG['Menu'][1]="Networks";
 $LANG['Menu'][2]="Printers";
