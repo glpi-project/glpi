@@ -58,13 +58,12 @@ class AuthLdapReplicate extends CommonDBTM {
     * @param $master_id : master ldap server ID
    **/
    static function addNewReplicateForm($target, $master_id) {
-      global $LANG;
 
       echo "<form action='$target' method='post' name='add_replicate_form' id='add_replicate_form'>";
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" .$LANG['ldap'][20] . "</th></tr>";
+      echo "<tr><th colspan='4'>".__('Add a LDAP directory replica'). "</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>".__('Name')."</td>";
       echo "<td class='center'>".__('Server')."</td>";
       echo "<td class='center'>".__('Port')."</td><td></td></tr>";
@@ -80,6 +79,4 @@ class AuthLdapReplicate extends CommonDBTM {
    }
 
 }
-
-
 ?>

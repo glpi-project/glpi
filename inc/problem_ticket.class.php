@@ -69,7 +69,7 @@ class Problem_Ticket extends CommonDBRelation{
     * @param $problem Problem object
    **/
    static function showForProblem(Problem $problem) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $ID = $problem->getField('id');
       if (!$problem->can($ID,'r')) {
@@ -86,7 +86,7 @@ class Problem_Ticket extends CommonDBRelation{
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='10'>"._n('Ticket','Tickets',2)."</th>";
       if ($problem->isRecursive()) {
-         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<th>".__('Entity')."</th>";
       }
       echo "</tr>";
 

@@ -98,12 +98,12 @@ class ReservationItem extends CommonDBTM {
 
       $tab = array();
 
-      $tab[4]['table']    = $this->getTable();
-      $tab[4]['field']    = 'comment';
-      $tab[4]['name']     = __('Comments');
-      $tab[4]['datatype'] = 'text';
+      $tab[4]['table']        = $this->getTable();
+      $tab[4]['field']        = 'comment';
+      $tab[4]['name']         = __('Comments');
+      $tab[4]['datatype']     = 'text';
 
-      $tab['common'] = __('Characteristics');
+      $tab['common']          = __('Characteristics');
 
       $tab[1]['table']         = 'reservation_types';
       $tab[1]['field']         = 'name';
@@ -118,38 +118,38 @@ class ReservationItem extends CommonDBTM {
 
       $tab += Location::getSearchOptionsToAdd();
 
-      $tab[16]['table']    = 'reservation_types';
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[16]['table']          = 'reservation_types';
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
-      $tab[70]['table'] = 'glpi_users';
-      $tab[70]['field'] = 'name';
-      $tab[70]['name']  = __('User');
+      $tab[70]['table']          = 'glpi_users';
+      $tab[70]['field']          = 'name';
+      $tab[70]['name']           = __('User');
 
-      $tab[71]['table'] = 'glpi_groups';
-      $tab[71]['field'] = 'completename';
-      $tab[71]['name']  = __('Group');
+      $tab[71]['table']          = 'glpi_groups';
+      $tab[71]['field']          = 'completename';
+      $tab[71]['name']           = __('Group');
 
-      $tab[19]['table']         = 'reservation_types';
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
+      $tab[19]['table']          = 'reservation_types';
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
 
-      $tab[23]['table'] = 'glpi_manufacturers';
-      $tab[23]['field'] = 'name';
-      $tab[23]['name']  = __('Manufacturer');
+      $tab[23]['table']          = 'glpi_manufacturers';
+      $tab[23]['field']          = 'name';
+      $tab[23]['name']           = __('Manufacturer');
 
-      $tab[24]['table']     = 'glpi_users';
-      $tab[24]['field']     = 'name';
-      $tab[24]['linkfield'] = 'users_id_tech';
-      $tab[24]['name']      = __('Technician in charge of the hardware');
+      $tab[24]['table']          =     'glpi_users';
+      $tab[24]['field']          = 'name';
+      $tab[24]['linkfield']      = 'users_id_tech';
+      $tab[24]['name']           = __('Technician in charge of the hardware');
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
-      $tab[80]['massiveaction'] = false;
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['massiveaction']  = false;
 
       return $tab;
    }
@@ -371,7 +371,8 @@ class ReservationItem extends CommonDBTM {
                                AND `glpi_alerts`.`itemtype` = 'Reservation'
                                AND `glpi_alerts`.`type` = '".Alert::END."')
                        LEFT JOIN `glpi_reservationitems`
-                           ON (`glpi_reservations`.`reservationitems_id` = `glpi_reservationitems`.`id`)
+                           ON (`glpi_reservations`.`reservationitems_id`
+                                 = `glpi_reservationitems`.`id`)
                        WHERE `glpi_reservationitems`.`entities_id` = '$entity'
                              AND (UNIX_TIMESTAMP(`glpi_reservations`.`end`) - $secs) < UNIX_TIMESTAMP()
                              AND `glpi_reservations`.`begin` < NOW()

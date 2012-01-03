@@ -129,7 +129,7 @@ abstract class CommonITILActor extends CommonDBRelation {
     * @return Nothing (display)
    **/
    function showUserNotificationForm($ID, $options=array()) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
 
       $this->check($ID,'w');
 
@@ -158,7 +158,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       echo "<tr class='tab_bg_2'><td>".__('User')."</td>";
       echo "<td>".$user->getName()."</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['job'][19]."</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Email Followups')."</td>";
       echo "<td>";
       Dropdown::showYesNo('use_notification', $this->fields['use_notification']);
       echo "</td></tr>";

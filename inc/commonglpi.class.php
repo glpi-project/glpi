@@ -51,10 +51,8 @@ class CommonGLPI {
     *
     * @return string
    **/
-   static function getTypeName() {
-      global $LANG;
-
-      return $LANG['help'][30];
+   static function getTypeName($nb) {
+      return _n('General', 'General', $nb);
    }
 
 

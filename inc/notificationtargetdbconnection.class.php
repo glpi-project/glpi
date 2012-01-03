@@ -50,10 +50,9 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
 
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG;
 
       if ($options['diff'] > 1000000000) {
-         $tmp = $LANG['install'][35];
+         $tmp = __s("Can't connect to the database.");
       } else {
          $tmp = Html::timestampToString($options['diff'], true);
       }

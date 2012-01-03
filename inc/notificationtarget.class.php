@@ -120,8 +120,6 @@ class NotificationTarget extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Recipient', 'Recipients', $nb);
    }
 
@@ -192,7 +190,6 @@ class NotificationTarget extends CommonDBChild {
 
 
    function showForNotification(Notification $notification) {
-      global $LANG;
 
       if (!Session::haveRight("notification", "r")) {
          return false;
@@ -434,7 +431,8 @@ class NotificationTarget extends CommonDBChild {
             // unknown, deleted or disabled user
             return false;
          }
-         $filt = getEntitiesRestrictRequest('AND', 'glpi_profiles_users', '', $this->getEntity(), true);
+         $filt = getEntitiesRestrictRequest('AND', 'glpi_profiles_users', '', $this->getEntity(),
+                                            true);
          $prof = Profile_User::getUserProfiles($data['id'], $filt);
          if (!count($prof)) {
             // No right on the entity of the object
@@ -960,7 +958,6 @@ class NotificationTarget extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate && Session::haveRight('notification', 'r')) {
          switch ($item->getType()) {
@@ -1020,7 +1017,7 @@ class NotificationTarget extends CommonDBChild {
     * @return nothing
    **/
    static function showForGroup(Group $group) {
-      global $LANG, $DB;
+      global $DB;
 
       if (!Session::haveRight("notification", "r")) {
          return false;
