@@ -45,7 +45,7 @@ class FieldUnicity extends CommonDropdown {
    var $second_level_menu = "control";
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       return __('Fields unicity');
    }
 
