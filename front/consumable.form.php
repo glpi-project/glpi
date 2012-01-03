@@ -65,7 +65,8 @@ if (isset($_POST["add_several"])) {
 
    if ($con->delete($_GET)) {
       Event::log($_GET["tID"], "consumables", 4, "inventory",
-               $_SESSION["glpiname"]." ".$LANG['log'][91]);
+               //TRANS: %s is the user login
+               sprintf(__('%d delete a consumable'),$_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -81,7 +82,8 @@ if (isset($_POST["add_several"])) {
       $item = new $_POST['itemtype']();
       $item->getFromDB($_POST["items_id"]);
       Event::log($_POST["tID"], "consumables", 5, "inventory",
-               $_SESSION["glpiname"]." ".$LANG['log'][97]." ".$item->getNameID());
+               //TRANS: %s is the user login
+               sprintf(__('%d give a consumable'),$_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -90,7 +92,8 @@ if (isset($_POST["add_several"])) {
 
    if ($con->restore($_GET)) {
       Event::log($_GET["tID"], "consumables", 5, "inventory",
-               $_SESSION["glpiname"]." ".$LANG['log'][93]);
+               //TRANS: %s is the user login
+               sprintf(__('%d restore a consumable'),$_SESSION["glpiname"]));
    }
    Html::back();
 
