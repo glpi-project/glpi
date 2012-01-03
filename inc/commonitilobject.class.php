@@ -430,7 +430,8 @@ abstract class CommonITILObject extends CommonDBTM {
                           && $input['_itil_requester']['alternative_email'])
                          || $input['_itil_requester']['users_id']>0) {
                         $useractors = new $this->userlinkclass();
-                        if ($useractors->can(-1,'w',$input['_itil_requester'])) {
+                        if (isset($input['_auto_update'])
+                            || $useractors->can(-1,'w',$input['_itil_requester'])) {
                            $useractors->add($input['_itil_requester']);
                            $input['_forcenotif'] = true;
                         }
@@ -441,7 +442,8 @@ abstract class CommonITILObject extends CommonDBTM {
                case "group" :
                   if (!empty($this->grouplinkclass)) {
                      $groupactors = new $this->grouplinkclass();
-                     if ($groupactors->can(-1,'w',$input['_itil_requester'])) {
+                     if (isset($input['_auto_update'])
+                         || $groupactors->can(-1,'w',$input['_itil_requester'])) {
                         $groupactors->add($input['_itil_requester']);
                         $input['_forcenotif'] = true;
                      }
@@ -470,7 +472,8 @@ abstract class CommonITILObject extends CommonDBTM {
                           && $input['_itil_observer']['alternative_email'])
                          || $input['_itil_observer']['users_id']>0) {
                         $useractors = new $this->userlinkclass();
-                        if ($useractors->can(-1,'w',$input['_itil_observer'])) {
+                        if (isset($input['_auto_update'])
+                            || $useractors->can(-1,'w',$input['_itil_observer'])) {
                            $useractors->add($input['_itil_observer']);
                            $input['_forcenotif'] = true;
                         }
@@ -481,7 +484,8 @@ abstract class CommonITILObject extends CommonDBTM {
                case "group" :
                    if (!empty($this->grouplinkclass)) {
                      $groupactors = new $this->grouplinkclass();
-                     if ($groupactors->can(-1,'w',$input['_itil_observer'])) {
+                     if (isset($input['_auto_update'])
+                         || $groupactors->can(-1,'w',$input['_itil_observer'])) {
                         $groupactors->add($input['_itil_observer']);
                         $input['_forcenotif'] = true;
                      }
@@ -500,7 +504,8 @@ abstract class CommonITILObject extends CommonDBTM {
                case "user" :
                   if (!empty($this->userlinkclass)) {
                      $useractors = new $this->userlinkclass();
-                     if ($useractors->can(-1,'w',$input['_itil_assign'])) {
+                     if (isset($input['_auto_update'])
+                         || $useractors->can(-1,'w',$input['_itil_assign'])) {
                         $useractors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
                         if ((!isset($input['status']) && $this->fields['status']=='new')
@@ -515,7 +520,8 @@ abstract class CommonITILObject extends CommonDBTM {
                   if (!empty($this->grouplinkclass)) {
                      $groupactors = new $this->grouplinkclass();
 
-                     if ($groupactors->can(-1,'w',$input['_itil_assign'])) {
+                     if (isset($input['_auto_update'])
+                         || $groupactors->can(-1,'w',$input['_itil_assign'])) {
                         $groupactors->add($input['_itil_assign']);
                         $input['_forcenotif'] = true;
                         if ((!isset($input['status']) && $this->fields['status']=='new')
