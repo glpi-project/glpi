@@ -446,14 +446,17 @@ class Infocom extends CommonDBChild {
             if ($item_infocom->getFromDB($data["items_id"])) {
                $entity   = $data['entities_id'];
                $warranty = self::getWarrantyExpir($data["warranty_date"], $data["warranty_duration"]);
-               $message  = $LANG['mailing'][40]." ".$item_infocom->getTypeName()." - ".
-                           $item_infocom->getName()." : ".$warranty."<br>";
+               $name = $item_infocom->getTypeName()." - ".$item_infocom->getName();
+               //TRANS: %1$s is the warranty end date and %2$s the name of the item
+               $message = sprintf(__('Item arrived at the end of the warranty on %1$s: %2$s'), 
+                                 $warranty, $name)."<br>";
+                                 
                $data['warrantyexpiration']        = $warranty;
                $data['item_name']                 = $item_infocom->getName();
                $items_infos[$entity][$data['id']] = $data;
 
                if (!isset($items_messages[$entity])) {
-                  $items_messages[$entity] = $LANG['mailing'][40]."<br />";
+                  $items_messages[$entity] = __('No item arrived at the end of the warranty.')."<br />";
                }
                $items_messages[$entity] .= $message;
             }

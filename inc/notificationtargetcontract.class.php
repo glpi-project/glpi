@@ -51,7 +51,8 @@ class NotificationTargetContract extends NotificationTarget {
       $this->datas['##contract.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                       $options['entities_id']);
       $events = $this->getEvents();
-      $this->datas['##contract.action##'] = $LANG['mailing'][39]." - ".$events[$event];
+      //TRANS: %s is the type of alarm : on end or notice
+      $this->datas['##contract.action##'] = sprintf(__('Contracts alarm - %s'), $events[$event]);
 
       foreach ($options['contracts'] as $id => $contract) {
          $tmp = array();
@@ -89,7 +90,7 @@ class NotificationTargetContract extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('contract.action'  => $LANG['mailing'][119],
+      $tags = array('contract.action'  => _n('Event', 'Events', 1),
                     'contract.name'    => __('Name'),
                     'contract.number'  => $LANG['financial'][4],
                     'contract.type'    => __('Type'),

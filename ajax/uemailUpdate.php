@@ -65,27 +65,32 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
    
    $rand = Dropdown::showYesNo($_REQUEST['field'].'[use_notification]', $default_notif);
 
-   echo '<br>'.$LANG['mailing'][118]."&nbsp;:&nbsp;";
+
+   $email_string = '';
    // Only one email
    if (count($emails) ==  1
        && !empty($default_email)
        && NotificationMail::isUserAddressValid($default_email)) {
-      echo $default_email;
+      $email_string =  $default_email;
 
    } else if (count($emails) > 1) {
       // Several emails : select in the list
-      echo "<select name='".$_REQUEST['field']."[alternative_email]' value=''>";
-      echo "<option value='' selected>$default_email</option>";
+      $email_string = "<select name='".$_REQUEST['field']."[alternative_email]' value=''>";
+      $email_string .= "<option value='' selected>$default_email</option>";
       foreach ($emails as $new_email) {
          if ($new_email != $default_email) {
-            echo "<option value='$new_email'>$new_email</option>";
+            $email_string .= "<option value='$new_email'>$new_email</option>";
          }
       }
-      echo "</select>";
+      $email_string .= "</select>";
    } else {
-      echo "<input type='text' size='25' name='".$_REQUEST['field']."[alternative_email]'
+      $email_string = "<input type='text' size='25' name='".$_REQUEST['field']."[alternative_email]'
             value='$default_email'>";
    }
+   
+   echo '<br>';
+   echo sprintf(__('Email: %s'), $email_string);
+   
 }
 
 Ajax::commonDropdownUpdateItem($_POST);

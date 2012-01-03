@@ -147,7 +147,7 @@ class NotificationMailSetting extends CommonDBTM {
          echo "<td><input type='text' name='admin_email' size='40' value='".
                     $CFG_GLPI["admin_email"]."'>";
          if (!NotificationMail::isUserAddressValid($CFG_GLPI["admin_email"])) {
-             echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
+             echo "<span class='red'>&nbsp;".__('Invalid email')."</span>";
          }
          echo "</td>";
          echo "<td >" . __('Administrator name') . "</td>";
@@ -160,7 +160,7 @@ class NotificationMailSetting extends CommonDBTM {
          echo "<td><input type='text' name='admin_reply' size='40' value='" .
                     $CFG_GLPI["admin_reply"] . "'>";
          if (!NotificationMail::isUserAddressValid($CFG_GLPI["admin_reply"])) {
-            echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
+            echo "<span class='red'>&nbsp;".__('Invalid email')."</span>";
          }
          echo " </td>";
          echo "<td >" . __('Response name (if needed)') . "</td>";

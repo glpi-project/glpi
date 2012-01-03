@@ -116,7 +116,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       if (!NotificationMail::isUserAddressValid($input['name'])) {
-         Session::addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+         Session::addMessageAfterRedirect(_('Invalid email address'),
                                           false, ERROR);
       }
 
@@ -140,7 +140,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       if (!NotificationMail::isUserAddressValid($input['name'])) {
-         Session::addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+         Session::addMessageAfterRedirect(_('Invalid email address'),
                                           false, ERROR);
       }
 

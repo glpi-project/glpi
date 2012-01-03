@@ -279,7 +279,8 @@ class TicketFollowup  extends CommonDBTM {
       if (count($docadded)>0) {
          $input['content'] .= "\n";
          foreach ($docadded as $name) {
-            $input['content'] .= "\n".$LANG['mailing'][26]." $name";
+            //TRANS: %s is tha document name
+            $input['content'] .= "\n".sprintf(__('Added document: %s'),$name);
          }
       }
 

@@ -195,7 +195,7 @@ class UserEmail  extends CommonDBChild {
          }
 
          if (!NotificationMail::isUserAddressValid($data['email'])) {
-            echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
+            echo "<span class='red'>&nbsp;".__('Invalid email')."</span>";
          }
       }
 

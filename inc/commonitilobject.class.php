@@ -422,7 +422,7 @@ abstract class CommonITILObject extends CommonDBTM {
                          && $input['_itil_requester']['alternative_email']
                          && !NotificationMail::isUserAddressValid($input['_itil_requester']['alternative_email'])) {
                         $input['_itil_requester']['alternative_email'] = '';
-                        Session::addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                        Session::addMessageAfterRedirect(_('Invalid email address'),
                                                          false, ERROR);
                      }
                      if ((isset($input['_itil_requester']['alternative_email'])
@@ -464,7 +464,7 @@ abstract class CommonITILObject extends CommonDBTM {
                          && $input['_itil_observer']['alternative_email']
                          && !NotificationMail::isUserAddressValid($input['_itil_observer']['alternative_email'])) {
                         $input['_itil_observer']['alternative_email'] = '';
-                        Session::addMessageAfterRedirect($LANG['mailing'][111].' : '.$LANG['mailing'][110],
+                        Session::addMessageAfterRedirect(_('Invalid email address'),
                                                          false, ERROR);
                      }
                      if ((isset($input['_itil_observer']['alternative_email'])
@@ -1913,9 +1913,9 @@ abstract class CommonITILObject extends CommonDBTM {
                   if (empty($uemail) && $user->getFromDB($d['users_id'])) {
                      $uemail = $user->getDefaultEmail();
                   }
-                  $text .= $LANG['mailing'][118]."&nbsp;:&nbsp;".$uemail;
+                  $text .= sprintf(__('Email: %s'),$uemail);
                   if (!NotificationMail::isUserAddressValid($uemail)) {
-                     $text .= "<span class='red'>".$LANG['mailing'][110]."</span>";
+                     $text .= "<span class='red'>".__('Invalid email')."</span>";
                   }
                }
                echo "&nbsp;";

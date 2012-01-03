@@ -37,10 +37,10 @@ class NotificationTargetReservation extends NotificationTarget {
    function getEvents() {
       global $LANG;
 
-      return array('new'    => $LANG['mailing'][19],
-                   'update' => $LANG['mailing'][23],
-                   'delete' => $LANG['mailing'][29],
-                   'alert'  => $LANG['mailing'][136]);
+      return array('new'    => __('New reservation'),
+                   'update' => __('Update reservation'),
+                   'delete' => __('Cancel reservation'),
+                   'alert'  => __('Reservation expired'));
    }
 
 

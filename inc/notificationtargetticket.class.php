@@ -151,19 +151,19 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    function getEvents() {
       global $LANG;
 
-      $events = array('new'             => $LANG['job'][13],
-                      'update'          => $LANG['mailing'][30],
-                      'solved'          => $LANG['mailing'][123],
+      $events = array('new'             => __('New ticket'),
+                      'update'          => __('Ticket updated'),
+                      'solved'          => __('Ticket solved'),
                       'validation'      => __('Approval request'),
-                      'add_followup'    => $LANG['mailing'][10],
-                      'update_followup' => $LANG['mailing'][134],
-                      'delete_followup' => $LANG['mailing'][135],
-                      'add_task'        => $LANG['job'][49],
-                      'update_task'     => $LANG['job'][52],
-                      'delete_task'     => $LANG['job'][53],
-                      'closed'          => $LANG['mailing'][127],
-                      'deleted'         => $LANG['mailing'][129],
-                      'alertnotclosed'  => $LANG['crontask'][15],
+                      'add_followup'    => __("New followup"),
+                      'update_followup' => __('Update followup'),
+                      'delete_followup' => __('Deletion of a followup'),
+                      'add_task'        => __('New task'),
+                      'update_task'     => __('Update task'),
+                      'delete_task'     => __('Deletion of a task'),
+                      'closed'          => __('Closing of the ticket'),
+                      'deleted'         => __('Deletion of a ticket'),
+                      'alertnotclosed'  => __('Not solved tickets'),
                       'recall'          => __('Automatic reminders of SLAs'),
                       'satisfaction'    => __('Satisfaction survey'));
       asort($events);
@@ -560,12 +560,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'followup.author'              =>  __('Writer'),
                     'followup.description'         => $LANG['joblist'][6],
                     'followup.requesttype'         => $LANG['job'][44],
-                    'ticket.numberoffollowups'     => $LANG['mailing'][4],
-                    'ticket.numberoftasks'         => $LANG['mailing'][122],
+                    'ticket.numberoffollowups'     => __('Number of followups'),
+                    'ticket.numberoftasks'         => __('Number of tasks'),
                     'ticket.numberoflinkedtickets' => __('Number of linked tickets'),
                     'ticket.numberofproblems'      => __('Number of problems'),
-                    'ticket.nocategoryassigned'    => $LANG['mailing'][100],
-                    'ticket.action'                => $LANG['mailing'][119],
+                    'ticket.action'                => _n('Event', 'Events', 1),
                     'ticket.autoclose'             => $LANG['entity'][18],
                     'ticket.globalvalidation'      => __('Global approval status'),
                   );
@@ -673,7 +672,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       //Foreach tag for alertnotclosed
       $this->addTagToList(array('tag'     => 'tickets',
-                                'label'   => $LANG['crontask'][15],
+                                'label'   => __('Not solved tickets'),
                                 'value'   => false,
                                 'foreach' => true,
                                 'events'  => array('alertnotclosed')));

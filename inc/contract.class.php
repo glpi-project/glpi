@@ -1169,7 +1169,7 @@ class Contract extends CommonDBTM {
                $contract_infos[$type][$entity][$data['id']] = $data;
 
                 if (!isset($contract_messages[$type][$entity])) {
-                  $contract_messages[$type][$entity] = $LANG['mailing'][37]."<br />";
+                  $contract_messages[$type][$entity] = __('Contract entered in notice time:')."<br />";
                }
                $contract_messages[$type][$entity] .= $message;
             }

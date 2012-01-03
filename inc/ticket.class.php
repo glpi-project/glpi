@@ -5041,7 +5041,7 @@ class Ticket extends CommonITILObject {
             return array('description' => $LANG['crontask'][14]);
 
          case 'alertnotclosed' :
-            return array('description' => $LANG['crontask'][15]);
+            return array('description' => __('Not solved tickets'));
 
          case 'createinquest' :
             return array('description' => $LANG['crontask'][18]);

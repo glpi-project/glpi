@@ -173,8 +173,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
       $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
       $mmail->AddAddress($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
-      $mmail->Subject = "[GLPI] ".$LANG['mailing'][32];
-      $mmail->Body    = $LANG['mailing'][31]."\n-- \n".$CFG_GLPI["mailing_signature"];
+      $mmail->Subject = "[GLPI] ".__('Mail test');
+      $mmail->Body    = __('This is a test email.')."\n-- \n".$CFG_GLPI["mailing_signature"];
 
       if (!$mmail->Send()) {
          Session::addMessageAfterRedirect(__('Failed to send test email to administrator'), false, ERROR);
@@ -236,7 +236,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
 
       $mmail->MessageID = "<GLPI-".$options["items_id"].".".time().".".rand(). "@".php_uname('n').">";
 
-      $messageerror = $LANG['mailing'][47];
+      $messageerror = __('Error in sending the email');
 
       if (!$mmail->Send()) {
          $senderror = true;

@@ -76,10 +76,10 @@ class NotificationTargetInfocom extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('infocom.action'         => $LANG['mailing'][119],
+      $tags = array('infocom.action'         => _n('Event', 'Events', 1),
                     'infocom.itemtype'       => __('Item type'),
                     'infocom.item'           => $LANG['financial'][104],
-                    'infocom.expirationdate' => $LANG['mailing'][54],
+                    'infocom.expirationdate' => __('Expiration date'),
                     'infocom.entity'         => $LANG['entity'][0]);
 
       foreach ($tags as $tag => $label) {

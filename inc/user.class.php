@@ -2917,7 +2917,7 @@ class User extends CommonDBTM {
                NotificationEvent::raiseEvent('passwordforget', $this, array('entities_id' => 0));
                _e('An email has been sent to your email address. The email contains informations for reset your password.');
             } else {
-               echo $LANG['mailing'][110];
+               _e('Invalid email');
             }
 
          } else {

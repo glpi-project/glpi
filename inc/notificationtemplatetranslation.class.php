@@ -291,7 +291,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th>".__('Tag')."</th>
                 <th>".__('Label')."</th>
-                <th>".__('Event')."</th>
+                <th>"._n('Event', 'Events', 1)."</th>
                 <th>".__('Type')."</th>
                 <th>".__('Possible values')."</th>
             </tr>";

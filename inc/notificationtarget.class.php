@@ -122,10 +122,7 @@ class NotificationTarget extends CommonDBChild {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['mailing'][121];
-      }
-      return $LANG['mailing'][131];
+      return _n('Recipient', 'Recipients', $nb);
    }
 
 
@@ -205,7 +202,7 @@ class NotificationTarget extends CommonDBChild {
              method='post' action=' ";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>" . $LANG['mailing'][121] . "</th></tr>";
+      echo "<tr><th colspan='4'>" . _n('Recipient', 'Recipients', 2) . "</th></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<input type='hidden' name='notifications_id' value='".$notification->getField('id')."'>";
       echo "<input type='hidden' name='itemtype' value='".$notification->getField('itemtype')."'>";
@@ -976,12 +973,12 @@ class NotificationTarget extends CommonDBChild {
 
             case 'Notification' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry($LANG['mailing'][121],
+                  return self::createTabEntry(_n('Recipient', 'Recipients', 2),
                                               countElementsInTable($this->getTable(),
                                                                    "notifications_id
                                                                         = '".$item->getID()."'"));
                }
-               return $LANG['mailing'][121];
+               return _n('Recipient', 'Recipients', 2);
          }
       }
       return '';
@@ -1046,7 +1043,7 @@ class NotificationTarget extends CommonDBChild {
          echo "<th>".Entity::getTypeName()."</th>";
          echo "<th>".__('Active')."</th>";
          echo "<th>".__('Type')."</th>";
-         echo "<th>".$LANG['mailing'][120]."</th>";
+         echo "<th>".__('Notification method')."</th>";
          echo "<th>".NotificationEvent::getTypeName()."</th>";
          echo "<th>".NotificationTemplate::getTypeName()."</th></tr>";
 

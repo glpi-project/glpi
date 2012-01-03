@@ -1422,11 +1422,11 @@ $LANG['mailing'][0]   = "-------------------------------------------------------
 $LANG['mailing'][1]   = "======================================================================";
 $LANG['mailing'][2]   = "Préfixe pour les notifications";
 $LANG['mailing'][3]   = "Généré automatiquement par GLPI";
-$LANG['mailing'][4]   = "Suivi(s) déjà effectué(s)";
+$LANG['mailing'][4]   = "Suivis déjà effectués";
 $LANG['mailing'][5]   = "Description du ticket";
 $LANG['mailing'][6]   = "CSS";
 
-$LANG['mailing'][10]  = "Nouveau suivi pour ce ticket";
+$LANG['mailing'][10]  = "Nouveau suivi";
 
 $LANG['mailing'][19]  = "Nouvelle réservation";
 
@@ -1434,10 +1434,10 @@ $LANG['mailing'][23]  = "Modification réservation";
 
 $LANG['mailing'][26]  = "Document ajouté :";
 
-$LANG['mailing'][29]  = "Annulation réservation";
-$LANG['mailing'][30]  = "Modification Ticket";
+$LANG['mailing'][29]  = "Annulation d'une réservation";
+$LANG['mailing'][30]  = "Modification d'un ticket";
 $LANG['mailing'][31]  = "Ceci est le courriel de test.";
-$LANG['mailing'][32]  = "Courriel Test";
+$LANG['mailing'][32]  = "Courriel test";
 $LANG['mailing'][33]  = "Alerte Cartouches";
 
 $LANG['mailing'][35]  = "Seuil d'alerte atteint pour le type de consommable :";
@@ -1472,7 +1472,7 @@ $LANG['mailing'][118] = "Courriel";
 $LANG['mailing'][119] = "Événement";
 $LANG['mailing'][120] = "Mode de notification";
 $LANG['mailing'][121] = "Destinataires";
-$LANG['mailing'][122] = "Tâche(s) déjà effectuée(s)";
+$LANG['mailing'][122] = "Tâches déjà effectuées";
 $LANG['mailing'][123] = "Ticket résolu";
 $LANG['mailing'][124] = "Ajouter une nouvelle traduction";
 $LANG['mailing'][125] = "Traduction par défaut";
@@ -1483,10 +1483,10 @@ $LANG['mailing'][129] = "Suppression d'un ticket";
 $LANG['mailing'][130] = "Expéditeur";
 $LANG['mailing'][131] = "Destinataire";
 $LANG['mailing'][132] = "En-tête du courriel";
-$LANG['mailing'][133] = "Supprimer courriel(s)";
-$LANG['mailing'][134] = "Mise à jour suivi";
-$LANG['mailing'][135] = "Suppression suivi";
-$LANG['mailing'][136] = "Expiration réservation";
+$LANG['mailing'][133] = "Supprimer courriels";
+$LANG['mailing'][134] = "Mise à jour d'un suivi";
+$LANG['mailing'][135] = "Suppression d'un suivi";
+$LANG['mailing'][136] = "Expiration d'une réservation";
 $LANG['mailing'][137] = "Utilisateur du matériel";
 $LANG['mailing'][138] = "Liste des balises disponibles";
 $LANG['mailing'][139] = "Libellé";

@@ -200,8 +200,9 @@ class Alert extends CommonDBTM {
                    LIMIT 1";
          $result = $DB->query($query);
          if ($DB->numrows($result) > 0) {
-            echo "&nbsp;".$LANG['mailing'][52].' '.Html::convDateTime($DB->result($result, 0,
-                                                                                  'date'));
+            //TRANS: %s is the date
+            echo sprintf(__('Alert sent on %s'), 
+                        Html::convDateTime($DB->result($result, 0, 'date')));
          }
       }
    }

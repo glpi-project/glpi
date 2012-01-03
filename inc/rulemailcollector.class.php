@@ -103,40 +103,40 @@ class RuleMailCollector extends Rule {
       $criterias['subject']['table'] = '';
       $criterias['subject']['type']  = 'text';
 
-      $criterias['content']['name']  = $LANG['mailing'][118].' : '.$LANG['mailing'][114];
+      $criterias['content']['name']  = __('Email body');
       $criterias['content']['table'] = '';
       $criterias['content']['type']  = 'text';
 
-      $criterias['from']['name']  = $LANG['mailing'][132].' : from';
+      $criterias['from']['name']  = __('From email header');
       $criterias['from']['table'] = '';
       $criterias['from']['type']  = 'text';
 
-      $criterias['to']['name']  = $LANG['mailing'][132].' : to';
+      $criterias['to']['name']  = __('To email header');
       $criterias['to']['table'] = '';
       $criterias['to']['type']  = 'text';
 
-      $criterias['in_reply_to']['name']  = $LANG['mailing'][132].' : in_reply_to';
+      $criterias['in_reply_to']['name']  = __('In_Reply_To email header');
       $criterias['in_reply_to']['table'] = '';
       $criterias['in_reply_to']['type']  = 'text';
 
-      $criterias['x-priority']['name']  = $LANG['mailing'][132].' : X-Priority';
+      $criterias['x-priority']['name']  = __('X-Priority email header');
       $criterias['x-priority']['table'] = '';
       $criterias['x-priority']['type']  = 'text';
 
-      $criterias['x-auto-response-suppress']['name']  = $LANG['mailing'][132].' : X-Auto-Response-Suppress';
+      $criterias['x-auto-response-suppress']['name']  = __('X-Auto-Response-Suppress email header');
       $criterias['x-auto-response-suppress']['table'] = '';
       $criterias['x-auto-response-suppress']['type']  = 'text';
 
-      $criterias['auto-submitted']['name']  = $LANG['mailing'][132].' : Auto-Submitted';
+      $criterias['auto-submitted']['name']  = __('Auto-Submitted email header');
       $criterias['auto-submitted']['table'] = '';
       $criterias['auto-submitted']['type']  = 'text';
 
       /// Renater spam matching : X-UCE-Status = Yes
-      $criterias['x-uce-status']['name']  = $LANG['mailing'][132].' : X-UCE-Status';
+      $criterias['x-uce-status']['name']  = __('X-UCE-Status email header');
       $criterias['x-uce-status']['table'] = '';
       $criterias['x-uce-status']['type']  = 'text';
 
-      $criterias['received']['name']  = $LANG['mailing'][132].' : Received';
+      $criterias['received']['name']  = __('Received email header');
       $criterias['received']['table'] = '';
       $criterias['received']['type']  = 'text';
 

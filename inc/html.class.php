@@ -1870,12 +1870,12 @@ class Html {
          $menu['config']['content']['crontask']['page']            = '/front/crontask.php';
          $menu['config']['content']['crontask']['links']['search'] = "/front/crontask.php";
 
-         $menu['config']['content']['mailing']['options']['config']['title'] = $LANG['mailing'][118];
+         $menu['config']['content']['mailing']['options']['config']['title'] = __('Email');
          $menu['config']['content']['mailing']['options']['config']['page']
                         = '/front/notificationmailsetting.form.php';
 
          $menu['config']['content']['mailing']['options']['notificationtemplate']['title']
-                        = $LANG['mailing'][113];
+                        = _n('Notification template', 'Notification templates', 2);
          $menu['config']['content']['mailing']['options']['notificationtemplate']['page']
                         = '/front/notificationtemplate.php';
          $menu['config']['content']['mailing']['options']['notificationtemplate']['links']['add']

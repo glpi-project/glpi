@@ -210,7 +210,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                     'task.begin'                => __('Start date'),
                     'task.end'                  => __('End date'),
                     'task.status'               => $LANG['joblist'][0],
-                    'problem.numberoftasks'     => $LANG['mailing'][122],
+                    'problem.numberoftasks'     => __('Number of tasks'),
                     'problem.numberoftickets'   => __('Number of tickets'),
                     'problem.impacts'           => __('Impacts'),
                     'problem.causes'            => __('Causes'),

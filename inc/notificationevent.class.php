@@ -44,10 +44,8 @@ class NotificationEvent extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['mailing'][108];
-      }
-      return $LANG['mailing'][119];
+
+      return _n('Event', 'Events', $nb);
    }
 
 
@@ -195,8 +193,8 @@ class NotificationEvent extends CommonDBTM {
          $events = $target->getAllEvents();
 
          if (count($events)>0) {
-            echo "<tr><th>".$LANG['mailing'][119].'</th><th>'.$LANG['mailing'][121]."</th>";
-            echo "<th>".$LANG['mailing'][113].'</th><th>'.$LANG['mailing'][111]."</th></tr>";
+            echo "<tr><th>"._n('Event', 'Events', 2).'</th><th>'._n('Recipient', 'Recipients', 2)."</th>";
+            echo "<th>"._n('Notification template', 'Notification templates', 2).'</th><th>'._n('Email', 'Emails', 2)."</th></tr>";
 
             foreach ($events as $event => $label) {
                self::raiseEvent($event, $item, $options, $label);
