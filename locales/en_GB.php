@@ -369,15 +369,12 @@ $LANG['computers'][8]="Volumes";
 $LANG['computers'][9]="Operating system";
 $LANG['computers'][10]="Serial of the operating system";
 $LANG['computers'][11]="Product ID of the operating system";
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['computers'][14]="Inserted";
 $LANG['computers'][23]="Memory Type";
-$LANG['computers'][24]="Memory (MB)";
+$LANG['computers'][24]="Memory (Mio)"; // fixed during gettext
 $LANG['computers'][25]="Hard drive size";
 $LANG['computers'][36]="Hard drive type";
-$LANG['computers'][37]="No connected monitor.";
+$LANG['computers'][37]="No connected monitor";
 $LANG['computers'][38]="No connected printer";
 $LANG['computers'][46]="Virtual machine";
 $LANG['computers'][47]="No connected device";
@@ -403,6 +400,9 @@ $LANG['computers'][66]="List of virtual machines";
 $LANG['computers'][67]="Virtualization systems";
 $LANG['computers'][68]="Virtualization Models";
 $LANG['computers'][69]="States of the virtual machine";
+
+
+/// TODO Before is ok for migration to gettext
 
 $LANG['connect'][0]="Direct Connections";
 $LANG['connect'][1]="Not connected.";

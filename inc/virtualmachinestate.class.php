@@ -40,12 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class VirtualMachineState extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
-      if ($nb>1) {
-         return $LANG['computers'][69];
-      }
-      return $LANG['computers'][63];
+      return _n('State of the virtual machine', 'States of the virtual machine', $nb);
    }
 
 }

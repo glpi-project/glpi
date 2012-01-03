@@ -172,7 +172,9 @@ class Computer_Item extends CommonDBRelation{
                && $comp->fields['locations_id'] != $item->getField('locations_id')) {
 
                $updates['locations_id'] = addslashes($comp->fields['locations_id']);
-               Session::addMessageAfterRedirect($LANG['computers'][48], true);
+               Session::addMessageAfterRedirect(
+                  __('Location updated. The items connected have been moved in the same location.'),
+                  true);
             }
             if (($CFG_GLPI["is_user_autoupdate"]
                  && $comp->fields['users_id'] != $item->getField('users_id'))
@@ -185,7 +187,9 @@ class Computer_Item extends CommonDBRelation{
                if ($CFG_GLPI["is_group_autoupdate"]) {
                   $updates['groups_id'] = $comp->fields['groups_id'];
                }
-               Session::addMessageAfterRedirect($LANG['computers'][50],true);
+               Session::addMessageAfterRedirect(
+                  __('User or group updated. The items connected have been moved in the same values.'),
+                  true);
             }
 
             if ($CFG_GLPI["is_contact_autoupdate"]
@@ -194,14 +198,18 @@ class Computer_Item extends CommonDBRelation{
 
                $updates['contact']     = addslashes($comp->fields['contact']);
                $updates['contact_num'] = addslashes($comp->fields['contact_num']);
-               Session::addMessageAfterRedirect($LANG['computers'][49], true);
+               Session::addMessageAfterRedirect(
+                  __('Alternate username updated. The connected items have been updated using this alternate username.'),
+                  true);
             }
 
             if ($CFG_GLPI["state_autoupdate_mode"]<0
                 && $comp->fields['states_id'] != $item->getField('states_id')) {
 
                $updates['states_id'] = $comp->fields['states_id'];
-               Session::addMessageAfterRedirect($LANG['computers'][56], true);
+               Session::addMessageAfterRedirect(
+                  __('Status updated. The connected items have been updated using this status.'),
+                  true);
             }
 
             if ($CFG_GLPI["state_autoupdate_mode"]>0
@@ -445,19 +453,19 @@ class Computer_Item extends CommonDBRelation{
             } else {
                switch ($itemtype) {
                   case 'Printer' :
-                     echo $LANG['computers'][38];
+                     _e('No connected printer');
                      break;
 
                   case 'Monitor' :
-                     echo $LANG['computers'][37];
+                     _e('No connected monitor');
                      break;
 
                   case 'Peripheral' :
-                     echo $LANG['computers'][47];
+                     _e('No connected device');
                      break;
 
                   case 'Phone' :
-                     echo $LANG['computers'][54];
+                     _e('No phone connected');
                      break;
                }
                echo "<br>";

@@ -165,7 +165,9 @@ class Computer extends CommonDBTM {
             }
 
             if ($update_done) {
-               Session::addMessageAfterRedirect($LANG['computers'][49], true);
+               Session::addMessageAfterRedirect(
+                  __('Alternate username updated. The connected items have been updated using this alternate username.'),
+                  true);
             }
          }
 
@@ -216,7 +218,9 @@ class Computer extends CommonDBTM {
                }
             }
             if ($update_done) {
-               Session::addMessageAfterRedirect($LANG['computers'][50], true);
+               Session::addMessageAfterRedirect(
+                  __('User or group updated. The items connected have been moved in the same values.'),
+                  true);
             }
          }
 
@@ -252,7 +256,9 @@ class Computer extends CommonDBTM {
                }
             }
             if ($update_done) {
-               Session::addMessageAfterRedirect($LANG['computers'][56], true);
+               Session::addMessageAfterRedirect(
+                  __('Status updated. The connected items have been updated using this status.'),
+                  true);
             }
          }
 
@@ -292,7 +298,9 @@ class Computer extends CommonDBTM {
                }
             }
             if ($update_done) {
-               Session::addMessageAfterRedirect($LANG['computers'][48], true);
+               Session::addMessageAfterRedirect(
+                  __('Location updated. The items connected have been moved in the same location.'),
+                  true);
             }
          }
       }
@@ -575,14 +583,14 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][53]."&nbsp;:</td>";
+      echo "<td>".__('Service Pack')."</td>";
       echo "<td >";
       Dropdown::show('OperatingSystemServicePack',
                      array('value' => $this->fields["operatingsystemservicepacks_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][52]."&nbsp;:</td>";
+      echo "<td>".__('Version of the operating system')."</td>";
       echo "<td >";
       Dropdown::show('OperatingSystemVersion',
                      array('value' => $this->fields["operatingsystemversions_id"]));
@@ -601,7 +609,7 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][58]."&nbsp;:</td>";
+      echo "<td>".__('UUID')."</td>";
       echo "<td >";
       Html::autocompletionTextField($this, 'uuid');
       echo "</td></tr>\n";
@@ -697,7 +705,7 @@ class Computer extends CommonDBTM {
       } else {
          echo "<td colspan='2'></td>";
       }
-      echo "<td>".$LANG['computers'][51]."&nbsp;:</td>";
+      echo "<td>".__('Update Source')."</td>";
       echo "<td >";
       Dropdown::show('AutoUpdateSystem', array('value' => $this->fields["autoupdatesystems_id"]));
       echo "</td></tr>";
@@ -760,15 +768,15 @@ class Computer extends CommonDBTM {
 
       $tab[46]['table'] = 'glpi_operatingsystemversions';
       $tab[46]['field'] = 'name';
-      $tab[46]['name']  = $LANG['computers'][52];
+      $tab[46]['name']  = __('Version of the operating system');
 
       $tab[41]['table'] = 'glpi_operatingsystemservicepacks';
       $tab[41]['field'] = 'name';
-      $tab[41]['name']  = $LANG['computers'][53];
+      $tab[41]['name']  = __('Service Pack');
 
       $tab[42]['table'] = 'glpi_autoupdatesystems';
       $tab[42]['field'] = 'name';
-      $tab[42]['name']  = $LANG['computers'][51];
+      $tab[42]['name']  = __('Update Source');
 
       $tab[43]['table'] = $this->getTable();
       $tab[43]['field'] = 'os_license_number';
@@ -780,7 +788,7 @@ class Computer extends CommonDBTM {
 
       $tab[47]['table'] = $this->getTable();
       $tab[47]['field'] = 'uuid';
-      $tab[47]['name']  = $LANG['computers'][58];
+      $tab[47]['name']  = __('UUID');
 
 
       $tab[5]['table']     = $this->getTable();
@@ -882,7 +890,7 @@ class Computer extends CommonDBTM {
 
       $tab[10]['table']         = 'glpi_devicememories';
       $tab[10]['field']         = 'designation';
-      $tab[10]['name']          = $LANG['computers'][23];
+      $tab[10]['name']          = __('Memory Type');
       $tab[10]['forcegroupby']  = true;
       $tab[10]['usehaving']     = true;
       $tab[10]['massiveaction'] = false;
@@ -892,7 +900,7 @@ class Computer extends CommonDBTM {
 
       $tab[35]['table']         = 'glpi_computers_devicememories';
       $tab[35]['field']         = 'specificity';
-      $tab[35]['name']          = $LANG['computers'][24];
+      $tab[35]['name']          = __('Memory (Mio)');
       $tab[35]['forcegroupby']  = true;
       $tab[35]['usehaving']     = true;
       $tab[35]['datatype']      = 'number';
@@ -940,7 +948,7 @@ class Computer extends CommonDBTM {
 
       $tab[15]['table']         = 'glpi_deviceharddrives';
       $tab[15]['field']         = 'designation';
-      $tab[15]['name']          = $LANG['computers'][36];
+      $tab[15]['name']          = __('Hard drive type');
       $tab[15]['forcegroupby']  = true;
       $tab[15]['usehaving']     = true;
       $tab[15]['massiveaction'] = false;
@@ -950,7 +958,7 @@ class Computer extends CommonDBTM {
 
       $tab[34]['table']         = 'glpi_computers_deviceharddrives';
       $tab[34]['field']         = 'specificity';
-      $tab[34]['name']          = $LANG['computers'][25];
+      $tab[34]['name']          = __('Hard drive size');
       $tab[34]['forcegroupby']  = true;
       $tab[34]['usehaving']     = true;
       $tab[34]['datatype']      = 'number';
@@ -1097,7 +1105,7 @@ class Computer extends CommonDBTM {
          $tab[111]['massiveaction'] = false;
          $tab[111]['joinparams']    = array('jointype' => 'child');
       }
-      $tab['virtualmachine'] = $LANG['computers'][57];
+      $tab['virtualmachine'] = _n('Virtual machine', 'Virtual machines', 2);
 
       $tab[160]['table']         = 'glpi_computervirtualmachines';
       $tab[160]['field']         = 'name';
@@ -1108,7 +1116,7 @@ class Computer extends CommonDBTM {
 
       $tab[161]['table']         = 'glpi_virtualmachinestates';
       $tab[161]['field']         = 'name';
-      $tab[161]['name']          = $LANG['computers'][63];
+      $tab[161]['name']          = __('State of the virtual machine');
       $tab[161]['forcegroupby']  = true;
       $tab[161]['massiveaction'] = false;
       $tab[161]['joinparams']    = array('beforejoin'
@@ -1117,7 +1125,7 @@ class Computer extends CommonDBTM {
 
       $tab[162]['table']         = 'glpi_virtualmachinetypes';
       $tab[162]['field']         = 'name';
-      $tab[162]['name']          = $LANG['computers'][60];
+      $tab[162]['name']          = __('Virtualization model');
       $tab[162]['forcegroupby']  = true;
       $tab[162]['massiveaction'] = false;
       $tab[162]['joinparams']    = array('beforejoin'
@@ -1126,7 +1134,7 @@ class Computer extends CommonDBTM {
 
       $tab[163]['table']         = 'glpi_virtualmachinetypes';
       $tab[163]['field']         = 'name';
-      $tab[163]['name']          = $LANG['computers'][62];
+      $tab[163]['name']          = __('Virtualization system');
       $tab[163]['forcegroupby']  = true;
       $tab[163]['massiveaction'] = false;
       $tab[163]['joinparams']    = array('beforejoin'
@@ -1135,7 +1143,7 @@ class Computer extends CommonDBTM {
 
       $tab[164]['table']         = 'glpi_computervirtualmachines';
       $tab[164]['field']         = 'vcpu';
-      $tab[164]['name']          = $LANG['computers'][57]." : ".$LANG['computers'][61];
+      $tab[164]['name']          = __('Virtual machine name');
       $tab[164]['forcegroupby']  = true;
       $tab[164]['massiveaction'] = false;
       $tab[164]['joinparams']    = array('jointype' => 'child');
@@ -1150,7 +1158,7 @@ class Computer extends CommonDBTM {
 
       $tab[166]['table']         = 'glpi_computervirtualmachines';
       $tab[166]['field']         = 'uuid';
-      $tab[166]['name']          = $LANG['computers'][57]." : ".$LANG['computers'][58];
+      $tab[166]['name']          = __('Virtual machine UUID');
       $tab[166]['forcegroupby']  = true;
       $tab[166]['massiveaction'] = false;
       $tab[166]['joinparams']    = array('jointype' => 'child');

@@ -40,12 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class OperatingSystemVersion extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
-      if ($nb>1) {
-         return $LANG['dropdown'][29];
-      }
-      return $LANG['computers'][52];
+      return _n('Version of the operating system', 'Versions of the operating systems', $nb);
    }
 }
 

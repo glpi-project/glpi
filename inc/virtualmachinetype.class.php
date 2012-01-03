@@ -40,12 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class VirtualMachineType extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
-      if ($nb>1) {
-         return $LANG['computers'][67];
-      }
-      return $LANG['computers'][62];
+      return _n('Virtualization system', 'Virtualization systems', $nb);
    }
 
 }

@@ -40,12 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class AutoUpdateSystem extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
-      if ($nb>1) {
-         return $LANG['dropdown'][31];
-      }
-      return $LANG['computers'][51];
+      return _n('Update Source', 'Update Sources', $nb);
    }
 }
 
