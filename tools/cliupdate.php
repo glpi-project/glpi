@@ -79,9 +79,14 @@ if (!$DB->connected) {
 **/
 class CliMigration extends Migration {
 
-   function __construct($ver) {
 
-      $this->deb     = time();
+   function __construct($ver) {
+      $this->deb = time();
+      $this->setVersion($ver);
+   }
+
+
+   function setVersion($ver) {
       $this->version = $ver;
    }
 
@@ -175,7 +180,7 @@ switch ($current_version) {
 if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
    // Update version number and default langage and new version_founded ---- LEAVE AT THE END
-   $query = "UPDATE `$config_table`
+   $query = "UPDATE `glpi_configs`
              SET `version` = '".GLPI_VERSION."',
                  `founded_new_version` = ''";
    $DB->queryOrDie($query, 'update version number');
