@@ -330,35 +330,35 @@ class OcsServer extends CommonDBTM {
       echo "<table width='100%'>";
       echo "<tr class='tab_bg_2'><td class='center'>" . __('Inventory number') . " </td>\n";
       echo "<td><select name='import_otherserial'>\n";
-      echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
+      echo "<option value=''>" . __('No import') . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "otherserial");
       echo $listColumnOCS;
       echo "</select>&nbsp;&nbsp;</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . __('Location') . " </td>\n";
       echo "<td><select name='import_location'>\n";
-      echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
+      echo "<option value=''>" . __('No import') . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "locations_id");
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . __('Group') . " </td>\n";
       echo "<td><select name='import_group'>\n";
-      echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
+      echo "<option value=''>" . __('No import') . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "groups_id");
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>". __('Alternate username number')."</td>\n";
       echo "<td><select name='import_contact_num'>\n";
-      echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
+      echo "<option value=''>" . __('No import') . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "contact_num");
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>" . __('Network') . " </td>\n";
       echo "<td><select name='import_network'>\n";
-      echo "<option value=''>" . $LANG['mailgate'][8] . "</option>\n";
+      echo "<option value=''>" . __('No import') . "</option>\n";
       $listColumnOCS = self::getColumnListFromAccountInfoTable($ID, "networks_id");
       echo $listColumnOCS;
       echo "</select></td></tr>\n";
@@ -424,11 +424,11 @@ class OcsServer extends CommonDBTM {
                               array('value' => $this->fields["deconnection_behavior"]));
       echo "</td></tr>\n";
 
-      $import_array = array("0" => $LANG['mailgate'][8],
+      $import_array = array("0" => __('No import'),
                             "1" => __('Global import'),
                             "2" => __('Unit import'));
 
-      $import_array2 = array("0" => $LANG['mailgate'][8],
+      $import_array2 = array("0" => __('No import'),
                              "1" => __('Global import'),
                              "2" => __('Unit import'),
                              "3" => __('Unit import on serial number'));
@@ -450,7 +450,7 @@ class OcsServer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'><td class='center'>". _n('Software', 'Software', 2)."</td>\n<td>";
-      $import_array = array("0" => $LANG['mailgate'][8],
+      $import_array = array("0" => __('No import'),
                             "1" => __('Unit import'));
       Dropdown::showFromArray("import_software", $import_array, array('value' => $software));
       echo "</td></tr>\n";

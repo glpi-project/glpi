@@ -55,10 +55,7 @@ class NotImportedEmail extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['mailgate'][1];
-      }
-      return $LANG['mailgate'][10];
+      return _n('Refused email', 'Refused emails', $nb);
    }
 
 
@@ -83,7 +80,7 @@ class NotImportedEmail extends CommonDBTM {
 
       $tab[4]['table']         = 'glpi_mailcollectors';
       $tab[4]['field']         = 'name';
-      $tab[4]['name']          = $LANG['mailgate'][0];
+      $tab[4]['name']          = __('Mails receiver');
       $tab[4]['datatype']      = 'itemlink';
       $tab[4]['itemlink_type'] = 'MailCollector';
 
@@ -98,7 +95,7 @@ class NotImportedEmail extends CommonDBTM {
 
       $tab[16]['table']         = 'glpi_notimportedemails';
       $tab[16]['field']         = 'reason';
-      $tab[16]['name']          = $LANG['mailgate'][13];
+      $tab[16]['name']          = __('Reason of rejection');
       $tab[16]['datatype']      = 'text';
       $tab[16]['massiveaction'] = false;
 
@@ -125,10 +122,10 @@ class NotImportedEmail extends CommonDBTM {
 
       switch ($reason_id) {
          case self::MATCH_NO_RULE :
-            return $LANG['mailgate'][12];
+            return __('Unable to affect the email to an entity');
 
          case self::USER_UNKNOWN :
-            return $LANG['login'][14];
+            return __('Email not found. Impossible import');
 
          default :
             return '';

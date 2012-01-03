@@ -205,7 +205,7 @@ class MailCollector  extends CommonDBTM {
       $this->showFormHeader($options);
 
       if (!function_exists('mb_list_encodings') || !function_exists('mb_convert_encoding')) {
-         echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['mailgate'][4]."</td></tr>";
+         echo "<tr class='tab_bg_1'><td colspan='2'>".__('mbstring extension not found. Warning with charsets used.')."</td></tr>";
       }
 
       echo "<tr class='tab_bg_1'><td>".__('Name (Email address))');
@@ -227,11 +227,11 @@ class MailCollector  extends CommonDBTM {
       echo "<td><input size='30' type='text' name='refused' value=\"" . $this->fields['refused'] . "\" >";
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['login'][6]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['login'][6]."</td><td>";
       Html::autocompletionTextField($this, "login");
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['login'][7]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['login'][7]."</td>";
       echo "<td><input type='password' name='passwd' value='' size='20' autocomplete='off'>";
       if ($ID > 0) {
          echo "<input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
@@ -240,7 +240,7 @@ class MailCollector  extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td width='200px'> " . $LANG['mailgate'][7] . "&nbsp;:</td><td>";
+      echo "<td width='200px'> " . __('Maximum size of each file imported by the mail receiver') . "</td><td>";
       self::showMaxFilesize('filesize_max',$this->fields["filesize_max"]);
       echo "</td></tr>";
 
@@ -267,7 +267,7 @@ class MailCollector  extends CommonDBTM {
       echo "<form name='form' method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<table class='tab_cadre'>";
       echo "<tr class='tab_bg_2'><td class='center'>";
-      echo "<input type='submit' name='get_mails' value=\"".$LANG['mailgate'][2]."\" class='submit'>";
+      echo "<input type='submit' name='get_mails' value=\"".__('Get email tickets now')."\" class='submit'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
       echo "</table></form></div>";
@@ -306,7 +306,7 @@ class MailCollector  extends CommonDBTM {
 
       $tab[5]['table']    = $this->getTable();
       $tab[5]['field']    = 'filesize_max';
-      $tab[5]['name']     = $LANG['mailgate'][7];
+      $tab[5]['name']     = __('Maximum size of each file imported by the mail receiver');
       $tab[5]['datatype'] = 'integer';
 
       $tab[16]['table']    = $this->getTable();
@@ -385,8 +385,8 @@ class MailCollector  extends CommonDBTM {
                               '>' => '');
                foreach ($rejected as $id => $data) {
                   if ($action == 1) {
-                     Session::addMessageAfterRedirect($LANG['mailgate'][14]."&nbsp;: ".strtr($id,
-                                                                                             $clean),
+                     Session::addMessageAfterRedirect(sprintf(__('Email %s not found. Impossible import.'),
+                                                               strtr($id,$clean)),
                                                       false, ERROR);
                   } else { // Delete data in notimportedemail table
                      $rejectedmail = new NotImportedEmail();
@@ -1157,14 +1157,16 @@ class MailCollector  extends CommonDBTM {
          $filename = $this->decodeMimeString($filename);
 
          if ($structure->bytes > $maxsize) {
-            $this->addtobody .= "<br>".$LANG['mailgate'][6]." (" .
-                                Toolbox::getSize($structure->bytes) . "): ".$filename;
+            //TRANS: %1$s is the filename and %2$s its size 
+            $this->addtobody .= "<br>".sprintf(__('Too large attached file: %1$s (%2$s)'), 
+                                             $filename, Toolbox::getSize($structure->bytes));
             return false;
          }
 
          if (!Document::isValidDoc($filename)) {
-            $this->addtobody .= "<br>".$LANG['mailgate'][5]." (" .
-                                $this->get_mime_type($structure) . ") : ".$filename;
+            //TRANS: %1$s is the filename and %2$s its mime type
+            $this->addtobody .= "<br>".sprintf(__('Invalid attached file: %1$s (%2$s)'), 
+                                             $filename, $this->get_mime_type($structure));
             return false;
          }
 
@@ -1358,7 +1360,7 @@ class MailCollector  extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><th>".__('Mails receivers')."</th></tr>\n";
 
-      echo $LANG['mailgate'][0]."\n";
+      echo __('Mails receiver')."\n";
       foreach ($DB->request('glpi_mailcollectors') as $mc) {
          $msg = "\t".__('Name').':"'.$mc['name'].'"  ';
          $msg .= " ". sprintf(__('Server: %s'), $mc['host']);
@@ -1378,8 +1380,10 @@ class MailCollector  extends CommonDBTM {
       $mmail->AddCustomHeader("Auto-Submitted: auto-replied");
       $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
       $mmail->AddAddress($to);
-      $mmail->Subject  = $LANG['mailgate'][16].' '.$subject;
-      $mmail->Body     = $LANG['mailgate'][9]."\n-- \n".$CFG_GLPI["mailing_signature"];
+      //TRANS: For auto answer of refused mail : %s is the original mail subject
+      $mmail->Subject  = sprintf(__('Re: %s'),$subject);
+      $mmail->Body     = __("Your email could not be processed.\nIf the problem persists, contact the administrator").
+                         "\n-- \n".$CFG_GLPI["mailing_signature"];
       $mmail->Send();
    }
 
@@ -1410,7 +1414,7 @@ class MailCollector  extends CommonDBTM {
    static function showMaxFilesize($name, $value = 0) {
       global $LANG;
 
-      $sizes[0] = $LANG['mailgate'][8];
+      $sizes[0] = __('No import');
       for ($index=1 ; $index<100 ; $index++) {
          $sizes[$index*1048576] = sprintf(__('%s Mio'), $index);
       }

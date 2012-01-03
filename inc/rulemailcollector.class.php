@@ -89,7 +89,7 @@ class RuleMailCollector extends Rule {
       $criterias = array();
 
       $criterias['mailcollector']['field'] = 'name';
-      $criterias['mailcollector']['name']  = $LANG['mailgate'][0];
+      $criterias['mailcollector']['name']  = __('Mails receiver');
       $criterias['mailcollector']['table'] = 'glpi_mailcollectors';
       $criterias['mailcollector']['type']  = 'dropdown';
 
