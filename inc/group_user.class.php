@@ -237,7 +237,7 @@ class Group_User extends CommonDBRelation{
          Dropdown::showYesNo('is_manager',
                              ($crit == 'is_manager' ? 1 : 0));
 
-         echo "</td><td>".$LANG['common'][123]."</td><td>";
+         echo "</td><td>".__('Delegatee')."</td><td>";
          Dropdown::showYesNo('is_userdelegate',
                              ($crit == 'is_userdelegate' ? 1 : 0));
 
@@ -362,7 +362,7 @@ class Group_User extends CommonDBRelation{
       echo _n('Criteria', 'Criteria', 1)."&nbsp;";
       $crits = array(''                => Dropdown::EMPTY_VALUE,
                      'is_manager'      => __('Manager'),
-                     'is_userdelegate' => $LANG['common'][123]);
+                     'is_userdelegate' => __('Delegatee'));
       Dropdown::showFromArray('crit', $crits,
                               array('value'     => $crit,
                                     'on_change' => 'reloadTab("start=0&criterion="+this.value)'));
@@ -404,7 +404,7 @@ class Group_User extends CommonDBRelation{
            echo "<th>".Group::getTypeName(1)."</th>";
          }
          echo "<th>".__('Manager')."</th>";
-         echo "<th>".$LANG['common'][123]."</th></tr>";
+         echo "<th>".__('Delegatee')."</th></tr>";
 
          for ($i=$start, $j=0 ; $i<$number && $j<$_SESSION['glpilist_limit'] ; $i++, $j++) {
             $data = $used[$i];

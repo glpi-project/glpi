@@ -355,10 +355,10 @@ $LANG['common'][117]="Operation performed partially successful";
 $LANG['common'][118]="Failed operation";
 $LANG['common'][119]="failure(s)";
 $LANG['common'][121]="authorizations problem(s)";
+$LANG['common'][123]="Delegatee";
 
 /// TODO Before is ok for migration to gettext
 
-$LANG['common'][123]="Delegatee";
 
 $LANG['computers'][0]="Volume";
 $LANG['computers'][1]="Free percentage";
