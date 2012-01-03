@@ -323,7 +323,7 @@ function update0713to072() {
                         } else {
                            // Re Create new entry
                            $query = "INSERT INTO `glpi_softwareversions`
-                                            SELECT `ID`, `sID`, `".$soft["state"]."`, `version`,''
+                                            SELECT `ID`, `sID`, '".$soft["state"]."', `version`,''
                                             FROM `glpi_licenses`
                                             WHERE `ID` = '".$vers_ID."'";
                            $DB->query($query);
@@ -405,7 +405,7 @@ function update0713to072() {
                                      VALUES ('".$soft['ID']."', '".$soft["FK_entities"]."',
                                              $install_count, 0, '".$vers['serial']."',
                                              '".addslashes($vers['serial'])."' , '$vers_ID',
-                                             '$vers_ID', '".$vers['expire']."',
+                                             '$vers_ID', ".$vers['expire'].",
                                              '".$vers['oem_computer']."',
                                              '".addslashes($vers['comments'])."')";
 

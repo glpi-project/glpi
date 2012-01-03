@@ -590,37 +590,45 @@ function updateDbUpTo031() {
 
    switch ($current_version) {
       case "0.31" :
+         $migration->setversion('0.4');
          include("update_031_04.php");
          update031to04();
 
       case "0.4" :
       case "0.41" :
+         $migration->setversion('0.42');
          include("update_04_042.php");
          update04to042();
 
       case "0.42" :
+         $migration->setversion('0.5');
          showLocationUpdateForm();
          include("update_042_05.php");
          update042to05();
 
       case "0.5" :
+         $migration->setversion('0.51');
          include("update_05_051.php");
          update05to051();
 
       case "0.51" :
       case "0.51a" :
+         $migration->setversion('0.6');
          include("update_051_06.php");
          update051to06();
 
       case "0.6" :
+         $migration->setversion('0.65');
          include("update_06_065.php");
          update06to065();
 
       case "0.65" :
+         $migration->setversion('0.68');
          include("update_065_068.php");
          update065to068();
 
       case "0.68" :
+         $migration->setversion('0.68.1');
          include("update_068_0681.php");
          update068to0681();
 
@@ -636,22 +644,26 @@ function updateDbUpTo031() {
             showContentUpdateForm();
             exit();
          }
-		case "0.68.3x": // Special version for replay upgrade process from here
+      case "0.68.3x": // Special version for replay upgrade process from here
+         $migration->setversion('0.7');
          include("update_0681_07.php");
          update0681to07();
 
       case "0.7" :
       case "0.70.1" :
       case "0.70.2" :
+         $migration->setversion('0.71');
          include("update_07_071.php");
          update07to071();
 
       case "0.71" :
       case "0.71.1" :
+         $migration->setversion('0.71.2');
          include("update_071_0712.php");
          update071to0712();
 
       case "0.71.2" :
+         $migration->setversion('0.71.3');
          include("update_0712_0713.php");
          update0712to0713();
 
@@ -659,32 +671,39 @@ function updateDbUpTo031() {
       case "0.71.4" :
       case "0.71.5" :
       case "0.71.6" :
+         $migration->setversion('0.72');
          include("update_0713_072.php");
          update0713to072();
 
       case "0.72" :
+         $migration->setversion('0.72.1');
          include("update_072_0721.php");
          update072to0721();
 
       case "0.72.1" :
+         $migration->setversion('0.72.2');
          include("update_0721_0722.php");
          update0721to0722();
 
       case "0.72.2" :
       case "0.72.21" :
+         $migration->setversion('0.72.3');
          include("update_0722_0723.php");
          update0722to0723();
 
       case "0.72.3" :
       case "0.72.4" :
+         $migration->setversion('0.78');
          include("update_0723_078.php");
          update0723to078();
 
       case "0.78" :
+         $migration->setversion('0.78.1');
          include("update_078_0781.php");
          update078to0781();
 
       case "0.78.1" :
+         $migration->setversion('0.78.2');
          include("update_0781_0782.php");
          update0781to0782();
 
@@ -692,25 +711,30 @@ function updateDbUpTo031() {
       case "0.78.3":
       case "0.78.4":
       case "0.78.5":
+         $migration->setversion('0.80');
          include("update_0782_080.php");
          update0782to080();
 
       case "0.80" :
+         $migration->setversion('0.80.1');
          include("update_080_0801.php");
          update080to0801();
 
       case "0.80.1" :
       case "0.80.2" :
+         $migration->setversion('0.80.3');
          include("update_0801_0803.php");
          update0801to0803();
 
       case "0.80.3" :
       case "0.80.4" :
       case "0.80.5" :
+         $migration->setversion('0.83');
          include("update_0803_083.php");
          update0803to083();
 
       case "0.83" :
+         $migration->setversion('0.84');
          include("update_083_084.php");
          update083to084();
 
