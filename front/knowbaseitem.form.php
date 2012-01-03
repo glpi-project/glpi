@@ -149,7 +149,8 @@ if ($_GET["id"] == "new") {
       if (!is_null($item)) {
          $item->add($_POST);
          Event::log($_POST["knowbaseitems_id"], "knowbaseitem", 4, "tools",
-                    $_SESSION["glpiname"]." ".$LANG['log'][68]);
+                     //TRANS: %s is the user login
+                     sprintf(__('%s adds a target'), $_SESSION["glpiname"]));
       }
    }
    Html::back();
@@ -191,7 +192,8 @@ if ($_GET["id"] == "new") {
       }
    }
    Event::log($_POST["knowbaseitems_id"], "knowbaseitem", 4, "tools",
-              $_SESSION["glpiname"]." ".$LANG['log'][67]);
+               //TRANS: %s is the user login
+               sprintf(__('%s deletes a target'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (empty($_GET["id"])) {

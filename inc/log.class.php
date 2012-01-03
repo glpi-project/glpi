@@ -62,7 +62,7 @@ class Log extends CommonDBTM {
    const HISTORY_CREATE_ITEM        = 20;
 
 
-   static function getTypeName() {
+   static function getTypeName($nb) {
       return __('Historical');
    }
 
@@ -556,7 +556,7 @@ class Log extends CommonDBTM {
                   break;
 
                case "text" :
-                  $tmp['change'] = $LANG['log'][64];
+                  $tmp['change'] = __('update of the field');
                   break;
             }
             if (empty($tmp['change'])) {

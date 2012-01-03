@@ -94,7 +94,9 @@ if (isset($_POST["add"])) {
    $print->check($_GET["id"],'w');
 
    Computer_Item::unglobalizeItem($print);
-   Event::log($_GET["id"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
+   Event::log($_GET["id"], "printers", 4, "inventory", 
+         //TRANS: %s is the user login
+         sprintf(__('%s sets unitary management'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_GET["id"]);
 
 } else {

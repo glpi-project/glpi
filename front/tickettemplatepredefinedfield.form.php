@@ -40,7 +40,8 @@ if (isset($_POST["massiveaction"])) {
 
    if ($item->add($_POST)) {
       Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",
-                 $_SESSION["glpiname"]." ".$LANG['log'][58]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s adds predefined fields'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -55,7 +56,8 @@ if (isset($_POST["massiveaction"])) {
          }
       }
       Event::log($_POST["tickettemplates_id"], "tickettemplate", 4, "maintain",
-                 $_SESSION["glpiname"]." ".$LANG['log'][63]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s deletes predefined fields'), $_SESSION["glpiname"]));
    }
    Html::back();
 

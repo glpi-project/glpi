@@ -54,7 +54,7 @@ if (!isset($_POST["clean_ok"])) {
    Session::checkRight("clean_ocsng", "w");
    if (count($_POST['toclean']) >0) {
       OcsServer::cleanLinksFromList($_SESSION["ocsservers_id"], $_POST['toclean']);
-      echo "<div class='center b'>".__('Clean links between GLPI and OCSNG')."<br>".$LANG['log'][45]."<br>";
+      echo "<div class='center b'>".__('Clean links between GLPI and OCSNG')."<br>".__('Successful')."<br>";
       Html::displayBackLink();
       echo "</div>";
    }

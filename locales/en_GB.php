@@ -1111,6 +1111,9 @@ $LANG['log'][32]="add link with an item";
 $LANG['log'][33]="deletion link with an item";
 $LANG['log'][34]="add a link with a supplier";
 $LANG['log'][35]="deletion link with supplier";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['log'][40]="IP connection";
 $LANG['log'][41]="Connection failed";
 $LANG['log'][42]="Reservation";
@@ -1127,17 +1130,16 @@ $LANG['log'][56]="add a mandatory field";
 $LANG['log'][57]="deletion of a mandatory field";
 $LANG['log'][58]="add a predefined field";
 $LANG['log'][59]="Automatic action";
+
 $LANG['log'][60]="use unitary management for this item";
 $LANG['log'][61]="add a user to an entity";
 $LANG['log'][62]="user's deletion from entity";
 $LANG['log'][63]="deletion of a predefined field";
-$LANG['log'][64]="modification of field";
+$LANG['log'][64]="update of the field";
 $LANG['log'][65]="rule";
 $LANG['log'][66]="Security";
 $LANG['log'][67]="deletion of a target";
 $LANG['log'][68]="add a target";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['log'][70]="add network port";
 $LANG['log'][71]="add several network ports";
