@@ -300,7 +300,7 @@ function update0713to072() {
                                       `glpi_infocoms`.`ID` AS infocomID
                                FROM `glpi_licenses`
                                LEFT JOIN `glpi_infocoms`
-                                  ON (`glpi_infocoms.device_type` = '9999'
+                                  ON (`glpi_infocoms`.`device_type` = '9999'
                                       AND `glpi_infocoms`.`FK_device` = `glpi_licenses`.`ID`)
                                WHERE `sID` = '".$soft['ID']."'
                                ORDER BY `ID`";
@@ -515,7 +515,7 @@ function update0713to072() {
                                    (`type` ,`num` ,`rank` ,
                                     `FK_users`)
                             VALUES ('".SOFTWARE_TYPE."', '163', '".$rank++."',
-                                    '".$data['FK_users']."';";
+                                    '".$data['FK_users']."');";
                   $DB->query($query);
                }
             }
@@ -889,7 +889,7 @@ function update0713to072() {
    }
 
    if (FieldExists("glpi_config","cut")) {
-      $query = "UPDATE glpi_config`
+      $query = "UPDATE `glpi_config`
                 SET `cut` = ROUND(`cut`/50)*50";
       $DB->query($query)
       or die("0.72 update config cut value to prepare update " . $LANG['update'][90].$DB->error());
