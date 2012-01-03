@@ -45,8 +45,8 @@ function update0782to080() {
    $ADDTODISPLAYPREF = array();
 
    $migration->displayTitle($LANG['install'][4]." -> 0.80");
-   $migration->setVersion('0.80')
-   
+   $migration->setVersion('0.80');
+
    $backup_tables = false;
    $newtables     = array('glpi_calendars',
                           'glpi_calendars_holidays',

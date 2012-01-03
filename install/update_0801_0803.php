@@ -49,7 +49,7 @@ function update0801to0803() {
    $ADDTODISPLAYPREF = array();
 
    $migration->displayTitle($LANG['install'][4]." -> 0.80.3");
-   $migration->setVersion('0.80.3')
+   $migration->setVersion('0.80.3');
 
    $migration->changeField("glpi_fieldunicities", 'fields', 'fields', "text");
 
