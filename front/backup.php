@@ -589,7 +589,7 @@ echo "</tr></table>";
 <br>
 <table class='tab_cadre' cellpadding="5">
 <tr class='center'>
-<th><u><i><?php echo $LANG['document'][2]; ?></i></u></th>
+<th><u><i><?php _e('File'); ?></i></u></th>
 <th><u><i><?php _e('Size'); ?></i></u></th>
 <th><u><i><?php _e('Date'); ?></i></u></th>
 <th colspan='3'>&nbsp;</th>

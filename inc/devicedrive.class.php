@@ -51,7 +51,7 @@ class DeviceDrive extends CommonDevice {
                                      'label' => __('Writing ability'),
                                      'type'  => 'bool'),
                                array('name'  => 'speed',
-                                     'label' => $__('Speed'),
+                                     'label' => __('Speed'),
                                      'type'  => 'text'),
                                array('name'  => 'interfacetypes_id',
                                      'label' => __('Interface'),

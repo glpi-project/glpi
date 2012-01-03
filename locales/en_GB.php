@@ -539,14 +539,15 @@ $LANG['device_power'][1]="ATX";
 
 $LANG['device_ram'][1]="Frequency";
 $LANG['device_ram'][2]="Size";
-/// TODO Before is ok for migration to gettext
-///end gettext for yllen
+
 
 $LANG['document'][1]="Checksum (SHA1)";
 $LANG['document'][2]="File";
 $LANG['document'][3]="Heading";
 $LANG['document'][4]="MIME Type";
 $LANG['document'][5]="Associate an existing document";
+/// TODO Before is ok for migration to gettext
+///end gettext for yllen
 $LANG['document'][6]="Add a new file";
 $LANG['document'][7]="Document Type";
 $LANG['document'][8]="Document Types";

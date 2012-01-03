@@ -52,7 +52,7 @@ class DocumentType  extends CommonDropdown {
                          'label' => $LANG['document'][9],
                          'type'  => 'text'),
                    array('name'  => 'mime',
-                         'label' => $LANG['document'][4],
+                         'label' => __('MIME Type'),
                          'type'  => 'text'));
    }
 
@@ -88,7 +88,7 @@ class DocumentType  extends CommonDropdown {
 
       $tab[4]['table'] = $this->getTable();
       $tab[4]['field'] = 'mime';
-      $tab[4]['name']  = $LANG['document'][4];
+      $tab[4]['name']  = __('MIME Type');
 
       $tab[5]['table']    = $this->getTable();
       $tab[5]['field']    = 'is_uploadable';
