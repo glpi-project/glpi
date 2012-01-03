@@ -46,12 +46,8 @@ class ComputerVirtualMachine extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
-      if ($nb>1) {
-         return $LANG['computers'][57];
-      }
-      return $LANG['computers'][46];
+      return _n('Virtual machine', 'Virtual machines', $nb);
    }
 
 
@@ -163,41 +159,41 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<td>".__('Name')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "name");
-      echo "</td><td>".$LANG['computers'][62]."&nbsp;:</td>";
+      echo "</td><td>".__('Virtualization system')."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show('VirtualMachineType',
                      array('value' => $this->fields['virtualmachinetypes_id']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][60]."&nbsp;:</td>";
+      echo "<td>".__('Virtualization model')."</td>";
       echo "<td>";
       Dropdown::show('VirtualMachineSystem',
                      array('value' => $this->fields['virtualmachinesystems_id']));
-      echo "</td><td>".$LANG['computers'][63]."&nbsp;:</td>";
+      echo "</td><td>".__('State of the virtual machine')."</td>";
       echo "<td>";
       Dropdown::show('VirtualMachineState',
                      array('value' => $this->fields['virtualmachinestates_id']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][58]."&nbsp;:</td>";
+      echo "<td>".__('UUID')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "uuid");
       echo "</td>";
 
-      echo "<td>".$LANG['computers'][61]."&nbsp;:</td>";
+      echo "<td>".__('Processor(s) number')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "vcpu");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['computers'][24]."&nbsp;:</td>";
+      echo "<td>".__('Memory (Mio)')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "ram");
       echo "</td>";
 
-      echo "<td>".$LANG['computers'][64]."&nbsp;:</td>";
+      echo "<td>".__('Machine')."</td>";
       echo "<td>";
       if ($link_computer = self::findVirtualMachine($this->fields)) {
          $computer = new Computer();
@@ -243,7 +239,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
          if (!empty($hosts)) {
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='2'>".$LANG['computers'][65]."</th></tr>";
+            echo "<tr><th colspan='2'>".__('List of host machines')."</th></tr>";
 
             echo "<tr><th>".__('Name')."</th>";
             echo "<th>".$LANG['entity'][0]."</th>";
@@ -308,18 +304,18 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'>";
 
       if (empty($virtualmachines)) {
-         echo "<tr><th>".$LANG['computers'][59]."</th></tr>";
+         echo "<tr><th>".__('No virtual machine associated with the computer')."</th></tr>";
       } else {
-         echo "<tr><th colspan='9'>".$LANG['computers'][66]."</th></tr>";
+         echo "<tr><th colspan='9'>".__('List of virtual machines')."</th></tr>";
 
          echo "<tr><th>".__('Name')."</th>";
-         echo "<th>".$LANG['computers'][62]."</th>";
-         echo "<th>".$LANG['computers'][60]."</th>";
-         echo "<th>".$LANG['computers'][63]."</th>";
-         echo "<th>".$LANG['computers'][58]."</th>";
-         echo "<th>".$LANG['computers'][61]."</th>";
-         echo "<th>".$LANG['computers'][24]."</th>";
-         echo "<th>".$LANG['computers'][64]."</th>";
+         echo "<th>".__('Virtualization system')."</th>";
+         echo "<th>".__('Virtualization model')."</th>";
+         echo "<th>".__('State of the virtual machine')."</th>";
+         echo "<th>".__('UUID')."</th>";
+         echo "<th>".__('Processor(s) number')."</th>";
+         echo "<th>".__('Memory (Mio)')."</th>";
+         echo "<th>".__('Machine')."</th>";
          echo "</tr>";
 
          Session::initNavigateListItems('ComputerVirtualMachine',
@@ -374,7 +370,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       if ($canedit) {
          echo "<tr class='tab_bg_2'><th colspan='8'>";
          echo "<a href='computervirtualmachine.form.php?computers_id=$ID'>".
-                $LANG['computers'][55]."</a></th></tr>";
+                __('Add a virtual machine')."</a></th></tr>";
       }
 
       echo "</table>";

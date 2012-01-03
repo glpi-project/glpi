@@ -1697,7 +1697,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['os_sp']['title']
-                           = $LANG['computers'][53];
+                           = __('Service Pack');
             $menu['admin']['content']['dictionnary']['options']['os_sp']['page']
                            = '/front/ruledictionnaryoperatingsystemservicepack.php';
             $menu['admin']['content']['dictionnary']['options']['os_sp']['links']['search']
@@ -1710,7 +1710,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['os_version']['title']
-                           = $LANG['computers'][52];
+                           = __('Version of the operating system');
             $menu['admin']['content']['dictionnary']['options']['os_version']['page']
                            = '/front/ruledictionnaryoperatingsystemversion.php';
             $menu['admin']['content']['dictionnary']['options']['os_version']['links']['search']
