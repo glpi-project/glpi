@@ -423,7 +423,7 @@ class Html {
     * @return Nothing
    **/
    static function displayNotFoundError() {
-      global $LANG, $CFG_GLPI, $HEADER_LOADED;
+      global $CFG_GLPI, $HEADER_LOADED;
 
       if (!$HEADER_LOADED) {
          if (!isset($_SESSION["glpiactiveprofile"]["interface"])) {
@@ -594,7 +594,7 @@ class Html {
     * @return nothing as function kill script
    **/
    static function displayErrorAndDie ($message, $minimal=false) {
-      global $LANG, $CFG_GLPI, $HEADER_LOADED;
+      global $CFG_GLPI, $HEADER_LOADED;
 
       if (!$HEADER_LOADED) {
          if ($minimal || !isset($_SESSION["glpiactiveprofile"]["interface"])) {

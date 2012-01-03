@@ -77,19 +77,14 @@ abstract class CommonITILTask  extends CommonDBTM {
     * Name of the type
     *
     * @param $nb : number of item in the type
-    *
-    * @return $LANG
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Task', 'Tasks', $nb);
-      
+
    }
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if ($item->getType() == $this->getItilObjectItemType() && $item->canView()) {
          if ($_SESSION['glpishow_count_on_tabs']) {
@@ -133,7 +128,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       Log::history($this->getField($item->getForeignKeyField()), $this->getItilObjectItemType(),
                    $changes, $this->getType(), Log::HISTORY_DELETE_SUBITEM);
 
-      $options = array('task_id'     => $this->fields["id"], 
+      $options = array('task_id'     => $this->fields["id"],
                         // Force is_private with data / not available
                         'is_private' => $this->isPrivate());
       NotificationEvent::raiseEvent('delete_task', $item, $options);

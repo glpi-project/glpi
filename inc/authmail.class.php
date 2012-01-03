@@ -85,7 +85,6 @@ class AuthMail extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Email server');
@@ -102,10 +101,10 @@ class AuthMail extends CommonDBTM {
       $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'host';
-      $tab[3]['name']      = __('Server');
-      $tab[3]['datatype']  = 'string';
+      $tab[3]['table']        = $this->getTable();
+      $tab[3]['field']        = 'host';
+      $tab[3]['name']         = __('Server');
+      $tab[3]['datatype']     = 'string';
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'connect_string';
@@ -113,10 +112,10 @@ class AuthMail extends CommonDBTM {
       $tab[4]['massiveaction'] = false;
       $tab[4]['datatype']      = 'string';
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'is_active';
-      $tab[6]['name']      = __('Active');
-      $tab[6]['datatype']  = 'bool';
+      $tab[6]['table']        = $this->getTable();
+      $tab[6]['field']        = 'is_active';
+      $tab[6]['name']         = __('Active');
+      $tab[6]['datatype']     = 'bool';
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
@@ -124,10 +123,10 @@ class AuthMail extends CommonDBTM {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = __('Comments');
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']       = $this->getTable();
+      $tab[16]['field']       = 'comment';
+      $tab[16]['name']        = __('Comments');
+      $tab[16]['datatype']    = 'text';
 
       return $tab;
    }
@@ -206,7 +205,6 @@ class AuthMail extends CommonDBTM {
 
 
    function showFormTestMail() {
-      global $LANG;
 
       $ID = $this->getField('id');
 

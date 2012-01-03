@@ -1103,7 +1103,7 @@ class Contract extends CommonDBTM {
     *
     **/
    static function cronContract($task=NULL) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_mailing"]) {
          return 0;
@@ -1408,7 +1408,6 @@ class Contract extends CommonDBTM {
     * @return array or string
     */
    static function getAlertName($val=NULL) {
-      global $LANG;
 
       $tmp[0]                     = Dropdown::EMPTY_VALUE;
       $tmp[pow(2, Alert::END)]    = __('End');

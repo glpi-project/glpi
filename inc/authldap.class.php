@@ -1848,7 +1848,6 @@ class AuthLDAP extends CommonDBTM {
     *          array('name'=>'glpi') or array('email' => 'test at test.com')
    **/
    static function importUserFromServers($options=array()) {
-      global $LANG;
 
       $auth   = new Auth();
       $params = array();
@@ -1880,7 +1879,8 @@ class AuthLDAP extends CommonDBTM {
          Session::addMessageAfterRedirect(__('User not found or several users found'), false, ERROR);
 
       } else {
-         Session::addMessageAfterRedirect(__('Unable to add. The user already exists.'), false, ERROR);
+         Session::addMessageAfterRedirect(__('Unable to add. The user already exists.'), false,
+                                          ERROR);
       }
       return false;
    }

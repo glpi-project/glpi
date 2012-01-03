@@ -375,7 +375,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    function prepareInputForUpdate($input) {
-      global $LANG;
 
       // Add document if needed
       $this->getFromDB($input["id"]); // entities_id field required

@@ -143,7 +143,8 @@ class Group_User extends CommonDBRelation{
 
       if (!empty($groups)) {
          Session::initNavigateListItems('Group',
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               //TRANS : %1$s is the itemtype name,
+               //        %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$user->getTypeName(1), $user->getName()));
 
          $i = 0;
@@ -213,7 +214,7 @@ class Group_User extends CommonDBRelation{
     * @param $crit            String for criteria (for default dropdown)
     */
    private static function showAddUserForm(Group $group, $used_ids, $entityrestrict, $crit) {
-      global $CFG_GLPI, $LANG, $DB;
+      global $CFG_GLPI, $DB;
 
       $rand = mt_rand();
       $res  = User::getSqlSearchResult (true, "all", $entityrestrict, 0, $used_ids);
@@ -332,7 +333,7 @@ class Group_User extends CommonDBRelation{
     * @param $group the group
    **/
    static function showForGroup(Group $group) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $ID = $group->fields['id'];
       if (!Session::haveRight("user","r") || !$group->can($ID,'r')) {
@@ -386,7 +387,8 @@ class Group_User extends CommonDBRelation{
          Html::printAjaxPager(__('Users (D=Dynamic)'), $start, $number);
 
          Session::initNavigateListItems('User',
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               //TRANS : %1$s is the itemtype name,
+               //        %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$group->getTypeName(1), $group->getName()));
 
          echo "<div class='spaced'>";
