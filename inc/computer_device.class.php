@@ -239,7 +239,7 @@ class Computer_Device extends CommonDBTM {
             if ($device->getFromDB($data[$fk])) {
                echo "<tr class='tab_bg_2'>";
                echo "<td class='center'>";
-               Dropdown::showInteger("quantity_".$itemtype."_".$data['id'], $data['NB']);
+               Dropdown::showInteger("quantity_".$itemtype."_".$data['id'], $data['NB'],0,300);
                echo "</td><td>";
                if ($device->canCreate()) {
                   echo "<a href='".$device->getSearchURL()."'>".$device->getTypeName()."</a>";
