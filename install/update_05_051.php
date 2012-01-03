@@ -40,21 +40,21 @@ function update05to051() {
 
    /*******************************GLPI 0.51***********************************************/
 
-   if (!FieldExists("glpi_infocoms","facture")) {
+   if (!FieldExists("glpi_infocoms","facture", false)) {
       $query = "ALTER TABLE `glpi_infocoms`
                 ADD `facture` char(255) NOT NULL default ''";
       $DB->queryOrDie($query, "0.51 add field facture");
    }
 
 
-   if (!FieldExists("glpi_enterprises","fax")) {
+   if (!FieldExists("glpi_enterprises","fax", false)) {
       $query = "ALTER TABLE `glpi_enterprises`
                 ADD `fax` char(255) NOT NULL default ''";
       $DB->queryOrDie($query, "0.51 add field fax");
    }
 
 
-   if (!FieldExists("glpi_docs","link")) {
+   if (!FieldExists("glpi_docs","link", false)) {
       $query = "ALTER TABLE `glpi_docs`
                 ADD `link` char(255) NOT NULL default ''";
       $DB->queryOrDie($query, "0.51 add field fax");
@@ -81,7 +81,7 @@ function update05to051() {
    }
 
 
-   if (!FieldExists("glpi_config","cartridges_alarm")) {
+   if (!FieldExists("glpi_config","cartridges_alarm", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `cartridges_alarm` int(11) NOT NULL default '10'";
       $DB->queryOrDie($query, "0.51 add field cartridges_alarm");
