@@ -41,14 +41,18 @@ class Migration {
 
    function __construct($ver) {
 
+
+      $this->deb = time();
+      $this->setVersion($ver);
+   }
+
+   function setVersion($ver) {
       // begin of global message
       echo "<div id='migration_message_$ver'>
             <p class='center'>".__('Work in progress...')."</p></div>";
 
-      $this->deb = time();
       $this->version = $ver;
    }
-
 
    /**
     * Additional message in global message
