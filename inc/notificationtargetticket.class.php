@@ -45,21 +45,23 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $this->options['sendprivate']=false;
 
       if (isset($options['followup_id'])) {
-         $fup = new TicketFollowup();
+         $this->options['sendprivate'] = $options['is_private'];
+/*         $fup = new TicketFollowup();
          if ($fup->getFromDB($options['followup_id'])) {
             if ($fup->fields['is_private']) {
                $this->options['sendprivate'] = true;
             }
-         }
+         }*/
       }
 
       if (isset($options['task_id'])) {
-         $fup = new TicketTask();
+         $this->options['sendprivate'] = $options['is_private'];
+/*         $fup = new TicketTask();
          if ($fup->getFromDB($options['task_id'])) {
             if ($fup->fields['is_private']) {
                $this->options['sendprivate'] = true;
             }
-         }
+         }*/
       }
    }
 

@@ -135,7 +135,9 @@ abstract class CommonITILTask  extends CommonDBTM {
       Log::history($this->getField($item->getForeignKeyField()), $this->getItilObjectItemType(),
                    $changes, $this->getType(), Log::HISTORY_DELETE_SUBITEM);
 
-      $options = array('task_id' => $this->fields["id"]);
+      $options = array('task_id'     => $this->fields["id"], 
+                        // Force is_private with data / not available
+                        'is_private' => $this->isPrivate());
       NotificationEvent::raiseEvent('delete_task', $item, $options);
    }
 
@@ -200,7 +202,8 @@ abstract class CommonITILTask  extends CommonDBTM {
             }
 
             if ($CFG_GLPI["use_mailing"]) {
-               $options = array('task_id' => $this->fields["id"]);
+               $options = array('task_id'    => $this->fields["id"],
+                                'is_private' => $this->isPrivate());
                NotificationEvent::raiseEvent('update_task', $item, $options);
             }
 
@@ -294,7 +297,8 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       if ($donotif) {
-         $options = array('task_id' => $this->fields["id"]);
+         $options = array('task_id'    => $this->fields["id"],
+                          'is_private' => $this->isPrivate());
          NotificationEvent::raiseEvent('add_task', $this->input["_job"], $options);
       }
 
@@ -379,11 +383,13 @@ abstract class CommonITILTask  extends CommonDBTM {
       $tab[3]['name']     = $LANG['common'][26];
       $tab[3]['datatype'] = 'datetime';
 
-      $tab[4]['table']    = $this->getTable();
-      $tab[4]['field']    = 'is_private';
-      $tab[4]['name']     = $LANG['job'][9]. " ".$LANG['common'][77];
-      $tab[4]['datatype'] = 'bool';
-
+      if ($this->maybePrivate()) {
+         $tab[4]['table']    = $this->getTable();
+         $tab[4]['field']    = 'is_private';
+         $tab[4]['name']     = $LANG['job'][9]. " ".$LANG['common'][77];
+         $tab[4]['datatype'] = 'bool';
+      }
+      
       $tab[5]['table'] = 'glpi_users';
       $tab[5]['field'] = 'name';
       $tab[5]['name']  = $LANG['financial'][43];
