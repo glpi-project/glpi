@@ -44,7 +44,6 @@ class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown {
 
 
    function getCriterias() {
-      global $LANG;
 
       $criterias = array();
       $criterias['name']['field'] = 'name';
@@ -55,7 +54,6 @@ class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown {
 
 
    function getActions() {
-      global $LANG;
 
       $actions = array();
       $actions['name']['name'] = __('Operating system');

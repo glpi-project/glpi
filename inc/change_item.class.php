@@ -90,7 +90,7 @@ class Change_Item extends CommonDBRelation{
     * @return Nothing (display)
    **/
    static function showForChange(Change $change) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $instID = $change->fields['id'];
 
@@ -129,7 +129,7 @@ class Change_Item extends CommonDBRelation{
          echo "<tr>";
       }
       echo "<th>".__('Type')."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".__('Entity')."</th>";
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th></tr>";

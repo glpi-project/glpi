@@ -46,7 +46,6 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if ($item->getType() == 'Computer' && Session::haveRight("computer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
@@ -105,7 +104,6 @@ abstract class CommonDevice extends CommonDropdown {
 
 
    function title() {
-      global $LANG;
 
       Dropdown::showItemTypeMenu(_n('Component', 'Components', 2),
                                  Dropdown::getDeviceItemTypes(), $this->getSearchURL());

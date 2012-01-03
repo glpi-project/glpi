@@ -91,7 +91,6 @@ class NotificationTargetUser extends NotificationTarget {
 
 
    function getTags() {
-      global $LANG;
 
       $tags = array('user.name'              => __('Login'),
                     'user.realname'          => __('Name'),
@@ -107,8 +106,10 @@ class NotificationTargetUser extends NotificationTarget {
       }
 
       // Only lang
-      $lang = array('passwordforget.information' => __('You have been made a request to reset your account password.'),
-                    'passwordforget.link'        => __('Just follow this link (you have one day):')
+      $lang = array('passwordforget.information'
+                        => __('You have been made a request to reset your account password.'),
+                    'passwordforget.link'
+                        => __('Just follow this link (you have one day):')
                     );
 
       foreach ($lang as $tag => $label) {

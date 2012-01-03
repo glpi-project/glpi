@@ -274,7 +274,6 @@ class RuleRight extends Rule {
 
    function getCriterias() {
       static $criterias = array();
-      global $LANG;
 
       if (!count($criterias)) {
          $criterias['LDAP_SERVER']['table']     = 'glpi_authldaps';

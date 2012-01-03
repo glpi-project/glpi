@@ -46,8 +46,6 @@ class ComputerDisk extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Volume', 'Volumes', $nb);
    }
 
@@ -85,7 +83,6 @@ class ComputerDisk extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       // can exists for template
       if ($item->getType() == 'Computer' && Session::haveRight("computer","r")) {
@@ -200,7 +197,7 @@ class ComputerDisk extends CommonDBChild {
     * @return Nothing (call to classes members)
    **/
    static function showForComputer(Computer $comp, $withtemplate='') {
-      global $DB, $LANG;
+      global $DB;
 
       $ID = $comp->fields['id'];
 
@@ -235,7 +232,8 @@ class ComputerDisk extends CommonDBChild {
             echo "</tr>";
 
          Session::initNavigateListItems('ComputerDisk',
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+               //TRANS : %1$s is the itemtype name,
+               //        %2$s is the name of the item (used for headings of a list)
                sprintf(__('%1$s = %2$s'),$comp->getTypeName(1), $comp->getName()));
 
             while ($data=$DB->fetch_assoc($result)) {
@@ -281,5 +279,4 @@ class ComputerDisk extends CommonDBChild {
    }
 
 }
-
 ?>

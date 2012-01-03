@@ -276,7 +276,7 @@ class Printer  extends CommonDBTM {
      *@return boolean item found
     **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $target       = $this->getFormURL();
       $withtemplate = '';

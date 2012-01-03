@@ -498,7 +498,7 @@ class Reminder extends CommonDBTM {
     *     - target filename : where to go when done.
     **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       // Show Reminder or blank form
       $onfocus = "";

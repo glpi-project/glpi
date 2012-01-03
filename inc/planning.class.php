@@ -897,7 +897,7 @@ class Planning {
     * @return icalendar string
    **/
    static function generateIcal($who,$who_group) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if ($who==0 && $who_group==0) {
          return false;

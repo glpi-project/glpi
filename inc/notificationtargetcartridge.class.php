@@ -35,8 +35,6 @@ if (!defined('GLPI_ROOT')) {
 class NotificationTargetCartridge extends NotificationTarget {
 
    function getEvents() {
-      global $LANG;
-
       return array('alert' => __('Cartridges alarm'));
    }
 

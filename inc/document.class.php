@@ -89,7 +89,6 @@ class Document extends CommonDBTM {
 
 
    function cleanDBonPurge() {
-      global $LANG;
 
       $di = new Document_Item();
       $di->cleanDBonItemDelete($this->getType(), $this->fields['id']);
@@ -150,7 +149,7 @@ class Document extends CommonDBTM {
 
 
    function prepareInputForAdd($input) {
-      global $LANG, $CFG_GLPI, $DB;
+      global $CFG_GLPI, $DB;
 
       // security (don't accept filename from $_POST)
       unset($input['filename']);
@@ -215,7 +214,7 @@ class Document extends CommonDBTM {
                        'entities_id'=>$input['entities_id']);
          foreach ($DB->request($this->getTable(), $crit) as $data) {
             $link=$this->getFormURL();
-            Session::addMessageAfterRedirect(__('"A document with that filename has already been attached to (another) record').
+            Session::addMessageAfterRedirect(__('"A document with that filename has already been attached to another record.').
                "&nbsp;: <a href=\"".$link."?id=".
                      $data['id']."\">".$data['name']."</a>",
                false, ERROR, true);
@@ -971,7 +970,7 @@ class Document extends CommonDBTM {
     *
    **/
    static function moveUploadedDocument(&$input, $filename) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $fullpath = GLPI_DOC_DIR."/_uploads/".$filename;
 
@@ -1058,7 +1057,6 @@ class Document extends CommonDBTM {
     * @return true on success
    **/
    static function uploadDocument(&$input, $FILEDESC) {
-      global $LANG;
 
       if (!count($FILEDESC) || empty($FILEDESC['name']) || !is_file($FILEDESC['tmp_name'])) {
          switch ($FILEDESC['error']) {
@@ -1132,7 +1130,7 @@ class Document extends CommonDBTM {
     * @return nothing
    **/
    static function getUploadFileValidLocationName($dir, $sha1sum) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if (empty($dir)) {
          $message = __('Unauthorized file type');
@@ -1175,7 +1173,7 @@ class Document extends CommonDBTM {
     * @param $myname dropdown name
    **/
    static function showUploadedFilesDropdown($myname) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if (is_dir(GLPI_DOC_DIR."/_uploads")) {
          $uploaded_files = array();

@@ -43,7 +43,6 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
     * Get all data needed for template processing
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG;
 
       //User who tries to add or update an item in DB
       $action = ($options['action_user']?__('Add the item'):__('Update the item'));

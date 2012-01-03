@@ -35,7 +35,6 @@ if (!defined('GLPI_ROOT')) {
 class NotificationTargetReservation extends NotificationTarget {
 
    function getEvents() {
-      global $LANG;
 
       return array('new'    => __('New reservation'),
                    'update' => __('Update reservation'),

@@ -149,7 +149,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
     *Get events related to tickets
    **/
    function getEvents() {
-      global $LANG;
 
       $events = array('new'             => __('New ticket'),
                       'update'          => __('Ticket updated'),
