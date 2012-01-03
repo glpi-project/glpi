@@ -53,7 +53,7 @@ function update042to05() {
 
    /*******************************GLPI 0.5***********************************************/
    //pass all templates to computers
-   if (!FieldExists("glpi_computers","is_template")) {
+   if (!FieldExists("glpi_computers","is_template", false)) {
       $query = "ALTER TABLE `glpi_computers`
                 ADD `is_template` ENUM('0','1') DEFAULT '0' NOT NULL ";
       $DB->queryOrDie($query, "0.5 alter computers add is_template");
@@ -357,7 +357,7 @@ function update042to05() {
    }
 
    // Comment reservation
-   if (!FieldExists("glpi_reservation_resa","comment")) {
+   if (!FieldExists("glpi_reservation_resa","comment", false)) {
       $query = "ALTER TABLE `glpi_reservation_resa`
                 ADD `comment` VARCHAR(255) NOT NULL ";
       $DB->queryOrDie($query, "0.5 alter reservation add comment");
@@ -373,14 +373,14 @@ function update042to05() {
       $DB->queryOrDie($query, "0.5 CREATE TABLE `glpi_dropdown_tracking_category");
    }
 
-   if (!FieldExists("glpi_tracking","category")) {
+   if (!FieldExists("glpi_tracking","category", false)) {
       $query= "ALTER TABLE `glpi_tracking`
                ADD `category` INT(11) ";
       $DB->queryOrDie($query, "0.5 alter tracking add categorie");
    }
 
    // Nouvelle gestion des software et licenses
-   if (!FieldExists("glpi_licenses","oem")) {
+   if (!FieldExists("glpi_licenses","oem", false)) {
       $query = "ALTER TABLE `glpi_licenses`
                 ADD `oem` ENUM('N', 'Y') DEFAULT 'N' NOT NULL ,
                 ADD `oem_computer` INT(11) NOT NULL,
@@ -394,7 +394,7 @@ function update042to05() {
    }
 
    // Couleur pour les priorites
-   if (!FieldExists("glpi_config","priority_1")) {
+   if (!FieldExists("glpi_config","priority_1", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `priority_1` VARCHAR(200) DEFAULT '#fff2f2' NOT NULL,
                 ADD `priority_2` VARCHAR(200) DEFAULT '#ffe0e0' NOT NULL,
@@ -604,7 +604,7 @@ function update042to05() {
    //// FIN INSERTION PARTIE GESTION
 
    // Merge de l'OS et de la version
-   if (FieldExists("glpi_computers","osver")) {
+   if (FieldExists("glpi_computers","osver", false)) {
       // Recuperation des couples existants
       $query = "SELECT DISTINCT `glpi_computers`.`os` AS ID ,
                                 `glpi_computers`.`osver` AS VERS,
@@ -659,7 +659,7 @@ function update042to05() {
 
 
    // Ajout Fabriquant computer
-   if (!FieldExists("glpi_computers","FK_glpi_enterprise")) {
+   if (!FieldExists("glpi_computers","FK_glpi_enterprise", false)) {
       $query = "ALTER TABLE `glpi_computers`
                 ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ";
       $DB->queryOrDie($query, "0.5 add field manufacturer");
@@ -671,7 +671,7 @@ function update042to05() {
 
 
    // Ajout Fabriquant printer
-   if (!FieldExists("glpi_printers","FK_glpi_enterprise")) {
+   if (!FieldExists("glpi_printers","FK_glpi_enterprise", false)) {
       $query = "ALTER TABLE `glpi_printers`
                 ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ";
       $DB->queryOrDie($query, "0.5 add field manufacturer");
@@ -683,7 +683,7 @@ function update042to05() {
 
 
    // Ajout Fabriquant networking
-   if (!FieldExists("glpi_networking","FK_glpi_enterprise")) {
+   if (!FieldExists("glpi_networking","FK_glpi_enterprise", false)) {
       $query = "ALTER TABLE `glpi_networking`
                 ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ";
       $DB->queryOrDie($query, "0.5 add field manufacturer");
@@ -695,7 +695,7 @@ function update042to05() {
 
 
    // Ajout Fabriquant monitor
-   if (!FieldExists("glpi_monitors","FK_glpi_enterprise")) {
+   if (!FieldExists("glpi_monitors","FK_glpi_enterprise", false)) {
       $query = "ALTER TABLE `glpi_monitors`
                 ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ";
       $DB->queryOrDie($query, "0.5 add field manufacturer");
@@ -707,7 +707,7 @@ function update042to05() {
 
 
    // Ajout Fabriquant software
-   if (!FieldExists("glpi_software","FK_glpi_enterprise")) {
+   if (!FieldExists("glpi_software","FK_glpi_enterprise", false)) {
       $query = "ALTER TABLE `glpi_software`
                 ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ";
       $DB->queryOrDie($query, "0.5 add field manufacturer");
@@ -719,7 +719,7 @@ function update042to05() {
 
 
    // Ajout Fabriquant peripheral
-   if (!FieldExists("glpi_peripherals","FK_glpi_enterprise")) {
+   if (!FieldExists("glpi_peripherals","FK_glpi_enterprise", false)) {
       $query = "ALTER TABLE `glpi_peripherals`
                 ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ";
       $DB->queryOrDie($query, "0.5 add field manufacturer");
@@ -731,7 +731,7 @@ function update042to05() {
 
 
    // Ajout deleted peripheral
-   if (!FieldExists("glpi_peripherals","deleted")) {
+   if (!FieldExists("glpi_peripherals","deleted", false)) {
       $query = "ALTER TABLE `glpi_peripherals`
                 ADD `deleted` ENUM('Y', 'N') DEFAULT 'N' NOT NULL ";
       $DB->queryOrDie($query, "0.5 add field deleted");
@@ -743,7 +743,7 @@ function update042to05() {
 
 
    // Ajout deleted software
-   if (!FieldExists("glpi_software","deleted")) {
+   if (!FieldExists("glpi_software","deleted", false)) {
       $query = "ALTER TABLE `glpi_software`
                 ADD `deleted` ENUM('Y', 'N') DEFAULT 'N' NOT NULL ";
       $DB->queryOrDie($query, "0.5 add field deleted");
@@ -755,7 +755,7 @@ function update042to05() {
 
 
    // Ajout deleted monitor
-   if (!FieldExists("glpi_monitors","deleted")) {
+   if (!FieldExists("glpi_monitors","deleted", false)) {
       $query = "ALTER TABLE `glpi_monitors`
                 ADD `deleted` ENUM('Y', 'N') DEFAULT 'N' NOT NULL ";
       $DB->queryOrDie($query, "0.5 add field deleted");
@@ -767,7 +767,7 @@ function update042to05() {
 
 
    // Ajout deleted networking
-   if (!FieldExists("glpi_networking","deleted")) {
+   if (!FieldExists("glpi_networking","deleted", false)) {
       $query = "ALTER TABLE `glpi_networking`
                 ADD `deleted` ENUM('Y', 'N') DEFAULT 'N' NOT NULL ";
       $DB->queryOrDie($query, "0.5 add field deleted");
@@ -779,7 +779,7 @@ function update042to05() {
 
 
    // Ajout deleted printer
-   if (!FieldExists("glpi_printers","deleted")) {
+   if (!FieldExists("glpi_printers","deleted", false)) {
       $query = "ALTER TABLE `glpi_printers`
                 ADD `deleted` ENUM('Y', 'N') DEFAULT 'N' NOT NULL ";
       $DB->queryOrDie($query, "0.5 add field deleted");
@@ -791,7 +791,7 @@ function update042to05() {
 
 
    // Ajout deleted computer
-   if (!FieldExists("glpi_computers","deleted")) {
+   if (!FieldExists("glpi_computers","deleted", false)) {
       $query = "ALTER TABLE `glpi_computers`
                 ADD `deleted` ENUM('Y', 'N') DEFAULT 'N' NOT NULL ";
       $DB->queryOrDie($query, "0.5 add field deleted");
@@ -803,7 +803,7 @@ function update042to05() {
 
 
    // Ajout template peripheral
-   if (!FieldExists("glpi_peripherals","is_template")) {
+   if (!FieldExists("glpi_peripherals","is_template", false)) {
       $query = "ALTER TABLE `glpi_peripherals`
                 ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL ,
                 ADD `tplname` VARCHAR(255) ";
@@ -822,7 +822,7 @@ function update042to05() {
 
 
    // Ajout template software
-   if (!FieldExists("glpi_software","is_template")) {
+   if (!FieldExists("glpi_software","is_template", false)) {
       $query = "ALTER TABLE `glpi_software`
                 ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL ,
                 ADD `tplname` VARCHAR(255) ";
@@ -840,7 +840,7 @@ function update042to05() {
 
 
    // Ajout template monitor
-   if (!FieldExists("glpi_monitors","is_template")) {
+   if (!FieldExists("glpi_monitors","is_template", false)) {
       $query = "ALTER TABLE `glpi_monitors`
                 ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL ,
                 ADD `tplname` VARCHAR(255) ";
@@ -865,7 +865,7 @@ function update042to05() {
 
 
    // Ajout template networking
-   if (!FieldExists("glpi_networking","is_template")) {
+   if (!FieldExists("glpi_networking","is_template", false)) {
       $query = "ALTER TABLE `glpi_networking`
                 ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL ,
                 ADD `tplname` VARCHAR(255) ";
@@ -884,7 +884,7 @@ function update042to05() {
 
 
    // Ajout template printer
-   if (!FieldExists("glpi_printers","is_template")) {
+   if (!FieldExists("glpi_printers","is_template", false)) {
       $query = "ALTER TABLE `glpi_printers`
                 ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL ,
                 ADD `tplname` VARCHAR(255) ";
@@ -903,7 +903,7 @@ function update042to05() {
 
 
    // Ajout date_mod
-   if (!FieldExists("glpi_printers","date_mod")) {
+   if (!FieldExists("glpi_printers","date_mod", false)) {
       $query = "ALTER TABLE `glpi_printers`
                 ADD `date_mod` DATETIME DEFAULT NULL";
       $DB->queryOrDie($query);
@@ -921,7 +921,7 @@ function update042to05() {
 
 
    // Ajout date_mod
-   if (!FieldExists("glpi_monitors","date_mod")) {
+   if (!FieldExists("glpi_monitors","date_mod", false)) {
       $query = "ALTER TABLE `glpi_monitors`
                 ADD `date_mod` DATETIME DEFAULT NULL";
       $DB->queryOrDie($query);
@@ -933,7 +933,7 @@ function update042to05() {
 
 
    // Ajout date_mod
-   if (!FieldExists("glpi_software","date_mod")) {
+   if (!FieldExists("glpi_software","date_mod", false)) {
       $query = "ALTER TABLE `glpi_software`
                 ADD `date_mod` DATETIME DEFAULT NULL";
       $DB->queryOrDie($query);
@@ -945,7 +945,7 @@ function update042to05() {
 
 
    // Ajout date_mod
-   if (!FieldExists("glpi_networking","date_mod")) {
+   if (!FieldExists("glpi_networking","date_mod", false)) {
       $query = "ALTER TABLE `glpi_networking`
                 ADD `date_mod` DATETIME DEFAULT NULL";
       $DB->queryOrDie($query);
@@ -957,7 +957,7 @@ function update042to05() {
 
 
    // Ajout tech_num
-   if (!FieldExists("glpi_computers","tech_num")) {
+   if (!FieldExists("glpi_computers","tech_num", false)) {
       $query = "ALTER TABLE `glpi_computers`
                 ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
       $DB->queryOrDie($query);
@@ -969,7 +969,7 @@ function update042to05() {
 
 
    // Ajout tech_num
-   if (!FieldExists("glpi_networking","tech_num")) {
+   if (!FieldExists("glpi_networking","tech_num", false)) {
       $query = "ALTER TABLE `glpi_networking`
                 ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
       $DB->queryOrDie($query);
@@ -981,7 +981,7 @@ function update042to05() {
 
 
    // Ajout tech_num
-   if (!FieldExists("glpi_printers","tech_num")) {
+   if (!FieldExists("glpi_printers","tech_num", false)) {
       $query = "ALTER TABLE `glpi_printers`
                 ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
       $DB->queryOrDie($query);
@@ -993,7 +993,7 @@ function update042to05() {
 
 
    // Ajout tech_num
-   if (!FieldExists("glpi_monitors","tech_num")) {
+   if (!FieldExists("glpi_monitors","tech_num", false)) {
       $query = "ALTER TABLE `glpi_monitors`
                 ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
       $DB->queryOrDie($query);
@@ -1005,7 +1005,7 @@ function update042to05() {
 
 
    // Ajout tech_num
-   if (!FieldExists("glpi_software","tech_num")) {
+   if (!FieldExists("glpi_software","tech_num", false)) {
       $query = "ALTER TABLE `glpi_software`
                 ADD `tech_num` int(11) NOT NULL default '0' AFTER `location`";
       $DB->queryOrDie($query);
@@ -1017,7 +1017,7 @@ function update042to05() {
 
 
    // Ajout tech_num
-   if (!FieldExists("glpi_peripherals","tech_num")) {
+   if (!FieldExists("glpi_peripherals","tech_num", false)) {
       $query = "ALTER TABLE `glpi_peripherals`
                 ADD `tech_num` int(11) NOT NULL default '0' AFTER `contact_num`";
       $DB->queryOrDie($query);
@@ -1029,7 +1029,7 @@ function update042to05() {
 
 
    // Ajout tech_num
-   if (!FieldExists("glpi_software","tech_num")) {
+   if (!FieldExists("glpi_software","tech_num", false)) {
       $query = "ALTER TABLE `glpi_software`
                 ADD `tech_num` int(11) NOT NULL default '0'";
       $DB->queryOrDie($query);
@@ -1185,19 +1185,19 @@ function update042to05() {
       $DB->queryOrDie($query, "0.5 alter field category");
    }
 
-   if (!FieldExists("glpi_config","date_fiscale")) {
+   if (!FieldExists("glpi_config","date_fiscale", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `date_fiscale` date NOT NULL default '2005-12-31'";
       $DB->queryOrDie($query, "0.5 add field date_fiscale");
    }
 
-   if (!FieldExists("glpi_networking","ifmac")) {
+   if (!FieldExists("glpi_networking","ifmac", false)) {
       $query = "ALTER TABLE `glpi_networking`
                 ADD `ifmac` char(30) NOT NULL default ''";
       $DB->queryOrDie($query, "0.5 add field ifmac");
    }
 
-   if (!FieldExists("glpi_networking","ifaddr")) {
+   if (!FieldExists("glpi_networking","ifaddr", false)) {
       $query = "ALTER TABLE `glpi_networking`
                 ADD `ifaddr` char(30) NOT NULL default ''";
       $DB->queryOrDie($query, "0.5 add field ifaddr");
@@ -1215,7 +1215,7 @@ function update042to05() {
       $DB->queryOrDie($query, "0.5 create glpirepair_item table");
    }
 
-   if (TableExists("glpi_prefs")&&!FieldExists("glpi_prefs","username")) {
+   if (TableExists("glpi_prefs")&&!FieldExists("glpi_prefs","username", false)) {
       if (isIndex("glpi_prefs", "user")) {
          $query = " ALTER TABLE `glpi_prefs`
                     DROP INDEX `user`";

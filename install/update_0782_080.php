@@ -561,7 +561,7 @@ function update0782to080() {
       $DB->queryOrDie($query, "0.80 create glpi_computers_softwarelicenses");
    }
 
-   if (FieldExists("glpi_softwarelicenses","computers_id")) {
+   if (FieldExists("glpi_softwarelicenses","computers_id", false)) {
       $query = "SELECT *
                 FROM `glpi_softwarelicenses`
                 WHERE `computers_id` > 0
@@ -1330,7 +1330,7 @@ function update0782to080() {
                               'condition' => " WHERE `auths_id` > 0"));
 
    //Migrate OCS computers link from static config to rules engine
-   if (FieldExists('glpi_ocsservers','is_glpi_link_enabled')) {
+   if (FieldExists('glpi_ocsservers','is_glpi_link_enabled', false)) {
       $ocs_servers = getAllDatasFromTable('glpi_ocsservers');
       $ranking     = 1;
       foreach ($ocs_servers as $ocs_server) {

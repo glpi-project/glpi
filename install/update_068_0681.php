@@ -105,7 +105,7 @@ function update068to0681() {
       $DB->queryOrDie($query, "0.68.1 add index on glpi_cartridges_type.location");
    }
 
-   if (FieldExists("glpi_cartridges_type", "type")) {
+   if (FieldExists("glpi_cartridges_type", "type", false)) {
       $query = "ALTER TABLE `glpi_cartridges_type`
                 CHANGE `type` `type` INT NOT NULL DEFAULT '0'";
       $DB->queryOrDie($query, "0.68.1 alter glpi_cartridges_type.type");
@@ -183,7 +183,7 @@ function update068to0681() {
       $DB->queryOrDie($query, "0.68.1 add index on glpi_consumables_type.alarm");
    }
 
-   if (FieldExists("glpi_contacts", "type")) {
+   if (FieldExists("glpi_contacts", "type", false)) {
       $query = "ALTER TABLE `glpi_contacts`
                 CHANGE `type` `type` INT( 11 ) NULL ";
       $DB->queryOrDie($query, "0.68.1 alter glpi_contacts.type");
@@ -327,7 +327,7 @@ function update068to0681() {
       $DB->queryOrDie($query, "0.68.1 add index on glpi_networking_ports.iface");
    }
 
-   if (FieldExists("glpi_phones", "power")) {
+   if (FieldExists("glpi_phones", "power", false)) {
       $query = "ALTER TABLE `glpi_phones`
                 CHANGE `power` `power` INT NOT NULL DEFAULT '0'";
       $DB->queryOrDie($query, "0.68.1 alter glpi_phones.power");
@@ -411,14 +411,14 @@ function update068to0681() {
       $DB->queryOrDie($query, "0.68.1 add index on glpi_printers.domain");
    }
 
-   if (FieldExists("glpi_device_case", "format")) {
+   if (FieldExists("glpi_device_case", "format", false)) {
       $query = "ALTER TABLE `glpi_device_case`
                 CHANGE `format` `format` ENUM('Grand', 'Moyen', 'Micro', 'Slim', '')
                                          NULL DEFAULT 'Moyen'";
       $DB->queryOrDie($query, "0.68.1 alter glpi_device_case.format");
    }
 
-   if (FieldExists("glpi_device_gfxcard", "interface")) {
+   if (FieldExists("glpi_device_gfxcard", "interface", false)) {
       $query = "ALTER TABLE `glpi_device_gfxcard`
                 CHANGE `interface` `interface` ENUM('AGP', 'PCI', 'PCI-X', 'Other', '')
                                                NULL DEFAULT 'AGP'";
@@ -501,31 +501,31 @@ function update068to0681() {
       $DB->queryOrDie($query, "0.68.1 add index on glpi_device_drive.interface");
    }
 
-   if (FieldExists("glpi_profiles", "update")) {
+   if (FieldExists("glpi_profiles", "update", false)) {
       $query = "ALTER TABLE `glpi_profiles`
                 CHANGE `update` `check_update` CHAR( 1 ) NULL DEFAULT NULL";
       $DB->queryOrDie($query, "0.68.1 alter glpi_profiles.update");
    }
 
-   if (FieldExists("glpi_config", "last_update_check")) {
+   if (FieldExists("glpi_config", "last_update_check", false)) {
       $query = "ALTER TABLE `glpi_config`
                 DROP `last_update_check`";
       $DB->queryOrDie($query, "0.68.1 drop glpi_config.last_update_check");
    }
 
-   if (!FieldExists("glpi_config", "keep_tracking_on_delete")) {
+   if (!FieldExists("glpi_config", "keep_tracking_on_delete", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `keep_tracking_on_delete` INT DEFAULT '1'";
       $DB->queryOrDie($query, "0.68.1 drop glpi_config.keep_tracking_on_delete");
    }
 
-   if (!FieldExists("glpi_config", "show_admin_doc")) {
+   if (!FieldExists("glpi_config", "show_admin_doc", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `show_admin_doc` INT DEFAULT '0' ";
       $DB->queryOrDie($query, "0.68.1 drop glpi_config.show_admin_doc");
    }
 
-   if (!FieldExists("glpi_config", "time_step")) {
+   if (!FieldExists("glpi_config", "time_step", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `time_step` INT DEFAULT '5' ";
       $DB->queryOrDie($query, "0.68.1 drop glpi_config.time_step");
@@ -537,19 +537,19 @@ function update068to0681() {
                  `keep_tracking_on_delete` = '0'";
    $DB->queryOrDie($query, "0.68.1 update glpi_config data");
 
-   if (!FieldExists("glpi_ocs_config", "cron_sync_number")) {
+   if (!FieldExists("glpi_ocs_config", "cron_sync_number", false)) {
       $query = "ALTER TABLE `glpi_ocs_config`
                 ADD `cron_sync_number` INT DEFAULT '1' ";
       $DB->queryOrDie($query, "0.68.1 drop glpi_ocs_config.cron_sync_number");
    }
 
-   if (!FieldExists("glpi_profiles", "show_group_ticket")) {
+   if (!FieldExists("glpi_profiles", "show_group_ticket", false)) {
       $query = "ALTER TABLE `glpi_profiles`
                 ADD `show_group_ticket` char(1) DEFAULT '0' ";
       $DB->queryOrDie($query, "0.68.1 drop glpi_profiles.show_group_ticket");
    }
 
-   if (!FieldExists("glpi_config", "ldap_group_condition")) {
+   if (!FieldExists("glpi_config", "ldap_group_condition", false)) {
       $query = "ALTER TABLE `glpi_config`
                 ADD `ldap_group_condition` VARCHAR( 255 ) NULL ,
                 ADD `ldap_search_for_groups` TINYINT NOT NULL DEFAULT '0',
@@ -557,25 +557,25 @@ function update068to0681() {
       $DB->queryOrDie($query, "0.68.1 add glpi_config.ldap_*_groups");
    }
 
-   if (!FieldExists("glpi_groups", "ldap_group_dn")) {
+   if (!FieldExists("glpi_groups", "ldap_group_dn", false)) {
       $query = "ALTER TABLE `glpi_groups`
                 ADD `ldap_group_dn` VARCHAR( 255 ) NULL ";
       $DB->queryOrDie($query, "0.68.1 add glpi_groups.ldap_group_dn");
    }
 
-   if (!FieldExists("glpi_ocs_link", "ocs_deviceid")) {
+   if (!FieldExists("glpi_ocs_link", "ocs_deviceid", false)) {
       $query = "ALTER TABLE `glpi_ocs_link`
                 CHANGE `ocs_id` `ocs_deviceid` VARCHAR( 255 ) NOT NULL ";
       $DB->queryOrDie($query, "0.68.1 add glpi_ocs_link.ocs_deviceid");
    }
 
-   if (!FieldExists("glpi_ocs_link", "ocs_id")) {
+   if (!FieldExists("glpi_ocs_link", "ocs_id", false)) {
       $query = "ALTER TABLE `glpi_ocs_link`
                 ADD `ocs_id` INT NOT NULL DEFAULT '0' AFTER `glpi_id` ";
       $DB->queryOrDie($query, "0.68.1 add glpi_ocs_link.ocs_id");
    }
 
-   if (!FieldExists("glpi_ocs_link", "last_ocs_update")) {
+   if (!FieldExists("glpi_ocs_link", "last_ocs_update", false)) {
       $query = "ALTER TABLE `glpi_ocs_link`
                 ADD `last_ocs_update` DATETIME NULL AFTER `last_update` ";
       $DB->queryOrDie($query, "0.68.1 add glpi_ocs_link.last_ocs_update");

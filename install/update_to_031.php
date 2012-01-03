@@ -49,7 +49,7 @@ function updateDbTo031(){
 	//Version 0.21 ajout du champ ramSize a la table printers si non existant.
 
 
-	if(!FieldExists("printers", "ramSize")) {
+	if(!FieldExists("printers", "ramSize", false)) {
 		$query = "alter table printers add ramSize varchar(6) NOT NULL default ''";
 		$DB->queryOrDie($query);
 	}
