@@ -366,9 +366,8 @@ class CartridgeItem extends CommonDBTM {
 
 
    static function cronInfo($name) {
-      global $LANG;
 
-      return array('description' => $LANG['crontask'][2]);
+      return array('description' => __('Send alarms on cartridges'));
    }
 
 
@@ -574,9 +573,8 @@ class CartridgeItem extends CommonDBTM {
 
 
   function getEvents() {
-      global $LANG;
 
-      return array('alert' => $LANG['crontask'][2]);
+      return array('alert' => __('Send alarms on cartridges'));
    }
 
 

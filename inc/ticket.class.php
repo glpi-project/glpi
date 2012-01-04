@@ -5038,13 +5038,13 @@ class Ticket extends CommonITILObject {
 
       switch ($name) {
          case 'closeticket' :
-            return array('description' => $LANG['crontask'][14]);
+            return array('description' => __('Automatic tickets closing'));
 
          case 'alertnotclosed' :
             return array('description' => __('Not solved tickets'));
 
          case 'createinquest' :
-            return array('description' => $LANG['crontask'][18]);
+            return array('description' => __('Generation of satisfaction surveys'));
       }
       return array();
    }

@@ -1866,7 +1866,8 @@ class Html {
          $menu['config']['content']['control']['options']['FieldUnicity']['links']['search']
                         = '/front/fieldunicity.php';
 
-         $menu['config']['content']['crontask']['title']           = $LANG['crontask'][0];
+         $menu['config']['content']['crontask']['title']
+                        = _n('Automatic action', 'Automatic actions', 2);
          $menu['config']['content']['crontask']['page']            = '/front/crontask.php';
          $menu['config']['content']['crontask']['links']['search'] = "/front/crontask.php";
 

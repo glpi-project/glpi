@@ -35,9 +35,8 @@ if (!defined('GLPI_ROOT')) {
 class NotificationTargetCrontask extends NotificationTarget {
 
    function getEvents() {
-      global $LANG;
 
-      return array('alert' => $LANG['crontask'][17]);
+      return array('alert' => __('Monitoring of automatic actions'));
    }
 
 
@@ -79,7 +78,7 @@ class NotificationTargetCrontask extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags = array('crontask.action'      => $LANG['crontask'][17],
+      $tags = array('crontask.action'      => __('Monitoring of automatic actions'),
                     'crontask.url'         => __('URL'),
                     'crontask.name'        => __('Name'),
                     'crontask.description' => $LANG['joblist'][6]);
@@ -96,7 +95,8 @@ class NotificationTargetCrontask extends NotificationTarget {
                                 'foreach' => true));
 
       //Tags with just lang
-      $tags = array('crontask.warning' => $LANG['crontask'][49]);
+      $tags = array('crontask.warning'
+                  => __('The following automatic actions are in error. They require intervention.'));
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
                                    'label' => $label,

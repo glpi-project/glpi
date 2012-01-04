@@ -62,7 +62,7 @@ if (isset($_POST["update"])) {
    if (!isset($_GET["id"]) || empty($_GET["id"])) {
       exit();
    }
-   Html::header($LANG['crontask'][0],$_SERVER['PHP_SELF'],"config","crontask");
+   Html::header(Crontask::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'crontask');
    $crontask->showForm($_GET["id"]);
    Html::footer();
 }

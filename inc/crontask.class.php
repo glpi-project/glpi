@@ -56,7 +56,6 @@ class CronTask extends CommonDBTM{
     * Name of the type
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
 
       return _n('Automatic action', 'Automatic actions', $nb);
    }
@@ -183,7 +182,7 @@ class CronTask extends CommonDBTM{
          $this->timer  = microtime(true);
          $this->volume = 0;
          $log = new CronTaskLog();
-         $txt = $LANG['crontask'][36] . " : " .
+         $txt = __('Run mode') . " : " .
                 $this->getModeName(isCommandLine() ? self::MODE_EXTERNAL
                                                    : self::MODE_INTERNAL);
 
@@ -228,7 +227,7 @@ class CronTask extends CommonDBTM{
     * @return bool : true if ok (not start by another)
    **/
    function end($retcode) {
-      global $LANG, $DB;
+      global $DB;
 
       if (!isset($this->fields['id'])) {
          return false;
@@ -242,11 +241,11 @@ class CronTask extends CommonDBTM{
 
       if ($DB->affected_rows($result)>0) {
          if ($retcode < 0) {
-            $content = $LANG['crontask'][44]; // Partial
+            $content = __('Action completed, partially processed');
          } else if ($retcode > 0) {
-            $content = $LANG['crontask'][45]; // Complete
+            $content = __('Action completed, fully processed');
          } else {
-            $content = $LANG['crontask'][46]; // Nothing to do
+            $content = __('Action completed, no processing required');
          }
          $log = new CronTaskLog();
          $log->add(array('crontasks_id'    => $this->fields['id'],
@@ -402,7 +401,7 @@ class CronTask extends CommonDBTM{
       echo $this->getDescription($ID);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][37]."&nbsp;:&nbsp;</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Run frequency')."</td><td>";
       $this->dropdownFrequency('frequency', $this->fields["frequency"]);
       echo "</td></tr>";
 
@@ -410,14 +409,14 @@ class CronTask extends CommonDBTM{
       echo "<tr class='tab_bg_1'><td>".$LANG['joblist'][0]."&nbsp;:&nbsp;</td><td>";
       if (is_file(GLPI_CRON_DIR. '/'.$this->fields["name"].'.lock')
           || is_file(GLPI_CRON_DIR. '/all.lock')) {
-         echo "<span class='b'>" . $LANG['crontask'][60]."</span><br>";
+         echo "<span class='b'>" . __('System lock')."</span><br>";
          $tmpstate = self::STATE_DISABLE;
       }
 
       if ($isplug) {
          $plug = new Plugin();
          if (!$plug->isActivated($isplug["plugin"])) {
-            echo "<span class='b'>" . $LANG['crontask'][61]."</span><br>";
+            echo "<span class='b'>" . __('Disabled plugin')."</span><br>";
             $tmpstate = self::STATE_DISABLE;
          }
       }
@@ -429,7 +428,7 @@ class CronTask extends CommonDBTM{
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][36]."&nbsp;:&nbsp;</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Run mode')."</td><td>";
       $modes = array();
       if ($this->fields['allowmode']&self::MODE_INTERNAL) {
          $modes[self::MODE_INTERNAL] = self::getModeName(self::MODE_INTERNAL);
@@ -440,7 +439,7 @@ class CronTask extends CommonDBTM{
       Dropdown::showFromArray('mode', $modes, array('value' => $this->fields['mode']));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][38]."&nbsp;:&nbsp;</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Run period')."</td><td>";
       Dropdown::showInteger('hourmin', $this->fields['hourmin'], 0, 24);
       echo "&nbsp;->&nbsp;";
       Dropdown::showInteger('hourmax', $this->fields['hourmax'], 0, 24);
@@ -449,7 +448,7 @@ class CronTask extends CommonDBTM{
       echo "<tr class='tab_bg_1'><td>".__('Number of days this action logs are stored')."</td><td>";
       Dropdown::showInteger('logs_lifetime', $this->fields['logs_lifetime'], 10, 360, 10,
                             array(0 => __('Infinite')));
-      echo "</td><td>".$LANG['crontask'][40]."&nbsp;:&nbsp;</td><td>";
+      echo "</td><td>".__('Last run')."</td><td>";
 
       if (empty($this->fields['lastrun'])) {
          _e('Never');
@@ -469,7 +468,7 @@ class CronTask extends CommonDBTM{
          echo $label."&nbsp;:&nbsp;</td><td>";
          Dropdown::showInteger('param', $this->fields['param'],0,400,1);
       }
-      echo "</td><td>".$LANG['crontask'][41]."&nbsp;:&nbsp;</td><td>";
+      echo "</td><td>".__('Next run')."</td><td>";
 
       if ($tmpstate == self::STATE_RUNNING) {
          $launch = false;
@@ -480,7 +479,7 @@ class CronTask extends CommonDBTM{
       if ($tmpstate!=self::STATE_WAITING) {
          echo $this->getStateName($tmpstate);
       } else if (empty($this->fields['lastrun'])) {
-         echo $LANG['crontask'][42];
+         _e('As soon as possible');
       } else {
          $next = strtotime($this->fields['lastrun'])+$this->fields['frequency'];
          $h=date('H',$next);
@@ -505,7 +504,7 @@ class CronTask extends CommonDBTM{
          }
 
          if ($next<time()) {
-            echo $LANG['crontask'][42].' ('.Html::convDateTime($disp).') ';
+            echo __('As soon as possible').'<br>('.Html::convDateTime($disp).') ';
          } else {
             echo Html::convDateTime($disp);
          }
@@ -616,17 +615,16 @@ class CronTask extends CommonDBTM{
     * @return string
    **/
    static public function getStateName($state) {
-      global $LANG;
 
       switch ($state) {
          case self::STATE_RUNNING :
-            return $LANG['crontask'][33];
+            return __('Running');
 
          case self::STATE_WAITING :
-            return $LANG['crontask'][32];
+            return __('Scheduled');
 
          case self::STATE_DISABLE :
-            return $LANG['crontask'][31];
+            return __('Disabled');
       }
 
       return '???';
@@ -642,11 +640,10 @@ class CronTask extends CommonDBTM{
     * @return nothing (display)
    **/
    static function dropdownState($name, $value=0) {
-      global $LANG;
 
       return Dropdown::showFromArray($name,
-                                     array(self::STATE_DISABLE => $LANG['crontask'][31],
-                                           self::STATE_WAITING => $LANG['crontask'][32]),
+                                     array(self::STATE_DISABLE => __('Disabled'),
+                                           self::STATE_WAITING => __('Scheduled')),
                                      array('value' => $value));
    }
 
@@ -659,14 +656,13 @@ class CronTask extends CommonDBTM{
     * @return string
    **/
    static public function getModeName($mode) {
-      global $LANG;
 
       switch ($mode) {
          case self::MODE_INTERNAL :
-            return $LANG['crontask'][34];
+            return __('GLPI');
 
          case self::MODE_EXTERNAL :
-            return $LANG['crontask'][35];
+            return __('CLI');
       }
 
       return '???';
@@ -866,7 +862,7 @@ class CronTask extends CommonDBTM{
                                       "`crontasks_id` = '".$this->fields['id']."'
                                           AND `state` = '".CronTaskLog::STATE_STOP."'");
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][50]."&nbsp;:&nbsp;</td><td class='right'>";
+      echo "<tr class='tab_bg_2'><td>".__('Run count')."</td><td class='right'>";
       if ($nbstart==$nbstop) {
          echo $nbstart;
       } else {
@@ -898,40 +894,40 @@ class CronTask extends CommonDBTM{
             echo "<tr class='tab_bg_1'><td>".__('Start date')."</td>";
             echo "<td class='right'>".Html::convDateTime($data['datemin'])."</td></tr>";
 
-            echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][51]."&nbsp;:&nbsp;</td>";
+            echo "<tr class='tab_bg_2'><td>".__('Minimal time')."</td>";
             //TRANS: %s is the number of seconds
-            echo "<td class='right'>".sprintf(__('%s sec(s)',number_format($data['elapsedmin'],2)));
+            echo "<td class='right'>".sprintf(__('%s sec(s)'), number_format($data['elapsedmin'],2));
             echo "</td></tr>";
 
-            echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][52]."&nbsp;:&nbsp;</td>";
-            echo "<td class='right'>".sprintf(__('%s sec(s)',number_format($data['elapsedmax'],2)));
+            echo "<tr class='tab_bg_1'><td>".__('Maximal time')."</td>";
+            echo "<td class='right'>".sprintf(__('%s sec(s)'), number_format($data['elapsedmax'],2));
             echo "</td></tr>";
 
-            echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][53]."&nbsp;:&nbsp;</td>";
-            echo "<td class='right b'>".sprintf(__('%s sec(s)',number_format($data['elapsedavg'],2)));
+            echo "<tr class='tab_bg_2'><td>".__('Average time')."</td>";
+            echo "<td class='right b'>".sprintf(__('%s sec(s)'), number_format($data['elapsedavg'],2));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".$LANG['job'][20]."&nbsp;:&nbsp;</td>";
-            echo "<td class='right'>".sprintf(__('%s sec(s)',number_format($data['elapsedtot'],2)));
+            echo "<td class='right'>".sprintf(__('%s sec(s)'), number_format($data['elapsedtot'],2));
             echo "</td></tr>";
          }
 
          if ($data && $data['voltot']>0) {
-            echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][55]."&nbsp;:&nbsp;</td>";
-            echo "<td class='right'>".$data['volmin']." ".$LANG['crontask'][62]."</td></tr>";
+            echo "<tr class='tab_bg_2'><td>".__('Minimal count')."</td>";
+            echo "<td class='right'>".sprintf(__('%s element(s)'), $data['volmin'])."</td></tr>";
 
-            echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][56]."&nbsp;:&nbsp;</td>";
-            echo "<td class='right'>".$data['volmax']." ".$LANG['crontask'][62]."</td></tr>";
+            echo "<tr class='tab_bg_1'><td>".__('Maximal count')."</td>";
+            echo "<td class='right'>".sprintf(__('%s element(s)'), $data['volmax'])."</td></tr>";
 
-            echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][57]."&nbsp;:&nbsp;</td>";
-            echo "<td class='right b'>".number_format($data['volavg'],2)." ".$LANG['crontask'][62].
+            echo "<tr class='tab_bg_2'><td>".__('Average count')."</td>";
+            echo "<td class='right b'>".sprintf(__('%s element(s)'), number_format($data['volavg'],2)).
                  "</td></tr>";
 
-            echo "<tr class='tab_bg_1'><td>".$LANG['crontask'][58]."&nbsp;:&nbsp;</td>";
-            echo "<td class='right'>".$data['voltot']." ".$LANG['crontask'][62]."</td></tr>";
+            echo "<tr class='tab_bg_1'><td>".__('Total count')."</td>";
+            echo "<td class='right'>".sprintf(__('%s element(s)'), $data['voltot'])."</td></tr>";
 
-            echo "<tr class='tab_bg_2'><td>".$LANG['crontask'][59]."&nbsp;:&nbsp;</td>";
-            echo "<td class='left'>".sprintf(__('%s elements/sec',number_format($data['voltot']/$data['elapsedtot'],2)));
+            echo "<tr class='tab_bg_2'><td>".__('Average speed')."</td>";
+            echo "<td class='left'>".sprintf(__('%s elements/sec'), number_format($data['voltot']/$data['elapsedtot'],2));
             echo "</td></tr>";
          }
       }
@@ -972,7 +968,7 @@ class CronTask extends CommonDBTM{
       }
 
       // Display the pager
-      Html::printAjaxPager($LANG['crontask'][47], $start, $number);
+      Html::printAjaxPager(__('Last run list'), $start, $number);
 
       $query = "SELECT *
                 FROM `glpi_crontasklogs`
@@ -1022,7 +1018,7 @@ class CronTask extends CommonDBTM{
       global $DB, $CFG_GLPI, $LANG;
 
       echo "<br><div class='center'>";
-      echo "<p><a href='javascript:reloadTab(\"crontasklogs_id=0\");'>".$LANG['crontask'][47]."</a>".
+      echo "<p><a href='javascript:reloadTab(\"crontasklogs_id=0\");'>".__('Last run list')."</a>".
            "</p>";
 
       $query = "SELECT *
@@ -1049,7 +1045,7 @@ class CronTask extends CommonDBTM{
 
                switch ($data['state']) {
                   case CronTaskLog::STATE_START :
-                     echo "<td>".$LANG['crontask'][48]."</td>";
+                     echo "<td>".__('Start')."</td>";
                      break;
 
                   case CronTaskLog::STATE_STOP :
@@ -1057,7 +1053,7 @@ class CronTask extends CommonDBTM{
                      break;
 
                   default :
-                     echo "<td>".$LANG['crontask'][33]."</td>";
+                     echo "<td>".__('Running')."</td>";
                }
 
                echo "<td class='right'>".number_format($data['elapsed'], 3)."s</td>";
@@ -1111,17 +1107,17 @@ class CronTask extends CommonDBTM{
 
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'mode';
-      $tab[5]['name']          = $LANG['crontask'][36];
+      $tab[5]['name']          = __('Run mode');
 
       $tab[6]['table']         = $this->getTable();
       $tab[6]['field']         = 'frequency';
-      $tab[6]['name']          = $LANG['crontask'][37];
+      $tab[6]['name']          = __('Run frequency');
       $tab[6]['datatype']      = 'timestamp';
       $tab[6]['massiveaction'] = false;
 
       $tab[7]['table']         = $this->getTable();
       $tab[7]['field']         = 'lastrun';
-      $tab[7]['name']          = $LANG['crontask'][40];
+      $tab[7]['name']          = __('Last run');
       $tab[7]['datatype']      = 'datetime';
       $tab[7]['massiveaction'] = false;
 
@@ -1293,27 +1289,26 @@ class CronTask extends CommonDBTM{
     * @return array of string
    **/
    static function cronInfo($name) {
-      global $LANG;
 
       switch ($name) {
          case 'checkupdate' :
-            return array('description' => $LANG['crontask'][11]);
+            return array('description' => __('Check for new updates'));
 
          case 'logs' :
-            return array('description' => $LANG['crontask'][7],
+            return array('description' => __('Clean old logs'),
                          'parameter'   => __('How long system logs are keep in database (in days, 0 for infinite)'));
 
          case 'optimize' :
-            return array('description' => $LANG['crontask'][8]);
+            return array('description' => __('Database optimization'));
 
          case 'session' :
-            return array('description' => $LANG['crontask'][12]);
+            return array('description' => __('Clean expired sessions'));
 
          case 'graph' :
-            return array('description' => $LANG['crontask'][13]);
+            return array('description' => __('Clean generated graphics'));
 
          case 'watcher' :
-            return array('description' => $LANG['crontask'][17]);
+            return array('description' => __('Monitoring of automatic actions'));
       }
    }
 

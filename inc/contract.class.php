@@ -1090,9 +1090,8 @@ class Contract extends CommonDBTM {
 
 
    static function cronInfo($name) {
-      global $LANG;
 
-      return array('description' => $LANG['crontask'][5]);
+      return array('description' => __('Send alarms on contracts'));
    }
 
 

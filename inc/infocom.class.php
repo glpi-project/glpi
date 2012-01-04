@@ -400,9 +400,8 @@ class Infocom extends CommonDBChild {
 
 
    static function cronInfo($name) {
-      global $LANG;
 
-      return array('description' => $LANG['crontask'][6]);
+      return array('description' => __('Send alarms on financial and administrative informations'));
    }
 
 
@@ -448,9 +447,9 @@ class Infocom extends CommonDBChild {
                $warranty = self::getWarrantyExpir($data["warranty_date"], $data["warranty_duration"]);
                $name = $item_infocom->getTypeName()." - ".$item_infocom->getName();
                //TRANS: %1$s is the warranty end date and %2$s the name of the item
-               $message = sprintf(__('Item arrived at the end of the warranty on %1$s: %2$s'), 
+               $message = sprintf(__('Item arrived at the end of the warranty on %1$s: %2$s'),
                                  $warranty, $name)."<br>";
-                                 
+
                $data['warrantyexpiration']        = $warranty;
                $data['item_name']                 = $item_infocom->getName();
                $items_infos[$entity][$data['id']] = $data;

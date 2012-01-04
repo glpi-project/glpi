@@ -286,9 +286,8 @@ class ConsumableItem extends CommonDBTM {
 
 
    static function cronInfo($name) {
-      global $LANG;
 
-      return array('description' => $LANG['crontask'][3]);
+      return array('description' => __('Send alarms on consumables'));
    }
 
 
@@ -392,9 +391,8 @@ class ConsumableItem extends CommonDBTM {
 
 
    function getEvents() {
-      global $LANG;
 
-      return array('alert' => $LANG['crontask'][3]);
+      return array('alert' => __('Send alarms on consumables'));
    }
 
 
