@@ -293,7 +293,7 @@ class Planning {
 
       echo "<div class='center'><form method='get' name='form' action='planning.php'>\n";
       echo "<table class='tab_cadre'>";
-      echo "<tr class='tab_bg_1'><th colspan='2'>".__('Availability')."&nbsp:</th>";
+      echo "<tr class='tab_bg_1'><th colspan='2'>".__('Availability')."</th>";
       echo "<th colspan='3'>".getUserName($who)."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
