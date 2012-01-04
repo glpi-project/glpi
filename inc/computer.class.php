@@ -542,7 +542,7 @@ class Computer extends CommonDBTM {
       Html::autocompletionTextField($this,'contact');
       echo "</td>";
       echo "<td>".__('Inventory number').
-                  (isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>";
+                  (isset($options['withtemplate']) && $options['withtemplate']?"*":"")."</td>";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial",
                              (isset($options['withtemplate']) && $options['withtemplate']==2),

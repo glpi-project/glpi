@@ -261,11 +261,11 @@ class Phone extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Alternate username')."&nbsp;:</td><td>";
+      echo "<td>".__('Alternate username')."</td><td>";
       Html::autocompletionTextField($this, "contact");
       echo "</td>";
       echo "<td>".__('Inventory number').
-                  (isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>";
+                  (isset($options['withtemplate']) && $options['withtemplate']?"*":"")."</td>";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial",
                              (isset($options['withtemplate']) && $options['withtemplate']==2),

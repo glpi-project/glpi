@@ -267,7 +267,7 @@ class Peripheral  extends CommonDBTM {
       Html::autocompletionTextField($this, "contact");
       echo "</td>\n";
       echo "<td>".__('Inventory number').
-                 (isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>\n";
+                 (isset($options['withtemplate']) && $options['withtemplate']?"*":"")."</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial",
                              (isset($options['withtemplate']) && $options['withtemplate']==2),
