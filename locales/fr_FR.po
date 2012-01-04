@@ -2080,7 +2080,7 @@ msgstr "Impossible d'utiliser LDAP comme source de connexion externe"
 #: inc/notificationmailsetting.class.php:181
 msgid "Mail server"
 msgid_plural "Mail servers"
-msgstr[0] "Serveur courriel"
+msgstr[0] "Serveur de messagerie"
 msgstr[1] "Serveurs de messagerie"
 
 #: front/setup.auth.php:62 inc/authmail.class.php:201
@@ -4083,7 +4083,7 @@ msgstr[1] "Tâches"
 #: inc/reservation.class.php:240
 msgid ""
 "Error in entering dates. The starting date is later than the ending date"
-msgstr "Erreur dans l'entrée de vos dates. La date de début est sûrement supérieure à la date de fin"
+msgstr ""
 
 #: inc/commonitiltask.class.php:370 inc/problem.class.php:544
 #: inc/ticket.class.php:1854
