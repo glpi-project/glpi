@@ -86,8 +86,13 @@ function isPluginItemType($classname) {
 
 function __($str){
    global $TRANSLATE;
-
-   return  "__".$TRANSLATE->_($str);
+   
+   $trans = $TRANSLATE->_($str);
+   // Wrong call when plural defined
+   if (is_array($trans)) {
+      return $trans[0];
+   }
+   return  "__".$trans;
 }
 
 
