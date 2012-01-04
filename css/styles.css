@@ -267,7 +267,6 @@ input[type="file"] {
 }
 
 input.submit {
-   font-size: 11px;
    cursor:pointer;
    height: auto;
    font: bold 12px Arial, Helvetica;
@@ -315,8 +314,9 @@ input.save {
 
 } 
 
-.vsubmit {
-   font-size: 11px;
+a.vsubmit {
+   padding: 2px;
+   vertical-align: middle;
    cursor:pointer;
    height: auto;
    font: bold 12px Arial, Helvetica;
@@ -346,9 +346,9 @@ input.save {
    
 }
 
-.vsubmit:hover {
-  
-   font-size: 11px;
+a.vsubmit:hover {
+   padding: 2px;
+   vertical-align: middle;
    cursor:pointer;
    height: auto;
    font: bold 12px Arial, Helvetica;
