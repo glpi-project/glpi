@@ -100,14 +100,13 @@ function __s($str){
    global $TRANSLATE;
 
 //   return  "__s".addslashes($TRANSLATE->_($str));
-   return "__s".htmlentities($TRANSLATE->_($str), ENT_QUOTES, 'UTF-8');
+   return "__s".htmlentities(__($str), ENT_QUOTES, 'UTF-8');
 }
 
 
 function _e($str){
-   global $TRANSLATE;
 
-   echo "_e".$TRANSLATE->_($str);
+   echo "_e".__($str);
 }
 
 
