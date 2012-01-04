@@ -110,7 +110,7 @@ class Computer extends CommonDBTM {
 
 
    function post_updateItem($history=1) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       // Manage changes for OCS if more than 1 element (date_mod)
       // Need dohistory==1 if dohistory==2 no locking fields
@@ -460,7 +460,7 @@ class Computer extends CommonDBTM {
    *
    **/
    function showForm($ID, $options=array()) {
-      global $LANG, $CFG_GLPI, $DB;
+      global $CFG_GLPI, $DB;
 
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -474,9 +474,12 @@ class Computer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf('%1$s%2$s',__('Name'),(isset($options['withtemplate']) && $options['withtemplate']?"*":""))."</td>";
+      echo "<td>".sprintf('%1$s%2$s',__('Name'),
+                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
+           "</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["name"], "name", (isset($options['withtemplate']) && $options['withtemplate']==2),
+      $objectName = autoName($this->fields["name"], "name",
+                             (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
@@ -538,9 +541,11 @@ class Computer extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this,'contact');
       echo "</td>";
-      echo "<td>".__('Inventory number').(isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>";
+      echo "<td>".__('Inventory number').
+                  (isset($options['withtemplate']) && $options['withtemplate']?"*":"")."&nbsp;:</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["otherserial"], "otherserial", (isset($options['withtemplate']) && $options['withtemplate']==2),
+      $objectName = autoName($this->fields["otherserial"], "otherserial",
+                             (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, 'otherserial', array('value' => $objectName));
       echo "</td></tr>\n";
@@ -656,8 +661,10 @@ class Computer extends CommonDBTM {
 
          echo "<br>";
          echo '<table>';
-         echo '<tr><td>'.__('Last OCSNG inventory date').'</td><td>'.Html::convDateTime($dataocs["last_ocs_update"]).'</td></tr>';
-         echo '<tr><td>'.__('Import date in GLPI').'</td><td>'.Html::convDateTime($dataocs["last_update"]).'</td></tr>';
+         echo '<tr><td>'.__('Last OCSNG inventory date').'</td>'.
+              '<td>'.Html::convDateTime($dataocs["last_ocs_update"]).'</td></tr>';
+         echo '<tr><td>'.__('Import date in GLPI').'</td>'.
+              '<td>'.Html::convDateTime($dataocs["last_update"]).'</td></tr>';
          if (Session::haveRight("ocsng","r")) {
             $tmp = " <a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id=" .
                    OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
@@ -674,9 +681,10 @@ class Computer extends CommonDBTM {
 
             //If have write right on OCS and ocsreports url is not empty in OCS config
             if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
-               echo '<tr><td colspan=2>'.OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
-                                                                 $data_version["ocsid"],
-                                                                 __('OCSNG interface')).'</td></tr>';
+               echo '<tr><td colspan=2>'.
+                      OcsServer::getComputerLinkToOcsConsole(OcsServer::getByMachineID($ID),
+                                                             $data_version["ocsid"],
+                                                             __('OCSNG interface')).'</td></tr>';
             }
 
             if ($data_version["ocs_agent_version"] != NULL) {
@@ -731,253 +739,253 @@ class Computer extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']             = __('Characteristics');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false; // implicit key==1
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false; // implicit key==1
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false; // implicit field is id
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false; // implicit field is id
 
       $tab += Location::getSearchOptionsToAdd();
 
-      $tab[4]['table']  = 'glpi_computertypes';
-      $tab[4]['field']  = 'name';
-      $tab[4]['name']   = __('Type');
+      $tab[4]['table']           = 'glpi_computertypes';
+      $tab[4]['field']           = 'name';
+      $tab[4]['name']            = __('Type');
 
-      $tab[40]['table'] = 'glpi_computermodels';
-      $tab[40]['field'] = 'name';
-      $tab[40]['name']  = __('Model');
+      $tab[40]['table']          = 'glpi_computermodels';
+      $tab[40]['field']          = 'name';
+      $tab[40]['name']           = __('Model');
 
-      $tab[31]['table'] = 'glpi_states';
-      $tab[31]['field'] = 'completename';
-      $tab[31]['name']  = __('Status');
+      $tab[31]['table']          = 'glpi_states';
+      $tab[31]['field']          = 'completename';
+      $tab[31]['name']           = __('Status');
 
-      $tab[45]['table'] = 'glpi_operatingsystems';
-      $tab[45]['field'] = 'name';
-      $tab[45]['name']  = __('Operating system');
+      $tab[45]['table']          = 'glpi_operatingsystems';
+      $tab[45]['field']          = 'name';
+      $tab[45]['name']           = __('Operating system');
 
-      $tab[46]['table'] = 'glpi_operatingsystemversions';
-      $tab[46]['field'] = 'name';
-      $tab[46]['name']  = __('Version of the operating system');
+      $tab[46]['table']          = 'glpi_operatingsystemversions';
+      $tab[46]['field']          = 'name';
+      $tab[46]['name']           = __('Version of the operating system');
 
-      $tab[41]['table'] = 'glpi_operatingsystemservicepacks';
-      $tab[41]['field'] = 'name';
-      $tab[41]['name']  = __('Service Pack');
+      $tab[41]['table']          = 'glpi_operatingsystemservicepacks';
+      $tab[41]['field']          = 'name';
+      $tab[41]['name']           = __('Service Pack');
 
-      $tab[42]['table'] = 'glpi_autoupdatesystems';
-      $tab[42]['field'] = 'name';
-      $tab[42]['name']  = __('Update Source');
+      $tab[42]['table']          = 'glpi_autoupdatesystems';
+      $tab[42]['field']          = 'name';
+      $tab[42]['name']           = __('Update Source');
 
-      $tab[43]['table'] = $this->getTable();
-      $tab[43]['field'] = 'os_license_number';
-      $tab[43]['name']  = __('Serial of the operating system');
+      $tab[43]['table']          = $this->getTable();
+      $tab[43]['field']          = 'os_license_number';
+      $tab[43]['name']           = __('Serial of the operating system');
 
-      $tab[44]['table'] = $this->getTable();
-      $tab[44]['field'] = 'os_licenseid';
-      $tab[44]['name']  = __('Product ID of the operating system');
+      $tab[44]['table']          = $this->getTable();
+      $tab[44]['field']          = 'os_licenseid';
+      $tab[44]['name']           = __('Product ID of the operating system');
 
-      $tab[47]['table'] = $this->getTable();
-      $tab[47]['field'] = 'uuid';
-      $tab[47]['name']  = __('UUID');
-
-
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'serial';
-      $tab[5]['name']      = __('Serial number');
-      $tab[5]['datatype']  = 'string';
-
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'otherserial';
-      $tab[6]['name']      = __('Inventory number');
-      $tab[6]['datatype']  = 'string';
-
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = __('Comments');
-      $tab[16]['datatype']  = 'text';
-
-      $tab[90]['table']         = $this->getTable();
-      $tab[90]['field']         = 'notepad';
-      $tab[90]['name']          = __('Notes');
-      $tab[90]['massiveaction'] = false;
-
-      $tab[17]['table']     = $this->getTable();
-      $tab[17]['field']     = 'contact';
-      $tab[17]['name']      = __('Alternate username');
-      $tab[17]['datatype']  = 'string';
-
-      $tab[18]['table']     = $this->getTable();
-      $tab[18]['field']     = 'contact_num';
-      $tab[18]['name']      = __('Alternate username number');
-      $tab[18]['datatype']  = 'string';
-
-      $tab[70]['table'] = 'glpi_users';
-      $tab[70]['field'] = 'name';
-      $tab[70]['name']  = __('User');
-
-      $tab[71]['table']     = 'glpi_groups';
-      $tab[71]['field']     = 'completename';
-      $tab[71]['name']      = __('Group');
-      $tab[71]['condition'] = '`is_itemgroup`';
-
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
-
-      $tab[32]['table'] = 'glpi_networks';
-      $tab[32]['field'] = 'name';
-      $tab[32]['name']  = __('Network');
-
-      $tab[33]['table'] = 'glpi_domains';
-      $tab[33]['field'] = 'name';
-      $tab[33]['name']  = __('Domain');
-
-      $tab[23]['table'] = 'glpi_manufacturers';
-      $tab[23]['field'] = 'name';
-      $tab[23]['name']  = __('Manufacturer');
-
-      $tab[24]['table']     = 'glpi_users';
-      $tab[24]['field']     = 'name';
-      $tab[24]['linkfield'] = 'users_id_tech';
-      $tab[24]['name']      = __('Technician in charge of the hardware');
-
-      $tab[49]['table']     = 'glpi_groups';
-      $tab[49]['field']     = 'completename';
-      $tab[49]['linkfield'] = 'groups_id_tech';
-      $tab[49]['name']      = __('Group in charge of the hardware');
-      $tab[49]['condition'] = '`is_assign`';
-
-      $tab[80]['table'] = 'glpi_entities';
-      $tab[80]['field'] = 'completename';
-      $tab[80]['name']  = $LANG['entity'][0];
+      $tab[47]['table']          = $this->getTable();
+      $tab[47]['field']          = 'uuid';
+      $tab[47]['name']           = __('UUID');
 
 
-      $tab['periph'] = _n('Component', 'Components', 2);
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'serial';
+      $tab[5]['name']            = __('Serial number');
+      $tab[5]['datatype']        = 'string';
 
-      $tab[7]['table']         = 'glpi_deviceprocessors';
-      $tab[7]['field']         = 'designation';
-      $tab[7]['name']          = __('Processor');
-      $tab[7]['forcegroupby']  = true;
-      $tab[7]['usehaving']     = true;
-      $tab[7]['massiveaction'] = false;
-      $tab[7]['joinparams']    = array('beforejoin'
-                                       => array('table'      => 'glpi_computers_deviceprocessors',
-                                                'joinparams' => array('jointype' => 'child')));
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'otherserial';
+      $tab[6]['name']            = __('Inventory number');
+      $tab[6]['datatype']        = 'string';
 
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
-      $tab[36]['table']         = 'glpi_computers_deviceprocessors';
-      $tab[36]['field']         = 'specificity';
-      $tab[36]['name']          = __('Processeur frequency');
-      $tab[36]['unit']          = __('MHz');
-      $tab[36]['forcegroupby']  = true;
-      $tab[36]['usehaving']     = true;
-      $tab[36]['datatype']      = 'number';
-      $tab[36]['width']         = 100;
-      $tab[36]['massiveaction'] = false;
-      $tab[36]['joinparams']    = array('jointype' => 'child');
+      $tab[90]['table']          = $this->getTable();
+      $tab[90]['field']          = 'notepad';
+      $tab[90]['name']           = __('Notes');
+      $tab[90]['massiveaction']  = false;
 
-      $tab[10]['table']         = 'glpi_devicememories';
-      $tab[10]['field']         = 'designation';
-      $tab[10]['name']          = __('Memory Type');
-      $tab[10]['forcegroupby']  = true;
-      $tab[10]['usehaving']     = true;
-      $tab[10]['massiveaction'] = false;
-      $tab[10]['joinparams']    = array('beforejoin'
-                                        => array('table'      => 'glpi_computers_devicememories',
-                                                 'joinparams' => array('jointype' => 'child')));
+      $tab[17]['table']          = $this->getTable();
+      $tab[17]['field']          = 'contact';
+      $tab[17]['name']           = __('Alternate username');
+      $tab[17]['datatype']       = 'string';
 
-      $tab[35]['table']         = 'glpi_computers_devicememories';
-      $tab[35]['field']         = 'specificity';
-      $tab[35]['name']          = __('Memory (Mio)');
-      $tab[35]['forcegroupby']  = true;
-      $tab[35]['usehaving']     = true;
-      $tab[35]['datatype']      = 'number';
-      $tab[35]['width']         = 100;
-      $tab[35]['massiveaction'] = false;
-      $tab[35]['joinparams']    = array('jointype' => 'child');
+      $tab[18]['table']          = $this->getTable();
+      $tab[18]['field']          = 'contact_num';
+      $tab[18]['name']           = __('Alternate username number');
+      $tab[18]['datatype']       = 'string';
 
+      $tab[70]['table']          = 'glpi_users';
+      $tab[70]['field']          = 'name';
+      $tab[70]['name']           = __('User');
 
-      $tab[11]['table']         = 'glpi_devicenetworkcards';
-      $tab[11]['field']         = 'designation';
-      $tab[11]['name']          = _n('Network interface', 'Network interfaces', 1);
-      $tab[11]['forcegroupby']  = true;
-      $tab[11]['massiveaction'] = false;
-      $tab[11]['joinparams']    = array('beforejoin'
-                                        => array('table'      => 'glpi_computers_devicenetworkcards',
-                                                 'joinparams' => array('jointype' => 'child')));
+      $tab[71]['table']          = 'glpi_groups';
+      $tab[71]['field']          = 'completename';
+      $tab[71]['name']           = __('Group');
+      $tab[71]['condition']      = '`is_itemgroup`';
 
-      $tab[12]['table']         = 'glpi_devicesoundcards';
-      $tab[12]['field']         = 'designation';
-      $tab[12]['name']          = __('Soundcard');
-      $tab[12]['forcegroupby']  = true;
-      $tab[12]['massiveaction'] = false;
-      $tab[12]['joinparams']    = array('beforejoin'
-                                        => array('table'      => 'glpi_computers_devicesoundcards',
-                                                 'joinparams' => array('jointype' => 'child')));
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
 
-      $tab[13]['table']         = 'glpi_devicegraphiccards';
-      $tab[13]['field']         = 'designation';
-      $tab[13]['name']          = __('Graphics Card');
-      $tab[13]['forcegroupby']  = true;
-      $tab[13]['massiveaction'] = false;
-      $tab[13]['joinparams']    = array('beforejoin'
-                                        => array('table'      => 'glpi_computers_devicegraphiccards',
-                                                 'joinparams' => array('jointype' => 'child')));
+      $tab[32]['table']          = 'glpi_networks';
+      $tab[32]['field']          = 'name';
+      $tab[32]['name']           = __('Network');
 
-      $tab[14]['table']         = 'glpi_devicemotherboards';
-      $tab[14]['field']         = 'designation';
-      $tab[14]['name']          = __('System Board');
-      $tab[14]['forcegroupby']  = true;
-      $tab[14]['massiveaction'] = false;
-      $tab[14]['joinparams']    = array('beforejoin'
-                                        => array('table'      => 'glpi_computers_devicemotherboards',
-                                                 'joinparams' => array('jointype' => 'child')));
+      $tab[33]['table']          = 'glpi_domains';
+      $tab[33]['field']          = 'name';
+      $tab[33]['name']           = __('Domain');
+
+      $tab[23]['table']          = 'glpi_manufacturers';
+      $tab[23]['field']          = 'name';
+      $tab[23]['name']           = __('Manufacturer');
+
+      $tab[24]['table']          = 'glpi_users';
+      $tab[24]['field']          = 'name';
+      $tab[24]['linkfield']      = 'users_id_tech';
+      $tab[24]['name']           = __('Technician in charge of the hardware');
+
+      $tab[49]['table']          = 'glpi_groups';
+      $tab[49]['field']          = 'completename';
+      $tab[49]['linkfield']      = 'groups_id_tech';
+      $tab[49]['name']           = __('Group in charge of the hardware');
+      $tab[49]['condition']      = '`is_assign`';
+
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
 
 
-      $tab[15]['table']         = 'glpi_deviceharddrives';
-      $tab[15]['field']         = 'designation';
-      $tab[15]['name']          = __('Hard drive type');
-      $tab[15]['forcegroupby']  = true;
-      $tab[15]['usehaving']     = true;
-      $tab[15]['massiveaction'] = false;
-      $tab[15]['joinparams']    = array('beforejoin'
-                                        => array('table'      => 'glpi_computers_deviceharddrives',
-                                                 'joinparams' => array('jointype' => 'child')));
+      $tab['periph']             = _n('Component', 'Components', 2);
 
-      $tab[34]['table']         = 'glpi_computers_deviceharddrives';
-      $tab[34]['field']         = 'specificity';
-      $tab[34]['name']          = __('Hard drive size');
-      $tab[34]['forcegroupby']  = true;
-      $tab[34]['usehaving']     = true;
-      $tab[34]['datatype']      = 'number';
-      $tab[34]['width']         = 1000;
-      $tab[34]['massiveaction'] = false;
-      $tab[34]['joinparams']    = array('jointype' => 'child');
+      $tab[7]['table']           = 'glpi_deviceprocessors';
+      $tab[7]['field']           = 'designation';
+      $tab[7]['name']            = __('Processor');
+      $tab[7]['forcegroupby']    = true;
+      $tab[7]['usehaving']       = true;
+      $tab[7]['massiveaction']   = false;
+      $tab[7]['joinparams']      = array('beforejoin'
+                                          => array('table'      => 'glpi_computers_deviceprocessors',
+                                                   'joinparams' => array('jointype' => 'child')));
 
 
-      $tab[39]['table']         = 'glpi_devicepowersupplies';
-      $tab[39]['field']         = 'designation';
-      $tab[39]['name']          = __('Power Supply');
-      $tab[39]['forcegroupby']  = true;
-      $tab[39]['usehaving']     = true;
-      $tab[39]['massiveaction'] = false;
-      $tab[39]['joinparams']    = array('beforejoin'
-                                        => array('table'      => 'glpi_computers_devicepowersupplies',
-                                                 'joinparams' => array('jointype' => 'child')));
+      $tab[36]['table']          = 'glpi_computers_deviceprocessors';
+      $tab[36]['field']          = 'specificity';
+      $tab[36]['name']           = __('Processeur frequency');
+      $tab[36]['unit']           = __('MHz');
+      $tab[36]['forcegroupby']   = true;
+      $tab[36]['usehaving']      = true;
+      $tab[36]['datatype']       = 'number';
+      $tab[36]['width']          = 100;
+      $tab[36]['massiveaction']  = false;
+      $tab[36]['joinparams']     = array('jointype' => 'child');
 
-      $tab['disk'] = _n('Volume', 'Volumes', 2);
+      $tab[10]['table']          = 'glpi_devicememories';
+      $tab[10]['field']          = 'designation';
+      $tab[10]['name']           = __('Memory Type');
+      $tab[10]['forcegroupby']   = true;
+      $tab[10]['usehaving']      = true;
+      $tab[10]['massiveaction']  = false;
+      $tab[10]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_computers_devicememories',
+                                                   'joinparams' => array('jointype' => 'child')));
+
+      $tab[35]['table']          = 'glpi_computers_devicememories';
+      $tab[35]['field']          = 'specificity';
+      $tab[35]['name']           = __('Memory (Mio)');
+      $tab[35]['forcegroupby']   = true;
+      $tab[35]['usehaving']      = true;
+      $tab[35]['datatype']       = 'number';
+      $tab[35]['width']          = 100;
+      $tab[35]['massiveaction']  = false;
+      $tab[35]['joinparams']     = array('jointype' => 'child');
+
+
+      $tab[11]['table']          = 'glpi_devicenetworkcards';
+      $tab[11]['field']          = 'designation';
+      $tab[11]['name']           = _n('Network interface', 'Network interfaces', 1);
+      $tab[11]['forcegroupby']   = true;
+      $tab[11]['massiveaction']  = false;
+      $tab[11]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_computers_devicenetworkcards',
+                                                   'joinparams' => array('jointype' => 'child')));
+
+      $tab[12]['table']          = 'glpi_devicesoundcards';
+      $tab[12]['field']          = 'designation';
+      $tab[12]['name']           = __('Soundcard');
+      $tab[12]['forcegroupby']   = true;
+      $tab[12]['massiveaction']  = false;
+      $tab[12]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_computers_devicesoundcards',
+                                                   'joinparams' => array('jointype' => 'child')));
+
+      $tab[13]['table']          = 'glpi_devicegraphiccards';
+      $tab[13]['field']          = 'designation';
+      $tab[13]['name']           = __('Graphics Card');
+      $tab[13]['forcegroupby']   = true;
+      $tab[13]['massiveaction']  = false;
+      $tab[13]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_computers_devicegraphiccards',
+                                                   'joinparams' => array('jointype' => 'child')));
+
+      $tab[14]['table']          = 'glpi_devicemotherboards';
+      $tab[14]['field']          = 'designation';
+      $tab[14]['name']           = __('System Board');
+      $tab[14]['forcegroupby']   = true;
+      $tab[14]['massiveaction']  = false;
+      $tab[14]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_computers_devicemotherboards',
+                                                   'joinparams' => array('jointype' => 'child')));
+
+
+      $tab[15]['table']          = 'glpi_deviceharddrives';
+      $tab[15]['field']          = 'designation';
+      $tab[15]['name']           = __('Hard drive type');
+      $tab[15]['forcegroupby']   = true;
+      $tab[15]['usehaving']      = true;
+      $tab[15]['massiveaction']  = false;
+      $tab[15]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_computers_deviceharddrives',
+                                                   'joinparams' => array('jointype' => 'child')));
+
+      $tab[34]['table']          = 'glpi_computers_deviceharddrives';
+      $tab[34]['field']          = 'specificity';
+      $tab[34]['name']           = __('Hard drive size');
+      $tab[34]['forcegroupby']   = true;
+      $tab[34]['usehaving']      = true;
+      $tab[34]['datatype']       = 'number';
+      $tab[34]['width']          = 1000;
+      $tab[34]['massiveaction']  = false;
+      $tab[34]['joinparams']     = array('jointype' => 'child');
+
+
+      $tab[39]['table']          = 'glpi_devicepowersupplies';
+      $tab[39]['field']          = 'designation';
+      $tab[39]['name']           = __('Power Supply');
+      $tab[39]['forcegroupby']   = true;
+      $tab[39]['usehaving']      = true;
+      $tab[39]['massiveaction']  = false;
+      $tab[39]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_computers_devicepowersupplies',
+                                                   'joinparams' => array('jointype' => 'child')));
+
+      $tab['disk']               = _n('Volume', 'Volumes', 2);
 
       $tab[156]['table']         = 'glpi_computerdisks';
       $tab[156]['field']         = 'name';
@@ -1040,7 +1048,7 @@ class Computer extends CommonDBTM {
                                                   'joinparams' => array('jointype' => 'child')));
 
       if ($CFG_GLPI["use_ocs_mode"]) {
-         $tab['ocsng'] = __('OCSNG');
+         $tab['ocsng']              = __('OCSNG');
 
          $tab[102]['table']         = 'glpi_ocslinks';
          $tab[102]['field']         = 'last_update';
@@ -1062,12 +1070,12 @@ class Computer extends CommonDBTM {
          $tab[100]['massiveaction'] = false;
          $tab[100]['datatype']      = 'bool';
 
-         $tab[101]['table']      = 'glpi_ocslinks';
-         $tab[101]['field']      = 'use_auto_update';
-         $tab[101]['linkfield']  = '_auto_update_ocs'; // update through compter update process
-         $tab[101]['name']       = __('Auto update OCSNG');
-         $tab[101]['datatype']   = 'bool';
-         $tab[101]['joinparams'] = array('jointype' => 'child');
+         $tab[101]['table']         = 'glpi_ocslinks';
+         $tab[101]['field']         = 'use_auto_update';
+         $tab[101]['linkfield']     = '_auto_update_ocs'; // update through compter update process
+         $tab[101]['name']          = __('Auto update OCSNG');
+         $tab[101]['datatype']      = 'bool';
+         $tab[101]['joinparams']    = array('jointype' => 'child');
 
          $tab[104]['table']         = 'glpi_ocslinks';
          $tab[104]['field']         = 'ocs_agent_version';
@@ -1089,7 +1097,7 @@ class Computer extends CommonDBTM {
          $tab[106]['massiveaction'] = false;
          $tab[106]['joinparams']    = array('jointype' => 'child');
 
-         $tab['registry'] = __('Registry');
+         $tab['registry']           = __('Registry');
 
          $tab[110]['table']         = 'glpi_registrykeys';
          $tab[110]['field']         = 'value';
@@ -1105,67 +1113,66 @@ class Computer extends CommonDBTM {
          $tab[111]['massiveaction'] = false;
          $tab[111]['joinparams']    = array('jointype' => 'child');
       }
-      $tab['virtualmachine'] = _n('Virtual machine', 'Virtual machines', 2);
+      $tab['virtualmachine']        = _n('Virtual machine', 'Virtual machines', 2);
 
-      $tab[160]['table']         = 'glpi_computervirtualmachines';
-      $tab[160]['field']         = 'name';
-      $tab[160]['name']          = __('Virtual machine');
-      $tab[160]['forcegroupby']  = true;
-      $tab[160]['massiveaction'] = false;
-      $tab[160]['joinparams']    = array('jointype' => 'child');
+      $tab[160]['table']            = 'glpi_computervirtualmachines';
+      $tab[160]['field']            = 'name';
+      $tab[160]['name']             = __('Virtual machine');
+      $tab[160]['forcegroupby']     = true;
+      $tab[160]['massiveaction']    = false;
+      $tab[160]['joinparams']       = array('jointype' => 'child');
 
-      $tab[161]['table']         = 'glpi_virtualmachinestates';
-      $tab[161]['field']         = 'name';
-      $tab[161]['name']          = __('State of the virtual machine');
-      $tab[161]['forcegroupby']  = true;
-      $tab[161]['massiveaction'] = false;
-      $tab[161]['joinparams']    = array('beforejoin'
-                                         => array('table'      => 'glpi_computervirtualmachines',
-                                                  'joinparams' => array('jointype' => 'child')));
+      $tab[161]['table']            = 'glpi_virtualmachinestates';
+      $tab[161]['field']            = 'name';
+      $tab[161]['name']             = __('State of the virtual machine');
+      $tab[161]['forcegroupby']     = true;
+      $tab[161]['massiveaction']    = false;
+      $tab[161]['joinparams']       = array('beforejoin'
+                                             => array('table'      => 'glpi_computervirtualmachines',
+                                                      'joinparams' => array('jointype' => 'child')));
 
-      $tab[162]['table']         = 'glpi_virtualmachinetypes';
-      $tab[162]['field']         = 'name';
-      $tab[162]['name']          = __('Virtualization model');
-      $tab[162]['forcegroupby']  = true;
-      $tab[162]['massiveaction'] = false;
-      $tab[162]['joinparams']    = array('beforejoin'
-                                         => array('table'      => 'glpi_computervirtualmachines',
-                                                  'joinparams' => array('jointype' => 'child')));
+      $tab[162]['table']            = 'glpi_virtualmachinetypes';
+      $tab[162]['field']            = 'name';
+      $tab[162]['name']             = __('Virtualization model');
+      $tab[162]['forcegroupby']     = true;
+      $tab[162]['massiveaction']    = false;
+      $tab[162]['joinparams']       = array('beforejoin'
+                                             => array('table'      => 'glpi_computervirtualmachines',
+                                                      'joinparams' => array('jointype' => 'child')));
 
-      $tab[163]['table']         = 'glpi_virtualmachinetypes';
-      $tab[163]['field']         = 'name';
-      $tab[163]['name']          = __('Virtualization system');
-      $tab[163]['forcegroupby']  = true;
-      $tab[163]['massiveaction'] = false;
-      $tab[163]['joinparams']    = array('beforejoin'
-                                         => array('table'      => 'glpi_computervirtualmachines',
-                                                  'joinparams' => array('jointype' => 'child')));
+      $tab[163]['table']            = 'glpi_virtualmachinetypes';
+      $tab[163]['field']            = 'name';
+      $tab[163]['name']             = __('Virtualization system');
+      $tab[163]['forcegroupby']     = true;
+      $tab[163]['massiveaction']    = false;
+      $tab[163]['joinparams']       = array('beforejoin'
+                                             => array('table'      => 'glpi_computervirtualmachines',
+                                                      'joinparams' => array('jointype' => 'child')));
 
-      $tab[164]['table']         = 'glpi_computervirtualmachines';
-      $tab[164]['field']         = 'vcpu';
-      $tab[164]['name']          = __('Virtual machine name');
-      $tab[164]['forcegroupby']  = true;
-      $tab[164]['massiveaction'] = false;
-      $tab[164]['joinparams']    = array('jointype' => 'child');
+      $tab[164]['table']            = 'glpi_computervirtualmachines';
+      $tab[164]['field']            = 'vcpu';
+      $tab[164]['name']             = __('Virtual machine name');
+      $tab[164]['forcegroupby']     = true;
+      $tab[164]['massiveaction']    = false;
+      $tab[164]['joinparams']       = array('jointype' => 'child');
 
-      $tab[165]['table']         = 'glpi_computervirtualmachines';
-      $tab[165]['field']         = 'ram';
-      $tab[165]['name']          = __('Memory of virtual machines');
-      $tab[165]['forcegroupby']  = true;
-      $tab[165]['massiveaction'] = false;
-      $tab[165]['joinparams']    = array('jointype' => 'child');
-      $tab[165]['datatype']      = 'integer';
+      $tab[165]['table']            = 'glpi_computervirtualmachines';
+      $tab[165]['field']            = 'ram';
+      $tab[165]['name']             = __('Memory of virtual machines');
+      $tab[165]['forcegroupby']     = true;
+      $tab[165]['massiveaction']    = false;
+      $tab[165]['joinparams']       = array('jointype' => 'child');
+      $tab[165]['datatype']         = 'integer';
 
-      $tab[166]['table']         = 'glpi_computervirtualmachines';
-      $tab[166]['field']         = 'uuid';
-      $tab[166]['name']          = __('Virtual machine UUID');
-      $tab[166]['forcegroupby']  = true;
-      $tab[166]['massiveaction'] = false;
-      $tab[166]['joinparams']    = array('jointype' => 'child');
-      $tab[166]['datatype']      = 'integer';
+      $tab[166]['table']            = 'glpi_computervirtualmachines';
+      $tab[166]['field']            = 'uuid';
+      $tab[166]['name']             = __('Virtual machine UUID');
+      $tab[166]['forcegroupby']     = true;
+      $tab[166]['massiveaction']    = false;
+      $tab[166]['joinparams']       = array('jointype' => 'child');
+      $tab[166]['datatype']         = 'integer';
 
       return $tab;
    }
 }
-
 ?>
