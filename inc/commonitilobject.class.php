@@ -2484,10 +2484,11 @@ abstract class CommonITILObject extends CommonDBTM {
          echo Dropdown::getDropdownName('glpi_solutiontypes',
                                         $this->getField('solutiontypes_id'));
       }
-      echo "</td><td>".$LANG['job'][25]."</td><td>";
+      echo "</td><td colspan='2'>&nbsp;</td></tr>";
+      echo "<tr><td>".$LANG['job'][25]."</td><td>";
       Dropdown::showYesNo('_sol_to_kb', false);
-      echo "</td></tr>";
-
+      echo "</td><td colspan='2'>&nbsp;</td></tr>";
+      
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['joblist'][6]."&nbsp;: </td><td colspan='3'>";
 
