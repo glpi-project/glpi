@@ -80,7 +80,7 @@ class NotificationTargetInfocom extends NotificationTarget {
                     'infocom.itemtype'       => __('Item type'),
                     'infocom.item'           => $LANG['financial'][104],
                     'infocom.expirationdate' => __('Expiration date'),
-                    'infocom.entity'         => $LANG['entity'][0]);
+                    'infocom.entity'         => __('Entity'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

@@ -318,8 +318,8 @@ class Session {
          $_SESSION["glpiactive_entity_name"]      = Dropdown::getDropdownName("glpi_entities", $active);
          $_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities", $active);
          if ($is_recursive) {
-            $_SESSION["glpiactive_entity_name"]      .= " (".$LANG['entity'][7].")";
-            $_SESSION["glpiactive_entity_shortname"] .= " (".$LANG['entity'][7].")";
+            $_SESSION["glpiactive_entity_name"]      .= __('(tree structure)');
+            $_SESSION["glpiactive_entity_shortname"] .= __('(tree structure)');
          }
          if ($ID=="all") {
             $_SESSION["glpiactive_entity_name"]      .= " (".__('Show all').")";

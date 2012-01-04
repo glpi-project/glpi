@@ -462,7 +462,7 @@ class Change extends CommonITILObject {
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['name']          = __('Entity');
       $tab[80]['massiveaction'] = false;
 
       $tab[45]['table']         = $this->getTable();

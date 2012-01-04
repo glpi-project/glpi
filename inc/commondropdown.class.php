@@ -281,40 +281,41 @@ abstract class CommonDropdown extends CommonDBTM {
     * @return array of search option
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
-      $tab['common']           = __('Characteristics');
+      $tab['common']             = __('Characteristics');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_link'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_link']   = $this->getType();
+      $tab[1]['massiveaction']   = false;
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = __('Comments');
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
       if ($this->isEntityAssign()) {
          $tab[80]['table']         = 'glpi_entities';
          $tab[80]['field']         = 'completename';
-         $tab[80]['name']          = $LANG['entity'][0];
+         $tab[80]['name']          = __('Entity');
          $tab[80]['massiveaction'] = false;
       }
+
       if ($this->maybeRecursive()) {
          $tab[86]['table']     = $this->getTable();
          $tab[86]['field']     = 'is_recursive';
-         $tab[86]['name']      = $LANG['entity'][9];
+         $tab[86]['name']      = __('Child entities');
          $tab[86]['datatype']  = 'bool';
       }
+
       if ($this->isField('date_mod')) {
          $tab[19]['table']         = $this->getTable();
          $tab[19]['field']         = 'date_mod';
@@ -620,5 +621,4 @@ abstract class CommonDropdown extends CommonDBTM {
       }
    }
 }
-
 ?>

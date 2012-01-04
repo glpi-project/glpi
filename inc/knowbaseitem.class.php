@@ -495,10 +495,10 @@ class KnowbaseItem extends CommonDBTM {
          echo "<p class='center'>";
 
 //          if (Session::isMultiEntitiesMode()) {
-//             echo $LANG['entity'][0]."&nbsp;: ";
+//             _e('Entity');
 //             Dropdown::show('Entity', array('value'    => $this->fields["entities_id"],
 //                                            'comments' => 0 ));
-//             echo "&nbsp;&nbsp;".$LANG['entity'][9]."&nbsp;: ";
+//             _e('Child entities: ');
 //             if ($canrecu) {
 //                Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
 //             } else {
@@ -1190,12 +1190,12 @@ class KnowbaseItem extends CommonDBTM {
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['name']          = __('Entity');
       $tab[80]['massiveaction'] = false;
 
       $tab[86]['table']    = $this->getTable();
       $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['name']     = __('Child entities');
       $tab[86]['datatype'] = 'bool';
 
       return $tab;
@@ -1322,7 +1322,7 @@ class KnowbaseItem extends CommonDBTM {
                   echo "<input type='checkbox' name='entity[".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
-               echo "<td>".$LANG['entity'][0]."</td>";
+               echo "<td>".__('Entity')."</td>";
                echo "<td>";
                $names = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
                echo $names["name"]." ";

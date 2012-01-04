@@ -138,7 +138,7 @@ class NotificationTargetReservation extends NotificationTarget {
                                  'reservation.begin'       => __('Start date'),
                                  'reservation.end'         => __('End date'),
                                  'reservation.comment'     => __('Comments'),
-                                 'reservation.item.entity' => $LANG['entity'][0],
+                                 'reservation.item.entity' => __('Entity'),
                                  'reservation.item.name'   => $LANG['financial'][104],
                                  'reservation.item.tech'   => __('Technician in charge of the hardware'));
 
@@ -156,7 +156,7 @@ class NotificationTargetReservation extends NotificationTarget {
                                 'events'  => array('alert')));
 
       $tag_alert = array('reservation.expirationdate' => __('End date'),
-                         'reservation.entity'         => $LANG['entity'][0]);
+                         'reservation.entity'         => __('Entity'));
 
       foreach ($tag_alert as $tag => $label) {
          $this->addTagToList(array('tag'    => $tag,

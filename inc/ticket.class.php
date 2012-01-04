@@ -1608,7 +1608,7 @@ class Ticket extends CommonITILObject {
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['name']          = __('Entity');
       $tab[80]['massiveaction'] = false;
       $tab[80]['datatype']      = 'dropdown';
 
@@ -4749,7 +4749,7 @@ class Ticket extends CommonITILObject {
          // Second TER column
          if (count($_SESSION["glpiactiveentities"]) > 1) {
             if ($job->fields['entities_id'] == 0) {
-               $second_col = $LANG['entity'][2];
+               $second_col = __('Root entity');
             } else {
                $second_col = Dropdown::getDropdownName('glpi_entities', $job->fields['entities_id']);
             }

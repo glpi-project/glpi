@@ -2549,7 +2549,7 @@ class User extends CommonDBTM {
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th>".__('Type')."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".__('Entity')."</th>";
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th>";
@@ -2615,7 +2615,7 @@ class User extends CommonDBTM {
       if (!empty($group_where)) {
          echo "<div class='spaced'><table class='tab_cadre_fixe'><tr>".
                "<th>".__('Type')."</th>".
-               "<th>".$LANG['entity'][0]."</th>".
+               "<th>".__('Entity')."</th>".
                "<th>".__('Name')."</th>".
                "<th>".__('Serial number')."</th>".
                "<th>".__('Inventory number')."</th><th>&nbsp;</th></tr>";
@@ -2991,10 +2991,9 @@ class User extends CommonDBTM {
     * @return an aray which contains field => label
    **/
    function getUnicityFieldsToDisplayInErrorMessage() {
-      global $LANG;
 
       return array('id'          => __('ID'),
-                   'entities_id' => $LANG['entity'][0]);
+                   'entities_id' => __('Entity'));
    }
 
 

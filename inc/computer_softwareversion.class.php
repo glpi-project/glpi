@@ -345,8 +345,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             if ($showEntity) {
                echo "<th>".(strstr($sort,"entity")?$sort_img:"").
                     "<a href='javascript:reloadTab(\"sort=entity,compname&amp;order=".
-                      ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['entity'][0].
-                    "</a></th>";
+                      ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Entity')."</a></th>";
             }
             echo "<th>".($sort=="`serial`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
@@ -398,7 +397,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                }
 
                if ($showEntity) {
-                  echo "<td>".(empty($data['entity']) ? $LANG['entity'][2] : $data['entity'])."</td>";
+                  echo "<td>".(empty($data['entity']) ? __('Root entity') : $data['entity'])."</td>";
                }
                echo "<td>".$data['serial']."</td>";
                echo "<td>".$data['otherserial']."</td>";
@@ -467,7 +466,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       echo "<div class='center'>";
       echo "<table class='tab_cadre'><tr>";
-      echo "<th>&nbsp;".$LANG['entity'][0]."&nbsp;</th>";
+      echo "<th>".__('Entity')."</th>";
       echo "<th>"._n('Installation', 'Installations', 2)."</th>";
       echo "</tr>\n";
 
@@ -475,7 +474,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       if (in_array(0,$_SESSION["glpiactiveentities"])) {
          $nb = self::countForVersion($softwareversions_id,0);
          if ($nb>0) {
-            echo "<tr class='tab_bg_2'><td>" . $LANG['entity'][2] . "</td>";
+            echo "<tr class='tab_bg_2'><td>" . __('Root entity') . "</td>";
             echo "<td class='right'>" . $nb . "</td></tr>\n";
             $tot += $nb;
          }

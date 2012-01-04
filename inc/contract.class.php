@@ -493,7 +493,7 @@ class Contract extends CommonDBTM {
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['name']          = __('Entity');
       $tab[80]['massiveaction'] = false;
 
       $tab[59]['table'] = $this->getTable();
@@ -502,7 +502,7 @@ class Contract extends CommonDBTM {
 
       $tab[86]['table']    = $this->getTable();
       $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['name']     = __('Child entities');
       $tab[86]['datatype'] = 'bool';
 
       $tab[72]['table']         = 'glpi_contracts_items';
@@ -690,7 +690,7 @@ class Contract extends CommonDBTM {
       }
       echo "</th></tr>";
       echo "<tr><th>".$LANG['financial'][26]."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".__('Entity')."</th>";
       echo "<th>".$LANG['financial'][79]."</th>";
       echo "<th>".$LANG['help'][35]."</th>";
       echo "<th>".$LANG['financial'][45]."</th>";
@@ -806,7 +806,7 @@ class Contract extends CommonDBTM {
          echo "<tr>";
       }
       echo "<th>".__('Type')."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".__('Entity')."</th>";
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th></tr>";
@@ -997,7 +997,7 @@ class Contract extends CommonDBTM {
       echo "</th></tr>";
 
       echo "<tr><th>".__('Name')."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".__('Entity')."</th>";
       echo "<th>".$LANG['financial'][4]."</th>";
       echo "<th>".$LANG['financial'][6]."</th>";
       echo "<th>".$LANG['financial'][26]."</th>";

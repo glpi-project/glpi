@@ -2328,7 +2328,7 @@ class OcsServer extends CommonDBTM {
          echo "<tr><th>" . __('Item') . "</th><th>" . __('Import date in GLPI') . "</th>";
          echo "<th>" . __('Existing in GLPI') . "</th><th>" . __('Existing in OCSNG') . "</th>";
          if (Session::isMultiEntitiesMode()) {
-            echo "<th>" . $LANG['entity'][0] . "</th>";
+            echo "<th>" . __('Entity') . "</th>";
          }
          if ($canedit) {
             echo "<th>&nbsp;</th>";

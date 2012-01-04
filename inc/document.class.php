@@ -651,7 +651,6 @@ class Document extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common']             = __('Characteristics');
@@ -706,7 +705,7 @@ class Document extends CommonDBTM {
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';
-      $tab[86]['name']           = $LANG['entity'][9];
+      $tab[86]['name']           = __('Child entities');
       $tab[86]['datatype']       = 'bool';
 
       $tab[19]['table']          = $this->getTable();
@@ -781,7 +780,7 @@ class Document extends CommonDBTM {
 
       echo "<th>".__('Type')."</th>";
       echo "<th>".__('Name')."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".__('Entity')."</th>";
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th>";
       echo "</tr>";

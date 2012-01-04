@@ -394,7 +394,7 @@ class RuleCollection extends CommonDBTM {
       echo "<th>".__('Active')."</th>";
 
       if ($display_entities) {
-         echo "<th>".$LANG['entity'][0]."</th>\n";
+         echo "<th>".__('Entity')."</th>\n";
       }
       if (!$display_entities) {
          echo "<th colspan='2'>&nbsp;</th>";

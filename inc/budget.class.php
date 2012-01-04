@@ -246,12 +246,12 @@ class Budget extends CommonDropdown{
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['name']          = __('Entity');
       $tab[80]['massiveaction'] = false;
 
       $tab[86]['table']     = $this->getTable();
       $tab[86]['field']     = 'is_recursive';
-      $tab[86]['name']      = $LANG['entity'][9];
+      $tab[86]['name']      = __('Child entities');
       $tab[86]['datatype']  = 'bool';
 
       $tab[90]['table']         = $this->getTable();
@@ -298,7 +298,7 @@ class Budget extends CommonDropdown{
       echo "</th></tr>";
 
       echo "<tr><th>".__('Type')."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".__('Entity')."</th>";
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th>";
@@ -493,7 +493,7 @@ class Budget extends CommonDropdown{
          $colspan = count($found_types)+2;
          echo "<div class='spaced'><table class='tab_cadre'>";
          echo "<tr><th colspan='$colspan'>".$LANG['financial'][108]."</th></tr>";
-         echo "<tr><th>".$LANG['entity'][0]."</th>";
+         echo "<tr><th>".__('Entity')."</th>";
          if (count($found_types)) {
             foreach ($found_types as $type => $typename) {
                echo "<th>$typename</th>";

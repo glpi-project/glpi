@@ -1855,8 +1855,8 @@ class CommonDBTM extends CommonGLPI {
       } else {
          if ($this->maybeRecursive()) {
             if (Session::isMultiEntitiesMode()) {
-               echo "<table class='tab_format'></tr><td>".$entiyname."</td><td class='right'>";
-               echo $LANG['entity'][9]."</td><td class='left'>";
+               echo "<table class='tab_format'></tr><td>".$entiyname."</td>".
+                    "<td class='right'>".__('Child entities')."</td><td>";
 
                if ($params['canedit']) {
                   if (!$this->can($ID,'recursive')) {
@@ -2646,11 +2646,10 @@ class CommonDBTM extends CommonGLPI {
     * @return an aray which contains field => label
    **/
    function getUnicityFieldsToDisplayInErrorMessage() {
-      global $LANG;
 
       return array('id'          => __('ID'),
                    'serial'      => __('Serial number'),
-                   'entities_id' => $LANG['entity'][0]);
+                   'entities_id' => __('Entity'));
    }
 
 

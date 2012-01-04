@@ -73,7 +73,7 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
          Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities'],
                                         'value'  => $_SESSION['glpiactive_entity']));
 
-         echo "&nbsp;".$LANG['entity'][9]."&nbsp;:&nbsp;";
+         _e('Child entities: ');
          Dropdown::showYesNo('is_recursive');
 
          $display = true;

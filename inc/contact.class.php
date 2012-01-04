@@ -289,12 +289,12 @@ class Contact extends CommonDBTM{
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['name']          = __('Entity');
       $tab[80]['massiveaction'] = false;
 
       $tab[86]['table']    = $this->getTable();
       $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['name']     = __('Child entities');
       $tab[86]['datatype'] = 'bool';
 
       return $tab;
@@ -352,7 +352,7 @@ class Contact extends CommonDBTM{
       echo "</th></tr>";
 
       echo "<tr><th>".$LANG['financial'][26]."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".__('Entity')."</th>";
       echo "<th>".$LANG['financial'][79]."</th>";
       echo "<th>".$LANG['help'][35]."</th>";
       echo "<th>".$LANG['financial'][30]."</th>";

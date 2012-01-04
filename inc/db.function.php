@@ -394,13 +394,13 @@ function getAllDatasFromTable($table, $condition='', $usecache=false, $order='')
  * @see getTreeValueCompleteName
 **/
 function getTreeLeafValueName($table, $ID, $withcomment=false) {
-   global $DB, $LANG;
+   global $DB;
 
    $name    = "";
    $comment = "";
 
    if ($ID==0 && $table=="glpi_entities") {
-      $name = $LANG['entity'][2];
+      $name = __('Root entity');
 
    } else {
       $query = "SELECT *
@@ -435,13 +435,13 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
  * @see getTreeLeafValueName
 **/
 function getTreeValueCompleteName($table, $ID, $withcomment=false) {
-   global $DB, $LANG;
+   global $DB;
 
    $name    = "";
    $comment = "";
 
    if ($ID==0 && $table=="glpi_entities") {
-      $name = $LANG['entity'][2];
+      $name = __('Root entity');
 
    } else {
       $query = "SELECT *

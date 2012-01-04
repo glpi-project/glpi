@@ -65,12 +65,11 @@ if (isset($_POST['is_private'])) {
          echo "<input type='hidden' name='is_private' value='0'>\n";
          echo __('Public')."&nbsp;";
          Dropdown::show('Entity', array('value' => $val));
-         echo "&nbsp;+&nbsp;".$LANG['entity'][9]."&nbsp;:&nbsp;";
+         _e(' + Child entities: ');
          Dropdown::showYesNo('is_recursive', $_POST["is_recursive"]);
          echo " - ";
          echo "<a onClick='setPrivate".$_POST['rand']."()'>".__('Set personal')."</a>";
          break;
    }
 }
-
 ?>

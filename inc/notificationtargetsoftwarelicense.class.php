@@ -79,7 +79,7 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
                     'license.item'           => $LANG['help'][31],
                     'license.name'           => __('Name'),
                     'license.serial'         => __('Serial number'),
-                    'license.entity'         => $LANG['entity'][0],
+                    'license.entity'         => __('Entity'),
                     'license.url'            => __('URL'),
                     'license.action'         => _n('Event', 'Events', 1));
 

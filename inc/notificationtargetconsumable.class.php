@@ -43,13 +43,13 @@ class NotificationTargetConsumable extends NotificationTarget {
     * Get all data needed for template processing
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $events = $this->getAllEvents();
 
       $this->datas['##consumable.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                              $options['entities_id']);
-      $this->datas['##lang.consumable.entity##'] = $LANG['entity'][0];
+      $this->datas['##lang.consumable.entity##'] = __('Entity');
       $this->datas['##consumable.action##']      = $events[$event];
 
       foreach ($options['consumables'] as $id => $consumable) {
@@ -78,7 +78,7 @@ class NotificationTargetConsumable extends NotificationTarget {
                     'consumable.reference' => __('Reference'),
                     'consumable.item'      => $LANG['financial'][104],
                     'consumable.remaining' => __('Remaining'),
-                    'consumable.entity'    => $LANG['entity'][0]);
+                    'consumable.entity'    => __('Entity'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

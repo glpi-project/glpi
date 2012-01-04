@@ -147,27 +147,25 @@ class RuleOcs extends Rule {
 
 
    function getActions() {
-      global $LANG;
 
       $actions = array();
-      $actions['entities_id']['name']  = $LANG['entity'][0];
-      $actions['entities_id']['type']  = 'dropdown';
-      $actions['entities_id']['table'] = 'glpi_entities';
+      $actions['entities_id']['name']                    = __('Entity');
+      $actions['entities_id']['type']                    = 'dropdown';
+      $actions['entities_id']['table']                   = 'glpi_entities';
 
-      $actions['locations_id']['name']  = __('Location');
-      $actions['locations_id']['type']  = 'dropdown';
-      $actions['locations_id']['table'] = 'glpi_locations';
+      $actions['locations_id']['name']                   = __('Location');
+      $actions['locations_id']['type']                   = 'dropdown';
+      $actions['locations_id']['table']                  = 'glpi_locations';
 
-      $actions['_affect_entity_by_tag']['name'] = __('Entity from TAG');
-      $actions['_affect_entity_by_tag']['type'] = 'text';
+      $actions['_affect_entity_by_tag']['name']          = __('Entity from TAG');
+      $actions['_affect_entity_by_tag']['type']          = 'text';
       $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
 
-      $actions['_ignore_ocs_import']['name'] = __('To be unaware of import');
-      $actions['_ignore_ocs_import']['type'] = 'yesonly';
+      $actions['_ignore_ocs_import']['name']             = __('To be unaware of import');
+      $actions['_ignore_ocs_import']['type']             = 'yesonly';
 
       return $actions;
    }
 
 }
-
 ?>

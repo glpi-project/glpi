@@ -185,59 +185,58 @@ class Notification extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']             = __('Characteristics');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false;
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'event';
-      $tab[2]['name']          = _n('Event', 'Events', 1);
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'event';
+      $tab[2]['name']            = _n('Event', 'Events', 1);
+      $tab[2]['massiveaction']   = false;
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'mode';
-      $tab[3]['name']          = __('Notification method');
-      $tab[3]['massiveaction'] = false;
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'mode';
+      $tab[3]['name']            = __('Notification method');
+      $tab[3]['massiveaction']   = false;
 
-      $tab[4]['table']         = 'glpi_notificationtemplates';
-      $tab[4]['field']         = 'name';
-      $tab[4]['name']          = _n('Notification template', 'Notification templates', 2);
-      $tab[4]['datatype']      = 'itemlink';
-      $tab[4]['itemlink_type'] = 'NotificationTemplate';
+      $tab[4]['table']           = 'glpi_notificationtemplates';
+      $tab[4]['field']           = 'name';
+      $tab[4]['name']            = _n('Notification template', 'Notification templates', 2);
+      $tab[4]['datatype']        = 'itemlink';
+      $tab[4]['itemlink_type']   = 'NotificationTemplate';
 
-      $tab[5]['table']         = $this->getTable();
-      $tab[5]['field']         = 'itemtype';
-      $tab[5]['name']          = __('Type');
-      $tab[5]['datatype']      = 'itemtypename';
-      $tab[5]['massiveaction'] = false;
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'itemtype';
+      $tab[5]['name']            = __('Type');
+      $tab[5]['datatype']        = 'itemtypename';
+      $tab[5]['massiveaction']   = false;
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'is_active';
-      $tab[6]['name']      = __('Active');
-      $tab[6]['datatype']  = 'bool';
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'is_active';
+      $tab[6]['name']            = __('Active');
+      $tab[6]['datatype']        = 'bool';
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = __('Comments');
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
-      $tab[80]['massiveaction'] = false;
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['massiveaction']  = false;
 
-      $tab[86]['table']     = $this->getTable();
-      $tab[86]['field']     = 'is_recursive';
-      $tab[86]['name']      = $LANG['entity'][9];
-      $tab[86]['datatype']  = 'bool';
+      $tab[86]['table']          = $this->getTable();
+      $tab[86]['field']          = 'is_recursive';
+      $tab[86]['name']           = __('Child entities');
+      $tab[86]['datatype']       = 'bool';
 
       return $tab;
    }

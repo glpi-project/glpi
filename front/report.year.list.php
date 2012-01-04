@@ -129,7 +129,7 @@ if (isset($query) && count($query)) {
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".__('Deleted')."</th>";
          if ($display_entity) {
-            echo "<th>".$LANG['entity'][0]."</th>";
+            echo "<th>".__('Entity')."</th>";
          }
          echo "<th>".__('Location')."</th>";
          echo "<th>".$LANG['financial'][14]."</th>";
@@ -149,7 +149,7 @@ if (isset($query) && count($query)) {
 
             if ($display_entity) {
                if ($data['entID'] == 0) {
-                  echo "<td>".$LANG['entity'][2]."</td>";
+                  echo "<td>".__('Root entity')."</td>";
                } else {
                   echo "<td>".$data['entname']."</td>";
                }

@@ -1043,7 +1043,7 @@ class Reminder extends CommonDBTM {
                   echo "<input type='checkbox' name='entity[".$data["id"]."]' value='1' $sel>";
                   echo "</td>";
                }
-               echo "<td>".$LANG['entity'][0]."</td>";
+               echo "<td>".__('Entity')."</td>";
                echo "<td>";
                $names = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
                echo $names["name"]." ";

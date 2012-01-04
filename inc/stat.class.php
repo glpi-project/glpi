@@ -1373,7 +1373,7 @@ class Stat {
                if ($view_entities) {
                   $ent = $item->getEntityID();
                   if ($ent==0) {
-                     $ent = $LANG['entity'][2];
+                     $ent = __('Root entity');
                   } else {
                      $ent = $entities[$ent]['completename'];
                   }
