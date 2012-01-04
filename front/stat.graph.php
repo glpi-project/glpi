@@ -130,7 +130,7 @@ switch($_GET["type"]) {
       // Only 2 items
       $next  = ($_GET["id"]%2)+1;
       $prev  = ($_GET["id"]%2)+1;
-      $title = sprintf(__('Type: %s', Ticket::getTicketTypeName($_GET["id"])));
+      $title = sprintf(__('Type: %s'), Ticket::getTicketTypeName($_GET["id"]));
       break;
 
    case 'group_tree' :
