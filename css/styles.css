@@ -398,20 +398,6 @@ input.save {
    background-color:#eeeeee;
 }
 
-.button {
-   border: 1px solid #888888;
-   background-color:#eeeeee;
-   cursor:pointer;
-   background:  url("../pics/fond_form.png") repeat-x; 
-}
-
-.button:hover{
-   border: 1px inset #888888;
-   background-color:#ffffff;
-   background:  url("../pics/fond_form_on.png") repeat-x; 
-}
-
-
 
 /* ################--------------- Table  ---------------#################### */
 table {

@@ -396,8 +396,8 @@ if ($offsettable>=0 && $complete_utf8) {
    }
 
 } else {
-   echo "<p class='submit'><a href='../index.php'>
-         <span class='button'>".$LANG['install'][64]."</span></a></p>";
+   echo "<p><a class='vsubmit' href='../index.php'>
+         ".$LANG['install'][64]."</a></p>";
    echo "<div class='bas'></div></div></div></body></html>";
 }
 

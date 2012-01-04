@@ -194,8 +194,8 @@ function showContentUpdateForm() {
    echo "<div class='center'>";
    echo "<h3>".__('Update successful, your database is up to date')."</h3>";
    echo "<p>".__('You must now proceed to updating your database content')."</p></div>";
-   echo "<p class='submit'>";
-   echo "<a href='update_content.php'><span class='button'>".$LANG['install'][25]."</span></a>";
+   echo "<p>";
+   echo "<a class='vsubmit' href='update_content.php'>".$LANG['install'][25]."</a>";
 }
 
 
@@ -835,8 +835,8 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
    if (empty($from_install) && !isset($_POST["from_update"])) {
       echo "<div class='center'>";
       echo "<h3><span class='red'>".__('Impossible to accomplish an update by this way!')."</span>";
-      echo "<p class='submit'>";
-      echo "<a href='../index.php'><span class='button'>".__('Go back to GLPI')."</span></a></p>";
+      echo "<p>";
+      echo "<a class='vsubmit' href='../index.php'>".__('Go back to GLPI')."</a></p>";
       echo "</div>";
 
    } else {
@@ -900,8 +900,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
                   break;
 
                default :
-                  echo "<a href='../index.php'><span class='button'>".$LANG['install'][64]."</span>".
-                       "</a>";
+                  echo "<a class='vsubmit' href='../index.php'>".$LANG['install'][64]."</a>";
             }
          }
          echo "</div>";

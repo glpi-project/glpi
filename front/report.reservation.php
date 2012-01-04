@@ -53,7 +53,7 @@ User::dropdown(array('name'   => 'id',
                      'right'  => 'reservation_helpdesk'));
 
 echo "</td>";
-echo "<td rowspan='2' class='center'><input type='submit' class='button' name='submit' value='".
+echo "<td rowspan='2' class='center'><input type='submit' class='submit' name='submit' value='".
       __s('Update')."'></td></tr>";
 echo "</table></form>";
 
