@@ -40,13 +40,8 @@ if (!defined('GLPI_ROOT')) {
 class SolutionType extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['dropdown'][5];
-      }
-      return $LANG['job'][48];
+      return _n('Solution type', 'Solution types', $nb);
    }
-}
 
+}
 ?>

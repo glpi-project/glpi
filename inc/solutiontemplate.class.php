@@ -44,12 +44,7 @@ class SolutionTemplate extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['dropdown'][7];
-      }
-      return $LANG['jobresolution'][6];
+      return _n('Solution template', 'Solution templates', $nb);
    }
 
 

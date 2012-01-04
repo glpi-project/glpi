@@ -584,9 +584,6 @@ $LANG['document'][46]="Failed to send the file (probably too large)";
 $LANG['document'][48]="A document with that filename has already been attached to (another) record";
 $LANG['document'][49]="File is altered (bad checksum)";
 
-/// TODO Before is ok for migration to gettext
-///end gettext for yllen
-
 
 $LANG['dropdown'][1]="Locations";
 $LANG['dropdown'][2]="Manufacturers";
@@ -622,6 +619,9 @@ $LANG['dropdown'][31]="Update Sources";
 $LANG['dropdown'][32]="Network Interfaces";
 $LANG['dropdown'][33]="Firmwares";
 $LANG['dropdown'][34]="Domains";
+
+/// TODO Before is ok for migration to gettext
+
 
 $LANG['entity'][0]="Entity";
 $LANG['entity'][2]="Root entity";

@@ -41,12 +41,7 @@ class RequestType extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb>1) {
-         return $LANG['dropdown'][6];
-      }
-      return $LANG['job'][44];
+      return _n('Request source', 'Request sources', $nb);
    }
 
 
