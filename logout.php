@@ -43,7 +43,7 @@ if (!isset($_SESSION["noAUTO"])
     && isset($_SESSION["glpiauthtype"])
     && $_SESSION["glpiauthtype"]==Auth::CAS) {
 
-   include (GLPI_ROOT . "/lib/phpcas/CAS.php");
+   include (GLPI_PHPCAS);
    phpCAS::client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]),
                   $CFG_GLPI["cas_uri"], false);
    phpCAS::setServerLogoutURL(strval($CFG_GLPI["cas_logout"]));
