@@ -2464,7 +2464,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                                                            $rand_type))));
 
          echo "</td><td colspan='2'>";
-         echo "<a title\"".$LANG['job'][23]."\"
+         echo "<a class='vsubmit' title\"".$LANG['job'][23]."\"
                 href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?itemtype=".$this->getType().
                 "&amp;items_id=".$this->getField('id')."'>".$LANG['job'][23]."</a>";
          echo "</td></tr>";

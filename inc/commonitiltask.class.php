@@ -928,7 +928,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "</script>\n";
          if ($item->fields["status"] != 'solved' && $item->fields["status"] != 'closed') {
             echo "<div class='center'>".
-                 "<a href='javascript:viewAddFollowup".$item->fields['id']."$rand();'>";
+                 "<a class='vsubmit' href='javascript:viewAddFollowup".$item->fields['id']."$rand();'>";
             echo $LANG['job'][30]."</a></div></p><br>\n";
          }
       }
