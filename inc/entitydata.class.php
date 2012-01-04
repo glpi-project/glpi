@@ -894,7 +894,7 @@ class EntityData extends CommonDBChild {
          echo "<tr><td colspan='4' class='green center'>";
 
          if ($inquestrate == 0) {
-            echo $LANG['crontask'][31];
+            echo __('Disabled');
          } else {
             echo $typeinquest[$inquestconfig].'<br>';
             $inqconf = self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],

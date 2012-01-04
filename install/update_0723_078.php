@@ -3211,7 +3211,7 @@ function update0723to078($output='HTML') {
    $ADDTODISPLAYPREF['Budget']=array(2,3,4,19);
 
 
-   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s'), $LANG['crontask'][0]));
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s'), __('Automatic action')));
    if (!TableExists('glpi_crontasks')) {
       $query = "CREATE TABLE `glpi_crontasks` (
                  `id` int(11) NOT NULL AUTO_INCREMENT,

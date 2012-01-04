@@ -434,9 +434,6 @@ $LANG['consumables'][38]="Alert threshold";
 $LANG['contract'][0]="Contract expired since the";
 $LANG['contract'][1]="Contract with notice since the";
 
-/// TODO Before is ok for migration to gettext
-
-
 $LANG['crontask'][0]="Automatic actions";
 $LANG['crontask'][2]="Send alarms on cartridges";
 $LANG['crontask'][3]="Send alarms on consumables";
@@ -487,8 +484,6 @@ $LANG['crontask'][60]="System lock";
 $LANG['crontask'][61]="Disabled plugin";
 $LANG['crontask'][62]="Elements";
 
-/// TODO Before is ok for migration to gettext
-/// begin gettext for yllen
 $LANG['devices'][0]="Add a new component";
 $LANG['devices'][1]="Hard Drive";
 $LANG['devices'][2]="Graphics Card";
@@ -588,6 +583,7 @@ $LANG['document'][45]="Unauthorized access to this file";
 $LANG['document'][46]="Failed to send the file (probably too large)";
 $LANG['document'][48]="A document with that filename has already been attached to (another) record";
 $LANG['document'][49]="File is altered (bad checksum)";
+
 /// TODO Before is ok for migration to gettext
 ///end gettext for yllen
 

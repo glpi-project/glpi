@@ -67,7 +67,7 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
       echo "<tr class='tab_bg_1'><td colspan='1'>".$LANG['entity'][21]."&nbsp;:&nbsp;</td>";
       echo "<td colspan='1'>";
       Dropdown::showInteger('inquest_rate', $inquest_rate, 10, 100, 10,
-                            array(0 => $LANG['crontask'][31]));
+                            array(0 => __('Disabled')));
       echo "&nbsp;%</td></tr>";
 
       if ($max_closedate != '') {

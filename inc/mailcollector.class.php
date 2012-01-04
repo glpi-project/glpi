@@ -1157,15 +1157,15 @@ class MailCollector  extends CommonDBTM {
          $filename = $this->decodeMimeString($filename);
 
          if ($structure->bytes > $maxsize) {
-            //TRANS: %1$s is the filename and %2$s its size 
-            $this->addtobody .= "<br>".sprintf(__('Too large attached file: %1$s (%2$s)'), 
+            //TRANS: %1$s is the filename and %2$s its size
+            $this->addtobody .= "<br>".sprintf(__('Too large attached file: %1$s (%2$s)'),
                                              $filename, Toolbox::getSize($structure->bytes));
             return false;
          }
 
          if (!Document::isValidDoc($filename)) {
             //TRANS: %1$s is the filename and %2$s its mime type
-            $this->addtobody .= "<br>".sprintf(__('Invalid attached file: %1$s (%2$s)'), 
+            $this->addtobody .= "<br>".sprintf(__('Invalid attached file: %1$s (%2$s)'),
                                              $filename, $this->get_mime_type($structure));
             return false;
          }
@@ -1276,10 +1276,9 @@ class MailCollector  extends CommonDBTM {
 
 
    static function cronInfo($name) {
-      global $LANG;
 
-      return array('description' => $LANG['crontask'][9],
-                   'parameter'   => $LANG['crontask'][39]);
+      return array('description' => __('Retrieve email (Mail receivers)'),
+                   'parameter'   => __('Number of email to retrieve'));
    }
 
 

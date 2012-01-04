@@ -41,25 +41,26 @@ Session::checkRight("config", "w");
 if (isset($_GET['execute'])) {
    if (is_numeric($_GET['execute'])) {
       // Execute button from list.
-      $name = CronTask::launch(CronTask::MODE_INTERNAL,intval($_GET['execute']));
+      $name = CronTask::launch(CronTask::MODE_INTERNAL, intval($_GET['execute']));
    } else {
       // Execute button from Task form (force)
-      $name = CronTask::launch(-CronTask::MODE_INTERNAL,1,$_GET['execute']);
+      $name = CronTask::launch(-CronTask::MODE_INTERNAL, 1, $_GET['execute']);
    }
    if ($name) {
-      Session::addMessageAfterRedirect($LANG['crontask'][40]." : ".$name);
+      //TRANS: %s is a task name
+      Session::addMessageAfterRedirect(sprintf(__('Task run: %s'), $name));
    }
    Html::back();
 }
-Html::header($LANG['crontask'][0],$_SERVER['PHP_SELF'],"config","crontask");
+Html::header(Crontask::getTypeName(2), $_SERVER['PHP_SELF'], 'config', 'crontask');
 
 $crontask = new CronTask();
 if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {
-   Html::displayTitle(GLPI_ROOT.'/pics/warning.png', $LANG['crontask'][41],
-                      $LANG['crontask'][41]."&nbsp;: ".$crontask->fields['name'],
+   Html::displayTitle(GLPI_ROOT.'/pics/warning.png', __('Next run'),
+                      sprintf(__('Next task to run: %s'), $crontask->fields['name']),
                       array($_SERVER['PHP_SELF']."?execute=1" => __('Execute')));
 } else {
-   Html::displayTitle(GLPI_ROOT.'/pics/ok.png',$LANG['crontask'][43],$LANG['crontask'][43]);
+   Html::displayTitle(GLPI_ROOT.'/pics/ok.png', __('No action pending'), __('No action pending'));
 }
 
 Search::show('CronTask');
