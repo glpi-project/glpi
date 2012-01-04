@@ -109,10 +109,14 @@ if ($pot && $po) {
 
       if (preg_match('/^msgstr[\[]*([0-9]*)[\]]* "(.*)"$/',$content,$reg)) {
          if (strlen($reg[1]) == 0) { //Singular
-            $translation = search_in_dict($current_string);
-            $content     = "msgstr \"$translation\"\n";
+            if ($_GET['lang']=='en_GB') {
+               $content     = "msgstr \"$current_string\"\n";
+            } else {
+               $translation = search_in_dict($current_string);
+               $content     = "msgstr \"$translation\"\n";
 //              echo '+'.$current_string."+\n";
-//              echo "$translation\n";
+//                echo "$translation\n";
+            }
          } else {
             
             switch ($reg[1]) {
@@ -130,12 +134,21 @@ if ($pot && $po) {
             }
             
             if ($reg[1] == "1") {
-               if (empty($sing_trans) || !empty($plural_trans)) {
-                  $sing_trans = '';
-                  $plural_trans = '';
+               if ($_GET['lang']=='en_GB') {
+                  $content = "msgstr[0] \"$current_string\"\n";
+                  $content .= "msgstr[1] \"$current_string_plural\"\n";
+               } else {
+//                   echo $current_string.'->'.$sing_trans.' '.$current_string_plural.'->'.$plural_trans."\n";
+                  if (!strlen($sing_trans) || !strlen($plural_trans)) {
+//                      echo "clean\n";
+                     $sing_trans = '';
+                     $plural_trans = '';
+                  }
+                  $content = "msgstr[0] \"$sing_trans\"\n";
+                  $content .= "msgstr[1] \"$plural_trans\"\n";
                }
-               $content = "msgstr[0] \"$sing_trans\"\n";
-               $content = "msgstr[1] \"$plural_trans\"\n";
+            } else {
+                  $content='';
             }
          }
       }
@@ -160,14 +173,20 @@ fclose($po);
 function search_in_dict($string) {
    global $REFLANG, $LANG;
 
-   $ponctmatch = "[\.: \(\)%1\$s]*";
+   $ponctmatch = "([\.: \(\)]*)";
+   $varmatch = "(%s)*";
 
-   if (preg_match("/($ponctmatch)(.*)($ponctmatch)$/U",$string,$reg)) {
+   if (preg_match("/$varmatch$ponctmatch(.*)$ponctmatch$varmatch$/U",$string,$reg)) {
+//       print_r($reg);
       $left   = $reg[1];
-      $string = $reg[2];
-      $right  = $reg[3];
+      $left   .= $reg[2];
+      $string = $reg[3];
+      $right  = $reg[4];
+      if (isset($reg[5])) {
+         $right  .= $reg[5];
+      }
    }
-//     echo $left.' <- '.$string.' -> '.$right."\n";
+//    echo $left.' <- '.$string.' -> '.$right."\n";
    foreach ($REFLANG as $mod => $data) {
       foreach ($data as $key => $val) {
          // Search same case without punc
