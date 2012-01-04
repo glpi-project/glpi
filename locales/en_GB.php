@@ -409,9 +409,6 @@ $LANG['connect'][4]="No direct connection";
 $LANG['connect'][15]="Automatic update of the following items";
 $LANG['connect'][16]="Warning!! The following two items of hardware do not match";
 
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['consumables'][0]="Consumable";
 $LANG['consumables'][1]="In stock";
 $LANG['consumables'][2]="Reference";
@@ -433,6 +430,9 @@ $LANG['consumables'][35]="Used consumables";
 $LANG['consumables'][36]="Stock location";
 $LANG['consumables'][37]="Back to stock";
 $LANG['consumables'][38]="Alert threshold";
+
+/// TODO Before is ok for migration to gettext
+
 
 $LANG['contract'][0]="Contract expired since the";
 $LANG['contract'][1]="Contract with notice since the";

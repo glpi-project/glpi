@@ -220,7 +220,6 @@ class Consumable extends CommonDBTM {
    static function getCount($tID, $alarm_threshold, $nohtml=0) {
       global $LANG;
 
-      $out = "";
       // Get total
       $total = self::getTotalNumber($tID);
 
@@ -232,41 +231,18 @@ class Consumable extends CommonDBTM {
          if ($unused<=$alarm_threshold) {
             $highlight = "class='tab_bg_1_2'";
          }
-         if (!$nohtml) {
-            $out .= "<div $highlight>".sprintf(__('Total = %s'), $total);
-            $out .= "<span class='b very_small_space'>";
-            if ($unused>1) {
-               $out .= $LANG['consumables'][14];
-            } else {
-               $out .= $LANG['consumables'][20];
-            }
-            $out .= "&nbsp;:&nbsp;$unused</span>";
-            $out .= "<span class='very_small_space'>";
-            if ($old>1) {
-               $out .= $LANG['consumables'][22];
-            } else {
-               $out .= $LANG['consumables'][21];
-            }
-            $out .= "&nbsp;:&nbsp;$old</span></div>";
+         //TRANS: %1$d is total number, %2$d is unused number, %3$d is old number
+         $tmptxt = sprintf(__('Total: %1$d, New: %2$d, Used: %3$d'), $total, $unused, $old);
+         if ($nohtml) {
+            $out = $tmptxt;
          } else {
-            if ($unused>1) {
-               $out .= $LANG['consumables'][14];
-            } else {
-               $out .= $LANG['consumables'][20];
-            }
-            $out .= " : $unused   ";
-            if ($old>1) {
-               $out .= $LANG['consumables'][22];
-            } else {
-               $out .= $LANG['consumables'][21];
-            }
-            $out .= " : $old";
+            $out = "<div $highlight>".$tmptxt."</div";
          }
       } else {
          if (!$nohtml) {
-            $out .= "<div class='tab_bg_1_2'><i>".$LANG['consumables'][9]."</i></div>";
+            $out = __('No consumable');
          } else {
-           $out .= $LANG['consumables'][9];
+            $out = "<div class='tab_bg_1_2'><i>".__('No consumable')."</i></div>";
          }
       }
       return $out;
@@ -320,13 +296,12 @@ class Consumable extends CommonDBTM {
     *
     **/
    static function getStatus($cID) {
-      global $LANG;
 
       if (self::isNew($cID)) {
-         return $LANG['consumables'][20];
+         return __('New');
 
       } else if (self::isOld($cID)) {
-         return $LANG['consumables'][22];
+         return __('Used');
       }
    }
 
@@ -394,13 +369,13 @@ class Consumable extends CommonDBTM {
             echo self::getCount($tID, -1);
             echo "</th></tr>";
          } else { // Old
-            echo "<tr><th colspan='8'>".$LANG['consumables'][35]."</th></tr>";
+            echo "<tr><th colspan='8'>".__('Used consumables')."</th></tr>";
          }
          $i = 0;
-         echo "<tr><th>".__('ID')."</th><th>".$LANG['consumables'][23]."</th>";
-         echo "<th>".__('Add date')."</th><th>".$LANG['consumables'][26]."</th>";
+         echo "<tr><th>".__('ID')."</th><th>".__('State')."</th>";
+         echo "<th>".__('Add date')."</th><th>".__('Use date')."</th>";
          if ($show_old) {
-            echo "<th>".$LANG['consumables'][31]."</th>";
+            echo "<th>".__('Give to')."</th>";
          }
          echo "<th width='200px'>".$LANG['financial'][3]."</th>";
 
@@ -412,8 +387,7 @@ class Consumable extends CommonDBTM {
 
 /*            User::dropdown(array('value'  => $consitem->fields["entities_id"],
                                  'right'  => 'all'));*/
-            echo "&nbsp;<input type='submit' class='submit' name='give' value='".
-                           $LANG['consumables'][32]."'>";
+            echo "&nbsp;<input type='submit' class='submit' name='give' value='".__s('Give')."'>";
             echo "</th>";
          } else {
             echo "<th colspan='".($canedit?'2':'1')."'>&nbsp;</th>";
@@ -469,7 +443,7 @@ class Consumable extends CommonDBTM {
                echo "<td class='center'>";
                echo "<a href='".
                       $CFG_GLPI["root_doc"]."/front/consumable.form.php?restore=restore&amp;id=".
-                      $data["id"]."&amp;tID=$tID'>".$LANG['consumables'][37]."</a>";
+                      $data["id"]."&amp;tID=$tID'>".__('Back to stock')."</a>";
                echo "</td>";
             }
             echo "<td class='center'>";
@@ -552,7 +526,7 @@ class Consumable extends CommonDBTM {
          echo "<div class='center'><table class='tab_cadrehov'><tr>";
 
          // Type
-         echo "<th>".$LANG['consumables'][31]."</th>";
+         echo "<th>".__('Give to')."</th>";
 
          foreach ($types as $key => $type) {
             echo "<th>$type</th>";
@@ -562,7 +536,7 @@ class Consumable extends CommonDBTM {
          echo "</tr>";
 
          // new
-         echo "<tr class='tab_bg_2'><td class='b'>".$LANG['consumables'][1]."</td>";
+         echo "<tr class='tab_bg_2'><td class='b'>".__('In stock')."</td>";
          $tot = 0;
          foreach ($types as $id_type => $type) {
             if (!isset($new[$id_type])) {
@@ -606,7 +580,7 @@ class Consumable extends CommonDBTM {
          echo "</table></div>";
 
       } else {
-         echo "<div class='center b'>".$LANG['consumables'][7]."</div>";
+         echo "<div class='center b'>".__('No consumable found')."</div>";
       }
    }
 
