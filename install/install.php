@@ -433,8 +433,8 @@ function step7() {
    echo "<li>".$LANG['install'][60]."</li>";
    echo "<li>".$LANG['install'][61]."</li></ul></p>";
    echo "<p>".$LANG['install'][62]."</p>";
-   echo "<p class='submit'> <a href='../index.php'><span class='button'>".$LANG['install'][64];
-   echo "</span></a></p>";
+   echo "<p><a class='vsubmit' href='../index.php'>".$LANG['install'][64];
+   echo "</a></p>";
 }
 
 

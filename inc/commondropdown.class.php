@@ -405,9 +405,9 @@ abstract class CommonDropdown extends CommonDBTM {
          echo "<table class='tab_cadre'><tr>";
          echo "<td><input type='hidden' name='id' value='$ID'>";
          echo "<input type='hidden' name='forcedelete' value='1'>";
-         echo "<input class='button' type='submit' name='delete' value=\"".__s('Confirm')."\">";
+         echo "<input class='submit' type='submit' name='delete' value=\"".__s('Confirm')."\">";
          echo "</td>";
-         echo "<td><input class='button' type='submit' name='annuler' value=\"".
+         echo "<td><input class='submit' type='submit' name='annuler' value=\"".
                     __s('Cancel')."\">";
          echo "</td></tr></table>\n";
          echo "</form>";
@@ -435,9 +435,9 @@ abstract class CommonDropdown extends CommonDBTM {
       }
       echo "<input type='hidden' name='id' value='$ID'/>";
       echo "</td><td>";
-      echo "<input class='button' type='submit' name='replace' value=\"".__s('Replace')."\">";
+      echo "<input class='submit' type='submit' name='replace' value=\"".__s('Replace')."\">";
       echo "</td><td>";
-      echo "<input class='button' type='submit' name='annuler' value=\"".__s('Cancel')."\">";
+      echo "<input class='submit' type='submit' name='annuler' value=\"".__s('Cancel')."\">";
       echo "</td></tr></table>\n";
       echo "</form>";
       echo "</div>";

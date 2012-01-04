@@ -230,7 +230,7 @@ class Planning {
       echo "</select></td>\n";
 
       echo "<td rowspan='2' class='center'>";
-      echo "<input type='submit' class='button' name='submit' value=\"".__s('Update')."\">";
+      echo "<input type='submit' class='submit' name='submit' value=\"".__s('Update')."\">";
       echo "</td>\n";
 
       echo "<td>";
@@ -308,7 +308,7 @@ class Planning {
 
       echo "<td rowspan='2' class='center'>";
       echo "<input type='hidden' name='users_id' value=\"$who\">";
-      echo "<input type='submit' class='button' name='checkavailability' value=\"".
+      echo "<input type='submit' class='submit' name='checkavailability' value=\"".
              __s('Update') ."\">";
       echo "</td>\n";
 
