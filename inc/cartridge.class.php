@@ -404,8 +404,8 @@ class Cartridge extends CommonDBTM {
             echo "<th colspan='2'>&nbsp;</th></tr>";
          }
          $i = 0;
-         echo "<tr><th>".__('ID')."</th><th>".$LANG['consumables'][23]."</th>";
-         echo "<th>".__('Add date')."</th><th>".$LANG['consumables'][26]."</th>";
+         echo "<tr><th>".__('ID')."</th><th>".__('State')."</th>";
+         echo "<th>".__('Add date')."</th><th>".__('Use date')."</th>";
          echo "<th>".__('Used on')."</th><th>".__('End date')."</th>";
 
          if ($show_old) {
@@ -513,7 +513,7 @@ class Cartridge extends CommonDBTM {
             echo "<td class='center'>";
             if (!is_null($date_use) && $canedit) {
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?restore=restore&amp;id=".
-                     $data["id"]."&amp;tID=$tID'>".$LANG['consumables'][37]."</a>";
+                     $data["id"]."&amp;tID=$tID'>".__('Back to stock')."</a>";
             } else {
                 echo "&nbsp;";
             }
@@ -624,7 +624,7 @@ class Cartridge extends CommonDBTM {
       }
       echo "<tr><th>".__('ID')."</th><th>"._n('Cartridge model','Cartridge models',1)."</th>";
       echo "<th>".__('Add date')."</th>";
-      echo "<th>".$LANG['consumables'][26]."</th>";
+      echo "<th>".__('Use date')."</th>";
       if ($old!=0) {
          echo "<th>".__('End date')."</th><th>".__('Printer counter')."</th>";
       }

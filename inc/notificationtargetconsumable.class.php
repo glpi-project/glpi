@@ -75,7 +75,7 @@ class NotificationTargetConsumable extends NotificationTarget {
       global $LANG;
 
       $tags = array('consumable.action'    => _n('Event', 'Events', 1),
-                    'consumable.reference' => $LANG['consumables'][2],
+                    'consumable.reference' => __('Reference'),
                     'consumable.item'      => $LANG['financial'][104],
                     'consumable.remaining' => __('Remaining'),
                     'consumable.entity'    => $LANG['entity'][0]);
