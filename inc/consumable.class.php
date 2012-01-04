@@ -218,7 +218,6 @@ class Consumable extends CommonDBTM {
     *
     **/
    static function getCount($tID, $alarm_threshold, $nohtml=0) {
-      global $LANG;
 
       // Get total
       $total = self::getTotalNumber($tID);
@@ -465,7 +464,7 @@ class Consumable extends CommonDBTM {
     *
     **/
    static function showSummary() {
-      global $DB, $LANG;
+      global $DB;
 
       if (!Session::haveRight("consumable","r")) {
          return false;
@@ -621,5 +620,4 @@ class Consumable extends CommonDBTM {
    }
 
 }
-
 ?>

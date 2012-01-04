@@ -584,7 +584,7 @@ class Cartridge extends CommonDBTM {
     *@return nothing (display)
     **/
    static function showInstalled(Printer $printer, $old=0) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $instID = $printer->getField('id');
       if (!Session::haveRight("cartridge","r")) {

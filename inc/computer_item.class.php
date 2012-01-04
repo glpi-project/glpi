@@ -117,7 +117,7 @@ class Computer_Item extends CommonDBRelation{
    *
    **/
    function prepareInputForAdd($input) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       switch ($input['itemtype']) {
          case 'Monitor' :
@@ -361,7 +361,7 @@ class Computer_Item extends CommonDBRelation{
    * @return Nothing (call to classes members)
    **/
    static function showForComputer(Computer $comp, $withtemplate='') {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $target = $comp->getFormURL();
       $ID = $comp->fields['id'];
@@ -508,7 +508,7 @@ class Computer_Item extends CommonDBRelation{
    **/
    static function showForItem(CommonDBTM $item, $withtemplate='') {
       // Prints a direct connection to a computer
-      global $DB, $LANG;
+      global $DB;
 
       $comp = new Computer();
       $target = $comp->getFormURL();
@@ -710,7 +710,8 @@ class Computer_Item extends CommonDBRelation{
                    || Session::haveRight('peripheral', 'r')
                    || Session::haveRight('monitor', 'r')) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(_n('Connection','Connections',2), self::countForComputer($item));
+                     return self::createTabEntry(_n('Connection','Connections',2),
+                                                 self::countForComputer($item));
                   }
                   return _n('Connection','Connections',2);
                }
@@ -737,5 +738,4 @@ class Computer_Item extends CommonDBRelation{
       }
    }
 }
-
 ?>
