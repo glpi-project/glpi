@@ -809,7 +809,9 @@ class Contract extends CommonDBTM {
       echo "<th>".__('Entity')."</th>";
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";
-      echo "<th>".__('Inventory number')."</th></tr>";
+      echo "<th>".__('Inventory number')."</th>";
+      echo "<th>".__('Status')."</th>";      
+      echo "</tr>";
 
       $totalnb = 0;
       for ($i=0 ; $i<$number ; $i++) {
@@ -886,7 +888,14 @@ class Contract extends CommonDBTM {
                          (isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
                   echo "<td class='center'>".
                          (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
-                  echo "</tr>";
+                  echo "<td class='center'>";
+                  if (isset($data["states_id"])) {
+                     echo Dropdown::getDropdownName("glpi_states",$data['states_id']);
+                  } else {
+                     echo '&nbsp;';
+                  }                         
+                  echo "</td></tr>";
+
                }
             }
             $totalnb += $nb;
