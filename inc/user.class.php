@@ -2553,6 +2553,8 @@ class User extends CommonDBTM {
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th>";
+      echo "<th>".__('Status')."</th>";            
+      
       echo "<th>&nbsp;</th></tr>";
 
       foreach ($type_user as $itemtype) {
@@ -2605,7 +2607,14 @@ class User extends CommonDBTM {
                   } else {
                      echo '&nbsp;';
                   }
-                  echo "<td class='center'>$linktype</td></tr>";
+                  echo "</td><td class='center'>";
+                  if (isset($data["states_id"])) {
+                     echo Dropdown::getDropdownName("glpi_states",$data['states_id']);
+                  } else {
+                     echo '&nbsp;';
+                  }                  
+                  
+                  echo "</td><td class='center'>$linktype</td></tr>";
                }
             }
          }
