@@ -2448,7 +2448,7 @@ $LANG['setup'][651] = "SMTP";
 $LANG['setup'][652] = "SMTP+SSL";
 $LANG['setup'][653] = "SMTP+TLS";
 
-$LANG['setup'][660] = "Serveur courriel";
+$LANG['setup'][660] = "Serveur de messagerie";
 $LANG['setup'][661] = "Configuration des notifications impossible : veuillez configurer le suivi par courriel dans la configuration ci-dessus.";
 
 $LANG['setup'][703] = "Générale";
