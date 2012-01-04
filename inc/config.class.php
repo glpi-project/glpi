@@ -280,7 +280,7 @@ class Config extends CommonDBTM {
     * @return Nothing (display)
    **/
    function showFormInventory() {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("config", "w")) {
          return false;
@@ -303,7 +303,7 @@ class Config extends CommonDBTM {
       echo "</td</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Enable the financial and administrative informations by default') . "</td><td>";
+      echo "<td>". __('Enable the financial and administrative informations by default')."</td><td>";
       Dropdown::ShowYesNo('auto_create_infocoms', $CFG_GLPI["auto_create_infocoms"]);
       echo "</td></td><td> " . __('Restrict device management') . "</td><td>";
       $this->dropdownGlobalManagement ("peripherals_management_restrict",

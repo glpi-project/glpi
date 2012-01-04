@@ -182,7 +182,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @return nothing
    **/
    private static function showInstallations($searchID, $crit) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("software", "r") || !$searchID) {
          return false;
@@ -456,7 +456,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @return nothing
    **/
    static function showForVersionByEntity(SoftwareVersion $version) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $softwareversions_id = $version->getField('id');
 

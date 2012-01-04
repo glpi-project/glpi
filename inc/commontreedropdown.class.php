@@ -348,7 +348,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @return Nothing (display)
     **/
     function showChildren() {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $ID = $this->getID();
       $this->check($ID, 'r');

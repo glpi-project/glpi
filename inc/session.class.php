@@ -64,7 +64,7 @@ class Session {
     * @return nothing
    **/
    static function init(Auth $auth) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if ($auth->auth_succeded) {
          // Restart GLPi session : complete destroy to prevent lost datas
@@ -252,7 +252,6 @@ class Session {
     * @return Nothing
    **/
    static function changeActiveEntities($ID="all", $is_recursive=false) {
-      global $LANG;
 
       $newentities = array();
       $newroots    = array();

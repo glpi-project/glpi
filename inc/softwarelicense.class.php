@@ -316,7 +316,7 @@ class SoftwareLicense extends CommonDBTM {
     * @return 0 : nothing to do 1 : done with success
    **/
    static function cronSoftware($task=NULL) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $cron_status = 1;
 
@@ -352,7 +352,8 @@ class SoftwareLicense extends CommonDBTM {
          foreach ($DB->request($query) as $license) {
             $name     = $license['softname'].' - '.$license['name'].' - '.$license['serial'];
             //TRANS: %1$s is the expiration date, %2$s the license information
-            $message .= sprintf(__('Expired license on %1$s: %2$s'), Html::convDate($license["expire"]), $name)."<br>\n";
+            $message .= sprintf(__('Expired license on %1$s: %2$s'),
+                                Html::convDate($license["expire"]), $name)."<br>\n";
             $items[$license['id']] = $license;
          }
 

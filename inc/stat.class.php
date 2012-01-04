@@ -226,14 +226,14 @@ class Stat {
 
          for ($i=$start ; $i< $numrows && $i<($end_display) ; $i++) {
             //le nombre d'intervention - the number of intervention
-            $opened    = self::constructEntryValues($itemtype, "inter_total", $date1, $date2, $type,
-                                                    $value[$i]["id"], $value2);
+            $opened    = self::constructEntryValues($itemtype, "inter_total", $date1, $date2,
+                                                    $type, $value[$i]["id"], $value2);
             $nb_opened = array_sum($opened);
             $export_data['opened'][$value[$i]['link']] = $nb_opened;
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $solved    = self::constructEntryValues($itemtype, "inter_solved", $date1, $date2, $type,
-                                                    $value[$i]["id"], $value2);
+            $solved    = self::constructEntryValues($itemtype, "inter_solved", $date1, $date2,
+                                                    $type, $value[$i]["id"], $value2);
             $nb_solved = array_sum($solved);
             $export_data['solved'][$value[$i]['link']] = $nb_solved;
 
@@ -244,8 +244,8 @@ class Stat {
             $export_data['late'][$value[$i]['link']] = $nb_late;
 
             //le nombre d'intervention closes - the number of closed intervention
-            $closed    = self::constructEntryValues($itemtype, "inter_closed", $date1, $date2, $type,
-                                                    $value[$i]["id"], $value2);
+            $closed    = self::constructEntryValues($itemtype, "inter_closed", $date1, $date2,
+                                                    $type, $value[$i]["id"], $value2);
             $nb_closed = array_sum($closed);
             $export_data['closed'][$value[$i]['link']] = $nb_closed;
 
@@ -259,8 +259,9 @@ class Stat {
             }
 
             //answer satisfaction
-//             $answersatisfaction    = self::constructEntryValues("inter_answersatisfaction", $date1, $date2, $type,
-//                                                     $value[$i]["id"], $value2);
+//             $answersatisfaction    = self::constructEntryValues("inter_answersatisfaction",
+//                                                                 $date1, $date2, $type,
+//                                                                 $value[$i]["id"], $value2);
 //             $nb_answersatisfaction = array_sum($answersatisfaction);
 //             $export_data['opensatisfaction'][$value[$i]['link']] = $nb_answersatisfaction;
 
@@ -334,7 +335,8 @@ class Stat {
             }
             echo Search::showHeaderItem($output_type, __('Average time'), $header_num, '', 0, '',
                                         $itemtype =='Ticket'?"colspan='3'":"colspan='2'");
-            echo Search::showHeaderItem($output_type, __('Real duration of treatment of the ticket'),
+            echo Search::showHeaderItem($output_type,
+                                        __('Real duration of treatment of the ticket'),
                                         $header_num, '', 0, '', "colspan='2'");
          }
 
@@ -361,19 +363,17 @@ class Stat {
          if ($itemtype =='Ticket') {
             if ($output_type != Search::HTML_OUTPUT) {
                echo Search::showHeaderItem($output_type, __('Number of opened satisfaction survey'),
-                                          $header_num);
-               echo Search::showHeaderItem($output_type, __('Number of answered satisfaction survey'),
-                                          $header_num);
+                                           $header_num);
+               echo Search::showHeaderItem($output_type,
+                                           __('Number of answered satisfaction survey'),
+                                           $header_num);
                echo Search::showHeaderItem($output_type, __('Average satisfaction'),
-                                          $header_num);
+                                           $header_num);
 
             } else {
-               echo Search::showHeaderItem($output_type, __('Opened'),
-                                          $header_num);
-               echo Search::showHeaderItem($output_type, __('Answered'),
-                                          $header_num);
-               echo Search::showHeaderItem($output_type, __('Average'),
-                                          $header_num);
+               echo Search::showHeaderItem($output_type, __('Opened'), $header_num);
+               echo Search::showHeaderItem($output_type, __('Answered'), $header_num);
+               echo Search::showHeaderItem($output_type, __('Average'), $header_num);
             }
          }
 
@@ -386,8 +386,7 @@ class Stat {
             echo Search::showHeaderItem($output_type, __('Average time to closure'), $header_num);
          } else {
             if ($itemtype =='Ticket') {
-               echo Search::showHeaderItem($output_type, __('Take into account'),
-                                          $header_num);
+               echo Search::showHeaderItem($output_type, __('Take into account'), $header_num);
             }
             echo Search::showHeaderItem($output_type, __('Resolution'), $header_num);
             echo Search::showHeaderItem($output_type, __('Closuse'), $header_num);
@@ -395,8 +394,12 @@ class Stat {
 
 
          if ($output_type != Search::HTML_OUTPUT) {
-            echo Search::showHeaderItem($output_type, __('Average real duration of treatment of the ticket'), $header_num);
-            echo Search::showHeaderItem($output_type, __('Total real duration of treatment of the ticket'), $header_num);
+            echo Search::showHeaderItem($output_type,
+                                        __('Average real duration of treatment of the ticket'),
+                                        $header_num);
+            echo Search::showHeaderItem($output_type,
+                                        __('Total real duration of treatment of the ticket'),
+                                        $header_num);
          } else {
             echo Search::showHeaderItem($output_type, __('Average'), $header_num);
             echo Search::showHeaderItem($output_type, __('Total'), $header_num);
@@ -1289,7 +1292,7 @@ class Stat {
 
 
    static function showItems($target, $date1, $date2, $start) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $view_entities = Session::isMultiEntitiesMode();
 
@@ -1416,10 +1419,10 @@ class Stat {
 
       if ($show_problem) {
          $opt_list["Problem"] = _n('Problem', 'Problems', 2);
-         $stat_list["Problem"]["Problem_Global"]["name"]  = __('Global');
-         $stat_list["Problem"]["Problem_Global"]["file"]  = "stat.global.php?itemtype=Problem";
-         $stat_list["Problem"]["Problem_Problem"]["name"]  = __('By problem');
-         $stat_list["Problem"]["Problem_Problem"]["file"]  = "stat.tracking.php?itemtype=Problem";
+         $stat_list["Problem"]["Problem_Global"]["name"]    = __('Global');
+         $stat_list["Problem"]["Problem_Global"]["file"]    = "stat.global.php?itemtype=Problem";
+         $stat_list["Problem"]["Problem_Problem"]["name"]   = __('By problem');
+         $stat_list["Problem"]["Problem_Problem"]["file"]   = "stat.tracking.php?itemtype=Problem";
       }
 
       //Affichage du tableau de presentation des stats

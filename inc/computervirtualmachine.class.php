@@ -222,7 +222,7 @@ class ComputerVirtualMachine extends CommonDBChild {
     * @return Nothing (call to classes members)
    **/
    static function showForVirtualMachine(Computer $comp) {
-      global $DB, $LANG;
+      global $DB;
 
       $ID = $comp->fields['id'];
 

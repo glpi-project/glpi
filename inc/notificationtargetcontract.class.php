@@ -46,7 +46,7 @@ class NotificationTargetContract extends NotificationTarget {
     * Get all data needed for template processing
    **/
    function getDatasForTemplate($event, $options=array()) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $this->datas['##contract.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                       $options['entities_id']);

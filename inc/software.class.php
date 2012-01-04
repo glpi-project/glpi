@@ -336,116 +336,115 @@ class Software extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       // Only use for History (not by search Engine)
       $tab = array();
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false;
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
 
       $tab+=Location::getSearchOptionsToAdd();
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
-      $tab[90]['table']         = $this->getTable();
-      $tab[90]['field']         = 'notepad';
-      $tab[90]['name']          = __('Notes');
-      $tab[90]['massiveaction'] = false;
+      $tab[90]['table']          = $this->getTable();
+      $tab[90]['field']          = 'notepad';
+      $tab[90]['name']           = __('Notes');
+      $tab[90]['massiveaction']  = false;
 
-      $tab[62]['table'] = 'glpi_softwarecategories';
-      $tab[62]['field'] = 'name';
-      $tab[62]['name']  = __('Category');
+      $tab[62]['table']          = 'glpi_softwarecategories';
+      $tab[62]['field']          = 'name';
+      $tab[62]['name']           = __('Category');
 
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
 
-      $tab[23]['table'] = 'glpi_manufacturers';
-      $tab[23]['field'] = 'name';
-      $tab[23]['name']  = __('Publisher');
+      $tab[23]['table']          = 'glpi_manufacturers';
+      $tab[23]['field']          = 'name';
+      $tab[23]['name']           = __('Publisher');
 
-      $tab[24]['table']     = 'glpi_users';
-      $tab[24]['field']     = 'name';
-      $tab[24]['linkfield'] = 'users_id_tech';
-      $tab[24]['name']      = __('Technician in charge of the hardware');
+      $tab[24]['table']          = 'glpi_users';
+      $tab[24]['field']          = 'name';
+      $tab[24]['linkfield']      = 'users_id_tech';
+      $tab[24]['name']           = __('Technician in charge of the hardware');
 
-      $tab[49]['table']     = 'glpi_groups';
-      $tab[49]['field']     = 'completename';
-      $tab[49]['linkfield'] = 'groups_id_tech';
-      $tab[49]['name']      = __('Group in charge of the hardware');
-      $tab[49]['condition'] = '`is_assign`';
+      $tab[49]['table']          = 'glpi_groups';
+      $tab[49]['field']          = 'completename';
+      $tab[49]['linkfield']      = 'groups_id_tech';
+      $tab[49]['name']           = __('Group in charge of the hardware');
+      $tab[49]['condition']      = '`is_assign`';
 
-      $tab[70]['table'] = 'glpi_users';
-      $tab[70]['field'] = 'name';
-      $tab[70]['name']  = __('User');
+      $tab[70]['table']          = 'glpi_users';
+      $tab[70]['field']          = 'name';
+      $tab[70]['name']           = __('User');
 
-      $tab[71]['table']     = 'glpi_groups';
-      $tab[71]['field']     = 'completename';
-      $tab[71]['name']      = __('Group');
-      $tab[71]['condition'] = '`is_itemgroup`';
+      $tab[71]['table']          = 'glpi_groups';
+      $tab[71]['field']          = 'completename';
+      $tab[71]['name']           = __('Group');
+      $tab[71]['condition']      = '`is_itemgroup`';
 
-      $tab[61]['table']    = $this->getTable();
-      $tab[61]['field']    = 'is_helpdesk_visible';
-      $tab[61]['name']     = __('Associable to a ticket');
-      $tab[61]['datatype'] = 'bool';
+      $tab[61]['table']          = $this->getTable();
+      $tab[61]['field']          = 'is_helpdesk_visible';
+      $tab[61]['name']           = __('Associable to a ticket');
+      $tab[61]['datatype']       = 'bool';
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __('Entity');
-      $tab[80]['massiveaction'] = false;
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['massiveaction']  = false;
 
-      $tab[72]['table']         = 'glpi_computers_softwareversions';
-      $tab[72]['field']         = 'count';
-      $tab[72]['name']          = __('Number of installations');
-      $tab[72]['forcegroupby']  = true;
-      $tab[72]['usehaving']     = true;
-      $tab[72]['datatype']      = 'number';
-      $tab[72]['nometa']        = true;
-      $tab[72]['massiveaction'] = false;
-      $tab[72]['joinparams']    = array('jointype'   => 'child',
-                                        'condition'  => "AND NEWTABLE.`is_deleted` = '0'
-                                                         AND NEWTABLE.`is_template` = '0'",
-                                        'beforejoin' => array('table' => 'glpi_softwareversions',
-                                                              'joinparams'
-                                                                      => array('jointype' => 'child')));
+      $tab[72]['table']          = 'glpi_computers_softwareversions';
+      $tab[72]['field']          = 'count';
+      $tab[72]['name']           = __('Number of installations');
+      $tab[72]['forcegroupby']   = true;
+      $tab[72]['usehaving']      = true;
+      $tab[72]['datatype']       = 'number';
+      $tab[72]['nometa']         = true;
+      $tab[72]['massiveaction']  = false;
+      $tab[72]['joinparams']     = array('jointype'   => 'child',
+                                         'condition'  => "AND NEWTABLE.`is_deleted` = '0'
+                                                          AND NEWTABLE.`is_template` = '0'",
+                                         'beforejoin' => array('table' => 'glpi_softwareversions',
+                                                               'joinparams'
+                                                                       => array('jointype' => 'child')));
 
 
-      $tab[86]['table']         = $this->getTable();
-      $tab[86]['field']         = 'is_recursive';
-      $tab[86]['name']          = __('Child entities');
-      $tab[86]['datatype']      = 'bool';
-      $tab[86]['massiveaction'] = false;
+      $tab[86]['table']          = $this->getTable();
+      $tab[86]['field']          = 'is_recursive';
+      $tab[86]['name']           = __('Child entities');
+      $tab[86]['datatype']       = 'bool';
+      $tab[86]['massiveaction']  = false;
 
-      $tab['versions'] = _n('Version', 'Versions',2);
+      $tab['versions']           = _n('Version', 'Versions',2);
 
-      $tab[5]['table']         = 'glpi_softwareversions';
-      $tab[5]['field']         = 'name';
-      $tab[5]['name']          = __('Version name');
-      $tab[5]['forcegroupby']  = true;
-      $tab[5]['massiveaction'] = false;
-      $tab[5]['joinparams']    = array('jointype' => 'child');
+      $tab[5]['table']           = 'glpi_softwareversions';
+      $tab[5]['field']           = 'name';
+      $tab[5]['name']            = __('Version name');
+      $tab[5]['forcegroupby']    = true;
+      $tab[5]['massiveaction']   = false;
+      $tab[5]['joinparams']      = array('jointype' => 'child');
 
-      $tab[31]['table']         = 'glpi_states';
-      $tab[31]['field']         = 'completename';
-      $tab[31]['name']          = __('Status');
-      $tab[31]['forcegroupby']  = true;
-      $tab[31]['massiveaction'] = false;
-      $tab[31]['joinparams']    = array('beforejoin'
+      $tab[31]['table']          = 'glpi_states';
+      $tab[31]['field']          = 'completename';
+      $tab[31]['name']           = __('Status');
+      $tab[31]['forcegroupby']   = true;
+      $tab[31]['massiveaction']  = false;
+      $tab[31]['joinparams']     = array('beforejoin'
                                           => array('table'      => 'glpi_softwareversions',
                                                    'joinparams' => array('jointype' => 'child')));
 
@@ -457,15 +456,15 @@ class Software extends CommonDBTM {
       $tab[170]['massiveaction'] = false;
       $tab[170]['joinparams']    = array('jointype' => 'child');
 
-      $tab[4]['table']        = 'glpi_operatingsystems';
-      $tab[4]['field']        = 'name';
-      $tab[4]['name']         = __('Operating system version');
-      $tab[4]['forcegroupby'] = true;
-      $tab[4]['joinparams']   = array('beforejoin'
-                                        => array('table'      => 'glpi_softwareversions',
-                                                 'joinparams' => array('jointype' => 'child')));
+      $tab[4]['table']           = 'glpi_operatingsystems';
+      $tab[4]['field']           = 'name';
+      $tab[4]['name']            = __('Operating system version');
+      $tab[4]['forcegroupby']    = true;
+      $tab[4]['joinparams']      = array('beforejoin'
+                                          => array('table'      => 'glpi_softwareversions',
+                                                   'joinparams' => array('jointype' => 'child')));
 
-      $tab['license'] = _n('License', 'Licenses', 2);
+      $tab['license']            = _n('License', 'Licenses', 2);
 
       $tab[160]['table']         = 'glpi_softwarelicenses';
       $tab[160]['field']         = 'name';

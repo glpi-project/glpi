@@ -86,7 +86,7 @@ class Profile_User extends CommonDBTM {
     * @param $user User object
    **/
    static function showForUser(User $user) {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB,$CFG_GLPI;
 
       $ID = $user->getField('id');
       if (!$user->can($ID,'r')) {

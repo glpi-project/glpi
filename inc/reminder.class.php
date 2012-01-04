@@ -929,7 +929,7 @@ class Reminder extends CommonDBTM {
     *
    **/
    function showVisibility() {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $ID      = $this->fields['id'];
       $canedit = $this->can($ID,'w');
