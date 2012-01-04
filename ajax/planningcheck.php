@@ -48,7 +48,7 @@ if (isset($_REQUEST['users_id']) &&  $_REQUEST['users_id'] > 0) {
          'infocoms','location=infocoms,width=1000,height=600,scrollbars=no')\"
          style='cursor:pointer'>
          <img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\"
-         alt=\"".__s('Availability')."\" title=\"".$__s('Availability')."\">
+         alt=\"".__s('Availability')."\" title=\"".__s('Availability')."\">
          </span>";
 }
 ?>

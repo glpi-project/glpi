@@ -4083,7 +4083,7 @@ msgstr[1] "Tasks"
 #: inc/reservation.class.php:240
 msgid ""
 "Error in entering dates. The starting date is later than the ending date"
-msgstr "Error in entering dates. The starting date is later than the ending date"
+msgstr ""
 
 #: inc/commonitiltask.class.php:370 inc/problem.class.php:544
 #: inc/ticket.class.php:1854
@@ -7422,7 +7422,7 @@ msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
 msgstr[0] "Without a reply, the ticket will be automatically closed after %s dayWithout a reply, the ticket will be automatically closed after %s days"
-msgstr[1] "Without a reply, the ticket will be automatically closed after %s days"
+msgstr[1] ""
 
 #. TRANS: %s is the user name
 #: inc/notificationtargetticket.class.php:444

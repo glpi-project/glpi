@@ -88,6 +88,9 @@ $current_string_plural = '';
 
 $pot = fopen(GLPI_ROOT . "/locales/glpi.pot", "r");
 $po  = fopen(GLPI_ROOT . "/locales/".$_GET['lang'].".po", "w+");
+
+$in_plural = false;
+
 if ($pot && $po) {
    while (($content = fgets($pot, 4096)) !== false) {
       if (preg_match('/^msgid "(.*)"$/',$content,$reg)) {
@@ -100,15 +103,20 @@ if ($pot && $po) {
          $plural_trans = '';
       }
 
+      // String on several lines
       if (preg_match('/^"(.*)"$/',$content,$reg)) {
-         $current_string        .= $reg[1];
-         $current_string_plural .= $reg[1];
+         if ($in_plural) {
+            $current_string_plural .= $reg[1];
+         } else {
+            $current_string        .= $reg[1];      
+         }
 //          echo '-'.$current_string."-\n";
       }
 
 
       if (preg_match('/^msgstr[\[]*([0-9]*)[\]]* "(.*)"$/',$content,$reg)) {
          if (strlen($reg[1]) == 0) { //Singular
+            $in_plural = false;
             if ($_GET['lang']=='en_GB') {
                $content     = "msgstr \"$current_string\"\n";
             } else {
@@ -121,12 +129,16 @@ if ($pot && $po) {
             
             switch ($reg[1]) {
                case "0" : // Singular
+                  $in_plural = false;
+
 //                   echo '+'.$current_string."+\n";
                   $sing_trans = search_in_dict($current_string);
 //                   echo "$translation\n";
                   break;
 
                case "1" : // Plural
+                  $in_plural = true;
+
 //                   echo '++'.$current_string."++\n";
                   $plural_trans = search_in_dict($current_string_plural);
 //                   echo "$translation\n";
