@@ -728,6 +728,7 @@ function updateDbUpTo031() {
       case "0.80.3" :
       case "0.80.4" :
       case "0.80.5" :
+      case "0.80.6" :
          break;
 
       default :
