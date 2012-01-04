@@ -155,30 +155,90 @@ fieldset {
 }
 
 input.submit {
-   border:1px solid #000000;
-   background-color:#eeeeee;
+   font-size: 11px;
+   cursor:pointer;
+   height: auto;
+   font: bold 12px Arial, Helvetica;
+   color: #8f5a0a;
+   background-color: #ffb94b;
+   background-image: -webkit-gradient(linear, left top, left bottom, from(#fddb6f), to(#ffb94b));
+   background-image: -webkit-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: -moz-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: -ms-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: -o-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: linear-gradient(top, #fddb6f, #ffb94b);
+   
+   /* For Internet Explorer 5.5 - 7 */
+   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b);
+   /* For Internet Explorer 8 */
+   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b)";
+   border-radius: 3px;
+   -moz-border-radius: 3px;
+   -webkit-border-radius: 3px;
+   text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+   -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+   -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+   box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;    
+   border-width: 1px;
+   border-style: solid;
+   border-color: #d69e31 #e3a037 #d5982d #e3a037
+   
 }
 
 input.submit:hover {
-   border:1px solid #cccccc;
-   background-color:#ffffff;
+  
+   border: 1px inset #888888;
+   background-color: #fddb6f;
+   background-image: -webkit-gradient(linear, left top, left bottom, from(#ffb94b), to(#fddb6f));
+   background-image: -webkit-linear-gradient(top, #ffb94b, #fddb6f);
+   background-image: -moz-linear-gradient(top, #ffb94b, #fddb6f);
+   background-image: -ms-linear-gradient(top, #ffb94b, #fddb6f);
+   background-image: -o-linear-gradient(top, #ffb94b, #fddb6f);
+   background-image: linear-gradient(top, #ffb94b, #fddb6f);
+
 }
 
 
-.button {
-   font-weight:200;
-   color:#000000;
-   padding:5px;
-   text-decoration:none;
-   border:1px solid #659900;
-   background-color:#eeeeee;
+.vsubmit {
+   font-size: 11px;
+   cursor:pointer;
+   height: auto;
+   font: bold 12px Arial, Helvetica;
+   color: #8f5a0a;
+   background-color: #ffb94b;
+   background-image: -webkit-gradient(linear, left top, left bottom, from(#fddb6f), to(#ffb94b));
+   background-image: -webkit-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: -moz-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: -ms-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: -o-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: linear-gradient(top, #fddb6f, #ffb94b);
+   
+   /* For Internet Explorer 5.5 - 7 */
+   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b);
+   /* For Internet Explorer 8 */
+   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b)";
+   border-radius: 3px;
+   -moz-border-radius: 3px;
+   -webkit-border-radius: 3px;
+   text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+   -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+   -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+   box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;    
+   border-width: 1px;
+   border-style: solid;
+   border-color: #d69e31 #e3a037 #d5982d #e3a037
+   
 }
 
-.button:hover {
-   font-weight:200;
-   color:#000000;
-   padding:5px;
-   text-decoration:none;
-   border:1px solid #659900;
-   background-color:#ffffff;
+.vsubmit:hover {
+  
+   border: 1px inset #888888;
+   background-color: #fddb6f;
+   background-image: -webkit-gradient(linear, left top, left bottom, from(#ffb94b), to(#fddb6f));
+   background-image: -webkit-linear-gradient(top, #ffb94b, #fddb6f);
+   background-image: -moz-linear-gradient(top, #ffb94b, #fddb6f);
+   background-image: -ms-linear-gradient(top, #ffb94b, #fddb6f);
+   background-image: -o-linear-gradient(top, #ffb94b, #fddb6f);
+   background-image: linear-gradient(top, #ffb94b, #fddb6f);
+
 }
