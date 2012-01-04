@@ -45,10 +45,9 @@ if (isset($_POST["update"])) {
    $item->check(-1, 'w', $_POST);
 
    if ($item->add($_POST)) {
-      Event::log($_POST["slas_id"], "slas", 4, "config", 
+      Event::log($_POST["slas_id"], "slas", 4, "config",
                   //TRANS: %s is the user login
                   sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
-);
    }
    Html::back();
 
