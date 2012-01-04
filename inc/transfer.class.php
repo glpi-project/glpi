@@ -3115,7 +3115,7 @@ class Transfer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='4' class='center b'>".$LANG['connect'][0]."</td></tr>";
+      echo "<td colspan='4' class='center b'>".__('Direct Connections')."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Monitor','Monitors',2)."</td><td>";
