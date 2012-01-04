@@ -583,7 +583,7 @@ class Reminder extends CommonDBTM {
              || Session::haveRight("show_all_planning","1")) {
 
             echo "<div id='plan' onClick='showPlan()'>\n";
-            echo "<span class='showplan'>".__('Add to schedule')."</span>";
+            echo "<a href='#' class='vsubmit'>".__('Add to schedule')."</a>";
          }
 
       } else {
