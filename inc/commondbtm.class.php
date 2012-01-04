@@ -1754,7 +1754,7 @@ class CommonDBTM extends CommonGLPI {
     *
    **/
    function showFormHeader($options=array()) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $ID = $this->fields['id'];
       $params['target']       = $this->getFormURL();

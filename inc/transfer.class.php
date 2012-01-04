@@ -296,8 +296,8 @@ class Transfer extends CommonDBTM {
       // Init types :
       $types = array('CartridgeItem', 'Computer', 'ConsumableItem', 'Contact', 'Contract',
                      'Document', 'Link', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-                     'Printer', 'Problem', 'Software', 'SoftwareLicense', 'SoftwareVersion', 'Supplier',
-                     'Ticket');
+                     'Printer', 'Problem', 'Software', 'SoftwareLicense', 'SoftwareVersion',
+                     'Supplier', 'Ticket');
 
       foreach ($types as $t) {
          if (!isset($this->needtobe_transfer[$t])) {
@@ -1566,7 +1566,8 @@ class Transfer extends CommonDBTM {
                   } else {
                      //// If not exists : create with number = 1
                      $input = $license->fields;
-                     foreach (array('softwareversions_id_buy', 'softwareversions_id_use') as $field) {
+                     foreach (array('softwareversions_id_buy',
+                                    'softwareversions_id_use') as $field) {
                         if ($license->fields[$field]>0) {
                            $newversID = $this->copySingleVersion($license->fields[$field]);
                            if ($newversID>0 && $newversID!=$license->fields[$field]) {
@@ -2926,8 +2927,9 @@ class Transfer extends CommonDBTM {
                      while ($data = $DB->fetch_array($result)) {
                         $data = Toolbox::addslashes_deep($data);
                         unset($data['id']);
-                        $data['items_id']     = $newID;
-                        $data['netpoints_id'] = $this->transferDropdownNetpoint($data['netpoints_id']);
+                        $data['items_id'] = $newID;
+                        $data['netpoints_id']
+                                          = $this->transferDropdownNetpoint($data['netpoints_id']);
                         unset($np->fields);
                         $np->add($data);
                      }
@@ -2940,8 +2942,9 @@ class Transfer extends CommonDBTM {
                   if ($ID != $newID) {
                      while ($data = $DB->fetch_array($result)) {
                         unset($data['id']);
-                        $data['items_id']     = $newID;
-                        $data['netpoints_id'] = $this->transferDropdownNetpoint($data['netpoints_id']);
+                        $data['items_id'] = $newID;
+                        $data['netpoints_id']
+                                          = $this->transferDropdownNetpoint($data['netpoints_id']);
                         unset($np->fields);
                         $np->add($data);
                      }
@@ -2974,7 +2977,7 @@ class Transfer extends CommonDBTM {
     * @return boolean item found
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $edit_form = true;
       if (!strpos($_SERVER['PHP_SELF'],"transfer.form.php")) {
@@ -3158,7 +3161,7 @@ class Transfer extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='4' class='center b'>".$LANG["Menu"][26]."</td></tr>";
+      echo "<td colspan='4' class='center b'>".__('Management')."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Supplier','Suppliers',2)."</td><td>";
@@ -3213,21 +3216,22 @@ class Transfer extends CommonDBTM {
 
 /// Display items to transfers
    function showTransferList() {
-      global $LANG, $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (isset($_SESSION['glpitransfer_list']) && count($_SESSION['glpitransfer_list'])) {
-         echo "<div class='center b'>".__('You can continue to add elements to be transferred or execute the transfer now');
+         echo "<div class='center b'>".
+                __('You can continue to add elements to be transferred or execute the transfer now');
          echo "<br>".__('Think of making a backup before transferring items.')."</div>";
          echo "<table class='tab_cadre_fixe' >";
          echo '<tr><th>'.__('Items to transfer').'</th><th>'.__('Transfer mode')."&nbsp;";
          $rand = Dropdown::show('Transfer',
                                 array('name'     => 'id',
                                       'comments' => false,
-                                      'toupdate'
-                                          => array('value_fieldname' => 'id',
-                                                   'to_update'       => "transfer_form",
-                                                   'url'             => $CFG_GLPI["root_doc"].
-                                                                        "/ajax/transfers.php")));
+                                      'toupdate' => array('value_fieldname'
+                                                                        => 'id',
+                                                          'to_update'   => "transfer_form",
+                                                          'url'         => $CFG_GLPI["root_doc"].
+                                                                           "/ajax/transfers.php")));
          echo '</th></tr>';
 
          echo "<tr><td class='tab_bg_1 top'>";
@@ -3297,5 +3301,4 @@ class Transfer extends CommonDBTM {
    }
 
 }
-
 ?>

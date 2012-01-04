@@ -3155,7 +3155,7 @@ class Search {
    **/
    static function addLeftJoin ($itemtype, $ref_table, &$already_link_tables, $new_table,
                                 $linkfield, $meta=0, $meta_type=0, $joinparams=array()) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       // Rename table for meta left join
       $AS = "";
@@ -4593,7 +4593,7 @@ class Search {
     * @return the reference to  array of search options for the given item type
    **/
    static function &getOptions($itemtype, $withplugins=true) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       static $search = array();
 

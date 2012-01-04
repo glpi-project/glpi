@@ -113,7 +113,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * @return nothing
    **/
    static function showForLicenseByEntity(SoftwareLicense $license) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $softwarelicense_id = $license->getField('id');
 
@@ -168,7 +168,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * @return nothing
    **/
    static function showForLicense (SoftwareLicense $license) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $searchID = $license->getField('id');
 
@@ -203,7 +203,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       $query_number = "SELECT COUNT(*) AS cpt
                        FROM `glpi_computers_softwarelicenses`
                        INNER JOIN `glpi_computers`
-                           ON (`glpi_computers_softwarelicenses`.`computers_id` = `glpi_computers`.`id`)
+                           ON (`glpi_computers_softwarelicenses`.`computers_id`
+                                 = `glpi_computers`.`id`)
                        WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id` = '$searchID'" .
                              getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                              AND `glpi_computers`.`is_deleted` = '0'
@@ -288,8 +289,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             $showEntity = ($license->isRecursive());
 
             Session::initNavigateListItems('Computer',
-                  //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                  sprintf(__('%1$s = %2$s'),$soft->getTypeName(1), $soft->fields["name"]." - " . $data["vername"]));
+                  //TRANS : %1$s is the itemtype name,
+                  //        %2$s is the name of the item (used for headings of a list)
+                  sprintf(__('%1$s = %2$s'),
+                          $soft->getTypeName(1), $soft->fields["name"]." - " . $data["vername"]));
 
 
 
@@ -319,7 +322,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Serial number')."</a></th>";
             echo "<th>".($sort=="`otherserial`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=otherserial&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Inventory number')."</a></th>";
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Inventory number').
+                 "</a></th>";
             echo "<th>".(strstr($sort,"`location`")?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=location,compname&amp;order=".
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Location')."</a></th>";
@@ -499,5 +503,4 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       return true;
    }
 }
-
 ?>
