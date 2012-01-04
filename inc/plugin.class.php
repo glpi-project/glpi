@@ -421,11 +421,11 @@ class Plugin extends CommonDBTM {
 
             switch ($plug['state']) {
                case self::ACTIVATED :
-                  echo "<td><a href='".$this->getSearchURL()."?id=$ID&amp;action=unactivate'>".
+                  echo "<td><a class='vsubmit' href='".$this->getSearchURL()."?id=$ID&amp;action=unactivate'>".
                              __('Disable')."</a></td>";
                   echo "<td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                     echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
+                     echo "<a class='vsubmit' href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
                             __('Uninstall')."</a>";
                   } else {
                      //TRANS: %s is the list of missing functions
@@ -452,7 +452,7 @@ class Plugin extends CommonDBTM {
                         $msg = __('Install');
                      }
                      if ($do_install) {
-                        echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=install'>".$msg.
+                        echo "<a class='vsubmit' 'href='".$this->getSearchURL()."?id=$ID&amp;action=install'>".$msg.
                              "</a>";
                      }
                   } else {
@@ -498,7 +498,7 @@ class Plugin extends CommonDBTM {
                   }
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                     echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
+                     echo "<a class='vsubmit' href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
                             __('Uninstall')."</a>";
                   } else {
                      //TRANS: %s is the list of missing functions
@@ -511,13 +511,13 @@ class Plugin extends CommonDBTM {
                   echo "<td>";
                   $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
                   if (function_exists($function) && $function()) {
-                     echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=activate'>".
+                     echo "<a class='vsubmit' href='".$this->getSearchURL()."?id=$ID&amp;action=activate'>".
                                 __('Enable')."</a>";
                   }
                   // Else : reason displayed by the plugin
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
-                     echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
+                     echo "<a class='vsubmit' href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
                             __('Uninstall')."</a>";
                   } else {
                      //TRANS: %s is the list of missing functions
@@ -529,7 +529,7 @@ class Plugin extends CommonDBTM {
                case self::TOBECLEANED :
                default :
                   echo "<td colspan='2'>";
-                  echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=clean'>".
+                  echo "<a class='vsubmit' href='".$this->getSearchURL()."?id=$ID&amp;action=clean'>".
                          __('Clean')."</a>";
                   echo "</td>";
                   break;
@@ -543,7 +543,7 @@ class Plugin extends CommonDBTM {
       echo "</table></div>";
       echo "<br>";
       echo "<div class='center'><p>";
-      echo "<a href='http://plugins.glpi-project.org'  class='icon_consol b' target='_blank'>".
+      echo "<a href='http://plugins.glpi-project.org'  class='vsubmit' target='_blank'>".
             __('See the catalog of plugins')."</a></p>";
       echo "</div>";
 
