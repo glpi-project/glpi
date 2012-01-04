@@ -401,9 +401,6 @@ $LANG['computers'][67]="Virtualization systems";
 $LANG['computers'][68]="Virtualization Models";
 $LANG['computers'][69]="States of the virtual machine";
 
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['connect'][0]="Direct Connections";
 $LANG['connect'][1]="Not connected.";
 $LANG['connect'][2]="Direct connections";
@@ -411,6 +408,9 @@ $LANG['connect'][3]="Direct connection";
 $LANG['connect'][4]="No direct connection";
 $LANG['connect'][15]="Automatic update of the following items";
 $LANG['connect'][16]="Warning!! The following two items of hardware do not match";
+
+
+/// TODO Before is ok for migration to gettext
 
 $LANG['consumables'][0]="Consumable";
 $LANG['consumables'][1]="In stock";

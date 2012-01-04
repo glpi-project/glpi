@@ -388,7 +388,7 @@ class Computer_Item extends CommonDBRelation{
 
       if (count($datas)) {
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>".$LANG['connect'][2]."&nbsp;:</th></tr>";
+         echo "<tr><th colspan='2'>".__('Direct connections')."</th></tr>";
 
          //echo "<tr class='tab_bg_1'>";
          $items_displayed = 0;
@@ -533,22 +533,14 @@ class Computer_Item extends CommonDBRelation{
       }
 
       echo "<div class='spaced'><table width='50%' class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='2'>";
-      if (count($compids)==0) {
-         echo $LANG['connect'][4];
-      } else if (count($compids)==1) {
-         echo $LANG['connect'][3]."&nbsp;:&nbsp;".count($compids);
-      } else {
-         echo $LANG['connect'][2]."&nbsp;:&nbsp;".count($compids);
-      }
-      echo "</th></tr>";
+      echo "<tr><th colspan='2'>".__('Direct connections')."</th></tr>";
 
       if (count($compids)>0) {
          foreach ($compids as $key => $compid) {
             $comp->getFromDB($compid);
             echo "<tr><td class='b tab_bg_1".($comp->getField('is_deleted')?"_2":"")."'>";
-            echo $LANG['help'][25]."&nbsp;:&nbsp;".$comp->getLink()."</td>";
-            echo "<td class='tab_bg_2".($comp->getField('is_deleted')?"_2":"")." center b'>";
+            printf(__('Computer: %s'), $comp->getLink());
+            echo "</td><td class='tab_bg_2".($comp->getField('is_deleted')?"_2":"")." center b'>";
             if ($canedit) {
                echo "<a href=\"$target?disconnect=1&amp;computers_id=$compid&amp;id=$key\">".
                       __('Disconnect')."</a>";
@@ -559,8 +551,7 @@ class Computer_Item extends CommonDBRelation{
          }
 
       } else {
-         echo "<tr><td class='tab_bg_1 b'>".$LANG['help'][25]."&nbsp;:&nbsp;";
-         echo "<i>".$LANG['connect'][1]."</i></td>";
+         echo "<tr><td class='tab_bg_1 b'><i>".__('Not connected')."</i></td>";
          echo "<td class='tab_bg_2' class='center'>";
          if ($canedit) {
             echo "<form method='post' action=\"$target\">";
