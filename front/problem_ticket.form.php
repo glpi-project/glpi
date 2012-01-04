@@ -39,7 +39,8 @@ if (isset($_POST["add"])) {
 
    if ($item->add($_POST)) {
       Event::log($_POST["problems_id"], "problem", 4, "maintain",
-                 $_SESSION["glpiname"]." ".$LANG['log'][32]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 

@@ -64,7 +64,8 @@ if (isset($_POST["add"])) {
          $name = $_FILES['filename']['name'];
       }
       Event::log($newID, "documents", 4, "document",
-               sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
+               //TRANS: %s is the user login
+               sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
 
    Html::back();
@@ -105,7 +106,8 @@ if (isset($_POST["add"])) {
    $documentitem->check(-1,'w',$_POST);
    if ($documentitem->add($_POST)) {
       Event::log($_POST["documents_id"], "documents", 4, "document",
-               $_SESSION["glpiname"]." ".$LANG['log'][32]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -119,7 +121,8 @@ if (isset($_POST["add"])) {
       }
    }
    Event::log($_POST["documents_id"], "documents", 4, "document",
-            $_SESSION["glpiname"]." ".$LANG['log'][33]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_GET["deletedocumentitem"])
@@ -129,7 +132,8 @@ if (isset($_POST["add"])) {
    $documentitem->check($_GET["id"],'w');
    if ($documentitem->delete(array('id' => $_GET["id"]))) {
       Event::log($_GET["documents_id"], "documents", 4, "document",
-               $_SESSION["glpiname"]." ".$LANG['log'][33]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 

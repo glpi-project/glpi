@@ -49,7 +49,9 @@ if (isset($_POST["add"])) {
    $link->check($_GET["id"],'w');
 
    if ($link_itemtype->add($_POST)) {
-    Event::log($_POST["links_id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][32]);
+    Event::log($_POST["links_id"], "links", 4, "setup", 
+               //TRANS: %s is the user login
+               sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
    Html::redirect($CFG_GLPI["root_doc"]."/front/link.form.php?id=".$_POST["links_id"]);
 }
@@ -57,7 +59,10 @@ else if (isset($_GET["delete"])) {
    $link->check($_GET["links_id"],'w');
 
    $link_itemtype->delete($_GET);
-   Event::log($_GET["links_id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][33]);
+   Event::log($_GET["links_id"], "links", 4, "setup", 
+               //TRANS: %s is the user login
+               sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
+
    Html::back();
 }
 ?>

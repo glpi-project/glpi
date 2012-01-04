@@ -99,7 +99,8 @@ if (isset($_REQUEST['getvcard'])) {
       && isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0) {
       if ($contactsupplier->add($_POST)) {
          Event::log($_POST["contacts_id"], "contacts", 4, "financial",
-         $_SESSION["glpiname"]."  ".$LANG['log'][34]);
+               //TRANS: %s is the user login
+               sprintf(__('%s adds a link with a supplier'), $_SESSION["glpiname"]));
       }
    }
    Html::back();
@@ -109,7 +110,8 @@ if (isset($_REQUEST['getvcard'])) {
 
    if ($contactsupplier->delete($_GET)) {
       Event::log($_GET["contacts_id"], "contacts", 4, "financial",
-               $_SESSION["glpiname"]."  ".$LANG['log'][35]);
+               //TRANS: %s is the user login
+               sprintf(__('%s deletes a link with a supplier'), $_SESSION["glpiname"]));
    }
    Html::back();
 
