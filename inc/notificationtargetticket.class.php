@@ -658,7 +658,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $tags = array('ticket.linkedtickets'    => $LANG['job'][55],
                     'ticket.problems'         => _n('Problem', 'Problems', 2),
                     'ticket.autoclosewarning'
-                     => sprintf(__('Without a reply, the ticket will be automatically closed after %s day'),
+                     => sprintf(_n('Without a reply, the ticket will be automatically closed after %s day',
+                               'Without a reply, the ticket will be automatically closed after %s days',
+                               2),
                                 '?'));
 
       foreach ($tags as $tag => $label) {
