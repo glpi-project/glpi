@@ -74,8 +74,8 @@ class NotificationTargetContract extends NotificationTarget {
          $this->datas['contracts'][] = $tmp;
       }
 
-      $this->datas['##lang.contract.time##'] = ($event==Alert::END?$LANG['contract'][0]
-                                                                  :$LANG['contract'][1]);
+      $this->datas['##lang.contract.time##'] = ($event==Alert::END ? __('Contract expired since the')
+                                                                   : __('Contract with notice since the'));
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -103,7 +103,8 @@ class NotificationTargetContract extends NotificationTarget {
       }
 
 
-      $tags = array('contract.time' => $LANG['contract'][0].' / '.$LANG['contract'][1]);
+      $tags = array('contract.time' => __('Contract expired since the').' / '.
+                                       __('Contract with notice since the'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

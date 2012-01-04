@@ -431,11 +431,11 @@ $LANG['consumables'][36]="Stock location";
 $LANG['consumables'][37]="Back to stock";
 $LANG['consumables'][38]="Alert threshold";
 
-/// TODO Before is ok for migration to gettext
-
-
 $LANG['contract'][0]="Contract expired since the";
 $LANG['contract'][1]="Contract with notice since the";
+
+/// TODO Before is ok for migration to gettext
+
 
 $LANG['crontask'][0]="Automatic actions";
 $LANG['crontask'][2]="Send alarms on cartridges";
