@@ -240,7 +240,8 @@ class Document extends CommonDBTM {
                              'items_id'     => $this->input["items_id"]));
 
          Event::log($this->fields['id'], "documents", 4, "document",
-                    $_SESSION["glpiname"]." ".$LANG['log'][32]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
       }
    }
 

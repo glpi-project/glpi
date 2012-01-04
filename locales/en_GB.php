@@ -1105,12 +1105,13 @@ $LANG['log'][28]="modification of components";
 $LANG['log'][29]="approval/refusal of the solution";
 $LANG['log'][30]="associate a type";
 $LANG['log'][31]="deletion of a type";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['log'][32]="add link with an item";
 $LANG['log'][33]="deletion link with an item";
 $LANG['log'][34]="add a link with a supplier";
 $LANG['log'][35]="deletion link with supplier";
-
-/// TODO After is ok for migration to gettext
 
 $LANG['log'][40]="IP connection";
 $LANG['log'][41]="Connection failed";

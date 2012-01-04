@@ -39,7 +39,8 @@ if (isset($_POST["add"])) {
    $item->check(-1, 'w', $_POST);
    if ($item->add($_POST)) {
       Event::log($_POST["calendars_id"], "calendars", 4, "setup",
-                 $_SESSION["glpiname"]." ".$LANG['log'][32]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
