@@ -207,7 +207,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       if ($canedit) {
          Html::openArrowMassives("form_language", true);
-         Html::closeArrowMassives(array("delete_languages" => $LANG["buttons"][6]));
+         Html::closeArrowMassives(array("delete_languages" => __('Delete'));
       }
    }
 

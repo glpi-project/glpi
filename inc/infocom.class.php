@@ -1306,12 +1306,12 @@ class Infocom extends CommonDBChild {
 
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'buy_date';
-      $tab[4]['name']     = $LANG["financial"][14];
+      $tab[4]['name']     = $LANG['financial'][14];
       $tab[4]['datatype'] = 'date';
 
       $tab[5]['table']    = $this->getTable();
       $tab[5]['field']    = 'use_date';
-      $tab[5]['name']     = $LANG["financial"][76];
+      $tab[5]['name']     = $LANG['financial'][76];
       $tab[5]['datatype'] = 'date';
 
       $tab[24]['table']        = 'glpi_infocoms';
@@ -1340,51 +1340,51 @@ class Infocom extends CommonDBChild {
 
       $tab[6]['table']    = $this->getTable();
       $tab[6]['field']    = 'warranty_duration';
-      $tab[6]['name']     = $LANG["financial"][15];
+      $tab[6]['name']     = $LANG['financial'][15];
       $tab[6]['datatype'] = 'integer';
 
       $tab[7]['table']     = $this->getTable();
       $tab[7]['field']     = 'warranty_info';
-      $tab[7]['name']      = $LANG["financial"][16];
+      $tab[7]['name']      = $LANG['financial'][16];
       $tab[7]['datatype']  = 'string';
 
       $tab[8]['table']    = $this->getTable();
       $tab[8]['field']    = 'warranty_value';
-      $tab[8]['name']     = $LANG["financial"][78];
+      $tab[8]['name']     = $LANG['financial'][78];
       $tab[8]['datatype'] = 'decimal';
 
       $tab[9]['table'] = 'glpi_suppliers';
       $tab[9]['field'] = 'name';
-      $tab[9]['name']  = $LANG["financial"][26];
+      $tab[9]['name']  = $LANG['financial'][26];
 
       $tab[10]['table']    = $this->getTable();
       $tab[10]['field']    = 'order_number';
-      $tab[10]['name']     = $LANG["financial"][18];
+      $tab[10]['name']     = $LANG['financial'][18];
       $tab[10]['datatype'] = 'string';
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'delivery_number';
-      $tab[11]['name']     = $LANG["financial"][19];
+      $tab[11]['name']     = $LANG['financial'][19];
       $tab[11]['datatype'] = 'string';
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'immo_number';
-      $tab[12]['name']     = $LANG["financial"][20];
+      $tab[12]['name']     = $LANG['financial'][20];
       $tab[12]['datatype'] = 'string';
 
       $tab[13]['table']    = $this->getTable();
       $tab[13]['field']    = 'value';
-      $tab[13]['name']     = $LANG["financial"][21];
+      $tab[13]['name']     = $LANG['financial'][21];
       $tab[13]['datatype'] = 'decimal';
 
       $tab[14]['table']    = $this->getTable();
       $tab[14]['field']    = 'sink_time';
-      $tab[14]['name']     = $LANG["financial"][23];
+      $tab[14]['name']     = $LANG['financial'][23];
       $tab[14]['datatype'] = 'integer';
 
       $tab[15]['table']    = $this->getTable();
       $tab[15]['field']    = 'sink_type';
-      $tab[15]['name']     = $LANG["financial"][22];
+      $tab[15]['name']     = $LANG['financial'][22];
       $tab[15]['datatype'] = 'integer';
 
       $tab[16]['table']    = $this->getTable();
@@ -1394,17 +1394,17 @@ class Infocom extends CommonDBChild {
 
       $tab[17]['table']    = $this->getTable();
       $tab[17]['field']    = 'sink_coeff';
-      $tab[17]['name']     = $LANG["financial"][77];
+      $tab[17]['name']     = $LANG['financial'][77];
       $tab[17]['datatype'] = 'decimal';
 
       $tab[18]['table']    = $this->getTable();
       $tab[18]['field']    = 'bill';
-      $tab[18]['name']     = $LANG["financial"][82];
+      $tab[18]['name']     = $LANG['financial'][82];
       $tab[18]['datatype'] = 'string';
 
       $tab[19]['table']    = 'glpi_budgets';
       $tab[19]['field']    = 'name';
-      $tab[19]['name']     = $LANG["financial"][87];
+      $tab[19]['name']     = $LANG['financial'][87];
       $tab[19]['datatype'] = 'itemlink';
 
       $tab[20]['table']         = $this->getTable();
@@ -1421,7 +1421,7 @@ class Infocom extends CommonDBChild {
 
       $tab[22]['table']    = $this->getTable();
       $tab[22]['field']    = 'alert';
-      $tab[22]['name']     = $LANG["setup"][247];
+      $tab[22]['name']     = $LANG['setup'][247];
       $tab[22]['datatype'] = 'integer';
 
       $tab[80]['table']         = 'glpi_entities';

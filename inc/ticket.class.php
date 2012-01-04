@@ -3323,7 +3323,7 @@ class Ticket extends CommonITILObject {
             if ($this->fields['status'] != 'closed') {
                echo "<td>";
                echo "<span id='sla_action'>";
-               echo "<a class='pointer' ".
+               echo "<a class='vsubmit' ".
                       Html::addConfirmationOnAction(array(__('The assignment of a SLA to a ticket causes the recalculation of the due date.'),
                        __("Escalations defined in the SLA will be triggered under this new date.")),
                                                     "cleanhide('sla_action');cleandisplay('sla_choice');").
