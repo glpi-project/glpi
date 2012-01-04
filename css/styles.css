@@ -37,7 +37,8 @@ body {
    font-size: 12px;
    margin: 0;
    padding: 0;
-   background:  #dfdfdf repeat-x;
+   background:  #eee repeat-x;
+   
 }
 
 ul, li, dt, dl, dd, form, img, input {
@@ -203,9 +204,9 @@ hr {
    -moz-border-radius: 8px;
    -webkit-border-radius: 8px;
    border-radius: 8px;
-   -moz-box-shadow: 0px 7px 10px ;
-   -webkit-box-shadow: 0px 7px 10px ;
-   box-shadow: 0px 7px 10px;
+   -moz-box-shadow: 0px 7px 10px #4D4D4D;
+   -webkit-box-shadow: 0px 7px 10px #4D4D4D;
+   box-shadow: 0px 7px 10px #4D4D4D;
    padding: 8px 8px 20px 8px;
 }
 
@@ -278,9 +279,14 @@ input.submit {
    background-image: -ms-linear-gradient(top, #fddb6f, #ffb94b);
    background-image: -o-linear-gradient(top, #fddb6f, #ffb94b);
    background-image: linear-gradient(top, #fddb6f, #ffb94b);
+   
+   /* For Internet Explorer 5.5 - 7 */
+   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b);
+   /* For Internet Explorer 8 */
+   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b)";
+   border-radius: 3px;
    -moz-border-radius: 3px;
    -webkit-border-radius: 3px;
-   border-radius: 3px;
    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
    -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
    -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
@@ -1086,16 +1092,26 @@ div#tabcontent {
 /* ################--------------- Login Null Header  ---------------#################### */
 
 #contenulogin {
-   height: 266px;
-   width: 600px;
-   margin-top:100px;
+   height: 236px;
+   width: 650px;
+   margin-top:150px;
    margin-left: auto;
    margin-right: auto;
-   background:url("../pics/login_glpi.png")  no-repeat;
-   font-family : Verdana,Arial,Helvetica,sans-serif;
+  font-family : Verdana,Arial,Helvetica,sans-serif;
    font-size : 12px;
    color :#659900;
    font-weight: bold;
+   
+   
+   background:#FFFFFF;
+	border:3px solid #ccc;
+   border-radius:10px;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+
+	padding:20px;
+
+   
 }
 
 #bloc .haut {
@@ -1123,17 +1139,43 @@ div#tabcontent {
 
 #boxlogin {
    position:relative;
-   background-color: transparent;
-   padding-left: 15px;
-   padding-top: 76px;
+ 
    text-align: left;  /* Bug IE Grrr */
-   height: 190px;
-   width: 300px;
+ 
+   width: 350px;
+   
+   padding:15px;
+   background:#E9EDD0;
+	background:-moz-linear-gradient(360deg, #E9EDD0, #BBC972); /* Firefox */
+	background:-webkit-gradient(linear, left top, left bottom, from(#E9EDD0), to(#BBC972)); /* Webkit */
+   
+   /* For Internet Explorer 5.5 - 7 */
+   filter: progid:DXImageTransform.Microsoft.gradient(startColorStr=#E9EDD0, endColorStr=#BBC972, GradientType=1);
+   /* For Internet Explorer 8 */
+   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#E9EDD0, endColorstr=#BBC972, GradientType=1)";
+   
+	border:1px solid #aaa;
+   border-radius:10px;
+	-moz-border-radius:10px;
+	-webkit-border-radius:10px;
+   box-shadow:0 0 15px #aaa;
+	-moz-box-shadow:0 0 15px #aaa;
+	-webkit-box-shadow:0 0 15px #aaa;
+
+   
+   
 }
 
 #boxlogin p {
    text-align:center;
 }
+
+#forget {
+text-align:right;
+text-decoration: underline;
+
+}
+
 
 .row {
    clear: both;
@@ -1150,6 +1192,7 @@ div#tabcontent {
    float: right;
    margin-right:10px;
    text-align: right;
+   
 }
 
 #boxlogin fieldset {
@@ -1167,19 +1210,40 @@ div#tabcontent {
 }
 
 #boxlogin input {
+
    border: 1px solid #659900;
+   -moz-border-radius:5px;
+	-webkit-border-radius:5px;
 }
+
+#boxlogin input[type=text],
+ #boxlogin input[type=password]{
+	width:13em;
+}
+
+#boxlogin input[type=text]:focus,
+ #boxlogin input[type=password]:focus{
+	border-color:#FFA500;
+   background-color: #fff;
+	-moz-box-shadow:0 0 3px #FFA500;
+	-webkit-box-shadow:0 0 3px #FFA500;
+	outline:none; /* Pour enlever le contour jaune lorsque l'on sélectionne un input dans Chrome */
+}
+
 
 #logo-login {
    font-size: 11px;
    float:right;
    height: 160px;
    width: 230px;
-   margin-right:10px;
+   /*margin-right:10px;
    margin-left:0px;
-   margin-top:80px;
+   margin-top:80px;*/
    color :#000000;
    overflow: auto;
+   
+    padding:15px;
+   
 }
 
 #logo-login a:hover {
@@ -1188,8 +1252,10 @@ div#tabcontent {
 }
 
 #box-faq {
-   float:right;
-   margin-right:10px;
+   width:250px;
+   text-align:center;
+  position:relative;
+   margin:auto;
 }
 
 .sous_logo {
@@ -1237,7 +1303,7 @@ div#header {
    border-radius: 0px 0px 8px 8px;
    -moz-box-shadow: 0px 7px 10px #4D4D4D;
    -webkit-box-shadow: 0px 7px 10px #4D4D4D;
-   box-shadow: 0px 7px 10px #011E3A;
+   box-shadow: 0px 7px 10px #4D4D4D;
    padding-bottom: 8px;
 }
 

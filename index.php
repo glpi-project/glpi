@@ -102,17 +102,23 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<fieldset>";
    echo '<legend>'.__('Authentication').'</legend>';
    echo '<div class="row"><span class="label"><label>'.__('Login').'</label></span>';
-   echo '<span class="formw"><input type="text" name="login_name" id="login_name" size="15" />';
+   echo '<span class="formw"><input type="text" name="login_name" id="login_name" required="required" />';
    echo '</span></div>';
 
    echo '<div class="row"><span class="label"><label>'.__('Password').'</label></span>';
    echo '<span class="formw">';
-   echo '<input type="password" name="login_password" id="login_password" size="15" /></span></div>';
+   echo '<input type="password" name="login_password" id="login_password" required="required" /></span></div>';
 
    echo "</fieldset>";
    echo '<p><span>';
    echo '<input type="submit" name="submit" value="'.__s('Post').'" class="submit"/>';
    echo '</span></p>';
+    if ($CFG_GLPI["use_mailing"]
+       && countElementsInTable('glpi_notifications',
+                               "`itemtype`='User' AND `event`='passwordforget' AND `is_active`=1")) {
+      echo '<div id="forget"><a href="front/lostpassword.php?lostpassword=1">'.__('Forgot your password ?').'</a>';
+      echo '</div>';
+   }
    echo "</form>";
 
    echo "<script type='text/javascript' >\n";
@@ -143,16 +149,11 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    // Display FAQ is enable
    if ($CFG_GLPI["use_public_faq"]) {
-      echo '<div id="box-faq"><a href="front/helpdesk.faq.php">[ '.$LANG['knowbase'][24].' ]</a>';
+      echo '<div id="box-faq"><a  "href="front/helpdesk.faq.php">[ '.$LANG['knowbase'][24].' ]</a>';
       echo '</div>';
    }
 
-   if ($CFG_GLPI["use_mailing"]
-       && countElementsInTable('glpi_notifications',
-                               "`itemtype`='User' AND `event`='passwordforget' AND `is_active`=1")) {
-      echo '<div id="box-faq"><a href="front/lostpassword.php?lostpassword=1">[ '.__('Forgot your password?').' ]</a>';
-      echo '</div>';
-   }
+  
 
    echo "</div>"; // end contenu login
 
