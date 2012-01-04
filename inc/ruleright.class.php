@@ -266,9 +266,7 @@ class RuleRight extends Rule {
 
 
    function getTitle() {
-      global $LANG;
-
-      return $LANG['entity'][6];
+      return __('Automatic user assignment');
    }
 
 
@@ -315,43 +313,43 @@ class RuleRight extends Rule {
 
 
    function getActions() {
-      global $LANG;
 
       $actions = array();
-      $actions['entities_id']['name']   = $LANG['entity'][0];
-      $actions['entities_id']['type']   = 'dropdown';
-      $actions['entities_id']['table']  = 'glpi_entities';
+      $actions['entities_id']['name']                       = __('Entity');
+      $actions['entities_id']['type']                       = 'dropdown';
+      $actions['entities_id']['table']                      = 'glpi_entities';
 
-      $actions['_affect_entity_by_dn']['name']          = __('Entity based on LDAP information');
-      $actions['_affect_entity_by_dn']['type']          = 'text';
-      $actions['_affect_entity_by_dn']['force_actions'] = array('regex_result');
-      $actions['_affect_entity_by_dn']['duplicatewith'] = 'entities_id';
+      $actions['_affect_entity_by_dn']['name']              = __('Entity based on LDAP information');
+      $actions['_affect_entity_by_dn']['type']              = 'text';
+      $actions['_affect_entity_by_dn']['force_actions']     = array('regex_result');
+      $actions['_affect_entity_by_dn']['duplicatewith']     = 'entities_id';
 
-      $actions['_affect_entity_by_tag']['name']          = __('Entity from TAG');
-      $actions['_affect_entity_by_tag']['type']          = 'text';
-      $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
-      $actions['_affect_entity_by_tag']['duplicatewith'] = 'entities_id';
+      $actions['_affect_entity_by_tag']['name']             = __('Entity from TAG');
+      $actions['_affect_entity_by_tag']['type']             = 'text';
+      $actions['_affect_entity_by_tag']['force_actions']    = array('regex_result');
+      $actions['_affect_entity_by_tag']['duplicatewith']    = 'entities_id';
 
       $actions['_affect_entity_by_domain']['name']          = __('Entity from mail domain');
       $actions['_affect_entity_by_domain']['type']          = 'text';
       $actions['_affect_entity_by_domain']['force_actions'] = array('regex_result');
       $actions['_affect_entity_by_domain']['duplicatewith'] = 'entities_id';
 
-      $actions['profiles_id']['name']  = _n('Profile', 'Profiles', 2);
-      $actions['profiles_id']['type']  = 'dropdown';
-      $actions['profiles_id']['table'] = 'glpi_profiles';
+      $actions['profiles_id']['name']                       = _n('Profile', 'Profiles', 2);
+      $actions['profiles_id']['type']                       = 'dropdown';
+      $actions['profiles_id']['table']                      = 'glpi_profiles';
 
-      $actions['is_recursive']['name']  = __('Recursive');
-      $actions['is_recursive']['type']  = 'yesno';
-      $actions['is_recursive']['table'] = '';
+      $actions['is_recursive']['name']                      = __('Recursive');
+      $actions['is_recursive']['type']                      = 'yesno';
+      $actions['is_recursive']['table']                     = '';
 
-      $actions['is_active']['name']  = __('Active');
-      $actions['is_active']['type']  = 'yesno';
-      $actions['is_active']['table'] = '';
+      $actions['is_active']['name']                         = __('Active');
+      $actions['is_active']['type']                         = 'yesno';
+      $actions['is_active']['table']                        = '';
 
-      $actions['_ignore_user_import']['name']  = __('To be unaware of import');
-      $actions['_ignore_user_import']['type']  = 'yesonly';
-      $actions['_ignore_user_import']['table'] = '';
+      $actions['_ignore_user_import']['name']               = __('To be unaware of import');
+      $actions['_ignore_user_import']['type']               = 'yesonly';
+      $actions['_ignore_user_import']['table']              = '';
+
       return $actions;
    }
 
@@ -370,5 +368,4 @@ class RuleRight extends Rule {
    }
 
 }
-
 ?>

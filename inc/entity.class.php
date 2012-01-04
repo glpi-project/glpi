@@ -49,9 +49,9 @@ class Entity extends CommonTreeDropdown {
 
       if ($ID==0) {
          $this->fields = array('id'              => 0,
-                               'name'            => $LANG['entity'][2],
+                               'name'            => __('Root entity'),
                                'entities_id'     => 0,
-                               'completename'    => $LANG['entity'][2],
+                               'completename'    => __('Root entity'),
                                'comment'         => '',
                                'level'           => 0,
                                'sons_cache'      => '',
@@ -119,7 +119,7 @@ class Entity extends CommonTreeDropdown {
 
       $buttons = array();
       $title   = self::getTypeName(2);
-      $buttons["entity.form.php?id=0"] = $LANG['entity'][2];
+      $buttons["entity.form.php?id=0"] = __('Root entity');
       Html::displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png", self::getTypeName(2), $title,
                          $buttons);
    }

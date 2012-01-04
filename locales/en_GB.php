@@ -620,8 +620,6 @@ $LANG['dropdown'][32]="Network Interfaces";
 $LANG['dropdown'][33]="Firmwares";
 $LANG['dropdown'][34]="Domains";
 
-/// TODO Before is ok for migration to gettext
-
 
 $LANG['entity'][0]="Entity";
 $LANG['entity'][2]="Root entity";
@@ -629,6 +627,10 @@ $LANG['entity'][6]="Automatic user assignment";
 $LANG['entity'][7]="tree structure";
 $LANG['entity'][8]="By entity";
 $LANG['entity'][9]="Child entities";
+
+/// TODO Before is ok for migration to gettext
+
+
 $LANG['entity'][10]="Select the desired entity";
 $LANG['entity'][11]="to see the entity and its sub-entities";
 $LANG['entity'][12]="LDAP directory information attribute representing the entity";

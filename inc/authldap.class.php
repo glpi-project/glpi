@@ -1309,7 +1309,7 @@ class AuthLDAP extends CommonDBTM {
             echo "<th>".__('Group DN')."</th>";
             echo"<th>".$LANG['ldap'][27]."</th>";
             if (Session::isMultiEntitiesMode()) {
-               echo"<th>".$LANG['entity'][9]."</th>";
+               echo"<th>".__('Child entities')."</th>";
             }
             echo "</tr>";
 
@@ -2586,7 +2586,7 @@ class AuthLDAP extends CommonDBTM {
          $ong[1] = __('Main');    // test connexion
          $ong[2]  = _n('User', 'Users', 2);
          $ong[3]  = _n('Group', 'Groups', 2);
-         $ong[4]  = $LANG['entity'][0];   // params for entity config
+         $ong[4]  = __('Entity');   // params for entity config
          $ong[5]  = $LANG['entity'][14];  // params for entity advanced config
          $ong[6]  = $LANG['ldap'][22];    // replicat
 

@@ -273,7 +273,7 @@ class RuleTicket extends Rule {
 
       $criterias['entities_id']['table']     = 'glpi_entities';
       $criterias['entities_id']['field']     = 'name';
-      $criterias['entities_id']['name']      = $LANG['entity'][0];
+      $criterias['entities_id']['name']      = __('Entity');
       $criterias['entities_id']['linkfield'] = 'entities_id';
       $criterias['entities_id']['type']      = 'dropdown';
 

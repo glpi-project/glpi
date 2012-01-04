@@ -276,54 +276,53 @@ class FieldUnicity extends CommonDropdown {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
-      $tab['common'] = __('Fields unicity');
+      $tab['common']             = __('Fields unicity');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false;
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'fields';
-      $tab[3]['name']          = __('Unique fields');
-      $tab[3]['massiveaction'] = false;
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'fields';
+      $tab[3]['name']            = __('Unique fields');
+      $tab[3]['massiveaction']   = false;
 
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'itemtype';
-      $tab[4]['name']          = __('Type');
-      $tab[4]['massiveaction'] = false;
-      $tab[4]['datatype']      = 'itemtypename';
-      $tab[4]['forcegroupby']  = true;
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'itemtype';
+      $tab[4]['name']            = __('Type');
+      $tab[4]['massiveaction']   = false;
+      $tab[4]['datatype']        = 'itemtypename';
+      $tab[4]['forcegroupby']    = true;
 
-      $tab[5]['table']         = $this->getTable();
-      $tab[5]['field']         = 'action_refuse';
-      $tab[5]['name']          = __('Record into the database denied');
-      $tab[5]['datatype']      = 'bool';
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'action_refuse';
+      $tab[5]['name']            = __('Record into the database denied');
+      $tab[5]['datatype']        = 'bool';
 
-      $tab[6]['table']         = $this->getTable();
-      $tab[6]['field']         = 'action_notify';
-      $tab[6]['name']          = __('Send a notification');
-      $tab[6]['datatype']      = 'bool';
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'action_notify';
+      $tab[6]['name']            = __('Send a notification');
+      $tab[6]['datatype']        = 'bool';
 
-      $tab[86]['table']    = $this->getTable();
-      $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = $LANG['entity'][9];
-      $tab[86]['datatype'] = 'bool';
+      $tab[86]['table']          = $this->getTable();
+      $tab[86]['field']          = 'is_recursive';
+      $tab[86]['name']           = __('Child entities');
+      $tab[86]['datatype']       = 'bool';
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
       $tab[30]['table']          = $this->getTable();
       $tab[30]['field']          = 'is_active';
@@ -331,10 +330,10 @@ class FieldUnicity extends CommonDropdown {
       $tab[30]['datatype']       = 'bool';
       $tab[30]['massiveaction']  = false;
 
-      $tab[80]['table']        = 'glpi_entities';
-      $tab[80]['field']        = 'completename';
-      $tab[80]['name']         = $LANG['entity'][0];
-      $tab[80]['forcegroupby'] = true;
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['forcegroupby']   = true;
 
       return $tab;
    }

@@ -562,13 +562,14 @@ class Group extends CommonTreeDropdown {
       $nb     = $this->getDataItems($types, $field, $tree, $user, $start, $datas);
       $nbcan  = 0;
 
-      echo "<form name='group_form' id='group_form_$field' method='post' action='".$this->getFormURL()."'>";
+      echo "<form name='group_form' id='group_form_$field' method='post' action='".
+             $this->getFormURL()."'>";
       if ($nb) {
          Html::printAjaxPager('', $start, $nb);
 
          echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
          echo "<th>".__('Type')."</th>";
-         echo "<th>".__('Name')."</th><th>".$LANG['entity'][0]."</th>";
+         echo "<th>".__('Name')."</th><th>".__('Entity')."</th>";
          if ($tree || $user) {
             echo "<th>".self::getTypeName(1)." / ".User::getTypeName(1)."</th>";
          }

@@ -568,8 +568,7 @@ class SoftwareLicense extends CommonDBTM {
                // Ereg to search entity in string for match default order
                echo "<th>".(strstr($sort,"entity")?$sort_img:"").
                     "<a href='javascript:reloadTab(\"sort=entity&amp;order=".
-                      ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".$LANG['entity'][0].
-                    "</a></th>";
+                      ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Entity')."</a></th>";
             }
 
             echo "<th>".($sort=="`serial`"?$sort_img:"").
@@ -692,7 +691,7 @@ class SoftwareLicense extends CommonDBTM {
 
       return array('id'           => __('ID'),
                    'serial'       => __('Serial number'),
-                   'entities_id'  => $LANG['entity'][0],
+                   'entities_id'  => __('Entity'),
                    'softwares_id' => $LANG['help'][31]);
    }
 

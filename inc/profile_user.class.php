@@ -159,7 +159,7 @@ class Profile_User extends CommonDBTM {
             echo "</td>";
 
             if ($data["entities_id"] == 0) {
-               $data["completename"] = $LANG['entity'][2];
+               $data["completename"] = __('Root entity');
             }
             echo "<td>";
 
@@ -657,37 +657,36 @@ class Profile_User extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']             = __('Characteristics');
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
 
-      $tab[3]['table']    = $this->getTable();
-      $tab[3]['field']    = 'is_dynamic';
-      $tab[3]['name']     = __('Dynamic');
-      $tab[3]['datatype'] = 'bool';
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'is_dynamic';
+      $tab[3]['name']            = __('Dynamic');
+      $tab[3]['datatype']        = 'bool';
 
-      $tab[4]['table'] = 'glpi_profiles';
-      $tab[4]['field'] = 'name';
-      $tab[4]['name']  = _n('Profile', 'Profiles', 1);
+      $tab[4]['table']           = 'glpi_profiles';
+      $tab[4]['field']           = 'name';
+      $tab[4]['name']            = _n('Profile', 'Profiles', 1);
 
-      $tab[5]['table'] = 'glpi_users';
-      $tab[5]['field'] = 'name';
-      $tab[5]['name']  = __('User');
+      $tab[5]['table']           = 'glpi_users';
+      $tab[5]['field']           = 'name';
+      $tab[5]['name']            = __('User');
 
-      $tab[80]['table'] = 'glpi_entities';
-      $tab[80]['field'] = 'completename';
-      $tab[80]['name']  = $LANG['entity'][0];
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
 
-      $tab[86]['table']    = $this->getTable();
-      $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = $LANG['entity'][9];
-      $tab[86]['datatype'] = 'bool';
+      $tab[86]['table']          = $this->getTable();
+      $tab[86]['field']          = 'is_recursive';
+      $tab[86]['name']           = __('Child entities');
+      $tab[86]['datatype']       = 'bool';
 
       return $tab;
    }

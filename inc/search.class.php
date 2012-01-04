@@ -3304,10 +3304,10 @@ class Search {
                                                      FROM `glpi_entities`
                                                      UNION
                                                      SELECT 0 AS id,
-                                                            '".addslashes($LANG['entity'][2])."'
+                                                            '".__s('Root entity')."'
                                                                AS name,
                                                             -1 AS entities_id,
-                                                            '".addslashes($LANG['entity'][2])."'
+                                                            '".__s('Root entity')."'
                                                                AS completename,
                                                             '' AS comment, -1 AS level) $AS
                                                 ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
@@ -3765,7 +3765,7 @@ class Search {
 
          case "glpi_entities.completename" :
             if ($data[$NAME.$num."_2"]==0) {  // Set name for Root entity
-               $data[$NAME.$num] = $LANG['entity'][2];
+               $data[$NAME.$num] = __('Root entity');
             }
             break;
 
@@ -4658,7 +4658,7 @@ class Search {
 
             $search['States'][80]['table']     = 'glpi_entities';
             $search['States'][80]['field']     = 'completename';
-            $search['States'][80]['name']      = $LANG['entity'][0];
+            $search['States'][80]['name']      = __('Entity');
 
          } else if ($item = getItemForItemtype($itemtype)) {
             $search[$itemtype] = $item->getSearchOptions();

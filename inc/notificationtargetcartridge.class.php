@@ -77,7 +77,7 @@ class NotificationTargetCartridge extends NotificationTarget {
                     'cartridge.item'      => $LANG['financial'][104],
                     'cartridge.remaining' => __('Remaining'),
                     'cartridge.url'       => __('URL'),
-                    'cartridge.entity'    => $LANG['entity'][0]);
+                    'cartridge.entity'    => __('Entity'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

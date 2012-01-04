@@ -1426,12 +1426,12 @@ class Infocom extends CommonDBChild {
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['name']          = __('Entity');
       $tab[80]['massiveaction'] = false;
 
       $tab[86]['table']    = $this->getTable();
       $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = $LANG['entity'][9];
+      $tab[86]['name']     = __('Child entities');
       $tab[86]['datatype'] = 'bool';
 
       return $tab;

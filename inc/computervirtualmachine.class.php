@@ -242,7 +242,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             echo "<tr><th colspan='2'>".__('List of host machines')."</th></tr>";
 
             echo "<tr><th>".__('Name')."</th>";
-            echo "<th>".$LANG['entity'][0]."</th>";
+            echo "<th>".__('Entity')."</th>";
             echo "</tr>";
 
             $computer = new Computer();
@@ -253,9 +253,12 @@ class ComputerVirtualMachine extends CommonDBChild {
                if ($computer->can($host['computers_id'],'r')) {
                   echo "<a href='computer.form.php?id=".$computer->fields['id']."'>";
                   echo $computer->fields['name']."</a>";
-                  $tooltip = "<table><tr><td>".__('Name')."</td><td>".$computer->fields['name'].'</td></tr>';
-                  $tooltip.= "<tr><td>".__('Serial number')."</td><td>".$computer->fields['serial'].'</td></tr>';
-                  $tooltip.= "<tr><td>".__('Comments')."</td><td>".$computer->fields['comment'].'</td></tr></table>';
+                  $tooltip = "<table><tr><td>".__('Name')."</td><td>".$computer->fields['name'].
+                             '</td></tr>';
+                  $tooltip.= "<tr><td>".__('Serial number')."</td><td>".$computer->fields['serial'].
+                             '</td></tr>';
+                  $tooltip.= "<tr><td>".__('Comments')."</td><td>".$computer->fields['comment'].
+                             '</td></tr></table>';
                   echo "&nbsp; ".Html::showToolTip($tooltip, array('display' => false));
 
                } else {
@@ -350,9 +353,12 @@ class ComputerVirtualMachine extends CommonDBChild {
                   $url = "<a href='computer.form.php?id=".$link_computer."'>";
                   $url.= $computer->fields["name"]."</a>";
 
-                  $tooltip = "<table><tr><td>".__('Name')."</td><td>".$computer->fields['name'].'</td></tr>';
-                  $tooltip.= "<tr><td>".__('Serial number')."</td><td>".$computer->fields['serial'].'</td></tr>';
-                  $tooltip.= "<tr><td>".__('Comments')."</td><td>".$computer->fields['comment'].'</td></tr></table>';
+                  $tooltip = "<table><tr><td>".__('Name')."</td><td>".$computer->fields['name'].
+                             '</td></tr>';
+                  $tooltip.= "<tr><td>".__('Serial number')."</td><td>".$computer->fields['serial'].
+                             '</td></tr>';
+                  $tooltip.= "<tr><td>".__('Comments')."</td><td>".$computer->fields['comment'].
+                             '</td></tr></table>';
 
                   $url .= "&nbsp; ".Html::showToolTip($tooltip, array('display' => false));
                } else {
@@ -449,5 +455,4 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 }
-
 ?>

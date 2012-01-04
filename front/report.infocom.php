@@ -119,7 +119,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
 
       echo "<table class='tab_cadre'><tr><th>".__('Name')."</th>";
       if ($display_entity) {
-         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<th>".__('Entity')."</th>";
       }
 
       echo "<th>".$LANG['financial'][21]."</th><th>".$LANG['financial'][92]."</th>";
@@ -173,7 +173,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
          echo "<tr class='tab_bg_1'><td>".$line["name"]."</td>";
          if ($display_entity) {
             if ($line['entID']==0) {
-               echo "<td>".$LANG['entity'][2]."</td>";
+               echo "<td>".__('Root entity')."</td>";
             } else {
                echo "<td>".$line['entname']."</td>";
             }

@@ -406,7 +406,7 @@ class Software extends CommonDBTM {
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = $LANG['entity'][0];
+      $tab[80]['name']          = __('Entity');
       $tab[80]['massiveaction'] = false;
 
       $tab[72]['table']         = 'glpi_computers_softwareversions';
@@ -427,7 +427,7 @@ class Software extends CommonDBTM {
 
       $tab[86]['table']         = $this->getTable();
       $tab[86]['field']         = 'is_recursive';
-      $tab[86]['name']          = $LANG['entity'][9];
+      $tab[86]['name']          = __('Child entities');
       $tab[86]['datatype']      = 'bool';
       $tab[86]['massiveaction'] = false;
 
@@ -777,7 +777,7 @@ class Software extends CommonDBTM {
                 action='".$link."'>";
          echo "<table class='tab_cadre_fixehov'><tr><th>&nbsp;</th>";
          echo "<th>".__('Name')."</th>";
-         echo "<th>".$LANG['entity'][0]."</th>";
+         echo "<th>".__('Entity')."</th>";
          echo "<th>"._n('Installation', 'Installations', 2)."</th>";
          echo "<th>"._n('License', 'Licenses', 2)."</th></tr>";
 

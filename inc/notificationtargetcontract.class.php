@@ -94,7 +94,7 @@ class NotificationTargetContract extends NotificationTarget {
                     'contract.name'    => __('Name'),
                     'contract.number'  => $LANG['financial'][4],
                     'contract.type'    => __('Type'),
-                    'contract.entity'  => $LANG['entity'][0]);
+                    'contract.entity'  => __('Entity'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
