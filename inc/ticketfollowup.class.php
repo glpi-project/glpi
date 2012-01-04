@@ -606,7 +606,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "</script>\n";
          if ($ticket->fields["status"] != 'solved' && $ticket->fields["status"] != 'closed') {
             echo "<div class='center'>".
-                 "<a href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
+                 "<a class='vsubmit' href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
             echo $LANG['job'][29]."</a></div><br>\n";
          }
       }
