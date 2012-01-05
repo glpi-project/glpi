@@ -492,7 +492,6 @@ class Dropdown {
     * @param $value default value
    **/
    static function showGMT($name, $value='') {
-      global $LANG;
 
       $elements = array(-12, -11, -10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0,
                         1, 2, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9, 9.5, 10, 11, 12, 13);
@@ -501,9 +500,10 @@ class Dropdown {
 
       foreach ($elements as $element) {
          if ($element != 0) {
-            $display_value = $LANG['gmt'][0].($element > 0?" +":" ").$element." ".$LANG['gmt'][1];
+            $display_value = __('GMT').($element > 0?" +":" ").$element." ".
+                             ($element > 0? __('hour') :__('hours'));
          } else {
-            $display_value = $LANG['gmt'][0];
+            $display_value = __('GMT');
          }
 
          $eltvalue = $element*HOUR_TIMESTAMP;
