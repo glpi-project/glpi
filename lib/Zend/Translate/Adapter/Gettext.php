@@ -125,6 +125,7 @@ class Zend_Translate_Adapter_Gettext extends Zend_Translate_Adapter {
                 if ((count($original) > 1) && (count($translate) > 1)) {
                     $this->_data[$locale][$original[0]] = $translate;
                     array_shift($original);
+/// PROBLEM WITH GLPI WHEN singular = plural                    
 //                     foreach ($original as $orig) {
 //                         $this->_data[$locale][$orig] = '';
 //                     }
