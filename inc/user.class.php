@@ -2018,7 +2018,7 @@ class User extends CommonDBTM {
 
       $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'user_dn';
-      $tab[21]['name']          = $LANG['ldap'][26];
+      $tab[21]['name']          = __('User DN');
       $tab[21]['massiveaction'] = false;
 
       $tab[22]['table']         = $this->getTable();
@@ -2395,7 +2395,7 @@ class User extends CommonDBTM {
           && $p['ldap_import']
           && EntityData::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
-         echo "<img alt='' title=\"".$LANG['ldap'][35]."\" src='".$CFG_GLPI["root_doc"].
+         echo "<img alt='' title=\"".__s('Import an user')."\" src='".$CFG_GLPI["root_doc"].
                "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                 onClick=\"var w = window.open('".$CFG_GLPI['root_doc'].
                "/front/popup.php?popup=add_ldapuser&amp;rand=".$p['rand']."&amp;entity=".
@@ -2756,7 +2756,7 @@ class User extends CommonDBTM {
       }
       $changes[0] = '0';
       $changes[1] = '';
-      $changes[2] = addslashes($LANG['ldap'][48]);
+      $changes[2] = __s('Deleted user in LDAP directory');
       Log::history($users_id, 'User', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
    }
 
@@ -2952,7 +2952,7 @@ class User extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>".__('LDAP directory')."</th></tr>";
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['ldap'][26]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_2'><td>".__('User DN')."</td>";
       echo "<td>".$this->fields['user_dn']."</td></tr>\n";
 
       if ($this->fields['user_dn']) {

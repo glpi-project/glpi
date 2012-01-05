@@ -2505,7 +2505,7 @@ class OcsServer extends CommonDBTM {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
             echo "<input class='submit' type='submit' name='update_ok' value=\"".
-                   $LANG['ldap'][15]."\">";
+                   __s('Synchronize')."\">";
             echo "</td></tr>\n";
 
             echo "<tr><th>" . __('Update computers') . "</th><th>" . __('Import date in GLPI') . "</th>";
@@ -2525,7 +2525,7 @@ class OcsServer extends CommonDBTM {
 
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
             echo "<input class='submit' type='submit' name='update_ok' value=\"".
-                   $LANG['ldap'][15]."\">";
+                   __s('Synchronize')."\">";
             echo "<input type=hidden name='ocsservers_id' value='$ocsservers_id'>";
             echo "</td></tr>";
 
@@ -2814,7 +2814,7 @@ class OcsServer extends CommonDBTM {
             echo "<th>" . __('Date') . "</th>\n<th>TAG</th>\n";
             if ($advanced && !$tolinked) {
                echo "<th>" . __('Match the rule ?') . "</th>\n";
-               echo "<th>" . $LANG['ldap'][27] . "</th>\n";
+               echo "<th>" . __('Destination entity') . "</th>\n";
                echo "<th>" . __('Target location') . "</th>\n";
             }
             echo "<th>&nbsp;</th></tr>\n";

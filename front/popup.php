@@ -87,12 +87,12 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          break;
 
       case "add_ldapuser" :
-         Html::popHeader($LANG['ldap'][35], $_SERVER['PHP_SELF']);
+         Html::popHeader(__('Import an user'), $_SERVER['PHP_SELF']);
          include "ldap.import.php";
          break;
 
       case "add_ruleparameter" :
-         Html::popHeader($LANG['ldap'][35], $_SERVER['PHP_SELF']);
+         Html::popHeader(__('Import an user'), $_SERVER['PHP_SELF']);
          include strtolower($_GET['sub_type']."Parameter.php");
          break;
 
