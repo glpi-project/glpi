@@ -1009,16 +1009,16 @@ $LANG['jobrecurrent'][2]="Preliminary creation";
 $LANG['jobrecurrent'][3]="Next creation";
 $LANG['jobrecurrent'][4]="Frequency invalid. It must be greater than the preliminary creation.";
 
+
+
+/// TODO After is ok for migration to gettext
+
 $LANG['jobresolution'][1]="Solution";
 $LANG['jobresolution'][2]="Solutions";
 $LANG['jobresolution'][3]="Approved solution";
 $LANG['jobresolution'][4]="Refused solution";
 $LANG['jobresolution'][5]="If you reject the solution, you must specify a reason";
 $LANG['jobresolution'][6]="Solution template";
-
-
-
-/// TODO After is ok for migration to gettext
 
 $LANG['knowbase'][1]="FAQ";
 $LANG['knowbase'][2]="Unpublished articles";
