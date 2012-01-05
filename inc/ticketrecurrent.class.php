@@ -53,7 +53,7 @@ class TicketRecurrent extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['jobrecurrent'][1];
+      return __('Recurrent tickets');
    }
 
 
@@ -88,7 +88,7 @@ class TicketRecurrent extends CommonDropdown {
       if (Session::haveRight("tickettemplate","r")) {
          switch ($item->getType()) {
             case 'TicketRecurrent' :
-               $ong[1] = $LANG['jobrecurrent'][1];
+               $ong[1] = __('Recurrent tickets');
                return $ong;
          }
       }
@@ -152,7 +152,7 @@ class TicketRecurrent extends CommonDropdown {
                          'step'  => DAY_TIMESTAMP,
                          'max'   => 2*MONTH_TIMESTAMP),
                    array('name'  => 'create_before',
-                         'label' => $LANG['jobrecurrent'][2],
+                         'label' => __('Preliminary creation'),
                          'type'  => 'timestamp',
                          'max'   => 7*DAY_TIMESTAMP,
                          'step'  => HOUR_TIMESTAMP),);
@@ -191,7 +191,7 @@ class TicketRecurrent extends CommonDropdown {
 
       $tab[14]['table']    = $this->getTable();
       $tab[14]['field']    = 'create_before';
-      $tab[14]['name']     = $LANG['jobrecurrent'][2];
+      $tab[14]['name']     = __('Preliminary creation');
       $tab[14]['datatype'] = 'timestamp';
 
       return $tab;
@@ -208,8 +208,8 @@ class TicketRecurrent extends CommonDropdown {
 
       if (!is_null($this->fields['next_creation_date'])) {
          echo "<div class='center'>";
-         echo $LANG['jobrecurrent'][3].'&nbsp;:&nbsp;';
-         echo Html::convDateTime($this->fields['next_creation_date']);
+         //TRANS: %s is the date of next creation
+         echo sprintf(__('Next creation on %s'), Html::convDateTime($this->fields['next_creation_date']));
          echo "</div>";
       }
    }
@@ -231,7 +231,7 @@ class TicketRecurrent extends CommonDropdown {
          return 'NULL';
       }
       if ($create_before > $periodicity) {
-         Session::addMessageAfterRedirect($LANG['jobrecurrent'][4], false, ERROR);
+         Session::addMessageAfterRedirect(__('Invalid frequency. It must be greater than the preliminary creation.'), false, ERROR);
          return 'NULL';
       }
 
@@ -260,7 +260,7 @@ class TicketRecurrent extends CommonDropdown {
 
       switch ($name) {
          case 'ticketrecurrent' :
-            return array('description' => $LANG['jobrecurrent'][1]);
+            return array('description' => __('Recurrent tickets'));
       }
       return array();
    }
