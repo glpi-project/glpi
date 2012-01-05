@@ -269,9 +269,9 @@ class ComputerDisk extends CommonDBChild {
          }
 
          if ($canedit &&!(!empty($withtemplate) && $withtemplate == 2)) {
-            echo "<tr class='tab_bg_2'><th colspan='7'>";
-            echo "<a href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
-                   $withtemplate."'>".__('Add a volume')."</a></th></tr>";
+            echo "<tr><td colspan='7' class='center'>";
+            echo "<a class='vsubmit' href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
+                   $withtemplate."'>".__('Add a volume')."</a></td></tr>";
          }
          echo "</table>";
       }

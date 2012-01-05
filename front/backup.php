@@ -563,7 +563,7 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != "") {
 if (Session::haveRight("check_update","r")) {
    echo "<div class='center spaced'><table class='tab_glpi'>";
    echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>";
-   echo "<a href='backup.php?action=check_version' class='icon_consol b'>".
+   echo "<a href='backup.php?action=check_version' class='vsubmit'>".
          __('Check if a new version is available')."</a>";
    echo "</td></tr></table></div>";
 }
@@ -572,11 +572,11 @@ if (Session::haveRight("check_update","r")) {
 echo "<div class='center'><table class='tab_glpi'><tr><td>".
      "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".__s('Deleted')."\">".
      "</td>";
-echo "<td><a class='icon_consol b'
+echo "<td><a class='vsubmit'
            href=\"javascript:confirmAction('".addslashes(__('Backup the database ?'))."',
                                            'backup.php?dump=dump')\">".__('SQL Dump').
      "</a>&nbsp;</td>";
-echo "<td><a class='icon_consol b'
+echo "<td><a class='vsubmit'
            href=\"javascript:confirmAction('".addslashes(__('Backup the database ?'))."',
                                            'backup.php?xmlnow=xmlnow')\">".__('XML Dump').
       "</a>&nbsp;</td>";
