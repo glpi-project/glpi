@@ -1200,7 +1200,7 @@ class Html {
       if (Session::haveRight("budget", "r")) {
          $menu['financial']['default'] = '/front/budget.php';
 
-         $menu['financial']['content']['budget']['title']           = -n('Budget', 'Budgets', 2);
+         $menu['financial']['content']['budget']['title']           = _n('Budget', 'Budgets', 2);
          $menu['financial']['content']['budget']['shortcut']        = '';
          $menu['financial']['content']['budget']['page']            = '/front/budget.php';
          $menu['financial']['content']['budget']['links']['search'] = '/front/budget.php';
@@ -1277,7 +1277,7 @@ class Html {
          if (Session::haveRight("knowbase","r")) {
             $menu['utils']['content']['knowbase']['title']        = __('Knowledge base');
          } else {
-            $menu['utils']['content']['knowbase']['title']        = $LANG['knowbase'][1];
+            $menu['utils']['content']['knowbase']['title']        = __('FAQ');
          }
          $menu['utils']['content']['knowbase']['shortcut']        = 'b';
 
@@ -2574,7 +2574,7 @@ class Html {
       if (Session::haveRight("faq","r")) {
          echo "<li id='menu5' >";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php' title=\"".
-                $LANG['knowbase'][1]."\" class='itemP'>".__('FAQ')."</a>";
+                __s('FAQ')."\" class='itemP'>".__('FAQ')."</a>";
          echo "</li>";
       }
 

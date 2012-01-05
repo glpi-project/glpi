@@ -131,7 +131,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
                                                 'used'         => $used));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['knowbase'][14] . "&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>" . __('Subject') . "</td>";
       echo "<td colspan='3'>";
       echo "<input type='text' name='subject'size='100' value='".$this->fields["subject"]."'>";
       echo "</td></tr>";
@@ -246,7 +246,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'subject';
-      $tab[2]['name']          = $LANG['knowbase'][14];
+      $tab[2]['name']          = __('Subject');
       $tab[2]['massiveaction'] = false;
 
       $tab[3]['table']         = $this->getTable();

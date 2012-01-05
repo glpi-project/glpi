@@ -1016,11 +1016,15 @@ $LANG['jobresolution'][4]="Refused solution";
 $LANG['jobresolution'][5]="If you reject the solution, you must specify a reason";
 $LANG['jobresolution'][6]="Solution template";
 
+
+
+/// TODO After is ok for migration to gettext
+
 $LANG['knowbase'][1]="FAQ";
 $LANG['knowbase'][2]="Unpublished articles";
 $LANG['knowbase'][3]="Unpublished";
 $LANG['knowbase'][5]="Put this item in the FAQ";
-$LANG['knowbase'][6]="Select a category for this item :";
+$LANG['knowbase'][6]="Select a category for this item:";
 $LANG['knowbase'][7]="Delete this item from the FAQ";
 $LANG['knowbase'][8]="Edit this item";
 $LANG['knowbase'][9]="Delete this item";
@@ -1028,15 +1032,12 @@ $LANG['knowbase'][10]="This item is part of the FAQ";
 $LANG['knowbase'][11]="This item is not part of the FAQ";
 $LANG['knowbase'][13]="Category name";
 $LANG['knowbase'][14]="Subject";
-$LANG['knowbase'][15]="Contents";
+$LANG['knowbase'][15]="Content";
 $LANG['knowbase'][24]="Access to the Frequently Asked Questions";
 $LANG['knowbase'][26]="Views";
 $LANG['knowbase'][27]="On";
-$LANG['knowbase'][29]="Recent Entries";
+$LANG['knowbase'][29]="Recent entries";
 $LANG['knowbase'][30]="Most popular questions";
-
-
-/// TODO After is ok for migration to gettext
 
 $LANG['ldap'][0]="Bulk import users from a LDAP directory";
 $LANG['ldap'][1]="Synchronizing already imported users";
