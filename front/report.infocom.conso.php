@@ -195,8 +195,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
                $valeurnettegraphtot[$key] += $valeurnettegraph[$key];
             }
 
-            Stat::showGraph(array($LANG['financial'][81] => $valeurnettegraphdisplay),
-                            array('title' => $LANG['financial'][81],
+            Stat::showGraph(array(__('Account net value') => $valeurnettegraphdisplay),
+                            array('title' => __('Account net value'),
                                   'width' => 400));
 
             echo "</td></tr>\n";
@@ -261,8 +261,8 @@ echo "<div class='center'><h3>$tmpmsg</h3></div>\n";
 
 if (count($valeurnettegraphtot) >0) {
    $valeurnettegraphtotdisplay = array_map('round', $valeurnettegraphtot);
-   Stat::showGraph(array($LANG['financial'][81] => $valeurnettegraphtotdisplay),
-                   array('title' => $LANG['financial'][81]));
+   Stat::showGraph(array(__('Account net value') => $valeurnettegraphtotdisplay),
+                   array('title' => __('Account net value')));
 
 }
 if (count($valeurgraphtot) >0) {

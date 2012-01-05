@@ -353,7 +353,7 @@ class Contact extends CommonDBTM{
 
       echo "<tr><th>".__('Supplier')."</th>";
       echo "<th>".__('Entity')."</th>";
-      echo "<th>".$LANG['financial'][79]."</th>";
+      echo "<th>".__('Third party type')."</th>";
       echo "<th>".$LANG['help'][35]."</th>";
       echo "<th>".__('Fax')."</th>";
       echo "<th>".__('Website')."</th>";

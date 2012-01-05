@@ -202,7 +202,7 @@ class Contract extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['financial'][107]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Renewal')."</td><td>";
       self::dropdownContractRenewal("renewal", $this->fields["renewal"]);
       echo "</td>";
       echo "<td>".__('Invoice period')."</td>";
@@ -216,7 +216,7 @@ class Contract extends CommonDBTM {
       _e(' month');
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['financial'][83]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__s('Max number of items')."</td><td>";
       Dropdown::showInteger("max_links_allowed", $this->fields["max_links_allowed"], 1, 200, 1,
                             array(0 => __('Unlimited')));
       echo "</td>";
@@ -454,12 +454,12 @@ class Contract extends CommonDBTM {
 
       $tab[23]['table']         = $this->getTable();
       $tab[23]['field']         = 'renewal';
-      $tab[23]['name']          = $LANG['financial'][107];
+      $tab[23]['name']          = __('Renewal');
       $tab[23]['massiveaction'] = false;
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'expire';
-      $tab[12]['name']          = $LANG['financial'][98];
+      $tab[12]['name']          = __('Expiration');
       $tab[12]['datatype']      = 'date_delay';
       $tab[12]['datafields'][1] = 'begin_date';
       $tab[12]['datafields'][2] = 'duration';
@@ -470,7 +470,7 @@ class Contract extends CommonDBTM {
 
       $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'expire_notice';
-      $tab[13]['name']          = $LANG['financial'][99];
+      $tab[13]['name']          = __('Expiration date + notice');
       $tab[13]['datatype']      = 'date_delay';
       $tab[13]['datafields'][1] = 'begin_date';
       $tab[13]['datafields'][2] = 'duration';
@@ -608,35 +608,35 @@ class Contract extends CommonDBTM {
                  "glpisearchcount=2&amp;sort=12&amp;order=DESC&amp;start=0&amp;field[0]=12&amp;".
                  "field[1]=12&amp;link[1]=AND&amp;contains[0]=%3C0&amp;contains[1]=%3E-30".
                   "&amp;searchtype[0]=contains&amp;searchtype[1]=contains\">".
-                 $LANG['financial'][93]."</a> </td>";
+                 __('Contracts expired in the last 30 days')."</a> </td>";
       echo "<td>$contract0</td></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
                  "glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;".
                  "contains%5B1%5D=%3C7&amp;field%5B1%5D=12&amp;sort=12&amp;is_deleted=0&amp;start=0".
                   "&amp;searchtype[0]=contains&amp;searchtype[1]=contains\">".
-                 $LANG['financial'][94]."</a></td>";
+                 __('Contracts expiring in less than 7 days')."</a></td>";
       echo "<td>".$contract7."</td></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
                  "glpisearchcount=2&amp;contains%5B0%5D=%3E6&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;".
                  "contains%5B1%5D=%3C30&amp;field%5B1%5D=12&amp;sort=12&amp;is_deleted=0".
                   "&amp;searchtype[0]=contains&amp;searchtype[1]=contains&amp;start=0\">".
-                 $LANG['financial'][95]."</a></td>";
+                 __('Contracts expiring in less than 30 days')."</a></td>";
       echo "<td>".$contract30."</td></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
                  "glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=13&amp;link%5B1%5D=AND&amp;".
                  "contains%5B1%5D=%3C7&amp;field%5B1%5D=13&amp;sort=12&amp;is_deleted=0".
                   "&amp;searchtype[0]=contains&amp;searchtype[1]=contains&amp;start=0\">".
-                 $LANG['financial'][96]."</a></td>";
+                 __('Contracts where notice begins in less than 7 days')."</a></td>";
       echo "<td>".$contractpre7."</td></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
                  "glpisearchcount=2&amp;sort=13&amp;order=DESC&amp;start=0&amp;field[0]=13&amp;".
                  "field[1]=13&amp;link[1]=AND&amp;contains[0]=%3E6&amp;contains[1]=%3C30".
                   "&amp;searchtype[0]=contains&amp;searchtype[1]=contains\">".
-                 $LANG['financial'][97]."</a></td>";
+                 __('Contracts where notice begins in less than 30 days')."</a></td>";
       echo "<td>".$contractpre30."</td></tr>";
       echo "</table>";
    }
@@ -690,7 +690,7 @@ class Contract extends CommonDBTM {
       echo "</th></tr>";
       echo "<tr><th>".__('Supplier')."</th>";
       echo "<th>".__('Entity')."</th>";
-      echo "<th>".$LANG['financial'][79]."</th>";
+      echo "<th>".__('Third party type')."</th>";
       echo "<th>".$LANG['help'][35]."</th>";
       echo "<th>".__('Website')."</th>";
       echo "<th>&nbsp;</th></tr>";
@@ -1342,11 +1342,10 @@ class Contract extends CommonDBTM {
     * @return Nothing (display)
    **/
    static function dropdownContractRenewal($name, $value=0) {
-      global $LANG;
 
       $tmp[0] = __('Never');
-      $tmp[1] = $LANG['financial'][105];
-      $tmp[2] = $LANG['financial'][106];
+      $tmp[1] = __('Tacit');
+      $tmp[2] = __('Express');
       Dropdown::showFromArray($name, $tmp, array('value' => $value));
    }
 
@@ -1359,14 +1358,13 @@ class Contract extends CommonDBTM {
     * @return string
    **/
    static function getContractRenewalName($value) {
-      global $LANG;
 
       switch ($value) {
          case 1 :
-            return $LANG['financial'][105];
+            return __('Tacit');
 
          case 2 :
-            return $LANG['financial'][106];
+            return __('Express');
 
          default :
             return "";
@@ -1382,11 +1380,10 @@ class Contract extends CommonDBTM {
     * @return the ID of the renewal
    **/
    static function getContractRenewalIDByName($value) {
-      global $LANG;
 
-      if (stristr($value,$LANG['financial'][105])) {
+      if (stristr($value, __('Tacit'))) {
          return 1;
-      } else if (stristr($value,$LANG['financial'][106])) {
+      } else if (stristr($value, __('Express'))) {
          return 2;
       }
       return 0;

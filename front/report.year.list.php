@@ -133,7 +133,7 @@ if (isset($query) && count($query)) {
          }
          echo "<th>".__('Location')."</th>";
          echo "<th>".__s('Date of purchase')."</th>";
-         echo "<th>".$LANG['financial'][80]."</th>";
+         echo "<th>".__s('Warranty expiration date')."</th>";
          echo "<th>".__('Contract Type')."</th>";
          echo "<th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th></tr>";

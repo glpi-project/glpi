@@ -124,7 +124,7 @@ class NotificationTargetReservation extends NotificationTarget {
    function getTags() {
       global $LANG;
 
-      $tags_all = array('reservation.item'     => $LANG['financial'][104],
+      $tags_all = array('reservation.item'     => __('Associated item'),
                         'reservation.itemtype' => __('Item type'),
                         'reservation.url'      => __('URL'));
 
@@ -139,7 +139,7 @@ class NotificationTargetReservation extends NotificationTarget {
                                  'reservation.end'         => __('End date'),
                                  'reservation.comment'     => __('Comments'),
                                  'reservation.item.entity' => __('Entity'),
-                                 'reservation.item.name'   => $LANG['financial'][104],
+                                 'reservation.item.name'   => __('Associated item'),
                                  'reservation.item.tech'   => __('Technician in charge of the hardware'));
 
       foreach ($tags_except_alert as $tag => $label) {

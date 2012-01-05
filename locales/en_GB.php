@@ -714,16 +714,13 @@ $LANG['financial'][66]="Associated contracts";
 $LANG['financial'][67]="No associated supplier";
 $LANG['financial'][68]="Enable the financial and administrative information";
 $LANG['financial'][69]="Contract renewal period";
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['financial'][76]="Startup date";
 $LANG['financial'][77]="Amortization coefficient";
-$LANG['financial'][78]="Warranty ends value";
+$LANG['financial'][78]="Warranty extension value";
 $LANG['financial'][79]="Third party type";
 $LANG['financial'][80]="Warranty expiration date";
 $LANG['financial'][81]="Account net value";
-$LANG['financial'][82]="Invoice Number";
+$LANG['financial'][82]="Invoice number";
 $LANG['financial'][83]="Max number of items";
 $LANG['financial'][84]="For this type of element, the financial and administrative information are only a model for the elements which you should add.";
 $LANG['financial'][85]="Requested item not found";
@@ -734,18 +731,18 @@ $LANG['financial'][89]="TCO (value + tracking cost)";
 $LANG['financial'][90]="Monthly TCO";
 $LANG['financial'][91]="TCO";
 $LANG['financial'][92]="ANV";
-$LANG['financial'][93]="Contracts expired - last 30 days";
+$LANG['financial'][93]="Contracts expired in the last 30 days";
 $LANG['financial'][94]="Contracts expiring in less than 7 days";
 $LANG['financial'][95]="Contracts expiring in less than 30 days";
 $LANG['financial'][96]="Contracts where notice begins in less than 7 days";
 $LANG['financial'][97]="Contracts where notice begins in less than 30 days";
 $LANG['financial'][98]="Expiration";
-$LANG['financial'][99]="Expiration date + Notice";
+$LANG['financial'][99]="Expiration date + notice";
 $LANG['financial'][100]="Postal Code";
 $LANG['financial'][101]="City";
 $LANG['financial'][102]="State";
 $LANG['financial'][103]="Country";
-$LANG['financial'][104]="Associated Item";
+$LANG['financial'][104]="Associated item";
 $LANG['financial'][105]="Tacit";
 $LANG['financial'][106]="Express";
 $LANG['financial'][107]="Renewal";
@@ -756,6 +753,9 @@ $LANG['financial'][111]="Autofill dates";
 $LANG['financial'][112]="Fill when shifting to state";
 $LANG['financial'][113]="No autofill";
 $LANG['financial'][114]="Date of last physical inventory";
+
+/// TODO Before is ok for migration to gettext
+
 
 $LANG['gmt'][0]="GMT";
 $LANG['gmt'][1]="hour(s)";

@@ -269,21 +269,21 @@ class Entity extends CommonTreeDropdown {
 
       $tab[11]['table']         = 'glpi_entitydatas';
       $tab[11]['field']         = 'town';
-      $tab[11]['name']          = $LANG['financial'][101];
+      $tab[11]['name']          = __('City');
       $tab[11]['massiveaction'] = false;
       $tab[11]['joinparams']    = array('jointype' => 'child');
       $tab[11]['datatype']      = 'string';
 
       $tab[12]['table']         = 'glpi_entitydatas';
       $tab[12]['field']         = 'state';
-      $tab[12]['name']          = $LANG['financial'][102];
+      $tab[12]['name']          = __('State');
       $tab[12]['massiveaction'] = false;
       $tab[12]['joinparams']    = array('jointype' => 'child');
       $tab[12]['datatype']      = 'string';
 
       $tab[13]['table']         = 'glpi_entitydatas';
       $tab[13]['field']         = 'country';
-      $tab[13]['name']          = $LANG['financial'][103];
+      $tab[13]['name']          = __('Country');
       $tab[13]['massiveaction'] = false;
       $tab[13]['joinparams']    = array('jointype' => 'child');
       $tab[13]['datatype']      = 'string';
@@ -354,7 +354,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[25]['table']         = 'glpi_entitydatas';
       $tab[25]['field']         = 'postcode';
-      $tab[25]['name']          = $LANG['financial'][100];
+      $tab[25]['name']          = __('Postal Code');
       $tab[25]['joinparams']    = array('jointype' => 'child');
       $tab[25]['datatype']      = 'string';
 
@@ -464,7 +464,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[41]['table']         = 'glpi_entitydatas';
       $tab[41]['field']         = 'autofill_use_date';
-      $tab[41]['name']          = $LANG['financial'][76];
+      $tab[41]['name']          = __('Startup date');
       $tab[41]['massiveaction'] = false;
       $tab[41]['nosearch']      = true;
       $tab[41]['joinparams']    = array('jointype' => 'child');

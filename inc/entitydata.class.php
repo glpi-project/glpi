@@ -239,21 +239,21 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][100]."</td>";
+      echo "<td>".__('Postal Code')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata,"postcode", array('size' => 7));
-      echo "&nbsp;".$LANG['financial'][101]."";
+      _e(' City ');
       Html::autocompletionTextField($entdata, "town", array('size' => 27));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][102]."</td>";
+      echo "<td>".__('State')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "state");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][103]."</td>";
+      echo "<td>".__('Country')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "country");
       echo "</td></tr>";
@@ -419,14 +419,14 @@ class EntityData extends CommonDBChild {
       echo "<tr><th colspan='4'>".__('Autofil dates for financial and administrative information')."</th></tr>";
 
 
-      $options[0] = $LANG['financial'][113];
+      $options[0] = __('No autofill');
       if ($ID > 0) {
          $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
       foreach (getAllDatasFromTable('glpi_states') as $state) {
-         $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']] = $LANG['financial'][112].' : '.
-                                                                $state['name'];
+         $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
+            = sprintf(__('Fill when shifting to state %s'), $state['name']);
       }
 
       $options[Infocom::COPY_WARRANTY_DATE] = __('Copy the start date of warranty');
@@ -456,7 +456,7 @@ class EntityData extends CommonDBChild {
       echo "</td>";
 
       //Use date
-      echo "<td> " . $LANG['financial'][76] . "&nbsp;: </td>";
+      echo "<td> " . __('Startup date') . " </td>";
       echo "<td>";
       $options[Infocom::COPY_DELIVERY_DATE] = __('Copy the delivery date');
       Dropdown::showFromArray('autofill_use_date', $options,
@@ -467,7 +467,7 @@ class EntityData extends CommonDBChild {
       echo "<tr class='tab_bg_2'>";
       echo "<td> " . __('Start date of warranty') . "</td>";
       echo "<td>";
-      $options = array(0                           => $LANG['financial'][113],
+      $options = array(0                           => __('No autofill'),
                        Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
                        Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
                        Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'));
@@ -1314,12 +1314,13 @@ class EntityData extends CommonDBChild {
                   if (strstr($values[$field], '_')) {
                      list($type,$sid) = explode('_', $values[$field], 2);
                      if ($type == Infocom::ON_STATUS_CHANGE) {
-                        return $LANG['financial'][112].' : '.
-                               Dropdown::getDropdownName('glpi_states', $sid);
+                        // TRANS %s is the name of the state
+                        return sprintf(__('Fill when shifting to state %s'),
+                                       Dropdown::getDropdownName('glpi_states', $sid));
                      }
                   }
             }
-            return $LANG['financial'][113];
+            return __('No autofill');
 
          case 'inquest_config' :
             if ($values[$field] == self::CONFIG_PARENT) {

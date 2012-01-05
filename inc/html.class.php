@@ -1200,7 +1200,7 @@ class Html {
       if (Session::haveRight("budget", "r")) {
          $menu['financial']['default'] = '/front/budget.php';
 
-         $menu['financial']['content']['budget']['title']           = $LANG['financial'][110];
+         $menu['financial']['content']['budget']['title']           = -n('Budget', 'Budgets', 2);
          $menu['financial']['content']['budget']['shortcut']        = '';
          $menu['financial']['content']['budget']['page']            = '/front/budget.php';
          $menu['financial']['content']['budget']['links']['search'] = '/front/budget.php';

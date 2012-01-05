@@ -40,13 +40,9 @@ class Budget extends CommonDropdown{
    // From CommonDBTM
    public $dohistory = true;
 
-   static function getTypeName($nb=0) {
-      global $LANG;
 
-      if ($nb>1) {
-         return $LANG['financial'][110];
-      }
-      return $LANG['financial'][87];
+   static function getTypeName($nb=0) {
+      return _n('Budget', 'Budgets', $nb);
    }
 
 
@@ -494,7 +490,7 @@ class Budget extends CommonDropdown{
 
          $colspan = count($found_types)+2;
          echo "<div class='spaced'><table class='tab_cadre'>";
-         echo "<tr><th colspan='$colspan'>".$LANG['financial'][108]."</th></tr>";
+         echo "<tr><th colspan='$colspan'>".__('Total spent on the budget')."</th></tr>";
          echo "<tr><th>".__('Entity')."</th>";
          if (count($found_types)) {
             foreach ($found_types as $type => $typename) {
@@ -526,11 +522,12 @@ class Budget extends CommonDropdown{
 
          echo "<tr class='tab_bg_1'><th colspan='$colspan'><br></th></tr>";
          echo "<tr class='tab_bg_1'>";
-         echo "<td class='right' colspan='".($colspan-1)."'>".$LANG['financial'][108]."</td>";
+         echo "<td class='right' colspan='".($colspan-1)."'>".__('Total spent on the budget')."</td>";
          echo "<td class='right b'>".Html::formatNumber($total)."</td></tr>";
          if ($_SESSION['glpiactive_entity'] == $budget->fields['entities_id']) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td class='right' colspan='".($colspan-1)."'>".$LANG['financial'][109]."</td>";
+            echo "<td class='right' colspan='".($colspan-1)."'>".__('Total remaining on the budget').
+                 "</td>";
             echo "<td class='right b'>".Html::formatNumber($budget->fields['value'] - $total).
                  "</td></tr>";
          }

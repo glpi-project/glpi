@@ -35,9 +35,8 @@ if (!defined('GLPI_ROOT')) {
 class NotificationTargetContract extends NotificationTarget {
 
    function getEvents() {
-      global $LANG;
 
-      return array('end'    => $LANG['financial'][86],
+      return array('end'    => __('End of contract'),
                    'notice' => __('Notice'));
    }
 

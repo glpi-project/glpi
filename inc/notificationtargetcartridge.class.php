@@ -74,7 +74,7 @@ class NotificationTargetCartridge extends NotificationTarget {
 
       $tags = array('cartridge.action'    => _n('Event', 'Events', 1),
                     'cartridge.reference' => __('Reference'),
-                    'cartridge.item'      => $LANG['financial'][104],
+                    'cartridge.item'      => __('Associated item'),
                     'cartridge.remaining' => __('Remaining'),
                     'cartridge.url'       => __('URL'),
                     'cartridge.entity'    => __('Entity'));

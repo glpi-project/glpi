@@ -78,7 +78,7 @@ class NotificationTargetInfocom extends NotificationTarget {
 
       $tags = array('infocom.action'         => _n('Event', 'Events', 1),
                     'infocom.itemtype'       => __('Item type'),
-                    'infocom.item'           => $LANG['financial'][104],
+                    'infocom.item'           => __('Associated item'),
                     'infocom.expirationdate' => __('Expiration date'),
                     'infocom.entity'         => __('Entity'));
 
