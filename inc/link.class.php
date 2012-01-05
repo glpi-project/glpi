@@ -117,7 +117,7 @@ class Link extends CommonDBTM {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_1'><td height='23'>".$LANG['links'][6]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td height='23'>".__('Valid tags')."</td>";
       echo "<td colspan='3'>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK],
                             [DOMAIN], [SERIAL], [OTHERSERIAL], [USER], [GROUP]</td></tr>";
 
@@ -126,12 +126,12 @@ class Link extends CommonDBTM {
       Html::autocompletionTextField($this, "name", array('size' => 84));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['links'][1]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Link or filename')."</td>";
       echo "<td colspan='2'>";
       Html::autocompletionTextField($this, "link", array('size' => 84));
       echo "</td><td width='1'></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['links'][9]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".__('File content')."</td>";
       echo "<td colspan='3'>";
       echo "<textarea name='data' rows='10' cols='96'>".$this->fields["data"]."</textarea>";
       echo "</td></tr>";
@@ -163,7 +163,7 @@ class Link extends CommonDBTM {
 
       $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'link';
-      $tab[3]['name']      = $LANG['links'][1];
+      $tab[3]['name']      = __('Link or filename');
       $tab[3]['datatype']  = 'string';
 
       $tab[80]['table']         = 'glpi_entities';
@@ -388,7 +388,7 @@ class Link extends CommonDBTM {
 
       } else {
          echo "<tr class='tab_bg_2'><th>"._n('External link', 'External links',2)."</th></tr>";
-         echo "<tr class='tab_bg_2'><td class='center b'>".$LANG['links'][7]."</td></tr>";
+         echo "<tr class='tab_bg_2'><td class='center b'>".__('No link defined')."</td></tr>";
          echo "</table></div>";
       }
    }
