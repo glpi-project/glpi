@@ -1084,14 +1084,14 @@ $LANG['ldap'][54]="Enable filtering by date";
 $LANG['ldap'][55]="Disable filtering by date";
 $LANG['ldap'][56]="Weeks";
 
+
+/// TODO After is ok for migration to gettext
+
 $LANG['links'][1]="Link or Filename";
 $LANG['links'][4]="Hardware types associated";
 $LANG['links'][6]="Valid tags";
 $LANG['links'][7]="No link defined";
 $LANG['links'][9]="File content";
-
-/// TODO After is ok for migration to gettext
-
 
 $LANG['log'][1]="system";
 $LANG['log'][16]="planning";

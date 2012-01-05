@@ -78,7 +78,7 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
 
       if ($_REQUEST['inquest_config']==2 ) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>".$LANG['links'][6]."&nbsp;:&nbsp;".
+         echo "<td>".__('Valid tags')."</td><td>".
                "[TICKET_ID] [TICKET_NAME] [TICKET_CREATEDATE] [TICKET_SOLVEDATE] ".
                "[REQUESTTYPE_ID] [REQUESTTYPE_NAME] [ITEMTYPE] [ITEM_ID] [ITEM_NAME] ".
                "[TICKET_PRIORITY] [TICKETCATEGORY_ID] [TICKETCATEGORY_NAME] [TICKETTYPE_ID] ".
