@@ -165,7 +165,7 @@ class Rule extends CommonDBTM {
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'description';
-      $tab[4]['name']          = $LANG['joblist'][6];
+      $tab[4]['name']          = __('Description');
       $tab[4]['datatype']      = 'string';
       $tab[4]['massiveaction'] = false;
 
@@ -229,7 +229,7 @@ class Rule extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>".$LANG['joblist'][6]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('Description')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "description");
       echo "</td></tr>\n";
@@ -1765,7 +1765,7 @@ class Rule extends CommonDBTM {
       echo "<td>".__('Name') . "</td><td>";
       Html::autocompletionTextField($this, "name", array('value' => '',
                                                          'size'  => 33));
-      echo "</td><td>".$LANG['joblist'][6] . "</td><td>";
+      echo "</td><td>".__('Description') . "</td><td>";
       Html::autocompletionTextField($this, "description", array('value' => '',
                                                                 'size'  => 33));
       echo "</td><td>".__('Logical operator') . "</td><td>";
@@ -1816,7 +1816,7 @@ class Rule extends CommonDBTM {
             echo "<th></th>";
          }
          echo "<th>" . $this->getTitle() . "</th>";
-         echo "<th>" . $LANG['joblist'][6] . "</th>";
+         echo "<th>" . __('Description') . "</th>";
          echo "<th>" . __('Active') . "</th>";
          echo "</tr>\n";
 

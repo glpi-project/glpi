@@ -81,7 +81,7 @@ class NotificationTargetCrontask extends NotificationTarget {
       $tags = array('crontask.action'      => __('Monitoring of automatic actions'),
                     'crontask.url'         => __('URL'),
                     'crontask.name'        => __('Name'),
-                    'crontask.description' => $LANG['joblist'][6]);
+                    'crontask.description' => __('Description'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

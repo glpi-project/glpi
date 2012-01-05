@@ -324,7 +324,7 @@ class Reminder extends CommonDBTM {
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'text';
-      $tab[4]['name']          = $LANG['joblist'][6];
+      $tab[4]['name']          = __('Description');
       $tab[4]['massiveaction'] = false;
       $tab[4]['datatype']      = 'text';
       $tab[4]['htmltext']      = true;

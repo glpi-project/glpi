@@ -84,7 +84,7 @@ class RuleRight extends Rule {
       echo "<td>".__('Name') . "</td><td>";
       Html::autocompletionTextField($this, "name", array('value' => '',
                                                          'size'  => 33));
-      echo '</td><td>'.$LANG['joblist'][6] . "</td><td>";
+      echo '</td><td>'.__('Description') . "</td><td>";
       Html::autocompletionTextField($this, "description", array('value' => '',
                                                                 'size'  => 33));
       echo "</td><td>".__('Logical operator') . "</td><td>";

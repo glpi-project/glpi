@@ -166,7 +166,7 @@ switch($_GET["type"]) {
       if ($val1 > 1) {
          $prev = $val1-1;
       }
-      $title = $LANG['joblist'][2]."&nbsp;: ".$item->getPriorityName($_GET["id"]);
+      $title = sprintf(__('Priority: %s'), $item->getPriorityName($_GET["id"]));
       break;
 
    case "urgency" :
@@ -179,7 +179,7 @@ switch($_GET["type"]) {
       if ($val1 > 1) {
          $prev = $val1-1;
       }
-      $title = $LANG['joblist'][29]."&nbsp;: ".$item->getUrgencyName($_GET["id"]);
+      $title = sprintf(__('Urgency: %s'), $item->getUrgencyName($_GET["id"]));
       break;
 
    case "impact" :
@@ -192,7 +192,7 @@ switch($_GET["type"]) {
       if ($val1 > 1) {
          $prev = $val1-1;
       }
-      $title = $LANG['joblist'][30]."&nbsp;: ".$item->getImpactName($_GET["id"]);
+      $title = sprintf(__('Impact: %s'), $item->getImpactName($_GET["id"]));
       break;
 
    case "usertitles_id" :

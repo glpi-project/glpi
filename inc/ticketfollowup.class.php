@@ -466,7 +466,7 @@ class TicketFollowup  extends CommonDBTM {
       echo "&nbsp;".$LANG['job'][45]."&nbsp;: ";
       Dropdown::show('RequestType', array('value' => RequestType::getDefault('helpdesk')));
 
-      echo "<br>".$LANG['joblist'][6]."&nbsp;: ";
+      echo "<br>".__('Description')." ";
       echo "<textarea name='content' cols='50' rows='6'></textarea>&nbsp;";
 
       echo "<input type='hidden' name='is_private' value='".$_SESSION['glpifollowup_private']."'>";
@@ -506,7 +506,7 @@ class TicketFollowup  extends CommonDBTM {
          $this->showFormHeader($options);
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td rowspan='3' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
+         echo "<td rowspan='3' class='middle right'>".__('Description')."</td>";
          echo "<td class='center middle' rowspan='3'><textarea name='content' cols='50' rows='6'>".
                $this->fields["content"]."</textarea></td>";
          if ($this->fields["date"]) {
@@ -535,7 +535,7 @@ class TicketFollowup  extends CommonDBTM {
          $this->showFormHeader($options);
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
+         echo "<td class='middle right'>".__('Description')."</td>";
          echo "<td class='center middle'><textarea name='content' cols='80' rows='6'>".
                $this->fields["content"]."</textarea>";
          echo "<input type='hidden' name='tickets_id' value='".$this->fields["tickets_id"]."'>";
@@ -613,7 +613,7 @@ class TicketFollowup  extends CommonDBTM {
       } else {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>".__('Type')."</th><th>" . __('Date') . "</th>";
-         echo "<th>" . $LANG['joblist'][6] . "</th>";//"<th>" . $LANG['job'][31] . "</th>";
+         echo "<th>" . __('Description') . "</th>";//"<th>" . $LANG['job'][31] . "</th>";
          echo "<th>" . __('Writer') . "</th>";
          if ($showprivate) {
             echo "<th>" . __('Private') . "</th>";
@@ -654,7 +654,7 @@ class TicketFollowup  extends CommonDBTM {
       if ($DB->numrows($result)>0) {
          $out .= "<div class='center'><table class='tab_cadre' width='100%'>\n
                   <tr><th>".__('Date')."</th><th>".$LANG['job'][4]."</th>
-                  <th>".$LANG['joblist'][6]."</th></tr>\n";
+                  <th>".__('Description')."</th></tr>\n";
 
          while ($data=$DB->fetch_array($result)) {
             $out .= "<tr class='tab_bg_3'>
@@ -716,7 +716,7 @@ class TicketFollowup  extends CommonDBTM {
 
       $tab[1]['table'] = $this->getTable();
       $tab[1]['field'] = 'content';
-      $tab[1]['name']  = $LANG['joblist'][6];
+      $tab[1]['name']  = __('Description');
 
       $tab[2]['table']        = 'glpi_requesttypes';
       $tab[2]['field']        = 'name';
