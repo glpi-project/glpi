@@ -268,7 +268,7 @@ class Rule extends CommonDBTM {
                $url = $CFG_GLPI["root_doc"];
             }
             echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-            echo "<a href='#' onClick=\"var w=window.open('".$url.
+            echo "<a class='vsubmit' href='#' onClick=\"var w=window.open('".$url.
                   "/front/popup.php?popup=test_rule&amp;sub_type=".$this->getType().
                   "&amp;rules_id=".$this->fields["id"]."' ,'glpipopup', 'height=400,".
                   "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".
