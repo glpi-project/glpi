@@ -345,7 +345,7 @@ class Consumable extends CommonDBTM {
     *@return Nothing (displays)
     **/
    static function showForConsumableItem(ConsumableItem $consitem, $show_old=0) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $tID = $consitem->getField('id');
       if (!$consitem->can($tID,'r')) {

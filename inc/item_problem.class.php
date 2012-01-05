@@ -90,7 +90,7 @@ class Item_Problem extends CommonDBRelation{
    *
    **/
    static function showForProblem(Problem $problem) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $instID = $problem->fields['id'];
 
@@ -235,7 +235,6 @@ class Item_Problem extends CommonDBRelation{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {

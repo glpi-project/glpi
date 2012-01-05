@@ -510,7 +510,7 @@ class Group extends CommonTreeDropdown {
     * @param $tech boolean, false search groups_id, true, search groups_id_tech
    **/
    function showItems($tech) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $ID = $this->fields['id'];
       if ($tech) {

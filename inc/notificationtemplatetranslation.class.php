@@ -160,7 +160,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    function showSummary(NotificationTemplate $template, $options=array()) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $nID     = $template->getField('id');
       $canedit = Session::haveRight("config", "w");

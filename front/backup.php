@@ -233,7 +233,7 @@ function get_def($DB, $table) {
  * @param $duree max delay before refresh
 **/
 function restoreMySqlDump($DB, $dumpFile, $duree) {
-   global $DB, $TPSCOUR, $offset, $cpt, $LANG;
+   global $DB, $TPSCOUR, $offset, $cpt;
 
    // $dumpFile, fichier source
    // $duree=timeout pour changement de page (-1 = aucun)
@@ -311,7 +311,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
  * @param $rowlimit rowlimit to backup in one time
 **/
 function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
-   global $TPSCOUR, $offsettable, $offsetrow, $cpt, $LANG;
+   global $TPSCOUR, $offsettable, $offsetrow, $cpt;
 
    // $dumpFile, fichier source
    // $duree=timeout pour changement de page (-1 = aucun)

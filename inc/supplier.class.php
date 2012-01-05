@@ -448,7 +448,7 @@ class Supplier extends CommonDBTM {
     *
    **/
    function showInfocoms() {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $instID = $this->fields['id'];
       if (!$this->can($instID,'r')) {

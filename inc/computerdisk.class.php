@@ -115,7 +115,7 @@ class ComputerDisk extends CommonDBChild {
     * @return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
 
       $computers_id = -1;
       if (isset($options['computers_id'])) {
@@ -148,7 +148,7 @@ class ComputerDisk extends CommonDBChild {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['help'][25]."&nbsp;:</td>";
+      echo "<td>".__('Computer')."</td>";
       echo "<td colspan='3'>".$comp->getLink()."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

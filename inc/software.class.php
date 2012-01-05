@@ -747,7 +747,7 @@ class Software extends CommonDBTM {
     * @return nothing
    **/
    function showMergeCandidates() {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $ID = $this->getField('id');
       $this->check($ID,"w");

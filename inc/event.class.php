@@ -192,7 +192,7 @@ class Event extends CommonDBTM {
     * @param $user string : name user to search on message
     **/
    static function showForUser($user="") {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       // Show events from $result in table form
       list($logItemtype, $logService) = self::logArray();

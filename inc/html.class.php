@@ -3410,7 +3410,7 @@ class Html {
     * @return nothing
    **/
    static function showProfileSelecter($target) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if (count($_SESSION["glpiprofiles"])>1) {
          echo '<li><form name="form" method="post" action="'.$target.'">';
