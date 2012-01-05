@@ -55,7 +55,8 @@ if (isset($_POST["add"])) {
          }
       }
       Event::log($_POST["calendars_id"], "calendars", 4, "setup",
-                 $_SESSION["glpiname"]." ".$LANG['log'][22]);
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes a close time'), $_SESSION["glpiname"]));            
    }
    Html::back();
 

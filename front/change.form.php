@@ -54,14 +54,18 @@ if (isset($_POST["add"])) {
    $change->check($_POST["id"], 'w');
 
    $change->delete($_POST);
-   Event::log($_POST["id"], "change", 4, "maintain", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "change", 4, "maintain", 
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
    $change->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $change->check($_POST["id"], 'w');
 
    $change->restore($_POST);
-   Event::log($_POST["id"], "change", 4, "maintain", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   Event::log($_POST["id"], "change", 4, "maintain",
+            //TRANS: %s is the user login
+            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));            
    $change->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
@@ -69,14 +73,17 @@ if (isset($_POST["add"])) {
    $change->delete($_REQUEST,1);
 
    Event::log($_REQUEST["id"], "change", 4, "maintain",
-              $_SESSION["glpiname"]." ".$LANG['log'][24]);
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
    $change->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $change->check($_POST["id"], 'w');
 
    $change->update($_POST);
-   Event::log($_POST["id"], "change", 4, "maintain", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "change", 4, "maintain",
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
 
    Html::back();
 

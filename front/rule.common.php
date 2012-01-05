@@ -62,7 +62,10 @@ if (isset($_GET["action"])) {
                $rulecollection->deleteRuleOrder($rule->fields["ranking"]);
                $rule->delete(array('id' => $key));
             }
-            Event::log(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+            Event::log(0, "rules", 4, "setup",
+                        //TRANS: %s is the user login
+                        sprintf(__('%s deletes items'), $_SESSION["glpiname"]));         
+            
             Html::back();
          }
          break;

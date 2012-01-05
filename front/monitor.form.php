@@ -64,14 +64,18 @@ if (isset($_POST["add"])) {
    $monitor->check($_POST["id"],'d');
    $monitor->delete($_POST);
 
-   Event::log($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "monitors", 4, "inventory", 
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
    $monitor->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $monitor->check($_POST["id"],'d');
 
    $monitor->restore($_POST);
-   Event::log($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   Event::log($_POST["id"], "monitors", 4, "inventory", 
+            //TRANS: %s is the user login
+            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));            
    $monitor->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
@@ -79,14 +83,17 @@ if (isset($_POST["add"])) {
 
    $monitor->delete($_REQUEST,1);
    Event::log($_REQUEST["id"], "monitors", 4, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][24]);
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
    $monitor->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $monitor->check($_POST["id"],'w');
 
    $monitor->update($_POST);
-   Event::log($_POST["id"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "monitors", 4, "inventory", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
    Html::back();
 
 } else if (isset($_GET["unglobalize"])) {

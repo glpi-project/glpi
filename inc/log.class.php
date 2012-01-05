@@ -337,15 +337,15 @@ class Log extends CommonDBTM {
             // Yes it is an internal device
             switch ($data["linked_action"]) {
                case self::HISTORY_CREATE_ITEM :
-                  $tmp['change'] = __('add the item');
+                  $tmp['change'] = __('Add the item');
                   break;
 
                case self::HISTORY_DELETE_ITEM :
-                  $tmp['change'] = $LANG['log'][22];
+                  $tmp['change'] = __('Delete the item');
                   break;
 
                case self::HISTORY_RESTORE_ITEM :
-                  $tmp['change'] = $LANG['log'][23];
+                  $tmp['change'] = __('Restore the item');
                   break;
 
                case self::HISTORY_ADD_DEVICE :
@@ -394,7 +394,8 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][26]." : "."\"". $data["old_value"]."\"";
+                  //TRANS: %s is the item name
+                  $tmp['change'] = sprintf(__('Disconnect the item "%s"'), $data["old_value"]);
                   break;
 
                case self::HISTORY_CONNECT_DEVICE :
@@ -402,7 +403,8 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName();
                   }
-                  $tmp['change'] = $LANG['log'][27]." : "."\"". $data["new_value"]."\"";
+                  //TRANS: %s is the item name
+                  $tmp['change'] = sprintf(__('Connect the item "%s"'), $data["new_value"]);
                   break;
 
                case self::HISTORY_OCS_IMPORT :

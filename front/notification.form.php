@@ -55,7 +55,8 @@ if (isset($_POST["add"])) {
    $notification->delete($_POST);
 
    Event::log($_POST["id"], "notifications", 4, "notification",
-              $_SESSION["glpiname"] ." ".$LANG['log'][22]);
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
    $notification->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -63,7 +64,8 @@ if (isset($_POST["add"])) {
 
    $notification->update($_POST);
    Event::log($_POST["id"], "notifications", 4, "notification",
-              $_SESSION["glpiname"]." ".$LANG['log'][21]);
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
    Html::back();
 
 } else {

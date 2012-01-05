@@ -90,7 +90,7 @@ if (isset($_REQUEST['checkavailability'])) {
       }
    }
 } else {
-   Html::header(Toolbox::ucfirst($LANG['log'][16]), $_SERVER['PHP_SELF'], "maintain", "planning");
+   Html::header(__('Planning'), $_SERVER['PHP_SELF'], "maintain", "planning");
 
    Session::checkSeveralRightsOr(array('show_all_planning' => '1',
                                        'show_planning'     => '1'));

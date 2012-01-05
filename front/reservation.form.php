@@ -61,7 +61,8 @@ if (isset($_POST["update"])) {
    $reservationitems_id = key($_POST["items"]);
    if ($rr->delete($_POST)) {
       Event::log($_POST["id"], "reservation", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][22]);
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
    }
 
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);

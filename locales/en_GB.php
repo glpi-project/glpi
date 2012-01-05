@@ -1090,6 +1090,9 @@ $LANG['links'][6]="Valid tags";
 $LANG['links'][7]="No link defined";
 $LANG['links'][9]="File content";
 
+/// TODO After is ok for migration to gettext
+
+
 $LANG['log'][1]="system";
 $LANG['log'][16]="planning";
 $LANG['log'][18]="Components";
@@ -1104,9 +1107,6 @@ $LANG['log'][28]="modification of components";
 $LANG['log'][29]="approval/refusal of the solution";
 $LANG['log'][30]="associate a type";
 $LANG['log'][31]="deletion of a type";
-
-/// TODO After is ok for migration to gettext
-
 $LANG['log'][32]="add link with an item";
 $LANG['log'][33]="deletion link with an item";
 $LANG['log'][34]="add a link with a supplier";

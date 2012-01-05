@@ -64,7 +64,9 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->check($_POST["id"],'w');
 
    if ($contact->delete($_POST)) {
-      Event::log($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($_POST["id"], "contacts", 4, "financial", 
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
    }
    $contact->redirectToList();
 
@@ -72,7 +74,9 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->check($_POST["id"],'w');
 
    if ($contact->restore($_POST)) {
-      Event::log($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+      Event::log($_POST["id"], "contacts", 4, "financial", 
+            //TRANS: %s is the user login
+            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));            
    }
    $contact->redirectToList();
 
@@ -80,7 +84,9 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->check($_POST["id"],'w');
 
    if ($contact->delete($_POST,1)) {
-      Event::log($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+      Event::log($_POST["id"], "contacts", 4, "financial", 
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
    }
    $contact->redirectToList();
 
@@ -88,7 +94,9 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->check($_POST["id"],'w');
 
    if ($contact->update($_POST)) {
-      Event::log($_POST["id"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+      Event::log($_POST["id"], "contacts", 4, "financial", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
    }
    Html::back();
 

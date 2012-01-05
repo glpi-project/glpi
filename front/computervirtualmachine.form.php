@@ -51,7 +51,8 @@ if (isset($_POST["add"])) {
 
    if ($newID = $disk->add($_POST)) {
       Event::log($_POST['computers_id'], "computers", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][21]);
+            //TRANS: %s is the user login
+            sprintf(__('%s adds a virtual machine'), $_SESSION["glpiname"]));         
    }
    Html::back();
 
@@ -60,7 +61,8 @@ if (isset($_POST["add"])) {
 
    if ($disk->delete($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][21]);
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes a virtual machine'), $_SESSION["glpiname"]));         
    }
    $computer = new Computer();
    $computer->getFromDB($disk->fields['computers_id']);
@@ -72,7 +74,8 @@ if (isset($_POST["add"])) {
 
    if ($disk->update($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][21]." ".$_POST["id"]);
+            //TRANS: %s is the user login
+            sprintf(__('%s updates a virtual machine'), $_SESSION["glpiname"]));         
    }
    Html::back();
 

@@ -55,14 +55,18 @@ if (isset($_POST["add"])) {
    $transfer->check($_POST["id"],'w');
 
    $transfer->delete($_POST);
-   Event::log($_POST["id"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "transfers", 4, "setup", 
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));      
    Html::redirect($CFG_GLPI["root_doc"]."/front/transfer.php");
 
 } else if (isset($_POST["update"])) {
    $transfer->check($_POST["id"],'w');
 
    $transfer->update($_POST);
-   Event::log($_POST["id"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "transfers", 4, "setup", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
    Html::back();
 }
 

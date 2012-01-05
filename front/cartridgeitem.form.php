@@ -57,7 +57,8 @@ if (isset($_POST["add"])) {
 
    if ($cartype->delete($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][22]);
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
    }
    $cartype->redirectToList();
 
@@ -66,7 +67,8 @@ if (isset($_POST["add"])) {
 
    if ($cartype->restore($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][23]);
+            //TRANS: %s is the user login
+            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));            
    }
    $cartype->redirectToList();
 
@@ -75,7 +77,8 @@ if (isset($_POST["add"])) {
 
    if ($cartype->delete($_POST,1)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][24]);
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
    }
    $cartype->redirectToList();
 
@@ -84,7 +87,8 @@ if (isset($_POST["add"])) {
 
    if ($cartype->update($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][21]);
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
    }
    Html::back();
 
@@ -93,7 +97,8 @@ if (isset($_POST["add"])) {
 
    if ($cartype->addCompatibleType($_POST["tID"],$_POST["printermodels_id"])) {
       Event::log($_POST["tID"], "cartridges", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][30]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s associates a type'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -102,7 +107,8 @@ if (isset($_POST["add"])) {
 
    if ($cartype->deleteCompatibleType($_GET["id"])) {
       Event::log($_GET["tID"], "cartridges", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][31]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s deletes a type'), $_SESSION["glpiname"]));
    }
    Html::back();
 
