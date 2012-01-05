@@ -768,8 +768,6 @@ function updateDbUpTo031() {
    $plugin = new Plugin();
    $plugin->unactivateAll();
 
-   echo "<h3>".$LANG['update'][139]."</h3>";
-
    DBmysql::optimize_tables($migration);
 
    return $ret;

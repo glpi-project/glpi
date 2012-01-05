@@ -546,9 +546,11 @@ class DBmysql {
      * @return number of tables
     **/
     static function optimize_tables($migration=NULL, $cron=false) {
-       global $DB;
+       global $LANG, $DB;
 
        if (!is_null($migration) && method_exists($migration,'displayMessage')) {
+          $migration->displayTitle($LANG['update'][139]);
+          $migration->setVersion('999'); // to force new ajax zone
           $migration->displayMessage("optimize - start");
        }
        $result = $DB->list_tables("glpi_%");
