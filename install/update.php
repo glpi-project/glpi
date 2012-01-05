@@ -756,8 +756,6 @@ function updateDbUpTo031() {
    $plugin = new Plugin();
    $plugin->unactivateAll();
 
-   echo "<h3>".__('Optimizing tables')."</h3>";
-
    DBmysql::optimize_tables($migration);
 
    return $ret;
