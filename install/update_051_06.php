@@ -34,7 +34,7 @@
 
 /// Update from 0.51x to 0.6
 function update051to06() {
-   global $DB, $LANG;
+   global $DB;
 
    echo "<p class='center'>Version 0.6 </p>";
 
@@ -145,37 +145,37 @@ function update051to06() {
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
-                VALUES ('".$LANG['financial'][50]."')";
+                VALUES ('".__('Loan')."')";
       $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
-                VALUES ('".$LANG['financial'][51]."')";
+                VALUES ('".__('Renting')."')";
       $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
-                VALUES ('".$LANG['financial'][52]."')";
+                VALUES ('".__('Leasing')."')";
       $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
-                VALUES ('".$LANG['financial'][53]."')";
+                VALUES ('".__('Insurance')."')";
       $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
-                VALUES ('".$LANG['financial'][54]."')";
+                VALUES ('".__('Hardware support')."')";
       $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
-                VALUES ('".$LANG['financial'][55]."')";
+                VALUES ('".__('Software support')."')";
       $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
 
       $query = "INSERT INTO `glpi_dropdown_contract_type`
                        (`name`)
-                VALUES ('".$LANG['financial'][56]."')";
+                VALUES ('".__('Service provided')."')";
       $DB->queryOrDie($query, "0.6 add entries to dropdown_contract_type");
    }
 
@@ -585,7 +585,8 @@ function update051to06() {
 
    // Modele ordinateurs
    if (!TableExists("glpi_dropdown_model")) {
-      // model=type pour faciliter la gestion en post mise �jour : ya plus qu'a deleter les elements non voulu
+      // model=type pour faciliter la gestion en post mise a jour :
+      //   y a plus qu'a deleter les elements non voulu
       // cela conviendra a tout le monde en fonction de l'utilisation du champ type
 
       $query = "ALTER TABLE `glpi_type_computers`
@@ -710,5 +711,4 @@ function update051to06() {
    }
 
 }
-
 ?>

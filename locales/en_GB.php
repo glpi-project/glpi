@@ -682,13 +682,9 @@ $LANG['financial'][26]="Supplier";
 $LANG['financial'][27]="Delivery date";
 $LANG['financial'][28]="Order date";
 $LANG['financial'][29]="Start date of warranty";
-
-/// TODO Before is ok for migration to gettext
-
-
 $LANG['financial'][30]="Fax";
-$LANG['financial'][33]="Add a Contact";
-$LANG['financial'][36]="Add a Contract";
+$LANG['financial'][33]="Add a contact";
+$LANG['financial'][36]="Add a contract";
 $LANG['financial'][40]="No associated contact";
 $LANG['financial'][41]="Associated contact";
 $LANG['financial'][42]="Commercial";
@@ -712,12 +708,15 @@ $LANG['financial'][60]="on week";
 $LANG['financial'][61]="on Saturday";
 $LANG['financial'][62]="Sundays and holidays";
 $LANG['financial'][63]="Associated contract";
-$LANG['financial'][64]="Associated provider";
+$LANG['financial'][64]="Associated supplier";
 $LANG['financial'][65]="Associated suppliers";
 $LANG['financial'][66]="Associated contracts";
-$LANG['financial'][67]="No associated provider";
-$LANG['financial'][68]="Enable the financial and administrative informations";
+$LANG['financial'][67]="No associated supplier";
+$LANG['financial'][68]="Enable the financial and administrative information";
 $LANG['financial'][69]="Contract renewal period";
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['financial'][76]="Startup date";
 $LANG['financial'][77]="Amortization coefficient";
 $LANG['financial'][78]="Warranty ends value";

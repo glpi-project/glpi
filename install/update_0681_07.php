@@ -536,20 +536,19 @@ function update0681to07() {
                   if (!empty($comments)) {
                      $comments .= "\n";
                   }
-                  $comments .= $LANG['financial'][44] . ":\n";
-                  $comments .= $data['address'];
+                  $comments .= sprintf(__('Address : %s'), $data['address']);
                }
 
                if (!empty($data['postcode']) || !empty($data['town'])) {
                   if (!empty($comments)) {
-                     $comments .= $LANG['financial'][44] . ":\n";
+                     $comments .= __('Address :');
                   }
                   $comments .= $data['postcode'] . " " . $data['town'];
                }
 
                if (!empty($data['state']) || !empty($data['country'])) {
                   if (!empty($comments)) {
-                     $comments .= $LANG['financial'][44] . ":\n";
+                     $comments .= __('Address :');
                   }
                   $comments .= $data['country'] . " " . $data['state'];
                }
@@ -558,8 +557,7 @@ function update0681to07() {
                   if (!empty($comments)) {
                      $comments .= "\n";
                   }
-                  $comments .= $LANG['financial'][45] . ": ";
-                  $comments .= $data['website'];
+                  $comments .= sprintf(__('Website : %s'), $data['website']);
                }
 
                if (!empty($data['phonenumber'])) {
@@ -574,16 +572,14 @@ function update0681to07() {
                   if (!empty($comments)) {
                      $comments .= "\n";
                   }
-                  $comments .= $LANG['financial'][30] . ": ";
-                  $comments .= $data['fax'];
+                  $comments .= sprintf(__('Fax : %s'), $data['fax']);
                }
 
                if (!empty($data['email'])) {
                   if (!empty($comments)) {
                      $comments .= "\n";
                   }
-                  $comments .= __('Email') . ": ";
-                  $comments .= $data['email'];
+                  $comments .= sprintf(__('Email : %s'), $data['email']);
                }
 
                if (!empty($data['comments'])) {

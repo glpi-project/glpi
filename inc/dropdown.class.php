@@ -286,15 +286,15 @@ class Dropdown {
                                         $data["phone2"];
                         }
                         if (!empty($data["mobile"])) {
-                           $comment .= "<br><span class='b'>".__('Mobile phone')."&nbsp;: </span> ".
+                           $comment .= "<br><span class='b'>".__('Mobile phone')."</span> ".
                                         $data["mobile"];
                         }
                         if (!empty($data["fax"])) {
-                           $comment .= "<br><span class='b'>".$LANG['financial'][30]."&nbsp;: </span> ".
+                           $comment .= "<br><span class='b'>".__('Fax')." </span> ".
                                         $data["fax"];
                         }
                         if (!empty($data["email"])) {
-                           $comment .= "<br><span class='b'>"._n('Email', 'Emails', 1)."&nbsp;: </span> ".
+                           $comment .= "<br><span class='b'>"._n('Email', 'Emails', 1)."</span> ".
                                         $data["email"];
                         }
                         break;
@@ -305,11 +305,11 @@ class Dropdown {
                                         $data["phonenumber"];
                         }
                         if (!empty($data["fax"])) {
-                           $comment .= "<br><span class='b'>".$LANG['financial'][30]."&nbsp;: </span> ".
+                           $comment .= "<br><span class='b'>".__('Fax')." </span> ".
                                         $data["fax"];
                         }
                         if (!empty($data["email"])) {
-                           $comment .= "<br><span class='b'>"._n('Email', 'Emails', 1)."&nbsp;: </span> ".
+                           $comment .= "<br><span class='b'>"._n('Email', 'Emails', 1)." </span> ".
                                         $data["email"];
                         }
                         break;
@@ -1385,7 +1385,8 @@ class Dropdown {
          }
 
          if (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canCreate() ) {
-            echo "<option value='activate_infocoms'>".$LANG['financial'][68]."</option>";
+            echo "<option value='activate_infocoms'>".
+                  __('Enable the financial and administrative information')."</option>";
          }
 
          if ($is_deleted && !in_array($itemtype,$CFG_GLPI["massiveaction_nodelete_types"])) {
@@ -1423,7 +1424,7 @@ class Dropdown {
             if (in_array($itemtype,$CFG_GLPI["contract_types"])) {
                $contract = new Contract();
                if ($contract->canUpdate()) {
-                  echo "<option value='add_contract'>".$LANG['financial'][36]."</option>";
+                  echo "<option value='add_contract'>".__('Add a contract')."</option>";
                }
             }
 

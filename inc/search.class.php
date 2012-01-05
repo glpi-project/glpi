@@ -3837,7 +3837,7 @@ class Search {
                $split=explode('$$$$', $data[$NAME.$num]);
                $output = "";
                foreach ($split as $duration) {
-                  $output .= (empty($output)?'':'<br>') . $duration . " " . $LANG['financial'][57];
+                  $output .= (empty($output)?'':'<br>') . $duration . __(' month');
                }
                return $output;
             }
@@ -3868,7 +3868,7 @@ class Search {
                foreach ($split as $val) {
                   $out .= (empty($out)?'':'<br>');
                   if ($val>0) {
-                     $out .= $val." ".$LANG['financial'][57];
+                     $out .= $val.__(' month');
                   }
                   if ($val<0) {
                      $out .= __('Lifelong');

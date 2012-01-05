@@ -211,14 +211,14 @@ class Entity extends CommonTreeDropdown {
 
       $tab[3]['table']         = 'glpi_entitydatas';
       $tab[3]['field']         = 'address';
-      $tab[3]['name']          = $LANG['financial'][44];
+      $tab[3]['name']          = __('Address');
       $tab[3]['massiveaction'] = false;
       $tab[3]['joinparams']    = array('jointype' => 'child');
       $tab[3]['datatype']      = 'text';
 
       $tab[4]['table']         = 'glpi_entitydatas';
       $tab[4]['field']         = 'website';
-      $tab[4]['name']          = $LANG['financial'][45];
+      $tab[4]['name']          = __('Website');
       $tab[4]['massiveaction'] = false;
       $tab[4]['joinparams']    = array('jointype' => 'child');
       $tab[4]['datatype']      = 'string';
@@ -262,7 +262,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[10]['table']         = 'glpi_entitydatas';
       $tab[10]['field']         = 'fax';
-      $tab[10]['name']          = $LANG['financial'][30];
+      $tab[10]['name']          = __('Fax');
       $tab[10]['massiveaction'] = false;
       $tab[10]['joinparams']    = array('jointype' => 'child');
       $tab[10]['datatype']      = 'string';

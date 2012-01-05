@@ -533,10 +533,10 @@ class Cartridge extends CommonDBTM {
             }
             echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
             echo "<td class='center'>".__('Average time in stock')."<br>";
-            echo round($stock_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
+            echo round($stock_time/$number/60/60/24/30.5,1)." ".__('month')."</td>";
             echo "<td>&nbsp;</td>";
             echo "<td class='center'>".__('Average time in use')."<br>";
-            echo round($use_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
+            echo round($use_time/$number/60/60/24/30.5,1)." ".__('month')."</td>";
             echo "<td class='center'>".__('Average number of printed pages')."<br>";
             echo round($pages_printed/$nb_pages_printed)."</td>";
             echo "<td colspan='3'>&nbsp;</td></tr>";

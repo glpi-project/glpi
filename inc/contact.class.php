@@ -184,7 +184,7 @@ class Contact extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][30]."&nbsp;:</td>";
+      echo "<td>".__('Fax')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "fax");
       echo "</td></tr>";
@@ -254,7 +254,7 @@ class Contact extends CommonDBTM{
 
       $tab[5]['table']     = $this->getTable();
       $tab[5]['field']     = 'fax';
-      $tab[5]['name']      = $LANG['financial'][30];
+      $tab[5]['name']      = __('Fax');
       $tab[5]['datatype']  = 'string';
 
       $tab[6]['table']    = $this->getTable();
@@ -269,7 +269,7 @@ class Contact extends CommonDBTM{
 
       $tab[8]['table']         = 'glpi_suppliers';
       $tab[8]['field']         = 'name';
-      $tab[8]['name']          = $LANG['financial'][65];
+      $tab[8]['name']          = __('Associated suppliers');
       $tab[8]['forcegroupby']  = true;
       $tab[8]['datatype']      = 'itemlink';
       $tab[8]['itemlink_type'] = 'Supplier';
@@ -343,11 +343,11 @@ class Contact extends CommonDBTM{
 
       echo "<tr><th colspan='7'>";
       if ($DB->numrows($result)==0) {
-         echo $LANG['financial'][67];
+         _e('No associated supplier');
       } else if ($DB->numrows($result)==1) {
-         echo $LANG['financial'][64];
+         _e('Associated supplier');
       } else {
-         echo $LANG['financial'][65];
+         echo _n('Associated supplier', 'Associated suppliers, 2');
       }
       echo "</th></tr>";
 
@@ -355,8 +355,8 @@ class Contact extends CommonDBTM{
       echo "<th>".__('Entity')."</th>";
       echo "<th>".$LANG['financial'][79]."</th>";
       echo "<th>".$LANG['help'][35]."</th>";
-      echo "<th>".$LANG['financial'][30]."</th>";
-      echo "<th>".$LANG['financial'][45]."</th>";
+      echo "<th>".__('Fax')."</th>";
+      echo "<th>".__('Website')."</th>";
       echo "<th>&nbsp;</th></tr>";
 
       $used = array();

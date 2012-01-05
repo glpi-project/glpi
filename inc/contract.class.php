@@ -173,7 +173,7 @@ class Contract extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Initial contract period')."</td><td>";
       Dropdown::showInteger("duration", $this->fields["duration"], 0, 120);
-      echo " ".$LANG['financial'][57];
+      _e(' month');
       if (!empty($this->fields["begin_date"])) {
          echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
                                                $this->fields["duration"]);
@@ -184,18 +184,18 @@ class Contract extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][69]."&nbsp;:</td><td>";
+      echo "<td>".__('Contract renewal period')."</td><td>";
       Dropdown::showInteger("periodicity", $this->fields["periodicity"], 12, 60, 12,
                             array(0 => Dropdown::EMPTY_VALUE,
                                   1 => "1",
                                   2 => "2",
                                   3 => "3",
                                   6 => "6"));
-      echo " ".$LANG['financial'][57];
+      _e(' month');
       echo "</td>";
       echo "<td>".__('Notice')."</td><td>";
       Dropdown::showInteger("notice", $this->fields["notice"], 0, 120);
-      echo " ".$LANG['financial'][57];
+      _e(' month');
       if (!empty($this->fields["begin_date"]) && $this->fields["notice"]>0) {
          echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
                                                $this->fields["duration"], $this->fields["notice"]);
@@ -213,7 +213,7 @@ class Contract extends CommonDBTM {
                                   2 => "2",
                                   3 => "3",
                                   6 => "6"));
-      echo " ".$LANG['financial'][57];
+      _e(' month');
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['financial'][83]."&nbsp;:</td><td>";
@@ -231,11 +231,11 @@ class Contract extends CommonDBTM {
       echo "<textarea cols='50' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['financial'][59]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Support hours')."</td>";
       echo "<td colspan='3'>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][60]."&nbsp;:</td>";
+      echo "<td>".__('on week')."</td>";
       echo "<td colspan='3'>". __('Start');
       Dropdown::showHours("week_begin_hour", $this->fields["week_begin_hour"]);
       echo "<span class='small_space'>".__('End')."</span>";
@@ -243,7 +243,7 @@ class Contract extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][61]."&nbsp;:</td>";
+      echo "<td>".__('on Saturday')."</td>";
       echo "<td colspan='3'>";
       Dropdown::showYesNo("use_saturday", $this->fields["use_saturday"]);
       echo "<span class='small_space'>".__('Start')."</span>";
@@ -253,7 +253,7 @@ class Contract extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][62]."&nbsp;:</td>";
+      echo "<td>".__('Sundays and holidays')."</td>";
       echo "<td colspan='3'>";
       Dropdown::showYesNo("use_monday", $this->fields["use_monday"]);
       echo "<span class='small_space'>".__('Start')."</span>";
@@ -439,7 +439,7 @@ class Contract extends CommonDBTM {
 
       $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'periodicity';
-      $tab[21]['name']          = $LANG['financial'][69];
+      $tab[21]['name']          = __('Contract renewal period');
       $tab[21]['massiveaction'] = false;
 
       $tab[22]['table']         = $this->getTable();
@@ -681,18 +681,18 @@ class Contract extends CommonDBTM {
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='6'>";
       if ($DB->numrows($result)==0) {
-         echo $LANG['financial'][67];
+         _e('No associated supplier');
       } else if ($DB->numrows($result)==1) {
-         echo $LANG['financial'][64];
+         _e('Associated supplier');
       } else {
-         echo $LANG['financial'][65];
+         echo _n('Associated supplier', 'Associated suppliers', 2);
       }
       echo "</th></tr>";
       echo "<tr><th>".__('Supplier')."</th>";
       echo "<th>".__('Entity')."</th>";
       echo "<th>".$LANG['financial'][79]."</th>";
       echo "<th>".$LANG['help'][35]."</th>";
-      echo "<th>".$LANG['financial'][45]."</th>";
+      echo "<th>".__('Website')."</th>";
       echo "<th>&nbsp;</th></tr>";
 
       $used = array();
@@ -996,11 +996,11 @@ class Contract extends CommonDBTM {
       echo "<tr><th colspan='8'>";
 
       if ($number==0) {
-         echo $LANG['financial'][58];
+         _e('No associated contract');
       } else if ($number==1) {
-         echo $LANG['financial'][63];
+         _e('Associated contract');
       } else {
-         echo $LANG['financial'][66];
+         echo _n ('Associated contract', 'Associated contracts', 2);
       }
       echo "</th></tr>";
 
@@ -1044,7 +1044,7 @@ class Contract extends CommonDBTM {
          echo Dropdown::getDropdownName("glpi_contracttypes", $con->fields["contracttypes_id"])."</td>";
          echo "<td class='center'>".$con->getSuppliersNames()."</td>";
          echo "<td class='center'>".Html::convDate($con->fields["begin_date"])."</td>";
-         echo "<td class='center'>".$con->fields["duration"]." ".$LANG['financial'][57];
+         echo "<td class='center'>".$con->fields["duration"]." ".__('month');
          if ($con->fields["begin_date"]!='' && !empty($con->fields["begin_date"])) {
             echo " -> ".Infocom::getWarrantyExpir($con->fields["begin_date"],
                                                   $con->fields["duration"]);
