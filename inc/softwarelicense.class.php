@@ -516,7 +516,7 @@ class SoftwareLicense extends CommonDBTM {
 
          if ($canedit) {
             echo "<tr class='tab_bg_2'><td class='center'>";
-            echo "<a href='softwarelicense.form.php?softwares_id=$softwares_id'>".
+            echo "<a class='vsubmit' href='softwarelicense.form.php?softwares_id=$softwares_id'>".
                    __('Add a license')."</a>";
             echo "</td></tr>\n";
          }
@@ -641,7 +641,7 @@ class SoftwareLicense extends CommonDBTM {
             echo "<td colspan='4' class='center'>";
 
             if ($canedit) {
-               echo "<a href='softwarelicense.form.php?softwares_id=$softwares_id'>".
+               echo "<a class='vsubmit' href='softwarelicense.form.php?softwares_id=$softwares_id'>".
                       __('Add a license')."</a>";
             }
 
