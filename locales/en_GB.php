@@ -1034,6 +1034,9 @@ $LANG['knowbase'][27]="On";
 $LANG['knowbase'][29]="Recent Entries";
 $LANG['knowbase'][30]="Most popular questions";
 
+
+/// TODO After is ok for migration to gettext
+
 $LANG['ldap'][0]="Bulk import users from a LDAP directory";
 $LANG['ldap'][1]="Synchronizing already imported users";
 $LANG['ldap'][2]="Import new users";
@@ -1068,7 +1071,7 @@ $LANG['ldap'][32]="Always dereferenced";
 $LANG['ldap'][33]="Dereferenced during the search (but not when locating)";
 $LANG['ldap'][34]="Dereferenced when locating (not during the search)";
 $LANG['ldap'][35]="Import an user";
-$LANG['ldap'][36]="No directory associated to entity : search impossible";
+$LANG['ldap'][36]="No directory associated to entity: impossible search";
 $LANG['ldap'][38]="Search criterias for users";
 $LANG['ldap'][39]="Advanced";
 $LANG['ldap'][40]="Simple";

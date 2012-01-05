@@ -71,7 +71,7 @@ if (isset($_SESSION["ocs_link"])) {
       Html::displayProgressBar(400, 100);
 
       unset($_SESSION["ocs_link"]);
-      echo "<div class='center b'>".$LANG['ldap'][10]."<br>";
+      echo "<div class='center b'>".__('Successful importation')."<br>";
       echo "<a href='".$_SERVER['PHP_SELF']."'>".__('Back')."</a></div>";
    }
 }

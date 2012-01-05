@@ -484,7 +484,7 @@ class OcsServer extends CommonDBTM {
            "<td class='center'>".__('Behavior to the deletion of a computer in OCSNG')."</td>";
       echo "<td>";
       $actions[0] = Dropdown::EMPTY_VALUE;
-      $actions[1] = $LANG['ldap'][47];
+      $actions[1] = __('Put in trash');
       foreach (getAllDatasFromTable('glpi_states') as $state) {
          $actions['STATE_'.$state['id']] = sprintf(__('Change to state %s'), $state['name']);
       }

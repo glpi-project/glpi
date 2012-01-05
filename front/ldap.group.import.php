@@ -71,7 +71,7 @@ if (isset($_GET['next'])) {
          unset($_SESSION["ldap_import"]);
          Html::displayProgressBar(400, 100);
 
-         echo "<div class='center b'>".$LANG['ldap'][10]."<br>";
+         echo "<div class='center b'>".__('Successful importation')."<br>";
          echo "<a href='".$_SERVER['PHP_SELF']."'>".__('Back')."</a></div>";
       }
    }
@@ -106,7 +106,7 @@ if (isset($_GET['next'])) {
 
       if (!AuthLdap::testLDAPConnection($_SESSION["ldap_server"])) {
          unset($_SESSION["ldap_server"]);
-         echo "<div class='center b'>".$LANG['ldap'][6]."<br>";
+         echo "<div class='center b'>".__('Unable to connect to the LDAP directory')."<br>";
          echo "<a href='".$_SERVER['PHP_SELF']."?next=listservers'>".__('Back')."</a></div>";
 
       } else {

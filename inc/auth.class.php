@@ -211,7 +211,7 @@ class Auth {
          }
 
       } else {
-         $this->addToError($LANG['ldap'][6]);
+         $this->addToError(__('Unable to connect to the LDAP directory'));
          //Directory is not available
          return false;
       }
@@ -910,7 +910,7 @@ class Auth {
                   echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
                   echo "<input type='hidden' name='id' value='".$user->getID()."'>";
                   echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
-                         $LANG['ldap'][11] . "'>";
+                         __s('Force synchronization') . "'>";
                   echo "</td></tr></table>";
                }
                break;
@@ -931,7 +931,7 @@ class Auth {
                   if ($DB->numrows($result) > 0) {
                      echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
                      echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
-                            $LANG['ldap'][11] . "'>";
+                            __s('Force synchronization') . "'>";
                      echo "</td></tr></table>";
                   }
                }
@@ -976,7 +976,7 @@ class Auth {
          switch ($item->getType()) {
             case 'User' :
                if (Session::haveRight("user_authtype", "w")) {
-                  return $LANG['ldap'][12];
+                  return __('Synchronization');
                }
                break;
          }
@@ -1087,7 +1087,7 @@ class Auth {
       echo "</td></tr>\n";
 
       echo "<tr><th colspan='2'>" . __('Access control and additional informations')."</th></tr>\n";
-      echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ldap'][4] . "</td><td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . __('LDAP directory choice') . "</td><td>";
       Dropdown::show('AuthLDAP', array('name'   => 'authldaps_id_extra',
                                        'value'  => $CFG_GLPI["authldaps_id_extra"]));
       echo "</td></tr>\n";

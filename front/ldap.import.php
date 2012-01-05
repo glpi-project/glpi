@@ -91,7 +91,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
          unset($_SESSION["ldap_process"]);
          Html::displayProgressBar(400, 100);
 
-         echo "<div class='center b'>".$LANG['ldap'][10]."<br>";
+         echo "<div class='center b'>".__('Successful importation')."<br>";
          echo "<a href='".$_SERVER['PHP_SELF']."'>".__('Back')."</a></div>";
          unset($_SESSION["authldaps_id"]);
          unset($_SESSION["mode"]);
