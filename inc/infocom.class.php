@@ -856,7 +856,7 @@ class Infocom extends CommonDBChild {
                echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><th>";
                echo $item->getTypeName()." - ".$item->getName()."</th></tr>";
                echo "<tr class='tab_bg_1'><td class='center'>";
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/infocom.form.php?itemtype=".
+               echo "<a class='vsubmit' href='".$CFG_GLPI["root_doc"]."/front/infocom.form.php?itemtype=".
                      $item->getType()."&amp;items_id=$dev_ID&amp;add=add'>".
                      __('Enable the financial and administrative information');
                echo "</a></td></tr></table></div>";
