@@ -161,6 +161,8 @@ switch ($current_version) {
    case "0.80.3" :
    case "0.80.4" :
    case "0.80.5" :
+   case "0.80.6" :
+   case "0.80.61" :
       include("../install/update_0803_083.php");
       update0803to083();
       // nobreak;
