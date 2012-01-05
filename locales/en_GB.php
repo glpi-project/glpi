@@ -754,17 +754,19 @@ $LANG['financial'][112]="Fill when shifting to state";
 $LANG['financial'][113]="No autofill";
 $LANG['financial'][114]="Date of last physical inventory";
 
-/// TODO Before is ok for migration to gettext
-
 
 $LANG['gmt'][0]="GMT";
 $LANG['gmt'][1]="hour(s)";
 $LANG['gmt'][2]="h";
 
+
 $LANG['group'][0]="Visible in a ticket";
 $LANG['group'][1]="Can be notified";
 $LANG['group'][2]="Can contain";
 $LANG['group'][3]="Child groups";
+
+/// TODO Before is ok for migration to gettext
+
 
 $LANG['help'][1]="Matrix of calculus for priority";
 $LANG['help'][2]="Major";
@@ -1084,9 +1086,6 @@ $LANG['ldap'][54]="Enable filtering by date";
 $LANG['ldap'][55]="Disable filtering by date";
 $LANG['ldap'][56]="Weeks";
 
-
-/// TODO After is ok for migration to gettext
-
 $LANG['links'][1]="Link or Filename";
 $LANG['links'][4]="Hardware types associated";
 $LANG['links'][6]="Valid tags";
@@ -1107,6 +1106,9 @@ $LANG['log'][28]="modification of components";
 $LANG['log'][29]="approval/refusal of the solution";
 $LANG['log'][30]="associate a type";
 $LANG['log'][31]="deletion of a type";
+
+/// TODO After is ok for migration to gettext
+
 $LANG['log'][32]="add link with an item";
 $LANG['log'][33]="deletion link with an item";
 $LANG['log'][34]="add a link with a supplier";
