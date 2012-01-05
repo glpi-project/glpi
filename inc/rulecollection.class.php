@@ -447,7 +447,7 @@ class RuleCollection extends CommonDBTM {
       }
 
       echo "</div></form>";
-      echo "<div class='spaced center'><span class='icon_consol'>";
+      echo "<div class='spaced center'>";
 
       if ($plugin = isPluginItemType($this->getType())) {
          $url = $CFG_GLPI["root_doc"]."/plugins/".strtolower($plugin['plugin']);
@@ -455,10 +455,10 @@ class RuleCollection extends CommonDBTM {
          $url = $CFG_GLPI["root_doc"];
       }
 
-      echo "<a href='#' onClick=\"var w=window.open('".$url.
+      echo "<a class='vsubmit' href='#' onClick=\"var w=window.open('".$url.
              "/front/popup.php?popup=test_all_rules&amp;sub_type=".$this->getRuleClassName().
              "&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );".
-             "w.focus();\">".__('Test rules engine')."</a></span></div>";
+             "w.focus();\">".__('Test rules engine')."</a></div>";
 
       echo "<div class='spaced'>";
       $this->showAdditionalInformationsInForm($target);
