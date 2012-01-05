@@ -114,18 +114,18 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             Dropdown::showLanguages("language", array('display_none' => true,
                                                       'emptylabel'   => __('Default value')));
             break;
-            
+
          case "glpi_crontasks.mode" :
             $options = array();
             $options[CronTask::MODE_INTERNAL] = CronTask::getModeName(CronTask::MODE_INTERNAL);
             $options[CronTask::MODE_EXTERNAL] = CronTask::getModeName(CronTask::MODE_EXTERNAL);
             Dropdown::showFromArray('mode', $options);
             break;
-         
+
          case "glpi_crontasks.state" :
             CronTask::dropdownState('state');
             break;
-            
+
          default :
             // Specific plugin Type case
             $plugdisplay = false;
@@ -234,7 +234,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
 
                case "warranty_duration" :
                   Dropdown::showInteger("warranty_duration", 0, 0, 120, 1,
-                                        array(-1 => $LANG['financial'][2]));
+                                        array(-1 => __('Lifelong')));
                   echo " ".$LANG['financial'][57]."&nbsp;&nbsp;";
                   break;
 

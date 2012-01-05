@@ -3853,7 +3853,8 @@ class Search {
                foreach ($split as $val) {
                   $out .= (empty($out)?'':'<br>');
                   if ($val>0) {
-                     $out .= $val." ".$LANG['financial'][9];
+                     //TRANS: %d is a number of years
+                     $out .= sprintf(_n('%d year', '%d years', $val), $val);
                   }
                }
                return $out;
@@ -3870,7 +3871,7 @@ class Search {
                      $out .= $val." ".$LANG['financial'][57];
                   }
                   if ($val<0) {
-                     $out .= $LANG['financial'][2];
+                     $out .= __('Lifelong');
                   }
                }
                return $out;

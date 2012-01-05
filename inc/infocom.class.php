@@ -57,10 +57,9 @@ class Infocom extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
-      // Always plural
-      return $LANG['financial'][3];
+      //TRASN: Always plural
+      return __('Financial and administrative information');
    }
 
 
@@ -871,7 +870,7 @@ class Infocom extends CommonDBChild {
             echo "<table class='tab_cadre".(!strpos($_SERVER['PHP_SELF'],
                                                     "infocoms-show")?"_fixe":"")."'>";
 
-            echo "<tr><th colspan='4'>".$LANG['financial'][3]."</th></tr>";
+            echo "<tr><th colspan='4'>".__('Financial and administrative information')."</th></tr>";
 
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][26]."&nbsp;:</td>";
@@ -1009,7 +1008,7 @@ class Infocom extends CommonDBChild {
             }
             echo "</td></tr>";
 
-            echo "<tr><th colspan='4'>".$LANG['financial'][7]."</th></tr>";
+            echo "<tr><th colspan='4'>".__('Warranty information')."</th></tr>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$LANG['financial'][29]."&nbsp;:</td><td>";
             Html::showDateFormItem("warranty_date", $ic->fields["warranty_date"], true,
@@ -1020,14 +1019,14 @@ class Infocom extends CommonDBChild {
             if ($withtemplate == 2) {
                // -1 = life
                if ($ic->fields["warranty_duration"] == -1) {
-                  echo $LANG['financial'][2];
+                  _e('Lifelong');
                } else {
                   echo $ic->fields["warranty_duration"];
                }
 
             } else {
                Dropdown::showInteger("warranty_duration", $ic->fields["warranty_duration"], 0, 120,
-                                     1, array(-1 => $LANG['financial'][2]));
+                                     1, array(-1 => __('Lifelong')));
             }
             if ($ic->fields["warranty_duration"] >= 0) {
                echo " ".$LANG['financial'][57];
@@ -1132,7 +1131,7 @@ class Infocom extends CommonDBChild {
 
       $tab = array();
 
-      $tab['financial'] = $LANG['financial'][3];
+      $tab['financial'] = __('Financial and administrative information');
 
       $tab[25]['table']        = 'glpi_infocoms';
       $tab[25]['field']        = 'immo_number';

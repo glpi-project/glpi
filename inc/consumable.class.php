@@ -376,7 +376,7 @@ class Consumable extends CommonDBTM {
          if ($show_old) {
             echo "<th>".__('Give to')."</th>";
          }
-         echo "<th width='200px'>".$LANG['financial'][3]."</th>";
+         echo "<th width='200px'>".__('Financial and administrative information')."</th>";
 
          if (!$show_old && $canedit && $DB->result($result,0,0)!=0) {
             echo "<th colspan='".($canedit?'2':'1')."'>";

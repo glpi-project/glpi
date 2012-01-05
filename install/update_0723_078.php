@@ -4830,7 +4830,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       $DB->queryOrDie($query, "0.78 drop table glpi_mailingsettings");
    }
 
-   $tables = array('glpi_infocoms'           => $LANG['financial'][3],
+   $tables = array('glpi_infocoms'           => __('Financial and administrative information'),
                    'glpi_reservationitems'   => _n('Reservation', 'Reservations', 2),
                    'glpi_networkports'       => _n('Network port', 'Network ports', 2));
    foreach ($tables as $table => $label) {

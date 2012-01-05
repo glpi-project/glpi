@@ -150,19 +150,19 @@ class Contract extends CommonDBTM {
       echo "<td>".__('Name')."</td><td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>".$LANG['financial'][6]."&nbsp;:</td><td >";
+      echo "<td>".__('Contract Type')."</td><td >";
       Dropdown::show('ContractType', array('value' => $this->fields["contracttypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][4]."&nbsp;:</td>";
+      echo "<td>".__('Number')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "num");
       echo "</td>";
       echo "<td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][5]."&nbsp;:</td><td>";
+      echo "<td>".__('Cost')."</td><td>";
       echo "<input type='text' name='cost' value='".Html::formatNumber($this->fields["cost"], true).
             "' size='14'></td>";
       echo "<td>".__('Start date')."</td>";
@@ -171,7 +171,7 @@ class Contract extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][8]."&nbsp;:</td><td>";
+      echo "<td>".__('Initial contract period')."</td><td>";
       Dropdown::showInteger("duration", $this->fields["duration"], 0, 120);
       echo " ".$LANG['financial'][57];
       if (!empty($this->fields["begin_date"])) {
@@ -193,7 +193,7 @@ class Contract extends CommonDBTM {
                                   6 => "6"));
       echo " ".$LANG['financial'][57];
       echo "</td>";
-      echo "<td>".$LANG['financial'][10]."&nbsp;:</td><td>";
+      echo "<td>".__('Notice')."</td><td>";
       Dropdown::showInteger("notice", $this->fields["notice"], 0, 120);
       echo " ".$LANG['financial'][57];
       if (!empty($this->fields["begin_date"]) && $this->fields["notice"]>0) {
@@ -329,7 +329,7 @@ class Contract extends CommonDBTM {
 
       $tab[133]['table']         = 'glpi_contracts';
       $tab[133]['field']         = 'accounting_number';
-      $tab[133]['name']          = $LANG['financial'][13]." ".$LANG['financial'][1];
+      $tab[133]['name']          = __('Contract account number');
       $tab[133]['forcegroupby']  = true;
       $tab[133]['massiveaction'] = false;
       $tab[133]['joinparams']    = $joinparams;
@@ -348,14 +348,14 @@ class Contract extends CommonDBTM {
 
       $tab[135]['table']         = 'glpi_contracts';
       $tab[135]['field']         = 'notice';
-      $tab[135]['name']          = $LANG['financial'][10]." ".$LANG['financial'][1];
+      $tab[135]['name']          = __('Contract notice');
       $tab[135]['forcegroupby']  = true;
       $tab[135]['massiveaction'] = false;
       $tab[135]['joinparams']    = $joinparams;
 
       $tab[136]['table']         = 'glpi_contracts';
       $tab[136]['field']         = 'cost';
-      $tab[136]['name']          = $LANG['financial'][5]." ".$LANG['financial'][1];
+      $tab[136]['name']          = __('Contract cost');
       $tab[136]['forcegroupby']  = true;
       $tab[136]['datatype']      = 'decimal';
       $tab[136]['massiveaction'] = false;
@@ -363,14 +363,14 @@ class Contract extends CommonDBTM {
 
       $tab[137]['table']         = 'glpi_contracts';
       $tab[137]['field']         = 'billing';
-      $tab[137]['name']          = $LANG['financial'][11]." ".$LANG['financial'][1];
+      $tab[137]['name']          = __('Contract invoice period');
       $tab[137]['forcegroupby']  = true;
       $tab[137]['massiveaction'] = false;
       $tab[137]['joinparams']    = $joinparams;
 
       $tab[138]['table']         = 'glpi_contracts';
       $tab[138]['field']         = 'renewal';
-      $tab[138]['name']          = $LANG['financial'][107]." ".$LANG['financial'][1];
+      $tab[138]['name']          = __('Contract renewal');
       $tab[138]['forcegroupby']  = true;
       $tab[138]['massiveaction'] = false;
       $tab[138]['joinparams']    = $joinparams;
@@ -399,7 +399,7 @@ class Contract extends CommonDBTM {
 
       $tab[3]['table']     = $this->getTable();
       $tab[3]['field']     = 'num';
-      $tab[3]['name']      = $LANG['financial'][4];
+      $tab[3]['name']      = __('Number');
       $tab[3]['datatype']  = 'string';
 
       $tab[4]['table'] = 'glpi_contracttypes';
@@ -415,7 +415,7 @@ class Contract extends CommonDBTM {
 
       $tab[6]['table'] = $this->getTable();
       $tab[6]['field'] = 'duration';
-      $tab[6]['name']  = $LANG['financial'][8];
+      $tab[6]['name']  = __('Initial contract period');
 
       $tab[20]['table']         = $this->getTable();
       $tab[20]['field']         = 'end_date';
@@ -431,11 +431,11 @@ class Contract extends CommonDBTM {
 
       $tab[7]['table'] = $this->getTable();
       $tab[7]['field'] = 'notice';
-      $tab[7]['name']  = $LANG['financial'][10];
+      $tab[7]['name']  = __('Notice');
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'cost';
-      $tab[11]['name']     = $LANG['financial'][5];
+      $tab[11]['name']     = __('Cost');
       $tab[11]['datatype'] = 'decimal';
 
       $tab[21]['table']         = $this->getTable();
@@ -602,7 +602,7 @@ class Contract extends CommonDBTM {
       echo "<table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset\">".
-             $LANG['financial'][1]."</a></th></tr>";
+             __('Contract')."</a></th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
@@ -810,7 +810,7 @@ class Contract extends CommonDBTM {
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th>";
-      echo "<th>".__('Status')."</th>";      
+      echo "<th>".__('Status')."</th>";
       echo "</tr>";
 
       $totalnb = 0;
@@ -893,7 +893,7 @@ class Contract extends CommonDBTM {
                      echo Dropdown::getDropdownName("glpi_states",$data['states_id']);
                   } else {
                      echo '&nbsp;';
-                  }                         
+                  }
                   echo "</td></tr>";
 
                }
@@ -1007,11 +1007,11 @@ class Contract extends CommonDBTM {
 
       echo "<tr><th>".__('Name')."</th>";
       echo "<th>".__('Entity')."</th>";
-      echo "<th>".$LANG['financial'][4]."</th>";
-      echo "<th>".$LANG['financial'][6]."</th>";
+      echo "<th>".__('Number')."</th>";
+      echo "<th>".__('Contract Type')."</th>";
       echo "<th>".$LANG['financial'][26]."</th>";
       echo "<th>".__('Start date')."</th>";
-      echo "<th>".$LANG['financial'][8]."</th>";
+      echo "<th>".__('Initial contract period')."</th>";
       if ($withtemplate!=2) {
          echo "<th>&nbsp;</th>";
       }
