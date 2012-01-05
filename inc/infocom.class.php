@@ -412,7 +412,7 @@ class Infocom extends CommonDBChild {
     * @return 0 : nothing to do 1 : done with success
    **/
    static function cronInfocom($task=NULL) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       if (!$CFG_GLPI["use_mailing"]) {
          return 0;

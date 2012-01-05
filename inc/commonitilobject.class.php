@@ -1105,7 +1105,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return array of doc added name
    **/
    function addFiles($id) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if (!isset($_FILES) || !isset($_FILES['filename'])) {
          return array();
@@ -2488,7 +2488,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<tr><td>".$LANG['job'][25]."</td><td>";
       Dropdown::showYesNo('_sol_to_kb', false);
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['joblist'][6]."&nbsp;: </td><td colspan='3'>";
 

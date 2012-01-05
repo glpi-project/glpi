@@ -93,11 +93,11 @@ class MailCollector  extends CommonDBTM {
       global $CFG_GLPI;
 
       $this->fields['filesize_max'] = $CFG_GLPI['default_mailcollector_filesize_max'];
-      $this->fields['is_active']=1;
+      $this->fields['is_active']    = 1;
    }
 
+
    function prepareInputForUpdate($input) {
-      global $LANG;
 
       if (isset($input["passwd"])) {
          if (empty($input["passwd"])) {
@@ -125,7 +125,6 @@ class MailCollector  extends CommonDBTM {
 
 
    function prepareInputForAdd($input) {
-      global $LANG;
 
       if (isset($input["passwd"])) {
          if (empty($input["passwd"])) {
@@ -140,8 +139,7 @@ class MailCollector  extends CommonDBTM {
       }
 
       if (!NotificationMail::isUserAddressValid($input['name'])) {
-         Session::addMessageAfterRedirect(_('Invalid email address'),
-                                          false, ERROR);
+         Session::addMessageAfterRedirect(_('Invalid email address'), false, ERROR);
       }
 
       return $input;
@@ -156,6 +154,7 @@ class MailCollector  extends CommonDBTM {
 
       return $ong;
    }
+
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
@@ -189,7 +188,7 @@ class MailCollector  extends CommonDBTM {
     * @return boolean item found
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if (!Session::haveRight("config", "r")) {
          return false;
@@ -205,7 +204,9 @@ class MailCollector  extends CommonDBTM {
       $this->showFormHeader($options);
 
       if (!function_exists('mb_list_encodings') || !function_exists('mb_convert_encoding')) {
-         echo "<tr class='tab_bg_1'><td colspan='2'>".__('mbstring extension not found. Warning with charsets used.')."</td></tr>";
+         echo "<tr class='tab_bg_1'>".
+              "<td colspan='2'>".__('mbstring extension not found. Warning with charsets used.').
+              "</td></tr>";
       }
 
       echo "<tr class='tab_bg_1'><td>".__('Name (Email address))');
@@ -220,11 +221,11 @@ class MailCollector  extends CommonDBTM {
       Toolbox::showMailServerConfig($this->fields["host"]);
 
       echo "<tr class='tab_bg_1'><td>" . __('Accepted mail archive folder (optional)') . "</td>";
-      echo "<td><input size='30' type='text' name='accepted' value=\"" . $this->fields['accepted'] . "\" >";
+      echo "<td><input size='30' type='text' name='accepted' value=\"".$this->fields['accepted']."\">";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Refused mail archive folder (optional)') . "</td>";
-      echo "<td><input size='30' type='text' name='refused' value=\"" . $this->fields['refused'] . "\" >";
+      echo "<td><input size='30' type='text' name='refused' value=\"".$this->fields['refused']."\">";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".__('Login')."</td><td>";
@@ -240,8 +241,9 @@ class MailCollector  extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td width='200px'> " . __('Maximum size of each file imported by the mail receiver') . "</td><td>";
-      self::showMaxFilesize('filesize_max',$this->fields["filesize_max"]);
+      echo "<td width='200px'> ". __('Maximum size of each file imported by the mail receiver').
+           "</td><td>";
+      self::showMaxFilesize('filesize_max', $this->fields["filesize_max"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
@@ -261,13 +263,13 @@ class MailCollector  extends CommonDBTM {
 
 
    function showGetMessageForm($ID) {
-      global $LANG;
 
       echo "<br><br><div class='center'>";
       echo "<form name='form' method='post' action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<table class='tab_cadre'>";
       echo "<tr class='tab_bg_2'><td class='center'>";
-      echo "<input type='submit' name='get_mails' value=\"".__('Get email tickets now')."\" class='submit'>";
+      echo "<input type='submit' name='get_mails' value=\"".__('Get email tickets now').
+             "\" class='submit'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
       echo "</table></form></div>";
@@ -275,65 +277,64 @@ class MailCollector  extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']             = __('Characteristics');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false;
 
-      $tab[2]['table']    = $this->getTable();
-      $tab[2]['field']    = 'is_active';
-      $tab[2]['name']     = __('Active');
-      $tab[2]['datatype'] = 'bool';
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'is_active';
+      $tab[2]['name']            = __('Active');
+      $tab[2]['datatype']        = 'bool';
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'host';
-      $tab[3]['name']          = __('Connection string');
-      $tab[3]['massiveaction'] = false;
-      $tab[3]['datatype']      = 'string';
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'host';
+      $tab[3]['name']            = __('Connection string');
+      $tab[3]['massiveaction']   = false;
+      $tab[3]['datatype']        = 'string';
 
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'login';
-      $tab[4]['name']          = __('Login');
-      $tab[4]['massiveaction'] = false;
-      $tab[4]['datatype']      = 'string';
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'login';
+      $tab[4]['name']            = __('Login');
+      $tab[4]['massiveaction']   = false;
+      $tab[4]['datatype']        = 'string';
 
-      $tab[5]['table']    = $this->getTable();
-      $tab[5]['field']    = 'filesize_max';
-      $tab[5]['name']     = __('Maximum size of each file imported by the mail receiver');
-      $tab[5]['datatype'] = 'integer';
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'filesize_max';
+      $tab[5]['name']            = __('Maximum size of each file imported by the mail receiver');
+      $tab[5]['datatype']        = 'integer';
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
 
-      $tab[20]['table']         = $this->getTable();
-      $tab[20]['field']         = 'accepted';
-      $tab[20]['name']          = __('Accepted mail archive folder (optional)');
+      $tab[20]['table']          = $this->getTable();
+      $tab[20]['field']          = 'accepted';
+      $tab[20]['name']           = __('Accepted mail archive folder (optional)');
 
-      $tab[21]['table']         = $this->getTable();
-      $tab[21]['field']         = 'refused';
-      $tab[21]['name']          = __('Refused mail archive folder (optional)');
+      $tab[21]['table']          = $this->getTable();
+      $tab[21]['field']          = 'refused';
+      $tab[21]['name']           = __('Refused mail archive folder (optional)');
 
       return $tab;
    }
 
 
    function deleteOrImportSeveralEmails($emails_ids = array(), $action=0, $entity=0) {
-      global $DB, $LANG;
+      global $DB;
 
       $mailbox_id = 0;
       $query = "SELECT *
@@ -386,7 +387,7 @@ class MailCollector  extends CommonDBTM {
                foreach ($rejected as $id => $data) {
                   if ($action == 1) {
                      Session::addMessageAfterRedirect(sprintf(__('Email %s not found. Impossible import.'),
-                                                               strtr($id,$clean)),
+                                                              strtr($id,$clean)),
                                                       false, ERROR);
                   } else { // Delete data in notimportedemail table
                      $rejectedmail = new NotImportedEmail();
@@ -410,7 +411,7 @@ class MailCollector  extends CommonDBTM {
     * @return if $display = false return messages result string
    **/
    function collect($mailgateID, $display=0) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       if ($this->getFromDB($mailgateID)) {
          $this->mid = -1;
@@ -1105,7 +1106,6 @@ class MailCollector  extends CommonDBTM {
     *
     */
    function getRecursiveAttached($mid, $path, $maxsize, $structure, $part="") {
-      global $LANG;
 
       if ($structure->type == 1) { // multipart
          reset($structure->parts);
@@ -1166,7 +1166,7 @@ class MailCollector  extends CommonDBTM {
          if (!Document::isValidDoc($filename)) {
             //TRANS: %1$s is the filename and %2$s its mime type
             $this->addtobody .= "<br>".sprintf(__('Invalid attached file: %1$s (%2$s)'),
-                                             $filename, $this->get_mime_type($structure));
+                                               $filename, $this->get_mime_type($structure));
             return false;
          }
 
@@ -1327,7 +1327,7 @@ class MailCollector  extends CommonDBTM {
 
 
    function showSystemInformations($width) {
-      global $LANG, $CFG_GLPI, $DB;
+      global $CFG_GLPI, $DB;
 
       echo "<tr class='tab_bg_2'><th>"._n('Notification', 'Notifications',2)."</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
@@ -1373,7 +1373,7 @@ class MailCollector  extends CommonDBTM {
 
 
    function sendMailRefusedResponse($to='', $subject='') {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $mmail           = new NotificationMail();
       $mmail->AddCustomHeader("Auto-Submitted: auto-replied");
@@ -1411,7 +1411,6 @@ class MailCollector  extends CommonDBTM {
 
 
    static function showMaxFilesize($name, $value = 0) {
-      global $LANG;
 
       $sizes[0] = __('No import');
       for ($index=1 ; $index<100 ; $index++) {

@@ -559,7 +559,7 @@ class Dropdown {
     * @return array (group of dropdown) of array (itemtype => localized name)
    **/
    static function getDeviceItemTypes() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
       static $optgroup = NULL;
 
       if (!Session::haveRight('device', 'r')) {
@@ -1416,7 +1416,7 @@ class Dropdown {
             if (in_array($itemtype,$CFG_GLPI["document_types"])) {
                $doc = new Document();
                if ($doc->canView()) {
-                  echo "<option value='add_document'>".$LANG['document'][16]."</option>";
+                  echo "<option value='add_document'>".__('Add a document')."</option>";
                }
             }
 

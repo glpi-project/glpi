@@ -45,7 +45,6 @@ class Entity extends CommonTreeDropdown {
    public $dohistory       = true;
 
    function getFromDB($ID) {
-      global $LANG;
 
       if ($ID==0) {
          $this->fields = array('id'              => 0,
@@ -115,7 +114,7 @@ class Entity extends CommonTreeDropdown {
     *@return nothing (display)
     **/
    function title() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $buttons = array();
       $title   = self::getTypeName(2);
@@ -550,7 +549,7 @@ class Entity extends CommonTreeDropdown {
     * @param $myname select name
     */
    static function showSelector($target, $myname) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $rand = mt_rand();
 

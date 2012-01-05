@@ -214,7 +214,6 @@ class OcsServer extends CommonDBTM {
     * @return Nothing (display)
    **/
    function ocsFormConfig($target, $ID) {
-      global $LANG;
 
       if (!Session::haveRight("ocsng", "w")) {
          return false;
@@ -2215,7 +2214,7 @@ class OcsServer extends CommonDBTM {
     * @return nothing
    **/
    static function showComputersToClean($ocsservers_id, $check, $start) {
-      global $DB, $DBocs, $LANG, $CFG_GLPI;
+      global $DB, $DBocs, $CFG_GLPI;
 
       self::checkOCSconnection($ocsservers_id);
 
@@ -2935,7 +2934,6 @@ class OcsServer extends CommonDBTM {
 
 
    static function getLockableFields() {
-      global $LANG;
 
       return array("name"                           => __('Name'),
                    "computertypes_id"               => __('Type'),

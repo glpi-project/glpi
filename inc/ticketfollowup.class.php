@@ -48,12 +48,8 @@ class TicketFollowup  extends CommonDBTM {
     * Name of the type
     *
     * @param $nb : number of item in the type
-    *
-    * @return $LANG
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Followup', 'Followups', $nb);
    }
 
@@ -219,7 +215,7 @@ class TicketFollowup  extends CommonDBTM {
       Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
                    Log::HISTORY_DELETE_SUBITEM);
 
-      $options = array('followup_id' => $this->fields["id"], 
+      $options = array('followup_id' => $this->fields["id"],
                         // Force is_private with data / not available
                         'is_private' => $this->fields['is_private']);
       NotificationEvent::raiseEvent('delete_followup', $job, $options);

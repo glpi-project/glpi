@@ -270,7 +270,6 @@ class Contract extends CommonDBTM {
 
 
    static function getSearchOptionsToAdd() {
-      global $LANG;
 
       $tab = array();
 
@@ -288,22 +287,22 @@ class Contract extends CommonDBTM {
       $tab[139]['massiveaction'] = false;
       $tab[139]['joinparams']    = array('jointype' => 'itemtype_item');
 
-      $tab[29]['table']         = 'glpi_contracts';
-      $tab[29]['field']         = 'name';
-      $tab[29]['name']          = __('Contract');
-      $tab[29]['forcegroupby']  = true;
-      $tab[29]['datatype']      = 'itemlink';
-      $tab[29]['itemlink_type'] = 'Contract';
-      $tab[29]['massiveaction'] = false;
-      $tab[29]['joinparams']    = $joinparams;
+      $tab[29]['table']          = 'glpi_contracts';
+      $tab[29]['field']          = 'name';
+      $tab[29]['name']           = __('Contract');
+      $tab[29]['forcegroupby']   = true;
+      $tab[29]['datatype']       = 'itemlink';
+      $tab[29]['itemlink_type']  = 'Contract';
+      $tab[29]['massiveaction']  = false;
+      $tab[29]['joinparams']     = $joinparams;
 
-      $tab[30]['table']         = 'glpi_contracts';
-      $tab[30]['field']         = 'num';
-      $tab[30]['name']          = __('Contract number');
-      $tab[30]['forcegroupby']  = true;
-      $tab[30]['massiveaction'] = false;
-      $tab[30]['joinparams']    = $joinparams;
-      $tab[30]['datatype']      = 'string';
+      $tab[30]['table']          = 'glpi_contracts';
+      $tab[30]['field']          = 'num';
+      $tab[30]['name']           = __('Contract number');
+      $tab[30]['forcegroupby']   = true;
+      $tab[30]['massiveaction']  = false;
+      $tab[30]['joinparams']     = $joinparams;
+      $tab[30]['datatype']       = 'string';
 
       $tab[130]['table']         = 'glpi_contracts';
       $tab[130]['field']         = 'duration';
@@ -767,7 +766,7 @@ class Contract extends CommonDBTM {
     *
     **/
    function showItems() {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $instID = $this->fields['id'];
 

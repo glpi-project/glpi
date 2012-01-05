@@ -977,7 +977,7 @@ class Profile extends CommonDBTM {
 //       echo "<td>".__('Update all changes')."</td><td>";
 //       Dropdown::showYesNo("edit_all_change", $this->fields["edit_all_change"]);
 //       echo "</td>";
-//       echo "<td>".(__$LANG'See all changes)['profiles'][55]."</td><td>";
+//       echo "<td>".(__'See all changes)."</td><td>";
 //       Dropdown::showYesNo("show_all_change", $this->fields["show_all_change"]);
 //       echo "</td>";
 //       echo "<td>".__('See the changes (actor)')."</td><td>";
@@ -1255,7 +1255,6 @@ class Profile extends CommonDBTM {
     * @param $closeform boolean close the form
    **/
    function showFormSetup($openform=true, $closeform=true) {
-      global $LANG;
 
       $ID = $this->fields['id'];
       $target = $this->getFormURL();
@@ -1301,7 +1300,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".$LANG['document'][7]."</td><td>";
+      echo "<td>".__('Document Type')."</td><td>";
       self::dropdownNoneReadWrite("typedoc", $this->fields["typedoc"], 1, 1, 1);
       echo "</td>";
       echo "<td>"._n('External link', 'External links',2)."</td><td>";
@@ -1528,7 +1527,7 @@ class Profile extends CommonDBTM {
 
       $tab[45]['table']    = $this->getTable();
       $tab[45]['field']    = 'typedoc';
-      $tab[45]['name']     = $LANG['document'][7];
+      $tab[45]['name']     = __('Document Type');
       $tab[45]['datatype'] = 'right';
 
       $tab[46]['table']    = $this->getTable();

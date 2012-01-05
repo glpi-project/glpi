@@ -165,7 +165,7 @@ class CronTask extends CommonDBTM{
     * @return bool : true if ok (not start by another)
    **/
    function start() {
-      global $DB, $LANG;
+      global $DB;
 
       if (!isset($this->fields['id']) || ($DB->isSlave())) {
          return false;

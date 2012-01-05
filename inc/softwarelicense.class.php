@@ -466,7 +466,7 @@ class SoftwareLicense extends CommonDBTM {
     * @return nothing
    **/
    static function showForSoftware($software) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $softwares_id = $software->getField('id');
       $license  = new SoftwareLicense();

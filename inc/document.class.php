@@ -226,7 +226,6 @@ class Document extends CommonDBTM {
 
 
    function post_addItem() {
-      global $LANG;
 
       if (isset($this->input["items_id"])
           && isset($this->input["itemtype"])
@@ -286,7 +285,7 @@ class Document extends CommonDBTM {
     * @return Nothing (display)
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
 
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -335,7 +334,7 @@ class Document extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['document'][2]." (".self::getMaxUploadSize().")&nbsp;:</td>";
+      echo "<td>".sprintf(__('File (%s)'), self::getMaxUploadSize())."</td>";
       echo "<td><input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
       echo "</td></tr>";
 
