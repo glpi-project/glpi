@@ -1206,10 +1206,10 @@ class Document extends CommonDBTM {
          $linkparam = "&amp;tickets_id=".$item->fields['id'];
       }
 
-      if ($item->getType() == 'Ticket' && $item->getField('status') != 'closed') {
-         $canedit = $item->can($ID,'w');
-      } else {
+      if ($item->getType() == 'Ticket' && $item->getField('status') == 'closed') {
          $canedit = false;
+      } else {
+         $canedit = $item->can($ID,'w');
       }
 
       $is_recursive=$item->isRecursive();
