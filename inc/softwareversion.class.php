@@ -303,7 +303,7 @@ class SoftwareVersion extends CommonDBChild {
             echo "<tr class='tab_bg_1'><td class='right b' colspan='3'>".__('Total')."</td>";
             echo "<td class='right b'>$tot&nbsp;&nbsp;</td><td>";
             if ($canedit) {
-               echo "<a href='softwareversion.form.php?softwares_id=$softwares_id'>".
+               echo "<a class='vsubmit' href='softwareversion.form.php?softwares_id=$softwares_id'>".
                       __('Add a version')."</a>";
             }
             echo "</td></tr>";
