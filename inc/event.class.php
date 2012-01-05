@@ -204,7 +204,7 @@ class Event extends CommonDBTM {
       }
 
 
-      /// TODO : do not work with RTL language. 
+      /// TODO : do not work with RTL language.
       /// review log system to be able to do that (store action user)
       // Query Database
       $query = "SELECT *
@@ -236,10 +236,10 @@ class Event extends CommonDBTM {
            sprintf(__('Last %d events'),  $_SESSION['glpilist_limit'])."</a>";
       echo "</th></tr>";
 
-      echo "<tr><th colspan='2'>".$LANG['event'][0]."</th>";
+      echo "<tr><th colspan='2'>".__('Source')."</th>";
       echo "<th>".__('Date')."</th>";
-      echo "<th width='8%'>".$LANG['event'][2]."</th>";
-      echo "<th width='60%'>".$LANG['event'][4]."</th></tr>";
+      echo "<th width='8%'>".__('Service')."</th>";
+      echo "<th width='60%'>".__('Message')."</th></tr>";
 
       while ($i < $number) {
          $ID       = $DB->result($result, $i, "id");
@@ -283,20 +283,20 @@ class Event extends CommonDBTM {
     * @param $start
     **/
    static function showList($target, $order='DESC', $sort='date', $start=0) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       // Show events from $result in table form
       list($logItemtype, $logService) = self::logArray();
 
       // Columns of the Table
-      $items = array("items_id" => array($LANG['event'][0],
+      $items = array("items_id" => array(__('Source'),
                                          "colspan='2'"),
                      "date"     => array(__('Date'), ""),
-                     "service"  => array($LANG['event'][2],
+                     "service"  => array(__('Service'),
                                          "width='8%'"),
-                     "level"    => array($LANG['event'][3],
+                     "level"    => array(__('Level'),
                                          "width='8%'"),
-                     "message"  => array($LANG['event'][4],
+                     "message"  => array(___('Message'),
                                          "width='50%'"));
 
       // define default sorting
