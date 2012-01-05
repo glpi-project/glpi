@@ -1479,7 +1479,7 @@ class Dropdown {
 
                case 'Supplier' :
                   if ($isadmin) {
-                     echo "<option value='add_contact'>".$LANG['financial'][24]."</option>";
+                     echo "<option value='add_contact'>".__('Add Contact...')."</option>";
                   }
                   break;
 
@@ -1489,7 +1489,7 @@ class Dropdown {
 
                case 'Contact' :
                   if ($isadmin) {
-                     echo "<option value='add_enterprise'>".$LANG['financial'][25]."</option>";
+                     echo "<option value='add_enterprise'>".__('Add Supplier...')."</option>";
                   }
                   break;
 

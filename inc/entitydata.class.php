@@ -432,14 +432,14 @@ class EntityData extends CommonDBChild {
       $options[Infocom::COPY_WARRANTY_DATE] = __('Copy the start date of warranty');
       //Buy date
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['financial'][14] . "&nbsp;: </td>";
+      echo "<td> " . __s('Date of purchase') . "</td>";
       echo "<td>";
       Dropdown::showFromArray('autofill_buy_date', $options,
                               array('value' => $entitydata->getField('autofill_buy_date')));
       echo "</td>";
 
       //Order date
-      echo "<td> " . $LANG['financial'][28] . "&nbsp;: </td>";
+      echo "<td> " . __('Order date') . "</td>";
       echo "<td>";
       $options[Infocom::COPY_BUY_DATE] = __('Copy the date of purchase');
       Dropdown::showFromArray('autofill_order_date', $options,
@@ -448,7 +448,7 @@ class EntityData extends CommonDBChild {
 
       //Delivery date
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['financial'][27] . "&nbsp;: </td>";
+      echo "<td> " . __('Delivery date') . "</td>";
       echo "<td>";
       $options[Infocom::COPY_ORDER_DATE] = __('Copy the order date');
       Dropdown::showFromArray('autofill_delivery_date', $options,
@@ -465,7 +465,7 @@ class EntityData extends CommonDBChild {
 
       //Warranty date
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . $LANG['financial'][29] . "&nbsp;: </td>";
+      echo "<td> " . __('Start date of warranty') . "</td>";
       echo "<td>";
       $options = array(0                           => $LANG['financial'][113],
                        Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),

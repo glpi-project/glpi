@@ -179,7 +179,7 @@ class Contract extends CommonDBTM {
                                                $this->fields["duration"]);
       }
       echo "</td>";
-      echo "<td>".$LANG['financial'][13]."&nbsp;:</td><td>";
+      echo "<td>".__('Account number')."</td><td>";
       Html::autocompletionTextField($this, "accounting_number");
       echo "</td></tr>";
 
@@ -205,7 +205,7 @@ class Contract extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".$LANG['financial'][107]."&nbsp;:</td><td>";
       self::dropdownContractRenewal("renewal", $this->fields["renewal"]);
       echo "</td>";
-      echo "<td>".$LANG['financial'][11]."&nbsp;:</td>";
+      echo "<td>".__('Invoice period')."</td>";
       echo "<td>";
       Dropdown::showInteger("billing", $this->fields["billing"], 12, 60, 12,
                             array(0 => Dropdown::EMPTY_VALUE,
@@ -444,12 +444,12 @@ class Contract extends CommonDBTM {
 
       $tab[22]['table']         = $this->getTable();
       $tab[22]['field']         = 'billing';
-      $tab[22]['name']          = $LANG['financial'][11];
+      $tab[22]['name']          = __('Invoice period');
       $tab[22]['massiveaction'] = false;
 
       $tab[10]['table']    = $this->getTable();
       $tab[10]['field']    = 'accounting_number';
-      $tab[10]['name']     = $LANG['financial'][13];
+      $tab[10]['name']     = __('Account number');
       $tab[10]['datatype'] = 'string';
 
       $tab[23]['table']         = $this->getTable();
@@ -688,7 +688,7 @@ class Contract extends CommonDBTM {
          echo $LANG['financial'][65];
       }
       echo "</th></tr>";
-      echo "<tr><th>".$LANG['financial'][26]."</th>";
+      echo "<tr><th>".__('Supplier')."</th>";
       echo "<th>".__('Entity')."</th>";
       echo "<th>".$LANG['financial'][79]."</th>";
       echo "<th>".$LANG['help'][35]."</th>";
@@ -1008,7 +1008,7 @@ class Contract extends CommonDBTM {
       echo "<th>".__('Entity')."</th>";
       echo "<th>".__('Number')."</th>";
       echo "<th>".__('Contract Type')."</th>";
-      echo "<th>".$LANG['financial'][26]."</th>";
+      echo "<th>".__('Supplier')."</th>";
       echo "<th>".__('Start date')."</th>";
       echo "<th>".__('Initial contract period')."</th>";
       if ($withtemplate!=2) {

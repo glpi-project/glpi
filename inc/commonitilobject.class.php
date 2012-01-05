@@ -1765,7 +1765,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[6]['field']     = 'name';
       $tab[6]['datatype']  = 'dropdown';
       $tab[6]['linkfield'] = 'suppliers_id_assign';
-      $tab[6]['name']      = $LANG['job'][5]." - ".$LANG['financial'][26];
+      $tab[6]['name']      = __('Assigned to a supplier');
 
       $tab[8]['table']         = 'glpi_groups';
       $tab[8]['field']         = 'completename';
@@ -1853,7 +1853,7 @@ abstract class CommonITILObject extends CommonDBTM {
                       alt=\"$icontitle\" title=\"$icontitle\">";
 
          case 'supplier' :
-            $icontitle = $LANG['financial'][26];
+            $icontitle = __('Supplier');
             return  "<img width=20 src='".$CFG_GLPI['root_doc']."/pics/supplier.png'
                       alt=\"$icontitle\" title=\"$icontitle\">";
 
@@ -1963,7 +1963,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      'group' => __('Group'));
 
       if ($withsupplier && $type == self::ASSIGN) {
-         $types['supplier'] = $LANG['financial'][26];
+         $types['supplier'] = __('Supplier');
       }
 
       switch ($type) {

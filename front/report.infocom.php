@@ -122,8 +122,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
          echo "<th>".__('Entity')."</th>";
       }
 
-      echo "<th>".$LANG['financial'][21]."</th><th>".$LANG['financial'][92]."</th>";
-      echo "<th>".$LANG['financial'][91]."</th><th>".$LANG['financial'][14]."</th>";
+      echo "<th>".__('Value')."</th><th>".$LANG['financial'][92]."</th>";
+      echo "<th>".$LANG['financial'][91]."</th><th>".__s('Date of purchase')."</th>";
       echo "<th>".$LANG['financial'][76]."</th><th>".$LANG['financial'][80]."</th></tr>";
 
       $valeursoustot      = 0;
@@ -228,8 +228,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
             $valeurgraphtot[$key] += $valeurgraph[$key];
          }
 
-         Stat::showGraph(array($LANG['financial'][21] => $valeurgraphdisplay),
-                         array('title' => $LANG['financial'][21],
+         Stat::showGraph(array(__('Value') => $valeurgraphdisplay),
+                         array('title' => __('Value'),
                                'width' => 400));
          echo "</td></tr>";
       }
@@ -277,8 +277,8 @@ if (count($valeurnettegraphtot)>0) {
 }
 if (count($valeurgraphtot)>0) {
    $valeurgraphtotdisplay = array_map('round', $valeurgraphtot);
-   Stat::showGraph(array($LANG['financial'][21] => $valeurgraphtotdisplay),
-                   array('title' => $LANG['financial'][21]));
+   Stat::showGraph(array(__('Value') => $valeurgraphtotdisplay),
+                   array('title' => __('Value')));
 }
 
 Html::footer();

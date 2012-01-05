@@ -351,7 +351,7 @@ class Contact extends CommonDBTM{
       }
       echo "</th></tr>";
 
-      echo "<tr><th>".$LANG['financial'][26]."</th>";
+      echo "<tr><th>".__('Supplier')."</th>";
       echo "<th>".__('Entity')."</th>";
       echo "<th>".$LANG['financial'][79]."</th>";
       echo "<th>".$LANG['help'][35]."</th>";

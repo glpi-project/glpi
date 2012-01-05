@@ -113,7 +113,6 @@ class Budget extends CommonDropdown{
     *@return Nothing (display)
     **/
    function showForm($ID, $options=array()) {
-      global $LANG;
 
       $use_cache = true;
 
@@ -140,7 +139,7 @@ class Budget extends CommonDropdown{
              name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][21]."&nbsp;:</td>";
+      echo "<td>".__('Value')."</td>";
       echo "<td><input type='text' name='value' size='14'
              value='".Html::formatNumber($this->fields["value"], true)."'></td></tr>";
 
@@ -208,56 +207,55 @@ class Budget extends CommonDropdown{
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false;
 
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'begin_date';
-      $tab[2]['name']      = __('Start date');
-      $tab[2]['datatype']  = 'date';
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'begin_date';
+      $tab[2]['name']            = __('Start date');
+      $tab[2]['datatype']        = 'date';
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'end_date';
-      $tab[3]['name']      = __('End date');
-      $tab[3]['datatype']  = 'date';
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'end_date';
+      $tab[3]['name']            = __('End date');
+      $tab[3]['datatype']        = 'date';
 
-      $tab[4]['table']     = $this->getTable();
-      $tab[4]['field']     = 'value';
-      $tab[4]['name']      = $LANG['financial'][21];
-      $tab[4]['datatype']  = 'decimal';
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'value';
+      $tab[4]['name']            = __('Value');
+      $tab[4]['datatype']        = 'decimal';
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = __('Comments');
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __('Entity');
-      $tab[80]['massiveaction'] = false;
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['massiveaction']  = false;
 
-      $tab[86]['table']     = $this->getTable();
-      $tab[86]['field']     = 'is_recursive';
-      $tab[86]['name']      = __('Child entities');
-      $tab[86]['datatype']  = 'bool';
+      $tab[86]['table']          = $this->getTable();
+      $tab[86]['field']          = 'is_recursive';
+      $tab[86]['name']           = __('Child entities');
+      $tab[86]['datatype']       = 'bool';
 
-      $tab[90]['table']         = $this->getTable();
-      $tab[90]['field']         = 'notepad';
-      $tab[90]['name']          = __('Notes');
-      $tab[90]['massiveaction'] = false;
+      $tab[90]['table']          = $this->getTable();
+      $tab[90]['field']          = 'notepad';
+      $tab[90]['name']           = __('Notes');
+      $tab[90]['massiveaction']  = false;
 
       return $tab;
    }
@@ -269,7 +267,7 @@ class Budget extends CommonDropdown{
    *@return Nothing (display)
    **/
    function showItems() {
-      global $DB, $LANG;
+      global $DB;
 
       $budgets_id = $this->fields['id'];
 
@@ -302,7 +300,7 @@ class Budget extends CommonDropdown{
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th>";
-      echo "<th>".$LANG['financial'][21]."</th>";
+      echo "<th>".__('Value')."</th>";
       echo "</tr>";
 
       $num = 0;
@@ -335,7 +333,8 @@ class Budget extends CommonDropdown{
                             INNER JOIN `".$item->getTable()."`
                                  ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
                             INNER JOIN `glpi_cartridgeitems`
-                                 ON (`".$item->getTable()."`.`cartridgeitems_id` = `glpi_cartridgeitems`.`id`)
+                                 ON (`".$item->getTable()."`.`cartridgeitems_id`
+                                       = `glpi_cartridgeitems`.`id`)
                             WHERE `glpi_infocoms`.`itemtype`='$itemtype'
                                   AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
                                   getEntitiesRestrictRequest(" AND", $item->getTable())."
@@ -350,7 +349,8 @@ class Budget extends CommonDropdown{
                             INNER JOIN `".$item->getTable()."`
                                  ON (`".$item->getTable()."`.`id` = `glpi_infocoms`.`items_id`)
                             INNER JOIN `glpi_consumableitems`
-                                 ON (`".$item->getTable()."`.`consumableitems_id` = `glpi_consumableitems`.`id`)
+                                 ON (`".$item->getTable()."`.`consumableitems_id`
+                                       = `glpi_consumableitems`.`id`)
                             WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
                                   AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
                                   getEntitiesRestrictRequest(" AND", $item->getTable())."
@@ -368,9 +368,10 @@ class Budget extends CommonDropdown{
                   echo "<td class='center' colspan='2'>";
                   echo "<a href='". $item->getSearchURL() . "?" .
                         rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" .
-                        rawurlencode("field[0]") . "=50&sort=80&order=ASC&is_deleted=0&start=0". "'>" .
+                        rawurlencode("field[0]")."=50&sort=80&order=ASC&is_deleted=0&start=0". "'>".
                         __('Device list')."</a></td>";
-                  echo "<td class='center'>-</td><td class='center'>-</td><td class='center'>-</td></tr>";
+                  echo "<td class='center'>-</td><td class='center'>-</td><td class='center'>-".
+                       "</td></tr>";
 
                } else if ($nb) {
                   for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
@@ -480,8 +481,9 @@ class Budget extends CommonDropdown{
                   if (!isset($entitiestype_values[$values['entities_id']][$types['itemtype']])) {
                      $entitiestype_values[$values['entities_id']][$types['itemtype']] = 0;
                   }
-                  $entities_values[$values['entities_id']] += $values['sumvalue'];
-                  $entitiestype_values[$values['entities_id']][$types['itemtype']] += $values['sumvalue'];
+                  $entities_values[$values['entities_id']]  += $values['sumvalue'];
+                  $entitiestype_values[$values['entities_id']][$types['itemtype']]
+                                                            += $values['sumvalue'];
                }
             }
 
@@ -538,5 +540,4 @@ class Budget extends CommonDropdown{
    }
 
 }
-
 ?>

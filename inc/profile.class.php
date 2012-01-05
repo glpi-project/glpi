@@ -1438,7 +1438,7 @@ class Profile extends CommonDBTM {
 
       $tab[30]['table']    = $this->getTable();
       $tab[30]['field']    = 'contact_enterprise';
-      $tab[30]['name']     = __('Contact')." / ".$LANG['financial'][26];
+      $tab[30]['name']     = __('Contact')." / ".__('Supplier');
       $tab[30]['datatype'] = 'right';
 
       $tab[31]['table']    = $this->getTable();
