@@ -105,7 +105,7 @@ $items = array($LANG['job'][4]       => $requester,
                                               'groups_tree_assign'
                                                    => array('title' => __('Group tree')),
                                               'enterprise'
-                                                   => array('title' => $LANG['financial'][26])));
+                                                   => array('title' => __('Supplier'))));
 
 $INSELECT = "";
 foreach ($items as $label => $tab) {

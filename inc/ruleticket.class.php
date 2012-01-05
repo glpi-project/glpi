@@ -243,7 +243,7 @@ class RuleTicket extends Rule {
 
       $criterias['suppliers_id_assign']['table']     = 'glpi_suppliers';
       $criterias['suppliers_id_assign']['field']     = 'name';
-      $criterias['suppliers_id_assign']['name']      = $LANG['job'][5]." - ".$LANG['financial'][26];
+      $criterias['suppliers_id_assign']['name']      = __('Assigned to a supplier');
       $criterias['suppliers_id_assign']['linkfield'] = 'suppliers_id_assign';
       $criterias['suppliers_id_assign']['type']      = 'dropdown';
 
@@ -328,7 +328,7 @@ class RuleTicket extends Rule {
       $actions['_groups_id_assign']['type']           = 'dropdown';
 
       $actions['suppliers_id_assign']['table']        = 'glpi_suppliers';
-      $actions['suppliers_id_assign']['name']         = $LANG['job'][5]." - ".$LANG['financial'][26];
+      $actions['suppliers_id_assign']['name']         = __('Assigned to a supplier');
       $actions['suppliers_id_assign']['type']         = 'dropdown';
 
       $actions['_users_id_observer']['name']          = __('Watcher user');

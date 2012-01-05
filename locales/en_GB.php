@@ -665,9 +665,6 @@ $LANG['financial'][7]="Warranty information"; // fixed
 $LANG['financial'][8]="Initial contract period";
 $LANG['financial'][9]="year(s)";
 $LANG['financial'][10]="Notice";
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['financial'][11]="Invoice period";
 $LANG['financial'][13]="Account number";
 $LANG['financial'][14]="Date of purchase";
@@ -685,6 +682,10 @@ $LANG['financial'][26]="Supplier";
 $LANG['financial'][27]="Delivery date";
 $LANG['financial'][28]="Order date";
 $LANG['financial'][29]="Start date of warranty";
+
+/// TODO Before is ok for migration to gettext
+
+
 $LANG['financial'][30]="Fax";
 $LANG['financial'][33]="Add a Contact";
 $LANG['financial'][36]="Add a Contract";

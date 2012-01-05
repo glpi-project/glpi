@@ -366,7 +366,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       } else if ($event!='alertnotclosed') {
          $this->addTarget(Notification::RECIPIENT, __('Writer'));
-         $this->addTarget(Notification::SUPPLIER, $LANG['financial'][26]);
+         $this->addTarget(Notification::SUPPLIER, __('Supplier'));
          $this->addTarget(Notification::SUPERVISOR_ASSIGN_GROUP,
                           __('Group in charge of the ticket manager'));
          $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP,
@@ -760,8 +760,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'author.phone2'                     => $LANG['help'][35].' 2',
                     $objettype.'.openbyuser'            => __('Writer'),
                     $objettype.'.assigntousers'         => $LANG['job'][5]." - ".$LANG['job'][3],
-                    $objettype.'.assigntosupplier'      => $LANG['job'][5]." - ".
-                                                            $LANG['financial'][26],
+                    $objettype.'.assigntosupplier'      => __('Assigned to a supplier'),
                     $objettype.'.groups'                => __('Requester groups'),
                     $objettype.'.observergroups'        => __('Watcher groups'),
                     $objettype.'.assigntogroups'        => __('Assigned to groups'),
