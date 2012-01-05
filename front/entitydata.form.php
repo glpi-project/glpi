@@ -38,7 +38,9 @@ if (isset($_POST["add"])) {
    $data->check(-1,'w',$_POST);
 
    if ($data->add($_POST)) {
-      Event::log($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+      Event::log($_POST["entities_id"], "entity", 4, "setup", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
    }
    Html::back();
 
@@ -46,7 +48,9 @@ if (isset($_POST["add"])) {
    $data->check($_POST["entities_id"],'w');
 
    if ($data->update($_POST)) {
-      Event::log($_POST["entities_id"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+      Event::log($_POST["entities_id"], "entity", 4, "setup", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
    }
    Html::back();
 

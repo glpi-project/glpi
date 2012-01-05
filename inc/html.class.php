@@ -1167,7 +1167,7 @@ class Html {
 //       }
 
       if (Session::haveRight("show_planning","1") || Session::haveRight("show_all_planning","1")) {
-         $menu['maintain']['content']['planning']['title']     = Toolbox::ucfirst($LANG['log'][16]);
+         $menu['maintain']['content']['planning']['title']     = __('Planning');
          $menu['maintain']['content']['planning']['shortcut']  = 'p';
          $menu['maintain']['content']['planning']['page']      = '/front/planning.php';
          $menu['maintain']['content']['planning']['links']['search']

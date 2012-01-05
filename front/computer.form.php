@@ -69,7 +69,8 @@ if (isset($_POST["add"])) {
    $ok = $computer->delete($_POST);
    if ($ok) {
       Event::log($_POST["id"], "computers", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$computer->getField('name'));
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
    }
    $computer->redirectToList();
 
@@ -77,7 +78,8 @@ if (isset($_POST["add"])) {
    $computer->check($_POST['id'], 'd');
    if ($computer->restore($_POST)) {
       Event::log($_POST["id"],"computers", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][23]." ".$computer->getField('name'));
+            //TRANS: %s is the user login
+            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));            
    }
    $computer->redirectToList();
 
@@ -85,7 +87,8 @@ if (isset($_POST["add"])) {
    $computer->check($_REQUEST['id'], 'd');
    if ($computer->delete($_REQUEST,1)) {
       Event::log($_REQUEST["id"], "computers", 4, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][24]." ".$computer->getField('name'));
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
    }
    $computer->redirectToList();
 
@@ -94,7 +97,8 @@ if (isset($_POST["add"])) {
    $computer->check($_POST['id'], 'w');
    $computer->update($_POST);
    Event::log($_POST["id"], "computers", 4, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][21]);
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
    Html::back();
 
 // Disconnect a computer from a printer/monitor/phone/peripheral
@@ -104,7 +108,8 @@ if (isset($_POST["add"])) {
    $conn->delete($_GET);
    $computer->check($_GET['computers_id'], 'w');
    Event::log($_GET["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][26]);
+            //TRANS: %s is the user login
+            sprintf(__('%s disconnects an item'), $_SESSION["glpiname"]));            
    Html::back();
 
 // Connect a computer to a printer/monitor/phone/peripheral
@@ -113,7 +118,8 @@ if (isset($_POST["add"])) {
    $conn->check(-1, 'w', $_POST);
    $conn->add($_POST);
    Event::log($_POST["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"] ." ".$LANG['log'][27]);
+            //TRANS: %s is the user login
+            sprintf(__('%s connects an item'), $_SESSION["glpiname"]));            
    Html::back();
 
 } else {//print computer informations

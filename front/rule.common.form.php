@@ -95,7 +95,9 @@ if (isset($_POST["delete_criteria"])) {
    $rulecollection->checkGlobal('w');
    $rule->update($_POST);
 
-   Event::log($_POST['id'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST['id'], "rules", 4, "setup", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
    Html::back();
 
 } else if (isset($_POST["add"])) {
@@ -111,7 +113,9 @@ if (isset($_POST["delete_criteria"])) {
    $rulecollection->deleteRuleOrder($_POST["ranking"]);
    $rule->delete($_POST);
 
-   Event::log($_POST["id"], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "rules", 4, "setup", 
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
    $rule->redirectToList();
 }
 

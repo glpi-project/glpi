@@ -40,15 +40,18 @@ $nn = new NetworkName();
 
 if (isset($_POST["add"])) {
    $nn->check(-1, 'w', $_POST);
-   $nn->add($_POST);
-   Event::log(0, "networkname", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][124]);
+   $newID = $nn->add($_POST);
+   Event::log($newID, "networkname", 5, "inventory", 
+            //TRANS: %s is the user login
+            sprintf(__('%s adds the item'), $_SESSION["glpiname"]));            
    Html::back();
 
 } else if (isset($_POST["delete"])) {
    $nn->check($_POST['id'], 'd');
    $nn->delete($_POST);
    Event::log($_POST["id"], "networkname", 5, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][126]);
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
    $node = new $nn->fields["itemtype"]();
    if ($node->can($nn->fields["items_id"], 'r')) {
       Html::redirect($node->getLinkURL());
@@ -59,7 +62,8 @@ if (isset($_POST["add"])) {
    $nn->check($_POST['id'], 'w');
    $nn->update($_POST);
    Event::log($_POST["id"], "networkname", 4, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][125]);
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
    Html::back();
 
 } else if (isset($_POST['assign_address'])) { // From NetworkPort or NetworkEquipement
@@ -82,7 +86,8 @@ if (isset($_POST["add"])) {
       $nn->check($_GET['id'],'d');
       $nn->delete($_GET);
       Event::log($nn->getID(), $nn->getType(), 5, "inventory",
-                 $_SESSION["glpiname"]." ".$LANG['log'][126]);
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
    } else {
       $nn->check($_GET['id'],'w');
       NetworkName::unaffectAddressByID($_GET['id']);

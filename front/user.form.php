@@ -83,20 +83,24 @@ if (isset($_REQUEST['getvcard'])) {
 } else if (isset($_POST["delete"])) {
    $user->check($_POST['id'], 'w');
    $user->delete($_POST);
-   Event::log(0, "users", 4, "setup",
-              $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$_POST["id"].".");
+   Event::log($_POST["id"], "users", 4, "setup",
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));   
    $user->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $user->check($_POST['id'], 'w');
    $user->restore($_POST);
-   Event::log($_POST["id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+   Event::log($_POST["id"], "users", 4, "setup", 
+            //TRANS: %s is the user login
+            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));   
    $user->redirectToList();
 
 } else if (isset($_POST["purge"])) {
    $user->check($_POST['id'], 'w');
    $user->delete($_POST, 1);
-   Event::log($_POST["id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][24]);
+   Event::log($_POST["id"], "users", 4, "setup",          //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));   
    $user->redirectToList();
 
 } else if (isset($_POST["force_ldap_resynch"])) {
@@ -112,8 +116,9 @@ if (isset($_REQUEST['getvcard'])) {
 } else if (isset($_POST["update"])) {
    $user->check($_POST['id'], 'w');
    $user->update($_POST);
-   Event::log(0, "users", 5, "setup",
-              $_SESSION["glpiname"]."  ".$LANG['log'][21]."  ".$user->fields["name"].".");
+   Event::log($_POST['id'], "users", 5, "setup",
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));      
    Html::back();
 
 } else if (isset($_POST["addgroup"])) {

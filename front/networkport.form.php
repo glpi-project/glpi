@@ -57,11 +57,11 @@ if (isset($_POST["add"])) {
    if (!isset($_POST["several"])) {
       $np->check(-1,'w',$_POST);
       $np->splitInputForElements($_POST);
-      $np->add($_POST);
+      $newID = $np->add($_POST);
       $np->updateDependencies(1);
-      Event::log(0, "networkport", 5, "inventory", 
-               //TRANS: %s is the user login
-               sprintf(__('%s adds a network port'),$_SESSION["glpiname"]));
+      Event::log($newID, "networkport", 5, "inventory", 
+            //TRANS: %s is the user login
+            sprintf(__('%s adds the item'), $_SESSION["glpiname"]));            
       Html::back();
 
    } else {
@@ -97,8 +97,8 @@ if (isset($_POST["add"])) {
    $np->check($_POST['id'],'d');
    $np->delete($_POST);
    Event::log($_POST['id'], "networkport", 5, "inventory",
-               //TRANS: %s is the user login
-               sprintf(__('%s deletes a network port'),$_SESSION["glpiname"]));
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
 
    if ($item = getItemForItemtype($np->fields['itemtype'])) {
       Html::redirect($item->getFormURL().'?id='.$np->fields['items_id']);
@@ -150,7 +150,8 @@ if (isset($_POST["add"])) {
    $np->update($_POST);
    $np->updateDependencies(1);
    Event::log($_POST["id"], "networkport", 4, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][21]);
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
    Html::back();
 
 } else if (isset($_POST["connect"])) {

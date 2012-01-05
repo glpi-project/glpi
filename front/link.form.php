@@ -55,13 +55,17 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    $link->check($_GET["id"],'w');
    $link->delete($_POST);
-   Event::log($_GET["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_GET["id"], "links", 4, "setup", 
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));         
    $link->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $link->check($_GET["id"],'w');
    $link->update($_POST);
-   Event::log($_GET["id"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_GET["id"], "links", 4, "setup", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
    Html::back();
 
 } else {

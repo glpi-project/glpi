@@ -80,7 +80,8 @@ if (isset($_POST["add"])) {
       $dropdown->refreshParentInfos();
 
       Event::log($_POST["id"], get_class($dropdown), 4, "setup",
-                 $_SESSION["glpiname"]." ".$LANG['log'][22]);
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));         
       $dropdown->redirectToList();
    }
 
@@ -90,7 +91,8 @@ if (isset($_POST["add"])) {
    $dropdown->refreshParentInfos();
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup",
-              $_SESSION["glpiname"]." ".$LANG['log'][22]);
+            //TRANS: %s is the user login
+            sprintf(__('%s replaces the item'), $_SESSION["glpiname"]));         
    $dropdown->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -99,7 +101,8 @@ if (isset($_POST["add"])) {
    $dropdown->refreshParentInfos();
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup",
-              $_SESSION["glpiname"]." ".$LANG['log'][21]);
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
    Html::back();
 
 } else if (isset($_POST['execute']) && isset($_POST['_method'])) {

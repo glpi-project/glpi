@@ -88,7 +88,9 @@ if ($_GET["id"] == "new") {
    $kb->check($_POST["id"],'w');
 
    $kb->update($_POST);
-   Event::log($_POST["id"], "knowbaseitem", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "knowbaseitem", 5, "tools", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_POST['id']);
 
 } else if (isset($_GET["id"]) && strcmp($_GET["modify"],"yes") == 0) {
@@ -104,7 +106,9 @@ if ($_GET["id"] == "new") {
    $kb->check($_GET["id"],'w');
 
    $kb->delete($_GET);
-   Event::log($_GET["id"], "knowbaseitem", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_GET["id"], "knowbaseitem", 5, "tools", 
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));         
    $kb->redirectToList();
 
 } else if (isset($_GET["id"]) && strcmp($_GET["addtofaq"],"yes") == 0) {

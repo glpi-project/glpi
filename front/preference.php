@@ -56,8 +56,9 @@ Session::checkLoginUser();
 
 if (isset($_POST["update"]) && $_POST["id"] === Session::getLoginUserID()) {
    $user->update($_POST);
-   Event::log(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " .
-              $LANG['log'][21] . "  " . $_SESSION["glpiname"] . ".");
+   Event::log($_POST["id"], "users", 5, "setup", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
    Html::back();
 
 } else {

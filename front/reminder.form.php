@@ -53,14 +53,18 @@ if (isset($_POST["add"])) {
    $remind->check($_POST["id"],'w');
 
    $remind->delete($_POST);
-   Event::log($_POST["id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "reminder", 4, "tools", 
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
    $remind->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $remind->check($_POST["id"],'w');   // Right to update the reminder
 
    $remind->update($_POST);
-   Event::log($_POST["id"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "reminder", 4, "tools", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
    Html::back();
 
 }  else if (isset($_POST["addvisibility"])) {

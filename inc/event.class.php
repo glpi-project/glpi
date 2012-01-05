@@ -113,9 +113,9 @@ class Event extends CommonDBTM {
          return array($logItemtype, $logService);
       }
 
-      $logItemtype = array('system'      => $LANG['log'][1],
+      $logItemtype = array('system'      => __('System'),
                            'devices'     => _n('Component', 'Components', 2),
-                           'planning'    => $LANG['log'][16],
+                           'planning'    => __('Planning'),
                            'reservation' => _n('Reservation', 'Reservations', 2),
                            'dropdown'    => _n('Dropdown', 'Dropdowns', 2),
                            'rules'       => _n('Rule', 'Rules', 2));
@@ -123,7 +123,7 @@ class Event extends CommonDBTM {
       $logService = array('inventory'    => __('Inventory'),
                           'tracking'     => _n('Ticket', 'Tickets', 2),
                           'maintain'     => __('Assistance'),
-                          'planning'     => Toolbox::ucfirst($LANG['log'][16]),
+                          'planning'     => __('Planning'),
                           'tools'        => __('Tools'),
                           'financial'    => __('Management'),
                           'login'        => __('Connection'),

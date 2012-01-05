@@ -55,7 +55,8 @@ if (isset($_POST["add"])) {
          }
       }
       Event::log($_POST["changes_id"], "change", 4, "tracking",
-                 $_SESSION["glpiname"]." ".$LANG['log'][22]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 

@@ -50,7 +50,8 @@ if (isset($_POST["add"])) {
    $validation->add($_POST);
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
-              $_SESSION["glpiname"]."  ".$LANG['log'][21]);
+            //TRANS: %s is the user login
+            sprintf(__('%s adds an approval'), $_SESSION["glpiname"]));         
    Html::back();
 
 } else if (isset($_POST["update"])) {
@@ -58,7 +59,8 @@ if (isset($_POST["add"])) {
    $validation->update($_POST);
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
-              $_SESSION["glpiname"]." ".$LANG['log'][21]);
+            //TRANS: %s is the user login
+            sprintf(__('%s updates an approval'), $_SESSION["glpiname"]));         
    Html::back();
 
 } else if (isset($_POST["delete"])) {
@@ -66,7 +68,8 @@ if (isset($_POST["add"])) {
    $validation->delete($_POST);
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
-              $_SESSION["glpiname"]." ".$LANG['log'][21]);
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes an approval'), $_SESSION["glpiname"]));         
    Html::back();
 }
 

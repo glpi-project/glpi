@@ -636,7 +636,10 @@ class Entity extends CommonTreeDropdown {
          }
       }
 
-      Event::log($ruleid, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($ruleid, "rules", 4, "setup", 
+            //TRANS: %s is the user login
+            sprintf(__('%s adds the item'), $_SESSION["glpiname"]));      
+      
       Html::back();
    }
 

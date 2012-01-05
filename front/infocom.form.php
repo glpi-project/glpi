@@ -49,14 +49,18 @@ if (isset($_GET["add"])) {
    $ic->check($_POST["id"],'w');
 
    $ic->delete($_POST);
-   Event::log($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "infocom", 4, "financial", 
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));         
    Html::back();
 
 } else if (isset($_POST["update"])) {
    $ic->check($_POST["id"],'w');
 
    $ic->update($_POST);
-   Event::log($_POST["id"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "infocom", 4, "financial", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
    Html::back();
 
 } else {

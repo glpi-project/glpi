@@ -47,7 +47,7 @@ if (isset($_POST["add"])) {
    $language->check(-1,'w',$_POST);
    $newID = $language->add($_POST);
 
-   Event::log($newID, "notificationtemplates", 4, "notification",
+   Event::log($newID, "notificationtemplatetranslations", 4, "notification",
               sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
 
@@ -55,16 +55,18 @@ if (isset($_POST["add"])) {
    $language->check($_POST["id"],'d');
    $language->delete($_POST);
 
-   Event::log($_POST["id"], "notificationtemplates", 4, "notification",
-              $_SESSION["glpiname"] ." ".$LANG['log'][22]);
+   Event::log($_POST["id"], "notificationtemplatetranslations", 4, "notification",
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));         
    $language->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $language->check($_POST["id"],'w');
    $language->update($_POST);
 
-   Event::log($_POST["id"], "notificationtemplates", 4, "notification", $_SESSION["glpiname"]." ".
-              $LANG['log'][21]);
+   Event::log($_POST["id"], "notificationtemplatetranslations", 4, "notification", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
    Html::back();
 
 } else {

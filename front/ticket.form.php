@@ -67,7 +67,10 @@ if (isset($_POST["add"])) {
       }
    }
    $track->update($_POST);
-   Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "ticket", 4, "tracking", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
+   
 
    // Copy solution to KB redirect to KB
    if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
@@ -85,7 +88,9 @@ if (isset($_POST["add"])) {
    $track->check($_POST['id'],'d');
    if ($track->delete($_POST)) {
       Event::log($_POST["id"], "ticket", 4, "tracking",
-                 $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$track->getField('name'));
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));         
+      
    }
    $track->redirectToList();
 
@@ -93,7 +98,8 @@ if (isset($_POST["add"])) {
    $track->check($_POST['id'],'d');
    if ($track->delete($_POST, 1)) {
       Event::log($_POST["id"], "ticket", 4, "tracking",
-                 $_SESSION["glpiname"]." ".$LANG['log'][24]." ".$track->getField('name'));
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));         
    }
    $track->redirectToList();
 
@@ -101,7 +107,8 @@ if (isset($_POST["add"])) {
    $track->check($_POST['id'], 'd');
    if ($track->restore($_POST)) {
       Event::log($_POST["id"], "ticket", 4, "tracking",
-                 $_SESSION["glpiname"]." ".$LANG['log'][23]." ".$track->getField('name'));
+            //TRANS: %s is the user login
+            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));         
    }
    $track->redirectToList();
 
@@ -109,7 +116,9 @@ if (isset($_POST["add"])) {
    $track->check($_POST["id"],'w');
 
    $track->deleteSLA($_POST["id"]);
-   Event::log($_POST["id"], "ticket", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "ticket", 4, "tracking", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
 
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
 
@@ -153,7 +162,8 @@ if (isset($_POST["add"])) {
    $ticket_user->add($input);
 
    Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
-              $_SESSION["glpiname"]." ".$LANG['log'][21]);
+            //TRANS: %s is the user login
+            sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));         
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
 
 }

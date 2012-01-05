@@ -38,7 +38,10 @@ if (isset($_POST["update"])) {
 
    $item->update($_POST);
 
-   Event::log($_POST["id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+   Event::log($_POST["id"], "slas", 4, "config", 
+            //TRANS: %s is the user login
+            sprintf(__('%s updates a slalevel'), $_SESSION["glpiname"]));            
+   
    Html::back();
 
 } else if (isset($_POST["add"])) {
@@ -61,14 +64,17 @@ if (isset($_POST["update"])) {
             }
          }
       }
-      Event::log($_POST["slas_id"], "slas", 4, "config", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($_POST["slas_id"], "slas", 4, "config",
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes several slalevels'), $_SESSION["glpiname"]));            
 
    } else if (isset($_POST['id'])) {
       $item->check($_POST['id'], 'd');
       $ok = $item->delete($_POST);
       if ($ok) {
          Event::log($_POST["id"], "slas", 4, "config",
-                    $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$item->getField('name'));
+            //TRANS: %s is the user login
+            sprintf(__('%s deletes a slalevel'), $_SESSION["glpiname"]));            
       }
       $item->redirectToList();
    }

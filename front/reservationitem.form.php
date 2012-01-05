@@ -51,13 +51,15 @@ if (isset($_REQUEST["add"])) {
 } else if (isset($_REQUEST["delete"])) {
    $ri->delete($_REQUEST);
    Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][22]);
+            //TRANS: %s is the user login
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
    Html::back();
 
 } else if (isset($_REQUEST["update"])) {
    $ri->update($_REQUEST);
    Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
-              $_SESSION["glpiname"]." ".$LANG['log'][21]);
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
    Html::back();
 
 } else {

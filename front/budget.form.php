@@ -60,7 +60,9 @@ if (isset($_POST["add"])) {
    $budget->check($_POST["id"],'w');
 
    if ($budget->delete($_POST)) {
-      Event::log($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
+      Event::log($_POST["id"], "budget", 4, "financial", 
+                  //TRANS: %s is the user login
+                  sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
    }
    $budget->redirectToList();
 
@@ -68,7 +70,9 @@ if (isset($_POST["add"])) {
    $budget->check($_POST["id"],'w');
 
    if ($budget->restore($_POST)) {
-      Event::log($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
+      Event::log($_POST["id"], "budget", 4, "financial", 
+                  //TRANS: %s is the user login
+                  sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
    }
    $budget->redirectToList();
 
@@ -77,7 +81,8 @@ if (isset($_POST["add"])) {
 
    if ($budget->delete($_REQUEST,1)) {
       Event::log($_REQUEST["id"], "budget", 4, "financial",
-                 $_SESSION["glpiname"]." ".$LANG['log'][24]);
+                  //TRANS: %s is the user login
+                  sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    }
    $budget->redirectToList();
 
@@ -85,7 +90,9 @@ if (isset($_POST["add"])) {
    $budget->check($_POST["id"],'w');
 
    if ($budget->update($_POST)) {
-      Event::log($_POST["id"], "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
+      Event::log($_POST["id"], "budget", 4, "financial", 
+                  //TRANS: %s is the user login
+                  sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    }
    Html::back();
 

@@ -45,7 +45,8 @@ if (isset($_POST["update"])) {
    $inquest->update($_POST);
 
    Event::log($inquest->getField('tickets_id'), "ticket", 4, "tracking",
-              $_SESSION["glpiname"]." ".$LANG['log'][21]);
+            //TRANS: %s is the user login
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
    Html::back();
 }
 
