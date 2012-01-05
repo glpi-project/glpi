@@ -34,7 +34,7 @@
 
 /// Update from 0.6 to 0.65
 function update06to065() {
-   global $DB, $LANG;
+   global $DB;
 
    	echo "<p class='center'>Version 0.65 </p>";
 

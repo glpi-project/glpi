@@ -418,7 +418,7 @@ class Budget extends CommonDropdown{
    *@return Nothing (display)
    **/
    function showValuesByEntity() {
-      global $DB, $LANG;
+      global $DB;
 
       $budgets_id = $this->fields['id'];
 

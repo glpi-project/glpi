@@ -248,7 +248,8 @@ class Cartridge extends CommonDBTM {
             $out .= "</td><td>$old</span></td></tr></table>";
 
          } else {
-            //TRANS : for display cartridges count : %1$d is the total number, %2$d the new one, %3$d the used one, %4$d worn one
+            //TRANS : for display cartridges count : %1$d is the total number,
+            //        %2$d the new one, %3$d the used one, %4$d worn one
             $out .= sprintf(__('Total: %1$d (%2$d new, %3$d used, %4$d worn)'),
                             $total ,$unused, $used, $old);
          }
@@ -377,7 +378,7 @@ class Cartridge extends CommonDBTM {
     *@return Nothing (displays)
     **/
    static function showForCartridgeItem(CartridgeItem $cartitem, $show_old=0) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $tID = $cartitem->getField('id');
       if (!$cartitem->can($tID,'r')) {
@@ -669,7 +670,8 @@ class Cartridge extends CommonDBTM {
          echo "</td><td class='center'>";
          if ($old!=0) {
             if ($canedit) {
-               echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
+               echo "<form method='post' action=\"".$CFG_GLPI["root_doc"].
+                    "/front/cartridge.form.php\">";
                echo "<input type='hidden' name='cID' value='".$data['id']."'>";
                echo "<input type='text' name='pages' value=\"".$data['pages']."\" size='10'>";
                echo "<input type='image' name='update_pages' value='update_pages'
@@ -817,5 +819,4 @@ class Cartridge extends CommonDBTM {
       }
    }
 }
-
 ?>

@@ -72,7 +72,6 @@ class NotificationTargetConsumable extends NotificationTarget {
 
 
    function getTags() {
-      global $LANG;
 
       $tags = array('consumable.action'    => _n('Event', 'Events', 1),
                     'consumable.reference' => __('Reference'),

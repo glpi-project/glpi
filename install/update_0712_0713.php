@@ -36,7 +36,7 @@
 
 /// Update from 0.71.2 to 0.71.3
 function update0712to0713() {
-   global $DB, $CFG_GLPI, $LANG;
+   global $DB, $CFG_GLPI;
 
    if (!FieldExists("glpi_rule_cache_software", "ignore_ocs_import", false)) {
       $query = "ALTER TABLE `glpi_rule_cache_software`

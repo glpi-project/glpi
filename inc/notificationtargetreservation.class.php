@@ -122,7 +122,6 @@ class NotificationTargetReservation extends NotificationTarget {
 
 
    function getTags() {
-      global $LANG;
 
       $tags_all = array('reservation.item'     => __('Associated item'),
                         'reservation.itemtype' => __('Item type'),

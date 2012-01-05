@@ -132,7 +132,6 @@ class Contract extends CommonDBTM {
    *
    **/
    function showForm($ID,$options=array()) {
-      global $LANG;
 
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -276,7 +275,8 @@ class Contract extends CommonDBTM {
       $tab['contract'] = self::getTypeName(2);
 
       $joinparams = array('beforejoin' => array('table'      => 'glpi_contracts_items',
-                                                'joinparams' => array('jointype' => 'itemtype_item')));
+                                                'joinparams' => array('jointype'
+                                                                        => 'itemtype_item')));
 
       $tab[139]['table']         = 'glpi_contracts_items';
       $tab[139]['field']         = 'count';
@@ -379,139 +379,136 @@ class Contract extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']             = __('Characteristics');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false;
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'num';
-      $tab[3]['name']      = __('Number');
-      $tab[3]['datatype']  = 'string';
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'num';
+      $tab[3]['name']            = __('Number');
+      $tab[3]['datatype']        = 'string';
 
-      $tab[4]['table'] = 'glpi_contracttypes';
-      $tab[4]['field'] = 'name';
-      $tab[4]['name']  = __('Type');
+      $tab[4]['table']           = 'glpi_contracttypes';
+      $tab[4]['field']           = 'name';
+      $tab[4]['name']            = __('Type');
 
-      $tab[5]['table']       = $this->getTable();
-      $tab[5]['field']       = 'begin_date';
-      $tab[5]['name']        = __('Start date');
-      $tab[5]['datatype']    = 'date';
-      $tab[5]['maybefuture'] = true;
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'begin_date';
+      $tab[5]['name']            = __('Start date');
+      $tab[5]['datatype']        = 'date';
+      $tab[5]['maybefuture']     = true;
 
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'duration';
+      $tab[6]['name']            = __('Initial contract period');
 
-      $tab[6]['table'] = $this->getTable();
-      $tab[6]['field'] = 'duration';
-      $tab[6]['name']  = __('Initial contract period');
+      $tab[20]['table']          = $this->getTable();
+      $tab[20]['field']          = 'end_date';
+      $tab[20]['name']           = __('End date');
+      $tab[20]['datatype']       = 'date_delay';
+      $tab[20]['datafields'][1]  = 'begin_date';
+      $tab[20]['datafields'][2]  = 'duration';
+      $tab[20]['searchunit']     = 'MONTH';
+      $tab[20]['delayunit']      = 'MONTH';
+      $tab[20]['maybefuture']    = true;
+      $tab[20]['massiveaction']  = false;
 
-      $tab[20]['table']         = $this->getTable();
-      $tab[20]['field']         = 'end_date';
-      $tab[20]['name']          = __('End date');
-      $tab[20]['datatype']      = 'date_delay';
-      $tab[20]['datafields'][1] = 'begin_date';
-      $tab[20]['datafields'][2] = 'duration';
-      $tab[20]['searchunit']    = 'MONTH';
-      $tab[20]['delayunit']     = 'MONTH';
-      $tab[20]['maybefuture']   = true;
-      $tab[20]['massiveaction'] = false;
+      $tab[7]['table']           = $this->getTable();
+      $tab[7]['field']           = 'notice';
+      $tab[7]['name']            = __('Notice');
 
+      $tab[11]['table']          = $this->getTable();
+      $tab[11]['field']          = 'cost';
+      $tab[11]['name']           = __('Cost');
+      $tab[11]['datatype']       = 'decimal';
 
-      $tab[7]['table'] = $this->getTable();
-      $tab[7]['field'] = 'notice';
-      $tab[7]['name']  = __('Notice');
+      $tab[21]['table']          = $this->getTable();
+      $tab[21]['field']          = 'periodicity';
+      $tab[21]['name']           = __('Contract renewal period');
+      $tab[21]['massiveaction']  = false;
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'cost';
-      $tab[11]['name']     = __('Cost');
-      $tab[11]['datatype'] = 'decimal';
+      $tab[22]['table']          = $this->getTable();
+      $tab[22]['field']          = 'billing';
+      $tab[22]['name']           = __('Invoice period');
+      $tab[22]['massiveaction']  = false;
 
-      $tab[21]['table']         = $this->getTable();
-      $tab[21]['field']         = 'periodicity';
-      $tab[21]['name']          = __('Contract renewal period');
-      $tab[21]['massiveaction'] = false;
+      $tab[10]['table']          = $this->getTable();
+      $tab[10]['field']          = 'accounting_number';
+      $tab[10]['name']           = __('Account number');
+      $tab[10]['datatype']       = 'string';
 
-      $tab[22]['table']         = $this->getTable();
-      $tab[22]['field']         = 'billing';
-      $tab[22]['name']          = __('Invoice period');
-      $tab[22]['massiveaction'] = false;
+      $tab[23]['table']          = $this->getTable();
+      $tab[23]['field']          = 'renewal';
+      $tab[23]['name']           = __('Renewal');
+      $tab[23]['massiveaction']  = false;
 
-      $tab[10]['table']    = $this->getTable();
-      $tab[10]['field']    = 'accounting_number';
-      $tab[10]['name']     = __('Account number');
-      $tab[10]['datatype'] = 'string';
+      $tab[12]['table']          = $this->getTable();
+      $tab[12]['field']          = 'expire';
+      $tab[12]['name']           = __('Expiration');
+      $tab[12]['datatype']       = 'date_delay';
+      $tab[12]['datafields'][1]  = 'begin_date';
+      $tab[12]['datafields'][2]  = 'duration';
+      $tab[12]['searchunit']     = 'DAY';
+      $tab[12]['delayunit']      = 'MONTH';
+      $tab[12]['maybefuture']    = true;
+      $tab[12]['massiveaction']  = false;
 
-      $tab[23]['table']         = $this->getTable();
-      $tab[23]['field']         = 'renewal';
-      $tab[23]['name']          = __('Renewal');
-      $tab[23]['massiveaction'] = false;
+      $tab[13]['table']          = $this->getTable();
+      $tab[13]['field']          = 'expire_notice';
+      $tab[13]['name']           = __('Expiration date + notice');
+      $tab[13]['datatype']       = 'date_delay';
+      $tab[13]['datafields'][1]  = 'begin_date';
+      $tab[13]['datafields'][2]  = 'duration';
+      $tab[13]['datafields'][3]  = 'notice';
+      $tab[13]['searchunit']     = 'DAY';
+      $tab[13]['delayunit']      = 'MONTH';
+      $tab[13]['maybefuture']    = true;
+      $tab[13]['massiveaction']  = false;
 
-      $tab[12]['table']         = $this->getTable();
-      $tab[12]['field']         = 'expire';
-      $tab[12]['name']          = __('Expiration');
-      $tab[12]['datatype']      = 'date_delay';
-      $tab[12]['datafields'][1] = 'begin_date';
-      $tab[12]['datafields'][2] = 'duration';
-      $tab[12]['searchunit']    = 'DAY';
-      $tab[12]['delayunit']     = 'MONTH';
-      $tab[12]['maybefuture']   = true;
-      $tab[12]['massiveaction'] = false;
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
-      $tab[13]['table']         = $this->getTable();
-      $tab[13]['field']         = 'expire_notice';
-      $tab[13]['name']          = __('Expiration date + notice');
-      $tab[13]['datatype']      = 'date_delay';
-      $tab[13]['datafields'][1] = 'begin_date';
-      $tab[13]['datafields'][2] = 'duration';
-      $tab[13]['datafields'][3] = 'notice';
-      $tab[13]['searchunit']    = 'DAY';
-      $tab[13]['delayunit']     = 'MONTH';
-      $tab[13]['maybefuture']   = true;
-      $tab[13]['massiveaction'] = false;
+      $tab[90]['table']          = $this->getTable();
+      $tab[90]['field']          = 'notepad';
+      $tab[90]['name']           = __('Notes');
+      $tab[90]['massiveaction']  = false;
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['massiveaction']  = false;
 
-      $tab[90]['table']         = $this->getTable();
-      $tab[90]['field']         = 'notepad';
-      $tab[90]['name']          = __('Notes');
-      $tab[90]['massiveaction'] = false;
+      $tab[59]['table']          = $this->getTable();
+      $tab[59]['field']          = 'alert';
+      $tab[59]['name']           = __('Email Alarms');
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __('Entity');
-      $tab[80]['massiveaction'] = false;
+      $tab[86]['table']          = $this->getTable();
+      $tab[86]['field']          = 'is_recursive';
+      $tab[86]['name']           = __('Child entities');
+      $tab[86]['datatype']       = 'bool';
 
-      $tab[59]['table'] = $this->getTable();
-      $tab[59]['field'] = 'alert';
-      $tab[59]['name']  = __('Email Alarms');
-
-      $tab[86]['table']    = $this->getTable();
-      $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = __('Child entities');
-      $tab[86]['datatype'] = 'bool';
-
-      $tab[72]['table']         = 'glpi_contracts_items';
-      $tab[72]['field']         = 'count';
-      $tab[72]['name']          = __('Number of items');
-      $tab[72]['forcegroupby']  = true;
-      $tab[72]['usehaving']     = true;
-      $tab[72]['datatype']      = 'number';
-      $tab[72]['massiveaction'] = false;
-      $tab[72]['joinparams']    = array('jointype' => 'child');
+      $tab[72]['table']          = 'glpi_contracts_items';
+      $tab[72]['field']          = 'count';
+      $tab[72]['name']           = __('Number of items');
+      $tab[72]['forcegroupby']   = true;
+      $tab[72]['usehaving']      = true;
+      $tab[72]['datatype']       = 'number';
+      $tab[72]['massiveaction']  = false;
+      $tab[72]['joinparams']     = array('jointype' => 'child');
 
       return $tab;
    }
@@ -525,7 +522,7 @@ class Contract extends CommonDBTM {
     *
     **/
    static function showCentral() {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB,$CFG_GLPI;
 
       if (!Session::haveRight("contract","r")) {
          return false;
@@ -649,7 +646,7 @@ class Contract extends CommonDBTM {
     *
     **/
    function showSuppliers() {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $instID = $this->fields['id'];
 
@@ -691,7 +688,7 @@ class Contract extends CommonDBTM {
       echo "<tr><th>".__('Supplier')."</th>";
       echo "<th>".__('Entity')."</th>";
       echo "<th>".__('Third party type')."</th>";
-      echo "<th>".$LANG['help'][35]."</th>";
+      echo "<th>".__('Phone')."</th>";
       echo "<th>".__('Website')."</th>";
       echo "<th>&nbsp;</th></tr>";
 
@@ -963,7 +960,7 @@ class Contract extends CommonDBTM {
     *
     **/
    static function showAssociated(CommonDBTM $item, $withtemplate='') {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $itemtype = $item->getType();
       $ID = $item->fields['id'];
@@ -1018,8 +1015,10 @@ class Contract extends CommonDBTM {
 
       if ($number>0) {
          Session::initNavigateListItems('Contract',
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
+               //TRANS : %1$s is the itemtype name,
+               //         %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                $item->getTypeName(1), $item->getName()));
       }
       $contracts = array();
       while ($i < $number) {
@@ -1041,7 +1040,8 @@ class Contract extends CommonDBTM {
          echo Dropdown::getDropdownName("glpi_entities", $con->fields["entities_id"])."</td>";
          echo "<td class='center'>".$con->fields["num"]."</td>";
          echo "<td class='center'>";
-         echo Dropdown::getDropdownName("glpi_contracttypes", $con->fields["contracttypes_id"])."</td>";
+         echo Dropdown::getDropdownName("glpi_contracttypes", $con->fields["contracttypes_id"]).
+              "</td>";
          echo "<td class='center'>".$con->getSuppliersNames()."</td>";
          echo "<td class='center'>".Html::convDate($con->fields["begin_date"])."</td>";
          echo "<td class='center'>".$con->fields["duration"]." ".__('month');
@@ -1176,7 +1176,7 @@ class Contract extends CommonDBTM {
                $contract_infos[$type][$entity][$data['id']] = $data;
 
                 if (!isset($contract_messages[$type][$entity])) {
-                  $contract_messages[$type][$entity] = __('Contract entered in notice time:')."<br />";
+                  $contract_messages[$type][$entity] = __('Contract entered in notice time:')."<br>";
                }
                $contract_messages[$type][$entity] .= $message;
             }

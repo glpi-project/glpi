@@ -34,7 +34,7 @@
 
 /// Update from 0.65 to 0.68
 function update065to068() {
-   global $DB, $LANG;
+   global $DB;
 
    if (!TableExists("glpi_profiles")) {
       $query = "CREATE TABLE `glpi_profiles` (

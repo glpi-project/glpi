@@ -34,7 +34,7 @@
 
 /// Update from 0.5 to 0.51
 function update05to051() {
-   global $DB, $LANG;
+   global $DB;
 
    echo "<p class='center'>Version 0.51 </p>";
 
@@ -71,7 +71,7 @@ function update05to051() {
 
       $query = "INSERT INTO `glpi_dropdown_contact_type`
                        (`name`)
-                VALUES ('".$LANG['financial'][43]."')";
+                VALUES ('".__('Technician')."')";
       $DB->queryOrDie($query, "0.51 add entries to dropdown_contact_type");
 
       $query = "INSERT INTO `glpi_dropdown_contact_type`

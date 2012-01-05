@@ -897,7 +897,8 @@ class Search {
                         "/front/popup.php?popup=search_config&amp;itemtype=$itemtype' ,'glpipopup', ".
                         "'height=400, width=1000, top=100, left=100, scrollbars=yes'); w.focus();\"";
 
-                  $search_config = "<img alt=\"".__s('Select default items to show')."\" title=\"".__s('Select default items to show').
+                  $search_config = "<img alt=\"".__s('Select default items to show')."\" title=\"".
+                                     __s('Select default items to show').
                                     "\" src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
                   $search_config .= $tmp.">";
                }
@@ -2237,9 +2238,11 @@ class Search {
             return " `glpi_users`.`authtype` AS ".$NAME."_".$num.",
                      `glpi_users`.`auths_id` AS ".$NAME."_".$num."_2,
                      `glpi_authldaps".$addtable."_".
-                           self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`$field` AS ".$NAME."_".$num."_3,
+                           self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`$field`
+                              AS ".$NAME."_".$num."_3,
                      `glpi_authmails".$addtable."_".
-                           self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`$field` AS ".$NAME."_".$num."_4, ";
+                           self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`$field`
+                              AS ".$NAME."_".$num."_4, ";
 
          case "glpi_softwarelicenses.name" :
          case "glpi_softwareversions.name" :
@@ -2401,15 +2404,22 @@ class Search {
             $condition = '';
             if (!Session::haveRight("show_all_ticket","1")) {
 
-               $searchopt            = &self::getOptions($itemtype);
-               $requester_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']['joinparams']).'`';
-               $requestergroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']['joinparams']).'`';
+               $searchopt
+                  = &self::getOptions($itemtype);
+               $requester_table
+                  = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[4]['joinparams']['beforejoin']['joinparams']).'`';
+               $requestergroup_table
+                  = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[71]['joinparams']['beforejoin']['joinparams']).'`';
 
-               $assign_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']['joinparams']).'`';
-               $assigngroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']['joinparams']).'`';
+               $assign_table
+                  = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[5]['joinparams']['beforejoin']['joinparams']).'`';
+               $assigngroup_table
+                  = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[8]['joinparams']['beforejoin']['joinparams']).'`';
 
-               $observer_table      = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']['joinparams']).'`';
-               $observergroup_table = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']['joinparams']).'`';
+               $observer_table
+                  = '`glpi_tickets_users_'.self::computeComplexJoinID($searchopt[66]['joinparams']['beforejoin']['joinparams']).'`';
+               $observergroup_table
+                  = '`glpi_groups_tickets_'.self::computeComplexJoinID($searchopt[65]['joinparams']['beforejoin']['joinparams']).'`';
 
                $condition = "(";
 
@@ -2684,9 +2694,11 @@ class Search {
          case "glpi_auth_tables.name" :
             $user_searchopt = self::getOptions('User');
             return $link." (`glpi_authmails".$addtable."_".
-                           self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`name` $SEARCH
+                           self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`name`
+                           $SEARCH
                             OR `glpi_authldaps".$addtable."_".
-                           self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`name` $SEARCH ) ";
+                           self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`name`
+                           $SEARCH ) ";
 
          case "glpi_contracts.renewal" :
             $valid = Contract::getContractRenewalIDByName($val);
@@ -3616,7 +3628,7 @@ class Search {
     * @return string to print
    **/
    static function giveItem($itemtype, $ID, $data, $num, $meta=0) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
 
       $searchopt = &self::getOptions($itemtype);
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
@@ -4529,7 +4541,8 @@ class Search {
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
 
-      if (!Session::haveRight('contract',$action) && in_array($itemtype,$CFG_GLPI["contract_types"])) {
+      if (!Session::haveRight('contract',$action) && in_array($itemtype,
+                                                              $CFG_GLPI["contract_types"])) {
          $itemstodel = Contract::getSearchOptionsToAdd();
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
@@ -4602,64 +4615,64 @@ class Search {
 
          // standard type first
          if ($itemtype=='States') {
-            $search[$itemtype]['common'] = __('Characteristics');
+            $search[$itemtype]['common']           = __('Characteristics');
 
-            $search['States'][1]['table']      = 'state_types';
-            $search['States'][1]['field']      = 'name';
-            $search['States'][1]['name']       = __('Name');
-            $search['States'][1]['datatype']   = 'itemlink';
-            $search['States'][1]['searchtype'] = 'contains';
+            $search['States'][1]['table']          = 'state_types';
+            $search['States'][1]['field']          = 'name';
+            $search['States'][1]['name']           = __('Name');
+            $search['States'][1]['datatype']       = 'itemlink';
+            $search['States'][1]['searchtype']     = 'contains';
 
-            $search['States'][2]['table']      = 'state_types';
-            $search['States'][2]['field']      = 'id';
-            $search['States'][2]['name']       = __('ID');
-            $search['States'][2]['searchtype'] = 'contains';
+            $search['States'][2]['table']          = 'state_types';
+            $search['States'][2]['field']          = 'id';
+            $search['States'][2]['name']           = __('ID');
+            $search['States'][2]['searchtype']     = 'contains';
 
-            $search['States'][31]['table']     = 'glpi_states';
-            $search['States'][31]['field']     = 'completename';
-            $search['States'][31]['name']      = __('Status');
+            $search['States'][31]['table']         = 'glpi_states';
+            $search['States'][31]['field']         = 'completename';
+            $search['States'][31]['name']          = __('Status');
 
             $search['States'] += Location::getSearchOptionsToAdd();
 
-            $search['States'][5]['table']     = 'state_types';
-            $search['States'][5]['field']     = 'serial';
-            $search['States'][5]['name']      = __('Serial number');
+            $search['States'][5]['table']          = 'state_types';
+            $search['States'][5]['field']          = 'serial';
+            $search['States'][5]['name']           = __('Serial number');
 
-            $search['States'][6]['table']     = 'state_types';
-            $search['States'][6]['field']     = 'otherserial';
-            $search['States'][6]['name']      = __('Inventory number');
+            $search['States'][6]['table']          = 'state_types';
+            $search['States'][6]['field']          = 'otherserial';
+            $search['States'][6]['name']           = __('Inventory number');
 
-            $search['States'][16]['table']     = 'state_types';
-            $search['States'][16]['field']     = 'comment';
-            $search['States'][16]['name']      = __('Comments');
-            $search['States'][16]['datatype']  = 'text';
+            $search['States'][16]['table']         = 'state_types';
+            $search['States'][16]['field']         = 'comment';
+            $search['States'][16]['name']          = __('Comments');
+            $search['States'][16]['datatype']      = 'text';
 
-            $search['States'][70]['table']     = 'glpi_users';
-            $search['States'][70]['field']     = 'name';
-            $search['States'][70]['name']      = __('User');
+            $search['States'][70]['table']         = 'glpi_users';
+            $search['States'][70]['field']         = 'name';
+            $search['States'][70]['name']          = __('User');
 
-            $search['States'][71]['table']     = 'glpi_groups';
-            $search['States'][71]['field']     = 'completename';
-            $search['States'][71]['name']      = __('Group');
+            $search['States'][71]['table']         = 'glpi_groups';
+            $search['States'][71]['field']         = 'completename';
+            $search['States'][71]['name']          = __('Group');
 
-            $search['States'][19]['table']          = 'state_types';
-            $search['States'][19]['field']          = 'date_mod';
-            $search['States'][19]['name']           = __('Last update');
-            $search['States'][19]['datatype']       = 'datetime';
-            $search['States'][19]['massiveaction']  = false;
+            $search['States'][19]['table']         = 'state_types';
+            $search['States'][19]['field']         = 'date_mod';
+            $search['States'][19]['name']          = __('Last update');
+            $search['States'][19]['datatype']      = 'datetime';
+            $search['States'][19]['massiveaction'] = false;
 
-            $search['States'][23]['table']     = 'glpi_manufacturers';
-            $search['States'][23]['field']     = 'name';
-            $search['States'][23]['name']      = __('Manufacturer');
+            $search['States'][23]['table']         = 'glpi_manufacturers';
+            $search['States'][23]['field']         = 'name';
+            $search['States'][23]['name']          = __('Manufacturer');
 
-            $search['States'][24]['table']     = 'glpi_users';
-            $search['States'][24]['field']     = 'name';
-            $search['States'][24]['linkfield'] = 'users_id_tech';
-            $search['States'][24]['name']      = __('Technician in charge of the hardware');
+            $search['States'][24]['table']         = 'glpi_users';
+            $search['States'][24]['field']         = 'name';
+            $search['States'][24]['linkfield']     = 'users_id_tech';
+            $search['States'][24]['name']          = __('Technician in charge of the hardware');
 
-            $search['States'][80]['table']     = 'glpi_entities';
-            $search['States'][80]['field']     = 'completename';
-            $search['States'][80]['name']      = __('Entity');
+            $search['States'][80]['table']         = 'glpi_entities';
+            $search['States'][80]['field']         = 'completename';
+            $search['States'][80]['name']          = __('Entity');
 
          } else if ($item = getItemForItemtype($itemtype)) {
             $search[$itemtype] = $item->getSearchOptions();
@@ -5420,5 +5433,4 @@ class Search {
 
 
 }
-
 ?>

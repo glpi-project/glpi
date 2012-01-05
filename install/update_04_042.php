@@ -34,7 +34,7 @@
 
 /// Update from 0.4 and 0.41 to 0.42
 function update04to042() {
-   global $DB,$LANG;
+   global $DB;
 
    echo "<p class='center'>Version 0.42 </p>";
 
