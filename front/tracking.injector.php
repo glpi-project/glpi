@@ -76,13 +76,14 @@ if (!isset($_POST["itemtype"]) || (empty($_POST["items_id"]) && $_POST["itemtype
 if (isset($_POST['add'])) {
    if ($newID = $track->add($_POST)) {
       if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
-         echo "<div class='center'>".$LANG['help'][18]."<br><br>";
+         echo "<div class='center spaced'>".
+                __('Your ticket has been registered, its treatment is in progress.');
          Html::displayBackLink();
          echo "</div>";
       } else {
          echo "<div class='center b spaced'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/ok.png' alt='OK'>";
-         Session::addMessageAfterRedirect($LANG['help'][19]);
+         Session::addMessageAfterRedirect(__('Thank you for using our automatic helpdesk system.'));
          Html::displayMessageAfterRedirect();
          echo "</div>";
       }

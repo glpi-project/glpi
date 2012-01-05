@@ -1256,7 +1256,8 @@ class Ticket extends CommonITILObject {
       }
 
       if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
-         Session::addMessageAfterRedirect($LANG['help'][18]." (".$LANG['job'][38]."&nbsp;".
+         Session::addMessageAfterRedirect(__('Your ticket has been registered, its treatment is in progress.').
+                                          " (".$LANG['job'][38]."&nbsp;".
                                           "<a href='".$CFG_GLPI["root_doc"].
                                             "/front/ticket.form.php?id=".$this->fields['id']."'>".
                                           $this->fields['id']."</a>)");
@@ -2440,7 +2441,7 @@ class Ticket extends CommonITILObject {
          echo "<div id='tracking_my_devices'>";
          echo "<select id='my_items' name='_my_items'>";
          echo "<option value=''>--- ";
-         echo $LANG['help'][30]." ---</option>$my_devices</select></div>";
+         echo __('General')." ---</option>$my_devices</select></div>";
 
 
          // Auto update summary of active or just solved tickets
@@ -2489,7 +2490,7 @@ class Ticket extends CommonITILObject {
             echo "<select id='search_$myname$rand' name='$myname'>\n";
             echo "<option value='-1' >".Dropdown::EMPTY_VALUE."</option>\n";
             echo "<option value='' ".((empty($itemtype)|| $itemtype===0)?" selected":"").">".
-                  $LANG['help'][30]."</option>";
+                  __('General')."</option>";
             $found_type = false;
             foreach ($types as $type => $label) {
                if (strcmp($type,$itemtype)==0) {
@@ -2912,7 +2913,7 @@ class Ticket extends CommonITILObject {
 
       if (empty($delegating) && NotificationTargetTicket::isAuthorMailingActivatedForHelpdesk()) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['help'][8]."&nbsp;:&nbsp;</td>";
+         echo "<td>".__('Inform me about the action(s) taken')."</td>";
          echo "<td>";
          if ($options["_users_id_requester"] == 0) {
             $options['_users_id_requester'] = Session::getLoginUserID();
@@ -2928,7 +2929,7 @@ class Ticket extends CommonITILObject {
       if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0) {
          if (!$tt->isHiddenField('itemtype')) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['help'][24]."&nbsp;: ".$tt->getMandatoryMark('itemtype')."</td>";
+            echo "<td>".sprintf(__('Hardware type : %s'), $tt->getMandatoryMark('itemtype'))."</td>";
             echo "<td>";
             self::dropdownMyDevices($options['_users_id_requester'], $_SESSION["glpiactive_entity"],
                                     $options['itemtype'], $options['items_id']);
@@ -2975,7 +2976,7 @@ class Ticket extends CommonITILObject {
       if (!$ticket_template) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['help'][14]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__('Submit Message')."\" class='submit'>";
 
          if ($tt->isField('id') && $tt->fields['id'] > 0) {
             echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
@@ -3609,7 +3610,7 @@ class Ticket extends CommonITILObject {
             $item->getFromDB($this->fields['items_id']);
             echo $item->getTypeName()." - ".$item->getNameID();
          } else {
-            echo $LANG['help'][30];
+            _e('General');
          }
       }
       echo $tt->getEndHiddenFieldValue('itemtype',$this);
@@ -4836,7 +4837,7 @@ class Ticket extends CommonITILObject {
             }
 
          } else if (empty($job->fields["itemtype"])) {
-            $sixth_col = $LANG['help'][30];
+            $sixth_col = __('General');
          }
 
          echo Search::showItem($output_type, $sixth_col, $item_num, $row_num,
@@ -4944,7 +4945,7 @@ class Ticket extends CommonITILObject {
                   $job->hardwaredatas->getNameID()."</span></td>";
 
          } else {
-            echo "<td class='center' >".$LANG['help'][30]."</td>";
+            echo "<td class='center' >".__('General')."</td>";
          }
          echo "<td>";
 

@@ -73,11 +73,12 @@ function fillidfield(Type,Id) {
 <?php
 
 echo "<div class='center'>";
-echo "<p class='b'>".$LANG['help'][22]."</p>";
+echo "<p class='b'>".__('Search the ID of your hardware')."</p>";
 echo " <form name='form1' method='post'  action='".$_SERVER['PHP_SELF']."'>";
 
 echo "<table class='tab_cadre_fixe'>";
-echo "<tr><th height='29'>".$LANG['help'][23]."</th></tr>";
+echo "<tr><th height='29'>".__('Enter the first letters (user, item name, serial or asset number)').
+     "</th></tr>";
 echo "<tr><td class='tab_bg_1 center'>";
 echo "<input name='NomContact' type='text' id='NomContact' >";
 echo "<input type='hidden' name='send' value='1'>"; // bug IE ! La validation par enter ne fonctionne pas sans cette ligne  incroyable mais vrai !
@@ -88,18 +89,18 @@ if (isset($_POST["send"])) {
    echo "<table class='tab_cadre_fixe'>";
    echo " <tr class='tab_bg3'>";
    echo " <td class='center b' width='30%'>".__('Alternate username')."</td>";
-   echo " <td class='center b' width='20%'>".$LANG['help'][24]."</td>";
+   echo " <td class='center b' width='20%'>".__('Hardware type')."</td>";
    echo " <td class='center b' width='30%'>".__('Associated element')."</td>";
    echo " <td class='center b' width='5%'>".__('ID')."</td>";
    echo " <td class='center b' width='10%'>".__('Serial number')."</td>";
    echo " <td class='center b' width='10%'>".__('Inventory number')."</td>";
    echo " </tr>";
 
-   $types = array('Computer'         => $LANG['help'][25],
-                  'NetworkEquipment' => $LANG['help'][26],
-                  'Printer'          => $LANG['help'][27],
-                  'Monitor'          => $LANG['help'][28],
-                  'Peripheral'       => $LANG['help'][29]);
+   $types = array('Computer'         => __('Computer'),
+                  'NetworkEquipment' => __('Network device'),
+                  'Printer'          => __('Printer'),
+                  'Monitor'          => __('Monitor'),
+                  'Peripheral'       => __('Device'));
    foreach ($types as $type => $label) {
       $query = "SELECT `name`, `id`, `contact`, `serial`, `otherserial`
                 FROM `".getTableForItemType($type)."`
