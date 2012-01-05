@@ -2134,7 +2134,6 @@ $LANG['setup'][619]="Life cycles";
 $LANG['setup'][621]="Search filter for entities";
 $LANG['setup'][622]="Attribute representing entity";
 $LANG['setup'][623]="Import entities from LDAP directory";
-$LANG['setup'][624]="Links";
 
 $LANG['setup'][650]="PHP";
 $LANG['setup'][651]="SMTP";
