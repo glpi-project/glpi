@@ -865,7 +865,7 @@ class Document extends CommonDBTM {
 
                      if ($itemtype == 'Entity' && !$data['entity']) {
                         $data['id']   = 0;
-                        $data['name'] = $LANG['entity']['2'];
+                        $data['name'] = __('Root entity');
                      }
 
                      if ($itemtype == 'Ticket') {

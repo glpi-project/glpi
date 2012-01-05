@@ -64,14 +64,15 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
       Dropdown::showInteger('inquest_delay', $inquest_delay, 0, 90, 1);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='1'>".$LANG['entity'][21]."&nbsp;:&nbsp;</td>";
+      echo "<tr class='tab_bg_1'>".
+           "<td colspan='1'>".__s('Rate to trigger survey')."</td>";
       echo "<td colspan='1'>";
       Dropdown::showInteger('inquest_rate', $inquest_rate, 10, 100, 10,
                             array(0 => __('Disabled')));
       echo "&nbsp;%</td></tr>";
 
       if ($max_closedate != '') {
-         echo "<tr class='tab_bg_1'><td colspan='1'>" . $LANG['entity'][22] . "&nbsp;:&nbsp;</td>";
+         echo "<tr class='tab_bg_1'><td colspan='1'>". __('For tickets closed after')."</td>";
          echo "<td colspan='1'>" . Html::convDateTime($max_closedate)."</td></tr>";
       }
 

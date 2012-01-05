@@ -310,35 +310,39 @@ class EntityData extends CommonDBChild {
       }
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='2'>".$LANG['entity'][23]."</th></tr>";
+      echo "<tr><th colspan='2'>".__s('Values for the generic rules for assignment to entities').
+           "</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2' class='center'>".$LANG['entity'][26]."</td></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='2' class='center'>".
+            __s('These parameters are used as actions in generic rules for assignment to entities').
+           "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['entity'][13]."</td>";
+      echo "<td>".__s('Information in inventory tool (TAG) representing the entity')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "tag", array('size' => 100));
       echo "</td></tr>";
 
       if (Toolbox::canUseLdap()) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['entity'][12]."</td>";
+         echo "<td>".__s('LDAP directory information attribute representing the entity')."</td>";
          echo "<td>";
          Html::autocompletionTextField($entdata, "ldap_dn", array('size' => 100));
          echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['entity'][27]."</td>";
+      echo "<td>".__('Mail domain surrogates entity')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "mail_domain", array('size' => 100));
       echo "</td></tr>";
 
       if (Toolbox::canUseLdap()) {
-         echo "<tr><th colspan='2'>".$LANG['entity'][24]."</th></tr>";
+         echo "<tr><th colspan='2'>".
+               __s('Values used in the interface to search users from a LDAP directory')."</th></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['entity'][15]."</td>";
+         echo "<td>".__('LDAP directory of an entity')."</td>";
          echo "<td>";
          Dropdown::show('AuthLDAP', array('value'      => $entdata->fields['authldaps_id'],
                                           'emptylabel' => $LANG['ldap'][44],
@@ -346,7 +350,7 @@ class EntityData extends CommonDBChild {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['entity'][25]."</td>";
+         echo "<td>".__s('LDAP filter associated to the entity (if necessary)')."</td>";
          echo "<td>";
          Html::autocompletionTextField($entdata, 'entity_ldapfilter', array('size' => 100));
          echo "</td></tr>";
@@ -802,7 +806,7 @@ class EntityData extends CommonDBChild {
       }
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][28]."</td>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>".__('Tickets default type')."</td>";
       echo "<td colspan='2'>";
       $toadd = array();
       if ($ID != 0) {
@@ -838,9 +842,10 @@ class EntityData extends CommonDBChild {
       }
       echo "</td></tr>";
 
-      echo "<tr><th colspan='4'>".$LANG['entity'][17]."</th></tr>";
+      echo "<tr><th colspan='4'>".__('Automatic closing configuration')."</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>".__('Automatic closing of solved tickets after (day(s))')."</td>";
+      echo "<tr class='tab_bg_1'>".
+           "<td colspan='2'>".__('Automatic closing of solved tickets after (day(s))')."</td>";
       echo "<td colspan='2'>";
       $autoclose = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                          self::CONFIG_NEVER  => __('Never'));
@@ -865,9 +870,10 @@ class EntityData extends CommonDBChild {
       }
       echo "</td></tr>";
 
-      echo "<tr><th colspan='4'>".$LANG['entity'][19]."</th></tr>";
+      echo "<tr><th colspan='4'>".__s('Configuring the satisfaction survey')."</th></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['entity'][19]."</td>";
+      echo "<tr class='tab_bg_1'>".
+           "<td colspan='2'>".__s('Configuring the satisfaction survey')."</td>";
       echo "<td colspan='2'>";
 
       /// no inquest case = rate 0
@@ -1133,7 +1139,7 @@ class EntityData extends CommonDBChild {
             case 'Entity' :
                $ong = array();
                $ong[1] = $LANG['financial'][44];      // Address
-               $ong[2] = $LANG['entity'][14];         // Advanced
+               $ong[2] = __('Advanced informations');         // Advanced
                if (Session::haveRight('notification','r')) {
                   $ong[3] = _n('Notification', 'Notifications',2);
                }

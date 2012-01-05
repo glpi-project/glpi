@@ -627,10 +627,6 @@ $LANG['entity'][6]="Automatic user assignment";
 $LANG['entity'][7]="tree structure";
 $LANG['entity'][8]="By entity";
 $LANG['entity'][9]="Child entities";
-
-/// TODO Before is ok for migration to gettext
-
-
 $LANG['entity'][10]="Select the desired entity";
 $LANG['entity'][11]="to see the entity and its sub-entities";
 $LANG['entity'][12]="LDAP directory information attribute representing the entity";
@@ -645,11 +641,14 @@ $LANG['entity'][20]="Create survey after";
 $LANG['entity'][21]="Rate to trigger survey";
 $LANG['entity'][22]="For tickets closed after";
 $LANG['entity'][23]="Values for the generic rules for assignment to entities";
-$LANG['entity'][24]="Values used in the interface to search users from an LDAP directory";
+$LANG['entity'][24]="Values used in the interface to search users from a LDAP directory";
 $LANG['entity'][25]="LDAP filter associated to the entity (if necessary)";
 $LANG['entity'][26]="These parameters are used as actions in generic rules for assignment to entities";
-$LANG['entity'][27]="Mail domain surrogate entity";
+$LANG['entity'][27]="Mail domain surrogates entity";
 $LANG['entity'][28]="Tickets default type";
+
+/// TODO Before is ok for migration to gettext
+
 
 $LANG['event'][0]="Source";
 $LANG['event'][2]="Service";

@@ -304,7 +304,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
       echo "<tr class='tab_bg_2'><th colspan='4'>";
-      echo "<input type='hidden' name='id' value='$ID'>". $LANG['entity'][14] . "</th></tr>";
+      echo "<input type='hidden' name='id' value='$ID'>". __('Advanced informations')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Use TLS') . "</td><td>";
@@ -2243,7 +2243,8 @@ class AuthLDAP extends CommonDBTM {
             //If multi-entity mode and more than one entity visible
             //else no need to select entity
             if (Session::isMultiEntitiesMode() && count($_SESSION['glpiactiveentities']) > 1) {
-               echo "<tr class='tab_bg_2'><td>".$LANG['entity'][10]."</td><td colspan='3'>";
+               echo "<tr class='tab_bg_2'><td>".__s('Select the desired entity')."</td>".
+                    "<td colspan='3'>";
                Dropdown::show('Entity',
                               array('value'       => $_SESSION['ldap_import']['entities_id'],
                                     'entity'      => $_SESSION['glpiactiveentities'],
@@ -2587,7 +2588,7 @@ class AuthLDAP extends CommonDBTM {
          $ong[2]  = _n('User', 'Users', 2);
          $ong[3]  = _n('Group', 'Groups', 2);
          $ong[4]  = __('Entity');   // params for entity config
-         $ong[5]  = $LANG['entity'][14];  // params for entity advanced config
+         $ong[5]  = __('Advanced informations');  // params for entity advanced config
          $ong[6]  = $LANG['ldap'][22];    // replicat
 
          return $ong;

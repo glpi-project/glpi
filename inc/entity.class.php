@@ -240,21 +240,21 @@ class Entity extends CommonTreeDropdown {
 
       $tab[7]['table']         = 'glpi_entitydatas';
       $tab[7]['field']         = 'ldap_dn';
-      $tab[7]['name']          = $LANG['entity'][12];
+      $tab[7]['name']          = __s('LDAP directory information attribute representing the entity');
       $tab[7]['massiveaction'] = false;
       $tab[7]['joinparams']    = array('jointype' => 'child');
       $tab[7]['datatype']      = 'string';
 
       $tab[8]['table']         = 'glpi_entitydatas';
       $tab[8]['field']         = 'tag';
-      $tab[8]['name']          = $LANG['entity'][13];
+      $tab[8]['name']          = __s('Information in inventory tool (TAG) representing the entity');
       $tab[8]['massiveaction'] = false;
       $tab[8]['joinparams']    = array('jointype' => 'child');
       $tab[8]['datatype']      = 'string';
 
       $tab[9]['table']         = 'glpi_authldaps';
       $tab[9]['field']         = 'name';
-      $tab[9]['name']          = $LANG['entity'][15];
+      $tab[9]['name']          = __('LDAP directory of an entity');
       $tab[9]['massiveaction'] = false;
       $tab[9]['joinparams']    = array('beforejoin'
                                        => array('table'      => 'glpi_entitydatas',
@@ -303,7 +303,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[17]['table']         = 'glpi_entitydatas';
       $tab[17]['field']         = 'entity_ldapfilter';
-      $tab[17]['name']          = $LANG['entity'][16];
+      $tab[17]['name']          = __('Search filter (if needed)');
       $tab[17]['massiveaction'] = false;
       $tab[17]['joinparams']    = array('jointype' => 'child');
       $tab[17]['datatype']      = 'string';
@@ -409,7 +409,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[33]['table']         = 'glpi_entitydatas';
       $tab[33]['field']         = 'autoclose_delay';
-      $tab[33]['name']          = $LANG['entity'][18];
+      $tab[33]['name']          = __('Automatic closing of solved tickets after');
       $tab[33]['massiveaction'] = false;
       $tab[33]['nosearch']      = true;
       $tab[33]['joinparams']    = array('jointype' => 'child');
@@ -437,7 +437,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[37]['table']         = 'glpi_entitydatas';
       $tab[37]['field']         = 'tickettype';
-      $tab[37]['name']          = $LANG['entity'][28];
+      $tab[37]['name']          = __('Tickets default type');
       $tab[37]['massiveaction'] = false;
       $tab[37]['nosearch']      = true;
       $tab[37]['joinparams']    = array('jointype' => 'child');
@@ -479,21 +479,21 @@ class Entity extends CommonTreeDropdown {
 
       $tab[43]['table']         = 'glpi_entitydatas';
       $tab[43]['field']         = 'inquest_config';
-      $tab[43]['name']          = $LANG['entity'][19];
+      $tab[43]['name']          = __s('Configuring the satisfaction survey');
       $tab[43]['massiveaction'] = false;
       $tab[43]['nosearch']      = true;
       $tab[43]['joinparams']    = array('jointype' => 'child');
 
       $tab[44]['table']         = 'glpi_entitydatas';
       $tab[44]['field']         = 'inquest_rate';
-      $tab[44]['name']          = $LANG['entity'][21];
+      $tab[44]['name']          = __s('Rate to trigger survey');
       $tab[44]['massiveaction'] = false;
       $tab[44]['joinparams']    = array('jointype' => 'child');
       $tab[44]['datatype']      = 'number';
 
       $tab[45]['table']         = 'glpi_entitydatas';
       $tab[45]['field']         = 'inquest_delay';
-      $tab[45]['name']          = $LANG['entity'][20];
+      $tab[45]['name']          = __s('Create survey after');
       $tab[45]['massiveaction'] = false;
       $tab[45]['joinparams']    = array('jointype' => 'child');
       $tab[45]['datatype']      = 'number';
@@ -555,8 +555,9 @@ class Entity extends CommonTreeDropdown {
       $rand = mt_rand();
 
       echo "<div class='center'>";
-      echo "<span class='b'>".$LANG['entity'][10]." ( <img src='".$CFG_GLPI["root_doc"].
-            "/pics/entity_all.png' alt=''> ".$LANG['entity'][11].")</span><br>";
+      echo "<span class='b'>".__s('Select the desired entity')." ( <img src='".$CFG_GLPI["root_doc"].
+            "/pics/entity_all.png' alt=''> ".__s('to see the entity and its sub-entities').")</span>".
+            "<br>";
       echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".
              __s('Show all')."\">".str_replace(" ","&nbsp;",__s('Show all'))."</a></div>";
 
