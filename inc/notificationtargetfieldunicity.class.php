@@ -69,9 +69,8 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
 
 
    function getTags() {
-      global $LANG;
 
-      $tags = array('unicity.message'     => $LANG['event'][4],
+      $tags = array('unicity.message'     => __('Message'),
                     'unicity.action_user' => __('Doer'),
                     'unicity.action_type' => __('Intended action'),
                     'unicity.date'        => __('Date'),

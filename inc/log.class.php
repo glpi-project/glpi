@@ -241,7 +241,7 @@ class Log extends CommonDBTM {
 
    **/
    static function showForItem(CommonDBTM $item, $withtemplate='') {
-      global $DB,$LANG;
+      global $DB;
 
       $itemtype = $item->getType();
       $items_id = $item->getField('id');
@@ -262,7 +262,7 @@ class Log extends CommonDBTM {
       if ($number < 1) {
          echo "<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".$LANG['event'][20]."</th></tr>";
+         echo "<tr><th>".__('No historical')."</th></tr>";
          echo "</table>";
          echo "</div><br>";
          return;
@@ -274,8 +274,8 @@ class Log extends CommonDBTM {
       // Output events
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th>".__('ID')."</th><th>".__('Date')."</th>";
-      echo "<th>".__('User')."</th><th>".$LANG['event'][18]."</th>";
-      echo "<th>".$LANG['event'][19]."</th></tr>";
+      echo "<th>".__('User')."</th><th>".__('Field')."</th>";
+      echo "<th>".__('Update')."</th></tr>";
 
       foreach (self::getHistoryData($item,$start,$_SESSION['glpilist_limit']) as $data) {
          if ($data['display_history']) {

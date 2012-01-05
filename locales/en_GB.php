@@ -647,9 +647,6 @@ $LANG['entity'][26]="These parameters are used as actions in generic rules for a
 $LANG['entity'][27]="Mail domain surrogates entity";
 $LANG['entity'][28]="Tickets default type";
 
-/// TODO Before is ok for migration to gettext
-
-
 $LANG['event'][0]="Source";
 $LANG['event'][2]="Service";
 $LANG['event'][3]="Level";
@@ -657,6 +654,9 @@ $LANG['event'][4]="Message";
 $LANG['event'][18]="Field";
 $LANG['event'][19]="Update";
 $LANG['event'][20]="No historical";
+
+
+/// TODO Before is ok for migration to gettext
 
 $LANG['financial'][1]="Contract";
 $LANG['financial'][2]="Lifelong";
