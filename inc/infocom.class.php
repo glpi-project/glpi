@@ -510,7 +510,7 @@ class Infocom extends CommonDBChild {
       echo "<select name='$name'>";
       echo "<option value='0'".($value==0?" selected ":"")." >".Dropdown::EMPTY_VALUE."</option>";
       echo "<option value=\"".pow(2,Alert::END)."\" ".($value==pow(2,Alert::END)?" selected ":"")." >".
-             $LANG['financial'][80]." </option>";
+             __s('Warranty expiration date')." </option>";
       echo "</select>";
    }
 
@@ -829,7 +829,7 @@ class Infocom extends CommonDBChild {
       }
 
       if (!$item) {
-         echo "<div class='spaced'>".$LANG['financial'][85]."</div>";
+         echo "<div class='spaced'>".__('Requested item not found')."</div>";
       } else {
          $date_tax = $CFG_GLPI["date_tax"];
          $dev_ID   = $item->getField('id');
@@ -841,7 +841,9 @@ class Infocom extends CommonDBChild {
 
          if (!strpos($_SERVER['PHP_SELF'],"infocoms-show")
              && in_array($item->getType(), array('CartridgeItem', 'ConsumableItem', 'Software'))) {
-            echo "<div class='firstbloc center'>".$LANG['financial'][84]."</div>";
+            echo "<div class='firstbloc center'>".
+                  __('For this type of element, the financial and administrative information are only a model for the elements which you should add.').
+                 "</div>";
          }
          if (!$ic->getFromDBforDevice($item->getType(),$dev_ID)) {
             $input = array('itemtype'    => $item->getType(),
@@ -882,7 +884,7 @@ class Infocom extends CommonDBChild {
             }
             echo "</td>";
             if (Session::haveRight("budget","r")) {
-               echo "<td>".$LANG['financial'][87]."&nbsp;:</td><td >";
+               echo "<td>".__('Budget')."</td><td >";
                Dropdown::show('Budget', array('value'    => $ic->fields["budgets_id"],
                                               'entity'   => $item->getEntityID(),
                                               'comments' => 1));
@@ -916,7 +918,7 @@ class Infocom extends CommonDBChild {
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['financial'][82]."&nbsp;:</td>";
+            echo "<td>".__('Invoice number')."</td>";
             echo "<td>";
             Html::autocompletionTextField($ic, "bill", array('option' => $option));
             echo "</td>";
@@ -929,7 +931,7 @@ class Infocom extends CommonDBChild {
             echo "<td>".__('Delivery form')."</td><td>";
             Html::autocompletionTextField($ic, "delivery_number", array('option' => $option));
             echo "</td>";
-            echo "<td>".$LANG['financial'][76]."&nbsp;:</td><td>";
+            echo "<td>".__('Startup date')."</td><td>";
             Html::showDateFormItem("use_date",$ic->fields["use_date"], true, $editcalendar);
             echo "</td></tr>";
 
@@ -938,13 +940,13 @@ class Infocom extends CommonDBChild {
             echo "<td><input type='text' name='value' $option value='".
                   Html::formatNumber($ic->fields["value"], true)."' size='14'></td>";
             echo "</td>";
-            echo "<td>".$LANG['financial'][114]."&nbsp;:</td><td>";
+            echo "<td>".__('Date of last physical inventory')."</td><td>";
             Html::showDateFormItem("inventory_date",$ic->fields["inventory_date"], true,
                                    $editcalendar);
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['financial'][78]."&nbsp;:</td>";
+            echo "<td>".__s('Warranty extension value')."</td>";
             echo "<td><input type='text' $option name='warranty_value' value='".
                        Html::formatNumber($ic->fields["warranty_value"], true)."' size='14'></td>";
             echo "<td rowspan='5'>".__('Comments')."</td>";
@@ -953,7 +955,7 @@ class Infocom extends CommonDBChild {
             echo "</textarea></td></tr>\n";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['financial'][81]."&nbsp;:</td><td>";
+            echo "<td>".__('Account net value')."</td><td>";
             echo Html::formatNumber(self::Amort($ic->fields["sink_type"], $ic->fields["value"],
                                                    $ic->fields["sink_time"],
                                                    $ic->fields["sink_coeff"],
@@ -980,7 +982,7 @@ class Infocom extends CommonDBChild {
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".$LANG['financial'][77]."&nbsp;:</td>";
+            echo "<td>".__s('Amortization coefficient')."</td>";
             echo "<td>";
             Html::autocompletionTextField($ic, "sink_coeff", array('size'   => 14,
                                                                    'option' => $option));
@@ -990,7 +992,7 @@ class Infocom extends CommonDBChild {
             if (!in_array($item->getType(), array('Cartridge', 'CartridgeItem', 'Consumable',
                                                   'ConsumableItem', 'Software',
                                                   'SoftwareLicense'))) {
-               echo "<td>".$LANG['financial'][89]."&nbsp;:</td><td>";
+               echo "<td>".__('TCO (value + tracking cost)')."</td><td>";
                echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"]);
             } else {
                 echo "<td colspan='2'>";
@@ -999,7 +1001,7 @@ class Infocom extends CommonDBChild {
             if (!in_array($item->getType(), array('Cartridge', 'CartridgeItem', 'Consumable',
                                                   'ConsumableItem', 'Software',
                                                   'SoftwareLicense'))) {
-               echo "<td>".$LANG['financial'][90]."&nbsp;:</td><td>";
+               echo "<td>".__('Monthly TCO')."</td><td>";
                echo self::showTco($item->getField('ticket_tco'), $ic->fields["value"],
                                   $ic->fields["warranty_date"]);
             } else {
@@ -1030,7 +1032,7 @@ class Infocom extends CommonDBChild {
             if ($ic->fields["warranty_duration"] >= 0) {
                _e(' month');
             }
-            echo "<span class='small_space'>".$LANG['financial'][88]."</span>&nbsp;";
+            echo "<span class='small_space'>".__('"Valid to:')."</span>";
             echo self::getWarrantyExpir($ic->fields["warranty_date"],
                                         $ic->fields["warranty_duration"]);
             echo "</td></tr>";
@@ -1155,7 +1157,7 @@ class Infocom extends CommonDBChild {
 
       $tab[28]['table']        = 'glpi_infocoms';
       $tab[28]['field']        = 'bill';
-      $tab[28]['name']         = $LANG['financial'][82];
+      $tab[28]['name']         = __('Invoice number');
       $tab[28]['forcegroupby'] = true;
       $tab[28]['joinparams']   = $joinparams;
       $tab[28]['datatype']     = 'string';
@@ -1169,7 +1171,7 @@ class Infocom extends CommonDBChild {
 
       $tab[38]['table']        = 'glpi_infocoms';
       $tab[38]['field']        = 'use_date';
-      $tab[38]['name']         = $LANG['financial'][76];
+      $tab[38]['name']         = __('Startup date');
       $tab[38]['datatype']     = 'date';
       $tab[38]['forcegroupby'] = true;
       $tab[38]['joinparams']   = $joinparams;
@@ -1197,14 +1199,14 @@ class Infocom extends CommonDBChild {
 
       $tab[125]['table']        = 'glpi_infocoms';
       $tab[125]['field']        = 'inventory_date';
-      $tab[125]['name']         = $LANG['financial'][114];
+      $tab[125]['name']         = __('Date of last physical inventory');
       $tab[125]['datatype']     = 'date';
       $tab[125]['forcegroupby'] = true;
       $tab[125]['joinparams']   = $joinparams;
 
       $tab[50]['table']        = 'glpi_budgets';
       $tab[50]['field']        = 'name';
-      $tab[50]['name']         = $LANG['financial'][87];
+      $tab[50]['name']         = __('Budget');
       $tab[50]['forcegroupby'] = true;
       $tab[50]['joinparams']   = $complexjoinparams;
 
@@ -1223,7 +1225,7 @@ class Infocom extends CommonDBChild {
 
       $tab[120]['table']         = 'glpi_infocoms';
       $tab[120]['field']         = 'end_warranty';
-      $tab[120]['name']          = $LANG['financial'][80];
+      $tab[120]['name']          = __s('Warranty expiration date');
       $tab[120]['datatype']      = 'date';
       $tab[120]['datatype']      = 'date_delay';
       $tab[120]['datafields'][1] = 'warranty_date';
@@ -1250,7 +1252,7 @@ class Infocom extends CommonDBChild {
 
       $tab[55]['table']        = 'glpi_infocoms';
       $tab[55]['field']        = 'warranty_value';
-      $tab[55]['name']         = $LANG['financial'][78];
+      $tab[55]['name']         = __s('Warranty extension value');
       $tab[55]['datatype']     = 'decimal';
       $tab[55]['width']        = 100;
       $tab[55]['forcegroupby'] = true;
@@ -1270,7 +1272,7 @@ class Infocom extends CommonDBChild {
 
       $tab[58]['table']        = 'glpi_infocoms';
       $tab[58]['field']        = 'sink_coeff';
-      $tab[58]['name']         = $LANG['financial'][77];
+      $tab[58]['name']         = __s('Amortization coefficient');
       $tab[58]['forcegroupby'] = true;
       $tab[58]['joinparams']   = $joinparams;
 
@@ -1309,7 +1311,7 @@ class Infocom extends CommonDBChild {
 
       $tab[5]['table']    = $this->getTable();
       $tab[5]['field']    = 'use_date';
-      $tab[5]['name']     = $LANG['financial'][76];
+      $tab[5]['name']     = __('Startup date');
       $tab[5]['datatype'] = 'date';
 
       $tab[24]['table']        = 'glpi_infocoms';
@@ -1332,7 +1334,7 @@ class Infocom extends CommonDBChild {
 
       $tab[26]['table']        = 'glpi_infocoms';
       $tab[26]['field']        = 'inventory_date';
-      $tab[26]['name']         = $LANG['financial'][114];
+      $tab[26]['name']         = __('Date of last physical inventory');
       $tab[26]['datatype']     = 'date';
       $tab[26]['forcegroupby'] = true;
 
@@ -1348,7 +1350,7 @@ class Infocom extends CommonDBChild {
 
       $tab[8]['table']    = $this->getTable();
       $tab[8]['field']    = 'warranty_value';
-      $tab[8]['name']     = $LANG['financial'][78];
+      $tab[8]['name']     = __s('Warranty extension value');
       $tab[8]['datatype'] = 'decimal';
 
       $tab[9]['table'] = 'glpi_suppliers';
@@ -1392,17 +1394,17 @@ class Infocom extends CommonDBChild {
 
       $tab[17]['table']    = $this->getTable();
       $tab[17]['field']    = 'sink_coeff';
-      $tab[17]['name']     = $LANG['financial'][77];
+      $tab[17]['name']     = __s('Amortization coefficient');
       $tab[17]['datatype'] = 'decimal';
 
       $tab[18]['table']    = $this->getTable();
       $tab[18]['field']    = 'bill';
-      $tab[18]['name']     = $LANG['financial'][82];
+      $tab[18]['name']     = __('Invoice number');
       $tab[18]['datatype'] = 'string';
 
       $tab[19]['table']    = 'glpi_budgets';
       $tab[19]['field']    = 'name';
-      $tab[19]['name']     = $LANG['financial'][87];
+      $tab[19]['name']     = __('Budget');
       $tab[19]['datatype'] = 'itemlink';
 
       $tab[20]['table']         = $this->getTable();

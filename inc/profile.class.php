@@ -690,7 +690,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td>".__('Financial and administratives informations')."</td><td>";
       self::dropdownNoneReadWrite("infocom", $this->fields["infocom"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".$LANG['financial'][87]."</td><td colspan='3'>";
+      echo "<td>".__('Budget')."</td><td colspan='3'>";
       self::dropdownNoneReadWrite("budget", $this->fields["budget"], 1, 1, 1);
       echo "</td></tr>\n";
 
@@ -1458,7 +1458,7 @@ class Profile extends CommonDBTM {
 
       $tab[101]['table']    = $this->getTable();
       $tab[101]['field']    = 'budget';
-      $tab[101]['name']     = $LANG['financial'][87];
+      $tab[101]['name']     = __('Budget');
       $tab[101]['datatype'] = 'right';
 
       $tab['tools']        = __('Tools');

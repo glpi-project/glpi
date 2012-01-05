@@ -3888,7 +3888,7 @@ class Search {
 
          case "glpi_infocoms.alert" :
             if ($data[$NAME.$num]==pow(2,Alert::END)) {
-               return $LANG['financial'][80];
+               return __s('Warranty expiration date');
             }
             return "";
 

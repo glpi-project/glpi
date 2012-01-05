@@ -125,7 +125,7 @@ class Supplier extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>".$LANG['financial'][79]."&nbsp;:</td>";
+      echo "<td>".__('Third party type')."</td>";
       echo "<td>";
       Dropdown::show('SupplierType', array('value' => $this->fields["suppliertypes_id"]));
       echo "</td></tr>";
@@ -165,21 +165,21 @@ class Supplier extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][100]."&nbsp;:</td>";
+      echo "<td>".__('Postal Code')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "postcode", array('size' => 10));
-      echo "&nbsp;&nbsp;".$LANG['financial'][101]."&nbsp;:&nbsp;";
+      _e(' City ');
       Html::autocompletionTextField($this, "town", array('size' => 23));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][102]."&nbsp;:</td>";
+      echo "<td>".__('State')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "state");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][103]."&nbsp;:</td>";
+      echo "<td>".__('Country')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "country");
       echo "</td></tr>";
@@ -220,19 +220,19 @@ class Supplier extends CommonDBTM {
 
       $tab[11]['table'] = $this->getTable();
       $tab[11]['field'] = 'town';
-      $tab[11]['name']  = $LANG['financial'][101];
+      $tab[11]['name']  = __('City');
 
       $tab[14]['table'] = $this->getTable();
       $tab[14]['field'] = 'postcode';
-      $tab[14]['name']  = $LANG['financial'][100];
+      $tab[14]['name']  = __('Postal Code');
 
       $tab[12]['table'] = $this->getTable();
       $tab[12]['field'] = 'state';
-      $tab[12]['name']  = $LANG['financial'][102];
+      $tab[12]['name']  = __('State');
 
       $tab[13]['table'] = $this->getTable();
       $tab[13]['field'] = 'country';
-      $tab[13]['name']  = $LANG['financial'][103];
+      $tab[13]['name']  = __('Country');
 
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'website';
@@ -250,7 +250,7 @@ class Supplier extends CommonDBTM {
 
       $tab[9]['table'] = 'glpi_suppliertypes';
       $tab[9]['field'] = 'name';
-      $tab[9]['name']  = $LANG['financial'][79];
+      $tab[9]['name']  = __('Third party type');
 
       $tab[8]['table']         = 'glpi_contacts';
       $tab[8]['field']         = 'completename';

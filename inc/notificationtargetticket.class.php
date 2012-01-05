@@ -531,7 +531,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.sla'                   => __('SLA'),
                     'ticket.requesttype'           => $LANG['job'][44],
                     'ticket.itemtype'              => __('Item type'),
-                    'ticket.item.name'             => $LANG['financial'][104],
+                    'ticket.item.name'             => __('Associated item'),
                     'ticket.item.serial'           => __('Serial number'),
                     'ticket.item.otherserial'      => __('Inventory number'),
                     'ticket.item.location'         => __('Location'),

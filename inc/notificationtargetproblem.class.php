@@ -215,7 +215,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
                     'problem.impacts'           => __('Impacts'),
                     'problem.causes'            => __('Causes'),
                     'problem.symtoms'           => __('Symptoms'),
-                    'item.name'                 => $LANG['financial'][104],
+                    'item.name'                 => __('Associated item'),
                     'item.serial'               => __('Serial number'),
                     'item.otherserial'          => __('Inventory number'),
                     'item.location'             => __('Location'),
