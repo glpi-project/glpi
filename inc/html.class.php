@@ -491,7 +491,7 @@ class Html {
    **/
    static function displayTitle($ref_pic_link="", $ref_pic_text="", $ref_title="", $ref_btts="") {
 
-      echo "<div class='center'><table border='0' class='tab_glpi'><tr>";
+      echo "<div class='center'><table class='tab_glpi'><tr>";
 
       if ($ref_pic_link!="") {
          echo "<td><img src='".$ref_pic_link."' alt=\"".$ref_pic_text."\" title=\"".$ref_pic_text."\">
@@ -499,12 +499,12 @@ class Html {
       }
 
       if ($ref_title!="") {
-         echo "<td><span class='icon_consol b'>".$ref_title."</span></td>";
+         echo "<td><span class='vsubmit'>".$ref_title."</span></td>";
       }
 
       if (is_array($ref_btts) && count($ref_btts)) {
          foreach ($ref_btts as $key => $val) {
-            echo "<td><a class='icon_consol_hov' href='".$key."'>".$val."</a></td>";
+            echo "<td><a class='vsubmit' href='".$key."'>".$val."</a></td>";
          }
       }
       echo "</tr></table></div>";
