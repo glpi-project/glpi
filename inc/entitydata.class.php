@@ -345,7 +345,7 @@ class EntityData extends CommonDBChild {
          echo "<td>".__('LDAP directory of an entity')."</td>";
          echo "<td>";
          Dropdown::show('AuthLDAP', array('value'      => $entdata->fields['authldaps_id'],
-                                          'emptylabel' => $LANG['ldap'][44],
+                                          'emptylabel' => __('Default server'),
                                           'condition'  => "`is_active` = '1'"));
          echo "</td></tr>";
 

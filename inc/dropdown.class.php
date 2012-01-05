@@ -1464,7 +1464,7 @@ class Dropdown {
 
                         if (Session::haveRight("ocsng","w")
                             || Session::haveRight("sync_ocsng","w")) {
-                           echo "<option value='force_ocsng_update'>".$LANG['ldap'][11]."</option>";
+                           echo "<option value='force_ocsng_update'>".__('Force synchronization')."</option>";
                         }
 
                         echo "<option value='unlock_ocsng_field'>".__('Unlock the locked field for OCSNG')."</option>";
@@ -1502,7 +1502,7 @@ class Dropdown {
 
                   if (Session::haveRight("user_authtype","w")) {
                      echo "<option value='change_authtype'>".__('Change of the authentication method')."</option>";
-                     echo "<option value='force_user_ldap_update'>".$LANG['ldap'][11]."</option>";
+                     echo "<option value='force_user_ldap_update'>".__('Force synchronization')."</option>";
                   }
                   break;
 
