@@ -3622,8 +3622,8 @@ function update0723to078($output='HTML') {
       // Populate only required for migration of ticket status
       $query = "INSERT INTO `glpi_ticketsolutiontypes`
                        (`id` ,`name` ,`comment`)
-                VALUES ('1', '".$LANG['joblist'][17]."', NULL),
-                       ('2', '".$LANG['joblist'][10]."', NULL)";
+                VALUES ('1', 'Closed (solved)', NULL),
+                       ('2', 'Closed (not solved)', NULL)";
       $DB->queryOrDie($query, "0.78 populate glpi_ticketsolutiontypes");
    }
 

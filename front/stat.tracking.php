@@ -83,9 +83,9 @@ $requester = array('user'               => array('title' => $LANG['job'][4]),
 
 $caract    = array('itilcategories_id'   => array('title' => __('Category')),
                    'itilcategories_tree' => array('title' => __('Category tree')),
-                   'urgency'             => array('title' => $LANG['joblist'][29]),
-                   'impact'              => array('title' => $LANG['joblist'][30]),
-                   'priority'            => array('title' => $LANG['joblist'][2]),
+                   'urgency'             => array('title' => __('Urgency')),
+                   'impact'              => array('title' => __('Impact')),
+                   'priority'            => array('title' => __('Priority')),
                    'solutiontypes_id'    => array('title' => $LANG['job'][48]));
 
 if ($_REQUEST['itemtype'] == 'Ticket') {

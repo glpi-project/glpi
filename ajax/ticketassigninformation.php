@@ -61,8 +61,8 @@ if (isset($_REQUEST['users_id_assign']) && $_REQUEST['users_id_assign'] > 0) {
    
    $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
 
-   echo "&nbsp;<a href='$url' title=\"".$LANG['joblist'][21]."\" target='_blank'>(".
-         $LANG['joblist'][21]."&nbsp;:&nbsp;".
+   echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(".
+         __s('Processing')."&nbsp;:&nbsp;".
          $ticket->countActiveObjectsForTech($_REQUEST['users_id_assign']).")</a>";
 }
 ?>

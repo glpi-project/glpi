@@ -397,7 +397,7 @@ class CronTask extends CommonDBTM{
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['joblist'][6]."&nbsp;:&nbsp;</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Description')."</td><td>";
       echo $this->getDescription($ID);
       echo "</td></tr>";
 
@@ -406,7 +406,7 @@ class CronTask extends CommonDBTM{
       echo "</td></tr>";
 
       $tmpstate = $this->fields["state"];
-      echo "<tr class='tab_bg_1'><td>".$LANG['joblist'][0]."&nbsp;:&nbsp;</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Status')."</td><td>";
       if (is_file(GLPI_CRON_DIR. '/'.$this->fields["name"].'.lock')
           || is_file(GLPI_CRON_DIR. '/all.lock')) {
          echo "<span class='b'>" . __('System lock')."</span><br>";
@@ -983,7 +983,7 @@ class CronTask extends CommonDBTM{
             echo "<th>".__('Date')."</th>";
             echo "<th>".$LANG['job'][20]."</th>"; // Duration
             echo "<th>".__('Number')."</th>";
-            echo "<th>".$LANG['joblist'][6]."</th>"; // Description
+            echo "<th>".__('Description')."</th>"; // Description
             echo "</tr>\n";
 
             do {
@@ -1031,10 +1031,10 @@ class CronTask extends CommonDBTM{
          if ($data=$DB->fetch_assoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
             echo "<th>".__('Date')."</th>";
-            echo "<th>".$LANG['joblist'][0]."</th>"; // statut
+            echo "<th>".__('Status')."</th>"; // statut
             echo "<th>".$LANG['job'][31]."</th>"; // Duration
             echo "<th>".__('Number')."</th>";
-            echo "<th>".$LANG['joblist'][6]."</th>"; // Description
+            echo "<th>".__('Description')."</th>"; // Description
             echo "</tr>\n";
 
             $first = true;
@@ -1094,14 +1094,14 @@ class CronTask extends CommonDBTM{
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'description';
-      $tab[3]['name']          = $LANG['joblist'][6];
+      $tab[3]['name']          = __('Description');
       $tab[3]['nosearch']      = true;
       $tab[3]['nosort']        = true;
       $tab[3]['massiveaction'] = false;
 
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'state';
-      $tab[4]['name']          = $LANG['joblist'][0];
+      $tab[4]['name']          = __('Status');
       $tab[4]['searchtype']    = array('equals');
       $tab[4]['massiveaction'] = false;
 

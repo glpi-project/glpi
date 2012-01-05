@@ -401,7 +401,7 @@ class Problem extends CommonITILObject {
 
       $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'content';
-      $tab[21]['name']          = $LANG['joblist'][6];
+      $tab[21]['name']          = __('Description');
       $tab[21]['massiveaction'] = false;
       $tab[21]['datatype']      = 'text';
 
@@ -412,22 +412,22 @@ class Problem extends CommonITILObject {
 
       $tab[12]['table']      = $this->getTable();
       $tab[12]['field']      = 'status';
-      $tab[12]['name']       = $LANG['joblist'][0];
+      $tab[12]['name']       = __('Status');
       $tab[12]['searchtype'] = 'equals';
 
       $tab[10]['table']      = $this->getTable();
       $tab[10]['field']      = 'urgency';
-      $tab[10]['name']       = $LANG['joblist'][29];
+      $tab[10]['name']       = __('Urgency');
       $tab[10]['searchtype'] = 'equals';
 
       $tab[11]['table']      = $this->getTable();
       $tab[11]['field']      = 'impact';
-      $tab[11]['name']       = $LANG['joblist'][30];
+      $tab[11]['name']       = __('Impact');
       $tab[11]['searchtype'] = 'equals';
 
       $tab[3]['table']      = $this->getTable();
       $tab[3]['field']      = 'priority';
-      $tab[3]['name']       = $LANG['joblist'][2];
+      $tab[3]['name']       = __('Priority');
       $tab[3]['searchtype'] = 'equals';
 
       $tab[15]['table']         = $this->getTable();
@@ -578,20 +578,20 @@ class Problem extends CommonITILObject {
       global $LANG;
 
       // To be overridden by class
-      $tab = array('new'      => $LANG['joblist'][9],
+      $tab = array('new'      => __('New'),
                    'accepted' => __('Accepted'),
-                   'assign'   => $LANG['joblist'][18],
-                   'plan'     => $LANG['joblist'][19],
-                   'waiting'  => $LANG['joblist'][26],
-                   'solved'   => $LANG['joblist'][32],
+                   'assign'   => __('Processing (assigned)'),
+                   'plan'     => __('Processing (planned)'),
+                   'waiting'  => __('Pending'),
+                   'solved'   => __('Solved'),
                    'observe'  => __('Under observation'),
-                   'closed'   => $LANG['joblist'][33]);
+                   'closed'   => __('Closed'));
 
       if ($withmetaforsearch) {
-         $tab['notold']    = $LANG['joblist'][34];
-         $tab['notclosed'] = $LANG['joblist'][35];
-         $tab['process']   = $LANG['joblist'][21];
-         $tab['old']       = $LANG['joblist'][32]." + ".$LANG['joblist'][33];
+         $tab['notold']    = __('Not solved');
+         $tab['notclosed'] = __('Not closed');
+         $tab['process']   = __('Processing');
+         $tab['old']       = __('Solved + Closed');
          $tab['all']       = __('All');
       }
       return $tab;
@@ -794,7 +794,7 @@ class Problem extends CommonITILObject {
 
       echo "<table>";
       echo "<tr>";
-      echo "<td><span class='tracking_small'>".$LANG['joblist'][11]."&nbsp;: </span></td>";
+      echo "<td><span class='tracking_small'>".__('Opening date')."</span></td>";
       echo "<td>";
       $date = $this->fields["date"];
       if (!$ID) {
@@ -841,7 +841,7 @@ class Problem extends CommonITILObject {
          switch ($this->fields["status"]) {
             case 'closed' :
                echo "<tr>";
-               echo "<td><span class='tracking_small'>".$LANG['joblist'][12]."&nbsp;: </span></td>";
+               echo "<td><span class='tracking_small'>".__('Close date')."</span></td>";
                echo "<td>";
                Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false);
                echo "</td></tr>";
@@ -850,7 +850,7 @@ class Problem extends CommonITILObject {
             case 'solved' :
             case 'observe' :
                echo "<tr>";
-               echo "<td><span class='tracking_small'>".$LANG['joblist'][14]."&nbsp;: </span></td>";
+               echo "<td><span class='tracking_small'>".__('Solve date')."</span></td>";
                echo "<td>";
                Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
                echo "</td></tr>";
@@ -862,11 +862,11 @@ class Problem extends CommonITILObject {
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['joblist'][0]."&nbsp;: </th>";
+      echo "<th>".__('Status')."</th>";
       echo "<td>";
       self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
       echo "</td>";
-      echo "<th>".$LANG['joblist'][29]."&nbsp;: </th>";
+      echo "<th>".__('Urgency')."</th>";
       echo "<td>";
       // Only change during creation OR when allowed to change priority OR when user is the creator
       $idurgency = self::dropdownUrgency("urgency", $this->fields["urgency"]);
@@ -881,7 +881,7 @@ class Problem extends CommonITILObject {
                    'condition' => "`is_problem`='1'");
       Dropdown::show('ITILCategory', $opt);
       echo "</td>";
-      echo "<th>".$LANG['joblist'][30]."&nbsp;: </th>";
+      echo "<th>".__('Impact')."</th>";
       echo "<td>";
       $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
       echo "</td>";
@@ -890,7 +890,7 @@ class Problem extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['job'][20]."</th>";
       echo "<td>".parent::getActionTime($this->fields["actiontime"])."</td>";
-      echo "<th class='left'>".$LANG['joblist'][2]."&nbsp;: </th>";
+      echo "<th class='left'>".__('Priority')."</th>";
       echo "<td>";
       $idpriority = parent::dropdownPriority("priority", $this->fields["priority"], false, true);
       $idajax     = 'change_priority_' . mt_rand();
@@ -938,7 +938,7 @@ class Problem extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['joblist'][6]."&nbsp;:&nbsp;</th>";
+      echo "<th>".__('Description')."</th>";
       echo "<td colspan='5'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
@@ -1069,7 +1069,7 @@ class Problem extends CommonITILObject {
 
       $items = array();
 
-      $items[$LANG['joblist'][0]] = "glpi_problems.status";
+      $items[__('Status')] = "glpi_problems.status";
       $items[__('Date')] = "glpi_problems.date";
       $items[__('Last update')] = "glpi_problems.date_mod";
 
@@ -1077,9 +1077,9 @@ class Problem extends CommonITILObject {
          $items[_n('Entity', 'Entities', 2)] = "glpi_entities.completename";
       }
 
-      $items[$LANG['joblist'][2]]   = "glpi_problems.priority";
+      $items[__('Priority')]   = "glpi_problems.priority";
       $items[$LANG['job'][4]]       = "glpi_problems.users_id";
-      $items[$LANG['joblist'][4]]   = "glpi_problems.users_id_assign";
+      $items[__('Assigned')]   = "glpi_problems.users_id_assign";
 //       $items[__('Associated element')] = "glpi_problems.itemtype, glpi_tickets.items_id";
       $items[__('Category')]        = "glpi_itilcategories.completename";
       $items[__('Title')]           = "glpi_problems.name";
@@ -1155,36 +1155,22 @@ class Problem extends CommonITILObject {
 
          // Second column
          if ($job->fields['status']=='closed') {
-            $second_col = $LANG['joblist'][12];
-            if ($output_type == Search::HTML_OUTPUT) {
-               $second_col .= "&nbsp;:<br>";
-            } else {
-               $second_col .= " : ";
-            }
-            $second_col .= Html::convDateTime($job->fields['closedate']);
-
-         } else if ($job->fields['status']=='solved') {
-            $second_col = $LANG['joblist'][14];
-            if ($output_type == Search::HTML_OUTPUT) {
-               $second_col .= "&nbsp;:<br>";
-            } else {
-               $second_col .= " : ";
-            }
-            $second_col .= Html::convDateTime($job->fields['solvedate']);
-
+            $second_col = sprintf(__('Closed on %s'),
+               ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                  Html::convDateTime($job->fields['closedate']));
+          } else if ($job->fields['status']=='solved') {
+            $second_col = sprintf(__('Solved on %s'),
+               ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                  Html::convDateTime($job->fields['solvedate']));
          } else if ($job->fields['due_date']) {
             $second_col = sprintf(__('Due date: %s'),
                ($output_type == Search::HTML_OUTPUT?'<br>':'').
                   Html::convDateTime($job->fields['due_date']));
          } else {
-            $second_col = $LANG['joblist'][11];
-            if ($output_type == Search::HTML_OUTPUT) {
-               $second_col .= "&nbsp;:<br>";
-            } else {
-               $second_col .= " : ";
-            }
-            $second_col .= Html::convDateTime($job->fields['date']);
-         }
+             $second_col = sprintf(__('Opened on %s'),
+               ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                  Html::convDateTime($job->fields['date']));
+        }
 
          echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=130");
 
@@ -1302,7 +1288,7 @@ class Problem extends CommonITILObject {
          echo Search::showEndLine($output_type);
 
       } else {
-         echo "<tr class='tab_bg_2'><td colspan='6' ><i>".$LANG['joblist'][16]."</i></td></tr>";
+         echo "<tr class='tab_bg_2'><td colspan='6' ><i>".__('No problem in progress.')."</i></td></tr>";
       }
    }
 
@@ -1429,23 +1415,8 @@ class Problem extends CommonITILObject {
          echo "</th></tr>";
 
       } else {
-         echo "<tr><th>".$LANG['joblist'][20]."</th></tr>";
+         echo "<tr><th>".__('No problem found.')."</th></tr>";
       }
-
-      // Link to open a new problem
-//       if ($item->getID() && in_array($item->getType(),
-//                                      $_SESSION['glpiactiveprofile']['helpdesk_item_type'])) {
-//          echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
-//          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".$item->getID().
-//               "&amp;itemtype=".$item->getType()."\">".$LANG['joblist'][7]."</a>";
-//          echo "</td></tr>";
-//       }
-//       if ($item->getID() && $item->getType()=='User') {
-//          echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
-//          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?_users_id_requester=".
-//                 $item->getID()."\">".$LANG['joblist'][7]."</a>";
-//          echo "</td></tr>";
-//       }
 
       // Ticket list
       if ($number > 0) {
@@ -1475,7 +1446,7 @@ class Problem extends CommonITILObject {
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='8'>";
-         echo $LANG['joblist'][31];
+         _e('Problems on linked items');
 
          echo "</th></tr>";
          if ($number > 0) {
@@ -1486,7 +1457,7 @@ class Problem extends CommonITILObject {
                self::showShort($data["id"]);
             }
          } else {
-            echo "<tr><th>".$LANG['joblist'][20]."</th></tr>";
+            echo "<tr><th>".__('No problem found.')."</th></tr>";
          }
          echo "</table></div>";
 

@@ -743,10 +743,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.category'              => __('Category'),
                     $objettype.'.content'               => __('Description'),
                     $objettype.'.description'           => __('Ticket description'),
-                    $objettype.'.status'                => $LANG['joblist'][0],
-                    $objettype.'.urgency'               => $LANG['joblist'][29],
-                    $objettype.'.impact'                => $LANG['joblist'][30],
-                    $objettype.'.priority'              => $LANG['joblist'][2],
+                    $objettype.'.status'                => __('Status'),
+                    $objettype.'.urgency'               => __('Urgency'),
+                    $objettype.'.impact'                => __('Impact'),
+                    $objettype.'.priority'              => __('Priority'),
                     $objettype.'.time'                  => $LANG['job'][20],
                     $objettype.'.creationdate'          => __('Opening date'),
                     $objettype.'.closedate'             => __('Closing date'),
@@ -819,7 +819,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $allowed_ticket[] = $key;
       }
 
-      $tags = array($objettype.'.storestatus' => array('text'           => $LANG['joblist'][36],
+      $tags = array($objettype.'.storestatus' => array('text'           => __('Status value in database'),
                                                        'allowed_values' => $allowed_ticket));
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'            => $tag,

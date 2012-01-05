@@ -195,7 +195,7 @@ class RuleTicket extends Rule {
 
       $criterias['content']['table']     = 'glpi_tickets';
       $criterias['content']['field']     = 'content';
-      $criterias['content']['name']      = $LANG['joblist'][6];
+      $criterias['content']['name']      = __('Description');
       $criterias['content']['linkfield'] = 'content';
 
       $criterias['itilcategories_id']['table']     = 'glpi_itilcategories';
@@ -277,13 +277,13 @@ class RuleTicket extends Rule {
       $criterias['entities_id']['linkfield'] = 'entities_id';
       $criterias['entities_id']['type']      = 'dropdown';
 
-      $criterias['urgency']['name'] = $LANG['joblist'][29];
+      $criterias['urgency']['name'] = __('Urgency');
       $criterias['urgency']['type'] = 'dropdown_urgency';
 
-      $criterias['impact']['name'] = $LANG['joblist'][30];
+      $criterias['impact']['name'] = __('Impact');
       $criterias['impact']['type'] = 'dropdown_impact';
 
-      $criterias['priority']['name'] = $LANG['joblist'][2];
+      $criterias['priority']['name'] = __('Priority');
       $criterias['priority']['type'] = 'dropdown_priority';
 
       $criterias['_mailgate']['table']     = 'glpi_mailcollectors';
@@ -338,17 +338,17 @@ class RuleTicket extends Rule {
       $actions['_groups_id_observer']['name']         = __('Watcher group');
       $actions['_groups_id_observer']['type']         = 'dropdown';
 
-      $actions['urgency']['name']                     = $LANG['joblist'][29];
+      $actions['urgency']['name']                     = __('Urgency');
       $actions['urgency']['type']                     = 'dropdown_urgency';
 
-      $actions['impact']['name']                      = $LANG['joblist'][30];
+      $actions['impact']['name']                      = __('Impact');
       $actions['impact']['type']                      = 'dropdown_impact';
 
-      $actions['priority']['name']                    = $LANG['joblist'][2];
+      $actions['priority']['name']                    = __('Priority');
       $actions['priority']['type']                    = 'dropdown_priority';
       $actions['priority']['force_actions']           = array('assign', 'compute');
 
-      $actions['status']['name']                      = $LANG['joblist'][0];
+      $actions['status']['name']                      = __('Status');
       $actions['status']['type']                      = 'dropdown_status';
 
       $actions['affectobject']['name']                = __('Associated element');

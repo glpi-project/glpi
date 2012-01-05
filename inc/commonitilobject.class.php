@@ -1802,7 +1802,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[34]['table']      = getTableForItemType($this->userlinkclass);
       $tab[34]['field']      = 'alternative_email';
-      $tab[34]['name']       = $LANG['joblist'][27];
+      $tab[34]['name']       = __('Email for followup');
       $tab[34]['datatype']   = 'email';
       $tab[34]['joinparams'] = array('jointype'  => 'child',
                                      'condition' => 'AND NEWTABLE.`type` = '.self::REQUESTER);
@@ -2113,8 +2113,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
             $url = $this->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
 
-            echo "&nbsp;<a href='$url' title=\"".$LANG['joblist'][21]."\" target='_blank'>(".
-                  $LANG['joblist'][21]."&nbsp;:&nbsp;".
+            echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(".
+                  __s('Processing')."&nbsp;:&nbsp;".
                   $this->countActiveObjectsForUser($options["_users_id_".$typename]).")</a>";
          }
 
@@ -2501,7 +2501,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['joblist'][6]."&nbsp;: </td><td colspan='3'>";
+      echo "<td>".__('Description')."</td><td colspan='3'>";
 
       if ($canedit) {
          $rand = mt_rand();
@@ -2753,7 +2753,7 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</td></tr>";
       }
 
-      echo "<tr class='tab_bg_2'><td>".$LANG['joblist'][26]."&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_2'><td>".__('Pending')."</td><td>";
       if ($this->fields['waiting_duration']>0) {
          echo Html::timestampToString($this->fields['waiting_duration'],0);
       } else {

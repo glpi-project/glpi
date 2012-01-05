@@ -195,7 +195,7 @@ class Planning {
          echo "\n<hr>";
          echo "<input type='radio' id='radio_user_group' name='usertype' value='user_group' ".
                 ($usertype=="user_group"?"checked":"").">";
-         echo $LANG['joblist'][3];
+         _e('Personal + groups');
 
          echo "\n<script type='text/javascript'>";
          echo "Ext.onReady(function() {";
@@ -208,10 +208,10 @@ class Planning {
 
       } else if (Session::haveRight("show_group_planning","1")) {
          echo "<select name='usertype'>";
-         echo "<option value='user' ".($usertype=='user'?'selected':'').">".$LANG['joblist'][1];
+         echo "<option value='user' ".($usertype=='user'?'selected':'').">".__('Just my ones');
          echo "</option>";
          echo "<option value='user_group' ".($usertype=='user_group'?'selected':'').">".
-               $LANG['joblist'][3]."</option>";
+               __('Personal + groups')."</option>";
          echo "</select>";
       }
       echo "</td>";

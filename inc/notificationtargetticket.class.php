@@ -547,17 +547,17 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'task.author'                  => __('Writer'),
                     'task.isprivate'               => __('Private'),
                     'task.date'                    => __('Opening date'),
-                    'task.description'             => $LANG['joblist'][6],
+                    'task.description'             => __('Description'),
                     'task.category'                => __('Category'),
                     'task.time'                    => $LANG['job'][20],
                     'task.user'                    => __('By'),
                     'task.begin'                   => __('Start date'),
                     'task.end'                     => __('End date'),
-                    'task.status'                  => $LANG['joblist'][0],
+                    'task.status'                  => __('Status'),
                     'followup.date'                => __('Opening date'),
                     'followup.isprivate'           =>  __('Private'),
                     'followup.author'              =>  __('Writer'),
-                    'followup.description'         => $LANG['joblist'][6],
+                    'followup.description'         => __('Description'),
                     'followup.requesttype'         => $LANG['job'][44],
                     'ticket.numberoffollowups'     => __('Number of followups'),
                     'ticket.numberoftasks'         => __('Number of tasks'),
@@ -708,7 +708,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $allowed_validation[] = $key;
       }
 
-      $tags = array('validation.validationstatus' => array('text'           => $LANG['joblist'][36],
+      $tags = array('validation.validationstatus' => array('text'           => __('Status value in database'),
                                                            'allowed_values' => $allowed_validation));
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'            => $tag,

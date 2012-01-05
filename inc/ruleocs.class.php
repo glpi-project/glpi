@@ -134,7 +134,7 @@ class RuleOcs extends Rule {
 
       $criterias['DESCRIPTION']['table']     = 'hardware';
       $criterias['DESCRIPTION']['field']     = 'DESCRIPTION';
-      $criterias['DESCRIPTION']['name']      = $LANG['joblist'][6];
+      $criterias['DESCRIPTION']['name']      = __('Description');
       $criterias['DESCRIPTION']['linkfield'] = '';
 
       $criterias['SSN']['table']     = 'bios';

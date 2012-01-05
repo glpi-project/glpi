@@ -363,7 +363,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[1]['table'] = $this->getTable();
       $tab[1]['field'] = 'content';
-      $tab[1]['name']  = $LANG['joblist'][6];
+      $tab[1]['name']  = __('Description');
 
       $tab[2]['table']        = 'glpi_taskcategories';
       $tab[2]['field']        = 'name';
@@ -640,16 +640,16 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (isset($val["state"])) {
             echo Planning::getState($val["state"])."<br>";
          }
-         echo $LANG['joblist'][2]."&nbsp;:</span> ".$parent->getPriorityName($val["priority"]);
-         echo "<br><span class='b'>".$LANG['joblist'][6]."&nbsp;:</span><br>".$val["content"];
+         echo sprintf(__('Priority: %s'),$parent->getPriorityName($val["priority"]));
+         echo "<br>".__('Description')."</span><br>".$val["content"];
 
       } else {
          $content = "<span class='b'>";
          if (isset($val["state"])) {
             $content .= Planning::getState($val["state"])."<br>";
          }
-         $content .= $LANG['joblist'][2]."&nbsp;:</span> ".$parent->getPriorityName($val["priority"]).
-                    "<br><span class='b'>".$LANG['joblist'][6]."&nbsp;:</span><br>".$val["content"].
+         $content .= sprintf(__('Priority: %s'),$parent->getPriorityName($val["priority"])).
+                    "<br>".__('Description')."</span><br>".$val["content"].
                     "</div>";
          Html::showToolTip($content, array('applyto' => "content_tracking_".$val["id"].$rand));
       }
@@ -769,7 +769,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td rowspan='$rowspan' class='middle right'>".$LANG['joblist'][6]."&nbsp;:</td>";
+      echo "<td rowspan='$rowspan' class='middle right'>".__('Description')."</td>";
       echo "<td class='center middle' rowspan='$rowspan'>".
            "<textarea name='content' cols='50' rows='$rowspan'>".$this->fields["content"].
            "</textarea></td>";
@@ -941,7 +941,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       } else {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>".__('Type')."</th><th>" . __('Date') . "</th>";
-         echo "<th>" . $LANG['joblist'][6] . "</th><th>" . $LANG['job'][31] . "</th>";
+         echo "<th>" . __('Description') . "</th><th>" . $LANG['job'][31] . "</th>";
          echo "<th>" . __('Writer') . "</th>";
          if ($this->maybePrivate() && $showprivate) {
             echo "<th>" . __('Public') . "</th>";
@@ -967,7 +967,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "&nbsp;".__('Category')."&nbsp;";
       Dropdown::show('TaskCategory');
 
-      echo "<br>".$LANG['joblist'][6]."&nbsp;: ";
+      echo "<br>".__('Description')." ";
       echo "<textarea name='content' cols='50' rows='6'></textarea>&nbsp;";
 
       if ($this->maybePrivate()) {

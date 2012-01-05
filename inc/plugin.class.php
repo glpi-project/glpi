@@ -378,7 +378,7 @@ class Plugin extends CommonDBTM {
             echo "</td><td>";
             switch ($plug['state']) {
                case self::ANEW :
-                  echo $LANG['joblist'][9];
+                  echo __('New');
                   break;
 
                case self::ACTIVATED :
@@ -883,11 +883,11 @@ class Plugin extends CommonDBTM {
       foreach ($pluglist as $plugin) {
          $msg  = substr(str_pad($plugin['directory'],30),0,16)." ".__('Name').":".
                  Toolbox::substr(str_pad($plugin['name'],40),0,30)." "._n('Version', 'Versions',1).
-                 "&nbsp;:".str_pad($plugin['version'],10)." ".$LANG['joblist'][0]."&nbsp;:";
+                 "&nbsp;:".str_pad($plugin['version'],10)." ".__('Status')."&nbsp;:";
 
          switch ($plugin['state']) {
             case self::ANEW :
-               $msg .=  $LANG['joblist'][9];
+               $msg .=  __('New');
                break;
 
             case self::ACTIVATED :

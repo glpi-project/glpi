@@ -969,22 +969,27 @@ $LANG['job'][70]="Visible for an incident";
 $LANG['job'][71]="Visible for a request";
 $LANG['job'][72]="Visible for a problem";
 
+
+
+/// TODO After is ok for migration to gettext
+
+
 $LANG['joblist'][0]="Status";
 $LANG['joblist'][1]="Just my ones";
 $LANG['joblist'][2]="Priority";
-$LANG['joblist'][3]="Personal + group(s)";
+$LANG['joblist'][3]="Personal + groups";
 $LANG['joblist'][4]="Assigned";
 $LANG['joblist'][5]="Created tickets";
 $LANG['joblist'][6]="Description";
 $LANG['joblist'][7]="New ticket for this item...";
-$LANG['joblist'][8]="No ticket found";
+$LANG['joblist'][8]="No ticket found.";
 $LANG['joblist'][9]="New";
 $LANG['joblist'][10]="Closed (solved)";
 $LANG['joblist'][11]="Opened on";
 $LANG['joblist'][12]="Closed on";
 $LANG['joblist'][13]="Tickets to be processed";
 $LANG['joblist'][14]="Solved on";
-$LANG['joblist'][15]="Put on hold the";
+$LANG['joblist'][15]="Put on hold on";
 $LANG['joblist'][16]="No ticket in progress.";
 $LANG['joblist'][17]="Closed (not solved)";
 $LANG['joblist'][18]="Processing (assigned)";
@@ -1004,9 +1009,6 @@ $LANG['joblist'][34]="Not solved";
 $LANG['joblist'][35]="Not closed";
 $LANG['joblist'][36]="Status value in database";
 
-
-
-/// TODO After is ok for migration to gettext
 
 $LANG['jobrecurrent'][1]="Recurrent tickets";
 $LANG['jobrecurrent'][2]="Preliminary creation";

@@ -587,7 +587,7 @@ class Config extends CommonDBTM {
       echo "<input type='hidden' name='_matrix' value='1'></th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='b right' colspan='2'>".$LANG['joblist'][30]."</td>";
+      echo "<td class='b right' colspan='2'>".__('Impact')."</td>";
 
       for ($impact=5, $msg=47 ; $impact>=1 ; $impact--, $msg++) {
          echo "<td>".$LANG['help'][$msg]."&nbsp;: ";
@@ -605,7 +605,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='b' colspan='2'>".$LANG['joblist'][29]."&nbsp;:</td>";
+      echo "<td class='b' colspan='2'>".__('Urgency')."&nbsp;:</td>";
 
       for ($impact=5, $msg=47 ; $impact>=1 ; $impact--, $msg++) {
          echo "<td>&nbsp;</td>";
