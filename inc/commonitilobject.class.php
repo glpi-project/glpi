@@ -2459,7 +2459,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       if ($show_template) {
          echo "<tr class='tab_bg_2'>";
-         echo "<td>".$LANG['jobresolution'][6]."&nbsp;:&nbsp;</td><td>";
+         echo "<td>"._n('Solution template', 'Solution templates', 1)."</td><td>";
 
          Dropdown::show('SolutionTemplate',
                         array('value'    => 0,
