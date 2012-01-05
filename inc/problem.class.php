@@ -178,8 +178,8 @@ class Problem extends CommonITILObject {
                return self::createTabEntry(self::getTypeName(2), $nb);
 
             case __CLASS__ :
-               $ong = array (1 => __('Analysis'),         // Analysis
-                             2 => $LANG['jobresolution'][2]);  // Solution
+               $ong = array (1 => __('Analysis'),         
+                             2 => _n('Solution', 'Solutions', 1)); 
                if (Session::haveRight('observe_ticket','1')) {
                   $ong[4] = __('Statistics');
                }
@@ -190,7 +190,7 @@ class Problem extends CommonITILObject {
       switch ($item->getType()) {
          case __CLASS__ :
             return array(1 => __('Analysis'),
-                         2 => $LANG['jobresolution'][2],    // Solution
+                         2 => _n('Solution', 'Solutions', 1),  
                          4 => __('Statistics'));
       }
       return '';
@@ -549,7 +549,7 @@ class Problem extends CommonITILObject {
                                           => array('table'      => 'glpi_problemtasks',
                                                    'joinparams' => array('jointype' => 'child')));
 
-      $tab['solution'] = $LANG['jobresolution'][1];
+      $tab['solution'] = _n('Solution', 'Solutions', 1);
 
       $tab[23]['table'] = 'glpi_solutiontypes';
       $tab[23]['field'] = 'name';
@@ -557,7 +557,7 @@ class Problem extends CommonITILObject {
 
       $tab[24]['table']         = $this->getTable();
       $tab[24]['field']         = 'solution';
-      $tab[24]['name']          = $LANG['jobresolution'][1]." - ".$LANG['joblist'][6];
+      $tab[24]['name']          = _n('Solution', 'Solutions', 1);
       $tab[24]['datatype']      = 'text';
       $tab[24]['massiveaction'] = false;
 

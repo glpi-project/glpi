@@ -765,7 +765,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.observergroups'        => __('Watcher groups'),
                     $objettype.'.assigntogroups'        => __('Assigned to groups'),
                     $objettype.'.solution.type'         => $LANG['job'][48],
-                    $objettype.'.solution.description'  => $LANG['jobresolution'][1],
+                    $objettype.'.solution.description'  => _n('Solution', 'Solutions', 1),
                     $objettype.'.observerusers'         => __('Watchers'));
 
       foreach ($tags as $tag => $label) {

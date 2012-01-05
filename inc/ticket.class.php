@@ -390,7 +390,7 @@ class Ticket extends CommonITILObject {
          case __CLASS__ :
             $ong = array();
             $ong[1] = $LANG['job'][47];
-            $ong[2] = $LANG['jobresolution'][2];
+            $ong[2] = _n('Solution', 'Solutions', 1);
             // enquete si statut clos
             if ($item->fields['status'] == 'closed') {
                $ong[3] = __('Satisfaction');
@@ -1860,7 +1860,7 @@ class Ticket extends CommonITILObject {
                                            => array('table'      => 'glpi_tickettasks',
                                                     'joinparams' => array('jointype' => 'child')));
 
-         $tab['solution'] = $LANG['jobresolution'][1];
+         $tab['solution'] = _n('Solution', 'Solutions', 1);
 
          $tab[23]['table'] = 'glpi_solutiontypes';
          $tab[23]['field'] = 'name';
@@ -1868,7 +1868,7 @@ class Ticket extends CommonITILObject {
 
          $tab[24]['table']         = $this->getTable();
          $tab[24]['field']         = 'solution';
-         $tab[24]['name']          = $LANG['jobresolution'][1]." - ".$LANG['joblist'][6];
+         $tab[24]['name']          = _n('Solution', 'Solutions', 1);
          $tab[24]['datatype']      = 'text';
          $tab[24]['htmltext']      = true;
          $tab[24]['massiveaction'] = false;

@@ -306,7 +306,7 @@ class TicketFollowup  extends CommonDBTM {
 
       if (isset($input["add_reopen"])) {
          if ($input["content"] == '') {
-            Session::addMessageAfterRedirect($LANG['jobresolution'][5], false, ERROR);
+            Session::addMessageAfterRedirect(__('If you reject the solution, you must specify a reason'), false, ERROR);
             return false;
          }
          $input['_reopen'] = 1;
@@ -695,11 +695,11 @@ class TicketFollowup  extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'>";
          echo "<td class='tab_bg_2 center' colspan='2' width='200'>\n";
-         echo "<input type='submit' name='add_close' value=\"".$LANG['jobresolution'][3]."\"
+         echo "<input type='submit' name='add_close' value=\"".__('Approve the solution')."\"
                 class='submit'>";
          echo "</td>\n";
          echo "<td class='tab_bg_2 center' colspan='2'>\n";
-         echo "<input type='submit' name='add_reopen' value=\"".$LANG['jobresolution'][4]."\"
+         echo "<input type='submit' name='add_reopen' value=\"".__('Refuse the solution')."\"
                 class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>";
