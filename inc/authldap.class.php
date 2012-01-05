@@ -1069,11 +1069,11 @@ class AuthLDAP extends CommonDBTM {
             Html::printPager($values['start'], $numrows, $_SERVER['PHP_SELF'], '');
          } else {
             echo "<div class='center b'>".($_SESSION['ldap_import']['mode']?__('No users to be synchronized')
-                                                                           :__('No users to be imported')."</div>";
+                                                                           :__('No users to be imported'))."</div>";
          }
       } else {
          echo "<div class='center b'>".($_SESSION['ldap_import']['mode']?__('No users to be synchronized')
-                                                                        :__('No users to be imported')."</div>";
+                                                                        :__('No users to be imported'))."</div>";
       }
    }
 
