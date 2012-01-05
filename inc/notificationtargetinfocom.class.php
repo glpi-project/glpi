@@ -74,7 +74,6 @@ class NotificationTargetInfocom extends NotificationTarget {
 
 
    function getTags() {
-      global $LANG;
 
       $tags = array('infocom.action'         => _n('Event', 'Events', 1),
                     'infocom.itemtype'       => __('Item type'),

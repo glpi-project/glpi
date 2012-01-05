@@ -56,7 +56,7 @@ function superAdminExists() {
 
 /// Update from 0.31 to 0.4
 function update031to04() {
-   global $DB,$LANG;
+   global $DB;
 
    //0.4 Prefixage des tables :
    echo "<p class='center'>Version 0.4 </p>";

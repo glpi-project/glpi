@@ -394,7 +394,6 @@ class EntityData extends CommonDBChild {
 
 
    static function showInventoryOptions(Entity $entity) {
-      global $LANG;
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID,'r')) {

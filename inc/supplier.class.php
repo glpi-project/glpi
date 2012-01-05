@@ -585,7 +585,7 @@ class Supplier extends CommonDBTM {
     *@return Nothing (display)
    **/
    function showContracts() {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $ID = $this->fields['id'];
       if (!Session::haveRight("contract","r") || !$this->can($ID,'r')) {

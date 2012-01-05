@@ -34,7 +34,7 @@
 
 /// Update from 0.68 to 0.68.1
 function update068to0681() {
-   global $DB,$LANG,$CFG_GLPI;
+   global $DB, $CFG_GLPI;
 
    if (TableExists("glpi_repair_item")) {
       $query = "DROP TABLE `glpi_repair_item`";

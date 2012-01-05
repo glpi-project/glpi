@@ -127,7 +127,6 @@ $DB = new DB();
  * since 0.80, migration is a new class
 **/
 function displayMigrationMessage ($id, $msg="") {
-   global $LANG;
    static $created = 0;
    static $deb;
 
@@ -377,9 +376,10 @@ function location_create_new($split_char, $add_first) {
 ///// FIN FONCTIONS POUR UPDATE LOCATION
 
 function showLocationUpdateForm() {
-   global $DB, $LANG, $CFG_GLPI;
+   global $DB, $CFG_GLPI;
 
-   if ((TableExists ("glpi_dropdown_locations") && FieldExists("glpi_dropdown_locations", "parentID", false))
+   if ((TableExists ("glpi_dropdown_locations")
+        && FieldExists("glpi_dropdown_locations", "parentID", false))
        || (TableExists ("glpi_locations") && FieldExists("glpi_locations", "locations_id", false))) {
       updateTreeDropdown();
       return true;
@@ -461,7 +461,7 @@ function test_connect() {
 
 //Change table2 from varchar to ID+varchar and update table1.chps with depends
 function changeVarcharToID($table1, $table2, $chps) {
-   global $DB,$LANG;
+   global $DB;
 
    if (!FieldExists($table2, "ID", false)) {
       $query = " ALTER TABLE `$table2`
@@ -500,7 +500,7 @@ function changeVarcharToID($table1, $table2, $chps) {
 
 //update database up to 0.31
 function updateDbUpTo031() {
-   global $DB, $LANG, $migration;
+   global $DB, $migration;
 
    $ret = array();
 

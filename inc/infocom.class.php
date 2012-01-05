@@ -177,7 +177,8 @@ class Infocom extends CommonDBChild {
       if (!$this->getFromDBforDevice($input['itemtype'],$input['items_id'])) {
          if ($item = getItemForItemtype($input['itemtype'])) {
             if ($item->getFromDB($input['items_id'])) {
-               $input['alert']        = EntityData::getUsedConfig('default_infocom_alert', $item->getEntityID());
+               $input['alert']        = EntityData::getUsedConfig('default_infocom_alert',
+                                                                  $item->getEntityID());
                $input['entities_id']  = $item->getEntityID();
                $input['is_recursive'] = intval($item->isRecursive());
                return $input;
@@ -435,7 +436,8 @@ class Infocom extends CommonDBChild {
                              AND `glpi_infocoms`.`warranty_duration`>'0'
                              AND `glpi_infocoms`.`warranty_date` IS NOT NULL
                              AND DATEDIFF(ADDDATE(`glpi_infocoms`.`warranty_date`,
-                                                  INTERVAL (`glpi_infocoms`.`warranty_duration`) MONTH),
+                                                  INTERVAL (`glpi_infocoms`.`warranty_duration`)
+                                                           MONTH),
                                           CURDATE() )<'0'
                              AND `glpi_alerts`.`date` IS NULL";
 
@@ -454,7 +456,7 @@ class Infocom extends CommonDBChild {
                $items_infos[$entity][$data['id']] = $data;
 
                if (!isset($items_messages[$entity])) {
-                  $items_messages[$entity] = __('No item arrived at the end of the warranty.')."<br />";
+                  $items_messages[$entity] = __('No item arrived at the end of the warranty.')."<br>";
                }
                $items_messages[$entity] .= $message;
             }
@@ -505,7 +507,6 @@ class Infocom extends CommonDBChild {
     * @param $value default value
     */
    static function dropdownAlert($name, $value=0) {
-      global $LANG;
 
       echo "<select name='$name'>";
       echo "<option value='0'".($value==0?" selected ":"")." >".Dropdown::EMPTY_VALUE."</option>";
@@ -821,7 +822,7 @@ class Infocom extends CommonDBChild {
     * @param $withtemplate integer: template or basic item
     **/
    static function showForItem(CommonDBTM $item, $withtemplate='') {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       // Show Infocom or blank form
       if (!Session::haveRight("infocom","r")) {
@@ -1076,7 +1077,6 @@ class Infocom extends CommonDBChild {
 
 
    static function getSearchOptionsToAdd($itemtype) {
-      global $LANG;
 
 
 //                if ($itemtype == 'CartridgeItem') {
@@ -1294,145 +1294,144 @@ class Infocom extends CommonDBChild {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']             = __('Characteristics');
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
 
-      $tab[4]['table']    = $this->getTable();
-      $tab[4]['field']    = 'buy_date';
-      $tab[4]['name']     = __s('Date of purchase');
-      $tab[4]['datatype'] = 'date';
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'buy_date';
+      $tab[4]['name']            = __s('Date of purchase');
+      $tab[4]['datatype']        = 'date';
 
-      $tab[5]['table']    = $this->getTable();
-      $tab[5]['field']    = 'use_date';
-      $tab[5]['name']     = __('Startup date');
-      $tab[5]['datatype'] = 'date';
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'use_date';
+      $tab[5]['name']            = __('Startup date');
+      $tab[5]['datatype']        = 'date';
 
-      $tab[24]['table']        = 'glpi_infocoms';
-      $tab[24]['field']        = 'delivery_date';
-      $tab[24]['name']         = __('Delivery date');
-      $tab[24]['datatype']     = 'date';
-      $tab[24]['forcegroupby'] = true;
+      $tab[24]['table']          = 'glpi_infocoms';
+      $tab[24]['field']          = 'delivery_date';
+      $tab[24]['name']           = __('Delivery date');
+      $tab[24]['datatype']       = 'date';
+      $tab[24]['forcegroupby']   = true;
 
-      $tab[23]['table']        = 'glpi_infocoms';
-      $tab[23]['field']        = 'order_date';
-      $tab[23]['name']         = __('Order date');
-      $tab[23]['datatype']     = 'date';
-      $tab[23]['forcegroupby'] = true;
+      $tab[23]['table']          = 'glpi_infocoms';
+      $tab[23]['field']          = 'order_date';
+      $tab[23]['name']           = __('Order date');
+      $tab[23]['datatype']       = 'date';
+      $tab[23]['forcegroupby']   = true;
 
-      $tab[25]['table']        = 'glpi_infocoms';
-      $tab[25]['field']        = 'warranty_date';
-      $tab[25]['name']         = __('Start date of warranty');
-      $tab[25]['datatype']     = 'date';
-      $tab[25]['forcegroupby'] = true;
+      $tab[25]['table']          = 'glpi_infocoms';
+      $tab[25]['field']          = 'warranty_date';
+      $tab[25]['name']           = __('Start date of warranty');
+      $tab[25]['datatype']       = 'date';
+      $tab[25]['forcegroupby']   = true;
 
-      $tab[26]['table']        = 'glpi_infocoms';
-      $tab[26]['field']        = 'inventory_date';
-      $tab[26]['name']         = __('Date of last physical inventory');
-      $tab[26]['datatype']     = 'date';
-      $tab[26]['forcegroupby'] = true;
+      $tab[26]['table']          = 'glpi_infocoms';
+      $tab[26]['field']          = 'inventory_date';
+      $tab[26]['name']           = __('Date of last physical inventory');
+      $tab[26]['datatype']       = 'date';
+      $tab[26]['forcegroupby']   = true;
 
-      $tab[6]['table']    = $this->getTable();
-      $tab[6]['field']    = 'warranty_duration';
-      $tab[6]['name']     = __('Warranty duration');
-      $tab[6]['datatype'] = 'integer';
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'warranty_duration';
+      $tab[6]['name']            = __('Warranty duration');
+      $tab[6]['datatype']        = 'integer';
 
-      $tab[7]['table']     = $this->getTable();
-      $tab[7]['field']     = 'warranty_info';
-      $tab[7]['name']      = __('Warranty information');
-      $tab[7]['datatype']  = 'string';
+      $tab[7]['table']           = $this->getTable();
+      $tab[7]['field']           = 'warranty_info';
+      $tab[7]['name']            = __('Warranty information');
+      $tab[7]['datatype']        = 'string';
 
-      $tab[8]['table']    = $this->getTable();
-      $tab[8]['field']    = 'warranty_value';
-      $tab[8]['name']     = __s('Warranty extension value');
-      $tab[8]['datatype'] = 'decimal';
+      $tab[8]['table']           = $this->getTable();
+      $tab[8]['field']           = 'warranty_value';
+      $tab[8]['name']            = __s('Warranty extension value');
+      $tab[8]['datatype']        = 'decimal';
 
-      $tab[9]['table'] = 'glpi_suppliers';
-      $tab[9]['field'] = 'name';
-      $tab[9]['name']  = __('Supplier');
+      $tab[9]['table']           = 'glpi_suppliers';
+      $tab[9]['field']           = 'name';
+      $tab[9]['name']            = __('Supplier');
 
-      $tab[10]['table']    = $this->getTable();
-      $tab[10]['field']    = 'order_number';
-      $tab[10]['name']     = __s('Order number');
-      $tab[10]['datatype'] = 'string';
+      $tab[10]['table']          = $this->getTable();
+      $tab[10]['field']          = 'order_number';
+      $tab[10]['name']           = __s('Order number');
+      $tab[10]['datatype']       = 'string';
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'delivery_number';
-      $tab[11]['name']     = __('Delivery form');
-      $tab[11]['datatype'] = 'string';
+      $tab[11]['table']          = $this->getTable();
+      $tab[11]['field']          = 'delivery_number';
+      $tab[11]['name']           = __('Delivery form');
+      $tab[11]['datatype']       = 'string';
 
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'immo_number';
-      $tab[12]['name']     = __s('Immobilization number');
-      $tab[12]['datatype'] = 'string';
+      $tab[12]['table']          = $this->getTable();
+      $tab[12]['field']          = 'immo_number';
+      $tab[12]['name']           = __s('Immobilization number');
+      $tab[12]['datatype']       = 'string';
 
-      $tab[13]['table']    = $this->getTable();
-      $tab[13]['field']    = 'value';
-      $tab[13]['name']     = __('Value');
-      $tab[13]['datatype'] = 'decimal';
+      $tab[13]['table']          = $this->getTable();
+      $tab[13]['field']          = 'value';
+      $tab[13]['name']           = __('Value');
+      $tab[13]['datatype']       = 'decimal';
 
-      $tab[14]['table']    = $this->getTable();
-      $tab[14]['field']    = 'sink_time';
-      $tab[14]['name']     = __s('Amortization duration');
-      $tab[14]['datatype'] = 'integer';
+      $tab[14]['table']          = $this->getTable();
+      $tab[14]['field']          = 'sink_time';
+      $tab[14]['name']           = __s('Amortization duration');
+      $tab[14]['datatype']       = 'integer';
 
-      $tab[15]['table']    = $this->getTable();
-      $tab[15]['field']    = 'sink_type';
-      $tab[15]['name']     = __s('Amortization Type');
-      $tab[15]['datatype'] = 'integer';
+      $tab[15]['table']          = $this->getTable();
+      $tab[15]['field']          = 'sink_type';
+      $tab[15]['name']           = __s('Amortization Type');
+      $tab[15]['datatype']       = 'integer';
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
-      $tab[17]['table']    = $this->getTable();
-      $tab[17]['field']    = 'sink_coeff';
-      $tab[17]['name']     = __s('Amortization coefficient');
-      $tab[17]['datatype'] = 'decimal';
+      $tab[17]['table']          = $this->getTable();
+      $tab[17]['field']          = 'sink_coeff';
+      $tab[17]['name']           = __s('Amortization coefficient');
+      $tab[17]['datatype']       = 'decimal';
 
-      $tab[18]['table']    = $this->getTable();
-      $tab[18]['field']    = 'bill';
-      $tab[18]['name']     = __('Invoice number');
-      $tab[18]['datatype'] = 'string';
+      $tab[18]['table']          = $this->getTable();
+      $tab[18]['field']          = 'bill';
+      $tab[18]['name']           = __('Invoice number');
+      $tab[18]['datatype']       = 'string';
 
-      $tab[19]['table']    = 'glpi_budgets';
-      $tab[19]['field']    = 'name';
-      $tab[19]['name']     = __('Budget');
-      $tab[19]['datatype'] = 'itemlink';
+      $tab[19]['table']          = 'glpi_budgets';
+      $tab[19]['field']          = 'name';
+      $tab[19]['name']           = __('Budget');
+      $tab[19]['datatype']       = 'itemlink';
 
-      $tab[20]['table']         = $this->getTable();
-      $tab[20]['field']         = 'itemtype';
-      $tab[20]['name']          = __('Type');
-      $tab[20]['datatype']      = 'itemtype';
-      $tab[20]['massiveaction'] = false;
+      $tab[20]['table']          = $this->getTable();
+      $tab[20]['field']          = 'itemtype';
+      $tab[20]['name']           = __('Type');
+      $tab[20]['datatype']       = 'itemtype';
+      $tab[20]['massiveaction']  = false;
 
-      $tab[21]['table']         = $this->getTable();
-      $tab[21]['field']         = 'items_id';
-      $tab[21]['name']          = 'ID';
-      $tab[21]['datatype']      = 'integer';
-      $tab[21]['massiveaction'] = false;
+      $tab[21]['table']          = $this->getTable();
+      $tab[21]['field']          = 'items_id';
+      $tab[21]['name']           = 'ID';
+      $tab[21]['datatype']       = 'integer';
+      $tab[21]['massiveaction']  = false;
 
-      $tab[22]['table']    = $this->getTable();
-      $tab[22]['field']    = 'alert';
-      $tab[22]['name']     = $LANG['setup'][247];
-      $tab[22]['datatype'] = 'integer';
+      $tab[22]['table']          = $this->getTable();
+      $tab[22]['field']          = 'alert';
+      $tab[22]['name']           = __('Alarms on financial and administrative information');
+      $tab[22]['datatype']       = 'integer';
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __('Entity');
-      $tab[80]['massiveaction'] = false;
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['massiveaction']  = false;
 
-      $tab[86]['table']    = $this->getTable();
-      $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = __('Child entities');
-      $tab[86]['datatype'] = 'bool';
+      $tab[86]['table']          = $this->getTable();
+      $tab[86]['field']          = 'is_recursive';
+      $tab[86]['name']           = __('Child entities');
+      $tab[86]['datatype']       = 'bool';
 
       return $tab;
    }

@@ -70,7 +70,6 @@ class NotificationTargetCartridge extends NotificationTarget {
 
 
    function getTags() {
-      global $LANG;
 
       $tags = array('cartridge.action'    => _n('Event', 'Events', 1),
                     'cartridge.reference' => __('Reference'),

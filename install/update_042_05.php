@@ -34,7 +34,7 @@
 
 /// Update from 0.42 to 0.5
 function update042to05() {
-   global $DB, $LANG;
+   global $DB;
 
    echo "<p class='center'>Version 0.5 </p>";
 
@@ -1299,7 +1299,7 @@ function date_diff050($from, $to) {
  * @param $ID item ID
 **/
 function updateMaintenanceInfos($table, $type, $ID){
-   global $DB, $LANG;
+   global $DB;
 
    $elements = array();
    $query    = "SELECT `ID`
@@ -1326,7 +1326,7 @@ function updateMaintenanceInfos($table, $type, $ID){
  * @param $type item type
 **/
 function updateWarrantyInfos($table, $type) {
-   global $DB, $LANG;
+   global $DB;
 
    $elements = array();
    $query    = "SELECT `ID`, `achat_date`, `date_fin_garantie`
@@ -1371,7 +1371,7 @@ function updateWarrantyInfos($table, $type) {
 
 /// Update to 0.5 :Is maintenance used ?
 function isMaintenanceUsed() {
-   global $DB,$LANG;
+   global $DB;
 
    $tables = array("glpi_computers", "glpi_monitors", "glpi_networking", "glpi_peripherals",
                    "glpi_printers");
@@ -1392,7 +1392,7 @@ function isMaintenanceUsed() {
 
 /// Update to 0.5 :drop maintenance field ?
 function dropMaintenanceField() {
-   global $DB, $LANG;
+   global $DB;
 
    $tables = array("glpi_computers", "glpi_monitors", "glpi_networking", "glpi_peripherals",
                    "glpi_printers");
@@ -1420,7 +1420,7 @@ function dropMaintenanceField() {
  * @return nothing if everything is good, else display mysql query and error.
  */
 function compDpd2Device($devtype, $devname, $dpdname, $compDpdName, $specif='') {
-   global $DB, $LANG;
+   global $DB;
 
    $query = "SELECT *
              FROM `glpi_dropdown_".$dpdname."`";

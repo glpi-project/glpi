@@ -34,53 +34,68 @@
 
 ///update the database to the 0.31 version
 function updateDbTo031(){
-	global $DB,$LANG;
+   global $DB;
 
-	//amSize ramSize
-	$query = "Alter table users drop can_assign_job";
-	$DB->queryOrDie($query);
-	$query = "Alter table users add can_assign_job enum('yes','no') NOT NULL default 'no'";
-	$DB->queryOrDie($query);
-	$query = "Update users set can_assign_job = 'yes' where type = 'admin'";
-	$DB->queryOrDie($query);
+   //amSize ramSize
+   $query = "ALTER TABLE `users`
+             DROP `can_assign_job`";
+   $DB->queryOrDie($query);
 
-	echo "<p class='center'>Version 0.2 & < </p>";
+   $query = "ALTER TABLE `users`
+             ADD `can_assign_job enum('yes','no')` NOT NULL DEFAULT 'no'";
+   $DB->queryOrDie($query);
 
-	//Version 0.21 ajout du champ ramSize a la table printers si non existant.
+   $query = "UPDATE `users`
+             SET `can_assign_job` = 'yes'
+             WHERE `type` = 'admin'";
+   $DB->queryOrDie($query);
 
+   echo "<p class='center'>Version 0.2 & < </p>";
 
-	if(!FieldExists("printers", "ramSize", false)) {
-		$query = "alter table printers add ramSize varchar(6) NOT NULL default ''";
-		$DB->queryOrDie($query);
-	}
-
-	echo "<p class='center'>Version 0.21  </p>";
-
-	//Version 0.3
-	//Ajout de NOT NULL et des valeurs par defaut.
-
-	$query = "ALTER TABLE computers MODIFY achat_date date NOT NULL default '0000-00-00'";
-	$DB->queryOrDie($query);
-	$query = "ALTER TABLE computers MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
+   //Version 0.21 ajout du champ ramSize a la table printers si non existant.
 
 
-	$query = "ALTER TABLE monitors MODIFY achat_date date NOT NULL default '0000-00-00'";
-	$DB->queryOrDie($query);
-	$query = "ALTER TABLE monitors MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
+   if (!FieldExists("printers", "ramSize", false)) {
+      $query = "ALTER TABLE `printers`
+                ADD `ramSize` varchar(6) NOT NULL default ''";
+      $DB->queryOrDie($query);
+   }
 
-	$query = "ALTER TABLE networking MODIFY achat_date date NOT NULL default '0000-00-00'";
-	$DB->queryOrDie($query);
-	$query = "ALTER TABLE networking MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
+   echo "<p class='center'>Version 0.21  </p>";
 
+   //Version 0.3
+   //Ajout de NOT NULL et des valeurs par defaut.
 
-	$query = "ALTER TABLE printers MODIFY achat_date date NOT NULL default '0000-00-00'";
-	$DB->queryOrDie($query);
-	$query = "ALTER TABLE printers MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
+   $query = "ALTER TABLE `computers`
+             MODIFY `achat_date` `date` NOT NULL default '0000-00-00'";
+   $DB->queryOrDie($query);
+   $query = "ALTER TABLE `computers`
+             MODIFY `date_fin_garantie` `date` NOT NULL default '0000-00-00'";
 
-	$query = "ALTER TABLE templates MODIFY achat_date date NOT NULL default '0000-00-00'";
-	$DB->queryOrDie($query);
-	$query = "ALTER TABLE templates MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
+   $query = "ALTER TABLE `monitors`
+             MODIFY `achat_date` `date` NOT NULL default '0000-00-00'";
+   $DB->queryOrDie($query);
+   $query = "ALTER TABLE `monitors`
+             MODIFY `date_fin_garantie` `date` NOT NULL default '0000-00-00'";
 
-	echo "<p class='center'>Version 0.3  </p>";
+   $query = "ALTER TABLE `networking`
+             MODIFY `achat_date` `date` NOT NULL default '0000-00-00'";
+   $DB->queryOrDie($query);
+   $query = "ALTER TABLE `networking`
+             MODIFY `date_fin_garantie` `date` NOT NULL default '0000-00-00'";
+
+   $query = "ALTER TABLE `printers`
+             MODIFY `achat_date` `date` NOT NULL default '0000-00-00'";
+   $DB->queryOrDie($query);
+   $query = "ALTER TABLE `printers`
+             MODIFY `date_fin_garantie` `date` NOT NULL default '0000-00-00'";
+
+   $query = "ALTER TABLE `templates`
+             MODIFY `achat_date` `date` NOT NULL default '0000-00-00'";
+   $DB->queryOrDie($query);
+   $query = "ALTER TABLE `templates`
+             MODIFY `date_fin_garantie` `date` NOT NULL default '0000-00-00'";
+
+   echo "<p class='center'>Version 0.3  </p>";
 }
 ?>

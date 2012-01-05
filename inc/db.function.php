@@ -200,7 +200,8 @@ function getItemForItemtype($itemtype) {
 function getPlural($string) {
 
    $rules = array(//'singular' => 'plural'
-                  /// TODO : real singular is criterion and plural criteria. Need to update class / tables names
+                  /// TODO : real singular is criterion and plural criteria.
+                  /// Need to update class / tables names
                   'criterias$'   =>'criterias',// Special case (criterias) when getPLural is called on already plural form
                   's$'           =>'ses',
                   '([^aeiou])y$' => '\1ies', // special case : category (but not key)
@@ -341,7 +342,8 @@ function countElementsInTableForEntity($table,$entity,$condition='') {
 
 
 /**
- * Get datas from a table in an array : CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
+ * Get datas from a table in an array :
+ * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
  *
  * @param $table     string: table name
  * @param $condition string: condition to use
@@ -1113,7 +1115,7 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
  *@return string : username string (realname if not empty and name if realname is empty).
 **/
 function getUserName($ID, $link=0) {
-   global $DB, $CFG_GLPI, $LANG;
+   global $DB, $CFG_GLPI;
 
    $user = "";
    if ($link==2) {
@@ -1153,7 +1155,7 @@ function getUserName($ID, $link=0) {
             }
 
             if (!empty($data["phone"])) {
-               $user["comment"] .= $LANG['help'][35]."&nbsp;: ".$data["phone"]."<br>";
+               $user["comment"] .= sprintf(__('Phone : %s'), $data["phone"])."<br>";
             }
 
             if (!empty($data["mobile"])) {
@@ -1537,9 +1539,11 @@ function getDbRelations() {
  * @param $separator : separator in the begin of the request
  * @param $table : table where apply the limit (if needed, multiple tables queries)
  * @param $field : field where apply the limit (id != entities_id)
- * @param $value : entity to restrict (if not set use $_SESSION['glpiactiveentities']). single item or array
+ * @param $value : entity to restrict (if not set use $_SESSION['glpiactiveentities']).
+ *                 single item or array
  * @param $is_recursive : need to use recursive process to find item (field need to be named recursive)
- * @param $complete_request : need to use a complete request and not a simple one when have acces to all entities (used for reminders)
+ * @param $complete_request : need to use a complete request and not a simple one
+ *                            when have acces to all entities (used for reminders)
  *
  * @return String : the WHERE clause to restrict
 **/
@@ -1614,5 +1618,4 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 
    return $query;
 }
-
 ?>
