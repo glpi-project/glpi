@@ -1145,6 +1145,9 @@ class NotificationTargetTicket extends NotificationTarget {
                $tmp['##ticket.time##']             = Ticket::getActionTime($ticket['actiontime']);
                $tmp['##ticket.costtime##']         = $ticket['cost_time'];
                $tmp['##ticket.creationdate##']     = convDateTime($ticket['date']);
+               $tmp['##ticket.closedate##']        = convDateTime($ticket['closedate']);
+               $tmp['##ticket.solvedate##']        = convDateTime($ticket['solvedate']);
+               $tmp['##ticket.duedate##']          = convDateTime($ticket['due_date']);
                $tmp['##ticket.content##']          = $ticket['content'];
 
 
