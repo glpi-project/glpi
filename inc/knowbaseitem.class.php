@@ -444,20 +444,20 @@ class KnowbaseItem extends CommonDBTM {
          }
 
          echo "<fieldset>";
-         echo "<legend>".$LANG['knowbase'][13]."</legend>";
-         echo "<div class='center'>".$LANG['knowbase'][6];
+         echo "<legend>".__('Category name')."</legend>";
+         echo "<div class='center'>".__('Select a category for this item:');
          Dropdown::show('KnowbaseItemCategory',
                         array('value' => $this->fields["knowbaseitemcategories_id"]));
          echo "</div></fieldset>";
 
          echo "<fieldset>";
-         echo "<legend>".$LANG['knowbase'][14]."</legend>";
+         echo "<legend>".__('Subject')."</legend>";
          echo "<div class='center'>";
          echo "<textarea cols='80' rows='2' name='name'>".$this->fields["name"]."</textarea>";
          echo "</div></fieldset>";
 
          echo "<fieldset>";
-         echo "<legend>".$LANG['knowbase'][15]."</legend>";
+         echo "<legend>".__('Content')."</legend>";
          echo "<div class='center'>";
          echo "<textarea cols='80' rows='30' id='answer' name='answer'>".$this->fields["answer"];
          echo "</textarea></div></fieldset>";
@@ -487,7 +487,8 @@ class KnowbaseItem extends CommonDBTM {
             }
 
             echo "<span class='baskb_right'>";
-            echo $LANG['knowbase'][26]."&nbsp;: ".$this->fields["view"]."</span></div>";
+            //TRANS: %d is the number of view
+            echo sprintf(_n('%d view', '%d views',$this->fields["view"]),$this->fields["view"])."</span></div>";
 
             echo "</fieldset>";
          }
@@ -506,7 +507,7 @@ class KnowbaseItem extends CommonDBTM {
 //             }
 //          }
 //          echo "<br><br>" .
-         echo $LANG['knowbase'][5]."&nbsp;: ";
+         echo __('Put this item in the FAQ')."&nbsp;";
 
          if (Session::haveRight("faq","w") && Session::haveRight("knowbase","w")) {
             Dropdown::showYesNo('is_faq', $this->fields["is_faq"]);
@@ -586,9 +587,9 @@ class KnowbaseItem extends CommonDBTM {
 
       echo "<table class='tab_cadre_fixe'><tr><th colspan='3'>";
       if ($isFAQ) {
-         echo $LANG['knowbase'][10]."</th></tr>\n";
+         echo __('This item is part of the FAQ')."</th></tr>\n";
       } else {
-         echo $LANG['knowbase'][11]."</th></tr>\n";
+         echo __('This item is not part of the FAQ')."</th></tr>\n";
       }
 
       if ($edit) {
@@ -598,24 +599,24 @@ class KnowbaseItem extends CommonDBTM {
                echo "<td class='center' width='33%'><a class='icon_nav_move' href=\"".
                      $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;removefromfaq=yes\">
                      <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqremove.png\" alt=\"".
-                        $LANG['knowbase'][7]."\" title=\"".$LANG['knowbase'][7]."\"></a></td>\n";
+                        __s('Delete this item from the FAQ')."\" title=\"".__s('Delete this item from the FAQ')."\"></a></td>\n";
             } else {
                echo "<td class='center' width='33%'><a  class='icon_nav_move' href=\"".
                      $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;addtofaq=yes\">
                      <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqadd.png\" alt=\"".
-                        $LANG['knowbase'][5]."\" title=\"".$LANG['knowbase'][5]."\"></a></td>\n";
+                        __s('Put this item in the FAQ')."\" title=\"".__s('Put this item in the FAQ')."\"></a></td>\n";
             }
          }
          echo "<td class='center' width='34%'><a class='icon_nav_move' href=\"".
                $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;modify=yes\">";
-         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt=\"".$LANG['knowbase'][8].
-               "\" title=\"".$LANG['knowbase'][8]."\"></a></td>\n";
+         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt=\"".__s('Edit').
+               "\" title=\"".__s('Edit')."\"></a></td>\n";
          echo "<td class='center' width='33%'>";
          echo "<a class='icon_nav_move' href=\"javascript:confirmAction('".
                 __s('Are you sure you want to delete this element?')."','".$CFG_GLPI["root_doc"].
                 "/front/knowbaseitem.form.php?id=$ID&amp;delete=yes')\">";
-         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt=\"".$LANG['knowbase'][9].
-               "\" title=\"".$LANG['knowbase'][9]."\"></a></td>";
+         echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt=\"".__s('Purge').
+               "\" title=\"".__s('Purge')."\"></a></td>";
          echo "</tr>";
       }
       echo "</table><br>";
@@ -670,11 +671,11 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_3'><th colspan='4'>".sprintf(__('Category: %s'), $tmp);
       echo "</th></tr>";
 
-      echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".$LANG['knowbase'][14]."</h2>";
+      echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".__('Subject')."</h2>";
       echo $this->fields["name"];
 
       echo "</td></tr>";
-      echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".$LANG['knowbase'][15]."</h2>\n";
+      echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".__('Content')."</h2>\n";
 
       $answer = Toolbox::unclean_cross_side_scripting_deep($this->fields["answer"]);
 
@@ -699,12 +700,8 @@ class KnowbaseItem extends CommonDBTM {
          printf(__('Created on %s'),Html::convDateTime($this->fields["date"]));
       }
 
-      if ($this->fields["date"]) {
-         echo $LANG['knowbase'][27]."&nbsp;: ". Html::convDateTime($this->fields["date"]);
-      }
-
       if ($this->countVisibilities() == 0) {
-         echo "<br><span class='red'>".$LANG['knowbase'][3]."</span>";
+         echo "<br><span class='red'>".__('Unpublished')."</span>";
       }
       echo "</th>";
       echo "<th class='tdkb' colspan='2'>";
@@ -714,7 +711,7 @@ class KnowbaseItem extends CommonDBTM {
          printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
          echo "<br>";
       }
-      echo $LANG['knowbase'][26]."&nbsp;: ".$this->fields["view"]."</th></tr>";
+      echo sprintf(_n('%d view', '%d views',$this->fields["view"]),$this->fields["view"])."</th></tr>";
 
       $this->showFormButtons($options);
       if (!$inpopup) {
@@ -944,10 +941,10 @@ class KnowbaseItem extends CommonDBTM {
             echo Search::showHeader($output_type, $numrows_limit+1, $nbcols);
 
             $header_num = 1;
-            echo Search::showHeaderItem($output_type, $LANG['knowbase'][14], $header_num);
+            echo Search::showHeaderItem($output_type, __('Subject'), $header_num);
 
             if ($output_type != Search::HTML_OUTPUT) {
-               echo Search::showHeaderItem($output_type, $LANG['knowbase'][15], $header_num);
+               echo Search::showHeaderItem($output_type, __('Content'), $header_num);
             }
             echo Search::showHeaderItem($output_type, __('Category'), $header_num);
 
@@ -1047,11 +1044,11 @@ class KnowbaseItem extends CommonDBTM {
 
       if ($type=="recent") {
          $orderby = "ORDER BY `date` DESC";
-         $title   = $LANG['knowbase'][29];
+         $title   = __('Recent entries');
 
       } else {
          $orderby = "ORDER BY `view` DESC";
-         $title   = $LANG['knowbase'][30];
+         $title   = __('Most popular questions');
       }
 
       $faq_limit = "";
@@ -1071,7 +1068,7 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       if ($type=="notpublished") {
-         $title = $LANG['knowbase'][2];
+         $title = __('Unpublished articles');
          // not published = no visibility set
          $faq_limit = "WHERE `glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."'
                              AND `glpi_entities_knowbaseitems`.`entities_id` IS NULL
@@ -1158,22 +1155,22 @@ class KnowbaseItem extends CommonDBTM {
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'name';
-      $tab[6]['name']      = $LANG['knowbase'][14];
+      $tab[6]['name']      = __('Subject');
       $tab[6]['datatype']  = 'text';
 
       $tab[7]['table']     = $this->getTable();
       $tab[7]['field']     = 'answer';
-      $tab[7]['name']      = $LANG['knowbase'][15];
+      $tab[7]['name']      = __('Content');
       $tab[7]['datatype']  = 'text';
 
       $tab[8]['table']    = $this->getTable();
       $tab[8]['field']    = 'is_faq';
-      $tab[8]['name']     = $LANG['knowbase'][5];
+      $tab[8]['name']     = __('FAQ item');
       $tab[8]['datatype'] = 'bool';
 
       $tab[9]['table']         = $this->getTable();
       $tab[9]['field']         = 'view';
-      $tab[9]['name']          = $LANG['knowbase'][26];
+      $tab[9]['name']          = __('Views');
       $tab[9]['datatype']      = 'integer';
       $tab[9]['massiveaction'] = false;
 

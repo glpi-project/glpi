@@ -149,7 +149,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    // Display FAQ is enable
    if ($CFG_GLPI["use_public_faq"]) {
-      echo '<div id="box-faq"><a href="front/helpdesk.faq.php">[ '.$LANG['knowbase'][24].' ]</a>';
+      echo '<div id="box-faq"><a href="front/helpdesk.faq.php">[ '.__('Access to the Frequently Asked Questions').' ]</a>';
       echo '</div>';
    }
 

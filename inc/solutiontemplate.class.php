@@ -66,7 +66,7 @@ class SolutionTemplate extends CommonDropdown {
                          'type'  => 'dropdownValue',
                          'list'  => true),
                    array('name'  => 'content',
-                         'label' => $LANG['knowbase'][15],
+                         'label' => __('Content'),
                          'type'  => 'tinymce'));
    }
 
@@ -79,7 +79,7 @@ class SolutionTemplate extends CommonDropdown {
 
       $tab = parent::getSearchOptions();
 
-      $tab[4]['name']   = $LANG['knowbase'][15];
+      $tab[4]['name']   = __('Content');
       $tab[4]['field']  = 'content';
       $tab[4]['table']  = $this->getTable();
 

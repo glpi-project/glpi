@@ -578,7 +578,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='4'>".__('Tools')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['knowbase'][1]."</td><td>";
+      echo "<td>".__('FAQ')."</td><td>";
       if ($this->fields["interface"]=="helpdesk" && $this->fields["faq"]=='w') {
          $this->fields["faq"]='r';
       }
@@ -709,7 +709,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['knowbase'][1]."</td><td>";
+      echo "<td>".__('FAQ')."</td><td>";
       self::dropdownNoneReadWrite("faq", $this->fields["faq"], 1, 1, 1);
       echo "</td>";
       echo "<td>"._n('Report', 'Reports', 2)."</td><td>";
