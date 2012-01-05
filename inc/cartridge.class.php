@@ -412,7 +412,7 @@ class Cartridge extends CommonDBTM {
             echo "<th>".__('Printer counter')."</th>";
          }
 
-         echo "<th>".$LANG['financial'][3]."</th>";
+         echo "<th>".__('Financial and administrative information')."</th>";
          echo "<th colspan='2'>&nbsp;</th>";
 
          echo "</tr>";

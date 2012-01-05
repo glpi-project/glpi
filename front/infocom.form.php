@@ -41,7 +41,7 @@ if (isset($_GET["add"])) {
    $ic->check(-1,'w',$_GET);
 
    $newID = $ic->add($_GET, false);
-   Event::log($newID, "infocom", 4, "financial", 
+   Event::log($newID, "infocom", 4, "financial",
                sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $newID));
    Html::back();
 
@@ -62,7 +62,7 @@ if (isset($_GET["add"])) {
 } else {
    Session::checkRight("infocom", "r");
 
-   Html::popHeader($LANG['financial'][3],$_SERVER['PHP_SELF']);
+   Html::popHeader(__('Financial and administrative information'), $_SERVER['PHP_SELF']);
 
    if (isset($_GET["id"])) {
       $ic->getFromDB($_GET["id"]);

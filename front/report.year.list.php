@@ -134,7 +134,7 @@ if (isset($query) && count($query)) {
          echo "<th>".__('Location')."</th>";
          echo "<th>".$LANG['financial'][14]."</th>";
          echo "<th>".$LANG['financial'][80]."</th>";
-         echo "<th>".$LANG['financial'][6]."</th>";
+         echo "<th>".__('Contract Type')."</th>";
          echo "<th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th></tr>";
 

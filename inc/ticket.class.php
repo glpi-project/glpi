@@ -1872,7 +1872,7 @@ class Ticket extends CommonITILObject {
          $tab[24]['htmltext']      = true;
          $tab[24]['massiveaction'] = false;
 
-         $tab['cost'] = $LANG['financial'][5];
+         $tab['cost'] = __('Cost');
 
          $tab[42]['table']    = $this->getTable();
          $tab[42]['field']    = 'cost_time';

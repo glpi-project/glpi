@@ -38,7 +38,7 @@ class NotificationTargetContract extends NotificationTarget {
       global $LANG;
 
       return array('end'    => $LANG['financial'][86],
-                   'notice' => $LANG['financial'][10]);
+                   'notice' => __('Notice'));
    }
 
 
@@ -88,11 +88,10 @@ class NotificationTargetContract extends NotificationTarget {
 
 
    function getTags() {
-      global $LANG;
 
       $tags = array('contract.action'  => _n('Event', 'Events', 1),
                     'contract.name'    => __('Name'),
-                    'contract.number'  => $LANG['financial'][4],
+                    'contract.number'  => __('Number'),
                     'contract.type'    => __('Type'),
                     'contract.entity'  => __('Entity'));
 

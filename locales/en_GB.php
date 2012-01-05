@@ -655,19 +655,19 @@ $LANG['event'][18]="Field";
 $LANG['event'][19]="Update";
 $LANG['event'][20]="No historical";
 
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['financial'][1]="Contract";
 $LANG['financial'][2]="Lifelong";
-$LANG['financial'][3]="financial and administrative informations";
+$LANG['financial'][3]="Financial and administrative information"; // fixed during gettext
 $LANG['financial'][4]="Number";
 $LANG['financial'][5]="Cost";
 $LANG['financial'][6]="Contract Type";
-$LANG['financial'][7]="Warranty informations";
+$LANG['financial'][7]="Warranty information"; // fixed
 $LANG['financial'][8]="Initial contract period";
 $LANG['financial'][9]="year(s)";
 $LANG['financial'][10]="Notice";
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['financial'][11]="Invoice period";
 $LANG['financial'][13]="Account number";
 $LANG['financial'][14]="Date of purchase";
