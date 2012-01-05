@@ -4571,8 +4571,8 @@ class Ticket extends CommonITILObject {
       // Link to open a new ticket
       if ($item->getID() && in_array($item->getType(),
                                      $_SESSION['glpiactiveprofile']['helpdesk_item_type'])) {
-         echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
-         echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".$item->getID().
+         echo "<tr><td class='tab_bg_2 center' colspan='10'>";
+         echo "<a class ='vsubmit' href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".$item->getID().
               "&amp;itemtype=".$item->getType()."\">".__('New ticket for this item...')."</a>";
          echo "</td></tr>";
       }
