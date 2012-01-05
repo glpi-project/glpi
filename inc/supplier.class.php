@@ -141,13 +141,13 @@ class Supplier extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][30]."&nbsp;:</td>";
+      echo "<td>".__('Fax')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "fax");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][45]."&nbsp;:</td>";
+      echo "<td>".__('Website')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "website");
       echo "</td></tr>";
@@ -159,7 +159,7 @@ class Supplier extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='middle'>".$LANG['financial'][44]."&nbsp;:</td>";
+      echo "<td class='middle'>".__('Address')."</td>";
       echo "<td class='middle'>";
       echo "<textarea cols='37' rows='3' name='address'>".$this->fields["address"]."</textarea>";
       echo "</td></tr>";
@@ -212,11 +212,11 @@ class Supplier extends CommonDBTM {
 
       $tab[3]['table'] = $this->getTable();
       $tab[3]['field'] = 'address';
-      $tab[3]['name']  = $LANG['financial'][44];
+      $tab[3]['name']  = __('Address');
 
       $tab[10]['table'] = $this->getTable();
       $tab[10]['field'] = 'fax';
-      $tab[10]['name']  = $LANG['financial'][30];
+      $tab[10]['name']  = __('Fax');
 
       $tab[11]['table'] = $this->getTable();
       $tab[11]['field'] = 'town';
@@ -236,7 +236,7 @@ class Supplier extends CommonDBTM {
 
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'website';
-      $tab[4]['name']     = $LANG['financial'][45];
+      $tab[4]['name']     = __('Website');
       $tab[4]['datatype'] = 'weblink';
 
       $tab[5]['table'] = $this->getTable();
@@ -254,7 +254,7 @@ class Supplier extends CommonDBTM {
 
       $tab[8]['table']         = 'glpi_contacts';
       $tab[8]['field']         = 'completename';
-      $tab[8]['name']          = $LANG['financial'][46];
+      $tab[8]['name']          = __('Associated contacts');
       $tab[8]['forcegroupby']  = true;
       $tab[8]['datatype']      = 'itemlink';
       $tab[8]['itemlink_type'] = 'Contact';
@@ -347,11 +347,11 @@ class Supplier extends CommonDBTM {
       echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='9'>";
       if ($DB->numrows($result)==0) {
-         echo $LANG['financial'][40];
+         _e('No associated contact');
       } else if ($DB->numrows($result)==1) {
-         echo $LANG['financial'][41];
+         _e('Associated contact');
       } else {
-         echo $LANG['financial'][46];
+         _e('Associated contacts');
       }
       echo "</th></tr>";
 
@@ -360,7 +360,7 @@ class Supplier extends CommonDBTM {
       echo "<th>".$LANG['help'][35]."</th>";
       echo "<th>".$LANG['help'][35]." 2</th>";
       echo "<th>".__('Mobile phone')."</th>";
-      echo "<th>".$LANG['financial'][30]."</th>";
+      echo "<th>".__('Fax')."</th>";
       echo "<th>"._n('Email', 'Emails', 1)."</th>";
       echo "<th>".__('Type')."</th>";
       echo "<th>&nbsp;</th></tr>";
@@ -422,7 +422,7 @@ class Supplier extends CommonDBTM {
             echo "<div class='spaced'>";
             echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['financial'][33]."</tr>";
+            echo "<tr class='tab_bg_1'><th colspan='2'>".__('Add a contact')."</tr>";
             echo "<tr><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name='suppliers_id' value='$instID'>";
 
@@ -612,11 +612,11 @@ class Supplier extends CommonDBTM {
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>";
       if ($DB->numrows($result)==0) {
-         echo $LANG['financial'][58];
+         _e('No associated contract');
       } else if ($DB->numrows($result)==1) {
-         echo $LANG['financial'][63];
+         _e('Associated contract');
       } else {
-         echo $LANG['financial'][66];
+         echo _n ('Associated contract', 'Associated contracts', 2);
       }
       echo "</th></tr>";
 
@@ -649,7 +649,7 @@ class Supplier extends CommonDBTM {
          echo "<td class='center'>".
                 Dropdown::getDropdownName("glpi_contracttypes",$data["contracttypes_id"])."</td>";
          echo "<td class='center'>".Html::convDate($data["begin_date"])."</td>";
-         echo "<td class='center'>".$data["duration"]." ".$LANG['financial'][57];
+         echo "<td class='center'>".$data["duration"].__(' month');
 
          if ($data["begin_date"]!='' && !empty($data["begin_date"])) {
             echo " -> ".Infocom::getWarrantyExpir($data["begin_date"], $data["duration"]);

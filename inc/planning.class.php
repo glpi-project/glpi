@@ -226,7 +226,7 @@ class Planning {
       echo "<option value='week' ".($type=="week"?" selected ":"").">".__('Week').
            "</option>";
       echo "<option value='month' ".($type=="month"?" selected ":"").">".
-             Toolbox::ucfirst($LANG['financial'][57])."</option>";
+             Toolbox::ucfirst(__('month'))."</option>";
       echo "</select></td>\n";
 
       echo "<td rowspan='2' class='center'>";

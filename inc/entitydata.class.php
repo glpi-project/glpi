@@ -209,25 +209,25 @@ class EntityData extends CommonDBChild {
       }
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>".$LANG['financial'][44]."</th></tr>";
+      echo "<tr><th colspan='4'>".__('Address')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['help'][35]."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "phonenumber");
       echo "</td>";
-      echo "<td rowspan='7'>".$LANG['financial'][44]."</td>";
+      echo "<td rowspan='7'>".__('Address')."</td>";
       echo "<td rowspan='7'>";
       echo "<textarea cols='45' rows='8' name='address'>". $entdata->fields["address"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][30]."</td>";
+      echo "<td>".__('Fax')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "fax");
       echo "</td></tr>";
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['financial'][45]."</td>";
+      echo "<td>".__('Website')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "website");
       echo "</td></tr>";
@@ -1132,14 +1132,13 @@ class EntityData extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Entity' :
                $ong = array();
-               $ong[1] = $LANG['financial'][44];      // Address
-               $ong[2] = __('Advanced informations');         // Advanced
+               $ong[1] = __('Address');
+               $ong[2] = __('Advanced informations');
                if (Session::haveRight('notification','r')) {
                   $ong[3] = _n('Notification', 'Notifications',2);
                }

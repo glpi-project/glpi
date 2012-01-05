@@ -327,7 +327,7 @@ class Plugin extends CommonDBTM {
          echo "<tr><th>".__('Name')."</th><th>"._n('Version', 'Versions',1)."</th>";
          echo "<th>".$LANG['install'][92]."</th>";
          echo "<th>".__('Status')."</th><th>".__('Authors')."</th>";
-         echo "<th>".$LANG['financial'][45]."</th><th colspan='2'>&nbsp;</th></tr>\n";
+         echo "<th>".__('Website')."</th><th colspan='2'>&nbsp;</th></tr>\n";
 
          foreach ($pluglist as $ID => $plug) {
             if (function_exists("plugin_".$plug['directory']."_check_config")) {

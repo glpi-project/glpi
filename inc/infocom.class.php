@@ -522,12 +522,11 @@ class Infocom extends CommonDBChild {
     * @param $value default value
     */
    static function dropdownAmortType($name, $value=0) {
-      global $LANG;
 
       echo "<select name='$name'>";
       echo "<option value='0' ".($value==0?" selected ":"").">".Dropdown::EMPTY_VALUE."</option>";
-      echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['financial'][47]."</option>";
-      echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['financial'][48]."</option>";
+      echo "<option value='2' ".($value==2?" selected ":"").">".__('Linear')."</option>";
+      echo "<option value='1' ".($value==1?" selected ":"").">".__('Decreasing')."</option>";
       echo "</select>";
    }
 
@@ -538,14 +537,13 @@ class Infocom extends CommonDBChild {
     * @param $value status ID
     */
    static function getAmortTypeName($value) {
-      global $LANG;
 
       switch ($value) {
          case 2 :
-            return $LANG['financial'][47];
+            return __('Linear');
 
          case 1 :
-            return $LANG['financial'][48];
+            return __('Decreasing');
 
          case 0 :
             return "";
@@ -856,7 +854,8 @@ class Infocom extends CommonDBChild {
                echo $item->getTypeName()." - ".$item->getName()."</th></tr>";
                echo "<tr class='tab_bg_1'><td class='center'>";
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/infocom.form.php?itemtype=".
-                     $item->getType()."&amp;items_id=$dev_ID&amp;add=add'>".$LANG['financial'][68];
+                     $item->getType()."&amp;items_id=$dev_ID&amp;add=add'>".
+                     __('Enable the financial and administrative information');
                echo "</a></td></tr></table></div>";
             }
 
@@ -1029,7 +1028,7 @@ class Infocom extends CommonDBChild {
                                      1, array(-1 => __('Lifelong')));
             }
             if ($ic->fields["warranty_duration"] >= 0) {
-               echo " ".$LANG['financial'][57];
+               _e(' month');
             }
             echo "<span class='small_space'>".$LANG['financial'][88]."</span>&nbsp;";
             echo self::getWarrantyExpir($ic->fields["warranty_date"],

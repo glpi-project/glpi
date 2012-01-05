@@ -76,7 +76,7 @@ function update05to051() {
 
       $query = "INSERT INTO `glpi_dropdown_contact_type`
                        (`name`)
-                VALUES ('".$LANG['financial'][42]."')";
+                VALUES ('".__('Commercial')."')";
       $DB->queryOrDie($query, "0.51 add entries to dropdown_contact_type");
    }
 

@@ -68,7 +68,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
          case "glpi_contracts.duration" :
          case "glpi_contracts.notice" :
             Dropdown::showInteger($search["linkfield"], 0, 0, 120);
-            echo " ".$LANG['financial'][57];
+            _e(' month');
             break;
 
          case "glpi_softwarelicenses.number" :
@@ -235,7 +235,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                case "warranty_duration" :
                   Dropdown::showInteger("warranty_duration", 0, 0, 120, 1,
                                         array(-1 => __('Lifelong')));
-                  echo " ".$LANG['financial'][57]."&nbsp;&nbsp;";
+                  _e(' month ');
                   break;
 
                default :
