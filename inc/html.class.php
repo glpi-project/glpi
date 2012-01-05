@@ -3436,7 +3436,7 @@ class Html {
             closeAction:'hide',
             modal: true,
             autoScroll: true,
-            title: \"".$LANG['entity'][10]."\",
+            title: \"".__s('Select the desired entity')."\",
             autoLoad: '".$CFG_GLPI['root_doc']."/ajax/entitytree.php?target=$target'
          });";
          echo "</script>";
