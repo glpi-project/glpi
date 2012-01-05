@@ -381,7 +381,7 @@ class Reservation extends CommonDBChild {
             $name = $type." - ".$name;
          }
 
-         $all = "<a href='reservation.php?reservationitems_id=&amp;mois_courant=".
+         $all = "<a class='vsubmit' href='reservation.php?reservationitems_id=&amp;mois_courant=".
                   "$mois_courant&amp;annee_courante=$annee_courante'>".__('Show all')."</a>";
 
       } else {
@@ -392,8 +392,8 @@ class Reservation extends CommonDBChild {
 
       echo "<div class='center'><table class='tab_glpi'><tr><td>";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/reservation.png' alt='' title=''></td>";
-      echo "<td class ='b'><span class='icon_consol'>".$name."</span></td></tr>";
-      echo "<tr><td colspan='2' class ='center'>$all</td></tr></table></div>\n";
+      echo "<td class ='b'>".$name."</td></tr>";
+      echo "<tr><td colspan='2' class ='center'>$all</td></tr></table></div></br>\n";
 
       // Check bisextile years
       if (($annee_courante%4)==0) {
