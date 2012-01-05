@@ -56,7 +56,7 @@ echo "<p><select name='item_type[]' size='8' multiple>";
 echo "<option value='0' selected>".__('All')."</option>";
 echo "<option value='Computer'>"._n('Computer', 'Computers', 2)."</option>";
 echo "<option value='Printer'>"._n('Printer', 'Printers', 2)."</option>";
-echo "<option value='NetworkEquipment'>".$LANG['help'][26]."</option>";
+echo "<option value='NetworkEquipment'>"._('Network device')."</option>";
 echo "<option value='Monitor'>"._n('Monitor', 'Monitors', 2)."</option>";
 echo "<option value='Peripheral'>"._n('Device', 'Devices', 2)."</option>";
 echo "<option value='SoftwareLicense'>"._n('License', 'Licenses', 2)."</option>";

@@ -1206,28 +1206,31 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return string id of the select
    **/
    static function dropdownPriority($name, $value=0, $complete=false, $major=false) {
-      global $LANG;
 
       $id = "select_$name".mt_rand();
       echo "<select id='$id' name='$name'>";
       if ($complete) {
          echo "<option value='0' ".($value==0?" selected ":"").">".__('All')."</option>";
-         echo "<option value='-5' ".($value==-5?" selected ":"").">".__('At least very high')."</option>";
-         echo "<option value='-4' ".($value==-4?" selected ":"").">".__('At least high')."</option>";
-         echo "<option value='-3' ".($value==-3?" selected ":"").">".__('At least very medium')."</option>";
+         echo "<option value='-5' ".($value==-5?" selected ":"").">".__('At least very high').
+              "</option>";
+         echo "<option value='-4' ".($value==-4?" selected ":"").">".__('At least high').
+              "</option>";
+         echo "<option value='-3' ".($value==-3?" selected ":"").">".__('At least very medium').
+              "</option>";
          echo "<option value='-2' ".($value==-2?" selected ":"").">".__('At least low')."</option>";
-         echo "<option value='-1' ".($value==-1?" selected ":"").">".__('At least very low')."</option>";
+         echo "<option value='-1' ".($value==-1?" selected ":"").">".__('At least very low').
+              "</option>";
       }
 
       if ($complete || $major) {
-         echo "<option value='6' ".($value==6?" selected ":"").">".$LANG['help'][2]."</option>";
+         echo "<option value='6' ".($value==6?" selected ":"").">".__('Major')."</option>";
       }
 
-      echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][3]."</option>";
-      echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][4]."</option>";
-      echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][5]."</option>";
-      echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][6]."</option>";
-      echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][7]."</option>";
+      echo "<option value='5' ".($value==5?" selected ":"").">".__('Very High')."</option>";
+      echo "<option value='4' ".($value==4?" selected ":"").">".__('High')."</option>";
+      echo "<option value='3' ".($value==3?" selected ":"").">".__('Medium')."</option>";
+      echo "<option value='2' ".($value==2?" selected ":"").">".__('Low')."</option>";
+      echo "<option value='1' ".($value==1?" selected ":"").">".__('Low')."</option>";
 
       echo "</select>";
 
@@ -1241,26 +1244,25 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $value status ID
    **/
    static function getPriorityName($value) {
-      global $LANG;
 
       switch ($value) {
          case 6 :
-            return $LANG['help'][2];
+            return __('Major');
 
          case 5 :
-            return $LANG['help'][3];
+            return __('Very High');
 
          case 4 :
-            return $LANG['help'][4];
+            return __('High');
 
          case 3 :
-            return $LANG['help'][5];
+            return __('Medium');
 
          case 2 :
-            return $LANG['help'][6];
+            return __('Low');
 
          case 1 :
-            return $LANG['help'][7];
+            return __('Low');
       }
    }
 
@@ -1283,11 +1285,15 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($complete) {
          echo "<option value='0' ".($value==0?" selected ":"").">".__('All')."</option>";
-         echo "<option value='-5' ".($value==-5?" selected ":"").">".__('At least very high')."</option>";
-         echo "<option value='-4' ".($value==-4?" selected ":"").">".__('At least high')."</option>";
-         echo "<option value='-3' ".($value==-3?" selected ":"").">".__('At least medium')."</option>";
+         echo "<option value='-5' ".($value==-5?" selected ":"").">".__('At least very high').
+              "</option>";
+         echo "<option value='-4' ".($value==-4?" selected ":"").">".__('At least high').
+              "</option>";
+         echo "<option value='-3' ".($value==-3?" selected ":"").">".__('At least medium').
+              "</option>";
          echo "<option value='-2' ".($value==-2?" selected ":"").">".__('At least low')."</option>";
-         echo "<option value='-1' ".($value==-1?" selected ":"").">".__('At least very low')."</option>";
+         echo "<option value='-1' ".($value==-1?" selected ":"").">".__('At least very low').
+              "</option>";
       }
 
       if (isset($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')])) {
@@ -1361,11 +1367,14 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($complete) {
          echo "<option value='0' ".($value==0?" selected ":"").">".__('All')."</option>";
-         echo "<option value='-5' ".($value==-5?" selected ":"").">".__('At least very high')."</option>";
+         echo "<option value='-5' ".($value==-5?" selected ":"").">".__('At least very high').
+              "</option>";
          echo "<option value='-4' ".($value==-4?" selected ":"").">".__('At least high')."</option>";
-         echo "<option value='-3' ".($value==-3?" selected ":"").">".__('At least medium')."</option>";
+         echo "<option value='-3' ".($value==-3?" selected ":"").">".__('At least medium').
+              "</option>";
          echo "<option value='-2' ".($value==-2?" selected ":"").">".__('At least low')."</option>";
-         echo "<option value='-1' ".($value==-1?" selected ":"").">".__('At least very low')."</option>";
+         echo "<option value='-1' ".($value==-1?" selected ":"").">".__('At least very low').
+              "</option>";
       }
 
       if (isset($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')])) {
@@ -1692,9 +1701,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[4]['joinparams']    = array('beforejoin'
                                        => array('table' => getTableForItemType($this->userlinkclass),
                                                 'joinparams'
-                                                        => array('jointype'  => 'child',
-                                                                 'condition' => 'AND NEWTABLE.`type` ' .
-                                                                                '= '.self::REQUESTER)));
+                                                   => array('jointype'  => 'child',
+                                                            'condition' => 'AND NEWTABLE.`type` ' .
+                                                                            '= '.self::REQUESTER)));
 
       $tab[71]['table']         = 'glpi_groups';
       $tab[71]['field']         = 'completename';
@@ -1706,9 +1715,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[71]['joinparams']    = array('beforejoin'
                                         => array('table' => getTableForItemType($this->grouplinkclass),
                                                  'joinparams'
-                                                         => array('jointype'  => 'child',
-                                                                  'condition' => 'AND NEWTABLE.`type` ' .
-                                                                                 '= '.self::REQUESTER)));
+                                                    => array('jointype'  => 'child',
+                                                             'condition' => 'AND NEWTABLE.`type` ' .
+                                                                             '= '.self::REQUESTER)));
 
       $tab[22]['table']     = 'glpi_users';
       $tab[22]['field']     = 'name';
@@ -1727,9 +1736,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[66]['joinparams']    = array('beforejoin'
                                         => array('table' => getTableForItemType($this->userlinkclass),
                                                  'joinparams'
-                                                         => array('jointype'  => 'child',
-                                                                  'condition' => 'AND NEWTABLE.`type` ' .
-                                                                                 '= '.self::OBSERVER)));
+                                                   => array('jointype'  => 'child',
+                                                            'condition' => 'AND NEWTABLE.`type` ' .
+                                                                            '= '.self::OBSERVER)));
 
       $tab[65]['table']         = 'glpi_groups';
       $tab[65]['field']         = 'completename';
@@ -1741,9 +1750,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[65]['joinparams']    = array('beforejoin'
                                         => array('table' => getTableForItemType($this->grouplinkclass),
                                                  'joinparams'
-                                                         => array('jointype'  => 'child',
-                                                                  'condition' => 'AND NEWTABLE.`type` ' .
-                                                                                 '= '.self::OBSERVER)));
+                                                   => array('jointype'  => 'child',
+                                                            'condition' => 'AND NEWTABLE.`type` ' .
+                                                                            '= '.self::OBSERVER)));
 
       $tab['assign'] = $LANG['job'][5];
 
@@ -1756,9 +1765,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[5]['joinparams']    = array('beforejoin'
                                        => array('table' => getTableForItemType($this->userlinkclass),
                                                 'joinparams'
-                                                        => array('jointype'  => 'child',
-                                                                 'condition' => 'AND NEWTABLE.`type` ' .
-                                                                                '= '.self::ASSIGN)));
+                                                  => array('jointype'  => 'child',
+                                                           'condition' => 'AND NEWTABLE.`type` ' .
+                                                                           '= '.self::ASSIGN)));
       $tab[5]['filter']        = 'own_ticket';
 
       $tab[6]['table']     = 'glpi_suppliers';
@@ -1777,9 +1786,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[8]['joinparams']    = array('beforejoin'
                                        => array('table' => getTableForItemType($this->grouplinkclass),
                                                 'joinparams'
-                                                        => array('jointype'  => 'child',
-                                                                 'condition' => 'AND NEWTABLE.`type` ' .
-                                                                                '= '.self::ASSIGN)));
+                                                  => array('jointype'  => 'child',
+                                                           'condition' => 'AND NEWTABLE.`type` ' .
+                                                                           '= '.self::ASSIGN)));
 
       $tab['notification'] = _n('Notification', 'Notifications',2);
 
@@ -2067,16 +2076,17 @@ abstract class CommonITILObject extends CommonDBTM {
                                 'allow_email'
                                         => ($type==self::REQUESTER || $type==self::OBSERVER),
                                 'use_notification'
-                                        => $options["_users_id_".$typename."_notif"]['use_notification']);
+                                    => $options["_users_id_".$typename."_notif"]['use_notification']);
 
          if (isset($options["_users_id_".$typename."_notif"]['alternative_email'])) {
-            $paramscomment['alternative_email'] = $options["_users_id_".$typename."_notif"]['alternative_email'];
+            $paramscomment['alternative_email']
+                           = $options["_users_id_".$typename."_notif"]['alternative_email'];
          }
 
          $params['toupdate'] = array('value_fieldname' => 'value',
-                                     'to_update'       => "notif_".$typename."_$rand",
-                                     'url'             => $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
-                                     'moreparams'      => $paramscomment);
+                                     'to_update'  => "notif_".$typename."_$rand",
+                                     'url'        => $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
+                                     'moreparams' => $paramscomment);
 
       }
       // List all users in the active entities
@@ -2190,7 +2200,8 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "&nbsp;&nbsp;";
          echo "&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"].
               "/front/ticket.form.php?addme_observer=addme_observer".
-              "&amp;tickets_id=".$this->fields['id']."' title=\"".__s('Associate myself with this ticket')."\">".
+              "&amp;tickets_id=".$this->fields['id']."' title=\"".
+              __s('Associate myself with this ticket')."\">".
               __s('Associate myself with this ticket')."</a>";
       }
       echo "</th>";
@@ -2461,7 +2472,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                                                  "/ajax/solution.php",
                                                   'moreparams' => array('type_id'
                                                                         => 'dropdown_solutiontypes_id'.
-                                                                           $rand_type))));
+                                                                            $rand_type))));
 
          echo "</td><td colspan='2'>";
          echo "<a class='vsubmit' title\"".$LANG['job'][23]."\"

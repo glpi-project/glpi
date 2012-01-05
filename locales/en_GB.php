@@ -765,8 +765,6 @@ $LANG['group'][1]="Can be notified";
 $LANG['group'][2]="Can contain";
 $LANG['group'][3]="Child groups";
 
-/// TODO Before is ok for migration to gettext
-
 
 $LANG['help'][1]="Matrix of calculus for priority";
 $LANG['help'][2]="Major";
@@ -774,7 +772,7 @@ $LANG['help'][3]="Very High";
 $LANG['help'][4]="High";
 $LANG['help'][5]="Medium";
 $LANG['help'][6]="Low";
-$LANG['help'][7]="Very Low";
+$LANG['help'][7]="Low";
 $LANG['help'][8]="Inform me about the action(s) taken";
 $LANG['help'][14]="Submit Message";
 $LANG['help'][18]="Your ticket has been registered, its treatment is in progress.";
@@ -785,9 +783,12 @@ $LANG['help'][24]="Hardware type";
 $LANG['help'][25]="Computer";
 $LANG['help'][26]="Network device";
 $LANG['help'][27]="Printer";
-$LANG['help'][28]="Monitor";
+$LANG['help'][28]="Printer";
 $LANG['help'][29]="Device";
 $LANG['help'][30]="General";
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['help'][31]="Software"; // Singular
 $LANG['help'][35]="Phone";
 $LANG['help'][40]="No title in your ticket, please retry.";

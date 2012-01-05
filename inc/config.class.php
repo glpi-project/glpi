@@ -228,7 +228,8 @@ class Config extends CommonDBTM {
                               array('value' => $CFG_GLPI["default_graphtype"]));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Dynamic display')."</td></tr>";
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Dynamic display').
+           "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Use dynamic display for dropdowns and text fields') . "</td><td>";
@@ -310,7 +311,8 @@ class Config extends CommonDBTM {
                                        $CFG_GLPI["peripherals_management_restrict"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . __('Software category deleted by the dictionary rules') . "</td><td>";
+      echo "<tr class='tab_bg_2'><td>" . __('Software category deleted by the dictionary rules') .
+           "</td><td>";
       Dropdown::show('SoftwareCategory',
                      array('value' => $CFG_GLPI["softwarecategories_id_ondelete"],
                            'name'  => "softwarecategories_id_ondelete"));
@@ -343,7 +345,8 @@ class Config extends CommonDBTM {
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>" . __('Automatic transfer of computers') . "</th></tr>";
          echo "<tr class='tab_bg_2'>";
-         echo "<td>" . __('Template for the automatic transfer of computers in another entity') . "</td><td>";
+         echo "<td>" . __('Template for the automatic transfer of computers in another entity') .
+              "</td><td>";
          Dropdown::show('Transfer',
                         array('value'      => $CFG_GLPI["transfers_id_auto"],
                               'name'       => "transfers_id_auto",
@@ -428,9 +431,9 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Authentication') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . __('Automatically add users from an external authentication source') . "</td><td>";
+      echo "<td>". __('Automatically add users from an external authentication source')."</td><td>";
       Dropdown::showYesNo("is_users_auto_add", $CFG_GLPI["is_users_auto_add"]);
-      echo "</td><td> " . __('Add a user without accreditation from a LDAP directory') . "</td><td>";
+      echo "</td><td>". __('Add a user without accreditation from a LDAP directory')."</td><td>";
       Dropdown::showYesNo("use_noright_users_add", $CFG_GLPI["use_noright_users_add"]);
       echo "</td></tr>";
 
@@ -470,7 +473,8 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       $active = DBConnection::isDBSlaveActive();
 
-      echo "<tr class='tab_bg_2'><th colspan='4'>" . _n('Mysql replicate', 'Mysql replicates',2) . "</th></tr>";
+      echo "<tr class='tab_bg_2'><th colspan='4'>" . _n('Mysql replicate', 'Mysql replicates',2) .
+           "</th></tr>";
       $DBSlave = DBConnection::getDBSlaveConf();
 
       if (is_array($DBSlave->dbhost)) {
@@ -546,7 +550,8 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Maximum size of each file imported by the mail receiver (default value)')."</td><td>";
+      echo "<td>".__('Maximum size of each file imported by the mail receiver (default value)').
+           "</td><td>";
       MailCollector::showMaxFilesize('default_mailcollector_filesize_max',
                                      $CFG_GLPI["default_mailcollector_filesize_max"]);
       echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
@@ -578,7 +583,7 @@ class Config extends CommonDBTM {
       echo "</table>";
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='7'>" . $LANG['help'][1];
+      echo "<tr><th colspan='7'>" . __('Matrix of calculus for priority');
       echo "<input type='hidden' name='_matrix' value='1'></th></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -745,7 +750,8 @@ class Config extends CommonDBTM {
          if (!$userpref) {
             $values[-1] = __('Never');
          }
-         Dropdown::showFromArray('show_count_on_tabs', $values, array('value' => $data["show_count_on_tabs"]));
+         Dropdown::showFromArray('show_count_on_tabs', $values,
+                                 array('value' => $data["show_count_on_tabs"]));
          echo "</td>";
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
@@ -785,7 +791,8 @@ class Config extends CommonDBTM {
                                              'name'  => "default_requesttypes_id"));
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_2'><td>".__('Pre-select me as a technician when creating a ticket')."</td><td>";
+         echo "<tr class='tab_bg_2'><td>".__('Pre-select me as a technician when creating a ticket').
+              "</td><td>";
          if (!$userpref || Session::haveRight('own_ticket', 1)) {
             Dropdown::showYesNo("set_default_tech", $data["set_default_tech"]);
          } else {
@@ -818,7 +825,8 @@ class Config extends CommonDBTM {
 
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><th colspan='4'>". _n('Software category','Software categories', 2) ."</th></tr>";
+         echo "<tr class='tab_bg_1'>".
+              "<th colspan='4'>". _n('Software category','Software categories', 2) ."</th></tr>";
 
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . __('Unfold the software belonging to a category')."</td><td>";
@@ -836,7 +844,8 @@ class Config extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td>" . __('Remote access key');
          if (!empty($data["personal_token"])) {
             //TRANS: %s is the generation date
-            echo "<br>".sprintf(__('generated on %s'), Html::convDateTime($data["personal_token_date"]));
+            echo "<br>".sprintf(__('generated on %s'),
+                                Html::convDateTime($data["personal_token_date"]));
          }
 
          echo "</td><td colspan='3'>";
@@ -859,7 +868,7 @@ class Config extends CommonDBTM {
     *
    **/
    function showSystemInformations() {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       echo "<div class='center' id='tabsbody'>";
       echo "<form name='form' action=\"".Toolbox::getItemTypeFormURL(__CLASS__)."\" method='post'>";
@@ -891,8 +900,8 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='4' class='center b'>".__('Proxy configuration for check for upgrade')."</td>";
-      echo "</tr>";
+      echo "<td colspan='4' class='center b'>".__('Proxy configuration for check for upgrade');
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Server') . "</td>";
@@ -923,7 +932,7 @@ class Config extends CommonDBTM {
       $width = 128;
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th>" . __('Information about system installation and configuration') . "</th></tr>";
+      echo "<tr><th>". __('Information about system installation and configuration')."</th></tr>";
 
       echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
       $oldlang = $_SESSION['glpilanguage'];
@@ -987,7 +996,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>[/code]\n</td></tr>";
 
-      echo "<tr class='tab_bg_2'><th>" . __('To copy/paste in your support request') . "</th></tr>\n";
+      echo "<tr class='tab_bg_2'><th>". __('To copy/paste in your support request')."</th></tr>\n";
 
       echo "</table></div>\n";
    }
@@ -1245,5 +1254,4 @@ class Config extends CommonDBTM {
       return $error;
    }
 }
-
 ?>

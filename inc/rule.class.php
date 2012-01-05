@@ -1333,7 +1333,7 @@ class Rule extends CommonDBTM {
                      return $item->getTypeName();
                   }
                   if (empty($pattern)) {
-                     return $LANG['help'][30];
+                     return __('General');
                   }
                   break;
 
