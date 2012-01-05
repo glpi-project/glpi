@@ -999,7 +999,7 @@ class AuthLDAP extends CommonDBTM {
                    $_SERVER['PHP_SELF']."'>";
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>".(!$_SESSION['ldap_import']['mode']?__('Import')
-                                                              :$LANG['ldap'][15])."</th>";
+                                                              :__('Synchronize'))."</th>";
             $num = 0;
             echo Search::showHeaderItem(Search::HTML_OUTPUT, _n('User', 'Users', 2), $num,
                                         $_SERVER['PHP_SELF'].
@@ -1059,7 +1059,7 @@ class AuthLDAP extends CommonDBTM {
             $form_action = "process_ok";
             $textbutton  = '';
             if ($_SESSION['ldap_import']['mode']) {
-               $textbutton = $LANG['ldap'][15];
+               $textbutton = __('Synchronize');
             } else {
                $textbutton = __('Import');
             }
@@ -1307,7 +1307,7 @@ class AuthLDAP extends CommonDBTM {
                                         $target."?order=".($order=="DESC"?"ASC":"DESC"),
                                         1, $order);
             echo "<th>".__('Group DN')."</th>";
-            echo"<th>".$LANG['ldap'][27]."</th>";
+            echo"<th>".__('Destination entity')."</th>";
             if (Session::isMultiEntitiesMode()) {
                echo"<th>".__('Child entities')."</th>";
             }

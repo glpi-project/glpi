@@ -77,7 +77,7 @@ class RuleDictionnarySoftware extends RuleCached {
       echo "<td class='tab_bg_1 b'>" . __('New publisher') . "</td>";
       echo "<td class='tab_bg_1 b'>" . __('To be unaware of import') . "</td>";
       echo "<td class='tab_bg_1 b'>" . __('Associable to a ticket') . "</td>\n";
-      echo "<td class='tab_bg_1 b'>" . $LANG['ldap'][27] . "</td></tr>\n";
+      echo "<td class='tab_bg_1 b'>" . __('Destination entity') . "</td></tr>\n";
    }
 
 
