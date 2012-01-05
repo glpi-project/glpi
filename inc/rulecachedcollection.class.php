@@ -77,12 +77,12 @@ class RuleCachedCollection extends RuleCollection {
    function showAdditionalInformationsInForm($target) {
       global $CFG_GLPI;
 
-      echo "<div class='spaced center'><span class='icon_consol'>";
-      echo "<a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
+      echo "<div class='spaced center'>";
+      echo "<a class='vsubmit' href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
             "/front/popup.php?popup=show_cache&amp;sub_type=".
             $this->getRuleClassName()."' ,'glpipopup', ".
             "'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".
-            __('Cache informations')."</a></span></div>";
+            __('Cache informations')."</a></div>";
    }
 
 
