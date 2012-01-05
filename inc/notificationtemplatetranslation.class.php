@@ -110,11 +110,11 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<td>".$template->getTypeName()."</td>";
       echo "<td colspan='2'><a href='".Toolbox::getItemTypeFormURL('NotificationTemplate').
             "?id=".$notificationtemplates_id."'>".$template->getField('name')."</a>";
-      echo "</td><td><a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
+      echo "</td><td><a class='vsubmit' href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
              "/front/popup.php?popup=list_notificationtags&amp;sub_type=".
              $template->getField('itemtype')."' ,
              'glpipopup', 'height=400, width=1000, top=100, left=100,".
-             " scrollbars=yes' );w.focus();\">".__('List of available tags')."</a></td></tr>";
+             " scrollbars=yes' );w.focus();\">".__('Show list of available tags')."</a></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Language') . "</td><td colspan='3'>";
@@ -168,7 +168,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       if ($canedit) {
          echo "<div class='center'>".
-              "<a href='".Toolbox::getItemTypeFormURL('NotificationTemplateTranslation').
+              "<a class='vsubmit' href='".Toolbox::getItemTypeFormURL('NotificationTemplateTranslation').
                 "?notificationtemplates_id=".$nID."'>". __('Add a new translation')."</a></div><br>";
       }
 
