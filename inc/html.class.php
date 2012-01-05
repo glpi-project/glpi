@@ -1182,7 +1182,7 @@ class Html {
 
 
       if (Session::haveRight("ticketrecurrent","r")) {
-         $menu['maintain']['content']['ticketrecurrent']['title']    = $LANG['jobrecurrent'][1];
+         $menu['maintain']['content']['ticketrecurrent']['title']    = __('Recurrent tickets');
          $menu['maintain']['content']['ticketrecurrent']['shortcut'] = '';
          $menu['maintain']['content']['ticketrecurrent']['page']     = '/front/ticketrecurrent.php';
          $menu['maintain']['content']['ticketrecurrent']['links']['search']

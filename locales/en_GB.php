@@ -1004,14 +1004,15 @@ $LANG['joblist'][34]="Not solved";
 $LANG['joblist'][35]="Not closed";
 $LANG['joblist'][36]="Status value in database";
 
-$LANG['jobrecurrent'][1]="Recurrent tickets";
-$LANG['jobrecurrent'][2]="Preliminary creation";
-$LANG['jobrecurrent'][3]="Next creation";
-$LANG['jobrecurrent'][4]="Frequency invalid. It must be greater than the preliminary creation.";
-
 
 
 /// TODO After is ok for migration to gettext
+
+$LANG['jobrecurrent'][1]="Recurrent tickets";
+$LANG['jobrecurrent'][2]="Preliminary creation";
+$LANG['jobrecurrent'][3]="Next creation";
+$LANG['jobrecurrent'][4]="Invalid frequency. It must be greater than the preliminary creation.";
+
 
 $LANG['jobresolution'][1]="Solution";
 $LANG['jobresolution'][2]="Solutions";
