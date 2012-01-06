@@ -74,7 +74,6 @@ class RuleRight extends Rule {
 
 
    function showNewRuleForm($ID) {
-      global $LANG;
 
       echo "<form method='post' action='".Toolbox::getItemTypeFormURL('Entity')."'>";
       echo "<table  class='tab_cadre_fixe'>";

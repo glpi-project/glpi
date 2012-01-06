@@ -114,7 +114,7 @@ class SoftwareVersion extends CommonDBChild {
     *
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
 
       $softwares_id = -1;
       if (isset($options['softwares_id'])) {

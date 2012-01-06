@@ -44,6 +44,7 @@ class Contact extends CommonDBTM{
    // From CommonDBTM
    public $dohistory = true;
 
+
    static function getTypeName($nb=0) {
       return _n('Contact', 'Contacts', $nb);
    }
@@ -137,7 +138,7 @@ class Contact extends CommonDBTM{
     * @return Nothing (display)
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -216,10 +217,9 @@ class Contact extends CommonDBTM{
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']           = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -228,44 +228,44 @@ class Contact extends CommonDBTM{
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false;
 
-      $tab[11]['table'] = $this->getTable();
-      $tab[11]['field'] = 'firstname';
-      $tab[11]['name']  = __('First name');
+      $tab[11]['table']        = $this->getTable();
+      $tab[11]['field']        = 'firstname';
+      $tab[11]['name']         = __('First name');
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
       $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'phone';
-      $tab[3]['name']      =  __('Phone');
-      $tab[3]['datatype']  = 'string';
+      $tab[3]['table']         = $this->getTable();
+      $tab[3]['field']         = 'phone';
+      $tab[3]['name']          = __('Phone');
+      $tab[3]['datatype']      = 'string';
 
-      $tab[4]['table']     = $this->getTable();
-      $tab[4]['field']     = 'phone2';
-      $tab[4]['name']      =  __('Phone 2');
-      $tab[4]['datatype']  = 'string';
+      $tab[4]['table']         = $this->getTable();
+      $tab[4]['field']         = 'phone2';
+      $tab[4]['name']          = __('Phone 2');
+      $tab[4]['datatype']      = 'string';
 
-      $tab[10]['table'] = $this->getTable();
-      $tab[10]['field'] = 'mobile';
-      $tab[10]['name']  = __('Mobile phone');
-      $tab[10]['datatype'] = 'string';
+      $tab[10]['table']        = $this->getTable();
+      $tab[10]['field']        = 'mobile';
+      $tab[10]['name']         = __('Mobile phone');
+      $tab[10]['datatype']     = 'string';
 
-      $tab[5]['table']     = $this->getTable();
-      $tab[5]['field']     = 'fax';
-      $tab[5]['name']      = __('Fax');
-      $tab[5]['datatype']  = 'string';
+      $tab[5]['table']         = $this->getTable();
+      $tab[5]['field']         = 'fax';
+      $tab[5]['name']          = __('Fax');
+      $tab[5]['datatype']      = 'string';
 
-      $tab[6]['table']    = $this->getTable();
-      $tab[6]['field']    = 'email';
-      $tab[6]['name']     = _n('Email', 'Emails', 1);
-      $tab[6]['datatype'] = 'email';
-      $tab[6]['datatype'] = 'string';
+      $tab[6]['table']         = $this->getTable();
+      $tab[6]['field']         = 'email';
+      $tab[6]['name']          = _n('Email', 'Emails', 1);
+      $tab[6]['datatype']      = 'email';
+      $tab[6]['datatype']      = 'string';
 
-      $tab[9]['table'] = 'glpi_contacttypes';
-      $tab[9]['field'] = 'name';
-      $tab[9]['name']  = __('Type');
+      $tab[9]['table']         = 'glpi_contacttypes';
+      $tab[9]['field']         = 'name';
+      $tab[9]['name']          = __('Type');
 
       $tab[8]['table']         = 'glpi_suppliers';
       $tab[8]['field']         = 'name';
@@ -277,10 +277,10 @@ class Contact extends CommonDBTM{
                                        => array('table'      => 'glpi_contacts_suppliers',
                                                 'joinparams' => array('jointype' => 'child')));
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[16]['table']         = $this->getTable();
+      $tab[16]['field']         = 'comment';
+      $tab[16]['name']          = __('Comments');
+      $tab[16]['datatype']      = 'text';
 
       $tab[90]['table']         = $this->getTable();
       $tab[90]['field']         = 'notepad';
@@ -292,10 +292,10 @@ class Contact extends CommonDBTM{
       $tab[80]['name']          = __('Entity');
       $tab[80]['massiveaction'] = false;
 
-      $tab[86]['table']    = $this->getTable();
-      $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = __('Child entities');
-      $tab[86]['datatype'] = 'bool';
+      $tab[86]['table']         = $this->getTable();
+      $tab[86]['field']         = 'is_recursive';
+      $tab[86]['name']          = __('Child entities');
+      $tab[86]['datatype']      = 'bool';
 
       return $tab;
    }
@@ -308,7 +308,7 @@ class Contact extends CommonDBTM{
     *
    **/
    function showSuppliers() {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB,$CFG_GLPI;
 
       $instID = $this->fields['id'];
 
@@ -362,8 +362,9 @@ class Contact extends CommonDBTM{
       $used = array();
       if ($number>0) {
          Session::initNavigateListItems('Supplier',
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$this->getTypeName(1), $this->getName()));
+               //TRANS : %1$s is the itemtype name,
+               //        %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'), $this->getTypeName(1), $this->getName()));
 
          while ($data= $DB->fetch_array($result)) {
             $ID = $data["id"];
@@ -419,8 +420,8 @@ class Contact extends CommonDBTM{
                                              'entity'      => $this->fields["entities_id"],
                                              'entity_sons' => $this->fields["is_recursive"]));
 
-            echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier' value='".
-                               __s('Add')."' class='submit'>";
+            echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier' value='".__s('Add').
+                               "' class='submit'>";
             echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
             echo "</tr>";
          }
@@ -474,5 +475,4 @@ class Contact extends CommonDBTM{
    }
 
 }
-
 ?>

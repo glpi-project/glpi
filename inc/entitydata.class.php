@@ -185,7 +185,6 @@ class EntityData extends CommonDBChild {
     *
    **/
    static function showStandardOptions(Entity $entity) {
-      global $LANG;
 
       $con_spotted = false;
 
@@ -286,7 +285,7 @@ class EntityData extends CommonDBChild {
     *
    **/
    static function showAdvancedOptions(Entity $entity) {
-      global $DB, $LANG;
+      global $DB;
 
       $con_spotted = false;
 
@@ -535,7 +534,6 @@ class EntityData extends CommonDBChild {
 
 
    static function showNotificationOptions(Entity $entity) {
-      global $LANG;
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID,'r') || !Session::haveRight('notification','r')) {
@@ -654,10 +652,11 @@ class EntityData extends CommonDBChild {
                                   $entitynotification->fields['use_reservations_alert'],
                                   array('max'            => 99,
                                         'inherit_parent' => ($ID>0 ? 1 : 0)));
-      echo "&nbsp;".Toolbox::ucfirst($LANG['gmt'][1])."</td></tr>";
+      echo "&nbsp;".Toolbox::ucfirst(__('hour(s)'))."</td></tr>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td >" . __('Alerts on tickets which are not solved since (day(s))') . "</td><td>";
+      echo "<tr class='tab_bg_1'>".
+           "<td >". __('Alerts on tickets which are not solved since (day(s))'). "</td><td>";
       Alert::dropdownIntegerNever('notclosed_delay', $entitynotification->fields["notclosed_delay"],
                                   array('max'            => 99,
                                         'inherit_parent' => ($ID>0 ? 1 : 0)));

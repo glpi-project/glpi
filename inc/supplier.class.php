@@ -108,7 +108,7 @@ class Supplier extends CommonDBTM {
     *@return Nothing (display)
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
 
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -193,7 +193,6 @@ class Supplier extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');
@@ -322,7 +321,7 @@ class Supplier extends CommonDBTM {
     * Show contacts asociated to an enterprise
    **/
    function showContacts() {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB,$CFG_GLPI;
 
       $instID = $this->fields['id'];
       if (!$this->can($instID,'r')) {

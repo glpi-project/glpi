@@ -125,7 +125,7 @@ class SoftwareLicense extends CommonDBTM {
     * @return true if displayed  false if item not found or not right to display
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $softwares_id = -1;
       if (isset($options['softwares_id'])) {

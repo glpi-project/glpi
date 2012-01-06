@@ -128,7 +128,7 @@ class Planning {
     * @return Display form
    **/
    static function showSelectionForm($type, $date, $usertype, $uID, $gID) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       switch ($type) {
          case "month":
