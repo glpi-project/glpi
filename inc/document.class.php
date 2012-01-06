@@ -1002,8 +1002,8 @@ class Document extends CommonDBTM {
             Session::addMessageAfterRedirectsprintf(__('Succesful deletion of the file %s'),
                                                      $input['current_filename']);
          } else {
-            // TRANS: %1s is the curent filename, %2s is its directory
-            Session::addMessageAfterRedirect(sprintf(__('Failed to delete the file %1s (%2s)'),
+            // TRANS: %1$s is the curent filename, %2$s is its directory
+            Session::addMessageAfterRedirect(sprintf(__('Failed to delete the file %1$s (%2$s)'),
                                                      $input['current_filename'],
                                                      GLPI_DOC_DIR."/".$input['current_filepath']),
                                              false, ERROR);
@@ -1090,8 +1090,8 @@ class Document extends CommonDBTM {
             Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
                                                      $input['current_filename']));
          } else {
-            // TRANS: %1s is the curent filename, %2s is its directory
-            Session::addMessageAfterRedirect(sprintf(__('Failed to delete the file %1s (%2s)'),
+            // TRANS: %1$s is the curent filename, %2$s is its directory
+            Session::addMessageAfterRedirect(sprintf(__('Failed to delete the file %1$s (%2$s)'),
                                                      $input['current_filename'],
                                                      GLPI_DOC_DIR."/".$input['current_filepath']),
                                              false, ERROR);
