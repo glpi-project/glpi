@@ -35,7 +35,7 @@
 
 /// Update from 0.68.1 to 0.7
 function update0681to07() {
-   global $DB, $CFG_GLPI, $LANG;
+   global $DB, $CFG_GLPI;
 
    @mysql_query("SET NAMES 'latin1'", $DB->dbh);
 

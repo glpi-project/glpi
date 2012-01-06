@@ -76,7 +76,6 @@ class NotificationTargetCrontask extends NotificationTarget {
 
 
    function getTags() {
-      global $LANG;
 
       $tags = array('crontask.action'      => __('Monitoring of automatic actions'),
                     'crontask.url'         => __('URL'),

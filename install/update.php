@@ -188,7 +188,6 @@ function update_importDropdown ($table, $name) {
  * @return nothing (displays)
  */
 function showContentUpdateForm() {
-   global $LANG;
 
    echo "<div class='center'>";
    echo "<h3>".__('Update successful, your database is up to date')."</h3>";

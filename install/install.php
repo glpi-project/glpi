@@ -139,7 +139,7 @@ function step0() {
 
 //Step 1 checking some compatibilty issue and some write tests.
 function step1($update) {
-   global $LANG, $CFG_GLPI;
+   global $CFG_GLPI;
 
    $error = 0;
    echo "<h3>".__s('Checking of the compatibility of your environment with the execution of GLPI').
@@ -286,14 +286,12 @@ function step3($host, $user, $password, $update) {
 
 //Step 4 Create and fill database.
 function step4 ($host, $user, $password, $databasename, $newdatabasename) {
-   global $LANG;
 
    //display the form to return to the previous step.
    echo "<h3>".__('Initialization of the database')."</h3>";
 
 
    function prev_form($host, $user, $password) {
-      global $LANG;
 
       echo "<br><form action='install.php' method='post'>";
       echo "<input type='hidden' name='db_host' value='". $host ."'>";
