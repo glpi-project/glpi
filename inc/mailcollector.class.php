@@ -1350,14 +1350,15 @@ class MailCollector  extends CommonDBTM {
             $msg .= __('SMTP+TLS');
             break;
       }
-
       if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
          $msg .= " (".(empty($CFG_GLPI['smtp_username'])?'':$CFG_GLPI['smtp_username']."@").
                     $CFG_GLPI['smtp_host'].")";
       }
       echo wordwrap($msg."\n", $width, "\n\t\t");
+      echo "\n</pre></td></tr>";
 
       echo "<tr class='tab_bg_2'><th>".__('Mails receivers')."</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
       echo __('Mails receiver')."\n";
       foreach ($DB->request('glpi_mailcollectors') as $mc) {
@@ -1369,6 +1370,7 @@ class MailCollector  extends CommonDBTM {
          $msg .= " ".__('Active').':'.Dropdown::getYesNo($mc['is_active']);
          echo wordwrap($msg."\n", $width, "\n\t\t");
       }
+      echo "\n</pre></td></tr>";
    }
 
 
