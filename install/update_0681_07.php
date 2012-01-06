@@ -564,8 +564,7 @@ function update0681to07() {
                   if (!empty($comments)) {
                      $comments .= "\n";
                   }
-                  $comments .= $LANG['help'][35] . ": ";
-                  $comments .= $data['phonenumber'];
+                  $comments .= sprintf(__('Phone: %s'), $data['phonenumber']);
                }
 
                if (!empty($data['fax'])) {

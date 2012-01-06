@@ -144,7 +144,7 @@ if (isset($_POST["send"])) {
       $Computer = $ligne['name'];
       echo " <tr class='tab_find' onClick=\"fillidfield('Software',".$Comp_num.")\">";
       echo "<td class='center'>&nbsp;</td>";
-      echo "<td class='center'>&nbsp;".$LANG['help'][31]."&nbsp;</td>";
+      echo "<td class='center'>&nbsp;".__('Software')."&nbsp;</td>";
       echo "<td class='center b'>&nbsp;$Computer&nbsp;</td>";
       echo "<td class='center'>&nbsp;$Comp_num&nbsp;</td>";
       echo "<td class='center'>&nbsp;</td></tr>";

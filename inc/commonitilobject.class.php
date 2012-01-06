@@ -1278,7 +1278,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return string id of the select
    **/
    static function dropdownGenericUrgency($itemtype, $name, $value=0, $complete=false) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $id = "select_$name".mt_rand();
       echo "<select id='$id' name='$name'>";
@@ -1298,21 +1298,21 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')])) {
          if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<5))) {
-            echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][42]."</option>";
+            echo "<option value='5' ".($value==5?" selected ":"").">".__('Very High')."</option>";
          }
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<4))) {
-            echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][43]."</option>";
+            echo "<option value='4' ".($value==4?" selected ":"").">".__('High')."</option>";
          }
 
-         echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][44]."</option>";
+         echo "<option value='3' ".($value==3?" selected ":"").">".__('Medium')."</option>";
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<2))) {
-            echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][45]."</option>";
+            echo "<option value='2' ".($value==2?" selected ":"").">".__('Low')."</option>";
          }
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<1))) {
-            echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][46]."</option>";
+            echo "<option value='1' ".($value==1?" selected ":"").">".__('Very Low')."</option>";
          }
       }
 
@@ -1328,23 +1328,22 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $value urgency ID
    **/
    static function getUrgencyName($value) {
-      global $LANG;
 
       switch ($value) {
          case 5 :
-            return $LANG['help'][42];
+            return __('Very High');
 
          case 4 :
-            return $LANG['help'][43];
+            return __('High');
 
          case 3 :
-            return $LANG['help'][44];
+            return __('Medium');
 
          case 2 :
-            return $LANG['help'][45];
+            return __('Low');
 
          case 1 :
-            return $LANG['help'][46];
+            return __('Very Low');
       }
    }
 
@@ -1360,7 +1359,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return string id of the select
    **/
    static function dropdownGenericImpact($itemtype, $name, $value=0, $complete=false) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $id = "select_$name".mt_rand();
       echo "<select id='$id' name='$name'>";
@@ -1379,21 +1378,21 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')])) {
          if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<5))) {
-            echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][47]."</option>";
+            echo "<option value='5' ".($value==5?" selected ":"").">".__('Very High')."</option>";
          }
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<4))) {
-            echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][48]."</option>";
+            echo "<option value='4' ".($value==4?" selected ":"").">".__('High')."</option>";
          }
 
-         echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][49]."</option>";
+         echo "<option value='3' ".($value==3?" selected ":"").">".__('Medium')."</option>";
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<2))) {
-            echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][50]."</option>";
+            echo "<option value='2' ".($value==2?" selected ":"").">".__('Low')."</option>";
          }
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<1))) {
-            echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][51]."</option>";
+            echo "<option value='1' ".($value==1?" selected ":"").">".__('Very Low')."</option>";
          }
       }
 
@@ -1409,23 +1408,22 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $value status ID
    **/
    static function getImpactName($value) {
-      global $LANG;
 
       switch ($value) {
          case 5 :
-            return $LANG['help'][47];
+            return __('Very High');
 
          case 4 :
-            return $LANG['help'][48];
+            return __('High');
 
          case 3 :
-            return $LANG['help'][49];
+            return __('Medium');
 
          case 2 :
-            return $LANG['help'][50];
+            return __('Low');
 
          case 1 :
-            return $LANG['help'][51];
+            return __('Very Low');
       }
    }
 

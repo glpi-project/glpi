@@ -155,7 +155,7 @@ class SoftwareLicense extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['help'][31]."&nbsp;:</td>";
+      echo "<td>".__('Software')."</td>";
       echo "<td>";
       if ($ID>0) {
          $softwares_id = $this->fields["softwares_id"];
@@ -688,12 +688,11 @@ class SoftwareLicense extends CommonDBTM {
     * @return an aray which contains field => label
    */
    function getUnicityFieldsToDisplayInErrorMessage() {
-      global $LANG;
 
       return array('id'           => __('ID'),
                    'serial'       => __('Serial number'),
                    'entities_id'  => __('Entity'),
-                   'softwares_id' => $LANG['help'][31]);
+                   'softwares_id' => __('Software'));
    }
 
 

@@ -64,36 +64,36 @@ if (isset($_POST["add"])) {
    $phone->check($_POST["id"],'d');
    $phone->delete($_POST);
 
-   Event::log($_POST["id"], "phones", 4, "inventory", 
+   Event::log($_POST["id"], "phones", 4, "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
+            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
    $phone->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $phone->check($_POST["id"],'d');
 
    $phone->restore($_POST);
-   Event::log($_POST["id"], "phones", 4, "inventory", 
+   Event::log($_POST["id"], "phones", 4, "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));            
+            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
    $phone->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
    $phone->check($_REQUEST["id"],'d');
 
    $phone->delete($_REQUEST,1);
-   Event::log($_REQUEST["id"], "phones", 4, "inventory", 
+   Event::log($_REQUEST["id"], "phones", 4, "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $phone->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $phone->check($_POST["id"],'w');
 
    $phone->update($_POST);
-   Event::log($_POST["id"], "phones", 4, "inventory", 
+   Event::log($_POST["id"], "phones", 4, "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_GET["unglobalize"])) {
@@ -103,11 +103,11 @@ if (isset($_POST["add"])) {
    Event::log($_GET["id"], "phones", 4, "inventory",
                //TRANS: %s is the user login
                sprintf(__('%s sets unitary management'), $_SESSION["glpiname"]));
-   
+
    Html::redirect($CFG_GLPI["root_doc"]."/front/phone.form.php?id=".$_GET["id"]);
 
 } else {
-   Html::header($LANG['help'][35],$_SERVER['PHP_SELF'],"inventory","phone");
+   Html::header(Phone::getTypeName(2), $_SERVER['PHP_SELF'], 'inventory', 'phone');
    $phone->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
    Html::footer();
 }

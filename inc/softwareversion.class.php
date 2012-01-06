@@ -139,7 +139,7 @@ class SoftwareVersion extends CommonDBChild {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_1'><td>".$LANG['help'][31]."&nbsp;:</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Software')."</td>";
       echo "<td>";
       if ($ID>0) {
          $softwares_id = $this->fields["softwares_id"];
