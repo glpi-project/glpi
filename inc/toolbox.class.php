@@ -659,10 +659,10 @@ class Toolbox {
       $error = 0;
 
       // Title
-      echo "<tr><th>".$LANG['install'][6]."</th><th >".$LANG['install'][7]."</th></tr>";
+      echo "<tr><th>".__('Test done')."</th><th >".__('Results')."</th></tr>";
 
       // Parser test
-      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][8]."</td>";
+      echo "<tr class='tab_bg_1'><td class='b'>".__('Testing PHP Parser')."</td>";
 
       // PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
       if (substr(phpversion(),0,1) == "5") {
@@ -670,16 +670,20 @@ class Toolbox {
          if (ini_get("zend.ze1_compatibility_mode") == 1) {
             $error = 2;
             echo "<td class='red'>
-                  <img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][10]."</td></tr>";
+                  <img src='".GLPI_ROOT."/pics/redbutton.png'>".
+                  __('GLPI is not compatible with the option zend.ze1_compatibility_mode = On.').
+                 "</td></tr>";
          } else {
-            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][11]."\"
-                       title=\"".$LANG['install'][11]."\"></td></tr>";
+            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+                       __('PHP version is at least 5.x - Perfect !')."\"
+                       title=\"".__('PHP version is at least 5.x - Perfect !')."\"></td></tr>";
          }
 
       } else { // PHP <5
          $error = 2;
          echo "<td class='red'>
-               <img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][9]."</td></tr>";
+               <img src='".GLPI_ROOT."/pics/redbutton.png'>". __('You must install at least PHP5.').
+               "</td></tr>";
       }
 
       // Check for mysql extension ni php
@@ -694,27 +698,30 @@ class Toolbox {
       }
 
       // session test
-      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][12]."</td>";
+      echo "<tr class='tab_bg_1'><td class='b'>".__('Sessions Test')."</td>";
 
       // check whether session are enabled at all!!
       if (!extension_loaded('session')) {
          $error = 2;
-         echo "<td class='red b'>".$LANG['install'][13]."</td></tr>";
+         echo "<td class='red b'>".__s('Your parser PHP is not installed with sessions support!').
+              "</td></tr>";
 
       } else if ((isset($_SESSION["Test_session_GLPI"]) && $_SESSION["Test_session_GLPI"] == 1) // From install
                  || isset($_SESSION["glpi_currenttime"])) { // From Update
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][14].
-                    "\" title=\"".$LANG['install'][14]."\"></td></tr>";
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+                    __s('Sessions support is available  - Perfect !').
+                    "\" title=\"".__s('Sessions support is available  - Perfect !')."\"></td></tr>";
 
       } else if ($error != 2) {
          echo "<td class='red'>";
-         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][15]."</td></tr>";
+         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
+                __('Make sure that sessions support has been activated in your php.ini')."</td></tr>";
          $error = 1;
       }
 
       //Test for session auto_start
       if (ini_get('session.auto_start')==1) {
-         echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][68]."</td>";
+         echo "<tr class='tab_bg_1'><td class='b'>".$LANG['install'][68]."</td>";
          echo "<td class='red'>";
          echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][69]."</td></tr>";
          $error = 2;

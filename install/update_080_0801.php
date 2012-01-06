@@ -39,12 +39,13 @@
  * @return bool for success (will die for most error)
 **/
 function update080to0801() {
-   global $DB, $LANG, $migration;
+   global $DB, $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
-   $migration->displayTitle($LANG['install'][4]." -> 0.80.1");
+   //TRANS: %s is the number of new version
+   $migration->displayTitle(_sprintf(_('Update %s'), '-> 0.80.1'));
    $migration->setVersion('0.80.1');
 
    // Clean duplicates

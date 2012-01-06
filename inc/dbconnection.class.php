@@ -344,7 +344,6 @@ class DBConnection extends CommonDBTM {
             $task->addVolume($diff);
             if ($diff > 1000000000) { // very large means slave is disconnect
                $task->log(sprintf(__('Mysql server: "%1$s", Can\'t connect to the database'), $name));
-               $task->log($LANG['install'][30]." : '$name', ".$LANG['install'][35]);
             } else {
                $task->log(sprintf(__('Mysql server: "%1$s", Difference between master and slave: %2$s'),
                                  $name, Html::timestampToString($diff, true)));
@@ -381,7 +380,8 @@ class DBConnection extends CommonDBTM {
 
       foreach ($hosts as $num => $name) {
          $diff = self::getReplicateDelay($num);
-         echo $LANG['install'][30] . "&nbsp;: '$name', ";
+         //TRANS: %s is namez of server Mysql
+         echo sprintf(__('Mysql server: %s, '), $name);
          if ($diff > 1000000000) {
             echo $LANG['install'][35] . "<br>";
          } else if ($diff) {

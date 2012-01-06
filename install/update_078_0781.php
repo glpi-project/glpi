@@ -44,16 +44,19 @@
  * @return bool for success (will die for most error)
  */
 function update078to0781($output='HTML') {
-   global $DB, $LANG;
+   global $DB;
 
    $updateresult = true;
 
    if ($output) {
-      echo "<h3>".$LANG['install'][4]." -&gt; 0.78.1</h3>";
+      //TRANS: %s is the number of new version
+      echo "<h3>"._sprintf(_('Update %s'), '-> 0.78.1')."</h3>";
    }
    displayMigrationMessage("0781"); // Start
 
-   displayMigrationMessage("0781", sprintf(__('Data migration - %s'), 'Clean reservation entity link')); // Updating schema
+   //TRANS: %s is 'Clean reservation entity link'
+   displayMigrationMessage("0781", sprintf(__('Data migration - %s'),
+                                   'Clean reservation entity link')); // Updating schema
 
    $entities=getAllDatasFromTable('glpi_entities');
    $entities[0]="Root";

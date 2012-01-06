@@ -36,9 +36,10 @@
 /// Update from 0.71.2 to 0.72
 
 function update0713to072() {
-   global $DB, $CFG_GLPI, $LANG;
+   global $DB, $CFG_GLPI;
 
-   echo "<h3>".$LANG['install'][4]." -&gt; 0.72</h3>";
+   //TRANS: %s is the number of new version
+   echo "<h3>"._sprintf(_('Update %s'), '-> 0.72')."</h3>";
    displayMigrationMessage("072"); // Start
 
    if (!FieldExists("glpi_networking", "recursive", false)) {

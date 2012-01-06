@@ -173,14 +173,15 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
  * @return bool for success (will die for most error)
 **/
 function update083to084() {
-   global $DB, $LANG, $migration;
+   global $DB, $migration;
 
    $GLOBALS['migration_log_file'] = fopen(GLPI_LOG_DIR."/migration_083_084.log", "w");
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
-   $migration->displayTitle($LANG['install'][4]." -> 0.84");
+   //TRANS: %s is the number of new version
+   $migration->displayTitle(_sprintf(_('Update %s'), '-> 0.84'));
    $migration->setVersion('0.84');
 
 
@@ -225,8 +226,8 @@ function update083to084() {
                                  " tables if have no need of them.", true);
    } */
 
-
-   logMessage($LANG['install'][4]. " - glpi_fqdns", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_fqdns"), true);
 
    // Adding FQDN table
    if (!TableExists('glpi_fqdns')) {
@@ -264,7 +265,8 @@ function update083to084() {
       $ADDTODISPLAYPREF['FQDN'] = array(11);
    }
 
-   logMessage($LANG['install'][4]. " - glpi_ipaddresses", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_ipaddresses"), true);
 
    // Adding IPAddress table
    if (!TableExists('glpi_ipaddresses')) {
@@ -288,7 +290,8 @@ function update083to084() {
       $DB->queryOrDie($query, "0.84 create glpi_ipaddresses");
    }
 
-   logMessage($LANG['install'][4]. " - glpi_wifinetworks", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_wifinetworks"), true);
 
    // Adding WifiNetwork table
    if (!TableExists('glpi_wifinetworks')) {
@@ -308,7 +311,8 @@ function update083to084() {
       $ADDTODISPLAYPREF['WifiNetwork'] = array(10);
    }
 
-   logMessage($LANG['install'][4]. " - glpi_ipnetworks", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_ipnetworks"), true);
 
    // Adding IPNetwork table
    if (!TableExists('glpi_ipnetworks')) {
@@ -419,7 +423,8 @@ function update083to084() {
       $ADDTODISPLAYPREF['IPNetwork'] = array(10, 11, 12, 13);
    }
 
-   logMessage($LANG['install'][4]. " - glpi_networknames", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_networknames"), true);
 
    // Adding NetworkName table
    if (!TableExists('glpi_networknames')) {
@@ -447,7 +452,8 @@ function update083to084() {
 
    }
 
-   logMessage($LANG['install'][4]. " - glpi_networkaliases", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_networkaliases"), true);
 
    // Adding NetworkAlias table
    if (!TableExists('glpi_networkaliases')) {
@@ -465,14 +471,16 @@ function update083to084() {
       $DB->queryOrDie($query, "0.84 create glpi_networkaliases");
    }
 
-   logMessage($LANG['install'][4]. " - glpi_networkinterfaces", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_networkinterfaces"), true);
 
    // Update NetworkPorts
    $migration->addField('glpi_networkports', 'instantiation_type', 'string',
                         array('after'  => 'name',
                               'update' => "'NetworkPortEthernet'"));
 
-   logMessage($LANG['install'][4]. " - glpi_networkports", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_networkports"), true);
 
    // Retrieve all the networks from the current network ports and add them to the IPNetworks
    $query = "SELECT *
@@ -523,7 +531,8 @@ function update083to084() {
       $migration->dropField('glpi_networkports', $field);
    }
 
-   logMessage($LANG['install'][4]. " - glpi_networkportethernets", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_networkportethernets"), true);
 
    // Adding NetworkPortEthernet table
    if (!TableExists('glpi_networkportethernets')) {
@@ -549,7 +558,8 @@ function update083to084() {
                                      true);
    }
 
-   logMessage($LANG['install'][4]. " - glpi_networkportwifis", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_networkportwifis"), true);
 
   // Adding NetworkPortWifi table
    if (!TableExists('glpi_networkportwifis')) {
@@ -577,7 +587,8 @@ function update083to084() {
       updateNetworkPortInstantiation($port, array("LOWER(`mac`)" => 'mac'), true);
    }
 
-   logMessage($LANG['install'][4]. " - glpi_networkportlocals", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_networkportlocals"), true);
 
    // Adding NetworkPortLocal table
    if (!TableExists('glpi_networkportlocals')) {
@@ -591,7 +602,8 @@ function update083to084() {
       updateNetworkPortInstantiation($port, array(), false);
    }
 
-   logMessage($LANG['install'][4]. " - glpi_networkportdilups", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_networkportdilups"), true);
 
    // Adding NetworkPortDialup table
    if (!TableExists('glpi_networkportdialups')) {
@@ -607,7 +619,8 @@ function update083to084() {
       updateNetworkPortInstantiation($port, array("LOWER(`mac`)" => 'mac'), true);
    }
 
-   logMessage($LANG['install'][4]. " - glpi_networkportmigrations", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_networkportmigrations"), true);
 
    $query = "SELECT *
              FROM `glpi_networkports`
@@ -636,7 +649,8 @@ function update083to084() {
                                      true);
    }
 
-   logMessage($LANG['install'][4]. " - glpi_networkportaggregates", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_networkportaggregates"), true);
 
    // Adding NetworkPortAggregate table
    if (!TableExists('glpi_networkportaggregates')) {
@@ -653,7 +667,8 @@ function update083to084() {
       // New element, so, we don't need to create items
    }
 
-   logMessage($LANG['install'][4]. " - glpi_networkportaliases", true);
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('Update %s'), "glpi_networkportaliases"), true);
 
    // Adding NetworkPortAlias table
    if (!TableExists('glpi_networkportaliases')) {

@@ -37,10 +37,10 @@
 /// Update from 0.72.2 to 0.72.3
 
 function update0722to0723() {
-   global $DB, $CFG_GLPI, $LANG;
+   global $DB, $CFG_GLPI;
 
-
-   echo "<h3>".$LANG['install'][4]." -&gt; 0.72.3</h3>";
+   //TRANS: %s is the number of new version
+   echo "<h3>"._sprintf(_('Update %s'), '-> 0.72.3')."</h3>";
    displayMigrationMessage("0723"); // Start
 
    //// Correct search.constant numbers : problem in previous update

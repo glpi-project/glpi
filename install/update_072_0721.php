@@ -37,12 +37,12 @@
 /// Update from 0.72 to 0.72.1
 
 function update072to0721() {
-   global $DB, $CFG_GLPI, $LANG;
+   global $DB, $CFG_GLPI;
 
-
-   echo "<h3>".$LANG['install'][4]." -&gt; 0.72.1</h3>";
+   //TRANS: %s is the number of new version
+   echo "<h3>"._sprintf(_('Update %s'), '-> 0.72.1')."</h3>";
    displayMigrationMessage("0721"); // Start
-         
+
    if (!isIndex("glpi_groups", "ldap_group_dn")) {
       $query = "ALTER TABLE `glpi_groups` ADD INDEX `ldap_group_dn` ( `ldap_group_dn` );";
       $DB->query($query, "0.72.1 add index on ldap_group_dn in glpi_groups");

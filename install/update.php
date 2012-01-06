@@ -194,7 +194,7 @@ function showContentUpdateForm() {
    echo "<h3>".__('Update successful, your database is up to date')."</h3>";
    echo "<p>".__('You must now proceed to updating your database content')."</p></div>";
    echo "<p>";
-   echo "<a class='vsubmit' href='update_content.php'>".$LANG['install'][25]."</a>";
+   echo "<a class='vsubmit' href='update_content.php'>".__('Continue ?')."</a>";
 }
 
 
@@ -825,7 +825,7 @@ echo "<div id='principal'>";
 echo "<div id='bloc'>";
 echo "<div class='haut'></div>";
 echo "<h2>GLPI SETUP</h2>";
-echo "<br><h3>".$LANG['install'][4]."</h3>";
+echo "<br><h3>".__('Update')."</h3>";
 
 // step 1    avec bouton de confirmation
 
@@ -843,7 +843,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
       echo "<h3><span class='red'>".sprintf(__('Caution ! You will update the GLPI database named: %s'),$DB->dbdefault) ."</h3>";
 
       echo "<form action='update.php' method='post'>";
-      echo "<input type='submit' class='submit' name='continuer' value=\"".$LANG['install'][26]."\">";
+      echo "<input type='submit' class='submit' name='continuer' value=\"".__('Continue')."\">";
       echo "</form></div>";
    }
 

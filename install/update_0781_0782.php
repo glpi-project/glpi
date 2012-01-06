@@ -42,12 +42,13 @@
  * @return bool for success (will die for most error)
  */
 function update0781to0782($output='HTML') {
-   global $DB, $LANG;
+   global $DB;
 
    $updateresult = true;
 
    if ($output) {
-      echo "<h3>".$LANG['install'][4]." -&gt; 0.78.2</h3>";
+      //TRANS: %s is the number of new version
+      echo "<h3>"._sprintf(_('Update %s'), '-> 0.78.2')."</h3>";
    }
    displayMigrationMessage("0782"); // Start
 
