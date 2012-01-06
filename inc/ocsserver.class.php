@@ -823,18 +823,20 @@ class OcsServer extends CommonDBTM {
 
    function showSystemInformations($width) {
 
+      // No need to translate, this part always display in english (for copy/paste to forum)
+
       $ocsServers = getAllDatasFromTable('glpi_ocsservers');
       if (!empty($ocsServers)) {
-         echo "\n<tr class='tab_bg_2'><th>" . __('OCS Inventory NG') . "</th></tr>\n";
+         echo "\n<tr class='tab_bg_2'><th>OCS Inventory NG</th></tr>\n";
          echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
          $msg = '';
          foreach ($ocsServers as $ocsServer) {
-               $msg .= __('Host for the OCSNG database')." : '".$ocsServer['ocs_db_host']."'";
-               $msg .= ', '.(self::checkOCSconnection($ocsServer['id'])
-                              ?__('Connection to OCSNG database successful')
-                              :__('Connection to the OCSNG database failed'));
-               $msg .= ', '.__('Use the OCSNG software dictionary'). " : ".$ocsServer['use_soft_dict'];
+               $msg .= "Host: '".$ocsServer['ocs_db_host']."'";
+               $msg .= ", Connection: ".
+                       (self::checkOCSconnection($ocsServer['id']) ? "Ok" : "KO");
+               $msg .= ", Use the OCSNG software dictionary: ".
+                        ($ocsServer['use_soft_dict'] ? 'Yes' : 'No');
          }
          echo wordwrap($msg."\n", $width, "\n\t\t");
          echo "\n</pre></td></tr>";

@@ -396,16 +396,16 @@ class DBConnection extends CommonDBTM {
 
    function showSystemInformations($width) {
 
-      echo "\n</pre></td>";
-      echo "</tr><tr class='tab_bg_2'><th>". _n('Mysql replicate', 'Mysql replicates',2)."</th></tr>";
+      // No need to translate, this part always display in english (for copy/paste to forum)
+
+      echo "<tr class='tab_bg_2'><th>Mysql replicates</th></tr>";
 
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
       if (self::isDBSlaveActive()) {
-         _e('Active');
-         echo " \n";
+         echo "Active\n";
          self::showAllReplicateDelay();
       } else {
-         _e('Not active');
+         echo "Not active\n";
       }
       echo "\n</pre></td></tr>";
    }
