@@ -1226,11 +1226,11 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<option value='6' ".($value==6?" selected ":"").">".__('Major')."</option>";
       }
 
-      echo "<option value='5' ".($value==5?" selected ":"").">".__('Very High')."</option>";
+      echo "<option value='5' ".($value==5?" selected ":"").">".__('Very high')."</option>";
       echo "<option value='4' ".($value==4?" selected ":"").">".__('High')."</option>";
       echo "<option value='3' ".($value==3?" selected ":"").">".__('Medium')."</option>";
       echo "<option value='2' ".($value==2?" selected ":"").">".__('Low')."</option>";
-      echo "<option value='1' ".($value==1?" selected ":"").">".__('Low')."</option>";
+      echo "<option value='1' ".($value==1?" selected ":"").">".__('Very low')."</option>";
 
       echo "</select>";
 
@@ -1250,7 +1250,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return __('Major');
 
          case 5 :
-            return __('Very High');
+            return __('Very high');
 
          case 4 :
             return __('High');
@@ -1262,7 +1262,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return __('Low');
 
          case 1 :
-            return __('Low');
+            return __('Very low');
       }
    }
 
@@ -1298,7 +1298,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')])) {
          if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<5))) {
-            echo "<option value='5' ".($value==5?" selected ":"").">".__('Very High')."</option>";
+            echo "<option value='5' ".($value==5?" selected ":"").">".__('Very high')."</option>";
          }
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<4))) {
@@ -1312,7 +1312,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<1))) {
-            echo "<option value='1' ".($value==1?" selected ":"").">".__('Very Low')."</option>";
+            echo "<option value='1' ".($value==1?" selected ":"").">".__('Very low')."</option>";
          }
       }
 
@@ -1331,7 +1331,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       switch ($value) {
          case 5 :
-            return __('Very High');
+            return __('Very high');
 
          case 4 :
             return __('High');
@@ -1343,7 +1343,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return __('Low');
 
          case 1 :
-            return __('Very Low');
+            return __('Very low');
       }
    }
 
@@ -1378,7 +1378,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')])) {
          if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<5))) {
-            echo "<option value='5' ".($value==5?" selected ":"").">".__('Very High')."</option>";
+            echo "<option value='5' ".($value==5?" selected ":"").">".__('Very high')."</option>";
          }
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<4))) {
@@ -1392,7 +1392,7 @@ abstract class CommonITILObject extends CommonDBTM {
          }
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<1))) {
-            echo "<option value='1' ".($value==1?" selected ":"").">".__('Very Low')."</option>";
+            echo "<option value='1' ".($value==1?" selected ":"").">".__('Very low')."</option>";
          }
       }
 
@@ -1411,7 +1411,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       switch ($value) {
          case 5 :
-            return __('Very High');
+            return __('Very high');
 
          case 4 :
             return __('High');
@@ -1423,7 +1423,7 @@ abstract class CommonITILObject extends CommonDBTM {
             return __('Low');
 
          case 1 :
-            return __('Very Low');
+            return __('Very low');
       }
    }
 

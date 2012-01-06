@@ -768,11 +768,11 @@ $LANG['group'][3]="Child groups";
 
 $LANG['help'][1]="Matrix of calculus for priority";
 $LANG['help'][2]="Major";
-$LANG['help'][3]="Very High";
+$LANG['help'][3]="Very high";
 $LANG['help'][4]="High";
 $LANG['help'][5]="Medium";
 $LANG['help'][6]="Low";
-$LANG['help'][7]="Low";
+$LANG['help'][7]="Very low";  // fixed
 $LANG['help'][8]="Inform me about the action(s) taken";
 $LANG['help'][14]="Submit Message";
 $LANG['help'][18]="Your ticket has been registered, its treatment is in progress.";
@@ -790,16 +790,16 @@ $LANG['help'][31]="Software"; // Singular
 $LANG['help'][35]="Phone";
 $LANG['help'][40]="No title in your ticket, please retry.";
 $LANG['help'][41]="No category in your ticket, please retry.";
-$LANG['help'][42]="Very High";
+$LANG['help'][42]="Very high";
 $LANG['help'][43]="High";
 $LANG['help'][44]="Medium";
 $LANG['help'][45]="Low";
-$LANG['help'][46]="Very Low";
-$LANG['help'][47]="Very High";
+$LANG['help'][46]="Very low";
+$LANG['help'][47]="Very high";
 $LANG['help'][48]="High";
 $LANG['help'][49]="Medium";
 $LANG['help'][50]="Low";
-$LANG['help'][51]="Very Low";
+$LANG['help'][51]="Very low";
 
 /// TODO Before is ok for migration to gettext
 
