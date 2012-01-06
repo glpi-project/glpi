@@ -80,7 +80,7 @@ $valeurgraphtot      = array();
  * @param $end end date
 **/
 function display_infocoms_report($itemtype, $begin, $end) {
-   global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $LANG, $CFG_GLPI;
+   global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $CFG_GLPI;
 
    $itemtable = getTableForItemType($itemtype);
    $query = "SELECT `glpi_infocoms`.*
@@ -255,8 +255,7 @@ echo "&nbsp;</td></tr></table>";
 
 //TRANS: %1$s and %2$s are values
 $tmpmsg = sprintf('Total: Value=%1$s - Account net value=%2$s',
-                  Html::formatNumber($valeurtot),
-                  Html::formatNumber($valeurnettetot));
+                  Html::formatNumber($valeurtot), Html::formatNumber($valeurnettetot));
 echo "<div class='center'><h3>$tmpmsg</h3></div>\n";
 
 if (count($valeurnettegraphtot) >0) {

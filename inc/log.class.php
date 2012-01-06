@@ -301,7 +301,7 @@ class Log extends CommonDBTM {
     * @return array of localized log entry (TEXT only, no HTML)
    **/
    static function getHistoryData(CommonDBTM $item, $start=0, $limit=0, $sqlfilter='') {
-      global $DB, $LANG;
+      global $DB;
 
       $itemtype = $item->getType();
       $items_id = $item->getField('id');

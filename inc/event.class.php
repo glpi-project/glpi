@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
 // Event class
 class Event extends CommonDBTM {
 
+
    static function getTypeName($nb=0) {
       return _n('Log', 'Logs', $nb);
    }
@@ -104,7 +105,6 @@ class Event extends CommonDBTM {
     * Return arrays for function showEvent et lastEvent
     **/
    static function logArray() {
-      global $LANG;
 
       static $logItemtype = array();
       static $logService  = array();
@@ -232,8 +232,9 @@ class Event extends CommonDBTM {
 
       echo "<br><table class='tab_cadrehov'>";
       echo "<tr><th colspan='5'>";
+      //TRANS: %d is the number of item to display
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/event.php\">".
-           sprintf(__('Last %d events'),  $_SESSION['glpilist_limit'])."</a>";
+             sprintf(__('Last %d events'), $_SESSION['glpilist_limit'])."</a>";
       echo "</th></tr>";
 
       echo "<tr><th colspan='2'>".__('Source')."</th>";

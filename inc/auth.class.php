@@ -166,7 +166,6 @@ class Auth {
    * @return String : basedn of the user / false if not founded
    **/
    function connection_ldap($ldap_method, $login, $password) {
-      global $LANG;
 
       // we prevent some delay...
       if (empty($ldap_method['host'])) {
@@ -452,8 +451,9 @@ class Auth {
                                                        'login_field' => $ldap_method['login_field'],
                                                        'search_parameters'
                                                                      => $params,
-                                                       'user_params' => array('method' =>AuthLDAP::IDENTIFIER_LOGIN,
-                                                                              'value'  => $login_name),
+                                                       'user_params'
+                                                         => array('method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                                                  'value'  => $login_name),
                                                        'condition'   => $ldap_method["condition"]));
                      if ($user_dn) {
                         $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $login_name,
@@ -586,22 +586,25 @@ class Auth {
       // Log Event (if possible)
       if (!$DB->isSlave()) {
          // GET THE IP OF THE CLIENT
-         $ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));
+         $ip = (getenv("HTTP_X_FORWARDED_FOR")?getenv("HTTP_X_FORWARDED_FOR"):getenv("REMOTE_ADDR"));
 
          if ($this->auth_succeded) {
             if (GLPI_DEMO_MODE) {
                Event::log(-1, "system", 3, "login", $login_name . " logged in: " . $ip);
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
-               Event::log(-1, "system", 3, "login", sprintf(__('Login of %1$s from IP %2$s'),$login_name, $ip));
+               Event::log(-1, "system", 3, "login", sprintf(__('Login of %1$s from IP %2$s'),
+                                                            $login_name, $ip));
             }
 
          } else {
             if (GLPI_DEMO_MODE) {
-               Event::log(-1, "system", 3, "login", "login", "connection failed: " . $login_name . " ($ip)");
+               Event::log(-1, "system", 3, "login", "login",
+                          "connection failed: " . $login_name . " ($ip)");
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
-               Event::log(-1, "system", 3, "login", sprintf(__('Failed login for %1$s from IP %2$s'),$login_name, $ip));
+               Event::log(-1, "system", 3, "login", sprintf(__('Failed login for %1$s from IP %2$s'),
+                                                            $login_name, $ip));
             }
          }
       }
@@ -678,17 +681,17 @@ class Auth {
             $auth = new AuthLdap();
             if ($auth->getFromDB($auths_id)) {
                //TRANS: %1$s is the auth method type, %2$s the auth method name or link
-               return sprintf(__('%1$s: %2$s'),$auth->getTypeName(1),$auth->getLink());
+               return sprintf(__('%1$s: %2$s'),$auth->getTypeName(1), $auth->getLink());
             }
-            return sprintf(__('%1$s: %2$s'),__('LDAP directory'),$name);
+            return sprintf(__('%1$s: %2$s'), __('LDAP directory'), $name);
 
          case self::MAIL :
             $auth = new AuthMail();
             if ($auth->getFromDB($auths_id)) {
                //TRANS: %1$s is the auth method type, %2$s the auth method name or link
-               return sprintf(__('%1$s: %2$s'),$auth->getTypeName(1),$auth->getLink());
+               return sprintf(__('%1$s: %2$s'), $auth->getTypeName(1), $auth->getLink());
             }
-            return sprintf(__('%1$s: %2$s'),__('Email server'),$name);
+            return sprintf(__('%1$s: %2$s'),__('Email server'), $name);
 
          case self::CAS :
             if ($auths_id > 0) {
@@ -697,8 +700,7 @@ class Auth {
                   //TRANS: %1$s is the auth method type, %2$s an optional method type
                   //       %3$s the name of the opt method
                   return sprintf(__('%1$s + %2$s: %3$s'),
-                                    __('CAS'),
-                                    $auth->getTypeName(1),$auth->getLink());
+                                    __('CAS'), $auth->getTypeName(1), $auth->getLink());
                }
             }
             return __('CAS');
@@ -711,7 +713,7 @@ class Auth {
                   //       %3$s the name of the opt method
                   return sprintf(__('%1$s + %2$s: %3$s'),
                                     __('x509 certificate authentication'),
-                                    $auth->getTypeName(1),$auth->getLink());
+                                    $auth->getTypeName(1), $auth->getLink());
                }
             }
             return __('x509 certificate authentication');
@@ -723,8 +725,7 @@ class Auth {
                   //TRANS: %1$s is the auth method type, %2$s an optional method type
                   //       %3$s the name of the opt method
                   return sprintf(__('%1$s + %2$s: %3$s'),
-                                    __('Other'),
-                                    $auth->getTypeName(1),$auth->getLink());
+                                    __('Other'), $auth->getTypeName(1), $auth->getLink());
                }
             }
             return __('Other');
@@ -892,7 +893,7 @@ class Auth {
     * @return nothing
     */
    static function showSynchronizationForm(User $user) {
-      global $LANG, $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (Session::haveRight("user", "w")) {
          echo "<form method='post' action='".Toolbox::getItemTypeFormURL('User')."'>";
@@ -970,7 +971,6 @@ class Auth {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {
@@ -997,7 +997,7 @@ class Auth {
     * Form for configuration authentification
    **/
    static function showOtherAuthList() {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("config", "w")) {
          return false;
@@ -1025,7 +1025,7 @@ class Auth {
          echo "<tr class='tab_bg_2'><td class='center'>" . __('Port') . "</td>";
          echo "<td><input type='text' name='cas_port' value=\"".$CFG_GLPI["cas_port"]."\"></td></tr>\n";
          //TRANS: for CAS SSO system
-         echo "<tr class='tab_bg_2'><td class='center'>" . __('Root directory (optional)') . "</td>";
+         echo "<tr class='tab_bg_2'><td class='center'>" . __('Root directory (optional)')."</td>";
          echo "<td><input type='text' name='cas_uri' value=\"".$CFG_GLPI["cas_uri"]."\"></td></tr>\n";
          //TRANS: for CAS SSO system
          echo "<tr class='tab_bg_2'><td class='center'>" . __('Logout fallback URL') . "</td>";
@@ -1035,7 +1035,7 @@ class Auth {
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          echo "<p class='red'>". __("The CURL or DOMXML extension for your PHP parser isn't installed");
          echo "</p>";
-         echo "<p>" .__('Impossible to use CAS as external source of connection') . "</p></td></tr>\n";
+         echo "<p>" .__('Impossible to use CAS as external source of connection')."</p></td></tr>\n";
       }
       // X509 config
       echo "<tr><th>" . __('x509 certificate authentication')."</th>/th>";
@@ -1081,7 +1081,7 @@ class Auth {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>" . __('Remove the domain of logins like login@domain') . "</td><td>";
+      echo "<td class='center'>" . __('Remove the domain of logins like login@domain')."</td><td>";
       Dropdown::showYesNo('existing_auth_server_field_clean_domain',
                           $CFG_GLPI['existing_auth_server_field_clean_domain']);
       echo "</td></tr>\n";

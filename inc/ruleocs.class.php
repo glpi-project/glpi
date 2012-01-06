@@ -95,7 +95,6 @@ class RuleOcs extends Rule {
 
 
    function getCriterias() {
-      global $LANG;
 
       $criterias = array();
 
