@@ -483,7 +483,7 @@ class Config extends CommonDBTM {
          $host = $DBSlave->dbhost;
       }
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['install'][30] . "</td>";
+      echo "<td>" . __('Mysql server') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbhost' size='40' value='$host'></td>";
       echo "<td>" . __('Database') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbdefault' value='".$DBSlave->dbdefault."'>";
@@ -1188,9 +1188,9 @@ class Config extends CommonDBTM {
    static function checkWriteAccessToDirs($fordebug=false) {
       global $LANG;
 
-      $dir_to_check = array(GLPI_CONFIG_DIR  => $LANG['install'][23],
-                            GLPI_DOC_DIR     => $LANG['install'][21],
-                            GLPI_DUMP_DIR    => $LANG['install'][16],
+      $dir_to_check = array(GLPI_CONFIG_DIR  => __s('Checking write permissions for setting files'),
+                            GLPI_DOC_DIR     => __s('Checking write permissions for document files'),
+                            GLPI_DUMP_DIR    => __s('Checking write permissions for dump files'),
                             GLPI_SESSION_DIR => $LANG['install'][50],
                             GLPI_CRON_DIR    => $LANG['install'][52],
                             GLPI_CACHE_DIR   => $LANG['install'][99],
@@ -1206,8 +1206,8 @@ class Config extends CommonDBTM {
 
          $errors = array(4 => $LANG['install'][100],
                          3 => $LANG['install'][101],
-                         2 => $LANG['install'][17],
-                         1 => $LANG['install'][19]);
+                         2 => __('The file could not be created.'),
+                         1 => __s("The file was created but can't be deleted."));
 
          if ($tmperror > 0) {
             if ($fordebug) {
@@ -1222,8 +1222,10 @@ class Config extends CommonDBTM {
             if ($fordebug) {
                echo "<img src='".GLPI_ROOT."/pics/greenbutton.png'>$dir : OK\n";
             } else {
-               echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][20].
-                           "\" title=\"".$LANG['install'][20]."\"></td></tr>";
+               echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+                          __('A file and a directory have be created and deleted - Perfect !')."\"
+                          title=\"".__('A file and a directory have be created and deleted - Perfect !')."\">".
+                    "</td></tr>";
             }
          }
       }
@@ -1237,8 +1239,9 @@ class Config extends CommonDBTM {
          if ($fordebug) {
             echo "<img src='".GLPI_ROOT."/pics/greenbutton.png'>".GLPI_LOG_DIR." : OK\n";
          } else {
-            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][22].
-                       "\" title=\"".$LANG['install'][22]."\"></td></tr>";
+            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+                       __('A file was created - Perfect !')."\" title=\"".
+                       __('A file was created - Perfect !')."\"></td></tr>";
          }
 
       } else {
@@ -1247,7 +1250,7 @@ class Config extends CommonDBTM {
                            GLPI_LOG_DIR."\n";
          } else {
             echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
-                      "<p class='red'>".$LANG['install'][19]."</p>".
+                      "<p class='red'>".__s("The file was created but can't be deleted.")."</p>".
                       $LANG['install'][97]."'".GLPI_LOG_DIR."'</td></tr>";
          }
          $error = 1;

@@ -43,12 +43,13 @@
  * @return bool for success (will die for most error)
 **/
 function update0801to0803() {
-   global $DB, $LANG, $migration;
+   global $DB, $migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
-   $migration->displayTitle($LANG['install'][4]." -> 0.80.3");
+   //TRANS: %s is the number of new version
+   $migration->displayTitle(_sprintf(_('Update %s'), '-> 0.80.3'));
    $migration->setVersion('0.80.3');
 
    $migration->changeField("glpi_fieldunicities", 'fields', 'fields', "text");

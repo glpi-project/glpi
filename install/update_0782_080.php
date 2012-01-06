@@ -39,12 +39,13 @@
  * @return bool for success (will die for most error)
 **/
 function update0782to080() {
-   global $DB, $LANG, $migration;
+   global $DB,$migration;
 
    $updateresult     = true;
    $ADDTODISPLAYPREF = array();
 
-   $migration->displayTitle($LANG['install'][4]." -> 0.80");
+   //TRANS: %s is the number of new version
+   $migration->displayTitle(_sprintf(_('Update %s'), '-> 0.80'));
    $migration->setVersion('0.80');
 
    $backup_tables = false;

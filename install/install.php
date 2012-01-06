@@ -101,7 +101,7 @@ function acceptLicence() {
    echo "</textarea>";
 
    echo "<br><a target='_blank' href='http://www.gnu.org/licenses/old-licenses/gpl-2.0-translations.html'>".
-         $LANG['install'][18]."</a>";
+         __('Unofficial translations are also available')."</a>";
 
    echo "<form action='install.php' method='post'>";
    echo "<p>";
@@ -111,7 +111,7 @@ function acceptLicence() {
    echo "<br>";
    echo "<input type='radio' name='install' value='lang_select' id='disagree' checked='checked'>";
    echo " <label for='disagree'>".$LANG['install'][94]." </label>";
-   echo "<p><input type='submit' name='submit' class='submit' value=\"".$LANG['install'][26]."\"></p>";
+   echo "<p><input type='submit' name='submit' class='submit' value=\"".__('Continue')."\"></p>";
    echo "</form>";
    echo "</div>";
 }
@@ -119,21 +119,20 @@ function acceptLicence() {
 
 //confirm install form
 function step0() {
-   global $LANG;
 
-   echo "<h3>".$LANG['install'][0]."</h3>";
-   echo "<p>".$LANG['install'][1]."</p>";
-   echo "<p> ".$LANG['install'][2]."</p>";
+   echo "<h3>".__('Installation or update of GLPI')."</h3>";
+   echo "<p>".__s("Choose 'Install' for a completely new installation of GLPI.")."</p>";
+   echo "<p> ".__s("Select 'Update' to update your version of GLPI from an earlier version")."</p>";
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='update' value='no'>";
    echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-   echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][3]."\"></p>";
+   echo "<input type='submit' name='submit' class='submit' value=\"".__('Installation')."\"></p>";
    echo "</form>";
 
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='update' value='yes'>";
    echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-   echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][4]."\"></p>";
+   echo "<input type='submit' name='submit' class='submit' value=\"".__('Update')."\"></p>";
    echo "</form>";
 }
 
@@ -143,7 +142,8 @@ function step1($update) {
    global $LANG, $CFG_GLPI;
 
    $error = 0;
-   echo "<h3>".$LANG['install'][5]."</h3>";
+   echo "<h3>".__s('Checking of the compatibility of your environment with the execution of GLPI').
+        "</h3>";
    echo "<table class='tab_check'>";
 
    $error = Toolbox::commonCheckForUseGLPI();
@@ -155,33 +155,33 @@ function step1($update) {
          echo "<input type='hidden' name='update' value='". $update."'>";
          echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_1'>";
-         echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][26]."\">";
+         echo "<input type='submit' name='submit' class='submit' value=\"".__('Continue')."\">";
          echo "</p></form>";
          break;
 
       case 1 :
-         echo "<h3>".$LANG['install'][25]."</h3>";
+         echo "<h3>".__('Do you want to continue ?')."</h3>";
          echo "<form action='install.php' method='post'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_1'>";
          echo "<input type='hidden' name='update' value='". $update."'>";
          echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
-         echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][26]."\">";
+         echo "<input type='submit' name='submit' class='submit' value=\"".__('Continue')."\">";
          echo "</p></form> &nbsp;&nbsp;";
 
          echo "<form action='install.php' method='post'>";
          echo "<input type='hidden' name='update' value='". $update."'>";
          echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-         echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][27]."\">";
+         echo "<input type='submit' name='submit' class='submit' value=\"".__('Try again')."\">";
          echo "</p></form>";
          break;
 
       case 2 :
-         echo "<h3>".$LANG['install'][25]."</h3>";
+         echo "<h3>".__('Do you want to continue ?')."</h3>";
          echo "<form action='install.php' method='post'>";
          echo "<input type='hidden' name='update' value='".$update."'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-         echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][27]."\">";
+         echo "<input type='submit' name='submit' class='submit' value=\"".__('Try again')."\">";
          echo "</p></form>";
          break;
    }
@@ -193,10 +193,10 @@ function step1($update) {
 function step2($update) {
    global $LANG;
 
-   echo "<h3>".$LANG['install'][28]."</h3>";
+   echo "<h3>".__('Database connection setup')."</h3>";
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='update' value='".$update."'>";
-   echo "<fieldset><legend>".$LANG['install'][29]."</legend>";
+   echo "<fieldset><legend>".__('Database connection parameters')."</legend>";
    echo "<p><label class='block'>".$LANG['install'][30] ." : </label>";
    echo "<input type='text' name='db_host'><p>";
    echo "<p><label class='block'>".$LANG['install'][31] ." : </label>";
@@ -205,7 +205,7 @@ function step2($update) {
    echo "<input type='password' name='db_pass'></p></fieldset>";
    echo "<input type='hidden' name='install' value='Etape_2'>";
    echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-         $LANG['install'][26]."'></p>";
+         __('Continue')."'></p>";
    echo "</form>";
 }
 
@@ -256,7 +256,7 @@ function step3($host, $user, $password, $update) {
          echo "<input type='hidden' name='db_pass' value='". rawurlencode($password) ."'>";
          echo "<input type='hidden' name='install' value='Etape_3'>";
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-               $LANG['install'][26]."'></p>";
+               __('Continue')."'></p>";
          mysql_close($link);
          echo "</form>";
 
@@ -275,7 +275,7 @@ function step3($host, $user, $password, $update) {
          echo "<input type='hidden' name='db_pass' value='". rawurlencode($password) ."'>";
          echo "<input type='hidden' name='install' value='update_1'>";
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-                $LANG['install'][26]."'></p>";
+                __('Continue')."'></p>";
          mysql_close($link);
          echo "</form>";
       }
@@ -289,7 +289,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
    global $LANG;
 
    //display the form to return to the previous step.
-   echo "<h3>".$LANG['install'][24]."</h3>";
+   echo "<h3>".__('Initialization of the database')."</h3>";
 
 
    function prev_form($host, $user, $password) {
@@ -309,12 +309,11 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
 
    //Display the form to go to the next page
    function next_form() {
-      global $LANG;
 
       echo "<br><form action='install.php' method='post'>";
       echo "<input type='hidden' name='install' value='Etape_4'>";
       echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
-             $LANG['install'][26]."'></p>";
+             __('Continue')."'></p>";
       echo "</form>";
    }
 
@@ -470,11 +469,11 @@ function update1($host, $user, $password, $DBname) {
 
    } else { // can't create config_db file
       echo $LANG['install'][70];
-      echo "<h3>".$LANG['install'][25]."</h3>";
+      echo "<h3>".__('Do you want to continue ?')."</h3>";
       echo "<form action='install.php' method='post'>";
       echo "<input type='hidden' name='update' value='yes'>";
       echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-      echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][25]."\">";
+      echo "<input type='submit' name='submit' class='submit' value=\"".__('Continue')."\">";
       echo "</p></form>";
    }
 }

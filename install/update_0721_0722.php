@@ -37,10 +37,10 @@
 /// Update from 0.72.1 to 0.72.2
 
 function update0721to0722() {
-   global $DB, $CFG_GLPI, $LANG;
+   global $DB, $CFG_GLPI;
 
-
-   echo "<h3>".$LANG['install'][4]." -&gt; 0.72.2</h3>";
+   //TRANS: %s is the number of new version
+   echo "<h3>"._sprintf(_('Update %s'), '-> 0.72.2')."</h3>";
    displayMigrationMessage("0722"); // Start
 
    // Delete state from reservation search

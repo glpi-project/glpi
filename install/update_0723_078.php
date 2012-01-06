@@ -44,16 +44,19 @@
  * @return bool for success (will die for most error)
 **/
 function update0723to078($output='HTML') {
-   global $DB, $LANG;
+   global $DB;
 
    $updateresult = true;
 
    if ($output) {
-      echo "<h3>".$LANG['install'][4]." -&gt; 0.78</h3>";
+   //TRANS: %s is the number of new version
+      echo "<h3>"._sprintf(_('Update %s'), '-> 0.78')."</h3>";
    }
    displayMigrationMessage("078"); // Start
 
-   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s'), 'Clean DB : rename tables'));
+   //TRANS: %s is 'Clean DB : rename tables'
+   displayMigrationMessage("078", sprintf(__('Change of the database layout - %s'),
+                                          'Clean DB : rename tables'));
 
    $changes     = array();
    $glpi_tables = array('glpi_alerts'                       => 'glpi_alerts',

@@ -801,7 +801,6 @@ $LANG['help'][49]="Medium";
 $LANG['help'][50]="Low";
 $LANG['help'][51]="Very low";
 
-/// TODO Before is ok for migration to gettext
 
 $LANG['install'][0]="Installation or update of GLPI";
 $LANG['install'][1]="Choose 'Install' for a completely new installation of GLPI.";
@@ -834,6 +833,9 @@ $LANG['install'][27]="Try again";
 $LANG['install'][28]="Database connection setup";
 $LANG['install'][29]="Database connection parameters";
 $LANG['install'][30]="Mysql server";
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['install'][31]="Mysql user";
 $LANG['install'][32]="Mysql password";
 $LANG['install'][34]="Test of the connection at the database";
