@@ -934,23 +934,26 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th>". __('Information about system installation and configuration')."</th></tr>";
 
+       $oldlang = $_SESSION['glpilanguage'];
+       // Keep this, for some function call which still use translation (ex showAllReplicateDelay)
+       Session::loadLanguage('en_GB');
+
+
+      // No need to translate, this part always display in english (for copy/paste to forum)
+
       echo "<tr class='tab_bg_1'><td><pre>[code]\n&nbsp;\n";
-      $oldlang = $_SESSION['glpilanguage'];
-      Session::loadLanguage('en_GB');
       echo "GLPI ".$CFG_GLPI['version']." (".$CFG_GLPI['root_doc']." => ".
             dirname(dirname($_SERVER["SCRIPT_FILENAME"])).")\n";
-
-
       echo "\n</pre></td></tr>";
 
-      echo "<tr><th>" . __('Server') . "</th></tr>\n";
 
+      echo "<tr><th>Server</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
-      echo wordwrap(__('Operating system')." : ".php_uname()."\n", $width, "\n\t");
+      echo wordwrap("Operating system: ".php_uname()."\n", $width, "\n\t");
       $exts = get_loaded_extensions();
       sort($exts);
       echo wordwrap("PHP ".phpversion()." (".implode(', ',$exts).")\n", $width, "\n\t");
-      $msg = __('Setup').": ";
+      $msg = "Setup: ";
 
       foreach (array('memory_limit',
                      'max_execution_time',
@@ -962,7 +965,7 @@ class Config extends CommonDBTM {
       }
       echo wordwrap($msg."\n", $width, "\n\t");
 
-      $msg = _n('Software', 'Software', 2);
+      $msg = 'Software: ';
       if (isset($_SERVER["SERVER_SOFTWARE"])) {
          $msg .= $_SERVER["SERVER_SOFTWARE"];
       }
@@ -983,16 +986,14 @@ class Config extends CommonDBTM {
 
       self::checkWriteAccessToDirs(true);
 
+      echo "\n</pre></td></tr>";
 
       foreach ($CFG_GLPI["systeminformations_types"] as $type) {
          $tmp = new $type();
          $tmp->showSystemInformations($width);
       }
+
       Session::loadLanguage($oldlang);
-
-
-
-      echo "\n</pre></td></tr>";
 
       echo "<tr class='tab_bg_1'><td>[/code]\n</td></tr>";
 

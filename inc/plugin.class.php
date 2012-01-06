@@ -875,40 +875,43 @@ class Plugin extends CommonDBTM {
    function showSystemInformations($width) {
       global $LANG;
 
-      echo "\n</pre></td></tr><tr class='tab_bg_2'><th>" . __('Plugins list') . "</th></tr>";
+      // No need to translate, this part always display in english (for copy/paste to forum)
+
+      echo "\n</pre></td></tr><tr class='tab_bg_2'><th>Plugins list</th></tr>";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
       $plug = new Plugin();
       $pluglist = $plug->find("","name, directory");
       foreach ($pluglist as $plugin) {
-         $msg  = substr(str_pad($plugin['directory'],30),0,16)." ".__('Name').":".
-                 Toolbox::substr(str_pad($plugin['name'],40),0,30)." "._n('Version', 'Versions',1).
-                 "&nbsp;:".str_pad($plugin['version'],10)." ".__('Status')."&nbsp;:";
+         $msg  = substr(str_pad($plugin['directory'],30),0,20).
+                 " Name: ".Toolbox::substr(str_pad($plugin['name'],40),0,30).
+                 " Version: ".str_pad($plugin['version'],10).
+                 " State: ";
 
          switch ($plugin['state']) {
             case self::ANEW :
-               $msg .=  __('New');
+               $msg .=  'New';
                break;
 
             case self::ACTIVATED :
-               $msg .=  __('Enabled');
+               $msg .=  'Enabled';
                break;
 
             case self::NOTINSTALLED :
-               $msg .=  __('Not installed');
+               $msg .=  'Not installed';
                break;
 
             case self::TOBECONFIGURED :
-               $msg .=  __('Installed / not configured');
+               $msg .=  'To be configured';
                break;
 
             case self::NOTACTIVATED :
-               $msg .=  __('Installed / not activated');
+               $msg .=  'Not activated';
                break;
 
             case self::TOBECLEANED :
             default :
-               $msg .=  __('Error / to clean');
+               $msg .=  'To be cleaned';
                break;
          }
          echo wordwrap("\t".$msg."\n", $width, "\n\t\t");

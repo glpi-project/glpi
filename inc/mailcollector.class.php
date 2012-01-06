@@ -1329,45 +1329,47 @@ class MailCollector  extends CommonDBTM {
    function showSystemInformations($width) {
       global $CFG_GLPI, $DB;
 
-      echo "<tr class='tab_bg_2'><th>"._n('Notification', 'Notifications',2)."</th></tr>\n";
+      // No need to translate, this part always display in english (for copy/paste to forum)
+
+      echo "<tr class='tab_bg_2'><th>Notifications</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
-      $msg = __('Way of sending emails:')." ";
+      $msg = 'Way of sending emails: ';
       switch($CFG_GLPI['smtp_mode']) {
          case MAIL_MAIL :
-            $msg .= __('PHP');
+            $msg .= 'PHP';
             break;
 
          case MAIL_SMTP :
-            $msg .= __('SMTP');
+            $msg .= 'SMTP';
             break;
 
          case MAIL_SMTPSSL :
-            $msg .= __('SMTP+SSL');
+            $msg .= 'SMTP+SSL';
             break;
 
          case MAIL_SMTPTLS :
-            $msg .= __('SMTP+TLS');
+            $msg .= 'SMTP+TLS';
             break;
       }
       if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL) {
-         $msg .= " (".(empty($CFG_GLPI['smtp_username'])?'':$CFG_GLPI['smtp_username']."@").
-                    $CFG_GLPI['smtp_host'].")";
+         $msg .= " (".(empty($CFG_GLPI['smtp_username']) ? 'anonymous' : $CFG_GLPI['smtp_username']).
+                    "@".$CFG_GLPI['smtp_host'].")";
       }
       echo wordwrap($msg."\n", $width, "\n\t\t");
       echo "\n</pre></td></tr>";
 
-      echo "<tr class='tab_bg_2'><th>".__('Mails receivers')."</th></tr>\n";
+      echo "<tr class='tab_bg_2'><th>Mails receivers</th></tr>\n";
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
 
-      echo __('Mails receiver')."\n";
       foreach ($DB->request('glpi_mailcollectors') as $mc) {
-         $msg = "\t".__('Name').':"'.$mc['name'].'"  ';
-         $msg .= " ". sprintf(__('Server: %s'), $mc['host']);
-         $msg .= " ".__('Login').':"'.$mc['login'].'"';
-         $msg .= " ".__('Password').':'.
-                 (empty($mc['passwd'])?__('No'):__('Yes'));
-         $msg .= " ".__('Active').':'.Dropdown::getYesNo($mc['is_active']);
+         $msg  = "Name: '".$mc['name']."'";
+         $msg .= " Active: " .($mc['is_active'] ? "Yes" : "No");
+         echo wordwrap($msg."\n", $width, "\n\t\t");
+
+         $msg  = "\tServer: '". $mc['host']."'";
+         $msg .= " Login: '".$mc['login']."'";
+         $msg .= " Password: ".(empty($mc['passwd']) ? "No" : "Yes");
          echo wordwrap($msg."\n", $width, "\n\t\t");
       }
       echo "\n</pre></td></tr>";

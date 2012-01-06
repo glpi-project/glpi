@@ -749,30 +749,32 @@ class AuthLDAP extends CommonDBTM {
 
    function showSystemInformations($width) {
 
+      // No need to translate, this part always display in english (for copy/paste to forum)
+
       $ldap_servers = self::getLdapServers();
 
       if (!empty($ldap_servers)) {
-         echo "\n</pre></td><tr class='tab_bg_2'><th>" . self::getTypeName(2) . "</th></tr>\n";
+         echo "<tr class='tab_bg_2'><th>" . self::getTypeName(2) . "</th></tr>\n";
          echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
          foreach ($ldap_servers as $ID => $value) {
-            $fields = array(__('Server')                             => 'host',
-                            __('Port (default=389)')                 => 'port',
-                            __('BaseDN')                             => 'basedn',
-                            __('Connection filter')                  => 'condition',
-                            __('RootDN (for non anonymous binds)')   => 'rootdn',
-                            __('Use TLS')                            => 'use_tls');
+            $fields = array('Server'            => 'host',
+                            'Port'              => 'port',
+                            'BaseDN'            => 'basedn',
+                            'Connection filter' => 'condition',
+                            'RootDN'            => 'rootdn',
+                            'Use TLS'           => 'use_tls');
             $msg   = '';
             $first = true;
             foreach ($fields as $label => $field) {
-               $msg .= (!$first?', ':'').$label.': '.($value[$field] != ''?'\''.$value[$field].
-                        '\'':__('None'));
+               $msg .= (!$first ? ', ' : '').
+                        $label.': '.
+                        ($value[$field]? '\''.$value[$field].'\'' : 'none');
                $first = false;
             }
             echo wordwrap($msg."\n", $width, "\n\t\t");
          }
+         echo "\n</pre></td></tr>";
       }
-
-      echo "\n</pre></td></tr>";
    }
 
 
