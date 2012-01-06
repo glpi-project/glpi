@@ -589,8 +589,8 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td class='b right' colspan='2'>".__('Impact')."</td>";
 
-      for ($impact=5, $msg=47 ; $impact>=1 ; $impact--, $msg++) {
-         echo "<td>".$LANG['help'][$msg]."&nbsp;: ";
+      for ($impact=5 ; $impact>=1 ; $impact--) {
+         echo "<td>".Ticket::getImpactName($impact).'&nbsp;';
 
          if ($impact==3) {
             $isimpact[3] = 1;
@@ -607,14 +607,14 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='b' colspan='2'>".__('Urgency')."&nbsp;:</td>";
 
-      for ($impact=5, $msg=47 ; $impact>=1 ; $impact--, $msg++) {
+      for ($impact=5 ; $impact>=1 ; $impact--) {
          echo "<td>&nbsp;</td>";
       }
       echo "</tr>";
 
-      for ($urgency=5, $msg=42 ; $urgency>=1 ; $urgency--, $msg++) {
+      for ($urgency=5 ; $urgency>=1 ; $urgency--) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['help'][$msg]."&nbsp;:</td>";
+         echo "<td>".Ticket::getUrgencyName($urgency)."&nbsp;</td>";
          echo "<td>";
 
          if ($urgency==3) {

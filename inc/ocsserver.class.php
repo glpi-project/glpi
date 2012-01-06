@@ -5471,7 +5471,7 @@ class OcsServer extends CommonDBTM {
          if ($nbcomp > 0) {
             while ($data = $DBocs->fetch_array($result_ocs)) {
                $task->addVolume(1);
-               $task->log($LANG['help'][25] . " : " . $data["DEVICEID"] . " (" . $data["ID"] . ")\n");
+               $task->log(sprintf(__('Computer: %s'), $data["DEVICEID"] . " (" . $data["ID"] . ")"));
                self::processComputer($data["ID"], $ocsservers_id, 0);
             }
          } else {

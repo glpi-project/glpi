@@ -225,7 +225,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[5]['table']         = 'glpi_entitydatas';
       $tab[5]['field']         = 'phonenumber';
-      $tab[5]['name']          = $LANG['help'][35];
+      $tab[5]['name']          =  __('Phone');
       $tab[5]['massiveaction'] = false;
       $tab[5]['joinparams']    = array('jointype' => 'child');
       $tab[5]['datatype']      = 'string';
@@ -636,10 +636,10 @@ class Entity extends CommonTreeDropdown {
          }
       }
 
-      Event::log($ruleid, "rules", 4, "setup", 
+      Event::log($ruleid, "rules", 4, "setup",
             //TRANS: %s is the user login
-            sprintf(__('%s adds the item'), $_SESSION["glpiname"]));      
-      
+            sprintf(__('%s adds the item'), $_SESSION["glpiname"]));
+
       Html::back();
    }
 

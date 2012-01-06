@@ -73,10 +73,9 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
 
 
    function getTags() {
-      global $LANG;
 
       $tags = array('license.expirationdate' => __('Expiration date'),
-                    'license.item'           => $LANG['help'][31],
+                    'license.item'           => __('Software'),
                     'license.name'           => __('Name'),
                     'license.serial'         => __('Serial number'),
                     'license.entity'         => __('Entity'),

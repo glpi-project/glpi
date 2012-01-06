@@ -786,9 +786,6 @@ $LANG['help'][27]="Printer";
 $LANG['help'][28]="Printer";
 $LANG['help'][29]="Device";
 $LANG['help'][30]="General";
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['help'][31]="Software"; // Singular
 $LANG['help'][35]="Phone";
 $LANG['help'][40]="No title in your ticket, please retry.";
@@ -803,6 +800,8 @@ $LANG['help'][48]="High";
 $LANG['help'][49]="Medium";
 $LANG['help'][50]="Low";
 $LANG['help'][51]="Very Low";
+
+/// TODO Before is ok for migration to gettext
 
 $LANG['install'][0]="Installation or update of GLPI";
 $LANG['install'][1]="Choose 'Install' for a completely new installation of GLPI.";

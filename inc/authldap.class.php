@@ -512,10 +512,10 @@ class AuthLDAP extends CommonDBTM {
       echo "<td><input type='text' name='email4_field' value='".$this->fields["email4_field"]."'>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . $LANG['help'][35] . "</td>";
+      echo "<tr class='tab_bg_2'><td>" . __('Phone') . "</td>";
       echo "<td><input type='text' name='phone_field'value='".$this->fields["phone_field"]."'>";
       echo "</td>";
-      echo "<td>" . $LANG['help'][35] . " 2>/td>";
+      echo "<td>" .  __('Phone 2') . "</td>";
       echo "<td><input type='text' name='phone2_field'value='".$this->fields["phone2_field"]."'>";
       echo "</td></tr>";
 
@@ -643,13 +643,13 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'phone_field';
-      $tab[11]['name']          = $LANG['help'][35];
+      $tab[11]['name']          =  __('Phone');
       $tab[11]['massiveaction'] = false;
       $tab[11]['datatype']      = 'string';
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'phone2_field';
-      $tab[12]['name']          = $LANG['help'][35]." 2";
+      $tab[12]['name']          =  __('Phone 2');
       $tab[12]['massiveaction'] = false;
       $tab[12]['datatype']      = 'string';
 
@@ -2276,8 +2276,8 @@ class AuthLDAP extends CommonDBTM {
                                'email4_field'    => __('Email 4'),
                                'realname_field'  => __('Surname'),
                                'firstname_field' => __('First name'),
-                               'phone_field'     => $LANG['help'][35],
-                               'phone2_field'    => $LANG['help'][35] . " 2",
+                               'phone_field'     =>  __('Phone'),
+                               'phone2_field'    =>  __('Phone 2'),
                                'mobile_field'    => __('Mobile phone'),
                                'title_field'     => __('Title'),
                                'category_field'  => __('Category'));
@@ -2487,10 +2487,10 @@ class AuthLDAP extends CommonDBTM {
    static function dropdownUserDeletedActions($value=0) {
       global $LANG;
 
-      $options[0] = __('Preserve'); 
-      $options[1] = __('Put in trash');    
-      $options[2] = __('Withdraw dynamic authorizations and groups');   
-      $options[3] = __('Disable'); 
+      $options[0] = __('Preserve');
+      $options[1] = __('Put in trash');
+      $options[2] = __('Withdraw dynamic authorizations and groups');
+      $options[3] = __('Disable');
       asort($options);
       return Dropdown::showFromArray('user_deleted_ldap', $options, array('value' => $value));
    }

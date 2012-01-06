@@ -1571,7 +1571,7 @@ class User extends CommonDBTM {
       Dropdown::show('UserCategory', array('value' => $this->fields["usercategories_id"]));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . "&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>" .  __('Phone') . "</td><td>";
       Html::autocompletionTextField($this, "phone");
       echo "</td>";
       echo "<td rowspan='5' class='middle'>" . __('Comments') . "</td>";
@@ -1579,7 +1579,7 @@ class User extends CommonDBTM {
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . " 2&nbsp;:</td><td>";
+      echo "<tr class='tab_bg_1'><td>" .  __('Phone 2') . "</td><td>";
       Html::autocompletionTextField($this, "phone2");
       echo "</td></tr>";
 
@@ -1769,7 +1769,7 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . "&nbsp;:</td><td>";
+         echo "<tr class='tab_bg_1'><td>" .  __('Phone') . "</td><td>";
 
          if ($extauth && isset($authtype['phone_field']) && !empty($authtype['phone_field'])) {
             echo $this->fields["phone"];
@@ -1788,7 +1788,7 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . $LANG['help'][35] . " 2 : </td><td>";
+         echo "<tr class='tab_bg_1'><td>" .  __('Phone 2') . "</td><td>";
 
          if ($extauth && isset($authtype['phone2_field']) && !empty($authtype['phone2_field'])) {
             echo $this->fields["phone2"];
@@ -1940,12 +1940,12 @@ class User extends CommonDBTM {
 
       $tab[6]['table']     = $this->getTable();
       $tab[6]['field']     = 'phone';
-      $tab[6]['name']      = $LANG['help'][35];
+      $tab[6]['name']      =  __('Phone');
       $tab[6]['datatype']  = 'string';
 
       $tab[10]['table']    = $this->getTable();
       $tab[10]['field']    = 'phone2';
-      $tab[10]['name']     = $LANG['help'][35]." 2";
+      $tab[10]['name']     =  __('Phone 2');
       $tab[10]['datatype'] = 'string';
 
       $tab[11]['table']    = $this->getTable();
@@ -2553,8 +2553,8 @@ class User extends CommonDBTM {
       echo "<th>".__('Name')."</th>";
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th>";
-      echo "<th>".__('Status')."</th>";            
-      
+      echo "<th>".__('Status')."</th>";
+
       echo "<th>&nbsp;</th></tr>";
 
       foreach ($type_user as $itemtype) {
@@ -2612,8 +2612,8 @@ class User extends CommonDBTM {
                      echo Dropdown::getDropdownName("glpi_states",$data['states_id']);
                   } else {
                      echo '&nbsp;';
-                  }                  
-                  
+                  }
+
                   echo "</td><td class='center'>$linktype</td></tr>";
                }
             }

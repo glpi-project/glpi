@@ -278,11 +278,11 @@ class Dropdown {
                      case "glpi_contacts" :
                         $name .= " ".$data["firstname"];
                         if (!empty($data["phone"])) {
-                           $comment .= "<br><span class='b'>".$LANG['help'][35]."&nbsp;: </span> ".
+                           $comment .= "<br><span class='b'>". __('Phone')."</span> ".
                                         $data["phone"];
                         }
                         if (!empty($data["phone2"])) {
-                           $comment .= "<br><span class='b'>".$LANG['help'][35]." 2&nbsp;: </span> ".
+                           $comment .= "<br><span class='b'>". __('Phone 2')."</span> ".
                                         $data["phone2"];
                         }
                         if (!empty($data["mobile"])) {
@@ -301,7 +301,7 @@ class Dropdown {
 
                      case "glpi_suppliers" :
                         if (!empty($data["phonenumber"])) {
-                           $comment .= "<br><span class='b'>".$LANG['help'][35]."&nbsp;: </span> ".
+                           $comment .= "<br><span class='b'>". __('Phone')."</span> ".
                                         $data["phonenumber"];
                         }
                         if (!empty($data["fax"])) {

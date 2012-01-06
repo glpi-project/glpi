@@ -63,7 +63,6 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    function showCacheRuleHeader() {
-      global $LANG;
 
       echo "<tr><th colspan='4'>" . __('Cache informations') . "</th>";
       echo "<th colspan='4'>" . $this->fields["name"];
@@ -113,11 +112,10 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    function getCriterias() {
-      global $LANG;
 
       $criterias = array();
       $criterias['name']['field']         = 'name';
-      $criterias['name']['name']          = $LANG['help'][31];
+      $criterias['name']['name']          = __('Software');
       $criterias['name']['table']         = 'glpi_softwares';
 
       $criterias['manufacturer']['field'] = 'name';
@@ -136,10 +134,9 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    function getActions() {
-      global $LANG;
 
       $actions = array();
-      $actions['name']['name']          = $LANG['help'][31];
+      $actions['name']['name']          = __('Software');
       $actions['name']['force_actions'] = array('assign', 'regex_result');
 
       $actions['_ignore_ocs_import']['name'] = __('To be unaware of import');

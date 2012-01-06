@@ -131,7 +131,7 @@ class Supplier extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['help'][35]."&nbsp;:</td>";
+      echo "<td>". __('Phone')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "phonenumber");
       echo "</td>";
@@ -241,7 +241,7 @@ class Supplier extends CommonDBTM {
 
       $tab[5]['table'] = $this->getTable();
       $tab[5]['field'] = 'phonenumber';
-      $tab[5]['name']  = $LANG['help'][35];
+      $tab[5]['name']  =  __('Phone');
 
       $tab[6]['table']    = $this->getTable();
       $tab[6]['field']    = 'email';
@@ -357,8 +357,8 @@ class Supplier extends CommonDBTM {
 
       echo "<tr><th>".__('Name')."</th>";
       echo "<th>".__('Entity')."</th>";
-      echo "<th>".$LANG['help'][35]."</th>";
-      echo "<th>".$LANG['help'][35]." 2</th>";
+      echo "<th>". __('Phone')."</th>";
+      echo "<th>". __('Phone 2')."</th>";
       echo "<th>".__('Mobile phone')."</th>";
       echo "<th>".__('Fax')."</th>";
       echo "<th>"._n('Email', 'Emails', 1)."</th>";
