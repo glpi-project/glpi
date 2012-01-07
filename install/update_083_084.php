@@ -699,6 +699,27 @@ function update083to084() {
 
    $migration->displayWarning("You should run migration cleaner plugin !", true);
 
+
+   $lang_to_update = array('ca_CA' => 'ca_ES',
+                           'dk_DK' => 'da_DK',
+                           'ee_ET' => 'et_EE',
+                           'el_EL' => 'el_GR',
+                           'he_HE' => 'he_IL',
+                           'no_NB' => 'nb_NO',
+                           'ua_UA' => 'uk_UA',);
+   foreach ($lang_to_update as $old => $new) {                        
+      $query = "UPDATE `glpi_configs`
+               SET `language` = '$new'
+               WHERE `language` = '$old';";
+      $DB->queryOrDie($query, "0.74 language in config $old to $new");
+   
+      $query = "UPDATE `glpi_users`
+               SET `language` = '$new'
+               WHERE `language` = '$old';";
+      $DB->queryOrDie($query, "0.74 language in users $old to $new");
+   }
+
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'),'glpi_displaypreferences'));
