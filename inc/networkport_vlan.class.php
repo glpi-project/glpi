@@ -51,7 +51,6 @@ class NetworkPort_Vlan extends CommonDBRelation {
     * @return array of search option
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
@@ -131,7 +130,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
 
    static function showForNetworkPort($ID, $canedit, $withtemplate) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $used = array();
 
@@ -153,9 +152,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
                               sprintf(__('Comments: %s'), $line['vlancomment']));
 
             if ((isset($line["tagged"])) && ($line["tagged"] == 1)) {
-               echo "&nbsp;- ".$LANG['Internet'][58];
+               echo "&nbsp;- ".__('Tagged');
             } else {
-               echo "&nbsp;- ".$LANG['Internet'][59];
+               echo "&nbsp;- ".__('Untagged');
             }
 
             echo "</td>\n<td>";
@@ -178,7 +177,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
 
    static function showForNetworkPortForm ($ID) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $port=new NetworkPort();
 
@@ -204,7 +203,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td>";
-         echo $LANG['Internet'][58]."&nbsp;: <input type='checkbox' name='tagged' value='1'>";
+         echo __('Tagged')."&nbsp;<input type='checkbox' name='tagged' value='1'>";
          echo "</td></tr>";
 
          echo "</table></form>";

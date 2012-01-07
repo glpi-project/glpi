@@ -43,9 +43,7 @@ class NetworkPortAlias extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-     return $LANG['Internet'][34];
+     return __('Alias port');
    }
 
 
@@ -55,9 +53,7 @@ class NetworkPortAlias extends NetworkPortInstantiation {
 
 
    static function showForItemHeader() {
-      global $LANG;
-
-      echo "<th>" . $LANG['Internet'][45] . "</th>\n";
+      echo "<th>" . __('Origin port') . "</th>\n";
       echo "<th>". __('MAC') ."</th>\n";
       echo "<th>". __('VLAN') ."</th>\n";
    }

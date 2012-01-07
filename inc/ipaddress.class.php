@@ -108,12 +108,8 @@ class IPAddress extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
-      if ($nb > 1) {
-         return $LANG['Internet'][3];
-      }
-      return $LANG['Internet'][4];
+      return _n('IP addresses', 'IP address', $nb);
    }
 
 

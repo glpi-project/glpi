@@ -54,22 +54,15 @@ class FQDN extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb > 1) {
-         return $LANG['Internet'][1];
-      }
-      return $LANG['Internet'][2];
+      return _n('Internet domain', 'Internet domains', $nb);
    }
 
 
    function getAdditionalFields() {
-      global $LANG;
-
       return array(array('name'    => 'fqdn',
-                         'label'   => $LANG['Internet'][7],
+                         'label'   => __('FQDN'),
                          'type'    => 'text',
-                         'comment' => $LANG['Internet'][8],
+                         'comment' => __('Fully Qualified Domain Name. Use the classical notation (labels separated by dots). For example: indepnet.net'),
                          'list'    => true));
    }
 
@@ -84,11 +77,10 @@ class FQDN extends CommonDropdown {
     * @return false or fields checks and update (lowercase for the fqdn field)
     */
    function prepareInput($input) {
-      global $LANG;
 
       // First, we check FQDN validity
       if (empty($input["fqdn"]) || !self::checkFQDN($input["fqdn"])) {
-         Session::addMessageAfterRedirect($LANG['Internet'][9], false, ERROR);
+         Session::addMessageAfterRedirect(__('Internet domain name is invalid'), false, ERROR);
          return false;
       }
 
@@ -101,7 +93,7 @@ class FQDN extends CommonDropdown {
 
       if (!self::checkFQDNUnicity($input["fqdn"], (isset($input["id"]) ? $input["id"] : -1),
                                   $entityID)) {
-         Session::addMessageAfterRedirect($LANG['Internet'][10], false, ERROR);
+         Session::addMessageAfterRedirect(__('Internet domain already defined in the visible entities'), false, ERROR);
          return false;
       }
 
@@ -201,13 +193,12 @@ class FQDN extends CommonDropdown {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'fqdn';
-      $tab[11]['name']     = $LANG['Internet'][7];
+      $tab[11]['name']     = __('FQDN');
 
       return $tab;
    }

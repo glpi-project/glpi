@@ -518,19 +518,19 @@ class Session {
          $newfile = "/locales/$trytoload.mo";
       }
 
-      $newtrytoload = $trytoload;
+//       $newtrytoload = $trytoload;
 
-      if (empty($file) || !is_file(GLPI_ROOT . $file)) {
-         $trytoload = 'en_GB';
-         $file = "/locales/en_GB.php";
-      }
+//       if (empty($file) || !is_file(GLPI_ROOT . $file)) {
+//          $trytoload = 'en_GB';
+//          $file = "/locales/en_GB.php";
+//       }
 
       if (empty($newfile) || !is_file(GLPI_ROOT . $newfile)) {
 //          $trytoload = 'en_GB';
          $newfile = "/locales/en_GB.mo";
       }
 
-      include (GLPI_ROOT . $file);
+//       include (GLPI_ROOT . $file);
 
 
       /// TODO permit to load and use simple dictionnary.
@@ -553,15 +553,16 @@ class Session {
          }
       }
 
+      /// TODO delete TRANSLATION_MODE or find another solution for gettext
       // Debug display lang element with item
-      if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
-         foreach ($LANG as $module => $tab) {
-            foreach ($tab as $num => $val) {
-               $LANG[$module][$num] = "".$LANG[$module][$num].
-                                      "/<span style='font-size:12px; color:red;'>$module/$num</span>";
-            }
-         }
-      }
+//       if ($_SESSION['glpi_use_mode'] == Session::TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
+//          foreach ($LANG as $module => $tab) {
+//             foreach ($tab as $num => $val) {
+//                $LANG[$module][$num] = "".$LANG[$module][$num].
+//                                       "/<span style='font-size:12px; color:red;'>$module/$num</span>";
+//             }
+//          }
+//       }
 
       $TRANSLATE->setLocale($trytoload);
 

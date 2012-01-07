@@ -67,9 +67,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $recursiveItems list of the items on which this port is attached
    **/
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
-      global $LANG;
-
-      echo "<tr><td colspan='4' class='center'>".$LANG['Internet'][44]."</td></tr>";
+      echo "<tr><td colspan='4' class='center'>".__('No options available for this port type.')."</td></tr>";
    }
 
 
@@ -385,7 +383,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     *                  are based on several NetworkPort.
    **/
    function showNetworkPortSelector($recursiveItems, $multiple) {
-      global $LANG, $DB;
+      global $DB;
 
       if (count($recursiveItems) == 0) {
          return;
@@ -393,7 +391,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
-      echo "<td>" . $LANG['Internet'][45] . "&nbsp;:</td><td>\n";
+      echo "<td>" . __('Origin port') . "</td><td>\n";
 
       if (!isset($this->fields['networkports_id'])) {
          $networkports_id = array();

@@ -89,12 +89,8 @@ class NetworkName extends FQDNLabel {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
-      if ($nb > 1) {
-         return $LANG['Internet'][25];
-      }
-      return $LANG['Internet'][26];
+      return _n('Network name', 'Network names', $nb);
    }
 
 
@@ -208,20 +204,19 @@ class NetworkName extends FQDNLabel {
     * @return $input altered array of new values;
    **/
    function prepareInput($input) {
-      global $LANG;
-
+      
       if (isset($input["IPs"])) {
          $addresses = IPAddress::checkInputFromItem($input["IPs"], self::getType(), $this->getID());
 
          if (count($addresses["invalid"]) > 0) {
-            $msg = $LANG['Internet'][27] . " (" . implode (', ',$addresses["invalid"]) . ")";
+            $msg = sprintf(_n('Invalid IP address: %s', 'Invalid IP addresses: %s',count($addresses["invalid"])),implode (', ',$addresses["invalid"]));
             Session::addMessageAfterRedirect($msg, false, ERROR);
             unset($addresses["invalid"]);
          }
 
          // TODO : is it usefull to check that there is at least one IP address ?
          // if ((count($addresses["new"]) + count($addresses["previous"])) == 0) {
-         //    Session::addMessageAfterRedirect($LANG['Internet'][28], false, ERROR);
+         //    Session::addMessageAfterRedirect(__('No IP address (v4 or v6) defined'), false, ERROR);
          //    return false;
          // }
 
@@ -375,7 +370,7 @@ class NetworkName extends FQDNLabel {
 
 
    static function showFormForNetworkPort($networkPortID) {
-      global $DB, $LANG;
+      global $DB;
 
       $name         = new self();
       $number_names = 0;
@@ -388,7 +383,7 @@ class NetworkName extends FQDNLabel {
          $result = $DB->query($query);
 
          if ($DB->numrows($result) > 1) {
-            echo "<tr class='tab_bg_1'><th colspan='4'>" . $LANG['Internet'][43] . "</th></tr>\n";
+            echo "<tr class='tab_bg_1'><th colspan='4'>" . __("Several network names available! Go to the tab 'Network Name' to manage them.") . "</th></tr>\n";
             return;
          }
 

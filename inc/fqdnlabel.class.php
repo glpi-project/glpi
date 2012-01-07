@@ -126,14 +126,13 @@ abstract class FQDNLabel extends CommonDBChild {
 
    function prepareLabelInput($input) {
       // Before adding a name, we must unsure its is valid : conform to RFC and is unique
-      global $LANG;
 
       if (isset($input['name'])) {
 
          $input['name'] = strtolower ( $input['name'] ) ;
 
          if (!self::checkFQDNLabel($input['name'], true)) {
-            Session::addMessageAfterRedirect($LANG['Internet'][11]." (".$input['name'].")",
+            Session::addMessageAfterRedirect(sprintf(__('Invalid internet name: %s'), $input['name']),
                                              false, ERROR);
             return false;
          }
@@ -142,7 +141,7 @@ abstract class FQDNLabel extends CommonDBChild {
          // $labels_id = (isset($input['id']) ? $input['id'] : -1);
          // if (!self::checkFQDNLabelUnicity($input['name'], $input["fqdns_id"],
          //                                  $this->getType(), $labels_id)) {
-         //    Session::addMessageAfterRedirect($LANG['Internet'][12]." (".$input['name'].")",
+         //    Session::addMessageAfterRedirect(sprintf(__('Internet name already defined in visible entities: %s'), $input['name']),
          //                                     false, ERROR);
          //    return false;
          // }
