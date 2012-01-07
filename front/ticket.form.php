@@ -80,7 +80,8 @@ if (isset($_POST["add"])) {
       if ($track->can($_POST["id"],'r')) {
          Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
       }
-      Session::addMessageAfterRedirect($LANG['job'][26], true, ERROR);
+      Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this ticket'), 
+                                       true, ERROR);
       Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.php");
    }
 
@@ -185,7 +186,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    $track->showForm($_GET["id"],$options);
 
 } else {
-   Html::header($LANG['job'][13],'',"maintain","ticket");
+   Html::header(__('New ticket'),'',"maintain","ticket");
 
    $track->showForm(0);
 }

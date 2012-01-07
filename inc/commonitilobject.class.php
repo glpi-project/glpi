@@ -1684,7 +1684,6 @@ abstract class CommonITILObject extends CommonDBTM {
    }
 
    function getSearchOptionsActors() {
-      global $LANG;
 
       $tab = array();
 
@@ -1792,7 +1791,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[35]['table']      = getTableForItemType($this->userlinkclass);
       $tab[35]['field']      = 'use_notification';
-      $tab[35]['name']       = $LANG['job'][19];
+      $tab[35]['name']       = __('Email followup');
       $tab[35]['datatype']   = 'bool';
       $tab[35]['joinparams'] = array('jointype'  => 'child',
                                      'condition' => 'AND NEWTABLE.`type` = '.self::REQUESTER);
@@ -1820,7 +1819,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return nothing display
    **/
    static function getActorIcon($user_group, $type) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       switch ($user_group) {
          case 'user' :
@@ -1879,7 +1878,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return nothing display
    **/
    function showUsersAssociated($type, $canedit) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $showuserlink = 0;
       if (Session::haveRight('user','r')) {
@@ -1912,7 +1911,7 @@ abstract class CommonITILObject extends CommonDBTM {
             }
 
             if ($CFG_GLPI['use_mailing']) {
-               $text = $LANG['job'][19]."&nbsp;:&nbsp;".Dropdown::getYesNo($d['use_notification']).
+               $text = __('Email followup')."&nbsp;".Dropdown::getYesNo($d['use_notification']).
                        '<br>';
 
                if ($d['use_notification']) {
@@ -1963,7 +1962,7 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    static function showActorAddForm($type, $rand_type, $entities_id, $withsupplier=false,
                                     $inobject=true) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $types = array(''      => Dropdown::EMPTY_VALUE,
                      'user'  => __('User'),
@@ -2018,7 +2017,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return nothing display
    **/
    function showActorAddFormOnCreate($type, $options) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       switch ($type) {
          case self::REQUESTER :
@@ -2154,7 +2153,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return nothing display
    **/
    function showActorsPartForm($ID, $options) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $showuserlink = 0;
       if (Session::haveRight('user','r')) {
@@ -2430,7 +2429,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $knowbase_id_toload integer load a kb article as solution (0 = no load)
    **/
    function showSolutionForm($knowbase_id_toload=0) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $this->check($this->getField('id'), 'r');
 
@@ -2473,9 +2472,9 @@ abstract class CommonITILObject extends CommonDBTM {
                                                                             $rand_type))));
 
          echo "</td><td colspan='2'>";
-         echo "<a class='vsubmit' title\"".$LANG['job'][23]."\"
+         echo "<a class='vsubmit' title\"".__s('Search a solution')."\"
                 href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?itemtype=".$this->getType().
-                "&amp;items_id=".$this->getField('id')."'>".$LANG['job'][23]."</a>";
+                "&amp;items_id=".$this->getField('id')."'>".__('Search a solution')."</a>";
          echo "</td></tr>";
       }
 
@@ -2494,7 +2493,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                         $this->getField('solutiontypes_id'));
       }
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
-      echo "<tr><td>".$LANG['job'][25]."</td><td>";
+      echo "<tr><td>".__('Save and add to the knowledge base')."</td><td>";
       Dropdown::showYesNo('_sol_to_kb', false);
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
@@ -2692,7 +2691,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    function showStats() {
-      global $LANG;
 
       if (!Session::haveRight('observe_ticket',1) || !isset($this->fields['id'])) {
          return false;

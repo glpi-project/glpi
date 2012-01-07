@@ -902,21 +902,20 @@ $LANG['job'][4]="Requester";
 $LANG['job'][5]="Assigned to";
 $LANG['job'][6]="Technician";
 
-/// TODO Before is ok for migration to gettext
 
 $LANG['job'][7]="Task";
 $LANG['job'][8]="Last tickets";
 $LANG['job'][9]="Followup";
 $LANG['job'][10]="Last ticket";
 $LANG['job'][11]="Describe the incident or request";
-$LANG['job'][12]="No followups for this ticket.";
+$LANG['job'][12]="No followup for this ticket.";
 $LANG['job'][13]="New ticket";
 $LANG['job'][14]="Opened";
 $LANG['job'][15]="Solved";
 $LANG['job'][16]="Closed";
 $LANG['job'][17]="Late";
 $LANG['job'][18]="Requesters";
-$LANG['job'][19]="Email Followups";
+$LANG['job'][19]="Email followup";
 $LANG['job'][20]="Total duration";
 $LANG['job'][21]="Last problems";
 $LANG['job'][22]="Minute(s)";
@@ -926,9 +925,6 @@ $LANG['job'][25]="Save and add to the knowledge base";
 $LANG['job'][26]="You have been redirected because you no longer have access to this ticket";
 $LANG['job'][27]="Add an actor";
 $LANG['job'][28]="Default template";
-
-
-/// TODO After is ok for migration to gettext
 
 $LANG['job'][29]="Add a new followup";
 $LANG['job'][30]="Add a new task";

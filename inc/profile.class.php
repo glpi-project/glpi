@@ -1656,7 +1656,7 @@ class Profile extends CommonDBTM {
 
       $tab[103]['table']    = $this->getTable();
       $tab[103]['field']    = 'tickettemplate';
-      $tab[103]['name']     = $LANG['job'][28];
+      $tab[103]['name']     = _n('Ticket template', 'Ticket templates', 2);
       $tab[103]['datatype'] = 'right';
 
       $tab[65]['table']    = $this->getTable();

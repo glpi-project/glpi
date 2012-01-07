@@ -913,7 +913,7 @@ class Html {
     *
    **/
    static function header($title, $url='', $sector="none", $item="none", $option="") {
-      global $CFG_GLPI, $LANG, $PLUGIN_HOOKS, $HEADER_LOADED, $DB;
+      global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED, $DB;
 
       // Print a nice HTML-head for every page
       if ($HEADER_LOADED) {
@@ -2484,7 +2484,7 @@ class Html {
     * @param $url not used anymore.
    **/
    static function helpHeader($title, $url='') {
-      global $CFG_GLPI, $LANG, $HEADER_LOADED, $PLUGIN_HOOKS;
+      global $CFG_GLPI, $HEADER_LOADED, $PLUGIN_HOOKS;
 
       // Print a nice HTML-head for help page
       if ($HEADER_LOADED) {
@@ -2542,7 +2542,7 @@ class Html {
       // Home
       echo "<li id='menu1'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
-             $LANG['job'][13]."\" class='itemP'>".__('Home')."</a>";
+             __s('Home')."\" class='itemP'>".__('Home')."</a>";
       echo "</li>";
 
       //  Create ticket

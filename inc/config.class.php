@@ -524,7 +524,7 @@ class Config extends CommonDBTM {
     * @return Nothing (display)
    **/
    function showFormHelpdesk() {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("config", "w")) {
          return false;
@@ -537,12 +537,11 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Assistance') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Step for the hours') . "</td><td>";
+      echo "<td>" . __('Step for the hours (minutes)') . "</td><td>";
       Dropdown::showInteger('time_step', $CFG_GLPI["time_step"], 30, 60, 30, array(5  => 5,
                                                                                    10 => 10,
                                                                                    15 => 15,
                                                                                    20 => 20));
-      echo "&nbsp;" . $LANG['job'][22];
       echo "</td><td>" .__('Limit of the schedules for planning') . "</td><td>";
       Dropdown::showHours('planning_begin', $CFG_GLPI["planning_begin"]);
       echo "&nbsp;->&nbsp;";
@@ -667,7 +666,7 @@ class Config extends CommonDBTM {
     * @return Nothing (display)
    **/
    function showFormUserPrefs($data=array()) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $oncentral = ($_SESSION["glpiactiveprofile"]["interface"]=="central");
       $userpref  = false;
@@ -798,10 +797,9 @@ class Config extends CommonDBTM {
          } else {
             echo Dropdown::getYesNo(0);
          }
-         echo "</td><td>" . __('Automatically refresh the list of tickets') . "</td><td>";
+         echo "</td><td>" . __('Automatically refresh the list of tickets (minutes)') . "</td><td>";
          Dropdown::showInteger('refresh_ticket_list', $data["refresh_ticket_list"], 1, 30, 1,
                                array(0 => __('Never')));
-         echo "&nbsp;".$LANG['job'][22];
          echo "</td>";
          echo "</tr>";
          echo "<tr class='tab_bg_2'>";

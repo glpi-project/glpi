@@ -82,7 +82,7 @@ if (!Session::haveRight('create_ticket',1)) {
 
 Session::checkHelpdeskAccess();
 
-Html::helpHeader($LANG['job'][13],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+Html::helpHeader(__('New ticket'),$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 if (isset($_GET['create_ticket'])) {
    Ticket::showFormHelpdesk(Session::getLoginUserID());
