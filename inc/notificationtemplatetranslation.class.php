@@ -79,7 +79,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    function showForm($ID, $options) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("config", "w")) {
          return false;
@@ -233,7 +233,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');

@@ -51,7 +51,6 @@ class TicketRecurrent extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
       return __('Recurrent tickets');
    }
@@ -83,7 +82,6 @@ class TicketRecurrent extends CommonDropdown {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (Session::haveRight("tickettemplate","r")) {
          switch ($item->getType()) {
@@ -131,7 +129,6 @@ class TicketRecurrent extends CommonDropdown {
     * Return Additional Fileds for this type
    **/
    function getAdditionalFields() {
-      global $LANG;
 
       return array(array('name'  => 'is_active',
                          'label' => __('Active'),
@@ -165,7 +162,6 @@ class TicketRecurrent extends CommonDropdown {
     * @return array of search option
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 
@@ -204,7 +200,6 @@ class TicketRecurrent extends CommonDropdown {
     * @return nothing only display
    **/
    function showInfos() {
-      global $LANG;
 
       if (!is_null($this->fields['next_creation_date'])) {
          echo "<div class='center'>";
@@ -225,7 +220,6 @@ class TicketRecurrent extends CommonDropdown {
     * @return datetime next creation date
    **/
    function computeNextCreationDate($begin_date, $periodicity, $create_before){
-      global $LANG;
 
       if (empty($begin_date)) {
          return 'NULL';
@@ -256,7 +250,6 @@ class TicketRecurrent extends CommonDropdown {
     * @return arrray of informations
    **/
    static function cronInfo($name) {
-      global $LANG;
 
       switch ($name) {
          case 'ticketrecurrent' :

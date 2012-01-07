@@ -688,7 +688,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @return new category ID
    **/
    private static function displayCategoryHeader($computers_ID, $data, $rand, $canedit) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $display = "none";
 

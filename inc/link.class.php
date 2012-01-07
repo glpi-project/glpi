@@ -105,7 +105,6 @@ class Link extends CommonDBTM {
    *
    **/
    function showForm($ID, $options=array()) {
-      global $LANG;
 
       if ($ID > 0) {
          $this->check($ID,'r');
@@ -144,7 +143,6 @@ class Link extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');
@@ -315,7 +313,7 @@ class Link extends CommonDBTM {
     * @param $withtemplate integer : withtemplate param
    **/
    static function showForItem(CommonDBTM $item, $withtemplate='') {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("link","r")) {
          return false;

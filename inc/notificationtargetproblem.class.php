@@ -43,7 +43,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
     * Get events related to tickets
    **/
    function getEvents() {
-      global $LANG;
 
       $events = array('new'            => __('New problem'),
                       'update'         => __('Update of a problem'),
@@ -195,7 +194,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
 
    function getTags() {
-      global $LANG;
 
       parent::getTags();
 

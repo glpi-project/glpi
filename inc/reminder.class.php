@@ -297,7 +297,6 @@ class Reminder extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');
@@ -814,7 +813,7 @@ class Reminder extends CommonDBTM {
     * @return Nothing (display function)
     **/
    static function showListForCentral($personal = true) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $reminder = new self();
 

@@ -82,7 +82,7 @@ $valeurgraphtot      = array();
  * @param $end end date
 **/
 function display_infocoms_report($itemtype, $begin, $end) {
-   global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $LANG, $CFG_GLPI;
+   global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $CFG_GLPI;
 
    $itemtable = getTableForItemType($itemtype);
    $query = "SELECT `glpi_infocoms`.*,

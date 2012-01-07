@@ -490,7 +490,7 @@ class Profile extends CommonDBTM {
     *
    **/
    function showFormHelpdesk() {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $ID = $this->fields['id'];
       $target = $this->getFormURL();

@@ -49,8 +49,6 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Hidden field', 'Hidden fields', $nb);
    }
 
@@ -66,7 +64,6 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       // can exists for template
       if ($item->getType() == 'TicketTemplate' && Session::haveRight("tickettemplate","r")) {

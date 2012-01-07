@@ -185,8 +185,7 @@ class RuleTicket extends Rule {
 
 
    function getCriterias() {
-      global $LANG;
-
+      
       $criterias = array();
       $criterias['name']['table']     = 'glpi_tickets';
       $criterias['name']['field']     = 'name';
@@ -301,7 +300,6 @@ class RuleTicket extends Rule {
 
 
    function getActions() {
-      global $LANG;
 
       $actions = array();
       $actions['itilcategories_id']['name']           = __('Category');

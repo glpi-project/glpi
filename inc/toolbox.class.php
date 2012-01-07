@@ -654,7 +654,6 @@ class Toolbox {
     * @return 2 : creation error 1 : delete error 0: OK
    **/
    static function commonCheckForUseGLPI() {
-      global $LANG;
 
       $error = 0;
 

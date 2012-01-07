@@ -49,8 +49,6 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return _n('Mandatory field', 'Mandatory fields', $nb);
    }
 
@@ -66,7 +64,6 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       // can exists for template
       if ($item->getType() == 'TicketTemplate' && Session::haveRight("tickettemplate","r")) {
