@@ -37,11 +37,12 @@ if (!defined('GLPI_ROOT')) {
  */
 class Bookmark extends CommonDBTM {
 
-   var $auto_message_on_action=false;
+   var $auto_message_on_action = false;
 
    const WIDTH  = 750;
    const SEARCH = 1; //SEARCH SYSTEM bookmark
    const URI    = 2;
+
 
    function canCreate() {
       return Session::haveRight('bookmark_public', 'w');
@@ -157,14 +158,14 @@ class Bookmark extends CommonDBTM {
 
 
    /**
-   * Print the bookmark form
-   *
-   * @param $ID integer ID of the item
-   * @param $options array
-   *     - target for the Form
-   *     - type bookmark type when adding a new bookmark
-   *     - url when adding a new bookmark
-   *     - itemtype when adding a new bookmark
+    * Print the bookmark form
+    *
+    * @param $ID integer ID of the item
+    * @param $options array
+    *     - target for the Form
+    *     - type bookmark type when adding a new bookmark
+    *     - url when adding a new bookmark
+    *     - itemtype when adding a new bookmark
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
@@ -197,7 +198,7 @@ class Bookmark extends CommonDBTM {
       echo "<tr><th>&nbsp;</th><th>";
       if ($ID>0) {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-         printf(__('%1$s - ID %2$d'),$this->getTypeName(1),$ID);
+         printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
       } else {
          _e('New card');
       }
@@ -247,13 +248,13 @@ class Bookmark extends CommonDBTM {
 
 
    /**
-   * Prepare query to store depending of the type
-   *
-   * @param $type bookmark type
-   * @param $query_tab parameters array
-   * @param $itemtype device type
-   *
-   * @return clean query array
+    * Prepare query to store depending of the type
+    *
+    * @param $type bookmark type
+    * @param $query_tab parameters array
+    * @param $itemtype device type (default 0)
+    *
+    * @return clean query array
    **/
    function prepareQueryToStore($type, $query_tab, $itemtype=0) {
 
@@ -364,7 +365,7 @@ class Bookmark extends CommonDBTM {
 
             // Display message
             if ($partial_load) {
-               Session::addMessageAfterRedirect('Partial load of the bookmark.', false, ERROR);
+               Session::addMessageAfterRedirect(__('Partial load of the bookmark.'), false, ERROR);
             }
             // add reset value
             $query_tab['reset'] = 'reset';
@@ -378,7 +379,7 @@ class Bookmark extends CommonDBTM {
     * load a bookmark
     *
     * @param $ID ID of the bookmark
-    * @param $opener boolean load bookmark in opener window ? false -> current window
+    * @param $opener boolean load bookmark in opener window ? false -> current window (true bu default)
     *
     * @return nothing
    **/
@@ -487,7 +488,7 @@ class Bookmark extends CommonDBTM {
     * Show bookmarks list
     *
     * @param $target target to use for links
-    * @param $is_private show private of public bookmarks ?
+    * @param $is_private show private of public bookmarks ? (default 1)
     *
     * @return nothing
    **/
@@ -599,7 +600,7 @@ class Bookmark extends CommonDBTM {
     * Display bookmark buttons
     *
     * @param $type bookmark type to use
-    * @param $itemtype device type of item where is the bookmark
+    * @param $itemtype device type of item where is the bookmark (default 0)
    **/
    static function showSaveButton($type, $itemtype=0) {
       global $CFG_GLPI;
@@ -607,7 +608,7 @@ class Bookmark extends CommonDBTM {
       echo " <a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
               "/front/popup.php?popup=edit_bookmark&amp;type=$type&amp;itemtype=$itemtype&amp;url=".
               rawurlencode($_SERVER["REQUEST_URI"])."' ,'glpipopup', 'height=500, width=".
-              (Bookmark::WIDTH+250).", top=100, left=100, scrollbars=yes' );w.focus();\">";
+              (self::WIDTH+250).", top=100, left=100, scrollbars=yes' );w.focus();\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'
              title=\"".__s('Save as bookmark')."\"
              alt=\"".__s('Save as bookmark')."\" class='calendrier'>";

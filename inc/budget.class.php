@@ -89,6 +89,7 @@ class Budget extends CommonDropdown{
             case 1 :
                $item->showValuesByEntity();
                break;
+
             case 2 :
                $item->showItems();
                break;
@@ -106,7 +107,7 @@ class Budget extends CommonDropdown{
     *     - target for the Form
     *     - withtemplate : template or basic item
     *
-    *@return Nothing (display)
+    * @return Nothing (display)
     **/
    function showForm($ID, $options=array()) {
 
@@ -148,15 +149,15 @@ class Budget extends CommonDropdown{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('End date')."</td>";
       echo "<td>";
-      Html::showDateFormItem("end_date",$this->fields["end_date"]);
+      Html::showDateFormItem("end_date", $this->fields["end_date"]);
       echo "</td></tr>";
 
       if ($ID>0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Last update')."</td>";
          echo "<td>";
-         echo ($this->fields["date_mod"]?Html::convDateTime($this->fields["date_mod"])
-                                        :__('Never'));
+         echo ($this->fields["date_mod"]? Html::convDateTime($this->fields["date_mod"])
+                                        : __('Never'));
          echo "</td></tr>";
       }
 
@@ -258,9 +259,9 @@ class Budget extends CommonDropdown{
 
 
    /**
-   * Print the HTML array of Items on a budget
-   *
-   *@return Nothing (display)
+    * Print the HTML array of Items on a budget
+    *
+    * @return Nothing (display)
    **/
    function showItems() {
       global $DB;
@@ -322,7 +323,7 @@ class Budget extends CommonDropdown{
                                      `".$item->getTable()."`.`name`";
                break;
 
-               case 'Cartridge':
+               case 'Cartridge' :
                   $query = "SELECT `".$item->getTable()."`.*,
                                    `glpi_cartridgeitems`.`name`
                             FROM `glpi_infocoms`
@@ -338,7 +339,7 @@ class Budget extends CommonDropdown{
                                      `glpi_cartridgeitems`.`name`";
                break;
 
-               case 'Consumable':
+               case 'Consumable' :
                   $query = "SELECT `".$item->getTable()."`.*,
                                    `glpi_consumableitems`.`name`
                             FROM `glpi_infocoms`
@@ -413,9 +414,9 @@ class Budget extends CommonDropdown{
 
 
    /**
-   * Print the HTML array of value consumed for a budget
-   *
-   *@return Nothing (display)
+    * Print the HTML array of value consumed for a budget
+    *
+    * @return Nothing (display)
    **/
    function showValuesByEntity() {
       global $DB;
@@ -437,11 +438,11 @@ class Budget extends CommonDropdown{
                 GROUP BY `itemtype`";
 
       $result = $DB->query($query);
-      $total = 0;
+      $total  = 0;
 
-      $entities_values = array();
+      $entities_values     = array();
       $entitiestype_values = array();
-      $found_types = array();
+      $found_types          = array();
 
       if ($DB->numrows($result)) {
          while ($types = $DB->fetch_array($result)) {
@@ -485,7 +486,7 @@ class Budget extends CommonDropdown{
 
          }
 
-         $budget = new Budget();
+         $budget = new self();
          $budget->getFromDB($budgets_id);
 
          $colspan = count($found_types)+2;
@@ -502,7 +503,7 @@ class Budget extends CommonDropdown{
 
          foreach ($entities_values as $entity => $value) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td class='b'>".Dropdown::getDropdownName('glpi_entities',$entity)."</td>";
+            echo "<td class='b'>".Dropdown::getDropdownName('glpi_entities', $entity)."</td>";
             if (count($found_types)) {
                foreach ($found_types as $type => $typename) {
                   echo "<td class='right'>";

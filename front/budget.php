@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("budget", "r");
 
-Html::header(__('Budget'), $_SERVER['PHP_SELF'], "financial", "budget");
+Html::header(Budget::getTypeName(1), $_SERVER['PHP_SELF'], "financial", "budget");
 
 Search::show('Budget');
 

@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * Alert class
- */
+**/
 class Alert extends CommonDBTM {
 
    // ALERTS TYPE
@@ -46,6 +46,7 @@ class Alert extends CommonDBTM {
    const END       = 2;
    const NOTICE    = 3;
    const NOTCLOSED = 4;
+
 
    function prepareInputForAdd($input) {
 
@@ -64,7 +65,6 @@ class Alert extends CommonDBTM {
     *@param $alert_type ID of the alert type to clear
     *
     *@return nothing
-    *
    **/
    function clear($itemtype, $ID, $alert_type) {
       global $DB;
@@ -78,6 +78,9 @@ class Alert extends CommonDBTM {
    }
 
 
+   /**
+    * @param $options array
+   **/
    static function dropdown($options=array()) {
 
       if (!isset($options['value'])) {
@@ -99,6 +102,9 @@ class Alert extends CommonDBTM {
    }
 
 
+   /**
+    * @param $options array
+   **/
    static function dropdownYesNo($options = array()) {
 
       if (!isset($options['value'])) {
@@ -118,6 +124,11 @@ class Alert extends CommonDBTM {
    }
 
 
+   /**
+    * @param $name
+    * @param $value
+    * @param $options array
+   **/
    static function dropdownIntegerNever($name, $value, $options=array()) {
 
       $p['max']   = 100;
@@ -140,6 +151,11 @@ class Alert extends CommonDBTM {
    }
 
 
+   /**
+    * @param $itemtype default ''
+    * @param $items_id default ''
+    * @param $type default ''
+   **/
    static function alertExists($itemtype='', $items_id='', $type='') {
       global $DB;
 
@@ -164,7 +180,7 @@ class Alert extends CommonDBTM {
     * @param $val if not set, ask for all values, else for 1 value
     *
     * @return array or string
-    */
+   **/
    static function getAlertName($val=NULL) {
 
       $tmp[0] = Dropdown::EMPTY_VALUE;
@@ -180,6 +196,9 @@ class Alert extends CommonDBTM {
    }
 
 
+   /**
+    * @param $value
+   **/
    static function dropdownInfocomAlert($value) {
 
       Dropdown::showFromArray("default_infocom_alert", self::getAlertName(),
@@ -187,6 +206,10 @@ class Alert extends CommonDBTM {
    }
 
 
+   /**
+    * @param $itemtype
+    * @param $items_id
+   **/
    static function displayLastAlert($itemtype, $items_id) {
       global $DB;
 

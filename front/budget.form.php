@@ -52,6 +52,7 @@ if (isset($_POST["add"])) {
       $budget->refreshParentInfos();
 
       Event::log($newID, "budget", 4, "financial",
+                  //TRANS: %1$s is the user login, %2$s is the name of the item to add
                   sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    }
    Html::back();
@@ -60,7 +61,7 @@ if (isset($_POST["add"])) {
    $budget->check($_POST["id"],'w');
 
    if ($budget->delete($_POST)) {
-      Event::log($_POST["id"], "budget", 4, "financial", 
+      Event::log($_POST["id"], "budget", 4, "financial",
                   //TRANS: %s is the user login
                   sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
    }
@@ -70,7 +71,7 @@ if (isset($_POST["add"])) {
    $budget->check($_POST["id"],'w');
 
    if ($budget->restore($_POST)) {
-      Event::log($_POST["id"], "budget", 4, "financial", 
+      Event::log($_POST["id"], "budget", 4, "financial",
                   //TRANS: %s is the user login
                   sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
    }
@@ -90,7 +91,7 @@ if (isset($_POST["add"])) {
    $budget->check($_POST["id"],'w');
 
    if ($budget->update($_POST)) {
-      Event::log($_POST["id"], "budget", 4, "financial", 
+      Event::log($_POST["id"], "budget", 4, "financial",
                   //TRANS: %s is the user login
                   sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    }
