@@ -323,7 +323,7 @@ class DBConnection extends CommonDBTM {
     * @param $task to log and get param
    **/
    static function cronCheckDBreplicate($task) {
-      global $DB, $LANG;
+      global $DB;
 
       //Lauch cron only is :
       // 1 the master database is avalaible
@@ -368,7 +368,6 @@ class DBConnection extends CommonDBTM {
     * 1 line per slave is multiple
    **/
    static function showAllReplicateDelay() {
-      global $LANG;
 
       $DBSlave = self::getDBSlaveConf();
 

@@ -178,7 +178,6 @@ class Group extends CommonTreeDropdown {
    * @return Nothing (display)
    **/
    function showForm($ID, $options=array()) {
-      global $LANG;
 
       if ($ID > 0) {
          $this->check($ID, 'r');
@@ -287,7 +286,6 @@ class Group extends CommonTreeDropdown {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 

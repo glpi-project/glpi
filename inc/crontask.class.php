@@ -376,7 +376,7 @@ class CronTask extends CommonDBTM{
     * @return Nothing (display)
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if (!Session::haveRight("config","r") || !$this->getFromDB($ID)) {
          return false;
@@ -715,7 +715,6 @@ class CronTask extends CommonDBTM{
     * @return the name of last task launched
    **/
    static public function launch($mode, $max=1, $name='') {
-      global $LANG;
 
       $taskname = '';
       //If cron is launched in command line, and if memory is insufficient, display a warning in
@@ -849,7 +848,7 @@ class CronTask extends CommonDBTM{
     * @return nothing
    **/
    function showStatistics() {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       echo "<br><div class='center'>";
       echo "<table class='tab_cadre'>";
@@ -941,7 +940,7 @@ class CronTask extends CommonDBTM{
     * @return nothing
    **/
    function showHistory() {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       if (isset($_REQUEST["crontasklogs_id"]) && $_REQUEST["crontasklogs_id"]) {
          return $this->showHistoryDetail($_REQUEST["crontasklogs_id"]);
@@ -1015,7 +1014,7 @@ class CronTask extends CommonDBTM{
     * @return nothing
    **/
    function showHistoryDetail($logid) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       echo "<br><div class='center'>";
       echo "<p><a href='javascript:reloadTab(\"crontasklogs_id=0\");'>".__('Last run list')."</a>".
@@ -1075,7 +1074,6 @@ class CronTask extends CommonDBTM{
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common']           = __('Characteristics');

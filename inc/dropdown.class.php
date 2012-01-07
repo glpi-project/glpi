@@ -243,7 +243,7 @@ class Dropdown {
     * @return string the value of the dropdown or &nbsp; if not exists
    **/
    static function getDropdownName($table, $id, $withcomment=0) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $item = getItemForItemtype(getItemTypeForTable($table));
 
@@ -591,7 +591,7 @@ class Dropdown {
     * @return array (group of dropdown) of array (itemtype => localized name)
    **/
    static function getStandardDropdownItemTypes() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
       static $optgroup = NULL;
 
       if (is_null($optgroup)) {
@@ -667,7 +667,7 @@ class Dropdown {
                                  'Network'            => Network::getTypeName(2),
                                  'Vlan'               => Vlan::getTypeName(2)),
 
-                        $LANG['Internet'][0]
+                        __('Internet')
                         => array('IPNetwork'          => IPNetwork::getTypeName(2),
                                  'FQDN'               => FQDN::getTypeName(2),
                                  'WifiNetwork'        => WifiNetwork::getTypeName(2)),
@@ -1341,7 +1341,7 @@ class Dropdown {
     * @param $extraparams array of extra parameters
    **/
    static function showForMassiveAction($itemtype, $is_deleted=0, $extraparams=array()) {
-      global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
+      global $CFG_GLPI,$PLUGIN_HOOKS;
 
       /// TODO include in CommonDBTM defining only getAdditionalMassiveAction in sub classes
       /// for specific actions (return a array of action name and title)

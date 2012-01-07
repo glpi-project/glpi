@@ -388,7 +388,6 @@ class OcsServer extends CommonDBTM {
 
 
    function ocsFormImportOptions($target, $ID, $withtemplate='', $templateid='') {
-      global $LANG;
 
       $this->getFromDB($ID);
       echo "<br><div class='center'>";
@@ -2432,7 +2431,7 @@ class OcsServer extends CommonDBTM {
 
 
    static function showComputersToUpdate($ocsservers_id, $check, $start) {
-      global $DB, $DBocs, $LANG, $CFG_GLPI;
+      global $DB, $DBocs, $CFG_GLPI;
 
       self::checkOCSconnection($ocsservers_id);
       if (!Session::haveRight("ocsng", "w")) {
@@ -2670,7 +2669,7 @@ class OcsServer extends CommonDBTM {
    **/
    static function showComputersToAdd($ocsservers_id, $advanced, $check, $start, $entity=0,
                                       $tolinked=false) {
-      global $DB, $DBocs, $LANG, $CFG_GLPI;
+      global $DB, $DBocs, $CFG_GLPI;
 
       if (!Session::haveRight("ocsng", "w")) {
          return false;
@@ -5425,7 +5424,7 @@ class OcsServer extends CommonDBTM {
 
 
    static function cronOcsng($task) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       //Get a randon server id
       $ocsservers_id = self::getRandomServerID();

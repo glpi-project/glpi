@@ -380,7 +380,6 @@ class Change extends CommonITILObject {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');
@@ -572,7 +571,6 @@ class Change extends CommonITILObject {
     * @return an array
    **/
    static function getAllStatusArray($withmetaforsearch=false) {
-      global $LANG;
 
       // new, evaluation, approbation, process (sub status : test, qualification, applied), review, closed, abandoned
 
@@ -729,7 +727,7 @@ class Change extends CommonITILObject {
 
 
    function showForm($ID, $options=array()) {
-      global $LANG, $CFG_GLPI, $DB;
+      global $CFG_GLPI, $DB;
 
       if (!$this->canView()) {
         return false;

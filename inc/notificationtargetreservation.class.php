@@ -44,7 +44,6 @@ class NotificationTargetReservation extends NotificationTarget {
 
 
    function getAdditionalTargets($event='') {
-      global $LANG;
 
       if ($event != 'alert') {
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,

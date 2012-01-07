@@ -354,7 +354,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     * @param $event
    **/
    function getAdditionalTargets($event='') {
-      global $LANG;
 
       if ($event=='update') {
          $this->addTarget(Notification::OLD_TECH_IN_CHARGE, __('Former technician in charge of the ticket'));
@@ -730,7 +729,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
    function getTags() {
-      global $LANG;
 
       $itemtype  = $this->obj->getType();
       $objettype = strtolower($itemtype);

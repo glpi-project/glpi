@@ -147,7 +147,6 @@ class Rule extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab[1]['table']         = $this->getTable();
@@ -210,7 +209,7 @@ class Rule extends CommonDBTM {
     * @return nothing
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       if (!$this->isNewID($ID)) {
          $this->check($ID, 'r');
@@ -1294,7 +1293,6 @@ class Rule extends CommonDBTM {
     * @param $pattern the pattern
    **/
    function getCriteriaDisplayPattern($ID, $condition, $pattern) {
-      global $LANG;
 
       if ($condition == self::PATTERN_EXISTS
           || $condition == self::PATTERN_DOES_NOT_EXISTS
@@ -1756,7 +1754,6 @@ class Rule extends CommonDBTM {
 
 
    function showNewRuleForm($ID) {
-      global $LANG;
 
       echo "<form method='post' action='".Toolbox::getItemTypeFormURL('Entity')."'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -1782,7 +1779,6 @@ class Rule extends CommonDBTM {
 
 
    function showAndAddRuleForm($item) {
-      global $LANG;
 
       $canedit = Session::haveRight($this->right, "w");
 

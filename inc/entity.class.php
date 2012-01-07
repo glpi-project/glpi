@@ -192,7 +192,6 @@ class Entity extends CommonTreeDropdown {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');
@@ -609,7 +608,6 @@ class Entity extends CommonTreeDropdown {
     *
    **/
    function executeAddRule($input) {
-      global $LANG;
 
       $this->check($_POST["affectentity"], 'w');
 

@@ -736,7 +736,7 @@ class EntityData extends CommonDBChild {
 
 
    static function showHelpdeskOptions(Entity $entity) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $ID = $entity->getField('id');
       if (!$entity->can($ID,'r') || !Session::haveRight('entity_helpdesk','r')) {
@@ -1208,7 +1208,6 @@ class EntityData extends CommonDBChild {
 
 
    static function getSpecificValueToDisplay($field, $values, $options=array()) {
-      global $LANG;
 
       if (!is_array($values)) {
          $values = array($field => $values);
@@ -1230,7 +1229,7 @@ class EntityData extends CommonDBChild {
                case 0 :
                   return __('Never');
             }
-            return $values[$field].' '.Toolbox::ucfirst($LANG['gmt'][1]);
+            return sprintf(__('%d hour', '%d hours', $values[$field]), $values[$field]);
 
          case 'cartridges_alert_repeat' :
          case 'consumables_alert_repeat' :

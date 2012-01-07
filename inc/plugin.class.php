@@ -313,7 +313,7 @@ class Plugin extends CommonDBTM {
     *
    **/
    function listPlugins() {
-      global $LANG, $CFG_GLPI, $PLUGIN_HOOKS;
+      global $CFG_GLPI, $PLUGIN_HOOKS;
 
       $this->checkStates();
       echo "<div class='center'><table class='tab_cadrehov'>";
@@ -873,7 +873,6 @@ class Plugin extends CommonDBTM {
 
 
    function showSystemInformations($width) {
-      global $LANG;
 
       // No need to translate, this part always display in english (for copy/paste to forum)
 

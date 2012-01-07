@@ -49,7 +49,7 @@ class Link_ItemType extends CommonDBTM{
     *@return Nothing (display)
    **/
    static function showForLink($link) {
-      global $DB,$CFG_GLPI, $LANG;
+      global $DB,$CFG_GLPI;
 
       $links_id = $link->getField('id');
 
@@ -104,7 +104,6 @@ class Link_ItemType extends CommonDBTM{
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (!$withtemplate) {
          switch ($item->getType()) {

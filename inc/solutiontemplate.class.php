@@ -59,7 +59,6 @@ class SolutionTemplate extends CommonDropdown {
 
 
    function getAdditionalFields() {
-      global $LANG;
 
       return array(array('name'  => 'solutiontypes_id',
                          'label' => __('Solution type'),
@@ -75,7 +74,6 @@ class SolutionTemplate extends CommonDropdown {
     * @since version 0.83
    **/
    function getSearchOptions() {
-      global $LANG;
 
       $tab = parent::getSearchOptions();
 

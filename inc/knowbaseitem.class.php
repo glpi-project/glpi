@@ -631,7 +631,7 @@ class KnowbaseItem extends CommonDBTM {
     * @return nothing (display item : question and answer)
    **/
    function showFull($linkusers_id=true, $options=array()) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!$this->can($this->fields['id'],'r')) {
          return false;
@@ -791,7 +791,7 @@ class KnowbaseItem extends CommonDBTM {
     * @param $faq display on faq ?
    **/
    static function showList($options, $faq=0) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       // Default values of parameters
       $params["start"]                     = "0";
@@ -1039,7 +1039,7 @@ class KnowbaseItem extends CommonDBTM {
     * @return nothing (display table)
    **/
    static function showRecentPopular($target, $type, $faq=0) {
-      global $DB, $LANG;
+      global $DB;
 
       if ($type=="recent") {
          $orderby = "ORDER BY `date` DESC";
@@ -1132,7 +1132,6 @@ class KnowbaseItem extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');

@@ -738,7 +738,7 @@ class Document extends CommonDBTM {
     * @return nothing (HTML display)
    **/
    function showItems() {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $instID = $this->fields['id'];
       if (!$this->can($instID,"r")) {

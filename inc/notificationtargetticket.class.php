@@ -522,7 +522,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
 
    function getTags() {
-      global $LANG;
 
       parent::getTags();
 

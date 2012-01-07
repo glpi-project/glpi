@@ -1453,7 +1453,7 @@ class User extends CommonDBTM {
     * @return boolean : user found
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       // Affiche un formulaire User
       if ($ID != Session::getLoginUserID() && !Session::haveRight("user", "r")) {
@@ -1665,7 +1665,7 @@ class User extends CommonDBTM {
     * @return boolean : user found
    **/
    function showMyForm($target, $ID) {
-      global $CFG_GLPI, $LANG, $PLUGIN_HOOKS;
+      global $CFG_GLPI, $PLUGIN_HOOKS;
 
       // Affiche un formulaire User
       if ($ID != Session::getLoginUserID() && !$this->currentUserHaveMoreRightThan($ID)) {
@@ -1894,7 +1894,6 @@ class User extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       // forcegroup by on name set force group by for all items
       $tab = array();
@@ -2299,7 +2298,7 @@ class User extends CommonDBTM {
     * @return nothing (print out an HTML select box)
    **/
    static function dropdown($options=array()) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       // Defautl values
       $p['name']           = 'users_id';
@@ -2410,7 +2409,6 @@ class User extends CommonDBTM {
     * Simple add user form for external auth
    **/
    static function showAddExtAuthForm() {
-      global $LANG;
 
       if (!Session::haveRight("import_externalauth_users","w")) {
          return false;
@@ -2506,7 +2504,7 @@ class User extends CommonDBTM {
     * Show items of the current user
    **/
    function showItems($tech) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $ID = $this->getField('id');
 
@@ -2725,7 +2723,7 @@ class User extends CommonDBTM {
 
 
    static function manageDeletedUserInLdap($users_id) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       //User is present in DB but not in the directory : it's been deleted in LDAP
       $tmp['id'] = $users_id;
@@ -2943,7 +2941,6 @@ class User extends CommonDBTM {
     * Display information from LDAP server for user
    **/
    private function showLdapDebug() {
-      global $LANG;
 
       if ($this->fields['authtype'] != Auth::LDAP) {
          return false;
