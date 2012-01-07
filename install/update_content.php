@@ -396,8 +396,7 @@ if ($offsettable>=0 && $complete_utf8) {
    }
 
 } else {
-   echo "<p><a class='vsubmit' href='../index.php'>
-         ".$LANG['install'][64]."</a></p>";
+   echo "<p><a class='vsubmit' href='../index.php'>".__('Use GLPI')."</a></p>";
    echo "<div class='bas'></div></div></div></body></html>";
 }
 

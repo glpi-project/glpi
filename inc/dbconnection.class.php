@@ -383,9 +383,10 @@ class DBConnection extends CommonDBTM {
          //TRANS: %s is namez of server Mysql
          echo sprintf(__('Mysql server: %s, '), $name);
          if ($diff > 1000000000) {
-            echo $LANG['install'][35] . "<br>";
+            echo __("Can't connect to the database") . "<br>";
          } else if ($diff) {
-            echo sprintf(__('Difference between master and slave: %s'),Html::timestampToString($diff, 1)) . "<br>";
+            echo sprintf(__('Difference between master and slave: %s'),
+                         Html::timestampToString($diff, 1)) . "<br>";
          } else {
 
             echo sprintf(__('Difference between master and slave: %s'), __('None')) . "<br>";

@@ -898,7 +898,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
                   break;
 
                default :
-                  echo "<a class='vsubmit' href='../index.php'>".$LANG['install'][64]."</a>";
+                  echo "<a class='vsubmit' href='../index.php'>".__('Use GLPI')."</a>";
             }
          }
          echo "</div>";

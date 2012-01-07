@@ -191,17 +191,16 @@ function step1($update) {
 
 //step 2 import mysql settings.
 function step2($update) {
-   global $LANG;
 
    echo "<h3>".__('Database connection setup')."</h3>";
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='update' value='".$update."'>";
    echo "<fieldset><legend>".__('Database connection parameters')."</legend>";
-   echo "<p><label class='block'>".$LANG['install'][30] ." : </label>";
+   echo "<p><label class='block'>".__('Mysql server') ." </label>";
    echo "<input type='text' name='db_host'><p>";
-   echo "<p><label class='block'>".$LANG['install'][31] ." : </label>";
+   echo "<p><label class='block'>".__('Mysql user') ." </label>";
    echo "<input type='text' name='db_user'></p>";
-   echo "<p><label class='block'>".$LANG['install'][32]." : </label>";
+   echo "<p><label class='block'>".__('Mysql password')." </label>";
    echo "<input type='password' name='db_pass'></p></fieldset>";
    echo "<input type='hidden' name='install' value='Etape_2'>";
    echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
@@ -215,14 +214,15 @@ function step3($host, $user, $password, $update) {
    global $LANG;
 
    error_reporting(16);
-   echo "<h3>".$LANG['install'][34]."</h3>";
+   echo "<h3>".__('Test of the connection at the database')."</h3>";
    $link = mysql_connect($host,$user,$password);
 
    if (!$link || empty($host) || empty($user)) {
-      echo "<p>".$LANG['install'][35]." : \n <br>".$LANG['install'][36]." : ".mysql_error()."</p>";
+      echo "<p>".__("Can't connect to the database")."\n <br>".
+           sprintf(__('The server answered: %s'), mysql_error())."</p>";
 
       if (empty($host) || empty($user)) {
-         echo "<p>".$LANG['install'][37]."</p>";
+         echo "<p>".__('The server or/and user field is empty')."</p>";
       }
 
       echo "<form action='install.php' method='post'>";
@@ -236,7 +236,7 @@ function step3($host, $user, $password, $update) {
       echo  "<h3>".__('Database connection successful')."</h3>";
 
       if ($update == "no") {
-         echo "<p>".$LANG['install'][38]."</p>";
+         echo "<p>".__('Please select a database:')."</p>";
          echo "<form action='install.php' method='post'>";
 
          $DB_list = mysql_list_dbs($link);
@@ -249,7 +249,8 @@ function step3($host, $user, $password, $update) {
             }
          }
 
-         echo "<p><input type='radio' name='databasename' value='0'>".$LANG['install'][39];
+         echo "<p><input type='radio' name='databasename' value='0'>";
+         _e('Create a new database or use an existing one:');
          echo "&nbsp;<input type='text' name='newdatabasename'></p>";
          echo "<input type='hidden' name='db_host' value='". $host ."'>";
          echo "<input type='hidden' name='db_user' value='". $user ."'>";
@@ -261,7 +262,7 @@ function step3($host, $user, $password, $update) {
          echo "</form>";
 
       } else if ($update == "yes") {
-         echo "<p>".$LANG['install'][40]."</p>";
+         echo "<p>".__('Please select the database to update:')."</p>";
          echo "<form action='install.php' method='post'>";
 
          $DB_list = mysql_list_dbs($link);
@@ -345,18 +346,18 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
       $DB_selected = mysql_select_db($databasename, $link);
 
       if (!$DB_selected) {
-         echo $LANG['install'][41];
-         echo "<br>".$LANG['install'][36]." ". mysql_error();
+         _e('Impossible to use the database:');
+         echo "<br>".sprintf(__('The server answered: %s'), mysql_error());
          prev_form($host, $user, $password);
 
       } else {
          if (create_conn_file($host,$user,$password,$databasename)) {
             fill_db();
-            echo "<p>".$LANG['install'][43]."</p>";
+            echo "<p>".__('OK - database was initialized')."</p>";
             next_form();
 
          } else { // can't create config_db file
-            echo "<p>".$LANG['install'][47]."</p>";
+            echo "<p>".__('Impossible to write the database setup file')."</p>";
             prev_form($host, $user, $password);
          }
       }
@@ -368,11 +369,11 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
 
          if (create_conn_file($host,$user,$password,$newdatabasename)) {
             fill_db();
-            echo "<p>".$LANG['install'][43]."</p>";
+            echo "<p>".__('OK - database was initialized')."</p>";
             next_form();
 
          } else { // can't create config_db file
-            echo "<p>".$LANG['install'][47]."</p>";
+            echo "<p>".__('Impossible to write the database setup file')."</p>";
             prev_form($host, $user, $password);
          }
 
@@ -384,23 +385,23 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
                 && create_conn_file($host,$user,$password,$newdatabasename)) {
 
                fill_db();
-               echo "<p>".$LANG['install'][43]."</p>";
+               echo "<p>".__('OK - database was initialized')."</p>";
                next_form();
 
             } else { // can't create config_db file
-               echo "<p>".$LANG['install'][47]."</p>";
+               echo "<p>".__('Impossible to write the database setup file')."</p>";
                prev_form($host, $user, $password);
             }
 
          } else { // can't create database
-            echo $LANG['install'][48];
-            echo "<br>".$LANG['install'][42] . mysql_error();
+            echo __('Error in creating database !');
+            echo "<br>".sprintf(__('The server answered: %s'), mysql_error());
             prev_form($host, $user, $password);
          }
       }
 
    } else { // no db selected
-      echo "<p>".$LANG['install'][49]. "</p>";
+      echo "<p>".__("You didn't select a database !"). "</p>";
       //prev_form();
       prev_form($host, $user, $password);
    }
@@ -412,7 +413,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
 
 // finish installation
 function step7() {
-   global $LANG, $CFG_GLPI;
+   global $CFG_GLPI;
 
    require_once (GLPI_ROOT . "/inc/dbmysql.class.php");
    require_once (GLPI_CONFIG_DIR . "/config_db.php");
@@ -423,14 +424,14 @@ function step7() {
              WHERE `id` = '1'";
    $DB->query($query);
 
-   echo "<h2>".$LANG['install'][55]."</h2>";
-   echo "<p>".$LANG['install'][57]."</p>";
-   echo "<p><ul><li> ".$LANG['install'][58]."</li>";
-   echo "<li>".$LANG['install'][59]."</li>";
-   echo "<li>".$LANG['install'][60]."</li>";
-   echo "<li>".$LANG['install'][61]."</li></ul></p>";
-   echo "<p>".$LANG['install'][62]."</p>";
-   echo "<p><a class='vsubmit' href='../index.php'>".$LANG['install'][64];
+   echo "<h2>".__('The installation is finished')."</h2>";
+   echo "<p>".__('Default logins / passwords are:')."</p>";
+   echo "<p><ul><li> ".__('glpi/glpi for the  administrator account')."</li>";
+   echo "<li>".__('tech/tech for the technician account')."</li>";
+   echo "<li>".__('normal/normal for the normal account')."</li>";
+   echo "<li>".__('post-only/postonly for the postonly account')."</li></ul></p>";
+   echo "<p>".__('You can delete or modify these accounts as well as the initial data.')."</p>";
+   echo "<p><a class='vsubmit' href='../index.php'>".__('Use GLPI');
    echo "</a></p>";
 }
 
@@ -459,14 +460,13 @@ function create_conn_file($host, $user, $password, $DBname) {
 
 
 function update1($host, $user, $password, $DBname) {
-   global $LANG;
 
    if (create_conn_file($host,$user,$password,$DBname) && !empty($DBname)) {
       $from_install = true;
       include(GLPI_ROOT ."/install/update.php");
 
    } else { // can't create config_db file
-      echo $LANG['install'][70];
+      _e("Can't create the database connection file, please verify file permissions.");
       echo "<h3>".__('Do you want to continue ?')."</h3>";
       echo "<form action='install.php' method='post'>";
       echo "<input type='hidden' name='update' value='yes'>";
