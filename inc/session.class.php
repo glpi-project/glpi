@@ -498,7 +498,7 @@ class Session {
             // Default config in GLPI < 0.72 : keep it for upgrade process
             $_SESSION["glpilanguage"] = $CFG_GLPI["default_language"];
          } else {
-            $_SESSION["glpilanguage"] = "en";
+            $_SESSION["glpilanguage"] = "en_GB";
          }
       }
 
@@ -527,7 +527,7 @@ class Session {
 
       if (empty($newfile) || !is_file(GLPI_ROOT . $newfile)) {
 //          $trytoload = 'en_GB';
-         $newfile = "/locales/en.mo";
+         $newfile = "/locales/en_GB.mo";
       }
 
 //       include (GLPI_ROOT . $file);
