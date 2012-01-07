@@ -70,7 +70,7 @@ function isCommandLine() {
 function isPluginItemType($classname) {
 
    if (preg_match("/Plugin([A-Z][a-z0-9]+)([A-Z]\w+)/",$classname,$matches)) {
-      $plug = array();
+      $plug           = array();
       $plug['plugin'] = $matches[1];
       $plug['class']  = $matches[2];
       return $plug;
@@ -84,6 +84,13 @@ function isPluginItemType($classname) {
 /// Translation functions
 /// since version 0.84
 
+/**
+ * For translation
+ *
+ * @param $str : string
+ *
+ * @return translated string
+**/
 function __($str){
    global $TRANSLATE;
 
@@ -96,6 +103,13 @@ function __($str){
 }
 
 
+/**
+ * For translation
+ *
+ * @param $str : string
+ *
+ * @return protected string (with htmlentities)
+**/
 function __s($str){
    global $TRANSLATE;
 
@@ -104,12 +118,27 @@ function __s($str){
 }
 
 
+/**
+ * to delete echo in translation
+ *
+ * @param $str : string
+ *
+ * @return echo string
+**/
 function _e($str){
-
    echo "e".__($str);
 }
 
 
+/**
+ * For translation
+ *
+ * @param $sing : string in singular
+ * @param $plural : string in plural
+ * $param $nb : to select singular or plurial
+ *
+ * @return translated string
+**/
 function _n($sing, $plural, $nb){
    global $TRANSLATE;
 
@@ -117,6 +146,14 @@ function _n($sing, $plural, $nb){
 }
 
 
+/**
+ * For context in translation
+ *
+ * @param $ctx : context
+ * @param $str : string
+ *
+ * @return string
+**/
 function _c($ctx, $str) {
 
    // simulate pgettext
@@ -131,6 +168,11 @@ function _c($ctx, $str) {
 }
 
 
+/**
+ * To load classes
+ *
+ * @param $classname : class to load
+**/
 function __autoload($classname) {
    global $DEBUG_AUTOLOAD, $CFG_GLPI;
    static $notfound = array();
@@ -192,7 +234,6 @@ function __autoload($classname) {
 
       } else if (!isset($notfound["x$classname"])) {
          // trigger an error to get a backtrace, but only once (use prefix 'x' to handle empty case)
-         //Toolbox::logInFile('debug',"file $dir$item.class.php not founded trying to load class $classname\n");
          trigger_error("GLPI autoload : file $dir$item.class.php not founded trying to load class '$classname'");
          $notfound["x$classname"] = true;
       }

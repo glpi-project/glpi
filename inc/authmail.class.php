@@ -41,6 +41,7 @@ class AuthMail extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
+
    static function getTypeName($nb=0) {
       return _n('Mail server', 'Mail servers', $nb);
    }
@@ -87,46 +88,46 @@ class AuthMail extends CommonDBTM {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common'] = __('Email server');
+      $tab['common']             = __('Email server');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false;
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
 
-      $tab[3]['table']        = $this->getTable();
-      $tab[3]['field']        = 'host';
-      $tab[3]['name']         = __('Server');
-      $tab[3]['datatype']     = 'string';
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'host';
+      $tab[3]['name']            = __('Server');
+      $tab[3]['datatype']        = 'string';
 
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'connect_string';
-      $tab[4]['name']          = __('Connection string');
-      $tab[4]['massiveaction'] = false;
-      $tab[4]['datatype']      = 'string';
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'connect_string';
+      $tab[4]['name']            = __('Connection string');
+      $tab[4]['massiveaction']   = false;
+      $tab[4]['datatype']        = 'string';
 
-      $tab[6]['table']        = $this->getTable();
-      $tab[6]['field']        = 'is_active';
-      $tab[6]['name']         = __('Active');
-      $tab[6]['datatype']     = 'bool';
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'is_active';
+      $tab[6]['name']            = __('Active');
+      $tab[6]['datatype']        = 'bool';
 
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
 
-      $tab[16]['table']       = $this->getTable();
-      $tab[16]['field']       = 'comment';
-      $tab[16]['name']        = __('Comments');
-      $tab[16]['datatype']    = 'text';
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
       return $tab;
    }
@@ -139,7 +140,7 @@ class AuthMail extends CommonDBTM {
     * @param $options array
     *
     * @return Nothing (display)
-    **/
+   **/
    function showForm($ID, $options=array()) {
 
       if (!Session::haveRight("config", "w")) {
@@ -168,7 +169,7 @@ class AuthMail extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>" . __('Active') . "</td>";
          echo "<td colspan='3'>";
-         Dropdown::showYesNo('is_active',$this->fields['is_active']);
+         Dropdown::showYesNo('is_active', $this->fields['is_active']);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -184,11 +185,10 @@ class AuthMail extends CommonDBTM {
          if ($ID>0) {
             echo "<br>";
             //TRANS: %s is the datetime of update
-            printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+            printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
          }
 
          echo "</td></tr>";
-
 
          $this->showFormButtons($options);
          $this->addDivForTabs();
@@ -250,6 +250,7 @@ class AuthMail extends CommonDBTM {
 
    /**
     * Test a connexion to the IMAP/POP server
+    *
     * @param $connect_string : mail server
     * @param $login : user login
     * @param $password : user password
@@ -266,6 +267,7 @@ class AuthMail extends CommonDBTM {
 
    /**
     * Authentify a user by checking a specific mail server
+    *
     * @param $auth : identification object
     * @param $login : user login
     * @param $password : user password
@@ -280,7 +282,7 @@ class AuthMail extends CommonDBTM {
                                                        Toolbox::decodeFromUtf8($login),
                                                        Toolbox::decodeFromUtf8($password));
          if ($auth->auth_succeded) {
-            $auth->extauth = 1;
+            $auth->extauth      = 1;
             $auth->user_present = $auth->user->getFromDBbyName(addslashes($login));
             $auth->user->getFromIMAP($mail_method, Toolbox::decodeFromUtf8($login));
             //Update the authentication method for the current user
@@ -294,15 +296,17 @@ class AuthMail extends CommonDBTM {
 
    /**
     * Try to authentify a user by checking all the mail server
+    *
     * @param $auth : identification object
     * @param $login : user login
     * @param $password : user password
-    * @param $auths_id : auths_id already used for the user
-    * @param $break : if user is not found in the first directory, stop searching or try the following ones
+    * @param $auths_id : auths_id already used for the user (default 0)
+    * @param $break : if user is not found in the first directory,
+    *                 stop searching or try the following ones (true by default)
     *
     * @return identification object
    **/
-   static function tryMailAuth($auth, $login, $password, $auths_id = 0, $break=true) {
+   static function tryMailAuth($auth, $login, $password, $auths_id=0, $break=true) {
 
       if ($auths_id <= 0) {
          foreach ($auth->authtypes["mail"] as $mail_method) {

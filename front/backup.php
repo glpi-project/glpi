@@ -74,7 +74,8 @@ if ($compression == 1) {
    $filetype = "sql";
 }
 
-/*
+
+/**
  * genere un fichier backup.xml a partir de base dbhost connecte avec l'utilisateur dbuser
  * et le mot de passe dbpassword sur le serveur dbdefault
 **/
@@ -134,7 +135,7 @@ function xmlbackup() {
 
 
 ////////////////////////// DUMP SQL FUNCTIONS
-/*
+/**
  * Init time to computer time spend
 **/
 function init_time() {
@@ -167,7 +168,7 @@ function current_time() {
  * @param $from begin from
  * @param $limit limit to
 **/
-function get_content($DB, $table,$from,$limit) {
+function get_content($DB, $table, $from, $limit) {
 
    $content = "";
    $gmqr    = "";
@@ -249,14 +250,15 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
    $fileHandle = fopen($dumpFile, "rb");
 
    if (!$fileHandle) {
-      echo sprintf(__('Unauthorized access to te file %s'), $dumpFile)."<br>";
+      //TRASN: %s is the name of the file
+      echo sprintf(__('Unauthorized access to the file %s'), $dumpFile)."<br>";
       return false;
    }
 
    if ($offset != 0) {
       if (fseek($fileHandle,$offset,SEEK_SET) != 0) { //erreur
          //TRANS: %s is the number of the byte
-         echo printf(__("Unable to find the byte %s"),Html::formatNumber($offset, false, 0));
+         echo printf(__("Unable to find the byte %s"), Html::formatNumber($offset, false, 0));
          echo "<br>";
          return false;
       }
@@ -293,7 +295,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
    if ($DB->error) {
       echo "<hr>";
       //TRANS: %s is the SQL query which generates the error
-      printf(__("Mysql error starting from %s"),"[$formattedQuery]");
+      printf(__("Mysql error starting from %s"), "[$formattedQuery]");
       echo "<br>".$DB->error()."<hr>";
    }
 
@@ -319,7 +321,8 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    $fileHandle = fopen($dumpFile, "a");
 
    if (!$fileHandle) {
-      echo sprintf(__('Unauthorized access to te file %s'), $dumpFile)."<br>";
+      //TRANS: %s is the name of the file
+      echo sprintf(__('Unauthorized access to the file %s'), $dumpFile)."<br>";
       return false;
    }
 
@@ -387,7 +390,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    if ($DB->error()) {
       echo "<hr>";
       //TRANS: %s is the SQL query which generates the error
-      printf(__("Mysql error starting from %s"),"[$formattedQuery]");
+      printf(__("Mysql error starting from %s"), "[$formattedQuery]");
       echo "<br>".$DB->error()."<hr>";
    }
    $offsettable = -1;
@@ -573,11 +576,11 @@ echo "<div class='center'><table class='tab_glpi'><tr><td>".
      "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".__s('Deleted')."\">".
      "</td>";
 echo "<td><a class='vsubmit'
-           href=\"javascript:confirmAction('".addslashes(__('Backup the database ?'))."',
+           href=\"javascript:confirmAction('".__s('Backup the database ?')."',
                                            'backup.php?dump=dump')\">".__('SQL Dump').
      "</a>&nbsp;</td>";
 echo "<td><a class='vsubmit'
-           href=\"javascript:confirmAction('".addslashes(__('Backup the database ?'))."',
+           href=\"javascript:confirmAction('".__s('Backup the database ?')."',
                                            'backup.php?xmlnow=xmlnow')\">".__('XML Dump').
       "</a>&nbsp;</td>";
 
@@ -616,13 +619,13 @@ if (count($files)) {
            "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
            "<td>&nbsp;";
            //TRANS: %s is the filename
-           $string = sprintf(__('Delete this file %s ?'),$file);
+           $string = sprintf(__s('Delete the file %s ?'), $file);
            echo "<a href=\"javascript:confirmAction('$string', 'backup.php?delfile=$file')\">".
                   __('Delete').
            "</a>&nbsp;</td>".
            "<td>&nbsp;";
            //TRANS: %s is the filename
-           $string = sprintf(__s('Replace the current database with the backup file %s ?'),$file);
+           $string = sprintf(__s('Replace the current database with the backup file %s ?'), $file);
            echo "<a href=\"javascript:confirmAction('$string',
                                                     'backup.php?file=$file&amp;donotcheckversion=1')\">".
                   __('Restore')."</a>&nbsp;</td>".

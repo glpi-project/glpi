@@ -80,7 +80,6 @@ class Ajax {
     *
     * @param $id ID of the ajax item
     * @param $size size of the input text field
-    *
    **/
    static function displaySearchTextForDropdown($id, $size=4) {
       global $CFG_GLPI;
@@ -210,10 +209,10 @@ class Ajax {
     * @param $events array of the observed events
     * @param $minsize minimum size of data to update content
     * @param $forceloadfor array of content which must force update content
-    *
    **/
    static function updateItemOnEvent($toobserve, $toupdate, $url, $parameters=array(),
-                                      $events=array("change"), $minsize = -1, $forceloadfor=array()) {
+                                      $events=array("change"), $minsize = -1,
+                                      $forceloadfor=array()) {
 
       echo "<script type='text/javascript'>";
       self::updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters, $events, $minsize,
@@ -229,10 +228,8 @@ class Ajax {
     * @param $toupdate id of the item to update
     * @param $url Url to get datas to update the item
     * @param $parameters Parameters to send to ajax URL
-    *
    **/
    static function updateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters=array()) {
-
       self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("change"));
    }
 
@@ -275,7 +272,6 @@ class Ajax {
     * @param $events array of the observed events
     * @param $minsize minimum size of data to update content
     * @param $forceloadfor array of content which must force update content
-    *
    **/
    static function updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=array(),
                                            $events=array("change"), $minsize = -1,
@@ -323,10 +319,9 @@ class Ajax {
     * Javascript code for update an item (Javascript code only)
     *
     * @param $options array of options
-    *    - toupdate : array / Update a specific item on select change on dropdown
-    *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for informations)
-    *                   and may have moreparams)
-    *
+    *  - toupdate : array / Update a specific item on select change on dropdown
+    *               (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for informations)
+    *                and may have moreparams)
    **/
    static function commonDropdownUpdateItem($options) {
 
@@ -354,7 +349,7 @@ class Ajax {
                }
             }
 
-            Ajax::updateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"],
+           self::updateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"],
                                            $data['to_update'], $data['url'], $paramsupdate);
          }
       }
@@ -369,7 +364,6 @@ class Ajax {
     * @param $parameters Parameters to send to ajax URL
     * @param $toobserve id of another item used to get value in case of __VALUE__ used
     *                   array of id to get value in case of __VALUE#__ used
-    *
    **/
    static function updateItemJsCode($toupdate, $url, $parameters=array(), $toobserve="") {
 
@@ -422,7 +416,6 @@ class Ajax {
     * @param $params Parameters to send to ajax URL
     * @param $default Default datas t print in case of $use_ajax
     * @param $rand Random parameter used
-    *
    **/
    static function dropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;", $rand=0) {
       global $CFG_GLPI, $DB;

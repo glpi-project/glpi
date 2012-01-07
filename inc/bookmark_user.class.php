@@ -34,8 +34,7 @@ if (!defined('GLPI_ROOT')) {
 
 class Bookmark_User extends CommonDBTM {
 
-    var $auto_message_on_action=false;
+    var $auto_message_on_action = false;
 
 }
-
 ?>

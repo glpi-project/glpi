@@ -39,10 +39,10 @@ if (!defined('GLPI_ROOT')) {
 /// Class AutoUpdateSystem
 class AutoUpdateSystem extends CommonDropdown {
 
-   static function getTypeName($nb=0) {
 
+   static function getTypeName($nb=0) {
       return _n('Update Source', 'Update Sources', $nb);
    }
-}
 
+}
 ?>

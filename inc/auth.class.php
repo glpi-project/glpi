@@ -79,12 +79,12 @@ class Auth {
 
    /**
     * Is the user exists in the DB
-    * @param $options array containing condition : array('name'=>'glpi') or array('email' => 'test at test.com')
+    * @param $options array containing condition : array('name'=>'glpi')
+    *                                              or array('email' => 'test at test.com')
     *
     * @return 0 (Not in the DB -> check external auth),
     *         1 ( Exist in the DB with a password -> check first local connection and external after),
     *         2 (Exist in the DB with no password -> check only external auth)
-    *
    **/
    function userExists($options=array()) {
       global $DB;
@@ -133,7 +133,6 @@ class Auth {
     * @param $pass Password to try
     *
     * @return boolean : connection success
-    *
    **/
    function connection_imap($host, $login, $pass) {
 
@@ -156,14 +155,14 @@ class Auth {
 
 
    /**
-   * Find a user in a LDAP and return is BaseDN
-   * Based on GRR auth system
-   *
-   * @param $ldap_method : ldap_method array to use
-   * @param $login User Login
-   * @param $password User Password
-   *
-   * @return String : basedn of the user / false if not founded
+    * Find a user in a LDAP and return is BaseDN
+    * Based on GRR auth system
+    *
+    * @param $ldap_method : ldap_method array to use
+    * @param $login User Login
+    * @param $password User Password
+    *
+    * @return String : basedn of the user / false if not founded
    **/
    function connection_ldap($ldap_method, $login, $password) {
 
@@ -284,7 +283,7 @@ class Auth {
    /**
     * Try to get login of external auth method
     *
-    * @param $authtype extenral auth type
+    * @param $authtype external auth type (default 0)
     *
     * @return boolean : user login success
    **/
@@ -386,6 +385,7 @@ class Auth {
 
    /**
     * Add a message to the global identification error message
+    *
     * @param $message the message to add
     *
     * @return nothing
@@ -403,10 +403,10 @@ class Auth {
     *
     * @param $login_name string
     * @param $login_password string
-    * @param $noauto boolean
+    * @param $noauto boolean (false by default)
     *
     * @return boolean (success)
-    */
+   */
    function Login($login_name, $login_password, $noauto=false) {
       global $DB, $CFG_GLPI;
 
@@ -669,8 +669,8 @@ class Auth {
     *
     * @param $authtype Authentication method
     * @param $auths_id Authentication method ID
-    * @param $link show links to config page ?
-    * @param $name override the name if not empty
+    * @param $link show links to config page ? (default 0)
+    * @param $name override the name if not empty (default '')
     *
     * @return string
     */
@@ -681,7 +681,7 @@ class Auth {
             $auth = new AuthLdap();
             if ($auth->getFromDB($auths_id)) {
                //TRANS: %1$s is the auth method type, %2$s the auth method name or link
-               return sprintf(__('%1$s: %2$s'),$auth->getTypeName(1), $auth->getLink());
+               return sprintf(__('%1$s: %2$s'), $auth->getTypeName(1), $auth->getLink());
             }
             return sprintf(__('%1$s: %2$s'), __('LDAP directory'), $name);
 
@@ -700,7 +700,7 @@ class Auth {
                   //TRANS: %1$s is the auth method type, %2$s an optional method type
                   //       %3$s the name of the opt method
                   return sprintf(__('%1$s + %2$s: %3$s'),
-                                    __('CAS'), $auth->getTypeName(1), $auth->getLink());
+                                 __('CAS'), $auth->getTypeName(1), $auth->getLink());
                }
             }
             return __('CAS');
@@ -712,7 +712,7 @@ class Auth {
                   //TRANS: %1$s is the auth method type, %2$s an optional method type
                   //       %3$s the name of the opt method
                   return sprintf(__('%1$s + %2$s: %3$s'),
-                                    __('x509 certificate authentication'),
+                                 __('x509 certificate authentication'),
                                     $auth->getTypeName(1), $auth->getLink());
                }
             }
@@ -725,7 +725,7 @@ class Auth {
                   //TRANS: %1$s is the auth method type, %2$s an optional method type
                   //       %3$s the name of the opt method
                   return sprintf(__('%1$s + %2$s: %3$s'),
-                                    __('Other'), $auth->getTypeName(1), $auth->getLink());
+                                 __('Other'), $auth->getTypeName(1), $auth->getLink());
                }
             }
             return __('Other');
@@ -746,7 +746,7 @@ class Auth {
     *
     * @param $authtype Authentication method
     * @param $auths_id Authentication method ID
-    */
+   **/
    static function getMethodsByID($authtype, $auths_id) {
       global $CFG_GLPI;
 
@@ -794,14 +794,17 @@ class Auth {
       if (!empty($CFG_GLPI["x509_email_field"])) {
          return true;
       }
+
       // Existing auth method
       if (!empty($CFG_GLPI["existing_auth_server_field"])) {
          return true;
       }
+
       // Using CAS server
       if (!empty($CFG_GLPI["cas_host"])) {
          return true;
       }
+
       return false;
    }
 
@@ -835,8 +838,8 @@ class Auth {
    /**
     * Check alternate authentication systems
     *
-    * @param $redirect : need to redirect (true) or get type of Auth system which match
-    * @param $redirect_string : redirect string if exists
+    * @param $redirect : need to redirect (true) or get type of Auth system which match (false by default)
+    * @param $redirect_string : redirect string if exists (default '')
     *
     * @return nothing if redirect is true, else Auth system ID
    **/
@@ -891,7 +894,7 @@ class Auth {
     * @param $user User
     *
     * @return nothing
-    */
+   **/
    static function showSynchronizationForm(User $user) {
       global $DB, $CFG_GLPI;
 
@@ -965,7 +968,7 @@ class Auth {
      *
      * @return boolean
     **/
-    static function isValidLogin($login="") {
+    static function isValidLogin($login) {
        return preg_match( "/^[[:alnum:]@.\-_ ]+$/i", $login);
     }
 
@@ -992,6 +995,7 @@ class Auth {
       }
       return true;
    }
+
 
    /**
     * Form for configuration authentification
@@ -1033,7 +1037,7 @@ class Auth {
               "</tr>\n";
       } else {
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         echo "<p class='red'>". __("The CURL or DOMXML extension for your PHP parser isn't installed");
+         echo "<p class='red'>".__("The CURL or DOMXML extension for your PHP parser isn't installed");
          echo "</p>";
          echo "<p>" .__('Impossible to use CAS as external source of connection')."</p></td></tr>\n";
       }
@@ -1055,24 +1059,24 @@ class Auth {
       }
       echo "</th></tr>\n";
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>" . __('Field storage of the login in the HTTP request') . "</td>";
+      echo "<td class='center'>". __('Field storage of the login in the HTTP request')."</td>";
       echo "<td><select name='existing_auth_server_field'>";
       echo "<option value=''>&nbsp;</option>\n";
       echo "<option value='HTTP_AUTH_USER' " .
-             ($CFG_GLPI["existing_auth_server_field"]=="HTTP_AUTH_USER" ? " selected " : "") . ">".
+             ($CFG_GLPI["existing_auth_server_field"]=="HTTP_AUTH_USER" ? " selected " : "").">".
              "HTTP_AUTH_USER</option>\n";
       echo "<option value='REMOTE_USER' " .
              ($CFG_GLPI["existing_auth_server_field"]=="REMOTE_USER" ? " selected " : "") . ">".
              "REMOTE_USER</option>\n";
       echo "<option value='PHP_AUTH_USER' " .
-             ($CFG_GLPI["existing_auth_server_field"]=="PHP_AUTH_USER" ? " selected " : "") . ">".
+             ($CFG_GLPI["existing_auth_server_field"]=="PHP_AUTH_USER" ? " selected " : "").">".
              "PHP_AUTH_USER</option>\n";
       echo "<option value='USERNAME' " .
              ($CFG_GLPI["existing_auth_server_field"]=="USERNAME" ? " selected " : "") . ">".
              "USERNAME</option>\n";
       echo "<option value='REDIRECT_REMOTE_USER' " .
-             ($CFG_GLPI["existing_auth_server_field"]=="REDIRECT_REMOTE_USER" ? " selected " : "") .">".
-             "REDIRECT_REMOTE_USER</option>\n";
+             ($CFG_GLPI["existing_auth_server_field"]=="REDIRECT_REMOTE_USER" ? " selected " : "") .
+            ">REDIRECT_REMOTE_USER</option>\n";
       //For apache mod_proxy
       echo "<option value='HTTP_REMOTE_USER' " .
              ($CFG_GLPI["existing_auth_server_field"]=="HTTP_REMOTE_USER" ? " selected " : "") .">".
