@@ -833,9 +833,6 @@ $LANG['install'][27]="Try again";
 $LANG['install'][28]="Database connection setup";
 $LANG['install'][29]="Database connection parameters";
 $LANG['install'][30]="Mysql server";
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['install'][31]="Mysql user";
 $LANG['install'][32]="Mysql password";
 $LANG['install'][34]="Test of the connection at the database";
@@ -867,6 +864,9 @@ $LANG['install'][67]="The magic_quotes_sybase option isn't active on your server
 $LANG['install'][68]="Test session auto start";
 $LANG['install'][69]="session.auto_start is activated. See .htaccess file in the GLPI root for more information.";
 $LANG['install'][70]="Can't create the database connection file, please verify file permissions.";
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['install'][71]="Mysql extension test.";
 $LANG['install'][72]="You must install the MySQL extension for PHP.";
 $LANG['install'][73]="Ok - the function mysql_query() exist - Perfect !";

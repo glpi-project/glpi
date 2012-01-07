@@ -721,9 +721,11 @@ class Toolbox {
 
       //Test for session auto_start
       if (ini_get('session.auto_start')==1) {
-         echo "<tr class='tab_bg_1'><td class='b'>".$LANG['install'][68]."</td>";
+         echo "<tr class='tab_bg_1'><td class='b'>".__('Test session auto start')."</td>";
          echo "<td class='red'>";
-         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][69]."</td></tr>";
+         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
+               __('session.auto_start is activated. See .htaccess file in the GLPI root for more information.').
+               "</td></tr>";
          $error = 2;
       }
 
@@ -741,16 +743,21 @@ class Toolbox {
       }
 
       //Test for sybase extension loaded or not.
-      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][65]."</td>";
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('magic_quotes_sybase extension test')."</td>";
 
       if (ini_get('magic_quotes_sybase')) {
          echo "<td class='red'>";
-         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][66]."</td></tr>";
+         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
+               __('GLPI does not work with the magic_quotes_sybase option ; Please turn it off and retry').
+               "</td></tr>";
          $error = 2;
 
       } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][67].
-                    "\" title=\"".$LANG['install'][67]."\"></td></tr>";
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+              __s("The magic_quotes_sybase option isn't active on your server - Perfect !").
+              "\" title=\"".
+              __s("The magic_quotes_sybase option isn't active on your server - Perfect !").
+              "\"></td></tr>";
       }
 
       //Test for json_encode function.

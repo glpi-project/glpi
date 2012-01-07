@@ -140,7 +140,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
             break;
 
          case 2 : // GLPI_SESSION_DIR not writable
-            echo $LANG['install'][50]." : ".GLPI_SESSION_DIR;
+            _e('Checking write permissions for session files');
+            echo "<br>".GLPI_SESSION_DIR;
             break;
       }
    }
@@ -153,7 +154,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo '</div>';
    }
 
-  
+
 
    echo "</div>"; // end contenu login
 

@@ -490,9 +490,9 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . $LANG['install'][31] . "</td>";
+      echo "<td>" . __('Mysql user') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbuser' value='".$DBSlave->dbuser."'></td>";
-      echo "<td>" . $LANG['install'][32] . "</td>";
+      echo "<td>" . __('Mysql password') . "</td>";
       echo "<td><input type='password' name='_dbreplicate_dbpassword' value='".
                  $DBSlave->dbpassword."'>";
       echo "</td></tr>";
@@ -1191,8 +1191,8 @@ class Config extends CommonDBTM {
       $dir_to_check = array(GLPI_CONFIG_DIR  => __s('Checking write permissions for setting files'),
                             GLPI_DOC_DIR     => __s('Checking write permissions for document files'),
                             GLPI_DUMP_DIR    => __s('Checking write permissions for dump files'),
-                            GLPI_SESSION_DIR => $LANG['install'][50],
-                            GLPI_CRON_DIR    => $LANG['install'][52],
+                            GLPI_SESSION_DIR => __s('Checking write permissions for session files'),
+                            GLPI_CRON_DIR    => __s('Check write permissions for automatic actions files'),
                             GLPI_CACHE_DIR   => $LANG['install'][99],
                             GLPI_GRAPH_DIR   => $LANG['install'][106]);
       $error = 0;
@@ -1232,7 +1232,8 @@ class Config extends CommonDBTM {
 
       // Only write test for GLPI_LOG as SElinux prevent removing log file.
       if (!$fordebug) {
-         echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][53]."</td>";
+         echo "<tr class='tab_bg_1'><td class='left b'>".
+               __('Checking write permissions for log files')."</td>";
       }
 
       if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
