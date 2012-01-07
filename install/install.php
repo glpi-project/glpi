@@ -93,7 +93,6 @@ function choose_language() {
 
 
 function acceptLicence() {
-   global $LANG;
 
    echo "<div class='center'>";
    echo "<textarea id='license' cols='85' rows='10' readonly='readonly'>";
@@ -105,13 +104,14 @@ function acceptLicence() {
 
    echo "<form action='install.php' method='post'>";
    echo "<p>";
-   echo "<input type='radio' name='install' id='agree' value='Licence'>";
-   echo " <label for= agree >".$LANG['install'][93]." </label></p>";
+   echo "<input type='radio' name='install' id='agree' value='Licence'><label for= agree >";
+   echo __('I have read and ACCEPT the terms of the license written above.')." </label></p>";
 
    echo "<br>";
    echo "<input type='radio' name='install' value='lang_select' id='disagree' checked='checked'>";
-   echo " <label for='disagree'>".$LANG['install'][94]." </label>";
-   echo "<p><input type='submit' name='submit' class='submit' value=\"".__('Continue')."\"></p>";
+   echo " <label for='disagree'>";
+   echo __('I have read and DO NOT ACCEPT the terms of the license written above')." </label>";
+   echo "<p><input type='submit' name='submit' class='submit' value=\"".__s('Continue')."\"></p>";
    echo "</form>";
    echo "</div>";
 }
@@ -211,7 +211,6 @@ function step2($update) {
 
 //step 3 test mysql settings and select database.
 function step3($host, $user, $password, $update) {
-   global $LANG;
 
    error_reporting(16);
    echo "<h3>".__('Test of the connection at the database')."</h3>";
@@ -319,7 +318,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
 
    //Fill the database
    function fill_db() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       //include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
       include_once (GLPI_CONFIG_DIR . "/config_db.php");
@@ -365,7 +364,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
    } else if (!empty($newdatabasename)) { // create new db
       // Try to connect
       if (mysql_select_db($newdatabasename, $link)) {
-         echo "<p>".$LANG['install'][82]."</p>";
+         echo "<p>".__('Database created')."</p>";
 
          if (create_conn_file($host,$user,$password,$newdatabasename)) {
             fill_db();
@@ -379,7 +378,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
 
       } else { // try to create the DB
          if (mysql_query("CREATE DATABASE IF NOT EXISTS `".$newdatabasename."`")) {
-            echo "<p>".$LANG['install'][82]."</p>";
+            echo "<p>".__('Database created')."</p>";
 
             if (mysql_select_db($newdatabasename, $link)
                 && create_conn_file($host,$user,$password,$newdatabasename)) {
@@ -517,17 +516,18 @@ if (!isset($_POST["install"])) {
 
    switch ($_POST["install"]) {
       case "lang_select" : // lang ok, go accept licence
-         header_html("".$LANG['install'][92]."");
+         header_html(__('Licence'));
          acceptLicence();
          break;
 
       case "Licence" : // licence  ok, go choose installation or Update
-         header_html("".$LANG['install'][81]."");
+         header_html(__('Beginning of the installation'));
          step0();
          break;
 
       case "Etape_0" : // choice ok , go check system
-         header_html($LANG['install'][77]." 0");
+         //TRANS %s is step number
+         header_html(sprintf(__('Step %d'), 0));
          $_SESSION["Test_session_GLPI"] = 1;
          step1($_POST["update"]);
          break;
@@ -540,17 +540,17 @@ if (!isset($_POST["install"])) {
          error_reporting(E_ALL | E_STRICT);
          set_error_handler(array('Toolbox', 'userErrorHandlerDebug'));
 
-         header_html($LANG['install'][77]." 1");
+         header_html(sprintf(__('Step %d'), 1));
          step2($_POST["update"]);
          break;
 
       case "Etape_2" : // mysql settings ok, go test mysql settings and select database.
-         header_html($LANG['install'][77]." 2");
+         header_html(sprintf(__('Step %d'), 2));
          step3($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["update"]);
          break;
 
       case "Etape_3" : // Create and fill database
-         header_html($LANG['install'][77]." 3");
+         header_html(sprintf(__('Step %d'), 3));
          if (empty($_POST["databasename"])) {
             $_POST["databasename"] = "";
          }
@@ -562,7 +562,7 @@ if (!isset($_POST["install"])) {
          break;
 
       case "Etape_4" : // finish installation
-         header_html($LANG['install'][77]." 4");
+         header_html(sprintf(__('Step %d'), 4));
          step7();
          break;
 

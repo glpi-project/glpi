@@ -864,9 +864,6 @@ $LANG['install'][67]="The magic_quotes_sybase option isn't active on your server
 $LANG['install'][68]="Test session auto start";
 $LANG['install'][69]="session.auto_start is activated. See .htaccess file in the GLPI root for more information.";
 $LANG['install'][70]="Can't create the database connection file, please verify file permissions.";
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['install'][71]="Mysql extension test.";
 $LANG['install'][72]="You must install the MySQL extension for PHP.";
 $LANG['install'][73]="Ok - the function mysql_query() exist - Perfect !";
@@ -894,9 +891,12 @@ $LANG['install'][100]="The directory could not be created.";
 $LANG['install'][101]="The directory was created but could not be removed.";
 $LANG['install'][102]="Test json functions";
 $LANG['install'][103]="GLPI can't work correctly without the json_encode and json_decode functions";
-$LANG['install'][104]="mbstring extension test";
+$LANG['install'][104]="Mbstring extension test";
 $LANG['install'][105]="Mbstring extension of your parser PHP is not installed";
 $LANG['install'][106]="Checking write permissions for graphic files";
+
+
+/// TODO Before is ok for migration to gettext
 
 $LANG['job'][1]="Incident";
 $LANG['job'][2]="Request";

@@ -730,7 +730,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<th>&nbsp;</th>";
       }
       echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-      echo "<th>" .__('Version')."</th><th>" . $LANG['install'][92] . "</th></tr>\n";
+      echo "<th>" .__('Version')."</th><th>" . __('Licence') . "</th></tr>\n";
 
       return $cat;
    }

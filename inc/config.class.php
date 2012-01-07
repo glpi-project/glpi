@@ -418,7 +418,7 @@ class Config extends CommonDBTM {
     * @return Nothing (display)
    **/
    function showFormAuthentication() {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("config", "w")) {
          return false;
@@ -460,7 +460,7 @@ class Config extends CommonDBTM {
     * @return Nothing (display)
    **/
    function showFormDBSlave() {
-      global $DB, $LANG, $CFG_GLPI, $DBSlave;
+      global $DB, $CFG_GLPI, $DBSlave;
 
       if (!Session::haveRight("config", "w")) {
          return false;
@@ -1181,20 +1181,19 @@ class Config extends CommonDBTM {
    /**
     * Check Write Access to needed directories
     *
-    * @param $fordebug boolean display for debug
+    * @param $fordebug boolean display for debug (no html, no gettext required)
     *
     * @return 2 : creation error 1 : delete error 0: OK
    **/
    static function checkWriteAccessToDirs($fordebug=false) {
-      global $LANG;
 
-      $dir_to_check = array(GLPI_CONFIG_DIR  => __s('Checking write permissions for setting files'),
-                            GLPI_DOC_DIR     => __s('Checking write permissions for document files'),
-                            GLPI_DUMP_DIR    => __s('Checking write permissions for dump files'),
-                            GLPI_SESSION_DIR => __s('Checking write permissions for session files'),
-                            GLPI_CRON_DIR    => __s('Check write permissions for automatic actions files'),
-                            GLPI_CACHE_DIR   => $LANG['install'][99],
-                            GLPI_GRAPH_DIR   => $LANG['install'][106]);
+      $dir_to_check = array(GLPI_CONFIG_DIR  => __('Checking write permissions for setting files'),
+                            GLPI_DOC_DIR     => __('Checking write permissions for document files'),
+                            GLPI_DUMP_DIR    => __('Checking write permissions for dump files'),
+                            GLPI_SESSION_DIR => __('Checking write permissions for session files'),
+                            GLPI_CRON_DIR    => __('Check write permissions for automatic actions files'),
+                            GLPI_CACHE_DIR   => __('Checking write permissions for cache files'),
+                            GLPI_GRAPH_DIR   => __('Checking write permissions for graphic files'));
       $error = 0;
 
       foreach ($dir_to_check as $dir => $message) {
@@ -1204,18 +1203,21 @@ class Config extends CommonDBTM {
          }
          $tmperror = Toolbox::testWriteAccessToDirectory($dir);
 
-         $errors = array(4 => $LANG['install'][100],
-                         3 => $LANG['install'][101],
+         $errors = array(4 => __('The directory could not be created.'),
+                         3 => __('The directory was created but could not be removed.'),
                          2 => __('The file could not be created.'),
-                         1 => __s("The file was created but can't be deleted."));
+                         1 => __("The file was created but can't be deleted."));
 
          if ($tmperror > 0) {
             if ($fordebug) {
-               echo "<img src='".GLPI_ROOT."/pics/redbutton.png'> ".$LANG['install'][97]." $dir - ".
-                              $errors[$tmperror]."\n";
+               echo "<img src='".GLPI_ROOT."/pics/redbutton.png'> ".
+                  sprintf(__('Check permissions to the directory: %s'), $dir).
+                  " ".$errors[$tmperror]."\n";
             } else {
                echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'><p class='red'>".
-                          $errors[$tmperror]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
+                    $errors[$tmperror]."</p> ".
+                    sprintf(__('Check permissions to the directory: %s'), $dir).
+                    "'</td></tr>";
             }
             $error = 2;
          } else {
@@ -1247,12 +1249,12 @@ class Config extends CommonDBTM {
 
       } else {
          if ($fordebug) {
-            echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][97]." : ".
-                           GLPI_LOG_DIR."\n";
+            echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
+                  sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."\n";
          } else {
             echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
-                      "<p class='red'>".__s("The file was created but can't be deleted.")."</p>".
-                      $LANG['install'][97]."'".GLPI_LOG_DIR."'</td></tr>";
+                 "<p class='red'>".__s("The file was created but can't be deleted.")."</p>".
+                 sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."</td></tr>";
          }
          $error = 1;
       }
