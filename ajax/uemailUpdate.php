@@ -52,7 +52,7 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
       $emails        = $user->getAllEmails();
    }
 
-   echo $LANG['job'][19].'&nbsp;:&nbsp;';
+   echo __('Email followup').'&nbsp;';
 
    $default_notif = true;
    if (isset($_REQUEST['use_notification'])) {

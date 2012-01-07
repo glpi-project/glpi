@@ -356,7 +356,6 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');
@@ -387,7 +386,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $tab[6]['table']         = $this->getTable();
       $tab[6]['field']         = 'actiontime';
-      $tab[6]['name']          = $LANG['job'][20];
+      $tab[6]['name']          = __('Total duration');
       $tab[6]['datatype']      = 'actiontime';
       $tab[6]['massiveaction'] = false;
 
@@ -574,7 +573,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @return Nothing (display function)
    **/
    static function genericDisplayPlanningItem($itemtype, $val, $who, $type="", $complete=0) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $rand      = mt_rand();
       $styleText = "";
@@ -657,7 +656,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
    function showInObjectSumnary(CommonITILObject $item, $rand, $showprivate = false) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $canedit = $this->can($this->fields['id'],'w');
 
@@ -700,19 +699,10 @@ abstract class CommonITILTask  extends CommonDBTM {
       //else echo "--no--";
       echo Html::convDateTime($this->fields["date"]) . "</td>";
       echo "<td class='left'>" . nl2br($this->fields["content"]) . "</td>";
-
-      $units = Toolbox::getTimestampTimeUnits($this->fields["actiontime"]);
-
-      $hour   = $units['hour']+24*$units['day'];
-      $minute = $units['minute'];
       echo "<td>";
-      if ($hour) {
-         echo "$hour " . Toolbox::ucfirst($LANG['gmt'][1]) . "<br>";
-      }
-      if ($minute || !$hour) {
-         echo "$minute " . $LANG['job'][22] . "</td>";
-      }
+      echo Html::timestampToString($this->fields["actiontime"], 0);
 
+      echo "</td>";
       echo "<td>" . getUserName($this->fields["users_id"]) . "</td>";
       if ($this->maybePrivate() && $showprivate) {
          echo "<td>".Dropdown::getYesNo($this->fields["is_private"])."</td>";
@@ -743,7 +733,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     *     -  parent Object : the object
    **/
    function showForm($ID, $options=array()) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (isset($options['parent']) && !empty($options['parent'])) {
          $item = $options['parent'];
@@ -883,7 +873,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     * Show the current task sumnary
    **/
    function showSummary(CommonITILObject $item) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!$this->canView()) {
          return false;
@@ -960,7 +950,6 @@ abstract class CommonITILTask  extends CommonDBTM {
     * Form for Ticket or Problem Task on Massive action
    **/
    function showFormMassiveAction() {
-      global $LANG;
 
       echo "&nbsp;".__('Category')."&nbsp;";
       Dropdown::show('TaskCategory');

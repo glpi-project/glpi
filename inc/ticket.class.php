@@ -325,7 +325,6 @@ class Ticket extends CommonITILObject {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (Session::haveRight("show_all_ticket","1")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
@@ -531,7 +530,7 @@ class Ticket extends CommonITILObject {
 
 
    function prepareInputForUpdate($input) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       // Get ticket : need for comparison
       $this->getFromDB($input['id']);
@@ -931,7 +930,7 @@ class Ticket extends CommonITILObject {
 
 
    function prepareInputForAdd($input) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       // Standard clean datas
       $input =  parent::prepareInputForAdd($input);
@@ -1133,7 +1132,7 @@ class Ticket extends CommonITILObject {
 
 
    function post_addItem() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       // Log this event
       Event::log($this->fields['id'], "ticket", 4, "tracking",
@@ -1263,7 +1262,7 @@ class Ticket extends CommonITILObject {
                                           " (".sprintf(__('Ticket %s'),
                                           "<a href='".$CFG_GLPI["root_doc"].
                                             "/front/ticket.form.php?id=".$this->fields['id']."'>".
-                                          $this->fields['id']."</a>)");
+                                          $this->fields['id']."</a>)"));
       }
 
    }
@@ -1497,7 +1496,6 @@ class Ticket extends CommonITILObject {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');
@@ -1568,7 +1566,7 @@ class Ticket extends CommonITILObject {
 
       $tab[82]['table']         = $this->getTable();
       $tab[82]['field']         = 'is_late';
-      $tab[82]['name']          = $LANG['job'][17];
+      $tab[82]['name']          = __('Late');
       $tab[82]['datatype']      = 'bool';
       $tab[82]['massiveaction'] = false;
 
@@ -1619,7 +1617,7 @@ class Ticket extends CommonITILObject {
 
       $tab[45]['table']         = $this->getTable();
       $tab[45]['field']         = 'actiontime';
-      $tab[45]['name']          = $LANG['job'][20];
+      $tab[45]['name']          = __('Total duration');
       $tab[45]['datatype']      = 'timestamp';
       $tab[45]['massiveaction'] = false;
       $tab[45]['nosearch']      = true;
@@ -2033,7 +2031,6 @@ class Ticket extends CommonITILObject {
     * @return an array
    **/
    static function getAllStatusArray($withmetaforsearch=false) {
-      global $LANG;
 
       // To be overridden by class
       $tab = array('new'     => __('New'),
@@ -2184,7 +2181,7 @@ class Ticket extends CommonITILObject {
     * @return nothing (print out an HTML select box)
    **/
    static function dropdownMyDevices($userID=0, $entity_restrict=-1, $itemtype=0, $items_id=0) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if ($userID == 0) {
          $userID = Session::getLoginUserID();
@@ -2470,7 +2467,7 @@ class Ticket extends CommonITILObject {
    **/
    static function dropdownAllDevices($myname, $itemtype, $items_id=0, $admin=0, $users_id=0,
                                       $entity_restrict=-1) {
-      global $LANG, $CFG_GLPI, $DB;
+      global $CFG_GLPI, $DB;
 
       $rand = mt_rand();
 
@@ -2532,7 +2529,6 @@ class Ticket extends CommonITILObject {
 
 
    function showCost() {
-      global $LANG;
 
       $this->check($this->getField('id'), 'r');
       $canedit = Session::haveRight('update_ticket', 1);
@@ -2543,7 +2539,7 @@ class Ticket extends CommonITILObject {
       echo "<tr><th colspan='4'>".__('Costs')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td width='50%'>".$LANG['job'][20]."</td>";
+      echo "<td width='50%'>".__('Total duration')."</td>";
       echo "<td class='b'>".parent::getActionTime($this->fields["actiontime"])."</td>";
       echo "</tr>";
 
@@ -2650,7 +2646,7 @@ class Ticket extends CommonITILObject {
     * @return nothing (print the helpdesk)
    **/
    static function showFormHelpdesk($ID, $ticket_template=false) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("create_ticket","1")) {
          return false;
@@ -2862,7 +2858,7 @@ class Ticket extends CommonITILObject {
       echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='2'>".$LANG['job'][11]."&nbsp;:&nbsp;";
+      echo "<tr><th>".__('Describe the incident or request')."</th><th>";
       if (Session::isMultiEntitiesMode()) {
          echo "&nbsp;(".Dropdown::getDropdownName("glpi_entities", $_SESSION["glpiactive_entity"]).")";
       }
@@ -3046,7 +3042,7 @@ class Ticket extends CommonITILObject {
 
 
    function showForm($ID, $options=array()) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $default_values = self::getDefaultValues();
 
@@ -3223,7 +3219,7 @@ class Ticket extends CommonITILObject {
             echo sprintf(__('The ticket will be added in the entity %s'),
                            Dropdown::getDropdownName("glpi_entities", $this->fields['entities_id']));
          } else {
-            echo $LANG['job'][13];
+            _e('New ticket');
          }
       }
       echo "</th></tr>";
@@ -3647,7 +3643,7 @@ class Ticket extends CommonITILObject {
       // Need comment right to add a followup with the actiontime
       if (!$ID && Session::haveRight("global_add_followups","1")) {
          echo "<tr class='tab_bg_1'>";
-         echo "<th>".$tt->getBeginHiddenFieldText('actiontime').$LANG['job'][20]."".
+         echo "<th>".$tt->getBeginHiddenFieldText('actiontime').__('Total duration').
                      $tt->getMandatoryMark('actiontime').$tt->getEndHiddenFieldText('actiontime').
               "</th>";
          echo "<td colspan='3'>";
@@ -3890,7 +3886,7 @@ class Ticket extends CommonITILObject {
 
 
    static function showCentralList($start, $status="process", $showgrouptickets=true) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("show_all_ticket","1")
           && !Session::haveRight("show_assign_ticket","1")
@@ -4228,7 +4224,7 @@ class Ticket extends CommonITILObject {
    * @param $foruser boolean : only for current login user as requester
    */
    static function showCentralCount($foruser=false) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       // show a tab with count of jobs in the central and give link
       if (!Session::haveRight("show_all_ticket","1") && !Session::haveRight("create_ticket",1)) {
@@ -4335,7 +4331,7 @@ class Ticket extends CommonITILObject {
       $options['contains'][0]    = 'solved';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                 Toolbox::append_params($options,'&amp;')."\">".$LANG['job'][15]."</a></td>";
+                 Toolbox::append_params($options,'&amp;')."\">".__('Solved')."</a></td>";
       echo "<td>".$status["solved"]."</td></tr>";
 
       $options['contains'][0]    = 'closed';
@@ -4349,7 +4345,7 @@ class Ticket extends CommonITILObject {
 
 
    static function showCentralNewList() {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("show_all_ticket","1")) {
          return false;
@@ -4399,7 +4395,6 @@ class Ticket extends CommonITILObject {
 
 
    static function commonListHeader($output_type=Search::HTML_OUTPUT) {
-      global $LANG;
 
       // New Line for Header Items Line
       echo Search::showNewLine($output_type);
@@ -4445,7 +4440,7 @@ class Ticket extends CommonITILObject {
     * @return nothing (display a table)
    **/
    static function showListForItem(CommonDBTM $item) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("show_all_ticket","1")) {
          return false;
@@ -4494,7 +4489,7 @@ class Ticket extends CommonITILObject {
             if ($item->haveChildren()) {
                $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
                echo "<table class='tab_cadre_fixe'>";
-               echo "<tr class='tab_bg_1'><th>".$LANG['job'][8]."</th></tr>";
+               echo "<tr class='tab_bg_1'><th>".__('Last tickets')."</th></tr>";
                echo "<tr class='tab_bg_1'><td class='center'>";
                _e('Child groups');
                Dropdown::showYesNo('tree', $tree, -1,
@@ -4554,16 +4549,11 @@ class Ticket extends CommonITILObject {
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
          sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
 
-         echo "<tr><th colspan='10'>";
-         if ($number==1) {
-            echo $LANG['job'][10]."&nbsp;:&nbsp;".$number;
-            echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                   Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
-         } else {
-            echo $LANG['job'][8]."&nbsp;:&nbsp;".$number;
-            echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                   Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
-         }
+         echo "<tr><th colspan='9'>";
+         echo sprintf(_n('Last %d ticket','Last %d tickets',$number), $number);
+         echo "</th><th>";
+         echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                  Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
          echo "</th></tr>";
 
       } else {
@@ -4631,7 +4621,7 @@ class Ticket extends CommonITILObject {
 
    static function showShort($id, $followups, $output_type=Search::HTML_OUTPUT, $row_num=0,
                              $id_for_massaction=-1) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $rand = mt_rand();
 
@@ -4864,7 +4854,7 @@ class Ticket extends CommonITILObject {
 
 
    static function showVeryShort($ID) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       // Prints a job in short form
       // Should be called in a <table>-segment
@@ -5012,7 +5002,6 @@ class Ticket extends CommonITILObject {
     * @return arrray of informations
    **/
    static function cronInfo($name) {
-      global $LANG;
 
       switch ($name) {
          case 'closeticket' :

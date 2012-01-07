@@ -549,7 +549,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'task.date'                    => __('Opening date'),
                     'task.description'             => __('Description'),
                     'task.category'                => __('Category'),
-                    'task.time'                    => $LANG['job'][20],
+                    'task.time'                    => __('Total duration'),
                     'task.user'                    => __('By'),
                     'task.begin'                   => __('Start date'),
                     'task.end'                     => __('End date'),

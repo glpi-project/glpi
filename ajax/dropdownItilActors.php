@@ -78,7 +78,7 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
          if ($CFG_GLPI["use_mailing"]==1) {
             echo "<br><span id='notif_user_$rand'>";
             if ($withemail) {
-               echo $LANG['job'][19].'&nbsp;:&nbsp;';
+               echo __('Email followup').'&nbsp;';
                $rand = Dropdown::showYesNo('_itil_'.$_POST["actortype"].'[use_notification]', 1);
                echo '<br>';
                echo sprintf(__('Email: %s'), "<input type='text' size='25' name='_itil_".$_POST["actortype"]."[alternative_email]'>");

@@ -166,8 +166,7 @@ class TicketFollowup  extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
-
+      
       if ($item->getType() == 'Ticket') {
          if (Session::haveRight('observe_ticket','1')){
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -261,7 +260,7 @@ class TicketFollowup  extends CommonDBTM {
 
 
    function prepareInputForAdd($input) {
-      global $LANG;
+
 
 //      $input["_isadmin"] = Session::haveRight("global_add_followups","1");
       $input["_job"] = new Ticket();
@@ -461,7 +460,6 @@ class TicketFollowup  extends CommonDBTM {
     * Form for Followup on Massive action
    **/
    static function showFormMassiveAction() {
-      global $LANG;
 
       echo "&nbsp;".__('Source of followup')."&nbsp;";
       Dropdown::show('RequestType', array('value' => RequestType::getDefault('helpdesk')));
@@ -481,7 +479,7 @@ class TicketFollowup  extends CommonDBTM {
     *     - ticket Object : the ticket
    **/
    function showForm($ID, $options=array()) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (isset($options['parent']) && !empty($options['parent'])) {
          $ticket = $options['parent'];
@@ -556,7 +554,7 @@ class TicketFollowup  extends CommonDBTM {
     * @param $ticket Ticket object
    **/
    function showSummary($ticket) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("observe_ticket", "1")
           && !havSession::haveRighteRight("show_full_ticket", "1")) {
@@ -609,7 +607,7 @@ class TicketFollowup  extends CommonDBTM {
 
       if ($DB->numrows($result) == 0) {
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'>";
-         echo "<th class='b'>" . $LANG['job'][12]."</th></tr></table>";
+         echo "<th class='b'>" . __('No followup for this ticket.')."</th></tr></table>";
       } else {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>".__('Type')."</th><th>" . __('Date') . "</th>";
@@ -631,7 +629,7 @@ class TicketFollowup  extends CommonDBTM {
 
 
    static function showShortForTicket($ID) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       // Print Followups for a job
       $showprivate = Session::haveRight("show_full_ticket", "1");
@@ -675,7 +673,7 @@ class TicketFollowup  extends CommonDBTM {
     * @param $ticket Object : the ticket
    **/
    function showApprobationForm($ticket) {
-      global $DB, $LANG, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $input = array('tickets_id' => $ticket->getField('id'));
 
@@ -709,7 +707,6 @@ class TicketFollowup  extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');

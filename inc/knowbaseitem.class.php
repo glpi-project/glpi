@@ -399,7 +399,6 @@ class KnowbaseItem extends CommonDBTM {
     * @return nothing (display the form)
    **/
    function showForm($ID, $options=array()) {
-      global $LANG;
 
       // show kb item form
       if (!Session::haveRight("knowbase","w" ) && !Session::haveRight("faq","w")) {
@@ -574,7 +573,7 @@ class KnowbaseItem extends CommonDBTM {
     * @return nothing (display the form)
    **/
    function showMenu() {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $ID = $this->fields['id'];
       if (!$this->can($ID,'r') || Session::getLoginUserID()===false) {
@@ -998,7 +997,7 @@ class KnowbaseItem extends CommonDBTM {
 
                   $content = "<a href='".Toolbox::getItemTypeFormURL($options['itemtype']).
                                "?load_kb_sol=".$data['id']."&amp;id=".$options['items_id'].
-                               "&amp;forcetab=".$options['itemtype']."$2'>".$LANG['job'][24]."</a>";
+                               "&amp;forcetab=".$options['itemtype']."$2'>".__('Use as a solution')."</a>";
                   echo Search::showItem($output_type, $content, $item_num, $row_num);
                }
 

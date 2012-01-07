@@ -907,7 +907,7 @@ class CronTask extends CommonDBTM{
             echo "<td class='right b'>".sprintf(__('%s sec(s)'), number_format($data['elapsedavg'],2));
             echo "</td></tr>";
 
-            echo "<tr class='tab_bg_1'><td>".$LANG['job'][20]."&nbsp;:&nbsp;</td>";
+            echo "<tr class='tab_bg_1'><td>".__('Total duration')."</td>";
             echo "<td class='right'>".sprintf(__('%s sec(s)'), number_format($data['elapsedtot'],2));
             echo "</td></tr>";
          }
@@ -981,9 +981,9 @@ class CronTask extends CommonDBTM{
          if ($data=$DB->fetch_assoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
             echo "<th>".__('Date')."</th>";
-            echo "<th>".$LANG['job'][20]."</th>"; // Duration
+            echo "<th>".__('Total duration')."</th>"; 
             echo "<th>".__('Number')."</th>";
-            echo "<th>".__('Description')."</th>"; // Description
+            echo "<th>".__('Description')."</th>"; 
             echo "</tr>\n";
 
             do {

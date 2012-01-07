@@ -467,7 +467,7 @@ class Change extends CommonITILObject {
 
       $tab[45]['table']         = $this->getTable();
       $tab[45]['field']         = 'actiontime';
-      $tab[45]['name']          = $LANG['job'][20];
+      $tab[45]['name']          = __('Total duration');
       $tab[45]['datatype']      = 'timestamp';
       $tab[45]['massiveaction'] = false;
       $tab[45]['nosearch']      = true;
@@ -902,7 +902,7 @@ class Change extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['job'][20]."</th>";
+      echo "<th>".__('Total duration')."</th>";
       echo "<td>".parent::getActionTime($this->fields["actiontime"])."</td>";
       echo "<th class='left'>".__('Priority')."</th>";
       echo "<td>";

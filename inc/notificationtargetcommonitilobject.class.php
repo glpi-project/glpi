@@ -747,12 +747,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.urgency'               => __('Urgency'),
                     $objettype.'.impact'                => __('Impact'),
                     $objettype.'.priority'              => __('Priority'),
-                    $objettype.'.time'                  => $LANG['job'][20],
+                    $objettype.'.time'                  => __('Total duration'),
                     $objettype.'.creationdate'          => __('Opening date'),
                     $objettype.'.closedate'             => __('Closing date'),
                     $objettype.'.solvedate'             => __('Resolution date'),
                     $objettype.'.duedate'               => __('Due date'),
-                    $objettype.'.authors'               => $LANG['job'][18],
+                    $objettype.'.authors'               => __('Requesters'),
                     'author.id'                         => __('Requester ID'),
                     'author.name'                       => __('Requester'),
                     'author.location'                   => __('Requester location'),
@@ -777,7 +777,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       //Foreach global tags
       $tags = array('log'      => __('Historical'),
-                    'authors'  => $LANG['job'][18]);
+                    'authors'  => __('Requesters'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,

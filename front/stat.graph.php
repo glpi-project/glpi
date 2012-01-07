@@ -329,10 +329,10 @@ $values['late']   = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_sol
                                                $_REQUEST["date1"], $_REQUEST["date2"],
                                                $_GET["type"], $val1, $val2);
 
-$available = array('total'  => $LANG['job'][14],
-                   'solved' => $LANG['job'][15],
-                   'late'   => $LANG['job'][17],
-                   'closed' => $LANG['job'][16],);
+$available = array('total'  => __('Opened'),
+                   'solved' => __('Solved'),
+                   'late'   => __('Late'),
+                   'closed' => __('Closed'),);
 echo "<div class='center'>";
 
 foreach ($available as $key => $name) {

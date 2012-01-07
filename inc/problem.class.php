@@ -158,7 +158,6 @@ class Problem extends CommonITILObject {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if (Session::haveRight("show_all_problem","1")) {
          $nb = 0;
@@ -385,7 +384,6 @@ class Problem extends CommonITILObject {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');
@@ -472,7 +470,7 @@ class Problem extends CommonITILObject {
 
       $tab[45]['table']         = $this->getTable();
       $tab[45]['field']         = 'actiontime';
-      $tab[45]['name']          = $LANG['job'][20];
+      $tab[45]['name']          = __('Total duration');
       $tab[45]['datatype']      = 'timestamp';
       $tab[45]['massiveaction'] = false;
       $tab[45]['nosearch']      = true;
@@ -575,7 +573,6 @@ class Problem extends CommonITILObject {
     * @return an array
    **/
    static function getAllStatusArray($withmetaforsearch=false) {
-      global $LANG;
 
       // To be overridden by class
       $tab = array('new'      => __('New'),
@@ -724,7 +721,7 @@ class Problem extends CommonITILObject {
 
 
    function showForm($ID, $options=array()) {
-      global $LANG, $CFG_GLPI, $DB;
+      global $CFG_GLPI, $DB;
 
       if (!$this->canView()) {
         return false;
@@ -888,7 +885,7 @@ class Problem extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['job'][20]."</th>";
+      echo "<th>".__('Total duration')."</th>";
       echo "<td>".parent::getActionTime($this->fields["actiontime"])."</td>";
       echo "<th class='left'>".__('Priority')."</th>";
       echo "<td>";
@@ -1060,7 +1057,6 @@ class Problem extends CommonITILObject {
 
 
    static function commonListHeader($output_type=Search::HTML_OUTPUT) {
-      global $LANG;
 
       // New Line for Header Items Line
       echo Search::showNewLine($output_type);
@@ -1097,7 +1093,7 @@ class Problem extends CommonITILObject {
 
    static function showShort($id, $output_type=Search::HTML_OUTPUT, $row_num=0,
                              $id_for_massaction=-1) {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $rand = mt_rand();
 
@@ -1303,7 +1299,7 @@ class Problem extends CommonITILObject {
     * @return nothing (display a table)
    **/
    static function showListForItem(CommonDBTM $item) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("show_all_problem","1")) {
          return false;
@@ -1343,7 +1339,7 @@ class Problem extends CommonITILObject {
             if ($item->haveChildren()) {
                $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
                echo "<table class='tab_cadre_fixe'>";
-               echo "<tr class='tab_bg_1'><th>".$LANG['job'][8]."</th></tr>";
+               echo "<tr class='tab_bg_1'><th>".__('Last problems')."</th></tr>";
                echo "<tr class='tab_bg_1'><td class='center'>";
                _e('Child groups');
                Dropdown::showYesNo('tree', $tree, -1,
@@ -1408,7 +1404,8 @@ class Problem extends CommonITILObject {
 
          echo "<tr><th colspan='8'>";
 
-         echo $LANG['job'][21]."&nbsp;:&nbsp;".$number;
+         //TRANS : %d is the number of problems
+         echo sprintf(_n('Last %d problem','Last %d problems',$number), $number);
 //             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
 //                    Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
 
