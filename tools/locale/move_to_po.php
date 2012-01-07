@@ -211,6 +211,9 @@ function search_in_dict($string, $context) {
 //    echo $left.' <- '.$string.' -> '.$right."\n";
    foreach ($REFLANG as $mod => $data) {
       foreach ($data as $key => $val) {
+         if (!isset($LANG[$mod][$key])) {
+            continue;
+         }      
          // Search same case without punc
          if (strcmp($val,$string) === 0) {
             return $left.$LANG[$mod][$key].$right;

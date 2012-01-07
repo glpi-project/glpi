@@ -513,8 +513,8 @@ class Session {
          $trytoload = $CFG_GLPI["language"];
       }
 
-      if (isset($CFG_GLPI["languages"][$trytoload][1])) {
-         $file = "/locales/" . $CFG_GLPI["languages"][$trytoload][1];
+      if (isset($CFG_GLPI["languages"][$trytoload])) {
+//          $file = "/locales/" . $CFG_GLPI["languages"][$trytoload][1];
          $newfile = "/locales/$trytoload.mo";
       }
 

@@ -704,8 +704,10 @@ function update083to084() {
                            'dk_DK' => 'da_DK',
                            'ee_ET' => 'et_EE',
                            'el_EL' => 'el_GR',
+                           'en_GB' => 'en',
                            'he_HE' => 'he_IL',
                            'no_NB' => 'nb_NO',
+                           'no_NN' => 'nn_NO',
                            'ua_UA' => 'uk_UA',);
    foreach ($lang_to_update as $old => $new) {                        
       $query = "UPDATE `glpi_configs`
