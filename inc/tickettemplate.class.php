@@ -112,10 +112,7 @@ class TicketTemplate extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['job'][59];
-      }
-      return $LANG['job'][58];
+      return _n('Ticket template', 'Ticket templates', $nb);
    }
 
 

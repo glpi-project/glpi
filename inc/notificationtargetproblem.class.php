@@ -48,9 +48,9 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       $events = array('new'            => __('New problem'),
                       'update'         => __('Update of a problem'),
                       'solved'         => __('Problem solved'),
-                      'add_task'       => $LANG['job'][49],
-                      'update_task'    => $LANG['job'][52],
-                      'delete_task'    => $LANG['job'][53],
+                      'add_task'       => __('New task'),
+                      'update_task'    => __('Update task'),
+                      'delete_task'    => __('Deletion of a task'),
                       'closed'         => __('Closure of a problem'),
                       'delete'         => __('Deleting a problem'));
       asort($events);

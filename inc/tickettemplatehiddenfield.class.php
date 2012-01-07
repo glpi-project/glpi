@@ -51,10 +51,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['job'][60];
-      }
-      return $LANG['job'][63];
+      return _n('Hidden field', 'Hidden fields', $nb);
    }
 
 
@@ -74,12 +71,12 @@ class TicketTemplateHiddenField extends CommonDBChild {
       // can exists for template
       if ($item->getType() == 'TicketTemplate' && Session::haveRight("tickettemplate","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['job'][60],
+            return self::createTabEntry(_n('Hidden field', 'Hidden fields', 2),
                                         countElementsInTable($this->getTable(),
                                                              "`tickettemplates_id`
                                                                = '".$item->getID()."'"));
          }
-         return $LANG['job'][60];
+         return _n('Hidden field', 'Hidden fields', 2);
       }
       return '';
    }

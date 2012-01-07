@@ -1510,12 +1510,12 @@ class Dropdown {
                   $tmp = new TicketFollowup();
                   if ($tmp->canCreate()
                       && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
-                     echo "<option value='add_followup'>".$LANG['job'][29]."</option>";
+                     echo "<option value='add_followup'>".__('Add a new followup')."</option>";
                   }
 
                   $tmp = new TicketTask();
                   if ($tmp->canCreate()) {
-                     echo "<option value='add_task'>".$LANG['job'][30]."</option>";
+                     echo "<option value='add_task'>".__('Add a new task')."</option>";
                   }
 
                   $tmp = new TicketValidation();
@@ -1524,8 +1524,8 @@ class Dropdown {
                   }
 
                   if (Session::haveRight("update_ticket","1")) {
-                     echo "<option value='add_actor'>".$LANG['job'][27]."</option>";
-                     echo "<option value='link_ticket'>".$LANG['job'][56]."</option>";
+                     echo "<option value='add_actor'>".__('Add an actor')."</option>";
+                     echo "<option value='link_ticket'>".__('Link tickets')."</option>";
                   }
 
                   break;
@@ -1543,10 +1543,10 @@ class Dropdown {
                case 'Problem' :
                   $tmp = new ProblemTask();
                   if ($tmp->canCreate()) {
-                     echo "<option value='add_task'>".$LANG['job'][30]."</option>";
+                     echo "<option value='add_task'>".__('Add a new task')."</option>";
                   }
                   if (Session::haveRight("edit_all_problem","1")) {
-                     echo "<option value='add_actor'>".$LANG['job'][27]."</option>";
+                     echo "<option value='add_actor'>".__('Add an actor')."</option>";
                   }
 
                   break;

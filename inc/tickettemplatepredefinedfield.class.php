@@ -51,10 +51,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      if ($nb>1) {
-         return $LANG['job'][61];
-      }
-      return $LANG['job'][64];
+      return _n('Predefined field', 'Predefined fields', $nb);
+      
    }
 
 
@@ -114,12 +112,12 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       // can exists for template
       if ($item->getType() == 'TicketTemplate' && Session::haveRight("tickettemplate","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry($LANG['job'][61],
+            return self::createTabEntry(_n('Predefined field', 'Predefined fields', 2),
                                         countElementsInTable($this->getTable(),
                                                              "`tickettemplates_id`
                                                                = '".$item->getID()."'"));
          }
-         return $LANG['job'][61];
+         return _n('Predefined field', 'Predefined fields', 2);
       }
       return '';
    }

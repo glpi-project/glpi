@@ -57,26 +57,6 @@ set_error_handler(array('Toolbox', 'userErrorHandlerDebug'));
 
 //################################ Functions ################################
 
-function loadLang() {
-   global $LANG;
-
-   if (isset($LANG)) {
-      unset($LANG);
-   }
-
-   if (isset($_SESSION["glpilanguage"])) {
-      $dict = $_SESSION["glpilanguage"];
-   } else {
-      $dict = "en_GB";
-   }
-
-   $file = GLPI_ROOT ."/locales/$dict.php";
-   if (!is_file($file)) {
-      $file = GLPI_ROOT ."/locales/en_GB.php";
-   }
-   include($file);
-}
-
 
 $max_time = min(get_cfg_var("max_execution_time"), get_cfg_var("max_input_time"));
 
@@ -160,7 +140,7 @@ function get_update_content($DB, $table, $from, $limit, $conv_utf8) {
 
 
 function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
-   global $TPSCOUR, $offsettable, $offsetrow, $cpt, $LANG;
+   global $TPSCOUR, $offsettable, $offsetrow, $cpt;
    // $dumpFile, fichier source
    // $database, nom de la base de données cible
    // $mysqlUser, login pouyr la connexion au serveur MySql

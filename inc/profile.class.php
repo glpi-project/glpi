@@ -809,7 +809,7 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['job'][59]."</td><td>";
+      echo "<td>"._n('Ticket template', 'Ticket templates', 2)."</td><td>";
       self::dropdownNoneReadWrite("tickettemplate", $this->fields["tickettemplate"], 1, 1, 1);
       echo "</td>";
       echo "<td>".__('Recurrent tickets')."</td><td>";

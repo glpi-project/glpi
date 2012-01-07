@@ -643,7 +643,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
      $tags = array('followups'     => _n('Followup', 'Followups', 2),
                    'tasks'         => _n('Task', 'Tasks', 2),
                    'validations'   => _n('Approval','Approvals',2),
-                   'linkedtickets' => $LANG['job'][55],
+                   'linkedtickets' => __('Linked tickets'),
                    'problems'      => _n('Problem', 'Problems', 2));
 
       foreach ($tags as $tag => $label) {
@@ -655,7 +655,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
 
       //Tags with just lang
-      $tags = array('ticket.linkedtickets'    => $LANG['job'][55],
+      $tags = array('ticket.linkedtickets'    => __('Linked tickets'),
                     'ticket.problems'         => _n('Problem', 'Problems', 2),
                     'ticket.autoclosewarning'
                      => sprintf(_n('Without a reply, the ticket will be automatically closed after %s day',

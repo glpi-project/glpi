@@ -681,7 +681,8 @@ class Ticket extends CommonITILObject {
             }
          }
          if (count($mandatory_missing)) {
-            $message = $LANG['job'][68]."&nbsp;".implode(", ",$mandatory_missing);
+            //TRANS: %s are the fields concerned
+            $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),implode(", ",$mandatory_missing));
             Session::addMessageAfterRedirect($message, false, ERROR);
             return false;
          }
@@ -950,7 +951,8 @@ class Ticket extends CommonITILObject {
                      }
                   }
                   if (count($mandatory_missing)) {
-                     $message = $LANG['job'][68]."&nbsp;".implode(", ",$mandatory_missing);
+                     //TRANS: %s are the fields concerned
+                     $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),implode(", ",$mandatory_missing));
                      Session::addMessageAfterRedirect($message, false, ERROR);
                      return false;
                   }
@@ -1794,7 +1796,7 @@ class Ticket extends CommonITILObject {
           || Session::haveRight("show_assign_ticket","1")
           || Session::haveRight("own_ticket","1")) {
 
-         $tab['linktickets'] = $LANG['job'][55];
+         $tab['linktickets'] = __('Linked tickets');
 
          $tab[40]['table']         = 'glpi_tickets_tickets';
          $tab[40]['field']         = 'tickets_id_1';
@@ -1805,7 +1807,7 @@ class Ticket extends CommonITILObject {
 
          $tab[47]['table']         = 'glpi_tickets_tickets';
          $tab[47]['field']         = 'tickets_id_1';
-         $tab[47]['name']          = $LANG['job'][57];
+         $tab[47]['name']          = __('Duplicated tickets');
          $tab[47]['massiveaction'] = false;
          $tab[47]['searchtype']    = 'equals';
          $tab[47]['joinparams']    = array('jointype'  => 'item_item',
@@ -2726,7 +2728,7 @@ class Ticket extends CommonITILObject {
 
       if (count($delegating)) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>".$LANG['job'][69]." ";
+         echo "<tr><th colspan='2'>".__('This ticket concerns me')." ";
 
          $rand   = Dropdown::showYesNo("nodelegate", $options['nodelegate']);
 
@@ -3772,7 +3774,7 @@ class Ticket extends CommonITILObject {
 
       if ($view_linked_tickets) {
          echo "<th width='10%'>";
-         echo $LANG['job'][55];
+         _e('Linked tickets');
 
          $rand_linked_ticket = mt_rand();
 
