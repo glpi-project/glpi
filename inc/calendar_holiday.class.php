@@ -107,7 +107,7 @@ class Calendar_Holiday extends CommonDBRelation {
       if ($DB->numrows($result) >0) {
 
          Session::initNavigateListItems('Holiday',
-                                        //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'), $calendar->getTypeName(1),
                                                 $calendar->fields["name"]));
 
@@ -153,6 +153,9 @@ class Calendar_Holiday extends CommonDBRelation {
 
    /**
     * Duplicate all holidays from a calendar to his clone
+    *
+    * @param $oldid
+    * ]param $newid
    **/
    function cloneCalendar($oldid, $newid) {
       global $DB;
@@ -177,11 +180,12 @@ class Calendar_Holiday extends CommonDBRelation {
          switch ($item->getType()) {
             case 'Calendar' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Close time','Close times',2),
+                  return self::createTabEntry(_n('Close time','Close times', 2),
                                               countElementsInTable($this->getTable(),
-                                                                   "calendars_id = '".$item->getID()."'"));
+                                                                   "calendars_id
+                                                                        = '".$item->getID()."'"));
                }
-               return _n('Close time','Close times',2);
+               return _n('Close time','Close times', 2);
          }
       }
       return '';

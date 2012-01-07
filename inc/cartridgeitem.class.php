@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
  * CartridgeItem Class
  * This class is used to manage the various types of cartridges.
  * \see Cartridge
- */
+**/
 class CartridgeItem extends CommonDBTM {
    // From CommonDBTM
    protected $forward_entity_to = array('Cartridge', 'Infocom');
@@ -66,10 +66,10 @@ class CartridgeItem extends CommonDBTM {
    /**
     * Get The Name + Ref of the Object
     *
-    * @param $with_comment add comments to name
+    * @param $with_comment add comments to name (default 0)
     *
     * @return String: name of the object in the current language
-    */
+   **/
    function getName($with_comment=0) {
 
       $toadd = "";
@@ -132,7 +132,7 @@ class CartridgeItem extends CommonDBTM {
    /**
    * Count cartridge of the cartridge type
    *
-   *@return number of cartridges
+   * @return number of cartridges
    **/
    static function getCount() {
       global $DB;
@@ -149,22 +149,21 @@ class CartridgeItem extends CommonDBTM {
    }
 
 
-   /**Add a compatible printer type for a cartridge type
-   *
-   * Add the compatible printer $type type for the cartridge type $tID
-   *
-   *@param $cartridgeitems_id integer: cartridge type identifier
-   *@param printermodels_id integer: printer type identifier
-   *
-   *@return boolean : true for success
+   /**
+    * Add a compatible printer type for a cartridge type
+    *
+    * @param $cartridgeitems_id integer: cartridge type identifier
+    * @param printermodels_id integer: printer type identifier
+    *
+    * @return boolean : true for success
    **/
    function addCompatibleType($cartridgeitems_id, $printermodels_id) {
       global $DB;
 
       if ($cartridgeitems_id>0 && $printermodels_id>0) {
          $query = "INSERT INTO `glpi_cartridgeitems_printermodels`
-                     (`cartridgeitems_id`, `printermodels_id`)
-                     VALUES ('$cartridgeitems_id', '$printermodels_id');";
+                          (`cartridgeitems_id`, `printermodels_id`)
+                   VALUES ('$cartridgeitems_id', '$printermodels_id');";
 
          if ($result = $DB->query($query) && $DB->affected_rows()>0) {
             return true;
@@ -175,12 +174,11 @@ class CartridgeItem extends CommonDBTM {
 
 
    /**
-   * Delete a compatible printer associated to a cartridge with assoc identifier $ID
-   *
-   *@param $ID integer: glpi_cartridge_assoc identifier.
-   *
-   *@return boolean : true for success
-   *
+    * Delete a compatible printer associated to a cartridge with assoc identifier $ID
+    *
+    * @param $ID integer: glpi_cartridge_assoc identifier.
+    *
+    * @return boolean : true for success
    **/
    function deleteCompatibleType($ID) {
       global $DB;
@@ -197,15 +195,14 @@ class CartridgeItem extends CommonDBTM {
 
 
    /**
-   * Print the cartridge type form
-   *
-   * @param $ID integer ID of the item
-   * @param $options array
-   *     - target for the Form
-   *     - withtemplate : 1 for newtemplate, 2 for newobject from template
-   *
-   * @return Nothing (display)
-   *
+    * Print the cartridge type form
+    *
+    * @param $ID integer ID of the item
+    * @param $options array
+    *     - target for the Form
+    *     - withtemplate : 1 for newtemplate, 2 for newobject from template
+    *
+    * @return Nothing (display)
    **/
    function showForm($ID, $options=array()) {
 
@@ -229,7 +226,7 @@ class CartridgeItem extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>".__('Type')."&nbsp;: </td>";
+      echo "<td>".__('Type')."</td>";
       echo "<td>";
       Dropdown::show('CartridgeItemType', array('value' => $this->fields["cartridgeitemtypes_id"]));
       echo "</td></tr>";
@@ -371,11 +368,11 @@ class CartridgeItem extends CommonDBTM {
    /**
     * Cron action on cartridges : alert if a stock is behind the threshold
     *
-    * @param $task for log, display informations if NULL?
+    * @param $task for log, display informations if NULL? (default NULL)
     *
     * @return 0 : nothing to do 1 : done with success
     *
-    **/
+   **/
    static function cronCartridge($task=NULL) {
       global $DB, $CFG_GLPI;
 
@@ -450,10 +447,11 @@ class CartridgeItem extends CommonDBTM {
                      $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
                                ."&nbsp;: Send cartidge alert failed\n");
                   } else {
-                     Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                                                                                $entity)
-                                                      ."&nbsp;: Send cartidge alert failed", false,
-                                                      ERROR);
+                     $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
+                     //TRANS: %s is the entity
+                     Session::addMessageAfterRedirect(sprintf(__('%s: send cartridge alert failed'),
+                                                              $entityname),
+                                                       false, ERROR);
                   }
                }
             }
@@ -465,10 +463,10 @@ class CartridgeItem extends CommonDBTM {
    /**
     * Print a select with compatible cartridge
     *
-    *@param $printer object Printer
+    * @param $printer object Printer
     *
-    *@return nothing (display)
-    **/
+    * @return nothing (display)
+   **/
    static function dropdownForPrinter(Printer $printer) {
       global $DB;
 
@@ -514,8 +512,8 @@ class CartridgeItem extends CommonDBTM {
    /**
     * Show the printer types that are compatible with a cartridge type
     *
-    *@return nothing (display)
-    **/
+    * @return nothing (display)
+   **/
    function showCompatiblePrinters() {
       global $DB, $CFG_GLPI;
 
@@ -571,14 +569,12 @@ class CartridgeItem extends CommonDBTM {
 
 
   function getEvents() {
-
       return array('alert' => __('Send alarms on cartridges'));
    }
 
 
    /**
     * Display debug information for current object
-    *
    **/
    function showDebug() {
 

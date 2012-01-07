@@ -41,6 +41,7 @@ class Calendar extends CommonDropdown {
 
    // From CommonDBTM
    var $dohistory = true;
+
    protected $forward_entity_to = array('CalendarSegment');
 
 
@@ -70,6 +71,7 @@ class Calendar extends CommonDropdown {
 
 
    /** Clone a calendar to another entity : name is updated
+    *
     * @param $options array of new values to set
    **/
    function duplicate ($options=array()) {
@@ -211,7 +213,7 @@ class Calendar extends CommonDropdown {
                   $timeoftheday = $cache_duration[$dayofweek];
                }
 //                 echo "time of the day = $timeoftheday ".Html::timestampToString($timeoftheday).'<br>';
-               $activetime+=$timeoftheday;
+               $activetime += $timeoftheday;
 //                 echo "cumulate time = $activetime ".Html::timestampToString($activetime).'<br>';
 
             } else {
@@ -278,10 +280,10 @@ class Calendar extends CommonDropdown {
          }
 
          // If > last working hour set last working hour
-         $dayofweek   = self::getDayNumberInWeek($actualtime);
+         $dayofweek       = self::getDayNumberInWeek($actualtime);
          $lastworkinghour = CalendarSegment::getLastWorkingHour($this->fields['id'], $dayofweek);
          if ($lastworkinghour< date('H:i:s', $actualtime)) {
-            $actualtime    = strtotime(date('Y-m-d',$actualtime).' '.$lastworkinghour);
+            $actualtime   = strtotime(date('Y-m-d',$actualtime).' '.$lastworkinghour);
          }
 
          return date('Y-m-d H:i:s', $actualtime);
@@ -384,6 +386,8 @@ class Calendar extends CommonDropdown {
 
    /**
     * Update the calendar cache
+    *
+    * @param $calendrads_id
    **/
    function updateDurationCache($calendars_id) {
 

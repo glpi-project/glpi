@@ -44,16 +44,16 @@ if (!isset($_GET["cID"])) {
    $_GET["cID"] = "";
 }
 
-$cart = new Cartridge();
+$cart    = new Cartridge();
 $cartype = new CartridgeItem();
 
 if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
    $cart->check($_POST["cID"],'w');
 
    if ($cart->updatePages($_POST['pages'])) {
-      Event::log(0, "cartridges", 4, "inventory", 
+      Event::log(0, "cartridges", 4, "inventory",
                //TRANS: %s is the user login
-               sprintf(__('%s updates cartridges'),$_SESSION["glpiname"]));
+               sprintf(__('%s updates cartridges'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -66,7 +66,7 @@ if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
    }
    Event::log($_POST["tID"], "cartridges", 4, "inventory",
                //TRANS: %s is the user login
-               sprintf(__('%d adds cartridges'),$_SESSION["glpiname"]));
+               sprintf(__('%s adds cartridges'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_GET["delete"])) {
@@ -86,7 +86,7 @@ if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
    if ($cart->restore($_GET)) {
       Event::log($_GET["tID"], "cartridges", 5, "inventory",
                //TRANS: %s is the user login
-               sprintf(__('%s restores a cartridge'),$_SESSION["glpiname"]));
+               sprintf(__('%s restores a cartridge'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -96,7 +96,7 @@ if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
    if ($cart->install($_POST["pID"],$_POST["tID"])) {
       Event::log($_POST["tID"], "cartridges", 5, "inventory",
                //TRANS: %s is the user login
-               sprintf(__('%s installs a cartridge'),$_SESSION["glpiname"]));
+               sprintf(__('%s installs a cartridge'), $_SESSION["glpiname"]));
    }
    Html::redirect($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_POST["pID"]);
 
@@ -106,7 +106,7 @@ if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
    if ($cart->uninstall($_GET["id"])) {
       Event::log($_GET["tID"], "cartridges", 5, "inventory",
                //TRANS: %s is the user login
-               sprintf(__('%s uninstalls a cartridge'),$_SESSION["glpiname"]));
+               sprintf(__('%s uninstalls a cartridge'), $_SESSION["glpiname"]));
    }
    Html::back();
 

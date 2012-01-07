@@ -47,11 +47,12 @@ class Cartridge extends CommonDBTM {
 
    // From CommonDBTM
    protected $forward_entity_to = array('Infocom');
+
    var $no_form_page = false;
 
 
    static function getTypeName($nb=0) {
-      return _n('Cartridge','Cartridges',$nb);
+      return _n('Cartridge', 'Cartridges', $nb);
    }
 
 
@@ -118,11 +119,11 @@ class Cartridge extends CommonDBTM {
 
    // SPECIFIC FUNCTIONS
    /**
-   * Update count pages value of a cartridge
-   *
-   *@param $pages  count pages value
-   *
-   *@return boolean : true for success
+    * Update count pages value of a cartridge
+    *
+    * @param $pages  count pages value
+    *
+    * @return boolean : true for success
    **/
    function updatePages($pages) {
 
@@ -132,14 +133,14 @@ class Cartridge extends CommonDBTM {
 
 
    /**
-   * Link a cartridge to a printer.
-   *
-   * Link the first unused cartridge of type $Tid to the printer $pID
-   *
-   *@param $tID : cartridge type identifier
-   *@param $pID : printer identifier
-   *
-   *@return boolean : true for success
+    * Link a cartridge to a printer.
+    *
+    * Link the first unused cartridge of type $Tid to the printer $pID
+    *
+    * @param $tID : cartridge type identifier
+    * @param $pID : printer identifier
+    *
+    * @return boolean : true for success
    **/
    function install($pID, $tID) {
       global $DB;
@@ -171,13 +172,13 @@ class Cartridge extends CommonDBTM {
 
 
    /**
-   * UnLink a cartridge linked to a printer
-   *
-   * UnLink the cartridge identified by $ID
-   *
-   *@param $ID : cartridge identifier
-   *
-   *@return boolean
+    * UnLink a cartridge linked to a printer
+    *
+    * UnLink the cartridge identified by $ID
+    *
+    * @param $ID : cartridge identifier
+    *
+    * @return boolean
    **/
    function uninstall($ID) {
       global $DB;
@@ -209,16 +210,14 @@ class Cartridge extends CommonDBTM {
 //    }
 
    /**
-    * Print the cartridge count HTML array for a defined cartridge type
-    *
     * Print the cartridge count HTML array for the cartridge item $tID
     *
-    *@param $tID integer: cartridge item identifier.
-    *@param $alarm_threshold integer: threshold alarm value.
-    *@param $nohtml integer: Return value without HTML tags.
+    * @param $tID integer: cartridge item identifier.
+     *@param $alarm_threshold integer: threshold alarm value.
+    * @param $nohtml integer: Return value without HTML tags.
     *
-    *@return string to display
-    **/
+    * @return string to display
+   **/
    static function getCount($tID, $alarm_threshold, $nohtml=0) {
       global $DB;
 
@@ -266,14 +265,12 @@ class Cartridge extends CommonDBTM {
 
 
    /**
-    * count how many cartbridge for a cartbridge type
-    *
     * count how many cartbridge for the cartridge item $tID
     *
-    *@param $tID integer: cartridge item identifier.
+    * @param $tID integer: cartridge item identifier.
     *
-    *@return integer : number of cartridge counted.
-    **/
+    * @return integer : number of cartridge counted.
+   **/
    static function getTotalNumber($tID) {
       global $DB;
 
@@ -286,14 +283,12 @@ class Cartridge extends CommonDBTM {
 
 
    /**
-    * count how many cartridge used for a cartbridge type
+    * count how many cartridge used for the cartridge item $tID
     *
-    * count how many cartridge used for the cartbridge item $tID
+    * @param $tID integer: cartridge item identifier.
     *
-    *@param $tID integer: cartridge item identifier.
-    *
-    *@return integer : number of cartridge used counted.
-    **/
+    * @return integer : number of cartridge used counted.
+   **/
    static function getUsedNumber($tID) {
       global $DB;
 
@@ -308,14 +303,12 @@ class Cartridge extends CommonDBTM {
 
 
    /**
-    * count how many old cartbridge for a cartbridge type
+    * count how many old cartbridge for the cartridge item $tID
     *
-    * count how many old cartbridge for the cartbridge item $tID
+    * @param $tID integer: cartridge item identifier.
     *
-    *@param $tID integer: cartridge item identifier.
-    *
-    *@return integer : number of old cartridge counted.
-    **/
+    * @return integer : number of old cartridge counted.
+   **/
    static function getOldNumber($tID) {
       global $DB;
 
@@ -329,14 +322,12 @@ class Cartridge extends CommonDBTM {
 
 
    /**
-    * count how many cartbridge unused for a cartbridge type
+    * count how many cartbridge unused for the cartridge item $tID
     *
-    * count how many cartbridge unused for the cartbridge item $tID
+    * @param $tID integer: cartridge item identifier.
     *
-    *@param $tID integer: cartridge item identifier.
-    *
-    *@return integer : number of cartridge unused counted.
-    **/
+    * @return integer : number of cartridge unused counted.
+   **/
    static function getUnusedNumber($tID) {
       global $DB;
 
@@ -355,8 +346,8 @@ class Cartridge extends CommonDBTM {
     * @param $date_use date : date of use
     * @param $date_out date : date of delete
     *
-    *@return string : dict value for the cartridge status.
-    **/
+    * @return string : dict value for the cartridge status.
+   **/
    static function getStatus($date_use, $date_out) {
 
       if (is_null($date_use) || empty($date_use)) {
@@ -373,10 +364,10 @@ class Cartridge extends CommonDBTM {
     * Print out the cartridges of a defined type
     *
     * @param $cartitem object of CartridgeItem class
-    * @param $show_old boolean : show old cartridges or not.
+    * @param $show_old boolean : show old cartridges or not. (default 0)
     *
-    *@return Nothing (displays)
-    **/
+    * @return Nothing (displays)
+   **/
    static function showForCartridgeItem(CartridgeItem $cartitem, $show_old=0) {
       global $DB, $CFG_GLPI;
 
@@ -553,7 +544,7 @@ class Cartridge extends CommonDBTM {
     * @param $cartitem object of CartridgeItem class
     *
     * @return Nothing (displays)
-    **/
+   **/
    static function showAddForm(CartridgeItem $cartitem) {
       global $CFG_GLPI;
 
@@ -579,11 +570,11 @@ class Cartridge extends CommonDBTM {
    /**
     * Show installed cartridges
     *
-    *@param $printer object Printer
-    *@param $old boolean : old cartridges or not ?
+    * @param $printer object Printer
+    * @param $old boolean : old cartridges or not ?
     *
-    *@return nothing (display)
-    **/
+    * @return nothing (display)
+   **/
    static function showInstalled(Printer $printer, $old=0) {
       global $DB, $CFG_GLPI;
 
@@ -724,10 +715,10 @@ class Cartridge extends CommonDBTM {
             echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
             echo "<td class='center'>".__('Average Time in stock')."<br>";
             $time_stock = round($stock_time/$number/60/60/24/30.5,1);
-            echo sprintf(_n('%d month', '%d months',$time_stock),$time_stock)."</td>";
+            echo sprintf(_n('%d month', '%d months', $time_stock), $time_stock)."</td>";
             echo "<td class='center'>".__('Average Time in use')."<br>";
             $time_use = round($use_time/$number/60/60/24/30.5,1);
-            echo sprintf(_n('%d month', '%d months',$time_use),$time_use)."</td>";
+            echo sprintf(_n('%d month', '%d months', $time_use), $time_use)."</td>";
             echo "<td class='center'>".__('Average number of printed pages')."<br>";
             echo round($pages_printed/$nb_pages_printed)."</td>";
             echo "<td>&nbsp;</td></tr>";
@@ -739,9 +730,10 @@ class Cartridge extends CommonDBTM {
 
    /**
     * Get notification parameters by entity
-    * @param entity the entity
+    *
+    * @param entity the entity (default 0)
     */
-   static function getNotificationParameters($entity = 0) {
+   static function getNotificationParameters($entity=0) {
       global $DB, $CFG_GLPI;
 
       //Look for parameters for this entity
@@ -795,6 +787,9 @@ class Cartridge extends CommonDBTM {
    }
 
 
+   /**
+    * @param $item Printer object
+   **/
    static function countForPrinter(Printer $item) {
 
       $restrict = "`glpi_cartridges`.`printers_id` = '".$item->getField('id') ."'";
