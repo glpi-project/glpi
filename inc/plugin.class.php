@@ -140,7 +140,7 @@ class Plugin extends CommonDBTM {
       // For compatibility for plugins using $LANG
       $LANG = array();
 
-      $trytoload = 'en_GB';
+      $trytoload = 'en';
       if (isset($_SESSION['glpilanguage'])) {
          $trytoload = $_SESSION["glpilanguage"];
       }
@@ -185,10 +185,10 @@ class Plugin extends CommonDBTM {
                'locale'  => $coretrytoload
             )
          );
-      } else if (file_exists($dir."en_GB.mo")) {
+      } else if (file_exists($dir."en.mo")) {
          $TRANSLATE->addTranslation(
             array(
-               'content' => $dir."en_GB.mo",
+               'content' => $dir."en.mo",
                'locale'  => $coretrytoload
             )
          );
