@@ -126,6 +126,7 @@ class Zend_Translate_Adapter_Gettext extends Zend_Translate_Adapter {
                     $this->_data[$locale][$original[0]] = $translate;
                     array_shift($original);
 /// PROBLEM WITH GLPI WHEN singular = plural                    
+/// opened bug http://framework.zend.com/issues/browse/ZF-11974
 //                     foreach ($original as $orig) {
 //                         $this->_data[$locale][$orig] = '';
 //                     }
