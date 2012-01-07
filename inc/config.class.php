@@ -786,7 +786,7 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td>" . __('Private tasks by default') . "</td><td>";
          Dropdown::showYesNo("task_private", $data["task_private"]);
-         echo "</td><td> " . $LANG['job'][44] . "</td><td>";
+         echo "</td><td> " . __('Request source by default') . "</td><td>";
          Dropdown::show('RequestType', array('value' => $data["default_requesttypes_id"],
                                              'name'  => "default_requesttypes_id"));
          echo "</td></tr>";

@@ -926,11 +926,15 @@ $LANG['job'][25]="Save and add to the knowledge base";
 $LANG['job'][26]="You have been redirected because you no longer have access to this ticket";
 $LANG['job'][27]="Add an actor";
 $LANG['job'][28]="Default template";
+
+
+/// TODO After is ok for migration to gettext
+
 $LANG['job'][29]="Add a new followup";
 $LANG['job'][30]="Add a new task";
 $LANG['job'][31]="Duration";
 $LANG['job'][32]="None";
-$LANG['job'][33]="Empty Description";
+$LANG['job'][33]="Empty description";
 $LANG['job'][34]="Plan this task";
 $LANG['job'][35]="Planning";
 $LANG['job'][36]="ticket(s) in progress or recently solved on this item.";
@@ -944,12 +948,8 @@ $LANG['job'][44]="Request source";
 $LANG['job'][45]="Source of followup";
 $LANG['job'][46]="The ticket will be added in the entity";
 $LANG['job'][47]="Costs";
-$LANG['job'][48]="Solution Type";
+$LANG['job'][48]="Solution type";
 $LANG['job'][49]="New task";
-
-
-/// TODO After is ok for migration to gettext
-
 $LANG['job'][50]="No task for this ticket.";
 $LANG['job'][51]="Approval of the solution";
 $LANG['job'][52]="Update task";

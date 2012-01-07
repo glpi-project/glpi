@@ -389,7 +389,7 @@ class Ticket extends CommonITILObject {
       switch ($item->getType()) {
          case __CLASS__ :
             $ong = array();
-            $ong[1] = $LANG['job'][47];
+            $ong[1] = __('Costs');
             $ong[2] = _n('Solution', 'Solutions', 1);
             // enquete si statut clos
             if ($item->fields['status'] == 'closed') {
@@ -1259,7 +1259,8 @@ class Ticket extends CommonITILObject {
 
       if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
          Session::addMessageAfterRedirect(__('Your ticket has been registered, its treatment is in progress.').
-                                          " (".$LANG['job'][38]."&nbsp;".
+                                          //TRANS: %s is the id or the link to the ticket
+                                          " (".sprintf(__('Ticket %s'),
                                           "<a href='".$CFG_GLPI["root_doc"].
                                             "/front/ticket.form.php?id=".$this->fields['id']."'>".
                                           $this->fields['id']."</a>)");
@@ -1606,7 +1607,7 @@ class Ticket extends CommonITILObject {
 
       $tab[9]['table']    = 'glpi_requesttypes';
       $tab[9]['field']    = 'name';
-      $tab[9]['name']     = $LANG['job'][44];
+      $tab[9]['name']     = __('Request source');
       $tab[9]['datatype'] = 'dropdown';
 
       $tab[80]['table']         = 'glpi_entities';
@@ -1866,7 +1867,7 @@ class Ticket extends CommonITILObject {
 
          $tab[23]['table'] = 'glpi_solutiontypes';
          $tab[23]['field'] = 'name';
-         $tab[23]['name']  = $LANG['job'][48];
+         $tab[23]['name']  = __('Solution type');
 
          $tab[24]['table']         = $this->getTable();
          $tab[24]['field']         = 'solution';
@@ -1879,17 +1880,17 @@ class Ticket extends CommonITILObject {
 
          $tab[42]['table']    = $this->getTable();
          $tab[42]['field']    = 'cost_time';
-         $tab[42]['name']     = $LANG['job'][40];
+         $tab[42]['name']     = __('Time cost');
          $tab[42]['datatype'] = 'decimal';
 
          $tab[43]['table']    = $this->getTable();
          $tab[43]['field']    = 'cost_fixed';
-         $tab[43]['name']     = $LANG['job'][41];
+         $tab[43]['name']     = __('Fixed cost');
          $tab[43]['datatype'] = 'decimal';
 
          $tab[44]['table']    = $this->getTable();
          $tab[44]['field']    = 'cost_material';
-         $tab[44]['name']     = $LANG['job'][42];
+         $tab[44]['name']     = __('Material cost');
          $tab[44]['datatype'] = 'decimal';
       }
 
@@ -2539,7 +2540,7 @@ class Ticket extends CommonITILObject {
       $options = array('colspan' => 1);
       $this->showFormHeader($options);
 
-      echo "<tr><th colspan='4'>".$LANG['job'][47]."</th></tr>";
+      echo "<tr><th colspan='4'>".__('Costs')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td width='50%'>".$LANG['job'][20]."</td>";
@@ -2547,7 +2548,7 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['job'][40]."</td><td>";
+      echo "<td>".__('Time cost')."</td><td>";
       if ($canedit) {
          echo "<input type='text' maxlength='100' size='15' name='cost_time' value='".
                 Html::formatNumber($this->fields["cost_time"], true)."'>";
@@ -2557,7 +2558,7 @@ class Ticket extends CommonITILObject {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['job'][41]."</td><td>";
+      echo "<td>".__('Fixed cost')."</td><td>";
       if ($canedit) {
          echo "<input type='text' maxlength='100' size='15' name='cost_fixed' value='".
                 Html::formatNumber($this->fields["cost_fixed"], true)."'>";
@@ -2567,7 +2568,7 @@ class Ticket extends CommonITILObject {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['job'][42]."</td><td>";
+      echo "<td>".__('Material cost')."</td><td>";
       if ($canedit) {
          echo "<input type='text' maxlength='100' size='15' name='cost_material' value='".
                 Html::formatNumber($this->fields["cost_material"], true)."'>";
@@ -2577,7 +2578,7 @@ class Ticket extends CommonITILObject {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td >".$LANG['job'][43]."</td>";
+      echo "<td >".__('Total cost')."</td>";
       echo "<td class='b'>";
       echo self::trackingTotalCost($this->fields["actiontime"], $this->fields["cost_time"],
                                    $this->fields["cost_fixed"], $this->fields["cost_material"],
@@ -3219,8 +3220,8 @@ class Ticket extends CommonITILObject {
 
       } else {
          if ($ismultientities) {
-            echo $LANG['job'][46]."&nbsp;:&nbsp;".
-                 Dropdown::getDropdownName("glpi_entities", $this->fields['entities_id']);
+            echo sprintf(__('The ticket will be added in the entity %s'),
+                           Dropdown::getDropdownName("glpi_entities", $this->fields['entities_id']));
          } else {
             echo $LANG['job'][13];
          }
@@ -3479,7 +3480,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldValue('status',$this);
 
       echo "</td>";
-      echo "<th class='left'>".$tt->getBeginHiddenFieldText('requesttypes_id').$LANG['job'][44].
+      echo "<th class='left'>".$tt->getBeginHiddenFieldText('requesttypes_id').__('Request source').
              $tt->getMandatoryMark('requesttypes_id').
              $tt->getEndHiddenFieldText('requesttypes_id')."</th>";
       echo "<td>";
@@ -3733,7 +3734,7 @@ class Ticket extends CommonITILObject {
          if (!empty($this->fields["content"])) {
             echo nl2br($this->fields["content"]);
          } else {
-            echo $LANG['job'][33];
+            _e('Empty description');
          }
          echo "</div>\n";
 

@@ -261,7 +261,7 @@ class RuleTicket extends Rule {
 
       $criterias['requesttypes_id']['table']     = 'glpi_requesttypes';
       $criterias['requesttypes_id']['field']     = 'name';
-      $criterias['requesttypes_id']['name']      = $LANG['job'][44];
+      $criterias['requesttypes_id']['name']      = __('Request source');
       $criterias['requesttypes_id']['linkfield'] = 'requesttypes_id';
       $criterias['requesttypes_id']['type']      = 'dropdown';
 

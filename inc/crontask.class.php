@@ -1031,10 +1031,10 @@ class CronTask extends CommonDBTM{
          if ($data=$DB->fetch_assoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
             echo "<th>".__('Date')."</th>";
-            echo "<th>".__('Status')."</th>"; // statut
-            echo "<th>".$LANG['job'][31]."</th>"; // Duration
+            echo "<th>".__('Status')."</th>"; 
+            echo "<th>". __('Duration')."</th>"; 
             echo "<th>".__('Number')."</th>";
-            echo "<th>".__('Description')."</th>"; // Description
+            echo "<th>".__('Description')."</th>"; 
             echo "</tr>\n";
 
             $first = true;
