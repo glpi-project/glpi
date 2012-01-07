@@ -62,7 +62,7 @@ class SolutionTemplate extends CommonDropdown {
       global $LANG;
 
       return array(array('name'  => 'solutiontypes_id',
-                         'label' => $LANG['job'][48],
+                         'label' => __('Solution type'),
                          'type'  => 'dropdownValue',
                          'list'  => true),
                    array('name'  => 'content',
@@ -83,7 +83,7 @@ class SolutionTemplate extends CommonDropdown {
       $tab[4]['field']  = 'content';
       $tab[4]['table']  = $this->getTable();
 
-      $tab[3]['name']   = $LANG['job'][48];
+      $tab[3]['name']   = __('Solution type');
       $tab[3]['field']  = 'name';
       $tab[3]['table']  = getTableForItemType('SolutionType');
 

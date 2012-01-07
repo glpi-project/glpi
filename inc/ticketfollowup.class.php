@@ -463,7 +463,7 @@ class TicketFollowup  extends CommonDBTM {
    static function showFormMassiveAction() {
       global $LANG;
 
-      echo "&nbsp;".$LANG['job'][45]."&nbsp;: ";
+      echo "&nbsp;".__('Source of followup')."&nbsp;";
       Dropdown::show('RequestType', array('value' => RequestType::getDefault('helpdesk')));
 
       echo "<br>".__('Description')." ";
@@ -519,7 +519,7 @@ class TicketFollowup  extends CommonDBTM {
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['job'][45]."&nbsp;:</td><td>";
+         echo "<td>".__('Source of followup')."</td><td>";
          Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
          echo "</td></tr>\n";
 
@@ -603,7 +603,7 @@ class TicketFollowup  extends CommonDBTM {
          if ($ticket->fields["status"] != 'solved' && $ticket->fields["status"] != 'closed') {
             echo "<div class='center'>".
                  "<a class='vsubmit' href='javascript:viewAddFollowup".$ticket->fields['id']."$rand();'>";
-            echo $LANG['job'][29]."</a></div><br>\n";
+            echo __('Add a new followup')."</a></div><br>\n";
          }
       }
 
@@ -613,7 +613,7 @@ class TicketFollowup  extends CommonDBTM {
       } else {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>".__('Type')."</th><th>" . __('Date') . "</th>";
-         echo "<th>" . __('Description') . "</th>";//"<th>" . $LANG['job'][31] . "</th>";
+         echo "<th>" . __('Description') . "</th>";//"<th>" . __('Duration') . "</th>";
          echo "<th>" . __('Writer') . "</th>";
          if ($showprivate) {
             echo "<th>" . __('Private') . "</th>";
@@ -720,7 +720,7 @@ class TicketFollowup  extends CommonDBTM {
 
       $tab[2]['table']        = 'glpi_requesttypes';
       $tab[2]['field']        = 'name';
-      $tab[2]['name']         = $LANG['job'][44];
+      $tab[2]['name']         = __('Request source');
       $tab[2]['forcegroupby'] = true;
 
       $tab[3]['table']    = $this->getTable();

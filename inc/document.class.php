@@ -868,7 +868,8 @@ class Document extends CommonDBTM {
                      }
 
                      if ($itemtype == 'Ticket') {
-                        $data["name"] = $LANG['job'][38]." ".$data["id"];
+                        //TRANS: %s is the id or the link to the ticket
+                        $data["name"] = sprintf(__('Ticket %s'),$data["id"]);
                      }
 
                      if ($itemtype == 'SoftwareLicense') {

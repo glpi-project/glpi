@@ -2480,7 +2480,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['job'][48]."&nbsp;:&nbsp;</td><td>";
+      echo "<td>".__('Solution type')."</td><td>";
 
       $current = $this->fields['status'];
       // Settings a solution will set status to solved

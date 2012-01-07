@@ -553,7 +553,7 @@ class Problem extends CommonITILObject {
 
       $tab[23]['table'] = 'glpi_solutiontypes';
       $tab[23]['field'] = 'name';
-      $tab[23]['name']  = $LANG['job'][48];
+      $tab[23]['name']  = __('Solution type');
 
       $tab[24]['table']         = $this->getTable();
       $tab[24]['field']         = 'solution';
@@ -955,7 +955,7 @@ class Problem extends CommonITILObject {
       if (!empty($this->fields["content"])) {
          echo nl2br($this->fields["content"]);
       } else {
-         echo $LANG['job'][33];
+         _e('Empty description');
       }
       echo "</div>\n";
       echo "<div id='viewdesc$rand'></div>\n";

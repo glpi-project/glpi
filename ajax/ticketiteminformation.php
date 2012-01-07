@@ -62,8 +62,12 @@ if (isset($_REQUEST['itemtype']) && isset($_REQUEST['items_id']) && $_REQUEST['i
    $data   = $ticket->getActiveOrSolvedLastDaysTicketsForItem($_REQUEST['itemtype'],
                                                               $_REQUEST['items_id'], $days);
 
-   echo count($data).'&nbsp;'.$LANG['job'][36];
-   if (count($data)) {
+   $nb = count($data);
+   echo sprintf(_n('%s ticket in progress or recently solved on this item.', 
+                   '%s tickets in progress or recently solved on this item.', $nb), 
+                $nb);
+   
+   if ($nb) {
       $content = '';
       foreach ($data as $title) {
          $content .= $title.'<br>';

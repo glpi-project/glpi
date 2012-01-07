@@ -86,11 +86,11 @@ $caract    = array('itilcategories_id'   => array('title' => __('Category')),
                    'urgency'             => array('title' => __('Urgency')),
                    'impact'              => array('title' => __('Impact')),
                    'priority'            => array('title' => __('Priority')),
-                   'solutiontypes_id'    => array('title' => $LANG['job'][48]));
+                   'solutiontypes_id'    => array('title' => __('Solution type')));
 
 if ($_REQUEST['itemtype'] == 'Ticket') {
    $caract['type']            = array('title' => __('Type'));
-   $caract['requesttypes_id'] = array('title' => $LANG['job'][44]);
+   $caract['requesttypes_id'] = array('title' => __('Request source'));
 }
 
 

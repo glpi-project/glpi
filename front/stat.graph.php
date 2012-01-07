@@ -210,8 +210,7 @@ switch($_GET["type"]) {
       $next  = $prev = 0;
       $next  = getNextItem("glpi_solutiontypes", $_GET["id"]);
       $prev  = getPreviousItem("glpi_solutiontypes", $_GET["id"]);
-      $title = $LANG['job'][48]."&nbsp;: ".Dropdown::getDropdownName("glpi_solutiontypes",
-                                                                      $_GET["id"]);
+      $title = sprintf(__('Solution type: %s'), Dropdown::getDropdownName("glpi_solutiontypes", $_GET["id"]));
       break;
 
    case "usercategories_id" :
@@ -234,8 +233,8 @@ switch($_GET["type"]) {
       if ($val1 > 0) {
          $prev = $val1-1;
       }
-      $title = $LANG['job'][44]."&nbsp;: ".Dropdown::getDropdownName('glpi_requesttypes',
-                                                                     $_GET["id"]);
+      $title = sprintf(__('Request source: %s'), Dropdown::getDropdownName("glpi_requesttypes",
+                                                                     $_GET["id"]));
       break;
 
    case "device" :

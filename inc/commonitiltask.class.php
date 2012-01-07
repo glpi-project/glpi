@@ -724,7 +724,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo Planning::getState($this->fields["state"])."<br>";
       }
       if (empty($this->fields["begin"])) {
-         echo $LANG['job'][32];
+         _e('None');
       } else {
          echo Html::convDateTime($this->fields["begin"])."<br>->".
               Html::convDateTime($this->fields["end"])."<br>".
@@ -805,7 +805,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
+      echo "<td>". __('Duration')."</td><td>";
 
       Dropdown::showTimeStamp("actiontime",array('min'   => 0,
                                                 'max'   => 8*HOUR_TIMESTAMP,
@@ -814,7 +814,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['job'][35]."</td>";
+      echo "<td>".__('Planning')."</td>";
       echo "<td>";
 
       if (!empty($this->fields["begin"])) {
@@ -862,12 +862,12 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo "</script>";
 
             echo "<div id='plan'  onClick='showPlanUpdate()'>\n";
-            echo "<span class='showplan'>".$LANG['job'][34]."</span>";
+            echo "<span class='showplan'>".__('Plan this task')."</span>";
             echo "</div>\n";
             echo "<div id='viewplan'></div>\n";
 
          } else {
-            echo $LANG['job'][32];
+            _e('None');
          }
       }
 
@@ -929,11 +929,9 @@ abstract class CommonITILTask  extends CommonDBTM {
          if ($item->fields["status"] != 'solved' && $item->fields["status"] != 'closed') {
             echo "<div class='center'>".
                  "<a class='vsubmit' href='javascript:viewAddFollowup".$item->fields['id']."$rand();'>";
-            echo $LANG['job'][30]."</a></div></p><br>\n";
+            echo __('Add a new task')."</a></div></p><br>\n";
          }
       }
-
-      //echo "<h3>" . $LANG['job'][37] . "</h3>";
 
       if ($DB->numrows($result) == 0) {
          echo "<table class='tab_cadre_fixe'><tr class='tab_bg_2'><th>" . __('No task found.');
@@ -941,12 +939,12 @@ abstract class CommonITILTask  extends CommonDBTM {
       } else {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>".__('Type')."</th><th>" . __('Date') . "</th>";
-         echo "<th>" . __('Description') . "</th><th>" . $LANG['job'][31] . "</th>";
+         echo "<th>" . __('Description') . "</th><th>" .  __('Duration') . "</th>";
          echo "<th>" . __('Writer') . "</th>";
          if ($this->maybePrivate() && $showprivate) {
             echo "<th>" . __('Public') . "</th>";
          }
-         echo "<th>" . $LANG['job'][35] . "</th></tr>\n";
+         echo "<th>" . __('Planning') . "</th></tr>\n";
 
          while ($data = $DB->fetch_array($result)) {
             if ($this->getFromDB($data['id'])) {

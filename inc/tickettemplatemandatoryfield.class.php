@@ -51,7 +51,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return _n('Mandatory field', 'Mandatory fields', $nb):
+      return _n('Mandatory field', 'Mandatory fields', $nb);
    }
 
 
