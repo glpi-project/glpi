@@ -2141,7 +2141,7 @@ $LANG['setup'][660]="Mail server";
 $LANG['setup'][661]="Impossible to configure the notifications: please configure your email followup using the above configuration.";
 
 
-$LANG['setup'][703]="General";
+$LANG['setup'][703]="setup/General"; // with context
 $LANG['setup'][704]="Notifications";
 $LANG['setup'][705]="Notification";
 $LANG['setup'][707]="Alerts on reservations";

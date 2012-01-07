@@ -1851,7 +1851,8 @@ class Html {
 
       if (Session::haveRight("config","w")) {
 
-         $menu['config']['content']['config']['title'] = __('General');
+         //TRANS: menu title for "General setup""
+         $menu['config']['content']['config']['title'] = _c('setup', 'General');
          $menu['config']['content']['config']['page']  = '/front/config.form.php';
 
          $menu['config']['content']['control']['title'] = _n('Check', 'Checks', 2);
