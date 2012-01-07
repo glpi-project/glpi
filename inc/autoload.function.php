@@ -86,7 +86,7 @@ function isPluginItemType($classname) {
 
 function __($str){
    global $TRANSLATE;
-   
+
    $trans = $TRANSLATE->_($str);
    // Wrong call when plural defined
    if (is_array($trans)) {
@@ -114,6 +114,20 @@ function _n($sing, $plural, $nb){
    global $TRANSLATE;
 
    return "_n".$TRANSLATE->plural($sing, $plural, $nb);
+}
+
+
+function _c($ctx, $str) {
+
+   // simulate pgettext
+   $msg = $ctx."\004".$str;
+   $trans = __($msg);
+
+   if ($trans == "__".$msg) {
+      // No translation
+      return 'c__'.$str;
+   }
+   return 'c'.$trans;
 }
 
 

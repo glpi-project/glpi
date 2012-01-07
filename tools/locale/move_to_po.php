@@ -92,7 +92,12 @@ $po  = fopen(GLPI_ROOT . "/locales/".$_GET['lang'].".po", "w+");
 $in_plural = false;
 
 if ($pot && $po) {
+   $context = '';
+
    while (($content = fgets($pot, 4096)) !== false) {
+      if (preg_match('/^msgctxt "(.*)"$/',$content,$reg)) {
+         $context = $reg[1];
+      }
       if (preg_match('/^msgid "(.*)"$/',$content,$reg)) {
          $current_string = $reg[1];
       }
@@ -108,7 +113,7 @@ if ($pot && $po) {
          if ($in_plural) {
             $current_string_plural .= $reg[1];
          } else {
-            $current_string        .= $reg[1];      
+            $current_string        .= $reg[1];
          }
 //          echo '-'.$current_string."-\n";
       }
@@ -120,19 +125,19 @@ if ($pot && $po) {
             if ($_GET['lang']=='en_GB') {
                $content     = "msgstr \"$current_string\"\n";
             } else {
-               $translation = search_in_dict($current_string);
+               $translation = search_in_dict($current_string, $context);
                $content     = "msgstr \"$translation\"\n";
 //              echo '+'.$current_string."+\n";
 //                echo "$translation\n";
             }
          } else {
-            
+
             switch ($reg[1]) {
                case "0" : // Singular
                   $in_plural = false;
 
 //                   echo '+'.$current_string."+\n";
-                  $sing_trans = search_in_dict($current_string);
+                  $sing_trans = search_in_dict($current_string, $context);
 //                   echo "$translation\n";
                   break;
 
@@ -140,11 +145,11 @@ if ($pot && $po) {
                   $in_plural = true;
 
 //                   echo '++'.$current_string."++\n";
-                  $plural_trans = search_in_dict($current_string_plural);
+                  $plural_trans = search_in_dict($current_string_plural, $context);
 //                   echo "$translation\n";
                   break;
             }
-            
+
             if ($reg[1] == "1") {
                if ($_GET['lang']=='en_GB') {
                   $content = "msgstr[0] \"$current_string\"\n";
@@ -163,6 +168,7 @@ if ($pot && $po) {
                   $content='';
             }
          }
+         $context = '';
       }
      // Standard replacement
      $content = preg_replace('/charset=CHARSET/','charset=UTF-8',$content);
@@ -182,8 +188,12 @@ fclose($pot);
 fclose($po);
 
 
-function search_in_dict($string) {
+function search_in_dict($string, $context) {
    global $REFLANG, $LANG;
+
+   if ($context) {
+      $string = "$context/$string";
+   }
 
    $ponctmatch = "([\.: \(\)]*)";
    $varmatch = "(%s)*";
