@@ -1998,10 +1998,9 @@ class Ticket extends CommonITILObject {
     * @return array of types
    **/
    static function getTypes() {
-      global $LANG;
 
-      $options[self::INCIDENT_TYPE] = $LANG['job'][1];
-      $options[self::DEMAND_TYPE]   = $LANG['job'][2];
+      $options[self::INCIDENT_TYPE] = __('Incident');
+      $options[self::DEMAND_TYPE]   = __('Request');
 
       return $options;
    }
@@ -2013,14 +2012,13 @@ class Ticket extends CommonITILObject {
     * @param $value type ID
    **/
    static function getTicketTypeName($value) {
-      global $LANG;
 
       switch ($value) {
          case self::INCIDENT_TYPE :
-            return $LANG['job'][1];
+            return __('Incident');
 
          case self::DEMAND_TYPE :
-            return $LANG['job'][2];
+            return __('Request');
       }
    }
 
@@ -3554,7 +3552,7 @@ class Ticket extends CommonITILObject {
       echo "</td>";
 
       echo "<th class='left' rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype').
-             $LANG['document'][14]."".$tt->getMandatoryMark('itemtype').
+             __('Associated element')."".$tt->getMandatoryMark('itemtype').
              $tt->getEndHiddenFieldText('itemtype');
       echo "<img title='".__s('Update')."' alt='".__s('Update')."'
                   onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
@@ -4178,8 +4176,8 @@ class Ticket extends CommonITILObject {
 
          echo "</th></tr>";
          echo "<tr><th></th>";
-         echo "<th>".$LANG['job'][4]."</th>";
-         echo "<th>".$LANG['document'][14]."</th>";
+         echo "<th>".__('Requester')."</th>";
+         echo "<th>".__('Associated element')."</th>";
          echo "<th>".__('Description')."</th></tr>";
          while ($i < $number) {
             $ID = $DB->result($result, $i, "id");
@@ -4415,12 +4413,13 @@ class Ticket extends CommonITILObject {
          $items[_n('Entity', 'Entities', 2)] = "glpi_entities.completename";
       }
 
-      $items[__('Priority')]   = "glpi_tickets.priority";
-      $items[$LANG['job'][4]]       = "glpi_tickets.users_id";
-      $items[__('Assigned')]   = "glpi_tickets.users_id_assign";
-      $items[$LANG['document'][14]] = "glpi_tickets.itemtype, glpi_tickets.items_id";
-      $items[__('Category')]        = "glpi_itilcategories.completename";
-      $items[__('Title')]           = "glpi_tickets.name";
+      $items[__('Priority')]  = "glpi_tickets.priority";
+      $items[__('Requester')] = "glpi_tickets.users_id";
+      $items[__('Assigned')]  = "glpi_tickets.users_id_assign";
+      $items[__('Associated element')]
+                              = "glpi_tickets.itemtype, glpi_tickets.items_id";
+      $items[__('Category')]  = "glpi_itilcategories.completename";
+      $items[__('Title')]     = "glpi_tickets.name";
 
       foreach ($items as $key => $val) {
          $issort = 0;

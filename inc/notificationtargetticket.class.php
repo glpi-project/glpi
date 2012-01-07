@@ -576,7 +576,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       }
 
      //Events specific for validation
-     $tags = array('validation.author'            => $LANG['job'][4],
+     $tags = array('validation.author'            => __('Requester'),
                    'validation.status'            => __('Status of the approval request'),
                    'validation.submissiondate'    => __('Request date'),
                    'validation.commentsubmission' => __('Request comments'),

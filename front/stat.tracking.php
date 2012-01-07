@@ -74,7 +74,7 @@ if (!isset($_REQUEST["start"])) {
 
 Stat::title();
 
-$requester = array('user'               => array('title' => $LANG['job'][4]),
+$requester = array('user'               => array('title' => __('Requester')),
                    'users_id_recipient' => array('title' => __('Writer')),
                    'group'              => array('title' => __('Group')),
                    'group_tree'         => array('title' => __('Group tree')),
@@ -94,9 +94,9 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
 }
 
 
-$items = array($LANG['job'][4]       => $requester,
+$items = array(__('Requester')       => $requester,
                __('Characteristics') => $caract,
-               $LANG['job'][5]       => array('technicien'
+               __('Assigned to')     => array('technicien'
                                                    => array('title' => __('Technician as assigned')),
                                               'technicien_followup'
                                                    => array('title' => __('Technician in tasks')),

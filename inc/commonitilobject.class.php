@@ -1688,12 +1688,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab = array();
 
-      $tab['requester'] = $LANG['job'][4];
+      $tab['requester'] = __('Requester');
 
       $tab[4]['table']         = 'glpi_users';
       $tab[4]['field']         = 'name';
       $tab[4]['datatype']      = 'dropdown';
-      $tab[4]['name']          = $LANG['job'][4];
+      $tab[4]['name']          = __('Requester');
       $tab[4]['forcegroupby']  = true;
       $tab[4]['massiveaction'] = false;
       $tab[4]['joinparams']    = array('beforejoin'
@@ -1752,12 +1752,12 @@ abstract class CommonITILObject extends CommonDBTM {
                                                             'condition' => 'AND NEWTABLE.`type` ' .
                                                                             '= '.self::OBSERVER)));
 
-      $tab['assign'] = $LANG['job'][5];
+      $tab['assign'] = __('Assigned to');
 
       $tab[5]['table']         = 'glpi_users';
       $tab[5]['field']         = 'name';
       $tab[5]['datatype']      = 'dropdown';
-      $tab[5]['name']          = $LANG['job'][5]." - ".$LANG['job'][6];
+      $tab[5]['name']          = __('Technician');
       $tab[5]['forcegroupby']  = true;
       $tab[5]['massiveaction'] = false;
       $tab[5]['joinparams']    = array('beforejoin'
@@ -2164,7 +2164,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th rowspan='2' width='10%'>".__('Actors')."&nbsp;:</th>";
-      echo "<th width='30%'>".$LANG['job'][4];
+      echo "<th width='30%'>".__('Requester');
       $rand_requester = -1;
       $candeleterequester    = false;
 
@@ -2204,7 +2204,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "</th>";
 
-      echo "<th width='30%'>".$LANG['job'][5];
+      echo "<th width='30%'>".__('Assigned to');
       $rand_assign = -1;
       $candeleteassign    = false;
       if ($ID && ($this->canAssign() || $this->canAssignToMe())) {

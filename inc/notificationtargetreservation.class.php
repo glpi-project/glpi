@@ -51,7 +51,7 @@ class NotificationTargetReservation extends NotificationTarget {
                           __('Technician in charge of the hardware'));
          $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE, __('Group in charge of the hardware'));
          $this->addTarget(Notification::ITEM_USER, __('Hardware user'));
-         $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
+         $this->addTarget(Notification::AUTHOR, __('Requester'));
       }
    }
 
