@@ -721,7 +721,7 @@ class CronTask extends CommonDBTM{
       //If cron is launched in command line, and if memory is insufficient, display a warning in
       //the logs
       if ($mode==self::MODE_EXTERNAL && Toolbox::checkMemoryLimit() == 2) {
-         Toolbox::logDebug($LANG['install'][88]);
+         Toolbox::logDebug(__('A minimum of 64MB is commonly required for GLPI.'));
       }
 
       if (self::get_lock()) {

@@ -687,14 +687,18 @@ class Toolbox {
       }
 
       // Check for mysql extension ni php
-      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][71]."</td>";
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('Mysql extension test.')."</td>";
       if (!function_exists("mysql_query")) {
          echo "<td class='red'>";
-         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][72]."</td></tr>";
+         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
+               __('You must install the MySQL extension for PHP.')."</td></tr>";
          $error = 2;
       } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][73].
-                    "\" title=\"".$LANG['install'][73]."\"></td></tr>";
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+               __s('Ok - the function mysql_query() exist - Perfect !').
+               "\" title=\"".
+               __s('Ok - the function mysql_query() exist - Perfect !').
+               "\"></td></tr>";
       }
 
       // session test
@@ -730,16 +734,20 @@ class Toolbox {
       }
 
       //Test for option session use trans_id loaded or not.
-      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][74]."</td>";
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('Test if Session_use_trans_sid is used')."</td>";
 
       if (isset($_POST[session_name()]) || isset($_GET[session_name()])) {
          echo "<td class='red'>";
-         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][75]."</td></tr>";
+         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
+               __('You must desactivate the Session_use_trans_id option in your php.ini')."</td></tr>";
          $error = 2;
 
       } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][76].
-                    "\" title=\"".$LANG['install'][76]."\"></td></tr>";
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+               __s('Ok - the sessions works (no problem with trans_id) - Perfect !').
+               "\" title=\"".
+               __s('Ok - the sessions works (no problem with trans_id) - Perfect !').
+               "\"></td></tr>";
       }
 
       //Test for sybase extension loaded or not.
@@ -761,60 +769,65 @@ class Toolbox {
       }
 
       //Test for json_encode function.
-      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][102]."</td>";
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('Test json functions')."</td>";
 
       if (!function_exists('json_encode') || !function_exists('json_decode')) {
-         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][103]."></td></tr>";
+         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
+               __("GLPI can't work correctly without the json_encode and json_decode functions").
+               "></td></tr>";
          $error = 2;
 
       } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][85].
-                    "\" title=\"".$LANG['install'][85]."\"></td></tr>";
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+               __s('The functionality is found - Perfect!').
+               "\" title=\"".
+               __s('The functionality is found - Perfect!').
+               "\"></td></tr>";
       }
 
       //Test for mbstring extension.
-      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][104]."</td>";
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('Mbstring extension test')."</td>";
 
       if (!extension_loaded('mbstring')) {
-         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][105]."></td></tr>";
+         echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
+               __('Mbstring extension of your parser PHP is not installed')."></td></tr>";
          $error = 2;
 
       } else {
-         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][85].
-                    "\" title=\"".$LANG['install'][85]."\"></td></tr>";
+         echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+               __s('The functionality is found - Perfect!').
+               "\" title=\"".
+               __s('The functionality is found - Perfect!').
+               "\"></td></tr>";
       }
 
       // memory test
-      echo "<tr class='tab_bg_1'><td class='left b'>".$LANG['install'][86]."</td>";
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
 
       //Get memory limit
       $mem = self::getMemoryLimit();
       switch (self::checkMemoryLimit()) {
          case 0: // memory_limit not compiled -> no memory limit
-            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][95]." - ".
-                       $LANG['install'][89]."\" title=\"".$LANG['install'][95]." - ".
-                       $LANG['install'][89]."\"></td></tr>";
-            break;
-
          case 1: // memory_limit compiled and unlimited
-            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][96]." - ".
-                       $LANG['install'][89]."\" title=\"".$LANG['install'][96]." - ".
-                       $LANG['install'][89]."\"></td></tr>";
+            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+                  __s('Unlimited memory')." - ".__s('Perfect !')."\" title=\"".
+                  __s('Unlimited memory')." - ".__s('Perfect !')."\"></td></tr>";
             break;
 
          case 2: //Insufficient memory
             $showmem = $mem/1048576;
-            echo "<td class='red'>
-                  <img src='".GLPI_ROOT."/pics/redbutton.png'><span class='b'>".
+            echo "<td class='red'><img src='".GLPI_ROOT."/pics/redbutton.png'><span class='b'>".
                   sprintf(__('Allocated memory: %dMio'),$showmem)."</span>".
-                   "<br>".$LANG['install'][88]."<br>".$LANG['install'][90]."</td></tr>";
+                  "<br>".__('A minimum of 64MB is commonly required for GLPI.').
+                  "<br>".__('Try increasing the memory_limit parameter in the php.ini file.').
+                  "</td></tr>";
             $error = 2;
             break;
 
          case 3: //Got enough memory, going to the next step
-            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".$LANG['install'][91]." - ".
-                       $LANG['install'][89]."\" title=\"".$LANG['install'][91]." - ".
-                       $LANG['install'][89]."\"></td></tr>";
+            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+                  __s('Allocated memory > 64M')." - ".__s('Perfect !')."\" title=\"".
+                  __s('Allocated memory > 64M')." - ".__s('Perfect !')."\"></td></tr>";
             break;
       }
       $suberr = Config::checkWriteAccessToDirs();
