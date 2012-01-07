@@ -43,7 +43,7 @@ class NetworkPortDialup extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-     return __s('Connection by dial line - Dialup');
+     return __('Connection by dial line - Dialup');
    }
 
 

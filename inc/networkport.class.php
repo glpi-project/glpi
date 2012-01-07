@@ -309,7 +309,7 @@ class NetworkPort extends CommonDBChild {
     * @param $withtemplate integer : withtemplate param
    **/
    static function showForItem(CommonDBTM $item, $withtemplate='') {
-      global $DB, $CFG_GLPI, $LANG;
+      global $DB, $CFG_GLPI;
 
       $rand = mt_rand();
 
@@ -332,7 +332,7 @@ class NetworkPort extends CommonDBChild {
          echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>\n";
          echo "<div class='firstbloc'><table class='tab_cadre_fixe'>\n";
          echo "<tr><td class='tab_bg_2 center'>\n";
-         echo $LANG['Internet'][36]."&nbsp;: <select name='instantiation_type'>\n";
+         echo __('Network port type to be added')." <select name='instantiation_type'>\n";
          foreach (self::getNetworkPortInstantiations() as $network_type) {
             echo "\t<option value='$network_type'";
             if ($network_type == "NetworkPortEthernet") {
@@ -342,8 +342,8 @@ class NetworkPort extends CommonDBChild {
          }
          echo "</select></td>\n";
          echo "<td class='tab_bg_2 center' width='50%'>";
-         echo $LANG['Internet'][37] .
-              "&nbsp;: <input type='checkbox' name='several' value='1'></td>\n";
+         echo __('Add several ports') .
+              "&nbsp;<input type='checkbox' name='several' value='1'></td>\n";
          echo "</tr>";
 
          echo "<tr><td class='tab_bg_2 center' colspan='2'>\n";
@@ -649,8 +649,7 @@ class NetworkPort extends CommonDBChild {
 
 
    function getSearchOptions() {
-      global $LANG;
-
+      
       $tab = array();
       $tab['common'] = __('Characteristics');
 

@@ -137,13 +137,11 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
 
    function getAdditionalFields() {
-      global $LANG;
-
       return array(array('name'     => 'network',
                          'label'    => self::getTypeName(1),
                          'type'     => 'text',
                          'list'     => true,
-                         'comment' => $LANG['Internet'][18]),
+                         'comment' => __('Set the network using notation address+mask'),
                    array('name'  => 'gateway',
                          'label' => __('Gateway'),
                          'type'  => 'text',
@@ -175,8 +173,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
 
    function prepareInput($input) {
-      global $LANG;
-
       // If $this->fields["network"] is not set then, we are adding a new network
       // Or if $this->fields["network"] != $input["network"] we a updating the network
       $address = new IPAddress();
@@ -184,15 +180,15 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       if (!isset($this->fields["network"]) || ($input["network"] != $this->fields["network"])) {
          $network = explode ("/", $input["network"]);
          if (count($network) != 2) {
-            return array('error' => $LANG['Internet'][19],
+            return array('error' => __('Invalid input format for the network'),
                          'input' => false);
          }
          if (!$address->setAddressFromString($network[0])) {
-            return array('error' => $LANG['Internet'][20],
+            return array('error' => $__('Invalid network address'),
                          'input' => false);
          }
          if (!$netmask->setNetmaskFromString($network[1], $address->getVersion())) {
-            return array('error' => $LANG['Internet'][21],
+            return array('error' => __('Invalid subnet mask'),
                          'input' => false);
          }
 
@@ -254,7 +250,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          if (!empty($input["gateway"])) {
             if (!$gateway->setAddressFromString($input["gateway"])
                 || (!self::checkIPFromNetwork($gateway, $address, $netmask))){
-               $returnValue['error'] = $LANG['Internet'][23];
+               $returnValue['error'] = __('Invalid gateway address');
 
                if (!empty($this->fields["gateway"])) {
                   if (!$gateway->setAddressFromString($this->fields["gateway"])

@@ -44,12 +44,8 @@ class IPNetmask extends IPAddress {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
 
-      if ($nb > 1) {
-         return $LANG['Internet'][6];
-      }
-      return $LANG['Internet'][5];
+      return _n('Subnet mask', 'Subnet masks', $nb);
    }
 
 

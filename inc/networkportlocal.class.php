@@ -43,9 +43,7 @@ class NetworkPortLocal extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-     return $LANG['Internet'][31];
+     return __('Local loop');
    }
 
 

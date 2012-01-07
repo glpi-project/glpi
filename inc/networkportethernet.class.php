@@ -52,8 +52,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
-      global $LANG;
-
+      
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'>";
          $this->showNetpointField($netport, $options, $recursiveItems);
@@ -62,13 +61,13 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . $LANG['Internet'][38] . "&nbsp;:</td><td>\n";
-      Dropdown::showFromArray('type', array('T'  => $LANG['Internet'][40],
-                                            'SX' => $LANG['Internet'][41],
-                                            'LX' => $LANG['Internet'][42]),
+      echo "<td>" . __('Ethernet port type') . "</td><td>\n";
+      Dropdown::showFromArray('type', array('T'  => __('Twisted pair (RJ-45)'),
+                                            'SX' => __('Multimode fiber'),
+                                            'LX' => __('Single mode fiber')),
                               array('value' => $this->fields['type']));
       echo "</td>";
-      echo "<td>" . $LANG['Internet'][39] . "&nbsp;:</td><td>\n";
+      echo "<td>" . __('Ethernet port speed') . "</td><td>\n";
       Dropdown::showFromArray('speed', array(0     => "",
                                              10    => 10,
                                              100   => 100,
@@ -292,7 +291,6 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');
@@ -304,12 +302,12 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'type';
-      $tab[11]['name']          = $LANG['Internet'][38];
+      $tab[11]['name']          = __('Ethernet port type');
       $tab[11]['massiveaction'] = false;
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'speed';
-      $tab[12]['name']          = $LANG['Internet'][39];
+      $tab[12]['name']          = __('Ethernet port speed');
       $tab[12]['massiveaction'] = false;
 
       return $tab;

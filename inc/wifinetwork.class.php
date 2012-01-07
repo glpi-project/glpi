@@ -61,10 +61,8 @@ class WifiNetwork extends CommonDropdown {
 
 
    static function getWifiNetworkModes() {
-      global $LANG;
-
-      return array('infrastructure' => $LANG['Internet'][53],
-                   'ad-hoc'         => $LANG['Internet'][54]);
+      return array('infrastructure' => __('Infrastructure (with access point)'),
+                   'ad-hoc'         => __('Ad-hoc (without access point)'));
    }
 
 
@@ -88,14 +86,12 @@ class WifiNetwork extends CommonDropdown {
 
 
    function getAdditionalFields() {
-      global $LANG;
-
       return array(array('name'  => 'essid',
                          'label' => __('ESSID'),
                          'type'  => 'text',
                          'list'  => true),
                    array('name'  => 'mode',
-                         'label' => $LANG['Internet'][55],
+                         'label' => __('Wifi network type'),
                          'type'  => 'wifi_mode',
                          'list'  => true));
    }

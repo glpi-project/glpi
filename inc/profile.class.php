@@ -615,7 +615,6 @@ class Profile extends CommonDBTM {
     * @param $closeform boolean close the form
    **/
    function showFormInventory($openform=true, $closeform=true) {
-      global $LANG;
 
       $ID = $this->fields['id'];
       $target = $this->getFormURL();
@@ -667,7 +666,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".$LANG['Internet'][0]."</td><td>";
+      echo "<td>".__('Internet')."</td><td>";
       self::dropdownNoneReadWrite("internet", $this->fields["internet"], 1, 1, 1);
       echo "</td>\n";
       echo "<td colspan='4'>&nbsp;</td></tr>";
@@ -766,7 +765,7 @@ class Profile extends CommonDBTM {
     * @param $closeform boolean close the form
    **/
    function showFormTracking($openform=true, $closeform=true) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $ID = $this->fields['id'];
       $target = $this->getFormURL();
@@ -1338,7 +1337,6 @@ class Profile extends CommonDBTM {
 
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
       $tab['common'] = __('Characteristics');
@@ -1431,7 +1429,7 @@ class Profile extends CommonDBTM {
 
       $tab[29]['table']    = $this->getTable();
       $tab[29]['field']    = 'internet';
-      $tab[29]['name']     = $LANG['Internet'][0];
+      $tab[29]['name']     = __('Internet');
       $tab[29]['datatype'] = 'right';
 
       $tab['management']   = __('Management');

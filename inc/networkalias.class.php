@@ -81,12 +81,8 @@ class NetworkAlias extends FQDNLabel {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      if ($nb > 1) {
-         return $LANG['Internet'][29];
-      }
-      return $LANG['Internet'][30];
+      
+      return _n('Network alias', 'Network aliases', $nb);
    }
 
 
