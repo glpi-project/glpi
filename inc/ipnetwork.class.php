@@ -141,7 +141,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
                          'label'    => self::getTypeName(1),
                          'type'     => 'text',
                          'list'     => true,
-                         'comment' => __('Set the network using notation address+mask'),
+                         'comment' => __('Set the network using notation address+mask')),
                    array('name'  => 'gateway',
                          'label' => __('Gateway'),
                          'type'  => 'text',

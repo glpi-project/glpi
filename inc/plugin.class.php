@@ -137,7 +137,7 @@ class Plugin extends CommonDBTM {
       // $LANG needed : used when include lang file
       global $CFG_GLPI,$LANG,$TRANSLATE;
 
-      // For cmpatibility for plugins using $LANG
+      // For compatibility for plugins using $LANG
       $LANG = array();
 
       $trytoload = 'en_GB';
