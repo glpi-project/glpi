@@ -763,7 +763,7 @@ function updateDbUpTo031() {
 
 
 function updateTreeDropdown() {
-   global $DB, $LANG;
+   global $DB;
 
    // Update Tree dropdown
    if (TableExists("glpi_dropdown_locations")

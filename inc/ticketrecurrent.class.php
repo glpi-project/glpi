@@ -138,7 +138,7 @@ class TicketRecurrent extends CommonDropdown {
                          'type'  => 'bool',
                          'list'  => false),
                    array('name'  => 'tickettemplates_id',
-                         'label' => $LANG['job'][58],
+                         'label' => _n('Ticket template', 'Ticket templates', 1),
                          'type'  => 'dropdownValue',
                          'list'  => true),
                    array('name'  => 'begin_date',
@@ -176,7 +176,7 @@ class TicketRecurrent extends CommonDropdown {
 
       $tab[12]['table']    = 'glpi_tickettemplates';
       $tab[12]['field']    = 'name';
-      $tab[12]['name']     = $LANG['job'][58];
+      $tab[12]['name']     = _n('Ticket template', 'Ticket templates', 1);
       $tab[12]['datatype'] = 'itemlink';
 
       $tab[13]['table']    = $this->getTable();

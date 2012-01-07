@@ -506,7 +506,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[47]['table']         = 'glpi_entitydatas';
       $tab[47]['field']         = 'tickettemplates_id';  // not a dropdown because of special value
-      $tab[47]['name']          = $LANG['job'][58];
+      $tab[47]['name']          = _n('Ticket template', 'Ticket templates', 1);
       $tab[47]['massiveaction'] = false;
       $tab[47]['nosearch']      = true;
       $tab[47]['joinparams']    = array('jointype' => 'child');

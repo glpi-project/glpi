@@ -1104,7 +1104,7 @@ class Html {
 
          if (Session::haveRight('tickettemplate', 'r')) {
             $menu['maintain']['content']['ticket']['options']['TicketTemplate']['title']
-                              = $LANG['job'][59];
+                              = _n('Ticket template', 'Ticket templates', 2);
             $menu['maintain']['content']['ticket']['options']['TicketTemplate']['page']
                               = '/front/tickettemplate.php';
             $menu['maintain']['content']['ticket']['options']['TicketTemplate']['links']['search']

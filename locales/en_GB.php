@@ -946,6 +946,10 @@ $LANG['job'][46]="The ticket will be added in the entity";
 $LANG['job'][47]="Costs";
 $LANG['job'][48]="Solution Type";
 $LANG['job'][49]="New task";
+
+
+/// TODO After is ok for migration to gettext
+
 $LANG['job'][50]="No task for this ticket.";
 $LANG['job'][51]="Approval of the solution";
 $LANG['job'][52]="Update task";
@@ -969,10 +973,6 @@ $LANG['job'][69]="This ticket concerns me";
 $LANG['job'][70]="Visible for an incident";
 $LANG['job'][71]="Visible for a request";
 $LANG['job'][72]="Visible for a problem";
-
-
-
-/// TODO After is ok for migration to gettext
 
 
 $LANG['joblist'][0]="Status";

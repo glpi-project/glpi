@@ -682,7 +682,7 @@ class TicketFollowup  extends CommonDBTM {
       if ($ticket->fields["status"] == 'solved' && $ticket->canApprove()) {
          echo "<form name='form' method='post' action='".$this->getFormURL()."'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='4'>". $LANG['job'][51]."</th></tr>";
+         echo "<tr><th colspan='4'>". __('Approval of the solution')."</th></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2'>".__('Comments')."<br>".__('Optional when approved')."</td>";

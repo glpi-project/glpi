@@ -756,7 +756,7 @@ class EntityData extends CommonDBChild {
       }
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG['job'][58]."</td>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Ticket template', 'Ticket templates', 1)."</td>";
       echo "<td colspan='2'>";
       $toadd = array();
       if ($ID != 0) {
