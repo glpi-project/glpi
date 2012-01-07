@@ -48,7 +48,7 @@ if (isset($_POST["add"])) {
 
    if ($newID = $cartype->add($_POST)) {
       Event::log($newID, "cartridges", 4, "inventory",
-               sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
+               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    }
    Html::back();
 
@@ -58,7 +58,7 @@ if (isset($_POST["add"])) {
    if ($cartype->delete($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
+            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
    }
    $cartype->redirectToList();
 
@@ -68,7 +68,7 @@ if (isset($_POST["add"])) {
    if ($cartype->restore($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));            
+            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
    }
    $cartype->redirectToList();
 
@@ -78,7 +78,7 @@ if (isset($_POST["add"])) {
    if ($cartype->delete($_POST,1)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    }
    $cartype->redirectToList();
 
@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
    if ($cartype->update($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
             //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -113,7 +113,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(_n('Cartridge', 'Cartridges', 2), $_SERVER['PHP_SELF'], "inventory", "cartridge");
+   Html::header(Cartridge::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "cartridge");
    $cartype->showForm($_GET["id"]);
    Html::footer();
 }

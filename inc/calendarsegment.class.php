@@ -126,12 +126,10 @@ class CalendarSegment extends CommonDBChild {
       // Do not check hour if day before the end day of after the begin day
       return getAllDatasFromTable('glpi_calendarsegments',
                                   "`calendars_id` = '$calendars_id'
-                                   AND `day` >= '$begin_day'
-                                   AND `day` <= '$end_day'
-                                   AND (`begin` < '$end_time'
-                                        OR `day` < '$end_day')
-                                   AND ('$begin_time' < `end`
-                                        OR `day` > '$begin_day')");
+                                    AND `day` >= '$begin_day'
+                                    AND `day` <= '$end_day'
+                                    AND (`begin` < '$end_time' OR `day` < '$end_day')
+                                    AND ('$begin_time' < `end` OR `day` > '$begin_day')");
    }
 
 
@@ -362,11 +360,12 @@ class CalendarSegment extends CommonDBChild {
          switch ($item->getType()) {
             case 'Calendar' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Time range','Time ranges',2),
+                  return self::createTabEntry(self::getTypeName(2),
                                               countElementsInTable($this->getTable(),
-                                                                   "calendars_id = '".$item->getID()."'"));
+                                                                   "calendars_id
+                                                                        = '".$item->getID()."'"));
                }
-               return _n('Time range','Time ranges',2);
+               return self::getTypeName(2);
          }
       }
       return '';
