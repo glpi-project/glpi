@@ -178,8 +178,8 @@ class Problem extends CommonITILObject {
                return self::createTabEntry(self::getTypeName(2), $nb);
 
             case __CLASS__ :
-               $ong = array (1 => __('Analysis'),         
-                             2 => _n('Solution', 'Solutions', 1)); 
+               $ong = array (1 => __('Analysis'),
+                             2 => _n('Solution', 'Solutions', 1));
                if (Session::haveRight('observe_ticket','1')) {
                   $ong[4] = __('Statistics');
                }
@@ -190,7 +190,7 @@ class Problem extends CommonITILObject {
       switch ($item->getType()) {
          case __CLASS__ :
             return array(1 => __('Analysis'),
-                         2 => _n('Solution', 'Solutions', 1),  
+                         2 => _n('Solution', 'Solutions', 1),
                          4 => __('Statistics'));
       }
       return '';
@@ -1078,7 +1078,7 @@ class Problem extends CommonITILObject {
       }
 
       $items[__('Priority')]   = "glpi_problems.priority";
-      $items[$LANG['job'][4]]       = "glpi_problems.users_id";
+      $items[__('Requester')]  = "glpi_problems.users_id";
       $items[__('Assigned')]   = "glpi_problems.users_id_assign";
 //       $items[__('Associated element')] = "glpi_problems.itemtype, glpi_tickets.items_id";
       $items[__('Category')]        = "glpi_itilcategories.completename";

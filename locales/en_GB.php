@@ -895,15 +895,15 @@ $LANG['install'][104]="Mbstring extension test";
 $LANG['install'][105]="Mbstring extension of your parser PHP is not installed";
 $LANG['install'][106]="Checking write permissions for graphic files";
 
-
-/// TODO Before is ok for migration to gettext
-
 $LANG['job'][1]="Incident";
 $LANG['job'][2]="Request";
 $LANG['job'][3]="Technicians";
 $LANG['job'][4]="Requester";
 $LANG['job'][5]="Assigned to";
 $LANG['job'][6]="Technician";
+
+/// TODO Before is ok for migration to gettext
+
 $LANG['job'][7]="Task";
 $LANG['job'][8]="Last tickets";
 $LANG['job'][9]="Followup";

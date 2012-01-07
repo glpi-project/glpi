@@ -231,7 +231,7 @@ class RuleTicket extends Rule {
 
       $criterias['_users_id_assign']['table']     = 'glpi_users';
       $criterias['_users_id_assign']['field']     = 'name';
-      $criterias['_users_id_assign']['name']      = $LANG['job'][5]." - ".$LANG['job'][6];
+      $criterias['_users_id_assign']['name']      = __('Technician');
       $criterias['_users_id_assign']['linkfield'] = '_users_id_assign';
       $criterias['_users_id_assign']['type']      = 'dropdown_users';
 
@@ -320,7 +320,7 @@ class RuleTicket extends Rule {
       $actions['_groups_id_requester']['type']        = 'dropdown';
       $actions['_groups_id_requester']['table']       = 'glpi_groups';
 
-      $actions['_users_id_assign']['name']            = $LANG['job'][5]." - ".$LANG['job'][6];
+      $actions['_users_id_assign']['name']            = __('Technician');
       $actions['_users_id_assign']['type']            = 'dropdown_assign';
 
       $actions['_groups_id_assign']['table']          = 'glpi_groups';

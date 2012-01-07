@@ -215,11 +215,11 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
-      echo "<td>".$LANG['job'][4]."&nbsp;:&nbsp;</td>";
+      echo "<td>".__('Requester')."</td>";
       echo "<td>";
       dropdown::showYesNo('is_requester', $this->fields['is_requester']);
       echo "</td>";
-      echo "<td>".$LANG['job'][5]."&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      echo "<td>".__('Assigned to')."&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
       dropdown::showYesNo('is_assign', $this->fields['is_assign']);
       echo "</td></tr>";
 
@@ -312,12 +312,12 @@ class Group extends CommonTreeDropdown {
 
       $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'is_requester';
-      $tab[11]['name']          = $LANG['job'][4];
+      $tab[11]['name']          = __('Requester');
       $tab[11]['datatype']      = 'bool';
 
       $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'is_assign';
-      $tab[12]['name']          = $LANG['job'][5];
+      $tab[12]['name']          = __('Assigned to');
       $tab[12]['datatype']      = 'bool';
 
       $tab[13]['table']         = $this->getTable();

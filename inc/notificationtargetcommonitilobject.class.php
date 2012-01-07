@@ -361,7 +361,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       if ($event=='satisfaction') {
-         $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
+         $this->addTarget(Notification::AUTHOR, __('Requester'));
          $this->addTarget(Notification::RECIPIENT, __('Writer'));
 
       } else if ($event!='alertnotclosed') {
@@ -375,7 +375,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE, __('Group in charge of the hardware'));
          $this->addTarget(Notification::ASSIGN_TECH, __('Technician in charge of this ticket'));
          $this->addTarget(Notification::REQUESTER_GROUP, __('Requester group'));
-         $this->addTarget(Notification::AUTHOR, $LANG['job'][4]);
+         $this->addTarget(Notification::AUTHOR, __('Requester'));
          $this->addTarget(Notification::ITEM_USER, __('Hardware user'));
          $this->addTarget(Notification::ASSIGN_GROUP, __('Group in charge of the ticket'));
          $this->addTarget(Notification::OBSERVER_GROUP, __('Watcher group'));
@@ -754,12 +754,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.duedate'               => __('Due date'),
                     $objettype.'.authors'               => $LANG['job'][18],
                     'author.id'                         => __('Requester ID'),
-                    'author.name'                       => $LANG['job'][4],
+                    'author.name'                       => __('Requester'),
                     'author.location'                   => __('Requester location'),
                     'author.phone'                      =>  __('Phone'),
                     'author.phone2'                     =>  __('Phone 2'),
                     $objettype.'.openbyuser'            => __('Writer'),
-                    $objettype.'.assigntousers'         => $LANG['job'][5]." - ".$LANG['job'][3],
+                    $objettype.'.assigntousers'         => _n('Technician', 'Technicians', 2),
                     $objettype.'.assigntosupplier'      => __('Assigned to a supplier'),
                     $objettype.'.groups'                => __('Requester groups'),
                     $objettype.'.observergroups'        => __('Watcher groups'),
@@ -788,7 +788,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       //Tags with just lang
       $tags = array($objettype.'.days'               => __('day(s)'),
-                    $objettype.'.attribution'        => $LANG['job'][5],
+                    $objettype.'.attribution'        => __('Assigned to'),
                     $objettype.'.nocategoryassigned' => __('No defined category'));
 
       foreach ($tags as $tag => $label) {
