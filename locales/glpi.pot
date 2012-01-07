@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-07 06:52+0100\n"
+"POT-Creation-Date: 2012-01-07 07:09+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4735,41 +4735,87 @@ msgid "At least very low"
 msgstr ""
 
 #: inc/commonitilobject.class.php:1226 inc/commonitilobject.class.php:1250
+msgctxt "priority"
 msgid "Major"
 msgstr ""
 
 #: inc/commonitilobject.class.php:1229 inc/commonitilobject.class.php:1253
-#: inc/commonitilobject.class.php:1301 inc/commonitilobject.class.php:1334
-#: inc/commonitilobject.class.php:1381 inc/commonitilobject.class.php:1414
+msgctxt "priority"
 msgid "Very high"
 msgstr ""
 
 #: inc/commonitilobject.class.php:1230 inc/commonitilobject.class.php:1256
-#: inc/commonitilobject.class.php:1305 inc/commonitilobject.class.php:1337
-#: inc/commonitilobject.class.php:1385 inc/commonitilobject.class.php:1417
+msgctxt "priority"
 msgid "High"
 msgstr ""
 
 #: inc/commonitilobject.class.php:1231 inc/commonitilobject.class.php:1259
-#: inc/commonitilobject.class.php:1308 inc/commonitilobject.class.php:1340
-#: inc/commonitilobject.class.php:1388 inc/commonitilobject.class.php:1420
+msgctxt "priority"
 msgid "Medium"
 msgstr ""
 
 #: inc/commonitilobject.class.php:1232 inc/commonitilobject.class.php:1262
-#: inc/commonitilobject.class.php:1311 inc/commonitilobject.class.php:1343
-#: inc/commonitilobject.class.php:1391 inc/commonitilobject.class.php:1423
+msgctxt "priority"
 msgid "Low"
 msgstr ""
 
 #: inc/commonitilobject.class.php:1233 inc/commonitilobject.class.php:1265
-#: inc/commonitilobject.class.php:1315 inc/commonitilobject.class.php:1346
-#: inc/commonitilobject.class.php:1395 inc/commonitilobject.class.php:1426
+msgctxt "priority"
 msgid "Very low"
 msgstr ""
 
 #: inc/commonitilobject.class.php:1292 inc/commonitilobject.class.php:1372
 msgid "At least medium"
+msgstr ""
+
+#: inc/commonitilobject.class.php:1301 inc/commonitilobject.class.php:1334
+msgctxt "urgency"
+msgid "Very high"
+msgstr ""
+
+#: inc/commonitilobject.class.php:1305 inc/commonitilobject.class.php:1337
+msgctxt "urgency"
+msgid "High"
+msgstr ""
+
+#: inc/commonitilobject.class.php:1308 inc/commonitilobject.class.php:1340
+msgctxt "urgency"
+msgid "Medium"
+msgstr ""
+
+#: inc/commonitilobject.class.php:1311 inc/commonitilobject.class.php:1343
+msgctxt "urgency"
+msgid "Low"
+msgstr ""
+
+#: inc/commonitilobject.class.php:1315 inc/commonitilobject.class.php:1346
+msgctxt "urgency"
+msgid "Very low"
+msgstr ""
+
+#: inc/commonitilobject.class.php:1381 inc/commonitilobject.class.php:1414
+msgctxt "impact"
+msgid "Very high"
+msgstr ""
+
+#: inc/commonitilobject.class.php:1385 inc/commonitilobject.class.php:1417
+msgctxt "impact"
+msgid "High"
+msgstr ""
+
+#: inc/commonitilobject.class.php:1388 inc/commonitilobject.class.php:1420
+msgctxt "impact"
+msgid "Medium"
+msgstr ""
+
+#: inc/commonitilobject.class.php:1391 inc/commonitilobject.class.php:1423
+msgctxt "impact"
+msgid "Low"
+msgstr ""
+
+#: inc/commonitilobject.class.php:1395 inc/commonitilobject.class.php:1426
+msgctxt "impact"
+msgid "Very low"
 msgstr ""
 
 #: inc/commonitilobject.class.php:1664

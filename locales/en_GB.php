@@ -767,12 +767,12 @@ $LANG['group'][3]="Child groups";
 
 
 $LANG['help'][1]="Matrix of calculus for priority";
-$LANG['help'][2]="Major";
-$LANG['help'][3]="Very high";
-$LANG['help'][4]="High";
-$LANG['help'][5]="Medium";
-$LANG['help'][6]="Low";
-$LANG['help'][7]="Very low";  // fixed
+$LANG['help'][2]="priority/Major";     // context/string
+$LANG['help'][3]="priority/Very high";
+$LANG['help'][4]="priority/High";
+$LANG['help'][5]="priority/Medium";
+$LANG['help'][6]="priority/Low";
+$LANG['help'][7]="priority/Very low";  // fixed
 $LANG['help'][8]="Inform me about the action(s) taken";
 $LANG['help'][14]="Submit Message";
 $LANG['help'][18]="Your ticket has been registered, its treatment is in progress.";
@@ -790,16 +790,16 @@ $LANG['help'][31]="Software"; // Singular
 $LANG['help'][35]="Phone";
 $LANG['help'][40]="No title in your ticket, please retry.";
 $LANG['help'][41]="No category in your ticket, please retry.";
-$LANG['help'][42]="Very high";
-$LANG['help'][43]="High";
-$LANG['help'][44]="Medium";
-$LANG['help'][45]="Low";
-$LANG['help'][46]="Very low";
-$LANG['help'][47]="Very high";
-$LANG['help'][48]="High";
-$LANG['help'][49]="Medium";
-$LANG['help'][50]="Low";
-$LANG['help'][51]="Very low";
+$LANG['help'][42]="urgency/Very high";   // context/string
+$LANG['help'][43]="urgency/High";
+$LANG['help'][44]="urgency/Medium";
+$LANG['help'][45]="urgency/Low";
+$LANG['help'][46]="urgency/Very low";
+$LANG['help'][47]="impact/Very high";   // context/string
+$LANG['help'][48]="impact/High";
+$LANG['help'][49]="impact/Medium";
+$LANG['help'][50]="impact/Low";
+$LANG['help'][51]="impact/Very low";
 
 
 $LANG['install'][0]="Installation or update of GLPI";

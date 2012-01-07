@@ -1223,14 +1223,14 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if ($complete || $major) {
-         echo "<option value='6' ".($value==6?" selected ":"").">".__('Major')."</option>";
+         echo "<option value='6' ".($value==6?" selected ":"").">"._c('priority', 'Major')."</option>";
       }
 
-      echo "<option value='5' ".($value==5?" selected ":"").">".__('Very high')."</option>";
-      echo "<option value='4' ".($value==4?" selected ":"").">".__('High')."</option>";
-      echo "<option value='3' ".($value==3?" selected ":"").">".__('Medium')."</option>";
-      echo "<option value='2' ".($value==2?" selected ":"").">".__('Low')."</option>";
-      echo "<option value='1' ".($value==1?" selected ":"").">".__('Very low')."</option>";
+      echo "<option value='5' ".($value==5?" selected ":"").">"._c('priority', 'Very high')."</option>";
+      echo "<option value='4' ".($value==4?" selected ":"").">"._c('priority', 'High')."</option>";
+      echo "<option value='3' ".($value==3?" selected ":"").">"._c('priority', 'Medium')."</option>";
+      echo "<option value='2' ".($value==2?" selected ":"").">"._c('priority', 'Low')."</option>";
+      echo "<option value='1' ".($value==1?" selected ":"").">"._c('priority', 'Very low')."</option>";
 
       echo "</select>";
 
@@ -1247,22 +1247,22 @@ abstract class CommonITILObject extends CommonDBTM {
 
       switch ($value) {
          case 6 :
-            return __('Major');
+            return _c('priority', 'Major');
 
          case 5 :
-            return __('Very high');
+            return _c('priority', 'Very high');
 
          case 4 :
-            return __('High');
+            return _c('priority', 'High');
 
          case 3 :
-            return __('Medium');
+            return _c('priority', 'Medium');
 
          case 2 :
-            return __('Low');
+            return _c('priority', 'Low');
 
          case 1 :
-            return __('Very low');
+            return _c('priority', 'Very low');
       }
    }
 
@@ -1298,21 +1298,21 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')])) {
          if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<5))) {
-            echo "<option value='5' ".($value==5?" selected ":"").">".__('Very high')."</option>";
+            echo "<option value='5' ".($value==5?" selected ":"").">"._c('urgency', 'Very high')."</option>";
          }
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<4))) {
-            echo "<option value='4' ".($value==4?" selected ":"").">".__('High')."</option>";
+            echo "<option value='4' ".($value==4?" selected ":"").">"._c('urgency', 'High')."</option>";
          }
 
-         echo "<option value='3' ".($value==3?" selected ":"").">".__('Medium')."</option>";
+         echo "<option value='3' ".($value==3?" selected ":"").">"._c('urgency', 'Medium')."</option>";
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<2))) {
-            echo "<option value='2' ".($value==2?" selected ":"").">".__('Low')."</option>";
+            echo "<option value='2' ".($value==2?" selected ":"").">"._c('urgency', 'Low')."</option>";
          }
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<1))) {
-            echo "<option value='1' ".($value==1?" selected ":"").">".__('Very low')."</option>";
+            echo "<option value='1' ".($value==1?" selected ":"").">"._c('urgency', 'Very low')."</option>";
          }
       }
 
@@ -1331,19 +1331,19 @@ abstract class CommonITILObject extends CommonDBTM {
 
       switch ($value) {
          case 5 :
-            return __('Very high');
+            return _c('urgency', 'Very high');
 
          case 4 :
-            return __('High');
+            return _c('urgency', 'High');
 
          case 3 :
-            return __('Medium');
+            return _c('urgency', 'Medium');
 
          case 2 :
-            return __('Low');
+            return _c('urgency', 'Low');
 
          case 1 :
-            return __('Very low');
+            return _c('urgency', 'Very low');
       }
    }
 
@@ -1378,21 +1378,21 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')])) {
          if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<5))) {
-            echo "<option value='5' ".($value==5?" selected ":"").">".__('Very high')."</option>";
+            echo "<option value='5' ".($value==5?" selected ":"").">"._c('impact', 'Very high')."</option>";
          }
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<4))) {
-            echo "<option value='4' ".($value==4?" selected ":"").">".__('High')."</option>";
+            echo "<option value='4' ".($value==4?" selected ":"").">"._c('impact', 'High')."</option>";
          }
 
-         echo "<option value='3' ".($value==3?" selected ":"").">".__('Medium')."</option>";
+         echo "<option value='3' ".($value==3?" selected ":"").">"._c('impact', 'Medium')."</option>";
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<2))) {
-            echo "<option value='2' ".($value==2?" selected ":"").">".__('Low')."</option>";
+            echo "<option value='2' ".($value==2?" selected ":"").">"._c('impact', 'Low')."</option>";
          }
 
          if ($complete || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<1))) {
-            echo "<option value='1' ".($value==1?" selected ":"").">".__('Very low')."</option>";
+            echo "<option value='1' ".($value==1?" selected ":"").">"._c('impact', 'Very low')."</option>";
          }
       }
 
@@ -1411,19 +1411,19 @@ abstract class CommonITILObject extends CommonDBTM {
 
       switch ($value) {
          case 5 :
-            return __('Very high');
+            return _c('impact', 'Very high');
 
          case 4 :
-            return __('High');
+            return _c('impact', 'High');
 
          case 3 :
-            return __('Medium');
+            return _c('impact', 'Medium');
 
          case 2 :
-            return __('Low');
+            return _c('impact', 'Low');
 
          case 1 :
-            return __('Very low');
+            return _c('impact', 'Very low');
       }
    }
 
