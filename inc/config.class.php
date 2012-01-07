@@ -934,7 +934,7 @@ class Config extends CommonDBTM {
 
        $oldlang = $_SESSION['glpilanguage'];
        // Keep this, for some function call which still use translation (ex showAllReplicateDelay)
-       Session::loadLanguage('en');
+       Session::loadLanguage('en_GB');
 
 
       // No need to translate, this part always display in english (for copy/paste to forum)

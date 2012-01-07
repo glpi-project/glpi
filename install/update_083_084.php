@@ -704,7 +704,6 @@ function update083to084() {
                            'dk_DK' => 'da_DK',
                            'ee_ET' => 'et_EE',
                            'el_EL' => 'el_GR',
-                           'en_GB' => 'en',
                            'he_HE' => 'he_IL',
                            'no_NB' => 'nb_NO',
                            'no_NN' => 'nn_NO',

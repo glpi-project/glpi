@@ -217,7 +217,7 @@ class User extends CommonDBTM {
       if (isset($CFG_GLPI["language"])) {
          $this->fields['language'] = $CFG_GLPI["language"];
       } else {
-         $this->fields['language'] = "en";
+         $this->fields['language'] = "en_GB";
       }
    }
 
