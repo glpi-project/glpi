@@ -1,21 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
+# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: GLPI Project\n"
+"Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-01-07 18:57+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-01-07 23:28+0000\n"
+"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: he_IL\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: index.php:64
@@ -571,9 +570,9 @@ msgstr "עדכון"
 
 #: config/config.php:188
 msgid ""
-"You are trying to use GLPI with files from an earlier version to the version "
-"of the database. Please install the GLPI files corresponding to the version "
-"of your database."
+"You are trying to use GLPI with files from an earlier version to the version"
+" of the database. Please install the GLPI files corresponding to the version"
+" of your database."
 msgstr ""
 
 #: config/config.php:193 install/install.php:175 install/install.php:184
@@ -2037,7 +2036,8 @@ msgstr[1] ""
 msgid "List of the hardware under contract"
 msgstr "רשימת החומרה הכלולה בחוזה"
 
-#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
+#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to
+#. change for RTL
 #: front/report.contract.list.php:117 front/report.infocom.php:120
 #: front/report.year.list.php:129 inc/authldap.class.php:211
 #: inc/authldap.class.php:370 inc/authldap.class.php:587
@@ -3706,7 +3706,9 @@ msgstr ""
 msgid ""
 "Warning: The request exceeds the limit of the directory. The results are "
 "only partial."
-msgstr "Warning: The request exceeds the limit of the directory. The results are only partial.."
+msgstr ""
+"Warning: The request exceeds the limit of the directory. The results are "
+"only partial.."
 
 #: inc/authldap.class.php:1002 inc/authldap.class.php:1062
 #: inc/ocsserver.class.php:2509 inc/ocsserver.class.php:2529
@@ -4088,16 +4090,20 @@ msgstr "סוף"
 msgid "Recurrent"
 msgstr "חוזר"
 
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #: inc/calendar_holiday.class.php:111 inc/change_problem.class.php:111
 #: inc/change_problem.class.php:192 inc/change_ticket.class.php:107
 #: inc/change_ticket.class.php:192 inc/computer_device.class.php:226
@@ -4328,7 +4334,8 @@ msgstr[1] ""
 msgid "Send alarms on cartridges"
 msgstr "שלח אזהרות אודות המחסניות"
 
-#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
+#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
+#. number
 #: inc/cartridgeitem.class.php:411
 #, php-format
 msgid ""
@@ -4754,8 +4761,8 @@ msgstr "זהירות: הינך הולך להסיר כותרת אשר בשימו�
 
 #: inc/commondropdown.class.php:402
 msgid ""
-"If you confirm the deletion the items using this heading used fields will be "
-"blanked."
+"If you confirm the deletion the items using this heading used fields will be"
+" blanked."
 msgstr ""
 
 #: inc/commondropdown.class.php:408
@@ -5118,8 +5125,8 @@ msgstr ""
 
 #: inc/computer.class.php:169 inc/computer_item.class.php:202
 msgid ""
-"Alternate username updated. The connected items have been updated using this "
-"alternate username."
+"Alternate username updated. The connected items have been updated using this"
+" alternate username."
 msgstr "שם המשתמש החלופי עודכן. הפריטים המקושרים עודכנו בפרטי איש קשר זה.."
 
 #: inc/computer.class.php:222 inc/computer_item.class.php:191
@@ -5624,7 +5631,8 @@ msgstr "לא להשתמש ב-AJAX אם המספר הפריטים פחות מ- (0
 
 #: inc/config.class.php:254
 msgid ""
-"Maximum number of items to display in the dropdowns when wildcard is not used"
+"Maximum number of items to display in the dropdowns when wildcard is not "
+"used"
 msgstr "מספר מירבי של פריטים לתצוגה דינאמית"
 
 #: inc/config.class.php:260
@@ -5797,7 +5805,8 @@ msgid "Limit of the schedules for planning"
 msgstr "הגבלת שעות לתכנון"
 
 #: inc/config.class.php:552
-msgid "Maximum size of each file imported by the mail receiver (default value)"
+msgid ""
+"Maximum size of each file imported by the mail receiver (default value)"
 msgstr ""
 
 #: inc/config.class.php:559
@@ -6103,12 +6112,13 @@ msgstr[1] ""
 msgid "Send alarms on consumables"
 msgstr "שלח אזהרה למתכלים"
 
-#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
+#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining
+#. number
 #: inc/consumableitem.class.php:335
 #, php-format
 msgid ""
-"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s "
-"- Remaining %3$d"
+"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s"
+" - Remaining %3$d"
 msgstr ""
 
 #: inc/consumableitemtype.class.php:43
@@ -6986,7 +6996,8 @@ msgstr ""
 msgid "Authorizations assignment rules"
 msgstr ""
 
-#. TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the number of minutes : display 1 day 3h15
+#. TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the
+#. number of minutes : display 1 day 3h15
 #: inc/dropdown.class.php:1081
 #, php-format
 msgid "%1$d day %2$dh%3$s"
@@ -7531,8 +7542,8 @@ msgstr ""
 
 #: inc/fqdn.class.php:65
 msgid ""
-"Fully Qualified Domain Name. Use the classical notation (labels separated by "
-"dots). For example: indepnet.net"
+"Fully Qualified Domain Name. Use the classical notation (labels separated by"
+" dots). For example: indepnet.net"
 msgstr ""
 
 #: inc/fqdn.class.php:83
@@ -7958,7 +7969,9 @@ msgstr "הפריט המבוקש לא נמצא"
 msgid ""
 "For this type of element, the financial and administrative information are "
 "only a model for the elements which you should add."
-msgstr "עבור סוג זה של פריט, המידע הפיננסי וניהולי ישמש רק כמודל עבור הפריטים שאתה מוסיף מאוחר יותר.."
+msgstr ""
+"עבור סוג זה של פריט, המידע הפיננסי וניהולי ישמש רק כמודל עבור הפריטים שאתה "
+"מוסיף מאוחר יותר.."
 
 #: inc/infocom.class.php:901 inc/infocom.class.php:1146
 #: inc/infocom.class.php:1361
@@ -8427,7 +8440,8 @@ msgstr ""
 #: inc/mailcollector.class.php:523
 #, php-format
 msgid ""
-"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d"
+"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, "
+"errors=%4$d"
 msgstr ""
 
 #: inc/mailcollector.class.php:533 inc/user.class.php:2974
@@ -8606,7 +8620,8 @@ msgstr[1] ""
 
 #: inc/networkname.class.php:386
 msgid ""
-"Several network names available! Go to the tab 'Network Name' to manage them."
+"Several network names available! Go to the tab 'Network Name' to manage "
+"them."
 msgstr ""
 
 #: inc/networkportaggregate.class.php:48
@@ -8825,7 +8840,8 @@ msgstr "הודעת דוא'ל נשלחה למנהל המערכת"
 msgid "Error in sending the email"
 msgstr "שגיאה בשליחת דוא'ל"
 
-#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of
+#. the mail
 #: inc/notificationmail.class.php:246
 #, php-format
 msgid "An email was sent to %1$s: %2$s"
@@ -9602,7 +9618,8 @@ msgstr "Web address of the OCSNG console"
 
 #: inc/ocsserver.class.php:404
 msgid "Limit the import to the following tags (separator $, nothing for all)"
-msgstr "Limit the import to the following tags (separator $, nothing for all))"
+msgstr ""
+"Limit the import to the following tags (separator $, nothing for all))"
 
 #: inc/ocsserver.class.php:409
 msgid "Exclude the following tags (separator $, nothing for all)"
@@ -9654,7 +9671,9 @@ msgstr "No import: the plugin will not import these elements"
 msgid ""
 "Global import: everything is imported but the material is globally managed "
 "(without double blooms)"
-msgstr "Global import: everything is imported but the material is globally managed (without double blooms))"
+msgstr ""
+"Global import: everything is imported but the material is globally managed "
+"(without double blooms))"
 
 #: inc/ocsserver.class.php:497
 msgid "Unit import: everything is imported 'as-is'"
@@ -9700,7 +9719,8 @@ msgstr "שגיאה בתצורת OCSNG - יש לוודא מצב פעיל עבור
 msgid ""
 "Access denied on OCSNG database (Need write rights on hardware.CHECKSUM "
 "necessary)"
-msgstr "גישה לבסיס נתונים של OCS נדחתה - יש להרשות כתיבה בתוך hardware.CHECKSUM)"
+msgstr ""
+"גישה לבסיס נתונים של OCS נדחתה - יש להרשות כתיבה בתוך hardware.CHECKSUM)"
 
 #: inc/ocsserver.class.php:609
 msgid ""
@@ -9771,7 +9791,9 @@ msgstr "אין מחשבים חדשים לעדכן"
 msgid ""
 "Caution! The imported data (see your configuration) will overwrite the "
 "existing data"
-msgstr "זהירות! תהליך יבוא של הנתונים עלול להחלף את הנתונים הקיימים (בהתאם להגדרות של המערכת)"
+msgstr ""
+"זהירות! תהליך יבוא של הנתונים עלול להחלף את הנתונים הקיימים (בהתאם להגדרות "
+"של המערכת)"
 
 #: inc/ocsserver.class.php:2778
 msgid "Manual import mode"
@@ -10534,7 +10556,8 @@ msgstr ""
 msgid "Add to schedule"
 msgstr "הוסף ללוח זמנים"
 
-#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s is its name
+#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s
+#. is its name
 #: inc/reminder.class.php:769
 #, php-format
 msgid "From %1$s to %2$s: %3$s"
@@ -10834,8 +10857,8 @@ msgstr ""
 
 #: inc/rule.class.php:353
 msgid ""
-"It is possible to affect the result of a regular expression using the string "
-"#0"
+"It is possible to affect the result of a regular expression using the string"
+" #0"
 msgstr ""
 
 #: inc/rule.class.php:556 inc/rule.class.php:1172
@@ -11660,7 +11683,8 @@ msgstr "סוג המכשור : %s"
 msgid "Submit Message"
 msgstr "שלח הודעה"
 
-#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the entity name
+#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the
+#. entity name
 #: inc/ticket.class.php:3210
 #, php-format
 msgid "%1$s - ID %2$d (%3$s)"
@@ -11683,7 +11707,8 @@ msgstr ""
 
 #: inc/ticket.class.php:3324
 msgid ""
-"The assignment of a SLA to a ticket causes the recalculation of the due date."
+"The assignment of a SLA to a ticket causes the recalculation of the due "
+"date."
 msgstr "שיוך של SLA לקריאה גורמת לחישוב מחדש של תאריך יעד.."
 
 #: inc/ticket.class.php:3325
@@ -11860,7 +11885,8 @@ msgid_plural "Predefined fields"
 msgstr[0] "שדה מוגדר מראש"
 msgstr[1] "שדות מוגדרים מראש"
 
-#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked ticket, %3$s optionals links / icons
+#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked
+#. ticket, %3$s optionals links / icons
 #: inc/ticket_ticket.class.php:137
 #, php-format
 msgid "%1$s %2$s %3$s"
@@ -11990,7 +12016,9 @@ msgstr "בדיקת אתחול אוטומטי של SESSION"
 msgid ""
 "session.auto_start is activated. See .htaccess file in the GLPI root for "
 "more information."
-msgstr "session.auto_start הופעל. ראה קובץ .htaccess בתיקיה ראשית של המערכת למידע נוסף."
+msgstr ""
+"session.auto_start הופעל. ראה קובץ .htaccess בתיקיה ראשית של המערכת למידע "
+"נוסף."
 
 #: inc/toolbox.class.php:736
 msgid "Test if Session_use_trans_sid is used"
@@ -12012,7 +12040,8 @@ msgstr "בדיקת הרחבה magic_quotes_sybase"
 msgid ""
 "GLPI does not work with the magic_quotes_sybase option ; Please turn it off "
 "and retry"
-msgstr "מערכת אינה עובדת עם האופציה  magic_quotes_sybase ; נא לכבות אותה ולנסות שוב"
+msgstr ""
+"מערכת אינה עובדת עם האופציה  magic_quotes_sybase ; נא לכבות אותה ולנסות שוב"
 
 #: inc/toolbox.class.php:764 inc/toolbox.class.php:766
 msgid "The magic_quotes_sybase option isn't active on your server - Perfect !"
@@ -12025,7 +12054,8 @@ msgstr "בדיקת פונקציות JSON"
 #: inc/toolbox.class.php:775
 msgid ""
 "GLPI can't work correctly without the json_encode and json_decode functions"
-msgstr "מערכת לא יכולה לעבוד באופן תקין ללא פונקציות json_encode ו- json_decode"
+msgstr ""
+"מערכת לא יכולה לעבוד באופן תקין ללא פונקציות json_encode ו- json_decode"
 
 #: inc/toolbox.class.php:781 inc/toolbox.class.php:783
 #: inc/toolbox.class.php:797 inc/toolbox.class.php:799
@@ -12379,14 +12409,17 @@ msgid "Please confirm your email address and enter your new password."
 msgstr "נא לאשר את כתובת הדוא'ל שלך והזן את הסיסמה החדשה.."
 
 #: inc/user.class.php:2826 inc/user.class.php:2882
-msgid "Your password reset request has expired or is invalid. Please renew it."
+msgid ""
+"Your password reset request has expired or is invalid. Please renew it."
 msgstr "בקשתך לאיפס הסיסמה פגה או אינה חוקית. בבקשה שלך בקשה חדשה.."
 
 #: inc/user.class.php:2845
 msgid ""
-"Please enter your email address. A email will be sent to you and you will be "
-"able to choose a new password."
-msgstr "אנא הכנס את כתובת הדוא'ל שלך. הודעת דוא'ל תישלח אלך ע'מ שתוכל לבחור סיסמא חדשה.."
+"Please enter your email address. A email will be sent to you and you will be"
+" able to choose a new password."
+msgstr ""
+"אנא הכנס את כתובת הדוא'ל שלך. הודעת דוא'ל תישלח אלך ע'מ שתוכל לבחור סיסמא "
+"חדשה.."
 
 #: inc/user.class.php:2870
 msgid "Reset password successful."
@@ -12406,7 +12439,8 @@ msgstr "כתובת דוא'ל לא נמצאת.."
 msgid ""
 "An email has been sent to your email address. The email contains "
 "informations for reset your password."
-msgstr "הודעת דוא'ל נשלחה לכתובת הדוא'ל שלך. ההודעה מכילה מידע איך לאפס את הסיסמה.."
+msgstr ""
+"הודעת דוא'ל נשלחה לכתובת הדוא'ל שלך. ההודעה מכילה מידע איך לאפס את הסיסמה.."
 
 #: inc/user.class.php:2956
 msgid "User informations"
@@ -12598,7 +12632,9 @@ msgstr "post-only/post-only עבור החשבון מסוג פתיחת קריאו
 
 #: install/install.php:432
 msgid "You can delete or modify these accounts as well as the initial data."
-msgstr "אתה יכול למחוק או לשנות חשבונות אלה, כמו גם את הערכים הראשונים במסד הנתונים.."
+msgstr ""
+"אתה יכול למחוק או לשנות חשבונות אלה, כמו גם את הערכים הראשונים במסד "
+"הנתונים.."
 
 #: install/install.php:433 install/update_content.php:379
 #: install/update.php:901
@@ -12608,7 +12644,8 @@ msgstr "השתמש ב-GLPI"
 #: install/install.php:468
 msgid ""
 "Can't create the database connection file, please verify file permissions."
-msgstr "אין אפשרות לצור קובץ הגדרות החיבור לבסיס הנתונים, אנא בדוק הרשאות קבצים.."
+msgstr ""
+"אין אפשרות לצור קובץ הגדרות החיבור לבסיס הנתונים, אנא בדוק הרשאות קבצים.."
 
 #: install/install.php:524
 msgid "Beginning of the installation"
@@ -12806,3 +12843,5 @@ msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
 msgstr "גישה לבסיס נתונים נכשלה, בדוק הגדרות החיבור בקובץ config_db.php"
+
+

@@ -1,22 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
+# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: GLPI Project\n"
+"Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-01-07 18:57+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-01-07 22:08+0000\n"
+"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Language: sl_SI\n"
+"Plural-Forms: nplurals=4; plural=(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3)\n"
 
 #: index.php:64
 msgid "GLPI - Authentication"
@@ -290,8 +289,10 @@ msgstr "Prekini"
 #: inc/user.class.php:2011 inc/user.class.php:2038
 msgid "Profile"
 msgid_plural "Profiles"
-msgstr[0] "Profil"
-msgstr[1] "Profili"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: ajax/dropdownMassiveAction.php:222 inc/profile_user.class.php:119
 #: inc/profile_user.class.php:241 inc/ruleright.class.php:102
@@ -490,6 +491,8 @@ msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: ajax/ticketsatisfaction.php:62
 msgid "Create survey after (day(s))"
@@ -571,9 +574,9 @@ msgstr "Posodobi"
 
 #: config/config.php:188
 msgid ""
-"You are trying to use GLPI with files from an earlier version to the version "
-"of the database. Please install the GLPI files corresponding to the version "
-"of your database."
+"You are trying to use GLPI with files from an earlier version to the version"
+" of the database. Please install the GLPI files corresponding to the version"
+" of your database."
 msgstr ""
 
 #: config/config.php:193 install/install.php:175 install/install.php:184
@@ -836,8 +839,10 @@ msgstr "Nazaj"
 #: inc/profile.class.php:1459
 msgid "Budget"
 msgid_plural "Budgets"
-msgstr[0] "Proračun"
-msgstr[1] "Proračun"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %s is the user login
 #: front/calendar_holiday.form.php:43 front/calendarsegment.form.php:43
@@ -922,8 +927,10 @@ msgstr ""
 #: inc/search.class.php:949
 msgid "Cartridge"
 msgid_plural "Cartridges"
-msgstr[0] "Kartuša"
-msgstr[1] "Kartuše"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/central.php:70 inc/central.class.php:40 inc/profile.class.php:1973
 #: inc/tickettemplate.class.php:258
@@ -943,6 +950,8 @@ msgid "Change"
 msgid_plural "Changes"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:57
@@ -1006,8 +1015,10 @@ msgstr ""
 #: inc/profile.class.php:636 inc/profile.class.php:1382
 msgid "Computer"
 msgid_plural "Computers"
-msgstr[0] "Računalnik"
-msgstr[1] "Računalniki"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %s is the user login
 #: front/computer_softwarelicense.form.php:47
@@ -1120,8 +1131,10 @@ msgstr ""
 #: inc/profile.class.php:1417 inc/search.class.php:952
 msgid "Consumable"
 msgid_plural "Consumables"
-msgstr[0] "Potrošno blago"
-msgstr[1] "Potrošni m."
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %s is the user login
 #: front/contact.form.php:111 front/contract.form.php:141
@@ -1140,8 +1153,10 @@ msgstr ""
 #: inc/html.class.php:1224 inc/profile.class.php:1439
 msgid "Contact"
 msgid_plural "Contacts"
-msgstr[0] "Drugo uporabniško ime"
-msgstr[1] "Kontakti"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/contract.php:41 inc/contract.class.php:48 inc/contract.class.php:292
 #: inc/contract.class.php:601 inc/contract_item.class.php:141
@@ -1151,8 +1166,10 @@ msgstr[1] "Kontakti"
 #: inc/transfer.class.php:3197
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] "Pogodba"
-msgstr[1] "Pogodbe"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %s is a task name
 #: front/crontask.php:51
@@ -1188,6 +1205,8 @@ msgid "Component"
 msgid_plural "Components"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:41 inc/html.class.php:1406 inc/profile.class.php:105
 #: inc/profile.class.php:1144 inc/profile.class.php:1556
@@ -1219,8 +1238,10 @@ msgstr "Globalni slovar"
 #: install/update_0713_072.php:509
 msgid "Software"
 msgid_plural "Software"
-msgstr[0] "Software"
-msgstr[1] "Software"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:54 inc/cartridgeitem.class.php:242
 #: inc/cartridgeitem.class.php:319 inc/commondevice.class.php:76
@@ -1250,6 +1271,8 @@ msgid "Manufacturer"
 msgid_plural "Manufacturers"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:58 front/find_num.php:101 front/printer.php:41
 #: front/report.contract.php:59 front/report.default.php:126
@@ -1259,8 +1282,10 @@ msgstr[1] ""
 #: inc/transfer.class.php:3134
 msgid "Printer"
 msgid_plural "Printers"
-msgstr[0] "Tiskalnik"
-msgstr[1] "Tiskalniki"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:65 front/stat.location.php:82
 #: inc/cartridgeitem.class.php:545 inc/computer.class.php:524
@@ -1287,44 +1312,58 @@ msgstr[1] "Tiskalniki"
 #: inc/ruleimportcomputer.class.php:117
 msgid "Model"
 msgid_plural "Models"
-msgstr[0] "Model"
-msgstr[1] "Modeli"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:67
 msgid "Computer model"
 msgid_plural "Computer models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:69
 msgid "Monitor model"
 msgid_plural "Monitor models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:71
 msgid "Printer model"
 msgid_plural "Printer models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:73
 msgid "Device model"
 msgid_plural "Device models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:75
 msgid "Network equipment model"
 msgid_plural "Network equipment models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:77 inc/phonemodel.class.php:45
 msgid "Phone model"
 msgid_plural "Phone models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:83 front/stat.location.php:80
 #: front/stat.tracking.php:92 inc/bookmark.class.php:211
@@ -1378,44 +1417,58 @@ msgstr[1] ""
 #: inc/user.class.php:2549 inc/user.class.php:2624
 msgid "Type"
 msgid_plural "Types"
-msgstr[0] "Tip"
-msgstr[1] "Tipi"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:85
 msgid "Computer type"
 msgid_plural "Computer types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:87 inc/monitortype.class.php:43
 msgid "Monitor type"
 msgid_plural "Monitor types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:89 inc/printertype.class.php:43
 msgid "Printer type"
 msgid_plural "Printer types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:91
 msgid "Device type"
 msgid_plural "Device types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:93
 msgid "Network equipment type"
 msgid_plural "Network equipment types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:95 inc/phonetype.class.php:43
 msgid "Phone type"
 msgid_plural "Phone types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:101 front/dictionnary.php:103
 #: front/report.default.php:140 front/stat.location.php:84
@@ -1431,6 +1484,8 @@ msgid "Operating system"
 msgid_plural "Operating systems"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:105 inc/computer.class.php:591
 #: inc/computer.class.php:783 inc/html.class.php:1700
@@ -1441,6 +1496,8 @@ msgid "Service Pack"
 msgid_plural "Service Packs"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/dictionnary.php:107 inc/computer_softwareversion.class.php:338
 #: inc/computer_softwareversion.class.php:733 inc/ocsserver.class.php:536
@@ -1452,16 +1509,20 @@ msgstr[1] ""
 #: inc/softwareversion.class.php:53 inc/softwareversion.class.php:281
 msgid "Version"
 msgid_plural "Versions"
-msgstr[0] "Verzija"
-msgstr[1] "Verzije"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/document.php:41 inc/document.class.php:51 inc/document.class.php:175
 #: inc/event.class.php:134 inc/html.class.php:1253 inc/profile.class.php:682
 #: inc/profile.class.php:1444 inc/transfer.class.php:3187
 msgid "Document"
 msgid_plural "Documents"
-msgstr[0] "Dokument"
-msgstr[1] "Dokumenti"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/document.send.php:47
 msgid "Unknown File"
@@ -1620,6 +1681,8 @@ msgid "Network device"
 msgid_plural "Network devices"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/find_num.php:102 front/monitor.php:41 front/report.contract.php:61
 #: front/report.default.php:132 front/report.default.php:186
@@ -1631,6 +1694,8 @@ msgid "Monitor"
 msgid_plural "Monitors"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/find_num.php:103 front/peripheral.php:41 front/report.contract.php:62
 #: front/report.default.php:134 front/report.default.php:236
@@ -1640,8 +1705,10 @@ msgstr[1] ""
 #: inc/transfer.class.php:3144
 msgid "Device"
 msgid_plural "Devices"
-msgstr[0] "Naprava"
-msgstr[1] "Naprave"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %s is the user login
 #: front/group.form.php:76 front/user.form.php:129
@@ -1761,6 +1828,8 @@ msgid "External link"
 msgid_plural "External links"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/lostpassword.php:48 inc/notificationtargetuser.class.php:38
 #: inc/user.class.php:2801 inc/user.class.php:2842
@@ -1773,6 +1842,8 @@ msgid "Receiver"
 msgid_plural "Receivers"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/mailcollector.php:49 front/setup.auth.php:61
 #: inc/authmail.class.php:200
@@ -1880,8 +1951,10 @@ msgstr ""
 #: install/update_0723_078.php:4838
 msgid "Network port"
 msgid_plural "Network ports"
-msgstr[0] "Network vrata (Network port)"
-msgstr[1] "Omrežna vrata"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/notification.form.php:72 front/notificationmailsetting.form.php:51
 #: front/notification.php:40 front/setup.notification.php:42
@@ -1896,6 +1969,8 @@ msgid "Notification"
 msgid_plural "Notifications"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/notificationtemplate.form.php:89 front/notificationtemplate.php:39
 #: front/notificationtemplatetranslation.form.php:73
@@ -1906,12 +1981,16 @@ msgid "Notification template"
 msgid_plural "Notification templates"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/notimportedemail.php:41 inc/notimportedemail.class.php:56
 msgid "Refused email"
 msgid_plural "Refused emails"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/ocsng.clean.php:39 front/ocsng.import.php:40 front/ocsng.link.php:40
 #: front/ocsng.php:42 front/ocsng.php:69 front/ocsng.sync.php:40
@@ -1984,8 +2063,10 @@ msgstr "Informacija predpomnilnika"
 #: front/popup.php:73 front/popup.php:79 front/popup.php:85
 msgid "Bookmark"
 msgid_plural "Bookmarks"
-msgstr[0] "zaznamek"
-msgstr[1] "Priljubljene"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/popup.php:90 front/popup.php:95 inc/user.class.php:2397
 msgid "Import an user"
@@ -2012,6 +2093,8 @@ msgid "Problem"
 msgid_plural "Problems"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %s is the user login
 #: front/profile_user.form.php:45
@@ -2032,12 +2115,15 @@ msgid "Reminder"
 msgid_plural "Reminders"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/report.contract.list.php:47
 msgid "List of the hardware under contract"
 msgstr "Seznam strojne opreme pod pogodbo"
 
-#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
+#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to
+#. change for RTL
 #: front/report.contract.list.php:117 front/report.infocom.php:120
 #: front/report.year.list.php:129 inc/authldap.class.php:211
 #: inc/authldap.class.php:370 inc/authldap.class.php:587
@@ -2169,8 +2255,10 @@ msgstr "Ime"
 #: inc/user.class.php:2550 inc/user.class.php:2625 inc/user.class.php:3002
 msgid "Entity"
 msgid_plural "Entities"
-msgstr[0] "Entiteta"
-msgstr[1] "Entitete"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/report.contract.list.php:122 front/report.location.list.php:61
 #: front/report.netpoint.list.php:68 front/report.year.list.php:134
@@ -2189,6 +2277,8 @@ msgid "Location"
 msgid_plural "Locations"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/report.contract.list.php:123 front/report.infocom.php:126
 #: front/report.year.list.php:135 inc/entity.class.php:445
@@ -2255,8 +2345,10 @@ msgstr "Tip strojne opreme"
 #: install/update_0723_078.php:3701
 msgid "Phone"
 msgid_plural "Phones"
-msgstr[0] "Telefon"
-msgstr[1] "Telefoni"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/report.contract.php:80 front/report.networking.php:56
 #: front/report.networking.php:66 front/report.networking.php:77
@@ -2274,8 +2366,10 @@ msgstr "Pokaži poročilo"
 #: inc/profile.class.php:1402
 msgid "Network"
 msgid_plural "Networks"
-msgstr[0] "Omrežje"
-msgstr[1] "Omrežna oprema"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/report.infocom.conso.php:198 front/report.infocom.conso.php:199
 #: front/report.infocom.conso.php:263 front/report.infocom.conso.php:264
@@ -2325,8 +2419,10 @@ msgstr "Omrežno poročilo po lokaciji: %s"
 #: inc/networkportmigration.class.php:59
 msgid "Network outlet"
 msgid_plural "Network outlets"
-msgstr[0] "Omrežna točka - network point"
-msgstr[1] "Vtičnice"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/report.location.list.php:63 front/report.netpoint.list.php:69
 msgid "Switch"
@@ -2414,6 +2510,8 @@ msgid "License"
 msgid_plural "Licenses"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/reservation.form.php:43 front/reservationitem.php:42
 #: front/reservation.php:45 front/tracking.injector.php:57
@@ -2431,8 +2529,10 @@ msgstr "Spletni vmesnik"
 #: inc/transfer.class.php:3080 install/update_0723_078.php:4837
 msgid "Reservation"
 msgid_plural "Reservations"
-msgstr[0] "Rezervacija"
-msgstr[1] "Rezervacije"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/rule.cache.php:43 front/rule.common.form.php:122
 #: front/rule.common.php:107 front/rule.common.php:157 inc/event.class.php:121
@@ -2441,8 +2541,10 @@ msgstr[1] "Rezervacije"
 #: inc/rulecollection.class.php:1040
 msgid "Rule"
 msgid_plural "Rules"
-msgstr[0] "pravilo"
-msgstr[1] "Pravila"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %s is the user login
 #: front/rule.common.php:67
@@ -2490,6 +2592,8 @@ msgid "LDAP directory"
 msgid_plural "LDAP directories"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/setup.auth.php:53 inc/authldap.class.php:291
 msgid "The LDAP extension of your PHP parser isn't installed"
@@ -2505,6 +2609,8 @@ msgid "Mail server"
 msgid_plural "Mail servers"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/setup.auth.php:62 inc/authmail.class.php:201
 msgid "Impossible to use email server as external source of connection"
@@ -2542,6 +2648,8 @@ msgid "SLA"
 msgid_plural "SLAs"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:43
@@ -2567,6 +2675,8 @@ msgid "Escalation level"
 msgid_plural "Escalation levels"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:54
@@ -2607,8 +2717,10 @@ msgstr ""
 #: front/states.php:43 inc/state.class.php:43
 msgid "Status of items"
 msgid_plural "Status of items"
-msgstr[0] "Status predmeta"
-msgstr[1] "Status predmeta"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/stat.global.php:38 front/stat.graph.php:38 front/stat.item.php:38
 #: front/stat.location.php:38 front/stat.php:38 front/stat.tracking.php:38
@@ -2852,8 +2964,10 @@ msgstr ""
 #: inc/user.class.php:1957 inc/user.class.php:2663
 msgid "Group"
 msgid_plural "Groups"
-msgstr[0] "Skupina"
-msgstr[1] "Skupine"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/stat.tracking.php:80 front/stat.tracking.php:106
 msgid "Group tree"
@@ -2936,6 +3050,8 @@ msgid "Solution type"
 msgid_plural "Solution types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/stat.tracking.php:93 inc/notificationtargetticket.class.php:531
 #: inc/notificationtargetticket.class.php:560 inc/requesttype.class.php:44
@@ -2945,6 +3061,8 @@ msgid "Request source"
 msgid_plural "Request sources"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/stat.tracking.php:98 inc/cartridgeitem.class.php:294
 #: inc/change.class.php:385 inc/commondbrelation.class.php:57
@@ -2993,8 +3111,10 @@ msgstr ""
 #: inc/supplier.class.php:54 inc/transfer.class.php:3167
 msgid "Supplier"
 msgid_plural "Suppliers"
-msgstr[0] "Dobavitelj"
-msgstr[1] "Dobavitelji"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: front/stat.tracking.php:180 front/stat.tracking.php:181
 msgid "Number resolved"
@@ -3049,8 +3169,10 @@ msgstr ""
 #: inc/ticket.class.php:4305 inc/transfer.class.php:3061
 msgid "Ticket"
 msgid_plural "Tickets"
-msgstr[0] "Naročilo"
-msgstr[1] "Naročila"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %s is the user login
 #: front/tickettemplatehiddenfield.form.php:43
@@ -3142,8 +3264,10 @@ msgstr "Hvala za uporabo našega avtomatskega sistema za pomoč.."
 #: install/update_0713_072.php:554
 msgid "User"
 msgid_plural "Users"
-msgstr[0] "Uporabnik"
-msgstr[1] "Uporabniki"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %s is the character used as wildcard in ajax search
 #: inc/ajax.class.php:89
@@ -3331,8 +3455,10 @@ msgstr "CAS gostitelj"
 #: inc/printer.class.php:444
 msgid "Port"
 msgid_plural "Ports"
-msgstr[0] "Vrata"
-msgstr[1] "Vrata"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1028
@@ -3644,6 +3770,8 @@ msgid "Email"
 msgid_plural "Emails"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/authldap.class.php:501 inc/authldap.class.php:684
 #: inc/authldap.class.php:2275
@@ -3859,6 +3987,8 @@ msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/authldap.class.php:2560
 #, php-format
@@ -3866,6 +3996,8 @@ msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/authldap.class.php:2563 inc/cartridge.class.php:727
 #: inc/cartridge.class.php:730
@@ -3874,6 +4006,8 @@ msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/authldap.class.php:2569
 msgid "Disable filtering by date"
@@ -3930,6 +4064,8 @@ msgid "Update Source"
 msgid_plural "Update Sources"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
 #: inc/bookmark.class.php:200 inc/commondbtm.class.php:1840
@@ -3985,8 +4121,10 @@ msgstr "Potrdi privzeto"
 #: inc/ticket.class.php:4406 inc/user.class.php:2554
 msgid "Status"
 msgid_plural "Status"
-msgstr[0] "Status"
-msgstr[1] "Status"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/bookmark.class.php:590
 msgid "You have not recorded any bookmarks yet"
@@ -4062,6 +4200,8 @@ msgid "Calendar"
 msgid_plural "Calendars"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/calendar_holiday.class.php:91 inc/calendarsegment.class.php:304
 #: inc/calendarsegment.class.php:317 inc/contract.class.php:238
@@ -4088,16 +4228,20 @@ msgstr "Končaj"
 msgid "Recurrent"
 msgstr ""
 
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #: inc/calendar_holiday.class.php:111 inc/change_problem.class.php:111
 #: inc/change_problem.class.php:192 inc/change_ticket.class.php:107
 #: inc/change_ticket.class.php:192 inc/computer_device.class.php:226
@@ -4127,6 +4271,8 @@ msgid "Close time"
 msgid_plural "Close times"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/calendarsegment.class.php:51 inc/calendarsegment.class.php:365
 #: inc/calendarsegment.class.php:369
@@ -4134,6 +4280,8 @@ msgid "Time range"
 msgid_plural "Time ranges"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/calendarsegment.class.php:70
 msgid "Can not add a range riding an existing period"
@@ -4158,21 +4306,27 @@ msgstr "Ni proste kartuše"
 #: inc/ticket.class.php:2036 inc/ticket.class.php:4310
 msgid "New"
 msgid_plural "New"
-msgstr[0] "Nov"
-msgstr[1] "Nov"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/cartridge.class.php:245 inc/cartridge.class.php:366
 #: inc/consumable.class.php:303
 msgid "Used"
 msgid_plural "Used"
-msgstr[0] "Uporabljen"
-msgstr[1] "Uporabljen"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/cartridge.class.php:247 inc/cartridge.class.php:368
 msgid "Worn"
 msgid_plural "Worn"
-msgstr[0] "Obrabljen"
-msgstr[1] "Obrabljen"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS : for display cartridges count : %1$d is the total number,
 #. %2$d the new one, %3$d the used one, %4$d worn one
@@ -4220,6 +4374,8 @@ msgid "%d printed page"
 msgid_plural "%d printed pages"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/cartridge.class.php:517 inc/consumable.class.php:445
 msgid "Back to stock"
@@ -4255,6 +4411,8 @@ msgid "Cartridge model"
 msgid_plural "Cartridge models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/cartridge.class.php:698
 msgid "End of life"
@@ -4323,12 +4481,15 @@ msgid "Printers model"
 msgid_plural "Printers models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/cartridgeitem.class.php:367 inc/cartridgeitem.class.php:575
 msgid "Send alarms on cartridges"
 msgstr "Pošlji alarme na osnovi tonerjev in kartuš"
 
-#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
+#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
+#. number
 #: inc/cartridgeitem.class.php:411
 #, php-format
 msgid ""
@@ -4350,8 +4511,10 @@ msgstr "Modeli kompatabilnih tiskalnikov"
 #: inc/cartridgeitemtype.class.php:43
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] "Tip kartuše"
-msgstr[1] "Tip kartuše"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/central.class.php:56 inc/displaypreference.class.php:587
 #: inc/displaypreference.class.php:595
@@ -4395,6 +4558,8 @@ msgid "Solution"
 msgid_plural "Solutions"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/change.class.php:398 inc/change.class.php:954
 #: inc/commonitilobject.class.php:2501 inc/commonitiltask.class.php:365
@@ -4498,6 +4663,8 @@ msgid "Approval"
 msgid_plural "Approvals"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/change.class.php:584 inc/problem.class.php:579
 msgid "Accepted"
@@ -4576,12 +4743,16 @@ msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/change_problem.class.php:87 inc/change_ticket.class.php:171
 msgid "Change - "
 msgid_plural "Changes - "
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/change_problem.class.php:89
 msgid "Create a change from this problem"
@@ -4592,6 +4763,8 @@ msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/change_ticket.class.php:173
 msgid "Create a change from this ticket"
@@ -4754,8 +4927,8 @@ msgstr ""
 
 #: inc/commondropdown.class.php:402
 msgid ""
-"If you confirm the deletion the items using this heading used fields will be "
-"blanked."
+"If you confirm the deletion the items using this heading used fields will be"
+" blanked."
 msgstr ""
 
 #: inc/commondropdown.class.php:408
@@ -4963,6 +5136,8 @@ msgid "Technician"
 msgid_plural "Technicians"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/commonitilobject.class.php:1774
 #: inc/notificationtargetcommonitilobject.class.php:761
@@ -5015,6 +5190,8 @@ msgid "Solution template"
 msgid_plural "Solution templates"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/commonitilobject.class.php:2475 inc/commonitilobject.class.php:2477
 msgid "Search a solution"
@@ -5039,8 +5216,10 @@ msgstr "times"
 #: inc/ticket.class.php:1835
 msgid "Task"
 msgid_plural "Tasks"
-msgstr[0] "Naloga"
-msgstr[1] "Naloge"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/commonitiltask.class.php:159 inc/commonitiltask.class.php:234
 #: inc/reminder.class.php:429 inc/reminder.class.php:466
@@ -5118,15 +5297,17 @@ msgstr ""
 
 #: inc/computer.class.php:169 inc/computer_item.class.php:202
 msgid ""
-"Alternate username updated. The connected items have been updated using this "
-"alternate username."
+"Alternate username updated. The connected items have been updated using this"
+" alternate username."
 msgstr ""
 
 #: inc/computer.class.php:222 inc/computer_item.class.php:191
 msgid ""
 "User or group updated. The items connected have been moved in the same "
 "values."
-msgstr "Uporabnik in skupina sta posodobljeni. Povezani predmeti so bili prestavljeni v enake vrednosti.."
+msgstr ""
+"Uporabnik in skupina sta posodobljeni. Povezani predmeti so bili "
+"prestavljeni v enake vrednosti.."
 
 #: inc/computer.class.php:260 inc/computer_item.class.php:211
 msgid ""
@@ -5136,7 +5317,9 @@ msgstr ""
 #: inc/computer.class.php:302 inc/computer_item.class.php:176
 msgid ""
 "Location updated. The items connected have been moved in the same location."
-msgstr "Lokacija posodobljena. Povezani predmeti so bili prestavljeni v isto lokacijo.."
+msgstr ""
+"Lokacija posodobljena. Povezani predmeti so bili prestavljeni v isto "
+"lokacijo.."
 
 #: inc/computer.class.php:579 inc/computer.class.php:853
 #: inc/domain.class.php:43 inc/networkequipment.class.php:340
@@ -5148,6 +5331,8 @@ msgid "Domain"
 msgid_plural "Domains"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:598 inc/computer.class.php:779
 #: inc/html.class.php:1713 inc/ocsserver.class.php:2952
@@ -5156,6 +5341,8 @@ msgid "Version of the operating system"
 msgid_plural "Versions of the operating systems"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:605 inc/computer.class.php:795
 #: inc/ocsserver.class.php:2954 install/update_0681_07.php:1413
@@ -5222,6 +5409,8 @@ msgid "Processor"
 msgid_plural "Processors"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:890
 msgid "Processeur frequency"
@@ -5249,6 +5438,8 @@ msgid "Network interface"
 msgid_plural "Network interfaces"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:931 inc/devicesoundcard.class.php:43
 #: inc/ocsserver.class.php:309
@@ -5256,6 +5447,8 @@ msgid "Soundcard"
 msgid_plural "Soundcards"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:940 inc/devicegraphiccard.class.php:43
 #: inc/ocsserver.class.php:305
@@ -5263,12 +5456,16 @@ msgid "Graphics Card"
 msgid_plural "Graphics Cards"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:949 inc/devicemotherboard.class.php:43
 msgid "System Board"
 msgid_plural "System Boards"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:959
 msgid "Hard drive type"
@@ -5283,14 +5480,18 @@ msgid "Power Supply"
 msgid_plural "Power Supplies"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:988 inc/computer.class.php:992
 #: inc/computerdisk.class.php:49 inc/computerdisk.class.php:221
 #: inc/ocsserver.class.php:456 install/update_0713_072.php:646
 msgid "Volume"
 msgid_plural "Volumes"
-msgstr[0] "Nosilec"
-msgstr[1] "Nosilci"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:999 inc/computerdisk.class.php:173
 #: inc/computerdisk.class.php:229
@@ -5322,6 +5523,8 @@ msgid "File system"
 msgid_plural "File systems"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:1051 inc/html.class.php:1313
 #: inc/ocslink.class.php:97 inc/profile.class.php:1491
@@ -5361,6 +5564,8 @@ msgid "Virtual machine"
 msgid_plural "Virtual machines"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:1127 inc/computervirtualmachine.class.php:173
 #: inc/computervirtualmachine.class.php:317
@@ -5369,6 +5574,8 @@ msgid "State of the virtual machine"
 msgid_plural "States of the virtual machine"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:1136 inc/computervirtualmachine.class.php:169
 #: inc/computervirtualmachine.class.php:316
@@ -5377,6 +5584,8 @@ msgid "Virtualization model"
 msgid_plural "Virtualization Models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:1145 inc/computervirtualmachine.class.php:162
 #: inc/computervirtualmachine.class.php:315
@@ -5385,6 +5594,8 @@ msgid "Virtualization system"
 msgid_plural "Virtualization systems"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer.class.php:1154
 msgid "Virtual machine name"
@@ -5481,14 +5692,18 @@ msgstr ""
 #: inc/event.class.php:129
 msgid "Connection"
 msgid_plural "Connections"
-msgstr[0] "Povezava"
-msgstr[1] "Povezave"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computermodel.class.php:45 inc/html.class.php:1532
 msgid "Computers model"
 msgid_plural "Computers models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer_softwarelicense.class.php:127
 msgid "Number of affected computers"
@@ -5505,14 +5720,18 @@ msgstr "Prizadeti računalniki"
 #: inc/softwareversion.class.php:284 install/install.php:129
 msgid "Installation"
 msgid_plural "Installations"
-msgstr[0] "Namestitev"
-msgstr[1] "Namestitve"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer_softwareversion.class.php:570
 msgid "Installed software"
 msgid_plural "Installed softwares"
-msgstr[0] "instalirano programje"
-msgstr[1] "Nameščena programska oprema"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computer_softwareversion.class.php:668
 #: inc/computer_softwareversion.class.php:772 inc/plugin.class.php:432
@@ -5538,6 +5757,8 @@ msgid "Computers type"
 msgid_plural "Computers types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/computervirtualmachine.class.php:185
 #: inc/computervirtualmachine.class.php:319
@@ -5624,7 +5845,8 @@ msgstr ""
 
 #: inc/config.class.php:254
 msgid ""
-"Maximum number of items to display in the dropdowns when wildcard is not used"
+"Maximum number of items to display in the dropdowns when wildcard is not "
+"used"
 msgstr ""
 
 #: inc/config.class.php:260
@@ -5758,6 +5980,8 @@ msgid "Mysql replicate"
 msgid_plural "Mysql replicates"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/config.class.php:486 install/install.php:199
 msgid "Mysql server"
@@ -5797,7 +6021,8 @@ msgid "Limit of the schedules for planning"
 msgstr "Omeji časovne razporejevalnike za planiranje"
 
 #: inc/config.class.php:552
-msgid "Maximum size of each file imported by the mail receiver (default value)"
+msgid ""
+"Maximum size of each file imported by the mail receiver (default value)"
 msgstr ""
 
 #: inc/config.class.php:559
@@ -5810,7 +6035,8 @@ msgstr ""
 
 #: inc/config.class.php:570
 msgid "Keep tickets when purging hardware in the inventory"
-msgstr "Ohrani opravila ob dokončnem brisanju (purge) strojne opreme iz seznamov"
+msgstr ""
+"Ohrani opravila ob dokončnem brisanju (purge) strojne opreme iz seznamov"
 
 #: inc/config.class.php:576
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
@@ -5917,6 +6143,8 @@ msgid "Software category"
 msgid_plural "Software categories"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/config.class.php:830
 msgid "Unfold the software belonging to a category"
@@ -6098,17 +6326,20 @@ msgid "Consumable Model"
 msgid_plural "Consumable Models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/consumableitem.class.php:288 inc/consumableitem.class.php:392
 msgid "Send alarms on consumables"
 msgstr "Pošlji alarme na osnovi potrošnega materiala"
 
-#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
+#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining
+#. number
 #: inc/consumableitem.class.php:335
 #, php-format
 msgid ""
-"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s "
-"- Remaining %3$d"
+"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s"
+" - Remaining %3$d"
 msgstr ""
 
 #: inc/consumableitemtype.class.php:43
@@ -6116,6 +6347,8 @@ msgid "Consumables type"
 msgid_plural "Consumables types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/contact.class.php:188 inc/contact.class.php:257
 #: inc/contact.class.php:358 inc/dropdown.class.php:293
@@ -6143,14 +6376,18 @@ msgid "Associated supplier"
 msgid_plural "Associated suppliers, 2"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/contact.class.php:356 inc/contract.class.php:690
 #: inc/supplier.class.php:128 inc/supplier.class.php:252
 #: inc/suppliertype.class.php:43
 msgid "Third party type"
 msgid_plural "Third party types"
-msgstr[0] "Third party Type"
-msgstr[1] "Tretja stran tipov"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/contact.class.php:359 inc/contract.class.php:692
 #: inc/entity.class.php:220 inc/entitydata.class.php:229
@@ -6164,12 +6401,16 @@ msgid "Link Contact/Supplier"
 msgid_plural "Links Contact/Supplier"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/contacttype.class.php:43
 msgid "Contact type"
 msgid_plural "Contact types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/contract.class.php:164 inc/contract.class.php:434
 #: inc/ticket.class.php:1877
@@ -6316,6 +6557,8 @@ msgid "Associated contract"
 msgid_plural "Associated contracts"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/contract.class.php:1102
 msgid "Send alarms on contracts"
@@ -6344,6 +6587,8 @@ msgid "Link Contract/Item"
 msgid_plural "Links Contract/Item"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/contract_item.class.php:94
 msgid "Associated item ID"
@@ -6352,8 +6597,10 @@ msgstr ""
 #: inc/contracttype.class.php:43
 msgid "Contract type"
 msgid_plural "Contract types"
-msgstr[0] "Tip pogodbe"
-msgstr[1] "Tip pogodbe"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/crontask.class.php:60 inc/event.class.php:133 inc/html.class.php:1871
 #: install/update_0723_078.php:3217
@@ -6361,6 +6608,8 @@ msgid "Automatic action"
 msgid_plural "Automatic actions"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/crontask.class.php:185 inc/crontask.class.php:431
 #: inc/crontask.class.php:1108
@@ -6544,6 +6793,8 @@ msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/crontask.class.php:1333 inc/entitydata.class.php:1232
 #, php-format
@@ -6551,6 +6802,8 @@ msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/crontasklog.class.php:77 inc/crontasklog.class.php:82
 #: inc/event.class.php:44 inc/html.class.php:1759 inc/profile.class.php:1173
@@ -6559,6 +6812,8 @@ msgid "Log"
 msgid_plural "Logs"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/dbconnection.class.php:315
 msgid "Check the MySQL replica"
@@ -6612,18 +6867,24 @@ msgid "Case"
 msgid_plural "Cases"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/devicecasetype.class.php:43
 msgid "Case type"
 msgid_plural "Case types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/devicecontrol.class.php:43
 msgid "Controller"
 msgid_plural "Controllers"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/devicecontrol.class.php:51 inc/devicecontrol.class.php:65
 #: inc/devicecontrol.class.php:86
@@ -6646,6 +6907,8 @@ msgid "Drive"
 msgid_plural "Drives"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/devicedrive.class.php:51 inc/devicedrive.class.php:68
 #: inc/devicedrive.class.php:94
@@ -6664,6 +6927,8 @@ msgid "Memory"
 msgid_plural "Memories"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/devicegraphiccard.class.php:56 inc/devicegraphiccard.class.php:71
 msgid "Memory by default"
@@ -6674,6 +6939,8 @@ msgid "Hard Drive"
 msgid_plural "Hard Drives"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/deviceharddrive.class.php:48 inc/deviceharddrive.class.php:124
 msgid "Capacity"
@@ -6709,6 +6976,8 @@ msgid "Memory type"
 msgid_plural "Memory types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/devicemotherboard.class.php:51 inc/devicemotherboard.class.php:62
 #: inc/devicemotherboard.class.php:79
@@ -6720,6 +6989,8 @@ msgid "Network Card"
 msgid_plural "Network Cards"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/devicenetworkcard.class.php:56 inc/devicenetworkcard.class.php:70
 msgid "MAC address by default"
@@ -6735,6 +7006,8 @@ msgid "Other Component"
 msgid_plural "Other Components"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/devicepowersupply.class.php:51 inc/devicepowersupply.class.php:65
 #: inc/devicepowersupply.class.php:87
@@ -6774,6 +7047,8 @@ msgid "Document heading"
 msgid_plural "Document headings"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/document.class.php:104 inc/document.class.php:1003
 #: inc/document.class.php:1091
@@ -6914,6 +7189,8 @@ msgid "Associated document"
 msgid_plural "Associated documents"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/document.class.php:1467
 msgid "Add a new file"
@@ -6941,6 +7218,8 @@ msgid "Document Type"
 msgid_plural "Document Types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/dropdown.class.php:503 inc/dropdown.class.php:506
 msgid "GMT"
@@ -6986,13 +7265,16 @@ msgstr ""
 msgid "Authorizations assignment rules"
 msgstr ""
 
-#. TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the number of minutes : display 1 day 3h15
+#. TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the
+#. number of minutes : display 1 day 3h15
 #: inc/dropdown.class.php:1081
 #, php-format
 msgid "%1$d day %2$dh%3$s"
 msgid_plural "%1$d days %2$dh%3$s"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
 #: inc/dropdown.class.php:1089
@@ -7305,6 +7587,8 @@ msgid "Ticket template"
 msgid_plural "Ticket templates"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/entity.class.php:515
 msgid "Default value for alarms on contracts"
@@ -7316,7 +7600,8 @@ msgstr ""
 
 #: inc/entity.class.php:529 inc/entitydata.class.php:603
 msgid "Default threshold for cartridge and consumable count"
-msgstr "Privzeta najvišja ali najnižja stopnja za kartuše in potrošno blago števec"
+msgstr ""
+"Privzeta najvišja ali najnižja stopnja za kartuše in potrošno blago števec"
 
 #: inc/entity.class.php:536 inc/entitydata.class.php:482
 msgid "Entity for software creation"
@@ -7446,6 +7731,8 @@ msgid "Dropdown"
 msgid_plural "Dropdowns"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/event.class.php:131
 msgid "Security"
@@ -7485,6 +7772,8 @@ msgid "Ignored value for the unicity"
 msgid_plural "Ignored values for the unicity"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/fieldblacklist.class.php:63 inc/fieldblacklist.class.php:89
 #: inc/ruleaction.class.php:77 inc/rule.class.php:429
@@ -7524,6 +7813,8 @@ msgid "Internet domain"
 msgid_plural "Internet domains"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/fqdn.class.php:63 inc/fqdn.class.php:201
 msgid "FQDN"
@@ -7531,8 +7822,8 @@ msgstr ""
 
 #: inc/fqdn.class.php:65
 msgid ""
-"Fully Qualified Domain Name. Use the classical notation (labels separated by "
-"dots). For example: indepnet.net"
+"Fully Qualified Domain Name. Use the classical notation (labels separated by"
+" dots). For example: indepnet.net"
 msgstr ""
 
 #: inc/fqdn.class.php:83
@@ -7571,8 +7862,10 @@ msgstr ""
 #: inc/group.class.php:240
 msgid "User  "
 msgid_plural "Users  "
-msgstr[0] "Uporabnik  "
-msgstr[1] "Uporabniki  "
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/group.class.php:302 inc/group.class.php:384
 msgid "Attribute value"
@@ -7616,8 +7909,10 @@ msgstr "Dodaj uporabnika"
 #: inc/rulerightparameter.class.php:83
 msgid "Criteria"
 msgid_plural "Criteria"
-msgstr[0] "Kriterij"
-msgstr[1] "Kriterij"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/group_user.class.php:387
 msgid "Users (D=Dynamic)"
@@ -7677,60 +7972,80 @@ msgid "Report"
 msgid_plural "Reports"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:1545 inc/monitormodel.class.php:45
 msgid "Monitors model"
 msgid_plural "Monitors madels"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:1571 inc/peripheralmodel.class.php:45
 msgid "Peripherals model"
 msgid_plural "Peripherals models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:1584 inc/networkequipmentmodel.class.php:45
 msgid "Networking equipment model"
 msgid_plural "Networking equipment models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:1597
 msgid "Phones model"
 msgid_plural "Phones models"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:1623
 msgid "Monitors type"
 msgid_plural "Monitors types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:1636
 msgid "Printers type"
 msgid_plural "Printers types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:1649
 msgid "Peripherals type"
 msgid_plural "Peripherals types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:1662 inc/networkequipmenttype.class.php:43
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:1675
 msgid "Phones type"
 msgid_plural "Phones types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: menu title for "General setup""
 #: inc/html.class.php:1855
@@ -7743,6 +8058,8 @@ msgid "Check"
 msgid_plural "Checks"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:1899
 msgid "Others"
@@ -7778,7 +8095,9 @@ msgstr ""
 #: inc/html.class.php:2364 inc/toolbox.class.php:1004
 #: inc/toolbox.class.php:1007
 msgid "You will find it on the GLPI-PROJECT.org site."
-msgstr "Dosegljivo na GLPI strani: <a href='http://glpi-project' target='_blank'>http://glpi-project.org</a>."
+msgstr ""
+"Dosegljivo na GLPI strani: <a href='http://glpi-project' "
+"target='_blank'>http://glpi-project.org</a>."
 
 #: inc/html.class.php:2366 inc/toolbox.class.php:1003
 #: inc/toolbox.class.php:1006 inc/toolbox.class.php:1012
@@ -7814,6 +8133,8 @@ msgid "- %d hour"
 msgid_plural "- %d hours"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:3235
 #, php-format
@@ -7821,6 +8142,8 @@ msgid "- %d day"
 msgid_plural "- %d days"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:3239
 msgid "last Sunday"
@@ -7856,6 +8179,8 @@ msgid "- %d week"
 msgid_plural "- %d weeks"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:3253
 msgid "Beginning of the month"
@@ -7867,6 +8192,8 @@ msgid "- %d month"
 msgid_plural "- %d monhs"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:3261
 msgid "Beginning of the year"
@@ -7878,6 +8205,8 @@ msgid "- %d year"
 msgid_plural "- %d years"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:3271
 #, php-format
@@ -7885,6 +8214,8 @@ msgid "+ %d hour"
 msgid_plural "- %d hours"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:3276
 #, php-format
@@ -7892,6 +8223,8 @@ msgid "+ %d day"
 msgid_plural "- %d days"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:3280
 #, php-format
@@ -7899,6 +8232,8 @@ msgid "+ %d week"
 msgid_plural "- %d weeks"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:3284
 #, php-format
@@ -7906,6 +8241,8 @@ msgid "+ %d month"
 msgid_plural "- %d months"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/html.class.php:3288
 #, php-format
@@ -7913,6 +8250,8 @@ msgid "+ %d year"
 msgid_plural "- %d years"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: inc/html.class.php:3764 inc/html.class.php:3912
@@ -8040,24 +8379,32 @@ msgid "Interface type (Hard drive...)"
 msgid_plural "Interface types (Hard drive...)"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/ipaddress.class.php:112
 msgid "IP addresses"
 msgid_plural "IP address"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/ipnetmask.class.php:48
 msgid "Subnet mask"
 msgid_plural "Subnet masks"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/ipnetwork.class.php:64
 msgid "IP network"
 msgid_plural "IP networks"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/ipnetwork.class.php:74
 msgid "IP version"
@@ -8121,6 +8468,8 @@ msgid "Category of ticket"
 msgid_plural "Categories of tickets"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/itilcategory.class.php:264 inc/ticket.class.php:2003
 #: inc/ticket.class.php:2019
@@ -8137,6 +8486,8 @@ msgid "Knowledge base category"
 msgid_plural "Knowledge base categories"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/knowbaseitem.class.php:113 inc/knowbaseitem.class.php:116
 #: inc/reminder.class.php:373 inc/reminder.class.php:376
@@ -8181,6 +8532,8 @@ msgid "%d view"
 msgid_plural "%d views"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/knowbaseitem.class.php:509 inc/knowbaseitem.class.php:606
 msgid "Put this item in the FAQ"
@@ -8248,14 +8601,18 @@ msgstr ""
 #: inc/reminder.class.php:975
 msgid "Recipient"
 msgid_plural "Recipients"
-msgstr[0] "Prejemnik"
-msgstr[1] "Prejemniki"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/link.class.php:62 inc/link.class.php:66
 msgid "Link"
 msgid_plural "Links"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/link.class.php:128 inc/link.class.php:164
 msgid "Link or filename"
@@ -8412,7 +8769,9 @@ msgstr ""
 
 #: inc/mailcollector.class.php:244 inc/mailcollector.class.php:310
 msgid "Maximum size of each file imported by the mail receiver"
-msgstr "Poštni Sprejemnik: Maksimalna velikost vsakega pripete datoteke (0: ni uvoza)"
+msgstr ""
+"Poštni Sprejemnik: Maksimalna velikost vsakega pripete datoteke (0: ni "
+"uvoza)"
 
 #: inc/mailcollector.class.php:271
 msgid "Get email tickets now"
@@ -8427,7 +8786,8 @@ msgstr ""
 #: inc/mailcollector.class.php:523
 #, php-format
 msgid ""
-"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d"
+"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, "
+"errors=%4$d"
 msgstr ""
 
 #: inc/mailcollector.class.php:533 inc/user.class.php:2974
@@ -8568,6 +8928,8 @@ msgid "Network alias"
 msgid_plural "Network aliases"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/networkalias.class.php:301 inc/ruleimportcomputer.class.php:108
 #: inc/ruleocs.class.php:131
@@ -8590,12 +8952,16 @@ msgid "Firmware"
 msgid_plural "Firmwares"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/networkname.class.php:93
 msgid "Network name"
 msgid_plural "Network names"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/networkname.class.php:212
 #, php-format
@@ -8603,10 +8969,13 @@ msgid "Invalid IP address: %s"
 msgid_plural "Invalid IP addresses: %s"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/networkname.class.php:386
 msgid ""
-"Several network names available! Go to the tab 'Network Name' to manage them."
+"Several network names available! Go to the tab 'Network Name' to manage "
+"them."
 msgstr ""
 
 #: inc/networkportaggregate.class.php:48
@@ -8625,8 +8994,10 @@ msgstr ""
 #: inc/vlan.class.php:44
 msgid "VLAN"
 msgid_plural "VLANs"
-msgstr[0] "VLAN"
-msgstr[1] "VLANs"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/networkportalias.class.php:46
 msgid "Alias port"
@@ -8650,6 +9021,8 @@ msgid "Port number"
 msgid_plural "Ports number"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/networkport.class.php:543 inc/software.class.php:319
 msgid "from"
@@ -8769,6 +9142,8 @@ msgid "Wifi port"
 msgid_plural "Wifi ports"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/networkportwifi.class.php:66 inc/networkportwifi.class.php:106
 #: inc/networkportwifi.class.php:165
@@ -8804,6 +9179,8 @@ msgid "Event"
 msgid_plural "Events"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/notificationmail.class.php:176
 msgid "Mail test"
@@ -8825,7 +9202,8 @@ msgstr ""
 msgid "Error in sending the email"
 msgstr "Napaka pri pošiljanju emaila"
 
-#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of
+#. the mail
 #: inc/notificationmail.class.php:246
 #, php-format
 msgid "An email was sent to %1$s: %2$s"
@@ -9251,6 +9629,8 @@ msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #. TRANS: %s is the user name
 #: inc/notificationtargetticket.class.php:444
@@ -9355,8 +9735,10 @@ msgstr ""
 #: inc/ticketfollowup.class.php:177
 msgid "Followup"
 msgid_plural "Followups"
-msgstr[0] "Sledi zgoraj"
-msgstr[1] "Sledi"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/notificationtargetticket.class.php:645
 #: inc/notificationtargetticket.class.php:657 inc/ticket.class.php:1798
@@ -9441,6 +9823,8 @@ msgid "Template translation"
 msgid_plural "Template translations"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/notificationtemplatetranslation.class.php:117
 msgid "Show list of available tags"
@@ -9531,6 +9915,8 @@ msgid "OCSNG link"
 msgid_plural "OCSNG links"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/ocslink.class.php:84
 #, php-format
@@ -9579,6 +9965,8 @@ msgid "OCSNG server"
 msgid_plural "OCSNG servers"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/ocsserver.class.php:136 inc/ocsserver.class.php:401
 msgid "Import options"
@@ -9654,7 +10042,9 @@ msgstr "Brez uvoza: vtičnik ne bo uvozil teh elementov"
 msgid ""
 "Global import: everything is imported but the material is globally managed "
 "(without double blooms)"
-msgstr "Globalni uvoz: vse je uvoženo toda material je gloalno upravljen (brez dvojnih imen - blooms))"
+msgstr ""
+"Globalni uvoz: vse je uvoženo toda material je gloalno upravljen (brez "
+"dvojnih imen - blooms))"
 
 #: inc/ocsserver.class.php:497
 msgid "Unit import: everything is imported 'as-is'"
@@ -9700,13 +10090,17 @@ msgstr "Nepravilna OCSNG konfiguracija (TRACE_DELETED mora biti aktiven))"
 msgid ""
 "Access denied on OCSNG database (Need write rights on hardware.CHECKSUM "
 "necessary)"
-msgstr "Prepovedan vstop v OCS bazo (Morate imeti možnost pisanja v hardware.CHECKSUM))"
+msgstr ""
+"Prepovedan vstop v OCS bazo (Morate imeti možnost pisanja v "
+"hardware.CHECKSUM))"
 
 #: inc/ocsserver.class.php:609
 msgid ""
 "Access denied on OCSNG database (Delete rights in deleted_equiv table "
 "necessary)"
-msgstr "Dostop v OCS bazo prepovedan (Morate imeti možnost brisanja v deleted_equiv tabeli))"
+msgstr ""
+"Dostop v OCS bazo prepovedan (Morate imeti možnost brisanja v deleted_equiv "
+"tabeli))"
 
 #: inc/ocsserver.class.php:611
 msgid "Connection to OCSNG database successful"
@@ -9771,7 +10165,9 @@ msgstr "Ni novih računalnikov za posodobitev"
 msgid ""
 "Caution! The imported data (see your configuration) will overwrite the "
 "existing data"
-msgstr "Pozor! Uvoženi podatki (poglejte v vaše nastavitve) bodo prepisali obstoječe podatke"
+msgstr ""
+"Pozor! Uvoženi podatki (poglejte v vaše nastavitve) bodo prepisali obstoječe"
+" podatke"
 
 #: inc/ocsserver.class.php:2778
 msgid "Manual import mode"
@@ -9879,6 +10275,8 @@ msgid "Devices type"
 msgid_plural "Devices types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/phone.class.php:312 inc/phone.class.php:487
 msgid "Power supply"
@@ -9913,6 +10311,8 @@ msgid "Phone power supply type"
 msgid_plural "Phones power supply types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/planning.class.php:52 inc/planning.class.php:72
 msgid "Information"
@@ -10113,6 +10513,8 @@ msgid "Last %d problem"
 msgid_plural "Last %d problems"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/problem.class.php:1415 inc/problem.class.php:1457
 msgid "No problem found."
@@ -10127,12 +10529,16 @@ msgid "Link Ticket/Problem"
 msgid_plural "Links Ticket/Problem"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/problem_ticket.class.php:161
 msgid "Problem - "
 msgid_plural "Problems - "
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/problem_ticket.class.php:163
 msgid "Create a problem from this ticket"
@@ -10238,8 +10644,10 @@ msgstr "Javni zapiski"
 #: inc/profile.class.php:678
 msgid "Contacts"
 msgid_plural "Contacts"
-msgstr[0] "Kontakti"
-msgstr[1] "Kontakti"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/profile.class.php:689 inc/profile.class.php:1454
 msgid "Financial and administratives informations"
@@ -10478,6 +10886,8 @@ msgid "Authorization"
 msgid_plural "Authorizations"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/registrykey.class.php:96
 #, php-format
@@ -10485,6 +10895,8 @@ msgid "%d registry key found"
 msgid_plural "%d registry keys found"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/registrykey.class.php:99
 msgid "OCSNG name"
@@ -10534,7 +10946,8 @@ msgstr ""
 msgid "Add to schedule"
 msgstr ""
 
-#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s is its name
+#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s
+#. is its name
 #: inc/reminder.class.php:769
 #, php-format
 msgid "From %1$s to %2$s: %3$s"
@@ -10706,6 +11119,8 @@ msgid "Reservable item"
 msgid_plural "Reservable items"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/reservationitem.class.php:187
 msgid "Make unavailable"
@@ -10745,8 +11160,10 @@ msgstr "Rezervacije za material, ki potečejo danes"
 #: inc/rule.class.php:422 inc/rule.class.php:464 inc/rule.class.php:467
 msgid "Action"
 msgid_plural "Actions"
-msgstr[0] "Akcija"
-msgstr[1] "Akcije"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/ruleaction.class.php:159
 msgid "Assign"
@@ -10834,8 +11251,8 @@ msgstr "ali"
 
 #: inc/rule.class.php:353
 msgid ""
-"It is possible to affect the result of a regular expression using the string "
-"#0"
+"It is possible to affect the result of a regular expression using the string"
+" #0"
 msgstr ""
 
 #: inc/rule.class.php:556 inc/rule.class.php:1172
@@ -11241,6 +11658,8 @@ msgid "LDAP criteria"
 msgid_plural "LDAP criterias"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/ruleticket.class.php:361 inc/ticketvalidation.class.php:559
 msgid "Send an approval request"
@@ -11281,6 +11700,8 @@ msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/search.class.php:4841 inc/search.class.php:4875
 msgid "before"
@@ -11296,6 +11717,8 @@ msgid "%s item"
 msgid_plural "%s items"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/session.class.php:136 inc/session.class.php:146
 msgid "You don't have right to connect"
@@ -11305,7 +11728,8 @@ msgstr "Nimate pravic za povezavo"
 msgid ""
 "You do not have access to this application because your account was "
 "deactivated or removed"
-msgstr "Nimate dostopa do aplikacije, ker je vaš račun bil deaktiviran in odstranjen"
+msgstr ""
+"Nimate dostopa do aplikacije, ker je vaš račun bil deaktiviran in odstranjen"
 
 #: inc/session.class.php:320 inc/session.class.php:321
 msgid "(tree structure)"
@@ -11325,6 +11749,8 @@ msgid "+ %1$d hour"
 msgid_plural "+ %1$d hours"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/sla.class.php:186 inc/slalevel.class.php:287
 #, php-format
@@ -11332,6 +11758,8 @@ msgid "+ %1$d day"
 msgid_plural "+ %1$d days"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/slalevel.class.php:91
 msgid "Add an escalation level"
@@ -11348,6 +11776,8 @@ msgid "- %1$d hour"
 msgid_plural "+ %1$d hours"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/slalevel.class.php:291
 #, php-format
@@ -11355,6 +11785,8 @@ msgid "- %1$d day"
 msgid_plural "+ %1$d days"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/slalevel_ticket.class.php:100
 msgid "Automatic actions of SLA"
@@ -11429,6 +11861,8 @@ msgid "License type"
 msgid_plural "License types"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/softwareversion.class.php:307 inc/softwareversion.class.php:318
 msgid "Add a version"
@@ -11548,6 +11982,8 @@ msgid "Tasks category"
 msgid_plural "Tasks categories"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/ticket.class.php:348 inc/ticket.class.php:365
 msgid "Created tickets"
@@ -11660,7 +12096,8 @@ msgstr "Tip strojne opreme : %s"
 msgid "Submit Message"
 msgstr "Oddaj sporočilo"
 
-#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the entity name
+#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the
+#. entity name
 #: inc/ticket.class.php:3210
 #, php-format
 msgid "%1$s - ID %2$d (%3$s)"
@@ -11683,7 +12120,8 @@ msgstr ""
 
 #: inc/ticket.class.php:3324
 msgid ""
-"The assignment of a SLA to a ticket causes the recalculation of the due date."
+"The assignment of a SLA to a ticket causes the recalculation of the due "
+"date."
 msgstr ""
 
 #: inc/ticket.class.php:3325
@@ -11748,6 +12186,8 @@ msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/ticket.class.php:4568 inc/ticket.class.php:4574
 msgid "New ticket for this item..."
@@ -11756,8 +12196,10 @@ msgstr "Novo naročilo za ta predmet......"
 #: inc/ticket.class.php:4603
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
-msgstr[0] "Naročila na povezanih predmetih"
-msgstr[1] "Opravila na povezanih elementih"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/ticket.class.php:4698
 #, php-format
@@ -11843,6 +12285,8 @@ msgid "Hidden field"
 msgid_plural "Hidden fields"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/tickettemplatemandatoryfield.class.php:52
 #: inc/tickettemplatemandatoryfield.class.php:71
@@ -11851,6 +12295,8 @@ msgid "Mandatory field"
 msgid_plural "Mandatory fields"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/tickettemplatepredefinedfield.class.php:52
 #: inc/tickettemplatepredefinedfield.class.php:111
@@ -11859,8 +12305,11 @@ msgid "Predefined field"
 msgid_plural "Predefined fields"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
-#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked ticket, %3$s optionals links / icons
+#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked
+#. ticket, %3$s optionals links / icons
 #: inc/ticket_ticket.class.php:137
 #, php-format
 msgid "%1$s %2$s %3$s"
@@ -11980,7 +12429,8 @@ msgstr "Podpora sejam je na voljo - Odlično !"
 
 #: inc/toolbox.class.php:721
 msgid "Make sure that sessions support has been activated in your php.ini"
-msgstr "Prepričajte se, da je podpora sejam aktivirana v vaši php.ini datoteki"
+msgstr ""
+"Prepričajte se, da je podpora sejam aktivirana v vaši php.ini datoteki"
 
 #: inc/toolbox.class.php:727
 msgid "Test session auto start"
@@ -11990,7 +12440,9 @@ msgstr "Testiraj sejo avto začetek"
 msgid ""
 "session.auto_start is activated. See .htaccess file in the GLPI root for "
 "more information."
-msgstr "session.auto_start je aktivirana. Poglej .htaccess datoteko v GLPI korenu za več informacij.."
+msgstr ""
+"session.auto_start je aktivirana. Poglej .htaccess datoteko v GLPI korenu za"
+" več informacij.."
 
 #: inc/toolbox.class.php:736
 msgid "Test if Session_use_trans_sid is used"
@@ -12012,7 +12464,9 @@ msgstr "magic_quotes_sybase razširitveni test"
 msgid ""
 "GLPI does not work with the magic_quotes_sybase option ; Please turn it off "
 "and retry"
-msgstr "GLPI ne deluje z magic_quotes_sybase izbiro ; Prosim, da jo izklopite in poizkusite ponovno"
+msgstr ""
+"GLPI ne deluje z magic_quotes_sybase izbiro ; Prosim, da jo izklopite in "
+"poizkusite ponovno"
 
 #: inc/toolbox.class.php:764 inc/toolbox.class.php:766
 msgid "The magic_quotes_sybase option isn't active on your server - Perfect !"
@@ -12242,7 +12696,9 @@ msgstr ""
 msgid ""
 "You can continue to add elements to be transferred or execute the transfer "
 "now"
-msgstr "Lahko nadaljuješ, da dodaš elemente, da so preneseni ali prenesi od sedaj te elemente"
+msgstr ""
+"Lahko nadaljuješ, da dodaš elemente, da so preneseni ali prenesi od sedaj te"
+" elemente"
 
 #: inc/transfer.class.php:3224
 msgid "Think of making a backup before transferring items."
@@ -12265,6 +12721,8 @@ msgid "Users category"
 msgid_plural "Users categories"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/user.class.php:152
 msgid "Used items"
@@ -12379,13 +12837,14 @@ msgid "Please confirm your email address and enter your new password."
 msgstr ""
 
 #: inc/user.class.php:2826 inc/user.class.php:2882
-msgid "Your password reset request has expired or is invalid. Please renew it."
+msgid ""
+"Your password reset request has expired or is invalid. Please renew it."
 msgstr ""
 
 #: inc/user.class.php:2845
 msgid ""
-"Please enter your email address. A email will be sent to you and you will be "
-"able to choose a new password."
+"Please enter your email address. A email will be sent to you and you will be"
+" able to choose a new password."
 msgstr ""
 
 #: inc/user.class.php:2870
@@ -12421,6 +12880,8 @@ msgid "Users title"
 msgid_plural "Users titles"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/vlan.class.php:51 inc/vlan.class.php:76
 msgid "ID TAG"
@@ -12467,6 +12928,8 @@ msgid "Wifi network"
 msgid_plural "Wifi networks"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
 
 #: install/install.php:103
 msgid "Unofficial translations are also available"
@@ -12492,7 +12955,9 @@ msgstr "Namestitev ali posodobitev GLPI"
 
 #: install/install.php:124
 msgid "Choose 'Install' for a completely new installation of GLPI."
-msgstr "Izberite 'Install' za popolnoma novo namestitev GLPI (podatki, ki bodo uvoženi z GLPI bodo privzeti podatki)."
+msgstr ""
+"Izberite 'Install' za popolnoma novo namestitev GLPI (podatki, ki bodo "
+"uvoženi z GLPI bodo privzeti podatki)."
 
 #: install/install.php:125
 msgid "Select 'Update' to update your version of GLPI from an earlier version"
@@ -12598,7 +13063,8 @@ msgstr "post-only/post-only za post-only račun"
 
 #: install/install.php:432
 msgid "You can delete or modify these accounts as well as the initial data."
-msgstr "Lahko izbrišete ali spremenite te račune, prav tako tudi vnose v bazi.."
+msgstr ""
+"Lahko izbrišete ali spremenite te račune, prav tako tudi vnose v bazi.."
 
 #: install/install.php:433 install/update_content.php:379
 #: install/update.php:901
@@ -12608,7 +13074,8 @@ msgstr "Uporabi GLPI"
 #: install/install.php:468
 msgid ""
 "Can't create the database connection file, please verify file permissions."
-msgstr "Ni mogoče ustvariti datoteke za povezavo z bazo. Preverite pravice na mape.."
+msgstr ""
+"Ni mogoče ustvariti datoteke za povezavo z bazo. Preverite pravice na mape.."
 
 #: install/install.php:524
 msgid "Beginning of the installation"
@@ -12754,13 +13221,16 @@ msgstr "Nova struktura je hierarhična"
 
 #: install/update.php:411
 msgid "Provide a delimiter in order to automate the new hierarchy generation."
-msgstr "Če si rabil znak za razmejitev, lahko določiš v zaporedju, da avtomatizeraš generacijo hierarhij.."
+msgstr ""
+"Če si rabil znak za razmejitev, lahko določiš v zaporedju, da avtomatizeraš "
+"generacijo hierarhij.."
 
 #: install/update.php:412
 msgid ""
 "You can also specify a root location which will include all the generated "
 "locations."
-msgstr "Definirate lahko root lokacijo, ki bo vsebovala vse generirane lokacije.."
+msgstr ""
+"Definirate lahko root lokacijo, ki bo vsebovala vse generirane lokacije.."
 
 #: install/update.php:414
 msgid "Delimiter"
@@ -12799,10 +13269,16 @@ msgstr ""
 msgid ""
 "All users having administrators rights have have been updated to 'super-"
 "admin' rights with the creation of his new user type."
-msgstr "Zdaj imajo vsi administratorji 'super-admin' pravice. Ta nov tip uporabnika je bil prav tako dodan.."
+msgstr ""
+"Zdaj imajo vsi administratorji 'super-admin' pravice. Ta nov tip uporabnika "
+"je bil prav tako dodan.."
 
 #: install/update.php:909
 msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
-msgstr "Povezava z bazo ni uspešna, preverite povezovalne parametre v config_db.php datoteki"
+msgstr ""
+"Povezava z bazo ni uspešna, preverite povezovalne parametre v config_db.php "
+"datoteki"
+
+

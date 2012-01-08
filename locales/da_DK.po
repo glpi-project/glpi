@@ -1,21 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
+# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: GLPI Project\n"
+"Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-01-07 18:57+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-01-07 22:17+0000\n"
+"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: da_DK\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: index.php:64
@@ -368,7 +367,8 @@ msgstr "Fjern tilknytning"
 
 #: ajax/dropdownTrackingDeviceType.php:49 front/find_num.php:80
 msgid "Enter the first letters (user, item name, serial or asset number)"
-msgstr "Indtast det første bogstav (bruger, emnenavn, serienr. eller assetnr.))"
+msgstr ""
+"Indtast det første bogstav (bruger, emnenavn, serienr. eller assetnr.))"
 
 #: ajax/dropdownValue.php:233 front/report.contract.list.php:140
 #: front/report.infocom.php:176 front/report.year.list.php:152
@@ -532,7 +532,9 @@ msgstr "Adgang nægtet"
 msgid ""
 "The version of the database is not compatible with the version of the "
 "installed files. An update is necessary."
-msgstr "Databasens version er ikke kompatibel med versionen af de installerede filer. En opdatering er nødvendig.."
+msgstr ""
+"Databasens version er ikke kompatibel med versionen af de installerede "
+"filer. En opdatering er nødvendig.."
 
 #. TRANS : means update / actualize
 #: config/config.php:183 front/report.infocom.conso.php:64
@@ -571,10 +573,13 @@ msgstr "Opdatér"
 
 #: config/config.php:188
 msgid ""
-"You are trying to use GLPI with files from an earlier version to the version "
-"of the database. Please install the GLPI files corresponding to the version "
-"of your database."
-msgstr "Du prøver at bruge GLPI med filer fra en tidligere version i forhold til databasens version. Installér venligst GLPI filer der svarer til din databases version.."
+"You are trying to use GLPI with files from an earlier version to the version"
+" of the database. Please install the GLPI files corresponding to the version"
+" of your database."
+msgstr ""
+"Du prøver at bruge GLPI med filer fra en tidligere version i forhold til "
+"databasens version. Installér venligst GLPI filer der svarer til din "
+"databases version.."
 
 #: config/config.php:193 install/install.php:175 install/install.php:184
 msgid "Try again"
@@ -2037,7 +2042,8 @@ msgstr[1] ""
 msgid "List of the hardware under contract"
 msgstr "Liste over hardware på kontrakt"
 
-#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
+#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to
+#. change for RTL
 #: front/report.contract.list.php:117 front/report.infocom.php:120
 #: front/report.year.list.php:129 inc/authldap.class.php:211
 #: inc/authldap.class.php:370 inc/authldap.class.php:587
@@ -2526,7 +2532,9 @@ msgstr "Emailopfølgnings konfiguration"
 msgid ""
 "Impossible to configure the notifications: please configure your email "
 "followup using the above configuration."
-msgstr "Kunne ikke konfigurere påmindelserne : konfigurer venligst din e-mail opfølgning ved hjælp af ovenstående konfiguration.."
+msgstr ""
+"Kunne ikke konfigurere påmindelserne : konfigurer venligst din e-mail "
+"opfølgning ved hjælp af ovenstående konfiguration.."
 
 #: front/setup.templates.php:48 inc/html.class.php:2211
 msgid "Manage templates..."
@@ -3346,7 +3354,8 @@ msgstr "URL ved udlogning"
 
 #: inc/auth.class.php:1036
 msgid "The CURL or DOMXML extension for your PHP parser isn't installed"
-msgstr "CURL eller DOMXML udvidelserne til din PHP fortolker er ikke installeret"
+msgstr ""
+"CURL eller DOMXML udvidelserne til din PHP fortolker er ikke installeret"
 
 #: inc/auth.class.php:1038
 msgid "Impossible to use CAS as external source of connection"
@@ -3706,7 +3715,9 @@ msgstr "Søgefilter for brugere"
 msgid ""
 "Warning: The request exceeds the limit of the directory. The results are "
 "only partial."
-msgstr "Advarsel: Forespørgslen overskrider grænserne for biblioteket. Resultatet er kun delvist.."
+msgstr ""
+"Advarsel: Forespørgslen overskrider grænserne for biblioteket. Resultatet er"
+" kun delvist.."
 
 #: inc/authldap.class.php:1002 inc/authldap.class.php:1062
 #: inc/ocsserver.class.php:2509 inc/ocsserver.class.php:2529
@@ -4088,16 +4099,20 @@ msgstr "Slut"
 msgid "Recurrent"
 msgstr "Gentagende"
 
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #: inc/calendar_holiday.class.php:111 inc/change_problem.class.php:111
 #: inc/change_problem.class.php:192 inc/change_ticket.class.php:107
 #: inc/change_ticket.class.php:192 inc/computer_device.class.php:226
@@ -4328,7 +4343,8 @@ msgstr[1] ""
 msgid "Send alarms on cartridges"
 msgstr "Send alarm vedr. patroner"
 
-#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
+#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
+#. number
 #: inc/cartridgeitem.class.php:411
 #, php-format
 msgid ""
@@ -4667,7 +4683,8 @@ msgstr "Nyt kort"
 
 #: inc/commondbtm.class.php:1864
 msgid "You are not allowed to change the visibility flag for child entities."
-msgstr "Du har ikke tilladelse til at ændre synlighedsflaget for underentiteter.."
+msgstr ""
+"Du har ikke tilladelse til at ændre synlighedsflaget for underentiteter.."
 
 #: inc/commondbtm.class.php:1869
 msgid "Can't change this attribute. It's inherited from its parent."
@@ -4750,13 +4767,16 @@ msgstr "You can't delete that place, because it has sub-places"
 
 #: inc/commondropdown.class.php:397
 msgid "Caution: you're about to remove a heading used for one or more items."
-msgstr "Forsigtig: Du er ved at slette en overskrift brugt til én eller flere ting.."
+msgstr ""
+"Forsigtig: Du er ved at slette en overskrift brugt til én eller flere ting.."
 
 #: inc/commondropdown.class.php:402
 msgid ""
-"If you confirm the deletion the items using this heading used fields will be "
-"blanked."
-msgstr "Hvis du godkender sletningen vil emner der indeholder denne overskrift blive blanket."
+"If you confirm the deletion the items using this heading used fields will be"
+" blanked."
+msgstr ""
+"Hvis du godkender sletningen vil emner der indeholder denne overskrift blive"
+" blanket."
 
 #: inc/commondropdown.class.php:408
 msgid "Confirm"
@@ -5118,25 +5138,31 @@ msgstr "Affødt af %s"
 
 #: inc/computer.class.php:169 inc/computer_item.class.php:202
 msgid ""
-"Alternate username updated. The connected items have been updated using this "
-"alternate username."
-msgstr "Alternativt brugernavn opdateret. De forbunde enheder er blevet opdateret ved brug af dette alternative brugernavn.."
+"Alternate username updated. The connected items have been updated using this"
+" alternate username."
+msgstr ""
+"Alternativt brugernavn opdateret. De forbunde enheder er blevet opdateret "
+"ved brug af dette alternative brugernavn.."
 
 #: inc/computer.class.php:222 inc/computer_item.class.php:191
 msgid ""
 "User or group updated. The items connected have been moved in the same "
 "values."
-msgstr "User or group updated. The items connected have been moved in the same values.."
+msgstr ""
+"User or group updated. The items connected have been moved in the same "
+"values.."
 
 #: inc/computer.class.php:260 inc/computer_item.class.php:211
 msgid ""
 "Status updated. The connected items have been updated using this status."
-msgstr "Status opdateret. De tilknyttede emner er opdateret med denne status.."
+msgstr ""
+"Status opdateret. De tilknyttede emner er opdateret med denne status.."
 
 #: inc/computer.class.php:302 inc/computer_item.class.php:176
 msgid ""
 "Location updated. The items connected have been moved in the same location."
-msgstr "Location updated. The items connected have been moved in the same location.."
+msgstr ""
+"Location updated. The items connected have been moved in the same location.."
 
 #: inc/computer.class.php:579 inc/computer.class.php:853
 #: inc/domain.class.php:43 inc/networkequipment.class.php:340
@@ -5624,8 +5650,10 @@ msgstr "Brug ikke dynamisk visning, hvis antallet af emner er mindre end"
 
 #: inc/config.class.php:254
 msgid ""
-"Maximum number of items to display in the dropdowns when wildcard is not used"
-msgstr "Maksimum antal emner der vises i dropdowns når der ikke bruges wildcard"
+"Maximum number of items to display in the dropdowns when wildcard is not "
+"used"
+msgstr ""
+"Maksimum antal emner der vises i dropdowns når der ikke bruges wildcard"
 
 #: inc/config.class.php:260
 msgid "Autocompletion of text fields"
@@ -5797,7 +5825,8 @@ msgid "Limit of the schedules for planning"
 msgstr "Begrænsning af kalender for planlægning"
 
 #: inc/config.class.php:552
-msgid "Maximum size of each file imported by the mail receiver (default value)"
+msgid ""
+"Maximum size of each file imported by the mail receiver (default value)"
 msgstr ""
 
 #: inc/config.class.php:559
@@ -6103,12 +6132,13 @@ msgstr[1] ""
 msgid "Send alarms on consumables"
 msgstr "Send alarm vedr. forbrugsvarer"
 
-#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
+#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining
+#. number
 #: inc/consumableitem.class.php:335
 #, php-format
 msgid ""
-"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s "
-"- Remaining %3$d"
+"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s"
+" - Remaining %3$d"
 msgstr ""
 
 #: inc/consumableitemtype.class.php:43
@@ -6519,7 +6549,8 @@ msgstr "Ryd gamle logfiler"
 
 #: inc/crontask.class.php:1297
 msgid "How long system logs are keep in database (in days, 0 for infinite)"
-msgstr "Hvor længe skal systemlog gemmes i databasen ( i dage, 0 for uendeligt))"
+msgstr ""
+"Hvor længe skal systemlog gemmes i databasen ( i dage, 0 for uendeligt))"
 
 #: inc/crontask.class.php:1300
 msgid "Database optimization"
@@ -6986,7 +7017,8 @@ msgstr ""
 msgid "Authorizations assignment rules"
 msgstr "Godkendelsestilknytnings regler"
 
-#. TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the number of minutes : display 1 day 3h15
+#. TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the
+#. number of minutes : display 1 day 3h15
 #: inc/dropdown.class.php:1081
 #, php-format
 msgid "%1$d day %2$dh%3$s"
@@ -7338,7 +7370,9 @@ msgstr ""
 msgid ""
 "These parameters are used as actions in generic rules for assignment to "
 "entities"
-msgstr "Disse parametre bruges som hændelser i grundlæggende regler for tilknytning til entiteter"
+msgstr ""
+"Disse parametre bruges som hændelser i grundlæggende regler for tilknytning "
+"til entiteter"
 
 #: inc/entitydata.class.php:334
 msgid "Mail domain surrogates entity"
@@ -7346,7 +7380,8 @@ msgstr ""
 
 #: inc/entitydata.class.php:341
 msgid "Values used in the interface to search users from a LDAP directory"
-msgstr "Værdier brugt i grænsefladen til at lede efter brugere i et LDAP bibliotek"
+msgstr ""
+"Værdier brugt i grænsefladen til at lede efter brugere i et LDAP bibliotek"
 
 #: inc/entitydata.class.php:352
 msgid "LDAP filter associated to the entity (if necessary)"
@@ -7531,8 +7566,8 @@ msgstr ""
 
 #: inc/fqdn.class.php:65
 msgid ""
-"Fully Qualified Domain Name. Use the classical notation (labels separated by "
-"dots). For example: indepnet.net"
+"Fully Qualified Domain Name. Use the classical notation (labels separated by"
+" dots). For example: indepnet.net"
 msgstr ""
 
 #: inc/fqdn.class.php:83
@@ -7958,7 +7993,9 @@ msgstr "Det ønskede emne blev ikke fundet"
 msgid ""
 "For this type of element, the financial and administrative information are "
 "only a model for the elements which you should add."
-msgstr "For denne type element, er de finansielle og administrative informationer kun en model for de emner du burde tilføje."
+msgstr ""
+"For denne type element, er de finansielle og administrative informationer "
+"kun en model for de emner du burde tilføje."
 
 #: inc/infocom.class.php:901 inc/infocom.class.php:1146
 #: inc/infocom.class.php:1361
@@ -8427,7 +8464,8 @@ msgstr ""
 #: inc/mailcollector.class.php:523
 #, php-format
 msgid ""
-"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d"
+"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, "
+"errors=%4$d"
 msgstr ""
 
 #: inc/mailcollector.class.php:533 inc/user.class.php:2974
@@ -8606,7 +8644,8 @@ msgstr[1] ""
 
 #: inc/networkname.class.php:386
 msgid ""
-"Several network names available! Go to the tab 'Network Name' to manage them."
+"Several network names available! Go to the tab 'Network Name' to manage "
+"them."
 msgstr ""
 
 #: inc/networkportaggregate.class.php:48
@@ -8825,7 +8864,8 @@ msgstr "Test e-mail sendt til administrator"
 msgid "Error in sending the email"
 msgstr "Fejl ved afsendelse af e-mail'en"
 
-#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of
+#. the mail
 #: inc/notificationmail.class.php:246
 #, php-format
 msgid "An email was sent to %1$s: %2$s"
@@ -9602,7 +9642,8 @@ msgstr "Web-adresse for OCSNG konsollen"
 
 #: inc/ocsserver.class.php:404
 msgid "Limit the import to the following tags (separator $, nothing for all)"
-msgstr "Begræns importen til de følgende tags ( seperator $, intet for alle ))"
+msgstr ""
+"Begræns importen til de følgende tags ( seperator $, intet for alle ))"
 
 #: inc/ocsserver.class.php:409
 msgid "Exclude the following tags (separator $, nothing for all)"
@@ -9635,7 +9676,8 @@ msgstr "Brug OCSNG software bibliotek"
 
 #: inc/ocsserver.class.php:477
 msgid "Number of items to synchronize via the automatic OCSNG action"
-msgstr "Antal emner der skal synkroniseres ved brug af den automatisk OCSNG handling"
+msgstr ""
+"Antal emner der skal synkroniseres ved brug af den automatisk OCSNG handling"
 
 #: inc/ocsserver.class.php:483
 msgid "Behavior to the deletion of a computer in OCSNG"
@@ -9654,7 +9696,9 @@ msgstr "Ingen import: Dette plugin vil ikke importere disse emner"
 msgid ""
 "Global import: everything is imported but the material is globally managed "
 "(without double blooms)"
-msgstr "Global import: alt importeres men emnet er globalt håndteret (uden dubletter))"
+msgstr ""
+"Global import: alt importeres men emnet er globalt håndteret (uden "
+"dubletter))"
 
 #: inc/ocsserver.class.php:497
 msgid "Unit import: everything is imported 'as-is'"
@@ -9700,13 +9744,17 @@ msgstr "Ugyldig OCSNG konfiguration (TRACE_DELETED skal være aktiv))"
 msgid ""
 "Access denied on OCSNG database (Need write rights on hardware.CHECKSUM "
 "necessary)"
-msgstr "Adgang nægtet til OCSNG databasen (Kræver skrive-rettigheder på hardware. krævet CHECKSUM))"
+msgstr ""
+"Adgang nægtet til OCSNG databasen (Kræver skrive-rettigheder på hardware. "
+"krævet CHECKSUM))"
 
 #: inc/ocsserver.class.php:609
 msgid ""
 "Access denied on OCSNG database (Delete rights in deleted_equiv table "
 "necessary)"
-msgstr "Adgang nægtet til OCSNG databasen (Slette-rettigheder i deleted_equiv tabellen påkrævet))"
+msgstr ""
+"Adgang nægtet til OCSNG databasen (Slette-rettigheder i deleted_equiv "
+"tabellen påkrævet))"
 
 #: inc/ocsserver.class.php:611
 msgid "Connection to OCSNG database successful"
@@ -9771,7 +9819,9 @@ msgstr "Ingen nye computere skal opdateres"
 msgid ""
 "Caution! The imported data (see your configuration) will overwrite the "
 "existing data"
-msgstr "Forsigtig! De importerede data (se din konfiguration) vil overskrive de eksisterende data"
+msgstr ""
+"Forsigtig! De importerede data (se din konfiguration) vil overskrive de "
+"eksisterende data"
 
 #: inc/ocsserver.class.php:2778
 msgid "Manual import mode"
@@ -10534,7 +10584,8 @@ msgstr ""
 msgid "Add to schedule"
 msgstr "Tilføj til kalender"
 
-#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s is its name
+#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s
+#. is its name
 #: inc/reminder.class.php:769
 #, php-format
 msgid "From %1$s to %2$s: %3$s"
@@ -10576,7 +10627,9 @@ msgstr "Hardware finans og administrativ information"
 msgid ""
 "Other financial and administrative informations (licenses, cartridges, "
 "consumables)"
-msgstr "Andre finansielle og administrative informationer (licenser, patroner, forbrugsstoffer))"
+msgstr ""
+"Andre finansielle og administrative informationer (licenser, patroner, "
+"forbrugsstoffer))"
 
 #: inc/report.class.php:80 install/update_051_06.php:148
 msgid "Loan"
@@ -10834,9 +10887,11 @@ msgstr "eller"
 
 #: inc/rule.class.php:353
 msgid ""
-"It is possible to affect the result of a regular expression using the string "
-"#0"
-msgstr "Det er muligt at påvirke resultatet af en regular expression ved brug af strengen #0"
+"It is possible to affect the result of a regular expression using the string"
+" #0"
+msgstr ""
+"Det er muligt at påvirke resultatet af en regular expression ved brug af "
+"strengen #0"
 
 #: inc/rule.class.php:556 inc/rule.class.php:1172
 #: inc/rulecriteria.class.php:79
@@ -11305,7 +11360,9 @@ msgstr "Du har ikke tilladelse til at tilslutte"
 msgid ""
 "You do not have access to this application because your account was "
 "deactivated or removed"
-msgstr "Du har ikke adgang til denne applikation da din konto er deaktiveret eller fjernet"
+msgstr ""
+"Du har ikke adgang til denne applikation da din konto er deaktiveret eller "
+"fjernet"
 
 #: inc/session.class.php:320 inc/session.class.php:321
 msgid "(tree structure)"
@@ -11660,7 +11717,8 @@ msgstr "Hardware Type : %s"
 msgid "Submit Message"
 msgstr "Send besked"
 
-#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the entity name
+#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the
+#. entity name
 #: inc/ticket.class.php:3210
 #, php-format
 msgid "%1$s - ID %2$d (%3$s)"
@@ -11683,7 +11741,8 @@ msgstr "Næste eskalering: %s"
 
 #: inc/ticket.class.php:3324
 msgid ""
-"The assignment of a SLA to a ticket causes the recalculation of the due date."
+"The assignment of a SLA to a ticket causes the recalculation of the due "
+"date."
 msgstr ""
 
 #: inc/ticket.class.php:3325
@@ -11860,7 +11919,8 @@ msgid_plural "Predefined fields"
 msgstr[0] "Foruddefineret felt"
 msgstr[1] "Foruddefinerede felter"
 
-#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked ticket, %3$s optionals links / icons
+#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked
+#. ticket, %3$s optionals links / icons
 #: inc/ticket_ticket.class.php:137
 #, php-format
 msgid "%1$s %2$s %3$s"
@@ -11944,7 +12004,9 @@ msgstr "Tester PHP Parser"
 #: inc/toolbox.class.php:673
 msgid ""
 "GLPI is not compatible with the option zend.ze1_compatibility_mode = On."
-msgstr "GLPI er ikke kompatibel med indstillingen: zend.ze1_compatibility_mode = On.."
+msgstr ""
+"GLPI er ikke kompatibel med indstillingen: zend.ze1_compatibility_mode = "
+"On.."
 
 #: inc/toolbox.class.php:677 inc/toolbox.class.php:678
 msgid "PHP version is at least 5.x - Perfect !"
@@ -11990,7 +12052,9 @@ msgstr "Test session autostart"
 msgid ""
 "session.auto_start is activated. See .htaccess file in the GLPI root for "
 "more information."
-msgstr "session.auto_start er aktiveret. Se .htaccess filen i GLPI roden for yderligere information.."
+msgstr ""
+"session.auto_start er aktiveret. Se .htaccess filen i GLPI roden for "
+"yderligere information.."
 
 #: inc/toolbox.class.php:736
 msgid "Test if Session_use_trans_sid is used"
@@ -12012,11 +12076,14 @@ msgstr "magic_quotes_sybase extension test"
 msgid ""
 "GLPI does not work with the magic_quotes_sybase option ; Please turn it off "
 "and retry"
-msgstr "GLPI virker ikke med magic_quotes_sybase option ; Vær venlig at slukke den og prøve igen."
+msgstr ""
+"GLPI virker ikke med magic_quotes_sybase option ; Vær venlig at slukke den "
+"og prøve igen."
 
 #: inc/toolbox.class.php:764 inc/toolbox.class.php:766
 msgid "The magic_quotes_sybase option isn't active on your server - Perfect !"
-msgstr "magic_quotes_sybase optionen er ikke aktiveret på din server - Perfekt !"
+msgstr ""
+"magic_quotes_sybase optionen er ikke aktiveret på din server - Perfekt !"
 
 #: inc/toolbox.class.php:771
 msgid "Test json functions"
@@ -12025,7 +12092,8 @@ msgstr "Test json funktioner"
 #: inc/toolbox.class.php:775
 msgid ""
 "GLPI can't work correctly without the json_encode and json_decode functions"
-msgstr "GLPI kan ikke fungere korrekt uden json_encode og json_decode funktionerne"
+msgstr ""
+"GLPI kan ikke fungere korrekt uden json_encode og json_decode funktionerne"
 
 #: inc/toolbox.class.php:781 inc/toolbox.class.php:783
 #: inc/toolbox.class.php:797 inc/toolbox.class.php:799
@@ -12242,7 +12310,9 @@ msgstr ""
 msgid ""
 "You can continue to add elements to be transferred or execute the transfer "
 "now"
-msgstr "Du kan fortsætte med at tilføje emner der skal overføres eller udføre overførslen nu"
+msgstr ""
+"Du kan fortsætte med at tilføje emner der skal overføres eller udføre "
+"overførslen nu"
 
 #: inc/transfer.class.php:3224
 msgid "Think of making a backup before transferring items."
@@ -12379,14 +12449,19 @@ msgid "Please confirm your email address and enter your new password."
 msgstr "Bekræft venligst din e-mailadresse og indtast dit nye kodeord.."
 
 #: inc/user.class.php:2826 inc/user.class.php:2882
-msgid "Your password reset request has expired or is invalid. Please renew it."
-msgstr "Din kodeords-nulstillings forespørgsel er udløbet eller ugyldig. Prøv at forny den.."
+msgid ""
+"Your password reset request has expired or is invalid. Please renew it."
+msgstr ""
+"Din kodeords-nulstillings forespørgsel er udløbet eller ugyldig. Prøv at "
+"forny den.."
 
 #: inc/user.class.php:2845
 msgid ""
-"Please enter your email address. A email will be sent to you and you will be "
-"able to choose a new password."
-msgstr "Indtast venligst din e-mailadresse. En e-mail vil blive sendt til dig, og kan vælge et nyt kodeord.."
+"Please enter your email address. A email will be sent to you and you will be"
+" able to choose a new password."
+msgstr ""
+"Indtast venligst din e-mailadresse. En e-mail vil blive sendt til dig, og "
+"kan vælge et nyt kodeord.."
 
 #: inc/user.class.php:2870
 msgid "Reset password successful."
@@ -12396,7 +12471,8 @@ msgstr "Nulstilling af kodeord lykkedes.."
 msgid ""
 "The authentication method configuration doesn't allow you to change your "
 "password."
-msgstr "Godkendelsesmetodens opsætning tillader ikke at du ændrer dit kodeord.."
+msgstr ""
+"Godkendelsesmetodens opsætning tillader ikke at du ændrer dit kodeord.."
 
 #: inc/user.class.php:2890 inc/user.class.php:2932
 msgid "Email address not found."
@@ -12406,7 +12482,9 @@ msgstr "E-mailadresse ikke fundet.."
 msgid ""
 "An email has been sent to your email address. The email contains "
 "informations for reset your password."
-msgstr "En e-mail er sendt til din e-mailadresse. E-mailen indeholder information om nulstilling af dit kodeord.."
+msgstr ""
+"En e-mail er sendt til din e-mailadresse. E-mailen indeholder information om"
+" nulstilling af dit kodeord.."
 
 #: inc/user.class.php:2956
 msgid "User informations"
@@ -12474,11 +12552,13 @@ msgstr "Uofficielle oversættelser er også tilgængelige"
 
 #: install/install.php:108
 msgid "I have read and ACCEPT the terms of the license written above."
-msgstr "Jeg har læst og accepterer betingelser og licensen som skrevet ovenfor.."
+msgstr ""
+"Jeg har læst og accepterer betingelser og licensen som skrevet ovenfor.."
 
 #: install/install.php:113
 msgid "I have read and DO NOT ACCEPT the terms of the license written above"
-msgstr "Jeg har læst og accepterer IKKE betingelserne af den ovenstående licens."
+msgstr ""
+"Jeg har læst og accepterer IKKE betingelserne af den ovenstående licens."
 
 #: install/install.php:114 install/install.php:158 install/install.php:168
 #: install/install.php:207 install/install.php:259 install/install.php:278
@@ -12496,7 +12576,8 @@ msgstr "Vælg 'Installation' for en helt ny installation af GLPI.."
 
 #: install/install.php:125
 msgid "Select 'Update' to update your version of GLPI from an earlier version"
-msgstr "Vælg 'Opdater' for at opdatere din version af GLPI fra en tidligere version"
+msgstr ""
+"Vælg 'Opdater' for at opdatere din version af GLPI fra en tidligere version"
 
 #: install/install.php:145
 msgid ""
@@ -12608,7 +12689,9 @@ msgstr "Brug GLPI"
 #: install/install.php:468
 msgid ""
 "Can't create the database connection file, please verify file permissions."
-msgstr "Kan ikke lave database connection filen, vær venlig at kontrollér fil tilladelserne.."
+msgstr ""
+"Kan ikke lave database connection filen, vær venlig at kontrollér fil "
+"tilladelserne.."
 
 #: install/install.php:524
 msgid "Beginning of the installation"
@@ -12754,13 +12837,17 @@ msgstr "Den nye struktur er hirakisk"
 
 #: install/update.php:411
 msgid "Provide a delimiter in order to automate the new hierarchy generation."
-msgstr "If you used a splitting character, you can set it in order to automate the generation of the new hierarchy.."
+msgstr ""
+"If you used a splitting character, you can set it in order to automate the "
+"generation of the new hierarchy.."
 
 #: install/update.php:412
 msgid ""
 "You can also specify a root location which will include all the generated "
 "locations."
-msgstr "Du kan også specificere en rod lokation som vil inkludere alle de lavede lokationer.."
+msgstr ""
+"Du kan også specificere en rod lokation som vil inkludere alle de lavede "
+"lokationer.."
 
 #: install/update.php:414
 msgid "Delimiter"
@@ -12799,10 +12886,16 @@ msgstr ""
 msgid ""
 "All users having administrators rights have have been updated to 'super-"
 "admin' rights with the creation of his new user type."
-msgstr "Nu har alle administratorene 'super-admin' rettigheder. Denne nye bruger er også blevet tilføjet.."
+msgstr ""
+"Nu har alle administratorene 'super-admin' rettigheder. Denne nye bruger er "
+"også blevet tilføjet.."
 
 #: install/update.php:909
 msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
-msgstr "Forbindelsen til databasen fejlede, check forbindelses parametrene inkluderet i config_db.php filen."
+msgstr ""
+"Forbindelsen til databasen fejlede, check forbindelses parametrene "
+"inkluderet i config_db.php filen."
+
+

@@ -1,21 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
+# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: GLPI Project\n"
+"Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-01-07 18:57+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-01-07 23:27+0000\n"
+"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: eu_ES\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: index.php:64
@@ -368,7 +367,9 @@ msgstr "Banandu"
 
 #: ajax/dropdownTrackingDeviceType.php:49 front/find_num.php:80
 msgid "Enter the first letters (user, item name, serial or asset number)"
-msgstr "Aurreneko hizkiak idatzi (izena, materiala, serie zenbakia edo inbentario zenbakia))"
+msgstr ""
+"Aurreneko hizkiak idatzi (izena, materiala, serie zenbakia edo inbentario "
+"zenbakia))"
 
 #: ajax/dropdownValue.php:233 front/report.contract.list.php:140
 #: front/report.infocom.php:176 front/report.year.list.php:152
@@ -532,7 +533,9 @@ msgstr "Sarbidea ukatuta"
 msgid ""
 "The version of the database is not compatible with the version of the "
 "installed files. An update is necessary."
-msgstr "Zure datu basearen bertsioa ez da instalatutako kodearen bertsioarekin bateragarria. Eguneraketa behar da.."
+msgstr ""
+"Zure datu basearen bertsioa ez da instalatutako kodearen bertsioarekin "
+"bateragarria. Eguneraketa behar da.."
 
 #. TRANS : means update / actualize
 #: config/config.php:183 front/report.infocom.conso.php:64
@@ -571,9 +574,9 @@ msgstr "Eguneratu"
 
 #: config/config.php:188
 msgid ""
-"You are trying to use GLPI with files from an earlier version to the version "
-"of the database. Please install the GLPI files corresponding to the version "
-"of your database."
+"You are trying to use GLPI with files from an earlier version to the version"
+" of the database. Please install the GLPI files corresponding to the version"
+" of your database."
 msgstr ""
 
 #: config/config.php:193 install/install.php:175 install/install.php:184
@@ -2037,7 +2040,8 @@ msgstr[1] ""
 msgid "List of the hardware under contract"
 msgstr "Kontratupeko materialaren zerrenda"
 
-#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
+#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to
+#. change for RTL
 #: front/report.contract.list.php:117 front/report.infocom.php:120
 #: front/report.year.list.php:129 inc/authldap.class.php:211
 #: inc/authldap.class.php:370 inc/authldap.class.php:587
@@ -2526,7 +2530,9 @@ msgstr ""
 msgid ""
 "Impossible to configure the notifications: please configure your email "
 "followup using the above configuration."
-msgstr "Ezin izan dira jakinarazpenak konfiguratu: mesedez zure posta konfiguratu hurrengo argibideak jarraituz.."
+msgstr ""
+"Ezin izan dira jakinarazpenak konfiguratu: mesedez zure posta konfiguratu "
+"hurrengo argibideak jarraituz.."
 
 #: front/setup.templates.php:48 inc/html.class.php:2211
 msgid "Manage templates..."
@@ -3027,7 +3033,8 @@ msgstr ""
 #: front/ticket.form.php:83
 msgid ""
 "You have been redirected because you no longer have access to this ticket"
-msgstr "Dagoeneko intzidentziarako baimenik ez duzula eta berzuzendua izan zara"
+msgstr ""
+"Dagoeneko intzidentziarako baimenik ez duzula eta berzuzendua izan zara"
 
 #. TRANS: %s is the user login
 #: front/ticket.form.php:134
@@ -4088,16 +4095,20 @@ msgstr "Bukaera"
 msgid "Recurrent"
 msgstr "Errepikakorra"
 
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #: inc/calendar_holiday.class.php:111 inc/change_problem.class.php:111
 #: inc/change_problem.class.php:192 inc/change_ticket.class.php:107
 #: inc/change_ticket.class.php:192 inc/computer_device.class.php:226
@@ -4328,7 +4339,8 @@ msgstr[1] ""
 msgid "Send alarms on cartridges"
 msgstr "Kartutxo jakinarazpenak"
 
-#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
+#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
+#. number
 #: inc/cartridgeitem.class.php:411
 #, php-format
 msgid ""
@@ -4754,8 +4766,8 @@ msgstr ""
 
 #: inc/commondropdown.class.php:402
 msgid ""
-"If you confirm the deletion the items using this heading used fields will be "
-"blanked."
+"If you confirm the deletion the items using this heading used fields will be"
+" blanked."
 msgstr ""
 
 #: inc/commondropdown.class.php:408
@@ -5118,8 +5130,8 @@ msgstr ""
 
 #: inc/computer.class.php:169 inc/computer_item.class.php:202
 msgid ""
-"Alternate username updated. The connected items have been updated using this "
-"alternate username."
+"Alternate username updated. The connected items have been updated using this"
+" alternate username."
 msgstr ""
 
 #: inc/computer.class.php:222 inc/computer_item.class.php:191
@@ -5624,8 +5636,11 @@ msgstr ""
 
 #: inc/config.class.php:254
 msgid ""
-"Maximum number of items to display in the dropdowns when wildcard is not used"
-msgstr "Komodinik erabili ez denean goitibeherakoetan erakutsiko den gehieneko item kopurua"
+"Maximum number of items to display in the dropdowns when wildcard is not "
+"used"
+msgstr ""
+"Komodinik erabili ez denean goitibeherakoetan erakutsiko den gehieneko item "
+"kopurua"
 
 #: inc/config.class.php:260
 msgid "Autocompletion of text fields"
@@ -5797,7 +5812,8 @@ msgid "Limit of the schedules for planning"
 msgstr ""
 
 #: inc/config.class.php:552
-msgid "Maximum size of each file imported by the mail receiver (default value)"
+msgid ""
+"Maximum size of each file imported by the mail receiver (default value)"
 msgstr ""
 
 #: inc/config.class.php:559
@@ -6103,12 +6119,13 @@ msgstr[1] ""
 msgid "Send alarms on consumables"
 msgstr ""
 
-#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
+#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining
+#. number
 #: inc/consumableitem.class.php:335
 #, php-format
 msgid ""
-"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s "
-"- Remaining %3$d"
+"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s"
+" - Remaining %3$d"
 msgstr ""
 
 #: inc/consumableitemtype.class.php:43
@@ -6986,7 +7003,8 @@ msgstr ""
 msgid "Authorizations assignment rules"
 msgstr ""
 
-#. TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the number of minutes : display 1 day 3h15
+#. TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the
+#. number of minutes : display 1 day 3h15
 #: inc/dropdown.class.php:1081
 #, php-format
 msgid "%1$d day %2$dh%3$s"
@@ -7531,8 +7549,8 @@ msgstr ""
 
 #: inc/fqdn.class.php:65
 msgid ""
-"Fully Qualified Domain Name. Use the classical notation (labels separated by "
-"dots). For example: indepnet.net"
+"Fully Qualified Domain Name. Use the classical notation (labels separated by"
+" dots). For example: indepnet.net"
 msgstr ""
 
 #: inc/fqdn.class.php:83
@@ -8427,7 +8445,8 @@ msgstr ""
 #: inc/mailcollector.class.php:523
 #, php-format
 msgid ""
-"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d"
+"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, "
+"errors=%4$d"
 msgstr ""
 
 #: inc/mailcollector.class.php:533 inc/user.class.php:2974
@@ -8606,7 +8625,8 @@ msgstr[1] ""
 
 #: inc/networkname.class.php:386
 msgid ""
-"Several network names available! Go to the tab 'Network Name' to manage them."
+"Several network names available! Go to the tab 'Network Name' to manage "
+"them."
 msgstr ""
 
 #: inc/networkportaggregate.class.php:48
@@ -8825,7 +8845,8 @@ msgstr ""
 msgid "Error in sending the email"
 msgstr "Posta bidalketan hutsegitea"
 
-#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of
+#. the mail
 #: inc/notificationmail.class.php:246
 #, php-format
 msgid "An email was sent to %1$s: %2$s"
@@ -9422,7 +9443,8 @@ msgstr "Zure pasahitza berrezartzea eskatu duzu."
 
 #: inc/notificationtargetuser.class.php:112
 msgid "Just follow this link (you have one day):"
-msgstr "Lotura hau jarraitzea besterik ez duzu egin behar (egun bateko balioa du):):"
+msgstr ""
+"Lotura hau jarraitzea besterik ez duzu egin behar (egun bateko balioa du):):"
 
 #: inc/notificationtemplate.class.php:118
 msgid "CSS"
@@ -9654,7 +9676,9 @@ msgstr ""
 msgid ""
 "Global import: everything is imported but the material is globally managed "
 "(without double blooms)"
-msgstr "Inportazio orokorra: dena inportatzen da baina materiala modu orokorrean kudeatzen da (bikoizketarik gabe))"
+msgstr ""
+"Inportazio orokorra: dena inportatzen da baina materiala modu orokorrean "
+"kudeatzen da (bikoizketarik gabe))"
 
 #: inc/ocsserver.class.php:497
 msgid "Unit import: everything is imported 'as-is'"
@@ -9771,7 +9795,8 @@ msgstr ""
 msgid ""
 "Caution! The imported data (see your configuration) will overwrite the "
 "existing data"
-msgstr "Kontuz! Inportatutako datuek (ezarpenak ikusi) daudenak ordezkatuko dituzte"
+msgstr ""
+"Kontuz! Inportatutako datuek (ezarpenak ikusi) daudenak ordezkatuko dituzte"
 
 #: inc/ocsserver.class.php:2778
 msgid "Manual import mode"
@@ -10534,7 +10559,8 @@ msgstr ""
 msgid "Add to schedule"
 msgstr "Zerrendara gehitu"
 
-#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s is its name
+#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s
+#. is its name
 #: inc/reminder.class.php:769
 #, php-format
 msgid "From %1$s to %2$s: %3$s"
@@ -10576,7 +10602,9 @@ msgstr "Inbentariatutako materialaren datu finantziari eta administratiboak"
 msgid ""
 "Other financial and administrative informations (licenses, cartridges, "
 "consumables)"
-msgstr "Bestelako datu finantziari eta administratiboak (lizentziak, kontsumigarriak, kartutxoak))"
+msgstr ""
+"Bestelako datu finantziari eta administratiboak (lizentziak, "
+"kontsumigarriak, kartutxoak))"
 
 #: inc/report.class.php:80 install/update_051_06.php:148
 msgid "Loan"
@@ -10834,8 +10862,8 @@ msgstr "edo"
 
 #: inc/rule.class.php:353
 msgid ""
-"It is possible to affect the result of a regular expression using the string "
-"#0"
+"It is possible to affect the result of a regular expression using the string"
+" #0"
 msgstr ""
 
 #: inc/rule.class.php:556 inc/rule.class.php:1172
@@ -11660,7 +11688,8 @@ msgstr "Material mota : %s"
 msgid "Submit Message"
 msgstr "Mezua bidali"
 
-#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the entity name
+#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the
+#. entity name
 #: inc/ticket.class.php:3210
 #, php-format
 msgid "%1$s - ID %2$d (%3$s)"
@@ -11683,7 +11712,8 @@ msgstr "Hurrengo maila: %s"
 
 #: inc/ticket.class.php:3324
 msgid ""
-"The assignment of a SLA to a ticket causes the recalculation of the due date."
+"The assignment of a SLA to a ticket causes the recalculation of the due "
+"date."
 msgstr ""
 
 #: inc/ticket.class.php:3325
@@ -11860,7 +11890,8 @@ msgid_plural "Predefined fields"
 msgstr[0] ""
 msgstr[1] ""
 
-#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked ticket, %3$s optionals links / icons
+#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked
+#. ticket, %3$s optionals links / icons
 #: inc/ticket_ticket.class.php:137
 #, php-format
 msgid "%1$s %2$s %3$s"
@@ -11881,7 +11912,9 @@ msgstr ""
 msgid ""
 "The selected user has no valid email address. The request has been created, "
 "without email confirmation."
-msgstr "Erabiltzaileak ez du postarik. Eskaera sortu da baina bidalketak huts egin du.."
+msgstr ""
+"Erabiltzaileak ez du postarik. Eskaera sortu da baina bidalketak huts egin "
+"du.."
 
 #: inc/ticketvalidation.class.php:230
 msgid "If approval is denied, specify a reason."
@@ -12246,7 +12279,8 @@ msgstr "Elementu gehiago gehitu edo daudenak transferitu daitezke"
 
 #: inc/transfer.class.php:3224
 msgid "Think of making a backup before transferring items."
-msgstr "Elementuak transferitu baino lehen babes-kopia egitea gomendatzen da.."
+msgstr ""
+"Elementuak transferitu baino lehen babes-kopia egitea gomendatzen da.."
 
 #: inc/transfer.class.php:3226
 msgid "Items to transfer"
@@ -12379,14 +12413,18 @@ msgid "Please confirm your email address and enter your new password."
 msgstr "Mesedez, zure posta berretsi eta pasahitz berria idatzi.."
 
 #: inc/user.class.php:2826 inc/user.class.php:2882
-msgid "Your password reset request has expired or is invalid. Please renew it."
-msgstr "Pasahitza berrezartzeko galdera iraungi da ala ez da zuzena. Berriz ezarri.."
+msgid ""
+"Your password reset request has expired or is invalid. Please renew it."
+msgstr ""
+"Pasahitza berrezartzeko galdera iraungi da ala ez da zuzena. Berriz ezarri.."
 
 #: inc/user.class.php:2845
 msgid ""
-"Please enter your email address. A email will be sent to you and you will be "
-"able to choose a new password."
-msgstr "Mesedez zure posta helbidea sartu. Mezua bidaliko zaizu eta pasahitz berria aukeratu ahalko duzu.."
+"Please enter your email address. A email will be sent to you and you will be"
+" able to choose a new password."
+msgstr ""
+"Mesedez zure posta helbidea sartu. Mezua bidaliko zaizu eta pasahitz berria "
+"aukeratu ahalko duzu.."
 
 #: inc/user.class.php:2870
 msgid "Reset password successful."
@@ -12406,7 +12444,9 @@ msgstr "Ez dago holako posta helbiderik."
 msgid ""
 "An email has been sent to your email address. The email contains "
 "informations for reset your password."
-msgstr "Zure posta helbidera mezua bidali da. Zure pasahitza berrezartzeko argibideak bertan daude.."
+msgstr ""
+"Zure posta helbidera mezua bidali da. Zure pasahitza berrezartzeko "
+"argibideak bertan daude.."
 
 #: inc/user.class.php:2956
 msgid "User informations"
@@ -12501,7 +12541,8 @@ msgstr "'Eguneraketa' aukeratu GLPI bertsio zaharrago batetik eguneratzeko"
 #: install/install.php:145
 msgid ""
 "Checking of the compatibility of your environment with the execution of GLPI"
-msgstr "Zure ingurunearen eta GLPIren beharren arteko bateragarritasuna egiaztatzen"
+msgstr ""
+"Zure ingurunearen eta GLPIren beharren arteko bateragarritasuna egiaztatzen"
 
 #: install/install.php:163 install/install.php:180 install/install.php:469
 msgid "Do you want to continue ?"
@@ -12780,7 +12821,8 @@ msgstr "Jerarkia berria"
 
 #: install/update.php:430
 msgid "This is the new hierarchy. If it's complete approve it."
-msgstr "Hauxe da sortutako hierarkia. Zuzentzat hartzen baduzu onartu dezakezu.."
+msgstr ""
+"Hauxe da sortutako hierarkia. Zuzentzat hartzen baduzu onartu dezakezu.."
 
 #: install/update.php:835
 msgid "Impossible to accomplish an update by this way!"
@@ -12806,3 +12848,5 @@ msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
 msgstr ""
+
+
