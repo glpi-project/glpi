@@ -99,7 +99,7 @@ function __($str){
    if (is_array($trans)) {
       return $trans[0];
    }
-   return  "__".$trans;
+   return  $trans;
 }
 
 
@@ -114,7 +114,7 @@ function __s($str){
    global $TRANSLATE;
 
 //   return  "__s".addslashes($TRANSLATE->_($str));
-   return "s".htmlentities(__($str), ENT_QUOTES, 'UTF-8');
+   return htmlentities(__($str), ENT_QUOTES, 'UTF-8');
 }
 
 
@@ -126,7 +126,7 @@ function __s($str){
  * @return echo string
 **/
 function _e($str){
-   echo "e".__($str);
+   echo __($str);
 }
 
 
@@ -135,14 +135,14 @@ function _e($str){
  *
  * @param $sing : string in singular
  * @param $plural : string in plural
- * $param $nb : to select singular or plurial
+ * @param $nb : to select singular or plurial
  *
  * @return translated string
 **/
 function _n($sing, $plural, $nb){
    global $TRANSLATE;
 
-   return "_n".$TRANSLATE->plural($sing, $plural, $nb);
+   return $TRANSLATE->plural($sing, $plural, $nb);
 }
 
 
@@ -160,13 +160,60 @@ function _x($ctx, $str) {
    $msg = $ctx."\004".$str;
    $trans = __($msg);
 
-   if ($trans == "__".$msg) {
+   if ($trans == $msg) {
       // No translation
-      return 'c__'.$str;
+      return $str;
    }
-   return 'c'.$trans;
+   return $trans;
 }
 
+/**
+ * Echo for context in translation
+ *
+ * @param $ctx : context
+ * @param $str : string
+ *
+ * @return string
+**/
+function _ex($ctx, $str) {
+
+   // simulate pgettext
+   $msg = $ctx."\004".$str;
+   $trans = __($msg);
+
+   if ($trans == $msg) {
+      // No translation
+      echo $str;
+   }
+   echo $trans;
+}
+
+/**
+ * For context in plural translation
+ *
+ * @param $ctx : context
+ * @param $sing : string in singular
+ * @param $plural : string in plural
+ * @param $nb : to select singular or plurial
+ *
+ * @return string
+**/
+function _nx($ctx, $sing, $plural, $nb) {
+
+   // simulate pgettext
+   $singmsg = $ctx."\004".$sing;
+   $pluralmsg = $ctx."\004".$plural;
+   $trans = _n($singmsg, $pluralmsg, $nb);
+
+   if ($trans == $singmsg) {
+      // No translation
+      return $sing;
+   } else if ($trans == $pluralmsg) {
+      // No translation
+      return $plural;
+   }
+   return $trans;
+}
 
 /**
  * To load classes
