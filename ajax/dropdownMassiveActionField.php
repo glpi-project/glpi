@@ -235,7 +235,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                case "warranty_duration" :
                   Dropdown::showInteger("warranty_duration", 0, 0, 120, 1,
                                         array(-1 => __('Lifelong')));
-                  _e(' month ');
+                  _e(' month');
                   break;
 
                default :
