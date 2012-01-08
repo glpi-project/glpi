@@ -46,5 +46,5 @@ svn update  >> $LOG
 echo "Add new po and mo " >> $LOG
 svn add locales/*.po locales/*.mo >> $LOG
 
-echo "commit SVN repository " >> $LOG
-svn commit   -m "Auto update locales" >> $LOG
+echo "commit locales SVN repository " >> $LOG
+svn commit locales  -m "Auto update locales" >> $LOG
