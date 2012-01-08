@@ -1,21 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
+# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: GLPI Project\n"
+"Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-01-07 18:57+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-01-07 20:11+0000\n"
+"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: fi_FI\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: index.php:64
@@ -59,7 +58,8 @@ msgstr ""
 
 #: index.php:133
 msgid "You must activate the JavaScript function of your navigator"
-msgstr "Selaimen JavaScript-ominaisuus pitää olla päällä käyttääksesi järjestelmää."
+msgstr ""
+"Selaimen JavaScript-ominaisuus pitää olla päällä käyttääksesi järjestelmää."
 
 #: index.php:139
 msgid "You must accept cookies to reach this application"
@@ -571,9 +571,9 @@ msgstr "Päivitä"
 
 #: config/config.php:188
 msgid ""
-"You are trying to use GLPI with files from an earlier version to the version "
-"of the database. Please install the GLPI files corresponding to the version "
-"of your database."
+"You are trying to use GLPI with files from an earlier version to the version"
+" of the database. Please install the GLPI files corresponding to the version"
+" of your database."
 msgstr ""
 
 #: config/config.php:193 install/install.php:175 install/install.php:184
@@ -2037,7 +2037,8 @@ msgstr[1] ""
 msgid "List of the hardware under contract"
 msgstr ""
 
-#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
+#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to
+#. change for RTL
 #: front/report.contract.list.php:117 front/report.infocom.php:120
 #: front/report.year.list.php:129 inc/authldap.class.php:211
 #: inc/authldap.class.php:370 inc/authldap.class.php:587
@@ -4088,16 +4089,20 @@ msgstr "Lopeta"
 msgid "Recurrent"
 msgstr ""
 
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #: inc/calendar_holiday.class.php:111 inc/change_problem.class.php:111
 #: inc/change_problem.class.php:192 inc/change_ticket.class.php:107
 #: inc/change_ticket.class.php:192 inc/computer_device.class.php:226
@@ -4328,7 +4333,8 @@ msgstr[1] ""
 msgid "Send alarms on cartridges"
 msgstr ""
 
-#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
+#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
+#. number
 #: inc/cartridgeitem.class.php:411
 #, php-format
 msgid ""
@@ -4754,8 +4760,8 @@ msgstr ""
 
 #: inc/commondropdown.class.php:402
 msgid ""
-"If you confirm the deletion the items using this heading used fields will be "
-"blanked."
+"If you confirm the deletion the items using this heading used fields will be"
+" blanked."
 msgstr ""
 
 #: inc/commondropdown.class.php:408
@@ -5118,8 +5124,8 @@ msgstr ""
 
 #: inc/computer.class.php:169 inc/computer_item.class.php:202
 msgid ""
-"Alternate username updated. The connected items have been updated using this "
-"alternate username."
+"Alternate username updated. The connected items have been updated using this"
+" alternate username."
 msgstr ""
 
 #: inc/computer.class.php:222 inc/computer_item.class.php:191
@@ -5624,7 +5630,8 @@ msgstr ""
 
 #: inc/config.class.php:254
 msgid ""
-"Maximum number of items to display in the dropdowns when wildcard is not used"
+"Maximum number of items to display in the dropdowns when wildcard is not "
+"used"
 msgstr ""
 
 #: inc/config.class.php:260
@@ -5797,7 +5804,8 @@ msgid "Limit of the schedules for planning"
 msgstr ""
 
 #: inc/config.class.php:552
-msgid "Maximum size of each file imported by the mail receiver (default value)"
+msgid ""
+"Maximum size of each file imported by the mail receiver (default value)"
 msgstr ""
 
 #: inc/config.class.php:559
@@ -6103,12 +6111,13 @@ msgstr[1] ""
 msgid "Send alarms on consumables"
 msgstr ""
 
-#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
+#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining
+#. number
 #: inc/consumableitem.class.php:335
 #, php-format
 msgid ""
-"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s "
-"- Remaining %3$d"
+"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s"
+" - Remaining %3$d"
 msgstr ""
 
 #: inc/consumableitemtype.class.php:43
@@ -6986,7 +6995,8 @@ msgstr ""
 msgid "Authorizations assignment rules"
 msgstr ""
 
-#. TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the number of minutes : display 1 day 3h15
+#. TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the
+#. number of minutes : display 1 day 3h15
 #: inc/dropdown.class.php:1081
 #, php-format
 msgid "%1$d day %2$dh%3$s"
@@ -7531,8 +7541,8 @@ msgstr ""
 
 #: inc/fqdn.class.php:65
 msgid ""
-"Fully Qualified Domain Name. Use the classical notation (labels separated by "
-"dots). For example: indepnet.net"
+"Fully Qualified Domain Name. Use the classical notation (labels separated by"
+" dots). For example: indepnet.net"
 msgstr ""
 
 #: inc/fqdn.class.php:83
@@ -8427,7 +8437,8 @@ msgstr ""
 #: inc/mailcollector.class.php:523
 #, php-format
 msgid ""
-"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d"
+"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, "
+"errors=%4$d"
 msgstr ""
 
 #: inc/mailcollector.class.php:533 inc/user.class.php:2974
@@ -8606,7 +8617,8 @@ msgstr[1] ""
 
 #: inc/networkname.class.php:386
 msgid ""
-"Several network names available! Go to the tab 'Network Name' to manage them."
+"Several network names available! Go to the tab 'Network Name' to manage "
+"them."
 msgstr ""
 
 #: inc/networkportaggregate.class.php:48
@@ -8825,7 +8837,8 @@ msgstr ""
 msgid "Error in sending the email"
 msgstr ""
 
-#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of
+#. the mail
 #: inc/notificationmail.class.php:246
 #, php-format
 msgid "An email was sent to %1$s: %2$s"
@@ -10534,7 +10547,8 @@ msgstr ""
 msgid "Add to schedule"
 msgstr ""
 
-#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s is its name
+#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s
+#. is its name
 #: inc/reminder.class.php:769
 #, php-format
 msgid "From %1$s to %2$s: %3$s"
@@ -10834,8 +10848,8 @@ msgstr "tai"
 
 #: inc/rule.class.php:353
 msgid ""
-"It is possible to affect the result of a regular expression using the string "
-"#0"
+"It is possible to affect the result of a regular expression using the string"
+" #0"
 msgstr ""
 
 #: inc/rule.class.php:556 inc/rule.class.php:1172
@@ -11305,7 +11319,8 @@ msgstr "Sinulla ei ole oikeuksia kirjautua järjestelmään."
 msgid ""
 "You do not have access to this application because your account was "
 "deactivated or removed"
-msgstr "Sinulla ei ole pääsyä järjestelmään. Käyttäjätunnus on poistettu käytöstä."
+msgstr ""
+"Sinulla ei ole pääsyä järjestelmään. Käyttäjätunnus on poistettu käytöstä."
 
 #: inc/session.class.php:320 inc/session.class.php:321
 msgid "(tree structure)"
@@ -11660,7 +11675,8 @@ msgstr "Laitetyyppi : %s"
 msgid "Submit Message"
 msgstr "Lähetä viesti"
 
-#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the entity name
+#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the
+#. entity name
 #: inc/ticket.class.php:3210
 #, php-format
 msgid "%1$s - ID %2$d (%3$s)"
@@ -11683,7 +11699,8 @@ msgstr ""
 
 #: inc/ticket.class.php:3324
 msgid ""
-"The assignment of a SLA to a ticket causes the recalculation of the due date."
+"The assignment of a SLA to a ticket causes the recalculation of the due "
+"date."
 msgstr ""
 
 #: inc/ticket.class.php:3325
@@ -11860,7 +11877,8 @@ msgid_plural "Predefined fields"
 msgstr[0] ""
 msgstr[1] ""
 
-#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked ticket, %3$s optionals links / icons
+#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked
+#. ticket, %3$s optionals links / icons
 #: inc/ticket_ticket.class.php:137
 #, php-format
 msgid "%1$s %2$s %3$s"
@@ -12379,13 +12397,14 @@ msgid "Please confirm your email address and enter your new password."
 msgstr ""
 
 #: inc/user.class.php:2826 inc/user.class.php:2882
-msgid "Your password reset request has expired or is invalid. Please renew it."
+msgid ""
+"Your password reset request has expired or is invalid. Please renew it."
 msgstr ""
 
 #: inc/user.class.php:2845
 msgid ""
-"Please enter your email address. A email will be sent to you and you will be "
-"able to choose a new password."
+"Please enter your email address. A email will be sent to you and you will be"
+" able to choose a new password."
 msgstr ""
 
 #: inc/user.class.php:2870
@@ -12806,3 +12825,5 @@ msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
 msgstr ""
+
+

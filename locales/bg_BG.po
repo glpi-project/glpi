@@ -1,21 +1,20 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
+# Translators:
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: GLPI Project\n"
+"Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-01-07 18:57+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2012-01-07 22:15+0000\n"
+"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: bg_BG\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: index.php:64
@@ -571,9 +570,9 @@ msgstr "Обновявяне"
 
 #: config/config.php:188
 msgid ""
-"You are trying to use GLPI with files from an earlier version to the version "
-"of the database. Please install the GLPI files corresponding to the version "
-"of your database."
+"You are trying to use GLPI with files from an earlier version to the version"
+" of the database. Please install the GLPI files corresponding to the version"
+" of your database."
 msgstr ""
 
 #: config/config.php:193 install/install.php:175 install/install.php:184
@@ -1944,7 +1943,8 @@ msgstr "Синхронизация на вече импортираните ко
 
 #: front/ocsng.php:83 inc/html.class.php:1332
 msgid "Link new OCS computers to existing GLPI computers"
-msgstr "Свързване на новите компютърни системи от OCS със съществуващите в GLPI"
+msgstr ""
+"Свързване на новите компютърни системи от OCS със съществуващите в GLPI"
 
 #: front/planning.php:93 inc/commonitiltask.class.php:807
 #: inc/commonitiltask.class.php:937 inc/event.class.php:118
@@ -2037,7 +2037,8 @@ msgstr[1] ""
 msgid "List of the hardware under contract"
 msgstr "Списък на хардуеъра по договори"
 
-#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
+#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to
+#. change for RTL
 #: front/report.contract.list.php:117 front/report.infocom.php:120
 #: front/report.year.list.php:129 inc/authldap.class.php:211
 #: inc/authldap.class.php:370 inc/authldap.class.php:587
@@ -4088,16 +4089,20 @@ msgstr "Край"
 msgid "Recurrent"
 msgstr ""
 
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
 #: inc/calendar_holiday.class.php:111 inc/change_problem.class.php:111
 #: inc/change_problem.class.php:192 inc/change_ticket.class.php:107
 #: inc/change_ticket.class.php:192 inc/computer_device.class.php:226
@@ -4328,7 +4333,8 @@ msgstr[1] ""
 msgid "Send alarms on cartridges"
 msgstr ""
 
-#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
+#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
+#. number
 #: inc/cartridgeitem.class.php:411
 #, php-format
 msgid ""
@@ -4754,8 +4760,8 @@ msgstr ""
 
 #: inc/commondropdown.class.php:402
 msgid ""
-"If you confirm the deletion the items using this heading used fields will be "
-"blanked."
+"If you confirm the deletion the items using this heading used fields will be"
+" blanked."
 msgstr ""
 
 #: inc/commondropdown.class.php:408
@@ -5118,15 +5124,16 @@ msgstr ""
 
 #: inc/computer.class.php:169 inc/computer_item.class.php:202
 msgid ""
-"Alternate username updated. The connected items have been updated using this "
-"alternate username."
+"Alternate username updated. The connected items have been updated using this"
+" alternate username."
 msgstr ""
 
 #: inc/computer.class.php:222 inc/computer_item.class.php:191
 msgid ""
 "User or group updated. The items connected have been moved in the same "
 "values."
-msgstr "Потребителя или групата са обновени. Свързаните елементи са преместени.."
+msgstr ""
+"Потребителя или групата са обновени. Свързаните елементи са преместени.."
 
 #: inc/computer.class.php:260 inc/computer_item.class.php:211
 msgid ""
@@ -5136,7 +5143,9 @@ msgstr ""
 #: inc/computer.class.php:302 inc/computer_item.class.php:176
 msgid ""
 "Location updated. The items connected have been moved in the same location."
-msgstr "Местонахождението е обновено. Свързаните елементи са преместени на същото място.."
+msgstr ""
+"Местонахождението е обновено. Свързаните елементи са преместени на същото "
+"място.."
 
 #: inc/computer.class.php:579 inc/computer.class.php:853
 #: inc/domain.class.php:43 inc/networkequipment.class.php:340
@@ -5624,7 +5633,8 @@ msgstr ""
 
 #: inc/config.class.php:254
 msgid ""
-"Maximum number of items to display in the dropdowns when wildcard is not used"
+"Maximum number of items to display in the dropdowns when wildcard is not "
+"used"
 msgstr ""
 
 #: inc/config.class.php:260
@@ -5738,7 +5748,8 @@ msgstr ""
 
 #: inc/config.class.php:434
 msgid "Automatically add users from an external authentication source"
-msgstr "Автоматично добавяне на потребител от външен източник на удостоверяване"
+msgstr ""
+"Автоматично добавяне на потребител от външен източник на удостоверяване"
 
 #: inc/config.class.php:436
 msgid "Add a user without accreditation from a LDAP directory"
@@ -5797,7 +5808,8 @@ msgid "Limit of the schedules for planning"
 msgstr "Ограничения на графика за планиране"
 
 #: inc/config.class.php:552
-msgid "Maximum size of each file imported by the mail receiver (default value)"
+msgid ""
+"Maximum size of each file imported by the mail receiver (default value)"
 msgstr ""
 
 #: inc/config.class.php:559
@@ -6103,12 +6115,13 @@ msgstr[1] ""
 msgid "Send alarms on consumables"
 msgstr ""
 
-#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
+#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining
+#. number
 #: inc/consumableitem.class.php:335
 #, php-format
 msgid ""
-"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s "
-"- Remaining %3$d"
+"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s"
+" - Remaining %3$d"
 msgstr ""
 
 #: inc/consumableitemtype.class.php:43
@@ -6300,11 +6313,15 @@ msgstr "Договори, които изтичат след по-малко о�
 
 #: inc/contract.class.php:629
 msgid "Contracts where notice begins in less than 7 days"
-msgstr "Договори, които имат предизвестие за прекратяване, започващо след по-малко то 7 дни"
+msgstr ""
+"Договори, които имат предизвестие за прекратяване, започващо след по-малко "
+"то 7 дни"
 
 #: inc/contract.class.php:636
 msgid "Contracts where notice begins in less than 30 days"
-msgstr "Договори, които имат предизвестие за прекратяване, започващо след по-малко то 30 дни"
+msgstr ""
+"Договори, които имат предизвестие за прекратяване, започващо след по-малко "
+"то 30 дни"
 
 #: inc/contract.class.php:996 inc/supplier.class.php:614
 msgid "No associated contract"
@@ -6986,7 +7003,8 @@ msgstr ""
 msgid "Authorizations assignment rules"
 msgstr ""
 
-#. TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the number of minutes : display 1 day 3h15
+#. TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the
+#. number of minutes : display 1 day 3h15
 #: inc/dropdown.class.php:1081
 #, php-format
 msgid "%1$d day %2$dh%3$s"
@@ -7531,8 +7549,8 @@ msgstr ""
 
 #: inc/fqdn.class.php:65
 msgid ""
-"Fully Qualified Domain Name. Use the classical notation (labels separated by "
-"dots). For example: indepnet.net"
+"Fully Qualified Domain Name. Use the classical notation (labels separated by"
+" dots). For example: indepnet.net"
 msgstr ""
 
 #: inc/fqdn.class.php:83
@@ -8427,7 +8445,8 @@ msgstr ""
 #: inc/mailcollector.class.php:523
 #, php-format
 msgid ""
-"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d"
+"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, "
+"errors=%4$d"
 msgstr ""
 
 #: inc/mailcollector.class.php:533 inc/user.class.php:2974
@@ -8606,7 +8625,8 @@ msgstr[1] ""
 
 #: inc/networkname.class.php:386
 msgid ""
-"Several network names available! Go to the tab 'Network Name' to manage them."
+"Several network names available! Go to the tab 'Network Name' to manage "
+"them."
 msgstr ""
 
 #: inc/networkportaggregate.class.php:48
@@ -8825,7 +8845,8 @@ msgstr ""
 msgid "Error in sending the email"
 msgstr ""
 
-#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of
+#. the mail
 #: inc/notificationmail.class.php:246
 #, php-format
 msgid "An email was sent to %1$s: %2$s"
@@ -9602,7 +9623,9 @@ msgstr ""
 
 #: inc/ocsserver.class.php:404
 msgid "Limit the import to the following tags (separator $, nothing for all)"
-msgstr "Ограничи импорта до следните стойности на полетата на OCS (разделител $, празно за всички))"
+msgstr ""
+"Ограничи импорта до следните стойности на полетата на OCS (разделител $, "
+"празно за всички))"
 
 #: inc/ocsserver.class.php:409
 msgid "Exclude the following tags (separator $, nothing for all)"
@@ -9654,7 +9677,9 @@ msgstr "Не се импортира: модула не импортира те�
 msgid ""
 "Global import: everything is imported but the material is globally managed "
 "(without double blooms)"
-msgstr "Глобално импортиране: всичко се импортира, но материалите се разглеждат глобално (без дублирания))"
+msgstr ""
+"Глобално импортиране: всичко се импортира, но материалите се разглеждат "
+"глобално (без дублирания))"
 
 #: inc/ocsserver.class.php:497
 msgid "Unit import: everything is imported 'as-is'"
@@ -9771,7 +9796,9 @@ msgstr ""
 msgid ""
 "Caution! The imported data (see your configuration) will overwrite the "
 "existing data"
-msgstr "Внимание! Импортируемите данни (виж конфигурацията) ще нарушат целостта на съществуващите данни"
+msgstr ""
+"Внимание! Импортируемите данни (виж конфигурацията) ще нарушат целостта на "
+"съществуващите данни"
 
 #: inc/ocsserver.class.php:2778
 msgid "Manual import mode"
@@ -10534,7 +10561,8 @@ msgstr ""
 msgid "Add to schedule"
 msgstr ""
 
-#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s is its name
+#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s
+#. is its name
 #: inc/reminder.class.php:769
 #, php-format
 msgid "From %1$s to %2$s: %3$s"
@@ -10834,8 +10862,8 @@ msgstr ""
 
 #: inc/rule.class.php:353
 msgid ""
-"It is possible to affect the result of a regular expression using the string "
-"#0"
+"It is possible to affect the result of a regular expression using the string"
+" #0"
 msgstr ""
 
 #: inc/rule.class.php:556 inc/rule.class.php:1172
@@ -11660,7 +11688,8 @@ msgstr "Тип на хардуеъра : %s"
 msgid "Submit Message"
 msgstr "Изпрати съобщение"
 
-#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the entity name
+#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the
+#. entity name
 #: inc/ticket.class.php:3210
 #, php-format
 msgid "%1$s - ID %2$d (%3$s)"
@@ -11683,7 +11712,8 @@ msgstr ""
 
 #: inc/ticket.class.php:3324
 msgid ""
-"The assignment of a SLA to a ticket causes the recalculation of the due date."
+"The assignment of a SLA to a ticket causes the recalculation of the due "
+"date."
 msgstr ""
 
 #: inc/ticket.class.php:3325
@@ -11860,7 +11890,8 @@ msgid_plural "Predefined fields"
 msgstr[0] ""
 msgstr[1] ""
 
-#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked ticket, %3$s optionals links / icons
+#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked
+#. ticket, %3$s optionals links / icons
 #: inc/ticket_ticket.class.php:137
 #, php-format
 msgid "%1$s %2$s %3$s"
@@ -11980,7 +12011,9 @@ msgstr "Поддръжката на сессии е открита - Идеал�
 
 #: inc/toolbox.class.php:721
 msgid "Make sure that sessions support has been activated in your php.ini"
-msgstr "Проверете правилността на настройките на сесии във файла php.ini на вашия сървър"
+msgstr ""
+"Проверете правилността на настройките на сесии във файла php.ini на вашия "
+"сървър"
 
 #: inc/toolbox.class.php:727
 msgid "Test session auto start"
@@ -12002,7 +12035,8 @@ msgstr "Трябва да изключите Session_use_trans_id във фай�
 
 #: inc/toolbox.class.php:746 inc/toolbox.class.php:748
 msgid "Ok - the sessions works (no problem with trans_id) - Perfect !"
-msgstr "Ok - сесиите се поддържат правилно (няма проблеми с trans_id) - Идеално !"
+msgstr ""
+"Ok - сесиите се поддържат правилно (няма проблеми с trans_id) - Идеално !"
 
 #: inc/toolbox.class.php:753
 msgid "magic_quotes_sybase extension test"
@@ -12016,7 +12050,8 @@ msgstr "GLPI не работи с magic_quotes_sybase ; Изключете го 
 
 #: inc/toolbox.class.php:764 inc/toolbox.class.php:766
 msgid "The magic_quotes_sybase option isn't active on your server - Perfect !"
-msgstr "Расширението magic_quotes_sybase на вашия сървър не е активно - Идеално !"
+msgstr ""
+"Расширението magic_quotes_sybase на вашия сървър не е активно - Идеално !"
 
 #: inc/toolbox.class.php:771
 msgid "Test json functions"
@@ -12379,13 +12414,14 @@ msgid "Please confirm your email address and enter your new password."
 msgstr ""
 
 #: inc/user.class.php:2826 inc/user.class.php:2882
-msgid "Your password reset request has expired or is invalid. Please renew it."
+msgid ""
+"Your password reset request has expired or is invalid. Please renew it."
 msgstr ""
 
 #: inc/user.class.php:2845
 msgid ""
-"Please enter your email address. A email will be sent to you and you will be "
-"able to choose a new password."
+"Please enter your email address. A email will be sent to you and you will be"
+" able to choose a new password."
 msgstr ""
 
 #: inc/user.class.php:2870
@@ -12608,7 +12644,9 @@ msgstr "Стартирайте GLPI"
 #: install/install.php:468
 msgid ""
 "Can't create the database connection file, please verify file permissions."
-msgstr "Невъзможно създъването на файл с настройките за връзка с БД, проверете правата за достъп до файловете."
+msgstr ""
+"Невъзможно създъването на файл с настройките за връзка с БД, проверете "
+"правата за достъп до файловете."
 
 #: install/install.php:524
 msgid "Beginning of the installation"
@@ -12754,13 +12792,17 @@ msgstr "Новата структура е иерархична"
 
 #: install/update.php:411
 msgid "Provide a delimiter in order to automate the new hierarchy generation."
-msgstr "Ако сте използвали при въвеждане символ-разделител, можете да го въведете за автоматизация при създаването на иерархията.."
+msgstr ""
+"Ако сте използвали при въвеждане символ-разделител, можете да го въведете за"
+" автоматизация при създаването на иерархията.."
 
 #: install/update.php:412
 msgid ""
 "You can also specify a root location which will include all the generated "
 "locations."
-msgstr "Вие също можете да укажете главното местонахождение, което ще съдържа в себе си всички останали.."
+msgstr ""
+"Вие също можете да укажете главното местонахождение, което ще съдържа в себе"
+" си всички останали.."
 
 #: install/update.php:414
 msgid "Delimiter"
@@ -12799,10 +12841,16 @@ msgstr ""
 msgid ""
 "All users having administrators rights have have been updated to 'super-"
 "admin' rights with the creation of his new user type."
-msgstr "Сега всички администратори имат права на 'super-admin'. Този тип потребител също е добавен.."
+msgstr ""
+"Сега всички администратори имат права на 'super-admin'. Този тип потребител "
+"също е добавен.."
 
 #: install/update.php:909
 msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
-msgstr "Грешка при свързване с БД, проверете параметрити на връзката във файла config_db.php"
+msgstr ""
+"Грешка при свързване с БД, проверете параметрити на връзката във файла "
+"config_db.php"
+
+
