@@ -81,8 +81,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "</head>";
 
    echo "<body>";
-   echo "<div id='contenulogin'>";
-   echo "<div id='logo-login'>";
+   echo "<div id='firstboxlogin'>";
+   echo "<div id='text-login'>";
    echo nl2br(Toolbox::unclean_cross_side_scripting_deep($CFG_GLPI['text_login']));
    echo "</div>";
 
@@ -148,15 +148,13 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "</div>";
 
 
-   // Display FAQ is enable
+     echo "</div>"; // end contenu login
+     
+      // Display FAQ is enable
    if ($CFG_GLPI["use_public_faq"]) {
       echo '<div id="box-faq"><a href="front/helpdesk.faq.php">[ '.__('Access to the Frequently Asked Questions').' ]</a>';
       echo '</div>';
    }
-
-
-
-   echo "</div>"; // end contenu login
 
    if (GLPI_DEMO_MODE) {
       echo "<div class='center'>";
