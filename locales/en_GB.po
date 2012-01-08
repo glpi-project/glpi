@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-08 18:53+0100\n"
+"POT-Creation-Date: 2012-01-08 19:00+0100\n"
 "PO-Revision-Date: 2012-01-08 17:34+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -552,7 +552,7 @@ msgstr ""
 #: inc/entitydata.class.php:521 inc/entitydata.class.php:673
 #: inc/entitydata.class.php:676 inc/entitydata.class.php:940
 #: inc/entitydata.class.php:943 inc/infocom.class.php:1062
-#: inc/knowbaseitem.class.php:519 inc/log.class.php:282
+#: inc/knowbaseitem.class.php:519 inc/log.class.php:278
 #: inc/ocsserver.class.php:385 inc/ocsserver.class.php:500
 #: inc/planning.class.php:233 inc/planning.class.php:312
 #: inc/plugin.class.php:453 inc/profile.class.php:602
@@ -693,7 +693,7 @@ msgstr "Size"
 #: inc/commonitiltask.class.php:374 inc/commonitiltask.class.php:767
 #: inc/commonitiltask.class.php:931 inc/crontask.class.php:982
 #: inc/crontask.class.php:1032 inc/event.class.php:241 inc/event.class.php:295
-#: inc/knowbaseitem.class.php:1150 inc/log.class.php:280
+#: inc/knowbaseitem.class.php:1150 inc/log.class.php:276
 #: inc/notificationtargetfieldunicity.class.php:76
 #: inc/notimportedemail.class.php:101 inc/ocsserver.class.php:2815
 #: inc/problem.class.php:1069 inc/ticket.class.php:4407
@@ -1205,7 +1205,7 @@ msgstr "Global dictionary"
 #: front/softwareversion.form.php:80
 #: inc/computer_softwareversion.class.php:552 inc/dropdown.class.php:675
 #: inc/entitydata.class.php:480 inc/html.class.php:969 inc/html.class.php:1519
-#: inc/log.class.php:385 inc/log.class.php:391
+#: inc/log.class.php:381 inc/log.class.php:387
 #: inc/notificationtargetsoftwarelicense.class.php:78
 #: inc/ocsserver.class.php:450 inc/profile.class.php:642
 #: inc/profile.class.php:1392 inc/ruledictionnarysoftware.class.php:118
@@ -1551,7 +1551,7 @@ msgstr "Associated element"
 #: inc/document.class.php:667 inc/entity.class.php:208
 #: inc/fieldunicity.class.php:292 inc/group_user.class.php:472
 #: inc/infocom.class.php:1303 inc/knowbaseitem.class.php:1141
-#: inc/link.class.php:159 inc/log.class.php:280 inc/monitor.class.php:404
+#: inc/link.class.php:159 inc/log.class.php:276 inc/monitor.class.php:404
 #: inc/networkequipment.class.php:411 inc/networkport.class.php:664
 #: inc/notificationtargetcommonitilobject.class.php:737
 #: inc/ocsserver.class.php:181 inc/peripheral.class.php:368
@@ -3124,7 +3124,7 @@ msgstr "Thank you for using our automatic helpdesk system."
 #: inc/computer_softwareversion.class.php:368 inc/config.class.php:364
 #: inc/dropdown.class.php:678 inc/group_user.class.php:486
 #: inc/html.class.php:1411 inc/knowbaseitem.class.php:1183
-#: inc/knowbaseitem.class.php:1267 inc/log.class.php:281
+#: inc/knowbaseitem.class.php:1267 inc/log.class.php:277
 #: inc/monitor.class.php:278 inc/monitor.class.php:443
 #: inc/networkequipment.class.php:316 inc/networkequipment.class.php:450
 #: inc/notificationtargetproblem.class.php:223
@@ -8352,108 +8352,108 @@ msgid "Location comments"
 msgstr "Location comments"
 
 #: inc/log.class.php:66 inc/log.class.php:74 inc/log.class.php:79
-#: inc/log.class.php:276 inc/notificationtargetcommonitilobject.class.php:777
+#: inc/log.class.php:272 inc/notificationtargetcommonitilobject.class.php:777
 #: inc/transfer.class.php:3041
 msgid "Historical"
 msgstr "Historical"
 
-#: inc/log.class.php:269
+#: inc/log.class.php:265
 msgid "No historical"
 msgstr "No historical"
 
-#: inc/log.class.php:281
+#: inc/log.class.php:277
 msgid "Field"
 msgstr "Field"
 
-#: inc/log.class.php:344 inc/notificationtargetfieldunicity.class.php:48
+#: inc/log.class.php:340 inc/notificationtargetfieldunicity.class.php:48
 msgid "Add the item"
 msgstr "Add the item"
 
-#: inc/log.class.php:348
+#: inc/log.class.php:344
 msgid "Delete the item"
 msgstr "Delete the item"
 
-#: inc/log.class.php:352
+#: inc/log.class.php:348
 msgid "Restore the item"
 msgstr "Restore the item"
 
 #. TRANS: %s is the component name
-#: inc/log.class.php:361
+#: inc/log.class.php:357
 #, php-format
 msgid "Add a component: %s"
 msgstr "Add a component: %s"
 
 #. TRANS: %s is the component name
-#: inc/log.class.php:381
+#: inc/log.class.php:377
 #, php-format
 msgid "Deletion of a component: %s"
 msgstr "Deletion of a component: %s"
 
 #. TRANS: %s is the software name
-#: inc/log.class.php:387 inc/log.class.php:393
+#: inc/log.class.php:383 inc/log.class.php:389
 #, php-format
 msgid "Install software: \"%s\""
 msgstr "Install software: \"%s\""
 
 #. TRANS: %s is the item name
-#: inc/log.class.php:402
+#: inc/log.class.php:398
 #, php-format
 msgid "Disconnect the item \"%s\""
 msgstr "Disconnect the item \"%s\""
 
 #. TRANS: %s is the item name
-#: inc/log.class.php:411
+#: inc/log.class.php:407
 #, php-format
 msgid "Connect the item \"%s\""
 msgstr "Connect the item \"%s\""
 
-#: inc/log.class.php:417
+#: inc/log.class.php:413
 msgid "Imported from OCSNG:"
 msgstr "Imported from OCSNG:"
 
-#: inc/log.class.php:426
+#: inc/log.class.php:422
 msgid "Deleted in OCSNG:"
 msgstr "Deleted in OCSNG:"
 
-#: inc/log.class.php:438
+#: inc/log.class.php:434
 msgid "Linked with an OCSNG computer:"
 msgstr "Linked with an OCSNG computer:"
 
-#: inc/log.class.php:448
+#: inc/log.class.php:444
 msgid "The OCSNG ID of the computer changed:"
 msgstr "The OCSNG ID of the computer changed:"
 
 #. TRANS: %s is the item name
-#: inc/log.class.php:467
+#: inc/log.class.php:463
 #, php-format
 msgid "add a link with an item: %s"
 msgstr "add a link with an item: %s"
 
 #. TRANS: %s is the item name
-#: inc/log.class.php:476
+#: inc/log.class.php:472
 #, php-format
 msgid "deletion of a link with an item: %s"
 msgstr "deletion of a link with an item: %s"
 
 #. TRANS: %s is the item name
-#: inc/log.class.php:485
+#: inc/log.class.php:481
 #, php-format
 msgid "add an item: %s"
 msgstr "add an item: %s"
 
 #. TRANS: %s is the item name
-#: inc/log.class.php:495
+#: inc/log.class.php:491
 #, php-format
 msgid "update an item: %s"
 msgstr "update an item: %s"
 
 #. TRANS: %s is the item name
-#: inc/log.class.php:504
+#: inc/log.class.php:500
 #, php-format
 msgid "deletion of an item: %s"
 msgstr "deletion of an item: %s"
 
-#: inc/log.class.php:565
+#: inc/log.class.php:561
 msgid "update of the field"
 msgstr "update of the field"
 
