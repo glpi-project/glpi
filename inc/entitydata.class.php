@@ -1229,7 +1229,7 @@ class EntityData extends CommonDBChild {
                case 0 :
                   return __('Never');
             }
-            return sprintf(__('%d hour', '%d hours', $values[$field]), $values[$field]);
+            return sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]);
 
          case 'cartridges_alert_repeat' :
          case 'consumables_alert_repeat' :
