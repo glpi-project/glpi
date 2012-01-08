@@ -120,6 +120,10 @@ class Log extends CommonDBTM {
 
          // Parsing $SEARCHOPTION to find changed field
          foreach ($searchopt as $key2 => $val2) {
+            if (!is_array($val2)) {
+               // skip sub-title
+               continue;
+            }
             // Linkfield or standard field not massive action enable
             if ($val2['linkfield'] == $key
                 || ($key == $val2['field'] && $val2['table'] == $item->getTable())) {
