@@ -4371,7 +4371,7 @@ class Ticket extends CommonITILObject {
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          //TRANS: %d is the number of new tickets
-         echo "<tr><th colspan='9'>".sprintf(__('%d new ticket','%d new tickets',$number),$number);
+         echo "<tr><th colspan='9'>".sprintf(_n('%d new ticket','%d new tickets', $number), $number);
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                 Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a>";
          echo "</th></tr>";
