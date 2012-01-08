@@ -96,6 +96,7 @@ enable-auto-props = yes
 *.txt = svn:eol-style=native;svn:keywords=Author Date Id Revision
 *.sh = svn:eol-style=native;svn:keywords=Author Date Id Revision
 *.pl = svn:eol-style=native;svn:keywords=Author Date Id Revision
+*.mo = svn:executable=yes
 # *.dsp = svn:eol-style=CRLF
 # *.dsw = svn:eol-style=CRLF
 # *.sh = svn:eol-style=native;svn:executable
