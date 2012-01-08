@@ -154,7 +154,7 @@ function _n($sing, $plural, $nb){
  *
  * @return string
 **/
-function _c($ctx, $str) {
+function _x($ctx, $str) {
 
    // simulate pgettext
    $msg = $ctx."\004".$str;
