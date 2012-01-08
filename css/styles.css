@@ -1073,8 +1073,8 @@ div#tabcontent {
 
 /* ################--------------- Login Null Header  ---------------#################### */
 
-#contenulogin {
-   height: 236px;
+#firstboxlogin {
+   height: 276px;
    width: 650px;
    margin-top:150px;
    margin-left: auto;
@@ -1091,9 +1091,30 @@ div#tabcontent {
 	-moz-border-radius:10px;
 	-webkit-border-radius:10px;
 
-	padding:20px;
+	padding:10px;
 
    
+}
+
+
+#text-login {
+   font-size: 13px;
+   margin-bottom:10px;
+   max-height: 50px;
+   width: 95%;
+   /*margin-right:10px;
+   margin-left:0px;
+   margin-top:80px;*/
+   color :#000000;
+   overflow: auto;
+   
+    padding:10px;
+   
+}
+
+#text-login a:hover {
+   color :#659900;
+   text-decoration: underline;
 }
 
 #bloc .haut {
@@ -1121,12 +1142,12 @@ div#tabcontent {
 
 #boxlogin {
    position:relative;
- 
+   margin:auto;
    text-align: left;  /* Bug IE Grrr */
  
    width: 350px;
    
-   padding:15px;
+   padding:10px;
    background:#E9EDD0;
 	background:-moz-linear-gradient(360deg, #E9EDD0, #BBC972); /* Firefox */
 	background:-webkit-gradient(linear, left top, left bottom, from(#E9EDD0), to(#BBC972)); /* Webkit */
@@ -1213,31 +1234,15 @@ text-decoration: underline;
 }
 
 
-#logo-login {
-   font-size: 11px;
-   float:right;
-   height: 160px;
-   width: 230px;
-   /*margin-right:10px;
-   margin-left:0px;
-   margin-top:80px;*/
-   color :#000000;
-   overflow: auto;
-   
-    padding:15px;
-   
-}
-
-#logo-login a:hover {
-   color :#659900;
-   text-decoration: underline;
-}
 
 #box-faq {
-   width:250px;
+   
+   padding-top:30px;
    text-align:center;
   position:relative;
    margin:auto;
+   
+   
 }
 
 .sous_logo {
