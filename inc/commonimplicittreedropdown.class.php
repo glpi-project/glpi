@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: commonimplicittreedropdown.class.php 14684 2011-06-11 06:32:40Z remi $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
