@@ -1921,7 +1921,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   }
                   $text .= sprintf(__('Email: %s'),$uemail);
                   if (!NotificationMail::isUserAddressValid($uemail)) {
-                     $text .= "<span class='red'>".__('Invalid email')."</span>";
+                     $text .= "<span class='red'>".__('Invalid email address')."</span>";
                   }
                }
                echo "&nbsp;";
