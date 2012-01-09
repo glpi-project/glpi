@@ -50,7 +50,7 @@ if (isset($_POST["add"])) {
    $compdev->updateAll($_POST);
    Event::log($_POST["computers_id"], "computers", 4, "inventory",
                   //TRANS: %s is the user login
-                  sprintf(__('%s update components'), $_SESSION["glpiname"]));
+                  sprintf(__('%s updates components'), $_SESSION["glpiname"]));
    Html::back();
 
 }

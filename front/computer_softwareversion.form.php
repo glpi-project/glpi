@@ -47,7 +47,7 @@ if (isset($_REQUEST["install"])) {
                        'softwareversions_id' => $_REQUEST["softwareversions_id"]));
 
       Event::log($_REQUEST["computers_id"], "computers", 5, "inventory",
-                  //TRANS: %s is the user login 
+                  //TRANS: %s is the user login
                   sprintf(__('%s install software'), $_SESSION["glpiname"]));
    }
    Html::back();
@@ -57,7 +57,7 @@ if (isset($_REQUEST["install"])) {
    $inst->delete(array('id' => $_GET["id"]));
 
    Event::log($_GET["computers_id"], "computers", 5, "inventory",
-               //TRANS: %s is the user login 
+               //TRANS: %s is the user login
                sprintf(__('%s uninstall software'), $_SESSION["glpiname"]));
    Html::back();
 
@@ -69,7 +69,7 @@ if (isset($_REQUEST["install"])) {
       }
    }
    Event::log($_POST["computers_id"], "computers", 5, "inventory",
-               //TRANS: %s is the user login 
+               //TRANS: %s is the user login
                sprintf(__('%s uninstall several softwares'), $_SESSION["glpiname"]));
    Html::back();
 
@@ -83,7 +83,7 @@ if (isset($_REQUEST["install"])) {
       }
    }
    Event::log($_POST["computers_id"], "computers", 5, "inventory",
-                     //TRANS: %s is the user login 
+                     //TRANS: %s is the user login
                     sprintf(__('%s install several softwares'), $_SESSION["glpiname"]));
    Html::back();
 
@@ -93,7 +93,7 @@ if (isset($_REQUEST["install"])) {
       if ($val == 1) {
          $inst->delete(array('id' => $key));
          Event::log($_POST["softwares_id"], "software", 5, "inventory",
-                     //TRANS: %s is the user login 
+                     //TRANS: %s is the user login
                     sprintf(__('%s uninstall software on several computers'), $_SESSION["glpiname"]));
       }
    }
@@ -104,8 +104,8 @@ if (isset($_REQUEST["install"])) {
       if ($val == 1 && $_POST['versionID'] > 0) {
          $inst->upgrade($key, $_POST['versionID']);
          Event::log($_POST["softwares_id"], "software", 5, "inventory",
-                     //TRANS: %s is the user login 
-                    sprintf(__('%s change the version of installed software'), $_SESSION["glpiname"]));
+                     //TRANS: %s is the user login
+                    sprintf(__('%s changes the version of installed software'), $_SESSION["glpiname"]));
       }
    }
    Html::back();
