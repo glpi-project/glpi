@@ -235,9 +235,9 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('on week')."</td>";
-      echo "<td colspan='3'>". __('Start');
+      echo "<td colspan='3'>". __('Start')."&nbsp;";
       Dropdown::showHours("week_begin_hour", $this->fields["week_begin_hour"]);
-      echo "<span class='small_space'>".__('End')."</span>";
+      echo "<span class='small_space'>".__('End')."</span>&nbsp;";
       Dropdown::showHours("week_end_hour", $this->fields["week_end_hour"]);
       echo "</td></tr>";
 
@@ -245,9 +245,9 @@ class Contract extends CommonDBTM {
       echo "<td>".__('on Saturday')."</td>";
       echo "<td colspan='3'>";
       Dropdown::showYesNo("use_saturday", $this->fields["use_saturday"]);
-      echo "<span class='small_space'>".__('Start')."</span>";
+      echo "<span class='small_space'>".__('Start')."</span>&nbsp;";
       Dropdown::showHours("saturday_begin_hour", $this->fields["saturday_begin_hour"]);
-      echo "<span class='small_space'>".__('End')."</span>";
+      echo "<span class='small_space'>".__('End')."</span>&nbsp;";
       Dropdown::showHours("saturday_end_hour", $this->fields["saturday_end_hour"]);
       echo "</td></tr>";
 
@@ -255,9 +255,9 @@ class Contract extends CommonDBTM {
       echo "<td>".__('Sundays and holidays')."</td>";
       echo "<td colspan='3'>";
       Dropdown::showYesNo("use_monday", $this->fields["use_monday"]);
-      echo "<span class='small_space'>".__('Start')."</span>";
+      echo "<span class='small_space'>".__('Start')."</span>&nbsp;";
       Dropdown::showHours("monday_begin_hour", $this->fields["monday_begin_hour"]);
-      echo "<span class='small_space'>".__('End')."</span>";
+      echo "<span class='small_space'>".__('End')."</span>&nbsp;";
       Dropdown::showHours("monday_end_hour", $this->fields["monday_end_hour"]);
       echo "</td></tr>";
 
