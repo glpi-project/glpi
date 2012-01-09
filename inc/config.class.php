@@ -322,7 +322,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" .__('Beginning of fiscal yea') . "</td><td>";
+      echo "<td>" .__('Beginning of fiscal year') . "</td><td>";
       Html::showDateFormItem("date_tax", $CFG_GLPI["date_tax"], false, true, '', '', false);
       echo "</td><td> " . __('Restrict printer management') . "</td><td>";
       $this->dropdownGlobalManagement("printers_management_restrict",
