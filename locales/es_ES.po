@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-08 18:35+0100\n"
-"PO-Revision-Date: 2012-01-08 17:34+0000\n"
+"POT-Creation-Date: 2012-01-08 19:04+0100\n"
+"PO-Revision-Date: 2012-01-09 08:33+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -465,7 +465,7 @@ msgstr "Encuesta externa"
 
 #: ajax/subvisibility.php:54
 msgid "No restriction"
-msgstr ""
+msgstr "No hay restricciones"
 
 #: ajax/subvisibility.php:56
 msgid "Entity: "
@@ -1789,7 +1789,7 @@ msgstr "Operación realizada correctamente"
 
 #: front/massiveaction.php:1013
 msgid "Failed operation"
-msgstr ""
+msgstr "Error en la operación"
 
 #. TRANS: %$1d and %$2d are numbers
 #: front/massiveaction.php:1016 front/massiveaction.php:1021
@@ -1903,8 +1903,8 @@ msgstr[1] "Notificaciones"
 #: inc/notificationevent.class.php:194 inc/notificationtemplate.class.php:48
 msgid "Notification template"
 msgid_plural "Notification templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de notificación"
+msgstr[1] "Modelos de notificaciones"
 
 #: front/notimportedemail.php:41 inc/notimportedemail.class.php:56
 msgid "Refused email"
@@ -2945,8 +2945,8 @@ msgstr[1] "Tipos de Solución"
 #: inc/ticket.class.php:3479 inc/ticketfollowup.class.php:720
 msgid "Request source"
 msgid_plural "Request sources"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Origen de la solicitud"
+msgstr[1] "Fuentes de solicitud"
 
 #: front/stat.tracking.php:98 inc/cartridgeitem.class.php:291
 #: inc/change.class.php:385 inc/commondbrelation.class.php:57
@@ -3110,7 +3110,7 @@ msgstr ""
 
 #: front/tracking.injector.php:80 inc/ticket.class.php:1260
 msgid "Your ticket has been registered, its treatment is in progress."
-msgstr "Su solicitud ha sido grabada correctamente.."
+msgstr "Su solicitud ha sido grabada correctamente y está en curso.."
 
 #: front/tracking.injector.php:86
 msgid "Thank you for using our automatic helpdesk system."
@@ -3961,7 +3961,7 @@ msgstr "Privado"
 
 #: inc/bookmark.class.php:368
 msgid "Partial load of the bookmark."
-msgstr ""
+msgstr "Carga parcial del marcador."
 
 #: inc/bookmark.class.php:527
 msgid "Bookmarks"
@@ -4514,7 +4514,7 @@ msgstr "Lista de control"
 
 #: inc/change.class.php:498 inc/change.class.php:1045
 msgid "Deployment plan"
-msgstr ""
+msgstr "Plan de Despliegue"
 
 #: inc/change.class.php:504 inc/change.class.php:1056
 msgid "Backup plan"
@@ -4981,15 +4981,15 @@ msgstr "Muy bajo"
 
 #: inc/commonitilobject.class.php:1664
 msgid "Resolution time"
-msgstr ""
+msgstr "Tiempo de solución"
 
 #: inc/commonitilobject.class.php:1671
 msgid "Closing time"
-msgstr ""
+msgstr "Tiempo de Cierre"
 
 #: inc/commonitilobject.class.php:1678
 msgid "Waiting time"
-msgstr ""
+msgstr "Tiempo de espera"
 
 #: inc/commonitilobject.class.php:1730 inc/commonitilobject.class.php:1833
 #: inc/ruleticket.class.php:251 inc/ruleticket.class.php:332
@@ -5061,8 +5061,8 @@ msgstr "Asociarme a esta incidencia"
 #: inc/commonitilobject.class.php:2459 inc/solutiontemplate.class.php:47
 msgid "Solution template"
 msgid_plural "Solution templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Plantilla"
+msgstr[1] "Plantillas de soluciones"
 
 #: inc/commonitilobject.class.php:2475 inc/commonitilobject.class.php:2477
 msgid "Search a solution"
@@ -5673,6 +5673,7 @@ msgstr "Utilizar Ajax"
 #: inc/config.class.php:239
 msgid "Minimum size of the text for dynamic search in dropdowns"
 msgstr ""
+"Tamaño de texto mínimo para búsqueda dinámica en los menús desplegables"
 
 #: inc/config.class.php:250
 msgid "Don't use dynamic display if the number of items is less than"
@@ -6003,7 +6004,7 @@ msgstr "Generados en %s"
 
 #: inc/config.class.php:850
 msgid "Regenerate"
-msgstr ""
+msgstr "Regenerar"
 
 #: inc/config.class.php:879
 msgid "Log Level"
@@ -6161,8 +6162,8 @@ msgstr "No se hallaron consumibles"
 #: inc/consumableitem.class.php:51
 msgid "Consumable Model"
 msgid_plural "Consumable Models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo de consumible"
+msgstr[1] "Modelos de consumibles"
 
 #: inc/consumableitem.class.php:288 inc/consumableitem.class.php:392
 msgid "Send alarms on consumables"
@@ -7390,7 +7391,7 @@ msgstr "Umbral de alarma predeterminado para los cartuchos y consumibles"
 
 #: inc/entity.class.php:536 inc/entitydata.class.php:482
 msgid "Entity for software creation"
-msgstr ""
+msgstr "Entidad para la creación de programas"
 
 #: inc/entity.class.php:557
 msgid "to see the entity and its sub-entities"
@@ -7462,7 +7463,7 @@ msgstr ""
 
 #: inc/entitydata.class.php:485 inc/entitydata.class.php:1342
 msgid "No change of entity"
-msgstr ""
+msgstr "No hay cambio de entidad"
 
 #: inc/entitydata.class.php:558
 msgid "Notification options"
@@ -7628,7 +7629,7 @@ msgstr "Materiales utilizados"
 
 #: inc/group.class.php:110 inc/group.class.php:517
 msgid "Managed Items"
-msgstr ""
+msgstr "Material gestionado"
 
 #: inc/group.class.php:213
 msgid "Visible in a ticket"
@@ -7640,7 +7641,7 @@ msgstr "Puede ser notificado"
 
 #: inc/group.class.php:232
 msgid "Can contain"
-msgstr ""
+msgstr "Puede contener"
 
 #: inc/group.class.php:240
 msgid "User  "
@@ -7668,12 +7669,12 @@ msgstr "Supervisor"
 #: inc/group.class.php:348 inc/group_user.class.php:241
 #: inc/group_user.class.php:366 inc/group_user.class.php:409
 msgid "Delegatee"
-msgstr ""
+msgstr "Delegado"
 
 #: inc/group.class.php:540 inc/group_user.class.php:371
 #: inc/problem.class.php:1344 inc/ticket.class.php:4494
 msgid "Child groups"
-msgstr ""
+msgstr "Subgrupos"
 
 #: inc/group_user.class.php:140
 msgid "Groups (D=Dynamic)"
@@ -7767,8 +7768,8 @@ msgstr[1] ""
 #: inc/html.class.php:1584 inc/networkequipmentmodel.class.php:45
 msgid "Networking equipment model"
 msgid_plural "Networking equipment models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Modelo equipo de red"
+msgstr[1] "Modelos de electrónica de red"
 
 #: inc/html.class.php:1597
 msgid "Phones model"
@@ -7797,8 +7798,8 @@ msgstr[1] ""
 #: inc/html.class.php:1662 inc/networkequipmenttype.class.php:43
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo de equipo de red"
+msgstr[1] "Tipos de electrónica de red"
 
 #: inc/html.class.php:1675
 msgid "Phones type"
@@ -8306,7 +8307,7 @@ msgstr "Artículos más consultados"
 
 #: inc/knowbaseitem.class.php:1070
 msgid "Unpublished articles"
-msgstr ""
+msgstr "Artículos sin publicar"
 
 #: inc/knowbaseitem.class.php:1166
 msgid "FAQ item"
@@ -9374,7 +9375,7 @@ msgstr ""
 
 #: inc/notificationtargetticket.class.php:564 inc/search.class.php:4698
 msgid "Number of problems"
-msgstr ""
+msgstr "Número de problemas"
 
 #: inc/notificationtargetticket.class.php:567
 msgid "Global approval status"
@@ -10200,7 +10201,7 @@ msgstr ""
 
 #: inc/problem.class.php:1342
 msgid "Last problems"
-msgstr ""
+msgstr "Últimos problemas"
 
 #. TRANS : %d is the number of problems
 #: inc/problem.class.php:1408
@@ -10240,7 +10241,7 @@ msgstr ""
 
 #: inc/profile.class.php:104
 msgid "Life cycles"
-msgstr ""
+msgstr "Ciclos de vida"
 
 #: inc/profile.class.php:402
 msgid "Global right"
@@ -10355,7 +10356,7 @@ msgstr "Sincronización manual de OCSNG"
 
 #: inc/profile.class.php:737 inc/profile.class.php:1496
 msgid "See OCSNG informations"
-msgstr ""
+msgstr "Ver la información de OCSNG"
 
 #: inc/profile.class.php:786
 msgid "Creation"
@@ -10391,7 +10392,7 @@ msgstr "Modificar todos los seguimientos"
 
 #: inc/profile.class.php:843
 msgid "Deletion"
-msgstr ""
+msgstr "Borrado"
 
 #: inc/profile.class.php:847 inc/profile.class.php:1662
 msgid "Ticket's deletion"
@@ -11704,7 +11705,7 @@ msgstr ""
 
 #: inc/ticket.class.php:1788
 msgid "Take into account time"
-msgstr ""
+msgstr "Tiempo en atender el servicio"
 
 #: inc/ticket.class.php:1802
 msgid "All linked tickets"
@@ -11744,7 +11745,7 @@ msgstr "Incidencias esperan su aprobación"
 
 #: inc/ticket.class.php:2728
 msgid "This ticket concerns me"
-msgstr ""
+msgstr "Esta incidencia me implica"
 
 #: inc/ticket.class.php:2861
 msgid "Describe the incident or request"
@@ -12391,7 +12392,7 @@ msgstr "Materiales utilizados"
 
 #: inc/user.class.php:153
 msgid "Managed items"
-msgstr ""
+msgstr "Material gestionado"
 
 #: inc/user.class.php:482 inc/user.class.php:590
 msgid "Error: the two passwords do not match"

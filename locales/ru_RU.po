@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-08 18:35+0100\n"
-"PO-Revision-Date: 2012-01-08 17:34+0000\n"
+"POT-Creation-Date: 2012-01-08 19:04+0100\n"
+"PO-Revision-Date: 2012-01-09 08:34+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: Russian (Russia) (http://www.transifex.net/projects/p/GLPI/team/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -4032,7 +4032,7 @@ msgstr "Личный"
 
 #: inc/bookmark.class.php:368
 msgid "Partial load of the bookmark."
-msgstr ""
+msgstr "Частичная загрузка закладок.."
 
 #: inc/bookmark.class.php:527
 msgid "Bookmarks"
@@ -4492,6 +4492,7 @@ msgstr "Сводная информация"
 msgid ""
 "For security reasons, please change the password for the default users: %s"
 msgstr ""
+"В целях безопасности измените пароли для пользователей по-умолчанию: %s"
 
 #: inc/central.class.php:158 inc/central.class.php:159 inc/html.class.php:2326
 msgid "MySQL replica: read only"
@@ -7111,7 +7112,7 @@ msgstr[2] ""
 
 #: inc/document.class.php:1467
 msgid "Add a new file"
-msgstr ""
+msgstr "Добавить файл"
 
 #: inc/document.class.php:1481
 msgid "Associate an existing document"
@@ -8020,7 +8021,7 @@ msgstr "Сейчас"
 
 #: inc/html.class.php:3218 inc/html.class.php:3221
 msgid "Today"
-msgstr ""
+msgstr "Сегодня"
 
 #: inc/html.class.php:3225
 msgid "Specify a date"
@@ -8044,31 +8045,31 @@ msgstr[2] ""
 
 #: inc/html.class.php:3239
 msgid "last Sunday"
-msgstr ""
+msgstr "последнее воскресение"
 
 #: inc/html.class.php:3240
 msgid "last Monday"
-msgstr ""
+msgstr "последний понедельник"
 
 #: inc/html.class.php:3241
 msgid "last Tuesday"
-msgstr ""
+msgstr "последний вторник"
 
 #: inc/html.class.php:3242
 msgid "last Wednesday"
-msgstr ""
+msgstr "последняя среда"
 
 #: inc/html.class.php:3243
 msgid "last Thursday"
-msgstr ""
+msgstr "последний четверг"
 
 #: inc/html.class.php:3244
 msgid "last Friday"
-msgstr ""
+msgstr "последняя пятница"
 
 #: inc/html.class.php:3245
 msgid "last Saturday"
-msgstr ""
+msgstr "последняя суббота"
 
 #: inc/html.class.php:3249
 #, php-format
@@ -8080,7 +8081,7 @@ msgstr[2] ""
 
 #: inc/html.class.php:3253
 msgid "Beginning of the month"
-msgstr ""
+msgstr "Начало месяца"
 
 #: inc/html.class.php:3257
 #, php-format
@@ -8092,7 +8093,7 @@ msgstr[2] ""
 
 #: inc/html.class.php:3261
 msgid "Beginning of the year"
-msgstr ""
+msgstr "Начало года"
 
 #: inc/html.class.php:3265
 #, php-format
@@ -11804,7 +11805,7 @@ msgstr ""
 
 #: inc/stat.class.php:1424
 msgid "By problem"
-msgstr ""
+msgstr "По проблеме"
 
 #: inc/stat.class.php:1430
 msgid "Select statistics to be displayed"
@@ -12015,7 +12016,7 @@ msgstr "Ваши заявки, которые надо утвердить"
 
 #: inc/ticket.class.php:4110 inc/ticket.class.php:4205
 msgid "Your rejected tickets"
-msgstr ""
+msgstr "Ваши отклоненные заявки"
 
 #: inc/ticket.class.php:4129 inc/ticket.class.php:4155
 #: inc/ticket.class.php:4209

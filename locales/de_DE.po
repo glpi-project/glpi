@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-08 18:35+0100\n"
-"PO-Revision-Date: 2012-01-08 17:34+0000\n"
+"POT-Creation-Date: 2012-01-08 19:04+0100\n"
+"PO-Revision-Date: 2012-01-09 08:43+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: German (Germany) (http://www.transifex.net/projects/p/GLPI/team/de_DE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -2503,8 +2503,8 @@ msgstr "LDAP kann nicht als Authentifizierungsquelle genutzt werden"
 #: inc/notificationmailsetting.class.php:181
 msgid "Mail server"
 msgid_plural "Mail servers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Mailserver"
+msgstr[1] "Mail Server"
 
 #: front/setup.auth.php:62 inc/authmail.class.php:201
 msgid "Impossible to use email server as external source of connection"
@@ -2540,8 +2540,8 @@ msgstr "Vorlagen verwalten …..."
 #: inc/ticket.class.php:3329 inc/ticket.class.php:3347
 msgid "SLA"
 msgid_plural "SLAs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "SLA"
+msgstr[1] "SLAs"
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:43
@@ -2800,7 +2800,7 @@ msgstr "Diagramme zeigen"
 #: front/stat.location.php:164 front/stat.location.php:165
 #: front/stat.tracking.php:168 front/stat.tracking.php:169
 msgid "Number opened"
-msgstr ""
+msgstr "Anzahl der geöffneten Tickets"
 
 #: front/stat.location.php:176 front/stat.location.php:177
 msgid "Number solved"
@@ -2814,7 +2814,7 @@ msgstr ""
 #: front/stat.location.php:200 front/stat.location.php:201
 #: front/stat.tracking.php:206 front/stat.tracking.php:207
 msgid "Number closed"
-msgstr ""
+msgstr "Anzahl geschlossener Tickets"
 
 #: front/stat.tracking.php:78 inc/commonitilobject.class.php:1723
 #: inc/commonitiltask.class.php:933
@@ -3283,7 +3283,7 @@ msgstr "CAS"
 
 #: inc/auth.class.php:715 inc/auth.class.php:719 inc/auth.class.php:1045
 msgid "x509 certificate authentication"
-msgstr ""
+msgstr "x509-Zertifikat Authentifizierung"
 
 #: inc/auth.class.php:728 inc/auth.class.php:731 inc/profile.class.php:1851
 #: install/update_0723_078.php:3707
@@ -3357,7 +3357,7 @@ msgstr "CAS kann nicht als Authentifizierungsquelle genutzt werden"
 
 #: inc/auth.class.php:1051
 msgid "Email attribute for x509 authentication"
-msgstr ""
+msgstr "Mailattribut für x509"
 
 #: inc/auth.class.php:1056
 msgid "Other authentication sent in the HTTP request"
@@ -3959,7 +3959,7 @@ msgstr "Privat"
 
 #: inc/bookmark.class.php:368
 msgid "Partial load of the bookmark."
-msgstr ""
+msgstr "Lesezeichen nur teilweise geladen.."
 
 #: inc/bookmark.class.php:527
 msgid "Bookmarks"
@@ -5269,8 +5269,8 @@ msgstr ""
 #: inc/ocsserver.class.php:289
 msgid "Processor"
 msgid_plural "Processors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Prozessor"
+msgstr[1] "Prozessoren"
 
 #: inc/computer.class.php:890
 msgid "Processeur frequency"
@@ -5303,21 +5303,21 @@ msgstr[1] ""
 #: inc/ocsserver.class.php:309
 msgid "Soundcard"
 msgid_plural "Soundcards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Soundkarte"
+msgstr[1] "Soundkarten"
 
 #: inc/computer.class.php:940 inc/devicegraphiccard.class.php:43
 #: inc/ocsserver.class.php:305
 msgid "Graphics Card"
 msgid_plural "Graphics Cards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Grafikkarte"
+msgstr[1] "Grafikkarten"
 
 #: inc/computer.class.php:949 inc/devicemotherboard.class.php:43
 msgid "System Board"
 msgid_plural "System Boards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Mainboard"
+msgstr[1] "Hauptplatinen"
 
 #: inc/computer.class.php:959
 msgid "Hard drive type"
@@ -5330,8 +5330,8 @@ msgstr "Größe der Festplatte"
 #: inc/computer.class.php:980 inc/devicepowersupply.class.php:43
 msgid "Power Supply"
 msgid_plural "Power Supplies"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Netzteil"
+msgstr[1] "Netzteile"
 
 #: inc/computer.class.php:988 inc/computer.class.php:992
 #: inc/computerdisk.class.php:49 inc/computerdisk.class.php:221
@@ -6241,7 +6241,7 @@ msgstr "Kosten"
 #: inc/contract.class.php:173 inc/contract.class.php:415
 #: inc/contract.class.php:1010 inc/supplier.class.php:627
 msgid "Initial contract period"
-msgstr ""
+msgstr "initiale Vertragslaufzeit"
 
 #: inc/contract.class.php:181 inc/contract.class.php:449
 msgid "Account number"
@@ -6672,8 +6672,8 @@ msgstr "Tabellen optimieren"
 #: inc/devicecase.class.php:43
 msgid "Case"
 msgid_plural "Cases"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Gehäuse"
+msgstr[1] "Gehäuse"
 
 #: inc/devicecasetype.class.php:43
 msgid "Case type"
@@ -6684,8 +6684,8 @@ msgstr[1] ""
 #: inc/devicecontrol.class.php:43
 msgid "Controller"
 msgid_plural "Controllers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Controller"
+msgstr[1] "Controller"
 
 #: inc/devicecontrol.class.php:51 inc/devicecontrol.class.php:65
 #: inc/devicecontrol.class.php:86
@@ -6706,8 +6706,8 @@ msgstr "Interface"
 #: inc/devicedrive.class.php:43 inc/ocsserver.class.php:313
 msgid "Drive"
 msgid_plural "Drives"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Laufwerk"
+msgstr[1] "Laufwerke"
 
 #: inc/devicedrive.class.php:51 inc/devicedrive.class.php:68
 #: inc/devicedrive.class.php:94
@@ -6724,8 +6724,8 @@ msgstr "Geschwindigkeit"
 #: inc/printer.class.php:426
 msgid "Memory"
 msgid_plural "Memories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Arbeitsspeicher"
+msgstr[1] "Speicher"
 
 #: inc/devicegraphiccard.class.php:56 inc/devicegraphiccard.class.php:71
 msgid "Memory by default"
@@ -6734,8 +6734,8 @@ msgstr ""
 #: inc/deviceharddrive.class.php:43 inc/ocsserver.class.php:297
 msgid "Hard Drive"
 msgid_plural "Hard Drives"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Festplatte"
+msgstr[1] "Festplatten"
 
 #: inc/deviceharddrive.class.php:48 inc/deviceharddrive.class.php:124
 msgid "Capacity"
@@ -6780,8 +6780,8 @@ msgstr "Chipsatz"
 #: inc/devicenetworkcard.class.php:43 inc/ocsserver.class.php:301
 msgid "Network Card"
 msgid_plural "Network Cards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Netzwerkkarte"
+msgstr[1] "Netzwerkkarten"
 
 #: inc/devicenetworkcard.class.php:56 inc/devicenetworkcard.class.php:70
 msgid "MAC address by default"
@@ -6795,8 +6795,8 @@ msgstr "Durchsatz"
 #: inc/devicepci.class.php:43
 msgid "Other Component"
 msgid_plural "Other Components"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Andere Komponenten"
+msgstr[1] "Andere Hardwarekomponenten"
 
 #: inc/devicepowersupply.class.php:51 inc/devicepowersupply.class.php:65
 #: inc/devicepowersupply.class.php:87
@@ -7734,7 +7734,7 @@ msgstr "Auf Ihre Genehmigung wartende Tickets"
 #: inc/ticketrecurrent.class.php:55 inc/ticketrecurrent.class.php:89
 #: inc/ticketrecurrent.class.php:256
 msgid "Recurrent tickets"
-msgstr ""
+msgstr "Wiederholende Tickets"
 
 #: inc/html.class.php:1306 inc/profile.class.php:714
 #: inc/profile.class.php:1486 inc/report.class.php:50
@@ -8026,6 +8026,8 @@ msgid ""
 "For this type of element, the financial and administrative information are "
 "only a model for the elements which you should add."
 msgstr ""
+"Finanz- und Verwaltungsdaten an dieser Stelle gelten nur als Vorlage - sie "
+"werden für alle zukünftig eingefügten Elemente übernommen.."
 
 #: inc/infocom.class.php:901 inc/infocom.class.php:1146
 #: inc/infocom.class.php:1361
@@ -8538,7 +8540,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:1399 inc/mailcollector.class.php:1401
 msgid "List of not imported emails"
-msgstr ""
+msgstr "Liste der nicht importierten E-Mails"
 
 #: inc/mailcollector.class.php:1419 inc/ocsserver.class.php:332
 #: inc/ocsserver.class.php:339 inc/ocsserver.class.php:346
@@ -10193,7 +10195,7 @@ msgstr ""
 
 #: inc/problem.class.php:1342
 msgid "Last problems"
-msgstr ""
+msgstr "Letzten Probleme"
 
 #. TRANS : %d is the number of problems
 #: inc/problem.class.php:1408
@@ -10209,7 +10211,7 @@ msgstr ""
 
 #: inc/problem.class.php:1446
 msgid "Problems on linked items"
-msgstr ""
+msgstr "Probleme von verknüpften Elementen"
 
 #: inc/problem_ticket.class.php:52
 msgid "Link Ticket/Problem"
@@ -10225,7 +10227,7 @@ msgstr[1] ""
 
 #: inc/problem_ticket.class.php:163
 msgid "Create a problem from this ticket"
-msgstr ""
+msgstr "Ein Problem zu diesem Ticket erstellen."
 
 #: inc/profile.class.php:102
 msgid "Inventory/Management/Tools"
@@ -10332,7 +10334,7 @@ msgstr[1] "Kontakte"
 
 #: inc/profile.class.php:689 inc/profile.class.php:1454
 msgid "Financial and administratives informations"
-msgstr ""
+msgstr "Finanz- und Verwaltungsinformationen"
 
 #: inc/profile.class.php:706 inc/profile.class.php:1865
 msgid "Public bookmarks"
@@ -11193,7 +11195,7 @@ msgstr ""
 #: inc/ruleimportcomputer.class.php:64
 #: inc/ruleimportcomputercollection.class.php:59
 msgid "Rules for import and link computers"
-msgstr ""
+msgstr "Regelen zum Importieren und Verknüpfen von Computern"
 
 #: inc/ruleimportcomputer.class.php:79
 msgid "Target entity for the computer"
@@ -11915,11 +11917,11 @@ msgstr ""
 
 #: inc/ticketrecurrent.class.php:146 inc/ticketrecurrent.class.php:185
 msgid "Periodicity"
-msgstr ""
+msgstr "Intervall"
 
 #: inc/ticketrecurrent.class.php:152 inc/ticketrecurrent.class.php:190
 msgid "Preliminary creation"
-msgstr ""
+msgstr "Voraberstellung"
 
 #. TRANS: %s is the date of next creation
 #: inc/ticketrecurrent.class.php:207
@@ -11930,6 +11932,8 @@ msgstr ""
 #: inc/ticketrecurrent.class.php:228
 msgid "Invalid frequency. It must be greater than the preliminary creation."
 msgstr ""
+"Häufigkeit ungültig. Die Regelmäßigkeit muss größer sein als die Erstellung "
+"im Voraus. (Erinnerungsfunktion)."
 
 #: inc/ticketsatisfaction.class.php:122
 msgid "Satisfaction with the resolution of the ticket"

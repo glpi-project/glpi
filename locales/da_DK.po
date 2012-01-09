@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-08 18:35+0100\n"
-"PO-Revision-Date: 2012-01-08 17:34+0000\n"
+"POT-Creation-Date: 2012-01-08 19:04+0100\n"
+"PO-Revision-Date: 2012-01-09 08:34+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1246,8 +1246,8 @@ msgstr[1] "Software"
 #: inc/ruleimportcomputer.class.php:120 inc/search.class.php:4666
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Producent"
+msgstr[1] "Producenter"
 
 #: front/dictionnary.php:58 front/find_num.php:101 front/printer.php:41
 #: front/report.contract.php:59 front/report.default.php:126
@@ -1388,14 +1388,14 @@ msgstr[1] ""
 #: front/dictionnary.php:87 inc/monitortype.class.php:43
 msgid "Monitor type"
 msgid_plural "Monitor types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Skærmtype"
+msgstr[1] "Skærmtyper"
 
 #: front/dictionnary.php:89 inc/printertype.class.php:43
 msgid "Printer type"
 msgid_plural "Printer types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Printertype"
+msgstr[1] "Printer typer"
 
 #: front/dictionnary.php:91
 msgid "Device type"
@@ -1428,7 +1428,7 @@ msgstr[1] ""
 msgid "Operating system"
 msgid_plural "Operating systems"
 msgstr[0] "Operativsystem"
-msgstr[1] "Os"
+msgstr[1] "Operativsystemer"
 
 #: front/dictionnary.php:105 inc/computer.class.php:591
 #: inc/computer.class.php:783 inc/html.class.php:1700
@@ -1437,8 +1437,8 @@ msgstr[1] "Os"
 #: inc/ruledictionnaryoperatingsystemservicepack.class.php:60
 msgid "Service Pack"
 msgid_plural "Service Packs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Service Pack"
+msgstr[1] "Servicepacks"
 
 #: front/dictionnary.php:107 inc/computer_softwareversion.class.php:338
 #: inc/computer_softwareversion.class.php:733 inc/ocsserver.class.php:536
@@ -1902,14 +1902,14 @@ msgstr[1] ""
 #: inc/notificationevent.class.php:194 inc/notificationtemplate.class.php:48
 msgid "Notification template"
 msgid_plural "Notification templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Notifikationsmodel"
+msgstr[1] "Påmindelsesskabeloner"
 
 #: front/notimportedemail.php:41 inc/notimportedemail.class.php:56
 msgid "Refused email"
 msgid_plural "Refused emails"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "E-mail afvist"
+msgstr[1] "Afviste emails"
 
 #: front/ocsng.clean.php:39 front/ocsng.import.php:40 front/ocsng.link.php:40
 #: front/ocsng.php:42 front/ocsng.php:69 front/ocsng.sync.php:40
@@ -2186,8 +2186,8 @@ msgstr[1] "Entiteter"
 #: inc/software.class.php:248
 msgid "Location"
 msgid_plural "Locations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Lokation"
+msgstr[1] "Placeringer"
 
 #: front/report.contract.list.php:123 front/report.infocom.php:126
 #: front/report.year.list.php:135 inc/entity.class.php:445
@@ -2935,8 +2935,8 @@ msgstr "Prioritet"
 #: inc/ticket.class.php:1868
 msgid "Solution type"
 msgid_plural "Solution types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Løsnings-type"
+msgstr[1] "Løsningstyper"
 
 #: front/stat.tracking.php:93 inc/notificationtargetticket.class.php:531
 #: inc/notificationtargetticket.class.php:560 inc/requesttype.class.php:44
@@ -3109,7 +3109,7 @@ msgstr ""
 
 #: front/tracking.injector.php:80 inc/ticket.class.php:1260
 msgid "Your ticket has been registered, its treatment is in progress."
-msgstr "Din besked er sendt korrekt, din forespørgsel er arkiveret.."
+msgstr "Din sag er registreret og er ved at blive behandlet.."
 
 #: front/tracking.injector.php:86
 msgid "Thank you for using our automatic helpdesk system."
@@ -3644,8 +3644,8 @@ msgstr "Administrativt nummer"
 #: install/update_0723_078.php:3699
 msgid "Email"
 msgid_plural "Emails"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "E-mail"
+msgstr[1] "Emails"
 
 #: inc/authldap.class.php:501 inc/authldap.class.php:684
 #: inc/authldap.class.php:2275
@@ -3932,8 +3932,8 @@ msgstr "Test forbindelsen til e-mailserveren"
 #: inc/computer.class.php:787
 msgid "Update Source"
 msgid_plural "Update Sources"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "opdateringskilde"
+msgstr[1] "Opdater kilder"
 
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
 #: inc/bookmark.class.php:201 inc/commondbtm.class.php:1840
@@ -3958,7 +3958,7 @@ msgstr "Privat"
 
 #: inc/bookmark.class.php:368
 msgid "Partial load of the bookmark."
-msgstr ""
+msgstr "Delvis indlæsning af bogmærket.."
 
 #: inc/bookmark.class.php:527
 msgid "Bookmarks"
@@ -4145,8 +4145,8 @@ msgstr ""
 #: inc/holiday.class.php:43
 msgid "Close time"
 msgid_plural "Close times"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Lukketid"
+msgstr[1] "Luk tider"
 
 #: inc/calendarsegment.class.php:51
 msgid "Time range"
@@ -4979,7 +4979,7 @@ msgstr ""
 
 #: inc/commonitilobject.class.php:1678
 msgid "Waiting time"
-msgstr ""
+msgstr "Ventetid"
 
 #: inc/commonitilobject.class.php:1730 inc/commonitilobject.class.php:1833
 #: inc/ruleticket.class.php:251 inc/ruleticket.class.php:332
@@ -5051,8 +5051,8 @@ msgstr ""
 #: inc/commonitilobject.class.php:2459 inc/solutiontemplate.class.php:47
 msgid "Solution template"
 msgid_plural "Solution templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Løsnings-skabelon"
+msgstr[1] "Løsningsskabeloner"
 
 #: inc/commonitilobject.class.php:2475 inc/commonitilobject.class.php:2477
 msgid "Search a solution"
@@ -5198,8 +5198,8 @@ msgstr[1] "Domæner"
 #: inc/operatingsystemversion.class.php:44
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating systems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Operativsystemets version"
+msgstr[1] "Versioner af operativsystemer"
 
 #: inc/computer.class.php:605 inc/computer.class.php:795
 #: inc/ocsserver.class.php:2954 install/update_0681_07.php:1413
@@ -5264,8 +5264,8 @@ msgstr ""
 #: inc/ocsserver.class.php:289
 msgid "Processor"
 msgid_plural "Processors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Processor"
+msgstr[1] "Processorer"
 
 #: inc/computer.class.php:890
 msgid "Processeur frequency"
@@ -5291,28 +5291,28 @@ msgstr "Hukommelse (MB))"
 #: inc/networkport.class.php:703
 msgid "Network interface"
 msgid_plural "Network interfaces"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Netværks interface"
+msgstr[1] "Netværksgrænseflader"
 
 #: inc/computer.class.php:931 inc/devicesoundcard.class.php:43
 #: inc/ocsserver.class.php:309
 msgid "Soundcard"
 msgid_plural "Soundcards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Lydkort"
+msgstr[1] "Lydkort"
 
 #: inc/computer.class.php:940 inc/devicegraphiccard.class.php:43
 #: inc/ocsserver.class.php:305
 msgid "Graphics Card"
 msgid_plural "Graphics Cards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Grafikkort"
+msgstr[1] "Grafikkort"
 
 #: inc/computer.class.php:949 inc/devicemotherboard.class.php:43
 msgid "System Board"
 msgid_plural "System Boards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bundkort"
+msgstr[1] "Systemkort"
 
 #: inc/computer.class.php:959
 msgid "Hard drive type"
@@ -5325,8 +5325,8 @@ msgstr "Harddisk størrelse"
 #: inc/computer.class.php:980 inc/devicepowersupply.class.php:43
 msgid "Power Supply"
 msgid_plural "Power Supplies"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Strømforsyning"
+msgstr[1] "Strømforsyninger"
 
 #: inc/computer.class.php:988 inc/computer.class.php:992
 #: inc/computerdisk.class.php:49 inc/computerdisk.class.php:221
@@ -5364,8 +5364,8 @@ msgstr "Partition"
 #: inc/computerdisk.class.php:228 inc/filesystem.class.php:43
 msgid "File system"
 msgid_plural "File systems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Filsystem"
+msgstr[1] "Filsystemer"
 
 #: inc/computer.class.php:1051 inc/html.class.php:1313
 #: inc/ocslink.class.php:97 inc/profile.class.php:1491
@@ -5403,32 +5403,32 @@ msgstr ""
 #: inc/ocsserver.class.php:471
 msgid "Virtual machine"
 msgid_plural "Virtual machines"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Virtuel maskine"
+msgstr[1] "Virtuelle maskiner"
 
 #: inc/computer.class.php:1127 inc/computervirtualmachine.class.php:173
 #: inc/computervirtualmachine.class.php:317
 #: inc/virtualmachinestate.class.php:44
 msgid "State of the virtual machine"
 msgid_plural "States of the virtual machine"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Virtuel maskines status"
+msgstr[1] "Tilstand for den virtuelle maskine"
 
 #: inc/computer.class.php:1136 inc/computervirtualmachine.class.php:169
 #: inc/computervirtualmachine.class.php:316
 #: inc/virtualmachinesystem.class.php:44
 msgid "Virtualization model"
 msgid_plural "Virtualization Models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Virtualiseringsmodel"
+msgstr[1] "Virtualiseringsmodeler"
 
 #: inc/computer.class.php:1145 inc/computervirtualmachine.class.php:162
 #: inc/computervirtualmachine.class.php:315
 #: inc/virtualmachinetype.class.php:44
 msgid "Virtualization system"
 msgid_plural "Virtualization systems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Virtualiseringssystem"
+msgstr[1] "Virtualiseringssystemer"
 
 #: inc/computer.class.php:1154
 msgid "Virtual machine name"
@@ -5985,7 +5985,7 @@ msgstr ""
 
 #: inc/config.class.php:850
 msgid "Regenerate"
-msgstr ""
+msgstr "Regenerer"
 
 #: inc/config.class.php:879
 msgid "Log Level"
@@ -6126,7 +6126,7 @@ msgstr "Brugte forbrugsvarer"
 
 #: inc/consumable.class.php:377 inc/consumable.class.php:528
 msgid "Give to"
-msgstr ""
+msgstr "Giv til"
 
 #: inc/consumable.class.php:389
 msgid "Give"
@@ -6216,8 +6216,8 @@ msgstr[1] ""
 #: inc/contacttype.class.php:43
 msgid "Contact type"
 msgid_plural "Contact types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kontakttype"
+msgstr[1] "Kontakt type"
 
 #: inc/contract.class.php:164 inc/contract.class.php:434
 #: inc/ticket.class.php:1877
@@ -6659,20 +6659,20 @@ msgstr "Tabel-optimering"
 #: inc/devicecase.class.php:43
 msgid "Case"
 msgid_plural "Cases"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kabinet"
+msgstr[1] "Kabinet"
 
 #: inc/devicecasetype.class.php:43
 msgid "Case type"
 msgid_plural "Case types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kabinettype"
+msgstr[1] "Sags type"
 
 #: inc/devicecontrol.class.php:43
 msgid "Controller"
 msgid_plural "Controllers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Controller"
+msgstr[1] "Kontrollere"
 
 #: inc/devicecontrol.class.php:51 inc/devicecontrol.class.php:65
 #: inc/devicecontrol.class.php:86
@@ -6693,8 +6693,8 @@ msgstr "Grænseflade"
 #: inc/devicedrive.class.php:43 inc/ocsserver.class.php:313
 msgid "Drive"
 msgid_plural "Drives"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Drev"
+msgstr[1] "Drev"
 
 #: inc/devicedrive.class.php:51 inc/devicedrive.class.php:68
 #: inc/devicedrive.class.php:94
@@ -6711,8 +6711,8 @@ msgstr "Hastighed"
 #: inc/printer.class.php:426
 msgid "Memory"
 msgid_plural "Memories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Hukommelse"
+msgstr[1] "Hukommelse"
 
 #: inc/devicegraphiccard.class.php:56 inc/devicegraphiccard.class.php:71
 msgid "Memory by default"
@@ -6721,8 +6721,8 @@ msgstr ""
 #: inc/deviceharddrive.class.php:43 inc/ocsserver.class.php:297
 msgid "Hard Drive"
 msgid_plural "Hard Drives"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Harddisk"
+msgstr[1] "Harddiske"
 
 #: inc/deviceharddrive.class.php:48 inc/deviceharddrive.class.php:124
 msgid "Capacity"
@@ -6767,8 +6767,8 @@ msgstr "Chipset"
 #: inc/devicenetworkcard.class.php:43 inc/ocsserver.class.php:301
 msgid "Network Card"
 msgid_plural "Network Cards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Netværkskort"
+msgstr[1] "Netværkskort"
 
 #: inc/devicenetworkcard.class.php:56 inc/devicenetworkcard.class.php:70
 msgid "MAC address by default"
@@ -6782,8 +6782,8 @@ msgstr "Hastighed"
 #: inc/devicepci.class.php:43
 msgid "Other Component"
 msgid_plural "Other Components"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Anden komponent"
+msgstr[1] "Andre komponenter"
 
 #: inc/devicepowersupply.class.php:51 inc/devicepowersupply.class.php:65
 #: inc/devicepowersupply.class.php:87
@@ -6821,8 +6821,8 @@ msgstr ""
 #: inc/documentcategory.class.php:43
 msgid "Document heading"
 msgid_plural "Document headings"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Dokument overskrift"
+msgstr[1] "Dokument overskrift"
 
 #: inc/document.class.php:104 inc/document.class.php:1003
 #: inc/document.class.php:1091
@@ -6970,7 +6970,7 @@ msgstr "Tilføj en ny fil"
 
 #: inc/document.class.php:1481
 msgid "Associate an existing document"
-msgstr ""
+msgstr "Tilknyt et eksisterende dokument"
 
 #: inc/documenttype.class.php:45 inc/documenttype.class.php:79
 msgid "Icon"
@@ -6988,8 +6988,8 @@ msgstr "Efternavn"
 #: inc/profile.class.php:1528
 msgid "Document Type"
 msgid_plural "Document Types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Dokument type"
+msgstr[1] "Dokumenttyper"
 
 #: inc/dropdown.class.php:503 inc/dropdown.class.php:506
 msgid "GMT"
@@ -7255,7 +7255,7 @@ msgstr "E-mail domæne"
 
 #: inc/entity.class.php:332 inc/entitydata.class.php:579
 msgid "Prefix for notifications"
-msgstr ""
+msgstr "Præfiks for notifikationer"
 
 #: inc/entity.class.php:338 inc/entitydata.class.php:565
 #: inc/notificationmailsetting.class.php:153
@@ -7611,7 +7611,7 @@ msgstr ""
 
 #: inc/group.class.php:213
 msgid "Visible in a ticket"
-msgstr ""
+msgstr "Synlig i en sag"
 
 #: inc/group.class.php:226 inc/group.class.php:323
 msgid "Can be notified"
@@ -7619,7 +7619,7 @@ msgstr ""
 
 #: inc/group.class.php:232
 msgid "Can contain"
-msgstr ""
+msgstr "Kan indeholde"
 
 #: inc/group.class.php:240
 msgid "User  "
@@ -7746,8 +7746,8 @@ msgstr[1] ""
 #: inc/html.class.php:1584 inc/networkequipmentmodel.class.php:45
 msgid "Networking equipment model"
 msgid_plural "Networking equipment models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Netværksmodel"
+msgstr[1] "Netværks modeller"
 
 #: inc/html.class.php:1597
 msgid "Phones model"
@@ -7776,8 +7776,8 @@ msgstr[1] ""
 #: inc/html.class.php:1662 inc/networkequipmenttype.class.php:43
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Netværksudstyrstype"
+msgstr[1] "Netværksudstyr-typer"
 
 #: inc/html.class.php:1675
 msgid "Phones type"
@@ -7855,7 +7855,7 @@ msgstr "Nu"
 
 #: inc/html.class.php:3218 inc/html.class.php:3221
 msgid "Today"
-msgstr ""
+msgstr "I dag"
 
 #: inc/html.class.php:3225
 msgid "Specify a date"
@@ -7877,31 +7877,31 @@ msgstr[1] ""
 
 #: inc/html.class.php:3239
 msgid "last Sunday"
-msgstr ""
+msgstr "sidste søndag"
 
 #: inc/html.class.php:3240
 msgid "last Monday"
-msgstr ""
+msgstr "sidste mandag"
 
 #: inc/html.class.php:3241
 msgid "last Tuesday"
-msgstr ""
+msgstr "sidste tirsdag"
 
 #: inc/html.class.php:3242
 msgid "last Wednesday"
-msgstr ""
+msgstr "sidste onsdag"
 
 #: inc/html.class.php:3243
 msgid "last Thursday"
-msgstr ""
+msgstr "sidste torsdag"
 
 #: inc/html.class.php:3244
 msgid "last Friday"
-msgstr ""
+msgstr "sidste fredag"
 
 #: inc/html.class.php:3245
 msgid "last Saturday"
-msgstr ""
+msgstr "sidste lørdag"
 
 #: inc/html.class.php:3249
 #, php-format
@@ -7912,7 +7912,7 @@ msgstr[1] ""
 
 #: inc/html.class.php:3253
 msgid "Beginning of the month"
-msgstr ""
+msgstr "Starten af måneden"
 
 #: inc/html.class.php:3257
 #, php-format
@@ -7923,7 +7923,7 @@ msgstr[1] ""
 
 #: inc/html.class.php:3261
 msgid "Beginning of the year"
-msgstr ""
+msgstr "Starten af året"
 
 #: inc/html.class.php:3265
 #, php-format
@@ -8644,8 +8644,8 @@ msgstr "MAC"
 #: inc/networkequipmentfirmware.class.php:43 inc/phone.class.php:318
 msgid "Firmware"
 msgid_plural "Firmwares"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Firmware"
+msgstr[1] "Firmware"
 
 #: inc/networkname.class.php:93
 msgid "Network name"
@@ -8859,8 +8859,8 @@ msgstr "Påmindelses metode"
 #: inc/notificationtemplatetranslation.class.php:290
 msgid "Event"
 msgid_plural "Events"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Forekomst"
+msgstr[1] "Hændelser"
 
 #: inc/notificationmail.class.php:176
 msgid "Mail test"
@@ -9491,7 +9491,7 @@ msgstr "CSS"
 #: inc/notificationtemplate.class.php:269
 #, php-format
 msgid "Automatically generated by GLPI %s"
-msgstr ""
+msgstr "Automatisk genereret af GLPI %s"
 
 #: inc/notificationtemplatetranslation.class.php:43
 #: inc/notificationtemplatetranslation.class.php:53
@@ -9699,7 +9699,7 @@ msgstr ""
 
 #: inc/ocsserver.class.php:483
 msgid "Behavior to the deletion of a computer in OCSNG"
-msgstr ""
+msgstr "Opførsel ved sletning af en computer i OCSNG"
 
 #: inc/ocsserver.class.php:488
 #, php-format
@@ -9744,7 +9744,7 @@ msgstr "OCSNG database i UTF8"
 
 #: inc/ocsserver.class.php:597
 msgid "Connecting to the OCSNG database"
-msgstr ""
+msgstr "Tilslutter til OCSNG databasen"
 
 #: inc/ocsserver.class.php:601
 msgid "Connection to the OCSNG database failed"
@@ -9784,7 +9784,7 @@ msgstr "Korrekt OCSNG konfiguration og version"
 
 #: inc/ocsserver.class.php:726
 msgid "Unable to add. The OCSNG server already exists."
-msgstr ""
+msgstr "Kan ikke tilføje. OCSNG serveren eksisterer allerede.."
 
 #. TRANS: %s is the OCS id
 #: inc/ocsserver.class.php:1159
@@ -9945,8 +9945,8 @@ msgstr "Mærke"
 #: inc/peripheraltype.class.php:43
 msgid "Devices type"
 msgid_plural "Devices types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Enhedstyper"
+msgstr[1] "Enheds typer"
 
 #: inc/phone.class.php:312 inc/phone.class.php:487
 msgid "Power supply"
@@ -10106,7 +10106,7 @@ msgstr "Side tæller"
 
 #: inc/printer.class.php:438 inc/printer.class.php:612
 msgid "Current counter of pages"
-msgstr ""
+msgstr "Nuværende aflæsning af sider"
 
 #: inc/printer.class.php:447 inc/printer.class.php:581
 msgid "Serial"
@@ -10323,11 +10323,11 @@ msgstr "Administration af reservationer"
 
 #: inc/profile.class.php:734 inc/profile.class.php:1501
 msgid "Manual OCSNG synchronization"
-msgstr ""
+msgstr "Manuel OCSNG synkronisering"
 
 #: inc/profile.class.php:737 inc/profile.class.php:1496
 msgid "See OCSNG informations"
-msgstr ""
+msgstr "Se OCSNG oplysninger"
 
 #: inc/profile.class.php:786
 msgid "Creation"
@@ -10363,7 +10363,7 @@ msgstr "Opdatér alle opfølgninger"
 
 #: inc/profile.class.php:843
 msgid "Deletion"
-msgstr ""
+msgstr "Sletning"
 
 #: inc/profile.class.php:847 inc/profile.class.php:1662
 msgid "Ticket's deletion"
@@ -10739,7 +10739,7 @@ msgstr "pr. uge"
 
 #: inc/reservation.class.php:665
 msgid "Delete all rehearsals"
-msgstr ""
+msgstr "Slet alle prøver"
 
 #: inc/reservation.class.php:786
 #, php-format
@@ -11502,8 +11502,8 @@ msgstr "Tilføj en licens"
 #: inc/softwarelicensetype.class.php:43
 msgid "License type"
 msgid_plural "License types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Licenstype"
+msgstr[1] "Licenstyper"
 
 #: inc/softwareversion.class.php:307 inc/softwareversion.class.php:318
 msgid "Add a version"
@@ -11587,7 +11587,7 @@ msgstr ""
 
 #: inc/stat.class.php:1424
 msgid "By problem"
-msgstr ""
+msgstr "Efter problem"
 
 #: inc/stat.class.php:1430
 msgid "Select statistics to be displayed"
@@ -11621,8 +11621,8 @@ msgstr "Tilføj en kontakt"
 #: inc/taskcategory.class.php:47
 msgid "Tasks category"
 msgid_plural "Tasks categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Opgaver kategori"
+msgstr[1] "Opgavekategorier"
 
 #: inc/ticket.class.php:348 inc/ticket.class.php:365
 msgid "Created tickets"
@@ -12512,7 +12512,7 @@ msgstr "Bruger information"
 
 #: inc/useremail.class.php:186
 msgid "Default email"
-msgstr ""
+msgstr "Standard email"
 
 #: inc/usertitle.class.php:43
 msgid "Users title"
