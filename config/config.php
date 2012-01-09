@@ -180,8 +180,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
                echo "<p class='red'>".
                      __('The version of the database is not compatible with the version of the installed files. An update is necessary.')."</p>";
-               echo "<input type='submit' name='from_update' value=\"".__('Update')."\" class='submit'>";
-               echo "</form>";
+               echo "<input type='submit' name='from_update' value=\"";
+               echo _x('button', 'Upgrade')."\" class='submit'></form>";
 
             } else if (trim($CFG_GLPI["version"])>GLPI_VERSION) {
                echo "<p class='red'>".
