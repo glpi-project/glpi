@@ -184,7 +184,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
                          'input' => false);
          }
          if (!$address->setAddressFromString($network[0])) {
-            return array('error' => $__('Invalid network address'),
+            return array('error' => __('Invalid network address'),
                          'input' => false);
          }
          if (!$netmask->setNetmaskFromString($network[1], $address->getVersion())) {
