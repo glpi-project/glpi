@@ -40,7 +40,7 @@ function update072to0721() {
    global $DB, $CFG_GLPI;
 
    //TRANS: %s is the number of new version
-   echo "<h3>"._sprintf(_('Update %s'), '-> 0.72.1')."</h3>";
+   echo "<h3>"._sprintf(_('Update to %s'), '0.72.1')."</h3>";
    displayMigrationMessage("0721"); // Start
 
    if (!isIndex("glpi_groups", "ldap_group_dn")) {
