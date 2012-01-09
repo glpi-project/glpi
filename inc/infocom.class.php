@@ -1023,17 +1023,15 @@ class Infocom extends CommonDBChild {
                if ($ic->fields["warranty_duration"] == -1) {
                   _e('Lifelong');
                } else {
-                  echo $ic->fields["warranty_duration"];
+                  echo sprintf(_n('%d month', '%d months', $ic->fields["warranty_duration"]),
+                                    $ic->fields["warranty_duration"]);
                }
 
             } else {
                Dropdown::showInteger("warranty_duration", $ic->fields["warranty_duration"], 0, 120,
-                                     1, array(-1 => __('Lifelong')));
+                                     1, array(-1 => __('Lifelong')), array('unit' => 'month'));
             }
-            if ($ic->fields["warranty_duration"] >= 0) {
-               _e(' month');
-            }
-            echo "<span class='small_space'>".__('"Valid to:')."</span>";
+            echo "<span class='small_space'>".__('Valid to:')."</span>";
             echo self::getWarrantyExpir($ic->fields["warranty_date"],
                                         $ic->fields["warranty_duration"]);
             echo "</td></tr>";

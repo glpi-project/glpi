@@ -171,8 +171,8 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Initial contract period')."</td><td>";
-      Dropdown::showInteger("duration", $this->fields["duration"], 0, 120);
-      _e(' month');
+      Dropdown::showInteger("duration", $this->fields["duration"], 1, 120,
+                            1, array(0 => Dropdown::EMPTY_VALUE), array('unit' => 'month'));
       if (!empty($this->fields["begin_date"])) {
          echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
                                                $this->fields["duration"]);
@@ -186,15 +186,15 @@ class Contract extends CommonDBTM {
       echo "<td>".__('Contract renewal period')."</td><td>";
       Dropdown::showInteger("periodicity", $this->fields["periodicity"], 12, 60, 12,
                             array(0 => Dropdown::EMPTY_VALUE,
-                                  1 => "1",
-                                  2 => "2",
-                                  3 => "3",
-                                  6 => "6"));
-      _e(' month');
+                                  1 => sprintf(_n('%d month', '%d months', 1), 1),
+                                  2 => sprintf(_n('%d month', '%d months', 2), 2),
+                                  3 => sprintf(_n('%d month', '%d months', 3), 3),
+                                  6 => sprintf(_n('%d month', '%d months', 6), 6)),
+                            array('unit' => 'month'));
       echo "</td>";
       echo "<td>".__('Notice')."</td><td>";
-      Dropdown::showInteger("notice", $this->fields["notice"], 0, 120);
-      _e(' month');
+      Dropdown::showInteger("notice", $this->fields["notice"], 0, 120,
+                            1, array(), array('unit' => 'month'));
       if (!empty($this->fields["begin_date"]) && $this->fields["notice"]>0) {
          echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
                                                $this->fields["duration"], $this->fields["notice"]);
@@ -208,11 +208,11 @@ class Contract extends CommonDBTM {
       echo "<td>";
       Dropdown::showInteger("billing", $this->fields["billing"], 12, 60, 12,
                             array(0 => Dropdown::EMPTY_VALUE,
-                                  1 => "1",
-                                  2 => "2",
-                                  3 => "3",
-                                  6 => "6"));
-      _e(' month');
+                                  1 => sprintf(_n('%d month', '%d months', 1), 1),
+                                  2 => sprintf(_n('%d month', '%d months', 2), 2),
+                                  3 => sprintf(_n('%d month', '%d months', 3), 3),
+                                  6 => sprintf(_n('%d month', '%d months', 6), 6)),
+                            array('unit' => 'month'));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__s('Max number of items')."</td><td>";
