@@ -648,7 +648,8 @@ class Supplier extends CommonDBTM {
          echo "<td class='center'>".
                 Dropdown::getDropdownName("glpi_contracttypes",$data["contracttypes_id"])."</td>";
          echo "<td class='center'>".Html::convDate($data["begin_date"])."</td>";
-         echo "<td class='center'>".$data["duration"].__(' month');
+         echo "<td class='center'>".
+               sprintf(_n('%d month', '%d months', $data["duration"]), $data["duration"]);
 
          if ($data["begin_date"]!='' && !empty($data["begin_date"])) {
             echo " -> ".Infocom::getWarrantyExpir($data["begin_date"], $data["duration"]);

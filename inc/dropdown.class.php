@@ -1022,7 +1022,16 @@ class Dropdown {
       }
 
       for ($i=$min ; $i<=$max ; $i+=$step) {
-         echo "<option value='$i' ".($i==$value?" selected ":"").">$i</option>";
+         $txt = $i;
+         if (isset($options['unit']) && $i) {
+            switch ($options['unit']) {
+               case 'month' :
+                  //TRANS: %d is a number of months
+                  $txt = sprintf(_n('%d month', '%d months', $i), $i);
+                  break;
+            }
+         }
+         echo "<option value='$i' ".($i==$value?" selected ":"").">$txt</option>";
       }
       echo "</select>";
 

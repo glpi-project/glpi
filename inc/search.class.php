@@ -3849,7 +3849,8 @@ class Search {
                $split=explode('$$$$', $data[$NAME.$num]);
                $output = "";
                foreach ($split as $duration) {
-                  $output .= (empty($output)?'':'<br>') . $duration . __(' month');
+                  $output .= (empty($output)?'':'<br>') .
+                              sprintf(_n('%d month', '%d months', $duration), $duration);
                }
                return $output;
             }
@@ -3880,7 +3881,7 @@ class Search {
                foreach ($split as $val) {
                   $out .= (empty($out)?'':'<br>');
                   if ($val>0) {
-                     $out .= $val.__(' month');
+                     $out .= sprintf(_n('%d month', '%d months', $val), $val);
                   }
                   if ($val<0) {
                      $out .= __('Lifelong');
