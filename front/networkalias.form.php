@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST["id"], $alias->getType(), 4, "setup",
             //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["delete"]) || isset($_GET['remove_alias'])) {
@@ -71,7 +71,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_REQUEST["id"], $alias->getType(), 4, "setup",
             //TRANS: %s is the user login
-            sprintf(__('%s purge the item'), $_SESSION["glpiname"]));            
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $node = new NetworkName();
    if ($node->can($alias->fields["networknames_id"], 'r')) {
       Html::redirect($node->getLinkURL());
