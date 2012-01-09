@@ -67,7 +67,7 @@ if (isset($_GET["active_entity"])) {
    }
 }
 
-Html::header(__('Standard interface'),$_SERVER['PHP_SELF']);
+Html::header(Central::getTypeName(1), $_SERVER['PHP_SELF']);
 
 // Redirect management
 if (isset($_GET["redirect"])) {

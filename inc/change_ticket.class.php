@@ -57,7 +57,7 @@ class Change_Ticket extends CommonDBRelation{
     * Get search function for the class
     *
     * @return array of search option
-    */
+   **/
    function getSearchOptions() {
       return parent::getSearchOptions();
    }
@@ -103,8 +103,9 @@ class Change_Ticket extends CommonDBRelation{
       $used = array();
       if ($DB->numrows($result) >0) {
          Session::initNavigateListItems('Ticket',
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$change->getTypeName(1), $change->fields["name"]));
+               //TRANS : %1$s is the itemtype name,
+               //        %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'), $change->getTypeName(1), $change->fields["name"]));
 
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
