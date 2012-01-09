@@ -450,7 +450,8 @@ class Plugin extends CommonDBTM {
                         $do_install = $function();
                      }
                      if ($plug['state']==self::NOTUPDATED) {
-                        $msg = __('Update');
+                        //TRANS: verb, for button
+                        $msg = _x('button', 'Upgrade');
                      } else {
                         $msg = __('Install');
                      }

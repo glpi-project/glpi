@@ -824,7 +824,7 @@ echo "<div id='principal'>";
 echo "<div id='bloc'>";
 echo "<div class='haut'></div>";
 echo "<h2>GLPI SETUP</h2>";
-echo "<br><h3>".__('Update')."</h3>";
+echo "<br><h3>".__('Upgrade')."</h3>";
 
 // step 1    avec bouton de confirmation
 

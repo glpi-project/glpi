@@ -314,7 +314,8 @@ class Software extends CommonDBTM {
 
       // UPDATE
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Update') . "</td><td>";
+      //TRANS: a noun, (ex : this software is an upgrade of..)
+      echo "<td>" . __('Upgrade') . "</td><td>";
       Dropdown::showYesNo("is_update", $this->fields['is_update']);
       echo "&nbsp;" . __('from') . "&nbsp;";
       Dropdown::show('Software', array('value' => $this->fields["softwares_id"]));
