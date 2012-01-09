@@ -248,9 +248,9 @@ class ComputerDisk extends CommonDBChild {
                echo "<td>".$data['mountpoint']."</td>";
                echo "<td>".$data['fsname']."</td>";
                //TRANS: %s is a size
-               $tmp = sprintf(__('%d Mio'), Html::formatNumber($data['totalsize'], false, 0));
+               $tmp = sprintf(__('%s Mio'), Html::formatNumber($data['totalsize'], false, 0));
                echo "<td class='right'>$tmp<span class='small_space'></span></td>";
-               $tmp = sprintf(__('%d Mio'), Html::formatNumber($data['freesize'], false, 0));
+               $tmp = sprintf(__('%s Mio'), Html::formatNumber($data['freesize'], false, 0));
                echo "<td class='right'>$tmp<span class='small_space'></span></td>";
                echo "<td>";
                $percent = 0;
