@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-08 18:35+0100\n"
-"PO-Revision-Date: 2012-01-08 17:34+0000\n"
+"POT-Creation-Date: 2012-01-08 19:04+0100\n"
+"PO-Revision-Date: 2012-01-09 07:51+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -206,11 +206,11 @@ msgstr ""
 
 #: ajax/dropdownMassiveAction.php:86
 msgid "After"
-msgstr "enne"
+msgstr "pärast"
 
 #: ajax/dropdownMassiveAction.php:87
 msgid "Before"
-msgstr "pärast"
+msgstr "enne"
 
 #: ajax/dropdownMassiveAction.php:114 front/stat.tracking.php:77
 #: front/stat.tracking.php:97 inc/commonitilobject.class.php:1690
@@ -3950,7 +3950,7 @@ msgstr "Isiklik"
 
 #: inc/bookmark.class.php:368
 msgid "Partial load of the bookmark."
-msgstr ""
+msgstr "Järjehoidjat näidatakse ainult osaliselt."
 
 #: inc/bookmark.class.php:527
 msgid "Bookmarks"
@@ -11325,11 +11325,11 @@ msgstr[1] ""
 
 #: inc/search.class.php:4841 inc/search.class.php:4875
 msgid "before"
-msgstr "pärast"
+msgstr "enne"
 
 #: inc/search.class.php:4845 inc/search.class.php:4876
 msgid "after"
-msgstr "enne"
+msgstr "pärast"
 
 #: inc/search.class.php:5090 inc/search.class.php:5110
 #, php-format

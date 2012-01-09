@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-08 18:35+0100\n"
-"PO-Revision-Date: 2012-01-08 17:34+0000\n"
+"POT-Creation-Date: 2012-01-08 19:04+0100\n"
+"PO-Revision-Date: 2012-01-09 08:29+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -4018,7 +4018,7 @@ msgstr "Privāts"
 
 #: inc/bookmark.class.php:368
 msgid "Partial load of the bookmark."
-msgstr ""
+msgstr "Daļēja grāmatzīmes ielāde.."
 
 #: inc/bookmark.class.php:527
 msgid "Bookmarks"

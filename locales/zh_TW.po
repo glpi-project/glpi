@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-08 18:35+0100\n"
-"PO-Revision-Date: 2012-01-08 17:34+0000\n"
+"POT-Creation-Date: 2012-01-08 19:04+0100\n"
+"PO-Revision-Date: 2012-01-09 08:35+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -363,7 +363,7 @@ msgstr "分開"
 
 #: ajax/dropdownTrackingDeviceType.php:49 front/find_num.php:80
 msgid "Enter the first letters (user, item name, serial or asset number)"
-msgstr "進入一個在上寫字(用戶名、項目或者序號))"
+msgstr "輸入的第一個字母(使用者、項目名稱或者序號))"
 
 #: ajax/dropdownValue.php:233 front/report.contract.list.php:140
 #: front/report.infocom.php:176 front/report.year.list.php:152
@@ -3042,7 +3042,7 @@ msgstr ""
 
 #: front/tracking.injector.php:80 inc/ticket.class.php:1260
 msgid "Your ticket has been registered, its treatment is in progress."
-msgstr "您的個人訊息已成功送出, 您的需求已經記錄.."
+msgstr "您的問題單已登記,正在進行處理。.."
 
 #: front/tracking.injector.php:86
 msgid "Thank you for using our automatic helpdesk system."
@@ -3154,7 +3154,7 @@ msgstr "錯誤的帳號/密碼"
 
 #: inc/auth.class.php:196 inc/auth.class.php:563 inc/auth.class.php:580
 msgid "User not authorized to connect in GLPI"
-msgstr "用戶無權連接GLPI"
+msgstr "使用者無權連接GLPI"
 
 #: inc/auth.class.php:238
 msgid "Password field is empty"
@@ -3226,7 +3226,7 @@ msgstr "基於GLPI本身"
 
 #: inc/auth.class.php:737
 msgid "Not yet authenticated"
-msgstr "尚未授權"
+msgstr "尚未身份驗證"
 
 #: inc/auth.class.php:917 inc/auth.class.php:938 inc/dropdown.class.php:1467
 #: inc/dropdown.class.php:1505 inc/ocslink.class.php:142
@@ -3506,7 +3506,7 @@ msgstr "搜尋方式"
 
 #: inc/authldap.class.php:413 inc/group.class.php:375
 msgid "In users"
-msgstr "依用戶"
+msgstr "依使用者"
 
 #: inc/authldap.class.php:415 inc/group.class.php:390
 msgid "In groups"
@@ -3514,12 +3514,12 @@ msgstr "依群組"
 
 #: inc/authldap.class.php:417
 msgid "In users and groups"
-msgstr "用戶 & 群組"
+msgstr "使用者 & 群組"
 
 #: inc/authldap.class.php:419 inc/authldap.class.php:720
 #: inc/group.class.php:297 inc/group.class.php:378
 msgid "User attribute containing its groups"
-msgstr "用戶類別包含自身群組"
+msgstr "使用者類別包含自身群組"
 
 #: inc/authldap.class.php:423 inc/authldap.class.php:726
 #: inc/authldap.class.php:858
@@ -3528,7 +3528,7 @@ msgstr "以群組做搜尋"
 
 #: inc/authldap.class.php:428 inc/authldap.class.php:732
 msgid "Group attribute containing its users"
-msgstr "群組類別包含自身用戶"
+msgstr "群組類別包含此使用者"
 
 #: inc/authldap.class.php:431 inc/authldap.class.php:702
 msgid "Use DN in the search"
@@ -3631,7 +3631,7 @@ msgstr "實體的搜索篩選"
 #: inc/authldap.class.php:857 inc/authldap.class.php:869
 #: inc/authldap.class.php:2235
 msgid "Search filter for users"
-msgstr "依用戶做搜尋篩選"
+msgstr "依使用者做搜尋篩選"
 
 #: inc/authldap.class.php:985
 msgid ""
@@ -3709,11 +3709,11 @@ msgstr "沒有 LDAP 目錄設定於 GLPI"
 
 #: inc/authldap.class.php:1880
 msgid "User not found or several users found"
-msgstr "無法找到用戶或發現多個用戶"
+msgstr "無法找到使用者或發現多個使用者"
 
 #: inc/authldap.class.php:1883 inc/user.class.php:466
 msgid "Unable to add. The user already exists."
-msgstr "無法新增,該用戶已存在.."
+msgstr "無法新增,該使用者已存在.."
 
 #: inc/authldap.class.php:2200
 msgid "Expert mode"
@@ -3828,7 +3828,7 @@ msgstr "結果的連接參量"
 
 #: inc/authmail.class.php:176
 msgid "Email domain Name (users email will be login@domain)"
-msgstr "電子郵件Domain名稱 <br>(用戶的電子郵件是 login@domain))"
+msgstr "電子郵件Domain名稱 <br>(使用者的電子郵件是 login@domain))"
 
 #. TRANS: %s is the datetime of update
 #. TRANS: %s is the datetime of insertion
@@ -3881,7 +3881,7 @@ msgstr "私人"
 
 #: inc/bookmark.class.php:368
 msgid "Partial load of the bookmark."
-msgstr ""
+msgstr "載入部份的書籤."
 
 #: inc/bookmark.class.php:527
 msgid "Bookmarks"
@@ -4872,15 +4872,15 @@ msgstr "非常低"
 
 #: inc/commonitilobject.class.php:1664
 msgid "Resolution time"
-msgstr ""
+msgstr "解決時間"
 
 #: inc/commonitilobject.class.php:1671
 msgid "Closing time"
-msgstr ""
+msgstr "結案時間"
 
 #: inc/commonitilobject.class.php:1678
 msgid "Waiting time"
-msgstr ""
+msgstr "等待時間"
 
 #: inc/commonitilobject.class.php:1730 inc/commonitilobject.class.php:1833
 #: inc/ruleticket.class.php:251 inc/ruleticket.class.php:332
@@ -5656,7 +5656,7 @@ msgstr "清除狀態"
 
 #: inc/config.class.php:434
 msgid "Automatically add users from an external authentication source"
-msgstr "自動地新增一個外在認證來源的用戶"
+msgstr "自動地新增一個外在認證來源的使用者"
 
 #: inc/config.class.php:436
 msgid "Add a user without accreditation from a LDAP directory"
@@ -5664,7 +5664,7 @@ msgstr "新增一個沒有從一個 LDAP目錄認證的使用者"
 
 #: inc/config.class.php:441
 msgid "Action when a user is deleted from the LDAP directory"
-msgstr "當用戶從 LDAP目錄中刪除後執行"
+msgstr "當使用者從 LDAP目錄中刪除後執行"
 
 #: inc/config.class.php:443
 msgid "GLPI server time zone"
@@ -7238,7 +7238,7 @@ msgstr "郵件域代理實體"
 
 #: inc/entitydata.class.php:341
 msgid "Values used in the interface to search users from a LDAP directory"
-msgstr "LDAP目錄搜索用戶界面中使用的值"
+msgstr "LDAP目錄搜索使用者界面中使用的值"
 
 #: inc/entitydata.class.php:352
 msgid "LDAP filter associated to the entity (if necessary)"
@@ -7495,7 +7495,7 @@ msgstr ""
 
 #: inc/group_user.class.php:230
 msgid "Add a user"
-msgstr "新增用戶"
+msgstr "新增使用者"
 
 #: inc/group_user.class.php:363 inc/rule.class.php:491 inc/rule.class.php:494
 #: inc/rule.class.php:549 inc/rule.class.php:555 inc/rule.class.php:1171
@@ -8796,7 +8796,7 @@ msgstr "工程師負責此問題單"
 #: inc/notificationtargetcommonitilobject.class.php:378
 #: inc/notificationtargetreservation.class.php:52
 msgid "Hardware user"
-msgstr "硬體用戶"
+msgstr "硬體使用者"
 
 #: inc/notificationtargetcommonitilobject.class.php:383
 msgid "Watcher group manager"
@@ -9517,7 +9517,7 @@ msgstr "OCSNG資料庫名稱"
 
 #: inc/ocsserver.class.php:551
 msgid "OCSNG database user"
-msgstr "OCSNG資料庫的用戶"
+msgstr "OCSNG資料庫的使用者"
 
 #: inc/ocsserver.class.php:555
 msgid "OCSNG user password"
@@ -9773,7 +9773,7 @@ msgstr "完成"
 
 #: inc/planning.class.php:112
 msgid "User is already occupied for the selected timeframe:"
-msgstr "所選定的時限用戶已經被佔用：:"
+msgstr "使用者所選定的時間表已經被佔用：:"
 
 #: inc/planning.class.php:198 inc/planning.class.php:214
 msgid "Personal + groups"
@@ -10218,7 +10218,7 @@ msgstr ""
 
 #: inc/profile.class.php:1153 inc/profile.class.php:1615
 msgid "Method for user authentication and synchronization"
-msgstr "用戶認證和同步方法"
+msgstr "使用者認證和同步方法"
 
 #: inc/profile.class.php:1177 inc/profile.class.php:1620
 msgid "Add users from an external source"
@@ -10300,7 +10300,7 @@ msgstr "寫"
 
 #: inc/profile_user.class.php:112 inc/profile_user.class.php:235
 msgid "Add an authorization to a user"
-msgstr "新增授權到用戶"
+msgstr "新增權力給使用者"
 
 #: inc/profile_user.class.php:130
 msgid "Profile (D=Dynamic, R=Recursive)"
@@ -10569,7 +10569,7 @@ msgstr "這將刪除所有的預借資訊.."
 
 #: inc/reservationitem.class.php:206
 msgid "Authorize reservations"
-msgstr "授權預借"
+msgstr "授權保留"
 
 #: inc/reservationitem.class.php:235 inc/search.class.php:3999
 #: inc/search.class.php:4003
@@ -11430,7 +11430,7 @@ msgstr ""
 
 #: inc/ticket.class.php:1788
 msgid "Take into account time"
-msgstr ""
+msgstr "考量到帳戶時間"
 
 #: inc/ticket.class.php:1802
 msgid "All linked tickets"
@@ -12155,7 +12155,7 @@ msgstr "翻譯"
 
 #: inc/user.class.php:1847
 msgid "Unable to update login. A user already exists."
-msgstr "無法更新登入. 該用戶已存在.."
+msgstr "無法更新登入. 該使用者已存在.."
 
 #: inc/user.class.php:1968
 msgid "Last login"
@@ -12187,7 +12187,7 @@ msgstr ""
 
 #: inc/user.class.php:2421
 msgid "Automatically add a user of an external source"
-msgstr "自動地新增一個外部來源的用戶"
+msgstr "自動地新增一個外部來源的使用者"
 
 #: inc/user.class.php:2429
 msgid "Import from directories"
@@ -12238,7 +12238,7 @@ msgstr "一封電子郵件已經發送到您的電子郵件地址。電子郵件
 
 #: inc/user.class.php:2956
 msgid "User informations"
-msgstr "用戶訊息"
+msgstr "使用者訊息"
 
 #: inc/useremail.class.php:186
 msgid "Default email"
@@ -12352,7 +12352,7 @@ msgstr "伺服器回答了: %s"
 
 #: install/install.php:224
 msgid "The server or/and user field is empty"
-msgstr "伺服器或用戶欄位未填寫"
+msgstr "伺服器或使用者欄位未填寫"
 
 #: install/install.php:235 install/update.php:852
 msgid "Database connection successful"

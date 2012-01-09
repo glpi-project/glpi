@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-08 18:35+0100\n"
-"PO-Revision-Date: 2012-01-08 17:34+0000\n"
+"POT-Creation-Date: 2012-01-08 19:04+0100\n"
+"PO-Revision-Date: 2012-01-09 08:35+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -3168,7 +3168,7 @@ msgstr ""
 
 #: front/tracking.injector.php:80 inc/ticket.class.php:1260
 msgid "Your ticket has been registered, its treatment is in progress."
-msgstr "Vaše zpráva byla úspěšně odeslána, váš požadavek byl zaregistrován.."
+msgstr "Váš požadavek byl zaregistrován, probíhá jeho řešení.."
 
 #: front/tracking.injector.php:86
 msgid "Thank you for using our automatic helpdesk system."
@@ -4026,7 +4026,7 @@ msgstr "Soukromé"
 
 #: inc/bookmark.class.php:368
 msgid "Partial load of the bookmark."
-msgstr ""
+msgstr "Částečné zavedení záložky.."
 
 #: inc/bookmark.class.php:527
 msgid "Bookmarks"
@@ -5056,15 +5056,15 @@ msgstr "Velmi nízký"
 
 #: inc/commonitilobject.class.php:1664
 msgid "Resolution time"
-msgstr ""
+msgstr "Čas vyřešení"
 
 #: inc/commonitilobject.class.php:1671
 msgid "Closing time"
-msgstr ""
+msgstr "Čas uzavření"
 
 #: inc/commonitilobject.class.php:1678
 msgid "Waiting time"
-msgstr ""
+msgstr "Čas čekání"
 
 #: inc/commonitilobject.class.php:1730 inc/commonitilobject.class.php:1833
 #: inc/ruleticket.class.php:251 inc/ruleticket.class.php:332
@@ -5806,7 +5806,7 @@ msgstr "Aktivovat OCSNG mód"
 
 #: inc/config.class.php:300
 msgid "Restrict monitor management"
-msgstr "Vymezit správu monitorů"
+msgstr "Omezit správu monitorů"
 
 #: inc/config.class.php:307
 msgid "Enable the financial and administrative informations by default"
@@ -5814,7 +5814,7 @@ msgstr "Standardně aktivovat finanční a administrativní informace"
 
 #: inc/config.class.php:309
 msgid "Restrict device management"
-msgstr "Vymezit správu zařízení"
+msgstr "Omezit správu zařízení"
 
 #: inc/config.class.php:314
 msgid "Software category deleted by the dictionary rules"
@@ -5822,7 +5822,7 @@ msgstr "Kategorie software smazána na základě pravidel slovníku"
 
 #: inc/config.class.php:319
 msgid "Restrict phone management"
-msgstr "Vymezit správu telefonu"
+msgstr "Omezit správu telefonů"
 
 #: inc/config.class.php:325
 msgid "Beginning of fiscal yea"
@@ -5830,7 +5830,7 @@ msgstr ""
 
 #: inc/config.class.php:327
 msgid "Restrict printer management"
-msgstr "Vymezit správu tiskárny"
+msgstr "Omezit správu tiskáren"
 
 #: inc/config.class.php:333
 msgid "Automatic fields (marked by *)"
@@ -11885,7 +11885,7 @@ msgstr ""
 
 #: inc/ticket.class.php:1788
 msgid "Take into account time"
-msgstr ""
+msgstr "Čas zaregistrování"
 
 #: inc/ticket.class.php:1802
 msgid "All linked tickets"

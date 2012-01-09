@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-08 18:35+0100\n"
-"PO-Revision-Date: 2012-01-08 17:34+0000\n"
+"POT-Creation-Date: 2012-01-08 19:04+0100\n"
+"PO-Revision-Date: 2012-01-09 07:51+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1246,8 +1246,8 @@ msgstr[1] "Software"
 #: inc/ruleimportcomputer.class.php:120 inc/search.class.php:4666
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Produttore"
+msgstr[1] "Produttori"
 
 #: front/dictionnary.php:58 front/find_num.php:101 front/printer.php:41
 #: front/report.contract.php:59 front/report.default.php:126
@@ -1388,14 +1388,14 @@ msgstr[1] ""
 #: front/dictionnary.php:87 inc/monitortype.class.php:43
 msgid "Monitor type"
 msgid_plural "Monitor types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo monitor"
+msgstr[1] "Tipo schermi"
 
 #: front/dictionnary.php:89 inc/printertype.class.php:43
 msgid "Printer type"
 msgid_plural "Printer types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo stampante"
+msgstr[1] "Tipo stampanti"
 
 #: front/dictionnary.php:91
 msgid "Device type"
@@ -1428,7 +1428,7 @@ msgstr[1] ""
 msgid "Operating system"
 msgid_plural "Operating systems"
 msgstr[0] "Sistema Operativo"
-msgstr[1] "Sistema Operativo"
+msgstr[1] "Sistema operativo"
 
 #: front/dictionnary.php:105 inc/computer.class.php:591
 #: inc/computer.class.php:783 inc/html.class.php:1700
@@ -1437,8 +1437,8 @@ msgstr[1] "Sistema Operativo"
 #: inc/ruledictionnaryoperatingsystemservicepack.class.php:60
 msgid "Service Pack"
 msgid_plural "Service Packs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Service Pack"
+msgstr[1] "Service Pack"
 
 #: front/dictionnary.php:107 inc/computer_softwareversion.class.php:338
 #: inc/computer_softwareversion.class.php:733 inc/ocsserver.class.php:536
@@ -2488,8 +2488,8 @@ msgstr "Fonti esterne di autenticazione"
 #: inc/html.class.php:1895 inc/ruleright.class.php:278 inc/user.class.php:2950
 msgid "LDAP directory"
 msgid_plural "LDAP directories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Directory LDAP"
+msgstr[1] "Directory LDAP"
 
 #: front/setup.auth.php:53 inc/authldap.class.php:291
 msgid "The LDAP extension of your PHP parser isn't installed"
@@ -2503,8 +2503,8 @@ msgstr "Impossibile usare LDAP come fonte esterna di autenticazione"
 #: inc/notificationmailsetting.class.php:181
 msgid "Mail server"
 msgid_plural "Mail servers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "E-mail server"
+msgstr[1] "Mail Server"
 
 #: front/setup.auth.php:62 inc/authmail.class.php:201
 msgid "Impossible to use email server as external source of connection"
@@ -3934,8 +3934,8 @@ msgstr "Verifica della connessione al server di posta"
 #: inc/computer.class.php:787
 msgid "Update Source"
 msgid_plural "Update Sources"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Provenienza aggiornamenti"
+msgstr[1] "Fonte aggiornamenti"
 
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
 #: inc/bookmark.class.php:201 inc/commondbtm.class.php:1840
@@ -3960,7 +3960,7 @@ msgstr "Privato"
 
 #: inc/bookmark.class.php:368
 msgid "Partial load of the bookmark."
-msgstr ""
+msgstr "Caricamento parziale del segnalibro.."
 
 #: inc/bookmark.class.php:527
 msgid "Bookmarks"
@@ -4408,6 +4408,7 @@ msgstr "Vista generale"
 msgid ""
 "For security reasons, please change the password for the default users: %s"
 msgstr ""
+"Per ragioni di sicurezza, cambia la password degli utenti predefiniti: %s"
 
 #: inc/central.class.php:158 inc/central.class.php:159 inc/html.class.php:2326
 msgid "MySQL replica: read only"
@@ -4538,7 +4539,7 @@ msgstr[1] "Validazioni"
 
 #: inc/change.class.php:584 inc/problem.class.php:579
 msgid "Accepted"
-msgstr ""
+msgstr "Accettato"
 
 #: inc/change.class.php:585 inc/commonitilobject.class.php:2752
 #: inc/problem.class.php:582 inc/ticket.class.php:2039
@@ -5197,16 +5198,16 @@ msgstr ""
 #: inc/ruleocs.class.php:108
 msgid "Domain"
 msgid_plural "Domains"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Dominio"
+msgstr[1] "Dominio"
 
 #: inc/computer.class.php:598 inc/computer.class.php:779
 #: inc/html.class.php:1713 inc/ocsserver.class.php:2952
 #: inc/operatingsystemversion.class.php:44
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating systems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Versione SO"
+msgstr[1] "Versione del sistema operativo"
 
 #: inc/computer.class.php:605 inc/computer.class.php:795
 #: inc/ocsserver.class.php:2954 install/update_0681_07.php:1413
@@ -5298,8 +5299,8 @@ msgstr "Memoria RAM (MB))"
 #: inc/networkport.class.php:703
 msgid "Network interface"
 msgid_plural "Network interfaces"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Schede di rete"
+msgstr[1] "Interfacce di rete"
 
 #: inc/computer.class.php:931 inc/devicesoundcard.class.php:43
 #: inc/ocsserver.class.php:309
@@ -5371,13 +5372,13 @@ msgstr "Partizione"
 #: inc/computerdisk.class.php:228 inc/filesystem.class.php:43
 msgid "File system"
 msgid_plural "File systems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "File System"
+msgstr[1] "File system"
 
 #: inc/computer.class.php:1051 inc/html.class.php:1313
 #: inc/ocslink.class.php:97 inc/profile.class.php:1491
 msgid "OCSNG"
-msgstr ""
+msgstr "OCS-NG"
 
 #: inc/computer.class.php:1069
 msgid "Imported from OCSNG"
@@ -5701,7 +5702,7 @@ msgstr "Inventario"
 
 #: inc/config.class.php:298
 msgid "Activate the OCSNG mode"
-msgstr ""
+msgstr "Attiva la modalità OCS-NG"
 
 #: inc/config.class.php:300
 msgid "Restrict monitor management"
@@ -6684,14 +6685,14 @@ msgstr[1] ""
 #: inc/devicecasetype.class.php:43
 msgid "Case type"
 msgid_plural "Case types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo case"
+msgstr[1] "Tipo case"
 
 #: inc/devicecontrol.class.php:43
 msgid "Controller"
 msgid_plural "Controllers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Controller"
+msgstr[1] "Controller"
 
 #: inc/devicecontrol.class.php:51 inc/devicecontrol.class.php:65
 #: inc/devicecontrol.class.php:86
@@ -6985,11 +6986,11 @@ msgstr[1] "Documenti associati"
 
 #: inc/document.class.php:1467
 msgid "Add a new file"
-msgstr ""
+msgstr "Aggiungi un nuovo file"
 
 #: inc/document.class.php:1481
 msgid "Associate an existing document"
-msgstr ""
+msgstr "Associa un documento esistente"
 
 #: inc/documenttype.class.php:45 inc/documenttype.class.php:79
 msgid "Icon"
@@ -7007,8 +7008,8 @@ msgstr "Estensione"
 #: inc/profile.class.php:1528
 msgid "Document Type"
 msgid_plural "Document Types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo documento"
+msgstr[1] "Tipi di documento"
 
 #: inc/dropdown.class.php:503 inc/dropdown.class.php:506
 msgid "GMT"
@@ -7823,7 +7824,7 @@ msgstr "Altri"
 
 #: inc/html.class.php:1934 inc/profile.class.php:731
 msgid "OCSNG mode"
-msgstr ""
+msgstr "Modalità OCS-NG"
 
 #: inc/html.class.php:1972 inc/html.class.php:2119 inc/html.class.php:2438
 #: inc/html.class.php:2505 inc/html.class.php:2546 inc/html.class.php:2637
@@ -8665,8 +8666,8 @@ msgstr "MAC"
 #: inc/networkequipmentfirmware.class.php:43 inc/phone.class.php:318
 msgid "Firmware"
 msgid_plural "Firmwares"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Firmware"
+msgstr[1] "Firmware"
 
 #: inc/networkname.class.php:93
 msgid "Network name"
@@ -8880,8 +8881,8 @@ msgstr "Modalità di notifica"
 #: inc/notificationtemplatetranslation.class.php:290
 msgid "Event"
 msgid_plural "Events"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Occorrenza"
+msgstr[1] "Eventi"
 
 #: inc/notificationmail.class.php:176
 msgid "Mail test"
@@ -9681,7 +9682,7 @@ msgstr "Modem"
 
 #: inc/ocsserver.class.php:396
 msgid "Web address of the OCSNG console"
-msgstr "Indirizzo della console OCS-NG (URL)"
+msgstr "Indirizzo web della console OCS-NG (URL)"
 
 #: inc/ocsserver.class.php:404
 msgid "Limit the import to the following tags (separator $, nothing for all)"
@@ -9725,7 +9726,7 @@ msgstr "Numero di elementi OCS-NG da sincronizzare tramite azioni automatiche"
 
 #: inc/ocsserver.class.php:483
 msgid "Behavior to the deletion of a computer in OCSNG"
-msgstr ""
+msgstr "Comportamento alla cancellazione di un computer in OCS-NG"
 
 #: inc/ocsserver.class.php:488
 #, php-format
@@ -9770,7 +9771,7 @@ msgstr "Database OCS-NG in UTF8"
 
 #: inc/ocsserver.class.php:597
 msgid "Connecting to the OCSNG database"
-msgstr ""
+msgstr "Connessione al database OCS-NG"
 
 #: inc/ocsserver.class.php:601
 msgid "Connection to the OCSNG database failed"
@@ -9811,7 +9812,7 @@ msgstr "Configurazione e versione OCS-NG valide"
 
 #: inc/ocsserver.class.php:726
 msgid "Unable to add. The OCSNG server already exists."
-msgstr ""
+msgstr "Impossibile aggiungerlo. Il server OCS-NG esista già.."
 
 #. TRANS: %s is the OCS id
 #: inc/ocsserver.class.php:1159
@@ -9972,8 +9973,8 @@ msgstr "Marca"
 #: inc/peripheraltype.class.php:43
 msgid "Devices type"
 msgid_plural "Devices types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo dispositivo"
+msgstr[1] "Tipo periferiche"
 
 #: inc/phone.class.php:312 inc/phone.class.php:487
 msgid "Power supply"
@@ -10350,11 +10351,11 @@ msgstr "Gestire le prenotazioni"
 
 #: inc/profile.class.php:734 inc/profile.class.php:1501
 msgid "Manual OCSNG synchronization"
-msgstr ""
+msgstr "Sincronizzazione OCS-NG manuale"
 
 #: inc/profile.class.php:737 inc/profile.class.php:1496
 msgid "See OCSNG informations"
-msgstr ""
+msgstr "Informazioni OCS-NG"
 
 #: inc/profile.class.php:786
 msgid "Creation"
@@ -11211,7 +11212,7 @@ msgstr "entità destinazione per il computer"
 
 #: inc/ruleimportcomputer.class.php:85
 msgid "Find computers in GLPI having the status"
-msgstr "Trova i computer che hanno uno stato"
+msgstr "Trova i computer che hanno uno stato in GLPI"
 
 #: inc/ruleimportcomputer.class.php:106 inc/ruleocs.class.php:126
 msgid "IP address"
@@ -11531,8 +11532,8 @@ msgstr "Aggiungi una licenza"
 #: inc/softwarelicensetype.class.php:43
 msgid "License type"
 msgid_plural "License types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tipo licenza"
+msgstr[1] "Tipo di licenze"
 
 #: inc/softwareversion.class.php:307 inc/softwareversion.class.php:318
 msgid "Add a version"
@@ -11826,7 +11827,7 @@ msgstr "Le tue chiamate da convalidate"
 
 #: inc/ticket.class.php:4110 inc/ticket.class.php:4205
 msgid "Your rejected tickets"
-msgstr ""
+msgstr "Le tue chiamate respinte"
 
 #: inc/ticket.class.php:4129 inc/ticket.class.php:4155
 #: inc/ticket.class.php:4209
@@ -12547,7 +12548,7 @@ msgstr "Informazioni utente"
 
 #: inc/useremail.class.php:186
 msgid "Default email"
-msgstr ""
+msgstr "E-mail predefinita"
 
 #: inc/usertitle.class.php:43
 msgid "Users title"

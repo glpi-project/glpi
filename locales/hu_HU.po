@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-08 18:35+0100\n"
-"PO-Revision-Date: 2012-01-08 17:34+0000\n"
+"POT-Creation-Date: 2012-01-08 19:04+0100\n"
+"PO-Revision-Date: 2012-01-09 08:31+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1384,8 +1384,8 @@ msgstr[1] ""
 #: front/dictionnary.php:87 inc/monitortype.class.php:43
 msgid "Monitor type"
 msgid_plural "Monitor types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Monitor típus"
+msgstr[1] "Monitor típusok"
 
 #: front/dictionnary.php:89 inc/printertype.class.php:43
 msgid "Printer type"
@@ -1424,7 +1424,7 @@ msgstr[1] ""
 msgid "Operating system"
 msgid_plural "Operating systems"
 msgstr[0] "Operációs rendszer"
-msgstr[1] "Os"
+msgstr[1] "Operációs rendszerek"
 
 #: front/dictionnary.php:105 inc/computer.class.php:591
 #: inc/computer.class.php:783 inc/html.class.php:1700
@@ -1433,8 +1433,8 @@ msgstr[1] "Os"
 #: inc/ruledictionnaryoperatingsystemservicepack.class.php:60
 msgid "Service Pack"
 msgid_plural "Service Packs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Javítócsomag"
+msgstr[1] "Szervizcsomagok"
 
 #: front/dictionnary.php:107 inc/computer_softwareversion.class.php:338
 #: inc/computer_softwareversion.class.php:733 inc/ocsserver.class.php:536
@@ -1721,7 +1721,7 @@ msgstr "LDAP kapcsolat"
 #: front/ldap.group.import.php:74 front/ldap.import.php:94
 #: front/ocsng.link.php:74
 msgid "Successful importation"
-msgstr ""
+msgstr "Sikeres importálás"
 
 #: front/ldap.group.import.php:109 inc/auth.class.php:212
 #: inc/authldap.class.php:2435
@@ -1784,7 +1784,7 @@ msgstr "A művelet sikerült"
 
 #: front/massiveaction.php:1013
 msgid "Failed operation"
-msgstr ""
+msgstr "Sikertelen művelet"
 
 #. TRANS: %$1d and %$2d are numbers
 #: front/massiveaction.php:1016 front/massiveaction.php:1021
@@ -1904,8 +1904,8 @@ msgstr[1] ""
 #: front/notimportedemail.php:41 inc/notimportedemail.class.php:56
 msgid "Refused email"
 msgid_plural "Refused emails"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "E-mail visszautasítva"
+msgstr[1] "Visszautasított emailek"
 
 #: front/ocsng.clean.php:39 front/ocsng.import.php:40 front/ocsng.link.php:40
 #: front/ocsng.php:42 front/ocsng.php:69 front/ocsng.sync.php:40
@@ -2560,8 +2560,8 @@ msgstr ""
 #: inc/ticket.class.php:1643
 msgid "Escalation level"
 msgid_plural "Escalation levels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kiterjesztés szintje"
+msgstr[1] "Eszkalációs szintek"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:54
@@ -2938,8 +2938,8 @@ msgstr[1] "Megoldás típusok"
 #: inc/ticket.class.php:3479 inc/ticketfollowup.class.php:720
 msgid "Request source"
 msgid_plural "Request sources"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kérés forrása"
+msgstr[1] "Kérés forrása"
 
 #: front/stat.tracking.php:98 inc/cartridgeitem.class.php:291
 #: inc/change.class.php:385 inc/commondbrelation.class.php:57
@@ -3103,7 +3103,7 @@ msgstr ""
 
 #: front/tracking.injector.php:80 inc/ticket.class.php:1260
 msgid "Your ticket has been registered, its treatment is in progress."
-msgstr "Az üzenet elküldése sikerült, a kérés teljesítése folyamatban van.."
+msgstr "A bejelentést regisztráltuk, a kérés teljesítése folyamatban van.."
 
 #: front/tracking.injector.php:86
 msgid "Thank you for using our automatic helpdesk system."
@@ -3293,7 +3293,7 @@ msgstr "Nincs hitelesítve"
 #: inc/auth.class.php:917 inc/auth.class.php:938 inc/dropdown.class.php:1467
 #: inc/dropdown.class.php:1505 inc/ocslink.class.php:142
 msgid "Force synchronization"
-msgstr ""
+msgstr "Szinkronizálás erőltetése"
 
 #: inc/auth.class.php:948 inc/dropdown.class.php:1504
 msgid "Change of the authentication method"
@@ -3925,8 +3925,8 @@ msgstr "Email kiszolgáló tesztelése"
 #: inc/computer.class.php:787
 msgid "Update Source"
 msgid_plural "Update Sources"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Frissít"
+msgstr[1] "Források frissítése"
 
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
 #: inc/bookmark.class.php:201 inc/commondbtm.class.php:1840
@@ -3951,7 +3951,7 @@ msgstr "Privát"
 
 #: inc/bookmark.class.php:368
 msgid "Partial load of the bookmark."
-msgstr ""
+msgstr "Könyvjelző részleges betöltése.."
 
 #: inc/bookmark.class.php:527
 msgid "Bookmarks"
@@ -4138,8 +4138,8 @@ msgstr ""
 #: inc/holiday.class.php:43
 msgid "Close time"
 msgid_plural "Close times"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Lezárás ideje"
+msgstr[1] "Zárási idők"
 
 #: inc/calendarsegment.class.php:51
 msgid "Time range"
@@ -4538,7 +4538,7 @@ msgstr "Várakozó"
 
 #: inc/change.class.php:589
 msgid "Qualification"
-msgstr ""
+msgstr "Minősítés"
 
 #: inc/change.class.php:590
 msgid "Applied"
@@ -4546,7 +4546,7 @@ msgstr "Érvényesítve"
 
 #: inc/change.class.php:591
 msgid "Review"
-msgstr ""
+msgstr "Felülvizsgálat"
 
 #: inc/change.class.php:597 inc/problem.class.php:588
 #: inc/ticket.class.php:2044
@@ -4612,7 +4612,7 @@ msgstr[1] ""
 
 #: inc/change_problem.class.php:89
 msgid "Create a change from this problem"
-msgstr ""
+msgstr "Változás létrehozása ebből a problémából"
 
 #: inc/change_ticket.class.php:52
 msgid "Link Ticket/Change"
@@ -4622,7 +4622,7 @@ msgstr[1] ""
 
 #: inc/change_ticket.class.php:173
 msgid "Create a change from this ticket"
-msgstr ""
+msgstr "Változás létrehozása ebből a bejelentésből"
 
 #: inc/commondbchild.class.php:109 inc/networkportinstantiation.class.php:295
 msgid "Item not linked to an object"
@@ -4964,15 +4964,15 @@ msgstr "Nagyon alacsony"
 
 #: inc/commonitilobject.class.php:1664
 msgid "Resolution time"
-msgstr ""
+msgstr "Megoldási idő"
 
 #: inc/commonitilobject.class.php:1671
 msgid "Closing time"
-msgstr ""
+msgstr "Lezárás ideje"
 
 #: inc/commonitilobject.class.php:1678
 msgid "Waiting time"
-msgstr ""
+msgstr "Várakozási idő"
 
 #: inc/commonitilobject.class.php:1730 inc/commonitilobject.class.php:1833
 #: inc/ruleticket.class.php:251 inc/ruleticket.class.php:332
@@ -5044,8 +5044,8 @@ msgstr "Magam hozzárendelése ehhez a bejelentéshez"
 #: inc/commonitilobject.class.php:2459 inc/solutiontemplate.class.php:47
 msgid "Solution template"
 msgid_plural "Solution templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Megoldás sablon"
+msgstr[1] "Megoldás sablonok"
 
 #: inc/commonitilobject.class.php:2475 inc/commonitilobject.class.php:2477
 msgid "Search a solution"
@@ -5281,28 +5281,28 @@ msgstr "RAM mérete)"
 #: inc/networkport.class.php:703
 msgid "Network interface"
 msgid_plural "Network interfaces"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Hálózati csatolók"
+msgstr[1] "hálózati interfészek"
 
 #: inc/computer.class.php:931 inc/devicesoundcard.class.php:43
 #: inc/ocsserver.class.php:309
 msgid "Soundcard"
 msgid_plural "Soundcards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Hangkártya"
+msgstr[1] "Hangkártyák"
 
 #: inc/computer.class.php:940 inc/devicegraphiccard.class.php:43
 #: inc/ocsserver.class.php:305
 msgid "Graphics Card"
 msgid_plural "Graphics Cards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Grafikus vezérlő"
+msgstr[1] "Grafikus kártyák"
 
 #: inc/computer.class.php:949 inc/devicemotherboard.class.php:43
 msgid "System Board"
 msgid_plural "System Boards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Alaplap"
+msgstr[1] "Alaplapok"
 
 #: inc/computer.class.php:959
 msgid "Hard drive type"
@@ -5315,8 +5315,8 @@ msgstr "HD méret"
 #: inc/computer.class.php:980 inc/devicepowersupply.class.php:43
 msgid "Power Supply"
 msgid_plural "Power Supplies"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tápegység"
+msgstr[1] "Tápegysésgek"
 
 #: inc/computer.class.php:988 inc/computer.class.php:992
 #: inc/computerdisk.class.php:49 inc/computerdisk.class.php:221
@@ -5401,24 +5401,24 @@ msgstr[1] "Virtuális gépek"
 #: inc/virtualmachinestate.class.php:44
 msgid "State of the virtual machine"
 msgid_plural "States of the virtual machine"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Virtuális gép állapota"
+msgstr[1] "Virtuális gép állapotai"
 
 #: inc/computer.class.php:1136 inc/computervirtualmachine.class.php:169
 #: inc/computervirtualmachine.class.php:316
 #: inc/virtualmachinesystem.class.php:44
 msgid "Virtualization model"
 msgid_plural "Virtualization Models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Virtualizációs modell"
+msgstr[1] "Virtualizációs modellek"
 
 #: inc/computer.class.php:1145 inc/computervirtualmachine.class.php:162
 #: inc/computervirtualmachine.class.php:315
 #: inc/virtualmachinetype.class.php:44
 msgid "Virtualization system"
 msgid_plural "Virtualization systems"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Virtualizált rendszer"
+msgstr[1] "Virtualizációs rendszerek"
 
 #: inc/computer.class.php:1154
 msgid "Virtual machine name"
@@ -5650,7 +5650,7 @@ msgstr "Dinamikus megjelenítés használata legördülőkben és szöveges mez�
 
 #: inc/config.class.php:239
 msgid "Minimum size of the text for dynamic search in dropdowns"
-msgstr ""
+msgstr "Szövegmező minimális mérete legördülőkben keresésnél"
 
 #: inc/config.class.php:250
 msgid "Don't use dynamic display if the number of items is less than"
@@ -5953,8 +5953,8 @@ msgstr "Prioritás színek"
 #: inc/config.class.php:827 inc/softwarecategory.class.php:43
 msgid "Software category"
 msgid_plural "Software categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Szoftverkategória"
+msgstr[1] "Szoftver kategóriák"
 
 #: inc/config.class.php:830
 msgid "Unfold the software belonging to a category"
@@ -5972,11 +5972,11 @@ msgstr ""
 #: inc/config.class.php:845
 #, php-format
 msgid "generated on %s"
-msgstr ""
+msgstr "létrehozva %s"
 
 #: inc/config.class.php:850
 msgid "Regenerate"
-msgstr ""
+msgstr "Újragenerálás"
 
 #: inc/config.class.php:879
 msgid "Log Level"
@@ -6134,8 +6134,8 @@ msgstr "Nem találtam kelléket"
 #: inc/consumableitem.class.php:51
 msgid "Consumable Model"
 msgid_plural "Consumable Models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kellék modell"
+msgstr[1] "Kellék modellek"
 
 #: inc/consumableitem.class.php:288 inc/consumableitem.class.php:392
 msgid "Send alarms on consumables"
@@ -6649,14 +6649,14 @@ msgstr "Adattáblák optimalizálása"
 #: inc/devicecase.class.php:43
 msgid "Case"
 msgid_plural "Cases"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ház"
+msgstr[1] "Házak"
 
 #: inc/devicecasetype.class.php:43
 msgid "Case type"
 msgid_plural "Case types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Ház típus"
+msgstr[1] "Ház típus"
 
 #: inc/devicecontrol.class.php:43
 msgid "Controller"
@@ -6701,8 +6701,8 @@ msgstr "Sebesség"
 #: inc/printer.class.php:426
 msgid "Memory"
 msgid_plural "Memories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "RAM"
+msgstr[1] "Memóriák"
 
 #: inc/devicegraphiccard.class.php:56 inc/devicegraphiccard.class.php:71
 msgid "Memory by default"
@@ -6757,8 +6757,8 @@ msgstr "Chipkészlet"
 #: inc/devicenetworkcard.class.php:43 inc/ocsserver.class.php:301
 msgid "Network Card"
 msgid_plural "Network Cards"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Hálózati kártya"
+msgstr[1] "Hálózati kártyák"
 
 #: inc/devicenetworkcard.class.php:56 inc/devicenetworkcard.class.php:70
 msgid "MAC address by default"
@@ -6772,8 +6772,8 @@ msgstr "Sebesség"
 #: inc/devicepci.class.php:43
 msgid "Other Component"
 msgid_plural "Other Components"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Egyéb alkatrész"
+msgstr[1] "Egyéb perifériák"
 
 #: inc/devicepowersupply.class.php:51 inc/devicepowersupply.class.php:65
 #: inc/devicepowersupply.class.php:87
@@ -7245,7 +7245,7 @@ msgstr "Email domain"
 
 #: inc/entity.class.php:332 inc/entitydata.class.php:579
 msgid "Prefix for notifications"
-msgstr ""
+msgstr "Előtag értesítésekhez"
 
 #: inc/entity.class.php:338 inc/entitydata.class.php:565
 #: inc/notificationmailsetting.class.php:153
@@ -7343,8 +7343,8 @@ msgstr "Felmérés készítése"
 #: inc/ticketrecurrent.class.php:175 inc/tickettemplate.class.php:113
 msgid "Ticket template"
 msgid_plural "Ticket templates"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bejelentés sablon"
+msgstr[1] "Bejelentés sablonok"
 
 #: inc/entity.class.php:515
 msgid "Default value for alarms on contracts"
@@ -7428,7 +7428,7 @@ msgstr ""
 
 #: inc/entitydata.class.php:485 inc/entitydata.class.php:1342
 msgid "No change of entity"
-msgstr ""
+msgstr "Entitás nem változott"
 
 #: inc/entitydata.class.php:558
 msgid "Notification options"
@@ -7598,7 +7598,7 @@ msgstr ""
 
 #: inc/group.class.php:213
 msgid "Visible in a ticket"
-msgstr ""
+msgstr "Látható a bejelentésben"
 
 #: inc/group.class.php:226 inc/group.class.php:323
 msgid "Can be notified"
@@ -7634,7 +7634,7 @@ msgstr "Menedzser"
 #: inc/group.class.php:348 inc/group_user.class.php:241
 #: inc/group_user.class.php:366 inc/group_user.class.php:409
 msgid "Delegatee"
-msgstr ""
+msgstr "Megbízott"
 
 #: inc/group.class.php:540 inc/group_user.class.php:371
 #: inc/problem.class.php:1344 inc/ticket.class.php:4494
@@ -7665,19 +7665,19 @@ msgstr ""
 
 #: inc/group_user.class.php:444
 msgid "Add to managers"
-msgstr ""
+msgstr "Hozzáadás a menedzserekhez"
 
 #: inc/group_user.class.php:445
 msgid "Add to delegatees"
-msgstr ""
+msgstr "Hozzáadás felhatalmazottakhoz"
 
 #: inc/group_user.class.php:446
 msgid "Delete from managers"
-msgstr ""
+msgstr "Törlés a menedzserek közül"
 
 #: inc/group_user.class.php:447
 msgid "Delete from delegatees"
-msgstr ""
+msgstr "Törlés a delegáltak közül"
 
 #: inc/group_user.class.php:477 inc/profile_user.class.php:671
 msgid "Dynamic"
@@ -7709,7 +7709,7 @@ msgstr "Bejelentés érvényesítésre vár"
 #: inc/ticketrecurrent.class.php:55 inc/ticketrecurrent.class.php:89
 #: inc/ticketrecurrent.class.php:256
 msgid "Recurrent tickets"
-msgstr ""
+msgstr "Ismétlődő bejelentések"
 
 #: inc/html.class.php:1306 inc/profile.class.php:714
 #: inc/profile.class.php:1486 inc/report.class.php:50
@@ -7733,8 +7733,8 @@ msgstr[1] ""
 #: inc/html.class.php:1584 inc/networkequipmentmodel.class.php:45
 msgid "Networking equipment model"
 msgid_plural "Networking equipment models"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Hálózati eszköz modell"
+msgstr[1] "Hálózati modellek"
 
 #: inc/html.class.php:1597
 msgid "Phones model"
@@ -7763,8 +7763,8 @@ msgstr[1] ""
 #: inc/html.class.php:1662 inc/networkequipmenttype.class.php:43
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Hálózati eszköz típus"
+msgstr[1] "Hálózati eszköz típusok"
 
 #: inc/html.class.php:1675
 msgid "Phones type"
@@ -7844,7 +7844,7 @@ msgstr "Most"
 
 #: inc/html.class.php:3218 inc/html.class.php:3221
 msgid "Today"
-msgstr ""
+msgstr "Ma"
 
 #: inc/html.class.php:3225
 msgid "Specify a date"
@@ -8154,11 +8154,11 @@ msgstr ""
 
 #: inc/itilcategory.class.php:91 inc/itilcategory.class.php:127
 msgid "Template for a request"
-msgstr ""
+msgstr "Kérés sablon"
 
 #: inc/itilcategory.class.php:95 inc/itilcategory.class.php:132
 msgid "Template for an incident"
-msgstr ""
+msgstr "Incidens sablon"
 
 #: inc/itilcategory.class.php:159
 msgid "Category of ticket"
@@ -8179,13 +8179,13 @@ msgstr "szerző"
 #: inc/knowbaseitemcategory.class.php:57
 msgid "Knowledge base category"
 msgid_plural "Knowledge base categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Tudástár kategóriák"
+msgstr[1] "Tudástár kategóriák"
 
 #: inc/knowbaseitem.class.php:113 inc/knowbaseitem.class.php:116
 #: inc/reminder.class.php:373 inc/reminder.class.php:376
 msgid "Targets"
-msgstr ""
+msgstr "Célok"
 
 #: inc/knowbaseitem.class.php:369 inc/knowbaseitem.class.php:386
 msgid "New item"
@@ -8272,7 +8272,7 @@ msgstr "Legnépszerűbb kérdések"
 
 #: inc/knowbaseitem.class.php:1070
 msgid "Unpublished articles"
-msgstr ""
+msgstr "Publikálatlan cikkek"
 
 #: inc/knowbaseitem.class.php:1166
 msgid "FAQ item"
@@ -8522,7 +8522,7 @@ msgstr "Nem importált levelek listája"
 #: inc/ocsserver.class.php:425 inc/ocsserver.class.php:429
 #: inc/ocsserver.class.php:451
 msgid "No import"
-msgstr ""
+msgstr "Nincs import"
 
 #. TRANS: %s is 'Clean DB : rename tables'
 #. TRANS: %s is the table or item implied
@@ -8634,8 +8634,8 @@ msgstr "MAC"
 #: inc/networkequipmentfirmware.class.php:43 inc/phone.class.php:318
 msgid "Firmware"
 msgid_plural "Firmwares"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Firmware"
+msgstr[1] "Firmware-ek"
 
 #: inc/networkname.class.php:93
 msgid "Network name"
@@ -9181,7 +9181,7 @@ msgstr "Új probléma"
 
 #: inc/notificationtargetproblem.class.php:48
 msgid "Update of a problem"
-msgstr ""
+msgstr "Probléma frissítése"
 
 #: inc/notificationtargetproblem.class.php:49
 msgid "Problem solved"
@@ -9578,8 +9578,8 @@ msgstr "Email nem található. Nem lehet importálni."
 #: inc/ocslink.class.php:43 inc/ruleimportcomputer.class.php:129
 msgid "OCSNG link"
 msgid_plural "OCSNG links"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "OCSNG hivatkozás"
+msgstr[1] "OCSNG hivatkozások"
 
 #: inc/ocslink.class.php:84
 #, php-format
@@ -9626,8 +9626,8 @@ msgstr "Nincs zárolt mező"
 #: inc/ruleimportcomputer.class.php:94 inc/ruleocs.class.php:113
 msgid "OCSNG server"
 msgid_plural "OCSNG servers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "OCSNG kiszolgáló"
+msgstr[1] "OCSNG szerverek"
 
 #: inc/ocsserver.class.php:136 inc/ocsserver.class.php:401
 msgid "Import options"
@@ -10024,7 +10024,7 @@ msgstr "Elérhető"
 
 #: inc/planning.class.php:433
 msgid "Unavailable"
-msgstr ""
+msgstr "Nem elérhető"
 
 #: inc/planning.class.php:864
 msgid "Your planning"
@@ -10172,7 +10172,7 @@ msgstr[1] ""
 
 #: inc/problem.class.php:1415 inc/problem.class.php:1457
 msgid "No problem found."
-msgstr ""
+msgstr "Nem található probléma.."
 
 #: inc/problem.class.php:1446
 msgid "Problems on linked items"
@@ -10192,7 +10192,7 @@ msgstr[1] ""
 
 #: inc/problem_ticket.class.php:163
 msgid "Create a problem from this ticket"
-msgstr ""
+msgstr "Probléma létrehozása ebből a bejelentésből"
 
 #: inc/profile.class.php:102
 msgid "Inventory/Management/Tools"
@@ -10311,11 +10311,11 @@ msgstr "Foglalás adminisztráció"
 
 #: inc/profile.class.php:734 inc/profile.class.php:1501
 msgid "Manual OCSNG synchronization"
-msgstr ""
+msgstr "Manuális OCSNG szinkronizáció"
 
 #: inc/profile.class.php:737 inc/profile.class.php:1496
 msgid "See OCSNG informations"
-msgstr ""
+msgstr "OCSNG információk megtekintése"
 
 #: inc/profile.class.php:786
 msgid "Creation"
@@ -10411,7 +10411,7 @@ msgstr "Minden terv megtekintése"
 
 #: inc/profile.class.php:963 inc/profile.class.php:1826
 msgid "Update all problems"
-msgstr ""
+msgstr "Minden probléma frissítése"
 
 #: inc/profile.class.php:966 inc/profile.class.php:1821
 msgid "View all problems"
@@ -10726,7 +10726,7 @@ msgstr "Hetente"
 
 #: inc/reservation.class.php:665
 msgid "Delete all rehearsals"
-msgstr ""
+msgstr "Minden próbálkozás törlése"
 
 #: inc/reservation.class.php:786
 #, php-format
@@ -10762,8 +10762,8 @@ msgstr "Korábbi foglalások"
 #: inc/reservationitem.class.php:43 inc/reservationitem.class.php:271
 msgid "Reservable item"
 msgid_plural "Reservable items"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Foglalható tételek"
+msgstr[1] "Foglalható elemek"
 
 #: inc/reservationitem.class.php:187
 msgid "Make unavailable"
@@ -11024,7 +11024,7 @@ msgstr "nem létezik"
 #: inc/search.class.php:1276 inc/search.class.php:4837
 #: inc/search.class.php:4913
 msgid "under"
-msgstr ""
+msgstr "alatt"
 
 #: inc/ruledictionnarycomputermodelcollection.class.php:58
 #: inc/ruledictionnarymonitormodelcollection.class.php:51
@@ -11297,8 +11297,8 @@ msgstr "Jogok és szervezetek összerendelése"
 #: inc/rulerightparameter.class.php:90
 msgid "LDAP criteria"
 msgid_plural "LDAP criterias"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "LDAP feltétel"
+msgstr[1] "LDAP feltételek"
 
 #: inc/ruleticket.class.php:361 inc/ticketvalidation.class.php:559
 msgid "Send an approval request"
@@ -11606,12 +11606,12 @@ msgstr "Új kapcsolat"
 #: inc/taskcategory.class.php:47
 msgid "Tasks category"
 msgid_plural "Tasks categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Feladat kategória"
+msgstr[1] "Feladat kategóriája"
 
 #: inc/ticket.class.php:348 inc/ticket.class.php:365
 msgid "Created tickets"
-msgstr ""
+msgstr "Létrehozott bejelentések"
 
 #: inc/ticket.class.php:391 inc/ticket.class.php:2539
 msgid "Costs"
@@ -11629,7 +11629,7 @@ msgstr ""
 
 #: inc/ticket.class.php:727 inc/ticket.class.php:1196
 msgid "Unknown ticket"
-msgstr ""
+msgstr "Ismeretlen bejelentés"
 
 #: inc/ticket.class.php:771 inc/ticket.class.php:1243
 msgid "%1$s updates the item %2%s"
@@ -11746,7 +11746,7 @@ msgstr "Következő kiterjesztés: %s"
 msgid ""
 "The assignment of a SLA to a ticket causes the recalculation of the due "
 "date."
-msgstr ""
+msgstr "Az SLA bejelentéshez rendelése az elkészülési időt újrakalkulálja.."
 
 #: inc/ticket.class.php:3325
 msgid "Escalations defined in the SLA will be triggered under this new date."
@@ -11782,7 +11782,7 @@ msgstr "Jóváhagyásra váró bejelentéseid"
 
 #: inc/ticket.class.php:4110 inc/ticket.class.php:4205
 msgid "Your rejected tickets"
-msgstr ""
+msgstr "Visszautasított bejelentéseid"
 
 #: inc/ticket.class.php:4129 inc/ticket.class.php:4155
 #: inc/ticket.class.php:4209
@@ -11880,7 +11880,7 @@ msgstr ""
 
 #: inc/ticketrecurrent.class.php:146 inc/ticketrecurrent.class.php:185
 msgid "Periodicity"
-msgstr ""
+msgstr "Időszakosság"
 
 #: inc/ticketrecurrent.class.php:152 inc/ticketrecurrent.class.php:190
 msgid "Preliminary creation"
@@ -11921,8 +11921,8 @@ msgstr[1] "Kötelező mezők"
 #: inc/tickettemplatepredefinedfield.class.php:116
 msgid "Predefined field"
 msgid_plural "Predefined fields"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Elődefiniált mező"
+msgstr[1] "Elődefiniált mezők"
 
 #. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked
 #. ticket, %3$s optionals links / icons

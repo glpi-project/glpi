@@ -765,7 +765,7 @@ $LANG['help'][6]="Под средно";
 $LANG['help'][7]="Маловажно"; 
 $LANG['help'][8]="Да бъда информиран за предприетите действия"; 
 $LANG['help'][14]="Изпрати съобщение"; 
-$LANG['help'][18]="Your message has been sent successfully, your request is on file."; // en_GB string to be translated
+$LANG['help'][18]="Your ticket has been registered, its treatment is in progress."; // en_GB string to be translated
 $LANG['help'][19]="Thank you for using our automatic helpdesk system."; // en_GB string to be translated
 $LANG['help'][22]="Search the ID of your hardware"; // en_GB string to be translated
 $LANG['help'][23]="Enter the first letters (user, item name, serial or asset number)"; // en_GB string to be translated
@@ -2345,6 +2345,6 @@ $LANG['validation'][28]="Status of the Approval request"; // en_GB string to be 
 $LANG['validation'][29]="If approval is denied, specify a reason"; // en_GB string to be translated
 $LANG['validation'][30]="Cancel the approval request to"; // en_GB string to be translated
 $LANG['validation'][31]="Update the Approval request to"; // en_GB string to be translated
-$LANG['validation'][32]="An answer to a Approval request was produced"; // en_GB string to be translated
+$LANG['validation'][32]="An answer to an approval request was produced"; // en_GB string to be translated
 $LANG['validation'][33]="Tickets awaiting approval"; // en_GB string to be translated
 ?>

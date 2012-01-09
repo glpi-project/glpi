@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-08 18:35+0100\n"
-"PO-Revision-Date: 2012-01-08 17:34+0000\n"
+"POT-Creation-Date: 2012-01-08 19:04+0100\n"
+"PO-Revision-Date: 2012-01-09 08:49+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -390,7 +390,7 @@ msgstr "نمایش همه"
 
 #: ajax/planningcheck.php:51 front/planning.php:70 inc/planning.class.php:296
 msgid "Availability"
-msgstr ""
+msgstr "حق ندارید این فقره را در این نهاد بازگشتی کنید"
 
 #: ajax/planning.php:71 inc/change.class.php:819
 #: inc/notificationtargetproblem.class.php:207
@@ -417,7 +417,7 @@ msgstr "توسط"
 #: inc/supplier.class.php:626 inc/ticketrecurrent.class.php:142
 #: inc/ticketrecurrent.class.php:180
 msgid "Start date"
-msgstr ""
+msgstr "تاریخ شروع"
 
 #: ajax/planning.php:93
 msgid "Period"
@@ -2178,7 +2178,7 @@ msgstr "نوع قرارداد"
 #: inc/reservation.class.php:864 inc/reservation.class.php:912
 #: inc/reservation.class.php:974 inc/reservation.class.php:1029
 msgid "End date"
-msgstr ""
+msgstr "تاریخ پایان"
 
 #: front/report.contract.php:49
 msgid "Hardware under contract"
@@ -2467,7 +2467,7 @@ msgstr "فعال کردن پیگیری از طریق رایانامه"
 
 #: front/setup.notification.php:70 inc/notificationmailsetting.class.php:50
 msgid "Email followups configuration"
-msgstr ""
+msgstr "پیکره بندی پیگیری ها"
 
 #: front/setup.notification.php:80
 msgid ""
@@ -2746,7 +2746,7 @@ msgstr "نمایش نمودار"
 #: front/stat.location.php:164 front/stat.location.php:165
 #: front/stat.tracking.php:168 front/stat.tracking.php:169
 msgid "Number opened"
-msgstr ""
+msgstr "تعداد باز شده"
 
 #: front/stat.location.php:176 front/stat.location.php:177
 msgid "Number solved"
@@ -2755,12 +2755,12 @@ msgstr ""
 #: front/stat.location.php:188 front/stat.location.php:189
 #: front/stat.tracking.php:193 front/stat.tracking.php:194
 msgid "Number resolved late"
-msgstr ""
+msgstr "تعداد رفع شده با تاخیر"
 
 #: front/stat.location.php:200 front/stat.location.php:201
 #: front/stat.tracking.php:206 front/stat.tracking.php:207
 msgid "Number closed"
-msgstr ""
+msgstr "تعداد بسته شده"
 
 #: front/stat.tracking.php:78 inc/commonitilobject.class.php:1723
 #: inc/commonitiltask.class.php:933
@@ -2940,7 +2940,7 @@ msgstr[0] ""
 
 #: front/stat.tracking.php:180 front/stat.tracking.php:181
 msgid "Number resolved"
-msgstr ""
+msgstr "تعداد رفع شده"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:49
@@ -3050,7 +3050,7 @@ msgstr ""
 
 #: front/tracking.injector.php:80 inc/ticket.class.php:1260
 msgid "Your ticket has been registered, its treatment is in progress."
-msgstr "پیام شما با موفقیت ارسال شد، درخواست شما در پرونده است.."
+msgstr "پیام شما ثبت شد، عملیات آن در حال انجام است.."
 
 #: front/tracking.injector.php:86
 msgid "Thank you for using our automatic helpdesk system."
@@ -3890,7 +3890,7 @@ msgstr "خصوصی"
 
 #: inc/bookmark.class.php:368
 msgid "Partial load of the bookmark."
-msgstr ""
+msgstr "بارگذاری بخشی از نشانک."
 
 #: inc/bookmark.class.php:527
 msgid "Bookmarks"
@@ -4087,7 +4087,7 @@ msgstr "در دوره موجود نمی توان بخش محدوده را اضا
 
 #: inc/calendarsegment.class.php:295
 msgid "Add a schedule"
-msgstr "افزودن زمانبندی"
+msgstr "افزودن زمان بندی"
 
 #: inc/calendarsegment.class.php:297 inc/calendarsegment.class.php:314
 #: inc/planning.class.php:224 inc/reservation.class.php:783
@@ -4103,7 +4103,7 @@ msgstr[0] ""
 
 #: inc/cartridge.class.php:168
 msgid "No free cartridge"
-msgstr "کارتریج غیر رایگان"
+msgstr "قاب نوار غیر رایگان"
 
 #: inc/cartridge.class.php:241 inc/cartridge.class.php:354
 #: inc/change.class.php:581 inc/consumable.class.php:300
@@ -4133,11 +4133,11 @@ msgstr ""
 
 #: inc/cartridge.class.php:258 inc/cartridge.class.php:260
 msgid "No cartridge"
-msgstr "هیچ کارتریج"
+msgstr "بدون قاب نوار"
 
 #: inc/cartridge.class.php:395 inc/cartridge.class.php:615
 msgid "Worn cartridges"
-msgstr "کارتریج فرسوده"
+msgstr "قاب نوار فرسوده"
 
 #: inc/cartridge.class.php:399 inc/consumable.class.php:374
 #: inc/entity.class.php:278 inc/entitydata.class.php:249
@@ -4197,7 +4197,7 @@ msgstr ""
 
 #: inc/cartridge.class.php:613
 msgid "Used cartridges"
-msgstr "کارتریج استفاده شده"
+msgstr "قاب نوار استفاده شده"
 
 #: inc/cartridge.class.php:617 inc/cartridgeitem.class.php:52
 msgid "Cartridge model"
@@ -4273,7 +4273,7 @@ msgstr[0] ""
 
 #: inc/cartridgeitem.class.php:364 inc/cartridgeitem.class.php:572
 msgid "Send alarms on cartridges"
-msgstr "ارسال هشدار برای کارتریج ها"
+msgstr "ارسال هشدار برای قاب نوارها"
 
 #. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
 #. number
@@ -4332,7 +4332,7 @@ msgstr "نسخه المثنی MySQL: فقط خواندنی"
 #: inc/change.class.php:180 inc/problem.class.php:180
 #: inc/problem.class.php:191 inc/problem.class.php:495
 msgid "Analysis"
-msgstr ""
+msgstr "کاوش"
 
 #: inc/change.class.php:181
 msgid "Plans"
@@ -4520,7 +4520,7 @@ msgstr "توضیحات خالی"
 #: inc/change.class.php:1005 inc/notificationtargetproblem.class.php:213
 #: inc/problem.class.php:499 inc/problem.class.php:988
 msgid "Impacts"
-msgstr ""
+msgstr "اثرات"
 
 #: inc/change_problem.class.php:52
 msgid "Link Problem/Change"
@@ -4668,7 +4668,7 @@ msgstr "<br/>دیگر موارد موجود است"
 
 #: inc/commondbtm.class.php:2706
 msgid "Item in the trash"
-msgstr ""
+msgstr "مورد در سطل زباله"
 
 #. TRANS: %1$s is the user login, %2$s the message
 #: inc/commondbtm.class.php:2822
@@ -4883,15 +4883,15 @@ msgstr "خیلی پایین"
 
 #: inc/commonitilobject.class.php:1664
 msgid "Resolution time"
-msgstr ""
+msgstr "زمان حل"
 
 #: inc/commonitilobject.class.php:1671
 msgid "Closing time"
-msgstr ""
+msgstr "بستن زمان"
 
 #: inc/commonitilobject.class.php:1678
 msgid "Waiting time"
-msgstr ""
+msgstr "زمان انتظار"
 
 #: inc/commonitilobject.class.php:1730 inc/commonitilobject.class.php:1833
 #: inc/ruleticket.class.php:251 inc/ruleticket.class.php:332
@@ -4957,7 +4957,7 @@ msgstr "حامیان"
 
 #: inc/commonitilobject.class.php:2201 inc/commonitilobject.class.php:2202
 msgid "Associate myself with this ticket"
-msgstr ""
+msgstr "ارتباط خودم با این درخواست"
 
 #: inc/commonitilobject.class.php:2459 inc/solutiontemplate.class.php:47
 msgid "Solution template"
@@ -5265,7 +5265,7 @@ msgstr[0] ""
 #: inc/computer.class.php:1051 inc/html.class.php:1313
 #: inc/ocslink.class.php:97 inc/profile.class.php:1491
 msgid "OCSNG"
-msgstr ""
+msgstr "OCSNG"
 
 #: inc/computer.class.php:1069
 msgid "Imported from OCSNG"
@@ -5577,7 +5577,7 @@ msgstr "فهرست اموال"
 
 #: inc/config.class.php:298
 msgid "Activate the OCSNG mode"
-msgstr ""
+msgstr "فعال کردن حالت OCSNG"
 
 #: inc/config.class.php:300
 msgid "Restrict monitor management"
@@ -5751,7 +5751,7 @@ msgstr "اجازه ایجاد درخواست ناشناس(میز فرمان.در
 
 #: inc/config.class.php:578
 msgid "Allow anonymous followups (receiver)"
-msgstr ""
+msgstr "اجازه پیگیری های ناشناس(دریافت کننده))"
 
 #: inc/config.class.php:585
 msgid "Matrix of calculus for priority"
@@ -6011,7 +6011,7 @@ msgstr "کالای مصرفی استفاده شده"
 
 #: inc/consumable.class.php:377 inc/consumable.class.php:528
 msgid "Give to"
-msgstr ""
+msgstr "را به"
 
 #: inc/consumable.class.php:389
 msgid "Give"
@@ -6828,11 +6828,11 @@ msgstr[0] ""
 
 #: inc/document.class.php:1467
 msgid "Add a new file"
-msgstr ""
+msgstr "افزودن فایل جدید"
 
 #: inc/document.class.php:1481
 msgid "Associate an existing document"
-msgstr ""
+msgstr "ارتباط به یک سند موجود"
 
 #: inc/documenttype.class.php:45 inc/documenttype.class.php:79
 msgid "Icon"
@@ -7466,15 +7466,15 @@ msgstr ""
 
 #: inc/group.class.php:213
 msgid "Visible in a ticket"
-msgstr ""
+msgstr "قابل مشاهده بودن در یک درخواست"
 
 #: inc/group.class.php:226 inc/group.class.php:323
 msgid "Can be notified"
-msgstr ""
+msgstr "اطلاع داده شود"
 
 #: inc/group.class.php:232
 msgid "Can contain"
-msgstr ""
+msgstr "می تواند شامل"
 
 #: inc/group.class.php:240
 msgid "User  "
@@ -7506,7 +7506,7 @@ msgstr ""
 #: inc/group.class.php:540 inc/group_user.class.php:371
 #: inc/problem.class.php:1344 inc/ticket.class.php:4494
 msgid "Child groups"
-msgstr ""
+msgstr "زیرگروه ها"
 
 #: inc/group_user.class.php:140
 msgid "Groups (D=Dynamic)"
@@ -7531,11 +7531,11 @@ msgstr ""
 
 #: inc/group_user.class.php:444
 msgid "Add to managers"
-msgstr ""
+msgstr "افزودن به مدیران"
 
 #: inc/group_user.class.php:445
 msgid "Add to delegatees"
-msgstr ""
+msgstr "افرودن به نماینده ها"
 
 #: inc/group_user.class.php:446
 msgid "Delete from managers"
@@ -7645,7 +7645,7 @@ msgstr "دیگران"
 
 #: inc/html.class.php:1934 inc/profile.class.php:731
 msgid "OCSNG mode"
-msgstr ""
+msgstr "حالت OCSNG"
 
 #: inc/html.class.php:1972 inc/html.class.php:2119 inc/html.class.php:2438
 #: inc/html.class.php:2505 inc/html.class.php:2546 inc/html.class.php:2637
@@ -7697,7 +7697,7 @@ msgstr "حالا"
 
 #: inc/html.class.php:3218 inc/html.class.php:3221
 msgid "Today"
-msgstr ""
+msgstr "امروز"
 
 #: inc/html.class.php:3225
 msgid "Specify a date"
@@ -7717,31 +7717,31 @@ msgstr[0] ""
 
 #: inc/html.class.php:3239
 msgid "last Sunday"
-msgstr ""
+msgstr "یکشنبه گذشته"
 
 #: inc/html.class.php:3240
 msgid "last Monday"
-msgstr ""
+msgstr "دوشنبه گذشته"
 
 #: inc/html.class.php:3241
 msgid "last Tuesday"
-msgstr ""
+msgstr "سه شنبه گذشته"
 
 #: inc/html.class.php:3242
 msgid "last Wednesday"
-msgstr ""
+msgstr "چهارشنبه گذشته"
 
 #: inc/html.class.php:3243
 msgid "last Thursday"
-msgstr ""
+msgstr "پنجشنبه گذشته"
 
 #: inc/html.class.php:3244
 msgid "last Friday"
-msgstr ""
+msgstr "جمعه گذشته"
 
 #: inc/html.class.php:3245
 msgid "last Saturday"
-msgstr ""
+msgstr "شنبه گذشته"
 
 #: inc/html.class.php:3249
 #, php-format
@@ -7751,7 +7751,7 @@ msgstr[0] ""
 
 #: inc/html.class.php:3253
 msgid "Beginning of the month"
-msgstr ""
+msgstr "ابتدای ماه"
 
 #: inc/html.class.php:3257
 #, php-format
@@ -7761,7 +7761,7 @@ msgstr[0] ""
 
 #: inc/html.class.php:3261
 msgid "Beginning of the year"
-msgstr ""
+msgstr "ابتدای سال"
 
 #: inc/html.class.php:3265
 #, php-format
@@ -8120,7 +8120,7 @@ msgstr "نماها"
 
 #: inc/knowbaseitem.class.php:1223 inc/reminder.class.php:948
 msgid "Add a target"
-msgstr ""
+msgstr "افزودن هدف"
 
 #: inc/knowbaseitem.class.php:1250 inc/notificationevent.class.php:192
 #: inc/notificationtarget.class.php:123 inc/notificationtarget.class.php:202
@@ -9001,15 +9001,15 @@ msgstr "تاریخ انقضاء"
 
 #: inc/notificationtargetproblem.class.php:47
 msgid "New problem"
-msgstr ""
+msgstr "مسئله جدید"
 
 #: inc/notificationtargetproblem.class.php:48
 msgid "Update of a problem"
-msgstr ""
+msgstr "بروزرسانی یک مسئله"
 
 #: inc/notificationtargetproblem.class.php:49
 msgid "Problem solved"
-msgstr ""
+msgstr "مسئله حل شد"
 
 #: inc/notificationtargetproblem.class.php:50
 #: inc/notificationtargetticket.class.php:160
@@ -9028,11 +9028,11 @@ msgstr "حذف یک وظیفه"
 
 #: inc/notificationtargetproblem.class.php:53
 msgid "Closure of a problem"
-msgstr ""
+msgstr "خاتمه یک مسئله"
 
 #: inc/notificationtargetproblem.class.php:54
 msgid "Deleting a problem"
-msgstr ""
+msgstr "حذف یک مسئله"
 
 #: inc/notificationtargetproblem.class.php:211
 #: inc/notificationtargetticket.class.php:562 inc/problem.class.php:533
@@ -9043,12 +9043,12 @@ msgstr ""
 #: inc/notificationtargetproblem.class.php:214 inc/problem.class.php:505
 #: inc/problem.class.php:999
 msgid "Causes"
-msgstr ""
+msgstr "علل"
 
 #: inc/notificationtargetproblem.class.php:215 inc/problem.class.php:511
 #: inc/problem.class.php:1010
 msgid "Symptoms"
-msgstr ""
+msgstr "نشانه ها"
 
 #: inc/notificationtargetproblem.class.php:258
 msgid "Ticket date"
@@ -9161,7 +9161,7 @@ msgstr ""
 
 #: inc/notificationtargetticket.class.php:564 inc/search.class.php:4698
 msgid "Number of problems"
-msgstr ""
+msgstr "تعداد مسائل"
 
 #: inc/notificationtargetticket.class.php:567
 msgid "Global approval status"
@@ -9304,7 +9304,7 @@ msgstr "CSS"
 #: inc/notificationtemplate.class.php:269
 #, php-format
 msgid "Automatically generated by GLPI %s"
-msgstr ""
+msgstr "به طور خودکار توسط GLPI تولید شده است %s"
 
 #: inc/notificationtemplatetranslation.class.php:43
 #: inc/notificationtemplatetranslation.class.php:53
@@ -9378,7 +9378,7 @@ msgstr ""
 #: inc/notimportedemail.class.php:80 inc/rulemailcollector.class.php:91
 #: inc/ruleticket.class.php:290
 msgid "Mails receiver"
-msgstr ""
+msgstr "دریافت کننده رایانامه"
 
 #: inc/notimportedemail.class.php:86
 msgid "Message-ID email header"
@@ -9507,7 +9507,7 @@ msgstr "تعداد اقلام همزمان شده در طی عمل OCSNG خود�
 
 #: inc/ocsserver.class.php:483
 msgid "Behavior to the deletion of a computer in OCSNG"
-msgstr ""
+msgstr "رفتار حذف از یک رایانه در OCSNG"
 
 #: inc/ocsserver.class.php:488
 #, php-format
@@ -9552,7 +9552,7 @@ msgstr "پایگاه داده OCSNG در UTF8"
 
 #: inc/ocsserver.class.php:597
 msgid "Connecting to the OCSNG database"
-msgstr ""
+msgstr "اتصال به پایگاه داده OCSNG"
 
 #: inc/ocsserver.class.php:601
 msgid "Connection to the OCSNG database failed"
@@ -9592,7 +9592,7 @@ msgstr "پیکره بندی و نسخه OCSNG معتبر"
 
 #: inc/ocsserver.class.php:726
 msgid "Unable to add. The OCSNG server already exists."
-msgstr ""
+msgstr "قادر به اضافه کردن نیست. خادم OCSNG در حال حاضر وجود دارد.."
 
 #. TRANS: %s is the OCS id
 #: inc/ocsserver.class.php:1159
@@ -9946,7 +9946,7 @@ msgstr "پردازش(طرح ریزی شده))"
 
 #: inc/problem.class.php:584
 msgid "Under observation"
-msgstr ""
+msgstr "تحت نظر"
 
 #: inc/problem.class.php:1078 inc/ticket.class.php:4416
 msgid "Assigned"
@@ -9989,11 +9989,11 @@ msgstr[0] ""
 
 #: inc/problem.class.php:1415 inc/problem.class.php:1457
 msgid "No problem found."
-msgstr ""
+msgstr "مسئله ای یافت نشد.."
 
 #: inc/problem.class.php:1446
 msgid "Problems on linked items"
-msgstr ""
+msgstr "مسائل در مورد عناوین مرتبط"
 
 #: inc/problem_ticket.class.php:52
 msgid "Link Ticket/Problem"
@@ -10007,7 +10007,7 @@ msgstr[0] ""
 
 #: inc/problem_ticket.class.php:163
 msgid "Create a problem from this ticket"
-msgstr ""
+msgstr "ایجاد مسئله از این درخواست"
 
 #: inc/profile.class.php:102
 msgid "Inventory/Management/Tools"
@@ -10036,7 +10036,7 @@ msgstr ""
 
 #: inc/profile.class.php:466 inc/profile.class.php:1855
 msgid "Update password"
-msgstr ""
+msgstr "بروزآوری کلمه عبور"
 
 #: inc/profile.class.php:470 inc/profile.class.php:1370
 msgid "Ticket creation form on login"
@@ -10065,7 +10065,7 @@ msgstr "سخت افزار گروه(های) مرا ببینید)"
 #: inc/profile.class.php:528 inc/profile.class.php:835
 #: inc/profile.class.php:1737
 msgid "Update followups (author)"
-msgstr ""
+msgstr "بروزآوری پیگیری های(نویسنده))"
 
 #: inc/profile.class.php:533 inc/profile.class.php:886
 #: inc/profile.class.php:1752
@@ -10125,11 +10125,11 @@ msgstr "مدیریت ذخیره ها"
 
 #: inc/profile.class.php:734 inc/profile.class.php:1501
 msgid "Manual OCSNG synchronization"
-msgstr ""
+msgstr "هماهنگ سازی دستی OCSNG"
 
 #: inc/profile.class.php:737 inc/profile.class.php:1496
 msgid "See OCSNG informations"
-msgstr ""
+msgstr "اطلاعات OCSNG را مشاهده کنید"
 
 #: inc/profile.class.php:786
 msgid "Creation"
@@ -10943,7 +10943,7 @@ msgstr "منطبق به درخواست"
 #: inc/rulesoftwarecategory.class.php:70 inc/software.class.php:243
 #: inc/software.class.php:379
 msgid "Publisher"
-msgstr ""
+msgstr "ناشر"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:92
 msgid "Warning before running rename based on the dictionary rules"
@@ -11008,7 +11008,7 @@ msgstr "قبلا در GLPI بوده است"
 
 #: inc/ruleimportcomputer.class.php:185
 msgid "is empty in GLPI"
-msgstr ""
+msgstr "در GLPI خالی است"
 
 #: inc/rulemailcollector.class.php:105
 msgid "Email body"
@@ -11182,7 +11182,7 @@ msgstr ""
 
 #: inc/sla.class.php:176
 msgid "Calendar of the ticket"
-msgstr ""
+msgstr "تقویم درخواست"
 
 #: inc/sla.class.php:179
 msgid "Maximum time to solve"
@@ -11376,7 +11376,7 @@ msgstr ""
 
 #: inc/stat.class.php:1424
 msgid "By problem"
-msgstr ""
+msgstr "با مشکل"
 
 #: inc/stat.class.php:1430
 msgid "Select statistics to be displayed"
@@ -11414,7 +11414,7 @@ msgstr[0] ""
 
 #: inc/ticket.class.php:348 inc/ticket.class.php:365
 msgid "Created tickets"
-msgstr ""
+msgstr "درخواست ها ایجاد شد."
 
 #: inc/ticket.class.php:391 inc/ticket.class.php:2539
 msgid "Costs"
@@ -11432,7 +11432,7 @@ msgstr ""
 
 #: inc/ticket.class.php:727 inc/ticket.class.php:1196
 msgid "Unknown ticket"
-msgstr ""
+msgstr "درخواست ناشناس"
 
 #: inc/ticket.class.php:771 inc/ticket.class.php:1243
 msgid "%1$s updates the item %2%s"
@@ -11464,7 +11464,7 @@ msgstr ""
 
 #: inc/ticket.class.php:1788
 msgid "Take into account time"
-msgstr ""
+msgstr "نگاهی به زمان حساب"
 
 #: inc/ticket.class.php:1802
 msgid "All linked tickets"
@@ -11557,7 +11557,7 @@ msgstr ""
 
 #: inc/ticket.class.php:3327
 msgid "Assign a SLA"
-msgstr ""
+msgstr "تخصیص یک SLA"
 
 #: inc/ticket.class.php:3768
 #, php-format
@@ -11626,7 +11626,7 @@ msgstr[0] ""
 #: inc/ticket.class.php:4698
 #, php-format
 msgid "Put on hold on %s"
-msgstr ""
+msgstr "را نگه دارید %s"
 
 #: inc/ticket.class.php:4851 inc/ticket.class.php:4932
 msgid "No ticket in progress."
@@ -11824,7 +11824,7 @@ msgstr "آزمون الحاقی Mysql."
 
 #: inc/toolbox.class.php:693
 msgid "You must install the MySQL extension for PHP."
-msgstr ""
+msgstr "شما باید الحاقیه Mysql را برای PHP نصب کنید.."
 
 #: inc/toolbox.class.php:697 inc/toolbox.class.php:699
 msgid "Ok - the function mysql_query() exist - Perfect !"
@@ -11836,7 +11836,7 @@ msgstr "آزمایش جلسه ها"
 
 #: inc/toolbox.class.php:709
 msgid "Your parser PHP is not installed with sessions support!"
-msgstr ""
+msgstr "تجزیه گر PHP شما با پشتیبانی جلسه ها نصب نشده است!"
 
 #: inc/toolbox.class.php:715 inc/toolbox.class.php:716
 msgid "Sessions support is available  - Perfect !"

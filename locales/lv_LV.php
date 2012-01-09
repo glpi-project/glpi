@@ -765,7 +765,7 @@ $LANG['help'][6]="Zems";
 $LANG['help'][7]="Ļoti zems"; 
 $LANG['help'][8]="Informēt mani par problēmas risināšanas gaitu"; 
 $LANG['help'][14]="Sūtīt ziņojumu"; 
-$LANG['help'][18]="Jūsu ziņojums veiksmīgi nosūtīts."; 
+$LANG['help'][18]="Your ticket has been registered, its treatment is in progress."; // en_GB string to be translated
 $LANG['help'][19]="Paldies par palīdzības sistēmas izmantošanu."; 
 $LANG['help'][22]="Meklēt pēc Jūsu aparatūras ID"; 
 $LANG['help'][23]="Ievadiet lietotājvārda, ierīces vai sērijas numura pirmos simbolus"; 
@@ -2345,6 +2345,6 @@ $LANG['validation'][28]="Status of the Approval request"; // en_GB string to be 
 $LANG['validation'][29]="If approval is denied, specify a reason"; // en_GB string to be translated
 $LANG['validation'][30]="Cancel the approval request to"; // en_GB string to be translated
 $LANG['validation'][31]="Update the Approval request to"; // en_GB string to be translated
-$LANG['validation'][32]="An answer to a Approval request was produced"; // en_GB string to be translated
+$LANG['validation'][32]="An answer to an approval request was produced"; // en_GB string to be translated
 $LANG['validation'][33]="Pieteikums gaida apstiprinājumu"; 
 ?>
