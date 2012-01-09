@@ -181,7 +181,7 @@ function update083to084() {
    $ADDTODISPLAYPREF = array();
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(sprintf(_('Update %s'), '-> 0.84'));
+   $migration->displayTitle(sprintf(_('Update to %s'), '0.84'));
    $migration->setVersion('0.84');
 
 
@@ -227,7 +227,7 @@ function update083to084() {
    } */
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_fqdns"), true);
+   logMessage(sprintf(__('Data migration - %s'), "glpi_fqdns"), true);
 
    // Adding FQDN table
    if (!TableExists('glpi_fqdns')) {
@@ -266,7 +266,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_ipaddresses"), true);
+   logMessage(__('Data migration - %s'), "glpi_ipaddresses"), true);
 
    // Adding IPAddress table
    if (!TableExists('glpi_ipaddresses')) {
@@ -291,7 +291,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_wifinetworks"), true);
+   logMessage(__('Change of the database layout - %s'), "glpi_wifinetworks"), true);
 
    // Adding WifiNetwork table
    if (!TableExists('glpi_wifinetworks')) {
@@ -312,7 +312,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_ipnetworks"), true);
+   logMessage(sprintf(__('Data migration - %s'), "glpi_ipnetworks"), true);
 
    // Adding IPNetwork table
    if (!TableExists('glpi_ipnetworks')) {
@@ -341,7 +341,7 @@ function update083to084() {
                   `gateway_0`  int unsigned NOT NULL DEFAULT '0',
                   `gateway_1`  int unsigned NOT NULL DEFAULT '0',
                   `gateway_2`  int unsigned NOT NULL DEFAULT '0',
-                  `gateway_3`  int unsigned NOT NULL DEFAULT '0',
+                 `gateway_3`  int unsigned NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
                   KEY `network_definition` (`entities_id`,`address`,`netmask`),
@@ -424,7 +424,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_networknames"), true);
+   logMessage(sprintf(__('Data migration - %s'), "glpi_networknames"), true);
 
    // Adding NetworkName table
    if (!TableExists('glpi_networknames')) {
@@ -453,7 +453,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_networkaliases"), true);
+   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkaliases"), true);
 
    // Adding NetworkAlias table
    if (!TableExists('glpi_networkaliases')) {
@@ -472,7 +472,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_networkinterfaces"), true);
+   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkinterfaces"), true);
 
    // Update NetworkPorts
    $migration->addField('glpi_networkports', 'instantiation_type', 'string',
@@ -480,7 +480,7 @@ function update083to084() {
                               'update' => "'NetworkPortEthernet'"));
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_networkports"), true);
+   logMessage(sprintf(__('Data migration - %s'), "glpi_networkports"), true);
 
    // Retrieve all the networks from the current network ports and add them to the IPNetworks
    $query = "SELECT *
@@ -532,7 +532,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_networkportethernets"), true);
+   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportethernets"), true);
 
    // Adding NetworkPortEthernet table
    if (!TableExists('glpi_networkportethernets')) {
@@ -559,7 +559,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_networkportwifis"), true);
+   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportwifis"), true);
 
   // Adding NetworkPortWifi table
    if (!TableExists('glpi_networkportwifis')) {
@@ -588,7 +588,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_networkportlocals"), true);
+   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportlocals"), true);
 
    // Adding NetworkPortLocal table
    if (!TableExists('glpi_networkportlocals')) {
@@ -603,7 +603,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_networkportdilups"), true);
+   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportdialups"), true);
 
    // Adding NetworkPortDialup table
    if (!TableExists('glpi_networkportdialups')) {
@@ -620,7 +620,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_networkportmigrations"), true);
+   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportmigrations"), true);
 
    $query = "SELECT *
              FROM `glpi_networkports`
@@ -650,7 +650,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_networkportaggregates"), true);
+   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportaggregates"), true);
 
    // Adding NetworkPortAggregate table
    if (!TableExists('glpi_networkportaggregates')) {
@@ -668,7 +668,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Update %s'), "glpi_networkportaliases"), true);
+   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportaliases"), true);
 
    // Adding NetworkPortAlias table
    if (!TableExists('glpi_networkportaliases')) {

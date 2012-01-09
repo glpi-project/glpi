@@ -40,7 +40,7 @@ function update0722to0723() {
    global $DB, $CFG_GLPI;
 
    //TRANS: %s is the number of new version
-   echo "<h3>"._sprintf(_('Update %s'), '-> 0.72.3')."</h3>";
+   echo "<h3>"._sprintf(_('Update to %s'), '0.72.3')."</h3>";
    displayMigrationMessage("0723"); // Start
 
    //// Correct search.constant numbers : problem in previous update

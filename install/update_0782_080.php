@@ -45,7 +45,7 @@ function update0782to080() {
    $ADDTODISPLAYPREF = array();
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(_sprintf(_('Update %s'), '-> 0.80'));
+   $migration->displayTitle(_sprintf(_('Update to %s'), '0.80'));
    $migration->setVersion('0.80');
 
    $backup_tables = false;
