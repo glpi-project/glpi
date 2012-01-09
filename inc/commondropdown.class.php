@@ -105,7 +105,8 @@ abstract class CommonDropdown extends CommonDBTM {
    function title() {
 
       if ($this->display_dropdowntitle) {
-         Dropdown::showItemTypeMenu(__('Dropdowns'), Dropdown::getStandardDropdownItemTypes(),
+         Dropdown::showItemTypeMenu(_n('Dropdown', 'Dropdowns', 2),
+                                    Dropdown::getStandardDropdownItemTypes(),
                                     $this->getSearchURL());
       }
    }
@@ -283,24 +284,24 @@ abstract class CommonDropdown extends CommonDBTM {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common']             = __('Characteristics');
+      $tab['common']               = __('Characteristics');
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['itemlink_link']   = $this->getType();
-      $tab[1]['massiveaction']   = false;
+      $tab[1]['table']             = $this->getTable();
+      $tab[1]['field']             = 'name';
+      $tab[1]['name']              = __('Name');
+      $tab[1]['datatype']          = 'itemlink';
+      $tab[1]['itemlink_link']     = $this->getType();
+      $tab[1]['massiveaction']     = false;
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false;
+      $tab[2]['table']             = $this->getTable();
+      $tab[2]['field']             = 'id';
+      $tab[2]['name']              = __('ID');
+      $tab[2]['massiveaction']     = false;
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[16]['table']            = $this->getTable();
+      $tab[16]['field']            = 'comment';
+      $tab[16]['name']             = __('Comments');
+      $tab[16]['datatype']         = 'text';
 
       if ($this->isEntityAssign()) {
          $tab[80]['table']         = 'glpi_entities';
@@ -310,10 +311,10 @@ abstract class CommonDropdown extends CommonDBTM {
       }
 
       if ($this->maybeRecursive()) {
-         $tab[86]['table']     = $this->getTable();
-         $tab[86]['field']     = 'is_recursive';
-         $tab[86]['name']      = __('Child entities');
-         $tab[86]['datatype']  = 'bool';
+         $tab[86]['table']         = $this->getTable();
+         $tab[86]['field']         = 'is_recursive';
+         $tab[86]['name']          = __('Child entities');
+         $tab[86]['datatype']      = 'bool';
       }
 
       if ($this->isField('date_mod')) {
@@ -407,14 +408,13 @@ abstract class CommonDropdown extends CommonDBTM {
          echo "<input type='hidden' name='forcedelete' value='1'>";
          echo "<input class='submit' type='submit' name='delete' value=\"".__s('Confirm')."\">";
          echo "</td>";
-         echo "<td><input class='submit' type='submit' name='annuler' value=\"".
-                    __s('Cancel')."\">";
+         echo "<td><input class='submit' type='submit' name='annuler' value=\"".__s('Cancel')."\">";
          echo "</td></tr></table>\n";
          echo "</form>";
       }
 
       // Replace form (set to new value)
-      echo "<p>" . __('You can also replace all the events of this heading by another:') . "</p>";
+      echo "<p>" . __('You can also replace all the events of this heading by another.') . "</p>";
       echo "<form action='$target' method='post'>";
       echo "<table class='tab_cadre'><tr><td>";
 
@@ -561,10 +561,10 @@ abstract class CommonDropdown extends CommonDBTM {
     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
     *
     * @param $value string : Value of the new dropdown.
-    * @param $entities_id int : entity in case of specific dropdown
+    * @param $entities_id int : entity in case of specific dropdown (default -1)
     * @param $external_params array(manufacturer)
-    * @param $comment
-    * @param $add if true, add it if not found. if false, just check if exists
+    * @param $comment (default '')
+    * @param $add if true, add it if not found. if false, just check if exists (true by default)
     *
     * @return integer : dropdown id.
    **/
@@ -598,8 +598,8 @@ abstract class CommonDropdown extends CommonDBTM {
             break;
       }*/
 
-      $input["name"] = $value;
-      $input["comment"] = $comment;
+      $input["name"]        = $value;
+      $input["comment"]     = $comment;
       $input["entities_id"] = $entities_id;
 
       if ($rulecollection) {

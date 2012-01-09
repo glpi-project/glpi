@@ -48,8 +48,8 @@ abstract class CommonITILActor extends CommonDBRelation {
 //    public $items_id_2 = 'users_id';
 
    var $checks_only_for_itemtype1 = true;
+   var $no_form_page              = true;
 
-   var $no_form_page = true;
 
    function getActorForeignKey() {
       return $this->items_id_2;
@@ -74,6 +74,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       }
       return $users;
    }
+
 
    function isAlternateEmailForITILObject($items_id, $email) {
       global $DB;
@@ -104,7 +105,7 @@ abstract class CommonITILActor extends CommonDBRelation {
     *
     * @param $ID ID of the item (-1 if new item)
     * @param $right Right to check : r / w / recursive
-    * @param $input array of input data (used for adding item)
+    * @param $input array of input data (used for adding item) (default NULL)
     *
     * @return boolean
    **/
@@ -173,8 +174,8 @@ abstract class CommonITILActor extends CommonDBRelation {
       } else if (count($emails) >  1) {
          // Several emails : select in the list
          echo "<select name='alternative_email' value=''>";
-         echo "<option value='' ".(empty($this->fields['alternative_email'])?'selected':'').
-               ">$default_email</option>";
+         echo "<option value='' ".(empty($this->fields['alternative_email'])?'selected':'').">".
+                "$default_email</option>";
          foreach ($emails as $new_email) {
             if ($new_email != $default_email) {
                echo "<option value='$new_email' ".
@@ -250,5 +251,4 @@ abstract class CommonITILActor extends CommonDBRelation {
    }
 
 }
-
 ?>

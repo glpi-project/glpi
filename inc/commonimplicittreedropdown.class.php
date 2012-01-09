@@ -43,7 +43,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
 
 
    /**
-    * Method that must be overloaded. This method provide the ancestor of the current item
+    * Method that must be overloaded. This method provides the ancestor of the current item
     * according to $this->input
     *
     * @return the id of the current object ancestor
@@ -54,8 +54,8 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
 
 
    /**
-    * Method that must be overloaded. This method provide the list of all potential sons of the
-    * current item according to this->fields.
+    * Method that must be overloaded. This method provides the list of all potential sons of the
+    * current item according to $this->fields.
     *
     * @return array of IDs of the potential sons
    **/
