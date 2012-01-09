@@ -816,7 +816,7 @@ class Toolbox {
          case 2: //Insufficient memory
             $showmem = $mem/1048576;
             echo "<td class='red'><img src='".GLPI_ROOT."/pics/redbutton.png'><span class='b'>".
-                  sprintf(__('Allocated memory: %dMio'),$showmem)."</span>".
+                  sprintf(__('Allocated memory: %d Mio'),$showmem)."</span>".
                   "<br>".__('A minimum of 64MB is commonly required for GLPI.').
                   "<br>".__('Try increasing the memory_limit parameter in the php.ini file.').
                   "</td></tr>";
