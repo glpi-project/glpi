@@ -209,7 +209,7 @@ class MailCollector  extends CommonDBTM {
               "</td></tr>";
       }
 
-      echo "<tr class='tab_bg_1'><td>".__('Name (Email address))');
+      echo "<tr class='tab_bg_1'><td>".__('Name (Email address)');
       echo "</td><td>";
       Html::autocompletionTextField($this, "name");
       echo "</td></tr>";

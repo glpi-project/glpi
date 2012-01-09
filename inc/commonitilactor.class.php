@@ -158,7 +158,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       echo "<tr class='tab_bg_2'><td>".__('User')."</td>";
       echo "<td>".$user->getName()."</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Email Followups')."</td>";
+      echo "<tr class='tab_bg_1'><td>".__('Email Followup')."</td>";
       echo "<td>";
       Dropdown::showYesNo('use_notification', $this->fields['use_notification']);
       echo "</td></tr>";
