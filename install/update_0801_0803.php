@@ -49,7 +49,7 @@ function update0801to0803() {
    $ADDTODISPLAYPREF = array();
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(_sprintf(_('Update to %s'), '0.80.3'));
+   $migration->displayTitle(sprintf(__('Update to %s'), '0.80.3'));
    $migration->setVersion('0.80.3');
 
    $migration->changeField("glpi_fieldunicities", 'fields', 'fields', "text");
