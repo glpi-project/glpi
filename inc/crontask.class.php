@@ -913,20 +913,24 @@ class CronTask extends CommonDBTM{
 
          if ($data && $data['voltot']>0) {
             echo "<tr class='tab_bg_2'><td>".__('Minimal count')."</td>";
-            echo "<td class='right'>".sprintf(__('%s element(s)'), $data['volmin'])."</td></tr>";
+            echo "<td class='right'>".
+                 sprintf(_n('%s item', '%s items', $data['volmin']), $data['volmin'])."</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".__('Maximal count')."</td>";
-            echo "<td class='right'>".sprintf(__('%s element(s)'), $data['volmax'])."</td></tr>";
+            echo "<td class='right'>".
+                 sprintf(_n('%s item', '%s items', $data['volmax']), $data['volmax'])."</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".__('Average count')."</td>";
-            echo "<td class='right b'>".sprintf(__('%s element(s)'), number_format($data['volavg'],2)).
+            echo "<td class='right b'>".
+                 sprintf(_n('%s item', '%s items', $data['volavg']), number_format($data['volavg'],2)).
                  "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".__('Total count')."</td>";
-            echo "<td class='right'>".sprintf(__('%s element(s)'), $data['voltot'])."</td></tr>";
+            echo "<td class='right'>".
+                 sprintf(_n('%s item', '%s items', $data['voltot']), $data['voltot'])."</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".__('Average speed')."</td>";
-            echo "<td class='left'>".sprintf(__('%s elements/sec'), number_format($data['voltot']/$data['elapsedtot'],2));
+            echo "<td class='left'>".sprintf(__('%s items/sec'), number_format($data['voltot']/$data['elapsedtot'],2));
             echo "</td></tr>";
          }
       }
@@ -980,9 +984,9 @@ class CronTask extends CommonDBTM{
          if ($data=$DB->fetch_assoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
             echo "<th>".__('Date')."</th>";
-            echo "<th>".__('Total duration')."</th>"; 
+            echo "<th>".__('Total duration')."</th>";
             echo "<th>".__('Number')."</th>";
-            echo "<th>".__('Description')."</th>"; 
+            echo "<th>".__('Description')."</th>";
             echo "</tr>\n";
 
             do {
@@ -1030,10 +1034,10 @@ class CronTask extends CommonDBTM{
          if ($data=$DB->fetch_assoc($result)) {
             echo "<table class='tab_cadrehov'><tr>";
             echo "<th>".__('Date')."</th>";
-            echo "<th>".__('Status')."</th>"; 
-            echo "<th>". __('Duration')."</th>"; 
+            echo "<th>".__('Status')."</th>";
+            echo "<th>". __('Duration')."</th>";
             echo "<th>".__('Number')."</th>";
-            echo "<th>".__('Description')."</th>"; 
+            echo "<th>".__('Description')."</th>";
             echo "</tr>\n";
 
             $first = true;
