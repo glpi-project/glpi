@@ -54,7 +54,7 @@ User::dropdown(array('name'   => 'id',
 
 echo "</td>";
 echo "<td rowspan='2' class='center'><input type='submit' class='submit' name='submit' value='".
-      __s('Update')."'></td></tr>";
+      __s('Display report')."'></td></tr>";
 echo "</table></form>";
 
 if ($_GET["id"] > 0) {

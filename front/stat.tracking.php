@@ -127,7 +127,7 @@ echo "</td>";
 echo "<td class='right'>".__('Show graphics')."</td>";
 echo "<td rowspan='2' class='center'>";
 echo "<input type='hidden' name='itemtype' value=\"". $_REQUEST["itemtype"] ."\">";
-echo "<input type='submit' class='submit' name='submit' value=\"".__s('Update')."\"></td>".
+echo "<input type='submit' class='submit' name='submit' value=\"".__s('Display report')."\"></td>".
      "</tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";

@@ -66,7 +66,7 @@ Html::showDateFormItem("date1", $_REQUEST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
 echo "<input type='hidden' name='itemtype' value=\"".$_REQUEST['itemtype']."\">";
 
-echo "<input type='submit' class='submit' value=\"".__s('Update')."\"></td></tr>";
+echo "<input type='submit' class='submit' value=\"".__s('Display report')."\"></td></tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
 Html::showDateFormItem("date2",$_REQUEST["date2"]);
