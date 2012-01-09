@@ -111,10 +111,24 @@ function __($str){
  * @return protected string (with htmlentities)
 **/
 function __s($str){
-   global $TRANSLATE;
 
 //   return  "__s".addslashes($TRANSLATE->_($str));
    return htmlentities(__($str), ENT_QUOTES, 'UTF-8');
+}
+
+
+/**
+ * For translation
+ *
+ * @param $ctx : context
+ * @param $str : string
+ *
+ * @return protected string (with htmlentities)
+**/
+function _sx($ctx, $str){
+
+//   return  "__s".addslashes($TRANSLATE->_($str));
+   return htmlentities(_x($ctx, $str), ENT_QUOTES, 'UTF-8');
 }
 
 

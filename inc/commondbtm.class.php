@@ -1689,7 +1689,7 @@ class CommonDBTM extends CommonGLPI {
             echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          } else {
             //TRANS : means update / actualize
-            echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+            echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          }
 
       } else {
@@ -1699,7 +1699,7 @@ class CommonDBTM extends CommonGLPI {
 
          if ($params['candel']) {
             echo "<td class='tab_bg_2 center' colspan='".$params['colspan']."'>\n";
-            echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+            echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
             echo "</td>\n";
             echo "<td class='tab_bg_2 center' colspan='".$params['colspan']."' >\n";
 
@@ -1724,7 +1724,7 @@ class CommonDBTM extends CommonGLPI {
 
          } else {
             echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>\n";
-            echo "<input type='submit' name='update' value=\"".__s('Update')."\"
+            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
                    class='submit'>";
          }
       }
@@ -2909,7 +2909,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       if ($canedit) {
-         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
       }
       echo "</td></tr>";
       echo "</table></div>";

@@ -382,7 +382,7 @@ class OcsServer extends CommonDBTM {
       echo "</table>\n";
 
       echo "<p class='submit'>";
-      echo "<input type='submit' name='update_server' class='submit' value=\"".__s('Update')."\">";
+      echo "<input type='submit' name='update_server' class='submit' value=\"".__s('Save')."\">";
       echo "</p></form></div>\n";
    }
 
@@ -497,7 +497,7 @@ class OcsServer extends CommonDBTM {
       echo "<br>". __("Unit import: everything is imported 'as-is'");
 
       echo "<p class='submit'><input type='submit' name='update_server' class='submit' value='" .
-             __s('Update') . "'></p>";
+             __s('Save') . "'></p>";
       echo "</form></div>";
    }
 

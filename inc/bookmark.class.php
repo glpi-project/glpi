@@ -238,7 +238,7 @@ class Bookmark extends CommonDBTM {
          echo "<td class='tab_bg_2 top' colspan='2'>";
          echo "<input type='hidden' name='id' value='$ID'>";
          echo "<div class='center'>";
-         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "<input type='hidden' name='id' value='$ID'>";
          echo "<input type='submit' name='delete' value=\"".__s('Delete')."\" class='submit'>";
          echo "</div></td></tr>";
@@ -563,7 +563,7 @@ class Bookmark extends CommonDBTM {
                   echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;id=".
                              $this->fields["id"]."\">
                             <img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".
-                              __s('Update')."'></a></td>";
+                              _sx('button', 'Update')."'></a></td>";
                } else {
                   echo "<td>&nbsp;</td>";
                }

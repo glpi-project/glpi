@@ -1097,7 +1097,7 @@ class Auth {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td class='center' colspan='2'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Update')."\" >";
+      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\" >";
       echo "</td></tr>";
 
       echo "</table></div></form>\n";

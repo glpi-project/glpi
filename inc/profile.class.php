@@ -599,7 +599,7 @@ class Profile extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='4' class='center'>";
          echo "<input type='hidden' name='id' value=$ID>";
-         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       } else {
@@ -748,7 +748,7 @@ class Profile extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='6' class='center'>";
          echo "<input type='hidden' name='id' value=$ID>";
-         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       } else {
@@ -817,6 +817,7 @@ class Profile extends CommonDBTM {
       echo "<td>&nbsp;</td><td>&nbsp;</td>";
       echo "</tr>\n";
 
+      //TRANS: a noun
       echo "<tr class='tab_bg_5'><th colspan='6'>".__('Update')."</th>";
       echo "</tr>\n";
 
@@ -988,7 +989,7 @@ class Profile extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='6' class='center'>";
          echo "<input type='hidden' name='id' value=$ID>";
-         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       } else {
@@ -1108,7 +1109,7 @@ class Profile extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='".(count($tabstatus)+1)."' class='center'>";
          echo "<input type='hidden' name='id' value=$ID>";
-         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       } else {
@@ -1236,7 +1237,7 @@ class Profile extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='6' class='center'>";
          echo "<input type='hidden' name='id' value=$ID>";
-         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       } else {
@@ -1324,7 +1325,7 @@ class Profile extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='6' class='center'>";
          echo "<input type='hidden' name='id' value=$ID>";
-         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       } else {
