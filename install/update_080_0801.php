@@ -45,7 +45,7 @@ function update080to0801() {
    $ADDTODISPLAYPREF = array();
 
    //TRANS: %s is the number of new version
-   $migration->displayTitle(_sprintf(_('Update to %s'), '0.80.1'));
+   $migration->displayTitle(sprintf(__('Update to %s'), '0.80.1'));
    $migration->setVersion('0.80.1');
 
    // Clean duplicates

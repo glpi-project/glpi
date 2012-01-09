@@ -266,7 +266,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(__('Data migration - %s'), "glpi_ipaddresses"), true);
+   logMessage(sprintf(__('Data migration - %s'), "glpi_ipaddresses"), true);
 
    // Adding IPAddress table
    if (!TableExists('glpi_ipaddresses')) {
@@ -291,7 +291,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(__('Change of the database layout - %s'), "glpi_wifinetworks"), true);
+   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_wifinetworks"), true);
 
    // Adding WifiNetwork table
    if (!TableExists('glpi_wifinetworks')) {
@@ -708,12 +708,12 @@ function update083to084() {
                            'no_NB' => 'nb_NO',
                            'no_NN' => 'nn_NO',
                            'ua_UA' => 'uk_UA',);
-   foreach ($lang_to_update as $old => $new) {                        
+   foreach ($lang_to_update as $old => $new) {
       $query = "UPDATE `glpi_configs`
                SET `language` = '$new'
                WHERE `language` = '$old';";
       $DB->queryOrDie($query, "0.74 language in config $old to $new");
-   
+
       $query = "UPDATE `glpi_users`
                SET `language` = '$new'
                WHERE `language` = '$old';";

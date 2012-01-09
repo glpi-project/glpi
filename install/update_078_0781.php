@@ -50,7 +50,7 @@ function update078to0781($output='HTML') {
 
    if ($output) {
       //TRANS: %s is the number of new version
-      echo "<h3>"._sprintf(_('Update to %s'), '0.78.1')."</h3>";
+      echo "<h3>".sprintf(__('Update to %s'), '0.78.1')."</h3>";
    }
    displayMigrationMessage("0781"); // Start
 
