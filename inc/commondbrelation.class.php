@@ -40,8 +40,7 @@ abstract class CommonDBRelation extends CommonDBTM {
    var $itemtype_2; // Type ref or field name (must start with itemtype)
    var $items_id_2; // Field name
 
-   var $check_entities = true;
-
+   var $check_entities            = true;
    var $checks_only_for_itemtype1 = false;
    var $logs_only_for_itemtype1   = false;
 
@@ -54,7 +53,7 @@ abstract class CommonDBRelation extends CommonDBTM {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']           = __('Characteristics');
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
@@ -82,7 +81,7 @@ abstract class CommonDBRelation extends CommonDBTM {
     *
     * @param $ID ID of the item (-1 if new item)
     * @param $right Right to check : r / w / recursive
-    * @param $input array of input data (used for adding item)
+    * @param $input array of input data (used for adding item) (default NULL)
     *
     * @return boolean
    **/
@@ -247,7 +246,6 @@ abstract class CommonDBRelation extends CommonDBTM {
     * Actions done after the DELETE of the item in the database
     *
     *@return nothing
-    *
    **/
    function post_deleteFromDB() {
 
@@ -345,5 +343,4 @@ abstract class CommonDBRelation extends CommonDBTM {
    }
 
 }
-
 ?>

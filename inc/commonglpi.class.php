@@ -45,6 +45,7 @@ class CommonGLPI {
 
    static protected $othertabs = array();
 
+
    /**
     * Return the localized name of the current Type
     * Should be overloaded in each new class
@@ -207,7 +208,7 @@ class CommonGLPI {
     * @since version 0.83
     *
     * @param $item         CommonDBTM object for which the tab need to be displayed
-    * @param $withtemplate boolean is a template object ?
+    * @param $withtemplate boolean is a template object ? (default 0)
     *
     *  @return string tab name
    **/
@@ -222,8 +223,8 @@ class CommonGLPI {
     * @since version 0.83
     *
     * @param $item         CommonGLPI object for which the tab need to be displayed
-    * @param $tabnum       integer tab number
-    * @param $withtemplate boolean is a template object ?
+    * @param $tabnum       integer tab number (default 1)
+    * @param $withtemplate boolean is a template object ? (default 0)
     *
     * @return true
    **/
@@ -237,7 +238,7 @@ class CommonGLPI {
     *
     * @param $item CommonGLPI object for which the tab need to be displayed
     * @param $tab string tab name
-    * @param $withtemplate boolean is a template object ?
+    * @param $withtemplate boolean is a template object ? (default 0)
     *
     * @return true
    **/
@@ -293,7 +294,7 @@ class CommonGLPI {
     * create tab text entry
     *
     * @param $text string text to display
-    * @param $nb integer number of items
+    * @param $nb integer number of items (default 0)
     *
     *  @return array containing the onglets
    **/
@@ -334,7 +335,7 @@ class CommonGLPI {
     * @since version 0.83
     *
     * @return boolean
-    */
+   **/
    function isNewItem() {
       return false;
    }
@@ -528,7 +529,7 @@ class CommonGLPI {
    /**
     * Get the search page URL for the current classe
     *
-    * @param $full path or relative one
+    * @param $full path or relative one (true by default)
    **/
    function getTabsURL($full=true) {
       return Toolbox::getItemTypeTabsURL(get_class($this), $full);
@@ -538,7 +539,7 @@ class CommonGLPI {
    /**
     * Get the search page URL for the current classe
     *
-    * @param $full path or relative one
+    * @param $full path or relative one (true by default)
    **/
    function getSearchURL($full=true) {
       return Toolbox::getItemTypeSearchURL(get_class($this), $full);
@@ -548,7 +549,7 @@ class CommonGLPI {
    /**
     * Get the search page URL for the current classe
     *
-    * @param $full path or relative one
+    * @param $full path or relative one (true by default)
    **/
    function getFormURL($full=true) {
       return Toolbox::getItemTypeFormURL(get_class($this), $full);

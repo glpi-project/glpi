@@ -35,6 +35,7 @@ if (!defined('GLPI_ROOT')) {
 // CommonDevice Class for Device*class
 abstract class CommonDevice extends CommonDropdown {
 
+
    function canCreate() {
       return Session::haveRight('device', 'w');
    }
@@ -90,14 +91,14 @@ abstract class CommonDevice extends CommonDropdown {
       $tab[1]['itemlink_link'] = $this->getType();
       $tab[1]['massiveaction'] = false;
 
-      $tab[23]['table']       = 'glpi_manufacturers';
-      $tab[23]['field']       = 'name';
-      $tab[23]['name']        = __('Manufacturer');
+      $tab[23]['table']        = 'glpi_manufacturers';
+      $tab[23]['field']        = 'name';
+      $tab[23]['name']         = __('Manufacturer');
 
-      $tab[16]['table']       = $this->getTable();
-      $tab[16]['field']       = 'comment';
-      $tab[16]['name']        = __('Comments');
-      $tab[16]['datatype']    = 'text';
+      $tab[16]['table']        = $this->getTable();
+      $tab[16]['field']        = 'comment';
+      $tab[16]['name']         = __('Comments');
+      $tab[16]['datatype']     = 'text';
 
       return $tab;
    }

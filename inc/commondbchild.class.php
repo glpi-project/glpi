@@ -51,6 +51,7 @@ abstract class CommonDBChild extends CommonDBTM {
    // TODO : thinking of factorizing the CommonDBTM::can* methods as checking the item ability
    // may be use for most CommonDBChild
 
+
    /**
     * Get the item associated with the current object. Rely on getItemFromArray()
     *
@@ -101,7 +102,6 @@ abstract class CommonDBChild extends CommonDBTM {
     *
     * @param $recursiveItems array of the items of the current elements (see recursivelyGetItems())
     * @param $elementToDisplay what to display : 'Type', 'Name', 'Link'
-    *
    **/
    static function displayRecursiveItems($recursiveItems, $elementToDisplay) {
 
@@ -154,9 +154,9 @@ abstract class CommonDBChild extends CommonDBTM {
 
 
    /**
-   * Get the ID of entity assigned to the object
-   *
-   * @return ID of the entity
+    * Get the ID of entity assigned to the object
+    *
+    * @return ID of the entity
    **/
    function getEntityID () {
 

@@ -96,6 +96,8 @@ class CommonDBTM extends CommonGLPI {
    /**
     * force table value (used for config management for old versions)
     *
+    * @param $table name of the table to be forced
+    *
     * @return nothing
    **/
    function forceTable($table) {
@@ -172,9 +174,9 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Retrieve all items from the database
     *
-    * @param $condition condition used to search if needed (empty get all)
-    * @param $order order field if needed
-    * @param $limit limit retrieved datas if needed
+    * @param $condition condition used to search if needed (empty get all) (default '')
+    * @param $order order field if needed (default '')
+    * @param $limit limit retrieved datas if needed (default '')
     *
     * @return true if succeed else false
    **/
@@ -276,7 +278,7 @@ class CommonDBTM extends CommonGLPI {
     * Update the item in the database
     *
     * @param $updates fields to update
-    * @param $oldvalues old values of the updated fields
+    * @param $oldvalues old values of the updated fields (array)
     *
     * @return nothing
    **/
@@ -407,6 +409,7 @@ class CommonDBTM extends CommonGLPI {
     * Mark deleted or purge an item in the database
     *
     * @param $force force the purge of the item (not used if the table do not have a deleted field)
+    *               (default 0)
     *
     * @return true if succeed else false
    **/
@@ -620,7 +623,7 @@ class CommonDBTM extends CommonGLPI {
     * @param $input array : the _POST vars returned by the item form when press add
     * @param options an array with the insert options
     *   - unicity_message : do not display message if item it a duplicate (default is yes)
-    * @param $history boolean : do history log ?
+    * @param $history boolean : do history log ? (true by default)
     *
     * @return integer the new ID of the added item (or false if fail)
    **/
@@ -724,7 +727,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get the link to an item
     *
-    * @param $with_comment Display comments
+    * @param $with_comment Display comments (default 0)
     *
     * @return string : HTML link
    **/
@@ -840,7 +843,7 @@ class CommonDBTM extends CommonGLPI {
     * Update some elements of an item in the database.
     *
     * @param $input array : the _POST vars returned by the item form when press update
-    * @param $history boolean : do history log ?
+    * @param $history boolean : do history log ? (default 1)
     * @param options an array with the insert options
     *
     * @return boolean : true on success
@@ -1055,7 +1058,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Actions done after the UPDATE of the item in the database
     *
-    * @param $history store changes history ?
+    * @param $history store changes history ? (default 1)
     *
     * @return nothing
    **/
@@ -1076,8 +1079,8 @@ class CommonDBTM extends CommonGLPI {
     * Delete an item in the database.
     *
     * @param $input array : the _POST vars returned by the item form when press delete
-    * @param $force boolean : force deletion
-    * @param $history boolean : do history log ?
+    * @param $force boolean : force deletion (default 0)
+    * @param $history boolean : do history log ? (default 1)
     *
     * @return boolean : true on success
    **/
@@ -1255,7 +1258,7 @@ class CommonDBTM extends CommonGLPI {
     * Restore an item trashed in the database.
     *
     * @param $input array : the _POST vars returned by the item form when press restore
-    * @param $history boolean : do history log ?
+    * @param $history boolean : do history log ? (default 1)
     *
     * @return boolean : true on success
    **/
@@ -1344,7 +1347,6 @@ class CommonDBTM extends CommonGLPI {
 
    /**
     * Have I the global right to add an item for the Object
-    *
     * May be overloaded if needed (ex KnowbaseItem)
     *
     * @since version 0.83
@@ -1360,7 +1362,6 @@ class CommonDBTM extends CommonGLPI {
 
    /**
     * Have I the global right to "create" the Object
-    *
     * May be overloaded if needed (ex KnowbaseItem)
     *
     * @return booleen
@@ -1479,7 +1480,6 @@ class CommonDBTM extends CommonGLPI {
 
    /**
     * Have I the right to "view" the Object
-    *
     * May be overloaded if needed
     *
     * @return booleen
@@ -1649,7 +1649,6 @@ class CommonDBTM extends CommonGLPI {
     *     - colspan for each column (default 2)
     *     - candel : set to false to hide "delete" button
     *     - canedit : set to false to hide all buttons
-    *
    **/
    function showFormButtons($options=array()) {
 
@@ -1751,7 +1750,6 @@ class CommonDBTM extends CommonGLPI {
     *     - colspan for each column (default 2)
     *     - formoptions string (javascript p.e.)
     *     - canedit boolean edit mode of form ?
-    *
    **/
    function showFormHeader($options=array()) {
       global $CFG_GLPI;
@@ -1837,7 +1835,7 @@ class CommonDBTM extends CommonGLPI {
          _e('New Card');
       } else {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-         printf(__('%1$s - ID %2$d'),$this->getTypeName(1),$ID);
+         printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
       }
 
 
@@ -1874,7 +1872,7 @@ class CommonDBTM extends CommonGLPI {
 
                   } else {
                      Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
-                     $comment = __('Change visibility in the child entities');
+                     $comment = __('Change visibility in child entities');
                   }
                   echo " ";
                   Html::showToolTip($comment);
@@ -1913,7 +1911,7 @@ class CommonDBTM extends CommonGLPI {
     * @since version 0.83
     *
     * @return boolean
-    */
+   **/
    function isNewItem() {
 
       if (isset($this->fields['id'])) {
@@ -1928,7 +1926,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param $ID ID of the item (-1 if new item)
     * @param $right Right to check : r / w / recursive
-    * @param $input array of input data (used for adding item)
+    * @param $input array of input data (used for adding item) (default NULL)
     *
     * @return boolean
    **/
@@ -2006,11 +2004,11 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param $ID ID of the item (-1 if new item)
     * @param $right Right to check : r / w / recursive
-    * @param $input array of input data (used for adding item)
+    * @param $input array of input data (used for adding item) (default NULL)
     *
     * @return nothing
    **/
-   function check($ID,$right,&$input=NULL) {
+   function check($ID, $right, &$input=NULL) {
       global $CFG_GLPI;
 
       // Check item exists
@@ -2288,67 +2286,67 @@ class CommonDBTM extends CommonGLPI {
       /// TODO manage it as table to have clean gettext view or use getComment of classes
       $comment = "";
       if ($this->isField('completename')) {
-         $comment .= "<span class='b'>".__('Complete Name')."&nbsp;: </span>".
+         $comment .= "<span class='b'>".__('Complete Name:')."</span>".
                       $this->getField('completename')."<br>";
       }
 
       if ($this->isField('serial')) {
-         $comment .= "<span class='b'>".__('Serial number')."&nbsp;: </span>".
+         $comment .= "<span class='b'>".__('Serial number:')."</span>".
                      $this->getField('serial')."<br>";
       }
 
       if ($this->isField('otherserial')) {
-         $comment .= "<span class='b'>".__('Inventory number')."&nbsp;: </span>".
+         $comment .= "<span class='b'>".__('Inventory number:')."</span>".
                      $this->getField('otherserial')."<br>";
       }
 
       if ($this->isField('states_id') && $this->getType()!='State') {
          $tmp = Dropdown::getDropdownName('glpi_states', $this->getField('states_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".__('Status')."&nbsp;: </span>$tmp<br>";
+            $comment .= "<span class='b'>".__('Status:')."</span>$tmp<br>";
          }
       }
 
       if ($this->isField('locations_id') && $this->getType()!='Location') {
          $tmp = Dropdown::getDropdownName("glpi_locations", $this->getField('locations_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".__('Location')."&nbsp;: "."</span>".$tmp."<br>";
+            $comment .= "<span class='b'>".__('Location:')."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('users_id')) {
          $tmp = getUserName($this->getField('users_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".__('User')."&nbsp;: "."</span>".$tmp."<br>";
+            $comment .= "<span class='b'>".__('User:')."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('groups_id') && $this->getType()!='Group') {
          $tmp = Dropdown::getDropdownName("glpi_groups",$this->getField('groups_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".__('Group')."&nbsp;: "."</span>".$tmp."<br>";
+            $comment .= "<span class='b'>".__('Group:')."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('users_id_tech')) {
          $tmp = getUserName($this->getField('users_id_tech'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".__('Technician in charge of the hardware')."&nbsp;: ".
+            $comment .= "<span class='b'>".__('Technician in charge of the hardware:').
                         "</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('contact')) {
-         $comment .= "<span class='b'>".__('Alternate username')."&nbsp;: </span>".
+         $comment .= "<span class='b'>".__('Alternate username:')."</span>".
                       $this->getField('contact')."<br>";
       }
 
       if ($this->isField('contact_num')) {
-         $comment .= "<span class='b'>".__('Alternate username number')."&nbsp;: </span>".
+         $comment .= "<span class='b'>".__('Alternate username number:')."</span>".
                      $this->getField('contact_num')."<br>";
       }
       if (($this instanceof CommonDropdown) && $this->isField('comment')) {
-         $comment .= "<span class='b'>".__('Comments')."&nbsp;: </span>".
+         $comment .= "<span class='b'>".__('Comments:')."</span>".
                       nl2br($this->getField('comment'))."<br>";
       }
 
@@ -2385,8 +2383,8 @@ class CommonDBTM extends CommonGLPI {
     * Get The Name of the Object with the ID if the config is set
     * Should Not be overloaded (overload getName() instead)
     *
-    * @param $with_comment add comments to name
-    * @param $forceid boolean override config and display item's ID
+    * @param $with_comment add comments to name (default 0)
+    * @param $forceid boolean override config and display item's ID (false by default)
     *
     * @return String: name of the object in the current language
    **/
@@ -2461,7 +2459,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param field the field in which looking for the value (for example : table, name, etc)
     * @param value the value to look for in the field
-    * @param table the table
+    * @param table the table (default '')
     *
     * @return then search option array, or an empty array if not found
    **/
@@ -2480,6 +2478,7 @@ class CommonDBTM extends CommonGLPI {
       return array();
    }
 
+
    /**
     * Return a search option ID by looking for a value of a specific field and maybe a specific table
     *
@@ -2487,7 +2486,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @param field the field in which looking for the value (for example : table, name, etc)
     * @param value the value to look for in the field
-    * @param table the table
+    * @param table the table (default '')
     *
     * @return then search option id, or -1 if not found
    **/
@@ -2504,13 +2503,13 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Check float and decimal values
     *
-    * @param display or not messages in and addAfterRedirect
+    * @param display or not messages in and addAfterRedirect (true by default)
     *
     * @return input the data checked
    **/
    function filterValues($display=true) {
 
-      if (in_array('CommonDBRelation',class_parents($this))) {
+      if (in_array('CommonDBRelation', class_parents($this))) {
          return true;
       }
       //Type mismatched fields
@@ -2673,7 +2672,7 @@ class CommonDBTM extends CommonGLPI {
          $message_text = sprintf(__('Item successfully added but duplicate record on %s'),
                                  implode('&nbsp;&&nbsp;',$message));
       }
-      $message_text .= '<br>'.__('Other items exist');
+      $message_text .= '<br>'.__('Other item exist');
 
       foreach ($doubles as $double) {
          $doubles_text = array();
@@ -2715,7 +2714,7 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Check field unicity before insert or update
     *
-    * @param add true for insert, false for update
+    * @param add true for insert, false for update (false by default)
     * @param $options array
     *
     * @return true if item can be written in DB, false if not
@@ -2820,7 +2819,7 @@ class CommonDBTM extends CommonGLPI {
                                        'inventory',
                                        //TRANS: %1$s is the user login, %2$s the message
                                        sprintf(__('%1$s trying to add an item that already exists: %2$s'),
-                                                $_SESSION["glpiname"], $message_text));
+                                               $_SESSION["glpiname"], $message_text));
                         }
                      }
                      if($fields['action_refuse']) {
@@ -2851,7 +2850,7 @@ class CommonDBTM extends CommonGLPI {
     * Clean all infos which match some criteria
     *
     * @param $crit array of criteria (ex array('is_active'=>'1'))
-    * @param $force boolean force purge not on put in trash
+    * @param $force boolean force purge not on put in trash (default 0)
    **/
    function deleteByCriteria($crit=array(), $force=0) {
       global $DB;
