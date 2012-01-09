@@ -311,7 +311,7 @@ class Supplier extends CommonDBTM {
          $ret .= "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=".
                    $this->fields['id']."'>
                   <img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' class='middle' alt=\"".
-                   __s('Update')."\" title=\"".__s('Update')."\"></a>";
+                   _sx('button', 'Update')."\" title=\""._sx('button', 'Update')."\"></a>";
       }
       return $ret;
    }

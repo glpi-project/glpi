@@ -122,17 +122,17 @@ function step0() {
 
    echo "<h3>".__('Installation or update of GLPI')."</h3>";
    echo "<p>".__s("Choose 'Install' for a completely new installation of GLPI.")."</p>";
-   echo "<p> ".__s("Select 'Update' to update your version of GLPI from an earlier version")."</p>";
+   echo "<p> ".__s("Select 'Upgrade' to update your version of GLPI from an earlier version")."</p>";
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='update' value='no'>";
    echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-   echo "<input type='submit' name='submit' class='submit' value=\"".__('Installation')."\"></p>";
+   echo "<input type='submit' name='submit' class='submit' value=\"".__('Install')."\"></p>";
    echo "</form>";
 
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='update' value='yes'>";
    echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
-   echo "<input type='submit' name='submit' class='submit' value=\"".__('Update')."\"></p>";
+   echo "<input type='submit' name='submit' class='submit' value=\"".__('Upgrade')."\"></p>";
    echo "</form>";
 }
 

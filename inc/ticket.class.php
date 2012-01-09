@@ -3553,7 +3553,7 @@ class Ticket extends CommonITILObject {
       echo "<th class='left' rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype').
              __('Associated element')."".$tt->getMandatoryMark('itemtype').
              $tt->getEndHiddenFieldText('itemtype');
-      echo "<img title='".__s('Update')."' alt='".__s('Update')."'
+      echo "<img title='"._sx('button', 'Update')."' alt='"._sx('button', 'Update')."'
                   onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
                   class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";
       echo "</th>";
@@ -3825,7 +3825,7 @@ class Ticket extends CommonITILObject {
                       __s('Restore')."'></td>";
                } else {
                   echo "<input type='submit' class='submit' name='update' value='".
-                      __s('Update')."'></td>";
+                      __s('Save')."'></td>";
                }
                echo "<td class='tab_bg_2 center' colspan='2'>";
                if ($this->fields["is_deleted"] == 1) {
@@ -3840,7 +3840,7 @@ class Ticket extends CommonITILObject {
             } else {
                echo "<td class='tab_bg_2 center' colspan='4'>";
                echo "<input type='submit' class='submit' name='update' value='".
-                      __s('Update')."'>";
+                      __s('Save')."'>";
             }
 
          } else {

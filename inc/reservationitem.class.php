@@ -243,7 +243,7 @@ class ReservationItem extends CommonDBTM {
          echo "</textarea></td></tr>\n";
 
          echo "<tr class='tab_bg_2'><td colspan='2' class='top center'>";
-         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>\n";
 
          echo "</table></form></div>";

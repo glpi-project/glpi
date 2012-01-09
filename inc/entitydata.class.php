@@ -264,10 +264,10 @@ class EntityData extends CommonDBChild {
 
          if ($entdata->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entdata->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".__s('Update')."\"
+            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
                    class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value=\"".__s('Update')."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
          }
 
          echo "</td></tr>";
@@ -362,10 +362,10 @@ class EntityData extends CommonDBChild {
 
          if ($entdata->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entdata->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".__s('Update')."\"
+            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
                    class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value=\"".__s('Update')."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
          }
 
          echo "</td></tr>";
@@ -515,10 +515,10 @@ class EntityData extends CommonDBChild {
 
          if ($entitydata->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entitydata->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".__s('Update')."\"
+            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
                    class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value=\"".__s('Update')."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
          }
 
          echo "</td></tr>";
@@ -670,10 +670,10 @@ class EntityData extends CommonDBChild {
 
          if ($entitynotification->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entitynotification->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".__s('Update')."\"
+            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
                    class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value=\"".__s('Update')."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
          }
 
          echo "</td></tr>";
@@ -937,10 +937,10 @@ class EntityData extends CommonDBChild {
 
          if ($entdata->fields["id"]) {
             echo "<input type='hidden' name='id' value='".$entdata->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".__s('Update')."\"
+            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
                    class='submit'>";
          } else {
-            echo "<input type='submit' name='add' value=\"".__s('Update')."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
          }
 
          echo "</td></tr>";

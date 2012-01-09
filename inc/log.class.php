@@ -279,6 +279,7 @@ class Log extends CommonDBTM {
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th>".__('ID')."</th><th>".__('Date')."</th>";
       echo "<th>".__('User')."</th><th>".__('Field')."</th>";
+      //TRANS: a noun, modification, change
       echo "<th>".__('Update')."</th></tr>";
 
       foreach (self::getHistoryData($item,$start,$_SESSION['glpilist_limit']) as $data) {

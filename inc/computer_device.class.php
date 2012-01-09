@@ -345,7 +345,7 @@ class Computer_Device extends CommonDBTM {
             echo "<tr><td colspan='$global_colspan'><hr></td></tr>";
             echo "<tr><td colspan='$global_colspan' class='tab_bg_1 center'>";
             echo "<input type='submit' class='submit' name='updateall' value='".
-                   __s('Update')."'></td></tr>";
+                   __s('Save')."'></td></tr>";
          }
 
          echo "<tr><td colspan='$global_colspan' class='tab_bg_1 center'>";

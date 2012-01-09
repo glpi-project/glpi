@@ -1057,7 +1057,7 @@ class Infocom extends CommonDBChild {
                echo "<tr>";
                echo "<td class='tab_bg_2 center' colspan='2'>";
                echo "<input type='hidden' name='id' value='".$ic->fields['id']."'>";
-               echo "<input type='submit' name='update' value=\"".__s('Update')."\"
+               echo "<input type='submit' name='update' value=\"".__s('Save')."\"
                       class='submit'>";
                echo "</td>";
                echo "<td class='tab_bg_2 center' colspan='2'>";

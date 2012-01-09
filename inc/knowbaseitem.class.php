@@ -516,7 +516,7 @@ class KnowbaseItem extends CommonDBTM {
 
          echo "<br><br>";
          if ($ID>0) {
-            echo "<input type='submit' class='submit' name='update' value=\"".__s('Update')."\">";
+            echo "<input type='submit' class='submit' name='update' value=\"".__s('Save')."\">";
          } else {
             echo "<input type='hidden' name='users_id' value=\"".Session::getLoginUserID()."\">";
             echo "<input type='submit' class='submit' name='add' value=\"".__s('Add')."\">";

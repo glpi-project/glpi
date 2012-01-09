@@ -1809,7 +1809,7 @@ class User extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr><td class='tab_bg_2 center' colspan='4'>";
-         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table></form></div>";
@@ -2817,7 +2817,7 @@ class User extends CommonDBTM {
 
          echo "<tr class='tab_bg_2 center'><td colspan='2'>";
          echo "<input type='hidden' name='password_forget_token' value='$token'>";
-         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>";
 
         echo "</table></form>";
@@ -2847,7 +2847,7 @@ class User extends CommonDBTM {
 
       echo "<tr class='tab_bg_2 center'>";
       echo "<td><input type='text' size='60' name='email' value=''></td>";
-      echo "<td><input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+      echo "<td><input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
       echo "</td></tr>";
 
       echo "</table></form></div>";

@@ -665,7 +665,7 @@ class Reservation extends CommonDBChild {
             echo "<br><input type='checkbox' name='_delete_group'>&nbsp;".__s('Delete all rehearsals');
          }
          echo "</td><td class='top center'>";
-         echo "<input type='submit' name='update' value=\"".__s('Update')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>\n";
       }
       echo "</table></form></div>\n";

@@ -1390,7 +1390,8 @@ class Dropdown {
                  || (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canUpdate())
                  || ($itemtype == 'Ticket' && Session::haveRight('update_ticket',1)))) {
 
-            echo "<option value='update'>".__('Update')."</option>";
+            //TRANS: select action 'update' (before doing it)
+            echo "<option value='update'>"._x('button', 'Update')."</option>";
          }
 
          if (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canCreate() ) {
