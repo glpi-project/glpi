@@ -5692,7 +5692,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
 
 
-   displayMigrationMessage("078", sprintf(__('Data migrat$ion - %s'), 'glpi_displaypreferences'));
+   displayMigrationMessage("078", sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
 
    // Add search values for tickets
    $ADDTODISPLAYPREF['Ticket'] = array(12, 19, 15, 3, 4, 5, 7);
