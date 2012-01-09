@@ -107,8 +107,9 @@ class Change_Problem extends CommonDBRelation{
       $used = array();
       if ($DB->numrows($result) >0) {
          Session::initNavigateListItems('Change',
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$problem->getTypeName(1), $problem->fields["name"]));
+               //TRANS : %1$s is the itemtype name,
+               //        %2$s is the name of the item (used for headings of a list)
+               sprintf(__('%1$s = %2$s'), $problem->getTypeName(1), $problem->fields["name"]));
 
          while ($data = $DB->fetch_array($result)) {
             $used[$data['id']] = $data['id'];
@@ -188,7 +189,8 @@ class Change_Problem extends CommonDBRelation{
       $used = array();
       if ($DB->numrows($result) >0) {
          Session::initNavigateListItems('Problem',
-         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+         //TRANS : %1$s is the itemtype name,
+         //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
                                                 $change->getTypeName(1), $change->fields["name"]));
 

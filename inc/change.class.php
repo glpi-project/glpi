@@ -382,16 +382,16 @@ class Change extends CommonITILObject {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']            = __('Characteristics');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Title');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['searchtype']    = 'contains';
-      $tab[1]['forcegroupby']  = true;
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']          = $this->getTable();
+      $tab[1]['field']          = 'name';
+      $tab[1]['name']           = __('Title');
+      $tab[1]['datatype']       = 'itemlink';
+      $tab[1]['itemlink_type']  = $this->getType();
+      $tab[1]['searchtype']     = 'contains';
+      $tab[1]['forcegroupby']   = true;
+      $tab[1]['massiveaction']  = false;
 
       $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'content';
@@ -399,30 +399,30 @@ class Change extends CommonITILObject {
       $tab[21]['massiveaction'] = false;
       $tab[21]['datatype']      = 'text';
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']          = $this->getTable();
+      $tab[2]['field']          = 'id';
+      $tab[2]['name']           = __('ID');
+      $tab[2]['massiveaction']  = false;
 
-      $tab[12]['table']      = $this->getTable();
-      $tab[12]['field']      = 'status';
-      $tab[12]['name']       = __('Status');
-      $tab[12]['searchtype'] = 'equals';
+      $tab[12]['table']         = $this->getTable();
+      $tab[12]['field']         = 'status';
+      $tab[12]['name']          = __('Status');
+      $tab[12]['searchtype']    = 'equals';
 
-      $tab[10]['table']      = $this->getTable();
-      $tab[10]['field']      = 'urgency';
-      $tab[10]['name']       = __('Urgency');
-      $tab[10]['searchtype'] = 'equals';
+      $tab[10]['table']         = $this->getTable();
+      $tab[10]['field']         = 'urgency';
+      $tab[10]['name']          = __('Urgency');
+      $tab[10]['searchtype']    = 'equals';
 
-      $tab[11]['table']      = $this->getTable();
-      $tab[11]['field']      = 'impact';
-      $tab[11]['name']       = __('Impact');
-      $tab[11]['searchtype'] = 'equals';
+      $tab[11]['table']         = $this->getTable();
+      $tab[11]['field']         = 'impact';
+      $tab[11]['name']          = __('Impact');
+      $tab[11]['searchtype']    = 'equals';
 
-      $tab[3]['table']      = $this->getTable();
-      $tab[3]['field']      = 'priority';
-      $tab[3]['name']       = __('Priority');
-      $tab[3]['searchtype'] = 'equals';
+      $tab[3]['table']          = $this->getTable();
+      $tab[3]['field']          = 'priority';
+      $tab[3]['name']           = __('Priority');
+      $tab[3]['searchtype']     = 'equals';
 
       $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'date';
@@ -479,7 +479,7 @@ class Change extends CommonITILObject {
 
       $tab += $this->getSearchOptionsActors();
 
-      $tab['analysis'] = __('Control list');
+      $tab['analysis']          = __('Control list');
 
       $tab[60]['table']         = $this->getTable();
       $tab[60]['field']         = 'impactcontent';
@@ -547,11 +547,11 @@ class Change extends CommonITILObject {
 //                                           => array('table'      => 'glpi_changetasks',
 //                                                    'joinparams' => array('jointype' => 'child')));
 
-      $tab['solution'] = _n('Solution', 'Solutions', 1);
+      $tab['solution']          = _n('Solution', 'Solutions', 1);
 
-      $tab[23]['table'] = 'glpi_solutiontypes';
-      $tab[23]['field'] = 'name';
-      $tab[23]['name']  = __('Solution type');
+      $tab[23]['table']         = 'glpi_solutiontypes';
+      $tab[23]['field']         = 'name';
+      $tab[23]['name']          = __('Solution type');
 
       $tab[24]['table']         = $this->getTable();
       $tab[24]['field']         = 'solution';
@@ -566,7 +566,8 @@ class Change extends CommonITILObject {
    /**
     * get the change status list
     * To be overridden by class
-    * @param $withmetaforsearch boolean
+    *
+    * @param $withmetaforsearch boolean (default false)
     *
     * @return an array
    **/
@@ -588,7 +589,7 @@ class Change extends CommonITILObject {
                    'test'          => __('Test'),
                    'qualification' => __('Qualification'),
                    'solved'        => __('Applied'),
-                   'observe'       => __('Review'), 
+                   'observe'       => __('Review'),
                    'closed'        => __('Closed'),
 //                   'abandoned'     => __('Abandonned'), // managed using trash ?
    );
@@ -606,45 +607,50 @@ class Change extends CommonITILObject {
 
    /**
     * Get the ITIL object closed status list
+    * To be overridden by class
     *
     * @since version 0.83
-    * To be overridden by class
+    *
     * @return an array
    **/
    static function getClosedStatusArray() {
+
       // To be overridden by class
       $tab = array('closed'/*, 'abandoned'*/);
-
       return $tab;
    }
 
 
    /**
     * Get the ITIL object solved or observe status list
+    * To be overridden by class
     *
     * @since version 0.83
-    * To be overridden by class
+    *
     * @return an array
    **/
    static function getSolvedStatusArray() {
       // To be overridden by class
       $tab = array('observe', 'solved');
-
       return $tab;
    }
+
 
    /**
     * Get the ITIL object test, qualification or accepted status list
-    * @since version 0.83
     * To be overridden by class
+    *
+    * @since version 0.83
+    *
     * @return an array
    **/
    static function getProcessStatusArray() {
+
       // To be overridden by class
       $tab = array('accepted', 'qualification', 'test');
-
       return $tab;
    }
+
 
    /**
     * Get change status Name
@@ -662,8 +668,8 @@ class Change extends CommonITILObject {
     * Dropdown of change status
     *
     * @param $name select name
-    * @param $value default value
-    * @param $option list proposed 0:normal, 1:search, 2:allowed
+    * @param $value default value (default "new')
+    * @param $option list proposed 0:normal, 1:search, 2:allowed (default 0)
     *
     * @return nothing (display)
    **/
@@ -689,8 +695,8 @@ class Change extends CommonITILObject {
     * Dropdown of change Urgency
     *
     * @param $name select name
-    * @param $value default value
-    * @param $complete see also at least selection
+    * @param $value default value (default 0)
+    * @param $complete see also at least selection (false by default)
     *
     * @return string id of the select
    **/
@@ -703,8 +709,8 @@ class Change extends CommonITILObject {
     * Dropdown of change Impact
     *
     * @param $name select name
-    * @param $value default value
-    * @param $complete see also at least selection (major included)
+    * @param $value default value (default 0)
+    * @param $complete see also at least selection (major included) (false by default)
     *
     * @return string id of the select
    **/

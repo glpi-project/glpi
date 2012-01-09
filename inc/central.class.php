@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
 // class Central
 class Central extends CommonGLPI {
 
+
    static function getTypeName($nb=0) {
 
       // No plural
@@ -124,8 +125,6 @@ class Central extends CommonGLPI {
 
    /**
     * Show the central personal view
-    *
-    *
    **/
    static function showMyView() {
       global $DB;
@@ -149,14 +148,13 @@ class Central extends CommonGLPI {
             echo "<tr><th colspan='2'><br>";
             Html::displayTitle(GLPI_ROOT."/pics/warning.png", $message, $message);
             echo "</th></tr>";
-
          }
       }
 
       if ($DB->isSlave() && !$DB->first_connection) {
          echo "<tr><th colspan='2'><br>";
          Html::displayTitle(GLPI_ROOT."/pics/warning.png", __('MySQL replica: read only'),
-                                    __('MySQL replica: read only'));
+                            __('MySQL replica: read only'));
          echo "</th></tr>";
       }
       echo "<tr><td class='top'><table>";

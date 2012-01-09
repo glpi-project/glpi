@@ -165,8 +165,8 @@ class ChangeTask extends CommonITILTask {
     *
     * @param $val Array of the item to display
     * @param $who ID of the user (0 if all)
-    * @param $type position of the item in the time block (in, through, begin or end)
-    * @param $complete complete display (more details)
+    * @param $type position of the item in the time block (in, through, begin or end) (default '')
+    * @param $complete complete display (more details) (default 0)
     *
     * @return Nothing (display function)
    **/

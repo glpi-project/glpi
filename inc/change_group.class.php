@@ -46,7 +46,5 @@ class Change_Group extends CommonITILActor {
    public $items_id_2 = 'groups_id';
 
 
-
 }
-
 ?>
