@@ -382,7 +382,7 @@ class Document extends CommonDBTM {
       $max_size  = Toolbox::return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
       $max_size /= 1024*1024;
       //TRANS: %s is a size
-      return sprintf(__('%s Mio max'), round($max_size, 1));
+      return sprintf(__('%d Mio max'), round($max_size, 1));
    }
 
 
