@@ -60,7 +60,8 @@ if (isset($_POST["add"])) {
       $dropdown->refreshParentInfos();
       if ($dropdown instanceof CommonDevice) {
          Event::log($newID, get_class($dropdown), 4, "inventory",
-                     sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["designation"]));
+                     sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"],
+                             $_POST["designation"]));
       } else {
          Event::log($newID, get_class($dropdown), 4, "setup",
                      sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
@@ -81,7 +82,7 @@ if (isset($_POST["add"])) {
 
       Event::log($_POST["id"], get_class($dropdown), 4, "setup",
             //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));         
+            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
       $dropdown->redirectToList();
    }
 
@@ -92,7 +93,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup",
             //TRANS: %s is the user login
-            sprintf(__('%s replaces the item'), $_SESSION["glpiname"]));         
+            sprintf(__('%s replaces the item'), $_SESSION["glpiname"]));
    $dropdown->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -102,7 +103,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup",
             //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
+            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST['execute']) && isset($_POST['_method'])) {

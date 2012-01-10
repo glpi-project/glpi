@@ -49,7 +49,8 @@ class Dropdown {
     *    - entity_sons : boolean / if entity restrict specified auto select its sons
     *                   only available if entity is a single value not an array (default false)
     *    - toupdate : array / Update a specific item on select change on dropdown
-    *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for informations)
+    *                   (need value_fieldname, to_update,
+    *                   url (see Ajax::updateItemOnSelectEvent for informations)
     *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - on_change : string / value to transmit to "onChange"
@@ -58,9 +59,9 @@ class Dropdown {
     *    - displaywith : array / array of field to display with request
     *
     * @param $itemtype itemtype used for create dropdown
-    * @param $options possible options
-    * @return boolean : lse if error and random id if OK
+    * @param $options array of possible options
     *
+    * @return boolean : lse if error and random id if OK
    **/
    static function show($itemtype, $options=array()) {
       global $DB, $CFG_GLPI;
@@ -238,7 +239,7 @@ class Dropdown {
     *
     * @param $table the dropdown table from witch we want values on the select
     * @param $id id of the element to get
-    * @param $withcomment give array with name and comment
+    * @param $withcomment give array with name and comment (default 0)
     *
     * @return string the value of the dropdown or &nbsp; if not exists
    **/
@@ -278,38 +279,38 @@ class Dropdown {
                      case "glpi_contacts" :
                         $name .= " ".$data["firstname"];
                         if (!empty($data["phone"])) {
-                           $comment .= "<br><span class='b'>". __('Phone')."</span> ".
+                           $comment .= "<br><span class='b'>". __('Phone: ')."</span>".
                                         $data["phone"];
                         }
                         if (!empty($data["phone2"])) {
-                           $comment .= "<br><span class='b'>". __('Phone 2')."</span> ".
+                           $comment .= "<br><span class='b'>". __('Phone 2: ')."</span>".
                                         $data["phone2"];
                         }
                         if (!empty($data["mobile"])) {
-                           $comment .= "<br><span class='b'>".__('Mobile phone')."</span> ".
+                           $comment .= "<br><span class='b'>".__('Mobile phone: ')."</span>".
                                         $data["mobile"];
                         }
                         if (!empty($data["fax"])) {
-                           $comment .= "<br><span class='b'>".__('Fax')." </span> ".
+                           $comment .= "<br><span class='b'>".__('Fax: ')." </span>".
                                         $data["fax"];
                         }
                         if (!empty($data["email"])) {
-                           $comment .= "<br><span class='b'>"._n('Email', 'Emails', 1)."</span> ".
+                           $comment .= "<br><span class='b'>".__('Email: ')."</span>".
                                         $data["email"];
                         }
                         break;
 
                      case "glpi_suppliers" :
                         if (!empty($data["phonenumber"])) {
-                           $comment .= "<br><span class='b'>". __('Phone')."</span> ".
+                           $comment .= "<br><span class='b'>". __('Phone: ')."</span> ".
                                         $data["phonenumber"];
                         }
                         if (!empty($data["fax"])) {
-                           $comment .= "<br><span class='b'>".__('Fax')." </span> ".
+                           $comment .= "<br><span class='b'>".__('Fax: ')." </span> ".
                                         $data["fax"];
                         }
                         if (!empty($data["email"])) {
-                           $comment .= "<br><span class='b'>"._n('Email', 'Emails', 1)." </span> ".
+                           $comment .= "<br><span class='b'>".__('Email: ')." </span> ".
                                         $data["email"];
                         }
                         break;
@@ -377,9 +378,9 @@ class Dropdown {
     * Make a select box for device type
     *
     * @param $name name of the select box
-    * @param $value default device type
-    * @param $types types to display
-    * @param $used Already used items ID: not to display in dropdown
+    * @param $value='' default device type
+    * @param $types array of types to display
+    * @param $used array Already used items ID: not to display in dropdown
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -444,7 +445,7 @@ class Dropdown {
     * @param $store_path path where icons are stored
     *
     * @return nothing (print out an HTML select box)
-    */
+   **/
    static function dropdownIcons($myname, $value, $store_path) {
 
       if (is_dir($store_path)) {
@@ -489,7 +490,7 @@ class Dropdown {
     * Dropdown for GMT selection
     *
     * @param $name select name
-    * @param $value default value
+    * @param $value='' default value
    **/
    static function showGMT($name, $value='') {
 
@@ -518,8 +519,8 @@ class Dropdown {
     * Make a select box for a boolean choice (Yes/No)
     *
     * @param $name select name
-    * @param $value preselected value.
-    * @param $restrict_to allows to display only yes or no in the dropdown (default is yes & no)
+    * @param $value preselected value. (default 0)
+    * @param $restrict_to allows to display only yes or no in the dropdown (default -1)
     * @param $params Array of optional options (passed to showFromArray)
     *
     * @return rand value
@@ -542,6 +543,7 @@ class Dropdown {
     * Get Yes No string
     *
     * @param $value Yes No value
+    *
     * @return string
    **/
    static function getYesNo($value) {
@@ -596,94 +598,116 @@ class Dropdown {
 
       if (is_null($optgroup)) {
          $optgroup = array(__('Common')
-                           => array('Location'        => Location::getTypeName(2),
-                                    'State'           => State::getTypeName(2),
+                           => array('Location'        => _n('Location', 'Locations', 2),
+                                    'State'           => _n('Status of items', 'Status of items', 2),
                                     'Manufacturer'    => Manufacturer::getTypeName(2)),
 
                            __('Assistance')
-                           => array('ITILCategory'     => ITILCategory::getTypeName(2),
-                                    'TaskCategory'     => TaskCategory::getTypeName(2),
-                                    'SolutionType'     => SolutionType::getTypeName(2),
-                                    'RequestType'      => RequestType::getTypeName(2),
-                                    'SolutionTemplate' => SolutionTemplate::getTypeName(2)),
+                           => array('ITILCategory'     =>  _n('Category of ticket',
+                                                              'Categories of tickets',2),
+                                    'TaskCategory'     => _n('Tasks category','Tasks categories', 2),
+                                    'SolutionType'     => _n('Solution type', 'Solution types', 2),
+                                    'RequestType'      => _n('Request source', 'Request sources', 2),
+                                    'SolutionTemplate' => _n('Solution template',
+                                                             'Solution templates', 2)),
 
                            _n('Type', 'Types', 2)
-                           => array('ComputerType'         => ComputerType::getTypeName(2),
-                                    'NetworkEquipmentType' => NetworkEquipmentType::getTypeName(2),
-                                    'PrinterType'          => PrinterType::getTypeName(2),
-                                    'MonitorType'          => MonitorType::getTypeName(2),
-                                    'PeripheralType'       => PeripheralType::getTypeName(2),
-                                    'PhoneType'            => PhoneType::getTypeName(2),
-                                    'SoftwareLicenseType'  => SoftwareLicenseType::getTypeName(2),
-                                    'CartridgeItemType'    => CartridgeItemType::getTypeName(2),
-                                    'ConsumableItemType'   => ConsumableItemType::getTypeName(2),
-                                    'ContractType'         => ContractType::getTypeName(2),
-                                    'ContactType'          => ContactType::getTypeName(2),
-                                    'DeviceMemoryType'     => DeviceMemoryType::getTypeName(2),
-                                    'SupplierType'         => SupplierType::getTypeName(2),
-                                    'InterfaceType'        => InterfaceType::getTypeName(2),
-                                    'DeviceCaseType'       => DeviceCaseType::getTypeName(2),
-                                    'PhonePowerSupply'     => PhonePowerSupply::getTypeName(2),
-                                    'Filesystem'           => Filesystem::getTypeName(2)),
+                           => array('ComputerType'         => _n('Computer type',
+                                                                 'Computers types', 2),
+                                    'NetworkEquipmentType' => _n('Networking equipment type',
+                                                                 'Networking equipment types', 2),
+                                    'PrinterType'          => _n('Printer type', 'Printer types', 2),
+                                    'MonitorType'          => _n('Monitor type', 'Monitor types', 2),
+                                    'PeripheralType'       => _n('Devices type', 'Devices types', 2),
+                                    'PhoneType'            => _n('Phone type', 'Phones types', 2),
+                                    'SoftwareLicenseType'  => _n('License type', 'License types', 2),
+                                    'CartridgeItemType'    => _n('Cartridge type',
+                                                                 'Cartridge types', 2),
+                                    'ConsumableItemType'   => _n('Consumable type',
+                                                                 'Consumable types', 2),
+                                    'ContractType'         => _n('Contract type',
+                                                                 'Contract types', 2),
+                                    'ContactType'          => _n('Contact type', 'Contact types', 2),
+                                    'DeviceMemoryType'     => _n('Memory type', 'Memory types', 2),
+                                    'SupplierType'         => _n('Third party type', 'Third party types', 2),
+                                    'InterfaceType'        => _n('Interface type (Hard drive...)',
+                                                                 'Interface types (Hard drive...)', 2) ,
+                                    'DeviceCaseType'       => _n('Case type', 'Case types', 2),
+                                    'PhonePowerSupply'     => _n('Phone power supply type',
+                                                                 'Phones power supply types', 2),
+                                    'Filesystem'           => _n('File system', 'File systems', 2)),
 
                         __('Model')
-                        => array('ComputerModel'         => ComputerModel::getTypeName(2),
-                                 'NetworkEquipmentModel' => NetworkEquipmentModel::getTypeName(2),
-                                 'PrinterModel'          => PrinterModel::getTypeName(2),
-                                 'MonitorModel'          => MonitorModel::getTypeName(2),
-                                 'PeripheralModel'       => PeripheralModel::getTypeName(2),
-                                 'PhoneModel'            => PhoneModel::getTypeName(2)),
+                        => array('ComputerModel'         => _n('Computer model',
+                                                               'Computer models', 2),
+                                 'NetworkEquipmentModel' => _n('Networking equipment model',
+                                                               'Networking equipment models', 2),
+                                 'PrinterModel'          => _n('Printers model',
+                                                                'Printers models', 2),
+                                 'MonitorModel'          => _n('Monitor model', 'Monitor models', 2),
+                                 'PeripheralModel'       => _n('Peripheral model',
+                                                               'Peripheral models', 2),
+                                 'PhoneModel'            =>  _n('Phone model', 'Phone models', 2)),
 
                         _n('Virtual machine', 'Virtual machines', 2)
-                        => array('VirtualMachineType'   => VirtualMachineType::getTypeName(2),
-                                 'VirtualMachineSystem' => VirtualMachineSystem::getTypeName(2),
-                                 'VirtualMachineState'  => VirtualMachineState::getTypeName(2)),
+                        => array('VirtualMachineType'   => _n('Virtualization model',
+                                                              'Virtualization models', 2),
+                                 'VirtualMachineSystem' => _n('Virtualization system',
+                                                              'Virtualization systems', 2),
+                                 'VirtualMachineState'  => _n('State of the virtual machine',
+                                                              'States of the virtual machine', 2)),
 
                         __('Management')
-                        => array('DocumentCategory' => DocumentCategory::getTypeName(2),
-                                 'DocumentType'     => DocumentType::getTypeName(2)),
+                        => array('DocumentCategory' => _n('Document heading', 'Document headings', 2),
+                                 'DocumentType'     => _n('Document Type', 'Document Types', 2)),
 
                         __('Tools')
-                        => array('KnowbaseItemCategory' => KnowbaseItemCategory::getTypeName(2)),
+                        => array('KnowbaseItemCategory' => _n('Knowledge base category',
+                                                              'Knowledge base categories', 2)),
 
                         __('Calendar')
-                        => array('Calendar' => Calendar::getTypeName(2),
-                                 'Holiday'  => Holiday::getTypeName(2)),
+                        => array('Calendar' => _n('Calendar', 'Calendars', 2),
+                                 'Holiday'  => _n('Close time', 'Close times', 2)),
 
                         _n('Operating system', 'Operating systems',2)
-                        => array('OperatingSystem'    => OperatingSystem::getTypeName(2),
+                        => array('OperatingSystem'     => _n('Operating system',
+                                                             'Operating systems', 2),
                                  'OperatingSystemVersion'
-                                                      => OperatingSystemVersion::getTypeName(2),
+                                                      => _n('Version of the operating system',
+                                                            'Versions of the operating systems', 2),
                                  'OperatingSystemServicePack'
-                                                      => OperatingSystemServicePack::getTypeName(2),
-                                 'AutoUpdateSystem'   => AutoUpdateSystem::getTypeName(2)),
+                                                      => _n('Service Pack', 'Service Packs', 2),
+                                 'AutoUpdateSystem'   => _n('Update Source', 'Update Sources', 2)),
 
                         __('Networking')
-                        => array('NetworkInterface'   => NetworkInterface::getTypeName(2),
-                                 'NetworkEquipmentFirmware'
-                                                      => NetworkEquipmentFirmware::getTypeName(2),
-                                 'Netpoint'           => Netpoint::getTypeName(2),
-                                 'Domain'             => Domain::getTypeName(2),
-                                 'Network'            => Network::getTypeName(2),
-                                 'Vlan'               => Vlan::getTypeName(2)),
+                        => array('NetworkInterface'         => _n('Network interface',
+                                                                  'Network interfaces', 2),
+                                 'NetworkEquipmentFirmware' => _n('Firmware', 'Firmwares', 2),
+                                 'Netpoint'                 => _n('Network outlet',
+                                                                  'Network outlets', 2),
+                                 'Domain'                   => _n('Domain', 'Domains', 2),
+                                 'Network'                  => _n('Network', 'Networks', 2),
+                                 'Vlan'                     => __('VLAN')),
 
                         __('Internet')
-                        => array('IPNetwork'          => IPNetwork::getTypeName(2),
-                                 'FQDN'               => FQDN::getTypeName(2),
-                                 'WifiNetwork'        => WifiNetwork::getTypeName(2)),
+                        => array('IPNetwork'    => _n('IP network', 'IP networks', 2),
+                                 'FQDN'         => _n('Internet domain', 'Internet domains', 2),
+                                 'WifiNetwork'  => _n('Wifi network', 'Wifi networks', 2)),
 
                         __('Software')
-                        => array('SoftwareCategory' => SoftwareCategory::getTypeName(2)),
+                        => array('SoftwareCategory' => _n('Software category',
+                                                          'Software categories', 2)),
 
                         __('User')
-                        => array('UserTitle'     => UserTitle::getTypeName(2),
-                                 'UserCategory'  => UserCategory::getTypeName(2)),
+                        => array('UserTitle'     => _n('User title', 'Users titles', 2),
+                                 'UserCategory'  => _n('User category', 'User categories', 2)),
 
                         __('Authorizations assignment rules')
-                        => array('RuleRightParameter' => RuleRightParameter::getTypeName(2)),
+                        => array('RuleRightParameter' => _n('LDAP criteria', 'LDAP criterias', 2)),
 
                         __('Fields unicity')
-                        => array('Fieldblacklist' => Fieldblacklist::getTypeName(2))
+                        => array('Fieldblacklist' => _n('Ignored value for the unicity',
+                                                        'Ignored values for the unicity', 2))
 
                  ); //end $opt
 
@@ -719,7 +743,7 @@ class Dropdown {
     *
     * @param $title string title to display
     * @param $optgroup array (group of dropdown) of array (itemtype => localized name)
-    * @param $value string URL of selected current value
+    * @param $value='' string URL of selected current value
    **/
    static function showItemTypeMenu($title, $optgroup, $value='') {
 
@@ -800,7 +824,7 @@ class Dropdown {
     * Dropdown available languages
     *
     * @param $myname select name
-    * @param $options additionnal options :
+    * @param $options array of additionnal options :
     *    - display_none : allow selection of no language
    **/
    static function showLanguages($myname, $options=array()) {
@@ -831,7 +855,7 @@ class Dropdown {
     *
     *@param $name string : HTML select name
     *@param $value integer : HTML select selected value
-    *@param $limit_planning limit planning to the configuration range
+    *@param $limit_planning limit planning to the configuration range (default 0)
     *
     *@return Nothing (display)
     **/
@@ -893,7 +917,7 @@ class Dropdown {
     *
     * @since version 0.83
     *
-    * @param $types     Array of types used (default "state_types")
+    * @param $types=='' Types used (default "state_types")
     * @param $options   Array of optional options
     *        name, value, rand, emptylabel, display_emptychoice, on_change
     *
@@ -957,11 +981,11 @@ class Dropdown {
     * Make a select box for all items
     *
     * @param $myname select name
-    * @param $value_type default value for the device type
-    * @param $value default value
-    * @param $entity_restrict Restrict to a defined entity
-    * @param $types Types used
-    * @param $onlyglobal Restrict to global items
+    * @param $value_type default value for the device type (default 0)
+    * @param $value default value (default 0)
+    * @param $entity_restrict Restrict to a defined entity (default -1)
+    * @param $types='' Types used
+    * @param $onlyglobal Restrict to global items (false by default)
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -1003,14 +1027,14 @@ class Dropdown {
     *
     * @param $myname select name
     * @param $value default value
-    * @param $min min value
-    * @param $max max value
-    * @param $step step used
-    * @param $toadd values to add at the beginning
-    * @param $options additionnal options :
+    * @param $min min value (default 0)
+    * @param $max max value (default 100)
+    * @param $step step used (default 1)
+    * @param $toadd array of values to add at the beginning
+    * @param $options array of additionnal options :
    **/
    static function showInteger($myname, $value, $min=0, $max=100, $step=1, $toadd=array(),
-                               $options = array()) {
+                               $options=array()) {
 
       echo "<select name='$myname'>\n";
 
@@ -1049,7 +1073,7 @@ class Dropdown {
     *    - max : max value : default DAY_TIMESTAMP
     *    - value : default value
    **/
-   static function showTimeStamp($myname, $options = array()) {
+   static function showTimeStamp($myname, $options=array()) {
 
       $params['value']       = 0;
       $params['min']         = 0;
@@ -1086,8 +1110,9 @@ class Dropdown {
          $values[$i] = '';
          if ($day > 0) {
             if ($hour > 0 || $minute > 0) {
-               //TRANS: %1$d is the number of days, %2$d the number of hours, %3$s the number of minutes : display 1 day 3h15
-               $values[$i] = sprintf(_n('%1$d day %2$dh%3$s','%1$d days %2$dh%3$s',$day),
+               //TRANS: %1$d is the number of days, %2$d the number of hours,
+               //       %3$s the number of minutes : display 1 day 3h15
+               $values[$i] = sprintf(_n('%1$d day %2$dh%3$s','%1$d days %2$dh%3$s', $day),
                                      $day, $hour, $minute);
             } else {
                $values[$i] = sprintf(_n('%d day','%d days',$day), $day);
@@ -1095,7 +1120,7 @@ class Dropdown {
 
          } else if ($hour > 0 || $minute > 0) {
             //TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
-            $values[$i] = sprintf(__('%1$dh%2$s'),$hour,$minute);
+            $values[$i] = sprintf(__('%1$dh%2$s'), $hour, $minute);
          }
       }
 
@@ -1150,8 +1175,10 @@ class Dropdown {
 
    /**
     * Toggle view in LDAP user import/synchro between no restriction and date restriction
+    *
+    * @param $enabled (default 0)
    **/
-   static function showAdvanceDateRestrictionSwitch($enabled = 0) {
+   static function showAdvanceDateRestrictionSwitch($enabled=0) {
       global $CFG_GLPI;
 
       $rand = mt_rand();
@@ -1247,7 +1274,7 @@ class Dropdown {
     * - value value of global state
     * - management_restrict global management restrict mode
    **/
-   static function showGlobalSwitch($ID,$attrs = array()) {
+   static function showGlobalSwitch($ID, $attrs=array()) {
       global $CFG_GLPI;
 
       $params['management_restrict'] = 0;
@@ -1267,7 +1294,7 @@ class Dropdown {
          if ($params['management_restrict'] == 2) {
             echo "&nbsp;<a title=\"".__s('Duplicate the element as many times as there are connections').
                  "\" href=\"javascript:confirmAction('".
-                 __s('Do you really want to use unitary management this item ?')."\\n".
+                 __s('Do you really want to use unitary management for this item ?')."\\n".
                  __s('Duplicate the element as many times as there are connections').
                  "','".$params['target']."?unglobalize=unglobalize&amp;id=$ID')\">".
                  __('Use unitary management')."</a>&nbsp;";
@@ -1291,8 +1318,7 @@ class Dropdown {
             if (!empty($params['withtemplate'])) {
                echo "<input type='hidden' name='is_global' value='".
                       $params['management_restrict']."'>";
-               echo (!$params['management_restrict']?__('Unit management')
-                                                    :__('Global management'));
+               echo (!$params['management_restrict']?__('Unit management') :__('Global management'));
             } else {
                echo (!$params['value']?__('Unit management'):__('Global management'));
             }
@@ -1325,10 +1351,10 @@ class Dropdown {
     *
     * @param $itemtype string name of the class
     * @param $value string : Value of the new dropdown.
-    * @param $entities_id int : entity in case of specific dropdown
-    * @param $external_params
-    * @param $comment
-    * @param $add if true, add it if not found. if false, just check if exists
+    * @param $entities_id int : entity in case of specific dropdown (default -1)
+    * @param $external_params array
+    * @param $comment=''
+    * @param $add if true, add it if not found. if false, just check if exists (true by default)
     *
     * @return integer : dropdown id.
    **/
@@ -1346,7 +1372,7 @@ class Dropdown {
     * Dropdown of actions for massive action
     *
     * @param $itemtype item type
-    * @param $is_deleted massive action for deleted items ?
+    * @param $is_deleted massive action for deleted items ? (default 0)
     * @param $extraparams array of extra parameters
    **/
    static function showForMassiveAction($itemtype, $is_deleted=0, $extraparams=array()) {
@@ -1455,13 +1481,15 @@ class Dropdown {
                   if ($isadmin && countElementsInTable("glpi_rules",
                                                        "sub_type='RuleSoftwareCategory'")>0) {
 
-                     echo "<option value='compute_software_category'>".__('Recalculate the category')."</option>";
+                     echo "<option value='compute_software_category'>".
+                            __('Recalculate the category')."</option>";
                   }
 
                   if (Session::haveRight("rule_dictionnary_software","w")
                       && countElementsInTable("glpi_rules","sub_type='RuleDictionnarySoftware'")>0) {
 
-                     echo "<option value='replay_dictionnary'>".__('Replay the dictionary rules')."</option>";
+                     echo "<option value='replay_dictionnary'>".
+                            __('Replay the dictionary rules')."</option>";
                   }
                   break;
 
@@ -1474,16 +1502,24 @@ class Dropdown {
 
                         if (Session::haveRight("ocsng","w")
                             || Session::haveRight("sync_ocsng","w")) {
-                           echo "<option value='force_ocsng_update'>".__('Force synchronization')."</option>";
+                           echo "<option value='force_ocsng_update'>".
+                                  __('Force synchronization')."</option>";
                         }
 
-                        echo "<option value='unlock_ocsng_field'>".__('Unlock the locked field for OCSNG')."</option>";
-                        echo "<option value='unlock_ocsng_monitor'>".__('Unlock the locked monitor for OCSNG')."</option>";
-                        echo "<option value='unlock_ocsng_peripheral'>".__('Unlock the locked device for OCSNG')."</option>";
-                        echo "<option value='unlock_ocsng_printer'>".__('Unlock the locked printer for OCSNG')."</option>";
-                        echo "<option value='unlock_ocsng_software'>".__('Unlock the locked software for OCSNG')."</option>";
-                        echo "<option value='unlock_ocsng_ip'>".__('Unlock the locked IP for OCSNG')."</option>";
-                        echo "<option value='unlock_ocsng_disk'>".__('Unlock the locked volume for OCSNG')."</option>";
+                        echo "<option value='unlock_ocsng_field'>".
+                               __('Unlock the locked field for OCSNG')."</option>";
+                        echo "<option value='unlock_ocsng_monitor'>".
+                               __('Unlock the locked monitor for OCSNG')."</option>";
+                        echo "<option value='unlock_ocsng_peripheral'>".
+                               __('Unlock the locked device for OCSNG')."</option>";
+                        echo "<option value='unlock_ocsng_printer'>".
+                               __('Unlock the locked printer for OCSNG')."</option>";
+                        echo "<option value='unlock_ocsng_software'>".
+                               __('Unlock the locked software for OCSNG')."</option>";
+                        echo "<option value='unlock_ocsng_ip'>".
+                               __('Unlock the locked IP for OCSNG')."</option>";
+                        echo "<option value='unlock_ocsng_disk'>".
+                               __('Unlock the locked volume for OCSNG')."</option>";
                      }
                   }
                   break;
@@ -1511,8 +1547,10 @@ class Dropdown {
                   }
 
                   if (Session::haveRight("user_authtype","w")) {
-                     echo "<option value='change_authtype'>".__('Change of the authentication method')."</option>";
-                     echo "<option value='force_user_ldap_update'>".__('Force synchronization')."</option>";
+                     echo "<option value='change_authtype'>".
+                            __('Change of the authentication method')."</option>";
+                     echo "<option value='force_user_ldap_update'>".
+                            __('Force synchronization')."</option>";
                   }
                   break;
 
@@ -1614,10 +1652,11 @@ class Dropdown {
       }
    }
 
+
    /**
     * Get the label associated with a management type
     *
-    * @param value the type of management
+    * @param value the type of management (default 0)
     *
     * @return the label corresponding to it, or ""
    **/
@@ -1668,7 +1707,7 @@ class Dropdown {
     *
     * @since version 0.83
     *
-    * @param $onchange String, optional, for ajax
+    * @param $onchange='' String, optional, for ajax
    **/
    static function showListLimit($onchange='') {
       global $CFG_GLPI;

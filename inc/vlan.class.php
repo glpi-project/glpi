@@ -41,7 +41,8 @@ class Vlan extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      return _n('VLAN','VLANs',$nb);
+    // Acronymous, no plural
+      return __('VLAN');
    }
 
 

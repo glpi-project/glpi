@@ -80,9 +80,9 @@ class DeviceMemory extends CommonDevice {
       $tab[12]['name']     = __('Frequency');
       $tab[12]['datatype'] = 'text';
 
-      $tab[13]['table'] = 'glpi_devicememorytypes';
-      $tab[13]['field'] = 'name';
-      $tab[13]['name']  = __('Type');
+      $tab[13]['table']    = 'glpi_devicememorytypes';
+      $tab[13]['field']    = 'name';
+      $tab[13]['name']     = __('Type');
 
       return $tab;
    }
