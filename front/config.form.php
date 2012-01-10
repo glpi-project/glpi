@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -56,7 +54,7 @@ if (!empty($_POST["update"])) {
    }
 }
 
-Html::header(__('Setup'), $_SERVER['PHP_SELF'],"config","config");
+Html::header(Config::getTypeName(1), $_SERVER['PHP_SELF'], "config", "config");
 $config->showForm(1);
 Html::footer();
 ?>

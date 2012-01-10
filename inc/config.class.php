@@ -215,7 +215,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Maximum number of characters for the summary text boxes') . "</td><td>";
       Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500, 50);
-      echo "</td><td>" . __('Maximum capacity of displayed characters for URLs') . "</td><td>";
+      echo "</td><td>" . __('Maximum capacity of displayed characters for URL') . "</td><td>";
       Dropdown::showInteger('url_maxlength', $CFG_GLPI["url_maxlength"], 20, 80, 5);
       echo "</td>";
       echo "</tr>";
@@ -232,7 +232,7 @@ class Config extends CommonDBTM {
            "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Use dynamic display for dropdowns and text fields') . "</td><td>";
+      echo "<td>". __('Use dynamic display for dropdowns and text fields'). "</td><td>";
       Dropdown::showYesNo("use_ajax", $CFG_GLPI["use_ajax"]);
       echo "</td>";
       if ($CFG_GLPI["use_ajax"]) {
@@ -251,7 +251,7 @@ class Config extends CommonDBTM {
          Dropdown::showInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 1, 200, 1,
                                array(0 => __('Never')));
          echo "</td><td>".
-               __('Maximum number of items to display in the dropdowns when wildcard is not used').
+               __('Maximum number of items to display in the dropdown when wildcard is not used').
               "</td><td>";
          Dropdown::showInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
          echo "</td></tr>";
@@ -304,14 +304,14 @@ class Config extends CommonDBTM {
       echo "</td</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>". __('Enable the financial and administrative informations by default')."</td><td>";
+      echo "<td>". __('Enable the financial and administrative information by default')."</td><td>";
       Dropdown::ShowYesNo('auto_create_infocoms', $CFG_GLPI["auto_create_infocoms"]);
       echo "</td></td><td> " . __('Restrict device management') . "</td><td>";
       $this->dropdownGlobalManagement ("peripherals_management_restrict",
                                        $CFG_GLPI["peripherals_management_restrict"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . __('Software category deleted by the dictionary rules') .
+      echo "<tr class='tab_bg_2'><td>" . __('Softwares category deleted by the dictionary rules') .
            "</td><td>";
       Dropdown::show('SoftwareCategory',
                      array('value' => $CFG_GLPI["softwarecategories_id_ondelete"],
@@ -567,7 +567,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Keep tickets when purging hardware in the inventory') . "</td><td>";
+      echo "<td>" . __('Keep tickets when purging hardwares in the inventory') . "</td><td>";
       Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
       echo "</td><td colspan='2'>&nbsp;</td>";
       echo "</tr>";
@@ -705,7 +705,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
-         echo "<td>" . __('Maximum number of characters for each items in dropdowns') . "</td><td>";
+         echo "<td>" . __('Maximum number of characters for each item in dropdowns') . "</td><td>";
          Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
          echo "</td>";
        } else {
@@ -785,7 +785,7 @@ class Config extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td>" . __('Private tasks by default') . "</td><td>";
          Dropdown::showYesNo("task_private", $data["task_private"]);
-         echo "</td><td> " . __('Request source by default') . "</td><td>";
+         echo "</td><td> " . __('Request sources by default') . "</td><td>";
          Dropdown::show('RequestType', array('value' => $data["default_requesttypes_id"],
                                              'name'  => "default_requesttypes_id"));
          echo "</td></tr>";
@@ -803,7 +803,7 @@ class Config extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
          echo "<tr class='tab_bg_2'>";
-         echo "<td>" . __('Priority colours') . "</td>";
+         echo "<td>" . __('Priority colors') . "</td>";
          echo "<td colspan='3'>";
 
          echo "<table><tr>";
@@ -863,7 +863,6 @@ class Config extends CommonDBTM {
 
    /**
     * Display a HTML report about systeme information / configuration
-    *
    **/
    function showSystemInformations() {
       global $DB, $CFG_GLPI;
@@ -878,10 +877,10 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Log Level') . "</td><td>";
       $values[1] = __('1- Critical (login error only)');
-      $values[2] = __('2- Severe (Not used)');
+      $values[2] = __('2- Severe (not used)');
       $values[3] = __('3- Important (successful logins)');
-      $values[4] = __('4- Notices (Add, delete, tracking)');
-      $values[5] = __('5- Complete (All)');
+      $values[4] = __('4- Notices (add, delete, tracking)');
+      $values[5] = __('5- Complete (all)');
 
       Dropdown::showFromArray('event_loglevel', $values,
                               array('value' => $CFG_GLPI["event_loglevel"]));
@@ -898,7 +897,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='4' class='center b'>".__('Proxy configuration for check for upgrade');
+      echo "<td colspan='4' class='center b'>".__('Proxy configuration for upgrade check');
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -914,10 +913,8 @@ class Config extends CommonDBTM {
       echo "<td><input type='text' name='proxy_user' value='".$CFG_GLPI["proxy_user"]."'></td>";
       echo "<td>" . __('Password') . "</td>";
       echo "<td><input type='password' name='proxy_passwd' value='' autocomplete='off'>";
-      echo "<br><input type='checkbox' name='_blank_proxy_passwd'>&nbsp;".__('Clear');
-
-      echo "</td>";
-      echo "</tr>";
+      echo "<br><input type='checkbox' name='_blank_proxy_passwd'>".__('Clear');
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
@@ -953,17 +950,13 @@ class Config extends CommonDBTM {
       echo wordwrap("PHP ".phpversion()." (".implode(', ',$exts).")\n", $width, "\n\t");
       $msg = "Setup: ";
 
-      foreach (array('memory_limit',
-                     'max_execution_time',
-                     'safe_mode',
-                     'session.save_handler',
-                     'post_max_size',
-                     'upload_max_filesize') as $key) {
+      foreach (array('max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode',
+                     'session.save_handler', 'upload_max_filesize') as $key) {
          $msg .= $key.'="'.ini_get($key).'" ';
       }
       echo wordwrap($msg."\n", $width, "\n\t");
 
-      $msg = 'Software: ';
+      $msg = __('Software: ');
       if (isset($_SERVER["SERVER_SOFTWARE"])) {
          $msg .= $_SERVER["SERVER_SOFTWARE"];
       }
@@ -1000,13 +993,14 @@ class Config extends CommonDBTM {
       echo "</table></div>\n";
    }
 
+
    /**
     * Dropdown for global management config
     *
     * @param $name select name
     * @param $value default value
     */
-   static function dropdownGlobalManagement($name,$value) {
+   static function dropdownGlobalManagement($name, $value) {
 
       $choices[0] = __('Yes - Restrict to unit management for manual add');
       $choices[1] = __('Yes - Restrict to global management for manual add');
@@ -1117,7 +1111,7 @@ class Config extends CommonDBTM {
             $tabs[2] = __('Default values');   // Prefs
             $tabs[3] = __('Inventory');
             $tabs[4] = __('Assistance');
-            $tabs[5] = __('System informations');
+            $tabs[5] = __('System information');
 
             if (DBConnection::isDBSlaveActive()) {
                $tabs[6]  = _n('Mysql replicate', 'Mysql replicates',2);  // Slave
@@ -1179,23 +1173,26 @@ class Config extends CommonDBTM {
    /**
     * Check Write Access to needed directories
     *
-    * @param $fordebug boolean display for debug (no html, no gettext required)
+    * @param $fordebug boolean display for debug (no html, no gettext required) (faulse by default)
     *
     * @return 2 : creation error 1 : delete error 0: OK
    **/
    static function checkWriteAccessToDirs($fordebug=false) {
 
-      $dir_to_check = array(GLPI_CONFIG_DIR  => __('Checking write permissions for setting files'),
-                            GLPI_DOC_DIR     => __('Checking write permissions for document files'),
-                            GLPI_DUMP_DIR    => __('Checking write permissions for dump files'),
-                            GLPI_SESSION_DIR => __('Checking write permissions for session files'),
-                            GLPI_CRON_DIR    => __('Check write permissions for automatic actions files'),
-                            GLPI_CACHE_DIR   => __('Checking write permissions for cache files'),
-                            GLPI_GRAPH_DIR   => __('Checking write permissions for graphic files'));
+      $dir_to_check = array(GLPI_CONFIG_DIR
+                                          => __('Checking write permissions for setting files'),
+                            GLPI_DOC_DIR  => __('Checking write permissions for document files'),
+                            GLPI_DUMP_DIR => __('Checking write permissions for dump files'),
+                            GLPI_SESSION_DIR
+                                          => __('Checking write permissions for session files'),
+                            GLPI_CRON_DIR => __('Check write permissions for automatic actions files'),
+                            GLPI_CACHE_DIR
+                                          => __('Checking write permissions for cache files'),
+                            GLPI_GRAPH_DIR
+                                          => __('Checking write permissions for graphic files'));
       $error = 0;
 
       foreach ($dir_to_check as $dir => $message) {
-
          if (!$fordebug) {
             echo "<tr class='tab_bg_1'><td class='left b'>".$message."</td>";
          }
@@ -1232,8 +1229,8 @@ class Config extends CommonDBTM {
 
       // Only write test for GLPI_LOG as SElinux prevent removing log file.
       if (!$fordebug) {
-         echo "<tr class='tab_bg_1'><td class='left b'>".
-               __('Checking write permissions for log files')."</td>";
+         echo "<tr class='tab_bg_1'><td class='b'>". __('Checking write permissions for log files').
+              "</td>";
       }
 
       if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
