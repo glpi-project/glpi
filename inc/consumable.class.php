@@ -46,6 +46,7 @@ class Consumable extends CommonDBTM {
 
    // From CommonDBTM
    protected $forward_entity_to = array('Infocom');
+
    var $no_form_page            = false;
 
 
@@ -114,13 +115,12 @@ class Consumable extends CommonDBTM {
     *
     * UnLink the consumable identified by $ID
     *
-    *@param $ID : consumable identifier
-    *@param $itemtype : itemtype of who we give the consumabl
-    *@param $items_id : ID of the item giving the consumable
+    * @param $ID : consumable identifier
+    * @param $itemtype : itemtype of who we give the consumable (default '')
+    * @param $items_id : ID of the item giving the consumable (default 0)
     *
-    *@return boolean
-    *
-    **/
+    * @return boolean
+   **/
    function out($ID, $itemtype='', $items_id=0) {
       global $DB;
 
@@ -140,14 +140,11 @@ class Consumable extends CommonDBTM {
 
 
    /**
-    * count how many consumable for a consumable type
-    *
     * count how many consumable for the consumable item $tID
     *
-    *@param $tID integer: consumable item identifier.
+    * @param $tID integer: consumable item identifier.
     *
-    *@return integer : number of consumable counted.
-    *
+    * @return integer : number of consumable counted.
     **/
    static function getTotalNumber($tID) {
       global $DB;
@@ -162,15 +159,12 @@ class Consumable extends CommonDBTM {
 
 
    /**
-    * count how many old consumable for a consumable type
-    *
     * count how many old consumable for the consumable item $tID
     *
-    *@param $tID integer: consumable item identifier.
+    * @param $tID integer: consumable item identifier.
     *
-    *@return integer : number of old consumable counted.
-    *
-    **/
+    * @return integer : number of old consumable counted.
+   **/
    static function getOldNumber($tID) {
       global $DB;
 
@@ -185,15 +179,12 @@ class Consumable extends CommonDBTM {
 
 
    /**
-    * count how many consumable unused for a consumable type
-    *
     * count how many consumable unused for the consumable item $tID
     *
-    *@param $tID integer: consumable item identifier.
+    * @param $tID integer: consumable item identifier.
     *
-    *@return integer : number of consumable unused counted.
-    *
-    **/
+    * @return integer : number of consumable unused counted.
+   **/
    static function getUnusedNumber($tID) {
       global $DB;
 
@@ -212,11 +203,10 @@ class Consumable extends CommonDBTM {
     *
     * @param $tID integer: consumable item identifier.
     * @param $alarm_threshold integer: threshold alarm value.
-    * @param $nohtml integer: Return value without HTML tags.
+    * @param $nohtml integer: Return value without HTML tags. (default 0)
     *
     * @return string to display
-    *
-    **/
+   **/
    static function getCount($tID, $alarm_threshold, $nohtml=0) {
 
       // Get total
@@ -252,8 +242,7 @@ class Consumable extends CommonDBTM {
     * Check if a Consumable is New (not used, in stock)
     *
     * @param $cID integer : consumable ID.
-    *
-    **/
+   **/
    static function isNew($cID) {
       global $DB;
 
@@ -270,9 +259,8 @@ class Consumable extends CommonDBTM {
    /**
     * Check if a consumable is Old (used, not in stock)
     *
-    *@param $cID integer : consumable ID.
-    *
-    **/
+    * @param $cID integer : consumable ID.
+   **/
    static function isOld($cID) {
       global $DB;
 
@@ -289,11 +277,10 @@ class Consumable extends CommonDBTM {
    /**
     * Get the localized string for the status of a consumable
     *
-    *@param $cID integer : consumable ID.
+    * @param $cID integer : consumable ID.
     *
-    *@return string : dict value for the consumable status.
-    *
-    **/
+    * @return string : dict value for the consumable status.
+   **/
    static function getStatus($cID) {
 
       if (self::isNew($cID)) {
@@ -311,7 +298,7 @@ class Consumable extends CommonDBTM {
     * @param $consitem oject of ConsumableItem class
     *
     * @return Nothing (displays)
-    **/
+   **/
    static function showAddForm(ConsumableItem $consitem) {
       global $CFG_GLPI;
 
@@ -339,11 +326,11 @@ class Consumable extends CommonDBTM {
    /**
     * Print out the consumables of a defined type
     *
-    *@param $consitem object of ConsumableItem class
-    *@param $show_old boolean : show old consumables or not.
+    * @param $consitem object of ConsumableItem class
+    * @param $show_old boolean : show old consumables or not. (default 0)
     *
-    *@return Nothing (displays)
-    **/
+    * @return Nothing (displays)
+   **/
    static function showForConsumableItem(ConsumableItem $consitem, $show_old=0) {
       global $DB, $CFG_GLPI;
 
@@ -423,8 +410,8 @@ class Consumable extends CommonDBTM {
 
             if ($show_old) {
                echo "<td class='center'>";
-               $item = new $data['itemtype']();
-               if ($item->getFromDB($data['items_id'])) {
+               if ($item = getItemForItemtype($data['itemtype'])
+                   && $item->getFromDB($data['items_id'])) {
                   echo $item->getLink();
                }
                echo "</td>";
@@ -461,7 +448,6 @@ class Consumable extends CommonDBTM {
 
    /**
     * Show the usage summary of consumables by user
-    *
     **/
    static function showSummary() {
       global $DB;
