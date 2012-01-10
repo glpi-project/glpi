@@ -138,8 +138,7 @@ class Contract_Item extends CommonDBRelation{
             default :
                if ($_SESSION['glpishow_count_on_tabs']
                    && in_array($item->getType(), $CFG_GLPI["contract_types"])) {
-                  return self::createTabEntry(_n('Contract', 'Contracts', 2),
-                                              self::countForItem($item));
+                  return self::createTabEntry(Contract::getTypeName(2), self::countForItem($item));
                }
                return _n('Contract', 'Contracts', 2);
 
@@ -165,5 +164,4 @@ class Contract_Item extends CommonDBRelation{
    }
 
 }
-
 ?>

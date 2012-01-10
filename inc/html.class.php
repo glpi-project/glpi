@@ -1529,7 +1529,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.computer']['title']
-                           = _n('Computers model', 'Computers models', 2);
+                           = _n('Computer model', 'Computer models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.computer']['page']
                            = '/front/ruledictionnarycomputermodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.computer']['links']['search']
@@ -1542,7 +1542,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.monitor']['title']
-                           = _n('Monitors model', 'Monitors madels', 2);
+                           = _n('Monitor model', 'Monitor models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.monitor']['page']
                            = '/front/ruledictionnarymonitormodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.monitor']['links']['search']
@@ -1555,7 +1555,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.printer']['title']
-                           = _n('Printers model', 'Printers models', 2);
+                           = _n('Printer model', 'Printer models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.printer']['page']
                            = '/front/ruledictionnaryprintermodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.printer']['links']['search']
@@ -1568,7 +1568,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.peripheral']['title']
-                           = _n('Peripherals model', 'Peripherals models', 2);
+                           = _n('Peripheral model', 'Peripheral models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.peripheral']['page']
                            = '/front/ruledictionnaryperipheralmodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.peripheral']['links']['search']
@@ -1594,7 +1594,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['model.phone']['title']
-                           = _n('Phones model', 'Phones models', 2);
+                           = _n('Phone model', 'Phone models', 2);
             $menu['admin']['content']['dictionnary']['options']['model.phone']['page']
                            = '/front/ruledictionnaryphonemodel.php';
             $menu['admin']['content']['dictionnary']['options']['model.phone']['links']['search']
@@ -1607,7 +1607,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.computer']['title']
-                           = _n('Computers type', 'Computers types', 2);
+                           = _n('Computer type', 'Computer types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.computer']['page']
                            = '/front/ruledictionnarycomputertype.php';
             $menu['admin']['content']['dictionnary']['options']['type.computer']['links']['search']
@@ -1633,7 +1633,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.printer']['title']
-                           = _n('Printers type', 'Printers types', 2);
+                           = _n('Printer type', 'Printer types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.printer']['page']
                            = '/front/ruledictionnaryprintertype.php';
             $menu['admin']['content']['dictionnary']['options']['type.printer']['links']['search']
@@ -1646,7 +1646,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.peripheral']['title']
-                           = _n('Peripherals type', 'Peripherals types', 2);
+                           = _n('Peripheral type', 'Peripheral types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.peripheral']['page']
                            = '/front/ruledictionnaryperipheraltype.php';
             $menu['admin']['content']['dictionnary']['options']['type.peripheral']['links']['search']
@@ -1672,7 +1672,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.phone']['title']
-                           = _n('Phones type', 'Phones types', 2);
+                           = _n('Phone type', 'Phone types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.phone']['page']
                            = '/front/ruledictionnaryphonetype.php';
             $menu['admin']['content']['dictionnary']['options']['type.phone']['links']['search']

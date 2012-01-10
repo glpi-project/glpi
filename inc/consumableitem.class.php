@@ -48,7 +48,7 @@ class ConsumableItem extends CommonDBTM {
 
    static function getTypeName($nb=0) {
 
-      return _n('Consumables Model', 'Consumables Models', $nb);
+      return _n('Consumable Model', 'Consumable Models', $nb);
    }
 
 
