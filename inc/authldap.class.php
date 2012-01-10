@@ -86,7 +86,7 @@ class AuthLDAP extends CommonDBTM {
       $this->fields['email2_field']                = '';
       $this->fields['email3_field']                = '';
       $this->fields['email4_field']                = '';
-      $this->fields['realname_field']              = 'cn';
+      $this->fields['realname_field']              = 'sn';
       $this->fields['firstname_field']             = 'givenname';
       $this->fields['phone_field']                 = 'telephonenumber';
       $this->fields['phone2_field']                = '';
