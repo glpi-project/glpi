@@ -44,7 +44,7 @@ if (isset($_REQUEST["add"])) {
       $csl->add($_REQUEST);
       Event::log($_REQUEST['softwarelicenses_id'], "softwarelicense", 4, "inventory",
                      //TRANS: %s is the user login
-                    sprintf(__('%s associates a computer and a license'), $_SESSION["glpiname"]));
+                 sprintf(__('%s associates a computer and a license'), $_SESSION["glpiname"]));
 
    }
    Html::back();
@@ -56,8 +56,9 @@ if (isset($_REQUEST["add"])) {
          if ($val == 1) {
             $csl->upgrade($key, $_REQUEST['softwarelicenses_id']);
             Event::log($_REQUEST["softwarelicenses_id"], "softwarelicense", 5, "inventory",
-                     //TRANS: %s is the user login
-                    sprintf(__('%s changes of license for several computers'), $_SESSION["glpiname"]));
+                       //TRANS: %s is the user login
+                       sprintf(__('%s changes of license for several computers'),
+                               $_SESSION["glpiname"]));
 
          }
       }

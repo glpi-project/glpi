@@ -1544,19 +1544,19 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($item = getItemForItemtype($itemtype)) {
          $tab = $item->getAllStatusArray();
-      }
 
-      if (!isset($current)) {
-         $current = 'new';
-      }
-
-      foreach ($tab as $status => $label) {
-         if ($status != $current
-             && !$item->isAllowedStatus($current, $status)) {
-            unset($tab[$status]);
+         if (!isset($current)) {
+            $current = 'new';
          }
+
+         foreach ($tab as $status => $label) {
+            if ($status != $current
+                && !$item->isAllowedStatus($current, $status)) {
+               unset($tab[$status]);
+            }
+         }
+         return $tab;
       }
-      return $tab;
    }
 
 

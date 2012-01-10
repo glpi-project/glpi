@@ -51,8 +51,8 @@ if (isset($_POST["add"])) {
 
    if ($newID = $disk->add($_POST)) {
       Event::log($_POST['computers_id'], "computers", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds a volume'), $_SESSION["glpiname"]));            
+                 //TRANS: %s is the user login
+                 sprintf(__('%s adds a volume'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -61,21 +61,21 @@ if (isset($_POST["add"])) {
 
    if ($disk->delete($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes a volume'), $_SESSION["glpiname"]));            
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes a volume'), $_SESSION["glpiname"]));
    }
    $computer = new Computer();
    $computer->getFromDB($disk->fields['computers_id']);
    Html::redirect(Toolbox::getItemTypeFormURL('Computer').'?id='.$disk->fields['computers_id'].
-               ($computer->fields['is_template']?"&withtemplate=1":""));
+                  ($computer->fields['is_template']?"&withtemplate=1":""));
 
 } else if (isset($_POST["update"])) {
    $disk->check($_POST["id"],'w');
 
    if ($disk->update($_POST)) {
       Event::log($disk->fields['computers_id'], "computers", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates a volume'), $_SESSION["glpiname"]));            
+                 //TRANS: %s is the user login
+                 sprintf(__('%s updates a volume'), $_SESSION["glpiname"]));
    }
    Html::back();
 
