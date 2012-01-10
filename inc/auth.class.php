@@ -1019,8 +1019,7 @@ class Auth {
       }
       echo "</th></tr>\n";
 
-      if (function_exists('curl_init')
-          && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem")))) {
+      if (function_exists('curl_init')) {
 
          //TRANS: for CAS SSO system
          echo "<tr class='tab_bg_2'><td class='center'>" . __('CAS Host') . "</td>";
@@ -1037,7 +1036,7 @@ class Auth {
               "</tr>\n";
       } else {
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         echo "<p class='red'>".__("The CURL or DOMXML extension for your PHP parser isn't installed");
+         echo "<p class='red'>".__("The CURL extension for your PHP parser isn't installed");
          echo "</p>";
          echo "<p>" .__('Impossible to use CAS as external source of connection')."</p></td></tr>\n";
       }
