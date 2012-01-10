@@ -1958,8 +1958,10 @@ class Html {
 
 
 
+
+
       // Special items
-      $menu['preference']['title']   = __('Settings');
+      $menu['preference']['title']   = __('My settings');
       $menu['preference']['default'] = '/front/preference.php';
 
 
@@ -1998,8 +2000,13 @@ class Html {
             $CFG_GLPI["central_doc_url"])."' target='_blank' title=\"".__s('Help')."\">".
             __('Help')."</a></li>";
 
+
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
-                 __('Settings')."\">".__('Settings')."</a></li>";
+                 __('My settings')."\">".__('My settings')."</a></li>";
+
+      echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
+                 addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
+                 __(Dropdown::getLanguageName($_SESSION['glpilanguage']))."</a></li>";
 
       echo "</ul>";
       echo "<div class='sep'></div>";

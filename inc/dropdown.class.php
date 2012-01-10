@@ -848,6 +848,15 @@ class Dropdown {
    }
 
 
+   static function getLanguageName($value) {
+      global $CFG_GLPI;
+      
+      if (isset($CFG_GLPI["languages"][$value][0])) {
+         return $CFG_GLPI["languages"][$value][0];
+      }
+      return $value;
+   }
+
    /**
     * Print a select with hours
     *
