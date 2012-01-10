@@ -52,7 +52,7 @@ if (!isset($_GET["id"])) {
 
 Html::header($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","others");
 
-Auth::showOtherAuthList($_SERVER['PHP_SELF']);
+Auth::showOtherAuthList();
 
 Html::footer();
 ?>

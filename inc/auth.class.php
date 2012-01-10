@@ -977,17 +977,15 @@ class Auth {
 
    /**
     * Form for configuration authentification
-    *
-    * @param $target String : URL for post
    **/
-   static function showOtherAuthList($target) {
+   static function showOtherAuthList() {
       global $DB, $LANG, $CFG_GLPI;
 
       if (!Session::haveRight("config", "w")) {
          return false;
       }
 
-      echo "<form name=cas action='$target' method='post'>";
+      echo "<form name=cas action='".$CFG_GLPI['root_doc']."/front/auth.others.php' method='post'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
