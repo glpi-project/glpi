@@ -302,6 +302,7 @@ class KnowbaseItem extends CommonDBTM {
 
       // Entities
       if ($forceall
+          || !Session::getLoginUserID()
           || (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"]))) {
          $join .= " LEFT JOIN `glpi_entities_knowbaseitems`
                         ON (`glpi_entities_knowbaseitems`.`knowbaseitems_id`
@@ -785,25 +786,15 @@ class KnowbaseItem extends CommonDBTM {
 
 
    /**
-    *Print out list kb item
+    * Build request for showList
     *
-    * @param $options : $_GET
-    * @param $faq display on faq ?
-   **/
-   static function showList($options, $faq=0) {
-      global $DB, $CFG_GLPI;
-
-      // Default values of parameters
-      $params["start"]                     = "0";
-      $params["knowbaseitemcategories_id"] = "0";
-      $params["contains"]                  = "";
-      $params["target"]                    = $_SERVER['PHP_SELF'];
-
-      if (is_array($options) && count($options)) {
-         foreach ($options as $key => $val) {
-            $params[$key] = $val;
-         }
-      }
+    * @param $params Array (contains, knowbaseitemcategories_id, faq)
+    * @param $faq    Boolean
+    *
+    * @return String : SQL request
+    */
+   static function getListRequest($params) {
+      global $DB;
 
       // Lists kb Items
       $where = "";
@@ -823,7 +814,7 @@ class KnowbaseItem extends CommonDBTM {
          }
       }
 
-      if ($faq) { // helpdesk
+      if ($params['faq']) { // helpdesk
          $where .= " (`glpi_knowbaseitems`.`is_faq` = '1')
                       AND ";
       }
@@ -871,9 +862,6 @@ class KnowbaseItem extends CommonDBTM {
          $order  = " ORDER BY `glpi_knowbaseitems`.`name` ASC";
       }
 
-      if (!$params["start"]) {
-         $params["start"] = 0;
-      }
 
       $query = "SELECT `glpi_knowbaseitems`.*,
                        `glpi_knowbaseitemcategories`.`completename` AS category
@@ -885,6 +873,38 @@ class KnowbaseItem extends CommonDBTM {
                            = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
                 WHERE $where
                 $order";
+
+      return $query;
+   }
+
+
+   /**
+    * Print out list kb item
+    *
+    * @param $options : $_GET
+    * @param $faq display on faq ?
+   **/
+   static function showList($options, $faq=0) {
+      global $DB, $CFG_GLPI;
+
+      // Default values of parameters
+      $params['faq']                       = $faq;
+      $params["start"]                     = "0";
+      $params["knowbaseitemcategories_id"] = "0";
+      $params["contains"]                  = "";
+      $params["target"]                    = $_SERVER['PHP_SELF'];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      if (!$params["start"]) {
+         $params["start"] = 0;
+      }
+
+      $query = self::getListRequest($params);
 
       // Get it from database
       if ($result=$DB->query($query)) {
