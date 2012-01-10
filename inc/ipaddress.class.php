@@ -73,6 +73,32 @@ class IPAddress extends CommonDBChild {
    protected $binary = '';
 
 
+   function __construct($ipaddress = "") {
+
+      // First, be sure that the parent is correctly initialised
+      parent::__construct();
+
+      // If $ipaddress if empty, then, empty address !
+      if (!empty($ipaddress)) {
+
+         // If $ipaddress if an IPAddress, then just clone it
+         if ($ipaddress instanceof IPAddress) {
+            $this->version = $ipaddress->version;
+            $this->textual = $ipaddress->textual;
+            $this->binary = $ipaddress->binary;
+            $this->fields = $ipaddress->fields;
+         } else {
+
+            // Else, check a binary then a string
+            if (!$this->setAddressFromBinary($ipaddress)) {
+               $this->setAddressFromString($ipaddress);
+            }
+
+         }
+      }
+   }
+
+
    function canCreate() {
 
       if (!Session::haveRight('internet', 'w')) {
@@ -511,6 +537,7 @@ class IPAddress extends CommonDBChild {
          }
       }
       $singletons = explode(".", $address);
+      // First, check to see if it is an IPv4 address
       if (count($singletons) == 4) {
          $binary = 0;
          foreach ($singletons as $singleton) {
@@ -529,8 +556,9 @@ class IPAddress extends CommonDBChild {
          $this->binary  = self::getIPv4ToIPv6Address($binary);
          return true;
       }
-      $singletons = explode(":", $address);
 
+      // Else, it should be an IPv6 address
+      $singletons = explode(":", $address);
       // Minimum IPv6 address is "::". So, we check that there is at least 3 elements in the array
       if ((count($singletons) > 2) && (count($singletons) < 9)) {
          $expanded = array();
@@ -544,6 +572,7 @@ class IPAddress extends CommonDBChild {
                $expanded[] = str_pad($singleton, 4, "0", STR_PAD_LEFT);
             }
          }
+         // Among others, be sure that it is not a MAC address (ie 6 digits seperated by ':')
          if (count($expanded) != 8) {
             return false;
          }
@@ -667,6 +696,7 @@ class IPAddress extends CommonDBChild {
          $textual = implode(':', $textual);
       }
       $this->textual = $textual;
+      return true;
    }
 
 
@@ -791,6 +821,32 @@ class IPAddress extends CommonDBChild {
       }
 
       return array();
+   }
+
+   /**
+    * Check if two addresses are equals
+    *
+    * @param $ipaddress the ip address to check with this
+    *
+    * @return return true if and only if both addresses are binary equals.
+   **/
+   function equals($ipaddress) {
+
+      // To normalise the address, just make new one
+      $ipaddress = new IPAddress($ipaddress);
+
+      if ((count($this->binary) != 4) || (count($ipaddress->binary) != 4)
+          || ($this->version != $ipaddress->version)) {
+         return false;
+      }
+
+      for ($index = 0 ; $index < 4 ; $index ++) {
+         if ($this->binary[$index] != $ipaddress->binary[$index]) {
+            return false;
+         }
+      }
+
+      return true;
    }
 }
 ?>

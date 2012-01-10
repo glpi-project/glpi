@@ -43,6 +43,31 @@ class IPNetmask extends IPAddress {
    var $notable = true;
 
 
+   function __construct($ipnetmask = "", $version = 0) {
+
+      // First, be sure that the parent is correctly initialised
+      parent::__construct();
+
+      // If $ipnetmask if empty, then, empty netmask !
+      if (!empty($ipnetmask)) {
+
+         // If $ipnetmask if an IPNetmask, then just clone it
+         if ($ipnetmask instanceof IPNetmask) {
+            $this->version = $ipnetmask->version;
+            $this->textual = $ipnetmask->textual;
+            $this->binary = $ipnetmask->binary;
+            $this->fields = $ipnetmask->fields;
+         } else {
+
+            // Else, check a binary then a string
+            if (!$this->setAddressFromBinary($ipnetmask)) {
+               $this->setNetmaskFromString($ipnetmask, $version);
+            }
+         }
+      }
+   }
+
+
    static function getTypeName($nb=0) {
 
       return _n('Subnet mask', 'Subnet masks', $nb);
