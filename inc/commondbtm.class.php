@@ -1697,18 +1697,17 @@ class CommonDBTM extends CommonGLPI {
          }
 
          if ($params['candel']) {
-            echo "<td class='tab_bg_2 center' colspan='".$params['colspan']."'>\n";
+            echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."'>\n";
             echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
-            echo "</td>\n";
+            echo "</td></tr><tr>\n";
             echo "<td class='tab_bg_2 center' colspan='".$params['colspan']."' >\n";
 
             if ($this->isDeleted()) {
                echo "<input type='submit' name='restore' value=\"".__s('Restore')."\"
                       class='submit'>";
-               echo "<span class='small_space'>
+               echo "</td><td class='tab_bg_2 center' colspan='".$params['colspan']."' >\n
                      <input type='submit' name='purge' value=\"".__s('Purge')."\"
-                      class='submit'>
-                     </span>";
+                      class='submit'>";
 
             } else {
                if (!$this->maybeDeleted()) {
