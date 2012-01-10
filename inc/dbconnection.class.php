@@ -95,7 +95,6 @@ class DBConnection extends CommonDBTM {
     * @return true if active / false if not active
    **/
    static function isDBSlaveActive() {
-
       return file_exists(GLPI_CONFIG_DIR . "/config_db_slave.php");
    }
 
@@ -103,7 +102,7 @@ class DBConnection extends CommonDBTM {
    /**
     * Read slave DB configuration file
     *
-    * @param $choice integer, host number
+    * @param $choice integer, host number (default NULL)
     *
     * @return DBmysql object
    **/
@@ -120,7 +119,6 @@ class DBConnection extends CommonDBTM {
     * Create a default slave DB configuration file
    **/
    static function createDBSlaveConfig() {
-
       self::createSlaveConnectionFile("localhost", "glpi", "glpi", "glpi");
    }
 
@@ -129,7 +127,6 @@ class DBConnection extends CommonDBTM {
     * Save changes to the slave DB configuration file
    **/
    static function saveDBSlaveConf($host, $user, $password, $DBname) {
-
       self::createSlaveConnectionFile($host, $user, $password, $DBname);
    }
 
@@ -138,7 +135,6 @@ class DBConnection extends CommonDBTM {
     * Delete slave DB configuration file
     */
    static function deleteDBSlaveConfig() {
-
       unlink(GLPI_CONFIG_DIR . "/config_db_slave.php");
    }
 
@@ -199,7 +195,7 @@ class DBConnection extends CommonDBTM {
     * @param $use_slave try to connect to slave server first not to main server
     * @param $required connection to the specified server is required
     *                  (if connection failed, do not try to connect to the other server)
-    * @param $display display error message
+    * @param $display display error message (true by default)
    **/
    static function establishDBConnection($use_slave, $required, $display=true) {
       global $DB;
@@ -256,7 +252,7 @@ class DBConnection extends CommonDBTM {
    /**
     * Get delay between slave and master
     *
-    * @param $choice integer, host number
+    * @param $choice integer, host number (default NULL)
     *
     * @return integer
    **/
@@ -291,21 +287,19 @@ class DBConnection extends CommonDBTM {
    **/
    static function displayMySQLError() {
 
-      Html::nullHeader("Mysql Error", '');
-
       if (!isCommandLine()) {
+         Html::nullHeader("Mysql Error", '');
          echo "<div class='center'><p class ='b'>
                 A link to the Mysql server could not be established. Please check your configuration.
                 </p><p class='b'>
-                Le serveur Mysql est inaccessible. V&eacute;rifiez votre configuration</p>
+                Le serveur Mysql est inaccessible. Vérifiez votre configuration</p>
                </div>";
-
+         Html::nullFooter();
       } else {
          echo "A link to the Mysql server could not be established. Please check your configuration.\n";
-         echo "Le serveur Mysql est inaccessible. V&eacute;rifiez votre configuration\n";
+         echo "Le serveur Mysql est inaccessible. Vérifiez votre configuration\n";
       }
 
-      Html::nullFooter();
       die();
    }
 
@@ -343,10 +337,11 @@ class DBConnection extends CommonDBTM {
             // Quite strange, but allow simple stat
             $task->addVolume($diff);
             if ($diff > 1000000000) { // very large means slave is disconnect
-               $task->log(sprintf(__('Mysql server: "%1$s", Can\'t connect to the database'), $name));
+               $task->log(sprintf(__s("Mysql server: %s can't connect to the database"), $name));
             } else {
-               $task->log(sprintf(__('Mysql server: "%1$s", Difference between master and slave: %2$s'),
-                                 $name, Html::timestampToString($diff, true)));
+                                  //TRANS: %1$s is the server name, %2$s is the time
+               $task->log(sprintf(__('Mysql server: %1$s, Difference between master and slave: %2$s'),
+                                  $name, Html::timestampToString($diff, true)));
             }
 
             if ($diff > ($task->fields['param']*60)) {
@@ -382,13 +377,12 @@ class DBConnection extends CommonDBTM {
          //TRANS: %s is namez of server Mysql
          echo sprintf(__('Mysql server: %s, '), $name);
          if ($diff > 1000000000) {
-            echo __("Can't connect to the database") . "<br>";
+            echo __s("can't connect to the database") . "<br>";
          } else if ($diff) {
             echo sprintf(__('Difference between master and slave: %s'),
                          Html::timestampToString($diff, 1)) . "<br>";
          } else {
-
-            echo sprintf(__('Difference between master and slave: %s'), __('None')) . "<br>";
+            echo __('Difference between master and slave: None') . "<br>";
          }
       }
    }
@@ -414,7 +408,7 @@ class DBConnection extends CommonDBTM {
    /**
     * Enable or disable db replication check cron task
     *
-    * @param enable of disable cron task
+    * @param enable of disable cron task (true by default)
    **/
    static function changeCronTaskStatus($enable=true) {
 

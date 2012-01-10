@@ -52,6 +52,7 @@ function getForeignKeyFieldForTable($table) {
   return str_replace("glpi_","",$table)."_id";
 }
 
+
 /**
  * Return foreign key field name for an itemtype
  *
@@ -208,7 +209,7 @@ function getPlural($string) {
                   'ch$'          =>'ches',
                   'sh$'          =>'shes',
                   'x$'           =>'xes',
-                  'ed$'         => 'ed',  // case table without plural (ex. imported)
+                  'ed$'          => 'ed',  // case table without plural (ex. imported)
                   '([^s])$'      => '\1s',   // Add at the end if not exists
                   );
 
@@ -220,6 +221,7 @@ function getPlural($string) {
    }
    return $string;
 }
+
 
 /**
  * Return the singular of a string
@@ -235,7 +237,7 @@ function getSingular($string) {
                   'shes$'             => 'sh',
                   'sses$'             => 'ss', // Case like addresses
 //                   'cases$'            => 'case', // Case like cases
-                  '([aeiou]{2})ses$' => '\1s', // Case like aliases
+                  '([aeiou]{2})ses$'  => '\1s', // Case like aliases
                   'ss$'               => 'ss', // Special case (addresses) when getSingular is called on already singular form
                   'lias$'             => 'lias', // Special case (aliases) when getSingular is called on already singular form
                   'ies$'              => 'y', // special case : category
@@ -270,7 +272,7 @@ function isDeviceTable($tablename) {
  * Count the number of elements in a table.
  *
  * @param $table string/array: table names
- * @param $condition string: condition to use
+ * @param $condition='' string: condition to use
  *
  * @return int nb of elements in table
 **/
@@ -288,7 +290,7 @@ function countElementsInTable($table, $condition="") {
       $query .= " WHERE $condition ";
    }
 
-   $result =$DB->query($query);
+   $result = $DB->query($query);
    $ligne  = $DB->fetch_array($result);
    return $ligne['cpt'];
 }
@@ -298,7 +300,7 @@ function countElementsInTable($table, $condition="") {
  * Count the number of elements in a table for a specific entity
  *
  * @param $table string: table name
- * @param $condition string: additional condition
+ * @param $condition='' string: additional condition
  *
  * @return int nb of elements in table
 **/
@@ -322,7 +324,7 @@ function countElementsInTableForMyEntities($table, $condition='') {
  *
  * @param $table string: table name
  * @param $entity integer: the entity ID
- * @param $condition string: additional condition
+ * @param $condition='' string: additional condition
  *
  * @return int nb of elements in table
 **/
@@ -345,10 +347,10 @@ function countElementsInTableForEntity($table,$entity,$condition='') {
  * Get datas from a table in an array :
  * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
  *
- * @param $table     string: table name
- * @param $condition string: condition to use
- * @param $usecache  boolean
- * @param $order     string: result order
+ * @param $table         string: table name
+ * @param $condition= '' string: condition to use
+ * @param $usecache      boolean (false by default)
+ * @param $order=''      string: result order
  *
  * @return array containing all the datas
 **/
@@ -389,7 +391,7 @@ function getAllDatasFromTable($table, $condition='', $usecache=false, $order='')
  *
  * @param $table string: Dropdown Tree table
  * @param $ID integer: ID of the element
- * @param $withcomment boolean: 1 if you want to give the array with the comments
+ * @param $withcomment boolean: 1 if you want to give the array with the comments (false by default)
  *
  * @return string : name of the element
  *
@@ -430,7 +432,7 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
  *
  * @param $table string: Dropdown Tree table
  * @param $ID integer: ID of the element
- * @param $withcomment boolean: 1 if you want to give the array with the comments
+ * @param $withcomment boolean: 1 if you want to give the array with the comments (false by default)
  *
  * @return string : completename of the element
  *
@@ -453,8 +455,8 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false) {
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)==1) {
             $name    = $DB->result($result,0,"completename");
-            $comment = "<span class='b'>".__('Complete Name')."&nbsp;: </span>".$name.
-                       "<br><span class='b'>".__('Comments')."</span>".
+            $comment = "<span class='b'>".__('Complete Name:')."&nbsp;</span>".$name.
+                       "<br><span class='b'>".__('Comments')."&nbsp;</span>".
                        nl2br($DB->result($result, 0, "comment"));
          }
       }
@@ -478,8 +480,8 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false) {
  *
  * @param $table string: table name
  * @param $ID integer: value ID
- * @param $wholename string : current name to complete (use for recursivity)
- * @param $level integer: current level of recursion
+ * @param $wholename='' string : current name to complete (use for recursivity)
+ * @param $level='' integer: current level of recursion
  *
  * @return string name
 **/
@@ -598,7 +600,7 @@ function getAncestorsOf($table, $items_id) {
  *
  * @return array of IDs of the sons
 **/
-function getSonsOf($table,$IDf) {
+function getSonsOf($table, $IDf) {
    global $DB;
 
    $parentIDfield = getForeignKeyFieldForTable($table);
@@ -692,7 +694,7 @@ function getSonsAndAncestorsOf($table, $IDf) {
  *
  * @return array of IDs of the sons
 **/
-function getTreeForItem($table,$IDf) {
+function getTreeForItem($table, $IDf) {
    global $DB;
 
    $parentIDfield = getForeignKeyFieldForTable($table);
@@ -772,7 +774,7 @@ function contructTreeFromList($list, $root) {
  * Construct a list from a tree structure
  *
  * @param $tree array: the tree
- * @param $parent integer: root of the tree
+ * @param $parent=0 integer: root of the tree
  *
  * @return list of items in the tree
 **/
@@ -803,7 +805,7 @@ function contructListFromTree($tree, $parent=0) {
  *
  * @param $table string: table name
  * @param $IDf integer: The ID of the father
- * @param $reallink string: real field to link ($table.id if not set)
+ * @param $reallink="" string: real field to link ($table.id if not set)
  *
  * @return string the query
 **/
@@ -871,8 +873,8 @@ function regenerateTreeCompleteName($table) {
  *
  * @param $table table to search next item
  * @param $ID current ID
- * @param $condition condition to add to the search
- * @param $nextprev_item field used to sort
+ * @param $condition="" condition to add to the search
+ * @param $nextprev_item="name" field used to sort
  *
  * @return the next ID, -1 if not exist
 **/
@@ -959,8 +961,8 @@ function getNextItem($table, $ID, $condition="", $nextprev_item="name") {
  *
  * @param $table table to search next item
  * @param $ID current ID
- * @param $condition condition to add to the search
- * @param $nextprev_item field used to sort
+ * @param $condition="" condition to add to the search
+ * @param $nextprev_item="name" field used to sort
  *
  * @return the previous ID, -1 if not exist
 **/
@@ -1048,9 +1050,9 @@ function getPreviousItem($table, $ID, $condition="", $nextprev_item="name") {
  *@param $login string : login of the user
  *@param $realname string : realname of the user
  *@param $firstname string : firstname of the user
- *@param $link int : include link (only if $link==1)
- *@param $cut int : limit string length (0 = no limit)
- *@param $force_config boolean : force order and id_visible to use common config
+ *@param $link=0 int : include link (only if $link==1)
+ *@param $cut=0 int : limit string length (0 = no limit)
+ *@param $force_config boolean : force order and id_visible to use common config (false by default)
  *
  *@return string : formatted username
 **/
@@ -1110,7 +1112,7 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
  * Get name of the user with ID=$ID (optional with link to user.form.php)
  *
  *@param $ID int : ID of the user.
- *@param $link int : 1 = Show link to user.form.php 2 = return array with comments and link
+ *@param $link=0 int : 1 = Show link to user.form.php 2 = return array with comments and link
  *
  *@return string : username string (realname if not empty and name if realname is empty).
 **/
@@ -1221,7 +1223,6 @@ function TableExists($tablename) {
  * @param $table     String : Name of the table we want to verify.
  * @param $field     String : Name of the field we want to verify.
  * @param $usecache  Boolean : if use field list cache (default true)
- * @
  *
  *@return bool : true if exists, false elseway.
 **/
@@ -1269,7 +1270,7 @@ function isIndex($table, $field) {
  * @param $field field to autoname
  * @param $isTemplate true if create an object from a template
  * @param $itemtype item type
- * @param $entities_id limit generation to an entity
+ * @param $entities_id limit generation to an entity (default -1)
  *
  * @return new auto string
 **/
@@ -1405,35 +1406,6 @@ function formatOutputWebLink($link) {
 
 
 /**
- * NOT USED
-* Clean fields if needed
-*
-* @param $table table name name
-* @param $fields fields to set NULL : may be a string or an array (sons_cache, ancestors_cache, ...)
-**/
-/*
-function CleanFields($table,$fields) {
-   global $DB;
-
-   if (!is_array($fields)) {
-      $fields = array($fields);
-   }
-
-   $query = '';
-   foreach ($fields as $field) {
-      if (FieldExists($table,$field)) {
-         $query .= (empty($query)?"UPDATE `$table` SET" : ",")." `$field` = NULL ";
-
-      }
-   }
-
-   if (!empty($query)) {
-      $DB->query($query);
-   }
-}
-*/
-
-/**
  * Add dates for request
  *
  * @param $field : table.field to request
@@ -1536,18 +1508,20 @@ function getDbRelations() {
 /**
  * Get SQL request to restrict to current entities of the user
  *
- * @param $separator : separator in the begin of the request
- * @param $table : table where apply the limit (if needed, multiple tables queries)
- * @param $field : field where apply the limit (id != entities_id)
- * @param $value : entity to restrict (if not set use $_SESSION['glpiactiveentities']).
+ * @param $separator : separator in the begin of the request (default AND
+ * @param $table=""  : table where apply the limit (if needed, multiple tables queries)
+ * @param $field="" : field where apply the limit (id != entities_id)
+ * @param $value='' : entity to restrict (if not set use $_SESSION['glpiactiveentities']).
  *                 single item or array
  * @param $is_recursive : need to use recursive process to find item (field need to be named recursive)
+ *                        (false by default)
  * @param $complete_request : need to use a complete request and not a simple one
  *                            when have acces to all entities (used for reminders)
+ *                            (false by default)
  *
  * @return String : the WHERE clause to restrict
 **/
-function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "",$value='',
+function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$value='',
                                     $is_recursive=false, $complete_request=false) {
 
    $query = $separator ." ( ";

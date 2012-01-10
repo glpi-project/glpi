@@ -59,8 +59,8 @@ class DBocs extends DBmysql {
 
 
    /**
-    *
     * Get current ocs server ID
+    *
     * @return ID of the ocs server ID
    **/
    function getServerID() {
@@ -68,6 +68,7 @@ class DBocs extends DBmysql {
    }
 
 }
+
 
 
 
@@ -99,15 +100,16 @@ class DBmysql {
    /// Is connected to the DB ?
    var $connected = false;
 
+
    /**
     * Constructor / Connect to the MySQL Database
     *
     * try to connect
     *
-    * @param $choice integer, host number
+    * @param $choice integer, host number (feult NULL)
     *
     * @return nothing
-    */
+   **/
    function __construct($choice=NULL) {
       $this->connect($choice);
    }
@@ -118,7 +120,7 @@ class DBmysql {
     *
     * Use dbhost, dbuser, dbpassword and dbdefault
     *
-    * @param $choice integer, host number
+    * @param $choice integer, host number (default NULL)
     *
     * @return nothing
    **/
@@ -221,7 +223,7 @@ class DBmysql {
     * @since version 0.84
     *
     * @param $query Query to execute
-    * @param $message explaination of query
+    * @param $message='' explaination of query
     *
     * @return Query result handler
    **/
@@ -488,7 +490,7 @@ class DBmysql {
     *
     * @return boolean true if all query are successfull
    **/
-   function runFile ($path) {
+   function runFile($path) {
 
       $DBf_handle = fopen($path, "rt");
       if (!$DBf_handle) {
@@ -538,7 +540,7 @@ class DBmysql {
     *  foreach ($DB->request("glpi_computers",array("name"=>"SBEI003W","entities_id"=>1),array("serial","otherserial")) { ... }
     *
     * @param $tableorsql table name, array of names or SQL query
-    * @param $crit string or array of filed/values, ex array("id"=>1), if empty => all rows
+    * @param $crit='' string or array of filed/values, ex array("id"=>1), if empty => all rows
     *
     * Examples =
     *   array("id"=>NULL)
@@ -560,8 +562,8 @@ class DBmysql {
     /**
      *  Optimize sql table
      *
-     * @param $migration migration class
-     * @param $cron to know if optimize must be done
+     * @param $migration migration class (default NULL)
+     * @param $cron to know if optimize must be done (false by default)
      *
      * @return number of tables
     **/
@@ -604,6 +606,7 @@ class DBmysql {
 
 
 
+
 /**
  * Helper for simple query => see $DBmysql->requete
 **/
@@ -617,12 +620,13 @@ class DBmysqlIterator  implements Iterator {
    /// Current row
    private $row;
 
+
    /**
     * Constructor
     *
     * @param $dbconnexion Database Connnexion (must be a CommonDBTM object)
     * @param $table table name
-    * @param $crit string or array of filed/values, ex array("id"=>1), if empty => all rows
+    * @param $crit='' string or array of filed/values, ex array("id"=>1), if empty => all rows
    **/
    function __construct ($dbconnexion, $table, $crit="") {
 
@@ -709,6 +713,10 @@ class DBmysqlIterator  implements Iterator {
    }
 
 
+   /**
+    * @param $crit
+    * @param $bool (default AND
+   **/
    private function analyseCrit ($crit, $bool="AND") {
 
       if (!is_array($crit)) {
