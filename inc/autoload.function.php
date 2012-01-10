@@ -40,16 +40,6 @@ include_once (GLPI_ROOT."/config/based_config.php");
 include_once (GLPI_ROOT."/config/define.php");
 
 
-/// TODO delete when PHP comptibility set > 5.3
-// PHP_VERSION_ID is available as of PHP 5.2.7, if our
-// version is lower than that, then emulate it
-if (!defined('PHP_VERSION_ID')) {
-    $version = explode('.', PHP_VERSION);
-
-    define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
-}
-
-
 /**
  * Is the script launch in Command line ?
  *

@@ -664,8 +664,8 @@ class Toolbox {
       echo "<tr class='tab_bg_1'><td class='b'>".__('Testing PHP Parser')."</td>";
 
       // PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
-      if (substr(phpversion(),0,1) == "5") {
-         // PHP > 5 ok, now check PHP zend.ze1_compatibility_mode
+      if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+         // PHP > 5.3 ok, now check PHP zend.ze1_compatibility_mode
          if (ini_get("zend.ze1_compatibility_mode") == 1) {
             $error = 2;
             echo "<td class='red'>
@@ -674,14 +674,14 @@ class Toolbox {
                  "</td></tr>";
          } else {
             echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-                       __('PHP version is at least 5.x - Perfect !')."\"
-                       title=\"".__('PHP version is at least 5.x - Perfect !')."\"></td></tr>";
+                       __('PHP version is at least 5.3.0 - Perfect !')."\"
+                       title=\"".__('PHP version is at least 5.3.0 - Perfect !')."\"></td></tr>";
          }
 
       } else { // PHP <5
          $error = 2;
          echo "<td class='red'>
-               <img src='".GLPI_ROOT."/pics/redbutton.png'>". __('You must install at least PHP5.').
+               <img src='".GLPI_ROOT."/pics/redbutton.png'>". __('You must install at least PHP 5.3.0.').
                "</td></tr>";
       }
 
