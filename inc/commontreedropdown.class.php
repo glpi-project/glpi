@@ -90,16 +90,19 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    /**
-   * Compute completename based on parent one
-   *
-   * @param $parentCompleteName string parent complete name (need to be stripslashes / comes from DB)
-   * @param $thisName string item name (need to be addslashes : comes from input)
+    * Compute completename based on parent one
+    *
+    * @param $parentCompleteName string parent complete name (need to be stripslashes / comes from DB)
+    * @param $thisName string item name (need to be addslashes : comes from input)
    **/
    static function getCompleteNameFromParents($parentCompleteName, $thisName) {
      return addslashes($parentCompleteName). " > ".$thisName;
    }
 
 
+   /**
+    * @param $input
+   **/
    function adaptTreeFieldsFromUpdateOrAdd($input) {
       $parent = clone $this;
 
@@ -178,6 +181,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
+   /**
+    * @param $ID
+    * @param $updateName
+    * @param $changeParent
+   **/
    function regenerateTreeUnderID($ID, $updateName, $changeParent) {
       global $DB;
 
@@ -223,6 +231,9 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    }
 
 
+   /**
+    * @param $ID
+   **/
    function recursiveCleanSonsAboveID($ID) {
       global $DB;
 
@@ -347,7 +358,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     *
     * @return Nothing (display)
     **/
-    function showChildren() {
+   function showChildren() {
       global $DB, $CFG_GLPI;
 
       $ID = $this->getID();
@@ -382,7 +393,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='".($nb+3)."'>".sprintf(__('Sons of %s'),$this->getTreeLink());
+      echo "<tr><th colspan='".($nb+3)."'>".sprintf(__('Sons of %s'), $this->getTreeLink());
       echo "</th></tr>";
 
       echo "<tr><th>".__('Name')."</th>";
@@ -456,51 +467,51 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common']             = __('Characteristics');
+      $tab['common']                = __('Characteristics');
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'completename';
-      $tab[1]['name']            = __('Complete Name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['itemlink_type']   = $this->getType();
-      $tab[1]['massiveaction']   = false;
+      $tab[1]['table']              = $this->getTable();
+      $tab[1]['field']              = 'completename';
+      $tab[1]['name']               = __('Complete Name');
+      $tab[1]['datatype']           = 'itemlink';
+      $tab[1]['itemlink_type']      = $this->getType();
+      $tab[1]['massiveaction']      = false;
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'id';
-      $tab[2]['name']            = __('ID');
-      $tab[2]['massiveaction']   = false;
+      $tab[2]['table']              = $this->getTable();
+      $tab[2]['field']              = 'id';
+      $tab[2]['name']               = __('ID');
+      $tab[2]['massiveaction']      = false;
 
-      $tab[14]['table']          = $this->getTable();
-      $tab[14]['field']          = 'name';
-      $tab[14]['name']           = __('Name');
-      $tab[14]['datatype']       = 'itemlink';
-      $tab[14]['itemlink_link']  = $this->getType();
+      $tab[14]['table']             = $this->getTable();
+      $tab[14]['field']             = 'name';
+      $tab[14]['name']              = __('Name');
+      $tab[14]['datatype']          = 'itemlink';
+      $tab[14]['itemlink_link']     = $this->getType();
 
-      $tab[16]['table']          = $this->getTable();
-      $tab[16]['field']          = 'comment';
-      $tab[16]['name']           = __('Comments');
-      $tab[16]['datatype']       = 'text';
+      $tab[16]['table']             = $this->getTable();
+      $tab[16]['field']             = 'comment';
+      $tab[16]['name']              = __('Comments');
+      $tab[16]['datatype']          = 'text';
 
       if ($this->isEntityAssign()) {
-         $tab[80]['table']         = 'glpi_entities';
-         $tab[80]['field']         = 'completename';
-         $tab[80]['name']          = __('Entity');
-         $tab[80]['massiveaction'] = false;
+         $tab[80]['table']          = 'glpi_entities';
+         $tab[80]['field']          = 'completename';
+         $tab[80]['name']           = __('Entity');
+         $tab[80]['massiveaction']  = false;
       }
 
       if ($this->maybeRecursive()) {
-         $tab[86]['table']    = $this->getTable();
-         $tab[86]['field']    = 'is_recursive';
-         $tab[86]['name']     = __('Child entities');
-         $tab[86]['datatype'] = 'bool';
+         $tab[86]['table']          = $this->getTable();
+         $tab[86]['field']          = 'is_recursive';
+         $tab[86]['name']           = __('Child entities');
+         $tab[86]['datatype']       = 'bool';
       }
 
       if ($this->isField('date_mod')) {
-         $tab[19]['table']         = $this->getTable();
-         $tab[19]['field']         = 'date_mod';
-         $tab[19]['name']          = __('Last update');
-         $tab[19]['datatype']      = 'datetime';
-         $tab[19]['massiveaction'] = false;
+         $tab[19]['table']          = $this->getTable();
+         $tab[19]['field']          = 'date_mod';
+         $tab[19]['name']           = __('Last update');
+         $tab[19]['datatype']       = 'datetime';
+         $tab[19]['massiveaction']  = false;
       }
 
       return $tab;
