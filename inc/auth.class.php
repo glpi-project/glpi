@@ -1007,7 +1007,7 @@ class Auth {
          return false;
       }
 
-      echo "<form name=cas action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";
+      echo "<form name=cas action='".$CFG_GLPI['root_doc']."/front/auth.others.php' method='post'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<div class='center'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -1042,7 +1042,7 @@ class Auth {
          echo "<p>" .__('Impossible to use CAS as external source of connection')."</p></td></tr>\n";
       }
       // X509 config
-      echo "<tr><th>" . __('x509 certificate authentication')."</th>/th>";
+      echo "<tr><th>" . __('x509 certificate authentication')."</th><th>";
       if (!empty($CFG_GLPI["x509_email_field"])) {
          _e('Enabled');
       }
@@ -1053,7 +1053,7 @@ class Auth {
       echo "</td></tr>\n";
 
       // Autres config
-      echo "<tr><th>" . __('Other authentication sent in the HTTP request')."</th>/th>";
+      echo "<tr><th>" . __('Other authentication sent in the HTTP request')."</th><th>";
       if (!empty($CFG_GLPI["existing_auth_server_field"])) {
          _e('Enabled');
       }
