@@ -1705,7 +1705,7 @@ class CommonDBTM extends CommonGLPI {
                echo "<td class='tab_bg_2 right' colspan='".($params['colspan']*2)."' >\n";
                echo "<input type='submit' name='restore' value=\"".__s('Restore')."\"
                       class='submit'>";
-               echo "<span class='small_space'><input type='submit' name='purge' value=\"".__s('Purge')."\"
+               echo "<span class='very_small_space'><input type='submit' name='purge' value=\"".__s('Purge')."\"
                       class='submit'></span>";
 
             } else {
