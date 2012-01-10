@@ -354,7 +354,7 @@ class Netpoint extends CommonDropdown {
          // Minimal form for quick input.
          echo "<form action='".$netpoint->getFormURL()."' method='post'>";
          echo "<br><table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_2 center'><td class='b'>".__('New card')."</td>";
+         echo "<tr class='tab_bg_2 center'><td class='b'>".__('New item')."</td>";
          echo "<td>".__('Name')."</td><td>";
          Html::autocompletionTextField($item, "name",array('value'=>''));
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
@@ -366,7 +366,7 @@ class Netpoint extends CommonDropdown {
          // Minimal form for massive input.
          echo "<form action='".$netpoint->getFormURL()."' method='post'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_2 center'><td class='b'>".__('New card')."</td>";
+         echo "<tr class='tab_bg_2 center'><td class='b'>".__('New item')."</td>";
          echo "<td>".__('Name')."</td><td>";
          echo "<input type='text' maxlength='100' size='10' name='_before'>&nbsp;";
          Dropdown::showInteger('_from', 0, 0, 400);

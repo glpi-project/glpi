@@ -200,7 +200,7 @@ class Bookmark extends CommonDBTM {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
          printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
       } else {
-         _e('New card');
+         _e('New item');
       }
       echo "</th></tr>";
 
