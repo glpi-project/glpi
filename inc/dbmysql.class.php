@@ -227,9 +227,10 @@ class DBmysql {
    **/
    function queryOrDie($query, $message='') {
 
+      //TRANS: %1$s is the description, %2$s is the query, %3$s is the error message
       $res = $this->query($query)
-             or die(sprintf(__('%1$s - Error during the database query: '.$query.' - Error is %2$s'),
-                            $message, $this->error()));
+             or die(sprintf(__('%1$s - Error during the database query: %2$s - Error is %3$s'),
+                            $message, $query, $this->error()));
       return $res;
    }
 
