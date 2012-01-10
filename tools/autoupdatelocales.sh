@@ -11,7 +11,7 @@ LOG="/tmp/autoupdatelang$VERSION.log"
 
 # Second you need to have transifex client installed 
 # and link your repository to transifex
-# tx set --execute --auto-local -r GLPI.glpipot084 'locales/<lang>.po' --source-lang en_GB --source-file locales/glpi.pot
+# tx set --execute --auto-local -r GLPI.glpipot084 'locales/<lang>.po' --source-lang en --source-file locales/glpi.pot
 # GLPI is the project name and glpipot084 the slug name
 
 TRANSIFEXPROJECT="GLPI"
@@ -34,8 +34,8 @@ tx push -s >> $LOG
 echo "Pull all po files" >> $LOG
 tx pull -a >> $LOG
 
-echo "Pull en_GB po files" >> $LOG
-tx pull -l en_GB >> $LOG
+#echo "Pull en_GB po files" >> $LOG
+#tx pull -l en_GB >> $LOG
 
 echo "Update mo files" >> $LOG
 tools/locale/update_mo.pl >> $LOG
