@@ -534,13 +534,14 @@ class Session {
 
 
       /// TODO permit to load and use simple dictionnary.
-      /// After usage (notifcation) load old one
+      /// After usage (notification) load old one
       // New localization system :
       $TRANSLATE = new Zend_Translate (
           array(
               'adapter' => 'gettext',
               'content' => GLPI_ROOT.$newfile,
-              'locale'  => $trytoload
+              'locale'  => $trytoload,
+              'disableNotices' => true, // no warning for empty languages
           )
       );
 
