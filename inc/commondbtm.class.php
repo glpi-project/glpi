@@ -1825,7 +1825,7 @@ class CommonDBTM extends CommonGLPI {
          echo "<input type='hidden' name='template_name' value='".$this->fields["template_name"]."'>";
 
          //TRANS: %s is the template name
-         printf(__('Add based on template %s'), $this->fields["template_name"]);
+         printf(__('Created from the template %s'), $this->fields["template_name"]);
 
       } else if (!empty($params['withtemplate']) && $params['withtemplate'] == 1) {
          echo "<input type='hidden' name='is_template' value='1'>\n";

@@ -345,7 +345,7 @@ class Phone extends CommonDBTM {
       if ((!isset($options['withtemplate']) || $options['withtemplate']==0)
           && !empty($this->fields['template_name'])) {
          echo "<span class='small_space'>";
-         printf(__('Created from the template %d'),$this->fields['template_name']);
+         printf(__('Created from the template %s'), $this->fields['template_name']);
          echo "</span>";
       } else {
          echo "&nbsp;";
