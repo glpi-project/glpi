@@ -1250,7 +1250,7 @@ class Html {
 
 
       if (Session::haveRight("document", "r")) {
-         $menu['financial']['content']['document']['title']       = _n('Document', 'Computers', 2);
+         $menu['financial']['content']['document']['title']       = _n('Document', 'Documents', 2);
          $menu['financial']['content']['document']['shortcut']    = 'd';
          $menu['financial']['content']['document']['page']        = '/front/document.php';
          $menu['financial']['content']['document']['links']['search']
