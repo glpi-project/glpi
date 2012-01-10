@@ -1923,6 +1923,7 @@ $LANG['setup'][127]="Autofuldførelse af tekstfelter";
 $LANG['setup'][128]="Datoformat"; 
 $LANG['setup'][129]="Vis GLPI ID"; 
 $LANG['setup'][130]="Antal dage disse hændelseslogfiler gemmes"; 
+$LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="Vis det fulde navn i træ-dropdowns"; 
 $LANG['setup'][135]="Normal"; 
 $LANG['setup'][136]="Oversættelse"; 

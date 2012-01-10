@@ -1923,6 +1923,7 @@ $LANG['setup'][127]="自動完成文字欄位";
 $LANG['setup'][128]="日期格式"; 
 $LANG['setup'][129]="顯示GLPI ID"; 
 $LANG['setup'][130]="用於下一個/上一個項目"; 
+$LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="下拉清單顯示完整的名稱"; 
 $LANG['setup'][135]="正常"; 
 $LANG['setup'][136]="翻譯"; 

@@ -1923,6 +1923,7 @@ $LANG['setup'][127]="Automatické vyplnenie textových polí";
 $LANG['setup'][128]="Formát dátumu"; 
 $LANG['setup'][129]="Zobraziť ID GLPI"; 
 $LANG['setup'][130]="Počet dní zachovania záznamov o tejto udalosti"; 
+$LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="Zobrazenie úplných mien v strome rolovacích ponúk"; 
 $LANG['setup'][135]="Normálne"; 
 $LANG['setup'][136]="Preklad"; 

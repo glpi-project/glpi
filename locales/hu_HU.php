@@ -1923,6 +1923,7 @@ $LANG['setup'][127]="Szövegmezők automatikus kiegészítése";
 $LANG['setup'][128]="Dátumformátum"; 
 $LANG['setup'][129]="GLPI ID megjelenítése"; 
 $LANG['setup'][130]="Következő/előző tételek"; 
+$LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="Lista megnyitása"; 
 $LANG['setup'][135]="Normál"; 
 $LANG['setup'][136]="Fordítás"; 

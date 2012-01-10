@@ -1923,6 +1923,7 @@ $LANG['setup'][127]="Completamento automatico dei campi di testo";
 $LANG['setup'][128]="Formato data"; 
 $LANG['setup'][129]="Mostra gli ID GLPI"; 
 $LANG['setup'][130]="Per quanto tempo, in giorni, i log delle azioni sono tenuti in archivio (0=sempre)"; 
+$LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="Visualizza il nome completo nei menù a discesa"; 
 $LANG['setup'][135]="Normale"; 
 $LANG['setup'][136]="Traduzione"; 

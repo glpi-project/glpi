@@ -1923,6 +1923,7 @@ $LANG['setup'][127]="تکمیل خودکار  اجزاء متنی";
 $LANG['setup'][128]="قالب تاریخ"; 
 $LANG['setup'][129]="نمایش شناسه GLPI"; 
 $LANG['setup'][130]="تعداد روزهایی که ثبت عمل ذخیره می شود"; 
+$LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="نمایش نام کامل در درختواره آبشاری"; 
 $LANG['setup'][135]="عادی"; 
 $LANG['setup'][136]="ترجمه"; 

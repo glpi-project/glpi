@@ -1923,6 +1923,7 @@ $LANG['setup'][127]="自动完成文本字段";
 $LANG['setup'][128]="数据格式"; 
 $LANG['setup'][129]="显示GLPI ID"; 
 $LANG['setup'][130]="这一方式的天数记录存储"; 
+$LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="在树的下来列表中显示完成的名字"; 
 $LANG['setup'][135]="正常"; 
 $LANG['setup'][136]="翻译"; 

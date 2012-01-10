@@ -1923,6 +1923,7 @@ $LANG['setup'][127]="Autocompletion of text fields"; // en_GB string to be trans
 $LANG['setup'][128]="Kuupäeva vormindus"; 
 $LANG['setup'][129]="Näita GLPI ID numbrit"; 
 $LANG['setup'][130]="Number of days this action logs are stored"; // en_GB string to be translated
+$LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="Näita terviklikku nime hierarhilistes rippmenüüdes"; 
 $LANG['setup'][135]="Tavarežiim"; 
 $LANG['setup'][136]="Tõlkerežiim"; 

@@ -1923,6 +1923,7 @@ $LANG['setup'][127]="Autocompletion of text fields";
 $LANG['setup'][128]="Date Format"; 
 $LANG['setup'][129]="Show GLPI ID"; 
 $LANG['setup'][130]="Number of days this action logs are stored"; 
+$LANG['setup'][131]="Number of results per page"; 
 $LANG['setup'][132]="Display the complete name in the tree dropdowns"; 
 $LANG['setup'][135]="Normal"; 
 $LANG['setup'][136]="Translation"; 

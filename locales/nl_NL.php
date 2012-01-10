@@ -1923,6 +1923,7 @@ $LANG['setup'][127]="Autocompletion of text fields"; // en_GB string to be trans
 $LANG['setup'][128]="Datumformaat"; 
 $LANG['setup'][129]="Toon GLPI-ID"; 
 $LANG['setup'][130]="Aantal dagen dat activiteitenlogs worden opgeslagen"; 
+$LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="Toon de volledige naam in de dropdowns"; 
 $LANG['setup'][135]="Normaal"; 
 $LANG['setup'][136]="Vertaling"; 
