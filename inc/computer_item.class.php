@@ -81,7 +81,7 @@ class Computer_Item extends CommonDBRelation{
     *
     * @param $ID ID of the item (-1 if new item)
     * @param $right Right to check : r / w / recursive
-    * @param $input array of input data (used for adding item)
+    * @param $input array of input data (used for adding item) (default NULL)
     *
     * @return boolean
    **/
@@ -101,20 +101,20 @@ class Computer_Item extends CommonDBRelation{
                return false;
          }
       }
-      return parent::can($ID,$right,$input);
+      return parent::can($ID, $right, $input);
    }
 
 
    /**
-   * Prepare input datas for adding the relation
-   *
-   * Overloaded to check is Disconnect needed (during OCS sync)
-   * and to manage autoupdate feature
-   *
-   *@param $input datas used to add the item
-   *
-   *@return the modified $input array
-   *
+    * Prepare input datas for adding the relation
+    *
+    * Overloaded to check is Disconnect needed (during OCS sync)
+    * and to manage autoupdate feature
+    *
+    * @param $input datas used to add the item
+    *
+    * @return the modified $input array
+    *
    **/
    function prepareInputForAdd($input) {
       global $DB, $CFG_GLPI;
@@ -173,7 +173,7 @@ class Computer_Item extends CommonDBRelation{
 
                $updates['locations_id'] = addslashes($comp->fields['locations_id']);
                Session::addMessageAfterRedirect(
-                  __('Location updated. The items connected have been moved in the same location.'),
+                  __('Location updated. The connected items have been moved in the same location.'),
                   true);
             }
             if (($CFG_GLPI["is_user_autoupdate"]
@@ -188,7 +188,7 @@ class Computer_Item extends CommonDBRelation{
                   $updates['groups_id'] = $comp->fields['groups_id'];
                }
                Session::addMessageAfterRedirect(
-                  __('User or group updated. The items connected have been moved in the same values.'),
+                  __('User or group updated. The connected items have been moved in the same values.'),
                   true);
             }
 
@@ -350,21 +350,19 @@ class Computer_Item extends CommonDBRelation{
 
 
    /**
-   * Print the computers or template local connections form.
-   *
-   * Print the form for computers or templates connections to printers, screens or peripherals
-   *
-   * @param $target
-   * @param $comp Computer object
-   * @param $withtemplate=''  boolean : Template or basic item.
-   *
-   * @return Nothing (call to classes members)
+    *
+    * Print the form for computers or templates connections to printers, screens or peripherals
+    *
+    * @param $comp Computer object
+    * @param $withtemplate=''  boolean : Template or basic item.
+    *
+    * @return Nothing (call to classes members)
    **/
    static function showForComputer(Computer $comp, $withtemplate='') {
       global $DB, $CFG_GLPI;
 
-      $target = $comp->getFormURL();
-      $ID = $comp->fields['id'];
+      $target  = $comp->getFormURL();
+      $ID      = $comp->fields['id'];
       $canedit = $comp->can($ID,'w');
 
       $items = array('Monitor', 'Peripheral', 'Phone', 'Printer');
@@ -465,7 +463,7 @@ class Computer_Item extends CommonDBRelation{
                      break;
 
                   case 'Phone' :
-                     _e('No phone connected');
+                     _e('No connected phone');
                      break;
                }
                echo "<br>";
@@ -502,7 +500,7 @@ class Computer_Item extends CommonDBRelation{
     * Prints a direct connection to a computer
     *
     * @param $item the Monitor/Phone/Peripheral/Printer
-    * @param $withtemplate integer : withtemplate param
+    * @param $withtemplate='' integer : withtemplate param
     *
     * @return nothing (print out a table)
    **/
@@ -521,7 +519,7 @@ class Computer_Item extends CommonDBRelation{
       $canedit = $item->can($ID,"w");
 
       // Is global connection ?
-      $global=$item->getField('is_global');
+      $global = $item->getField('is_global');
 
       $used    = array();
       $compids = array();
@@ -603,7 +601,7 @@ class Computer_Item extends CommonDBRelation{
     * Unglobalize an item : duplicate item and connections
     *
     * @param $item object to unglobalize
-    */
+   **/
    static function unglobalizeItem(CommonDBTM $item) {
       global $DB;
 
@@ -645,9 +643,9 @@ class Computer_Item extends CommonDBRelation{
    * @param $itemtype type to connect
    * @param $fromtype from where the connection is
    * @param $myname select name
-   * @param $entity_restrict Restrict to a defined entity
-   * @param $onlyglobal display only global devices (used for templates)
-   * @param $used Already used items ID: not to display in dropdown
+   * @param $entity_restrict Restrict to a defined entity (default = -1)
+   * @param $onlyglobal display only global devices (used for templates) (default 0)
+   * @param $used Already used items ID: not to display in dropdown (array)
    *
    * @return nothing (print out an HTML select box)
    */

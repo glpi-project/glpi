@@ -221,121 +221,123 @@ class Computer_Device extends CommonDBTM {
       $numberOfPreviousItem = 0;
       foreach ($devtypes as $itemtype) {
          Session::initNavigateListItems($itemtype,
-               //TRANS : %1$s is the itemtype name,
-               //        %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'), $computer->getTypeName(1), $computer->getName()));
+                              //TRANS : %1$s is the itemtype name,
+                              //        %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                $computer->getTypeName(1), $computer->getName()));
 
-         $device        = new $itemtype();
-         $specificities = $device->getSpecifityLabel();
-         $specif_fields = array_keys($specificities);
-         $specif_text   = implode(',',$specif_fields);
+         if ($device=getItemForItemtype($itemtype)) {
+            $specificities = $device->getSpecifityLabel();
+            $specif_fields = array_keys($specificities);
+            $specif_text   = implode(',',$specif_fields);
 
-         if (!empty($specif_text)) {
-            $specif_text=" ,".$specif_text." ";
-         }
-
-         $linktable = getTableForItemType('Computer_'.$itemtype);
-         $fk        = getForeignKeyFieldForTable(getTableForItemType($itemtype));
-
-         $query = "SELECT COUNT(*) AS nb,
-                          `$fk`
-                   FROM `$linktable`
-                   WHERE `computers_id` = '$ID'
-                   GROUP BY `$fk`";
-
-         foreach ($DB->request($query) as $deviceFromSQL) {
-
-            if ($numberOfPreviousItem * $deviceFromSQL['nb'] > 1) {
-               echo "<tr><td colspan='$global_colspan'><hr></td></tr>";
+            if (!empty($specif_text)) {
+               $specif_text=" ,".$specif_text." ";
             }
 
-            $numberOfPreviousItem = $deviceFromSQL['nb'];
+            $linktable = getTableForItemType('Computer_'.$itemtype);
+            $fk        = getForeignKeyFieldForTable(getTableForItemType($itemtype));
 
-            $query = "SELECT `id`,
+            $query = "SELECT COUNT(*) AS nb,
                              `$fk`
-                             $specif_text
                       FROM `$linktable`
                       WHERE `computers_id` = '$ID'
-                            AND `$fk` = '".$deviceFromSQL[$fk]."'
-                      ORDER BY `id`";
+                      GROUP BY `$fk`";
 
-            $first = true;
+            foreach ($DB->request($query) as $deviceFromSQL) {
 
-            foreach ($DB->request($query) as $data) {
-               Session::addToNavigateListItems($itemtype, $data[$fk]);
-
-               if ($device->getFromDB($data[$fk])) {
-                  echo "<tr class='tab_bg_2'>";
-
-                  if ($first) {
-                     if ($deviceFromSQL['nb'] > 1)
-                        $rowspan = "rowspan='".$deviceFromSQL['nb']."'";
-                     else
-                        $rowspan = "";
-                     echo "<td $rowspan>";
-
-                     if ($device->canCreate()) {
-                        echo "<a href='".$device->getSearchURL()."'>".$device->getTypeName()."</a>";
-                     } else {
-                        echo $device->getTypeName();
-                     }
-
-                     echo "</td><td $rowspan>".$device->getLink()."</td>";
-
-                     echo "<td class='center' $rowspan>";
-                     Dropdown::showInteger("quantity_".$itemtype."_".$data['id'], 0, 0, 10);
-                     echo "</td>";
-
-                     echo "</td><td class='center' $rowspan><input type='checkbox' " .
-                          " name='removeall_".$itemtype."_".$data[$fk]."' value='1'></td>";
-                  }
-
-                  echo "<td class='center'>";
-                  echo "<input type='checkbox' name='remove_" .$itemtype."_".$data['id']."'
-                         value='1'>";
-                  echo "</td>";
-                  $spec = $device->getFormData();
-
-                  if (isset($spec['label']) && count($spec['label'])) {
-                     $colspan = (60/count($spec['label']));
-
-                     foreach ($spec['label'] as $i => $label) {
-
-                        if (isset($spec['value'][$i])) {
-                           echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
-                           echo $spec['value'][$i]."</td>";
-
-                        } else if ($canedit) {
-                           // Specificity
-                           echo "<td class='right' colspan='$colspan'>" .
-                                  $spec['label'][$i]."&nbsp;: ";
-                           echo "<input type='text' name='value_" . $itemtype . "_" .
-                                  $data['id'] . "' value='" . $data['specificity'] .
-                                  "' size='".$spec['size']."'>";
-                           if (isset($specificity_units[$device->getType()])) {
-                              echo '&nbsp;'.$specificity_units[$device->getType()];
-                           }
-                           echo "</td>";
-
-                        } else {
-                           echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
-                           echo $data['specificity'];
-
-                           if (isset($specificity_units[$device->getType()])) {
-                              echo '&nbsp;'.$specificity_units[$device->getType()];
-                           }
-
-                           echo "</td>";
-                        }
-                     }
-                  } else {
-                     echo "<td colspan='60'>&nbsp;</td>";
-                  }
-
-                  echo "</tr>";
-                  $nb++;
+               if ($numberOfPreviousItem * $deviceFromSQL['nb'] > 1) {
+                  echo "<tr><td colspan='$global_colspan'><hr></td></tr>";
                }
-               $first = false;
+
+               $numberOfPreviousItem = $deviceFromSQL['nb'];
+
+               $query = "SELECT `id`,
+                                `$fk`
+                                $specif_text
+                         FROM `$linktable`
+                         WHERE `computers_id` = '$ID'
+                               AND `$fk` = '".$deviceFromSQL[$fk]."'
+                         ORDER BY `id`";
+
+               $first = true;
+
+               foreach ($DB->request($query) as $data) {
+                  Session::addToNavigateListItems($itemtype, $data[$fk]);
+
+                  if ($device->getFromDB($data[$fk])) {
+                     echo "<tr class='tab_bg_2'>";
+
+                     if ($first) {
+                        if ($deviceFromSQL['nb'] > 1)
+                           $rowspan = "rowspan='".$deviceFromSQL['nb']."'";
+                        else
+                           $rowspan = "";
+                        echo "<td $rowspan>";
+
+                        if ($device->canCreate()) {
+                           echo "<a href='".$device->getSearchURL()."'>".$device->getTypeName()."</a>";
+                        } else {
+                           echo $device->getTypeName();
+                        }
+
+                        echo "</td><td $rowspan>".$device->getLink()."</td>";
+
+                        echo "<td class='center' $rowspan>";
+                        Dropdown::showInteger("quantity_".$itemtype."_".$data['id'], 0, 0, 10);
+                        echo "</td>";
+
+                        echo "</td><td class='center' $rowspan><input type='checkbox' " .
+                             " name='removeall_".$itemtype."_".$data[$fk]."' value='1'></td>";
+                     }
+
+                     echo "<td class='center'>";
+                     echo "<input type='checkbox' name='remove_" .$itemtype."_".$data['id']."'
+                            value='1'>";
+                     echo "</td>";
+                     $spec = $device->getFormData();
+
+                     if (isset($spec['label']) && count($spec['label'])) {
+                        $colspan = (60/count($spec['label']));
+
+                        foreach ($spec['label'] as $i => $label) {
+
+                           if (isset($spec['value'][$i])) {
+                              echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
+                              echo $spec['value'][$i]."</td>";
+
+                           } else if ($canedit) {
+                              // Specificity
+                              echo "<td class='right' colspan='$colspan'>" .
+                                     $spec['label'][$i]."&nbsp;: ";
+                              echo "<input type='text' name='value_" . $itemtype . "_" .
+                                     $data['id'] . "' value='" . $data['specificity'] .
+                                     "' size='".$spec['size']."'>";
+                              if (isset($specificity_units[$device->getType()])) {
+                                 echo '&nbsp;'.$specificity_units[$device->getType()];
+                              }
+                              echo "</td>";
+
+                           } else {
+                              echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
+                              echo $data['specificity'];
+
+                              if (isset($specificity_units[$device->getType()])) {
+                                 echo '&nbsp;'.$specificity_units[$device->getType()];
+                              }
+
+                              echo "</td>";
+                           }
+                        }
+                     } else {
+                        echo "<td colspan='60'>&nbsp;</td>";
+                     }
+
+                     echo "</tr>";
+                     $nb++;
+                  }
+                  $first = false;
+               }
             }
          }
       }
@@ -423,35 +425,36 @@ class Computer_Device extends CommonDBTM {
       $this->forceTable($linktable);
       $fk        = getForeignKeyFieldForTable(getTableForItemType($itemtype));
       // Force table for link
-      $item          = new $itemtype();
-      $specif_fields = $item->getSpecifityLabel();
+      if ($item = getItemForItemtype($itemtype)) {
+         $specif_fields = $item->getSpecifityLabel();
 
-      if (!$this->getFromDB($compDevID)) {
-         return false;
-      }
-
-      $query = "SELECT `id`
-                FROM `$linktable`
-                WHERE `computers_id` = '".$this->fields["computers_id"]."'
-                      AND `$fk` = '".$this->fields[$fk]."'";
-
-      if (count($specif_fields)) {
-         foreach ($specif_fields as $field => $name) {
-            $query .= " AND `$field` = '".addslashes($this->fields[$field])."' ";
+         if (!$this->getFromDB($compDevID)) {
+            return false;
          }
-      }
 
-      if (($result = $DB->query($query)) && ($newNumber > 0)) {
-         $input = array('computers_id' => $this->fields["computers_id"],
-                        '_itemtype'    => $itemtype,
-                        $fk            => $this->fields[$fk]);
+         $query = "SELECT `id`
+                   FROM `$linktable`
+                   WHERE `computers_id` = '".$this->fields["computers_id"]."'
+                         AND `$fk` = '".$this->fields[$fk]."'";
+
          if (count($specif_fields)) {
             foreach ($specif_fields as $field => $name) {
-               $input[$field] = addslashes($this->fields["specificity"]);
+               $query .= " AND `$field` = '".addslashes($this->fields[$field])."' ";
             }
          }
-         for ($i=0 ; $i<$newNumber ; $i++) {
-            $this->add($input);
+
+         if (($result = $DB->query($query)) && ($newNumber > 0)) {
+            $input = array('computers_id' => $this->fields["computers_id"],
+                           '_itemtype'    => $itemtype,
+                           $fk            => $this->fields[$fk]);
+            if (count($specif_fields)) {
+               foreach ($specif_fields as $field => $name) {
+                  $input[$field] = addslashes($this->fields["specificity"]);
+               }
+            }
+            for ($i=0 ; $i<$newNumber ; $i++) {
+               $this->add($input);
+            }
          }
       }
    }
@@ -468,12 +471,13 @@ class Computer_Device extends CommonDBTM {
    private function updateSpecificity($newValue, $itemtype,$compDevID) {
       global $DB;
 
-      $item          = new $itemtype();
-      $specif_fields = $item->getSpecifityLabel();
+      if ($item = getItemForItemtype($itemtype)) {
+         $specif_fields = $item->getSpecifityLabel();
 
-      // No specificity for this device type
-      if (count($specif_fields) == 0) {
-         return false;
+         // No specificity for this device type
+         if (count($specif_fields) == 0) {
+            return false;
+         }
       }
 
       $linktable = getTableForItemType('Computer_'.$itemtype);
@@ -683,10 +687,11 @@ class Computer_Device extends CommonDBTM {
       $this->forceTable($linktable);
 
       if ($this->can($compDevID,'r')) {
-         $device = new $deviceType();
-         if (isset($this->fields[$device->getForeignKeyField()])
-             && $device->can($this->fields[$device->getForeignKeyField()], 'r')) {
-            return $device;
+         if ($device = getItemForItemtype($deviceType)) {
+            if (isset($this->fields[$device->getForeignKeyField()])
+                && $device->can($this->fields[$device->getForeignKeyField()], 'r')) {
+               return $device;
+            }
          }
       }
       return false;

@@ -32,13 +32,12 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("computer", "r");
 
-Html::header(_n('Computer', 'Computers', 2), $_SERVER['PHP_SELF'], "inventory", "computer");
+Html::header(Computer::GetTypeName(2), $_SERVER['PHP_SELF'], "inventory", "computer");
 
 Search::show('Computer');
 
