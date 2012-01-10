@@ -46,7 +46,6 @@ class ComputerVirtualMachine extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-
       return _n('Virtual machine', 'Virtual machines', $nb);
    }
 
@@ -285,7 +284,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * Print the computers disks
     *
-    * @param $comp Computer
+    * @param $comp Computer object
     *
     * @return Nothing (call to classes members)
    **/
@@ -321,10 +320,10 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "<th>".__('Machine')."</th>";
          echo "</tr>";
 
-         Session::initNavigateListItems('ComputerVirtualMachine',
+         Session::initNavigateListItems(__CLASS__,
                                         __('Computer')." = ".(empty($comp->fields['name'])
                                                                ? "($ID)" : $comp->fields['name']));
-         $vm = new ComputerVirtualMachine();
+         $vm = new self();
          foreach ($virtualmachines as $virtualmachine) {
             $vm->getFromDB($virtualmachine['id']);
 //             $href = "<a href='computervirtualmachine.form.php?id=".$virtualmachine['id']."'>";
@@ -368,7 +367,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             }
             echo "</td>";
             echo "</tr>";
-            Session::addToNavigateListItems('ComputerVirtualMachine', $virtualmachine['id']);
+            Session::addToNavigateListItems(__CLASS_, $virtualmachine['id']);
 
          }
       }
@@ -430,7 +429,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * Find a virtual machine by uuid
     *
-    * @param fields virtualmachine fields
+    * @param fields array of virtualmachine fields
     *
     * @return the ID of the computer that have this uuid or false otherwise
    **/

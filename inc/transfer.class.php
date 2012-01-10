@@ -403,7 +403,7 @@ class Transfer extends CommonDBTM {
          }
       } // End of direct connections
 
-      // Licence / Software :  keep / delete + clean unused / keep unused
+      // License / Software :  keep / delete + clean unused / keep unused
       if ($this->options['keep_software']) {
          // Clean DB
          $query = "SELECT `glpi_computers_softwareversions`.`id`
@@ -1022,7 +1022,7 @@ class Transfer extends CommonDBTM {
                $this->transferDirectConnection($itemtype, $ID, 'Phone');
                // Printer Direct Connect : keep / delete + clean unused / keep unused
                $this->transferDirectConnection($itemtype, $ID, 'Printer', $ocs_computer);
-               // Licence / Software :  keep / delete + clean unused / keep unused
+               // License / Software :  keep / delete + clean unused / keep unused
                $this->transferComputerSoftwares($ID, $ocs_computer);
                // Computer Disks :  delete them or not ?
                $this->transferComputerDisks($ID);

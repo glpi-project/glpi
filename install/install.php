@@ -92,7 +92,7 @@ function choose_language() {
 
 
 
-function acceptLicence() {
+function acceptLicense() {
 
    echo "<div class='center'>";
    echo "<textarea id='license' cols='85' rows='10' readonly='readonly'>";
@@ -104,7 +104,7 @@ function acceptLicence() {
 
    echo "<form action='install.php' method='post'>";
    echo "<p>";
-   echo "<input type='radio' name='install' id='agree' value='Licence'><label for= agree >";
+   echo "<input type='radio' name='install' id='agree' value='License'><label for= agree >";
    echo __('I have read and ACCEPT the terms of the license written above.')." </label></p>";
 
    echo "<br>";
@@ -516,11 +516,11 @@ if (!isset($_POST["install"])) {
 
    switch ($_POST["install"]) {
       case "lang_select" : // lang ok, go accept licence
-         header_html(__('Licence'));
-         acceptLicence();
+         header_html(__('License'));
+         acceptLicense();
          break;
 
-      case "Licence" : // licence  ok, go choose installation or Update
+      case "License" : // licence  ok, go choose installation or Update
          header_html(__('Beginning of the installation'));
          step0();
          break;

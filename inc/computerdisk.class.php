@@ -217,9 +217,7 @@ class ComputerDisk extends CommonDBChild {
 
       if ($result=$DB->query($query)) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='7'>";
-         echo _n('Volume', 'Volumes', $DB->numrows($result));
-         echo "</th></tr>";
+         echo "<tr><th colspan='7'>".self::getTypeName($DB->numrows($result))."</th></tr>";
 
          if ($DB->numrows($result)) {
             echo "<tr><th>".__('Name')."</th>";
@@ -231,10 +229,11 @@ class ComputerDisk extends CommonDBChild {
             echo "<th>".__('Free percentage')."</th>";
             echo "</tr>";
 
-         Session::initNavigateListItems('ComputerDisk',
-               //TRANS : %1$s is the itemtype name,
-               //        %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$comp->getTypeName(1), $comp->getName()));
+         Session::initNavigateListItems(__CLASS__,
+                              //TRANS : %1$s is the itemtype name,
+                              //        %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                $comp->getTypeName(1), $comp->getName()));
 
             while ($data=$DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
@@ -261,7 +260,7 @@ class ComputerDisk extends CommonDBChild {
                                                                'forcepadding' => false));
                echo "</td>";
 
-               Session::addToNavigateListItems('ComputerDisk',$data['id']);
+               Session::addToNavigateListItems(__CLASS__, $data['id']);
             }
 
          } else {

@@ -93,7 +93,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * Get number of installed licenses of a version
     *
     * @param $softwareversions_id version ID
-    * @param $entity to search for computer in (default = all active entities)
+    * @param $entity='' to search for computer in (default = all active entities)
     *
     * @return number of installations
    **/
@@ -104,7 +104,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 FROM `glpi_computers_softwareversions`
                 INNER JOIN `glpi_computers`
                      ON (`glpi_computers_softwareversions`.`computers_id` = `glpi_computers`.`id`)
-                WHERE `glpi_computers_softwareversions`.`softwareversions_id`='$softwareversions_id'
+                WHERE `glpi_computers_softwareversions`.`softwareversions_id` = '$softwareversions_id'
                       AND `glpi_computers`.`is_deleted` = '0'
                       AND `glpi_computers`.`is_template` = '0' " .
                       getEntitiesRestrictRequest('AND', 'glpi_computers', '', $entity);
@@ -152,7 +152,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Show installation of a Software
     *
-    * @param $software object
+    * @param $software Software object
     *
     * @return nothing
    **/
@@ -260,7 +260,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       // Display the pager
-      Html::printAjaxPager(_n('Installation', 'Installations', 2),$start,$number);
+      Html::printAjaxPager(self::getTypeName(2), $start, $number);
 
       $query = "SELECT DISTINCT `glpi_computers_softwareversions`.*,
                        `glpi_computers`.`name` AS compname,
@@ -314,8 +314,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
 
             Session::initNavigateListItems('Computer',
-            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                           sprintf(__('%1$s = %2$s'), $soft->getTypeName(1), $title));
+                              //TRANS : %1$s is the itemtype name,
+                              //        %2$s is the name of the item (used for headings of a list)
+                                           sprintf(__('%1$s = %2$s'),
+                                                   $soft->getTypeName(1), $title));
 
 
             $sort_img="<img src='".$CFG_GLPI["root_doc"]."/pics/".
@@ -449,7 +451,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
 
    /**
-    * Show number of installation per entity
+    * Show number of installations per entity
     *
     * @param $version SoftwareVersion object
     *
@@ -467,7 +469,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<div class='center'>";
       echo "<table class='tab_cadre'><tr>";
       echo "<th>".__('Entity')."</th>";
-      echo "<th>"._n('Installation', 'Installations', 2)."</th>";
+      echo "<th>".self::getTypeName(2)."</th>";
       echo "</tr>\n";
 
       $tot = 0;
@@ -507,11 +509,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * Show software installed on a computer
     *
     * @param $comp Computer object
-    * @param $withtemplate template case of the view process
+    * @param $withtemplate='' template case of the view process
     *
     * @return nothing
    **/
-   static function showForComputer(Computer $comp, $withtemplate = '') {
+   static function showForComputer(Computer $comp, $withtemplate='') {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("software", "r")) {
@@ -558,7 +560,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<td class='cneter' clospan='2'>";
          echo "<form method='post' action='".$CFG_GLPI["root_doc"].
                 "/front/computer_softwarelicense.form.php'>";
-         echo _n('License', 'Licenses', 2)."&nbsp;";
+         echo _n('License', 'Licenses', 2);
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
          echo "<input type='submit' name='add' value=\"" .__s('Add')."\" class='submit'>";
@@ -575,11 +577,13 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
 
       Session::initNavigateListItems('Software',
-      //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                           //TRANS : %1$s is the itemtype name,
+                           //        %2$s is the name of the item (used for headings of a list)
                                      sprintf(__('%1$s = %2$s'),
                                              $comp->getTypeName(1), $comp->getName()));
       Session::initNavigateListItems('SoftwareLicense',
-      //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                           //TRANS : %1$s is the itemtype name,
+                           //        %2$s is the name of the item (used for headings of a list)
                                      sprintf(__('%1$s = %2$s'),
                                              $comp->getTypeName(1), $comp->getName()));
 
@@ -701,14 +705,14 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             $display = $_SESSION["glpiis_categorized_soft_expanded"];
          } else {
             // Not categorized
-            $catname = __('Uncategorized softwares');
+            $catname = __('Uncategorized software');
             $display = $_SESSION["glpiis_not_categorized_soft_expanded"];
          }
 
       } else {
          // Not installed
          $cat     = '';
-         $catname = __('Not installed affected licenses');
+         $catname = __('Affected licenses of not installed software');
          $display = true;
       }
 
@@ -716,7 +720,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<a href=\"javascript:showHideDiv('softcat$cat$rand','imgcat$cat','" . GLPI_ROOT .
              "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
       echo "<img alt='' name='imgcat$cat' src='".GLPI_ROOT."/pics/folder".
-            (!$display ? '' : "-open") . ".png'>&nbsp;<span class='b'>" . $catname . "</span>";
+             (!$display ? '' : "-open") . ".png'>&nbsp;<span class='b'>" . $catname . "</span>";
       echo "</a></td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='5'>";
@@ -730,7 +734,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<th>&nbsp;</th>";
       }
       echo "<th>" . __('Name') . "</th><th>" . __('Status') . "</th>";
-      echo "<th>" .__('Version')."</th><th>" . __('Licence') . "</th></tr>\n";
+      echo "<th>" .__('Version')."</th><th>" . __('License') . "</th></tr>\n";
 
       return $cat;
    }
@@ -743,7 +747,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     * @param $computers_id ID of the computer
     * @param $withtemplate template case of the view process
     * @param $canedit boolean user can edit software ?
-
+    *
     * @return array of found license id
    **/
    private static function displaySoftsByCategory($data, $computers_id, $withtemplate, $canedit) {
@@ -870,10 +874,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                               $data["softwarelicensetypes_id"]).")&nbsp; ";
       }
 
-      $comment = "<table><tr><td>".__('Name')."</td>"."<td>".
-                  $data['name']."</td></tr><tr><td>".__('Serial number').
-                  "</td><td>".$data['serial']."</td></tr><tr><td>".
-                  __('Comments').'</td><td>'.$data['comment'].'</td></tr></table>';
+      $comment = "<table><tr><td>".__('Name')."</td>"."<td>".$data['name']."</td></tr>".
+                 "<tr><td>".__('Serial number')."</td><td>".$data['serial']."</td></tr>".
+                 "<tr><td>". __('Comments')."</td><td>".$data['comment']."</td></tr></table>";
 
       Html::showToolTip($comment, array('link' => $link));
       echo "</td></tr>\n";
@@ -975,7 +978,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @param $instID ID of the install software lienk
     * @param $softwareversions_id ID of the new version
-    * @param $dohistory Do history ?
+    * @param $dohistory Do history ? (default 1)
     *
     * @return nothing
    **/

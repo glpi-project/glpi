@@ -43,6 +43,7 @@ class Computer extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
+
    protected $forward_entity_to = array('ComputerDisk','ComputerVirtualMachine', 'Infocom',
                                         'NetworkPort', 'Ocslink', 'ReservationItem');
    // Specific ones
@@ -219,7 +220,7 @@ class Computer extends CommonDBTM {
             }
             if ($update_done) {
                Session::addMessageAfterRedirect(
-                  __('User or group updated. The items connected have been moved in the same values.'),
+                  __('User or group updated. The connected items have been moved in the same values.'),
                   true);
             }
          }
@@ -257,8 +258,8 @@ class Computer extends CommonDBTM {
             }
             if ($update_done) {
                Session::addMessageAfterRedirect(
-                  __('Status updated. The connected items have been updated using this status.'),
-                  true);
+                     __('Status updated. The connected items have been updated using this status.'),
+                     true);
             }
          }
 
@@ -299,7 +300,7 @@ class Computer extends CommonDBTM {
             }
             if ($update_done) {
                Session::addMessageAfterRedirect(
-                  __('Location updated. The items connected have been moved in the same location.'),
+                  __('Location updated. The connected items have been moved in the same location.'),
                   true);
             }
          }
@@ -449,15 +450,14 @@ class Computer extends CommonDBTM {
 
 
    /**
-   * Print the computer form
-   *
-   * @param $ID integer ID of the item
-   * @param $options array
-   *     - target for the Form
-   *     - withtemplate template or basic computer
-   *
-   *@return Nothing (display)
-   *
+    * Print the computer form
+    *
+    * @param $ID integer ID of the item
+    * @param $options array
+    *     - target for the Form
+    *     - withtemplate template or basic computer
+    *
+    *@return Nothing (display)
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $DB;
@@ -640,7 +640,7 @@ class Computer extends CommonDBTM {
       if ((!isset($options['withtemplate']) || $options['withtemplate']==0)
           && !empty($this->fields['template_name'])) {
          echo "<span class='small_space'>";
-         printf(__('Created from the template %d'),$this->fields['template_name']);
+         printf(__('Created from the template %d'), $this->fields['template_name']);
          echo "</span>";
       } else {
          echo "&nbsp;";
@@ -648,10 +648,10 @@ class Computer extends CommonDBTM {
       echo "</td><td>";
       if (isset($options['withtemplate']) && $options['withtemplate']) {
          //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'),Html::convDateTime($_SESSION["glpi_currenttime"]));
+         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
       } else {
          //TRANS: %s is the datetime of update
-         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
 
       if (!empty($ID)
