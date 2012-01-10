@@ -74,11 +74,11 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields['users_id'] == Session::getLoginUserID()) {
          return true;
       }
-      /// TODO add check on entities_id is_recursive for public_faq
+
       if ($this->fields["is_faq"]) {
          return (((Session::haveRight('knowbase', 'r') || Session::haveRight('faq', 'r'))
                   && $this->haveVisibilityAccess())
-                 || (Session::getLoginUserID() === false && $CFG_GLPI["use_public_faq"]));
+                 || (Session::getLoginUserID() === false && $this->isPubliclyVisible()));
       }
       return (Session::haveRight("knowbase", "r") && $this->haveVisibilityAccess());
    }
@@ -185,6 +185,30 @@ class KnowbaseItem extends CommonDBTM {
               + count($this->users)
               + count($this->groups)
               + count($this->profiles));
+   }
+
+
+   /**
+    * Check is this item if visible to everybody (anonymous users)
+    *
+    * @since version 0.83
+    *
+    * @return Boolean
+    */
+   function isPubliclyVisible() {
+      global $CFG_GLPI;
+
+      if (!$CFG_GLPI["use_public_faq"]) {
+         return false;
+      }
+      if (isset($this->entities[0])) { // Browser root entoty right
+         foreach ($this->entities[0] as $entity) {
+            if ($entity['is_recursive']) {
+               return true;
+            }
+         }
+      }
+      return false;
    }
 
 
