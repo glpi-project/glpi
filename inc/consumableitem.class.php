@@ -48,7 +48,7 @@ class ConsumableItem extends CommonDBTM {
 
    static function getTypeName($nb=0) {
 
-      return _n('Consumable Model', 'Consumable Models', $nb);
+      return _n('Consumables Model', 'Consumables Models', $nb);
    }
 
 
@@ -65,7 +65,7 @@ class ConsumableItem extends CommonDBTM {
    /**
     * Get The Name + Ref of the Object
     *
-    * @param $with_comment add comments to name
+    * @param $with_comment add comments to name (default 0)
     *
     * @return String: name of the object in the current language
    **/

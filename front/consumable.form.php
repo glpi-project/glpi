@@ -45,7 +45,7 @@ if (!isset($_GET["cID"])) {
    $_GET["cID"] = "";
 }
 
-$con = new Consumable();
+$con      = new Consumable();
 $constype = new ConsumableItem();
 
 if (isset($_POST["add_several"])) {
@@ -56,8 +56,8 @@ if (isset($_POST["add_several"])) {
       $con->add($_POST);
    }
    Event::log($_POST["tID"], "consumables", 4, "inventory",
-               //TRANS: %s is the user login
-               sprintf(__('%s adds consumables'),$_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s adds consumables'), $_SESSION["glpiname"]));
 
    Html::back();
 
@@ -66,8 +66,8 @@ if (isset($_POST["add_several"])) {
 
    if ($con->delete($_GET)) {
       Event::log($_GET["tID"], "consumables", 4, "inventory",
-               //TRANS: %s is the user login
-               sprintf(__('%s deletes a consumable'),$_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes a consumable'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -83,8 +83,8 @@ if (isset($_POST["add_several"])) {
       $item = new $_POST['itemtype']();
       $item->getFromDB($_POST["items_id"]);
       Event::log($_POST["tID"], "consumables", 5, "inventory",
-               //TRANS: %s is the user login
-               sprintf(__('%s gives a consumable'),$_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -93,13 +93,12 @@ if (isset($_POST["add_several"])) {
 
    if ($con->restore($_GET)) {
       Event::log($_GET["tID"], "consumables", 5, "inventory",
-               //TRANS: %s is the user login
-               sprintf(__('%s restores a consumable'),$_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s restores a consumable'), $_SESSION["glpiname"]));
    }
    Html::back();
 
 } else {
    Html::back();
 }
-
 ?>
