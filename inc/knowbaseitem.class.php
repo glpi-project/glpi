@@ -624,6 +624,23 @@ class KnowbaseItem extends CommonDBTM {
 
 
    /**
+    * Increase the view counter of the current knowbaseitem
+    *
+    * @since version 0.83
+    */
+   function updateCounter() {
+      global $DB;
+
+      //update counter view
+      $query = "UPDATE `glpi_knowbaseitems`
+                SET `view` = `view`+1
+                WHERE `id` = '".$this->getID()."'";
+
+      $DB->query($query);
+   }
+
+
+   /**
     * Print out (html) show item : question and answer
     *
     * @param $linkusers_id display users_id link
@@ -645,11 +662,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $inpopup = strpos($_SERVER['PHP_SELF'],"popup.php");
 
-      //update counter view
-      $query = "UPDATE `glpi_knowbaseitems`
-                SET `view`=view+1
-                WHERE `id` = '".$this->fields['id']."'";
-      $DB->query($query);
+      $this->updateCounter();
 
       $knowbaseitemcategories_id = $this->fields["knowbaseitemcategories_id"];
       $fullcategoryname = getTreeValueCompleteName("glpi_knowbaseitemcategories",
@@ -787,6 +800,8 @@ class KnowbaseItem extends CommonDBTM {
 
    /**
     * Build request for showList
+    *
+    * @since version 0.83
     *
     * @param $params Array (contains, knowbaseitemcategories_id, faq)
     * @param $faq    Boolean
