@@ -2566,6 +2566,20 @@ CREATE TABLE `glpi_networknames` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_networknames_ipnetworks
+
+DROP TABLE IF EXISTS `glpi_networknames_ipnetworks`;
+CREATE TABLE `glpi_networknames_ipnetworks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `networknames_id` int(11) NOT NULL DEFAULT '0',
+  `ipnetworks_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`networknames_id`,`ipnetworks_id`),
+  KEY `ipnetworks_id` (`ipnetworks_id`),
+  KEY `networknames_id` (`networknames_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 ### Dump table glpi_networkportaggregates
 
 DROP TABLE IF EXISTS `glpi_networkportaggregates`;

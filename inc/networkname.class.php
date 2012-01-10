@@ -204,7 +204,7 @@ class NetworkName extends FQDNLabel {
     * @return $input altered array of new values;
    **/
    function prepareInput($input) {
-      
+
       if (isset($input["IPs"])) {
          $addresses = IPAddress::checkInputFromItem($input["IPs"], self::getType(), $this->getID());
 
@@ -261,6 +261,7 @@ class NetworkName extends FQDNLabel {
     * \brief Update IPAddress database
     * Update IPAddress database to remove old IPs and add new ones. Update this "IPs" cache field
     * with the current IP addresses according to the database
+    * And, if the addresses are different than before, recreate the link with the networks
    **/
    function post_workOnItem() {
 
@@ -271,13 +272,21 @@ class NetworkName extends FQDNLabel {
          $newIPaddressField = IPAddress::updateDatabase($this->IPs, $this->getType(),
                                                         $this->getID());
 
+         $new_ip_addresses_field = implode('\n', $newIPaddressField);
+
          $query = "UPDATE `".$this->getTable()."`
-                   SET `ip_addresses` = '" . implode('\n', $newIPaddressField) . "'
+                   SET `ip_addresses` = '$new_ip_addresses_field'
                    WHERE `id` = '".$this->getID()."'";
          $DB->query($query);
 
          unset($this->IPs);
 
+      } else {
+         $new_ip_addresses_field = "";
+      }
+
+      if ($new_ip_addresses_field != $this->fields['ip_addresses']) {
+         NetworkName_IPNetwork::updateIPAddressOfIPNetwork($this);
       }
    }
 
@@ -566,8 +575,8 @@ class NetworkName extends FQDNLabel {
          $order = "name";
       }
 
-      $cirterion = $internetElement->getCriterionForMatchingNetworkNames();
-      $number    = countElementsInTable($elementToDisplay->getTable(), $cirterion);
+      $criterion = $internetElement->getCriterionForMatchingNetworkNames();
+      $number    = countElementsInTable($elementToDisplay->getTable(), $criterion);
 
       echo "<br><div class='center'>";
 
@@ -593,7 +602,7 @@ class NetworkName extends FQDNLabel {
 
          $query = "SELECT *
                    FROM `".$elementToDisplay->getTable()."`
-                   WHERE $cirterion
+                   WHERE $criterion
                     ORDER BY `$order`
                    LIMIT ".$_SESSION['glpilist_limit']."
                    OFFSET $start";

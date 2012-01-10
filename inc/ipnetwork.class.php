@@ -130,9 +130,15 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    **/
    function post_getFromDB () {
 
+      // Be sure to remove addresses, otherwise reusing will provide old objects for getAddress, ...
+      unset($this->address);
+      unset($this->netmask);
+      unset($this->gateway);
+
       if (isset($this->fields["address"]) && isset($this->fields["netmask"])) {
          $this->fields["network"] = $this->fields["address"]."/".$this->fields["netmask"];
       }
+
    }
 
 
@@ -219,16 +225,27 @@ class IPNetwork extends CommonImplicitTreeDropdown {
             return array('error' => __('Network already defined in visible entities'),
                          'input' => false);
          }
-         $networkUpdate = true;
 
          // Then, update $input to reflect the network and the netmask
          $input = $address->setArrayFromAddress($input, "version", "address", "address");
          $input = $netmask->setArrayFromAddress($input, "", "netmask", "netmask");
 
+         // We check to see if the network is modified
+         $previousAddress = new IPAddress();
+         $previousAddress->setAddressFromArray($this->fields, "version", "address", "address");
+         $previousNetmask = new IPNetmask();
+         $previousNetmask->setAddressFromArray($this->fields, "version", "netmask", "netmask");
+
+         if ($previousAddress->equals($address) && $previousNetmask->equals($netmask)) {
+            $this->networkUpdate = false;
+         } else {
+            $this->networkUpdate = true;
+         }
+
       } else {
          // If netmask and address are not modified, then, load them from DB to check the validity
          // of the gateway
-         $networkUpdate = false;
+         $this->networkUpdate = false;
          $address->setAddressFromArray($this->fields, "version", "address", "address");
          $netmask->setAddressFromArray($this->fields, "version", "netmask", "netmask");
          $entities_id = $this->fields['entities_id'];
@@ -244,7 +261,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       // then, we must revalidate the gateway !
       if (!isset($this->fields["gateway"])
           || ($input["gateway"] != $this->fields["gateway"])
-          || $networkUpdate) {
+          || $this->networkUpdate) {
          $gateway = new IPAddress();
 
          if (!empty($input["gateway"])) {
@@ -305,6 +322,30 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
+   function post_addItem() {
+
+      if ($this->networkUpdate) {
+         NetworkName_IPNetwork::linkIPAddressFromIPNetwork($this);
+      }
+
+      unset($this->networkUpdate);
+
+      parent::post_addItem();
+   }
+
+
+   function post_updateItem($history=1) {
+
+      if ($this->networkUpdate) {
+         NetworkName_IPNetwork::linkIPAddressFromIPNetwork($this);
+      }
+
+      unset($this->networkUpdate);
+
+      parent::post_updateItem($history);
+   }
+
+
    function getPotentialSons() {
 
       if (isset($this->data_for_implicit_update)) {
@@ -339,12 +380,10 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    **/
    static function searchNetworksContainingIP($IP, $entityID=-1, $recursive=true, $fields="") {
 
-      return self::searchNetworks(array("relation" => "contains",
-                                        "address"  => $IP,
-                                        "netmask"  => array(0xffffffff, 0xffffffff,
-                                                            0xffffffff, 0xffffffff),
-                                        "fields"   => $fields),
-                                  $entityID, $recursive);
+      return self::searchNetworks("contains", array("address"  => $IP,
+                                                    "netmask"  => array(0xffffffff, 0xffffffff,
+                                                                        0xffffffff, 0xffffffff),
+                                                    "fields"   => $fields), $entityID, $recursive);
    }
 
 
@@ -402,48 +441,32 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $WHERE = "";
       if ((isset($condition["address"])) && isset($condition["netmask"])) {
 
-         if (is_string($condition["address"])) {
-            $addressPa = new IPAddress();
-            if (!$addressPa->setAddressFromString($condition["address"])) {
+         $addressPa = new IPAddress($condition["address"]);
+
+         // Check version equality ...
+         if ($version != $addressPa->getVersion()) {
+            if ($version != 0) {
                return false;
+            } else {
+               $version = $addressPa->getVersion();
             }
-         } else {
-            $addressPa = $condition["address"];
          }
 
-         if ($addressPa instanceof IPAddress) {
-            if (($version != 0) && ($version != $addressPa->getVersion())) {
-               return false;
-            }
-            $version = $addressPa->getVersion();
-            $addressPa = $addressPa->getBinary();
-         }
+         $netmaskPa = new IPNetmask($condition["netmask"], $version);
 
+         // Get the array of the adresses
+         $addressPa = $addressPa->getBinary();
+         $netmaskPa = $netmaskPa->getBinary();
+
+         // Check the binary is valid
          if (!is_array($addressPa) || (count($addressPa) != 4)) {
             return false;
          }
-
-         if (is_string($condition["netmask"])) {
-            $netmaskPa = new IPNetmask();
-            if (!$netmaskPa->setNetmaskFromString($condition["netmask"])) {
-               return false;
-            }
-         } else {
-            $netmaskPa = $condition["netmask"];
-         }
-
-         if ($netmaskPa instanceof IPNetmask) {
-            if (($version != 0) && ($version != $netmaskPa->getVersion())) {
-               return false;
-            }
-            $version = $netmaskPa->getVersion();
-            $netmaskPa = $netmaskPa->getBinary();
-         }
-
-         if (!is_array($netmaskPa) || (count($netmaskPa) != 4)) {
+          if (!is_array($netmaskPa) || (count($netmaskPa) != 4)) {
             return false;
          }
-         $startIndex = (($version == 4) ? 3 : 0);
+
+        $startIndex = (($version == 4) ? 3 : 0);
 
          if ($relation == "equals") {
             for ($i = $startIndex ; $i < 4 ; ++$i) {
@@ -548,8 +571,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function defineTabs($options=array()) {
 
       $ong = array();
-      // This is very very slow on very big database ...
-      //$this->addStandardTab('NetworkName',$ong, $options);
+      $this->addStandardTab('NetworkName',$ong, $options);
       $this->addStandardTab('Log',$ong, $options);
 
       return $ong;
@@ -592,12 +614,9 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    **/
    function getCriterionForMatchingNetworkNames() {
 
-      return "`id` IN (SELECT `items_id`
-                       FROM `glpi_ipaddresses`
-                       WHERE `itemtype` = 'NetworkName'
-                             AND ".$this->getWHEREForMatchingElement('glpi_ipaddresses', 'binary',
-                                                                     'version')."
-                       GROUP BY `items_id`)";
+      return "`id` IN (SELECT `networknames_id`
+                       FROM `glpi_networknames_ipnetworks`
+                       WHERE `ipnetworks_id`='".$this->getID()."')";
    }
 
 
@@ -800,6 +819,33 @@ class IPNetwork extends CommonImplicitTreeDropdown {
             $network->update($input);
          }
       }
+   }
+
+
+   /**
+    * \brief Recreate the links between NetworkName and IPNetwork
+    * Among others, the migration don't create it. So, an update is necessary
+    *
+    * First, reset the link table then reinit the links for each network
+    *
+    * @return nothing
+   **/
+   static function recreateLinksWithNetworkName() {
+      global $DB;
+
+
+      // Foreach IPNetwork ...
+      $query = "SELECT `id`
+                FROM `glpi_ipnetworks`";
+
+      $network = new IPNetwork();
+
+      foreach ($DB->request($query) as $network_entry) {
+         if ($network->getFromDB($network_entry['id'])) {
+            NetworkName_IPNetwork::linkIPAddressFromIPNetwork($network);
+         }
+      }
+      exit();
    }
 
 }
