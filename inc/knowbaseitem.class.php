@@ -197,7 +197,7 @@ class KnowbaseItem extends CommonDBTM {
       if (!$CFG_GLPI['use_public_faq']) {
          return false;
       }
-      if (isset($this->entities[0])) { // Browser root entoty right
+      if (isset($this->entities[0])) { // Browse root entity rights
          foreach ($this->entities[0] as $entity) {
             if ($entity['is_recursive']) {
                return true;
