@@ -49,7 +49,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * Get number of installed licenses of a license
     *
     * @param $softwarelicenses_id license ID
-    * @param $entity to search for computer in (default = all active entities)
+    * @param $entity='' to search for computer in (default = all active entities)
     *
     * @return number of installations
    **/
@@ -60,7 +60,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                 FROM `glpi_computers_softwarelicenses`
                 INNER JOIN `glpi_computers`
                       ON (`glpi_computers_softwarelicenses`.`computers_id` = `glpi_computers`.`id`)
-                WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id`='$softwarelicenses_id'
+                WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id` = '$softwarelicenses_id'
                       AND `glpi_computers`.`is_deleted` = '0'
                       AND `glpi_computers`.`is_template` = '0' " .
                       getEntitiesRestrictRequest('AND', 'glpi_computers','',$entity);
@@ -291,10 +291,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             Session::initNavigateListItems('Computer',
                   //TRANS : %1$s is the itemtype name,
                   //        %2$s is the name of the item (used for headings of a list)
-                  sprintf(__('%1$s = %2$s'),
-                          $soft->getTypeName(1), $soft->fields["name"]." - " . $data["vername"]));
-
-
+                                           sprintf(__('%1$s = %2$s'), $soft->getTypeName(1),
+                                                   $soft->fields["name"]." - " . $data["vername"]));
 
             $sort_img = "<img src='" . $CFG_GLPI["root_doc"] . "/pics/" .
                         ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt='' title=''>";
@@ -446,8 +444,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
       return $lic;
    }
 
+
    /**
-    * Duplicate all software license from a computer template to its clone
+    * Duplicate all software licenses from a computer template to its clone
     *
     * @param $oldid ID of the computer to clone
     * @param $newid ID of the computer cloned
