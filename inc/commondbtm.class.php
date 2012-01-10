@@ -2286,67 +2286,67 @@ class CommonDBTM extends CommonGLPI {
       /// TODO manage it as table to have clean gettext view or use getComment of classes
       $comment = "";
       if ($this->isField('completename')) {
-         $comment .= "<span class='b'>".__('Complete Name:')."</span>".
+         $comment .= "<span class='b'>".__('Complete Name: ')."</span>".
                       $this->getField('completename')."<br>";
       }
 
       if ($this->isField('serial')) {
-         $comment .= "<span class='b'>".__('Serial number:')."</span>".
+         $comment .= "<span class='b'>".__('Serial number: ')."</span>".
                      $this->getField('serial')."<br>";
       }
 
       if ($this->isField('otherserial')) {
-         $comment .= "<span class='b'>".__('Inventory number:')."</span>".
+         $comment .= "<span class='b'>".__('Inventory number: ')."</span>".
                      $this->getField('otherserial')."<br>";
       }
 
       if ($this->isField('states_id') && $this->getType()!='State') {
          $tmp = Dropdown::getDropdownName('glpi_states', $this->getField('states_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".__('Status:')."</span>$tmp<br>";
+            $comment .= "<span class='b'>".__('Status: ')."</span>$tmp<br>";
          }
       }
 
       if ($this->isField('locations_id') && $this->getType()!='Location') {
          $tmp = Dropdown::getDropdownName("glpi_locations", $this->getField('locations_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".__('Location:')."</span>".$tmp."<br>";
+            $comment .= "<span class='b'>".__('Location: ')."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('users_id')) {
          $tmp = getUserName($this->getField('users_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".__('User:')."</span>".$tmp."<br>";
+            $comment .= "<span class='b'>".__('User: ')."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('groups_id') && $this->getType()!='Group') {
          $tmp = Dropdown::getDropdownName("glpi_groups",$this->getField('groups_id'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".__('Group:')."</span>".$tmp."<br>";
+            $comment .= "<span class='b'>".__('Group: ')."</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('users_id_tech')) {
          $tmp = getUserName($this->getField('users_id_tech'));
          if (strlen($tmp)!=0 && $tmp!='&nbsp;') {
-            $comment .= "<span class='b'>".__('Technician in charge of the hardware:').
+            $comment .= "<span class='b'>".__('Technician in charge of the hardware: ').
                         "</span>".$tmp."<br>";
          }
       }
 
       if ($this->isField('contact')) {
-         $comment .= "<span class='b'>".__('Alternate username:')."</span>".
+         $comment .= "<span class='b'>".__('Alternate username: ')."</span>".
                       $this->getField('contact')."<br>";
       }
 
       if ($this->isField('contact_num')) {
-         $comment .= "<span class='b'>".__('Alternate username number:')."</span>".
+         $comment .= "<span class='b'>".__('Alternate username number: ')."</span>".
                      $this->getField('contact_num')."<br>";
       }
       if (($this instanceof CommonDropdown) && $this->isField('comment')) {
-         $comment .= "<span class='b'>".__('Comments:')."</span>".
+         $comment .= "<span class='b'>".__('Comments: ')."</span>".
                       nl2br($this->getField('comment'))."<br>";
       }
 
