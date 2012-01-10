@@ -626,6 +626,8 @@ class KnowbaseItem extends CommonDBTM {
 
    /**
     * Increase the view counter of the current knowbaseitem
+    *
+    * @since version 0.83
     */
    function updateCounter() {
       global $DB;
@@ -637,6 +639,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $DB->query($query);
    }
+
 
    /**
     * Print out (html) show item : question and answer
@@ -799,6 +802,8 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Build request for showList
     *
+    * @since version 0.83
+    *
     * @param $params Array (contains, knowbaseitemcategories_id, faq)
     * @param $faq    Boolean
     *
@@ -888,7 +893,7 @@ class KnowbaseItem extends CommonDBTM {
    }
 
    /**
-    *Print out list kb item
+    * Print out list kb item
     *
     * @param $options : $_GET
     * @param $faq display on faq ?
