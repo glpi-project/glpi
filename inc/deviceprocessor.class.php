@@ -107,5 +107,4 @@ class DeviceProcessor extends CommonDevice {
    }
 
 }
-
 ?>

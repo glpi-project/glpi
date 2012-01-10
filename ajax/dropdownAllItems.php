@@ -81,5 +81,4 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    Ajax::dropdown($use_ajax, "/ajax/$link", $paramsallitems, $default, $rand);
 
 }
-
 ?>

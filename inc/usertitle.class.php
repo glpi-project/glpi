@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class UserTitle extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      return _n('Users title', 'Users titles',$nb);
+      return _n('User title', 'Users titles',$nb);
    }
 }
 ?>

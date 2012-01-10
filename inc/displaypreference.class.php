@@ -36,13 +36,13 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-
 class DisplayPreference extends CommonDBTM {
 
    // From CommonDBTM
    var $auto_message_on_action = false;
 
    protected $displaylist = false;
+
 
    function prepareInputForAdd($input) {
       global $DB;
@@ -206,7 +206,7 @@ class DisplayPreference extends CommonDBTM {
     *
     * @return nothing
    **/
-   function showFormPerso($target,$itemtype) {
+   function showFormPerso($target, $itemtype) {
       global $CFG_GLPI, $DB;
 
       $searchopt = Search::getCleanedOptions($itemtype);
@@ -215,7 +215,7 @@ class DisplayPreference extends CommonDBTM {
       }
 
       $item = NULL;
-      if ($itemtype!='States') {
+      if ($itemtype != 'States') {
          $item = getItemForItemtype($itemtype);
       }
 
@@ -362,7 +362,7 @@ class DisplayPreference extends CommonDBTM {
     *
     * @return nothing
    **/
-   function showFormGlobal($target,$itemtype) {
+   function showFormGlobal($target, $itemtype) {
       global $CFG_GLPI, $DB;
 
       $searchopt = Search::getOptions($itemtype);
@@ -372,7 +372,7 @@ class DisplayPreference extends CommonDBTM {
       $IDuser = 0;
 
       $item = NULL;
-      if ($itemtype!='States') {
+      if ($itemtype != 'States') {
          $item = getItemForItemtype($itemtype);
       }
 
@@ -390,7 +390,7 @@ class DisplayPreference extends CommonDBTM {
       $numrows = $DB->numrows($result);
 
       echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>";
-      echo __s('Select default items to show')."</th></tr>\n";
+      echo __('Select default items to show')."</th></tr>\n";
 
       if ($global_write) {
          $already_added = self::getForTypeUser($itemtype, $IDuser);

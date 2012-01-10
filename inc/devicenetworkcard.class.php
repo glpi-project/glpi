@@ -102,7 +102,7 @@ class DeviceNetworkCard extends CommonDevice {
 
 
    /**
-    * Import a device is not exists
+    * Import a device if not exists
     *
     * @param $input of data
     *
@@ -132,5 +132,4 @@ class DeviceNetworkCard extends CommonDevice {
    }
 
 }
-
 ?>
