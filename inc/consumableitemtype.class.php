@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class ConsumableItemType extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      return _n('Consumables type', 'Consumables types',$nb);
+      return _n('Consumable type', 'Consumable types',$nb);
    }
 }
 ?>

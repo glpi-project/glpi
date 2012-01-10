@@ -76,20 +76,20 @@ class Contract_Supplier extends CommonDBRelation {
             case 'Supplier' :
                if (Session::haveRight("contract","r")) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(_n('Contract', 'Contracts', 2),
+                     return self::createTabEntry(Contract::getTypeName(2),
                                                  self::countForSupplier($item));
                   }
-                  return _n('Contract', 'Contracts', 2);
+                  return Contract::getTypeName(2);
                }
                break;
 
             case 'Contract' :
                if (Session::haveRight("contact_enterprise","r")) {
                   if ($_SESSION['glpishow_count_on_tabs']) {
-                     return self::createTabEntry(_n('Supplier', 'Suppliers', 2),
+                     return self::createTabEntry(Supplier::getTypeName(2),
                                                  self::countForContract($item));
                   }
-                  return _n('Supplier', 'Suppliers', 2);
+                  return Supplier::getTypeName(2);
                }
                break;
          }

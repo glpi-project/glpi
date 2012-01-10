@@ -42,7 +42,7 @@ class ComputerModel extends CommonDropdown {
    var $additional_fields_for_dictionnary = array('manufacturer');
 
    static function getTypeName($nb=0) {
-      return _n('Computers model', 'Computers models', $nb);
+      return _n('Computer model', 'Computer models', $nb);
    }
 }
 ?>

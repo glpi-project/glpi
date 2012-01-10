@@ -121,15 +121,14 @@ class Contract extends CommonDBTM {
 
 
    /**
-   * Print the contract form
-   *
-   * @param $ID integer ID of the item
-   * @param $options array
-   *     - target filename : where to go when done.
-   *     - withtemplate boolean : template or basic item
-   *
-   *@return boolean item found
-   *
+    * Print the contract form
+    *
+    * @param $ID integer ID of the item
+    * @param $options array
+    *     - target filename : where to go when done.
+    *     - withtemplate boolean : template or basic item
+    *
+    *@return boolean item found
    **/
    function showForm($ID,$options=array()) {
 
@@ -270,8 +269,7 @@ class Contract extends CommonDBTM {
 
    static function getSearchOptionsToAdd() {
 
-      $tab = array();
-
+      $tab             = array();
       $tab['contract'] = self::getTypeName(2);
 
       $joinparams = array('beforejoin' => array('table'      => 'glpi_contracts_items',
@@ -306,7 +304,7 @@ class Contract extends CommonDBTM {
 
       $tab[130]['table']         = 'glpi_contracts';
       $tab[130]['field']         = 'duration';
-      $tab[130]['name']          = __('Contact duration');
+      $tab[130]['name']          = __('Contract duration');
       $tab[130]['forcegroupby']  = true;
       $tab[130]['massiveaction'] = false;
       $tab[130]['joinparams']    = $joinparams;
@@ -519,7 +517,6 @@ class Contract extends CommonDBTM {
     * HTML array
     *
     * @return Nothing (display)
-    *
     **/
    static function showCentral() {
       global $DB,$CFG_GLPI;
@@ -643,7 +640,6 @@ class Contract extends CommonDBTM {
     * Print the HTML array of suppliers for this contract
     *
     *@return Nothing (HTML display)
-    *
     **/
    function showSuppliers() {
       global $DB, $CFG_GLPI;
@@ -760,7 +756,6 @@ class Contract extends CommonDBTM {
     * Print the HTML array for Items linked to current contract
     *
     *@return Nothing (display)
-    *
     **/
    function showItems() {
       global $DB, $CFG_GLPI;
@@ -784,7 +779,9 @@ class Contract extends CommonDBTM {
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='5'>";
       if ($DB->numrows($result)==0) {
-         _e('No associated element');
+         _e('No associated item');
+      } else if ($DB->numrows($result)==1) {
+         _e('Associated item');
       } else {
          _e('Associated items');
       }
@@ -932,7 +929,7 @@ class Contract extends CommonDBTM {
     * Get the entreprise name  for the contract
     *
     *@return string of names (HTML)
-    **/
+   **/
    function getSuppliersNames() {
       global $DB;
 
@@ -949,16 +946,15 @@ class Contract extends CommonDBTM {
       return $out;
    }
 
+
    /**
     * Print an HTML array of contract associated to an object
     *
+    * @param $item CommonDBTM : object wanted
+    * @param $withtemplate='' not used (to be deleted)
     *
-    *@param $item CommonDBTM : object wanted
-    *@param $withtemplate='' not used (to be deleted)
-    *
-    *@return Nothing (display)
-    *
-    **/
+    * @return Nothing (display)
+   **/
    static function showAssociated(CommonDBTM $item, $withtemplate='') {
       global $DB, $CFG_GLPI;
 
@@ -1015,8 +1011,8 @@ class Contract extends CommonDBTM {
 
       if ($number>0) {
          Session::initNavigateListItems('Contract',
-               //TRANS : %1$s is the itemtype name,
-               //         %2$s is the name of the item (used for headings of a list)
+                              //TRANS : %1$s is the itemtype name,
+                              //         %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
                                                 $item->getTypeName(1), $item->getName()));
       }
@@ -1098,7 +1094,6 @@ class Contract extends CommonDBTM {
 
 
    static function cronInfo($name) {
-
       return array('description' => __('Send alarms on contracts'));
    }
 
@@ -1107,8 +1102,7 @@ class Contract extends CommonDBTM {
     * Cron action on contracts : alert depending of the config : on notice and expire
     *
     * @param $task for log, if NULL display
-    *
-    **/
+   **/
    static function cronContract($task=NULL) {
       global $DB, $CFG_GLPI;
 
@@ -1186,7 +1180,7 @@ class Contract extends CommonDBTM {
       foreach (array(Alert::NOTICE => "notice",
                      Alert::END    => "end") as $type=>$event) {
          foreach ($contract_infos[$type] as $entity => $contracts) {
-            if (NotificationEvent::raiseEvent($event, new Contract(),
+            if (NotificationEvent::raiseEvent($event, new self(),
                                               array('entities_id' => $entity,
                                                     'contracts'   => $contracts))) {
                $message = $contract_messages[$type][$entity];
@@ -1337,7 +1331,7 @@ class Contract extends CommonDBTM {
     * Print a select named $name with contract renewal options and selected value $value
     *
     * @param $name string : HTML select name
-    * @param $value integer : HTML select selected value
+    * @param $value=0 integer : HTML select selected value
     *
     * @return Nothing (display)
    **/
@@ -1397,7 +1391,6 @@ class Contract extends CommonDBTM {
     * @param $value default value
    **/
    static function dropdownAlert($myname, $value) {
-
       Dropdown::showFromArray($myname, self::getAlertName(), array('value' => $value));
    }
 
@@ -1407,10 +1400,10 @@ class Contract extends CommonDBTM {
     *
     * @since version 0.83
     *
-    * @param $val if not set, ask for all values, else for 1 value
+    * @param $val if not set, ask for all values, else for 1 value (default NULL)
     *
     * @return array or string
-    */
+   **/
    static function getAlertName($val=NULL) {
 
       $tmp[0]                     = Dropdown::EMPTY_VALUE;

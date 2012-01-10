@@ -765,9 +765,9 @@ class Document extends CommonDBTM {
       echo "<tr><th colspan='".($canedit?6:5)."'>";
 
       if ($DB->numrows($result)==0) {
-         _e('No associated element');
+         _e('No associated item');
       } else if ($DB->numrows($result)==1) {
-         _e('Associated element');
+         _e('Associated item');
       } else {
          _e('Associated items');
       }
