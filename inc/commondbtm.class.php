@@ -1702,15 +1702,14 @@ class CommonDBTM extends CommonGLPI {
             echo "</td></tr><tr>\n";
 
             if ($this->isDeleted()) {
-               echo "<td class='tab_bg_2 center' colspan='".$params['colspan']."' >\n";
+               echo "<td class='tab_bg_2 right' colspan='".($params['colspan']*2)."' >\n";
                echo "<input type='submit' name='restore' value=\"".__s('Restore')."\"
                       class='submit'>";
-               echo "</td><td class='tab_bg_2 center' colspan='".$params['colspan']."' >\n
-                     <input type='submit' name='purge' value=\"".__s('Purge')."\"
+               echo "&nbsp;<input type='submit' name='purge' value=\"".__s('Purge')."\"
                       class='submit'>";
 
             } else {
-               echo "<td class='tab_bg_2 center' colspan='".($params['colspan']*2)."' >\n";
+               echo "<td class='tab_bg_2 right' colspan='".($params['colspan']*2)."' >\n";
                if (!$this->maybeDeleted()) {
                   echo "<input type='submit' name='delete' value=\"".__s('Purge')."\"
                          class='submit' ".
