@@ -191,13 +191,13 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . __('Text on the login page') . "</td>";
+      echo "<td> " . __('Text in the  login box') . "</td>";
       echo "<td colspan='3'>";
       echo "<textarea cols='70' rows='4' name='text_login'>".$CFG_GLPI["text_login"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . __('Authorize anonymous view of the FAQ') . "</td><td>";
+      echo "<td> " . __('Allow FAQ anonymous access') . "</td><td>";
       Dropdown::showYesNo("use_public_faq", $CFG_GLPI["use_public_faq"]);
       echo "</td><td>" . __('Simplified interface help link') . "</td>";
       echo "<td><input size='22' type='text' name='helpdesk_doc_url' value='" .
@@ -205,7 +205,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Maximum number of search results to display on a page')."</td><td>";
+      echo "<td>" . __('Default search results limit (page)')."</td><td>";
       Dropdown::showInteger("list_limit_max", $CFG_GLPI["list_limit_max"], 5, 200, 5);
       echo "</td><td>" . __('Standard interface help link') . "</td>";
       echo "<td><input size='22' type='text' name='central_doc_url' value='" .
@@ -213,14 +213,14 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Maximum number of characters for the summary text boxes') . "</td><td>";
+      echo "<td>" . __('Default characters limit (summary text boxes)') . "</td><td>";
       Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500, 50);
-      echo "</td><td>" . __('Maximum capacity of displayed characters for URL') . "</td><td>";
+      echo "</td><td>" . __('Default url lenght limit') . "</td><td>";
       Dropdown::showInteger('url_maxlength', $CFG_GLPI["url_maxlength"], 20, 80, 5);
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_2'><td>" .__('Number of decimals in amounts') . "</td><td>";
+      echo "<tr class='tab_bg_2'><td>" .__('Default decimals limit') . "</td><td>";
       Dropdown::showInteger("decimal_number", $CFG_GLPI["decimal_number"], 1, 4);
       echo "</td><td>" . __('Default chart format')."</td><td>";
       Dropdown::showFromArray("default_graphtype", array('png' => 'PNG',
@@ -236,7 +236,7 @@ class Config extends CommonDBTM {
       Dropdown::showYesNo("use_ajax", $CFG_GLPI["use_ajax"]);
       echo "</td>";
       if ($CFG_GLPI["use_ajax"]) {
-         echo "<td>".__('Minimum size of the text for dynamic search in dropdowns')."</td><td>";
+         echo "<td>".__('Minimum text length for dynamic search in dropdowns')."</td><td>";
          Dropdown::showInteger('ajax_min_textsearch_load', $CFG_GLPI["ajax_min_textsearch_load"],
                                0, 10, 1);
       } else {
@@ -549,7 +549,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Maximum size of each file imported by the mail receiver (default value)').
+      echo "<td>".__('Default file size limit imported by the mail receiver ').
            "</td><td>";
       MailCollector::showMaxFilesize('default_mailcollector_filesize_max',
                                      $CFG_GLPI["default_mailcollector_filesize_max"]);
@@ -561,7 +561,7 @@ class Config extends CommonDBTM {
                      array('value' => $CFG_GLPI["documentcategories_id_forticket"],
                            'name'  => "documentcategories_id_forticket"));
       echo "</td>";
-      echo "<td>" . __('By default, a software may be associable to a ticket') . "</td><td>";
+      echo "<td>" . __('By default, a software may be linked to a ticket') . "</td><td>";
       Dropdown::showYesNo("default_software_helpdesk_visible",
                           $CFG_GLPI["default_software_helpdesk_visible"]);
       echo "</td></tr>";
@@ -689,7 +689,7 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Personalization') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Maximum number of search results to display on a page')."</td><td>";
+      echo "<td>" . __('Results to display by page')."</td><td>";
       // Limit using global config
       Dropdown::showInteger('list_limit',
                             ($data['list_limit']<$CFG_GLPI['list_limit_max']
@@ -705,7 +705,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
-         echo "<td>" . __('Maximum number of characters for each item in dropdowns') . "</td><td>";
+         echo "<td>" . __('Default characters limit in dropdowns') . "</td><td>";
          Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
          echo "</td>";
        } else {
@@ -721,7 +721,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
-         echo "<td>" . __('Display the complete name in the tree dropdowns') . "</td><td>";
+         echo "<td>" . __('Display the complete name in tree dropdowns') . "</td><td>";
          Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"]);
          echo "</td>";
       } else {
@@ -741,7 +741,7 @@ class Config extends CommonDBTM {
       echo "</td>";
 
       if (!$userpref || $CFG_GLPI['show_count_on_tabs'] != -1) {
-         echo "<td>".__('See the counts in the tabs')."</td><td>";
+         echo "<td>".__('Display counts in tabs')."</td><td>";
 
          $values = array(0 => __('No'),
                          1 => __('Yes'));
