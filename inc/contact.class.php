@@ -130,8 +130,8 @@ class Contact extends CommonDBTM{
    /**
     * Print the contact form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *

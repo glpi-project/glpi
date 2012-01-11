@@ -110,8 +110,8 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * Print the version form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target for the Form
     *     - computers_id ID of the computer for add process
     *
@@ -216,7 +216,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * Show hosts for a virtualmachine
     *
-    * @param $comp a computer object that represents the virtual machine
+    * @param $comp   Computer object that represents the virtual machine
     *
     * @return Nothing (call to classes members)
    **/
@@ -386,7 +386,7 @@ class ComputerVirtualMachine extends CommonDBChild {
    /**
     * Get correct uuid sql search for virtualmachines
     *
-    * @param $uuid the uuid give
+    * @param $uuid the uuid given
     *
     * @return the restrict which contains uuid, uuid with first block flipped,
     * uuid with 3 first block flipped

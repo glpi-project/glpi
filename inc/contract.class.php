@@ -123,8 +123,8 @@ class Contract extends CommonDBTM {
    /**
     * Print the contract form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
@@ -950,8 +950,8 @@ class Contract extends CommonDBTM {
    /**
     * Print an HTML array of contract associated to an object
     *
-    * @param $item CommonDBTM : object wanted
-    * @param $withtemplate='' not used (to be deleted)
+    * @param $item            CommonDBTM object wanted
+    * @param $withtemplate     not used (to be deleted) (default '')
     *
     * @return Nothing (display)
    **/
@@ -1101,7 +1101,7 @@ class Contract extends CommonDBTM {
    /**
     * Cron action on contracts : alert depending of the config : on notice and expire
     *
-    * @param $task for log, if NULL display
+    * @param $task for log, if NULL display (default NULL)
    **/
    static function cronContract($task=NULL) {
       global $DB, $CFG_GLPI;
@@ -1236,7 +1236,7 @@ class Contract extends CommonDBTM {
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - nochecklimit : boolean / disable limit for nomber of device (for supplier, default false)
     *
-    * @param $options possible options
+    * @param $options   array of possible options
     *
     * @return Nothing (display)
    **/
@@ -1330,8 +1330,8 @@ class Contract extends CommonDBTM {
     *
     * Print a select named $name with contract renewal options and selected value $value
     *
-    * @param $name string : HTML select name
-    * @param $value integer : HTML select selected value (default = 0)
+    * @param $name   string   HTML select name
+    * @param $value  integer  HTML select selected value (default = 0)
     *
     * @return Nothing (display)
    **/
@@ -1347,7 +1347,7 @@ class Contract extends CommonDBTM {
    /**
     * Get the renewal type name
     *
-    * @param $value integer : HTML select selected value
+    * @param $value integer   HTML select selected value
     *
     * @return string
    **/
@@ -1387,8 +1387,8 @@ class Contract extends CommonDBTM {
    /**
     * Dropdown for alerting of contracts
     *
-    * @param $myname select name
-    * @param $value default value
+    * @param $myname    select name
+    * @param $value     default value
    **/
    static function dropdownAlert($myname, $value) {
       Dropdown::showFromArray($myname, self::getAlertName(), array('value' => $value));

@@ -54,7 +54,7 @@ class Computer extends CommonDBTM {
    /**
     * Name of the type
     *
-    * @param $nb : number of item in the type
+    * @param $nb  integer  number of item in the type (default 0)
    **/
    static function getTypeName($nb=0) {
          return _n('Computer', 'Computers', $nb);
@@ -452,8 +452,8 @@ class Computer extends CommonDBTM {
    /**
     * Print the computer form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target for the Form
     *     - withtemplate template or basic computer
     *

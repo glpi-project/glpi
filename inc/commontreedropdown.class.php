@@ -93,7 +93,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * Compute completename based on parent one
     *
     * @param $parentCompleteName string parent complete name (need to be stripslashes / comes from DB)
-    * @param $thisName string item name (need to be addslashes : comes from input)
+    * @param $thisName           string item name (need to be addslashes : comes from input)
    **/
    static function getCompleteNameFromParents($parentCompleteName, $thisName) {
      return addslashes($parentCompleteName). " > ".$thisName;
@@ -560,7 +560,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     *
     * @return the ID of the new (or -1 if not found)
    **/
-   function findID (&$input) {
+   function findID (array &$input) {
       global $DB;
 
       if (isset($input['completename'])) {
@@ -614,7 +614,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     *
     * @return the ID of the new or existing dropdown
    **/
-   function import ($input) {
+   function import(array $input) {
 
       if (isset($input['name'])) {
          return parent::import($input);

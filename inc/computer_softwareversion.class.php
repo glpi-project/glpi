@@ -92,8 +92,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Get number of installed licenses of a version
     *
-    * @param $softwareversions_id version ID
-    * @param $entity='' to search for computer in (default = all active entities)
+    * @param $softwareversions_id   version ID
+    * @param $entity                to search for computer in (default '' = all active entities)
     *
     * @return number of installations
    **/
@@ -176,8 +176,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Show installations of a software
     *
-    * @param $searchID valeur to the ID to search
-    * @param $crit to search : softwares_id (software) or id (version)
+    * @param $searchID  value of the ID to search
+    * @param $crit      to search : softwares_id (software) or id (version)
     *
     * @return nothing
    **/
@@ -508,8 +508,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Show software installed on a computer
     *
-    * @param $comp Computer object
-    * @param $withtemplate='' template case of the view process
+    * @param $comp            Computer object
+    * @param $withtemplate    template case of the view process (default '')
     *
     * @return nothing
    **/
@@ -653,9 +653,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Display category footer for Computer_SoftwareVersion::showForComputer function
     *
-    * @param $cat current category ID
-    * @param $rand random for unicity
-    * @param $canedit boolean
+    * @param $cat                current category ID
+    * @param $rand               random for unicity
+    * @param $canedit   boolean
     *
     * @return new category ID
    **/
@@ -684,10 +684,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Display category header for Computer_SoftwareVersion::showForComputer function
     *
-    * @param $computers_ID ID of the computer
-    * @param $data data used to display
-    * @param $rand random for unicity
-    * @param $canedit boolean
+    * @param $computers_ID             ID of the computer
+    * @param $data                     data used to display
+    * @param $rand                     random for unicity
+    * @param $canedit         boolean
     *
     * @return new category ID
    **/
@@ -743,10 +743,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Display a installed software for a category
     *
-    * @param $data data used to display
-    * @param $computers_id ID of the computer
-    * @param $withtemplate template case of the view process
-    * @param $canedit boolean user can edit software ?
+    * @param $data                     data used to display
+    * @param $computers_id             ID of the computer
+    * @param $withtemplate             template case of the view process
+    * @param $canedit         boolean  user can edit software ?
     *
     * @return array of found license id
    **/
@@ -822,10 +822,10 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Display a software for a License (not installed)
     *
-    * @param $data data used to display
-    * @param $computers_id ID of the computer
-    * @param $withtemplate template case of the view process
-    * @param $canedit boolean user can edit software ?
+    * @param $data                  data used to display
+    * @param $computers_id          ID of the computer
+    * @param $withtemplate          template case of the view process
+    * @param $canedit      boolean  user can edit software ?
     *
     * @return nothing
    */
@@ -976,9 +976,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    /**
     * Update version installed on a computer
     *
-    * @param $instID ID of the install software lienk
-    * @param $softwareversions_id ID of the new version
-    * @param $dohistory Do history ? (default 1)
+    * @param $instID                ID of the install software lienk
+    * @param $softwareversions_id   ID of the new version
+    * @param $dohistory             Do history ? (default 1)
     *
     * @return nothing
    **/

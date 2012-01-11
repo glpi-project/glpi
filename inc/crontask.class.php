@@ -52,11 +52,7 @@ class CronTask extends CommonDBTM{
    const MODE_EXTERNAL = 2;
 
 
-   /**
-    * Name of the type
-   **/
    static function getTypeName($nb=0) {
-
       return _n('Automatic action', 'Automatic actions', $nb);
    }
 
@@ -100,8 +96,8 @@ class CronTask extends CommonDBTM{
     *
     * Used by plugins to load its crontasks
     *
-    * @param $itemtype itemtype of the crontask
-    * @param $name name of the task
+    * @param $itemtype  itemtype of the crontask
+    * @param $name      name of the task
     *
     * @return true if succeed else false
    **/
@@ -286,9 +282,10 @@ class CronTask extends CommonDBTM{
    /**
     * read the first task which need to be run by cron
     *
-    * @param $mode : >0 retrieve task configured for this mode
+    * @param $mode   >0 retrieve task configured for this mode
     *                <0 retrieve task allowed for this mode (force, no time check)
-    * @param $name : one specify action
+    *                (default 0)
+    * @param $name   one specify action (default '')
     *
     * @return false if no task to run
    **/
@@ -368,8 +365,8 @@ class CronTask extends CommonDBTM{
    /**
     * Print the contact form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
@@ -634,8 +631,8 @@ class CronTask extends CommonDBTM{
    /**
     * Dropdown of state
     *
-    * @param $name select name
-    * @param $value default value
+    * @param $name   select name
+    * @param $value  default value (default 0)
     *
     * @return nothing (display)
    **/
@@ -708,9 +705,9 @@ class CronTask extends CommonDBTM{
    /**
     * Launch the need cron tasks
     *
-    * @param $mode (internal/external, <0 to force)
-    * @param $max number of task to launch ()
-    * @param $name of task to run
+    * @param $mode   (internal/external, <0 to force)
+    * @param $max    number of task to launch (default 1)
+    * @param $name   of task to run (default '')
     *
     * @return the name of last task launched
    **/
@@ -776,10 +773,10 @@ class CronTask extends CommonDBTM{
    /**
     * Register new task for plugin (called by plugin during install)
     *
-    * @param $itemtype : itemtype of the plugin object
-    * @param $name : of the task
-    * @param $frequency : of execution
-    * @param $options array of optional options
+    * @param $itemtype        itemtype of the plugin object
+    * @param $name            of the task
+    * @param $frequency       of execution
+    * @param $options   array of optional options
     *       (state, mode, allowmode, hourmin, hourmax, logs_lifetime, param, comment)
     *
     * @return bool for success
@@ -895,19 +892,22 @@ class CronTask extends CommonDBTM{
 
             echo "<tr class='tab_bg_2'><td>".__('Minimal time')."</td>";
             //TRANS: %s is the number of seconds
-            echo "<td class='right'>".sprintf(__('%s sec(s)'), number_format($data['elapsedmin'],2));
+            echo "<td class='right'>".sprintf(__('%s sec(s)'),
+                                               number_format($data['elapsedmin'], 2));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".__('Maximal time')."</td>";
-            echo "<td class='right'>".sprintf(__('%s sec(s)'), number_format($data['elapsedmax'],2));
+            echo "<td class='right'>".sprintf(__('%s sec(s)'),
+                                              number_format($data['elapsedmax'], 2));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".__('Average time')."</td>";
-            echo "<td class='right b'>".sprintf(__('%s sec(s)'), number_format($data['elapsedavg'],2));
+            echo "<td class='right b'>".sprintf(__('%s sec(s)'),  number_format($data['elapsedavg'],2));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".__('Total duration')."</td>";
-            echo "<td class='right'>".sprintf(__('%s sec(s)'), number_format($data['elapsedtot'],2));
+            echo "<td class='right'>".sprintf(__('%s sec(s)'),
+                                              number_format($data['elapsedtot'],2));
             echo "</td></tr>";
          }
 
@@ -1239,8 +1239,7 @@ class CronTask extends CommonDBTM{
     * Clean log cron function
     *
     * @param $task for log
-    *
-    **/
+   **/
    static function cronOptimize($task) {
 
       $nb = DBmysql::optimize_tables(NULL, true);
@@ -1298,7 +1297,8 @@ class CronTask extends CommonDBTM{
 
          case 'logs' :
             return array('description' => __('Clean old logs'),
-                         'parameter'   => __('How long system logs are keep in database (in days, 0 for infinite)'));
+                         'parameter'
+                           => __('How long system logs are keep in database (in days, 0 for infinite)'));
 
          case 'optimize' :
             return array('description' => __('Database optimization'));
@@ -1318,8 +1318,8 @@ class CronTask extends CommonDBTM{
    /**
     * Dropdown for frequency (interval between 2 actions)
     *
-    * @param $name select name
-    * @param $value default value
+    * @param $name   select name
+    * @param $value  default value (default 0)
    **/
    function dropdownFrequency($name, $value=0) {
 

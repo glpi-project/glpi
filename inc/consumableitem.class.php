@@ -125,8 +125,8 @@ class ConsumableItem extends CommonDBTM {
    /**
     * Print the consumable type form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
@@ -292,7 +292,7 @@ class ConsumableItem extends CommonDBTM {
    /**
     * Cron action on consumables : alert if a stock is behind the threshold
     *
-    * @param $task to log, if NULL display
+    * @param $task   to log, if NULL display (default NULL)
     *
     * @return 0 : nothing to do 1 : done with success
    **/
