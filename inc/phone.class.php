@@ -471,6 +471,11 @@ class Phone extends CommonDBTM {
       $tab[23]['field']          = 'name';
       $tab[23]['name']           = __('Manufacturer');
 
+      $tab[32]['table']          = $this->getTable();
+      $tab[32]['field']          = 'firmware';
+      $tab[32]['name']           = __('Firmware');
+      $tab[32]['datatype']       = 'string';
+
       $tab[24]['table']          = 'glpi_users';
       $tab[24]['field']          = 'name';
       $tab[24]['linkfield']      = 'users_id_tech';
