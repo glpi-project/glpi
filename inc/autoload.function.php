@@ -110,6 +110,8 @@ function __s($str){
 /**
  * For translation
  *
+ * @since version 0.84
+ *
  * @param $ctx : context
  * @param $str : string
  *

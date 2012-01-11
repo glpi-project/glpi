@@ -61,7 +61,8 @@ echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td class='right'>".__('Start date')."</td><td>";
 Html::showDateFormItem("date1", $_POST["date1"]);
 echo "</td><td rowspan='2' class='center'>";
-echo "<input type='submit' class='submit' name='submit' value=\"".__s('Display report')."\"></td></tr>\n";
+echo "<input type='submit' class='submit' name='submit' value=\"".__s('Display report')."\"></td>".
+     "</tr>\n";
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
 Html::showDateFormItem("date2", $_POST["date2"]);
 echo "</td></tr>";

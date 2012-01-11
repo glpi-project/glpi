@@ -190,13 +190,14 @@ class KnowbaseItem extends CommonDBTM {
     * @since version 0.83
     *
     * @return Boolean
-    */
+   **/
    function isPubliclyVisible() {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI['use_public_faq']) {
          return false;
       }
+
       if (isset($this->entities[0])) { // Browse root entity rights
          foreach ($this->entities[0] as $entity) {
             if ($entity['is_recursive']) {
@@ -828,10 +829,9 @@ class KnowbaseItem extends CommonDBTM {
     * @since version 0.83
     *
     * @param $params Array (contains, knowbaseitemcategories_id, faq)
-    * @param $faq    Boolean
     *
     * @return String : SQL request
-    */
+   **/
    static function getListRequest($params) {
       global $DB;
 
@@ -921,7 +921,7 @@ class KnowbaseItem extends CommonDBTM {
     * Print out list kb item
     *
     * @param $options : $_GET
-    * @param $faq display on faq ?
+    * @param $faq display on faq ? (default 0)
    **/
    static function showList($options, $faq=0) {
       global $DB, $CFG_GLPI;
@@ -950,9 +950,8 @@ class KnowbaseItem extends CommonDBTM {
          $KbCategory = new KnowbaseItemCategory();
          $title = "";
          if ($KbCategory->getFromDB($params["knowbaseitemcategories_id"])) {
-            $title = (empty($KbCategory->fields['name'])
-                              ?"(".$params['knowbaseitemcategories_id'].")"
-                              : $KbCategory->fields['name']);
+            $title = (empty($KbCategory->fields['name']) ?"(".$params['knowbaseitemcategories_id'].")"
+                                                         : $KbCategory->fields['name']);
             $title = sprintf(__('Category: %s'), $title);
          }
 
@@ -985,7 +984,8 @@ class KnowbaseItem extends CommonDBTM {
                           $params['knowbaseitemcategories_id']."&amp;contains=".
                           $params["contains"]."&amp;is_faq=$faq";
             if (isset($options['itemtype']) && isset($options['items_id'])) {
-               $parameters .= "&amp;items_id=".$options['items_id']."&amp;itemtype=".$options['itemtype'];
+               $parameters .= "&amp;items_id=".$options['items_id']."&amp;itemtype=".
+                               $options['itemtype'];
             }
 
             if ($output_type == Search::HTML_OUTPUT) {

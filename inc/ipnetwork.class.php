@@ -147,7 +147,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
                          'label'    => self::getTypeName(1),
                          'type'     => 'text',
                          'list'     => true,
-                         'comment' => __('Set the network using notation address+mask')),
+                         'comment'  => __('Set the network using notation address+mask')),
                    array('name'  => 'gateway',
                          'label' => __('Gateway'),
                          'type'  => 'text',
@@ -452,7 +452,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
             }
          }
 
-         $netmaskPa = new IPNetmask($condition["netmask"], $version);
+         $netmaskPa = new self($condition["netmask"], $version);
 
          // Get the array of the adresses
          $addressPa = $addressPa->getBinary();
@@ -616,7 +616,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       return "`id` IN (SELECT `networknames_id`
                        FROM `glpi_networknames_ipnetworks`
-                       WHERE `ipnetworks_id`='".$this->getID()."')";
+                       WHERE `ipnetworks_id` = '".$this->getID()."')";
    }
 
 
@@ -810,7 +810,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $query = "SELECT `id`
                 FROM `glpi_ipnetworks`";
 
-      $network = new IPNetwork();
+      $network = new self();
 
       foreach ($DB->request($query) as $network_entry) {
          if ($network->getFromDB($network_entry['id'])) {
@@ -838,7 +838,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $query = "SELECT `id`
                 FROM `glpi_ipnetworks`";
 
-      $network = new IPNetwork();
+      $network = new self();
 
       foreach ($DB->request($query) as $network_entry) {
          if ($network->getFromDB($network_entry['id'])) {

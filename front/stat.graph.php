@@ -210,7 +210,8 @@ switch($_GET["type"]) {
       $next  = $prev = 0;
       $next  = getNextItem("glpi_solutiontypes", $_GET["id"]);
       $prev  = getPreviousItem("glpi_solutiontypes", $_GET["id"]);
-      $title = sprintf(__('Solution type: %s'), Dropdown::getDropdownName("glpi_solutiontypes", $_GET["id"]));
+      $title = sprintf(__('Solution type: %s'), Dropdown::getDropdownName("glpi_solutiontypes",
+                                                                          $_GET["id"]));
       break;
 
    case "usercategories_id" :
