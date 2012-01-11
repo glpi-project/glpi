@@ -497,11 +497,11 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     * check if a dropdown already exists (before import)
     *
-    * @param $input array of value to import (name)
+    * @param $input  array of value to import (name)
     *
     * @return the ID of the new (or -1 if not found)
    **/
-   function findID (&$input) {
+   function findID(array &$input) {
       global $DB;
 
       if (!empty($input["name"])) {
@@ -528,11 +528,11 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     * Import a dropdown - check if already exists
     *
-    * @param $input array of value to import (name, ...)
+    * @param $input  array of value to import (name, ...)
     *
     * @return the ID of the new or existing dropdown
    **/
-   function import ($input) {
+   function import(array $input) {
 
       if (!isset($input['name'])) {
          return -1;
@@ -560,11 +560,12 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
     *
-    * @param $value string : Value of the new dropdown.
-    * @param $entities_id int : entity in case of specific dropdown (default -1)
-    * @param $external_params array(manufacturer)
-    * @param $comment (default '')
-    * @param $add if true, add it if not found. if false, just check if exists (true by default)
+    * @param $value           string   Value of the new dropdown.
+    * @param $entities_id     int      entity in case of specific dropdown (default -1)
+    * @param $external_params array    (manufacturer)
+    * @param $comment                  (default '')
+    * @param $add                      if true, add it if not found. if false,
+    *                                  just check if exists (true by default)
     *
     * @return integer : dropdown id.
    **/
@@ -576,7 +577,7 @@ abstract class CommonDropdown extends CommonDBTM {
          return 0;
       }
 
-      $ruleinput = array("name" => $value);
+      $ruleinput      = array("name" => $value);
       $rulecollection = RuleCollection::getClassByType($this->getType(),true);
 
       foreach ($this->additional_fields_for_dictionnary as $field) {

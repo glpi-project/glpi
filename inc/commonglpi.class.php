@@ -76,8 +76,8 @@ class CommonGLPI {
     *
     * @since version 0.83
     *
-    * @param $typeform string object class name to add tab on form
-    * @param $typetab  string object class name which manage the tab
+    * @param $typeform  string object class name to add tab on form
+    * @param $typetab   string object class name which manage the tab
    **/
    static function registerStandardTab($typeform, $typetab) {
 
@@ -167,7 +167,7 @@ class CommonGLPI {
     *
     *  @return nothing (set the tab array)
    **/
-   function addStandardTab($itemtype, &$ong, $options) {
+   function addStandardTab($itemtype, array &$ong, array $options) {
 
       $withtemplate = 0;
       if (isset($options['withtemplate'])) {
@@ -207,8 +207,8 @@ class CommonGLPI {
     *
     * @since version 0.83
     *
-    * @param $item         CommonDBTM object for which the tab need to be displayed
-    * @param $withtemplate boolean is a template object ? (default 0)
+    * @param $item            CommonDBTM object for which the tab need to be displayed
+    * @param $withtemplate    boolean is a template object ? (default 0)
     *
     *  @return string tab name
    **/
@@ -236,8 +236,8 @@ class CommonGLPI {
    /**
     * display standard tab contents
     *
-    * @param $item CommonGLPI object for which the tab need to be displayed
-    * @param $tab string tab name
+    * @param $item         CommonGLPI object for which the tab need to be displayed
+    * @param $tab          string tab name
     * @param $withtemplate boolean is a template object ? (default 0)
     *
     * @return true
@@ -293,8 +293,8 @@ class CommonGLPI {
    /**
     * create tab text entry
     *
-    * @param $text string text to display
-    * @param $nb integer number of items (default 0)
+    * @param $text   string   text to display
+    * @param $nb     integer  number of items (default 0)
     *
     *  @return array containing the onglets
    **/

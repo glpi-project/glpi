@@ -955,7 +955,7 @@ class Config extends CommonDBTM {
       }
       echo wordwrap($msg."\n", $width, "\n\t");
 
-      $msg = __('Software: ');
+      $msg = 'Software: ';
       if (isset($_SERVER["SERVER_SOFTWARE"])) {
          $msg .= $_SERVER["SERVER_SOFTWARE"];
       }

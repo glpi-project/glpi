@@ -346,7 +346,7 @@ class Contact extends CommonDBTM{
       } else if ($DB->numrows($result)==1) {
          _e('Associated supplier');
       } else {
-         echo _n('Associated supplier', 'Associated suppliers, 2');
+         echo _n('Associated supplier', 'Associated suppliers', 2);
       }
       echo "</th></tr>";
 

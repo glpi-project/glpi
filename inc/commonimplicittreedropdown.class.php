@@ -109,7 +109,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown {
    /**
     * Used to update tree by redefining other items ForeignKeyField
     *
-    * @param $history
+    * @param $history   (default 1)
     *
     * @return nothing
    **/
