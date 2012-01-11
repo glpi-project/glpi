@@ -222,8 +222,8 @@ class DBmysql {
     *
     * @since version 0.84
     *
-    * @param $query Query to execute
-    * @param $message='' explaination of query
+    * @param $query     Query to execute
+    * @param $messag    explaination of query (default '')
     *
     * @return Query result handler
    **/
@@ -240,9 +240,9 @@ class DBmysql {
    /**
     * Give result from a mysql result
     *
-    * @param $result MySQL result handler
-    * @param $i Row to give
-    * @param $field Field to give
+    * @param $result    MySQL result handler
+    * @param $i         Row to give
+    * @param $field     Field to give
     *
     * @return Value of the Row $i and the Field $field of the Mysql $result
    **/
@@ -318,8 +318,8 @@ class DBmysql {
    /**
     * Move current pointer of a Mysql result to the specific row
     *
-    * @param $result MySQL result handler
-    * @param $num row to move current pointer
+    * @param $result    MySQL result handler
+    * @param $num       row to move current pointer
     *
     * @return boolean
    **/
@@ -353,8 +353,8 @@ class DBmysql {
    /**
     * Give name of a field of a Mysql result
     *
-    * @param $result MySQL result handler
-    * @param $nb number of column of the field
+    * @param $result  MySQL result handler
+    * @param $nb     number of columns of the field
     *
     * @return name of the field
    **/
@@ -366,8 +366,8 @@ class DBmysql {
    /**
     * Get flags of a field of a mysql result
     *
-    * @param $result MySQL result handler
-    * @param $field field name
+    * @param $result    MySQL result handler
+    * @param $field     field name
     *
     * @return flags of the field
    **/
@@ -391,8 +391,8 @@ class DBmysql {
    /**
     * List fields of a table
     *
-    * @param $table     String : table name condition
-    * @param $usecache  Boolean : if use field list cache (default true)
+    * @param $table     String   table name condition
+    * @param $usecache  Boolean  if use field list cache (default true)
     *
     * @return list of fields
    **/
@@ -539,8 +539,9 @@ class DBmysql {
     *  foreach ($DB->request("glpi_states", "", "name") as $ID => $data) { ... }
     *  foreach ($DB->request("glpi_computers",array("name"=>"SBEI003W","entities_id"=>1),array("serial","otherserial")) { ... }
     *
-    * @param $tableorsql table name, array of names or SQL query
-    * @param $crit='' string or array of filed/values, ex array("id"=>1), if empty => all rows
+    * @param $tableorsql                     table name, array of names or SQL query
+    * @param $crit         string or array   of filed/values, ex array("id"=>1), if empty => all rows
+    *                                        (default '')
     *
     * Examples =
     *   array("id"=>NULL)
@@ -562,8 +563,8 @@ class DBmysql {
     /**
      *  Optimize sql table
      *
-     * @param $migration migration class (default NULL)
-     * @param $cron to know if optimize must be done (false by default)
+     * @param $migration   migration class (default NULL)
+     * @param $cron        to know if optimize must be done (false by default)
      *
      * @return number of tables
     **/
@@ -624,9 +625,10 @@ class DBmysqlIterator  implements Iterator {
    /**
     * Constructor
     *
-    * @param $dbconnexion Database Connnexion (must be a CommonDBTM object)
-    * @param $table table name
-    * @param $crit='' string or array of filed/values, ex array("id"=>1), if empty => all rows
+    * @param $dbconnexion                    Database Connnexion (must be a CommonDBTM object)
+    * @param $table                          table name
+    * @param $crit         string or array   of filed/values, ex array("id"=>1), if empty => all rows
+    *                                        (default '')
    **/
    function __construct ($dbconnexion, $table, $crit="") {
 
@@ -715,7 +717,7 @@ class DBmysqlIterator  implements Iterator {
 
    /**
     * @param $crit
-    * @param $bool (default AND
+    * @param $bool (default AND)
    **/
    private function analyseCrit ($crit, $bool="AND") {
 

@@ -58,10 +58,10 @@ class Dropdown {
     *    - condition : string / aditional SQL condition to limit display
     *    - displaywith : array / array of field to display with request
     *
-    * @param $itemtype itemtype used for create dropdown
-    * @param $options array of possible options
+    * @param $itemtype        itemtype used for create dropdown
+    * @param $options   array of possible options
     *
-    * @return boolean : lse if error and random id if OK
+    * @return boolean : false if error and random id if OK
    **/
    static function show($itemtype, $options=array()) {
       global $DB, $CFG_GLPI;
@@ -237,9 +237,9 @@ class Dropdown {
     *
     * Returns the value of the dropdown from $table with ID $id.
     *
-    * @param $table the dropdown table from witch we want values on the select
-    * @param $id id of the element to get
-    * @param $withcomment give array with name and comment (default 0)
+    * @param $table        the dropdown table from witch we want values on the select
+    * @param $id           id of the element to get
+    * @param $withcomment  give array with name and comment (default 0)
     *
     * @return string the value of the dropdown or &nbsp; if not exists
    **/
@@ -341,8 +341,8 @@ class Dropdown {
    /**
     * Get values of a dropdown for a list of item
     *
-    * @param $table the dropdown table from witch we want values on the select
-    * @param $ids array containing the ids to get
+    * @param $table        the dropdown table from witch we want values on the select
+    * @param $ids    array containing the ids to get
     *
     * @return array containing the value of the dropdown or &nbsp; if not exists
    **/
@@ -377,10 +377,10 @@ class Dropdown {
    /**
     * Make a select box for device type
     *
-    * @param $name name of the select box
-    * @param $value='' default device type
-    * @param $types array of types to display
-    * @param $used array Already used items ID: not to display in dropdown
+    * @param $name         name of the select box
+    * @param $value        default device type (default '')
+    * @param $types  array of types to display
+    * @param $used   array Already used items ID: not to display in dropdown
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -405,9 +405,10 @@ class Dropdown {
    /**
     * Make a select box for device type
     *
-    * @param $name name of the select box
-    * @param $itemtype_ref string itemtype reference where to search in itemtype field
-    * @param $options array options : may be value (default value) / field (used field to search itemtype)
+    * @param $name                  name of the select box
+    * @param $itemtype_ref  string   itemtype reference where to search in itemtype field
+    * @param $options       array    options :
+    *        - may be value (default value) / field (used field to search itemtype)
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -440,9 +441,9 @@ class Dropdown {
    /**
     * Make a select box for icons
     *
-    * @param $myname the name of the HTML select
-    * @param $value the preselected value we want
-    * @param $store_path path where icons are stored
+    * @param $myname       the name of the HTML select
+    * @param $value        the preselected value we want
+    * @param $store_path   path where icons are stored
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -489,8 +490,8 @@ class Dropdown {
    /**
     * Dropdown for GMT selection
     *
-    * @param $name select name
-    * @param $value='' default value
+    * @param $name   select name
+    * @param $value  default value (default '')
    **/
    static function showGMT($name, $value='') {
 
@@ -518,10 +519,10 @@ class Dropdown {
    /**
     * Make a select box for a boolean choice (Yes/No)
     *
-    * @param $name select name
-    * @param $value preselected value. (default 0)
-    * @param $restrict_to allows to display only yes or no in the dropdown (default -1)
-    * @param $params Array of optional options (passed to showFromArray)
+    * @param $name               select name
+    * @param $value              preselected value. (default 0)
+    * @param $restrict_to        allows to display only yes or no in the dropdown (default -1)
+    * @param $params       Array of optional options (passed to showFromArray)
     *
     * @return rand value
    **/
@@ -597,47 +598,46 @@ class Dropdown {
       static $optgroup = NULL;
 
       if (is_null($optgroup)) {
-         $optgroup = array(__('Common')
-                           => array('Location'        => _n('Location', 'Locations', 2),
-                                    'State'           => _n('Status of items', 'Status of items', 2),
-                                    'Manufacturer'    => Manufacturer::getTypeName(2)),
+         $optgroup
+            = array(__('Common')
+                        => array('Location'        => _n('Location', 'Locations', 2),
+                                 'State'           => _n('Status of items', 'Status of items', 2),
+                                 'Manufacturer'    => Manufacturer::getTypeName(2)),
 
-                           __('Assistance')
-                           => array('ITILCategory'     =>  _n('Category of ticket',
-                                                              'Categories of tickets',2),
-                                    'TaskCategory'     => _n('Tasks category','Tasks categories', 2),
-                                    'SolutionType'     => _n('Solution type', 'Solution types', 2),
-                                    'RequestType'      => _n('Request source', 'Request sources', 2),
-                                    'SolutionTemplate' => _n('Solution template',
-                                                             'Solution templates', 2)),
+                    __('Assistance')
+                        => array('ITILCategory'     =>  _n('Category of ticket',
+                                                           'Categories of tickets',2),
+                                 'TaskCategory'     => _n('Tasks category','Tasks categories', 2),
+                                 'SolutionType'     => _n('Solution type', 'Solution types', 2),
+                                 'RequestType'      => _n('Request source', 'Request sources', 2),
+                                 'SolutionTemplate' => _n('Solution template',
+                                                          'Solution templates', 2)),
 
-                           _n('Type', 'Types', 2)
-                           => array('ComputerType'         => _n('Computer type',
-                                                                 'Computers types', 2),
-                                    'NetworkEquipmentType' => _n('Networking equipment type',
-                                                                 'Networking equipment types', 2),
-                                    'PrinterType'          => _n('Printer type', 'Printer types', 2),
-                                    'MonitorType'          => _n('Monitor type', 'Monitor types', 2),
-                                    'PeripheralType'       => _n('Devices type', 'Devices types', 2),
-                                    'PhoneType'            => _n('Phone type', 'Phones types', 2),
-                                    'SoftwareLicenseType'  => _n('License type', 'License types', 2),
-                                    'CartridgeItemType'    => _n('Cartridge type',
-                                                                 'Cartridge types', 2),
-                                    'ConsumableItemType'   => _n('Consumable type',
-                                                                 'Consumable types', 2),
-                                    'ContractType'         => _n('Contract type',
-                                                                 'Contract types', 2),
-                                    'ContactType'          => _n('Contact type', 'Contact types', 2),
-                                    'DeviceMemoryType'     => _n('Memory type', 'Memory types', 2),
-                                    'SupplierType'         => _n('Third party type', 'Third party types', 2),
-                                    'InterfaceType'        => _n('Interface type (Hard drive...)',
-                                                                 'Interface types (Hard drive...)', 2) ,
-                                    'DeviceCaseType'       => _n('Case type', 'Case types', 2),
-                                    'PhonePowerSupply'     => _n('Phone power supply type',
-                                                                 'Phones power supply types', 2),
-                                    'Filesystem'           => _n('File system', 'File systems', 2)),
+                    _n('Type', 'Types', 2)
+                        => array('ComputerType'         => _n('Computer type', 'Computers types', 2),
+                                 'NetworkEquipmentType' => _n('Networking equipment type',
+                                                              'Networking equipment types', 2),
+                                 'PrinterType'          => _n('Printer type', 'Printer types', 2),
+                                 'MonitorType'          => _n('Monitor type', 'Monitor types', 2),
+                                 'PeripheralType'       => _n('Devices type', 'Devices types', 2),
+                                 'PhoneType'            => _n('Phone type', 'Phones types', 2),
+                                 'SoftwareLicenseType'  => _n('License type', 'License types', 2),
+                                 'CartridgeItemType'    => _n('Cartridge type', 'Cartridge types', 2),
+                                 'ConsumableItemType'   => _n('Consumable type',
+                                                              'Consumable types', 2),
+                                 'ContractType'         => _n('Contract type', 'Contract types', 2),
+                                 'ContactType'          => _n('Contact type', 'Contact types', 2),
+                                 'DeviceMemoryType'     => _n('Memory type', 'Memory types', 2),
+                                 'SupplierType'         => _n('Third party type',
+                                                              'Third party types', 2),
+                                 'InterfaceType'        => _n('Interface type (Hard drive...)',
+                                                              'Interface types (Hard drive...)', 2) ,
+                                 'DeviceCaseType'       => _n('Case type', 'Case types', 2),
+                                 'PhonePowerSupply'     => _n('Phone power supply type',
+                                                              'Phones power supply types', 2),
+                                 'Filesystem'           => _n('File system', 'File systems', 2)),
 
-                        __('Model')
+                    __('Model')
                         => array('ComputerModel'         => _n('Computer model',
                                                                'Computer models', 2),
                                  'NetworkEquipmentModel' => _n('Networking equipment model',
@@ -649,7 +649,7 @@ class Dropdown {
                                                                'Peripheral models', 2),
                                  'PhoneModel'            =>  _n('Phone model', 'Phone models', 2)),
 
-                        _n('Virtual machine', 'Virtual machines', 2)
+                    _n('Virtual machine', 'Virtual machines', 2)
                         => array('VirtualMachineType'   => _n('Virtualization model',
                                                               'Virtualization models', 2),
                                  'VirtualMachineSystem' => _n('Virtualization system',
@@ -657,19 +657,19 @@ class Dropdown {
                                  'VirtualMachineState'  => _n('State of the virtual machine',
                                                               'States of the virtual machine', 2)),
 
-                        __('Management')
+                    __('Management')
                         => array('DocumentCategory' => _n('Document heading', 'Document headings', 2),
                                  'DocumentType'     => _n('Document Type', 'Document Types', 2)),
 
-                        __('Tools')
+                    __('Tools')
                         => array('KnowbaseItemCategory' => _n('Knowledge base category',
                                                               'Knowledge base categories', 2)),
 
-                        __('Calendar')
+                    __('Calendar')
                         => array('Calendar' => _n('Calendar', 'Calendars', 2),
                                  'Holiday'  => _n('Close time', 'Close times', 2)),
 
-                        _n('Operating system', 'Operating systems',2)
+                    _n('Operating system', 'Operating systems',2)
                         => array('OperatingSystem'     => _n('Operating system',
                                                              'Operating systems', 2),
                                  'OperatingSystemVersion'
@@ -679,7 +679,7 @@ class Dropdown {
                                                       => _n('Service Pack', 'Service Packs', 2),
                                  'AutoUpdateSystem'   => _n('Update Source', 'Update Sources', 2)),
 
-                        __('Networking')
+                    __('Networking')
                         => array('NetworkInterface'         => _n('Network interface',
                                                                   'Network interfaces', 2),
                                  'NetworkEquipmentFirmware' => _n('Firmware', 'Firmwares', 2),
@@ -689,23 +689,23 @@ class Dropdown {
                                  'Network'                  => _n('Network', 'Networks', 2),
                                  'Vlan'                     => __('VLAN')),
 
-                        __('Internet')
+                    __('Internet')
                         => array('IPNetwork'    => _n('IP network', 'IP networks', 2),
                                  'FQDN'         => _n('Internet domain', 'Internet domains', 2),
                                  'WifiNetwork'  => _n('Wifi network', 'Wifi networks', 2)),
 
-                        __('Software')
+                    __('Software')
                         => array('SoftwareCategory' => _n('Software category',
                                                           'Software categories', 2)),
 
-                        __('User')
+                    __('User')
                         => array('UserTitle'     => _n('User title', 'Users titles', 2),
                                  'UserCategory'  => _n('User category', 'User categories', 2)),
 
-                        __('Authorizations assignment rules')
+                    __('Authorizations assignment rules')
                         => array('RuleRightParameter' => _n('LDAP criteria', 'LDAP criterias', 2)),
 
-                        __('Fields unicity')
+                    __('Fields unicity')
                         => array('Fieldblacklist' => _n('Ignored value for the unicity',
                                                         'Ignored values for the unicity', 2))
 
@@ -741,9 +741,9 @@ class Dropdown {
    /**
     * Display a menu to select a itemtype which open the search form
     *
-    * @param $title string title to display
-    * @param $optgroup array (group of dropdown) of array (itemtype => localized name)
-    * @param $value='' string URL of selected current value
+    * @param $title     string   title to display
+    * @param $optgroup  array    (group of dropdown) of array (itemtype => localized name)
+    * @param $value     string   URL of selected current value (default '')
    **/
    static function showItemTypeMenu($title, $optgroup, $value='') {
 
@@ -823,8 +823,8 @@ class Dropdown {
    /**
     * Dropdown available languages
     *
-    * @param $myname select name
-    * @param $options array of additionnal options :
+    * @param $myname          select name
+    * @param $options   array of additionnal options :
     *    - display_none : allow selection of no language
    **/
    static function showLanguages($myname, $options=array()) {
@@ -868,9 +868,9 @@ class Dropdown {
     *
     * Print a select named $name with hours options and selected value $value
     *
-    *@param $name string : HTML select name
-    *@param $value integer : HTML select selected value
-    *@param $limit_planning limit planning to the configuration range (default 0)
+    *@param $name             string   HTML select name
+    *@param $value            integer  HTML select selected value
+    *@param $limit_planning            limit planning to the configuration range (default 0)
     *
     *@return Nothing (display)
     **/
@@ -932,7 +932,7 @@ class Dropdown {
     *
     * @since version 0.83
     *
-    * @param $types=='' Types used (default "state_types")
+    * @param $types           Types used (default "state_types") (default '')
     * @param $options   Array of optional options
     *        name, value, rand, emptylabel, display_emptychoice, on_change
     *
@@ -995,12 +995,12 @@ class Dropdown {
    /**
     * Make a select box for all items
     *
-    * @param $myname select name
-    * @param $value_type default value for the device type (default 0)
-    * @param $value default value (default 0)
+    * @param $myname          select name
+    * @param $value_type      default value for the device type (default 0)
+    * @param $value           default value (default 0)
     * @param $entity_restrict Restrict to a defined entity (default -1)
-    * @param $types='' Types used
-    * @param $onlyglobal Restrict to global items (false by default)
+    * @param $types           Types used (default '')
+    * @param $onlyglobal      Restrict to global items (false by default)
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -1040,13 +1040,13 @@ class Dropdown {
    /**
     * Dropdown integers
     *
-    * @param $myname select name
-    * @param $value default value
-    * @param $min min value (default 0)
-    * @param $max max value (default 100)
-    * @param $step step used (default 1)
-    * @param $toadd array of values to add at the beginning
-    * @param $options array of additionnal options :
+    * @param $myname          select name
+    * @param $value           default value
+    * @param $min             min value (default 0)
+    * @param $max             max value (default 100)
+    * @param $step            step used (default 1)
+    * @param $toadd     array of values to add at the beginning
+    * @param $options   array of additionnal options :
    **/
    static function showInteger($myname, $value, $min=0, $max=100, $step=1, $toadd=array(),
                                $options=array()) {
@@ -1081,7 +1081,7 @@ class Dropdown {
     *
     * @since version 0.83
     *
-    * @param $myname select name
+    * @param $myname        select name
     * @param $options array of options
     *    - value : default value
     *    - min : min value : default 0
@@ -1146,9 +1146,9 @@ class Dropdown {
    /**
     * Private / Public switch for items which may be assign to a user and/or an entity
     *
-    * @param $is_private default is private ?
-    * @param $entity working entity ID
-    * @param $is_recursive is the item recursive ?
+    * @param $is_private      default is private ?
+    * @param $entity          working entity ID
+    * @param $is_recursive    is the item recursive ?
    **/
    static function showPrivatePublicSwitch($is_private, $entity, $is_recursive) {
       global $CFG_GLPI;
@@ -1222,9 +1222,9 @@ class Dropdown {
    /**
     * Dropdown of values in an array
     *
-    * @param $name select name
-    * @param $elements array of elements to display
-    * @param $options array of options
+    * @param $name            select name
+    * @param $elements  array of elements to display
+    * @param $options   array of options
     *
     * Parameters which could be used in options array :
     *    - value : integer / preselected value (default 0)
@@ -1232,7 +1232,7 @@ class Dropdown {
     *    - readonly : boolean / used as a readonly item (default false)
     *    - on_change : string / value to transmit to "onChange"
    **/
-   static function showFromArray($name, $elements, $options=array()) {
+   static function showFromArray($name, array $elements, $options=array()) {
 
       $param['value']    = '';
       $param['used']     = array();
@@ -1280,8 +1280,8 @@ class Dropdown {
    /**
     * Dropdown for global item management
     *
-    * @param $ID item ID
-    * @param attrs an array which contains the extra paramters
+    * @param $ID           item ID
+    * @param attrs   array which contains the extra paramters
     *
     * Parameters can be :
     * - target target for actions
@@ -1345,8 +1345,8 @@ class Dropdown {
    /**
     * Import a dropdown - check if already exists
     *
-    * @param $itemtype string name of the class
-    * @param $input array of value to import
+    * @param $itemtype  string   name of the class
+    * @param $input     array    of value to import
     *
     * @return the ID of the new
    **/
@@ -1364,12 +1364,13 @@ class Dropdown {
     *
     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
     *
-    * @param $itemtype string name of the class
-    * @param $value string : Value of the new dropdown.
-    * @param $entities_id int : entity in case of specific dropdown (default -1)
+    * @param $itemtype        string   name of the class
+    * @param $value           string   Value of the new dropdown.
+    * @param $entities_id     integer  entity in case of specific dropdown (default -1)
     * @param $external_params array
-    * @param $comment=''
-    * @param $add if true, add it if not found. if false, just check if exists (true by default)
+    * @param $comment                  (default '')
+    * @param $add             if true, add it if not found. if false, just check if exists
+    *                         (true by default)
     *
     * @return integer : dropdown id.
    **/
@@ -1386,9 +1387,9 @@ class Dropdown {
    /**
     * Dropdown of actions for massive action
     *
-    * @param $itemtype item type
-    * @param $is_deleted massive action for deleted items ? (default 0)
-    * @param $extraparams array of extra parameters
+    * @param $itemtype           item type
+    * @param $is_deleted         massive action for deleted items ? (default 0)
+    * @param $extraparams  array of extra parameters
    **/
    static function showForMassiveAction($itemtype, $is_deleted=0, $extraparams=array()) {
       global $CFG_GLPI,$PLUGIN_HOOKS;
@@ -1722,7 +1723,7 @@ class Dropdown {
     *
     * @since version 0.83
     *
-    * @param $onchange='' String, optional, for ajax
+    * @param $onchange  String   optional, for ajax (default '')
    **/
    static function showListLimit($onchange='') {
       global $CFG_GLPI;
