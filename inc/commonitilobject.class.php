@@ -80,8 +80,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Retrieve an item from the database with datas associated (hardwares)
     *
-    * @param $ID ID of the item to get
-    * @param $purecontent boolean : true : nothing change / false : convert to HTML display
+    * @param $ID           ID       of the item to get
+    * @param $purecontent  boolean  true : nothing change / false : convert to HTML display
     *
     * @return true if succeed else false
    **/
@@ -116,8 +116,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Is a user linked to the object ?
     *
-    * @param $type type to search (see constants)
-    * @param $users_id integer user ID
+    * @param $type      type     to search (see constants)
+    * @param $users_id  integer  user ID
     *
     * @return boolean
    **/
@@ -172,7 +172,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * count users linked to object by type or global
     *
-    * @param $type type to search (see constants) / 0 for all
+    * @param $type type to search (see constants) / 0 for all (default 0)
     *
     * @return integer
    **/
@@ -226,8 +226,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Is a group linked to the object ?
     *
-    * @param $type type to search (see constants)
-    * @param $groups_id integer group ID
+    * @param $type       type     to search (see constants)
+    * @param $groups_id  integer  group ID
     *
     * @return boolean
    **/
@@ -247,12 +247,12 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Is one of groups linked to the object ?
     *
-    * @param $type type to search (see constants)
-    * @param $groups array of group ID
+    * @param $type    type    to search (see constants)
+    * @param $groups  array   of group ID
     *
     * @return boolean
    **/
-   function haveAGroup($type, $groups) {
+   function haveAGroup($type, array $groups) {
 
       if (is_array($groups) && count($groups) && isset($this->groups[$type])) {
          foreach ($groups as $groups_id) {
@@ -1178,9 +1178,9 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Compute Priority
     *
-    * @param $itemtype itemtype
-    * @param $urgency integer from 1 to 5
-    * @param $impact integer from 1 to 5
+    * @param $itemtype  itemtype
+    * @param $urgency   integer from 1 to 5
+    * @param $impact    integer from 1 to 5
     *
     * @return integer from 1 to 5 (priority)
    **/
@@ -1198,10 +1198,10 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of ITIL object priority
     *
-    * @param $name select name
-    * @param $value default value (default 0)
-    * @param $complete see also at least selection (major included) (false by default)
-    * @param $major display major priority (false by default)
+    * @param $name      select name
+    * @param $value     default value (default 0)
+    * @param $complete  see also at least selection (major included) (false by default)
+    * @param $major     display major priority (false by default)
     *
     * @return string id of the select
    **/
@@ -1274,10 +1274,10 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of ITIL object Urgency
     *
-    * @param $itemtype itemtype
-    * @param $name select name
-    * @param $value default value (default 0)
-    * @param $complete see also at least selection (false by default)
+    * @param $itemtype  itemtype
+    * @param $name      select name
+    * @param $value     default value (default 0)
+    * @param $complete  see also at least selection (false by default)
     *
     * @return string id of the select
    **/
@@ -1363,10 +1363,10 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of ITIL object Impact
     *
-    * @param $itemtype itemtype
-    * @param $name select name
-    * @param $value default value (default 0)
-    * @param $complete see also at least selection (major included) (false by default)
+    * @param $itemtype  itemtype
+    * @param $name      select name
+    * @param $value     default value (default 0)
+    * @param $complete  see also at least selection (major included) (false by default)
     *
     * @return string id of the select
    **/
@@ -1473,6 +1473,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return an array
    **/
    static function getClosedStatus() {
+
       // To be overridden by class
       $tab = array();
       return $tab;
@@ -1487,6 +1488,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return an array
    **/
    static function getSolvedStatus() {
+
       // To be overridden by class
       $tab = array();
       return $tab;
@@ -1501,6 +1503,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return an array
    **/
    static function getProcessStatus() {
+
       // To be overridden by class
       $tab = array();
       return $tab;
@@ -1510,9 +1513,9 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * check is the user can change from / to a status
     *
-    * @param $itemtype itemtype
-    * @param $old string value of old/current status
-    * @param $new string value of target status
+    * @param $itemtype  itemtype
+    * @param $old       string value of old/current status
+    * @param $new       string value of target status
     *
     * @return boolean
    **/
@@ -1535,8 +1538,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get the ITIL object status allowed for a current status
     *
-    * @param $itemtype itemtype
-    * @param $current status
+    * @param $itemtype  itemtype
+    * @param $current   status
     *
     * @return an array
    **/
@@ -1563,10 +1566,10 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of object status
     *
-    * @param $itemtype itemtype
-    * @param $name select name
-    * @param $value default value (default 'new')
-    * @param $option list proposed 0:normal, 1:search, 2:allowed (default 0)
+    * @param $itemtype  itemtype
+    * @param $name      select name
+    * @param $value     default value (default 'new')
+    * @param $option    list proposed 0:normal, 1:search, 2:allowed (default 0)
     *
     * @return nothing (display)
    **/
@@ -1593,8 +1596,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get ITIL object status Name
     *
-    * @param $itemtype itemtype
-    * @param $value status ID
+    * @param $itemtype  itemtype
+    * @param $value     status ID
    **/
    static function getGenericStatus($itemtype, $value) {
 
@@ -1608,8 +1611,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * show tooltip for user notification informations
     *
-    * @param $type integer : user type
-    * @param $canedit boolean : can edit ?
+    * @param $type      integer : user type
+    * @param $canedit   boolean : can edit ?
     *
     * @return nothing display
    **/
@@ -1649,13 +1652,13 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @since version 0.83
     *
-    * @param $field     String name of the field
-    * @param $values    Array with the value to display
-    * @param $options   Array of option
+    * @param $field     String   name of the field
+    * @param $values    Array    with the value to display
+    * @param $options   Array    of option
     *
     * @return a string
    **/
-   static function getSpecificValueToDisplay($field, $values, $options=array()) {
+   static function getSpecificValueToDisplay($field, array $values, $options=array()) {
 
       if (!is_array($values)) {
          $values = array($field => $values);
@@ -1832,8 +1835,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * show Icon for Actor
     *
-    * @param $user_group string : 'user or 'group'
-    * @param $type integer : user/group type
+    * @param $user_group   string   'user or 'group'
+    * @param $type         integer  user/group type
     *
     * @return nothing display
    **/
@@ -1891,8 +1894,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * show tooltip for user notification informations
     *
-    * @param $type integer : user type
-    * @param $canedit boolean : can edit ?
+    * @param $type      integer  user type
+    * @param $canedit   boolean  can edit ?
     *
     * @return nothing display
    **/
@@ -1971,11 +1974,11 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * show actor add div
     *
-    * @param $type string : actor type
-    * @param $rand_type integer rand value of div to use
-    * @param $entities_id integer entity ID
-    * @param $withsupplier boolean : allow adding a supplier (only one possible in ASSIGN case)
-    *                                 (false by default)
+    * @param $type         string   actor type
+    * @param $rand_type    integer  rand value of div to use
+    * @param $entities_id  integer  entity ID
+    * @param $withsupplier boolean  allow adding a supplier (only one possible in ASSIGN case)
+    *                               (false by default)
     * @param $inobject boolean display in ITIL object ? (true by default)
     *
     * @return nothing display
@@ -2031,12 +2034,12 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * show user add div on creation
     *
-    * @param $type integer : actor type
-    * @param $options array options for default values ($options of showForm)
+    * @param $type      integer  actor type
+    * @param $options   array    options for default values ($options of showForm)
     *
     * @return nothing display
    **/
-   function showActorAddFormOnCreate($type, $options) {
+   function showActorAddFormOnCreate($type, array $options) {
       global $CFG_GLPI;
 
       switch ($type) {
@@ -2167,12 +2170,12 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * show actor part in ITIL object form
     *
-    * @param $ID integer ITIL object ID
-    * @param $options array options for default values ($options of showForm)
+    * @param $ID        integer  ITIL object ID
+    * @param $options   array    options for default values ($options of showForm)
     *
     * @return nothing display
    **/
-   function showActorsPartForm($ID, $options) {
+   function showActorsPartForm($ID, array $options) {
       global $CFG_GLPI;
 
       $showuserlink = 0;
@@ -2423,7 +2426,7 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * @param $ID
     * @param $itemtype
-    * @param $link (default 0)
+    * @param $link      (default 0)
    **/
    static function getAssignName($ID, $itemtype, $link=0) {
 
@@ -2453,7 +2456,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Form to add a solution to an ITIL object
     *
-    * @param $knowbase_id_toload integer load a kb article as solution (0 = no load by default)
+    * @param $knowbase_id_toload integer  load a kb article as solution (0 = no load by default)
+    *                                     (default 0)
    **/
    function showSolutionForm($knowbase_id_toload=0) {
       global $CFG_GLPI;
@@ -2551,8 +2555,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Update date mod of the ITIL object
     *
-    * @param $ID ID of the ITIL object
-    * @param $no_stat_computation boolean do not cumpute take into account stat (false by default)
+    * @param $ID                    integer  ID of the ITIL object
+    * @param $no_stat_computation   boolean  do not cumpute take into account stat (false by default)
    **/
    function updateDateMod($ID, $no_stat_computation=false) {
       global $DB;
@@ -2928,7 +2932,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param $date1 date : begin date (default '')
     * @param $date2 date : end date (default '')
-    * @param title : indicates if stat if by title (true) or type (false) (true by default)
+    * @param title       : indicates if stat if by title (true) or type (false) (true by default)
     *
     * @return array contains the distinct recipents which have tickets
    **/

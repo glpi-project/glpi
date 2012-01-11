@@ -73,7 +73,7 @@ abstract class CommonDBChild extends CommonDBTM {
     *
     * @return object of the concerned item or false on error
    **/
-   function getItemFromArray($array) {
+   function getItemFromArray(array $array) {
 
       if (preg_match('/^itemtype/', $this->itemtype)) {
          if (isset($array[$this->itemtype])) {
@@ -100,10 +100,10 @@ abstract class CommonDBChild extends CommonDBTM {
    /**
     * \brief recursively display the items of this
     *
-    * @param $recursiveItems array of the items of the current elements (see recursivelyGetItems())
-    * @param $elementToDisplay what to display : 'Type', 'Name', 'Link'
+    * @param $recursiveItems     array of the items of the current elements (see recursivelyGetItems())
+    * @param $elementToDisplay   what to display : 'Type', 'Name', 'Link'
    **/
-   static function displayRecursiveItems($recursiveItems, $elementToDisplay) {
+   static function displayRecursiveItems(array $recursiveItems, $elementToDisplay) {
 
       if ((!is_array($recursiveItems)) || (count($recursiveItems) == 0)) {
          _e('Item not linked to an object');
@@ -388,8 +388,8 @@ abstract class CommonDBChild extends CommonDBTM {
     * Clean the Relation Table when item of the relation is deleted
     * To be call from the cleanDBonPurge of each Item class
     *
-    * @param $itemtype : type of the item
-    * @param $item_id : id of the item
+    * @param $itemtype  type of the item
+    * @param $item_id   id of the item
    **/
    function cleanDBonItemDelete ($itemtype, $item_id) {
       global $DB;

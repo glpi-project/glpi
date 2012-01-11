@@ -116,6 +116,9 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
 
+   /**
+    * @param $with_comment (default 0)
+   **/
    function getName($with_comment=0) {
 
       $toadd="";

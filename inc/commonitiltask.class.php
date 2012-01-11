@@ -76,7 +76,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * Name of the type
     *
-    * @param $nb : number of item in the type
+    * @param $nb : number of item in the type (default 0)
    **/
    static function getTypeName($nb=0) {
       return _n('Task', 'Tasks', $nb);
@@ -320,7 +320,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
    /**
     * Get the users_id name of the followup
-    * @param $link insert link ?
+    *
+    * @param $link insert link ? (default 0)
     *
     *@return string of the users_id name
    **/
@@ -397,6 +398,8 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * Current dates are valid ? begin before end
     *
+    * @param $input
+    *
     *@return boolean
    **/
    function test_valid_date($input) {
@@ -410,8 +413,8 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * Populate the planning with planned tasks
     *
-    * @param $itemtype itemtype
-    * @param $options options array must contains :
+    * @param $itemtype  itemtype
+    * @param $options   array    of options must contains :
     *    - who ID of the user (0 = undefined)
     *    - who_group ID of the group of users (0 = undefined)
     *    - begin Date
@@ -431,9 +434,13 @@ abstract class CommonITILTask  extends CommonDBTM {
          return $interv;
       }
 
-      $item           = new $itemtype();
+      if (!$item = getItemForItemtype($itemtype)) {
+         return;
+      }
       $parentitemtype = $item->getItilObjectItemType();
-      $parentitem     = new $parentitemtype();
+      if (!$parentitem = getItemForItemtype($parentitemtype)) {
+         return;
+      }
 
       $who       = $options['who'];
       $who_group = $options['who_group'];
@@ -542,37 +549,39 @@ abstract class CommonITILTask  extends CommonDBTM {
    /**
     * Display a Planning Item
     *
-    * @param $itemtype itemtype
-    * @param $val Array of the item to display
+    * @param $itemtype  itemtype
+    * @param $val       Array    of the item to display
     *
     * @return Already planned information
    **/
-   static function genericGetAlreadyPlannedInformation($itemtype, $val) {
+   static function genericGetAlreadyPlannedInformation($itemtype, array $val) {
       global $CFG_GLPI;
 
-      $item = new $itemtype();
-      $out  = $item->getTypeName().' : '.Html::convDateTime($val["begin"]).' -> '.
-              Html::convDateTime($val["end"]).' : ';
-      $out .= "<a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
-                $val[getForeignKeyFieldForItemType($itemtype)]."'>";
-      $out .= Html::resume_text($val["name"],80).'</a>';
+      if ($item = getItemForItemtype($_POST['itemtype'])) {
+         $out  = $item->getTypeName().' : '.Html::convDateTime($val["begin"]).' -> '.
+                 Html::convDateTime($val["end"]).' : ';
+         $out .= "<a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
+                   $val[getForeignKeyFieldForItemType($itemtype)]."'>";
+         $out .= Html::resume_text($val["name"],80).'</a>';
 
-      return $out;
+         return $out;
+      }
    }
 
 
    /**
     * Display a Planning Item
     *
-    * @param $itemtype itemtype
-    * @param $val Array of the item to display
-    * @param $who ID of the user (0 if all)
-    * @param $type position of the item in the time block (in, through, begin or end)
-    * @param $complete complete display (more details)
+    * @param $itemtype  itemtype
+    * @param $val       Array of the item to display
+    * @param $who       ID of the user (0 if all)
+    * @param $type      position of the item in the time block (in, through, begin or end)
+    *                   (default '')
+    * @param $complete  complete display (more details) (default 0)
     *
     * @return Nothing (display function)
    **/
-   static function genericDisplayPlanningItem($itemtype, $val, $who, $type="", $complete=0) {
+   static function genericDisplayPlanningItem($itemtype, array $val, $who, $type="", $complete=0) {
       global $CFG_GLPI;
 
       $rand      = mt_rand();
@@ -586,8 +595,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       $parenttype    = str_replace('Task','',$itemtype);
-      $parent        = new $parenttype();
-      $parenttype_fk = $parent->getForeignKeyField();
+      if ($parent = getItemForItemtype($parenttype)) {
+         $parenttype_fk = $parent->getForeignKeyField();
+      } else {
+         return;
+      }
 
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title=\"".
              $parent->getTypeName()."\">&nbsp;&nbsp;";
@@ -655,7 +667,12 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
 
-   function showInObjectSumnary(CommonITILObject $item, $rand, $showprivate = false) {
+   /**
+    * @param $item         CommonITILObject
+    * @param $rand
+    * @param $showprivate  (false by default)
+   **/
+   function showInObjectSumnary(CommonITILObject $item, $rand, $showprivate=false) {
       global $DB, $CFG_GLPI;
 
       $canedit = $this->can($this->fields['id'],'w');
@@ -728,8 +745,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
    /** form for Task
     *
-    * @param $ID Integer : Id of the task
-    * @param $options array
+    * @param $ID        Integer : Id of the task
+    * @param $options   array
     *     -  parent Object : the object
    **/
    function showForm($ID, $options=array()) {
@@ -871,6 +888,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
    /**
     * Show the current task sumnary
+    *
+    * @param $item   CommonITILObject
    **/
    function showSummary(CommonITILObject $item) {
       global $DB, $CFG_GLPI;
