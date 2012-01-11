@@ -276,8 +276,8 @@ class Document extends CommonDBTM {
    /**
     * Print the document form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
@@ -409,8 +409,8 @@ class Document extends CommonDBTM {
    /**
     * Get download link for a document
     *
-    * @param $params='' additonal parameters to be added to the link
-    * @param $len maximum length of displayed string (default 20)
+    * @param $params    additonal parameters to be added to the link (default '')
+    * @param $len       maximum length of displayed string (default 20)
     *
    **/
    function getDownloadLink($params='', $len=20) {
@@ -459,8 +459,8 @@ class Document extends CommonDBTM {
    /**
     * find a document with a file attached
     *
-    * @param $entity of the document
-    * @param $path of the searched file
+    * @param $entity    of the document
+    * @param $path      of the searched file
     *
     * @return boolean
    **/
@@ -940,8 +940,8 @@ class Document extends CommonDBTM {
     * Move a file to a new location
     * Work even if dest file already exists
     *
-    * @param $srce source file path
-    * @param $dest destination file path
+    * @param $srce   source file path
+    * @param $dest   destination file path
     *
     * @return boolean : success
    **/
@@ -961,12 +961,12 @@ class Document extends CommonDBTM {
    /**
     * Move an uploadd document (files in GLPI_DOC_DIR."/_uploads" dir)
     *
-    * @param $filename filename to move
-    * @param $input array of data used in adding process (need current_filepath)
+    * @param $input     array of datas used in adding process (need current_filepath)
+    * @param $filename        filename to move
     *
     * @return boolean for success / $input array is updated
    **/
-   static function moveUploadedDocument(&$input, $filename) {
+   static function moveUploadedDocument(array &$input, $filename) {
       global $CFG_GLPI;
 
       $fullpath = GLPI_DOC_DIR."/_uploads/".$filename;
@@ -1049,12 +1049,12 @@ class Document extends CommonDBTM {
    /**
     * Upload a new file
     *
-    * @param $input data need for add/update (will be completed)
-    * @param $FILEDESC FILE descriptor
+    * @param $input     array of datas need for add/update (will be completed)
+    * @param $FILEDESC  FILE descriptor
     *
     * @return true on success
    **/
-   static function uploadDocument(&$input, $FILEDESC) {
+   static function uploadDocument(array &$input, $FILEDESC) {
 
       if (!count($FILEDESC) || empty($FILEDESC['name']) || !is_file($FILEDESC['tmp_name'])) {
          switch ($FILEDESC['error']) {
@@ -1123,8 +1123,8 @@ class Document extends CommonDBTM {
    /**
     * Find a valid path for the new file
     *
-    * @param $dir dir to search a free path for the file
-    * @param $sha1sum SHA1 of the file
+    * @param $dir       dir to search a free path for the file
+    * @param $sha1sum   SHA1 of the file
     *
     * @return nothing
    **/
@@ -1236,8 +1236,8 @@ class Document extends CommonDBTM {
    /**
     * Show documents associated to an item
     *
-    * @param $item CommonDBTM object for which associated documents must be displayed
-    * @param $withtemplate
+    * @param $item            CommonDBTM object for which associated documents must be displayed
+    * @param $withtemplate    (default '')
    **/
    static function showAssociated(CommonDBTM $item, $withtemplate='') {
       global $DB, $CFG_GLPI;

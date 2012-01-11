@@ -48,10 +48,10 @@ class DBConnection extends CommonDBTM {
    /**
     * Create slave DB configuration file
     *
-    * @param host the slave DB host(s)
-    * @param user the slave DB user
-    * @param password the slave DB password
-    * @param DBname the name of the slave DB
+    * @param host       the slave DB host(s)
+    * @param user       the slave DB user
+    * @param password   the slave DB password
+    * @param DBname     the name of the slave DB
     *
     * @return boolean for success
    **/
@@ -125,6 +125,11 @@ class DBConnection extends CommonDBTM {
 
    /**
     * Save changes to the slave DB configuration file
+    *
+    * @param $host
+    * @param $user
+    * @param $password
+    * @param $DBname
    **/
    static function saveDBSlaveConf($host, $user, $password, $DBname) {
       self::createSlaveConnectionFile($host, $user, $password, $DBname);
@@ -192,10 +197,10 @@ class DBConnection extends CommonDBTM {
    /**
     *  Establish a connection to a mysql server (main or replicate)
     *
-    * @param $use_slave try to connect to slave server first not to main server
-    * @param $required connection to the specified server is required
-    *                  (if connection failed, do not try to connect to the other server)
-    * @param $display display error message (true by default)
+    * @param $use_slave    try to connect to slave server first not to main server
+    * @param $required     connection to the specified server is required
+    *                      (if connection failed, do not try to connect to the other server)
+    * @param $display      display error message (true by default)
    **/
    static function establishDBConnection($use_slave, $required, $display=true) {
       global $DB;

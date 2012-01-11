@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 /**
  * Return foreign key field name for a table
  *
- * @param $table string: table name
+ * @param $table string table name
  *
  * @return string field name used for a foreign key to the parameter table
 **/
@@ -56,7 +56,7 @@ function getForeignKeyFieldForTable($table) {
 /**
  * Return foreign key field name for an itemtype
  *
- * @param $itemtype string: itemtype
+ * @param $itemtype string itemtype
  *
  * @return string field name used for a foreign key to the parameter itemtype
 **/
@@ -68,7 +68,7 @@ function getForeignKeyFieldForItemType($itemtype) {
 /**
  * Return table name for a given foreign key name
  *
- * @param $fkname string: foreign key name
+ * @param $fkname   string   foreign key name
  *
  * @return string table name corresponding to a foreign key name
 **/
@@ -83,7 +83,7 @@ function getTableNameForForeignKeyField($fkname) {
 /**
  * Return ItemType  for a table
  *
- * @param $table string: table name
+ * @param $table string table name
  *
  * @return string itemtype corresponding to a table name parameter
 **/
@@ -131,7 +131,7 @@ function getItemTypeForTable($table) {
 /**
  * Return ItemType  for a table
  *
- * @param $itemtype string: itemtype
+ * @param $itemtype   string   itemtype
  *
  * @return string table name corresponding to the itemtype  parameter
 **/
@@ -178,7 +178,7 @@ function getTableForItemType($itemtype) {
  *
  * @since version 0.83
  *
- * @param $itemtype string: itemtype
+ * @param $itemtype   string   itemtype
  *
  * @return itemtype object or false if class does not exists
 **/
@@ -194,7 +194,7 @@ function getItemForItemtype($itemtype) {
 /**
  * Return the plural of a string
  *
- * @param $string string: input string
+ * @param $string   string   input string
  *
  * @return string plural of the parameter string
 **/
@@ -226,7 +226,7 @@ function getPlural($string) {
 /**
  * Return the singular of a string
  *
- * @param $string string: input string
+ * @param $string   string   input string
  *
  * @return string singular of the parameter string
 **/
@@ -271,8 +271,8 @@ function isDeviceTable($tablename) {
 /**
  * Count the number of elements in a table.
  *
- * @param $table string/array: table names
- * @param $condition='' string: condition to use
+ * @param $table        string/array   table names
+ * @param $condition    string         condition to use (default '')
  *
  * @return int nb of elements in table
 **/
@@ -299,8 +299,8 @@ function countElementsInTable($table, $condition="") {
 /**
  * Count the number of elements in a table for a specific entity
  *
- * @param $table string: table name
- * @param $condition='' string: additional condition
+ * @param $table        string   table name
+ * @param $condition    string   additional condition (default '')
  *
  * @return int nb of elements in table
 **/
@@ -322,9 +322,9 @@ function countElementsInTableForMyEntities($table, $condition='') {
 /**
  * Count the number of elements in a table for a specific entity
  *
- * @param $table string: table name
- * @param $entity integer: the entity ID
- * @param $condition='' string: additional condition
+ * @param $table        string   table name
+ * @param $entity       integer  the entity ID
+ * @param $condition    string   additional condition (default '')
  *
  * @return int nb of elements in table
 **/
@@ -347,10 +347,10 @@ function countElementsInTableForEntity($table,$entity,$condition='') {
  * Get datas from a table in an array :
  * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
  *
- * @param $table         string: table name
- * @param $condition= '' string: condition to use
- * @param $usecache      boolean (false by default)
- * @param $order=''      string: result order
+ * @param $table        string   table name
+ * @param $condition    string   condition to use (default '')
+ * @param $usecache     boolean  (false by default)
+ * @param $order        string   result order (default '')
  *
  * @return array containing all the datas
 **/
@@ -389,9 +389,9 @@ function getAllDatasFromTable($table, $condition='', $usecache=false, $order='')
 /**
  * Get the Name of the element of a Dropdown Tree table
  *
- * @param $table string: Dropdown Tree table
- * @param $ID integer: ID of the element
- * @param $withcomment boolean: 1 if you want to give the array with the comments (false by default)
+ * @param $table        string   Dropdown Tree table
+ * @param $ID           integer  ID of the element
+ * @param $withcomment  boolean  1 if you want to give the array with the comments (false by default)
  *
  * @return string : name of the element
  *
@@ -430,9 +430,9 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
 /**
  * Get completename of a Dropdown Tree table
  *
- * @param $table string: Dropdown Tree table
- * @param $ID integer: ID of the element
- * @param $withcomment boolean: 1 if you want to give the array with the comments (false by default)
+ * @param $table        string   Dropdown Tree table
+ * @param $ID           integer  ID of the element
+ * @param $withcomment  boolean  1 if you want to give the array with the comments (false by default)
  *
  * @return string : completename of the element
  *
@@ -478,10 +478,10 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false) {
  * show name category
  * DO NOT DELETE THIS FUNCTION : USED IN THE UPDATE
  *
- * @param $table string: table name
- * @param $ID integer: value ID
- * @param $wholename='' string : current name to complete (use for recursivity)
- * @param $level='' integer: current level of recursion
+ * @param $table        string   table name
+ * @param $ID           integer  value ID
+ * @param $wholename    string   current name to complete (use for recursivity) (default '')
+ * @param $level        integer  current level of recursion (default 0)
  *
  * @return string name
 **/
@@ -518,8 +518,8 @@ function getTreeValueName($table, $ID, $wholename="", $level=0) {
 /**
  * Get the ancestors of an item in a tree dropdown
  *
- * @param $table string: table name
- * @param $items_id integer: The ID of the item
+ * @param $table     string   table name
+ * @param $items_id  integer  The ID of the item
  *
  * @return array of IDs of the ancestors
 **/
@@ -595,8 +595,8 @@ function getAncestorsOf($table, $items_id) {
 /**
  * Get the sons of an item in a tree dropdown. Get datas in cache if available
  *
- * @param $table string: table name
- * @param $IDf integer: The ID of the father
+ * @param $table  string   table name
+ * @param $IDf    integer  The ID of the father
  *
  * @return array of IDs of the sons
 **/
@@ -676,8 +676,8 @@ function getSonsOf($table, $IDf) {
  *
  * @since version 0.84
  *
- * @param $table string: table name
- * @param $IDf integer: The ID of the father
+ * @param $table  string   table name
+ * @param $IDf    integer  The ID of the father
  *
  * @return array of IDs of the sons and the ancestors
 **/
@@ -689,8 +689,8 @@ function getSonsAndAncestorsOf($table, $IDf) {
 /**
  * Get the sons of an item in a tree dropdown
  *
- * @param $table string: table name
- * @param $IDf integer: The ID of the father
+ * @param $table  string   table name
+ * @param $IDf    integer  The ID of the father
  *
  * @return array of IDs of the sons
 **/
@@ -751,8 +751,8 @@ function getTreeForItem($table, $IDf) {
 /**
  * Construct a tree from a list structure
  *
- * @param $list array: the list
- * @param $root integer: root of the tree
+ * @param $list   array    the list
+ * @param $root   integer  root of the tree
  *
  * @return list of items in the tree
 **/
@@ -773,8 +773,8 @@ function contructTreeFromList($list, $root) {
 /**
  * Construct a list from a tree structure
  *
- * @param $tree array: the tree
- * @param $parent integer: root of the tree (default =0)
+ * @param $tree   array    the tree
+ * @param $parent integer  root of the tree (default =0)
  *
  * @return list of items in the tree
 **/
@@ -803,9 +803,9 @@ function contructListFromTree($tree, $parent=0) {
 /**
  * Get the equivalent search query using ID of soons that the search of the father's ID argument
  *
- * @param $table string: table name
- * @param $IDf integer: The ID of the father
- * @param $reallink string: real field to link ($table.id if not set) (default ='')
+ * @param $table     string   table name
+ * @param $IDf       integer  The ID of the father
+ * @param $reallink  string   real field to link ($table.id if not set) (default ='')
  *
  * @return string the query
 **/
@@ -871,10 +871,10 @@ function regenerateTreeCompleteName($table) {
 /**
  * Get the ID of the next Item
  *
- * @param $table table to search next item
- * @param $ID current ID
- * @param $condition condition to add to the search (default ='')
- * @param $nextprev_item field used to sort (default ='name')
+ * @param $table           table to search next item
+ * @param $ID              current ID
+ * @param $condition       condition to add to the search (default ='')
+ * @param $nextprev_item   field used to sort (default ='name')
  *
  * @return the next ID, -1 if not exist
 **/
@@ -959,10 +959,10 @@ function getNextItem($table, $ID, $condition="", $nextprev_item="name") {
 /**
  * Get the ID of the previous Item
  *
- * @param $table table to search next item
- * @param $ID current ID
- * @param $condition condition to add to the search (default ='')
- * @param $nextprev_item field used to sort (default ='name')
+ * @param $table           table to search next item
+ * @param $ID              current ID
+ * @param $condition       condition to add to the search (default ='')
+ * @param $nextprev_item   field used to sort (default ='name')
  *
  * @return the previous ID, -1 if not exist
 **/
@@ -1046,13 +1046,13 @@ function getPreviousItem($table, $ID, $condition="", $nextprev_item="name") {
 /**
  * Format a user name
  *
- *@param $ID int : ID of the user.
- *@param $login string : login of the user
- *@param $realname string : realname of the user
- *@param $firstname string : firstname of the user
- *@param $link int : include link (only if $link==1) (default =0)
- *@param $cut int : limit string length (0 = no limit) (default =0)
- *@param $force_config boolean : force order and id_visible to use common config (false by default)
+ *@param $ID            integer  ID of the user.
+ *@param $login         string   login of the user
+ *@param $realname      string   realname of the user
+ *@param $firstname     string   firstname of the user
+ *@param $link          integer  include link (only if $link==1) (default =0)
+ *@param $cut           integer  limit string length (0 = no limit) (default =0)
+ *@param $force_config   boolean force order and id_visible to use common config (false by default)
  *
  *@return string : formatted username
 **/
@@ -1111,8 +1111,9 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
 /**
  * Get name of the user with ID=$ID (optional with link to user.form.php)
  *
- *@param $ID int : ID of the user.
- *@param $link int : 1 = Show link to user.form.php 2 = return array with comments and link (default =0)
+ *@param $ID   integer  ID of the user.
+ *@param $link integer  1 = Show link to user.form.php 2 = return array with comments and link
+ *                      (default =0)
  *
  *@return string : username string (realname if not empty and name if realname is empty).
 **/
@@ -1220,9 +1221,9 @@ function TableExists($tablename) {
 /**
  * Verify if a DB field exists
  *
- * @param $table     String : Name of the table we want to verify.
- * @param $field     String : Name of the field we want to verify.
- * @param $usecache  Boolean : if use field list cache (default true)
+ * @param $table     String   Name of the table we want to verify.
+ * @param $field     String   Name of the field we want to verify.
+ * @param $usecache  Boolean  if use field list cache (default true)
  *
  *@return bool : true if exists, false elseway.
 **/
@@ -1242,8 +1243,8 @@ function FieldExists($table, $field, $usecache=true) {
 /**
  * Determine if an index exists in database
  *
- * @param $table string : table of the index
- * @param $field string : name of the index
+ * @param $table  string  table of the index
+ * @param $field  string  name of the index
  *
  * @return boolean : index exists ?
 **/
@@ -1266,11 +1267,11 @@ function isIndex($table, $field) {
 /**
  * Create a new name using a autoname field defined in a template
  *
- * @param $objectName autoname template
- * @param $field field to autoname
- * @param $isTemplate true if create an object from a template
- * @param $itemtype item type
- * @param $entities_id limit generation to an entity (default -1)
+ * @param $objectName      autoname template
+ * @param $field           field to autoname
+ * @param $isTemplate      true if create an object from a template
+ * @param $itemtype        item type
+ * @param $entities_id     limit generation to an entity (default -1)
  *
  * @return new auto string
 **/
@@ -1408,9 +1409,9 @@ function formatOutputWebLink($link) {
 /**
  * Add dates for request
  *
- * @param $field : table.field to request
- * @param $begin date : begin date
- * @param $end date : end date
+ * @param $field        table.field to request
+ * @param $begin  date  begin date
+ * @param $end    date  end date
  *
  * @return sql
 **/
@@ -1508,14 +1509,15 @@ function getDbRelations() {
 /**
  * Get SQL request to restrict to current entities of the user
  *
- * @param $separator : separator in the begin of the request (default AND
- * @param $table=""  : table where apply the limit (if needed, multiple tables queries)
- * @param $field="" : field where apply the limit (id != entities_id)
- * @param $value='' : entity to restrict (if not set use $_SESSION['glpiactiveentities']).
- *                 single item or array
- * @param $is_recursive : need to use recursive process to find item (field need to be named recursive)
- *                        (false by default)
- * @param $complete_request : need to use a complete request and not a simple one
+ * @param $separator          separator in the begin of the request (default AND)
+ * @param $table              table where apply the limit (if needed, multiple tables queries)
+ *                            (default '')
+ * @param $field              field where apply the limit (id != entities_id) (default '')
+ * @param $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
+ *                            single item or array (default '')
+ * @param $is_recursive       need to use recursive process to find item
+ *                            (field need to be named recursive) (false by default)
+ * @param $complete_request   need to use a complete request and not a simple one
  *                            when have acces to all entities (used for reminders)
  *                            (false by default)
  *

@@ -62,8 +62,8 @@ class DisplayPreference extends CommonDBTM {
    /**
     * Get display preference for an user for an itemtype
     *
-    * @param $itemtype itemtype
-    * @param $user_id user ID
+    * @param $itemtype  itemtype
+    * @param $user_id   user ID
    **/
    static function getForTypeUser($itemtype, $user_id) {
       global $DB;
@@ -99,9 +99,9 @@ class DisplayPreference extends CommonDBTM {
    /**
     * Active personal config based on global one
     *
-    * @param $input parameter array (itemtype,users_id)
+    * @param $input  array parameter (itemtype,users_id)
    **/
-   function activatePerso($input) {
+   function activatePerso(array $input) {
       global $DB;
 
       if (!Session::haveRight("search_config", "w")) {
@@ -147,10 +147,10 @@ class DisplayPreference extends CommonDBTM {
    /**
     * Order to move an item
     *
-    * @param $input parameter array (id,itemtype,users_id)
-    * @param $action up or down
+    * @param $input  array parameter (id,itemtype,users_id)
+    * @param $action       up or down
    **/
-   function orderItem($input, $action) {
+   function orderItem(array $input, $action) {
       global $DB;
 
       // Get current item
@@ -201,8 +201,8 @@ class DisplayPreference extends CommonDBTM {
    /**
     * Print the search config form
     *
-    * @param $target form target
-    * @param $itemtype item type
+    * @param $target    form target
+    * @param $itemtype  item type
     *
     * @return nothing
    **/
@@ -357,8 +357,8 @@ class DisplayPreference extends CommonDBTM {
    /**
     * Print the search config form
     *
-    * @param $target form target
-    * @param $itemtype item type
+    * @param $target    form target
+    * @param $itemtype  item type
     *
     * @return nothing
    **/
