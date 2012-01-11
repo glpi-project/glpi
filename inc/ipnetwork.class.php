@@ -452,7 +452,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
             }
          }
 
-         $netmaskPa = new self($condition["netmask"], $version);
+         $netmaskPa = new IPNetmask($condition["netmask"], $version);
 
          // Get the array of the adresses
          $addressPa = $addressPa->getBinary();
@@ -832,7 +832,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    **/
    static function recreateLinksWithNetworkName() {
       global $DB;
-
 
       // Foreach IPNetwork ...
       $query = "SELECT `id`
