@@ -191,7 +191,7 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('General setup') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . __('Text in the  login box') . "</td>";
+      echo "<td> " . __('Text in the login box') . "</td>";
       echo "<td colspan='3'>";
       echo "<textarea cols='70' rows='4' name='text_login'>".$CFG_GLPI["text_login"]."</textarea>";
       echo "</td></tr>";
@@ -215,7 +215,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Default characters limit (summary text boxes)') . "</td><td>";
       Dropdown::showInteger('cut', $CFG_GLPI["cut"], 50, 500, 50);
-      echo "</td><td>" . __('Default url lenght limit') . "</td><td>";
+      echo "</td><td>" . __('Default url length limit') . "</td><td>";
       Dropdown::showInteger('url_maxlength', $CFG_GLPI["url_maxlength"], 20, 80, 5);
       echo "</td>";
       echo "</tr>";
@@ -549,8 +549,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Default file size limit imported by the mail receiver ').
-           "</td><td>";
+      echo "<td>".__('Default file size limit imported by the mail receiver')."</td><td>";
       MailCollector::showMaxFilesize('default_mailcollector_filesize_max',
                                      $CFG_GLPI["default_mailcollector_filesize_max"]);
       echo "</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
