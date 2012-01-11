@@ -774,7 +774,7 @@ function contructTreeFromList($list, $root) {
  * Construct a list from a tree structure
  *
  * @param $tree array: the tree
- * @param $parent=0 integer: root of the tree
+ * @param $parent integer: root of the tree (default =0)
  *
  * @return list of items in the tree
 **/
@@ -805,7 +805,7 @@ function contructListFromTree($tree, $parent=0) {
  *
  * @param $table string: table name
  * @param $IDf integer: The ID of the father
- * @param $reallink="" string: real field to link ($table.id if not set)
+ * @param $reallink string: real field to link ($table.id if not set) (default ='')
  *
  * @return string the query
 **/
@@ -873,8 +873,8 @@ function regenerateTreeCompleteName($table) {
  *
  * @param $table table to search next item
  * @param $ID current ID
- * @param $condition="" condition to add to the search
- * @param $nextprev_item="name" field used to sort
+ * @param $condition condition to add to the search (default ='')
+ * @param $nextprev_item field used to sort (default ='name')
  *
  * @return the next ID, -1 if not exist
 **/
@@ -961,8 +961,8 @@ function getNextItem($table, $ID, $condition="", $nextprev_item="name") {
  *
  * @param $table table to search next item
  * @param $ID current ID
- * @param $condition="" condition to add to the search
- * @param $nextprev_item="name" field used to sort
+ * @param $condition condition to add to the search (default ='')
+ * @param $nextprev_item field used to sort (default ='name')
  *
  * @return the previous ID, -1 if not exist
 **/
@@ -1050,8 +1050,8 @@ function getPreviousItem($table, $ID, $condition="", $nextprev_item="name") {
  *@param $login string : login of the user
  *@param $realname string : realname of the user
  *@param $firstname string : firstname of the user
- *@param $link=0 int : include link (only if $link==1)
- *@param $cut=0 int : limit string length (0 = no limit)
+ *@param $link int : include link (only if $link==1) (default =0)
+ *@param $cut int : limit string length (0 = no limit) (default =0)
  *@param $force_config boolean : force order and id_visible to use common config (false by default)
  *
  *@return string : formatted username
@@ -1112,7 +1112,7 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
  * Get name of the user with ID=$ID (optional with link to user.form.php)
  *
  *@param $ID int : ID of the user.
- *@param $link=0 int : 1 = Show link to user.form.php 2 = return array with comments and link
+ *@param $link int : 1 = Show link to user.form.php 2 = return array with comments and link (default =0)
  *
  *@return string : username string (realname if not empty and name if realname is empty).
 **/
