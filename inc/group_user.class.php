@@ -252,7 +252,7 @@ class Group_User extends CommonDBRelation{
     * @param $group     Object
     * @param $members   Array filled on output of member (filtered)
     * @param $ids       Array of ids (not filtered)
-    * @param $tree      String filter (is_manager, is_userdelegate)
+    * @param $crit      String filter (is_manager, is_userdelegate)
     * @param $tree      Boolean true to include member of sub-group
     *
     * @return String tab of entity for restriction

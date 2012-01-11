@@ -74,11 +74,11 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields['users_id'] == Session::getLoginUserID()) {
          return true;
       }
-
+      /// TODO add check on entities_id is_recursive for public_faq
       if ($this->fields["is_faq"]) {
          return (((Session::haveRight('knowbase', 'r') || Session::haveRight('faq', 'r'))
                   && $this->haveVisibilityAccess())
-                 || (Session::getLoginUserID() === false && $this->isPubliclyVisible()));
+                 || (Session::getLoginUserID() === false && $CFG_GLPI["use_public_faq"]));
       }
       return (Session::haveRight("knowbase", "r") && $this->haveVisibilityAccess());
    }
@@ -185,30 +185,6 @@ class KnowbaseItem extends CommonDBTM {
               + count($this->users)
               + count($this->groups)
               + count($this->profiles));
-   }
-
-
-   /**
-    * Check is this item if visible to everybody (anonymous users)
-    *
-    * @since version 0.83
-    *
-    * @return Boolean
-    */
-   function isPubliclyVisible() {
-      global $CFG_GLPI;
-
-      if (!$CFG_GLPI["use_public_faq"]) {
-         return false;
-      }
-      if (isset($this->entities[0])) { // Browse root entity rights
-         foreach ($this->entities[0] as $entity) {
-            if ($entity['is_recursive']) {
-               return true;
-            }
-         }
-      }
-      return false;
    }
 
 
@@ -649,23 +625,6 @@ class KnowbaseItem extends CommonDBTM {
 
 
    /**
-    * Increase the view counter of the current knowbaseitem
-    *
-    * @since version 0.83
-    */
-   function updateCounter() {
-      global $DB;
-
-      //update counter view
-      $query = "UPDATE `glpi_knowbaseitems`
-                SET `view` = `view`+1
-                WHERE `id` = '".$this->getID()."'";
-
-      $DB->query($query);
-   }
-
-
-   /**
     * Print out (html) show item : question and answer
     *
     * @param $linkusers_id display users_id link
@@ -687,7 +646,11 @@ class KnowbaseItem extends CommonDBTM {
 
       $inpopup = strpos($_SERVER['PHP_SELF'],"popup.php");
 
-      $this->updateCounter();
+      //update counter view
+      $query = "UPDATE `glpi_knowbaseitems`
+                SET `view`=view+1
+                WHERE `id` = '".$this->fields['id']."'";
+      $DB->query($query);
 
       $knowbaseitemcategories_id = $this->fields["knowbaseitemcategories_id"];
       $fullcategoryname = getTreeValueCompleteName("glpi_knowbaseitemcategories",
@@ -826,8 +789,6 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Build request for showList
     *
-    * @since version 0.83
-    *
     * @param $params Array (contains, knowbaseitemcategories_id, faq)
     *
     * @return String : SQL request
@@ -916,7 +877,7 @@ class KnowbaseItem extends CommonDBTM {
    }
 
    /**
-    * Print out list kb item
+    *Print out list kb item
     *
     * @param $options : $_GET
     * @param $faq display on faq ?
