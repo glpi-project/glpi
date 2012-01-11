@@ -117,54 +117,6 @@ class RuleCriteria extends CommonDBChild {
    }
 
 
-   /**
-    * Return a value associated with a pattern associated to a criteria to compare it
-    *
-    * @param $condition condition used
-    * @param $initValue the pattern
-   **/
-/// TODO Delete : no more used
-//    function getValueToMatch($condition, &$initValue) {
-//
-//       $type = $this->getType();
-//
-//       if (!empty($type)
-//           && (!in_array($condition, array(Rule::PATTERN_IS,
-//                                           Rule::PATTERN_IS_NOT,
-//                                           Rule::PATTERN_UNDER,)))) {
-//          switch ($this->getType()) {
-//             case "dropdown" :
-//                return Dropdown::getDropdownName($this->getTable(), $initValue);
-//
-//             case "dropdown_users" :
-//                return getUserName($initValue);
-//
-//             case "dropdown_tracking_itemtype" :
-//                if ($item = getItemForItemtype($initValue)) {
-//                   return $item->getTypeName();
-//                } else {
-//                   if (empty($initValue)) {
-//                      return __('General');
-//                   }
-//                }
-//                break;
-//
-//             case "dropdown_urgency" :
-//                return Ticket::getUrgencyName($initValue);
-//
-//             case "dropdown_impact" :
-//                return Ticket::getImpactName($initValue);
-//
-//             case "dropdown_priority" :
-//                return Ticket::getPriorityName($initValue);
-//
-//             case "dropdown_tickettype" :
-//                return Ticket::getTicketTypeName($initValue);
-//          }
-//       }
-//       return $initValue;
-//    }
-
 
    /**
     * Try to match a definied rule

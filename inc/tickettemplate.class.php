@@ -73,13 +73,13 @@ class TicketTemplate extends CommonDropdown {
     *
     * @return true if succeed else false
    **/
-   function getFromDBWithDatas($ID, $withtypandcategory=true) {
+   function getFromDBWithDatas($ID, $withtypeandcategory=true) {
       global $DB;
 
       if ($this->getFromDB($ID)) {
          $ticket       = new Ticket();
          $tth          = new TicketTemplateHiddenField();
-         $this->hidden = $tth->getHiddenFields($ID, $withtypandcategory);
+         $this->hidden = $tth->getHiddenFields($ID, $withtypeandcategory);
 
          // Force items_id if itemtype is defined
          if (isset($this->hidden['itemtype']) && !isset($this->hidden['items_id'])) {
@@ -97,7 +97,7 @@ class TicketTemplate extends CommonDropdown {
          }
 
          $ttp              = new TicketTemplatePredefinedField();
-         $this->predefined = $ttp->getPredefinedFields($ID, $withtypandcategory);
+         $this->predefined = $ttp->getPredefinedFields($ID, $withtypeandcategory);
          // Compute due_date
          if (isset($this->predefined['due_date'])) {
             $this->predefined['due_date']
@@ -124,15 +124,15 @@ class TicketTemplate extends CommonDropdown {
    }
 
 
-   static function getAllowedFields($withtypandcategory=0, $with_items_id=1) {
+   static function getAllowedFields($withtypeandcategory=0, $with_items_id=1) {
 
       static $allowed_fields = array();
 
       // For integer value for index
-      if ($withtypandcategory) {
-         $withtypandcategory = 1;
+      if ($withtypeandcategory) {
+         $withtypeandcategory = 1;
       } else {
-         $withtypandcategory = 0;
+         $withtypeandcategory = 0;
       }
 
       if ($with_items_id) {
@@ -141,11 +141,11 @@ class TicketTemplate extends CommonDropdown {
          $with_items_id = 0;
       }
 
-      if (!isset($allowed_fields[$withtypandcategory][$with_items_id])) {
+      if (!isset($allowed_fields[$withtypeandcategory][$with_items_id])) {
          $ticket = new Ticket();
 
          // SearchOption ID => name used for options
-         $allowed_fields[$withtypandcategory][$with_items_id]
+         $allowed_fields[$withtypeandcategory][$with_items_id]
              = array($ticket->getSearchOptionIDByField('field', 'name',
                                                        'glpi_tickets')        => 'name',
                      $ticket->getSearchOptionIDByField('field', 'content',
@@ -178,33 +178,33 @@ class TicketTemplate extends CommonDropdown {
                                                        'glpi_suppliers') => 'suppliers_id_assign',
             );
 
-         if ($withtypandcategory) {
-            $allowed_fields[$withtypandcategory][$with_items_id][$ticket->getSearchOptionIDByField('field',
+         if ($withtypeandcategory) {
+            $allowed_fields[$withtypeandcategory][$with_items_id][$ticket->getSearchOptionIDByField('field',
                                                       'completename',
                                                       'glpi_itilcategories')] = 'itilcategories_id';
-            $allowed_fields[$withtypandcategory][$with_items_id][$ticket->getSearchOptionIDByField('field',
+            $allowed_fields[$withtypeandcategory][$with_items_id][$ticket->getSearchOptionIDByField('field',
                                                                         'type',
                                                                         'glpi_tickets')] = 'type';
          }
 
          if ($with_items_id) {
-            $allowed_fields[$withtypandcategory][$with_items_id][$ticket->getSearchOptionIDByField('field',
+            $allowed_fields[$withtypeandcategory][$with_items_id][$ticket->getSearchOptionIDByField('field',
                                                                      'items_id',
                                                                      'glpi_tickets')] = 'items_id';
          }
       }
 
-      return $allowed_fields[$withtypandcategory][$with_items_id];
+      return $allowed_fields[$withtypeandcategory][$with_items_id];
 
      /// TODO ADD : validation_request : _add_validation : change num storage in DB / add hidden searchOption ?
      /// TODO ADD : linked tickets ? : array passed. How to manage it ? store array in DB + add hidden searchOption ?
    }
 
 
-   function getAllowedFieldsNames($withtypandcategory=0, $with_items_id=1) {
+   function getAllowedFieldsNames($withtypeandcategory=0, $with_items_id=1) {
 
       $searchOption = Search::getOptions('Ticket');
-      $tab          = $this->getAllowedFields($withtypandcategory, $with_items_id);
+      $tab          = $this->getAllowedFields($withtypeandcategory, $with_items_id);
       foreach ($tab as $ID => $shortname) {
          if (isset($searchOption[$ID]['name'])) {
             $tab[$ID] = $searchOption[$ID]['name'];
