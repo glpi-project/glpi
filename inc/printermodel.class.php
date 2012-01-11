@@ -42,7 +42,7 @@ class PrinterModel extends CommonDropdown {
    var $additional_fields_for_dictionnary = array('manufacturer');
 
    static function getTypeName($nb=0) {
-      return _n('Printers model', 'Printers models', $nb);
+      return _n('Printer model', 'Printer models', $nb);
    }
 
 
@@ -61,8 +61,7 @@ class PrinterModel extends CommonDropdown {
 
       if (!$withtemplate && Session::haveRight("printer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(_n('Printers model', 'Printers models', 2),
-                                        self::countForCartridge($item));
+            return self::createTabEntry(self::getTypeName(2), self::countForCartridge($item));
          }
          return _n('Printers model', 'Printers models', 2);
       }
