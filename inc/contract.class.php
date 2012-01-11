@@ -1331,7 +1331,7 @@ class Contract extends CommonDBTM {
     * Print a select named $name with contract renewal options and selected value $value
     *
     * @param $name string : HTML select name
-    * @param $value=0 integer : HTML select selected value
+    * @param $value integer : HTML select selected value (default = 0)
     *
     * @return Nothing (display)
    **/

@@ -37,23 +37,24 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class IPAddress : Represents an IPv4 or an IPv6 address. Both textual (ie. human readable)
-/// and binary (ie. : used for SQL requests) are present inside the DB.
-/// The class itself contains three protected attributes. If the address is valid, then, these
-/// attributes are not empty.
-/// This object is usefull for SQL research and binary<=>textual conversions. There is no update
-/// mecanism. Entries in the database are create "on the fly" when creating or updating addresses
-/// To add an address to an item, the form must include the showInputField() method that display
-/// the HTML TEXTAREA field with previous addresses. When validating the addresses, the item must
-/// call, before updating or adding the item the checkInputFromItem() method. This method will
-/// validate all the IP addresses and sorting them as invalid, new or already defined. After having
-/// updating or adding the item (ie. : when the item exists and the IPAddress can be attached to
-/// it), the item must call updateDatabase() with the array of addresses. This method add new
-/// addresses, remove unused addresses and return an array of the addresses attached to the item,
-/// for the item to update its own IP Address cache field
-/// @since version 0.84
-/// \warning textual (ie. human readable) representation is not unique for IPv6 addresses :
-/// 2001:db8:0:85a3::ac1f:8001 = 2001:db8:0:85a3:0:0:ac1f:8001
+/** Class IPAddress : Represents an IPv4 or an IPv6 address. Both textual (ie. human readable)
+* and binary (ie. : used for SQL requests) are present inside the DB.
+* The class itself contains three protected attributes. If the address is valid, then, these
+* attributes are not empty.
+* This object is usefull for SQL research and binary<=>textual conversions. There is no update
+* mecanism. Entries in the database are create "on the fly" when creating or updating addresses
+* To add an address to an item, the form must include the showInputField() method that display
+* the HTML TEXTAREA field with previous addresses. When validating the addresses, the item must
+* call, before updating or adding the item the checkInputFromItem() method. This method will
+* validate all the IP addresses and sorting them as invalid, new or already defined. After having
+* updating or adding the item (ie. : when the item exists and the IPAddress can be attached to
+* it), the item must call updateDatabase() with the array of addresses. This method add new
+* addresses, remove unused addresses and return an array of the addresses attached to the item,
+* for the item to update its own IP Address cache field
+* @since version 0.84
+* \warning textual (ie. human readable) representation is not unique for IPv6 addresses :
+* 2001:db8:0:85a3::ac1f:8001 = 2001:db8:0:85a3:0:0:ac1f:8001
+**/
 class IPAddress extends CommonDBChild {
 
    // From CommonDBChild

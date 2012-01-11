@@ -387,7 +387,7 @@ class Calendar extends CommonDropdown {
    /**
     * Update the calendar cache
     *
-    * @param $calendrads_id
+    * @param $calendars_id integer calendar ID
    **/
    function updateDurationCache($calendars_id) {
 

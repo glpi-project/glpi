@@ -155,7 +155,7 @@ class Calendar_Holiday extends CommonDBRelation {
     * Duplicate all holidays from a calendar to his clone
     *
     * @param $oldid
-    * ]param $newid
+    * @param $newid
    **/
    function cloneCalendar($oldid, $newid) {
       global $DB;
