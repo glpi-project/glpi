@@ -36,10 +36,6 @@
 /**
  * Update from 0.80.1 to 0.80.3
  *
- * @param $output string for format
- *       HTML (default) for standard upgrade
- *       empty = no ouput for PHPUnit
- *
  * @return bool for success (will die for most error)
 **/
 function update0801to0803() {

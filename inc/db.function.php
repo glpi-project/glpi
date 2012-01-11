@@ -1382,36 +1382,6 @@ function formatOutputWebLink($link) {
    return $link;
 }
 
-
-/**
- * NOT USED
-* Clean fields if needed
-*
-* @param $table table name name
-* @param $fields fields to set NULL : may be a string or an array (sons_cache, ancestors_cache, ...)
-**/
-/*
-function CleanFields($table,$fields) {
-   global $DB;
-
-   if (!is_array($fields)) {
-      $fields = array($fields);
-   }
-
-   $query = '';
-   foreach ($fields as $field) {
-      if (FieldExists($table,$field)) {
-         $query .= (empty($query)?"UPDATE `$table` SET" : ",")." `$field` = NULL ";
-
-      }
-   }
-
-   if (!empty($query)) {
-      $DB->query($query);
-   }
-}
-*/
-
 /**
  * Add dates for request
  *

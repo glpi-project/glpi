@@ -192,6 +192,7 @@ function addDocuments($type, $ID) {
  * @param $type item type
  * @param $ID item ID
  * @param $ID_entity entity ID
+ * @param $is_recursive recursive item ?
 **/
 function addInfocoms($type, $ID, $ID_entity, $is_recursive=0) {
    global $DB, $FIRST, $LAST;
