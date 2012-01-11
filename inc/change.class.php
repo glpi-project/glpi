@@ -55,7 +55,7 @@ class Change extends CommonITILObject {
    /**
     * Name of the type
     *
-    * @param $nb : number of item in the type
+    * @param $nb : number of item in the type (default 0)
    **/
    static function getTypeName($nb=0) {
       return _n('Change','Changes',$nb);
@@ -667,9 +667,9 @@ class Change extends CommonITILObject {
    /**
     * Dropdown of change status
     *
-    * @param $name select name
-    * @param $value default value (default "new')
-    * @param $option list proposed 0:normal, 1:search, 2:allowed (default 0)
+    * @param $name      select name
+    * @param $value     default value (default 'new')
+    * @param $option    list proposed 0:normal, 1:search, 2:allowed (default 0)
     *
     * @return nothing (display)
    **/
@@ -681,8 +681,8 @@ class Change extends CommonITILObject {
    /**
     * Compute Priority
     *
-    * @param $urgency integer from 1 to 5
-    * @param $impact integer from 1 to 5
+    * @param $urgency   integer from 1 to 5
+    * @param $impact    integer from 1 to 5
     *
     * @return integer from 1 to 5 (priority)
    **/
@@ -694,9 +694,9 @@ class Change extends CommonITILObject {
    /**
     * Dropdown of change Urgency
     *
-    * @param $name select name
-    * @param $value default value (default 0)
-    * @param $complete see also at least selection (false by default)
+    * @param $name      select name
+    * @param $value     default value (default 0)
+    * @param $complete  see also at least selection (false by default)
     *
     * @return string id of the select
    **/
@@ -708,9 +708,9 @@ class Change extends CommonITILObject {
    /**
     * Dropdown of change Impact
     *
-    * @param $name select name
-    * @param $value default value (default 0)
-    * @param $complete see also at least selection (major included) (false by default)
+    * @param $name      select name
+    * @param $value     default value (default 0)
+    * @param $complete  see also at least selection (major included) (false by default)
     *
     * @return string id of the select
    **/
@@ -722,8 +722,8 @@ class Change extends CommonITILObject {
    /**
     * check is the user can change from / to a status
     *
-    * @param $old string value of old/current status
-    * @param $new string value of target status
+    * @param $old    string value of old/current status
+    * @param $new    string value of target status
     *
     * @return boolean
    **/

@@ -163,14 +163,14 @@ class ChangeTask extends CommonITILTask {
    /**
     * Display a Planning Item
     *
-    * @param $val Array of the item to display
-    * @param $who ID of the user (0 if all)
-    * @param $type position of the item in the time block (in, through, begin or end) (default '')
-    * @param $complete complete display (more details) (default 0)
+    * @param $val       Array of the item to display
+    * @param $who       ID of the user (0 if all)
+    * @param $type      position of the item in the time block (in, through, begin or end) (default '')
+    * @param $complete  complete display (more details) (default 0)
     *
     * @return Nothing (display function)
    **/
-   static function displayPlanningItem($val, $who, $type="", $complete=0) {
+   static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
       return parent::genericDisplayPlanningItem('ChangeTask',$val, $who, $type, $complete);
    }
 

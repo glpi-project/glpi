@@ -194,27 +194,12 @@ class Cartridge extends CommonDBTM {
    }
 
 
-//    function isEntityAssign() {
-//       return true;
-//    }
-
-   /**
-   * Get the ID of entity assigned to the cartdrige
-   *
-   * @return ID of the entity
-   **/
-//    function getEntityID () {
-//       $ci=new CartridgeItem();
-//       $ci->getFromDB($this->fields["cartridgeitems_id"]);
-//       return $ci->getEntityID();
-//    }
-
    /**
     * Print the cartridge count HTML array for the cartridge item $tID
     *
-    * @param $tID integer: cartridge item identifier.
-     *@param $alarm_threshold integer: threshold alarm value.
-    * @param $nohtml integer: Return value without HTML tags.
+    * @param $tID              integer: cartridge item identifier.
+     *@param $alarm_threshold  integer: threshold alarm value.
+    * @param $nohtml           integer: Return value without HTML tags (default 0)
     *
     * @return string to display
    **/
@@ -343,8 +328,8 @@ class Cartridge extends CommonDBTM {
    /**
     * Get the dict value for the status of a cartridge
     *
-    * @param $date_use date : date of use
-    * @param $date_out date : date of delete
+    * @param $date_use  date : date of use
+    * @param $date_out  date : date of delete
     *
     * @return string : dict value for the cartridge status.
    **/
@@ -363,8 +348,8 @@ class Cartridge extends CommonDBTM {
    /**
     * Print out the cartridges of a defined type
     *
-    * @param $cartitem object of CartridgeItem class
-    * @param $show_old boolean : show old cartridges or not. (default 0)
+    * @param $cartitem  object of CartridgeItem class
+    * @param $show_old  boolean : show old cartridges or not (default 0)
     *
     * @return Nothing (displays)
    **/
@@ -570,8 +555,8 @@ class Cartridge extends CommonDBTM {
    /**
     * Show installed cartridges
     *
-    * @param $printer object Printer
-    * @param $old boolean : old cartridges or not ?
+    * @param $printer   object Printer
+    * @param $old       boolean : old cartridges or not ? (default 0)
     *
     * @return nothing (display)
    **/

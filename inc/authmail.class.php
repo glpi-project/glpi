@@ -136,8 +136,8 @@ class AuthMail extends CommonDBTM {
    /**
     * Print the auth mail form
     *
-    * @param $ID Integer : ID of the item
-    * @param $options array
+    * @param $ID        Integer : ID of the item
+    * @param $options   array
     *
     * @return Nothing (display)
    **/
@@ -251,9 +251,9 @@ class AuthMail extends CommonDBTM {
    /**
     * Test a connexion to the IMAP/POP server
     *
-    * @param $connect_string : mail server
-    * @param $login : user login
-    * @param $password : user password
+    * @param $connect_string     mail server
+    * @param $login              user login
+    * @param $password           user password
     *
     * @return authentification succeeded ?
    **/
@@ -268,10 +268,10 @@ class AuthMail extends CommonDBTM {
    /**
     * Authentify a user by checking a specific mail server
     *
-    * @param $auth : identification object
-    * @param $login : user login
-    * @param $password : user password
-    * @param $mail_method : mail_method array to use
+    * @param $auth         identification object
+    * @param $login        user login
+    * @param $password     user password
+    * @param $mail_method  mail_method array to use
     *
     * @return identification object
    **/
@@ -297,12 +297,12 @@ class AuthMail extends CommonDBTM {
    /**
     * Try to authentify a user by checking all the mail server
     *
-    * @param $auth : identification object
-    * @param $login : user login
-    * @param $password : user password
-    * @param $auths_id : auths_id already used for the user (default 0)
-    * @param $break : if user is not found in the first directory,
-    *                 stop searching or try the following ones (true by default)
+    * @param $auth      identification object
+    * @param $login     user login
+    * @param $password  user password
+    * @param $auths_id  auths_id already used for the user (default 0)
+    * @param $break     if user is not found in the first directory,
+    *                   stop searching or try the following ones (true by default)
     *
     * @return identification object
    **/

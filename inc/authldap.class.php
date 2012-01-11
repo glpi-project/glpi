@@ -100,6 +100,7 @@ class AuthLDAP extends CommonDBTM {
 
    /**
     * Preconfig datas for standard system
+    *
     * @param $type type of standard system : AD
     *
     * @return nothing
@@ -171,8 +172,8 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Print the auth ldap form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target for the Form
     *
     * @return Nothing (display)
@@ -816,7 +817,7 @@ class AuthLDAP extends CommonDBTM {
    /** Display LDAP filter
     *
     * @param   $target target for the form
-    * @param   $users boolean : for user ?
+    * @param   $users boolean : for user ? (true by default)
     *
     * @return nothing
    **/
@@ -882,8 +883,8 @@ class AuthLDAP extends CommonDBTM {
 
    /** Converts LDAP timestamps over to Unix timestamps
     *
-    * @param $ldapstamp LDAP timestamp
-    * @param $ldap_time_offset time offset
+    * @param $ldapstamp          LDAP timestamp
+    * @param $ldap_time_offset   time offset (default 0)
     *
     * @return unix timestamp
    **/
@@ -905,7 +906,7 @@ class AuthLDAP extends CommonDBTM {
 
    /** Converts a Unix timestamp to an LDAP timestamps
     *
-    * @param   $days integer (number of days from now)
+    * @param $days integer (number of days from now)
     *
     * @return ldap timestamp
    **/
@@ -916,8 +917,8 @@ class AuthLDAP extends CommonDBTM {
 
    /** Test a LDAP connection
     *
-    * @param   $auths_id ID of the LDAP server
-    * @param   $replicate_id use a replicate if > 0
+    * @param $auths_id     ID of the LDAP server
+    * @param $replicate_id use a replicate if > 0 (default -1)
     *
     * @return  boolean connection succeeded ?
    **/
@@ -1082,7 +1083,7 @@ class AuthLDAP extends CommonDBTM {
 
    /** Get the list of LDAP users to add/synchronize
     *
-    * @param $options array options
+    * @param $options         array options
     *          - authldaps_id ID of the server to use
     *          - mode user to synchronise or add ?
     *          - ldap_filter ldap filter to use
@@ -1091,8 +1092,8 @@ class AuthLDAP extends CommonDBTM {
     *          - operator operator used to limit user updates days
     *          - days number of days to limit (with operator)
     *          - script true if called by an external script
-    * @param $results result stats
-    * @param $limitexceeded limit exceeded exception
+    * @param $results         result stats
+    * @param $limitexceeded   limit exceeded exception
     *
     * @return  array of the user
    **/
@@ -1257,18 +1258,18 @@ class AuthLDAP extends CommonDBTM {
 
    /** Show LDAP groups to add or synchronise in an entity
     *
-    * @param   $target target page for the form
-    * @param   $check check all ? -> need to be delete
-    * @param   $start where to start the list
-    * @param   $sync synchronise or add ?
-    * @param   $filter ldap filter to use
-    * @param   $filter2 second ldap filter to use (which case ?)
-    * @param   $entity working entity
-    * @param   $order display order
+    * @param $target    target page for the form
+    * @param $check     check all ? -> need to be delete
+    * @param $start     where to start the list
+    * @param $sync      synchronise or add ? (default 0)
+    * @param $filter    ldap filter to use (default '')
+    * @param $filter2   second ldap filter to use (which case ?) (default '')
+    * @param $entity    working entity
+    * @param $order     display order (default DESC)
     *
     * @return  nothing
    **/
-   static function showLdapGroups($target, $check, $start, $sync = 0, $filter='', $filter2='',
+   static function showLdapGroups($target, $check, $start, $sync=0, $filter='', $filter2='',
                                   $entity, $order='DESC') {
 
       echo "<br>";
@@ -1360,11 +1361,11 @@ class AuthLDAP extends CommonDBTM {
 
    /** Get all LDAP groups from a ldap server which are not already in an entity
     *
-    * @param   $auths_id ID of the server to use
-    * @param   $filter ldap filter to use
-    * @param   $filter2 second ldap filter to use if needed
-    * @param   $entity entity to search
-    * @param   $order order to use
+    * @param $auths_id  ID of the server to use
+    * @param $filter    ldap filter to use
+    * @param $filter2   second ldap filter to use if needed
+    * @param $entity    entity to search
+    * @param $order     order to use (default DESC)
     *
     * @return  array of the groups
    **/
@@ -1436,8 +1437,9 @@ class AuthLDAP extends CommonDBTM {
 
    /**
     * Get the group's cn by giving his DN
+    *
     * @param $ldap_connection ldap connection to use
-    * @param $group_dn the group's dn
+    * @param $group_dn        the group's dn
     *
     * @return the group cn
    **/
@@ -1452,6 +1454,13 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
+   /**
+    * @param $ldap_connection
+    * @param $config_ldap
+    * @param $filter
+    * @param $search_in_groups   (true by default)
+    * @param $groups             array
+   **/
    static function getGroupsFromLDAP($ldap_connection, $config_ldap, $filter,
                                      $search_in_groups=true, $groups=array()) {
       global $DB;
@@ -1576,10 +1585,10 @@ class AuthLDAP extends CommonDBTM {
 
    /** Import a user from a specific ldap server
     *
-    * @param   $params  array of parameters : method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
-    * @param   $action synchoronize (true) or import (false)
-    * @param   $ldap_server ID of the LDAP server to use
-    * @param   $display display message information on redirect
+    * @param $params       array of parameters : method (IDENTIFIER_LOGIN or IDENTIFIER_EMAIL) + value
+    * @param $action       synchoronize (true) or import (false)
+    * @param $ldap_server  ID of the LDAP server to use
+    * @param $display      display message information on redirect (false by default)
     *
     * @return  nothing
    **/
@@ -1677,8 +1686,8 @@ class AuthLDAP extends CommonDBTM {
 
    /** Converts an array of parameters into a query string to be appended to a URL.
     *
-    * @param   $group_dn  dn of the group to import
-    * @param   $options array for
+    * @param $group_dn  dn of the group to import
+    * @param $options   array for
     *             - authldaps_id
     *             - entities_id where group must to be imported
     *             - is_recursive
@@ -1734,16 +1743,16 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Connect to a LDAP serveur
     *
-    * @param $host : LDAP host to connect
-    * @param $port : port to use
-    * @param $login : login to use
-    * @param $password : password to use
-    * @param $use_tls : use a tls connection ?
-    * @param $deref_options Deref options used
+    * @param $host            LDAP host to connect
+    * @param $port            port to use
+    * @param $login           login to use (default '')
+    * @param $password        password to use (default '')
+    * @param $use_tls         use a tls connection ? (false by default)
+    * @param $deref_options   Deref options used
     *
     * @return link to the LDAP server : false if connection failed
    **/
-   static function connectToServer($host, $port, $login = "", $password = "", $use_tls = false,
+   static function connectToServer($host, $port, $login="", $password="", $use_tls=false,
                                    $deref_options) {
 
       $ds = @ldap_connect($host, intval($port));
@@ -1773,9 +1782,9 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Try to connect to a ldap server
     *
-    * @param $ldap_method : ldap_method array to use
-    * @param $login User Login
-    * @param $password User Password
+    * @param $ldap_method  ldap_method array to use
+    * @param $login        User Login
+    * @param $password     User Password
     *
     * @return link to the LDAP server : false if connection failed
    **/
@@ -1844,9 +1853,9 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Import a user from ldap
     * Check all the directories. When the user is found, then import it
-    * @param $options array containing condition :
     *
-    *          array('name'=>'glpi') or array('email' => 'test at test.com')
+    * @param $options array containing condition :
+    *                 array('name'=>'glpi') or array('email' => 'test at test.com')
    **/
    static function importUserFromServers($options=array()) {
 
@@ -1889,11 +1898,12 @@ class AuthLDAP extends CommonDBTM {
 
    /**
     * Authentify a user by checking a specific directory
-    * @param $auth : identification object
-    * @param $login : user login
-    * @param $password : user password
-    * @param $ldap_method : ldap_method array to use
-    * @param $user_dn : user LDAP DN if present
+    *
+    * @param $auth         identification object
+    * @param $login        user login
+    * @param $password     user password
+    * @param $ldap_method  ldap_method array to use
+    * @param $user_dn      user LDAP DN if present
     *
     * @return identification object
    **/
@@ -1919,17 +1929,17 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Try to authentify a user by checking all the directories
     *
-    * @param $auth : identification object
-    * @param $login : user login
-    * @param $password : user password
-    * @param $auths_id : auths_id already used for the user
-    * @param $user_dn : user LDAP DN if present
-    * @param $break : if user is not found in the first directory, stop searching or try the following ones
+    * @param $auth      identification object
+    * @param $login     user login
+    * @param $password  user password
+    * @param $auths_id  auths_id already used for the user (default 0)
+    * @param $user_dn   user LDAP DN if present (false by default)
+    * @param $break     if user is not found in the first directory, stop searching or try the following ones
+    *                   (false by default)
     *
     * @return identification object
    **/
-   static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn=false,
-                               $break=true) {
+   static function tryLdapAuth($auth, $login, $password, $auths_id=0, $user_dn=false, $break=true) {
 
       //If no specific source is given, test all ldap directories
       if ($auths_id <= 0) {
@@ -1956,8 +1966,8 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Get dn for a user
     *
-    * @param $ds : LDAP link
-    * @param $options array
+    * @param $ds        LDAP link
+    * @param $options   array
     *          - basedn : base dn used to search
     *          - login_field : attribute to store login
     *          - search_parameters array of search parameters
@@ -2025,10 +2035,10 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Get an object from LDAP by giving his DN
     *
-    * @param ds the active connection to the directory
-    * @param condition the LDAP filter to use for the search
-    * @param $dn string DN of the object
-    * @param attrs the attributes to retreive
+    * @param ds         the active connection to the directory
+    * @param condition  the LDAP filter to use for the search
+    * @param $dn        string DN of the object
+    * @param attrs      array of the attributes to retreive
    **/
    static function getObjectByDn($ds, $condition, $dn, $attrs=array()) {
 
@@ -2044,6 +2054,11 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
+   /**
+    * @param $ds
+    * @param $user_dn
+    * @param $attrs
+   **/
    static function getUserByDn($ds, $user_dn, $attrs) {
       return self::getObjectByDn($ds, "objectClass=*", $user_dn, $attrs);
    }
@@ -2051,8 +2066,8 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Get infos for groups
     *
-    * @param $ds : LDAP link
-    * @param $group_dn : dn of the group
+    * @param $ds        LDAP link
+    * @param $group_dn  dn of the group
     *
     * @return group infos if found, else false
    **/
@@ -2061,6 +2076,10 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
+   /**
+    * @param $options   array
+    * @param $delete    (false by default)
+   **/
    static function manageValuesInSession($options=array(), $delete=false) {
 
       $fields = array('action', 'authldaps_id', 'basedn', 'criterias', 'days', 'entities_id',
@@ -2174,6 +2193,9 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
+   /**
+    * @param $authldap  AuthLDAP object
+   **/
    static function showUserImportForm(AuthLDAP $authldap) {
       global $DB;
 
@@ -2348,20 +2370,10 @@ class AuthLDAP extends CommonDBTM {
       return $DB->result($result,0,'cpt');
    }
 
-/*
- **** UNUSED ***
-   static function getFirstLdapServer() {
-      global $DB;
 
-      $query = "SELECT `id`
-                FROM `glpi_authldaps`
-                WHERE `is_active` = '1'";
-      $result = $DB->query($query);
-
-      return $DB->result($result,0,'id');
-   }
-*/
-
+   /**
+    * @param $authldap  AuthLDAP object
+   **/
    static private function buildLdapFilter(AuthLdap $authldap) {
       //Build search filter
 
@@ -2410,6 +2422,10 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
+   /**
+    * @param $operator
+    * @param $days
+   **/
    static function addTimestampRestrictions($operator, $days) {
 
       //If days restriction
@@ -2422,6 +2438,9 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
+   /**
+    * @param $authldap  AuthLDAP object
+   **/
    static function searchUser(AuthLDAP $authldap) {
 
       if (self::connectToServer($authldap->getField('host'), $authldap->getField('port'),
@@ -2486,6 +2505,9 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
+   /**
+    * @param $value  (default 0)
+   **/
    static function dropdownUserDeletedActions($value=0) {
 
       $options[0] = __('Preserve');
@@ -2522,6 +2544,9 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
+   /**
+    * @param $options  array
+   **/
    static function showDateRestrictionForm($options=array()) {
 
       echo "<table class='tab_cadre_fixe'>";
@@ -2629,8 +2654,8 @@ class AuthLDAP extends CommonDBTM {
    /**
     * Get ldap query results and clean them at the same time
     *
-    * @param link the directory connection
-    * @param result the query results
+    * @param link    the directory connection
+    * @param result  the query results
     *
     * @return an array which contains ldap query results
    **/

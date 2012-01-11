@@ -60,8 +60,8 @@ class Alert extends CommonDBTM {
    /**
     * Clear all alerts of an alert type for an item
     *
-    *@param $itemtype ID of the type to clear
-    *@param $ID ID of the item to clear
+    *@param $itemtype   ID of the type to clear
+    *@param $ID         ID of the item to clear
     *@param $alert_type ID of the alert type to clear
     *
     *@return nothing
@@ -152,9 +152,9 @@ class Alert extends CommonDBTM {
 
 
    /**
-    * @param $itemtype default ''
-    * @param $items_id default ''
-    * @param $type default ''
+    * @param $itemtype  (default '')
+    * @param $items_id  (default '')
+    * @param $type      (default '')
    **/
    static function alertExists($itemtype='', $items_id='', $type='') {
       global $DB;
@@ -177,7 +177,7 @@ class Alert extends CommonDBTM {
     *
     * @since version 0.83
     *
-    * @param $val if not set, ask for all values, else for 1 value
+    * @param $val if not set, ask for all values, else for 1 value (default NULL)
     *
     * @return array or string
    **/
