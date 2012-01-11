@@ -902,7 +902,8 @@ class CronTask extends CommonDBTM{
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".__('Average time')."</td>";
-            echo "<td class='right b'>".sprintf(__('%s sec(s)'),  number_format($data['elapsedavg'],2));
+            echo "<td class='right b'>".sprintf(__('%s sec(s)'),
+                                                number_format($data['elapsedavg'],2));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".__('Total duration')."</td>";
@@ -921,16 +922,17 @@ class CronTask extends CommonDBTM{
                  sprintf(_n('%s item', '%s items', $data['volmax']), $data['volmax'])."</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".__('Average count')."</td>";
-            echo "<td class='right b'>".
-                 sprintf(_n('%s item', '%s items', $data['volavg']), number_format($data['volavg'],2)).
+            echo "<td class='right b'>".sprintf(_n('%s item', '%s items', $data['volavg']),
+                                                 number_format($data['volavg'],2)).
                  "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".__('Total count')."</td>";
-            echo "<td class='right'>".
-                 sprintf(_n('%s item', '%s items', $data['voltot']), $data['voltot'])."</td></tr>";
+            echo "<td class='right'>". sprintf(_n('%s item', '%s items',
+                                               $data['voltot']), $data['voltot'])."</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".__('Average speed')."</td>";
-            echo "<td class='left'>".sprintf(__('%s items/sec'), number_format($data['voltot']/$data['elapsedtot'],2));
+            echo "<td class='left'>".sprintf(__('%s items/sec'),
+                                             number_format($data['voltot']/$data['elapsedtot'],2));
             echo "</td></tr>";
          }
       }
