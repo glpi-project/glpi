@@ -42,7 +42,7 @@ class PeripheralModel extends CommonDropdown {
    var $additional_fields_for_dictionnary = array('manufacturer');
 
    static function getTypeName($nb=0) {
-      return _n('Peripherals model', 'Peripherals models', $nb);
+      return _n('Peripheral model', 'Peripheral models', $nb);
    }
 
 }
