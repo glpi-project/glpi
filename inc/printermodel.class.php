@@ -63,7 +63,7 @@ class PrinterModel extends CommonDropdown {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2), self::countForCartridge($item));
          }
-         return _n('Printers model', 'Printers models', 2);
+         return self::getTypeName(2);
       }
       return '';
    }
