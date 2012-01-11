@@ -56,26 +56,28 @@ class NetworkName_IPNetwork extends CommonDBRelation {
    static function linkIPAddressFromIPNetwork(IPNetwork $network) {
       global $DB;
 
-      $thisTable     = "glpi_networknames_ipnetworks";
+      $linkObject    = new self();
+      $linkTable     = $linkObject->getTable();
       $ipnetworks_id = $network->getID();
 
-      // First, remove all previous networks
-      $query = "DELETE
-                FROM `$thisTable`
+      // First, remove all links of the current Network
+      $query = "SELECT `id`
+                FROM `$linkTable`
                 WHERE `ipnetworks_id` = '$ipnetworks_id'";
-      $DB->query($query);
+      foreach ($DB->request($query) as $link) {
+         $linkObject->delete(array('id' => $link['id']));
+      }
 
-      // Then add all current NetworkNames
-      $query = "INSERT INTO `$thisTable`
-                       (`ipnetworks_id`, `networknames_id`)
-                VALUES (SELECT $ipnetworks_id, `items_id`
-                        FROM `glpi_ipaddresses`
-                        WHERE `itemtype` = 'NetworkName'
-                              AND ".$network->getWHEREForMatchingElement('glpi_ipaddresses', 'binary',
-                                                                         'version')."
-                        GROUP BY `items_id`)";
-
-     $DB->query($query);
+      // Then, look each IP address contained inside current Network
+      $query = "SELECT $ipnetworks_id as ipnetworks_id, `items_id` as networknames_id
+                FROM `glpi_ipaddresses`
+                WHERE `itemtype` = 'NetworkName'
+                      AND ".$network->getWHEREForMatchingElement('glpi_ipaddresses', 'binary',
+                                                                 'version')."
+                GROUP BY `items_id`";
+      foreach ($DB->request($query) as $link) {
+         $linkObject->add($link);
+      }
    }
 
 
@@ -87,39 +89,38 @@ class NetworkName_IPNetwork extends CommonDBRelation {
    static function updateIPAddressOfIPNetwork(NetworkName $networkname) {
       global $DB;
 
-      $thisTable       = "glpi_networknames_ipnetworks";
+      $linkObject      = new self();
+      $linkTable       = $linkObject->getTable();
       $networknames_id = $networkname->getID();
 
-      // First, remove all previous networks
-      $query = "DELETE
-                FROM `$thisTable`
+      $query = "SELECT `id`
+                FROM `$linkTable`
                 WHERE `networknames_id` = '$networknames_id'";
-      $DB->query($query);
 
+      // First, remove all previous networks
+      foreach ($DB->request($query) as $link) {
+         $linkObject->delete(array('id' => $link['id']));
+      }
+
+      // Then, get all IP addresses of local network
       $query = "SELECT `version`, `name`, `binary_0`, `binary_1`, `binary_2`, `binary_3`
                 FROM `glpi_ipaddresses`
                 WHERE `items_id` = '$networknames_id'
                       AND `itemtype` = 'NetworkName'";
 
       $ipaddress    = new IPAddress();
-      $networks_ids = array();
+      $ipnetworks_ids = array();
       foreach ($DB->request($query) as $address) {
          $ipaddress->setAddressFromArray($address, 'version', 'name', 'binary');
-         $networks_ids = array_merge($networks_ids,
+         $ipnetworks_ids = array_merge($ipnetworks_ids,
                                      IPNetwork::searchNetworksContainingIP($ipaddress));
       }
 
-      $query = "INSERT INTO `$thisTable`
-                       (`networknames_id`, `ipnetworks_id`)
-                VALUES";
-      $first = true;
-      foreach ($networks_ids as $network_id) {
-         if (!$first)
-            $query .= ',';
-         $query .= " ('$networknames_id', '$network_id')";
-         $first = false;
+      $link = array('networknames_id' => "$networknames_id");
+      foreach ($ipnetworks_ids as $ipnetworks_id) {
+         $link['ipnetworks_id'] = $ipnetworks_id;
+         $linkObject->add($link);
       }
-      $DB->query($query);
    }
 }
 ?>
