@@ -53,7 +53,7 @@ if (!defined('GLPI_ROOT')) {
 * for the item to update its own IP Address cache field
 * @since version 0.84
 * \warning textual (ie. human readable) representation is not unique for IPv6 addresses :
-* 2001:db8:0:85a3::ac1f:8001 = 2001:db8:0:85a3:0:0:ac1f:8001
+* 2001:db8:0:85a3\::ac1f:8001 = 2001:db8:0:85a3:0:0:ac1f:8001
 **/
 class IPAddress extends CommonDBChild {
 
@@ -67,7 +67,7 @@ class IPAddress extends CommonDBChild {
    /// $version (integer) : version of the adresse. Should be 4 or 6, or empty if not valid address
    protected $version = '';
    /// $this->textual (string) : human readable of the IP adress (for instance : 192.168.0.0,
-   /// 2001:db8:0:85a3::ac1f:8001)
+   /// 2001:db8:0:85a3\::ac1f:8001)
    protected $textual = '';
    /// $this->binary (bytes[4]) : binary version for the SQL requests. For IPv4 addresses, the
    /// first three bytes are set to [0, 0, 0xffff]
@@ -594,7 +594,7 @@ class IPAddress extends CommonDBChild {
     * Convert a binary address (bytes[4]) to textual one. Opposite function that
     * setAddressFromString(). If item is valid ($itemtype not empty and $items_id > 0) then first
     * try to find it inside the database and load it from database. textual version is condensed
-    * one (ie : 2001:db8:0:85a3::ac1f:8001 rather than 2001:0db8:0000:85a3:0000:0000:ac1f:8001)
+    * one (ie : 2001:db8:0:85a3\::ac1f:8001 rather than 2001:0db8:0000:85a3:0000:0000:ac1f:8001)
     * \warning The resulting binary form is created inside the current object
     *
     * @param $address (bytes[4]) binary (ie. SQL requests) address
