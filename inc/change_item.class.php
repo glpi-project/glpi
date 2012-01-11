@@ -85,7 +85,7 @@ class Change_Item extends CommonDBRelation{
    /**
     * Print the HTML array for Items linked to a change
     *
-    * @param $change change object
+    * @param $change Change object
     *
     * @return Nothing (display)
    **/

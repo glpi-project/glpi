@@ -154,9 +154,9 @@ class Calendar extends CommonDropdown {
    /**
     * Get active time between to date time for the active calendar
     *
-    * @param $start datetime begin
-    * @param $end datetime end
-    * @param $work_in_days boolean force working in days
+    * @param $start           datetime begin
+    * @param $end             datetime end
+    * @param $work_in_days    boolean force working in days (false by default)
     *
     * @return timestamp of delay
    **/
@@ -231,9 +231,9 @@ class Calendar extends CommonDropdown {
     * if delay >= DAY_TIMESTAMP : work in days
     * else work in minutes
     *
-    * @param $start datetime begin
-    * @param $delay timestamp delay to add
-    * @param $work_in_days boolean force working in days
+    * @param $start           datetime begin
+    * @param $delay           timestamp delay to add
+    * @param $work_in_days    boolean force working in days (false by default)
     *
     * @return end date
    **/

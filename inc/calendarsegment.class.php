@@ -77,7 +77,7 @@ class CalendarSegment extends CommonDBChild {
 
    /**
     * Duplicate all segments from a calendar to his clone
-   */
+   **/
    function cloneCalendar($oldid, $newid) {
       global $DB;
 
@@ -114,11 +114,11 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Get segments of a calendar between 2 date
     *
-    * @param $calendars_id id of the calendar
-    * @param $begin_day begin day number
-    * @param $begin_time begin time to check
-    * @param $end_day end day number
-    * @param $end_time end time to check
+    * @param $calendars_id    id of the calendar
+    * @param $begin_day       begin day number
+    * @param $begin_time      begin time to check
+    * @param $end_day         end day number
+    * @param $end_time        end time to check
    **/
    static function getSegmentsBetween($calendars_id, $begin_day, $begin_time, $end_day, $end_time) {
       global $DB;
@@ -136,10 +136,10 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Get segments of a calendar between 2 date
     *
-    * @param $calendars_id id of the calendar
-    * @param $day day number
-    * @param $begin_time begin time to check
-    * @param $end_time end time to check
+    * @param $calendars_id    id of the calendar
+    * @param $day             day number
+    * @param $begin_time      begin time to check
+    * @param $end_time        end time to check
     *
     * @return timestamp value
    **/
@@ -171,10 +171,10 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Add a delay of a starting hour in a specific day
     *
-    * @param $calendars_id id of the calendar
-    * @param $day day number
-    * @param $begin_time begin time
-    * @param delay timestamp delay to add
+    * @param $calendars_id    id of the calendar
+    * @param $day             day number
+    * @param $begin_time      begin time
+    * @param $delay            timestamp delay to add
     *
     * @return timestamp value
    **/
@@ -219,8 +219,8 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Get first working hour of a day
     *
-    * @param $calendars_id id of the calendar
-    * @param $day day number
+    * @param $calendars_id    id of the calendar
+    * @param $day             day number
     *
     * @return time value
    **/
@@ -246,8 +246,8 @@ class CalendarSegment extends CommonDBChild {
    /**
     * Get last working hour of a day
     *
-    * @param $calendars_id id of the calendar
-    * @param $day day number
+    * @param $calendars_id    id of the calendar
+    * @param $day             day number
     *
     * @return time value
    **/

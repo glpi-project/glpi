@@ -65,7 +65,7 @@ class Ajax {
    /**
     * Call from a popup Windows, refresh the tab in main window
     *
-    *  @since version 0.84
+    * @since version 0.84
    **/
    static function refreshPopupTab() {
 
@@ -78,8 +78,8 @@ class Ajax {
    /**
     * Input text used as search system in ajax system
     *
-    * @param $id ID of the ajax item
-    * @param $size size of the input text field
+    * @param $id   ID of the ajax item
+    * @param $size size of the input text field (default 4)
    **/
    static function displaySearchTextForDropdown($id, $size=4) {
       global $CFG_GLPI;
@@ -94,11 +94,14 @@ class Ajax {
    /**
     *  Create Ajax Tabs apply to 'tabspanel' div. Content is displayed in 'tabcontent'
     *
-    * @param $tabdiv_id ID of the div containing the tabs
-    * @param $tabdivcontent_id ID of the div containing the content loaded by tabs
-    * @param $tabs array of tabs to create : tabs is array( 'key' => array('title'=>'x',url=>'url_toload',params='url_params')...
-    * @param $type for active tab
-    * @param $size width of tabs panel
+    * @param $tabdiv_id        ID of the div containing the tabs (default tabspanel)
+    * @param $tabdivcontent_id ID of the div containing the content loaded by tabs (default tabcontent)
+    * @param $tabs             array of tabs to create :
+    *                          tabs is array('key' => array('title'=> 'x',
+    *                                                       url    => 'url_toload',
+    *                                                       params => 'url_params')...
+    * @param $type             for active tab
+    * @param $size             width of tabs panel (default 950)
     *
     * @return nothing
    **/
@@ -202,12 +205,12 @@ class Ajax {
    /**
     * Javascript code for update an item when another item changed
     *
-    * @param $toobserve id (or array of id) of the select to observe
-    * @param $toupdate id of the item to update
-    * @param $url Url to get datas to update the item
-    * @param $parameters Parameters to send to ajax URL
-    * @param $events array of the observed events
-    * @param $minsize minimum size of data to update content
+    * @param $toobserve    id (or array of id) of the select to observe
+    * @param $toupdate     id of the item to update
+    * @param $url          Url to get datas to update the item
+    * @param $parameters   array of parameters to send to ajax URL
+    * @param $events       array of the observed events (default change in array)
+    * @param $minsize      minimum size of data to update content (default -1)
     * @param $forceloadfor array of content which must force update content
    **/
    static function updateItemOnEvent($toobserve, $toupdate, $url, $parameters=array(),
@@ -224,10 +227,10 @@ class Ajax {
    /**
     * Javascript code for update an item when a select item changed
     *
-    * @param $toobserve id of the select to observe
-    * @param $toupdate id of the item to update
-    * @param $url Url to get datas to update the item
-    * @param $parameters Parameters to send to ajax URL
+    * @param $toobserve  id of the select to observe
+    * @param $toupdate   id of the item to update
+    * @param $url        Url to get datas to update the item
+    * @param $parameters array of parameters to send to ajax URL
    **/
    static function updateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters=array()) {
       self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("change"));
@@ -237,11 +240,11 @@ class Ajax {
    /**
     * Javascript code for update an item when a Input text item changed
     *
-    * @param $toobserve id of the Input text to observe
-    * @param $toupdate id of the item to update
-    * @param $url Url to get datas to update the item
-    * @param $parameters Parameters to send to ajax URL
-    * @param $minsize minimum size of data to update content
+    * @param $toobserve    id of the Input text to observe
+    * @param $toupdate     id of the item to update
+    * @param $url          Url to get datas to update the item
+    * @param $parameters   array of parameters to send to ajax URL
+    * @param $minsize      minimum size of data to update content (default -1)
     * @param $forceloadfor array of content which must force update content
     *
    **/
@@ -265,12 +268,12 @@ class Ajax {
    /**
     * Javascript code for update an item when another item changed (Javascript code only)
     *
-    * @param $toobserve id (or array of id) of the select to observe
-    * @param $toupdate id of the item to update
-    * @param $url Url to get datas to update the item
-    * @param $parameters Parameters to send to ajax URL
-    * @param $events array of the observed events
-    * @param $minsize minimum size of data to update content
+    * @param $toobserve    id (or array of id) of the select to observe
+    * @param $toupdate     id of the item to update
+    * @param $url          Url to get datas to update the item
+    * @param $parameters   array of parameters to send to ajax URL
+    * @param $events       array of the observed events (default change in array)
+    * @param $minsize      minimum size of data to update content (default -1)
     * @param $forceloadfor array of content which must force update content
    **/
    static function updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=array(),
@@ -359,11 +362,11 @@ class Ajax {
    /**
     * Javascript code for update an item (Javascript code only)
     *
-    * @param $toupdate id of the item to update
-    * @param $url Url to get datas to update the item
-    * @param $parameters Parameters to send to ajax URL
-    * @param $toobserve id of another item used to get value in case of __VALUE__ used
-    *                   array of id to get value in case of __VALUE#__ used
+    * @param $toupdate   id of the item to update
+    * @param $url        Url to get datas to update the item
+    * @param $parameters array of parameters to send to ajax URL
+    * @param $toobserve  id of another item used to get value in case of __VALUE__ used
+    *                    array of id to get value in case of __VALUE#__ used (default '')
    **/
    static function updateItemJsCode($toupdate, $url, $parameters=array(), $toobserve="") {
 
@@ -411,11 +414,11 @@ class Ajax {
    /**
     * Complete Dropdown system using ajax to get datas
     *
-    * @param $use_ajax Use ajax search system (if not display a standard dropdown)
-    * @param $relativeurl Relative URL to the root directory of GLPI
-    * @param $params Parameters to send to ajax URL
-    * @param $default Default datas t print in case of $use_ajax
-    * @param $rand Random parameter used
+    * @param $use_ajax     Use ajax search system (if not display a standard dropdown)
+    * @param $relativeurl  Relative URL to the root directory of GLPI
+    * @param $params       array of parameters to send to ajax URL
+    * @param $default      Default datas t print in case of $use_ajax (default $nbsp;)
+    * @param $rand         Random parameter used (default 0)
    **/
    static function dropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;", $rand=0) {
       global $CFG_GLPI, $DB;
@@ -466,10 +469,10 @@ class Ajax {
    /**
     * Javascript code for update an item
     *
-    * @param $toupdate id of the item to update
-    * @param $url Url to get datas to update the item
-    * @param $parameters Parameters to send to ajax URL
-    * @param $toobserve id of another item used to get value in case of __VALUE__ used
+    * @param $toupdate     id of the item to update
+    * @param $url          Url to get datas to update the item
+    * @param $parameters   array of parameters to send to ajax URL
+    * @param $toobserve    id of another item used to get value in case of __VALUE__ used (default '')
     *
    **/
    static function updateItem($toupdate, $url, $parameters=array(), $toobserve="") {

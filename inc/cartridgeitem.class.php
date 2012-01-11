@@ -66,7 +66,7 @@ class CartridgeItem extends CommonDBTM {
    /**
     * Get The Name + Ref of the Object
     *
-    * @param $with_comment add comments to name (default 0)
+    * @param $with_comment    add comments to name (default 0)
     *
     * @return String: name of the object in the current language
    **/
@@ -152,8 +152,8 @@ class CartridgeItem extends CommonDBTM {
    /**
     * Add a compatible printer type for a cartridge type
     *
-    * @param $cartridgeitems_id integer: cartridge type identifier
-    * @param printermodels_id integer: printer type identifier
+    * @param $cartridgeitems_id  integer: cartridge type identifier
+    * @param printermodels_id    integer: printer type identifier
     *
     * @return boolean : true for success
    **/
@@ -197,8 +197,8 @@ class CartridgeItem extends CommonDBTM {
    /**
     * Print the cartridge type form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target for the Form
     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
     *
@@ -371,7 +371,6 @@ class CartridgeItem extends CommonDBTM {
     * @param $task for log, display informations if NULL? (default NULL)
     *
     * @return 0 : nothing to do 1 : done with success
-    *
    **/
    static function cronCartridge($task=NULL) {
       global $DB, $CFG_GLPI;
@@ -463,7 +462,7 @@ class CartridgeItem extends CommonDBTM {
    /**
     * Print a select with compatible cartridge
     *
-    * @param $printer object Printer
+    * @param $printer Printer object
     *
     * @return nothing (display)
    **/

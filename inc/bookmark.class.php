@@ -160,8 +160,8 @@ class Bookmark extends CommonDBTM {
    /**
     * Print the bookmark form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target for the Form
     *     - type bookmark type when adding a new bookmark
     *     - url when adding a new bookmark
@@ -250,9 +250,9 @@ class Bookmark extends CommonDBTM {
    /**
     * Prepare query to store depending of the type
     *
-    * @param $type bookmark type
-    * @param $query_tab parameters array
-    * @param $itemtype device type (default 0)
+    * @param $type         bookmark type
+    * @param $query_tab    parameters array
+    * @param $itemtype     device type (default 0)
     *
     * @return clean query array
    **/
@@ -290,8 +290,8 @@ class Bookmark extends CommonDBTM {
    /**
     * Prepare query to use depending of the type
     *
-    * @param $type bookmark type
-    * @param $query_tab parameters array
+    * @param $type         bookmark type
+    * @param $query_tab    parameters array
     *
     * @return prepared query array
    **/
@@ -378,8 +378,9 @@ class Bookmark extends CommonDBTM {
    /**
     * load a bookmark
     *
-    * @param $ID ID of the bookmark
-    * @param $opener boolean load bookmark in opener window ? false -> current window (true bu default)
+    * @param $ID        ID of the bookmark
+    * @param $opener    boolean load bookmark in opener window ? false -> current window
+    *                   (true by default)
     *
     * @return nothing
    **/
@@ -487,8 +488,8 @@ class Bookmark extends CommonDBTM {
    /**
     * Show bookmarks list
     *
-    * @param $target target to use for links
-    * @param $is_private show private of public bookmarks ? (default 1)
+    * @param $target       target to use for links
+    * @param $is_private   show private of public bookmarks ? (default 1)
     *
     * @return nothing
    **/
@@ -599,8 +600,8 @@ class Bookmark extends CommonDBTM {
    /**
     * Display bookmark buttons
     *
-    * @param $type bookmark type to use
-    * @param $itemtype device type of item where is the bookmark (default 0)
+    * @param $type      bookmark type to use
+    * @param $itemtype  device type of item where is the bookmark (default 0)
    **/
    static function showSaveButton($type, $itemtype=0) {
       global $CFG_GLPI;

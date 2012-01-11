@@ -59,8 +59,8 @@ class AuthLdapReplicate extends CommonDBTM {
    /**
     * Form to add a replicate to a ldap server
     *
-    * @param $target : target page for add new replicate
-    * @param $master_id : master ldap server ID
+    * @param $target       target page for add new replicate
+    * @param $master_id    master ldap server ID
    **/
    static function addNewReplicateForm($target, $master_id) {
 

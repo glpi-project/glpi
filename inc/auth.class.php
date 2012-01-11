@@ -44,7 +44,7 @@ class Auth {
    var $err ='';
    /** User class variable
     * @see User
-    */
+   **/
    var $user;
    //! External authentification variable : boolean
    var $extauth = 0;
@@ -128,9 +128,9 @@ class Auth {
    /**
     * Try a IMAP/POP connection
     *
-    * @param $host IMAP/POP host to connect
-    * @param $login Login to try
-    * @param $pass Password to try
+    * @param $host   IMAP/POP host to connect
+    * @param $login  Login to try
+    * @param $pass   Password to try
     *
     * @return boolean : connection success
    **/
@@ -158,9 +158,9 @@ class Auth {
     * Find a user in a LDAP and return is BaseDN
     * Based on GRR auth system
     *
-    * @param $ldap_method : ldap_method array to use
-    * @param $login User Login
-    * @param $password User Password
+    * @param $ldap_method  ldap_method array to use
+    * @param $login        User Login
+    * @param $password     User Password
     *
     * @return String : basedn of the user / false if not founded
    **/
@@ -219,8 +219,8 @@ class Auth {
    /**
     * Find a user in the GLPI DB
     *
-    * @param $name User Login
-    * @param $password User Password
+    * @param $name      User Login
+    * @param $password  User Password
     *
     * try to connect to DB
     * update the instance variable user with the user who has the name $name
@@ -401,9 +401,9 @@ class Auth {
    /**
     * Manage use authentication and initialize the session
     *
-    * @param $login_name string
-    * @param $login_password string
-    * @param $noauto boolean (false by default)
+    * @param $login_name      string
+    * @param $login_password  string
+    * @param $noauto          boolean (false by default)
     *
     * @return boolean (success)
    */
@@ -625,7 +625,7 @@ class Auth {
    * Parameters which could be used in options array :
    *    - name : string / name of the select (default is auths_id)
    *
-   * @param $options possible options / not used here
+   * @param $options array of possible options / not used here
    *
    *@return Nothing (display)
    */
@@ -667,10 +667,10 @@ class Auth {
    /**
     * Get name of an authentication method
     *
-    * @param $authtype Authentication method
-    * @param $auths_id Authentication method ID
-    * @param $link show links to config page ? (default 0)
-    * @param $name override the name if not empty (default '')
+    * @param $authtype  Authentication method
+    * @param $auths_id  Authentication method ID
+    * @param $link      show links to config page ? (default 0)
+    * @param $name      override the name if not empty (default '')
     *
     * @return string
     */
@@ -838,8 +838,9 @@ class Auth {
    /**
     * Check alternate authentication systems
     *
-    * @param $redirect : need to redirect (true) or get type of Auth system which match (false by default)
-    * @param $redirect_string : redirect string if exists (default '')
+    * @param $redirect           need to redirect (true) or get type of Auth system which match
+    *                            (false by default)
+    * @param $redirect_string    redirect string if exists (default '')
     *
     * @return nothing if redirect is true, else Auth system ID
    **/

@@ -155,7 +155,7 @@ class Change_Problem extends CommonDBRelation{
    /**
     * Show problems for a change
     *
-    * @param $change Ticket object
+    * @param $change Change object
    **/
    static function showForChange(Change $change) {
       global $DB, $CFG_GLPI;

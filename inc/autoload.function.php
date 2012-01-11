@@ -53,7 +53,7 @@ function isCommandLine() {
 /**
  * Determine if an object name is a plugin one
  *
- * @param $classname class name to analyze
+ * @param $classname    class name to analyze
  *
  * @return false or an object containing plugin name and class name
 **/
@@ -139,9 +139,9 @@ function _e($str){
 /**
  * For translation
  *
- * @param $sing : string in singular
- * @param $plural : string in plural
- * @param $nb : to select singular or plurial
+ * @param $sing      string in singular
+ * @param $plural    string in plural
+ * @param $nb        to select singular or plurial
  *
  * @return translated string
 **/
@@ -197,10 +197,10 @@ function _ex($ctx, $str) {
 /**
  * For context in plural translation
  *
- * @param $ctx : context
- * @param $sing : string in singular
- * @param $plural : string in plural
- * @param $nb : to select singular or plurial
+ * @param $ctx       context
+ * @param $sing      string in singular
+ * @param $plural    string in plural
+ * @param $nb        to select singular or plurial
  *
  * @return string
 **/
