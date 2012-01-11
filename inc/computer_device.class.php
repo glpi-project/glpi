@@ -178,8 +178,8 @@ class Computer_Device extends CommonDBTM {
    /**
     * Print the form for devices linked to a computer or a template
     *
-    * @param $computer Computer object
-    * @param $withtemplate='' boolean : template or basic computer
+    * @param $computer        Computer object
+    * @param $withtemplate    boolean : template or basic computer (default '')
     *
     * @return Nothing (display)
    **/
@@ -369,8 +369,8 @@ class Computer_Device extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param $itemtype the type of the device to remove
-    * @param $compDevID the id of the link between the computer and the device
+    * @param $itemtype     the type of the device to remove
+    * @param $compDevID    the id of the link between the computer and the device
    **/
    private function removeDevice($itemtype, $compDevID) {
       global $DB;
@@ -391,8 +391,8 @@ class Computer_Device extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param $itemtype the type of the device to remove
-    * @param $devID the id of the device to remove from the computer
+    * @param $itemtype  the type of the device to remove
+    * @param $devID     the id of the device to remove from the computer
    **/
    private function removeDevices($itemtype, $devID) {
       global $DB;
@@ -414,9 +414,9 @@ class Computer_Device extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param $newNumber number of links to add
-    * @param $itemtype itemtype of device
-    * @param $compDevID computer device ID
+    * @param $newNumber     number of links to add
+    * @param $itemtype     itemtype of device
+    * @param $compDevID    computer device ID
    **/
    private function addDevices($newNumber, $itemtype, $compDevID) {
       global $DB;
@@ -464,9 +464,9 @@ class Computer_Device extends CommonDBTM {
    /**
     * Update an internal device specificity
     *
-    * @param $newValue new specifity value
-    * @param $itemtype itemtype of device
-    * @param $compDevID computer device ID
+    * @param $newValue     new specifity value
+    * @param $itemtype     itemtype of device
+    * @param $compDevID    computer device ID
    **/
    private function updateSpecificity($newValue, $itemtype,$compDevID) {
       global $DB;
@@ -503,9 +503,9 @@ class Computer_Device extends CommonDBTM {
    /**
     * Update the device attached to a computer
     *
-    * @param $input array of data from the input form
+    * @param $input array of datas from the input form
    **/
-   function updateAll($input) {
+   function updateAll(array $input) {
 
       // Update quantity
       foreach ($input as $key => $val) {
@@ -574,6 +574,9 @@ class Computer_Device extends CommonDBTM {
 
    /**
     * Duplicate all device from a computer template to his clone
+    *
+    * @param $oldid
+    * @param $newid
    **/
    function cloneComputer ($oldid, $newid) {
       global $DB;
@@ -656,8 +659,8 @@ class Computer_Device extends CommonDBTM {
    /**
     * Delete old devices settings
     *
-    * @param $glpi_computers_id integer : glpi computer id.
-    * @param $itemtype integer : device type identifier.
+    * @param $glpi_computers_id  integer : glpi computer id.
+    * @param $itemtype           integer : device type identifier.
     *
     * @return nothing.
    **/
@@ -678,8 +681,8 @@ class Computer_Device extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param $deviceType the device type
-    * @param $compDevID the link ID
+    * @param $deviceType   the device type
+    * @param $compDevID    the link ID
    **/
    function getDeviceFromComputerDeviceID($deviceType, $compDevID) {
 

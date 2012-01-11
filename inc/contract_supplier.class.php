@@ -47,6 +47,9 @@ class Contract_Supplier extends CommonDBRelation {
    public $items_id_2 = 'suppliers_id';
 
 
+   /**
+    * @param $item   string   Supplier object
+   **/
    static function countForSupplier(Supplier $item) {
 
       $restrict = "`glpi_contracts_suppliers`.`suppliers_id` = '".$item->getField('id') ."'
@@ -58,6 +61,9 @@ class Contract_Supplier extends CommonDBRelation {
    }
 
 
+   /**
+    * @param $item   string   Contract object
+   **/
    static function countForContract(Contract $item) {
 
       $restrict = "`glpi_contracts_suppliers`.`contracts_id` = '".$item->getField('id') ."'

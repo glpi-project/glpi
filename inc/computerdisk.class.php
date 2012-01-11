@@ -107,8 +107,8 @@ class ComputerDisk extends CommonDBChild {
    /**
     * Print the version form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target for the Form
     *     - computers_id ID of the computer for add process
     *
@@ -191,8 +191,8 @@ class ComputerDisk extends CommonDBChild {
    /**
     * Print the computers disks
     *
-    * @param $comp Computer
-    * @param $withtemplate=''  boolean : Template or basic item.
+    * @param $comp                  Computer object
+    * @param $withtemplate boolean  Template or basic item (default '')
     *
     * @return Nothing (call to classes members)
    **/

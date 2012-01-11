@@ -48,8 +48,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Get number of installed licenses of a license
     *
-    * @param $softwarelicenses_id license ID
-    * @param $entity='' to search for computer in (default = all active entities)
+    * @param $softwarelicenses_id   license ID
+    * @param $entity                to search for computer in (default = all active entities)
+    *                               (default '')
     *
     * @return number of installations
    **/
@@ -396,8 +397,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Update license associated on a computer
     *
-    * @param $licID ID of the install software lienk
-    * @param $softwarelicenses_id ID of the new license
+    * @param $licID                 ID of the install software lienk
+    * @param $softwarelicenses_id   ID of the new license
     *
     * @return nothing
    **/
@@ -416,8 +417,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    /**
     * Get licenses list corresponding to an installation
     *
-    * @param $computers_id ID of the computer
-    * @param $softwareversions_id ID of the version
+    * @param $computers_id          ID of the computer
+    * @param $softwareversions_id   ID of the version
     *
     * @return nothing
    **/

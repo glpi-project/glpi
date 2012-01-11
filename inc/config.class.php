@@ -86,11 +86,11 @@ class Config extends CommonDBTM {
    /**
     * Prepare input datas for updating the item
     *
-    * @param $input datas used to update the item
+    * @param $input array of datas used to update the item
     *
     * @return the modified $input array
    **/
-   function prepareInputForUpdate($input) {
+   function prepareInputForUpdate(array $input) {
 
       if (isset($input["smtp_passwd"])) {
          if (empty($input["smtp_passwd"])) {
@@ -996,8 +996,8 @@ class Config extends CommonDBTM {
    /**
     * Dropdown for global management config
     *
-    * @param $name select name
-    * @param $value default value
+    * @param $name   select name
+    * @param $value  default value
     */
    static function dropdownGlobalManagement($name, $value) {
 
@@ -1172,7 +1172,7 @@ class Config extends CommonDBTM {
    /**
     * Check Write Access to needed directories
     *
-    * @param $fordebug boolean display for debug (no html, no gettext required) (faulse by default)
+    * @param $fordebug boolean display for debug (no html, no gettext required) (false by default)
     *
     * @return 2 : creation error 1 : delete error 0: OK
    **/

@@ -50,9 +50,9 @@ class Contract_Item extends CommonDBRelation{
    /**
     * Check right on an contract - overloaded to check max_links_allowed
     *
-    * @param $ID ID of the item (-1 if new item)
-    * @param $right Right to check : r / w / recursive
-    * @param $input array of input data (used for adding item)
+    * @param $ID           ID of the item (-1 if new item)
+    * @param $right        Right to check : r / w / recursive
+    * @param $input  array of input data (used for adding item)
     *
     * @return boolean
    **/

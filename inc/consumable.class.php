@@ -115,9 +115,9 @@ class Consumable extends CommonDBTM {
     *
     * UnLink the consumable identified by $ID
     *
-    * @param $ID : consumable identifier
-    * @param $itemtype : itemtype of who we give the consumable (default '')
-    * @param $items_id : ID of the item giving the consumable (default 0)
+    * @param $ID           consumable identifier
+    * @param $itemtype     itemtype of who we give the consumable (default '')
+    * @param $items_id     ID of the item giving the consumable (default 0)
     *
     * @return boolean
    **/
@@ -142,7 +142,7 @@ class Consumable extends CommonDBTM {
    /**
     * count how many consumable for the consumable item $tID
     *
-    * @param $tID integer: consumable item identifier.
+    * @param $tID integer  consumable item identifier.
     *
     * @return integer : number of consumable counted.
     **/
@@ -161,7 +161,7 @@ class Consumable extends CommonDBTM {
    /**
     * count how many old consumable for the consumable item $tID
     *
-    * @param $tID integer: consumable item identifier.
+    * @param $tID integer  consumable item identifier.
     *
     * @return integer : number of old consumable counted.
    **/
@@ -181,7 +181,7 @@ class Consumable extends CommonDBTM {
    /**
     * count how many consumable unused for the consumable item $tID
     *
-    * @param $tID integer: consumable item identifier.
+    * @param $tID integer  consumable item identifier.
     *
     * @return integer : number of consumable unused counted.
    **/
@@ -201,9 +201,9 @@ class Consumable extends CommonDBTM {
    /**
     * Get the consumable count HTML array for a defined consumable type
     *
-    * @param $tID integer: consumable item identifier.
-    * @param $alarm_threshold integer: threshold alarm value.
-    * @param $nohtml integer: Return value without HTML tags. (default 0)
+    * @param $tID             integer  consumable item identifier.
+    * @param $alarm_threshold integer  threshold alarm value.
+    * @param $nohtml          integer  Return value without HTML tags. (default 0)
     *
     * @return string to display
    **/
@@ -241,7 +241,7 @@ class Consumable extends CommonDBTM {
    /**
     * Check if a Consumable is New (not used, in stock)
     *
-    * @param $cID integer : consumable ID.
+    * @param $cID integer  consumable ID.
    **/
    static function isNew($cID) {
       global $DB;
@@ -259,7 +259,7 @@ class Consumable extends CommonDBTM {
    /**
     * Check if a consumable is Old (used, not in stock)
     *
-    * @param $cID integer : consumable ID.
+    * @param $cID integer  consumable ID.
    **/
    static function isOld($cID) {
       global $DB;
@@ -277,7 +277,7 @@ class Consumable extends CommonDBTM {
    /**
     * Get the localized string for the status of a consumable
     *
-    * @param $cID integer : consumable ID.
+    * @param $cID integer  consumable ID.
     *
     * @return string : dict value for the consumable status.
    **/
@@ -295,7 +295,7 @@ class Consumable extends CommonDBTM {
    /**
     * Print out a link to add directly a new consumable from a consumable item.
     *
-    * @param $consitem oject of ConsumableItem class
+    * @param $consitem  ConsumableItem object
     *
     * @return Nothing (displays)
    **/
@@ -326,8 +326,8 @@ class Consumable extends CommonDBTM {
    /**
     * Print out the consumables of a defined type
     *
-    * @param $consitem object of ConsumableItem class
-    * @param $show_old boolean : show old consumables or not. (default 0)
+    * @param $consitem           ConsumableItem object
+    * @param $show_old  boolean  show old consumables or not. (default 0)
     *
     * @return Nothing (displays)
    **/
@@ -586,6 +586,9 @@ class Consumable extends CommonDBTM {
    }
 
 
+   /**
+    * @param $item   string  ConsumableItem object
+   **/
    static function countForConsumableItem(ConsumableItem $item) {
 
       $restrict = "`glpi_consumables`.`consumableitems_id` = '".$item->getField('id') ."'";

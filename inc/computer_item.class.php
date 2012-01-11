@@ -79,9 +79,9 @@ class Computer_Item extends CommonDBRelation{
    /**
     * Check right on an item - overloaded to check is_global
     *
-    * @param $ID ID of the item (-1 if new item)
-    * @param $right Right to check : r / w / recursive
-    * @param $input array of input data (used for adding item) (default NULL)
+    * @param $ID     ID of the item (-1 if new item)
+    * @param $right  Right to check : r / w / recursive
+    * @param $input  array of input data (used for adding item) (default NULL)
     *
     * @return boolean
    **/
@@ -111,12 +111,12 @@ class Computer_Item extends CommonDBRelation{
     * Overloaded to check is Disconnect needed (during OCS sync)
     * and to manage autoupdate feature
     *
-    * @param $input datas used to add the item
+    * @param $input array of datas used to add the item
     *
     * @return the modified $input array
     *
    **/
-   function prepareInputForAdd($input) {
+   function prepareInputForAdd(array $input) {
       global $DB, $CFG_GLPI;
 
       switch ($input['itemtype']) {
@@ -353,8 +353,8 @@ class Computer_Item extends CommonDBRelation{
     *
     * Print the form for computers or templates connections to printers, screens or peripherals
     *
-    * @param $comp Computer object
-    * @param $withtemplate=''  boolean : Template or basic item.
+    * @param $comp            Computer object
+    * @param $withtemplat     boolean : Template or basic item (default '')
     *
     * @return Nothing (call to classes members)
    **/
@@ -499,8 +499,8 @@ class Computer_Item extends CommonDBRelation{
    /**
     * Prints a direct connection to a computer
     *
-    * @param $item the Monitor/Phone/Peripheral/Printer
-    * @param $withtemplate='' integer : withtemplate param
+    * @param $item            the Monitor/Phone/Peripheral/Printer
+    * @param $withtemplate    integer : withtemplate param (default '')
     *
     * @return nothing (print out a table)
    **/
@@ -600,7 +600,7 @@ class Computer_Item extends CommonDBRelation{
    /**
     * Unglobalize an item : duplicate item and connections
     *
-    * @param $item object to unglobalize
+    * @param $item CommonDBTM object to unglobalize
    **/
    static function unglobalizeItem(CommonDBTM $item) {
       global $DB;
@@ -640,12 +640,12 @@ class Computer_Item extends CommonDBRelation{
    /**
    * Make a select box for connections
    *
-   * @param $itemtype type to connect
-   * @param $fromtype from where the connection is
-   * @param $myname select name
-   * @param $entity_restrict Restrict to a defined entity (default = -1)
-   * @param $onlyglobal display only global devices (used for templates) (default 0)
-   * @param $used Already used items ID: not to display in dropdown (array)
+   * @param $itemtype               type to connect
+   * @param $fromtype               from where the connection is
+   * @param $myname                 select name
+   * @param $entity_restrict        Restrict to a defined entity (default = -1)
+   * @param $onlyglobal             display only global devices (used for templates) (default 0)
+   * @param $used             array Already used items ID: not to display in dropdown
    *
    * @return nothing (print out an HTML select box)
    */
