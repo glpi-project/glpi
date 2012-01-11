@@ -829,10 +829,9 @@ class KnowbaseItem extends CommonDBTM {
     * @since version 0.83
     *
     * @param $params Array (contains, knowbaseitemcategories_id, faq)
-    * @param $faq    Boolean
     *
     * @return String : SQL request
-    */
+   **/
    static function getListRequest($params) {
       global $DB;
 
