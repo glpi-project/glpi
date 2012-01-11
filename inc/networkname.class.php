@@ -269,8 +269,8 @@ class NetworkName extends FQDNLabel {
          global $DB;
 
          // Update IPAddress database : return value is a list of
-         $newIPaddressField = IPAddress::updateDatabase($this->IPs, $this->getType(),
-                                                        $this->getID());
+         $newIPaddressField      = IPAddress::updateDatabase($this->IPs, $this->getType(),
+                                                             $this->getID());
 
          $new_ip_addresses_field = implode('\n', $newIPaddressField);
 
@@ -368,7 +368,7 @@ class NetworkName extends FQDNLabel {
    **/
    static function getInternetNameFromID($ID) {
 
-      $networkName = new NetworkName();
+      $networkName = new self();
 
       if ($networkName->can($ID, 'r')) {
          return FQDNLabel::getInternetNameFromLabelAndDomainID($this->fields["name"],
@@ -456,7 +456,7 @@ class NetworkName extends FQDNLabel {
                   AND `itemtype` = '" . $item->getType() . "'";
       $result = $DB->query($query);
 
-      $address = new NetworkName();
+      $address = new self();
 
       if ($DB->numrows($result) > 0) {
          while ($line = $DB->fetch_array($result)) {
@@ -515,7 +515,7 @@ class NetworkName extends FQDNLabel {
 
       $items_id = $item->getID();
       $itemtype = $item->getType();
-      $address  = new NetworkName();
+      $address  = new self();
 
       echo "<form method='post' action='".$address->getFormURL()."'>\n";
 
@@ -534,8 +534,8 @@ class NetworkName extends FQDNLabel {
       echo "<tr><td colspan='3'>&nbsp;</td></tr>";
 
       echo "<tr><td colspan='3' class='center'>";
-      Dropdown::show('NetworkName', array('name'      => 'addressID',
-                                          'condition' => '`items_id`=0'));
+      Dropdown::show(__CLASS__, array('name'      => 'addressID',
+                                      'condition' => '`items_id`=0'));
       echo "<a href=\"" . $address->getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
       echo "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
              "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'>";
@@ -560,7 +560,7 @@ class NetworkName extends FQDNLabel {
    static function showForInternetElement(CommonGLPI $internetElement, $withtemplate=0) {
       global $DB, $CFG_GLPI;
 
-      $elementToDisplay = new NetworkName();
+      $elementToDisplay = new self();
       $internetElement->check($internetElement->getID(), 'r');
       $canedit          = $internetElement->can($internetElement->getID(), 'w');
 

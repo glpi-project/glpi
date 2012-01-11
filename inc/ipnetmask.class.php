@@ -55,10 +55,10 @@ class IPNetmask extends IPAddress {
          if ($ipnetmask instanceof IPNetmask) {
             $this->version = $ipnetmask->version;
             $this->textual = $ipnetmask->textual;
-            $this->binary = $ipnetmask->binary;
-            $this->fields = $ipnetmask->fields;
-         } else {
+            $this->binary  = $ipnetmask->binary;
+            $this->fields  = $ipnetmask->fields;
 
+         } else {
             // Else, check a binary then a string
             if (!$this->setAddressFromBinary($ipnetmask)) {
                $this->setNetmaskFromString($ipnetmask, $version);
@@ -69,7 +69,6 @@ class IPNetmask extends IPAddress {
 
 
    static function getTypeName($nb=0) {
-
       return _n('Subnet mask', 'Subnet masks', $nb);
    }
 

@@ -536,14 +536,11 @@ class Session {
       /// TODO permit to load and use simple dictionnary.
       /// After usage (notification) load old one
       // New localization system :
-      $TRANSLATE = new Zend_Translate (
-          array(
-              'adapter' => 'gettext',
-              'content' => GLPI_ROOT.$newfile,
-              'locale'  => $trytoload,
-              'disableNotices' => true, // no warning for empty languages
-          )
-      );
+      $TRANSLATE = new Zend_Translate(array('adapter'        => 'gettext',
+                                            'content'        => GLPI_ROOT.$newfile,
+                                            'locale'         => $trytoload,
+                                            'disableNotices' => true) // no warning for empty languages
+                                     );
 
       // Load plugin dicts
       if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])) {

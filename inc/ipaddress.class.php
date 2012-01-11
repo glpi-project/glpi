@@ -85,15 +85,14 @@ class IPAddress extends CommonDBChild {
          if ($ipaddress instanceof IPAddress) {
             $this->version = $ipaddress->version;
             $this->textual = $ipaddress->textual;
-            $this->binary = $ipaddress->binary;
-            $this->fields = $ipaddress->fields;
-         } else {
+            $this->binary  = $ipaddress->binary;
+            $this->fields  = $ipaddress->fields;
 
+         } else {
             // Else, check a binary then a string
             if (!$this->setAddressFromBinary($ipaddress)) {
                $this->setAddressFromString($ipaddress);
             }
-
          }
       }
    }
@@ -306,7 +305,7 @@ class IPAddress extends CommonDBChild {
       // then, check each address
       foreach (explode($mainDelim, $inputAddresses) as $ipaddress) {
          // Create the object
-         $addressObject = new IPAddress();
+         $addressObject = new self();
          if ($addressObject->setAddressFromString($ipaddress, $itemtype, $items_id)) {
             // If it is valid and its ID is not NULL, then, the address already exists
             if ($addressObject->getID() > 0) {
@@ -823,6 +822,7 @@ class IPAddress extends CommonDBChild {
       return array();
    }
 
+
    /**
     * Check if two addresses are equals
     *
@@ -833,7 +833,7 @@ class IPAddress extends CommonDBChild {
    function equals($ipaddress) {
 
       // To normalise the address, just make new one
-      $ipaddress = new IPAddress($ipaddress);
+      $ipaddress = new self($ipaddress);
 
       if ((count($this->binary) != 4) || (count($ipaddress->binary) != 4)
           || ($this->version != $ipaddress->version)) {
