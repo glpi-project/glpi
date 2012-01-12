@@ -818,7 +818,7 @@ class MailCollector  extends CommonDBTM {
     ///Connect To the Mail Box
    function connect() {
       $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
-                                  Toolbox::decrypt($this->fields['passwd'],GLPIKEY), 1);
+                                  Toolbox::decrypt($this->fields['passwd'],GLPIKEY));
    }
 
 
