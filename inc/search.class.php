@@ -1293,10 +1293,21 @@ class Search {
             // Delete selected item
             if ($output_type == self::HTML_OUTPUT) {
                if ($isadmin) {
-                  Html::openArrowMassives("massiveaction_form");
-                  Dropdown::showForMassiveAction($itemtype, $p['is_deleted']);
-                  $options = array();
-                  Html::closeArrowMassives($options);
+                  $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
+                  if ($max>0 && $max<($row_num+10)) {
+                     echo "<table class='tab_cadre' width='80%'><tr class='tab_bg_1'><td><span class='b'>";
+                     _e('Selection too large, massive action disabled.');
+                     if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+                        echo "</span><br>";
+                        _e('To increase the limit: change max_input_vars in php configuration');
+                     }
+                     echo "</td></tr></table>";
+                  } else {
+                     Html::openArrowMassives("massiveaction_form");
+                     Dropdown::showForMassiveAction($itemtype, $p['is_deleted']);
+                     $options = array();
+                     Html::closeArrowMassives($options);
+                  }
 
                   // End form for delete item
                   echo "</form>\n";
