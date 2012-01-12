@@ -90,7 +90,7 @@ class Config extends CommonDBTM {
     *
     * @return the modified $input array
    **/
-   function prepareInputForUpdate(array $input) {
+   function prepareInputForUpdate($input) {
 
       if (isset($input["smtp_passwd"])) {
          if (empty($input["smtp_passwd"])) {

@@ -96,7 +96,7 @@ class Consumable extends CommonDBTM {
    }
 
 
-   function restore($input, $history=1) {
+   function restore(array $input, $history=1) {
       global $DB;
 
       $query = "UPDATE `".$this->getTable()."`
