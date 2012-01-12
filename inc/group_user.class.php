@@ -82,7 +82,7 @@ class Group_User extends CommonDBRelation{
          return false;
       }
 
-      $canedit = $user->can($ID,'w');
+      $canedit     = $user->can($ID,'w');
 
       $rand        = mt_rand();
       $nb_per_line = 3;
@@ -143,9 +143,10 @@ class Group_User extends CommonDBRelation{
 
       if (!empty($groups)) {
          Session::initNavigateListItems('Group',
-               //TRANS : %1$s is the itemtype name,
-               //        %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$user->getTypeName(1), $user->getName()));
+                              //TRANS : %1$s is the itemtype name,
+                              //        %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                $user->getTypeName(1), $user->getName()));
 
          $i = 0;
          foreach ($groups as $data) {
@@ -209,10 +210,10 @@ class Group_User extends CommonDBRelation{
     * @since version 0.83
     *
     * @param $group           Object
-    * @param $used_ids        Array of already add users
-    * @param $entityrestrict  Array of entities
-    * @param $crit            String for criteria (for default dropdown)
-    */
+    * @param $used_ids        Array    of already add users
+    * @param $entityrestrict  Array    of entities
+    * @param $crit            String   for criteria (for default dropdown)
+   **/
    private static function showAddUserForm(Group $group, $used_ids, $entityrestrict, $crit) {
       global $CFG_GLPI, $DB;
 
@@ -244,8 +245,7 @@ class Group_User extends CommonDBRelation{
 
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name'is_dynamic' value='0'>";
-         echo "<input type='submit' name='adduser' value=\"".__s('Add')."\"
-                class='submit'>";
+         echo "<input type='submit' name='adduser' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
          echo "</table></div></form>";
       }
@@ -258,10 +258,10 @@ class Group_User extends CommonDBRelation{
     * @since version 0.83
     *
     * @param $group     Object
-    * @param $members   Array filled on output of member (filtered)
-    * @param $ids       Array of ids (not filtered)
-    * @param $crit      String filter (is_manager, is_userdelegate)
-    * @param $tree      Boolean true to include member of sub-group
+    * @param $members   Array    filled on output of member (filtered)
+    * @param $ids       Array    of ids (not filtered)
+    * @param $crit      String   filter (is_manager, is_userdelegate) (default '')
+    * @param $tree      Boolean  true to include member of sub-group (default 0)
     *
     * @return String tab of entity for restriction
    **/
@@ -328,7 +328,7 @@ class Group_User extends CommonDBRelation{
    /**
     * Show users of a group
     *
-    * @since v ersion 0.83
+    * @since version 0.83
     *
     * @param $group the group
    **/
@@ -387,9 +387,10 @@ class Group_User extends CommonDBRelation{
          Html::printAjaxPager(__('Users (D=Dynamic)'), $start, $number);
 
          Session::initNavigateListItems('User',
-               //TRANS : %1$s is the itemtype name,
-               //        %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$group->getTypeName(1), $group->getName()));
+                              //TRANS : %1$s is the itemtype name,
+                              //        %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                $group->getTypeName(1), $group->getName()));
 
          echo "<div class='spaced'>";
          if ($canedit) {
@@ -465,31 +466,35 @@ class Group_User extends CommonDBRelation{
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']             = __('Characteristics');
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
 
-      $tab[3]['table']    = $this->getTable();
-      $tab[3]['field']    = 'is_dynamic';
-      $tab[3]['name']     = __('Dynamic');
-      $tab[3]['datatype'] = 'bool';
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'is_dynamic';
+      $tab[3]['name']            = __('Dynamic');
+      $tab[3]['datatype']        = 'bool';
 
-      $tab[4]['table'] = 'glpi_groups';
-      $tab[4]['field'] = 'completename';
-      $tab[4]['name']  = __('Group');
+      $tab[4]['table']           = 'glpi_groups';
+      $tab[4]['field']           = 'completename';
+      $tab[4]['name']            = __('Group');
 
-      $tab[5]['table'] = 'glpi_users';
-      $tab[5]['field'] = 'name';
-      $tab[5]['name']  = __('User');
+      $tab[5]['table']           = 'glpi_users';
+      $tab[5]['field']           = 'name';
+      $tab[5]['name']            = __('User');
 
       return $tab;
    }
 
 
-   static function deleteGroups($user_ID, $only_dynamic = false) {
+   /**
+    * @param $user_ID
+    * @param $only_dynamic (false by default
+   **/
+   static function deleteGroups($user_ID, $only_dynamic=false) {
       global $DB;
 
       $crit['users_id'] = $user_ID;

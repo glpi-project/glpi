@@ -37,7 +37,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight('config', 'r');
-Html::header(__('Fields unicity'), $_SERVER['PHP_SELF'], "config", "control", "FieldUnicity");
+Html::header(FieldUnicity::getTypeName(), $_SERVER['PHP_SELF'], "config", "control", "FieldUnicity");
 
 Search::show('FieldUnicity');
 Html::footer();

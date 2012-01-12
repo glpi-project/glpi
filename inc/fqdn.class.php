@@ -62,7 +62,8 @@ class FQDN extends CommonDropdown {
       return array(array('name'    => 'fqdn',
                          'label'   => __('FQDN'),
                          'type'    => 'text',
-                         'comment' => __('Fully Qualified Domain Name. Use the classical notation (labels separated by dots). For example: indepnet.net'),
+                         'comment'
+                          => __('Fully Qualified Domain Name. Use the classical notation (labels separated by dots). For example: indepnet.net'),
                          'list'    => true));
    }
 
@@ -75,7 +76,7 @@ class FQDN extends CommonDropdown {
     * @param $input fields of the record to check
     *
     * @return false or fields checks and update (lowercase for the fqdn field)
-    */
+   **/
    function prepareInput($input) {
 
       // First, we check FQDN validity
@@ -93,7 +94,8 @@ class FQDN extends CommonDropdown {
 
       if (!self::checkFQDNUnicity($input["fqdn"], (isset($input["id"]) ? $input["id"] : -1),
                                   $entityID)) {
-         Session::addMessageAfterRedirect(__('Internet domain already defined in the visible entities'), false, ERROR);
+         Session::addMessageAfterRedirect(__('Internet domain already defined in the visible entities'),
+                                          false, ERROR);
          return false;
       }
 
@@ -116,9 +118,9 @@ class FQDN extends CommonDropdown {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addStandardTab('NetworkName',$ong, $options);
-      $this->addStandardTab('NetworkAlias',$ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab('NetworkName', $ong, $options);
+      $this->addStandardTab('NetworkAlias', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -177,6 +179,7 @@ class FQDN extends CommonDropdown {
       return $DB->result($result, 0, "id");
    }
 
+
    /**
     * @param $ID id of the FQDN
     *
@@ -207,9 +210,9 @@ class FQDN extends CommonDropdown {
    /**
     * Check to see if an FQDN is unique
     *
-    * @param $fqdn the FQDN to check
-    * @param $ID its id to don't check itself
-    * @param $entityID the entity containing the FQDN
+    * @param $fqdn      the FQDN to check
+    * @param $ID        its id to don't check itself
+    * @param $entityID  the entity containing the FQDN
     *
     * We check all the entities that are visible.
     * That allows two sisters entities to define the same FQDN

@@ -55,25 +55,25 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    $group->check($_POST["id"],'w');
    $group->delete($_POST);
-   Event::log($_POST["id"], "groups", 4, "setup", 
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));         
+   Event::log($_POST["id"], "groups", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $group->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $group->check($_POST["id"],'w');
    $group->update($_POST);
-   Event::log($_POST["id"], "groups", 4, "setup", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
+   Event::log($_POST["id"], "groups", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["adduser"])) {
    $groupuser->check(-1,'w',$_POST);
    if ($groupuser->add($_POST)) {
       Event::log($_POST["groups_id"], "groups", 4, "setup",
-               //TRANS: %s is the user login
-               sprintf(__('%s adds a user to a group'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s adds a user to a group'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -85,9 +85,9 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Event::log($_POST["groups_id"], "groups", 4, "setup", 
-               //TRANS: %s is the user login
-               sprintf(__('%s deletes users from a group'), $_SESSION["glpiname"]));
+   Event::log($_POST["groups_id"], "groups", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes users from a group'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST['action']) && $_POST['action']=='unset_manager') {
@@ -99,9 +99,9 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Event::log($_POST["groups_id"], "groups", 4, "setup", 
-               //TRANS: %s is the user login
-               sprintf(__('%s unsets users as manager in a group'), $_SESSION["glpiname"]));
+   Event::log($_POST["groups_id"], "groups", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s unsets users as manager in a group'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST['action']) && $_POST['action']=='set_manager') {
@@ -113,9 +113,9 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Event::log($_POST["groups_id"], "groups", 4, "setup", 
-               //TRANS: %s is the user login
-               sprintf(__('%s sets users as manager in a group'), $_SESSION["glpiname"]));
+   Event::log($_POST["groups_id"], "groups", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s sets users as manager in a group'), $_SESSION["glpiname"]));
 
    Html::back();
 
@@ -128,10 +128,10 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Event::log($_POST["groups_id"], "groups", 4, "setup", 
-               //TRANS: %s is the user login
-               sprintf(__('%s unsets users as delegatee in a group'), $_SESSION["glpiname"]));
-   
+   Event::log($_POST["groups_id"], "groups", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s unsets users as delegatee in a group'), $_SESSION["glpiname"]));
+
    Html::back();
 
 } else if (isset($_POST['action']) && $_POST['action']=='set_delegate') {
@@ -143,9 +143,9 @@ if (isset($_POST["add"])) {
          }
       }
    }
-   Event::log($_POST["groups_id"], "groups", 4, "setup", 
-               //TRANS: %s is the user login
-               sprintf(__('%s sets users as delegatee in a group'), $_SESSION["glpiname"]));
+   Event::log($_POST["groups_id"], "groups", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s sets users as delegatee in a group'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["changegroup"]) && isset($_POST["groups_id"]) && isset($_POST["field"])) {

@@ -81,7 +81,7 @@ function isPluginItemType($classname) {
  *
  * @return translated string
 **/
-function __($str){
+function __($str) {
    global $TRANSLATE;
 
    $trans = $TRANSLATE->_($str);
@@ -100,7 +100,7 @@ function __($str){
  *
  * @return protected string (with htmlentities)
 **/
-function __s($str){
+function __s($str) {
 
 //   return  "__s".addslashes($TRANSLATE->_($str));
    return htmlentities(__($str), ENT_QUOTES, 'UTF-8');
@@ -117,7 +117,7 @@ function __s($str){
  *
  * @return protected string (with htmlentities)
 **/
-function _sx($ctx, $str){
+function _sx($ctx, $str) {
 
 //   return  "__s".addslashes($TRANSLATE->_($str));
    return htmlentities(_x($ctx, $str), ENT_QUOTES, 'UTF-8');
@@ -131,7 +131,7 @@ function _sx($ctx, $str){
  *
  * @return echo string
 **/
-function _e($str){
+function _e($str) {
    echo __($str);
 }
 
@@ -145,10 +145,28 @@ function _e($str){
  *
  * @return translated string
 **/
-function _n($sing, $plural, $nb){
+function _n($sing, $plural, $nb) {
    global $TRANSLATE;
 
    return $TRANSLATE->plural($sing, $plural, $nb);
+}
+
+
+/**
+ * For translation
+ *
+ * @since version 0.84
+ *
+ * @param $sing      string in singular
+ * @param $plural    string in plural
+ * @param $nb        to select singular or plurial
+ *
+ * @return protected string (with htmlentities)
+**/
+function _sn($sing, $plural, $nb) {
+   global $TRANSLATE;
+
+   return htmlentities($TRANSLATE->plural($sing, $plural, $nb), ENT_QUOTES, 'UTF-8');
 }
 
 

@@ -39,21 +39,21 @@ class Html {
    /**
     * Clean display value deleting html tags
     *
-    *@param $value string: string value
+    * @param $value string: string value
     *
-    *@return clean value
+    * @return clean value
    **/
    static function clean($value) {
 
       $value = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n", $value);
 
       $specialfilter = array('@<span[^>]*?x-hidden[^>]*?>.*?</span[^>]*?>@si'); // Strip ToolTips
-      $value = preg_replace($specialfilter, ' ', $value);
+      $value         = preg_replace($specialfilter, ' ', $value);
 
-      $search = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
-                      '@<style[^>]*?>.*?</style[^>]*?>@si',   // Strip style tags properly
-                      '@<[\/\!]*?[^<>]*?>@si',                // Strip out HTML tags
-                      '@<![\s\S]*?--[ \t\n\r]*>@');           // Strip multi-line comments including CDATA
+      $search        = array('@<script[^>]*?>.*?</script[^>]*?>@si', // Strip out javascript
+                             '@<style[^>]*?>.*?</style[^>]*?>@si',   // Strip style tags properly
+                             '@<[\/\!]*?[^<>]*?>@si',                // Strip out HTML tags
+                             '@<![\s\S]*?--[ \t\n\r]*>@');           // Strip multi-line comments including CDATA
 
       $value = preg_replace($search, ' ', $value);
 
@@ -116,13 +116,13 @@ class Html {
 
       switch ($_SESSION['glpidate_format']) {
          case 1 : // DD-MM-YYYY
-            $date = substr($time, 8, 2)."-";  // day
+            $date  = substr($time, 8, 2)."-";  // day
             $date .= substr($time, 5, 2)."-"; // month
             $date .= substr($time, 0, 4);     // year
             return $date;
 
          case 2 : // MM-DD-YYYY
-            $date = substr($time, 5, 2)."-";  // month
+            $date  = substr($time, 5, 2)."-";  // month
             $date .= substr($time, 8, 2)."-"; // day
             $date .= substr($time, 0, 4);     // year
             return $date;
@@ -196,8 +196,8 @@ class Html {
     /**
      *  Resume text for followup
      *
-     * @param $string string: string to resume
-     * @param $length integer: resume length
+     * @param $string   string   string to resume
+     * @param $length   integer  resume length (default 255)
      *
      * @return cut string
     **/
@@ -214,8 +214,8 @@ class Html {
     /**
      *  Resume a name for display
      *
-     * @param $string string: string to resume
-     * @param $length integer: resume length
+     * @param $string   string   string to resume
+     * @param $length   integer  resume length (default 255)
      *
      * @return cut string
      **/
@@ -255,9 +255,10 @@ class Html {
    /**
     * Convert a number to correct display
     *
-    * @param $number float: Number to display
-    * @param $edit boolean: display number for edition ? (id edit use . in all case)
-    * @param $forcedecimal integer: Force decimal number (do not use default value)
+    * @param $number       float    Number to display
+    * @param $edit         boolean  display number for edition ? (id edit use . in all case)
+    *                               (false by default)
+    * @param $forcedecimal integer  Force decimal number (do not use default value) (default -1)
     *
     * @return formatted number
    **/
@@ -301,8 +302,8 @@ class Html {
    /**
     * Make a good string from the unix timestamp $sec
     *
-    * @param $time integer: timestamp
-    * @param $display_sec boolean: display seconds ?
+    * @param $time         integer  timestamp
+    * @param $display_sec  boolean  display seconds ? (true by default)
     *
     * @return string
    **/
@@ -325,43 +326,39 @@ class Html {
 
       if ($units['day']>0) {
          if ($display_sec) {
-            //TRANS: %1$d number of days, %2$d number of hours,   %3$d number of minutes,
+            //TRANS: %1$d number of days, %2$d number of hours, %3$d number of minutes,
             //       %4$d number of seconds
-            return sprintf('%1$d day(s) %2$d hour(s) %3$d minute(s) %4$d second(s)',
-                           $units['day'], $units['hour'], $units['minute'],
-                           $units['second']);
+            return sprintf(__('%1$d day(s) %2$d hour(s) %3$d minute(s) %4$d second(s)'),
+                           $units['day'], $units['hour'], $units['minute'], $units['second']);
          }
          //TRANS: %1$d number of days, %2$d number of hours,   %3$d number of minutes
-         return sprintf('%1$d day(s) %2$d hour(s) %3$d minute(s)',
+         return sprintf(__('%1$d day(s) %2$d hour(s) %3$d minute(s)'),
                         $units['day'], $units['hour'], $units['minute']);
       }
 
       if ($units['hour']>0) {
          if ($display_sec) {
-            //TRANS: %1$d number of hours,   %2$d number of minutes,  %3$d number of seconds
-            return sprintf('%1$d hour(s) %2$d minute(s) %3$d second(s)',
-                           $units['hour'], $units['minute'],
-                           $units['second']);
+            //TRANS: %1$d number of hours, %2$d number of minutes, %3$d number of seconds
+            return sprintf(__('%1$d hour(s) %2$d minute(s) %3$d second(s)'),
+                           $units['hour'], $units['minute'], $units['second']);
          }
-         //TRANS: %1$d number of hours,   %2$d number of minutes
-         return sprintf('%1$d hour(s) %2$d minute(s)',
-                        $units['hour'], $units['minute']);
+         //TRANS: %1$d number of hours, %2$d number of minutes
+         return sprintf(__('%1$d hour(s) %2$d minute(s)'), $units['hour'], $units['minute']);
       }
 
       if ($units['minute']>0) {
          if ($display_sec) {
             //TRANS:  %1$d number of minutes,  %2$d number of seconds
-            return sprintf('%1$d minute(s) %2$d second(s)',
-                           $units['minute'], $units['second']);
+            return sprintf(__('%1$d minute(s) %2$d second(s)'), $units['minute'], $units['second']);
          }
          //TRANS: %1$d number of minutes
-         return sprintf('%1$d minute(s)', $units['minute']);
+         return sprintf(__('%1$d minute(s)'), $units['minute']);
 
       }
 
       if ($display_sec) {
          //TRANS:  %1$d number of seconds
-         return sprintf('%1$d second(s)', $units['second']);
+         return sprintf(__('%1$d second(s)'), $units['second']);
       }
       return '';
    }
@@ -482,10 +479,10 @@ class Html {
    /**
     * Common Title Function
     *
-    * @param $ref_pic_link Path to the image to display
-    * @param $ref_pic_text Alt text of the icon
-    * @param $ref_title Title to display
-    * @param $ref_btts Extra items to display array(link=>text...)
+    * @param $ref_pic_link    Path to the image to display (default '')
+    * @param $ref_pic_text    Alt text of the icon (default '')
+    * @param $ref_title       Title to display (default '')
+    * @param $ref_btts        Extra items to display array(link=>text...) (default '')
     *
     * @return nothing
    **/
@@ -514,11 +511,12 @@ class Html {
    /**
     * Display Debug Informations
     *
-    * @param $with_session with session information
+    * @param $with_session with session information (true by default)
    **/
    static function displayDebugInfos($with_session=true) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST, $SQL_TOTAL_TIMER, $DEBUG_AUTOLOAD;
 
+      // Only for debug mode so not need to be translated
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          echo "<div id='debug'>";
          echo "<h1><a id='see_debug' name='see_debug'>GLPI MODE DEBUG</a></h1>";
@@ -588,8 +586,8 @@ class Html {
    /**
     * Simple Error message page
     *
-    * @param $message string displayed before dying
-    * @param $minimal set to true do not display app menu
+    * @param $message   string   displayed before dying
+    * @param $minimal            set to true do not display app menu (false by default)
     *
     * @return nothing as function kill script
    **/
@@ -618,8 +616,9 @@ class Html {
    /**
     * Add confirmation on button or link before action
     *
-    * @param $string string to display or array of string for using multilines
-    * @param $additionalactions string additional actions to do on success confirmation
+    * @param $string             string   to display or array of string for using multilines
+    * @param $additionalactions  string   additional actions to do on success confirmation
+    *                                     (default '')
     *
     * @return nothing
    **/
@@ -649,7 +648,7 @@ class Html {
     /**
      * Create a Dynamic Progress Bar
      *
-     * @param $msg initial message (under the bar)
+     * @param $msg initial message (under the bar) (default '&nbsp;')
      *
      * @return nothing
     **/
@@ -671,7 +670,7 @@ class Html {
     /**
      * Change the Message under the Progress Bar
      *
-     * @param $msg message under the bar
+     * @param $msg message under the bar (default '&nbsp;')
      *
      * @return nothing
     **/
@@ -683,9 +682,9 @@ class Html {
     /**
      * Change the Progress Bar Position
      *
-     * @param $crt Current Value (less then $max)
-     * @param $tot Maximum Value
-     * @param $msg message inside the bar (defaut is %)
+     * @param $crt   Current Value (less then $max)
+     * @param $tot   Maximum Value
+     * @param $msg   message inside the bar (default is %) (default '')
      *
      * @return nothing
     **/
@@ -709,9 +708,9 @@ class Html {
     /**
      * Display a simple progress bar
      *
-     * @param $width Width of the progress bar
-     * @param $percent Percent of the progress bar
-     * @param $options array options :
+     * @param $width       Width    of the progress bar
+     * @param $percent     Percent  of the progress bar
+     * @param $options     array    options :
      *            - title : string title to display (default Progesssion)
      *            - simple : display a simple progress bar (no title / only percent)
      *            - forcepadding : boolean force str_pad to force refresh (default true)
@@ -763,7 +762,7 @@ class Html {
    /**
     * Include common HTML headers
     *
-    * @param $title title used for the page
+    * @param $title title used for the page (default '')
     *
     * @return nothing
    **/
@@ -905,12 +904,11 @@ class Html {
    /**
     * Print a nice HTML head for every page
     *
-    * @param $title title of the page
-    * @param $url not used anymore.
-    * @param $sector sector in which the page displayed is
-    * @param $item item corresponding to the page displayed
-    * @param $option option corresponding to the page displayed
-    *
+    * @param $title     title of the page
+    * @param $url       not used anymore (default '')
+    * @param $sector    sector in which the page displayed is (default 'none')
+    * @param $item      item corresponding to the page displayed (default 'none')
+    * @param $option    option corresponding to the page displayed (default '')
    **/
    static function header($title, $url='', $sector="none", $item="none", $option="") {
       global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED, $DB;
@@ -959,7 +957,7 @@ class Html {
             $menu['inventory']['content']['monitor']['links']['add']
                               = '/front/setup.templates.php?'.'itemtype=Monitor&amp;add=1';
             $menu['inventory']['content']['monitor']['links']['template']
-                               = '/front/setup.templates.php?'.'itemtype=Monitor&amp;add=0';
+                              = '/front/setup.templates.php?'.'itemtype=Monitor&amp;add=0';
          }
          $showstate = true;
       }
@@ -1045,11 +1043,11 @@ class Html {
 
 
       if (Session::haveRight("consumable","r")) {
-         $menu['inventory']['content']['consumable']['title']    = _n('Consumable', 'Consumables', 2);
-         $menu['inventory']['content']['consumable']['shortcut'] = '';
-         $menu['inventory']['content']['consumable']['page']     = '/front/consumableitem.php';
-         $menu['inventory']['content']['consumable']['links']['search']
-                                                                 = '/front/consumableitem.php';
+         $menu['inventory']['content']['consumable']['title']           = _n('Consumable',
+                                                                             'Consumables', 2);
+         $menu['inventory']['content']['consumable']['shortcut']        = '';
+         $menu['inventory']['content']['consumable']['page']            = '/front/consumableitem.php';
+         $menu['inventory']['content']['consumable']['links']['search'] = '/front/consumableitem.php';
 
          if (Session::haveRight("consumable","w")) {
             $menu['inventory']['content']['consumable']['links']['add']
@@ -1057,7 +1055,7 @@ class Html {
          }
 
          $menu['inventory']['content']['consumable']['links']['summary']
-                                                      = '/front/consumableitem.php?'.'synthese=yes';
+                              = '/front/consumableitem.php?'.'synthese=yes';
       }
 
 
@@ -1109,6 +1107,7 @@ class Html {
                               = '/front/tickettemplate.php';
             $menu['maintain']['content']['ticket']['options']['TicketTemplate']['links']['search']
                               = '/front/tickettemplate.php';
+
             if (Session::haveRight('tickettemplate', 'w')) {
                $menu['maintain']['content']['ticket']['options']['TicketTemplate']['links']['add']
                               = '/front/tickettemplate.form.php';
@@ -1167,11 +1166,10 @@ class Html {
 //       }
 
       if (Session::haveRight("show_planning","1") || Session::haveRight("show_all_planning","1")) {
-         $menu['maintain']['content']['planning']['title']     = __('Planning');
-         $menu['maintain']['content']['planning']['shortcut']  = 'p';
-         $menu['maintain']['content']['planning']['page']      = '/front/planning.php';
-         $menu['maintain']['content']['planning']['links']['search']
-                                                               = '/front/planning.php';
+         $menu['maintain']['content']['planning']['title']           = __('Planning');
+         $menu['maintain']['content']['planning']['shortcut']        = 'p';
+         $menu['maintain']['content']['planning']['page']            = '/front/planning.php';
+         $menu['maintain']['content']['planning']['links']['search'] = '/front/planning.php';
       }
 
       if (Session::haveRight("statistic","1")) {
@@ -1214,11 +1212,11 @@ class Html {
       }
 
       if (Session::haveRight("contact_enterprise", "r")) {
-         $menu['financial']['content']['supplier']['title']       = _n('Supplier', 'Suppliers', 2);
-         $menu['financial']['content']['supplier']['shortcut']    = '';
-         $menu['financial']['content']['supplier']['page']        = '/front/supplier.php';
-         $menu['financial']['content']['supplier']['links']['search']
-                                                                  = '/front/supplier.php';
+         $menu['financial']['content']['supplier']['title']           = _n('Supplier',
+                                                                           'Suppliers', 2);
+         $menu['financial']['content']['supplier']['shortcut']        = '';
+         $menu['financial']['content']['supplier']['page']            = '/front/supplier.php';
+         $menu['financial']['content']['supplier']['links']['search'] = '/front/supplier.php';
 
 
          $menu['financial']['content']['contact']['title']           = _n('Contact', 'Contacts', 2);
@@ -1234,11 +1232,11 @@ class Html {
 
 
       if (Session::haveRight("contract", "r")) {
-         $menu['financial']['content']['contract']['title']       = _n('Contract', 'Contracts', 2);
-         $menu['financial']['content']['contract']['shortcut']    = '';
-         $menu['financial']['content']['contract']['page']        = '/front/contract.php';
-         $menu['financial']['content']['contract']['links']['search']
-                                                                  = '/front/contract.php';
+         $menu['financial']['content']['contract']['title']           = _n('Contract',
+                                                                           'Contracts', 2);
+         $menu['financial']['content']['contract']['shortcut']        = '';
+         $menu['financial']['content']['contract']['page']            = '/front/contract.php';
+         $menu['financial']['content']['contract']['links']['search'] = '/front/contract.php';
 
          if (Session::haveRight("contract", "w")) {
             $menu['financial']['content']['contract']['links']['add']
@@ -1250,11 +1248,11 @@ class Html {
 
 
       if (Session::haveRight("document", "r")) {
-         $menu['financial']['content']['document']['title']       = _n('Document', 'Documents', 2);
-         $menu['financial']['content']['document']['shortcut']    = 'd';
-         $menu['financial']['content']['document']['page']        = '/front/document.php';
-         $menu['financial']['content']['document']['links']['search']
-                                                                  = '/front/document.php';
+         $menu['financial']['content']['document']['title']           = _n('Document',
+                                                                           'Documents', 2);
+         $menu['financial']['content']['document']['shortcut']        = 'd';
+         $menu['financial']['content']['document']['page']            = '/front/document.php';
+         $menu['financial']['content']['document']['links']['search'] = '/front/document.php';
 
          if (Session::haveRight("document","w")) {
             $menu['financial']['content']['document']['links']['add'] = '/front/document.form.php';
@@ -1286,15 +1284,16 @@ class Html {
 
          if (Session::haveRight("knowbase","w") || Session::haveRight("faq","w")) {
             $menu['utils']['content']['knowbase']['links']['add']
-                                                            = '/front/knowbaseitem.form.php?id=new';
+                           = '/front/knowbaseitem.form.php?id=new';
          }
       }
 
 
       if (Session::haveRight("reservation_helpdesk","1")
           || Session::haveRight("reservation_central","r")) {
-         $menu['utils']['content']['reservation']['title']     = _n('Reservation', 'Reservations', 2);
-         $menu['utils']['content']['reservation']['shortcut']  = 'r';
+         $menu['utils']['content']['reservation']['title']            = _n('Reservation',
+                                                                           'Reservations', 2);
+         $menu['utils']['content']['reservation']['shortcut']         = 'r';
 
          $menu['utils']['content']['reservation']['page']             = '/front/reservationitem.php';
          $menu['utils']['content']['reservation']['links']['search']  = '/front/reservationitem.php';
@@ -1310,13 +1309,11 @@ class Html {
 
 
       if ($CFG_GLPI["use_ocs_mode"] && Session::haveRight("ocsng","w")) {
-         $menu['utils']['content']['ocsng']['title']  = __('OCSNG');
-         $menu['utils']['content']['ocsng']['page']   = '/front/ocsng.php';
+         $menu['utils']['content']['ocsng']['title']                     = __('OCSNG');
+         $menu['utils']['content']['ocsng']['page']                      = '/front/ocsng.php';
 
-         $menu['utils']['content']['ocsng']['options']['import']['title']
-                                          = __('Import new computers');
-         $menu['utils']['content']['ocsng']['options']['import']['page']
-                                          = '/front/ocsng.import.php';
+         $menu['utils']['content']['ocsng']['options']['import']['title'] = __('Import new computers');
+         $menu['utils']['content']['ocsng']['options']['import']['page']  = '/front/ocsng.import.php';
 
          $menu['utils']['content']['ocsng']['options']['sync']['title']
                                           = __('Synchronize computers already imported');
@@ -1620,7 +1617,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['type.monitor']['title']
-                           = _n('Monitors type', 'Monitors types', 2);
+                           = _n('Monitor type', 'Monitors types', 2);
             $menu['admin']['content']['dictionnary']['options']['type.monitor']['page']
                            = '/front/ruledictionnarymonitortype.php';
             $menu['admin']['content']['dictionnary']['options']['type.monitor']['links']['search']
@@ -1782,14 +1779,15 @@ class Html {
                foreach ($tab as $key => $val) {
                   if ($key == $option) {
                      $tmp = new $key();
-                     $menu['config']['content']['dropdowns']['options'][$option]['title'] = $val;
+                     $menu['config']['content']['dropdowns']['options'][$option]['title']
+                                    = $val;
                      $menu['config']['content']['dropdowns']['options'][$option]['page']
                                     = $tmp->getSearchURL(false);
                      $menu['config']['content']['dropdowns']['options'][$option]['links']['search']
                                     = $tmp->getSearchURL(false);
                      if ($tmp->canCreate()) {
                         $menu['config']['content']['dropdowns']['options'][$option]['links']['add']
-                                       = $tmp->getFormURL(false);
+                                    = $tmp->getFormURL(false);
                      }
                   }
                }
@@ -1816,7 +1814,7 @@ class Html {
                                     = $tmp->getSearchURL(false);
                      if ($tmp->canCreate()) {
                         $menu['config']['content']['device']['options'][$option]['links']['add']
-                                       = $tmp->getFormURL(false);
+                                    = $tmp->getFormURL(false);
                      }
                   }
                }
@@ -1841,7 +1839,7 @@ class Html {
 
 
       if (Session::haveRight("sla","r")) {
-         $menu['config']['content']['sla']['title']           = _n('SLA', 'SLA', 2);
+         $menu['config']['content']['sla']['title']           = _n('SLA', 'SLA');
          $menu['config']['content']['sla']['page']            = '/front/sla.php';
          $menu['config']['content']['sla']['links']['search'] = "/front/sla.php";
          if (Session::haveRight("sla","w")) {
@@ -1852,11 +1850,11 @@ class Html {
       if (Session::haveRight("config","w")) {
 
          //TRANS: menu title for "General setup""
-         $menu['config']['content']['config']['title'] = _x('setup', 'General');
-         $menu['config']['content']['config']['page']  = '/front/config.form.php';
+         $menu['config']['content']['config']['title']   = _x('setup', 'General');
+         $menu['config']['content']['config']['page']    = '/front/config.form.php';
 
-         $menu['config']['content']['control']['title'] = _n('Check', 'Checks', 2);
-         $menu['config']['content']['control']['page']  = '/front/control.php';
+         $menu['config']['content']['control']['title']  = _n('Check', 'Checks', 2);
+         $menu['config']['content']['control']['page']   = '/front/control.php';
 
          $menu['config']['content']['control']['options']['FieldUnicity']['title']
                         = __('Fields unicity');
@@ -1867,8 +1865,8 @@ class Html {
          $menu['config']['content']['control']['options']['FieldUnicity']['links']['search']
                         = '/front/fieldunicity.php';
 
-         $menu['config']['content']['crontask']['title']
-                        = _n('Automatic action', 'Automatic actions', 2);
+         $menu['config']['content']['crontask']['title']           = _n('Automatic action',
+                                                                        'Automatic actions', 2);
          $menu['config']['content']['crontask']['page']            = '/front/crontask.php';
          $menu['config']['content']['crontask']['links']['search'] = "/front/crontask.php";
 
@@ -1921,7 +1919,8 @@ class Html {
          $menu['config']['content']['mailcollector']['page']  = '/front/mailcollector.php';
 
          if (Toolbox::canUseImapPop()) {
-            $menu['config']['content']['mailcollector']['links']['search'] = '/front/mailcollector.php';
+            $menu['config']['content']['mailcollector']['links']['search']
+                                       = '/front/mailcollector.php';
             $menu['config']['content']['mailcollector']['links']['add']
                                        = '/front/mailcollector.form.php';
             $menu['config']['content']['mailcollector']['options']['rejectedemails']['links']['search']
@@ -2002,7 +2001,7 @@ class Html {
 
 
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
-                 __('My settings')."\">".__('My settings')."</a></li>";
+                 __s('My settings')."\">".__('My settings')."</a></li>";
 
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
                  addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
@@ -2185,8 +2184,8 @@ class Html {
          echo "<li>";
          if (isset($links['add'])) {
             echo "<a href='".$CFG_GLPI["root_doc"].$links['add']."'>";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".
-                   __s('Add')."\" alt=\"". __s('Add')."\"></a>";
+            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"". __s('Add')."\"
+                   alt=\"". __s('Add')."\"></a>";
 
          } else {
             echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' title=\"".
@@ -2343,7 +2342,7 @@ class Html {
    /**
     * Print footer for every page
     *
-    * @param $keepDB booleen, closeDBConnections if false
+    * @param $keepDB booleen, closeDBConnections if false (false by default)
    **/
    static function footer($keepDB=false) {
       global $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG;
@@ -2422,7 +2421,7 @@ class Html {
     * Print a simple HTML head with links
     *
     * @param $title title of the page
-    * @param $links links to display
+    * @param $links array of links to display
    **/
    static function simpleHeader($title, $links=array()) {
       global $CFG_GLPI, $HEADER_LOADED;
@@ -2488,8 +2487,8 @@ class Html {
    /**
     * Print a nice HTML head for help page
     *
-    * @param $title title of the page
-    * @param $url not used anymore.
+    * @param $title  title of the page
+    * @param $url    not used anymore (default '')
    **/
    static function helpHeader($title, $url='') {
       global $CFG_GLPI, $HEADER_LOADED, $PLUGIN_HOOKS;
@@ -2530,7 +2529,7 @@ class Html {
                  "' target='_blank' title=\"".__s('Help')."\"> ".__('Help').
            "</a></li>";
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
-                  __('Settings')."\">".__('Settings')."</a></li>\n";
+                  __s('Settings')."\">".__('Settings')."</a></li>\n";
 
       echo "</ul>";
       echo "<div class='sep'></div>";
@@ -2573,7 +2572,7 @@ class Html {
       if (Session::haveRight("reservation_helpdesk","1")) {
          echo "<li id='menu4'>";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservationitem.php' title=\"".
-                _n('Reservation', 'Reservations', 2)."\" class='itemP'>".
+                _sn('Reservation', 'Reservations', 2)."\" class='itemP'>".
                 _n('Reservation', 'Reservations', 2)."</a>";
          echo "</li>";
       }
@@ -2611,8 +2610,7 @@ class Html {
 
          asort($list);
          echo "<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\">";
-         echo "<a href='#' title=\"".__s('Plugins')."\" class='itemP'>".
-                __('Plugins')."</a>";  // default none
+         echo "<a href='#' title=\"".__s('Plugins')."\" class='itemP'>". __('Plugins')."</a>";  // default none
          echo "<ul class='ssmenu'>";
 
          // list menu item
@@ -2742,8 +2740,8 @@ class Html {
    /**
     * Print a nice HTML head with no controls
     *
-    * @param $title title of the page
-    * @param $url not used anymore.
+    * @param $title  title of the page
+    * @param $url    not used anymore (default '')
    **/
    static function nullHeader($title, $url='') {
       global $CFG_GLPI, $HEADER_LOADED;
@@ -2807,8 +2805,8 @@ class Html {
    /**
     * Print a nice HTML head for popup window (nothing to display)
     *
-    * @param $title title of the page
-    * @param $url not used anymore.
+    * @param $title  title of the page
+    * @param $url    not used anymore (default '')
    **/
    static function popHeader($title, $url='') {
       global $CFG_GLPI, $PLUGIN_HOOKS, $HEADER_LOADED;
@@ -2866,9 +2864,9 @@ class Html {
    /**
     * show arrow for massives actions : opening
     *
-    * @param $formname string
-    * @param $fixed boolean - used tab_cadre_fixe in both tables
-    * @param $width only for dictionnary
+    * @param $formname  string
+    * @param $fixed     boolean  used tab_cadre_fixe in both tables (false by default)
+    * @param $width              only for dictionnary (default '80%')
    **/
    static function openArrowMassives($formname, $fixed=false, $width='80%') {
       global $CFG_GLPI;
@@ -2913,13 +2911,13 @@ class Html {
    /**
     * Display Date form with calendar
     *
-    * @param $element name of the element
-    * @param $value default value to display
-    * @param $maybeempty may be empty ?
-    * @param $can_edit could not modify element
-    * @param $minDate minimum allowed date
-    * @param $maxDate maximum allowed date
-    * @param $displayYear should we set/diplay the year?
+    * @param $element      name of the element
+    * @param $value        default value to display (default '')
+    * @param $maybeempty   may be empty ? (true by default)
+    * @param $can_edit     could not modify element (true by default)
+    * @param $minDate      minimum allowed date (default '')
+    * @param $maxDate      maximum allowed date (default '')
+    * @param $displayYear  should we set/diplay the year? (true by default)
     *
     * @return rand value used
    **/
@@ -2983,15 +2981,15 @@ class Html {
    /**
     * Display DateTime form with calendar
     *
-    * @param $element name of the element
-    * @param $value default value to display
-    * @param $time_step step for time in minute (-1 use default config)
-    * @param $maybeempty may be empty ?
-    * @param $can_edit could not modify element
-    * @param $minDate minimum allowed date
-    * @param $maxDate maximum allowed date
-    * @param $minTime minimum allowed time
-    * @param $maxTime maximum allowed time
+    * @param $element      name of the element
+    * @param $value        default value to display (default '')
+    * @param $time_step    step for time in minute (-1 use default config) (default -1)
+    * @param $maybeempty   may be empty ? (true by default)
+    * @param $can_edit     could not modify element (true by default)
+    * @param $minDate      minimum allowed date (default '')
+    * @param $maxDate      maximum allowed date (default '')
+    * @param $minTime      minimum allowed time (default '')
+    * @param $maxTime      maximum allowed time (default '')
     *
     * @return rand value used
    **/
@@ -3003,7 +3001,6 @@ class Html {
       if ($time_step<0) {
          $time_step = $CFG_GLPI['time_step'];
       }
-
 
       $rand = mt_rand();
       echo "<input type='hidden' id='showdate$rand' value=''>";
@@ -3116,9 +3113,9 @@ class Html {
    /**
     * Show generic date search
     *
-    * @param $element name of the html element
-    * @param $value default value
-    * @param $options : array of options may be :
+    * @param $element         name of the html element
+    * @param $value           default value (default '')
+    * @param $options   array of options may be :
     *      - with_time display with time selection ? (default false)
     *      - with_future display with future date selection ? (default false)
     *      - with_days display specific days selection TODAY, BEGINMONTH, LASTMONDAY... ? (default true)
@@ -3261,7 +3258,7 @@ class Html {
       }
 
       for ($i=1 ; $i<=12 ; $i++) {
-         $dates['-'.$i.'MONTH'] = sprintf(_n('- %d month','- %d monhs',$i),$i);
+         $dates['-'.$i.'MONTH'] = sprintf(_n('- %d month','- %d months',$i),$i);
       }
 
       if ($params['with_days']) {
@@ -3275,24 +3272,24 @@ class Html {
       if ($params['with_future']) {
          if ($params['with_time']) {
             for ($i=1 ; $i<=24 ; $i++) {
-               $dates[$i.'HOUR'] = sprintf(_n('+ %d hour','- %d hours',$i),$i);
+               $dates[$i.'HOUR'] = sprintf(_n('+ %d hour','+ %d hours',$i),$i);
             }
          }
 
          for ($i=1 ; $i<=7 ; $i++) {
-            $dates[$i.'DAY'] = sprintf(_n('+ %d day','- %d days',$i),$i);
+            $dates[$i.'DAY'] = sprintf(_n('+ %d day','+ %d days',$i),$i);
          }
 
          for ($i=1 ; $i<=10 ; $i++) {
-            $dates[$i.'WEEK'] = sprintf(_n('+ %d week','- %d weeks',$i),$i);
+            $dates[$i.'WEEK'] = sprintf(_n('+ %d week','+ %d weeks',$i),$i);
          }
 
          for ($i=1 ; $i<=12 ; $i++) {
-            $dates[$i.'MONTH'] = sprintf(_n('+ %d month','- %d months',$i),$i);
+            $dates[$i.'MONTH'] = sprintf(_n('+ %d month','+ %d months',$i),$i);
          }
 
          for ($i=1 ; $i<=10 ; $i++) {
-            $dates[$i.'YEAR'] = sprintf(_n('+ %d year','- %d years',$i),$i);
+            $dates[$i.'YEAR'] = sprintf(_n('+ %d year','+ %d years',$i),$i);
          }
       }
       return $dates;
@@ -3305,9 +3302,9 @@ class Html {
     *
     * @since version 0.83
     *
-    * @param $val date / datetime value passed
-    * @param $force_day bool force computation in days
-    * @param $specifictime timestamp set specific timestamp
+    * @param $val          date / datetime   value passed
+    * @param $force_day    boolean           force computation in days (false by default)
+    * @param $specifictime timestamp         set specific timestamp (default '')
     *
     * @return computed date / datetime value
     * @see showGenericDateTimeSearch
@@ -3462,8 +3459,8 @@ class Html {
    /**
     * Show a tooltip on an item
     *
-    * @param $content string data to put in the tooltip
-    * @param $options array possible options
+    * @param $content   string   data to put in the tooltip
+    * @param $options   array    of possible options
     * Parameters which could be used in options array :
     *   - applyto : string / id of the item to apply tooltip (default empty).
     *                  If not set display an icon
@@ -3580,9 +3577,9 @@ class Html {
    /**
     * Show div with auto completion
     *
-    * @param $item item object used for create dropdown
-    * @param $field field to search for autocompletion
-    * @param $options possible options
+    * @param $item            item object used for create dropdown
+    * @param $field           field to search for autocompletion
+    * @param $options   array of possible options
     * Parameters which could be used in options array :
     *    - name : string / name of the select (default is field parameter)
     *    - value : integer / preselected value (default value of the item object)
@@ -3709,9 +3706,9 @@ class Html {
    /**
     * Print Ajax pager for list in tab panel
     *
-    * @param $title displayed above
-    * @param $start from witch item we start
-    * @param $numrows total items
+    * @param $title     displayed above
+    * @param $start     from witch item we start
+    * @param $numrows   total items
     *
     * @return nothing (print a pager)
    **/
@@ -3789,8 +3786,8 @@ class Html {
    /**
     * Clean Printing of and array in a table
     *
-    * @param $tab the array to display
-    * @param $pad Pad used
+    * @param $tab    the array to display
+    * @param $pad    Pad used (default 0)
     *
     * @return nothing
    **/
@@ -3821,12 +3818,13 @@ class Html {
    /**
     * Print pager for search option (first/previous/next/last)
     *
-    * @param $start from witch item we start
-    * @param $numrows total items
-    * @param $target page would be open when click on the option (last,previous etc)
-    * @param $parameters parameters would be passed on the URL.
-    * @param $item_type_output item type display - if >0 display export PDF et Sylk form
-    * @param $item_type_output_param item type parameter for export
+    * @param $start                       from witch item we start
+    * @param $numrows                     total items
+    * @param $target                      page would be open when click on the option (last,previous etc)
+    * @param $parameters                  parameters would be passed on the URL.
+    * @param $item_type_output            item type display - if >0 display export PDF et Sylk form
+    *                                     (default 0)
+    * @param $item_type_output_param item type parameter for export (default 0)
     *
     * @return nothing (print a pager)
     *
@@ -3848,7 +3846,7 @@ class Html {
 
       // And the human is viewing from start to end
       $current_end = $current_start+$list_limit-1;
-      if ($current_end>$numrows) {
+      if ($current_end > $numrows) {
          $current_end = $numrows;
       }
 
@@ -3941,7 +3939,8 @@ class Html {
    /**
     * Display the list_limit combo choice
     *
-    * @param $action page would be posted when change the value (URL + param)
+    * @param $action page would be posted when change the value (URL + param) (default '')
+    *
     * ajax Pager will be displayed if empty
     *
     * @return nothing (print a combo)

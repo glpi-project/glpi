@@ -54,11 +54,11 @@ abstract class FQDNLabel extends CommonDBChild {
    /**
     * Get the internet name from a label and a domain ID
     *
-    * @param $label (string) the label of the computer or its alias
-    * @param $domain (integer) id of the domain that owns the item
+    * @param $label   string   the label of the computer or its alias
+    * @param $domain  integer  id of the domain that owns the item
     *
     * @return result the full internet name
-    **/
+   **/
    static function getInternetNameFromLabelAndDomainID($label, $domain) {
 
       $domainName = FQDN::getFQDNFromID($domain);
@@ -74,10 +74,11 @@ abstract class FQDNLabel extends CommonDBChild {
     * Check a label regarding section 6.1.3.5 of RFC 1123 : 63 lengths and no other characters
     * than alphanumerics. Minus ('-') is allowed if it is not at the end or begin of the lable.
     *
-    * @param $label the label to check
-    * @param $canBeEmpty true if empty label is valid (name of NetworkName or NetworkAlias)
+    * @param $label        the label to check
+    * @param $canBeEmpty   true if empty label is valid (name of NetworkName or NetworkAlias)
+    *                      (false by default)
     **/
-   static function checkFQDNLabel($label, $canBeEmpty = false) {
+   static function checkFQDNLabel($label, $canBeEmpty=false) {
 
       if (empty($label)) {
          return $canBeEmpty;
@@ -101,11 +102,11 @@ abstract class FQDNLabel extends CommonDBChild {
     * object. Otherwise, unicity will answer false in case of updatint with the same label and
     * domain
     *
-    * @param $label the label to check
-    * @param $fqdns_id ID of the domain
-    * @param $labeltype the type of the current Label
-    * @param $labels_id the if of the current Label
-    **/
+    * @param $label        the label to check
+    * @param $fqdns_id     ID of the domain
+    * @param $labeltype    the type of the current Label
+    * @param $labels_id    the if of the current Label
+   **/
    static function checkFQDNLabelUnicity($label, $fqdns_id, $labeltype, $labels_id) {
 
       foreach (self::getIDsByLabelAndFQDNID($label, $fqdns_id) as $class => $IDs) {
@@ -128,7 +129,6 @@ abstract class FQDNLabel extends CommonDBChild {
       // Before adding a name, we must unsure its is valid : conform to RFC and is unique
 
       if (isset($input['name'])) {
-
          $input['name'] = strtolower ( $input['name'] ) ;
 
          if (!self::checkFQDNLabel($input['name'], true)) {
@@ -177,8 +177,8 @@ abstract class FQDNLabel extends CommonDBChild {
    /**
     * Get all label IDs corresponding to given string label and FQDN ID
     *
-    * @param $label string label to search for
-    * @param $fqdns_id the id of the FQDN that owns the label
+    * @param $label     string   label to search for
+    * @param $fqdns_id           the id of the FQDN that owns the label
     *
     * @return array two arrays (NetworkName and NetworkAlias) of the IDs
     **/
@@ -186,8 +186,8 @@ abstract class FQDNLabel extends CommonDBChild {
       global $DB;
 
       $IDs = array();
-      foreach(array('NetworkName' => 'glpi_networknames', 'NetworkAlias' => 'glpi_networkaliases')
-              as $class => $table) {
+      foreach(array('NetworkName'  => 'glpi_networknames',
+                    'NetworkAlias' => 'glpi_networkaliases') as $class => $table) {
          $query = "SELECT `id`
                    FROM `$table`
                    WHERE `name` = '$label'
@@ -200,6 +200,7 @@ abstract class FQDNLabel extends CommonDBChild {
       return $IDs;
    }
 
+
    /**
     * Look for "computer name" inside all databases
     *
@@ -209,26 +210,28 @@ abstract class FQDNLabel extends CommonDBChild {
     *                 items from the master item to the NetworkPort
     **/
    static function getItemsByFQDN($fqdn) {
+
       $FQNDs_with_Items = array();
 
       if (!FQDN::checkFQDN($fqdn)) {
          return array();
       }
 
-      $position = strpos( $fqdn, "." );
-      $label    = strtolower( substr( $fqdn, 0, $position ));
-      $fqdns_id = FQDN::getFQDNIDByFQDN( substr( $fqdn, $position + 1 ));
+      $position = strpos($fqdn, ".");
+      $label    = strtolower(substr( $fqdn, 0, $position));
+      $fqdns_id = FQDN::getFQDNIDByFQDN(substr( $fqdn, $position + 1));
 
       if ($fqdns_id < 0) {
          return array();
       }
 
       foreach (self::getIDsByLabelAndFQDNID($label, $fqdns_id) as $class => $IDs) {
-         $FQDNlabel = new $class();
-         foreach ($IDs as $ID) {
-            if ($FQDNlabel->getFromDB($ID)) {
-               $FQNDs_with_Items[] = array_merge(array_reverse($FQDNlabel->recursivelyGetItems()),
-                                                 array(clone $FQDNlabel));
+         if ($FQDNlabel = getItemForItemtype($class)) {
+            foreach ($IDs as $ID) {
+               if ($FQDNlabel->getFromDB($ID)) {
+                  $FQNDs_with_Items[] = array_merge(array_reverse($FQDNlabel->recursivelyGetItems()),
+                                                    array(clone $FQDNlabel));
+               }
             }
          }
       }
@@ -236,10 +239,11 @@ abstract class FQDNLabel extends CommonDBChild {
       return $FQNDs_with_Items;
    }
 
+
    /**
     * Get an Object ID by its name (only if one result is found in the entity)
     *
-    * @param $value the name
+    * @param $value  the name
     * @param $entity the entity to look for
     *
     * @return an array containing the object ID
@@ -251,7 +255,7 @@ abstract class FQDNLabel extends CommonDBChild {
 
       if (count($labels_with_items) == 1) {
          $label_with_items = $labels_with_items[0];
-         $item = $label_with_items[0];
+         $item             = $label_with_items[0];
          if ($item->getEntityID() == $entity) {
             $result = array("id"       => $item->getID(),
                             "itemtype" => $item->getType());

@@ -119,5 +119,4 @@ class GraphPalette extends ezcGraphPalette {
    protected $margin = 0;
 
 }
-
 ?>

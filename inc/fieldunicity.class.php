@@ -87,10 +87,10 @@ class FieldUnicity extends CommonDropdown {
    **/
    function defineTabs($options=array()) {
 
-      $ong = array();
+      $ong          = array();
       $ong['empty'] = $this->getTypeName();
       $this->addStandardTab($this->getType(), $ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -139,8 +139,8 @@ class FieldUnicity extends CommonDropdown {
    /**
     * Display a dropdown which contains all the available itemtypes
     *
-    * @param ID the field unicity item id
-    * @param value the selected value
+    * @param ID      the field unicity item id
+    * @param value   the selected value (default 0)
     *
     * @return nothing
    **/
@@ -179,9 +179,9 @@ class FieldUnicity extends CommonDropdown {
    /**
     * Return criteria unicity for an itemtype, in an entity
     *
-    * @param itemtype the itemtype for which unicity must be checked
-    * @param entities_id the entity for which configuration must be retrivied
-    * @param $check_active
+    * @param itemtype      the itemtype for which unicity must be checked
+    * @param entities_id   the entity for which configuration must be retrivied (default 0)
+    * @param $check_active (true by default)
     *
     * @return an array of fields to check, or an empty array if no
    **/
@@ -431,7 +431,7 @@ class FieldUnicity extends CommonDropdown {
                           COUNT(*) AS cpt
                    FROM `".$item->getTable()."`
                    WHERE `".$item->getTable()."`.`entities_id` IN (".implode(',',$entities).")
-                        $where_template
+                         $where_template
                    GROUP BY $fields_string
                    ORDER BY cpt DESC";
          $results = array();
