@@ -655,8 +655,8 @@ class EntityData extends CommonDBChild {
       Alert::dropdownIntegerNever('use_reservations_alert',
                                   $entitynotification->fields['use_reservations_alert'],
                                   array('max'            => 99,
-                                        'inherit_parent' => ($ID>0 ? 1 : 0)));
-      echo "&nbsp;".Toolbox::ucfirst(__('hour(s)'))."</td></tr>";
+                                        'inherit_parent' => ($ID>0 ? 1 : 0),
+                                        'unit'           => 'hour'));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>".
@@ -849,16 +849,17 @@ class EntityData extends CommonDBChild {
       echo "<tr><th colspan='4'>".__('Automatic closing configuration')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>".
-           "<td colspan='2'>".__('Automatic closing of solved tickets after (day(s))')."</td>";
+           "<td colspan='2'>".__('Automatic closing of solved tickets after')."</td>";
       echo "<td colspan='2'>";
       $autoclose = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'),
-                         self::CONFIG_NEVER  => __('Never'));
+                         self::CONFIG_NEVER  => __('Never'),
+                         0                   => __('Immediatly'));
       if ($ID == 0) {
          unset($autoclose[self::CONFIG_PARENT]);
       }
 
-      Dropdown::showInteger('autoclose_delay', $entdata->fields['autoclose_delay'], 0, 99, 1,
-                            $autoclose);
+      Dropdown::showInteger('autoclose_delay', $entdata->fields['autoclose_delay'], 1, 99, 1,
+                            $autoclose, array('unit' => 'day'));
 
       if ($entdata->fields['autoclose_delay'] == self::CONFIG_PARENT && $ID != 0) {
          $autoclose_mode = self::getUsedConfig('autoclose_delay', $entdata->fields['entities_id'],
@@ -874,10 +875,10 @@ class EntityData extends CommonDBChild {
       }
       echo "</td></tr>";
 
-      echo "<tr><th colspan='4'>".__s('Configuring the satisfaction survey')."</th></tr>";
+      echo "<tr><th colspan='4'>".__('Configuring the satisfaction survey')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>".
-           "<td colspan='2'>".__s('Configuring the satisfaction survey')."</td>";
+           "<td colspan='2'>".__('Configuring the satisfaction survey')."</td>";
       echo "<td colspan='2'>";
 
       /// no inquest case = rate 0
@@ -908,17 +909,17 @@ class EntityData extends CommonDBChild {
          } else {
             echo $typeinquest[$inquestconfig].'<br>';
             $inqconf = self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
-                                            'inquest_delay');
+                                           'inquest_delay');
 
-            printf(_n('%d day','%d days',$inqconf),$inqconf);
+            printf(_n('%d day','%d days',$inqconf), $inqconf);
             echo "<br>";
             //TRANS: %d is the percentage. %% to display %
-            printf(__('%d%%'),$inquestrate);
+            printf(__('%d%%'), $inquestrate);
 
             if ($inquestconfig == 2) {
                echo "<br>";
                echo self::getUsedConfig('inquest_config', $entdata->fields['entities_id'],
-                                              'inquest_URL');
+                                        'inquest_URL');
             }
          }
          echo "</td></tr>\n";
@@ -965,10 +966,10 @@ class EntityData extends CommonDBChild {
    /**
     * Retrieve data of current entity or parent entity
     *
-    * @param $fieldref  string name of the referent field to know if we look at parent entity
+    * @param $fieldref        string   name of the referent field to know if we look at parent entity
     * @param $entities_id
-    * @param $fieldval string name of the field that we want value
-    * @param $default_value value to return
+    * @param $fieldval        string   name of the field that we want value (default '')
+    * @param $default_value            value to return (default -2)
    **/
    static function getUsedConfig($fieldref, $entities_id, $fieldval='', $default_value=-2) {
 
@@ -977,7 +978,7 @@ class EntityData extends CommonDBChild {
          $fieldval = $fieldref;
       }
 
-      $entdata = new EntityData();
+      $entdata = new self();
 
       // Search in entity data of the current entity
       if ($entdata->getFromDB($entities_id)) {
@@ -1192,7 +1193,7 @@ class EntityData extends CommonDBChild {
     *
     * @since version 0.83
     *
-    * @param $val if not set, ask for all values, else for 1 value
+    * @param $val if not set, ask for all values, else for 1 value (default NULL)
     *
     * @return array or string
     */
@@ -1271,7 +1272,7 @@ class EntityData extends CommonDBChild {
                case self::CONFIG_NEVER :
                   return __('Never');
             }
-            return sprintf(_n('%d day','%d days',$values[$field]),$values[$field]);
+            return sprintf(_n('%d day','%d days',$values[$field]), $values[$field]);
 
          case 'auto_assign_mode' :
             return self::getAutoAssignMode($values[$field]);
@@ -1317,7 +1318,7 @@ class EntityData extends CommonDBChild {
                   if (strstr($values[$field], '_')) {
                      list($type,$sid) = explode('_', $values[$field], 2);
                      if ($type == Infocom::ON_STATUS_CHANGE) {
-                        // TRANS %s is the name of the state
+                                       // TRANS %s is the name of the state
                         return sprintf(__('Fill when shifting to state %s'),
                                        Dropdown::getDropdownName('glpi_states', $sid));
                      }
@@ -1356,5 +1357,4 @@ class EntityData extends CommonDBChild {
       return '';
    }
 }
-
 ?>
