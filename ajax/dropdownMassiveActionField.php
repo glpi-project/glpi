@@ -42,7 +42,7 @@ if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST['itemtype'
    exit();
 }
 
-if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
+if (in_array($_POST["itemtype"], $CFG_GLPI["infocom_types"])) {
    Session::checkSeveralRightsOr(array($_POST["itemtype"] => "w",
                                        "infocom"          => "w"));
 } else {
@@ -67,12 +67,12 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
 
          case "glpi_contracts.duration" :
          case "glpi_contracts.notice" :
-            Dropdown::showInteger($search["linkfield"], 0, 0, 120, 1, array(), array('unit'=>'month'));
+            Dropdown::showInteger($search["linkfield"], 0, 0, 120, 1, array(),
+                                  array('unit'=>'month'));
             break;
 
          case "glpi_softwarelicenses.number" :
-            Dropdown::showInteger($search["linkfield"], 0, 1, 1000, 1,
-                                  array(-1 => __('Unlimited')));
+            Dropdown::showInteger($search["linkfield"], 0, 1, 1000, 1, array(-1 => __('Unlimited')));
             break;
 
          case "glpi_contracts.alert" :
@@ -167,7 +167,8 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
 
                   case "itemtypename" :
                      if (isset($search['itemtype_list'])) {
-                        Dropdown::dropdownTypes($search["linkfield"],'',$CFG_GLPI[$search['itemtype_list']]);
+                        Dropdown::dropdownTypes($search["linkfield"], '',
+                                                $CFG_GLPI[$search['itemtype_list']]);
                         $already_display = true;
                      }
                      break;
@@ -183,7 +184,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                      break;
 
                   case "text" :
-                     echo "<textarea cols='45' rows='5' name='".$search["linkfield"]."' ></textarea>";
+                     echo "<textarea cols='45' rows='5' name='".$search["linkfield"]."'></textarea>";
                      $already_display = true;
                      break;
                }
@@ -281,7 +282,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
 
          break;
 
-         case "glpi_softwareversions":
+         case "glpi_softwareversions" :
             switch ($search["linkfield"]) {
                case "softwareversions_id_use" :
                case "softwareversions_id_buy" :
@@ -328,7 +329,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                      break;
 
                   case "text" :
-                     echo "<textarea cols='45' rows='5' name='".$search["linkfield"]."' ></textarea>";
+                     echo "<textarea cols='45' rows='5' name='".$search["linkfield"]."'></textarea>";
                      $already_display = true;
                      break;
                }

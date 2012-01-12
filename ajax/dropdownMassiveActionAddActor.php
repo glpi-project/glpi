@@ -46,5 +46,4 @@ if ($_POST["actortype"] > 0) {
    Ticket::showActorAddForm($_POST["actortype"], $rand, $_SESSION['glpiactive_entity'], false, false);
    echo "&nbsp;<input type='submit' name='add_actor' class='submit' value=\"".__s('Add')."\">";
 }
-
 ?>

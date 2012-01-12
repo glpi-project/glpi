@@ -68,5 +68,4 @@ if (isset($_POST["rubdoc"])) {
                         'rand'      => $_POST['rand'],
                         'condition' => "glpi_documents.documentcategories_id='".$_POST["rubdoc"]."'"));
 }
-
 ?>

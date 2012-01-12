@@ -78,5 +78,4 @@ if ($_POST['softwares_id']>0) {
    }
    echo "</select>&nbsp;";
 }
-
 ?>

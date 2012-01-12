@@ -42,7 +42,7 @@ Session::checkLoginUser();
 // Make a select box
 if (isset($_POST["itemtype"]) && CommonITILObject::isPossibleToAssignType($_POST["itemtype"])) {
    $table = getTableForItemType($_POST["itemtype"]);
-   $rand  =mt_rand();
+   $rand  = mt_rand();
 
    // Message for post-only
    if (!isset($_POST["admin"]) || $_POST["admin"]==0) {
@@ -67,5 +67,4 @@ if (isset($_POST["itemtype"]) && CommonITILObject::isPossibleToAssignType($_POST
    echo "</span>\n";
 
 }
-
 ?>

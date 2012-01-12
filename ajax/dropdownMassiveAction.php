@@ -60,6 +60,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
    echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
    echo "<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
    echo '&nbsp;';
+
    switch($_POST["action"]) {
       case "activate_rule" :
          Dropdown::showYesNo("activate_rule");
@@ -105,8 +106,9 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
       case "add_task" :
          $tasktype = $_POST['itemtype']."Task";
-         $ttype    = new $tasktype();
-         $ttype->showFormMassiveAction();
+         if ($ttype = getItemForItemtype($tasktype)) {
+            $ttype->showFormMassiveAction();
+         }
          break;
 
       case "add_actor" :
@@ -160,9 +162,8 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "add_transfer_list" :
       case "activate_infocoms" :
       case "delete_email" :
-      case 'reset':
-         echo "<input type='submit' name='massiveaction' class='submit' value='".
-                __s('Post')."'>\n";
+      case 'reset' :
+         echo "<input type='submit' name='massiveaction' class='submit' value='". __s('Post')."'>\n";
          break;
 
       case "unlock_ocsng_field" :
@@ -179,8 +180,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "unlock_ocsng_printer" :
       case "unlock_ocsng_disk" :
       case "unlock_ocsng_ip" :
-         echo "<input type='submit' name='massiveaction' class='submit' value='".
-                __s('Unlock')."'>";
+         echo "<input type='submit' name='massiveaction' class='submit' value='". __s('Unlock')."'>";
          break;
 
       case "install" :
@@ -366,5 +366,4 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          }
    }
 }
-
 ?>

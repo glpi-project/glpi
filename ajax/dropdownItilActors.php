@@ -68,7 +68,8 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
                                    'field'       => "_itil_".$_POST["actortype"]);
             // Fix rand value
             $options['rand']     = $rand;
-            $options['toupdate'] = array('value_fieldname' => 'value',
+            $options['toupdate'] = array('value_fieldname'
+                                                      => 'value',
                                          'to_update'  => "notif_user_$rand",
                                          'url'        => $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
                                          'moreparams' => $paramscomment);
@@ -81,7 +82,8 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
                echo __('Email followup').'&nbsp;';
                $rand = Dropdown::showYesNo('_itil_'.$_POST["actortype"].'[use_notification]', 1);
                echo '<br>';
-               echo sprintf(__('Email: %s'), "<input type='text' size='25' name='_itil_".$_POST["actortype"]."[alternative_email]'>");
+               echo sprintf(__('Email: %s'), "<input type='text' size='25' name='_itil_".
+                                               $_POST["actortype"]."[alternative_email]'>");
             }
             echo "</span>";
          }
@@ -100,5 +102,4 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
          break;
    }
 }
-
 ?>
