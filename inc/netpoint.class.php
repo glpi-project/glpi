@@ -193,7 +193,7 @@ class Netpoint extends CommonDropdown {
     *
     * @return the ID of the new (or -1 if not found)
    **/
-   function findID(&$input) {
+   function findID(array &$input) {
       global $DB;
 
       if (!empty($input["name"])) {

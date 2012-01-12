@@ -56,7 +56,7 @@ class Contract_Item extends CommonDBRelation{
     *
     * @return boolean
    **/
-   function can($ID, $right, &$input=NULL) {
+   function can($ID, $right, array &$input=NULL) {
 
       if ($ID<0) {
          // Ajout

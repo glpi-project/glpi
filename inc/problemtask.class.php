@@ -165,7 +165,7 @@ class ProblemTask extends CommonITILTask {
     *
     * @return Nothing (display function)
    **/
-   static function displayPlanningItem($val, $who, $type="", $complete=0) {
+   static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
       return parent::genericDisplayPlanningItem('ProblemTask',$val, $who, $type, $complete);
    }
 

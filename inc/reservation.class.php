@@ -253,7 +253,7 @@ class Reservation extends CommonDBChild {
    }
 
 
-   function can($ID, $right, &$input=NULL) {
+   function can($ID, $right, array &$input=NULL) {
 
       if (empty($ID) || $ID<=0) {
          return Session::haveRight("reservation_helpdesk", "1");

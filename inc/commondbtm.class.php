@@ -2950,7 +2950,7 @@ class CommonDBTM extends CommonGLPI {
     *
     * @return return the string to display
    **/
-   static function getSpecificValueToDisplay($field, $values, $options=array()) {
+   static function getSpecificValueToDisplay($field, array $values, $options=array()) {
       return '';
    }
 
