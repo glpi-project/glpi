@@ -1296,10 +1296,9 @@ class Search {
                   $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
                   if ($max>0 && $max<($row_num+10)) {
                      echo "<table class='tab_cadre' width='80%'><tr class='tab_bg_1'><td><span class='b'>";
-                     _e('Selection too large, massive action disabled.');
+                     echo __('Selection too large, massive action disabled.')."</span>";
                      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                        echo "</span><br>";
-                        _e('To increase the limit: change max_input_vars in php configuration');
+                        echo "<br>".__('To increase the limit: change max_input_vars in php configuration.');
                      }
                      echo "</td></tr></table>";
                   } else {
