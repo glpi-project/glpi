@@ -170,7 +170,7 @@ class Group extends CommonTreeDropdown {
    /**
    * Print the group form
    *
-   * @param $ID integer ID of the item
+   * @param $ID      integer ID of the item
    * @param $options array
    *     - target filename : where to go when done.
    *     - withtemplate boolean : template or basic item
@@ -218,7 +218,7 @@ class Group extends CommonTreeDropdown {
       echo "<td>";
       dropdown::showYesNo('is_requester', $this->fields['is_requester']);
       echo "</td>";
-      echo "<td>".__('Assigned to')."&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+      echo "<td>".__('Assigned to')."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
       dropdown::showYesNo('is_assign', $this->fields['is_assign']);
       echo "</td></tr>";
 
@@ -237,7 +237,7 @@ class Group extends CommonTreeDropdown {
       echo "<td>";
       dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
       echo "</td>";
-      echo "<td>"._n('User  ', 'Users  ', 2);
+      echo "<td>"._n('User', 'Users', 2)."&nbsp;&nbsp;&nbsp;";
       dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
       echo "</td></tr>";
 
@@ -246,10 +246,10 @@ class Group extends CommonTreeDropdown {
 
       if (!$ID) {
          //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'),Html::convDateTime($_SESSION["glpi_currenttime"]));
+         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
       } else {
          //TRANS: %s is the datetime of update
-         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
       echo "</td></tr>";
 
@@ -274,7 +274,7 @@ class Group extends CommonTreeDropdown {
           && AuthLdap::useAuthLdap()) {
 
          $buttons["ldap.group.php"] = __('LDAP directory link');
-         $title = "";
+         $title                     = "";
 
       } else {
          $title = self::getTypeName(2);
@@ -289,23 +289,22 @@ class Group extends CommonTreeDropdown {
 
       $tab = parent::getSearchOptions();
 
-
       if (AuthLdap::useAuthLdap()) {
 
-         $tab[3]['table']     = $this->getTable();
-         $tab[3]['field']     = 'ldap_field';
-         $tab[3]['name']      = __('User attribute containing its groups');
-         $tab[3]['datatype']  = 'string';
+         $tab[3]['table']       = $this->getTable();
+         $tab[3]['field']       = 'ldap_field';
+         $tab[3]['name']        = __('Attribute of the user containing its groups');
+         $tab[3]['datatype']    = 'string';
 
-         $tab[4]['table']     = $this->getTable();
-         $tab[4]['field']     = 'ldap_value';
-         $tab[4]['name']      = __('Attribute value');
-         $tab[4]['datatype']  = 'string';
+         $tab[4]['table']       = $this->getTable();
+         $tab[4]['field']       = 'ldap_value';
+         $tab[4]['name']        = __('Attribute value');
+         $tab[4]['datatype']    = 'string';
 
-         $tab[5]['table']     = $this->getTable();
-         $tab[5]['field']     = 'ldap_group_dn';
-         $tab[5]['name']      = __('Group DN');
-         $tab[5]['datatype']  = 'string';
+         $tab[5]['table']       = $this->getTable();
+         $tab[5]['field']       = 'ldap_group_dn';
+         $tab[5]['name']        = __('Group DN');
+         $tab[5]['datatype']    = 'string';
       }
 
       $tab[11]['table']         = $this->getTable();
@@ -375,7 +374,7 @@ class Group extends CommonTreeDropdown {
          echo "<td colspan='2' class='center'>".__('In users')."</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('User attribute containing its groups')."</td>";
+         echo "<td>".__('Attribute of the user containing its groups')."</td>";
          echo "<td>";
          Html::autocompletionTextField($this, "ldap_field");
          echo "</td></tr>";
@@ -410,16 +409,16 @@ class Group extends CommonTreeDropdown {
     *
     * @since version 0.83
     *
-    * @param $types  Array of types
-    * @param $field  String field name
-    * @param $tree   Boolean include child groups
-    * @param $user   Boolean include members (users)
-    * @param $start  Integer (first row to retrieve)
-    * @param $res    Array result filled on ouput
+    * @param $types  Array    of types
+    * @param $field  String   field name
+    * @param $tree   Boolean  include child groups
+    * @param $user   Boolean  include members (users)
+    * @param $start  Integer  (first row to retrieve)
+    * @param $res    Array    result filled on ouput
     *
     * @return integer total of items
    **/
-   function getDataItems($types, $field, $tree, $user, $start, &$res) {
+   function getDataItems(array $types, $field, $tree, $user, $start, array &$res) {
       global $DB;
 
       // include item of child groups ?
@@ -430,7 +429,7 @@ class Group extends CommonTreeDropdown {
       }
       // include items of members
       if ($user) {
-         $ufield = str_replace('groups', 'users', $field);
+         $ufield      = str_replace('groups', 'users', $field);
          $grprestrict = "(`$field` $grprestrict
                           OR (`$field`=0
                               AND `$ufield` IN (SELECT `users_id`
@@ -505,7 +504,7 @@ class Group extends CommonTreeDropdown {
    /**
     * Show items for the group
     *
-    * @param $tech boolean, false search groups_id, true, search groups_id_tech
+    * @param $tech   boolean  false search groups_id, true, search groups_id_tech
    **/
    function showItems($tech) {
       global $DB, $CFG_GLPI;
@@ -566,8 +565,7 @@ class Group extends CommonTreeDropdown {
          Html::printAjaxPager('', $start, $nb);
 
          echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
-         echo "<th>".__('Type')."</th>";
-         echo "<th>".__('Name')."</th><th>".__('Entity')."</th>";
+         echo "<th>".__('Type')."</th><th>".__('Name')."</th><th>".__('Entity')."</th>";
          if ($tree || $user) {
             echo "<th>".self::getTypeName(1)." / ".User::getTypeName(1)."</th>";
          }

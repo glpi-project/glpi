@@ -36,6 +36,8 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkCentralAccess();
+toolbox::logDebug("Count", count($_POST['item']));
+
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();

@@ -77,22 +77,22 @@ class Fieldblacklist extends CommonDropdown {
 
       $tab = parent::getSearchOptions();
 
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'itemtype';
-      $tab[4]['name']          = __('Type');
-      $tab[4]['massiveaction'] = false;
-      $tab[4]['datatype']      = 'itemtypename';
-      $tab[4]['forcegroupby']  = true;
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'itemtype';
+      $tab[4]['name']            = __('Type');
+      $tab[4]['massiveaction']   = false;
+      $tab[4]['datatype']        = 'itemtypename';
+      $tab[4]['forcegroupby']    = true;
 
-      $tab[6]['table']    = $this->getTable();
-      $tab[6]['field']    = 'field';
-      $tab[6]['name']     = __('Fields');
-      $tab[6]['datatype'] = 'string';
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'field';
+      $tab[6]['name']            = __('Fields');
+      $tab[6]['datatype']        = 'string';
 
-      $tab[7]['table']    = $this->getTable();
-      $tab[7]['field']    = 'value';
-      $tab[7]['name']     = __('Value');
-      $tab[7]['datatype'] = 'string';
+      $tab[7]['table']           = $this->getTable();
+      $tab[7]['field']           = 'value';
+      $tab[7]['name']            = __('Value');
+      $tab[7]['datatype']        = 'string';
 
       return $tab;
    }
@@ -216,7 +216,10 @@ class Fieldblacklist extends CommonDropdown {
    }
 
 
-   function selectValues($field = '') {
+   /**
+    * @param $field  (default '')
+   **/
+   function selectValues($field='') {
       global $DB, $CFG_GLPI;
 
       if ($field == '') {
@@ -269,13 +272,14 @@ class Fieldblacklist extends CommonDropdown {
       echo "</span>";
    }
 
+
    /**
     * Check if a field & value are blacklisted or not
     *
-    * @param itemtype itemtype of the blacklisted field
-    * @param entities_id the entity in which the field must be saved
-    * @param field the field to check
-    * @param value the field's value
+    * @param itemtype      itemtype of the blacklisted field
+    * @param entities_id   the entity in which the field must be saved
+    * @param field         the field to check
+    * @param value         the field's value
     *
     * @return true is value if blacklisted, false otherwise
    **/

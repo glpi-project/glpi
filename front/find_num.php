@@ -74,7 +74,7 @@ function fillidfield(Type,Id) {
 
 echo "<div class='center'>";
 echo "<p class='b'>".__('Search the ID of your hardware')."</p>";
-echo " <form name='form1' method='post'  action='".$_SERVER['PHP_SELF']."'>";
+echo " <form name='form1' method='post' action='".$_SERVER['PHP_SELF']."'>";
 
 echo "<table class='tab_cadre_fixe'>";
 echo "<tr><th height='29'>".__('Enter the first letters (user, item name, serial or asset number)').
@@ -115,10 +115,10 @@ if (isset($_POST["send"])) {
 
       while ($ligne = $DB->fetch_array($result)) {
          $Comp_num = $ligne['id'];
-         $Contact = $ligne['contact'];
+         $Contact  = $ligne['contact'];
          $Computer = $ligne['name'];
-         $s1 = $ligne['serial'];
-         $s2 = $ligne['otherserial'];
+         $s1       = $ligne['serial'];
+         $s2       = $ligne['otherserial'];
          echo " <tr class='tab_find' onClick=\"fillidfield(".$type.",".$Comp_num.")\">";
          echo "<td class='center'>&nbsp;$Contact&nbsp;</td>";
          echo "<td class='center'>&nbsp;$label&nbsp;</td>";
@@ -153,5 +153,4 @@ if (isset($_POST["send"])) {
    echo "</table>";
 }
 echo '</body></html>';
-
 ?>
