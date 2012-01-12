@@ -136,5 +136,4 @@ if (isset($_REQUEST['node'])) {
    }
    print json_encode($nodes);
 }
-
 ?>

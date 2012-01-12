@@ -1068,6 +1068,12 @@ class Dropdown {
                   //TRANS: %d is a number of months
                   $txt = sprintf(_n('%d month', '%d months', $i), $i);
                   break;
+
+               case 'day' :
+                  //TRANS: %d is a number of days
+                  $txt = sprintf(_n('%d day', '%d days', $i), $i);
+                  break;
+
             }
          }
          echo "<option value='$i' ".($i==$value?" selected ":"").">$txt</option>";

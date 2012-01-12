@@ -147,7 +147,7 @@ class Alert extends CommonDBTM {
       foreach ($options as $key=>$val) {
          $p[$key] = $val;
       }
-      Dropdown::showInteger($name, $value, 1, $p['max'], $p['step'], $p['toadd']);
+      Dropdown::showInteger($name, $value, 1, $p['max'], $p['step'], $p['toadd'], $options);
    }
 
 

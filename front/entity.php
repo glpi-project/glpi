@@ -38,5 +38,4 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $dropdown = new Entity();
 include (GLPI_ROOT . "/front/dropdown.common.php");
-
 ?>
