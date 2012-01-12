@@ -116,7 +116,7 @@ class Computer_Item extends CommonDBRelation{
     * @return the modified $input array
     *
    **/
-   function prepareInputForAdd(array $input) {
+   function prepareInputForAdd($input) {
       global $DB, $CFG_GLPI;
 
       switch ($input['itemtype']) {
