@@ -42,31 +42,31 @@ if (isset($_GET["add"])) {
 
    $newID = $ic->add($_GET, false);
    Event::log($newID, "infocom", 4, "financial",
-               sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $newID));
+              sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $newID));
    Html::back();
 
 } else if (isset($_POST["delete"])) {
    $ic->check($_POST["id"],'w');
 
    $ic->delete($_POST);
-   Event::log($_POST["id"], "infocom", 4, "financial", 
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));         
+   Event::log($_POST["id"], "infocom", 4, "financial",
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["update"])) {
    $ic->check($_POST["id"],'w');
 
    $ic->update($_POST);
-   Event::log($_POST["id"], "infocom", 4, "financial", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
+   Event::log($_POST["id"], "infocom", 4, "financial",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else {
    Session::checkRight("infocom", "r");
 
-   Html::popHeader(__('Financial and administrative information'), $_SERVER['PHP_SELF']);
+   Html::popHeader(Infocom::getTypeName(), $_SERVER['PHP_SELF']);
 
    if (isset($_GET["id"])) {
       $ic->getFromDB($_GET["id"]);
