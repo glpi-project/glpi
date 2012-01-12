@@ -217,11 +217,18 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
-   static function cleanContentHtml($input) {
+   static function cleanContentHtml(array $input) {
 
-      if (!$input['content_text']) {
-         $input['content_text']
-               = Html::clean(Toolbox::unclean_cross_side_scripting_deep($input['content_html']));
+      $txt = Html::clean(Toolbox::unclean_cross_side_scripting_deep($input['content_html']));
+      $txt = trim(html_entity_decode($txt, 0, 'UTF-8'));
+
+      if (!$txt) {
+         // No HTML (nothing to display)
+         $input['content_html'] = '';
+
+      } else if (!$input['content_text']) {
+         // Use cleaned HTML
+         $input['content_text'] = $txt;
       }
       return $input;
    }
