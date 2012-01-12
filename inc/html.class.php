@@ -1839,7 +1839,7 @@ class Html {
 
 
       if (Session::haveRight("sla","r")) {
-         $menu['config']['content']['sla']['title']           = _n('SLA', 'SLA');
+         $menu['config']['content']['sla']['title']           = _n('SLA', 'SLA', 2);
          $menu['config']['content']['sla']['page']            = '/front/sla.php';
          $menu['config']['content']['sla']['links']['search'] = "/front/sla.php";
          if (Session::haveRight("sla","w")) {

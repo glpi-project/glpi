@@ -2944,13 +2944,13 @@ class CommonDBTM extends CommonGLPI {
     *
     * @since version 0.83
     *
-    * @param $field     String name of the field
-    * @param $values    Array with the value to display or a Single value
-    * @param $options   Array of options
+    * @param $field     String         name of the field
+    * @param $values    String/Array   with the value to display or a Single value
+    * @param $options   Array          of options
     *
     * @return return the string to display
    **/
-   static function getSpecificValueToDisplay($field, array $values, $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
       return '';
    }
 
