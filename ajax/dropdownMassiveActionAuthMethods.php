@@ -65,5 +65,4 @@ if ($_POST["authtype"] > 0) {
 
    echo "&nbsp;<input type='submit' name='$name' class='submit' value=\"".__s('Post')."\">";
 }
-
 ?>

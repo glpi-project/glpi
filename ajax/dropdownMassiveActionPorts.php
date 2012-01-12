@@ -51,8 +51,7 @@ if (isset($_POST["action"])) {
 
       case "assign_vlan" :
          Dropdown::show('Vlan');
-         echo "&nbsp;" . __('Tagged') .
-              "&nbsp;<input type='checkbox' name='tagged' value='1'>";
+         echo "&nbsp;". __('Tagged'). "&nbsp;<input type='checkbox' name='tagged' value='1'>";
          echo "&nbsp;<input type='submit' name='assign_vlan_several' class='submit' value='".
                __s('Associate')."'>";
          break;
@@ -65,10 +64,8 @@ if (isset($_POST["action"])) {
 
       case "move" :
          Dropdown::show($_POST['itemtype'], array('name' => 'device'));
-         echo "&nbsp;<input type='submit' name='move' class='submit' value=\"".
-                     __s('Move')."\">";
+         echo "&nbsp;<input type='submit' name='move' class='submit' value=\"". __s('Move')."\">";
          break;
    }
 }
-
 ?>
