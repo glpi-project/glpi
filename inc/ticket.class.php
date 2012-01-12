@@ -1916,7 +1916,7 @@ class Ticket extends CommonITILObject {
       return $tab;
    }
 
-   static function getSpecificValueToDisplay($field, array $values, $options=array()) {
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
          $values = array($field => $values);
