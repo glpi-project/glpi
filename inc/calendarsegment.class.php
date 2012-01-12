@@ -174,7 +174,7 @@ class CalendarSegment extends CommonDBChild {
     * @param $calendars_id    id of the calendar
     * @param $day             day number
     * @param $begin_time      begin time
-    * @param $delay            timestamp delay to add
+    * @param $delay           timestamp delay to add
     *
     * @return timestamp value
    **/

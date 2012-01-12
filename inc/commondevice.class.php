@@ -163,11 +163,11 @@ abstract class CommonDevice extends CommonDropdown {
    /**
     * Import a device is not exists
     *
-    * @param $input of data
+    * @param $input array of datas
     *
     * @return interger ID of existing or new Device
    **/
-   function import($input) {
+   function import(array $input) {
       global $DB;
 
       if (!isset($input['designation']) || empty($input['designation'])) {

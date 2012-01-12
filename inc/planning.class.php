@@ -741,7 +741,7 @@ class Planning {
     *
     * @return Nothing (display function)
    **/
-   static function displayPlanningItem($val, $who, $type="", $complete=0) {
+   static function displayPlanningItem(array $val, $who, $type="", $complete=0) {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
       $color = "#e4e4e4";
