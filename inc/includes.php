@@ -59,11 +59,11 @@ $_SERVER['PHP_SELF'] = Html::cleanParametersURL($_SERVER['PHP_SELF']);
 Session::loadLanguage();
 
 if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-   $SQL_TOTAL_REQUEST=0;
-   $DEBUG_SQL["queries"]=array();
-   $DEBUG_SQL["errors"]=array();
-   $DEBUG_SQL["times"]=array();
-   $DEBUG_AUTOLOAD=array();
+   $SQL_TOTAL_REQUEST    = 0;
+   $DEBUG_SQL["queries"] = array();
+   $DEBUG_SQL["errors"]  = array();
+   $DEBUG_SQL["times"]   = array();
+   $DEBUG_AUTOLOAD       = array();
 }
 
 // Security system
@@ -84,18 +84,18 @@ if (isset($_GET)) {
 }
 
 // Mark if Header is loaded or not :
-$HEADER_LOADED=false;
-$FOOTER_LOADED=false;
+$HEADER_LOADED = false;
+$FOOTER_LOADED = false;
 if (isset($AJAX_INCLUDE)) {
-   $HEADER_LOADED=true;
+   $HEADER_LOADED = true;
 }
 
 /* On startup, register all plugins configured for use. */
 if (!isset($AJAX_INCLUDE) && !isset($PLUGINS_INCLUDED)) {
    // PLugin already included
-   $PLUGINS_INCLUDED=1;
-   $LOADED_PLUGINS=array();
-   $plugin = new Plugin();
+   $PLUGINS_INCLUDED = 1;
+   $LOADED_PLUGINS   = array();
+   $plugin           = new Plugin();
    if (!isset($_SESSION["glpi_plugins"])) {
       $plugin->init();
    }
@@ -119,16 +119,16 @@ if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) {
 // Manage force tab
 if (isset($_REQUEST['forcetab'])) {
    if (preg_match('/([a-zA-Z]+).form.php/',$_SERVER['PHP_SELF'],$matches)) {
-      $itemtype=$matches[1];
-      Session::setActiveTab($matches[1],$_REQUEST['forcetab']);
+      $itemtype = $matches[1];
+      Session::setActiveTab($matches[1], $_REQUEST['forcetab']);
    }
 }
 // Manage tabs
 if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
-   Session::setActiveTab($_REQUEST['itemtype'],$_REQUEST['glpi_tab']);
+   Session::setActiveTab($_REQUEST['itemtype'], $_REQUEST['glpi_tab']);
 }
 // Override list-limit if choosen
 if (isset($_REQUEST['glpilist_limit'])) {
-   $_SESSION['glpilist_limit']=$_REQUEST['glpilist_limit'];
+   $_SESSION['glpilist_limit'] = $_REQUEST['glpilist_limit'];
 }
 ?>
