@@ -142,7 +142,8 @@ class Auth {
       }
 
       $oldlevel = error_reporting(16);
-      if ($mbox = imap_open($host, $login, $pass)) {
+      // No retry (avoid lock account when password is not correct)
+      if ($mbox = imap_open($host, $login, $pass, NULL, 1)) {
          imap_close($mbox);
          error_reporting($oldlevel);
          return true;
