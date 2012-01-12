@@ -400,7 +400,7 @@ abstract class CommonDropdown extends CommonDBTM {
       if (!$this->must_be_replace) {
          // Delete form (set to 0)
          echo "<p>".
-               __('If you confirm the deletion the items using this heading used fields will be blanked.') .
+               __('If you confirm the deletion, all uses of this dropdown will be blanked.') .
               "</p>";
          echo "<form action='$target' method='post'>";
          echo "<table class='tab_cadre'><tr>";
@@ -414,7 +414,7 @@ abstract class CommonDropdown extends CommonDBTM {
       }
 
       // Replace form (set to new value)
-      echo "<p>" . __('You can also replace all the events of this heading by another.') . "</p>";
+      echo "<p>" . __('You can also replace all uses of this dropdown by another.') . "</p>";
       echo "<form action='$target' method='post'>";
       echo "<table class='tab_cadre'><tr><td>";
 
