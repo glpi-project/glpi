@@ -59,13 +59,15 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
 
    if ($_REQUEST['inquest_config']>0 ) {
       echo "<table class='tab_cadre_fixe' width='50%'>";
-      echo "<tr class='tab_bg_1'><td width='50%'>".__('Create survey after (day(s))')."</td>";
+      echo "<tr class='tab_bg_1'><td width='50%'>".__('Create survey after')."</td>";
       echo "<td>";
-      Dropdown::showInteger('inquest_delay', $inquest_delay, 0, 90, 1);
+      Dropdown::showInteger('inquest_delay', $inquest_delay, 1, 90, 1,
+                            array('0' => __('As soon as possible')),
+                            array('unit' => 'day'));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>".
-           "<td colspan='1'>".__s('Rate to trigger survey')."</td>";
+           "<td colspan='1'>".__('Rate to trigger survey')."</td>";
       echo "<td colspan='1'>";
       Dropdown::showInteger('inquest_rate', $inquest_rate, 10, 100, 10,
                             array(0 => __('Disabled')));

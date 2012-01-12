@@ -1074,6 +1074,11 @@ class Dropdown {
                   $txt = sprintf(_n('%d day', '%d days', $i), $i);
                   break;
 
+               case 'hour' :
+                  //TRANS: %d is a number of hours
+                  $txt = sprintf(_n('%d hour', '%d hours', $i), $i);
+                  break;
+
             }
          }
          echo "<option value='$i' ".($i==$value?" selected ":"").">$txt</option>";

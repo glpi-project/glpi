@@ -66,7 +66,7 @@ class Event extends CommonDBTM {
     * @param $level
     * @param $service
     * @param $event
-    **/
+   **/
    static function log ($items_id, $type, $level, $service, $event) {
 
       $input = array('items_id' => intval($items_id),
@@ -86,7 +86,7 @@ class Event extends CommonDBTM {
     * @param $day integer
     *
     * @return integer number of events deleted
-    **/
+   **/
    static function cleanOld($day) {
       global $DB;
 
@@ -103,7 +103,7 @@ class Event extends CommonDBTM {
 
    /**
     * Return arrays for function showEvent et lastEvent
-    **/
+   **/
    static function logArray() {
 
       static $logItemtype = array();
@@ -139,6 +139,10 @@ class Event extends CommonDBTM {
    }
 
 
+   /**
+    * @param $type
+    * @param $items_id
+   **/
    static function displayItemLogID($type, $items_id) {
       global $CFG_GLPI;
 
@@ -167,8 +171,8 @@ class Event extends CommonDBTM {
                break;
 
             default :
-               $type=getSingular($type);
-               $url='';
+               $type = getSingular($type);
+               $url  = '';
                if ($item = getItemForItemtype($type)) {
                   $url  =  $item->getFormURL();
                }
@@ -189,7 +193,7 @@ class Event extends CommonDBTM {
     *
     * Print a great tab to present lasts events occured on glpi
     *
-    * @param $user string : name user to search on message
+    * @param $user   string  name user to search on message (default '')
     **/
    static function showForUser($user="") {
       global $DB, $CFG_GLPI;
@@ -202,7 +206,6 @@ class Event extends CommonDBTM {
       if (!empty($user)) {
          $usersearch = $user." ";
       }
-
 
       /// TODO : do not work with RTL language.
       /// review log system to be able to do that (store action user)
@@ -262,7 +265,7 @@ class Event extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td>$itemtype :</td>";
          echo "<td class='center'>";
-         self::displayItemLogID($type,$items_id);
+         self::displayItemLogID($type, $items_id);
          echo "</td><td class='center'>".Html::convDateTime($date)."</td>";
          echo "<td class='center'>".$logService[$service]."</td><td>$message</td></tr>";
 
@@ -278,11 +281,11 @@ class Event extends CommonDBTM {
     *
     * Print a great tab to present lasts events occured on glpi
     *
-    * @param $target where to go when complete
-    * @param $order order by clause occurences (eg: )
-    * @param $sort order by clause occurences (eg: date)
-    * @param $start
-    **/
+    * @param $target    where to go when complete
+    * @param $order     order by clause occurences (eg: ) (default 'DESC')
+    * @param $sort      order by clause occurences (eg: date) (defaut 'date')
+    * @param $start     (default 0)
+   **/
    static function showList($target, $order='DESC', $sort='date', $start=0) {
       global $DB, $CFG_GLPI;
 
@@ -290,15 +293,11 @@ class Event extends CommonDBTM {
       list($logItemtype, $logService) = self::logArray();
 
       // Columns of the Table
-      $items = array("items_id" => array(__('Source'),
-                                         "colspan='2'"),
+      $items = array("items_id" => array(__('Source'), "colspan='2'"),
                      "date"     => array(__('Date'), ""),
-                     "service"  => array(__('Service'),
-                                         "width='8%'"),
-                     "level"    => array(__('Level'),
-                                         "width='8%'"),
-                     "message"  => array(___('Message'),
-                                         "width='50%'"));
+                     "service"  => array(__('Service'), "width='8%'"),
+                     "level"    => array(__('Level'), "width='8%'"),
+                     "message"  => array(___('Message'), "width='50%'"));
 
       // define default sorting
       if (!isset($items[$sort])) {
@@ -346,7 +345,7 @@ class Event extends CommonDBTM {
             }
          }
          echo "<a href='$target?sort=$field&amp;order=".($order=="ASC"?"DESC":"ASC")."'>".$args[0].
-               "</a></th>";
+              "</a></th>";
       }
       echo "</tr>";
 
@@ -403,7 +402,7 @@ class Event extends CommonDBTM {
        $result2  = $DB->query($query2);
        $nb_login = $DB->result($result, 0, 0);
        $date     = $DB->result($result2, 0, 0);
-
+       // Only for DEMO mode (not need to be translated)
        echo '<span class="b">'.$nb_login.'</span> logins since '.$date ;
     }
 
