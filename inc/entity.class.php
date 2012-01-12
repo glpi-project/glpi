@@ -136,7 +136,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @return ID of the entity
    **/
-   function getEntityID () {
+   function getEntityID() {
 
       if (isset($this->fields["id"])) {
          return $this->fields["id"];
@@ -194,7 +194,7 @@ class Entity extends CommonTreeDropdown {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']           = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'completename';
@@ -224,7 +224,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[5]['table']         = 'glpi_entitydatas';
       $tab[5]['field']         = 'phonenumber';
-      $tab[5]['name']          =  __('Phone');
+      $tab[5]['name']          = __('Phone');
       $tab[5]['massiveaction'] = false;
       $tab[5]['joinparams']    = array('jointype' => 'child');
       $tab[5]['datatype']      = 'string';
@@ -238,14 +238,14 @@ class Entity extends CommonTreeDropdown {
 
       $tab[7]['table']         = 'glpi_entitydatas';
       $tab[7]['field']         = 'ldap_dn';
-      $tab[7]['name']          = __s('LDAP directory information attribute representing the entity');
+      $tab[7]['name']          = __('LDAP directory information attribute representing the entity');
       $tab[7]['massiveaction'] = false;
       $tab[7]['joinparams']    = array('jointype' => 'child');
       $tab[7]['datatype']      = 'string';
 
       $tab[8]['table']         = 'glpi_entitydatas';
       $tab[8]['field']         = 'tag';
-      $tab[8]['name']          = __s('Information in inventory tool (TAG) representing the entity');
+      $tab[8]['name']          = __('Information in inventory tool (TAG) representing the entity');
       $tab[8]['massiveaction'] = false;
       $tab[8]['joinparams']    = array('jointype' => 'child');
       $tab[8]['datatype']      = 'string';
@@ -294,10 +294,10 @@ class Entity extends CommonTreeDropdown {
       $tab[14]['itemlink_type'] = 'Entity';
       $tab[14]['massiveaction'] = false;
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = __('Comments');
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']         = $this->getTable();
+      $tab[16]['field']         = 'comment';
+      $tab[16]['name']          = __('Comments');
+      $tab[16]['datatype']      = 'text';
 
       $tab[17]['table']         = 'glpi_entitydatas';
       $tab[17]['field']         = 'entity_ldapfilter';
@@ -393,7 +393,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[31]['table']         = 'glpi_entitydatas';
       $tab[31]['field']         = 'use_infocoms_alert';
-      $tab[31]['name']          = __('Alarms on financial and administrative informations');
+      $tab[31]['name']          = __('Alarms on financial and administrative information');
       $tab[31]['massiveaction'] = false;
       $tab[31]['nosearch']      = true;
       $tab[31]['joinparams']    = array('jointype' => 'child');
@@ -442,7 +442,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[38]['table']         = 'glpi_entitydatas';
       $tab[38]['field']         = 'autofill_buy_date';
-      $tab[38]['name']          = __s('Date of purchase');
+      $tab[38]['name']          = __('Date of purchase');
       $tab[38]['massiveaction'] = false;
       $tab[38]['nosearch']      = true;
       $tab[38]['joinparams']    = array('jointype' => 'child');
@@ -477,21 +477,21 @@ class Entity extends CommonTreeDropdown {
 
       $tab[43]['table']         = 'glpi_entitydatas';
       $tab[43]['field']         = 'inquest_config';
-      $tab[43]['name']          = __s('Configuring the satisfaction survey');
+      $tab[43]['name']          = __('Configuring the satisfaction survey');
       $tab[43]['massiveaction'] = false;
       $tab[43]['nosearch']      = true;
       $tab[43]['joinparams']    = array('jointype' => 'child');
 
       $tab[44]['table']         = 'glpi_entitydatas';
       $tab[44]['field']         = 'inquest_rate';
-      $tab[44]['name']          = __s('Rate to trigger survey');
+      $tab[44]['name']          = __('Rate to trigger survey');
       $tab[44]['massiveaction'] = false;
       $tab[44]['joinparams']    = array('jointype' => 'child');
       $tab[44]['datatype']      = 'number';
 
       $tab[45]['table']         = 'glpi_entitydatas';
       $tab[45]['field']         = 'inquest_delay';
-      $tab[45]['name']          = __s('Create survey after');
+      $tab[45]['name']          = __('Create survey after');
       $tab[45]['massiveaction'] = false;
       $tab[45]['joinparams']    = array('jointype' => 'child');
       $tab[45]['datatype']      = 'number';
@@ -519,14 +519,14 @@ class Entity extends CommonTreeDropdown {
 
       $tab[49]['table']         = 'glpi_entitydatas';
       $tab[49]['field']         = 'default_infocom_alert';
-      $tab[49]['name']          = __('Default value for alarms on financial and administrative informations');
+      $tab[49]['name']          = __('Default value for alarms on financial and administrative information');
       $tab[49]['massiveaction'] = false;
       $tab[49]['nosearch']      = true;
       $tab[49]['joinparams']    = array('jointype' => 'child');
 
       $tab[50]['table']         = 'glpi_entitydatas';
       $tab[50]['field']         = 'default_alarm_threshold';
-      $tab[50]['name']          = __('Default threshold for cartridge and consumable count');
+      $tab[50]['name']          = __('Default threshold for cartridges and consumables count');
       $tab[50]['massiveaction'] = false;
       $tab[50]['nosearch']      = true;
       $tab[50]['datatype']      = 'number';
@@ -546,7 +546,7 @@ class Entity extends CommonTreeDropdown {
     *
     * @param $target target for entity change action
     * @param $myname select name
-    */
+   **/
    static function showSelector($target, $myname) {
       global $CFG_GLPI;
 
@@ -635,8 +635,8 @@ class Entity extends CommonTreeDropdown {
       }
 
       Event::log($ruleid, "rules", 4, "setup",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds the item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s adds the item'), $_SESSION["glpiname"]));
 
       Html::back();
    }
@@ -704,5 +704,4 @@ class Entity extends CommonTreeDropdown {
       }
    }
 }
-
 ?>

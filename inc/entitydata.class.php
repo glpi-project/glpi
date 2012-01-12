@@ -96,7 +96,8 @@ class EntityData extends CommonDBChild {
                                                                   'autoclose_delay',
                                                                   'inquest_config', 'inquest_rate',
                                                                   'inquest_delay', 'inquest_URL',
-                                                                  'max_closedate', 'tickettemplates_id'));
+                                                                  'max_closedate',
+                                                                  'tickettemplates_id'));
 
 
    function getIndexName() {
@@ -128,7 +129,6 @@ class EntityData extends CommonDBChild {
    function prepareInputForAdd($input) {
 
       $input['max_closedate'] = $_SESSION["glpi_currenttime"];
-
       return $this->checkRightDatas($input);
    }
 
@@ -182,7 +182,7 @@ class EntityData extends CommonDBChild {
 
 
    /**
-    *
+    * @param $entity Entity object
    **/
    static function showStandardOptions(Entity $entity) {
 
@@ -197,7 +197,7 @@ class EntityData extends CommonDBChild {
       $canedit = $entity->can($ID, 'w');
 
       // Get data
-      $entdata = new EntityData();
+      $entdata = new self();
       if (!$entdata->getFromDB($ID)) {
          $entdata->getEmpty();
       }
@@ -282,7 +282,7 @@ class EntityData extends CommonDBChild {
 
 
    /**
-    *
+    * @param $entity Entity object
    **/
    static function showAdvancedOptions(Entity $entity) {
       global $DB;
@@ -298,7 +298,7 @@ class EntityData extends CommonDBChild {
       $canedit = $entity->can($ID, 'w');
 
       // Get data
-      $entdata = new EntityData();
+      $entdata = new self();
       if (!$entdata->getFromDB($ID)) {
          $entdata->getEmpty();
       }
@@ -309,22 +309,22 @@ class EntityData extends CommonDBChild {
       }
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='2'>".__s('Values for the generic rules for assignment to entities').
+      echo "<tr><th colspan='2'>".__('Values for the generic rules for assignment to entities').
            "</th></tr>";
 
       echo "<tr class='tab_bg_1'><td colspan='2' class='center'>".
-            __s('These parameters are used as actions in generic rules for assignment to entities').
+             __('These parameters are used as actions in generic rules for assignment to entities').
            "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__s('Information in inventory tool (TAG) representing the entity')."</td>";
+      echo "<td>".__('Information in inventory tool (TAG) representing the entity')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entdata, "tag", array('size' => 100));
       echo "</td></tr>";
 
       if (Toolbox::canUseLdap()) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".__s('LDAP directory information attribute representing the entity')."</td>";
+         echo "<td>".__('LDAP directory information attribute representing the entity')."</td>";
          echo "<td>";
          Html::autocompletionTextField($entdata, "ldap_dn", array('size' => 100));
          echo "</td></tr>";
@@ -338,7 +338,7 @@ class EntityData extends CommonDBChild {
 
       if (Toolbox::canUseLdap()) {
          echo "<tr><th colspan='2'>".
-               __s('Values used in the interface to search users from a LDAP directory')."</th></tr>";
+                __('Values used in the interface to search users from a LDAP directory')."</th></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('LDAP directory of an entity')."</td>";
@@ -349,7 +349,7 @@ class EntityData extends CommonDBChild {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".__s('LDAP filter associated to the entity (if necessary)')."</td>";
+         echo "<td>".__('LDAP filter associated to the entity (if necessary)')."</td>";
          echo "<td>";
          Html::autocompletionTextField($entdata, 'entity_ldapfilter', array('size' => 100));
          echo "</td></tr>";
@@ -414,7 +414,8 @@ class EntityData extends CommonDBChild {
       }
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>".__('Autofil dates for financial and administrative information')."</th></tr>";
+      echo "<tr><th colspan='4'>".__('Autofil dates for financial and administrative information').
+           "</th></tr>";
 
 
       $options[0] = __('No autofill');
@@ -424,13 +425,14 @@ class EntityData extends CommonDBChild {
 
       foreach (getAllDatasFromTable('glpi_states') as $state) {
          $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
+                     //TRANS: %s is the name of the state
             = sprintf(__('Fill when shifting to state %s'), $state['name']);
       }
 
       $options[Infocom::COPY_WARRANTY_DATE] = __('Copy the start date of warranty');
       //Buy date
       echo "<tr class='tab_bg_2'>";
-      echo "<td> " . __s('Date of purchase') . "</td>";
+      echo "<td> " . __('Date of purchase') . "</td>";
       echo "<td>";
       Dropdown::showFromArray('autofill_buy_date', $options,
                               array('value' => $entitydata->getField('autofill_buy_date')));
@@ -500,6 +502,7 @@ class EntityData extends CommonDBChild {
                            'entity'             => $entities,
                            'display_rootentity' => true,
                            'comments'           => false));
+
       if ($entitydata->fields['entities_id_software'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('entities_id_software', $entity->getField('entities_id'));
          echo "<font class='green'>&nbsp;&nbsp;";
@@ -600,7 +603,8 @@ class EntityData extends CommonDBChild {
                             'value'          => $default_value,
                             'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
-      echo "<td rowspan='2'>" . __('Default threshold for cartridge and consumable count') . "</td><td rowspan='2'>";
+      echo "<td rowspan='2'>" . __('Default threshold for cartridge and consumable count') .
+           "</td><td rowspan='2'>";
       Dropdown::showInteger('default_alarm_threshold',
                             $entitynotification->fields["default_alarm_threshold"], 0, 100, 1,
                             array('-1' => __('Never')));
@@ -627,7 +631,7 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Alarms on financial and administrative informations') . "</td><td>";
+      echo "<td>" . __('Alarms on financial and administrative information') . "</td><td>";
       $default_value = $entitynotification->fields['use_infocoms_alert'];
       Alert::dropdownYesNo(array('name'           => "use_infocoms_alert",
                                  'value'          => $default_value,
@@ -656,10 +660,11 @@ class EntityData extends CommonDBChild {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>".
-           "<td >". __('Alerts on tickets which are not solved since (day(s))'). "</td><td>";
+           "<td >". __('Alerts on tickets which are not solved since'). "</td><td>";
       Alert::dropdownIntegerNever('notclosed_delay', $entitynotification->fields["notclosed_delay"],
                                   array('max'            => 99,
-                                        'inherit_parent' => ($ID>0 ? 1 : 0)));
+                                        'inherit_parent' => ($ID>0 ? 1 : 0),
+                                        'unit'           => 'day'));
       echo "</td>";
       echo "<td colspan='2'></td></tr>";
 
@@ -756,7 +761,8 @@ class EntityData extends CommonDBChild {
       }
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Ticket template', 'Ticket templates', 1)."</td>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Ticket template', 'Ticket templates', 1).
+           "</td>";
       echo "<td colspan='2'>";
       $toadd = array();
       if ($ID != 0) {
