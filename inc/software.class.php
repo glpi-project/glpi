@@ -459,7 +459,7 @@ class Software extends CommonDBTM {
 
       $tab[4]['table']           = 'glpi_operatingsystems';
       $tab[4]['field']           = 'name';
-      $tab[4]['name']            = __('Operating system version');
+      $tab[4]['name']            = __('Operating system');
       $tab[4]['forcegroupby']    = true;
       $tab[4]['joinparams']      = array('beforejoin'
                                           => array('table'      => 'glpi_softwareversions',
