@@ -151,11 +151,13 @@ function addReservation($type, $ID, $ID_entity) {
          $date1 = $date2+3600*mt_rand(0,10); // 10 hours between each resa max
          $date2 = $date1+3600*mt_rand(1,5); // A reservation from 1 to 5 hours
 
-         $r->add(array('reservationitems_id' => $tID,
-                       'begin'               => date("Y-m-d H:i:s", $date1),
-                       'end'                 => date("Y-m-d H:i:s", $date2),
-                       'users_id'            => mt_rand($FIRST['users_normal'], $LAST['users_postonly']),
-                       'comment'             => "comments $i ".Toolbox::getRandomString(15)));
+         $r->add(array(
+                  'reservationitems_id' => $tID,
+                  'begin'               => date("Y-m-d H:i:s", $date1),
+                  'end'                 => date("Y-m-d H:i:s", $date2),
+                  'users_id'            => mt_rand($FIRST['users_normal'], $LAST['users_postonly']),
+                  'comment'             => "comments $i ".Toolbox::getRandomString(15)
+                  ));
          $i++;
       }
    }
@@ -176,13 +178,15 @@ function addDocuments($type, $ID) {
       $docs[] = mt_rand($FIRST["document"], $LAST["document"]);
    }
    $docs = array_unique($docs);
-
+   $di = new Document_Item();
    foreach ($docs as $val) {
       if (isset($DOCUMENTS[$val])) {
          list($entID, $recur) = explode('-',$DOCUMENTS[$val]);
-         $query = "INSERT INTO `glpi_documents_items`
-                  VALUES (NULL, '$val', '$ID', '$type', '$entID', '$recur')";
-         $DB->query($query);
+         $di->add(array('documents_id' => $val,
+                        'itemtype'     => $type,
+                        'items_id'     => $ID,
+                        'entities_id'  => $entID,
+                        'is_recursive' => $recur));
       }
    }
 }
@@ -212,15 +216,32 @@ function addInfocoms($type, $ID, $ID_entity, $is_recursive=0) {
    $warrantydate  = date("Y-m-d", intval($warrantydate));
    $inventorydate = date("Y-m-d", intval($inventorydate));
 
-   $query = "INSERT INTO `glpi_infocoms`
-             VALUES (NULL, '$ID', '$type', '$ID_entity', '$is_recursive', '$buydate', '$usedate',
-                     '".mt_rand(12,36)."', 'infowar $type $ID', '".mt_rand($FIRST["enterprises"],
-                     $LAST['enterprises'])."', 'commande $type $ID', 'BL $type $ID',
-                     'immo $type $ID', '".mt_rand(0,5000)."', '".mt_rand(0,500)."',
-                     '".mt_rand(1,7)."', '".mt_rand(1,2)."', '".mt_rand(2,5)."', 'comment $type $ID',
-                     'facture $type $ID', '".mt_rand($FIRST['budget'], $LAST['budget'])."', '0',
-                     '$orderdate', '$deliverydate', '$inventorydate', '$warrantydate')";
-   $DB->query($query) or die("PB REQUETE ".$query);
+   $i =new Infocom();
+   $i->add(array('itemtype'           => $type,
+                  'items_id'          => $ID,
+                  'entities_id'       => $ID_entity,
+                  'is_recursive'      => $is_recursive,
+                  'buy_date'          => $buydate,
+                  'use_date'          => $usedate,
+                  'warranty_duration' => mt_rand(12,36),
+                  'warranty_info'     => "infowar $type $ID",
+                  'suppliers_id'      => mt_rand($FIRST["enterprises"], $LAST['enterprises']),
+                  'order_number'      => "commande $type $ID",
+                  'delivery_number'   => "BL $type $ID",
+                  'immo_number'       => "immo $type $ID",
+                  'value'             => mt_rand(0,5000),
+                  'warranty_value'    => mt_rand(0,500),
+                  'sink_time'         => mt_rand(1,7),
+                  'sink_type'         => mt_rand(1,2),
+                  'sink_coeff'        => mt_rand(2,5),
+                  'comment'           => "comment $type $ID",
+                  'bill'              => "bill $type $ID",
+                  'budgets_id'        => mt_rand($FIRST['budget'], $LAST['budget']),
+                  'order_date'        => $orderdate,
+                  'delivery_date'     => $deliverydate,
+                  'inventory_date'    => $inventorydate,
+                  'warranty_date'     => $warrantydate,                 
+   ));
 }
 
 
@@ -238,11 +259,11 @@ function addContracts($type, $ID) {
       $con[] = mt_rand($FIRST["contract"], $LAST["contract"]);
    }
    $con = array_unique($con);
-
+   $ci = new Contract_Item();
    foreach ($con as $val) {
-      $query = "INSERT INTO `glpi_contracts_items`
-                VALUES (NULL, '$val', '$ID', '$type')";
-      $DB->query($query) ;
+      $ci->add(array('contracts_id' => $val,
+                     'itemtype'     => $type,
+                     'items_id'     => $ID));
    }
 }
 
