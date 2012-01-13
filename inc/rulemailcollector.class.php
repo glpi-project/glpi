@@ -114,7 +114,8 @@ class RuleMailCollector extends Rule {
       $criterias['to']['table'] = '';
       $criterias['to']['type']  = 'text';
 
-      $criterias['in_reply_to']['name']  = __('In_Reply_To email header');
+
+      $criterias['in_reply_to']['name']  = __('In-Reply-To email header');
       $criterias['in_reply_to']['table'] = '';
       $criterias['in_reply_to']['type']  = 'text';
 

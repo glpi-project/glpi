@@ -297,7 +297,7 @@ class Netpoint extends CommonDropdown {
          echo "<th>".__('No item found')."</th></tr>";
          echo "</table>\n";
       } else {
-         Html::printAjaxPager(printf(__('Network outlet for %s'), $item->getTreeLink()),
+         Html::printAjaxPager(printf(__('Network outlets for %s'), $item->getTreeLink()),
                               $start, $number);
 
          if ($canedit) {
