@@ -47,7 +47,7 @@ class KnowbaseItem extends CommonDBTM {
    protected $entities  = array();
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       return __('Knowledge base');
    }
 
@@ -270,6 +270,7 @@ class KnowbaseItem extends CommonDBTM {
       // Profiles
       if (count($this->profiles)
           && isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
+
          if (isset($this->profiles[$_SESSION["glpiactiveprofile"]['id']])) {
             foreach ($this->profiles[$_SESSION["glpiactiveprofile"]['id']] as $profile) {
                // All the profile
@@ -297,7 +298,7 @@ class KnowbaseItem extends CommonDBTM {
    *
    * @since version 0.83
    *
-   * @param $forceall force all joins
+   * @param $forceall force all joins (false by default)
    *
    * @return string joins to add
    **/
@@ -373,13 +374,13 @@ class KnowbaseItem extends CommonDBTM {
       // Entities
       if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
          // Force complete SQL not summary when access to all entities
-         $restrict .= getEntitiesRestrictRequest("OR", "glpi_entities_knowbaseitems", '', '', true, true);
+         $restrict .= getEntitiesRestrictRequest("OR", "glpi_entities_knowbaseitems", '', '', true,
+                                                 true);
       }
 
       $restrict .= ") ";
       return $restrict;
    }
-
 
 
    function prepareInputForAdd($input) {
@@ -446,16 +447,17 @@ class KnowbaseItem extends CommonDBTM {
              && isset($options['itemtype']) && !empty($options['itemtype'])
              && isset($options['items_id']) && !empty($options['items_id'])) {
 
-            $item = new $options['itemtype']();
-            if ($item->getFromDB($options['items_id'])) {
-               $this->fields['name']   = $item->getField('name');
-               $this->fields['answer'] = $item->getField('solution');
-               if ($item->isField('itilcategories_id')) {
-                  $ic = new ItilCategory();
-                  if ($ic->getFromDB($item->getField('itilcategories_id'))) {
-                     $this->fields['knowbaseitemcategories_id'] = $ic->getField('knowbaseitemcategories_id');
+            if ($item = getItemForItemtype($options['itemtype'])) {
+               if ($item->getFromDB($options['items_id'])) {
+                  $this->fields['name']   = $item->getField('name');
+                  $this->fields['answer'] = $item->getField('solution');
+                  if ($item->isField('itilcategories_id')) {
+                     $ic = new ItilCategory();
+                     if ($ic->getFromDB($item->getField('itilcategories_id'))) {
+                        $this->fields['knowbaseitemcategories_id']
+                              = $ic->getField('knowbaseitemcategories_id');
+                     }
                   }
-
                }
             }
          }
@@ -501,19 +503,20 @@ class KnowbaseItem extends CommonDBTM {
             echo "<span class='baskb_right'>";
             if ($this->fields["date_mod"]) {
                //TRANS: %s is the datetime of update
-               printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+               printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
             }
 
             echo "</span><br>";
 
             if ($this->fields["date"]) {
                //TRANS: %s is the datetime of insertion
-               printf(__('Created on %s'),Html::convDateTime($this->fields["date"]));
+               printf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
             }
 
             echo "<span class='baskb_right'>";
             //TRANS: %d is the number of view
-            echo sprintf(_n('%d view', '%d views',$this->fields["view"]),$this->fields["view"])."</span></div>";
+            echo sprintf(_n('%d view', '%d views', $this->fields["view"]),$this->fields["view"]).
+                 "</span></div>";
 
             echo "</fieldset>";
          }
@@ -569,6 +572,7 @@ class KnowbaseItem extends CommonDBTM {
       $DB->query("UPDATE `".$this->getTable()."`
                   SET `is_faq` = '1'
                   WHERE `id` = '".$this->fields['id']."'");
+
       if (isset($_SESSION['glpi_faqcategories'])) {
          unset($_SESSION['glpi_faqcategories']);
       }
@@ -586,6 +590,7 @@ class KnowbaseItem extends CommonDBTM {
       $DB->query("UPDATE `".$this->getTable()."`
                   SET `is_faq` = '0'
                   WHERE `id` = '".$this->fields['id']."'");
+
       if (isset($_SESSION['glpi_faqcategories'])) {
          unset($_SESSION['glpi_faqcategories']);
       }
@@ -612,10 +617,11 @@ class KnowbaseItem extends CommonDBTM {
 
       echo "<table class='tab_cadre_fixe'><tr><th colspan='3'>";
       if ($isFAQ) {
-         echo __('This item is part of the FAQ')."</th></tr>\n";
+         _e('This item is part of the FAQ');
       } else {
-         echo __('This item is not part of the FAQ')."</th></tr>\n";
+         _e('This item is not part of the FAQ');
       }
+      echo "</th></tr>\n";
 
       if ($edit) {
          echo "<tr class='tab_bg_1'>";
@@ -624,12 +630,14 @@ class KnowbaseItem extends CommonDBTM {
                echo "<td class='center' width='33%'><a class='icon_nav_move' href=\"".
                      $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;removefromfaq=yes\">
                      <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqremove.png\" alt=\"".
-                        __s('Delete this item from the FAQ')."\" title=\"".__s('Delete this item from the FAQ')."\"></a></td>\n";
+                        __s('Delete this item from the FAQ')."\" title=\"".
+                        __s('Delete this item from the FAQ')."\"></a></td>\n";
             } else {
                echo "<td class='center' width='33%'><a  class='icon_nav_move' href=\"".
                      $CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;addtofaq=yes\">
                      <img src=\"".$CFG_GLPI["root_doc"]."/pics/faqadd.png\" alt=\"".
-                        __s('Put this item in the FAQ')."\" title=\"".__s('Put this item in the FAQ')."\"></a></td>\n";
+                        __s('Put this item in the FAQ')."\" title=\"".
+                        __s('Put this item in the FAQ')."\"></a></td>\n";
             }
          }
          echo "<td class='center' width='34%'><a class='icon_nav_move' href=\"".
@@ -638,7 +646,7 @@ class KnowbaseItem extends CommonDBTM {
                "\" title=\"".__s('Edit')."\"></a></td>\n";
          echo "<td class='center' width='33%'>";
          echo "<a class='icon_nav_move' href=\"javascript:confirmAction('".
-                __s('Are you sure you want to delete this element?')."','".$CFG_GLPI["root_doc"].
+                __s('Are you sure you want to delete this item?')."','".$CFG_GLPI["root_doc"].
                 "/front/knowbaseitem.form.php?id=$ID&amp;delete=yes')\">";
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt=\"".__s('Purge').
                "\" title=\"".__s('Purge')."\"></a></td>";
@@ -668,8 +676,8 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Print out (html) show item : question and answer
     *
-    * @param $linkusers_id display users_id link
-    * @param $options array of options
+    * @param $linkusers_id       display users_id link (true by default)
+    * @param $options      array of options
     *
     * @return nothing (display item : question and answer)
    **/
@@ -735,7 +743,7 @@ class KnowbaseItem extends CommonDBTM {
 
       if ($this->fields["date"]) {
          //TRANS: %s is the datetime of update
-         printf(__('Created on %s'),Html::convDateTime($this->fields["date"]));
+         printf(__('Created on %s'), Html::convDateTime($this->fields["date"]));
       }
 
       if ($this->countVisibilities() == 0) {
@@ -746,10 +754,11 @@ class KnowbaseItem extends CommonDBTM {
 
       if ($this->fields["date_mod"]) {
          //TRANS: %s is the datetime of update
-         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
          echo "<br>";
       }
-      echo sprintf(_n('%d view', '%d views',$this->fields["view"]),$this->fields["view"])."</th></tr>";
+      echo sprintf(_n('%d view', '%d views', $this->fields["view"]), $this->fields["view"]).
+           "</th></tr>";
 
       $this->showFormButtons($options);
       if (!$inpopup) {
@@ -763,8 +772,8 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Print out an HTML "<form>" for Search knowbase item
     *
-    * @param $options : $_GET
-    * @param $faq display on faq ?
+    * @param $options   $_GET
+    * @param $faq       display on faq ? (default 0)
     *
     * @return nothing (display the form)
    **/
@@ -812,7 +821,7 @@ class KnowbaseItem extends CommonDBTM {
 
          echo "<td><form method=get action='".$params["target"]."'>";
          echo "<table border='0' class='tab_cadre'>";
-         echo "<tr><th colspan='2'>".__s('Browse')."</th></tr>";
+         echo "<tr><th colspan='2'>".__('Browse')."</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>".__('Category')."&nbsp;";
          Dropdown::show('KnowbaseItemCategory',
                         array('value' => '$params["knowbaseitemcategories_id)"]'));
@@ -832,7 +841,7 @@ class KnowbaseItem extends CommonDBTM {
     *
     * @return String : SQL request
    **/
-   static function getListRequest($params) {
+   static function getListRequest(array $params) {
       global $DB;
 
       // Lists kb Items
@@ -871,14 +880,14 @@ class KnowbaseItem extends CommonDBTM {
          $order   = "ORDER BY `SCORE` DESC";
 
          // preliminar query to allow alternate search if no result with fulltext
-         $query_1 = "SELECT COUNT(`glpi_knowbaseitems`.`id`)
-                     FROM `glpi_knowbaseitems`
-                     $join
-                     WHERE $where_1";
-         $result_1 = $DB->query($query_1);
+         $query_1   = "SELECT COUNT(`glpi_knowbaseitems`.`id`)
+                       FROM `glpi_knowbaseitems`
+                       $join
+                       WHERE $where_1";
+         $result_1  = $DB->query($query_1);
          $numrows_1 = $DB->result($result_1,0,0);
 
-         if ($numrows_1<= 0) {// not result this fulltext try with alternate search
+         if ($numrows_1 <= 0) {// not result this fulltext try with alternate search
             $search1 = array(/* 1 */   '/\\\"/',
                              /* 2 */   "/\+/",
                              /* 3 */   "/\*/",
@@ -889,8 +898,8 @@ class KnowbaseItem extends CommonDBTM {
                              /* 8 */   "/\)/",
                              /* 9 */   "/\-/");
             $contains = preg_replace($search1,"", $params["contains"]);
-            $where .= " (`glpi_knowbaseitems`.`name` ".Search::makeTextSearch($contains)."
-                         OR `glpi_knowbaseitems`.`answer` ".Search::makeTextSearch($contains).")";
+            $where   .= " (`glpi_knowbaseitems`.`name` ".Search::makeTextSearch($contains)."
+                           OR `glpi_knowbaseitems`.`answer` ".Search::makeTextSearch($contains).")";
          } else {
             $where = $where_1;
          }
@@ -920,8 +929,8 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Print out list kb item
     *
-    * @param $options : $_GET
-    * @param $faq display on faq ? (default 0)
+    * @param $options   $_GET
+    * @param $faq       display on faq ? (default 0)
    **/
    static function showList($options, $faq=0) {
       global $DB, $CFG_GLPI;
@@ -948,7 +957,7 @@ class KnowbaseItem extends CommonDBTM {
       // Get it from database
       if ($result=$DB->query($query)) {
          $KbCategory = new KnowbaseItemCategory();
-         $title = "";
+         $title      = "";
          if ($KbCategory->getFromDB($params["knowbaseitemcategories_id"])) {
             $title = (empty($KbCategory->fields['name']) ?"(".$params['knowbaseitemcategories_id'].")"
                                                          : $KbCategory->fields['name']);
@@ -1046,7 +1055,7 @@ class KnowbaseItem extends CommonDBTM {
                      Html::clean(Toolbox::unclean_cross_side_scripting_deep(html_entity_decode($data["answer"],
                                                                                                ENT_QUOTES,
                                                                                                "UTF-8"))),
-                                        $item_num, $row_num);
+                                $item_num, $row_num);
                }
                echo Search::showItem($output_type, $data["category"], $item_num, $row_num);
 
@@ -1056,7 +1065,8 @@ class KnowbaseItem extends CommonDBTM {
 
                   $content = "<a href='".Toolbox::getItemTypeFormURL($options['itemtype']).
                                "?load_kb_sol=".$data['id']."&amp;id=".$options['items_id'].
-                               "&amp;forcetab=".$options['itemtype']."$2'>".__('Use as a solution')."</a>";
+                               "&amp;forcetab=".$options['itemtype']."$2'>".__('Use as a solution').
+                             "</a>";
                   echo Search::showItem($output_type, $content, $item_num, $row_num);
                }
 
@@ -1091,9 +1101,9 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Print out list recent or popular kb/faq
     *
-    * @param $target where to go on action
-    * @param $type type : recent / popular / not published
-    * @param $faq display only faq
+    * @param $target    where to go on action
+    * @param $type      type : recent / popular / not published
+    * @param $faq       display only faq (default 0)
     *
     * @return nothing (display table)
    **/
@@ -1172,8 +1182,8 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Print out lists of recent and popular kb/faq
     *
-    * @param $target where to go on action
-    * @param $faq display only faq
+    * @param $target    where to go on action
+    * @param $faq       display only faq (default 0)
     *
     * @return nothing (display table)
    **/
@@ -1193,43 +1203,43 @@ class KnowbaseItem extends CommonDBTM {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']            = __('Characteristics');
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']          = $this->getTable();
+      $tab[2]['field']          = 'id';
+      $tab[2]['name']           = __('ID');
+      $tab[2]['massiveaction']  = false;
 
-      $tab[4]['table'] = 'glpi_knowbaseitemcategories';
-      $tab[4]['field'] = 'name';
-      $tab[4]['name']  = __('Category');
+      $tab[4]['table']          = 'glpi_knowbaseitemcategories';
+      $tab[4]['field']          = 'name';
+      $tab[4]['name']           = __('Category');
 
-      $tab[5]['table']         = $this->getTable();
-      $tab[5]['field']         = 'date';
-      $tab[5]['name']          = __('Date');
-      $tab[5]['datatype']      = 'datetime';
-      $tab[5]['massiveaction'] = false;
+      $tab[5]['table']          = $this->getTable();
+      $tab[5]['field']          = 'date';
+      $tab[5]['name']           = __('Date');
+      $tab[5]['datatype']       = 'datetime';
+      $tab[5]['massiveaction']  = false;
 
-      $tab[6]['table']     = $this->getTable();
-      $tab[6]['field']     = 'name';
-      $tab[6]['name']      = __('Subject');
-      $tab[6]['datatype']  = 'text';
+      $tab[6]['table']          = $this->getTable();
+      $tab[6]['field']          = 'name';
+      $tab[6]['name']           = __('Subject');
+      $tab[6]['datatype']       = 'text';
 
-      $tab[7]['table']     = $this->getTable();
-      $tab[7]['field']     = 'answer';
-      $tab[7]['name']      = __('Content');
-      $tab[7]['datatype']  = 'text';
+      $tab[7]['table']          = $this->getTable();
+      $tab[7]['field']          = 'answer';
+      $tab[7]['name']           = __('Content');
+      $tab[7]['datatype']       = 'text';
 
-      $tab[8]['table']    = $this->getTable();
-      $tab[8]['field']    = 'is_faq';
-      $tab[8]['name']     = __('FAQ item');
-      $tab[8]['datatype'] = 'bool';
+      $tab[8]['table']          = $this->getTable();
+      $tab[8]['field']          = 'is_faq';
+      $tab[8]['name']           = __('FAQ item');
+      $tab[8]['datatype']       = 'bool';
 
-      $tab[9]['table']         = $this->getTable();
-      $tab[9]['field']         = 'view';
-      $tab[9]['name']          = __('Views');
-      $tab[9]['datatype']      = 'integer';
-      $tab[9]['massiveaction'] = false;
+      $tab[9]['table']          = $this->getTable();
+      $tab[9]['field']          = 'view';
+      $tab[9]['name']           = __('Views');
+      $tab[9]['datatype']       = 'integer';
+      $tab[9]['massiveaction']  = false;
 
       $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'date_mod';
@@ -1247,19 +1257,19 @@ class KnowbaseItem extends CommonDBTM {
       $tab[80]['name']          = __('Entity');
       $tab[80]['massiveaction'] = false;
 
-      $tab[86]['table']    = $this->getTable();
-      $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = __('Child entities');
-      $tab[86]['datatype'] = 'bool';
+      $tab[86]['table']         = $this->getTable();
+      $tab[86]['field']         = 'is_recursive';
+      $tab[86]['name']          = __('Child entities');
+      $tab[86]['datatype']      = 'bool';
 
       return $tab;
    }
+
 
    /**
     * Show visibility config for a knowbaseitem
     *
     * @since version 0.83
-    *
    **/
    function showVisibility() {
       global $DB, $CFG_GLPI;
@@ -1411,7 +1421,7 @@ class KnowbaseItem extends CommonDBTM {
                echo Html::showToolTip($names["comment"]);
                if ($data['entities_id'] >= 0) {
                   echo " / ";
-                  echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
+                  echo Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
                   if ($data['is_recursive']) {
                      echo " <span class='b'>&nbsp;(R)</span>";
                   }

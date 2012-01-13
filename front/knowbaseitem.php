@@ -42,13 +42,14 @@ if (isset($_GET["id"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);
 }
 
-Html::header(__('Knowledge base'),$_SERVER['PHP_SELF'],"utils","knowbase");
+Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
 
 // Search a solution
 if (!isset($_GET["contains"]) && isset($_GET["itemtype"]) && isset($_GET["items_id"])) {
-   $item = new $_GET["itemtype"]();
-   if ($item->getFromDB($_GET["items_id"])) {
-      $_GET["contains"] = $item->getField('name');
+   if ($item = getItemForItemtype($_GET["itemtype"])) {
+      if ($item->getFromDB($_GET["items_id"])) {
+         $_GET["contains"] = $item->getField('name');
+      }
    }
 }
 

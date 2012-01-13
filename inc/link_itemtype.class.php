@@ -41,12 +41,13 @@ class Link_ItemType extends CommonDBTM{
    public $itemtype_2 = 'itemtype';
    public $items_id_2 = 'items_id';
 
+
    /**
     * Print the HTML array for device on link
     *
-    *@param $link : Link
+    * @param $link : Link
     *
-    *@return Nothing (display)
+    * @return Nothing (display)
    **/
    static function showForLink($link) {
       global $DB,$CFG_GLPI;
@@ -95,8 +96,7 @@ class Link_ItemType extends CommonDBTM{
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
          echo "<input type='hidden' name='links_id' value='$links_id'>";
          Dropdown::dropdownTypes("itemtype",'',$CFG_GLPI["link_types"],$used);
-         echo "&nbsp;&nbsp;<input type='submit' name='add' value=\"".
-                            __s('Add')."\" class='submit'>";
+         echo "&nbsp;&nbsp;<input type='submit' name='add' value=\"". __s('Add')."\" class='submit'>";
          echo "</td></tr>";
       }
       echo "</table></div></form>";

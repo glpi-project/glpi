@@ -39,7 +39,7 @@ $group = new Group();
 $group->checkGlobal('w');
 Session::checkRight('user_authtype', 'w');
 
-Html::header(__('LDAP directory link'),$_SERVER['PHP_SELF'],"admin","group","ldap");
+Html::header(__('LDAP directory link'), $_SERVER['PHP_SELF'], "admin", "group", "ldap");
 
 if (isset($_SESSION["ldap_import"])) {
    unset($_SESSION["ldap_import"]);
