@@ -41,6 +41,9 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT."/inc/includes.php");
 include ("generate_bigdump.function.php");
 
+// Force mailing to false
+$CFG_GLPI["use_mailing"] = 0;
+
 $entity_number = 5;
 
 $multiplicator = 0.5;
