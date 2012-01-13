@@ -536,7 +536,7 @@ class NetworkPort extends CommonDBChild {
          echo "</td></tr>\n";
 
       } else {
-         echo "<tr class='tab_bg_1'><td>". _n('Port number', 'Ports number', 2) ."</td>\n";
+         echo "<tr class='tab_bg_1'><td>". _n('Port number', 'Port numbers', 2) ."</td>\n";
          echo "<td>";
          echo "<input type='hidden' name='several' value='yes'>";
          echo "<input type='hidden' name='logical_number' value=''>\n";
@@ -649,7 +649,7 @@ class NetworkPort extends CommonDBChild {
 
 
    function getSearchOptions() {
-      
+
       $tab = array();
       $tab['common'] = __('Characteristics');
 
