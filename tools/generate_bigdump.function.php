@@ -939,8 +939,8 @@ function generateGlobalDropdowns() {
                               ));
       
       for ($j=0 ; $j<mt_rand(0,pow($MAX['tracking_category'],1/2)) ; $j++) {
-         $newID2 = $dp->add(array('name'         => "s-category $i", 
-                                 'comment'      => "comment s-category $i",
+         $newID2 = $dp->add(array('name'         => "s-category $j", 
+                                 'comment'      => "comment category $i s-category $j",
                                  'is_recursive' => 1,
                                  'tickettemplates_id_incident' => 1,
                                  'tickettemplates_id_demand'   => 1,
@@ -949,8 +949,8 @@ function generateGlobalDropdowns() {
 
          $newID2 = $DB->insert_id();
          for ($k=0 ; $k<mt_rand(0,pow($MAX['tracking_category'],1/2)) ; $k++) {
-            $newID3 = $dp->add(array('name'         => "ss-category $i", 
-                                    'comment'      => "comment ss-category $i",
+            $newID3 = $dp->add(array('name'         => "ss-category $k", 
+                                    'comment'      => "comment category $i  s-category $j ss-category $k",
                                     'is_recursive' => 1,
                                     'tickettemplates_id_incident' => 1,
                                     'tickettemplates_id_demand'   => 1,
@@ -1225,171 +1225,202 @@ function generate_entity($ID_entity) {
 
    // glpi_groups
    $FIRST["groups"] = getMaxItem("glpi_groups")+1;
-
+   $group = new Group();
    for ($i=0 ; $i<$MAX['groups'] ; $i++) {
-      $query = "INSERT INTO `glpi_groups`
-                VALUES (NULL, '$ID_entity', 0, 'group $i', 'comment group $i', '', '', '',
-                        NOW(), 0, 'group $i', 1, NULL, NULL, 1, 0, 1, 1, 1
-                        )";
-      $DB->query($query) or die("PB REQUETE ".$query);
-      $papa = $DB->insert_id();
+      $gID = $group->add(array(
+                  'entities_id'  => $ID_entity,
+                  'name'         => "group $i",
+                  'comment'      => "comment group $i",
+                  'is_assign'    => 0,
+            ));
 
       // Generate sub group
       for ($j=0 ; $j<$MAX['groups'] ; $j++) {
-         $query = "INSERT INTO `glpi_groups`
-                   VALUES (NULL, '$ID_entity', 0, 'subgroup $j', 'comment subgroup $j of group $i', '', '', '',
-                           NOW(), $papa, 'group $i > subgroup $j', 2, NULL, NULL, 1, 0, 1, 1, 1)";
-         $DB->query($query) or die("PB REQUETE ".$query);
+         $group->add(array(
+                     'entities_id'  => $ID_entity,
+                     'name'         => "subgroup $j",
+                     'comment'      => "comment subgroup $j of group $i",
+                     'groups_id'    => $gID,
+                     'is_assign'    => 0,
+               ));
       }
    }
 
-   $LAST["groups"] = $DB->insert_id();
+   $LAST["groups"] = getMaxItem("glpi_groups");
 
    $FIRST["techgroups"] = $LAST["groups"]+1;
 
    for ($i=0 ; $i<$MAX['groups'] ; $i++) {
-      $query = "INSERT INTO `glpi_groups`
-                VALUES (NULL, '$ID_entity', 0, 'group $i', 'comment group $i', '', '', '',
-                        NOW(), 0, 'group $i', 1, NULL, NULL, 0, 1, 1, 1, 1)";
-      $DB->query($query) or die("PB REQUETE ".$query);
+         $group->add(array(
+                  'entities_id'  => $ID_entity,
+                  'name'         => "tech group $i",
+                  'comment'      => "comment tech group $i",
+            ));   
    }
 
-   $LAST["techgroups"] = $DB->insert_id();
+   $LAST["techgroups"] = getMaxItem("glpi_groups");
    regenerateTreeCompleteName("glpi_groups");
 
 
    // glpi_users
    $FIRST["users_sadmin"] = getMaxItem("glpi_users")+1;
-
+   $user = new User();
+   $pu = new Profile_User();
+   $gu = new Group_User();
    for ($i=0 ; $i<$MAX['users_sadmin'] ; $i++) {
-      $query = "INSERT INTO `glpi_users`
-                       (`name`, `password`, `phone`, `phone2`, `mobile`,
-                        `realname`, `firstname`, `comment`,
-                        `usertitles_id`, `usercategories_id`)
-                VALUES ('sadmin$i-$ID_entity', SHA1('sadmin$i'), 'tel $i', 'tel2 $i', 'mobile $i',
-                        'sadmin$i name', 'sadmin$i firstname', 'comment $i',
-                        '".mt_rand(0,$MAX['user_title'])."', '".mt_rand(0,$MAX['user_type'])."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $users_id = $user->add(array(
+            'name'               => "sadmin$i-$ID_entity",
+            'password'           => "sadmin$i",
+            'password2'          => "sadmin$i",
+            'phone'              => "tel $i",
+            'phone2'             => "tel2 $i",
+            'mobile'             => "mobile $i",
+            'realname'           => "sadmin$i name",
+            'firstname'          => "sadmin$i firstname",
+            'comment'            => "comment $i",
+            'usertitles_id'      => mt_rand(0,$MAX['user_title']),
+            'usercategories_id'  => mt_rand(0,$MAX['user_type']),
+             
+            ));
 
-      $user_id = $DB->insert_id();
+      $pu->add(array('users_id'     => $users_id, 
+                     'profiles_id'  => 4,
+                     'entities_id'  => $ID_entity,
+                     'is_recursive' => 1 ));
 
-      $query = "INSERT INTO `glpi_profiles_users`
-                VALUES (NULL, '$user_id', '4', '$ID_entity', '1', '0')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '".mt_rand($FIRST['groups'], $LAST['groups'])."', 0, 0, 0)";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '".mt_rand($FIRST['techgroups'], $LAST['techgroups'])."', 0, 0, 0)";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $gu->add(array('users_id'     => $users_id, 
+                     'groups_id'    => mt_rand($FIRST['groups'], $LAST['groups']),
+                     ));
+      $gu->add(array('users_id'     => $users_id, 
+                     'groups_id'    => mt_rand($FIRST['techgroups'], $LAST['techgroups']),
+                     ));
    }
 
    $LAST["users_sadmin"] = getMaxItem("glpi_users");
    $FIRST["users_admin"] = getMaxItem("glpi_users")+1;
 
    for ($i=0 ; $i<$MAX['users_admin'] ; $i++) {
-      $query = "INSERT INTO `glpi_users`
-                       (`name`, `password`, `phone`, `phone2`, `mobile`,
-                        `realname`, `firstname`, `comment`,
-                        `usertitles_id`, `usercategories_id`)
-                VALUES ('admin$i-$ID_entity', SHA1('admin$i'),  'tel $i', 'tel2 $i', 'mobile $i',
-                        'admin$i name', 'admin$i firstname', 'comment $i',
-                        '".mt_rand(0,$MAX['user_title'])."', '".mt_rand(0,$MAX['user_type'])."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+   
+      $users_id = $user->add(array(
+            'name'               => "admin$i-$ID_entity",
+            'password'           => "admin$i",
+            'password2'          => "admin$i",
+            'phone'              => "tel $i",
+            'phone2'             => "tel2 $i",
+            'mobile'             => "mobile $i",
+            'realname'           => "admin$i name",
+            'firstname'          => "admin$i firstname",
+            'comment'            => "comment $i",
+            'usertitles_id'      => mt_rand(0,$MAX['user_title']),
+            'usercategories_id'  => mt_rand(0,$MAX['user_type']),
+             
+            ));
 
-      $user_id = $DB->insert_id();
-      $query = "INSERT INTO `glpi_profiles_users`
-                VALUES (NULL, '$user_id', '3', '$ID_entity', '1', '0')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $pu->add(array('users_id'     => $users_id, 
+                     'profiles_id'  => 3,
+                     'entities_id'  => $ID_entity,
+                     'is_recursive' => 1 ));
 
-      $group = mt_rand($FIRST['groups'], $LAST['groups']);
-      $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '$group', 0, 1, 1)";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $group = mt_rand($FIRST['techgroups'], $LAST['techgroups']);
-      $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '$group', 0, 1, 1)";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $gu->add(array('users_id'     => $users_id, 
+                     'groups_id'    => mt_rand($FIRST['groups'], $LAST['groups']),
+                     'is_manager'   => 1,
+                     'is_delegate'  => 1,
+                     ));
+      $gu->add(array('users_id'     => $users_id, 
+                     'groups_id'    => mt_rand($FIRST['techgroups'], $LAST['techgroups']),
+                     'is_manager'   => 1,
+                     'is_delegate'  => 1,
+                     ));
    }
 
    $LAST["users_admin"]   = getMaxItem("glpi_users");
    $FIRST["users_normal"] = getMaxItem("glpi_users")+1;
 
    for ($i=0 ; $i<$MAX['users_normal'] ; $i++) {
-      $query = "INSERT INTO `glpi_users`
-                       (`name`, `password`,  `phone`, `phone2`, `mobile`,
-                        `realname`, `firstname`, `comment`,
-                        `usertitles_id`, `usercategories_id`)
-                VALUES ('normal$i-$ID_entity', SHA1('normal$i'), 'tel $i', 'tel2 $i', 'mobile $i',
-                        'normal$i name', 'normal$i firstname', 'comment $i',
-                        '".mt_rand(0,$MAX['user_title'])."', '".mt_rand(0,$MAX['user_type'])."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $users_id = $user->add(array(
+            'name'               => "normal$i-$ID_entity",
+            'password'           => "normal$i",
+            'password2'          => "normal$i",
+            'phone'              => "tel $i",
+            'phone2'             => "tel2 $i",
+            'mobile'             => "mobile $i",
+            'realname'           => "normal$i name",
+            'firstname'          => "normal$i firstname",
+            'comment'            => "comment $i",
+            'usertitles_id'      => mt_rand(0,$MAX['user_title']),
+            'usercategories_id'  => mt_rand(0,$MAX['user_type']),
+             
+            ));
 
-      $user_id = $DB->insert_id();
-      $LAST["users_normal"] = $user_id;
-      $query = "INSERT INTO `glpi_profiles_users`
-                VALUES (NULL, '$user_id', '2', '$ID_entity', '1', '0')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $pu->add(array('users_id'     => $users_id, 
+                     'profiles_id'  => 2,
+                     'entities_id'  => $ID_entity,
+                     'is_recursive' => 1 ));
 
-      $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '".mt_rand($FIRST['groups'], $LAST['groups'])."', 0, 0, 0)";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '".mt_rand($FIRST['techgroups'], $LAST['techgroups'])."', 0, 0, 0)";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $gu->add(array('users_id'     => $users_id, 
+                     'groups_id'    => mt_rand($FIRST['groups'], $LAST['groups']),
+                     ));
+      $gu->add(array('users_id'     => $users_id, 
+                     'groups_id'    => mt_rand($FIRST['techgroups'], $LAST['techgroups']),
+                     ));
    }
 
    $LAST["users_normal"]    = getMaxItem("glpi_users");
    $FIRST["users_postonly"] = getMaxItem("glpi_users")+1;
 
    for ($i=0 ; $i<$MAX['users_postonly'] ; $i++) {
-      $query = "INSERT INTO `glpi_users`
-                       (`name`, `password`, `phone`, `phone2`,
-                        `mobile`, `realname`, `firstname`, `comment`,
-                        `usertitles_id`, `usercategories_id`)
-                VALUES ('postonly$i-$ID_entity', SHA1('postonly$i'),  'tel $i', 'tel2 $i',
-                        'mobile $i', 'postonly$i name', 'postonly$i firstname', 'comment $i',
-                        '".mt_rand(0,$MAX['user_title'])."', '".mt_rand(0,$MAX['user_type'])."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $users_id = $user->add(array(
+            'name'               => "postonly$i-$ID_entity",
+            'password'           => "postonly$i",
+            'password2'          => "postonly$i",
+            'phone'              => "tel $i",
+            'phone2'             => "tel2 $i",
+            'mobile'             => "mobile $i",
+            'realname'           => "postonly$i name",
+            'firstname'          => "postonly$i firstname",
+            'comment'            => "comment $i",
+            'usertitles_id'      => mt_rand(0,$MAX['user_title']),
+            'usercategories_id'  => mt_rand(0,$MAX['user_type']),
+             
+            ));
 
-      $user_id = $DB->insert_id();
-      $LAST["users_postonly"] = $user_id;
-      $query = "INSERT INTO `glpi_profiles_users`
-                VALUES (NULL, '$user_id', '1', '$ID_entity', '1', '0')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $pu->add(array('users_id'     => $users_id, 
+                     'profiles_id'  => 1,
+                     'entities_id'  => $ID_entity,
+                     'is_recursive' => 1 ));
 
-      $query = "INSERT INTO `glpi_groups_users`
-                VALUES (NULL, '$user_id', '".mt_rand($FIRST['groups'], $LAST['groups'])."', 0, 0, 0)";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $gu->add(array('users_id'     => $users_id, 
+                     'groups_id'    => mt_rand($FIRST['groups'], $LAST['groups']),
+                     ));
    }
 
    $LAST["users_postonly"] = getMaxItem("glpi_users");
 
-
+   
    $FIRST["kbcategories"] = getMaxItem("glpi_knowbaseitemcategories")+1;
+   $kbc = new KnowbaseItemCategory();
+   
    for ($i=0 ; $i<max(1,pow($MAX['kbcategories'],1/3)) ; $i++) {
-      $query = "INSERT INTO `glpi_knowbaseitemcategories`
-                VALUES (NULL, '$ID_entity', '1', '0', 'entity categorie $i', '',
-                        'comment categorie $i', '1')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $newID = $kbc->add(array(
+               'entities_id'     => $ID_entity,
+               'is_recursive'    => 1,
+               'name'            => "entity categorie $i",
+               'comment'         => "comment categorie $i"));
 
-      $newID = $DB->insert_id();
       for ($j=0 ; $j<mt_rand(0,pow($MAX['kbcategories'],1/2)) ; $j++) {
-         $query = "INSERT INTO `glpi_knowbaseitemcategories`
-                   VALUES (NULL, '$ID_entity', '1', '$newID', 's-categorie $j', '',
-                           'comment s-categorie $j', '2')";
-         $DB->query($query) or die("PB REQUETE ".$query);
-
-         $newID2 = $DB->insert_id();
+         $newID2 = $kbc->add(array(
+                  'entities_id'     => $ID_entity,
+                  'is_recursive'    => 1,
+                  'name'            => "entity s-categorie $j",
+                  'comment'         => "comment s-categorie $j",
+                  'knowbaseitemcategories_id' => $newID));
          for ($k=0 ; $k<mt_rand(0,pow($MAX['kbcategories'],1/2)) ; $k++) {
-            $query = "INSERT INTO `glpi_knowbaseitemcategories`
-                      VALUES (NULL, '$ID_entity', '1', '$newID2', 'ss-categorie $k', '',
-                              'comment ss-categorie $k', '3')";
-            $DB->query($query) or die("PB REQUETE ".$query);
+            $newID2 = $kbc->add(array(
+                     'entities_id'     => $ID_entity,
+                     'is_recursive'    => 1,
+                     'name'            => "entity ss-categorie $k",
+                     'comment'         => "comment ss-categorie $k",
+                     'knowbaseitemcategories_id' => $newID2));
          }
       }
    }
@@ -1404,47 +1435,63 @@ function generate_entity($ID_entity) {
    // LOCATIONS
    $added = 0;
    $FIRST["locations"] = getMaxItem("glpi_locations")+1;
-
+   $loc = new Location();
    for ($i=0 ; $i<pow($MAX['locations'],1/5)&&$added<$MAX['locations'] ; $i++) {
       $added++;
-      $query = "INSERT INTO `glpi_locations`
-                VALUES (NULL, '$ID_entity', '1', 'lieu $i', '0', '', 'comment lieu $i', '1', '', '',
-                        'building X', 'room $i')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $newID = $DB->insert_id();
+      $newID = $loc->add(array(
+               'entities_id'     => $ID_entity,
+               'is_recursive'    => 1,
+               'name'            => "location $i",
+               'comment'         => "comment location $i",
+               'building'        => "building $i",
+               ));
+      
       for ($j=0 ; $j<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'] ; $j++) {
          $added++;
-         $query = "INSERT INTO `glpi_locations`
-                   VALUES (NULL, '$ID_entity', '1', 's-lieu $j', '$newID', '', 'comment s-lieu $j',
-                           '2', '', '', 'building X', 'room $i-$j')";
-         $DB->query($query) or die("PB REQUETE ".$query);
+         $newID2 = $loc->add(array(
+                  'entities_id'     => $ID_entity,
+                  'is_recursive'    => 1,
+                  'name'            => "s-location $j",
+                  'comment'         => "comment s-location $j",
+                  'building'        => "building $i",
+                  'room'            => "stage $j",
+                  'locations_id'    => $newID,
+                  ));
 
-         $newID2 = $DB->insert_id();
          for ($k=0 ; $k<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'] ; $k++) {
             $added++;
-            $query = "INSERT INTO `glpi_locations`
-                      VALUES (NULL, '$ID_entity', '1', 'ss-lieu $k', '$newID2', '',
-                              'comment ss-lieu $k', '3', '', '', 'building X', 'room $i-$j-$k')";
-            $DB->query($query) or die("PB REQUETE ".$query);
+            $newID3 = $loc->add(array(
+                     'entities_id'     => $ID_entity,
+                     'is_recursive'    => 1,
+                     'name'            => "ss-location $k",
+                     'comment'         => "comment ss-location $k",
+                     'building'        => "building $i",
+                     'room'            => "part $k",
+                     'locations_id'    => $newID2,
+                     ));
 
-            $newID3 = $DB->insert_id();
             for ($l=0 ; $l<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'] ; $l++) {
                $added++;
-               $query = "INSERT INTO `glpi_locations`
-                         VALUES (NULL, '$ID_entity', '1', 'sss-lieu $l', '$newID3', '',
-                                 'comment sss-lieu $l', '4', '', '', 'building X',
-                                 'room $i-$j-$k-$l')";
-               $DB->query($query) or die("PB REQUETE ".$query);
-
-               $newID4 = $DB->insert_id();
+               $newID4 = $loc->add(array(
+                        'entities_id'     => $ID_entity,
+                        'is_recursive'    => 1,
+                        'name'            => "sss-location $l",
+                        'comment'         => "comment sss-location $l",
+                        'building'        => "building $i",
+                        'room'            => "room $l",
+                        'locations_id'    => $newID3,
+                        ));
                for ($m=0 ; $m<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'] ; $m++) {
                   $added++;
-                  $query = "INSERT INTO `glpi_locations`
-                            VALUES (NULL, '$ID_entity', '1', 'ssss-lieu $m', '$newID4', '',
-                                    'comment ssss-lieu $m', 5, '', '', 'building X',
-                                    'room $i-$j-$k-$l-$m')";
-                  $DB->query($query) or die("PB REQUETE ".$query);
+                  $newID5 = $loc->add(array(
+                           'entities_id'     => $ID_entity,
+                           'is_recursive'    => 1,
+                           'name'            => "sss-location $m",
+                           'comment'         => "comment sss-location $m",
+                           'building'        => "building $i",
+                           'room'            => "room $l-$m",
+                           'locations_id'    => $newID4,
+                           ));                  
                }
             }
          }
@@ -1461,22 +1508,25 @@ function generate_entity($ID_entity) {
    // Task categories
    $added = 0;
    $FIRST["taskcategory"] = getMaxItem("glpi_taskcategories")+1;
-
+   $tc = new TaskCategory();
    for ($i=0 ; $i<pow($MAX['taskcategory'],1/5)&&$added<$MAX['taskcategory'] ; $i++) {
       $added++;
-      $query = "INSERT INTO `glpi_taskcategories`
-                VALUES (NULL, '$ID_entity', '1', '0', 'ent$ID_entity taskcategory $i', '',
-                        'comment lieu $i', '1', '', '', '1')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $newID = $tc->add(array(
+            'entities_id'     => $ID_entity,
+            'is_recursive'    => 1,
+            'name'            => "ent$ID_entity taskcategory $i",
+            'coment'          => "comment ent$ID_entity taskcategory $i",
+            ));
 
-      $newID = $DB->insert_id();
       for ($j=0 ; $j<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'] ; $j++) {
+         $newID2 = $tc->add(array(
+               'entities_id'        => $ID_entity,
+               'is_recursive'       => 1,
+               'name'               => "ent$ID_entity taskcategory $i",
+               'coment'             => "comment ent$ID_entity taskcategory $i",
+               'taskcategories_id'  => $newID,
+               ));
          $added++;
-         $query = "INSERT INTO `glpi_taskcategories`
-                   VALUES (NULL, '$ID_entity', '1', '$newID', 'ent$ID_entity s-taskcategory $j', '',
-                           'comment s-lieu $j', '2', '', '', '1')";
-         $DB->query($query) or die("PB REQUETE ".$query);
-         $newID2 = $DB->insert_id();
       }
    }
 
