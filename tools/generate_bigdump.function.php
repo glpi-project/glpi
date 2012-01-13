@@ -1558,6 +1558,25 @@ function generate_entity($ID_entity) {
 
    regenerateTreeCompleteName("glpi_itilcategories");
 
+   $FIRST["solutiontypes"] = getMaxItem("glpi_solutiontypes")+1;
+
+   $items = array();
+   $st = new SolutionType();
+   for ($i=0 ; $i<$MAX['solutiontypes'] ; $i++) {
+      if (isset($items[$i])) {
+         $val = $items[$i];
+      } else {
+         $val = "type de solution $i";
+      }
+      $st->add(array('name'         => $val, 
+                     'comment'      => "comment $val",
+                     'entities_id'  => $ID_entity,
+                     'is_recursive' => 1,
+               ));
+   }
+   $LAST["solutiontypes"] = getMaxItem("glpi_solutiontypes");
+
+
    $FIRST["solutiontemplates"] = getMaxItem("glpi_solutiontemplates")+1;
    $nb_items = mt_rand(0,$MAX['solutiontemplates']);
    $st = new SolutionTemplate();
@@ -1574,40 +1593,27 @@ function generate_entity($ID_entity) {
 
    $LAST["solutiontemplates"] = getMaxItem("glpi_solutiontemplates");
 
-   $FIRST["solutiontypes"] = getMaxItem("glpi_solutiontypes")+1;
-
-   $items = array();
-   for ($i=0 ; $i<$MAX['solutiontypes'] ; $i++) {
-      if (isset($items[$i])) {
-         $val = $items[$i];
-      } else {
-         $val = "type de solution $i";
-      }
-      $query = "INSERT INTO `glpi_solutiontypes`
-                VALUES (NULL, '$val', 'comment $val','$ID_entity', '1')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-   }
-   $LAST["solutiontypes"] = getMaxItem("glpi_solutiontypes");
-
-
    // Add Specific questions
    $k = 0;
    $FIRST["kbitems"] = getMaxItem("glpi_knowbaseitems")+1;
-
+   $ki = new KnowbaseItem();
+   $eki = new Entity_KnowbaseItem();
    for ($i=$FIRST['kbcategories'] ; $i<=$LAST['kbcategories'] ; $i++) {
       $nb = mt_rand(0,$MAX_KBITEMS_BY_CAT);
       for ($j=0 ; $j<$nb ; $j++) {
          $k++;
-         $query = "INSERT INTO `glpi_knowbaseitems`
-                   VALUES (NULL, '$i', 'Entity $ID_entity Question $k',
-                           'Reponse $k', '".mt_rand(0,1)."', '10', '".mt_rand(0,1000)."', NOW(),
-                           NOW())";
-         $DB->query($query) or die("PB REQUETE ".$query);
+         $newID = $ki->add(array(
+               'knowbaseitemcategories_id'   => $i,
+               'name'                        => "Entity $ID_entity Question $k",
+               'answer'                      => "Answer $k".Toolbox::getRandomString(50),
+               'is_faq'                      => mt_rand(0,1),
+               'users_id'                    => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),              
+            ));
 
-         $newID = $DB->insert_id();
-         $query = "INSERT INTO `glpi_entities_knowbaseitems`
-                   VALUES (NULL, '$newID','$ID_entity','0')";
-         $DB->query($query) or die("PB REQUETE ".$query);
+         $eki->add(array('entities_id' => $ID_entity, 
+                        'knowbaseitems_id' => $newID,
+                        'is_recursive' => 0
+                        ));
       }
    }
 
@@ -1617,16 +1623,18 @@ function generate_entity($ID_entity) {
       $nb = mt_rand(0,$MAX_KBITEMS_BY_CAT);
       for ($j=0 ; $j<$nb ; $j++) {
          $k++;
-         $query = "INSERT INTO `glpi_knowbaseitems`
-                   VALUES (NULL, '$i', 'Entity $ID_entity Recursive Question $k',
-                           'Reponse $k ".Toolbox::getRandomString(50)."','".mt_rand(0,1)."', '10',
-                           '".mt_rand(0,1000)."', NOW(), NOW())";
-         $DB->query($query) or die("PB REQUETE ".$query);
+         $newID = $ki->add(array(
+               'knowbaseitemcategories_id'   => $i,
+               'name'                        => "Entity $ID_entity Recursive Question $k",
+               'answer'                      => "Answer $k".Toolbox::getRandomString(50),
+               'is_faq'                      => mt_rand(0,1),
+               'users_id'                    => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),              
+            ));
 
-         $newID = $DB->insert_id();
-         $query = "INSERT INTO `glpi_entities_knowbaseitems`
-                   VALUES (NULL, '$newID','$ID_entity','1')";
-         $DB->query($query) or die("PB REQUETE ".$query);
+         $eki->add(array('entities_id' => $ID_entity, 
+                        'knowbaseitems_id' => $newID,
+                        'is_recursive' => 1
+                        ));
       }
    }
 
@@ -1635,18 +1643,23 @@ function generate_entity($ID_entity) {
 
    // Ajout documents  specific
    $FIRST["document"] = getMaxItem("glpi_documents")+1;
-
+   $doc = new Document();
    for ($i=0 ; $i<$MAX['document'] ; $i++) {
       $link = "";
       if (mt_rand(0,100)<50) {
          $link = "http://linktodoc/doc$i";
       }
-      $query = "INSERT INTO `glpi_documents`
-                VALUES (NULL, '$ID_entity', '0', 'document $i-$ID_entity', '', '',
-                        '".mt_rand(1,$MAX['rubdocs'])."', '', NOW(), 'comment $i', '0', '$link',
-                        'notes document $i', '0', '0', '')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-      $docID = $DB->insert_id();
+      
+      $docID = $doc->add(array(
+            'entities_id'           => $ID_entity,
+            'is_recursive'          => 0,
+            'name'                  => "document $i-$ID_entity",
+            'documentcategories_id' => mt_rand(1,$MAX['rubdocs']),
+            'comment'               => "comment $i",
+            'link'                  => $link,
+            'notepad'               => "notes document $i"
+         ));
+
       $DOCUMENTS[$docID] = $ID_entity."-0";
    }
 
@@ -1657,12 +1670,16 @@ function generate_entity($ID_entity) {
       if (mt_rand(0,100)<50) {
          $link = "http://linktodoc/doc$i";
       }
-      $query = "INSERT INTO `glpi_documents`
-                VALUES (NULL, '$ID_entity', '1', 'Recursive document $i-$ID_entity', '', '',
-                        '".mt_rand(1,$MAX['rubdocs'])."', '', NOW(), 'comment $i', '0', '$link',
-                        'notes document $i', '0', '0', '')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-      $docID = $DB->insert_id();
+      
+      $docID = $doc->add(array(
+         'entities_id'           => $ID_entity,
+         'is_recursive'          => 1,
+         'name'                  => "Recursive document $i-$ID_entity",
+         'documentcategories_id' => mt_rand(1,$MAX['rubdocs']),
+         'comment'               => "comment $i",
+         'link'                  => $link,
+         'notepad'               => "notes document $i"
+      ));
       $DOCUMENTS[$docID] = $ID_entity."-1";
    }
 
@@ -1671,15 +1688,19 @@ function generate_entity($ID_entity) {
 
    // Ajout budgets  specific
    $FIRST["budget"] = getMaxItem("glpi_budgets")+1;
+   $b = new Budget();
    for ($i=0 ; $i<$MAX['budget'] ; $i++) {
       $date1 = strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
       $date2 = $date1+MONTH_TIMESTAMP*12*mt_rand(1,4); // + entre 1 et 4 ans
 
-      $query = "INSERT INTO `glpi_budgets`
-                VALUES (NULL, 'budget $i-$ID_entity', '$ID_entity', '0', 'comment $i-$ID_entity',
-                        '0', '".date("Y-m-d",intval($date1))."', '".date("Y-m-d",intval($date2))."',
-                        '0.0000', '0', '', NULL, '')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $b->add(array(
+         'name'         => "budget $i-$ID_entity",
+         'entities_id'  => $ID_entity,
+         'is_recusive'  => 0,
+         'comment'      => "comment $i-$ID_entity",
+         'begin_date'   => date("Y-m-d",intval($date1)),
+         'end_date'     => date("Y-m-d",intval($date2)),
+         ));      
    }
    $LAST["budget"] = getMaxItem("glpi_budgets");
 
@@ -1688,11 +1709,15 @@ function generate_entity($ID_entity) {
       $date1 = strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
       $date2 = $date1+MONTH_TIMESTAMP*12*mt_rand(1,4); // + entre 1 et 4 ans
 
-      $query = "INSERT INTO `glpi_budgets`
-                VALUES (NULL, 'Recursive budget $i-$ID_entity', '$ID_entity', '1',
-                        'comment $i-$ID_entity', '0', '".date("Y-m-d",intval($date1))."',
-                        '".date("Y-m-d",intval($date2))."', '0.0000', '0', '', NULL, '')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $b->add(array(
+         'name'         => "Recursive budget $i-$ID_entity",
+         'entities_id'  => $ID_entity,
+         'is_recusive'  => 1,
+         'comment'      => "comment $i-$ID_entity",
+         'begin_date'   => date("Y-m-d",intval($date1)),
+         'end_date'     => date("Y-m-d",intval($date2)),
+         ));      
+
    }
    $LAST["document"] = getMaxItem("glpi_documents");
 
@@ -1701,25 +1726,31 @@ function generate_entity($ID_entity) {
    $items = array("DELL", "IBM", "ACER", "Microsoft", "Epson", "Xerox", "Hewlett Packard", "Nikon",
                   "Targus", "LG", "Samsung", "Lexmark");
    $FIRST["enterprises"] = getMaxItem("glpi_suppliers")+1;
-
+   $ent = new Supplier();
 
    // Global ones
    for ($i=0 ; $i<$MAX['enterprises']/2 ; $i++) {
       if (isset($items[$i])) {
-         $val = $items[$i];
+         $val = "Recursive ".$items[$i];
       } else {
-         $val = "Global enterprise_".$i."_ID_entity";
+         $val = "Recursive enterprise_".$i."_ID_entity";
       }
+      $entID = $ent->add(array(
+         'entities_id'        => $ID_entity,
+         'is_recursive'       => 1,
+         'name'               => "Recursive $val-$ID_entity",
+         'suppliertypes_id'   => mt_rand(1,$MAX['enttype']),
+         'address'            => "address $i",
+         'postcode'           => "postcode $i",
+         'town'               => "town $i",
+         'state'              => "state $i",
+         'country'            => "country $i",
+         'website'            => "http://www.$val.com/",
+         'fax'                => "fax $i",
+         'email'              => "info@ent$i.com",
+         'notepad'            => "notes enterprises $i",
+         ));
 
-      $query = "INSERT INTO `glpi_suppliers`
-                VALUES (NULL, '$ID_entity', '1', 'Recursive $val-$ID_entity',
-                        '".mt_rand(1,$MAX['enttype'])."', 'address $i', 'postcode $i', 'town $i',
-                        'state $i', 'country $i', 'http://www.$val.com/', 'phone $i',
-                        'comment enterprises $i', '0', 'fax $i', 'info@ent$i.com',
-                        'notes enterprises $i')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $entID = $DB->insert_id();
       addDocuments('Supplier', $entID);
    }
 
@@ -1732,63 +1763,88 @@ function generate_entity($ID_entity) {
          $val = "enterprise_".$i."_ID_entity";
       }
 
-      $query = "INSERT INTO `glpi_suppliers`
-                VALUES (NULL, '$ID_entity', '0', '$val-$ID_entity', '".mt_rand(1,$MAX['enttype'])."',
-                        'address $i', 'postcode $i', 'town $i', 'state $i', 'country $i',
-                        'http://www.$val.com/', 'phone $i', 'comment enterprises $i', '0', 'fax $i',
-                        'info@ent$i.com', 'notes suppliers $i')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $entID = $ent->add(array(
+         'entities_id'        => $ID_entity,
+         'is_recursive'       => 0,
+         'name'               => "$val-$ID_entity",
+         'suppliertypes_id'   => mt_rand(1,$MAX['enttype']),
+         'address'            => "address $i",
+         'postcode'           => "postcode $i",
+         'town'               => "town $i",
+         'state'              => "state $i",
+         'country'            => "country $i",
+         'website'            => "http://www.$val.com/",
+         'fax'                => "fax $i",
+         'email'              => "info@ent$i.com",
+         'notepad'            => "notes supplier $i",
+         'comment'            => "comment supplier $i",
+         ));
 
-      $supplierID = $DB->insert_id();
-      addDocuments('Supplier', $supplierID);
+      addDocuments('Supplier', $entID);
    }
    $LAST["enterprises"] = getMaxItem("glpi_suppliers");
 
 
    // Ajout contracts
    $FIRST["contract"] = getMaxItem("glpi_contracts")+1;
-
+   $c = new Contract();
+   $cs = new Contract_Supplier();
    // Specific
    for ($i=0 ; $i<$MAX['contract'] ; $i++) {
       $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
+      $contractID = $c->add(array(
+         'entities_id'        => $ID_entity,
+         'is_recursive'       => 0,
+         'name'               => "contract $i-$ID_entity",
+         'num'                => "num $i",
+         'cost'               => mt_rand(100,10000),
+         'contracttypes_id'   => mt_rand(1,$MAX_CONTRACT_TYPE),
+         'begin_date'         => $date,
+         'duration'           => mt_rand(1,36),
+         'notice'             => mt_rand(1,3),
+         'periodicity'        => mt_rand(1,36),
+         'billing'            => mt_rand(1,36),
+         'comment'            => "comment $i",
+         'accounting_number'  => "compta num $i",
+         'renewal'            => 1,
+         ));
 
-      $query = "INSERT INTO `glpi_contracts`
-                VALUES (NULL, '$ID_entity', '0', 'contract $i-$ID_entity', 'num $i',
-                        '".mt_rand(100,10000)."', '".mt_rand(1,$MAX_CONTRACT_TYPE)."', '$date',
-                        '".mt_rand(1,36)."', '".mt_rand(1,3)."', '".mt_rand(1,36)."',
-                        '".mt_rand(1,36)."', 'comment $i', 'compta num $i', '0', '08:00:00',
-                        '19:00:00', '09:00:00', '16:00:00', '1', '00:00:00', '00:00:00', '0', '0',
-                        'notes contract $i', '0', '1','', '0')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $contractID = $DB->insert_id();
       addDocuments('Contract', $contractID);
 
       // Add an enterprise
-      $query = "INSERT INTO `glpi_contracts_suppliers`
-                VALUES(NULL, '".mt_rand($FIRST["enterprises"],$LAST["enterprises"])."', '$contractID')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $cs->add(array(
+         'contracts_id' => $contractID,
+         'suppliers_id' => mt_rand($FIRST["enterprises"],$LAST["enterprises"])
+      ));
    }
 
    for ($i=0 ; $i<$MAX['contract']/2 ; $i++) {
       $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
-      $query = "INSERT INTO `glpi_contracts`
-                VALUES (NULL, '$ID_entity', '1', 'Recursive contract $i-$ID_entity', 'num $i',
-                        '".mt_rand(100,10000)."', '".mt_rand(1,$MAX_CONTRACT_TYPE)."', '$date',
-                        '".mt_rand(1,36)."', '".mt_rand(1,3)."', '".mt_rand(1,36)."',
-                        '".mt_rand(1,36)."', 'comment $i', 'compta num $i', '0', '08:00:00',
-                        '19:00:00', '09:00:00', '16:00:00', '1', '00:00:00', '00:00:00', '0', '0',
-                        'notes contract $i', '0', '1','', '0')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $contractID = $c->add(array(
+         'entities_id'        => $ID_entity,
+         'is_recursive'       => 1,
+         'name'               => "Recursive contract $i-$ID_entity",
+         'num'                => "num $i",
+         'cost'               => mt_rand(100,10000),
+         'contracttypes_id'   => mt_rand(1,$MAX_CONTRACT_TYPE),
+         'begin_date'         => $date,
+         'duration'           => mt_rand(1,36),
+         'notice'             => mt_rand(1,3),
+         'periodicity'        => mt_rand(1,36),
+         'billing'            => mt_rand(1,36),
+         'comment'            => "comment $i",
+         'accounting_number'  => "compta num $i",
+         'renewal'            => 1,
+         ));
 
-      $contractID = $DB->insert_id();
       addDocuments('Contract', $contractID);
 
       // Add an enterprise
-      $query = "INSERT INTO `glpi_contracts_suppliers`
-                VALUES(NULL, '".mt_rand($FIRST["enterprises"], $LAST["enterprises"])."', '$contractID')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $cs->add(array(
+         'contracts_id' => $contractID,
+         'suppliers_id' => mt_rand($FIRST["enterprises"],$LAST["enterprises"])
+      ));
    }
    $LAST["contract"] = getMaxItem("glpi_contracts");
 
@@ -1800,43 +1856,55 @@ function generate_entity($ID_entity) {
                   "Henri Dumont", "Clement Fontaine");
 
    $FIRST["contacts"] = getMaxItem("glpi_contacts")+1;
+   $c = new Contact();
+   $cs = new Contact_Supplier();
    for ($i=0 ; $i<$MAX['contacts'] ; $i++) {
       if (isset($items[$i])) {
          $val = $items[$i];
       } else {
          $val = "contact $i";
       }
-      $query = "INSERT INTO `glpi_contacts`
-                VALUES (NULL, '$ID_entity', '0', '$val-$ID_entity', '', 'phone $i', 'phone2 $i',
-                        'mobile $i', 'fax $i', 'email $i', '".mt_rand(1,$MAX['contact_type'])."',
-                        'comment $i', '0', 'notes contact $i')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-      $contactID = $DB->insert_id();
-
+      
+      $contactID = $c->add(array(
+         'entities_id'        => $ID_entity,
+         'is_recursive'       => 0,
+         'name'               => "$val-$ID_entity",
+         'contacttypes_id'    => mt_rand(1,$MAX['contact_type']),
+         'phone'              => "phone $i",
+         'phone2'             => "phone2 $i",
+         'mobile'             => "mobile $i",
+         'fax'                => "fax $i",
+         'email'              => "email $i",
+         'comment'            => "Comment $i"
+         ));
+               
       // Link with enterprise
-      $query = "INSERT INTO `glpi_contacts_suppliers`
-                VALUES (NULL, '".mt_rand($FIRST['enterprises'],$LAST['enterprises'])."', '$contactID')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $cs->add(array('contacts_id'  => $contactID,
+                     'suppliers_id' => mt_rand($FIRST['enterprises'],$LAST['enterprises'])));
    }
 
    for ($i=0 ; $i<$MAX['contacts']/2 ; $i++) {
       if (isset($items[$i])) {
-         $val = $items[$i];
+         $val = "Recursive ".$items[$i];
       } else {
-         $val = "contact $i";
+         $val = "Recursive contact $i";
       }
-      $query = "INSERT INTO `glpi_contacts`
-                VALUES (NULL, '$ID_entity', '1', 'Recursive $val-$ID_entity', '', 'phone $i',
-                        'phone2 $i', 'mobile $i', 'fax $i', 'email $i',
-                        '".mt_rand(1,$MAX['contact_type'])."', 'comment $i', '0',
-                        'notes contact $i')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-      $contactID = $DB->insert_id();
-
+      $contactID = $c->add(array(
+         'entities_id'        => $ID_entity,
+         'is_recursive'       => 0,
+         'name'               => "$val-$ID_entity",
+         'contacttypes_id'    => mt_rand(1,$MAX['contact_type']),
+         'phone'              => "phone $i",
+         'phone2'             => "phone2 $i",
+         'mobile'             => "mobile $i",
+         'fax'                => "fax $i",
+         'email'              => "email $i",
+         'comment'            => "Comment $i"
+         ));
+               
       // Link with enterprise
-      $query = "INSERT INTO `glpi_contacts_suppliers`
-                VALUES (NULL, '".mt_rand($FIRST['enterprises'],$LAST['enterprises'])."', '$contactID')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $cs->add(array('contacts_id'  => $contactID,
+                     'suppliers_id' => mt_rand($FIRST['enterprises'],$LAST['enterprises'])));
    }
    $LAST["contacts"] = getMaxItem("glpi_contacts");
 
