@@ -331,7 +331,6 @@ function addTracking($type, $ID, $ID_entity) {
          $enterprise = mt_rand($FIRST["enterprises"], $LAST['enterprises']);
       }
 
-      $actiontime      = mt_rand(0, 3)*HOUR_TIMESTAMP+mt_rand(0, 60)*MINUTE_TIMESTAMP;
       $firstactiontime = mt_rand(0, 10)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP
                          +mt_rand(0, 60)*MINUTE_TIMESTAMP;
       $solvetime       = 0;
@@ -370,49 +369,46 @@ function addTracking($type, $ID, $ID_entity) {
       if (!empty($solvedate)) {
          $solvedatetoadd = "'".date("Y-m-d H:i:s",intval($solvedate))."'";
       }
-
-      $query = "INSERT INTO `glpi_tickets`
-                VALUES (NULL, '$ID_entity', 'Title ".Toolbox::getRandomString(20)."',
-                        '".date("Y-m-d H:i:s", intval($opendate))."', $closedatetoadd,
-                        $solvedatetoadd, '".date("Y-m-d H:i:s", intval($updatedate))."',
-                        '".$users[0]."', '$status', '".$users[0]."', '".mt_rand(0,6)."',
-                        '$enterprise', '$type', '$ID',
-                        'tracking ".Toolbox::getRandomString(15)."',
-                        '".mt_rand(1,5)."', '".mt_rand(1,5)."', '".mt_rand(1,5)."',
-                        '".mt_rand(0, $MAX['tracking_category'])."', '".mt_rand(1,2)."',
-                        '$hour_cost', '0', '0', '$solutiontype', '$solution', 'none', 0, 0,
-                        $duedatetoadd, NULL, 0, 0, $closetime, $solvetime, $firstactiontime,
-                        '$actiontime', '0')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $tID = $DB->insert_id();
-
-      // Add users and groups
-      $query = "INSERT INTO `glpi_tickets_users`
-                VALUES(NULL, '$tID', '".$users[0]."', '".CommonITILObject::REQUESTER."', '1', '')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $query = "INSERT INTO `glpi_tickets_users`
-                VALUES(NULL, '$tID', '".$users[1]."', '".CommonITILObject::ASSIGN."', '1', '')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $query = "INSERT INTO `glpi_groups_tickets`
-                VALUES(NULL, '$tID', '".mt_rand($FIRST["techgroups"], $LAST['techgroups'])."',
-                       '".CommonITILObject::ASSIGN."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $query = "INSERT INTO `glpi_groups_tickets`
-                VALUES(NULL, '$tID', '".mt_rand($FIRST["groups"], $LAST['groups'])."',
-                       '".CommonITILObject::REQUESTER."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
+      $t = new Ticket();
+      $tID = $t->add(array(
+            'entities_id'                 => $ID_entity,
+            'name'                        => 'Title '.Toolbox::getRandomString(20),
+            'date'                        => date("Y-m-d H:i:s", intval($opendate)),
+            'closedate'                   => $closedatetoadd,
+            'solvedate'                   => $solvedatetoadd,
+            'date_mod'                    => date("Y-m-d H:i:s", intval($updatedate)),
+            'users_id_lastupdater'        => $users[0],
+            'status'                      => $status,
+            'users_id_recipient'          => $users[0],
+            'requesttypes_id'             => mt_rand(0,6),
+            'suppliers_id_assign'         => $enterprise,
+            'itemtype'                    => $type,
+            'items_id'                    => $ID,
+            'content'                     => 'tracking '.Toolbox::getRandomString(15),
+            'urgency'                     => mt_rand(1,5),
+            'impact'                      => mt_rand(1,5),
+            'priority'                    => mt_rand(1,5),
+            'itilcategories_id'           => mt_rand(0, $MAX['tracking_category']),
+            'type'                        => mt_rand(1,2),
+            'cost_time'                   => $hour_cost,
+            'solutiontypes_id'            => $solutiontype,
+            'solution'                    => $solution,
+            'due_date'                    => $duedatetoadd,
+            'close_delay_stat'            => $closetime,
+            'solve_delay_stat'            => $solvetime,
+            'takeintoaccount_delay_stat'  => $firstactiontime,
+            '_users_id_requester'         => $users[0],
+            '_users_id_assign'            => $users[1],
+            '_groups_id_assign'           => mt_rand($FIRST["techgroups"], $LAST['techgroups']),
+            '_groups_id_requester'        => mt_rand($FIRST["groups"], $LAST['groups']),
+      ));
 
       // Add followups
       $i     = 0;
       $fID   = 0;
       $first = true;
       $date  = 0;
-
+      $tf = new TicketFollowup();
       while (mt_rand(0,100)<$percent['followups']) {
          if ($first) {
             $date = $opendate+$firstactiontime;
@@ -421,40 +417,48 @@ function addTracking($type, $ID, $ID_entity) {
          } else {
             $date += mt_rand(3600, 7776000);
          }
-
-         $query = "INSERT INTO `glpi_ticketfollowups`
-                   VALUES (NULL, '$tID', '".date("Y-m-d H:i:s", $date)."', '".$users[1]."',
-                           'followup $i ".Toolbox::getRandomString(15)."', '0', '".mt_rand(0, 3)."')";
-         $DB->query($query) or die("PB REQUETE ".$query);
-
-         $fID = $DB->insert_id();
+         $tf->add(array(
+                  'tickets_id'      => $tID,
+                  'date'            => date("Y-m-d H:i:s", $date),
+                  'users_id'        => $users[1],
+                  'content'         => "followup $i ".Toolbox::getRandomString(15),
+                  'requesttypes_id' => mt_rand(0, 3),
+         ));
          $i++;
       }
-
+      $tt = new TicketTask();
       while (mt_rand(0,100)<$percent['tasks']) {
+         $doplan=false;
          if ($first) {
             $date  = $opendate+$firstactiontime;
             $first = false;
-
+            $doplan = true;
          } else {
             $date += mt_rand(3600, 7776000);
          }
 
-         $plan_string = 'NULL,NULL,1,0';
-
-         if ($status=="plan") {
-            $plan_string = "'".date("Y-m-d H:i:s", $date3)."', '".date("Y-m-d H:i:s", $date4)."','1',
-                           '".$users[1]."'";
+         $begin = $end = 'NULL';
+         $assign_user = 0;
+         $state = 0;
+         $params = array(
+                  'tickets_id'               => $tID,
+                  'taskcategories_id'  => mt_rand($FIRST['taskcategory'], $LAST['taskcategory']),
+                  'date'               => date("Y-m-d H:i:s",$date),
+                  'users_id'           => $users[1],
+                  'content'            => "task $i ".Toolbox::getRandomString(15),
+                  'is_private'         => mt_rand(0,1),
+                  'state'              => 1,                  
+         );
+         if ($status=="plan" && $doplan) {
+            $params['plan'] = array(            
+                              'begin'       => date("Y-m-d H:i:s", $date3),
+                              'end'         => date("Y-m-d H:i:s", $date4),
+                              'users_id' => $users[1],
+                              );
          }
-         $actiontime = (mt_rand(0, 3)+mt_rand(0, 100)/100);
-         $query = "INSERT INTO `glpi_tickettasks`
-                   VALUES (NULL, '$tID', '".mt_rand($FIRST['taskcategory'], $LAST['taskcategory'])."',
-                           '".date("Y-m-d H:i:s",$date)."', '".$users[1]."',
-                           'task $i ".Toolbox::getRandomString(15)."', '".mt_rand(0,1)."',
-                           '$actiontime', $plan_string)";
-         $DB->query($query) or die("PB REQUETE ".$query);
+         print_r($params);echo '<br><br>';
+         $tt->add($params);
 
-         $fID = $DB->insert_id();
          $i++;
       }
 
@@ -477,11 +481,6 @@ function addTracking($type, $ID, $ID_entity) {
       }
 
    }
-
-   $query = "UPDATE `".getTableForItemType($type)."`
-             SET `ticket_tco` = '$tco'
-             WHERE `id` = '".$ID."'";
-   $DB->query($query) or die("PB REQUETE ".$query);
 
 }
 
