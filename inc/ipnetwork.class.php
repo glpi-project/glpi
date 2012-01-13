@@ -257,7 +257,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
                                               'entities_id' => $entities_id);
 
       $returnValue = array();
-      // If the gateway has been altered, or the network informations (address or netmask) changed,
+      // If the gateway has been altered, or the network information (address or netmask) changed,
       // then, we must revalidate the gateway !
       if (!isset($this->fields["gateway"])
           || ($input["gateway"] != $this->fields["gateway"])

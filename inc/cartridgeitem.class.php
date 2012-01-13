@@ -368,7 +368,7 @@ class CartridgeItem extends CommonDBTM {
    /**
     * Cron action on cartridges : alert if a stock is behind the threshold
     *
-    * @param $task for log, display informations if NULL? (default NULL)
+    * @param $task for log, display information if NULL? (default NULL)
     *
     * @return 0 : nothing to do 1 : done with success
    **/

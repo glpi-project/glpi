@@ -509,7 +509,7 @@ class Html {
 
 
    /**
-    * Display Debug Informations
+    * Display Debug Information
     *
     * @param $with_session with session information (true by default)
    **/

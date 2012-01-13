@@ -339,7 +339,7 @@ function update0681to07() {
       $config = $DB->fetch_array($result);
 
       if (!empty($config["ldap_host"])) {
-         //Transfer ldap informations into the new table
+         //Transfer ldap information into the new table
          $query = "INSERT INTO `glpi_auth_ldap`
                    VALUES (NULL, '".$config["ldap_host"]."', '".$config["ldap_host"]."',
                            '".$config["ldap_basedn"]."', '".$config["ldap_rootdn"]."',
@@ -402,7 +402,7 @@ function update0681to07() {
       $config = $DB->fetch_array($result);
 
       if (!empty($config["imap_host"])) {
-         //Transfer ldap informations into the new table
+         //Transfer ldap information into the new table
          $query = "INSERT INTO `glpi_auth_mail`
                    VALUES (NULL, '".$config["imap_host"]."', '".$config["imap_auth_server"]."',
                            '".$config["imap_host"]."')";

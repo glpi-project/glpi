@@ -134,7 +134,7 @@ class OcsServer extends CommonDBTM {
                    && self::checkConfig(2)
                    && self::checkConfig(8)) {
                   $ong[2] = __('Import options');
-                  $ong[3] = __('General informations');
+                  $ong[3] = __('General information');
                }
                return $ong;
          }
@@ -222,7 +222,7 @@ class OcsServer extends CommonDBTM {
       echo "<br><div class='center'>";
       echo "<form name='formconfig' action=\"$target\" method='post'>";
       echo "<table class='tab_cadre_fixe'>\n";
-      echo "<tr><th><input type='hidden' name='id' value='$ID'>".__('General informations')."</th>\n";
+      echo "<tr><th><input type='hidden' name='id' value='$ID'>".__('General information')."</th>\n";
       echo "<th>&nbsp;" . _n('Component', 'Components', 2) . "</th>\n";
       echo "<th>&nbsp;" . __('OCSNG administrative information') . "&nbsp;</th></tr>\n";
 
@@ -972,7 +972,7 @@ class OcsServer extends CommonDBTM {
    static function ocsLink($ocsid, $ocsservers_id, $glpi_computers_id) {
       global $DB, $DBocs;
 
-      // Retrieve informations from computer
+      // Retrieve information from computer
       $comp = new Computer();
       $comp->getFromDB($glpi_computers_id);
 
@@ -1691,7 +1691,7 @@ class OcsServer extends CommonDBTM {
                   $computer_updates = self::migrateComputerUpdates($line["computers_id"],
                                                                    $computer_updates);
                }
-               // Update Administrative informations
+               // Update Administrative information
                self::updateAdministrativeInfo($line['computers_id'], $line['ocsid'],
                                              $ocsservers_id, $cfg_ocs, $computer_updates,
                                              $comp->fields['entities_id'], $dohistory);
@@ -2720,8 +2720,8 @@ class OcsServer extends CommonDBTM {
                               FROM `networks`
                               WHERE `HARDWARE_ID` = '".$data["ID"]."'";
 
-            //Get network informations for this computer
-            //Ignore informations that contains "??"
+            //Get network information for this computer
+            //Ignore information that contains "??"
             foreach ($DBocs->request($query_network) as $network) {
                if (isset($network['IPADDRESS']) && $network['IPADDRESS'] != '??') {
                   $hardware[$data["ID"]]['IPADDRESS'][] = $network['IPADDRESS'];
@@ -4823,9 +4823,9 @@ class OcsServer extends CommonDBTM {
 
 
    /**
-    * Update the administrative informations
+    * Update the administrative information
     *
-    * This function erase old data and import the new ones about administrative informations
+    * This function erase old data and import the new ones about administrative information
     *
     * @param $computers_id integer : glpi computer id.
     * @param $ocsid integer : ocs computer id (ID).

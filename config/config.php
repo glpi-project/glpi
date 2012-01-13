@@ -133,7 +133,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       exit();
    }
 
-   // If debug mode activated : display some informations
+   // If debug mode activated : display some information
    if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
       // display_errors only need for for E_ERROR, E_PARSE, ... which cannot be catched
       ini_set('display_errors','On');

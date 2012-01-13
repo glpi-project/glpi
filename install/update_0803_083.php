@@ -759,7 +759,7 @@ function update0803to083() {
    }
 
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Add entities informations on document links'));
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Add entities information on document links'));
 
    if ($migration->addField("glpi_documents_items", "entities_id", "integer")) {
       $migration->addField("glpi_documents_items", "is_recursive", "bool");

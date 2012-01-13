@@ -521,7 +521,7 @@ function update0782to080() {
 
    $migration->dropKey("glpi_computers_softwareversions", "computers_id");
 
-   // For real count : copy template and deleted informations
+   // For real count : copy template and deleted information
    $migration->addField("glpi_computers_softwareversions", "is_deleted",
                         "tinyint(1) NOT NULL DEFAULT 0");
    // Gain de temps pour les beta-testeurs

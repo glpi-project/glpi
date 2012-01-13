@@ -853,7 +853,7 @@ class NotificationTarget extends CommonDBChild {
 
    /**
     * Get all data needed for template processing
-    * Provides minimum informations for alerts
+    * Provides minimum information for alerts
     * Can be overridden by each NotificationTartget class if needed
    **/
    function getDatasForTemplate($event, $options=array()) {

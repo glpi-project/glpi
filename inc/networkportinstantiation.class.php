@@ -210,7 +210,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
    /**
     * Select which network card to attach to the current NetworkPort (for the moment, only ethernet
-    * and wifi ports). Whenever a card is attached, its informations (mac, type, ...) are
+    * and wifi ports). Whenever a card is attached, its information (mac, type, ...) are
     * autmatically set to the required field.
     *
     * @param $netport the port that owns this instantiation (usefull, for instance to get network

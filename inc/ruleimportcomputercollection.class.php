@@ -66,7 +66,7 @@ class RuleImportComputerCollection extends RuleCollection {
       if (!isset($input['ocsid']) && isset($input['id'])) {
          $input['ocsid'] = $input['id'];
       }
-      //Get informations about network ports
+      //Get information about network ports
       $query = "SELECT *
                 FROM `networks`
                 WHERE `HARDWARE_ID` = '".$input['ocsid']."'";

@@ -3102,7 +3102,7 @@ class Transfer extends CommonDBTM {
       $params['value'] = $this->fields['keep_cartridge'];
       Dropdown::showFromArray('keep_cartridge', $keep, $params);
       echo "</td>";
-      echo "<td>".__('Financial and administrative informations')."</td><td>";
+      echo "<td>".__('Financial and administrative information')."</td><td>";
       $params['value'] = $this->fields['keep_infocom'];
       Dropdown::showFromArray('keep_infocom', $keep, $params);
       echo "</td></tr>";

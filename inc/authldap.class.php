@@ -304,7 +304,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
       echo "<tr class='tab_bg_2'><th colspan='4'>";
-      echo "<input type='hidden' name='id' value='$ID'>". __('Advanced informations')."</th></tr>";
+      echo "<input type='hidden' name='id' value='$ID'>". __('Advanced information')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Use TLS') . "</td><td>";
@@ -1638,7 +1638,7 @@ class AuthLDAP extends CommonDBTM {
             $groups  = array();
             $user    = new User();
 
-            //Get informations from LDAP
+            //Get information from LDAP
             if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login),
                                    ($action == self::ACTION_IMPORT))) {
                // Add the auth method
@@ -1648,7 +1648,7 @@ class AuthLDAP extends CommonDBTM {
                if ($action == self::ACTION_IMPORT) {
                   $user->fields["authtype"] = Auth::LDAP;
                   $user->fields["auths_id"] = $ldap_server;
-                  //Save informations in database !
+                  //Save information in database !
                   $input = $user->fields;
                   // Display message after redirect
                   if ($display) {
@@ -2611,7 +2611,7 @@ class AuthLDAP extends CommonDBTM {
          $ong[2]  = _n('User', 'Users', 2);
          $ong[3]  = _n('Group', 'Groups', 2);
          $ong[4]  = __('Entity');                  // params for entity config
-         $ong[5]  = __('Advanced informations');   // params for entity advanced config
+         $ong[5]  = __('Advanced information');   // params for entity advanced config
          $ong[6]  = __('Replicate', 'Replicates', 2);
 
          return $ong;

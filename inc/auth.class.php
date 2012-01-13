@@ -499,7 +499,7 @@ class Auth {
                }
 
             } else if ($exists == 2) {
-               //The user is not authenticated on the GLPI DB, but we need to get informations about him
+               //The user is not authenticated on the GLPI DB, but we need to get information about him
                //to find out his authentication method
                $this->user->getFromDBbyName(addslashes($login_name));
 
@@ -1091,7 +1091,7 @@ class Auth {
                           $CFG_GLPI['existing_auth_server_field_clean_domain']);
       echo "</td></tr>\n";
 
-      echo "<tr><th colspan='2'>" . __('Access control and additional informations')."</th></tr>\n";
+      echo "<tr><th colspan='2'>" . __('Access control and additional information')."</th></tr>\n";
       echo "<tr class='tab_bg_2'><td class='center'>" . __('LDAP directory choice') . "</td><td>";
       Dropdown::show('AuthLDAP', array('name'   => 'authldaps_id_extra',
                                        'value'  => $CFG_GLPI["authldaps_id_extra"]));

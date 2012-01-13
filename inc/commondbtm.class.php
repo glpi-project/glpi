@@ -960,7 +960,7 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Forward entity informations to linked items
+    * Forward entity information to linked items
    **/
    protected function forwardEntityInformations() {
       global $DB;
@@ -2438,7 +2438,7 @@ class CommonDBTM extends CommonGLPI {
     *    - entity : integer or array / restrict to a defined entity or array of entities
     *                   (default -1 : no restriction)
     *    - toupdate : array / Update a specific item on select change on dropdown
-    *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for informations)
+    *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for information)
     *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *

@@ -122,7 +122,7 @@ if (isset($_POST["add"])) {
               sprintf(__('%s connects an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else {//print computer informations
+} else {//print computer information
    Html::header(Computer::GetTypeName(2), $_SERVER['PHP_SELF'], "inventory", "computer");
    //show computer form to add
    $computer->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));

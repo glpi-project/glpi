@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
-* Rule class store all informations about a GLPI rule :
+* Rule class store all information about a GLPI rule :
 *   - description
 *   - criterias
 *   - actions
@@ -62,7 +62,7 @@ class RuleDictionnaryPrinter extends RuleCached {
 
    function showCacheRuleHeader() {
 
-      echo "<tr><th colspan='3'>" . __('Cache informations') . "</th>";
+      echo "<tr><th colspan='3'>" . __('Cache information') . "</th>";
       echo "<th colspan='3'>" . $this->fields["name"];
       echo "</th></tr>";
 

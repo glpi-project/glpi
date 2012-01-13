@@ -5000,11 +5000,11 @@ class Ticket extends CommonITILObject {
 
 
    /**
-    * Give cron informations
+    * Give cron information
     *
     * @param $name : task's name
     *
-    * @return arrray of informations
+    * @return arrray of information
    **/
    static function cronInfo($name) {
 

@@ -243,11 +243,11 @@ class TicketRecurrent extends CommonDropdown {
 
 
    /**
-    * Give cron informations
+    * Give cron information
     *
     * @param $name : task's name
     *
-    * @return arrray of informations
+    * @return arrray of information
    **/
    static function cronInfo($name) {
 
@@ -297,7 +297,7 @@ class TicketRecurrent extends CommonDropdown {
 
       $tt = new TicketTemplate();
 
-      // Create ticket based on ticket template and entity informations of ticketrecurrent
+      // Create ticket based on ticket template and entity information of ticketrecurrent
       if ($tt->getFromDB($data['tickettemplates_id'])) {
          // Get default values for ticket
          $input = Ticket::getDefaultValues();
@@ -320,7 +320,7 @@ class TicketRecurrent extends CommonDropdown {
          }
          // Set entity
          $input['entities_id'] = $data['entities_id'];
-         
+
          $ticket = new Ticket();
          $ticket->add($input);
       }

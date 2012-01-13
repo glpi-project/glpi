@@ -48,7 +48,7 @@ class RuleDictionnaryDropdown extends RuleCached {
    function showCacheRuleHeader() {
 
       if ($this->show_cache) {
-         echo "<tr><th colspan='2'>".__('Cache informations')."</th><th>".$this->fields["name"].
+         echo "<tr><th colspan='2'>".__('Cache information')."</th><th>".$this->fields["name"].
               "</th></tr>";
          echo "<tr><td class='tab_bg_1 b'>".__('Original value')."</td>";
          echo "<td class='tab_bg_1 b'>".__('Manufacturer')."</td>";
