@@ -72,7 +72,7 @@ class NotImportedEmail extends CommonDBTM {
 
       $tab[3]['table']         = 'glpi_notimportedemails';
       $tab[3]['field']         = 'subject';
-      $tab[3]['name']          = __('Email header: Subject');
+      $tab[3]['name']          = __('Subject email header');
       $tab[3]['massiveaction'] = false;
 
       $tab[4]['table']         = 'glpi_mailcollectors';

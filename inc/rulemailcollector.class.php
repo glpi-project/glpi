@@ -97,7 +97,7 @@ class RuleMailCollector extends Rule {
       $criterias['_users_id_requester']['table'] = 'glpi_users';
       $criterias['_users_id_requester']['type']  = 'dropdown';
 
-      $criterias['subject']['name']  = __('Email header: Subject');;
+      $criterias['subject']['name']  = __('Subject email header');
       $criterias['subject']['field'] = 'subject';
       $criterias['subject']['table'] = '';
       $criterias['subject']['type']  = 'text';
