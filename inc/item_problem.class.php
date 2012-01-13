@@ -59,7 +59,7 @@ class Item_Problem extends CommonDBRelation{
       }
 
       // Avoid duplicate entry
-      $restrict = "`problems_id` = '".$input['problems_id']."'
+      $restrict = " `problems_id` = '".$input['problems_id']."'
                    AND `itemtype` = '".$input['itemtype']."'
                    AND `items_id` = '".$input['items_id']."'";
       if (countElementsInTable($this->getTable(),$restrict)>0) {
@@ -83,11 +83,11 @@ class Item_Problem extends CommonDBRelation{
 
 
    /**
-   * Print the HTML array for Items linked to a problem
-   *
-   * @param $problem problem object
-   * @return Nothing (display)
-   *
+    * Print the HTML array for Items linked to a problem
+    *
+    * @param $problem Problem object
+    *
+    * @return Nothing (display)
    **/
    static function showForProblem(Problem $problem) {
       global $DB, $CFG_GLPI;
@@ -253,7 +253,7 @@ class Item_Problem extends CommonDBRelation{
                   $nb += countElementsInTable('glpi_items_problems',
                                               " (`itemtype`,`items_id`) IN (" . $subquery . ")");
                }
-               return self::createTabEntry(_n('Problem', 'Problems', 2), $nb);
+               return self::createTabEntry(Problem::getTypeName(2), $nb);
          }
       }
       return '';
