@@ -57,7 +57,7 @@ class DocumentType  extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      return _n('Document Type', 'Document Types', $nb);
+      return _n('Document type', 'Document types', $nb);
    }
 
 
