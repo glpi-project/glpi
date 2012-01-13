@@ -1964,38 +1964,38 @@ function generate_entity($ID_entity) {
          $newIP  = getNextIP();
          $newMAC = getNextMAC();
 
-         $query = "INSERT INTO `glpi_networkports`
-                   VALUES (NULL, '$netwID', 'NetworkEquipment', '$ID_entity', '0',
-                           '".$net_port['NetworkEquipment'][$netwID]++."',
-                           'link port to netw ".$net_loc[$data['locations_id']]."',
-                           '".$newIP['ip']."', '$newMAC', '$iface', '$netpointID',
-                           '".$newIP['netwmask']."', '".$newIP['gateway']."',
-                           '".$newIP['subnet']."','comment')";
-         $DB->query($query) or die("PB REQUETE ".$query);
-
-         $port1ID = $DB->insert_id();
-         $query = "INSERT INTO `glpi_networkports`
-                   VALUES (NULL, '".$net_loc[$data['locations_id']]."', 'NetworkEquipment',
-                           '$ID_entity', '0',
-                           '".$net_port['NetworkEquipment'][$net_loc[$data['locations_id']]]++."',
-                           'link port to netw $netwID', '".$newIP['ip']."', '$newMAC', '$iface',
-                           '$netpointID', '".$newIP['netwmask']."', '".$newIP['gateway']."',
-                           '".$newIP['subnet']."','comment')";
-         $DB->query($query) or die("PB REQUETE ".$query);
-
-         $port2ID = $DB->insert_id();
-         $query = "INSERT INTO `glpi_networkports_networkports`
-                   VALUES (NULL, '$port1ID', '$port2ID')";
-         $DB->query($query) or die("PB REQUETE ".$query);
-
-         // Add Vlan
-         $query = "INSERT INTO `glpi_networkports_vlans`
-                   VALUES (NULL, '$port1ID', '$vlanID')";
-         $DB->query($query) or die("PB REQUETE ".$query);
-
-         $query = "INSERT INTO `glpi_networkports_vlans`
-                   VALUES (NULL, '$port2ID', '$vlanID')";
-         $DB->query($query) or die("PB REQUETE ".$query);
+//          $query = "INSERT INTO `glpi_networkports`
+//                    VALUES (NULL, '$netwID', 'NetworkEquipment', '$ID_entity', '0',
+//                            '".$net_port['NetworkEquipment'][$netwID]++."',
+//                            'link port to netw ".$net_loc[$data['locations_id']]."',
+//                            '".$newIP['ip']."', '$newMAC', '$iface', '$netpointID',
+//                            '".$newIP['netwmask']."', '".$newIP['gateway']."',
+//                            '".$newIP['subnet']."','comment')";
+//          $DB->query($query) or die("PB REQUETE ".$query);
+// 
+//          $port1ID = $DB->insert_id();
+//          $query = "INSERT INTO `glpi_networkports`
+//                    VALUES (NULL, '".$net_loc[$data['locations_id']]."', 'NetworkEquipment',
+//                            '$ID_entity', '0',
+//                            '".$net_port['NetworkEquipment'][$net_loc[$data['locations_id']]]++."',
+//                            'link port to netw $netwID', '".$newIP['ip']."', '$newMAC', '$iface',
+//                            '$netpointID', '".$newIP['netwmask']."', '".$newIP['gateway']."',
+//                            '".$newIP['subnet']."','comment')";
+//          $DB->query($query) or die("PB REQUETE ".$query);
+// 
+//          $port2ID = $DB->insert_id();
+//          $query = "INSERT INTO `glpi_networkports_networkports`
+//                    VALUES (NULL, '$port1ID', '$port2ID')";
+//          $DB->query($query) or die("PB REQUETE ".$query);
+// 
+//          // Add Vlan
+//          $query = "INSERT INTO `glpi_networkports_vlans`
+//                    VALUES (NULL, '$port1ID', '$vlanID')";
+//          $DB->query($query) or die("PB REQUETE ".$query);
+// 
+//          $query = "INSERT INTO `glpi_networkports_vlans`
+//                    VALUES (NULL, '$port2ID', '$vlanID')";
+//          $DB->query($query) or die("PB REQUETE ".$query);
       }
 
       // Ajout imprimantes reseaux : 1 par loc + connexion d un matos reseau + ajout de cartouches
@@ -2076,35 +2076,35 @@ function generate_entity($ID_entity) {
       $newIP  = getNextIP();
       $newMAC = getNextMAC();
 
-      $query = "INSERT INTO `glpi_networkports`
-                VALUES (NULL, '$netwID', 'NetworkEquipment', '$ID_entity', '0',
-                        '".$net_port['NetworkEquipment'][$netwID]++."',
-                        'link port to printer of loc ".$data["id"]."', '".$newIP['ip']."',
-                        '$newMAC','$iface', '$netpointID', '".$newIP['netwmask']."',
-                        '".$newIP['gateway']."', '".$newIP['subnet']."','comment')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $port1ID = $DB->insert_id();
-      $query = "INSERT INTO `glpi_networkports`
-                VALUES (NULL, '$printID', 'Printer', '$ID_entity', '$recur',
-                        '".$net_port['Printer'][$printID]++."', 'link port to netw $netwID',
-                        '".$newIP['ip']."', '$newMAC', '$iface', '$netpointID',
-                        '".$newIP['netwmask']."', '".$newIP['gateway']."', '".$newIP['subnet']."', 'comment')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $port2ID = $DB->insert_id();
-      $query = "INSERT INTO `glpi_networkports_networkports`
-                VALUES (NULL, '$port1ID', '$port2ID')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      // Add Vlan
-      $query = "INSERT INTO `glpi_networkports_vlans`
-                VALUES (NULL, '$port1ID', '$vlanID')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $query = "INSERT INTO `glpi_networkports_vlans`
-                VALUES (NULL, '$port2ID', '$vlanID')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+//       $query = "INSERT INTO `glpi_networkports`
+//                 VALUES (NULL, '$netwID', 'NetworkEquipment', '$ID_entity', '0',
+//                         '".$net_port['NetworkEquipment'][$netwID]++."',
+//                         'link port to printer of loc ".$data["id"]."', '".$newIP['ip']."',
+//                         '$newMAC','$iface', '$netpointID', '".$newIP['netwmask']."',
+//                         '".$newIP['gateway']."', '".$newIP['subnet']."','comment')";
+//       $DB->query($query) or die("PB REQUETE ".$query);
+// 
+//       $port1ID = $DB->insert_id();
+//       $query = "INSERT INTO `glpi_networkports`
+//                 VALUES (NULL, '$printID', 'Printer', '$ID_entity', '$recur',
+//                         '".$net_port['Printer'][$printID]++."', 'link port to netw $netwID',
+//                         '".$newIP['ip']."', '$newMAC', '$iface', '$netpointID',
+//                         '".$newIP['netwmask']."', '".$newIP['gateway']."', '".$newIP['subnet']."', 'comment')";
+//       $DB->query($query) or die("PB REQUETE ".$query);
+// 
+//       $port2ID = $DB->insert_id();
+//       $query = "INSERT INTO `glpi_networkports_networkports`
+//                 VALUES (NULL, '$port1ID', '$port2ID')";
+//       $DB->query($query) or die("PB REQUETE ".$query);
+// 
+//       // Add Vlan
+//       $query = "INSERT INTO `glpi_networkports_vlans`
+//                 VALUES (NULL, '$port1ID', '$vlanID')";
+//       $DB->query($query) or die("PB REQUETE ".$query);
+// 
+//       $query = "INSERT INTO `glpi_networkports_vlans`
+//                 VALUES (NULL, '$port2ID', '$vlanID')";
+//       $DB->query($query) or die("PB REQUETE ".$query);
 
    }
    unset($net_loc);
@@ -2244,7 +2244,7 @@ function generate_entity($ID_entity) {
          $newIP  = getNextIP();
          $newMAC = getNextMAC();
 
-         $query = "INSERT INTO `glpi_networkports`
+/*         $query = "INSERT INTO `glpi_networkports`
                    VALUES (NULL, '$compID', 'Computer', '$ID_entity', '0',
                            '".$net_port['Computer'][$compID]++."', 'link port to netw $netwID',
                            '".$newIP['ip']."', '$newMAC', '$iface', '$netpointID',
@@ -2273,7 +2273,7 @@ function generate_entity($ID_entity) {
 
          $query = "INSERT INTO `glpi_networkports_vlans`
                    VALUES (NULL, '$port2ID', '".$vlan_loc[$loc]."')";
-         $DB->query($query) or die("PB REQUETE ".$query);
+         $DB->query($query) or die("PB REQUETE ".$query);*/
       }
 
       // Ajout d'un ecran sur l'ordi
