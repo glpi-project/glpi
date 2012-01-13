@@ -3767,7 +3767,7 @@ class Ticket extends CommonITILObject {
          echo "<th colspan='2'>";
          $docnb=Document_Item::countForItem($this);
          //TRANS: %d is the document number
-         echo sprintf(_n('%d associated document', '%d associated documents'), $docnb), $docnb);
+         echo sprintf(_n('%d associated document', '%d associated documents', $docnb), $docnb);
          echo "</th>";
       }
 
