@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
    $link->check($_GET["id"],'w');
 
    if ($link_itemtype->add($_POST)) {
-    Event::log($_POST["links_id"], "links", 4, "setup", 
+    Event::log($_POST["links_id"], "links", 4, "setup",
                //TRANS: %s is the user login
                sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
@@ -59,9 +59,9 @@ else if (isset($_GET["delete"])) {
    $link->check($_GET["links_id"],'w');
 
    $link_itemtype->delete($_GET);
-   Event::log($_GET["links_id"], "links", 4, "setup", 
-               //TRANS: %s is the user login
-               sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
+   Event::log($_GET["links_id"], "links", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
 
    Html::back();
 }

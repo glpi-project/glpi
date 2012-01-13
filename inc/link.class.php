@@ -97,7 +97,7 @@ class Link extends CommonDBTM {
    /**
    * Print the link form
    *
-   * @param $ID integer ID of the item
+   * @param $ID      integer ID of the item
    * @param $options array
    *     - target filename : where to go when done.
    *
@@ -145,24 +145,24 @@ class Link extends CommonDBTM {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']            = __('Characteristics');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['table']          = $this->getTable();
+      $tab[1]['field']          = 'name';
+      $tab[1]['name']           = __('Name');
+      $tab[1]['datatype']       = 'itemlink';
+      $tab[1]['itemlink_type']  = $this->getType();
       $tab[1]['massiveaction'] = false;
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']          = $this->getTable();
+      $tab[2]['field']          = 'id';
+      $tab[2]['name']           = __('ID');
+      $tab[2]['massiveaction']  = false;
 
-      $tab[3]['table']     = $this->getTable();
-      $tab[3]['field']     = 'link';
-      $tab[3]['name']      = __('Link or filename');
-      $tab[3]['datatype']  = 'string';
+      $tab[3]['table']          = $this->getTable();
+      $tab[3]['field']          = 'link';
+      $tab[3]['name']           = __('Link or filename');
+      $tab[3]['datatype']       = 'string';
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
@@ -174,13 +174,13 @@ class Link extends CommonDBTM {
 
 
    /**
-   * Generate link
-   *
-   * @param $link string : original string content
-   * @param $item CommonDBTM : item used to make replacements
-   *
-   * @return array of link contents (may have several when item have several IP / MAC cases)
-   */
+    * Generate link
+    *
+    * @param $link    string   original string content
+    * @param $item             CommonDBTM object: item used to make replacements
+    *
+    * @return array of link contents (may have several when item have several IP / MAC cases)
+   **/
    static function generateLinkContents($link, CommonDBTM $item) {
       global $DB;
 
@@ -309,8 +309,8 @@ class Link extends CommonDBTM {
    /**
     * Show Links for an item
     *
-    * @param $item CommonDBTM object
-    * @param $withtemplate integer : withtemplate param
+    * @param $item                     CommonDBTM object
+    * @param $withtemplate    integer  withtemplate param (default '')
    **/
    static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $DB, $CFG_GLPI;
@@ -340,7 +340,7 @@ class Link extends CommonDBTM {
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
       if ($DB->numrows($result)>0) {
-         echo "<tr><th>"._n('External link', 'External links',2)."</th></tr>";
+         echo "<tr><th>".self::getTypeName(2)."</th></tr>";
          while ($data=$DB->fetch_assoc($result)) {
             $name = $data["name"];
             if (empty($name)) {
@@ -385,7 +385,7 @@ class Link extends CommonDBTM {
          echo "</table></div>";
 
       } else {
-         echo "<tr class='tab_bg_2'><th>"._n('External link', 'External links',2)."</th></tr>";
+         echo "<tr class='tab_bg_2'><th>".self::getTypeName(2)."</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center b'>".__('No link defined')."</td></tr>";
          echo "</table></div>";
       }

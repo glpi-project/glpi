@@ -78,8 +78,8 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
    /**
     * Show KB categories
     *
-    * @param $options : $_GET
-    * @param $faq display on faq ?
+    * @param $options   $_GET
+    * @param $faq       display on faq ? (default 0)
     *
     * @return nothing (display the form)
    **/

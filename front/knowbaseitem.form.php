@@ -63,7 +63,7 @@ if ($_GET["id"] == "new") {
    // on affiche le formulaire de saisie de l'item
    $kb->check(-1,'w');
 
-   Html::header(__('Knowledge base'),$_SERVER['PHP_SELF'],"utils","knowbase");
+   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
    $available_options = array('itemtype', 'items_id');
    $options           = array();
    foreach ($available_options as $key) {
@@ -79,8 +79,8 @@ if ($_GET["id"] == "new") {
    $kb->check(-1,'w',$_POST);
 
    $newID = $kb->add($_POST);
-   Event::log($newID, "knowbaseitem", 5, "tools", 
-               sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $ewID));
+   Event::log($newID, "knowbaseitem", 5, "tools",
+              sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $ewID));
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.php");
 
 } else if (isset($_POST["update"])) {
@@ -88,16 +88,16 @@ if ($_GET["id"] == "new") {
    $kb->check($_POST["id"],'w');
 
    $kb->update($_POST);
-   Event::log($_POST["id"], "knowbaseitem", 5, "tools", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
+   Event::log($_POST["id"], "knowbaseitem", 5, "tools",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_POST['id']);
 
 } else if (isset($_GET["id"]) && strcmp($_GET["modify"],"yes") == 0) {
    // modifier un item dans la base de connaissance
    $kb->check($_GET["id"],'r');
 
-   Html::header(__('Knowledge base'),$_SERVER['PHP_SELF'],"utils","knowbase");
+   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
    $kb->showForm($_GET["id"]);
    Html::footer();
 
@@ -106,9 +106,9 @@ if ($_GET["id"] == "new") {
    $kb->check($_GET["id"],'w');
 
    $kb->delete($_GET);
-   Event::log($_GET["id"], "knowbaseitem", 5, "tools", 
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));         
+   Event::log($_GET["id"], "knowbaseitem", 5, "tools",
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $kb->redirectToList();
 
 } else if (isset($_GET["id"]) && strcmp($_GET["addtofaq"],"yes") == 0) {
@@ -153,8 +153,8 @@ if ($_GET["id"] == "new") {
       if (!is_null($item)) {
          $item->add($_POST);
          Event::log($_POST["knowbaseitems_id"], "knowbaseitem", 4, "tools",
-                     //TRANS: %s is the user login
-                     sprintf(__('%s adds a target'), $_SESSION["glpiname"]));
+                    //TRANS: %s is the user login
+                    sprintf(__('%s adds a target'), $_SESSION["glpiname"]));
       }
    }
    Html::back();
@@ -196,8 +196,8 @@ if ($_GET["id"] == "new") {
       }
    }
    Event::log($_POST["knowbaseitems_id"], "knowbaseitem", 4, "tools",
-               //TRANS: %s is the user login
-               sprintf(__('%s deletes a target'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes a target'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (empty($_GET["id"])) {
@@ -208,7 +208,7 @@ if ($_GET["id"] == "new") {
    // Affiche un item de la base de connaissances
    $kb->check($_GET["id"],'r');
 
-   Html::header(__('Knowledge base'),$_SERVER['PHP_SELF'],"utils","knowbase");
+   Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
 
    $kb->showFull(true);
 

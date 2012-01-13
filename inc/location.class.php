@@ -78,6 +78,7 @@ class Location extends CommonTreeDropdown {
    static function getSearchOptionsToAdd() {
 
       $tab = array();
+
       $tab[3]['table']          = 'glpi_locations';
       $tab[3]['field']          = 'completename';
       $tab[3]['name']           = __('Location');
