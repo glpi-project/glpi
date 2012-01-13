@@ -277,7 +277,6 @@ function addTracking($type, $ID, $ID_entity) {
    global $percent, $DB, $MAX, $FIRST, $LAST;
 
    $current_year = date("Y");
-   $tco          = 0;
 
    while (mt_rand(0,100)<$percent['tracking_on_item']) {
       // ticket closed ?
@@ -358,7 +357,6 @@ function addTracking($type, $ID, $ID_entity) {
       }
       $updatedate = $opendate+max($firstactiontime, $solvetime, $closetime);
       $hour_cost  = 100;
-      $tco       += $actiontime*$hour_cost;
 
       $closedatetoadd = 'NULL';
       if (!empty($closedate)) {
@@ -456,7 +454,6 @@ function addTracking($type, $ID, $ID_entity) {
                               'users_id' => $users[1],
                               );
          }
-         print_r($params);echo '<br><br>';
          $tt->add($params);
 
          $i++;
