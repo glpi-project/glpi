@@ -389,7 +389,7 @@ class Stat {
                echo Search::showHeaderItem($output_type, __('Take into account'), $header_num);
             }
             echo Search::showHeaderItem($output_type, __('Resolution'), $header_num);
-            echo Search::showHeaderItem($output_type, __('Closuse'), $header_num);
+            echo Search::showHeaderItem($output_type, __('Closure'), $header_num);
          }
 
 
