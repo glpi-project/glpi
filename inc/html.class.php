@@ -2391,7 +2391,7 @@ class Html {
       // Main Headline
       echo "<div id='header'>";
       echo "<div id='c_logo'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' accesskey='1' title=\"".
+      echo "<a href='".$CFG_GLPI["root_doc"]."' accesskey='1' title=\"".
              $LANG['central'][5]."\"><span class='invisible'>Logo</span></a></div>";
 
       // Les préférences + lien déconnexion
