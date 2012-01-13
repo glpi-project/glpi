@@ -228,18 +228,18 @@ class Profile extends CommonDBTM {
          $input["problem_status"] = exportArrayToDB($cycle);
       }
 
-//       if (isset($input["_cycles_change"])) {
-//          $tab   = Change::getAllStatusArray();
-//          $cycle = array();
-//          foreach ($tab as $from => $label) {
-//             foreach ($tab as $dest => $label) {
-//                if ($from!=$dest && $input["_cycle_change"][$from][$dest]==0) {
-//                   $cycle[$from][$dest] = 0;
-//                }
-//             }
-//          }
-//          $input["change_status"] = exportArrayToDB($cycle);
-//       }
+      if (isset($input["_cycles_change"])) {
+         $tab   = Change::getAllStatusArray();
+         $cycle = array();
+         foreach ($tab as $from => $label) {
+            foreach ($tab as $dest => $label) {
+               if ($from!=$dest && $input["_cycle_change"][$from][$dest]==0) {
+                  $cycle[$from][$dest] = 0;
+               }
+            }
+         }
+         $input["change_status"] = exportArrayToDB($cycle);
+      }
 
       return $input;
    }
@@ -957,7 +957,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("show_all_planning", $this->fields["show_all_planning"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_5'><th colspan='6'>"._n('Problem', 'Problems', 2)/*." / "._n('Change', 'Changes', 2)*/;
+      echo "<tr class='tab_bg_5'><th colspan='6'>"._n('Problem', 'Problems', 2);
       echo "</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -973,17 +973,17 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
 
-//       echo "<tr class='tab_bg_2'>";
-//       echo "<td>".__('Update all changes')."</td><td>";
-//       Dropdown::showYesNo("edit_all_change", $this->fields["edit_all_change"]);
-//       echo "</td>";
-//       echo "<td>".(__'See all changes)."</td><td>";
-//       Dropdown::showYesNo("show_all_change", $this->fields["show_all_change"]);
-//       echo "</td>";
-//       echo "<td>".__('See the changes (actor)')."</td><td>";
-//       Dropdown::showYesNo("show_my_change", $this->fields["show_my_change"]);
-//       echo "</td>";
-//       echo "</tr>\n";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>".__('Update all changes')."</td><td>";
+      Dropdown::showYesNo("edit_all_change", $this->fields["edit_all_change"]);
+      echo "</td>";
+      echo "<td>".__('See all changes')."</td><td>";
+      Dropdown::showYesNo("show_all_change", $this->fields["show_all_change"]);
+      echo "</td>";
+      echo "<td>".__('See the changes (actor)')."</td><td>";
+      Dropdown::showYesNo("show_my_change", $this->fields["show_my_change"]);
+      echo "</td>";
+      echo "</tr>\n";
 
       if ($canedit && $closeform) {
          echo "<tr class='tab_bg_1'>";
@@ -1076,34 +1076,34 @@ class Profile extends CommonDBTM {
          echo "</tr>\n";
       }
 
-//       echo "</table>";
-//
-//       echo "<table class='tab_cadre_fixe'>";
-//       $tabstatus = Change::getAllStatusArray();
-//
-//       echo "<th colspan='".(count($tabstatus)+1)."'>".__('Life cycle of changes')."</th>";
-//       echo "<tr class='tab_bg_1'><td class='b center'>".__('From \ To');
-//       echo "<input type='hidden' name='_cycles_change' value='1'</td>";
-//       foreach ($tabstatus as $label) {
-//          echo "<td class='center'>$label</td>";
-//       }
-//       echo "</tr>\n";
-//
-//       foreach ($tabstatus as $from => $label) {
-//          echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
-//          foreach ($tabstatus as $dest => $label) {
-//             echo "<td class='center'>";
-//             if ($dest==$from) {
-//                echo Dropdown::getYesNo(1);
-//             } else {
-//                Dropdown::showYesNo("_cycle_change[$from][$dest]",
-//                                    (!isset($this->fields['change_status'][$from][$dest])
-//                                     || $this->fields['change_status'][$from][$dest]));
-//             }
-//             echo "</td>";
-//          }
-//          echo "</tr>\n";
-//       }
+      echo "</table>";
+
+      echo "<table class='tab_cadre_fixe'>";
+      $tabstatus = Change::getAllStatusArray();
+
+      echo "<th colspan='".(count($tabstatus)+1)."'>".__('Life cycle of changes')."</th>";
+      echo "<tr class='tab_bg_1'><td class='b center'>".__('From \ To');
+      echo "<input type='hidden' name='_cycles_change' value='1'</td>";
+      foreach ($tabstatus as $label) {
+         echo "<td class='center'>$label</td>";
+      }
+      echo "</tr>\n";
+
+      foreach ($tabstatus as $from => $label) {
+         echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
+         foreach ($tabstatus as $dest => $label) {
+            echo "<td class='center'>";
+            if ($dest==$from) {
+               echo Dropdown::getYesNo(1);
+            } else {
+               Dropdown::showYesNo("_cycle_change[$from][$dest]",
+                                   (!isset($this->fields['change_status'][$from][$dest])
+                                    || $this->fields['change_status'][$from][$dest]));
+            }
+            echo "</td>";
+         }
+         echo "</tr>\n";
+      }
 
       if ($canedit && $closeform) {
          echo "<tr class='tab_bg_1'>";
@@ -1827,27 +1827,27 @@ class Profile extends CommonDBTM {
       $tab[114]['name']     = __('Update all problems');
       $tab[114]['datatype'] = 'bool';
 
-//       $tab[111]['table']         = $this->getTable();
-//       $tab[111]['field']         = 'change_status';
-//       $tab[111]['name']          = __('Life cycle of changes');
-//       $tab[111]['nosearch']      = true;
-//       $tab[111]['datatype']      = 'text';
-//       $tab[111]['massiveaction'] = false;
-//
-//       $tab[115]['table']    = $this->getTable();
-//       $tab[115]['field']    = 'show_my_change';
-//       $tab[115]['name']     =__('See the changes (actor)');
-//       $tab[115]['datatype'] = 'bool';
-//
-//       $tab[116]['table']    = $this->getTable();
-//       $tab[116]['field']    = 'show_all_change';
-//       $tab[116]['name']     = __('See all changes');
-//       $tab[116]['datatype'] = 'bool';
-//
-//       $tab[117]['table']    = $this->getTable();
-//       $tab[117]['field']    = 'edit_all_change';
-//       $tab[117]['name']     = __('Update all changes');
-//       $tab[117]['datatype'] = 'bool';
+      $tab[111]['table']         = $this->getTable();
+      $tab[111]['field']         = 'change_status';
+      $tab[111]['name']          = __('Life cycle of changes');
+      $tab[111]['nosearch']      = true;
+      $tab[111]['datatype']      = 'text';
+      $tab[111]['massiveaction'] = false;
+
+      $tab[115]['table']    = $this->getTable();
+      $tab[115]['field']    = 'show_my_change';
+      $tab[115]['name']     =__('See the changes (actor)');
+      $tab[115]['datatype'] = 'bool';
+
+      $tab[116]['table']    = $this->getTable();
+      $tab[116]['field']    = 'show_all_change';
+      $tab[116]['name']     = __('See all changes');
+      $tab[116]['datatype'] = 'bool';
+
+      $tab[117]['table']    = $this->getTable();
+      $tab[117]['field']    = 'edit_all_change';
+      $tab[117]['name']     = __('Update all changes');
+      $tab[117]['datatype'] = 'bool';
 
       $tab['other'] = __('Other');
 

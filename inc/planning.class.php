@@ -315,8 +315,8 @@ class Planning {
       echo "</tr>";
       echo "</table></form></div>\n";
 
-
-            // ---------------Tracking
+      ///TODO use $CFG_GLPI['planning_types']
+      // ---------------Tracking
       $interv = TicketTask::populatePlanning(array('who'       => $who,
                                                    'who_group' => 0,
                                                    'begin'     => $realbegin,
@@ -326,14 +326,18 @@ class Planning {
                                                      'who_group' => 0,
                                                      'begin'     => $realbegin,
                                                      'end'       => $realend));
-
+      // ---------------Change
+      $interv3 = ChangeTask::populatePlanning(array('who'       => $who,
+                                                     'who_group' => 0,
+                                                     'begin'     => $realbegin,
+                                                     'end'       => $realend));
       // ---------------reminder
       $datareminders = Reminder::populatePlanning(array('who'       => $who,
                                                         'who_group' => 0,
                                                         'begin'     => $realbegin,
                                                         'end'       => $realend));
 
-      $interv = array_merge($interv, $interv2, $datareminders);
+      $interv = array_merge($interv, $interv2, $interv3, $datareminders);
 
       // Print Headers
       echo "<br><div class='center'><table class='tab_cadre_fixe'>";
@@ -531,7 +535,7 @@ class Planning {
       }
       echo "</tr>\n";
 
-
+      /// TODO : use $CFG_GLPI['planning_types']
       // ---------------Tracking
       $interv = TicketTask::populatePlanning(array('who'       => $who,
                                                    'who_group' => $who_group,
@@ -543,13 +547,19 @@ class Planning {
                                                      'begin'     => $begin,
                                                      'end'       => $end));
 
+      // ---------------Change
+      $interv3 = ChangeTask::populatePlanning(array('who'       => $who,
+                                                     'who_group' => $who_group,
+                                                     'begin'     => $begin,
+                                                     'end'       => $end));
+
       // ---------------reminder
       $datareminders = Reminder::populatePlanning(array('who'       => $who,
                                                         'who_group' => $who_group,
                                                         'begin'     => $begin,
                                                         'end'       => $end));
 
-      $interv = array_merge($interv, $interv2, $datareminders);
+      $interv = array_merge($interv, $interv2, $interv3, $datareminders);
 
       // --------------- Plugins
       $data = Plugin::doHookFunction("planning_populate", array("begin"     => $begin,
@@ -777,10 +787,10 @@ class Planning {
       } else if (isset($val["problems_id"])) {  // show tracking
          ProblemTask::displayPlanningItem($val, $who, $type, $complete);
 
-      } /*else if (isset($val["changes_id"])) {  // show tracking
+      } else if (isset($val["changes_id"])) {  // show tracking
          ChangeTask::displayPlanningItem($val, $who, $type, $complete);
 
-      }*/ else {  // show Reminder
+      } else {  // show Reminder
          Reminder::displayPlanningItem($val, $who, $type, $complete);
       }
       echo "</div><br>";
@@ -828,6 +838,8 @@ class Planning {
       $end   = $begin+DAY_TIMESTAMP;
       $begin = date("Y-m-d H:i:s", $begin);
       $end   = date("Y-m-d H:i:s", $end);
+      
+      /// TODO : use $CFG_GLPI['planning_types']
 
       // ---------------Tracking
       $interv = TicketTask::populatePlanning(array('who'       => $who,
@@ -841,13 +853,19 @@ class Planning {
                                                      'begin'     => $begin,
                                                      'end'       => $end));
 
+      // ---------------Problem
+      $interv3 = ChangeTask::populatePlanning(array('who'       => $who,
+                                                     'who_group' => 0,
+                                                     'begin'     => $begin,
+                                                     'end'       => $end));
+
       // ---------------Reminder
       $data = Reminder::populatePlanning(array('who'       => $who,
                                                'who_group' => 0,
                                                'begin'     => $begin,
                                                'end'       => $end));
 
-      $interv = array_merge($interv, $interv2, $data);
+      $interv = array_merge($interv, $interv2, $interv3, $data);
 
       // ---------------Plugin
       $data = Plugin::doHookFunction("planning_populate", array("begin"     => $begin,
@@ -922,6 +940,8 @@ class Planning {
       $end   = time()+MONTH_TIMESTAMP*12;
       $begin = date("Y-m-d H:i:s", $begin);
       $end   = date("Y-m-d H:i:s", $end);
+      
+      /// TODO : use $CFG_GLPI['planning_types']
 
       // ---------------Tracking
       $interv = TicketTask::populatePlanning(array('who'       => $who,
@@ -935,13 +955,19 @@ class Planning {
                                                      'begin'     => $begin,
                                                      'end'       => $end));
 
+      // ---------------Problem
+      $interv3 = ChangeTask::populatePlanning(array('who'       => $who,
+                                                     'who_group' => $who_group,
+                                                     'begin'     => $begin,
+                                                     'end'       => $end));
+
       // ---------------Reminder
       $data = Reminder::populatePlanning(array('who'       => $who,
                                                'who_group' => $who_group,
                                                'begin'     => $begin,
                                                'end'       => $end));
 
-      $interv = array_merge($interv, $interv2, $data);
+      $interv = array_merge($interv, $interv2, $interv3, $data);
 
       // ---------------Plugin
       $data = Plugin::doHookFunction("planning_populate", array("begin"     => $begin,

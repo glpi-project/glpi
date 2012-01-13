@@ -1155,15 +1155,15 @@ class Html {
          }
       }
 
-//       if (Session::haveRight("show_all_change","1") || Session::haveRight("show_my_change","1")) {
-//          $menu['maintain']['content']['change']['title']           = _n('Change', 'Changes', 2);
-//          $menu['maintain']['content']['change']['shortcut']        = '';
-//          $menu['maintain']['content']['change']['page']            = '/front/change.php';
-//          $menu['maintain']['content']['change']['links']['search'] = '/front/change.php';
-//          if (Session::haveRight("edit_all_change","1")) {
-//             $menu['maintain']['content']['change']['links']['add'] = '/front/change.form.php';
-//          }
-//       }
+      if (Session::haveRight("show_all_change","1") || Session::haveRight("show_my_change","1")) {
+         $menu['maintain']['content']['change']['title']           = _n('Change', 'Changes', 2);
+         $menu['maintain']['content']['change']['shortcut']        = '';
+         $menu['maintain']['content']['change']['page']            = '/front/change.php';
+         $menu['maintain']['content']['change']['links']['search'] = '/front/change.php';
+         if (Session::haveRight("edit_all_change","1")) {
+            $menu['maintain']['content']['change']['links']['add'] = '/front/change.form.php';
+         }
+      }
 
       if (Session::haveRight("show_planning","1") || Session::haveRight("show_all_planning","1")) {
          $menu['maintain']['content']['planning']['title']           = __('Planning');
