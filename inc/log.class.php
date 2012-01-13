@@ -156,7 +156,8 @@ class Log extends CommonDBTM {
 //                      }
 
                   // other cases ; link field -> get data from dropdown
-                  if ($val2['table'] != 'glpi_complete_entities') {
+                  if ($val2['table'] != 'glpi_complete_entities'
+                     && $val2["table"] != 'glpi_auth_tables') {
                      $changes = array($id_search_option,
                                       addslashes(Dropdown::getDropdownName($val2["table"],
                                                                            $oldval)),
