@@ -1383,8 +1383,8 @@ class MailCollector  extends CommonDBTM {
       $mmail->AddCustomHeader("Auto-Submitted: auto-replied");
       $mmail->SetFrom($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]);
       $mmail->AddAddress($to);
-      //TRANS: For auto answer of refused mail : %s is the original mail subject
-      $mmail->Subject  = sprintf(__('Re: %s'),$subject);
+      // Normalized header, no translation
+      $mmail->Subject  = 'Re: ' . $subject;
       $mmail->Body     = __("Your email could not be processed.\nIf the problem persists, contact the administrator").
                          "\n-- \n".$CFG_GLPI["mailing_signature"];
       $mmail->Send();
