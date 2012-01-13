@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 
 
 /**
- * Rule class store all informations about a GLPI rule :
+ * Rule class store all information about a GLPI rule :
  *   - description
  *   - criterias
  *   - actions

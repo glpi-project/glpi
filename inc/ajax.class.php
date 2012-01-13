@@ -323,7 +323,7 @@ class Ajax {
     *
     * @param $options array of options
     *  - toupdate : array / Update a specific item on select change on dropdown
-    *               (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for informations)
+    *               (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for information)
     *                and may have moreparams)
    **/
    static function commonDropdownUpdateItem($options) {

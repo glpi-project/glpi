@@ -235,7 +235,7 @@ class IPAddress extends CommonDBChild {
 
    function prepareInputForAdd($input) {
 
-      // Update $input to get informations from the local object
+      // Update $input to get information from the local object
       $input = $this->setArrayFromAddress($input, "version", "name", "binary");
 
       // Don't forget that if we cannot set the object, then, $inout === false;

@@ -1609,7 +1609,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * show tooltip for user notification informations
+    * show tooltip for user notification information
     *
     * @param $type      integer : user type
     * @param $canedit   boolean : can edit ?
@@ -1892,7 +1892,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * show tooltip for user notification informations
+    * show tooltip for user notification information
     *
     * @param $type      integer  user type
     * @param $canedit   boolean  can edit ?

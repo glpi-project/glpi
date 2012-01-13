@@ -1293,7 +1293,7 @@ function date_diff050($from, $to) {
 }
 
 
-/** Update to 0.5 : Update maintenance informations
+/** Update to 0.5 : Update maintenance information
  * @param $table table name
  * @param $type item type
  * @param $ID item ID
@@ -1321,7 +1321,7 @@ function updateMaintenanceInfos($table, $type, $ID){
 }
 
 
-/** Update to 0.5 : Update warranty informations
+/** Update to 0.5 : Update warranty information
  * @param $table table name
  * @param $type item type
 **/

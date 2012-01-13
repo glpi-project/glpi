@@ -50,7 +50,7 @@ class Dropdown {
     *                   only available if entity is a single value not an array (default false)
     *    - toupdate : array / Update a specific item on select change on dropdown
     *                   (need value_fieldname, to_update,
-    *                   url (see Ajax::updateItemOnSelectEvent for informations)
+    *                   url (see Ajax::updateItemOnSelectEvent for information)
     *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - on_change : string / value to transmit to "onChange"

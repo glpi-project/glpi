@@ -63,7 +63,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          return false;
       }
 
-      // Get template and deleted informations from computer
+      // Get template and deleted information from computer
       $computer = new Computer();
       if ($computer->getFromDB($input['computers_id'])) {
          $input['is_template'] = $computer->getField('is_template');

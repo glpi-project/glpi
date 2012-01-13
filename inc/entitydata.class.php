@@ -1143,7 +1143,7 @@ class EntityData extends CommonDBChild {
             case 'Entity' :
                $ong = array();
                $ong[1] = __('Address');
-               $ong[2] = __('Advanced informations');
+               $ong[2] = __('Advanced information');
                if (Session::haveRight('notification','r')) {
                   $ong[3] = _n('Notification', 'Notifications',2);
                }

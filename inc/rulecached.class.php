@@ -107,7 +107,7 @@ class RuleCached extends Rule {
       }
 
       echo "</table><br><br>\n";
-      echo "<a href='$target'>".__('Cache informations')."</a></div>";
+      echo "<a href='$target'>".__('Cache information')."</a></div>";
    }
 
 
@@ -116,7 +116,7 @@ class RuleCached extends Rule {
    **/
    function showCacheRuleHeader() {
 
-      echo "<tr><th>".__('Cache informations')."</th><th>".$this->fields["name"];
+      echo "<tr><th>".__('Cache information')."</th><th>".$this->fields["name"];
       echo "</th></tr>\n";
       echo "<tr><td class='tab_bg_1'>".__('Original value')."</td>";
       echo "<td class='tab_bg_1'>".__('Modified value')."</td></tr>";

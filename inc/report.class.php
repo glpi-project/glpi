@@ -67,9 +67,9 @@ class Report {
       if (Session::haveRight("infocom","r")) {
          $report_list["Par_annee"]["name"] = __('By year');
          $report_list["Par_annee"]["file"] = "report.year.php";
-         $report_list["Infocoms"]["name"]  = __('Hardware financial and administrative informations');
+         $report_list["Infocoms"]["name"]  = __('Hardware financial and administrative information');
          $report_list["Infocoms"]["file"]  = "report.infocom.php";
-         $report_list["Infocoms2"]["name"] = __('Other financial and administrative informations (licenses, cartridges, consumables)');
+         $report_list["Infocoms2"]["name"] = __('Other financial and administrative information (licenses, cartridges, consumables)');
          $report_list["Infocoms2"]["file"] = "report.infocom.conso.php";
       }
       if (Session::haveRight("networking","r")) {

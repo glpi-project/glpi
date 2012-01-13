@@ -403,7 +403,7 @@ class Reservation extends CommonDBChild {
       }
       $nb_jour = array(31, $fev, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
-      // Datas used to put right informations in columns
+      // Datas used to put right information in columns
       $jour_debut_mois = strftime("%w", mktime(0, 0, 0, $mois_courant, 1, $annee_courante));
       if ($jour_debut_mois==0) {
          $jour_debut_mois = 7;

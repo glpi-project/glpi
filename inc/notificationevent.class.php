@@ -97,7 +97,7 @@ class NotificationEvent extends CommonDBTM {
       if ($CFG_GLPI["use_mailing"]) {
          $email_processed    = array();
          $email_notprocessed = array();
-         //Get template's informations
+         //Get template's information
          $template = new NotificationTemplate();
 
          $notificationtarget = NotificationTarget::getInstance($item,$event,$options);

@@ -1269,7 +1269,7 @@ class User extends CommonDBTM {
                }
             }
 
-            //Hook to retrieve more informations for ldap
+            //Hook to retrieve more information for ldap
             $this->fields = Plugin::doHookFunction("retrieve_more_data_from_ldap", $this->fields);
          }
          return true;
@@ -1533,7 +1533,7 @@ class User extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . __('First name') . "</td><td>";
       Html::autocompletionTextField($this, "firstname");
       echo "</td>";
-     //Authentications informations : auth method used and server used
+     //Authentications information : auth method used and server used
       //don't display is creation of a new user'
       if (!empty($ID)) {
          if (Session::haveRight("user_authtype", "r")) {
@@ -2288,7 +2288,7 @@ class User extends CommonDBTM {
     *          all=-1-> nothing
     *    - rand : integer / already computed rand value
     *    - toupdate : array / Update a specific item on select change on dropdown
-    *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for informations)
+    *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for information)
     *                   and may have moreparams)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - on_change : string / value to transmit to "onChange"
@@ -2919,7 +2919,7 @@ class User extends CommonDBTM {
                $this->update($input);
                // Notication on root entity (glpi_users.entities_id is only a pref)
                NotificationEvent::raiseEvent('passwordforget', $this, array('entities_id' => 0));
-               _e('An email has been sent to your email address. The email contains informations for reset your password.');
+               _e('An email has been sent to your email address. The email contains information for reset your password.');
             } else {
                _e('Invalid email address');
             }
@@ -2953,7 +2953,7 @@ class User extends CommonDBTM {
       echo "<td>".$this->fields['user_dn']."</td></tr>\n";
 
       if ($this->fields['user_dn']) {
-         echo "<tr class='tab_bg_2'><td>".__('User informations')."</td><td>";
+         echo "<tr class='tab_bg_2'><td>".__('User information')."</td><td>";
          $config_ldap = new AuthLDAP();
          $ds          = false;
 

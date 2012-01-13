@@ -319,7 +319,7 @@ class RuleCollection extends CommonDBTM {
 
       echo "<table class='tab_cadre_fixe'><tr><th>";
 
-      //Display informations about the how the rules engine process the rules
+      //Display information about the how the rules engine process the rules
       if ($this->stop_on_first_match) {
          //The engine stop on the first matched rule
          echo "<span class='center b'>".__('The engine stops on the first checked rule.').

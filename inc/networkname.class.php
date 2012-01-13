@@ -43,7 +43,7 @@ if (!defined('GLPI_ROOT')) {
 /// computer with gateways) and several administrative networks (for instance, entity sub-network).
 /// An address can be affected to an item, or can be "free" to be reuse by another item (for
 /// instance, in case of maintenance, when you change the network card of a computer, but not its
-/// network informations
+/// network information
 /// since version 0.84
 class NetworkName extends FQDNLabel {
 

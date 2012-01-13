@@ -591,7 +591,7 @@ function update068to0681() {
       $result_glpi = $DB->query($query);
 
       while ($data_glpi=$DB->fetch_array($result_glpi)) {
-         // Get ocs informations
+         // Get ocs information
          $query_ocs = "SELECT *
                        FROM `hardware`
                        WHERE `DEVICEID` = '".$data_glpi["ocs_deviceid"]."'

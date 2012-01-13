@@ -82,7 +82,7 @@ class RuleCachedCollection extends RuleCollection {
             "/front/popup.php?popup=show_cache&amp;sub_type=".
             $this->getRuleClassName()."' ,'glpipopup', ".
             "'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".
-            __('Cache informations')."</a></div>";
+            __('Cache information')."</a></div>";
    }
 
 
@@ -136,7 +136,7 @@ class RuleCachedCollection extends RuleCollection {
                 ORDER BY `name`";
       $res_count = $DB->query($query);
 
-      echo "<tr><th>".__('Cache informations')."</th><th>".$this->getTitle()."</th></tr>\n";
+      echo "<tr><th>".__('Cache information')."</th><th>".$this->getTitle()."</th></tr>\n";
       echo "<tr><td class='tab_bg_1'>".__('Rule name')."</td>";
       echo "<td class='tab_bg_1'>".__('Objects in cache')."</td></tr>\n";
 
