@@ -134,11 +134,14 @@ function addReservation($type, $ID, $ID_entity) {
    $current_year = date("Y");
 
    if (mt_rand(0,100)<$percent['reservationitems']) {
-      $query = "INSERT INTO `glpi_reservationitems`
-                VALUES (NULL, '$type', '$ID_entity', '0', '$ID', 'comment $ID $type', '1')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $tID = $DB->insert_id();
+      $ri = new Reservationitem();
+      $r = new Reservation();
+      $tID = $ri->add(array('itemtype'     => $type,
+                            'entities_id'  => $ID_entity,
+                            'is_recursive' => 0,
+                            'items_id'     => $ID,
+                            'comment'     => "comment $ID $type",
+                            'is_active'    => 1));
 
       $date1 = strtotime('-2 week'); // reservations since 2 weeks
       $date2 = $date1;
@@ -148,14 +151,11 @@ function addReservation($type, $ID, $ID_entity) {
          $date1 = $date2+3600*mt_rand(0,10); // 10 hours between each resa max
          $date2 = $date1+3600*mt_rand(1,5); // A reservation from 1 to 5 hours
 
-         $query = "INSERT INTO `glpi_reservations`
-                   VALUES (NULL, '$tID', '".date("Y-m-d H:i:s", $date1)."',
-                           '".date("Y-m-d H:i:s", $date2)."', '".mt_rand($FIRST['users_normal'],
-                           $LAST['users_postonly'])."',
-                           'comments $i ".Toolbox::getRandomString(15)."',0)";
-         $DB->query($query) or die("PB REQUETE ".$query);
-
-         $DB->insert_id();
+         $r->add(array('reservationitems_id' => $tID,
+                       'begin'               => date("Y-m-d H:i:s", $date1),
+                       'end'                 => date("Y-m-d H:i:s", $date2),
+                       'users_id'            => mt_rand($FIRST['users_normal'], $LAST['users_postonly']),
+                       'comment'             => "comments $i ".Toolbox::getRandomString(15)));
          $i++;
       }
    }
