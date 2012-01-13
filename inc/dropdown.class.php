@@ -659,7 +659,7 @@ class Dropdown {
 
                     __('Management')
                         => array('DocumentCategory' => _n('Document heading', 'Document headings', 2),
-                                 'DocumentType'     => _n('Document Type', 'Document Types', 2)),
+                                 'DocumentType'     => _n('Document type', 'Document types', 2)),
 
                     __('Tools')
                         => array('KnowbaseItemCategory' => _n('Knowledge base category',

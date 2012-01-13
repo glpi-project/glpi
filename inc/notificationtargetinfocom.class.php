@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')) {
 class NotificationTargetInfocom extends NotificationTarget {
 
    function getEvents() {
-      return array('alert' => __('Alarms on financial and administrative informations'));
+      return array('alert' => __('Alarms on financial and administrative information'));
    }
 
 
