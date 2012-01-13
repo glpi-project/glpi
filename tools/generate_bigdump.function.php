@@ -965,14 +965,7 @@ function generateGlobalDropdowns() {
 
    regenerateTreeCompleteName("glpi_itilcategories");
 
-   $MAX['tracking_category'] = 0;
-   $query = "SELECT MAX(`id`)
-             FROM `glpi_itilcategories`";
-   $result = $DB->query($query) or die("PB REQUETE ".$query);
-
-   $MAX['tracking_category'] = $DB->result($result, 0, 0) or die (" PB RESULT ".$query);
-
-
+   $MAX['tracking_category'] = getMaxItem('glpi_itilcategories');
 
    // DEVICE
    $items = array("Textorm 6A19", "ARIA", "SLK3000B-EU", "Sonata II", "TA-212", "TA-551", "TA-581",
@@ -1536,37 +1529,47 @@ function generate_entity($ID_entity) {
    regenerateTreeCompleteName("glpi_taskcategories");
    $LAST["taskcategory"] = getMaxItem("glpi_taskcategories");
 
-
+   $ic = new ItilCategory();
    // Specific ticket categories
-   $query = "INSERT INTO `glpi_itilcategories`
-             VALUES (NULL, '$ID_entity', '1', '0', 'category for entity $ID_entity', '',
-                     'comment category for entity $ID_entity', '1', '0',
-                     '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
-                     '".mt_rand($FIRST['techgroups'],$LAST['techgroups'])."', '', '', 1, 0, 0, 1, 1, 1)";
-   $DB->query($query) or die("PB REQUETE ".$query);
-
-   $newID = $DB->insert_id();
+   $newID = $ic->add(array(
+      'entities_id'     => $ID_entity,
+      'is_recursive'    => 1,
+      'name'            => "category for entity $ID_entity",
+      'comment'         => "comment category for entity $ID_entity",
+      'users_id'        => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
+      'groups_id'       => mt_rand($FIRST['techgroups'],$LAST['techgroups']),
+      'tickettemplates_id_incident' => 1,
+      'tickettemplates_id_demand'  => 1,
+      ));
+   
    for ($i=0 ; $i<max(1,pow($MAX['tracking_category'],1/3)) ; $i++) {
-      $query = "INSERT INTO `glpi_itilcategories`
-                VALUES (NULL, '$ID_entity', '1', '$newID', 'categorie $i', '',
-                        'comment categorie $i', '2', '0',
-                        '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
-                        '".mt_rand($FIRST['techgroups'],$LAST['techgroups'])."', '', '', 1, 0, 0, 1, 1, 1)";
-      $DB->query($query) or die("PB REQUETE ".$query);
-      $newID=$DB->insert_id();
+      $ic->add(array(
+         'entities_id'     => $ID_entity,
+         'is_recursive'    => 1,
+         'name'            => "scategory for entity $ID_entity",
+         'comment'         => "comment scategory for entity $ID_entity",
+         'users_id'        => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
+         'groups_id'       => mt_rand($FIRST['techgroups'],$LAST['techgroups']),
+         'tickettemplates_id_incident' => 1,
+         'tickettemplates_id_demand'  => 1,
+         'itilcategories_id'           => $newID,
+         ));   
    }
 
    regenerateTreeCompleteName("glpi_itilcategories");
 
    $FIRST["solutiontemplates"] = getMaxItem("glpi_solutiontemplates")+1;
    $nb_items = mt_rand(0,$MAX['solutiontemplates']);
+   $st = new SolutionTemplate();
    for ($i=0 ; $i<$nb_items ; $i++) {
-      $query = "INSERT INTO `glpi_solutiontemplates`
-                VALUES (null, '$ID_entity', '1', 'solution $i-$ID_entity',
-                        'content solution $i-$ID_entity', '".mt_rand(0,$MAX['solutiontypes'])."',
-                        'comment solution $i-$ID_entity')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-      $newID = $DB->insert_id();
+      $st-> add(array(
+         'entities_id'        => $ID_entity,
+         'is_recursive'       => 1,
+         'name'               => "solution $i-$ID_entity",
+         'content'            => "content solution $i-$ID_entity",
+         'solutiontypes_id'   => mt_rand(0,$MAX['solutiontypes']),
+         'comment'            => "comment solution $i-$ID_entity"
+      ));
    }
 
    $LAST["solutiontemplates"] = getMaxItem("glpi_solutiontemplates");
