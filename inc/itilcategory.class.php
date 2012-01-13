@@ -72,7 +72,7 @@ class ITILCategory extends CommonTreeDropdown {
                          'type'  => 'dropdownValue',
                          'list'  => true),
                    array('name'  => 'is_helpdeskvisible',
-                         'label' => __s('Visible in the simplified interface'),
+                         'label' => __('Visible in the simplified interface'),
                          'type'  => 'bool',
                          'list'  => true),
                    array('name'  => 'is_incident',
@@ -105,21 +105,20 @@ class ITILCategory extends CommonTreeDropdown {
       }
       return $tab;
 
-
    }
 
 
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                  = parent::getSearchOptions();
 
-      $tab[70]['table'] = 'glpi_users';
-      $tab[70]['field'] = 'name';
-      $tab[70]['name']  = __('Technician in charge of the hardware');
+      $tab[70]['table']     = 'glpi_users';
+      $tab[70]['field']     = 'name';
+      $tab[70]['name']      = __('Technician in charge of the hardware');
 
-      $tab[71]['table'] = 'glpi_groups';
-      $tab[71]['field'] = 'completename';
-      $tab[71]['name']  = __('Group');
+      $tab[71]['table']     = 'glpi_groups';
+      $tab[71]['field']     = 'completename';
+      $tab[71]['name']      = __('Group');
 
       $tab[72]['table']     = 'glpi_tickettemplates';
       $tab[72]['field']     = 'name';
@@ -134,29 +133,29 @@ class ITILCategory extends CommonTreeDropdown {
       $tab[74]['table']     = $this->getTable();
       $tab[74]['field']     = 'is_incident';
       $tab[74]['name']      = __('Visible for an incident');
-      $tab[74]['datatype'] = 'bool';
+      $tab[74]['datatype']  = 'bool';
 
       $tab[75]['table']     = $this->getTable();
       $tab[75]['field']     = 'is_request';
       $tab[75]['name']      = __('Visible for a request');
-      $tab[75]['datatype'] = 'bool';
+      $tab[75]['datatype']  = 'bool';
 
-      $tab[76]['table']    = $this->getTable();
-      $tab[76]['field']    = 'is_problem';
-      $tab[76]['name']     = __('Visible for a problem');
-      $tab[76]['datatype'] = 'bool';
+      $tab[76]['table']     = $this->getTable();
+      $tab[76]['field']     = 'is_problem';
+      $tab[76]['name']      = __('Visible for a problem');
+      $tab[76]['datatype']  = 'bool';
 
-      $tab[3]['table']    = $this->getTable();
-      $tab[3]['field']    = 'is_helpdeskvisible';
-      $tab[3]['name']     = __s('Visible in the simplified interface');
-      $tab[3]['datatype'] = 'bool';
+      $tab[3]['table']      = $this->getTable();
+      $tab[3]['field']      = 'is_helpdeskvisible';
+      $tab[3]['name']       = __('Visible in the simplified interface');
+      $tab[3]['datatype']   = 'bool';
 
       return $tab;
    }
 
 
    static function getTypeName($nb=0) {
-      return _n('Category of ticket', 'Categories of tickets', $nb);
+      return _n('Ticket category', 'Ticket categories', $nb);
    }
 
 
@@ -172,7 +171,7 @@ class ITILCategory extends CommonTreeDropdown {
    /**
     * Get links to Faq
     *
-    * @param $withname boolean : also display name ?
+    * @param $withname  boolean  also display name ? (false by default)
    **/
    function getLinks($withname=false) {
       global $CFG_GLPI;
@@ -209,6 +208,9 @@ class ITILCategory extends CommonTreeDropdown {
 
    /**
     * @since version 0.84
+    *
+    * @param $item         CommonGLPI object
+    * @param $withtemplate (default 0)
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
@@ -230,6 +232,10 @@ class ITILCategory extends CommonTreeDropdown {
    }
 
 
+   /**
+    * @param $tt           TicketTemplate object
+    * @param $withtemplate (default '')
+   **/
    static function showForTicketTemplate(TicketTemplate $tt, $withtemplate='') {
       global $DB, $CFG_GLPI;
 

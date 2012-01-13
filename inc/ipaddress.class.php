@@ -74,7 +74,10 @@ class IPAddress extends CommonDBChild {
    protected $binary = '';
 
 
-   function __construct($ipaddress = "") {
+   /**
+    * @param $ipaddress (default '')
+   **/
+   function __construct($ipaddress="") {
 
       // First, be sure that the parent is correctly initialised
       parent::__construct();
@@ -123,9 +126,10 @@ class IPAddress extends CommonDBChild {
       }
 
       if (!empty($this->fields['itemtype']) && !empty($this->fields['items_id'])) {
-         $item = new $this->fields['itemtype']();
-         if ($item->getFromDB($this->fields['items_id'])) {
-            return $item->canView();
+         if ($item = getItemForItemtype($this->fields['itemtype'])) {
+            if ($item->getFromDB($this->fields['items_id'])) {
+               return $item->canView();
+            }
          }
       }
 
@@ -134,8 +138,7 @@ class IPAddress extends CommonDBChild {
 
 
    static function getTypeName($nb=0) {
-
-      return _n('IP addresses', 'IP address', $nb);
+      return _n('IP address', 'IP addresses', $nb);
    }
 
 
@@ -146,15 +149,15 @@ class IPAddress extends CommonDBChild {
     * If the field name is empty, then, the field is not set
     * If the object is not valid, then, version = 0, textual = "" and binary = (0, 0, 0, 0)
     *
-    * @param $array the array to Fill
-    * @param $versionField the name of the key inside $array that contains de IP version number
-    * @param $textualField the name of the key inside $array that contains de textual version
-    * @param $binaryField the name of the key inside $array that contains de binary. Each element
-    *        of the array is post-fixed by _i, with i the index
+    * @param $array        array the array to Fill
+    * @param $versionField       the name of the key inside $array that contains de IP version number
+    * @param $textualField       the name of the key inside $array that contains de textual version
+    * @param $binaryField        the name of the key inside $array that contains de binary.
+    *                            Each element of the array is post-fixed by _i, with i the index
     *
     * @return result the array altered
    **/
-   function setArrayFromAddress($array, $versionField, $textualField, $binaryField) {
+   function setArrayFromAddress(array $array, $versionField, $textualField, $binaryField) {
 
       if (!empty($versionField)) {
          $version = $this->getVersion();
@@ -192,17 +195,17 @@ class IPAddress extends CommonDBChild {
     * \brief Fill the local address object from an array
     * Fill the local address object from an array. Usefull for reading $input
     *
-    * @param $array the array to Fill
-    * @param $versionField the name of the key inside $array that contains de IP version number
-    * @param $textualField the name of the key inside $array that contains de textual version
-    * @param $binaryField the name of the key inside $array that contains de binary. Each element
-    *                     of the array is post-fixed by _i, with i the index
+    * @param $array        array the array to Fill
+    * @param $versionField       the name of the key inside $array that contains de IP version number
+    * @param $textualField       the name of the key inside $array that contains de textual version
+    * @param $binaryField        the name of the key inside $array that contains de binary.
+    *                            Each element of the array is post-fixed by _i, with i the index
     *
     * If the field name is empty, then, the field is not set
     *
     * @return true is succeffully defined
    **/
-   function setAddressFromArray($array, $versionField, $textualField, $binaryField) {
+   function setAddressFromArray(array $array, $versionField, $textualField, $binaryField) {
       // First, we empty the fields to notify that this address is not valid
       $this->disableAddress();
 
@@ -254,9 +257,9 @@ class IPAddress extends CommonDBChild {
     * Display the input field inside the form : a textarea that contains previous addresses for
     * the given item
     *
-    * @param $itemtype type of the item that owns the addresses
-    * @param $items_id id of the item that owns the addresses
-    * @param $objectFieldName the name of the field inside the form
+    * @param $itemtype           type of the item that owns the addresses
+    * @param $items_id           id of the item that owns the addresses
+    * @param $objectFieldName    the name of the field inside the form
    **/
    static function showInputField($itemtype, $items_id, $objectFieldName) {
       global $DB;
@@ -284,9 +287,9 @@ class IPAddress extends CommonDBChild {
     *            "new" : addresses that are currently not attached to the item
     *            "invalid" : addresses that not valid
     *
-    * @param $inputAddresses string of comma, CR, LF or space separated addresses
-    * @param $itemtype type of the item this address has to be attached
-    * @param $items_id id of the item this address has to be attached
+    * @param $inputAddresses  string   of comma, CR, LF or space separated addresses
+    * @param $itemtype                 type of the item this address has to be attached
+    * @param $items_id                 id of the item this address has to be attached
     *
     * @return array of "previous", "new" and "invalid" addresses
    **/
@@ -331,9 +334,9 @@ class IPAddress extends CommonDBChild {
     * Update the database by removing old address and creating new ones.
     * Already known addresses remains
     *
-    * @param $addressesFromCheck the array previously created by checkInputFromItem()
-    * @param $itemtype type of the item this address has to be attached
-    * @param $items_id id of the item this address has to be attached
+    * @param $addressesFromCheck array the array previously created by checkInputFromItem()
+    * @param $itemtype                 type of the item this address has to be attached
+    * @param $items_id                 id of the item this address has to be attached
     *
     * @return an array of all addresses attached the the item
     *         That should be use to fill cache IP field of the item
@@ -354,8 +357,8 @@ class IPAddress extends CommonDBChild {
       $query = "SELECT `id`, `name`
                 FROM `glpi_ipaddresses`
                 WHERE `itemtype` = '".$itemtype."'
-                AND `items_id` = '".$items_id."'
-                AND `id` NOT IN ('".implode("', '", $previousAddresses)."')";
+                      AND `items_id` = '".$items_id."'
+                      AND `id` NOT IN ('".implode("', '", $previousAddresses)."')";
       $addressObject = new self();
       foreach ($DB->request($query) as $previousAddress) {
          if ($addressObject->can($previousAddress["id"], "d")) {
@@ -384,9 +387,9 @@ class IPAddress extends CommonDBChild {
     * Remove the unused addresses from the database. That is used when deleting an item, to clean
     * the database. That is also use by updateDatabase() to remove unuse addresses
     *
-    * @param $itemtype type of the item this address has to be attached
-    * @param $items_id id of the item this address has to be attached
-    * @param $excludeFromDelete array of the IDs that must not be delete
+    * @param $itemtype                 type of the item this address has to be attached
+    * @param $items_id                 id of the item this address has to be attached
+    * @param $excludeFromDelete  array of the IDs that must not be delete
    **/
    static function cleanAddress($itemtype, $items_id, $excludeFromDelete=array()) {
       global $DB;
@@ -509,13 +512,13 @@ class IPAddress extends CommonDBChild {
     * try to find it inside the database and load it from database.
     * \warning The resulting binary form is created inside the current object
     *
-    * @param $address (string) textual (ie. human readable) address
-    * @param $itemtype type of the item this address has to be attached
-    * @param $items_id id of the item this address has to be attached
+    * @param $address   string   textual (ie. human readable) address
+    * @param $itemtype           type of the item this address has to be attached (default '')
+    * @param $items_id           id of the item this address has to be attached (default -1)
     *
     * @return true if the address is valid.
    **/
-   function setAddressFromString($address, $itemtype = "", $items_id = -1) {
+   function setAddressFromString($address, $itemtype="", $items_id=-1) {
       global $DB;
 
       $this->disableAddress();
@@ -597,9 +600,9 @@ class IPAddress extends CommonDBChild {
     * one (ie : 2001:db8:0:85a3\::ac1f:8001 rather than 2001:0db8:0000:85a3:0000:0000:ac1f:8001)
     * \warning The resulting binary form is created inside the current object
     *
-    * @param $address (bytes[4]) binary (ie. SQL requests) address
-    * @param $itemtype type of the item this address has to be attached
-    * @param $items_id id of the item this address has to be attached
+    * @param $address   (bytes[4]) binary (ie. SQL requests) address
+    * @param $itemtype  type of the item this address has to be attached (default '')
+    * @param $items_id  id of the item this address has to be attached (default -1)
     *
     * @return true if the address is valid.
    **/
@@ -703,8 +706,8 @@ class IPAddress extends CommonDBChild {
    /**
     * \brief add value to the address for iterator on addresses
     *
-    * @param $address (in and out) the address to increment or decrement
-    * @param $value the value to add or remove. Must be betwwen -0xffffffff and +0xffffffff
+    * @param $address   (in and out) the address to increment or decrement
+    * @param $value     the value to add or remove. Must be betwwen -0xffffffff and +0xffffffff
     *
     * @return true if the increment is valid
    **/
@@ -778,7 +781,7 @@ class IPAddress extends CommonDBChild {
 
       $query = "SELECT `gip`.`id`
                 FROM `glpi_ipaddresses` as gip
-                WHERE `gip`.`version`='".$address->version."'\n";
+                WHERE `gip`.`version` = '".$address->version."'\n";
       $startIndex = (($address->version == 4) ? 3 : 1);
       $binaryIP = $address->getBinary();
       for ($i = $startIndex ; $i < 4 ; ++$i) {
@@ -798,8 +801,8 @@ class IPAddress extends CommonDBChild {
    /**
     * Get an Object ID by its IP address (only if one result is found in the entity)
     *
-    * @param $value the ip address
-    * @param $entity the entity to look for
+    * @param $value     the ip address
+    * @param $entity    the entity to look for
     *
     * @return an array containing the object ID
     *         or an empty array is no value of serverals ID where found
@@ -810,7 +813,7 @@ class IPAddress extends CommonDBChild {
 
       if (count($addressesWithItems) == 1) {
          $addressWithItems = $addressesWithItems[0];
-         $item = $addressWithItems[0];
+         $item             = $addressWithItems[0];
          if ($item->getEntityID() == $entity) {
             $result = array("id"       => $item->getID(),
                             "itemtype" => $item->getType());

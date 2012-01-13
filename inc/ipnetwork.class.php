@@ -75,11 +75,11 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'address';
-      $tab[11]['name']     = IPAddress::getTypeName();
+      $tab[11]['name']     = IPAddress::getTypeName(1);
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'netmask';
-      $tab[12]['name']     = IPNetmask::getTypeName();
+      $tab[12]['name']     = IPNetmask::getTypeName(1);
 
       $tab[13]['table']    = $this->getTable();
       $tab[13]['field']    = 'gateway';
@@ -158,7 +158,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function getNewAncestor() {
 
       if (isset($this->data_for_implicit_update)) {
-
          $params = array("address" => $this->data_for_implicit_update['address'],
                          "netmask" => $this->data_for_implicit_update['netmask']);
 
@@ -179,6 +178,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
 
    function prepareInput($input) {
+
       // If $this->fields["network"] is not set then, we are adding a new network
       // Or if $this->fields["network"] != $input["network"] we a updating the network
       $address = new IPAddress();
@@ -329,7 +329,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       }
 
       unset($this->networkUpdate);
-
       parent::post_addItem();
    }
 
@@ -341,7 +340,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       }
 
       unset($this->networkUpdate);
-
       parent::post_updateItem($history);
    }
 
@@ -349,7 +347,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function getPotentialSons() {
 
       if (isset($this->data_for_implicit_update)) {
-
          $params = array("address"     => $this->data_for_implicit_update['address'],
                          "netmask"     => $this->data_for_implicit_update['netmask'],
                          "exclude IDs" => $this->getID());
@@ -370,11 +367,12 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * \brief Search any networks that contains the given IP
     * \ref ipAddressToNetwork
     *
-    * @param $IP (see \ref parameterType) given IP
-    * @param $entityID scope of the search (parents and childrens are check)
+    * @param $IP        (see \ref parameterType) given IP
+    * @param $entityID  scope of the search (parents and childrens are check) (default -1)
     * @param $recursive set to false to only search in current entity, otherwise, all visible
-    *                   entities will be search
-    * @param $fields list of fields to return in the result (default : only ID of the networks)
+    *                   entities will be search (true by default)
+    * @param $fields    list of fields to return in the result (default : only ID of the networks)
+    *                   (default '')
     *
     * @return list of networks (see searchNetworks())
    **/
@@ -390,22 +388,22 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    /**
     * Search networks relative to a given network
     *
-    * $condition array possible elements :
+    * @param $relation        type of relation ("is contained by", "equals" or "contains")
+    *                         regarding the networks given as parameter
+    * @param $condition array of elements to select the good arrays (see Parameters above)
     *    - fields : the fields of the network we wish to retrieve (single field or array of
     *               fields). This parameter will impact the result of the function
     *    - address (see \ref parameterType) : the address for the query
     *    - netmask (see \ref parameterType) : the netmask for the query
     *    - exclude IDs : the IDs to exclude from the query (for instance, $this->getID())
     *
-    * @param $relation type of relation ("is contained by", "equals" or "contains")
-    *                  regarding the networks given as parameter
-    * @param $condition array of elements to select the good arrays (see Parameters above)
-    * @param $entityID the entity on which the selection should occur (-1 => the current active
-    *                  entity)
-    * @param $recursive set to false to only search in current entity, otherwise, all visible
-    *                   entities will be search
-    * @param $version version of IP to look (only use when using arrays or string as input for
-    *                 address or netmask
+    * @param $entityID        the entity on which the selection should occur (-1 => the current active
+    *                         entity) (default -1)
+    * @param $recursive       set to false to only search in current entity, otherwise, all visible
+    *                         entities will be search (true by default)
+    * @param $version         version of IP to look (only use when using arrays or string as input for
+    *                         address or netmask n(default 0)
+    *
     * @return array of networks found. If we want request several field, the return value will be
     *                 an array of array
     *
@@ -431,25 +429,23 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          $fields = array($fields);
       }
 
-      $FIELDS = "`".implode("`, `", $fields)."`";
+      $FIELDS     = "`".implode("`, `", $fields)."`";
 
       $startIndex = (($version == 4) ? 3 : 1);
 
-      $addressDB = array('address_0', 'address_1', 'address_2', 'address_3');
-      $netmaskDB = array('netmask_0', 'netmask_1', 'netmask_2', 'netmask_3');
+      $addressDB  = array('address_0', 'address_1', 'address_2', 'address_3');
+      $netmaskDB  = array('netmask_0', 'netmask_1', 'netmask_2', 'netmask_3');
 
-      $WHERE = "";
-      if ((isset($condition["address"])) && isset($condition["netmask"])) {
-
+      $WHERE      = "";
+      if (isset($condition["address"]) && isset($condition["netmask"])) {
          $addressPa = new IPAddress($condition["address"]);
 
          // Check version equality ...
          if ($version != $addressPa->getVersion()) {
             if ($version != 0) {
                return false;
-            } else {
-               $version = $addressPa->getVersion();
             }
+            $version = $addressPa->getVersion();
          }
 
          $netmaskPa = new IPNetmask($condition["netmask"], $version);
@@ -462,7 +458,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          if (!is_array($addressPa) || (count($addressPa) != 4)) {
             return false;
          }
-          if (!is_array($netmaskPa) || (count($netmaskPa) != 4)) {
+         if (!is_array($netmaskPa) || (count($netmaskPa) != 4)) {
             return false;
          }
 
@@ -571,8 +567,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addStandardTab('NetworkName',$ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab('NetworkName', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -581,10 +577,11 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    /**
     * Get SQL WHERE statement for requesting elements that are contained inside the current network
     *
-    * @param $tableName name of the table containing the element (for instance : glpi_ipaddresses)
-    * @param $binaryFieldPrefix prefix of the binary version of IP address (binary for glpi
-    *                           ipaddresses)
-    * @param $versionField the name of the field containing the version inside the database
+    * @param $tableName          name of the table containing the element
+    *                            (for instance : glpi_ipaddresses)
+    * @param $binaryFieldPrefix  prefix of the binary version of IP address
+    *                            (binary for glpi ipaddresses)
+    * @param $versionField       the name of the field containing the version inside the database
     *
     * @return SQL request "WHERE" element
    **/
@@ -624,14 +621,14 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * Check to see if an IP is inside a given network
     * See : \ref ipAddressToNetwork
     *
-    * @param $address (see \ref parameterType) the IP address to check
-    * @param $networkAddress (see \ref parameterType) the address of the network
-    * @param $networkNetmask (see \ref parameterType) the netmask of the network
-    * @param $version of IP : only usefull for binary array as input
+    * @param $address         (see \ref parameterType) the IP address to check
+    * @param $networkAddress  (see \ref parameterType) the address of the network
+    * @param $networkNetmask  (see \ref parameterType) the netmask of the network
+    * @param $version         of IP : only usefull for binary array as input (default 0)
     *
     * @return true if the network owns the IP address
    **/
-   static function checkIPFromNetwork($address, $networkAddress, $networkNetmask, $version = 0) {
+   static function checkIPFromNetwork($address, $networkAddress, $networkNetmask, $version=0) {
 
       $IPNetmask  = array(0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff);
       $relativity = self::checkNetworkRelativity($address, $IPNetmask, $networkAddress,
@@ -644,11 +641,11 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * \brief Check network relativity
     * Check how networks are relative (fully different, equals, first contains second, ...)
     *
-    * @param $firstAddress (see \ref parameterType) address of the first network
-    * @param $firstNetmask (see \ref parameterType) netmask of the first network
-    * @param $secondAddress (see \ref parameterType) address of the second network
-    * @param $secondNetmask (see \ref parameterType) netmask of the second network
-    * @param $version of IP : only usefull for binary array as input
+    * @param $firstAddress    (see \ref parameterType) address of the first network
+    * @param $firstNetmask    (see \ref parameterType) netmask of the first network
+    * @param $secondAddress   (see \ref parameterType) address of the second network
+    * @param $secondNetmask   (see \ref parameterType) netmask of the second network
+    * @param $version         of IP : only usefull for binary array as input (default 0)
     *
     * @return string :
     *           - "different version" : there is different versions between elements
@@ -728,6 +725,10 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    /**
     * Compute the first and the last address of $this
     * \see computeNetworkRangeFromAdressAndNetmask()
+    *
+    * @param $start
+    * @param $end                         (default NULL)
+    * @param $excludeBroadcastAndNetwork  (false by default)
    **/
    function computeNetworkRange(&$start, &$end=NULL, $excludeBroadcastAndNetwork=false) {
 
@@ -741,14 +742,15 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * That is usefull, for instance, to compute the "real" network address (the first address)
     * or the broadcast address of the network
     *
-    * @param $address (see \ref parameterType) the address of the network
-    * @param $netmask (see \ref parameterType) its netmask
-    * @param $firstAddress (see \ref parameterType - in/out) the first address (ie real
-    *                      address of the network)
-    * @param $lastAddress (see \ref parameterType - in/out) the lastAddress of the network
-    *                      (ie. : the broadcast address)
-    * @param $excludeBroadcastAndNetwork (boolean) exclude broadcast and network address from the
-    *                      result
+    * @param $address                              (see \ref parameterType) the address of the network
+    * @param $netmask                              (see \ref parameterType) its netmask
+    * @param $firstAddress                         (see \ref parameterType - in/out)
+    *                                              the first address (ie real address of the network)
+    * @param $lastAddress                          (see \ref parameterType - in/out)
+    *                                              the lastAddress of the network
+    *                                              (ie. : the broadcast address) (default NULL)
+    * @param $excludeBroadcastAndNetwork  boolean  exclude broadcast and network address from the
+    *                                              result (false by default)
    **/
    static function computeNetworkRangeFromAdressAndNetmask($address, $netmask, &$firstAddress,
                                                            &$lastAddress=NULL,
