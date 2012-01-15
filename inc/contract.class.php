@@ -1206,14 +1206,13 @@ class Contract extends CommonDBTM {
                }
 
             } else {
+               $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
+               //TRANS: %s is entity name
+               $msg = sprintf(__('%s: send contract alert failed'), $entityname);
                if ($task) {
-                  $task->log(Dropdown::getDropdownName("glpi_entities", $entity).
-                             ":  Send contract alert failed\n");
+                  $task->log($msg);
                } else {
-                  Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                                                                             $entity)
-                                                      .":  Send contract alert failed",
-                                                   false, ERROR);
+                  Session::addMessageAfterRedirect($msg, false, ERROR);
                }
             }
          }

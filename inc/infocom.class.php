@@ -424,13 +424,13 @@ class Infocom extends CommonDBChild {
             }
 
          } else {
+            $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
+            //TRANS: %s is entity name
+            $msg = sprintf(__('%s: send infocom alert failed'), $entityname);
             if ($task) {
-               $task->log(Dropdown::getDropdownName("glpi_entities", $entity).
-                          __(': Send infocom alert failed'));
+               $task->log($msg);
             } else {
-               Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities", $entity).
-                                                __(': Send infocom alert failed'),
-                                                false, ERROR);
+               Session::addMessageAfterRedirect($msg, false, ERROR);
             }
          }
       }
