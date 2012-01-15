@@ -48,7 +48,7 @@ class NetworkEquipment extends CommonDBTM {
    /**
     * Name of the type
     *
-    * @param $nb : number of item in the type
+    * @param $nb  integer  number of item in the type (default 0)
    **/
    static function getTypeName($nb=0) {
       return _n('Network device', 'Network devices', $nb);
@@ -141,12 +141,14 @@ class NetworkEquipment extends CommonDBTM {
       }
    }
 
+
    /**
     * @since version 0.84
    **/
    function cleanDBonPurge() {
       NetworkName::unaffectAddressesOfItem($this->getID(), $this->getType());
    }
+
 
    /**
     * Can I change recursive flag to false
@@ -194,13 +196,14 @@ class NetworkEquipment extends CommonDBTM {
          if ($res) {
             while ($data = $DB->fetch_assoc($res)) {
                $itemtable = getTableForItemType($data["itemtype"]);
-               $item = new $data["itemtype"]();
-               // For each itemtype which are entity dependant
-               if ($item->isEntityAssign()) {
-                  if (countElementsInTable($itemtable, "id IN (".$data["ids"].")
-                                           AND entities_id NOT IN $entities")>0) {
-                     return false;
-                  }
+               if ($item = getItemForItemtype($data["itemtype"])) {
+                   // For each itemtype which are entity dependant
+                   if ($item->isEntityAssign()) {
+                      if (countElementsInTable($itemtable, "id IN (".$data["ids"].")
+                                               AND entities_id NOT IN $entities")>0) {
+                         return false;
+                      }
+                   }
                }
             }
          }
@@ -212,8 +215,8 @@ class NetworkEquipment extends CommonDBTM {
    /**
     * Print the networking form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
@@ -240,9 +243,12 @@ class NetworkEquipment extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf('%1$s%2$s',__('Name'),(isset($options['withtemplate']) && $options['withtemplate']?"*":""))."</td>";
+      echo "<td>".sprintf(__('%1$s%2$s'),__('Name'),
+                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
+           "</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["name"], "name", (isset($options['withtemplate']) && $options['withtemplate']==2),
+      $objectName = autoName($this->fields["name"], "name",
+                             (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, "name", array('value' => $objectName));
       echo "</td>";
@@ -305,9 +311,12 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "contact");
       echo "</td>";
-      echo "<td>".__('Inventory number').(isset($options['withtemplate']) && $options['withtemplate']?"*":"")."</td>";
+      echo "<td>".sprintf(__('%1$s%2$s'), ('Inventory number'),
+                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
+           "</td>";
       echo "<td>";
-      $objectName = autoName($this->fields["otherserial"], "otherserial", (isset($options['withtemplate']) && $options['withtemplate']==2),
+      $objectName = autoName($this->fields["otherserial"], "otherserial",
+                             (isset($options['withtemplate']) && $options['withtemplate']==2),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, "otherserial", array('value' => $objectName));
       echo "</td></tr>";
@@ -380,10 +389,10 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td><td>";
       if (isset($options['withtemplate']) && $options['withtemplate']) {
          //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'),Html::convDateTime($_SESSION["glpi_currenttime"]));
+         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
       } else {
          //TRANS: %s is the datetime of insertion
-         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
       echo "</td></tr>\n";
 
