@@ -64,18 +64,18 @@ if (isset($_POST["add"])) {
    $monitor->check($_POST["id"],'d');
    $monitor->delete($_POST);
 
-   Event::log($_POST["id"], "monitors", 4, "inventory", 
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST["id"], "monitors", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
    $monitor->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $monitor->check($_POST["id"],'d');
 
    $monitor->restore($_POST);
-   Event::log($_POST["id"], "monitors", 4, "inventory", 
-            //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST["id"], "monitors", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
    $monitor->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
@@ -83,34 +83,32 @@ if (isset($_POST["add"])) {
 
    $monitor->delete($_REQUEST,1);
    Event::log($_REQUEST["id"], "monitors", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $monitor->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $monitor->check($_POST["id"],'w');
 
    $monitor->update($_POST);
-   Event::log($_POST["id"], "monitors", 4, "inventory", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST["id"], "monitors", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_GET["unglobalize"])) {
    $monitor->check($_GET["id"],'w');
 
    Computer_Item::unglobalizeItem($monitor);
-   Event::log($_GET["id"], "monitors", 4, "inventory", 
-               //TRANS: %s is the user login
-               sprintf(__('%s sets unitary management'), $_SESSION["glpiname"]));
-   
+   Event::log($_GET["id"], "monitors", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s sets unitary management'), $_SESSION["glpiname"]));
+
    Html::redirect($CFG_GLPI["root_doc"]."/front/monitor.form.php?id=".$_GET["id"]);
 
 } else {
    Html::header(Monitor::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "monitor");
-
    $monitor->showForm($_GET["id"], array('withtemplate' => $_GET["withtemplate"]));
-
    Html::footer();
 }
 ?>

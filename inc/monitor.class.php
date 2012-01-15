@@ -48,7 +48,7 @@ class Monitor extends CommonDBTM {
    /**
     * Name of the type
     *
-    * @param $nb : number of item in the type
+    * @param $nb  string   number of item in the type
    **/
    static function getTypeName($nb=0) {
       return _n('Monitor', 'Monitors', $nb);
@@ -166,8 +166,8 @@ class Monitor extends CommonDBTM {
    /**
     * Print the monitor form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer  ID of the item
+    * @param $options   array
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
@@ -346,7 +346,6 @@ class Monitor extends CommonDBTM {
       echo "</td></tr>";
       echo "</table></td></tr>";
 
-
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       if ((!isset($options['withtemplate']) || $options['withtemplate']==0)
@@ -360,10 +359,10 @@ class Monitor extends CommonDBTM {
       echo "</td><td>";
       if (isset($options['withtemplate']) && $options['withtemplate']) {
          //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'),Html::convDateTime($_SESSION["glpi_currenttime"]));
+         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
       } else {
          //TRANS: %s is the datetime of insertion
-         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
       echo "</td></tr>\n";
 
@@ -377,7 +376,7 @@ class Monitor extends CommonDBTM {
     * Return the SQL command to retrieve linked object
     *
     * @return a SQL command which return a set of (itemtype, items_id)
-    */
+   **/
    function getSelectLinkedItem() {
 
       return "SELECT 'Computer', `computers_id`
@@ -406,7 +405,7 @@ class Monitor extends CommonDBTM {
 
       $tab+=Location::getSearchOptionsToAdd();
 
-      $tab[4]['table']            = 'glpi_monitortypes';
+      $tab[4]['table']           = 'glpi_monitortypes';
       $tab[4]['field']           = 'name';
       $tab[4]['name']            = __('Type');
 
