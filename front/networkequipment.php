@@ -37,7 +37,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("networking", "r");
 
-Html::header(_n('Network device', 'Network devices', 2),$_SERVER['PHP_SELF'],"inventory","networking");
+Html::header(NetworkEquipment::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "networking");
 
 Search::show('NetworkEquipment');
 

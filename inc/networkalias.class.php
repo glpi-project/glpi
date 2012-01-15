@@ -81,7 +81,6 @@ class NetworkAlias extends FQDNLabel {
 
 
    static function getTypeName($nb=0) {
-      
       return _n('Network alias', 'Network aliases', $nb);
    }
 
@@ -95,7 +94,7 @@ class NetworkAlias extends FQDNLabel {
    **/
    static function getInternetNameFromID($ID) {
 
-      $networkAlias = new NetworkAlias();
+      $networkAlias = new self();
       if ($networkalias->can($ID, 'r'))
          return FQDNLabel::getInternetNameFromLabelAndDomainID($this->fields["name"],
                                                                $this->fields["fqdns_id"]);
@@ -106,12 +105,12 @@ class NetworkAlias extends FQDNLabel {
    /**
     * Print the network alias form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target for the Form
     *     - withtemplate template or basic computer
     *
-    *@return Nothing (display)
+    * @return Nothing (display)
    **/
    function showForm ($ID, $options=array()) {
 
@@ -170,9 +169,9 @@ class NetworkAlias extends FQDNLabel {
    /**
     * Print the tab for NetworkName object
     *
-    * @param $networkNameID integer ID of the NetworkName
-    * @param $fromForm display change if from the NetworkName form or other
-    * @param $withtemplate integer : withtemplate param
+    * @param $networkNameID   integer  ID of the NetworkName
+    * @param $fromForm                 display change if from the NetworkName form or other
+    * @param $withtemplate    integer  withtemplate param (default 0)
     *
     *@return Nothing (display)
    **/
@@ -183,7 +182,7 @@ class NetworkAlias extends FQDNLabel {
                 FROM `glpi_networkaliases`
                 WHERE `networknames_id` = '$networkNameID'";
 
-      $alias  = new NetworkAlias();
+      $alias  = new self();
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
          if (!$fromForm) {
@@ -205,7 +204,7 @@ class NetworkAlias extends FQDNLabel {
                   //echo "<a href='#' onclick='javascript:reloadTab(\"remove_alias=" .
                   //     $alias->getID() . "\") ; return false;'>&nbsp;";
                   echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" .
-                     __s('Delete') . "\" title=\"" . __s('Delete') . "\"></a>";
+                         __s('Delete') . "\" title=\"" . __s('Delete') . "\"></a>";
                   echo "</td></tr>";
                } else {
                   echo "</li>\n";
@@ -229,12 +228,12 @@ class NetworkAlias extends FQDNLabel {
     * NetworkAlias, remove, ...) or if readden from item of the item (for instance from the computer
     * form through NetworkPort::ShowForItem and NetworkName::ShowForItem).
     *
-    * @param $item CommonDBTM object
-    * @param $withtemplate integer : withtemplate param
+    * @param $item                     CommonDBTM object
+    * @param $withtemplate   integer   withtemplate param (default 0)
    **/
    static function showForNetworkNameForm(CommonGLPI $item, $withtemplate=0) {
 
-      $alias = new NetworkAlias();
+      $alias = new self();
 
       if (isset($_POST["remove_alias"])) {
          $alias->delete(array('id' => $_POST["remove_alias"]));
@@ -260,14 +259,14 @@ class NetworkAlias extends FQDNLabel {
    /**
     * Show the aliases contained by the alias
     *
-    * @param $item the FQDN owning the aliases
-    * @param $withtemplate integer : withtemplate param
+    * @param $item                     the FQDN owning the aliases
+    * @param $withtemplate  integer    withtemplate param
     *
    **/
    static function showForFQDN(CommonGLPI $item, $withtemplate) {
       global $DB;
 
-      $alias   = new NetworkAlias();
+      $alias   = new self();
       $address = new NetworkName();
       $item->check($item->getID(), 'r');
       $canedit = $item->can($item->getID(), 'w');
@@ -289,14 +288,14 @@ class NetworkAlias extends FQDNLabel {
 
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".self::getTypeName()."</th><th>".__('No item found')."</th></tr>";
+         echo "<tr><th>".self::getTypeName(1)."</th><th>".__('No item found')."</th></tr>";
          echo "</table>\n";
       } else {
-         Html::printAjaxPager(self::getTypeName($number),$start,$number);
+         Html::printAjaxPager(self::getTypeName($number), $start, $number);
 
          echo "<table class='tab_cadre_fixe'><tr>";
 
-         echo "<th><a href='javascript:reloadTab(\"order=alias\");'>".self::getTypeName().
+         echo "<th><a href='javascript:reloadTab(\"order=alias\");'>".self::getTypeName(1).
               "</a></th>"; // Alias
          echo "<th><a href='javascript:reloadTab(\"order=realname\");'>".__("Computer's name").
               "</a></th>";
@@ -305,15 +304,15 @@ class NetworkAlias extends FQDNLabel {
 
          Session::initNavigateListItems($item->getType(),
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'), $alias->getTypeName(1),
-                                                $item->fields['name']));
+                                        sprintf(__('%1$s = %2$s'),
+                                                $alias->getTypeName(1), $item->fields['name']));
 
          $query = "SELECT `glpi_networkaliases`.`id` AS alias_id,
                           `glpi_networkaliases`.`name` AS alias,
                           `glpi_networknames`.`id` AS address_id,
                           `glpi_networkaliases`.`comment` AS comment
                    FROM `glpi_networkaliases`, `glpi_networknames`
-                   WHERE `glpi_networkaliases`.`fqdns_id`='".$item->getID()."'
+                   WHERE `glpi_networkaliases`.`fqdns_id` = '".$item->getID()."'
                          AND  `glpi_networknames`.`id` = `glpi_networkaliases`.`networknames_id`
                    ORDER BY `$order`
                    LIMIT ".$_SESSION['glpilist_limit']."
@@ -366,7 +365,7 @@ class NetworkAlias extends FQDNLabel {
                   $numberElements = countElementsInTable($this->getTable(),
                                                          "fqdns_id='".$item->getID()."'");
             }
-            return self::createTabEntry( self::getTypeName($numberElements), $numberElements);
+            return self::createTabEntry(self::getTypeName(2), $numberElements);
          }
          return self::getTypeName(2);
       }

@@ -50,7 +50,7 @@ if (isset($_POST["add"])) {
    if ($newID=$alias->add($_POST)) {
       Ajax::refreshPopupTab();
       Event::log($newID, $alias->getType(), 4, "setup",
-                     sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
+                 sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    }
    Html::back();
 
@@ -60,8 +60,8 @@ if (isset($_POST["add"])) {
    Ajax::refreshPopupMainWindow();
 
    Event::log($_POST["id"], $alias->getType(), 4, "setup",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["delete"]) || isset($_GET['remove_alias'])) {
@@ -70,8 +70,8 @@ if (isset($_POST["add"])) {
    Ajax::refreshPopupMainWindow();
 
    Event::log($_REQUEST["id"], $alias->getType(), 4, "setup",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $node = new NetworkName();
    if ($node->can($alias->fields["networknames_id"], 'r')) {
       Html::redirect($node->getLinkURL());
@@ -89,7 +89,7 @@ if (!isset($options)) {
 $options = array_merge($options, $_GET);
 
 if (isset($_GET['popup'])) {
-   Html::popHeader($alias->getTypeName(), $_SERVER['PHP_SELF']);
+   Html::popHeader(NetworkAlias::getTypeName(1), $_SERVER['PHP_SELF']);
    if (isset($_GET["rand"])) {
       $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
    }
@@ -99,7 +99,7 @@ if (isset($_GET['popup'])) {
    Html::popFooter();
 
 } else {
-   Html::header($alias->getTypeName(2), $_SERVER['PHP_SELF'], 'inventory', 'networkalias');
+   Html::header(NetworkAlias::getTypeName(2), $_SERVER['PHP_SELF'], 'inventory', 'networkalias');
 
    $alias->showForm($_GET["id"],$options);
    Html::footer();
