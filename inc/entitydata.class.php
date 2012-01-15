@@ -603,7 +603,7 @@ class EntityData extends CommonDBChild {
                             'value'          => $default_value,
                             'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
-      echo "<td rowspan='2'>" . __('Default threshold for cartridge and consumable count') .
+      echo "<td rowspan='2'>" . __('Default threshold for cartridges and consumables count') .
            "</td><td rowspan='2'>";
       Dropdown::showInteger('default_alarm_threshold',
                             $entitynotification->fields["default_alarm_threshold"], 0, 100, 1,
