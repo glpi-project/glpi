@@ -970,8 +970,8 @@ if (isset($_POST["action"])
          }
          break;
 
-      case 'delete_email':
-      case 'import_email':
+      case 'delete_email' :
+      case 'import_email' :
          /// TODO check rights
          $emails_ids = array();
          foreach ($_POST["item"] as $key => $val) {
@@ -1015,12 +1015,14 @@ if (isset($_POST["action"])
       $message = __('Failed operation');
       if ($nbnoright) {
          //TRANS: %$1d and %$2d are numbers
-         $message .= "<br>(".sprintf(__('%1$d authorizations problem(s), %2$d failure(s)'), $nbnoright, $nbko).")";
+         $message .= "<br>".sprintf(__('(%1$d authorizations problem(s), %2$d failure(s))'),
+                                     $nbnoright, $nbko);
       }
    } else if ($nbnoright || $nbko) {
       // Partial success
       $message = __('Operation performed partially successful');
-         $message .= "<br>(".sprintf(__('%1$d authorizations problem(s), %2$d failure(s)'), $nbnoright, $nbko).")";
+      $message .= "<br>".sprintf(__('(%1$d authorizations problem(s), %2$d failure(s))'),
+                                 $nbnoright, $nbko);
    }
    Session::addMessageAfterRedirect($message);
    Html::redirect($REDIRECT);

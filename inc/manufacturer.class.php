@@ -39,10 +39,15 @@ if (!defined('GLPI_ROOT')) {
 /// Class Manufacturer
 class Manufacturer extends CommonDropdown {
 
+
    static function getTypeName($nb=0) {
-      return _n('Manufacturer','Manufacturers',$nb);
+      return _n('Manufacturer', 'Manufacturers', $nb);
    }
 
+
+   /**
+    * @param $old_name
+   **/
    static function processName($old_name) {
 
       if ($old_name == null) {
@@ -50,8 +55,9 @@ class Manufacturer extends CommonDropdown {
       }
 
       $rulecollection = new RuleDictionnaryManufacturerCollection();
-      $output=array();
-      $output = $rulecollection->processAllRules(array("name"=>addslashes($old_name)),$output,array());
+      $output         = array();
+      $output         = $rulecollection->processAllRules(array("name" => addslashes($old_name)),
+                                                         $output, array());
       if (isset($output["name"])) {
          return $output["name"];
       }
@@ -64,5 +70,6 @@ class Manufacturer extends CommonDropdown {
       // Rules use manufacturer intread of manufacturers_id
       Rule::cleanForItemAction($this, 'manufacturer');
    }
+
 }
 ?>

@@ -49,7 +49,7 @@ class Migration {
    /**
     * @since version 0.84
     *
-    * @param $ver : number of new version
+    * @param $ver    number of new version
    **/
    function setVersion($ver) {
 
@@ -64,9 +64,8 @@ class Migration {
    /**
     * Additional message in global message
     *
-    * @param $msg text to display
+    * @param $msg    text  to display
    **/
-
    function displayMessage ($msg) {
 
       $fin = time();
@@ -91,8 +90,8 @@ class Migration {
    /**
     * Display a Warning
     *
-    * @param $msg string
-    * @param $red boolean
+    * @param $msg    string
+    * @param $red    boolean (false by default)
    **/
    function displayWarning($msg, $red=false) {
 
@@ -104,8 +103,10 @@ class Migration {
    /**
     * Define field's format
     *
-    * @param $type : can be bool, string, integer, date, datatime, text, longtext, autoincrement
-    * @param $default_value new field's default value, if a specific default value needs to be used
+    * @param $type            string   can be bool, string, integer, date, datatime, text, longtext,
+    *                                         autoincrement, char
+    * @param $default_value   string   new field's default value,
+    *                                  if a specific default value needs to be used
    **/
    private function fieldFormat($type, $default_value) {
 
@@ -118,7 +119,7 @@ class Migration {
             } else if (in_array($default_value, array('0', '1'))) {
                $format .= " DEFAULT '$default_value'";
             } else {
-               trigger_error("default_value must be 0 or 1", E_USER_ERROR);
+               trigger_error(__('default_value must be 0 or 1'), E_USER_ERROR);
             }
             break;
 
@@ -147,7 +148,7 @@ class Migration {
             } else if (is_numeric($default_value)) {
                $format .= " DEFAULT '$default_value'";
             } else {
-               trigger_error("default_value must be numeric", E_USER_ERROR);
+               trigger_error(__('default_value must be numeric'), E_USER_ERROR);
             }
             break;
 
@@ -204,10 +205,10 @@ class Migration {
    /**
     * Add a new GLPI normalized field
     *
-    * @param $table
-    * @param $field to add
-    * @param $type : can be bool, string, integer, date, datatime, text, longtext, autoincrement
-    * @param $options array
+    * @param $table     string
+    * @param $field     string   to add
+    * @param $type      string   (see fieldFormat)
+    * @param $options   array
     *    - update if not empty = value of $field (must be protected)
     *    - condition if needed
     *    - value default_value new field's default value, if a specific default value needs to be used
@@ -261,11 +262,11 @@ class Migration {
    /**
     * Modify field for migration
     *
-    * @param $table
-    * @param $oldfield : old name of the field
-    * @param $newfield : new name of the field
-    * @param $type : can be bool, string, integer, date, datatime, text, longtext, autoincrement
-    * @param $options array
+    * @param $table        string
+    * @param $oldfield     string   old name of the field
+    * @param $newfield     string   new name of the field
+    * @param $type         string   (see fieldFormat)
+    * @param $options      array
     *    - default_value new field's default value, if a specific default value needs to be used
     *    - comment comment to be added during field creation
    **/
@@ -307,8 +308,8 @@ class Migration {
    /**
     * Drop field for migration
     *
-    * @param $table
-    * @param $field to drop
+    * @param $table  string
+    * @param $field  string   field to drop
    **/
    function dropField($table, $field) {
 
@@ -321,7 +322,7 @@ class Migration {
    /**
     * Drop immediatly a table if it exists
     *
-    * @param table
+    * @param table   string
    **/
    function dropTable($table) {
       global $DB;
@@ -335,11 +336,11 @@ class Migration {
    /**
     * Add index for migration
     *
-    * @param $table
-    * @param $fields : string or array
-    * @param $indexname : if empty =$fields
-    * @param $type : index or unique
-    * @param $len : integer for field length
+    * @param $table        string
+    * @param $fields       string or array
+    * @param $indexname    string            if empty =$fields (default '')
+    * @param $type         string            index or unique (default 'INDEX')
+    * @param $len          integer           for field length (default 0)
    **/
    function addKey($table, $fields, $indexname='', $type='INDEX', $len=0) {
 
@@ -373,8 +374,8 @@ class Migration {
    /**
     * Drop index for migration
     *
-    * @param $table
-    * @param $indexname
+    * @param $table     string
+    * @param $indexname string
    **/
    function dropKey($table, $indexname) {
 
@@ -387,8 +388,8 @@ class Migration {
    /**
     * Rename table for migration
     *
-    * @param $oldtable
-    * @param $newtable
+    * @param $oldtable  string
+    * @param $newtable  string
    **/
    function renameTable($oldtable, $newtable) {
       global $DB;
@@ -405,8 +406,8 @@ class Migration {
     *
     * @since version 0.84
     *
-    * @param $oldtable The name of the table already inside the database
-    * @param $newtable The copy of the old table
+    * @param $oldtable  string   The name of the table already inside the database
+    * @param $newtable  string   The copy of the old table
    **/
    function copyTable($oldtable, $newtable) {
       global $DB;
@@ -428,12 +429,12 @@ class Migration {
     *
     * @since version 0.84
     *
-    * @param $table The table to alter
-    * @param $input The elements to add inside the table
+    * @param $table  string   The table to alter
+    * @param $input  array    The elements to add inside the table
     *
     * @return id of the last item inserted by mysql
    **/
-   function insertInTable($table, $input) {
+   function insertInTable($table, array $input) {
       global $DB;
 
       if (TableExists("$table") && is_array($input) && (count($input) > 0)) {
@@ -458,7 +459,7 @@ class Migration {
    /**
     * Execute migration for only one table
     *
-    * @param $table
+    * @param $table  string
    **/
    function migrationOneTable($table) {
       global $DB;
@@ -476,7 +477,6 @@ class Migration {
    /**
     * Execute global migration
    **/
-
    function executeMigration() {
 
       foreach ($this->change as $table => $tab) {
