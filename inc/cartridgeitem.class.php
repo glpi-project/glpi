@@ -442,15 +442,14 @@ class CartridgeItem extends CommonDBTM {
                   }
 
                } else {
+                  $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
+                  //TRANS: %s is entity name
+                  $msg = sprintf(__('%s: send cartridge alert failed'), $entityname);
                   if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
-                               ."&nbsp;: Send cartidge alert failed\n");
+                     $task->log($msg);
                   } else {
-                     $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
                      //TRANS: %s is the entity
-                     Session::addMessageAfterRedirect(sprintf(__('%s: send cartridge alert failed'),
-                                                              $entityname),
-                                                       false, ERROR);
+                     Session::addMessageAfterRedirect($msg, false, ERROR);
                   }
                }
             }
