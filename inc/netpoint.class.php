@@ -91,9 +91,8 @@ class Netpoint extends CommonDropdown {
     * @since version 0.83 (before addMulti)
     *
     * @param $input array of values
-    *
    **/
-   function executeAddMulti($input) {
+   function executeAddMulti(array $input) {
 
       $this->check(-1,'w',$input);
       for ($i=$input["_from"] ; $i<=$input["_to"] ; $i++) {
@@ -101,7 +100,7 @@ class Netpoint extends CommonDropdown {
          $this->add($input);
       }
       Event::log(0, "dropdown", 5, "setup",
-            sprintf(__('%1$s adds several netpoints'), $_SESSION["glpiname"], $_POST["name"]));
+                 sprintf(__('%1$s adds several netpoints'), $_SESSION["glpiname"]));
       Ajax::refreshDropdownPopupInMainWindow();
    }
 
@@ -109,17 +108,15 @@ class Netpoint extends CommonDropdown {
    /**
     * Print out an HTML "<select>" for a dropdown with preselected value
     *
-    *
-    * @param $myname the name of the HTML select
-    * @param $value the preselected value we want
-    * @param $locations_id default location ID for search
-    * @param $display_comment display the comment near the dropdown
-    * @param $entity_restrict Restrict to a defined entity
-    * @param $devtype
+    * @param $myname             the name of the HTML select
+    * @param $value              the preselected value we want (default 0)
+    * @param $locations_id       default location ID for search (default -1)
+    * @param $display_comment    display the comment near the dropdown (default 1)
+    * @param $entity_restrict    Restrict to a defined entity(default -1)
+    * @param $devtype            (default -1)
     *
     * @return nothing (display the select box)
-    *
-    */
+   **/
    static function dropdownNetpoint($myname, $value=0, $locations_id=-1, $display_comment=1,
                                     $entity_restrict=-1, $devtype=-1) {
       global $CFG_GLPI;
@@ -246,12 +243,12 @@ class Netpoint extends CommonDropdown {
          switch ($item->getType()) {
             case 'Location' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Network outlet', 'Network outlets', 2),
+                  return self::createTabEntry(self::getTypeName(2),
                                               countElementsInTable($this->getTable(),
                                                                    "locations_id
                                                                         = '".$item->getID()."'"));
                }
-               return _n('Network outlet', 'Network outlets', 2);
+               return self::getTypeName(2);
          }
       }
       return '';
@@ -277,10 +274,10 @@ class Netpoint extends CommonDropdown {
    static function showForLocation($item) {
       global $DB, $CFG_GLPI;
 
-      $ID = $item->getField('id');
+      $ID       = $item->getField('id');
       $netpoint = new self();
       $item->check($ID, 'r');
-      $canedit = $item->can($ID, 'w');
+      $canedit  = $item->can($ID, 'w');
 
       if (isset($_REQUEST["start"])) {
          $start = $_REQUEST["start"];
@@ -293,7 +290,7 @@ class Netpoint extends CommonDropdown {
 
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>"._n('Network outlet', 'Network outlets', 1)."</th>";
+         echo "<tr><th>".self::getTypeName(1)."</th>";
          echo "<th>".__('No item found')."</th></tr>";
          echo "</table>\n";
       } else {
@@ -321,8 +318,8 @@ class Netpoint extends CommonDropdown {
 
          Session::initNavigateListItems('Netpoint',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
-                                                $item->getName()));
+                                        sprintf(__('%1$s = %2$s'),
+                                                $item->getTypeName(1), $item->getName()));
 
          foreach ($DB->request('glpi_netpoints', $crit) as $data) {
             Session::addToNavigateListItems('Netpoint',$data["id"]);
@@ -356,7 +353,7 @@ class Netpoint extends CommonDropdown {
          echo "<br><table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'><td class='b'>".__('New item')."</td>";
          echo "<td>".__('Name')."</td><td>";
-         Html::autocompletionTextField($item, "name",array('value'=>''));
+         Html::autocompletionTextField($item, "name", array('value' => ''));
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
          echo "<td><input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
@@ -376,8 +373,7 @@ class Netpoint extends CommonDropdown {
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
          echo "<input type='hidden' name='_method' value='AddMulti'></td>";
-         echo "<td><input type='submit' name='execute' value=\"".__s('Add')."\"
-                    class='submit'>";
+         echo "<td><input type='submit' name='execute' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       }
