@@ -57,6 +57,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
       return $tab;
    }
 
+
    function unassignVlanbyID($ID) {
       global $DB;
 
@@ -152,9 +153,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
                               sprintf(__('Comments: %s'), $line['vlancomment']));
 
             if ((isset($line["tagged"])) && ($line["tagged"] == 1)) {
-               echo "&nbsp;- ".__('Tagged');
+               _e('- Tagged');
             } else {
-               echo "&nbsp;- ".__('Untagged');
+               _e('- Untagged');
             }
 
             echo "</td>\n<td>";
@@ -179,7 +180,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
    static function showForNetworkPortForm ($ID) {
       global $DB, $CFG_GLPI;
 
-      $port=new NetworkPort();
+      $port = new NetworkPort();
 
       if ($ID && $port->can($ID,'w')) {
 
@@ -188,7 +189,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          echo "<input type='hidden' name='networkports_id' value='$ID'>\n";
 
          echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>" . _n('VLAN','VLANs',2) . "</th></tr>\n";
+         echo "<tr><th colspan='2'>" . __('VLAN') . "</th></tr>\n";
 
          echo "<tr class='tab_bg_2'><td colspan='2'>";
          $used = self::showForNetworkPort($ID, true,0);
@@ -214,7 +215,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
    static function getVlansForNetworkPort($portID) {
       global $DB;
 
-      $vlans=array();
+      $vlans = array();
       $query = "SELECT `vlans_id`
                FROM `glpi_networkports_vlans`
                WHERE `networkports_id` = '$portID'";
@@ -232,11 +233,12 @@ class NetworkPort_Vlan extends CommonDBRelation {
          switch ($item->getType()) {
             case 'NetworkPort' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('VLAN','VLANs',2),
+                  return self::createTabEntry(__('VLAN'),
                                               countElementsInTable($this->getTable(),
-                                                                   "networkports_id = '".$item->getID()."'"));
+                                                                   "networkports_id
+                                                                        = '".$item->getID()."'"));
                }
-               return _n('VLAN','VLANs',2);
+               return __('VLAN');
          }
       }
       return '';
@@ -252,5 +254,4 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 }
-
 ?>

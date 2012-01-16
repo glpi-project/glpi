@@ -57,7 +57,7 @@ class NetworkPortMigration extends NetworkPortInstantiation {
 
       echo "<th>" . __('MAC') . "</th>\n";
       echo "<th>" . __('Network outlet') . "</th>\n";
-      echo "<th>" . NetworkInterface::getTypeName() . "</th>\n";
+      echo "<th>" . NetworkInterface::getTypeName(1) . "</th>\n";
   }
 
 
@@ -77,7 +77,7 @@ class NetworkPortMigration extends NetworkPortInstantiation {
          echo "<tr class='tab_bg_1'>";
          $this->showNetpointField($netport, $options, $recursiveItems);
 
-         echo "<td>" . NetworkInterface::getTypeName() . "</td>\n";
+         echo "<td>" . NetworkInterface::getTypeName(1) . "</td>\n";
          echo "<td>";
          Dropdown::show('NetworkInterface',
                         array('value' => $this->fields["networkinterfaces_id"]));

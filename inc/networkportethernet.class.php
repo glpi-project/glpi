@@ -52,7 +52,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
-      
+
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'>";
          $this->showNetpointField($netport, $options, $recursiveItems);
@@ -130,9 +130,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    /**
     * Display a connection of a networking port
     *
-    * @param $device1 the device of the port
-    * @param $netport to be displayed
-    * @param $withtemplate
+    * @param $device1      the device of the port
+    * @param $netport      to be displayed
+    * @param $withtemplate (default '')
    **/
    static function showConnection(&$device1, &$netport, $withtemplate='') {
 
@@ -158,9 +158,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                   echo $netport->getLink();
                   echo "</span>\n";
                   Html::showToolTip($netport->fields['comment']);
-                  echo "&nbsp;".__('on') . " <span class='b'>";
-                  echo $device2->getLink();
-                  echo "</span>";
+                  echo "&nbsp;".__('on') . "<span class='b'>".$device2->getLink()."</span>";
 
                   if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
                      echo "<br>(". Dropdown::getDropdownName("glpi_entities",
@@ -173,8 +171,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
                      if ($withtemplate != 2) {
                         echo "<a href=\"".$netport->getFormURL()."?disconnect=".
-                              "disconnect&amp;id=".$contact->fields['id']."\">" .
-                              __('Disconnect') . "</a>";
+                              "disconnect&amp;id=".$contact->fields['id']."\">". __('Disconnect').
+                             "</a>";
                      } else {
                         "&nbsp;";
                      }
@@ -186,12 +184,11 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                   if (rtrim($netport->fields["name"]) != "") {
                      echo $netport->fields["name"];
                   } else {
-                     echo __('Without name');
+                     _e('Without name');
                   }
-                  echo "</span> " . __('on') . " <strong>";
-                  echo $device2->getName();
-                  echo "</span><br>(" .Dropdown::getDropdownName("glpi_entities",
-                                                                 $device2->getEntityID()) .")";
+                  echo "</span> " . __('on') . " <span class='b'>".$device2->getName()."</span>";
+                  echo "<br>(" .Dropdown::getDropdownName("glpi_entities",
+                                                          $device2->getEntityID()) .")";
                }
 
                echo "</td></tr></table>\n";
@@ -202,7 +199,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
          echo "\n<table width='100%'><tr>";
 
          if ($canedit) {
-            echo "<td class='left'>";
+            echo "<td>";
 
             if ($withtemplate != 2 && $withtemplate != 1) {
                self::dropdownConnect($ID, array('name'        => 'dport',
@@ -224,16 +221,14 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    /**
     * Make a select box for  connected port
     *
-    * Parameters which could be used in options array :
+    * @param $ID                 ID of the current port to connect
+    * @param $options   array of possible options
     *    - name : string / name of the select (default is networkports_id)
     *    - comments : boolean / is the comments displayed near the dropdown (default true)
     *    - entity : integer or array / restrict to a defined entity or array of entities
     *                   (default -1 : no restriction)
     *    - entity_sons : boolean / if entity restrict specified auto select its sons
     *                   only available if entity is a single value not an array (default false)
-    *
-    * @param $ID ID of the current port to connect
-    * @param $options possible options
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -254,7 +249,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       // Manage entity_sons
       if (!($p['entity']<0) && $p['entity_sons']) {
          if (is_array($p['entity'])) {
-            echo "entity_sons options is not available with array of entity";
+            _e('entity_sons options are not available with array of entity');
          } else {
             $p['entity'] = getSonsOf('glpi_entities', $p['entity']);
          }
@@ -281,7 +276,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       Ajax::updateItemOnSelectEvent("itemtype$rand", "show_".$p['name']."$rand",
                                     $CFG_GLPI["root_doc"].
-                                    "/ajax/dropdownConnectEthernetPortDeviceType.php",
+                                       "/ajax/dropdownConnectEthernetPortDeviceType.php",
                                     $params);
 
       echo "<span id='show_".$p['name']."$rand'>&nbsp;</span>\n";
@@ -293,7 +288,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']            = __('Characteristics');
 
       $tab[10]['table']         = $this->getTable();
       $tab[10]['field']         = 'mac';

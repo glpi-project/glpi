@@ -53,7 +53,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
     *
     * @return true if succeed else false
    **/
-   function getFromDBForNetworkPort ($ID) {
+   function getFromDBForNetworkPort($ID) {
       global $DB;
 
       // Make new database object and fill variables
@@ -189,11 +189,13 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          $changes[2] = $destname;
 
          if ($ps->fields["itemtype"] == 'NetworkEquipment') {
-            $changes[2] = "#" . $ps->fields["name"] . " > " . $changes[2];
+                          //TRANS: %1$s is a name, %2$s is the new name
+            $changes[2] = sprintf(__('From #%1$s to %2$s'), $ps->fields["name"], $changes[2]);
          }
 
          if ($pd->fields["itemtype"] == 'NetworkEquipment') {
-            $changes[2] = $changes[2] . " > #" . $pd->fields["name"];
+                          //TRANS: %1$s is a name, %2$s is the new name
+            $changes[2] = sprintf(__('From %1$s to #%2$s'), $changes[2], $pd->fields["name"]);
          }
 
          Log::history($ps->fields["items_id"], $ps->fields["itemtype"], $changes,
@@ -204,11 +206,11 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          $changes[2] = $sourcename;
 
          if ($pd->fields["itemtype"] == 'NetworkEquipment') {
-            $changes[2] = "#" . $pd->fields["name"] . " > " . $changes[2];
+            $changes[2] = sprintf(__('From #%1$s to %2$s'), $pd->fields["name"], $changes[2]);
          }
 
          if ($ps->fields["itemtype"] == 'NetworkEquipment') {
-            $changes[2] = $changes[2] . " > #" . $ps->fields["name"];
+            $changes[2] = sprintf(__('From %1$s to #%2$s'), $changes[2], $ps->fields["name"]);
          }
 
          Log::history($pd->fields["items_id"], $pd->fields["itemtype"], $changes,
@@ -277,11 +279,11 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
             $changes[2] = '';
 
             if ($np1->fields["itemtype"] == 'NetworkEquipment') {
-               $changes[1] = "#" . $np1->fields["name"] . " > " . $changes[1];
+               $changes[1] = sprintf(__('From #%1$s to %2$s'), $np1->fields["name"], $changes[1]);
             }
 
             if ($np2->fields["itemtype"] == 'NetworkEquipment') {
-               $changes[1] = $changes[1] . " > #" . $np2->fields["name"];
+               $changes[1] = sprintf(__('From %1$s to #%2$s'), $changes[1], $np2->fields["name"]);
             }
             Log::history($np1->fields["items_id"], $np1->fields["itemtype"], $changes,
                          $np2->fields["itemtype"], Log::HISTORY_DISCONNECT_DEVICE);
@@ -302,11 +304,11 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
             $changes[2] = '';
 
             if ($np2->fields["itemtype"] == 'NetworkEquipment') {
-               $changes[1] = "#" . $np2->fields["name"] . " > " . $changes[1];
+               $changes[1] = sprintf(__('From #%1$s to %2$s'), $np2->fields["name"], $changes[1]);
             }
 
             if ($np1->fields["itemtype"] == 'NetworkEquipment') {
-               $changes[1] = $changes[1] . " > #" . $np1->fields["name"];
+               $changes[1] = sprintf(__('From %1$s to #%2$s'), $changes[1], $np1->fields["name"]);
             }
             Log::history($np2->fields["items_id"], $np2->fields["itemtype"], $changes,
                          $np1->fields["itemtype"], Log::HISTORY_DISCONNECT_DEVICE);
@@ -323,7 +325,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
     *
     * @return integer ID of opposite port. false if not found
    **/
-   function getOppositeContact ($ID) {
+   function getOppositeContact($ID) {
       global $DB;
 
       if ($this->getFromDBForNetworkPort($ID)) {

@@ -89,7 +89,6 @@ class NetworkName extends FQDNLabel {
 
 
    static function getTypeName($nb=0) {
-
       return _n('Network name', 'Network names', $nb);
    }
 
@@ -97,8 +96,8 @@ class NetworkName extends FQDNLabel {
    function defineTabs($options=array()) {
 
       $ong  = array();
-      $this->addStandardTab('NetworkAlias',$ong, $options);
-      $this->addStandardTab('Log',$ong, $options);
+      $this->addStandardTab('NetworkAlias', $ong, $options);
+      $this->addStandardTab('Log', $ong, $options);
 
       return $ong;
    }
@@ -107,8 +106,8 @@ class NetworkName extends FQDNLabel {
    /**
     * Print the network name form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target for the Form
     *     - withtemplate template or basic computer
     *
@@ -154,12 +153,12 @@ class NetworkName extends FQDNLabel {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td rowspan='2'>".IPAddress::getTypeName(2)."&nbsp;:</td>";
+      echo "<td rowspan='2'>".IPAddress::getTypeName(2)."</td>";
       echo "<td rowspan='2'>";
       IPAddress::showInputField($this->getType(), $this->getID(), "IPs");
       echo "</td>\n";
 
-      echo "<td>".FQDN::getTypeName()."&nbsp;:</td><td>";
+      echo "<td>".FQDN::getTypeName(1)."</td><td>";
       Dropdown::show(getItemTypeForTable(getTableNameForForeignKeyField("fqdns_id")),
                      array('value'       => $this->fields["fqdns_id"],
                            'name'        => 'fqdns_id',
@@ -186,11 +185,11 @@ class NetworkName extends FQDNLabel {
 
       $tab[12]['table']  = 'glpi_fqdns';
       $tab[12]['field']  = 'fqdn';
-      $tab[12]['name']   = FQDN::getTypeName();
+      $tab[12]['name']   = FQDN::getTypeName(1);
 
       $tab[13]['table']  = $this->getTable();
       $tab[13]['field']  = 'ip_addresses';
-      $tab[13]['name']   = IPAddress::getTypeName();
+      $tab[13]['name']   = IPAddress::getTypeName(1);
 
       return $tab;
    }
@@ -209,7 +208,9 @@ class NetworkName extends FQDNLabel {
          $addresses = IPAddress::checkInputFromItem($input["IPs"], self::getType(), $this->getID());
 
          if (count($addresses["invalid"]) > 0) {
-            $msg = sprintf(_n('Invalid IP address: %s', 'Invalid IP addresses: %s',count($addresses["invalid"])),implode (', ',$addresses["invalid"]));
+            $msg = sprintf(_n('Invalid IP address: %s', 'Invalid IP addresses: %s',
+                              count($addresses["invalid"])),
+                           implode (', ',$addresses["invalid"]));
             Session::addMessageAfterRedirect($msg, false, ERROR);
             unset($addresses["invalid"]);
          }
@@ -320,8 +321,8 @@ class NetworkName extends FQDNLabel {
     *
     * The address can be unaffected, and remain "free"
     *
-    * @param $items_id the id of the item
-    * @param $itemtype the type of the item
+    * @param $items_id  the id of the item
+    * @param $itemtype  the type of the item
     *
    **/
    static function unaffectAddressesOfItem($items_id, $itemtype) {
@@ -350,6 +351,11 @@ class NetworkName extends FQDNLabel {
    }
 
 
+   /**
+    * @param $networkNameID
+    * @param $items_id
+    * @param $itemtype
+   **/
    static function affectAddress($networkNameID, $items_id, $itemtype) {
 
       $networkName = new self();
@@ -378,6 +384,9 @@ class NetworkName extends FQDNLabel {
    }
 
 
+   /**
+    * @param $networkPortID
+   **/
    static function showFormForNetworkPort($networkPortID) {
       global $DB;
 
@@ -392,7 +401,9 @@ class NetworkName extends FQDNLabel {
          $result = $DB->query($query);
 
          if ($DB->numrows($result) > 1) {
-            echo "<tr class='tab_bg_1'><th colspan='4'>" . __("Several network names available! Go to the tab 'Network Name' to manage them.") . "</th></tr>\n";
+            echo "<tr class='tab_bg_1'><th colspan='4'>" .
+                   __("Several network names available! Go to the tab 'Network Name' to manage them.") .
+                 "</th></tr>\n";
             return;
          }
 
@@ -418,17 +429,17 @@ class NetworkName extends FQDNLabel {
       echo "</th></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>" . self::getTypeName() . "&nbsp;:</td><td>\n";
+      echo "<td>" . self::getTypeName(1) . "</td><td>\n";
       Html::autocompletionTextField($name, "name", array('name' => 'NetworkName_name'));
       echo "</td>\n";
-      echo "<td rowspan='2'>".IPAddress::getTypeName(2)."&nbsp;:</td>";
+      echo "<td rowspan='2'>".IPAddress::getTypeName(2)."</td>";
       echo "<td rowspan='2'>";
       IPAddress::showInputField($name->getType(), $name->getID(), "NetworkName_IPs");
       echo "</td>\n";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".FQDN::getTypeName()."&nbsp;:</td><td>";
+      echo "<td>".FQDN::getTypeName(1)."</td><td>";
       Dropdown::show(getItemTypeForTable(getTableNameForForeignKeyField("fqdns_id")),
                      array('value'       => $name->fields["fqdns_id"],
                            'name'        => 'NetworkName_fqdns_id',
@@ -442,10 +453,10 @@ class NetworkName extends FQDNLabel {
    /**
     * \brief Show names for an item
     *
-    * @param $item CommonDBTM object
-    * @param $fromForm the presentation if different if we call this method from the
-    *                  showForItemForm
-    * @param $withtemplate integer : withtemplate param
+    * @param $item                     CommonDBTM object
+    * @param $fromForm                 the presentation if different if we call this method from the
+    *                                  showForItemForm
+    * @param $withtemplate   integer   withtemplate param (false by default)
    **/
    static function showForItem(CommonGLPI $item, $fromForm, $withtemplate=false) {
       global $DB, $CFG_GLPI;
@@ -507,8 +518,8 @@ class NetworkName extends FQDNLabel {
     * NetworkName, remove, ...) or if readden from item of the item (for instance from the computer
     * form through NetworkPort::ShowForItem).
     *
-    * @param $item CommonGLPI object
-    * @param $withtemplate integer : withtemplate param
+    * @param $item                     CommonGLPI object
+    * @param $withtemplate   integer   withtemplate param (default 0)
    **/
    static function showForItemForm(CommonGLPI $item, $withtemplate=0) {
       global $DB, $CFG_GLPI;
@@ -554,8 +565,8 @@ class NetworkName extends FQDNLabel {
    /**
     * Show names for an internet element (IP network, FQDN, ...)
     *
-    * @param $internetElement CommonGLPI object
-    * @param $withtemplate integer : withtemplate param
+    * @param $internetElement          CommonGLPI object
+    * @param $withtemplate    integer  withtemplate param (default 0)
     **/
    static function showForInternetElement(CommonGLPI $internetElement, $withtemplate=0) {
       global $DB, $CFG_GLPI;
@@ -582,7 +593,7 @@ class NetworkName extends FQDNLabel {
 
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".self::getTypeName(0)."</th><th>".__('No item found')."</th></tr>";
+         echo "<tr><th>".self::getTypeName(1)."</th><th>".__('No item found')."</th></tr>";
          echo "</table>\n";
 
       } else {
@@ -660,7 +671,7 @@ class NetworkName extends FQDNLabel {
                                                             AND items_id='".$item->getID()."'");
                   break;
             }
-            return self::createTabEntry( self::getTypeName($numberElements), $numberElements);
+            return self::createTabEntry(self::getTypeName(2), $numberElements);
          }
          return self::getTypeName(2);
       }
