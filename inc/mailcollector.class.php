@@ -528,22 +528,21 @@ class MailCollector  extends CommonDBTM {
             }
 
          } else {
+            $msg = __('Could not connect to mailgate server');
             if ($display) {
-               Session::addMessageAfterRedirect(__('Connection failed'), false, ERROR);
+               Session::addMessageAfterRedirect($msg, false, ERROR);
             } else {
-               return __('Could not connect to mailgate server');
+               return $msg;
             }
          }
 
       } else {
+         //TRANS: %s is the ID of the mailgate
+         $msg = sprintf(__('Could not find mailgate %d'), $mailgateID);
          if ($display) {
-            //TRANS: %s is the ID of the mailgate
-            Session::addMessageAfterRedirect(sprintf(__('Item not found (mailgate %d'),
-                                                     $mailgateID),
-                                             false, ERROR);
+            Session::addMessageAfterRedirect($msg, false, ERROR);
          } else {
-            //TRANS: %s is the ID of the mailgate
-            return sprintf(__('Could find mailgate %d'), $mailgateID);
+            return $msg;
          }
       }
    }
