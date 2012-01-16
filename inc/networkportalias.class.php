@@ -53,6 +53,7 @@ class NetworkPortAlias extends NetworkPortInstantiation {
 
 
    static function showForItemHeader() {
+
       echo "<th>" . __('Origin port') . "</th>\n";
       echo "<th>". __('MAC') ."</th>\n";
       echo "<th>". __('VLAN') ."</th>\n";

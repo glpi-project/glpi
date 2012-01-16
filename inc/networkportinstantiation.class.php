@@ -61,13 +61,15 @@ class NetworkPortInstantiation extends CommonDBChild {
     * Show the instanciation element for the form of the NetworkPort
     * By default, just print that there is no parameter for this type of NetworkPort
     *
-    * @param $netport the port that owns this instantiation (usefull, for instance to get network
-    *                 port attributs
-    * @param $options the option given to NetworkPort::showForm
-    * @param $recursiveItems list of the items on which this port is attached
+    * @param $netport               the port that owns this instantiation
+    *                               (usefull, for instance to get network port attributs
+    * @param $options         array of options given to NetworkPort::showForm
+    * @param $recursiveItems        list of the items on which this port is attached
    **/
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
-      echo "<tr><td colspan='4' class='center'>".__('No options available for this port type.')."</td></tr>";
+
+      echo "<tr><td colspan='4' class='center'>".__('No options available for this port type.').
+           "</td></tr>";
    }
 
 
@@ -77,7 +79,6 @@ class NetworkPortInstantiation extends CommonDBChild {
       if (!empty($input['mac'])) {
          $input['mac'] = strtolower($input['mac']) ;
       }
-
       return $input;
    }
 
@@ -124,6 +125,11 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Give the values of the columns that this NetworkPort instantiation add to the array of
     * NetworkPort in NetworkPort::showForItem
+    *
+    * @param $netport      NetworkPort object
+    * @param $item         CommonDBTM object
+    * @param $canedit
+    * @param $withtemplate (default '')
    **/
    function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
    }
@@ -146,19 +152,20 @@ class NetworkPortInstantiation extends CommonDBChild {
       foreach (array('NetworkEquipment', 'NetworkPortAggregate', 'NetworkPortAlias',
                      'NetworkPortEthernet', 'NetworkPortWifi') as $class) {
 
-         $macItem = new $class();
-         $query = "SELECT `id`
-                   FROM `".$macItem->getTable()."`
-                   WHERE `mac` = '$mac'";
+         if ($macItem = getItemForItemtype($class)) {
+            $query = "SELECT `id`
+                      FROM `".$macItem->getTable()."`
+                      WHERE `mac` = '$mac'";
 
-         foreach ($DB->request($query) as $element) {
-            if ($macItem->getFromDB($element['id'])) {
+            foreach ($DB->request($query) as $element) {
+               if ($macItem->getFromDB($element['id'])) {
 
-               if ($macItem instanceof CommonDBChild) {
-                  $macItemWithItems[] = array_merge(array_reverse($macItem->recursivelyGetItems()),
-                                                    array(clone $macItem));
-               } else {
-                  $macItemWithItems[] = array(clone $macItem);
+                  if ($macItem instanceof CommonDBChild) {
+                     $macItemWithItems[] = array_merge(array_reverse($macItem->recursivelyGetItems()),
+                                                       array(clone $macItem));
+                  } else {
+                     $macItemWithItems[] = array(clone $macItem);
+                  }
                }
             }
          }
@@ -171,7 +178,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Get an Object ID by its MAC address (only if one result is found in the entity)
     *
-    * @param $value the ip address
+    * @param $value  the ip address
     * @param $entity the entity to look for
     *
     * @return an array containing the object ID
@@ -213,10 +220,10 @@ class NetworkPortInstantiation extends CommonDBChild {
     * and wifi ports). Whenever a card is attached, its information (mac, type, ...) are
     * autmatically set to the required field.
     *
-    * @param $netport the port that owns this instantiation (usefull, for instance to get network
-    *                 port attributs
-    * @param $options the option given to NetworkPort::showForm
-    * @param $recursiveItems list of the items on which this port is attached
+    * @param $netport               NetworkPort object :the port that owns this instantiation
+    *                               (usefull, for instance to get network port attributs
+    * @param $options         array of options given to NetworkPort::showForm
+    * @param $recursiveItems        list of the items on which this port is attached
    **/
    function showNetworkCardField(NetworkPort $netport, $options=array(), $recursiveItems) {
       global $DB;
@@ -301,9 +308,9 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Display the MAC field. Used by Ethernet, Wifi, Aggregate and alias NetworkPorts
     *
-    * @param $netport the port that owns this instantiation (usefull, for instance to get network
-    *                 port attributs
-    * @param $options the option given to NetworkPort::showForm
+    * @param $netport         NetworkPort object : the port that owns this instantiation
+    *                         (usefull, for instance to get network port attributs
+    * @param $options   array of options given to NetworkPort::showForm
    **/
    function showMacField(NetworkPort $netport, $options=array()) {
 
@@ -317,14 +324,14 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Display the Netpoint field. Used by Ethernet, and Migration
     *
-    * @param $netport the port that owns this instantiation (usefull, for instance to get network
-    *                 port attributs
-    * @param $options the option given to NetworkPort::showForm
-    * @param $recursiveItems list of the items on which this port is attached
+    * @param $netport               NetworkPort object :the port that owns this instantiation
+    *                               (usefull, for instance to get network port attributs
+    * @param $options         array of options given to NetworkPort::showForm
+    * @param $recursiveItems        list of the items on which this port is attached
    **/
    function showNetpointField(NetworkPort $netport, $options=array(), $recursiveItems) {
 
-      echo "<td>" . __('Network outlet') . "&nbsp;: </td>\n";
+      echo "<td>" . __('Network outlet') . "</td>\n";
       echo "<td>";
       if (count($recursiveItems) > 0) {
          $lastItem = $recursiveItems[count($recursiveItems) - 1];
@@ -379,8 +386,8 @@ class NetworkPortInstantiation extends CommonDBChild {
     * (Ethernet or Wifi). This method Allows us to select which one to select.
     *
     * @param $recursiveItems
-    * @param $multiple NetworkPortAlias are based on one NetworkPort wherever NetworkPortAggregate
-    *                  are based on several NetworkPort.
+    * @param $multiple        NetworkPortAlias are based on one NetworkPort wherever
+    *                         NetworkPortAggregate are based on several NetworkPort.
    **/
    function showNetworkPortSelector($recursiveItems, $multiple) {
       global $DB;
@@ -431,7 +438,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                if ($multiple) {
                   $portEntry['name'] .= ' - '.$portEntry['mac'];
                } else {
-                  echo "  device_mac_addresses[".$portEntry['id']."] = '".$portEntry['mac']."';\n";
+                  echo "  device_mac_addresses[".$portEntry['id']."] = '".$portEntry['mac']."'\n";
                }
                $possible_ports[$array_element_name][$portEntry['id']] = $portEntry['name'];
             }

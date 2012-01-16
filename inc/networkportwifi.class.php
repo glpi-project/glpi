@@ -57,7 +57,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       if (!$options['several']) {
          echo "<tr class='tab_bg_1'>\n";
          $this->showNetworkCardField($netport, $options, $recursiveItems);
-         echo "<td>" . WifiNetwork::getTypeName() . "&nbsp:</td><td>";
+         echo "<td>" . WifiNetwork::getTypeName(1) . "</td><td>";
          Dropdown::show('WifiNetwork', array('value'  => $this->fields["wifinetworks_id"]));
          echo "</td>";
          echo "</tr>\n";
@@ -153,7 +153,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']            = __('Characteristics');
 
       $tab[10]['table']         = $this->getTable();
       $tab[10]['field']         = 'mac';
@@ -172,7 +172,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
       $tab[13]['table']         = 'glpi_wifinetworks';
       $tab[13]['field']         = 'name';
-      $tab[13]['name']          = WifiNetwork::getTypeName();
+      $tab[13]['name']          = WifiNetwork::getTypeName(1);
       $tab[13]['massiveaction'] = false;
 
       return $tab;

@@ -44,7 +44,6 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-
      return __('Aggregation port');
    }
 

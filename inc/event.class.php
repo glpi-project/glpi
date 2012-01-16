@@ -67,7 +67,7 @@ class Event extends CommonDBTM {
     * @param $service
     * @param $event
    **/
-   static function log ($items_id, $type, $level, $service, $event) {
+   static function log($items_id, $type, $level, $service, $event) {
 
       $input = array('items_id' => intval($items_id),
                      'type'     => addslashes($type),

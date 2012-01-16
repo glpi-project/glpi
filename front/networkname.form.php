@@ -41,20 +41,21 @@ $nn = new NetworkName();
 if (isset($_POST["add"])) {
    $nn->check(-1, 'w', $_POST);
    $newID = $nn->add($_POST);
-   Event::log($newID, "networkname", 5, "inventory", 
-            //TRANS: %s is the user login
-            sprintf(__('%s adds the item'), $_SESSION["glpiname"]));            
+   Event::log($newID, "networkname", 5, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s adds the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["delete"])) {
    $nn->check($_POST['id'], 'd');
    $nn->delete($_POST);
    Event::log($_POST["id"], "networkname", 5, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
-   $node = new $nn->fields["itemtype"]();
-   if ($node->can($nn->fields["items_id"], 'r')) {
-      Html::redirect($node->getLinkURL());
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+   if ($node = getItemForItemtype($nn->fields["itemtype"])) {
+      if ($node->can($nn->fields["items_id"], 'r')) {
+         Html::redirect($node->getLinkURL());
+      }
    }
    Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
 
@@ -62,20 +63,21 @@ if (isset($_POST["add"])) {
    $nn->check($_POST['id'], 'w');
    $nn->update($_POST);
    Event::log($_POST["id"], "networkname", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST['assign_address'])) { // From NetworkPort or NetworkEquipement
    $nn->check($_POST['addressID'],'w');
 
    if ((!empty($_POST['itemtype'])) && (!empty($_POST['items_id']))) {
-      $node = new $_POST['itemtype']();
-      $node->check($_POST['items_id'],'w');
+      if ($node = getItemForItemtype($_POST['itemtype'])) {
+         $node->check($_POST['items_id'],'w');
+      }
       NetworkName::affectAddress($_POST['addressID'], $_POST['items_id'], $_POST['itemtype']);
-      Event::log(0, "networkport", 5, "inventory", 
-               //TRANS: %s is the user login
-               sprintf(__('%s associates a network name to an item'),$_SESSION["glpiname"]));
+      Event::log(0, "networkport", 5, "inventory",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s associates a network name to an item'), $_SESSION["glpiname"]));
       Html::back();
    } else {
       Html::displayNotFoundError();
@@ -86,14 +88,14 @@ if (isset($_POST["add"])) {
       $nn->check($_GET['id'],'d');
       $nn->delete($_GET);
       Event::log($nn->getID(), $nn->getType(), 5, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
    } else {
       $nn->check($_GET['id'],'w');
       NetworkName::unaffectAddressByID($_GET['id']);
       Event::log($nn->getID(), $nn->getType(), 5, "inventory",
-               //TRANS: %s is the user login
-               sprintf(__('%s dissociates a network name to an item'),$_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s dissociates a network name to an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -109,7 +111,7 @@ if (isset($_POST["add"])) {
    }
 
    Session::checkRight("internet","w");
-   Html::header(__('Networks'),$_SERVER['PHP_SELF'],"inventory");
+   Html::header(Network::getTypeName(2), $_SERVER['PHP_SELF'], "inventory");
 
    $nn->showForm($_GET["id"], $_GET);
    Html::footer();
