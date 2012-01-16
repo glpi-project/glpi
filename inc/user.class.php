@@ -1073,7 +1073,7 @@ class User extends CommonDBTM {
       //User dn may contain ( or ), need to espace it!
       //User dn may also contains \, which must be replaced by \\, ...
       //$user_dn = addslashes($user_dn);
-      $user_dn = str_replace(array("(", ")", "\,"), array("\(", "\)", "\\\,"), $user_dn);
+      $user_dn = str_replace(array("(", ")", "\,", "\+"), array("\(", "\)", "\\\,", "\\\+"), $user_dn);
 
       //Only retrive cn and member attributes from groups
       $attrs = array('dn');
@@ -1618,10 +1618,10 @@ class User extends CommonDBTM {
          $result = $DB->query($query);
 
          if ($DB->numrows($result) > 0) {
+            /// To display a message
+            $this->fields['name'] = $this->oldvalues['name'];
             unset($this->updates[$key]);
             unset($this->oldvalues['name']);
-            /// For displayed message
-            $this->fields['name'] = $this->oldvalues['name'];
             addMessageAfterRedirect($LANG['setup'][614], false, ERROR);
          }
       }
