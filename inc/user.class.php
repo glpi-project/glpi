@@ -1299,7 +1299,7 @@ class User extends CommonDBTM {
       $listgroups = array();
 
       //User dn may contain ( or ), need to espace it!
-      $user_dn = str_replace(array("(", ")", "\,"), array("\(", "\)", "\\\,"), $user_dn);
+      $user_dn = str_replace(array("(", ")", "\,", "\+"), array("\(", "\)", "\\\,", "\\\+"), $user_dn);
 
       //Only retrive cn and member attributes from groups
       $attrs = array('dn');
@@ -1840,10 +1840,10 @@ class User extends CommonDBTM {
          $result = $DB->query($query);
 
          if ($DB->numrows($result) > 0) {
+            //To display a message
+            $this->fields['name'] = $this->oldvalues['name'];
             unset($this->updates[$key]);
             unset($this->oldvalues['name']);
-            /// For displayed message
-            $this->fields['name'] = $this->oldvalues['name'];
             Session::addMessageAfterRedirect(__('Unable to update login. A user already exists.'),
                                              false, ERROR);
          }
