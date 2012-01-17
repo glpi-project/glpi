@@ -135,12 +135,12 @@ function addReservation($type, $ID, $ID_entity) {
 
    if (mt_rand(0,100)<$percent['reservationitems']) {
       $ri = new Reservationitem();
-      $r = new Reservation();
+      $r  = new Reservation();
       $tID = $ri->add(array('itemtype'     => $type,
                             'entities_id'  => $ID_entity,
                             'is_recursive' => 0,
                             'items_id'     => $ID,
-                            'comment'     => "comment $ID $type",
+                            'comment'      => "comment $ID $type",
                             'is_active'    => 1));
 
       $date1 = strtotime('-2 week'); // reservations since 2 weeks
@@ -151,12 +151,12 @@ function addReservation($type, $ID, $ID_entity) {
          $date1 = $date2+3600*mt_rand(0,10); // 10 hours between each resa max
          $date2 = $date1+3600*mt_rand(1,5); // A reservation from 1 to 5 hours
 
-         $r->add(array(
-                  'reservationitems_id' => $tID,
-                  'begin'               => date("Y-m-d H:i:s", $date1),
-                  'end'                 => date("Y-m-d H:i:s", $date2),
-                  'users_id'            => mt_rand($FIRST['users_normal'], $LAST['users_postonly']),
-                  'comment'             => "comments $i ".Toolbox::getRandomString(15)
+         $r->add(array('reservationitems_id' => $tID,
+                       'begin'               => date("Y-m-d H:i:s", $date1),
+                       'end'                 => date("Y-m-d H:i:s", $date2),
+                       'users_id'            => mt_rand($FIRST['users_normal'],
+                                                        $LAST['users_postonly']),
+                       'comment'             => "comments $i ".Toolbox::getRandomString(15)
                   ));
          $i++;
       }
@@ -240,7 +240,7 @@ function addInfocoms($type, $ID, $ID_entity, $is_recursive=0) {
                   'order_date'        => $orderdate,
                   'delivery_date'     => $deliverydate,
                   'inventory_date'    => $inventorydate,
-                  'warranty_date'     => $warrantydate,                 
+                  'warranty_date'     => $warrantydate,
    ));
 }
 
@@ -415,13 +415,12 @@ function addTracking($type, $ID, $ID_entity) {
          } else {
             $date += mt_rand(3600, 7776000);
          }
-         $tf->add(array(
-                  'tickets_id'      => $tID,
-                  'date'            => date("Y-m-d H:i:s", $date),
-                  'users_id'        => $users[1],
-                  'content'         => "followup $i ".Toolbox::getRandomString(15),
-                  'requesttypes_id' => mt_rand(0, 3),
-         ));
+         $tf->add(array('tickets_id'      => $tID,
+                        'date'            => date("Y-m-d H:i:s", $date),
+                        'users_id'        => $users[1],
+                        'content'         => "followup $i ".Toolbox::getRandomString(15),
+                        'requesttypes_id' => mt_rand(0, 3),
+                  ));
          $i++;
       }
       $tt = new TicketTask();
@@ -437,22 +436,21 @@ function addTracking($type, $ID, $ID_entity) {
 
          $begin = $end = 'NULL';
          $assign_user = 0;
-         $state = 0;
-         $params = array(
-                  'tickets_id'               => $tID,
-                  'taskcategories_id'  => mt_rand($FIRST['taskcategory'], $LAST['taskcategory']),
-                  'date'               => date("Y-m-d H:i:s",$date),
-                  'users_id'           => $users[1],
-                  'content'            => "task $i ".Toolbox::getRandomString(15),
-                  'is_private'         => mt_rand(0,1),
-                  'state'              => 1,                  
-         );
+         $state       = 0;
+         $params = array('tickets_id'        => $tID,
+                         'taskcategories_id' => mt_rand($FIRST['taskcategory'],
+                                                        $LAST['taskcategory']),
+                         'date'              => date("Y-m-d H:i:s",$date),
+                         'users_id'          => $users[1],
+                         'content'           => "task $i ".Toolbox::getRandomString(15),
+                         'is_private'        => mt_rand(0,1),
+                         'state'             => 1,
+                        );
          if ($status=="plan" && $doplan) {
-            $params['plan'] = array(            
-                              'begin'       => date("Y-m-d H:i:s", $date3),
-                              'end'         => date("Y-m-d H:i:s", $date4),
-                              'users_id' => $users[1],
-                              );
+            $params['plan'] = array('begin'     => date("Y-m-d H:i:s", $date3),
+                                    'end'       => date("Y-m-d H:i:s", $date4),
+                                    'users_id'  => $users[1],
+                                    );
          }
          $tt->add($params);
 
@@ -499,7 +497,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de consommable $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -511,7 +510,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "power $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -523,7 +523,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "power $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -535,7 +536,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de cartouche $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -547,7 +549,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de contact $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -559,7 +562,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "domain $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -572,7 +576,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type entreprise $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -585,7 +590,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "firmware $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -597,7 +603,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de disque dur $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -610,7 +617,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type carte reseau $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -622,7 +630,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de mise a jour $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -635,7 +644,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "Modele $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -648,7 +658,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele imprimante $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -661,7 +672,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele moniteur $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -674,7 +686,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele materiel reseau $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -687,7 +700,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele peripherique $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -699,7 +713,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "modele phone $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -712,7 +727,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "reseau $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -726,7 +742,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "os $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -738,7 +755,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "osversion $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -750,7 +768,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "ossp $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -762,7 +781,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de ram $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -775,7 +795,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "category $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
    $items = array('Bureautique', 'Calcul', 'Antivirus', 'Multimédia');
@@ -785,14 +806,16 @@ function generateGlobalDropdowns() {
          $val = $items[$i];
       } else {
          $val = "category $i";
-      }   
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      }
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
    $dp = new SoftwareLicenseType();
    for ($i=0 ; $i<$MAX['licensetype'] ; $i++) {
       $val = "type $i";
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -804,7 +827,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "Etat $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
    regenerateTreeCompleteName("glpi_states");
 
@@ -817,7 +841,9 @@ function generateGlobalDropdowns() {
       } else {
          $val = "VLAN $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val", 'tag' => $i));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val",
+                     'tag'     => $i));
    }
 
 
@@ -829,7 +855,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type ordinateur $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -841,7 +868,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type imprimante $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -853,7 +881,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type ecran $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -865,7 +894,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de materiel reseau $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -877,7 +907,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de peripheriques $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -889,7 +920,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "type de phone $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -901,7 +933,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "manufacturer $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -913,7 +946,8 @@ function generateGlobalDropdowns() {
       } else {
          $val = "user type $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
 
@@ -925,36 +959,37 @@ function generateGlobalDropdowns() {
       } else {
          $val = "user type $i";
       }
-      $dp->add(array('name'=>$val, 'comment' => "comment $val"));
+      $dp->add(array('name'    => $val,
+                     'comment' => "comment $val"));
    }
 
    $dp = new ItilCategory();
    // GLobal ticket categories : also specific ones by entity
    for ($i=0 ; $i<max(1,pow($MAX['tracking_category'],1/3)) ; $i++) {
-      $newID = $dp->add(array('name'         => "category $i", 
-                              'comment'      => "comment category $i",
-                              'is_recursive' => 1,
+      $newID = $dp->add(array('name'                        => "category $i",
+                              'comment'                     => "comment category $i",
+                              'is_recursive'                => 1,
                               'tickettemplates_id_incident' => 1,
                               'tickettemplates_id_demand'   => 1
                               ));
-      
+
       for ($j=0 ; $j<mt_rand(0,pow($MAX['tracking_category'],1/2)) ; $j++) {
-         $newID2 = $dp->add(array('name'         => "s-category $j", 
-                                 'comment'      => "comment category $i s-category $j",
-                                 'is_recursive' => 1,
+         $newID2 = $dp->add(array('name'                       => "s-category $j",
+                                 'comment'                     => "comment category $i s-category $j",
+                                 'is_recursive'                => 1,
                                  'tickettemplates_id_incident' => 1,
                                  'tickettemplates_id_demand'   => 1,
-                                 'itilcategories_id'  => $newID,
+                                 'itilcategories_id'           => $newID,
                                  ));
 
          $newID2 = $DB->insert_id();
          for ($k=0 ; $k<mt_rand(0,pow($MAX['tracking_category'],1/2)) ; $k++) {
-            $newID3 = $dp->add(array('name'         => "ss-category $k", 
-                                    'comment'      => "comment category $i  s-category $j ss-category $k",
+            $newID3 = $dp->add(array('name'        => "ss-category $k",
+                                    'comment'      => "comment category $i s-category $j ss-category $k",
                                     'is_recursive' => 1,
                                     'tickettemplates_id_incident' => 1,
                                     'tickettemplates_id_demand'   => 1,
-                                    'itilcategories_id'  => $newID2,
+                                    'itilcategories_id'           => $newID2,
                                     ));
          }
       }
@@ -977,7 +1012,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "case $i";
       }
-      $dp->add(array('designation'        => $val, 
+      $dp->add(array('designation'        => $val,
                      'comment'            => "comment $val",
                      'devicecasetypes_id' => mt_rand(0,$MAX["case_type"]),
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer'])
@@ -994,7 +1029,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "control $i";
       }
-      $dp->add(array('designation'        => $val, 
+      $dp->add(array('designation'        => $val,
                      'comment'            => "comment $val",
                      'interfacetypes_id'  => mt_rand(0,$MAX["interface"]),
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer'])
@@ -1011,7 +1046,7 @@ function generateGlobalDropdowns() {
       } else {
          $val = "drive $i";
       }
-      $dp->add(array('designation'        => $val, 
+      $dp->add(array('designation'        => $val,
                      'comment'            => "comment $val",
                      'is_writer'          => mt_rand(0,1),
                      'speed'              => mt_rand(0,60),
@@ -1031,12 +1066,12 @@ function generateGlobalDropdowns() {
       } else {
          $val = "gfxcard $i";
       }
-      $dp->add(array('designation'        => $val, 
+      $dp->add(array('designation'        => $val,
                      'comment'            => "comment $val",
                      'interfacetypes_id'  => mt_rand(0,$MAX["interface"]),
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
                      'specif_default'     => 256*mt_rand(0,8),
-                  ));      
+                  ));
    }
 
 
@@ -1049,14 +1084,14 @@ function generateGlobalDropdowns() {
       } else {
          $val = "hdd  $i";
       }
-      $dp->add(array('designation'        => $val, 
+      $dp->add(array('designation'        => $val,
                      'comment'            => "comment $val",
                      'interfacetypes_id'  => mt_rand(0,$MAX["interface"]),
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
                      'specif_default'     => mt_rand(0,300),
                      'rpm'                => mt_rand(0,15000),
                      'cache'              => 51200*mt_rand(0,10),
-                  ));      
+                  ));
    }
 
 
@@ -1069,11 +1104,11 @@ function generateGlobalDropdowns() {
       } else {
          $val = "iface  $i";
       }
-      $dp->add(array('designation'        => $val, 
+      $dp->add(array('designation'        => $val,
                      'comment'            => "comment $val",
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
                      'bandwidth'          => mt_rand(0,1000),
-                  ));  
+                  ));
    }
 
 
@@ -1088,11 +1123,11 @@ function generateGlobalDropdowns() {
       } else {
          $val = "moboard $i";
       }
-      $dp->add(array('designation'        => $val, 
+      $dp->add(array('designation'        => $val,
                      'comment'            => "comment $val",
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
                      'chipset'            => 'chipset '.mt_rand(0,1000),
-                  ));        
+                  ));
    }
 
 
@@ -1105,10 +1140,10 @@ function generateGlobalDropdowns() {
       } else {
          $val = "pci $i";
       }
-      $dp->add(array('designation'        => $val, 
+      $dp->add(array('designation'        => $val,
                      'comment'            => "comment $val",
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
-                  ));        
+                  ));
    }
 
 
@@ -1121,12 +1156,12 @@ function generateGlobalDropdowns() {
       } else {
          $val = "power $i";
       }
-      $dp->add(array('designation'        => $val, 
+      $dp->add(array('designation'        => $val,
                      'comment'            => "comment $val",
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
                      'power'              => mt_rand(0,500).'W',
                      'is_atx'             => mt_rand(0,1),
-                  ));        
+                  ));
    }
 
 
@@ -1140,12 +1175,12 @@ function generateGlobalDropdowns() {
       } else {
          $val = "processor $i";
       }
-      $dp->add(array('designation'        => $val, 
+      $dp->add(array('designation'        => $val,
                      'comment'            => "comment $val",
                      'manufacturers_id'   => mt_rand(1,$MAX['manufacturer']),
                      'frequence'          => mt_rand(1000,3000),
                      'specif_default'     => 1000+200*mt_rand(0,10),
-                  ));        
+                  ));
    }
 
 
@@ -1159,13 +1194,13 @@ function generateGlobalDropdowns() {
       } else {
          $val = "ram $i";
       }
-      $dp->add(array('designation'          => $val, 
+      $dp->add(array('designation'          => $val,
                      'comment'              => "comment $val",
                      'manufacturers_id'     => mt_rand(1,$MAX['manufacturer']),
                      'frequence'            => 100*mt_rand(0,10),
                      'specif_default'       => 1024*mt_rand(0,6),
                      'devicememorytypes_id' => mt_rand(1,$MAX['ram_type']),
-                  ));     
+                  ));
    }
 
 
@@ -1179,11 +1214,11 @@ function generateGlobalDropdowns() {
       } else {
          $val = "sndcard $i";
       }
-       $dp->add(array('designation'         => $val, 
+       $dp->add(array('designation'         => $val,
                      'comment'              => "comment $val",
                      'manufacturers_id'     => mt_rand(1,$MAX['manufacturer']),
                      'type'                 => 'type '.mt_rand(0,100),
-                  ));        
+                  ));
    }
 
 } // Fin generation global dropdowns
@@ -1220,22 +1255,20 @@ function generate_entity($ID_entity) {
    $FIRST["groups"] = getMaxItem("glpi_groups")+1;
    $group = new Group();
    for ($i=0 ; $i<$MAX['groups'] ; $i++) {
-      $gID = $group->add(array(
-                  'entities_id'  => $ID_entity,
-                  'name'         => "group $i",
-                  'comment'      => "comment group $i",
-                  'is_assign'    => 0,
-            ));
+      $gID = $group->add(array('entities_id'  => $ID_entity,
+                               'name'         => "group $i",
+                               'comment'      => "comment group $i",
+                               'is_assign'    => 0,
+                        ));
 
       // Generate sub group
       for ($j=0 ; $j<$MAX['groups'] ; $j++) {
-         $group->add(array(
-                     'entities_id'  => $ID_entity,
-                     'name'         => "subgroup $j",
-                     'comment'      => "comment subgroup $j of group $i",
-                     'groups_id'    => $gID,
-                     'is_assign'    => 0,
-               ));
+         $group->add(array('entities_id'  => $ID_entity,
+                           'name'         => "subgroup $j",
+                           'comment'      => "comment subgroup $j of group $i",
+                           'groups_id'    => $gID,
+                           'is_assign'    => 0,
+                     ));
       }
    }
 
@@ -1244,11 +1277,10 @@ function generate_entity($ID_entity) {
    $FIRST["techgroups"] = $LAST["groups"]+1;
 
    for ($i=0 ; $i<$MAX['groups'] ; $i++) {
-         $group->add(array(
-                  'entities_id'  => $ID_entity,
-                  'name'         => "tech group $i",
-                  'comment'      => "comment tech group $i",
-            ));   
+         $group->add(array('entities_id'  => $ID_entity,
+                           'name'         => "tech group $i",
+                           'comment'      => "comment tech group $i",
+                     ));
    }
 
    $LAST["techgroups"] = getMaxItem("glpi_groups");
@@ -1258,33 +1290,31 @@ function generate_entity($ID_entity) {
    // glpi_users
    $FIRST["users_sadmin"] = getMaxItem("glpi_users")+1;
    $user = new User();
-   $pu = new Profile_User();
-   $gu = new Group_User();
+   $pu   = new Profile_User();
+   $gu   = new Group_User();
    for ($i=0 ; $i<$MAX['users_sadmin'] ; $i++) {
-      $users_id = $user->add(array(
-            'name'               => "sadmin$i-$ID_entity",
-            'password'           => "sadmin$i",
-            'password2'          => "sadmin$i",
-            'phone'              => "tel $i",
-            'phone2'             => "tel2 $i",
-            'mobile'             => "mobile $i",
-            'realname'           => "sadmin$i name",
-            'firstname'          => "sadmin$i firstname",
-            'comment'            => "comment $i",
-            'usertitles_id'      => mt_rand(0,$MAX['user_title']),
-            'usercategories_id'  => mt_rand(0,$MAX['user_type']),
-             
-            ));
+      $users_id = $user->add(array('name'               => "sadmin$i-$ID_entity",
+                                   'password'           => "sadmin$i",
+                                   'password2'          => "sadmin$i",
+                                   'phone'              => "tel $i",
+                                   'phone2'             => "tel2 $i",
+                                   'mobile'             => "mobile $i",
+                                   'realname'           => "sadmin$i name",
+                                   'firstname'          => "sadmin$i firstname",
+                                   'comment'            => "comment $i",
+                                   'usertitles_id'      => mt_rand(0,$MAX['user_title']),
+                                   'usercategories_id'  => mt_rand(0,$MAX['user_type']),
+                                 ));
 
-      $pu->add(array('users_id'     => $users_id, 
+      $pu->add(array('users_id'     => $users_id,
                      'profiles_id'  => 4,
                      'entities_id'  => $ID_entity,
                      'is_recursive' => 1 ));
 
-      $gu->add(array('users_id'     => $users_id, 
+      $gu->add(array('users_id'     => $users_id,
                      'groups_id'    => mt_rand($FIRST['groups'], $LAST['groups']),
                      ));
-      $gu->add(array('users_id'     => $users_id, 
+      $gu->add(array('users_id'     => $users_id,
                      'groups_id'    => mt_rand($FIRST['techgroups'], $LAST['techgroups']),
                      ));
    }
@@ -1293,33 +1323,31 @@ function generate_entity($ID_entity) {
    $FIRST["users_admin"] = getMaxItem("glpi_users")+1;
 
    for ($i=0 ; $i<$MAX['users_admin'] ; $i++) {
-   
-      $users_id = $user->add(array(
-            'name'               => "admin$i-$ID_entity",
-            'password'           => "admin$i",
-            'password2'          => "admin$i",
-            'phone'              => "tel $i",
-            'phone2'             => "tel2 $i",
-            'mobile'             => "mobile $i",
-            'realname'           => "admin$i name",
-            'firstname'          => "admin$i firstname",
-            'comment'            => "comment $i",
-            'usertitles_id'      => mt_rand(0,$MAX['user_title']),
-            'usercategories_id'  => mt_rand(0,$MAX['user_type']),
-             
-            ));
 
-      $pu->add(array('users_id'     => $users_id, 
+      $users_id = $user->add(array('name'               => "admin$i-$ID_entity",
+                                   'password'           => "admin$i",
+                                   'password2'          => "admin$i",
+                                   'phone'              => "tel $i",
+                                   'phone2'             => "tel2 $i",
+                                   'mobile'             => "mobile $i",
+                                   'realname'           => "admin$i name",
+                                   'firstname'          => "admin$i firstname",
+                                   'comment'            => "comment $i",
+                                   'usertitles_id'      => mt_rand(0,$MAX['user_title']),
+                                   'usercategories_id'  => mt_rand(0,$MAX['user_type']),
+                                 ));
+
+      $pu->add(array('users_id'     => $users_id,
                      'profiles_id'  => 3,
                      'entities_id'  => $ID_entity,
                      'is_recursive' => 1 ));
 
-      $gu->add(array('users_id'     => $users_id, 
+      $gu->add(array('users_id'     => $users_id,
                      'groups_id'    => mt_rand($FIRST['groups'], $LAST['groups']),
                      'is_manager'   => 1,
                      'is_delegate'  => 1,
                      ));
-      $gu->add(array('users_id'     => $users_id, 
+      $gu->add(array('users_id'     => $users_id,
                      'groups_id'    => mt_rand($FIRST['techgroups'], $LAST['techgroups']),
                      'is_manager'   => 1,
                      'is_delegate'  => 1,
@@ -1330,30 +1358,28 @@ function generate_entity($ID_entity) {
    $FIRST["users_normal"] = getMaxItem("glpi_users")+1;
 
    for ($i=0 ; $i<$MAX['users_normal'] ; $i++) {
-      $users_id = $user->add(array(
-            'name'               => "normal$i-$ID_entity",
-            'password'           => "normal$i",
-            'password2'          => "normal$i",
-            'phone'              => "tel $i",
-            'phone2'             => "tel2 $i",
-            'mobile'             => "mobile $i",
-            'realname'           => "normal$i name",
-            'firstname'          => "normal$i firstname",
-            'comment'            => "comment $i",
-            'usertitles_id'      => mt_rand(0,$MAX['user_title']),
-            'usercategories_id'  => mt_rand(0,$MAX['user_type']),
-             
-            ));
+      $users_id = $user->add(array('name'               => "normal$i-$ID_entity",
+                                   'password'           => "normal$i",
+                                   'password2'          => "normal$i",
+                                   'phone'              => "tel $i",
+                                   'phone2'             => "tel2 $i",
+                                   'mobile'             => "mobile $i",
+                                   'realname'           => "normal$i name",
+                                   'firstname'          => "normal$i firstname",
+                                   'comment'            => "comment $i",
+                                   'usertitles_id'      => mt_rand(0,$MAX['user_title']),
+                                   'usercategories_id'  => mt_rand(0,$MAX['user_type']),
+                                 ));
 
-      $pu->add(array('users_id'     => $users_id, 
+      $pu->add(array('users_id'     => $users_id,
                      'profiles_id'  => 2,
                      'entities_id'  => $ID_entity,
                      'is_recursive' => 1 ));
 
-      $gu->add(array('users_id'     => $users_id, 
+      $gu->add(array('users_id'     => $users_id,
                      'groups_id'    => mt_rand($FIRST['groups'], $LAST['groups']),
                      ));
-      $gu->add(array('users_id'     => $users_id, 
+      $gu->add(array('users_id'     => $users_id,
                      'groups_id'    => mt_rand($FIRST['techgroups'], $LAST['techgroups']),
                      ));
    }
@@ -1362,58 +1388,53 @@ function generate_entity($ID_entity) {
    $FIRST["users_postonly"] = getMaxItem("glpi_users")+1;
 
    for ($i=0 ; $i<$MAX['users_postonly'] ; $i++) {
-      $users_id = $user->add(array(
-            'name'               => "postonly$i-$ID_entity",
-            'password'           => "postonly$i",
-            'password2'          => "postonly$i",
-            'phone'              => "tel $i",
-            'phone2'             => "tel2 $i",
-            'mobile'             => "mobile $i",
-            'realname'           => "postonly$i name",
-            'firstname'          => "postonly$i firstname",
-            'comment'            => "comment $i",
-            'usertitles_id'      => mt_rand(0,$MAX['user_title']),
-            'usercategories_id'  => mt_rand(0,$MAX['user_type']),
-             
-            ));
+      $users_id = $user->add(array('name'               => "postonly$i-$ID_entity",
+                                   'password'           => "postonly$i",
+                                   'password2'          => "postonly$i",
+                                   'phone'              => "tel $i",
+                                   'phone2'             => "tel2 $i",
+                                   'mobile'             => "mobile $i",
+                                   'realname'           => "postonly$i name",
+                                   'firstname'          => "postonly$i firstname",
+                                   'comment'            => "comment $i",
+                                   'usertitles_id'      => mt_rand(0,$MAX['user_title']),
+                                   'usercategories_id'  => mt_rand(0,$MAX['user_type']),
+                                 ));
 
-      $pu->add(array('users_id'     => $users_id, 
+      $pu->add(array('users_id'     => $users_id,
                      'profiles_id'  => 1,
                      'entities_id'  => $ID_entity,
                      'is_recursive' => 1 ));
 
-      $gu->add(array('users_id'     => $users_id, 
+      $gu->add(array('users_id'     => $users_id,
                      'groups_id'    => mt_rand($FIRST['groups'], $LAST['groups']),
                      ));
    }
 
    $LAST["users_postonly"] = getMaxItem("glpi_users");
 
-   
+
    $FIRST["kbcategories"] = getMaxItem("glpi_knowbaseitemcategories")+1;
    $kbc = new KnowbaseItemCategory();
-   
+
    for ($i=0 ; $i<max(1,pow($MAX['kbcategories'],1/3)) ; $i++) {
-      $newID = $kbc->add(array(
-               'entities_id'     => $ID_entity,
-               'is_recursive'    => 1,
-               'name'            => "entity categorie $i",
-               'comment'         => "comment categorie $i"));
+      $newID = $kbc->add(array('entities_id'     => $ID_entity,
+                               'is_recursive'    => 1,
+                               'name'            => "entity categorie $i",
+                               'comment'         => "comment categorie $i"));
 
       for ($j=0 ; $j<mt_rand(0,pow($MAX['kbcategories'],1/2)) ; $j++) {
-         $newID2 = $kbc->add(array(
-                  'entities_id'     => $ID_entity,
-                  'is_recursive'    => 1,
-                  'name'            => "entity s-categorie $j",
-                  'comment'         => "comment s-categorie $j",
-                  'knowbaseitemcategories_id' => $newID));
+         $newID2 = $kbc->add(array('entities_id'               => $ID_entity,
+                                  'is_recursive'               => 1,
+                                  'name'                       => "entity s-categorie $j",
+                                  'comment'                    => "comment s-categorie $j",
+                                  'knowbaseitemcategories_id'  => $newID));
          for ($k=0 ; $k<mt_rand(0,pow($MAX['kbcategories'],1/2)) ; $k++) {
-            $newID2 = $kbc->add(array(
-                     'entities_id'     => $ID_entity,
-                     'is_recursive'    => 1,
-                     'name'            => "entity ss-categorie $k",
-                     'comment'         => "comment ss-categorie $k",
-                     'knowbaseitemcategories_id' => $newID2));
+            $newID2 = $kbc->add(array('entities_id'               => $ID_entity,
+                                     'is_recursive'               => 1,
+                                     'name'                       => "entity ss-categorie $k",
+                                     'comment'                    => "comment ss-categorie $k",
+                                     'knowbaseitemcategories_id'  => $newID2));
          }
       }
    }
@@ -1431,60 +1452,55 @@ function generate_entity($ID_entity) {
    $loc = new Location();
    for ($i=0 ; $i<pow($MAX['locations'],1/5)&&$added<$MAX['locations'] ; $i++) {
       $added++;
-      $newID = $loc->add(array(
-               'entities_id'     => $ID_entity,
-               'is_recursive'    => 1,
-               'name'            => "location $i",
-               'comment'         => "comment location $i",
-               'building'        => "building $i",
-               ));
-      
+      $newID = $loc->add(array('entities_id'     => $ID_entity,
+                               'is_recursive'    => 1,
+                               'name'            => "location $i",
+                               'comment'         => "comment location $i",
+                               'building'        => "building $i",
+                              ));
+
       for ($j=0 ; $j<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'] ; $j++) {
          $added++;
-         $newID2 = $loc->add(array(
-                  'entities_id'     => $ID_entity,
-                  'is_recursive'    => 1,
-                  'name'            => "s-location $j",
-                  'comment'         => "comment s-location $j",
-                  'building'        => "building $i",
-                  'room'            => "stage $j",
-                  'locations_id'    => $newID,
-                  ));
+         $newID2 = $loc->add(array('entities_id'     => $ID_entity,
+                                   'is_recursive'    => 1,
+                                   'name'            => "s-location $j",
+                                   'comment'         => "comment s-location $j",
+                                   'building'        => "building $i",
+                                   'room'            => "stage $j",
+                                   'locations_id'    => $newID,
+                                 ));
 
          for ($k=0 ; $k<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'] ; $k++) {
             $added++;
-            $newID3 = $loc->add(array(
-                     'entities_id'     => $ID_entity,
-                     'is_recursive'    => 1,
-                     'name'            => "ss-location $k",
-                     'comment'         => "comment ss-location $k",
-                     'building'        => "building $i",
-                     'room'            => "part $k",
-                     'locations_id'    => $newID2,
-                     ));
+            $newID3 = $loc->add(array('entities_id'     => $ID_entity,
+                                      'is_recursive'    => 1,
+                                      'name'            => "ss-location $k",
+                                      'comment'         => "comment ss-location $k",
+                                      'building'        => "building $i",
+                                      'room'            => "part $k",
+                                      'locations_id'    => $newID2,
+                                    ));
 
             for ($l=0 ; $l<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'] ; $l++) {
                $added++;
-               $newID4 = $loc->add(array(
-                        'entities_id'     => $ID_entity,
-                        'is_recursive'    => 1,
-                        'name'            => "sss-location $l",
-                        'comment'         => "comment sss-location $l",
-                        'building'        => "building $i",
-                        'room'            => "room $l",
-                        'locations_id'    => $newID3,
-                        ));
+               $newID4 = $loc->add(array('entities_id'     => $ID_entity,
+                                         'is_recursive'    => 1,
+                                         'name'            => "sss-location $l",
+                                         'comment'         => "comment sss-location $l",
+                                         'building'        => "building $i",
+                                         'room'            => "room $l",
+                                         'locations_id'    => $newID3,
+                                       ));
                for ($m=0 ; $m<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'] ; $m++) {
                   $added++;
-                  $newID5 = $loc->add(array(
-                           'entities_id'     => $ID_entity,
-                           'is_recursive'    => 1,
-                           'name'            => "sss-location $m",
-                           'comment'         => "comment sss-location $m",
-                           'building'        => "building $i",
-                           'room'            => "room $l-$m",
-                           'locations_id'    => $newID4,
-                           ));                  
+                  $newID5 = $loc->add(array('entities_id'     => $ID_entity,
+                                            'is_recursive'    => 1,
+                                            'name'            => "sss-location $m",
+                                            'comment'         => "comment sss-location $m",
+                                            'building'        => "building $i",
+                                            'room'            => "room $l-$m",
+                                            'locations_id'    => $newID4,
+                                    ));
                }
             }
          }
@@ -1504,21 +1520,19 @@ function generate_entity($ID_entity) {
    $tc = new TaskCategory();
    for ($i=0 ; $i<pow($MAX['taskcategory'],1/5)&&$added<$MAX['taskcategory'] ; $i++) {
       $added++;
-      $newID = $tc->add(array(
-            'entities_id'     => $ID_entity,
-            'is_recursive'    => 1,
-            'name'            => "ent$ID_entity taskcategory $i",
-            'coment'          => "comment ent$ID_entity taskcategory $i",
-            ));
+      $newID = $tc->add(array('entities_id'     => $ID_entity,
+                              'is_recursive'    => 1,
+                              'name'            => "ent$ID_entity taskcategory $i",
+                              'comment'         => "comment ent$ID_entity taskcategory $i",
+                           ));
 
       for ($j=0 ; $j<mt_rand(0,pow($MAX['locations'],1/4))&&$added<$MAX['locations'] ; $j++) {
-         $newID2 = $tc->add(array(
-               'entities_id'        => $ID_entity,
-               'is_recursive'       => 1,
-               'name'               => "ent$ID_entity taskcategory $i",
-               'coment'             => "comment ent$ID_entity taskcategory $i",
-               'taskcategories_id'  => $newID,
-               ));
+         $newID2 = $tc->add(array('entities_id'        => $ID_entity,
+                                  'is_recursive'       => 1,
+                                  'name'               => "ent$ID_entity taskcategory $i",
+                                  'comment'            => "comment ent$ID_entity taskcategory $i",
+                                  'taskcategories_id'  => $newID,
+                                 ));
          $added++;
       }
    }
@@ -1531,29 +1545,27 @@ function generate_entity($ID_entity) {
 
    $ic = new ItilCategory();
    // Specific ticket categories
-   $newID = $ic->add(array(
-      'entities_id'     => $ID_entity,
-      'is_recursive'    => 1,
-      'name'            => "category for entity $ID_entity",
-      'comment'         => "comment category for entity $ID_entity",
-      'users_id'        => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
-      'groups_id'       => mt_rand($FIRST['techgroups'],$LAST['techgroups']),
-      'tickettemplates_id_incident' => 1,
-      'tickettemplates_id_demand'  => 1,
-      ));
-   
+   $newID = $ic->add(array('entities_id'     => $ID_entity,
+                           'is_recursive'    => 1,
+                           'name'            => "category for entity $ID_entity",
+                           'comment'         => "comment category for entity $ID_entity",
+                           'users_id'        => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
+                           'groups_id'       => mt_rand($FIRST['techgroups'],$LAST['techgroups']),
+                           'tickettemplates_id_incident' => 1,
+                           'tickettemplates_id_demand'   => 1,
+                           ));
+
    for ($i=0 ; $i<max(1,pow($MAX['tracking_category'],1/3)) ; $i++) {
-      $ic->add(array(
-         'entities_id'     => $ID_entity,
-         'is_recursive'    => 1,
-         'name'            => "scategory for entity $ID_entity",
-         'comment'         => "comment scategory for entity $ID_entity",
-         'users_id'        => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
-         'groups_id'       => mt_rand($FIRST['techgroups'],$LAST['techgroups']),
-         'tickettemplates_id_incident' => 1,
-         'tickettemplates_id_demand'  => 1,
-         'itilcategories_id'           => $newID,
-         ));   
+      $ic->add(array('entities_id'     => $ID_entity,
+                     'is_recursive'    => 1,
+                     'name'            => "scategory for entity $ID_entity",
+                     'comment'         => "comment scategory for entity $ID_entity",
+                     'users_id'        => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
+                     'groups_id'       => mt_rand($FIRST['techgroups'],$LAST['techgroups']),
+                     'tickettemplates_id_incident' => 1,
+                     'tickettemplates_id_demand'   => 1,
+                     'itilcategories_id'           => $newID,
+                     ));
    }
 
    regenerateTreeCompleteName("glpi_itilcategories");
@@ -1568,7 +1580,7 @@ function generate_entity($ID_entity) {
       } else {
          $val = "type de solution $i";
       }
-      $st->add(array('name'         => $val, 
+      $st->add(array('name'         => $val,
                      'comment'      => "comment $val",
                      'entities_id'  => $ID_entity,
                      'is_recursive' => 1,
@@ -1581,14 +1593,13 @@ function generate_entity($ID_entity) {
    $nb_items = mt_rand(0,$MAX['solutiontemplates']);
    $st = new SolutionTemplate();
    for ($i=0 ; $i<$nb_items ; $i++) {
-      $st-> add(array(
-         'entities_id'        => $ID_entity,
-         'is_recursive'       => 1,
-         'name'               => "solution $i-$ID_entity",
-         'content'            => "content solution $i-$ID_entity",
-         'solutiontypes_id'   => mt_rand(0,$MAX['solutiontypes']),
-         'comment'            => "comment solution $i-$ID_entity"
-      ));
+      $st-> add(array('entities_id'        => $ID_entity,
+                      'is_recursive'       => 1,
+                      'name'               => "solution $i-$ID_entity",
+                      'content'            => "content solution $i-$ID_entity",
+                      'solutiontypes_id'   => mt_rand(0,$MAX['solutiontypes']),
+                      'comment'            => "comment solution $i-$ID_entity"
+                  ));
    }
 
    $LAST["solutiontemplates"] = getMaxItem("glpi_solutiontemplates");
@@ -1596,23 +1607,22 @@ function generate_entity($ID_entity) {
    // Add Specific questions
    $k = 0;
    $FIRST["kbitems"] = getMaxItem("glpi_knowbaseitems")+1;
-   $ki = new KnowbaseItem();
+   $ki  = new KnowbaseItem();
    $eki = new Entity_KnowbaseItem();
    for ($i=$FIRST['kbcategories'] ; $i<=$LAST['kbcategories'] ; $i++) {
       $nb = mt_rand(0,$MAX_KBITEMS_BY_CAT);
       for ($j=0 ; $j<$nb ; $j++) {
          $k++;
-         $newID = $ki->add(array(
-               'knowbaseitemcategories_id'   => $i,
-               'name'                        => "Entity $ID_entity Question $k",
-               'answer'                      => "Answer $k".Toolbox::getRandomString(50),
-               'is_faq'                      => mt_rand(0,1),
-               'users_id'                    => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),              
-            ));
+         $newID = $ki->add(array('knowbaseitemcategories_id'   => $i,
+                                 'name'      => "Entity $ID_entity Question $k",
+                                 'answer'    => "Answer $k".Toolbox::getRandomString(50),
+                                 'is_faq'    => mt_rand(0,1),
+                                 'users_id'  => mt_rand($FIRST['users_sadmin'], $LAST['users_admin']),
+                              ));
 
-         $eki->add(array('entities_id' => $ID_entity, 
-                        'knowbaseitems_id' => $newID,
-                        'is_recursive' => 0
+         $eki->add(array('entities_id'       => $ID_entity,
+                        'knowbaseitems_id'   => $newID,
+                        'is_recursive'       => 0
                         ));
       }
    }
@@ -1623,17 +1633,16 @@ function generate_entity($ID_entity) {
       $nb = mt_rand(0,$MAX_KBITEMS_BY_CAT);
       for ($j=0 ; $j<$nb ; $j++) {
          $k++;
-         $newID = $ki->add(array(
-               'knowbaseitemcategories_id'   => $i,
-               'name'                        => "Entity $ID_entity Recursive Question $k",
-               'answer'                      => "Answer $k".Toolbox::getRandomString(50),
-               'is_faq'                      => mt_rand(0,1),
-               'users_id'                    => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),              
-            ));
+         $newID = $ki->add(array('knowbaseitemcategories_id'   => $i,
+                                 'name'      => "Entity $ID_entity Recursive Question $k",
+                                 'answer'    => "Answer $k".Toolbox::getRandomString(50),
+                                 'is_faq'    => mt_rand(0,1),
+                                 'users_id'  => mt_rand($FIRST['users_sadmin'], $LAST['users_admin']),
+                              ));
 
-         $eki->add(array('entities_id' => $ID_entity, 
-                        'knowbaseitems_id' => $newID,
-                        'is_recursive' => 1
+         $eki->add(array('entities_id'       => $ID_entity,
+                        'knowbaseitems_id'   => $newID,
+                        'is_recursive'       => 1
                         ));
       }
    }
@@ -1649,16 +1658,15 @@ function generate_entity($ID_entity) {
       if (mt_rand(0,100)<50) {
          $link = "http://linktodoc/doc$i";
       }
-      
-      $docID = $doc->add(array(
-            'entities_id'           => $ID_entity,
-            'is_recursive'          => 0,
-            'name'                  => "document $i-$ID_entity",
-            'documentcategories_id' => mt_rand(1,$MAX['rubdocs']),
-            'comment'               => "comment $i",
-            'link'                  => $link,
-            'notepad'               => "notes document $i"
-         ));
+
+      $docID = $doc->add(array('entities_id'           => $ID_entity,
+                              'is_recursive'          => 0,
+                              'name'                  => "document $i-$ID_entity",
+                              'documentcategories_id' => mt_rand(1,$MAX['rubdocs']),
+                              'comment'               => "comment $i",
+                              'link'                  => $link,
+                              'notepad'               => "notes document $i"
+                           ));
 
       $DOCUMENTS[$docID] = $ID_entity."-0";
    }
@@ -1670,16 +1678,15 @@ function generate_entity($ID_entity) {
       if (mt_rand(0,100)<50) {
          $link = "http://linktodoc/doc$i";
       }
-      
-      $docID = $doc->add(array(
-         'entities_id'           => $ID_entity,
-         'is_recursive'          => 1,
-         'name'                  => "Recursive document $i-$ID_entity",
-         'documentcategories_id' => mt_rand(1,$MAX['rubdocs']),
-         'comment'               => "comment $i",
-         'link'                  => $link,
-         'notepad'               => "notes document $i"
-      ));
+
+      $docID = $doc->add(array('entities_id'           => $ID_entity,
+                               'is_recursive'          => 1,
+                               'name'                  => "Recursive document $i-$ID_entity",
+                               'documentcategories_id' => mt_rand(1,$MAX['rubdocs']),
+                               'comment'               => "comment $i",
+                               'link'                  => $link,
+                               'notepad'               => "notes document $i"
+                           ));
       $DOCUMENTS[$docID] = $ID_entity."-1";
    }
 
@@ -1693,14 +1700,13 @@ function generate_entity($ID_entity) {
       $date1 = strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
       $date2 = $date1+MONTH_TIMESTAMP*12*mt_rand(1,4); // + entre 1 et 4 ans
 
-      $b->add(array(
-         'name'         => "budget $i-$ID_entity",
-         'entities_id'  => $ID_entity,
-         'is_recusive'  => 0,
-         'comment'      => "comment $i-$ID_entity",
-         'begin_date'   => date("Y-m-d",intval($date1)),
-         'end_date'     => date("Y-m-d",intval($date2)),
-         ));      
+      $b->add(array('name'         => "budget $i-$ID_entity",
+                    'entities_id'  => $ID_entity,
+                    'is_recusive'  => 0,
+                    'comment'      => "comment $i-$ID_entity",
+                    'begin_date'   => date("Y-m-d",intval($date1)),
+                    'end_date'     => date("Y-m-d",intval($date2)),
+                  ));
    }
    $LAST["budget"] = getMaxItem("glpi_budgets");
 
@@ -1709,14 +1715,13 @@ function generate_entity($ID_entity) {
       $date1 = strtotime(mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28));
       $date2 = $date1+MONTH_TIMESTAMP*12*mt_rand(1,4); // + entre 1 et 4 ans
 
-      $b->add(array(
-         'name'         => "Recursive budget $i-$ID_entity",
-         'entities_id'  => $ID_entity,
-         'is_recusive'  => 1,
-         'comment'      => "comment $i-$ID_entity",
-         'begin_date'   => date("Y-m-d",intval($date1)),
-         'end_date'     => date("Y-m-d",intval($date2)),
-         ));      
+      $b->add(array('name'         => "Recursive budget $i-$ID_entity",
+                    'entities_id'  => $ID_entity,
+                    'is_recusive'  => 1,
+                    'comment'      => "comment $i-$ID_entity",
+                    'begin_date'   => date("Y-m-d",intval($date1)),
+                    'end_date'     => date("Y-m-d",intval($date2)),
+                     ));
 
    }
    $LAST["document"] = getMaxItem("glpi_documents");
@@ -1735,21 +1740,20 @@ function generate_entity($ID_entity) {
       } else {
          $val = "Recursive enterprise_".$i."_ID_entity";
       }
-      $entID = $ent->add(array(
-         'entities_id'        => $ID_entity,
-         'is_recursive'       => 1,
-         'name'               => "Recursive $val-$ID_entity",
-         'suppliertypes_id'   => mt_rand(1,$MAX['enttype']),
-         'address'            => "address $i",
-         'postcode'           => "postcode $i",
-         'town'               => "town $i",
-         'state'              => "state $i",
-         'country'            => "country $i",
-         'website'            => "http://www.$val.com/",
-         'fax'                => "fax $i",
-         'email'              => "info@ent$i.com",
-         'notepad'            => "notes enterprises $i",
-         ));
+      $entID = $ent->add(array('entities_id'        => $ID_entity,
+                               'is_recursive'       => 1,
+                               'name'               => "Recursive $val-$ID_entity",
+                               'suppliertypes_id'   => mt_rand(1,$MAX['enttype']),
+                               'address'            => "address $i",
+                               'postcode'           => "postcode $i",
+                               'town'               => "town $i",
+                               'state'              => "state $i",
+                               'country'            => "country $i",
+                               'website'            => "http://www.$val.com/",
+                               'fax'                => "fax $i",
+                               'email'              => "info@ent$i.com",
+                               'notepad'            => "notes enterprises $i",
+                              ));
 
       addDocuments('Supplier', $entID);
    }
@@ -1763,22 +1767,21 @@ function generate_entity($ID_entity) {
          $val = "enterprise_".$i."_ID_entity";
       }
 
-      $entID = $ent->add(array(
-         'entities_id'        => $ID_entity,
-         'is_recursive'       => 0,
-         'name'               => "$val-$ID_entity",
-         'suppliertypes_id'   => mt_rand(1,$MAX['enttype']),
-         'address'            => "address $i",
-         'postcode'           => "postcode $i",
-         'town'               => "town $i",
-         'state'              => "state $i",
-         'country'            => "country $i",
-         'website'            => "http://www.$val.com/",
-         'fax'                => "fax $i",
-         'email'              => "info@ent$i.com",
-         'notepad'            => "notes supplier $i",
-         'comment'            => "comment supplier $i",
-         ));
+      $entID = $ent->add(array('entities_id'        => $ID_entity,
+                               'is_recursive'       => 0,
+                               'name'               => "$val-$ID_entity",
+                               'suppliertypes_id'   => mt_rand(1,$MAX['enttype']),
+                               'address'            => "address $i",
+                               'postcode'           => "postcode $i",
+                               'town'               => "town $i",
+                               'state'              => "state $i",
+                               'country'            => "country $i",
+                               'website'            => "http://www.$val.com/",
+                               'fax'                => "fax $i",
+                               'email'              => "info@ent$i.com",
+                               'notepad'            => "notes supplier $i",
+                               'comment'            => "comment supplier $i",
+                              ));
 
       addDocuments('Supplier', $entID);
    }
@@ -1787,64 +1790,60 @@ function generate_entity($ID_entity) {
 
    // Ajout contracts
    $FIRST["contract"] = getMaxItem("glpi_contracts")+1;
-   $c = new Contract();
+   $c  = new Contract();
    $cs = new Contract_Supplier();
    // Specific
    for ($i=0 ; $i<$MAX['contract'] ; $i++) {
       $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
-      $contractID = $c->add(array(
-         'entities_id'        => $ID_entity,
-         'is_recursive'       => 0,
-         'name'               => "contract $i-$ID_entity",
-         'num'                => "num $i",
-         'cost'               => mt_rand(100,10000),
-         'contracttypes_id'   => mt_rand(1,$MAX_CONTRACT_TYPE),
-         'begin_date'         => $date,
-         'duration'           => mt_rand(1,36),
-         'notice'             => mt_rand(1,3),
-         'periodicity'        => mt_rand(1,36),
-         'billing'            => mt_rand(1,36),
-         'comment'            => "comment $i",
-         'accounting_number'  => "compta num $i",
-         'renewal'            => 1,
-         ));
+      $contractID = $c->add(array('entities_id'        => $ID_entity,
+                                  'is_recursive'       => 0,
+                                  'name'               => "contract $i-$ID_entity",
+                                  'num'                => "num $i",
+                                  'cost'               => mt_rand(100,10000),
+                                  'contracttypes_id'   => mt_rand(1,$MAX_CONTRACT_TYPE),
+                                  'begin_date'         => $date,
+                                  'duration'           => mt_rand(1,36),
+                                  'notice'             => mt_rand(1,3),
+                                  'periodicity'        => mt_rand(1,36),
+                                  'billing'            => mt_rand(1,36),
+                                  'comment'            => "comment $i",
+                                  'accounting_number'  => "compta num $i",
+                                  'renewal'            => 1,
+                                    ));
 
       addDocuments('Contract', $contractID);
 
       // Add an enterprise
-      $cs->add(array(
-         'contracts_id' => $contractID,
-         'suppliers_id' => mt_rand($FIRST["enterprises"],$LAST["enterprises"])
-      ));
+      $cs->add(array('contracts_id' => $contractID,
+                     'suppliers_id' => mt_rand($FIRST["enterprises"],$LAST["enterprises"])
+                  ));
    }
 
    for ($i=0 ; $i<$MAX['contract']/2 ; $i++) {
       $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
-      $contractID = $c->add(array(
-         'entities_id'        => $ID_entity,
-         'is_recursive'       => 1,
-         'name'               => "Recursive contract $i-$ID_entity",
-         'num'                => "num $i",
-         'cost'               => mt_rand(100,10000),
-         'contracttypes_id'   => mt_rand(1,$MAX_CONTRACT_TYPE),
-         'begin_date'         => $date,
-         'duration'           => mt_rand(1,36),
-         'notice'             => mt_rand(1,3),
-         'periodicity'        => mt_rand(1,36),
-         'billing'            => mt_rand(1,36),
-         'comment'            => "comment $i",
-         'accounting_number'  => "compta num $i",
-         'renewal'            => 1,
-         ));
+      $contractID = $c->add(array('entities_id'        => $ID_entity,
+                                  'is_recursive'       => 1,
+                                  'name'               => "Recursive contract $i-$ID_entity",
+                                  'num'                => "num $i",
+                                  'cost'               => mt_rand(100,10000),
+                                  'contracttypes_id'   => mt_rand(1,$MAX_CONTRACT_TYPE),
+                                  'begin_date'         => $date,
+                                  'duration'           => mt_rand(1,36),
+                                  'notice'             => mt_rand(1,3),
+                                  'periodicity'        => mt_rand(1,36),
+                                  'billing'            => mt_rand(1,36),
+                                  'comment'            => "comment $i",
+                                  'accounting_number'  => "compta num $i",
+                                  'renewal'            => 1,
+                                 ));
 
       addDocuments('Contract', $contractID);
 
       // Add an enterprise
-      $cs->add(array(
-         'contracts_id' => $contractID,
-         'suppliers_id' => mt_rand($FIRST["enterprises"],$LAST["enterprises"])
-      ));
+      $cs->add(array('contracts_id' => $contractID,
+                     'suppliers_id' => mt_rand($FIRST["enterprises"],$LAST["enterprises"])
+                  ));
    }
    $LAST["contract"] = getMaxItem("glpi_contracts");
 
@@ -1856,7 +1855,7 @@ function generate_entity($ID_entity) {
                   "Henri Dumont", "Clement Fontaine");
 
    $FIRST["contacts"] = getMaxItem("glpi_contacts")+1;
-   $c = new Contact();
+   $c  = new Contact();
    $cs = new Contact_Supplier();
    for ($i=0 ; $i<$MAX['contacts'] ; $i++) {
       if (isset($items[$i])) {
@@ -1864,20 +1863,19 @@ function generate_entity($ID_entity) {
       } else {
          $val = "contact $i";
       }
-      
-      $contactID = $c->add(array(
-         'entities_id'        => $ID_entity,
-         'is_recursive'       => 0,
-         'name'               => "$val-$ID_entity",
-         'contacttypes_id'    => mt_rand(1,$MAX['contact_type']),
-         'phone'              => "phone $i",
-         'phone2'             => "phone2 $i",
-         'mobile'             => "mobile $i",
-         'fax'                => "fax $i",
-         'email'              => "email $i",
-         'comment'            => "Comment $i"
-         ));
-               
+
+      $contactID = $c->add(array('entities_id'        => $ID_entity,
+                                 'is_recursive'       => 0,
+                                 'name'               => "$val-$ID_entity",
+                                 'contacttypes_id'    => mt_rand(1,$MAX['contact_type']),
+                                 'phone'              => "phone $i",
+                                 'phone2'             => "phone2 $i",
+                                 'mobile'             => "mobile $i",
+                                 'fax'                => "fax $i",
+                                 'email'              => "email $i",
+                                 'comment'            => "Comment $i"
+                                 ));
+
       // Link with enterprise
       $cs->add(array('contacts_id'  => $contactID,
                      'suppliers_id' => mt_rand($FIRST['enterprises'],$LAST['enterprises'])));
@@ -1889,19 +1887,18 @@ function generate_entity($ID_entity) {
       } else {
          $val = "Recursive contact $i";
       }
-      $contactID = $c->add(array(
-         'entities_id'        => $ID_entity,
-         'is_recursive'       => 0,
-         'name'               => "$val-$ID_entity",
-         'contacttypes_id'    => mt_rand(1,$MAX['contact_type']),
-         'phone'              => "phone $i",
-         'phone2'             => "phone2 $i",
-         'mobile'             => "mobile $i",
-         'fax'                => "fax $i",
-         'email'              => "email $i",
-         'comment'            => "Comment $i"
-         ));
-               
+      $contactID = $c->add(array('entities_id'        => $ID_entity,
+                                 'is_recursive'       => 0,
+                                 'name'               => "$val-$ID_entity",
+                                 'contacttypes_id'    => mt_rand(1,$MAX['contact_type']),
+                                 'phone'              => "phone $i",
+                                 'phone2'             => "phone2 $i",
+                                 'mobile'             => "mobile $i",
+                                 'fax'                => "fax $i",
+                                 'email'              => "email $i",
+                                 'comment'            => "Comment $i"
+                                 ));
+
       // Link with enterprise
       $cs->add(array('contacts_id'  => $contactID,
                      'suppliers_id' => mt_rand($FIRST['enterprises'],$LAST['enterprises'])));
@@ -1913,20 +1910,21 @@ function generate_entity($ID_entity) {
    $FIRST["type_of_consumables"] = getMaxItem("glpi_consumableitems")+1;
    $ci = new Consumableitem();
    for ($i=0 ; $i<$MAX['type_of_consumables'] ; $i++) {
-      $consID = $ci->add(array(
-            'entities_id'              => $ID_entity,
-            'name'                     => "consumable type $i",
-            'ref'                      => "ref $i",
-            'locations_id'             => mt_rand($FIRST["locations"],$LAST['locations']),
-            'consumableitemtypes_id'   => mt_rand(0,$MAX['consumable_type']),
-            'manufacturers_id'         => mt_rand(1,$MAX['manufacturer']),
-            'users_id_tech'            => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
-            'groups_id_tech'           => mt_rand($FIRST["groups"],$LAST["groups"]),
-            'comment'                  => "comment $i",
-            'notepad'                  => "notes consumableitem $i",
-            'alarm_threshold'          => mt_rand(0,10),
-            
-      ));
+      $consID = $ci->add(array('entities_id'             => $ID_entity,
+                               'name'                    => "consumable type $i",
+                               'ref'                     => "ref $i",
+                               'locations_id'            => mt_rand($FIRST["locations"],
+                                                                    $LAST['locations']),
+                               'consumableitemtypes_id'  => mt_rand(0,$MAX['consumable_type']),
+                               'manufacturers_id'        => mt_rand(1,$MAX['manufacturer']),
+                               'users_id_tech'           => mt_rand($FIRST['users_sadmin'],
+                                                                    $LAST['users_admin']),
+                               'groups_id_tech'          => mt_rand($FIRST["groups"], $LAST["groups"]),
+                               'comment'                 => "comment $i",
+                               'notepad'                 => "notes consumableitem $i",
+                               'alarm_threshold'         => mt_rand(0,10),
+
+                        ));
 
       addDocuments('ConsumableItem', $consID);
 
@@ -1936,14 +1934,13 @@ function generate_entity($ID_entity) {
 
       // Ajout consommable en stock
       $c = new Consumable();
-      for ($j=0 ; $j<mt_rand(0,$MAX['consumables_stock']) ; $j++) {         
+      for ($j=0 ; $j<mt_rand(0,$MAX['consumables_stock']) ; $j++) {
          $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
-         $ID = $c->add(array(
-               'entities_id'        => $ID_entity,
-               'consumableitems_id' => $consID,
-               'date_in'            => $date,
-         ));
+         $ID = $c->add(array('entities_id'        => $ID_entity,
+                             'consumableitems_id' => $consID,
+                             'date_in'            => $date,
+                     ));
 
          // AJOUT INFOCOMS
          addInfocoms('Consumable', $ID, $ID_entity);
@@ -1954,12 +1951,11 @@ function generate_entity($ID_entity) {
       for ($j=0 ; $j<mt_rand(0,$MAX['consumables_given']) ; $j++) {
          $date = mt_rand(2000,$current_year-1)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
-         $ID = $c->add(array(
-               'entities_id'        => $ID_entity,
-               'consumableitems_id' => $consID,
-               'date_in'            => $date,
-               'date_out'           => date("Y-m-d"),
-         ));
+         $ID = $c->add(array('entities_id'        => $ID_entity,
+                             'consumableitems_id' => $consID,
+                             'date_in'            => $date,
+                             'date_out'           => date("Y-m-d"),
+                     ));
 
          // AJOUT INFOCOMS
          addInfocoms('Consumable', $ID, $ID_entity);
@@ -1974,37 +1970,35 @@ function generate_entity($ID_entity) {
    $FIRST["type_of_cartridges"] = getMaxItem("glpi_cartridgeitems")+1;
    $ct = new CartridgeItem();
    for ($i=0 ; $i<$MAX['type_of_cartridges'] ; $i++) {
-   
-      $cartID = $ct->add(array(
-            'entities_id'              => $ID_entity,
-            'name'                     => "cartridge type $i",
-            'ref'                      => "ref $i",
-            'locations_id'             => mt_rand($FIRST["locations"],$LAST['locations']),
-            'manufacturers_id'         => mt_rand(1,$MAX['manufacturer']),
-            'users_id_tech'            => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
-            'groups_id_tech'           => mt_rand($FIRST["groups"],$LAST["groups"]),
-            'comment'                  => "comment $i",
-            'notepad'                  => "notes cartridgeitem $i",
-            'alarm_threshold'          => mt_rand(0,10),
-            
-      ));   
+
+      $cartID = $ct->add(array('entities_id'       => $ID_entity,
+                               'name'              => "cartridge type $i",
+                               'ref'               => "ref $i",
+                               'locations_id'      => mt_rand($FIRST["locations"], $LAST['locations']),
+                               'manufacturers_id'  => mt_rand(1,$MAX['manufacturer']),
+                               'users_id_tech'     => mt_rand($FIRST['users_sadmin'],
+                                                              $LAST['users_admin']),
+                               'groups_id_tech'    => mt_rand($FIRST["groups"], $LAST["groups"]),
+                               'comment'           => "comment $i",
+                               'notepad'           => "notes cartridgeitem $i",
+                               'alarm_threshold'   => mt_rand(0,10),
+                        ));
       addDocuments('CartridgeItem', $cartID);
 
 
       // AJOUT INFOCOMS
       addInfocoms('CartridgeItem', $cartID, $ID_entity);
 
-      $c = new Cartridge();
+      $c    = new Cartridge();
       $cipm = new CartridgeItem_PrinterModel();
       // Ajout cartouche en stock
       for ($j=0 ; $j<mt_rand(0,$MAX['cartridges_stock']) ; $j++) {
          $date = mt_rand(2000,$current_year-1)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
-         $ID = $c->add(array(
-               'entities_id'        => $ID_entity,
-               'cartridgeitems_id'  => $cartID,
-               'date_in'            => $date,
-         ));      
+         $ID = $c->add(array('entities_id'         => $ID_entity,
+                             'cartridgeitems_id'   => $cartID,
+                             'date_in'             => $date,
+                        ));
 
          // AJOUT INFOCOMS
          addInfocoms('Cartridge', $ID, $ID_entity);
@@ -2012,10 +2006,9 @@ function generate_entity($ID_entity) {
       }
 
       // Assoc printer type to cartridge type
-      $cipm->add(array(
-            'cartridgeitems_id'  => $cartID,
-            'printermodels_id'   =>mt_rand(1,$MAX['type_printers']),
-      ));
+      $cipm->add(array('cartridgeitems_id'  => $cartID,
+                       'printermodels_id'   => mt_rand(1,$MAX['type_printers']),
+                     ));
    }
    $LAST["type_of_cartridges"] = getMaxItem("glpi_cartridgeitems");
 
@@ -2025,9 +2018,7 @@ function generate_entity($ID_entity) {
    $FIRST["networking"] = getMaxItem("glpi_networkequipments")+1;
    $FIRST["printers"]   = getMaxItem("glpi_printers")+1;
    $ne = new NetworkEquipment();
-   $p = new Printer();
-   $np = new Netpoint();
-   $c = new Cartridge();
+   $p  = new Printer();
    foreach ($DB->request('glpi_locations') as $data) {
       $i          = $data["id"];
       $techID     = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
@@ -2035,35 +2026,37 @@ function generate_entity($ID_entity) {
       $infoIP     = getNextIP();
       $domainID   = mt_rand(1,$MAX['domain']);
       $networkID  = mt_rand(1,$MAX['network']);
-      
+
       // insert networking
-   
-      $netwID = $ne->add(array(
-         'entities_id'                    => $ID_entity,
-         'name'                           => "networking $i-$ID_entity",
-         'ram'                            => mt_rand(32,256),
-         'serial'                         => Toolbox::getRandomString(10),
-         'otherserial'                    => Toolbox::getRandomString(10),
-         'contact'                        => "contact $i",
-         'contact_num'                    => "num $i",
-         'users_id_tech'                  => $techID,
-         'groups_id_tech'                 => $gtechID,
-         'comment'                        => "comment $i",
-         'locations_id'                   => $i,
-         'domains_id'                     => $domainID,
-         'networks_id'                    => $networkID,         
-         'networkequipmenttypes_id'       => mt_rand(1,$MAX['type_networking']),
-         'networkequipmentmodels_id'      => mt_rand(1,$MAX['model_networking']),
-         'networkequipmentfirmwares_id'   => mt_rand(1,$MAX['firmware']),
-         'manufacturers_id'               => mt_rand(1,$MAX['manufacturer']),
-         'mac'                            => getNextMAC(),
-         'ip'                             => $infoIP["ip"],
-         'notepad'                        => "notes networking $i",
-         'users_id'                       => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
-         'groups_id'                      => mt_rand($FIRST["groups"],$LAST["groups"]),
-         'states_id'                      => (mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0),
-      ));
-      
+
+      $netwID = $ne->add(array('entities_id'                   => $ID_entity,
+                               'name'                          => "networking $i-$ID_entity",
+                               'ram'                           => mt_rand(32,256),
+                               'serial'                        => Toolbox::getRandomString(10),
+                               'otherserial'                   => Toolbox::getRandomString(10),
+                               'contact'                       => "contact $i",
+                               'contact_num'                   => "num $i",
+                               'users_id_tech'                 => $techID,
+                               'groups_id_tech'                => $gtechID,
+                               'comment'                       => "comment $i",
+                               'locations_id'                  => $i,
+                               'domains_id'                    => $domainID,
+                               'networks_id'                   => $networkID,
+                               'networkequipmenttypes_id'      => mt_rand(1,$MAX['type_networking']),
+                               'networkequipmentmodels_id'     => mt_rand(1,$MAX['model_networking']),
+                               'networkequipmentfirmwares_id'  => mt_rand(1,$MAX['firmware']),
+                               'manufacturers_id'              => mt_rand(1,$MAX['enterprises']),
+                               'mac'                           => getNextMAC(),
+                               'ip'                            => $infoIP["ip"],
+                               'notepad'                       => "notes networking $i",
+                               'users_id'                      => mt_rand($FIRST['users_sadmin'],
+                                                                          $LAST['users_admin']),
+                               'groups_id'                     => mt_rand($FIRST["groups"],
+                                                                          $LAST["groups"]),
+                               'states_id'                     => (mt_rand(0,100)<$percent['state']
+                                                                     ?mt_rand(1,$MAX['state']):0),
+                           ));
+
       addDocuments('NetworkEquipment', $netwID);
       addContracts('NetworkEquipment', $netwID);
 
@@ -2077,15 +2070,16 @@ function generate_entity($ID_entity) {
       // Link with father
       if ($data['locations_id']>0) {
          //insert netpoint
-         $netpointID = $np->add(array(
-               'entities_id'  => $ID_entity,
-               'locations_id' => $i,
-               'name'         => getNextNETPOINT(),
-               'comment'      => "comment netpoint $i",
-         ));
-         
-         // Add networking ports
+         $query = "INSERT INTO `glpi_netpoints`
+                   VALUES (NULL, '$ID_entity', '".$data['id']."', '".getNextNETPOINT()."',
+                           'comment netpoint')";
+         $DB->query($query) or die("PB REQUETE ".$query);
+
+         $netpointID = $DB->insert_id();
          $iface = mt_rand(1,$MAX['iface']);
+
+
+         // Add networking ports
          $newIP  = getNextIP();
          $newMAC = getNextMAC();
          $vlanID                = mt_rand(1,$MAX["vlan"]);
@@ -2099,7 +2093,7 @@ function generate_entity($ID_entity) {
 //                            '".$newIP['netwmask']."', '".$newIP['gateway']."',
 //                            '".$newIP['subnet']."','comment')";
 //          $DB->query($query) or die("PB REQUETE ".$query);
-// 
+//
 //          $port1ID = $DB->insert_id();
 //          $query = "INSERT INTO `glpi_networkports`
 //                    VALUES (NULL, '".$net_loc[$data['locations_id']]."', 'NetworkEquipment',
@@ -2109,17 +2103,17 @@ function generate_entity($ID_entity) {
 //                            '$netpointID', '".$newIP['netwmask']."', '".$newIP['gateway']."',
 //                            '".$newIP['subnet']."','comment')";
 //          $DB->query($query) or die("PB REQUETE ".$query);
-// 
+//
 //          $port2ID = $DB->insert_id();
 //          $query = "INSERT INTO `glpi_networkports_networkports`
 //                    VALUES (NULL, '$port1ID', '$port2ID')";
 //          $DB->query($query) or die("PB REQUETE ".$query);
-// 
+//
 //          // Add Vlan
 //          $query = "INSERT INTO `glpi_networkports_vlans`
 //                    VALUES (NULL, '$port1ID', '$vlanID')";
 //          $DB->query($query) or die("PB REQUETE ".$query);
-// 
+//
 //          $query = "INSERT INTO `glpi_networkports_vlans`
 //                    VALUES (NULL, '$port2ID', '$vlanID')";
 //          $DB->query($query) or die("PB REQUETE ".$query);
@@ -2127,21 +2121,20 @@ function generate_entity($ID_entity) {
 
       // Ajout imprimantes reseaux : 1 par loc + connexion d un matos reseau + ajout de cartouches
       //insert netpoint
-      $netpointID = $np->add(array(
-            'entities_id'  => $ID_entity,
-            'locations_id' => $i,
-            'name'         => getNextNETPOINT(),
-            'comment'      => "comment netpoint $i",
-      ));
-               
+      $query = "INSERT INTO `glpi_netpoints`
+                VALUES (NULL, '$ID_entity', '".$data['id']."', '".getNextNETPOINT()."',
+                        'comment netpoint')";
+      $DB->query($query) or die("PB REQUETE ".$query);
+      $netpointID = $DB->insert_id();
+
       // Add trackings
       addTracking('NetworkEquipment', $netwID, $ID_entity);
 
       $typeID  = mt_rand(1,$MAX['type_printers']);
       $modelID = mt_rand(1,$MAX['model_printers']);
       $recur   = mt_rand(0,1);
-      
-      $printID = $p->add(array(
+
+      $printID = $ne->add(array(
          'entities_id'                    => $ID_entity,
          'is_recursive'                   => $recur,
          'name'                           => "printer of loc $i",
@@ -2160,10 +2153,10 @@ function generate_entity($ID_entity) {
          'memory_size'                    => mt_rand(0,128),
          'locations_id'                   => $i,
          'domains_id'                     => $domainID,
-         'networks_id'                    => $networkID,         
+         'networks_id'                    => $networkID,
          'printertypes_id'                => mt_rand(1,$MAX['type_printers']),
          'printermodels_id'               => mt_rand(1,$MAX['model_printers']),
-         'manufacturers_id'               => mt_rand(1,$MAX['manufacturer']),
+         'manufacturers_id'               => mt_rand(1,$MAX['enterprises']),
          'is_global'                      => 1,
          'notepad'                        => "notes printers $i",
          'users_id'                       => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
@@ -2199,30 +2192,23 @@ function generate_entity($ID_entity) {
          // Add old cartridges
          for ($j=0 ; $j<$oldnb ; $j++) {
             $printed += mt_rand(0,5000);
-            $c->add(array(
-               'entities_id'        => $ID_entity,
-               'cartridgeitems_id'  => $ctypeID,
-               'printers_id'        => $printID,
-               'date_in'            => date("Y-m-d",$date1),
-               'date_use'           => date("Y-m-d",$date1+$j*$inter),
-               'date_out'           => date("Y-m-d",$date1+($j+1)*$inter),
-               'pages'              => $printed,
-               ));
+            $query = "INSERT INTO `glpi_cartridges`
+                      VALUES (NULL, '$ID_entity', '$ctypeID', '$printID', '".date("Y-m-d",$date1)."',
+                              '".date("Y-m-d",$date1+$j*$inter)."',
+                              '".date("Y-m-d",$date1+($j+1)*$inter)."', '$printed')";
+            $DB->query($query) or die("PB REQUETE ".$query);
          }
 
          // Add current cartridges
-         $c->add(array(
-            'entities_id'        => $ID_entity,
-            'cartridgeitems_id'  => $ctypeID,
-            'printers_id'        => $printID,
-            'date_in'            => $date,
-            'date_use'           => date("Y-m-d",$date2),
-            ));
+         $query = "INSERT INTO `glpi_cartridges`
+                   VALUES (NULL, '$ID_entity', '$ctypeID', '$printID', '".date("Y-m-d",$date1)."',
+                           '".date("Y-m-d",$date2)."', NULL, '0')";
+         $DB->query($query) or die("PB REQUETE ".$query);
       }
 
+      $iface = mt_rand(1,$MAX['iface']);
 
       // Add networking ports
-      $iface = mt_rand(1,$MAX['iface']);
       $newIP  = getNextIP();
       $newMAC = getNextMAC();
 
@@ -2233,7 +2219,7 @@ function generate_entity($ID_entity) {
 //                         '$newMAC','$iface', '$netpointID', '".$newIP['netwmask']."',
 //                         '".$newIP['gateway']."', '".$newIP['subnet']."','comment')";
 //       $DB->query($query) or die("PB REQUETE ".$query);
-// 
+//
 //       $port1ID = $DB->insert_id();
 //       $query = "INSERT INTO `glpi_networkports`
 //                 VALUES (NULL, '$printID', 'Printer', '$ID_entity', '$recur',
@@ -2241,17 +2227,17 @@ function generate_entity($ID_entity) {
 //                         '".$newIP['ip']."', '$newMAC', '$iface', '$netpointID',
 //                         '".$newIP['netwmask']."', '".$newIP['gateway']."', '".$newIP['subnet']."', 'comment')";
 //       $DB->query($query) or die("PB REQUETE ".$query);
-// 
+//
 //       $port2ID = $DB->insert_id();
 //       $query = "INSERT INTO `glpi_networkports_networkports`
 //                 VALUES (NULL, '$port1ID', '$port2ID')";
 //       $DB->query($query) or die("PB REQUETE ".$query);
-// 
+//
 //       // Add Vlan
 //       $query = "INSERT INTO `glpi_networkports_vlans`
 //                 VALUES (NULL, '$port1ID', '$vlanID')";
 //       $DB->query($query) or die("PB REQUETE ".$query);
-// 
+//
 //       $query = "INSERT INTO `glpi_networkports_vlans`
 //                 VALUES (NULL, '$port2ID', '$vlanID')";
 //       $DB->query($query) or die("PB REQUETE ".$query);
@@ -2268,14 +2254,7 @@ function generate_entity($ID_entity) {
    $FIRST["monitors"]    = getMaxItem("glpi_monitors")+1;
    $FIRST["phones"]      = getMaxItem("glpi_phones")+1;
    $FIRST["peripherals"] = getMaxItem("glpi_peripherals")+1;
-   $c = new Computer();
-   $mon = new Monitor();
-   $cdev = new Computer_Device();
-   $cdisk = new ComputerDisk();
-   $np = new Netpoint();
-   $ci = new Computer_Item();
-   $phone = new Phone();
-   $periph = new Peripheral();
+
    for ($i=0 ; $i<$MAX['computers'] ; $i++) {
       $loc       = mt_rand($FIRST["locations"],$LAST['locations']);
       $techID    = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
@@ -2285,36 +2264,20 @@ function generate_entity($ID_entity) {
       $domainID  = mt_rand(1,$MAX['domain']);
       $networkID = mt_rand(1,$MAX['network']);
 
-      $compID = $c->add(array(
-         'entities_id'                    => $ID_entity,
-         'name'                           => "computer $i-$ID_entity",
-         'serial'                         => Toolbox::getRandomString(10),
-         'otherserial'                    => Toolbox::getRandomString(10),
-         'contact'                        => "contact $i",
-         'contact_num'                    => "num $i",
-         'users_id_tech'                  => $techID,
-         'groups_id_tech'                 => $gtechID,
-         'comment'                        => "comment $i",
-         'operatingsystems_id'            => mt_rand(1,$MAX['os']),
-         'operatingsystemversions_id'     => mt_rand(1,$MAX['os_version']),
-         'operatingsystemservicepacks_id' => mt_rand(1,$MAX['os_sp']),
-         'os_license_number'              => "os sn $i",
-         'os_licenseid'                   => "os id $i",
-         'autoupdatesystems_id'           => mt_rand(1,$MAX['os_sp']),
-         'locations_id'                   => $loc,
-         'domains_id'                     => $domainID,
-         'networks_id'                    => $networkID,         
-         'computertypes_id'               => mt_rand(1,$MAX['type_computers']),
-         'computermodels_id'              => mt_rand(1,$MAX['model']),
-         'manufacturers_id'               => mt_rand(1,$MAX['manufacturer']),
-         'is_global'                      => 1,
-         'notepad'                        => "notes computer $i",
-         'users_id'                       => $userID,
-         'groups_id'                      => $groupID,
-         'states_id'                      => (mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0),
-         'uuid'                           => Toolbox::getRandomString(30),
-      ));
-      
+      $query = "INSERT INTO `glpi_computers`
+                VALUES (NULL, '$ID_entity', 'computers $i-$ID_entity',
+                        '".Toolbox::getRandomString(10)."', '".Toolbox::getRandomString(10)."',
+                        'contact $i', 'num $i', '$techID', '$gtechID', '', NOW(),
+                        '".mt_rand(1,$MAX['os'])."', '".mt_rand(1,$MAX['os_version'])."',
+                        '".mt_rand(1,$MAX['os_sp'])."', 'os sn $i', 'os id $i',
+                        '".mt_rand(1,$MAX['auto_update'])."', '".$loc."', '$domainID', '$networkID',
+                        '".mt_rand(1,$MAX['model'])."', '".mt_rand(1,$MAX['type_computers'])."','0',
+                        '', '".mt_rand(1,$MAX['manufacturer'])."', '0', 'note computer $i', '0',
+                        '".$userID."', '".$groupID."',
+                        '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."', '0', '')";
+      $DB->query($query) or die("PB REQUETE ".$query);
+
+      $compID = $DB->insert_id();
       addDocuments('Computer', $compID);
       addContracts('Computer', $compID);
 
@@ -2331,236 +2294,174 @@ function generate_entity($ID_entity) {
       addInfocoms('Computer', $compID, $ID_entity);
 
       // ADD DEVICE
-      $cdev->add(array(
-         'itemtype'              => 'DeviceMotherBoard',
-         'computers_id'          => $compID,
-         'devicemotherboards_id' => mt_rand(1,$MAX['device']),
-      ));
+      $query = "INSERT INTO `glpi_computers_devicemotherboards`
+                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
+      $DB->query($query) or die("PB REQUETE ".$query);
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceProcessor',
-         'computers_id'          => $compID,
-         'deviceprocessors_id'   => mt_rand(1,$MAX['device']),
-         'specificity'           => (1000+200*mt_rand(0,10))
-      ));
+      $query = "INSERT INTO `glpi_computers_deviceprocessors`
+                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."',
+                        '".(1000+200*mt_rand(0,10))."')";
+      $DB->query($query) or die("PB REQUETE ".$query);
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceMemory',
-         'computers_id'          => $compID,
-         'devicememories_id'     => mt_rand(1,$MAX['device']),
-         'specificity'           => (1024*mt_rand(0,6))
-      ));
+      $query = "INSERT INTO `glpi_computers_devicememories`
+                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."',
+                        '".(1024*mt_rand(0,6))."')";
+      $DB->query($query) or die("PB REQUETE ".$query);
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceHardDrive',
-         'computers_id'          => $compID,
-         'deviceharddrives_id'   => mt_rand(1,$MAX['device']),
-         'specificity'           => (51200*mt_rand(0,10))
-      ));
+      $query = "INSERT INTO `glpi_computers_deviceharddrives`
+                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."',
+                        '".(51200*mt_rand(0,10))."')";
+      $DB->query($query) or die("PB REQUETE ".$query);
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceNetworkCard',
-         'computers_id'          => $compID,
-         'devicenetworkcards_id' => mt_rand(1,$MAX['device']),
-         'specificity'           => getNextMAC()
-      ));
+      $query = "INSERT INTO `glpi_computers_devicenetworkcards`
+                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."', '".getNextMAC()."')";
+      $DB->query($query) or die("PB REQUETE ".$query);
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceDrive',
-         'computers_id'          => $compID,
-         'devicedrives_id'       => mt_rand(1,$MAX['device']),
-      ));
-      
-      $cdev->add(array(
-         'itemtype'              => 'DeviceControl',
-         'computers_id'          => $compID,
-         'devicecontrols_id'     => mt_rand(1,$MAX['device']),
-      ));      
+      $query = "INSERT INTO `glpi_computers_devicedrives`
+                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
+      $DB->query($query) or die("PB REQUETE ".$query);
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceGraphicCard',
-         'computers_id'          => $compID,
-         'devicegraphiccards_id' => mt_rand(1,$MAX['device']),
-         'specificity'           => (256*mt_rand(0,8))
-      ));
-      
-      $cdev->add(array(
-         'itemtype'              => 'DeviceSoundCard',
-         'computers_id'          => $compID,
-         'devicesoundcards_id'   => mt_rand(1,$MAX['device']),
-      ));
-            
-      if (mt_rand(0,100)<20) {
-         $cdev->add(array(
-            'itemtype'              => 'DevicePci',
-            'computers_id'          => $compID,
-            'devicepcis_id'         => mt_rand(1,$MAX['device']),
-         ));
+      $query = "INSERT INTO `glpi_computers_devicecontrols`
+                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
+      $DB->query($query) or die("PB REQUETE ".$query);
+
+      $query = "INSERT INTO `glpi_computers_devicegraphiccards`
+                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."', '".(256*mt_rand(0,8))."')";
+      $DB->query($query) or die("PB REQUETE ".$query);
+
+      $query = "INSERT INTO `glpi_computers_devicesoundcards`
+                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
+      $DB->query($query) or die("PB REQUETE ".$query);
+
+      if (mt_rand(0,100)<50) {
+         $query = "INSERT INTO `glpi_computers_devicepcis`
+                   VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
+         $DB->query($query) or die("PB REQUETE ".$query);
       }
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceCase',
-         'computers_id'          => $compID,
-         'devicecases_id'        => mt_rand(1,$MAX['device']),
-      ));
+      $query = "INSERT INTO `glpi_computers_devicecases`
+                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
+      $DB->query($query) or die("PB REQUETE ".$query);
 
-      $cdev->add(array(
-         'itemtype'                 => 'DevicePowerSupply',
-         'computers_id'             => $compID,
-         'devicepowersupplies_id'   => mt_rand(1,$MAX['device']),
-      ));
+      $query = "INSERT INTO `glpi_computers_devicepowersupplies`
+                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
+      $DB->query($query) or die("PB REQUETE ".$query);
 
       // insert disk
       $nb_disk = mt_rand(1,$MAX_DISK);
       for ($j=1 ; $j<=$nb_disk ; $j++) {
          $totalsize = mt_rand(10000,1000000);
          $freesize  = mt_rand(0,$totalsize);
-         $cdisk-> add(array(
-               'entities_id'     => $ID_entity,
-               'computers_id'    => $compID,
-               'name'            => "disk $j",
-               'device'          => "/dev/disk$j",
-               'mountpoint'      => "/mnt/disk$j",
-               'filesystems_id'  => mt_rand(1,10),
-               'totalsize'       => $totalsize,
-               'freesize'        => $freesize,
-         ));
-     }
+
+         $query = "INSERT INTO `glpi_computerdisks`
+                   VALUES (NULL, '$ID_entity', '$compID', 'disk $j', '/dev/disk$j', '/mnt/disk$j',
+                           '".mt_rand(1,10)."', '$totalsize', '$freesize')";
+         $DB->query($query) or die("PB REQUETE ".$query);
+      }
 
       //insert netpoint
-      $netpointID = $np->add(array(
-            'entities_id'  => $ID_entity,
-            'locations_id' => $loc,
-            'name'         => getNextNETPOINT(),
-            'comment'      => "comment netpoint $loc",
-      ));
-            
-      // Get networking element
-//       $query = "SELECT `id`
-//                 FROM `glpi_networkequipments`
-//                 WHERE `locations_id` = '$loc'
-//                       AND `entities_id` = '$ID_entity'";
-//       $result = $DB->query($query) or die("PB REQUETE ".$query);
-// 
-//       if ($DB->numrows($result)>0) {
-//          $netwID = $DB->result($result, 0, 0) or die (" PB RESULT ".$query);
-//          $iface  = mt_rand(1,$MAX['iface']);
-// 
-//          // Add networking ports
-//          $newIP  = getNextIP();
-//          $newMAC = getNextMAC();
-// 
-//          $query = "INSERT INTO `glpi_networkports`
-//                    VALUES (NULL, '$compID', 'Computer', '$ID_entity', '0',
-//                            '".$net_port['Computer'][$compID]++."', 'link port to netw $netwID',
-//                            '".$newIP['ip']."', '$newMAC', '$iface', '$netpointID',
-//                            '".$newIP['netwmask']."', '".$newIP['gateway']."',
-//                            '".$newIP['subnet']."','comment')";
-//          $DB->query($query) or die("PB REQUETE ".$query);
-// 
-//          $port1ID = $DB->insert_id();
-//          $query = "INSERT INTO `glpi_networkports`
-//                    VALUES (NULL, '$netwID', 'NetworkEquipment', '$ID_entity', '0',
-//                            '".$net_port['NetworkEquipment'][$netwID]++."',
-//                            'link port to computer $i', '".$newIP['ip']."', '$newMAC', '$iface',
-//                            '$netpointID', '".$newIP['netwmask']."', '".$newIP['gateway']."',
-//                            '".$newIP['subnet']."','comment')";
-//          $DB->query($query) or die("PB REQUETE ".$query);
-// 
-//          $port2ID = $DB->insert_id();
-//          $query = "INSERT INTO `glpi_networkports_networkports`
-//                    VALUES (NULL, '$port1ID', '$port2ID')";
-//          $DB->query($query) or die("PB REQUETE ".$query);
-// 
-//          // Add Vlan
-//          $query = "INSERT INTO `glpi_networkports_vlans`
-//                    VALUES (NULL, '$port1ID', '".$vlan_loc[$loc]."')";
-//          $DB->query($query) or die("PB REQUETE ".$query);
-// 
-//          $query = "INSERT INTO `glpi_networkports_vlans`
-//                    VALUES (NULL, '$port2ID', '".$vlan_loc[$loc]."')";
-//          $DB->query($query) or die("PB REQUETE ".$query);
-//       }
+      $query = "INSERT INTO `glpi_netpoints`
+                VALUES (NULL, '$ID_entity', '$loc', '".getNextNETPOINT()."', 'comment netpoint')";
+      $DB->query($query) or die("PB REQUETE ".$query);
+      $netpointID = $DB->insert_id();
 
-      // Add a monitor to the computer
-      $monID = $mon->add(array(
-         'entities_id'                    => $ID_entity,
-         'name'                           => "monitor $i-$ID_entity",
-         'serial'                         => Toolbox::getRandomString(10),
-         'otherserial'                    => Toolbox::getRandomString(10),
-         'contact'                        => "contact $i",
-         'contact_num'                    => "num $i",
-         'users_id_tech'                  => $techID,
-         'groups_id_tech'                 => $gtechID,
-         'comment'                        => "comment $i",
-         'size'                           => mt_rand(14,22),
-         'have_micro'                     => mt_rand(0,1),
-         'have_speaker'                   => mt_rand(0,1),
-         'have_subd'                      => mt_rand(0,1),
-         'have_bnc'                       => mt_rand(0,1),
-         'have_dvi'                       => mt_rand(0,1),
-         'have_pivot'                     => mt_rand(0,1),
-         'have_hdmi'                      => mt_rand(0,1),
-         'have_displayport'               => mt_rand(0,1),
-         'locations_id'                   => $loc,
-         'monitortypes_id'                => mt_rand(1,$MAX['type_monitors']),
-         'monitormodels_id'               => mt_rand(1,$MAX['model_monitors']),
-         'manufacturers_id'               => mt_rand(1,$MAX['manufacturer']),
-         'notepad'                        => "notes monitor $i",
-         'users_id'                       => $userID,
-         'groups_id'                      => $groupID,
-         'states_id'                      => (mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0),
-      ));      
-      
+      // Get networking element
+      $query = "SELECT `id`
+                FROM `glpi_networkequipments`
+                WHERE `locations_id` = '$loc'
+                      AND `entities_id` = '$ID_entity'";
+      $result = $DB->query($query) or die("PB REQUETE ".$query);
+
+      if ($DB->numrows($result)>0) {
+         $netwID = $DB->result($result, 0, 0) or die (" PB RESULT ".$query);
+         $iface  = mt_rand(1,$MAX['iface']);
+
+         // Add networking ports
+         $newIP  = getNextIP();
+         $newMAC = getNextMAC();
+
+/*         $query = "INSERT INTO `glpi_networkports`
+                   VALUES (NULL, '$compID', 'Computer', '$ID_entity', '0',
+                           '".$net_port['Computer'][$compID]++."', 'link port to netw $netwID',
+                           '".$newIP['ip']."', '$newMAC', '$iface', '$netpointID',
+                           '".$newIP['netwmask']."', '".$newIP['gateway']."',
+                           '".$newIP['subnet']."','comment')";
+         $DB->query($query) or die("PB REQUETE ".$query);
+
+         $port1ID = $DB->insert_id();
+         $query = "INSERT INTO `glpi_networkports`
+                   VALUES (NULL, '$netwID', 'NetworkEquipment', '$ID_entity', '0',
+                           '".$net_port['NetworkEquipment'][$netwID]++."',
+                           'link port to computer $i', '".$newIP['ip']."', '$newMAC', '$iface',
+                           '$netpointID', '".$newIP['netwmask']."', '".$newIP['gateway']."',
+                           '".$newIP['subnet']."','comment')";
+         $DB->query($query) or die("PB REQUETE ".$query);
+
+         $port2ID = $DB->insert_id();
+         $query = "INSERT INTO `glpi_networkports_networkports`
+                   VALUES (NULL, '$port1ID', '$port2ID')";
+         $DB->query($query) or die("PB REQUETE ".$query);
+
+         // Add Vlan
+         $query = "INSERT INTO `glpi_networkports_vlans`
+                   VALUES (NULL, '$port1ID', '".$vlan_loc[$loc]."')";
+         $DB->query($query) or die("PB REQUETE ".$query);
+
+         $query = "INSERT INTO `glpi_networkports_vlans`
+                   VALUES (NULL, '$port2ID', '".$vlan_loc[$loc]."')";
+         $DB->query($query) or die("PB REQUETE ".$query);*/
+      }
+
+      // Ajout d'un ecran sur l'ordi
+      $query = "INSERT INTO `glpi_monitors`
+                VALUES (NULL, '$ID_entity', 'monitor $i-$ID_entity', NOW(), 'contact $i', 'num $i',
+                        '$techID', '$gtechID', 'comment $i', '".Toolbox::getRandomString(10)."',
+                        '".Toolbox::getRandomString(10)."', '".mt_rand(14,22)."', '".mt_rand(0,1)."',
+                        '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
+                        '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
+                        '".mt_rand(0,1)."', '$loc',
+                        '".mt_rand(1,$MAX['model_monitors'])."',
+                        '".mt_rand(1,$MAX['type_monitors'])."',
+                        '".mt_rand(1,$MAX['manufacturer'])."', '0', '0', '0', '',
+                        'notes monitor $i', '".$userID."', '".$groupID."',
+                        '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."', '0')";
+      $DB->query($query) or die("PB REQUETE ".$query);
+
+      $monID = $DB->insert_id();
       addDocuments('Monitor', $monID);
       addContracts('Monitor', $monID);
 
       // Add trackings
       addTracking('Monitor', $monID, $ID_entity);
-      $ci->add(array(
-            'itemtype'     => 'Monitor',
-            'items_id'     => $monID,
-            'computers_id' => $compID,
-      ));
+
+      $query = "INSERT INTO `glpi_computers_items`
+                VALUES (NULL, '$monID', '$compID', 'Monitor')";
+      $DB->query($query) or die("PB REQUETE ".$query);
 
       // Ajout d'un telephhone avec l'ordi
-      $telID = $phone->add(array(
-         'entities_id'                    => $ID_entity,
-         'name'                           => "monitor $i-$ID_entity",
-         'serial'                         => Toolbox::getRandomString(10),
-         'otherserial'                    => Toolbox::getRandomString(10),
-         'contact'                        => "contact $i",
-         'contact_num'                    => "num $i",
-         'users_id_tech'                  => $techID,
-         'groups_id_tech'                 => $gtechID,
-         'comment'                        => "comment $i",
-         'firmware'                       => Toolbox::getRandomString(10),
-         'brand'                          => Toolbox::getRandomString(10),
-         'phonepowersupplies_id'          => mt_rand(0,$MAX['phone_power']),
-         'number_line'                    => Toolbox::getRandomString(10),
-         'have_headset'                   => mt_rand(0,1),
-         'have_hp'                        => mt_rand(0,1),
-         'locations_id'                   => $loc,
-         'phonetypes_id'                  => mt_rand(1,$MAX['type_phones']),
-         'phonemodels_id'                 => mt_rand(1,$MAX['model_phones']),
-         'manufacturers_id'               => mt_rand(1,$MAX['manufacturer']),
-         'notepad'                        => "notes monitor $i",
-         'users_id'                       => $userID,
-         'groups_id'                      => $groupID,
-         'states_id'                      => (mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0),
-      ));           
+      $query = "INSERT INTO `glpi_phones`
+                VALUES (NULL, '$ID_entity', 'phone $i-$ID_entity', NOW(), 'contact $i', 'num $i',
+                        '$techID', '$gtechID', 'comment $i', '".Toolbox::getRandomString(10)."',
+                        '".Toolbox::getRandomString(10)."', '".Toolbox::getRandomString(10)."',
+                        '$loc', '".mt_rand(1,$MAX['type_phones'])."',
+                        '".mt_rand(1,$MAX['model_phones'])."', '".Toolbox::getRandomString(10)."',
+                        '".mt_rand(0,$MAX['phone_power'])."', '".Toolbox::getRandomString(10)."',
+                        '".mt_rand(0,1)."', '".mt_rand(0,1)."',
+                        '".mt_rand(1,$MAX['manufacturer'])."', '0', '0', '0', '', 'notes phone $i',
+                        '".$userID."', '".$groupID."',
+                        '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."', '0')";
+      $DB->query($query) or die("PB REQUETE ".$query);
 
+      $telID = $DB->insert_id();
       addDocuments('Phone', $monID);
       addContracts('Phone', $monID);
 
       // Add trackings
       addTracking('Phone', $monID, $ID_entity);
 
-      $ci->add(array(
-            'itemtype'     => 'Phone',
-            'items_id'     => $telID,
-            'computers_id' => $compID,
-      ));
+      $query = "INSERT INTO `glpi_computers_items`
+                VALUES (NULL, '$telID', '$compID', 'Phone')";
+      $DB->query($query) or die("PB REQUETE ".$query);
 
       // Ajout des periphs externes en connection directe
       while (mt_rand(0,100)<$percent['peripherals']) {
@@ -2583,11 +2484,9 @@ function generate_entity($ID_entity) {
          addTracking('Peripheral', $periphID, $ID_entity);
 
          // Add connection
-         $ci->add(array(
-               'itemtype'     => 'Peripheral',
-               'items_id'     => $periphID,
-               'computers_id' => $compID,
-         ));
+         $query = "INSERT INTO `glpi_computers_items`
+                   VALUES (NULL, '$periphID', '$compID', 'Peripheral')";
+         $DB->query($query) or die("PB REQUETE ".$query);
       }
 
       // AJOUT INFOCOMS
@@ -2606,7 +2505,7 @@ function generate_entity($ID_entity) {
                            '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
                            '".mt_rand(0,1)."', '".mt_rand(0,1)."', 'comment $i',
                            '".mt_rand(0,64)."', '$loc', '$domainID', '$networkID', '$modelID',
-                           '$typeID', '".mt_rand(1,$MAX['manufacturer'])."', '0', '0', '0', '', '0', '0',
+                           '$typeID', '".mt_rand(1,$MAX['enterprises'])."', '0', '0', '0', '', '0', '0',
                            'notes printers $i',
                            '".mt_rand($FIRST['users_postonly'],$LAST['users_postonly'])."',
                            '".mt_rand(1,$MAX["groups"])."',
@@ -2621,12 +2520,10 @@ function generate_entity($ID_entity) {
          addTracking('Printer', $printID, $ID_entity);
 
          // Add connection
-         $ci->add(array(
-               'itemtype'     => 'Printer',
-               'items_id'     => $printID,
-               'computers_id' => $compID,
-         ));
-         
+         $query = "INSERT INTO `glpi_computers_items`
+                   VALUES (NULL, '$printID', '$compID', 'Printer')";
+         $DB->query($query) or die("PB REQUETE ".$query);
+
 
          // AJOUT INFOCOMS
          addInfocoms('Printer', $printID, $ID_entity);
