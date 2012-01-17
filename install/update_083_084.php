@@ -900,6 +900,7 @@ function update083to084() {
 
    /// TODO add changetasktypes table as dropdown
    /// TODO review users linked to changetask
+   /// TODO add display prefs
 
    $migration->addField("glpi_profiles", "show_my_change", "char",
                         array('update'    => "1",
@@ -916,7 +917,10 @@ function update083to084() {
    $migration->addField('glpi_profiles', 'change_status', "text",
                         array('comment' => "json encoded array of from/dest allowed status change"));
 
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'various fields'));
 
+   $migration->addField("glpi_reservationitems", "is_deleted", "bool");
+   $migration->addKey("glpi_reservationitems", "is_deleted");
 
 
    // ************ Keep it at the end **************
