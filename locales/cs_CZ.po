@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-16 18:40+0100\n"
-"PO-Revision-Date: 2012-01-16 17:41+0000\n"
+"POT-Creation-Date: 2012-01-17 16:14+0100\n"
+"PO-Revision-Date: 2012-01-17 16:08+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Czech (Czech Republic) (http://www.transifex.net/projects/p/GLPI/team/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
@@ -117,7 +117,7 @@ msgstr "Email: %s"
 #: ajax/dropdownMassiveAction.php:243 ajax/dropdownMassiveAction.php:249
 #: ajax/visibility.php:101 inc/authldapreplicate.class.php:81
 #: inc/bookmark.class.php:233 inc/calendar_holiday.class.php:140
-#: inc/calendarsegment.class.php:307 inc/cartridgeitem.class.php:562
+#: inc/calendarsegment.class.php:307 inc/cartridgeitem.class.php:516
 #: inc/change_item.class.php:223 inc/change_problem.class.php:141
 #: inc/change_problem.class.php:220 inc/change_ticket.class.php:137
 #: inc/change_ticket.class.php:219 inc/commondbtm.class.php:1688
@@ -137,7 +137,7 @@ msgstr "Email: %s"
 #: inc/item_problem.class.php:224 inc/knowbaseitem.class.php:551
 #: inc/link_itemtype.class.php:99 inc/netpoint.class.php:175
 #: inc/netpoint.class.php:359 inc/netpoint.class.php:376
-#: inc/networkalias.class.php:252 inc/networkname.class.php:551
+#: inc/networkalias.class.php:252 inc/networkname.class.php:560
 #: inc/networkport.class.php:359 inc/problem_ticket.class.php:126
 #: inc/problem_ticket.class.php:201 inc/profile_user.class.php:122
 #: inc/profile_user.class.php:244 inc/reminder.class.php:885
@@ -156,19 +156,19 @@ msgid "Add"
 msgstr "Přidat"
 
 #: ajax/dropdownMassiveActionField.php:75 inc/contract.class.php:219
-#: inc/search.class.php:4000 inc/softwarelicense.class.php:212
+#: inc/search.class.php:4001 inc/softwarelicense.class.php:212
 #: inc/softwarelicense.class.php:617 inc/softwarelicense.class.php:638
 msgid "Unlimited"
 msgstr "Neomezeně"
 
 #: ajax/dropdownMassiveActionField.php:114 inc/commondbtm.class.php:3119
 #: inc/entitydata.class.php:628 inc/entitydata.class.php:640
-#: inc/search.class.php:4330
+#: inc/search.class.php:4331
 msgid "Default value"
 msgstr "Výchozí hodnota"
 
 #: ajax/dropdownMassiveActionField.php:237 inc/infocom.class.php:961
-#: inc/infocom.class.php:969 inc/search.class.php:3900
+#: inc/infocom.class.php:969 inc/search.class.php:3901
 msgid "Lifelong"
 msgstr "Je živý"
 
@@ -242,7 +242,7 @@ msgstr ""
 #: inc/commonglpi.class.php:518
 #: inc/notificationtemplatetranslation.class.php:314 inc/problem.class.php:592
 #: inc/search.class.php:799 inc/search.class.php:1176
-#: inc/search.class.php:1556 inc/ticket.class.php:2048
+#: inc/search.class.php:1557 inc/ticket.class.php:2048
 #: inc/ticketvalidation.class.php:348 inc/user.class.php:2372
 msgid "All"
 msgstr "Všechno"
@@ -301,7 +301,7 @@ msgstr "Zkopírovat"
 #: front/backup.php:664 inc/authldap.class.php:393 inc/bookmark.class.php:243
 #: inc/bookmark.class.php:588 inc/calendar_holiday.class.php:148
 #: inc/calendarsegment.class.php:351 inc/cartridge.class.php:501
-#: inc/cartridge.class.php:678 inc/cartridgeitem.class.php:553
+#: inc/cartridge.class.php:678 inc/cartridgeitem.class.php:507
 #: inc/change_item.class.php:229 inc/change_problem.class.php:149
 #: inc/change_problem.class.php:228 inc/change_ticket.class.php:145
 #: inc/change_ticket.class.php:227 inc/commondbtm.class.php:1718
@@ -338,17 +338,17 @@ msgstr "Zkopírovat"
 msgid "Delete"
 msgstr "Smazat"
 
-#: ajax/dropdownMassiveActionPorts.php:54 inc/networkport_vlan.class.php:207
+#: ajax/dropdownMassiveActionPorts.php:54 inc/networkport_vlan.class.php:208
 msgid "Tagged"
 msgstr ""
 
-#: ajax/dropdownMassiveActionPorts.php:56 inc/networkname.class.php:554
-#: inc/networkport_vlan.class.php:202
+#: ajax/dropdownMassiveActionPorts.php:56 inc/networkname.class.php:563
+#: inc/networkport_vlan.class.php:203
 msgid "Associate"
 msgstr "Přiřadit"
 
-#: ajax/dropdownMassiveActionPorts.php:62 inc/networkname.class.php:492
-#: inc/networkname.class.php:493 inc/networkport_vlan.class.php:166
+#: ajax/dropdownMassiveActionPorts.php:62 inc/networkname.class.php:501
+#: inc/networkname.class.php:502 inc/networkport_vlan.class.php:167
 msgid "Dissociate"
 msgstr "Zrušit přiřazení"
 
@@ -356,7 +356,7 @@ msgstr "Zrušit přiřazení"
 msgid "Enter the first letters (user, item name, serial or asset number)"
 msgstr ""
 "Zadejte první znaky (jména uživatele nebo položky, sériového nebo "
-"inventárního čísla))"
+"inventárního čísla)"
 
 #: ajax/dropdownValue.php:233 front/report.contract.list.php:140
 #: front/report.infocom.php:177 front/report.year.list.php:152
@@ -366,8 +366,8 @@ msgstr ""
 #: inc/computer_softwareversion.class.php:479 inc/db.function.php:407
 #: inc/db.function.php:448 inc/document.class.php:866 inc/entity.class.php:51
 #: inc/entity.class.php:53 inc/entity.class.php:121 inc/problem.class.php:1180
-#: inc/profile_user.class.php:162 inc/search.class.php:3332
-#: inc/search.class.php:3335 inc/search.class.php:3793 inc/stat.class.php:1379
+#: inc/profile_user.class.php:162 inc/search.class.php:3333
+#: inc/search.class.php:3336 inc/search.class.php:3794 inc/stat.class.php:1379
 #: inc/ticket.class.php:4727 inc/transfer.class.php:3269
 msgid "Root entity"
 msgstr "Kořenová entita"
@@ -528,7 +528,7 @@ msgid ""
 "installed files. An update is necessary."
 msgstr ""
 "Verze vaší databáze není kompatibilní s verzí nainstalovaných souborů. Je "
-"vyžadována aktualizace.."
+"vyžadována aktualizace."
 
 #: config/config.php:188
 msgid ""
@@ -537,7 +537,7 @@ msgid ""
 " of your database."
 msgstr ""
 "Snažíte se použít GLPI se soubory staršími než je verze databáze. "
-"Nainstalujte prosím soubory GLPI odpovídající vaší databázi.."
+"Nainstalujte prosím soubory GLPI odpovídající vaší databázi."
 
 #: config/config.php:193 install/install.php:175 install/install.php:184
 msgid "Try again"
@@ -875,13 +875,13 @@ msgid "%1$s adds the item %2$s"
 msgstr ""
 
 #. TRANS: %s is the user login
-#: front/cartridgeitem.form.php:101
+#: front/cartridgeitem.form.php:102
 #, php-format
 msgid "%s associates a type"
 msgstr ""
 
 #. TRANS: %s is the user login
-#: front/cartridgeitem.form.php:111
+#: front/cartridgeitem.form.php:113
 #, php-format
 msgid "%s deletes a type"
 msgstr ""
@@ -1021,25 +1021,25 @@ msgid "%s updates a virtual machine"
 msgstr ""
 
 #. TRANS: %s is the user login
-#: front/consumable.form.php:60
+#: front/consumable.form.php:57
 #, php-format
 msgid "%s adds consumables"
 msgstr ""
 
 #. TRANS: %s is the user login
-#: front/consumable.form.php:70
+#: front/consumable.form.php:67
 #, php-format
 msgid "%s deletes a consumable"
 msgstr ""
 
 #. TRANS: %s is the user login
-#: front/consumable.form.php:87
+#: front/consumable.form.php:84
 #, php-format
 msgid "%s gives a consumable"
 msgstr ""
 
 #. TRANS: %s is the user login
-#: front/consumable.form.php:97
+#: front/consumable.form.php:94
 #, php-format
 msgid "%s restores a consumable"
 msgstr ""
@@ -1154,8 +1154,8 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: front/dictionnary.php:54 inc/cartridgeitem.class.php:239
-#: inc/cartridgeitem.class.php:316 inc/commondevice.class.php:77
+#: front/dictionnary.php:54 inc/cartridgeitem.class.php:193
+#: inc/cartridgeitem.class.php:270 inc/commondevice.class.php:77
 #: inc/commondevice.class.php:96 inc/computer.class.php:510
 #: inc/computer.class.php:857 inc/consumableitem.class.php:170
 #: inc/consumableitem.class.php:248 inc/html.class.php:1503
@@ -1177,7 +1177,7 @@ msgstr[2] ""
 #: inc/ruledictionnaryprinter.class.php:110
 #: inc/ruledictionnaryprinter.class.php:130
 #: inc/ruledictionnaryprintermodel.class.php:54
-#: inc/ruleimportcomputer.class.php:120 inc/search.class.php:4680
+#: inc/ruleimportcomputer.class.php:120 inc/search.class.php:4681
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
 msgstr[0] ""
@@ -1189,7 +1189,7 @@ msgstr[2] ""
 #: front/report.default.php:211 front/report.year.php:58
 #: inc/html.class.php:1016 inc/html.class.php:1722 inc/ocsserver.class.php:446
 #: inc/printer.class.php:55 inc/profile.class.php:650
-#: inc/transfer.class.php:3134
+#: inc/profile.class.php:1403 inc/transfer.class.php:3134
 msgid "Printer"
 msgid_plural "Printers"
 msgstr[0] ""
@@ -1197,7 +1197,7 @@ msgstr[1] ""
 msgstr[2] ""
 
 #: front/dictionnary.php:66 front/stat.location.php:82
-#: inc/cartridgeitem.class.php:541 inc/computer.class.php:524
+#: inc/cartridgeitem.class.php:495 inc/computer.class.php:524
 #: inc/computer.class.php:767 inc/dropdown.class.php:640
 #: inc/monitor.class.php:248 inc/monitor.class.php:414
 #: inc/networkequipment.class.php:293 inc/networkequipment.class.php:431
@@ -1241,7 +1241,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: front/dictionnary.php:74 inc/cartridgeitem.class.php:353
+#: front/dictionnary.php:74 inc/cartridgeitem.class.php:307
 #: inc/dropdown.class.php:645 inc/html.class.php:1555
 #: inc/printermodel.class.php:45
 msgid "Printer model"
@@ -1274,8 +1274,8 @@ msgstr[2] ""
 
 #: front/dictionnary.php:91 front/stat.location.php:80
 #: front/stat.tracking.php:92 inc/bookmark.class.php:212
-#: inc/budget.class.php:297 inc/cartridgeitem.class.php:229
-#: inc/cartridgeitem.class.php:312 inc/change_item.class.php:133
+#: inc/budget.class.php:297 inc/cartridgeitem.class.php:183
+#: inc/cartridgeitem.class.php:266 inc/change_item.class.php:133
 #: inc/commonitiltask.class.php:952 inc/computer.class.php:497
 #: inc/computer.class.php:763 inc/consumableitem.class.php:159
 #: inc/consumableitem.class.php:244 inc/contact.class.php:200
@@ -1291,7 +1291,7 @@ msgstr[2] ""
 #: inc/item_problem.class.php:133 inc/knowbaseitem.class.php:1318
 #: inc/link_itemtype.class.php:76 inc/monitor.class.php:222
 #: inc/monitor.class.php:410 inc/networkequipment.class.php:266
-#: inc/networkequipment.class.php:427 inc/networkport.class.php:722
+#: inc/networkequipment.class.php:427 inc/networkport.class.php:734
 #: inc/notification.class.php:144 inc/notification.class.php:217
 #: inc/notificationtarget.class.php:1042
 #: inc/notificationtargetcontract.class.php:94
@@ -1436,7 +1436,7 @@ msgstr "Soubor nenalezen"
 
 #: front/document.send.php:57
 msgid "File is altered (bad checksum)"
-msgstr "Soubor pozměněn (chybný kontrolní součet))"
+msgstr "Soubor pozměněn (chybný kontrolní součet)"
 
 #: front/document.send.php:62 front/document.send.php:76
 #: front/graph.send.php:52
@@ -1471,7 +1471,7 @@ msgstr "Hledat ID vašeho hardware"
 #: inc/dropdown.class.php:770 inc/html.class.php:2021 inc/html.class.php:2200
 #: inc/html.class.php:2204 inc/knowbaseitem.class.php:803
 #: inc/knowbaseitem.class.php:807 inc/planning.class.php:312
-#: inc/search.class.php:1703
+#: inc/search.class.php:1704
 msgid "Search"
 msgstr "Hledat"
 
@@ -1499,7 +1499,7 @@ msgstr "Přiřazená součást"
 
 #: front/find_num.php:94 inc/authldap.class.php:595 inc/authmail.class.php:102
 #: inc/cartridge.class.php:384 inc/cartridge.class.php:602
-#: inc/cartridgeitem.class.php:302 inc/cartridgeitem.class.php:541
+#: inc/cartridgeitem.class.php:256 inc/cartridgeitem.class.php:495
 #: inc/change.class.php:404 inc/commondbrelation.class.php:60
 #: inc/commondbtm.class.php:2648 inc/commondropdown.class.php:298
 #: inc/commontreedropdown.class.php:481 inc/computer.class.php:756
@@ -1510,12 +1510,12 @@ msgstr "Přiřazená součást"
 #: inc/fieldunicity.class.php:292 inc/group_user.class.php:473
 #: inc/infocom.class.php:1238 inc/knowbaseitem.class.php:1210
 #: inc/link.class.php:159 inc/log.class.php:280 inc/monitor.class.php:403
-#: inc/networkequipment.class.php:420 inc/networkport.class.php:674
+#: inc/networkequipment.class.php:420 inc/networkport.class.php:686
 #: inc/notificationtargetcommonitilobject.class.php:737
 #: inc/ocsserver.class.php:181 inc/peripheral.class.php:368
 #: inc/phone.class.php:398 inc/printer.class.php:522 inc/problem.class.php:408
 #: inc/profile_user.class.php:666 inc/reservationitem.class.php:115
-#: inc/search.class.php:4642 inc/sla.class.php:213 inc/software.class.php:353
+#: inc/search.class.php:4643 inc/sla.class.php:213 inc/software.class.php:353
 #: inc/softwarelicense.class.php:691 inc/supplier.class.php:209
 #: inc/ticket.class.php:1519 inc/user.class.php:1912 inc/user.class.php:3001
 msgid "ID"
@@ -1540,7 +1540,7 @@ msgstr "ID"
 #: inc/peripheral.class.php:259 inc/peripheral.class.php:387
 #: inc/phone.class.php:258 inc/printer.class.php:360 inc/printer.class.php:541
 #: inc/ruleimportcomputer.class.php:114 inc/ruleocs.class.php:141
-#: inc/search.class.php:4653 inc/software.class.php:479
+#: inc/search.class.php:4654 inc/software.class.php:479
 #: inc/softwarelicense.class.php:179 inc/softwarelicense.class.php:263
 #: inc/softwarelicense.class.php:576 inc/softwarelicense.class.php:692
 #: inc/supplier.class.php:481 inc/user.class.php:2552 inc/user.class.php:2627
@@ -1559,7 +1559,7 @@ msgstr "Sériové číslo"
 #: inc/ocsserver.class.php:2944 inc/peripheral.class.php:269
 #: inc/peripheral.class.php:392 inc/phone.class.php:267
 #: inc/printer.class.php:370 inc/printer.class.php:546
-#: inc/search.class.php:4657 inc/software.class.php:486
+#: inc/search.class.php:4658 inc/software.class.php:486
 #: inc/softwarelicense.class.php:191 inc/softwarelicense.class.php:268
 #: inc/supplier.class.php:482 inc/user.class.php:2553 inc/user.class.php:2628
 msgid "Inventory number"
@@ -1890,7 +1890,7 @@ msgstr ""
 
 #: front/plugin.php:46
 msgid "Delete or update it otherwise GLPI will not work correctly."
-msgstr "Smažte nebo aktualizujte to, jinak nebude GLPI pracovat správně.."
+msgstr "Smažte nebo aktualizujte to, jinak nebude GLPI pracovat správně."
 
 #: front/popup.php:58 inc/authldap.class.php:387 inc/authldap.class.php:463
 #: inc/authmail.class.php:225 inc/change.class.php:589 inc/rule.class.php:274
@@ -1984,8 +1984,8 @@ msgstr "Seznam hardwaru ve smlouvě"
 #: inc/authmail.class.php:95 inc/authmail.class.php:165
 #: inc/bookmark.class.php:207 inc/budget.class.php:129
 #: inc/budget.class.php:211 inc/budget.class.php:299
-#: inc/calendar_holiday.class.php:90 inc/cartridgeitem.class.php:225
-#: inc/cartridgeitem.class.php:295 inc/change_item.class.php:135
+#: inc/calendar_holiday.class.php:90 inc/cartridgeitem.class.php:179
+#: inc/cartridgeitem.class.php:249 inc/change_item.class.php:135
 #: inc/commondbtm.class.php:2419 inc/commondevice.class.php:89
 #: inc/commondropdown.class.php:139 inc/commondropdown.class.php:291
 #: inc/commontreedropdown.class.php:378 inc/commontreedropdown.class.php:399
@@ -2017,8 +2017,8 @@ msgstr "Seznam hardwaru ve smlouvě"
 #: inc/netpoint.class.php:355 inc/netpoint.class.php:367
 #: inc/networkalias.class.php:148 inc/networkequipment.class.php:246
 #: inc/networkequipment.class.php:413 inc/networkname.class.php:151
-#: inc/networkname.class.php:602 inc/networkport.class.php:410
-#: inc/networkport.class.php:560 inc/networkport.class.php:668
+#: inc/networkname.class.php:611 inc/networkport.class.php:410
+#: inc/networkport.class.php:560 inc/networkport.class.php:680
 #: inc/notification.class.php:130 inc/notification.class.php:194
 #: inc/notificationtarget.class.php:1039
 #: inc/notificationtargetcontract.class.php:92
@@ -2038,7 +2038,7 @@ msgstr "Seznam hardwaru ve smlouvě"
 #: inc/rulecollection.class.php:392 inc/rulecriteria.class.php:73
 #: inc/ruledictionnaryprinter.class.php:106
 #: inc/ruledictionnaryprinter.class.php:124 inc/ruleright.class.php:83
-#: inc/search.class.php:4636 inc/sla.class.php:155 inc/sla.class.php:206
+#: inc/search.class.php:4637 inc/sla.class.php:155 inc/sla.class.php:206
 #: inc/slalevel.class.php:93 inc/slalevel.class.php:122
 #: inc/slalevel.class.php:211 inc/software.class.php:239
 #: inc/software.class.php:346 inc/software.class.php:779
@@ -2057,7 +2057,7 @@ msgstr "Název"
 #: front/report.contract.list.php:120 front/report.infocom.php:123
 #: front/report.year.list.php:132 inc/authldap.class.php:2613
 #: inc/budget.class.php:244 inc/budget.class.php:298 inc/budget.class.php:497
-#: inc/cartridgeitem.class.php:348 inc/change.class.php:464
+#: inc/cartridgeitem.class.php:302 inc/change.class.php:464
 #: inc/change_item.class.php:134 inc/change_problem.class.php:93
 #: inc/change_ticket.class.php:89 inc/commondbtm.class.php:2650
 #: inc/commondropdown.class.php:309 inc/commontreedropdown.class.php:401
@@ -2098,7 +2098,7 @@ msgstr "Název"
 #: inc/ruledictionnarysoftware.class.php:156
 #: inc/rulemailcollector.class.php:193 inc/ruleocs.class.php:151
 #: inc/ruleright.class.php:317 inc/rulerightcollection.class.php:139
-#: inc/ruleticket.class.php:275 inc/search.class.php:4689
+#: inc/ruleticket.class.php:275 inc/search.class.php:4690
 #: inc/sla.class.php:227 inc/software.class.php:409 inc/software.class.php:780
 #: inc/softwarelicense.class.php:571 inc/softwarelicense.class.php:693
 #: inc/stat.class.php:1351 inc/supplier.class.php:277
@@ -2142,7 +2142,7 @@ msgstr "Datum nákupu"
 #: front/report.contract.list.php:124 front/report.infocom.php:128
 #: front/report.year.list.php:136 inc/alert.class.php:187
 #: inc/infocom.class.php:452 inc/infocom.class.php:1163
-#: inc/search.class.php:3917
+#: inc/search.class.php:3918
 msgid "Warranty expiration date"
 msgstr "Datum konce záruky"
 
@@ -2216,7 +2216,6 @@ msgstr "Zobrazit zprávu"
 #: inc/ocsserver.class.php:358 inc/ocsserver.class.php:2949
 #: inc/printer.class.php:410 inc/printer.class.php:622
 #: inc/profile.class.php:647 inc/profile.class.php:1398
-#: inc/profile.class.php:1403
 msgid "Network"
 msgid_plural "Networks"
 msgstr[0] ""
@@ -2264,8 +2263,8 @@ msgid "Network report by location: %s"
 msgstr "Zpráva o síti podle umístění: %s"
 
 #: front/report.location.list.php:62 inc/dropdown.class.php:686
-#: inc/netpoint.class.php:56 inc/networkport.class.php:630
-#: inc/networkport.class.php:709 inc/networkportethernet.class.php:95
+#: inc/netpoint.class.php:56 inc/networkport.class.php:642
+#: inc/networkport.class.php:721 inc/networkportethernet.class.php:95
 #: inc/networkportinstantiation.class.php:334
 #: inc/networkportmigration.class.php:59
 msgid "Network outlet"
@@ -2282,8 +2281,8 @@ msgstr "přepínač"
 #: front/report.netpoint.list.php:70 front/report.netpoint.list.php:74
 #: front/report.switch.list.php:61 front/report.switch.list.php:64
 #: inc/networkequipment.class.php:355 inc/networkequipment.class.php:493
-#: inc/networkname.class.php:603 inc/networkport.class.php:595
-#: inc/networkport.class.php:689
+#: inc/networkname.class.php:612 inc/networkport.class.php:598
+#: inc/networkport.class.php:701
 msgid "IP"
 msgstr "IP"
 
@@ -2296,7 +2295,7 @@ msgstr "porty hardware"
 #: front/report.netpoint.list.php:72 front/report.netpoint.list.php:75
 #: front/report.switch.list.php:62 front/report.switch.list.php:65
 #: inc/devicenetworkcard.class.php:48 inc/devicenetworkcard.class.php:97
-#: inc/networkport.class.php:684 inc/ruleimportcomputer.class.php:104
+#: inc/networkport.class.php:696 inc/ruleimportcomputer.class.php:104
 msgid "MAC address"
 msgstr "MAC adresa"
 
@@ -2409,7 +2408,7 @@ msgstr "Přehrát pravidla slovníku"
 #: front/rule.common.php:121 inc/migration.class.php:58
 #: inc/software.class.php:823 install/update.php:135
 msgid "Work in progress..."
-msgstr "Zpracovává se......"
+msgstr "Zpracovává se..."
 
 #: front/rule.common.php:144
 #, php-format
@@ -2481,11 +2480,11 @@ msgid ""
 "followup using the above configuration."
 msgstr ""
 "Nelze nastavit avíza: konfigurujte zasílání doplňujících zpráv emailem "
-"pomocí nastavení výše.."
+"pomocí nastavení výše."
 
 #: front/setup.templates.php:48 inc/html.class.php:2217
 msgid "Manage templates..."
-msgstr "Spravovat šablony......"
+msgstr "Spravovat šablony..."
 
 #: front/sla.form.php:74 front/sla.php:41 inc/html.class.php:1842
 #: inc/notificationtargetticket.class.php:530 inc/profile.class.php:1185
@@ -2635,7 +2634,7 @@ msgstr "Průměrný čas"
 
 #: front/stat.global.php:187 front/stat.graph.php:424
 msgid "hour(s)"
-msgstr "hodin)"
+msgstr "hodin"
 
 #: front/stat.global.php:207 front/stat.graph.php:443 inc/stat.class.php:375
 msgid "Answered"
@@ -2653,7 +2652,7 @@ msgstr "Průzkum spokojenosti"
 #: front/stat.location.php:191 front/stat.location.php:203
 #: front/stat.location.php:215
 msgid "Ticket(s)"
-msgstr "Požadavků)"
+msgstr "Požadavků"
 
 #: front/stat.global.php:232 front/stat.global.php:248
 #: front/stat.graph.php:468 front/stat.graph.php:484
@@ -2746,7 +2745,7 @@ msgid "Next"
 msgstr "Další"
 
 #: front/stat.graph.php:352 inc/notificationtargetproblem.class.php:212
-#: inc/search.class.php:4701 inc/stat.class.php:1353
+#: inc/search.class.php:4702 inc/stat.class.php:1353
 msgid "Number of tickets"
 msgstr "Počet požadavků"
 
@@ -2803,7 +2802,7 @@ msgstr "Autor"
 #: inc/peripheral.class.php:411 inc/phone.class.php:294
 #: inc/phone.class.php:446 inc/printer.class.php:404 inc/printer.class.php:565
 #: inc/profile.class.php:1151 inc/reminder.class.php:1013
-#: inc/reservationitem.class.php:131 inc/search.class.php:4670
+#: inc/reservationitem.class.php:131 inc/search.class.php:4671
 #: inc/software.class.php:289 inc/software.class.php:399
 #: inc/user.class.php:1957 inc/user.class.php:2663
 msgid "Group"
@@ -2906,7 +2905,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: front/stat.tracking.php:98 inc/cartridgeitem.class.php:291
+#: front/stat.tracking.php:98 inc/cartridgeitem.class.php:245
 #: inc/change.class.php:385 inc/commondbrelation.class.php:56
 #: inc/commondbtm.class.php:2415 inc/commondevice.class.php:85
 #: inc/commondropdown.class.php:287 inc/commonitiltask.class.php:364
@@ -2917,7 +2916,7 @@ msgstr[2] ""
 #: inc/group_user.class.php:469 inc/infocom.class.php:1234
 #: inc/knowbaseitem.class.php:1206 inc/link.class.php:148
 #: inc/mailcollector.class.php:281 inc/monitor.class.php:392
-#: inc/networkequipment.class.php:409 inc/networkport.class.php:664
+#: inc/networkequipment.class.php:409 inc/networkport.class.php:676
 #: inc/networkportethernet.class.php:291 inc/networkportwifi.class.php:156
 #: inc/notification.class.php:190 inc/notificationtemplate.class.php:131
 #: inc/notificationtemplatetranslation.class.php:245
@@ -2925,7 +2924,7 @@ msgstr[2] ""
 #: inc/printer.class.php:511 inc/problem.class.php:389
 #: inc/profile.class.php:1343 inc/profile_user.class.php:662
 #: inc/reminder.class.php:302 inc/reservationitem.class.php:105
-#: inc/search.class.php:4632 inc/sla.class.php:202
+#: inc/search.class.php:4633 inc/sla.class.php:202
 #: inc/softwareversion.class.php:185 inc/supplier.class.php:198
 #: inc/ticket.class.php:1501 inc/ticketfollowup.class.php:712
 #: inc/transfer.class.php:97 inc/user.class.php:1900
@@ -3069,11 +3068,11 @@ msgstr ""
 
 #: front/tracking.injector.php:80 inc/ticket.class.php:1260
 msgid "Your ticket has been registered, its treatment is in progress."
-msgstr "Váš požadavek byl zaregistrován, probíhá jeho řešení.."
+msgstr "Váš požadavek byl zaregistrován, probíhá jeho řešení."
 
 #: front/tracking.injector.php:86
 msgid "Thank you for using our automatic helpdesk system."
-msgstr "Děkujeme za použití našeho automatizovaného systému podpory.."
+msgstr "Děkujeme za použití našeho automatizovaného systému podpory."
 
 #: front/user.form.php:158 front/user.form.php:184 front/user.php:40
 #: inc/authldap.class.php:1005 inc/authldap.class.php:2611
@@ -3095,7 +3094,7 @@ msgstr "Děkujeme za použití našeho automatizovaného systému podpory.."
 #: inc/profile.class.php:1611 inc/profile_user.class.php:236
 #: inc/profile_user.class.php:680 inc/profile_user.class.php:747
 #: inc/profile_user.class.php:763 inc/reminder.class.php:992
-#: inc/reservationitem.class.php:127 inc/search.class.php:4666
+#: inc/reservationitem.class.php:127 inc/search.class.php:4667
 #: inc/software.class.php:281 inc/software.class.php:395
 #: inc/ticketfollowup.class.php:735 inc/user.class.php:54
 #: inc/user.class.php:1410 inc/user.class.php:1426 inc/user.class.php:2590
@@ -3127,7 +3126,7 @@ msgid "Inheritance of the parent entity"
 msgstr "Dědění z nadřazené entity"
 
 #: inc/alert.class.php:96 inc/alert.class.php:138 inc/alert.class.php:140
-#: inc/budget.class.php:160 inc/cartridgeitem.class.php:277
+#: inc/budget.class.php:160 inc/cartridgeitem.class.php:231
 #: inc/config.class.php:252 inc/config.class.php:749 inc/config.class.php:801
 #: inc/consumableitem.class.php:208 inc/contract.class.php:1339
 #: inc/crontask.class.php:451 inc/entitydata.class.php:610
@@ -3158,14 +3157,14 @@ msgstr "Každý měsíc"
 #: inc/alert.class.php:120 inc/bookmark.class.php:575 inc/config.class.php:745
 #: inc/config.class.php:1006 inc/dropdown.class.php:532
 #: inc/dropdown.class.php:555 inc/entitydata.class.php:1203
-#: inc/ruleimportcomputer.class.php:169 inc/search.class.php:2973
+#: inc/ruleimportcomputer.class.php:169 inc/search.class.php:2974
 msgid "No"
 msgstr "Ne"
 
 #: inc/alert.class.php:121 inc/bookmark.class.php:579 inc/config.class.php:746
 #: inc/dropdown.class.php:536 inc/dropdown.class.php:553
 #: inc/rule.class.php:1300 inc/ruleimportcomputer.class.php:192
-#: inc/search.class.php:2975
+#: inc/search.class.php:2976
 msgid "Yes"
 msgstr "Ano"
 
@@ -3299,7 +3298,7 @@ msgstr[2] ""
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1033
 msgid "Root directory (optional)"
-msgstr "Kořenový adresář (volitelný))"
+msgstr "Kořenový adresář (volitelný)"
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1036
@@ -3364,7 +3363,7 @@ msgstr "Volba adresáře LDAP"
 #: inc/ticket.class.php:3830 inc/ticket.class.php:3845 inc/user.class.php:1812
 #: inc/user.class.php:2820 inc/user.class.php:2850
 msgid "Save"
-msgstr ""
+msgstr "Uložit"
 
 #: inc/authldap.class.php:205
 msgid "Preconfiguration"
@@ -3391,7 +3390,7 @@ msgstr "Výchozí hodnota(y)"
 #: inc/problem.class.php:818 inc/problem.class.php:1070
 #: inc/profile.class.php:475 inc/profile.class.php:1354
 #: inc/reminder.class.php:359 inc/reservationitem.class.php:135
-#: inc/search.class.php:4674 inc/sla.class.php:165 inc/software.class.php:374
+#: inc/search.class.php:4675 inc/sla.class.php:165 inc/software.class.php:374
 #: inc/softwarelicense.class.php:224 inc/ticket.class.php:1581
 #: inc/ticket.class.php:3261 inc/ticket.class.php:4415
 #: inc/transfer.class.php:108 inc/user.class.php:2005
@@ -3429,7 +3428,7 @@ msgstr "Server"
 
 #: inc/authldap.class.php:233
 msgid "Port (default=389)"
-msgstr "Port (výchozí=389))"
+msgstr "Port (výchozí=389)"
 
 #: inc/authldap.class.php:237 inc/authldap.class.php:615
 msgid "Connection filter"
@@ -3441,11 +3440,11 @@ msgstr "Basedn"
 
 #: inc/authldap.class.php:247
 msgid "RootDN (for non anonymous binds)"
-msgstr "Rootdn (pro anonymní přiřazení))"
+msgstr "Rootdn (pro anonymní přiřazení)"
 
 #: inc/authldap.class.php:252
 msgid "Password (for non-anonymous binds)"
-msgstr "Pass (pro ne-anonymní přiřazení))"
+msgstr "Pass (pro ne-anonymní přiřazení)"
 
 #: inc/authldap.class.php:255 inc/config.class.php:391
 #: inc/config.class.php:915 inc/mailcollector.class.php:237
@@ -3460,8 +3459,8 @@ msgstr "Pole s přihlašovacím jménem"
 #: inc/authldap.class.php:263 inc/authldap.class.php:488
 #: inc/authldap.class.php:674 inc/authmail.class.php:129
 #: inc/authmail.class.php:182 inc/budget.class.php:134
-#: inc/budget.class.php:239 inc/cartridgeitem.class.php:252
-#: inc/cartridgeitem.class.php:338 inc/commondevice.class.php:100
+#: inc/budget.class.php:239 inc/cartridgeitem.class.php:206
+#: inc/cartridgeitem.class.php:292 inc/commondevice.class.php:100
 #: inc/commondropdown.class.php:151 inc/commondropdown.class.php:303
 #: inc/commontreedropdown.class.php:408 inc/commontreedropdown.class.php:492
 #: inc/computer.class.php:573 inc/computer.class.php:814
@@ -3481,8 +3480,8 @@ msgstr "Pole s přihlašovacím jménem"
 #: inc/monitor.class.php:457 inc/netpoint.class.php:311
 #: inc/networkalias.class.php:302 inc/networkequipment.class.php:343
 #: inc/networkequipment.class.php:474 inc/networkname.class.php:170
-#: inc/networkname.class.php:604 inc/networkport.class.php:536
-#: inc/networkport.class.php:717 inc/notification.class.php:135
+#: inc/networkname.class.php:613 inc/networkport.class.php:536
+#: inc/networkport.class.php:729 inc/notification.class.php:135
 #: inc/notification.class.php:228
 #: inc/notificationtargetreservation.class.php:138
 #: inc/notificationtemplate.class.php:113
@@ -3498,7 +3497,7 @@ msgstr "Pole s přihlašovacím jménem"
 #: inc/reservationitem.class.php:102 inc/reservationitem.class.php:122
 #: inc/reservationitem.class.php:241 inc/rule.class.php:184
 #: inc/rule.class.php:247 inc/ruledictionnaryprinter.class.php:114
-#: inc/rulesoftwarecategory.class.php:74 inc/search.class.php:4661
+#: inc/rulesoftwarecategory.class.php:74 inc/search.class.php:4662
 #: inc/sla.class.php:158 inc/sla.class.php:222 inc/software.class.php:275
 #: inc/software.class.php:360 inc/softwarelicense.class.php:203
 #: inc/softwarelicense.class.php:298 inc/softwareversion.class.php:152
@@ -3535,7 +3534,7 @@ msgstr "Jak má být nakládáno s LDAP aliasy"
 
 #: inc/authldap.class.php:323
 msgid "Never dereferenced (default)"
-msgstr "Nikdy dereferencováno (výchozí))"
+msgstr "Nikdy dereferencováno (výchozí)"
 
 #: inc/authldap.class.php:324
 msgid "Always dereferenced"
@@ -3543,11 +3542,11 @@ msgstr "Vždy dereferencováno"
 
 #: inc/authldap.class.php:325
 msgid "Dereferenced during the search (but not when locating)"
-msgstr "Dereferencováno během hledání (ale ne při lokalizování))"
+msgstr "Dereferencováno během hledání (ale ne při lokalizování)"
 
 #: inc/authldap.class.php:326
 msgid "Dereferenced when locating (not during the search)"
-msgstr "Dereferencováno při lokalizování (ne při hledání))"
+msgstr "Dereferencováno při lokalizování (ne při hledání)"
 
 #: inc/authldap.class.php:361 inc/authldap.class.php:372
 msgid "List of LDAP directory replicates"
@@ -3696,7 +3695,7 @@ msgid ""
 "only partial."
 msgstr ""
 "Upozornění: Požadavek přesáhl omezení adresáře. Výsledky jsou pouze "
-"částečné.."
+"částečné."
 
 #: inc/authldap.class.php:1003 inc/authldap.class.php:1063
 #: inc/ocsserver.class.php:2509 inc/ocsserver.class.php:2529
@@ -3772,7 +3771,7 @@ msgstr "Uživatel nenalezen nebo jich bylo nalezeno více"
 
 #: inc/authldap.class.php:1892 inc/user.class.php:466
 msgid "Unable to add. The user already exists."
-msgstr "Není možno přidat. Uživatel již existuje.."
+msgstr "Není možno přidat. Uživatel již existuje."
 
 #: inc/authldap.class.php:2222
 msgid "Expert mode"
@@ -3868,8 +3867,8 @@ msgstr[2] ""
 #: inc/contract.class.php:191 inc/contract.class.php:210
 #: inc/contract.class.php:211 inc/contract.class.php:212
 #: inc/contract.class.php:213 inc/dropdown.class.php:1069
-#: inc/infocom.class.php:963 inc/search.class.php:3866
-#: inc/search.class.php:3897 inc/supplier.class.php:654
+#: inc/infocom.class.php:963 inc/search.class.php:3867
+#: inc/search.class.php:3898 inc/supplier.class.php:654
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
@@ -3904,7 +3903,7 @@ msgstr "Připojovací řetězec"
 msgid "Email domain Name (users email will be login@domain)"
 msgstr ""
 "Doménové jméno emailové adresy <br>(email uživatelů bude 'přihašovací "
-"jméno'@'doménové jméno'))"
+"jméno'@'doménové jméno')"
 
 #. TRANS: %s is the datetime of update
 #. TRANS: %s is the datetime of insertion
@@ -3960,7 +3959,7 @@ msgstr "Soukromé"
 
 #: inc/bookmark.class.php:368
 msgid "Partial load of the bookmark."
-msgstr "Částečné zavedení záložky.."
+msgstr "Částečné zavedení záložky."
 
 #: inc/bookmark.class.php:528
 msgid "Bookmarks"
@@ -3988,7 +3987,7 @@ msgstr "Výchozí pohled"
 #: inc/printer.class.php:537 inc/problem.class.php:413
 #: inc/problem.class.php:862 inc/problem.class.php:1068
 #: inc/reminder.class.php:319 inc/reminder.class.php:553
-#: inc/ruleticket.class.php:349 inc/search.class.php:4647
+#: inc/ruleticket.class.php:349 inc/search.class.php:4648
 #: inc/software.class.php:445 inc/softwareversion.class.php:166
 #: inc/softwareversion.class.php:203 inc/softwareversion.class.php:282
 #: inc/state.class.php:113 inc/ticket.class.php:1525 inc/ticket.class.php:3467
@@ -4024,7 +4023,7 @@ msgstr[2] ""
 msgid "Items"
 msgstr "Položky"
 
-#: inc/budget.class.php:254 inc/cartridgeitem.class.php:343
+#: inc/budget.class.php:254 inc/cartridgeitem.class.php:297
 #: inc/change.class.php:516 inc/commondbtm.class.php:2895
 #: inc/commonglpi.class.php:180 inc/computer.class.php:819
 #: inc/consumableitem.class.php:275 inc/contact.class.php:287
@@ -4113,7 +4112,7 @@ msgstr "Začátek"
 #: inc/holiday.class.php:63 inc/holiday.class.php:87 inc/html.class.php:3777
 #: inc/html.class.php:3778 inc/html.class.php:3930 inc/html.class.php:3931
 #: inc/planning.class.php:304 inc/reminder.class.php:549
-#: inc/search.class.php:3924
+#: inc/search.class.php:3925
 msgid "End"
 msgstr "Konec"
 
@@ -4122,6 +4121,10 @@ msgstr "Konec"
 msgid "Recurrent"
 msgstr "Opakující se"
 
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
+#. TRANS : %1$s is the itemtype name,
+#. %2$s is the name of the item (used for headings of a list)
 #. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
 #. headings of a list)
 #. TRANS : %1$s is the itemtype name,
@@ -4150,8 +4153,8 @@ msgstr "Opakující se"
 #: inc/contract.class.php:1016 inc/document.class.php:1359
 #: inc/group_user.class.php:148 inc/group_user.class.php:392
 #: inc/netpoint.class.php:321 inc/networkalias.class.php:307
-#: inc/networkname.class.php:610 inc/networkport.class.php:377
-#: inc/notificationtarget.class.php:1051
+#: inc/networkname.class.php:478 inc/networkname.class.php:619
+#: inc/networkport.class.php:377 inc/notificationtarget.class.php:1051
 #: inc/notificationtemplatetranslation.class.php:179
 #: inc/problem.class.php:1403 inc/problem_ticket.class.php:108
 #: inc/problem_ticket.class.php:183 inc/profile_user.class.php:266
@@ -4333,14 +4336,14 @@ msgstr "Průměrná doba na skladu"
 msgid "Average Time in use"
 msgstr "Průměrná doba používání"
 
-#: inc/cartridgeitem.class.php:235 inc/cartridgeitem.class.php:307
+#: inc/cartridgeitem.class.php:189 inc/cartridgeitem.class.php:261
 #: inc/consumableitem.class.php:166 inc/consumableitem.class.php:239
 #: inc/notificationtargetcartridge.class.php:75
 #: inc/notificationtargetconsumable.class.php:77
 msgid "Reference"
 msgstr "Reference"
 
-#: inc/cartridgeitem.class.php:245 inc/cartridgeitem.class.php:323
+#: inc/cartridgeitem.class.php:199 inc/cartridgeitem.class.php:277
 #: inc/computer.class.php:503 inc/computer.class.php:862
 #: inc/consumableitem.class.php:176 inc/consumableitem.class.php:255
 #: inc/itilcategory.class.php:63 inc/itilcategory.class.php:117
@@ -4352,12 +4355,12 @@ msgstr "Reference"
 #: inc/peripheral.class.php:229 inc/peripheral.class.php:442
 #: inc/phone.class.php:228 inc/phone.class.php:482 inc/printer.class.php:330
 #: inc/printer.class.php:635 inc/reservationitem.class.php:146
-#: inc/search.class.php:4685 inc/software.class.php:257
+#: inc/search.class.php:4686 inc/software.class.php:257
 #: inc/software.class.php:385
 msgid "Technician in charge of the hardware"
 msgstr "Technik zodpovědný za hardware"
 
-#: inc/cartridgeitem.class.php:258 inc/cartridgeitem.class.php:328
+#: inc/cartridgeitem.class.php:212 inc/cartridgeitem.class.php:282
 #: inc/computer.class.php:516 inc/computer.class.php:867
 #: inc/consumableitem.class.php:189 inc/consumableitem.class.php:260
 #: inc/itilcategory.class.php:67 inc/monitor.class.php:241
@@ -4371,22 +4374,22 @@ msgstr "Technik zodpovědný za hardware"
 msgid "Group in charge of the hardware"
 msgstr "Skupina zodpovědná za hardware"
 
-#: inc/cartridgeitem.class.php:267 inc/consumableitem.class.php:198
+#: inc/cartridgeitem.class.php:221 inc/consumableitem.class.php:198
 msgid "Stock location"
 msgstr "Umístění skladu"
 
-#: inc/cartridgeitem.class.php:274 inc/cartridgeitem.class.php:333
+#: inc/cartridgeitem.class.php:228 inc/cartridgeitem.class.php:287
 #: inc/consumableitem.class.php:205 inc/consumableitem.class.php:265
 msgid "Alert threshold"
 msgstr "Upozornění při dosažení hranice"
 
-#: inc/cartridgeitem.class.php:364 inc/cartridgeitem.class.php:570
+#: inc/cartridgeitem.class.php:318 inc/cartridgeitem.class.php:524
 msgid "Send alarms on cartridges"
 msgstr "Posílat alarmy u náplní"
 
 #. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
 #. number
-#: inc/cartridgeitem.class.php:407
+#: inc/cartridgeitem.class.php:361
 #, php-format
 msgid ""
 "Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s "
@@ -4394,19 +4397,19 @@ msgid ""
 msgstr ""
 
 #. TRANS: %s is entity name
-#: inc/cartridgeitem.class.php:447
+#: inc/cartridgeitem.class.php:401
 #, php-format
 msgid "%s: send cartridge alert failed"
 msgstr ""
 
 #. TRANS: %1$s is the name of the cartrige type, $2$s the reference,
 #. $3$d the number of free cartridges for the reference, %4$s the location
-#: inc/cartridgeitem.class.php:497
+#: inc/cartridgeitem.class.php:451
 #, php-format
 msgid "%1$s - %2$s (%3$d) - %4$s"
 msgstr ""
 
-#: inc/cartridgeitem.class.php:540
+#: inc/cartridgeitem.class.php:494
 msgid "Models of compatible printers"
 msgstr "Modely kompatibilních tiskáren"
 
@@ -4722,7 +4725,7 @@ msgstr "Položka úspěšně obnovena: %s"
 #: inc/commondbtm.class.php:3186 inc/dropdown.class.php:1457
 #: inc/dropdown.class.php:1470 inc/infocom.class.php:1003
 #: inc/knowbaseitem.class.php:651 inc/knowbaseitem.class.php:652
-#: inc/networkname.class.php:497 inc/networkname.class.php:498
+#: inc/networkname.class.php:506 inc/networkname.class.php:507
 #: inc/ocsserver.class.php:421 inc/reservation.class.php:663
 #: inc/ticket.class.php:3835 inc/transfer.class.php:3038
 msgid "Purge"
@@ -4747,15 +4750,15 @@ msgstr "Jméno šablony"
 
 #: inc/commondbtm.class.php:1861
 msgid "You are not allowed to change the visibility flag for child entities."
-msgstr "Nemáte povoleno měnit vlastnost viditelnosti pro podřízené entity.."
+msgstr "Nemáte povoleno měnit vlastnost viditelnosti pro podřízené entity."
 
 #: inc/commondbtm.class.php:1866
 msgid "Can't change this attribute. It's inherited from its parent."
-msgstr "Nelze změnit tento parametr. Je zděděný z jeho rodiče.."
+msgstr "Nelze změnit tento parametr. Je zděděný z jeho rodiče."
 
 #: inc/commondbtm.class.php:1870
 msgid "Flag change forbidden. Linked items found."
-msgstr "Změna příznaku zakázána. Nalezeny propojené položky.."
+msgstr "Změna příznaku zakázána. Nalezeny propojené položky."
 
 #: inc/commondbtm.class.php:1874
 msgid "Change visibility in child entities"
@@ -4763,47 +4766,47 @@ msgstr ""
 
 #: inc/commondbtm.class.php:2288
 msgid "Complete Name: "
-msgstr ""
+msgstr "Celé jméno: "
 
 #: inc/commondbtm.class.php:2293
 msgid "Serial number: "
-msgstr ""
+msgstr "Sériové číslo: "
 
 #: inc/commondbtm.class.php:2298
 msgid "Inventory number: "
-msgstr ""
+msgstr "Inventární číslo: "
 
 #: inc/commondbtm.class.php:2305
 msgid "Status: "
-msgstr ""
+msgstr "Stav: "
 
 #: inc/commondbtm.class.php:2312
 msgid "Location: "
-msgstr ""
+msgstr "Umístění: "
 
 #: inc/commondbtm.class.php:2319
 msgid "User: "
-msgstr ""
+msgstr "Uživatel: "
 
 #: inc/commondbtm.class.php:2326
 msgid "Group: "
-msgstr ""
+msgstr "Skupina: "
 
 #: inc/commondbtm.class.php:2333
 msgid "Technician in charge of the hardware: "
-msgstr ""
+msgstr "Technik zodpovědný za hardware: "
 
 #: inc/commondbtm.class.php:2339
 msgid "Alternate username: "
-msgstr ""
+msgstr "Náhradní uživatelské jméno: "
 
 #: inc/commondbtm.class.php:2344
 msgid "Alternate username number: "
-msgstr ""
+msgstr "Náhradní uživatelské číslo: "
 
 #: inc/commondbtm.class.php:2348
 msgid "Comments: "
-msgstr ""
+msgstr "Komentáře: "
 
 #. TRANS: %s is the list of the failed fields
 #: inc/commondbtm.class.php:2621
@@ -4849,7 +4852,7 @@ msgstr "Šablony"
 
 #: inc/commondbtm.class.php:3197
 msgid "Add a template..."
-msgstr "Přidat šablonu......"
+msgstr "Přidat šablonu..."
 
 #: inc/commondropdown.class.php:108 inc/event.class.php:120
 #: inc/html.class.php:1769
@@ -4866,7 +4869,7 @@ msgstr "Toto umístění nelze smazat, protože má pod-umístění"
 #: inc/commondropdown.class.php:398
 msgid "Caution: you're about to remove a heading used for one or more items."
 msgstr ""
-"Varování: chystáte se odstranit hlavičku použitou u jedné nebo více položek."
+"Varování: chystáte se odstranit hlavičku použitou u jedné nebo více položek"
 
 #: inc/commondropdown.class.php:403
 msgid ""
@@ -4916,7 +4919,7 @@ msgstr "Ladit"
 
 #: inc/commonitilactor.class.php:162
 msgid "Email Followup"
-msgstr ""
+msgstr "Emailové doplňující zprávy"
 
 #: inc/commonitilobject.class.php:425 inc/commonitilobject.class.php:468
 #: inc/commonitilobject.class.php:1946 inc/mailcollector.class.php:119
@@ -4929,7 +4932,7 @@ msgstr ""
 #: inc/commonitilobject.class.php:681 inc/commonitilobject.class.php:701
 #: inc/commonitilobject.class.php:711 inc/commonitilobject.class.php:737
 msgid "Invalid dates. Update cancelled."
-msgstr "Neplatná data. Akce zrušena.."
+msgstr "Neplatná data. Akce zrušena."
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
 #: inc/commonitilobject.class.php:1146
@@ -4939,7 +4942,7 @@ msgstr ""
 
 #: inc/commonitilobject.class.php:1169
 msgid "Failed to send the file (probably too large)"
-msgstr "Chyba při odesílání souboru (pravděpodobně z důvodu velikosti))"
+msgstr "Chyba při odesílání souboru (pravděpodobně z důvodu velikosti)"
 
 #: inc/commonitilobject.class.php:1213
 msgctxt "priority"
@@ -5261,7 +5264,7 @@ msgstr ""
 
 #: inc/commonitiltask.class.php:736 inc/commonitiltask.class.php:879
 #: inc/group_user.class.php:131 inc/group_user.class.php:192
-#: inc/ocsserver.class.php:479 inc/search.class.php:4015
+#: inc/ocsserver.class.php:479 inc/search.class.php:4016
 msgid "None"
 msgstr "Žádný"
 
@@ -5302,7 +5305,7 @@ msgid ""
 " alternate username."
 msgstr ""
 "Náhradní uživatelské jméno aktualizováno. Připojená zařízení byla "
-"aktualizována použitím tohoto uživatelského jména.."
+"aktualizována použitím tohoto uživatelského jména."
 
 #: inc/computer.class.php:223 inc/computer_item.class.php:191
 msgid ""
@@ -5315,7 +5318,7 @@ msgid ""
 "Status updated. The connected items have been updated using this status."
 msgstr ""
 "Stav aktualizován. Připojená zařízení byla aktualizována použitím tohoto "
-"stavu.."
+"stavu."
 
 #: inc/computer.class.php:303 inc/computer_item.class.php:176
 msgid ""
@@ -5431,10 +5434,10 @@ msgstr "Typ paměti"
 #: inc/computervirtualmachine.class.php:319 inc/networkequipment.class.php:374
 #: inc/networkequipment.class.php:488
 msgid "Memory (Mio)"
-msgstr "Paměť (MB))"
+msgstr "Paměť (MB)"
 
 #: inc/computer.class.php:922 inc/dropdown.class.php:683
-#: inc/networkinterface.class.php:43 inc/networkport.class.php:713
+#: inc/networkinterface.class.php:43 inc/networkport.class.php:725
 msgid "Network interface"
 msgid_plural "Network interfaces"
 msgstr[0] ""
@@ -5618,7 +5621,7 @@ msgstr "Přidat novou komponentu"
 
 #. TRANS: %s is a size
 #: inc/computerdisk.class.php:250 inc/computerdisk.class.php:252
-#: inc/mailcollector.class.php:1435
+#: inc/mailcollector.class.php:1434
 #, php-format
 msgid "%s Mio"
 msgstr ""
@@ -5633,9 +5636,9 @@ msgstr ""
 #: inc/displaypreference.class.php:557 inc/group.class.php:600
 #: inc/group_user.class.php:456 inc/itilcategory.class.php:297
 #: inc/knowbaseitem.class.php:1095 inc/netpoint.class.php:294
-#: inc/networkalias.class.php:291 inc/networkname.class.php:596
+#: inc/networkalias.class.php:291 inc/networkname.class.php:605
 #: inc/notificationtarget.class.php:1075 inc/rule.class.php:1799
-#: inc/search.class.php:5080 inc/software.class.php:801
+#: inc/search.class.php:5081 inc/software.class.php:801
 #: inc/softwarelicense.class.php:514 inc/softwarelicense.class.php:661
 #: inc/softwareversion.class.php:314 inc/state.class.php:184
 #: inc/tickettemplatehiddenfield.class.php:205
@@ -5819,8 +5822,7 @@ msgstr "Automatické vyplnění textových polí"
 
 #: inc/config.class.php:262
 msgid "Character to force the full display of dropdowns (wildcard)"
-msgstr ""
-"Znak způsobující plné zobrazení rozbalovacích nabídek (zástupný znak))"
+msgstr "Znak způsobující plné zobrazení rozbalovacích nabídek (zástupný znak)"
 
 #: inc/config.class.php:295 inc/config.class.php:1111
 #: inc/entitydata.class.php:1153 inc/event.class.php:123
@@ -5855,7 +5857,7 @@ msgstr "Omezit správu telefonů"
 
 #: inc/config.class.php:325
 msgid "Beginning of fiscal year"
-msgstr ""
+msgstr "Počátek fiskálního roku"
 
 #: inc/config.class.php:327
 msgid "Restrict printer management"
@@ -5863,7 +5865,7 @@ msgstr "Omezit správu tiskáren"
 
 #: inc/config.class.php:333
 msgid "Automatic fields (marked by *)"
-msgstr "Automatická pole (označená *))"
+msgstr "Automatická pole (označená *)"
 
 #: inc/config.class.php:334 inc/stat.class.php:1411 inc/stat.class.php:1422
 msgid "Global"
@@ -5972,7 +5974,7 @@ msgstr "Použít slave pro vyhledávač"
 #: inc/event.class.php:125 inc/html.class.php:1089 inc/profile.class.php:103
 #: inc/profile.class.php:506 inc/profile.class.php:784
 #: inc/profile.class.php:1320 inc/profile.class.php:1649
-#: inc/search.class.php:4696
+#: inc/search.class.php:4697
 msgid "Assistance"
 msgstr "Podpora"
 
@@ -6002,11 +6004,11 @@ msgstr ""
 
 #: inc/config.class.php:575
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
-msgstr "Povolit vytvoření anonymních požadavků (přijímačem))"
+msgstr "Povolit vytvoření anonymních požadavků (přijímačem)"
 
 #: inc/config.class.php:577
 msgid "Allow anonymous followups (receiver)"
-msgstr "Povolit anonymní doplňující zprávy (přijímačem))"
+msgstr "Povolit anonymní doplňující zprávy (přijímačem)"
 
 #: inc/config.class.php:584
 msgid "Matrix of calculus for priority"
@@ -6140,31 +6142,31 @@ msgstr "Úroveň záznamů"
 
 #: inc/config.class.php:878
 msgid "1- Critical (login error only)"
-msgstr "1- Kritické (pouze chyba přihlášení))"
+msgstr "1- Kritické (pouze chyba přihlášení)"
 
 #: inc/config.class.php:879
 msgid "2- Severe (not used)"
-msgstr ""
+msgstr "2- Závažné (nepoužívá se)"
 
 #: inc/config.class.php:880
 msgid "3- Important (successful logins)"
-msgstr "3- Důležité (úspěšná přihlášení))"
+msgstr "3- Důležité (úspěšná přihlášení)"
 
 #: inc/config.class.php:881
 msgid "4- Notices (add, delete, tracking)"
-msgstr ""
+msgstr "4- Upozornění (přidat, smazat, sledování)"
 
 #: inc/config.class.php:882
 msgid "5- Complete (all)"
-msgstr ""
+msgstr "5- Kompletní (vše)"
 
 #: inc/config.class.php:886
 msgid "Maximal number of automatic actions (run by CLI)"
-msgstr "Maximální počet automatizovaných akcí (spuštěno příkazovým řádkem))"
+msgstr "Maximální počet automatizovaných akcí (spuštěno příkazovým řádkem)"
 
 #: inc/config.class.php:891
 msgid "Logs in files (SQL, email, automatic action...)"
-msgstr "Záznamy v souborech (SQL, email, automatizované činnosti...)...)"
+msgstr "Záznamy v souborech (SQL, email, automatizované činnosti...)"
 
 #: inc/config.class.php:899
 msgid "Proxy configuration for upgrade check"
@@ -6224,19 +6226,19 @@ msgstr "Kontrola přístupových oprávnění pro zápis do grafických souborů
 
 #: inc/config.class.php:1200
 msgid "The directory could not be created."
-msgstr "Adresář nebylo možné vytvořit.."
+msgstr "Adresář nebylo možné vytvořit."
 
 #: inc/config.class.php:1201
 msgid "The directory was created but could not be removed."
-msgstr "Adresář byl vytvořen, ale není možné ho odstranit.."
+msgstr "Adresář byl vytvořen, ale není možné ho odstranit."
 
 #: inc/config.class.php:1202
 msgid "The file could not be created."
-msgstr "Soubor nebylo možné vytvořit.."
+msgstr "Soubor nebylo možné vytvořit."
 
 #: inc/config.class.php:1203 inc/config.class.php:1250
 msgid "The file was created but can't be deleted."
-msgstr "Soubor byl vytvořen, ale není možné ho smazat.."
+msgstr "Soubor byl vytvořen, ale není možné ho smazat."
 
 #: inc/config.class.php:1208 inc/config.class.php:1213
 #: inc/config.class.php:1247 inc/config.class.php:1251
@@ -6400,7 +6402,7 @@ msgstr "Doba obnovování smlouvy"
 
 #: inc/contract.class.php:194 inc/contract.class.php:428
 #: inc/contract.class.php:1410 inc/notificationtargetcontract.class.php:40
-#: inc/search.class.php:3927
+#: inc/search.class.php:3928
 msgid "Notice"
 msgstr "Výpověď"
 
@@ -6533,7 +6535,7 @@ msgstr "Posílat alarmy u smluv"
 
 #: inc/contract.class.php:1173
 msgid "Contract entered in notice time:"
-msgstr "Smlouva zadána v čase::"
+msgstr "Smlouva zadána v čase:"
 
 #. TRANS: %s is entity name
 #: inc/contract.class.php:1211
@@ -6551,7 +6553,7 @@ msgstr "Automaticky"
 msgid "Express"
 msgstr "Výslovně"
 
-#: inc/contract.class.php:1412 inc/search.class.php:3930
+#: inc/contract.class.php:1412 inc/search.class.php:3931
 msgid "End + Notice"
 msgstr ""
 
@@ -6628,7 +6630,7 @@ msgstr "Poslední běh"
 
 #: inc/crontask.class.php:455 inc/crontask.class.php:456
 #: inc/crontask.class.php:516 inc/crontask.class.php:517
-#: inc/knowbaseitem.class.php:555 inc/search.class.php:1707
+#: inc/knowbaseitem.class.php:555 inc/search.class.php:1708
 msgid "Blank"
 msgstr "Vyčistit formulář"
 
@@ -6650,7 +6652,7 @@ msgstr "Příkazový řádek"
 
 #: inc/crontask.class.php:720 inc/toolbox.class.php:820
 msgid "A minimum of 64MB is commonly required for GLPI."
-msgstr "Obvykle je pro GLPI vyžadováno minimálně 64Mb.."
+msgstr "Obvykle je pro GLPI vyžadováno minimálně 64Mb."
 
 #: inc/crontask.class.php:861
 msgid "Run count"
@@ -6689,7 +6691,7 @@ msgstr "Minimální počet"
 
 #: inc/crontask.class.php:918 inc/crontask.class.php:922
 #: inc/crontask.class.php:925 inc/crontask.class.php:930
-#: inc/search.class.php:5104 inc/search.class.php:5124
+#: inc/search.class.php:5105 inc/search.class.php:5125
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
@@ -6723,7 +6725,7 @@ msgid "Last run list"
 msgstr "Přehled posledního běhu"
 
 #: inc/crontask.class.php:1130 inc/event.class.php:136 inc/html.class.php:1339
-#: inc/html.class.php:1954 inc/html.class.php:2613 inc/search.class.php:4739
+#: inc/html.class.php:1954 inc/html.class.php:2613 inc/search.class.php:4740
 msgid "Plugins"
 msgstr "Pluginy"
 
@@ -6737,7 +6739,7 @@ msgstr "Vyčistit staré záznamy"
 
 #: inc/crontask.class.php:1303
 msgid "How long system logs are keep in database (in days, 0 for infinite)"
-msgstr "Jak dlouho uchovávat logy v databázi (ve dnech, 0 pro nekončeno))"
+msgstr "Jak dlouho uchovávat logy v databázi (ve dnech, 0 pro nekončeno)"
 
 #: inc/crontask.class.php:1306
 msgid "Database optimization"
@@ -6789,7 +6791,7 @@ msgstr "Zkontrolovat repliku MySQL"
 
 #: inc/dbconnection.class.php:315
 msgid "Max delay between master and slave (minutes)"
-msgstr "Maximální zpoždění mezi master a slave (v minutách))"
+msgstr "Maximální zpoždění mezi master a slave (v minutách)"
 
 #: inc/dbconnection.class.php:345
 #, php-format
@@ -6810,7 +6812,7 @@ msgstr ""
 
 #: inc/dbconnection.class.php:385
 msgid "can't connect to the database"
-msgstr ""
+msgstr "Nemohu se připojit do databáze"
 
 #: inc/dbconnection.class.php:387
 #, php-format
@@ -6823,7 +6825,7 @@ msgstr ""
 
 #: inc/db.function.php:458
 msgid "Complete Name:"
-msgstr ""
+msgstr "Celé jméno:"
 
 #: inc/db.function.php:1161
 #, php-format
@@ -6871,7 +6873,7 @@ msgstr "RAID"
 #: inc/devicegraphiccard.class.php:60 inc/devicegraphiccard.class.php:76
 #: inc/devicegraphiccard.class.php:91 inc/deviceharddrive.class.php:67
 #: inc/deviceharddrive.class.php:93 inc/deviceharddrive.class.php:114
-#: inc/networkport.class.php:638 inc/networkportethernet.class.php:93
+#: inc/networkport.class.php:650 inc/networkportethernet.class.php:93
 #: inc/networkportwifi.class.php:103
 msgid "Interface"
 msgstr "Rozhraní"
@@ -7075,7 +7077,7 @@ msgstr "Typ MIME"
 
 #: inc/document.class.php:364 inc/document.class.php:718
 msgid "Checksum (SHA1)"
-msgstr "Kontrolní součet (SHA1))"
+msgstr "Kontrolní součet (SHA1)"
 
 #. TRANS: %s is a size
 #: inc/document.class.php:384
@@ -7121,11 +7123,11 @@ msgstr "Přesun souboru selhal"
 
 #: inc/document.class.php:1063
 msgid "File too large to be added."
-msgstr "Příliš velký soubor pro přidání.."
+msgstr "Příliš velký soubor pro přidání."
 
 #: inc/document.class.php:1108
 msgid "The file is valid. Upload is successful."
-msgstr "Soubor je platný. Upload byl úspěšný.."
+msgstr "Soubor je platný. Upload byl úspěšný."
 
 #: inc/document.class.php:1117
 msgid ""
@@ -7197,7 +7199,7 @@ msgstr[2] ""
 
 #: inc/dropdown.class.php:282 inc/dropdown.class.php:305
 msgid "Phone: "
-msgstr ""
+msgstr "Telefon: "
 
 #: inc/dropdown.class.php:286
 msgid "Phone 2: "
@@ -7205,15 +7207,15 @@ msgstr ""
 
 #: inc/dropdown.class.php:290
 msgid "Mobile phone: "
-msgstr ""
+msgstr "Mobil: "
 
 #: inc/dropdown.class.php:294 inc/dropdown.class.php:309
 msgid "Fax: "
-msgstr ""
+msgstr "Fax: "
 
 #: inc/dropdown.class.php:298 inc/dropdown.class.php:313
 msgid "Email: "
-msgstr ""
+msgstr "Email: "
 
 #: inc/dropdown.class.php:505 inc/dropdown.class.php:508
 msgid "GMT"
@@ -7317,7 +7319,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: inc/dropdown.class.php:682 inc/networkport.class.php:584
+#: inc/dropdown.class.php:682 inc/networkport.class.php:587
 msgid "Networking"
 msgstr ""
 
@@ -7332,12 +7334,12 @@ msgstr[1] ""
 msgstr[2] ""
 
 #: inc/dropdown.class.php:690 inc/networkportaggregate.class.php:77
-#: inc/networkportalias.class.php:59 inc/networkport.class.php:651
-#: inc/networkportethernet.class.php:96 inc/networkport_vlan.class.php:192
-#: inc/networkport_vlan.class.php:236 inc/networkport_vlan.class.php:241
+#: inc/networkportalias.class.php:59 inc/networkport.class.php:663
+#: inc/networkportethernet.class.php:96 inc/networkport_vlan.class.php:193
+#: inc/networkport_vlan.class.php:237 inc/networkport_vlan.class.php:242
 #: inc/networkportwifi.class.php:108 inc/vlan.class.php:45
 msgid "VLAN"
-msgstr ""
+msgstr "VLAN"
 
 #: inc/dropdown.class.php:692 inc/profile.class.php:669
 #: inc/profile.class.php:1433
@@ -7441,7 +7443,7 @@ msgstr ""
 msgid "Use unitary management"
 msgstr "Použít jednotnou správu"
 
-#: inc/dropdown.class.php:1420 inc/networkport_vlan.class.php:198
+#: inc/dropdown.class.php:1420 inc/networkport_vlan.class.php:199
 msgid "Associate a VLAN"
 msgstr "Přiřadit VLAN"
 
@@ -7505,11 +7507,11 @@ msgstr ""
 
 #: inc/dropdown.class.php:1556
 msgid "Add Contact..."
-msgstr "Přidat kontakt......"
+msgstr "Přidat kontakt..."
 
 #: inc/dropdown.class.php:1566
 msgid "Add Supplier..."
-msgstr "Přidat dodavatele......"
+msgstr "Přidat dodavatele..."
 
 #: inc/dropdown.class.php:1572 inc/group_user.class.php:109
 msgid "Associate to a group"
@@ -7613,7 +7615,7 @@ msgstr "Země"
 
 #: inc/entity.class.php:304
 msgid "Search filter (if needed)"
-msgstr "Vyhledávací filtr (pokud je třeba))"
+msgstr "Vyhledávací filtr (pokud je třeba)"
 
 #: inc/entity.class.php:311 inc/entitydata.class.php:564
 #: inc/notificationmailsetting.class.php:146
@@ -7623,7 +7625,7 @@ msgstr "Emailová adresa správce"
 #: inc/entity.class.php:318 inc/entitydata.class.php:573
 #: inc/notificationmailsetting.class.php:159
 msgid "Administrator reply-to email (if needed)"
-msgstr "Emailová adresa správce pro odpovědi (pokud je třeba))"
+msgstr "Emailová adresa správce pro odpovědi (pokud je třeba)"
 
 #: inc/entity.class.php:325
 msgid "Domain of electronic mail service"
@@ -7641,7 +7643,7 @@ msgstr "Jméno administrátora"
 #: inc/entity.class.php:344 inc/entitydata.class.php:577
 #: inc/notificationmailsetting.class.php:166
 msgid "Response name (if needed)"
-msgstr "Jméno pro odpovědi (pokud je třeba))"
+msgstr "Jméno pro odpovědi (pokud je třeba)"
 
 #: inc/entity.class.php:350 inc/entitydata.class.php:590
 #: inc/notificationmailsetting.class.php:177
@@ -7777,7 +7779,7 @@ msgstr "Hodnoty použité v rozhraní pro vyhledání uživatelů z LDAP adresá
 
 #: inc/entitydata.class.php:352
 msgid "LDAP filter associated to the entity (if necessary)"
-msgstr "LDAP filtr přiřazený k entitě (pokud je vyžadováno))"
+msgstr "LDAP filtr přiřazený k entitě (pokud je vyžadováno)"
 
 #: inc/entitydata.class.php:417
 msgid "Autofil dates for financial and administrative information"
@@ -8101,7 +8103,7 @@ msgstr "Položka nenalezena"
 
 #: inc/html.class.php:450
 msgid "You don't have permission to perform this action."
-msgstr "Nemáte oprávnění k provedení této akce.."
+msgstr "Nemáte oprávnění k provedení této akce."
 
 #: inc/html.class.php:723
 msgid "Progress"
@@ -8109,7 +8111,7 @@ msgstr "Postup"
 
 #: inc/html.class.php:853 inc/html.class.php:860
 msgid "Loading..."
-msgstr "Probíhá nahrávání......"
+msgstr "Probíhá nahrávání..."
 
 #: inc/html.class.php:1135 inc/html.class.php:1136 inc/html.class.php:2662
 #: inc/html.class.php:2663 inc/ticket.class.php:2672 inc/ticket.class.php:2673
@@ -8441,7 +8443,7 @@ msgstr "Koeficient odepisování"
 
 #: inc/infocom.class.php:933
 msgid "TCO (value + tracking cost)"
-msgstr "TCO (celkové náklady na pořízení a držení))"
+msgstr "TCO (celkové náklady na pořízení a držení)"
 
 #: inc/infocom.class.php:942
 msgid "Monthly TCO"
@@ -8486,7 +8488,7 @@ msgid "IP version"
 msgstr ""
 
 #: inc/ipnetwork.class.php:86 inc/ipnetwork.class.php:152
-#: inc/networkport.class.php:623 inc/networkport.class.php:704
+#: inc/networkport.class.php:635 inc/networkport.class.php:716
 msgid "Gateway"
 msgstr "Brána"
 
@@ -8566,7 +8568,7 @@ msgstr "Jméno kategorie"
 
 #: inc/knowbaseitem.class.php:475
 msgid "Select a category for this item:"
-msgstr "Zvolit kategorii pro tuto položku ::"
+msgstr "Zvolit kategorii pro tuto položku :"
 
 #: inc/knowbaseitem.class.php:481 inc/knowbaseitem.class.php:720
 #: inc/knowbaseitem.class.php:1011 inc/knowbaseitem.class.php:1225
@@ -8758,19 +8760,19 @@ msgstr "Smazání komponenty: %s"
 #: inc/log.class.php:390
 #, php-format
 msgid "Install software: %s"
-msgstr ""
+msgstr "Instalovat software: %s"
 
 #. TRANS: %s is the software name
 #: inc/log.class.php:396
 #, php-format
 msgid "Uninstall software: %s"
-msgstr ""
+msgstr "Odinstalovat software: %s"
 
 #. TRANS: %s is the item name
 #: inc/log.class.php:405
 #, php-format
 msgid "Disconnect the item: %s"
-msgstr ""
+msgstr "odpojit položku: %s"
 
 #. TRANS: %s is the item name
 #: inc/log.class.php:414
@@ -8782,19 +8784,19 @@ msgstr ""
 #: inc/log.class.php:421
 #, php-format
 msgid "Imported from OCSNG: %s"
-msgstr ""
+msgstr "Importováno z OCSNG: %s"
 
 #. TRANS: %s is the value deleted
 #: inc/log.class.php:431
 #, php-format
 msgid "Deleted in OCSNG: %s"
-msgstr ""
+msgstr "Smazáno v OCSNG: %s"
 
 #. TRANS: %s is the value linked
 #: inc/log.class.php:444
 #, php-format
 msgid "Linked with an OCSNG computer: %s"
-msgstr ""
+msgstr "Spojeno s počítačem OCSNG: %s"
 
 #: inc/log.class.php:455
 #, php-format
@@ -8833,7 +8835,7 @@ msgstr ""
 
 #: inc/log.class.php:574
 msgid "Update of the field"
-msgstr ""
+msgstr "úprava pole"
 
 #: inc/log.class.php:578
 #, php-format
@@ -8843,7 +8845,7 @@ msgstr ""
 #: inc/mailcollector.class.php:208
 msgid "mbstring extension not found. Warning with charsets used."
 msgstr ""
-"Rozšíření mbstring nenalezeno. Upozornění týkající se použité znakové sady.."
+"Rozšíření mbstring nenalezeno. Upozornění týkající se použité znakové sady."
 
 #: inc/mailcollector.class.php:212
 msgid "Name (Email address)"
@@ -8879,69 +8881,59 @@ msgid ""
 "errors=%4$d"
 msgstr ""
 
-#: inc/mailcollector.class.php:532 inc/user.class.php:2974
-msgid "Connection failed"
-msgstr "připojení selhalo"
-
-#: inc/mailcollector.class.php:534
+#: inc/mailcollector.class.php:531
 msgid "Could not connect to mailgate server"
 msgstr ""
 
 #. TRANS: %s is the ID of the mailgate
 #: inc/mailcollector.class.php:541
 #, php-format
-msgid "Item not found (mailgate %d"
-msgstr ""
-
-#. TRANS: %s is the ID of the mailgate
-#: inc/mailcollector.class.php:546
-#, php-format
-msgid "Could find mailgate %d"
+msgid "Could not find mailgate %d"
 msgstr ""
 
 #. TRANS: %s is a directory
-#: inc/mailcollector.class.php:584
+#: inc/mailcollector.class.php:583
 #, php-format
 msgid "%s is not writable"
 msgstr ""
 
 #. TRANS: %1$s is the filename and %2$s its size
-#: inc/mailcollector.class.php:1164
+#: inc/mailcollector.class.php:1163
 #, php-format
 msgid "Too large attached file: %1$s (%2$s)"
 msgstr ""
 
 #. TRANS: %1$s is the filename and %2$s its mime type
-#: inc/mailcollector.class.php:1171
+#: inc/mailcollector.class.php:1170
 #, php-format
 msgid "Invalid attached file: %1$s (%2$s)"
 msgstr ""
 
 #. TRANS: %1$s is the name of the folder, %2$s is the name of the receiver
-#: inc/mailcollector.class.php:1267
+#: inc/mailcollector.class.php:1266
 #, php-format
 msgid "Invalid configuration for %1$s folder in receiver %2$s"
 msgstr ""
 
-#: inc/mailcollector.class.php:1284
+#: inc/mailcollector.class.php:1283
 msgid "Retrieve email (Mail receivers)"
-msgstr "Načíst email (Emailové přijímače))"
+msgstr "Načíst email (Emailové přijímače)"
 
-#: inc/mailcollector.class.php:1285
+#: inc/mailcollector.class.php:1284
 msgid "Number of email to retrieve"
 msgstr "Počet emailů k načtení"
 
-#: inc/mailcollector.class.php:1398
+#: inc/mailcollector.class.php:1397
 msgid ""
 "Your email could not be processed.\n"
 "If the problem persists, contact the administrator"
 msgstr ""
 
-#: inc/mailcollector.class.php:1409 inc/mailcollector.class.php:1411
+#: inc/mailcollector.class.php:1408 inc/mailcollector.class.php:1410
 msgid "List of not imported emails"
 msgstr "Seznam nenaimportovaných emailů"
 
-#: inc/mailcollector.class.php:1433 inc/ocsserver.class.php:332
+#: inc/mailcollector.class.php:1432 inc/ocsserver.class.php:332
 #: inc/ocsserver.class.php:339 inc/ocsserver.class.php:346
 #: inc/ocsserver.class.php:353 inc/ocsserver.class.php:360
 #: inc/ocsserver.class.php:425 inc/ocsserver.class.php:429
@@ -8982,14 +8974,15 @@ msgstr ""
 #: install/update_0803_083.php:78 install/update_0803_083.php:246
 #: install/update_0803_083.php:248 install/update_0803_083.php:275
 #: install/update_0803_083.php:440 install/update_0803_083.php:464
-#: install/update_0803_083.php:495 install/update_0803_083.php:628
-#: install/update_0803_083.php:640 install/update_0803_083.php:715
-#: install/update_0803_083.php:762 install/update_083_084.php:297
+#: install/update_0803_083.php:495 install/update_0803_083.php:631
+#: install/update_0803_083.php:643 install/update_0803_083.php:718
+#: install/update_0803_083.php:765 install/update_083_084.php:297
 #: install/update_083_084.php:459 install/update_083_084.php:496
 #: install/update_083_084.php:556 install/update_083_084.php:583
 #: install/update_083_084.php:612 install/update_083_084.php:627
 #: install/update_083_084.php:644 install/update_083_084.php:674
 #: install/update_083_084.php:692 install/update_083_084.php:744
+#: install/update_083_084.php:920
 #, php-format
 msgid "Change of the database layout - %s"
 msgstr ""
@@ -8997,7 +8990,7 @@ msgstr ""
 #: inc/migration.class.php:487 inc/software.class.php:894
 #: install/update.php:143
 msgid "Task completed."
-msgstr "Dokončeno.."
+msgstr "Dokončeno."
 
 #: inc/monitor.class.php:284 inc/peripheral.class.php:285
 #: inc/phone.class.php:283 inc/printer.class.php:386
@@ -9069,7 +9062,7 @@ msgstr ""
 
 #: inc/networkequipment.class.php:361 inc/networkequipment.class.php:498
 #: inc/networkportaggregate.class.php:76 inc/networkportalias.class.php:58
-#: inc/networkport.class.php:602 inc/networkportdialup.class.php:56
+#: inc/networkport.class.php:614 inc/networkportdialup.class.php:56
 #: inc/networkportethernet.class.php:94 inc/networkportethernet.class.php:295
 #: inc/networkportinstantiation.class.php:318
 #: inc/networkportmigration.class.php:58 inc/networkportwifi.class.php:104
@@ -9092,7 +9085,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: inc/networkname.class.php:405
+#: inc/networkname.class.php:406
 msgid ""
 "Several network names available! Go to the tab 'Network Name' to manage "
 "them."
@@ -9132,7 +9125,7 @@ msgid "No network port found"
 msgstr "Nenalezen žádný síťový port"
 
 #: inc/networkport.class.php:543 inc/networkport.class.php:549
-#: inc/networkport.class.php:679
+#: inc/networkport.class.php:691
 msgid "Port number"
 msgid_plural "Ports number"
 msgstr[0] ""
@@ -9147,22 +9140,22 @@ msgstr "Od"
 msgid "to"
 msgstr "Do"
 
-#: inc/networkport.class.php:609
+#: inc/networkport.class.php:621
 msgid "Netmask"
 msgstr ""
 
-#: inc/networkport.class.php:616 inc/networkport.class.php:699
+#: inc/networkport.class.php:628 inc/networkport.class.php:711
 #: inc/ruleimportcomputer.class.php:102 inc/ruleocs.class.php:121
 msgid "Subnet"
 msgstr "Podsíť"
 
-#: inc/networkport.class.php:694
+#: inc/networkport.class.php:706
 msgid "Mask"
 msgstr "Maska"
 
-#: inc/networkport.class.php:728
+#: inc/networkport.class.php:740
 msgid "id"
-msgstr ""
+msgstr "ID"
 
 #: inc/networkportdialup.class.php:46
 msgid "Connection by dial line - Dialup"
@@ -9207,7 +9200,7 @@ msgstr "Bez jména"
 
 #: inc/networkportethernet.class.php:215
 msgid "Not connected."
-msgstr "Není připojeno.."
+msgstr "Není připojeno."
 
 #: inc/networkportethernet.class.php:252
 msgid "entity_sons options are not available with array of entity"
@@ -9231,6 +9224,10 @@ msgstr ""
 
 #: inc/networkportlocal.class.php:46
 msgid "Local loop"
+msgstr ""
+
+#: inc/networkportmigration.class.php:45
+msgid "Not defined. Inherit from migration"
 msgstr ""
 
 #: inc/networkport_networkport.class.php:112
@@ -9260,23 +9257,26 @@ msgstr ""
 msgid "From %1$s to #%2$s"
 msgstr ""
 
-#: inc/networkport_vlan.class.php:152
+#. TRANS: %s is the VLAN name
+#: inc/networkport_vlan.class.php:154
+#, php-format
+msgid "%s - Tagged"
+msgstr ""
+
+#: inc/networkport_vlan.class.php:156
+#, php-format
+msgid "%s - Untagged"
+msgstr ""
+
+#: inc/networkport_vlan.class.php:158
 #, php-format
 msgid "ID TAG: %s"
 msgstr "ID TAG: %s"
 
-#: inc/networkport_vlan.class.php:153
+#: inc/networkport_vlan.class.php:159
 #, php-format
 msgid "Comments: %s"
 msgstr "Komentáře: %s"
-
-#: inc/networkport_vlan.class.php:156
-msgid "- Tagged"
-msgstr ""
-
-#: inc/networkport_vlan.class.php:158
-msgid "- Untagged"
-msgstr ""
 
 #: inc/networkportwifi.class.php:46
 msgid "Wifi port"
@@ -9327,7 +9327,7 @@ msgstr "Test emailu"
 
 #: inc/notificationmail.class.php:177
 msgid "This is a test email."
-msgstr "Toto je zkušební email.."
+msgstr "Toto je zkušební email."
 
 #: inc/notificationmail.class.php:180
 msgid "Failed to send test email to administrator"
@@ -9355,11 +9355,11 @@ msgstr "Adresa (URL) aplikace"
 
 #: inc/notificationmailsetting.class.php:172
 msgid "The PHP mail function is unknown or is not activated on your system."
-msgstr "Funkce PHP mail není známa nebo není ve vašem systému aktivní."
+msgstr "Funkce PHP mail není známa nebo není ve vašem systému aktivní"
 
 #: inc/notificationmailsetting.class.php:173
 msgid "The use of a SMTP is needed."
-msgstr "Je nutné použít SMTP."
+msgstr "Je nutné použít SMTP"
 
 #: inc/notificationmailsetting.class.php:182
 msgid "Way of sending emails"
@@ -9391,11 +9391,11 @@ msgstr "Počítač SMTP"
 
 #: inc/notificationmailsetting.class.php:197
 msgid "SMTP Login (optional)"
-msgstr "Přihlášení SMTP (volitelně))"
+msgstr "Přihlášení SMTP (volitelně)"
 
 #: inc/notificationmailsetting.class.php:205
 msgid "SMTP Password (optional)"
-msgstr "Heslo SMTP (volitelně))"
+msgstr "Heslo SMTP (volitelně)"
 
 #: inc/notificationtargetcartridge.class.php:38
 msgid "Cartridges alarm"
@@ -9527,7 +9527,7 @@ msgstr ""
 
 #: inc/notificationtargetcommonitilobject.class.php:788
 msgid "day(s)"
-msgstr "dnů)"
+msgstr "dnů"
 
 #: inc/notificationtargetcommonitilobject.class.php:790
 msgid "No defined category"
@@ -9585,7 +9585,7 @@ msgstr "Kontrakt s upozorněním od"
 #: inc/notificationtargetcrontask.class.php:98
 msgid ""
 "The following automatic actions are in error. They require intervention."
-msgstr "Následující automatizované akce ohlásily chybu a vyžadují Váš zásah.."
+msgstr "Následující automatizované akce ohlásily chybu a vyžadují Váš zásah."
 
 #: inc/notificationtargetdbconnection.class.php:48
 msgid "Desynchronization MySQL replication"
@@ -9605,7 +9605,7 @@ msgstr "Slave databáze není sychronizovaná !"
 
 #: inc/notificationtargetdbconnection.class.php:86
 msgid "The slave base is desynchronized. The difference is of:"
-msgstr "Slave databáze je desynchronizovaná. Rozdíl::"
+msgstr "Slave databáze je desynchronizovaná. Rozdíl:"
 
 #: inc/notificationtargetfieldunicity.class.php:38
 #: inc/notificationtargetfieldunicity.class.php:79
@@ -9795,7 +9795,7 @@ msgstr ""
 msgid "Number of linked tickets"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:564 inc/search.class.php:4712
+#: inc/notificationtargetticket.class.php:564 inc/search.class.php:4713
 msgid "Number of problems"
 msgstr "Počet problémů"
 
@@ -9927,11 +9927,11 @@ msgstr "Token"
 
 #: inc/notificationtargetuser.class.php:110
 msgid "You have been made a request to reset your account password."
-msgstr "Požádali jste o resetování hesla k vašemu účtu.."
+msgstr "Požádali jste o resetování hesla k vašemu účtu."
 
 #: inc/notificationtargetuser.class.php:112
 msgid "Just follow this link (you have one day):"
-msgstr "Pokračujte po kliknutí na odkaz (máte jeden den) :):"
+msgstr "Pokračujte po kliknutí na odkaz (máte jeden den) :"
 
 #: inc/notificationtemplate.class.php:118
 msgid "CSS"
@@ -10114,11 +10114,11 @@ msgstr "Webová adresa konzole OCSNG"
 
 #: inc/ocsserver.class.php:404
 msgid "Limit the import to the following tags (separator $, nothing for all)"
-msgstr "Omezit import následujících příznaků (oddělovač $, nic pro všechny))"
+msgstr "Omezit import následujících příznaků (oddělovač $, nic pro všechny)"
 
 #: inc/ocsserver.class.php:409
 msgid "Exclude the following tags (separator $, nothing for all)"
-msgstr "Vynechat následující příznaky (oddělovač $, zrušit vše))"
+msgstr "Vynechat následující příznaky (oddělovač $, zrušit vše)"
 
 #: inc/ocsserver.class.php:413
 msgid "Default status"
@@ -10168,7 +10168,7 @@ msgid ""
 "(without double blooms)"
 msgstr ""
 "Globální import: je naimportováno vše, ale materiál je řízen globálně (bez "
-"duplikací))"
+"duplikací)"
 
 #: inc/ocsserver.class.php:497
 msgid "Unit import: everything is imported 'as-is'"
@@ -10208,7 +10208,7 @@ msgstr "Neplatná verze OCSNG: vyžadována verze RC3"
 
 #: inc/ocsserver.class.php:605
 msgid "Invalid OCSNG configuration (TRACE_DELETED must be active)"
-msgstr "Neplatná konfigurace OCSNG (je potřeba aktivovat TRACE_DELETED))"
+msgstr "Neplatná konfigurace OCSNG (je potřeba aktivovat TRACE_DELETED)"
 
 #: inc/ocsserver.class.php:607
 msgid ""
@@ -10216,7 +10216,7 @@ msgid ""
 "necessary)"
 msgstr ""
 "Přístup k databázi OCSNG odepřen (Potřebuji oprávnění pro zápis "
-"hardware.CHECKSUM))"
+"hardware.CHECKSUM)"
 
 #: inc/ocsserver.class.php:609
 msgid ""
@@ -10224,7 +10224,7 @@ msgid ""
 "necessary)"
 msgstr ""
 "Přístup k databázi OCSNG odepřen (Potřebuji oprávnění pro mazání v tabulce "
-"deleted_equiv))"
+"deleted_equiv)"
 
 #: inc/ocsserver.class.php:611
 msgid "Connection to OCSNG database successful"
@@ -10236,7 +10236,7 @@ msgstr "Platná verze a konfigurace OCSNG"
 
 #: inc/ocsserver.class.php:726
 msgid "Unable to add. The OCSNG server already exists."
-msgstr "Není možné přidat. Tento OCSNG server již existuje.."
+msgstr "Není možné přidat. Tento OCSNG server již existuje."
 
 #. TRANS: %s is the OCS id
 #: inc/ocsserver.class.php:1159
@@ -10436,7 +10436,7 @@ msgstr "Hotovo"
 
 #: inc/planning.class.php:112
 msgid "User is already occupied for the selected timeframe:"
-msgstr "Uživatel je už ve zvoleném časovém období obsazený ::"
+msgstr "Uživatel je už ve zvoleném časovém období obsazený :"
 
 #: inc/planning.class.php:198 inc/planning.class.php:214
 msgid "Personal + groups"
@@ -10577,12 +10577,12 @@ msgstr ""
 #: inc/problem.class.php:580 inc/ticket.class.php:2037
 #: inc/ticket.class.php:4323
 msgid "Processing (assigned)"
-msgstr "Zpracováváno (přiděleno))"
+msgstr "Zpracováváno (přiděleno)"
 
 #: inc/problem.class.php:581 inc/ticket.class.php:2038
 #: inc/ticket.class.php:4329
 msgid "Processing (planned)"
-msgstr "Zpracováváno (naplánováno))"
+msgstr "Zpracováváno (naplánováno)"
 
 #: inc/problem.class.php:584
 msgid "Under observation"
@@ -10631,7 +10631,7 @@ msgstr[2] ""
 
 #: inc/problem.class.php:1415 inc/problem.class.php:1457
 msgid "No problem found."
-msgstr "Žádný problém nenalezen.."
+msgstr "Žádný problém nenalezen."
 
 #: inc/problem.class.php:1446
 msgid "Problems on linked items"
@@ -10691,7 +10691,7 @@ msgstr "Po přihlášení přejít na formulář pro vytvoření požadavku"
 #: inc/profile.class.php:512 inc/profile.class.php:793
 #: inc/profile.class.php:1668
 msgid "Add a followup to tickets (requester)"
-msgstr "Přidat doplňující zprávu k požadavku (žadatel))"
+msgstr "Přidat doplňující zprávu k požadavku (žadatel)"
 
 #: inc/profile.class.php:517 inc/profile.class.php:939
 #: inc/profile.class.php:1713
@@ -10704,14 +10704,13 @@ msgid "Show tickets created by my groups"
 msgstr "Zobrazit požadavky vytvořené mými skupinami"
 
 #: inc/profile.class.php:525 inc/profile.class.php:884
-#: inc/profile.class.php:1768
 msgid "See hardware of my group(s)"
-msgstr "Podívat se na hardware v mých skupinách)"
+msgstr "Podívat se na hardware v mých skupinách"
 
 #: inc/profile.class.php:528 inc/profile.class.php:836
 #: inc/profile.class.php:1738
 msgid "Update followups (author)"
-msgstr "Aktualizovat doplňující zprávy (autor))"
+msgstr "Aktualizovat doplňující zprávy (autor)"
 
 #: inc/profile.class.php:533 inc/profile.class.php:887
 #: inc/profile.class.php:1753
@@ -10787,9 +10786,9 @@ msgstr "Vytvoření"
 msgid "Add a followup to all tickets"
 msgstr "Přidat doplňující zprávu do všech požadavků"
 
-#: inc/profile.class.php:801 inc/profile.class.php:1773
+#: inc/profile.class.php:801
 msgid "Add a followup to tickets of associated group(s)"
-msgstr "Přidat doplňující zprávy k požadavkům přiřazených skupin)"
+msgstr "Přidat doplňující zprávy k požadavkům přiřazených skupin"
 
 #: inc/profile.class.php:804 inc/profile.class.php:1778
 msgid "Add a task to all tickets"
@@ -10849,7 +10848,7 @@ msgstr "Viditelnost"
 
 #: inc/profile.class.php:928 inc/profile.class.php:1703
 msgid "See assigned tickets (personnal + group associated)"
-msgstr "Podívat se na přidělené požadavky (osobní + skupinové))"
+msgstr "Podívat se na přidělené požadavky (osobní + skupinové)"
 
 #: inc/profile.class.php:934 inc/profile.class.php:1698
 msgid "Show all tickets"
@@ -10857,7 +10856,7 @@ msgstr "Zobrazit všechny požadavky"
 
 #: inc/profile.class.php:942 inc/profile.class.php:1708
 msgid "View all followups and tasks (public and private)"
-msgstr "Prohlížet všechny doplňující zprávy a úkoly (veřejné a soukromé))"
+msgstr "Prohlížet všechny doplňující zprávy a úkoly (veřejné a soukromé)"
 
 #: inc/profile.class.php:950 inc/profile.class.php:1723
 msgid "View personnal planning"
@@ -10881,19 +10880,19 @@ msgstr "Prohlížet všechny problémy"
 
 #: inc/profile.class.php:970 inc/profile.class.php:1817
 msgid "See the problems (actor)"
-msgstr "Podívat se na problémy (účastník))"
+msgstr "Podívat se na problémy (účastník)"
 
 #: inc/profile.class.php:977 inc/profile.class.php:1849
 msgid "Update all changes"
-msgstr ""
+msgstr "Aktualizovat všechny změny"
 
 #: inc/profile.class.php:980 inc/profile.class.php:1844
 msgid "See all changes"
-msgstr ""
+msgstr "Podívat se na všechny změny"
 
 #: inc/profile.class.php:983 inc/profile.class.php:1839
 msgid "See the changes (actor)"
-msgstr ""
+msgstr "Podívat se na změny, kde spolupracuji"
 
 #: inc/profile.class.php:1026 inc/profile.class.php:1055
 #: inc/profile.class.php:1803
@@ -10908,7 +10907,7 @@ msgstr ""
 
 #: inc/profile.class.php:1084 inc/profile.class.php:1832
 msgid "Life cycle of changes"
-msgstr ""
+msgstr "Životní cyklus změn"
 
 #: inc/profile.class.php:1154 inc/profile.class.php:1616
 msgid "Method for user authentication and synchronization"
@@ -10923,22 +10922,22 @@ msgstr "Přidat uživatele z externích zdrojů"
 msgid "Rules for assigning a computer to an entity"
 msgstr "Pravidla pro přiřazení počítače do entity"
 
-#: inc/profile.class.php:1202 inc/rulemailcollector.class.php:82
+#: inc/profile.class.php:1202 inc/profile.class.php:1566
+#: inc/rulemailcollector.class.php:82
 #: inc/rulemailcollectorcollection.class.php:48
 msgid "Rules for assigning a ticket created through a mail receiver"
 msgstr "Pravidla pro přiřazení požadavku vytvořeného emailovým přijímačem"
 
-#: inc/profile.class.php:1208 inc/profile.class.php:1581
-#: inc/rulesoftwarecategory.class.php:53
+#: inc/profile.class.php:1208 inc/rulesoftwarecategory.class.php:53
 #: inc/rulesoftwarecategorycollection.class.php:48
 msgid "Rules for assigning a category to software"
 msgstr "Pravidla pro přiřazení kategorií k software"
 
-#: inc/profile.class.php:1212 inc/profile.class.php:1591
+#: inc/profile.class.php:1212
 msgid "Dropdown dictionaries"
 msgstr "Rozbalovací nabídka slovníku"
 
-#: inc/profile.class.php:1216 inc/profile.class.php:1586
+#: inc/profile.class.php:1216
 msgid "Software dictionary"
 msgstr ""
 
@@ -10970,14 +10969,30 @@ msgstr ""
 
 #: inc/profile.class.php:1303 inc/profile.class.php:1529
 msgid "Document Type"
-msgstr ""
+msgstr "Typ dokumentu"
 
 #: inc/profile.class.php:1309 inc/profile.class.php:1601
 msgid "Check for upgrade"
 msgstr "Kontrola aktualizací"
 
-#: inc/profile.class.php:1566
-msgid "Rules for assigning a ticket created through a mail receive"
+#: inc/profile.class.php:1581
+msgid "Rules for assigning a category to a software"
+msgstr ""
+
+#: inc/profile.class.php:1586
+msgid "Softwares dictionaries"
+msgstr ""
+
+#: inc/profile.class.php:1591
+msgid "Dropdowns dictionaries"
+msgstr ""
+
+#: inc/profile.class.php:1768
+msgid "See hardware of my groups"
+msgstr ""
+
+#: inc/profile.class.php:1773
+msgid "Add a followup to tickets of associated groups"
 msgstr ""
 
 #: inc/profile.class.php:1810
@@ -11269,14 +11284,14 @@ msgstr "Opravdu si přejete vrátit tuto nerezervovatelnou položku?"
 
 #: inc/reservationitem.class.php:198 inc/search.class.php:1142
 msgid "That will remove all the reservations in progress."
-msgstr "Odstraní všechny probíhající rezervace.."
+msgstr "Odstraní všechny probíhající rezervace."
 
 #: inc/reservationitem.class.php:206
 msgid "Authorize reservations"
 msgstr "Povolit rezervace"
 
-#: inc/reservationitem.class.php:235 inc/search.class.php:4013
-#: inc/search.class.php:4017
+#: inc/reservationitem.class.php:235 inc/search.class.php:4014
+#: inc/search.class.php:4018
 msgid "Modify the comment"
 msgstr "Upravit komentář"
 
@@ -11422,7 +11437,7 @@ msgstr "Výsledek regulárního výrazu"
 
 #: inc/rule.class.php:1949
 msgid "Rules using the object have been disabled."
-msgstr "Pravidla využívající tento objekt byla vypnuta.."
+msgstr "Pravidla využívající tento objekt byla vypnuta."
 
 #: inc/rulecollection.class.php:294
 msgid "Rules list"
@@ -11430,15 +11445,15 @@ msgstr "Seznam pravidel"
 
 #: inc/rulecollection.class.php:325
 msgid "The engine stops on the first checked rule."
-msgstr "Vyhodnocování se zastaví u prvního zaškrtnutého pravidla.."
+msgstr "Vyhodnocování se zastaví u prvního zaškrtnutého pravidla."
 
 #: inc/rulecollection.class.php:330
 msgid "The engine treats all the rules."
-msgstr "Vyhodnotí všechna pravidla.."
+msgstr "Vyhodnotí všechna pravidla."
 
 #: inc/rulecollection.class.php:336
 msgid "The engine passes the result of a rule to the following ones."
-msgstr "Vyhodnocený výsledek pravidla se předá následujícím pravidlům.."
+msgstr "Vyhodnocený výsledek pravidla se předá následujícím pravidlům."
 
 #: inc/rulecollection.class.php:731
 msgid "No element to be tested"
@@ -11464,23 +11479,23 @@ msgstr "Místní pravidla: %s"
 msgid "Rules applicable in the sub-entities"
 msgstr "Pravidla použitelná v podřízených entitách"
 
-#: inc/rulecriteria.class.php:292 inc/search.class.php:4839
-#: inc/search.class.php:4869 inc/search.class.php:4875
-#: inc/search.class.php:4880 inc/search.class.php:4887
-#: inc/search.class.php:4905 inc/search.class.php:4912
-msgid "is"
-msgstr "je"
-
-#: inc/rulecriteria.class.php:293 inc/search.class.php:4843
+#: inc/rulecriteria.class.php:292 inc/search.class.php:4840
 #: inc/search.class.php:4870 inc/search.class.php:4876
 #: inc/search.class.php:4881 inc/search.class.php:4888
 #: inc/search.class.php:4906 inc/search.class.php:4913
+msgid "is"
+msgstr "je"
+
+#: inc/rulecriteria.class.php:293 inc/search.class.php:4844
+#: inc/search.class.php:4871 inc/search.class.php:4877
+#: inc/search.class.php:4882 inc/search.class.php:4889
+#: inc/search.class.php:4907 inc/search.class.php:4914
 msgid "is not"
 msgstr "není"
 
-#: inc/rulecriteria.class.php:294 inc/search.class.php:4822
-#: inc/search.class.php:4847 inc/search.class.php:4871
-#: inc/search.class.php:4891 inc/search.class.php:4911
+#: inc/rulecriteria.class.php:294 inc/search.class.php:4823
+#: inc/search.class.php:4848 inc/search.class.php:4872
+#: inc/search.class.php:4892 inc/search.class.php:4912
 msgid "contains"
 msgstr "obsahuje"
 
@@ -11513,8 +11528,8 @@ msgid "does not exist"
 msgstr "neexistuje"
 
 #: inc/rulecriteria.class.php:316 inc/search.class.php:1221
-#: inc/search.class.php:1276 inc/search.class.php:4851
-#: inc/search.class.php:4927
+#: inc/search.class.php:1276 inc/search.class.php:4852
+#: inc/search.class.php:4928
 msgid "under"
 msgstr "pod"
 
@@ -11636,7 +11651,7 @@ msgid ""
 "notify your users."
 msgstr ""
 "Varování! Tato operace může vyhodit sloučený software do koše.<br>Upozorněte"
-" na to uživatele.."
+" na to uživatele."
 
 #: inc/ruledictionnarysoftwarecollection.class.php:98
 msgid "Manufacturer choice"
@@ -11644,7 +11659,7 @@ msgstr "Výběr výrobce"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:100
 msgid "Replay dictionary rules for the manufacturer(s)<br> ( ----- = All)"
-msgstr "Přehrát pravidla slovníku výrobců <br> ( ----- = Všichni))"
+msgstr "Přehrát pravidla slovníku výrobců <br> ( ----- = Všichni)"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:385
 msgid "Software deleted by GLPI dictionary rules"
@@ -11750,11 +11765,11 @@ msgstr "Entita je založena na uživatelově profilu"
 
 #: inc/rulemailcollector.class.php:209
 msgid "Reject email (without email response)"
-msgstr "Odmítnout email (bez odpovědi emailem))"
+msgstr "Odmítnout email (bez odpovědi emailem)"
 
 #: inc/rulemailcollector.class.php:213
 msgid "Reject email (with email response)"
-msgstr "Odmítnout email (s odpovědí emailem))"
+msgstr "Odmítnout email (s odpovědí emailem)"
 
 #: inc/ruleright.class.php:268
 msgid "Automatic user assignment"
@@ -11788,46 +11803,46 @@ msgstr "Přiřazení práv a entit"
 msgid "Send an approval request"
 msgstr "Poslat žádost o schválení"
 
-#: inc/search.class.php:1180 inc/search.class.php:1508
+#: inc/search.class.php:1180 inc/search.class.php:1509
 msgid "Items seen"
 msgstr "Zobrazené položky"
 
-#: inc/search.class.php:1302
+#: inc/search.class.php:1303
 msgid "Selection too large, massive action disabled."
 msgstr ""
 
-#: inc/search.class.php:1304
+#: inc/search.class.php:1305
 msgid ""
 "To increase the limit: change max_input_vars or suhosin.post.max_vars in php"
 " configuration."
 msgstr ""
 
-#: inc/search.class.php:1426
+#: inc/search.class.php:1427
 msgid "Add a search criteria"
 msgstr "Přidat vyhledávací kritérium"
 
-#: inc/search.class.php:1433
+#: inc/search.class.php:1434
 msgid "Delete a search criteria"
 msgstr "Smazat kritérium vyhledávání"
 
-#: inc/search.class.php:1441
+#: inc/search.class.php:1442
 msgid "Add a global search criteria"
 msgstr "Přidat globální vyhledávací kritérium"
 
-#: inc/search.class.php:1449
+#: inc/search.class.php:1450
 msgid "Delete a global search criteria"
 msgstr "Smazat globální vyhledávací kritérium"
 
-#: inc/search.class.php:1461 inc/search.class.php:1463
+#: inc/search.class.php:1462 inc/search.class.php:1464
 msgid "Show the trash"
 msgstr "Zobrazit položky v koši"
 
-#: inc/search.class.php:1461 inc/search.class.php:1463
+#: inc/search.class.php:1462 inc/search.class.php:1464
 msgid "Don't show deleted items"
 msgstr "Nezobrazovat smazané položky"
 
 #. TRANS: %d is a number of years
-#: inc/search.class.php:3883
+#: inc/search.class.php:3884
 #, php-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -11835,11 +11850,11 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: inc/search.class.php:4855 inc/search.class.php:4889
+#: inc/search.class.php:4856 inc/search.class.php:4890
 msgid "before"
 msgstr "před"
 
-#: inc/search.class.php:4859 inc/search.class.php:4890
+#: inc/search.class.php:4860 inc/search.class.php:4891
 msgid "after"
 msgstr "po"
 
@@ -12230,12 +12245,12 @@ msgid ""
 "The assignment of a SLA to a ticket causes the recalculation of the due "
 "date."
 msgstr ""
-"Přiřazení SLA smlouvy k požadavku způsobí přepočítání termínu splnění.."
+"Přiřazení SLA smlouvy k požadavku způsobí přepočítání termínu splnění."
 
 #: inc/ticket.class.php:3325
 msgid "Escalations defined in the SLA will be triggered under this new date."
 msgstr ""
-"Eskalace definované v SLA smlouvě budou spuštěna od tohoto nového data.."
+"Eskalace definované v SLA smlouvě budou spuštěna od tohoto nového data."
 
 #: inc/ticket.class.php:3327
 msgid "Assign a SLA"
@@ -12290,7 +12305,7 @@ msgstr[2] ""
 #: inc/ticket.class.php:4397 inc/ticket.class.php:4567
 #: inc/ticket.class.php:4620
 msgid "No ticket found."
-msgstr "Žádný požadavek nebyl nalezen."
+msgstr "Žádný požadavek nebyl nalezen"
 
 #: inc/ticket.class.php:4499
 msgid "Last tickets"
@@ -12306,7 +12321,7 @@ msgstr[2] ""
 
 #: inc/ticket.class.php:4575 inc/ticket.class.php:4581
 msgid "New ticket for this item..."
-msgstr "Nový požadavek pro tuto položku......"
+msgstr "Nový požadavek pro tuto položku..."
 
 #: inc/ticket.class.php:4610
 msgid "Ticket on linked items"
@@ -12322,7 +12337,7 @@ msgstr "Toto pozdržet %s"
 
 #: inc/ticket.class.php:4858 inc/ticket.class.php:4939
 msgid "No ticket in progress."
-msgstr "Žádný požadavek se nezpracovává."
+msgstr "Žádný požadavek se nezpracovává"
 
 #: inc/ticket.class.php:4986
 msgid "Assign equipment"
@@ -12352,7 +12367,7 @@ msgstr "Způsob zadání doplňující zprávy"
 
 #: inc/ticketfollowup.class.php:610
 msgid "No followup for this ticket."
-msgstr "Žádné doplňující zprávy pro tento požadavek.."
+msgstr "Žádné doplňující zprávy pro tento požadavek."
 
 #: inc/ticketfollowup.class.php:683
 msgid "Approval of the solution"
@@ -12386,7 +12401,7 @@ msgstr ""
 
 #: inc/ticketrecurrent.class.php:228
 msgid "Invalid frequency. It must be greater than the preliminary creation."
-msgstr "Neplatná frekvence. Musí být větší než úvodní vytvoření.."
+msgstr "Neplatná frekvence. Musí být větší než úvodní vytvoření."
 
 #: inc/ticketsatisfaction.class.php:122
 msgid "Satisfaction with the resolution of the ticket"
@@ -12443,7 +12458,7 @@ msgid ""
 "without email confirmation."
 msgstr ""
 "Zvolený uživatel nemá platnou emailovou adresu. Žádost byla vytvořena bez "
-"emailového potvrzení.."
+"emailového potvrzení."
 
 #: inc/ticketvalidation.class.php:230
 msgid "If approval is denied, specify a reason."
@@ -12506,7 +12521,7 @@ msgstr "Test překladače PHP"
 #: inc/toolbox.class.php:673
 msgid ""
 "GLPI is not compatible with the option zend.ze1_compatibility_mode = On."
-msgstr "GLPI není kompatibilní s volbou zend.ze1_compatibility_mode = On.."
+msgstr "GLPI není kompatibilní s volbou zend.ze1_compatibility_mode = On."
 
 #: inc/toolbox.class.php:677 inc/toolbox.class.php:678
 msgid "PHP version is at least 5.3.0 - Perfect !"
@@ -12518,11 +12533,11 @@ msgstr ""
 
 #: inc/toolbox.class.php:689
 msgid "Mysql extension test."
-msgstr "Test rozšíření MySQL."
+msgstr "Test rozšíření MySQL"
 
 #: inc/toolbox.class.php:693
 msgid "You must install the MySQL extension for PHP."
-msgstr "PHP musíte nainstalovat s rozšířením MySQL.."
+msgstr "PHP musíte nainstalovat s rozšířením MySQL."
 
 #: inc/toolbox.class.php:697 inc/toolbox.class.php:699
 msgid "Ok - the function mysql_query() exist - Perfect !"
@@ -12554,7 +12569,7 @@ msgid ""
 "more information."
 msgstr ""
 "session.auto_start je aktivováno. Více informací naleznete v souboru "
-".htaccess v kořenové složce GLPI.."
+".htaccess v kořenové složce GLPI."
 
 #: inc/toolbox.class.php:736
 msgid "Test if Session_use_trans_sid is used"
@@ -12626,7 +12641,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:821
 msgid "Try increasing the memory_limit parameter in the php.ini file."
-msgstr "Zkuste zvětšit parametr memory_limit v souboru php.ini.."
+msgstr "Zkuste zvětšit parametr memory_limit v souboru php.ini."
 
 #: inc/toolbox.class.php:828 inc/toolbox.class.php:829
 msgid "Allocated memory > 64M"
@@ -12670,7 +12685,7 @@ msgstr ""
 #. TRANS: for mail connection system
 #: inc/toolbox.class.php:1638
 msgid "Port (optional)"
-msgstr "Port (volitelně))"
+msgstr "Port (volitelně)"
 
 #: inc/toolbox.class.php:1695
 msgid "January"
@@ -12810,7 +12825,7 @@ msgstr ""
 
 #: inc/transfer.class.php:3224
 msgid "Think of making a backup before transferring items."
-msgstr "Přemýšlejte o provedení zálohy před vlastním převodem položek.."
+msgstr "Přemýšlejte o provedení zálohy před vlastním převodem položek."
 
 #: inc/transfer.class.php:3226
 msgid "Items to transfer"
@@ -12838,7 +12853,7 @@ msgstr "Chyba: tyto dvě hesla nejsou totožná"
 
 #: inc/user.class.php:1413
 msgid "Add user..."
-msgstr "Přidat uživatele......"
+msgstr "Přidat uživatele..."
 
 #: inc/user.class.php:1418
 msgid "... From an external source"
@@ -12886,7 +12901,7 @@ msgstr "Překlad"
 
 #: inc/user.class.php:1847
 msgid "Unable to update login. A user already exists."
-msgstr "Není možné aktualizovat přihlašovací jméno. Uživatel již existuje.."
+msgstr "Není možné aktualizovat přihlašovací jméno. Uživatel již existuje."
 
 #: inc/user.class.php:1968
 msgid "Last login"
@@ -12934,12 +12949,12 @@ msgstr "Smazaný uživatel v adresáři LDAP"
 
 #: inc/user.class.php:2804
 msgid "Please confirm your email address and enter your new password."
-msgstr "Potvrďte, prosím, vaši emailovou adresu a zadejte vaše nové heslo.."
+msgstr "Potvrďte, prosím, vaši emailovou adresu a zadejte vaše nové heslo."
 
 #: inc/user.class.php:2826 inc/user.class.php:2882
 msgid ""
 "Your password reset request has expired or is invalid. Please renew it."
-msgstr "Žádost o resetování vypršela nebo je neplatná. Obnovte ji, prosím.."
+msgstr "Žádost o resetování vypršela nebo je neplatná. Obnovte ji, prosím."
 
 #: inc/user.class.php:2845
 msgid ""
@@ -12947,21 +12962,21 @@ msgid ""
 " able to choose a new password."
 msgstr ""
 "Zadejte, prosím, vaši emailovou adresu. Bude vám zaslán email a budete si "
-"moci vybrat nové heslo.."
+"moci vybrat nové heslo."
 
 #: inc/user.class.php:2870
 msgid "Reset password successful."
-msgstr "Obnovení hesla bylo úspěšné.."
+msgstr "Obnovení hesla bylo úspěšné."
 
 #: inc/user.class.php:2886 inc/user.class.php:2928
 msgid ""
 "The authentication method configuration doesn't allow you to change your "
 "password."
-msgstr "Nastavení metody ověření vám nedovoluje změnit vaše heslo.."
+msgstr "Nastavení metody ověření vám nedovoluje změnit vaše heslo."
 
 #: inc/user.class.php:2890 inc/user.class.php:2932
 msgid "Email address not found."
-msgstr "Emailová adresa nenalezena.."
+msgstr "Emailová adresa nenalezena."
 
 #: inc/user.class.php:2922
 msgid ""
@@ -12972,6 +12987,10 @@ msgstr ""
 #: inc/user.class.php:2956
 msgid "User information"
 msgstr ""
+
+#: inc/user.class.php:2974
+msgid "Connection failed"
+msgstr "připojení selhalo"
 
 #: inc/useremail.class.php:186
 msgid "Default email"
@@ -13023,7 +13042,7 @@ msgstr "Neoficiální překlady jsou také k dispozici"
 
 #: install/install.php:108
 msgid "I have read and ACCEPT the terms of the license written above."
-msgstr "Přečetl jsem si licenční ujednání napsané výše a SOUHLASÍM s ním.."
+msgstr "Přečetl jsem si licenční ujednání napsané výše a SOUHLASÍM s ním."
 
 #: install/install.php:113
 msgid "I have read and DO NOT ACCEPT the terms of the license written above"
@@ -13041,7 +13060,7 @@ msgstr "Instalace nebo aktualizace GLPI"
 
 #: install/install.php:124
 msgid "Choose 'Install' for a completely new installation of GLPI."
-msgstr "Pro úplně novou instalaci GLPI zvolte 'Instalace'.."
+msgstr "Pro úplně novou instalaci GLPI zvolte 'Instalace'."
 
 #: install/install.php:125
 msgid ""
@@ -13088,15 +13107,15 @@ msgstr "Připojení k databázi bylo úspěšné"
 
 #: install/install.php:238
 msgid "Please select a database:"
-msgstr "Zvolte prosím databázi::"
+msgstr "Zvolte prosím databázi:"
 
 #: install/install.php:252
 msgid "Create a new database or use an existing one:"
-msgstr "Vytvořit novou databázi nebo použít stávající::"
+msgstr "Vytvořit novou databázi nebo použít stávající:"
 
 #: install/install.php:264
 msgid "Please select the database to update:"
-msgstr "Zvolte prosím databázi pro aktualizaci::"
+msgstr "Zvolte prosím databázi pro aktualizaci:"
 
 #: install/install.php:291
 msgid "Initialization of the database"
@@ -13104,7 +13123,7 @@ msgstr "Inicializace databáze"
 
 #: install/install.php:348
 msgid "Impossible to use the database:"
-msgstr "Není možné použít databázi::"
+msgstr "Není možné použít databázi:"
 
 #: install/install.php:355 install/install.php:371 install/install.php:387
 msgid "OK - database was initialized"
@@ -13132,7 +13151,7 @@ msgstr "Instalace je dokončena"
 
 #: install/install.php:427
 msgid "Default logins / passwords are:"
-msgstr "Výchozí přihlašovací jména / hesla jsou::"
+msgstr "Výchozí přihlašovací jména / hesla jsou:"
 
 #: install/install.php:428
 msgid "glpi/glpi for the  administrator account"
@@ -13152,7 +13171,7 @@ msgstr "post-only/postonly (pro účet postonly- pouze zasílání)"
 
 #: install/install.php:432
 msgid "You can delete or modify these accounts as well as the initial data."
-msgstr "Tyto účty můžete smazat nebo upravit, stejně jako výchozí údaje.."
+msgstr "Tyto účty můžete smazat nebo upravit, stejně jako výchozí údaje."
 
 #: install/install.php:433 install/update_content.php:379
 #: install/update.php:901
@@ -13164,7 +13183,7 @@ msgid ""
 "Can't create the database connection file, please verify file permissions."
 msgstr ""
 "Nemohu vytvořit soubor s databázovým připojením, ověřte prosím přístupová "
-"oprávnění k souboru.."
+"oprávnění k souboru."
 
 #: install/install.php:524
 msgid "Beginning of the installation"
@@ -13253,15 +13272,15 @@ msgstr ""
 #: install/update_0723_078.php:5695 install/update_078_0781.php:58
 #: install/update_0782_080.php:784 install/update_0782_080.php:947
 #: install/update_0782_080.php:1147 install/update_0782_080.php:1489
-#: install/update_0803_083.php:431 install/update_0803_083.php:799
-#: install/update_0803_083.php:836 install/update_0803_083.php:967
-#: install/update_0803_083.php:1010 install/update_0803_083.php:1027
-#: install/update_0803_083.php:1069 install/update_0803_083.php:1111
-#: install/update_0803_083.php:1269 install/update_0803_083.php:1391
-#: install/update_0803_083.php:1647 install/update_083_084.php:233
+#: install/update_0803_083.php:431 install/update_0803_083.php:802
+#: install/update_0803_083.php:839 install/update_0803_083.php:970
+#: install/update_0803_083.php:1013 install/update_0803_083.php:1030
+#: install/update_0803_083.php:1072 install/update_0803_083.php:1114
+#: install/update_0803_083.php:1272 install/update_0803_083.php:1394
+#: install/update_0803_083.php:1650 install/update_083_084.php:233
 #: install/update_083_084.php:272 install/update_083_084.php:318
 #: install/update_083_084.php:430 install/update_083_084.php:478
-#: install/update_083_084.php:504 install/update_083_084.php:924
+#: install/update_083_084.php:504 install/update_083_084.php:928
 #, php-format
 msgid "Data migration - %s"
 msgstr ""
@@ -13300,7 +13319,7 @@ msgstr "Nová struktura je hierarchická"
 
 #: install/update.php:411
 msgid "Provide a delimiter in order to automate the new hierarchy generation."
-msgstr "Použít znak oddělovače pro vygenerování nové struktury.."
+msgstr "Použít znak oddělovače pro vygenerování nové struktury."
 
 #: install/update.php:412
 msgid ""
@@ -13308,7 +13327,7 @@ msgid ""
 "locations."
 msgstr ""
 "Také můžete určit umístění kořenové složky, které bude obsahovat všechna "
-"vytvořená umístění.."
+"vytvořená umístění."
 
 #: install/update.php:414
 msgid "Delimiter"
@@ -13328,7 +13347,7 @@ msgstr "Nová struktura"
 
 #: install/update.php:430
 msgid "This is the new hierarchy. If it's complete approve it."
-msgstr "Toto je nová struktura. Potvrďte, pokud je v pořádku.."
+msgstr "Toto je nová struktura. Potvrďte, pokud je v pořádku."
 
 #: install/update.php:835
 msgid "Impossible to accomplish an update by this way!"
@@ -13349,7 +13368,7 @@ msgid ""
 "admin' rights with the creation of his new user type."
 msgstr ""
 "Nyní mají všichni administrátoři práva 'super-admin'. Tento nový typ "
-"uživatele byl automaticky přidán.."
+"uživatele byl automaticky přidán."
 
 #: install/update.php:909
 msgid ""
