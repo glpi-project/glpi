@@ -1087,7 +1087,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   foreach ($tmp as $key => $val) {
                      $input2[$key] = $val;
                   }
-                  $ticket_user->add($input2);
+                  $useractors->add($input2);
                }
             }
          }
