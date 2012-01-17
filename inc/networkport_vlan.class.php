@@ -148,15 +148,16 @@ class NetworkPort_Vlan extends CommonDBRelation {
          echo "\n<table>";
          while ($line = $DB->fetch_array($result)) {
             $used[$line["vlans_id"]] = $line["vlans_id"];
-            echo "<tr><td>" . Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]);
+            echo "<tr><td>";
+            if ((isset($line["tagged"])) && ($line["tagged"] == 1)) {
+               //TRANS: %s is the VLAN name
+               echo sprintf(__('%s - Tagged'), Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]));
+            } else {
+               echo sprintf(__('%s - Untagged'), Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]));
+            }
             Html::showToolTip(sprintf(__('ID TAG: %s'), $line['vlantag'])."<br>".
                               sprintf(__('Comments: %s'), $line['vlancomment']));
 
-            if ((isset($line["tagged"])) && ($line["tagged"] == 1)) {
-               _e('- Tagged');
-            } else {
-               _e('- Untagged');
-            }
 
             echo "</td>\n<td>";
             if ($canedit) {

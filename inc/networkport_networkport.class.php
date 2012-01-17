@@ -189,12 +189,12 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          $changes[2] = $destname;
 
          if ($ps->fields["itemtype"] == 'NetworkEquipment') {
-                          //TRANS: %1$s is a name, %2$s is the new name
+            //TRANS: %1$s is a name, %2$s is the new name
             $changes[2] = sprintf(__('From #%1$s to %2$s'), $ps->fields["name"], $changes[2]);
          }
 
          if ($pd->fields["itemtype"] == 'NetworkEquipment') {
-                          //TRANS: %1$s is a name, %2$s is the new name
+            //TRANS: %1$s is a name, %2$s is the new name
             $changes[2] = sprintf(__('From %1$s to #%2$s'), $changes[2], $pd->fields["name"]);
          }
 
