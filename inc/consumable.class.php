@@ -79,7 +79,7 @@ class Consumable extends CommonDBTM {
    function prepareInputForAdd($input) {
 
       $item = new ConsumableItem();
-      if ($item->getFromDB($input["tID"])) {
+      if ($item->getFromDB($input["consumableitems_id"])) {
          return array("consumableitems_id" => $item->fields["id"],
                       "entities_id"        => $item->getEntityID(),
                       "date_in"            => date("Y-m-d"));
@@ -313,7 +313,7 @@ class Consumable extends CommonDBTM {
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/consumable.form.php\">";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td class='tab_bg_2 center'>";
-         echo "<input type='hidden' name='tID' value='$ID'>\n";
+         echo "<input type='hidden' name='consumableitems_id' value='$ID'>\n";
          Dropdown::showInteger('to_add',1,1,100);
          echo " <input type='submit' name='add_several' value=\"".__s('Add consumables')."\"
                 class='submit'>";
@@ -347,7 +347,7 @@ class Consumable extends CommonDBTM {
       if ($result = $DB->query($query)) {
          if (!$show_old && $canedit) {
             echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/consumable.form.php'>";
-            echo "<input type='hidden' name='tID' value='$tID'>\n";
+            echo "<input type='hidden' name='consumableitems_id' value='$tID'>\n";
          }
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          if (!$show_old) {

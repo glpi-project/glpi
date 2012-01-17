@@ -93,20 +93,22 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["addtype"])) {
-   $cartype->check($_POST["tID"],'w');
-
-   if ($cartype->addCompatibleType($_POST["tID"],$_POST["printermodels_id"])) {
-      Event::log($_POST["tID"], "cartridges", 4, "inventory",
+   /// TODO create specific form page
+   $cipm = new CartridgeItem_PrinterModel();
+   $cipm->check(-1,'w', $_POST);
+   if ($cipm->add($_POST)) {
+      Event::log($_POST["cartridgeitems_id"], "cartridges", 4, "inventory",
                   //TRANS: %s is the user login
                   sprintf(__('%s associates a type'), $_SESSION["glpiname"]));
    }
    Html::back();
 
 } else if (isset($_GET["deletetype"])) {
-   $cartype->check($_GET["tID"],'w');
-
-   if ($cartype->deleteCompatibleType($_GET["id"])) {
-      Event::log($_GET["tID"], "cartridges", 4, "inventory",
+   /// TODO create specific form page
+   $cipm = new CartridgeItem_PrinterModel();
+   $cipm->check(-1,'w', $_POST);
+   if ($cipm->delete($_GET)) {
+      Event::log($_GET["cartridgeitems_id"], "cartridges", 4, "inventory",
                   //TRANS: %s is the user login
                   sprintf(__('%s deletes a type'), $_SESSION["glpiname"]));
    }

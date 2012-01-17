@@ -1911,19 +1911,23 @@ function generate_entity($ID_entity) {
 
    // TYPE DE CONSOMMABLES
    $FIRST["type_of_consumables"] = getMaxItem("glpi_consumableitems")+1;
-
+   $ci = new Consumableitem();
    for ($i=0 ; $i<$MAX['type_of_consumables'] ; $i++) {
-      $query = "INSERT INTO `glpi_consumableitems`
-                VALUES (NULL, '$ID_entity', 'consumable type $i', 'ref $i',
-                        '".mt_rand($FIRST["locations"],$LAST['locations'])."',
-                        '".mt_rand(0,$MAX['consumable_type'])."',
-                        '".mt_rand(1,$MAX['manufacturer'])."',
-                        '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
-                        '".mt_rand($FIRST["groups"],$LAST["groups"])."', '0',
-                        'comment $i', '".mt_rand(0,10)."', 'notes consumableitem $i')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $consID = $ci->add(array(
+            'entities_id'              => $ID_entity,
+            'name'                     => "consumable type $i",
+            'ref'                      => "ref $i",
+            'locations_id'             => mt_rand($FIRST["locations"],$LAST['locations']),
+            'consumableitemtypes_id'   => mt_rand(0,$MAX['consumable_type']),
+            'manufacturers_id'         => mt_rand(1,$MAX['manufacturer']),
+            'users_id_tech'            => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
+            'groups_id_tech'           => mt_rand($FIRST["groups"],$LAST["groups"]),
+            'comment'                  => "comment $i",
+            'notepad'                  => "notes consumableitem $i",
+            'alarm_threshold'          => mt_rand(0,10),
+            
+      ));
 
-      $consID = $DB->insert_id();
       addDocuments('ConsumableItem', $consID);
 
 
@@ -1931,14 +1935,15 @@ function generate_entity($ID_entity) {
       addInfocoms('ConsumableItem', $consID, $ID_entity);
 
       // Ajout consommable en stock
-      for ($j=0 ; $j<mt_rand(0,$MAX['consumables_stock']) ; $j++) {
+      $c = new Consumable();
+      for ($j=0 ; $j<mt_rand(0,$MAX['consumables_stock']) ; $j++) {         
          $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
-         $query = "INSERT INTO `glpi_consumables`
-                   VALUES(NULL, '$ID_entity', '$consID', '$date', NULL, NULL,0)";
-         $DB->query($query) or die("PB REQUETE ".$query);
-         $ID = $DB->insert_id();
-
+         $ID = $c->add(array(
+               'entities_id'        => $ID_entity,
+               'consumableitems_id' => $consID,
+               'date_in'            => $date,
+         ));
 
          // AJOUT INFOCOMS
          addInfocoms('Consumable', $ID, $ID_entity);
@@ -1947,14 +1952,14 @@ function generate_entity($ID_entity) {
 
       // Ajout consommable donne
       for ($j=0 ; $j<mt_rand(0,$MAX['consumables_given']) ; $j++) {
-         $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
+         $date = mt_rand(2000,$current_year-1)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
-         $query = "INSERT INTO `glpi_consumables`
-                   VALUES(NULL, '$ID_entity', '$consID', '$date', NOW(),'User',
-                          '".mt_rand($FIRST['users_sadmin'],$LAST['users_postonly'])."')";
-         $DB->query($query) or die("PB REQUETE ".$query);
-         $ID = $DB->insert_id();
-
+         $ID = $c->add(array(
+               'entities_id'        => $ID_entity,
+               'consumableitems_id' => $consID,
+               'date_in'            => $date,
+               'date_out'           => date("Y-m-d"),
+         ));
 
          // AJOUT INFOCOMS
          addInfocoms('Consumable', $ID, $ID_entity);
@@ -1967,44 +1972,50 @@ function generate_entity($ID_entity) {
 
    // TYPE DE CARTOUCHES
    $FIRST["type_of_cartridges"] = getMaxItem("glpi_cartridgeitems")+1;
-
+   $ct = new CartridgeItem();
    for ($i=0 ; $i<$MAX['type_of_cartridges'] ; $i++) {
-      $query = "INSERT INTO `glpi_cartridgeitems`
-                VALUES (NULL, '$ID_entity', 'cartridge type $i', 'ref $i',
-                        '".mt_rand(1,$MAX['locations'])."', '".mt_rand(1,$MAX['cartridge_type'])."',
-                        '".mt_rand(1,$MAX['manufacturer'])."',
-                        '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
-                        '".mt_rand($FIRST["groups"],$LAST["groups"])."', '0',
-                        'comment $i', '".mt_rand(0,10)."', 'notes cartridgeitem $i')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $cartID = $DB->insert_id();
+   
+      $cartID = $ct->add(array(
+            'entities_id'              => $ID_entity,
+            'name'                     => "cartridge type $i",
+            'ref'                      => "ref $i",
+            'locations_id'             => mt_rand($FIRST["locations"],$LAST['locations']),
+            'manufacturers_id'         => mt_rand(1,$MAX['manufacturer']),
+            'users_id_tech'            => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
+            'groups_id_tech'           => mt_rand($FIRST["groups"],$LAST["groups"]),
+            'comment'                  => "comment $i",
+            'notepad'                  => "notes cartridgeitem $i",
+            'alarm_threshold'          => mt_rand(0,10),
+            
+      ));   
       addDocuments('CartridgeItem', $cartID);
 
 
       // AJOUT INFOCOMS
       addInfocoms('CartridgeItem', $cartID, $ID_entity);
 
-
+      $c = new Cartridge();
+      $cipm = new CartridgeItem_PrinterModel();
       // Ajout cartouche en stock
       for ($j=0 ; $j<mt_rand(0,$MAX['cartridges_stock']) ; $j++) {
-         $query = "INSERT INTO `glpi_cartridges`
-                   VALUES(NULL, '$ID_entity', '$cartID', 0, NOW(), NULL, NULL, '0')";
-         $DB->query($query) or die("PB REQUETE ".$query);
-         $ID = $DB->insert_id();
+         $date = mt_rand(2000,$current_year-1)."-".mt_rand(1,12)."-".mt_rand(1,28);
 
+         $ID = $c->add(array(
+               'entities_id'        => $ID_entity,
+               'cartridgeitems_id' => $cartID,
+               'date_in'            => $date,
+         ));      
 
          // AJOUT INFOCOMS
          addInfocoms('Cartridge', $ID, $ID_entity);
 
       }
 
-
       // Assoc printer type to cartridge type
-      $query = "INSERT INTO `glpi_cartridgeitems_printermodels`
-                VALUES (NULL, '$cartID', '".mt_rand(1,$MAX['type_printers'])."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
+      $cipm->add(array(
+            'cartridgeitems_id'  => $cartID,
+            'printermodels_id'   =>mt_rand(1,$MAX['type_printers']),
+      ));
    }
    $LAST["type_of_cartridges"] = getMaxItem("glpi_cartridgeitems");
 

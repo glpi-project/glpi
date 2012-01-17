@@ -282,8 +282,7 @@ $CFG_GLPI['user_pref_field'] = array('csv_delimiter', 'date_format', 'default_re
 
 /// TODO need this array be empty
 // Itemtypes not implements : need to create class to avoid warning on autoload
-$CFG_GLPI['missingclasses'] = array('cartridgeitem_printermodel',
-                                    'computer_devicecase',
+$CFG_GLPI['missingclasses'] = array('computer_devicecase',
                                     'computer_devicecontrol',
                                     'computer_devicedrive',
                                     'computer_devicegraphiccard',
