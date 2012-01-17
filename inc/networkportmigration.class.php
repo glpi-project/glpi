@@ -42,7 +42,7 @@ class NetworkPortMigration extends NetworkPortInstantiation {
 
 
    static function getTypeName($nb=0) {
-     return _s('Not defined. Inherit from migration');
+     return __('Not defined. Inherit from migration');
    }
 
 
