@@ -698,6 +698,9 @@ function update0803to083() {
    $migration->addKey("glpi_states", array('states_id','name'), 'unicity');
    regenerateTreeCompleteName("glpi_states");
 
+   $migration->addField("glpi_knowbaseitemcategories", 'ancestors_cache', "longtext");
+   $migration->addField("glpi_knowbaseitemcategories", 'sons_cache', "longtext");
+
    $migration->changeField("glpi_authldaps", 'group_condition', 'group_condition', "text");
 
    $migration->dropKey("glpi_groups", 'ldap_value');
