@@ -55,8 +55,8 @@ if (isset($_POST["add"])) {
    $notification->delete($_POST);
 
    Event::log($_POST["id"], "notifications", 4, "notification",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $notification->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -64,12 +64,13 @@ if (isset($_POST["add"])) {
 
    $notification->update($_POST);
    Event::log($_POST["id"], "notifications", 4, "notification",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else {
-   Html::header(_n('Notification', 'Notifications',2),$_SERVER['PHP_SELF'],"config","mailing","notification");
+   Html::header(Notification::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailing",
+                "notification");
    $notification->showForm($_GET["id"]);
    Html::footer();
 }

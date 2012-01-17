@@ -38,7 +38,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "r");
 
-Html::header(_n('Refused email', 'Refused emails', 2),$_SERVER['PHP_SELF'],"config","mailcollector","rejectedemails");
+Html::header(NotImportedEmail::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailcollector",
+             "rejectedemails");
 
 Search::show('NotImportedEmail');
 

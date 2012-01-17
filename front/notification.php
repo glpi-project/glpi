@@ -37,7 +37,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("notification", 'r');
 
-Html::header(_n('Notification', 'Notifications',2),$_SERVER['PHP_SELF'],"config","mailing","notification");
+Html::header(Notification::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailing",
+             "notification");
 
 Search::show('Notification');
 
