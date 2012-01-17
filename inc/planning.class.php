@@ -328,9 +328,9 @@ class Planning {
                                                      'end'       => $realend));
       // ---------------Change
       $interv3 = ChangeTask::populatePlanning(array('who'       => $who,
-                                                     'who_group' => 0,
-                                                     'begin'     => $realbegin,
-                                                     'end'       => $realend));
+                                                    'who_group' => 0,
+                                                    'begin'     => $realbegin,
+                                                    'end'       => $realend));
       // ---------------reminder
       $datareminders = Reminder::populatePlanning(array('who'       => $who,
                                                         'who_group' => 0,
@@ -549,9 +549,9 @@ class Planning {
 
       // ---------------Change
       $interv3 = ChangeTask::populatePlanning(array('who'       => $who,
-                                                     'who_group' => $who_group,
-                                                     'begin'     => $begin,
-                                                     'end'       => $end));
+                                                    'who_group' => $who_group,
+                                                    'begin'     => $begin,
+                                                    'end'       => $end));
 
       // ---------------reminder
       $datareminders = Reminder::populatePlanning(array('who'       => $who,
@@ -838,7 +838,7 @@ class Planning {
       $end   = $begin+DAY_TIMESTAMP;
       $begin = date("Y-m-d H:i:s", $begin);
       $end   = date("Y-m-d H:i:s", $end);
-      
+
       /// TODO : use $CFG_GLPI['planning_types']
 
       // ---------------Tracking
@@ -855,9 +855,9 @@ class Planning {
 
       // ---------------Problem
       $interv3 = ChangeTask::populatePlanning(array('who'       => $who,
-                                                     'who_group' => 0,
-                                                     'begin'     => $begin,
-                                                     'end'       => $end));
+                                                    'who_group' => 0,
+                                                    'begin'     => $begin,
+                                                    'end'       => $end));
 
       // ---------------Reminder
       $data = Reminder::populatePlanning(array('who'       => $who,
@@ -940,7 +940,7 @@ class Planning {
       $end   = time()+MONTH_TIMESTAMP*12;
       $begin = date("Y-m-d H:i:s", $begin);
       $end   = date("Y-m-d H:i:s", $end);
-      
+
       /// TODO : use $CFG_GLPI['planning_types']
 
       // ---------------Tracking
@@ -957,9 +957,9 @@ class Planning {
 
       // ---------------Problem
       $interv3 = ChangeTask::populatePlanning(array('who'       => $who,
-                                                     'who_group' => $who_group,
-                                                     'begin'     => $begin,
-                                                     'end'       => $end));
+                                                    'who_group' => $who_group,
+                                                    'begin'     => $begin,
+                                                    'end'       => $end));
 
       // ---------------Reminder
       $data = Reminder::populatePlanning(array('who'       => $who,

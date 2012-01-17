@@ -1298,7 +1298,8 @@ class Search {
                      $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
                   }
                   if ($max>0 && $max<($row_num+10)) {
-                     echo "<table class='tab_cadre' width='80%'><tr class='tab_bg_1'><td><span class='b'>";
+                     echo "<table class='tab_cadre' width='80%'><tr class='tab_bg_1'>".
+                          "<td><span class='b'>";
                      echo __('Selection too large, massive action disabled.')."</span>";
                      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
                         echo "<br>".__('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
