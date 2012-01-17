@@ -44,7 +44,7 @@ include ("generate_bigdump.function.php");
 // Force mailing to false
 $CFG_GLPI["use_mailing"] = 0;
 
-$entity_number = 1;
+$entity_number = 5;
 
 $multiplicator = 0.5;
 
@@ -182,32 +182,31 @@ generate_entity(0);
 
 // Entite
 $added = 0;
-
+$entity = new Entity ();
 for ($i=0 ; $i<max(1,pow($entity_number,1/2))&&$added<$entity_number ; $i++) {
    $added++;
-   $query = "INSERT INTO `glpi_entities`
-             VALUES (NULL, 'entity $i', '0', '', 'comment entity $i', '1', '', '')";
-   $DB->query($query) or die("PB REQUETE ".$query);
-
-   $newID = $DB->insert_id();
+   $newID = $entity->add(array(
+         'name'      => "entity $i",
+         'comment'   => "comment entity $i",
+   ));
    generate_entity($newID);
 
    for ($j=0 ; $j<mt_rand(0,pow($entity_number,1/2))&&$added<$entity_number ; $j++) {
       $added++;
-      $query = "INSERT INTO `glpi_entities`
-                VALUES (NULL, 's-entity $j', '$newID', '', 'comment s-entity $j', '2', '', '')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $newID2 = $DB->insert_id();
+      $newID2 = $entity->add(array(
+            'name'         => "s-entity $j",
+            'comment'      => "comment s-entity $j",
+            'entities_id'  => $newID,
+      ));      
       generate_entity($newID2);
 
       for ($k=0 ; $k<mt_rand(0,pow($entity_number,1/2))&&$added<$entity_number ; $k++) {
          $added++;
-         $query = "INSERT INTO `glpi_entities`
-                   VALUES (NULL, 'ss-entity $k', '$newID2', '', 'comment ss-entity $k', '3', '', '')";
-         $DB->query($query) or die("PB REQUETE ".$query);
-
-         $newID3 = $DB->insert_id();
+         $newID3 = $entity->add(array(
+               'name'         => "ss-entity $k",
+               'comment'      => "comment ss-entity $k",
+               'entities_id'  => $newID2,
+         ));      
          generate_entity($newID3);
       }
    }
