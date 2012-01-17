@@ -2078,6 +2078,8 @@ CREATE TABLE `glpi_knowbaseitemcategories` (
   `completename` text COLLATE utf8_unicode_ci,
   `comment` text COLLATE utf8_unicode_ci,
   `level` int(11) NOT NULL DEFAULT '0',
+  `sons_cache` longtext COLLATE utf8_unicode_ci,
+  `ancestors_cache` longtext COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`knowbaseitemcategories_id`,`name`),
   KEY `name` (`name`),
