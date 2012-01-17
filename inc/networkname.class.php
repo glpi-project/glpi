@@ -470,10 +470,18 @@ class NetworkName extends FQDNLabel {
 
       $address = new self();
 
+
       if ($DB->numrows($result) > 0) {
+         Session::initNavigateListItems(__CLASS__,
+                              //TRANS : %1$s is the itemtype name,
+                              //        %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                $item->getTypeName(1), $item->getName()));
          while ($line = $DB->fetch_array($result)) {
 
             if ($address->getFromDB($line["id"])) {
+               Session::addToNavigateListItems(__CLASS__, $line["id"]);
+
                if ($fromForm) {
                   echo "<tr class='tab_bg_1'><td>";
                }
