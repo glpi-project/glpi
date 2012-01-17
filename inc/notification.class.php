@@ -100,7 +100,7 @@ class Notification extends CommonDBTM {
    public $dohistory = true;
 
    static function getTypeName($nb=0) {
-      return _n('Notification', 'Notifications',$nb);
+      return _n('Notification', 'Notifications', $nb);
    }
 
 
@@ -172,7 +172,8 @@ class Notification extends CommonDBTM {
       NotificationEvent::dropdownEvents($this->fields['itemtype'],$this->fields['event']);
       echo "</span></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . _n('Notification template', 'Notification templates', 1) . "</td>";
+      echo "<tr class='tab_bg_1'><td>". _n('Notification template', 'Notification templates', 1).
+           "</td>";
       echo "<td><span id='show_templates'>";
       NotificationTemplate::dropdownTemplates('notificationtemplates_id', $this->fields['itemtype'],
                                               $this->fields['notificationtemplates_id']);
@@ -279,8 +280,9 @@ class Notification extends CommonDBTM {
 
    /**
     * Display a dropdown with all the available notification modes
+    *
     * @param $value the default value for the dropdown
-    */
+   **/
    static function dropdownMode($value) {
 
       $modes['mail'] = __('Email');
@@ -290,10 +292,11 @@ class Notification extends CommonDBTM {
 
    /**
     * Get notification method label (email only for the moment)
+    *
     * @param $mode the mode to use
     *
     * @return the mode's label
-    */
+   **/
    static function getMode($mode) {
       return __('Email');
    }
@@ -309,6 +312,9 @@ class Notification extends CommonDBTM {
    }
 
 
+   /**
+    * @param $mailing_options
+   **/
    static function send($mailing_options) {
 
       $mail = new NotificationMail();
@@ -319,7 +325,9 @@ class Notification extends CommonDBTM {
 
    /**
     * Get the mailing signature for the entity
-    */
+    *
+    * @param $entity
+   **/
    static function getMailingSignature($entity) {
       global $DB, $CFG_GLPI;
 
@@ -331,7 +339,12 @@ class Notification extends CommonDBTM {
    }
 
 
-   static function  getNotificationsByEventAndType($event,$itemtype,$entity) {
+   /**
+    * @param $event
+    * @param $itemtype
+    * @param $entity
+   **/
+   static function getNotificationsByEventAndType($event, $itemtype, $entity) {
       global $DB;
 
       $query = "SELECT `glpi_notifications`.*

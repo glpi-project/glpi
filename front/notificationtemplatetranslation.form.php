@@ -56,22 +56,21 @@ if (isset($_POST["add"])) {
    $language->delete($_POST);
 
    Event::log($_POST["id"], "notificationtemplatetranslations", 4, "notification",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));         
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $language->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $language->check($_POST["id"],'w');
    $language->update($_POST);
 
-   Event::log($_POST["id"], "notificationtemplatetranslations", 4, "notification", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
+   Event::log($_POST["id"], "notificationtemplatetranslations", 4, "notification",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else {
-   Html::header(_n('Notification template', 'Notification templates', 2), 
-                $_SERVER['PHP_SELF'], "config", "mailing",
+   Html::header(NotificationTemplate::getTypeName(2), $_SERVER['PHP_SELF'], "config", "mailing",
                 "notificationtemplate");
 
    if ($_GET["id"] == '') {

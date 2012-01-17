@@ -50,8 +50,8 @@ if (isset($_POST["add"])) {
               sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
 
    $language = new NotificationTemplateTranslation();
-   $url = Toolbox::getItemTypeFormURL('NotificationTemplateTranslation',true);
-   $url.="?notificationtemplates_id=$newID";
+   $url      = Toolbox::getItemTypeFormURL('NotificationTemplateTranslation', true);
+   $url     .="?notificationtemplates_id=$newID";
    Html::redirect($url);
 
 } else if (isset($_POST["delete"])) {
@@ -59,8 +59,8 @@ if (isset($_POST["add"])) {
    $notificationtemplate->delete($_POST);
 
    Event::log($_POST["id"], "notificationtemplates", 4, "notification",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));         
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $notificationtemplate->redirectToList();
 
 } else if (isset($_POST["delete_languages"])) {
@@ -81,13 +81,12 @@ if (isset($_POST["add"])) {
 
    $notificationtemplate->update($_POST);
    Event::log($_POST["id"], "notificationtemplates", 4, "notification",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else {
-   Html::header(_n('Notification template', 'Notification templates', 2),
-               $_SERVER['PHP_SELF'],"config","mailing",
+   Html::header(NotificationTemplate::getTypeName(2), $_SERVER['PHP_SELF'],"config","mailing",
                 "notificationtemplate");
    $notificationtemplate->showForm($_GET["id"]);
    Html::footer();
