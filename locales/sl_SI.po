@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-01-16 18:40+0100\n"
-"PO-Revision-Date: 2012-01-16 17:41+0000\n"
+"POT-Creation-Date: 2012-01-17 16:14+0100\n"
+"PO-Revision-Date: 2012-01-17 15:48+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Slovenian (Slovenia) (http://www.transifex.net/projects/p/GLPI/team/sl_SI/)\n"
 "MIME-Version: 1.0\n"
@@ -117,7 +117,7 @@ msgstr "E-naslov: %s"
 #: ajax/dropdownMassiveAction.php:243 ajax/dropdownMassiveAction.php:249
 #: ajax/visibility.php:101 inc/authldapreplicate.class.php:81
 #: inc/bookmark.class.php:233 inc/calendar_holiday.class.php:140
-#: inc/calendarsegment.class.php:307 inc/cartridgeitem.class.php:562
+#: inc/calendarsegment.class.php:307 inc/cartridgeitem.class.php:516
 #: inc/change_item.class.php:223 inc/change_problem.class.php:141
 #: inc/change_problem.class.php:220 inc/change_ticket.class.php:137
 #: inc/change_ticket.class.php:219 inc/commondbtm.class.php:1688
@@ -137,7 +137,7 @@ msgstr "E-naslov: %s"
 #: inc/item_problem.class.php:224 inc/knowbaseitem.class.php:551
 #: inc/link_itemtype.class.php:99 inc/netpoint.class.php:175
 #: inc/netpoint.class.php:359 inc/netpoint.class.php:376
-#: inc/networkalias.class.php:252 inc/networkname.class.php:551
+#: inc/networkalias.class.php:252 inc/networkname.class.php:560
 #: inc/networkport.class.php:359 inc/problem_ticket.class.php:126
 #: inc/problem_ticket.class.php:201 inc/profile_user.class.php:122
 #: inc/profile_user.class.php:244 inc/reminder.class.php:885
@@ -156,19 +156,19 @@ msgid "Add"
 msgstr "Dodaj"
 
 #: ajax/dropdownMassiveActionField.php:75 inc/contract.class.php:219
-#: inc/search.class.php:4000 inc/softwarelicense.class.php:212
+#: inc/search.class.php:4001 inc/softwarelicense.class.php:212
 #: inc/softwarelicense.class.php:617 inc/softwarelicense.class.php:638
 msgid "Unlimited"
 msgstr "Neskončno"
 
 #: ajax/dropdownMassiveActionField.php:114 inc/commondbtm.class.php:3119
 #: inc/entitydata.class.php:628 inc/entitydata.class.php:640
-#: inc/search.class.php:4330
+#: inc/search.class.php:4331
 msgid "Default value"
 msgstr "Privzeta vrednost"
 
 #: ajax/dropdownMassiveActionField.php:237 inc/infocom.class.php:961
-#: inc/infocom.class.php:969 inc/search.class.php:3900
+#: inc/infocom.class.php:969 inc/search.class.php:3901
 msgid "Lifelong"
 msgstr "Ima življenje"
 
@@ -242,7 +242,7 @@ msgstr ""
 #: inc/commonglpi.class.php:518
 #: inc/notificationtemplatetranslation.class.php:314 inc/problem.class.php:592
 #: inc/search.class.php:799 inc/search.class.php:1176
-#: inc/search.class.php:1556 inc/ticket.class.php:2048
+#: inc/search.class.php:1557 inc/ticket.class.php:2048
 #: inc/ticketvalidation.class.php:348 inc/user.class.php:2372
 msgid "All"
 msgstr "Vse"
@@ -302,7 +302,7 @@ msgstr "Podvoji"
 #: front/backup.php:664 inc/authldap.class.php:393 inc/bookmark.class.php:243
 #: inc/bookmark.class.php:588 inc/calendar_holiday.class.php:148
 #: inc/calendarsegment.class.php:351 inc/cartridge.class.php:501
-#: inc/cartridge.class.php:678 inc/cartridgeitem.class.php:553
+#: inc/cartridge.class.php:678 inc/cartridgeitem.class.php:507
 #: inc/change_item.class.php:229 inc/change_problem.class.php:149
 #: inc/change_problem.class.php:228 inc/change_ticket.class.php:145
 #: inc/change_ticket.class.php:227 inc/commondbtm.class.php:1718
@@ -339,23 +339,23 @@ msgstr "Podvoji"
 msgid "Delete"
 msgstr "Izbriši"
 
-#: ajax/dropdownMassiveActionPorts.php:54 inc/networkport_vlan.class.php:207
+#: ajax/dropdownMassiveActionPorts.php:54 inc/networkport_vlan.class.php:208
 msgid "Tagged"
 msgstr ""
 
-#: ajax/dropdownMassiveActionPorts.php:56 inc/networkname.class.php:554
-#: inc/networkport_vlan.class.php:202
+#: ajax/dropdownMassiveActionPorts.php:56 inc/networkname.class.php:563
+#: inc/networkport_vlan.class.php:203
 msgid "Associate"
 msgstr "Dodeli"
 
-#: ajax/dropdownMassiveActionPorts.php:62 inc/networkname.class.php:492
-#: inc/networkname.class.php:493 inc/networkport_vlan.class.php:166
+#: ajax/dropdownMassiveActionPorts.php:62 inc/networkname.class.php:501
+#: inc/networkname.class.php:502 inc/networkport_vlan.class.php:167
 msgid "Dissociate"
 msgstr "Pretrgati"
 
 #: ajax/dropdownTrackingDeviceType.php:49 front/find_num.php:80
 msgid "Enter the first letters (user, item name, serial or asset number)"
-msgstr "Vnesite prve črke (uporabniško ime, predmet ali serijska številka))"
+msgstr "Vnesite prve črke (uporabniško ime, predmet ali serijska številka)"
 
 #: ajax/dropdownValue.php:233 front/report.contract.list.php:140
 #: front/report.infocom.php:177 front/report.year.list.php:152
@@ -365,8 +365,8 @@ msgstr "Vnesite prve črke (uporabniško ime, predmet ali serijska številka))"
 #: inc/computer_softwareversion.class.php:479 inc/db.function.php:407
 #: inc/db.function.php:448 inc/document.class.php:866 inc/entity.class.php:51
 #: inc/entity.class.php:53 inc/entity.class.php:121 inc/problem.class.php:1180
-#: inc/profile_user.class.php:162 inc/search.class.php:3332
-#: inc/search.class.php:3335 inc/search.class.php:3793 inc/stat.class.php:1379
+#: inc/profile_user.class.php:162 inc/search.class.php:3333
+#: inc/search.class.php:3336 inc/search.class.php:3794 inc/stat.class.php:1379
 #: inc/ticket.class.php:4727 inc/transfer.class.php:3269
 msgid "Root entity"
 msgstr "Root entiteta"
@@ -871,13 +871,13 @@ msgid "%1$s adds the item %2$s"
 msgstr ""
 
 #. TRANS: %s is the user login
-#: front/cartridgeitem.form.php:101
+#: front/cartridgeitem.form.php:102
 #, php-format
 msgid "%s associates a type"
 msgstr ""
 
 #. TRANS: %s is the user login
-#: front/cartridgeitem.form.php:111
+#: front/cartridgeitem.form.php:113
 #, php-format
 msgid "%s deletes a type"
 msgstr ""
@@ -1017,25 +1017,25 @@ msgid "%s updates a virtual machine"
 msgstr ""
 
 #. TRANS: %s is the user login
-#: front/consumable.form.php:60
+#: front/consumable.form.php:57
 #, php-format
 msgid "%s adds consumables"
 msgstr ""
 
 #. TRANS: %s is the user login
-#: front/consumable.form.php:70
+#: front/consumable.form.php:67
 #, php-format
 msgid "%s deletes a consumable"
 msgstr ""
 
 #. TRANS: %s is the user login
-#: front/consumable.form.php:87
+#: front/consumable.form.php:84
 #, php-format
 msgid "%s gives a consumable"
 msgstr ""
 
 #. TRANS: %s is the user login
-#: front/consumable.form.php:97
+#: front/consumable.form.php:94
 #, php-format
 msgid "%s restores a consumable"
 msgstr ""
@@ -1155,8 +1155,8 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: front/dictionnary.php:54 inc/cartridgeitem.class.php:239
-#: inc/cartridgeitem.class.php:316 inc/commondevice.class.php:77
+#: front/dictionnary.php:54 inc/cartridgeitem.class.php:193
+#: inc/cartridgeitem.class.php:270 inc/commondevice.class.php:77
 #: inc/commondevice.class.php:96 inc/computer.class.php:510
 #: inc/computer.class.php:857 inc/consumableitem.class.php:170
 #: inc/consumableitem.class.php:248 inc/html.class.php:1503
@@ -1178,7 +1178,7 @@ msgstr[3] ""
 #: inc/ruledictionnaryprinter.class.php:110
 #: inc/ruledictionnaryprinter.class.php:130
 #: inc/ruledictionnaryprintermodel.class.php:54
-#: inc/ruleimportcomputer.class.php:120 inc/search.class.php:4680
+#: inc/ruleimportcomputer.class.php:120 inc/search.class.php:4681
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
 msgstr[0] ""
@@ -1191,7 +1191,7 @@ msgstr[3] ""
 #: front/report.default.php:211 front/report.year.php:58
 #: inc/html.class.php:1016 inc/html.class.php:1722 inc/ocsserver.class.php:446
 #: inc/printer.class.php:55 inc/profile.class.php:650
-#: inc/transfer.class.php:3134
+#: inc/profile.class.php:1403 inc/transfer.class.php:3134
 msgid "Printer"
 msgid_plural "Printers"
 msgstr[0] ""
@@ -1200,7 +1200,7 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: front/dictionnary.php:66 front/stat.location.php:82
-#: inc/cartridgeitem.class.php:541 inc/computer.class.php:524
+#: inc/cartridgeitem.class.php:495 inc/computer.class.php:524
 #: inc/computer.class.php:767 inc/dropdown.class.php:640
 #: inc/monitor.class.php:248 inc/monitor.class.php:414
 #: inc/networkequipment.class.php:293 inc/networkequipment.class.php:431
@@ -1247,7 +1247,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: front/dictionnary.php:74 inc/cartridgeitem.class.php:353
+#: front/dictionnary.php:74 inc/cartridgeitem.class.php:307
 #: inc/dropdown.class.php:645 inc/html.class.php:1555
 #: inc/printermodel.class.php:45
 msgid "Printer model"
@@ -1284,8 +1284,8 @@ msgstr[3] ""
 
 #: front/dictionnary.php:91 front/stat.location.php:80
 #: front/stat.tracking.php:92 inc/bookmark.class.php:212
-#: inc/budget.class.php:297 inc/cartridgeitem.class.php:229
-#: inc/cartridgeitem.class.php:312 inc/change_item.class.php:133
+#: inc/budget.class.php:297 inc/cartridgeitem.class.php:183
+#: inc/cartridgeitem.class.php:266 inc/change_item.class.php:133
 #: inc/commonitiltask.class.php:952 inc/computer.class.php:497
 #: inc/computer.class.php:763 inc/consumableitem.class.php:159
 #: inc/consumableitem.class.php:244 inc/contact.class.php:200
@@ -1301,7 +1301,7 @@ msgstr[3] ""
 #: inc/item_problem.class.php:133 inc/knowbaseitem.class.php:1318
 #: inc/link_itemtype.class.php:76 inc/monitor.class.php:222
 #: inc/monitor.class.php:410 inc/networkequipment.class.php:266
-#: inc/networkequipment.class.php:427 inc/networkport.class.php:722
+#: inc/networkequipment.class.php:427 inc/networkport.class.php:734
 #: inc/notification.class.php:144 inc/notification.class.php:217
 #: inc/notificationtarget.class.php:1042
 #: inc/notificationtargetcontract.class.php:94
@@ -1456,7 +1456,7 @@ msgstr "Datoteka ni bila najdena"
 
 #: front/document.send.php:57
 msgid "File is altered (bad checksum)"
-msgstr "Datoteka je spremenjena (slaba kontrolna vsota))"
+msgstr "Datoteka je spremenjena (slaba kontrolna vsota)"
 
 #: front/document.send.php:62 front/document.send.php:76
 #: front/graph.send.php:52
@@ -1491,7 +1491,7 @@ msgstr "Poišči ID vaše strojne opreme"
 #: inc/dropdown.class.php:770 inc/html.class.php:2021 inc/html.class.php:2200
 #: inc/html.class.php:2204 inc/knowbaseitem.class.php:803
 #: inc/knowbaseitem.class.php:807 inc/planning.class.php:312
-#: inc/search.class.php:1703
+#: inc/search.class.php:1704
 msgid "Search"
 msgstr "Išči"
 
@@ -1519,7 +1519,7 @@ msgstr ""
 
 #: front/find_num.php:94 inc/authldap.class.php:595 inc/authmail.class.php:102
 #: inc/cartridge.class.php:384 inc/cartridge.class.php:602
-#: inc/cartridgeitem.class.php:302 inc/cartridgeitem.class.php:541
+#: inc/cartridgeitem.class.php:256 inc/cartridgeitem.class.php:495
 #: inc/change.class.php:404 inc/commondbrelation.class.php:60
 #: inc/commondbtm.class.php:2648 inc/commondropdown.class.php:298
 #: inc/commontreedropdown.class.php:481 inc/computer.class.php:756
@@ -1530,12 +1530,12 @@ msgstr ""
 #: inc/fieldunicity.class.php:292 inc/group_user.class.php:473
 #: inc/infocom.class.php:1238 inc/knowbaseitem.class.php:1210
 #: inc/link.class.php:159 inc/log.class.php:280 inc/monitor.class.php:403
-#: inc/networkequipment.class.php:420 inc/networkport.class.php:674
+#: inc/networkequipment.class.php:420 inc/networkport.class.php:686
 #: inc/notificationtargetcommonitilobject.class.php:737
 #: inc/ocsserver.class.php:181 inc/peripheral.class.php:368
 #: inc/phone.class.php:398 inc/printer.class.php:522 inc/problem.class.php:408
 #: inc/profile_user.class.php:666 inc/reservationitem.class.php:115
-#: inc/search.class.php:4642 inc/sla.class.php:213 inc/software.class.php:353
+#: inc/search.class.php:4643 inc/sla.class.php:213 inc/software.class.php:353
 #: inc/softwarelicense.class.php:691 inc/supplier.class.php:209
 #: inc/ticket.class.php:1519 inc/user.class.php:1912 inc/user.class.php:3001
 msgid "ID"
@@ -1560,7 +1560,7 @@ msgstr "ID"
 #: inc/peripheral.class.php:259 inc/peripheral.class.php:387
 #: inc/phone.class.php:258 inc/printer.class.php:360 inc/printer.class.php:541
 #: inc/ruleimportcomputer.class.php:114 inc/ruleocs.class.php:141
-#: inc/search.class.php:4653 inc/software.class.php:479
+#: inc/search.class.php:4654 inc/software.class.php:479
 #: inc/softwarelicense.class.php:179 inc/softwarelicense.class.php:263
 #: inc/softwarelicense.class.php:576 inc/softwarelicense.class.php:692
 #: inc/supplier.class.php:481 inc/user.class.php:2552 inc/user.class.php:2627
@@ -1579,7 +1579,7 @@ msgstr "Serijska številka"
 #: inc/ocsserver.class.php:2944 inc/peripheral.class.php:269
 #: inc/peripheral.class.php:392 inc/phone.class.php:267
 #: inc/printer.class.php:370 inc/printer.class.php:546
-#: inc/search.class.php:4657 inc/software.class.php:486
+#: inc/search.class.php:4658 inc/software.class.php:486
 #: inc/softwarelicense.class.php:191 inc/softwarelicense.class.php:268
 #: inc/supplier.class.php:482 inc/user.class.php:2553 inc/user.class.php:2628
 msgid "Inventory number"
@@ -1918,7 +1918,7 @@ msgstr ""
 
 #: front/plugin.php:46
 msgid "Delete or update it otherwise GLPI will not work correctly."
-msgstr "Zbriši ali nadgradi drugače GLPI ne bo deloval pravilno.."
+msgstr "Zbriši ali nadgradi drugače GLPI ne bo deloval pravilno."
 
 #: front/popup.php:58 inc/authldap.class.php:387 inc/authldap.class.php:463
 #: inc/authmail.class.php:225 inc/change.class.php:589 inc/rule.class.php:274
@@ -2015,8 +2015,8 @@ msgstr "Seznam strojne opreme pod pogodbo"
 #: inc/authmail.class.php:95 inc/authmail.class.php:165
 #: inc/bookmark.class.php:207 inc/budget.class.php:129
 #: inc/budget.class.php:211 inc/budget.class.php:299
-#: inc/calendar_holiday.class.php:90 inc/cartridgeitem.class.php:225
-#: inc/cartridgeitem.class.php:295 inc/change_item.class.php:135
+#: inc/calendar_holiday.class.php:90 inc/cartridgeitem.class.php:179
+#: inc/cartridgeitem.class.php:249 inc/change_item.class.php:135
 #: inc/commondbtm.class.php:2419 inc/commondevice.class.php:89
 #: inc/commondropdown.class.php:139 inc/commondropdown.class.php:291
 #: inc/commontreedropdown.class.php:378 inc/commontreedropdown.class.php:399
@@ -2048,8 +2048,8 @@ msgstr "Seznam strojne opreme pod pogodbo"
 #: inc/netpoint.class.php:355 inc/netpoint.class.php:367
 #: inc/networkalias.class.php:148 inc/networkequipment.class.php:246
 #: inc/networkequipment.class.php:413 inc/networkname.class.php:151
-#: inc/networkname.class.php:602 inc/networkport.class.php:410
-#: inc/networkport.class.php:560 inc/networkport.class.php:668
+#: inc/networkname.class.php:611 inc/networkport.class.php:410
+#: inc/networkport.class.php:560 inc/networkport.class.php:680
 #: inc/notification.class.php:130 inc/notification.class.php:194
 #: inc/notificationtarget.class.php:1039
 #: inc/notificationtargetcontract.class.php:92
@@ -2069,7 +2069,7 @@ msgstr "Seznam strojne opreme pod pogodbo"
 #: inc/rulecollection.class.php:392 inc/rulecriteria.class.php:73
 #: inc/ruledictionnaryprinter.class.php:106
 #: inc/ruledictionnaryprinter.class.php:124 inc/ruleright.class.php:83
-#: inc/search.class.php:4636 inc/sla.class.php:155 inc/sla.class.php:206
+#: inc/search.class.php:4637 inc/sla.class.php:155 inc/sla.class.php:206
 #: inc/slalevel.class.php:93 inc/slalevel.class.php:122
 #: inc/slalevel.class.php:211 inc/software.class.php:239
 #: inc/software.class.php:346 inc/software.class.php:779
@@ -2088,7 +2088,7 @@ msgstr "Ime"
 #: front/report.contract.list.php:120 front/report.infocom.php:123
 #: front/report.year.list.php:132 inc/authldap.class.php:2613
 #: inc/budget.class.php:244 inc/budget.class.php:298 inc/budget.class.php:497
-#: inc/cartridgeitem.class.php:348 inc/change.class.php:464
+#: inc/cartridgeitem.class.php:302 inc/change.class.php:464
 #: inc/change_item.class.php:134 inc/change_problem.class.php:93
 #: inc/change_ticket.class.php:89 inc/commondbtm.class.php:2650
 #: inc/commondropdown.class.php:309 inc/commontreedropdown.class.php:401
@@ -2129,7 +2129,7 @@ msgstr "Ime"
 #: inc/ruledictionnarysoftware.class.php:156
 #: inc/rulemailcollector.class.php:193 inc/ruleocs.class.php:151
 #: inc/ruleright.class.php:317 inc/rulerightcollection.class.php:139
-#: inc/ruleticket.class.php:275 inc/search.class.php:4689
+#: inc/ruleticket.class.php:275 inc/search.class.php:4690
 #: inc/sla.class.php:227 inc/software.class.php:409 inc/software.class.php:780
 #: inc/softwarelicense.class.php:571 inc/softwarelicense.class.php:693
 #: inc/stat.class.php:1351 inc/supplier.class.php:277
@@ -2175,7 +2175,7 @@ msgstr "Datum nakupa"
 #: front/report.contract.list.php:124 front/report.infocom.php:128
 #: front/report.year.list.php:136 inc/alert.class.php:187
 #: inc/infocom.class.php:452 inc/infocom.class.php:1163
-#: inc/search.class.php:3917
+#: inc/search.class.php:3918
 msgid "Warranty expiration date"
 msgstr "Datum poteka garancije"
 
@@ -2250,7 +2250,6 @@ msgstr "Pokaži poročilo"
 #: inc/ocsserver.class.php:358 inc/ocsserver.class.php:2949
 #: inc/printer.class.php:410 inc/printer.class.php:622
 #: inc/profile.class.php:647 inc/profile.class.php:1398
-#: inc/profile.class.php:1403
 msgid "Network"
 msgid_plural "Networks"
 msgstr[0] ""
@@ -2299,8 +2298,8 @@ msgid "Network report by location: %s"
 msgstr "Omrežno poročilo po lokaciji: %s"
 
 #: front/report.location.list.php:62 inc/dropdown.class.php:686
-#: inc/netpoint.class.php:56 inc/networkport.class.php:630
-#: inc/networkport.class.php:709 inc/networkportethernet.class.php:95
+#: inc/netpoint.class.php:56 inc/networkport.class.php:642
+#: inc/networkport.class.php:721 inc/networkportethernet.class.php:95
 #: inc/networkportinstantiation.class.php:334
 #: inc/networkportmigration.class.php:59
 msgid "Network outlet"
@@ -2318,8 +2317,8 @@ msgstr "stikalo - switch"
 #: front/report.netpoint.list.php:70 front/report.netpoint.list.php:74
 #: front/report.switch.list.php:61 front/report.switch.list.php:64
 #: inc/networkequipment.class.php:355 inc/networkequipment.class.php:493
-#: inc/networkname.class.php:603 inc/networkport.class.php:595
-#: inc/networkport.class.php:689
+#: inc/networkname.class.php:612 inc/networkport.class.php:598
+#: inc/networkport.class.php:701
 msgid "IP"
 msgstr "IP"
 
@@ -2332,7 +2331,7 @@ msgstr "Porti računalniške strojne opreme"
 #: front/report.netpoint.list.php:72 front/report.netpoint.list.php:75
 #: front/report.switch.list.php:62 front/report.switch.list.php:65
 #: inc/devicenetworkcard.class.php:48 inc/devicenetworkcard.class.php:97
-#: inc/networkport.class.php:684 inc/ruleimportcomputer.class.php:104
+#: inc/networkport.class.php:696 inc/ruleimportcomputer.class.php:104
 msgid "MAC address"
 msgstr "Mac Naslov"
 
@@ -2448,7 +2447,7 @@ msgstr ""
 #: front/rule.common.php:121 inc/migration.class.php:58
 #: inc/software.class.php:823 install/update.php:135
 msgid "Work in progress..."
-msgstr "Delo v teku......"
+msgstr "Delo v teku..."
 
 #: front/rule.common.php:144
 #, php-format
@@ -2524,7 +2523,7 @@ msgstr ""
 
 #: front/setup.templates.php:48 inc/html.class.php:2217
 msgid "Manage templates..."
-msgstr "Upravljaj predloge......"
+msgstr "Upravljaj predloge..."
 
 #: front/sla.form.php:74 front/sla.php:41 inc/html.class.php:1842
 #: inc/notificationtargetticket.class.php:530 inc/profile.class.php:1185
@@ -2677,7 +2676,7 @@ msgstr "Povprečni čas"
 
 #: front/stat.global.php:187 front/stat.graph.php:424
 msgid "hour(s)"
-msgstr "Ura(e))"
+msgstr "Ura(e)"
 
 #: front/stat.global.php:207 front/stat.graph.php:443 inc/stat.class.php:375
 msgid "Answered"
@@ -2695,7 +2694,7 @@ msgstr ""
 #: front/stat.location.php:191 front/stat.location.php:203
 #: front/stat.location.php:215
 msgid "Ticket(s)"
-msgstr "naročilo(a))"
+msgstr "naročilo(a)"
 
 #: front/stat.global.php:232 front/stat.global.php:248
 #: front/stat.graph.php:468 front/stat.graph.php:484
@@ -2788,7 +2787,7 @@ msgid "Next"
 msgstr "Naprej"
 
 #: front/stat.graph.php:352 inc/notificationtargetproblem.class.php:212
-#: inc/search.class.php:4701 inc/stat.class.php:1353
+#: inc/search.class.php:4702 inc/stat.class.php:1353
 msgid "Number of tickets"
 msgstr "Število naročil"
 
@@ -2845,7 +2844,7 @@ msgstr ""
 #: inc/peripheral.class.php:411 inc/phone.class.php:294
 #: inc/phone.class.php:446 inc/printer.class.php:404 inc/printer.class.php:565
 #: inc/profile.class.php:1151 inc/reminder.class.php:1013
-#: inc/reservationitem.class.php:131 inc/search.class.php:4670
+#: inc/reservationitem.class.php:131 inc/search.class.php:4671
 #: inc/software.class.php:289 inc/software.class.php:399
 #: inc/user.class.php:1957 inc/user.class.php:2663
 msgid "Group"
@@ -2951,7 +2950,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: front/stat.tracking.php:98 inc/cartridgeitem.class.php:291
+#: front/stat.tracking.php:98 inc/cartridgeitem.class.php:245
 #: inc/change.class.php:385 inc/commondbrelation.class.php:56
 #: inc/commondbtm.class.php:2415 inc/commondevice.class.php:85
 #: inc/commondropdown.class.php:287 inc/commonitiltask.class.php:364
@@ -2962,7 +2961,7 @@ msgstr[3] ""
 #: inc/group_user.class.php:469 inc/infocom.class.php:1234
 #: inc/knowbaseitem.class.php:1206 inc/link.class.php:148
 #: inc/mailcollector.class.php:281 inc/monitor.class.php:392
-#: inc/networkequipment.class.php:409 inc/networkport.class.php:664
+#: inc/networkequipment.class.php:409 inc/networkport.class.php:676
 #: inc/networkportethernet.class.php:291 inc/networkportwifi.class.php:156
 #: inc/notification.class.php:190 inc/notificationtemplate.class.php:131
 #: inc/notificationtemplatetranslation.class.php:245
@@ -2970,7 +2969,7 @@ msgstr[3] ""
 #: inc/printer.class.php:511 inc/problem.class.php:389
 #: inc/profile.class.php:1343 inc/profile_user.class.php:662
 #: inc/reminder.class.php:302 inc/reservationitem.class.php:105
-#: inc/search.class.php:4632 inc/sla.class.php:202
+#: inc/search.class.php:4633 inc/sla.class.php:202
 #: inc/softwareversion.class.php:185 inc/supplier.class.php:198
 #: inc/ticket.class.php:1501 inc/ticketfollowup.class.php:712
 #: inc/transfer.class.php:97 inc/user.class.php:1900
@@ -3120,7 +3119,7 @@ msgstr "Vaše sporočilo je bilo uspešno poslano, vaša zahteva je v datoteki..
 
 #: front/tracking.injector.php:86
 msgid "Thank you for using our automatic helpdesk system."
-msgstr "Hvala za uporabo našega avtomatskega sistema za pomoč.."
+msgstr "Hvala za uporabo našega avtomatskega sistema za pomoč."
 
 #: front/user.form.php:158 front/user.form.php:184 front/user.php:40
 #: inc/authldap.class.php:1005 inc/authldap.class.php:2611
@@ -3142,7 +3141,7 @@ msgstr "Hvala za uporabo našega avtomatskega sistema za pomoč.."
 #: inc/profile.class.php:1611 inc/profile_user.class.php:236
 #: inc/profile_user.class.php:680 inc/profile_user.class.php:747
 #: inc/profile_user.class.php:763 inc/reminder.class.php:992
-#: inc/reservationitem.class.php:127 inc/search.class.php:4666
+#: inc/reservationitem.class.php:127 inc/search.class.php:4667
 #: inc/software.class.php:281 inc/software.class.php:395
 #: inc/ticketfollowup.class.php:735 inc/user.class.php:54
 #: inc/user.class.php:1410 inc/user.class.php:1426 inc/user.class.php:2590
@@ -3175,7 +3174,7 @@ msgid "Inheritance of the parent entity"
 msgstr ""
 
 #: inc/alert.class.php:96 inc/alert.class.php:138 inc/alert.class.php:140
-#: inc/budget.class.php:160 inc/cartridgeitem.class.php:277
+#: inc/budget.class.php:160 inc/cartridgeitem.class.php:231
 #: inc/config.class.php:252 inc/config.class.php:749 inc/config.class.php:801
 #: inc/consumableitem.class.php:208 inc/contract.class.php:1339
 #: inc/crontask.class.php:451 inc/entitydata.class.php:610
@@ -3206,14 +3205,14 @@ msgstr "Vsak mesec"
 #: inc/alert.class.php:120 inc/bookmark.class.php:575 inc/config.class.php:745
 #: inc/config.class.php:1006 inc/dropdown.class.php:532
 #: inc/dropdown.class.php:555 inc/entitydata.class.php:1203
-#: inc/ruleimportcomputer.class.php:169 inc/search.class.php:2973
+#: inc/ruleimportcomputer.class.php:169 inc/search.class.php:2974
 msgid "No"
 msgstr "Ne"
 
 #: inc/alert.class.php:121 inc/bookmark.class.php:579 inc/config.class.php:746
 #: inc/dropdown.class.php:536 inc/dropdown.class.php:553
 #: inc/rule.class.php:1300 inc/ruleimportcomputer.class.php:192
-#: inc/search.class.php:2975
+#: inc/search.class.php:2976
 msgid "Yes"
 msgstr "Da"
 
@@ -3348,7 +3347,7 @@ msgstr[3] ""
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1033
 msgid "Root directory (optional)"
-msgstr "Root imenik (opcijsko))"
+msgstr "Root imenik (opcijsko)"
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1036
@@ -3412,7 +3411,7 @@ msgstr "LDAP izbira imenika"
 #: inc/ticket.class.php:3830 inc/ticket.class.php:3845 inc/user.class.php:1812
 #: inc/user.class.php:2820 inc/user.class.php:2850
 msgid "Save"
-msgstr ""
+msgstr "Shrani"
 
 #: inc/authldap.class.php:205
 msgid "Preconfiguration"
@@ -3439,7 +3438,7 @@ msgstr "Privzeta vrednost(i)"
 #: inc/problem.class.php:818 inc/problem.class.php:1070
 #: inc/profile.class.php:475 inc/profile.class.php:1354
 #: inc/reminder.class.php:359 inc/reservationitem.class.php:135
-#: inc/search.class.php:4674 inc/sla.class.php:165 inc/software.class.php:374
+#: inc/search.class.php:4675 inc/sla.class.php:165 inc/software.class.php:374
 #: inc/softwarelicense.class.php:224 inc/ticket.class.php:1581
 #: inc/ticket.class.php:3261 inc/ticket.class.php:4415
 #: inc/transfer.class.php:108 inc/user.class.php:2005
@@ -3489,11 +3488,11 @@ msgstr "Osnovadn - basedn"
 
 #: inc/authldap.class.php:247
 msgid "RootDN (for non anonymous binds)"
-msgstr "rootdn (za ne anonimne binde))"
+msgstr "rootdn (za ne anonimne binde)"
 
 #: inc/authldap.class.php:252
 msgid "Password (for non-anonymous binds)"
-msgstr "Pass (za ne-anonimno bindanje - binds))"
+msgstr "Pass (za ne-anonimno bindanje - binds)"
 
 #: inc/authldap.class.php:255 inc/config.class.php:391
 #: inc/config.class.php:915 inc/mailcollector.class.php:237
@@ -3508,8 +3507,8 @@ msgstr "Prijavno polje"
 #: inc/authldap.class.php:263 inc/authldap.class.php:488
 #: inc/authldap.class.php:674 inc/authmail.class.php:129
 #: inc/authmail.class.php:182 inc/budget.class.php:134
-#: inc/budget.class.php:239 inc/cartridgeitem.class.php:252
-#: inc/cartridgeitem.class.php:338 inc/commondevice.class.php:100
+#: inc/budget.class.php:239 inc/cartridgeitem.class.php:206
+#: inc/cartridgeitem.class.php:292 inc/commondevice.class.php:100
 #: inc/commondropdown.class.php:151 inc/commondropdown.class.php:303
 #: inc/commontreedropdown.class.php:408 inc/commontreedropdown.class.php:492
 #: inc/computer.class.php:573 inc/computer.class.php:814
@@ -3529,8 +3528,8 @@ msgstr "Prijavno polje"
 #: inc/monitor.class.php:457 inc/netpoint.class.php:311
 #: inc/networkalias.class.php:302 inc/networkequipment.class.php:343
 #: inc/networkequipment.class.php:474 inc/networkname.class.php:170
-#: inc/networkname.class.php:604 inc/networkport.class.php:536
-#: inc/networkport.class.php:717 inc/notification.class.php:135
+#: inc/networkname.class.php:613 inc/networkport.class.php:536
+#: inc/networkport.class.php:729 inc/notification.class.php:135
 #: inc/notification.class.php:228
 #: inc/notificationtargetreservation.class.php:138
 #: inc/notificationtemplate.class.php:113
@@ -3546,7 +3545,7 @@ msgstr "Prijavno polje"
 #: inc/reservationitem.class.php:102 inc/reservationitem.class.php:122
 #: inc/reservationitem.class.php:241 inc/rule.class.php:184
 #: inc/rule.class.php:247 inc/ruledictionnaryprinter.class.php:114
-#: inc/rulesoftwarecategory.class.php:74 inc/search.class.php:4661
+#: inc/rulesoftwarecategory.class.php:74 inc/search.class.php:4662
 #: inc/sla.class.php:158 inc/sla.class.php:222 inc/software.class.php:275
 #: inc/software.class.php:360 inc/softwarelicense.class.php:203
 #: inc/softwarelicense.class.php:298 inc/softwareversion.class.php:152
@@ -3583,7 +3582,7 @@ msgstr "Kako LDAP z drugim imenom bo narejeno"
 
 #: inc/authldap.class.php:323
 msgid "Never dereferenced (default)"
-msgstr "Nikoli ne dereferenciraj (privzeto))"
+msgstr "Nikoli ne dereferenciraj (privzeto)"
 
 #: inc/authldap.class.php:324
 msgid "Always dereferenced"
@@ -3591,11 +3590,11 @@ msgstr "Vedno dereferenciraj"
 
 #: inc/authldap.class.php:325
 msgid "Dereferenced during the search (but not when locating)"
-msgstr "Dereferenciraj med iskanjem (toda ne med lociranjem))"
+msgstr "Dereferenciraj med iskanjem (toda ne med lociranjem)"
 
 #: inc/authldap.class.php:326
 msgid "Dereferenced when locating (not during the search)"
-msgstr "Dereferancija ko lociraš (ne med iskanjem))"
+msgstr "Dereferancija ko lociraš (ne med iskanjem)"
 
 #: inc/authldap.class.php:361 inc/authldap.class.php:372
 msgid "List of LDAP directory replicates"
@@ -3743,7 +3742,7 @@ msgstr "Iskalni filter za uporabnike"
 msgid ""
 "Warning: The request exceeds the limit of the directory. The results are "
 "only partial."
-msgstr "Pozor: Prošnja je presegla mejo direktorija. Rezultat je le delni.."
+msgstr "Pozor: Prošnja je presegla mejo direktorija. Rezultat je le delni."
 
 #: inc/authldap.class.php:1003 inc/authldap.class.php:1063
 #: inc/ocsserver.class.php:2509 inc/ocsserver.class.php:2529
@@ -3819,7 +3818,7 @@ msgstr "Uporabnika ne najdem ali več najdenih uporabnikov"
 
 #: inc/authldap.class.php:1892 inc/user.class.php:466
 msgid "Unable to add. The user already exists."
-msgstr "Ni mogoče dodati. Uporabnik že obstaja.."
+msgstr "Ni mogoče dodati. Uporabnik že obstaja."
 
 #: inc/authldap.class.php:2222
 msgid "Expert mode"
@@ -3917,8 +3916,8 @@ msgstr[3] ""
 #: inc/contract.class.php:191 inc/contract.class.php:210
 #: inc/contract.class.php:211 inc/contract.class.php:212
 #: inc/contract.class.php:213 inc/dropdown.class.php:1069
-#: inc/infocom.class.php:963 inc/search.class.php:3866
-#: inc/search.class.php:3897 inc/supplier.class.php:654
+#: inc/infocom.class.php:963 inc/search.class.php:3867
+#: inc/search.class.php:3898 inc/supplier.class.php:654
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
@@ -4009,7 +4008,7 @@ msgstr "Zasebno"
 
 #: inc/bookmark.class.php:368
 msgid "Partial load of the bookmark."
-msgstr "Delno naloženi zaznamki.."
+msgstr "Delno naloženi zaznamki."
 
 #: inc/bookmark.class.php:528
 msgid "Bookmarks"
@@ -4037,7 +4036,7 @@ msgstr "Potrdi privzeto"
 #: inc/printer.class.php:537 inc/problem.class.php:413
 #: inc/problem.class.php:862 inc/problem.class.php:1068
 #: inc/reminder.class.php:319 inc/reminder.class.php:553
-#: inc/ruleticket.class.php:349 inc/search.class.php:4647
+#: inc/ruleticket.class.php:349 inc/search.class.php:4648
 #: inc/software.class.php:445 inc/softwareversion.class.php:166
 #: inc/softwareversion.class.php:203 inc/softwareversion.class.php:282
 #: inc/state.class.php:113 inc/ticket.class.php:1525 inc/ticket.class.php:3467
@@ -4075,7 +4074,7 @@ msgstr[3] ""
 msgid "Items"
 msgstr "Predmetov"
 
-#: inc/budget.class.php:254 inc/cartridgeitem.class.php:343
+#: inc/budget.class.php:254 inc/cartridgeitem.class.php:297
 #: inc/change.class.php:516 inc/commondbtm.class.php:2895
 #: inc/commonglpi.class.php:180 inc/computer.class.php:819
 #: inc/consumableitem.class.php:275 inc/contact.class.php:287
@@ -4165,7 +4164,7 @@ msgstr "Začni"
 #: inc/holiday.class.php:63 inc/holiday.class.php:87 inc/html.class.php:3777
 #: inc/html.class.php:3778 inc/html.class.php:3930 inc/html.class.php:3931
 #: inc/planning.class.php:304 inc/reminder.class.php:549
-#: inc/search.class.php:3924
+#: inc/search.class.php:3925
 msgid "End"
 msgstr "Končaj"
 
@@ -4174,6 +4173,10 @@ msgstr "Končaj"
 msgid "Recurrent"
 msgstr ""
 
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
+#. headings of a list)
+#. TRANS : %1$s is the itemtype name,
+#. %2$s is the name of the item (used for headings of a list)
 #. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
 #. headings of a list)
 #. TRANS : %1$s is the itemtype name,
@@ -4202,8 +4205,8 @@ msgstr ""
 #: inc/contract.class.php:1016 inc/document.class.php:1359
 #: inc/group_user.class.php:148 inc/group_user.class.php:392
 #: inc/netpoint.class.php:321 inc/networkalias.class.php:307
-#: inc/networkname.class.php:610 inc/networkport.class.php:377
-#: inc/notificationtarget.class.php:1051
+#: inc/networkname.class.php:478 inc/networkname.class.php:619
+#: inc/networkport.class.php:377 inc/notificationtarget.class.php:1051
 #: inc/notificationtemplatetranslation.class.php:179
 #: inc/problem.class.php:1403 inc/problem_ticket.class.php:108
 #: inc/problem_ticket.class.php:183 inc/profile_user.class.php:266
@@ -4393,14 +4396,14 @@ msgstr "Povprečen čas zaloge"
 msgid "Average Time in use"
 msgstr "Povprečen čas uporabnosti"
 
-#: inc/cartridgeitem.class.php:235 inc/cartridgeitem.class.php:307
+#: inc/cartridgeitem.class.php:189 inc/cartridgeitem.class.php:261
 #: inc/consumableitem.class.php:166 inc/consumableitem.class.php:239
 #: inc/notificationtargetcartridge.class.php:75
 #: inc/notificationtargetconsumable.class.php:77
 msgid "Reference"
 msgstr "Reference"
 
-#: inc/cartridgeitem.class.php:245 inc/cartridgeitem.class.php:323
+#: inc/cartridgeitem.class.php:199 inc/cartridgeitem.class.php:277
 #: inc/computer.class.php:503 inc/computer.class.php:862
 #: inc/consumableitem.class.php:176 inc/consumableitem.class.php:255
 #: inc/itilcategory.class.php:63 inc/itilcategory.class.php:117
@@ -4412,12 +4415,12 @@ msgstr "Reference"
 #: inc/peripheral.class.php:229 inc/peripheral.class.php:442
 #: inc/phone.class.php:228 inc/phone.class.php:482 inc/printer.class.php:330
 #: inc/printer.class.php:635 inc/reservationitem.class.php:146
-#: inc/search.class.php:4685 inc/software.class.php:257
+#: inc/search.class.php:4686 inc/software.class.php:257
 #: inc/software.class.php:385
 msgid "Technician in charge of the hardware"
 msgstr "Odgovorni tehnik"
 
-#: inc/cartridgeitem.class.php:258 inc/cartridgeitem.class.php:328
+#: inc/cartridgeitem.class.php:212 inc/cartridgeitem.class.php:282
 #: inc/computer.class.php:516 inc/computer.class.php:867
 #: inc/consumableitem.class.php:189 inc/consumableitem.class.php:260
 #: inc/itilcategory.class.php:67 inc/monitor.class.php:241
@@ -4431,22 +4434,22 @@ msgstr "Odgovorni tehnik"
 msgid "Group in charge of the hardware"
 msgstr ""
 
-#: inc/cartridgeitem.class.php:267 inc/consumableitem.class.php:198
+#: inc/cartridgeitem.class.php:221 inc/consumableitem.class.php:198
 msgid "Stock location"
 msgstr "Lokacija zaloge"
 
-#: inc/cartridgeitem.class.php:274 inc/cartridgeitem.class.php:333
+#: inc/cartridgeitem.class.php:228 inc/cartridgeitem.class.php:287
 #: inc/consumableitem.class.php:205 inc/consumableitem.class.php:265
 msgid "Alert threshold"
 msgstr ""
 
-#: inc/cartridgeitem.class.php:364 inc/cartridgeitem.class.php:570
+#: inc/cartridgeitem.class.php:318 inc/cartridgeitem.class.php:524
 msgid "Send alarms on cartridges"
 msgstr "Pošlji alarme na osnovi tonerjev in kartuš"
 
 #. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
 #. number
-#: inc/cartridgeitem.class.php:407
+#: inc/cartridgeitem.class.php:361
 #, php-format
 msgid ""
 "Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s "
@@ -4454,19 +4457,19 @@ msgid ""
 msgstr ""
 
 #. TRANS: %s is entity name
-#: inc/cartridgeitem.class.php:447
+#: inc/cartridgeitem.class.php:401
 #, php-format
 msgid "%s: send cartridge alert failed"
 msgstr ""
 
 #. TRANS: %1$s is the name of the cartrige type, $2$s the reference,
 #. $3$d the number of free cartridges for the reference, %4$s the location
-#: inc/cartridgeitem.class.php:497
+#: inc/cartridgeitem.class.php:451
 #, php-format
 msgid "%1$s - %2$s (%3$d) - %4$s"
 msgstr ""
 
-#: inc/cartridgeitem.class.php:540
+#: inc/cartridgeitem.class.php:494
 msgid "Models of compatible printers"
 msgstr "Modeli kompatabilnih tiskalnikov"
 
@@ -4789,7 +4792,7 @@ msgstr "Predmet uspešno obnovljen: %s"
 #: inc/commondbtm.class.php:3186 inc/dropdown.class.php:1457
 #: inc/dropdown.class.php:1470 inc/infocom.class.php:1003
 #: inc/knowbaseitem.class.php:651 inc/knowbaseitem.class.php:652
-#: inc/networkname.class.php:497 inc/networkname.class.php:498
+#: inc/networkname.class.php:506 inc/networkname.class.php:507
 #: inc/ocsserver.class.php:421 inc/reservation.class.php:663
 #: inc/ticket.class.php:3835 inc/transfer.class.php:3038
 msgid "Purge"
@@ -4818,11 +4821,11 @@ msgstr ""
 
 #: inc/commondbtm.class.php:1866
 msgid "Can't change this attribute. It's inherited from its parent."
-msgstr "Ne morem spremeniti atributa. Podedovan je od staršev.."
+msgstr "Ne morem spremeniti atributa. Podedovan je od staršev."
 
 #: inc/commondbtm.class.php:1870
 msgid "Flag change forbidden. Linked items found."
-msgstr "Sprememba zastavice prepovedana. Povezane predmete našel.."
+msgstr "Sprememba zastavice prepovedana. Povezane predmete našel."
 
 #: inc/commondbtm.class.php:1874
 msgid "Change visibility in child entities"
@@ -4830,35 +4833,35 @@ msgstr ""
 
 #: inc/commondbtm.class.php:2288
 msgid "Complete Name: "
-msgstr ""
+msgstr "Celotno ime: "
 
 #: inc/commondbtm.class.php:2293
 msgid "Serial number: "
-msgstr ""
+msgstr "Serijska številka: "
 
 #: inc/commondbtm.class.php:2298
 msgid "Inventory number: "
-msgstr ""
+msgstr "Inventarna številka: "
 
 #: inc/commondbtm.class.php:2305
 msgid "Status: "
-msgstr ""
+msgstr "Status: "
 
 #: inc/commondbtm.class.php:2312
 msgid "Location: "
-msgstr ""
+msgstr "Lokacija: "
 
 #: inc/commondbtm.class.php:2319
 msgid "User: "
-msgstr ""
+msgstr "Uporabnik: "
 
 #: inc/commondbtm.class.php:2326
 msgid "Group: "
-msgstr ""
+msgstr "Skupina: "
 
 #: inc/commondbtm.class.php:2333
 msgid "Technician in charge of the hardware: "
-msgstr ""
+msgstr "Odgovorni tehnik: "
 
 #: inc/commondbtm.class.php:2339
 msgid "Alternate username: "
@@ -4870,7 +4873,7 @@ msgstr ""
 
 #: inc/commondbtm.class.php:2348
 msgid "Comments: "
-msgstr ""
+msgstr "Komentarji: "
 
 #. TRANS: %s is the list of the failed fields
 #: inc/commondbtm.class.php:2621
@@ -4916,7 +4919,7 @@ msgstr "Predloge"
 
 #: inc/commondbtm.class.php:3197
 msgid "Add a template..."
-msgstr "Dodaj predlogo......"
+msgstr "Dodaj predlogo..."
 
 #: inc/commondropdown.class.php:108 inc/event.class.php:120
 #: inc/html.class.php:1769
@@ -4983,7 +4986,7 @@ msgstr "Razhroščevanje"
 
 #: inc/commonitilactor.class.php:162
 msgid "Email Followup"
-msgstr ""
+msgstr "Opombe po e-mailu"
 
 #: inc/commonitilobject.class.php:425 inc/commonitilobject.class.php:468
 #: inc/commonitilobject.class.php:1946 inc/mailcollector.class.php:119
@@ -4996,7 +4999,7 @@ msgstr ""
 #: inc/commonitilobject.class.php:681 inc/commonitilobject.class.php:701
 #: inc/commonitilobject.class.php:711 inc/commonitilobject.class.php:737
 msgid "Invalid dates. Update cancelled."
-msgstr "Nepravilni datumi. Posodobitev je bila preklicana.."
+msgstr "Nepravilni datumi. Posodobitev je bila preklicana."
 
 #. TRANS: Default document to files attached to tickets : %d is the ticket id
 #: inc/commonitilobject.class.php:1146
@@ -5006,7 +5009,7 @@ msgstr ""
 
 #: inc/commonitilobject.class.php:1169
 msgid "Failed to send the file (probably too large)"
-msgstr "Napaka pri pošiljanju datoteke (definitivno je prevelika))"
+msgstr "Napaka pri pošiljanju datoteke (definitivno je prevelika)"
 
 #: inc/commonitilobject.class.php:1213
 msgctxt "priority"
@@ -5331,7 +5334,7 @@ msgstr ""
 
 #: inc/commonitiltask.class.php:736 inc/commonitiltask.class.php:879
 #: inc/group_user.class.php:131 inc/group_user.class.php:192
-#: inc/ocsserver.class.php:479 inc/search.class.php:4015
+#: inc/ocsserver.class.php:479 inc/search.class.php:4016
 msgid "None"
 msgstr "Nobeden"
 
@@ -5500,10 +5503,10 @@ msgstr ""
 #: inc/computervirtualmachine.class.php:319 inc/networkequipment.class.php:374
 #: inc/networkequipment.class.php:488
 msgid "Memory (Mio)"
-msgstr "RAM (MB))"
+msgstr "RAM (MB)"
 
 #: inc/computer.class.php:922 inc/dropdown.class.php:683
-#: inc/networkinterface.class.php:43 inc/networkport.class.php:713
+#: inc/networkinterface.class.php:43 inc/networkport.class.php:725
 msgid "Network interface"
 msgid_plural "Network interfaces"
 msgstr[0] ""
@@ -5698,7 +5701,7 @@ msgstr "Dodaj novo komponento"
 
 #. TRANS: %s is a size
 #: inc/computerdisk.class.php:250 inc/computerdisk.class.php:252
-#: inc/mailcollector.class.php:1435
+#: inc/mailcollector.class.php:1434
 #, php-format
 msgid "%s Mio"
 msgstr ""
@@ -5713,9 +5716,9 @@ msgstr ""
 #: inc/displaypreference.class.php:557 inc/group.class.php:600
 #: inc/group_user.class.php:456 inc/itilcategory.class.php:297
 #: inc/knowbaseitem.class.php:1095 inc/netpoint.class.php:294
-#: inc/networkalias.class.php:291 inc/networkname.class.php:596
+#: inc/networkalias.class.php:291 inc/networkname.class.php:605
 #: inc/notificationtarget.class.php:1075 inc/rule.class.php:1799
-#: inc/search.class.php:5080 inc/software.class.php:801
+#: inc/search.class.php:5081 inc/software.class.php:801
 #: inc/softwarelicense.class.php:514 inc/softwarelicense.class.php:661
 #: inc/softwareversion.class.php:314 inc/state.class.php:184
 #: inc/tickettemplatehiddenfield.class.php:205
@@ -5945,7 +5948,7 @@ msgstr "Omejitev upravljanja s tiskalniki"
 
 #: inc/config.class.php:333
 msgid "Automatic fields (marked by *)"
-msgstr "Avtomatična polja (označena z *))"
+msgstr "Avtomatična polja (označena z *)"
 
 #: inc/config.class.php:334 inc/stat.class.php:1411 inc/stat.class.php:1422
 msgid "Global"
@@ -6055,7 +6058,7 @@ msgstr ""
 #: inc/event.class.php:125 inc/html.class.php:1089 inc/profile.class.php:103
 #: inc/profile.class.php:506 inc/profile.class.php:784
 #: inc/profile.class.php:1320 inc/profile.class.php:1649
-#: inc/search.class.php:4696
+#: inc/search.class.php:4697
 msgid "Assistance"
 msgstr "Pomoč"
 
@@ -6224,27 +6227,27 @@ msgstr "Stopnja dnevnika (log)"
 
 #: inc/config.class.php:878
 msgid "1- Critical (login error only)"
-msgstr "1- Kritično (zapiše samo napake))"
+msgstr "1- Kritično (zapiše samo napake)"
 
 #: inc/config.class.php:879
 msgid "2- Severe (not used)"
-msgstr ""
+msgstr "2- Strogo (Ne deluje)"
 
 #: inc/config.class.php:880
 msgid "3- Important (successful logins)"
-msgstr "3- Pomembno (uspešne prijave))"
+msgstr "3- Pomembno (uspešne prijave)"
 
 #: inc/config.class.php:881
 msgid "4- Notices (add, delete, tracking)"
-msgstr ""
+msgstr "4- Zapiski (Dodano, zbrisano, sledenje)"
 
 #: inc/config.class.php:882
 msgid "5- Complete (all)"
-msgstr ""
+msgstr "5- Kompletno (Vse)"
 
 #: inc/config.class.php:886
 msgid "Maximal number of automatic actions (run by CLI)"
-msgstr "Maksimalno število avtomatičnih dejanj (pognanih z CLI))"
+msgstr "Maksimalno število avtomatičnih dejanj (pognanih z CLI)"
 
 #: inc/config.class.php:891
 msgid "Logs in files (SQL, email, automatic action...)"
@@ -6305,19 +6308,19 @@ msgstr "Preveri dovoljenja za pisanje za grafične datoteke"
 
 #: inc/config.class.php:1200
 msgid "The directory could not be created."
-msgstr "Imenika ni bilo mogoče ustvariti.."
+msgstr "Imenika ni bilo mogoče ustvariti."
 
 #: inc/config.class.php:1201
 msgid "The directory was created but could not be removed."
-msgstr "Imenik je bil ustvarjen, vendar ga ni bilo mogoče odstraniti.."
+msgstr "Imenik je bil ustvarjen, vendar ga ni bilo mogoče odstraniti."
 
 #: inc/config.class.php:1202
 msgid "The file could not be created."
-msgstr "Datoteke ni bilo mogoče ustvariti.."
+msgstr "Datoteke ni bilo mogoče ustvariti."
 
 #: inc/config.class.php:1203 inc/config.class.php:1250
 msgid "The file was created but can't be deleted."
-msgstr "Datoteka je bila ustvarjena, vendar je ni mogoče izbrisati.."
+msgstr "Datoteka je bila ustvarjena, vendar je ni mogoče izbrisati."
 
 #: inc/config.class.php:1208 inc/config.class.php:1213
 #: inc/config.class.php:1247 inc/config.class.php:1251
@@ -6487,7 +6490,7 @@ msgstr "Pogodbeni čas"
 
 #: inc/contract.class.php:194 inc/contract.class.php:428
 #: inc/contract.class.php:1410 inc/notificationtargetcontract.class.php:40
-#: inc/search.class.php:3927
+#: inc/search.class.php:3928
 msgid "Notice"
 msgstr "Opozorilo"
 
@@ -6621,7 +6624,7 @@ msgstr "Pošlji alarme na osnovi pogodb"
 
 #: inc/contract.class.php:1173
 msgid "Contract entered in notice time:"
-msgstr "Pogodba vnešena v objavljenem času:"
+msgstr "Pogodba vnešena v objavljenem času"
 
 #. TRANS: %s is entity name
 #: inc/contract.class.php:1211
@@ -6639,7 +6642,7 @@ msgstr "Tiha privolitev"
 msgid "Express"
 msgstr "Ekspresno"
 
-#: inc/contract.class.php:1412 inc/search.class.php:3930
+#: inc/contract.class.php:1412 inc/search.class.php:3931
 msgid "End + Notice"
 msgstr ""
 
@@ -6719,7 +6722,7 @@ msgstr "Zadnji tek"
 
 #: inc/crontask.class.php:455 inc/crontask.class.php:456
 #: inc/crontask.class.php:516 inc/crontask.class.php:517
-#: inc/knowbaseitem.class.php:555 inc/search.class.php:1707
+#: inc/knowbaseitem.class.php:555 inc/search.class.php:1708
 msgid "Blank"
 msgstr "Počisti"
 
@@ -6741,7 +6744,7 @@ msgstr "CLI"
 
 #: inc/crontask.class.php:720 inc/toolbox.class.php:820
 msgid "A minimum of 64MB is commonly required for GLPI."
-msgstr "Za GLPI je ponavadi potrebno minimalno 64MB."
+msgstr "Za GLPI je ponavadi potrebno minimalno 64MB"
 
 #: inc/crontask.class.php:861
 msgid "Run count"
@@ -6780,7 +6783,7 @@ msgstr "Minimalen števec"
 
 #: inc/crontask.class.php:918 inc/crontask.class.php:922
 #: inc/crontask.class.php:925 inc/crontask.class.php:930
-#: inc/search.class.php:5104 inc/search.class.php:5124
+#: inc/search.class.php:5105 inc/search.class.php:5125
 #, php-format
 msgid "%s item"
 msgid_plural "%s items"
@@ -6815,7 +6818,7 @@ msgid "Last run list"
 msgstr "Zadnja lista teka"
 
 #: inc/crontask.class.php:1130 inc/event.class.php:136 inc/html.class.php:1339
-#: inc/html.class.php:1954 inc/html.class.php:2613 inc/search.class.php:4739
+#: inc/html.class.php:1954 inc/html.class.php:2613 inc/search.class.php:4740
 msgid "Plugins"
 msgstr "Vtičniki"
 
@@ -6905,7 +6908,7 @@ msgstr ""
 
 #: inc/dbconnection.class.php:385
 msgid "can't connect to the database"
-msgstr ""
+msgstr "Ne morem se povezati z bazo"
 
 #: inc/dbconnection.class.php:387
 #, php-format
@@ -6918,7 +6921,7 @@ msgstr ""
 
 #: inc/db.function.php:458
 msgid "Complete Name:"
-msgstr ""
+msgstr "Celotno ime:"
 
 #: inc/db.function.php:1161
 #, php-format
@@ -6969,7 +6972,7 @@ msgstr "RAID"
 #: inc/devicegraphiccard.class.php:60 inc/devicegraphiccard.class.php:76
 #: inc/devicegraphiccard.class.php:91 inc/deviceharddrive.class.php:67
 #: inc/deviceharddrive.class.php:93 inc/deviceharddrive.class.php:114
-#: inc/networkport.class.php:638 inc/networkportethernet.class.php:93
+#: inc/networkport.class.php:650 inc/networkportethernet.class.php:93
 #: inc/networkportwifi.class.php:103
 msgid "Interface"
 msgstr "Vmesnik"
@@ -7181,7 +7184,7 @@ msgstr "MIME Tip"
 
 #: inc/document.class.php:364 inc/document.class.php:718
 msgid "Checksum (SHA1)"
-msgstr "Kontrolna vsota(SHA1))"
+msgstr "Kontrolna vsota(SHA1)"
 
 #. TRANS: %s is a size
 #: inc/document.class.php:384
@@ -7227,11 +7230,11 @@ msgstr "Napaka pri premiku datoteke"
 
 #: inc/document.class.php:1063
 msgid "File too large to be added."
-msgstr "Datoteka je prevelika!."
+msgstr "Datoteka je prevelika!"
 
 #: inc/document.class.php:1108
 msgid "The file is valid. Upload is successful."
-msgstr "Datoteka je pravilna. Upload je bil uspešen.."
+msgstr "Datoteka je pravilna. Upload je bil uspešen."
 
 #: inc/document.class.php:1117
 msgid ""
@@ -7305,7 +7308,7 @@ msgstr[3] ""
 
 #: inc/dropdown.class.php:282 inc/dropdown.class.php:305
 msgid "Phone: "
-msgstr ""
+msgstr "Telefon: "
 
 #: inc/dropdown.class.php:286
 msgid "Phone 2: "
@@ -7313,15 +7316,15 @@ msgstr ""
 
 #: inc/dropdown.class.php:290
 msgid "Mobile phone: "
-msgstr ""
+msgstr "Prenosni telefon: "
 
 #: inc/dropdown.class.php:294 inc/dropdown.class.php:309
 msgid "Fax: "
-msgstr ""
+msgstr "Faks: "
 
 #: inc/dropdown.class.php:298 inc/dropdown.class.php:313
 msgid "Email: "
-msgstr ""
+msgstr "E-naslov: "
 
 #: inc/dropdown.class.php:505 inc/dropdown.class.php:508
 msgid "GMT"
@@ -7435,7 +7438,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: inc/dropdown.class.php:682 inc/networkport.class.php:584
+#: inc/dropdown.class.php:682 inc/networkport.class.php:587
 msgid "Networking"
 msgstr ""
 
@@ -7451,12 +7454,12 @@ msgstr[2] ""
 msgstr[3] ""
 
 #: inc/dropdown.class.php:690 inc/networkportaggregate.class.php:77
-#: inc/networkportalias.class.php:59 inc/networkport.class.php:651
-#: inc/networkportethernet.class.php:96 inc/networkport_vlan.class.php:192
-#: inc/networkport_vlan.class.php:236 inc/networkport_vlan.class.php:241
+#: inc/networkportalias.class.php:59 inc/networkport.class.php:663
+#: inc/networkportethernet.class.php:96 inc/networkport_vlan.class.php:193
+#: inc/networkport_vlan.class.php:237 inc/networkport_vlan.class.php:242
 #: inc/networkportwifi.class.php:108 inc/vlan.class.php:45
 msgid "VLAN"
-msgstr ""
+msgstr "VLAN"
 
 #: inc/dropdown.class.php:692 inc/profile.class.php:669
 #: inc/profile.class.php:1433
@@ -7568,7 +7571,7 @@ msgstr ""
 msgid "Use unitary management"
 msgstr ""
 
-#: inc/dropdown.class.php:1420 inc/networkport_vlan.class.php:198
+#: inc/dropdown.class.php:1420 inc/networkport_vlan.class.php:199
 msgid "Associate a VLAN"
 msgstr "Povezati v VLAN"
 
@@ -7632,11 +7635,11 @@ msgstr ""
 
 #: inc/dropdown.class.php:1556
 msgid "Add Contact..."
-msgstr "Dodaj osebo......"
+msgstr "Dodaj osebo..."
 
 #: inc/dropdown.class.php:1566
 msgid "Add Supplier..."
-msgstr "Dodaj dobavitelja......"
+msgstr "Dodaj dobavitelja..."
 
 #: inc/dropdown.class.php:1572 inc/group_user.class.php:109
 msgid "Associate to a group"
@@ -7740,7 +7743,7 @@ msgstr "Država"
 
 #: inc/entity.class.php:304
 msgid "Search filter (if needed)"
-msgstr "Iskalni filter (če je potreben))"
+msgstr "Iskalni filter (če je potreben)"
 
 #: inc/entity.class.php:311 inc/entitydata.class.php:564
 #: inc/notificationmailsetting.class.php:146
@@ -7750,7 +7753,7 @@ msgstr "Administrator Pošte"
 #: inc/entity.class.php:318 inc/entitydata.class.php:573
 #: inc/notificationmailsetting.class.php:159
 msgid "Administrator reply-to email (if needed)"
-msgstr "Administratorjev odgovori na Email (če je potrebno))"
+msgstr "Administratorjev odgovori na Email (če je potrebno)"
 
 #: inc/entity.class.php:325
 msgid "Domain of electronic mail service"
@@ -8228,7 +8231,7 @@ msgstr "Predmeta ni mogoče najti"
 
 #: inc/html.class.php:450
 msgid "You don't have permission to perform this action."
-msgstr "Nimate dovoljenja za izvedbo te operacije.."
+msgstr "Nimate dovoljenja za izvedbo te operacije."
 
 #: inc/html.class.php:723
 msgid "Progress"
@@ -8236,7 +8239,7 @@ msgstr "Napredek"
 
 #: inc/html.class.php:853 inc/html.class.php:860
 msgid "Loading..."
-msgstr "Med nalaganjem......"
+msgstr "Med nalaganjem..."
 
 #: inc/html.class.php:1135 inc/html.class.php:1136 inc/html.class.php:2662
 #: inc/html.class.php:2663 inc/ticket.class.php:2672 inc/ticket.class.php:2673
@@ -8584,7 +8587,7 @@ msgstr "Amortizacijski koeficient"
 
 #: inc/infocom.class.php:933
 msgid "TCO (value + tracking cost)"
-msgstr "TCO (vrednost + stroški sledenja))"
+msgstr "TCO (vrednost + stroški sledenja)"
 
 #: inc/infocom.class.php:942
 msgid "Monthly TCO"
@@ -8631,7 +8634,7 @@ msgid "IP version"
 msgstr ""
 
 #: inc/ipnetwork.class.php:86 inc/ipnetwork.class.php:152
-#: inc/networkport.class.php:623 inc/networkport.class.php:704
+#: inc/networkport.class.php:635 inc/networkport.class.php:716
 msgid "Gateway"
 msgstr "Prehod"
 
@@ -8712,7 +8715,7 @@ msgstr "Ime kategorije"
 
 #: inc/knowbaseitem.class.php:475
 msgid "Select a category for this item:"
-msgstr "Izberi kategorijo za ta predmet ::"
+msgstr "Izberi kategorijo za ta predmet :"
 
 #: inc/knowbaseitem.class.php:481 inc/knowbaseitem.class.php:720
 #: inc/knowbaseitem.class.php:1011 inc/knowbaseitem.class.php:1225
@@ -8907,13 +8910,13 @@ msgstr "Odstrani komponento: %s"
 #: inc/log.class.php:390
 #, php-format
 msgid "Install software: %s"
-msgstr ""
+msgstr "Namesti programsko opremo: %s"
 
 #. TRANS: %s is the software name
 #: inc/log.class.php:396
 #, php-format
 msgid "Uninstall software: %s"
-msgstr ""
+msgstr "Izbriši programsko opremo: %s"
 
 #. TRANS: %s is the item name
 #: inc/log.class.php:405
@@ -8931,19 +8934,19 @@ msgstr ""
 #: inc/log.class.php:421
 #, php-format
 msgid "Imported from OCSNG: %s"
-msgstr ""
+msgstr "Uvoženo iz OCSNG: %s"
 
 #. TRANS: %s is the value deleted
 #: inc/log.class.php:431
 #, php-format
 msgid "Deleted in OCSNG: %s"
-msgstr ""
+msgstr "Izbrisano v OCSNG: %s"
 
 #. TRANS: %s is the value linked
 #: inc/log.class.php:444
 #, php-format
 msgid "Linked with an OCSNG computer: %s"
-msgstr ""
+msgstr "Povezano z OCSNG računalnikom: %s"
 
 #: inc/log.class.php:455
 #, php-format
@@ -8982,7 +8985,7 @@ msgstr ""
 
 #: inc/log.class.php:574
 msgid "Update of the field"
-msgstr ""
+msgstr "modifikacija polja"
 
 #: inc/log.class.php:578
 #, php-format
@@ -8991,7 +8994,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:208
 msgid "mbstring extension not found. Warning with charsets used."
-msgstr "mbstring dodatka nisem našel. Opozorilo nabor znakov uporabljenih.."
+msgstr "mbstring dodatka nisem našel. Opozorilo nabor znakov uporabljenih."
 
 #: inc/mailcollector.class.php:212
 msgid "Name (Email address)"
@@ -9028,69 +9031,59 @@ msgid ""
 "errors=%4$d"
 msgstr ""
 
-#: inc/mailcollector.class.php:532 inc/user.class.php:2974
-msgid "Connection failed"
-msgstr "povezava ni uspela"
-
-#: inc/mailcollector.class.php:534
+#: inc/mailcollector.class.php:531
 msgid "Could not connect to mailgate server"
 msgstr ""
 
 #. TRANS: %s is the ID of the mailgate
 #: inc/mailcollector.class.php:541
 #, php-format
-msgid "Item not found (mailgate %d"
-msgstr ""
-
-#. TRANS: %s is the ID of the mailgate
-#: inc/mailcollector.class.php:546
-#, php-format
-msgid "Could find mailgate %d"
+msgid "Could not find mailgate %d"
 msgstr ""
 
 #. TRANS: %s is a directory
-#: inc/mailcollector.class.php:584
+#: inc/mailcollector.class.php:583
 #, php-format
 msgid "%s is not writable"
 msgstr ""
 
 #. TRANS: %1$s is the filename and %2$s its size
-#: inc/mailcollector.class.php:1164
+#: inc/mailcollector.class.php:1163
 #, php-format
 msgid "Too large attached file: %1$s (%2$s)"
 msgstr ""
 
 #. TRANS: %1$s is the filename and %2$s its mime type
-#: inc/mailcollector.class.php:1171
+#: inc/mailcollector.class.php:1170
 #, php-format
 msgid "Invalid attached file: %1$s (%2$s)"
 msgstr ""
 
 #. TRANS: %1$s is the name of the folder, %2$s is the name of the receiver
-#: inc/mailcollector.class.php:1267
+#: inc/mailcollector.class.php:1266
 #, php-format
 msgid "Invalid configuration for %1$s folder in receiver %2$s"
 msgstr ""
 
-#: inc/mailcollector.class.php:1284
+#: inc/mailcollector.class.php:1283
 msgid "Retrieve email (Mail receivers)"
-msgstr "Dobi e-naslovnike)"
+msgstr "Dobi e-naslovnike"
 
-#: inc/mailcollector.class.php:1285
+#: inc/mailcollector.class.php:1284
 msgid "Number of email to retrieve"
 msgstr "Število e-pošte, ki jo moram dobiti"
 
-#: inc/mailcollector.class.php:1398
+#: inc/mailcollector.class.php:1397
 msgid ""
 "Your email could not be processed.\n"
 "If the problem persists, contact the administrator"
 msgstr ""
 
-#: inc/mailcollector.class.php:1409 inc/mailcollector.class.php:1411
+#: inc/mailcollector.class.php:1408 inc/mailcollector.class.php:1410
 msgid "List of not imported emails"
 msgstr ""
 
-#: inc/mailcollector.class.php:1433 inc/ocsserver.class.php:332
+#: inc/mailcollector.class.php:1432 inc/ocsserver.class.php:332
 #: inc/ocsserver.class.php:339 inc/ocsserver.class.php:346
 #: inc/ocsserver.class.php:353 inc/ocsserver.class.php:360
 #: inc/ocsserver.class.php:425 inc/ocsserver.class.php:429
@@ -9131,14 +9124,15 @@ msgstr ""
 #: install/update_0803_083.php:78 install/update_0803_083.php:246
 #: install/update_0803_083.php:248 install/update_0803_083.php:275
 #: install/update_0803_083.php:440 install/update_0803_083.php:464
-#: install/update_0803_083.php:495 install/update_0803_083.php:628
-#: install/update_0803_083.php:640 install/update_0803_083.php:715
-#: install/update_0803_083.php:762 install/update_083_084.php:297
+#: install/update_0803_083.php:495 install/update_0803_083.php:631
+#: install/update_0803_083.php:643 install/update_0803_083.php:718
+#: install/update_0803_083.php:765 install/update_083_084.php:297
 #: install/update_083_084.php:459 install/update_083_084.php:496
 #: install/update_083_084.php:556 install/update_083_084.php:583
 #: install/update_083_084.php:612 install/update_083_084.php:627
 #: install/update_083_084.php:644 install/update_083_084.php:674
 #: install/update_083_084.php:692 install/update_083_084.php:744
+#: install/update_083_084.php:920
 #, php-format
 msgid "Change of the database layout - %s"
 msgstr ""
@@ -9146,7 +9140,7 @@ msgstr ""
 #: inc/migration.class.php:487 inc/software.class.php:894
 #: install/update.php:143
 msgid "Task completed."
-msgstr "Delo končano.."
+msgstr "Delo končano."
 
 #: inc/monitor.class.php:284 inc/peripheral.class.php:285
 #: inc/phone.class.php:283 inc/printer.class.php:386
@@ -9219,7 +9213,7 @@ msgstr ""
 
 #: inc/networkequipment.class.php:361 inc/networkequipment.class.php:498
 #: inc/networkportaggregate.class.php:76 inc/networkportalias.class.php:58
-#: inc/networkport.class.php:602 inc/networkportdialup.class.php:56
+#: inc/networkport.class.php:614 inc/networkportdialup.class.php:56
 #: inc/networkportethernet.class.php:94 inc/networkportethernet.class.php:295
 #: inc/networkportinstantiation.class.php:318
 #: inc/networkportmigration.class.php:58 inc/networkportwifi.class.php:104
@@ -9244,7 +9238,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: inc/networkname.class.php:405
+#: inc/networkname.class.php:406
 msgid ""
 "Several network names available! Go to the tab 'Network Name' to manage "
 "them."
@@ -9285,7 +9279,7 @@ msgid "No network port found"
 msgstr ""
 
 #: inc/networkport.class.php:543 inc/networkport.class.php:549
-#: inc/networkport.class.php:679
+#: inc/networkport.class.php:691
 msgid "Port number"
 msgid_plural "Ports number"
 msgstr[0] ""
@@ -9301,22 +9295,22 @@ msgstr "Od"
 msgid "to"
 msgstr "To"
 
-#: inc/networkport.class.php:609
+#: inc/networkport.class.php:621
 msgid "Netmask"
 msgstr ""
 
-#: inc/networkport.class.php:616 inc/networkport.class.php:699
+#: inc/networkport.class.php:628 inc/networkport.class.php:711
 #: inc/ruleimportcomputer.class.php:102 inc/ruleocs.class.php:121
 msgid "Subnet"
 msgstr "Podomrežje - subnet"
 
-#: inc/networkport.class.php:694
+#: inc/networkport.class.php:706
 msgid "Mask"
 msgstr "Maska"
 
-#: inc/networkport.class.php:728
+#: inc/networkport.class.php:740
 msgid "id"
-msgstr ""
+msgstr "ID"
 
 #: inc/networkportdialup.class.php:46
 msgid "Connection by dial line - Dialup"
@@ -9361,7 +9355,7 @@ msgstr "Brez imena"
 
 #: inc/networkportethernet.class.php:215
 msgid "Not connected."
-msgstr "Ni povezano.."
+msgstr "Ni povezano."
 
 #: inc/networkportethernet.class.php:252
 msgid "entity_sons options are not available with array of entity"
@@ -9385,6 +9379,10 @@ msgstr ""
 
 #: inc/networkportlocal.class.php:46
 msgid "Local loop"
+msgstr ""
+
+#: inc/networkportmigration.class.php:45
+msgid "Not defined. Inherit from migration"
 msgstr ""
 
 #: inc/networkport_networkport.class.php:112
@@ -9414,23 +9412,26 @@ msgstr ""
 msgid "From %1$s to #%2$s"
 msgstr ""
 
-#: inc/networkport_vlan.class.php:152
+#. TRANS: %s is the VLAN name
+#: inc/networkport_vlan.class.php:154
+#, php-format
+msgid "%s - Tagged"
+msgstr ""
+
+#: inc/networkport_vlan.class.php:156
+#, php-format
+msgid "%s - Untagged"
+msgstr ""
+
+#: inc/networkport_vlan.class.php:158
 #, php-format
 msgid "ID TAG: %s"
 msgstr ""
 
-#: inc/networkport_vlan.class.php:153
+#: inc/networkport_vlan.class.php:159
 #, php-format
 msgid "Comments: %s"
 msgstr "Komentarji: %s"
-
-#: inc/networkport_vlan.class.php:156
-msgid "- Tagged"
-msgstr ""
-
-#: inc/networkport_vlan.class.php:158
-msgid "- Untagged"
-msgstr ""
 
 #: inc/networkportwifi.class.php:46
 msgid "Wifi port"
@@ -9483,7 +9484,7 @@ msgstr "Mail Test"
 
 #: inc/notificationmail.class.php:177
 msgid "This is a test email."
-msgstr "To je testni email.."
+msgstr "To je testni email."
 
 #: inc/notificationmail.class.php:180
 msgid "Failed to send test email to administrator"
@@ -9515,7 +9516,7 @@ msgstr ""
 
 #: inc/notificationmailsetting.class.php:173
 msgid "The use of a SMTP is needed."
-msgstr "Potrebna je uporaba SMTP-ja."
+msgstr "Potrebna je uporaba SMTP-ja"
 
 #: inc/notificationmailsetting.class.php:182
 msgid "Way of sending emails"
@@ -9547,11 +9548,11 @@ msgstr ""
 
 #: inc/notificationmailsetting.class.php:197
 msgid "SMTP Login (optional)"
-msgstr "SMTP prijava)"
+msgstr "SMTP prijava"
 
 #: inc/notificationmailsetting.class.php:205
 msgid "SMTP Password (optional)"
-msgstr "SMTP Geslo)"
+msgstr "SMTP Geslo"
 
 #: inc/notificationtargetcartridge.class.php:38
 msgid "Cartridges alarm"
@@ -9952,7 +9953,7 @@ msgstr ""
 msgid "Number of linked tickets"
 msgstr ""
 
-#: inc/notificationtargetticket.class.php:564 inc/search.class.php:4712
+#: inc/notificationtargetticket.class.php:564 inc/search.class.php:4713
 msgid "Number of problems"
 msgstr ""
 
@@ -10275,11 +10276,11 @@ msgstr "URL naslov OCS konzole"
 
 #: inc/ocsserver.class.php:404
 msgid "Limit the import to the following tags (separator $, nothing for all)"
-msgstr "Omeji uvoz k naslednjim znakom (ločilo $, nič za vse))"
+msgstr "Omeji uvoz k naslednjim znakom (ločilo $, nič za vse)"
 
 #: inc/ocsserver.class.php:409
 msgid "Exclude the following tags (separator $, nothing for all)"
-msgstr "Izključi naslednje znake (ločilo $, nič za vse))"
+msgstr "Izključi naslednje znake (ločilo $, nič za vse)"
 
 #: inc/ocsserver.class.php:413
 msgid "Default status"
@@ -10329,7 +10330,7 @@ msgid ""
 "(without double blooms)"
 msgstr ""
 "Globalni uvoz: vse je uvoženo toda material je gloalno upravljen (brez "
-"dvojnih imen - blooms))"
+"dvojnih imen - blooms)"
 
 #: inc/ocsserver.class.php:497
 msgid "Unit import: everything is imported 'as-is'"
@@ -10369,7 +10370,7 @@ msgstr "Neveljavna OCS NG Verzija: potrebujete RC3"
 
 #: inc/ocsserver.class.php:605
 msgid "Invalid OCSNG configuration (TRACE_DELETED must be active)"
-msgstr "Nepravilna OCSNG konfiguracija (TRACE_DELETED mora biti aktiven))"
+msgstr "Nepravilna OCSNG konfiguracija (TRACE_DELETED mora biti aktiven)"
 
 #: inc/ocsserver.class.php:607
 msgid ""
@@ -10377,7 +10378,7 @@ msgid ""
 "necessary)"
 msgstr ""
 "Prepovedan vstop v OCS bazo (Morate imeti možnost pisanja v "
-"hardware.CHECKSUM))"
+"hardware.CHECKSUM)"
 
 #: inc/ocsserver.class.php:609
 msgid ""
@@ -10385,7 +10386,7 @@ msgid ""
 "necessary)"
 msgstr ""
 "Dostop v OCS bazo prepovedan (Morate imeti možnost brisanja v deleted_equiv "
-"tabeli))"
+"tabeli)"
 
 #: inc/ocsserver.class.php:611
 msgid "Connection to OCSNG database successful"
@@ -10597,7 +10598,7 @@ msgstr "Končano"
 
 #: inc/planning.class.php:112
 msgid "User is already occupied for the selected timeframe:"
-msgstr "Uporabnik je za določeno obdobje že zaseden::"
+msgstr "Uporabnik je za določeno obdobje že zaseden:"
 
 #: inc/planning.class.php:198 inc/planning.class.php:214
 msgid "Personal + groups"
@@ -10738,12 +10739,12 @@ msgstr ""
 #: inc/problem.class.php:580 inc/ticket.class.php:2037
 #: inc/ticket.class.php:4323
 msgid "Processing (assigned)"
-msgstr "V teku (dodeljeno))"
+msgstr "V teku (dodeljeno)"
 
 #: inc/problem.class.php:581 inc/ticket.class.php:2038
 #: inc/ticket.class.php:4329
 msgid "Processing (planned)"
-msgstr "V teku (načrtovano))"
+msgstr "V teku (načrtovano)"
 
 #: inc/problem.class.php:584
 msgid "Under observation"
@@ -10868,7 +10869,6 @@ msgid "Show tickets created by my groups"
 msgstr "Prikaži kreirana naročila mojih skupin"
 
 #: inc/profile.class.php:525 inc/profile.class.php:884
-#: inc/profile.class.php:1768
 msgid "See hardware of my group(s)"
 msgstr ""
 
@@ -10952,9 +10952,9 @@ msgstr ""
 msgid "Add a followup to all tickets"
 msgstr "Dodaj opombo vsem naročilom"
 
-#: inc/profile.class.php:801 inc/profile.class.php:1773
+#: inc/profile.class.php:801
 msgid "Add a followup to tickets of associated group(s)"
-msgstr "Dodaj sledeča opravila iz mojih skupin)"
+msgstr "Dodaj sledeča opravila iz mojih skupin"
 
 #: inc/profile.class.php:804 inc/profile.class.php:1778
 msgid "Add a task to all tickets"
@@ -11014,7 +11014,7 @@ msgstr "Vidljivost"
 
 #: inc/profile.class.php:928 inc/profile.class.php:1703
 msgid "See assigned tickets (personnal + group associated)"
-msgstr "Poglej dodeljena naročila (osebne in skupinske asociacije))"
+msgstr "Poglej dodeljena naročila (osebne in skupinske asociacije)"
 
 #: inc/profile.class.php:934 inc/profile.class.php:1698
 msgid "Show all tickets"
@@ -11088,22 +11088,22 @@ msgstr ""
 msgid "Rules for assigning a computer to an entity"
 msgstr ""
 
-#: inc/profile.class.php:1202 inc/rulemailcollector.class.php:82
+#: inc/profile.class.php:1202 inc/profile.class.php:1566
+#: inc/rulemailcollector.class.php:82
 #: inc/rulemailcollectorcollection.class.php:48
 msgid "Rules for assigning a ticket created through a mail receiver"
 msgstr ""
 
-#: inc/profile.class.php:1208 inc/profile.class.php:1581
-#: inc/rulesoftwarecategory.class.php:53
+#: inc/profile.class.php:1208 inc/rulesoftwarecategory.class.php:53
 #: inc/rulesoftwarecategorycollection.class.php:48
 msgid "Rules for assigning a category to software"
 msgstr "Pravila določanja kategorij programja"
 
-#: inc/profile.class.php:1212 inc/profile.class.php:1591
+#: inc/profile.class.php:1212
 msgid "Dropdown dictionaries"
 msgstr "Slovar spodnji"
 
-#: inc/profile.class.php:1216 inc/profile.class.php:1586
+#: inc/profile.class.php:1216
 msgid "Software dictionary"
 msgstr ""
 
@@ -11135,14 +11135,30 @@ msgstr ""
 
 #: inc/profile.class.php:1303 inc/profile.class.php:1529
 msgid "Document Type"
-msgstr ""
+msgstr "Tip dokumenta"
 
 #: inc/profile.class.php:1309 inc/profile.class.php:1601
 msgid "Check for upgrade"
 msgstr "Preveri za posodobitev"
 
-#: inc/profile.class.php:1566
-msgid "Rules for assigning a ticket created through a mail receive"
+#: inc/profile.class.php:1581
+msgid "Rules for assigning a category to a software"
+msgstr ""
+
+#: inc/profile.class.php:1586
+msgid "Softwares dictionaries"
+msgstr ""
+
+#: inc/profile.class.php:1591
+msgid "Dropdowns dictionaries"
+msgstr ""
+
+#: inc/profile.class.php:1768
+msgid "See hardware of my groups"
+msgstr ""
+
+#: inc/profile.class.php:1773
+msgid "Add a followup to tickets of associated groups"
 msgstr ""
 
 #: inc/profile.class.php:1810
@@ -11437,14 +11453,14 @@ msgstr ""
 
 #: inc/reservationitem.class.php:198 inc/search.class.php:1142
 msgid "That will remove all the reservations in progress."
-msgstr "To bo odstranilo vse rezervacije v teku.."
+msgstr "To bo odstranilo vse rezervacije v teku."
 
 #: inc/reservationitem.class.php:206
 msgid "Authorize reservations"
 msgstr ""
 
-#: inc/reservationitem.class.php:235 inc/search.class.php:4013
-#: inc/search.class.php:4017
+#: inc/reservationitem.class.php:235 inc/search.class.php:4014
+#: inc/search.class.php:4018
 msgid "Modify the comment"
 msgstr "Uredi komentar"
 
@@ -11599,15 +11615,15 @@ msgstr "Seznam pravil"
 
 #: inc/rulecollection.class.php:325
 msgid "The engine stops on the first checked rule."
-msgstr "Motor prekine na prvem preverjanju pravil.."
+msgstr "Motor prekine na prvem preverjanju pravil."
 
 #: inc/rulecollection.class.php:330
 msgid "The engine treats all the rules."
-msgstr "Motor upravlja s pravili.."
+msgstr "Motor upravlja s pravili."
 
 #: inc/rulecollection.class.php:336
 msgid "The engine passes the result of a rule to the following ones."
-msgstr "Motor vrne rezultate pravil k naslednjim.."
+msgstr "Motor vrne rezultate pravil k naslednjim."
 
 #: inc/rulecollection.class.php:731
 msgid "No element to be tested"
@@ -11633,23 +11649,23 @@ msgstr "Lokalna pravila: %s"
 msgid "Rules applicable in the sub-entities"
 msgstr "Pravila primerna v pod-entitetah"
 
-#: inc/rulecriteria.class.php:292 inc/search.class.php:4839
-#: inc/search.class.php:4869 inc/search.class.php:4875
-#: inc/search.class.php:4880 inc/search.class.php:4887
-#: inc/search.class.php:4905 inc/search.class.php:4912
-msgid "is"
-msgstr "je"
-
-#: inc/rulecriteria.class.php:293 inc/search.class.php:4843
+#: inc/rulecriteria.class.php:292 inc/search.class.php:4840
 #: inc/search.class.php:4870 inc/search.class.php:4876
 #: inc/search.class.php:4881 inc/search.class.php:4888
 #: inc/search.class.php:4906 inc/search.class.php:4913
+msgid "is"
+msgstr "je"
+
+#: inc/rulecriteria.class.php:293 inc/search.class.php:4844
+#: inc/search.class.php:4871 inc/search.class.php:4877
+#: inc/search.class.php:4882 inc/search.class.php:4889
+#: inc/search.class.php:4907 inc/search.class.php:4914
 msgid "is not"
 msgstr "ni"
 
-#: inc/rulecriteria.class.php:294 inc/search.class.php:4822
-#: inc/search.class.php:4847 inc/search.class.php:4871
-#: inc/search.class.php:4891 inc/search.class.php:4911
+#: inc/rulecriteria.class.php:294 inc/search.class.php:4823
+#: inc/search.class.php:4848 inc/search.class.php:4872
+#: inc/search.class.php:4892 inc/search.class.php:4912
 msgid "contains"
 msgstr "vsebuje"
 
@@ -11682,8 +11698,8 @@ msgid "does not exist"
 msgstr "ne obstaja"
 
 #: inc/rulecriteria.class.php:316 inc/search.class.php:1221
-#: inc/search.class.php:1276 inc/search.class.php:4851
-#: inc/search.class.php:4927
+#: inc/search.class.php:1276 inc/search.class.php:4852
+#: inc/search.class.php:4928
 msgid "under"
 msgstr ""
 
@@ -11955,46 +11971,46 @@ msgstr "Pravice in entite nalog"
 msgid "Send an approval request"
 msgstr "Pošlji prošnjo za uzakonitev"
 
-#: inc/search.class.php:1180 inc/search.class.php:1508
+#: inc/search.class.php:1180 inc/search.class.php:1509
 msgid "Items seen"
 msgstr "Predmeti videni"
 
-#: inc/search.class.php:1302
+#: inc/search.class.php:1303
 msgid "Selection too large, massive action disabled."
 msgstr ""
 
-#: inc/search.class.php:1304
+#: inc/search.class.php:1305
 msgid ""
 "To increase the limit: change max_input_vars or suhosin.post.max_vars in php"
 " configuration."
 msgstr ""
 
-#: inc/search.class.php:1426
+#: inc/search.class.php:1427
 msgid "Add a search criteria"
 msgstr "Dodaj iskalni kriterij"
 
-#: inc/search.class.php:1433
+#: inc/search.class.php:1434
 msgid "Delete a search criteria"
 msgstr "Izbriši iskalni kriterij"
 
-#: inc/search.class.php:1441
+#: inc/search.class.php:1442
 msgid "Add a global search criteria"
 msgstr "Dodaj globalni iskalni kriterij"
 
-#: inc/search.class.php:1449
+#: inc/search.class.php:1450
 msgid "Delete a global search criteria"
 msgstr "Izbriši globalni iskalni kriterij"
 
-#: inc/search.class.php:1461 inc/search.class.php:1463
+#: inc/search.class.php:1462 inc/search.class.php:1464
 msgid "Show the trash"
 msgstr ""
 
-#: inc/search.class.php:1461 inc/search.class.php:1463
+#: inc/search.class.php:1462 inc/search.class.php:1464
 msgid "Don't show deleted items"
 msgstr "Ne prikaži izbrisane elemente"
 
 #. TRANS: %d is a number of years
-#: inc/search.class.php:3883
+#: inc/search.class.php:3884
 #, php-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -12003,11 +12019,11 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#: inc/search.class.php:4855 inc/search.class.php:4889
+#: inc/search.class.php:4856 inc/search.class.php:4890
 msgid "before"
 msgstr "pred"
 
-#: inc/search.class.php:4859 inc/search.class.php:4890
+#: inc/search.class.php:4860 inc/search.class.php:4891
 msgid "after"
 msgstr "potem"
 
@@ -12461,7 +12477,7 @@ msgstr[3] ""
 #: inc/ticket.class.php:4397 inc/ticket.class.php:4567
 #: inc/ticket.class.php:4620
 msgid "No ticket found."
-msgstr "Ni naročil."
+msgstr "Ni naročil"
 
 #: inc/ticket.class.php:4499
 msgid "Last tickets"
@@ -12478,7 +12494,7 @@ msgstr[3] ""
 
 #: inc/ticket.class.php:4575 inc/ticket.class.php:4581
 msgid "New ticket for this item..."
-msgstr "Novo naročilo za ta predmet......"
+msgstr "Novo naročilo za ta predmet..."
 
 #: inc/ticket.class.php:4610
 msgid "Ticket on linked items"
@@ -12495,7 +12511,7 @@ msgstr ""
 
 #: inc/ticket.class.php:4858 inc/ticket.class.php:4939
 msgid "No ticket in progress."
-msgstr "Nobeno naročilo ni v teku.."
+msgstr "Nobeno naročilo ni v teku."
 
 #: inc/ticket.class.php:4986
 msgid "Assign equipment"
@@ -12525,7 +12541,7 @@ msgstr "Vir sledi"
 
 #: inc/ticketfollowup.class.php:610
 msgid "No followup for this ticket."
-msgstr "Za to naročilo ni odgovorov.."
+msgstr "Za to naročilo ni odgovorov."
 
 #: inc/ticketfollowup.class.php:683
 msgid "Approval of the solution"
@@ -12680,7 +12696,7 @@ msgstr "Testiranje PHP razčlenjevalnika kode"
 #: inc/toolbox.class.php:673
 msgid ""
 "GLPI is not compatible with the option zend.ze1_compatibility_mode = On."
-msgstr "GLPI ni kompatibilen z opcijo zend.ze1_compatibility_mode = On.."
+msgstr "GLPI ni kompatibilen z opcijo zend.ze1_compatibility_mode = On."
 
 #: inc/toolbox.class.php:677 inc/toolbox.class.php:678
 msgid "PHP version is at least 5.3.0 - Perfect !"
@@ -12692,7 +12708,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:689
 msgid "Mysql extension test."
-msgstr "Mysql razširitveni test.."
+msgstr "Mysql razširitveni test."
 
 #: inc/toolbox.class.php:693
 msgid "You must install the MySQL extension for PHP."
@@ -12729,7 +12745,7 @@ msgid ""
 "more information."
 msgstr ""
 "session.auto_start je aktivirana. Poglej .htaccess datoteko v GLPI korenu za"
-" več informacij.."
+" več informacij."
 
 #: inc/toolbox.class.php:736
 msgid "Test if Session_use_trans_sid is used"
@@ -12801,7 +12817,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:821
 msgid "Try increasing the memory_limit parameter in the php.ini file."
-msgstr "Poizkusite povečati memory_limit parameter v php.ini datoteki.."
+msgstr "Poizkusite povečati memory_limit parameter v php.ini datoteki."
 
 #: inc/toolbox.class.php:828 inc/toolbox.class.php:829
 msgid "Allocated memory > 64M"
@@ -12845,7 +12861,7 @@ msgstr ""
 #. TRANS: for mail connection system
 #: inc/toolbox.class.php:1638
 msgid "Port (optional)"
-msgstr "Vrata (opcijsko))"
+msgstr "Vrata (opcijsko)"
 
 #: inc/toolbox.class.php:1695
 msgid "January"
@@ -12985,7 +13001,7 @@ msgstr ""
 
 #: inc/transfer.class.php:3224
 msgid "Think of making a backup before transferring items."
-msgstr "Razmisli o varnostnih kopijah preden prenašaš predmete.."
+msgstr "Razmisli o varnostnih kopijah preden prenašaš predmete."
 
 #: inc/transfer.class.php:3226
 msgid "Items to transfer"
@@ -13013,7 +13029,7 @@ msgstr "Napaka : oba gesla nista enaka"
 
 #: inc/user.class.php:1413
 msgid "Add user..."
-msgstr "Dodaj uporabnika......"
+msgstr "Dodaj uporabnika..."
 
 #: inc/user.class.php:1418
 msgid "... From an external source"
@@ -13061,7 +13077,7 @@ msgstr "Prevod"
 
 #: inc/user.class.php:1847
 msgid "Unable to update login. A user already exists."
-msgstr "Nadgradnja prijave ni mogoča. Uporabnik že obstaja.."
+msgstr "Nadgradnja prijave ni mogoča. Uporabnik že obstaja."
 
 #: inc/user.class.php:1968
 msgid "Last login"
@@ -13146,6 +13162,10 @@ msgstr ""
 msgid "User information"
 msgstr ""
 
+#: inc/user.class.php:2974
+msgid "Connection failed"
+msgstr "povezava ni uspela"
+
 #: inc/useremail.class.php:186
 msgid "Default email"
 msgstr ""
@@ -13196,7 +13216,7 @@ msgstr "Neuradni prevodi so tudi na voljo"
 
 #: install/install.php:108
 msgid "I have read and ACCEPT the terms of the license written above."
-msgstr "Sem prebral in se strinjam z pogoji pogodbe, ki so napisani zgoraj.."
+msgstr "Sem prebral in se strinjam z pogoji pogodbe, ki so napisani zgoraj."
 
 #: install/install.php:113
 msgid "I have read and DO NOT ACCEPT the terms of the license written above"
@@ -13216,7 +13236,7 @@ msgstr "Namestitev ali posodobitev GLPI"
 msgid "Choose 'Install' for a completely new installation of GLPI."
 msgstr ""
 "Izberite 'Install' za popolnoma novo namestitev GLPI (podatki, ki bodo "
-"uvoženi z GLPI bodo privzeti podatki)."
+"uvoženi z GLPI bodo privzeti podatki)"
 
 #: install/install.php:125
 msgid ""
@@ -13263,15 +13283,15 @@ msgstr "Priklop na bazo uspešen"
 
 #: install/install.php:238
 msgid "Please select a database:"
-msgstr "Prosim izberite bazo::"
+msgstr "Prosim izberite bazo:"
 
 #: install/install.php:252
 msgid "Create a new database or use an existing one:"
-msgstr "Ustvari novo bazo ali uporabi že obstoječo:"
+msgstr "Ustvari novo bazo ali uporabi že obstoječo"
 
 #: install/install.php:264
 msgid "Please select the database to update:"
-msgstr "Prosim izberite bazo za posodobitev::"
+msgstr "Prosim izberite bazo za posodobitev:"
 
 #: install/install.php:291
 msgid "Initialization of the database"
@@ -13279,7 +13299,7 @@ msgstr "Inicializacija baze"
 
 #: install/install.php:348
 msgid "Impossible to use the database:"
-msgstr "Nemogoče je uporabiti bazo::"
+msgstr "Nemogoče je uporabiti bazo:"
 
 #: install/install.php:355 install/install.php:371 install/install.php:387
 msgid "OK - database was initialized"
@@ -13307,7 +13327,7 @@ msgstr "Namestitev je končana"
 
 #: install/install.php:427
 msgid "Default logins / passwords are:"
-msgstr "Privzeta uporabniška imena / gesla so::"
+msgstr "Privzeta uporabniška imena / gesla so:"
 
 #: install/install.php:428
 msgid "glpi/glpi for the  administrator account"
@@ -13328,7 +13348,7 @@ msgstr "post-only/post-only za post-only račun"
 #: install/install.php:432
 msgid "You can delete or modify these accounts as well as the initial data."
 msgstr ""
-"Lahko izbrišete ali spremenite te račune, prav tako tudi vnose v bazi.."
+"Lahko izbrišete ali spremenite te račune, prav tako tudi vnose v bazi."
 
 #: install/install.php:433 install/update_content.php:379
 #: install/update.php:901
@@ -13339,7 +13359,7 @@ msgstr "Uporabi GLPI"
 msgid ""
 "Can't create the database connection file, please verify file permissions."
 msgstr ""
-"Ni mogoče ustvariti datoteke za povezavo z bazo. Preverite pravice na mape.."
+"Ni mogoče ustvariti datoteke za povezavo z bazo. Preverite pravice na mape."
 
 #: install/install.php:524
 msgid "Beginning of the installation"
@@ -13428,15 +13448,15 @@ msgstr ""
 #: install/update_0723_078.php:5695 install/update_078_0781.php:58
 #: install/update_0782_080.php:784 install/update_0782_080.php:947
 #: install/update_0782_080.php:1147 install/update_0782_080.php:1489
-#: install/update_0803_083.php:431 install/update_0803_083.php:799
-#: install/update_0803_083.php:836 install/update_0803_083.php:967
-#: install/update_0803_083.php:1010 install/update_0803_083.php:1027
-#: install/update_0803_083.php:1069 install/update_0803_083.php:1111
-#: install/update_0803_083.php:1269 install/update_0803_083.php:1391
-#: install/update_0803_083.php:1647 install/update_083_084.php:233
+#: install/update_0803_083.php:431 install/update_0803_083.php:802
+#: install/update_0803_083.php:839 install/update_0803_083.php:970
+#: install/update_0803_083.php:1013 install/update_0803_083.php:1030
+#: install/update_0803_083.php:1072 install/update_0803_083.php:1114
+#: install/update_0803_083.php:1272 install/update_0803_083.php:1394
+#: install/update_0803_083.php:1650 install/update_083_084.php:233
 #: install/update_083_084.php:272 install/update_083_084.php:318
 #: install/update_083_084.php:430 install/update_083_084.php:478
-#: install/update_083_084.php:504 install/update_083_084.php:924
+#: install/update_083_084.php:504 install/update_083_084.php:928
 #, php-format
 msgid "Data migration - %s"
 msgstr ""
@@ -13477,14 +13497,14 @@ msgstr "Nova struktura je hierarhična"
 msgid "Provide a delimiter in order to automate the new hierarchy generation."
 msgstr ""
 "Če si rabil znak za razmejitev, lahko določiš v zaporedju, da avtomatizeraš "
-"generacijo hierarhij.."
+"generacijo hierarhij."
 
 #: install/update.php:412
 msgid ""
 "You can also specify a root location which will include all the generated "
 "locations."
 msgstr ""
-"Definirate lahko root lokacijo, ki bo vsebovala vse generirane lokacije.."
+"Definirate lahko root lokacijo, ki bo vsebovala vse generirane lokacije."
 
 #: install/update.php:414
 msgid "Delimiter"
@@ -13504,7 +13524,7 @@ msgstr "Nova hierarhija"
 
 #: install/update.php:430
 msgid "This is the new hierarchy. If it's complete approve it."
-msgstr "To je nova hierarhija. Če je pravilna jo lahko preverite.."
+msgstr "To je nova hierarhija. Če je pravilna jo lahko preverite."
 
 #: install/update.php:835
 msgid "Impossible to accomplish an update by this way!"
@@ -13525,7 +13545,7 @@ msgid ""
 "admin' rights with the creation of his new user type."
 msgstr ""
 "Zdaj imajo vsi administratorji 'super-admin' pravice. Ta nov tip uporabnika "
-"je bil prav tako dodan.."
+"je bil prav tako dodan."
 
 #: install/update.php:909
 msgid ""
