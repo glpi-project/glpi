@@ -108,7 +108,7 @@ class NetworkName_IPNetwork extends CommonDBRelation {
                 WHERE `items_id` = '$networknames_id'
                       AND `itemtype` = 'NetworkName'";
 
-      $ipaddress    = new IPAddress();
+      $ipaddress      = new IPAddress();
       $ipnetworks_ids = array();
       foreach ($DB->request($query) as $address) {
          $ipaddress->setAddressFromArray($address, 'version', 'name', 'binary');
