@@ -2024,39 +2024,44 @@ function generate_entity($ID_entity) {
    $net_loc = array();
    $FIRST["networking"] = getMaxItem("glpi_networkequipments")+1;
    $FIRST["printers"]   = getMaxItem("glpi_printers")+1;
-
-   $query = "SELECT *
-             FROM `glpi_locations`
-             WHERE `entities_id` = '$ID_entity'";
-   $result = $DB->query($query);
-
-   while ($data=$DB->fetch_array($result)) {
+   $ne = new NetworkEquipment();
+   $p = new Printer();
+   foreach ($DB->request('glpi_locations') as $data) {
+      $i          = $data["id"];
+      $techID     = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
+      $gtechID    = mt_rand($FIRST["techgroups"],$LAST["techgroups"]);
+      $infoIP     = getNextIP();
+      $domainID   = mt_rand(1,$MAX['domain']);
+      $networkID  = mt_rand(1,$MAX['network']);
+      
       // insert networking
-      $techID                = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
-      $gtechID               = mt_rand($FIRST["techgroups"],$LAST["techgroups"]);
-      $domainID              = mt_rand(1,$MAX['domain']);
-      $networkID             = mt_rand(1,$MAX['network']);
-      $vlanID                = mt_rand(1,$MAX["vlan"]);
-      $i                     = $data["id"];
-      $vlan_loc[$data['id']] = $vlanID;
-      $netname               = "networking $i-$ID_entity";
-      $infoIP                = getNextIP();
-
-      $query = "INSERT INTO `glpi_networkequipments`
-                VALUES (NULL, '$ID_entity', '0', '$netname', '".mt_rand(32,256)."',
-                        '".Toolbox::getRandomString(10)."', '".Toolbox::getRandomString(10)."',
-                        'contact $i', 'num $i', '$techID', '$gtechID', NOW(), 'comment $i',
-                        '".$data['id']."', '$domainID', '$networkID',
-                        '".mt_rand(1,$MAX['type_networking'])."',
-                        '".mt_rand(1,$MAX['model_networking'])."', '".mt_rand(1,$MAX['firmware'])."',
-                        '".mt_rand(1,$MAX['enterprises'])."', '0', '0', '', '".getNextMAC()."',
-                        '".$infoIP["ip"]."', 'notes networking $i',
-                        '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
-                        '".mt_rand($FIRST["groups"],$LAST["groups"])."',
-                        '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."', '0')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $netwID = $DB->insert_id();
+   
+      $netwID = $ne->add(array(
+         'entities_id'                    => $ID_entity,
+         'name'                           => "networking $i-$ID_entity",
+         'ram'                            => mt_rand(32,256),
+         'serial'                         => Toolbox::getRandomString(10),
+         'otherserial'                    => Toolbox::getRandomString(10),
+         'contact'                        => "contact $i",
+         'contact_num'                    => "num $i",
+         'users_id_tech'                  => $techID,
+         'groups_id_tech'                 => $gtechID,
+         'comment'                        => "comment $i",
+         'locations_id'                   => $i,
+         'domains_id'                     => $domainID,
+         'networks_id'                    => $networkID,         
+         'networkequipmenttypes_id'       => mt_rand(1,$MAX['type_networking']),
+         'networkequipmentmodels_id'      => mt_rand(1,$MAX['model_networking']),
+         'networkequipmentfirmwares_id'   => mt_rand(1,$MAX['firmware']),
+         'manufacturers_id'               => mt_rand(1,$MAX['enterprises']),
+         'mac'                            => getNextMAC(),
+         'ip'                             => $infoIP["ip"],
+         'notepad'                        => "notes networking $i",
+         'users_id'                       => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
+         'groups_id'                      => mt_rand($FIRST["groups"],$LAST["groups"]),
+         'states_id'                      => (mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0),
+      ));
+      
       addDocuments('NetworkEquipment', $netwID);
       addContracts('NetworkEquipment', $netwID);
 
@@ -2082,6 +2087,8 @@ function generate_entity($ID_entity) {
          // Add networking ports
          $newIP  = getNextIP();
          $newMAC = getNextMAC();
+         $vlanID                = mt_rand(1,$MAX["vlan"]);
+         $vlan_loc[$data['id']] = $vlanID;
 
 //          $query = "INSERT INTO `glpi_networkports`
 //                    VALUES (NULL, '$netwID', 'NetworkEquipment', '$ID_entity', '0',
@@ -2131,22 +2138,37 @@ function generate_entity($ID_entity) {
       $typeID  = mt_rand(1,$MAX['type_printers']);
       $modelID = mt_rand(1,$MAX['model_printers']);
       $recur   = mt_rand(0,1);
+      
+      $printID = $ne->add(array(
+         'entities_id'                    => $ID_entity,
+         'is_recursive'                   => $recur,
+         'name'                           => "printer of loc $i",
+         'serial'                         => Toolbox::getRandomString(10),
+         'otherserial'                    => Toolbox::getRandomString(10),
+         'contact'                        => "contact $i",
+         'contact_num'                    => "num $i",
+         'users_id_tech'                  => $techID,
+         'groups_id_tech'                 => $gtechID,
+         'have_serial'                    => mt_rand(0,1),
+         'have_parallel'                  => mt_rand(0,1),
+         'have_usb'                       => mt_rand(0,1),
+         'have_wifi'                      => mt_rand(0,1),
+         'have_ethernet'                  => mt_rand(0,1),
+         'comment'                        => "comment $i",
+         'memory_size'                    => mt_rand(0,128),
+         'locations_id'                   => $i,
+         'domains_id'                     => $domainID,
+         'networks_id'                    => $networkID,         
+         'printertypes_id'                => mt_rand(1,$MAX['type_printers']),
+         'printermodels_id'               => mt_rand(1,$MAX['model_printers']),
+         'manufacturers_id'               => mt_rand(1,$MAX['enterprises']),
+         'is_global'                      => 1,
+         'notepad'                        => "notes printers $i",
+         'users_id'                       => mt_rand($FIRST['users_sadmin'],$LAST['users_admin']),
+         'groups_id'                      => mt_rand($FIRST["groups"],$LAST["groups"]),
+         'states_id'                      => (mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0),
+      ));
 
-      $query = "INSERT INTO `glpi_printers`
-                VALUES (NULL, '$ID_entity', '$recur', 'printer of loc ".$data['id']."', NOW(),
-                        'contact ".$data['id']."', 'num ".$data['id']."', '$techID', '$gtechID',
-                        '".Toolbox::getRandomString(10)."', '".Toolbox::getRandomString(10)."',
-                        '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
-                        '".mt_rand(0,1)."', '".mt_rand(0,1)."', 'comment $i', '".mt_rand(0,64)."',
-                        '".$data['id']."', '$domainID', '$networkID', '$modelID', '$typeID',
-                        '".mt_rand(1,$MAX['manufacturer'])."', '1', '0', '0', '', '0', '0',
-                        'notes printers ".$data['id']."',
-                        '".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."',
-                        '".mt_rand($FIRST["groups"],$LAST["groups"])."',
-                        '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."', '0')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $printID = $DB->insert_id();
       addDocuments('Printer', $printID);
       addContracts('Printer', $printID);
       $net_port['Printer'][$printID] = 0;
