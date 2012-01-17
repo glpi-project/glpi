@@ -38,41 +38,38 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("consumable", "r");
 
-if (!isset($_GET["tID"])) {
-   $_GET["tID"] = "";
-}
-if (!isset($_GET["cID"])) {
-   $_GET["cID"] = "";
+if (!isset($_GET["cartridgeitems_id"])) {
+   $_GET["cartridgeitems_id"] = "";
 }
 
 $con      = new Consumable();
 $constype = new ConsumableItem();
 
 if (isset($_POST["add_several"])) {
-   $constype->check($_POST["tID"],'w');
+   $constype->check($_POST["cartridgeitems_id"],'w');
 
    for ($i=0 ; $i<$_POST["to_add"] ; $i++) {
       unset($con->fields["id"]);
       $con->add($_POST);
    }
-   Event::log($_POST["tID"], "consumables", 4, "inventory",
+   Event::log($_POST["cartridgeitems_id"], "consumables", 4, "inventory",
               //TRANS: %s is the user login
               sprintf(__('%s adds consumables'), $_SESSION["glpiname"]));
 
    Html::back();
 
 } else if (isset($_GET["delete"])) {
-   $constype->check($_GET["tID"],'w');
+   $constype->check($_GET["cartridgeitems_id"],'w');
 
    if ($con->delete($_GET)) {
-      Event::log($_GET["tID"], "consumables", 4, "inventory",
+      Event::log($_GET["cartridgeitems_id"], "consumables", 4, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s deletes a consumable'), $_SESSION["glpiname"]));
    }
    Html::back();
 
 } else if (isset($_POST["give"])) {
-   $constype->check($_POST["tID"],'w');
+   $constype->check($_POST["cartridgeitems_id"],'w');
 
    if ($_POST["items_id"] > 0 && !empty($_POST['itemtype'])) {
       if (isset($_POST["out"])) {
@@ -82,17 +79,17 @@ if (isset($_POST["add_several"])) {
       }
       $item = new $_POST['itemtype']();
       $item->getFromDB($_POST["items_id"]);
-      Event::log($_POST["tID"], "consumables", 5, "inventory",
+      Event::log($_POST["cartridgeitems_id"], "consumables", 5, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s gives a consumable'), $_SESSION["glpiname"]));
    }
    Html::back();
 
 } else if (isset($_GET["restore"])) {
-   $constype->check($_GET["tID"],'w');
+   $constype->check($_GET["cartridgeitems_id"],'w');
 
    if ($con->restore($_GET)) {
-      Event::log($_GET["tID"], "consumables", 5, "inventory",
+      Event::log($_GET["cartridgeitems_id"], "consumables", 5, "inventory",
                  //TRANS: %s is the user login
                  sprintf(__('%s restores a consumable'), $_SESSION["glpiname"]));
    }

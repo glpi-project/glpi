@@ -44,7 +44,7 @@ include ("generate_bigdump.function.php");
 // Force mailing to false
 $CFG_GLPI["use_mailing"] = 0;
 
-$entity_number = 5;
+$entity_number = 1;
 
 $multiplicator = 0.5;
 

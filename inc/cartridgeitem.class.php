@@ -148,52 +148,6 @@ class CartridgeItem extends CommonDBTM {
       return false;
    }
 
-
-   /**
-    * Add a compatible printer type for a cartridge type
-    *
-    * @param $cartridgeitems_id  integer: cartridge type identifier
-    * @param printermodels_id    integer: printer type identifier
-    *
-    * @return boolean : true for success
-   **/
-   function addCompatibleType($cartridgeitems_id, $printermodels_id) {
-      global $DB;
-
-      if ($cartridgeitems_id>0 && $printermodels_id>0) {
-         $query = "INSERT INTO `glpi_cartridgeitems_printermodels`
-                          (`cartridgeitems_id`, `printermodels_id`)
-                   VALUES ('$cartridgeitems_id', '$printermodels_id');";
-
-         if ($result = $DB->query($query) && $DB->affected_rows()>0) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-
-   /**
-    * Delete a compatible printer associated to a cartridge with assoc identifier $ID
-    *
-    * @param $ID integer: glpi_cartridge_assoc identifier.
-    *
-    * @return boolean : true for success
-   **/
-   function deleteCompatibleType($ID) {
-      global $DB;
-
-      $query = "DELETE
-                FROM `glpi_cartridgeitems_printermodels`
-                WHERE `id` = '$ID';";
-
-      if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
-         return true;
-      }
-      return false;
-   }
-
-
    /**
     * Print the cartridge type form
     *
@@ -490,7 +444,7 @@ class CartridgeItem extends CommonDBTM {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            echo "<select name='tID' size=1>";
+            echo "<select name='cartridgeitems_id' size=1>";
             while ($data= $DB->fetch_assoc($result)) {
                //TRANS: %1$s is the name of the cartrige type, $2$s the reference,
                //       $3$d the number of free cartridges for the reference, %4$s the location
@@ -556,7 +510,7 @@ class CartridgeItem extends CommonDBTM {
       }
       if (Session::haveRight("cartridge", "w")) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
-         echo "<input type='hidden' name='tID' value='$instID'>";
+         echo "<input type='hidden' name='cartridgeitems_id' value='$instID'>";
          Dropdown::show('PrinterModel', array('used' => $used));
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='addtype' value=\"".__s('Add')."\" class='submit'>";

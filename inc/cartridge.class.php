@@ -69,7 +69,7 @@ class Cartridge extends CommonDBTM {
    function prepareInputForAdd($input) {
 
       $item = new CartridgeItem();
-      if ($item->getFromDB($input["tID"])) {
+      if ($item->getFromDB($input["cartridgeitems_id"])) {
          return array("cartridgeitems_id" => $item->fields["id"],
                       "entities_id"       => $item->getEntityID(),
                       "date_in"           => date("Y-m-d"));
@@ -542,7 +542,7 @@ class Cartridge extends CommonDBTM {
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><td class='center tab_bg_2'>";
-         echo "<input type='hidden' name='tID' value='$ID'>\n";
+         echo "<input type='hidden' name='cartridgeitems_id' value='$ID'>\n";
          Dropdown::showInteger('to_add',1,1,100);
          echo " <input type='submit' name='add_several' value=\"".__s('Add cartridges')."\"
                 class='submit'>";
@@ -648,7 +648,7 @@ class Cartridge extends CommonDBTM {
             if ($canedit) {
                echo "<form method='post' action=\"".$CFG_GLPI["root_doc"].
                     "/front/cartridge.form.php\">";
-               echo "<input type='hidden' name='cID' value='".$data['id']."'>";
+               echo "<input type='hidden' name='id' value='".$data['id']."'>";
                echo "<input type='text' name='pages' value=\"".$data['pages']."\" size='10'>";
                echo "<input type='image' name='update_pages' value='update_pages'
                       src='".$CFG_GLPI["root_doc"]."/pics/actualiser.png' class='calendrier'>";
@@ -683,7 +683,7 @@ class Cartridge extends CommonDBTM {
       if ($old==0 && $canedit) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='3'>";
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
-         echo "<input type='hidden' name='pID' value='$instID'>";
+         echo "<input type='hidden' name='printers_id' value='$instID'>";
 
          if (CartridgeItem::dropdownForPrinter($printer)) {
             echo "&nbsp;<input type='submit' name='install' value=\"".__s('Install')."\"
