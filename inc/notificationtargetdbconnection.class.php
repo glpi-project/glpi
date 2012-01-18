@@ -49,10 +49,14 @@ class NotificationTargetDBConnection extends NotificationTarget {
    }
 
 
+   /**
+    * @param $event
+    * @param $options   array
+   **/
    function getDatasForTemplate($event, $options=array()) {
 
       if ($options['diff'] > 1000000000) {
-         $tmp = __s("Can't connect to the database.");
+         $tmp = __("Can't connect to the database.");
       } else {
          $tmp = Html::timestampToString($options['diff'], true);
       }
@@ -83,7 +87,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
       $tags = array('dbconnection.title'
                                  => __('Slave database out of sync!'),
                     'dbconnection.delay'
-                                 => __('The slave base is desynchronized. The difference is of:'));
+                                 => __('The slave database is desynchronized. The difference is of:'));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

@@ -46,7 +46,11 @@ class NotificationEvent extends CommonDBTM {
    }
 
 
-   static function dropdownEvents($itemtype,$value='') {
+   /**
+    * @param $itemtype
+    * @param $value     (default '')
+   **/
+   static function dropdownEvents($itemtype, $value='') {
 
       $events = array();
       $target = NotificationTarget::getInstanceByType($itemtype);
@@ -85,10 +89,10 @@ class NotificationEvent extends CommonDBTM {
    /**
     * Raise a notification event event
     *
-    * @param $event the event raised for the itemtype
-    * @param $item the object which raised the event
-    * @param $options array options used
-    * @param $label used for debugEvent()
+    * @param $event           the event raised for the itemtype
+    * @param $item            the object which raised the event
+    * @param $options array   of options used
+    * @param $label           used for debugEvent() (default '')
    **/
    static function raiseEvent($event, $item, $options=array(), $label='') {
       global $CFG_GLPI;
@@ -103,7 +107,7 @@ class NotificationEvent extends CommonDBTM {
          $notificationtarget = NotificationTarget::getInstance($item,$event,$options);
          $entity             = $notificationtarget->getEntity();
          //Foreach notification
-         foreach (Notification::getNotificationsByEventAndType($event, $item->getType(),$entity)
+         foreach (Notification::getNotificationsByEventAndType($event, $item->getType(), $entity)
                   as $data) {
             $targets = getAllDatasFromTable('glpi_notificationtargets',
                                             'notifications_id = '.$data['id']);
@@ -140,7 +144,7 @@ class NotificationEvent extends CommonDBTM {
                                                             $event, $options)) {
 
                            //Send notification to the user
-                           if ($label=='') {
+                           if ($label == '') {
                               Notification::send($template->getDataToSend($notificationtarget,
                                                                           $users_infos, $options));
                            } else {
@@ -174,23 +178,22 @@ class NotificationEvent extends CommonDBTM {
    /**
     * Display debug information for an object
     *
-    * @param $item the object
-    * @param $options array
+    * @param $item            the object
+    * @param $options   array
    **/
    static function debugEvent($item, $options=array()) {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>"._n('Notification', 'Notifications',2).
-               "</th><th colspan='2'><font color='blue'> (".$item->getTypeName().")</font></th></tr>";
+               "</th><th colspan='2'><font color='blue'> (".$item->getTypeName(1).")</font></th></tr>";
 
       $events = array();
       if ($target = NotificationTarget::getInstanceByType(get_class($item))) {
          $events = $target->getAllEvents();
 
          if (count($events)>0) {
-            echo "<tr><th>"._n('Event', 'Events', 2).'</th><th>'._n('Recipient', 'Recipients', 2).
-                 "</th>";
+            echo "<tr><th>".self::getTypeName(2).'</th><th>'._n('Recipient', 'Recipients', 2)."</th>";
             echo "<th>"._n('Notification template', 'Notification templates', 2)."</th>".
                  "<th>"._n('Email', 'Emails', 2)."</th></tr>";
 

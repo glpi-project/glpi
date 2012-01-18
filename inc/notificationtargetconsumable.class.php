@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetConsumable extends NotificationTarget {
 
+
    function getEvents() {
       return array('alert' => __('Consumables alarm'));
    }
@@ -41,6 +42,9 @@ class NotificationTargetConsumable extends NotificationTarget {
 
    /**
     * Get all data needed for template processing
+    *
+    * @param $event
+    * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;
@@ -53,7 +57,7 @@ class NotificationTargetConsumable extends NotificationTarget {
       $this->datas['##consumable.action##']      = $events[$event];
 
       foreach ($options['consumables'] as $id => $consumable) {
-         $tmp = array();
+         $tmp                             = array();
          $tmp['##consumable.item##']      = $consumable['consname'];
          $tmp['##consumable.reference##'] = $consumable['consref'];
          $tmp['##consumable.remaining##'] = Consumable::getUnusedNumber($id);

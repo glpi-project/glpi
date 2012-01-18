@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetFieldUnicity extends NotificationTarget {
 
+
    function getEvents() {
       return array('refuse' => __('Alert on duplicate record'));
    }
@@ -41,6 +42,9 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
 
    /**
     * Get all data needed for template processing
+    *
+    * @param $event
+    * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
 
@@ -50,8 +54,10 @@ class NotificationTargetFieldUnicity extends NotificationTarget {
       $this->datas['##unicity.action_user##'] = $options['action_user'];
       $this->datas['##unicity.message##']     = $options['message'];
       $this->datas['##unicity.date##']        = Html::convDateTime($options['date']);
-      $item = new $options['itemtype']();
-      $this->datas['##unicity.itemtype##']    = $item->getTypeName();
+
+      if ($item = getItemForItemtype($options['itemtype'])) {
+         $this->datas['##unicity.itemtype##'] = $item->getTypeName(1);
+      }
       $this->datas['##unicity.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                           $options['entities_id']);
       if ($options['refuse']) {

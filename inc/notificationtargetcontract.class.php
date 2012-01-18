@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetContract extends NotificationTarget {
 
+
    function getEvents() {
 
       return array('end'    => __('End of contract'),
@@ -43,6 +44,9 @@ class NotificationTargetContract extends NotificationTarget {
 
    /**
     * Get all data needed for template processing
+    *
+    * @param $event
+    * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;

@@ -34,25 +34,27 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetCrontask extends NotificationTarget {
 
-   function getEvents() {
 
+   function getEvents() {
       return array('alert' => __('Monitoring of automatic actions'));
    }
 
 
    /**
     * Get all data needed for template processing
+    *
+    * @param $event
+    * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;
 
-      $events = $this->getAllEvents();
-
+      $events                             = $this->getAllEvents();
       $this->datas['##crontask.action##'] = $events[$event];
 
       $cron = new Crontask();
       foreach ($options['crontasks'] as $id => $crontask) {
-         $tmp = array();
+         $tmp                      = array();
          $tmp['##crontask.name##'] = '';
 
          if ($isplug=isPluginItemType($crontask["itemtype"])) {
@@ -95,7 +97,7 @@ class NotificationTargetCrontask extends NotificationTarget {
 
       //Tags with just lang
       $tags = array('crontask.warning'
-                  => __('The following automatic actions are in error. They require intervention.'));
+                     => __('The following automatic actions are in error. They require intervention.'));
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
                                    'label' => $label,

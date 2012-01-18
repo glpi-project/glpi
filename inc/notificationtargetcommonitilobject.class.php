@@ -38,6 +38,12 @@ if (!defined('GLPI_ROOT')) {
 
 abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
+   /**
+    * @param $entity          (default '')
+    * @param $event           (default '')
+    * @param $object          (default null)
+    * @param $options   array
+   **/
    function __construct($entity='', $event='', $object=null, $options=array()) {
       parent::__construct($entity, $event, $object, $options);
 
@@ -195,7 +201,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
     }
 
 
-   //Get recipient
+   /**
+    * Get recipient
+   **/
    function getRecipientAddress() {
       return $this->getUserByField("users_id_recipient");
   }
@@ -204,7 +212,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    /**
     * Get supplier related to the ITIL object
     *
-    * @param $sendprivate false
+    * @param $sendprivate  (false by default)
    **/
    function getSupplierAddress($sendprivate=false) {
       global $DB;
@@ -300,7 +308,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
    /**
-    * Get author related to the followup
+    * Get author related to the task
     *
     * @param $options array
    **/
@@ -324,7 +332,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
    /**
-    * Get author related to the followup
+    * Get author related to the task
     *
     * @param $options array
    **/
@@ -351,12 +359,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    /**
     * Get additionnals targets for ITIL objects
     *
-    * @param $event
+    * @param $event  (default '')
    **/
    function getAdditionalTargets($event='') {
 
       if ($event=='update') {
-         $this->addTarget(Notification::OLD_TECH_IN_CHARGE, __('Former technician in charge of the ticket'));
+         $this->addTarget(Notification::OLD_TECH_IN_CHARGE,
+                          __('Former technician in charge of the ticket'));
       }
 
       if ($event=='satisfaction') {
@@ -367,11 +376,12 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::RECIPIENT, __('Writer'));
          $this->addTarget(Notification::SUPPLIER, __('Supplier'));
          $this->addTarget(Notification::SUPERVISOR_ASSIGN_GROUP,
-                          __('Group in charge of the ticket manager'));
-         $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP,
-                          __('Requester group manager'));
-         $this->addTarget(Notification::ITEM_TECH_IN_CHARGE, __('Technician in charge of the hardware'));
-         $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE, __('Group in charge of the hardware'));
+                          __('Manager of the group in charge of the ticket'));
+         $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP, __('Requester group manager'));
+         $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,
+                          __('Technician in charge of the hardware'));
+         $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE,
+                          __('Group in charge of the hardware'));
          $this->addTarget(Notification::ASSIGN_TECH, __('Technician in charge of this ticket'));
          $this->addTarget(Notification::REQUESTER_GROUP, __('Requester group'));
          $this->addTarget(Notification::AUTHOR, __('Requester'));
@@ -379,20 +389,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::ASSIGN_GROUP, __('Group in charge of the ticket'));
          $this->addTarget(Notification::OBSERVER_GROUP, __('Watcher group'));
          $this->addTarget(Notification::OBSERVER, __('Watcher'));
-         $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP,
-                          __('Watcher group manager'));
+         $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP,__('Watcher group manager'));
       }
 
       if ($event=='validation') {
-         $this->addTarget(Notification::VALIDATION_REQUESTER,
-                          __('Approval requester'));
-         $this->addTarget(Notification::VALIDATION_APPROVER,
-                          __('Approver'));
+         $this->addTarget(Notification::VALIDATION_REQUESTER, __('Approval requester'));
+         $this->addTarget(Notification::VALIDATION_APPROVER, __('Approver'));
       }
 
       if ($event=='update_task' || $event=='add_task' || $event=='delete_task') {
-         $this->addTarget(Notification::TASK_ASSIGN_TECH,
-                          __('Technician in charge of the task'));
+         $this->addTarget(Notification::TASK_ASSIGN_TECH, __('Technician in charge of the task'));
          $this->addTarget(Notification::TASK_AUTHOR, __('Task author'));
       }
 
@@ -516,20 +522,21 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          if (isset($options['entities_id']) && isset($options['items'])) {
             $this->datas["##$objettype.entity##"] = Dropdown::getDropdownName('glpi_entities',
                                                                               $options['entities_id']);
-            $item       = new $objettype();
-            $objettypes = Toolbox::strtolower(getPlural($objettype));
-            $items      = array();
-            foreach ($options['items'] as $object) {
-               $item->getFromDB($object['id']);
-               $tmp = $this->getDatasForObject($item, true);
-               $this->datas[$objettypes][] = $tmp;
+            if ($item = getItemForItemtype($objettype)) {
+               $objettypes = Toolbox::strtolower(getPlural($objettype));
+               $items      = array();
+               foreach ($options['items'] as $object) {
+                  $item->getFromDB($object['id']);
+                  $tmp = $this->getDatasForObject($item, true);
+                  $this->datas[$objettypes][] = $tmp;
+               }
             }
          }
       }
 
       if ($event == 'validation' && isset($options['validation_status'])) {
          $this->datas["##$objettype.action##"]
-                     //TRANS: %s id the state of the approval
+                     //TRANS: %s id of the approval's state
                       = sprintf(__('Approval - %s'),
                                 TicketValidation::getStatus($options['validation_status']));
       } else {
@@ -547,6 +554,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    }
 
 
+   /**
+    * @param $item   CommonDBTM object
+    * @param $simple (false by default)
+   **/
    function getDatasForObject(CommonDBTM $item, $simple=false) {
       global $CFG_GLPI;
 
@@ -638,7 +649,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($item->countUsers(CommonITILObject::ASSIGN)) {
          $users = array();
          foreach ($item->getUsers(CommonITILObject::ASSIGN) as $tmp) {
-            $uid = $tmp['users_id'];
+            $uid      = $tmp['users_id'];
             $user_tmp = new User();
             if ($user_tmp->getFromDB($uid)) {
                $users[$uid] = $user_tmp->getName();
@@ -658,7 +669,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($item->countGroups(CommonITILObject::REQUESTER)) {
          $groups = array();
          foreach ($item->getGroups(CommonITILObject::REQUESTER) as $tmp) {
-            $gid = $tmp['groups_id'];
+            $gid          = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
          $datas["##$objettype.groups##"] = implode(', ',$groups);
@@ -668,7 +679,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($item->countGroups(CommonITILObject::OBSERVER)) {
          $groups = array();
          foreach ($item->getGroups(CommonITILObject::OBSERVER) as $tmp) {
-            $gid = $tmp['groups_id'];
+            $gid          = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
          $datas["##$objettype.observergroups##"] = implode(', ',$groups);
@@ -678,7 +689,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($item->countUsers(CommonITILObject::OBSERVER)) {
          $users = array();
          foreach ($item->getUsers(CommonITILObject::OBSERVER) as $tmp) {
-            $uid = $tmp['users_id'];
+            $uid      = $tmp['users_id'];
             $user_tmp = new User();
             if ($uid && $user_tmp->getFromDB($uid)) {
                $users[] = $user_tmp->getName();
@@ -693,7 +704,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($item->countGroups(CommonITILObject::ASSIGN)) {
          $groups = array();
          foreach ($item->getGroups(CommonITILObject::ASSIGN) as $tmp) {
-            $gid = $tmp['groups_id'];
+            $gid          = $tmp['groups_id'];
             $groups[$gid] = Dropdown::getDropdownName('glpi_groups', $gid);
          }
          $datas["##$objettype.assigntogroups##"] = implode(', ',$groups);
@@ -716,7 +727,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $tmp["##$objettype.log.user##"]    = $data['user_name'];
          $tmp["##$objettype.log.field##"]   = $data['field'];
          $tmp["##$objettype.log.content##"] = $data['change'];
-         $datas['log'][] = $tmp;
+         $datas['log'][]                    = $tmp;
       }
 
       $datas["##$objettype.numberoflogs##"] = 0;
@@ -746,9 +757,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.impact'                => __('Impact'),
                     $objettype.'.priority'              => __('Priority'),
                     $objettype.'.time'                  => __('Total duration'),
-                    $objettype.'.creationdate'          => __('Opening date'),
-                    $objettype.'.closedate'             => __('Closing date'),
-                    $objettype.'.solvedate'             => __('Resolution date'),
+                    $objettype.'.creationdate'          => __('Date of opening'),
+                    $objettype.'.closedate'             => __('Date of closing'),
+                    $objettype.'.solvedate'             => __('Date of solving'),
                     $objettype.'.duedate'               => __('Due date'),
                     $objettype.'.authors'               => __('Requesters'),
                     'author.id'                         => __('Requester ID'),
@@ -757,7 +768,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'author.phone'                      =>  __('Phone'),
                     'author.phone2'                     =>  __('Phone 2'),
                     $objettype.'.openbyuser'            => __('Writer'),
-                    $objettype.'.assigntousers'         => _n('Technician', 'Technicians', 2),
+                    $objettype.'.assigntousers'         => __('Assigned to technicians'),
                     $objettype.'.assigntosupplier'      => __('Assigned to a supplier'),
                     $objettype.'.groups'                => __('Requester groups'),
                     $objettype.'.observergroups'        => __('Watcher groups'),
@@ -785,7 +796,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       //Tags with just lang
-      $tags = array($objettype.'.days'               => __('day(s)'),
+      $tags = array($objettype.'.days'               => __('days'),
                     $objettype.'.attribution'        => __('Assigned to'),
                     $objettype.'.nocategoryassigned' => __('No defined category'));
 
@@ -797,7 +808,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       }
 
       //Tags without lang
-      $tags = array($objettype.'.urlapprove'  => __('Web Link to approval of the solution'),
+      $tags = array($objettype.'.urlapprove'  => __('Web Link to approval the solution'),
                     $objettype.'.log.date'    => __('Historical: date'),
                     $objettype.'.log.user'    => __('Historical: user'),
                     $objettype.'.log.field'   => __('Historical: field'),
@@ -817,8 +828,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $allowed_ticket[] = $key;
       }
 
-      $tags = array($objettype.'.storestatus' => array('text'           => __('Status value in database'),
-                                                       'allowed_values' => $allowed_ticket));
+      $tags = array($objettype.'.storestatus'
+                                    => array('text'           => __('Status value in database'),
+                                             'allowed_values' => $allowed_ticket));
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'            => $tag,
                                    'label'          => $label['text'],

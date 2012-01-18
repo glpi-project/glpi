@@ -99,8 +99,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
    /**
     * Determine if email is valid
     *
-    * @param $address email to check
-    * @param $options array options used
+    * @param $address         email to check
+    * @param $options   array of options used (by default 'checkdns'=>false)
     *     - checkdns :check dns entry
     *
     * @return boolean
@@ -189,7 +189,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
     * Format the mail sender to send
     *
     * @return mail sender email string
-   */
+   **/
    function getEntityAdminAddress() {
       global $CFG_GLPI,$DB;
 
@@ -209,6 +209,9 @@ class NotificationMail extends phpmailer implements NotificationInterface {
    }
 
 
+   /**
+    * @param $options   array
+   **/
    function sendNotification($options=array()) {
 
       $mmail = new self();
