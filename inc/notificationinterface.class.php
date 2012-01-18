@@ -43,24 +43,26 @@ interface NotificationInterface {
 
    /**
     * Send notifications
+    *
     * @return must return 0 or 1
-    */
+   **/
    function sendNotification();
 
 
    /**
     * Check user address
-    * @param $address the user's address to check
-    * @param $options an array with the special options (may be needed)
+    *
+    * @param $address         the user's address to check
+    * @param $options   array with the special options (may be needed)
     *
     * @return true or false
-    */
-   static function isUserAddressValid($address, $options = array());
+   **/
+   static function isUserAddressValid($address, $options=array());
 
 
    /**
     * Method to test notification
-    */
+   **/
    static function testNotification();
 }
 

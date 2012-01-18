@@ -46,7 +46,7 @@ class NotificationMailSetting extends CommonDBTM {
    protected $displaylist = false;
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       return __('Email followups configuration');
    }
 
@@ -87,13 +87,12 @@ class NotificationMailSetting extends CommonDBTM {
    /**
     * Print the mailing config form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target filename : where to go when done.
     *     - tabs integer : ID of the tab to display
     *
     * @return Nothing (display)
-    *
    **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
@@ -137,7 +136,6 @@ class NotificationMailSetting extends CommonDBTM {
       echo "</td>";
 
       if ($CFG_GLPI['use_mailing']) {
-
          echo "<td >" . __('URL of the application') . "</td>";
          echo "<td><input type='text' name='url_base' size='40' value='".$CFG_GLPI["url_base"]."'>";
          echo "</td></tr>";
@@ -214,11 +212,6 @@ class NotificationMailSetting extends CommonDBTM {
       $options['candel'] = false;
       $this->showFormButtons($options);
 
-      /*
-      echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-      echo "<input class='submit' type='submit' name='update' value='".__s('Save')."'>";
-      echo "</td></tr>";
-      echo "</table></form>";*/
    }
 
 

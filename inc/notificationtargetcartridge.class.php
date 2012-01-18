@@ -34,12 +34,16 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetCartridge extends NotificationTarget {
 
+
    function getEvents() {
       return array('alert' => __('Cartridges alarm'));
    }
 
    /**
     * Get all data needed for template processing
+    *
+    * @param $event
+    * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;

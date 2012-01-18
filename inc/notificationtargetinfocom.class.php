@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetInfocom extends NotificationTarget {
 
+
    function getEvents() {
       return array('alert' => __('Alarms on financial and administrative information'));
    }
@@ -41,6 +42,9 @@ class NotificationTargetInfocom extends NotificationTarget {
 
    /**
     * Get all data needed for template processing
+    *
+    * @param $event
+    * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;
@@ -54,7 +58,7 @@ class NotificationTargetInfocom extends NotificationTarget {
       foreach ($options['items'] as $id => $item) {
          $tmp = array();
          $obj = new $item['itemtype']();
-         $tmp['##infocom.itemtype##']       = $obj->getTypeName();
+         $tmp['##infocom.itemtype##']       = $obj->getTypeName(1);
          $tmp['##infocom.item##']           = $item['item_name'];
          $tmp['##infocom.expirationdate##'] = $item['warrantyexpiration'];
          $tmp['##infocom.url##']            = urldecode($CFG_GLPI["url_base"].
