@@ -60,15 +60,10 @@ class NetworkPort extends CommonDBChild {
     *
     * @return array of available type of network ports
    **/
-   static function getNetworkPortInstantiations($onlySelectableOnes=true) {
+   static function getNetworkPortInstantiations() {
 
-      $instantiations = array('NetworkPortAggregate', 'NetworkPortAlias', 'NetworkPortDialup',
-                              'NetworkPortEthernet', 'NetworkPortLocal', 'NetworkPortWifi');
-      if ( !$onlySelectableOnes ) {
-         $instantiations[] = 'NetworkPortMigration';
-      }
-
-      return $instantiations;
+      return array('NetworkPortAggregate', 'NetworkPortAlias', 'NetworkPortDialup',
+                   'NetworkPortEthernet', 'NetworkPortLocal', 'NetworkPortWifi');
    }
 
 
@@ -110,7 +105,8 @@ class NetworkPort extends CommonDBChild {
    **/
    function getInstantiation() {
 
-      if (!empty($this->fields['instantiation_type'])) {
+      if (isset($this->fields['instantiation_type'])
+          && in_array($this->fields['instantiation_type'], self::getNetworkPortInstantiations())) {
          if ($instantiation = getItemForItemtype($this->fields['instantiation_type'])) {
             if (!$instantiation->getFromDB($this->getID())) {
                $instantiation->getEmpty();
@@ -119,6 +115,47 @@ class NetworkPort extends CommonDBChild {
          }
       }
       return false;
+   }
+
+
+   /**
+    * Change the instantion type of a NetworkPort
+    *
+    * @since version 0.84
+    *
+    * @param $new_instantiation_type the name of the new instaniation type
+    *
+    * @return false on error, true if the previous instantiation is not available (ie.: invalid
+    *         instantiation type) or the object of the previous instantiation.
+   **/
+   function switchInstantiationType($new_instantiation_type) {
+
+     // First, check if the new instantiation is a valid one ...
+      if (!in_array($new_instantiation_type, self::getNetworkPortInstantiations())) {
+         return false;
+      }
+
+      // Load the previous instantiation
+      $previousInstantiation = $this->getInstantiation();
+
+      // If the previous instantiation is the same than the new one: nothing to do !
+      if (($previousInstantiation !== false)
+          && ($previousInstantiation->getType() == $new_instantiation_type)) {
+         return $previousInstantiation;
+      }
+
+      // We update the current NetworkPort
+      $input = $this->fields;
+      $input['instantiation_type'] = $new_instantiation_type;
+      $this->update($input);
+
+      // Then, we delete the previous instantiation
+      if ($previousInstantiation !== false) {
+         $previousInstantiation->delete($previousInstantiation->fields);
+         return $previousInstantiation;
+      }
+
+      return true;
    }
 
 
@@ -369,7 +406,7 @@ class NetworkPort extends CommonDBChild {
       }
 
       $is_active_network_port = false;
-      foreach (self::getNetworkPortInstantiations(false) as $portType) {
+      foreach (self::getNetworkPortInstantiations() as $portType) {
 
          Session::initNavigateListItems('NetworkPort',
                               //TRANS : %1$s is the itemtype name,
