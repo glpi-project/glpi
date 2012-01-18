@@ -556,9 +556,8 @@ function update083to084() {
             $instantiation_type = "NetworkPortDialup";
             break;
 
-
          default:
-            $instantiation_type = "NetworkPortMigration";
+            $instantiation_type = "";
             break;
 
        }
@@ -577,6 +576,17 @@ function update083to084() {
    foreach (array('ip', 'gateway', 'mac', 'netmask', 'netpoints_id', 'networkinterfaces_id',
                   'subnet') as $field) {
       $migration->dropField('glpi_networkports', $field);
+   }
+
+   //TRANS: %s is the name of the table
+   logMessage(sprintf(__('update migration of interfaces errors - %s'), "glpi_networkportmigrations"), true);
+
+   $query = "SELECT id
+             FROM `glpi_networkports`
+             WHERE `instantiation_type` = ''";
+
+   foreach ($DB->request($query) as $networkPortID) {
+      addNetworkPortMigrationError($networkPortID['id'], 'unknown_interface_type');
    }
 
    //TRANS: %s is the name of the table
@@ -665,17 +675,6 @@ function update083to084() {
 
       $port = new NetworkPortDialup();
       updateNetworkPortInstantiation($port, array("LOWER(`mac`)" => 'mac'), true);
-   }
-
-   //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportmigrations"), true);
-
-   $query = "SELECT id
-             FROM `glpi_networkports`
-             WHERE `instantiation_type` = 'NetworkPortMigration'";
-   foreach ($DB->request($query) as $networkPortID) {
-      addNetworkPortMigrationError($networkPortID['id'], 'unknown_interface_type');
-
    }
 
    //TRANS: %s is the name of the table
