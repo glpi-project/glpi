@@ -2912,7 +2912,7 @@ class OcsServer extends CommonDBTM {
                   $data = $rule->processAllRules(array(), array(), $tab["id"]);
                }
                echo "<tr class='tab_bg_2'><td>" . $tab["name"] . "</td>\n";
-               echo "<td>".$tab["manufacturer"]."</td><td>".$tab["model"]."</td>"
+               echo "<td>".$tab["manufacturer"]."</td><td>".$tab["model"]."</td>";
                echo "<td>".$tab["serial"]."</td>\n";
                echo "<td>" . Html::convDateTime($tab["date"]) . "</td>\n";
                echo "<td>" . $tab["TAG"] . "</td>\n";
