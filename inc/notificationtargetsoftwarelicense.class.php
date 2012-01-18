@@ -34,6 +34,7 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetSoftwareLicense extends NotificationTarget {
 
+
    function getEvents() {
       return array('alert' => __('Alarms on expired licenses'));
    }
@@ -41,6 +42,9 @@ class NotificationTargetSoftwareLicense extends NotificationTarget {
 
    /**
     * Get all data needed for template processing
+    *
+    * @param $event
+    * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
      global $CFG_GLPI;

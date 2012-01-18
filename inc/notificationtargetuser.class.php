@@ -34,13 +34,13 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetUser extends NotificationTarget {
 
+
    function getEvents() {
       return array('passwordforget' => __('Forgot your password?'));
    }
 
 
    function getNotificationTargets($entity) {
-
       $this->addTarget(Notification::USER, __('User'));
    }
 
@@ -64,6 +64,9 @@ class NotificationTargetUser extends NotificationTarget {
 
    /**
     * Get all data needed for template processing
+    *
+    * @param $event
+    * @param $options   array
    **/
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;
@@ -75,11 +78,11 @@ class NotificationTargetUser extends NotificationTarget {
       $this->datas['##user.firstname##'] = $this->obj->getField("firstname");
       $this->datas['##user.token##']     = $this->obj->getField("password_forget_token");
 
-      $this->datas['##user.action##']  = $events[$event];
+      $this->datas['##user.action##']    = $events[$event];
       $this->datas['##user.passwordforgeturl##']
-                                       = urldecode($CFG_GLPI["url_base"].
-                                                   "/front/lostpassword.php?password_forget_token=".
-                                                   $this->obj->getField("password_forget_token"));
+                                         = urldecode($CFG_GLPI["url_base"].
+                                                     "/front/lostpassword.php?password_forget_token=".
+                                                     $this->obj->getField("password_forget_token"));
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -97,8 +100,8 @@ class NotificationTargetUser extends NotificationTarget {
                     'user.firstname'         => __('First name'),
                     'user.token'             => __('Token'),
                     'user.passwordforgeturl' => __('URL'),
-                    'user.action'            => _n('Event', 'Events', 1),
-                     );
+                    'user.action'            => _n('Event', 'Events', 1));
+
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
                                    'label' => $label,
@@ -109,8 +112,7 @@ class NotificationTargetUser extends NotificationTarget {
       $lang = array('passwordforget.information'
                         => __('You have been made a request to reset your account password.'),
                     'passwordforget.link'
-                        => __('Just follow this link (you have one day):')
-                    );
+                        => __('Just follow this link (you have one day):'));
 
       foreach ($lang as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

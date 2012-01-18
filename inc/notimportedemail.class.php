@@ -114,6 +114,9 @@ class NotImportedEmail extends CommonDBTM {
    }
 
 
+   /**
+    * @param $reason_id
+   **/
    static function getReason($reason_id) {
 
       switch ($reason_id) {
