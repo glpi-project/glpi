@@ -40,6 +40,12 @@ if (!defined('GLPI_ROOT')) {
 /// @since 0.84
 class NetworkPortMigration extends NetworkPortInstantiation {
 
+   static function getMotives() {
+      return array( 'unknown_interface_type' => __('undefined interface'),
+                    'invalid_network'        => __('invalid network (already defined or with invalid addresses'),
+                    'invalid_gateway'        => __('gateway not include inside the network'),
+                    'invalid_address'        => __('invalid IP address') );
+   }
 
    static function getTypeName($nb=0) {
      return __('Not defined. Inherit from migration');
@@ -90,5 +96,49 @@ class NetworkPortMigration extends NetworkPortInstantiation {
       echo "</tr>";
    }
 
+   function getSearchOptions() {
+      global $CFG_GLPI;
+
+      $tab = parent::getSearchOptions();
+
+
+      $optionIndex = 10;
+      foreach (self::getMotives() as $motive => $name) {
+
+         $tab[$optionIndex]['table']         = $this->getTable();
+         $tab[$optionIndex]['field']         = $motive;
+         $tab[$optionIndex]['name']          = $name;
+         $tab[$optionIndex]['datatype']      = 'bool';
+
+         $optionIndex ++;
+      }
+
+      $tab[$optionIndex]['table']         = $this->getTable();
+      $tab[$optionIndex]['field']         = 'ip';
+      $tab[$optionIndex]['name']          = IPAddress::getTypeName(1);
+      $optionIndex ++;
+
+      $tab[$optionIndex]['table']         = $this->getTable();
+      $tab[$optionIndex]['field']         = 'netmask';
+      $tab[$optionIndex]['name']          = IPNetmask::getTypeName(1);
+      $optionIndex ++;
+
+      $tab[$optionIndex]['table']         = $this->getTable();
+      $tab[$optionIndex]['field']         = 'subnet';
+      $tab[$optionIndex]['name']          = IPNetwork::getTypeName(1);
+      $optionIndex ++;
+
+      $tab[$optionIndex]['table']         = $this->getTable();
+      $tab[$optionIndex]['field']         = 'gateway';
+      $tab[$optionIndex]['name']          = IPAddress::getTypeName(1);
+      $optionIndex ++;
+
+      $tab[$optionIndex]['table']         = 'glpi_networkinterfaces';
+      $tab[$optionIndex]['field']         = 'name';
+      $tab[$optionIndex]['name']          = NetworkInterface::getTypeName(1);
+      $optionIndex ++;
+
+      return $tab;
+   }
 }
 ?>

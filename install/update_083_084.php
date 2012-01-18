@@ -115,6 +115,7 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
 
          $migration->insertInTable($IPaddress->getTable(), $input);
       } else {
+         addNetworkPortMigrationError($entry["id"], 'invalid_address');
          logNetworkPortError('invalid IP address', $entry["id"], $entry["itemtype"],
                              $entry["items_id"], "$IP");
       }
@@ -166,6 +167,24 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
    }
 }
 
+
+function addNetworkPortMigrationError($networkports_id, $motive) {
+   global $DB;
+
+   if (countElementsInTable("glpi_networkportmigrations", "`id` = '$networkports_id'") == 0) {
+      $query = "INSERT INTO `glpi_networkportmigrations`
+                       (SELECT *" . str_repeat(', 0',  count(NetworkPortMigration::getMotives())) ."
+                       FROM `origin_glpi_networkports`
+                       WHERE `id` = '$networkports_id')";
+      $DB->queryOrDie($query, "0.84 copy of NetworkPort during migration error");
+   }
+
+   $query = "UPDATE `glpi_networkportmigrations`
+             SET `$motive` = '1'
+             WHERE `id`='$networkports_id'";
+   $DB->queryOrDie($query, "0.84 append of motive to migration of NetworkPort error");
+
+}
 
 /**
  * Update from 0.83 to 0.84
@@ -223,11 +242,21 @@ function update083to084() {
                                     "It is a copy of $copyTable", false);
       }
    }
-   /* Actually, now, we recommend to use the migration cleaner plugin ...
-   if (count($originTables) > 0) {
-      $migration->displayWarning("You can remove ".implode(', ', $originTables).
-                                 " tables if have no need of them.", true);
-   } */
+
+   // Create the glpi_networkportmigrations that is a copy of origin_glpi_networkports
+   $query = "CREATE TABLE `glpi_networkportmigrations` LIKE `origin_glpi_networkports`";
+   $DB->queryOrDie($query, "0.84 create glpi_networkportmigrations");
+
+   // And add the error motive fields
+   $optionIndex = 10;
+   $ADDTODISPLAYPREF['NetworkPortMigration'] = array();
+   foreach (NetworkPortMigration::getMotives() as $key => $name) {
+
+      $ADDTODISPLAYPREF['NetworkPortMigration'][] = $optionIndex ++;
+      $query = "ALTER TABLE `glpi_networkportmigrations` ADD $key int(1) default 0";
+      $DB->queryOrDie($query, "0.84 add $key to glpi_networkportmigrations");
+
+   }
 
    //TRANS: %s is the name of the table
    logMessage(sprintf(__('Data migration - %s'), "glpi_fqdns"), true);
@@ -404,6 +433,7 @@ function update083to084() {
                                AND `entities_id` = '$entities_id'";
                $result = $DB->query($query);
                foreach ($DB->request($query) as $data) {
+                  addNetworkPortMigrationError($data['id'], 'invalid_gateway');
                   logNetworkPortError('network warning', $data['id'], $data['itemtype'],
                                       $data['items_id'], $preparedInput['error']);
                }
@@ -418,6 +448,7 @@ function update083to084() {
                             AND `entities_id` = '$entities_id'";
             $result = $DB->query($query);
             foreach ($DB->request($query) as $data) {
+               addNetworkPortMigrationError($data['id'], 'invalid_network');
                logNetworkPortError('network error', $data['id'], $data['itemtype'],
                                    $data['items_id'], $preparedInput['error']);
             }
@@ -542,10 +573,6 @@ function update083to084() {
          unset($instantiation_type);
       }
    }
-   /* Actually, now, we recommend to use the migration cleaner plugin ...
-   $migration->displayWarning("You can delete glpi_networkinterfaces table if you have no need
-                              of them.", true);
-   */
 
    foreach (array('ip', 'gateway', 'mac', 'netmask', 'netpoints_id', 'networkinterfaces_id',
                   'subnet') as $field) {
@@ -643,31 +670,12 @@ function update083to084() {
    //TRANS: %s is the name of the table
    logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportmigrations"), true);
 
-   $query = "SELECT *
+   $query = "SELECT id
              FROM `glpi_networkports`
              WHERE `instantiation_type` = 'NetworkPortMigration'";
-   $result = $DB->query($query);
+   foreach ($DB->request($query) as $networkPortID) {
+      addNetworkPortMigrationError($networkPortID['id'], 'unknown_interface_type');
 
-   // Adding NetworkPortMigration table only if it is required : in case of unknown interface
-   if ((!TableExists('glpi_networkportmigrations')) && ($DB->numrows($result) > 0)) {
-      $query = "CREATE TABLE `glpi_networkportmigrations` (
-                  `id` int(11) NOT NULL,
-                  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                  `networkinterfaces_id` int(11) NOT NULL DEFAULT '0',
-                  `netpoints_id` int(11) NOT NULL DEFAULT '0',
-                  PRIMARY KEY (`id`),
-                  KEY `mac` (`mac`),
-                  KEY `networkinterfaces_id` (`networkinterfaces_id`),
-                  KEY `netpoints_id` (`netpoints_id`)
-                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.84 create glpi_networkportmigrations");
-
-      $port = new NetworkPortMigration();
-      updateNetworkPortInstantiation($port, array("LOWER(`mac`)"           => 'mac',
-                                                  '`netpoints_id`'         => 'netpoints_id',
-                                                  '`networkinterfaces_id`' =>
-                                                  'networkinterfaces_id'),
-                                     true);
    }
 
    //TRANS: %s is the name of the table
@@ -718,7 +726,7 @@ function update083to084() {
                    AND `num` = 7";
    $DB->query($query);
 
-   $migration->displayWarning("You should run migration cleaner plugin !", true);
+   $migration->displayWarning("You should have a look at the \"migration cleaner\" tool !", true);
 
 
    $lang_to_update = array('ca_CA' => 'ca_ES',
