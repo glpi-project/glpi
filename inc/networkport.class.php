@@ -802,8 +802,7 @@ class NetworkPort extends CommonDBChild {
       if (Session::haveRight('networking','r')) {
          if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
             if ($_SESSION['glpishow_count_on_tabs']) {
-               return self::createTabEntry(self::getTypeName(self::countForItem($item)),
-                                           self::countForItem($item));
+               return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
             }
             return (self::getTypeName(2));
          }

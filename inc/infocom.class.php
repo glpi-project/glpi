@@ -877,7 +877,7 @@ class Infocom extends CommonDBChild {
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Value')."&nbsp;:</td>";
+            echo "<td>".__('Value')."</td>";
             echo "<td><input type='text' name='value' $option value='".
                   Html::formatNumber($ic->fields["value"], true)."' size='14'></td>";
             echo "</td>";
