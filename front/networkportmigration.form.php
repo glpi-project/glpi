@@ -49,7 +49,7 @@ if (isset($_GET["delete"])) {
               //TRANS: %s is the user login
               sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
 
-   Html::redirect($CFG_GLPI["root_doc"]."/front/migration_cleaner.php");
+   Html::redirect($CFG_GLPI["root_doc"]."/front/networkportmigration.php");
 
 } else if (isset($_POST["delete_several"])) {
    Session::checkRight("networking", "w");
