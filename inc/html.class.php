@@ -1332,6 +1332,11 @@ class Html {
 
       }
 
+      if (TableExists('glpi_networkportmigrations')
+          && countElementsInTable('glpi_networkportmigrations') > 0) {
+         $menu['utils']['content']['migration']['title']           = __('migration cleaner');
+         $menu['utils']['content']['migration']['page']            = '/front/migration_cleaner.php';
+      }
 
 
       // PLUGINS
