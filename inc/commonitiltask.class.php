@@ -255,7 +255,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       if (!isset($input["date"])) {
          $input["date"] = $_SESSION["glpi_currenttime"];
       }
-      
+
       return $input;
    }
 
@@ -342,7 +342,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $name = Dropdown::getDropdownName('glpi_taskcategories',
                                            $this->fields['taskcategories_id']);
       } else {
-         $name = $this->getTypeName();
+         $name = $this->getTypeName(1);
       }
 
       if ($with_comment) {
@@ -560,9 +560,10 @@ abstract class CommonITILTask  extends CommonDBTM {
       global $CFG_GLPI;
 
       if ($item = getItemForItemtype($_POST['itemtype'])) {
-         $out  = $item->getTypeName().' : '.Html::convDateTime($val["begin"]).' -> '.
-                 Html::convDateTime($val["end"]).' : ';
-         $out .= "<a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
+         //TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
+         $out  = sprintf(__('%1$s: from %2$s to %3$s:'), $item->getTypeName(1),
+                         Html::convDateTime($val["begin"]), Html::convDateTime($val["end"]));
+         $out .= "<br><a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
                    $val[getForeignKeyFieldForItemType($itemtype)]."'>";
          $out .= Html::resume_text($val["name"],80).'</a>';
 
@@ -604,9 +605,10 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title=\"".
-             $parent->getTypeName()."\">&nbsp;&nbsp;";
+             htmlentities($parent->getTypeName(1))."\">&nbsp;&nbsp;";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png' alt='".
-             $parent->getStatus($val["status"])."' title=\"".$parent->getStatus($val["status"])."\">";
+             htmlentities($parent->getStatus($val["status"]))."' title=\"".
+             htmlentities($parent->getStatus($val["status"]))."\">";
       echo "&nbsp;<a id='content_tracking_".$val["id"].$rand."'
                    href='".Toolbox::getItemTypeFormURL($parenttype)."?id=".$val[$parenttype_fk]."'
                    style='$styleText'>";
@@ -694,7 +696,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo " id='viewfollowup" . $this->fields[$item->getForeignKeyField()] . $this->fields["id"] .
             "$rand'>";
 
-      echo "<td>".$this->getTypeName();
+      echo "<td>".$this->getTypeName(1);
       if ($this->fields['taskcategories_id']) {
          echo " - " .Dropdown::getDropdownName('glpi_taskcategories',
                                                $this->fields['taskcategories_id']);

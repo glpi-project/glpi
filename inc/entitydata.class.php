@@ -1060,7 +1060,7 @@ class EntityData extends CommonDBChild {
       if (strstr($url,"[ITEMTYPE]")
           && $ticket->fields['itemtype']
           && ($objet = getItemForItemtype($ticket->fields['itemtype']))) {
-         $url = str_replace("[ITEMTYPE]", urlencode($objet->getTypeName()), $url);
+         $url = str_replace("[ITEMTYPE]", urlencode($objet->getTypeName(1)), $url);
       }
 
       if (strstr($url,"[ITEM_ID]")) {

@@ -540,7 +540,7 @@ class DisplayPreference extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td width='10'>";
             echo "<input  type='checkbox' name='itemtype[".$data["itemtype"]."]' value='1'></td>";
             if ($item = getItemForItemtype($data["itemtype"])) {
-               $name = $item->getTypeName();
+               $name = $item->getTypeName(1);
             } else {
                $name = $data["itemtype"];
             }

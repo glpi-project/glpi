@@ -392,7 +392,7 @@ class Dropdown {
       if (count($types)) {
          foreach ($types as $type) {
             if ($item = getItemForItemtype($type)) {
-               $options[$type] = $item->getTypeName();
+               $options[$type] = $item->getTypeName(1);
             }
          }
       }
@@ -964,7 +964,7 @@ class Dropdown {
 
       foreach ($types as $type) {
          if ($item = getItemForItemtype($type)) {
-            $options[$type] = $item->getTypeName($type);
+            $options[$type] = $item->getTypeName(1);
          }
       }
       asort($options);

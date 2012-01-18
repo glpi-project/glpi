@@ -356,7 +356,7 @@ class Log extends CommonDBTM {
                case self::HISTORY_ADD_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName();
+                     $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the component name
                   $tmp['change'] = sprintf(__('Add a component: %s'), $data["new_value"]);
@@ -366,7 +366,7 @@ class Log extends CommonDBTM {
                   $tmp['field'] = NOT_AVAILABLE;
                   $change = '';
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field']  = $item->getTypeName();
+                     $tmp['field']  = $item->getTypeName(1);
                      $specif_fields = $item->getSpecifityLabel();
                      $tmp['change'] = $specif_fields['specificity']." : ";
                   }
@@ -378,7 +378,7 @@ class Log extends CommonDBTM {
                case self::HISTORY_DELETE_DEVICE :
                   $tmp['field']=NOT_AVAILABLE;
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName();
+                     $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the component name
                   $tmp['change'] = sprintf(__('Deletion of a component: %s'), $data["old_value"]);
@@ -399,7 +399,7 @@ class Log extends CommonDBTM {
                case self::HISTORY_DISCONNECT_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName();
+                     $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the item name
                   $tmp['change'] = sprintf(__('Disconnect the item: %s'), $data["old_value"]);
@@ -408,7 +408,7 @@ class Log extends CommonDBTM {
                case self::HISTORY_CONNECT_DEVICE :
                   $tmp['field'] = NOT_AVAILABLE;
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName();
+                     $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the item name
                   $tmp['change'] = sprintf(__('Connect the item: %s'), $data["new_value"]);
@@ -438,7 +438,7 @@ class Log extends CommonDBTM {
                   if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field'] = NOT_AVAILABLE;
                      if ($item = getItemForItemtype($data["itemtype_link"])) {
-                        $tmp['field'] = $item->getTypeName();
+                        $tmp['field'] = $item->getTypeName(1);
                      }
                      //TRANS: %s is the value linked
                      $tmp['change'] = sprintf(__('Linked with an OCSNG computer: %s'),
@@ -467,7 +467,7 @@ class Log extends CommonDBTM {
                case self::HISTORY_ADD_RELATION :
                   $tmp['field'] = NOT_AVAILABLE;
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName();
+                     $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the item name
                   $tmp['change'] = sprintf(__('Add a link with an item: %s'), $data["old_value"]);
@@ -476,7 +476,7 @@ class Log extends CommonDBTM {
                case self::HISTORY_DEL_RELATION :
                   $tmp['field'] = NOT_AVAILABLE;
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName();
+                     $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the item name
                   $tmp['change'] = sprintf(__('Deletion of a link with an item: %s'),
@@ -486,7 +486,7 @@ class Log extends CommonDBTM {
                case self::HISTORY_ADD_SUBITEM :
                   $tmp['field'] = '';
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName();
+                     $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %1$s is the item name, %2$s is the value
                   $tmp['change'] = sprintf(__('Add an item: %1$s (%2$s)'),
@@ -497,7 +497,7 @@ class Log extends CommonDBTM {
                case self::HISTORY_UPDATE_SUBITEM :
                   $tmp['field'] = '';
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName();
+                     $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %1$s is the item name, %2$s is the value
                   $tmp['change'] = sprintf(__('Update an item: %1$s (%2$s)'),
@@ -507,7 +507,7 @@ class Log extends CommonDBTM {
                case self::HISTORY_DELETE_SUBITEM :
                   $tmp['field'] = '';
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
-                     $tmp['field'] = $item->getTypeName();
+                     $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %1$s is the item name, %2$s is the value
                   $tmp['change'] = sprintf(__('Deletion of an item: %1$s (%2$s)'),

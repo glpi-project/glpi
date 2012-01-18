@@ -377,9 +377,9 @@ class Computer_Item extends CommonDBRelation{
 
             $result = $DB->query($query);
             if ($result) {
-               $nb = $DB->numrows($result);
+               $nb                         = $DB->numrows($result);
                $datas[$itemtype]['result'] = $result;
-               $datas[$itemtype]['title'] = $item->getTypeName($nb);
+               $datas[$itemtype]['title']  = $item->getTypeName($nb);
             }
          }
       }

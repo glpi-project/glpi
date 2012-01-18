@@ -116,7 +116,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
    if ($DB->numrows($result)>0) {
       $item = new $itemtype();
 
-      echo "<h2>".$item->getTypeName()."</h2>";
+      echo "<h2>".$item->getTypeName(1)."</h2>";
 
       echo "<table class='tab_cadre'><tr><th>".__('Name')."</th>";
       if ($display_entity) {

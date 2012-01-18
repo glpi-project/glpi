@@ -2630,7 +2630,7 @@ abstract class CommonITILObject extends CommonDBTM {
          if ($item = getItemForItemtype($itemtype)) {
             if (!isPluginItemType($itemtype) // No plugin here
                 && in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
-               $types[$itemtype] = $item->getTypeName();
+               $types[$itemtype] = $item->getTypeName(1);
             }
          }
       }

@@ -540,7 +540,7 @@ class Bookmark extends CommonDBTM {
                   if ($current_type=="States") {
                      $current_type_name = __('Status');
                   } else if ($item = getItemForItemtype($current_type)) {
-                     $current_type_name = $item->getTypeName();
+                     $current_type_name = $item->getTypeName(1);
                   }
                }
                $canedit = $this->can($this->fields["id"],"w");

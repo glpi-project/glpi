@@ -261,7 +261,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       foreach ($CFG_GLPI["networkport_types"] as $key => $itemtype) {
          if ($item = getItemForItemtype($itemtype)) {
-            echo "<option value='".$itemtype."'>".$item->getTypeName()."</option>";
+            echo "<option value='".$itemtype."'>".$item->getTypeName(1)."</option>";
          } else {
             unset($CFG_GLPI["networkport_types"][$key]);
          }

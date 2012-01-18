@@ -124,7 +124,7 @@ if (isset($query) && count($query)) {
       $result = $DB->query($val);
       if ($result && $DB->numrows($result)) {
          $item = new $key();
-         echo "<div class='center b'>".$item->getTypeName()."</div>";
+         echo "<div class='center b'>".$item->getTypeName(1)."</div>";
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".__('Deleted')."</th>";
