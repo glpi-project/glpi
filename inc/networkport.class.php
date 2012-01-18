@@ -564,8 +564,7 @@ class NetworkPort extends CommonDBChild {
 
       $instantiation = $this->getInstantiation();
       if ($instantiation !== false) {
-         echo "<tr class='tab_bg_1'><th colspan='4'>" .$instantiation->getTypeName() .
-              "</th></tr>\n";
+         echo "<tr class='tab_bg_1'><th colspan='4'>".$instantiation->getTypeName(1)."</th></tr>\n";
          $instantiation->showInstantiationForm($this, $options, $recursiveItems);
          unset($instantiation);
       }
@@ -600,12 +599,12 @@ class NetworkPort extends CommonDBChild {
       $tab[20]['massiveaction'] = false;
       $tab[20]['joinparams']    = array('jointype'   => 'itemtype_item',
                                         'specific_itemtype' => 'NetworkName',
-                                        'beforejoin' => 
+                                        'beforejoin' =>
                                           array('table'      => 'glpi_networknames',
-                                                'joinparams' => 
+                                                'joinparams' =>
                                                    array('jointype'   => 'itemtype_item',
                                                          'specific_itemtype' => 'NetworkPort',
-                                                         'beforejoin' => 
+                                                         'beforejoin' =>
                                                             array('table'      => 'glpi_networkports',
                                                                   'joinparams' => $joinparams))));
 

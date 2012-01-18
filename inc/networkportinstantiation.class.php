@@ -484,7 +484,9 @@ class NetworkPortInstantiation extends CommonDBChild {
          $instantiation = $item->getInstantiation();
          if ($instantiation !== false) {
             $log = new Log();
-            return $instantiation->getTypeName().' - '.$log->getTabNameForItem($instantiation);
+            //TRANS: %1$s is a type, %2$s is a table
+            return sprintf(__('%1$s - %2$s'), $instantiation->getTypeName(),
+                           $log->getTabNameForItem($instantiation));
          }
       }
       return '';

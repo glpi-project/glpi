@@ -166,7 +166,7 @@ class Document extends CommonDBTM {
           && ($item = getItemForItemtype($input["itemtype"]))
           && $input["items_id"]>0) {
 
-         $typename = $item->getTypeName();
+         $typename = $item->getTypeName(1);
          $name     = NOT_AVAILABLE;
 
          if ($item->getFromDB($input["items_id"])) {
@@ -895,7 +895,7 @@ class Document extends CommonDBTM {
                         echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
                         echo "</td>";
                      }
-                     echo "<td class='center'>".$item->getTypeName()."</td>";
+                     echo "<td class='center'>".$item->getTypeName(1)."</td>";
                      echo "<td ".
                            (isset($data['is_deleted']) && $data['is_deleted']?"class='tab_bg_2_2'":"").
                           ">".$name."</td>";

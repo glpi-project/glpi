@@ -151,7 +151,7 @@ class CommonGLPI {
 
       // Single tab
       if (empty($onglets)) {
-         $onglets['empty'] = $this->getTypeName();
+         $onglets['empty'] = $this->getTypeName(1);
       }
 
       return $onglets;

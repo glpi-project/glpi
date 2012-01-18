@@ -804,7 +804,7 @@ class CommonDBTM extends CommonGLPI {
          if (($name=$this->getName()) == NOT_AVAILABLE) {
             //TRANS: %1$s is the itemtype, %2$d is the id of the item
             $this->fields['name'] = sprintf(__('%1$s: ID %2$d'),
-                                            $this->getTypeName(), $this->fields['id']);
+                                            $this->getTypeName(1), $this->fields['id']);
          }
          $display = (isset($this->input['_no_message_link'])?$this->getNameID()
                                                             :$this->getLink());
@@ -1026,7 +1026,7 @@ class CommonDBTM extends CommonGLPI {
          } else {
             //TRANS: %1$s is the itemtype, %2$d is the id of the item
             $this->fields['name'] = sprintf(__('%1$s: ID %2$d'),
-                                            $this->getTypeName(), $this->fields['id']);
+                                            $this->getTypeName(1), $this->fields['id']);
          }
 
 
@@ -3108,7 +3108,7 @@ class CommonDBTM extends CommonGLPI {
 
                case "itemtypename" :
                   if ($obj = getItemForItemtype($value)) {
-                     return $obj->getTypeName();
+                     return $obj->getTypeName(1);
                   }
                   break;
 
@@ -3163,13 +3163,13 @@ class CommonDBTM extends CommonGLPI {
       if ($result = $DB->query($query)) {
          echo "<div class='center'><table class='tab_cadre'>";
          if ($add) {
-            echo "<tr><th>" . $item->getTypeName()."</th>";
+            echo "<tr><th>" . $item->getTypeName(1)."</th>";
             echo "<th>".__('Choose a template')."</th></tr>";
             echo "<tr><td class='tab_bg_1 center' colspan='2'>";
             echo "<a href=\"$target?id=-1&amp;withtemplate=2\">".__('Blank Template')."</a></td>";
             echo "</tr>";
          } else {
-            echo "<tr><th>".$item->getTypeName()."</th><th>".__('Templates')."</th></tr>";
+            echo "<tr><th>".$item->getTypeName(1)."</th><th>".__('Templates')."</th></tr>";
          }
 
          while ($data = $DB->fetch_array($result)) {

@@ -145,8 +145,9 @@ class Fieldblacklist extends CommonDropdown {
       global $CFG_GLPI;
 
       if ($this->fields['id'] > 0) {
-         $item = new $this->fields['itemtype']();
-         echo $item->getTypeName();
+         if ($item = getItemForItemtype($this->fields['itemtype'])) {
+            echo $item->getTypeName(1);
+         }
          echo "<input type='hidden' name='itemtype' value='".$this->fields['itemtype']."'>";
 
       } else {
@@ -155,7 +156,7 @@ class Fieldblacklist extends CommonDropdown {
          foreach ($CFG_GLPI['unicity_types'] as $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
                if ($item->can(-1,'r')) {
-                  $options[$itemtype] = $item->getTypeName($itemtype);
+                  $options[$itemtype] = $item->getTypeName(1);
                }
             }
          }

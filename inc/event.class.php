@@ -259,7 +259,7 @@ class Event extends CommonDBTM {
          } else {
             $type = getSingular($type);
             if ($item = getItemForItemtype($type)) {
-               $itemtype = $item->getTypeName();
+               $itemtype = $item->getTypeName(1);
             }
          }
 
@@ -364,7 +364,7 @@ class Event extends CommonDBTM {
          } else {
             $type = getSingular($type);
             if ($item = getItemForItemtype($type)) {
-               $itemtype = $item->getTypeName();
+               $itemtype = $item->getTypeName(1);
             }
          }
 

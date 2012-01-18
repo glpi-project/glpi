@@ -380,23 +380,26 @@ class Infocom extends CommonDBChild {
                              AND `glpi_alerts`.`date` IS NULL";
 
          foreach ($DB->request($query_end) as $data) {
-            $item_infocom = new $data["itemtype"]();
-            if ($item_infocom->getFromDB($data["items_id"])) {
-               $entity   = $data['entities_id'];
-               $warranty = self::getWarrantyExpir($data["warranty_date"], $data["warranty_duration"]);
-               $name = $item_infocom->getTypeName()." - ".$item_infocom->getName();
-               //TRANS: %1$s is the warranty end date and %2$s the name of the item
-               $message = sprintf(__('Item reaching the end of warranty on %1$s: %2$s'),
-                                  $warranty, $name)."<br>";
+            if ($item_infocom = getItemForItemtype($data["itemtype"])) {
+               if ($item_infocom->getFromDB($data["items_id"])) {
+                  $entity   = $data['entities_id'];
+                  $warranty = self::getWarrantyExpir($data["warranty_date"], $data["warranty_duration"]);
+                  //TRANS: %1$s is a type, %2$s is a name (used in croninfocom)
+                  $name = sprintf(__('%1$s - %2$s'), $item_infocom->getTypeName(1),
+                                  $item_infocom->getName());
+                  //TRANS: %1$s is the warranty end date and %2$s the name of the item
+                  $message = sprintf(__('Item reaching the end of warranty on %1$s: %2$s'),
+                                     $warranty, $name)."<br>";
 
-               $data['warrantyexpiration']        = $warranty;
-               $data['item_name']                 = $item_infocom->getName();
-               $items_infos[$entity][$data['id']] = $data;
+                  $data['warrantyexpiration']        = $warranty;
+                  $data['item_name']                 = $item_infocom->getName();
+                  $items_infos[$entity][$data['id']] = $data;
 
-               if (!isset($items_messages[$entity])) {
-                  $items_messages[$entity] = __('No item reaching the end of warranty.')."<br>";
+                  if (!isset($items_messages[$entity])) {
+                     $items_messages[$entity] = __('No item reaching the end of warranty.')."<br>";
+                  }
+                  $items_messages[$entity] .= $message;
                }
-               $items_messages[$entity] .= $message;
             }
          }
       }
@@ -791,7 +794,7 @@ class Infocom extends CommonDBChild {
             if ($ic->can(-1,"w",$input) && $withtemplate!=2) {
                echo "<div class='spaced b'>";
                echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><th>";
-               echo $item->getTypeName()." - ".$item->getName()."</th></tr>";
+               echo sprintf(__('%1$s - %2$s'), $item->getTypeName(1), $item->getName())."</th></tr>";
                echo "<tr class='tab_bg_1'><td class='center'>";
                echo "<a class='vsubmit' href='".$CFG_GLPI["root_doc"]."/front/infocom.form.php?itemtype=".
                      $item->getType()."&amp;items_id=$dev_ID&amp;add=add'>".

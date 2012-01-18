@@ -363,7 +363,9 @@ class Budget extends CommonDropdown{
 
                if ($nb>$_SESSION['glpilist_limit']) {
                   echo "<tr class='tab_bg_1'>";
-                  echo "<td class='center'>".$item->getTypeName($nb)."&nbsp;:&nbsp;$nb</td>";
+                  $name = $item->getTypeName($nb);
+                  //TRANS: %1$s is a name, %2$d is a number
+                  echo "<td class='center'>".sprinf(__('%1$s: %2$d'), $name, $nb)."</td>";
                   echo "<td class='center' colspan='2'>";
                   echo "<a href='". $item->getSearchURL() . "?" .
                         rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" .
@@ -384,8 +386,10 @@ class Budget extends CommonDropdown{
                      }
                      echo "<tr class='tab_bg_1'>";
                      if ($prem) {
-                        echo "<td class='center top' rowspan='$nb'>".$item->getTypeName($nb)
-                              .($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
+                        $name = $item->getTypeName($nb);
+                        echo "<td class='center top' rowspan='$nb'>".
+                              ($nb>1 ? sprinf(__('%1$s: %2$d'), $name, $nb)
+                                     : sprinf(__('%s'), $name))."</td>";
                      }
                      echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                           $data["entities_id"]);
@@ -452,7 +456,7 @@ class Budget extends CommonDropdown{
                continue;
             }
 
-            $found_types[$types['itemtype']] = $item->getTypeName();
+            $found_types[$types['itemtype']] = $item->getTypeName(1);
             $table = getTableForItemType($types['itemtype']);
             $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`,
                                    `$table`.`entities_id`

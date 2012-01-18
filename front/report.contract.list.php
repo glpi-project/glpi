@@ -112,7 +112,7 @@ if (isset($query) && count($query)) {
       $result = $DB->query($val);
       if ($result && $DB->numrows($result)) {
          $item = new $key();
-         echo "<span class='b'>".$item->getTypeName()."</span>";
+         echo "<span class='b'>".$item->getTypeName(1)."</span>";
          echo "<table class='tab_cadre_report'>";
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".__('Deleted')."</th>";

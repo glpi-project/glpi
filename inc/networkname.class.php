@@ -423,7 +423,7 @@ class NetworkName extends FQDNLabel {
          $name->getEmpty();
       }
 
-      echo "<tr class='tab_bg_1'><th colspan='4'>" . $name->getTypeName();
+      echo "<tr class='tab_bg_1'><th colspan='4'>" . $name->getTypeName(1);
       if ($name->getID() > 0) {
          echo "<input type='hidden' name='NetworkName_id' value='".$name->getID()."'>\n";
       }

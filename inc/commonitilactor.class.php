@@ -142,7 +142,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       echo "<br><form method='post' action='".$CFG_GLPI['root_doc']."/front/popup.php'>";
       echo "<div class='center'>";
       echo "<table class='tab_cadre'>";
-      echo "<tr class='tab_bg_2'><td>".$item->getTypeName()."</td>";
+      echo "<tr class='tab_bg_2'><td>".$item->getTypeName(1)."</td>";
       echo "<td>";
       if ($item->getFromDB($this->fields[$this->getItilObjectForeignKey()])) {
          echo $item->getField('name');

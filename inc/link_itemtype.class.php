@@ -81,7 +81,7 @@ class Link_ItemType extends CommonDBTM{
          $itemtype = $DB->result($result, $i, "itemtype");
          $typename = NOT_AVAILABLE;
          if ($item = getItemForItemtype($itemtype)) {
-            $typename = $item->getTypeName();
+            $typename = $item->getTypeName(1);
          }
          echo "<tr class='tab_bg_1'>";
          echo "<td class='center'>$typename</td>";

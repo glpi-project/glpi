@@ -72,7 +72,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["delete"])) {
    $dropdown->check($_POST["id"],'w');
    if ($dropdown->isUsed() && empty($_POST["forcedelete"])) {
-      Html::header($dropdown->getTypeName(), $_SERVER['PHP_SELF'], "config",
+      Html::header($dropdown->getTypeName(1), $_SERVER['PHP_SELF'], "config",
                    $dropdown->second_level_menu, str_replace('glpi_','',$dropdown->getTable()));
       $dropdown->showDeleteConfirmForm($_SERVER['PHP_SELF']);
       Html::footer();
@@ -116,7 +116,7 @@ if (isset($_POST["add"])) {
    }
 
 } else if (isset($_GET['popup'])) {
-   Html::popHeader($dropdown->getTypeName(),$_SERVER['PHP_SELF']);
+   Html::popHeader($dropdown->getTypeName(1),$_SERVER['PHP_SELF']);
    if (isset($_GET["rand"])) {
       $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
    }

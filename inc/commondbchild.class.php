@@ -113,7 +113,7 @@ abstract class CommonDBChild extends CommonDBTM {
       switch ($elementToDisplay) {
       case 'Type' :
          $masterItem = $recursiveItems[count($recursiveItems) - 1];
-         echo $masterItem->getTypeName();
+         echo $masterItem->getTypeName(1);
          break;
 
       case 'Name':

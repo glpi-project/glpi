@@ -276,9 +276,9 @@ class Computer_Device extends CommonDBTM {
                         echo "<td $rowspan>";
 
                         if ($device->canCreate()) {
-                           echo "<a href='".$device->getSearchURL()."'>".$device->getTypeName()."</a>";
+                           echo "<a href='".$device->getSearchURL()."'>".$device->getTypeName(1)."</a>";
                         } else {
-                           echo $device->getTypeName();
+                           echo $device->getTypeName(1);
                         }
 
                         echo "</td><td $rowspan>".$device->getLink()."</td>";
