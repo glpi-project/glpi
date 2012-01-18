@@ -167,13 +167,12 @@ class Notification extends CommonDBTM {
       self::dropdownMode($this->fields['mode']);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>" . _n('Event', 'Events', 1) . "</td>";
+      echo "<tr class='tab_bg_1'><td>" . NotificationEvent::getTypeName(1) . "</td>";
       echo "<td><span id='show_events'>";
       NotificationEvent::dropdownEvents($this->fields['itemtype'],$this->fields['event']);
       echo "</span></td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>". _n('Notification template', 'Notification templates', 1).
-           "</td>";
+      echo "<tr class='tab_bg_1'><td>". NotificationTemplate::getTypeName(1)."</td>";
       echo "<td><span id='show_templates'>";
       NotificationTemplate::dropdownTemplates('notificationtemplates_id', $this->fields['itemtype'],
                                               $this->fields['notificationtemplates_id']);

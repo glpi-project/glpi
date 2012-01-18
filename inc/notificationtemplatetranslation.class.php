@@ -39,6 +39,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    public $items_id  = 'notificationtemplates_id';
    public $dohistory = true;
 
+
    static function getTypeName($nb=0) {
       return _n('Template translation', 'Template translations', $nb);
    }
@@ -50,7 +51,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       if ($this->getField('language') != '') {
          $toadd = $CFG_GLPI['languages'][$this->getField('language')][0];
       } else {
-         $toadd = _n('Template translation', 'Template translations', 1);
+         $toadd = self::getTypeName(1);
       }
 
       return $toadd;
@@ -109,12 +110,13 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$template->getTypeName()."</td>";
       echo "<td colspan='2'><a href='".Toolbox::getItemTypeFormURL('NotificationTemplate').
-            "?id=".$notificationtemplates_id."'>".$template->getField('name')."</a>";
-      echo "</td><td><a class='vsubmit' href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
+                           "?id=".$notificationtemplates_id."'>".$template->getField('name')."</a>";
+      echo "</td><td>".
+           "<a class='vsubmit' href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"].
              "/front/popup.php?popup=list_notificationtags&amp;sub_type=".
-             $template->getField('itemtype')."' ,
-             'glpipopup', 'height=400, width=1000, top=100, left=100,".
-             " scrollbars=yes' );w.focus();\">".__('Show list of available tags')."</a></td></tr>";
+             $template->getField('itemtype')."' ,'glpipopup', 'height=400, width=1000, top=100, ".
+             "left=100, scrollbars=yes' );w.focus();\">".__('Show list of available tags')."</a>".
+           "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Language') . "</td><td colspan='3'>";
@@ -159,6 +161,10 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
+   /**
+    * @param $template        NotificationTemplate object
+    * @param $options   array
+   **/
    function showSummary(NotificationTemplate $template, $options=array()) {
       global $DB, $CFG_GLPI;
 
@@ -176,7 +182,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       Session::initNavigateListItems('NotificationTemplateTranslation',
             //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-            sprintf(__('%1$s = %2$s'),$template->getTypeName(1), $template->getName()));
+                                     sprintf(__('%1$s = %2$s'),
+                                             $template->getTypeName(1), $template->getName()));
 
       echo "<form name='form_language' id='form_language' method='post'>";
       echo "<table class='tab_cadre_fixe'>";
@@ -242,7 +249,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']           = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'language';
@@ -271,6 +278,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
+   /**
+    * @param $language_id
+   **/
    static function getAllUsedLanguages($language_id) {
 
       $used_languages = getAllDatasFromTable('glpi_notificationtemplatetranslations',
@@ -285,6 +295,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
+   /**
+    * @param $itemtype
+   **/
    static function showAvailableTags($itemtype) {
 
       $target = NotificationTarget::getInstanceByType($itemtype);

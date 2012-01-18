@@ -34,11 +34,12 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetReservation extends NotificationTarget {
 
+
    function getEvents() {
 
       return array('new'    => __('New reservation'),
-                   'update' => __('Update reservation'),
-                   'delete' => __('Cancel reservation'),
+                   'update' => __('Update of a reservation'),
+                   'delete' => __('Deletion of a reservation'),
                    'alert'  => __('Reservation expired'));
    }
 
@@ -48,7 +49,8 @@ class NotificationTargetReservation extends NotificationTarget {
       if ($event != 'alert') {
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,
                           __('Technician in charge of the hardware'));
-         $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE, __('Group in charge of the hardware'));
+         $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE,
+                          __('Group in charge of the hardware'));
          $this->addTarget(Notification::ITEM_USER, __('Hardware user'));
          $this->addTarget(Notification::AUTHOR, __('Requester'));
       }
@@ -79,7 +81,7 @@ class NotificationTargetReservation extends NotificationTarget {
 
          if ($item = getItemForItemtype($itemtype)) {
             $item->getFromDB($reservationitem->getField('items_id'));
-            $this->datas['##reservation.itemtype##']    = $item->getTypeName();
+            $this->datas['##reservation.itemtype##']    = $item->getTypeName(1);
             $this->datas['##reservation.item.name##']   = $item->getField('name');
             $this->datas['##reservation.item.entity##']
                         = Dropdown::getDropdownName('glpi_entities', $item->getField('entities_id'));
@@ -100,13 +102,14 @@ class NotificationTargetReservation extends NotificationTarget {
 
          foreach ($options['items'] as $id => $item) {
             $tmp = array();
-            $obj = new $item['itemtype']();
-            $tmp['##reservation.itemtype##']       = $obj->getTypeName();
-            $tmp['##reservation.item##']           = $item['item_name'];
-            $tmp['##reservation.expirationdate##'] = Html::convDateTime($item['end']);
-            $tmp['##reservation.url##']            = urldecode($CFG_GLPI["url_base"].
-                                                               "/index.php?redirect=reservation_".
-                                                               $id);
+            if ($obj = getItemForItemtype($item['itemtype'])) {
+               $tmp['##reservation.itemtype##']       = $obj->getTypeName(1);
+               $tmp['##reservation.item##']           = $item['item_name'];
+               $tmp['##reservation.expirationdate##'] = Html::convDateTime($item['end']);
+               $tmp['##reservation.url##']            = urldecode($CFG_GLPI["url_base"].
+                                                                  "/index.php?redirect=reservation_".
+                                                                  $id);
+            }
             $this->datas['reservations'][] = $tmp;
          }
       }
@@ -169,6 +172,8 @@ class NotificationTargetReservation extends NotificationTarget {
 
    /**
     * Get item associated with the object on which the event was raised
+    *
+    * @param $event  (default '')
     *
     * @return the object associated with the itemtype
    **/

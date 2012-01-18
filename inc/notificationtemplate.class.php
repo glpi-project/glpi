@@ -69,7 +69,9 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
-   /// Reset already computed templates
+   /**
+    * Reset already computed templates
+   **/
    function resetComputedTemplates() {
       $this->templates_by_languages = array();
    }
@@ -128,7 +130,7 @@ class NotificationTemplate extends CommonDBTM {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']           = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -180,6 +182,12 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
+   /**
+    * @param $target             NotificationTarget object
+    * @param $user_infos   array
+    * @param $event
+    * @param $options      array
+   **/
    function getTemplateByLanguage(NotificationTarget $target, $user_infos=array(), $event,
                                   $options=array()) {
 
@@ -276,6 +284,10 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
+   /**
+    * @param $string
+    * @param $data
+   **/
    static function process($string, $data) {
 
       $offset = $new_offset = 0;
@@ -348,6 +360,10 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
+   /**
+    * @param $string
+    * @param $data
+   **/
    static function processIf($string, $data) {
 
       if (preg_match_all("/##IF([a-z\.]*)[=]?(.*?)##/i",$string,$out)) {
@@ -374,7 +390,8 @@ class NotificationTemplate extends CommonDBTM {
             } else { // check exact match
 
                if (isset($data['##'.$if_field.'##'])
-                   && Html::entity_decode_deep($data['##'.$if_field.'##']) == Html::entity_decode_deep($out[2][$key])) {
+                   && Html::entity_decode_deep($data['##'.$if_field.'##'])
+                                                      == Html::entity_decode_deep($out[2][$key])) {
 
                   $condition_ok = true;
 
@@ -398,11 +415,17 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
+   /**
+    * @param $signature
+   **/
    function setSignature($signature) {
       $this->signature = $signature;
    }
 
 
+   /**
+    * @param $language
+   **/
    function getByLanguage($language) {
       global $DB;
 
@@ -423,7 +446,12 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
-   function getDataToSend(NotificationTarget $target, $user_infos, $options) {
+   /**
+    * @param $target             NotificationTarget object
+    * @param $user_infos   array
+    * @param $options      array
+   **/
+   function getDataToSend(NotificationTarget $target, array $user_infos, array $options) {
 
       $language   = $user_infos['language'];
       $user_email = $user_infos['email'];
