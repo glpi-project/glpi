@@ -934,7 +934,7 @@ class Dropdown {
     *
     * @param $types           Types used (default "state_types") (default '')
     * @param $options   Array of optional options
-    *        name, value, rand, emptylabel, display_emptychoice, on_change
+    *        name, value, rand, emptylabel, display_emptychoice, on_change, plural
     *
     * @return integer rand for select id
    **/
@@ -945,6 +945,7 @@ class Dropdown {
       $params['value']       = '';
       $params['rand']        = mt_rand();
       $params['on_change']   = '';
+      $params['plural']      = false;
       //Parameters about choice 0
       //Empty choice's label
       $params['emptylabel']  = self::EMPTY_VALUE;
@@ -964,7 +965,7 @@ class Dropdown {
 
       foreach ($types as $type) {
          if ($item = getItemForItemtype($type)) {
-            $options[$type] = $item->getTypeName(1);
+            $options[$type] = $item->getTypeName($params['plural'] ? 2 : 1);
          }
       }
       asort($options);

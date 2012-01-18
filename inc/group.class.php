@@ -534,16 +534,17 @@ class Group extends CommonTreeDropdown {
       echo __('Type')."&nbsp;";
       Dropdown::showItemType($types, array('value'     => $type,
                                            'name'      => 'onlytype',
+                                           'plural'    => true,
                                            'on_change' => 'reloadTab("start=0&onlytype="+this.value)'));
       if ($this->haveChildren()) {
-         echo "</td><td class='center'>".__('Child groups');
+         echo "</td><td class='center'>".__('Child groups')."&nbsp;";
          Dropdown::showYesNo('tree', $tree, -1,
                              array('on_change' => 'reloadTab("start=0&tree="+this.value)'));
       } else {
          $tree = 0;
       }
       if ($this->getField('is_usergroup')) {
-         echo "</td><td class='center'>".User::getTypeName(2)."&nbsp;:&nbsp;";
+         echo "</td><td class='center'>".User::getTypeName(2)."&nbsp;";
          Dropdown::showYesNo('user', $user, -1,
                              array('on_change' => 'reloadTab("start=0&user="+this.value)'));
       } else {
