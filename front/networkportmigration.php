@@ -1,7 +1,6 @@
 <?php
-
 /*
- * @version $Id: migration_cleaner.php -1   $
+ * @version $Id: networkportmigration.php 16922 2012-01-10 09:27:44Z yllen $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
@@ -29,46 +28,19 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Damien Touraine
+// Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (!TableExists('glpi_networkportmigrations')) {
-   Session::addMessageAfterRedirect(__('You don\'t need the "migration cleaner" tool anymore ...'));
-   Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
-}
+Session::checkRight("networking", "w");
+Session::checkRight("internet", "w");
 
-if (isset($_GET['action'])) {
-   switch ($_GET['action']) {
+Html::header(NetworkPortMigration::GetTypeName(2), $_SERVER['PHP_SELF'], "inventory", "computer");
 
-   case 'reinit_network':
-      IPNetwork::recreateTree();
-      Session::addMessageAfterRedirect(__('Successfully recreated network tree !'));
-      break;
-   }
-
-   Html::back();
-}
-
-Html::header(__('migration cleaner'), $_SERVER['PHP_SELF'], "utils","migration");
-
-echo "<div class='spaced' id='tabsbody'>";
-echo "<table class='tab_cadre_fixe'>";
-
-echo "<tr><th>" . __('"Migration cleaner" tool') . "</td></tr>";
-
-echo "<tr><td class='center'><a href='".$_SERVER['PHP_SELF']."?action=reinit_network'>".
-     __('Reinit the network topology') . "</a></td></tr>";
-
-echo "<tr><td class='center'><a href='".$CFG_GLPI['root_doc']."/front/networkportmigration.php'>".
-     __('Clean the networkport migration errors') . "</a></td></tr>";
-
-echo "</table>";
-echo "</div>";
-
+Search::show('NetworkPortMigration');
 
 Html::footer();
 ?>
