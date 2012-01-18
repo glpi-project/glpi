@@ -551,7 +551,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<tr class='tab_bg_1'><td class='center' colspan='3'>";
          echo "<form method='post' action='".
                 $CFG_GLPI["root_doc"]."/front/computer_softwareversion.form.php'>";
-         echo _n('Software', 'Software', 2);
+         echo _n('Software', 'Software', 2)."&nbsp;&nbsp;";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
          echo "<input type='submit' name='install' value=\"".__s('Install')."\" class='submit'>";
@@ -560,7 +560,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<td class='cneter' clospan='2'>";
          echo "<form method='post' action='".$CFG_GLPI["root_doc"].
                 "/front/computer_softwarelicense.form.php'>";
-         echo _n('License', 'Licenses', 2);
+         echo _n('License', 'Licenses', 2)."&nbsp;&nbsp;";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
          echo "<input type='submit' name='add' value=\"" .__s('Add')."\" class='submit'>";

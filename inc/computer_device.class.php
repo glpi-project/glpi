@@ -350,11 +350,11 @@ class Computer_Device extends CommonDBTM {
                    __s('Save')."'></td></tr>";
          }
 
-         echo "<tr><td colspan='$global_colspan' class='tab_bg_1 center'>";
-         _e('Add a new component');
+         echo "<tr><td colspan='$global_colspan' class='tab_bg_1 center'>".
+               __('Add a new component')."&nbsp;&nbsp;";
          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
-         echo "</tr></table></form>";
+         echo "</td></tr></table></form>";
 
       } else {
          echo "</table>";
