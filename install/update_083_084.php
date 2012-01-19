@@ -357,6 +357,7 @@ function update083to084() {
                   `level` int(11) NOT NULL DEFAULT '0',
                   `ancestors_cache` longtext COLLATE utf8_unicode_ci,
                   `sons_cache` longtext COLLATE utf8_unicode_ci,
+                  `addressable` tinyint(1) NOT NULL DEFAULT '0',
                   `version` tinyint unsigned DEFAULT '0',
                   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `address` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -417,6 +418,7 @@ function update083to084() {
                                 'network'       => $networkDefinition,
                                 'gateway'       => $gateway,
                                 'ipnetworks_id' => 0,
+                                'addressable'   => 1,
                                 'completename'  => $networkName,
                                 'level'         => 1);
 
@@ -454,7 +456,7 @@ function update083to084() {
             }
          }
       }
-      $ADDTODISPLAYPREF['IPNetwork'] = array(10, 11, 12, 13);
+      $ADDTODISPLAYPREF['IPNetwork'] = array(14, 10, 11, 12, 13);
    }
 
    //TRANS: %s is the name of the table

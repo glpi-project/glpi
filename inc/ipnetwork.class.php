@@ -85,6 +85,11 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $tab[13]['field']    = 'gateway';
       $tab[13]['name']     = __('Gateway');
 
+      $tab[14]['table']    = $this->getTable();
+      $tab[14]['field']    = 'addressable';
+      $tab[14]['name']     = __('Addressable network');
+      $tab[14]['datatype'] = 'bool';
+
       return $tab;
    }
 
@@ -148,10 +153,14 @@ class IPNetwork extends CommonImplicitTreeDropdown {
                          'type'     => 'text',
                          'list'     => true,
                          'comment'  => __('Set the network using notation address+mask')),
-                   array('name'  => 'gateway',
-                         'label' => __('Gateway'),
-                         'type'  => 'text',
-                         'list'  => true));
+                   array('name'     => 'gateway',
+                         'label'    => __('Gateway'),
+                         'type'     => 'text',
+                         'list'     => true),
+                   array('name'     => 'addressable',
+                         'label'    => __('Addressable network'),
+                         'comment'  => __('An addressable network is the network that is defined on the equipment'),
+                         'type'     => 'bool'));
    }
 
 
