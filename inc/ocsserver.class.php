@@ -4038,12 +4038,11 @@ class OcsServer extends CommonDBTM {
          Html::redirect($CFG_GLPI['root_doc']."/front/ocsng.php?ocsservers_id=" . $ocs["id"]);
 
       } else {
-         echo "<form action='$target' method='get'>";
          echo "<div class='center'><table class='tab_cadre'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG['ocsng'][26] . "</th></tr>\n";
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>".$LANG['ocsng'][27]."</td></tr>";
-         echo "</table></div></form>\n";
+         echo "</table></div>\n";
       }
    }
 
