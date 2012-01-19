@@ -187,9 +187,12 @@ class NetworkName extends FQDNLabel {
       $tab[12]['field']  = 'fqdn';
       $tab[12]['name']   = FQDN::getTypeName(1);
 
-      $tab[13]['table']  = $this->getTable();
-      $tab[13]['field']  = 'ip_addresses';
-      $tab[13]['name']   = IPAddress::getTypeName(1);
+      $tab[13]['table']         = 'glpi_ipaddresses';
+      $tab[13]['field']         = 'name';
+      $tab[13]['name']          = "Essai";
+      $tab[13]['joinparams']    = array('jointype'=>'itemtype_item');
+      $tab[13]['forcegroupby']  = true;
+      $tab[13]['massiveaction'] = false;
 
       return $tab;
    }
