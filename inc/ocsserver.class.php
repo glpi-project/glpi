@@ -4113,13 +4113,12 @@ class OcsServer extends CommonDBTM {
          Html::redirect($CFG_GLPI['root_doc']."/front/ocsng.php?ocsservers_id=" . $ocs["id"]);
 
       } else {
-         echo "<form action='$target' method='get'>";
          echo "<div class='center'><table class='tab_cadre'>";
          echo "<tr class='tab_bg_2'><th colspan='2'>". __('Choice of an OCSNG server')."</th></tr>\n";
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>".__('No OCSNG server defined').
               "</td></tr>";
-         echo "</table></div></form>\n";
+         echo "</table></div>\n";
       }
    }
 
