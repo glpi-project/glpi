@@ -183,13 +183,13 @@ class NetworkName extends FQDNLabel {
 
       $tab = parent::getSearchOptions();
 
-      $tab[12]['table']  = 'glpi_fqdns';
-      $tab[12]['field']  = 'fqdn';
-      $tab[12]['name']   = FQDN::getTypeName(1);
+      $tab[12]['table']         = 'glpi_fqdns';
+      $tab[12]['field']         = 'fqdn';
+      $tab[12]['name']          = FQDN::getTypeName(1);
 
       $tab[13]['table']         = 'glpi_ipaddresses';
       $tab[13]['field']         = 'name';
-      $tab[13]['name']          = "Essai";
+      $tab[13]['name']          = IPAddress::getTypeName(1);
       $tab[13]['joinparams']    = array('jointype'=>'itemtype_item');
       $tab[13]['forcegroupby']  = true;
       $tab[13]['massiveaction'] = false;
