@@ -2033,7 +2033,7 @@ class Ticket extends CommonITILObject {
    static function getAllStatusArray($withmetaforsearch=false) {
 
       // To be overridden by class
-      $tab = array('new'     => __('New'),
+      $tab = array('new'     => _x('ticket', 'New'),
                    'assign'  => __('Processing (assigned)'),
                    'plan'    => __('Processing (planned)'),
                    'waiting' => __('Pending'),
@@ -4314,7 +4314,7 @@ class Ticket extends CommonITILObject {
       $options['contains'][0]    = 'new';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                 Toolbox::append_params($options,'&amp;')."\">".__('New')."</a></td>";
+                 Toolbox::append_params($options,'&amp;')."\">"._x('ticket', 'New')."</a></td>";
       echo "<td>".$status["new"]."</td></tr>";
 
       $options['contains'][0]    = 'assign';

@@ -284,10 +284,10 @@ class Consumable extends CommonDBTM {
    static function getStatus($cID) {
 
       if (self::isNew($cID)) {
-         return __('New');
+         return _x('consumable', 'New');
 
       } else if (self::isOld($cID)) {
-         return __('Used');
+         return _x('consumable', 'Used');
       }
    }
 

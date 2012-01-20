@@ -579,7 +579,7 @@ class Change extends CommonITILObject {
       /// TODO define standard function to check solved / closed status
 
       // To be overridden by class
-      $tab = array('new'           => __('New'),
+      $tab = array('new'           => _x('change', 'New'),
                    'evaluation'    => __('Evaluation'),
                    'approbation'   => __('Approval'),
                    'accepted'      => __('Accepted'),
