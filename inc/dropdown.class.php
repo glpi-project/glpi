@@ -71,7 +71,7 @@ class Dropdown {
       $table = $item->getTable();
 
       $params['name']        = $item->getForeignKeyField();
-      $params['value']       = '';
+      $params['value']       = ($itemtype=='Entity' ? $_SESSION['glpiactive_entity'] : '');
       $params['comments']    = true;
       $params['entity']      = -1;
       $params['entity_sons'] = false;
