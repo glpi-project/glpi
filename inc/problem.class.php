@@ -575,7 +575,7 @@ class Problem extends CommonITILObject {
    static function getAllStatusArray($withmetaforsearch=false) {
 
       // To be overridden by class
-      $tab = array('new'      => __('New'),
+      $tab = array('new'      => _x('problem', 'New'),
                    'accepted' => __('Accepted'),
                    'assign'   => __('Processing (assigned)'),
                    'plan'     => __('Processing (planned)'),

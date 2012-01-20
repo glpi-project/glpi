@@ -336,12 +336,12 @@ class Cartridge extends CommonDBTM {
    static function getStatus($date_use, $date_out) {
 
       if (is_null($date_use) || empty($date_use)) {
-         return __('New','New',1);
+         return _x('cartridge', 'New');
       }
       if (is_null($date_out) || empty($date_out)) {
-         return __('Used','Used',1);
+         return _x('cartridge', 'Used');
       }
-      return __('Worn','Worn',1);
+      return __('Worn');
    }
 
 
