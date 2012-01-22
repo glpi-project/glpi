@@ -71,8 +71,6 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
                    AND `$table`.`is_template` = '0'
              ORDER BY `glpi_networkports`.`id`";
 
-   echo __FILE__." ".__LINE__." : $query<br>\n";
-
    $result = $DB->query($query);
 
    echo "<br>";
