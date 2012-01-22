@@ -115,7 +115,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
          $table->addElement($device->getLink(), "Interface", $this->getID(), $netport->getID());
       }
 
-      $table->addElement($this->fields["mac"], "MAC", $this->getID(), $netport->getID());
+      $table->addElement($netport->fields["mac"], "MAC", $this->getID(), $netport->getID());
 
       $table->addElement(Dropdown::getDropdownName("glpi_wifinetworks",
                                             $this->fields["wifinetworks_id"]),

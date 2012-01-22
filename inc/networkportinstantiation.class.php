@@ -51,10 +51,15 @@ class NetworkPortInstantiation extends CommonDBChild {
 
    // From CommonDBChild
    public $itemtype              = 'NetworkPort';
-   public $items_id              = 'id';
+   public $items_id              = 'networkports_id';
    public $dohistory             = true;
    public $mustBeAttached        = true;
    public $inheritEntityFromItem = true;
+
+
+   function getIndexName() {
+      return 'networkports_id';
+   }
 
 
    /**
@@ -141,6 +146,8 @@ class NetworkPortInstantiation extends CommonDBChild {
    **/
    static function getItemsByMac($mac) {
       global $DB;
+
+      // TODO : Have to update it !
 
       $mac              = strtolower($mac);
       $macItemWithItems = array();
@@ -312,7 +319,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       // Show device MAC adresses
       echo "<td>" . __('MAC') ."</td>\n<td>";
-      Html::autocompletionTextField($this, "mac");
+      Html::autocompletionTextField($netport, "mac");
       echo "</td>\n";
    }
 
