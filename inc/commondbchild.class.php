@@ -394,7 +394,7 @@ abstract class CommonDBChild extends CommonDBTM {
    function cleanDBonItemDelete ($itemtype, $item_id) {
       global $DB;
 
-      $query = "SELECT `id`
+      $query = "SELECT `".$this->getIndexName()."`
                 FROM `".$this->getTable()."`";
 
       if ($itemtype == $this->itemtype) {
