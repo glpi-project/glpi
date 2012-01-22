@@ -858,5 +858,27 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       exit();
    }
 
+
+   static function getHTMLTableHeaderForItem(&$table, $canedit) {
+      $table->addHeader(IPNetwork::getTypeName(), "IPNetwork", "IPAddress");
+   }
+
+
+   static function getHTMLTableForIPAddress(IPAddress $address, &$table, $canedit) {
+      $network = new IPNetwork();
+
+      foreach (IPNetwork::searchNetworksContainingIP($address) as $networks_id) {
+         if ($network->getFromDB($networks_id)){
+            $content = $network->getAddress()->getTextual() . "/" .
+               $network->getNetmask()->getTextual();
+            if ($network->fields['addressable'] == 1) {
+               $content = "<span class='b'>".$content."</span>";
+            }
+            $content .= " - " . $network->getLink();
+            $table->addElement($content, "IPNetwork", $network->getID(),
+                               $address->getID());
+         }
+      }
+   }
 }
 ?>

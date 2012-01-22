@@ -457,8 +457,7 @@ class NetworkName extends FQDNLabel {
    static function getHTMLTableHeaderForItem(&$table, $canedit) {
       $table->addHeader(NetworkName::getTypeName(), "NetworkName", "Name");
       NetworkAlias::getHTMLTableHeaderForItem($table, $canedit);
-      $table->addHeader(IPAddress::getTypeName(), "IPAddress", "NetworkName");
-      $table->addHeader(IPNetwork::getTypeName(), "IPNetwork", "IPAddress");
+      IPAddress::getHTMLTableHeaderForItem($table, $canedit);
    }
 
 
