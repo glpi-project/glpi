@@ -854,6 +854,12 @@ class IPAddress extends CommonDBChild {
    }
 
 
+   static function getHTMLTableHeaderForItem(&$table, $canedit) {
+      $table->addHeader(IPAddress::getTypeName(), "IPAddress", "NetworkName");
+      IPNetwork::getHTMLTableHeaderForItem($table, $canedit);
+   }
+
+
    static function getHTMLTableForItem(CommonGLPI $item, &$table, $canedit) {
       global $DB, $CFG_GLPI;
 
@@ -864,22 +870,12 @@ class IPAddress extends CommonDBChild {
 
       $result = $DB->query($query);
       $address = new IPAddress();
-      $network = new IPNetwork();
       foreach ($DB->request($query) as $ipaddress) {
          if ($address->getFromDB($ipaddress['id'])) {
             $table->addElement($address->fields['name'], "IPAddress", $address->getID(),
                                $item->getID());
-            foreach (IPNetwork::searchNetworksContainingIP($address) as $networks_id) {
-               if ($network->getFromDB($networks_id)){
-                  $content = $network->getAddress()->getTextual() . "/" .
-                             $network->getNetmask()->getTextual(). " - " . $network->getLink();
-                  if ($network->fields['addressable'] == 1) {
-                     $content = "<span class='b'>".$content."</span>";
-                  }
-                  $table->addElement($content, "IPNetwork", $network->getID(),
-                                     $ipaddress['id']);
-               }
-            }
+
+            IPNetwork::getHTMLTableForIPAddress($address, $table, $canedit);
          }
       }
    }
