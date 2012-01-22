@@ -135,6 +135,15 @@ class NetworkPortInstantiation extends CommonDBChild {
    }
 
 
+   static function getHTMLTableHeadersForNetworkPort(&$table, $canedit) {
+   }
+
+
+   function getHTMLTableForNetworkPort(NetworkPort $netport, CommonDBTM $item, &$table,
+                                       $withtemplate, $canedit) {
+   }
+
+
   /**
     * Get all NetworkPort that have a specific MAC address
     *
