@@ -228,7 +228,7 @@ class NetworkPort extends CommonDBChild {
 
       $instantiation = $this->getInstantiation();
       if (($instantiation !== false) && (count($this->input_for_instantiation) > 0)) {
-         $this->input_for_instantiation['id'] = $this->getID();
+         $this->input_for_instantiation['networkports_id'] = $this->getID();
          if ($instantiation->isNewID($instantiation->getID())) {
             $instantiation->add($this->input_for_instantiation, $history);
          } else {

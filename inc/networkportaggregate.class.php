@@ -84,7 +84,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
       $table->addElement($this->showNetworkPortForItem(), "Origin", $this->getID(),
                          $netport->getID());
 
-      $table->addElement($this->fields["mac"], "MAC", $this->getID(),$netport->getID());
+      $table->addElement($netport->fields["mac"], "MAC", $this->getID(),$netport->getID());
 
       NetworkPort_Vlan::getHTMLTableForNetworkPort($netport->getID(), $table, $canedit);
 

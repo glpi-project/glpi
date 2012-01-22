@@ -57,7 +57,7 @@ class NetworkPortDialup extends NetworkPortInstantiation {
    function getHTMLTableForNetworkPort(NetworkPort $netport, CommonDBTM $item, &$table,
                                        $withtemplate, $canedit) {
 
-      $table->addElement($this->fields["mac"], "MAC", $this->getID(),$netport->getID());
+      $table->addElement($netport->fields["mac"], "MAC", $this->getID(),$netport->getID());
 
    }
 

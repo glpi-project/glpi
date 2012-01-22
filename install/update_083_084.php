@@ -126,7 +126,7 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
 function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
    global $DB, $migration;
 
-   $query = "SELECT `name`, `id`, ";
+   $query = "SELECT `name`, `id`, `mac`, ";
 
    foreach ($fields as $SQL_field => $field) {
       $query .= "$SQL_field AS $field, ";
@@ -138,7 +138,7 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
                              WHERE `instantiation_type` = '".$port->getType()."')";
 
    foreach ($DB->request($query) as $portInformation) {
-      $input = array('id' => $portInformation['id']);
+      $input = array('networkports_id' => $portInformation['id']);
       foreach ($fields as $field) {
          $input[$field] = $portInformation[$field];
       }
@@ -153,7 +153,7 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
                          AND link.`specificity` = '".$portInformation['mac']."'";
          $result = $DB->query($query);
 
-         if ($DB->numrows($result) > 0) {
+        if ($DB->numrows($result) > 0) {
             $set_first = ($DB->numrows($result) == 1);
             while ($link = $DB->fetch_assoc($result)) {
                if (($set_first) || ($link['name'] == $portInformation['name'])) {
@@ -575,10 +575,15 @@ function update083to084() {
       }
    }
 
-   foreach (array('ip', 'gateway', 'mac', 'netmask', 'netpoints_id', 'networkinterfaces_id',
+   foreach (array('ip', 'gateway', 'netmask', 'netpoints_id', 'networkinterfaces_id',
                   'subnet') as $field) {
       $migration->dropField('glpi_networkports', $field);
    }
+
+   logMessage(__('Transform address mac to lower'), true);
+   $query = "UPDATE glpi_networkports
+             SET `mac`=LOWER(`mac`)";
+   $DB->queryOrDie($query, "0.84 transforme MAC to lower case");
 
    //TRANS: %s is the name of the table
    logMessage(sprintf(__('update migration of interfaces errors - %s'), "glpi_networkportmigrations"), true);
@@ -597,24 +602,23 @@ function update083to084() {
    // Adding NetworkPortEthernet table
    if (!TableExists('glpi_networkportethernets')) {
       $query = "CREATE TABLE `glpi_networkportethernets` (
-                  `id` int(11) NOT NULL,
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int(11) NOT NULL DEFAULT '0',
                   `computers_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
                   `netpoints_id` int(11) NOT NULL DEFAULT '0',
-                  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `type` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'T, LX, SX',
                   `speed` int(11) NOT NULL DEFAULT '10' COMMENT '10, 100, 1000, 10000',
                   PRIMARY KEY (`id`),
+                  UNIQUE KEY `networkports_id` (`networkports_id`),
                   KEY `card` (`computers_devicenetworkcards_id`),
                   KEY `netpoint` (`netpoints_id`),
-                  KEY `mac` (`mac`),
                   KEY `type` (`type`),
                   KEY `speed` (`speed`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_networkportethernets");
 
       $port = new NetworkPortEthernet();
-      updateNetworkPortInstantiation($port, array("LOWER(`mac`)"   => 'mac',
-                                                  '`netpoints_id`' => 'netpoints_id'),
+      updateNetworkPortInstantiation($port, array('`netpoints_id`' => 'netpoints_id'),
                                      true);
    }
 
@@ -624,9 +628,9 @@ function update083to084() {
   // Adding NetworkPortWifi table
    if (!TableExists('glpi_networkportwifis')) {
       $query = "CREATE TABLE `glpi_networkportwifis` (
-                  `id` int(11) NOT NULL,
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int(11) NOT NULL DEFAULT '0',
                   `computers_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
-                  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `wifinetworks_id` int(11) NOT NULL DEFAULT '0',
                   `networkportwifis_id` int(11) NOT NULL DEFAULT '0'
                                         COMMENT 'only usefull in case of Managed node',
@@ -635,7 +639,7 @@ function update083to084() {
                   `mode` varchar(20) COLLATE utf8_unicode_ci DEFAULT NULL
                          COMMENT 'ad-hoc, managed, master, repeater, secondary, monitor, auto',
                   PRIMARY KEY (`id`),
-                  KEY `mac` (`mac`),
+                  UNIQUE KEY `networkports_id` (`networkports_id`),
                   KEY `card` (`computers_devicenetworkcards_id`),
                   KEY `essid` (`wifinetworks_id`),
                   KEY `version` (`version`),
@@ -644,7 +648,7 @@ function update083to084() {
       $DB->queryOrDie($query, "0.84 create glpi_networkportwifis");
 
       $port = new NetworkPortWifi();
-      updateNetworkPortInstantiation($port, array("LOWER(`mac`)" => 'mac'), true);
+      updateNetworkPortInstantiation($port, array(), true);
    }
 
    //TRANS: %s is the name of the table
@@ -653,8 +657,10 @@ function update083to084() {
    // Adding NetworkPortLocal table
    if (!TableExists('glpi_networkportlocals')) {
       $query = "CREATE TABLE `glpi_networkportlocals` (
-                  `id` int(11) NOT NULL,
-                  PRIMARY KEY (`id`)
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `networkports_id` (`networkports_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_networkportlocals");
 
@@ -668,15 +674,15 @@ function update083to084() {
    // Adding NetworkPortDialup table
    if (!TableExists('glpi_networkportdialups')) {
       $query = "CREATE TABLE `glpi_networkportdialups` (
-                  `id` int(11) NOT NULL,
-                  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
-                  KEY `mac` (`mac`)
+                  UNIQUE KEY `networkports_id` (`networkports_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_networkportdialups");
 
       $port = new NetworkPortDialup();
-      updateNetworkPortInstantiation($port, array("LOWER(`mac`)" => 'mac'), true);
+      updateNetworkPortInstantiation($port, array(), true);
    }
 
    //TRANS: %s is the name of the table
@@ -685,12 +691,12 @@ function update083to084() {
    // Adding NetworkPortAggregate table
    if (!TableExists('glpi_networkportaggregates')) {
       $query = "CREATE TABLE `glpi_networkportaggregates` (
-                  `id` int(11) NOT NULL,
-                  `networkports_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
-                                    COMMENT 'array of associated networkports_id',
-                  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int(11) NOT NULL DEFAULT '0',
+                  `links_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
+                             COMMENT 'array of associated networkports_id',
                   PRIMARY KEY (`id`),
-                  KEY `mac` (`mac`)
+                  UNIQUE KEY `networkports_id` (`networkports_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_networkportaggregates");
 
@@ -703,12 +709,12 @@ function update083to084() {
    // Adding NetworkPortAlias table
    if (!TableExists('glpi_networkportaliases')) {
       $query = "CREATE TABLE `glpi_networkportaliases` (
-                  `id` int(11) NOT NULL,
-                  `networkports_id` int(11) NOT NULL,
-                  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `networkports_id` int(11) NOT NULL DEFAULT '0',
+                  `links_id` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
-                  KEY `networkports_id` (`networkports_id`),
-                  KEY `mac` (`mac`)
+                  UNIQUE KEY `networkports_id` (`networkports_id`),
+                  KEY `links_id` (`links_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_networkportaliases");
 
