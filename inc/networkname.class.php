@@ -457,6 +457,70 @@ class NetworkName extends FQDNLabel {
    /**
     * \brief Show names for an item
     *
+    * @param $item     CommonDBTM object
+    * @param $table    The table to update
+   **/
+   static function getHTMLTableForItem(CommonGLPI $item, &$table, $canedit) {
+      global $DB, $CFG_GLPI;
+
+      $query = "SELECT `id`
+                FROM `glpi_networknames`
+                 WHERE `items_id` = '" . $item->getID() . "'
+                  AND `itemtype` = '" . $item->getType() . "'";
+      $result = $DB->query($query);
+
+      $address = new self();
+
+
+      if ($DB->numrows($result) > 0) {
+         Session::initNavigateListItems(__CLASS__,
+                              //TRANS : %1$s is the itemtype name,
+                              //        %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                $item->getTypeName(1), $item->getName()));
+         while ($line = $DB->fetch_array($result)) {
+
+            if ($address->getFromDB($line["id"])) {
+               Session::addToNavigateListItems(__CLASS__, $line["id"]);
+
+               $content = "<a href='" . $address->getLinkURL(). "'>";
+               $internetName = $address->getInternetName();
+               if (empty($internetName)) {
+                  $content .= "(".$line["id"].")";
+               } else {
+                  $content .= $internetName;
+               }
+               $content .= "</a>";
+
+               if ($canedit) {
+                  $content .= "<a href='" . $address->getFormURL(). "?remove_address=unaffect&id=" .
+                              $address->getID() . "'>&nbsp;".
+                              "<img src=\"" . $CFG_GLPI["root_doc"] .
+                              "/pics/sub_dropdown.png\" alt=\"" . __s('Dissociate') . "\" title=\"" .
+                              __s('Dissociate') . "\"></a>";
+                  $content .= "<a href='" . $address->getFormURL(). "?remove_address=purge&id=" .
+                              $address->getID() . "'>&nbsp;".
+                              "<img src=\"" . $CFG_GLPI["root_doc"] .
+                              "/pics/delete.png\" alt=\"" . __s('Purge') . "\" title=\"" .
+                              __s('Purge') . "\"></a>";
+               }
+
+               $table->addElement($content, "NetworkName", $address->getID(), $item->getID());
+
+               if ($canedit) {
+                  NetworkAlias::getHTMLTableForNetworkName($address->getID(), $table, $canedit);
+               }
+
+               IPAddress::getHTMLTableForItem($address, $table, $canedit);
+            }
+         }
+      }
+   }
+
+
+   /**
+    * \brief Show names for an item
+    *
     * @param $item                     CommonDBTM object
     * @param $fromForm                 the presentation if different if we call this method from the
     *                                  showForItemForm

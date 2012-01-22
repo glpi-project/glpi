@@ -166,6 +166,29 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
+   static function getHTMLTableForNetworkName($networknames_id, &$table, $canedit) {
+      global $DB, $CFG_GLPI;
+      $query = "SELECT `id`
+                FROM `glpi_networkaliases`
+                WHERE `networknames_id` = '$networknames_id'";
+
+      $alias  = new self();
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0) {
+         while ($line = $DB->fetch_array($result)) {
+            if ($alias->getFromDB($line["id"])) {
+               $content = "<a href='" . $alias->getLinkURL(). "'>".$alias->getInternetName()."</a>";
+               $content .= "<a href='" . $alias->getFormURL(). "?remove_alias=remove&id=";
+               $content .= $alias->getID() . "'>&nbsp;";
+               $content .= "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" ;
+               $content .= __s('Delete') . "\" title=\"" . __s('Delete') . "\"></a>";
+               $table->addElement($content, "NetworkAlias", $line["id"], $networknames_id);
+            }
+         }
+      }
+   }
+
+
    /**
     * Print the tab for NetworkName object
     *

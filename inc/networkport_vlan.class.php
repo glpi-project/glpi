@@ -130,6 +130,44 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
+   static function getHTMLTableForNetworkPort($networkports_id, &$table, $canedit) {
+      global $DB, $CFG_GLPI;
+
+      $used = array();
+
+      $query = "SELECT `glpi_networkports_vlans`.*,
+                       `glpi_vlans`.`tag` AS vlantag,
+                       `glpi_vlans`.`comment` AS vlancomment
+                FROM `glpi_networkports_vlans`
+                LEFT JOIN `glpi_vlans`
+                        ON (`glpi_networkports_vlans`.`vlans_id` = `glpi_vlans`.`id`)
+                WHERE `networkports_id` = '$networkports_id'";
+
+      foreach ($DB->request($query) as $line) {
+         $used[$line["vlans_id"]] = $line["vlans_id"];
+         if ((isset($line["tagged"])) && ($line["tagged"] == 1)) {
+            //TRANS: %s is the VLAN name
+            $content = sprintf(__('%s - Tagged'), Dropdown::getDropdownName("glpi_vlans",
+                                                                            $line["vlans_id"]));
+         } else {
+            $content = sprintf(__('%s - Untagged'), Dropdown::getDropdownName("glpi_vlans",
+                                                                              $line["vlans_id"]));
+         }
+         $content .= Html::showToolTip(sprintf(__('ID TAG: %s'), $line['vlantag'])."<br>".
+                                       sprintf(__('Comments: %s'), $line['vlancomment']),
+                                       array('display' => false));
+         if ($canedit) {
+            $content .= "<a href='" . $CFG_GLPI["root_doc"] .
+                      "/front/networkport.form.php?unassign_vlan=" . "unassigned&amp;id=" .
+                      $line["id"] . "'>";
+            $content .= "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" .
+                        __s('Dissociate') . "\" title=\"" . __s('Dissociate') . "\"></a>";
+         }
+         $table->addElement($content, "VLAN",  $line["vlans_id"]);
+      }
+   }
+
+
    static function showForNetworkPort($ID, $canedit, $withtemplate) {
       global $DB, $CFG_GLPI;
 

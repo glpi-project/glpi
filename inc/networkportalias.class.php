@@ -116,5 +116,20 @@ class NetworkPortAlias extends NetworkPortInstantiation {
       echo "</tr>";
    }
 
+
+   static function getHTMLTableHeadersForNetworkPort(&$table, $canedit) {
+      $table->addHeader(__('Origin port'), "Origin");
+      $table->addHeader(__('MAC'), "MAC");
+      $table->addHeader(__('VLAN'), "VLAN");
+   }
+
+
+   function getHTMLTableForNetworkPort(NetworkPort $netport, CommonDBTM $item, &$table,
+                                       $withtemplate, $canedit) {
+      $table->addElement($this->showNetworkPortForItem(), "Origin", $this->getID(),
+                         $netport->getID());
+      $table->addElement($this->fields["mac"], "MAC", $this->getID(),$netport->getID());
+      NetworkPort_Vlan::getHTMLTableForNetworkPort($netport->getID(), $table, $canedit);
+    }
 }
 ?>

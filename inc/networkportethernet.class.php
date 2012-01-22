@@ -88,6 +88,15 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    }
 
 
+   static function getHTMLTableHeadersForNetworkPort(&$table, $canedit) {
+      $table->addHeader(__('Interface'), "Interface");
+      $table->addHeader(__('Network outlet'), "Outlet");
+      $table->addHeader(__('MAC'), "MAC");
+      $table->addHeader(__('VLAN'), "VLAN");
+      $table->addHeader(__('Connected to'), "Connected");
+   }
+
+
    static function showForItemHeader() {
 
       echo "<th>" . __('Interface') . "</th>\n";
@@ -95,6 +104,29 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       echo "<th>" . __('Network outlet') . "</th>\n";
       echo "<th>" . __('VLAN') . "</th>\n";
       echo "<th>" . __('Connected to') . "</th>\n";
+   }
+
+
+   function getHTMLTableForNetworkPort(NetworkPort $netport, CommonDBTM $item, &$table,
+                                       $withtemplate, $canedit) {
+      $compdev = new Computer_Device();
+      $device = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
+                $this->fields['computers_devicenetworkcards_id']);
+      if ($device) {
+         $table->addElement($device->getLink(), "Interface", $this->getID(), $netport->getID());
+      }
+
+      $table->addElement($this->fields["mac"], "MAC", $this->getID(),$netport->getID());
+
+      $table->addElement(Dropdown::getDropdownName("glpi_netpoints",
+                                                   $this->fields["netpoints_id"]),
+                         "Outlet", $this->getID(),$netport->getID());
+
+      NetworkPort_Vlan::getHTMLTableForNetworkPort($netport->getID(), $table, $canedit);
+
+      $table->addElement(array('function' => array(__CLASS__, 'showConnection'),
+                               'parameters' => array($item, $netport, $withtemplate)),
+                         "Outlet", $this->getID(),$netport->getID());
    }
 
 
@@ -134,7 +166,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @param $netport      to be displayed
     * @param $withtemplate (default '')
    **/
-   static function showConnection(&$device1, &$netport, $withtemplate='') {
+   static function showConnection($device1, $netport, $withtemplate='') {
 
       if (!$device1->can($device1->fields["id"], 'r')) {
          return false;

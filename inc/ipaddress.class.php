@@ -852,5 +852,33 @@ class IPAddress extends CommonDBChild {
 
       return true;
    }
+
+
+   static function getHTMLTableForItem(CommonGLPI $item, &$table, $canedit) {
+      global $DB, $CFG_GLPI;
+
+      $query = "SELECT `id`
+                FROM `glpi_ipaddresses`
+                 WHERE `items_id` = '" . $item->getID() . "'
+                  AND `itemtype` = '" . $item->getType() . "'";
+
+      $result = $DB->query($query);
+      $address = new IPAddress();
+      $network = new IPNetwork();
+      foreach ($DB->request($query) as $ipaddress) {
+         if ($address->getFromDB($ipaddress['id'])) {
+            $table->addElement($address->fields['name'], "IPAddress", $address->getID(),
+                               $item->getID());
+            foreach (IPNetwork::searchNetworksContainingIP($address) as $networks_id) {
+               if (($network->getFromDB($networks_id)) && ($network->fields['addressable'] == 1)) {
+                  $content = $network->getAddress()->getTextual() . "/" .
+                             $network->getNetmask()->getTextual(). " - " . $network->getLink();
+                  $table->addElement($content, "IPNetwork", $network->getID(),
+                                     $ipaddress['id']);
+               }
+            }
+         }
+      }
+   }
 }
 ?>

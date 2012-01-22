@@ -432,10 +432,27 @@ class NetworkPort extends CommonDBChild {
                $colspan = 3 + call_user_func(array($portType, 'getShowForItemNumberColums'))
                             + ($checkbox_column ? 1 : 0);
 
+               $table = new HTMLTable();
+               $table->addGlobalName(NetworkPort::getTypeName($number_port).
+                                     " (".call_user_func(array($portType, 'getTypeName')).")" .
+                                     "&nbsp;:&nbsp;$number_port</th></tr>\n");
+               if ($withtemplate != 2 && $canedit) {
+                  $table->addHeader("&nbsp;", "checkbox");
+               }
+               $table->addHeader("#", "NetworkPort");
+               $table->addHeader(__('Name'), "Name");
+               $table->addHeader(NetworkName::getTypeName(), "NetworkName", "Name");
+               //$table->addHeader(NetworkAlias::getTypeName(), "NetworkAlias", "NetworkName");
+               $table->addHeader(IPAddress::getTypeName(), "IPAddress", "NetworkName");
+               $table->addHeader(IPNetwork::getTypeName(), "IPNetwork", "IPAddress");
+               call_user_func_array(array($portType, 'getHTMLTableHeadersForNetworkPort'),
+                                    array(&$table, $canedit));
+                  //$portType::getHTMLTableHeadersForNetworkPort($table, $canedit);
+
                echo "<table class='tab_cadre_fixe'>\n";
 
                echo "<tr><th colspan='$colspan'>\n";
-               echo NetworkPort::getTypeName($number_port).
+               echo NetworkPort::getTypeName($number_port) .
                     " (".call_user_func(array($portType, 'getTypeName')).")";
                echo "&nbsp;:&nbsp;$number_port</th></tr>\n";
 
@@ -446,8 +463,8 @@ class NetworkPort extends CommonDBChild {
                echo "<th>#</th>\n";
                echo "<th>" . __('Name') . "</th>\n";
                echo "<th>" . NetworkName::getTypeName() . "</th>\n";
-                     call_user_func(array($portType, 'showForItemHeader'));
-                echo "</tr>\n";
+               call_user_func(array($portType, 'showForItemHeader'));
+               echo "</tr>\n";
 
                $i = 0;
 
@@ -461,35 +478,57 @@ class NetworkPort extends CommonDBChild {
                      echo "<input type='checkbox' name='del_port[".$netport->fields["id"].
                             "]' value='1'>";
                      echo "</td>\n";
+                     $table->addElement("<input type='checkbox' name='del_port[" .
+                                        $netport->fields["id"]."]' value='1'>", "checkbox",
+                                        $netport->getID());
                   }
+                  $content = "<span class='b'>";
                   echo "<td class='center'><span class='b'>";
                   if ($canedit && $withtemplate != 2) {
+                     $content .= "<a href=\"" . $CFG_GLPI["root_doc"] .
+                                 "/front/networkport.form.php?id=" .
+                                 $netport->fields["id"] . "\">";
                      echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php?id=".
                             $netport->fields["id"] . "\">";
                   }
+                  $content .= $netport->fields["logical_number"];
                   echo $netport->fields["logical_number"];
                   if ($canedit && $withtemplate != 2) {
+                     $content .= "</a>";
                      echo "</a>";
                   }
+                  $content .= "</span>";
                   echo "</span>";
+                  $content .= Html::showToolTip($netport->fields['comment'],
+                                                array('display' => false));
                   Html::showToolTip($netport->fields['comment']);
+                  $table->addElement($content, "NetworkPort", $netport->getID());
                   echo "</td>\n";
                   echo "<td>" . $netport->fields["name"] . "</td>\n";
+                  $table->addElement($netport->fields["name"], "Name", $netport->getID());
                   echo "<td>";
+                  NetworkName::getHTMLTableForItem($netport, $table, false);
                   NetworkName::showForItem($netport, false, $canedit, $withtemplate);
                   echo "</td>\n";
 
                   $instantiation = $netport->getInstantiation();
                   if ($instantiation !== false) {
+                     $instantiation->getHTMLTableForNetworkPort($netport, $item, $table,
+                                                                $withtemplate, false);
+
                      $instantiation->showForItem($netport, $item, $withtemplate);
                      unset($instantiation);
                   }
 
                   echo "</tr>\n";
-               }
+                  $table->closeRow();
+                }
                echo "</table>\n";
 
-           }
+               $table->display();
+               unset($table);
+
+            }
             echo "</div>";
          }
       }
