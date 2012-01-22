@@ -442,7 +442,7 @@ class NetworkPort extends CommonDBChild {
                $table->addHeader("#", "NetworkPort");
                $table->addHeader(__('Name'), "Name");
                $table->addHeader(NetworkName::getTypeName(), "NetworkName", "Name");
-               //$table->addHeader(NetworkAlias::getTypeName(), "NetworkAlias", "NetworkName");
+               $table->addHeader(NetworkAlias::getTypeName(), "NetworkAlias", "NetworkName");
                $table->addHeader(IPAddress::getTypeName(), "IPAddress", "NetworkName");
                $table->addHeader(IPNetwork::getTypeName(), "IPNetwork", "IPAddress");
                call_user_func_array(array($portType, 'getHTMLTableHeadersForNetworkPort'),

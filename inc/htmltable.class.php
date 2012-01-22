@@ -63,18 +63,18 @@ class HTMLTable {
 
    private function computeAndGetCellTotalNumberOfRows($headers_name, $cells_id) {
       $cell = $this->currentRow[$headers_name][$cells_id];
-      $rowspan = 1;
+      $numberOfLines = 1;
       foreach ($cell['sons'] as $sons_header => $sons) {
-         $sonsNumberOfRows = 0;
+         $sonsNumberOfLines = 0;
          foreach ($sons as $son) {
-            $sonsNumberOfRows += $this->computeAndGetCellTotalNumberOfRows($sons_header, $son);
+            $sonsNumberOfLines += $this->computeAndGetCellTotalNumberOfRows($sons_header, $son);
          }
-         if ($rowspan < $sonsNumberOfRows) {
-            $rowspan = $sonsNumberOfRows;
+         if ($numberOfLines < $sonsNumberOfLines) {
+            $numberOfLines = $sonsNumberOfLines;
          }
       }
-      $this->currentRow[$headers_name][$cells_id]['rowspan'] = $rowspan;
-      return $rowspan;
+      $this->currentRow[$headers_name][$cells_id]['numberOfLines'] = $numberOfLines;
+      return $numberOfLines;
    }
 
    function getFather(&$row, $headers_name, $cells_id) {
@@ -141,40 +141,47 @@ class HTMLTable {
    }
 
    function closeRow() {
-      $rowspan = 0;
+      $numberOfLines = 0;
       foreach ($this->currentRow as $headers_name => $cells) {
          $start = 0;
          foreach ($cells as $cells_id => $cell) {
-            $cell = $this->currentRow[$headers_name][$cells_id];
-            $father = $this->getFather($this->currentRow, $headers_name, $cells_id);
+            $cellNumberOfLines = $this->computeAndGetCellTotalNumberOfRows($headers_name,
+                                                                           $cells_id);
+            if ($numberOfLines < $cellNumberOfLines) {
+               $numberOfLines = $cellNumberOfLines;
+            }
+         }
+      }
+      foreach ($this->currentRow as $headers_name => $cells) {
+         $endLine = 0;
+         foreach($this->currentRow[$headers_name] as $cells_id => $cell) {
+            $startLine = $endLine;
+            $father    = $this->getFather($this->currentRow, $headers_name, $cells_id);
             if ($father !== false) {
-               if ($start < $father['start']) {
-                  $start = $father['start'];
+               if ($startLine < $father['start']) {
+                  $startLine = $father['start'];
                }
             }
-            $numberOfRows = $this->computeAndGetCellTotalNumberOfRows($headers_name, $cells_id);
-            $this->currentRow[$headers_name][$cells_id]['start'] = $start;
-            $this->currentRow[$headers_name][$cells_id]['end'] = $start+ $numberOfRows;
-            $start = $this->currentRow[$headers_name][$cells_id]['end'];
-            if ($rowspan < $numberOfRows) {
-               $rowspan = $numberOfRows;
+            $rowspan = $this->currentRow[$headers_name][$cells_id]['numberOfLines'];
+            // TODO : enhance the presentation by setting the rowspan according to the number of identical cells and so on
+            if ($father === false) {
+               if (count($cells) == 1) {
+                  $rowspan = $numberOfLines;
+               }
+            } else {
+               if (count($father['sons'][$headers_name]) == 1) {
+                  $rowspan = $father['rowspan'];
+               }
             }
+            $endLine = $startLine + $rowspan;
+
+            $this->currentRow[$headers_name][$cells_id]['start']   = $startLine;
+            $this->currentRow[$headers_name][$cells_id]['rowspan'] = $rowspan;
+            $this->currentRow[$headers_name][$cells_id]['end']     = $endLine;
          }
       }
-      /*
-      foreach ($this->currentRow as $headers_name => $cells) {
-         $start = 0;
-         foreach($this->currentRow[$headers_name] as $cells_id => $cell) {
-            $father = $this->getFather($this->currentRow, $headers_name, $cells_id);
-            if ($this->currentRow[$headers_name][$cells_id]['rowspan'] == 1) {
-               $this->currentRow[$headers_name][$cells_id]['rowspan'] = $rowspan;
-               $this->currentRow[$headers_name][$cells_id]['end'] = $rowspan;
-            }
-         }
-      }
-            */
-      $this->rows[] = array('rowspan' => $rowspan,
-                            'elements' => $this->currentRow);
+      $this->rows[] = array('numberOfLines' => $numberOfLines,
+                            'elements'      => $this->currentRow);
       unset($this->currentRow);
    }
 
@@ -195,13 +202,13 @@ class HTMLTable {
       }
       echo "</tr>\n";
 
-      $previousRowSpan = 0;
+      $previousNumberOfLines = 0;
 
       foreach ($this->rows as $row) {
-         if (($previousRowSpan * $row['rowspan']) > 1) {
+         if (($previousNumberOfLines * $row['numberOfLines']) > 1) {
             echo "<tr><td colspan='".count($this->headers)."'><hr></td></tr>";
          }
-         for ($i = 0 ; $i < $row['rowspan'] ; $i++) {
+         for ($i = 0 ; $i < $row['numberOfLines'] ; $i++) {
             echo "<tr>";
             foreach ($this->headers as $name => $header) {
                $display = false;
@@ -235,7 +242,7 @@ class HTMLTable {
             }
             echo "</tr>\n";
          }
-         $previousRowSpan = $row['rowspan'];
+         $previousNumberOfLines = $row['numberOfLines'];
       }
      echo "</table>\n";
    }
