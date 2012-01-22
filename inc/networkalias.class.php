@@ -178,10 +178,12 @@ class NetworkAlias extends FQDNLabel {
          while ($line = $DB->fetch_array($result)) {
             if ($alias->getFromDB($line["id"])) {
                $content = "<a href='" . $alias->getLinkURL(). "'>".$alias->getInternetName()."</a>";
-               $content .= "<a href='" . $alias->getFormURL(). "?remove_alias=remove&id=";
-               $content .= $alias->getID() . "'>&nbsp;";
-               $content .= "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" ;
-               $content .= __s('Delete') . "\" title=\"" . __s('Delete') . "\"></a>";
+               if ($canedit) {
+                  $content .= "<a href='" . $alias->getFormURL(). "?remove_alias=remove&id=";
+                  $content .= $alias->getID() . "'>&nbsp;";
+                  $content .= "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" ;
+                  $content .= __s('Delete') . "\" title=\"" . __s('Delete') . "\"></a>";
+               }
                $table->addElement($content, "NetworkAlias", $line["id"], $networknames_id);
             }
          }

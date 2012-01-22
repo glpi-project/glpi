@@ -507,9 +507,7 @@ class NetworkName extends FQDNLabel {
 
                $table->addElement($content, "NetworkName", $address->getID(), $item->getID());
 
-               if ($canedit) {
-                  NetworkAlias::getHTMLTableForNetworkName($address->getID(), $table, $canedit);
-               }
+               NetworkAlias::getHTMLTableForNetworkName($address->getID(), $table, $canedit);
 
                IPAddress::getHTMLTableForItem($address, $table, $canedit);
             }

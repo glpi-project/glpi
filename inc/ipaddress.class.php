@@ -870,9 +870,12 @@ class IPAddress extends CommonDBChild {
             $table->addElement($address->fields['name'], "IPAddress", $address->getID(),
                                $item->getID());
             foreach (IPNetwork::searchNetworksContainingIP($address) as $networks_id) {
-               if (($network->getFromDB($networks_id)) && ($network->fields['addressable'] == 1)) {
+               if ($network->getFromDB($networks_id)){
                   $content = $network->getAddress()->getTextual() . "/" .
                              $network->getNetmask()->getTextual(). " - " . $network->getLink();
+                  if ($network->fields['addressable'] == 1) {
+                     $content = "<b>".$content."</b>";
+                  }
                   $table->addElement($content, "IPNetwork", $network->getID(),
                                      $ipaddress['id']);
                }
