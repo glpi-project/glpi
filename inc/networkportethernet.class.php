@@ -90,9 +90,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
    static function getHTMLTableHeadersForNetworkPort(&$table, $canedit) {
       $table->addHeader(__('Interface'), "Interface");
-      $table->addHeader(__('Network outlet'), "Outlet");
       $table->addHeader(__('MAC'), "MAC");
       $table->addHeader(__('VLAN'), "VLAN");
+      $table->addHeader(__('Network outlet'), "Outlet");
       $table->addHeader(__('Connected to'), "Connected");
    }
 
@@ -126,7 +126,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $table->addElement(array('function' => array(__CLASS__, 'showConnection'),
                                'parameters' => array($item, $netport, $withtemplate)),
-                         "Outlet", $this->getID(),$netport->getID());
+                         "Connected", $this->getID(),$netport->getID());
    }
 
 
