@@ -45,14 +45,5 @@ class NetworkPortLocal extends NetworkPortInstantiation {
    static function getTypeName($nb=0) {
      return __('Local loop');
    }
-
-
-   static function showForItemHeader() {
-   }
-
-
-   function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
-   }
-
 }
 ?>

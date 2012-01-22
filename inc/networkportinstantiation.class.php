@@ -106,39 +106,26 @@ class NetworkPortInstantiation extends CommonDBChild {
 
 
    /**
-    * Give the number of columns that this instantiation add to the array of NetworkPort in
-    * NetworkPort::showForItem
-   **/
-   static function getShowForItemNumberColums() {
-      return 0;
-   }
-
-
-   /**
-    * Give the headers of the columns that this instantiation add to the array of NetworkPort in
-    * NetworkPort::showForItem
-   **/
-   static function showForItemHeader() {
-   }
-
-
-   /**
-    * Give the values of the columns that this NetworkPort instantiation add to the array of
-    * NetworkPort in NetworkPort::showForItem
+    * Add all the headers the currebt instantiation to the table for rendering by NetworkPort::showForItem
+    * @see HTMLTable
     *
-    * @param $netport      NetworkPort object
-    * @param $item         CommonDBTM object
+    * @param $table   the table to fill
     * @param $canedit
-    * @param $withtemplate (default '')
    **/
-   function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
-   }
-
-
    static function getHTMLTableHeadersForNetworkPort(&$table, $canedit) {
    }
 
 
+   /**
+    * Add a specific row to the table of the instantiation
+    * @see HTMLTable
+    *
+    * @param $netport      NetworkPort object
+    * @param $item         CommonDBTM object
+    * @param $table        the table to fill
+    * @param $withtemplate (default '')
+    * @param $canedit
+   **/
    function getHTMLTableForNetworkPort(NetworkPort $netport, CommonDBTM $item, &$table,
                                        $withtemplate, $canedit) {
    }
