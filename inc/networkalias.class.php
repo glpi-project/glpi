@@ -166,6 +166,11 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
+   static function getHTMLTableHeaderForItem(&$table, $canedit) {
+      $table->addHeader(NetworkAlias::getTypeName(), "NetworkAlias", "NetworkName");
+   }
+
+
    static function getHTMLTableForNetworkName($networknames_id, &$table, $canedit) {
       global $DB, $CFG_GLPI;
       $query = "SELECT `id`

@@ -454,6 +454,14 @@ class NetworkName extends FQDNLabel {
    }
 
 
+   static function getHTMLTableHeaderForItem(&$table, $canedit) {
+      $table->addHeader(NetworkName::getTypeName(), "NetworkName", "Name");
+      NetworkAlias::getHTMLTableHeaderForItem($table, $canedit);
+      $table->addHeader(IPAddress::getTypeName(), "IPAddress", "NetworkName");
+      $table->addHeader(IPNetwork::getTypeName(), "IPNetwork", "IPAddress");
+   }
+
+
    /**
     * \brief Show names for an item
     *
@@ -470,7 +478,6 @@ class NetworkName extends FQDNLabel {
       $result = $DB->query($query);
 
       $address = new self();
-
 
       if ($DB->numrows($result) > 0) {
          Session::initNavigateListItems(__CLASS__,

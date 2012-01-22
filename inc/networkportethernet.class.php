@@ -83,35 +83,24 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
   }
 
 
-   static function getShowForItemNumberColums() {
-      return 5;
-   }
-
-
    static function getHTMLTableHeadersForNetworkPort(&$table, $canedit) {
+
       $table->addHeader(__('Interface'), "Interface");
       $table->addHeader(__('MAC'), "MAC");
       $table->addHeader(__('VLAN'), "VLAN");
       $table->addHeader(__('Network outlet'), "Outlet");
       $table->addHeader(__('Connected to'), "Connected");
-   }
 
-
-   static function showForItemHeader() {
-
-      echo "<th>" . __('Interface') . "</th>\n";
-      echo "<th>" . __('MAC') . "</th>\n";
-      echo "<th>" . __('Network outlet') . "</th>\n";
-      echo "<th>" . __('VLAN') . "</th>\n";
-      echo "<th>" . __('Connected to') . "</th>\n";
    }
 
 
    function getHTMLTableForNetworkPort(NetworkPort $netport, CommonDBTM $item, &$table,
                                        $withtemplate, $canedit) {
+
       $compdev = new Computer_Device();
       $device = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
                 $this->fields['computers_devicenetworkcards_id']);
+
       if ($device) {
          $table->addElement($device->getLink(), "Interface", $this->getID(), $netport->getID());
       }
@@ -127,35 +116,6 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       $table->addElement(array('function' => array(__CLASS__, 'showConnection'),
                                'parameters' => array($item, $netport, $withtemplate)),
                          "Connected", $this->getID(),$netport->getID());
-   }
-
-
-   function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
-
-      echo "<td>";
-      $compdev = new Computer_Device();
-      $device = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
-                $this->fields['computers_devicenetworkcards_id']);
-      if ($device) {
-         echo $device->getLink();
-      } else {
-         echo "&nbsp;";
-      }
-      echo "</td>";
-
-      echo "<td>".$this->fields["mac"]."</td>\n";
-
-      echo "<td>".Dropdown::getDropdownName("glpi_netpoints",
-                                            $this->fields["netpoints_id"])."</td>\n";
-
-      // VLANs
-      echo "<td>";
-      NetworkPort_Vlan::showForNetworkPort($netport->fields["id"], $canedit, $withtemplate);
-      echo "</td>\n";
-
-      echo "<td width='300' class='tab_bg_2'>";
-      self::showConnection($item, $netport, $withtemplate);
-      echo "</td>\n";
    }
 
 

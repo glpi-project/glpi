@@ -66,30 +66,28 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
    }
 
 
-   static function getShowForItemNumberColums() {
-      return 3;
+   static function getHTMLTableHeadersForNetworkPort(&$table, $canedit) {
+      $table->addHeader(__('Origin port'), "Origin");
+      $table->addHeader(__('MAC'), "MAC");
+      $table->addHeader(__('VLAN'), "VLAN");
    }
 
 
-   static function showForItemHeader() {
-      echo "<th>" . __('Origin port') . "</th>\n";
-      echo "<th>". __('MAC') ."</th>\n";
-      echo "<th>". __('VLAN') ."</th>\n";
-   }
-
-
-   function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
+   function getHTMLTableForNetworkPort(NetworkPort $netport, CommonDBTM $item, &$table,
+                                       $withtemplate, $canedit) {
 
       if (isset($this->fields['networkports_id'])
           && is_string($this->fields['networkports_id'])) {
          $this->fields['networkports_id'] = importArrayFromDB($this->fields['networkports_id']);
       }
 
-      echo "<td>".$this->showNetworkPortForItem()."</td>\n";
-      echo "<td>".$this->fields["mac"]."</td>\n";
-      echo "<td>";
-      NetworkPort_Vlan::showForNetworkPort($netport->fields["id"], $canedit, $withtemplate);
-      echo "</td>\n";
+      $table->addElement($this->showNetworkPortForItem(), "Origin", $this->getID(),
+                         $netport->getID());
+
+      $table->addElement($this->fields["mac"], "MAC", $this->getID(),$netport->getID());
+
+      NetworkPort_Vlan::getHTMLTableForNetworkPort($netport->getID(), $table, $canedit);
+
    }
 
 

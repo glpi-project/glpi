@@ -47,19 +47,6 @@ class NetworkPortAlias extends NetworkPortInstantiation {
    }
 
 
-   static function getShowForItemNumberColums() {
-      return 3;
-   }
-
-
-   static function showForItemHeader() {
-
-      echo "<th>" . __('Origin port') . "</th>\n";
-      echo "<th>". __('MAC') ."</th>\n";
-      echo "<th>". __('VLAN') ."</th>\n";
-   }
-
-
    function prepareInput($input) {
 
       // Try to get mac address from the instantiation ...
@@ -95,16 +82,6 @@ class NetworkPortAlias extends NetworkPortInstantiation {
          return false;
       }
       return parent::prepareInputForUpdate($input);
-   }
-
-
-   function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
-
-      echo "<td>".$this->showNetworkPortForItem()."</td>\n";
-      echo "<td>".$this->fields["mac"]."</td>\n";
-      echo "<td>";
-      NetworkPort_Vlan::showForNetworkPort($netport->fields["id"], $canedit, $withtemplate);
-      echo "</td>\n";
    }
 
 

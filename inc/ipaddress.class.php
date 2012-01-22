@@ -874,7 +874,7 @@ class IPAddress extends CommonDBChild {
                   $content = $network->getAddress()->getTextual() . "/" .
                              $network->getNetmask()->getTextual(). " - " . $network->getLink();
                   if ($network->fields['addressable'] == 1) {
-                     $content = "<b>".$content."</b>";
+                     $content = "<span class='b'>".$content."</span>";
                   }
                   $table->addElement($content, "IPNetwork", $network->getID(),
                                      $ipaddress['id']);

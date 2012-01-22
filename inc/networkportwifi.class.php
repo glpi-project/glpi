@@ -93,62 +93,47 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    }
 
 
-   static function getShowForItemNumberColums() {
-      return 7;
+   static function getHTMLTableHeadersForNetworkPort(&$table, $canedit) {
+      $table->addHeader(__('Interface'), "Interface");
+      $table->addHeader(__('MAC'), "MAC");
+      $table->addHeader(__('ESSID'), 'ESSID');
+      $table->addHeader(__('Wifi mode'), 'Mode');
+      $table->addHeader(__('Wifi protocol version'), 'Version');
+      $table->addHeader(__('VLAN'), 'VLAN');
+      $table->addHeader(__('Connected to'), "Connected");
    }
 
 
-   static function showForItemHeader() {
+   function getHTMLTableForNetworkPort(NetworkPort $netport, CommonDBTM $item, &$table,
+                                       $withtemplate, $canedit) {
 
-      echo "<th>" . __('Interface') . "</th>\n";
-      echo "<th>" . __('MAC') . "</th>\n";
-      echo "<th>" . __('ESSID') . "</th>\n";
-      echo "<th>" . __('Wifi mode') . "</th>\n";
-      echo "<th>" . __('Wifi protocol version') . "</th>\n";
-      echo "<th>" . __('VLAN') . "</th>\n";
-      echo "<th>" . __('Connected to')."</th>\n";
-   }
-
-
-   function showForItem(NetworkPort $netport, CommonDBTM $item, $canedit, $withtemplate='') {
-
-      // Network card associated with this wifi port
-      echo "<td>";
       $compdev = new Computer_Device();
-      $device  = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
-                                                         $this->fields['computers_devicenetworkcards_id']);
+      $device = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
+                $this->fields['computers_devicenetworkcards_id']);
+
       if ($device) {
-         echo $device->getLink();
-      } else {
-         echo "&nbsp;";
+         $table->addElement($device->getLink(), "Interface", $this->getID(), $netport->getID());
       }
-      echo "</td>";
 
-      // Mac address
-      echo "<td>".$this->fields['mac'] . "</td>\n";
+      $table->addElement($this->fields["mac"], "MAC", $this->getID(), $netport->getID());
 
-      // ESSID
-      echo "<td>".Dropdown::getDropdownName("glpi_wifinetworks",
-                                            $this->fields["wifinetworks_id"])."</td>\n";
+      $table->addElement(Dropdown::getDropdownName("glpi_wifinetworks",
+                                            $this->fields["wifinetworks_id"]),
+                         "ESSID", $this->getID(), $netport->getID());
 
-      // Wifi mode
-      echo "<td>".$this->fields['mode'] . "</td>\n";
+      $table->addElement($this->fields['mode'], "Mode", $this->getID(), $netport->getID());
 
-      // Wifi version
-      echo "<td>".$this->fields['version'] . "</td>\n";
+      $table->addElement($this->fields['version'], "Version", $this->getID(), $netport->getID());
 
-      // VLANs
-      echo "<td>";
-      NetworkPort_Vlan::showForNetworkPort($netport->fields["id"], $canedit,
-                                           $withtemplate);
-      echo "</td>";
+      NetworkPort_Vlan::getHTMLTableForNetworkPort($netport->getID(), $table, $canedit);
 
-      // Connections to the other Wifi networks
-      echo "<td width='300' class='tab_bg_2'>&nbsp;";
-      //self::showConnection($item, $this, $withtemplate);
-      echo "</td>\n";
+      /*
+      $table->addElement(array('function' => array(__CLASS__, 'showConnection'),
+                               'parameters' => array($item, $netport, $withtemplate)),
+                         "Connected", $this->getID(),$netport->getID());
+      */
+
    }
-
 
    function getSearchOptions() {
 
