@@ -223,12 +223,12 @@ class Cartridge extends CommonDBTM {
             $out .= "<table  class='tab_format $highlight' width='100%'><tr><td>";
             $out .= __('Total')."</td><td>$total";
             $out .= "</td><td class='b'>";
-            $out .= _n('New','New',$unused);
+            $out .= _nx('cartridge','New','New',$unused);
             $out .= "</td><td class='b'>$unused</td><tr>";
             $out .= "<tr><td>";
-            $out .= _n('Used','Used',$used);
+            $out .= _nx('cartridge','Used','Used',$used);
             $out .= "</td><td>$used</span></td><td>";
-            $out .= _n('Worn','Worn',$old);
+            $out .= _nx('cartridge','Worn','Worn',$old);
             $out .= "</td><td>$old</span></td></tr></table>";
 
          } else {
@@ -341,7 +341,7 @@ class Cartridge extends CommonDBTM {
       if (is_null($date_out) || empty($date_out)) {
          return _x('cartridge', 'Used');
       }
-      return __('Worn');
+      return _x('cartridge', 'Worn');
    }
 
 
