@@ -48,7 +48,7 @@ if (isset($_POST["add"])) {
 
    if ($newID = $cartype->add($_POST)) {
       Event::log($newID, "cartridges", 4, "inventory",
-               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    }
    Html::back();
 
@@ -57,8 +57,8 @@ if (isset($_POST["add"])) {
 
    if ($cartype->delete($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
    }
    $cartype->redirectToList();
 
@@ -67,8 +67,8 @@ if (isset($_POST["add"])) {
 
    if ($cartype->restore($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
    }
    $cartype->redirectToList();
 
@@ -77,8 +77,8 @@ if (isset($_POST["add"])) {
 
    if ($cartype->delete($_POST,1)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    }
    $cartype->redirectToList();
 
@@ -87,8 +87,8 @@ if (isset($_POST["add"])) {
 
    if ($cartype->update($_POST)) {
       Event::log($_POST["id"], "cartridges", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -98,8 +98,8 @@ if (isset($_POST["add"])) {
    $cipm->check(-1,'w', $_POST);
    if ($cipm->add($_POST)) {
       Event::log($_POST["cartridgeitems_id"], "cartridges", 4, "inventory",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s associates a type'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s associates a type'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -109,8 +109,8 @@ if (isset($_POST["add"])) {
    $cipm->check(-1,'w', $_POST);
    if ($cipm->delete($_GET)) {
       Event::log($_GET["cartridgeitems_id"], "cartridges", 4, "inventory",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s deletes a type'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes a type'), $_SESSION["glpiname"]));
    }
    Html::back();
 
