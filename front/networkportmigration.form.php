@@ -74,7 +74,10 @@ if (isset($_GET["delete"])) {
    if ($networkport->can($_POST['id'], 'w')) {
       if ($networkport->switchInstantiationType($_POST['transform_to']) !== false) {
          $instantiation = $networkport->getInstantiation();
-         $instantiation->add($np->fields);
+         $input = $np->fields;
+         $input['networkports_id'] = $input['id'];
+         unset($input['id']);
+         $instantiation->add($input);
          $np->delete($_POST);
       } else {
          Session::addMessageAfterRedirect(__('Cannot change a migration network port to an unknown one'));
