@@ -1521,12 +1521,12 @@ abstract class CommonITILObject extends CommonDBTM {
    **/
    static function genericIsAllowedStatus($itemtype, $old, $new) {
 
-      if (isset($_SESSION['glpiactiveprofile'][constant($itemtype.'::STATUS_MATRIX_FIELD')][$old][$new])
-          && !$_SESSION['glpiactiveprofile'][constant($itemtype.'::STATUS_MATRIX_FIELD')][$old][$new]) {
+      if (isset($_SESSION['glpiactiveprofile'][$itemtype::STATUS_MATRIX_FIELD][$old][$new])
+          && !$_SESSION['glpiactiveprofile'][$itemtype::STATUS_MATRIX_FIELD][$old][$new]) {
          return false;
       }
 
-      if (array_key_exists(constant($itemtype.'::STATUS_MATRIX_FIELD'),
+      if (array_key_exists($itemtype::STATUS_MATRIX_FIELD,
                            $_SESSION['glpiactiveprofile'])) { // Not set for post-only)
          return true;
       }
