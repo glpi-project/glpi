@@ -603,7 +603,7 @@ class Search {
          if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
             $tmpquery = $query_num;
             $numrows  = 0;
-            
+
             foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype) {
                $ctable = getTableForItemType($ctype);
                $citem  = new $ctype();
@@ -628,18 +628,18 @@ class Search {
                      $reftable = getTableForItemType($itemtype);
                      if ($item->maybeDeleted()) {
                         $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$itemtype]."`.`is_deleted`",
-                                              "`$reftable`.`is_deleted`", $tmpquery);
+                                                "`$reftable`.`is_deleted`", $tmpquery);
                      }
                      $replace  = "FROM `$reftable`
                                   INNER JOIN `$ctable`
                                        ON (`$reftable`.`items_id` =`$ctable`.`id`
                                            AND `$reftable`.`itemtype` = '$ctype')";
-                     
+
                      $query_num = str_replace("FROM `".$CFG_GLPI["union_search_type"][$itemtype]."`",
                                               $replace, $tmpquery);
                      $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype], $ctable,
                                               $query_num);
-                                              
+
                   }
                   $query_num = str_replace("ENTITYRESTRICT",
                                            getEntitiesRestrictRequest('', $ctable, '', '',
@@ -720,8 +720,8 @@ class Search {
                      $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$itemtype]."`.`is_deleted`",
                                              "`$reftable`.`is_deleted`", $tmpquery);
                   }
-                  
-                  
+
+
                   $replace = "FROM `$reftable`"."
                               INNER JOIN `$ctable`"."
                                  ON (`$reftable`.`items_id`=`$ctable`.`id`"."
@@ -1137,35 +1137,34 @@ class Search {
                      } else {
                         if ($p['is_deleted']) {
                            echo self::showItem($output_type,
-                                            "<a href=\"".Toolbox::getItemTypeFormURL($itemtype)."?id=".
-                                              $data["refID"]."&amp;restore=restore\" title=\"".__s('Restore')."\">".
-                                              __s('Restore')."</a>",
-                                            $item_num, $row_num, "class='center'");
-                        
+                                               "<a href=\"".Toolbox::getItemTypeFormURL($itemtype).
+                                                "?id=".$data["refID"]."&amp;restore=restore\" title=\"".
+                                                __s('Restore')."\">".__('Restore')."</a>",
+                                               $item_num, $row_num, "class='center'");
+
                            echo self::showItem($output_type,
-                                            "<a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
-                                              $data["refID"]."&amp;purge=purge' ".
-                                              Html::addConfirmationOnAction(array(__('Are you sure you want to purge this item ?'),
-                                                                                  __('That will remove all the reservations.'))).
-                                              ">".__s('Purge')."</a>",
-                                            $item_num, $row_num, "class='center'");                        
+                                               "<a href='".Toolbox::getItemTypeFormURL($itemtype).
+                                                "?id=".$data["refID"]."&amp;purge=purge' ".
+                                                Html::addConfirmationOnAction(array(__('Are you sure you want to purge this item ?'),
+                                                                                    __('That will remove all the reservations.'))).
+                                                ">".__('Purge')."</a>",
+                                              $item_num, $row_num, "class='center'");
                         } else {
                            echo self::showItem($output_type,
-                                            "<a href=\"".Toolbox::getItemTypeFormURL($itemtype)."?id=".
-                                              $data["refID"]."&amp;is_active=".($data["ACTIVE"]?0:1).
-                                              "&amp;update=update\" "."title=\"".
-                                              ($data["ACTIVE"]?__s('Disable')
-                                                              :__s('Enable'))."\">".
-                                              "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".
-                                                ($data["ACTIVE"]?"moins":"plus").".png\" alt=''
-                                                title=''></a>",
-                                            $item_num, $row_num, "class='center'");
-                        
+                                               "<a href=\"".Toolbox::getItemTypeFormURL($itemtype).
+                                                "?id=".$data["refID"]."&amp;is_active=".
+                                                ($data["ACTIVE"]?0:1)."&amp;update=update\" title=\"".
+                                                ($data["ACTIVE"]?__s('Disable'):__s('Enable'))."\">".
+                                                "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".
+                                                  ($data["ACTIVE"]?"moins":"plus").".png\" alt=''
+                                                  title=''></a>",
+                                               $item_num, $row_num, "class='center'");
+
                            echo self::showItem($output_type,
-                                            "<a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
-                                              $data["refID"]."&amp;delete=delete' title=\"".__s('Put in trash')."\">".
-                                              __('Delete')."</a>",
-                                            $item_num, $row_num, "class='center'");
+                                               "<a href='".Toolbox::getItemTypeFormURL($itemtype).
+                                                "?id=".$data["refID"]."&amp;delete=delete' title=\"".
+                                                __s('Put in dustbin')."\">".__('Delete')."</a>",
+                                               $item_num, $row_num, "class='center'");
                         }
                      }
                   }

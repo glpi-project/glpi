@@ -185,28 +185,22 @@ $added = 0;
 $entity = new Entity ();
 for ($i=0 ; $i<max(1,pow($entity_number,1/2))&&$added<$entity_number ; $i++) {
    $added++;
-   $newID = $entity->add(array(
-         'name'      => "entity $i",
-         'comment'   => "comment entity $i",
-   ));
+   $newID = $entity->add(array('name'      => "entity $i",
+                               'comment'   => "comment entity $i"));
    generate_entity($newID);
 
    for ($j=0 ; $j<mt_rand(0,pow($entity_number,1/2))&&$added<$entity_number ; $j++) {
       $added++;
-      $newID2 = $entity->add(array(
-            'name'         => "s-entity $j",
-            'comment'      => "comment s-entity $j",
-            'entities_id'  => $newID,
-      ));      
+      $newID2 = $entity->add(array('name'         => "s-entity $j",
+                                   'comment'      => "comment s-entity $j",
+                                   'entities_id'  => $newID));
       generate_entity($newID2);
 
       for ($k=0 ; $k<mt_rand(0,pow($entity_number,1/2))&&$added<$entity_number ; $k++) {
          $added++;
-         $newID3 = $entity->add(array(
-               'name'         => "ss-entity $k",
-               'comment'      => "comment ss-entity $k",
-               'entities_id'  => $newID2,
-         ));      
+         $newID3 = $entity->add(array('name'         => "ss-entity $k",
+                                      'comment'      => "comment ss-entity $k",
+                                      'entities_id'  => $newID2));
          generate_entity($newID3);
       }
    }
