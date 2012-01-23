@@ -122,5 +122,46 @@ class NetworkName_IPNetwork extends CommonDBRelation {
          $linkObject->add($link);
       }
    }
+
+
+   /**
+    * \brief Recreate the links between NetworkName and IPNetwork
+    * Among others, the migration don't create it. So, an update is necessary
+    * WARNING : this method does not work properly for the moment ...
+    *
+    * First, reset the link table then reinit the links for each network
+    *
+    * @return nothing
+   **/
+   static function recreateAllConnexities() {
+      global $DB;
+
+      $query = "DELETE
+                FROM `glpi_networknames_ipnetworks`";
+      $DB->query($query);
+
+      $network    = new IPNetwork();
+      $query      = "SELECT `id`
+                     FROM `glpi_ipnetworks`";
+      foreach ($DB->request($query) as $ipnetwork_row) {
+         $ipnetworks_id = $ipnetwork_row['id'];
+         if ($network->getFromDB($ipnetwork_row['id'])) {
+            $query = "SELECT `items_id`
+                      FROM `glpi_ipaddresses`
+                      WHERE `itemtype` = 'NetworkName'
+                            AND ".$network->getWHEREForMatchingElement('glpi_ipaddresses', 'binary',
+                                                                       'version')."
+                      GROUP BY `items_id`";
+            foreach ($DB->request($query) as $link) {
+               $query = "INSERT INTO `glpi_networknames_ipnetworks`
+                                ( `ipnetworks_id`, `networknames_id`)
+                         VALUES ('$ipnetworks_id', '".$link['items_id']."')";
+               $DB->query($query);
+               unset($query);
+            }
+            unset($query);
+         }
+      }
+   }
 }
 ?>

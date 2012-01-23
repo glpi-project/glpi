@@ -48,7 +48,13 @@ if (isset($_GET['action'])) {
       IPNetwork::recreateTree();
       Session::addMessageAfterRedirect(__('Successfully recreated network tree !'));
       break;
-   }
+   case 'recreate_network_connexities':
+      NetworkName_IPNetwork::recreateAllConnexities();
+      Session::addMessageAfterRedirect(__('Successfully recreated connexities between ' .
+                                          'IPNetwork and NetworkName !'));
+      break;
+  }
+
 
    Html::back();
 }
@@ -62,6 +68,12 @@ echo "<tr><th>" . __('"Migration cleaner" tool') . "</td></tr>";
 
 echo "<tr><td class='center'><a href='".$_SERVER['PHP_SELF']."?action=reinit_network'>".
      __('Reinit the network topology') . "</a></td></tr>";
+
+/*
+echo "<tr><td class='center'><a href='".$_SERVER['PHP_SELF'] .
+     "?action=recreate_network_connexities'>".
+     __('Re-create all connexities between IPNetwork and NetworkName') . "</a></td></tr>";
+*/
 
 echo "<tr><td class='center'><a href='".$CFG_GLPI['root_doc']."/front/networkportmigration.php'>".
      __('Clean the networkport migration errors') . "</a></td></tr>";
