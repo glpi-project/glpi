@@ -635,16 +635,16 @@ class NetworkPort extends CommonDBChild {
       $tab[20]['name']          = __('IP');
       $tab[20]['forcegroupby']  = true;
       $tab[20]['massiveaction'] = false;
-      $tab[20]['joinparams']    = array('jointype'   => 'itemtype_item',
+      $tab[20]['joinparams']    = array('jointype'          => 'itemtype_item',
                                         'specific_itemtype' => 'NetworkName',
-                                        'beforejoin' =>
-                                          array('table'      => 'glpi_networknames',
-                                                'joinparams' =>
-                                                   array('jointype'   => 'itemtype_item',
-                                                         'specific_itemtype' => 'NetworkPort',
-                                                         'beforejoin' =>
-                                                            array('table'      => 'glpi_networkports',
-                                                                  'joinparams' => $joinparams))));
+                                        'beforejoin'
+                                         => array('table'      => 'glpi_networknames',
+                                                  'joinparams'
+                                                   => array('jointype'          => 'itemtype_item',
+                                                            'specific_itemtype' => 'NetworkPort',
+                                                            'beforejoin'
+                                                             => array('table'      => 'glpi_networkports',
+                                                                      'joinparams' => $joinparams))));
 
       $tab[21]['table']         = 'glpi_networkports';
       $tab[21]['field']         = 'mac';
