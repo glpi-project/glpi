@@ -833,32 +833,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
-   /**
-    * \brief Recreate the links between NetworkName and IPNetwork
-    * Among others, the migration don't create it. So, an update is necessary
-    *
-    * First, reset the link table then reinit the links for each network
-    *
-    * @return nothing
-   **/
-   static function recreateLinksWithNetworkName() {
-      global $DB;
-
-      // Foreach IPNetwork ...
-      $query = "SELECT `id`
-                FROM `glpi_ipnetworks`";
-
-      $network = new self();
-
-      foreach ($DB->request($query) as $network_entry) {
-         if ($network->getFromDB($network_entry['id'])) {
-            NetworkName_IPNetwork::linkIPAddressFromIPNetwork($network);
-         }
-      }
-      exit();
-   }
-
-
    static function getHTMLTableHeaderForItem(&$table, $canedit) {
       $table->addHeader(IPNetwork::getTypeName(), "IPNetwork", "IPAddress");
    }

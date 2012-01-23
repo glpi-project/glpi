@@ -734,7 +734,7 @@ function update083to084() {
    $DB->query($query);
 
    $migration->displayWarning("You should have a look at the \"migration cleaner\" tool !", true);
-
+   $migration->displayWarning("With it, you should re-create the networks topologies and the links between the networks and the addresses", true);
 
    $lang_to_update = array('ca_CA' => 'ca_ES',
                            'dk_DK' => 'da_DK',
