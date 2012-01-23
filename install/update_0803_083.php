@@ -505,7 +505,7 @@ function update0803to083() {
 
    $migration->addField("glpi_knowbaseitemcategories", 'ancestors_cache', "longtext");
    $migration->addField("glpi_knowbaseitemcategories", 'sons_cache', "longtext");
-   
+
    $migration->changeField("glpi_authldaps", 'group_condition', 'group_condition', "text");
 
    $migration->dropKey("glpi_groups", 'ldap_value');
@@ -671,10 +671,10 @@ function update0803to083() {
                $is_dynamic = 0;
                $ldap_servers = array();
                // manage is_dynamic :
-               if ($data['authtype'] == constant('Auth::MAIL')) {
+               if ($data['authtype'] == Auth::MAIL) {
                   $is_dynamic = 1;
                } else if ((Auth::isAlternateAuth($data["authtype"]) && $data['auths_id'] >0)
-                           || $data['authtype'] == constant('Auth::LDAP')) {
+                           || $data['authtype'] == Auth::LDAP) {
                   if (!isset($ldap_servers[$data['auths_id']])) {
                      $ldap_servers[$data['auths_id']] = 0;
                      $ldap = new AuthLDAP();
