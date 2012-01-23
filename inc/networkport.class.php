@@ -56,8 +56,6 @@ class NetworkPort extends CommonDBChild {
     *
     * @since version 0.84
     *
-    * @param $onlySelectableOnes (true by default)
-    *
     * @return array of available type of network ports
    **/
    static function getNetworkPortInstantiations() {
@@ -145,7 +143,7 @@ class NetworkPort extends CommonDBChild {
       }
 
       // We update the current NetworkPort
-      $input = $this->fields;
+      $input                       = $this->fields;
       $input['instantiation_type'] = $new_instantiation_type;
       $this->update($input);
 

@@ -159,7 +159,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
                          'list'     => true),
                    array('name'     => 'addressable',
                          'label'    => __('Addressable network'),
-                         'comment'  => __('An addressable network is the network that is defined on the equipment'),
+                         'comment'  => __('An addressable network is a network defined on an equipment'),
                          'type'     => 'bool'));
    }
 

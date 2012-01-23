@@ -193,7 +193,7 @@ class NetworkName extends FQDNLabel {
       $tab[13]['table']         = 'glpi_ipaddresses';
       $tab[13]['field']         = 'name';
       $tab[13]['name']          = IPAddress::getTypeName(1);
-      $tab[13]['joinparams']    = array('jointype'=>'itemtype_item');
+      $tab[13]['joinparams']    = array('jointype' => 'itemtype_item');
       $tab[13]['forcegroupby']  = true;
       $tab[13]['massiveaction'] = false;
 
