@@ -295,19 +295,11 @@ class IPAddress extends CommonDBChild {
    **/
    static function checkInputFromItem($inputAddresses, $itemtype, $items_id) {
 
-      // replace delimiters by \n
-      $delimiters = array(',', ' ', '\r', '\n');
-      $mainDelim  = $delimiters[count($delimiters)-1]; // dernier
-      array_pop($delimiters);
-
-      foreach ($delimiters as $delimiter) {
-         $inputAddresses = str_replace($delimiter, $mainDelim, $inputAddresses);
-      }
       $invalidAddresses  = array();
       $previousAddresses = array();
       $newAddresses      = array();
       // then, check each address
-      foreach (explode($mainDelim, $inputAddresses) as $ipaddress) {
+      foreach ($inputAddresses as $ipaddress) {
          // Create the object
          $addressObject = new self();
          if ($addressObject->setAddressFromString($ipaddress, $itemtype, $items_id)) {
