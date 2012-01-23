@@ -174,9 +174,9 @@ function addNetworkPortMigrationError($networkports_id, $motive) {
    if (countElementsInTable("glpi_networkportmigrations", "`id` = '$networkports_id'") == 0) {
       $query = "INSERT INTO `glpi_networkportmigrations`
                        (SELECT *" . str_repeat(', 0',  count(NetworkPortMigration::getMotives())) ."
-                       FROM `origin_glpi_networkports`
-                       WHERE `id` = '$networkports_id')";
-      $DB->queryOrDie($query, "0.84 copy of NetworkPort during migration error");
+                        FROM `origin_glpi_networkports`
+                        WHERE `id` = '$networkports_id')";
+      $DB->queryOrDie($query, "0.84 error on copy of NetworkPort during migration");
    }
 
    $query = "UPDATE `glpi_networkportmigrations`
@@ -185,6 +185,7 @@ function addNetworkPortMigrationError($networkports_id, $motive) {
    $DB->queryOrDie($query, "0.84 append of motive to migration of NetworkPort error");
 
 }
+
 
 /**
  * Update from 0.83 to 0.84

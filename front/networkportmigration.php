@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkRight("networking", "w");
 Session::checkRight("internet", "w");
 
-Html::header(NetworkPortMigration::GetTypeName(2), $_SERVER['PHP_SELF'], "inventory", "computer");
+Html::header(NetworkPortMigration::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "computer");
 
 Search::show('NetworkPortMigration');
 
