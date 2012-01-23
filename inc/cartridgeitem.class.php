@@ -148,6 +148,31 @@ class CartridgeItem extends CommonDBTM {
       return false;
    }
 
+
+   /**
+    * Add a compatible printer type for a cartridge type
+    *
+    * @param $cartridgeitems_id  integer: cartridge type identifier
+    * @param printermodels_id    integer: printer type identifier
+    *
+    * @return boolean : true for success
+   **/
+   function addCompatibleType($cartridgeitems_id, $printermodels_id) {
+      global $DB;
+
+      if ($cartridgeitems_id>0 && $printermodels_id>0) {
+         $query = "INSERT INTO `glpi_cartridgeitems_printermodels`
+                          (`cartridgeitems_id`, `printermodels_id`)
+                   VALUES ('$cartridgeitems_id', '$printermodels_id');";
+
+         if ($result = $DB->query($query) && $DB->affected_rows()>0) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+
    /**
     * Print the cartridge type form
     *
