@@ -220,7 +220,7 @@ class Consumable extends CommonDBTM {
          if ($unused<=$alarm_threshold) {
             $highlight = "class='tab_bg_1_2'";
          }
-         //TRANS: %1$d is total number, %2$d is unused number, %3$d is old number
+         //TRANS: For consumable. %1$d is total number, %2$d is unused number, %3$d is old number
          $tmptxt = sprintf(__('Total: %1$d, New: %2$d, Used: %3$d'), $total, $unused, $old);
          if ($nohtml) {
             $out = $tmptxt;
