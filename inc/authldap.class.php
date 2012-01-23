@@ -2511,7 +2511,7 @@ class AuthLDAP extends CommonDBTM {
    static function dropdownUserDeletedActions($value=0) {
 
       $options[0] = __('Preserve');
-      $options[1] = __('Put in trash');
+      $options[1] = __('Put in dustbin');
       $options[2] = __('Withdraw dynamic authorizations and groups');
       $options[3] = __('Disable');
       asort($options);
