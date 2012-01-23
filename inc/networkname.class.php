@@ -153,9 +153,12 @@ class NetworkName extends FQDNLabel {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td rowspan='2'>".IPAddress::getTypeName(2)."</td>";
+      $address = new IPAddress();
+      echo "<td rowspan='2'>".$address->getTypeName(2);
+      $address->showAddButtonForChildItem($this, '_ipaddresses');
+      echo "</td>";
       echo "<td rowspan='2'>";
-      IPAddress::showInputField($this->getType(), $this->getID(), "IPs");
+      $address->showFieldsForItemForm($this, '_ipaddresses', 'name');
       echo "</td>\n";
 
       echo "<td>".FQDN::getTypeName(1)."</td><td>";
@@ -207,8 +210,9 @@ class NetworkName extends FQDNLabel {
    **/
    function prepareInput($input) {
 
-      if (isset($input["IPs"])) {
-         $addresses = IPAddress::checkInputFromItem($input["IPs"], self::getType(), $this->getID());
+      if (isset($input["_ipaddresses"])) {
+         $addresses = IPAddress::checkInputFromItem($input["_ipaddresses"],
+                                                    self::getType(), $this->getID());
 
          if (count($addresses["invalid"]) > 0) {
             $msg = sprintf(_n('Invalid IP address: %s', 'Invalid IP addresses: %s',
@@ -225,7 +229,7 @@ class NetworkName extends FQDNLabel {
          // }
 
          $this->IPs = $addresses;
-         $input["IPs"] = "";
+         $input["_ipaddresses"] = "";
       }
 
       return $input;
@@ -437,10 +441,13 @@ class NetworkName extends FQDNLabel {
       echo "<td>" . self::getTypeName(1) . "</td><td>\n";
       Html::autocompletionTextField($name, "name", array('name' => 'NetworkName_name'));
       echo "</td>\n";
-      echo "<td rowspan='2'>".IPAddress::getTypeName(2)."</td>";
+
+      $address = new IPAddress();
+      echo "<td rowspan='2'>".$address->getTypeName(2);
+      $address->showAddButtonForChildItem($name, 'NetworkName__ipaddresses');
+      echo "</td>";
       echo "<td rowspan='2'>";
-      IPAddress::showInputField($name->getType(), $name->getID(), "NetworkName_IPs");
-      echo "</td>\n";
+      $address->showFieldsForItemForm($name, 'NetworkName__ipaddresses', 'name');
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";

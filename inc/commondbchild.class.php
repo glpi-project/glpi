@@ -416,5 +416,135 @@ abstract class CommonDBChild extends CommonDBTM {
       }
    }
 
+
+   /**
+    * We can add several CommonDBChild to a given Item. In such case, we display a "+" button and
+    * the fields already entered
+    * This method display the "+" button
+    *
+    * @since version 0.84
+    * @TODO study if we cannot use these methods for the user emails
+    * @see showFieldsForItemForm(CommonDBTM $item, $html_field, $db_field)
+    *
+    * @param $item the item on which to add the current CommenDBChild
+    * @param $html_field the name of the HTML field inside the Item form
+    *
+    * @result nothing (display only)
+   **/
+   function showAddButtonForChildItem(CommonDBTM $item, $html_field) {
+      global $CFG_GLPI;
+
+      $items_id = $item->getID();
+      if (!$item->can($items_id,'r')) {
+         return false;
+      }
+      $canedit = $item->can($items_id,"w");
+
+      $lower_name = strtolower($this->getType());
+      $nb_item_var = 'nb'.$lower_name.'s';
+      $div_id = $lower_name."add$items_id";
+
+      if ($canedit) {
+
+         echo "&nbsp;<script type='text/javascript'>var $nb_item_var=1; </script>";
+         echo "<span id='add".$lower_name."button'><img title=\"".__s('Add')."\" alt=\"".
+               __s('Add').
+            "\" onClick=\"var row = Ext.get('$div_id');
+                             row.createChild('<input type=\'text\' size=\'40\' ".
+            "name=\'".$html_field."[-'+$nb_item_var+']\'><br>');
+                            $nb_item_var++;\"
+               class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'></span>";
+      }
+   }
+
+
+   /**
+    * We can add several CommonDBChild to a given Item. In such case, we display a "+" button and
+    * the fields already entered.
+    * This method display the fields
+    *
+    * @since version 0.84
+    * @TODO study if we cannot use these methods for the user emails
+    * @see showAddButtonForChildItem(CommonDBTM $item, $html_field)
+    *
+    * @param $item the item on which to add the current CommenDBChild
+    * @param $html_field the name of the HTML field inside the Item form
+    * @param $db_field the name of the field inside the CommonDBChild table to display
+    *
+    * @result nothing (display only)
+   **/
+   function showFieldsForItemForm(CommonDBTM $item, $html_field, $db_field) {
+      global $DB, $CFG_GLPI;
+
+      $items_id = $item->getID();
+
+      if (!$item->can($items_id,'r')) {
+         return false;
+      }
+      $canedit = $item->can($items_id,"w");
+
+      $lower_name = strtolower($this->getType());
+      $div_id = $lower_name."add$items_id";
+
+     // To be sure not to load bad datas from glpi_itememails table
+      if ($items_id == 0) {
+         $items_id = -99;
+      }
+
+      $query = "SELECT `$db_field`, `".$this->getIndexName()."`
+                FROM `" . $this->getTable() . "`
+                WHERE `".$this->items_id."`='".$item->getID()."'";
+
+      if (preg_match('/^itemtype/', $this->itemtype)) {
+         $query .= " AND `itemtype` = '".$item->getType()."'";
+      }
+
+      $setDefault = $this->isField('is_default');
+
+      $count = 0;
+      foreach ($DB->request($query) as $data) {
+
+         $data['is_default'] = 0;
+         $data['is_dynamic'] = 0;
+
+         if ($count) {
+            echo '<br>';
+         }
+         $count++;
+
+         if ($setDefault) {
+            echo "<input title='" . sprintf(__s('Default %s'), $this->getTypeName(1)) .
+                 "' type='radio' name='_default_email' value='".$data[$this->getIndexName()]."'".
+                 ($canedit?' ':' disabled').($data['is_default'] ? ' checked' : ' ').">&nbsp;";
+         }
+
+         $input_name = $html_field . "[" . $data[$this->getIndexName()] . "]";
+         $input_value = $data[$db_field];
+
+         if (!$canedit || ((isset($data['is_dynamic'])) && ($data['is_dynamic']))) {
+            echo "<input type='hidden' name='$input_name' value='$input_value'>" .
+               $input_value."<span class='b'>&nbsp;(D)</span>";
+         } else {
+            echo "<input type='text' size='40' name='$input_name' value='$input_value'>";
+         }
+
+         /*
+         if (!NotificationMail::isItemAddressValid($data['email'])) {
+            echo "<span class='red'>&nbsp;".__('Invalid email address')."</span>";
+         }
+         */
+      }
+
+      if ($canedit) {
+         echo "<div id='$div_id'>";
+         // No email display field
+         if ($count == 0) {
+            echo "<input type='text' size='40' name='".$html_field."[-100]' value=''>";
+         }
+         echo "</div>";
+      }
+   }
+
+
 }
 ?>

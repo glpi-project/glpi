@@ -238,13 +238,16 @@ class NetworkPort extends CommonDBChild {
       unset($this->input_for_instantiation);
 
       if (count($this->input_for_NetworkName) > 0) {
-         $network_name = new NetworkName();
-         if (isset($this->input_for_NetworkName['id'])) {
-            $network_name->update($this->input_for_NetworkName, $history);
-         } else {
-            $this->input_for_NetworkName['itemtype'] = 'NetworkPort';
-            $this->input_for_NetworkName['items_id'] = $this->getID();
-            $network_name->add($this->input_for_NetworkName, $history);
+         if (!empty($this->input_for_NetworkName['name'])
+             || !empty($this->input_for_NetworkName['IPs'])) {
+            $network_name = new NetworkName();
+            if (isset($this->input_for_NetworkName['id'])) {
+               $network_name->update($this->input_for_NetworkName, $history);
+            } else {
+               $this->input_for_NetworkName['itemtype'] = 'NetworkPort';
+               $this->input_for_NetworkName['items_id'] = $this->getID();
+               $network_name->add($this->input_for_NetworkName, $history);
+            }
          }
       }
       unset($this->input_for_NetworkName);
