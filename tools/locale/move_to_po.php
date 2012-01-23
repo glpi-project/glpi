@@ -213,7 +213,7 @@ function search_in_dict($string, $context) {
       foreach ($data as $key => $val) {
          if (!isset($LANG[$mod][$key])) {
             continue;
-         }      
+         }
          // Search same case with punc
          if (strcmp($val,$left.$string.$right) === 0) {
             return $LANG[$mod][$key];
@@ -222,7 +222,7 @@ function search_in_dict($string, $context) {
          if (strcasecmp($val,$left.$string.$right) === 0) {
             return $LANG[$mod][$key];
          }
-         
+
          // Search same case with left punc
          if (strcmp($val,$left.$string) === 0) {
             return $LANG[$mod][$key].$right;
@@ -239,7 +239,8 @@ function search_in_dict($string, $context) {
          // Search same case with right punc
          if (strcasecmp($val,$string.$right) === 0) {
             return $left.$LANG[$mod][$key];
-                     
+         }
+
          // Search same case without punc
          if (strcmp($val,$string) === 0) {
             return $left.$LANG[$mod][$key].$right;
@@ -247,9 +248,6 @@ function search_in_dict($string, $context) {
          // Search non case sensitive
          if (strcasecmp($val,$string) === 0) {
             return $left.$LANG[$mod][$key].$right;
-         }
-
-
          }
 
       }
