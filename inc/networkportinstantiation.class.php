@@ -151,25 +151,19 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       $mac              = strtolower($mac);
       $macItemWithItems = array();
+      $netport          = new NetworkPort();
 
-      foreach (array('NetworkEquipment', 'NetworkPortAggregate', 'NetworkPortAlias',
-                     'NetworkPortEthernet', 'NetworkPortWifi') as $class) {
+      $query = "SELECT `id`
+                FROM `".$netport->getTable()."`
+                WHERE `mac` = '$mac'";
+      foreach ($DB->request($query) as $element) {
+         if ($netport->getFromDB($element['id'])) {
 
-         if ($macItem = getItemForItemtype($class)) {
-            $query = "SELECT `id`
-                      FROM `".$macItem->getTable()."`
-                      WHERE `mac` = '$mac'";
-
-            foreach ($DB->request($query) as $element) {
-               if ($macItem->getFromDB($element['id'])) {
-
-                  if ($macItem instanceof CommonDBChild) {
-                     $macItemWithItems[] = array_merge(array_reverse($macItem->recursivelyGetItems()),
-                                                       array(clone $macItem));
-                  } else {
-                     $macItemWithItems[] = array(clone $macItem);
-                  }
-               }
+            if ($netport instanceof CommonDBChild) {
+               $netportWithItems[] = array_merge(array_reverse($netport->recursivelyGetItems()),
+                                                 array(clone $netport));
+            } else {
+               $macItemWithItems[] = array(clone $netport);
             }
          }
       }
