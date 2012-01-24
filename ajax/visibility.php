@@ -49,6 +49,7 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
 
    switch ($_REQUEST['type']) {
       case 'User':
+         // TODO fix this => depend of objet type (kb, faq or reminder)
          User::dropdown(array('right' => 'reminder_public'));
          $display = true;
          break;
