@@ -456,7 +456,7 @@ class Plugin extends CommonDBTM {
                         $msg = __('Install');
                      }
                      if ($do_install) {
-                        echo "<a class='vsubmit' 'href='".$this->getSearchURL()."?id=$ID&amp;action=install'>".$msg.
+                        echo "<a class='vsubmit' href='".$this->getSearchURL()."?id=$ID&amp;action=install'>".$msg.
                              "</a>";
                      }
                   } else {
