@@ -713,15 +713,21 @@ class CronTask extends CommonDBTM{
    **/
    static public function launch($mode, $max=1, $name='') {
 
+      $crontask = new self();
       $taskname = '';
-      //If cron is launched in command line, and if memory is insufficient, display a warning in
-      //the logs
-      if ($mode==self::MODE_EXTERNAL && Toolbox::checkMemoryLimit() == 2) {
-         Toolbox::logDebug(__('A minimum of 64MB is commonly required for GLPI.'));
+      if ($mode==self::MODE_EXTERNAL) {
+         // If cron is launched in command line, and if memory is insufficient,
+         // display a warning in the logs
+         if (Toolbox::checkMemoryLimit() == 2) {
+            Toolbox::logInFile('cron', __('A minimum of 64MB is commonly required for GLPI.')."\n");
+         }
+         // If no task in CLI mode, call cron.php from command line is not really usefull ;)
+         if (!countElementsInTable($crontask->getTable(), "`mode` = '$mode'")) {
+            Toolbox::logInFile('cron', __('No task with Run mode = CLI, fix your tasks configuration')."\n");
+         }
       }
 
       if (self::get_lock()) {
-         $crontask = new self();
          for ($i=1 ; $i<=$max ; $i++) {
             $prefix = ($mode==self::MODE_EXTERNAL ? 'External'
                                                   : 'Internal')." #$i: ";
