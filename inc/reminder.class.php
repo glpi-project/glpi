@@ -132,10 +132,16 @@ class Reminder extends CommonDBTM {
          return false;
       }
 
+      // Author
+      if ($this->fields['users_id'] == Session::getLoginUserID()) {
+         return true;
+      }
+
       // Users
       if (isset($this->users[Session::getLoginUserID()])) {
          return true;
       }
+
       // Groups
       if (count($this->groups)
           && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
