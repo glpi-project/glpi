@@ -488,6 +488,9 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false) {
 function getTreeValueName($table, $ID, $wholename="", $level=0) {
    global $DB;
 
+   if ($ID == 0) {
+      return array($wholename, 0);
+   }
    $parentIDfield = getForeignKeyFieldForTable($table);
 
    $query = "SELECT *
@@ -860,9 +863,9 @@ function regenerateTreeCompleteName($table) {
          list($name, $level) = getTreeValueName($table, $data['id']);
 
          $query = "UPDATE `$table`
-                   SET `completename` = '".addslashes($name)."',
-                       `level` = '$level'
-                   WHERE `id` = '".$data['id']."'";
+                  SET `completename` = '".addslashes($name)."',
+                     `level` = '$level'
+                  WHERE `id` = '".$data['id']."'";
          $DB->query($query);
       }
    }
