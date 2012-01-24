@@ -127,10 +127,16 @@ class Reminder extends CommonDBTM {
          return false;
       }
 
+      // Author
+      if ($this->fields['users_id'] == Session::getLoginUserID()) {
+         return true;
+      }
+
       // Users
       if (isset($this->users[Session::getLoginUserID()])) {
          return true;
       }
+
       // Groups
       if (count($this->groups)
           && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
@@ -243,7 +249,7 @@ class Reminder extends CommonDBTM {
    **/
    static function addVisibilityRestrict() {
 
-      $restrict = '(0';
+      $restrict = "(`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."' ";
 
       // Users
       $restrict .= " OR `glpi_reminders_users`.`users_id` = '".Session::getLoginUserID()."' ";
