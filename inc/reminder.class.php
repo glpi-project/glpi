@@ -689,28 +689,31 @@ class Reminder extends CommonDBTM {
 
          if ($DB->numrows($result2)>0) {
             for ($i=0 ; $data=$DB->fetch_array($result2) ; $i++) {
-               $interv[$data["begin"]."$$".$i]["reminders_id"] = $data["id"];
-               $interv[$data["begin"]."$$".$i]["id"]           = $data["id"];
+               $key = $data["begin"]."$$".$i;
+               $interv[$key]["itemtype"]    = 'Reminder';
+               $interv[$key]["reminders_id"] = $data["id"];
+               $interv[$key]["id"]           = $data["id"];
 
                if (strcmp($begin,$data["begin"])>0) {
-                  $interv[$data["begin"]."$$".$i]["begin"] = $begin;
+                  $interv[$key]["begin"] = $begin;
                } else {
-                  $interv[$data["begin"]."$$".$i]["begin"] = $data["begin"];
+                  $interv[$key]["begin"] = $data["begin"];
                }
 
                if (strcmp($end,$data["end"])<0) {
-                  $interv[$data["begin"]."$$".$i]["end"] = $end;
+                  $interv[$key]["end"] = $end;
                } else {
-                  $interv[$data["begin"]."$$".$i]["end"] = $data["end"];
+                  $interv[$key]["end"] = $data["end"];
                }
-               $interv[$data["begin"]."$$".$i]["name"]
+               $interv[$key]["name"]
                   = Html::resume_text($data["name"], $CFG_GLPI["cut"]);
-               $interv[$data["begin"]."$$".$i]["text"]
+               $interv[$key]["text"]
                   = Html::resume_text(Html::clean(Toolbox::unclean_cross_side_scripting_deep($data["text"])),
                                                   $CFG_GLPI["cut"]);
 
-               $interv[$data["begin"]."$$".$i]["users_id"]   = $data["users_id"];
-               $interv[$data["begin"]."$$".$i]["state"]      = $data["state"];
+               $interv[$key]["users_id"]   = $data["users_id"];
+               $interv[$key]["state"]      = $data["state"];
+               $interv[$key]["state"]      = $data["state"];
             }
          }
       }

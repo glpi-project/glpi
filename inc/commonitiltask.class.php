@@ -504,38 +504,40 @@ abstract class CommonITILTask  extends CommonDBTM {
          for ($i=0 ; $data=$DB->fetch_array($result) ; $i++) {
             if ($item->getFromDB($data["id"])) {
                if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()],0)) {
+                  $key = $data["begin"]."$$$".$i;
                   // Do not check entity here because webcal used non authenticated access
 //                  if (Session::haveAccessToEntity($item->fields["entities_id"])) {
-                     $interv[$data["begin"]."$$$".$i][$item->getForeignKeyField()] = $data["id"];
-                     $interv[$data["begin"]."$$$".$i]["id"]                        = $data["id"];
+                     $interv[$key]['itemtype'] = $itemtype;
+                     $interv[$key][$item->getForeignKeyField()] = $data["id"];
+                     $interv[$key]["id"]                        = $data["id"];
                      if (isset($data["state"])) {
-                        $interv[$data["begin"]."$$$".$i]["state"]                     = $data["state"];
+                        $interv[$key]["state"]                     = $data["state"];
                      }
-                     $interv[$data["begin"]."$$$".$i][$parentitem->getForeignKeyField()]
+                     $interv[$key][$parentitem->getForeignKeyField()]
                                                 = $item->fields[$parentitem->getForeignKeyField()];
-                     $interv[$data["begin"]."$$$".$i]["users_id"]                  = $data["users_id"];
+                     $interv[$key]["users_id"]                  = $data["users_id"];
 
                      if (strcmp($begin,$data["begin"])>0) {
-                        $interv[$data["begin"]."$$$".$i]["begin"] = $begin;
+                        $interv[$key]["begin"] = $begin;
                      } else {
-                        $interv[$data["begin"]."$$$".$i]["begin"] = $data["begin"];
+                        $interv[$key]["begin"] = $data["begin"];
                      }
 
                      if (strcmp($end,$data["end"])<0) {
-                        $interv[$data["begin"]."$$$".$i]["end"] = $end;
+                        $interv[$key]["end"] = $end;
                      } else {
-                        $interv[$data["begin"]."$$$".$i]["end"] = $data["end"];
+                        $interv[$key]["end"] = $data["end"];
                      }
 
-                     $interv[$data["begin"]."$$$".$i]["name"]     = $parentitem->fields["name"];
-                     $interv[$data["begin"]."$$$".$i]["content"]
+                     $interv[$key]["name"]     = $parentitem->fields["name"];
+                     $interv[$key]["content"]
                                                       = Html::resume_text($parentitem->fields["content"],
                                                                           $CFG_GLPI["cut"]);
-                     $interv[$data["begin"]."$$$".$i]["status"]   = $parentitem->fields["status"];
-                     $interv[$data["begin"]."$$$".$i]["priority"] = $parentitem->fields["priority"];
+                     $interv[$key]["status"]   = $parentitem->fields["status"];
+                     $interv[$key]["priority"] = $parentitem->fields["priority"];
                      /// Specific for tickets
                      if (isset($parentitem->hardwaredatas)) {
-                        $interv[$data["begin"]."$$$".$i]["device"]
+                        $interv[$key]["device"]
                               = ($parentitem->hardwaredatas ?$parentitem->hardwaredatas->getName()
                                                             :'');
                      }
