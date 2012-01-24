@@ -63,6 +63,7 @@ switch ($_GET["usertype"]) {
 
    case "user_group" :
       $_GET['gID'] = "mine";
+      $_GET['uID'] = getLoginUserID();      
       break;
 }
 
