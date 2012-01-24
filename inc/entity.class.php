@@ -160,8 +160,11 @@ class Entity extends CommonTreeDropdown {
    **/
    private function checkRightDatas($input) {
 
-      $tmp = array('id' => $input['id'], 
-                   'level' => $input['level']);
+      $tmp = array();
+      
+      if (isset($input['id'])) {
+         $tmp['id'] = $input['id'];
+      }
 
       foreach (self::$field_right as $right => $fields) {
 
