@@ -674,7 +674,8 @@ class RuleCollection extends CommonDBTM {
             }
 
             if ($this->use_output_rule_process_as_next_input) {
-               $input = $output;
+               $output = $this->prepareInputDataForProcess($output, $params);
+               $input  = $output;
             }
          }
       }
