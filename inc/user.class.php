@@ -1301,7 +1301,7 @@ class User extends CommonDBTM {
 
       //User dn may contain ( or ), need to espace it!
       $user_dn = str_replace(array("(", ")", "\,", "\+"), array("\(", "\)", "\\\,", "\\\+"), $user_dn);
-      
+
       //Only retrive cn and member attributes from groups
       $attrs = array('dn');
 
@@ -2185,8 +2185,7 @@ class User extends CommonDBTM {
          default :
             $joinprofile = true;
             // Check read or active for rights
-            $where = " ((`glpi_profiles`.`".$right."` = '1'
-                          OR `glpi_profiles`.`".$right."` = 'r') ".
+            $where = " (`glpi_profiles`.`".$right."` IN ('1', 'r', 'w') ".
                         getEntitiesRestrictRequest("AND", "glpi_profiles_users", '',
                                                    $entity_restrict, 1)." ";
 
@@ -2557,7 +2556,7 @@ class User extends CommonDBTM {
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['common'][19]."</th>";
       echo "<th>".$LANG['common'][20]."</th>";
-      echo "<th>".$LANG['state'][0]."</th>";            
+      echo "<th>".$LANG['state'][0]."</th>";
       echo "<th>&nbsp;</th></tr>";
 
       foreach ($type_user as $itemtype) {
@@ -2615,8 +2614,8 @@ class User extends CommonDBTM {
                      echo Dropdown::getDropdownName("glpi_states",$data['states_id']);
                   } else {
                      echo '&nbsp;';
-                  }                  
-                  
+                  }
+
                   echo "</td><td class='center'>$linktype</td></tr>";
                }
             }

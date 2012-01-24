@@ -43,14 +43,13 @@ if (strpos($_SERVER['PHP_SELF'],"visibility.php")) {
 
 Session::checkLoginUser();
 
-if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
+if (isset($_REQUEST['type']) && !empty($_REQUEST['type']) && isset($_REQUEST['right'])) {
    $display = false;
    $rand = mt_rand();
 
    switch ($_REQUEST['type']) {
       case 'User':
-         // TODO fix this => depend of objet type (kb, faq or reminder)
-         User::dropdown(array('right' => 'reminder_public'));
+         User::dropdown(array('right' => $_REQUEST['right']));
          $display = true;
          break;
 
@@ -82,7 +81,7 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])) {
 
       case 'Profile':
          $params = array('rand'      => $rand,
-                         'condition' => "`reminder_public` IN ('r','w')");
+                         'condition' => "`".$_REQUEST['right']."` IN ('r','w')");
          $params['toupdate']
                  = array('value_fieldname' => 'value',
                          'to_update'       => "subvisibility$rand",

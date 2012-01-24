@@ -1143,7 +1143,8 @@ class Reminder extends CommonDBTM {
       }
 
       $addrand = Dropdown::dropdownTypes('_type', '', $types);
-      $params  = array('type' => '__VALUE__');
+      $params  = array('type'  => '__VALUE__',
+                       'right' => 'reminder_public');
 
       Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/visibility.php",

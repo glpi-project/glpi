@@ -1290,7 +1290,8 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       $addrand = Dropdown::dropdownTypes('_type', '', $types);
-      $params  = array('type' => '__VALUE__');
+      $params  = array('type'  => '__VALUE__',
+                       'right' => ($this->getfield('is_faq') ? 'faq' : 'knowbase'));
 
       Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
                                     $CFG_GLPI["root_doc"]."/ajax/visibility.php",
