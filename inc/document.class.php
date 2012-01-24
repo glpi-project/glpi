@@ -694,7 +694,7 @@ class Document extends CommonDBTM {
       $tab[90]['massiveaction']   = false;
 
       $tab[7]['table']           = 'glpi_documentcategories';
-      $tab[7]['field']           = 'name';
+      $tab[7]['field']           = 'completename';
       $tab[7]['name']            = __('Heading');
 
       $tab[80]['table']          = 'glpi_entities';

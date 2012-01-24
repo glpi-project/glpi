@@ -791,20 +791,6 @@ function generateGlobalDropdowns() {
                      'comment' => "comment $val"));
    }
 
-
-   $items = array("Documentation", "Facture", "Bon Livraison", "Bon commande", "Capture Ecran",
-                  "Dossier Technique");
-   $dp    = new DocumentCategory();
-   for ($i=0 ; $i<$MAX['rubdocs'] ; $i++) {
-      if (isset($items[$i])) {
-         $val = $items[$i];
-      } else {
-         $val = "category $i";
-      }
-      $dp->add(array('name'    => $val,
-                     'comment' => "comment $val"));
-   }
-
    $items = array('Bureautique', 'Calcul', 'Antivirus', 'Multimédia');
    $dp    = new SoftwareCategory();
    for ($i=0 ; $i<$MAX['softwarecategory'] ; $i++) {
@@ -968,6 +954,26 @@ function generateGlobalDropdowns() {
       $dp->add(array('name'    => $val,
                      'comment' => "comment $val"));
    }
+
+   $items = array("Documentation", "Facture", "Bon Livraison", "Bon commande", "Capture Ecran",
+                  "Dossier Technique");
+   $dp    = new DocumentCategory();
+   for ($i=0 ; $i<max(1,pow($MAX['rubdocs'],1/2)) ; $i++) {
+      if (isset($items[$i])) {
+         $val = $items[$i];
+      } else {
+         $val = "category $i";
+      }
+      $newID = $dp->add(array('name'    => $val,
+                              'comment' => "comment $val"));
+                              
+      for ($j=0 ; $j<mt_rand(0,pow($MAX['rubdocs'],1/2)) ; $j++) {
+         $newID2 = $dp->add(array('name'                        => "s-category $j",
+                                  'comment'                     => "comment $val s-category $j",
+                                  'documentcategories_id'       => $newID));
+      }                     
+   }
+   $MAX['rubdocs'] = getMaxItem('glpi_documentcategories');
 
    $dp = new ItilCategory();
    // GLobal ticket categories : also specific ones by entity

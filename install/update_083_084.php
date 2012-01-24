@@ -938,6 +938,16 @@ function update083to084() {
    $migration->addField("glpi_reservationitems", "is_deleted", "bool");
    $migration->addKey("glpi_reservationitems", "is_deleted");
 
+   $migration->addField("glpi_documentcategories", 'documentcategorie_id', "integer");
+   $migration->addField("glpi_documentcategories", 'completename', "text");
+   $migration->addField("glpi_documentcategories", 'level', "integer");
+   $migration->addField("glpi_documentcategories", 'ancestors_cache', "longtext");
+   $migration->addField("glpi_documentcategories", 'sons_cache', "longtext");
+   $migration->migrationOneTable('glpi_documentcategories');
+   $migration->addKey("glpi_documentcategories", array('documentcategorie_id','name'), 'unicity');
+   regenerateTreeCompleteName("glpi_documentcategories");
+
+
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
