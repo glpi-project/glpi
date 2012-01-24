@@ -399,7 +399,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                }
 
                if ($showEntity) {
-                  echo "<td>".(empty($data['entity']) ? __('Root entity') : $data['entity'])."</td>";
+                  echo "<td>".$data['entity']."</td>";
                }
                echo "<td>".$data['serial']."</td>";
                echo "<td>".$data['otherserial']."</td>";
@@ -473,14 +473,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "</tr>\n";
 
       $tot = 0;
-      if (in_array(0,$_SESSION["glpiactiveentities"])) {
-         $nb = self::countForVersion($softwareversions_id,0);
-         if ($nb>0) {
-            echo "<tr class='tab_bg_2'><td>" . __('Root entity') . "</td>";
-            echo "<td class='right'>" . $nb . "</td></tr>\n";
-            $tot += $nb;
-         }
-      }
+
       $sql = "SELECT `id`, `completename`
               FROM `glpi_entities` " .
               getEntitiesRestrictRequest('WHERE', 'glpi_entities') ."

@@ -80,10 +80,6 @@ if (!isset($_POST['emptylabel']) || $_POST['emptylabel'] == '') {
    $_POST['emptylabel'] = Dropdown::EMPTY_VALUE;
 }
 
-if (!isset($_POST['display_rootentity'])) {
-   $_POST['display_rootentity'] = false;
-}
-
 if (isset($_POST["entity_restrict"])
     && !is_numeric($_POST["entity_restrict"])
     && !is_array($_POST["entity_restrict"])) {
@@ -198,7 +194,7 @@ if ($item instanceof CommonTreeDropdown) {
              $where
              ORDER BY $add_order `completename`
              $LIMIT";
-
+   
    if ($result = $DB->query($query)) {
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."'
              size='1'";
@@ -220,45 +216,22 @@ if ($item instanceof CommonTreeDropdown) {
          }
       }
 
-      $display_selected = true;
-
-      switch ($table) {
-         case "glpi_entities" :
-            // If entity=0 allowed
-            if (isset($_POST["entity_restrict"])
-                && (($_POST["entity_restrict"]<=0 && in_array(0, $_SESSION['glpiactiveentities']))
-                    || (is_array($_POST["entity_restrict"])
-                        && in_array(0, $_POST["entity_restrict"])))) {
-
-               echo "<option class='tree' value='0'>".__('Root entity')."</option>";
-
-               // Entity=0 already add above
-               if ($_POST['value']==0 && !$_POST['display_rootentity']) {
-                  $display_selected = false;
-               }
-            }
-            break;
-
-         default :
-            if ($_POST['display_emptychoice']) {
-               echo "<option class='tree' value='0'>".$_POST['emptylabel']."</option>";
-            }
+      if ($_POST['display_emptychoice']) {
+         echo "<option class='tree' value='0'>".$_POST['emptylabel']."</option>";
       }
 
-      if ($display_selected) {
-         $outputval = Dropdown::getDropdownName($table, $_POST['value']);
+      $outputval = Dropdown::getDropdownName($table, $_POST['value']);
 
-         if (Toolbox::strlen($outputval)!=0 && $outputval!="&nbsp;") {
+      if (Toolbox::strlen($outputval)!=0 && $outputval!="&nbsp;") {
 
-            if (Toolbox::strlen($outputval)>$_POST["limit"]) {
-               // Completename for tree dropdown : keep right
-               $outputval = "&hellip;".Toolbox::substr($outputval, -$_POST["limit"]);
-            }
-            if ($_SESSION["glpiis_ids_visible"] || Toolbox::strlen($outputval)==0) {
-               $outputval .= " (".$_POST['value'].")";
-            }
-            echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
+         if (Toolbox::strlen($outputval)>$_POST["limit"]) {
+            // Completename for tree dropdown : keep right
+            $outputval = "&hellip;".Toolbox::substr($outputval, -$_POST["limit"]);
          }
+         if ($_SESSION["glpiis_ids_visible"] || Toolbox::strlen($outputval)==0) {
+            $outputval .= " (".$_POST['value'].")";
+         }
+         echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
       }
 
       $last_level_displayed = array();

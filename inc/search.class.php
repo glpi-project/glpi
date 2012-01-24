@@ -2254,7 +2254,7 @@ class Search {
             }
             break;
 
-         case "glpi_complete_entities.completename" :
+         case "glpi_entities.completename" :
             if ($itemtype == 'User' && $ID == 80) {
                return " GROUP_CONCAT(`$table$addtable`.`completename` SEPARATOR '$$$$')
                            AS ".$NAME."_$num,
@@ -2264,10 +2264,6 @@ class Search {
                            AS ".$NAME."_".$num."_3,";
             }
             break;
-
-//          case "glpi_entities.completename" :
-//             return " `$table$addtable`.`completename` AS ".$NAME."_$num,
-//                      `$table$addtable`.`id` AS ".$NAME."_".$num."_2, ";
 
          case "glpi_auth_tables.name":
             $user_searchopt = self::getOptions('User');
@@ -3339,23 +3335,6 @@ class Search {
                                                              "glpi_authmails", 'auths_id', 0, 0,
                                                              $user_searchopt[31]['joinparams']);
                      break;
-
-               case "glpi_complete_entities" :
-                  array_push($already_link_tables, "glpi_complete_entities");
-      //            $AS = "AS $new_table";
-                  $specific_leftjoin =  " LEFT JOIN (SELECT `id`, `name`, `entities_id`,
-                                                            `completename`, `comment`, `level`
-                                                     FROM `glpi_entities`
-                                                     UNION
-                                                     SELECT 0 AS id,
-                                                            '".__s('Root entity')."'
-                                                               AS name,
-                                                            -1 AS entities_id,
-                                                            '".__s('Root entity')."'
-                                                               AS completename,
-                                                            '' AS comment, -1 AS level) $AS
-                                                ON (`$rt`.`$linkfield` = `$nt`.`id`) ";
-                  break;
             }
          }
 
@@ -3778,8 +3757,7 @@ class Search {
                return $out;
             }
             break;
-
-         case "glpi_complete_entities.completename" :
+         case "glpi_entities.completename" :
             if ($itemtype == 'User') {
                $out    = "";
                $split  = explode("$$$$",$data[$NAME.$num]);
@@ -3806,12 +3784,6 @@ class Search {
                return $out;
             }
             break;
-
-//          case "glpi_entities.completename" :
-//             if ($data[$NAME.$num."_2"]==0) {  // Set name for Root entity
-//                $data[$NAME.$num] = __('Root entity');
-//             }
-//             break;
 
          case "glpi_documenttypes.icon" :
             if (!empty($data[$NAME.$num])) {
@@ -4184,7 +4156,7 @@ class Search {
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "itemlink" :
-               if (strlen($data[$NAME.$num."_2"])) {
+               if (isset($data[$NAME.$num."_2"]) && strlen($data[$NAME.$num."_2"])) {
                   if (isset($searchopt[$ID]["itemlink_type"])) {
                      $link = Toolbox::getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
                   } else {
@@ -4934,13 +4906,7 @@ class Search {
                                 'searchopt' => $searchopt[$field_num]);
 
                // Specific case of TreeDropdown : add under
-               /// TODO clean realtable usage : for complete_entities
-               if (isset($searchopt[$field_num]['realtable'])
-                   && !empty($searchopt[$field_num]['realtable'])) {
-                  $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['realtable']);
-               } else {
-                  $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);
-               }
+               $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);
 
                $itemlinked      = new $itemtype_linked();
                if ($itemlinked instanceof CommonTreeDropdown) {

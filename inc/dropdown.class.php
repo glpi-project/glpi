@@ -89,8 +89,6 @@ class Dropdown {
       $params['emptylabel'] = self::EMPTY_VALUE;
       //Display emptychoice ?
       $params['display_emptychoice'] = true;
-      //In case of Entity dropdown, display root entity ?
-      $params['display_rootentity']  = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -181,8 +179,7 @@ class Dropdown {
                       'condition'           => $params['condition'],
                       'emptylabel'          => $params['emptylabel'],
                       'display_emptychoice' => $params['display_emptychoice'],
-                      'displaywith'         => $params['displaywith'],
-                      'display_rootentity'  => $params['display_rootentity']);
+                      'displaywith'         => $params['displaywith']);
 
       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
                     $params['rand']."'>";

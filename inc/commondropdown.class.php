@@ -216,6 +216,7 @@ abstract class CommonDropdown extends CommonDBTM {
                } else {
                   $restrict = $this->getEntityID();
                }
+               print_r(getSonsOf($this->getTable(), $ID));
                Dropdown::show(getItemTypeForTable($this->getTable()),
                               array('value'  => $this->fields[$field['name']],
                                     'name'   => $field['name'],

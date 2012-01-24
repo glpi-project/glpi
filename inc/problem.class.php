@@ -1176,11 +1176,7 @@ class Problem extends CommonITILObject {
 
          // Second TER column
          if (count($_SESSION["glpiactiveentities"]) > 1) {
-            if ($job->fields['entities_id'] == 0) {
-               $second_col = __('Root entity');
-            } else {
-               $second_col = Dropdown::getDropdownName('glpi_entities', $job->fields['entities_id']);
-            }
+            $second_col = Dropdown::getDropdownName('glpi_entities', $job->fields['entities_id']);
             echo Search::showItem($output_type, $second_col, $item_num, $row_num,
                                   $align." width=100");
          }

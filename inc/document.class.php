@@ -800,15 +800,6 @@ class Document extends CommonDBTM {
             $query = "SELECT `$itemtable`.*,
                              `glpi_documents_items`.`id` AS IDD, ";
 
-            if ($itemtype == 'Entity') {
-               // Left join because root entity not storeed
-               $query .= "`glpi_documents_items`.`items_id` AS entity
-                          FROM `glpi_documents_items`
-                          LEFT JOIN `glpi_entities`
-                              ON (`glpi_entities`.`id` = `glpi_documents_items`.`items_id`)
-                          WHERE ";
-            }
-
             if ($itemtype == 'KnowbaseItem') {
                $query .= "-1 AS entity
                           FROM `glpi_documents_items`, `$itemtable`
@@ -860,11 +851,6 @@ class Document extends CommonDBTM {
 
                   while ($data=$DB->fetch_assoc($result_linked)) {
                      $ID = "";
-
-                     if ($itemtype == 'Entity' && !$data['entity']) {
-                        $data['id']   = 0;
-                        $data['name'] = __('Root entity');
-                     }
 
                      if ($itemtype == 'Ticket') {
                         //TRANS: %s is the id or the link to the ticket

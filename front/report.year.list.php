@@ -148,11 +148,7 @@ if (isset($query) && count($query)) {
             echo "<td class='center'>".Dropdown::getYesNo($data['itemdeleted'])."</td>";
 
             if ($display_entity) {
-               if ($data['entID'] == 0) {
-                  echo "<td>".__('Root entity')."</td>";
-               } else {
-                  echo "<td>".$data['entname']."</td>";
-               }
+               echo "<td>".$data['entname']."</td>";
             }
 
             if ($data['location']) {

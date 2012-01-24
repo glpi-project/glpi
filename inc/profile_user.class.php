@@ -157,10 +157,6 @@ class Profile_User extends CommonDBTM {
                echo "&nbsp;";
             }
             echo "</td>";
-
-            if ($data["entities_id"] == 0) {
-               $data["completename"] = __('Root entity');
-            }
             echo "<td>";
 
             if ($canshowentity) {
