@@ -418,7 +418,7 @@ class NotificationTarget extends CommonDBChild {
     *
     * @return NO_OPTION
    **/
-   function addAdditionnalUserInfo($data) {
+   function addAdditionnalUserInfo(array $data) {
       return self::NO_OPTION;
    }
 
