@@ -230,7 +230,7 @@ $CFG_GLPI["helpdesk_visible_types"]       = array('Software');
 $CFG_GLPI["networkport_types"]            = array('Computer', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer');
 
-$CFG_GLPI["massiveaction_noupdate_types"] = array('Entity', 'OcsServer', 'Profile',
+$CFG_GLPI["massiveaction_noupdate_types"] = array('OcsServer', 'Profile',
                                                   'TicketValidation');
 
 $CFG_GLPI["massiveaction_nodelete_types"] = array('CronTask', 'Entity', 'NotImportedEmail');
