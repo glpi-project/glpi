@@ -124,10 +124,11 @@ class Planning {
     * @param $usertype type of planning to view : can be user or group
     * @param $uID ID of the user
     * @param $gID ID of the group
+    * @param $itemtype ityemtype only display this itemtype
     *
     * @return Display form
    **/
-   static function showSelectionForm($type, $date, $usertype, $uID, $gID) {
+   static function showSelectionForm($type, $date, $usertype, $uID, $gID, $itemtype='') {
       global $CFG_GLPI;
 
       switch ($type) {
@@ -172,7 +173,7 @@ class Planning {
       echo "<table class='tab_cadre'><tr class='tab_bg_1'>";
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
-                        "&amp;date=$prev&amp;usertype=$usertype&amp;gID=$gID\">";
+                        "&amp;date=$prev&amp;usertype=$usertype&amp;gID=$gID&amp;itemtype=$itemtype\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous')."\"
              title=\"".__s('Previous')."\"></a>";
       echo "</td>";
@@ -229,6 +230,10 @@ class Planning {
              __('Month')."</option>";
       echo "</select></td>\n";
 
+      echo "<td>";
+      Dropdown::dropdownTypes('itemtype',$itemtype, $CFG_GLPI['planning_types']);
+      echo "</td>";
+
       echo "<td rowspan='2' class='center'>";
       echo "<input type='submit' class='submit' name='submit' value=\"".__s('Save')."\">";
       echo "</td>\n";
@@ -236,7 +241,7 @@ class Planning {
       echo "<td>";
       echo "<a target='_blank'
             href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID.
-                  "&amp;gID=".$gID."&amp;usertype=".$usertype."&amp;token=".
+                  "&amp;gID=".$gID."&amp;usertype=".$usertype."&amp;itemtype=$itemtype&amp;token=".
                   User::getPersonalToken(Session::getLoginUserID(true))."\"
                   title=\"".__s('Download the planning in Ical format')."\">".
             "<span style='font-size:10px'>".__('Ical')."</span></a>";
@@ -245,7 +250,7 @@ class Planning {
       // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
       echo "<a target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
              "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
-             "&amp;usertype=".$usertype."&amp;token=".
+             "&amp;usertype=".$usertype."&amp;itemtype=$itemtype&amp;token=".
              User::getPersonalToken(Session::getLoginUserID(true))."\" title=\"".
              __s('webcal:// synchronization')."\">";
       echo "<span style='font-size:10px'>".__('Webcal')."</span></a>";
@@ -253,7 +258,7 @@ class Planning {
 
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
-                     "&amp;date=$next&amp;usertype=$usertype&amp;gID=$gID\">";
+                     "&amp;date=$next&amp;usertype=$usertype&amp;gID=$gID&amp;itemtype=$itemtype\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next')."\"
              title=\"".__s('Next')."\"></a>";
       echo "</td>";
@@ -434,10 +439,11 @@ class Planning {
     * @param $who_group ID of the group of users (0 = undefined)
     * @param $when Date of the planning to display
     * @param $type type of planning to display (day, week, month)
+    * @param $itemtype itemtype limit display to this itemtype
     *
     * @return Nothing (display function)
    **/
-   static function show($who, $who_group, $when, $type) {
+   static function show($who, $who_group, $when, $type, $itemtype='') {
       global $CFG_GLPI, $DB;
 
       if (!Session::haveRight("show_planning","1")
@@ -527,8 +533,12 @@ class Planning {
                       'end'       => $end);
                       
       $interv = array();
-      foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-         $interv = array_merge($interv,$itemtype::populatePlanning($params));
+      if (empty($itemtype)) {
+         foreach ($CFG_GLPI['planning_types'] as $itemtype) {
+            $interv = array_merge($interv,$itemtype::populatePlanning($params));
+         }
+      } else {
+         $interv = $itemtype::populatePlanning($params);
       }
       
       // Display Items
@@ -830,10 +840,11 @@ class Planning {
     *
     * @param $who user ID
     * @param $who_group group ID
+    * @param $itemtype ityemtype only display this itemtype
     *
     * @return icalendar string
    **/
-   static function generateIcal($who,$who_group) {
+   static function generateIcal($who,$who_group, $itemtype) {
       global $CFG_GLPI;
 
       if ($who==0 && $who_group==0) {
@@ -866,10 +877,14 @@ class Planning {
                       'end'       => $end);
                       
       $interv = array();
-      foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-         $interv = array_merge($interv,$itemtype::populatePlanning($params));
-      
+      if (empty($itemtype)) {
+         foreach ($CFG_GLPI['planning_types'] as $itemtype) {
+            $interv = array_merge($interv,$itemtype::populatePlanning($params));
+         }
+      } else {
+         $interv = $itemtype::populatePlanning($params);
       }
+      
       if (count($interv)>0) {
          foreach ($interv as $key => $val) {
             $vevent = new vevent(); //initiate EVENT

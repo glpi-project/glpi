@@ -38,6 +38,10 @@ if (!defined('GLPI_ROOT')) {
 
 class ChangeTask extends CommonITILTask {
 
+   static function getTypeName($nb=0) {
+      return _n('Change task', 'Change tasks', $nb);
+   }
+
 
    function canCreate() {
 

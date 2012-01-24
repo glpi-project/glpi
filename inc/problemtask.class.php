@@ -38,6 +38,9 @@ if (!defined('GLPI_ROOT')) {
 
 class ProblemTask extends CommonITILTask {
 
+   static function getTypeName($nb=0) {
+      return _n('Problem task', 'Problem tasks', $nb);
+   }
 
    function canCreate() {
       return (Session::haveRight('show_my_problem', '1')
