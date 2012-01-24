@@ -1,9 +1,9 @@
 <?php
 /*
- * @version $Id: networkname_ipnetwork.class.php 16719 2012-01-03 14:29:38Z remi $
+ * @version $Id: HEADER 15930 2011-10-25 10:47:55Z jmd $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2011 by the INDEPNET Development Team.
+ Copyright (C) 2003-2012 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------

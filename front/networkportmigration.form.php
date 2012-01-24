@@ -1,9 +1,9 @@
 <?php
 /*
- * @version $Id: networkport.form.php 17050 2012-01-16 10:24:05Z yllen $
+ * @version $Id: HEADER 15930 2011-10-25 10:47:55Z jmd $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2011 by the INDEPNET Development Team.
+ Copyright (C) 2003-2012 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
