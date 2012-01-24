@@ -395,7 +395,7 @@ $LANG['computers'][65]="Liste der Host Maschinen";
 $LANG['computers'][66]="Liste der virtuellen Maschinen"; 
 $LANG['computers'][67]="Virtualization systems"; // en_GB string to be translated
 $LANG['computers'][68]="Virtualization Models"; // en_GB string to be translated
-$LANG['computers'][69]="States of the virtual machine"; // en_GB string to be translated
+$LANG['computers'][69]="State(s) of the virtual machines"; // en_GB string to be translated
 
 $LANG['connect'][0]="Lokale Anschlüsse"; 
 $LANG['connect'][1]="Nicht verbunden"; 
@@ -1754,7 +1754,7 @@ $LANG['rulesengine'][87]="Software deleted by GLPI dictionary rules"; // en_GB s
 $LANG['rulesengine'][90]="Bearbeitung läuft …"; 
 $LANG['rulesengine'][91]="Bearbeitung abgeschlossen"; 
 $LANG['rulesengine'][92]="Warning before running rename based on the dictionary rules"; // en_GB string to be translated
-$LANG['rulesengine'][93]="Warning! This operation can put merged software in the trash.<br>Sure to notify your users."; // en_GB string to be translated
+$LANG['rulesengine'][93]="Warning! This operation can put merged software in the trash.<br>Make sure to notify your users."; // en_GB string to be translated
 $LANG['rulesengine'][94]="FUSION"; 
 $LANG['rulesengine'][95]="Herstellerauswahl"; 
 $LANG['rulesengine'][96]="Replay dictionary rules for the manufacturer(s)<br> ( ----- = All)"; // en_GB string to be translated
@@ -1845,7 +1845,7 @@ $LANG['setup'][10]="Anzeige der Vor- und Nachnamen";
 $LANG['setup'][11]="Automatically refresh the list of tickets"; // en_GB string to be translated
 $LANG['setup'][12]="Pre-select me as a technician when creating a ticket"; // en_GB string to be translated
 $LANG['setup'][14]="E-Mail"; 
-$LANG['setup'][15]="Emails"; // en_GB string to be translated
+$LANG['setup'][15]="Email addresses"; // en_GB string to be translated
 $LANG['setup'][18]="Anmeldung"; 
 $LANG['setup'][19]="Passwort"; 
 $LANG['setup'][20]="Bestätigung Passwort"; 
@@ -2318,7 +2318,7 @@ $LANG['users'][20]="Delete from managers"; // en_GB string to be translated
 $LANG['users'][21]="Default email"; // en_GB string to be translated
 $LANG['users'][22]="Users titles"; // en_GB string to be translated
 $LANG['users'][23]="Benutzer Kategorieren"; 
-$LANG['users'][24]="Add to delegatees"; // en_GB string to be translated
+$LANG['users'][24]="Add to delegates"; // en_GB string to be translated
 $LANG['users'][25]="Delete from delegatees"; // en_GB string to be translated
 
 $LANG['validation'][0]="Genehmigung"; 

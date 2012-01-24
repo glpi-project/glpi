@@ -1754,7 +1754,7 @@ $LANG['rulesengine'][87]="Software slettet af GLPI ordbogsregler";
 $LANG['rulesengine'][90]="Arbejde i gang..."; 
 $LANG['rulesengine'][91]="Arbejde afsluttet."; 
 $LANG['rulesengine'][92]="Warning before running rename based on the dictionary rules"; // en_GB string to be translated
-$LANG['rulesengine'][93]="Warning! This operation can put merged software in the trash.<br>Sure to notify your users."; // en_GB string to be translated
+$LANG['rulesengine'][93]="Warning! This operation can put merged software in the trash.<br>Make sure to notify your users."; // en_GB string to be translated
 $LANG['rulesengine'][94]="FUSION"; 
 $LANG['rulesengine'][95]="Manufacturer choice"; // en_GB string to be translated
 $LANG['rulesengine'][96]="Afspil ordbogsregler for producent(er)<br> ( ----- = Alle)"; 
@@ -2318,7 +2318,7 @@ $LANG['users'][20]="Delete from managers"; // en_GB string to be translated
 $LANG['users'][21]="Standard email"; 
 $LANG['users'][22]="Users titles"; // en_GB string to be translated
 $LANG['users'][23]="Users categories"; // en_GB string to be translated
-$LANG['users'][24]="Add to delegatees"; // en_GB string to be translated
+$LANG['users'][24]="Add to delegates"; // en_GB string to be translated
 $LANG['users'][25]="Delete from delegatees"; // en_GB string to be translated
 
 $LANG['validation'][0]="Validering"; 

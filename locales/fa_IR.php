@@ -395,7 +395,7 @@ $LANG['computers'][65]="فهرست ماشین های میزبان";
 $LANG['computers'][66]="فهرست ماشین های مجازی"; 
 $LANG['computers'][67]="Virtualization systems"; // en_GB string to be translated
 $LANG['computers'][68]="Virtualization Models"; // en_GB string to be translated
-$LANG['computers'][69]="States of the virtual machine"; // en_GB string to be translated
+$LANG['computers'][69]="State(s) of the virtual machines"; // en_GB string to be translated
 
 $LANG['connect'][0]="اتصالات مستقیم"; 
 $LANG['connect'][1]="متصل نیست"; 
@@ -1845,7 +1845,7 @@ $LANG['setup'][10]="نمایش به ترتیب نام خانوادگی نام";
 $LANG['setup'][11]="تازه کردن فهرست درخواست ها به طور خودکار"; 
 $LANG['setup'][12]="Pre-select me as a technician when creating a ticket"; // en_GB string to be translated
 $LANG['setup'][14]="رایانامه"; 
-$LANG['setup'][15]="Emails"; // en_GB string to be translated
+$LANG['setup'][15]="Email addresses"; // en_GB string to be translated
 $LANG['setup'][18]="ورود به سامانه"; 
 $LANG['setup'][19]="گذر واژه"; 
 $LANG['setup'][20]="تایید رمز عبور"; 

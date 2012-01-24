@@ -395,7 +395,7 @@ $LANG['computers'][65]="Llista de màquines hosts.";
 $LANG['computers'][66]="Llistat de les màquines virtuals"; 
 $LANG['computers'][67]="Virtualization systems"; // en_GB string to be translated
 $LANG['computers'][68]="Virtualization Models"; // en_GB string to be translated
-$LANG['computers'][69]="States of the virtual machine"; // en_GB string to be translated
+$LANG['computers'][69]="State(s) of the virtual machines"; // en_GB string to be translated
 
 $LANG['connect'][0]="Connexions directes"; 
 $LANG['connect'][1]="No conectat"; 
@@ -1845,7 +1845,7 @@ $LANG['setup'][10]="Visualitza l'ordre del cognom i nom";
 $LANG['setup'][11]="Automatically refresh the list of tickets"; // en_GB string to be translated
 $LANG['setup'][12]="Pre-select me as a technician when creating a ticket"; // en_GB string to be translated
 $LANG['setup'][14]="Correu electrònic"; 
-$LANG['setup'][15]="Emails"; // en_GB string to be translated
+$LANG['setup'][15]="Email addresses"; // en_GB string to be translated
 $LANG['setup'][18]="Login"; 
 $LANG['setup'][19]="Contrasenya"; 
 $LANG['setup'][20]="Confirmar contrasenya"; 
@@ -2318,7 +2318,7 @@ $LANG['users'][20]="Delete from managers"; // en_GB string to be translated
 $LANG['users'][21]="Correu per defecte"; 
 $LANG['users'][22]="Users titles"; // en_GB string to be translated
 $LANG['users'][23]="Users categories"; // en_GB string to be translated
-$LANG['users'][24]="Add to delegatees"; // en_GB string to be translated
+$LANG['users'][24]="Add to delegates"; // en_GB string to be translated
 $LANG['users'][25]="Delete from delegatees"; // en_GB string to be translated
 
 $LANG['validation'][0]="Validació"; 
