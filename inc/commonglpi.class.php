@@ -257,19 +257,17 @@ class CommonGLPI {
                   }
                }
             }
-            // Display plugin datas
-            Plugin::displayAction($item, $tab);
             return true;
 
          case 'Note' :
             $item->showNotesForm();
             return true;
 
-         default :
-            if (Plugin::displayAction($item, $tab, $withtemplate)) {
-               return true;
-            }
+         case -2 :
+            $item->showDebugInfo();
+            return true;
 
+         default :
             $data     = explode('$',$tab);
             $itemtype = $data[0];
             // Default set
@@ -508,10 +506,6 @@ class CommonGLPI {
                                 'params' => "target=$target&itemtype=".$this->getType().
                                             "&glpi_tab=$key&id=$ID$extraparam");
          }
-
-         // Plugin with plugin_get_headings_xxx
-         $plug_tabs = Plugin::getTabs($target,$this, $withtemplate);
-         $tabs += $plug_tabs;
 
          // Not all tab for templates and if only 1 tab
          if ($display_all && empty($withtemplate) && count($tabs)>1) {
