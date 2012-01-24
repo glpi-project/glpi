@@ -218,15 +218,15 @@ class Planning {
 
       echo "<td>";
       Html::showDateFormItem("date", $date, false);
-      echo "</td>\n";
+      echo '<hr>';
 
-      echo "<td><select name='type'>";
+      echo "<select name='type'>";
       echo "<option value='day' ".($type=="day"?" selected ":"").">".__('Day').
            "</option>";
       echo "<option value='week' ".($type=="week"?" selected ":"").">".__('Week').
            "</option>";
       echo "<option value='month' ".($type=="month"?" selected ":"").">".
-             Toolbox::ucfirst(__('month'))."</option>";
+             __('Month')."</option>";
       echo "</select></td>\n";
 
       echo "<td rowspan='2' class='center'>";
