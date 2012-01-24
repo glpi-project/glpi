@@ -870,7 +870,6 @@ class Planning {
          $interv = array_merge($interv,$itemtype::populatePlanning($params));
       
       }
-
       if (count($interv)>0) {
          foreach ($interv as $key => $val) {
             $vevent = new vevent(); //initiate EVENT
@@ -880,6 +879,8 @@ class Planning {
                } else {
                   $vevent->setProperty("uid", "Other#".$key);
                }
+            } else {
+               $vevent->setProperty("uid", "Other#".$key);
             }
             
             $vevent->setProperty( "dstamp", $val["begin"] );
@@ -901,18 +902,16 @@ class Planning {
                $vevent->setProperty( "description", $val["name"] );
             }
 
-            if (isset($val["tickets_id"])) {
-               $vevent->setProperty("url",
-                                    $CFG_GLPI["url_base"]."/index.php?redirect=tracking_".
-                                       $val["tickets_id"]);
+            if (isset($val["url"])) {
+               $vevent->setProperty("url",$val["url"]);
             }
-
+            
             $v->setComponent( $vevent );
          }
       }
       $v->sort();
-      $v->parse();
-      return $v->createCalendar();
+//       $v->parse();
+      return $v->returnCalendar();
    }
 
 }
