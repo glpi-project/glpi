@@ -854,7 +854,7 @@ class EntityData extends CommonDBChild {
 
       if ($entdata->fields['autoclose_delay'] == self::CONFIG_PARENT && $ID != 0) {
          $autoclose_mode = self::getUsedConfig('autoclose_delay', $entdata->fields['entities_id'],
-                                               '', EntityData::CONFIG_NEVER);
+                                               '', self::CONFIG_NEVER);
 
          echo "<font class='green'>&nbsp;&nbsp;";
          if ($autoclose_mode >= 0) {
@@ -980,7 +980,6 @@ class EntityData extends CommonDBChild {
             }
          }
       }
-
       // Entity data not found or not defined : search in parent one
       if ($entities_id > 0) {
          $current = new Entity();

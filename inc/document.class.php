@@ -818,7 +818,7 @@ class Document extends CommonDBTM {
                           LEFT JOIN `glpi_entities`
                               ON (`glpi_entities`.`id` = `glpi_documents_items`.`items_id`)
                           WHERE ";
-            } if ($itemtype == 'KnowbaseItem') {
+            } else if ($itemtype == 'KnowbaseItem') {
                $query .= "-1 AS entity
                           FROM `glpi_documents_items`, `$itemtable`
                           ".KnowbaseItem::addVisibilityJoins()."
