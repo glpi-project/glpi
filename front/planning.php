@@ -63,6 +63,7 @@ switch ($_GET["usertype"]) {
 
    case "user_group" :
       $_GET['gID'] = "mine";
+      $_GET['uID'] = Session::getLoginUserID();      
       break;
 }
 
@@ -86,6 +87,7 @@ if (isset($_REQUEST['checkavailability'])) {
       /// TODO : complex : check if the request is valid : rights on uID / gID ?
       $user = new User();
       if ($user->getFromDBByToken($_GET['token'])) {
+         print_r($_GET);
          Planning::generateIcal($_GET["uID"], $_GET["gID"]);
       }
    }
