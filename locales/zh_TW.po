@@ -1,21 +1,22 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
-# Translators:
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: GLPI Project\n"
-"Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-17 16:14+0100\n"
-"PO-Revision-Date: 2012-01-17 15:42+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
-"Language-Team: Chinese (Taiwan) (http://www.transifex.net/projects/p/GLPI/team/zh_TW/)\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: zh_TW\n"
-"Plural-Forms: nplurals=1; plural=0\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: index.php:64
 msgid "GLPI - Authentication"
@@ -276,7 +277,8 @@ msgstr "中斷"
 #: inc/user.class.php:2011 inc/user.class.php:2038
 msgid "Profile"
 msgid_plural "Profiles"
-msgstr[0] ""
+msgstr[0] "個人配置"
+msgstr[1] "個人配置"
 
 #: ajax/dropdownMassiveAction.php:222 inc/profile_user.class.php:119
 #: inc/profile_user.class.php:241 inc/ruleright.class.php:102
@@ -473,6 +475,7 @@ msgstr "處理中"
 msgid "%s ticket in progress or recently solved on this item."
 msgid_plural "%s tickets in progress or recently solved on this item."
 msgstr[0] ""
+msgstr[1] ""
 
 #: ajax/ticketsatisfaction.php:62 inc/entity.class.php:494
 msgid "Create survey after"
@@ -524,9 +527,9 @@ msgstr "資料庫版本與安裝的檔案不符. 必需更新."
 
 #: config/config.php:188
 msgid ""
-"You are trying to use GLPI with files from an earlier version to the version"
-" of the database. Please install the GLPI files corresponding to the version"
-" of your database."
+"You are trying to use GLPI with files from an earlier version to the version "
+"of the database. Please install the GLPI files corresponding to the version "
+"of your database."
 msgstr "您嘗試使用舊版本的GLPI連接新版本的GLPI資料庫. 請安裝與目前資料庫版本相符的檔案."
 
 #: config/config.php:193 install/install.php:175 install/install.php:184
@@ -1039,7 +1042,8 @@ msgstr ""
 #: inc/profile.class.php:1418 inc/search.class.php:952
 msgid "Consumable"
 msgid_plural "Consumables"
-msgstr[0] ""
+msgstr[0] "消耗品"
+msgstr[1] "消耗品"
 
 #. TRANS: %s is the user login
 #: front/contact.form.php:111 front/contract.form.php:141
@@ -1058,7 +1062,8 @@ msgstr ""
 #: inc/html.class.php:1222 inc/profile.class.php:1440
 msgid "Contact"
 msgid_plural "Contacts"
-msgstr[0] ""
+msgstr[0] "供選擇的使用者名稱"
+msgstr[1] "聯絡人"
 
 #: front/contract.php:41 inc/contract.class.php:48 inc/contract.class.php:290
 #: inc/contract.class.php:598 inc/contract_item.class.php:143
@@ -1066,7 +1071,8 @@ msgstr[0] ""
 #: inc/profile.class.php:1450 inc/transfer.class.php:3197
 msgid "Contract"
 msgid_plural "Contracts"
-msgstr[0] ""
+msgstr[0] "合約"
+msgstr[1] "合約"
 
 #. TRANS: %s is a task name
 #: front/crontask.php:51
@@ -1101,6 +1107,7 @@ msgstr "未執行待決定"
 msgid "Component"
 msgid_plural "Components"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/dictionnary.php:41 inc/html.class.php:1403 inc/profile.class.php:105
 #: inc/profile.class.php:1145 inc/profile.class.php:1557
@@ -1132,7 +1139,8 @@ msgstr "總體的辭典"
 #: install/update_0713_072.php:509
 msgid "Software"
 msgid_plural "Software"
-msgstr[0] ""
+msgstr[0] "軟體"
+msgstr[1] "軟體"
 
 #: front/dictionnary.php:54 inc/cartridgeitem.class.php:193
 #: inc/cartridgeitem.class.php:270 inc/commondevice.class.php:77
@@ -1160,7 +1168,8 @@ msgstr[0] ""
 #: inc/ruleimportcomputer.class.php:120 inc/search.class.php:4681
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
-msgstr[0] ""
+msgstr[0] "製造商"
+msgstr[1] "製造商"
 
 #: front/dictionnary.php:59 front/find_num.php:101 front/printer.php:41
 #: front/report.contract.php:59 front/report.default.php:126
@@ -1170,7 +1179,8 @@ msgstr[0] ""
 #: inc/profile.class.php:1403 inc/transfer.class.php:3134
 msgid "Printer"
 msgid_plural "Printers"
-msgstr[0] ""
+msgstr[0] "印表機"
+msgstr[1] "印表機"
 
 #: front/dictionnary.php:66 front/stat.location.php:82
 #: inc/cartridgeitem.class.php:495 inc/computer.class.php:524
@@ -1197,19 +1207,22 @@ msgstr[0] ""
 #: inc/ruleimportcomputer.class.php:117
 msgid "Model"
 msgid_plural "Models"
-msgstr[0] ""
+msgstr[0] "樣式"
+msgstr[1] "型號"
 
 #: front/dictionnary.php:68 inc/computermodel.class.php:45
 #: inc/dropdown.class.php:641 inc/html.class.php:1529
 msgid "Computer model"
 msgid_plural "Computer models"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/dictionnary.php:71 inc/dropdown.class.php:647 inc/html.class.php:1542
 #: inc/monitormodel.class.php:45
 msgid "Monitor model"
 msgid_plural "Monitor models"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/dictionnary.php:74 inc/cartridgeitem.class.php:307
 #: inc/dropdown.class.php:645 inc/html.class.php:1555
@@ -1217,22 +1230,26 @@ msgstr[0] ""
 msgid "Printer model"
 msgid_plural "Printer models"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/dictionnary.php:77
 msgid "Device model"
 msgid_plural "Device models"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/dictionnary.php:80
 msgid "Network equipment model"
 msgid_plural "Network equipment models"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/dictionnary.php:84 inc/dropdown.class.php:650 inc/html.class.php:1594
 #: inc/phonemodel.class.php:45
 msgid "Phone model"
 msgid_plural "Phone models"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/dictionnary.php:91 front/stat.location.php:80
 #: front/stat.tracking.php:92 inc/bookmark.class.php:212
@@ -1286,41 +1303,48 @@ msgstr[0] ""
 #: inc/user.class.php:2549 inc/user.class.php:2624
 msgid "Type"
 msgid_plural "Types"
-msgstr[0] ""
+msgstr[0] "類型"
+msgstr[1] "類型"
 
 #: front/dictionnary.php:93 inc/computertype.class.php:43
 #: inc/dropdown.class.php:617 inc/html.class.php:1607
 msgid "Computer type"
 msgid_plural "Computer types"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/dictionnary.php:96 inc/dropdown.class.php:621 inc/html.class.php:1620
 #: inc/monitortype.class.php:43
 msgid "Monitor type"
 msgid_plural "Monitor types"
-msgstr[0] ""
+msgstr[0] "顯示器類型"
+msgstr[1] "顯示器類型"
 
 #: front/dictionnary.php:99 inc/dropdown.class.php:620 inc/html.class.php:1633
 #: inc/printertype.class.php:43
 msgid "Printer type"
 msgid_plural "Printer types"
-msgstr[0] ""
+msgstr[0] "印表機類型"
+msgstr[1] "印表機類型"
 
 #: front/dictionnary.php:102
 msgid "Device type"
 msgid_plural "Device types"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/dictionnary.php:105
 msgid "Network equipment type"
 msgid_plural "Network equipment types"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/dictionnary.php:109 inc/dropdown.class.php:623
 #: inc/html.class.php:1672 inc/phonetype.class.php:43
 msgid "Phone type"
 msgid_plural "Phone types"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/dictionnary.php:116 front/dictionnary.php:118
 #: front/report.default.php:140 front/stat.location.php:84
@@ -1334,7 +1358,8 @@ msgstr[0] ""
 #: inc/softwareversion.class.php:283
 msgid "Operating system"
 msgid_plural "Operating systems"
-msgstr[0] ""
+msgstr[0] "作業系統"
+msgstr[1] "操作系統"
 
 #: front/dictionnary.php:121 inc/computer.class.php:591
 #: inc/computer.class.php:783 inc/dropdown.class.php:679
@@ -1344,7 +1369,8 @@ msgstr[0] ""
 #: inc/ruledictionnaryoperatingsystemservicepack.class.php:60
 msgid "Service Pack"
 msgid_plural "Service Packs"
-msgstr[0] ""
+msgstr[0] "服務套件"
+msgstr[1] "Service Packs"
 
 #: front/dictionnary.php:125 inc/computer_softwareversion.class.php:340
 #: inc/computer_softwareversion.class.php:737 inc/ocsserver.class.php:536
@@ -1356,7 +1382,8 @@ msgstr[0] ""
 #: inc/softwareversion.class.php:53 inc/softwareversion.class.php:281
 msgid "Version"
 msgid_plural "Versions"
-msgstr[0] ""
+msgstr[0] "版本"
+msgstr[1] "版本"
 
 #: front/displaypreference.form.php:41 front/documenttype.list.php:36
 #: front/dropdown.php:41 front/plugin.php:52 front/popup.php:42
@@ -1515,7 +1542,8 @@ msgstr "財產編號"
 #: inc/profile.class.php:636 inc/profile.class.php:1383
 msgid "Computer"
 msgid_plural "Computers"
-msgstr[0] ""
+msgstr[0] "電腦"
+msgstr[1] "電腦"
 
 #: front/find_num.php:100 front/report.contract.php:60
 #: front/report.year.php:59 inc/networkequipment.class.php:54
@@ -1523,6 +1551,7 @@ msgstr[0] ""
 msgid "Network device"
 msgid_plural "Network devices"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/find_num.php:102 front/report.contract.php:61
 #: front/report.default.php:132 front/report.default.php:186
@@ -1533,6 +1562,7 @@ msgstr[0] ""
 msgid "Monitor"
 msgid_plural "Monitors"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/find_num.php:103 front/peripheral.php:41 front/report.contract.php:62
 #: front/report.default.php:134 front/report.default.php:236
@@ -1542,7 +1572,8 @@ msgstr[0] ""
 #: inc/transfer.class.php:3144
 msgid "Device"
 msgid_plural "Devices"
-msgstr[0] ""
+msgstr[0] "設備"
+msgstr[1] "設備"
 
 #. TRANS: %s is the user login
 #: front/group.form.php:76 front/user.form.php:129
@@ -1650,6 +1681,7 @@ msgstr "忘記您的密碼?"
 msgid "Receiver"
 msgid_plural "Receivers"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/mailcollector.php:47 front/setup.auth.php:61
 #: inc/authmail.class.php:200
@@ -1753,7 +1785,8 @@ msgstr ""
 #: inc/profile.class.php:1314 inc/profile.class.php:1524
 msgid "Notification"
 msgid_plural "Notifications"
-msgstr[0] ""
+msgstr[0] "通知"
+msgstr[1] "通知"
 
 #: front/notificationtemplate.form.php:89 front/notificationtemplate.php:39
 #: front/notificationtemplatetranslation.form.php:73
@@ -1762,12 +1795,14 @@ msgstr[0] ""
 #: inc/notificationevent.class.php:194 inc/notificationtemplate.class.php:48
 msgid "Notification template"
 msgid_plural "Notification templates"
-msgstr[0] ""
+msgstr[0] "通知模型"
+msgstr[1] "通知模板"
 
 #: front/notimportedemail.php:41 inc/notimportedemail.class.php:56
 msgid "Refused email"
 msgid_plural "Refused emails"
-msgstr[0] ""
+msgstr[0] "電子郵件被拒絕"
+msgstr[1] "電子郵件被拒絕"
 
 #: front/ocsng.clean.php:39 front/ocsng.import.php:40 front/ocsng.link.php:40
 #: front/ocsng.php:42 front/ocsng.php:69 front/ocsng.sync.php:40
@@ -1840,7 +1875,8 @@ msgstr ""
 #: front/popup.php:73 front/popup.php:79 front/popup.php:85
 msgid "Bookmark"
 msgid_plural "Bookmarks"
-msgstr[0] ""
+msgstr[0] "書籤"
+msgstr[1] "書籤"
 
 #: front/popup.php:90 front/popup.php:95 inc/user.class.php:2397
 msgid "Import an user"
@@ -1870,7 +1906,8 @@ msgstr ""
 #: inc/profile.class.php:960 inc/stat.class.php:1421
 msgid "Problem"
 msgid_plural "Problems"
-msgstr[0] ""
+msgstr[0] "問題"
+msgstr[1] "問題"
 
 #. TRANS: %s is the user login
 #: front/profile_user.form.php:45
@@ -1890,13 +1927,13 @@ msgstr ""
 msgid "Reminder"
 msgid_plural "Reminders"
 msgstr[0] ""
+msgstr[1] ""
 
 #: front/report.contract.list.php:47
 msgid "List of the hardware under contract"
 msgstr "硬體名單根據合約"
 
-#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to
-#. change for RTL
+#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
 #: front/report.contract.list.php:117 front/report.infocom.php:121
 #: front/report.year.list.php:129 inc/authldap.class.php:212
 #: inc/authldap.class.php:371 inc/authldap.class.php:588
@@ -2028,7 +2065,8 @@ msgstr "名稱"
 #: inc/user.class.php:2550 inc/user.class.php:2625 inc/user.class.php:3002
 msgid "Entity"
 msgid_plural "Entities"
-msgstr[0] ""
+msgstr[0] "實體"
+msgstr[1] "權限"
 
 #: front/report.contract.list.php:122 front/report.location.list.php:61
 #: front/report.netpoint.list.php:68 front/report.year.list.php:134
@@ -2046,7 +2084,8 @@ msgstr[0] ""
 #: inc/software.class.php:248
 msgid "Location"
 msgid_plural "Locations"
-msgstr[0] ""
+msgstr[0] "地點"
+msgstr[1] "位置"
 
 #: front/report.contract.list.php:123 front/report.infocom.php:127
 #: front/report.year.list.php:135 inc/entity.class.php:445
@@ -2112,7 +2151,8 @@ msgstr "硬體類型"
 #: install/update_0723_078.php:3701
 msgid "Phone"
 msgid_plural "Phones"
-msgstr[0] ""
+msgstr[0] "電話"
+msgstr[1] "電話"
 
 #: front/report.contract.php:80 front/report.infocom.conso.php:64
 #: front/report.infocom.php:65 front/report.networking.php:56
@@ -2132,7 +2172,8 @@ msgstr "顯示報告"
 #: inc/profile.class.php:647 inc/profile.class.php:1398
 msgid "Network"
 msgid_plural "Networks"
-msgstr[0] ""
+msgstr[0] "網路"
+msgstr[1] "網絡"
 
 #: front/report.infocom.conso.php:199 front/report.infocom.conso.php:200
 #: front/report.infocom.conso.php:264 front/report.infocom.conso.php:265
@@ -2181,7 +2222,8 @@ msgstr "根據地點的網絡報告: %s"
 #: inc/networkportmigration.class.php:59
 msgid "Network outlet"
 msgid_plural "Network outlets"
-msgstr[0] ""
+msgstr[0] "網路點"
+msgstr[1] "網路商店"
 
 #: front/report.location.list.php:63 front/report.netpoint.list.php:69
 msgid "Switch"
@@ -2269,7 +2311,8 @@ msgstr "根據年的設備報告"
 #: install/install.php:519
 msgid "License"
 msgid_plural "Licenses"
-msgstr[0] ""
+msgstr[0] "授權"
+msgstr[1] "使用授權"
 
 #: front/reservation.form.php:43 front/reservationitem.php:42
 #: front/reservation.php:45 front/tracking.injector.php:57
@@ -2287,7 +2330,8 @@ msgstr "服務台"
 #: install/update_0723_078.php:4837
 msgid "Reservation"
 msgid_plural "Reservations"
-msgstr[0] ""
+msgstr[0] "預借"
+msgstr[1] "預借"
 
 #: front/rule.cache.php:43 front/rule.common.form.php:122
 #: front/rule.common.php:107 front/rule.common.php:157 inc/event.class.php:121
@@ -2296,7 +2340,8 @@ msgstr[0] ""
 #: inc/rulecollection.class.php:1040
 msgid "Rule"
 msgid_plural "Rules"
-msgstr[0] ""
+msgstr[0] "規則"
+msgstr[1] "規則"
 
 #. TRANS: %s is the user login
 #: front/rule.common.php:67
@@ -2342,7 +2387,8 @@ msgstr "外在認證"
 #: inc/html.class.php:1893 inc/ruleright.class.php:278 inc/user.class.php:2950
 msgid "LDAP directory"
 msgid_plural "LDAP directories"
-msgstr[0] ""
+msgstr[0] "LDAP"
+msgstr[1] "LDAP目錄"
 
 #: front/setup.auth.php:53 inc/authldap.class.php:292
 msgid "The LDAP extension of your PHP parser isn't installed"
@@ -2356,7 +2402,8 @@ msgstr "不能用LDAP作為連接的外部來源"
 #: inc/notificationmailsetting.class.php:181
 msgid "Mail server"
 msgid_plural "Mail servers"
-msgstr[0] ""
+msgstr[0] "電子郵件伺服器"
+msgstr[1] "郵件伺服器"
 
 #: front/setup.auth.php:62 inc/authmail.class.php:201
 msgid "Impossible to use email server as external source of connection"
@@ -2392,7 +2439,8 @@ msgstr "處理模板…"
 #: inc/ticket.class.php:3329 inc/ticket.class.php:3347
 msgid "SLA"
 msgid_plural "SLAs"
-msgstr[0] ""
+msgstr[0] "服務等級"
+msgstr[1] "所有服務等級"
 
 #. TRANS: %s is the user login
 #: front/slalevel.form.php:43
@@ -2416,7 +2464,8 @@ msgstr ""
 #: inc/ticket.class.php:1643
 msgid "Escalation level"
 msgid_plural "Escalation levels"
-msgstr[0] ""
+msgstr[0] "申告等級"
+msgstr[1] "升級層級"
 
 #. TRANS: %s is the user login, %2$s is the license id
 #: front/softwarelicense.form.php:54
@@ -2457,7 +2506,8 @@ msgstr ""
 #: front/states.php:43 inc/dropdown.class.php:604 inc/state.class.php:43
 msgid "Status of items"
 msgid_plural "Status of items"
-msgstr[0] ""
+msgstr[0] "項目狀態"
+msgstr[1] "項目狀態"
 
 #: front/stat.global.php:38 front/stat.graph.php:38 front/stat.item.php:38
 #: front/stat.location.php:38 front/stat.php:38 front/stat.tracking.php:38
@@ -2699,7 +2749,8 @@ msgstr "作者"
 #: inc/user.class.php:1957 inc/user.class.php:2663
 msgid "Group"
 msgid_plural "Groups"
-msgstr[0] ""
+msgstr[0] "群組"
+msgstr[1] "群組"
 
 #: front/stat.tracking.php:80 front/stat.tracking.php:106
 msgid "Group tree"
@@ -2780,7 +2831,8 @@ msgstr "優先權"
 #: inc/ticket.class.php:1868
 msgid "Solution type"
 msgid_plural "Solution types"
-msgstr[0] ""
+msgstr[0] "解決方案的類型"
+msgstr[1] "解決方案類型"
 
 #: front/stat.tracking.php:93 inc/dropdown.class.php:612
 #: inc/notificationtargetticket.class.php:531
@@ -2789,7 +2841,8 @@ msgstr[0] ""
 #: inc/ticket.class.php:3479 inc/ticketfollowup.class.php:720
 msgid "Request source"
 msgid_plural "Request sources"
-msgstr[0] ""
+msgstr[0] "請求來源"
+msgstr[1] "請求來源"
 
 #: front/stat.tracking.php:98 inc/cartridgeitem.class.php:245
 #: inc/change.class.php:385 inc/commondbrelation.class.php:56
@@ -2837,7 +2890,8 @@ msgstr ""
 #: inc/supplier.class.php:54 inc/transfer.class.php:3167
 msgid "Supplier"
 msgid_plural "Suppliers"
-msgstr[0] ""
+msgstr[0] "供應商"
+msgstr[1] "供應廠商"
 
 #: front/stat.tracking.php:180 front/stat.tracking.php:181
 msgid "Number resolved"
@@ -2892,7 +2946,8 @@ msgstr ""
 #: inc/ticket.class.php:4312 inc/transfer.class.php:3061
 msgid "Ticket"
 msgid_plural "Tickets"
-msgstr[0] ""
+msgstr[0] "問題單"
+msgstr[1] "固定資產追蹤"
 
 #. TRANS: %s is the user login
 #: front/tickettemplatehiddenfield.form.php:43
@@ -2983,7 +3038,8 @@ msgstr "感謝您使用我們的自動服務台系統."
 #: install/update_0713_072.php:554
 msgid "User"
 msgid_plural "Users"
-msgstr[0] ""
+msgstr[0] "使用者"
+msgstr[1] "使用者"
 
 #. TRANS: %s is the character used as wildcard in ajax search
 #: inc/ajax.class.php:88
@@ -3171,7 +3227,8 @@ msgstr "CAS主機"
 #: inc/printer.class.php:444
 msgid "Port"
 msgid_plural "Ports"
-msgstr[0] ""
+msgstr[0] "端口"
+msgstr[1] "端口"
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1033
@@ -3505,7 +3562,8 @@ msgstr "管理號碼"
 #: install/update_0723_078.php:3699
 msgid "Email"
 msgid_plural "Emails"
-msgstr[0] ""
+msgstr[0] "電子郵件"
+msgstr[1] "Emails"
 
 #: inc/authldap.class.php:502 inc/authldap.class.php:685
 #: inc/authldap.class.php:2297
@@ -3722,12 +3780,14 @@ msgstr "小於"
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/authldap.class.php:2585
 #, php-format
 msgid "%d week"
 msgid_plural "%d weeks"
 msgstr[0] ""
+msgstr[1] ""
 
 #. TRANS: %d is a number of months
 #: inc/authldap.class.php:2588 inc/cartridge.class.php:703
@@ -3742,6 +3802,7 @@ msgstr[0] ""
 msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/authldap.class.php:2594
 msgid "Disable filtering by date"
@@ -3796,7 +3857,8 @@ msgstr "測試連線至電子郵件伺服器"
 #: inc/computer.class.php:787 inc/dropdown.class.php:680
 msgid "Update Source"
 msgid_plural "Update Sources"
-msgstr[0] ""
+msgstr[0] "更新來源"
+msgstr[1] "更新來源"
 
 #. TRANS: %1$s is the Itemtype name and $2$d the ID of the item
 #: inc/bookmark.class.php:201 inc/commondbtm.class.php:1837
@@ -3857,7 +3919,8 @@ msgstr "預設檢視"
 #: inc/ticket.class.php:4413 inc/user.class.php:2554
 msgid "Status"
 msgid_plural "Status"
-msgstr[0] ""
+msgstr[0] "狀態"
+msgstr[1] "狀態"
 
 #: inc/bookmark.class.php:592
 msgid "You have not recorded any bookmarks yet"
@@ -3872,7 +3935,8 @@ msgstr ""
 #: inc/profile.class.php:692 inc/profile.class.php:1460
 msgid "Budget"
 msgid_plural "Budgets"
-msgstr[0] ""
+msgstr[0] "預算"
+msgstr[1] "預算"
 
 #: inc/budget.class.php:78 inc/change_item.class.php:243
 #: inc/contract_item.class.php:134 inc/contract_item.class.php:136
@@ -3952,6 +4016,7 @@ msgstr "預算總餘額"
 msgid "Calendar"
 msgid_plural "Calendars"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/calendar_holiday.class.php:91 inc/calendarsegment.class.php:302
 #: inc/calendarsegment.class.php:315 inc/contract.class.php:237
@@ -3978,28 +4043,22 @@ msgstr "結束"
 msgid "Recurrent"
 msgstr "遞迴"
 
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
-#. headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
-#. headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
-#. headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
-#. headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
-#. headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
-#. headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
 #: inc/calendar_holiday.class.php:111 inc/change_problem.class.php:112
 #: inc/change_problem.class.php:194 inc/change_ticket.class.php:108
 #: inc/change_ticket.class.php:193 inc/computer_device.class.php:226
@@ -4027,12 +4086,14 @@ msgstr ""
 #: inc/dropdown.class.php:670 inc/holiday.class.php:43
 msgid "Close time"
 msgid_plural "Close times"
-msgstr[0] ""
+msgstr[0] "結束時間"
+msgstr[1] "關閉時間"
 
 #: inc/calendarsegment.class.php:51
 msgid "Time range"
 msgid_plural "Time ranges"
-msgstr[0] ""
+msgstr[0] "時間範圍"
+msgstr[1] "時間範圍"
 
 #: inc/calendarsegment.class.php:70
 msgid "Can not add a range riding an existing period"
@@ -4052,7 +4113,8 @@ msgstr "日"
 #: inc/search.class.php:949
 msgid "Cartridge"
 msgid_plural "Cartridges"
-msgstr[0] ""
+msgstr[0] "墨水夾"
+msgstr[1] "墨水夾"
 
 #: inc/cartridge.class.php:168
 msgid "No free cartridge"
@@ -4064,18 +4126,21 @@ msgstr "可用墨水夾？"
 #: inc/ticket.class.php:2036 inc/ticket.class.php:4317
 msgid "New"
 msgid_plural "New"
-msgstr[0] ""
+msgstr[0] "新的"
+msgstr[1] "新的"
 
 #: inc/cartridge.class.php:229 inc/cartridge.class.php:342
 #: inc/consumable.class.php:290
 msgid "Used"
 msgid_plural "Used"
-msgstr[0] ""
+msgstr[0] "用過的"
+msgstr[1] "用過的"
 
 #: inc/cartridge.class.php:231 inc/cartridge.class.php:344
 msgid "Worn"
 msgid_plural "Worn"
-msgstr[0] ""
+msgstr[0] "舊"
+msgstr[1] "舊"
 
 #. TRANS : for display cartridges count : %1$d is the total number,
 #. %2$d the new one, %3$d the used one, %4$d worn one
@@ -4130,6 +4195,7 @@ msgstr "會計和管理資訊"
 msgid "%d printed page"
 msgid_plural "%d printed pages"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/cartridge.class.php:493 inc/consumable.class.php:432
 msgid "Back to stock"
@@ -4163,7 +4229,8 @@ msgstr "用過的墨水夾"
 #: inc/cartridge.class.php:602 inc/cartridgeitem.class.php:52
 msgid "Cartridge model"
 msgid_plural "Cartridge models"
-msgstr[0] ""
+msgstr[0] "墨水型號"
+msgstr[1] "墨水型號"
 
 #: inc/cartridge.class.php:674
 msgid "End of life"
@@ -4228,8 +4295,7 @@ msgstr "報警閾值"
 msgid "Send alarms on cartridges"
 msgstr "發送墨盒警報"
 
-#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
-#. number
+#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
 #: inc/cartridgeitem.class.php:361
 #, php-format
 msgid ""
@@ -4257,7 +4323,8 @@ msgstr "兼容印表機型號"
 #: inc/cartridgeitemtype.class.php:43 inc/dropdown.class.php:625
 msgid "Cartridge type"
 msgid_plural "Cartridge types"
-msgstr[0] ""
+msgstr[0] "墨水夾類型"
+msgstr[1] "墨水夾類型"
 
 #: inc/central.class.php:41 inc/profile.class.php:1974
 #: inc/tickettemplate.class.php:258
@@ -4290,7 +4357,8 @@ msgstr "MySQL 複製: 唯讀"
 #: inc/change.class.php:61 inc/html.class.php:1159
 msgid "Change"
 msgid_plural "Changes"
-msgstr[0] ""
+msgstr[0] "變更"
+msgstr[1] "變更"
 
 #: inc/change.class.php:180 inc/problem.class.php:180
 #: inc/problem.class.php:191 inc/problem.class.php:495
@@ -4309,7 +4377,8 @@ msgstr "計劃"
 #: inc/ticket.class.php:1872
 msgid "Solution"
 msgid_plural "Solutions"
-msgstr[0] ""
+msgstr[0] "解決"
+msgstr[1] "解決方案"
 
 #: inc/change.class.php:398 inc/change.class.php:960
 #: inc/commonitilobject.class.php:2533 inc/commonitiltask.class.php:368
@@ -4411,7 +4480,8 @@ msgstr "評估"
 #: inc/ticketvalidation.class.php:120 inc/ticketvalidation.class.php:750
 msgid "Approval"
 msgid_plural "Approvals"
-msgstr[0] ""
+msgstr[0] "批准"
+msgstr[1] "驗證"
 
 #: inc/change.class.php:585 inc/problem.class.php:579
 msgid "Accepted"
@@ -4489,11 +4559,13 @@ msgstr "影響"
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/change_problem.class.php:87 inc/change_ticket.class.php:172
 msgid "Change - "
 msgid_plural "Changes - "
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/change_problem.class.php:89
 msgid "Create a change from this problem"
@@ -4503,6 +4575,7 @@ msgstr "建立這個問題的變更"
 msgid "Link Ticket/Change"
 msgid_plural "Links Ticket/Change"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/change_ticket.class.php:174
 msgid "Create a change from this ticket"
@@ -4686,6 +4759,7 @@ msgstr "新增一塊模板…"
 msgid "Dropdown"
 msgid_plural "Dropdowns"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/commondropdown.class.php:391
 msgid "You can't delete that item, because it has sub-items"
@@ -4696,8 +4770,7 @@ msgid "Caution: you're about to remove a heading used for one or more items."
 msgstr "注意，您將刪除一個用於一個或更多項目的標題"
 
 #: inc/commondropdown.class.php:403
-msgid ""
-"If you confirm the deletion, all uses of this dropdown will be blanked."
+msgid "If you confirm the deletion, all uses of this dropdown will be blanked."
 msgstr ""
 
 #: inc/commondropdown.class.php:409
@@ -4771,7 +4844,7 @@ msgstr "傳檔失敗 (可能檔案過大)"
 #: inc/commonitilobject.class.php:1213
 msgctxt "priority"
 msgid "All"
-msgstr "全部"
+msgstr ""
 
 #: inc/commonitilobject.class.php:1215
 msgctxt "priority"
@@ -4831,7 +4904,7 @@ msgstr "非常低"
 #: inc/commonitilobject.class.php:1291
 msgctxt "urgency"
 msgid "All"
-msgstr "全部"
+msgstr ""
 
 #: inc/commonitilobject.class.php:1293
 msgctxt "urgency"
@@ -4886,7 +4959,7 @@ msgstr "非常低"
 #: inc/commonitilobject.class.php:1380
 msgctxt "impact"
 msgid "All"
-msgstr "全部"
+msgstr ""
 
 #: inc/commonitilobject.class.php:1382
 msgctxt "impact"
@@ -4968,7 +5041,8 @@ msgstr "監督群組"
 #: install/update_05_051.php:74
 msgid "Technician"
 msgid_plural "Technicians"
-msgstr[0] ""
+msgstr[0] "工程師"
+msgstr[1] "技術人員"
 
 #: inc/commonitilobject.class.php:1798
 #: inc/notificationtargetcommonitilobject.class.php:761
@@ -5013,7 +5087,8 @@ msgstr "將這張問題單與自己關聯"
 #: inc/solutiontemplate.class.php:47
 msgid "Solution template"
 msgid_plural "Solution templates"
-msgstr[0] ""
+msgstr[0] "解決方案模板"
+msgstr[1] "解決方案模板"
 
 #: inc/commonitilobject.class.php:2507 inc/commonitilobject.class.php:2509
 msgid "Search a solution"
@@ -5038,7 +5113,8 @@ msgstr "次數"
 #: inc/ticket.class.php:1835
 msgid "Task"
 msgid_plural "Tasks"
-msgstr[0] ""
+msgstr[0] "作業"
+msgstr[1] "作業"
 
 #: inc/commonitiltask.class.php:159 inc/commonitiltask.class.php:234
 #: inc/reminder.class.php:429 inc/reminder.class.php:466
@@ -5119,8 +5195,8 @@ msgstr "全名"
 
 #: inc/computer.class.php:170 inc/computer_item.class.php:202
 msgid ""
-"Alternate username updated. The connected items have been updated using this"
-" alternate username."
+"Alternate username updated. The connected items have been updated using this "
+"alternate username."
 msgstr "聯絡人更新。 和聯絡關聯的項目已被更新。"
 
 #: inc/computer.class.php:223 inc/computer_item.class.php:191
@@ -5158,14 +5234,16 @@ msgstr "聯絡電話"
 #: inc/ruleimportcomputer.class.php:100 inc/ruleocs.class.php:108
 msgid "Domain"
 msgid_plural "Domains"
-msgstr[0] ""
+msgstr[0] "網域"
+msgstr[1] "網域"
 
 #: inc/computer.class.php:598 inc/computer.class.php:779
 #: inc/dropdown.class.php:676 inc/html.class.php:1710
 #: inc/ocsserver.class.php:2952 inc/operatingsystemversion.class.php:44
 msgid "Version of the operating system"
 msgid_plural "Versions of the operating systems"
-msgstr[0] ""
+msgstr[0] "作業系統版本"
+msgstr[1] "作業系統的版本"
 
 #: inc/computer.class.php:605 inc/computer.class.php:795
 #: inc/ocsserver.class.php:2954 install/update_0681_07.php:1413
@@ -5222,7 +5300,8 @@ msgstr ""
 #: inc/ocsserver.class.php:289
 msgid "Processor"
 msgid_plural "Processors"
-msgstr[0] ""
+msgstr[0] "處理器"
+msgstr[1] "處理器"
 
 #: inc/computer.class.php:890
 msgid "Processeur frequency"
@@ -5248,24 +5327,28 @@ msgstr "記憶體大小"
 #: inc/networkinterface.class.php:43 inc/networkport.class.php:725
 msgid "Network interface"
 msgid_plural "Network interfaces"
-msgstr[0] ""
+msgstr[0] "網路界面"
+msgstr[1] "網路界面"
 
 #: inc/computer.class.php:931 inc/devicesoundcard.class.php:43
 #: inc/ocsserver.class.php:309
 msgid "Soundcard"
 msgid_plural "Soundcards"
-msgstr[0] ""
+msgstr[0] "音效卡"
+msgstr[1] "音效卡"
 
 #: inc/computer.class.php:940 inc/devicegraphiccard.class.php:43
 #: inc/ocsserver.class.php:305
 msgid "Graphics Card"
 msgid_plural "Graphics Cards"
-msgstr[0] ""
+msgstr[0] "圖形卡"
+msgstr[1] "顯示卡"
 
 #: inc/computer.class.php:949 inc/devicemotherboard.class.php:43
 msgid "System Board"
 msgid_plural "System Boards"
-msgstr[0] ""
+msgstr[0] "主機板"
+msgstr[1] "系統板"
 
 #: inc/computer.class.php:959
 msgid "Hard drive type"
@@ -5278,14 +5361,16 @@ msgstr "硬碟大小"
 #: inc/computer.class.php:980 inc/devicepowersupply.class.php:43
 msgid "Power Supply"
 msgid_plural "Power Supplies"
-msgstr[0] ""
+msgstr[0] "電源供應器"
+msgstr[1] "電源供應器"
 
 #: inc/computer.class.php:988 inc/computer.class.php:992
 #: inc/computerdisk.class.php:49 inc/ocsserver.class.php:456
 #: install/update_0713_072.php:646
 msgid "Volume"
 msgid_plural "Volumes"
-msgstr[0] ""
+msgstr[0] "儲存裝置"
+msgstr[1] "儲存裝置"
 
 #: inc/computer.class.php:999 inc/computerdisk.class.php:173
 #: inc/computerdisk.class.php:227
@@ -5316,7 +5401,8 @@ msgstr "分割"
 #: inc/filesystem.class.php:43
 msgid "File system"
 msgid_plural "File systems"
-msgstr[0] ""
+msgstr[0] "檔案系統"
+msgstr[1] "檔案系統"
 
 #: inc/computer.class.php:1051 inc/html.class.php:1312
 #: inc/ocslink.class.php:97 inc/profile.class.php:1492
@@ -5354,28 +5440,32 @@ msgstr ""
 #: inc/ocsserver.class.php:471
 msgid "Virtual machine"
 msgid_plural "Virtual machines"
-msgstr[0] ""
+msgstr[0] "虛擬機"
+msgstr[1] "虛擬機"
 
 #: inc/computer.class.php:1127 inc/computervirtualmachine.class.php:172
 #: inc/computervirtualmachine.class.php:316 inc/dropdown.class.php:657
 #: inc/virtualmachinestate.class.php:44
 msgid "State of the virtual machine"
 msgid_plural "States of the virtual machine"
-msgstr[0] ""
+msgstr[0] "虛擬機的狀態"
+msgstr[1] "虛擬機的狀態"
 
 #: inc/computer.class.php:1136 inc/computervirtualmachine.class.php:168
 #: inc/computervirtualmachine.class.php:315 inc/dropdown.class.php:653
 #: inc/virtualmachinetype.class.php:43
 msgid "Virtualization model"
 msgid_plural "Virtualization models"
-msgstr[0] ""
+msgstr[0] "虛擬化模式"
+msgstr[1] "虛擬機型號"
 
 #: inc/computer.class.php:1145 inc/computervirtualmachine.class.php:161
 #: inc/computervirtualmachine.class.php:314 inc/dropdown.class.php:655
 #: inc/virtualmachinesystem.class.php:43
 msgid "Virtualization system"
 msgid_plural "Virtualization systems"
-msgstr[0] ""
+msgstr[0] "虛擬化系統"
+msgstr[1] "虛擬化系統"
 
 #: inc/computer.class.php:1154
 msgid "Virtual machine name"
@@ -5472,7 +5562,8 @@ msgstr ""
 #: inc/event.class.php:129
 msgid "Connection"
 msgid_plural "Connections"
-msgstr[0] ""
+msgstr[0] "連接"
+msgstr[1] "連接"
 
 #: inc/computer_softwarelicense.class.php:128
 msgid "Number of affected computers"
@@ -5487,12 +5578,14 @@ msgstr "受影響的電腦"
 #: inc/softwareversion.class.php:284
 msgid "Installation"
 msgid_plural "Installations"
-msgstr[0] ""
+msgstr[0] "安裝"
+msgstr[1] "安裝"
 
 #: inc/computer_softwareversion.class.php:572
 msgid "Installed software"
 msgid_plural "Installed softwares"
-msgstr[0] ""
+msgstr[0] "已安裝的軟體"
+msgstr[1] "已安裝的軟體"
 
 #: inc/computer_softwareversion.class.php:672
 #: inc/computer_softwareversion.class.php:776 inc/plugin.class.php:432
@@ -5726,6 +5819,7 @@ msgstr "GLPI 伺服器時區"
 msgid "Mysql replicate"
 msgid_plural "Mysql replicates"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/config.class.php:486 install/install.php:199
 msgid "Mysql server"
@@ -5888,7 +5982,8 @@ msgstr ""
 #: inc/softwarecategory.class.php:43
 msgid "Software category"
 msgid_plural "Software categories"
-msgstr[0] ""
+msgstr[0] "軟體分類"
+msgstr[1] "軟體類別"
 
 #: inc/config.class.php:829
 msgid "Unfold the software belonging to a category"
@@ -6068,19 +6163,19 @@ msgstr "沒有發現消耗品"
 #: inc/consumableitem.class.php:51
 msgid "Consumable model"
 msgid_plural "Consumable models"
-msgstr[0] ""
+msgstr[0] "耗材型號"
+msgstr[1] "耗材型號"
 
 #: inc/consumableitem.class.php:288 inc/consumableitem.class.php:391
 msgid "Send alarms on consumables"
 msgstr "發送消耗品警報"
 
-#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining
-#. number
+#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
 #: inc/consumableitem.class.php:335
 #, php-format
 msgid ""
-"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s"
-" - Remaining %3$d"
+"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s "
+"- Remaining %3$d"
 msgstr ""
 
 #. TRANS: %s is entity name
@@ -6093,6 +6188,7 @@ msgstr ""
 msgid "Consumable type"
 msgid_plural "Consumable types"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/contact.class.php:188 inc/contact.class.php:257
 #: inc/contact.class.php:357 inc/entity.class.php:264
@@ -6117,14 +6213,16 @@ msgstr "沒有相關供應商"
 #: inc/contract.class.php:679 inc/contract.class.php:681
 msgid "Associated supplier"
 msgid_plural "Associated suppliers"
-msgstr[0] ""
+msgstr[0] "相關供應商"
+msgstr[1] "相關供應商"
 
 #: inc/contact.class.php:355 inc/contract.class.php:686
 #: inc/dropdown.class.php:631 inc/supplier.class.php:128
 #: inc/supplier.class.php:252 inc/suppliertype.class.php:43
 msgid "Third party type"
 msgid_plural "Third party types"
-msgstr[0] ""
+msgstr[0] "第三方類型"
+msgstr[1] "第三方類型"
 
 #: inc/contact.class.php:358 inc/contract.class.php:688
 #: inc/entity.class.php:220 inc/entitydata.class.php:229
@@ -6137,11 +6235,13 @@ msgstr "網站"
 msgid "Link Contact/Supplier"
 msgid_plural "Links Contact/Supplier"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/contacttype.class.php:43 inc/dropdown.class.php:629
 msgid "Contact type"
 msgid_plural "Contact types"
-msgstr[0] ""
+msgstr[0] "聯絡人類型"
+msgstr[1] "聯絡人類型"
 
 #: inc/contract.class.php:163 inc/contract.class.php:432
 #: inc/ticket.class.php:1877
@@ -6286,7 +6386,8 @@ msgstr "沒有相關合約"
 #: inc/supplier.class.php:618 inc/supplier.class.php:620
 msgid "Associated contract"
 msgid_plural "Associated contracts"
-msgstr[0] ""
+msgstr[0] "相關合約"
+msgstr[1] "同合約關聯在一起"
 
 #: inc/contract.class.php:1097
 msgid "Send alarms on contracts"
@@ -6320,6 +6421,7 @@ msgstr ""
 msgid "Link Contract/Item"
 msgid_plural "Links Contract/Item"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/contract_item.class.php:94
 msgid "Associated item ID"
@@ -6328,13 +6430,15 @@ msgstr ""
 #: inc/contracttype.class.php:43 inc/dropdown.class.php:628
 msgid "Contract type"
 msgid_plural "Contract types"
-msgstr[0] ""
+msgstr[0] "合約類型"
+msgstr[1] "合約類型"
 
 #: inc/crontask.class.php:56 inc/event.class.php:133 inc/html.class.php:1868
 #: install/update_0723_078.php:3217
 msgid "Automatic action"
 msgid_plural "Automatic actions"
-msgstr[0] ""
+msgstr[0] "自動執行"
+msgstr[1] "自動執行"
 
 #: inc/crontask.class.php:181 inc/crontask.class.php:428
 #: inc/crontask.class.php:1114
@@ -6449,6 +6553,7 @@ msgstr "最小次數"
 msgid "%s item"
 msgid_plural "%s items"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/crontask.class.php:920
 msgid "Maximal count"
@@ -6514,6 +6619,7 @@ msgstr "監測自動執行"
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] ""
+msgstr[1] ""
 
 #. TRANS: %d is a number of hours
 #: inc/crontask.class.php:1339 inc/dropdown.class.php:1079
@@ -6522,6 +6628,7 @@ msgstr[0] ""
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/crontasklog.class.php:77 inc/crontasklog.class.php:82
 #: inc/event.class.php:44 inc/html.class.php:1756 inc/profile.class.php:1174
@@ -6529,6 +6636,7 @@ msgstr[0] ""
 msgid "Log"
 msgid_plural "Logs"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/dbconnection.class.php:314
 msgid "Check the MySQL replica"
@@ -6589,17 +6697,20 @@ msgstr "資料表最佳化"
 #: inc/devicecase.class.php:43
 msgid "Case"
 msgid_plural "Cases"
-msgstr[0] ""
+msgstr[0] "案件"
+msgstr[1] "機殼"
 
 #: inc/devicecasetype.class.php:43 inc/dropdown.class.php:635
 msgid "Case type"
 msgid_plural "Case types"
-msgstr[0] ""
+msgstr[0] "案件類型"
+msgstr[1] "機殼類型"
 
 #: inc/devicecontrol.class.php:43
 msgid "Controller"
 msgid_plural "Controllers"
-msgstr[0] ""
+msgstr[0] "控制器"
+msgstr[1] "控制器"
 
 #: inc/devicecontrol.class.php:51 inc/devicecontrol.class.php:65
 #: inc/devicecontrol.class.php:86
@@ -6620,7 +6731,8 @@ msgstr "接口"
 #: inc/devicedrive.class.php:43 inc/ocsserver.class.php:313
 msgid "Drive"
 msgid_plural "Drives"
-msgstr[0] ""
+msgstr[0] "驅動"
+msgstr[1] "驅動程式"
 
 #: inc/devicedrive.class.php:51 inc/devicedrive.class.php:68
 #: inc/devicedrive.class.php:94
@@ -6637,7 +6749,8 @@ msgstr "速度"
 #: inc/printer.class.php:426
 msgid "Memory"
 msgid_plural "Memories"
-msgstr[0] ""
+msgstr[0] "記憶體"
+msgstr[1] "記憶體"
 
 #: inc/devicegraphiccard.class.php:56 inc/devicegraphiccard.class.php:71
 msgid "Memory by default"
@@ -6646,7 +6759,8 @@ msgstr ""
 #: inc/deviceharddrive.class.php:43 inc/ocsserver.class.php:297
 msgid "Hard Drive"
 msgid_plural "Hard Drives"
-msgstr[0] ""
+msgstr[0] "硬碟"
+msgstr[1] "硬碟驅動程式"
 
 #: inc/deviceharddrive.class.php:48 inc/deviceharddrive.class.php:124
 msgid "Capacity"
@@ -6680,7 +6794,8 @@ msgstr "頻率"
 #: inc/devicememorytype.class.php:43 inc/dropdown.class.php:630
 msgid "Memory type"
 msgid_plural "Memory types"
-msgstr[0] ""
+msgstr[0] "記憶體類型"
+msgstr[1] "記憶體類型"
 
 #: inc/devicemotherboard.class.php:51 inc/devicemotherboard.class.php:62
 #: inc/devicemotherboard.class.php:79
@@ -6691,7 +6806,8 @@ msgstr "晶片組"
 #: inc/networkportinstantiation.class.php:231 inc/ocsserver.class.php:301
 msgid "Network Card"
 msgid_plural "Network Cards"
-msgstr[0] ""
+msgstr[0] "網卡"
+msgstr[1] "網路卡"
 
 #: inc/devicenetworkcard.class.php:56 inc/devicenetworkcard.class.php:70
 msgid "MAC address by default"
@@ -6705,7 +6821,8 @@ msgstr "流量"
 #: inc/devicepci.class.php:43
 msgid "Other Component"
 msgid_plural "Other Components"
-msgstr[0] ""
+msgstr[0] "其它設備"
+msgstr[1] "其他零組件"
 
 #: inc/devicepowersupply.class.php:51 inc/devicepowersupply.class.php:65
 #: inc/devicepowersupply.class.php:87
@@ -6743,14 +6860,16 @@ msgstr ""
 #: inc/documentcategory.class.php:43 inc/dropdown.class.php:661
 msgid "Document heading"
 msgid_plural "Document headings"
-msgstr[0] ""
+msgstr[0] "文件標題"
+msgstr[1] "文件標題"
 
 #: inc/document.class.php:51 inc/document.class.php:175
 #: inc/event.class.php:134 inc/html.class.php:1251 inc/profile.class.php:682
 #: inc/profile.class.php:1445 inc/transfer.class.php:3187
 msgid "Document"
 msgid_plural "Documents"
-msgstr[0] ""
+msgstr[0] "文件"
+msgstr[1] "文件檔"
 
 #: inc/document.class.php:104 inc/document.class.php:1001
 #: inc/document.class.php:1090
@@ -6889,7 +7008,8 @@ msgstr "沒有相關文件"
 #: inc/document.class.php:1331 inc/document.class.php:1333
 msgid "Associated document"
 msgid_plural "Associated documents"
-msgstr[0] ""
+msgstr[0] "相關文件"
+msgstr[1] "相關文件"
 
 #: inc/document.class.php:1466
 msgid "Add a new file"
@@ -6914,7 +7034,8 @@ msgstr "擴展名"
 #: inc/documenttype.class.php:60 inc/dropdown.class.php:662
 msgid "Document type"
 msgid_plural "Document types"
-msgstr[0] ""
+msgstr[0] "文件類型"
+msgstr[1] "文件類型"
 
 #: inc/dropdown.class.php:282 inc/dropdown.class.php:305
 msgid "Phone: "
@@ -6956,49 +7077,58 @@ msgstr "公共"
 msgid "Category of ticket"
 msgid_plural "Categories of tickets"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/dropdown.class.php:610 inc/taskcategory.class.php:47
 msgid "Tasks category"
 msgid_plural "Tasks categories"
-msgstr[0] ""
+msgstr[0] "作業類別"
+msgstr[1] "作業類別"
 
 #: inc/dropdown.class.php:618 inc/html.class.php:1659
 #: inc/networkequipmenttype.class.php:43
 msgid "Networking equipment type"
 msgid_plural "Networking equipment types"
-msgstr[0] ""
+msgstr[0] "網路設備類型"
+msgstr[1] "網路設備類型"
 
 #: inc/dropdown.class.php:622 inc/peripheraltype.class.php:43
 msgid "Devices type"
 msgid_plural "Devices types"
-msgstr[0] ""
+msgstr[0] "設備類型"
+msgstr[1] "設備型號"
 
 #: inc/dropdown.class.php:624 inc/softwarelicensetype.class.php:43
 msgid "License type"
 msgid_plural "License types"
-msgstr[0] ""
+msgstr[0] "授權類型"
+msgstr[1] "授權類型"
 
 #: inc/dropdown.class.php:633 inc/interfacetype.class.php:43
 msgid "Interface type (Hard drive...)"
 msgid_plural "Interface types (Hard drive...)"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/dropdown.class.php:636 inc/phonepowersupply.class.php:43
 msgid "Phone power supply type"
 msgid_plural "Phones power supply types"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/dropdown.class.php:643 inc/html.class.php:1581
 #: inc/networkequipmentmodel.class.php:45
 msgid "Networking equipment model"
 msgid_plural "Networking equipment models"
-msgstr[0] ""
+msgstr[0] "網路模型"
+msgstr[1] "網絡模式"
 
 #: inc/dropdown.class.php:648 inc/html.class.php:1568
 #: inc/peripheralmodel.class.php:45
 msgid "Peripheral model"
 msgid_plural "Peripheral models"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/dropdown.class.php:660 inc/event.class.php:128 inc/html.class.php:1196
 #: inc/infocom.class.php:101 inc/infocom.class.php:108
@@ -7016,7 +7146,8 @@ msgstr "工具"
 #: inc/dropdown.class.php:665 inc/knowbaseitemcategory.class.php:57
 msgid "Knowledge base category"
 msgid_plural "Knowledge base categories"
-msgstr[0] ""
+msgstr[0] "知識庫類別"
+msgstr[1] "知識庫類別"
 
 #: inc/dropdown.class.php:682 inc/networkport.class.php:587
 msgid "Networking"
@@ -7028,7 +7159,8 @@ msgstr ""
 #: inc/phone.class.php:476
 msgid "Firmware"
 msgid_plural "Firmwares"
-msgstr[0] ""
+msgstr[0] "軔體"
+msgstr[1] "分位"
 
 #: inc/dropdown.class.php:690 inc/networkportaggregate.class.php:77
 #: inc/networkportalias.class.php:59 inc/networkport.class.php:663
@@ -7047,26 +7179,31 @@ msgstr ""
 msgid "IP network"
 msgid_plural "IP networks"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/dropdown.class.php:694 inc/fqdn.class.php:57
 msgid "Internet domain"
 msgid_plural "Internet domains"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/dropdown.class.php:695 inc/wifinetwork.class.php:130
 msgid "Wifi network"
 msgid_plural "Wifi networks"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/dropdown.class.php:702 inc/usertitle.class.php:43
 msgid "User title"
 msgid_plural "Users titles"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/dropdown.class.php:703 inc/usercategory.class.php:43
 msgid "User category"
 msgid_plural "User categories"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/dropdown.class.php:705 inc/profile.class.php:1196
 #: inc/profile.class.php:1576 inc/ruleright.class.php:80
@@ -7077,7 +7214,8 @@ msgstr "認證分配規則"
 #: inc/dropdown.class.php:706 inc/rulerightparameter.class.php:90
 msgid "LDAP criteria"
 msgid_plural "LDAP criterias"
-msgstr[0] ""
+msgstr[0] "LDAP的標準"
+msgstr[1] "LDAP的標準"
 
 #: inc/dropdown.class.php:708 inc/fieldunicity.class.php:49
 #: inc/fieldunicity.class.php:281 inc/html.class.php:1860
@@ -7087,7 +7225,8 @@ msgstr "唯一欄位"
 #: inc/dropdown.class.php:709 inc/fieldblacklist.class.php:43
 msgid "Ignored value for the unicity"
 msgid_plural "Ignored values for the unicity"
-msgstr[0] ""
+msgstr[0] "忽略值的唯一性"
+msgstr[1] "忽略唯一值"
 
 #. TRANS: %1$d is the number of days, %2$d the number of hours,
 #. %3$s the number of minutes : display 1 day 3h15
@@ -7096,6 +7235,7 @@ msgstr[0] ""
 msgid "%1$d day %2$dh%3$s"
 msgid_plural "%1$d days %2$dh%3$s"
 msgstr[0] ""
+msgstr[1] ""
 
 #. TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
 #: inc/dropdown.class.php:1149
@@ -7136,7 +7276,7 @@ msgstr "刪除一個 VLAN"
 #: inc/dropdown.class.php:1447
 msgctxt "button"
 msgid "Update"
-msgstr "更新"
+msgstr ""
 
 #: inc/dropdown.class.php:1452 inc/infocom.class.php:798
 msgid "Enable the financial and administrative information"
@@ -7410,7 +7550,8 @@ msgstr "設定滿意度調查"
 #: inc/ticketrecurrent.class.php:175 inc/tickettemplate.class.php:113
 msgid "Ticket template"
 msgid_plural "Ticket templates"
-msgstr[0] ""
+msgstr[0] "問題單模板"
+msgstr[1] "問題單模板"
 
 #: inc/entity.class.php:515
 msgid "Default value for alarms on contracts"
@@ -7620,8 +7761,8 @@ msgstr ""
 
 #: inc/fqdn.class.php:66
 msgid ""
-"Fully Qualified Domain Name. Use the classical notation (labels separated by"
-" dots). For example: indepnet.net"
+"Fully Qualified Domain Name. Use the classical notation (labels separated by "
+"dots). For example: indepnet.net"
 msgstr ""
 
 #: inc/fqdn.class.php:84
@@ -7703,7 +7844,8 @@ msgstr "新增使用者"
 #: inc/rulerightparameter.class.php:83
 msgid "Criteria"
 msgid_plural "Criteria"
-msgstr[0] ""
+msgstr[0] "標準"
+msgstr[1] "標準"
 
 #: inc/group_user.class.php:387
 msgid "Users (D=Dynamic)"
@@ -7804,11 +7946,13 @@ msgstr "經常性問題單"
 msgid "Report"
 msgid_plural "Reports"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/html.class.php:1646
 msgid "Peripheral type"
 msgid_plural "Peripheral types"
 msgstr[0] ""
+msgstr[1] ""
 
 #. TRANS: menu title for "General setup""
 #: inc/html.class.php:1853
@@ -7820,6 +7964,7 @@ msgstr "一般"
 msgid "Check"
 msgid_plural "Checks"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/html.class.php:1897
 msgid "Others"
@@ -7834,6 +7979,7 @@ msgstr "OCSNG模式"
 msgid "External link"
 msgid_plural "External links"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/html.class.php:1963 inc/html.class.php:2004
 msgid "My settings"
@@ -7900,12 +8046,14 @@ msgstr "指定日期"
 msgid "- %d hour"
 msgid_plural "- %d hours"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/html.class.php:3239
 #, php-format
 msgid "- %d day"
 msgid_plural "- %d days"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/html.class.php:3243
 msgid "last Sunday"
@@ -7940,6 +8088,7 @@ msgstr "上週六"
 msgid "- %d week"
 msgid_plural "- %d weeks"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/html.class.php:3257
 msgid "Beginning of the month"
@@ -7950,6 +8099,7 @@ msgstr "從本月開始"
 msgid "- %d month"
 msgid_plural "- %d months"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/html.class.php:3265
 msgid "Beginning of the year"
@@ -7960,36 +8110,42 @@ msgstr "從今年開始"
 msgid "- %d year"
 msgid_plural "- %d years"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/html.class.php:3275
 #, php-format
 msgid "+ %d hour"
 msgid_plural "+ %d hours"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/html.class.php:3280
 #, php-format
 msgid "+ %d day"
 msgid_plural "+ %d days"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/html.class.php:3284
 #, php-format
 msgid "+ %d week"
 msgid_plural "+ %d weeks"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/html.class.php:3288
 #, php-format
 msgid "+ %d month"
 msgid_plural "+ %d months"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/html.class.php:3292
 #, php-format
 msgid "+ %d year"
 msgid_plural "+ %d years"
 msgstr[0] ""
+msgstr[1] ""
 
 #. TRANS: %1$d, %2$d, %3$d are page numbers
 #: inc/html.class.php:3768 inc/html.class.php:3917
@@ -8039,8 +8195,8 @@ msgstr "未發現請求的項目"
 
 #: inc/infocom.class.php:783
 msgid ""
-"For this type of item, the financial and administrative information are only"
-" a model for the items which you should add."
+"For this type of item, the financial and administrative information are only "
+"a model for the items which you should add."
 msgstr ""
 
 #: inc/infocom.class.php:838 inc/infocom.class.php:1081
@@ -8120,11 +8276,13 @@ msgstr ""
 msgid "IP address"
 msgid_plural "IP addresses"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/ipnetmask.class.php:76
 msgid "Subnet mask"
 msgid_plural "Subnet masks"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/ipnetwork.class.php:74
 msgid "IP version"
@@ -8187,6 +8345,7 @@ msgstr "事件模板"
 msgid "Ticket category"
 msgid_plural "Ticket categories"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/itilcategory.class.php:270 inc/ticket.class.php:2003
 #: inc/ticket.class.php:2019
@@ -8236,6 +8395,7 @@ msgstr "作者: %s"
 msgid "%d view"
 msgid_plural "%d views"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/knowbaseitem.class.php:538 inc/knowbaseitem.class.php:639
 #: inc/knowbaseitem.class.php:640
@@ -8304,12 +8464,14 @@ msgstr "新增一個目標"
 #: inc/reminder.class.php:975
 msgid "Recipient"
 msgid_plural "Recipients"
-msgstr[0] ""
+msgstr[0] "收件人"
+msgstr[1] "收件人"
 
 #: inc/link.class.php:62 inc/link.class.php:66
 msgid "Link"
 msgid_plural "Links"
-msgstr[0] ""
+msgstr[0] "連結"
+msgstr[1] "連結"
 
 #: inc/link.class.php:128 inc/link.class.php:164
 msgid "Link or filename"
@@ -8510,8 +8672,7 @@ msgstr ""
 #: inc/mailcollector.class.php:522
 #, php-format
 msgid ""
-"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, "
-"errors=%4$d"
+"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d"
 msgstr ""
 
 #: inc/mailcollector.class.php:531
@@ -8678,14 +8839,14 @@ msgstr ""
 msgid "Network alias"
 msgid_plural "Network aliases"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/networkalias.class.php:300 inc/ruleimportcomputer.class.php:108
 #: inc/ruleocs.class.php:131
 msgid "Computer's name"
 msgstr "電腦名稱"
 
-#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to
-#. change for RTL
+#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
 #: inc/networkequipment.class.php:246 inc/networkequipment.class.php:314
 #, php-format
 msgid "%1$s%2$s"
@@ -8705,17 +8866,18 @@ msgstr "MAC"
 msgid "Network name"
 msgid_plural "Network names"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/networkname.class.php:211
 #, php-format
 msgid "Invalid IP address: %s"
 msgid_plural "Invalid IP addresses: %s"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/networkname.class.php:406
 msgid ""
-"Several network names available! Go to the tab 'Network Name' to manage "
-"them."
+"Several network names available! Go to the tab 'Network Name' to manage them."
 msgstr ""
 
 #: inc/networkportaggregate.class.php:47
@@ -8735,7 +8897,8 @@ msgstr ""
 #: install/update_0723_078.php:4838
 msgid "Network port"
 msgid_plural "Network ports"
-msgstr[0] ""
+msgstr[0] "網路端口"
+msgstr[1] "網路端口"
 
 #: inc/networkport.class.php:343
 msgid "Network port type to be added"
@@ -8754,6 +8917,7 @@ msgstr "沒有發現網路端口"
 msgid "Port number"
 msgid_plural "Ports number"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/networkport.class.php:553 inc/software.class.php:320
 msgid "from"
@@ -8905,6 +9069,7 @@ msgstr "備註: %s"
 msgid "Wifi port"
 msgid_plural "Wifi ports"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/networkportwifi.class.php:66 inc/networkportwifi.class.php:106
 #: inc/networkportwifi.class.php:165
@@ -8938,7 +9103,8 @@ msgstr "通知方法"
 #: inc/notificationtemplatetranslation.class.php:297
 msgid "Event"
 msgid_plural "Events"
-msgstr[0] ""
+msgstr[0] "發生"
+msgstr[1] "事件"
 
 #: inc/notificationmail.class.php:176
 msgid "Mail test"
@@ -8960,8 +9126,7 @@ msgstr "發送測試郵件到管理員"
 msgid "Error in sending the email"
 msgstr "寄送電子郵件發生錯誤"
 
-#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of
-#. the mail
+#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
 #: inc/notificationmail.class.php:246
 #, php-format
 msgid "An email was sent to %1$s: %2$s"
@@ -9376,6 +9541,7 @@ msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
 msgstr[0] ""
+msgstr[1] ""
 
 #. TRANS: %s is the user name
 #: inc/notificationtargetticket.class.php:444
@@ -9480,7 +9646,8 @@ msgstr "邀請填寫調查"
 #: inc/ticketfollowup.class.php:177
 msgid "Followup"
 msgid_plural "Followups"
-msgstr[0] ""
+msgstr[0] "後續"
+msgstr[1] "後續"
 
 #: inc/notificationtargetticket.class.php:645
 #: inc/notificationtargetticket.class.php:657 inc/ticket.class.php:1798
@@ -9564,6 +9731,7 @@ msgstr "由GLPI自動生成 %s"
 msgid "Template translation"
 msgid_plural "Template translations"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/notificationtemplatetranslation.class.php:117
 msgid "Show list of available tags"
@@ -9652,7 +9820,8 @@ msgstr "沒有找到電子郵件, 無法導入"
 #: inc/ocslink.class.php:43 inc/ruleimportcomputer.class.php:129
 msgid "OCSNG link"
 msgid_plural "OCSNG links"
-msgstr[0] ""
+msgstr[0] "OCSNG連結"
+msgstr[1] "OCSNG連結"
 
 #: inc/ocslink.class.php:84
 #, php-format
@@ -9699,7 +9868,8 @@ msgstr "沒有欄位被鎖定"
 #: inc/ruleimportcomputer.class.php:94 inc/ruleocs.class.php:113
 msgid "OCSNG server"
 msgid_plural "OCSNG servers"
-msgstr[0] ""
+msgstr[0] "OCS伺服器"
+msgstr[1] "OCSNG伺服器"
 
 #: inc/ocsserver.class.php:136 inc/ocsserver.class.php:401
 msgid "Import options"
@@ -10227,6 +10397,7 @@ msgstr "最近的問題"
 msgid "Last %d problem"
 msgid_plural "Last %d problems"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/problem.class.php:1415 inc/problem.class.php:1457
 msgid "No problem found."
@@ -10240,11 +10411,13 @@ msgstr "連結項目的問題"
 msgid "Link Ticket/Problem"
 msgid_plural "Links Ticket/Problem"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/problem_ticket.class.php:161
 msgid "Problem - "
 msgid_plural "Problems - "
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/problem_ticket.class.php:163
 msgid "Create a problem from this ticket"
@@ -10349,7 +10522,8 @@ msgstr "公開註解"
 #: inc/profile.class.php:678
 msgid "Contacts"
 msgid_plural "Contacts"
-msgstr[0] ""
+msgstr[0] "聯絡人"
+msgstr[1] "聯絡人"
 
 #: inc/profile.class.php:689 inc/profile.class.php:1455
 msgid "Financial and administratives information"
@@ -10624,12 +10798,14 @@ msgstr "無此使用者"
 msgid "Authorization"
 msgid_plural "Authorizations"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/registrykey.class.php:96
 #, php-format
 msgid "%d registry key found"
 msgid_plural "%d registry keys found"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/registrykey.class.php:99
 msgid "OCSNG name"
@@ -10679,8 +10855,7 @@ msgstr ""
 msgid "Add to schedule"
 msgstr "新增到日曆"
 
-#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s
-#. is its name
+#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s is its name
 #: inc/reminder.class.php:769
 #, php-format
 msgid "From %1$s to %2$s: %3$s"
@@ -10850,7 +11025,8 @@ msgstr "過去的預借"
 #: inc/reservationitem.class.php:43 inc/reservationitem.class.php:271
 msgid "Reservable item"
 msgid_plural "Reservable items"
-msgstr[0] ""
+msgstr[0] "保留的項目"
+msgstr[1] "可保留的項目"
 
 #: inc/reservationitem.class.php:187
 msgid "Make unavailable"
@@ -10896,7 +11072,8 @@ msgstr ""
 #: inc/rule.class.php:422 inc/rule.class.php:464 inc/rule.class.php:467
 msgid "Action"
 msgid_plural "Actions"
-msgstr[0] ""
+msgstr[0] "作用"
+msgstr[1] "作用"
 
 #: inc/ruleaction.class.php:159
 msgid "Assign"
@@ -10984,8 +11161,8 @@ msgstr "或"
 
 #: inc/rule.class.php:353
 msgid ""
-"It is possible to affect the result of a regular expression using the string"
-" #0"
+"It is possible to affect the result of a regular expression using the string "
+"#0"
 msgstr "你可以使用字串 #0 改變正規表示法的結果"
 
 #: inc/rule.class.php:556 inc/rule.class.php:1172
@@ -11396,8 +11573,8 @@ msgstr ""
 
 #: inc/search.class.php:1305
 msgid ""
-"To increase the limit: change max_input_vars or suhosin.post.max_vars in php"
-" configuration."
+"To increase the limit: change max_input_vars or suhosin.post.max_vars in php "
+"configuration."
 msgstr ""
 
 #: inc/search.class.php:1427
@@ -11430,6 +11607,7 @@ msgstr "不顯示已刪除的項目"
 msgid "%d year"
 msgid_plural "%d years"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/search.class.php:4856 inc/search.class.php:4890
 msgid "before"
@@ -11466,12 +11644,14 @@ msgstr "最大的解決時間"
 msgid "+ %1$d hour"
 msgid_plural "+ %1$d hours"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/sla.class.php:186 inc/slalevel.class.php:287
 #, php-format
 msgid "+ %1$d day"
 msgid_plural "+ %1$d days"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/slalevel.class.php:91
 msgid "Add an escalation level"
@@ -11487,12 +11667,14 @@ msgstr "執行"
 msgid "- %1$d hour"
 msgid_plural "+ %1$d hours"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/slalevel.class.php:291
 #, php-format
 msgid "- %1$d day"
 msgid_plural "+ %1$d days"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/slalevel_ticket.class.php:100
 msgid "Automatic actions of SLA"
@@ -11789,8 +11971,7 @@ msgstr "硬體類型 : %s"
 msgid "Submit Message"
 msgstr "發送訊息"
 
-#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the
-#. entity name
+#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the entity name
 #: inc/ticket.class.php:3210
 #, php-format
 msgid "%1$s - ID %2$d (%3$s)"
@@ -11813,8 +11994,7 @@ msgstr "下一個申告: %s"
 
 #: inc/ticket.class.php:3324
 msgid ""
-"The assignment of a SLA to a ticket causes the recalculation of the due "
-"date."
+"The assignment of a SLA to a ticket causes the recalculation of the due date."
 msgstr "分配到問題單的 SLA，導致重新計算到期日期."
 
 #: inc/ticket.class.php:3325
@@ -11831,6 +12011,7 @@ msgstr "指定一個 SLA"
 msgid "%d associated document"
 msgid_plural "%d associated documents"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/ticket.class.php:4015 inc/ticket.class.php:4069
 #: inc/ticket.class.php:4200
@@ -11866,6 +12047,7 @@ msgstr "您 待結案 的問題單"
 msgid "%d new ticket"
 msgid_plural "%d new tickets"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/ticket.class.php:4397 inc/ticket.class.php:4567
 #: inc/ticket.class.php:4620
@@ -11881,6 +12063,7 @@ msgstr "進行中的問題單"
 msgid "Last %d ticket"
 msgid_plural "Last %d tickets"
 msgstr[0] ""
+msgstr[1] ""
 
 #: inc/ticket.class.php:4575 inc/ticket.class.php:4581
 msgid "New ticket for this item..."
@@ -11889,7 +12072,8 @@ msgstr "為此項目新增問題單…"
 #: inc/ticket.class.php:4610
 msgid "Ticket on linked items"
 msgid_plural "Tickets on linked items"
-msgstr[0] ""
+msgstr[0] "問題單連結的項目"
+msgstr[1] "問題單的連結項目"
 
 #: inc/ticket.class.php:4705
 #, php-format
@@ -11973,24 +12157,26 @@ msgstr "該問題單的滿意度調查結果"
 #: inc/tickettemplatehiddenfield.class.php:76
 msgid "Hidden field"
 msgid_plural "Hidden fields"
-msgstr[0] ""
+msgstr[0] "隱藏欄位"
+msgstr[1] "隱藏欄位"
 
 #: inc/tickettemplatemandatoryfield.class.php:52
 #: inc/tickettemplatemandatoryfield.class.php:71
 #: inc/tickettemplatemandatoryfield.class.php:76
 msgid "Mandatory field"
 msgid_plural "Mandatory fields"
-msgstr[0] ""
+msgstr[0] "必填欄位"
+msgstr[1] "必填欄位"
 
 #: inc/tickettemplatepredefinedfield.class.php:52
 #: inc/tickettemplatepredefinedfield.class.php:111
 #: inc/tickettemplatepredefinedfield.class.php:116
 msgid "Predefined field"
 msgid_plural "Predefined fields"
-msgstr[0] ""
+msgstr[0] "預定欄位"
+msgstr[1] "預定欄位"
 
-#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked
-#. ticket, %3$s optionals links / icons
+#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked ticket, %3$s optionals links / icons
 #: inc/ticket_ticket.class.php:137
 #, php-format
 msgid "%1$s %2$s %3$s"
@@ -12499,14 +12685,13 @@ msgid "Please confirm your email address and enter your new password."
 msgstr "請確認您的電子郵件地址和新輸入的密碼"
 
 #: inc/user.class.php:2826 inc/user.class.php:2882
-msgid ""
-"Your password reset request has expired or is invalid. Please renew it."
+msgid "Your password reset request has expired or is invalid. Please renew it."
 msgstr "您的密碼重置請求已過期或無效,請更新密碼."
 
 #: inc/user.class.php:2845
 msgid ""
-"Please enter your email address. A email will be sent to you and you will be"
-" able to choose a new password."
+"Please enter your email address. A email will be sent to you and you will be "
+"able to choose a new password."
 msgstr "請輸入您的電子郵件地址。電子郵件將發送給您，之後你可以選擇一個新密碼。"
 
 #: inc/user.class.php:2870
@@ -12525,8 +12710,8 @@ msgstr "未找到電子郵件地址。"
 
 #: inc/user.class.php:2922
 msgid ""
-"An email has been sent to your email address. The email contains information"
-" for reset your password."
+"An email has been sent to your email address. The email contains information "
+"for reset your password."
 msgstr ""
 
 #: inc/user.class.php:2956
@@ -12608,8 +12793,7 @@ msgid "Choose 'Install' for a completely new installation of GLPI."
 msgstr "選擇 '安裝' 以完整安裝新的GLPI."
 
 #: install/install.php:125
-msgid ""
-"Select 'Upgrade' to update your version of GLPI from an earlier version"
+msgid "Select 'Upgrade' to update your version of GLPI from an earlier version"
 msgstr ""
 
 #: install/install.php:145
@@ -12914,5 +13098,3 @@ msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
 msgstr "與資料庫的連接失敗，驗證在config_db.php文件中的連線參數"
-
-
