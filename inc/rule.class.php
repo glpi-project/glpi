@@ -456,6 +456,8 @@ class Rule extends CommonDBTM {
     * @param $rules_id rule ID
    **/
    function addActionForm($rules_id) {
+      // CFG_GLPI needed by ruleaction.php
+      global $CFG_GLPI; 
 
       $ra = new $this->ruleactionclass();
 
@@ -485,7 +487,9 @@ class Rule extends CommonDBTM {
     * @param $rules_id rule ID
    **/
    function addCriteriaForm($rules_id) {
-
+      // CFG_GLPI needed by rulecriteria.php
+      global $CFG_GLPI; 
+      
       echo "<div class='firstbloc'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . _n('Criteria', 'Criteria', 1) . "</tr>";
