@@ -1,20 +1,21 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
-# Translators:
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: GLPI Project\n"
-"Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-17 16:14+0100\n"
-"PO-Revision-Date: 2012-01-17 15:50+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
-"Language-Team: Dutch (Netherlands) (http://www.transifex.net/projects/p/GLPI/team/nl_NL/)\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nl_NL\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: index.php:64
@@ -109,7 +110,7 @@ msgstr "E-mailopvolgingen"
 #: inc/commonitilobject.class.php:1944
 #, php-format
 msgid "Email: %s"
-msgstr ""
+msgstr "Email: %s"
 
 #: ajax/dropdownMassiveActionAddActor.php:47
 #: ajax/dropdownMassiveAction.php:215 ajax/dropdownMassiveAction.php:225
@@ -197,7 +198,7 @@ msgstr "Samenvoegen"
 
 #: ajax/dropdownMassiveAction.php:87
 msgid "After"
-msgstr ""
+msgstr "na"
 
 #: ajax/dropdownMassiveAction.php:88
 msgid "Before"
@@ -380,7 +381,7 @@ msgstr "Laat alles zien"
 
 #: ajax/planningcheck.php:51 front/planning.php:70 inc/planning.class.php:296
 msgid "Availability"
-msgstr ""
+msgstr "Beschikbaarheid"
 
 #: ajax/planning.php:71 inc/change.class.php:825
 #: inc/notificationtargetproblem.class.php:207
@@ -407,7 +408,7 @@ msgstr ""
 #: inc/supplier.class.php:628 inc/ticketrecurrent.class.php:142
 #: inc/ticketrecurrent.class.php:180
 msgid "Start date"
-msgstr ""
+msgstr "Begindatum"
 
 #: ajax/planning.php:93
 msgid "Period"
@@ -522,14 +523,14 @@ msgstr "Toegang geweigerd"
 msgid ""
 "The version of the database is not compatible with the version of the "
 "installed files. An update is necessary."
-msgstr ""
+msgstr "De versie van uw database is niet compatibel met de versie van de geïnstalleerde code. Een update is noodzakelijk."
 
 #: config/config.php:188
 msgid ""
-"You are trying to use GLPI with files from an earlier version to the version"
-" of the database. Please install the GLPI files corresponding to the version"
-" of your database."
-msgstr ""
+"You are trying to use GLPI with files from an earlier version to the version "
+"of the database. Please install the GLPI files corresponding to the version "
+"of your database."
+msgstr "U probeert GLPI te gebruiken met een databaseversie bedoeld voor een hogere versie.  Gelieve de versie te installeren die met de versie van uw database overeenstemt."
 
 #: config/config.php:193 install/install.php:175 install/install.php:184
 msgid "Try again"
@@ -622,7 +623,7 @@ msgstr "Verwijderd"
 
 #: front/backup.php:579 front/backup.php:583
 msgid "Backup the database ?"
-msgstr ""
+msgstr "Wilt u de database back-uppen?"
 
 #: front/backup.php:580
 msgid "SQL Dump"
@@ -1433,7 +1434,7 @@ msgstr "Drop-downs"
 
 #: front/find_num.php:76
 msgid "Search the ID of your hardware"
-msgstr ""
+msgstr "Zoek het Identificatienummer van uw computer"
 
 #: front/find_num.php:85 front/search.php:41 inc/authldap.class.php:2347
 #: inc/dropdown.class.php:770 inc/html.class.php:2021 inc/html.class.php:2200
@@ -1932,8 +1933,7 @@ msgstr[1] ""
 msgid "List of the hardware under contract"
 msgstr "Lijst van hardware onder contract"
 
-#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to
-#. change for RTL
+#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
 #: front/report.contract.list.php:117 front/report.infocom.php:121
 #: front/report.year.list.php:129 inc/authldap.class.php:212
 #: inc/authldap.class.php:371 inc/authldap.class.php:588
@@ -2120,7 +2120,7 @@ msgstr "Contracttype"
 #: inc/reservation.class.php:864 inc/reservation.class.php:912
 #: inc/reservation.class.php:974 inc/reservation.class.php:1029
 msgid "End date"
-msgstr ""
+msgstr "Einddatum"
 
 #: front/report.contract.php:49
 msgid "Hardware under contract"
@@ -2407,7 +2407,7 @@ msgstr[1] ""
 
 #: front/setup.auth.php:62 inc/authmail.class.php:201
 msgid "Impossible to use email server as external source of connection"
-msgstr ""
+msgstr "de IMAP/POP kan niet gebruikt worden als externe verbindingsbron"
 
 #: front/setup.auth.php:65
 msgid "Others authentication methods"
@@ -2415,17 +2415,17 @@ msgstr ""
 
 #: front/setup.notification.php:56 inc/notificationmailsetting.class.php:135
 msgid "Enable followup via email"
-msgstr ""
+msgstr "Activeer opvolging via e-mail"
 
 #: front/setup.notification.php:70 inc/notificationmailsetting.class.php:50
 msgid "Email followups configuration"
-msgstr ""
+msgstr "Configuratie van opvolging d.m.v. alerts & emails"
 
 #: front/setup.notification.php:80
 msgid ""
 "Impossible to configure the notifications: please configure your email "
 "followup using the above configuration."
-msgstr ""
+msgstr "Configuratie van meldingen is onmogelijk : maak hieronder gebruik van opvolging via e-mail"
 
 #: front/setup.templates.php:48 inc/html.class.php:2217
 msgid "Manage templates..."
@@ -2580,7 +2580,7 @@ msgstr "uur(uren)"
 
 #: front/stat.global.php:207 front/stat.graph.php:443 inc/stat.class.php:375
 msgid "Answered"
-msgstr ""
+msgstr "Antwoorden"
 
 #: front/stat.global.php:223 front/stat.graph.php:459
 #: front/stat.location.php:212 front/stat.location.php:213
@@ -2698,7 +2698,7 @@ msgstr "Toon de grafieken"
 #: front/stat.location.php:164 front/stat.location.php:165
 #: front/stat.tracking.php:168 front/stat.tracking.php:169
 msgid "Number opened"
-msgstr ""
+msgstr "Aantal geopende Incident-tickets"
 
 #: front/stat.location.php:176 front/stat.location.php:177
 msgid "Number solved"
@@ -2895,7 +2895,7 @@ msgstr[1] "Leveranciers"
 
 #: front/stat.tracking.php:180 front/stat.tracking.php:181
 msgid "Number resolved"
-msgstr ""
+msgstr "Aantal opgeloste Incident-tickets"
 
 #. TRANS: %s is the user login
 #: front/ticketfollowup.form.php:49
@@ -3005,7 +3005,7 @@ msgstr ""
 
 #: front/tracking.injector.php:80 inc/ticket.class.php:1260
 msgid "Your ticket has been registered, its treatment is in progress."
-msgstr "Uw aanvraag werd succesvol geregistreerd, en wordt verder verwerkt.."
+msgstr "Uw probleemticket werd succesvol geregistreerd, en wordt verder verwerkt."
 
 #: front/tracking.injector.php:86
 msgid "Thank you for using our automatic helpdesk system."
@@ -3108,7 +3108,7 @@ msgstr "Ja"
 #: inc/alert.class.php:226
 #, php-format
 msgid "Alert sent on %s"
-msgstr ""
+msgstr "Alarm verstuurd op %s"
 
 #: inc/auth.class.php:108 inc/auth.class.php:204 inc/auth.class.php:249
 #: inc/auth.class.php:276
@@ -3149,7 +3149,7 @@ msgstr "Authentificatie d.m.v. LDAP directory"
 
 #: inc/auth.class.php:661
 msgid "Authentication on mail server"
-msgstr ""
+msgstr "Authentificatie op mail server"
 
 #. TRANS: %1$s is the auth method type, %2$s the auth method name or link
 #: inc/auth.class.php:685 inc/auth.class.php:687 inc/auth.class.php:693
@@ -3161,7 +3161,7 @@ msgstr ""
 #: inc/auth.class.php:695 inc/authmail.class.php:91
 #: inc/ruleright.class.php:286
 msgid "Email server"
-msgstr ""
+msgstr "Email server"
 
 #. TRANS: %1$s is the auth method type, %2$s an optional method type
 #. %3$s the name of the opt method
@@ -3176,7 +3176,7 @@ msgstr "CAS"
 
 #: inc/auth.class.php:716 inc/auth.class.php:720 inc/auth.class.php:1046
 msgid "x509 certificate authentication"
-msgstr ""
+msgstr "Authentificatie via x509 certificaat"
 
 #: inc/auth.class.php:729 inc/auth.class.php:732 inc/profile.class.php:1852
 #: install/update_0723_078.php:3707
@@ -3206,7 +3206,7 @@ msgstr "Synchronisatie"
 
 #: inc/auth.class.php:1018
 msgid "CAS authentication"
-msgstr ""
+msgstr "CAS-authentificatie"
 
 #: inc/auth.class.php:1020 inc/auth.class.php:1048 inc/auth.class.php:1059
 #: inc/plugin.class.php:388
@@ -3250,7 +3250,7 @@ msgstr "CAS kan niet gebruikt worden als externe verbindingsbron"
 
 #: inc/auth.class.php:1052
 msgid "Email attribute for x509 authentication"
-msgstr ""
+msgstr "mail attribuut voor x509 authentificatie"
 
 #: inc/auth.class.php:1057
 msgid "Other authentication sent in the HTTP request"
@@ -3460,7 +3460,7 @@ msgstr "De start-TLS van LDAP_bestaat niet"
 
 #: inc/authldap.class.php:317
 msgid "LDAP directory time zone"
-msgstr ""
+msgstr "Tijd zone van de LDAP directory"
 
 #: inc/authldap.class.php:322
 msgid "How LDAP aliases should be handled"
@@ -3547,7 +3547,7 @@ msgstr "Voornaam"
 
 #: inc/authldap.class.php:491 inc/user.class.php:1586 inc/user.class.php:2025
 msgid "Administrative number"
-msgstr ""
+msgstr "Administratief nummer"
 
 #: inc/authldap.class.php:499 inc/authldap.class.php:679
 #: inc/authldap.class.php:2296 inc/commonitilactor.class.php:167
@@ -3626,9 +3626,7 @@ msgstr "Zoekfilter voor gebruikers"
 msgid ""
 "Warning: The request exceeds the limit of the directory. The results are "
 "only partial."
-msgstr ""
-"Waarschuwing: Het verzoek overschrijdt de limiet van het directory, enkel "
-"partiële resultaten zijn beschikbaar"
+msgstr "Waarschuwing: Het verzoek overschrijdt de limiet van het directory, enkel partiële resultaten zijn beschikbaar"
 
 #: inc/authldap.class.php:1003 inc/authldap.class.php:1063
 #: inc/ocsserver.class.php:2509 inc/ocsserver.class.php:2529
@@ -3831,7 +3829,7 @@ msgstr "Verbindingsparameter"
 
 #: inc/authmail.class.php:176
 msgid "Email domain Name (users email will be login@domain)"
-msgstr ""
+msgstr "IMAP/POP-domeinnaam (gebruikers-e-mail is dan: login@thisdomain)"
 
 #. TRANS: %s is the datetime of update
 #. TRANS: %s is the datetime of insertion
@@ -3849,11 +3847,11 @@ msgstr ""
 
 #: inc/authmail.class.php:198
 msgid "Email server configuration"
-msgstr ""
+msgstr "Email server configuratie"
 
 #: inc/authmail.class.php:215
 msgid "Test connection to email server"
-msgstr ""
+msgstr "Test verbinding naar IMAP/POP server"
 
 #: inc/autoupdatesystem.class.php:44 inc/computer.class.php:716
 #: inc/computer.class.php:787 inc/dropdown.class.php:680
@@ -3873,7 +3871,7 @@ msgstr ""
 #: inc/knowbaseitem.class.php:396 inc/knowbaseitem.class.php:413
 #: inc/netpoint.class.php:354 inc/netpoint.class.php:366
 msgid "New item"
-msgstr ""
+msgstr "Nieuw Item"
 
 #: inc/bookmark.class.php:221 inc/commonitiltask.class.php:353
 #: inc/notificationtargetproblem.class.php:202
@@ -4045,28 +4043,22 @@ msgstr "Einde"
 msgid "Recurrent"
 msgstr ""
 
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
-#. headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
-#. headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
-#. headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
-#. headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
-#. headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
 #. TRANS : %1$s is the itemtype name,
 #. %2$s is the name of the item (used for headings of a list)
-#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for
-#. headings of a list)
+#. TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
 #: inc/calendar_holiday.class.php:111 inc/change_problem.class.php:112
 #: inc/change_problem.class.php:194 inc/change_ticket.class.php:108
 #: inc/change_ticket.class.php:193 inc/computer_device.class.php:226
@@ -4109,7 +4101,7 @@ msgstr ""
 
 #: inc/calendarsegment.class.php:295
 msgid "Add a schedule"
-msgstr ""
+msgstr "Voeg een tijdschema toe"
 
 #: inc/calendarsegment.class.php:297 inc/calendarsegment.class.php:314
 #: inc/planning.class.php:224 inc/reservation.class.php:783
@@ -4147,8 +4139,8 @@ msgstr[1] "Gebruikt"
 #: inc/cartridge.class.php:231 inc/cartridge.class.php:344
 msgid "Worn"
 msgid_plural "Worn"
-msgstr[0] "Oud"
-msgstr[1] "Oud"
+msgstr[0] "Gebruikt"
+msgstr[1] "Gebruikt"
 
 #. TRANS : for display cartridges count : %1$d is the total number,
 #. %2$d the new one, %3$d the used one, %4$d worn one
@@ -4163,7 +4155,7 @@ msgstr "Geen inktpatroon"
 
 #: inc/cartridge.class.php:380 inc/cartridge.class.php:600
 msgid "Worn cartridges"
-msgstr ""
+msgstr "Gebruikte inktpatronen"
 
 #: inc/cartridge.class.php:384 inc/consumable.class.php:361
 #: inc/entity.class.php:278 inc/entitydata.class.php:249
@@ -4196,7 +4188,7 @@ msgstr "Printerteller"
 #: inc/infocom.class.php:1070 inc/transfer.class.php:3105
 #: install/update_0723_078.php:4836
 msgid "Financial and administrative information"
-msgstr ""
+msgstr "financiële & administratieve informatie"
 
 #: inc/cartridge.class.php:482 inc/cartridge.class.php:664
 #, php-format
@@ -4303,8 +4295,7 @@ msgstr "Alarmdrempel"
 msgid "Send alarms on cartridges"
 msgstr "Stuur alarm over cartridges"
 
-#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining
-#. number
+#. TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
 #: inc/cartridgeitem.class.php:361
 #, php-format
 msgid ""
@@ -4372,7 +4363,7 @@ msgstr[1] ""
 #: inc/change.class.php:180 inc/problem.class.php:180
 #: inc/problem.class.php:191 inc/problem.class.php:495
 msgid "Analysis"
-msgstr ""
+msgstr "Analyse"
 
 #: inc/change.class.php:181
 msgid "Plans"
@@ -4508,7 +4499,7 @@ msgstr ""
 
 #: inc/change.class.php:591
 msgid "Applied"
-msgstr ""
+msgstr "Toegepast"
 
 #: inc/change.class.php:592
 msgid "Review"
@@ -4659,21 +4650,15 @@ msgstr "Sjabloonnaam"
 
 #: inc/commondbtm.class.php:1861
 msgid "You are not allowed to change the visibility flag for child entities."
-msgstr ""
-"U bent niet gemachtigd voor het aanpassen van de zichtbaarheid van deze sub-"
-"entiteiten."
+msgstr "U bent niet gemachtigd voor het aanpassen van de zichtbaarheid van deze sub-entiteiten."
 
 #: inc/commondbtm.class.php:1866
 msgid "Can't change this attribute. It's inherited from its parent."
-msgstr ""
-"Dit item is afhankelijk van (een of meer) andere. Het wijzigen van deze "
-"status (attribuut) is niet toegelaten"
+msgstr "Dit item is afhankelijk van (een of meer) andere. Het wijzigen van deze status (attribuut) is niet toegelaten"
 
 #: inc/commondbtm.class.php:1870
 msgid "Flag change forbidden. Linked items found."
-msgstr ""
-"De aanwezigheid van verbonden items, verhindert de wijziging van deze status"
-" (attribuut)"
+msgstr "De aanwezigheid van verbonden items, verhindert de wijziging van deze status (attribuut)"
 
 #: inc/commondbtm.class.php:1874
 msgid "Change visibility in child entities"
@@ -4782,11 +4767,10 @@ msgstr "U kunt deze locatie niet verwijderen, omdat die sublocaties had"
 
 #: inc/commondropdown.class.php:398
 msgid "Caution: you're about to remove a heading used for one or more items."
-msgstr ""
+msgstr "Opgelet: u staat op het punt een rubriek te verwijderen die gebruikt wordt voor één of meer items"
 
 #: inc/commondropdown.class.php:403
-msgid ""
-"If you confirm the deletion, all uses of this dropdown will be blanked."
+msgid "If you confirm the deletion, all uses of this dropdown will be blanked."
 msgstr ""
 
 #: inc/commondropdown.class.php:409
@@ -4860,7 +4844,7 @@ msgstr "Fout bij het versturen van het bestand (waarschijnlijk te groot)"
 #: inc/commonitilobject.class.php:1213
 msgctxt "priority"
 msgid "All"
-msgstr "Allemaal"
+msgstr ""
 
 #: inc/commonitilobject.class.php:1215
 msgctxt "priority"
@@ -4920,7 +4904,7 @@ msgstr "Zeer laag"
 #: inc/commonitilobject.class.php:1291
 msgctxt "urgency"
 msgid "All"
-msgstr "Allemaal"
+msgstr ""
 
 #: inc/commonitilobject.class.php:1293
 msgctxt "urgency"
@@ -4975,7 +4959,7 @@ msgstr "Zeer laag"
 #: inc/commonitilobject.class.php:1380
 msgctxt "impact"
 msgid "All"
-msgstr "Allemaal"
+msgstr ""
 
 #: inc/commonitilobject.class.php:1382
 msgctxt "impact"
@@ -5211,11 +5195,9 @@ msgstr "Gehele Naam"
 
 #: inc/computer.class.php:170 inc/computer_item.class.php:202
 msgid ""
-"Alternate username updated. The connected items have been updated using this"
-" alternate username."
-msgstr ""
-"Update van alternatieve gebruikersnaam.  De gelinkte items werden hiermee "
-"aangepast."
+"Alternate username updated. The connected items have been updated using this "
+"alternate username."
+msgstr "Update van alternatieve gebruikersnaam.  De gelinkte items werden hiermee aangepast."
 
 #: inc/computer.class.php:223 inc/computer_item.class.php:191
 msgid ""
@@ -5226,7 +5208,7 @@ msgstr ""
 #: inc/computer.class.php:261 inc/computer_item.class.php:211
 msgid ""
 "Status updated. The connected items have been updated using this status."
-msgstr ""
+msgstr "Status gewijzigd. De verbonden items zijn bijgewerkt met deze status."
 
 #: inc/computer.class.php:303 inc/computer_item.class.php:176
 msgid ""
@@ -5590,7 +5572,7 @@ msgstr ""
 #: inc/computer_softwarelicense.class.php:247
 #: inc/softwarelicense.class.php:581
 msgid "Affected computers"
-msgstr ""
+msgstr "betrokken computers"
 
 #: inc/computer_softwareversion.class.php:49 inc/software.class.php:781
 #: inc/softwareversion.class.php:284
@@ -5643,7 +5625,7 @@ msgstr ""
 
 #: inc/computervirtualmachine.class.php:378
 msgid "Add a virtual machine"
-msgstr ""
+msgstr "voeg een virtuele machine toe"
 
 #: inc/config.class.php:191 inc/config.class.php:874 inc/config.class.php:1109
 #: inc/profile.class.php:1278 inc/profile.class.php:1539
@@ -5700,9 +5682,7 @@ msgstr ""
 
 #: inc/config.class.php:250
 msgid "Don't use dynamic display if the number of items is less than"
-msgstr ""
-"Gebruik dynamische weergave (Ajax) niet als het aantal items minder is dan "
-"(0 = nooit)"
+msgstr "Gebruik dynamische weergave (Ajax) niet als het aantal items minder is dan (0 = nooit)"
 
 #: inc/config.class.php:254
 msgid ""
@@ -5711,7 +5691,7 @@ msgstr ""
 
 #: inc/config.class.php:260
 msgid "Autocompletion of text fields"
-msgstr ""
+msgstr "Automatisch aanvullen van tekstvelden (in dynamische weergave, Ajax)"
 
 #: inc/config.class.php:262
 msgid "Character to force the full display of dropdowns (wildcard)"
@@ -5820,12 +5800,11 @@ msgstr "Wis de status"
 
 #: inc/config.class.php:434
 msgid "Automatically add users from an external authentication source"
-msgstr ""
-"Voeg automatisch een gebruiker van een externe authentificatiebron toe"
+msgstr "Voeg automatisch een gebruiker van een externe authentificatiebron toe"
 
 #: inc/config.class.php:436
 msgid "Add a user without accreditation from a LDAP directory"
-msgstr ""
+msgstr "Voeg een gebruiker toe vanuit een LDAP-directory zonder machtiging"
 
 #: inc/config.class.php:441
 msgid "Action when a user is deleted from the LDAP directory"
@@ -5901,7 +5880,7 @@ msgstr "Sta het aanmaken van anonieme tickets toe (helpdesk.receiver)"
 
 #: inc/config.class.php:577
 msgid "Allow anonymous followups (receiver)"
-msgstr ""
+msgstr "Sta anoniem opvolging toe (ontvanger)"
 
 #: inc/config.class.php:584
 msgid "Matrix of calculus for priority"
@@ -6058,7 +6037,7 @@ msgstr "Maximum aantal automatische acties (run by CLI)"
 
 #: inc/config.class.php:891
 msgid "Logs in files (SQL, email, automatic action...)"
-msgstr ""
+msgstr "Logfiles in verschilende bestanden (SQL, mail, cron...)"
 
 #: inc/config.class.php:899
 msgid "Proxy configuration for upgrade check"
@@ -6137,8 +6116,7 @@ msgstr ""
 
 #: inc/config.class.php:1222 inc/config.class.php:1223
 msgid "A file and a directory have be created and deleted - Perfect !"
-msgstr ""
-"Een bestand en directorie zijn aangemaakt en daarna verwijderd - Perfect!"
+msgstr "Een bestand en directorie zijn aangemaakt en daarna verwijderd - Perfect!"
 
 #: inc/config.class.php:1231
 msgid "Checking write permissions for log files"
@@ -6192,13 +6170,12 @@ msgstr[1] ""
 msgid "Send alarms on consumables"
 msgstr "Stuur alarm over verbruiksartikelen"
 
-#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining
-#. number
+#. TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
 #: inc/consumableitem.class.php:335
 #, php-format
 msgid ""
-"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s"
-" - Remaining %3$d"
+"Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s "
+"- Remaining %3$d"
 msgstr ""
 
 #. TRANS: %s is entity name
@@ -6274,7 +6251,7 @@ msgstr "Kostprijs"
 #: inc/contract.class.php:172 inc/contract.class.php:413
 #: inc/contract.class.php:1006 inc/supplier.class.php:629
 msgid "Initial contract period"
-msgstr ""
+msgstr "Initiële contract duur"
 
 #: inc/contract.class.php:180 inc/contract.class.php:447
 msgid "Account number"
@@ -6395,15 +6372,11 @@ msgstr "Contracten die zullen vervallen binnen 30 dagen"
 
 #: inc/contract.class.php:626
 msgid "Contracts where notice begins in less than 7 days"
-msgstr ""
-"Contract(en) waarvoor de ingediende opzeggingstermijn in minder dan 7 dagen "
-"aanvangt"
+msgstr "Contract(en) waarvoor de ingediende opzeggingstermijn in minder dan 7 dagen aanvangt"
 
 #: inc/contract.class.php:633
 msgid "Contracts where notice begins in less than 30 days"
-msgstr ""
-"Contract(en) waarvoor de ingediende opzeggingstermijn in minder dan 30 dagen"
-" aanvangt"
+msgstr "Contract(en) waarvoor de ingediende opzeggingstermijn in minder dan 30 dagen aanvangt"
 
 #: inc/contract.class.php:992 inc/supplier.class.php:616
 msgid "No associated contract"
@@ -6622,9 +6595,7 @@ msgstr "Oude logfiles verwijderen"
 
 #: inc/crontask.class.php:1303
 msgid "How long system logs are keep in database (in days, 0 for infinite)"
-msgstr ""
-"Hoe lang worden de logs bijgehouden in de databank (in dagen, 0 voor "
-"oneindig)"
+msgstr "Hoe lang worden de logs bijgehouden in de databank (in dagen, 0 voor oneindig)"
 
 #: inc/crontask.class.php:1306
 msgid "Database optimization"
@@ -6802,7 +6773,7 @@ msgstr ""
 #: inc/deviceharddrive.class.php:60 inc/deviceharddrive.class.php:83
 #: inc/deviceharddrive.class.php:109
 msgid "Rpm"
-msgstr ""
+msgstr "Tpm."
 
 #: inc/deviceharddrive.class.php:63 inc/deviceharddrive.class.php:88
 #: inc/deviceharddrive.class.php:120
@@ -6869,7 +6840,7 @@ msgstr ""
 
 #: inc/displaypreference.class.php:241
 msgid "No personal criteria. Create personal parameters?"
-msgstr ""
+msgstr "Geen persoonlijke criteria. Wilt u persoonlijke parameters aanmaken?"
 
 #: inc/displaypreference.class.php:249 inc/displaypreference.class.php:393
 #: inc/search.class.php:900 inc/search.class.php:901
@@ -7042,7 +7013,7 @@ msgstr[1] ""
 
 #: inc/document.class.php:1466
 msgid "Add a new file"
-msgstr ""
+msgstr "Voeg een nieuw bestand toe"
 
 #: inc/document.class.php:1480
 msgid "Associate an existing document"
@@ -7084,7 +7055,7 @@ msgstr "Fax: "
 
 #: inc/dropdown.class.php:298 inc/dropdown.class.php:313
 msgid "Email: "
-msgstr ""
+msgstr "Email: "
 
 #: inc/dropdown.class.php:505 inc/dropdown.class.php:508
 msgid "GMT"
@@ -7305,11 +7276,11 @@ msgstr "Verwijder een VLAN"
 #: inc/dropdown.class.php:1447
 msgctxt "button"
 msgid "Update"
-msgstr "Updaten"
+msgstr ""
 
 #: inc/dropdown.class.php:1452 inc/infocom.class.php:798
 msgid "Enable the financial and administrative information"
-msgstr ""
+msgstr "Activeer de financiële & administratieve informatie"
 
 #: inc/dropdown.class.php:1483
 msgid "Add a document"
@@ -7382,7 +7353,7 @@ msgstr "Aanvraag validatie"
 
 #: inc/dropdown.class.php:1602 inc/dropdown.class.php:1624
 msgid "Add an actor"
-msgstr ""
+msgstr "voeg een actor toe"
 
 #: inc/dropdown.class.php:1603
 msgid "Link tickets"
@@ -7394,7 +7365,7 @@ msgstr ""
 
 #: inc/dropdown.class.php:1614
 msgid "Delete emails"
-msgstr ""
+msgstr "Email(s) verwijderen"
 
 #: inc/dropdown.class.php:1644
 msgid "Transfer and Merge"
@@ -7488,7 +7459,7 @@ msgstr ""
 #: inc/entity.class.php:338 inc/entitydata.class.php:568
 #: inc/notificationmailsetting.class.php:153
 msgid "Administrator name"
-msgstr ""
+msgstr "Administrator naam"
 
 #: inc/entity.class.php:344 inc/entitydata.class.php:577
 #: inc/notificationmailsetting.class.php:166
@@ -7526,7 +7497,7 @@ msgstr "Alarm bij contracten"
 #: inc/infocom.class.php:985 inc/infocom.class.php:1358
 #: inc/notificationtargetinfocom.class.php:38
 msgid "Alarms on financial and administrative information"
-msgstr ""
+msgstr "Alarm op de financiële of daministratieve informatie"
 
 #: inc/entity.class.php:403 inc/entitydata.class.php:654
 #: inc/reservationitem.class.php:336
@@ -7540,7 +7511,7 @@ msgstr "Automatisch afsluiten van opgeloste Incidenten-tickets na (termijn)"
 
 #: inc/entity.class.php:417
 msgid "Alerts on tickets which are not solved"
-msgstr ""
+msgstr "Waarschuwingen voor niet gesloten incident-tickets sinds"
 
 #: inc/entity.class.php:424 inc/entitydata.class.php:830
 msgid "Automatic assignment of tickets"
@@ -7690,7 +7661,7 @@ msgstr ""
 #: inc/entitydata.class.php:793 inc/entitydata.class.php:1286
 #: inc/sla.class.php:175
 msgid "24/7"
-msgstr ""
+msgstr "24/7"
 
 #: inc/entitydata.class.php:849
 msgid "Automatic closing configuration"
@@ -7724,7 +7695,7 @@ msgstr "Beveiliging"
 
 #: inc/event.class.php:215
 msgid "add the item"
-msgstr ""
+msgstr "item toegevoegen"
 
 #: inc/event.class.php:228 inc/event.class.php:324
 msgid "No Event"
@@ -7790,8 +7761,8 @@ msgstr ""
 
 #: inc/fqdn.class.php:66
 msgid ""
-"Fully Qualified Domain Name. Use the classical notation (labels separated by"
-" dots). For example: indepnet.net"
+"Fully Qualified Domain Name. Use the classical notation (labels separated by "
+"dots). For example: indepnet.net"
 msgstr ""
 
 #: inc/fqdn.class.php:84
@@ -7882,11 +7853,11 @@ msgstr ""
 
 #: inc/group_user.class.php:445
 msgid "Add to managers"
-msgstr ""
+msgstr "voeg toe aan managers"
 
 #: inc/group_user.class.php:446
 msgid "Add to delegatees"
-msgstr ""
+msgstr "voeg toe aan gedelegeerde"
 
 #: inc/group_user.class.php:447
 msgid "Delete from managers"
@@ -8040,9 +8011,7 @@ msgstr ""
 #: inc/html.class.php:2370 inc/toolbox.class.php:1004
 #: inc/toolbox.class.php:1007
 msgid "You will find it on the GLPI-PROJECT.org site."
-msgstr ""
-"Deze is beschikbaar vanaf de GLPI-website: <a href='http://glpi-project.org'"
-" target='_blank'>http://glpi-project.org</a>."
+msgstr "Deze is beschikbaar vanaf de GLPI-website: <a href='http://glpi-project.org' target='_blank'>http://glpi-project.org</a>."
 
 #: inc/html.class.php:2372 inc/toolbox.class.php:1003
 #: inc/toolbox.class.php:1006 inc/toolbox.class.php:1012
@@ -8226,8 +8195,8 @@ msgstr "Gevraagde item niet gevonden"
 
 #: inc/infocom.class.php:783
 msgid ""
-"For this type of item, the financial and administrative information are only"
-" a model for the items which you should add."
+"For this type of item, the financial and administrative information are only "
+"a model for the items which you should add."
 msgstr ""
 
 #: inc/infocom.class.php:838 inc/infocom.class.php:1081
@@ -8386,7 +8355,7 @@ msgstr ""
 #: inc/itilcategory.class.php:271 inc/ticket.class.php:2004
 #: inc/ticket.class.php:2022
 msgid "Request"
-msgstr ""
+msgstr "Vraag"
 
 #: inc/knowbaseitem.class.php:113 inc/knowbaseitem.class.php:116
 #: inc/reminder.class.php:373 inc/reminder.class.php:376
@@ -8399,7 +8368,7 @@ msgstr "Categorienaam"
 
 #: inc/knowbaseitem.class.php:475
 msgid "Select a category for this item:"
-msgstr ""
+msgstr "Selecteer een categorie voor dit item:"
 
 #: inc/knowbaseitem.class.php:481 inc/knowbaseitem.class.php:720
 #: inc/knowbaseitem.class.php:1011 inc/knowbaseitem.class.php:1225
@@ -8431,19 +8400,19 @@ msgstr[1] ""
 #: inc/knowbaseitem.class.php:538 inc/knowbaseitem.class.php:639
 #: inc/knowbaseitem.class.php:640
 msgid "Put this item in the FAQ"
-msgstr ""
+msgstr "Item toevoegen aan de publieke FAQ"
 
 #: inc/knowbaseitem.class.php:620
 msgid "This item is part of the FAQ"
-msgstr ""
+msgstr "Dit item hoort tot de publieke FAQ"
 
 #: inc/knowbaseitem.class.php:622
 msgid "This item is not part of the FAQ"
-msgstr ""
+msgstr "Dit item hoort niet tot de publieke FAQ"
 
 #: inc/knowbaseitem.class.php:633 inc/knowbaseitem.class.php:634
 msgid "Delete this item from the FAQ"
-msgstr ""
+msgstr "Verwijder dit item van de publieke FAQ"
 
 #: inc/knowbaseitem.class.php:645 inc/knowbaseitem.class.php:646
 msgid "Edit"
@@ -8487,7 +8456,7 @@ msgstr "Overzicht(en)"
 
 #: inc/knowbaseitem.class.php:1292 inc/reminder.class.php:948
 msgid "Add a target"
-msgstr ""
+msgstr "voeg een doel toe"
 
 #: inc/knowbaseitem.class.php:1319 inc/notificationevent.class.php:192
 #: inc/notificationtarget.class.php:123 inc/notificationtarget.class.php:202
@@ -8556,7 +8525,7 @@ msgstr "Updaten"
 
 #: inc/log.class.php:345 inc/notificationtargetfieldunicity.class.php:48
 msgid "Add the item"
-msgstr ""
+msgstr "item toegevoegen"
 
 #: inc/log.class.php:349
 msgid "Delete the item"
@@ -8600,7 +8569,7 @@ msgstr "De-installeer software: %s"
 #: inc/log.class.php:405
 #, php-format
 msgid "Disconnect the item: %s"
-msgstr ""
+msgstr "item loskoppelen: %s"
 
 #. TRANS: %s is the item name
 #: inc/log.class.php:414
@@ -8672,9 +8641,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:208
 msgid "mbstring extension not found. Warning with charsets used."
-msgstr ""
-"De 'mbstring' extensie is niet gevonden. waarschuwing voor gebruikte "
-"'charsets'."
+msgstr "De 'mbstring' extensie is niet gevonden. waarschuwing voor gebruikte 'charsets'."
 
 #: inc/mailcollector.class.php:212
 msgid "Name (Email address)"
@@ -8690,8 +8657,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:243 inc/mailcollector.class.php:309
 msgid "Maximum size of each file imported by the mail receiver"
-msgstr ""
-"Mail ontvanger: Maximale grootte van elk ingevoerd bestand (0: geen import)"
+msgstr "Mail ontvanger: Maximale grootte van elk ingevoerd bestand (0: geen import)"
 
 #: inc/mailcollector.class.php:270
 msgid "Get email tickets now"
@@ -8706,8 +8672,7 @@ msgstr ""
 #: inc/mailcollector.class.php:522
 #, php-format
 msgid ""
-"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, "
-"errors=%4$d"
+"Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d"
 msgstr ""
 
 #: inc/mailcollector.class.php:531
@@ -8760,7 +8725,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:1408 inc/mailcollector.class.php:1410
 msgid "List of not imported emails"
-msgstr ""
+msgstr "Lijst van niet geïmporteerde emails"
 
 #: inc/mailcollector.class.php:1432 inc/ocsserver.class.php:332
 #: inc/ocsserver.class.php:339 inc/ocsserver.class.php:346
@@ -8881,8 +8846,7 @@ msgstr[1] ""
 msgid "Computer's name"
 msgstr "Naam van de computer"
 
-#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to
-#. change for RTL
+#. TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
 #: inc/networkequipment.class.php:246 inc/networkequipment.class.php:314
 #, php-format
 msgid "%1$s%2$s"
@@ -8913,8 +8877,7 @@ msgstr[1] ""
 
 #: inc/networkname.class.php:406
 msgid ""
-"Several network names available! Go to the tab 'Network Name' to manage "
-"them."
+"Several network names available! Go to the tab 'Network Name' to manage them."
 msgstr ""
 
 #: inc/networkportaggregate.class.php:47
@@ -9145,26 +9108,25 @@ msgstr[1] ""
 
 #: inc/notificationmail.class.php:176
 msgid "Mail test"
-msgstr ""
+msgstr "Email Test"
 
 #: inc/notificationmail.class.php:177
 msgid "This is a test email."
-msgstr ""
+msgstr "Dit is een test Email om te controleren of het mail-lijst systeem werkt"
 
 #: inc/notificationmail.class.php:180
 msgid "Failed to send test email to administrator"
-msgstr ""
+msgstr "Poging om een Email naar de administrator te sturen is mislukt"
 
 #: inc/notificationmail.class.php:183
 msgid "Test email sent to administrator"
-msgstr ""
+msgstr "(test)Email verzonden naar administrator"
 
 #: inc/notificationmail.class.php:239
 msgid "Error in sending the email"
-msgstr ""
+msgstr "Fout in het versturen van de Email"
 
-#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of
-#. the mail
+#. TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
 #: inc/notificationmail.class.php:246
 #, php-format
 msgid "An email was sent to %1$s: %2$s"
@@ -9173,11 +9135,11 @@ msgstr ""
 #: inc/notificationmailsetting.class.php:141
 #: inc/notificationtarget.class.php:900
 msgid "URL of the application"
-msgstr ""
+msgstr "(Base) URL van de applicatie"
 
 #: inc/notificationmailsetting.class.php:172
 msgid "The PHP mail function is unknown or is not activated on your system."
-msgstr ""
+msgstr "De PHP E-mailfunctie is onbestaande of niet actief in het systeem"
 
 #: inc/notificationmailsetting.class.php:173
 msgid "The use of a SMTP is needed."
@@ -9185,7 +9147,7 @@ msgstr "Het gebruik van SMTP is nodig voor E-mail"
 
 #: inc/notificationmailsetting.class.php:182
 msgid "Way of sending emails"
-msgstr ""
+msgstr "Mailprotocol om E-mails te sturen"
 
 #: inc/notificationmailsetting.class.php:183
 msgid "PHP"
@@ -9205,7 +9167,7 @@ msgstr "SMTP+TLS"
 
 #: inc/notificationmailsetting.class.php:191
 msgid "Send a test email to the administrator"
-msgstr ""
+msgstr "Stuur een test e-mail naar de administrator"
 
 #: inc/notificationmailsetting.class.php:194
 msgid "SMTP host"
@@ -9432,11 +9394,11 @@ msgstr "De slave-database is gedesynchroniseerd, het verschil is"
 #: inc/notificationtargetfieldunicity.class.php:38
 #: inc/notificationtargetfieldunicity.class.php:79
 msgid "Alert on duplicate record"
-msgstr ""
+msgstr "Alarm voor dubbel record"
 
 #: inc/notificationtargetfieldunicity.class.php:48
 msgid "Update the item"
-msgstr ""
+msgstr "item bijwerken"
 
 #: inc/notificationtargetfieldunicity.class.php:60
 msgid "Item successfully added but duplicate record on"
@@ -9837,7 +9799,7 @@ msgstr ""
 #: inc/notimportedemail.class.php:80 inc/rulemailcollector.class.php:91
 #: inc/ruleticket.class.php:290
 msgid "Mails receiver"
-msgstr ""
+msgstr "Mail Ontvanger"
 
 #: inc/notimportedemail.class.php:86
 msgid "Message-ID email header"
@@ -9849,11 +9811,11 @@ msgstr "Reden van weigering"
 
 #: inc/notimportedemail.class.php:121
 msgid "Unable to affect the email to an entity"
-msgstr ""
+msgstr "Onmogelijk om de email toe te wijzen aan een entiteit"
 
 #: inc/notimportedemail.class.php:124
 msgid "Email not found. Impossible import"
-msgstr ""
+msgstr "Email niet gevonden, import onmogelijk"
 
 #: inc/ocslink.class.php:43 inc/ruleimportcomputer.class.php:129
 msgid "OCSNG link"
@@ -9868,7 +9830,7 @@ msgstr "OCSNG TAG: %s"
 
 #: inc/ocslink.class.php:173
 msgid "Locked fields"
-msgstr ""
+msgstr "Geblokkeerde velden"
 
 #: inc/ocslink.class.php:197
 msgid "Locked monitors"
@@ -9931,9 +9893,7 @@ msgstr "URL van de OCSNG console"
 
 #: inc/ocsserver.class.php:404
 msgid "Limit the import to the following tags (separator $, nothing for all)"
-msgstr ""
-"Beperk het importeren tot de volgende extensies (separator $, niets indien "
-"alle)"
+msgstr "Beperk het importeren tot de volgende extensies (separator $, niets indien alle)"
 
 #: inc/ocsserver.class.php:409
 msgid "Exclude the following tags (separator $, nothing for all)"
@@ -9966,8 +9926,7 @@ msgstr "Maak gebruik van de software dictionary in OCSNG"
 
 #: inc/ocsserver.class.php:477
 msgid "Number of items to synchronize via the automatic OCSNG action"
-msgstr ""
-"Aantal computers die nog gesynchroniseerd moeten worden d.m.v OCSNG actie"
+msgstr "Aantal computers die nog gesynchroniseerd moeten worden d.m.v OCSNG actie"
 
 #: inc/ocsserver.class.php:483
 msgid "Behavior to the deletion of a computer in OCSNG"
@@ -9986,9 +9945,7 @@ msgstr "Geen import: de plug-in zal deze onderdelen niet importeren"
 msgid ""
 "Global import: everything is imported but the material is globally managed "
 "(without double blooms)"
-msgstr ""
-"Allesomvattende import: alles is geïmporteerd, maar het materiaal werd "
-"allesomvattend beheerd"
+msgstr "Allesomvattende import: alles is geïmporteerd, maar het materiaal werd allesomvattend beheerd"
 
 #: inc/ocsserver.class.php:497
 msgid "Unit import: everything is imported 'as-is'"
@@ -10034,17 +9991,13 @@ msgstr "Òngeldige OCSNG configuratie ('TRACE_DELETED' moet actief zijn)"
 msgid ""
 "Access denied on OCSNG database (Need write rights on hardware.CHECKSUM "
 "necessary)"
-msgstr ""
-"Toegang tot de OCS databank geweigerd (gebruiker moet schrijfrechten hebben "
-"voor hardware.CHECKSUM)"
+msgstr "Toegang tot de OCS databank geweigerd (gebruiker moet schrijfrechten hebben voor hardware.CHECKSUM)"
 
 #: inc/ocsserver.class.php:609
 msgid ""
 "Access denied on OCSNG database (Delete rights in deleted_equiv table "
 "necessary)"
-msgstr ""
-"Toegang geweigerd tot de OCS databank (gebruiker moet verwijderrechten "
-"hebben voor de tabel deleted_equiv)"
+msgstr "Toegang geweigerd tot de OCS databank (gebruiker moet verwijderrechten hebben voor de tabel deleted_equiv)"
 
 #: inc/ocsserver.class.php:611
 msgid "Connection to OCSNG database successful"
@@ -10109,9 +10062,7 @@ msgstr "Geen nieuwe computer om bij te werken"
 msgid ""
 "Caution! The imported data (see your configuration) will overwrite the "
 "existing data"
-msgstr ""
-"Opgelet!  De geïmporteerde gegevens (zie uw configuratie) zullen de "
-"bestaande gegevens overschrijven"
+msgstr "Opgelet!  De geïmporteerde gegevens (zie uw configuratie) zullen de bestaande gegevens overschrijven"
 
 #: inc/ocsserver.class.php:2778
 msgid "Manual import mode"
@@ -10127,7 +10078,7 @@ msgstr "Activeer het overzicht"
 
 #: inc/ocsserver.class.php:2794
 msgid "Check first that duplicates have been correctly managed in OCSNG"
-msgstr ""
+msgstr "Controleer eerst of de doublures correct beheerd worden door OCSNG"
 
 #: inc/ocsserver.class.php:2817
 msgid "Match the rule ?"
@@ -10499,7 +10450,7 @@ msgstr ""
 
 #: inc/profile.class.php:466 inc/profile.class.php:1856
 msgid "Update password"
-msgstr ""
+msgstr "Wachtwoord aanpassen"
 
 #: inc/profile.class.php:470 inc/profile.class.php:1371
 msgid "Ticket creation form on login"
@@ -10680,7 +10631,7 @@ msgstr "Bekijk de eigen planning"
 
 #: inc/profile.class.php:953 inc/profile.class.php:1728
 msgid "See schedule of people in my groups"
-msgstr ""
+msgstr "Bekijk de agenda van leden van mijn groepen"
 
 #: inc/profile.class.php:956 inc/profile.class.php:1733
 msgid "View all plannings"
@@ -10731,7 +10682,7 @@ msgstr "Methode van authenticatie en synchronisatie voor gebruikers"
 
 #: inc/profile.class.php:1178 inc/profile.class.php:1621
 msgid "Add users from an external source"
-msgstr ""
+msgstr "Gebruiker toegevoegen vanaf een externe bron"
 
 #: inc/profile.class.php:1199 inc/profile.class.php:1571
 #: inc/ruleocs.class.php:47 inc/ruleocscollection.class.php:69
@@ -10742,7 +10693,7 @@ msgstr "Regels die een computer toewijzen aam een entiteit"
 #: inc/rulemailcollector.class.php:82
 #: inc/rulemailcollectorcollection.class.php:48
 msgid "Rules for assigning a ticket created through a mail receiver"
-msgstr ""
+msgstr "Regels voor het toewijzen van een Incident-ticket ontvangen via email"
 
 #: inc/profile.class.php:1208 inc/rulesoftwarecategory.class.php:53
 #: inc/rulesoftwarecategorycollection.class.php:48
@@ -10904,8 +10855,7 @@ msgstr ""
 msgid "Add to schedule"
 msgstr "Aan planning toevoegen"
 
-#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s
-#. is its name
+#. TRANS: %1$s is the start time of a planned item, %2$s is the end and %3$s is its name
 #: inc/reminder.class.php:769
 #, php-format
 msgid "From %1$s to %2$s: %3$s"
@@ -11203,7 +11153,7 @@ msgstr "logical operator"
 
 #: inc/rule.class.php:297 inc/rule.class.php:1596
 msgid "and"
-msgstr ""
+msgstr "en"
 
 #: inc/rule.class.php:301 inc/rule.class.php:1596
 msgid "or"
@@ -11211,8 +11161,8 @@ msgstr ""
 
 #: inc/rule.class.php:353
 msgid ""
-"It is possible to affect the result of a regular expression using the string"
-" #0"
+"It is possible to affect the result of a regular expression using the string "
+"#0"
 msgstr ""
 
 #: inc/rule.class.php:556 inc/rule.class.php:1172
@@ -11249,7 +11199,7 @@ msgstr "Resultaat van een reguliere expressie"
 
 #: inc/rule.class.php:1949
 msgid "Rules using the object have been disabled."
-msgstr ""
+msgstr "De regels die verband houden met de entiteit werden gedesactiveerd"
 
 #: inc/rulecollection.class.php:294
 msgid "Rules list"
@@ -11265,8 +11215,7 @@ msgstr "De engine behandeld alle regels."
 
 #: inc/rulecollection.class.php:336
 msgid "The engine passes the result of a rule to the following ones."
-msgstr ""
-"De engine geeft her resultaat van een regel door aan de daar opvolgende."
+msgstr "De engine geeft her resultaat van een regel door aan de daar opvolgende."
 
 #: inc/rulecollection.class.php:731
 msgid "No element to be tested"
@@ -11452,17 +11401,17 @@ msgstr "Bruikbaar in Incident-tickets"
 #: inc/rulesoftwarecategory.class.php:70 inc/software.class.php:243
 #: inc/software.class.php:380
 msgid "Publisher"
-msgstr ""
+msgstr "Uitgever"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:92
 msgid "Warning before running rename based on the dictionary rules"
-msgstr ""
+msgstr "Waarschuwing voor de dictionary-regels opnieuw worden toegepast"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:96
 msgid ""
 "Warning! This operation can put merged software in the trash.<br>Sure to "
 "notify your users."
-msgstr ""
+msgstr "Waarschuwing! Deze handeling verwijdert de software uit dit systeem.<br>Informeer hiervan de gebruikers."
 
 #: inc/ruledictionnarysoftwarecollection.class.php:98
 msgid "Manufacturer choice"
@@ -11474,7 +11423,7 @@ msgstr ""
 
 #: inc/ruledictionnarysoftwarecollection.class.php:385
 msgid "Software deleted by GLPI dictionary rules"
-msgstr ""
+msgstr "Software verwijdert door GLPI dictionary"
 
 #: inc/ruleimportcomputer.class.php:64
 #: inc/ruleimportcomputercollection.class.php:59
@@ -11487,7 +11436,7 @@ msgstr ""
 
 #: inc/ruleimportcomputer.class.php:85
 msgid "Find computers in GLPI having the status"
-msgstr ""
+msgstr "Computers zoeken in GLPI met deze status"
 
 #: inc/ruleimportcomputer.class.php:142
 msgid "Link if possible"
@@ -11515,7 +11464,7 @@ msgstr ""
 
 #: inc/rulemailcollector.class.php:105
 msgid "Email body"
-msgstr ""
+msgstr "Email body"
 
 #: inc/rulemailcollector.class.php:118
 msgid "In-Reply-To email header"
@@ -11576,11 +11525,11 @@ msgstr "Entiteit gebaseerd op gebruikersprofiel"
 
 #: inc/rulemailcollector.class.php:209
 msgid "Reject email (without email response)"
-msgstr ""
+msgstr "Weiger email (geen antwoord via email)"
 
 #: inc/rulemailcollector.class.php:213
 msgid "Reject email (with email response)"
-msgstr ""
+msgstr "Weiger email (met emailantwoord)"
 
 #: inc/ruleright.class.php:268
 msgid "Automatic user assignment"
@@ -11592,7 +11541,7 @@ msgstr ""
 
 #: inc/ruleright.class.php:321
 msgid "Entity based on LDAP information"
-msgstr ""
+msgstr "Entiteit gebaseerd op LDAP informatie"
 
 #: inc/ruleright.class.php:331
 msgid "Entity from mail domain"
@@ -11624,8 +11573,8 @@ msgstr ""
 
 #: inc/search.class.php:1305
 msgid ""
-"To increase the limit: change max_input_vars or suhosin.post.max_vars in php"
-" configuration."
+"To increase the limit: change max_input_vars or suhosin.post.max_vars in php "
+"configuration."
 msgstr ""
 
 #: inc/search.class.php:1427
@@ -11666,7 +11615,7 @@ msgstr ""
 
 #: inc/search.class.php:4860 inc/search.class.php:4891
 msgid "after"
-msgstr ""
+msgstr "na"
 
 #: inc/session.class.php:136 inc/session.class.php:146
 msgid "You don't have right to connect"
@@ -11676,9 +11625,7 @@ msgstr "U heeft de rechten niet om te verbinden"
 msgid ""
 "You do not have access to this application because your account was "
 "deactivated or removed"
-msgstr ""
-"U heeft geen toegang tot deze applicatie, omdat uw account is verwijderd of "
-"gedeactiveerd."
+msgstr "U heeft geen toegang tot deze applicatie, omdat uw account is verwijderd of gedeactiveerd."
 
 #: inc/session.class.php:320 inc/session.class.php:321
 msgid "(tree structure)"
@@ -11708,7 +11655,7 @@ msgstr[1] ""
 
 #: inc/slalevel.class.php:91
 msgid "Add an escalation level"
-msgstr ""
+msgstr "voeg een escalatie niveau toe"
 
 #: inc/slalevel.class.php:98 inc/slalevel.class.php:123
 #: inc/slalevel.class.php:228
@@ -11810,7 +11757,7 @@ msgstr "Een versie toevoegen"
 
 #: inc/stat.class.php:339
 msgid "Real duration of treatment of the ticket"
-msgstr ""
+msgstr "Duur Incident-ticket"
 
 #: inc/stat.class.php:351
 msgid "Number of opened tickets"
@@ -11989,7 +11936,7 @@ msgstr ""
 
 #: inc/ticket.class.php:2433
 msgid "Installed softwares"
-msgstr ""
+msgstr "Geïnstalleerde software"
 
 #: inc/ticket.class.php:2484
 msgid "Or complete search"
@@ -12024,8 +11971,7 @@ msgstr "Dit Incident-ticket gaat over : %s"
 msgid "Submit Message"
 msgstr "Een bericht verzenden"
 
-#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the
-#. entity name
+#. TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the entity name
 #: inc/ticket.class.php:3210
 #, php-format
 msgid "%1$s - ID %2$d (%3$s)"
@@ -12048,8 +11994,7 @@ msgstr ""
 
 #: inc/ticket.class.php:3324
 msgid ""
-"The assignment of a SLA to a ticket causes the recalculation of the due "
-"date."
+"The assignment of a SLA to a ticket causes the recalculation of the due date."
 msgstr ""
 
 #: inc/ticket.class.php:3325
@@ -12111,7 +12056,7 @@ msgstr "Geen tussenkomst gevonden"
 
 #: inc/ticket.class.php:4499
 msgid "Last tickets"
-msgstr ""
+msgstr "Laatste ticket(s)"
 
 #: inc/ticket.class.php:4560
 #, php-format
@@ -12122,7 +12067,7 @@ msgstr[1] ""
 
 #: inc/ticket.class.php:4575 inc/ticket.class.php:4581
 msgid "New ticket for this item..."
-msgstr ""
+msgstr "Nieuw incident-ticket voor dit item ..."
 
 #: inc/ticket.class.php:4610
 msgid "Ticket on linked items"
@@ -12231,8 +12176,7 @@ msgid_plural "Predefined fields"
 msgstr[0] ""
 msgstr[1] ""
 
-#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked
-#. ticket, %3$s optionals links / icons
+#. TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked ticket, %3$s optionals links / icons
 #: inc/ticket_ticket.class.php:137
 #, php-format
 msgid "%1$s %2$s %3$s"
@@ -12253,7 +12197,7 @@ msgstr ""
 msgid ""
 "The selected user has no valid email address. The request has been created, "
 "without email confirmation."
-msgstr ""
+msgstr "De gekozen gebruiker heeft geen emailadres, de aanvraag werd gemaakt maar de bevstigingsemail kon niet worden verzonden"
 
 #: inc/ticketvalidation.class.php:230
 msgid "If approval is denied, specify a reason."
@@ -12316,8 +12260,7 @@ msgstr "Test PHP Parser"
 #: inc/toolbox.class.php:673
 msgid ""
 "GLPI is not compatible with the option zend.ze1_compatibility_mode = On."
-msgstr ""
-"GLPI is niet compatibel met de optie zend.ze1_compatibility_mode = On."
+msgstr "GLPI is niet compatibel met de optie zend.ze1_compatibility_mode = On."
 
 #: inc/toolbox.class.php:677 inc/toolbox.class.php:678
 msgid "PHP version is at least 5.3.0 - Perfect !"
@@ -12333,7 +12276,7 @@ msgstr "MySQL-uitbreidingstest"
 
 #: inc/toolbox.class.php:693
 msgid "You must install the MySQL extension for PHP."
-msgstr ""
+msgstr "Compileer uw PHP met de MySQL-uitbreiding"
 
 #: inc/toolbox.class.php:697 inc/toolbox.class.php:699
 msgid "Ok - the function mysql_query() exist - Perfect !"
@@ -12345,7 +12288,7 @@ msgstr "Sessietest"
 
 #: inc/toolbox.class.php:709
 msgid "Your parser PHP is not installed with sessions support!"
-msgstr ""
+msgstr "Uw PHP-parser is niet gecompileerd met ondersteuning voor sessies!"
 
 #: inc/toolbox.class.php:715 inc/toolbox.class.php:716
 msgid "Sessions support is available  - Perfect !"
@@ -12353,9 +12296,7 @@ msgstr "Ondersteuning voor de sessies is beschikbaar - Perfect!"
 
 #: inc/toolbox.class.php:721
 msgid "Make sure that sessions support has been activated in your php.ini"
-msgstr ""
-"Controleer of de ondersteuning van de sessies goed is ingesteld in uw "
-"php.ini"
+msgstr "Controleer of de ondersteuning van de sessies goed is ingesteld in uw php.ini"
 
 #: inc/toolbox.class.php:727
 msgid "Test session auto start"
@@ -12365,9 +12306,7 @@ msgstr "Test sessie-autostart"
 msgid ""
 "session.auto_start is activated. See .htaccess file in the GLPI root for "
 "more information."
-msgstr ""
-"session.auto_start geactiveerd. Bekijk het bestand .htaccess in "
-"rootdirectory van GLPI voor meer informatie."
+msgstr "session.auto_start geactiveerd. Bekijk het bestand .htaccess in rootdirectory van GLPI voor meer informatie."
 
 #: inc/toolbox.class.php:736
 msgid "Test if Session_use_trans_sid is used"
@@ -12389,9 +12328,7 @@ msgstr "Test op de uitbreiding 'Magic_Quotes_Sybase'"
 msgid ""
 "GLPI does not work with the magic_quotes_sybase option ; Please turn it off "
 "and retry"
-msgstr ""
-"GLPI kan niet werken met de 'Magic_Quotes_Sybase'-optie.  Deactiveer de "
-"optie en probeer opnieuw."
+msgstr "GLPI kan niet werken met de 'Magic_Quotes_Sybase'-optie.  Deactiveer de optie en probeer opnieuw."
 
 #: inc/toolbox.class.php:764 inc/toolbox.class.php:766
 msgid "The magic_quotes_sybase option isn't active on your server - Perfect !"
@@ -12404,8 +12341,7 @@ msgstr "Test json functies"
 #: inc/toolbox.class.php:775
 msgid ""
 "GLPI can't work correctly without the json_encode and json_decode functions"
-msgstr ""
-"GLPI kan niet correct werken zonder de json_encode en json_decode functies"
+msgstr "GLPI kan niet correct werken zonder de json_encode en json_decode functies"
 
 #: inc/toolbox.class.php:781 inc/toolbox.class.php:783
 #: inc/toolbox.class.php:797 inc/toolbox.class.php:799
@@ -12618,15 +12554,11 @@ msgstr ""
 msgid ""
 "You can continue to add elements to be transferred or execute the transfer "
 "now"
-msgstr ""
-"U kunt doorgaan om de onderdelen toe te voegen voor verzending of verstuur "
-"vanaf nu deze onderdelen"
+msgstr "U kunt doorgaan om de onderdelen toe te voegen voor verzending of verstuur vanaf nu deze onderdelen"
 
 #: inc/transfer.class.php:3224
 msgid "Think of making a backup before transferring items."
-msgstr ""
-"Mischien is het verstandig om eerst een backup te maken, voor u de items "
-"gaat versturen."
+msgstr "Mischien is het verstandig om eerst een backup te maken, voor u de items gaat versturen."
 
 #: inc/transfer.class.php:3226
 msgid "Items to transfer"
@@ -12753,14 +12685,13 @@ msgid "Please confirm your email address and enter your new password."
 msgstr ""
 
 #: inc/user.class.php:2826 inc/user.class.php:2882
-msgid ""
-"Your password reset request has expired or is invalid. Please renew it."
+msgid "Your password reset request has expired or is invalid. Please renew it."
 msgstr ""
 
 #: inc/user.class.php:2845
 msgid ""
-"Please enter your email address. A email will be sent to you and you will be"
-" able to choose a new password."
+"Please enter your email address. A email will be sent to you and you will be "
+"able to choose a new password."
 msgstr ""
 
 #: inc/user.class.php:2870
@@ -12779,8 +12710,8 @@ msgstr ""
 
 #: inc/user.class.php:2922
 msgid ""
-"An email has been sent to your email address. The email contains information"
-" for reset your password."
+"An email has been sent to your email address. The email contains information "
+"for reset your password."
 msgstr ""
 
 #: inc/user.class.php:2956
@@ -12862,8 +12793,7 @@ msgid "Choose 'Install' for a completely new installation of GLPI."
 msgstr "Kies 'Installeren' voor een nieuwe complete installatie van GLPI."
 
 #: install/install.php:125
-msgid ""
-"Select 'Upgrade' to update your version of GLPI from an earlier version"
+msgid "Select 'Upgrade' to update your version of GLPI from an earlier version"
 msgstr ""
 
 #: install/install.php:145
@@ -12970,9 +12900,7 @@ msgstr "post-only/post-only voor het 'alleen posten'-gebruikersaccount"
 
 #: install/install.php:432
 msgid "You can delete or modify these accounts as well as the initial data."
-msgstr ""
-"U kunt deze gebruikers verwijderen of wijzigen, net als de intiële waarden "
-"in de databank"
+msgstr "U kunt deze gebruikers verwijderen of wijzigen, net als de intiële waarden in de databank"
 
 #: install/install.php:433 install/update_content.php:379
 #: install/update.php:901
@@ -12982,9 +12910,7 @@ msgstr "Gebruik GLPI"
 #: install/install.php:468
 msgid ""
 "Can't create the database connection file, please verify file permissions."
-msgstr ""
-"Onmogelijk om het databank verbindingsbestand aan te maken.  Controleer de "
-"rechten van de bestanden."
+msgstr "Onmogelijk om het databank verbindingsbestand aan te maken.  Controleer de rechten van de bestanden."
 
 #: install/install.php:524
 msgid "Beginning of the installation"
@@ -13052,7 +12978,7 @@ msgstr "Fax : %s"
 #: install/update_0681_07.php:581
 #, php-format
 msgid "Email : %s"
-msgstr ""
+msgstr "Email : %s"
 
 #. TRANS: %s is the number of new version
 #: install/update_0713_072.php:42 install/update_072_0721.php:43
@@ -13120,16 +13046,13 @@ msgstr "De nieuwe structuur is hiërarchisch"
 
 #: install/update.php:411
 msgid "Provide a delimiter in order to automate the new hierarchy generation."
-msgstr ""
-"Als u een scheidingsteken gebruikt, kunt u het instellen om het creëren van "
-"een nieuwe hiërarchie te automatiseren"
+msgstr "Als u een scheidingsteken gebruikt, kunt u het instellen om het creëren van een nieuwe hiërarchie te automatiseren"
 
 #: install/update.php:412
 msgid ""
 "You can also specify a root location which will include all the generated "
 "locations."
-msgstr ""
-"U kunt ook een rootlocatie specificeren die alle gegenereerde locaties omvat"
+msgstr "U kunt ook een rootlocatie specificeren die alle gegenereerde locaties omvat"
 
 #: install/update.php:414
 msgid "Delimiter"
@@ -13168,16 +13091,10 @@ msgstr ""
 msgid ""
 "All users having administrators rights have have been updated to 'super-"
 "admin' rights with the creation of his new user type."
-msgstr ""
-"Nu hebben alle administrators 'super-admin'-rechten, dit gebruikerstype is "
-"nieuw toegevoegd."
+msgstr "Nu hebben alle administrators 'super-admin'-rechten, dit gebruikerstype is nieuw toegevoegd."
 
 #: install/update.php:909
 msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
-msgstr ""
-"Verbinding met de databank is mislukt, controleer / pas eventueel de "
-"connectieparameters aan in het bestand config_db.php"
-
-
+msgstr "Verbinding met de databank is mislukt, controleer / pas eventueel de connectieparameters aan in het bestand config_db.php"
