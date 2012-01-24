@@ -535,6 +535,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                      $interv[$data["begin"]."$$$".$i]["status"]   = $parentitem->fields["status"];
                      $interv[$data["begin"]."$$$".$i]["priority"] = $parentitem->fields["priority"];
                      /// Specific for tickets
+                     $interv[$data["begin"]."$$$".$i]["device"] = '';
                      if (isset($parentitem->hardwaredatas)) {
                         $interv[$data["begin"]."$$$".$i]["device"]
                               = ($parentitem->hardwaredatas ?$parentitem->hardwaredatas->getName()

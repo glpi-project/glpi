@@ -950,7 +950,7 @@ class Planning {
       if (isset($data["items"]) && count($data["items"])) {
          $interv = array_merge($data["items"], $interv);
       }
-
+      
       if (count($interv)>0) {
          foreach ($interv as $key => $val) {
             $vevent = new vevent(); //initiate EVENT
@@ -991,8 +991,8 @@ class Planning {
          }
       }
       $v->sort();
-      $v->parse();
-      return $v->createCalendar();
+//       $v->parse();
+      return $v->returnCalendar();
    }
 
 }
