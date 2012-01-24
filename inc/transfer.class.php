@@ -3263,11 +3263,7 @@ class Transfer extends CommonDBTM {
                            }
                            $entID = $data['entID'];
                            echo "<span class='b'>";
-                           if ($entID > 0) {
                               echo $data['locname'];
-                           } else {
-                              _e('Root entity');
-                           }
                            echo "</span><br>";
 
                         }

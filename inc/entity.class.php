@@ -66,7 +66,9 @@ class Entity extends CommonTreeDropdown {
                                                                   'autofill_order_date',
                                                                   'autofill_use_date',
                                                                   'autofill_warranty_date',
-                                                                  'entities_id_software'),
+                                                                  'entities_id_software',
+                                                                  'level', 'name', 'completename', 'entities_id',
+                                                                  'ancestors_cache', 'sons_cache', 'comment'),
                                        // Notification
                                        'notification'    => array('admin_email', 'admin_reply',
                                                                   'admin_email_name',
@@ -95,6 +97,13 @@ class Entity extends CommonTreeDropdown {
    function getFromDB($ID) {
 
       return parent::getFromDB($ID);
+   }
+   
+   function pre_deleteItem() {
+      // Security do not delete root entity
+      if ($this->input['id'] ==0){
+         return false;
+      }
    }
 
    function post_getEmpty() {
@@ -151,7 +160,8 @@ class Entity extends CommonTreeDropdown {
    **/
    private function checkRightDatas($input) {
 
-      $tmp = array('id' => $input['id']);
+      $tmp = array('id' => $input['id'], 
+                   'level' => $input['level']);
 
       foreach (self::$field_right as $right => $fields) {
 
@@ -193,11 +203,10 @@ class Entity extends CommonTreeDropdown {
       // Force entities_id = -1 for root entity
       if ($input['id']==0) {
          $input['entities_id'] = -1;
-         $input['level'] = 0;
-         $input['level'] = 0;
+         $input['level'] = 1;
       }
       if (!Session::isCron()) { // Filter input for connected
-         return $this->checkRightDatas($input);
+         $input = $this->checkRightDatas($input);
       }      
       return $input;      
    }
@@ -223,15 +232,16 @@ class Entity extends CommonTreeDropdown {
          switch ($item->getType()) {
             case __CLASS__ :
                $ong = array();
-               $ong[1] = __('Address');
-               $ong[2] = __('Advanced information');
+               $ong[1] = $this->getTypeName(2);
+               $ong[2] = __('Address');
+               $ong[3] = __('Advanced information');
                if (Session::haveRight('notification','r')) {
-                  $ong[3] = _n('Notification', 'Notifications',2);
+                  $ong[4] = _n('Notification', 'Notifications',2);
                }
                if (Session::haveRight('entity_helpdesk','r')) {
-                  $ong[4] = __('Assistance');
+                  $ong[5] = __('Assistance');
                }
-               $ong[5] = __('Inventory');
+               $ong[6] = __('Inventory');
 
                return $ong;
          }
@@ -244,22 +254,26 @@ class Entity extends CommonTreeDropdown {
       if ($item->getType()==__CLASS__) {
          switch ($tabnum) {
             case 1 :
+               $item->showChildren();
+               break;
+               
+            case 2 :
                self::showStandardOptions($item);
                break;
 
-            case 2 :
+            case 3 :
                self::showAdvancedOptions($item);
                break;
 
-            case 3 :
+            case 4 :
                self::showNotificationOptions($item);
                break;
 
-            case 4 :
+            case 5 :
                self::showHelpdeskOptions($item);
                break;
 
-            case 5 :
+            case 6 :
                self::showInventoryOptions($item);
                break;
          }
@@ -1078,7 +1092,6 @@ class Entity extends CommonTreeDropdown {
                            'value'              => $entity->getField('entities_id_software'),
                            'toadd'              => $toadd,
                            'entity'             => $entities,
-                           'display_rootentity' => true,
                            'comments'           => false));
 
       if ($entity->fields['entities_id_software'] == self::CONFIG_PARENT) {

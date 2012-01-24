@@ -173,11 +173,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
 
          echo "<tr class='tab_bg_1'><td>".$line["name"]."</td>";
          if ($display_entity) {
-            if ($line['entID']==0) {
-               echo "<td>".__('Root entity')."</td>";
-            } else {
-               echo "<td>".$line['entname']."</td>";
-            }
+            echo "<td>".$line['entname']."</td>";
          }
 
          echo "<td class='right'>".Html::formatNumber($line["value"])."</td><td class='right'>".

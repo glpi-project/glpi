@@ -173,6 +173,20 @@ class Session {
    }
 
 
+   function getRootEntityName() {
+      if (isset($_SESSION['glpirootentityname'])) {
+         return $_SESSION['glpirootentityname'];
+      }
+      $entity = new Entity();
+      if ($entity->getFromDB(0)) {
+         $_SESSION['glpirootentityname'] = $entity->fields['name'];
+      } else {
+         $_SESSION['glpirootentityname'] = 'No root entity / DB troubles';
+      }
+      return $_SESSION['glpirootentityname'];
+   }
+
+
    /**
     * Is GLPI used in multi-entities mode ?
     *

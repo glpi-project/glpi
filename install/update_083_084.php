@@ -995,7 +995,7 @@ function update083to084() {
    if (TableExists('glpi_entitydatas')) {
       // Create root entity
       $query = "INSERT INTO `glpi_entities`
-                     (`id`, `name`, `entities_id`) VALUES (0,'".addslashes(__('Root entity'))."', '-1');";
+                     (`id`, `name`, `entities_id`, `level`) VALUES (0,'".addslashes(__('Root entity'))."', '-1', '1');";
                      
       $DB->queryOrDie($query, '0.84 insert root entity to to glpi_entities');
       $newID = $DB->insert_id();
@@ -1084,7 +1084,7 @@ function update083to084() {
          }
       
       }   
-//       $migration->dropTable('glpi_entitydatas');
+      $migration->dropTable('glpi_entitydatas');
    }
    regenerateTreeCompleteName("glpi_entities");
 

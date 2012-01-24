@@ -1375,11 +1375,7 @@ class Stat {
                                                                              :""));
                if ($view_entities) {
                   $ent = $item->getEntityID();
-                  if ($ent==0) {
-                     $ent = __('Root entity');
-                  } else {
-                     $ent = $entities[$ent]['completename'];
-                  }
+                  $ent = $entities[$ent]['completename'];
                   echo Search::showItem($output_type, $ent, $item_num, $i-$start+1,
                                         "class='center'"." ".($item->isDeleted()?" class='deleted' "
                                                                                 :""));

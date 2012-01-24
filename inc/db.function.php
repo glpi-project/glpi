@@ -403,19 +403,14 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
    $name    = "";
    $comment = "";
 
-   if ($ID==0 && $table=="glpi_entities") {
-      $name = __('Root entity');
+   $query = "SELECT *
+               FROM `$table`
+               WHERE `id` = '$ID'";
 
-   } else {
-      $query = "SELECT *
-                FROM `$table`
-                WHERE `id` = '$ID'";
-
-      if ($result=$DB->query($query)) {
-         if ($DB->numrows($result)==1) {
-            $name = $DB->result($result, 0, "name");
-            $comment=$DB->result($result, 0, "comment");
-         }
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)==1) {
+         $name = $DB->result($result, 0, "name");
+         $comment=$DB->result($result, 0, "comment");
       }
    }
 
@@ -444,21 +439,16 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false) {
    $name    = "";
    $comment = "";
 
-   if ($ID==0 && $table=="glpi_entities") {
-      $name = __('Root entity');
+   $query = "SELECT *
+               FROM `$table`
+               WHERE `id` = '$ID'";
 
-   } else {
-      $query = "SELECT *
-                FROM `$table`
-                WHERE `id` = '$ID'";
-
-      if ($result=$DB->query($query)) {
-         if ($DB->numrows($result)==1) {
-            $name    = $DB->result($result,0,"completename");
-            $comment = "<span class='b'>".__('Complete Name:')."&nbsp;</span>".$name.
-                       "<br><span class='b'>".__('Comments')."&nbsp;</span>".
-                       nl2br($DB->result($result, 0, "comment"));
-         }
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)==1) {
+         $name    = $DB->result($result,0,"completename");
+         $comment = "<span class='b'>".__('Complete Name:')."&nbsp;</span>".$name.
+                     "<br><span class='b'>".__('Comments')."&nbsp;</span>".
+                     nl2br($DB->result($result, 0, "comment"));
       }
    }
 
@@ -1597,4 +1587,5 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
 
    return $query;
 }
+
 ?>
