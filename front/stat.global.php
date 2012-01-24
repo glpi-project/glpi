@@ -184,7 +184,7 @@ foreach ($available as $key => $name) {
 }
 
 Stat::showGraph($toprint, array('title'     => __('Average time'),
-                                'unit'      => Toolbox::ucfirst(__('hour(s)')),
+                                'unit'      => __('Hour(s)'),
                                 'showtotal' => 1,
                                 'datatype'  => 'average'));
 
