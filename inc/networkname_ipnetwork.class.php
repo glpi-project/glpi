@@ -143,23 +143,28 @@ class NetworkName_IPNetwork extends CommonDBRelation {
       $network    = new IPNetwork();
       $query      = "SELECT `id`
                      FROM `glpi_ipnetworks`";
-      foreach ($DB->request($query) as $ipnetwork_row) {
-         $ipnetworks_id = $ipnetwork_row['id'];
-         if ($network->getFromDB($ipnetwork_row['id'])) {
-            $query = "SELECT `items_id`
-                      FROM `glpi_ipaddresses`
-                      WHERE `itemtype` = 'NetworkName'
-                            AND ".$network->getWHEREForMatchingElement('glpi_ipaddresses', 'binary',
-                                                                       'version')."
-                      GROUP BY `items_id`";
-            foreach ($DB->request($query) as $link) {
-               $query = "INSERT INTO `glpi_networknames_ipnetworks`
+      if ($network_result = $DB->query($query)) {
+         unset($query);
+         while ($ipnetwork_row = $DB->fetch_assoc($network_result)) {
+            $ipnetworks_id = $ipnetwork_row['id'];
+            if ($network->getFromDB($ipnetwork_row['id'])) {
+               $query = "SELECT `items_id`
+                         FROM `glpi_ipaddresses`
+                         WHERE `itemtype` = 'NetworkName'
+                               AND ".$network->getWHEREForMatchingElement('glpi_ipaddresses', 'binary',
+                                                                          'version')."
+                         GROUP BY `items_id`";
+               if ($networkname_result = $DB->query($query)) {
+                  unset($query);
+                  while ($link = $DB->fetch_assoc($networkname_result)) {
+                     $query = "INSERT INTO `glpi_networknames_ipnetworks`
                                 ( `ipnetworks_id`, `networknames_id`)
                          VALUES ('$ipnetworks_id', '".$link['items_id']."')";
-               $DB->query($query);
-               unset($query);
+                     $DB->query($query);
+                     unset($query);
+                  }
+               }
             }
-            unset($query);
          }
       }
    }
