@@ -873,8 +873,7 @@ class Contract extends CommonDBTM {
                   if ($prem) {
                      $name = $item->getTypeName($nb);
                      echo "<td class='center top' rowspan='$nb'>".
-                            ($nb>1 ? sprinf(__('%1$s: %2$d'), $name, $nb)
-                                   : sprinf(__('%s'), $name))."</td>";
+                            ($nb>1 ? sprinf(__('%1$s: %2$d'), $name, $nb): $name)."</td>";
                   }
                   echo "<td class='center'>";
                   echo Dropdown::getDropdownName("glpi_entities",$data['entity'])."</td>";
