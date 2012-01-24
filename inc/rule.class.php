@@ -586,12 +586,27 @@ class Rule extends CommonDBTM {
       global $CFG_GLPI;
 
       $items = array();
-
+      $group = array();
+      $groupname = '';
+      
       foreach ($this->getCriterias() as $ID => $crit) {
-         $items[$ID] = $crit['name'];
+         // Manage group system
+         if (!is_array($crit)) {
+            if (count($group)) {
+               asort($group);
+               $items[$groupname] = $group;
+            }
+            $group = array();
+            $groupname = $crit;
+         } else {
+            $group[$ID] = $crit['name'];
+         }
       }
-      asort($items);
-
+      if (count($group)) {
+         asort($group);
+         $items[$groupname] = $group;
+      }
+      
       $rand   = Dropdown::showFromArray("criteria", $items);
       $params = array('criteria' => '__VALUE__',
                       'rand'     => $rand,
@@ -611,14 +626,6 @@ class Rule extends CommonDBTM {
 
       return key($items);
    }
-
-
-   /**
-    * Get all ldap rules criterias from the DB and add them into the RULES_CRITERIAS
-   **/
-   function addSpecificCriteriasToArray(&$criterias) {
-   }
-
 
    /**
     * Display the dropdown of the actions for the rule
