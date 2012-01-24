@@ -1992,7 +1992,9 @@ function generate_entity($ID_entity) {
    $FIRST["printers"]   = getMaxItem("glpi_printers")+1;
    $ne                  = new NetworkEquipment();
    $p                   = new Printer();
-
+   $np                  = new Netpoint();
+   $c                   = new Cartridge();
+   
    foreach ($DB->request('glpi_locations') as $data) {
       $i          = $data["id"];
       $techID     = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
@@ -2044,20 +2046,20 @@ function generate_entity($ID_entity) {
       // Link with father
       if ($data['locations_id']>0) {
          //insert netpoint
-         $query = "INSERT INTO `glpi_netpoints`
-                   VALUES (NULL, '$ID_entity', '".$data['id']."', '".getNextNETPOINT()."',
-                           'comment netpoint')";
-         $DB->query($query) or die("PB REQUETE ".$query);
-
-         $netpointID = $DB->insert_id();
-         $iface      = mt_rand(1,$MAX['iface']);
-
-
-         // Add networking ports
-         $newIP                 = getNextIP();
-         $newMAC                = getNextMAC();
-         $vlanID                = mt_rand(1,$MAX["vlan"]);
-         $vlan_loc[$data['id']] = $vlanID;
+         $netpointID = $np->add(array(
+               'entities_id'  => $ID_entity,
+               'locations_id' => $i,
+               'name'         => getNextNETPOINT(),
+               'comment'      => "comment netpoint $i",
+         ));
+//          $iface      = mt_rand(1,$MAX['iface']);
+// 
+// 
+//          // Add networking ports
+//          $newIP                 = getNextIP();
+//          $newMAC                = getNextMAC();
+//          $vlanID                = mt_rand(1,$MAX["vlan"]);
+//          $vlan_loc[$data['id']] = $vlanID;
 
 //          $query = "INSERT INTO `glpi_networkports`
 //                    VALUES (NULL, '$netwID', 'NetworkEquipment', '$ID_entity', '0',
@@ -2095,11 +2097,12 @@ function generate_entity($ID_entity) {
 
       // Ajout imprimantes reseaux : 1 par loc + connexion d un matos reseau + ajout de cartouches
       //insert netpoint
-      $query = "INSERT INTO `glpi_netpoints`
-                VALUES (NULL, '$ID_entity', '".$data['id']."', '".getNextNETPOINT()."',
-                        'comment netpoint')";
-      $DB->queryOrDie($query, "PB REQUETE ".$query);
-      $netpointID = $DB->insert_id();
+      $netpointID = $np->add(array(
+            'entities_id'  => $ID_entity,
+            'locations_id' => $i,
+            'name'         => getNextNETPOINT(),
+            'comment'      => "comment netpoint $i",
+      ));
 
       // Add trackings
       addTracking('NetworkEquipment', $netwID, $ID_entity);
@@ -2167,18 +2170,25 @@ function generate_entity($ID_entity) {
          // Add old cartridges
          for ($j=0 ; $j<$oldnb ; $j++) {
             $printed += mt_rand(0,5000);
-            $query = "INSERT INTO `glpi_cartridges`
-                      VALUES (NULL, '$ID_entity', '$ctypeID', '$printID', '".date("Y-m-d",$date1)."',
-                              '".date("Y-m-d",$date1+$j*$inter)."',
-                              '".date("Y-m-d",$date1+($j+1)*$inter)."', '$printed')";
-            $DB->query($query) or die("PB REQUETE ".$query);
+            $c->add(array(
+               'entities_id'        => $ID_entity,
+               'cartridgeitems_id'  => $ctypeID,
+               'printers_id'        => $printID,
+               'date_in'            => date("Y-m-d",$date1),
+               'date_use'           => date("Y-m-d",$date1+$j*$inter),
+               'date_out'           => date("Y-m-d",$date1+($j+1)*$inter),
+               'pages'              => $printed,
+               ));
          }
 
          // Add current cartridges
-         $query = "INSERT INTO `glpi_cartridges`
-                   VALUES (NULL, '$ID_entity', '$ctypeID', '$printID', '".date("Y-m-d",$date1)."',
-                           '".date("Y-m-d",$date2)."', NULL, '0')";
-         $DB->query($query) or die("PB REQUETE ".$query);
+         $c->add(array(
+            'entities_id'        => $ID_entity,
+            'cartridgeitems_id'  => $ctypeID,
+            'printers_id'        => $printID,
+            'date_in'            => $date,
+            'date_use'           => date("Y-m-d",$date2),
+            ));
       }
 
       $iface = mt_rand(1,$MAX['iface']);
@@ -2248,20 +2258,36 @@ function generate_entity($ID_entity) {
       $domainID  = mt_rand(1,$MAX['domain']);
       $networkID = mt_rand(1,$MAX['network']);
 
-      $query = "INSERT INTO `glpi_computers`
-                VALUES (NULL, '$ID_entity', 'computers $i-$ID_entity',
-                        '".Toolbox::getRandomString(10)."', '".Toolbox::getRandomString(10)."',
-                        'contact $i', 'num $i', '$techID', '$gtechID', '', NOW(),
-                        '".mt_rand(1,$MAX['os'])."', '".mt_rand(1,$MAX['os_version'])."',
-                        '".mt_rand(1,$MAX['os_sp'])."', 'os sn $i', 'os id $i',
-                        '".mt_rand(1,$MAX['auto_update'])."', '".$loc."', '$domainID', '$networkID',
-                        '".mt_rand(1,$MAX['model'])."', '".mt_rand(1,$MAX['type_computers'])."','0',
-                        '', '".mt_rand(1,$MAX['manufacturer'])."', '0', 'note computer $i', '0',
-                        '".$userID."', '".$groupID."',
-                        '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."', '0', '')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $compID = $DB->insert_id();
+      $compID = $c->add(array(
+         'entities_id'                    => $ID_entity,
+         'name'                           => "computer $i-$ID_entity",
+         'serial'                         => Toolbox::getRandomString(10),
+         'otherserial'                    => Toolbox::getRandomString(10),
+         'contact'                        => "contact $i",
+         'contact_num'                    => "num $i",
+         'users_id_tech'                  => $techID,
+         'groups_id_tech'                 => $gtechID,
+         'comment'                        => "comment $i",
+         'operatingsystems_id'            => mt_rand(1,$MAX['os']),
+         'operatingsystemversions_id'     => mt_rand(1,$MAX['os_version']),
+         'operatingsystemservicepacks_id' => mt_rand(1,$MAX['os_sp']),
+         'os_license_number'              => "os sn $i",
+         'os_licenseid'                   => "os id $i",
+         'autoupdatesystems_id'           => mt_rand(1,$MAX['os_sp']),
+         'locations_id'                   => $loc,
+         'domains_id'                     => $domainID,
+         'networks_id'                    => $networkID,         
+         'computertypes_id'               => mt_rand(1,$MAX['type_computers']),
+         'computermodels_id'              => mt_rand(1,$MAX['model']),
+         'manufacturers_id'               => mt_rand(1,$MAX['manufacturer']),
+         'is_global'                      => 1,
+         'notepad'                        => "notes computer $i",
+         'users_id'                       => $userID,
+         'groups_id'                      => $groupID,
+         'states_id'                      => (mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0),
+         'uuid'                           => Toolbox::getRandomString(30),
+      ));
+      
       addDocuments('Computer', $compID);
       addContracts('Computer', $compID);
 
@@ -2278,58 +2304,84 @@ function generate_entity($ID_entity) {
       addInfocoms('Computer', $compID, $ID_entity);
 
       // ADD DEVICE
-      $query = "INSERT INTO `glpi_computers_devicemotherboards`
-                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $cdev->add(array(
+         'itemtype'              => 'DeviceMotherBoard',
+         'computers_id'          => $compID,
+         'devicemotherboards_id' => mt_rand(1,$MAX['device']),
+      ));
 
-      $query = "INSERT INTO `glpi_computers_deviceprocessors`
-                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."',
-                        '".(1000+200*mt_rand(0,10))."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $cdev->add(array(
+         'itemtype'              => 'DeviceProcessor',
+         'computers_id'          => $compID,
+         'deviceprocessors_id'   => mt_rand(1,$MAX['device']),
+         'specificity'           => (1000+200*mt_rand(0,10))
+      ));
 
-      $query = "INSERT INTO `glpi_computers_devicememories`
-                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."',
-                        '".(1024*mt_rand(0,6))."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $cdev->add(array(
+         'itemtype'              => 'DeviceMemory',
+         'computers_id'          => $compID,
+         'devicememories_id'     => mt_rand(1,$MAX['device']),
+         'specificity'           => (1024*mt_rand(0,6))
+      ));
 
-      $query = "INSERT INTO `glpi_computers_deviceharddrives`
-                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."',
-                        '".(51200*mt_rand(0,10))."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $cdev->add(array(
+         'itemtype'              => 'DeviceHardDrive',
+         'computers_id'          => $compID,
+         'deviceharddrives_id'   => mt_rand(1,$MAX['device']),
+         'specificity'           => (51200*mt_rand(0,10))
+      ));
 
-      $query = "INSERT INTO `glpi_computers_devicenetworkcards`
-                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."', '".getNextMAC()."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $cdev->add(array(
+         'itemtype'              => 'DeviceNetworkCard',
+         'computers_id'          => $compID,
+         'devicenetworkcards_id' => mt_rand(1,$MAX['device']),
+         'specificity'           => getNextMAC()
+      ));
 
-      $query = "INSERT INTO `glpi_computers_devicedrives`
-                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $cdev->add(array(
+         'itemtype'              => 'DeviceDrive',
+         'computers_id'          => $compID,
+         'devicedrives_id'       => mt_rand(1,$MAX['device']),
+      ));
+      
+      $cdev->add(array(
+         'itemtype'              => 'DeviceControl',
+         'computers_id'          => $compID,
+         'devicecontrols_id'     => mt_rand(1,$MAX['device']),
+      ));      
 
-      $query = "INSERT INTO `glpi_computers_devicecontrols`
-                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $query = "INSERT INTO `glpi_computers_devicegraphiccards`
-                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."', '".(256*mt_rand(0,8))."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      $query = "INSERT INTO `glpi_computers_devicesoundcards`
-                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-
-      if (mt_rand(0,100)<50) {
-         $query = "INSERT INTO `glpi_computers_devicepcis`
-                   VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
-         $DB->query($query) or die("PB REQUETE ".$query);
+      $cdev->add(array(
+         'itemtype'              => 'DeviceGraphicCard',
+         'computers_id'          => $compID,
+         'devicegraphiccards_id' => mt_rand(1,$MAX['device']),
+         'specificity'           => (256*mt_rand(0,8))
+      ));
+      
+      $cdev->add(array(
+         'itemtype'              => 'DeviceSoundCard',
+         'computers_id'          => $compID,
+         'devicesoundcards_id'   => mt_rand(1,$MAX['device']),
+      ));
+            
+      if (mt_rand(0,100)<20) {
+         $cdev->add(array(
+            'itemtype'              => 'DevicePci',
+            'computers_id'          => $compID,
+            'devicepcis_id'         => mt_rand(1,$MAX['device']),
+         ));
       }
 
-      $query = "INSERT INTO `glpi_computers_devicecases`
-                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $cdev->add(array(
+         'itemtype'              => 'DeviceCase',
+         'computers_id'          => $compID,
+         'devicecases_id'        => mt_rand(1,$MAX['device']),
+      ));
 
-      $query = "INSERT INTO `glpi_computers_devicepowersupplies`
-                VALUES (NULL, '$compID', '".mt_rand(1,$MAX['device'])."')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $cdev->add(array(
+         'itemtype'                 => 'DevicePowerSupply',
+         'computers_id'             => $compID,
+         'devicepowersupplies_id'   => mt_rand(1,$MAX['device']),
+      ));
 
       // insert disk
       $nb_disk = mt_rand(1,$MAX_DISK);
@@ -2337,17 +2389,25 @@ function generate_entity($ID_entity) {
          $totalsize = mt_rand(10000,1000000);
          $freesize  = mt_rand(0,$totalsize);
 
-         $query = "INSERT INTO `glpi_computerdisks`
-                   VALUES (NULL, '$ID_entity', '$compID', 'disk $j', '/dev/disk$j', '/mnt/disk$j',
-                           '".mt_rand(1,10)."', '$totalsize', '$freesize')";
-         $DB->query($query) or die("PB REQUETE ".$query);
+         $cdisk-> add(array(
+               'entities_id'     => $ID_entity,
+               'computers_id'    => $compID,
+               'name'            => "disk $j",
+               'device'          => "/dev/disk$j",
+               'mountpoint'      => "/mnt/disk$j",
+               'filesystems_id'  => mt_rand(1,10),
+               'totalsize'       => $totalsize,
+               'freesize'        => $freesize,
+         ));
       }
 
       //insert netpoint
-      $query = "INSERT INTO `glpi_netpoints`
-                VALUES (NULL, '$ID_entity', '$loc', '".getNextNETPOINT()."', 'comment netpoint')";
-      $DB->query($query) or die("PB REQUETE ".$query);
-      $netpointID = $DB->insert_id();
+      $netpointID = $np->add(array(
+            'entities_id'  => $ID_entity,
+            'locations_id' => $loc,
+            'name'         => getNextNETPOINT(),
+            'comment'      => "comment netpoint $loc",
+      ));
 
       // Get networking element
       $query = "SELECT `id`
@@ -2397,19 +2457,34 @@ function generate_entity($ID_entity) {
       }
 
       // Ajout d'un ecran sur l'ordi
-      $query = "INSERT INTO `glpi_monitors`
-                VALUES (NULL, '$ID_entity', 'monitor $i-$ID_entity', NOW(), 'contact $i', 'num $i',
-                        '$techID', '$gtechID', 'comment $i', '".Toolbox::getRandomString(10)."',
-                        '".Toolbox::getRandomString(10)."', '".mt_rand(14,22)."', '".mt_rand(0,1)."',
-                        '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
-                        '".mt_rand(0,1)."', '".mt_rand(0,1)."', '".mt_rand(0,1)."',
-                        '".mt_rand(0,1)."', '$loc',
-                        '".mt_rand(1,$MAX['model_monitors'])."',
-                        '".mt_rand(1,$MAX['type_monitors'])."',
-                        '".mt_rand(1,$MAX['manufacturer'])."', '0', '0', '0', '',
-                        'notes monitor $i', '".$userID."', '".$groupID."',
-                        '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."', '0')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $monID = $mon->add(array(
+         'entities_id'                    => $ID_entity,
+         'name'                           => "monitor $i-$ID_entity",
+         'serial'                         => Toolbox::getRandomString(10),
+         'otherserial'                    => Toolbox::getRandomString(10),
+         'contact'                        => "contact $i",
+         'contact_num'                    => "num $i",
+         'users_id_tech'                  => $techID,
+         'groups_id_tech'                 => $gtechID,
+         'comment'                        => "comment $i",
+         'size'                           => mt_rand(14,22),
+         'have_micro'                     => mt_rand(0,1),
+         'have_speaker'                   => mt_rand(0,1),
+         'have_subd'                      => mt_rand(0,1),
+         'have_bnc'                       => mt_rand(0,1),
+         'have_dvi'                       => mt_rand(0,1),
+         'have_pivot'                     => mt_rand(0,1),
+         'have_hdmi'                      => mt_rand(0,1),
+         'have_displayport'               => mt_rand(0,1),
+         'locations_id'                   => $loc,
+         'monitortypes_id'                => mt_rand(1,$MAX['type_monitors']),
+         'monitormodels_id'               => mt_rand(1,$MAX['model_monitors']),
+         'manufacturers_id'               => mt_rand(1,$MAX['manufacturer']),
+         'notepad'                        => "notes monitor $i",
+         'users_id'                       => $userID,
+         'groups_id'                      => $groupID,
+         'states_id'                      => (mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0),
+      ));   
 
       $monID = $DB->insert_id();
       addDocuments('Monitor', $monID);
@@ -2421,9 +2496,11 @@ function generate_entity($ID_entity) {
       // AJOUT INFOCOMS
       addInfocoms('Monitor', $monID, $ID_entity);
 
-      $query = "INSERT INTO `glpi_computers_items`
-                VALUES (NULL, '$monID', '$compID', 'Monitor')";
-      $DB->query($query) or die("PB REQUETE ".$query);
+      $ci->add(array(
+            'itemtype'     => 'Phone',
+            'items_id'     => $telID,
+            'computers_id' => $compID,
+      ));
 
       // Ajout d'un telephhone avec l'ordi
       $telID = $phone->add(array('entities_id'           => $ID_entity,
@@ -2496,9 +2573,11 @@ function generate_entity($ID_entity) {
          addTracking('Peripheral', $periphID, $ID_entity);
 
          // Add connection
-         $query = "INSERT INTO `glpi_computers_items`
-                   VALUES (NULL, '$periphID', '$compID', 'Peripheral')";
-         $DB->query($query) or die("PB REQUETE ".$query);
+         $ci->add(array(
+               'itemtype'     => 'Peripheral',
+               'items_id'     => $periphID,
+               'computers_id' => $compID,
+         ));
       }
 
 
@@ -2544,9 +2623,11 @@ function generate_entity($ID_entity) {
          addTracking('Printer', $printID, $ID_entity);
 
          // Add connection
-         $query = "INSERT INTO `glpi_computers_items`
-                   VALUES (NULL, '$printID', '$compID', 'Printer')";
-         $DB->query($query) or die("PB REQUETE ".$query);
+         $ci->add(array(
+               'itemtype'     => 'Printer',
+               'items_id'     => $printID,
+               'computers_id' => $compID,
+         ));
 
          // AJOUT INFOCOMS
          addInfocoms('Printer', $printID, $ID_entity);
