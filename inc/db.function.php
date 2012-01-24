@@ -478,9 +478,6 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false) {
 function getTreeValueName($table, $ID, $wholename="", $level=0) {
    global $DB;
 
-   if ($ID == 0) {
-      return array($wholename, 0);
-   }
    $parentIDfield = getForeignKeyFieldForTable($table);
 
    $query = "SELECT *
