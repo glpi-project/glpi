@@ -52,6 +52,10 @@ if (!isset($_GET["usertype"])) {
    $_GET["usertype"] = "user";
 }
 
+if (!isset($_GET["itemtype"])) {
+   $_GET["itemtype"] = "";
+}
+
 switch ($_GET["usertype"]) {
    case "user" :
       $_GET['gID'] = 0;
@@ -87,7 +91,7 @@ if (isset($_REQUEST['checkavailability'])) {
       /// TODO : complex : check if the request is valid : rights on uID / gID ?
       $user = new User();
       if ($user->getFromDBByToken($_GET['token'])) {
-         Planning::generateIcal($_GET["uID"], $_GET["gID"]);
+         Planning::generateIcal($_GET["uID"], $_GET["gID"], $_GET["itemtype"]);
       }
    }
 } else {
@@ -104,9 +108,9 @@ if (isset($_REQUEST['checkavailability'])) {
    }
 
    Planning::showSelectionForm($_GET['type'], $_GET['date'], $_GET["usertype"], $_GET["uID"],
-                               $_GET["gID"]);
+                               $_GET["gID"], $_GET["itemtype"]);
 
-   Planning::show($_GET['uID'], $_GET['gID'], $_GET["date"], $_GET["type"]);
+   Planning::show($_GET['uID'], $_GET['gID'], $_GET["date"], $_GET["type"], $_GET["itemtype"]);
 
    Html::footer();
 }
