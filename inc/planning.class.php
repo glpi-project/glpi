@@ -734,25 +734,11 @@ class Planning {
              background-color: $color; font-size:9px; width:98%;'>";
 
       // Plugins case
-      if (isset($val["plugin"]) && isset($PLUGIN_HOOKS['display_planning'][$val["plugin"]])) {
-         $function = $PLUGIN_HOOKS['display_planning'][$val["plugin"]];
-         if (is_callable($function)) {
-            $val["type"] = $type;
-            call_user_func($function, $val);
-         }
-
-      } else if (isset($val["tickets_id"])) {  // show tracking
-         TicketTask::displayPlanningItem($val, $who, $type, $complete);
-
-      } else if (isset($val["problems_id"])) {  // show tracking
-         ProblemTask::displayPlanningItem($val, $who, $type, $complete);
-
-      } else if (isset($val["changes_id"])) {  // show tracking
-         ChangeTask::displayPlanningItem($val, $who, $type, $complete);
-
-      } else {  // show Reminder
-         Reminder::displayPlanningItem($val, $who, $type, $complete);
+      if (isset($val['itemtype']) && !empty($val['itemtype'])) {
+         $val['itemtype']::displayPlanningItem($val, $who, $type, $complete);
+      
       }
+      
       echo "</div><br>";
    }
 
@@ -888,15 +874,14 @@ class Planning {
       if (count($interv)>0) {
          foreach ($interv as $key => $val) {
             $vevent = new vevent(); //initiate EVENT
-            if (isset($val["tickettasks_id"])) {
-               $vevent->setProperty("uid", "Job#".$val["tickettasks_id"]);
-            } else if (isset($val["reminders_id"])) {
-               $vevent->setProperty("uid", "Event#".$val["reminders_id"]);
-            } else if (isset($val['planningID'])) { // Specify the ID (for plugins)
-               $vevent->setProperty("uid", "Plugin#".$val['planningID']);
-            } else {
-               $vevent->setProperty("uid", "Plugin#".$key);
+            if (isset($val['itemtype'])) {
+               if (isset($val[getForeignKeyFieldForItemType($val['itemtype'])])) {
+                  $vevent->setProperty("uid", $val['itemtype']."#".$val[getForeignKeyFieldForItemType($val['itemtype'])]);
+               } else {
+                  $vevent->setProperty("uid", "Other#".$key);
+               }
             }
+            
             $vevent->setProperty( "dstamp", $val["begin"] );
             $vevent->setProperty( "dtstart", $val["begin"] );
             $vevent->setProperty( "dtend", $val["end"] );
