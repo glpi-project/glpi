@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class DocumentCategory
-class DocumentCategory extends CommonDropdown {
+class DocumentCategory extends CommonTreeDropdown {
 
    static function getTypeName($nb=0) {
       return _n('Document heading', 'Document headings', $nb);
