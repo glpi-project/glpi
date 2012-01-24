@@ -193,6 +193,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_documents'                => 'entities_id',
                                  '_glpi_documents_items'         => 'entities_id',
                                  '_glpi_entities'                => 'entities_id',
+                                 'glpi_entities'                 => 'entities_id_software',
                                  'glpi_entities_knowbaseitems'   => 'entities_id',
                                  'glpi_entities_reminders'       => 'entities_id',
                                  'glpi_fieldblacklists'          => 'entities_id',

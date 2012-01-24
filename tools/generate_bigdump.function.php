@@ -2497,9 +2497,9 @@ function generate_entity($ID_entity) {
       addInfocoms('Monitor', $monID, $ID_entity);
 
       $ci->add(array(
-            'itemtype'     => 'Phone',
+            'itemtype'     => 'Monitor',
             'items_id'     => $telID,
-            'computers_id' => $compID,
+            'computers_id' => $monID,
       ));
 
       // Ajout d'un telephhone avec l'ordi
