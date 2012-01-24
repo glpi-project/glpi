@@ -214,7 +214,7 @@ function update083to084() {
                           'glpi_changes_problems', 'glpi_changes_tickets', 'glpi_changes_users',
                           'glpi_changetasks', 'glpi_fqdns', 'glpi_ipaddresses', 'glpi_ipnetworks',
                           'glpi_networkaliases', 'glpi_networknames',
-                          'glpi_networknames_ipnetworks', 'glpi_networkportaggregates',
+                          'glpi_ipnetworks_networknames', 'glpi_networkportaggregates',
                           'glpi_networkportdialups', 'glpi_networkportethernets',
                           'glpi_networkportlocals', 'glpi_networkportmigrations',
                           'glpi_networkportwifis', 'glpi_wifinetworks');
@@ -509,11 +509,11 @@ function update083to084() {
    }
 
 
-   logMessage(sprintf(__('Data migration - %s'), "glpi_networknames_ipnetworks"), true);
+   logMessage(sprintf(__('Data migration - %s'), "glpi_ipnetworks_networknames"), true);
 
-   // Adding NetworkName_IPNetwork table
-   if (!TableExists('glpi_networknames_ipnetworks')) {
-      $query = "CREATE TABLE `glpi_networknames_ipnetworks` (
+   // Adding IPNetwork_NetworkName table
+   if (!TableExists('glpi_ipnetworks_networknames')) {
+      $query = "CREATE TABLE `glpi_ipnetworks_networknames` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `networknames_id` int(11) NOT NULL DEFAULT '0',
                   `ipnetworks_id` int(11) NOT NULL DEFAULT '0',
@@ -522,7 +522,7 @@ function update083to084() {
                   KEY `ipnetworks_id` (`ipnetworks_id`),
                   KEY `networknames_id` (`networknames_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-      $DB->queryOrDie($query, "0.84 create glpi_networknames_ipnetworks");
+      $DB->queryOrDie($query, "0.84 create glpi_ipnetworks_networknames");
    }
 
 

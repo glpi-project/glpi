@@ -334,7 +334,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function post_addItem() {
 
       if ($this->networkUpdate) {
-         NetworkName_IPNetwork::linkIPAddressFromIPNetwork($this);
+         IPNetwork_NetworkName::linkIPAddressFromIPNetwork($this);
       }
 
       unset($this->networkUpdate);
@@ -345,7 +345,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function post_updateItem($history=1) {
 
       if ($this->networkUpdate) {
-         NetworkName_IPNetwork::linkIPAddressFromIPNetwork($this);
+         IPNetwork_NetworkName::linkIPAddressFromIPNetwork($this);
       }
 
       unset($this->networkUpdate);
@@ -621,7 +621,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function getCriterionForMatchingNetworkNames() {
 
       return "`id` IN (SELECT `networknames_id`
-                       FROM `glpi_networknames_ipnetworks`
+                       FROM `glpi_ipnetworks_networknames`
                        WHERE `ipnetworks_id` = '".$this->getID()."')";
    }
 
