@@ -842,7 +842,8 @@ class Contract extends CommonDBTM {
                if ($canedit) {
                   echo "<td>&nbsp;</td>";
                }
-               echo "<td class='center'>".sprintf(__('%1$s: %1$d'), $item->getTypeName($nb), $nb).
+               //TRANS: %1$s is a type name, %2$d is a number
+               echo "<td class='center'>".sprintf(__('%1$s: %2$d'), $item->getTypeName($nb), $nb).
                     "</td>";
                echo "<td class='center' colspan='2'>";
                echo "<a href='". Toolbox::getItemTypeSearchURL($itemtype) . "?" .
