@@ -155,9 +155,9 @@ class Contact extends CommonDBTM{
       echo "<td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td rowspan='7' class='middle right'>".__('Comments')."</td>";
-      echo "<td class='center middle' rowspan='9'>";
-      echo "<textarea cols='45' rows='9' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<td rowspan='4' class='middle right'>".__('Comments')."</td>";
+      echo "<td class='middle' rowspan='4'>";
+      echo "<textarea cols='45' rows='7' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -182,35 +182,53 @@ class Contact extends CommonDBTM{
       echo "<td>".__('Mobile phone')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "mobile");
+      echo "</td>";
+      echo "<td class='middle'>".__('Address')."</td>";
+      echo "<td class='middle'>";
+      echo "<textarea cols='37' rows='3' name='address'>".$this->fields["address"]."</textarea>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Fax')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "fax");
+      echo "</td>";
+      echo "<td>".__('Postal Code')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "postcode", array('size' => 10));
+      _e(' City ');
+      Html::autocompletionTextField($this, "town", array('size' => 23));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Email', 'Emails', 1)."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "email");
-      echo "</td></tr>";
+      echo "</td>";
+      echo "<td>".__('State')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "state");
+      echo "</td></tr>";      
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
       Dropdown::show('ContactType', array('value' => $this->fields["contacttypes_id"]));
       echo "</td>";
-      echo "<td></td><td class='center'>";
+      echo "<td>".__('Country')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, "country");
+      echo "</td></tr>";
+      
+      
+      echo "<tr class='tab_bg_1'><td>" . __('Title') . "&nbsp;:</td><td>";
+      Dropdown::show('UserTitle', array('value' => $this->fields["usertitles_id"]));
+      echo "<td>&nbsp;</td><td class='center'>";
 
       if ($ID>0) {
          echo "<a target=''_blank' href='".$CFG_GLPI["root_doc"].
                 "/front/contact.form.php?getvcard=1&amp;id=$ID'>".__('Vcard')."</a>";
       }
-      echo "</td></tr>";
-      
-      echo "<tr class='tab_bg_1'><td>" . __('Title') . "&nbsp;:</td><td>";
-      Dropdown::show('UserTitle', array('value' => $this->fields["usertitles_id"]));
       echo "</td></tr>";
       
 
@@ -267,6 +285,27 @@ class Contact extends CommonDBTM{
       $tab[6]['name']           = _n('Email', 'Emails', 1);
       $tab[6]['datatype']       = 'email';
       $tab[6]['datatype']       = 'string';
+
+      $tab[82]['table']         = $this->getTable();
+      $tab[82]['field']         = 'address';
+      $tab[82]['name']          = __('Address');
+
+      $tab[84]['table']         = $this->getTable();
+      $tab[84]['field']         = 'town';
+      $tab[84]['name']          = __('City');
+
+      $tab[83]['table']         = $this->getTable();
+      $tab[83]['field']         = 'postcode';
+      $tab[83]['name']          = __('Postal Code');
+
+      $tab[85]['table']         = $this->getTable();
+      $tab[85]['field']         = 'state';
+      $tab[85]['name']          = __('State');
+
+      $tab[87]['table']         = $this->getTable();
+      $tab[87]['field']         = 'country';
+      $tab[87]['name']          = __('Country');
+
 
       $tab[9]['table']          = 'glpi_contacttypes';
       $tab[9]['field']          = 'name';

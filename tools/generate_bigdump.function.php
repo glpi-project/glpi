@@ -1841,6 +1841,11 @@ function generate_entity($ID_entity) {
                                  'mobile'             => "mobile $i",
                                  'fax'                => "fax $i",
                                  'email'              => "email $i",
+                                 'address'            => "address $i",
+                                 'postcode'           => "postcode $i",
+                                 'town'               => "town $i",
+                                 'state'              => "state $i",
+                                 'country'            => "country $i",
                                  'comment'            => "Comment $i"));
 
       // Link with enterprise
@@ -1864,6 +1869,11 @@ function generate_entity($ID_entity) {
                                  'mobile'             => "mobile $i",
                                  'fax'                => "fax $i",
                                  'email'              => "email $i",
+                                 'address'            => "address $i",
+                                 'postcode'           => "postcode $i",
+                                 'town'               => "town $i",
+                                 'state'              => "state $i",
+                                 'country'            => "country $i",
                                  'comment'            => "Comment $i"));
 
       // Link with enterprise
