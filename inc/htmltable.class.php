@@ -37,9 +37,26 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/// HTMLTable class
+/// Create a smart HTML table. The table allows cells to depend on other ones. As such, it is
+/// possible to have rowspan for cells that are "father" of other ones. If a "father" has several
+/// sons, then, it "rowspans" on all.
+/// Each column has a header defined by its value (ie. : what is printed inside the "th" cell), its
+/// name (the one that is used by a cell to know where to put it) and a fathers_name, that is the
+/// name of the column that is the father.
+/// We work on "active" row. We can add elements in the active row. But we must "closeRow()" the
+/// active row each time we skip to next row
+///
+/// Each cell of the table is define by a column name and its ID inside the column.
+///
+/// For further explaination, refer to NetworkPort and all its dependencies (NetworkName, IPAddress,
+/// IPNetwork, ...)
+/// @since 0.84
 class HTMLTable {
 
+   // The headers of each column
    private $headers;
+   // All rows as an array
    private $rows;
 
    function __construct() {
@@ -47,10 +64,27 @@ class HTMLTable {
       $this->rows = array();
    }
 
+   /**
+    * We can define a global name for the table : this will print as header that colspan all columns
+    *
+    * @param $name the name to print inside the header
+    *
+    * @return nothing
+   **/
    function addGlobalName($name) {
       $this->globalName = $name;
    }
 
+   /**
+    * Define a new columne by its header
+    *
+    * @param $value         the value to print inside the column header
+    * @param $name          the name of the column
+    * @param $fathers_name  the name of the father of the column. Use "" if there is no father for
+    *                       the current column
+    *
+    * @return nothing
+   **/
    function addHeader($value, $name, $fathers_name = "") {
       if (count($this->rows) == 0) {
          if (($fathers_name != "") && (!isset($this->headers[$fathers_name]))) {
@@ -61,6 +95,15 @@ class HTMLTable {
       }
    }
 
+   /**
+    * Recursively compute the total number of rows of a given cell  (ie.: intelligent cumulation of
+    * each sons number of row)
+    *
+    * @param $headers_name  the name of the column
+    * @param $cells_id      the id of the cell inside the column
+    *
+    * @return the number of rows of the current cell
+   **/
    private function computeAndGetCellTotalNumberOfRows($headers_name, $cells_id) {
       $cell = $this->currentRow[$headers_name][$cells_id];
       $numberOfLines = 1;
@@ -77,7 +120,16 @@ class HTMLTable {
       return $numberOfLines;
    }
 
-   function getFather(&$row, $headers_name, $cells_id) {
+   /**
+    * Get the father of a given cell
+    *
+    * @param &$row          the current row (ie : when we use it during the displau of the table)
+    * @param $headers_name  the name of the column
+    * @param $cells_id      the id of the cell inside the column
+    *
+    * @return false if there is no father, or the father cell
+   **/
+   private function getFather(&$row, $headers_name, $cells_id) {
 
       if (!isset($row[$headers_name][$cells_id])) {
          return false;
@@ -108,6 +160,17 @@ class HTMLTable {
       return false;
    }
 
+   /**
+    * Add a cell in the current row
+    *
+    * @param $value         the value to print inside the cell or the method to call
+    * @param $headers_name  the name of the column
+    * @param $cells_id      the id of the cell inside the column
+    * @param $fathers_id    the id of the father inside its column (the column of the father is
+    *                       given during the definition of the columne), 0 if there is no father
+    *
+    * @return nothing
+   **/
    function addElement($value, $headers_name, $cells_id = 0, $fathers_id = 0) {
       if (!isset($this->currentRow)) {
          $this->currentRow = array();
@@ -140,6 +203,14 @@ class HTMLTable {
                                                           'sons'        => array());
    }
 
+   /**
+    * close the current row
+    *
+    * Used at the end of a line. computer all rendering elements such as rowspan or total number of
+    * lines used by the row
+    *
+    * @return nothing
+   **/
    function closeRow() {
       $numberOfLines = 0;
       foreach ($this->currentRow as $headers_name => $cells) {
@@ -185,6 +256,11 @@ class HTMLTable {
       unset($this->currentRow);
    }
 
+   /**
+    * Display the table
+    *
+    * @return nothing (display only)
+   **/
    function display() {
       if (!isset($this->headers)) {
          return;

@@ -462,8 +462,8 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   static function getHTMLTableHeaderForItem(&$table, $canedit) {
-      $table->addHeader(NetworkName::getTypeName(), "NetworkName", "Name");
+   static function getHTMLTableHeaderForItem(&$table, $canedit, $fathers_name) {
+      $table->addHeader(NetworkName::getTypeName(), "NetworkName", $fathers_name);
       NetworkAlias::getHTMLTableHeaderForItem($table, $canedit);
       IPAddress::getHTMLTableHeaderForItem($table, $canedit);
    }
@@ -475,7 +475,7 @@ class NetworkName extends FQDNLabel {
     * @param $item     CommonDBTM object
     * @param $table    The table to update
    **/
-   static function getHTMLTableForItem(CommonGLPI $item, &$table, $canedit) {
+   static function getHTMLTableForItem(CommonGLPI $item, &$table, $canedit, $closeRow) {
       global $DB, $CFG_GLPI;
 
       $query = "SELECT `id`
@@ -524,75 +524,9 @@ class NetworkName extends FQDNLabel {
                NetworkAlias::getHTMLTableForNetworkName($address->getID(), $table, $canedit);
 
                IPAddress::getHTMLTableForItem($address, $table, $canedit);
-            }
-         }
-      }
-   }
 
-
-   /**
-    * \brief Show names for an item
-    *
-    * @param $item                     CommonDBTM object
-    * @param $fromForm                 the presentation if different if we call this method from the
-    *                                  showForItemForm
-    * @param $withtemplate   integer   withtemplate param (false by default)
-   **/
-   static function showForItem(CommonGLPI $item, $fromForm, $withtemplate=false) {
-      global $DB, $CFG_GLPI;
-
-      $query = "SELECT `id`
-                FROM `glpi_networknames`
-                 WHERE `items_id` = '" . $item->getID() . "'
-                  AND `itemtype` = '" . $item->getType() . "'";
-      $result = $DB->query($query);
-
-      $address = new self();
-
-
-      if ($DB->numrows($result) > 0) {
-         Session::initNavigateListItems(__CLASS__,
-                              //TRANS : %1$s is the itemtype name,
-                              //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'),
-                                                $item->getTypeName(1), $item->getName()));
-         while ($line = $DB->fetch_array($result)) {
-
-            if ($address->getFromDB($line["id"])) {
-               Session::addToNavigateListItems(__CLASS__, $line["id"]);
-
-               if ($fromForm) {
-                  echo "<tr class='tab_bg_1'><td>";
-               }
-               echo "<a href='" . $address->getLinkURL(). "'>";
-               $internetName = $address->getInternetName();
-               if (empty($internetName)) {
-                  echo "(".$line["id"].")";
-               } else {
-                  echo $internetName;
-               }
-               echo "</a>";
-
-               if ($fromForm) {
-                  echo "<a href='" . $address->getFormURL(). "?remove_address=unaffect&id=" .
-                         $address->getID() . "'>&nbsp;".
-                         "<img src=\"" . $CFG_GLPI["root_doc"] .
-                           "/pics/sub_dropdown.png\" alt=\"" . __s('Dissociate') . "\" title=\"" .
-                           __s('Dissociate') . "\"></a>";
-                  echo "<a href='" . $address->getFormURL(). "?remove_address=purge&id=" .
-                         $address->getID() . "'>&nbsp;".
-                         "<img src=\"" . $CFG_GLPI["root_doc"] .
-                           "/pics/delete.png\" alt=\"" . __s('Purge') . "\" title=\"" .
-                           __s('Purge') . "\"></a>";
-                  echo "</td>";
-                  echo "<td>".str_replace('$$$$', '<br>',
-                                          nl2br($address->fields['ip_addresses'])) . "</td>";
-                  echo "<td>";
-                  NetworkAlias::showForNetworkName($address->getID(), false, $withtemplate);
-                  echo "</td></tr>";
-
-               } else {
-                  echo "<br>\n";
+               if ($closeRow) {
+                  $table->closeRow();
                }
             }
          }
@@ -609,30 +543,26 @@ class NetworkName extends FQDNLabel {
     * @param $item                     CommonGLPI object
     * @param $withtemplate   integer   withtemplate param (default 0)
    **/
-   static function showForItemForm(CommonGLPI $item, $withtemplate=0) {
+   static function showForItem(CommonGLPI $item, $withtemplate=0) {
       global $DB, $CFG_GLPI;
 
       $items_id = $item->getID();
       $itemtype = $item->getType();
       $address  = new self();
 
+      $table = new HTMLTable();
+      $table->addGlobalName(self::getTypeName(2));
+      self::getHTMLTableHeaderForItem($table, true, "");
+
+      self::getHTMLTableForItem($item, $table, true, true);
+
+      $table->display();
+
       echo "<form method='post' action='".$address->getFormURL()."'>\n";
 
       echo "<input type='hidden' name='items_id' value='$items_id'>\n";
       echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
 
-      echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
-
-      echo "<tr><th colspan='4'>" . self::getTypeName(2) . "</th></tr>\n";
-
-      echo "<tr><th>" . self::getTypeName(2) . "</th>";
-      echo "<th>".IPAddress::getTypeName(2)."</th>";
-      echo "<th>" . NetworkAlias::getTypeName(2) . "</th></tr>\n";
-      self::showForItem($item, true, $withtemplate);
-
-      echo "<tr><td colspan='3'>&nbsp;</td></tr>";
-
-      echo "<tr><td colspan='3' class='center'>";
       Dropdown::show(__CLASS__, array('name'      => 'addressID',
                                       'condition' => '`items_id`=0'));
       echo "<a href=\"" . $address->getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
@@ -641,10 +571,6 @@ class NetworkName extends FQDNLabel {
       echo "</a>&nbsp;\n";
       echo "<input type='submit' name='assign_address' value='" . __s('Associate') .
              "' class='submit'>";
-      echo "</td></tr>";
-
-      echo "\n</table>";
-      echo "</div>\n";
 
       echo "</form>\n";
    }
@@ -728,7 +654,7 @@ class NetworkName extends FQDNLabel {
       switch ($item->getType()) {
          case 'NetworkEquipment' :
          case 'NetworkPort' :
-            self::showForItemForm($item, $withtemplate);
+            self::showForItem($item, $withtemplate);
             break;
 
          case 'IPNetwork' :
