@@ -248,7 +248,7 @@ class Reminder extends CommonDBTM {
    **/
    static function addVisibilityRestrict() {
 
-      $restrict = '(0';
+      $restrict = "(`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."' ";
 
       // Users
       $restrict .= " OR `glpi_reminders_users`.`users_id` = '".Session::getLoginUserID()."' ";
@@ -284,7 +284,7 @@ class Reminder extends CommonDBTM {
 
    function post_addItem() {
       if (isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
-   
+
          Planning::checkAlreadyPlanned($this->fields["users_id"], $this->fields["begin"],
                                        $this->fields["end"],
                                        array('Reminder' => array($this->fields['id'])));
@@ -881,7 +881,7 @@ class Reminder extends CommonDBTM {
                               OR `glpi_reminders`.`is_planned` = '0')
                          $restrict_visibility
                    ORDER BY `glpi_reminders`.`name`";
-         
+
          $titre = "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.php'>".$LANG['reminder'][0]."</a>";
 
       } else {
