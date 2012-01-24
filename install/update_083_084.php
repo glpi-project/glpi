@@ -947,6 +947,8 @@ function update083to084() {
    $migration->addKey("glpi_documentcategories", array('documentcategorie_id','name'), 'unicity');
    regenerateTreeCompleteName("glpi_documentcategories");
 
+   $migration->addField("glpi_contacts", 'usertitles_id', "integer");
+   $migration->addKey("glpi_contacts", 'usertitles_id');
 
 
    // ************ Keep it at the end **************
