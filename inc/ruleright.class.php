@@ -273,6 +273,8 @@ class RuleRight extends Rule {
       static $criterias = array();
 
       if (!count($criterias)) {
+         $criterias['common'] = __('Global criterias');
+      
          $criterias['LDAP_SERVER']['table']     = 'glpi_authldaps';
          $criterias['LDAP_SERVER']['field']     = 'name';
          $criterias['LDAP_SERVER']['name']      = __('LDAP directory');
@@ -358,6 +360,7 @@ class RuleRight extends Rule {
    **/
    function addSpecificCriteriasToArray(&$criterias) {
 
+      $criterias['ldap'] = __('LDAP criterias');
       foreach (getAllDatasFromTable('glpi_rulerightparameters', '', true) as $datas ) {
          $criterias[$datas["value"]]['name']      = $datas["name"];
          $criterias[$datas["value"]]['field']     = $datas["value"];
