@@ -724,6 +724,40 @@ function update083to084() {
 
    $migration->addField('glpi_networkports_vlans', 'tagged', 'char', array('value' => '0'));
 
+   //TRANS: %s is the name of the table
+   logMessage(__('Update connexities between NetworkName and IPNetwork'), true);
+
+   // Here, we are sure that there is only IPv4 addresses. So, the SQL requests are simplified
+   $query = "SELECT `id`, `address_3`, `netmask_3`
+             FROM `glpi_ipnetworks`";
+
+   if ($network_result = $DB->query($query)) {
+      unset($query);
+      while ($ipnetwork_row = $DB->fetch_assoc($network_result)) {
+         $ipnetworks_id = $ipnetwork_row['id'];
+         $netmask = floatval($ipnetwork_row['netmask_3']);
+         $address = floatval($ipnetwork_row['address_3']) & $netmask;
+
+         $query = "SELECT `items_id`
+                   FROM `glpi_ipaddresses`
+                   WHERE `itemtype` = 'NetworkName'
+                     AND (`glpi_ipaddresses`.`binary_3` & '$netmask') = $address
+                     AND `glpi_ipaddresses`.`version` = '4'
+                   GROUP BY `items_id`";
+
+         if ($networkname_result = $DB->query($query)) {
+            unset($query);
+            while ($link = $DB->fetch_assoc($networkname_result)) {
+               $query = "INSERT INTO `glpi_ipnetworks_networknames`
+                             ( `ipnetworks_id`, `networknames_id`)
+                         VALUES ('$ipnetworks_id', '".$link['items_id']."')";
+               $DB->query($query);
+               unset($query);
+            }
+         }
+      }
+   }
+
    $migration->addField('glpi_mailcollectors', 'accepted', 'string');
    $migration->addField('glpi_mailcollectors', 'refused', 'string');
 
