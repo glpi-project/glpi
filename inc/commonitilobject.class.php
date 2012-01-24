@@ -579,8 +579,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
          // Special case for Ticket : use autoclose
          if ($this->getType() == 'Ticket') {
-            $autoclosedelay =  EntityData::getUsedConfig('autoclose_delay', $this->getEntityID(),
-                                                         '', EntityData::CONFIG_NEVER);
+            $autoclosedelay =  Entity::getUsedConfig('autoclose_delay', $this->getEntityID(),
+                                                         '', Entity::CONFIG_NEVER);
 
             // 0 = immediatly
             if ($autoclosedelay == 0) {
@@ -771,7 +771,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   && !in_array($this->fields["status"], $this->getClosedStatusArray())))) {
 
          // Compute ticket waiting time use calendar if exists
-         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
          $delay_time   = 0;
 
@@ -2683,7 +2683,7 @@ abstract class CommonITILObject extends CommonDBTM {
           && !empty($this->fields['date'])
           && !empty($this->fields['solvedate'])) {
 
-         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
 
          // Using calendar
@@ -2709,7 +2709,7 @@ abstract class CommonITILObject extends CommonDBTM {
           && !empty($this->fields['date'])
           && !empty($this->fields['closedate'])) {
 
-         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
 
          // Using calendar

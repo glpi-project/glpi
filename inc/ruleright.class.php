@@ -198,15 +198,15 @@ class RuleRight extends Rule {
                            if ($res != null) {
                               switch ($action->fields["field"]) {
                                  case "_affect_entity_by_dn" :
-                                    $entity_found = EntityData::getEntityIDByDN($res);
+                                    $entity_found = Entity::getEntityIDByDN($res);
                                     break;
 
                                  case "_affect_entity_by_tag" :
-                                    $entity_found = EntityData::getEntityIDByTag($res);
+                                    $entity_found = Entity::getEntityIDByTag($res);
                                     break;
 
                                  case "_affect_entity_by_domain" :
-                                    $entity_found = EntityData::getEntityIDByDomain($res);
+                                    $entity_found = Entity::getEntityIDByDomain($res);
                                     break;
 
                                  default:

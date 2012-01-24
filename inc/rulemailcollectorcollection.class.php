@@ -112,7 +112,7 @@ class RuleMailCollectorCollection extends RuleCollection {
       //Store the number of profiles of which the user belongs to
       if (in_array('known_domain',$fields)) {
          if (preg_match("/@(.*)/",$input['from'],$results)) {
-            if (EntityData::getEntityIDByDomain($results[1]) != -1) {
+            if (Entity::getEntityIDByDomain($results[1]) != -1) {
                $input['KNOWN_DOMAIN'] = 1;
             }
             else {

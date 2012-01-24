@@ -284,7 +284,6 @@ class CommonDBTM extends CommonGLPI {
    **/
    function updateInDB($updates, $oldvalues=array()) {
       global $DB, $CFG_GLPI;
-
       foreach ($updates as $field) {
          if (isset($this->fields[$field])) {
             $query  = "UPDATE `".$this->getTable()."`
@@ -1727,7 +1726,7 @@ class CommonDBTM extends CommonGLPI {
          }
       }
 
-      if ($ID>0) {
+      if (!$this->isNewID($ID)) {
          echo "<input type='hidden' name='id' value='$ID'>";
       }
       echo "</td>";
@@ -2900,7 +2899,7 @@ class CommonDBTM extends CommonGLPI {
 
       echo "<tr><td class='tab_bg_2 center'>";
       echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-      // for all objects without id as primary key (like entitydata)
+      // for all objects without id as primary key
       if ($this->getIndexName() != 'id') {
          echo "<input type='hidden' name='".$this->getIndexName()."' value='".
                 $this->fields[$this->getIndexName()]."'>";

@@ -188,7 +188,7 @@ class Ticket extends CommonITILObject {
    **/
    function getDatasToAddSLA($slas_id,$entities_id, $date) {
 
-      $calendars_id = EntityData::getUsedConfig('calendars_id', $entities_id);
+      $calendars_id = Entity::getUsedConfig('calendars_id', $entities_id);
       $data         = array();
 
       $sla = new SLA();
@@ -631,7 +631,7 @@ class Ticket extends CommonITILObject {
       } else {
          $entid = $this->fields['entities_id'];
       }
-      if ($template_id = EntityData::getUsedConfig('tickettemplates_id', $entid)) {
+      if ($template_id = Entity::getUsedConfig('tickettemplates_id', $entid)) {
          // with type and categ
          $tt->getFromDBWithDatas($template_id, true);
       }
@@ -821,7 +821,7 @@ class Ticket extends CommonITILObject {
    function computeTakeIntoAccountDelayStat() {
 
       if (isset($this->fields['id']) && !empty($this->fields['date'])) {
-         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
 
          // Using calendar
@@ -852,7 +852,7 @@ class Ticket extends CommonITILObject {
           && $this->fields["slas_id"] > 0) {
 
          // Add First Level
-         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
 
          $sla = new SLA();
          if ($sla->getFromDB($this->fields["slas_id"])) {
@@ -1015,13 +1015,13 @@ class Ticket extends CommonITILObject {
 
       // Manage auto assign
 
-      $auto_assign_mode = EntityData::getUsedConfig('auto_assign_mode', $input['entities_id']);
+      $auto_assign_mode = Entity::getUsedConfig('auto_assign_mode', $input['entities_id']);
 
       switch ($auto_assign_mode) {
-         case EntityData::CONFIG_NEVER :
+         case Entity::CONFIG_NEVER :
             break;
 
-         case EntityData::AUTO_ASSIGN_HARDWARE_CATEGORY :
+         case Entity::AUTO_ASSIGN_HARDWARE_CATEGORY :
             if ($item!=NULL) {
                // Auto assign tech from item
                if ((!isset($input['_users_id_assign']) || $input['_users_id_assign']==0)
@@ -1052,7 +1052,7 @@ class Ticket extends CommonITILObject {
             }
             break;
 
-         case EntityData::AUTO_ASSIGN_CATEGORY_HARDWARE :
+         case Entity::AUTO_ASSIGN_CATEGORY_HARDWARE :
             // Auto assign tech/group from Category
             if ($input['itilcategories_id']>0
                 && ((!isset($input['_users_id_assign']) || !$input['_users_id_assign'])
@@ -1123,7 +1123,7 @@ class Ticket extends CommonITILObject {
 
       // auto set type if not set
       if (!isset($input["type"])) {
-         $input['type'] = EntityData::getUsedConfig('tickettype', $input['entities_id'],
+         $input['type'] = Entity::getUsedConfig('tickettype', $input['entities_id'],
                                                     '', Ticket::INCIDENT_TYPE);
       }
 
@@ -1212,7 +1212,7 @@ class Ticket extends CommonITILObject {
           && isset($this->input["slalevels_id"])
           && $this->input["slalevels_id"]>0) {
 
-         $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
+         $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
 
          $sla = new SLA();
          if ($sla->getFromDB($this->input["slas_id"])) {
@@ -2698,7 +2698,7 @@ class Ticket extends CommonITILObject {
                       'due_date'                   => 'NULL',
                       'slas_id'                    => 0,
                       '_add_validation'            => 0,
-                      'type'              => EntityData::getUsedConfig('tickettype',
+                      'type'              => Entity::getUsedConfig('tickettype',
                                                                        $_SESSION['glpiactive_entity'],
                                                                        '', Ticket::INCIDENT_TYPE),
                       '_right'                     => "id");
@@ -2773,7 +2773,7 @@ class Ticket extends CommonITILObject {
       $tt = new TicketTemplate();
 
       // First load default entity one
-      if ($template_id = EntityData::getUsedConfig('tickettemplates_id',
+      if ($template_id = Entity::getUsedConfig('tickettemplates_id',
                                                    $_SESSION["glpiactive_entity"])) {
          // with type and categ
          $tt->getFromDBWithDatas($template_id, true);
@@ -3069,7 +3069,7 @@ class Ticket extends CommonITILObject {
          unset($_SESSION["helpdeskSaved"]);
       }
       if ($values['type'] <= 0) {
-         $values['type'] = EntityData::getUsedConfig('tickettype', $values['entities_id'],
+         $values['type'] = Entity::getUsedConfig('tickettype', $values['entities_id'],
                                                      '', Ticket::INCIDENT_TYPE);
       }
 
@@ -3077,7 +3077,7 @@ class Ticket extends CommonITILObject {
       $tt = new TicketTemplate();
 
       // First load default entity one
-      if ($template_id = EntityData::getUsedConfig('tickettemplates_id', $values['entities_id'])) {
+      if ($template_id = Entity::getUsedConfig('tickettemplates_id', $values['entities_id'])) {
          // with type and categ
          $tt->getFromDBWithDatas($template_id, true);
       }
@@ -5152,20 +5152,20 @@ class Ticket extends CommonITILObject {
    static function cronCreateInquest($task) {
       global $DB;
 
-      $conf    = new Entitydata();
+      $conf    = new Entity();
       $inquest = new TicketSatisfaction();
       $tot = 0;
       $maxentity   = array();
       $tabentities = array();
 
-      $rate = EntityData::getUsedConfig('inquest_config', 0, 'inquest_rate');
+      $rate = Entity::getUsedConfig('inquest_config', 0, 'inquest_rate');
       if ($rate>0) {
          $tabentities[0] = $rate;
       }
 
       foreach ($DB->request('glpi_entities') as $entity) {
-         $rate   = EntityData::getUsedConfig('inquest_config', $entity['id'], 'inquest_rate');
-         $parent = EntityData::getUsedConfig('inquest_config', $entity['id'], 'entities_id');
+         $rate   = Entity::getUsedConfig('inquest_config', $entity['id'], 'inquest_rate');
+         $parent = Entity::getUsedConfig('inquest_config', $entity['id'], 'entities_id');
 
          if ($rate>0) {
             $tabentities[$entity['id']] = $rate;
@@ -5173,10 +5173,10 @@ class Ticket extends CommonITILObject {
       }
 
       foreach ($tabentities as $entity => $rate) {
-         $parent        = EntityData::getUsedConfig('inquest_config', $entity, 'entities_id');
-         $delay         = EntityData::getUsedConfig('inquest_config', $entity, 'inquest_delay');
-         $type          = EntityData::getUsedConfig('inquest_config', $entity);
-         $max_closedate = EntityData::getUsedConfig('inquest_config', $entity, 'max_closedate');
+         $parent        = Entity::getUsedConfig('inquest_config', $entity, 'entities_id');
+         $delay         = Entity::getUsedConfig('inquest_config', $entity, 'inquest_delay');
+         $type          = Entity::getUsedConfig('inquest_config', $entity);
+         $max_closedate = Entity::getUsedConfig('inquest_config', $entity, 'max_closedate');
 
          $query = "SELECT `glpi_tickets`.`id`,
                           `glpi_tickets`.`closedate`,

@@ -2392,7 +2392,7 @@ class User extends CommonDBTM {
 
       if (Session::haveRight('import_externalauth_users','w')
           && $p['ldap_import']
-          && EntityData::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
+          && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
          echo "<img alt='' title=\"".__s('Import an user')."\" src='".$CFG_GLPI["root_doc"].
                "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'

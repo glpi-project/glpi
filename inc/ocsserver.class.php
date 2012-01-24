@@ -4733,7 +4733,7 @@ class OcsServer extends CommonDBTM {
                $manufacturer  = Manufacturer::processName($data2["PUBLISHER"]);
 
                //Software might be created in another entity, depending on the entity's configuration
-               $target_entity = EntityData::getUsedConfig('entities_id_software', $entity);
+               $target_entity = Entity::getUsedConfig('entities_id_software', $entity);
                //Do not change software's entity except if the dictionnary explicity changes it
                if ($target_entity < 0) {  // CONFIG_NEVER
                   $target_entity = $entity;

@@ -338,7 +338,17 @@ class CommonGLPI {
       return false;
    }
 
-
+    /**
+    * is the current object a new one - Always true here (virtual Objet)
+    *
+    * @since version 0.84
+    *
+    * @return boolean
+   **/
+   function isNewID($ID) {
+      return true;
+   }
+     
    /**
     * Show onglets
     *
@@ -354,7 +364,7 @@ class CommonGLPI {
       if (isset($this->fields['id'])) {
          $ID = $this->fields['id'];
       } else {
-        $ID = 0;
+         $ID = 0;
       }
 
       $target         = $_SERVER['PHP_SELF'];
@@ -374,7 +384,7 @@ class CommonGLPI {
          }
       }
 
-      if (empty($withtemplate) && $ID && $this->getType() && $this->displaylist) {
+      if (empty($withtemplate) && !$this->isNewID($ID) && $this->getType() && $this->displaylist) {
          $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()];
          $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
          $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()];
@@ -433,7 +443,7 @@ class CommonGLPI {
          }
          echo "</a>&nbsp;:&nbsp;</li>";
 
-         if ($first > 0) {
+         if ($first >=0) {
             echo "<li><a href='$cleantarget?id=$first$extraparamhtml'><img src='".
                        $CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
                        "\" title=\"".__s('First')."\"></a></li>";
@@ -442,7 +452,7 @@ class CommonGLPI {
                        __s('First')."\" title=\"".__s('First')."\"></li>";
          }
 
-         if ($prev > 0) {
+         if ($prev >=0) {
             echo "<li><a href='$cleantarget?id=$prev$extraparamhtml'><img src='".
                        $CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
                        "\" title=\"".__s('Previous')."\"></a></li>";
@@ -455,7 +465,7 @@ class CommonGLPI {
             echo "<li>".($current+1) . "/" . count($glpilistitems)."</li>";
          }
 
-         if ($next > 0) {
+         if ($next >=0) {
             echo "<li><a href='$cleantarget?id=$next$extraparamhtml'><img src='".
                        $CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
                        "\" title=\"".__s('Next')."\"></a></li>";
@@ -464,7 +474,7 @@ class CommonGLPI {
                        __s('Next')."\" title=\"".__s('Next')."\"></li>";
          }
 
-         if ($last > 0) {
+         if ($last >=0) {
             echo "<li><a href='$cleantarget?id=$last$extraparamhtml'><img src=\"".
                        $CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
                        "\" title=\"".__s('Last')."\"></a></li>";

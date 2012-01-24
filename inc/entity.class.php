@@ -44,23 +44,73 @@ class Entity extends CommonTreeDropdown {
    public $must_be_replace = true;
    public $dohistory       = true;
 
+   const CONFIG_PARENT   = - 2;
+   const CONFIG_NEVER    = -10;
+
+   const AUTO_ASSIGN_HARDWARE_CATEGORY = 1;
+   const AUTO_ASSIGN_CATEGORY_HARDWARE = 2;
+
+   // Array of "right required to update" => array of fields allowed
+   // Missing field here couldn't be update (no right)
+   private static $field_right = array('entity'          => array(// Address
+                                                                  'address', 'country', 'email',
+                                                                  'fax', 'notepad', 'phonenumber',
+                                                                  'postcode', 'state', 'town',
+                                                                  'website',
+                                                                  // Advanced (could be user_authtype ?)
+                                                                  'authldaps_id', 'entity_ldapfilter',
+                                                                  'ldap_dn', 'mail_domain', 'tag',
+                                                                  // Inventory
+                                                                  'autofill_buy_date',
+                                                                  'autofill_delivery_date',
+                                                                  'autofill_order_date',
+                                                                  'autofill_use_date',
+                                                                  'autofill_warranty_date',
+                                                                  'entities_id_software'),
+                                       // Notification
+                                       'notification'    => array('admin_email', 'admin_reply',
+                                                                  'admin_email_name',
+                                                                  'admin_reply_name',
+                                                                  'default_alarm_threshold',
+                                                                  'default_contract_alert',
+                                                                  'default_infocom_alert',
+                                                                  'mailing_signature',
+                                                                  'cartridges_alert_repeat',
+                                                                  'consumables_alert_repeat',
+                                                                  'notclosed_delay',
+                                                                  'use_licenses_alert',
+                                                                  'use_contracts_alert',
+                                                                  'use_reservations_alert',
+                                                                  'use_infocoms_alert',
+                                                                  'notification_subject_tag'),
+                                       // Helpdesk
+                                       'entity_helpdesk' => array('calendars_id', 'tickettype',
+                                                                  'auto_assign_mode',
+                                                                  'autoclose_delay',
+                                                                  'inquest_config', 'inquest_rate',
+                                                                  'inquest_delay', 'inquest_URL',
+                                                                  'max_closedate',
+                                                                  'tickettemplates_id'));
+
    function getFromDB($ID) {
 
-      if ($ID==0) {
-         $this->fields = array('id'              => 0,
-                               'name'            => __('Root entity'),
-                               'entities_id'     => 0,
-                               'completename'    => __('Root entity'),
-                               'comment'         => '',
-                               'level'           => 0,
-                               'sons_cache'      => '',
-                               'ancestors_cache' => '');
-         return true;
-      }
       return parent::getFromDB($ID);
    }
 
+   function post_getEmpty() {
 
+      $fields = array('autoclose_delay', 'autofill_buy_date', 'autofill_delivery_date',
+                      'autofill_order_date', 'autofill_use_date', 'autofill_warranty_date',
+                      'calendars_id', 'cartridges_alert_repeat', 'consumables_alert_repeat',
+                      'entities_id_software', 'notclosed_delay', 'tickettemplates_id',
+                      'use_contracts_alert', 'use_infocoms_alert', 'use_licenses_alert',
+                      'use_reservations_alert');
+
+      foreach ($fields as $field) {
+         $this->fields[$field] = self::CONFIG_PARENT;
+      }
+   }
+   
    static function getTypeName($nb=0) {
       return _n('Entity', 'Entities', $nb);
    }
@@ -92,13 +142,72 @@ class Entity extends CommonTreeDropdown {
       return ($ID<0 || !strlen($ID));
    }
 
+   /**
+    * Check right on each field before add / update
+    *
+    * @param $input array (form)
+    *
+    * @return array (filtered input)
+   **/
+   private function checkRightDatas($input) {
 
+      $tmp = array('id' => $input['id']);
+
+      foreach (self::$field_right as $right => $fields) {
+
+         if (Session::haveRight($right, 'w')) {
+            foreach ($fields as $field) {
+               if (isset($input[$field])) {
+                  $tmp[$field] = $input[$field];
+               }
+            }
+         }
+      }
+
+      return $tmp;
+   }
+
+   function prepareInputForAdd($input) {
+      $input = parent::prepareInputForAdd($input);
+      
+      $input['max_closedate'] = $_SESSION["glpi_currenttime"];
+      return $this->checkRightDatas($input);
+   }
+
+   function prepareInputForUpdate($input) {
+  
+      $input = parent::prepareInputForUpdate($input);
+      
+      // Si on change le taux de déclenchement de l'enquête (enquête activée) ou le type de l'enquete,
+      // cela s'applique aux prochains tickets - Pas à l'historique
+      if ((isset($input['inquest_rate'])
+           && ($this->fields['inquest_rate'] == 0 || is_null($this->fields['max_closedate']))
+           && $input['inquest_rate'] != $this->fields['inquest_rate'])
+          || (isset($input['inquest_config'])
+              && ($this->fields['inquest_config'] == 0 || is_null($this->fields['max_closedate']))
+              && $input['inquest_config']!= $this->fields['inquest_config'])) {
+
+         $input['max_closedate'] = $_SESSION["glpi_currenttime"];
+      }
+
+      // Force entities_id = -1 for root entity
+      if ($input['id']==0) {
+         $input['entities_id'] = -1;
+         $input['level'] = 0;
+         $input['level'] = 0;
+      }
+      if (!Session::isCron()) { // Filter input for connected
+         return $this->checkRightDatas($input);
+      }      
+      return $input;      
+   }
+   
    function defineTabs($options=array()) {
 
       $ong = array();
       $this->addStandardTab($this->getType(), $ong, $options);
       $this->addStandardTab('Profile_User',$ong, $options);
-      $this->addStandardTab('EntityData', $ong, $options);
+      $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Rule', $ong, $options);
       $this->addStandardTab('Document',$ong, $options);
       $this->addStandardTab('Note',$ong, $options);
@@ -108,19 +217,63 @@ class Entity extends CommonTreeDropdown {
    }
 
 
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case __CLASS__ :
+               $ong = array();
+               $ong[1] = __('Address');
+               $ong[2] = __('Advanced information');
+               if (Session::haveRight('notification','r')) {
+                  $ong[3] = _n('Notification', 'Notifications',2);
+               }
+               if (Session::haveRight('entity_helpdesk','r')) {
+                  $ong[4] = __('Assistance');
+               }
+               $ong[5] = __('Inventory');
+
+               return $ong;
+         }
+      }
+      return '';
+   }
+   
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()==__CLASS__) {
+         switch ($tabnum) {
+            case 1 :
+               self::showStandardOptions($item);
+               break;
+
+            case 2 :
+               self::showAdvancedOptions($item);
+               break;
+
+            case 3 :
+               self::showNotificationOptions($item);
+               break;
+
+            case 4 :
+               self::showHelpdeskOptions($item);
+               break;
+
+            case 5 :
+               self::showInventoryOptions($item);
+               break;
+         }
+      }
+      return true;
+   }   
+   
    /**
     * Print a good title for entity pages
     *
     *@return nothing (display)
     **/
    function title() {
-      global $CFG_GLPI;
-
-      $buttons = array();
-      $title   = self::getTypeName(2);
-      $buttons["entity.form.php?id=0"] = __('Root entity');
-      Html::displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png", self::getTypeName(2), $title,
-                         $buttons);
+      // Empty title for entities
    }
 
 
@@ -180,11 +333,6 @@ class Entity extends CommonTreeDropdown {
    function cleanDBonPurge() {
       global $DB;
 
-      $query = "DELETE
-                FROM `glpi_entitydatas`
-                WHERE `entities_id` = '".$this->fields['id']."'";
-      $result = $DB->query($query);
-
       // most use entities_id, RuleDictionnarySoftwareCollection use new_entities_id
       Rule::cleanForItemAction($this, '%entities_id');
       Rule::cleanForItemCriteria($this);
@@ -208,83 +356,69 @@ class Entity extends CommonTreeDropdown {
       $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
 
-      $tab[3]['table']         = 'glpi_entitydatas';
+      $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'address';
       $tab[3]['name']          = __('Address');
       $tab[3]['massiveaction'] = false;
-      $tab[3]['joinparams']    = array('jointype' => 'child');
       $tab[3]['datatype']      = 'text';
 
-      $tab[4]['table']         = 'glpi_entitydatas';
+      $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'website';
       $tab[4]['name']          = __('Website');
       $tab[4]['massiveaction'] = false;
-      $tab[4]['joinparams']    = array('jointype' => 'child');
       $tab[4]['datatype']      = 'string';
 
-      $tab[5]['table']         = 'glpi_entitydatas';
+      $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'phonenumber';
       $tab[5]['name']          = __('Phone');
       $tab[5]['massiveaction'] = false;
-      $tab[5]['joinparams']    = array('jointype' => 'child');
       $tab[5]['datatype']      = 'string';
 
-      $tab[6]['table']         = 'glpi_entitydatas';
+      $tab[6]['table']         = $this->getTable();
       $tab[6]['field']         = 'email';
       $tab[6]['name']          = _n('Email', 'Emails', 1);
       $tab[6]['datatype']      = 'email';
       $tab[6]['massiveaction'] = false;
-      $tab[6]['joinparams']    = array('jointype' => 'child');
 
-      $tab[7]['table']         = 'glpi_entitydatas';
+      $tab[7]['table']         = $this->getTable();
       $tab[7]['field']         = 'ldap_dn';
       $tab[7]['name']          = __('LDAP directory information attribute representing the entity');
       $tab[7]['massiveaction'] = false;
-      $tab[7]['joinparams']    = array('jointype' => 'child');
       $tab[7]['datatype']      = 'string';
 
-      $tab[8]['table']         = 'glpi_entitydatas';
+      $tab[8]['table']         = $this->getTable();
       $tab[8]['field']         = 'tag';
       $tab[8]['name']          = __('Information in inventory tool (TAG) representing the entity');
       $tab[8]['massiveaction'] = false;
-      $tab[8]['joinparams']    = array('jointype' => 'child');
       $tab[8]['datatype']      = 'string';
 
       $tab[9]['table']         = 'glpi_authldaps';
       $tab[9]['field']         = 'name';
       $tab[9]['name']          = __('LDAP directory of an entity');
       $tab[9]['massiveaction'] = false;
-      $tab[9]['joinparams']    = array('beforejoin'
-                                       => array('table'      => 'glpi_entitydatas',
-                                                'joinparams' => array('jointype' => 'child')));
 
-
-      $tab[10]['table']         = 'glpi_entitydatas';
+      $tab[10]['table']         = $this->getTable();
       $tab[10]['field']         = 'fax';
       $tab[10]['name']          = __('Fax');
       $tab[10]['massiveaction'] = false;
-      $tab[10]['joinparams']    = array('jointype' => 'child');
       $tab[10]['datatype']      = 'string';
 
-      $tab[11]['table']         = 'glpi_entitydatas';
+      $tab[11]['table']         = $this->getTable();
       $tab[11]['field']         = 'town';
       $tab[11]['name']          = __('City');
       $tab[11]['massiveaction'] = false;
-      $tab[11]['joinparams']    = array('jointype' => 'child');
       $tab[11]['datatype']      = 'string';
 
-      $tab[12]['table']         = 'glpi_entitydatas';
+      $tab[12]['table']         = $this->getTable();
       $tab[12]['field']         = 'state';
       $tab[12]['name']          = __('State');
       $tab[12]['massiveaction'] = false;
-      $tab[12]['joinparams']    = array('jointype' => 'child');
       $tab[12]['datatype']      = 'string';
 
-      $tab[13]['table']         = 'glpi_entitydatas';
+      $tab[13]['table']         = $this->getTable();
       $tab[13]['field']         = 'country';
       $tab[13]['name']          = __('Country');
       $tab[13]['massiveaction'] = false;
-      $tab[13]['joinparams']    = array('jointype' => 'child');
       $tab[13]['datatype']      = 'string';
 
       $tab[14]['table']         = $this->getTable();
@@ -299,239 +433,206 @@ class Entity extends CommonTreeDropdown {
       $tab[16]['name']          = __('Comments');
       $tab[16]['datatype']      = 'text';
 
-      $tab[17]['table']         = 'glpi_entitydatas';
+      $tab[17]['table']         = $this->getTable();
       $tab[17]['field']         = 'entity_ldapfilter';
       $tab[17]['name']          = __('Search filter (if needed)');
       $tab[17]['massiveaction'] = false;
-      $tab[17]['joinparams']    = array('jointype' => 'child');
       $tab[17]['datatype']      = 'string';
 
-      $tab[18]['table']         = 'glpi_entitydatas';
+      $tab[18]['table']         = $this->getTable();
       $tab[18]['field']         = 'admin_email';
       $tab[18]['name']          = __('Administrator email');
       $tab[18]['massiveaction'] = false;
-      $tab[18]['joinparams']    = array('jointype' => 'child');
       $tab[18]['datatype']      = 'string';
 
-      $tab[19]['table']         = 'glpi_entitydatas';
+      $tab[19]['table']         = $this->getTable();
       $tab[19]['field']         = 'admin_reply';
       $tab[19]['name']          = __('Administrator reply-to email (if needed)');
       $tab[19]['massiveaction'] = false;
-      $tab[19]['joinparams']    = array('jointype' => 'child');
       $tab[19]['datatype']      = 'string';
 
-      $tab[20]['table']         = 'glpi_entitydatas';
+      $tab[20]['table']         = $this->getTable();
       $tab[20]['field']         = 'mail_domain';
       $tab[20]['name']          = __('Domain of electronic mail service');
       $tab[20]['massiveaction'] = false;
-      $tab[20]['joinparams']    = array('jointype' => 'child');
       $tab[20]['datatype']      = 'string';
 
-      $tab[21]['table']         = 'glpi_entitydatas';
+      $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'notification_subject_tag';
       $tab[21]['name']          = __('Prefix for notifications');
-      $tab[21]['joinparams']    = array('jointype' => 'child');
       $tab[21]['datatype']      = 'string';
 
-      $tab[22]['table']         = 'glpi_entitydatas';
+      $tab[22]['table']         = $this->getTable();
       $tab[22]['field']         = 'admin_email_name';
       $tab[22]['name']          = __('Administrator name');
-      $tab[22]['joinparams']    = array('jointype' => 'child');
       $tab[22]['datatype']      = 'string';
 
-      $tab[23]['table']         = 'glpi_entitydatas';
+      $tab[23]['table']         = $this->getTable();
       $tab[23]['field']         = 'admin_reply_name';
       $tab[23]['name']          = __('Response name (if needed)');
-      $tab[23]['joinparams']    = array('jointype' => 'child');
       $tab[23]['datatype']      = 'string';
 
-      $tab[24]['table']         = 'glpi_entitydatas';
+      $tab[24]['table']         = $this->getTable();
       $tab[24]['field']         = 'mailing_signature';
       $tab[24]['name']          = __('Email signature');
-      $tab[24]['joinparams']    = array('jointype' => 'child');
       $tab[24]['datatype']      = 'text';
 
-      $tab[25]['table']         = 'glpi_entitydatas';
+      $tab[25]['table']         = $this->getTable();
       $tab[25]['field']         = 'postcode';
       $tab[25]['name']          = __('Postal Code');
-      $tab[25]['joinparams']    = array('jointype' => 'child');
       $tab[25]['datatype']      = 'string';
 
-      $tab[26]['table']         = 'glpi_entitydatas';
+      $tab[26]['table']         = $this->getTable();
       $tab[26]['field']         = 'cartridges_alert_repeat';
       $tab[26]['name']          = __('Alarms on cartridges');
-      $tab[26]['joinparams']    = array('jointype' => 'child');
       $tab[26]['massiveaction'] = false;
       $tab[26]['nosearch']      = true;
 
-      $tab[27]['table']         = 'glpi_entitydatas';
+      $tab[27]['table']         = $this->getTable();
       $tab[27]['field']         = 'consumables_alert_repeat';
       $tab[27]['name']          = __('Alarms on consumables');
-      $tab[27]['joinparams']    = array('jointype' => 'child');
       $tab[27]['massiveaction'] = false;
       $tab[27]['nosearch']      = true;
 
-      $tab[28]['table']         = 'glpi_entitydatas';
+      $tab[28]['table']         = $this->getTable();
       $tab[28]['field']         = 'notepad';
       $tab[28]['name']          = __('Notes');
-      $tab[28]['joinparams']    = array('jointype' => 'child');
       $tab[28]['datatype']      = 'text';
 
-      $tab[29]['table']         = 'glpi_entitydatas';
+      $tab[29]['table']         = $this->getTable();
       $tab[29]['field']         = 'use_licenses_alert';
       $tab[29]['name']          = __('Alarms on expired licenses');
       $tab[29]['massiveaction'] = false;
       $tab[29]['nosearch']      = true;
-      $tab[29]['joinparams']    = array('jointype' => 'child');
 
-      $tab[30]['table']         = 'glpi_entitydatas';
+      $tab[30]['table']         = $this->getTable();
       $tab[30]['field']         = 'use_contracts_alert';
       $tab[30]['name']          = __('Alarms on contracts');
       $tab[30]['massiveaction'] = false;
       $tab[30]['nosearch']      = true;
-      $tab[30]['joinparams']    = array('jointype' => 'child');
 
-      $tab[31]['table']         = 'glpi_entitydatas';
+      $tab[31]['table']         = $this->getTable();
       $tab[31]['field']         = 'use_infocoms_alert';
       $tab[31]['name']          = __('Alarms on financial and administrative information');
       $tab[31]['massiveaction'] = false;
       $tab[31]['nosearch']      = true;
-      $tab[31]['joinparams']    = array('jointype' => 'child');
 
-      $tab[32]['table']         = 'glpi_entitydatas';
+      $tab[32]['table']         = $this->getTable();
       $tab[32]['field']         = 'use_reservations_alert';
       $tab[32]['name']          = __('Alerts on reservations');
       $tab[32]['massiveaction'] = false;
       $tab[32]['nosearch']      = true;
-      $tab[32]['joinparams']    = array('jointype' => 'child');
 
-      $tab[33]['table']         = 'glpi_entitydatas';
+      $tab[33]['table']         = $this->getTable();
       $tab[33]['field']         = 'autoclose_delay';
       $tab[33]['name']          = __('Automatic closing of solved tickets after');
       $tab[33]['massiveaction'] = false;
       $tab[33]['nosearch']      = true;
-      $tab[33]['joinparams']    = array('jointype' => 'child');
 
-      $tab[34]['table']         = 'glpi_entitydatas';
+      $tab[34]['table']         = $this->getTable();
       $tab[34]['field']         = 'notclosed_delay';
       $tab[34]['name']          = __('Alerts on tickets which are not solved');
       $tab[34]['massiveaction'] = false;
       $tab[34]['nosearch']      = true;
-      $tab[34]['joinparams']    = array('jointype' => 'child');
 
-      $tab[35]['table']         = 'glpi_entitydatas';
+      $tab[35]['table']         = $this->getTable();
       $tab[35]['field']         = 'auto_assign_mode';
       $tab[35]['name']          = __('Automatic assignment of tickets');
       $tab[35]['massiveaction'] = false;
       $tab[35]['nosearch']      = true;
-      $tab[35]['joinparams']    = array('jointype' => 'child');
 
-      $tab[36]['table']         = 'glpi_entitydatas';
+      $tab[36]['table']         = $this->getTable();
       $tab[36]['field']         = 'calendars_id';        // not a dropdown because of special value
       $tab[36]['name']          = __('Calendar');
       $tab[36]['massiveaction'] = false;
       $tab[36]['nosearch']      = true;
-      $tab[36]['joinparams']    = array('jointype' => 'child');
 
-      $tab[37]['table']         = 'glpi_entitydatas';
+      $tab[37]['table']         = $this->getTable();
       $tab[37]['field']         = 'tickettype';
       $tab[37]['name']          = __('Tickets default type');
       $tab[37]['massiveaction'] = false;
       $tab[37]['nosearch']      = true;
-      $tab[37]['joinparams']    = array('jointype' => 'child');
 
-      $tab[38]['table']         = 'glpi_entitydatas';
+      $tab[38]['table']         = $this->getTable();
       $tab[38]['field']         = 'autofill_buy_date';
       $tab[38]['name']          = __('Date of purchase');
       $tab[38]['massiveaction'] = false;
       $tab[38]['nosearch']      = true;
-      $tab[38]['joinparams']    = array('jointype' => 'child');
 
-      $tab[39]['table']         = 'glpi_entitydatas';
+      $tab[39]['table']         = $this->getTable();
       $tab[39]['field']         = 'autofill_order_date';
       $tab[39]['name']          = __('Order date');
       $tab[39]['massiveaction'] = false;
       $tab[39]['nosearch']      = true;
-      $tab[39]['joinparams']    = array('jointype' => 'child');
 
-      $tab[40]['table']         = 'glpi_entitydatas';
+      $tab[40]['table']         = $this->getTable();
       $tab[40]['field']         = 'autofill_delivery_date';
       $tab[40]['name']          = __('Delivery date');
       $tab[40]['massiveaction'] = false;
       $tab[40]['nosearch']      = true;
-      $tab[40]['joinparams']    = array('jointype' => 'child');
 
-      $tab[41]['table']         = 'glpi_entitydatas';
+      $tab[41]['table']         = $this->getTable();
       $tab[41]['field']         = 'autofill_use_date';
       $tab[41]['name']          = __('Startup date');
       $tab[41]['massiveaction'] = false;
       $tab[41]['nosearch']      = true;
-      $tab[41]['joinparams']    = array('jointype' => 'child');
 
-      $tab[42]['table']         = 'glpi_entitydatas';
+      $tab[42]['table']         = $this->getTable();
       $tab[42]['field']         = 'autofill_warranty_date';
       $tab[42]['name']          = __('Start date of warranty');
       $tab[42]['massiveaction'] = false;
       $tab[42]['nosearch']      = true;
-      $tab[42]['joinparams']    = array('jointype' => 'child');
 
-      $tab[43]['table']         = 'glpi_entitydatas';
+      $tab[43]['table']         = $this->getTable();
       $tab[43]['field']         = 'inquest_config';
       $tab[43]['name']          = __('Configuring the satisfaction survey');
       $tab[43]['massiveaction'] = false;
       $tab[43]['nosearch']      = true;
-      $tab[43]['joinparams']    = array('jointype' => 'child');
 
-      $tab[44]['table']         = 'glpi_entitydatas';
+      $tab[44]['table']         = $this->getTable();
       $tab[44]['field']         = 'inquest_rate';
       $tab[44]['name']          = __('Rate to trigger survey');
       $tab[44]['massiveaction'] = false;
-      $tab[44]['joinparams']    = array('jointype' => 'child');
       $tab[44]['datatype']      = 'number';
 
-      $tab[45]['table']         = 'glpi_entitydatas';
+      $tab[45]['table']         = $this->getTable();
       $tab[45]['field']         = 'inquest_delay';
       $tab[45]['name']          = __('Create survey after');
       $tab[45]['massiveaction'] = false;
-      $tab[45]['joinparams']    = array('jointype' => 'child');
       $tab[45]['datatype']      = 'number';
 
-      $tab[46]['table']         = 'glpi_entitydatas';
+      $tab[46]['table']         = $this->getTable();
       $tab[46]['field']         = 'inquest_URL';
       $tab[46]['name']          = __('URL');
       $tab[46]['massiveaction'] = false;
-      $tab[46]['joinparams']    = array('jointype' => 'child');
       $tab[46]['datatype']      = 'string';
 
-      $tab[47]['table']         = 'glpi_entitydatas';
+      $tab[47]['table']         = $this->getTable();
       $tab[47]['field']         = 'tickettemplates_id';  // not a dropdown because of special value
       $tab[47]['name']          = _n('Ticket template', 'Ticket templates', 1);
       $tab[47]['massiveaction'] = false;
       $tab[47]['nosearch']      = true;
-      $tab[47]['joinparams']    = array('jointype' => 'child');
 
-      $tab[48]['table']         = 'glpi_entitydatas';
+      $tab[48]['table']         = $this->getTable();
       $tab[48]['field']         = 'default_contract_alert';
       $tab[48]['name']          =__('Default value for alarms on contracts');
       $tab[48]['massiveaction'] = false;
       $tab[48]['nosearch']      = true;
-      $tab[48]['joinparams']    = array('jointype' => 'child');
 
-      $tab[49]['table']         = 'glpi_entitydatas';
+      $tab[49]['table']         = $this->getTable();
       $tab[49]['field']         = 'default_infocom_alert';
       $tab[49]['name']          = __('Default value for alarms on financial and administrative information');
       $tab[49]['massiveaction'] = false;
       $tab[49]['nosearch']      = true;
-      $tab[49]['joinparams']    = array('jointype' => 'child');
 
-      $tab[50]['table']         = 'glpi_entitydatas';
+      $tab[50]['table']         = $this->getTable();
       $tab[50]['field']         = 'default_alarm_threshold';
       $tab[50]['name']          = __('Default threshold for cartridges and consumables count');
       $tab[50]['massiveaction'] = false;
       $tab[50]['nosearch']      = true;
       $tab[50]['datatype']      = 'number';
 
-      $tab[51]['table']         = 'glpi_entitydatas';
+      $tab[51]['table']         = $this->getTable();
       $tab[51]['field']         = 'entities_id_software';   // not a dropdown because of special value
       $tab[51]['name']          = __('Entity for software creation');
       $tab[51]['massiveaction'] = false;
@@ -656,7 +757,7 @@ class Entity extends CommonTreeDropdown {
       $entities = array();
 
       // root entity first
-      $ent = new EntityData();
+      $ent = new self();
       if ($ent->getFromDB(0)) {  // always exists
          $val = $ent->getField($field);
          if ($val>0) {
@@ -667,15 +768,13 @@ class Entity extends CommonTreeDropdown {
       // Others entities in level order (parent first)
       $query = "SELECT `glpi_entities`.`id` AS `entity`,
                        `glpi_entities`.`entities_id` AS `parent`,
-                       `glpi_entitydatas`.`$field`
+                       `glpi_entities`.`$field`
                 FROM `glpi_entities`
-                LEFT JOIN `glpi_entitydatas`
-                     ON (`glpi_entitydatas`.`entities_id` = `glpi_entities`.`id`)
                 ORDER BY `glpi_entities`.`level` ASC";
 
 
       foreach ($DB->request($query) as $entitydatas) {
-         if ((is_null($entitydatas[$field]) || $entitydatas[$field]==EntityData::CONFIG_PARENT)
+         if ((is_null($entitydatas[$field]) || $entitydatas[$field]==self::CONFIG_PARENT)
              && isset($entities[$entitydatas['parent']])) {
 
             // config inherit from parent
@@ -691,17 +790,1083 @@ class Entity extends CommonTreeDropdown {
       return $entities;
    }
 
+   /**
+    * @param $entity Entity object
+   **/
+   static function showStandardOptions(Entity $entity) {
 
-   function showNotesForm() {
+      $con_spotted = false;
 
-      if (isset($this->fields['id'])) {
-         $entitydata = new EntityData();
-         if (!$entitydata->getFromDB($this->fields['id'])) {
-            $entitydata->add(array('entities_id' => $this->fields['id']));
-            $entitydata->getFromDB($this->fields['id']);
-         }
-         $entitydata->showNotesForm();
+      $ID = $entity->getField('id');
+      if (!$entity->can($ID,'r')) {
+         return false;
       }
+
+      // Entity right applied
+      $canedit = $entity->can($ID, 'w');
+
+      echo "<div class='spaced'>";
+      if ($canedit) {
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+      }
+
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='4'>".__('Address')."</th></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>". __('Phone')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "phonenumber");
+      echo "</td>";
+      echo "<td rowspan='7'>".__('Address')."</td>";
+      echo "<td rowspan='7'>";
+      echo "<textarea cols='45' rows='8' name='address'>". $entity->fields["address"]."</textarea>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Fax')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "fax");
+      echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Website')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "website");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>"._n('Email', 'Emails', 1)."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "email");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Postal Code')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity,"postcode", array('size' => 7));
+      _e(' City ');
+      Html::autocompletionTextField($entity, "town", array('size' => 27));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('State')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "state");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Country')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "country");
+      echo "</td></tr>";
+
+      if ($canedit) {
+         echo "<tr>";
+         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<input type='hidden' name='id' value='$ID'>";
+
+         if ($entity->fields["id"]) {
+            echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
+            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
+                   class='submit'>";
+         } else {
+            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
+         }
+
+         echo "</td></tr>";
+         echo "</table></form>";
+
+      } else {
+         echo "</table>";
+      }
+
+      echo "</div>";
+   }
+
+
+   /**
+    * @param $entity Entity object
+   **/
+   static function showAdvancedOptions(Entity $entity) {
+      global $DB;
+
+      $con_spotted = false;
+
+      $ID = $entity->getField('id');
+      if (!$entity->can($ID,'r')) {
+         return false;
+      }
+
+      // Entity right applied (could be user_authtype)
+      $canedit = $entity->can($ID, 'w');
+
+      if ($canedit) {
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+      }
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr><th colspan='2'>".__('Values for the generic rules for assignment to entities').
+           "</th></tr>";
+
+      echo "<tr class='tab_bg_1'><td colspan='2' class='center'>".
+             __('These parameters are used as actions in generic rules for assignment to entities').
+           "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Information in inventory tool (TAG) representing the entity')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "tag", array('size' => 100));
+      echo "</td></tr>";
+
+      if (Toolbox::canUseLdap()) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".__('LDAP directory information attribute representing the entity')."</td>";
+         echo "<td>";
+         Html::autocompletionTextField($entity, "ldap_dn", array('size' => 100));
+         echo "</td></tr>";
+      }
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Mail domain surrogates entity')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "mail_domain", array('size' => 100));
+      echo "</td></tr>";
+
+      if (Toolbox::canUseLdap()) {
+         echo "<tr><th colspan='2'>".
+                __('Values used in the interface to search users from a LDAP directory')."</th></tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".__('LDAP directory of an entity')."</td>";
+         echo "<td>";
+         Dropdown::show('AuthLDAP', array('value'      => $entity->fields['authldaps_id'],
+                                          'emptylabel' => __('Default server'),
+                                          'condition'  => "`is_active` = '1'"));
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".__('LDAP filter associated to the entity (if necessary)')."</td>";
+         echo "<td>";
+         Html::autocompletionTextField($entity, 'entity_ldapfilter', array('size' => 100));
+         echo "</td></tr>";
+      }
+
+     if ($canedit) {
+         echo "<tr>";
+         echo "<td class='tab_bg_2 center' colspan='2'>";
+         echo "<input type='hidden' name='id' value='$ID'>";
+
+         if ($entity->fields["id"]) {
+            echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
+            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
+                   class='submit'>";
+         } else {
+            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
+         }
+
+         echo "</td></tr>";
+         echo "</table></form>";
+
+      } else {
+         echo "</table>";
+      }
+   }
+
+
+
+
+
+   static function showInventoryOptions(Entity $entity) {
+
+      $ID = $entity->getField('id');
+      if (!$entity->can($ID,'r')) {
+         return false;
+      }
+
+      // Notification right applied
+      $canedit = Session::haveRight('entity', 'w') && Session::haveAccessToEntity($ID);
+
+      echo "<div class='spaced'>";
+      if ($canedit) {
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+      }
+
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='4'>".__('Autofil dates for financial and administrative information').
+           "</th></tr>";
+
+
+      $options[0] = __('No autofill');
+      if ($ID > 0) {
+         $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+      }
+
+      foreach (getAllDatasFromTable('glpi_states') as $state) {
+         $options[Infocom::ON_STATUS_CHANGE.'_'.$state['id']]
+                     //TRANS: %s is the name of the state
+            = sprintf(__('Fill when shifting to state %s'), $state['name']);
+      }
+
+      $options[Infocom::COPY_WARRANTY_DATE] = __('Copy the start date of warranty');
+      //Buy date
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . __('Date of purchase') . "</td>";
+      echo "<td>";
+      Dropdown::showFromArray('autofill_buy_date', $options,
+                              array('value' => $entity->getField('autofill_buy_date')));
+      echo "</td>";
+
+      //Order date
+      echo "<td> " . __('Order date') . "</td>";
+      echo "<td>";
+      $options[Infocom::COPY_BUY_DATE] = __('Copy the date of purchase');
+      Dropdown::showFromArray('autofill_order_date', $options,
+                              array('value' => $entity->getField('autofill_order_date')));
+      echo "</td></tr>";
+
+      //Delivery date
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . __('Delivery date') . "</td>";
+      echo "<td>";
+      $options[Infocom::COPY_ORDER_DATE] = __('Copy the order date');
+      Dropdown::showFromArray('autofill_delivery_date', $options,
+                              array('value' => $entity->getField('autofill_delivery_date')));
+      echo "</td>";
+
+      //Use date
+      echo "<td> " . __('Startup date') . " </td>";
+      echo "<td>";
+      $options[Infocom::COPY_DELIVERY_DATE] = __('Copy the delivery date');
+      Dropdown::showFromArray('autofill_use_date', $options,
+                              array('value' => $entity->getField('autofill_use_date')));
+      echo "</td></tr>";
+
+      //Warranty date
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . __('Start date of warranty') . "</td>";
+      echo "<td>";
+      $options = array(0                           => __('No autofill'),
+                       Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
+                       Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
+                       Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'));
+      if ($ID > 0) {
+         $options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+      }
+
+      Dropdown::showFromArray('autofill_warranty_date', $options,
+                              array('value' => $entity->getField('autofill_warranty_date')));
+      echo "</td><td colspan='2'></td></tr>";
+
+      echo "<tr><th colspan='4'>"._n('Software', 'Software', 2)."</th></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td> " . __('Entity for software creation') . "</td>";
+      echo "<td>";
+
+      $toadd = array(self::CONFIG_NEVER => __('No change of entity')); // Keep software in PC entity
+      if ($ID > 0) {
+         $toadd[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
+      }
+      $entities = array($entity->fields['entities_id']);
+      foreach (getAncestorsOf('glpi_entities',  $entity->fields['entities_id']) as $ent) {
+         if (Session::haveAccessToEntity($ent)) {
+            $entities[] = $ent;
+         }
+      }
+
+      Dropdown::show('Entity',
+                     array('name'               => 'entities_id_software',
+                           'value'              => $entity->getField('entities_id_software'),
+                           'toadd'              => $toadd,
+                           'entity'             => $entities,
+                           'display_rootentity' => true,
+                           'comments'           => false));
+
+      if ($entity->fields['entities_id_software'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('entities_id_software', $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo self::getSpecificValueToDisplay('entities_id_software', $tid);
+         echo "</font>";
+      }
+      echo "</td><td colspan='2'></td></tr>";
+
+      if ($canedit) {
+         echo "<tr>";
+         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<input type='hidden' name='entities_id' value='$ID'>";
+
+         if ($entity->fields["id"]) {
+            echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
+            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
+                   class='submit'>";
+         } else {
+            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
+         }
+
+         echo "</td></tr>";
+         echo "</table></form>";
+
+      } else {
+         echo "</table>";
+      }
+
+      echo "</div>";
+
+   }
+
+
+   static function showNotificationOptions(Entity $entity) {
+
+      $ID = $entity->getField('id');
+      if (!$entity->can($ID,'r') || !Session::haveRight('notification','r')) {
+         return false;
+      }
+
+      // Notification right applied
+      $canedit = Session::haveRight('notification','w') && Session::haveAccessToEntity($ID);
+
+      echo "<div class='spaced'>";
+      if ($canedit) {
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+      }
+
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='4'>".__('Notification options')."</th></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Administrator email')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "admin_email");
+      echo "</td>";
+      echo "<td>" . __('Administrator name') . "</td><td>";
+      Html::autocompletionTextField($entity, "admin_email_name");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Administrator reply-to email (if needed)')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "admin_reply");
+      echo "</td>";
+      echo "<td>" . __('Response name (if needed)') . "</td><td>";
+      Html::autocompletionTextField($entity, "admin_reply_name");
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Prefix for notifications')."</td>";
+      echo "<td>";
+      Html::autocompletionTextField($entity, "notification_subject_tag");
+      echo "</td>";
+      echo "<td colspan='2'>&nbsp;</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='middle right'>" . __('Email signature') . "</td>";
+      echo "<td colspan='3'>";
+      echo "<textarea cols='60' rows='5' name='mailing_signature'>".
+             $entity->fields["mailing_signature"]."</textarea>";
+      echo "</td></tr>";
+
+
+      echo "<tr><th colspan='4'>".__('Alarms options')."</th></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Reminders frequency for alarms on cartridges') . "</td><td>";
+      $default_value = $entity->fields['cartridges_alert_repeat'];
+      Alert::dropdown(array('name'           => 'cartridges_alert_repeat',
+                            'value'          => $default_value,
+                            'inherit_parent' => ($ID>0 ? 1 : 0)));
+      echo "</td>";
+      echo "<td rowspan='2'>" . __('Default threshold for cartridges and consumables count') .
+           "</td><td rowspan='2'>";
+      Dropdown::showInteger('default_alarm_threshold',
+                            $entity->fields["default_alarm_threshold"], 0, 100, 1,
+                            array('-1' => __('Never')));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Reminders frequency for alarms on consumables') . "</td><td>";
+      $default_value = $entity->fields['consumables_alert_repeat'];
+      Alert::dropdown(array('name'           => 'consumables_alert_repeat',
+                            'value'          => $default_value,
+                            'inherit_parent' => ($ID>0 ? 1 : 0)));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Alarms on contracts') . "</td><td>";
+      $default_value = $entity->fields['use_contracts_alert'];
+      Alert::dropdownYesNo(array('name'           => "use_contracts_alert",
+                                 'value'          => $default_value,
+                                 'inherit_parent' => ($ID>0 ? 1 : 0)));
+      echo "</td>";
+      echo "<td >".__('Default value') . "</td><td>";
+      Contract::dropdownAlert("default_contract_alert",
+                              $entity->fields["default_contract_alert"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Alarms on financial and administrative information') . "</td><td>";
+      $default_value = $entity->fields['use_infocoms_alert'];
+      Alert::dropdownYesNo(array('name'           => "use_infocoms_alert",
+                                 'value'          => $default_value,
+                                 'inherit_parent' => ($ID>0 ? 1 : 0)));
+      echo "</td>";
+      echo "<td >" . __('Default value')."</td><td>";
+      Alert::dropdownInfocomAlert($entity->fields["default_infocom_alert"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Alarms on expired licenses') . "</td><td>";
+      $default_value = $entity->fields['use_licenses_alert'];
+      Alert::dropdownYesNo(array('name'           => "use_licenses_alert",
+                                 'value'          => $default_value,
+                                 'inherit_parent' => ($ID>0 ? 1 : 0)));
+      echo "</td>";
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Alerts on reservations') . "</td><td>";
+      Alert::dropdownIntegerNever('use_reservations_alert',
+                                  $entity->fields['use_reservations_alert'],
+                                  array('max'            => 99,
+                                        'inherit_parent' => ($ID>0 ? 1 : 0),
+                                        'unit'           => 'hour'));
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'>".
+           "<td >". __('Alerts on tickets which are not solved since'). "</td><td>";
+      Alert::dropdownIntegerNever('notclosed_delay', $entity->fields["notclosed_delay"],
+                                  array('max'            => 99,
+                                        'inherit_parent' => ($ID>0 ? 1 : 0),
+                                        'unit'           => 'day'));
+      echo "</td>";
+      echo "<td colspan='2'></td></tr>";
+
+      if ($canedit) {
+         echo "<tr>";
+         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<input type='hidden' name='entities_id' value='$ID'>";
+
+         if ($entity->fields["id"]) {
+            echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
+            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
+                   class='submit'>";
+         } else {
+            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
+         }
+
+         echo "</td></tr>";
+         echo "</table></form>";
+
+      } else {
+         echo "</table>";
+      }
+
+      echo "</div>";
+   }
+
+
+   private static function getEntityIDByField($field,$value) {
+      global $DB;
+
+      $sql = "SELECT `entities_id`
+              FROM `glpi_entities`
+              WHERE `".$field."` = '".$value."'";
+
+      $result = $DB->query($sql);
+
+      if ($DB->numrows($result)==1) {
+         return $DB->result($result, 0, "entities_id");
+      }
+      return -1;
+   }
+
+
+   static function getEntityIDByDN($value) {
+      return self::getEntityIDByField("ldap_dn", $value);
+   }
+
+
+   static function getEntityIDByTag($value) {
+      return self::getEntityIDByField("tag", $value);
+   }
+
+
+   static function getEntityIDByDomain($value) {
+      return self::getEntityIDByField("mail_domain", $value);
+   }
+
+
+   static function isEntityDirectoryConfigured($entities_id) {
+
+      $entity = new self();
+
+      if ($entity->getFromDB($entities_id)
+          && $entity->getField('authldaps_id') != NOT_AVAILABLE) {
+         return true;
+      }
+
+      //If there's a directory marked as default
+      if (AuthLdap::getDefault()) {
+         return true;
+      }
+      return false;
+   }
+
+
+   static function showHelpdeskOptions(Entity $entity) {
+      global $CFG_GLPI;
+
+      $ID = $entity->getField('id');
+      if (!$entity->can($ID,'r') || !Session::haveRight('entity_helpdesk','r')) {
+         return false;
+      }
+      $canedit = Session::haveRight('entity_helpdesk','w') && Session::haveAccessToEntity($ID);
+
+      echo "<div class='spaced'>";
+      if ($canedit) {
+         echo "<form method='post' name=form action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+      }
+
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'><td colspan='2'>"._n('Ticket template', 'Ticket templates', 1).
+           "</td>";
+      echo "<td colspan='2'>";
+      $toadd = array();
+      if ($ID != 0) {
+         $toadd = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'));
+      }
+
+      $options = array('value' => $entity->fields["tickettemplates_id"],
+                       'toadd' =>$toadd);
+
+      Dropdown::show('TicketTemplate', $options);
+
+      if ($entity->fields["tickettemplates_id"] == self::CONFIG_PARENT) {
+         echo "<font class='green'>&nbsp;&nbsp;";
+         $tt  = new TicketTemplate();
+         $tid = self::getUsedConfig('tickettemplates_id', $ID);
+         if (!$tid) {
+            echo Dropdown::EMPTY_VALUE;
+         } else if ($tt->getFromDB($tid)) {
+            echo "- ".$tt->getLink();
+         }
+         echo "</font>";
+      }
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td colspan='2'>".__('Calendar')."</td>";
+      echo "<td colspan='2'>";
+      $options = array('value'      => $entity->fields["calendars_id"],
+                       'emptylabel' => __('24/7'));
+
+      if ($ID) {
+         $options['toadd'] = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'));
+      }
+      Dropdown::show('Calendar', $options);
+
+      if ($entity->fields["calendars_id"] == self::CONFIG_PARENT) {
+         echo "<br><font class='green'>";
+         $calendar = new Calendar();
+         $cid = self::getUsedConfig('calendars_id', $ID, '', 0);
+         if (!$cid) {
+            _e('24/7');
+         } else if ($calendar->getFromDB($cid)) {
+            echo $calendar->getLink();
+         }
+         echo "</font>";
+      }
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td colspan='2'>".__('Tickets default type')."</td>";
+      echo "<td colspan='2'>";
+      $toadd = array();
+      if ($ID != 0) {
+         $toadd = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'));
+      }
+      Ticket::dropdownType('tickettype', array('value' => $entity->fields["tickettype"],
+                                               'toadd'  =>$toadd));
+
+      if ($entity->fields['tickettype'] == self::CONFIG_PARENT) {
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo Ticket::getTicketTypeName(self::getUsedConfig('tickettype', $ID, '',
+                                                            Ticket::INCIDENT_TYPE));
+         echo "</font>";
+      }
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td  colspan='2'>".__('Automatic assignment of tickets')."</td>";
+      echo "<td colspan='2'>";
+      $autoassign = self::getAutoAssignMode();
+
+      if ($ID == 0) {
+         unset($autoassign[self::CONFIG_PARENT]);
+      }
+
+      Dropdown::showFromArray('auto_assign_mode', $autoassign,
+                              array('value' => $entity->fields["auto_assign_mode"]));
+
+      if ($entity->fields['auto_assign_mode'] == self::CONFIG_PARENT && $ID != 0) {
+         $auto_assign_mode = self::getUsedConfig('auto_assign_mode', $entity->fields['entities_id']);
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo $autoassign[$auto_assign_mode];
+         echo "</font>";
+      }
+      echo "</td></tr>";
+
+      echo "<tr><th colspan='4'>".__('Automatic closing configuration')."</th></tr>";
+
+      echo "<tr class='tab_bg_1'>".
+           "<td colspan='2'>".__('Automatic closing of solved tickets after')."</td>";
+      echo "<td colspan='2'>";
+      $autoclose = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                         self::CONFIG_NEVER  => __('Never'),
+                         0                   => __('Immediatly'));
+      if ($ID == 0) {
+         unset($autoclose[self::CONFIG_PARENT]);
+      }
+
+      Dropdown::showInteger('autoclose_delay', $entity->fields['autoclose_delay'], 1, 99, 1,
+                            $autoclose, array('unit' => 'day'));
+
+      if ($entity->fields['autoclose_delay'] == self::CONFIG_PARENT && $ID != 0) {
+         $autoclose_mode = self::getUsedConfig('autoclose_delay', $entity->fields['entities_id'],
+                                               '', self::CONFIG_NEVER);
+
+         echo "<br><font class='green'>&nbsp;&nbsp;";
+         if ($autoclose_mode >= 0) {
+            printf(_n('%d day','%d days',$autoclose_mode),$autoclose_mode);
+         } else {
+            echo $autoclose[$autoclose_mode];
+         }
+         echo "</font>";
+      }
+      echo "</td></tr>";
+
+      echo "<tr><th colspan='4'>".__('Configuring the satisfaction survey')."</th></tr>";
+
+      echo "<tr class='tab_bg_1'>".
+           "<td colspan='2'>".__('Configuring the satisfaction survey')."</td>";
+      echo "<td colspan='2'>";
+
+      /// no inquest case = rate 0
+      $typeinquest = array(self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
+                           1                    => __('Internal survey'),
+                           2                    => __('External survey'));
+
+      // No inherit from parent for root entity
+      if ($ID == 0) {
+         unset($typeinquest[self::CONFIG_PARENT]);
+         if ($entity->fields['inquest_config'] == self::CONFIG_PARENT) {
+            $entity->fields['inquest_config'] = 1;
+         }
+      }
+      $rand = Dropdown::showFromArray('inquest_config', $typeinquest,
+                                      $options = array('value' => $entity->fields['inquest_config']));
+      echo "</td></tr>\n";
+
+      // Do not display for root entity in inherit case
+      if ($entity->fields['inquest_config'] == self::CONFIG_PARENT && $ID !=0) {
+         $inquestconfig = self::getUsedConfig('inquest_config', $entity->fields['entities_id']);
+         $inquestrate   = self::getUsedConfig('inquest_config', $entity->fields['entities_id'],
+                                              'inquest_rate');
+         echo "<tr><td colspan='4' class='green center'>";
+
+         if ($inquestrate == 0) {
+            echo __('Disabled');
+         } else {
+            echo $typeinquest[$inquestconfig].'<br>';
+            $inqconf = self::getUsedConfig('inquest_config', $entity->fields['entities_id'],
+                                           'inquest_delay');
+
+            printf(_n('%d day','%d days',$inqconf), $inqconf);
+            echo "<br>";
+            //TRANS: %d is the percentage. %% to display %
+            printf(__('%d%%'), $inquestrate);
+
+            if ($inquestconfig == 2) {
+               echo "<br>";
+               echo self::getUsedConfig('inquest_config', $entity->fields['entities_id'],
+                                        'inquest_URL');
+            }
+         }
+         echo "</td></tr>\n";
+      }
+
+      echo "<tr class='tab_bg_1'><td colspan='4'>";
+
+      $_REQUEST = array('inquest_config' => $entity->fields['inquest_config'],
+                        'entities_id'    => $ID);
+      $params = array('inquest_config' => '__VALUE__',
+                      'entities_id'    => $ID);
+      echo "<div id='inquestconfig'>";
+      include GLPI_ROOT.'/ajax/ticketsatisfaction.php';
+      echo "</div>\n";
+
+      echo "</td></tr>";
+
+      if ($canedit) {
+         echo "<tr>";
+         echo "<td class='tab_bg_2 center' colspan='4'>";
+         echo "<input type='hidden' name='entities_id' value='$ID'>";
+
+         if ($entity->fields["id"]) {
+            echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
+            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
+                   class='submit'>";
+         } else {
+            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
+         }
+
+         echo "</td></tr>";
+         echo "</table></form>";
+
+      } else {
+         echo "</table>";
+      }
+
+      echo "</div>";
+
+      Ajax::updateItemOnSelectEvent("dropdown_inquest_config$rand", "inquestconfig",
+                                    $CFG_GLPI["root_doc"]."/ajax/ticketsatisfaction.php", $params);
+   }
+
+   /**
+    * Retrieve data of current entity or parent entity
+    *
+    * @param $fieldref        string   name of the referent field to know if we look at parent entity
+    * @param $entities_id
+    * @param $fieldval        string   name of the field that we want value (default '')
+    * @param $default_value            value to return (default -2)
+   **/
+   static function getUsedConfig($fieldref, $entities_id, $fieldval='', $default_value=-2) {
+
+      // for calendar
+      if (empty($fieldval)) {
+         $fieldval = $fieldref;
+      }
+
+      $entity = new self();
+
+      // Search in entity data of the current entity
+      if ($entity->getFromDB($entities_id)) {
+         // Value is defined : use it
+         if (isset($entity->fields[$fieldref])) {
+            // Numerical value
+            if (is_numeric($default_value)
+                && $entity->fields[$fieldref] != self::CONFIG_PARENT) {
+               return $entity->fields[$fieldval];
+            }
+            // String value
+            if (!is_numeric($default_value) && $entity->fields[$fieldref]) {
+               return $entity->fields[$fieldval];
+            }
+         }
+      }
+
+      // Entity data not found or not defined : search in parent one
+      if ($entities_id > 0) {
+
+         if ($entity->getFromDB($entities_id)) {
+            $ret = self::getUsedConfig($fieldref, $entity->fields['entities_id'], $fieldval,
+                                       $default_value);
+            return $ret;
+
+         }
+      }
+/*
+      switch ($fieldval) {
+         case "tickettype" :
+            // Default is Incident if not set
+            return Ticket::INCIDENT_TYPE;
+      }
+      */
+      return $default_value;
+   }
+
+
+   /**
+   * Generate link for ticket satisfaction
+   *
+   * @param $ticket ticket object
+   *
+   * @return url contents
+   */
+   static function generateLinkSatisfaction($ticket) {
+      global $DB;
+
+      $url = self::getUsedConfig('inquest_config', $ticket->fields['entities_id'], 'inquest_URL');
+
+      if (strstr($url,"[TICKET_ID]")) {
+         $url = str_replace("[TICKET_ID]", $ticket->fields['id'], $url);
+      }
+
+      if (strstr($url,"[TICKET_NAME]")) {
+         $url = str_replace("[TICKET_NAME]", urlencode($ticket->fields['name']), $url);
+      }
+
+      if (strstr($url,"[TICKET_CREATEDATE]")) {
+         $url = str_replace("[TICKET_CREATEDATE]", $ticket->fields['date'], $url);
+      }
+
+      if (strstr($url,"[TICKET_SOLVEDATE]")) {
+         $url = str_replace("[TICKET_SOLVEDATE]", $ticket->fields['solvedate'], $url);
+      }
+
+      if (strstr($url,"[REQUESTTYPE_ID]")) {
+         $url = str_replace("[REQUESTTYPE_ID]", $ticket->fields['requesttypes_id'], $url);
+      }
+
+      if (strstr($url,"[REQUESTTYPE_NAME]")) {
+         $url = str_replace("[REQUESTTYPE_NAME]",
+                            urlencode(Dropdown::getDropdownName('glpi_requesttypes',
+                                                                $ticket->fields['requesttypes_id'])),
+                            $url);
+      }
+
+      if (strstr($url,"[ITEMTYPE]")
+          && $ticket->fields['itemtype']
+          && ($objet = getItemForItemtype($ticket->fields['itemtype']))) {
+         $url = str_replace("[ITEMTYPE]", urlencode($objet->getTypeName(1)), $url);
+      }
+
+      if (strstr($url,"[ITEM_ID]")) {
+         $url = str_replace("[ITEM_ID]", $ticket->fields['items_id'], $url);
+      }
+
+      if (strstr($url,"[ITEM_NAME]")
+          && $ticket->fields['itemtype']
+          && ($objet = getItemForItemtype($ticket->fields['itemtype']))) {
+         if ($objet->getFromDB($ticket->fields['items_id'])) {
+            $url = str_replace("[ITEM_NAME]", urlencode($objet->getName()), $url);
+         }
+      }
+
+      if (strstr($url,"[TICKET_PRIORITY]")) {
+         $url = str_replace("[TICKET_PRIORITY]", $ticket->fields['priority'], $url);
+      }
+
+      if (strstr($url,"[TICKETCATEGORY_ID]")) {
+         $url = str_replace("[TICKETCATEGORY_ID]", $ticket->fields['itilcategories_id'], $url);
+      }
+
+      if (strstr($url,"[TICKETCATEGORY_NAME]")) {
+         $url = str_replace("[TICKETCATEGORY_NAME]",
+                            urlencode(Dropdown::getDropdownName('glpi_itilcategories',
+                                                                $ticket->fields['itilcategories_id'])),
+                            $url);
+      }
+
+      if (strstr($url,"[TICKETTYPE_ID]")) {
+         $url = str_replace("[TICKETTYPE_ID]", $ticket->fields['type'], $url);
+      }
+
+      if (strstr($url,"[TICKET_TYPENAME]")) {
+         $url = str_replace("[TICKET_TYPENAME]",
+                            Ticket::getTicketTypeName($ticket->fields['type']), $url);
+      }
+
+      if (strstr($url,"[SOLUTIONTYPE_ID]")) {
+         $url = str_replace("[SOLUTIONTYPE_ID]", $ticket->fields['solutiontypes_id'], $url);
+      }
+
+      if (strstr($url,"[SOLUTIONTYPE_NAME]")) {
+         $url = str_replace("[SOLUTIONTYPE_NAME]",
+                            urlencode(Dropdown::getDropdownName('glpi_solutiontypes',
+                                                                $ticket->fields['solutiontypes_id'])),
+                            $url);
+      }
+
+      if (strstr($url,"[SLA_ID]")) {
+         $url = str_replace("[SLA_ID]", $ticket->fields['slas_id'], $url);
+      }
+
+      if (strstr($url,"[SLA_NAME]")) {
+         $url = str_replace("[SLA_NAME]",
+                            urlencode(Dropdown::getDropdownName('glpi_slas',
+                                                                $ticket->fields['slas_id'])),
+                            $url);
+      }
+
+      if (strstr($url,"[SLALEVEL_ID]")) {
+         $url = str_replace("[SLALEVEL_ID]", $ticket->fields['slalevels_id'], $url);
+      }
+
+      if (strstr($url,"[SLALEVEL_NAME]")) {
+         $url = str_replace("[SLALEVEL_NAME]",
+                            urlencode(Dropdown::getDropdownName('glpi_slalevels',
+                                                                $ticket->fields['slalevels_id'])),
+                            $url);
+      }
+
+      return $url;
+   }
+   
+   /**
+    * get value for auto_assign_mode
+    *
+    * @since version 0.83
+    *
+    * @param $val if not set, ask for all values, else for 1 value (default NULL)
+    *
+    * @return array or string
+    */
+   static function getAutoAssignMode($val=NULL) {
+
+      $tab = array(self::CONFIG_PARENT                  => __('Inheritance of the parent entity'),
+                   self::CONFIG_NEVER                   => __('No'),
+                   self::AUTO_ASSIGN_HARDWARE_CATEGORY  => __('Based on the item then the category'),
+                   self::AUTO_ASSIGN_CATEGORY_HARDWARE  => __('Based on the category then the item'));
+
+      if (is_null($val)) {
+         return $tab;
+      }
+      if (isset($tab[$val])) {
+         return $tab[$val];
+      }
+      return NOT_AVAILABLE;
+   }
+
+
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'use_licenses_alert' :
+         case 'use_contracts_alert' :
+         case 'use_infocoms_alert' :
+            if ($values[$field] == self::CONFIG_PARENT) {
+               return __('Inheritance of the parent entity');
+            }
+            return Dropdown::getYesNo($values[$field]);
+
+         case 'use_reservations_alert' :
+            switch ($values[$field]) {
+               case self::CONFIG_PARENT :
+                  return __('Inheritance of the parent entity');
+
+               case 0 :
+                  return __('Never');
+            }
+            return sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]);
+
+         case 'cartridges_alert_repeat' :
+         case 'consumables_alert_repeat' :
+            switch ($values[$field]) {
+               case self::CONFIG_PARENT :
+                  return __('Inheritance of the parent entity');
+
+               case self::CONFIG_NEVER :
+                  return __('Never');
+
+               case DAY_TIMESTAMP :
+                  return __('Each day');
+
+               case WEEK_TIMESTAMP :
+                  return __('Each week');
+
+               case MONTH_TIMESTAMP :
+                  return __('Each month');
+            }
+            break;
+
+         case 'notclosed_delay' :   // 0 means never
+            if ($values[$field] == 0) {
+               return __('Never');
+            }
+            // nobreak;
+
+         case 'autoclose_delay' :   // 0 means immediatly
+            switch ($values[$field]) {
+               case self::CONFIG_PARENT :
+                  return __('Inheritance of the parent entity');
+
+               case self::CONFIG_NEVER :
+                  return __('Never');
+            }
+            return sprintf(_n('%d day','%d days',$values[$field]), $values[$field]);
+
+         case 'auto_assign_mode' :
+            return self::getAutoAssignMode($values[$field]);
+
+         case 'calendars_id' :
+            switch ($values[$field]) {
+               case self::CONFIG_PARENT :
+                  return __('Inheritance of the parent entity');
+
+               case 0 :
+                  return __('24/7');
+            }
+            return Dropdown::getDropdownName('glpi_calendars', $values[$field]);
+
+         case 'tickettype' :
+            if ($values[$field] == self::CONFIG_PARENT) {
+               return __('Inheritance of the parent entity');
+            }
+            return Ticket::getTicketTypeName($values[$field]);
+
+         case 'autofill_buy_date' :
+         case 'autofill_order_date' :
+         case 'autofill_delivery_date' :
+         case 'autofill_use_date' :
+         case 'autofill_warranty_date' :
+            switch ($values[$field]) {
+               case self::CONFIG_PARENT :
+                  return __('Inheritance of the parent entity');
+
+               case Infocom::COPY_WARRANTY_DATE :
+                  return __('Copy the start date of warranty');
+
+               case Infocom::COPY_BUY_DATE :
+                  return __('Copy the date of purchase');
+
+               case Infocom::COPY_ORDER_DATE :
+                  return __('Copy the order date');
+
+               case Infocom::COPY_DELIVERY_DATE :
+                  return __('Copy the delivery date');
+
+               default :
+                  if (strstr($values[$field], '_')) {
+                     list($type,$sid) = explode('_', $values[$field], 2);
+                     if ($type == Infocom::ON_STATUS_CHANGE) {
+                                       // TRANS %s is the name of the state
+                        return sprintf(__('Fill when shifting to state %s'),
+                                       Dropdown::getDropdownName('glpi_states', $sid));
+                     }
+                  }
+            }
+            return __('No autofill');
+
+         case 'inquest_config' :
+            if ($values[$field] == self::CONFIG_PARENT) {
+               return __('Inheritance of the parent entity');
+            }
+            return TicketSatisfaction::getTypeInquestName($values[$field]);
+
+         case 'tickettemplates_id' :
+            if ($values[$field] == self::CONFIG_PARENT) {
+               return __('Inheritance of the parent entity');
+            }
+            return Dropdown::getDropdownName('glpi_tickettemplates', $values[$field]);
+
+         case 'default_contract_alert' :
+            return Contract::getAlertName($values[$field]);
+
+         case 'default_infocom_alert' :
+            return Alert::getAlertName($values[$field]);
+
+         case 'entities_id_software' :
+            if ($values[$field] == self::CONFIG_NEVER) {
+               return __('No change of entity');
+            }
+            if ($values[$field] == self::CONFIG_PARENT) {
+               return __('Inheritance of the parent entity');
+            }
+            return Dropdown::getDropdownName('glpi_entities', $values[$field]);
+
+      }
+      return '';
    }
 }
 ?>

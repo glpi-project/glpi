@@ -723,8 +723,8 @@ class Cartridge extends CommonDBTM {
 
       //Look for parameters for this entity
       $query = "SELECT `cartridges_alert_repeat`
-                FROM `glpi_entitydatas`
-                WHERE `entities_id`='$entity'";
+                FROM `glpi_entities`
+                WHERE `id`='$entity'";
       $iterator = $DB->request($query);
 
       if (!$iterator->numrows()) {

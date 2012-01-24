@@ -40,7 +40,7 @@ $dropdown = new Entity();
 
 // Root entity : no edit
 if (isset($_GET['id']) && $_GET['id']==0) {
-   $options = array('canedit' => false,
+   $options = array('canedit' => true,
                     'candel'  => false);
 }
 

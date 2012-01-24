@@ -154,6 +154,13 @@ abstract class CommonDropdown extends CommonDBTM {
       echo "</textarea></td></tr>\n";
 
       foreach ($fields as $field) {
+         if ($field['name']=='entities_id' && $ID==0) {
+            // No display for root entity
+            echo "<tr class='tab_bg_1'><td>&nbsp;</td></tr>";
+            break;
+         }
+      
+      
          echo "<tr class='tab_bg_1'><td>".$field['label'];
          if (isset($field['comment']) && !empty($field['comment'])) {
             echo "&nbsp;";

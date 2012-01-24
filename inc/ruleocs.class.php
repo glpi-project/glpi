@@ -80,7 +80,7 @@ class RuleOcs extends Rule {
                      }
                      if ($res != null) {
                         //Get the entity associated with the TAG
-                        $target_entity = EntityData::getEntityIDByTag($res);
+                        $target_entity = Entity::getEntityIDByTag($res);
                         if ($target_entity != '') {
                            $output["entities_id"] = $target_entity;
                         }

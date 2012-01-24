@@ -106,7 +106,7 @@ class TicketSatisfaction extends CommonDBTM {
 
       // for external inquest => link
       if ($this->fields["type"] == 2) {
-         $url = EntityData::generateLinkSatisfaction($ticket);
+         $url = Entity::generateLinkSatisfaction($ticket);
          echo "<div class='center spaced'>".
               "<a href='$url'>".__('External survey')."</a><br>($url)</div>";
 

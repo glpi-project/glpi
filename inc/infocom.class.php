@@ -74,7 +74,7 @@ class Infocom extends CommonDBChild {
 
    function post_getEmpty() {
 
-      $this->fields["alert"] = EntityData::getUsedConfig("use_infocoms_alert",
+      $this->fields["alert"] = Entity::getUsedConfig("use_infocoms_alert",
                                                          $this->fields["entities_id"],
                                                          "default_infocom_alert", 0);
    }
@@ -176,7 +176,7 @@ class Infocom extends CommonDBChild {
       if (!$this->getFromDBforDevice($input['itemtype'],$input['items_id'])) {
          if ($item = getItemForItemtype($input['itemtype'])) {
             if ($item->getFromDB($input['items_id'])) {
-               $input['alert']        = EntityData::getUsedConfig('default_infocom_alert',
+               $input['alert']        = Entity::getUsedConfig('default_infocom_alert',
                                                                   $item->getEntityID());
                $input['entities_id']  = $item->getEntityID();
                $input['is_recursive'] = intval($item->isRecursive());
@@ -212,7 +212,7 @@ class Infocom extends CommonDBChild {
       //For each date that can be automatically filled
       foreach (self::getAutoManagemendDatesFields() as $date => $date_field) {
          $resp   = array();
-         $result = EntityData::getUsedConfig($date, $changes['entities_id']);
+         $result = Entity::getUsedConfig($date, $changes['entities_id']);
 
          //Date must be filled if status corresponds to the one defined in the config
          if (preg_match('/'.self::ON_STATUS_CHANGE.'_(.*)/',$result,$values)
@@ -301,9 +301,6 @@ class Infocom extends CommonDBChild {
       $infocom = new self();
       $infocom->getFromDB($input['id']);
 
-      $entitydata = new EntityData();
-      $entitydata->getFromDB($infocom->fields['entities_id']);
-
       if (isset($input['warranty_duration'])) {
          $input['_warranty_duration'] = $this->fields['warranty_duration'];
       }
@@ -311,7 +308,7 @@ class Infocom extends CommonDBChild {
 
       //Check if one or more dates needs to be updated
       foreach (self::getAutoManagemendDatesFields() as $key => $field) {
-         $result = EntityData::getUsedConfig($key, $infocom->fields['entities_id']);
+         $result = Entity::getUsedConfig($key, $infocom->fields['entities_id']);
 
          //Only update date if it's empty in DB. Otherwise do nothing
          if ($result > 0 && !isset($infocom->fields[$field])) {

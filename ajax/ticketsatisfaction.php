@@ -42,7 +42,7 @@ if (strpos($_SERVER['PHP_SELF'],"ticketsatisfaction.php")) {
    Html::header_nocache();
 }
 
-$entity = new EntityData();
+$entity = new Entity();
 
 if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
    if ($entity->getFromDB($_REQUEST['entities_id'])) {
