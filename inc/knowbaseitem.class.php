@@ -226,6 +226,11 @@ class KnowbaseItem extends CommonDBTM {
          return false;
       }
 
+      // Author
+      if ($this->fields['users_id'] == Session::getLoginUserID()) {
+         return true;
+      }
+
       // Users
       if (isset($this->users[Session::getLoginUserID()])) {
          return true;
@@ -350,7 +355,7 @@ class KnowbaseItem extends CommonDBTM {
    **/
    static function addVisibilityRestrict() {
 
-      $restrict = '(0';
+      $restrict = "(`glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."' ";;
 
       // Users
       $restrict .= " OR `glpi_knowbaseitems_users`.`users_id` = '".Session::getLoginUserID()."' ";
