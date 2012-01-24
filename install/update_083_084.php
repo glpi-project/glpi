@@ -949,6 +949,12 @@ function update083to084() {
 
    $migration->addField("glpi_contacts", 'usertitles_id', "integer");
    $migration->addKey("glpi_contacts", 'usertitles_id');
+   
+   $migration->addField("glpi_contacts", 'address', "text");
+   $migration->addField("glpi_contacts", 'postcode', "string");
+   $migration->addField("glpi_contacts", 'town', "string");
+   $migration->addField("glpi_contacts", 'state', "string");
+   $migration->addField("glpi_contacts", 'country', "string");
 
 
    // ************ Keep it at the end **************
