@@ -49,7 +49,7 @@ if (isset($_GET['action'])) {
       Session::addMessageAfterRedirect(__('Successfully recreated network tree !'));
       break;
    case 'recreate_network_connexities':
-      NetworkName_IPNetwork::recreateAllConnexities();
+      IPNetwork_NetworkName::recreateAllConnexities();
       Session::addMessageAfterRedirect(__('Successfully recreated connexities between ' .
                                           'IPNetwork and NetworkName !'));
       break;

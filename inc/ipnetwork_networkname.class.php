@@ -36,9 +36,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class NetworkName_IPNetwork : Connection between NetworkName and IPNetwork
+/// Class IPNetwork_NetworkName : Connection between NetworkName and IPNetwork
 /// @since 0.84
-class NetworkName_IPNetwork extends CommonDBRelation {
+class IPNetwork_NetworkName extends CommonDBRelation {
 
    // From CommonDBRelation
    public $itemtype_1 = 'NetworkName';
@@ -137,7 +137,7 @@ class NetworkName_IPNetwork extends CommonDBRelation {
       global $DB;
 
       $query = "DELETE
-                FROM `glpi_networknames_ipnetworks`";
+                FROM `glpi_ipnetworks_networknames`";
       $DB->query($query);
 
       $network    = new IPNetwork();
@@ -157,7 +157,7 @@ class NetworkName_IPNetwork extends CommonDBRelation {
                if ($networkname_result = $DB->query($query)) {
                   unset($query);
                   while ($link = $DB->fetch_assoc($networkname_result)) {
-                     $query = "INSERT INTO `glpi_networknames_ipnetworks`
+                     $query = "INSERT INTO `glpi_ipnetworks_networknames`
                                 ( `ipnetworks_id`, `networknames_id`)
                          VALUES ('$ipnetworks_id', '".$link['items_id']."')";
                      $DB->query($query);
