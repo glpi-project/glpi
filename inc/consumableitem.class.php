@@ -103,9 +103,9 @@ class ConsumableItem extends CommonDBTM {
 
    function post_getEmpty() {
 
-     $this->fields["alarm_threshold"] = EntityData::getUsedConfig("consumables_alert_repeat",
-                                                                   $this->fields["entities_id"],
-                                                                   "default_alarm_threshold", 10);
+     $this->fields["alarm_threshold"] = Entity::getUsedConfig("consumables_alert_repeat",
+                                                              $this->fields["entities_id"],
+                                                              "default_alarm_threshold", 10);
    }
 
 

@@ -112,7 +112,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       }
 
       if (isset($input[$this->getForeignKeyField()])
-          && $input[$this->getForeignKeyField()]>0
+          && !$this->isNewID($input[$this->getForeignKeyField()])
           && $parent->getFromDB($input[$this->getForeignKeyField()])) {
 
          $input['level']        = $parent->fields['level']+1;
@@ -124,7 +124,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          $input['level']                     = 1;
          $input['completename']              = $input['name'];
       }
-
       return $input;
    }
 

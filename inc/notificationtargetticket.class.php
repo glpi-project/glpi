@@ -81,7 +81,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    function getSubjectPrefix($event='') {
 
       if ($event !='alertnotclosed') {
-         $perso_tag = trim(EntityData::getUsedConfig('notification_subject_tag',$this->getEntity(),
+         $perso_tag = trim(Entity::getUsedConfig('notification_subject_tag',$this->getEntity(),
                                                      '', ''));
 
          if (empty($perso_tag)) {
@@ -229,8 +229,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                               = Dropdown::getDropdownName('glpi_requesttypes',
                                                           $item->getField('requesttypes_id'));
 
-      $autoclose_value = EntityData::getUsedConfig('autoclose_delay', $this->getEntity(),
-                                                   '', EntityData::CONFIG_NEVER);
+      $autoclose_value = Entity::getUsedConfig('autoclose_delay', $this->getEntity(),
+                                                   '', Entity::CONFIG_NEVER);
 
       $datas['##ticket.autoclose##']             = __('Never');
       $datas['##lang.ticket.autoclosewarning##'] = "";
@@ -489,7 +489,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                        $item->getField("id")."_10");
             // external inquest
             } else if ($inquest->fields['type'] == 2) {
-               $datas['##ticket.urlsatisfaction##'] = EntityData::generateLinkSatisfaction($item);
+               $datas['##ticket.urlsatisfaction##'] = Entity::generateLinkSatisfaction($item);
             }
 
             $datas['##satisfaction.type##'] = $inquest->getTypeInquestName($inquest->getfield('type'));

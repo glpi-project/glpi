@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 $RELATION = array("glpi_authldaps"
                         => array('glpi_configs'            => 'authldaps_id_extra',
                                  'glpi_authldapreplicates' => 'authldaps_id',
-                                 'glpi_entitydatas'        => 'authldaps_id',),
+                                 'glpi_entityies'        => 'authldaps_id',),
 
                   "glpi_autoupdatesystems"
                         => array('glpi_computers' => 'autoupdatesystems_id'),
@@ -55,7 +55,7 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_calendarsegments'   => 'calendars_id',
                                  'glpi_calendars_holidays' => 'calendars_id',
                                  'glpi_slas'               => 'calendars_id',
-                                 'glpi_entitydatas'        => 'calendars_id',),
+                                 'glpi_entities'        => 'calendars_id',),
 
                   "glpi_cartridgeitems"
                         => array('glpi_cartridges'                   => 'cartridgeitems_id',
@@ -189,7 +189,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_contracts'               => 'entities_id',
                                  'glpi_documents'               => 'entities_id',
                                  'glpi_entities'                => 'entities_id',
-                                 '_glpi_entitydatas'            => 'entities_id',
+                                 '_glpi_entities'               => 'entities_id',
                                  'glpi_fieldblacklists'         => 'entities_id',
                                  'glpi_fieldunicities'          => 'entities_id',
                                  'glpi_groups'                  => 'entities_id',

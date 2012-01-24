@@ -995,7 +995,8 @@ function update083to084() {
    if (TableExists('glpi_entitydatas')) {
       // Create root entity
       $query = "INSERT INTO `glpi_entities`
-                     (`id`, `name`) VALUES (0,'".addslashes(__('Root entity'))."');";
+                     (`id`, `name`, `entities_id`) VALUES (0,'".addslashes(__('Root entity'))."', '-1');";
+                     
       $DB->queryOrDie($query, '0.84 insert root entity to to glpi_entities');
       $newID = $DB->insert_id();
       $query ="UPDATE `glpi_entities` SET `id` = '0' WHERE `id` = '$newID'";

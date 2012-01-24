@@ -194,8 +194,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
       global $CFG_GLPI,$DB;
 
       $query = "SELECT `admin_email` AS email
-                FROM `glpi_entitydatas`
-                WHERE `entities_id` = '".$this->job->fields["entities_id"]."'";
+                FROM `glpi_entities`
+                WHERE `id` = '".$this->job->fields["entities_id"]."'";
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {

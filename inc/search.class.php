@@ -2265,9 +2265,9 @@ class Search {
             }
             break;
 
-         case "glpi_entities.completename" :
-            return " `$table$addtable`.`completename` AS ".$NAME."_$num,
-                     `$table$addtable`.`id` AS ".$NAME."_".$num."_2, ";
+//          case "glpi_entities.completename" :
+//             return " `$table$addtable`.`completename` AS ".$NAME."_$num,
+//                      `$table$addtable`.`id` AS ".$NAME."_".$num."_2, ";
 
          case "glpi_auth_tables.name":
             $user_searchopt = self::getOptions('User');
@@ -3086,10 +3086,6 @@ class Search {
                                       "glpi_profiles_users", "profiles_users_id", 0, 0,
                                       array('jointype' => 'child'));
 
-         case 'Entity' :
-            return self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
-                                     "glpi_entitydatas", "");
-
          case 'Reminder' :
             $out = self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                      "glpi_reminders_users", "reminders_users_id", 0, 0,
@@ -3811,11 +3807,11 @@ class Search {
             }
             break;
 
-         case "glpi_entities.completename" :
-            if ($data[$NAME.$num."_2"]==0) {  // Set name for Root entity
-               $data[$NAME.$num] = __('Root entity');
-            }
-            break;
+//          case "glpi_entities.completename" :
+//             if ($data[$NAME.$num."_2"]==0) {  // Set name for Root entity
+//                $data[$NAME.$num] = __('Root entity');
+//             }
+//             break;
 
          case "glpi_documenttypes.icon" :
             if (!empty($data[$NAME.$num])) {
@@ -4188,7 +4184,7 @@ class Search {
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "itemlink" :
-               if (!empty($data[$NAME.$num."_2"])) {
+               if (strlen($data[$NAME.$num."_2"])) {
                   if (isset($searchopt[$ID]["itemlink_type"])) {
                      $link = Toolbox::getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
                   } else {
@@ -4203,6 +4199,7 @@ class Search {
                   $out .= "</a>";
                   return $out;
                }
+               
                if (isset($searchopt[$ID]["itemlink_type"])) {
                   $out   = "";
                   $split = explode("$$$$", $data[$NAME.$num]);

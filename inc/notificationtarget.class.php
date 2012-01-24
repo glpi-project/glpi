@@ -124,7 +124,7 @@ class NotificationTarget extends CommonDBChild {
    **/
    function getSubjectPrefix($event='') {
 
-      $perso_tag = trim(EntityData::getUsedConfig('notification_subject_tag', $this->getEntity(),
+      $perso_tag = trim(Entity::getUsedConfig('notification_subject_tag', $this->getEntity(),
                                                   '', ''));
       if (empty($perso_tag)) {
          $perso_tag = "GLPI";
@@ -512,7 +512,7 @@ class NotificationTarget extends CommonDBChild {
    function getEntityAdminAddress() {
       global $DB, $CFG_GLPI;
 
-      foreach ($DB->request('glpi_entitydatas', array('entities_id' => $this->entity)) as $row) {
+      foreach ($DB->request('glpi_entities', array('id' => $this->entity)) as $row) {
          $data['language'] = $CFG_GLPI['language'];
          $data['email']    = $row['admin_email'];
          $data['name']     = $row['admin_email_name'];
@@ -779,8 +779,8 @@ class NotificationTarget extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       //If the entity administrator's address is defined, return it
-      foreach ($DB->request('glpi_entitydatas',
-               array('entities_id' => $this->getEntity())) as $data) {
+      foreach ($DB->request('glpi_entities',
+               array('id' => $this->getEntity())) as $data) {
 
          if (NotificationMail::isUserAddressValid($data['admin_email'])) {
             return array('email' => $data['admin_email'],
@@ -802,8 +802,8 @@ class NotificationTarget extends CommonDBChild {
       global $DB, $CFG_GLPI;
 
       //If the entity administrator's address is defined, return it
-      foreach ($DB->request('glpi_entitydatas',
-               array('entities_id' => $this->getEntity())) as $data) {
+      foreach ($DB->request('glpi_entities',
+               array('id' => $this->getEntity())) as $data) {
 
          if (NotificationMail::isUserAddressValid($data['admin_reply'])) {
             return array('email' => $data['admin_reply'],

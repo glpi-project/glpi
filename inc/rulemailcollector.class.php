@@ -150,7 +150,7 @@ class RuleMailCollector extends Rule {
 
       $criterias['KNOWN_DOMAIN']['field']           = 'name';
       $criterias['KNOWN_DOMAIN']['name']            = __('Mail domain is known');
-      $criterias['KNOWN_DOMAIN']['table']           = 'glpi_entitydatas';
+      $criterias['KNOWN_DOMAIN']['table']           = 'glpi_entities';
       $criterias['KNOWN_DOMAIN']['type']            = 'yesno';
       $criterias['KNOWN_DOMAIN']['virtual']         = true;
       $criterias['KNOWN_DOMAIN']['id']              = 'entitydatas';
@@ -305,11 +305,11 @@ class RuleMailCollector extends Rule {
                      if ($res != null) {
                         switch ($action->fields["field"]) {
                            case "_affect_entity_by_domain" :
-                              $entity_found = EntityData::getEntityIDByDomain($res);
+                              $entity_found = Entity::getEntityIDByDomain($res);
                               break;
 
                            case "_affect_entity_by_tag" :
-                              $entity_found = EntityData::getEntityIDByTag($res);
+                              $entity_found = Entity::getEntityIDByTag($res);
                               break;
                         }
 

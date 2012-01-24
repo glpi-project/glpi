@@ -61,9 +61,9 @@ class Contract extends CommonDBTM {
 
    function post_getEmpty() {
 
-      $this->fields["alert"] = EntityData::getUsedConfig("use_contracts_alert",
-                                                         $this->fields["entities_id"],
-                                                         "default_contract_alert", 0);
+      $this->fields["alert"] = Entity::getUsedConfig("use_contracts_alert",
+                                                     $this->fields["entities_id"],
+                                                     "default_contract_alert", 0);
    }
 
 

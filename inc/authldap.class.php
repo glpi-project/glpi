@@ -2135,23 +2135,23 @@ class AuthLDAP extends CommonDBTM {
          $authldap = new self();
          //Filter computation
          if ($_SESSION['ldap_import']['interface'] == self::SIMPLE_INTERFACE) {
-            $entitydata = new EntityData();
+            $entity = new Entity();
 
-            if ($entitydata->getFromDB($_SESSION['ldap_import']['entities_id'])
-                && $entitydata->getField('authldaps_id') > 0) {
+            if ($entity->getFromDB($_SESSION['ldap_import']['entities_id'])
+                && $entity->getField('authldaps_id') > 0) {
 
                $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);
-               $_SESSION['ldap_import']['authldaps_id'] = $entitydata->getField('authldaps_id');
-               $_SESSION['ldap_import']['basedn']       = $entitydata->getField('ldap_dn');
+               $_SESSION['ldap_import']['authldaps_id'] = $entity->getField('authldaps_id');
+               $_SESSION['ldap_import']['basedn']       = $entity->getField('ldap_dn');
 
                // No dn specified in entity : use standard one
                if (empty($_SESSION['ldap_import']['basedn'])) {
                   $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
                }
 
-               if ($entitydata->getField('entity_ldapfilter') != NOT_AVAILABLE) {
+               if ($entity->getField('entity_ldapfilter') != NOT_AVAILABLE) {
                   $_SESSION['ldap_import']['entity_filter']
-                     = $entitydata->getField('entity_ldapfilter');
+                     = $entity->getField('entity_ldapfilter');
                }
 
             } else {
