@@ -328,7 +328,7 @@ a.vsubmit {
    background-image: -ms-linear-gradient(top, #fddb6f, #ffb94b);
    background-image: -o-linear-gradient(top, #fddb6f, #ffb94b);
    background-image: linear-gradient(top, #fddb6f, #ffb94b);
-   
+   white-space:nowrap; /* no line break*/
    /* For Internet Explorer 5.5 - 7 */
    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b);
    /* For Internet Explorer 8 */
@@ -361,7 +361,7 @@ a.vsubmit:hover {
    background-image: -ms-linear-gradient(top, #ffb94b, #fddb6f);
    background-image: -o-linear-gradient(top, #ffb94b, #fddb6f);
    background-image: linear-gradient(top, #ffb94b, #fddb6f);
-
+   white-space:nowrap; /* no line break*/
 }
 
 
