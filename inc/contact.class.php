@@ -156,7 +156,7 @@ class Contact extends CommonDBTM{
       Html::autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td rowspan='7' class='middle right'>".__('Comments')."</td>";
-      echo "<td class='center middle' rowspan='7'>";
+      echo "<td class='center middle' rowspan='9'>";
       echo "<textarea cols='45' rows='9' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
@@ -208,6 +208,11 @@ class Contact extends CommonDBTM{
                 "/front/contact.form.php?getvcard=1&amp;id=$ID'>".__('Vcard')."</a>";
       }
       echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1'><td>" . __('Title') . "&nbsp;:</td><td>";
+      Dropdown::show('UserTitle', array('value' => $this->fields["usertitles_id"]));
+      echo "</td></tr>";
+      
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
@@ -266,6 +271,10 @@ class Contact extends CommonDBTM{
       $tab[9]['table']          = 'glpi_contacttypes';
       $tab[9]['field']          = 'name';
       $tab[9]['name']           = __('Type');
+
+      $tab[81]['table']         = 'glpi_usertitles';
+      $tab[81]['field']         = 'name';
+      $tab[81]['name']          = __('Title');
 
       $tab[8]['table']          = 'glpi_suppliers';
       $tab[8]['field']          = 'name';
