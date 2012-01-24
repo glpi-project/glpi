@@ -50,7 +50,7 @@ function logMessage($msg, $andDisplay) {
    }
 
    if ($andDisplay) {
-      $migration->displayMessage ($msg);
+      $migration->displayMessage($msg);
    }
 }
 
@@ -844,7 +844,7 @@ function update083to084() {
                   KEY `due_date` (`due_date`),
                   KEY `users_id_lastupdater` (`users_id_lastupdater`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.83 create glpi_changes");
+      $DB->queryOrDie($query, "0.84 create glpi_changes");
    }
 
    if (!TableExists('glpi_changes_users')) {
@@ -859,7 +859,7 @@ function update083to084() {
                   UNIQUE KEY `unicity` (`changes_id`,`type`,`users_id`,`alternative_email`),
                   KEY `user` (`users_id`,`type`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.83 add table glpi_changes_users");
+      $DB->queryOrDie($query, "0.84 add table glpi_changes_users");
    }
 
    if (!TableExists('glpi_changes_groups')) {
@@ -872,7 +872,7 @@ function update083to084() {
                   UNIQUE KEY `unicity` (`changes_id`,`type`,`groups_id`),
                   KEY `group` (`groups_id`,`type`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.83 add table glpi_changes_groups");
+      $DB->queryOrDie($query, "0.84 add table glpi_changes_groups");
    }
 
    if (!TableExists('glpi_changes_items')) {
@@ -885,7 +885,7 @@ function update083to084() {
                   UNIQUE KEY `unicity` (`changes_id`,`itemtype`,`items_id`),
                   KEY `item` (`itemtype`,`items_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.83 add table glpi_changes_items");
+      $DB->queryOrDie($query, "0.84 add table glpi_changes_items");
    }
 
    if (!TableExists('glpi_changes_tickets')) {
@@ -897,7 +897,7 @@ function update083to084() {
                   UNIQUE KEY `unicity` (`changes_id`,`tickets_id`),
                   KEY `tickets_id` (`tickets_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.83 add table glpi_changes_tickets");
+      $DB->queryOrDie($query, "0.84 add table glpi_changes_tickets");
    }
 
    if (!TableExists('glpi_changes_problems')) {
@@ -909,7 +909,7 @@ function update083to084() {
                   UNIQUE KEY `unicity` (`changes_id`,`problems_id`),
                   KEY `problems_id` (`problems_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.83 add table glpi_changes_problems");
+      $DB->queryOrDie($query, "0.84 add table glpi_changes_problems");
    }
 
    if (!TableExists('glpi_changetasks')) {
@@ -945,7 +945,7 @@ function update083to084() {
                   KEY `end` (`end`),
                   KEY `taskcategories_id` (taskcategories_id)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.83 add table glpi_changetasks");
+      $DB->queryOrDie($query, "0.84 add table glpi_changetasks");
    }
 
    /// TODO add changetasktypes table as dropdown
@@ -972,13 +972,13 @@ function update083to084() {
    $migration->addField("glpi_reservationitems", "is_deleted", "bool");
    $migration->addKey("glpi_reservationitems", "is_deleted");
 
-   $migration->addField("glpi_documentcategories", 'documentcategorie_id', "integer");
+   $migration->addField("glpi_documentcategories", 'documentcategories_id', "integer");
    $migration->addField("glpi_documentcategories", 'completename', "text");
    $migration->addField("glpi_documentcategories", 'level', "integer");
    $migration->addField("glpi_documentcategories", 'ancestors_cache', "longtext");
    $migration->addField("glpi_documentcategories", 'sons_cache', "longtext");
    $migration->migrationOneTable('glpi_documentcategories');
-   $migration->addKey("glpi_documentcategories", array('documentcategorie_id','name'), 'unicity');
+   $migration->addKey("glpi_documentcategories", array('documentcategories_id','name'), 'unicity');
    regenerateTreeCompleteName("glpi_documentcategories");
 
    $migration->addField("glpi_contacts", 'usertitles_id', "integer");
@@ -990,6 +990,102 @@ function update083to084() {
    $migration->addField("glpi_contacts", 'state', "string");
    $migration->addField("glpi_contacts", 'country', "string");
 
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Merge entity and entitydatas'));
+   
+   if (TableExists('glpi_entitydatas')) {
+      // Create root entity
+      $query = "INSERT INTO `glpi_entities`
+                     (`id`, `name`) VALUES (0,'".addslashes(__('Root entity'))."');";
+      $DB->queryOrDie($query, '0.84 insert root entity to to glpi_entities');
+      $newID = $DB->insert_id();
+      $query ="UPDATE `glpi_entities` SET `id` = '0' WHERE `id` = '$newID'";
+      $DB->queryOrDie($query, '0.84 be sure that id of the root entity if 0 in glpi_entities');
+      
+      $migration->addField("glpi_entities", 'address', "text");
+      $migration->addField("glpi_entities", 'postcode', "string");
+      $migration->addField("glpi_entities", 'town', "string");
+      $migration->addField("glpi_entities", 'state', "string");
+      $migration->addField("glpi_entities", 'country', "string");
+      $migration->addField("glpi_entities", 'website', "string");
+      $migration->addField("glpi_entities", 'phonenumber', "string");
+      $migration->addField("glpi_entities", 'fax', "string");
+      $migration->addField("glpi_entities", 'email', "string");
+      $migration->addField("glpi_entities", 'admin_email', "string");
+      $migration->addField("glpi_entities", 'admin_email_name', "string");
+      $migration->addField("glpi_entities", 'admin_reply', "string");
+      $migration->addField("glpi_entities", 'admin_reply_name', "string");
+      $migration->addField("glpi_entities", 'notification_subject_tag', "string");
+      $migration->addField("glpi_entities", 'notepad', "longtext");
+      $migration->addField("glpi_entities", 'ldap_dn', "string");
+      $migration->addField("glpi_entities", 'tag', "string");
+      $migration->addField("glpi_entities", 'authldaps_id', "int");
+      $migration->addField("glpi_entities", 'mail_domain', "string");
+      $migration->addField("glpi_entities", 'entity_ldapfilter', "text");
+      $migration->addField("glpi_entities", 'mailing_signature', "text");
+      $migration->addField("glpi_entities", 'cartridges_alert_repeat', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'consumables_alert_repeat', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'use_licenses_alert', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'use_contracts_alert', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'use_infocoms_alert', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'use_reservations_alert', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'autoclose_delay', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'notclosed_delay', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'calendars_id', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'auto_assign_mode', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'tickettype', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'max_closedate', "datetime");
+      $migration->addField("glpi_entities", 'inquest_config', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'inquest_rate', "int");
+      $migration->addField("glpi_entities", 'inquest_delay', "int", array('value' => -10));
+      $migration->addField("glpi_entities", 'inquest_URL', "string");
+      $migration->addField("glpi_entities", 'autofill_warranty_date', "string", array('value' => -2));
+      $migration->addField("glpi_entities", 'autofill_use_date', "string", array('value' => -2));
+      $migration->addField("glpi_entities", 'autofill_buy_date', "string", array('value' => -2));
+      $migration->addField("glpi_entities", 'autofill_delivery_date', "string", array('value' => -2));
+      $migration->addField("glpi_entities", 'autofill_order_date', "string", array('value' => -2));
+      $migration->addField("glpi_entities", 'tickettemplates_id', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'entities_id_software', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'default_contract_alert', "int");
+      $migration->addField("glpi_entities", 'default_infocom_alert', "int");
+      $migration->addField("glpi_entities", 'default_alarm_threshold', "int", array('value' => -10));
+      $migration->migrationOneTable('glpi_entities');
+      
+      $fields = array('address', 'postcode', 'town', 'state', 'country', 'website',
+                     'phonenumber', 'fax', 'email', 'admin_email', 'admin_email_name', 
+                     'admin_reply', 'admin_reply_name', 'notification_subject_tag', 
+                     'notepad', 'ldap_dn', 'tag', 'authldaps_id', 'mail_domain', 
+                     'entity_ldapfilter', 'mailing_signature', 'cartridges_alert_repeat', 
+                     'consumables_alert_repeat', 'use_licenses_alert', 'use_contracts_alert',
+                     'use_infocoms_alert', 'use_reservations_alert', 'autoclose_delay', 
+                     'notclosed_delay', 'calendars_id', 'auto_assign_mode', 'tickettype', 
+                     'max_closedate', 'inquest_config', 'inquest_rate', 'inquest_delay', 
+                     'inquest_URL', 'autofill_warranty_date', 'autofill_use_date', 
+                     'autofill_buy_date', 'autofill_delivery_date', 'autofill_order_date', 
+                     'tickettemplates_id', 'entities_id_software', 'default_contract_alert', 
+                     'default_infocom_alert', 'default_alarm_threshold');
+      $entity = new Entity();
+      foreach ($DB->request('glpi_entitydatas') as $data) {
+         if ($entity->getFromDB($data['entities_id'])) {
+            $update_fields = array();
+            foreach ($fields as $field) {
+               if (is_null($data[$field])) {
+                  $update_fields[] = "`$field` = NULL"; 
+               } else {
+                  $update_fields[] = "`$field` = '".addslashes($data[$field])."'";                
+               }
+            }
+            
+            $query = "UPDATE `glpi_entities` SET ".implode(',',$update_fields);
+            $query .= " WHERE `id` = '".$data['entities_id']."';";
+            $DB->queryOrDie($query, "0.84 transfer datas from glpi_entitydatas to glpi_entities");
+         } else {
+            $migration->displayMessage('Entity ID '.$data['entities_id'].' does not exist');
+         }
+      
+      }   
+//       $migration->dropTable('glpi_entitydatas');
+   }
+   regenerateTreeCompleteName("glpi_entities");
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
