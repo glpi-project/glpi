@@ -769,8 +769,8 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($key=array_search('status',$this->updates) !== false
           && ($this->oldvalues['status'] == 'waiting'
                // From solved to another state than closed
-              || (in_array($this->fields["status"], $this->getSolvedStatusArray()) && !in_array($this->fields["status"], $this->getClosedStatusArray())))) {
-
+              || (in_array($this->oldvalues["status"], $this->getSolvedStatusArray())
+                   && !in_array($this->fields["status"], $this->getClosedStatusArray())))) {
          // Compute ticket waiting time use calendar if exists
          $calendars_id = EntityData::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
