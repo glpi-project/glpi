@@ -2462,8 +2462,8 @@ function generate_entity($ID_entity) {
 
       // TODO Julien $telID n'a pas ete initialise
       $ci->add(array('itemtype'     => 'Monitor',
-                     'items_id'     => $telID,
-                     'computers_id' => $monID,
+                     'items_id'     => $monID,
+                     'computers_id' => $compID,
       ));
 
       // Ajout d'un telephhone avec l'ordi
