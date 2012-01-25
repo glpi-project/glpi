@@ -119,12 +119,12 @@ class Planning {
     * Show the planning selection form
     *
     *
-    * @param $type planning type : can be day, week, month
-    * @param $date working date
-    * @param $usertype type of planning to view : can be user or group
-    * @param $uID ID of the user
-    * @param $gID ID of the group
-    * @param $itemtype ityemtype only display this itemtype
+    * @param $type         planning type : can be day, week, month
+    * @param $date         working date
+    * @param $usertype     type of planning to view : can be user or group
+    * @param $uID          ID of the user
+    * @param $gID          ID of the group
+    * @param $itemtype     itemtype only display this itemtype (default '')
     *
     * @return Display form
    **/
@@ -324,7 +324,7 @@ class Planning {
                       'who_group' => 0,
                       'begin'     => $realbegin,
                       'end'       => $realend);
-                      
+
       $interv = array();
       foreach ($CFG_GLPI['planning_types'] as $itemtype) {
          $interv = array_merge($interv,$itemtype::populatePlanning($params));
@@ -435,11 +435,11 @@ class Planning {
    /**
     * Show the planning
     *
-    * @param $who ID of the user (0 = undefined)
+    * @param $who       ID of the user (0 = undefined)
     * @param $who_group ID of the group of users (0 = undefined)
-    * @param $when Date of the planning to display
-    * @param $type type of planning to display (day, week, month)
-    * @param $itemtype itemtype limit display to this itemtype
+    * @param $when      Date of the planning to display
+    * @param $type      type of planning to display (day, week, month)
+    * @param $itemtype  itemtype limit display to this itemtype (default '')
     *
     * @return Nothing (display function)
    **/
@@ -531,16 +531,16 @@ class Planning {
                       'who_group' => $who_group,
                       'begin'     => $begin,
                       'end'       => $end);
-                      
+
       $interv = array();
       if (empty($itemtype)) {
          foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-            $interv = array_merge($interv,$itemtype::populatePlanning($params));
+            $interv = array_merge($interv, $itemtype::populatePlanning($params));
          }
       } else {
          $interv = $itemtype::populatePlanning($params);
       }
-      
+
       // Display Items
       $tmp        = explode(":", $CFG_GLPI["planning_begin"]);
       $hour_begin = $tmp[0];
@@ -746,9 +746,9 @@ class Planning {
       // Plugins case
       if (isset($val['itemtype']) && !empty($val['itemtype'])) {
          $val['itemtype']::displayPlanningItem($val, $who, $type, $complete);
-      
+
       }
-      
+
       echo "</div><br>";
    }
 
@@ -802,7 +802,7 @@ class Planning {
       $interv = array();
       foreach ($CFG_GLPI['planning_types'] as $itemtype) {
          $interv = array_merge($interv,$itemtype::populatePlanning($params));
-      
+
       }
 
       ksort($interv);
@@ -838,13 +838,13 @@ class Planning {
    /**
     *  Generate ical file content
     *
-    * @param $who user ID
+    * @param $who       user ID
     * @param $who_group group ID
-    * @param $itemtype ityemtype only display this itemtype
+    * @param $itemtype  itemtype only display this itemtype (default '')
     *
     * @return icalendar string
    **/
-   static function generateIcal($who,$who_group, $itemtype) {
+   static function generateIcal($who,$who_group, $itemtype='') {
       global $CFG_GLPI;
 
       if ($who==0 && $who_group==0) {
@@ -875,29 +875,31 @@ class Planning {
                       'who_group' => $who_group,
                       'begin'     => $begin,
                       'end'       => $end);
-                      
+
       $interv = array();
       if (empty($itemtype)) {
          foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-            $interv = array_merge($interv,$itemtype::populatePlanning($params));
+            $interv = array_merge($interv, $itemtype::populatePlanning($params));
          }
       } else {
          $interv = $itemtype::populatePlanning($params);
       }
-      
+
       if (count($interv)>0) {
          foreach ($interv as $key => $val) {
             $vevent = new vevent(); //initiate EVENT
             if (isset($val['itemtype'])) {
                if (isset($val[getForeignKeyFieldForItemType($val['itemtype'])])) {
-                  $vevent->setProperty("uid", $val['itemtype']."#".$val[getForeignKeyFieldForItemType($val['itemtype'])]);
+                  $vevent->setProperty("uid",
+                                       $val['itemtype']."#".
+                                          $val[getForeignKeyFieldForItemType($val['itemtype'])]);
                } else {
                   $vevent->setProperty("uid", "Other#".$key);
                }
             } else {
                $vevent->setProperty("uid", "Other#".$key);
             }
-            
+
             $vevent->setProperty( "dstamp", $val["begin"] );
             $vevent->setProperty( "dtstart", $val["begin"] );
             $vevent->setProperty( "dtend", $val["end"] );
@@ -920,7 +922,7 @@ class Planning {
             if (isset($val["url"])) {
                $vevent->setProperty("url",$val["url"]);
             }
-            
+
             $v->setComponent( $vevent );
          }
       }
