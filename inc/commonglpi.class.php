@@ -348,7 +348,7 @@ class CommonGLPI {
    function isNewID($ID) {
       return true;
    }
-     
+
    /**
     * Show onglets
     *
@@ -384,7 +384,11 @@ class CommonGLPI {
          }
       }
 
-      if (empty($withtemplate) && !$this->isNewID($ID) && $this->getType() && $this->displaylist) {
+      if (empty($withtemplate)
+          && !$this->isNewID($ID)
+          && $this->getType()
+          && $this->displaylist) {
+
          $glpilistitems =& $_SESSION['glpilistitems'][$this->getType()];
          $glpilisttitle =& $_SESSION['glpilisttitle'][$this->getType()];
          $glpilisturl   =& $_SESSION['glpilisturl'][$this->getType()];

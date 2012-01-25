@@ -93,10 +93,10 @@ class Alert extends CommonDBTM {
          $times[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
 
-      $times[Entity::CONFIG_NEVER] = __('Never');
-      $times[DAY_TIMESTAMP]            = __('Each day');
-      $times[WEEK_TIMESTAMP]           = __('Each week');
-      $times[MONTH_TIMESTAMP]          = __('Each month');
+      $times[Entity::CONFIG_NEVER]  = __('Never');
+      $times[DAY_TIMESTAMP]         = __('Each day');
+      $times[WEEK_TIMESTAMP]        = __('Each week');
+      $times[MONTH_TIMESTAMP]       = __('Each month');
 
       Dropdown::showFromArray($options['name'], $times, array('value' => $value));
    }

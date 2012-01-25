@@ -3262,12 +3262,9 @@ class Transfer extends CommonDBTM {
                               echo '<br>';
                            }
                            $entID = $data['entID'];
-                           echo "<span class='b'>";
-                              echo $data['locname'];
-                           echo "</span><br>";
-
+                           echo "<span class='b spaced'>".$data['locname']."</span>";
                         }
-                        echo ($data['name'] ? $data['name']."<br>" : "(".$data['id'].")<br>");
+                        echo ($data['name'] ? $data['name'] : "(".$data['id'].")")."<br>";
                      }
                   }
                }

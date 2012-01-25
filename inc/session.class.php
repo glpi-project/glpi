@@ -173,10 +173,15 @@ class Session {
    }
 
 
+   /**
+    * @since version 0.84
+   **/
    function getRootEntityName() {
+
       if (isset($_SESSION['glpirootentityname'])) {
          return $_SESSION['glpirootentityname'];
       }
+
       $entity = new Entity();
       if ($entity->getFromDB(0)) {
          $_SESSION['glpirootentityname'] = $entity->fields['name'];

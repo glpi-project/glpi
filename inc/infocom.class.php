@@ -75,8 +75,8 @@ class Infocom extends CommonDBChild {
    function post_getEmpty() {
 
       $this->fields["alert"] = Entity::getUsedConfig("use_infocoms_alert",
-                                                         $this->fields["entities_id"],
-                                                         "default_infocom_alert", 0);
+                                                     $this->fields["entities_id"],
+                                                     "default_infocom_alert", 0);
    }
 
 
@@ -177,7 +177,7 @@ class Infocom extends CommonDBChild {
          if ($item = getItemForItemtype($input['itemtype'])) {
             if ($item->getFromDB($input['items_id'])) {
                $input['alert']        = Entity::getUsedConfig('default_infocom_alert',
-                                                                  $item->getEntityID());
+                                                              $item->getEntityID());
                $input['entities_id']  = $item->getEntityID();
                $input['is_recursive'] = intval($item->isRecursive());
                return $input;

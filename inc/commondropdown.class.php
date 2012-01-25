@@ -159,8 +159,8 @@ abstract class CommonDropdown extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td>&nbsp;</td></tr>";
             break;
          }
-      
-      
+
+
          echo "<tr class='tab_bg_1'><td>".$field['label'];
          if (isset($field['comment']) && !empty($field['comment'])) {
             echo "&nbsp;";
@@ -216,7 +216,7 @@ abstract class CommonDropdown extends CommonDBTM {
                } else {
                   $restrict = $this->getEntityID();
                }
-               print_r(getSonsOf($this->getTable(), $ID));
+ //              print_r(getSonsOf($this->getTable(), $ID));
                Dropdown::show(getItemTypeForTable($this->getTable()),
                               array('value'  => $this->fields[$field['name']],
                                     'name'   => $field['name'],
