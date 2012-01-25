@@ -440,7 +440,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   break;
 
                case "group" :
-                  if (!empty($this->grouplinkclass)) {
+                  if (!empty($this->grouplinkclass) && $input['_itil_requester']['groups_id']>0) {
                      $groupactors = new $this->grouplinkclass();
                      if (isset($input['_auto_update'])
                          || $groupactors->can(-1,'w',$input['_itil_requester'])) {
@@ -482,7 +482,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   break;
 
                case "group" :
-                   if (!empty($this->grouplinkclass)) {
+                   if (!empty($this->grouplinkclass) && $input['_itil_observer']['groups_id']>0) {
                      $groupactors = new $this->grouplinkclass();
                      if (isset($input['_auto_update'])
                          || $groupactors->can(-1,'w',$input['_itil_observer'])) {
@@ -517,7 +517,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   break;
 
                case "group" :
-                  if (!empty($this->grouplinkclass)) {
+                  if (!empty($this->grouplinkclass) && $input['_itil_assign']['groups_id']>0) {
                      $groupactors = new $this->grouplinkclass();
 
                      if (isset($input['_auto_update'])
