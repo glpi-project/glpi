@@ -432,9 +432,10 @@ class NetworkPort extends CommonDBChild {
                $is_active_network_port = true;
 
                $table = new HTMLTable();
-               $table->addGlobalName(NetworkPort::getTypeName($number_port).
-                                     " (".call_user_func(array($portType, 'getTypeName')).")" .
-                                     "&nbsp;:&nbsp;$number_port</th></tr>\n");
+               //TRANS: %1$s is the type name, %2$s is the port type, %3$d is the port's number
+               $name  = sprintf(__('%1$s (%2$s): %3$d'), self::getTypeName($number_port),
+                                call_user_func(array($portType, 'getTypeName')), $number_port);
+               $table->addGlobalName("$name</th></tr>\n");
 
                if ($withtemplate != 2 && $canedit) {
                   $table->addHeader("&nbsp;", "checkbox");
@@ -454,14 +455,13 @@ class NetworkPort extends CommonDBChild {
 
                  if ($withtemplate != 2 && $canedit) {
                      $table->addElement("<input type='checkbox' name='del_port[" .
-                                        $netport->fields["id"]."]' value='1'>", "checkbox",
-                                        $netport->getID());
+                                          $netport->fields["id"]."]' value='1'>",
+                                        "checkbox", $netport->getID());
                   }
                   $content = "<span class='b'>";
                   if ($canedit && $withtemplate != 2) {
                      $content .= "<a href=\"" . $CFG_GLPI["root_doc"] .
-                                 "/front/networkport.form.php?id=" .
-                                 $netport->fields["id"] . "\">";
+                                   "/front/networkport.form.php?id=".$netport->fields["id"] ."\">";
                   }
                   $content .= $netport->fields["logical_number"];
 
