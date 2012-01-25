@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-01-24 08:43+0100\n"
-"PO-Revision-Date: 2012-01-24 07:43+0000\n"
+"PO-Revision-Date: 2012-01-25 20:35+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: French (France) (http://www.transifex.net/projects/p/GLPI/team/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -1846,7 +1846,7 @@ msgstr "Réussie"
 #: front/ocsng.php:73
 #, php-format
 msgid "OCSNG server: %s"
-msgstr ""
+msgstr "Serveur OCSNG : %s"
 
 #: front/ocsng.php:77 inc/html.class.php:1315 inc/ocsserver.class.php:2895
 #: inc/ocsserver.class.php:3004 inc/ocsserver.class.php:3014
@@ -2352,7 +2352,7 @@ msgstr "Interface simplifiée"
 #: front/reservationitem.form.php:72
 #, php-format
 msgid "%s retores the item"
-msgstr ""
+msgstr "%s restaure l'élément"
 
 #: front/reservationitem.php:44 front/reservation.php:47
 #: inc/event.class.php:119 inc/event.class.php:132 inc/html.class.php:1294
@@ -3798,7 +3798,7 @@ msgstr "Conserver"
 
 #: inc/authldap.class.php:2514 inc/search.class.php:1166
 msgid "Put in dustbin"
-msgstr ""
+msgstr "Mettre à la poubelle"
 
 #: inc/authldap.class.php:2515
 msgid "Withdraw dynamic authorizations and groups"
@@ -4050,13 +4050,13 @@ msgstr "Éléments associés"
 #: inc/item_problem.class.php:194
 #, php-format
 msgid "%1$s: %2$d"
-msgstr ""
+msgstr "%1$s : %2$d"
 
 #: inc/budget.class.php:392 inc/change_item.class.php:194
 #: inc/contract.class.php:876 inc/item_problem.class.php:195
 #, php-format
 msgid "%s"
-msgstr ""
+msgstr "to be removed %s"
 
 #: inc/budget.class.php:415 inc/change_item.class.php:212
 #: inc/contract.class.php:902 inc/item_problem.class.php:213
@@ -4205,22 +4205,22 @@ msgstr "Pas de cartouche libre"
 msgctxt "cartridge"
 msgid "New"
 msgid_plural "New"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Neuve"
+msgstr[1] "Neuves"
 
 #: inc/cartridge.class.php:229 inc/cartridge.class.php:342
 msgctxt "cartridge"
 msgid "Used"
 msgid_plural "Used"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Utilisée"
+msgstr[1] "Utilisées"
 
 #: inc/cartridge.class.php:231 inc/cartridge.class.php:344
 msgctxt "cartridge"
 msgid "Worn"
 msgid_plural "Worn"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Usagée"
+msgstr[1] "Usagées"
 
 #. TRANS : for display cartridges count : %1$d is the total number,
 #. %2$d the new one, %3$d the used one, %4$d worn one
@@ -4551,7 +4551,7 @@ msgstr "Liste de vérifications"
 #: inc/change.class.php:582
 msgctxt "change"
 msgid "New"
-msgstr ""
+msgstr "Nouveau"
 
 #: inc/change.class.php:583
 msgid "Evaluation"
@@ -6269,12 +6269,12 @@ msgstr "Aucun consommable"
 #: inc/consumable.class.php:287
 msgctxt "consumable"
 msgid "New"
-msgstr ""
+msgstr "Neuf"
 
 #: inc/consumable.class.php:290
 msgctxt "consumable"
 msgid "Used"
-msgstr ""
+msgstr "Utilisé"
 
 #: inc/consumable.class.php:318
 msgid "Add consumables"
@@ -6298,7 +6298,7 @@ msgstr "En stock"
 
 #: inc/consumable.class.php:542
 msgid "%1$s - %1$d"
-msgstr ""
+msgstr "string removed %1$s - %1$d"
 
 #: inc/consumable.class.php:568
 msgid "No consumable found"
@@ -6527,7 +6527,7 @@ msgstr "Contrat(s) dont le préavis débute dans moins de 30 jours"
 
 #: inc/contract.class.php:845
 msgid "%1$s: %1$d"
-msgstr ""
+msgstr "string removed %1$s: %1$d"
 
 #: inc/contract.class.php:995 inc/supplier.class.php:616
 msgid "No associated contract"
@@ -8335,7 +8335,7 @@ msgstr "Envoi des alertes sur les informations financières et administratives"
 #: inc/networkportinstantiation.class.php:485
 #, php-format
 msgid "%1$s - %2$s"
-msgstr ""
+msgstr "%1$s - %2$s"
 
 #. TRANS: %1$s is the warranty end date and %2$s the name of the item
 #: inc/infocom.class.php:391
@@ -8454,7 +8454,7 @@ msgstr "Commentaires sur les informations financières et administratives"
 msgid "IP address"
 msgid_plural "IP addresses"
 msgstr[0] "Adresse IP"
-msgstr[1] ""
+msgstr[1] "Adresses IP"
 
 #: inc/ipnetmask.class.php:76
 msgid "Subnet mask"
@@ -8867,13 +8867,13 @@ msgstr ""
 
 #: inc/mailcollector.class.php:531
 msgid "Could not connect to mailgate server"
-msgstr ""
+msgstr "Échec de connexion au collecteur"
 
 #. TRANS: %s is the ID of the mailgate
 #: inc/mailcollector.class.php:541
 #, php-format
 msgid "Could not find mailgate %d"
-msgstr ""
+msgstr "Collecteur %d introuvable"
 
 #. TRANS: %s is a directory
 #: inc/mailcollector.class.php:583
@@ -8897,7 +8897,7 @@ msgstr "Type de fichier joint invalide : %1$s (%2$s)"
 #: inc/mailcollector.class.php:1266
 #, php-format
 msgid "Invalid configuration for %1$s folder in receiver %2$s"
-msgstr ""
+msgstr "Configuration incorrecte du dossier %1$s pour le collecteur %2$s"
 
 #: inc/mailcollector.class.php:1283
 msgid "Retrieve email (Mail receivers)"
@@ -9186,6 +9186,7 @@ msgstr "Non connecté."
 #: inc/networkportethernet.class.php:244
 msgid "entity_sons options are not available with array of entity"
 msgstr ""
+"L'option entity_sons n'est pas disponible lorsque entity est un tableau"
 
 #: inc/networkportinstantiation.class.php:76
 msgid "No options available for this port type."
@@ -9221,7 +9222,7 @@ msgstr ""
 
 #: inc/networkportmigration.class.php:122
 msgid "invalid IP address"
-msgstr ""
+msgstr "Adresse IP incorrecte"
 
 #: inc/networkportmigration.class.php:202
 msgid "Transform this NetworkPort to: "
@@ -9563,15 +9564,15 @@ msgstr "Description du ticket"
 #: inc/notificationtargetticket.class.php:558
 #: inc/notificationtargetticket.class.php:566
 msgid "Date of opening"
-msgstr ""
+msgstr "Date d'ouverture"
 
 #: inc/notificationtargetcommonitilobject.class.php:761
 msgid "Date of closing"
-msgstr ""
+msgstr "Date de fermeture"
 
 #: inc/notificationtargetcommonitilobject.class.php:762
 msgid "Date of solving"
-msgstr ""
+msgstr "Date de résolution"
 
 #: inc/notificationtargetcommonitilobject.class.php:764
 #: inc/notificationtargetcommonitilobject.class.php:789
@@ -10603,7 +10604,7 @@ msgstr "Auteurs"
 #: inc/plugin.class.php:384
 msgctxt "plugin"
 msgid "New"
-msgstr ""
+msgstr "Nouveau"
 
 #: inc/plugin.class.php:392
 msgid "Not installed"
@@ -10686,7 +10687,7 @@ msgstr "Description de la tâche"
 #: inc/problem.class.php:578
 msgctxt "problem"
 msgid "New"
-msgstr ""
+msgstr "Nouveau"
 
 #: inc/problem.class.php:580 inc/ticket.class.php:2037
 #: inc/ticket.class.php:4323
@@ -12301,7 +12302,7 @@ msgstr "Nombre de ticket dupliqués"
 #: inc/ticket.class.php:2036 inc/ticket.class.php:4317
 msgctxt "ticket"
 msgid "New"
-msgstr ""
+msgstr "Nouveau"
 
 #: inc/ticket.class.php:2329
 msgid "Devices own by my groups"
@@ -13342,7 +13343,7 @@ msgstr "Début de l'installation"
 #: install/install.php:553 install/install.php:565
 #, php-format
 msgid "Step %d"
-msgstr "Pas %d"
+msgstr "Étape %d"
 
 #: install/update_05_051.php:79
 msgid "Commercial"
