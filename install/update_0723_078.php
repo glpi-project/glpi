@@ -3899,11 +3899,11 @@ function update0723to078($output='HTML') {
 
    // Migrate devices
    if (TableExists('glpi_computer_device')) {
-      displayMigrationMessage("078 ", sprintf(__('Change of the database layout - %s')), _n('Component', 'Components', 2));
+      displayMigrationMessage("078 ", sprintf(__('Change of the database layout - %s'), _n('Component', 'Components', 2)));
 
       foreach ($devtypetoname as $key => $itemtype) {
-         displayMigrationMessage("078 ", sprintf(__('Change of the database layout - %s')),
-                                 $itemtype);
+         displayMigrationMessage("078 ", sprintf(__('Change of the database layout - %s'),
+                                 $itemtype));
          $linktype      = "Computer_$itemtype";
          $linktable     = getTableForItemType($linktype);
          $itemtable     = getTableForItemType($itemtype);
