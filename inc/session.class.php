@@ -200,7 +200,7 @@ class Session {
    static function isMultiEntitiesMode() {
 
       if (!isset($_SESSION['glpi_multientitiesmode'])) {
-         if (countElementsInTable("glpi_entities")>0) {
+         if (countElementsInTable("glpi_entities")>1) {
             $_SESSION['glpi_multientitiesmode'] = 1;
          } else {
             $_SESSION['glpi_multientitiesmode'] = 0;

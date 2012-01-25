@@ -198,9 +198,18 @@ class Entity extends CommonTreeDropdown {
     * @since version 0.84 (before in entitydata.class)
    **/
    function prepareInputForAdd($input) {
-
+      global $DB;
+      
       $input = parent::prepareInputForAdd($input);
 
+      $query = "SELECT MAX(`id`)+1 AS newID
+               FROM `glpi_entities`";
+      if ($result = $DB->query($query)) {
+          $input['id'] = $DB->result($result,0,0); 
+      } else {
+         return false;
+      }
+      print_r($input);exit();
       $input['max_closedate'] = $_SESSION["glpi_currenttime"];
       return $this->checkRightDatas($input);
    }
