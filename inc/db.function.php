@@ -404,13 +404,13 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
    $comment = "";
 
    $query = "SELECT *
-               FROM `$table`
-               WHERE `id` = '$ID'";
+             FROM `$table`
+             WHERE `id` = '$ID'";
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)==1) {
-         $name = $DB->result($result, 0, "name");
-         $comment=$DB->result($result, 0, "comment");
+         $name    = $DB->result($result, 0, "name");
+         $comment = $DB->result($result, 0, "comment");
       }
    }
 
@@ -440,8 +440,8 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false) {
    $comment = "";
 
    $query = "SELECT *
-               FROM `$table`
-               WHERE `id` = '$ID'";
+             FROM `$table`
+             WHERE `id` = '$ID'";
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)==1) {
@@ -850,13 +850,14 @@ function regenerateTreeCompleteName($table) {
          list($name, $level) = getTreeValueName($table, $data['id']);
 
          $query = "UPDATE `$table`
-                  SET `completename` = '".addslashes($name)."',
-                     `level` = '$level'
-                  WHERE `id` = '".$data['id']."'";
+                   SET `completename` = '".addslashes($name)."',
+                       `level` = '$level'
+                   WHERE `id` = '".$data['id']."'";
          $DB->query($query);
       }
    }
 }
+
 
 /**
  * Get the ID of the next Item

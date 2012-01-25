@@ -2684,24 +2684,25 @@ class Ticket extends CommonITILObject {
 
 
       // Set default values...
-      $values = array('_users_id_requester_notif'  => array('use_notification' => ($email==""?0:1)),
-                      'nodelegate'                 => 1,
-                      '_users_id_requester'        => 0,
-                      'name'                       => '',
-                      'content'                    => '',
-                      'itilcategories_id'          => 0,
-                      'urgency'                    => 3,
-                      'itemtype'                   => '',
-                      'items_id'                   => 0,
-                      'plan'                       => array(),
-                      'global_validation'          => 'none',
-                      'due_date'                   => 'NULL',
-                      'slas_id'                    => 0,
-                      '_add_validation'            => 0,
-                      'type'              => Entity::getUsedConfig('tickettype',
-                                                                       $_SESSION['glpiactive_entity'],
-                                                                       '', Ticket::INCIDENT_TYPE),
-                      '_right'                     => "id");
+      $values = array('_users_id_requester_notif'
+                                             => array('use_notification' => ($email==""?0:1)),
+                      'nodelegate'           => 1,
+                      '_users_id_requester'  => 0,
+                      'name'                 => '',
+                      'content'              => '',
+                      'itilcategories_id'    => 0,
+                      'urgency'              => 3,
+                      'itemtype'             => '',
+                      'items_id'             => 0,
+                      'plan'                 => array(),
+                      'global_validation'    => 'none',
+                      'due_date'             => 'NULL',
+                      'slas_id'              => 0,
+                      '_add_validation'      => 0,
+                      'type'                 => Entity::getUsedConfig('tickettype',
+                                                                      $_SESSION['glpiactive_entity'],
+                                                                      '', Ticket::INCIDENT_TYPE),
+                      '_right'               => "id");
 
 
       // Restore saved value or override with page parameter
@@ -2774,7 +2775,7 @@ class Ticket extends CommonITILObject {
 
       // First load default entity one
       if ($template_id = Entity::getUsedConfig('tickettemplates_id',
-                                                   $_SESSION["glpiactive_entity"])) {
+                                               $_SESSION["glpiactive_entity"])) {
          // with type and categ
          $tt->getFromDBWithDatas($template_id, true);
       }
@@ -3069,8 +3070,8 @@ class Ticket extends CommonITILObject {
          unset($_SESSION["helpdeskSaved"]);
       }
       if ($values['type'] <= 0) {
-         $values['type'] = Entity::getUsedConfig('tickettype', $values['entities_id'],
-                                                     '', Ticket::INCIDENT_TYPE);
+         $values['type'] = Entity::getUsedConfig('tickettype', $values['entities_id'], '',
+                                                 Ticket::INCIDENT_TYPE);
       }
 
       // Load ticket template if available :

@@ -81,8 +81,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    function getSubjectPrefix($event='') {
 
       if ($event !='alertnotclosed') {
-         $perso_tag = trim(Entity::getUsedConfig('notification_subject_tag',$this->getEntity(),
-                                                     '', ''));
+         $perso_tag = trim(Entity::getUsedConfig('notification_subject_tag', $this->getEntity(),
+                                                 '', ''));
 
          if (empty($perso_tag)) {
             $perso_tag = 'GLPI';
@@ -229,8 +229,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                               = Dropdown::getDropdownName('glpi_requesttypes',
                                                           $item->getField('requesttypes_id'));
 
-      $autoclose_value = Entity::getUsedConfig('autoclose_delay', $this->getEntity(),
-                                                   '', Entity::CONFIG_NEVER);
+      $autoclose_value = Entity::getUsedConfig('autoclose_delay', $this->getEntity(), '',
+                                               Entity::CONFIG_NEVER);
 
       $datas['##ticket.autoclose##']             = __('Never');
       $datas['##lang.ticket.autoclosewarning##'] = "";

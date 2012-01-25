@@ -104,6 +104,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
     * @param $input
    **/
    function adaptTreeFieldsFromUpdateOrAdd($input) {
+
       $parent = clone $this;
       // Update case input['name'] not set :
       if (!isset($input['name']) && isset($this->fields['name'])) {

@@ -45,7 +45,7 @@ Session::checkLoginUser();
 
 if (isset($_REQUEST['type']) && !empty($_REQUEST['type']) && isset($_REQUEST['right'])) {
    $display = false;
-   $rand = mt_rand();
+   $rand    = mt_rand();
 
    switch ($_REQUEST['type']) {
       case 'User':
