@@ -435,7 +435,7 @@ class NetworkPort extends CommonDBChild {
                //TRANS: %1$s is the type name, %2$s is the port type, %3$d is the port's number
                $name  = sprintf(__('%1$s (%2$s): %3$d'), self::getTypeName($number_port),
                                 call_user_func(array($portType, 'getTypeName')), $number_port);
-               $table->addGlobalName("$name</th></tr>\n");
+               $table->addGlobalName("$name\n");
 
                if ($withtemplate != 2 && $canedit) {
                   $table->addHeader("&nbsp;", "checkbox");
