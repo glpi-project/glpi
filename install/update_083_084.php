@@ -994,17 +994,19 @@ function update083to084() {
                                       'Merge entity and entitydatas'));
 
    if (TableExists('glpi_entitydatas')) {
+      $migration->changeField('glpi_entities', 'id', 'id', 'integer');
+      $migration->migrationOneTable('glpi_entities');
       // Create root entity
       $query = "INSERT INTO `glpi_entities`
                        (`id`, `name`, `entities_id`, `level`)
                 VALUES (0,'".addslashes(__('Root entity'))."', '-1', '1');";
 
       $DB->queryOrDie($query, '0.84 insert root entity into glpi_entities');
-      $newID = $DB->insert_id();
-      $query = "UPDATE `glpi_entities`
-                SET `id` = '0'
-                WHERE `id` = '$newID'";
-      $DB->queryOrDie($query, '0.84 be sure that id of the root entity if 0 in glpi_entities');
+//       $newID = $DB->insert_id();
+//       $query = "UPDATE `glpi_entities`
+//                 SET `id` = '0'
+//                 WHERE `id` = '$newID'";
+//       $DB->queryOrDie($query, '0.84 be sure that id of the root entity if 0 in glpi_entities');
 
       $migration->addField("glpi_entities", 'address', "text");
       $migration->addField("glpi_entities", 'postcode', "string");
