@@ -208,7 +208,7 @@ class Contact extends CommonDBTM{
       echo "<td>".__('State')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "state");
-      echo "</td></tr>";      
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Type')."</td>";
@@ -219,18 +219,16 @@ class Contact extends CommonDBTM{
       echo "<td>";
       Html::autocompletionTextField($this, "country");
       echo "</td></tr>";
-      
-      
-      echo "<tr class='tab_bg_1'><td>" . __('Title') . "&nbsp;:</td><td>";
+
+      echo "<tr class='tab_bg_1'><td>" . __('Title') . "</td><td>";
       Dropdown::show('UserTitle', array('value' => $this->fields["usertitles_id"]));
       echo "<td>&nbsp;</td><td class='center'>";
-
       if ($ID>0) {
          echo "<a target=''_blank' href='".$CFG_GLPI["root_doc"].
                 "/front/contact.form.php?getvcard=1&amp;id=$ID'>".__('Vcard')."</a>";
       }
       echo "</td></tr>";
-      
+
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
