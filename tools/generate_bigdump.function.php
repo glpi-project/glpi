@@ -966,12 +966,12 @@ function generateGlobalDropdowns() {
       }
       $newID = $dp->add(array('name'    => $val,
                               'comment' => "comment $val"));
-                              
+
       for ($j=0 ; $j<mt_rand(0,pow($MAX['rubdocs'],1/2)) ; $j++) {
          $newID2 = $dp->add(array('name'                        => "s-category $j",
                                   'comment'                     => "comment $val s-category $j",
                                   'documentcategories_id'       => $newID));
-      }                     
+      }
    }
    $MAX['rubdocs'] = getMaxItem('glpi_documentcategories');
 
@@ -1863,7 +1863,7 @@ function generate_entity($ID_entity) {
                                  'is_recursive'       => 0,
                                  'name'               => "$val-$ID_entity",
                                  'contacttypes_id'    => mt_rand(1,$MAX['contact_type']),
-                                 'usertitles_id'      => mt_rand(0,$MAX['user_title']),                                 
+                                 'usertitles_id'      => mt_rand(0,$MAX['user_title']),
                                  'phone'              => "phone $i",
                                  'phone2'             => "phone2 $i",
                                  'mobile'             => "mobile $i",
@@ -1994,7 +1994,7 @@ function generate_entity($ID_entity) {
    $p                   = new Printer();
    $np                  = new Netpoint();
    $c                   = new Cartridge();
-   
+
    foreach ($DB->request('glpi_locations') as $data) {
       $i          = $data["id"];
       $techID     = mt_rand($FIRST['users_sadmin'],$LAST['users_admin']);
@@ -2046,15 +2046,13 @@ function generate_entity($ID_entity) {
       // Link with father
       if ($data['locations_id']>0) {
          //insert netpoint
-         $netpointID = $np->add(array(
-               'entities_id'  => $ID_entity,
-               'locations_id' => $i,
-               'name'         => getNextNETPOINT(),
-               'comment'      => "comment netpoint $i",
-         ));
+         $netpointID = $np->add(array('entities_id'  => $ID_entity,
+                                      'locations_id' => $i,
+                                      'name'         => getNextNETPOINT(),
+                                      'comment'      => "comment netpoint $i"));
 //          $iface      = mt_rand(1,$MAX['iface']);
-// 
-// 
+//
+//
 //          // Add networking ports
 //          $newIP                 = getNextIP();
 //          $newMAC                = getNextMAC();
@@ -2097,12 +2095,10 @@ function generate_entity($ID_entity) {
 
       // Ajout imprimantes reseaux : 1 par loc + connexion d un matos reseau + ajout de cartouches
       //insert netpoint
-      $netpointID = $np->add(array(
-            'entities_id'  => $ID_entity,
-            'locations_id' => $i,
-            'name'         => getNextNETPOINT(),
-            'comment'      => "comment netpoint $i",
-      ));
+      $netpointID = $np->add(array('entities_id'  => $ID_entity,
+                                   'locations_id' => $i,
+                                   'name'         => getNextNETPOINT(),
+                                   'comment'      => "comment netpoint $i"));
 
       // Add trackings
       addTracking('NetworkEquipment', $netwID, $ID_entity);
@@ -2170,25 +2166,21 @@ function generate_entity($ID_entity) {
          // Add old cartridges
          for ($j=0 ; $j<$oldnb ; $j++) {
             $printed += mt_rand(0,5000);
-            $c->add(array(
-               'entities_id'        => $ID_entity,
-               'cartridgeitems_id'  => $ctypeID,
-               'printers_id'        => $printID,
-               'date_in'            => date("Y-m-d",$date1),
-               'date_use'           => date("Y-m-d",$date1+$j*$inter),
-               'date_out'           => date("Y-m-d",$date1+($j+1)*$inter),
-               'pages'              => $printed,
-               ));
+            $c->add(array('entities_id'        => $ID_entity,
+                          'cartridgeitems_id'  => $ctypeID,
+                          'printers_id'        => $printID,
+                          'date_in'            => date("Y-m-d",$date1),
+                          'date_use'           => date("Y-m-d",$date1+$j*$inter),
+                          'date_out'           => date("Y-m-d",$date1+($j+1)*$inter),
+                          'pages'              => $printed));
          }
 
          // Add current cartridges
-         $c->add(array(
-            'entities_id'        => $ID_entity,
-            'cartridgeitems_id'  => $ctypeID,
-            'printers_id'        => $printID,
-            'date_in'            => $date,
-            'date_use'           => date("Y-m-d",$date2),
-            ));
+         $c->add(array('entities_id'        => $ID_entity,
+                       'cartridgeitems_id'  => $ctypeID,
+                       'printers_id'        => $printID,
+                       'date_in'            => $date,
+                       'date_use'           => date("Y-m-d",$date2)));
       }
 
       $iface = mt_rand(1,$MAX['iface']);
@@ -2258,36 +2250,36 @@ function generate_entity($ID_entity) {
       $domainID  = mt_rand(1,$MAX['domain']);
       $networkID = mt_rand(1,$MAX['network']);
 
-      $compID = $c->add(array(
-         'entities_id'                    => $ID_entity,
-         'name'                           => "computer $i-$ID_entity",
-         'serial'                         => Toolbox::getRandomString(10),
-         'otherserial'                    => Toolbox::getRandomString(10),
-         'contact'                        => "contact $i",
-         'contact_num'                    => "num $i",
-         'users_id_tech'                  => $techID,
-         'groups_id_tech'                 => $gtechID,
-         'comment'                        => "comment $i",
-         'operatingsystems_id'            => mt_rand(1,$MAX['os']),
-         'operatingsystemversions_id'     => mt_rand(1,$MAX['os_version']),
-         'operatingsystemservicepacks_id' => mt_rand(1,$MAX['os_sp']),
-         'os_license_number'              => "os sn $i",
-         'os_licenseid'                   => "os id $i",
-         'autoupdatesystems_id'           => mt_rand(1,$MAX['os_sp']),
-         'locations_id'                   => $loc,
-         'domains_id'                     => $domainID,
-         'networks_id'                    => $networkID,         
-         'computertypes_id'               => mt_rand(1,$MAX['type_computers']),
-         'computermodels_id'              => mt_rand(1,$MAX['model']),
-         'manufacturers_id'               => mt_rand(1,$MAX['manufacturer']),
-         'is_global'                      => 1,
-         'notepad'                        => "notes computer $i",
-         'users_id'                       => $userID,
-         'groups_id'                      => $groupID,
-         'states_id'                      => (mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0),
-         'uuid'                           => Toolbox::getRandomString(30),
-      ));
-      
+      $compID = $c->add(array('entities_id'                    => $ID_entity,
+                              'name'                           => "computer $i-$ID_entity",
+                              'serial'                         => Toolbox::getRandomString(10),
+                              'otherserial'                    => Toolbox::getRandomString(10),
+                              'contact'                        => "contact $i",
+                              'contact_num'                    => "num $i",
+                              'users_id_tech'                  => $techID,
+                              'groups_id_tech'                 => $gtechID,
+                              'comment'                        => "comment $i",
+                              'operatingsystems_id'            => mt_rand(1,$MAX['os']),
+                              'operatingsystemversions_id'     => mt_rand(1,$MAX['os_version']),
+                              'operatingsystemservicepacks_id' => mt_rand(1,$MAX['os_sp']),
+                              'os_license_number'              => "os sn $i",
+                              'os_licenseid'                   => "os id $i",
+                              'autoupdatesystems_id'           => mt_rand(1,$MAX['os_sp']),
+                              'locations_id'                   => $loc,
+                              'domains_id'                     => $domainID,
+                              'networks_id'                    => $networkID,
+                              'computertypes_id'               => mt_rand(1,$MAX['type_computers']),
+                              'computermodels_id'              => mt_rand(1,$MAX['model']),
+                              'manufacturers_id'               => mt_rand(1,$MAX['manufacturer']),
+                              'is_global'                      => 1,
+                              'notepad'                        => "notes computer $i",
+                              'users_id'                       => $userID,
+                              'groups_id'                      => $groupID,
+                              'states_id'                      => (mt_rand(0,100)<$percent['state']
+                                                                     ?mt_rand(1,$MAX['state']):0),
+                              'uuid'                           => Toolbox::getRandomString(30)
+                           ));
+
       addDocuments('Computer', $compID);
       addContracts('Computer', $compID);
 
@@ -2304,84 +2296,60 @@ function generate_entity($ID_entity) {
       addInfocoms('Computer', $compID, $ID_entity);
 
       // ADD DEVICE
-      $cdev->add(array(
-         'itemtype'              => 'DeviceMotherBoard',
-         'computers_id'          => $compID,
-         'devicemotherboards_id' => mt_rand(1,$MAX['device']),
-      ));
+      $cdev->add(array('itemtype'              => 'DeviceMotherBoard',
+                       'computers_id'          => $compID,
+                       'devicemotherboards_id' => mt_rand(1,$MAX['device'])));
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceProcessor',
-         'computers_id'          => $compID,
-         'deviceprocessors_id'   => mt_rand(1,$MAX['device']),
-         'specificity'           => (1000+200*mt_rand(0,10))
-      ));
+      $cdev->add(array('itemtype'              => 'DeviceProcessor',
+                       'computers_id'          => $compID,
+                       'deviceprocessors_id'   => mt_rand(1,$MAX['device']),
+                       'specificity'           => (1000+200*mt_rand(0,10))));
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceMemory',
-         'computers_id'          => $compID,
-         'devicememories_id'     => mt_rand(1,$MAX['device']),
-         'specificity'           => (1024*mt_rand(0,6))
-      ));
+      $cdev->add(array('itemtype'              => 'DeviceMemory',
+                       'computers_id'          => $compID,
+                       'devicememories_id'     => mt_rand(1,$MAX['device']),
+                       'specificity'           => (1024*mt_rand(0,6))));
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceHardDrive',
-         'computers_id'          => $compID,
-         'deviceharddrives_id'   => mt_rand(1,$MAX['device']),
-         'specificity'           => (51200*mt_rand(0,10))
-      ));
+      $cdev->add(array('itemtype'              => 'DeviceHardDrive',
+                       'computers_id'          => $compID,
+                       'deviceharddrives_id'   => mt_rand(1,$MAX['device']),
+                       'specificity'           => (51200*mt_rand(0,10))));
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceNetworkCard',
-         'computers_id'          => $compID,
-         'devicenetworkcards_id' => mt_rand(1,$MAX['device']),
-         'specificity'           => getNextMAC()
-      ));
+      $cdev->add(array('itemtype'              => 'DeviceNetworkCard',
+                       'computers_id'          => $compID,
+                       'devicenetworkcards_id' => mt_rand(1,$MAX['device']),
+                       'specificity'           => getNextMAC()));
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceDrive',
-         'computers_id'          => $compID,
-         'devicedrives_id'       => mt_rand(1,$MAX['device']),
-      ));
-      
-      $cdev->add(array(
-         'itemtype'              => 'DeviceControl',
-         'computers_id'          => $compID,
-         'devicecontrols_id'     => mt_rand(1,$MAX['device']),
-      ));      
+      $cdev->add(array('itemtype'              => 'DeviceDrive',
+                       'computers_id'          => $compID,
+                       'devicedrives_id'       => mt_rand(1,$MAX['device'])));
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceGraphicCard',
-         'computers_id'          => $compID,
-         'devicegraphiccards_id' => mt_rand(1,$MAX['device']),
-         'specificity'           => (256*mt_rand(0,8))
-      ));
-      
-      $cdev->add(array(
-         'itemtype'              => 'DeviceSoundCard',
-         'computers_id'          => $compID,
-         'devicesoundcards_id'   => mt_rand(1,$MAX['device']),
-      ));
-            
+      $cdev->add(array('itemtype'              => 'DeviceControl',
+                       'computers_id'          => $compID,
+                       'devicecontrols_id'     => mt_rand(1,$MAX['device'])));
+
+      $cdev->add(array('itemtype'              => 'DeviceGraphicCard',
+                       'computers_id'          => $compID,
+                       'devicegraphiccards_id' => mt_rand(1,$MAX['device']),
+                       'specificity'           => (256*mt_rand(0,8))));
+
+      $cdev->add(array('itemtype'              => 'DeviceSoundCard',
+                       'computers_id'          => $compID,
+                       'devicesoundcards_id'   => mt_rand(1,$MAX['device'])));
+
       if (mt_rand(0,100)<20) {
-         $cdev->add(array(
-            'itemtype'              => 'DevicePci',
-            'computers_id'          => $compID,
-            'devicepcis_id'         => mt_rand(1,$MAX['device']),
-         ));
+         $cdev->add(array('itemtype'         => 'DevicePci',
+                          'computers_id'     => $compID,
+                          'devicepcis_id'    => mt_rand(1,$MAX['device'])));
       }
 
-      $cdev->add(array(
-         'itemtype'              => 'DeviceCase',
-         'computers_id'          => $compID,
-         'devicecases_id'        => mt_rand(1,$MAX['device']),
-      ));
+      $cdev->add(array('itemtype'         => 'DeviceCase',
+                       'computers_id'     => $compID,
+                       'devicecases_id'   => mt_rand(1,$MAX['device'])));
 
-      $cdev->add(array(
-         'itemtype'                 => 'DevicePowerSupply',
-         'computers_id'             => $compID,
-         'devicepowersupplies_id'   => mt_rand(1,$MAX['device']),
-      ));
+      $cdev->add(array('itemtype'                 => 'DevicePowerSupply',
+                       'computers_id'             => $compID,
+                       'devicepowersupplies_id'   => mt_rand(1,$MAX['device'])));
 
       // insert disk
       $nb_disk = mt_rand(1,$MAX_DISK);
@@ -2389,25 +2357,21 @@ function generate_entity($ID_entity) {
          $totalsize = mt_rand(10000,1000000);
          $freesize  = mt_rand(0,$totalsize);
 
-         $cdisk-> add(array(
-               'entities_id'     => $ID_entity,
-               'computers_id'    => $compID,
-               'name'            => "disk $j",
-               'device'          => "/dev/disk$j",
-               'mountpoint'      => "/mnt/disk$j",
-               'filesystems_id'  => mt_rand(1,10),
-               'totalsize'       => $totalsize,
-               'freesize'        => $freesize,
-         ));
+         $cdisk-> add(array('entities_id'     => $ID_entity,
+                            'computers_id'    => $compID,
+                            'name'            => "disk $j",
+                            'device'          => "/dev/disk$j",
+                            'mountpoint'      => "/mnt/disk$j",
+                            'filesystems_id'  => mt_rand(1,10),
+                            'totalsize'       => $totalsize,
+                            'freesize'        => $freesize));
       }
 
       //insert netpoint
-      $netpointID = $np->add(array(
-            'entities_id'  => $ID_entity,
-            'locations_id' => $loc,
-            'name'         => getNextNETPOINT(),
-            'comment'      => "comment netpoint $loc",
-      ));
+      $netpointID = $np->add(array('entities_id'  => $ID_entity,
+                                   'locations_id' => $loc,
+                                   'name'         => getNextNETPOINT(),
+                                   'comment'      => "comment netpoint $loc"));
 
       // Get networking element
       $query = "SELECT `id`
@@ -2457,34 +2421,34 @@ function generate_entity($ID_entity) {
       }
 
       // Ajout d'un ecran sur l'ordi
-      $monID = $mon->add(array(
-         'entities_id'                    => $ID_entity,
-         'name'                           => "monitor $i-$ID_entity",
-         'serial'                         => Toolbox::getRandomString(10),
-         'otherserial'                    => Toolbox::getRandomString(10),
-         'contact'                        => "contact $i",
-         'contact_num'                    => "num $i",
-         'users_id_tech'                  => $techID,
-         'groups_id_tech'                 => $gtechID,
-         'comment'                        => "comment $i",
-         'size'                           => mt_rand(14,22),
-         'have_micro'                     => mt_rand(0,1),
-         'have_speaker'                   => mt_rand(0,1),
-         'have_subd'                      => mt_rand(0,1),
-         'have_bnc'                       => mt_rand(0,1),
-         'have_dvi'                       => mt_rand(0,1),
-         'have_pivot'                     => mt_rand(0,1),
-         'have_hdmi'                      => mt_rand(0,1),
-         'have_displayport'               => mt_rand(0,1),
-         'locations_id'                   => $loc,
-         'monitortypes_id'                => mt_rand(1,$MAX['type_monitors']),
-         'monitormodels_id'               => mt_rand(1,$MAX['model_monitors']),
-         'manufacturers_id'               => mt_rand(1,$MAX['manufacturer']),
-         'notepad'                        => "notes monitor $i",
-         'users_id'                       => $userID,
-         'groups_id'                      => $groupID,
-         'states_id'                      => (mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0),
-      ));   
+      $monID = $mon->add(array('entities_id'       => $ID_entity,
+                               'name'              => "monitor $i-$ID_entity",
+                               'serial'            => Toolbox::getRandomString(10),
+                               'otherserial'       => Toolbox::getRandomString(10),
+                               'contact'           => "contact $i",
+                               'contact_num'       => "num $i",
+                               'users_id_tech'     => $techID,
+                               'groups_id_tech'    => $gtechID,
+                               'comment'           => "comment $i",
+                               'size'              => mt_rand(14,22),
+                               'have_micro'        => mt_rand(0,1),
+                               'have_speaker'      => mt_rand(0,1),
+                               'have_subd'         => mt_rand(0,1),
+                               'have_bnc'          => mt_rand(0,1),
+                               'have_dvi'          => mt_rand(0,1),
+                               'have_pivot'        => mt_rand(0,1),
+                               'have_hdmi'         => mt_rand(0,1),
+                               'have_displayport'  => mt_rand(0,1),
+                               'locations_id'      => $loc,
+                               'monitortypes_id'   => mt_rand(1,$MAX['type_monitors']),
+                               'monitormodels_id'  => mt_rand(1,$MAX['model_monitors']),
+                               'manufacturers_id'  => mt_rand(1,$MAX['manufacturer']),
+                               'notepad'           => "notes monitor $i",
+                               'users_id'          => $userID,
+                               'groups_id'         => $groupID,
+                               'states_id'         => (mt_rand(0,100)<$percent['state']
+                                                         ?mt_rand(1,$MAX['state']):0)
+                           ));
 
       $monID = $DB->insert_id();
       addDocuments('Monitor', $monID);
@@ -2496,10 +2460,10 @@ function generate_entity($ID_entity) {
       // AJOUT INFOCOMS
       addInfocoms('Monitor', $monID, $ID_entity);
 
-      $ci->add(array(
-            'itemtype'     => 'Monitor',
-            'items_id'     => $telID,
-            'computers_id' => $monID,
+      // TODO Julien $telID n'a pas ete initialise
+      $ci->add(array('itemtype'     => 'Monitor',
+                     'items_id'     => $telID,
+                     'computers_id' => $monID,
       ));
 
       // Ajout d'un telephhone avec l'ordi
@@ -2573,11 +2537,9 @@ function generate_entity($ID_entity) {
          addTracking('Peripheral', $periphID, $ID_entity);
 
          // Add connection
-         $ci->add(array(
-               'itemtype'     => 'Peripheral',
-               'items_id'     => $periphID,
-               'computers_id' => $compID,
-         ));
+         $ci->add(array('itemtype'     => 'Peripheral',
+                        'items_id'     => $periphID,
+                        'computers_id' => $compID));
       }
 
 
@@ -2623,11 +2585,9 @@ function generate_entity($ID_entity) {
          addTracking('Printer', $printID, $ID_entity);
 
          // Add connection
-         $ci->add(array(
-               'itemtype'     => 'Printer',
-               'items_id'     => $printID,
-               'computers_id' => $compID,
-         ));
+         $ci->add(array('itemtype'     => 'Printer',
+                        'items_id'     => $printID,
+                        'computers_id' => $compID));
 
          // AJOUT INFOCOMS
          addInfocoms('Printer', $printID, $ID_entity);
