@@ -177,6 +177,9 @@ generateGlobalDropdowns();
 
 DBmysql::optimize_tables ();
 
+// Force entity right
+$_SESSION['glpiactive_profile']['entity'] = 'w';
+
 // Root entity
 generate_entity(0);
 

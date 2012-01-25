@@ -148,9 +148,9 @@ function addReservation($type, $ID, $ID_entity) {
       $i     = 0;
 
       while (mt_rand(0,100)<$percent['reservations']) {
-         $date1 = $date2+3600*mt_rand(0,10); // 10 hours between each resa max
-         $date2 = $date1+3600*mt_rand(1,5); // A reservation from 1 to 5 hours
-
+         $date1 = $date2+HOUR_TIMESTAMP*(1+mt_rand(0,10)); // min 10 hours between each resa max
+         $date2 = $date1+HOUR_TIMESTAMP*mt_rand(1,10); // A reservation from 1 to 5 hours
+//          echo $tID.' '.date("Y-m-d H:i:s", $date1).'->'.date("Y-m-d H:i:s", $date2).'<br>';
          $r->add(array('reservationitems_id' => $tID,
                        'begin'               => date("Y-m-d H:i:s", $date1),
                        'end'                 => date("Y-m-d H:i:s", $date2),
