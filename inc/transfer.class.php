@@ -2585,16 +2585,17 @@ class Transfer extends CommonDBTM {
                // Search for infocoms
                if ($this->options['keep_infocom']) {
                   foreach ($CFG_GLPI["infocom_types"] as $itemtype) {
-                     $query = "SELECT COUNT(*) AS cpt
-                               FROM `glpi_infocoms`
-                               WHERE `suppliers_id` = '$ID'
-                                     AND `itemtype` = '$itemtype'
-                                     AND `items_id` NOT IN ".$this->item_search[$itemtype];
-
-                     if ($result_search = $DB->query($query)) {
-                        $links_remaining += $DB->result($result_search,0,'cpt');
+                     if (isset($this->item_search[$itemtype])) {
+                        $query = "SELECT COUNT(*) AS cpt
+                                 FROM `glpi_infocoms`
+                                 WHERE `suppliers_id` = '$ID'
+                                       AND `itemtype` = '$itemtype'
+                                       AND `items_id` NOT IN ".$this->item_search[$itemtype];
+   
+                        if ($result_search = $DB->query($query)) {
+                           $links_remaining += $DB->result($result_search,0,'cpt');
+                        }
                      }
-
                   }
                }
             }
