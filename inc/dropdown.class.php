@@ -1243,9 +1243,9 @@ class Dropdown {
     *
     * Permit to use optgroup defining items in arrays
     * array('optgroupname'  => array('key1' => 'val1',
-    *                               'key2' => 'val2'),
+    *                                'key2' => 'val2'),
     *       'optgroupname2' => array('key3' => 'val3',
-    *                               'key4' => 'val4'),)       
+    *                                'key4' => 'val4'))
    **/
    static function showFromArray($name, array $elements, $options=array()) {
 
@@ -1259,7 +1259,7 @@ class Dropdown {
             $param[$key] = $val;
          }
       }
-      
+
       // readonly mode
       if ($param['readonly']) {
          echo "<input type='hidden' name='$name' value='".$param['value']."'>";
@@ -1282,18 +1282,18 @@ class Dropdown {
          foreach ($elements as $key => $val) {
             // optgroup management
             if (is_array($val)) {
-               echo  "<optgroup label=\"".htmlentities($key)."\">";
+               echo "<optgroup label=\"".htmlentities($key)."\">";
                foreach ($val as $key2 => $val2) {
                   if (!isset($param['used'][$key2])) {
-                     echo "<option value='".$key2."'".($param['value']==$key2?" selected ":"").">".$val2.
-                        "</option>";
+                     echo "<option value='".$key2."'".($param['value']==$key2?" selected ":"").">".
+                            $val2."</option>";
                   }
                               }
                echo "</optgroup>";
             } else {
                if (!isset($param['used'][$key])) {
                   echo "<option value='".$key."'".($param['value']==$key?" selected ":"").">".$val.
-                     "</option>";
+                       "</option>";
                }
             }
          }

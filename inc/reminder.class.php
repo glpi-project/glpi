@@ -695,8 +695,8 @@ class Reminder extends CommonDBTM {
 
          if ($DB->numrows($result2)>0) {
             for ($i=0 ; $data=$DB->fetch_array($result2) ; $i++) {
-               $key = $data["begin"]."$$".$i;
-               $interv[$key]["itemtype"]    = 'Reminder';
+               $key                          = $data["begin"]."$$".$i;
+               $interv[$key]["itemtype"]     = 'Reminder';
                $interv[$key]["reminders_id"] = $data["id"];
                $interv[$key]["id"]           = $data["id"];
 

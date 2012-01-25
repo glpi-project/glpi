@@ -38,6 +38,10 @@ if (!defined('GLPI_ROOT')) {
 
 class TicketTask  extends CommonITILTask {
 
+
+   /**
+    * @since version 0.84
+   **/
    static function getTypeName($nb=0) {
       return _n('Ticket task', 'Ticket tasks', $nb);
    }

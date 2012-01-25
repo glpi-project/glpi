@@ -507,15 +507,16 @@ abstract class CommonITILTask  extends CommonDBTM {
                   $key = $data["begin"]."$$$".$i;
                   // Do not check entity here because webcal used non authenticated access
 //                  if (Session::haveAccessToEntity($item->fields["entities_id"])) {
-                     $interv[$key]['itemtype'] = $itemtype;
-                     $interv[$data["begin"]."$$$".$i]["url"] = $CFG_GLPI["url_base"].
-                                       "/index.php?redirect=".strtolower($parentitemtype)."_".
-                                       $item->fields[$parentitem->getForeignKeyField()];                    
-                     
+                     $interv[$key]['itemtype']               = $itemtype;
+                     $interv[$data["begin"]."$$$".$i]["url"]
+                                          = $CFG_GLPI["url_base"]."/index.php?redirect=".
+                                            strtolower($parentitemtype)."_".
+                                            $item->fields[$parentitem->getForeignKeyField()];
+
                      $interv[$key][$item->getForeignKeyField()] = $data["id"];
                      $interv[$key]["id"]                        = $data["id"];
                      if (isset($data["state"])) {
-                        $interv[$key]["state"]                     = $data["state"];
+                        $interv[$key]["state"]                  = $data["state"];
                      }
                      $interv[$key][$parentitem->getForeignKeyField()]
                                                 = $item->fields[$parentitem->getForeignKeyField()];
@@ -539,7 +540,7 @@ abstract class CommonITILTask  extends CommonDBTM {
                                                                           $CFG_GLPI["cut"]);
                      $interv[$key]["status"]   = $parentitem->fields["status"];
                      $interv[$key]["priority"] = $parentitem->fields["priority"];
-                     
+
                      /// Specific for tickets
                      $interv[$key]["device"] = '';
                      if (isset($parentitem->hardwaredatas)) {
