@@ -539,7 +539,7 @@ class Consumable extends CommonDBTM {
             list($itemtype,$items_id) = explode('####',$itemtype_items_id);
             $item = new $itemtype();
             if ($item->getFromDB($items_id)) {
-               //TRANS: %1$s is a type name - %2$d is an name
+               //TRANS: %1$s is a type name - %2$s is a name
                printf(__('%1$s - %2$s'), $item->getTypeName(1), $item->getNameID());
             }
             echo "</td>";
