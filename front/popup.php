@@ -82,7 +82,7 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          break;
 
       case "edit_user_notification" :
-         Html::popHeader($LANG['Menu'][40], $_SERVER['PHP_SELF']);
+         Html::popHeader($LANG['job'][19], $_SERVER['PHP_SELF']);
          include "ticket_user.form.php";
          break;
 
