@@ -4327,7 +4327,7 @@ class OcsServer extends CommonDBTM {
 
    static function updateVirtualMachines($computers_id, $ocsid, $ocsservers_id, $cfg_ocs, $import_vm,
                                          $dohistory) {
-      global $DBocs, $DB;
+      global $DBocs;
 
       // No VM before OCS 1.3
       if ($cfg_ocs['ocs_version'] < self::OCS1_3_VERSION_LIMIT) {
@@ -4341,62 +4341,40 @@ class OcsServer extends CommonDBTM {
                 FROM `virtualmachines`
                 WHERE `HARDWARE_ID` = '$ocsid'";
       $result = $DBocs->query($query);
-      
+
       $virtualmachine = new ComputerVirtualMachine();
       if ($DBocs->numrows($result) > 0) {
          while ($line = $DBocs->fetch_array($result)) {
             $line = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
-            $vm['name']                     = $line['NAME'];
-            $vm['vcpu']                     = $line['VCPU'];
-            $vm['ram']                      = $line['MEMORY'];
-            $vm['uuid']                     = $line['UUID'];
-            $vm['computers_id']             = $computers_id;
+            $vm['name'] = $line['NAME'];
+            $vm['vcpu'] = $line['VCPU'];
+            $vm['ram']  = $line['MEMORY'];
+            $vm['uuid'] = $line['UUID'];
+            $vm['computers_id'] = $computers_id;
+
             $vm['virtualmachinestates_id']  = Dropdown::importExternal('VirtualMachineState',
                                                                        $line['STATUS']);
             $vm['virtualmachinetypes_id']   = Dropdown::importExternal('VirtualMachineType',
                                                                        $line['VMTYPE']);
             $vm['virtualmachinesystems_id'] = Dropdown::importExternal('VirtualMachineType',
                                                                        $line['SUBSYSTEM']);
-            //VM already exists on this computer
-            if (in_array(stripslashes($line["ID"]), $import_vm)) {
-               $virtualmachine->reset();
-               $vm['id'] = $line['ID'];
-               $virtualmachine->update($vm);
-               
-               //vm processed, remove it from import_vm
-               $id = array_search(stripslashes($line["ID"]), $import_vm);
-               unset($import_vm[$id]);
-            } else {
-               //VM doesn't exists on the host, but may exist on another one
-               $query = "SELECT `id`, `computers_id` FROM `glpi_computervirtualmachines` " .
-                           "WHERE `uuid`='".$line['UUID']."'";
-               $result_vms = $DB->query($query);
-               if ($DB->numrows($result_vms) > 0) {
-                  $old_computers_id = $DB->result($result_vms, 0, "computers_id");
-                  $id               = $DB->result($result_vms, 0, "id");
-                  //If vm has changed of host
-                  if ($old_computers_id != $computers_id) {
-                     self::deleteInOcsArray($old_computers_id, $id, "import_vm");
-                     self::addToOcsArray($computers_id, array($id => $line['ID']), "import_vm");
-                  } else {
-                     //vm ID has changed in OCS, update import_vm
-                     self::deleteInOcsArray($computers_id, $id, "import_vm");
-                     self::addToOcsArray($computers_id, array($id => $line['ID']), "import_vm");
-                  }
-                  unset($import_vm[$id]);
-                  $vm['id'] = $id;
-                  $virtualmachine->update($vm);
 
-               } else {
-                  $virtualmachine->reset();
-                  if (!$dohistory) {
-                     $vm['_no_history'] = true;
-                  }
-                  $id_vm = $virtualmachine->add($vm);
-                  if ($id_vm) {
-                     self::addToOcsArray($computers_id, array($id_vm => $line['ID']), "import_vm");
-                  }
+            if (!in_array(stripslashes($line["UUID"]), $import_vm)) {
+               $virtualmachine->reset();
+               if (!$dohistory) {
+                  $vm['_no_history'] = true;
                }
+               $id_vm = $virtualmachine->add($vm);
+               if ($id_vm) {
+                  self::addToOcsArray($computers_id, array($id_vm => $line['UUID']), "import_vm");
+               }
+            } else {
+               $id = array_search(stripslashes($line["UUID"]), $import_vm);
+               if ($virtualmachine->getFromDB($id)) {
+                   $vm['id'] = $id;
+                   $virtualmachine->update($vm);
+               }
+               unset ($import_vm[$id]);
             }
          }
       }
