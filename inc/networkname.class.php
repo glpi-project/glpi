@@ -558,21 +558,32 @@ class NetworkName extends FQDNLabel {
 
       $table->display();
 
-      echo "<form method='post' action='".$address->getFormURL()."'>\n";
+      echo "<div class='center'>\n";
+      echo "<table class='tab_cadre'>\n";
 
+      echo "<tr><th>".__('Add a Network Name')."</th></tr>";
+
+      echo "<tr><td class='center'>";
+      echo "<a href=\"" . $address->getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
+      echo __('New one')."</a>";
+      echo "</td></tr>\n";
+
+      echo "<tr><td class='center'>";
+      echo "<form method='post' action='".$address->getFormURL()."'>\n";
       echo "<input type='hidden' name='items_id' value='$items_id'>\n";
       echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
 
+      echo __('Not associated one:');
       Dropdown::show(__CLASS__, array('name'      => 'addressID',
                                       'condition' => '`items_id`=0'));
-      echo "<a href=\"" . $address->getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
-      echo "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
-             "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'>";
-      echo "</a>&nbsp;\n";
-      echo "<input type='submit' name='assign_address' value='" . __s('Associate') .
+      echo "&nbsp;<input type='submit' name='assign_address' value='" . __s('Associate') .
              "' class='submit'>";
-
       echo "</form>\n";
+      echo "</td></tr>\n";
+
+      echo "</table>\n";
+      echo "</div>\n";
+
    }
 
 
