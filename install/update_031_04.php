@@ -33,7 +33,7 @@
 // ----------------------------------------------------------------------
 
 /**
- * Test if there is an user with superadmin rights
+ * Test if there is a user with superadmin rights
  *
  *
  * @returns boolean true if its ok, elsewhere false.

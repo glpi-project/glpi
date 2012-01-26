@@ -937,7 +937,7 @@ class Reservation extends CommonDBChild {
 
 
    /**
-    * Display reservations for an user
+    * Display reservations for a user
     *
     * @param $ID ID a the user
    **/

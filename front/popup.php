@@ -87,7 +87,7 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          break;
 
       case "add_ldapuser" :
-         Html::popHeader(__('Import an user'), $_SERVER['PHP_SELF']);
+         Html::popHeader(__('Import a user'), $_SERVER['PHP_SELF']);
          include "ldap.import.php";
          break;
 

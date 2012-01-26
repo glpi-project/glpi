@@ -303,7 +303,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Count active ITIL Objects requested by an user
+    * Count active ITIL Objects requested by a user
     *
     * @since version 0.83
     *
@@ -332,7 +332,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * Count active ITIL Objects assigned to an user
+    * Count active ITIL Objects assigned to a user
     *
     * @since version 0.83
     *

@@ -2001,7 +2001,7 @@ class AuthLDAP extends CommonDBTM {
          $ldap_parameters[] = $parameter;
       }
 
-      //First : if an user dn is provided, look for it in the directory
+      //First : if a user dn is provided, look for it in the directory
       //Before trying to find the user using his login_field
       if ($values['user_dn']) {
          $info = self::getUserByDn($ds, $values['user_dn'], $ldap_parameters);

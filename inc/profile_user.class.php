@@ -38,6 +38,7 @@ class Profile_User extends CommonDBTM {
    // From CommonDBTM
    var $auto_message_on_action = false;
 
+
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object
       return false;
@@ -55,6 +56,7 @@ class Profile_User extends CommonDBTM {
 
 
    function canCreateItem() {
+
       $user = new User();
       return $user->can($this->fields['users_id'],'r')
              && Profile::currentUserHaveMoreRightThan(
@@ -102,7 +104,7 @@ class Profile_User extends CommonDBTM {
       }
 
       $canshowentity = Session::haveRight("entity","r");
-      $rand=mt_rand();
+      $rand          = mt_rand();
       echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
