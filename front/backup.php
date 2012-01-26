@@ -586,18 +586,14 @@ echo "<td><a class='vsubmit'
 
 echo "</tr></table>";
 
-?>
+echo "<br><table class='tab_cadre' cellpadding='5'>".
+     "<tr class='center'>".
+     "<th><u><i><?php _e('File'); ?></i></u></th>".
+     "<th><u><i><?php _e('Size'); ?></i></u></th>".
+     "<th><u><i><?php _e('Date'); ?></i></u></th>".
+     "<th colspan='3'>&nbsp;</th>".
+     "</tr>";
 
-
-<br>
-<table class='tab_cadre' cellpadding="5">
-<tr class='center'>
-<th><u><i><?php _e('File'); ?></i></u></th>
-<th><u><i><?php _e('Size'); ?></i></u></th>
-<th><u><i><?php _e('Date'); ?></i></u></th>
-<th colspan='3'>&nbsp;</th>
-</tr>
-<?php
 $dir = opendir($path);
 $files = array();
 while ($file = readdir($dir)) {
@@ -669,10 +665,9 @@ if (count($files)) {
    }
 }
 closedir($dir);
-?>
-</table>
-</div>
-<?php
+
+echo "</table>";
+echo "</div>";
 
 Html::footer();
 ?>
