@@ -39,8 +39,8 @@ if (isset($_POST["add"])) {
 
    if ($item->add($_POST)) {
       Event::log($_POST["problems_id"], "problem", 4, "maintain",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -55,8 +55,8 @@ if (isset($_POST["add"])) {
          }
       }
       Event::log($_POST["problems_id"], "problem", 4, "maintain",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 

@@ -80,11 +80,10 @@ class Problem_Ticket extends CommonDBRelation{
 
       $rand = mt_rand();
       echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
-             action='";
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+             action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='10'>"._n('Ticket','Tickets',2)."</th>";
+      echo "<tr><th colspan='10'>".Ticket::getTypeName(2)."</th>";
       if ($problem->isRecursive()) {
          echo "<th>".__('Entity')."</th>";
       }
@@ -104,8 +103,10 @@ class Problem_Ticket extends CommonDBRelation{
       if ($DB->numrows($result) >0) {
          Ticket::commonListHeader(Search::HTML_OUTPUT);
          Session::initNavigateListItems('Ticket',
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$problem->getTypeName(1), $problem->fields["name"]));
+                                 //TRANS : %1$s is the itemtype name,
+                                 //        %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'), $problem->getTypeName(1),
+                                                $problem->fields["name"]));
 
          $i = 0;
          while ($data = $DB->fetch_array($result)) {
@@ -154,8 +155,7 @@ class Problem_Ticket extends CommonDBRelation{
 
       $rand = mt_rand();
       echo "<form name='problemticket_form$rand' id='problemticket_form$rand' method='post'
-             action='";
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+             action='".Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='9'>"._n('Problem - ', 'Problems - ', 2);
@@ -179,7 +179,8 @@ class Problem_Ticket extends CommonDBRelation{
       if ($DB->numrows($result) >0) {
          Problem::commonListHeader(Search::HTML_OUTPUT);
          Session::initNavigateListItems('Problem',
-         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+                              //TRANS : %1$s is the itemtype name,
+                              //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
                                                 $ticket->getTypeName(1), $ticket->fields["name"]));
 

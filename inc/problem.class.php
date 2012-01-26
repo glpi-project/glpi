@@ -275,6 +275,9 @@ class Problem extends CommonITILObject {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::post_updateItem()
+   **/
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
@@ -386,16 +389,16 @@ class Problem extends CommonITILObject {
    function getSearchOptions() {
 
       $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab['common']            = __('Characteristics');
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Title');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['searchtype']    = 'contains';
-      $tab[1]['forcegroupby']  = true;
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']          = $this->getTable();
+      $tab[1]['field']          = 'name';
+      $tab[1]['name']           = __('Title');
+      $tab[1]['datatype']       = 'itemlink';
+      $tab[1]['itemlink_type']  = $this->getType();
+      $tab[1]['searchtype']     = 'contains';
+      $tab[1]['forcegroupby']   = true;
+      $tab[1]['massiveaction']  = false;
 
       $tab[21]['table']         = $this->getTable();
       $tab[21]['field']         = 'content';
@@ -403,30 +406,30 @@ class Problem extends CommonITILObject {
       $tab[21]['massiveaction'] = false;
       $tab[21]['datatype']      = 'text';
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']          = $this->getTable();
+      $tab[2]['field']          = 'id';
+      $tab[2]['name']           = __('ID');
+      $tab[2]['massiveaction']  = false;
 
-      $tab[12]['table']      = $this->getTable();
-      $tab[12]['field']      = 'status';
-      $tab[12]['name']       = __('Status');
-      $tab[12]['searchtype'] = 'equals';
+      $tab[12]['table']         = $this->getTable();
+      $tab[12]['field']         = 'status';
+      $tab[12]['name']          = __('Status');
+      $tab[12]['searchtype']    = 'equals';
 
-      $tab[10]['table']      = $this->getTable();
-      $tab[10]['field']      = 'urgency';
-      $tab[10]['name']       = __('Urgency');
-      $tab[10]['searchtype'] = 'equals';
+      $tab[10]['table']         = $this->getTable();
+      $tab[10]['field']         = 'urgency';
+      $tab[10]['name']          = __('Urgency');
+      $tab[10]['searchtype']    = 'equals';
 
-      $tab[11]['table']      = $this->getTable();
-      $tab[11]['field']      = 'impact';
-      $tab[11]['name']       = __('Impact');
-      $tab[11]['searchtype'] = 'equals';
+      $tab[11]['table']         = $this->getTable();
+      $tab[11]['field']         = 'impact';
+      $tab[11]['name']          = __('Impact');
+      $tab[11]['searchtype']    = 'equals';
 
-      $tab[3]['table']      = $this->getTable();
-      $tab[3]['field']      = 'priority';
-      $tab[3]['name']       = __('Priority');
-      $tab[3]['searchtype'] = 'equals';
+      $tab[3]['table']          = $this->getTable();
+      $tab[3]['field']          = 'priority';
+      $tab[3]['name']           = __('Priority');
+      $tab[3]['searchtype']     = 'equals';
 
       $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'date';
@@ -459,9 +462,9 @@ class Problem extends CommonITILObject {
       $tab[19]['datatype']      = 'datetime';
       $tab[19]['massiveaction'] = false;
 
-      $tab[7]['table'] = 'glpi_itilcategories';
-      $tab[7]['field'] = 'completename';
-      $tab[7]['name']  = __('Category');
+      $tab[7]['table']          = 'glpi_itilcategories';
+      $tab[7]['field']          = 'completename';
+      $tab[7]['name']           = __('Category');
 
       $tab[80]['table']         = 'glpi_entities';
       $tab[80]['field']         = 'completename';
@@ -492,7 +495,7 @@ class Problem extends CommonITILObject {
 
       $tab += $this->getSearchOptionsActors();
 
-      $tab['analysis'] = __('Analysis');
+      $tab['analysis']          = __('Analysis');
 
       $tab[60]['table']         = $this->getTable();
       $tab[60]['field']         = 'impactcontent';
@@ -518,7 +521,7 @@ class Problem extends CommonITILObject {
       $tab[90]['massiveaction'] = false;
 
 
-      $tab['task'] = _n('Task', 'Tasks', 2);
+      $tab['task']              = _n('Task', 'Tasks', 2);
 
       $tab[26]['table']         = 'glpi_problemtasks';
       $tab[26]['field']         = 'content';
@@ -547,11 +550,11 @@ class Problem extends CommonITILObject {
                                           => array('table'      => 'glpi_problemtasks',
                                                    'joinparams' => array('jointype' => 'child')));
 
-      $tab['solution'] = _n('Solution', 'Solutions', 1);
+      $tab['solution']          = _n('Solution', 'Solutions', 1);
 
-      $tab[23]['table'] = 'glpi_solutiontypes';
-      $tab[23]['field'] = 'name';
-      $tab[23]['name']  = __('Solution type');
+      $tab[23]['table']         = 'glpi_solutiontypes';
+      $tab[23]['field']         = 'name';
+      $tab[23]['name']          = __('Solution type');
 
       $tab[24]['table']         = $this->getTable();
       $tab[24]['field']         = 'solution';
@@ -568,7 +571,7 @@ class Problem extends CommonITILObject {
    /**
     * get the problem status list
     *
-    * @param $withmetaforsearch boolean
+    * @param $withmetaforsearch  boolean  (false by default)
     *
     * @return an array
    **/
@@ -576,19 +579,19 @@ class Problem extends CommonITILObject {
 
       // To be overridden by class
       $tab = array('new'      => _x('problem', 'New'),
-                   'accepted' => __('Accepted'),
-                   'assign'   => __('Processing (assigned)'),
-                   'plan'     => __('Processing (planned)'),
+                   'accepted' => _x('problem', 'Accepted'),
+                   'assign'   => _x('problem', 'Processing (assigned)'),
+                   'plan'     => _x('problem', 'Processing (planned)'),
                    'waiting'  => __('Pending'),
-                   'solved'   => __('Solved'),
+                   'solved'   => _x('problem', 'Solved'),
                    'observe'  => __('Under observation'),
-                   'closed'   => __('Closed'));
+                   'closed'   => _x('problem', 'Closed'));
 
       if ($withmetaforsearch) {
-         $tab['notold']    = __('Not solved');
-         $tab['notclosed'] = __('Not closed');
+         $tab['notold']    = _x('problem', 'Not solved');
+         $tab['notclosed'] = _x('problem', 'Not closed');
          $tab['process']   = __('Processing');
-         $tab['old']       = __('Solved + Closed');
+         $tab['old']       = _x('problem', 'Solved + Closed');
          $tab['all']       = __('All');
       }
       return $tab;
@@ -655,9 +658,9 @@ class Problem extends CommonITILObject {
    /**
     * Dropdown of problem status
     *
-    * @param $name select name
-    * @param $value default value
-    * @param $option list proposed 0:normal, 1:search, 2:allowed
+    * @param $name      select name
+    * @param $value     default value (default 'new')
+    * @param $option    list proposed 0:normal, 1:search, 2:allowed (default 0)
     *
     * @return nothing (display)
    **/
@@ -669,8 +672,8 @@ class Problem extends CommonITILObject {
    /**
     * Compute Priority
     *
-    * @param $urgency integer from 1 to 5
-    * @param $impact integer from 1 to 5
+    * @param $urgency   integer from 1 to 5
+    * @param $impact    integer from 1 to 5
     *
     * @return integer from 1 to 5 (priority)
    **/
@@ -682,9 +685,9 @@ class Problem extends CommonITILObject {
    /**
     * Dropdown of problem Urgency
     *
-    * @param $name select name
-    * @param $value default value
-    * @param $complete see also at least selection
+    * @param $name      select name
+    * @param $value     default value (default 0)
+    * @param $complete  see also at least selection (false by default)
     *
     * @return string id of the select
    **/
@@ -696,9 +699,9 @@ class Problem extends CommonITILObject {
    /**
     * Dropdown of problem Impact
     *
-    * @param $name select name
-    * @param $value default value
-    * @param $complete see also at least selection (major included)
+    * @param $name      select name
+    * @param $value     default value (default 0)
+    * @param $complete  see also at least selection (major included) (false by default)
     *
     * @return string id of the select
    **/
@@ -838,7 +841,7 @@ class Problem extends CommonITILObject {
          switch ($this->fields["status"]) {
             case 'closed' :
                echo "<tr>";
-               echo "<td><span class='tracking_small'>".__('Close date')."</span></td>";
+               echo "<td><span class='tracking_small'>".__('Closing date')."</span></td>";
                echo "<td>";
                Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false);
                echo "</td></tr>";
@@ -847,7 +850,7 @@ class Problem extends CommonITILObject {
             case 'solved' :
             case 'observe' :
                echo "<tr>";
-               echo "<td><span class='tracking_small'>".__('Solve date')."</span></td>";
+               echo "<td><span class='tracking_small'>".__('Date of solving')."</span></td>";
                echo "<td>";
                Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
                echo "</td></tr>";
@@ -1056,6 +1059,9 @@ class Problem extends CommonITILObject {
    }
 
 
+   /**
+    * @param $output_type  (default Search::HTML_OUTPUT)
+   **/
    static function commonListHeader($output_type=Search::HTML_OUTPUT) {
 
       // New Line for Header Items Line
@@ -1065,20 +1071,20 @@ class Problem extends CommonITILObject {
 
       $items = array();
 
-      $items[__('Status')] = "glpi_problems.status";
-      $items[__('Date')] = "glpi_problems.date";
-      $items[__('Last update')] = "glpi_problems.date_mod";
+      $items[__('Status')]       = "glpi_problems.status";
+      $items[__('Date')]         = "glpi_problems.date";
+      $items[__('Last update')]  = "glpi_problems.date_mod";
 
       if (count($_SESSION["glpiactiveentities"])>1) {
          $items[_n('Entity', 'Entities', 2)] = "glpi_entities.completename";
       }
 
-      $items[__('Priority')]   = "glpi_problems.priority";
-      $items[__('Requester')]  = "glpi_problems.users_id";
-      $items[__('Assigned')]   = "glpi_problems.users_id_assign";
+      $items[__('Priority')]           = "glpi_problems.priority";
+      $items[__('Requester')]          = "glpi_problems.users_id";
+      $items[_x('problem','Assigned')] = "glpi_problems.users_id_assign";
 //       $items[__('Associated element')] = "glpi_problems.itemtype, glpi_tickets.items_id";
-      $items[__('Category')]        = "glpi_itilcategories.completename";
-      $items[__('Title')]           = "glpi_problems.name";
+      $items[__('Category')]           = "glpi_itilcategories.completename";
+      $items[__('Title')]              = "glpi_problems.name";
 
       foreach ($items as $key => $val) {
          $issort = 0;
@@ -1091,6 +1097,12 @@ class Problem extends CommonITILObject {
    }
 
 
+   /**
+    * @param $id
+    * @param $output_type        (default Search::HTML_OUTPUT)
+    * @param $row_num            (default 0)
+    * @param $id_for_massaction  (default -1)
+    */
    static function showShort($id, $output_type=Search::HTML_OUTPUT, $row_num=0,
                              $id_for_massaction=-1) {
       global $CFG_GLPI;
@@ -1152,20 +1164,20 @@ class Problem extends CommonITILObject {
          // Second column
          if ($job->fields['status']=='closed') {
             $second_col = sprintf(__('Closed on %s'),
-               ($output_type == Search::HTML_OUTPUT?'<br>':'').
-                  Html::convDateTime($job->fields['closedate']));
+                                  ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                    Html::convDateTime($job->fields['closedate']));
           } else if ($job->fields['status']=='solved') {
             $second_col = sprintf(__('Solved on %s'),
-               ($output_type == Search::HTML_OUTPUT?'<br>':'').
-                  Html::convDateTime($job->fields['solvedate']));
+                                  ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                    Html::convDateTime($job->fields['solvedate']));
          } else if ($job->fields['due_date']) {
             $second_col = sprintf(__('Due date: %s'),
-               ($output_type == Search::HTML_OUTPUT?'<br>':'').
-                  Html::convDateTime($job->fields['due_date']));
+                                  ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                    Html::convDateTime($job->fields['due_date']));
          } else {
              $second_col = sprintf(__('Opened on %s'),
-               ($output_type == Search::HTML_OUTPUT?'<br>':'').
-                  Html::convDateTime($job->fields['date']));
+                                   ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                     Html::convDateTime($job->fields['date']));
         }
 
          echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=130");
@@ -1248,7 +1260,7 @@ class Problem extends CommonITILObject {
                                "<span class='b'>".
                                  Dropdown::getDropdownName('glpi_itilcategories',
                                                            $job->fields["itilcategories_id"]).
-                               "</span>",
+                                 "</span>",
                                $item_num, $row_num, $align);
 
          // Eigth column
@@ -1280,13 +1292,14 @@ class Problem extends CommonITILObject {
          echo Search::showEndLine($output_type);
 
       } else {
-         echo "<tr class='tab_bg_2'><td colspan='6' ><i>".__('No problem in progress.')."</i></td></tr>";
+         echo "<tr class='tab_bg_2'><td colspan='6'><i>".__('No problem in progress.').
+              "</i></td></tr>";
       }
    }
 
 
    /**
-   * Display problems for an item
+    * Display problems for an item
     *
     * Will also display problems of linked items
     *
@@ -1360,7 +1373,8 @@ class Problem extends CommonITILObject {
             break;
 
          default :
-            $restrict                 = "(`items_id` = '".$item->getID()."' AND `itemtype` = '".$item->getType()."')";
+            $restrict                 = "(`items_id` = '".$item->getID()."'
+                                          AND `itemtype` = '".$item->getType()."')";
             $order                    = '`glpi_problems`.`date_mod` DESC';
 
 //             $options['field'][0]      = 12;
@@ -1395,8 +1409,10 @@ class Problem extends CommonITILObject {
       if ($number > 0) {
 
          Session::initNavigateListItems('Problem',
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
+               //TRANS : %1$s is the itemtype name,
+               //        %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
+                                                $item->getName()));
 
          echo "<tr><th colspan='8'>";
 
@@ -1416,7 +1432,7 @@ class Problem extends CommonITILObject {
          self::commonListHeader(Search::HTML_OUTPUT);
 
          while ($data = $DB->fetch_assoc($result)) {
-            Session::addToNavigateListItems('Problem',$data["id"]);
+            Session::addToNavigateListItems('Problem', $data["id"]);
             self::showShort($data["id"]);
          }
       }
@@ -1462,7 +1478,6 @@ class Problem extends CommonITILObject {
    /**
     * Number of tasks of the problem
     *
-
     * @return followup count
    **/
    function numberOfTasks() {

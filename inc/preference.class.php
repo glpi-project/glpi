@@ -36,7 +36,6 @@ class Preference extends CommonGLPI {
 
 
    static function getTypeName($nb=0) {
-
       // Always plural
       return __('Settings');
    }
@@ -45,7 +44,6 @@ class Preference extends CommonGLPI {
    function defineTabs($options=array()) {
 
       $ong = array();
-
       $this->addStandardTab('User', $ong, $options);
       $this->addStandardTab('Config', $ong, $options);
       $this->addStandardTab('DisplayPreference', $ong, $options);

@@ -54,9 +54,9 @@ if (isset($_POST["add"])) {
    $problem->check($_POST["id"], 'w');
 
    $problem->delete($_POST);
-   Event::log($_POST["id"], "problem", 4, "maintain", 
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST["id"], "problem", 4, "maintain",
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
    $problem->redirectToList();
 
 } else if (isset($_POST["restore"])) {
@@ -64,26 +64,26 @@ if (isset($_POST["add"])) {
 
    $problem->restore($_POST);
    Event::log($_POST["id"], "problem", 4, "maintain",
-            //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));               
+              //TRANS: %s is the user login
+              sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
    $problem->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
    $problem->check($_REQUEST["id"], 'w');
-   $problem->delete($_REQUEST,1);
 
+   $problem->delete($_REQUEST,1);
    Event::log($_REQUEST["id"], "problem", 4, "maintain",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $problem->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $problem->check($_POST["id"], 'w');
 
    $problem->update($_POST);
-   Event::log($_POST["id"], "problem", 4, "maintain", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST["id"], "problem", 4, "maintain",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
 
    // Copy solution to KB redirect to KB
    if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
@@ -108,7 +108,7 @@ if (isset($_POST["add"])) {
    $group_ticket->delete($_REQUEST);
 
    Event::log($_REQUEST['problems_id'], "problem", 4, "maintain",
-              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
+              sprintf(__('%s deletes a group'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_REQUEST['problems_id']);
 
 } else {
