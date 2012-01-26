@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class PhonePowerSupply extends CommonDropdown {
 
    static function getTypeName($nb=0) {
-      return _n('Phone power supply type', 'Phones power supply types', $nb);
+      return _n('Phone power supply type', 'Phone power supply types', $nb);
    }
 
 }

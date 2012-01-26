@@ -55,7 +55,7 @@ $phone = new Phone();
 if (isset($_POST["add"])) {
    $phone->check(-1,'w',$_POST);
 
-   $newID=$phone->add($_POST);
+   $newID = $phone->add($_POST);
    Event::log($newID, "phones", 4, "inventory",
               sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
@@ -65,8 +65,8 @@ if (isset($_POST["add"])) {
    $phone->delete($_POST);
 
    Event::log($_POST["id"], "phones", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
    $phone->redirectToList();
 
 } else if (isset($_POST["restore"])) {
@@ -74,8 +74,8 @@ if (isset($_POST["add"])) {
 
    $phone->restore($_POST);
    Event::log($_POST["id"], "phones", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
    $phone->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
@@ -83,8 +83,8 @@ if (isset($_POST["add"])) {
 
    $phone->delete($_REQUEST,1);
    Event::log($_REQUEST["id"], "phones", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $phone->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -92,8 +92,8 @@ if (isset($_POST["add"])) {
 
    $phone->update($_POST);
    Event::log($_POST["id"], "phones", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_GET["unglobalize"])) {
@@ -101,8 +101,8 @@ if (isset($_POST["add"])) {
 
    Computer_Item::unglobalizeItem($phone);
    Event::log($_GET["id"], "phones", 4, "inventory",
-               //TRANS: %s is the user login
-               sprintf(__('%s sets unitary management'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s sets unitary management'), $_SESSION["glpiname"]));
 
    Html::redirect($CFG_GLPI["root_doc"]."/front/phone.form.php?id=".$_GET["id"]);
 
