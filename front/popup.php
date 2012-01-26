@@ -82,18 +82,13 @@ if (isset($_SESSION["glpipopup"]["name"])) {
          break;
 
       case "edit_user_notification" :
-         Html::popHeader(_n('Bookmark', 'Bookmarks', 2), $_SERVER['PHP_SELF']);
+         Html::popHeader(__('Email followup'), $_SERVER['PHP_SELF']);
          include "ticket_user.form.php";
          break;
 
       case "add_ldapuser" :
          Html::popHeader(__('Import an user'), $_SERVER['PHP_SELF']);
          include "ldap.import.php";
-         break;
-
-      case "add_ruleparameter" :
-         Html::popHeader(__('Import an user'), $_SERVER['PHP_SELF']);
-         include strtolower($_GET['sub_type']."Parameter.php");
          break;
 
       case "list_notificationtags" :
