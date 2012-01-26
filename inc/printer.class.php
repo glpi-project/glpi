@@ -92,7 +92,7 @@ class Printer  extends CommonDBTM {
     * Overloaded from CommonDBTM
     *
     * @return booleen
-    **/
+   **/
    function canUnrecurs() {
       global $DB, $CFG_GLPI;
 
@@ -118,8 +118,8 @@ class Printer  extends CommonDBTM {
 
       // Evaluate connection in the 2 ways
       for ($tabend = array("networkports_id_1" => "networkports_id_2",
-                           "networkports_id_2" => "networkports_id_1");
-           list($enda, $endb) = each($tabend);) {
+                           "networkports_id_2" => "networkports_id_1") ;
+           list($enda, $endb) = each($tabend) ; ) {
 
          $sql = "SELECT `itemtype`,
                         GROUP_CONCAT(DISTINCT `items_id`) AS ids
@@ -137,13 +137,14 @@ class Printer  extends CommonDBTM {
          if ($res) {
             while ($data = $DB->fetch_assoc($res)) {
                $itemtable = getTableForItemType($data["itemtype"]);
-               $item      = new $data["itemtype"]();
-               // For each itemtype which are entity dependant
-               if ($item->isEntityAssign()) {
+               if ($item = getItemForItemtype($data["itemtype"])) {
+                  // For each itemtype which are entity dependant
+                  if ($item->isEntityAssign()) {
 
-                  if (countElementsInTable($itemtable, "`id` IN (".$data["ids"].")
-                                           AND `entities_id` NOT IN $entities")>0) {
-                     return false;
+                     if (countElementsInTable($itemtable, "`id` IN (".$data["ids"].")
+                                              AND `entities_id` NOT IN $entities")>0) {
+                        return false;
+                     }
                   }
                }
             }
@@ -171,7 +172,6 @@ class Printer  extends CommonDBTM {
       } else {
          $input['last_pages_counter'] = $input['init_pages_counter'];
       }
-
 
       return $input;
    }
@@ -268,8 +268,8 @@ class Printer  extends CommonDBTM {
    /**
     * Print the printer form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer ID of the item
+    * @param $options   array
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
@@ -478,10 +478,10 @@ class Printer  extends CommonDBTM {
       echo "</td><td>";
       if (isset($options['withtemplate']) && $options['withtemplate']) {
          //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'),Html::convDateTime($_SESSION["glpi_currenttime"]));
+         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
       } else {
          //TRANS: %s is the datetime of insertion
-         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
       echo "</td></tr>\n";
 
@@ -664,10 +664,10 @@ class Printer  extends CommonDBTM {
   /**
     * Add a printer. If already exist in trash restore it
     *
-    * @param name the printer's name
-    * @param manufacturer the software's manufacturer
-    * @param entity the entity in which the software must be added
-    * @param comment comment
+    * @param $name          the printer's name
+    * @param $manufacturer  the software's manufacturer
+    * @param $entity        the entity in which the software must be added
+    * @param $comment       comment (default '')
    **/
    function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment='') {
       global $DB;
@@ -705,10 +705,10 @@ class Printer  extends CommonDBTM {
    /**
     * Create a new printer
     *
-    * @param name the printer's name
-    * @param manufacturer the printer's manufacturer
-    * @param entity the entity in which the printer must be added
-    * @param comment
+    * @param $name         the printer's name
+    * @param $manufacturer the printer's manufacturer
+    * @param $entity       the entity in which the printer must be added
+    * @param $comment      (default '')
     *
     * @return the printer's ID
    **/

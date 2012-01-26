@@ -39,6 +39,4 @@ include (GLPI_ROOT . "/inc/includes.php");
 $task = new ProblemTask();
 
 include (GLPI_ROOT . "/front/commonitiltask.form.php");
-
-
 ?>

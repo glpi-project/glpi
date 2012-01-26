@@ -582,7 +582,7 @@ class Change extends CommonITILObject {
       $tab = array('new'           => _x('change', 'New'),
                    'evaluation'    => __('Evaluation'),
                    'approbation'   => __('Approval'),
-                   'accepted'      => __('Accepted'),
+                   'accepted'      => _x('change', 'Accepted'),
                    'waiting'       => __('Pending'),
 //                   'assign'      => __('Processing (assigned)'),
 //                   'plan'        => __('Processing (planned)'),
@@ -590,15 +590,15 @@ class Change extends CommonITILObject {
                    'qualification' => __('Qualification'),
                    'solved'        => __('Applied'),
                    'observe'       => __('Review'),
-                   'closed'        => __('Closed'),
+                   'closed'        => _x('change', 'Closed'),
 //                   'abandoned'     => __('Abandonned'), // managed using trash ?
    );
 
       if ($withmetaforsearch) {
-         $tab['notold']    = __('Not solved');
-         $tab['notclosed'] = __('Not closed');
+         $tab['notold']    = _x('change', 'Not solved');
+         $tab['notclosed'] = _x('change', 'Not closed');
          $tab['process']   = __('Processing');
-         $tab['old']       = __('Solved + Closed');
+         $tab['old']       = _x('change', 'Solved + Closed');
          $tab['all']       = __('All');
       }
       return $tab;

@@ -56,16 +56,16 @@ Session::checkLoginUser();
 
 if (isset($_POST["update"]) && $_POST["id"] === Session::getLoginUserID()) {
    $user->update($_POST);
-   Event::log($_POST["id"], "users", 5, "setup", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST["id"], "users", 5, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
-      Html::header(__('Preferences'), $_SERVER['PHP_SELF'],'preference');
+      Html::header(Preference::getTypeName(1), $_SERVER['PHP_SELF'],'preference');
    } else {
-      Html::helpHeader(__('Preferences'), $_SERVER['PHP_SELF']);
+      Html::helpHeader(Preference::getTypeName(1), $_SERVER['PHP_SELF']);
    }
 
    $pref = new Preference();

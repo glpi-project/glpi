@@ -64,46 +64,45 @@ if (isset($_POST["add"])) {
    $print->check($_POST["id"],'d');
    $print->delete($_POST);
 
-   Event::log($_POST["id"], "printers", 4, "inventory", 
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST["id"], "printers", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
    $print->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $print->check($_POST["id"],'d');
 
    $print->restore($_POST);
-   Event::log($_POST["id"], "printers", 4, "inventory", 
-            //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST["id"], "printers", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
    $print->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
-
    $print->check($_REQUEST["id"],'d');
 
    $print->delete($_REQUEST,1);
    Event::log($_REQUEST["id"], "printers", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $print->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $print->check($_POST["id"],'w');
 
    $print->update($_POST);
-   Event::log($_POST["id"], "printers", 4, "inventory", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST["id"], "printers", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_GET["unglobalize"])) {
    $print->check($_GET["id"],'w');
 
    Computer_Item::unglobalizeItem($print);
-   Event::log($_GET["id"], "printers", 4, "inventory", 
-         //TRANS: %s is the user login
-         sprintf(__('%s sets unitary management'), $_SESSION["glpiname"]));
+   Event::log($_GET["id"], "printers", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s sets unitary management'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/printer.form.php?id=".$_GET["id"]);
 
 } else {

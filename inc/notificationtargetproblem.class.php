@@ -206,7 +206,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       //Locales
       $tags = array('task.author'               => __('Writer'),
                     'task.isprivate'            => __('Private'),
-                    'task.date'                 => __('Date of opening'),
+                    'task.date'                 => __('Opening date'),
                     'task.description'          => __('Description'),
                     'task.category'             => __('Category'),
                     'task.time'                 => __('Total duration'),
