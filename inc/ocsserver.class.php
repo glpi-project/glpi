@@ -4443,17 +4443,17 @@ class OcsServer extends CommonDBTM {
             $vm['virtualmachinesystems_id'] = Dropdown::importExternal('VirtualMachineType',
                                                                        $line['SUBSYSTEM']);
 
-            if (!in_array(stripslashes($line["ID"]), $import_vm)) {
+            if (!in_array(stripslashes($line["UUID"]), $import_vm)) {
                $virtualmachine->reset();
                if (!$dohistory) {
                   $vm['_no_history'] = true;
                }
                $id_vm = $virtualmachine->add($vm);
                if ($id_vm) {
-                  self::addToOcsArray($computers_id, array($id_vm => $line['ID']), "import_vm");
+                  self::addToOcsArray($computers_id, array($id_vm => $line['UUID']), "import_vm");
                }
             } else {
-               $id = array_search(stripslashes($line["ID"]), $import_vm);
+               $id = array_search(stripslashes($line["UUID"]), $import_vm);
                if ($virtualmachine->getFromDB($id)) {
                    $vm['id'] = $id;
                    $virtualmachine->update($vm);

@@ -1643,6 +1643,14 @@ function update0803to083() {
       $DB->queryOrDie($query, "0.83 restore root entity default value");
    }
 
+   $migration->addKey('glpi_computervirtualmachines', 'computers_id');
+   $migration->addKey('glpi_computervirtualmachines', 'entities_id');
+   $migration->addKey('glpi_computervirtualmachines', 'name');
+   $migration->addKey('glpi_computervirtualmachines', 'virtualmachinestates_id');
+   $migration->addKey('glpi_computervirtualmachines', 'virtualmachinesystems_id');
+   $migration->addKey('glpi_computervirtualmachines', 'vcpu');
+   $migration->addKey('glpi_computervirtualmachines', 'ram');
+
 //   $ADDTODISPLAYPREF['KnowbaseItem'] = array(2,3,4,5,6,7);
 
 
