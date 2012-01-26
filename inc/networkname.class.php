@@ -462,21 +462,45 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   static function getHTMLTableHeaderForItem(&$table, $canedit, $fathers_name) {
-      $table->addHeader(NetworkName::getTypeName(), "NetworkName", $fathers_name);
-      NetworkAlias::getHTMLTableHeaderForItem($table, $canedit);
-      IPAddress::getHTMLTableHeaderForItem($table, $canedit);
+   /**
+    * \brief Show names for an item
+    *
+    * @param $table        The table to update
+    * @param $fathers_name The name of the father element
+    * @param $options:
+    *                 'dont_display' : array of the columns that must not be display
+    *
+   **/
+   static function getHTMLTableHeaderForItem(HTMLTable &$table, $fathers_name = "",
+                                             $options=array()) {
+      $column_name = 'NetworkName';
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+      $table->addHeader(NetworkName::getTypeName(), $column_name, $fathers_name);
+      NetworkAlias::getHTMLTableHeaderForNetworkName($table, $column_name, $options);
+      IPAddress::getHTMLTableHeaderForItem($table, $column_name, $options);
    }
 
 
    /**
     * \brief Show names for an item
     *
-    * @param $item     CommonDBTM object
-    * @param $table    The table to update
+    * @param $item      CommonDBTM object
+    * @param $table     The table to update
+    * @param $canedit   display the edition elements (ie : add, remove, ...)
+    * @param $close_row set to true if we must close the row at the end of the current element
+    * @param $options:
+    *                  'dont_display' : array of the elements that must not be display
+    *
    **/
-   static function getHTMLTableForItem(CommonGLPI $item, &$table, $canedit, $closeRow) {
+   static function getHTMLTableForItem(CommonGLPI $item, HTMLTable &$table, $canedit, $close_row,
+                                       $options=array()) {
       global $DB, $CFG_GLPI;
+
+      if (isset($options['dont_display']['NetworkName'])) {
+         return;
+      }
 
       $query = "SELECT `id`
                 FROM `glpi_networknames`
@@ -521,11 +545,12 @@ class NetworkName extends FQDNLabel {
 
                $table->addElement($content, "NetworkName", $address->getID(), $item->getID());
 
-               NetworkAlias::getHTMLTableForNetworkName($address->getID(), $table, $canedit);
+               NetworkAlias::getHTMLTableForNetworkName($address, $table, $canedit, false,
+                                                        $options);
 
-               IPAddress::getHTMLTableForItem($address, $table, $canedit);
+               IPAddress::getHTMLTableForItem($address, $table, $canedit, false, $options);
 
-               if ($closeRow) {
+               if ($close_row) {
                   $table->closeRow();
                }
             }
@@ -552,7 +577,7 @@ class NetworkName extends FQDNLabel {
 
       $table = new HTMLTable();
       $table->addGlobalName(self::getTypeName(2));
-      self::getHTMLTableHeaderForItem($table, true, "");
+      self::getHTMLTableHeaderForItem($table);
 
       self::getHTMLTableForItem($item, $table, true, true);
 
