@@ -65,8 +65,8 @@ if (isset($_POST["add"])) {
    $peripheral->delete($_POST);
 
    Event::log($_POST["id"], "peripherals", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
    $peripheral->redirectToList();
 
 } else if (isset($_POST["restore"])) {
@@ -74,8 +74,8 @@ if (isset($_POST["add"])) {
 
    $peripheral->restore($_POST);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));            
+              //TRANS: %s is the user login
+              sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
    $peripheral->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
@@ -83,8 +83,8 @@ if (isset($_POST["add"])) {
 
    $peripheral->delete($_REQUEST,1);
    Event::log($_REQUEST["id"], "peripherals", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $peripheral->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -92,8 +92,8 @@ if (isset($_POST["add"])) {
 
    $peripheral->update($_POST);
    Event::log($_POST["id"], "peripherals", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_GET["unglobalize"])) {

@@ -63,8 +63,8 @@ class Planning {
    /**
     * Dropdown of planning state
     *
-    * @param $name select name
-    * @param $value default value
+    * @param $name   select name
+    * @param $value  default value (default '')
    **/
    static function dropdownState($name, $value='') {
 
@@ -79,10 +79,11 @@ class Planning {
    /**
     * Check already planned user for a period
     *
-    * @param $users_id user id
-    * @param $begin begin date
-    * @param $end end date
-    * @param $except array of items which not be into account array('Reminder'=>array(1,2,id_of_items))
+    * @param $users_id        user id
+    * @param $begin           begin date
+    * @param $end             end date
+    * @param $except    array of items which not be into account array
+    *                         ('Reminder'=>array(1,2,id_of_items))
    **/
    static function checkAlreadyPlanned($users_id, $begin, $end, $except=array()) {
       global $CFG_GLPI;
@@ -109,7 +110,8 @@ class Planning {
          }
       }
       if ($planned) {
-         Session::addMessageAfterRedirect(__('User is already occupied for the selected timeframe:').'<br>'.$message, false, ERROR);
+         Session::addMessageAfterRedirect(__('The user is busy at the selected timeframe.').
+                                          '<br>'.$message, false, ERROR);
       }
       return $planned;
    }
@@ -117,7 +119,6 @@ class Planning {
 
    /**
     * Show the planning selection form
-    *
     *
     * @param $type         planning type : can be day, week, month
     * @param $date         working date
@@ -140,7 +141,7 @@ class Planning {
                $year_next++;
                $month_next -= 12;
             }
-            $year_prev=   $split[0];
+            $year_prev  = $split[0];
             $month_prev = $split[1]-1;
             if ($month_prev==0) {
                $year_prev--;
@@ -181,11 +182,11 @@ class Planning {
       if (Session::haveRight("show_all_planning","1")) {
          echo "<input type='radio' id='radio_user' name='usertype' value='user' ".
                 ($usertype=="user"?"checked":"").">";
-         $rand_user  =User::dropdown(array( 'name'   => 'uID',
-                                            'value'  => $uID,
-                                            'right'  => 'interface',
-                                            'all'    => 1,
-                                            'entity' => $_SESSION["glpiactive_entity"]));
+         $rand_user = User::dropdown(array('name'   => 'uID',
+                                           'value'  => $uID,
+                                           'right'  => 'interface',
+                                           'all'    => 1,
+                                           'entity' => $_SESSION["glpiactive_entity"]));
          echo "\n<hr>";
          echo "<input type='radio' id='radio_group' name='usertype' value='group' ".
                 ($usertype=="group"?"checked":"").">";
@@ -222,16 +223,13 @@ class Planning {
       echo '<hr>';
 
       echo "<select name='type'>";
-      echo "<option value='day' ".($type=="day"?" selected ":"").">".__('Day').
-           "</option>";
-      echo "<option value='week' ".($type=="week"?" selected ":"").">".__('Week').
-           "</option>";
-      echo "<option value='month' ".($type=="month"?" selected ":"").">".
-             __('Month')."</option>";
+      echo "<option value='day' ".($type=="day"?" selected ":"").">".__('Day')."</option>";
+      echo "<option value='week' ".($type=="week"?" selected ":"").">".__('Week')."</option>";
+      echo "<option value='month' ".($type=="month"?" selected ":"").">".__('Month')."</option>";
       echo "</select></td>\n";
 
       echo "<td>";
-      Dropdown::dropdownTypes('itemtype',$itemtype, $CFG_GLPI['planning_types']);
+      Dropdown::dropdownTypes('itemtype', $itemtype, $CFG_GLPI['planning_types']);
       echo "</td>";
 
       echo "<td rowspan='2' class='center'>";
@@ -272,9 +270,9 @@ class Planning {
     *
     * @since version 0.83
     *
-    * @param $who ID of the user
-    * @param $begin begin date to check
-    * @param $end end date to check
+    * @param $who    ID of the user
+    * @param $begin  begin date to check (default '')
+    * @param $end    end date to check (default '')
     *
     * @return Nothing (display function)
    **/
@@ -327,7 +325,7 @@ class Planning {
 
       $interv = array();
       foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-         $interv = array_merge($interv,$itemtype::populatePlanning($params));
+         $interv = array_merge($interv, $itemtype::populatePlanning($params));
       }
 
       // Print Headers
@@ -346,8 +344,10 @@ class Planning {
       echo "<tr class='tab_bg_1'><th width='15%'>&nbsp;</th>";
 
       for ($i=$begin_hour ; $i<$end_hour ; $i++) {
-         echo "<th width='$colsize%' colspan='4'>".($i<10?'0':'').$i.
-                " -> ". (($i+1)<10?'0':'').($i+1)."</th>";
+         $from = ($i<10?'0':'').$i;
+         $to   = (($i+1)<10?'0':'').($i+1);
+         echo "<th width='$colsize%' colspan='4'>".sprintf(__('From %1$s to %2$s'), $from, $to).
+              "<th>";
          $colnumber += 4;
       }
       echo "</tr>";
@@ -381,7 +381,7 @@ class Planning {
                      $begin_act = $data["begin"];
                   }
                   if ($end_act < $data["end"]) {
-                     $end_act   = $data["end"];
+                     $end_act = $data["end"];
                   }
 
                   unset($interv[key($interv)]);
@@ -658,7 +658,8 @@ class Planning {
 
                echo "<td height='100' class='tab_bg_3 top'>";
                echo "<table class='center'><tr><td class='center'>";
-               echo "<span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$day."</span></td></tr>";
+               echo "<span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".
+                      $day."</span></td></tr>";
 
                echo "<tr class='tab_bg_3'>";
                echo "<td class='tab_bg_3 top' width='12%'>";
@@ -680,7 +681,7 @@ class Planning {
                   if (empty($type)) {
                      next($interv);
                   } else {
-                     self::displayPlanningItem($data,$who,$type);
+                     self::displayPlanningItem($data,  $who,$type);
                      if ($type=="in") {
                         unset($interv[key($interv)]);
                      } else {
@@ -714,10 +715,11 @@ class Planning {
    /**
     * Display a Planning Item
     *
-    * @param $val Array of the item to display
-    * @param $who ID of the user (0 if all)
-    * @param $type position of the item in the time block (in, through, begin or end)
-    * @param $complete complete display (more details)
+    * @param $val       Array of the item to display
+    * @param $who             ID of the user (0 if all)
+    * @param $type            position of the item in the time block (in, through, begin or end)
+    *                         (default '')
+    * @param $complete        complete display (more details) (default 0)
     *
     * @return Nothing (display function)
    **/
@@ -844,7 +846,7 @@ class Planning {
     *
     * @return icalendar string
    **/
-   static function generateIcal($who,$who_group, $itemtype='') {
+   static function generateIcal($who, $who_group, $itemtype='') {
       global $CFG_GLPI;
 
       if ($who==0 && $who_group==0) {
@@ -932,5 +934,4 @@ class Planning {
    }
 
 }
-
 ?>

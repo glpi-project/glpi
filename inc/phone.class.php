@@ -42,11 +42,11 @@ class Phone extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory            = true;
+   
    protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
 
    static function getTypeName($nb=0) {
-
       //TRANS: Test of comment for translation (mark : //TRANS)
       return _n('Phone','Phones',$nb);
    }
@@ -171,8 +171,8 @@ class Phone extends CommonDBTM {
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
-    *@return boolean item found
-    **/
+    * @return boolean item found
+   **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
@@ -354,10 +354,10 @@ class Phone extends CommonDBTM {
       echo "</td><td>";
       if (isset($options['withtemplate']) && $options['withtemplate']) {
          //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'),Html::convDateTime($_SESSION["glpi_currenttime"]));
+         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
       } else {
          //TRANS: %s is the datetime of insertion
-         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
       echo "</td></tr>\n";
 
@@ -372,7 +372,7 @@ class Phone extends CommonDBTM {
     * Return the SQL command to retrieve linked object
     *
     * @return a SQL command which return a set of (itemtype, items_id)
-    **/
+   **/
    function getSelectLinkedItem() {
 
       return "SELECT 'Computer', `computers_id`

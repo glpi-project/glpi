@@ -38,10 +38,11 @@ if (!defined('GLPI_ROOT')) {
 
 // CLASS peripheral
 
-class Peripheral  extends CommonDBTM {
+class Peripheral extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory            = true;
+   
    protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
 
@@ -173,7 +174,7 @@ class Peripheral  extends CommonDBTM {
     *     - withtemplate boolean : template or basic item
     *
     * @return boolean item found
-    **/
+   **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
@@ -200,7 +201,7 @@ class Peripheral  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf('%1$s%2$s', __('Name'),
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'),
                           (isset($options['withtemplate']) && $options['withtemplate']?"*":""));
       echo "</td>";
       echo "<td>";
@@ -266,8 +267,9 @@ class Peripheral  extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "contact");
       echo "</td>\n";
-      echo "<td>".__('Inventory number').
-                 (isset($options['withtemplate']) && $options['withtemplate']?"*":"")."</td>\n";
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number').
+                 (        isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
+           "</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial",
                              (isset($options['withtemplate']) && $options['withtemplate']==2),
@@ -323,10 +325,10 @@ class Peripheral  extends CommonDBTM {
       echo "</td><td>";
       if (isset($options['withtemplate']) && $options['withtemplate']) {
          //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'),Html::convDateTime($_SESSION["glpi_currenttime"]));
+         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
       } else {
          //TRANS: %s is the datetime of insertion
-         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
       echo "</td></tr>\n";
 
@@ -341,7 +343,7 @@ class Peripheral  extends CommonDBTM {
     * Return the SQL command to retrieve linked object
     *
     * @return a SQL command which return a set of (itemtype, items_id)
-    **/
+   **/
    function getSelectLinkedItem() {
 
       return "SELECT 'Computer', `computers_id`
