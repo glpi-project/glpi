@@ -49,7 +49,7 @@ function registerPluginType($name) {
 
 $plugin = new Plugin();
 
-Html::header(__('Setup'),$_SERVER['PHP_SELF'],"config","plugins");
+Html::header(__('Setup'), $_SERVER['PHP_SELF'], "config", "plugins");
 
 if (isset($_GET['action']) && isset($_GET['id'])) {
    if (method_exists($plugin,$_GET['action'])) {
