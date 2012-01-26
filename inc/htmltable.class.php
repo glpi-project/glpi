@@ -323,5 +323,26 @@ class HTMLTable {
      echo "</table>\n";
    }
 
+
+   /**
+    * Get the number of columns (ie. : number of "headers")
+    *
+    * @return number of columns
+   **/
+   function getNumberOfColumns() {
+      return count($this->headers);
+   }
+
+
+   /**
+    * Get the number of rows. Be carefull : one row can have several lines, according to the
+    * number of children one cell have
+    *
+    * @return number of rows
+   **/
+   function getNumberOfRows() {
+      return count($this->rows);
+   }
+
 }
 ?>
