@@ -110,29 +110,35 @@ class NetworkPortInstantiation extends CommonDBChild {
    }
 
 
+
    /**
-    * Add all the headers the currebt instantiation to the table for rendering by NetworkPort::showForItem
-    * @see HTMLTable
+    * Get HTMLTable columns headers for a given item type
     *
-    * @param $table   the table to fill
-    * @param $canedit
+    * @param $itemtype     The type of the item
+    * @param $table        The table to update
+    * @param $fathers_name The name of the father element
+    * @param $options:
+    *                 'dont_display' : array of the columns that must not be display
+    *
    **/
-   static function getHTMLTableHeadersForNetworkPort(&$table, $canedit) {
+   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name = "",
+                                                    $options=array()) {
    }
 
-
    /**
-    * Add a specific row to the table of the instantiation
-    * @see HTMLTable
+    * Get HTMLTable row for a given item
     *
-    * @param $netport      NetworkPort object
-    * @param $item         CommonDBTM object
-    * @param $table        the table to fill
-    * @param $withtemplate (default '')
-    * @param $canedit
+    * @param $item      CommonDBTM object
+    * @param $table     The table to update
+    * @param $canedit   display the edition elements (ie : add, remove, ...)
+    * @param $close_row set to true if we must close the row at the end of the current element
+    * @param $options:
+    *                  'dont_display' : array of the elements that must not be display
+    *                  'withtemplate' : integer withtemplate param
+    *
    **/
-   function getHTMLTableForNetworkPort(NetworkPort $netport, CommonDBTM $item, &$table,
-                                       $withtemplate, $canedit) {
+   function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
+                                      $canedit, $options=array()) {
    }
 
 
@@ -348,22 +354,22 @@ class NetworkPortInstantiation extends CommonDBChild {
     * NetworkPortAlias and NetworkPortAggregate ara based on other physical network ports
     * (Ethernet or Wifi). This method displays the physical network ports.
    **/
-   function showNetworkPortForItem() {
+   function getInstantiationNetworkPortHTMLTable() {
 
       $netports = array();
 
-      if (isset($this->fields['networkports_id'])) {
+      if (isset($this->fields['links_id'])) {
 
-         if (is_array($this->fields['networkports_id'])) {
-            $networkports_id = $this->fields['networkports_id'];
+         if (is_array($this->fields['links_id'])) {
+            $links_id = $this->fields['links_id'];
          } else {
-            $networkports_id = array($this->fields['networkports_id']);
+            $links_id = array($this->fields['links_id']);
          }
 
          $netport = new NetworkPort();
-         foreach ($networkports_id as $id) {
+         foreach ($links_id as $id) {
             if ($netport->getFromDB($id)) {
-               $netports[] =  $netport->getLink();
+               $netports[] = $netport->getLink();
             }
          }
       }
@@ -397,12 +403,12 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       echo "<td>" . __('Origin port') . "</td><td>\n";
 
-      if (!isset($this->fields['networkports_id'])) {
-         $networkports_id = array();
-      } else if (!is_array($this->fields['networkports_id'])) {
-         $networkports_id = array($this->fields['networkports_id']);
+      if (!isset($this->fields['links_id'])) {
+         $links_id = array();
+      } else if (!is_array($this->fields['links_id'])) {
+         $links_id = array($this->fields['links_id']);
       } else {
-         $networkports_id = $this->fields['networkports_id'];
+         $links_id = $this->fields['links_id'];
       }
 
       // Only one available NetworkPort => copy its MAC to the aggregate or alias port
@@ -411,19 +417,17 @@ class NetworkPortInstantiation extends CommonDBChild {
         var device_mac_addresses = [];\n";
       }
 
-      $possible_ports = array();
+     $possible_ports = array();
       foreach (array('NetworkPortEthernet', 'NetworkPortWifi') as $netport_type) {
 
         $instantiationTable = getTableForItemType($netport_type);
-         $query = "SELECT port.`id`, port.`name`, instantiation.`mac`
+         $query = "SELECT port.`id`, port.`name`, port.`mac`
                    FROM `glpi_networkports` AS port
-                   LEFT JOIN $instantiationTable AS instantiation
-                        ON (instantiation.`id` = port.`id`)
                    WHERE `items_id` = '".$lastItem->getID()."'
                          AND `itemtype` = '".$lastItem->getType()."'
                          AND `instantiation_type` = '$netport_type'";
 
-         $result = $DB->query($query);
+        $result = $DB->query($query);
 
          if ($DB->numrows($result) > 0) {
             $array_element_name                  = call_user_func(array($netport_type,
@@ -443,7 +447,7 @@ class NetworkPortInstantiation extends CommonDBChild {
       }
 
       if ($multiple) {
-         echo "<select name='networkports_id[]' multiple>";
+         echo "<select name='links_id[]' multiple>";
       } else {
          echo "
    function updateForm(devID) {
@@ -453,25 +457,25 @@ class NetworkPortInstantiation extends CommonDBChild {
    }
 </script>\n";
 
-         echo "<select name='networkports_id' ";
-         echo "onchange='updateForm(this.options[this.selectedIndex].value)'>";
+         echo "<select name='links_id' ";
+         echo "onchange='updateForm(this.options[this.selectedIndex].value)'>\n";
       }
 
       foreach ($possible_ports as $group => $ports) {
-         echo "<optgroup label=\"$group\">";
+         echo "   <optgroup label=\"$group\">";
 
          foreach ($ports as $id => $name) {
-            echo "<option value='$id'";
-            if (in_array($id, $networkports_id)) {
+            echo "      <option value='$id'";
+            if (in_array($id, $links_id)) {
                echo " selected";
             }
-            echo ">$name</option>";
+            echo ">$name</option>\n";
          }
 
-         echo "</optgroup>";
+         echo "   </optgroup>";
       }
 
-      echo "</select></td>";
+      echo "</select>\n</td>\n";
    }
 
 

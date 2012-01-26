@@ -93,19 +93,22 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    }
 
 
-   static function getHTMLTableHeadersForNetworkPort(&$table, $canedit) {
-      $table->addHeader(__('Interface'), "Interface");
-      $table->addHeader(__('MAC'), "MAC");
-      $table->addHeader(__('ESSID'), 'ESSID');
-      $table->addHeader(__('Wifi mode'), 'Mode');
-      $table->addHeader(__('Wifi protocol version'), 'Version');
-      $table->addHeader(__('VLAN'), 'VLAN');
-      $table->addHeader(__('Connected to'), "Connected");
+   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name = "",
+                                                    $options=array()) {
+
+      $table->addHeader(__('Interface'), "Interface", $fathers_name);
+      $table->addHeader(__('MAC'), "MAC", $fathers_name);
+      $table->addHeader(__('ESSID'), 'ESSID', $fathers_name);
+      $table->addHeader(__('Wifi mode'), 'Mode', $fathers_name);
+      $table->addHeader(__('Wifi protocol version'), 'Version', $fathers_name);
+      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $table, $fathers_name);
+      $table->addHeader(__('Connected to'), "Connected", $fathers_name);
+
    }
 
 
-   function getHTMLTableForNetworkPort(NetworkPort $netport, CommonDBTM $item, &$table,
-                                       $withtemplate, $canedit) {
+   function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
+                                      $canedit, $options=array()) {
 
       $compdev = new Computer_Device();
       $device = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
@@ -125,9 +128,15 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
       $table->addElement($this->fields['version'], "Version", $this->getID(), $netport->getID());
 
-      NetworkPort_Vlan::getHTMLTableForNetworkPort($netport->getID(), $table, $canedit);
+      NetworkPort_Vlan::getHTMLTableForItem($netport, $table, $canedit, false);
 
       /*
+      if (isset($options['withtemplate'])) {
+         $withtemplate = $options['withtemplate'];
+      } else {
+         $withtemplate = '';
+      }
+
       $table->addElement(array('function' => array(__CLASS__, 'showConnection'),
                                'parameters' => array($item, $netport, $withtemplate)),
                          "Connected", $this->getID(),$netport->getID());

@@ -51,11 +51,10 @@ class NetworkPortAlias extends NetworkPortInstantiation {
 
       // Try to get mac address from the instantiation ...
 
-      if (!isset($input['mac']) && isset($input['networkports_id'])) {
+      if (!isset($input['mac']) && isset($input['links_id'])) {
          $networkPort = new NetworkPort();
-         if ($networkPort->getFromDB($input['networkports_id'])) {
-            $networkPortInstaciation = $networkPort->getInstantiation();
-            $input['mac']            = $networkPortInstaciation->getField('mac');
+         if ($networkPort->getFromDB($input['links_id'])) {
+            $input['mac']            = $networkPort->getField('mac');
          }
       }
 
@@ -94,19 +93,26 @@ class NetworkPortAlias extends NetworkPortInstantiation {
    }
 
 
-   static function getHTMLTableHeadersForNetworkPort(&$table, $canedit) {
-      $table->addHeader(__('Origin port'), "Origin");
-      $table->addHeader(__('MAC'), "MAC");
-      $table->addHeader(__('VLAN'), "VLAN");
+   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name = "",
+                                                    $options=array()) {
+
+      $table->addHeader(__('Origin port'), "Origin", $fathers_name);
+      $table->addHeader(__('MAC'), "MAC", $fathers_name);
+      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $table, $fathers_name);
+
    }
 
 
-   function getHTMLTableForNetworkPort(NetworkPort $netport, CommonDBTM $item, &$table,
-                                       $withtemplate, $canedit) {
-      $table->addElement($this->showNetworkPortForItem(), "Origin", $this->getID(),
+   function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
+                                      $canedit, $options=array()) {
+
+      $table->addElement($this->getInstantiationNetworkPortHTMLTable(), "Origin", $this->getID(),
                          $netport->getID());
+
       $table->addElement($netport->fields["mac"], "MAC", $this->getID(),$netport->getID());
-      NetworkPort_Vlan::getHTMLTableForNetworkPort($netport->getID(), $table, $canedit);
+
+      NetworkPort_Vlan::getHTMLTableForItem($netport, $table, $canedit, false);
+
     }
 }
 ?>

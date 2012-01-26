@@ -47,15 +47,16 @@ class NetworkPortDialup extends NetworkPortInstantiation {
    }
 
 
-   static function getHTMLTableHeadersForNetworkPort(&$table, $canedit) {
+   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name = "",
+                                                    $options=array()) {
 
-      $table->addHeader(__('MAC'), "MAC");
+      $table->addHeader(__('MAC'), "MAC", $fathers_name);
 
    }
 
 
-   function getHTMLTableForNetworkPort(NetworkPort $netport, CommonDBTM $item, &$table,
-                                       $withtemplate, $canedit) {
+   function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
+                                      $canedit, $options=array()) {
 
       $table->addElement($netport->fields["mac"], "MAC", $this->getID(),$netport->getID());
 

@@ -834,27 +834,33 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
 
    /**
-    * \brief Show names for an item
+    * Get HTMLTable columns headers for a given item type
     *
+    * @param $itemtype     The type of the item
     * @param $table        The table to update
     * @param $fathers_name The name of the father element
     * @param $options:
-    *                 'canedit'      : display the edition elements (ie : add, remove, ...)
     *                 'dont_display' : array of the columns that must not be display
     *
    **/
-   static function getHTMLTableHeaderForIPAddress(HTMLTable &$table, $fathers_name = "",
-                                                  $options=array()) {
-      $column_name = 'IPNetwork';
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name = "",
+                                             $options=array()) {
+
+      if ($itemtype != 'IPAddress') {
+         return;
+      }
+
+      $column_name = __CLASS__;
       if (isset($options['dont_display'][$column_name])) {
          return;
       }
+
       $table->addHeader(IPNetwork::getTypeName(), $column_name, $fathers_name);
    }
 
 
    /**
-    * \brief Show names for an item
+    * Get HTMLTable row for a given item
     *
     * @param $item      CommonDBTM object
     * @param $table     The table to update
@@ -864,16 +870,17 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *                  'dont_display' : array of the elements that must not be display
     *
    **/
-   static function getHTMLTableForIPAddress(IPAddress $address, HTMLTable &$table, $canedit,
-                                            $close_row, $options=array()) {
+   static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
+                                       $options=array()) {
+      global $DB, $CFG_GLPI;
 
-      if (isset($options['dont_display']['IPNetwork'])) {
+      if ($item->getType() != 'IPAddress') {
          return;
       }
 
       $network = new IPNetwork();
 
-      foreach (IPNetwork::searchNetworksContainingIP($address) as $networks_id) {
+      foreach (IPNetwork::searchNetworksContainingIP($item) as $networks_id) {
          if ($network->getFromDB($networks_id)){
             $content = $network->getAddress()->getTextual() . "/" .
                $network->getNetmask()->getTextual();
@@ -882,7 +889,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
             }
             $content .= " - " . $network->getLink();
             $table->addElement($content, "IPNetwork", $network->getID(),
-                               $address->getID());
+                               $item->getID());
 
             if ($close_row) {
                $table->closeRow();
