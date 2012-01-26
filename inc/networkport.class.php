@@ -608,10 +608,7 @@ class NetworkPort extends CommonDBChild {
          unset($instantiation);
       }
 
-      if (($this->isNewID($ID)) && (!$options['several'])) {
-         // Only display NetworkName form for new IDs and if there is not several ports
-         NetworkName::showFormForNetworkPort($this->getID());
-      }
+      NetworkName::showFormForNetworkPort($this->getID());
 
       $this->showFormButtons($options);
       $this->addDivForTabs();

@@ -507,13 +507,13 @@ class NetworkName extends FQDNLabel {
                $content .= "</a>";
 
                if ($canedit) {
-                  $content .= "<a href='" . $address->getFormURL(). "?remove_address=unaffect&id=" .
-                              $address->getID() . "'>&nbsp;".
+                  $content .= "&nbsp;- <a href='" . $address->getFormURL() .
+                              "?remove_address=unaffect&id=" . $address->getID() . "'>&nbsp;".
                               "<img src=\"" . $CFG_GLPI["root_doc"] .
-                              "/pics/sub_dropdown.png\" alt=\"" . __s('Dissociate') . "\" title=\"" .
-                              __s('Dissociate') . "\"></a>";
-                  $content .= "<a href='" . $address->getFormURL(). "?remove_address=purge&id=" .
-                              $address->getID() . "'>&nbsp;".
+                              "/pics/sub_dropdown.png\" alt=\"" . __s('Dissociate') .
+                              "\" title=\"" . __s('Dissociate') . "\"></a>";
+                  $content .= "&nbsp;- <a href='" . $address->getFormURL() .
+                              "?remove_address=purge&id=" . $address->getID() . "'>&nbsp;".
                               "<img src=\"" . $CFG_GLPI["root_doc"] .
                               "/pics/delete.png\" alt=\"" . __s('Purge') . "\" title=\"" .
                               __s('Purge') . "\"></a>";
