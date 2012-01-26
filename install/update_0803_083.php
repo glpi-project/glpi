@@ -929,19 +929,19 @@ function update0803to083() {
       /// Add mandatory fields to default template
       if ($default_ticket_template > 0) {
          foreach ($DB->request('glpi_configs') as $data) {
-            if ($data['is_ticket_title_mandatory']) {
+            if (isset($data['is_ticket_title_mandatory']) && $data['is_ticket_title_mandatory']) {
                $query = "INSERT INTO `glpi_tickettemplatemandatoryfields`
                                 (`tickettemplates_id`, `num`)
                          VALUES ('$default_ticket_template', 1)";
                $DB->queryOrDie($query, "0.83 add mandatory field for default ticket template");
             }
-            if ($data['is_ticket_content_mandatory']) {
+            if (isset($data['is_ticket_content_mandatory']) && $data['is_ticket_content_mandatory']) {
                $query = "INSERT INTO `glpi_tickettemplatemandatoryfields`
                                 (`tickettemplates_id`, `num`)
                          VALUES ('$default_ticket_template', 21)";
                $DB->queryOrDie($query, "0.83 add mandatory field for default ticket template");
             }
-            if ($data['is_ticket_category_mandatory']) {
+            if (isset($data['is_ticket_category_mandatory']) && $data['is_ticket_category_mandatory']) {
                $query = "INSERT INTO `glpi_tickettemplatemandatoryfields`
                                 (`tickettemplates_id`, `num`)
                          VALUES ('$default_ticket_template', 7)";
