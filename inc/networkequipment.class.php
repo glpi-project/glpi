@@ -311,7 +311,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "contact");
       echo "</td>";
-      echo "<td>".sprintf(__('%1$s%2$s'), ('Inventory number'),
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'),
                           (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
            "</td>";
       echo "<td>";
