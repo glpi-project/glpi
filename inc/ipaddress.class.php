@@ -846,14 +846,45 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   static function getHTMLTableHeaderForItem(&$table, $canedit) {
-      $table->addHeader(IPAddress::getTypeName(), "IPAddress", "NetworkName");
-      IPNetwork::getHTMLTableHeaderForItem($table, $canedit);
+   /**
+    * \brief Show names for an item
+    *
+    * @param $table        The table to update
+    * @param $fathers_name The name of the father element
+    * @param $options:
+    *                 'canedit'      : display the edition elements (ie : add, remove, ...)
+    *                 'dont_display' : array of the columns that must not be display
+    *
+   **/
+   static function getHTMLTableHeaderForItem(HTMLTable &$table, $fathers_name = "",
+                                             $options=array()) {
+      $column_name = 'IPAddress';
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+      $table->addHeader(IPAddress::getTypeName(), $column_name, $fathers_name);
+      IPNetwork::getHTMLTableHeaderForIPAddress($table, $column_name, $options);
    }
 
 
-   static function getHTMLTableForItem(CommonGLPI $item, &$table, $canedit) {
+   /**
+    * \brief Show names for an item
+    *
+    * @param $item      CommonDBTM object
+    * @param $table     The table to update
+    * @param $canedit   display the edition elements (ie : add, remove, ...)
+    * @param $close_row set to true if we must close the row at the end of the current element
+    * @param $options:
+    *                  'dont_display' : array of the elements that must not be display
+    *
+   **/
+   static function getHTMLTableForItem(CommonGLPI $item, HTMLTable &$table, $canedit, $close_row,
+                                       $options=array()) {
       global $DB, $CFG_GLPI;
+
+      if (isset($options['dont_display']['IPAddress'])) {
+         return;
+      }
 
       $query = "SELECT `id`
                 FROM `glpi_ipaddresses`
@@ -867,7 +898,11 @@ class IPAddress extends CommonDBChild {
             $table->addElement($address->fields['name'], "IPAddress", $address->getID(),
                                $item->getID());
 
-            IPNetwork::getHTMLTableForIPAddress($address, $table, $canedit);
+            IPNetwork::getHTMLTableForIPAddress($address, $table, $canedit, false, $options);
+
+            if ($close_row) {
+               $table->closeRow();
+            }
          }
       }
    }

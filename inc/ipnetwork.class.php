@@ -833,12 +833,44 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
-   static function getHTMLTableHeaderForItem(&$table, $canedit) {
-      $table->addHeader(IPNetwork::getTypeName(), "IPNetwork", "IPAddress");
+   /**
+    * \brief Show names for an item
+    *
+    * @param $table        The table to update
+    * @param $fathers_name The name of the father element
+    * @param $options:
+    *                 'canedit'      : display the edition elements (ie : add, remove, ...)
+    *                 'dont_display' : array of the columns that must not be display
+    *
+   **/
+   static function getHTMLTableHeaderForIPAddress(HTMLTable &$table, $fathers_name = "",
+                                                  $options=array()) {
+      $column_name = 'IPNetwork';
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+      $table->addHeader(IPNetwork::getTypeName(), $column_name, $fathers_name);
    }
 
 
-   static function getHTMLTableForIPAddress(IPAddress $address, &$table, $canedit) {
+   /**
+    * \brief Show names for an item
+    *
+    * @param $item      CommonDBTM object
+    * @param $table     The table to update
+    * @param $canedit   display the edition elements (ie : add, remove, ...)
+    * @param $close_row set to true if we must close the row at the end of the current element
+    * @param $options:
+    *                  'dont_display' : array of the elements that must not be display
+    *
+   **/
+   static function getHTMLTableForIPAddress(IPAddress $address, HTMLTable &$table, $canedit,
+                                            $close_row, $options=array()) {
+
+      if (isset($options['dont_display']['IPNetwork'])) {
+         return;
+      }
+
       $network = new IPNetwork();
 
       foreach (IPNetwork::searchNetworksContainingIP($address) as $networks_id) {
@@ -851,6 +883,10 @@ class IPNetwork extends CommonImplicitTreeDropdown {
             $content .= " - " . $network->getLink();
             $table->addElement($content, "IPNetwork", $network->getID(),
                                $address->getID());
+
+            if ($close_row) {
+               $table->closeRow();
+            }
          }
       }
    }

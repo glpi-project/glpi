@@ -166,30 +166,64 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
-   static function getHTMLTableHeaderForItem(&$table, $canedit) {
-      $table->addHeader(NetworkAlias::getTypeName(), "NetworkAlias", "NetworkName");
+   /**
+    * \brief Show names for a NetworkName
+    *
+    * @param $table        The table to update
+    * @param $fathers_name The name of the father element
+    * @param $options:
+    *                 'canedit'      : display the edition elements (ie : add, remove, ...)
+    *                 'dont_display' : array of the columns that must not be display
+    *
+   **/
+   static function getHTMLTableHeaderForNetworkName(HTMLTable &$table, $fathers_name = "",
+                                                    $options=array()) {
+      if (isset($options['dont_display']['NetworkAlias'])) {
+         return;
+      }
+      $table->addHeader(NetworkAlias::getTypeName(), "NetworkAlias", $fathers_name);
    }
 
 
-   static function getHTMLTableForNetworkName($networknames_id, &$table, $canedit) {
+   /**
+    * \brief Show names for an item
+    *
+    * @param $item      CommonDBTM object
+    * @param $table     The table to update
+    * @param $canedit   display the edition elements (ie : add, remove, ...)
+    * @param $close_row set to true if we must close the row at the end of the current element
+    * @param $options:
+    *                  'dont_display' : array of the elements that must not be display
+    *
+   **/
+   static function getHTMLTableForNetworkName(NetworkName $address, HTMLTable &$table, $canedit,
+                                              $close_row, $options=array()) {
       global $DB, $CFG_GLPI;
+
+      if (isset($options['dont_display']['NetworkAlias'])) {
+         return;
+      }
+
       $query = "SELECT `id`
                 FROM `glpi_networkaliases`
-                WHERE `networknames_id` = '$networknames_id'";
+                WHERE `networknames_id` = '".$address->getID()."'";
 
       $alias  = new self();
       $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         while ($line = $DB->fetch_array($result)) {
-            if ($alias->getFromDB($line["id"])) {
-               $content = "<a href='" . $alias->getLinkURL(). "'>".$alias->getInternetName()."</a>";
-               if ($canedit) {
-                  $content .= "<a href='" . $alias->getFormURL(). "?remove_alias=remove&id=";
-                  $content .= $alias->getID() . "'>&nbsp;";
-                  $content .= "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" ;
-                  $content .= __s('Delete') . "\" title=\"" . __s('Delete') . "\"></a>";
-               }
-               $table->addElement($content, "NetworkAlias", $line["id"], $networknames_id);
+      foreach ($DB->request($query) as $line) {
+         if ($alias->getFromDB($line["id"])) {
+            $content = "<a href='" . $alias->getLinkURL(). "'>".$alias->getInternetName()."</a>";
+            if ($canedit) {
+               $content .= "<a href='" . $alias->getFormURL(). "?remove_alias=remove&id=";
+               $content .= $alias->getID() . "'>&nbsp;";
+               $content .= "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" ;
+               $content .= __s('Delete') . "\" title=\"" . __s('Delete') . "\"></a>";
+            }
+
+            $table->addElement($content, "NetworkAlias", $line["id"], $address->getID());
+
+            if ($close_row) {
+               $table->closeRow();
             }
          }
       }
