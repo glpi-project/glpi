@@ -637,7 +637,14 @@ CREATE TABLE `glpi_computervirtualmachines` (
   `uuid` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
   `vcpu` int(11) NOT NULL DEFAULT '0',
   `ram` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `computers_id` (`computers_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `name` (`name`),
+  KEY `virtualmachinestates_id` (`virtualmachinestates_id`),
+  KEY `virtualmachinesystems_id` (`virtualmachinesystems_id`),
+  KEY `vcpu` (`vcpu`),
+  KEY `ram` (`ram`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
