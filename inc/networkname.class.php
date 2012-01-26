@@ -463,28 +463,33 @@ class NetworkName extends FQDNLabel {
 
 
    /**
-    * \brief Show names for an item
+    * Get HTMLTable columns headers for a given item type
     *
+    * @param $itemtype     The type of the item
     * @param $table        The table to update
     * @param $fathers_name The name of the father element
     * @param $options:
     *                 'dont_display' : array of the columns that must not be display
     *
    **/
-   static function getHTMLTableHeaderForItem(HTMLTable &$table, $fathers_name = "",
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name = "",
                                              $options=array()) {
-      $column_name = 'NetworkName';
+
+      $column_name = __CLASS__;
+
       if (isset($options['dont_display'][$column_name])) {
          return;
       }
+
       $table->addHeader(NetworkName::getTypeName(), $column_name, $fathers_name);
-      NetworkAlias::getHTMLTableHeaderForNetworkName($table, $column_name, $options);
-      IPAddress::getHTMLTableHeaderForItem($table, $column_name, $options);
+
+      NetworkAlias::getHTMLTableHeaderForItem(__CLASS__, $table, $column_name, $options);
+      IPAddress::getHTMLTableHeaderForItem(__CLASS__, $table, $column_name, $options);
    }
 
 
    /**
-    * \brief Show names for an item
+    * Get HTMLTable row for a given item
     *
     * @param $item      CommonDBTM object
     * @param $table     The table to update
@@ -494,11 +499,12 @@ class NetworkName extends FQDNLabel {
     *                  'dont_display' : array of the elements that must not be display
     *
    **/
-   static function getHTMLTableForItem(CommonGLPI $item, HTMLTable &$table, $canedit, $close_row,
+   static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
                                        $options=array()) {
       global $DB, $CFG_GLPI;
 
-      if (isset($options['dont_display']['NetworkName'])) {
+      $column_name = __CLASS__;
+      if (isset($options['dont_display'][$column_name])) {
          return;
       }
 
@@ -543,10 +549,9 @@ class NetworkName extends FQDNLabel {
                               __s('Purge') . "\"></a>";
                }
 
-               $table->addElement($content, "NetworkName", $address->getID(), $item->getID());
+               $table->addElement($content, $column_name, $address->getID(), $item->getID());
 
-               NetworkAlias::getHTMLTableForNetworkName($address, $table, $canedit, false,
-                                                        $options);
+               NetworkAlias::getHTMLTableForItem($address, $table, $canedit, false, $options);
 
                IPAddress::getHTMLTableForItem($address, $table, $canedit, false, $options);
 
@@ -577,7 +582,7 @@ class NetworkName extends FQDNLabel {
 
       $table = new HTMLTable();
       $table->addGlobalName(self::getTypeName(2));
-      self::getHTMLTableHeaderForItem($table);
+      self::getHTMLTableHeaderForItem(__CLASS__, $table);
 
       self::getHTMLTableForItem($item, $table, true, true);
 

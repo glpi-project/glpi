@@ -166,27 +166,34 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
-   /**
-    * \brief Show names for a NetworkName
+    /**
+    * Get HTMLTable columns headers for a given item type
     *
+    * @param $itemtype     The type of the item
     * @param $table        The table to update
     * @param $fathers_name The name of the father element
     * @param $options:
-    *                 'canedit'      : display the edition elements (ie : add, remove, ...)
     *                 'dont_display' : array of the columns that must not be display
     *
    **/
-   static function getHTMLTableHeaderForNetworkName(HTMLTable &$table, $fathers_name = "",
-                                                    $options=array()) {
-      if (isset($options['dont_display']['NetworkAlias'])) {
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name = "",
+                                             $options=array()) {
+
+      if ($itemtype != 'NetworkName') {
          return;
       }
-      $table->addHeader(NetworkAlias::getTypeName(), "NetworkAlias", $fathers_name);
+
+      $column_name = __CLASS__;
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      $table->addHeader(NetworkAlias::getTypeName(), $column_name, $fathers_name);
    }
 
 
    /**
-    * \brief Show names for an item
+    * Get HTMLTable row for a given item
     *
     * @param $item      CommonDBTM object
     * @param $table     The table to update
@@ -196,17 +203,22 @@ class NetworkAlias extends FQDNLabel {
     *                  'dont_display' : array of the elements that must not be display
     *
    **/
-   static function getHTMLTableForNetworkName(NetworkName $address, HTMLTable &$table, $canedit,
-                                              $close_row, $options=array()) {
+   static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
+                                       $options=array()) {
       global $DB, $CFG_GLPI;
 
-      if (isset($options['dont_display']['NetworkAlias'])) {
+      if ($item->getType() != 'NetworkName') {
+         return;
+      }
+
+      $column_name = __CLASS__;
+      if (isset($options['dont_display'][$column_name])) {
          return;
       }
 
       $query = "SELECT `id`
                 FROM `glpi_networkaliases`
-                WHERE `networknames_id` = '".$address->getID()."'";
+                WHERE `networknames_id` = '".$item->getID()."'";
 
       $alias  = new self();
       $result = $DB->query($query);
@@ -220,7 +232,7 @@ class NetworkAlias extends FQDNLabel {
                $content .= __s('Delete') . "\" title=\"" . __s('Delete') . "\"></a>";
             }
 
-            $table->addElement($content, "NetworkAlias", $line["id"], $address->getID());
+            $table->addElement($content, $column_name, $line["id"], $item->getID());
 
             if ($close_row) {
                $table->closeRow();

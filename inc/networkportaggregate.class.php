@@ -50,8 +50,8 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
 
    function prepareInputForAdd($input) {
 
-      if ((isset($input['networkports_id'])) && is_array($input['networkports_id'])) {
-         $input['networkports_id'] = exportArrayToDB($input['networkports_id']);
+      if ((isset($input['links_id'])) && is_array($input['links_id'])) {
+         $input['links_id'] = exportArrayToDB($input['links_id']);
       }
       return parent::prepareInputForAdd($input);
    }
@@ -59,49 +59,52 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
 
    function prepareInputForUpdate($input) {
 
-      if ((isset($input['networkports_id'])) && is_array($input['networkports_id'])) {
-         $input['networkports_id'] = exportArrayToDB($input['networkports_id']);
+      if ((isset($input['links_id'])) && is_array($input['links_id'])) {
+         $input['links_id'] = exportArrayToDB($input['links_id']);
       }
       return parent::prepareInputForAdd($input);
    }
 
 
-   static function getHTMLTableHeadersForNetworkPort(&$table, $canedit) {
-      $table->addHeader(__('Origin port'), "Origin");
-      $table->addHeader(__('MAC'), "MAC");
-      $table->addHeader(__('VLAN'), "VLAN");
-   }
-
-
-   function getHTMLTableForNetworkPort(NetworkPort $netport, CommonDBTM $item, &$table,
-                                       $withtemplate, $canedit) {
-
-      if (isset($this->fields['networkports_id'])
-          && is_string($this->fields['networkports_id'])) {
-         $this->fields['networkports_id'] = importArrayFromDB($this->fields['networkports_id']);
-      }
-
-      $table->addElement($this->showNetworkPortForItem(), "Origin", $this->getID(),
-                         $netport->getID());
-
-      $table->addElement($netport->fields["mac"], "MAC", $this->getID(),$netport->getID());
-
-      NetworkPort_Vlan::getHTMLTableForNetworkPort($netport->getID(), $table, $canedit);
-
-   }
-
-
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
 
-      if (isset($this->fields['networkports_id'])
-          && is_string($this->fields['networkports_id'])) {
-         $this->fields['networkports_id'] = importArrayFromDB($this->fields['networkports_id']);
+      if (isset($this->fields['links_id'])
+          && is_string($this->fields['links_id'])) {
+         $this->fields['links_id'] = importArrayFromDB($this->fields['links_id']);
       }
 
       echo "<tr class='tab_bg_1'>";
       $this->showMacField($netport, $options);
       $this->showNetworkPortSelector($recursiveItems, true);
       echo "</tr>";
+   }
+
+
+   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name = "",
+                                                    $options=array()) {
+
+      $table->addHeader(__('Origin port'), "Origin", $fathers_name);
+      $table->addHeader(__('MAC'), "MAC", $fathers_name);
+      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $table, $fathers_name);
+
+   }
+
+
+   function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
+                                      $canedit, $options=array()) {
+
+      if (isset($this->fields['links_id'])
+          && is_string($this->fields['links_id'])) {
+         $this->fields['links_id'] = importArrayFromDB($this->fields['links_id']);
+      }
+
+      $table->addElement($this->getInstantiationNetworkPortHTMLTable(), "Origin", $this->getID(),
+                         $netport->getID());
+
+      $table->addElement($netport->fields["mac"], "MAC", $this->getID(),$netport->getID());
+
+      NetworkPort_Vlan::getHTMLTableForItem($netport, $table, $canedit, false);
+
    }
 }
 ?>

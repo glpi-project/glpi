@@ -60,8 +60,8 @@ class NetworkPort extends CommonDBChild {
    **/
    static function getNetworkPortInstantiations() {
 
-      return array('NetworkPortAggregate', 'NetworkPortAlias', 'NetworkPortDialup',
-                   'NetworkPortEthernet', 'NetworkPortLocal', 'NetworkPortWifi');
+      return array('NetworkPortEthernet', 'NetworkPortWifi', 'NetworkPortLocal',
+                   'NetworkPortAggregate', 'NetworkPortAlias', 'NetworkPortDialup');
    }
 
 
@@ -447,10 +447,10 @@ class NetworkPort extends CommonDBChild {
                //$table_options = array('dont_display' => array('NetworkAlias' => true));
                $table_options = array();
 
-               NetworkName::getHTMLTableHeaderForItem($table, 'Name', $table_options);
+               NetworkName::getHTMLTableHeaderForItem(__CLASS__, $table, 'Name', $table_options);
 
-               call_user_func_array(array($portType, 'getHTMLTableHeadersForNetworkPort'),
-                                    array(&$table, $canedit));
+               call_user_func_array(array($portType, 'getInstantiationHTMLTableHeaders'),
+                                    array(&$table, 'Name'));
 
                while ($devid = $DB->fetch_row($result)) {
                   $netport->getFromDB(current($devid));
@@ -484,8 +484,8 @@ class NetworkPort extends CommonDBChild {
 
                   $instantiation = $netport->getInstantiation();
                   if ($instantiation !== false) {
-                     $instantiation->getHTMLTableForNetworkPort($netport, $item, $table,
-                                                                $withtemplate, false);
+                     $instantiation->getInstantiationHTMLTable($netport, $item, $table, $canedit,
+                                                               array('withtemplate' => $withtemplate));
                      unset($instantiation);
                   }
 
