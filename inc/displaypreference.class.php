@@ -60,7 +60,7 @@ class DisplayPreference extends CommonDBTM {
 
 
    /**
-    * Get display preference for an user for an itemtype
+    * Get display preference for a user for an itemtype
     *
     * @param $itemtype  itemtype
     * @param $user_id   user ID
