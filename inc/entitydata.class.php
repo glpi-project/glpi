@@ -643,7 +643,7 @@ class EntityData extends CommonDBChild {
                                  'value'          => $default_value,
                                  'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
-      echo "</td></tr>";
+      echo "<td colspan='2'></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . $LANG['setup'][707] . "</td><td>";
@@ -651,8 +651,8 @@ class EntityData extends CommonDBChild {
                                   $entitynotification->fields['use_reservations_alert'],
                                   array('max'            => 99,
                                         'inherit_parent' => ($ID>0 ? 1 : 0)));
-      echo "&nbsp;".Toolbox::ucfirst($LANG['gmt'][1])."</td></tr>";
-      echo "</td></tr>";
+      echo "&nbsp;".Toolbox::ucfirst($LANG['gmt'][1])."</td>";
+      echo "<td colspan='2'></tr>";
 
       echo "<tr class='tab_bg_1'><td >" . $LANG['setup'][708] . "</td><td>";
       Alert::dropdownIntegerNever('notclosed_delay', $entitynotification->fields["notclosed_delay"],
