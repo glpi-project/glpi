@@ -172,10 +172,10 @@ class TicketTemplate extends CommonDropdown {
                      71 => '_groups_id_requester',
                      5  => '_users_id_assign',
                      8  => '_groups_id_assign',
-                     66 => '_users_id_observer',
-                     65 => '_groups_id_observer',
                      $ticket->getSearchOptionIDByField('field', 'name',
                                                        'glpi_suppliers') => 'suppliers_id_assign',
+                     66 => '_users_id_observer',
+                     65 => '_groups_id_observer',
             );
 
          if ($withtypeandcategory) {
