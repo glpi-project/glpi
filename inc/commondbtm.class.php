@@ -3035,8 +3035,11 @@ class CommonDBTM extends CommonGLPI {
                   return $value;
 
                case "text" :
+                  
                   if ($options['html']) {
                      $text = nl2br($value);
+                  } else {
+                     $text = $value;
                   }
                   if (isset($searchoptions['htmltext']) && $searchoptions['htmltext']) {
                      $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep($text));
