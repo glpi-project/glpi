@@ -217,7 +217,7 @@ class NetworkPortMigration extends CommonDBChild {
          $address_cell = "th";
          echo "<tr class='tab_bg_1'><th>" .$motives['invalid_network'] ."</th>\n<td colspan=3>";
          if (isset($network)) {
-            printf(__('NetworkPort informations conflicting with %s'), $network->getLink());
+            printf(__('NetworkPort information conflicting with %s'), $network->getLink());
          } else {
             if (!isset($address) || !isset($netmask)) {
                _e('Invalid address or netmask');

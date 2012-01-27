@@ -116,7 +116,7 @@ class Profile_User extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='users_id' value='$ID'>";
          Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
-         echo "</td><td class='center'>"._n('Profile', 'Profiles', 1)."</td><td>";
+         echo "</td><td class='center'>".self::getTypeName(1)."</td><td>";
          Profile::dropdownUnder(array('value' => Profile::getDefault()));
          echo "</td><td>".__('Recursive')."</td><td>";
          Dropdown::showYesNo("is_recursive",0);
@@ -176,13 +176,15 @@ class Profile_User extends CommonDBTM {
             if ($data["is_dynamic"] || $data["is_recursive"]) {
                echo "<span class='b'>&nbsp;(";
                if ($data["is_dynamic"]) {
-                  echo "D";
+                  //TRANS: letter 'D' for Dynamic
+                  _e('D');
                }
                if ($data["is_dynamic"] && $data["is_recursive"]) {
                   echo ", ";
                }
                if ($data["is_recursive"]) {
-                  echo "R";
+                  //TRANS: letter 'R' for Recursive
+                  _e('R');
                }
                echo ")</span>";
             }
@@ -234,7 +236,7 @@ class Profile_User extends CommonDBTM {
          echo "<tr><td class='tab_bg_2 center'>".__('User')."&nbsp;";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
          User::dropdown(array('right' => 'all'));
-         echo "</td><td class='tab_bg_2 center'>"._n('Profile', 'Profiles', 1)."</td><td>";
+         echo "</td><td class='tab_bg_2 center'>".self::getTypeName(1)."</td><td>";
          Profile::dropdownUnder(array('value' => Profile::getDefault()));
          echo "</td><td class='tab_bg_2 center'>".__('Recursive')."</td><td>";
          Dropdown::showYesNo("is_recursive", 0);
@@ -265,7 +267,7 @@ class Profile_User extends CommonDBTM {
                                                 $entity->getName()));
 
          while ($data=$DB->fetch_array($result)) {
-            echo "<tr><th colspan='$headerspan'>".sprintf(__('Profile: %s'),$data["name"]);
+            echo "<tr><th colspan='$headerspan'>".sprintf(__('Profile: %s'), $data["name"]);
             echo "</th></tr>";
 
             $query = "SELECT `glpi_users`.*,
@@ -309,13 +311,13 @@ class Profile_User extends CommonDBTM {
                   if ($data2["is_dynamic"] || $data2["is_recursive"]) {
                      echo "<span class='b'>&nbsp;(";
                      if ($data2["is_dynamic"]) {
-                        echo "D";
+                        _e('D');
                      }
                      if ($data2["is_dynamic"] && $data2["is_recursive"]) {
                         echo ", ";
                      }
                      if ($data2["is_recursive"]) {
-                        echo "R";
+                        _e('R');
                      }
                      echo ")</span>";
                   }
@@ -352,7 +354,7 @@ class Profile_User extends CommonDBTM {
    /**
     * Show the User having a profile, in allowed Entity
     *
-    * @param $prof object
+    * @param $prof Profile object
    **/
    static function showForProfile(Profile $prof) {
       global $DB;
@@ -366,7 +368,7 @@ class Profile_User extends CommonDBTM {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'><tr>";
-      echo "<th>".sprintf(__('Profile: %s'),$prof->fields["name"])."</th></tr>\n";
+      echo "<th>".sprintf(__('Profile: %s'), $prof->fields["name"])."</th></tr>\n";
 
       echo "<tr><th colspan='2'>".__('Users (D=Dynamic, R=Recursive)')."</th></tr>";
       echo "</table>\n";
@@ -389,7 +391,7 @@ class Profile_User extends CommonDBTM {
 
       echo "<table class='tab_cadre_fixe'>";
 
-      $i = 0;
+      $i              = 0;
       $nb_per_line    = 3;
       $rand           = mt_rand(); // Just to avoid IDE warning
       $canedit_entity = false;
@@ -423,12 +425,12 @@ class Profile_User extends CommonDBTM {
                   }
 
                   // New entity
-                  $i = 0;
+                  $i              = 0;
                   $temp           = $data["entity"];
                   $canedit_entity = $canedit && in_array($temp, $_SESSION['glpiactiveentities']);
                   $rand           = mt_rand();
                   echo "<tr class='tab_bg_2'>";
-                  echo "<td class='left'>";
+                  echo "<td>";
                   echo "<a href=\"javascript:showHideDiv('entity$temp$rand','imgcat$temp', '".
                          GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
                   echo "<img alt='' name='imgcat$temp' src=\"".GLPI_ROOT."/pics/folder.png\">&nbsp;";
@@ -468,13 +470,13 @@ class Profile_User extends CommonDBTM {
                if ($data["is_dynamic"] || $data["is_recursive"]) {
                   echo "<span class='b'>&nbsp;(";
                   if ($data["is_dynamic"]) {
-                     echo "D";
+                     -e('D');
                   }
                   if ($data["is_dynamic"] && $data["is_recursive"]) {
                      echo ", ";
                   }
                   if ($data["is_recursive"]) {
-                     echo "R";
+                     _e('R');
                   }
                   echo ")</span>";
                }
@@ -497,15 +499,16 @@ class Profile_User extends CommonDBTM {
                if ($canedit_entity) {
                   Html::openArrowMassives("profileuser_form".$rand."_$temp", true);
                   Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
-                  echo "&nbsp;<input type='submit' name='moveentity' value='".
-                               __s('Move')."' class='submit'>&nbsp;";
+                  echo "&nbsp;<input type='submit' name='moveentity' value='".__s('Move')."'
+                               class='submit'>&nbsp;";
                   Html::closeArrowMassives(array('delete' => __('Delete')));
                }
                echo "</div></form></td></tr>\n";
             }
 
          } else {
-            echo "<tr class='tab_bg_2'><td class='tab_bg_1 center'>".__('No user found')."</td></tr>\n";
+            echo "<tr class='tab_bg_2'><td class='tab_bg_1 center'>".__('No user found').
+                 "</td></tr>\n";
          }
       }
       echo "</table></div>\n";
@@ -515,8 +518,8 @@ class Profile_User extends CommonDBTM {
    /**
     * Get entities for which a user have a right
     *
-    * @param $user_ID user ID
-    * @param $is_recursive check also using recursive rights
+    * @param $user_ID         user ID
+    * @param $is_recursive    check also using recursive rights (true by default)
     *
     * @return array of entities ID
    **/
@@ -550,8 +553,8 @@ class Profile_User extends CommonDBTM {
    /**
     * Get user profiles (no entity association, use sqlfilter if needed)
     *
-    * @param $user_ID user ID
-    * @param $sqlfilter String : additional filter (must start with AND)
+    * @param $user_ID            user ID
+    * @param $sqlfilter  string  additional filter (must start with AND) (default '')
     *
     * @return array of the IDs of the profiles
    **/
@@ -582,9 +585,10 @@ class Profile_User extends CommonDBTM {
     * @param $users_id     Integer  ID of the user
     * @param $profiles_id  Integer  ID of the profile
     * @param $child        Boolean  when true, include child entity when recursive right
+    *                               (false by default)
     *
     * @return Array of entity ID
-    */
+   **/
    static function getEntitiesForProfileByUser($users_id, $profiles_id, $child=false) {
       global $DB;
 
@@ -610,8 +614,8 @@ class Profile_User extends CommonDBTM {
    /**
     * Get entities for which a user have a right
     *
-    * @param $user_ID user ID
-    * @param $only_dynamic get only recursive rights
+    * @param $user_ID         user ID
+    * @param $only_dynamic    get only recursive rights (false by default)
     *
     * @return array of entities ID
    **/
@@ -624,10 +628,14 @@ class Profile_User extends CommonDBTM {
          $condition .= " AND `is_dynamic` = 1";
       }
 
-      return getAllDatasFromTable('glpi_profiles_users',$condition);
+      return getAllDatasFromTable('glpi_profiles_users', $condition);
    }
 
 
+   /**
+    * @param $user_ID
+    * @param $profile_id
+   **/
    static function haveUniqueRight($user_ID, $profile_id) {
       global $DB;
 
@@ -649,7 +657,7 @@ class Profile_User extends CommonDBTM {
          $crit['is_dynamic'] = '1';
       }
 
-      $obj = new Profile_User();
+      $obj = new self();
       $obj->deleteByCriteria($crit);
    }
 
@@ -671,7 +679,7 @@ class Profile_User extends CommonDBTM {
 
       $tab[4]['table']           = 'glpi_profiles';
       $tab[4]['field']           = 'name';
-      $tab[4]['name']            = _n('Profile', 'Profiles', 1);
+      $tab[4]['name']            = self::getTypeName(1);
 
       $tab[5]['table']           = 'glpi_users';
       $tab[5]['field']           = 'name';
@@ -695,12 +703,19 @@ class Profile_User extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::getName()
+   **/
    function getName($with_comment=0) {
 
+            //TRANS: D for Dynamic
+      $dyn = __(', D');
+            //TRANS: R for Recursive
+      $rec = __(', R');
       return Dropdown::getDropdownName('glpi_profiles', $this->fields['profiles_id']).', '.
              Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']).
-             (isset($this->fields['is_dynamic']) && $this->fields['is_dynamic'] ? ', D' : '').
-             (isset($this->fields['is_recursive']) && $this->fields['is_recursive'] ? ', R' : '');
+             (isset($this->fields['is_dynamic']) && $this->fields['is_dynamic'] ? $dyn : '').
+             (isset($this->fields['is_recursive']) && $this->fields['is_recursive'] ? $rec : '');
    }
 
 
