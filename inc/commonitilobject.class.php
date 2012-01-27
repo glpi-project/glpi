@@ -502,7 +502,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             switch ($input['_itil_assign']['_type']) {
                case "user" :
-                  if (!empty($this->userlinkclass)) {
+                  if (!empty($this->userlinkclass) && $input['_itil_assign']['users_id']>0) {
                      $useractors = new $this->userlinkclass();
                      if (isset($input['_auto_update'])
                          || $useractors->can(-1,'w',$input['_itil_assign'])) {
