@@ -1032,7 +1032,7 @@ class Problem extends CommonITILObject {
       $SELECT = "";
       if (count($_SESSION["glpiactiveentities"])>1) {
          $SELECT .= ", `glpi_entities`.`completename` AS entityname,
-                       `glpi_tickets`.`entities_id` AS entityID ";
+                       `glpi_problems`.`entities_id` AS entityID ";
       }
 
       return " DISTINCT `glpi_problems`.*,
@@ -1046,7 +1046,7 @@ class Problem extends CommonITILObject {
       $FROM = "";
       if (count($_SESSION["glpiactiveentities"])>1) {
          $FROM .= " LEFT JOIN `glpi_entities`
-                        ON (`glpi_entities`.`id` = `glpi_tickets`.`entities_id`) ";
+                        ON (`glpi_entities`.`id` = `glpi_problems`.`entities_id`) ";
       }
 
       return " LEFT JOIN `glpi_groups_problems`
@@ -1082,7 +1082,7 @@ class Problem extends CommonITILObject {
       $items[__('Priority')]           = "glpi_problems.priority";
       $items[__('Requester')]          = "glpi_problems.users_id";
       $items[_x('problem','Assigned')] = "glpi_problems.users_id_assign";
-//       $items[__('Associated element')] = "glpi_problems.itemtype, glpi_tickets.items_id";
+//       $items[__('Associated element')] = "glpi_problems.itemtype, glpi_problems.items_id";
       $items[__('Category')]           = "glpi_itilcategories.completename";
       $items[__('Title')]              = "glpi_problems.name";
 
