@@ -236,24 +236,25 @@ class Planning {
       echo "<input type='submit' class='submit' name='submit' value=\"".__s('Save')."\">";
       echo "</td>\n";
 
-      echo "<td>";
-      echo "<a target='_blank'
-            href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID.
-                  "&amp;gID=".$gID."&amp;usertype=".$usertype."&amp;itemtype=$itemtype&amp;token=".
-                  User::getPersonalToken(Session::getLoginUserID(true))."\"
-                  title=\"".__s('Download the planning in Ical format')."\">".
-            "<span style='font-size:10px'>".__('Ical')."</span></a>";
-      echo "<br>";
-
-      // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
-      echo "<a target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
-             "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
-             "&amp;usertype=".$usertype."&amp;itemtype=$itemtype&amp;token=".
-             User::getPersonalToken(Session::getLoginUserID(true))."\" title=\"".
-             __s('webcal:// synchronization')."\">";
-      echo "<span style='font-size:10px'>".__('Webcal')."</span></a>";
-      echo "</td>\n";
-
+      if ($uID || $gID) {
+         echo "<td>";
+         echo "<a target='_blank'
+               href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID.
+                     "&amp;gID=".$gID."&amp;usertype=".$usertype."&amp;itemtype=$itemtype&amp;token=".
+                     User::getPersonalToken(Session::getLoginUserID(true))."\"
+                     title=\"".__s('Download the planning in Ical format')."\">".
+               "<span style='font-size:10px'>".__('Ical')."</span></a>";
+         echo "<br>";
+   
+         // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
+         echo "<a target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
+               "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
+               "&amp;usertype=".$usertype."&amp;itemtype=$itemtype&amp;token=".
+               User::getPersonalToken(Session::getLoginUserID(true))."\" title=\"".
+               __s('webcal:// synchronization')."\">";
+         echo "<span style='font-size:10px'>".__('Webcal')."</span></a>";
+         echo "</td>\n";
+      }
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
                      "&amp;date=$next&amp;usertype=$usertype&amp;gID=$gID&amp;itemtype=$itemtype\">";
