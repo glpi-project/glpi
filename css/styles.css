@@ -37,7 +37,7 @@ body {
    font-size: 12px;
    margin: 0;
    padding: 0;
-   background:  #eee repeat-x;
+   background:  #F7F7F7 repeat-x;
    
 }
 
@@ -1083,17 +1083,27 @@ div#tabcontent {
    font-size : 12px;
    color :#659900;
    font-weight: bold;
-   
-   
-   background:#FFFFFF;
+   background-color:#FFFFFF;
 	border:3px solid #ccc;
    border-radius:10px;
 	-moz-border-radius:10px;
 	-webkit-border-radius:10px;
-
-	padding:10px;
-
+   padding:10px;
    
+      
+}
+
+
+#logo_login {
+   position: relative;
+   top:-30px;
+   padding:0;
+   margin:0;
+   width: 107px;
+   height: 43px;
+   float: left;
+   background: url(../pics/login_logo_glpi.png)  no-repeat; 
+  
 }
 
 
