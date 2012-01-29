@@ -2776,7 +2776,7 @@ class Html {
       echo "<body>";
       echo "<div id='page'>";
       echo "<div id='bloc'>";
-      echo "<div class='haut'></div>";
+       echo "<div id='logo_bloc'></div>";
    }
 
 
@@ -2793,7 +2793,7 @@ class Html {
       $FOOTER_LOADED = true;
 
       if (!isCommandLine()) {
-         echo "<div class='bas'></div></div></div>";
+         echo "</div></div>";
 
          echo "<div id='footer-login'>";
          echo "<a href='http://glpi-project.org/' title='Powered By Indepnet'>";
