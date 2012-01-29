@@ -348,5 +348,40 @@ class HTMLTable {
       return count($this->rows);
    }
 
+   /**
+    * Get the order of the columns
+    *
+    * @return an array of the names of the columns
+   **/
+   function getColumnOrder() {
+
+      return array_keys($this->headers);
+   }
+
+   /**
+    * Modify the order of the columns. If a known header (ie defined by addHeader()) is not
+    * present in the given order, then the column will be destroy from the table. No new header
+    * will be added (ie : a name that is not known will not generate a new header).
+    *
+    * @param $order an array of the names of the columns
+    *
+    * @return (nothing)
+   **/
+    function setColumnOrder($order = array()) {
+
+      if (!is_array($order)) {
+         return;
+      }
+
+      $old_headers = $this->headers;
+      $this->headers = array();
+      foreach ($order as $column) {
+         if (isset($old_headers[$column])) {
+            $this->headers[$column] = $old_headers[$column];
+         }
+      }
+      unset($old_headers);
+   }
+
 }
 ?>

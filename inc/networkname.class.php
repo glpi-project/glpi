@@ -607,8 +607,7 @@ class NetworkName extends FQDNLabel {
             $order = "name";
          }
 
-         $table_options['dont_display'] = array('IPNetwork'    => true,
-                                                'NetworkAlias' => true);
+         $table_options['dont_display'] = array('IPNetwork'    => true);
          $table_options['SQL_options']  = "ORDER BY `$order`
                                            LIMIT ".$_SESSION['glpilist_limit']."
                                            OFFSET $start";
@@ -627,6 +626,9 @@ class NetworkName extends FQDNLabel {
       $table->addGlobalName(self::getTypeName(2));
 
       self::getHTMLTableHeaderForItem($item->getType(), $table, "", $table_options);
+
+      // Reorder the columns for better display
+      $table->setColumnOrder(array('NetworkName', 'IPAddress', 'NetworkAlias'));
 
       self::getHTMLTableForItem($item, $table, $canedit, true, $table_options);
 
