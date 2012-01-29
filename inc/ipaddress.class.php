@@ -854,6 +854,7 @@ class IPAddress extends CommonDBChild {
     * @param $fathers_name The name of the father element
     * @param $options:
     *                 'dont_display' : array of the columns that must not be display
+    *                 'column_links' : array of links for a given column
     *
    **/
    static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name = "",
@@ -865,7 +866,11 @@ class IPAddress extends CommonDBChild {
          return;
       }
 
-      $table->addHeader(IPAddress::getTypeName(), $column_name, $fathers_name);
+      $header = self::getTypeName();
+      if (isset($options['column_links'][$column_name])) {
+         $header = "<a href='".$options['column_links'][$column_name]."'>$header</a>";
+      }
+      $table->addHeader($header, $column_name, $fathers_name);
 
       IPNetwork::getHTMLTableHeaderForItem(__CLASS__, $table, $column_name, $options);
 

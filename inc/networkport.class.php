@@ -441,10 +441,9 @@ class NetworkPort extends CommonDBChild {
                   $table->addHeader("&nbsp;", "checkbox");
                }
 
-               $table->addHeader("#", "NetworkPort");
+               $table->addHeader("#", "NetworkPort", "", 'NetworkPort');
                $table->addHeader(__('Name'), "Name");
 
-               //$table_options = array('dont_display' => array('NetworkAlias' => true));
                $table_options = array();
 
                NetworkName::getHTMLTableHeaderForItem(__CLASS__, $table, 'Name', $table_options);
@@ -454,7 +453,8 @@ class NetworkPort extends CommonDBChild {
 
                while ($devid = $DB->fetch_row($result)) {
                   $netport->getFromDB(current($devid));
-                  Session::addToNavigateListItems('NetworkPort', $netport->fields["id"]);
+                  // This is added by HTMLTable
+                  // Session::addToNavigateListItems('NetworkPort', $netport->fields["id"]);
 
                  if ($withtemplate != 2 && $canedit) {
                      $table->addElement("<input type='checkbox' name='del_port[" .

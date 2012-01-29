@@ -470,6 +470,7 @@ class NetworkName extends FQDNLabel {
     * @param $fathers_name The name of the father element
     * @param $options:
     *                 'dont_display' : array of the columns that must not be display
+    *                 'column_links' : array of links for a given column
     *
    **/
    static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name = "",
@@ -481,7 +482,11 @@ class NetworkName extends FQDNLabel {
          return;
       }
 
-      $table->addHeader(NetworkName::getTypeName(), $column_name, $fathers_name);
+      $header = self::getTypeName();
+      if (isset($options['column_links'][$column_name])) {
+         $header = "<a href='".$options['column_links'][$column_name]."'>$header</a>";
+      }
+      $table->addHeader($header, $column_name, $fathers_name, __CLASS__);
 
       NetworkAlias::getHTMLTableHeaderForItem(__CLASS__, $table, $column_name, $options);
       IPAddress::getHTMLTableHeaderForItem(__CLASS__, $table, $column_name, $options);
@@ -497,6 +502,7 @@ class NetworkName extends FQDNLabel {
     * @param $close_row set to true if we must close the row at the end of the current element
     * @param $options:
     *                  'dont_display' : array of the elements that must not be display
+    *                  'SQL_options'  : SQL options to add after WHERE request
     *
    **/
    static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
@@ -508,24 +514,34 @@ class NetworkName extends FQDNLabel {
          return;
       }
 
+      switch ($item->getType()) {
+      case 'IPNetwork':
+      case 'FQDN' :
+         $where_criterion = $item->getCriterionForMatchingNetworkNames();
+         break;
+
+      case 'NetworkEquipment' :
+      case 'NetworkPort' :
+         $where_criterion = "itemtype = '".$item->getType()."' AND items_id='".$item->getID()."'";
+         break;
+      }
+
+
       $query = "SELECT `id`
                 FROM `glpi_networknames`
-                 WHERE `items_id` = '" . $item->getID() . "'
-                  AND `itemtype` = '" . $item->getType() . "'";
+                 WHERE $where_criterion";
+
+      if (isset($options['SQL_options'])) {
+         $query .= " ".$options['SQL_options'];
+      }
       $result = $DB->query($query);
 
       $address = new self();
 
       if ($DB->numrows($result) > 0) {
-         Session::initNavigateListItems(__CLASS__,
-                              //TRANS : %1$s is the itemtype name,
-                              //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'),
-                                                $item->getTypeName(1), $item->getName()));
          while ($line = $DB->fetch_array($result)) {
 
             if ($address->getFromDB($line["id"])) {
-               Session::addToNavigateListItems(__CLASS__, $line["id"]);
 
                $content = "<a href='" . $address->getLinkURL(). "'>";
                $internetName = $address->getInternetName();
@@ -576,117 +592,103 @@ class NetworkName extends FQDNLabel {
    static function showForItem(CommonGLPI $item, $withtemplate=0) {
       global $DB, $CFG_GLPI;
 
-      $items_id = $item->getID();
-      $itemtype = $item->getType();
+      $table_options = array();
+
+      if (($item->getType() == 'IPNetwork') || ($item->getType() == 'FQDN')) {
+         if (isset($_REQUEST["start"])) {
+            $start = $_REQUEST["start"];
+         } else {
+            $start = 0;
+         }
+
+         if (!empty($_REQUEST["order"])) {
+            $order = $_REQUEST["order"];
+         } else {
+            $order = "name";
+         }
+
+         $table_options['dont_display'] = array('IPNetwork'    => true,
+                                                'NetworkAlias' => true);
+         $table_options['SQL_options']  = "ORDER BY `$order`
+                                           LIMIT ".$_SESSION['glpilist_limit']."
+                                           OFFSET $start";
+         $table_options['column_links'] =
+            array('NetworkName' => 'javascript:reloadTab("order=name");',
+                  'IPAddress' => 'javascript:reloadTab("order=ip_addresses");');
+
+         $canedit = false;
+
+      } else {
+         $canedit = true;
+      }
+
       $address  = new self();
-
-      $table = new HTMLTable();
+      $table    = new HTMLTable();
       $table->addGlobalName(self::getTypeName(2));
-      self::getHTMLTableHeaderForItem(__CLASS__, $table);
 
-      self::getHTMLTableForItem($item, $table, true, true);
+      self::getHTMLTableHeaderForItem($item->getType(), $table, "", $table_options);
+
+      self::getHTMLTableForItem($item, $table, $canedit, true, $table_options);
+
+      if ($table->getNumberOfRows() > 0) {
+
+         switch ($item->getType()) {
+         case 'IPNetwork':
+         case 'FQDN' :
+            $criterion = $item->getCriterionForMatchingNetworkNames();
+            break;
+
+         case 'NetworkEquipment' :
+         case 'NetworkPort' :
+            $criterion = "`itemtype` = '".$item->getType()."' AND `items_id`='".$item->getID()."'";
+            break;
+         }
+
+         $number = countElementsInTable($address->getTable(), $criterion);
+         Html::printAjaxPager(self::getTypeName(2), $start, $number);
+
+         Session::initNavigateListItems(__CLASS__,
+                              //TRANS : %1$s is the itemtype name,
+                              //        %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                $item->getTypeName(1), $item->getName()));
+
+      }
 
       $table->display();
 
-      echo "<div class='center'>\n";
-      echo "<table class='tab_cadre'>\n";
+      if (($item->getType() == 'NetworkEquipment') || ($item->getType() == 'NetworkPort')) {
 
-      echo "<tr><th>".__('Add a Network Name')."</th></tr>";
+         $items_id = $item->getID();
+         $itemtype = $item->getType();
 
-      echo "<tr><td class='center'>";
-      echo "<a href=\"" . $address->getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
-      echo __('New one')."</a>";
-      echo "</td></tr>\n";
+         echo "<div class='center'>\n";
+         echo "<table class='tab_cadre'>\n";
 
-      echo "<tr><td class='center'>";
-      echo "<form method='post' action='".$address->getFormURL()."'>\n";
-      echo "<input type='hidden' name='items_id' value='$items_id'>\n";
-      echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
+         echo "<tr><th>".__('Add a Network Name')."</th></tr>";
 
-      echo __('Not associated one:');
-      Dropdown::show(__CLASS__, array('name'      => 'addressID',
-                                      'condition' => '`items_id`=0'));
-      echo "&nbsp;<input type='submit' name='assign_address' value='" . __s('Associate') .
-             "' class='submit'>";
-      echo "</form>\n";
-      echo "</td></tr>\n";
+         echo "<tr><td class='center'>";
+         echo "<a href=\"" . $address->getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
+         echo __('New one')."</a>";
+         echo "</td></tr>\n";
 
-      echo "</table>\n";
-      echo "</div>\n";
+         echo "<tr><td class='center'>";
+         echo "<form method='post' action='".$address->getFormURL()."'>\n";
+         echo "<input type='hidden' name='items_id' value='$items_id'>\n";
+         echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
 
-   }
-
-
-   /**
-    * Show names for an internet element (IP network, FQDN, ...)
-    *
-    * @param $internetElement          CommonGLPI object
-    * @param $withtemplate    integer  withtemplate param (default 0)
-    **/
-   static function showForInternetElement(CommonGLPI $internetElement, $withtemplate=0) {
-      global $DB, $CFG_GLPI;
-
-      $elementToDisplay = new self();
-      $internetElement->check($internetElement->getID(), 'r');
-      $canedit          = $internetElement->can($internetElement->getID(), 'w');
-
-      if (isset($_REQUEST["start"])) {
-         $start = $_REQUEST["start"];
-      } else {
-         $start = 0;
-      }
-      if (!empty($_REQUEST["order"])) {
-         $order = $_REQUEST["order"];
-      } else {
-         $order = "name";
-      }
-
-      $criterion = $internetElement->getCriterionForMatchingNetworkNames();
-      $number    = countElementsInTable($elementToDisplay->getTable(), $criterion);
-
-      echo "<br><div class='center'>";
-
-      if ($number < 1) {
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th>".self::getTypeName(1)."</th><th>".__('No item found')."</th></tr>";
-         echo "</table>\n";
-
-      } else {
-         Html::printAjaxPager(self::getTypeName(2),$start,$number);
-         echo "<table class='tab_cadre_fixe'><tr>";
-         echo "<th><a href='javascript:reloadTab(\"order=name\");'>".__('Name')."</a></th>";
-         echo "<th><a href='javascript:reloadTab(\"order=ip_addresses\");'>".__('IP')."</th>";
-         echo "<th>".__('Comments')."</th>";
-         echo "</tr>\n";
-
-
-         Session::initNavigateListItems($internetElement->getType(),
-         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'),
-                                                $elementToDisplay->getTypeName(1),
-                                                $internetElement->getName()));
-
-         $query = "SELECT *
-                   FROM `".$elementToDisplay->getTable()."`
-                   WHERE $criterion
-                    ORDER BY `$order`
-                   LIMIT ".$_SESSION['glpilist_limit']."
-                   OFFSET $start";
-
-         foreach ($DB->request($query) as $data) {
-            Session::addToNavigateListItems($elementToDisplay->getType(),$data["id"]);
-
-            echo "<tr class='tab_bg_1'>";
-            echo "<td><a href='".$elementToDisplay->getFormURL().'?id='.$data['id']."'>".
-                       $data['name']."</a></td>";
-            echo "<td>".str_replace('$$$$', '<br>', nl2br($data['ip_addresses']))."</td>";
-            echo "<td>".$data['comment']."</td>";
-            echo "</tr>\n";
-         }
+         echo __('Not associated one:');
+         Dropdown::show(__CLASS__, array('name'      => 'addressID',
+                                         'condition' => '`items_id`=0'));
+         echo "&nbsp;<input type='submit' name='assign_address' value='" . __s('Associate') .
+            "' class='submit'>";
+         echo "</form>\n";
+         echo "</td></tr>\n";
 
          echo "</table>\n";
+         echo "</div>\n";
       }
-      echo "</div>\n";
+
    }
 
 
@@ -695,12 +697,9 @@ class NetworkName extends FQDNLabel {
       switch ($item->getType()) {
          case 'NetworkEquipment' :
          case 'NetworkPort' :
-            self::showForItem($item, $withtemplate);
-            break;
-
          case 'IPNetwork' :
          case 'FQDN' :
-            self::showForInternetElement($item, $withtemplate);
+             self::showForItem($item, $withtemplate);
             break;
       }
    }
@@ -721,10 +720,12 @@ class NetworkName extends FQDNLabel {
 
                case 'NetworkEquipment' :
                case 'NetworkPort' :
+
                   $numberElements = countElementsInTable($this->getTable(),
-                                                         "itemtype = '".$item->getType()."'
-                                                            AND items_id='".$item->getID()."'");
+                                                        "itemtype = '".$item->getType()."'
+                                                           AND items_id='".$item->getID()."'");
                   break;
+
             }
             return self::createTabEntry(self::getTypeName(2), $numberElements);
          }
@@ -734,3 +735,4 @@ class NetworkName extends FQDNLabel {
    }
 }
 ?>
+ 
