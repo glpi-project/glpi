@@ -632,30 +632,21 @@ class NetworkName extends FQDNLabel {
 
       if ($table->getNumberOfRows() > 0) {
 
-         switch ($item->getType()) {
-         case 'IPNetwork':
-         case 'FQDN' :
-            $criterion = $item->getCriterionForMatchingNetworkNames();
-            break;
-
-         case 'NetworkEquipment' :
-         case 'NetworkPort' :
-            $criterion = "`itemtype` = '".$item->getType()."' AND `items_id`='".$item->getID()."'";
-            break;
+         if (($item->getType() == 'IPNetwork') || ($item->getType() == 'FQDN')) {
+            $number = countElementsInTable($address->getTable(),
+                                           $item->getCriterionForMatchingNetworkNames());
+            Html::printAjaxPager(self::getTypeName(2), $start, $number);
          }
-
-         $number = countElementsInTable($address->getTable(), $criterion);
-         Html::printAjaxPager(self::getTypeName(2), $start, $number);
-
          Session::initNavigateListItems(__CLASS__,
-                              //TRANS : %1$s is the itemtype name,
-                              //        %2$s is the name of the item (used for headings of a list)
+                                        //TRANS : %1$s is the itemtype name,
+                                        //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
                                                 $item->getTypeName(1), $item->getName()));
-
+         $table->display();
+      } else {
+         echo "<table class='tab_cadre_fixe'><tr><th>".__('No network name found')."</th></tr>";
+         echo "</table>";
       }
-
-      $table->display();
 
       if (($item->getType() == 'NetworkEquipment') || ($item->getType() == 'NetworkPort')) {
 
