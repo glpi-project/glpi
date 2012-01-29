@@ -57,7 +57,7 @@ class Computer extends CommonDBTM {
     * @param $nb  integer  number of item in the type (default 0)
    **/
    static function getTypeName($nb=0) {
-         return _n('Computer', 'Computers', $nb);
+      return _n('Computer', 'Computers', $nb);
    }
 
 
