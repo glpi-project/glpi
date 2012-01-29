@@ -63,7 +63,7 @@ function header_html($etape) {
    echo "<body>";
    echo "<div id='principal'>";
    echo "<div id='bloc'>";
-   echo "<div class='haut'></div>";
+   echo "<div id='logo_bloc'></div>";
    echo "<h2>GLPI SETUP</h2>";
    echo "<br><h3>". $etape ."</h3>";
 }
@@ -71,7 +71,7 @@ function header_html($etape) {
 
 //Display a great footer.
 function footer_html() {
-   echo "<div class='bas'></div></div></div></body></html>";
+   echo "</div></div></body></html>";
 }
 
 
