@@ -292,12 +292,6 @@ class NetworkName extends FQDNLabel {
       } else {
          $new_ip_addresses_field = "";
       }
-
-      if (!isset($this->fields['ip_addresses'])
-          || $new_ip_addresses_field != $this->fields['ip_addresses']) {
-
-         IPNetwork_NetworkName::updateIPAddressOfIPNetwork($this);
-      }
    }
 
 
@@ -728,4 +722,3 @@ class NetworkName extends FQDNLabel {
    }
 }
 ?>
- 
