@@ -1228,7 +1228,7 @@ class Config extends CommonDBTM {
 
       // Only write test for GLPI_LOG as SElinux prevent removing log file.
       if (!$fordebug) {
-         echo "<tr class='tab_bg_1'><td class='b'>". __('Checking write permissions for log files').
+         echo "<tr class='tab_bg_1'><td class='b left'>". __('Checking write permissions for log files').
               "</td>";
       }
 

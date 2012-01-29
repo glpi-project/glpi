@@ -661,7 +661,7 @@ class Toolbox {
       echo "<tr><th>".__('Test done')."</th><th >".__('Results')."</th></tr>";
 
       // Parser test
-      echo "<tr class='tab_bg_1'><td class='b'>".__('Testing PHP Parser')."</td>";
+      echo "<tr class='tab_bg_1'><td class='b left'>".__('Testing PHP Parser')."</td>";
 
       // PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
       if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
@@ -701,7 +701,7 @@ class Toolbox {
       }
 
       // session test
-      echo "<tr class='tab_bg_1'><td class='b'>".__('Sessions Test')."</td>";
+      echo "<tr class='tab_bg_1'><td class='b left'>".__('Sessions Test')."</td>";
 
       // check whether session are enabled at all!!
       if (!extension_loaded('session')) {
