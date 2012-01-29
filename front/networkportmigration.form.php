@@ -35,6 +35,9 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+if (!TableExists('glpi_networkportmigrations')) {
+   Html::displayNotFoundError();
+}
 
 $np = new NetworkPortMigration();
 
@@ -87,7 +90,7 @@ if (isset($_GET["delete"])) {
       $np->delete($_POST);
    }
 
-   Html::redirect($CFG_GLPI["root_doc"]."/front/migration_cleaner.php");
+   Html::redirect($CFG_GLPI["root_doc"]."/front/networkportmigration.php");
 
 } else {
    Session::checkRight("networking", "w");

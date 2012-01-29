@@ -2710,7 +2710,8 @@ CREATE TABLE `glpi_networkequipments` (
   KEY `networkequipmenttypes_id` (`networkequipmenttypes_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `date_mod` (`date_mod`),
-  KEY `groups_id_tech` (`groups_id_tech`)
+  KEY `groups_id_tech` (`groups_id_tech`),
+  KEY `mac` (`mac`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -2824,39 +2825,6 @@ CREATE TABLE `glpi_networkportlocals` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_networkportmigrations
-
-DROP TABLE IF EXISTS `glpi_networkportmigrations`;
-CREATE TABLE `glpi_networkportmigrations` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `items_id` int(11) NOT NULL DEFAULT '0',
-  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
-  `entities_id` int(11) NOT NULL DEFAULT '0',
-  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-  `logical_number` int(11) NOT NULL DEFAULT '0',
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `ip` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `mac` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `networkinterfaces_id` int(11) NOT NULL DEFAULT '0',
-  `netpoints_id` int(11) NOT NULL DEFAULT '0',
-  `netmask` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `gateway` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `subnet` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `comment` text COLLATE utf8_unicode_ci,
-  `unknown_interface_type` int(1) DEFAULT '0',
-  `invalid_network` int(1) DEFAULT '0',
-  `invalid_gateway` int(1) DEFAULT '0',
-  `invalid_address` int(1) DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `on_device` (`items_id`,`itemtype`),
-  KEY `networkinterfaces_id` (`networkinterfaces_id`),
-  KEY `netpoints_id` (`netpoints_id`),
-  KEY `item` (`itemtype`,`items_id`),
-  KEY `entities_id` (`entities_id`),
-  KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 ### Dump table glpi_networkports
 
 DROP TABLE IF EXISTS `glpi_networkports`;
@@ -2875,7 +2843,8 @@ CREATE TABLE `glpi_networkports` (
   KEY `on_device` (`items_id`,`itemtype`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `entities_id` (`entities_id`),
-  KEY `is_recursive` (`is_recursive`)
+  KEY `is_recursive` (`is_recursive`),
+  KEY `mac` (`mac`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
