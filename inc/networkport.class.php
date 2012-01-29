@@ -407,13 +407,14 @@ class NetworkPort extends CommonDBChild {
       }
 
       $is_active_network_port = false;
-      foreach (self::getNetworkPortInstantiations() as $portType) {
 
-         Session::initNavigateListItems('NetworkPort',
-                              //TRANS : %1$s is the itemtype name,
-                              //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'),
-                                                $item->getTypeName(1), $item->getName()));
+      Session::initNavigateListItems('NetworkPort',
+                                     //TRANS : %1$s is the itemtype name,
+                                     //        %2$s is the name of the item (used for headings of a list)
+                                     sprintf(__('%1$s = %2$s'),
+                                             $item->getTypeName(1), $item->getName()));
+
+      foreach (self::getNetworkPortInstantiations() as $portType) {
 
          $query = "SELECT `id`
                    FROM `glpi_networkports`
@@ -441,7 +442,7 @@ class NetworkPort extends CommonDBChild {
                   $table->addHeader("&nbsp;", "checkbox");
                }
 
-               $table->addHeader("#", "NetworkPort", "", 'NetworkPort');
+               $table->addHeader("#", 'NetworkPort', "", 'NetworkPort');
                $table->addHeader(__('Name'), "Name");
 
                $table_options = array();

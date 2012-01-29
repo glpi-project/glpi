@@ -292,10 +292,10 @@ class HTMLTable {
                if (isset($row['elements'][$name])) {
                   $cells = $row['elements'][$name];
                   foreach ($cells as $cells_id => $cell) {
-                     if (!empty($header['itemtype_forListItems'])) {
-                        Session::addToNavigateListItems($header['itemtype_forListItems'],$cells_id);
-                     }
                      if ($cell['start'] == $i) {
+                        if (!empty($header['itemtype_forListItems'])) {
+                           Session::addToNavigateListItems($header['itemtype_forListItems'],$cells_id);
+                        }
                         echo "<td";
                         if ($cell['rowspan'] > 1) {
                            echo " rowspan='".$cell['rowspan']."'";
