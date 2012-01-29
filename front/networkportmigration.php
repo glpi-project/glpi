@@ -38,6 +38,10 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkRight("networking", "w");
 Session::checkRight("internet", "w");
 
+if (!TableExists('glpi_networkportmigrations')) {
+   Html::displayNotFoundError();
+}
+
 Html::header(NetworkPortMigration::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "computer");
 
 Search::show('NetworkPortMigration');

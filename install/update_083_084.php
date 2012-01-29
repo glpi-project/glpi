@@ -581,10 +581,17 @@ function update083to084() {
       $migration->dropField('glpi_networkports', $field);
    }
 
-   logMessage(__('Transform address mac to lower'), true);
-   $query = "UPDATE glpi_networkports
-             SET `mac`=LOWER(`mac`)";
-   $DB->queryOrDie($query, "0.84 transforme MAC to lower case");
+   logMessage(__('Index mac field and transform address mac to lower'), true);
+
+   foreach (array('glpi_networkports', 'glpi_networkequipments') as $table) {
+
+      $query = "UPDATE $table
+                SET `mac`=LOWER(`mac`)";
+      $DB->queryOrDie($query, "0.84 transforme MAC to lower case");
+
+     $migration->addKey($table, 'mac');
+
+   }
 
    //TRANS: %s is the name of the table
    logMessage(sprintf(__('update migration of interfaces errors - %s'), "glpi_networkportmigrations"), true);
@@ -756,6 +763,11 @@ function update083to084() {
             }
          }
       }
+   }
+
+   logMessage(__('Drop table glpi_networkportmigrations if it is empty'), true);
+   if (countElementsInTable("glpi_networkportmigrations") == 0) {
+      $migration->dropTable("`glpi_networkportmigrations`");
    }
 
    $migration->addField('glpi_mailcollectors', 'accepted', 'string');
