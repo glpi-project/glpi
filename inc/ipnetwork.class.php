@@ -334,7 +334,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function post_addItem() {
 
       if ($this->networkUpdate) {
-         IPNetwork_NetworkName::linkIPAddressFromIPNetwork($this);
+         IPAddress_IPNetwork::linkIPAddressFromIPNetwork($this);
       }
 
       unset($this->networkUpdate);
@@ -345,11 +345,20 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function post_updateItem($history=1) {
 
       if ($this->networkUpdate) {
-         IPNetwork_NetworkName::linkIPAddressFromIPNetwork($this);
+         IPAddress_IPNetwork::linkIPAddressFromIPNetwork($this);
       }
 
       unset($this->networkUpdate);
       parent::post_updateItem($history);
+   }
+
+
+   function cleanDBonPurge() {
+
+      $link = new IPAddress_IPNetwork();
+      $link->removeIPAddress($this->getType(), $this->getID());
+
+      return true;
    }
 
 
@@ -620,9 +629,11 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    **/
    function getCriterionForMatchingNetworkNames() {
 
-      return "`id` IN (SELECT `networknames_id`
-                       FROM `glpi_ipnetworks_networknames`
-                       WHERE `ipnetworks_id` = '".$this->getID()."')";
+      return "`id` IN (SELECT `glpi_ipaddresses`.`items_id`
+                       FROM `glpi_ipaddresses_ipnetworks`, `glpi_ipaddresses`
+                       WHERE `glpi_ipaddresses_ipnetworks`.`ipnetworks_id` = '".$this->getID()."'
+                        AND `glpi_ipaddresses`.`id` = `glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
+                        AND `glpi_ipaddresses`.`itemtype` = 'NetworkName')";
    }
 
 

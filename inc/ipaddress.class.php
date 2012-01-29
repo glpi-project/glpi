@@ -403,6 +403,25 @@ class IPAddress extends CommonDBChild {
    }
 
 
+   function post_updateItem($history=1) {
+      IPAddress_IPNetwork::addIPAddress($this);
+   }
+
+
+   function post_addItem() {
+      IPAddress_IPNetwork::addIPAddress($this);
+   }
+
+
+   function cleanDBonPurge() {
+
+      $link = new IPAddress_IPNetwork();
+      $link->cleanDBonItemDelete($this->getType(), $this->getID());
+
+      return true;
+   }
+
+
    /**
     * Disable the address
    **/

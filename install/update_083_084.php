@@ -212,9 +212,9 @@ function update083to084() {
    $backup_tables = false;
    $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
                           'glpi_changes_problems', 'glpi_changes_tickets', 'glpi_changes_users',
-                          'glpi_changetasks', 'glpi_fqdns', 'glpi_ipaddresses', 'glpi_ipnetworks',
-                          'glpi_networkaliases', 'glpi_networknames',
-                          'glpi_ipnetworks_networknames', 'glpi_networkportaggregates',
+                          'glpi_changetasks', 'glpi_fqdns', 'glpi_ipaddresses',
+                          'glpi_ipaddressesipnetworks', 'glpi_ipnetworks', 'glpi_networkaliases',
+                          'glpi_networknames', 'glpi_networkportaggregates',
                           'glpi_networkportdialups', 'glpi_networkportethernets',
                           'glpi_networkportlocals', 'glpi_networkportmigrations',
                           'glpi_networkportwifis', 'glpi_wifinetworks');
@@ -509,20 +509,20 @@ function update083to084() {
    }
 
 
-   logMessage(sprintf(__('Data migration - %s'), "glpi_ipnetworks_networknames"), true);
+   logMessage(sprintf(__('Data migration - %s'), "glpi_ipaddresses_ipnetworks"), true);
 
    // Adding IPNetwork_NetworkName table
-   if (!TableExists('glpi_ipnetworks_networknames')) {
-      $query = "CREATE TABLE `glpi_ipnetworks_networknames` (
+   if (!TableExists('glpi_ipaddresses_ipnetworks')) {
+      $query = "CREATE TABLE `glpi_ipaddresses_ipnetworks` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
-                  `networknames_id` int(11) NOT NULL DEFAULT '0',
+                  `ipaddresses_id` int(11) NOT NULL DEFAULT '0',
                   `ipnetworks_id` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
-                  UNIQUE KEY `unicity` (`networknames_id`,`ipnetworks_id`),
+                  UNIQUE KEY `unicity` (`ipaddresses_id`,`ipnetworks_id`),
                   KEY `ipnetworks_id` (`ipnetworks_id`),
-                  KEY `networknames_id` (`networknames_id`)
+                  KEY `ipaddresses_id` (`ipaddresses_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-      $DB->queryOrDie($query, "0.84 create glpi_ipnetworks_networknames");
+      $DB->queryOrDie($query, "0.84 create glpi_ipaddresses_ipnetworks");
    }
 
 
@@ -732,7 +732,7 @@ function update083to084() {
    $migration->addField('glpi_networkports_vlans', 'tagged', 'char', array('value' => '0'));
 
    //TRANS: %s is the name of the table
-   logMessage(__('Update connexities between NetworkName and IPNetwork'), true);
+   logMessage(__('Update connexities between IPAddress and IPNetwork'), true);
 
    // Here, we are sure that there is only IPv4 addresses. So, the SQL requests are simplified
    $query = "SELECT `id`, `address_3`, `netmask_3`
@@ -745,19 +745,18 @@ function update083to084() {
          $netmask = floatval($ipnetwork_row['netmask_3']);
          $address = floatval($ipnetwork_row['address_3']) & $netmask;
 
-         $query = "SELECT `items_id`
+         $query = "SELECT `id`
                    FROM `glpi_ipaddresses`
-                   WHERE `itemtype` = 'NetworkName'
-                     AND (`glpi_ipaddresses`.`binary_3` & '$netmask') = $address
+                   WHERE (`glpi_ipaddresses`.`binary_3` & '$netmask') = $address
                      AND `glpi_ipaddresses`.`version` = '4'
                    GROUP BY `items_id`";
 
-         if ($networkname_result = $DB->query($query)) {
+         if ($ipaddress_result = $DB->query($query)) {
             unset($query);
-            while ($link = $DB->fetch_assoc($networkname_result)) {
-               $query = "INSERT INTO `glpi_ipnetworks_networknames`
-                             ( `ipnetworks_id`, `networknames_id`)
-                         VALUES ('$ipnetworks_id', '".$link['items_id']."')";
+            while ($link = $DB->fetch_assoc($ipaddress_result)) {
+               $query = "INSERT INTO `glpi_ipaddresses_ipnetworks`
+                             ( `ipaddresses_id`, `ipnetworks_id`  )
+                         VALUES ('".$link['id']."', '$ipnetworks_id')";
                $DB->query($query);
                unset($query);
             }
