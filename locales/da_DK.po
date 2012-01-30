@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-01-24 08:43+0100\n"
-"PO-Revision-Date: 2012-01-24 07:43+0000\n"
+"PO-Revision-Date: 2012-01-30 15:47+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Danish (Denmark) (http://www.transifex.net/projects/p/GLPI/team/da_DK/)\n"
 "MIME-Version: 1.0\n"
@@ -1839,7 +1839,7 @@ msgstr "Successfull"
 #: front/ocsng.php:73
 #, php-format
 msgid "OCSNG server: %s"
-msgstr ""
+msgstr "OCSNG server: %s"
 
 #: front/ocsng.php:77 inc/html.class.php:1315 inc/ocsserver.class.php:2895
 #: inc/ocsserver.class.php:3004 inc/ocsserver.class.php:3014
@@ -2328,8 +2328,8 @@ msgstr "Udstyrsrapport pr. år"
 #: install/install.php:519
 msgid "License"
 msgid_plural "Licenses"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Licens"
+msgstr[1] "Licenser"
 
 #: front/reservation.form.php:43 front/reservationitem.php:42
 #: front/reservation.php:45 front/tracking.injector.php:57
@@ -3716,7 +3716,7 @@ msgstr "Gruppe DN"
 #: inc/authldap.class.php:1312 inc/ocsserver.class.php:2900
 #: inc/ruledictionnarysoftware.class.php:79
 msgid "Destination entity"
-msgstr ""
+msgstr "Destinationsentitet"
 
 #: inc/authldap.class.php:1314 inc/budget.class.php:249
 #: inc/commondbtm.class.php:1856 inc/commondropdown.class.php:316
@@ -4533,7 +4533,7 @@ msgstr "Tjekliste"
 #: inc/change.class.php:582
 msgctxt "change"
 msgid "New"
-msgstr ""
+msgstr "Ny"
 
 #: inc/change.class.php:583
 msgid "Evaluation"
@@ -5114,7 +5114,7 @@ msgstr "Overvåg gruppe"
 #: inc/commonitiltask.class.php:388 inc/ruleticket.class.php:233
 #: inc/ruleticket.class.php:321 install/update_05_051.php:74
 msgid "Technician"
-msgstr "Teknikkere"
+msgstr "Tekniker"
 
 #: inc/commonitilobject.class.php:1798
 #: inc/notificationtargetcommonitilobject.class.php:772
@@ -6083,7 +6083,7 @@ msgstr ""
 #: inc/config.class.php:844
 #, php-format
 msgid "generated on %s"
-msgstr ""
+msgstr "genereret den %s"
 
 #: inc/config.class.php:849
 msgid "Regenerate"
@@ -6222,12 +6222,12 @@ msgstr "Ingen forbrugsvare"
 #: inc/consumable.class.php:287
 msgctxt "consumable"
 msgid "New"
-msgstr ""
+msgstr "Ny"
 
 #: inc/consumable.class.php:290
 msgctxt "consumable"
 msgid "Used"
-msgstr ""
+msgstr "Tom"
 
 #: inc/consumable.class.php:318
 msgid "Add consumables"
@@ -7317,8 +7317,8 @@ msgstr "Godkendelsestilknytnings regler"
 #: inc/dropdown.class.php:706 inc/rulerightparameter.class.php:90
 msgid "LDAP criteria"
 msgid_plural "LDAP criterias"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "LDAP kriterie"
+msgstr[1] "LDAP kriterier"
 
 #: inc/dropdown.class.php:708 inc/fieldunicity.class.php:49
 #: inc/fieldunicity.class.php:282 inc/html.class.php:1865
@@ -7670,7 +7670,7 @@ msgstr ""
 
 #: inc/entity.class.php:536 inc/entitydata.class.php:484
 msgid "Entity for software creation"
-msgstr ""
+msgstr "Entitet for software oprettelse"
 
 #: inc/entity.class.php:557
 msgid "to see the entity and its sub-entities"
@@ -10061,8 +10061,8 @@ msgstr "E-mail ikke fundet. Umuligt at importere"
 #: inc/ocslink.class.php:43 inc/ruleimportcomputer.class.php:129
 msgid "OCSNG link"
 msgid_plural "OCSNG links"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "OCSNG link"
+msgstr[1] "OCSNG links"
 
 #: inc/ocslink.class.php:84
 #, php-format
@@ -10526,7 +10526,7 @@ msgstr "Forfattere"
 #: inc/plugin.class.php:384
 msgctxt "plugin"
 msgid "New"
-msgstr ""
+msgstr "Ny"
 
 #: inc/plugin.class.php:392
 msgid "Not installed"
@@ -10609,7 +10609,7 @@ msgstr ""
 #: inc/problem.class.php:578
 msgctxt "problem"
 msgid "New"
-msgstr ""
+msgstr "Ny"
 
 #: inc/problem.class.php:580 inc/ticket.class.php:2037
 #: inc/ticket.class.php:4323
@@ -11906,7 +11906,7 @@ msgstr ""
 
 #: inc/sla.class.php:176
 msgid "Calendar of the ticket"
-msgstr ""
+msgstr "Sagens kalender"
 
 #: inc/sla.class.php:179
 msgid "Maximum time to solve"
@@ -12135,7 +12135,7 @@ msgstr "Tilføj en kontakt"
 
 #: inc/ticket.class.php:348 inc/ticket.class.php:365
 msgid "Created tickets"
-msgstr ""
+msgstr "Oprettede sager"
 
 #: inc/ticket.class.php:391 inc/ticket.class.php:2539
 msgid "Costs"
@@ -12153,7 +12153,7 @@ msgstr ""
 
 #: inc/ticket.class.php:727 inc/ticket.class.php:1196
 msgid "Unknown ticket"
-msgstr ""
+msgstr "Ukendt sag"
 
 #: inc/ticket.class.php:771 inc/ticket.class.php:1243
 msgid "%1$s updates the item %2%s"
@@ -12216,7 +12216,7 @@ msgstr ""
 #: inc/ticket.class.php:2036 inc/ticket.class.php:4317
 msgctxt "ticket"
 msgid "New"
-msgstr ""
+msgstr "Ny"
 
 #: inc/ticket.class.php:2329
 msgid "Devices own by my groups"
@@ -12293,7 +12293,7 @@ msgstr ""
 
 #: inc/ticket.class.php:3327
 msgid "Assign a SLA"
-msgstr ""
+msgstr "Tilknyt en SLA"
 
 #. TRANS: %d is the document number
 #: inc/ticket.class.php:3770
