@@ -156,12 +156,12 @@ class NetworkPort_Vlan extends CommonDBRelation {
    /**
     * Get HTMLTable row for a given item
     *
-    * @param $item      CommonDBTM object
-    * @param $table     The table to update
-    * @param $canedit   display the edition elements (ie : add, remove, ...)
-    * @param $close_row set to true if we must close the row at the end of the current element
-    * @param $options:
-    *                  'dont_display' : array of the elements that must not be display
+    * @param $item            CommonDBTM object
+    * @param $table           HTMLTable object: the table to update
+    * @param $canedit         display the edition elements (ie : add, remove, ...)
+    * @param $close_row       set to true if we must close the row at the end of the current element
+    * @param $options   array of possible options:
+    *       - 'dont_display' : array of the elements that must not be display
     *
    **/
    static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
@@ -196,10 +196,10 @@ class NetworkPort_Vlan extends CommonDBRelation {
                                        array('display' => false));
          if ($canedit) {
             $content .= "<a href='" . $CFG_GLPI["root_doc"] .
-                      "/front/networkport.form.php?unassign_vlan=" . "unassigned&amp;id=" .
-                      $line["id"] . "'>";
+                         "/front/networkport.form.php?unassign_vlan=" . "unassigned&amp;id=" .
+                         $line["id"] . "'>";
             $content .= "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" .
-                        __s('Dissociate') . "\" title=\"" . __s('Dissociate') . "\"></a>";
+                          __s('Dissociate') . "\" title=\"" . __s('Dissociate') . "\"></a>";
          }
 
          $table->addElement($content, $column_name, $line["vlans_id"], $item->getID());

@@ -868,15 +868,14 @@ class IPAddress extends CommonDBChild {
    /**
     * Get HTMLTable columns headers for a given item type
     *
-    * @param $itemtype     The type of the item
-    * @param $table        The table to update
-    * @param $fathers_name The name of the father element
-    * @param $options:
-    *                 'dont_display' : array of the columns that must not be display
-    *                 'column_links' : array of links for a given column
-    *
+    * @param $itemtype           The type of the item
+    * @param &$table             HTMLTable object: the table to update
+    * @param $fathers_name       The name of the father element (default '')
+    * @param $options      array of possible options:
+    *       - 'dont_display' : array of the columns that must not be display
+    *       - 'column_links' : array of links for a given column
    **/
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name = "",
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name="",
                                              $options=array()) {
 
       $column_name = __CLASS__;
@@ -899,13 +898,12 @@ class IPAddress extends CommonDBChild {
    /**
     * Get HTMLTable row for a given item
     *
-    * @param $item      CommonDBTM object
-    * @param $table     The table to update
-    * @param $canedit   display the edition elements (ie : add, remove, ...)
-    * @param $close_row set to true if we must close the row at the end of the current element
-    * @param $options:
-    *                  'dont_display' : array of the elements that must not be display
-    *
+    * @param $item            CommonDBTM object
+    * @param &$table          HTMLTable object: the table to update
+    * @param $canedit         display the edition elements (ie : add, remove, ...)
+    * @param $close_row       set to true if we must close the row at the end of the current element
+    * @param $options   array of possible options:
+    *       - 'dont_display' : array of the elements that must not be display
    **/
    static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
                                        $options=array()) {
@@ -917,11 +915,11 @@ class IPAddress extends CommonDBChild {
 
       $query = "SELECT `id`
                 FROM `glpi_ipaddresses`
-                 WHERE `items_id` = '" . $item->getID() . "'
-                  AND `itemtype` = '" . $item->getType() . "'";
+                WHERE `items_id` = '" . $item->getID() . "'
+                      AND `itemtype` = '" . $item->getType() . "'";
 
       $result = $DB->query($query);
-      $address = new IPAddress();
+      $address = new self();
       foreach ($DB->request($query) as $ipaddress) {
          if ($address->getFromDB($ipaddress['id'])) {
             $table->addElement($address->fields['name'], "IPAddress", $address->getID(),

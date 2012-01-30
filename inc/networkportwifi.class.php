@@ -52,6 +52,9 @@ class NetworkPortWifi extends NetworkPortInstantiation {
   }
 
 
+   /**
+    * @see inc/NetworkPortInstantiation::showInstantiationForm()
+   **/
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
 
       if (!$options['several']) {
@@ -93,7 +96,12 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    }
 
 
-   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name = "",
+   /**
+    * @param $table              HTMLTable  object
+    * @param $fathers_name       (default '')
+    * @param $options      array
+   **/
+   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name="",
                                                     $options=array()) {
 
       $table->addHeader(__('Interface'), "Interface", $fathers_name);
@@ -107,12 +115,15 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    }
 
 
+   /**
+    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
+   **/
    function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
                                       $canedit, $options=array()) {
 
       $compdev = new Computer_Device();
-      $device = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
-                $this->fields['computers_devicenetworkcards_id']);
+      $device  = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
+                 $this->fields['computers_devicenetworkcards_id']);
 
       if ($device) {
          $table->addElement($device->getLink(), "Interface", $this->getID(), $netport->getID());

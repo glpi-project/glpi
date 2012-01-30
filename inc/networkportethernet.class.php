@@ -83,7 +83,12 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
   }
 
 
-   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name = "",
+   /**
+    * @param $table              HTMLTable object
+    * @param $fathers_name       (default '')
+    * @param $options      array
+   **/
+   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name="",
                                                     $options=array()) {
 
       // TODO : try to transfert to Interface DeviceNetworkCard::getHTMLTableHeaderForItem...
@@ -97,12 +102,15 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
    }
 
 
+   /**
+    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
+    */
    function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
                                       $canedit, $options=array()) {
 
       $compdev = new Computer_Device();
-      $device = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
-                $this->fields['computers_devicenetworkcards_id']);
+      $device  = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
+                                                   $this->fields['computers_devicenetworkcards_id']);
 
       if ($device) {
          $table->addElement($device->getLink(), "Interface", $this->getID(), $netport->getID());
@@ -122,7 +130,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
          $withtemplate = '';
       }
 
-      $table->addElement(array('function' => array(__CLASS__, 'showConnection'),
+      $table->addElement(array('function'   => array(__CLASS__, 'showConnection'),
                                'parameters' => array($item, $netport, $withtemplate)),
                          "Connected", $this->getID(),$netport->getID());
    }

@@ -80,16 +80,24 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
    }
 
 
-   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name = "",
+   /**
+    * @param $table              HTMLTable object
+    * @param $fathers_name       (default '')
+    * @param $options      array
+   **/
+   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name="",
                                                     $options=array()) {
 
-      $table->addHeader(__('Origin port'), "Origin", $fathers_name);
+      $table->addHeader(__('Original port'), "Origin", $fathers_name);
       $table->addHeader(__('MAC'), "MAC", $fathers_name);
       NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $table, $fathers_name);
 
    }
 
 
+   /**
+    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
+   **/
    function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
                                       $canedit, $options=array()) {
 
