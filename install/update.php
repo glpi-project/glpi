@@ -822,7 +822,7 @@ echo "</head>";
 echo "<body>";
 echo "<div id='principal'>";
 echo "<div id='bloc'>";
-echo "<div class='haut'></div>";
+echo "<div id='logo_bloc'></div>";
 echo "<h2>GLPI SETUP</h2>";
 echo "<br><h3>".__('Upgrade')."</h3>";
 
@@ -911,6 +911,5 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
 }
 
-echo "<div class='bas'></div></div></div></body></html>";
-
+echo "<div></div></div></div></body></html>";
 ?>
