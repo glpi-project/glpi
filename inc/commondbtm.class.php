@@ -368,8 +368,9 @@ class CommonDBTM extends CommonGLPI {
          $query .= ")";
          if ($result=$DB->query($query)) {
             // Already define for entity / insert_id does not work
-            if (!isset($this->fields['id']) || is_null($this->fields['id'])
-                  || $this->fields['id'] == 0) {
+            if (!isset($this->fields['id'])
+                || is_null($this->fields['id'])
+                || $this->fields['id'] == 0) {
                $this->fields['id'] = $DB->insert_id();
             }
             return $this->fields['id'];
@@ -3035,7 +3036,7 @@ class CommonDBTM extends CommonGLPI {
                   return $value;
 
                case "text" :
-                  
+
                   if ($options['html']) {
                      $text = nl2br($value);
                   } else {
