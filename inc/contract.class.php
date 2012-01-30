@@ -899,14 +899,14 @@ class Contract extends CommonDBTM {
       }
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='2'>".
-            ($totalnb>0 ? sprintf(__('Total = %s'), $totalnb)  : "&nbsp;");
-      echo "</td><td colspan='4'>&nbsp;</td></tr> ";
+            ($totalnb>0 ? sprintf(__('Total = %s'), $totalnb) : "&nbsp;");
+      echo "</td><td colspan='5'>&nbsp;</td></tr> ";
 
       if ($canedit) {
          if ($this->fields['max_links_allowed']==0
              || $this->fields['max_links_allowed'] > $totalnb) {
 
-            echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
+            echo "<tr class='tab_bg_1'><td colspan='5' class='right'>";
             Dropdown::showAllItems("items_id", 0, 0,
                                    ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
                                    $CFG_GLPI["contract_types"]);
