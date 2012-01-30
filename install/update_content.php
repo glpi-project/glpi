@@ -360,7 +360,7 @@ if (!FieldExists($config_table,"utf8_conv", false)) {
 if ($offsettable>=0 && $complete_utf8) {
    if ($percent >= 0) {
       Html::displayProgressBar(400, $percent);
-      echo "<div></div></div></div></body></html>";
+      echo "</div></div></body></html>";
       Html::glpi_flush();
    }
 
@@ -377,7 +377,7 @@ if ($offsettable>=0 && $complete_utf8) {
 
 } else {
    echo "<p><a class='vsubmit' href='../index.php'>".__('Use GLPI')."</a></p>";
-   echo "<div></div></div></div></body></html>";
+   echo "</div></div></body></html>";
 }
 
 if ($conv_utf8) {
