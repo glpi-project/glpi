@@ -1,10 +1,10 @@
 <?php 
 /*
- * @version $Id$
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@
 
  You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //dk_DK
 
@@ -961,7 +961,7 @@ $LANG['joblist'][1]="Kun mine!";
 $LANG['joblist'][2]="Prioritet"; 
 $LANG['joblist'][3]="Personlig + gruppe(r)"; 
 $LANG['joblist'][4]="Tildelt"; 
-$LANG['joblist'][5]="Created tickets"; // en_GB string to be translated
+$LANG['joblist'][5]="Oprettede sager"; 
 $LANG['joblist'][6]="Beskrivelse"; 
 $LANG['joblist'][7]="Nyt sag for dette emne..."; 
 $LANG['joblist'][8]="Ingen sag fundet"; 
@@ -1049,7 +1049,7 @@ $LANG['ldap'][23]="Masse-importér grupper fra LDAP biblioteket";
 $LANG['ldap'][24]="Import af nye grupper"; 
 $LANG['ldap'][25]="Ingen grupper at importere"; 
 $LANG['ldap'][26]="Bruger DN"; 
-$LANG['ldap'][27]="Destination entity"; // en_GB string to be translated
+$LANG['ldap'][27]="Destinationsentitet"; 
 $LANG['ldap'][30]="Hvordan LDAP aliaser skal håndteres"; 
 $LANG['ldap'][31]="Never dereferenced (default)"; // en_GB string to be translated
 $LANG['ldap'][32]="Always dereferenced"; // en_GB string to be translated
@@ -1448,7 +1448,7 @@ $LANG['ocsng'][48]="Computerens OCSNG ID er ændret";
 $LANG['ocsng'][49]="Agent"; 
 $LANG['ocsng'][50]="Låst IP(er)"; 
 $LANG['ocsng'][52]="Låst software"; 
-$LANG['ocsng'][53]="OCSNG links"; // en_GB string to be translated
+$LANG['ocsng'][53]="OCSNG links"; 
 $LANG['ocsng'][54]="Software slettet af OCSNG synkronisering"; 
 $LANG['ocsng'][55]="Låst(e) volumen(er)"; 
 $LANG['ocsng'][56]="Låste komponenter"; 
@@ -1780,7 +1780,7 @@ $LANG['rulesengine'][132]="To be unaware of import"; // en_GB string to be trans
 $LANG['rulesengine'][133]="Entitet fra domæne"; 
 $LANG['rulesengine'][134]="Afvis e-mail (uden e-mail svar)"; 
 $LANG['rulesengine'][135]="Afvis e-mail (med e-mail svar)"; 
-$LANG['rulesengine'][137]="LDAP criteria"; // en_GB string to be translated
+$LANG['rulesengine'][137]="LDAP kriterie"; 
 $LANG['rulesengine'][138]="LDAP kriterier"; 
 $LANG['rulesengine'][140]="Tilføjer et kriterie"; 
 $LANG['rulesengine'][142]="Liste over ej-importerede emails"; 
@@ -2141,8 +2141,8 @@ $LANG['sla'][6]="Eskaleringsniveau";
 $LANG['sla'][8]="Næste eskalering"; 
 $LANG['sla'][9]="Automatisk SLA påmindelse"; 
 $LANG['sla'][10]="24/7"; 
-$LANG['sla'][11]="Calendar of ticket"; // en_GB string to be translated
-$LANG['sla'][12]="Assign a SLA"; // en_GB string to be translated
+$LANG['sla'][11]="Sagens kalender"; 
+$LANG['sla'][12]="Tilknyt en SLA"; 
 $LANG['sla'][13]="The assignment of a SLA to a ticket causes the recalculation of the due date."; // en_GB string to be translated
 $LANG['sla'][14]="Escalations defined in the SLA will be triggered under this new date."; // en_GB string to be translated
 $LANG['sla'][15]="Escalation levels"; // en_GB string to be translated
@@ -2156,9 +2156,9 @@ $LANG['software'][6]="Udgiver";
 $LANG['software'][7]="Tilføj en version"; 
 $LANG['software'][8]="Tilføj en licens"; 
 $LANG['software'][9]="Påvirkede computere"; 
-$LANG['software'][10]="Entity for software creation"; // en_GB string to be translated
+$LANG['software'][10]="Entitet for software oprettelse"; 
 $LANG['software'][11]="Licenser"; 
-$LANG['software'][12]="License"; // en_GB string to be translated
+$LANG['software'][12]="Licens"; 
 $LANG['software'][16]="installeret software"; 
 $LANG['software'][17]="Installeret software"; 
 $LANG['software'][19]="Installationer"; 
@@ -2249,7 +2249,7 @@ $LANG['tracking'][7]="Sagens beskrivelse er påkrævet: opdatering ikke fuldfør
 $LANG['tracking'][8]="Ingen beskrivelse af din sag, prøv venligst igen."; 
 $LANG['tracking'][9]="Standard for sager"; 
 $LANG['tracking'][10]="Standard for mail-modtagere"; 
-$LANG['tracking'][11]="Unknown ticket"; // en_GB string to be translated
+$LANG['tracking'][11]="Ukendt sag"; 
 $LANG['tracking'][24]="Dokument sag"; 
 $LANG['tracking'][29]="Antal"; 
 $LANG['tracking'][30]="Ny"; 
@@ -2312,7 +2312,7 @@ $LANG['users'][14]="Rettigheder";
 $LANG['users'][15]="Importer fra biblioteker"; 
 $LANG['users'][16]="Importér fra andre kilder"; 
 $LANG['users'][17]="Administrativt nummer"; 
-$LANG['users'][18]="generated on"; // en_GB string to be translated
+$LANG['users'][18]="genereret den"; 
 $LANG['users'][19]="Add to managers"; // en_GB string to be translated
 $LANG['users'][20]="Delete from managers"; // en_GB string to be translated
 $LANG['users'][21]="Standard email"; 

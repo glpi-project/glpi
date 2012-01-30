@@ -1,10 +1,10 @@
 <?php 
 /*
- * @version $Id$
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@
 
  You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //gl_ES
 
@@ -1790,7 +1790,7 @@ $LANG['rulesengine'][146]="Co perfil do usuario";
 $LANG['rulesengine'][147]="Usuario cun único perfil"; 
 $LANG['rulesengine'][148]="Dominio correo electrónico coñecido"; 
 $LANG['rulesengine'][149]="Grupo importado dun directorio LDAP"; 
-$LANG['rulesengine'][150]="As regras que afectan á entidade están desactivadas"; 
+$LANG['rulesengine'][150]="As regras que afectan á entidade están desactivadas."; 
 $LANG['rulesengine'][151]="xa está presente en GLPI"; 
 $LANG['rulesengine'][152]="Ordenador a importar"; 
 $LANG['rulesengine'][154]="está baleiro no GLPI"; 
@@ -1815,8 +1815,8 @@ $LANG['search'][1]="para todos";
 $LANG['search'][2]="contén"; 
 $LANG['search'][3]="baixo"; 
 $LANG['search'][4]="Ordenado por"; 
-$LANG['search'][5]="Selection too large, massive action disabled."; // en_GB string to be translated
-$LANG['search'][6]="To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration."; // en_GB string to be translated
+$LANG['search'][5]="Selección demasiado ampla, acción xeral desactivada."; 
+$LANG['search'][6]="Para incrementar o límite: cambia max_input_vars ou suhosin.post.max_vars na configuración do PHP."; 
 $LANG['search'][8]="Data inicial"; 
 $LANG['search'][9]="Data final"; 
 $LANG['search'][11]="Elementos mostrados"; 
@@ -1925,7 +1925,7 @@ $LANG['setup'][127]="Autocompletar campos de texto";
 $LANG['setup'][128]="Formato de datas"; 
 $LANG['setup'][129]="Amosar os ID GLPI"; 
 $LANG['setup'][130]="Tempo en días que se conservarán os rexistros desta tarefa (0 para infinito)"; 
-$LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
+$LANG['setup'][131]="Número de resultados por páxina"; 
 $LANG['setup'][132]="Despregar a lista completa en árbore"; 
 $LANG['setup'][135]="Normal"; 
 $LANG['setup'][136]="Tradución"; 
