@@ -5040,7 +5040,8 @@ class Ticket extends CommonITILObject {
             $query = "SELECT *
                       FROM `glpi_tickets`
                       WHERE `entities_id` = '".$entity."'
-                            AND `status` = 'solved'";
+                            AND `status` = 'solved'
+                            AND `is_deleted` = 0";
 
             if ($delay >0) {
                $query .= " AND ADDDATE(`solvedate`, INTERVAL ".$delay." DAY) < CURDATE()";
@@ -5096,6 +5097,7 @@ class Ticket extends CommonITILObject {
          $query = "SELECT `glpi_tickets`.*
                    FROM `glpi_tickets`
                    WHERE `glpi_tickets`.`entities_id` = '".$entity."'
+                         AND `glpi_tickets`.`is_deleted` = 0
                          AND `glpi_tickets`.`status` IN ('new','assign','plan','waiting')
                          AND `glpi_tickets`.`closedate` IS NULL
                          AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < CURDATE()";
@@ -5182,6 +5184,7 @@ class Ticket extends CommonITILObject {
                    LEFT JOIN `glpi_ticketsatisfactions`
                        ON `glpi_ticketsatisfactions`.`tickets_id` = `glpi_tickets`.`id`
                    WHERE `glpi_tickets`.`entities_id` = '$entity'
+                         AND `glpi_tickets`.`is_deleted` = 0                   
                          AND `glpi_tickets`.`status` = 'closed'
                          AND `glpi_tickets`.`closedate` > '$max_closedate'
                          AND ADDDATE(`glpi_tickets`.`closedate`, INTERVAL $delay DAY)<=NOW()
