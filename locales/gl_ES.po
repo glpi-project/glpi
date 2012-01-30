@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-01-24 08:43+0100\n"
-"PO-Revision-Date: 2012-01-24 07:43+0000\n"
+"PO-Revision-Date: 2012-01-30 15:48+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Galician (Spain) (http://www.transifex.net/projects/p/GLPI/team/gl_ES/)\n"
 "MIME-Version: 1.0\n"
@@ -1839,7 +1839,7 @@ msgstr "Correcta"
 #: front/ocsng.php:73
 #, php-format
 msgid "OCSNG server: %s"
-msgstr ""
+msgstr "Servidor OCSNG: %s"
 
 #: front/ocsng.php:77 inc/html.class.php:1315 inc/ocsserver.class.php:2895
 #: inc/ocsserver.class.php:3004 inc/ocsserver.class.php:3014
@@ -2379,7 +2379,7 @@ msgstr "Repetir as regras de dicionario"
 #: front/rule.common.php:121 inc/migration.class.php:58
 #: inc/software.class.php:823 install/update.php:135
 msgid "Work in progress..."
-msgstr "Traballo en progreso..."
+msgstr "Traballo en curso..."
 
 #: front/rule.common.php:144
 #, php-format
@@ -2620,7 +2620,7 @@ msgstr "Duración media"
 
 #: front/stat.global.php:187 front/stat.graph.php:424
 msgid "hour(s)"
-msgstr "horas"
+msgstr "hora(s)"
 
 #: front/stat.global.php:207 front/stat.graph.php:443 inc/stat.class.php:375
 msgid "Answered"
@@ -4535,7 +4535,7 @@ msgstr "Lista de verificación"
 #: inc/change.class.php:582
 msgctxt "change"
 msgid "New"
-msgstr ""
+msgstr "Novos"
 
 #: inc/change.class.php:583
 msgid "Evaluation"
@@ -5118,7 +5118,7 @@ msgstr "Ver grupo"
 #: inc/commonitiltask.class.php:388 inc/ruleticket.class.php:233
 #: inc/ruleticket.class.php:321 install/update_05_051.php:74
 msgid "Technician"
-msgstr "Técnicos"
+msgstr "Técnico"
 
 #: inc/commonitilobject.class.php:1798
 #: inc/notificationtargetcommonitilobject.class.php:772
@@ -6232,12 +6232,12 @@ msgstr "Ningún consumible"
 #: inc/consumable.class.php:287
 msgctxt "consumable"
 msgid "New"
-msgstr ""
+msgstr "Novos"
 
 #: inc/consumable.class.php:290
 msgctxt "consumable"
 msgid "Used"
-msgstr ""
+msgstr "Usados"
 
 #: inc/consumable.class.php:318
 msgid "Add consumables"
@@ -10543,7 +10543,7 @@ msgstr "Autores"
 #: inc/plugin.class.php:384
 msgctxt "plugin"
 msgid "New"
-msgstr ""
+msgstr "Novos"
 
 #: inc/plugin.class.php:392
 msgid "Not installed"
@@ -10626,7 +10626,7 @@ msgstr ""
 #: inc/problem.class.php:578
 msgctxt "problem"
 msgid "New"
-msgstr ""
+msgstr "Novos"
 
 #: inc/problem.class.php:580 inc/ticket.class.php:2037
 #: inc/ticket.class.php:4323
@@ -10985,7 +10985,7 @@ msgstr "Regras de asignación de categoría aos programas"
 
 #: inc/profile.class.php:1212
 msgid "Dropdown dictionaries"
-msgstr "Dicionario dos títulos"
+msgstr "Dicionario dos despregables"
 
 #: inc/profile.class.php:1216
 msgid "Software dictionary"
@@ -11478,7 +11478,7 @@ msgstr "Resultado da expresión regular"
 
 #: inc/rule.class.php:1949
 msgid "Rules using the object have been disabled."
-msgstr "As regras que afectan á entidade están desactivadas"
+msgstr "As regras que afectan á entidade están desactivadas."
 
 #: inc/rulecollection.class.php:294
 msgid "Rules list"
@@ -11577,11 +11577,11 @@ msgstr "baixo"
 #: inc/ruledictionnarycomputermodelcollection.class.php:58
 #: inc/ruledictionnarymonitormodelcollection.class.php:51
 msgid "Dictionnary of computer models"
-msgstr "Dicionario modelo de computador"
+msgstr "Dicionario de modelos de computador"
 
 #: inc/ruledictionnarycomputertypecollection.class.php:57
 msgid "Dictionnary of computer types"
-msgstr "Dicionario tipos de ordenadores"
+msgstr "Dicionario de tipos de ordenador"
 
 #: inc/ruledictionnarymanufacturercollection.class.php:58
 msgid "Dictionary of manufacturers"
@@ -11589,7 +11589,7 @@ msgstr "Dicionario de fabricantes"
 
 #: inc/ruledictionnarymonitortypecollection.class.php:58
 msgid "Dictionnary of monitor types"
-msgstr "Dicionario tipo de monitor"
+msgstr "Dicionario de tipos de monitor"
 
 #: inc/ruledictionnarynetworkequipmentmodelcollection.class.php:52
 msgid "Dictionnary of networking equipment models"
@@ -11617,15 +11617,15 @@ msgstr "Dicionario de modelos de periféricos"
 
 #: inc/ruledictionnaryperipheraltypecollection.class.php:49
 msgid "Dictionnary of device types"
-msgstr "Dicionario tipos de periféricos"
+msgstr "Dicionario de tipos de periféricos"
 
 #: inc/ruledictionnaryphonemodelcollection.class.php:50
 msgid "Dictionnary of phone models"
-msgstr "Dicionario modelos de teléfonos"
+msgstr "Dicionario de modelos de teléfonos"
 
 #: inc/ruledictionnaryphonetypecollection.class.php:49
 msgid "Dictionnary of phone types"
-msgstr "Dicionario tipos de teléfonos"
+msgstr "Dicionario de tipos de teléfonos"
 
 #: inc/ruledictionnaryprinter.class.php:70
 msgid "Original manufacturer"
@@ -11684,7 +11684,7 @@ msgstr "Editor"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:92
 msgid "Warning before running rename based on the dictionary rules"
-msgstr "Coidado antes de executar o regras de renomeado do dicionario"
+msgstr "Coidado antes de executar regras de renomeado do dicionario"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:96
 msgid ""
@@ -12235,7 +12235,7 @@ msgstr ""
 #: inc/ticket.class.php:2036 inc/ticket.class.php:4317
 msgctxt "ticket"
 msgid "New"
-msgstr ""
+msgstr "Novos"
 
 #: inc/ticket.class.php:2329
 msgid "Devices own by my groups"
@@ -12393,7 +12393,7 @@ msgstr "Por en espera o %s"
 
 #: inc/ticket.class.php:4858 inc/ticket.class.php:4939
 msgid "No ticket in progress."
-msgstr "Non hai incidencias pendentes."
+msgstr "Non hai incidencias en curso."
 
 #: inc/ticket.class.php:4986
 msgid "Assign equipment"

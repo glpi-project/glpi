@@ -1,10 +1,10 @@
 <?php 
 /*
- * @version $Id$
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@
 
  You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //gl_ES
 
@@ -748,7 +748,7 @@ $LANG['financial'][113]="Non autocompletar";
 $LANG['financial'][114]="Data do último inventario físico"; 
 
 $LANG['gmt'][0]="GMT"; 
-$LANG['gmt'][1]="horas"; 
+$LANG['gmt'][1]="hora(s)"; 
 $LANG['gmt'][2]="h"; 
 
 $LANG['group'][0]="Visible nunha incidencia"; 
@@ -919,7 +919,7 @@ $LANG['job'][32]="Ningunha";
 $LANG['job'][33]="Descrición baleira"; 
 $LANG['job'][34]="Planificar esta tarefa"; 
 $LANG['job'][35]="Planificación"; 
-$LANG['job'][36]="incidencia(s) en marcha ou resoltas recentemente para este elemento."; 
+$LANG['job'][36]="incidencia(s) en curso ou resoltas recentemente para este elemento."; 
 $LANG['job'][37]="Seguimento"; 
 $LANG['job'][38]="Incidencia"; 
 $LANG['job'][40]="Custo horario"; 
@@ -972,7 +972,7 @@ $LANG['joblist'][12]="Pechada o";
 $LANG['joblist'][13]="Incidencias a procesar"; 
 $LANG['joblist'][14]="Solucionado o"; 
 $LANG['joblist'][15]="Por en espera o"; 
-$LANG['joblist'][16]="Non hai incidencias pendentes."; 
+$LANG['joblist'][16]="Non hai incidencias en curso."; 
 $LANG['joblist'][17]="Pechada (non resolta)"; 
 $LANG['joblist'][18]="En curso (asignada)"; 
 $LANG['joblist'][19]="En curso (planificada)"; 
@@ -1707,8 +1707,8 @@ $LANG['rulesengine'][29]="Lista de regras";
 $LANG['rulesengine'][30]="Acción"; 
 $LANG['rulesengine'][31]="existe"; 
 $LANG['rulesengine'][32]="non existe"; 
-$LANG['rulesengine'][33]="Dicionario dos títulos"; 
-$LANG['rulesengine'][35]="dicionario de software"; 
+$LANG['rulesengine'][33]="Dicionario dos despregables"; 
+$LANG['rulesengine'][35]="Dicionario de software"; 
 $LANG['rulesengine'][36]="Dicionario de fabricantes"; 
 $LANG['rulesengine'][37]="Regras de asignación de categoría aos programas"; 
 $LANG['rulesengine'][38]="Recalcular"; 
@@ -1720,18 +1720,18 @@ $LANG['rulesengine'][46]="Asignar : IP do equipo";
 $LANG['rulesengine'][47]="Asignar : nome do equipo + dominio"; 
 $LANG['rulesengine'][48]="Asignar material"; 
 $LANG['rulesengine'][49]="Asignar : material polo enderezo MAC"; 
-$LANG['rulesengine'][50]="Dicionario modelo de computador"; 
-$LANG['rulesengine'][51]="Dicionario tipos de monitores"; 
-$LANG['rulesengine'][52]="Dicionario modelos de teléfonos"; 
+$LANG['rulesengine'][50]="Dicionario de modelos de computador"; 
+$LANG['rulesengine'][51]="Dicionario de modelos de monitor"; 
+$LANG['rulesengine'][52]="Dicionario de modelos de teléfonos"; 
 $LANG['rulesengine'][53]="Dicionario de modelos de periféricos"; 
 $LANG['rulesengine'][54]="Dicionario de modelos de impresoras"; 
 $LANG['rulesengine'][55]="Dicionario de modelos de electrónica de rede"; 
 $LANG['rulesengine'][56]="Modelos"; 
 $LANG['rulesengine'][57]="Normas de importación e vinculación dos equipos"; 
-$LANG['rulesengine'][60]="Dicionario tipos de ordenadores"; 
-$LANG['rulesengine'][61]="Dicionario tipo de monitor"; 
-$LANG['rulesengine'][62]="Dicionario tipos de teléfonos"; 
-$LANG['rulesengine'][63]="Dicionario tipos de periféricos"; 
+$LANG['rulesengine'][60]="Dicionario de tipos de ordenador"; 
+$LANG['rulesengine'][61]="Dicionario de tipos de monitor"; 
+$LANG['rulesengine'][62]="Dicionario de tipos de teléfonos"; 
+$LANG['rulesengine'][63]="Dicionario de tipos de periféricos"; 
 $LANG['rulesengine'][64]="Dicionario de tipos de impresoras"; 
 $LANG['rulesengine'][65]="Dicionario de tipos de electrónica de rede"; 
 $LANG['rulesengine'][66]="Tipos"; 
@@ -1751,9 +1751,9 @@ $LANG['rulesengine'][84]="Probar o motor de regras";
 $LANG['rulesengine'][85]="Resultado da expresión regular"; 
 $LANG['rulesengine'][86]="Categoría de software eliminada polas regras de dicionario"; 
 $LANG['rulesengine'][87]="Material eliminado polas regras de dicionario GLPI"; 
-$LANG['rulesengine'][90]="Traballo en progreso..."; 
+$LANG['rulesengine'][90]="Traballo en curso..."; 
 $LANG['rulesengine'][91]="Traballo rematado."; 
-$LANG['rulesengine'][92]="Coidado antes de executar o regras de renomeado do dicionario"; 
+$LANG['rulesengine'][92]="Coidado antes de executar regras de renomeado do dicionario"; 
 $LANG['rulesengine'][93]="Coidado! Esta operación pode pór software no lixo.<br>Asegúrese de notificarllo aos seus usuarios."; 
 $LANG['rulesengine'][94]="FUSIÓN"; 
 $LANG['rulesengine'][95]="Escolla un fabricante"; 
@@ -1790,7 +1790,7 @@ $LANG['rulesengine'][146]="Co perfil do usuario";
 $LANG['rulesengine'][147]="Usuario cun único perfil"; 
 $LANG['rulesengine'][148]="Dominio correo electrónico coñecido"; 
 $LANG['rulesengine'][149]="Grupo importado dun directorio LDAP"; 
-$LANG['rulesengine'][150]="As regras que afectan á entidade están desactivadas"; 
+$LANG['rulesengine'][150]="As regras que afectan á entidade están desactivadas."; 
 $LANG['rulesengine'][151]="xa está presente en GLPI"; 
 $LANG['rulesengine'][152]="Ordenador a importar"; 
 $LANG['rulesengine'][154]="está baleiro no GLPI"; 
@@ -1815,6 +1815,8 @@ $LANG['search'][1]="para todos";
 $LANG['search'][2]="contén"; 
 $LANG['search'][3]="baixo"; 
 $LANG['search'][4]="Ordenado por"; 
+$LANG['search'][5]="Selección demasiado ampla, acción xeral desactivada."; 
+$LANG['search'][6]="Para incrementar o límite: cambia max_input_vars ou suhosin.post.max_vars na configuración do PHP."; 
 $LANG['search'][8]="Data inicial"; 
 $LANG['search'][9]="Data final"; 
 $LANG['search'][11]="Elementos mostrados"; 
@@ -1923,6 +1925,7 @@ $LANG['setup'][127]="Autocompletar campos de texto";
 $LANG['setup'][128]="Formato de datas"; 
 $LANG['setup'][129]="Amosar os ID GLPI"; 
 $LANG['setup'][130]="Tempo en días que se conservarán os rexistros desta tarefa (0 para infinito)"; 
+$LANG['setup'][131]="Número de resultados por páxina"; 
 $LANG['setup'][132]="Despregar a lista completa en árbore"; 
 $LANG['setup'][135]="Normal"; 
 $LANG['setup'][136]="Tradución"; 
