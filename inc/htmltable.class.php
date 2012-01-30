@@ -59,10 +59,13 @@ class HTMLTable {
    // All rows as an array
    private $rows;
 
+
    function __construct() {
+
       $this->headers = array();
-      $this->rows = array();
+      $this->rows    = array();
    }
+
 
    /**
     * We can define a global name for the table : this will print as header that colspan all columns
@@ -75,30 +78,34 @@ class HTMLTable {
       $this->globalName = $name;
    }
 
+
    /**
     * Define a new columne by its header
     *
-    * @param $value         the value to print inside the column header
-    * @param $name          the name of the column
-    * @param $fathers_name  the name of the father of the column. Use "" if there is no father for
-    *                       the current column
+    * @param $value                 the value to print inside the column header
+    * @param $name                  the name of the column
+    * @param $fathers_name          the name of the father of the column.
+    *                               Use "" if there is no father for the current column (default '')
+    * @param $itemtype_forListItems (default '')
     *
     * @return nothing
    **/
-   function addHeader($value, $name, $fathers_name = "", $itemtype_forListItems = "") {
+   function addHeader($value, $name, $fathers_name="", $itemtype_forListItems="") {
+
       if (count($this->rows) == 0) {
          if (($fathers_name != "") && (!isset($this->headers[$fathers_name]))) {
             return;
          }
-         $this->headers[$name] = array('value'        => $value,
-                                       'fathers_name' => $fathers_name,
+         $this->headers[$name] = array('value'                 => $value,
+                                       'fathers_name'          => $fathers_name,
                                        'itemtype_forListItems' => $itemtype_forListItems);
       }
    }
 
+
    /**
-    * Recursively compute the total number of rows of a given cell  (ie.: intelligent cumulation of
-    * each sons number of row)
+    * Recursively compute the total number of rows of a given cell
+    * (ie.: intelligent cumulation of each sons number of row)
     *
     * @param $headers_name  the name of the column
     * @param $cells_id      the id of the cell inside the column
@@ -106,7 +113,8 @@ class HTMLTable {
     * @return the number of rows of the current cell
    **/
    private function computeAndGetCellTotalNumberOfRows($headers_name, $cells_id) {
-      $cell = $this->currentRow[$headers_name][$cells_id];
+
+      $cell          = $this->currentRow[$headers_name][$cells_id];
       $numberOfLines = 1;
       foreach ($cell['sons'] as $sons_header => $sons) {
          $sonsNumberOfLines = 0;
@@ -120,6 +128,7 @@ class HTMLTable {
       $this->currentRow[$headers_name][$cells_id]['numberOfLines'] = $numberOfLines;
       return $numberOfLines;
    }
+
 
    /**
     * Get the father of a given cell
@@ -142,8 +151,8 @@ class HTMLTable {
          return false;
       }
 
-      if ((!isset($this->headers[$headers_name])
-           || ($this->headers[$headers_name]['fathers_name'] == ""))) {
+      if (!isset($this->headers[$headers_name])
+          || $this->headers[$headers_name]['fathers_name'] == "") {
          return false;
       }
 
@@ -161,18 +170,21 @@ class HTMLTable {
       return false;
    }
 
+
    /**
     * Add a cell in the current row
     *
     * @param $value         the value to print inside the cell or the method to call
     * @param $headers_name  the name of the column
-    * @param $cells_id      the id of the cell inside the column
+    * @param $cells_id      the id of the cell inside the column (default 0)
     * @param $fathers_id    the id of the father inside its column (the column of the father is
     *                       given during the definition of the columne), 0 if there is no father
+    *                       (default 0)
     *
     * @return nothing
    **/
-   function addElement($value, $headers_name, $cells_id = 0, $fathers_id = 0) {
+   function addElement($value, $headers_name, $cells_id=0, $fathers_id=0) {
+
       if (!isset($this->currentRow)) {
          $this->currentRow = array();
       }
@@ -189,8 +201,8 @@ class HTMLTable {
 
       if ($header['fathers_name'] != '') {
          $fathers_name = $header['fathers_name'];
-         if ((!isset($this->currentRow[$fathers_name]))
-             || (!isset($this->currentRow[$fathers_name][$fathers_id]))) {
+         if (!isset($this->currentRow[$fathers_name])
+             || !isset($this->currentRow[$fathers_name][$fathers_id])) {
             return;
          }
          if (!isset($this->currentRow[$fathers_name][$fathers_id]['sons'][$headers_name])) {
@@ -204,6 +216,7 @@ class HTMLTable {
                                                           'sons'        => array());
    }
 
+
    /**
     * close the current row
     *
@@ -213,6 +226,7 @@ class HTMLTable {
     * @return nothing
    **/
    function closeRow() {
+
       $numberOfLines = 0;
       foreach ($this->currentRow as $headers_name => $cells) {
          $start = 0;
@@ -257,12 +271,14 @@ class HTMLTable {
       unset($this->currentRow);
    }
 
+
    /**
     * Display the table
     *
     * @return nothing (display only)
    **/
    function display() {
+
       if (!isset($this->headers)) {
          return;
       }
@@ -294,7 +310,8 @@ class HTMLTable {
                   foreach ($cells as $cells_id => $cell) {
                      if ($cell['start'] == $i) {
                         if (!empty($header['itemtype_forListItems'])) {
-                           Session::addToNavigateListItems($header['itemtype_forListItems'],$cells_id);
+                           Session::addToNavigateListItems($header['itemtype_forListItems'],
+                                                           $cells_id);
                         }
                         echo "<td";
                         if ($cell['rowspan'] > 1) {
@@ -348,26 +365,27 @@ class HTMLTable {
       return count($this->rows);
    }
 
+
    /**
     * Get the order of the columns
     *
     * @return an array of the names of the columns
    **/
    function getColumnOrder() {
-
       return array_keys($this->headers);
    }
+
 
    /**
     * Modify the order of the columns. If a known header (ie defined by addHeader()) is not
     * present in the given order, then the column will be destroy from the table. No new header
     * will be added (ie : a name that is not known will not generate a new header).
     *
-    * @param $order an array of the names of the columns
+    * @param $order  array of the names of the columns
     *
     * @return (nothing)
    **/
-    function setColumnOrder($order = array()) {
+    function setColumnOrder($order=array()) {
 
       if (!is_array($order)) {
          return;

@@ -76,9 +76,9 @@ if (isset($_GET["delete"])) {
    $networkport = new NetworkPort();
    if ($networkport->can($_POST['id'], 'w')) {
       if ($networkport->switchInstantiationType($_POST['transform_to']) !== false) {
-         $instantiation = $networkport->getInstantiation();
-         $input = $np->fields;
-         $input['networkports_id'] = $input['id'];
+         $instantiation             = $networkport->getInstantiation();
+         $input                     = $np->fields;
+         $input['networkports_id']  = $input['id'];
          unset($input['id']);
          $instantiation->add($input);
          $np->delete($_POST);

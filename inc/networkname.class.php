@@ -228,7 +228,7 @@ class NetworkName extends FQDNLabel {
          //    return false;
          // }
 
-         $this->IPs = $addresses;
+         $this->IPs             = $addresses;
          $input["_ipaddresses"] = "";
       }
 
@@ -459,15 +459,15 @@ class NetworkName extends FQDNLabel {
    /**
     * Get HTMLTable columns headers for a given item type
     *
-    * @param $itemtype     The type of the item
-    * @param $table        The table to update
-    * @param $fathers_name The name of the father element
-    * @param $options:
-    *                 'dont_display' : array of the columns that must not be display
-    *                 'column_links' : array of links for a given column
+    * @param $itemtype           The type of the item
+    * @param $table              HTMLTable object: the table to update
+    * @param $fathers_name       The name of the father element (default '')
+    * @param $options      array of possible options:
+    *       - 'dont_display' : array of the columns that must not be display
+    *       - 'column_links' : array of links for a given column
     *
    **/
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name = "",
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name="",
                                              $options=array()) {
 
       $column_name = __CLASS__;
@@ -490,13 +490,13 @@ class NetworkName extends FQDNLabel {
    /**
     * Get HTMLTable row for a given item
     *
-    * @param $item      CommonDBTM object
-    * @param $table     The table to update
-    * @param $canedit   display the edition elements (ie : add, remove, ...)
-    * @param $close_row set to true if we must close the row at the end of the current element
-    * @param $options:
-    *                  'dont_display' : array of the elements that must not be display
-    *                  'SQL_options'  : SQL options to add after WHERE request
+    * @param $item            CommonDBTM object
+    * @param $table           HTMLTable object: tThe table to update
+    * @param $canedit         display the edition elements (ie : add, remove, ...)
+    * @param $close_row       set to true if we must close the row at the end of the current element
+    * @param $options   array of possible options:
+    *       - 'dont_display' : array of the elements that must not be display
+    *       - 'SQL_options'  : SQL options to add after WHERE request
     *
    **/
    static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
@@ -516,14 +516,15 @@ class NetworkName extends FQDNLabel {
 
       case 'NetworkEquipment' :
       case 'NetworkPort' :
-         $where_criterion = "itemtype = '".$item->getType()."' AND items_id='".$item->getID()."'";
+         $where_criterion = "`itemtype` = '".$item->getType()."'
+                             AND `items_id` = '".$item->getID()."'";
          break;
       }
 
 
       $query = "SELECT `id`
                 FROM `glpi_networknames`
-                 WHERE $where_criterion";
+                WHERE $where_criterion";
 
       if (isset($options['SQL_options'])) {
          $query .= " ".$options['SQL_options'];
@@ -537,7 +538,7 @@ class NetworkName extends FQDNLabel {
 
             if ($address->getFromDB($line["id"])) {
 
-               $content = "<a href='" . $address->getLinkURL(). "'>";
+               $content      = "<a href='" . $address->getLinkURL(). "'>";
                $internetName = $address->getInternetName();
                if (empty($internetName)) {
                   $content .= "(".$line["id"].")";
@@ -598,7 +599,7 @@ class NetworkName extends FQDNLabel {
          if (!empty($_REQUEST["order"])) {
             $order = $_REQUEST["order"];
          } else {
-            $order = "name";
+            $order = "`name`";
          }
 
          $table_options['dont_display'] = array('IPNetwork'    => true);
@@ -606,8 +607,8 @@ class NetworkName extends FQDNLabel {
                                            LIMIT ".$_SESSION['glpilist_limit']."
                                            OFFSET $start";
          $table_options['column_links'] =
-            array('NetworkName' => 'javascript:reloadTab("order=name");',
-                  'IPAddress' => 'javascript:reloadTab("order=ip_addresses");');
+               array('NetworkName' => 'javascript:reloadTab("order=name");',
+                     'IPAddress'   => 'javascript:reloadTab("order=ip_addresses");');
 
          $canedit = false;
 
@@ -634,8 +635,8 @@ class NetworkName extends FQDNLabel {
             Html::printAjaxPager(self::getTypeName(2), $start, $number);
          }
          Session::initNavigateListItems(__CLASS__,
-                                        //TRANS : %1$s is the itemtype name,
-                                        //        %2$s is the name of the item (used for headings of a list)
+                                 //TRANS : %1$s is the itemtype name,
+                                 //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
                                                 $item->getTypeName(1), $item->getName()));
          $table->display();
@@ -652,7 +653,7 @@ class NetworkName extends FQDNLabel {
          echo "<div class='center'>\n";
          echo "<table class='tab_cadre'>\n";
 
-         echo "<tr><th>".__('Add a Network Name')."</th></tr>";
+         echo "<tr><th>".__('Add a network name')."</th></tr>";
 
          echo "<tr><td class='center'>";
          echo "<a href=\"" . $address->getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
@@ -664,11 +665,11 @@ class NetworkName extends FQDNLabel {
          echo "<input type='hidden' name='items_id' value='$items_id'>\n";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>\n";
 
-         echo __('Not associated one:');
+         _e('Not associated one:');
          Dropdown::show(__CLASS__, array('name'      => 'addressID',
                                          'condition' => '`items_id`=0'));
          echo "&nbsp;<input type='submit' name='assign_address' value='" . __s('Associate') .
-            "' class='submit'>";
+                      "' class='submit'>";
          echo "</form>\n";
          echo "</td></tr>\n";
 

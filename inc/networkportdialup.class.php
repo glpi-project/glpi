@@ -47,7 +47,12 @@ class NetworkPortDialup extends NetworkPortInstantiation {
    }
 
 
-   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name = "",
+   /**
+    * @param $table           HTMLTable object
+    * @param $fathers_name    (default '')
+    * @param $options      array
+   */
+   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name="",
                                                     $options=array()) {
 
       $table->addHeader(__('MAC'), "MAC", $fathers_name);
@@ -55,6 +60,9 @@ class NetworkPortDialup extends NetworkPortInstantiation {
    }
 
 
+   /**
+    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
+   */
    function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
                                       $canedit, $options=array()) {
 
@@ -63,6 +71,9 @@ class NetworkPortDialup extends NetworkPortInstantiation {
    }
 
 
+   /**
+    * @see inc/NetworkPortInstantiation::showInstantiationForm()
+   */
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
 
       echo "<tr class='tab_bg_1'>";

@@ -110,31 +110,30 @@ class NetworkPortInstantiation extends CommonDBChild {
    }
 
 
-
    /**
     * Get HTMLTable columns headers for a given item type
     *
-    * @param $itemtype     The type of the item
-    * @param $table        The table to update
-    * @param $fathers_name The name of the father element
-    * @param $options:
-    *                 'dont_display' : array of the columns that must not be display
+    * @param &$table          HTMLTable object: the table to update
+    * @param $fathers_name    The name of the father element (default '')
+    * @param $options   array of possible options:
+    *       - 'dont_display' : array of the columns that must not be display
     *
    **/
-   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name = "",
+   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name="",
                                                     $options=array()) {
    }
+
 
    /**
     * Get HTMLTable row for a given item
     *
-    * @param $item      CommonDBTM object
-    * @param $table     The table to update
-    * @param $canedit   display the edition elements (ie : add, remove, ...)
-    * @param $close_row set to true if we must close the row at the end of the current element
-    * @param $options:
-    *                  'dont_display' : array of the elements that must not be display
-    *                  'withtemplate' : integer withtemplate param
+    * @param $netport         NetworkPort object
+    * @param $item            CommonDBTM object
+    * @param $table           HTMLTable object; the table to update
+    * @param $canedit         display the edition elements (ie : add, remove, ...)
+    * @param $options   array of possible options:
+    *       - 'dont_display' : array of the elements that must not be display
+    *       - 'withtemplate' : integer withtemplate param
     *
    **/
    function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
