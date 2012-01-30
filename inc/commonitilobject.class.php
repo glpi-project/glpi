@@ -2181,6 +2181,19 @@ abstract class CommonITILObject extends CommonDBTM {
       if (Session::haveRight('user','r')) {
          $showuserlink = 1;
       }
+      
+      // check is_hidden fields 
+      foreach (array('_users_id_requester', '_groups_id_requester',
+                     '_users_id_observer', '_groups_id_observer',
+                     '_users_id_assign', '_groups_id_assign',
+                     'suppliers_id_assign') as $f) {
+         $is_hidden[$f] = false;
+         if (isset($options['_tickettemplate']) 
+            && $options['_tickettemplate']->isHiddenField($f)) {
+            $is_hidden[$f] = true;    
+         }              
+      }
+      
       // Manage actors : requester and assign
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
@@ -2251,18 +2264,13 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Requester
       if (!$ID) {
-         $is_hidden = false;
-         if (isset($options['_tickettemplate']) 
-             && $options['_tickettemplate']->isHiddenField('_users_id_requester')) {
-            $is_hidden = true;    
-         }
          $reqdisplay=false;
-         if ($this->canAdminActors() && !$is_hidden) {
+         if ($this->canAdminActors() && !$is_hidden['_users_id_requester']) {
             $this->showActorAddFormOnCreate(self::REQUESTER, $options);
             $reqdisplay=true;
          } else {
             $delegating = User::getDelegateGroupsForUser();
-            if (count($delegating) && !$is_hidden) {
+            if (count($delegating) && !$is_hidden['_users_id_requester']) {
                //$this->getDefaultActor(self::REQUESTER);
                $options['_right'] = "delegate";
                $this->showActorAddFormOnCreate(self::REQUESTER, $options);
@@ -2298,14 +2306,8 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // Requester Group
-      if (!$ID) {
-         $is_hidden = false;
-         if (isset($options['_tickettemplate']) 
-             && $options['_tickettemplate']->isHiddenField('_groups_id_requester')) {
-            $is_hidden = true;    
-         }
-               
-         if ($this->canAdminActors() && !$is_hidden) {
+      if (!$ID) {     
+         if ($this->canAdminActors() && !$is_hidden['_groups_id_requester']) {
             echo self::getActorIcon('group', self::REQUESTER);
             /// For ticket templates : mandatories
             if (isset($options['_tickettemplate'])) {
@@ -2338,13 +2340,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Observer
       if (!$ID) {
-         $is_hidden = false;
-         if (isset($options['_tickettemplate']) 
-             && $options['_tickettemplate']->isHiddenField('_users_id_observer')) {
-            $is_hidden = true;    
-         }
-               
-         if ($this->canAdminActors() && !$is_hidden) {
+         if ($this->canAdminActors() && !$is_hidden['_users_id_observer']) {
             $this->showActorAddFormOnCreate(self::OBSERVER, $options);
             echo '<hr>';
          } else { // predefined value
@@ -2361,12 +2357,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Observer Group
       if (!$ID) {
-         $is_hidden = false;
-         if (isset($options['_tickettemplate']) 
-             && $options['_tickettemplate']->isHiddenField('_groups_id_observer')) {
-            $is_hidden = true;    
-         }      
-         if ($this->canAdminActors() && !$is_hidden) {
+         if ($this->canAdminActors() && !$is_hidden['_groups_id_observer']) {
             echo self::getActorIcon('group', self::OBSERVER);
             /// For ticket templates : mandatories
             if (isset($options['_tickettemplate'])) {
@@ -2399,15 +2390,10 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Assign User
       if (!$ID) {
-         $is_hidden = false;
-         if (isset($options['_tickettemplate']) 
-             && $options['_tickettemplate']->isHiddenField('_users_id_assign')) {
-            $is_hidden = true;    
-         }      
-         if ($this->canAssign() && !$is_hidden) {
+         if ($this->canAssign() && !$is_hidden['_users_id_assign']) {
             $this->showActorAddFormOnCreate(self::ASSIGN, $options);
             echo '<hr>';
-         } else if ($this->canAssignToMe() && !$is_hidden) {
+         } else if ($this->canAssignToMe() && !$is_hidden['_users_id_assign']) {
             echo self::getActorIcon('user', self::ASSIGN)."&nbsp;";
             User::dropdown(array('name'        => '_users_id_assign',
                                  'value'       => $options["_users_id_assign"],
@@ -2428,12 +2414,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Assign Groups
       if (!$ID) {
-         $is_hidden = false;
-         if (isset($options['_tickettemplate']) 
-             && $options['_tickettemplate']->isHiddenField('_groups_id_assign')) {
-            $is_hidden = true;    
-         }      
-         if ($this->canAssign() && !$is_hidden) {
+         if ($this->canAssign() && !$is_hidden['_groups_id_assign']) {
             echo self::getActorIcon('group', self::ASSIGN);
             /// For ticket templates : mandatories
             if (isset($options['_tickettemplate'])) {
@@ -2460,12 +2441,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // Supplier
-      $is_hidden = false;
-      if (isset($options['_tickettemplate']) 
-            && $options['_tickettemplate']->isHiddenField('suppliers_id_assign')) {
-         $is_hidden = true;    
-      }
-      if ($this->canAssign() && !$is_hidden) {
+      if ($this->canAssign() && !$is_hidden['suppliers_id_assign']) {
          echo self::getActorIcon('supplier', self::ASSIGN);
          /// For ticket templates : mandatories
          if (isset($options['_tickettemplate'])) {
