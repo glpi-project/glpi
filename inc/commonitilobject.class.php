@@ -2251,19 +2251,31 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Requester
       if (!$ID) {
-
-         if ($this->canAdminActors()) {
+         $is_hidden = false;
+         if (isset($options['_tickettemplate']) 
+             && $options['_tickettemplate']->isHiddenField('_users_id_requester')) {
+            $is_hidden = true;    
+         }
+         $reqdisplay=false;
+         if ($this->canAdminActors() && !$is_hidden) {
             $this->showActorAddFormOnCreate(self::REQUESTER, $options);
+            $reqdisplay=true;
          } else {
             $delegating = User::getDelegateGroupsForUser();
-            if (count($delegating)) {
+            if (count($delegating) && !$is_hidden) {
                //$this->getDefaultActor(self::REQUESTER);
                $options['_right'] = "delegate";
                $this->showActorAddFormOnCreate(self::REQUESTER, $options);
-            } else {
-               echo self::getActorIcon('user', self::REQUESTER)."&nbsp;";
-               echo getUserName($options["_users_id_requester"], $showuserlink);
-            }
+               $reqdisplay=true;
+            } else { // predefined value
+               if (isset($options["_users_id_requester"]) && $options["_users_id_requester"]) {
+                  echo self::getActorIcon('user', self::REQUESTER)."&nbsp;";
+                  echo Dropdown::getDropdownName("glpi_users", $options["_users_id_requester"]);
+                  echo "<input type='hidden' name='_users_id_requester' value=\"".$options["_users_id_requester"]."\">";
+                  echo '<br>';
+                  $reqdisplay=true;
+               }
+            }            
          }
 
          //If user have access to more than one entity, then display a combobox : Ticket case
@@ -2277,7 +2289,9 @@ abstract class CommonITILObject extends CommonDBTM {
          } else {
             echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
          }
-         echo '<hr>';
+         if ($reqdisplay) {
+            echo '<hr>';
+         }
 
       } else {
          $this->showUsersAssociated(self::REQUESTER, $candeleterequester);
@@ -2285,7 +2299,13 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Requester Group
       if (!$ID) {
-         if ($this->canAdminActors()) {
+         $is_hidden = false;
+         if (isset($options['_tickettemplate']) 
+             && $options['_tickettemplate']->isHiddenField('_groups_id_requester')) {
+            $is_hidden = true;    
+         }
+               
+         if ($this->canAdminActors() && !$is_hidden) {
             echo self::getActorIcon('group', self::REQUESTER);
             /// For ticket templates : mandatories
             if (isset($options['_tickettemplate'])) {
@@ -2297,8 +2317,14 @@ abstract class CommonITILObject extends CommonDBTM {
                                           'value'     => $options["_groups_id_requester"],
                                           'entity'    => $this->fields["entities_id"],
                                           'condition' => '`is_requester`'));
-        }
-
+         } else { // predefined value
+            if (isset($options["_groups_id_requester"]) && $options["_groups_id_requester"]) {
+               echo self::getActorIcon('group', self::REQUESTER)."&nbsp;";
+               echo Dropdown::getDropdownName("glpi_groups", $options["_groups_id_requester"]);
+               echo "<input type='hidden' name='_groups_id_requester' value=\"".$options["_groups_id_requester"]."\">";
+               echo '<br>';
+            }
+         }
       } else {
          $this->showGroupsAssociated(self::REQUESTER, $candeleterequester);
       }
@@ -2312,9 +2338,22 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Observer
       if (!$ID) {
-         if ($this->canAdminActors()) {
+         $is_hidden = false;
+         if (isset($options['_tickettemplate']) 
+             && $options['_tickettemplate']->isHiddenField('_users_id_observer')) {
+            $is_hidden = true;    
+         }
+               
+         if ($this->canAdminActors() && !$is_hidden) {
             $this->showActorAddFormOnCreate(self::OBSERVER, $options);
             echo '<hr>';
+         } else { // predefined value
+            if (isset($options["_users_id_observer"]) && $options["_users_id_observer"]) {
+               echo self::getActorIcon('user', self::OBSERVER)."&nbsp;";
+               echo Dropdown::getDropdownName("glpi_users", $options["_users_id_observer"]);
+               echo "<input type='hidden' name='_users_id_observer' value=\"".$options["_users_id_observer"]."\">";
+               echo '<hr>';
+            }
          }
       } else {
          $this->showUsersAssociated(self::OBSERVER, $candeleteobserver);
@@ -2322,7 +2361,12 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Observer Group
       if (!$ID) {
-         if ($this->canAdminActors()) {
+         $is_hidden = false;
+         if (isset($options['_tickettemplate']) 
+             && $options['_tickettemplate']->isHiddenField('_groups_id_observer')) {
+            $is_hidden = true;    
+         }      
+         if ($this->canAdminActors() && !$is_hidden) {
             echo self::getActorIcon('group', self::OBSERVER);
             /// For ticket templates : mandatories
             if (isset($options['_tickettemplate'])) {
@@ -2334,6 +2378,13 @@ abstract class CommonITILObject extends CommonDBTM {
                                           'value'     => $options["_groups_id_observer"],
                                           'entity'    => $this->fields["entities_id"],
                                           'condition' => '`is_requester`'));
+         } else { // predefined value
+            if (isset($options["_groups_id_observer"]) && $options["_groups_id_observer"]) {
+               echo self::getActorIcon('group', self::OBSERVER)."&nbsp;";
+               echo Dropdown::getDropdownName("glpi_groups", $options["_groups_id_observer"]);
+               echo "<input type='hidden' name='_groups_id_observer' value=\"".$options["_groups_id_observer"]."\">";
+               echo '<br>';
+            }
          }
       } else {
          $this->showGroupsAssociated(self::OBSERVER, $candeleteobserver);
@@ -2348,25 +2399,41 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Assign User
       if (!$ID) {
-         if ($this->canAssign()) {
+         $is_hidden = false;
+         if (isset($options['_tickettemplate']) 
+             && $options['_tickettemplate']->isHiddenField('_users_id_assign')) {
+            $is_hidden = true;    
+         }      
+         if ($this->canAssign() && !$is_hidden) {
             $this->showActorAddFormOnCreate(self::ASSIGN, $options);
             echo '<hr>';
-         } else if ($this->canAssignToMe()) {
+         } else if ($this->canAssignToMe() && !$is_hidden) {
             echo self::getActorIcon('user', self::ASSIGN)."&nbsp;";
             User::dropdown(array('name'        => '_users_id_assign',
                                  'value'       => $options["_users_id_assign"],
                                  'entity'      => $this->fields["entities_id"],
                                  'ldap_import' => true));
-            echo '<br>';
+            echo '<hr>';
+         } else { // predefined value
+            if (isset($options["_users_id_assign"]) && $options["_users_id_assign"]) {
+               echo self::getActorIcon('user', self::ASSIGN)."&nbsp;";
+               echo Dropdown::getDropdownName("glpi_users", $options["_users_id_assign"]);
+               echo "<input type='hidden' name='_users_id_assign' value=\"".$options["_users_id_assign"]."\">";
+               echo '<hr>';
+            }
          }
-
       } else {
          $this->showUsersAssociated(self::ASSIGN, $candeleteassign);
       }
 
       // Assign Groups
       if (!$ID) {
-         if ($this->canAssign()) {
+         $is_hidden = false;
+         if (isset($options['_tickettemplate']) 
+             && $options['_tickettemplate']->isHiddenField('_groups_id_assign')) {
+            $is_hidden = true;    
+         }      
+         if ($this->canAssign() && !$is_hidden) {
             echo self::getActorIcon('group', self::ASSIGN);
             /// For ticket templates : mandatories
             if (isset($options['_tickettemplate'])) {
@@ -2379,6 +2446,13 @@ abstract class CommonITILObject extends CommonDBTM {
                                           'entity'    => $this->fields["entities_id"],
                                           'condition' => '`is_assign`'));
             echo '<hr>';
+         } else { // predefined value
+            if (isset($options["_groups_id_assign"]) && $options["_groups_id_assign"]) {
+               echo self::getActorIcon('group', self::ASSIGN)."&nbsp;";
+               echo Dropdown::getDropdownName("glpi_groups", $options["_groups_id_assign"]);
+               echo "<input type='hidden' name='_groups_id_assign' value=\"".$options["_groups_id_assign"]."\">";
+               echo '<hr>';
+            }
          }
 
       } else {
@@ -2386,25 +2460,29 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // Supplier
-      if ($this->fields["suppliers_id_assign"] > 0 || !$ID) {
+      $is_hidden = false;
+      if (isset($options['_tickettemplate']) 
+            && $options['_tickettemplate']->isHiddenField('suppliers_id_assign')) {
+         $is_hidden = true;    
+      }
+      if ($this->canAssign() && !$is_hidden) {
+         echo self::getActorIcon('supplier', self::ASSIGN);
+         /// For ticket templates : mandatories
+         if (isset($options['_tickettemplate'])) {
+            echo $options['_tickettemplate']->getMandatoryMark('suppliers_id_assign');
+         }
+         echo "&nbsp;";
 
-         if ($this->canAssign()) {
-            echo self::getActorIcon('supplier', self::ASSIGN);
-            /// For ticket templates : mandatories
-            if (isset($options['_tickettemplate'])) {
-               echo $options['_tickettemplate']->getMandatoryMark('suppliers_id_assign');
-            }
-            echo "&nbsp;";
-
-            Dropdown::show('Supplier', array('name'   => 'suppliers_id_assign',
-                                             'value'  => $this->fields["suppliers_id_assign"],
-                                             'entity' => $this->fields["entities_id"]));
-            echo '<br>';
-         } else {
-            if ($this->fields["suppliers_id_assign"]) {
-               echo self::getActorIcon('supplier', self::ASSIGN)."&nbsp;";
-               echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id_assign"]);
-               echo '<br>';
+         Dropdown::show('Supplier', array('name'   => 'suppliers_id_assign',
+                                          'value'  => $this->fields["suppliers_id_assign"],
+                                          'entity' => $this->fields["entities_id"]));
+         echo '<br>';
+      } else {
+         if ($this->fields["suppliers_id_assign"]) {
+            echo self::getActorIcon('supplier', self::ASSIGN)."&nbsp;";
+            echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id_assign"]);
+            if (!$ID) {
+               echo "<input type='hidden' name='suppliers_id_assign' value=\"".$this->fields["suppliers_id_assign"]."\">";
             }
          }
       }
