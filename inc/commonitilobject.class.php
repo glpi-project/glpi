@@ -2504,7 +2504,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                         $this->getField('solutiontypes_id'));
       }
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
-      echo "<tr><td>".$LANG['job'][25]."</td><td>";
+      echo "<tr class='tab_bg_2'><td>".$LANG['job'][25]."</td><td>";
       Dropdown::showYesNo('_sol_to_kb', false);
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
