@@ -911,5 +911,5 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
 }
 
-echo "<div></div></div></div></body></html>";
+echo "</div></div></body></html>";
 ?>
