@@ -2246,28 +2246,30 @@ abstract class CommonITILObject extends CommonDBTM {
              && $options['_tickettemplate']->isHiddenField('_users_id_requester')) {
             $is_hidden = true;    
          }
-
+         $reqdisplay=false;
          if ($this->canAdminActors() && !$is_hidden) {
             $this->showActorAddFormOnCreate(self::REQUESTER, $options);
+            $reqdisplay=true;
          } else {
             $delegating = User::getDelegateGroupsForUser();
-            if (count($delegating)) {
+            if (count($delegating) && !$is_hidden) {
                //$this->getDefaultActor(self::REQUESTER);
                $options['_right'] = "delegate";
                $this->showActorAddFormOnCreate(self::REQUESTER, $options);
+               $reqdisplay=true;
             } else { // predefined value
                if (isset($options["_users_id_requester"]) && $options["_users_id_requester"]) {
                   echo self::getActorIcon('user', self::REQUESTER)."&nbsp;";
                   echo Dropdown::getDropdownName("glpi_users", $options["_users_id_requester"]);
                   echo "<input type='hidden' name='_users_id_requester' value=\"".$options["_users_id_requester"]."\">";
                   echo '<br>';
+                  $reqdisplay=true;
                }
             }            
          }
 
          //If user have access to more than one entity, then display a combobox : Ticket case
          if ($this->userentity_oncreate
-             && !$is_hidden
              && isset($this->countentitiesforuser)
              && $this->countentitiesforuser > 1) {
             echo "<br>";
@@ -2277,7 +2279,7 @@ abstract class CommonITILObject extends CommonDBTM {
          } else {
             echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
          }
-         if (!$is_hidden) {
+         if ($reqdisplay) {
             echo '<hr>';
          }
 
@@ -2313,7 +2315,6 @@ abstract class CommonITILObject extends CommonDBTM {
                echo '<br>';
             }
          }
-
       } else {
          $this->showGroupsAssociated(self::REQUESTER, $candeleterequester);
       }
@@ -2338,10 +2339,10 @@ abstract class CommonITILObject extends CommonDBTM {
             echo '<hr>';
          } else { // predefined value
             if (isset($options["_users_id_observer"]) && $options["_users_id_observer"]) {
-               echo self::getActorIcon('group', self::OBSERVER)."&nbsp;";
+               echo self::getActorIcon('user', self::OBSERVER)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_users", $options["_users_id_observer"]);
                echo "<input type='hidden' name='_users_id_observer' value=\"".$options["_users_id_observer"]."\">";
-               echo '<br>';
+               echo '<hr>';
             }
          }
       } else {
@@ -2397,22 +2398,21 @@ abstract class CommonITILObject extends CommonDBTM {
          if ($this->canAssign() && !$is_hidden) {
             $this->showActorAddFormOnCreate(self::ASSIGN, $options);
             echo '<hr>';
-         } else if ($this->canAssignToMe()) {
+         } else if ($this->canAssignToMe() && !$is_hidden) {
             echo self::getActorIcon('user', self::ASSIGN)."&nbsp;";
             User::dropdown(array('name'        => '_users_id_assign',
                                  'value'       => $options["_users_id_assign"],
                                  'entity'      => $this->fields["entities_id"],
                                  'ldap_import' => true));
-            echo '<br>';
+            echo '<hr>';
          } else { // predefined value
             if (isset($options["_users_id_assign"]) && $options["_users_id_assign"]) {
                echo self::getActorIcon('user', self::ASSIGN)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_users", $options["_users_id_assign"]);
                echo "<input type='hidden' name='_users_id_assign' value=\"".$options["_users_id_assign"]."\">";
-               echo '<br>';
+               echo '<hr>';
             }
          }
-
       } else {
          $this->showUsersAssociated(self::ASSIGN, $candeleteassign);
       }
@@ -2443,7 +2443,7 @@ abstract class CommonITILObject extends CommonDBTM {
                echo self::getActorIcon('group', self::ASSIGN)."&nbsp;";
                echo Dropdown::getDropdownName("glpi_groups", $options["_groups_id_assign"]);
                echo "<input type='hidden' name='_groups_id_assign' value=\"".$options["_groups_id_assign"]."\">";
-               echo '<br>';
+               echo '<hr>';
             }
          }
 
@@ -2473,6 +2473,9 @@ abstract class CommonITILObject extends CommonDBTM {
          if ($this->fields["suppliers_id_assign"]) {
             echo self::getActorIcon('supplier', self::ASSIGN)."&nbsp;";
             echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id_assign"]);
+            if (!$ID) {
+               echo "<input type='hidden' name='suppliers_id_assign' value=\"".$this->fields["suppliers_id_assign"]."\">";
+            }
             echo '<br>';
          }
       }
