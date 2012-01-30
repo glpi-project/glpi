@@ -2460,7 +2460,6 @@ function generate_entity($ID_entity) {
       // AJOUT INFOCOMS
       addInfocoms('Monitor', $monID, $ID_entity);
 
-      // TODO Julien $telID n'a pas ete initialise
       $ci->add(array('itemtype'     => 'Monitor',
                      'items_id'     => $monID,
                      'computers_id' => $compID,
