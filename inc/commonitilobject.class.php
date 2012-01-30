@@ -1967,13 +1967,14 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $type string : actor type
     * @param $rand_type integer rand value of div to use
     * @param $entities_id integer entity ID
+    * @param $is_hidden array of hidden fields (if empty consider as not hidden)
     * @param $withsupplier boolean : allow adding a supplier (only one possible in ASSIGN case)
     * @param $inobject boolean display in ITIL object ?
     *
     * @return nothing display
    **/
-   static function showActorAddForm($type, $rand_type, $entities_id, $withsupplier=false,
-                                    $inobject=true) {
+   static function showActorAddForm($type, $rand_type, $entities_id, $is_hidden = array(), 
+                                    $withsupplier=false, $inobject=true) {
       global $LANG, $CFG_GLPI;
 
       $types = array(''      => Dropdown::EMPTY_VALUE,
@@ -1987,36 +1988,59 @@ abstract class CommonITILObject extends CommonDBTM {
       switch ($type) {
          case self::REQUESTER :
             $typename = 'requester';
+            if (isset($is_hidden['_users_id_requester']) && $is_hidden['_users_id_requester']) {
+               unset($types['user']);
+            }
+            if (isset($is_hidden['_groups_id_requester']) && $is_hidden['_groups_id_requester']) {
+               unset($types['group']);
+            }
             break;
 
          case self::OBSERVER :
             $typename = 'observer';
+            if (isset($is_hidden['_users_id_observer']) && $is_hidden['_users_id_observer']) {
+               unset($types['user']);
+            }
+            if (isset($is_hidden['_groups_id_observer']) && $is_hidden['_groups_id_observer']) {
+               unset($types['group']);
+            }
             break;
 
          case self::ASSIGN :
             $typename = 'assign';
+            if (isset($is_hidden['_users_id_assign']) && $is_hidden['_users_id_assign']) {
+               unset($types['user']);
+            }
+            if (isset($is_hidden['_groups_id_assign']) && $is_hidden['_groups_id_assign']) {
+               unset($types['group']);
+            }      
+            if (isset($types['supplier']) 
+               && isset($is_hidden['suppliers_id_assign']) && $is_hidden['suppliers_id_assign']) {
+               unset($types['supplier']);
+            }                    
             break;
 
          default :
             return false;
       }
-
-      echo "<div ".($inobject?"style='display:none'":'')." id='itilactor$rand_type'>";
-      $rand   = Dropdown::showFromArray("_itil_".$typename."[_type]", $types);
-      $params = array('type'            => '__VALUE__',
-                      'actortype'       => $typename,
-                      'allow_email'     => ($type==self::OBSERVER || $type==self::REQUESTER),
-                      'entity_restrict' => $entities_id);
-
-      Ajax::updateItemOnSelectEvent("dropdown__itil_".$typename."[_type]$rand",
-                                    "showitilactor".$typename."_$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/dropdownItilActors.php",
-                                    $params);
-      echo "<span id='showitilactor".$typename."_$rand'>&nbsp;</span>";
-      if ($inobject) {
-         echo "<hr>";
+      if (count($types)>1) {
+         echo "<div ".($inobject?"style='display:none'":'')." id='itilactor$rand_type'>";
+         $rand   = Dropdown::showFromArray("_itil_".$typename."[_type]", $types);
+         $params = array('type'            => '__VALUE__',
+                        'actortype'       => $typename,
+                        'allow_email'     => ($type==self::OBSERVER || $type==self::REQUESTER),
+                        'entity_restrict' => $entities_id);
+   
+         Ajax::updateItemOnSelectEvent("dropdown__itil_".$typename."[_type]$rand",
+                                       "showitilactor".$typename."_$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownItilActors.php",
+                                       $params);
+         echo "<span id='showitilactor".$typename."_$rand'>&nbsp;</span>";
+         if ($inobject) {
+            echo "<hr>";
+         }
+         echo "</div>";
       }
-      echo "</div>";
    }
 
 
@@ -2183,7 +2207,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $is_hidden[$f] = true;    
          }              
       }
-      
+
       // Manage actors : requester and assign
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
@@ -2192,9 +2216,11 @@ abstract class CommonITILObject extends CommonDBTM {
       $rand_requester = -1;
       $candeleterequester    = false;
 
-      if ($ID && $this->canAdminActors()) {
+      if ($ID && $this->canAdminActors()
+         && (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester'])) {
          $rand_requester = mt_rand();
          echo "&nbsp;&nbsp;";
+         
          echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
                     onClick=\"Ext.get('itilactor$rand_requester').setDisplayed('block')\"
                     class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
@@ -2206,7 +2232,8 @@ abstract class CommonITILObject extends CommonDBTM {
       $rand_observer = -1;
       $candeleteobserver    = false;
 
-      if ($ID && $this->canAdminActors()) {
+      if ($ID && $this->canAdminActors()
+         && (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer'])) {
          $rand_observer = mt_rand();
 
          echo "&nbsp;&nbsp;";
@@ -2216,7 +2243,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
          $candeleteobserver = true;
 
-      } else if ($ID > 0
+      } else if ($ID > 0 && !$is_hidden['_users_id_observer']
                  && !$this->isUser(self::OBSERVER, Session::getLoginUserID())
                  && !$this->isUser(self::REQUESTER, Session::getLoginUserID())) {
          echo "&nbsp;&nbsp;";
@@ -2230,7 +2257,10 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<th width='30%'>".$LANG['job'][5];
       $rand_assign = -1;
       $candeleteassign    = false;
-      if ($ID && ($this->canAssign() || $this->canAssignToMe())) {
+
+      if ($ID && ($this->canAssign() || $this->canAssignToMe())
+         && (!$is_hidden['_users_id_assign'] || !$is_hidden['_groups_id_assign']
+               || !$is_hidden['suppliers_id_assign'])) {
          $rand_assign = mt_rand();
 
          echo "&nbsp;&nbsp;";
@@ -2249,7 +2279,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if ($rand_requester>=0) {
          self::showActorAddForm(self::REQUESTER, $rand_requester,
-                                $this->fields['entities_id']);
+                                $this->fields['entities_id'], $is_hidden);
       }
 
       // Requester
@@ -2327,7 +2357,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<td>";
       if ($rand_observer>=0) {
          self::showActorAddForm(self::OBSERVER, $rand_observer,
-                                $this->fields['entities_id']);
+                                $this->fields['entities_id'], $is_hidden);
       }
 
       // Observer
@@ -2379,7 +2409,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<td>";
       if ($rand_assign>=0) {
          self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'],
-                                $this->fields["suppliers_id_assign"]==0);
+                                $is_hidden, $this->fields["suppliers_id_assign"]==0);
       }
 
       // Assign User
