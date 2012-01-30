@@ -153,7 +153,7 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
                          AND link.`specificity` = '".$portInformation['mac']."'";
          $result = $DB->query($query);
 
-        if ($DB->numrows($result) > 0) {
+         if ($DB->numrows($result) > 0) {
             $set_first = ($DB->numrows($result) == 1);
             while ($link = $DB->fetch_assoc($result)) {
                if (($set_first) || ($link['name'] == $portInformation['name'])) {
@@ -213,7 +213,7 @@ function update083to084() {
    $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
                           'glpi_changes_problems', 'glpi_changes_tickets', 'glpi_changes_users',
                           'glpi_changetasks', 'glpi_fqdns', 'glpi_ipaddresses',
-                          'glpi_ipaddressesipnetworks', 'glpi_ipnetworks', 'glpi_networkaliases',
+                          'glpi_ipaddresses_ipnetworks', 'glpi_ipnetworks', 'glpi_networkaliases',
                           'glpi_networknames', 'glpi_networkportaggregates',
                           'glpi_networkportdialups', 'glpi_networkportethernets',
                           'glpi_networkportlocals', 'glpi_networkportmigrations',
@@ -586,7 +586,7 @@ function update083to084() {
    foreach (array('glpi_networkports', 'glpi_networkequipments') as $table) {
 
       $query = "UPDATE $table
-                SET `mac`=LOWER(`mac`)";
+                SET `mac` = LOWER(`mac`)";
       $DB->queryOrDie($query, "0.84 transforme MAC to lower case");
 
      $migration->addKey($table, 'mac');
@@ -732,7 +732,7 @@ function update083to084() {
    $migration->addField('glpi_networkports_vlans', 'tagged', 'char', array('value' => '0'));
 
    //TRANS: %s is the name of the table
-   logMessage(__('Update connexities between IPAddress and IPNetwork'), true);
+   logMessage(__('Update connections between IPAddress and IPNetwork'), true);
 
    // Here, we are sure that there is only IPv4 addresses. So, the SQL requests are simplified
    $query = "SELECT `id`, `address_3`, `netmask_3`
@@ -742,13 +742,13 @@ function update083to084() {
       unset($query);
       while ($ipnetwork_row = $DB->fetch_assoc($network_result)) {
          $ipnetworks_id = $ipnetwork_row['id'];
-         $netmask = floatval($ipnetwork_row['netmask_3']);
-         $address = floatval($ipnetwork_row['address_3']) & $netmask;
+         $netmask       = floatval($ipnetwork_row['netmask_3']);
+         $address       = floatval($ipnetwork_row['address_3']) & $netmask;
 
          $query = "SELECT `id`
                    FROM `glpi_ipaddresses`
                    WHERE (`glpi_ipaddresses`.`binary_3` & '$netmask') = $address
-                     AND `glpi_ipaddresses`.`version` = '4'
+                         AND `glpi_ipaddresses`.`version` = '4'
                    GROUP BY `items_id`";
 
          if ($ipaddress_result = $DB->query($query)) {
