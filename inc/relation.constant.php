@@ -208,7 +208,6 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_ipnetworks'                      => 'entities_id',
                                  'glpi_itilcategories'                  => 'entities_id',
                                  'glpi_knowbaseitemcategories'          => 'entities_id',
-                                 'glpi_knowbaseitems'                   => 'entities_id',
                                  'glpi_knowbaseitems_profiles'          => 'entities_id',
                                  'glpi_links'                           => 'entities_id',
                                  'glpi_locations'                       => 'entities_id',
@@ -238,7 +237,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_suppliers'                       => 'entities_id',
                                  'glpi_taskcategories'                  => 'entities_id',
                                  'glpi_ticketrecurrents'                => 'entities_id',
-                                 'glpi_ticketemplates'                  => 'entities_id',
+                                 'glpi_tickettemplates'                  => 'entities_id',
                                  '_glpi_tickettemplatehiddenfields'     => 'entities_id',
                                  '_glpi_tickettemplatemandatoryfields'  => 'entities_id',
                                  '_glpi_tickettemplatepredefinedfields' => 'entities_id',
@@ -519,7 +518,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_tickets'         => 'itilcategories_id',
                                  'glpi_problems'        => 'itilcategories_id'),
 
-                  "glpi_ticketemplates"
+                  "glpi_tickettemplates"
                         => array('glpi_itilcategories'      => array('tickettemplates_id_incident',
                                                                      'tickettemplates_id_demand'),
                                  'glpi_ticketrecurrents'    => 'tickettemplates_id',
