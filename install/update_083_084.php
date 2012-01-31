@@ -581,7 +581,8 @@ function update083to084() {
       $migration->dropField('glpi_networkports', $field);
    }
 
-   logMessage(__('Index mac field and transform address mac to lower'), true);
+   //TRANS: %s is the table or item to migrate
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'Index mac field and transform address mac to lower'));
 
    foreach (array('glpi_networkports', 'glpi_networkequipments') as $table) {
 
@@ -594,7 +595,7 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('update migration of interfaces errors - %s'), "glpi_networkportmigrations"), true);
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'Update migration of interfaces errors'));
 
    $query = "SELECT id
              FROM `glpi_networkports`
@@ -731,8 +732,7 @@ function update083to084() {
 
    $migration->addField('glpi_networkports_vlans', 'tagged', 'char', array('value' => '0'));
 
-   //TRANS: %s is the name of the table
-   logMessage(__('Update connections between IPAddress and IPNetwork'), true);
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'Update connections between IPAddress and IPNetwork'));
 
    // Here, we are sure that there is only IPv4 addresses. So, the SQL requests are simplified
    $query = "SELECT `id`, `address_3`, `netmask_3`
@@ -764,7 +764,8 @@ function update083to084() {
       }
    }
 
-   logMessage(__('Drop table glpi_networkportmigrations if it is empty'), true);
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Drop table glpi_networkportmigrations if it is empty'));
+
    if (countElementsInTable("glpi_networkportmigrations") == 0) {
       $migration->dropTable("`glpi_networkportmigrations`");
    }
