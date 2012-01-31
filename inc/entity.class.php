@@ -1336,9 +1336,25 @@ class Entity extends CommonTreeDropdown {
       Alert::dropdownYesNo(array('name'           => "use_infocoms_alert",
                                  'value'          => $default_value,
                                  'inherit_parent' => ($ID>0 ? 1 : 0)));
+      if ($entity->fields['use_infocoms_alert'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('use_infocoms_alert', $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo self::getSpecificValueToDisplay('use_infocoms_alert', $tid);
+         echo "</font>";
+      }
+                                 
       echo "</td></tr>";
       echo "<tr><td>" . __('Default value')."</td><td>";
-      Alert::dropdownInfocomAlert($entity->fields["default_infocom_alert"]);
+      Infocom::dropdownAlert(array('name'  => 'default_infocom_alert',
+                                   'value' => $entity->fields["default_infocom_alert"],
+                                 'inherit_parent' => ($ID>0 ? 1 : 0)));
+      if ($entity->fields['default_infocom_alert'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('default_infocom_alert', $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo self::getSpecificValueToDisplay('default_infocom_alert', $tid);
+         echo "</font>";
+      }
+                                 
       echo "</td></tr>";
       echo "<tr><td>" . __('TODO to it before ?')."</td><td>";
 //       Alert::dropdownInfocomAlert($entity->fields["default_infocom_alert"]);
@@ -1353,6 +1369,12 @@ class Entity extends CommonTreeDropdown {
       Alert::dropdownYesNo(array('name'           => "use_licenses_alert",
                                  'value'          => $default_value,
                                  'inherit_parent' => ($ID>0 ? 1 : 0)));
+      if ($entity->fields['use_licenses_alert'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('use_licenses_alert', $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo self::getSpecificValueToDisplay('use_licenses_alert', $tid);
+         echo "</font>";
+      }                                 
       echo "</td>";
       echo "</td></tr>";
       echo "<tr><td>" . __('TODO to it before ?')."</td><td>";
@@ -1369,6 +1391,12 @@ class Entity extends CommonTreeDropdown {
                                   array('max'            => 99,
                                         'inherit_parent' => ($ID>0 ? 1 : 0),
                                         'unit'           => 'hour'));
+      if ($entity->fields['use_reservations_alert'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('use_reservations_alert', $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo self::getSpecificValueToDisplay('use_reservations_alert', $tid);
+         echo "</font>";
+      }                                                
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1380,6 +1408,12 @@ class Entity extends CommonTreeDropdown {
                                   array('max'            => 99,
                                         'inherit_parent' => ($ID>0 ? 1 : 0),
                                         'unit'           => 'day'));
+      if ($entity->fields['notclosed_delay'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('notclosed_delay', $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo self::getSpecificValueToDisplay('notclosed_delay', $tid);
+         echo "</font>";
+      }                                                
       echo "</td>";
       echo "<td colspan='2'></td></tr>";
 
@@ -2030,7 +2064,7 @@ class Entity extends CommonTreeDropdown {
             return Contract::getAlertName($values[$field]);
 
          case 'default_infocom_alert' :
-            return Alert::getAlertName($values[$field]);
+            return Infocom::getAlertName($values[$field]);
 
          case 'entities_id_software' :
             if ($values[$field] == self::CONFIG_NEVER) {
