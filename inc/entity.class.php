@@ -44,6 +44,9 @@ class Entity extends CommonTreeDropdown {
    public $must_be_replace = true;
    public $dohistory       = true;
 
+   public $first_level_menu  = "admin";
+   public $second_level_menu = "entity";
+
    const CONFIG_PARENT   = -2;
    const CONFIG_NEVER    = -10;
 
@@ -140,7 +143,11 @@ class Entity extends CommonTreeDropdown {
       return Session::haveAccessToEntity($this->getField('id'));
    }
 
-
+   function canViewItem() {
+      // Check the current entity
+      return Session::haveAccessToEntity($this->getField('id'));
+   }
+   
    function isNewID($ID) {
       return ($ID<0 || !strlen($ID));
    }
@@ -173,6 +180,13 @@ class Entity extends CommonTreeDropdown {
             }
          }
       }
+      // Add framework  / internal ones 
+      foreach ($input as $key => $val) {
+         if ($key[0] == '_') {
+            $tmp[$key] = $input[$key];
+         }
+      }
+      
 
       return $tmp;
    }
@@ -1241,7 +1255,8 @@ class Entity extends CommonTreeDropdown {
            "</td><td>";
       Dropdown::showInteger('default_cartridges_alarm_threshold',
                             $entity->fields["default_cartridges_alarm_threshold"], 0, 100, 1,
-                            array(self::CONFIG_NEVER => __('Never')));
+                            array(self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                                  self::CONFIG_NEVER  => __('Never')));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1260,7 +1275,8 @@ class Entity extends CommonTreeDropdown {
            "</td><td>";
       Dropdown::showInteger('default_consumables_alarm_threshold',
                             $entity->fields["default_consumables_alarm_threshold"], 0, 100, 1,
-                            array(self::CONFIG_NEVER => __('Never')));
+                            array(self::CONFIG_PARENT => __('Inheritance of the parent entity'),
+                                  self::CONFIG_NEVER => __('Never')));
       echo "</td></tr>";
       
 
