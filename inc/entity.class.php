@@ -73,7 +73,8 @@ class Entity extends CommonTreeDropdown {
                                        'notification'    => array('admin_email', 'admin_reply',
                                                                   'admin_email_name',
                                                                   'admin_reply_name',
-                                                                  'default_alarm_threshold',
+                                                                  'default_cartridges_alarm_threshold',
+                                                                  'default_consumables_alarm_threshold',
                                                                   'default_contract_alert',
                                                                   'default_infocom_alert',
                                                                   'mailing_signature',
@@ -682,11 +683,18 @@ class Entity extends CommonTreeDropdown {
       $tab[49]['nosearch']      = true;
 
       $tab[50]['table']         = $this->getTable();
-      $tab[50]['field']         = 'default_alarm_threshold';
-      $tab[50]['name']          = __('Default threshold for cartridges and consumables count');
+      $tab[50]['field']         = 'default_cartridges_alarm_threshold';
+      $tab[50]['name']          = __('Default threshold for cartridges count');
       $tab[50]['massiveaction'] = false;
       $tab[50]['nosearch']      = true;
       $tab[50]['datatype']      = 'number';
+
+      $tab[52]['table']         = $this->getTable();
+      $tab[52]['field']         = 'default_consumables_alarm_threshold';
+      $tab[52]['name']          = __('Default threshold for consumables count');
+      $tab[52]['massiveaction'] = false;
+      $tab[52]['nosearch']      = true;
+      $tab[52]['datatype']      = 'number';
 
       $tab[51]['table']         = $this->getTable();
       $tab[51]['field']         = 'entities_id_software';   // not a dropdown because of special value
@@ -1246,10 +1254,10 @@ class Entity extends CommonTreeDropdown {
                             'value'          => $default_value,
                             'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td></tr>";
-      echo "<tr><td>" . __('Default threshold for cartridges and consumables count') .
+      echo "<tr><td>" . __('Default threshold for cartridges count') .
            "</td><td>";
-      Dropdown::showInteger('default_alarm_threshold',
-                            $entity->fields["default_alarm_threshold"], 0, 100, 1,
+      Dropdown::showInteger('default_cartridges_alarm_threshold',
+                            $entity->fields["default_cartridges_alarm_threshold"], 0, 100, 1,
                             array('-1' => __('Never')));
       echo "</td></tr>";
 
@@ -1265,10 +1273,10 @@ class Entity extends CommonTreeDropdown {
                             'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td></tr>";
       
-      echo "<tr><td>" . __('TODO : split config in 2 values Default threshold for cartridges and consumables count') .
+      echo "<tr><td>" . __('Default threshold for consumables count') .
            "</td><td>";
-      Dropdown::showInteger('default_alarm_threshold',
-                            $entity->fields["default_alarm_threshold"], 0, 100, 1,
+      Dropdown::showInteger('default_consumables_alarm_threshold',
+                            $entity->fields["default_consumables_alarm_threshold"], 0, 100, 1,
                             array('-1' => __('Never')));
       echo "</td></tr>";
       

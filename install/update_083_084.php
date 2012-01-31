@@ -1089,6 +1089,12 @@ function update083to084() {
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'various fields'));
 
+   $migration->changeField('glpi_entities', 'default_alarm_threshold', 'default_cartridges_alarm_threshold', 
+                           'integer', array('value' => -10));
+   $migration->migrationOneTable('glpi_entities');
+   $migration->addField("glpi_entities", 'default_consumables_alarm_threshold', "integer", array('value'  => -10,
+                                                                                                 'update' => 'default_cartridges_alarm_threshold'));
+
    $migration->addField("glpi_reservationitems", "is_deleted", "bool");
    $migration->addKey("glpi_reservationitems", "is_deleted");
 
