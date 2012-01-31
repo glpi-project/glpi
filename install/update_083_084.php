@@ -511,7 +511,7 @@ function update083to084() {
 
    logMessage(sprintf(__('Data migration - %s'), "glpi_ipaddresses_ipnetworks"), true);
 
-   // Adding IPNetwork_NetworkName table
+   // Adding IPAddress_IPNetwork table
    if (!TableExists('glpi_ipaddresses_ipnetworks')) {
       $query = "CREATE TABLE `glpi_ipaddresses_ipnetworks` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -755,7 +755,7 @@ function update083to084() {
             unset($query);
             while ($link = $DB->fetch_assoc($ipaddress_result)) {
                $query = "INSERT INTO `glpi_ipaddresses_ipnetworks`
-                             ( `ipaddresses_id`, `ipnetworks_id`  )
+                                (`ipaddresses_id`, `ipnetworks_id`)
                          VALUES ('".$link['id']."', '$ipnetworks_id')";
                $DB->query($query);
                unset($query);
@@ -764,7 +764,8 @@ function update083to084() {
       }
    }
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Drop table glpi_networkportmigrations if it is empty'));
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
+                                      'Drop table glpi_networkportmigrations if empty'));
 
    if (countElementsInTable("glpi_networkportmigrations") == 0) {
       $migration->dropTable("`glpi_networkportmigrations`");
@@ -1089,7 +1090,7 @@ function update083to084() {
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'various fields'));
 
-   $migration->changeField('glpi_entities', 'default_alarm_threshold', 'default_cartridges_alarm_threshold', 
+   $migration->changeField('glpi_entities', 'default_alarm_threshold', 'default_cartridges_alarm_threshold',
                            'integer', array('value' => -2));
    $migration->migrationOneTable('glpi_entities');
    $migration->addField("glpi_entities", 'default_consumables_alarm_threshold', "integer", array('value'  => -2,

@@ -632,8 +632,9 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       return "`id` IN (SELECT `glpi_ipaddresses`.`items_id`
                        FROM `glpi_ipaddresses_ipnetworks`, `glpi_ipaddresses`
                        WHERE `glpi_ipaddresses_ipnetworks`.`ipnetworks_id` = '".$this->getID()."'
-                        AND `glpi_ipaddresses`.`id` = `glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
-                        AND `glpi_ipaddresses`.`itemtype` = 'NetworkName')";
+                             AND `glpi_ipaddresses`.`id`
+                                 = `glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
+                             AND `glpi_ipaddresses`.`itemtype` = 'NetworkName')";
    }
 
 

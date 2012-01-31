@@ -69,7 +69,7 @@ class IPAddress_IPNetwork extends CommonDBRelation {
       }
 
       // Then, look each IP address contained inside current Network
-      $query = "SELECT $ipnetworks_id as ipnetworks_id, `id` as ipaddresses_id
+      $query = "SELECT $ipnetworks_id AS ipnetworks_id, `id` AS ipaddresses_id
                 FROM `glpi_ipaddresses`
                 WHERE ".$network->getWHEREForMatchingElement('glpi_ipaddresses', 'binary',
                                                              'version')."
@@ -79,6 +79,10 @@ class IPAddress_IPNetwork extends CommonDBRelation {
       }
    }
 
+
+   /**
+    * @param $ipaddress IPAddress object
+   **/
    static function addIPAddress(IPAddress $ipaddress) {
 
       $linkObject = new self();
@@ -88,7 +92,7 @@ class IPAddress_IPNetwork extends CommonDBRelation {
          $input['ipnetworks_id'] = $ipnetworks_id;
          $linkObject->add($input);
       }
-
    }
+
 }
 ?>

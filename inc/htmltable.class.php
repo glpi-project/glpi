@@ -391,7 +391,7 @@ class HTMLTable {
          return;
       }
 
-      $old_headers = $this->headers;
+      $old_headers   = $this->headers;
       $this->headers = array();
       foreach ($order as $column) {
          if (isset($old_headers[$column])) {
