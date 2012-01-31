@@ -493,15 +493,13 @@ function getTreeValueName($table, $ID, $wholename="", $level=0) {
 
          if ($wholename == "") {
             $name = $row["name"];
-         } else if ($ID > 0){ // Not root entity 
+         } else { 
             $name = $row["name"] . " > ";
          }
    
-         if ($ID > 0) { // Not root entity
-            $level++;
-            list($tmpname, $level) = getTreeValueName($table, $parentID, $name, $level);
-            $name = $tmpname. $name;
-         }
+         $level++;
+         list($tmpname, $level) = getTreeValueName($table, $parentID, $name, $level);
+         $name = $tmpname. $name;
       }
    }
    return array($name, $level);
