@@ -161,10 +161,10 @@ class Plugin extends CommonDBTM {
 
       $dir = GLPI_ROOT . "/plugins/$name/locales/";
 
-      if (file_exists($dir.$CFG_GLPI["languages"][$trytoload][1])) {
-         include ($dir.$CFG_GLPI["languages"][$trytoload][1]);
-      } else if (file_exists($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
-         include ($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1]);
+      if (file_exists($dir.$trytoload.'.php')) {
+         include ($dir.$trytoload.'.php');
+      } else if (file_exists($dir.$CFG_GLPI["language"].'.php')) {
+         include ($dir.$CFG_GLPI["language"].'.php');
       } else if (file_exists($dir . "en_GB.php")) {
          include ($dir . "en_GB.php");
       } else if (file_exists($dir . "fr_FR.php")) {
@@ -172,12 +172,12 @@ class Plugin extends CommonDBTM {
       }
 
       // New localisation system
-      if (file_exists($dir.$trytoload.".mo")) {
-         $TRANSLATE->addTranslation(array('content' => $dir.$trytoload.".mo",
+      if (file_exists($dir.$CFG_GLPI["languages"][$trytoload][1])) {
+         $TRANSLATE->addTranslation(array('content' => $dir.$CFG_GLPI["languages"][$trytoload][1],
                                           'locale'  => $coretrytoload));
 
-      } else if (file_exists($dir.$CFG_GLPI["language"].".mo")) {
-         $TRANSLATE->addTranslation(array('content' => $dir.$CFG_GLPI["language"].".mo",
+      } else if (file_exists($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
+         $TRANSLATE->addTranslation(array('content' => $dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1],
                                           'locale'  => $coretrytoload));
 
       } else if (file_exists($dir."en_GB.mo")) {
