@@ -76,9 +76,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       foreach ($DB->request($query) as $data) {
          //Add the user email and language in the notified users list
          if ($data['notif']) {
-            $author_email = UserEmail::getDefaultForUser($data['id']);
+            $author_email = UserEmail::getDefaultForUser($data['users_id']);
             $author_lang  = $data["language"];
-            $author_id    = $data['id'];
+            $author_id    = $data['users_id'];
 
             if (!empty($data['altemail'])
                 && $data['altemail'] != $author_email
@@ -93,7 +93,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             }
             $this->addToAddressesList(array('email'    => $author_email,
                                             'language' => $author_lang,
-                                            'id'       => $author_id));
+                                            'users_id' => $author_id));
          }
       }
 
@@ -108,7 +108,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          if (NotificationMail::isUserAddressValid($data['alternative_email'])) {
             $this->addToAddressesList(array('email'    => $data['alternative_email'],
                                             'language' => $CFG_GLPI["language"],
-                                            'id'       => -1));
+                                            'users_id' => -1));
          }
       }
    }
@@ -196,7 +196,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             }
             $this->addToAddressesList(array('email'    => $author_email,
                                             'language' => $author_lang,
-                                            'id'       => $author_id));
+                                            'users_id' => $author_id));
       }
     }
 
@@ -221,7 +221,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
           && isset($this->obj->fields["suppliers_id_assign"])
           && $this->obj->fields["suppliers_id_assign"]>0) {
 
-         $query = "SELECT DISTINCT `glpi_suppliers`.`email` AS email
+         $query = "SELECT DISTINCT `glpi_suppliers`.`email` AS email,
+                                   `glpi_suppliers`.`name` AS name
                    FROM `glpi_suppliers`
                    WHERE `glpi_suppliers`.`id` = '".$this->obj->fields["suppliers_id_assign"]."'";
 

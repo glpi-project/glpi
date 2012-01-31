@@ -59,16 +59,15 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       }
    }
 
+   function validateSendTo($infos, $notify_me=false) {
 
-   /**
-    * Validate send before doing it (may be overloaded : exemple for private tasks or followups)
-    *
-    * @param $user_infos
-   **/
-   function validateSendTo($user_infos) {
-
+      // Check global ones for notification to myself
+      if (!parent::validateSendTo($infos, $notify_me)) {
+         return false;
+      }
+      
       // Private object and no right to see private items : do not send
-      if ($this->isPrivate() && $user_infos['additionnaloption']==0) {
+      if ($this->isPrivate() && $infos['additionnaloption']==0) {
          return false;
       }
       return true;
