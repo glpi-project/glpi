@@ -1231,56 +1231,88 @@ class Entity extends CommonTreeDropdown {
       echo "<textarea cols='60' rows='5' name='mailing_signature'>".
              $entity->fields["mailing_signature"]."</textarea>";
       echo "</td></tr>";
+      echo "</table>";
 
-
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>".__('Alarms options')."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2' rowspan='2'>";
+      echo _n('Cartridge','Cartridges',2);
+      echo "</th>";
       echo "<td>" . __('Reminders frequency for alarms on cartridges') . "</td><td>";
       $default_value = $entity->fields['cartridges_alert_repeat'];
       Alert::dropdown(array('name'           => 'cartridges_alert_repeat',
                             'value'          => $default_value,
                             'inherit_parent' => ($ID>0 ? 1 : 0)));
-      echo "</td>";
-      echo "<td rowspan='2'>" . __('Default threshold for cartridges and consumables count') .
-           "</td><td rowspan='2'>";
+      echo "</td></tr>";
+      echo "<tr><td>" . __('Default threshold for cartridges and consumables count') .
+           "</td><td>";
       Dropdown::showInteger('default_alarm_threshold',
                             $entity->fields["default_alarm_threshold"], 0, 100, 1,
                             array('-1' => __('Never')));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2' rowspan='2'>";
+      echo _n('Consumable','Consumables',2);
+      echo "</th>";
+
       echo "<td>" . __('Reminders frequency for alarms on consumables') . "</td><td>";
       $default_value = $entity->fields['consumables_alert_repeat'];
       Alert::dropdown(array('name'           => 'consumables_alert_repeat',
                             'value'          => $default_value,
                             'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td></tr>";
+      
+      echo "<tr><td>" . __('TODO : split config in 2 values Default threshold for cartridges and consumables count') .
+           "</td><td>";
+      Dropdown::showInteger('default_alarm_threshold',
+                            $entity->fields["default_alarm_threshold"], 0, 100, 1,
+                            array('-1' => __('Never')));
+      echo "</td></tr>";
+      
 
       echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2' rowspan='3'>";
+      echo _n('Contract','Contracts',2);
+      echo "</th>";      
       echo "<td>" . __('Alarms on contracts') . "</td><td>";
       $default_value = $entity->fields['use_contracts_alert'];
       Alert::dropdownYesNo(array('name'           => "use_contracts_alert",
                                  'value'          => $default_value,
                                  'inherit_parent' => ($ID>0 ? 1 : 0)));
-      echo "</td>";
-      echo "<td >".__('Default value') . "</td><td>";
+      echo "</td></tr>";
+      
+      echo "</tr><td>".__('Default value') . "</td><td>";
       Contract::dropdownAlert("default_contract_alert",
                               $entity->fields["default_contract_alert"]);
       echo "</td></tr>";
+      echo "<tr><td>" . __('TODO to it before ?')."</td><td>";
+//       Alert::dropdownInfocomAlert($entity->fields["default_infocom_alert"]);
+      echo "</td></tr>";      
 
       echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2' rowspan='3'>";
+      _e('Financial and administrative information');
+      echo "</th>";        
       echo "<td>" . __('Alarms on financial and administrative information') . "</td><td>";
       $default_value = $entity->fields['use_infocoms_alert'];
       Alert::dropdownYesNo(array('name'           => "use_infocoms_alert",
                                  'value'          => $default_value,
                                  'inherit_parent' => ($ID>0 ? 1 : 0)));
-      echo "</td>";
-      echo "<td >" . __('Default value')."</td><td>";
+      echo "</td></tr>";
+      echo "<tr><td>" . __('Default value')."</td><td>";
       Alert::dropdownInfocomAlert($entity->fields["default_infocom_alert"]);
       echo "</td></tr>";
+      echo "<tr><td>" . __('TODO to it before ?')."</td><td>";
+//       Alert::dropdownInfocomAlert($entity->fields["default_infocom_alert"]);
+      echo "</td></tr>";          
 
       echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2' rowspan='2'>";
+      echo _n('License', 'Licenses', 2);
+      echo "</th>";         
       echo "<td>" . __('Alarms on expired licenses') . "</td><td>";
       $default_value = $entity->fields['use_licenses_alert'];
       Alert::dropdownYesNo(array('name'           => "use_licenses_alert",
@@ -1288,8 +1320,14 @@ class Entity extends CommonTreeDropdown {
                                  'inherit_parent' => ($ID>0 ? 1 : 0)));
       echo "</td>";
       echo "</td></tr>";
-
+      echo "<tr><td>" . __('TODO to it before ?')."</td><td>";
+//       Alert::dropdownInfocomAlert($entity->fields["default_infocom_alert"]);
+      echo "</td></tr>";
+      
       echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2' rowspan='1'>";
+      echo _n('Reservation', 'Reservations', 2);
+      echo "</th>";         
       echo "<td>" . __('Alerts on reservations') . "</td><td>";
       Alert::dropdownIntegerNever('use_reservations_alert',
                                   $entity->fields['use_reservations_alert'],
@@ -1298,8 +1336,11 @@ class Entity extends CommonTreeDropdown {
                                         'unit'           => 'hour'));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'>".
-           "<td >". __('Alerts on tickets which are not solved since'). "</td><td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2' rowspan='1'>";
+      echo _n('Ticket', 'Tickets', 2);
+      echo "</th>";      
+      echo "<td >". __('Alerts on tickets which are not solved since'). "</td><td>";
       Alert::dropdownIntegerNever('notclosed_delay', $entity->fields["notclosed_delay"],
                                   array('max'            => 99,
                                         'inherit_parent' => ($ID>0 ? 1 : 0),
