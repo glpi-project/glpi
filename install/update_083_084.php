@@ -1088,6 +1088,46 @@ function update083to084() {
    }
    regenerateTreeCompleteName("glpi_entities");
 
+
+   $migration->displayMessage(sprintf(__('Data migration - - %s'), 
+                                         'create validation_answer notification'));
+
+   /// TODO : create a new template ?
+   // Check if notifications already exists
+   if (countElementsInTable('glpi_notifications', 
+                              "`itemtype` = 'Ticket' 
+                               AND `event` = 'validation_answer'")==0) {
+   // No notifications duplicate all
+         
+      $query = "SELECT *
+                FROM `glpi_notifications`
+                WHERE `itemtype` = 'Ticket' 
+                  AND `event` = 'validation'";
+      foreach ($DB->request($query) as $notif) {
+         $query = "INSERT INTO `glpi_notifications`
+                           (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                           `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
+                           `date_mod`)
+                     VALUES ('".addslashes($notif['name'])." Answer', 
+                             '".$notif['entities_id']."', 'Ticket', 
+                             'validation_answer', '".$notif['mode']."',
+                             '".$notif['notificationtemplates_id']."', 
+                             '".addslashes($notif['comment'])."', '".$notif['is_recursive']."', 
+                             '".$notif['is_active']."', NOW());";
+         $DB->queryOrDie($query, "0.84 insert validation_answer notification");
+         $newID = $DB->insert_id();
+         $query2 = "SELECT *
+                FROM `glpi_notificationtargets`
+                WHERE `notifications_id` = '".$notif['id']."'";
+         foreach ($DB->request($query2) as $target) {
+            $query = "INSERT INTO `glpi_notificationtargets`
+                           (`notifications_id`, `type`, `items_id`)
+                     VALUES ($newID, '".$target['type']."', '".$target['items_id']."')";
+            $DB->queryOrDie($query, "0.84 insert targets for validation_answer notification");
+         }
+      }
+   }
+
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'various fields'));
 
    $migration->changeField('glpi_entities', 'default_alarm_threshold', 'default_cartridges_alarm_threshold',

@@ -272,7 +272,7 @@ class TicketValidation  extends CommonDBChild {
          if (count($this->updates) && $donotif) {
             $options = array('validation_id'     => $this->fields["id"],
                              'validation_status' => $this->fields["status"]);
-            $mailsend = NotificationEvent::raiseEvent('validation',$job,$options);
+            $mailsend = NotificationEvent::raiseEvent('validation_answer',$job,$options);
          }
          // Add log entry in the ticket
          $changes[0] = 0;

@@ -156,21 +156,22 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    **/
    function getEvents() {
 
-      $events = array('new'             => __('New ticket'),
-                      'update'          => __('Update of a ticket'),
-                      'solved'          => __('Ticket solved'),
-                      'validation'      => __('Approval request'),
-                      'add_followup'    => __("New followup"),
-                      'update_followup' => __('Update of a followup'),
-                      'delete_followup' => __('Deletion of a followup'),
-                      'add_task'        => __('New task'),
-                      'update_task'     => __('Update of a task'),
-                      'delete_task'     => __('Deletion of a task'),
-                      'closed'          => __('Closing of the ticket'),
-                      'deleted'         => __('Deletion of a ticket'),
-                      'alertnotclosed'  => __('Not solved tickets'),
-                      'recall'          => __('Automatic reminders of SLAs'),
-                      'satisfaction'    => __('Satisfaction survey'));
+      $events = array('new'               => __('New ticket'),
+                      'update'            => __('Update of a ticket'),
+                      'solved'            => __('Ticket solved'),
+                      'validation'        => __('Approval request'),
+                      'validation_answer' => __('Approval request answer'),
+                      'add_followup'      => __("New followup"),
+                      'update_followup'   => __('Update of a followup'),
+                      'delete_followup'   => __('Deletion of a followup'),
+                      'add_task'          => __('New task'),
+                      'update_task'       => __('Update of a task'),
+                      'delete_task'       => __('Deletion of a task'),
+                      'closed'            => __('Closing of the ticket'),
+                      'deleted'           => __('Deletion of a ticket'),
+                      'alertnotclosed'    => __('Not solved tickets'),
+                      'recall'            => __('Automatic reminders of SLAs'),
+                      'satisfaction'      => __('Satisfaction survey'));
       asort($events);
       return $events;
    }
@@ -206,11 +207,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    }
 
 
-   function getDatasForObject(CommonDBTM $item, $simple=false) {
+   function getDatasForObject(CommonDBTM $item, $options, $simple=false) {
       global $CFG_GLPI;
 
       // Common ITIL datas
-      $datas = parent::getDatasForObject($item, $simple);
+      $datas = parent::getDatasForObject($item, $options, $simple);
 
       // Specific datas
       $datas["##ticket.costfixed"]    = $item->getField('cost_fixed');
@@ -441,6 +442,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          }
 
          $restrict .= " ORDER BY `submission_date` DESC, `id` ASC";
+
          $validations = getAllDatasFromTable('glpi_ticketvalidations',$restrict);
 
          foreach ($validations as $validation) {
@@ -597,7 +599,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $this->addTagToList(array('tag'    => $tag,
                                    'label'  => $label,
                                    'value'  => true,
-                                   'events' => array('validation')));
+                                   'events' => array('validation', 'validation_answer')));
       }
       //Tags without lang for validation
       $tags = array('validation.submission.title' => __('A validation request has been submitted'),
@@ -609,7 +611,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                                    'label' => $label,
                                    'value' => true,
                                    'lang'  => false,
-                                   'events' => array('validation')));
+                                   'events' => array('validation', 'validation_answer')));
       }
 
 

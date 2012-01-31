@@ -393,7 +393,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP,__('Watcher group manager'));
       }
 
-      if ($event=='validation') {
+      if ($event=='validation' || $event=='validation_answer') {
          $this->addTarget(Notification::VALIDATION_REQUESTER, __('Approval requester'));
          $this->addTarget(Notification::VALIDATION_APPROVER, __('Approver'));
       }
@@ -517,7 +517,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       // Get datas from ITIL objects
       if ($event != 'alertnotclosed') {
-         $this->datas = $this->getDatasForObject($this->obj);
+         $this->datas = $this->getDatasForObject($this->obj, $options);
 
       } else {
          if (isset($options['entities_id']) && isset($options['items'])) {
@@ -528,7 +528,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                $items      = array();
                foreach ($options['items'] as $object) {
                   $item->getFromDB($object['id']);
-                  $tmp = $this->getDatasForObject($item, true);
+                  $tmp = $this->getDatasForObject($item, $options, true);
                   $this->datas[$objettypes][] = $tmp;
                }
             }
@@ -557,9 +557,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
    /**
     * @param $item   CommonDBTM object
+    * @param $options   array
     * @param $simple (false by default)
    **/
-   function getDatasForObject(CommonDBTM $item, $simple=false) {
+   function getDatasForObject(CommonDBTM $item, $options, $simple=false) {
       global $CFG_GLPI;
 
       $objettype = strtolower($item->getType());
