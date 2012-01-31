@@ -114,11 +114,14 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if (isset($input[$this->getForeignKeyField()])
           && !$this->isNewID($input[$this->getForeignKeyField()])
           && $parent->getFromDB($input[$this->getForeignKeyField()])) {
-
          $input['level']        = $parent->fields['level']+1;
          // Sometimes (internet address), the complete name may be different ...
-         $input['completename'] = self::getCompleteNameFromParents($parent->fields['completename'],
-                                                                   $input['name']);
+         if ($input[$this->getForeignKeyField()]==0) { // Root entity case
+            $input['completename'] =  $input['name'];
+         } else {
+            $input['completename'] = self::getCompleteNameFromParents($parent->fields['completename'],
+                                                                      $input['name']);
+         }
       } else {
          $input[$this->getForeignKeyField()] = 0;
          $input['level']                     = 1;
@@ -158,7 +161,6 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    function prepareInputForUpdate($input) {
-
       if (isset($input[$this->getForeignKeyField()])) {
          // Can't move a parent under a child
          if (in_array($input[$this->getForeignKeyField()],

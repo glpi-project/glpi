@@ -1094,7 +1094,15 @@ function update083to084() {
    $migration->migrationOneTable('glpi_entities');
    $migration->addField("glpi_entities", 'default_consumables_alarm_threshold', "integer", array('value'  => -2,
                                                                                                  'update' => 'default_cartridges_alarm_threshold'));
-
+   $migration->migrationOneTable('glpi_entities');                     
+   // move -1 to Entity::CONFIG_NEVER                                                                            
+   $query = 'UPDATE `glpi_entities` SET `default_consumables_alarm_threshold` = -10 
+                           WHERE `default_consumables_alarm_threshold` = -1';
+   $DB->query($query);
+   $query = 'UPDATE `glpi_entities` SET `default_cartridges_alarm_threshold` = -10 
+                           WHERE `default_cartridges_alarm_threshold` = -1';
+   $DB->query($query);
+   
    $migration->addField("glpi_reservationitems", "is_deleted", "bool");
    $migration->addKey("glpi_reservationitems", "is_deleted");
 
