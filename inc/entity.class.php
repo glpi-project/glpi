@@ -234,7 +234,7 @@ class Entity extends CommonTreeDropdown {
       // Force entities_id = -1 for root entity
       if ($input['id']==0) {
          $input['entities_id'] = -1;
-         $input['level'] = 0;
+         $input['level'] = 1;
       }
       if (!Session::isCron()) { // Filter input for connected
          $input = $this->checkRightDatas($input);
