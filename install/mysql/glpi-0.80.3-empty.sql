@@ -971,17 +971,6 @@ CREATE TABLE `glpi_crontasklogs` (
   KEY `crontasklogs_id_state` (`crontasklogs_id`,`state`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_crontasklogs` VALUES ('1','6','0','2011-01-18 11:40:43','0','0','0','Mode d\'exÃƒÆ’Ã‚Â©cution : GLPI');
-INSERT INTO `glpi_crontasklogs` VALUES ('2','6','1','2011-01-18 11:40:43','2','0.00222397','0','Action terminÃƒÆ’Ã‚Â©e, rien ÃƒÆ’Ã‚Â  faire');
-INSERT INTO `glpi_crontasklogs` VALUES ('3','8','0','2011-03-04 11:35:21','0','0','0','Mode d\'exÃƒÂ©cution : GLPI');
-INSERT INTO `glpi_crontasklogs` VALUES ('4','8','3','2011-03-04 11:35:21','2','0.0720789','184','Action terminÃƒÂ©e, traitement complet');
-INSERT INTO `glpi_crontasklogs` VALUES ('5','9','0','2011-06-28 11:34:37','0','0','0','Mode d\'exÃ©cution : GLPI');
-INSERT INTO `glpi_crontasklogs` VALUES ('6','9','5','2011-06-28 11:34:37','2','0.0198219','0','Action terminÃ©e, rien Ã  faire');
-INSERT INTO `glpi_crontasklogs` VALUES ('7','12','0','2011-08-30 08:22:27','0','0','0','Mode d\'exécution : GLPI');
-INSERT INTO `glpi_crontasklogs` VALUES ('8','12','7','2011-08-30 08:22:27','1','0.101052','1','Clean 1 session file(s) created since more than 180 seconds
-');
-INSERT INTO `glpi_crontasklogs` VALUES ('9','12','7','2011-08-30 08:22:27','2','0.102898','1','Action terminée, traitement complet');
-
 ### Dump table glpi_crontasks
 
 DROP TABLE IF EXISTS `glpi_crontasks`;
@@ -1669,11 +1658,6 @@ CREATE TABLE `glpi_events` (
   KEY `level` (`level`),
   KEY `item` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `glpi_events` VALUES ('1','-1','system','2011-01-18 11:40:45','login','3','glpi connexion de l\'IP: 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('2','-1','system','2011-03-04 11:35:25','login','3','glpi connexion de l\'IP: 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('3','-1','system','2011-06-28 11:34:39','login','3','glpi connexion de l\'IP: 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('4','-1','system','2011-08-30 08:22:29','login','3','glpi connexion de l\'IP: 127.0.0.1');
 
 ### Dump table glpi_fieldblacklists
 
