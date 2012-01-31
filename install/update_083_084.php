@@ -1044,9 +1044,9 @@ function update083to084() {
       $migration->addField("glpi_entities", 'autofill_order_date', "string", array('value' => -2));
       $migration->addField("glpi_entities", 'tickettemplates_id', "integer", array('value' => -2));
       $migration->addField("glpi_entities", 'entities_id_software', "integer", array('value' => -2));
-      $migration->addField("glpi_entities", 'default_contract_alert', "integer");
-      $migration->addField("glpi_entities", 'default_infocom_alert', "integer");
-      $migration->addField("glpi_entities", 'default_alarm_threshold', "integer", array('value' => -10));
+      $migration->addField("glpi_entities", 'default_contract_alert', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'default_infocom_alert', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'default_alarm_threshold', "integer", array('value' => -2));
       $migration->migrationOneTable('glpi_entities');
 
       $fields = array('address', 'postcode', 'town', 'state', 'country', 'website',

@@ -437,20 +437,49 @@ class Infocom extends CommonDBChild {
       return $cron_status;
    }
 
+   /**
+    * Get the possible value for infocom alert
+    *
+    * @since version 0.83
+    *
+    * @param $val if not set, ask for all values, else for 1 value (default NULL)
+    *
+    * @return array or string
+   **/
+   static function getAlertName($val=NULL) {
+
+      $tmp[0] = Dropdown::EMPTY_VALUE;
+      $tmp[pow(2, Alert::END)] = __('Warranty expiration date');
+
+      if (is_null($val)) {
+         return $tmp;
+      }
+      if (isset($tmp[$val])) {
+         return $tmp[$val];
+      }
+      return NOT_AVAILABLE;
+   }
+
 
    /**
-    * Dropdown for infocoms alert config
-    *
-    * @param $name   select name
-    * @param $value  default value (default 0)
+    * @param $options array
    **/
-   static function dropdownAlert($name, $value=0) {
-
-      echo "<select name='$name'>";
-      echo "<option value='0'".($value==0?" selected ":"")." >".Dropdown::EMPTY_VALUE."</option>";
-      echo "<option value=\"".pow(2,Alert::END)."\" ".($value==pow(2,Alert::END)?" selected ":"")." >".
-             __s('Warranty expiration date')." </option>";
-      echo "</select>";
+   static function dropdownAlert($options) {
+   
+      if (!isset($options['value'])) {
+         $value = 0;
+      } else {
+         $value = $options['value'];
+      }
+      
+      $tab = array();
+      if (isset($options['inherit_parent']) && $options['inherit_parent']) {
+         $tab[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
+      }
+               
+      $tab += self::getAlertName();
+      
+      Dropdown::showFromArray($options['name'], $tab, array('value' => $value));
    }
 
 

@@ -173,40 +173,6 @@ class Alert extends CommonDBTM {
 
 
    /**
-    * Get the possible value for infocom alert
-    *
-    * @since version 0.83
-    *
-    * @param $val if not set, ask for all values, else for 1 value (default NULL)
-    *
-    * @return array or string
-   **/
-   static function getAlertName($val=NULL) {
-
-      $tmp[0] = Dropdown::EMPTY_VALUE;
-      $tmp[pow(2, self::END)] = __('Warranty expiration date');
-
-      if (is_null($val)) {
-         return $tmp;
-      }
-      if (isset($tmp[$val])) {
-         return $tmp[$val];
-      }
-      return NOT_AVAILABLE;
-   }
-
-
-   /**
-    * @param $value
-   **/
-   static function dropdownInfocomAlert($value) {
-
-      Dropdown::showFromArray("default_infocom_alert", self::getAlertName(),
-                              array('value' => $value));
-   }
-
-
-   /**
     * @param $itemtype
     * @param $items_id
    **/
