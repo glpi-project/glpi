@@ -1387,13 +1387,24 @@ class Contract extends CommonDBTM {
 
 
    /**
-    * Dropdown for alerting of contracts
-    *
-    * @param $myname    select name
-    * @param $value     default value
+    * @param $options array
    **/
-   static function dropdownAlert($myname, $value) {
-      Dropdown::showFromArray($myname, self::getAlertName(), array('value' => $value));
+   static function dropdownAlert($options) {
+   
+      if (!isset($options['value'])) {
+         $value = 0;
+      } else {
+         $value = $options['value'];
+      }
+      
+      $tab = array();
+      if (isset($options['inherit_parent']) && $options['inherit_parent']) {
+         $tab[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
+      }
+               
+      $tab += self::getAlertName();
+      
+      Dropdown::showFromArray($options['name'], $tab, array('value' => $value));
    }
 
 
