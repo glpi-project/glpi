@@ -113,13 +113,13 @@ class NetworkPortMigration extends CommonDBChild {
    static function getMotives() {
 
       return array( 'unknown_interface_type'
-                              => __('undefined interface'),
+                              => __('Undefined interface'),
                     'invalid_network'
-                              => __('invalid network (already defined or with invalid addresses)'),
+                              => __('Invalid network (already defined or with invalid addresses)'),
                     'invalid_gateway'
-                              => __('gateway not include inside the network'),
+                              => __('Gateway not include inside the network'),
                     'invalid_address'
-                              => __('invalid IP address') );
+                              => __('Invalid IP address') );
    }
 
 
@@ -263,12 +263,12 @@ class NetworkPortMigration extends CommonDBChild {
          echo "<tr class='tab_bg_1'><th colspan=4>" .
               __('I don\'t understand why this migration error is not deleted.') .
               "<a href='".$this->getLinkURL()."&delete=1'>" .
-              __('you should delete this migration error') . "</a></th></tr>\n";
+              __('You can delete this migration error') . "</a></th></tr>\n";
        } else {
           echo "<tr class='tab_bg_1'><th>" . __('At all events') . "</th>\n";
           echo "<td colspan=3>" .
                "<a href='".$this->getLinkURL()."&delete=1'>" .
-               __('you can delete this migration error') . "</a></td></tr>\n";
+               __('You can delete this migration error') . "</a></td></tr>\n";
        }
 
       echo "<tr class='tab_bg_1'><td colspan='4'>&nbsp;</td></tr>\n";
@@ -285,7 +285,7 @@ class NetworkPortMigration extends CommonDBChild {
       echo "<td>".__('Comments')."</td>";
       echo "<td class='middle'>" . $this->fields["comment"] . "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><td>". __('network address') ."</td>\n";
+      echo "<tr class='tab_bg_1'><td>". __('Network address') ."</td>\n";
       echo "<$network_cell>" . $this->fields['subnet'] . "</$network_cell>\n";
 
       echo "<td>". IPNetmask::getTypeName(1) ."</td>\n";
