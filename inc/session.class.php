@@ -536,23 +536,11 @@ class Session {
          $newfile = "/locales/" . $CFG_GLPI["languages"][$trytoload][1];
       }
 
-//       $newtrytoload = $trytoload;
-
-//       if (empty($file) || !is_file(GLPI_ROOT . $file)) {
-//          $trytoload = 'en_GB';
-//          $file = "/locales/en_GB.php";
-//       }
-
       if (empty($newfile) || !is_file(GLPI_ROOT . $newfile)) {
-//          $trytoload = 'en_GB';
          $newfile = "/locales/en_GB.mo";
       }
 
-//       include (GLPI_ROOT . $file);
 
-
-      /// TODO permit to load and use simple dictionnary.
-      /// After usage (notification) load old one
       // New localization system :
       $TRANSLATE = new Zend_Translate(array('adapter'        => 'gettext',
                                             'content'        => GLPI_ROOT.$newfile,
