@@ -53,6 +53,7 @@ class NotificationTargetUser extends NotificationTarget {
             switch ($data['items_id']) {
                case Notification::USER :
                   // Send to user without any check on profile / entity
+                  // Do not set users_id
                   $data = array('name'     => $this->obj->getName(),
                                 'email'    => $this->obj->getDefaultEmail(),
                                 'language' => $this->obj->getField('language'));

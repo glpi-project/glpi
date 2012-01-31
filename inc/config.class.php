@@ -772,6 +772,13 @@ class Config extends CommonDBTM {
       }
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('Notifications for my changes') . "</td><td>";
+      Dropdown::showYesNo("notification_to_myself", $data["notification_to_myself"]);
+      echo "</td>";
+      echo "<td>&nbsp;</td><td>&nbsp;";
+      echo "</td></tr>";
+      
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
 

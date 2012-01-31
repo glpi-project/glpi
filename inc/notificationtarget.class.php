@@ -110,11 +110,20 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Validate send before doing it (may be overloaded : exemple for private tasks or followups)
     *
-    * @param $user_infos
+    * @param $infos array of destination of the notification
+    * @param $notify_me bool notify me on my action ? ($infos contains users_id to check if the target is me)
     *
     * @return true
    **/
-   function validateSendTo($user_infos) {
+   function validateSendTo($infos, $notify_me=false) {
+      
+      if (!$notify_me) {
+         if (isset($infos['users_id']) 
+            && $infos['users_id'] === Session::getLoginUserID()) {
+            return false;
+         }
+      }
+   
       return true;
    }
 
@@ -432,8 +441,8 @@ class NotificationTarget extends CommonDBChild {
       global $CFG_GLPI;
 
       // No email set : get default for user
-      if (!isset($data['email']) && isset($data['id'])) {
-         $data['email'] = UserEmail::getDefaultForUser($data['id']);
+      if (!isset($data['email']) && isset($data['users_id'])) {
+         $data['email'] = UserEmail::getDefaultForUser($data['users_id']);
       }
 
       $new_mail = trim(Toolbox::strtolower($data['email']));
@@ -446,9 +455,9 @@ class NotificationTarget extends CommonDBChild {
       if (isset($data['name']) && !empty($data['name'])) {
          $username = $data['name'];
       }
-      if (isset($data['id']) && $data['id'] > 0) {
+      if (isset($data['users_id']) && $data['users_id'] > 0) {
          $user = new User();
-         if (!$user->getFromDB($data['id'])
+         if (!$user->getFromDB($data['users_id'])
              || $user->getField('is_deleted')==1
              || $user->getField('is_active')==0) {
             // unknown, deleted or disabled user
@@ -456,7 +465,7 @@ class NotificationTarget extends CommonDBChild {
          }
          $filt = getEntitiesRestrictRequest('AND', 'glpi_profiles_users', '', $this->getEntity(),
                                             true);
-         $prof = Profile_User::getUserProfiles($data['id'], $filt);
+         $prof = Profile_User::getUserProfiles($data['users_id'], $filt);
          if (!count($prof)) {
             // No right on the entity of the object
             return false;
@@ -470,12 +479,16 @@ class NotificationTarget extends CommonDBChild {
       if (!empty($new_mail)) {
          if (NotificationMail::isUserAddressValid($new_mail) && !isset($this->target[$new_mail])) {
 
-            $this->target[$new_mail] = array('language'           => (empty($new_lang)
-                                                                        ? $CFG_GLPI["language"]
-                                                                        : $new_lang),
-                                             'email'              => $new_mail,
-                                             'additionnaloption'  => $notificationoption,
-                                             'username'           => $username);
+            $param = array('language'           => (empty($new_lang)
+                                                   ? $CFG_GLPI["language"]
+                                                  : $new_lang),
+                           'email'              => $new_mail,
+                           'additionnaloption'  => $notificationoption,
+                           'username'           => $username);
+            if (isset($data['users_id']) && $data['users_id']) {
+               $param['users_id'] = $data['users_id'];
+            }
+            $this->target[$new_mail] = $param;
          }
       }
    }
@@ -501,7 +514,7 @@ class NotificationTarget extends CommonDBChild {
       $user = new User();
       if ($this->obj->isField('users_id') && $user->getFromDB($this->obj->getField('users_id'))) {
          $this->addToAddressesList(array('language' => $user->getField('language'),
-                                         'id'       => $user->getField('id')));
+                                         'users_id' => $user->getField('id')));
       }
    }
 
@@ -549,7 +562,7 @@ class NotificationTarget extends CommonDBChild {
 
    function getDistinctUserSql() {
 
-      return  "SELECT DISTINCT `glpi_users`.id AS id,
+      return  "SELECT DISTINCT `glpi_users`.id AS users_id,
                                `glpi_users`.`language` AS language";
    }
 

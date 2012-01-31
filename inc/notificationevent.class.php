@@ -123,6 +123,15 @@ class NotificationEvent extends CommonDBTM {
             //Set notification's signature (the one which corresponds to the entity)
             $template->setSignature(Notification::getMailingSignature($entity));
 
+            $notify_me = false;
+            if (Session::isCron()) {
+               // Cron notify me
+               $notify_me = true;
+            } else {
+               // Not cron see my pref
+               $notify_me = $_SESSION['glpinotification_to_myself'];
+            }
+
             //Foreach notification targets
             foreach ($targets as $target) {
 
@@ -130,7 +139,7 @@ class NotificationEvent extends CommonDBTM {
                $notificationtarget->getAddressesByTarget($target,$options);
 
                foreach ($notificationtarget->getTargets() as $user_email => $users_infos) {
-                  if ($label || $notificationtarget->validateSendTo($users_infos)) {
+                  if ($label || $notificationtarget->validateSendTo($users_infos, $notify_me)) {
                      //If the user have not yet been notified
                      if (!isset($email_processed[$users_infos['language']][$users_infos['email']])) {
                         //If ther user's language is the same as the template's one
