@@ -3438,10 +3438,13 @@ class Ticket extends CommonITILObject {
 
          } else {
             echo "<table><tr><td>";
+            echo $tt->getBeginHiddenFieldValue('due_date');
             Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
+            echo $tt->getEndHiddenFieldValue('due_date',$this);
             echo "</td>";
             if ($this->fields['status'] != 'closed') {
                echo "<td>";
+               echo $tt->getBeginHiddenFieldText('slas_id');
                echo "<span id='sla_action'>";
                echo "<a class='pointer' ".Html::addConfirmationOnAction(array($LANG['sla'][13],
                                                                        $LANG['sla'][14]),
@@ -3452,6 +3455,7 @@ class Ticket extends CommonITILObject {
                Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
                                           'value'  => $this->fields["slas_id"]));
                echo "</span>";
+               echo $tt->getEndHiddenFieldText('slas_id');
                echo "</td>";
             }
             echo "</tr></table>";
@@ -3673,11 +3677,11 @@ class Ticket extends CommonITILObject {
       echo "</td>";
 
       echo "<th class='left' rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype').
-                $LANG['document'][14]."&nbsp;: ".$tt->getMandatoryMark('itemtype').
-                $tt->getEndHiddenFieldText('itemtype');
+                $LANG['document'][14]."&nbsp;: ".$tt->getMandatoryMark('itemtype');
       echo "<img title=\"".$LANG['buttons'][14]."\" alt=\"".$LANG['buttons'][14]."\"
                   onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
                   class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";
+      echo $tt->getEndHiddenFieldText('itemtype');
       echo "</th>";
       echo "<td rowspan='2'>";
       echo $tt->getBeginHiddenFieldValue('itemtype');
