@@ -376,7 +376,7 @@ class CartridgeItem extends CommonDBTM {
                                   AND `glpi_cartridgeitems`.`alarm_threshold` >= '0'
                                   AND `glpi_cartridgeitems`.`entities_id` = '".$entity."'
                                   AND (`glpi_alerts`.`date` IS NULL
-                                       OR (`glpi_alerts`.date+$repeat) < CURRENT_TIMESTAMP());";
+                                       OR (`glpi_alerts`.`date`+$repeat) < CURRENT_TIMESTAMP());";
             $message = "";
             $items   = array();
 

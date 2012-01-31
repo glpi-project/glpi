@@ -44,7 +44,7 @@ class Entity extends CommonTreeDropdown {
    public $must_be_replace = true;
    public $dohistory       = true;
 
-   const CONFIG_PARENT   = - 2;
+   const CONFIG_PARENT   = -2;
    const CONFIG_NEVER    = -10;
 
    const AUTO_ASSIGN_HARDWARE_CATEGORY = 1;
@@ -107,27 +107,10 @@ class Entity extends CommonTreeDropdown {
    function pre_deleteItem() {
 
       // Security do not delete root entity
-      if ($this->input['id'] ==0){
+      if ($this->input['id']==0){
          return false;
       }
-   }
-
-
-   /**
-    * @since version 0.84 (before in entitydata.class)
-   **/
-   function post_getEmpty() {
-
-      $fields = array('autoclose_delay', 'autofill_buy_date', 'autofill_delivery_date',
-                      'autofill_order_date', 'autofill_use_date', 'autofill_warranty_date',
-                      'calendars_id', 'cartridges_alert_repeat', 'consumables_alert_repeat',
-                      'entities_id_software', 'notclosed_delay', 'tickettemplates_id',
-                      'use_contracts_alert', 'use_infocoms_alert', 'use_licenses_alert',
-                      'use_reservations_alert');
-
-      foreach ($fields as $field) {
-         $this->fields[$field] = self::CONFIG_PARENT;
-      }
+      return true;
    }
 
 
@@ -1258,7 +1241,7 @@ class Entity extends CommonTreeDropdown {
            "</td><td>";
       Dropdown::showInteger('default_cartridges_alarm_threshold',
                             $entity->fields["default_cartridges_alarm_threshold"], 0, 100, 1,
-                            array('-1' => __('Never')));
+                            array(self::CONFIG_NEVER => __('Never')));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1277,7 +1260,7 @@ class Entity extends CommonTreeDropdown {
            "</td><td>";
       Dropdown::showInteger('default_consumables_alarm_threshold',
                             $entity->fields["default_consumables_alarm_threshold"], 0, 100, 1,
-                            array('-1' => __('Never')));
+                            array(self::CONFIG_NEVER => __('Never')));
       echo "</td></tr>";
       
 
