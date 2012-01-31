@@ -111,7 +111,7 @@ class Profile_User extends CommonDBTM {
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add an authorization to a user')."</tr>";
+         echo "<tr class='tab_bg_1'><th colspan='6'>".__('Add an authorization to a user')."</tr>";
 
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='users_id' value='$ID'>";
@@ -232,7 +232,7 @@ class Profile_User extends CommonDBTM {
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'><th colspan='5'>".__('Add an authorization to a user')."</tr>";
+         echo "<tr class='tab_bg_1'><th colspan='6'>".__('Add an authorization to a user')."</tr>";
          echo "<tr><td class='tab_bg_2 center'>".__('User')."&nbsp;";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
          User::dropdown(array('right' => 'all'));

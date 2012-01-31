@@ -77,6 +77,5 @@ if (isset($_GET["redirect"])) {
 $central = new Central();
 $central->show();
 
-Entity::getEntitiesToNotify('notclosed_delay');
 Html::footer();
 ?>

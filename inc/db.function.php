@@ -490,15 +490,18 @@ function getTreeValueName($table, $ID, $wholename="", $level=0) {
          $row      = $DB->fetch_array($result);
          $parentID = $row[$parentIDfield];
 
+
          if ($wholename == "") {
             $name = $row["name"];
-         } else {
+         } else if ($ID > 0){ // Not root entity 
             $name = $row["name"] . " > ";
          }
-
-         $level++;
-         list($tmpname, $level) = getTreeValueName($table, $parentID, $name, $level);
-         $name = $tmpname. $name;
+   
+         if ($ID > 0) { // Not root entity
+            $level++;
+            list($tmpname, $level) = getTreeValueName($table, $parentID, $name, $level);
+            $name = $tmpname. $name;
+         }
       }
    }
    return array($name, $level);
@@ -848,7 +851,6 @@ function regenerateTreeCompleteName($table) {
    if ($DB->numrows($result)>0) {
       while ($data=$DB->fetch_array($result)) {
          list($name, $level) = getTreeValueName($table, $data['id']);
-
          $query = "UPDATE `$table`
                    SET `completename` = '".addslashes($name)."',
                        `level` = '$level'
@@ -857,7 +859,6 @@ function regenerateTreeCompleteName($table) {
       }
    }
 }
-
 
 /**
  * Get the ID of the next Item
