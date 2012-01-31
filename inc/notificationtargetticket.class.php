@@ -201,11 +201,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    }
 
 
-   function getDatasForObject(CommonDBTM $item, $simple=false) {
+   function getDatasForObject(CommonDBTM $item, $options, $simple=false) {
       global $CFG_GLPI, $LANG;
 
       // Common ITIL datas
-      $datas = parent::getDatasForObject($item, $simple);
+      $datas = parent::getDatasForObject($item, $options, $simple);
 
       // Specific datas
       $datas["##ticket.costfixed"]    = $item->getField('cost_fixed');

@@ -513,7 +513,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       // Get datas from ITIL objects
       if ($event != 'alertnotclosed') {
-         $this->datas = $this->getDatasForObject($this->obj);
+         $this->datas = $this->getDatasForObject($this->obj, $options);
 
       } else {
          if (isset($options['entities_id']) && isset($options['items'])) {
@@ -524,7 +524,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             $items      = array();
             foreach ($options['items'] as $object) {
                $item->getFromDB($object['id']);
-               $tmp = $this->getDatasForObject($item, true);
+               $tmp = $this->getDatasForObject($item, $options, true);
                
                $this->datas[$objettypes][] = $tmp;
             }
@@ -550,7 +550,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
    }
 
 
-   function getDatasForObject(CommonDBTM $item, $simple=false) {
+   function getDatasForObject(CommonDBTM $item, $options, $simple=false) {
       global $CFG_GLPI, $LANG;
 
       $objettype = strtolower($item->getType());
