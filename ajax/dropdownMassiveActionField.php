@@ -76,7 +76,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
             break;
 
          case "glpi_contracts.alert" :
-            Contract::dropdownAlert($search["linkfield"], 0);
+            Contract::dropdownAlert(array('name' => $search["linkfield"]));
             break;
 
          case "glpi_tickets.status" :

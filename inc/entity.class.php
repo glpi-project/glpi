@@ -1244,8 +1244,7 @@ class Entity extends CommonTreeDropdown {
          echo "<font class='green'>&nbsp;&nbsp;";
          echo self::getSpecificValueToDisplay('cartridges_alert_repeat', $tid);
          echo "</font>";
-      }
-                            
+      }                     
                             
       echo "</td></tr>";
       echo "<tr><td>" . __('Default threshold for cartridges count') .
@@ -1254,6 +1253,12 @@ class Entity extends CommonTreeDropdown {
                             $entity->fields["default_cartridges_alarm_threshold"], 0, 100, 1,
                             array(self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                                   self::CONFIG_NEVER  => __('Never')));
+      if ($entity->fields['default_cartridges_alarm_threshold'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('default_cartridges_alarm_threshold', $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo $tid;
+         echo "</font>";
+      }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1266,6 +1271,12 @@ class Entity extends CommonTreeDropdown {
       Alert::dropdown(array('name'           => 'consumables_alert_repeat',
                             'value'          => $default_value,
                             'inherit_parent' => ($ID>0 ? 1 : 0)));
+      if ($entity->fields['consumables_alert_repeat'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('consumables_alert_repeat', $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo self::getSpecificValueToDisplay('consumables_alert_repeat', $tid);
+         echo "</font>";
+      }                            
       echo "</td></tr>";
       
       echo "<tr><td>" . __('Default threshold for consumables count') .
@@ -1274,6 +1285,12 @@ class Entity extends CommonTreeDropdown {
                             $entity->fields["default_consumables_alarm_threshold"], 0, 100, 1,
                             array(self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                                   self::CONFIG_NEVER => __('Never')));
+      if ($entity->fields['default_consumables_alarm_threshold'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('default_consumables_alarm_threshold', $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo $tid;
+         echo "</font>";
+      }                                  
       echo "</td></tr>";
       
 
@@ -1286,11 +1303,25 @@ class Entity extends CommonTreeDropdown {
       Alert::dropdownYesNo(array('name'           => "use_contracts_alert",
                                  'value'          => $default_value,
                                  'inherit_parent' => ($ID>0 ? 1 : 0)));
+      if ($entity->fields['use_contracts_alert'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('use_contracts_alert', $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo self::getSpecificValueToDisplay('use_contracts_alert', $tid);
+         echo "</font>";
+      }                                      
       echo "</td></tr>";
       
       echo "</tr><td>".__('Default value') . "</td><td>";
-      Contract::dropdownAlert("default_contract_alert",
-                              $entity->fields["default_contract_alert"]);
+      Contract::dropdownAlert(array('name'        => "default_contract_alert",
+                                 'value'          => $entity->fields["default_contract_alert"],
+                                 'inherit_parent' => ($ID>0 ? 1 : 0)));
+      if ($entity->fields['default_contract_alert'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('default_contract_alert', $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo self::getSpecificValueToDisplay('default_contract_alert', $tid);
+         echo "</font>";
+      }
+                                       
       echo "</td></tr>";
       echo "<tr><td>" . __('TODO to it before ?')."</td><td>";
 //       Alert::dropdownInfocomAlert($entity->fields["default_infocom_alert"]);
