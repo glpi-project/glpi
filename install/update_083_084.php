@@ -1103,6 +1103,19 @@ function update083to084() {
                            WHERE `default_cartridges_alarm_threshold` = -1';
    $DB->query($query);
    
+   $migration->addField("glpi_entities", 'send_contracts_alert_before_delay', "integer", array('value'  => -2,
+                                                                                         'after'   => 'use_contracts_alert',
+                                                                                         'update' => '0', // No delay for root entity
+                                                                                         'condition' => 'WHERE `id`=0'));
+   $migration->addField("glpi_entities", 'send_infocoms_alert_before_delay', "integer", array('value'  => -2,
+                                                                                        'after'   => 'use_infocoms_alert',
+                                                                                        'update' => '0', // No delay for root entity
+                                                                                        'condition' => 'WHERE `id`=0'));
+   $migration->addField("glpi_entities", 'send_licenses_alert_before_delay', "integer", array('value'  => -2,
+                                                                                        'after'   => 'use_licenses_alert',
+                                                                                        'update' => '0', // No delay for root entity
+                                                                                        'condition' => 'WHERE `id`=0'));
+   
    $migration->addField("glpi_reservationitems", "is_deleted", "bool");
    $migration->addKey("glpi_reservationitems", "is_deleted");
 

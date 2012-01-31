@@ -245,7 +245,7 @@ class Migration {
             $this->change[$table][] = "ADD `$field` $format ".$params['comment'] ." ".
                                            $params['after']."";
 
-            if ($params['update']) {
+            if (isset($params['update']) && strlen($params['update'])) {
                $this->migrationOneTable($table);
                $query = "UPDATE `$table`
                          SET `$field` = ".$params['update']." ".
