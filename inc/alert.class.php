@@ -134,15 +134,21 @@ class Alert extends CommonDBTM {
       $p['max']   = 100;
       $p['step']  = 1;
       $p['toadd'] = array();
-      if (isset($options['never_value']) && $options['never_value']) {
-         $p['toadd'][$options['never_value']] = __('Never');
-      } else {
-         $p['toadd'][0] = __('Never');
-      }
-
+      
       if (isset($options['inherit_parent']) && $options['inherit_parent']) {
          $p['toadd'][-2] = __('Inheritance of the parent entity');
       }
+      
+      $never_string = __('Never');
+      if (isset($options['never_string']) && $options['never_string']) {
+         $never_string = $options['never_string'];
+      }
+      if (isset($options['never_value']) && $options['never_value']) {
+         $p['toadd'][$options['never_value']] = $never_string;
+      } else {
+         $p['toadd'][0] = $never_string;
+      }
+
 
       foreach ($options as $key=>$val) {
          $p[$key] = $val;

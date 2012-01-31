@@ -360,7 +360,7 @@ class Infocom extends CommonDBChild {
       $items_messages = array();
 
       foreach (Entity::getEntitiesToNotify('use_infocoms_alert') as $entity => $value) {
-
+         $before = Entity::getUsedConfig('send_infocoms_alert_before_delay', $entity);
          $query_end = "SELECT `glpi_infocoms`.*
                        FROM `glpi_infocoms`
                        LEFT JOIN `glpi_alerts` ON (`glpi_infocoms`.`id` = `glpi_alerts`.`items_id`
@@ -373,7 +373,7 @@ class Infocom extends CommonDBChild {
                              AND DATEDIFF(ADDDATE(`glpi_infocoms`.`warranty_date`,
                                                   INTERVAL (`glpi_infocoms`.`warranty_duration`)
                                                            MONTH),
-                                          CURDATE() )<'0'
+                                          CURDATE() ) < '$before'
                              AND `glpi_alerts`.`date` IS NULL";
 
          foreach ($DB->request($query_end) as $data) {

@@ -329,6 +329,7 @@ class SoftwareLicense extends CommonDBTM {
       $items_end    = array();
 
       foreach (Entity::getEntitiesToNotify('use_licenses_alert') as $entity => $value) {
+         $before = Entity::getUsedConfig('send_licenses_alert_before_delay', $entity);
          // Check licenses
          $query = "SELECT `glpi_softwarelicenses`.*,
                           `glpi_softwares`.`name` AS softname
@@ -341,7 +342,8 @@ class SoftwareLicense extends CommonDBTM {
                             AND `glpi_alerts`.`type` = '".Alert::END."')
                    WHERE `glpi_alerts`.`date` IS NULL
                          AND `glpi_softwarelicenses`.`expire` IS NOT NULL
-                         AND `glpi_softwarelicenses`.`expire` < CURDATE()
+                         AND DATEDIFF(`glpi_softwarelicenses`.`expire`,
+                                    CURDATE()) < '$before'                         
                          AND `glpi_softwares`.`is_template` = '0'
                          AND `glpi_softwares`.`is_deleted` = '0'
                          AND `glpi_softwares`.`entities_id` = '".$entity."'";
