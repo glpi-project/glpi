@@ -113,13 +113,15 @@ if (isset($_POST["add"])) {
    Html::back();
 
 // Connect a computer to a printer/monitor/phone/peripheral
-} else if (isset($_POST["connect"]) && isset($_POST["items_id"]) && $_POST["items_id"]>0) {
-   $conn = new Computer_Item();
-   $conn->check(-1, 'w', $_POST);
-   $conn->add($_POST);
-   Event::log($_POST["computers_id"], "computers", 5, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s connects an item'), $_SESSION["glpiname"]));
+} else if (isset($_POST["connect"])) {
+   if (isset($_POST["items_id"]) && $_POST["items_id"]>0) {
+      $conn = new Computer_Item();
+      $conn->check(-1, 'w', $_POST);
+      $conn->add($_POST);
+      Event::log($_POST["computers_id"], "computers", 5, "inventory",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s connects an item'), $_SESSION["glpiname"]));
+   }
    Html::back();
 
 } else {//print computer information
