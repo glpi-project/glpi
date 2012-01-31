@@ -108,8 +108,8 @@ $MAX['contacts']       = 10;
 $MAX['groups']         = 3;
 
 // INVENTORY ITEMS
-$MAX['computers']             = 1000;
-$MAX['printers']              = 100;
+$MAX['computers']             = 500;
+$MAX['printers']              = 10;
 $MAX['networking']            = $MAX['locations'];
 $MAX['monitors']              = $MAX['computers'];
 $MAX['type_of_consumables']   = 10;
