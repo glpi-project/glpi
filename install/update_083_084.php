@@ -1117,6 +1117,9 @@ function update083to084() {
                                                                                         'update' => '0', // No delay for root entity
                                                                                         'condition' => 'WHERE `id`=0'));
    
+   $migration->addField("glpi_configs", "notification_to_myself", "bool");
+   $migration->addField("glpi_users", "notification_to_myself", "tinyint(1) NULL DEFAULT NULL");
+   
    $migration->addField("glpi_reservationitems", "is_deleted", "bool");
    $migration->addKey("glpi_reservationitems", "is_deleted");
 
