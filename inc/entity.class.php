@@ -929,13 +929,9 @@ class Entity extends CommonTreeDropdown {
          echo "<td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='hidden' name='id' value='$ID'>";
 
-         if ($entity->fields["id"]) {
-            echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
-                   class='submit'>";
-         } else {
-            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
-         }
+         echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\"
+                  class='submit'>";
 
          echo "</td></tr>";
          echo "</table></form>";
@@ -1022,13 +1018,9 @@ class Entity extends CommonTreeDropdown {
          echo "<td class='tab_bg_2 center' colspan='2'>";
          echo "<input type='hidden' name='id' value='$ID'>";
 
-         if ($entity->fields["id"]) {
-            echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
-                   class='submit'>";
-         } else {
-            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
-         }
+         echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\"
+                  class='submit'>";
 
          echo "</td></tr>";
          echo "</table></form>";
@@ -1161,13 +1153,9 @@ class Entity extends CommonTreeDropdown {
          echo "<td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
 
-         if ($entity->fields["id"]) {
-            echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
-                   class='submit'>";
-         } else {
-            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
-         }
+         echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\"
+                  class='submit'>";
 
          echo "</td></tr>";
          echo "</table></form>";
@@ -1250,6 +1238,15 @@ class Entity extends CommonTreeDropdown {
       Alert::dropdown(array('name'           => 'cartridges_alert_repeat',
                             'value'          => $default_value,
                             'inherit_parent' => ($ID>0 ? 1 : 0)));
+                            
+      if ($entity->fields['cartridges_alert_repeat'] == self::CONFIG_PARENT) {
+         $tid = self::getUsedConfig('cartridges_alert_repeat', $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;";
+         echo self::getSpecificValueToDisplay('cartridges_alert_repeat', $tid);
+         echo "</font>";
+      }
+                            
+                            
       echo "</td></tr>";
       echo "<tr><td>" . __('Default threshold for cartridges count') .
            "</td><td>";
@@ -1358,15 +1355,9 @@ class Entity extends CommonTreeDropdown {
       if ($canedit) {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
-         echo "<input type='hidden' name='entities_id' value='$ID'>";
-
-         if ($entity->fields["id"]) {
-            echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
-                   class='submit'>";
-         } else {
-            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
-         }
+         echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\"
+                  class='submit'>";
 
          echo "</td></tr>";
          echo "</table></form>";
@@ -1654,13 +1645,9 @@ class Entity extends CommonTreeDropdown {
          echo "<td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='hidden' name='entities_id' value='$ID'>";
 
-         if ($entity->fields["id"]) {
-            echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-            echo "<input type='submit' name='update' value=\"".__s('Save')."\"
-                   class='submit'>";
-         } else {
-            echo "<input type='submit' name='add' value=\"".__s('Save')."\" class='submit'>";
-         }
+         echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\"
+                  class='submit'>";
 
          echo "</td></tr>";
          echo "</table></form>";
@@ -1694,7 +1681,6 @@ class Entity extends CommonTreeDropdown {
       }
 
       $entity = new self();
-
       // Search in entity data of the current entity
       if ($entity->getFromDB($entities_id)) {
          // Value is defined : use it
@@ -1915,6 +1901,7 @@ class Entity extends CommonTreeDropdown {
                   return __('Inheritance of the parent entity');
 
                case self::CONFIG_NEVER :
+               case 0 : // For compatibility issue
                   return __('Never');
 
                case DAY_TIMESTAMP :
