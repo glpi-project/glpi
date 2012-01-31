@@ -979,28 +979,6 @@ function update083to084() {
    $migration->addField('glpi_profiles', 'change_status', "text",
                         array('comment' => "json encoded array of from/dest allowed status change"));
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'various fields'));
-
-   $migration->addField("glpi_reservationitems", "is_deleted", "bool");
-   $migration->addKey("glpi_reservationitems", "is_deleted");
-
-   $migration->addField("glpi_documentcategories", 'documentcategories_id', "integer");
-   $migration->addField("glpi_documentcategories", 'completename', "text");
-   $migration->addField("glpi_documentcategories", 'level', "integer");
-   $migration->addField("glpi_documentcategories", 'ancestors_cache', "longtext");
-   $migration->addField("glpi_documentcategories", 'sons_cache', "longtext");
-   $migration->migrationOneTable('glpi_documentcategories');
-   $migration->addKey("glpi_documentcategories", array('documentcategories_id','name'), 'unicity');
-   regenerateTreeCompleteName("glpi_documentcategories");
-
-   $migration->addField("glpi_contacts", 'usertitles_id', "integer");
-   $migration->addKey("glpi_contacts", 'usertitles_id');
-
-   $migration->addField("glpi_contacts", 'address', "text");
-   $migration->addField("glpi_contacts", 'postcode', "string");
-   $migration->addField("glpi_contacts", 'town', "string");
-   $migration->addField("glpi_contacts", 'state', "string");
-   $migration->addField("glpi_contacts", 'country', "string");
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
                                       'Merge entity and entitydatas'));
@@ -1108,6 +1086,29 @@ function update083to084() {
       $migration->dropTable('glpi_entitydatas');
    }
    regenerateTreeCompleteName("glpi_entities");
+
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'various fields'));
+
+   $migration->addField("glpi_reservationitems", "is_deleted", "bool");
+   $migration->addKey("glpi_reservationitems", "is_deleted");
+
+   $migration->addField("glpi_documentcategories", 'documentcategories_id', "integer");
+   $migration->addField("glpi_documentcategories", 'completename', "text");
+   $migration->addField("glpi_documentcategories", 'level', "integer");
+   $migration->addField("glpi_documentcategories", 'ancestors_cache', "longtext");
+   $migration->addField("glpi_documentcategories", 'sons_cache', "longtext");
+   $migration->migrationOneTable('glpi_documentcategories');
+   $migration->addKey("glpi_documentcategories", array('documentcategories_id','name'), 'unicity');
+   regenerateTreeCompleteName("glpi_documentcategories");
+
+   $migration->addField("glpi_contacts", 'usertitles_id', "integer");
+   $migration->addKey("glpi_contacts", 'usertitles_id');
+
+   $migration->addField("glpi_contacts", 'address', "text");
+   $migration->addField("glpi_contacts", 'postcode', "string");
+   $migration->addField("glpi_contacts", 'town', "string");
+   $migration->addField("glpi_contacts", 'state', "string");
+   $migration->addField("glpi_contacts", 'country', "string");
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
