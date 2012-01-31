@@ -1015,25 +1015,25 @@ function update083to084() {
       $migration->addField("glpi_entities", 'notepad', "longtext");
       $migration->addField("glpi_entities", 'ldap_dn', "string");
       $migration->addField("glpi_entities", 'tag', "string");
-      $migration->addField("glpi_entities", 'authldaps_id', "int");
+      $migration->addField("glpi_entities", 'authldaps_id', "integer");
       $migration->addField("glpi_entities", 'mail_domain', "string");
       $migration->addField("glpi_entities", 'entity_ldapfilter', "text");
       $migration->addField("glpi_entities", 'mailing_signature', "text");
-      $migration->addField("glpi_entities", 'cartridges_alert_repeat', "int", array('value' => -2));
-      $migration->addField("glpi_entities", 'consumables_alert_repeat', "int", array('value' => -2));
-      $migration->addField("glpi_entities", 'use_licenses_alert', "int", array('value' => -2));
-      $migration->addField("glpi_entities", 'use_contracts_alert', "int", array('value' => -2));
-      $migration->addField("glpi_entities", 'use_infocoms_alert', "int", array('value' => -2));
-      $migration->addField("glpi_entities", 'use_reservations_alert', "int", array('value' => -2));
-      $migration->addField("glpi_entities", 'autoclose_delay', "int", array('value' => -2));
-      $migration->addField("glpi_entities", 'notclosed_delay', "int", array('value' => -2));
-      $migration->addField("glpi_entities", 'calendars_id', "int", array('value' => -2));
-      $migration->addField("glpi_entities", 'auto_assign_mode', "int", array('value' => -2));
-      $migration->addField("glpi_entities", 'tickettype', "int", array('value' => -2));
+      $migration->addField("glpi_entities", 'cartridges_alert_repeat', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'consumables_alert_repeat', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'use_licenses_alert', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'use_contracts_alert', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'use_infocoms_alert', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'use_reservations_alert', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'autoclose_delay', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'notclosed_delay', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'calendars_id', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'auto_assign_mode', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'tickettype', "integer", array('value' => -2));
       $migration->addField("glpi_entities", 'max_closedate', "datetime");
-      $migration->addField("glpi_entities", 'inquest_config', "int", array('value' => -2));
-      $migration->addField("glpi_entities", 'inquest_rate', "int");
-      $migration->addField("glpi_entities", 'inquest_delay', "int", array('value' => -10));
+      $migration->addField("glpi_entities", 'inquest_config', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'inquest_rate', "integer");
+      $migration->addField("glpi_entities", 'inquest_delay', "integer", array('value' => -10));
       $migration->addField("glpi_entities", 'inquest_URL', "string");
       $migration->addField("glpi_entities", 'autofill_warranty_date', "string",
                                              array('value' => -2));
@@ -1042,11 +1042,11 @@ function update083to084() {
       $migration->addField("glpi_entities", 'autofill_delivery_date', "string",
                                              array('value' => -2));
       $migration->addField("glpi_entities", 'autofill_order_date', "string", array('value' => -2));
-      $migration->addField("glpi_entities", 'tickettemplates_id', "int", array('value' => -2));
-      $migration->addField("glpi_entities", 'entities_id_software', "int", array('value' => -2));
-      $migration->addField("glpi_entities", 'default_contract_alert', "int");
-      $migration->addField("glpi_entities", 'default_infocom_alert', "int");
-      $migration->addField("glpi_entities", 'default_alarm_threshold', "int", array('value' => -10));
+      $migration->addField("glpi_entities", 'tickettemplates_id', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'entities_id_software', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'default_contract_alert', "integer");
+      $migration->addField("glpi_entities", 'default_infocom_alert', "integer");
+      $migration->addField("glpi_entities", 'default_alarm_threshold', "integer", array('value' => -10));
       $migration->migrationOneTable('glpi_entities');
 
       $fields = array('address', 'postcode', 'town', 'state', 'country', 'website',
