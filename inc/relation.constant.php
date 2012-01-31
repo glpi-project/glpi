@@ -197,7 +197,6 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_groups_knowbaseitems'    => 'entities_id',
                                  'glpi_holidays'                => 'entities_id',
                                  'glpi_knowbaseitemcategories'  => 'entities_id',
-                                 'glpi_knowbaseitems'           => 'entities_id',
                                  'glpi_knowbaseitems_profiles'  => 'entities_id',
                                  'glpi_links'                   => 'entities_id',
                                  'glpi_locations'               => 'entities_id',
