@@ -108,12 +108,14 @@ if (isset($_POST["add"])) {
    Html::back();
 
 // Connect a computer to a printer/monitor/phone/peripheral
-} else if (isset($_POST["connect"]) && isset($_POST["items_id"]) && $_POST["items_id"]>0) {
-   $conn = new Computer_Item();
-   $conn->check(-1, 'w', $_POST);
-   $conn->add($_POST);
-   Event::log($_POST["computers_id"], "computers", 5, "inventory",
-              $_SESSION["glpiname"] ." ".$LANG['log'][27]);
+} else if (isset($_POST["connect"])) {
+   if (isset($_POST["items_id"]) && $_POST["items_id"]>0) {
+      $conn = new Computer_Item();
+      $conn->check(-1, 'w', $_POST);
+      $conn->add($_POST);
+      Event::log($_POST["computers_id"], "computers", 5, "inventory",
+                 $_SESSION["glpiname"] ." ".$LANG['log'][27]);
+   }
    Html::back();
 
 } else {//print computer informations
