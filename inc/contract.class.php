@@ -220,7 +220,8 @@ class Contract extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Email Alarms')."</td>";
       echo "<td>";
-      self::dropdownAlert("alert", $this->fields["alert"]);
+      self::dropdownAlert(array('name'  => "alert", 
+                                'value' => $this->fields["alert"]));
       Alert::displayLastAlert('Contract', $ID);
       echo "</td></tr>";
 
