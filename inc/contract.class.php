@@ -1125,6 +1125,7 @@ class Contract extends CommonDBTM {
       $contract_messages             = array();
 
       foreach (Entity::getEntitiesToNotify('use_contracts_alert') as $entity => $value) {
+         $before = Entity::getUsedConfig('send_contracts_alert_before_delay', $entity);
          $query_notice = "SELECT `glpi_contracts`.*
                           FROM `glpi_contracts`
                           LEFT JOIN `glpi_alerts`
@@ -1142,7 +1143,7 @@ class Contract extends CommonDBTM {
                                 AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
                                                      INTERVAL (`glpi_contracts`.`duration`
                                                                 -`glpi_contracts`.`notice`) MONTH),
-                                             CURDATE()) < '0'
+                                             CURDATE()) < '$before'
                                 AND `glpi_alerts`.`date` IS NULL
                                 AND `glpi_contracts`.`entities_id` = '".$entity."'";
 
@@ -1158,7 +1159,7 @@ class Contract extends CommonDBTM {
                              AND `glpi_contracts`.`duration` <> '0'
                              AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
                                                   INTERVAL (`glpi_contracts`.`duration`) MONTH),
-                                          CURDATE()) < '0'
+                                          CURDATE()) < '$before'
                              AND `glpi_alerts`.`date` IS NULL
                              AND `glpi_contracts`.`entities_id` = '".$entity."'";
 
@@ -1180,7 +1181,7 @@ class Contract extends CommonDBTM {
             }
          }
       }
-
+      
       foreach (array(Alert::NOTICE => "notice",
                      Alert::END    => "end") as $type=>$event) {
          foreach ($contract_infos[$type] as $entity => $contracts) {
