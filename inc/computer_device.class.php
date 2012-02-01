@@ -195,22 +195,30 @@ class Computer_Device extends CommonDBTM {
       $canedit = ($withtemplate!=2 && $computer->can($ID, 'w'));
 
       echo "<div class='spaced'>";
+      $rand = mt_rand();
       if ($canedit) {
-         echo "<form name='form_device_action' action='".Toolbox::getItemTypeFormURL(__CLASS__).
-                "' method='post'>";
+         echo "<form id='form_device_action$rand' name='form_device_action$rand' 
+                     action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";
          echo "<input type='hidden' name='computers_id' value='$ID'>";
       }
       $global_colspan = 63;
+      
+      if (!$canedit) {
+         $global_colspan--;
+      }
 
-      echo "<table class='tab_cadre_fixe' >";
+      echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='$global_colspan'>"._n('Component', 'Components', 2)."</th></tr>";
-      echo "<tr><th>".__('Item type')."</th>";
+      echo "<tr>";
+      if ($canedit) {
+         echo "<th>".__('Delete')."</th>";
+      }
+      echo "<th>".__('Item type')."</th>";
       echo "<th>".__('Name')."</th>";
-      echo "<th colspan='".($global_colspan-3)."'>".__('Characteristics')."</th>";
+      echo "<th colspan='60'>".__('Characteristics')."</th>";
 //       echo "<th>".__('Add')."</th>";
 //       echo "<th>".__('Delete all')."</th>";
-      echo "<th>".__('Delete')."</th>";
       echo "</tr>";
       $nb = 0;
 
@@ -269,6 +277,13 @@ class Computer_Device extends CommonDBTM {
                   if ($device->getFromDB($data[$fk])) {
                      echo "<tr class='tab_bg_2'>";
 
+                     if ($canedit) {
+                        echo "<td class='center'>";
+                        echo "<input type='checkbox' name='remove_" .$itemtype."_".$data['id']."'
+                              value='1'>";
+                        echo "</td>";
+                     }
+
                      if ($first) {
                         if ($deviceFromSQL['nb'] > 1)
                            $rowspan = "rowspan='".$deviceFromSQL['nb']."'";
@@ -276,21 +291,23 @@ class Computer_Device extends CommonDBTM {
                            $rowspan = "";
                         echo "<td $rowspan>";
 
-                        if ($device->canCreate()) {
+                        if ($device->canView()) {
                            echo "<a href='".$device->getSearchURL()."'>".$device->getTypeName(1)."</a>";
                         } else {
                            echo $device->getTypeName(1);
                         }
 
                         echo "</td><td $rowspan>".$device->getLink();
-                        echo "&nbsp;<img title='"._sx('button', 'Add')."' alt='"._sx('button', 'Add')."'
-                              onClick=\"Ext.get('quantity_".$itemtype."_".$data['id']."').setDisplayed('block')\"
-                              class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
-                        echo "<span id='quantity_".$itemtype."_".$data['id']."' style='display:none'><br>";                        
-                        _e('Add');
-                        echo "&nbsp;";
-                        Dropdown::showInteger("quantity_".$itemtype."_".$data['id'], 0, 0, 10);
-                        echo "</span>";
+                        if ($canedit) {
+                           echo "&nbsp;<img title='"._sx('button', 'Add')."' alt='"._sx('button', 'Add')."'
+                                 onClick=\"Ext.get('quantity_".$itemtype."_".$data['id']."').setDisplayed('block')\"
+                                 class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+                           echo "<span id='quantity_".$itemtype."_".$data['id']."' style='display:none'><br>";                        
+                           _e('Add');
+                           echo "&nbsp;";
+                           Dropdown::showInteger("quantity_".$itemtype."_".$data['id'], 0, 0, 10);
+                           echo "</span>";
+                        }
                         echo "</td>";
                      }
 
@@ -332,20 +349,6 @@ class Computer_Device extends CommonDBTM {
                         echo "<td colspan='60'>&nbsp;</td>";
                      }
 
-                     if ($first) {
-//                         echo "<td class='center' $rowspan>";
-//                         Dropdown::showInteger("quantity_".$itemtype."_".$data['id'], 0, 0, 10);
-//                         echo "</td>";
-
-//                         echo "</td><td class='center' $rowspan><input type='checkbox' " .
-//                              " name='removeall_".$itemtype."_".$data[$fk]."' value='1'></td>";
-                     }
-
-                     echo "<td class='center'>";
-                     echo "<input type='checkbox' name='remove_" .$itemtype."_".$data['id']."'
-                            value='1'>";
-                     echo "</td>";
-
                      echo "</tr>";
                      $nb++;
                   }
@@ -358,14 +361,19 @@ class Computer_Device extends CommonDBTM {
       if ($canedit) {
          if ($nb > 0) {
             echo "<tr><td colspan='$global_colspan'><hr></td></tr>";
-            echo "<tr><td colspan='$global_colspan' class='tab_bg_1 center'>";
+            echo "<tr><td colspan='3 class='left'>";
+            Html::openArrowMassives("form_device_action$rand", false);
+            Html::closeArrowMassives(array());
+            echo "</td>";
+            echo "<td colspan='".($global_colspan-3)."' class='tab_bg_1 center'>";
             echo "<input type='submit' class='submit' name='updateall' value='".
                    __s('Save')."'></td></tr>";
          }
 
-         echo "<tr><td colspan='$global_colspan' class='tab_bg_1 center'>".
-               __('Add a new component')."&nbsp;&nbsp;";
+         echo "<tr><td colspan='60' class='tab_bg_1 right'>";
+//                __('Add a new component')."&nbsp;&nbsp;";
          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
+         echo "</td><td colspan='".($global_colspan-60)."'>";
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr></table></form>";
 
