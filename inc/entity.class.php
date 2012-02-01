@@ -146,11 +146,18 @@ class Entity extends CommonTreeDropdown {
       return Session::haveAccessToEntity($this->getField('id'));
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @see inc/CommonDBTM::canViewItem()
+   **/
    function canViewItem() {
       // Check the current entity
       return Session::haveAccessToEntity($this->getField('id'));
    }
-   
+
+
    function isNewID($ID) {
       return ($ID<0 || !strlen($ID));
    }
@@ -183,13 +190,13 @@ class Entity extends CommonTreeDropdown {
             }
          }
       }
-      // Add framework  / internal ones 
+      // Add framework  / internal ones
       foreach ($input as $key => $val) {
          if ($key[0] == '_') {
             $tmp[$key] = $input[$key];
          }
       }
-      
+
 
       return $tmp;
    }
@@ -951,8 +958,7 @@ class Entity extends CommonTreeDropdown {
          echo "<input type='hidden' name='id' value='$ID'>";
 
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\"
-                  class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
 
          echo "</td></tr>";
          echo "</table></form>";
@@ -1017,7 +1023,8 @@ class Entity extends CommonTreeDropdown {
 
       if (Toolbox::canUseLdap()) {
          echo "<tr><th colspan='2'>".
-                __('Values used in the interface to search users from a LDAP directory')."</th></tr>";
+                __('Values used in the interface to search users from a LDAP directory').
+              "</th></tr>";
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('LDAP directory of an entity')."</td>";
@@ -1040,8 +1047,7 @@ class Entity extends CommonTreeDropdown {
          echo "<input type='hidden' name='id' value='$ID'>";
 
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\"
-                  class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
 
          echo "</td></tr>";
          echo "</table></form>";
@@ -1154,12 +1160,11 @@ class Entity extends CommonTreeDropdown {
          }
       }
 
-      Dropdown::show('Entity',
-                     array('name'               => 'entities_id_software',
-                           'value'              => $entity->getField('entities_id_software'),
-                           'toadd'              => $toadd,
-                           'entity'             => $entities,
-                           'comments'           => false));
+      Dropdown::show('Entity', array('name'     => 'entities_id_software',
+                                     'value'    => $entity->getField('entities_id_software'),
+                                     'toadd'    => $toadd,
+                                     'entity'   => $entities,
+                                     'comments' => false));
 
       if ($entity->fields['entities_id_software'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('entities_id_software', $entity->getField('entities_id'));
@@ -1175,8 +1180,7 @@ class Entity extends CommonTreeDropdown {
          echo "<input type='hidden' name='entities_id' value='$ID'>";
 
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\"
-                  class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
 
          echo "</td></tr>";
          echo "</table></form>";
@@ -1259,26 +1263,24 @@ class Entity extends CommonTreeDropdown {
       Alert::dropdown(array('name'           => 'cartridges_alert_repeat',
                             'value'          => $default_value,
                             'inherit_parent' => ($ID>0 ? 1 : 0)));
-                            
+
       if ($entity->fields['cartridges_alert_repeat'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('cartridges_alert_repeat', $entity->getField('entities_id'));
          echo "<font class='green'>&nbsp;&nbsp;";
          echo self::getSpecificValueToDisplay('cartridges_alert_repeat', $tid);
          echo "</font>";
-      }                     
-                            
+      }
+
       echo "</td></tr>";
-      echo "<tr><td>" . __('Default threshold for cartridges count') .
-           "</td><td>";
+      echo "<tr><td>" . __('Default threshold for cartridges count') ."</td><td>";
       Dropdown::showInteger('default_cartridges_alarm_threshold',
                             $entity->fields["default_cartridges_alarm_threshold"], 0, 100, 1,
                             array(self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                                   self::CONFIG_NEVER  => __('Never')));
       if ($entity->fields['default_cartridges_alarm_threshold'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('default_cartridges_alarm_threshold', $entity->getField('entities_id'));
-         echo "<font class='green'>&nbsp;&nbsp;";
-         echo $tid;
-         echo "</font>";
+         $tid = self::getUsedConfig('default_cartridges_alarm_threshold',
+                                    $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;".$tid."</font>";
       }
       echo "</td></tr>";
 
@@ -1297,28 +1299,26 @@ class Entity extends CommonTreeDropdown {
          echo "<font class='green'>&nbsp;&nbsp;";
          echo self::getSpecificValueToDisplay('consumables_alert_repeat', $tid);
          echo "</font>";
-      }                            
+      }
       echo "</td></tr>";
-      
-      echo "<tr><td>" . __('Default threshold for consumables count') .
-           "</td><td>";
+
+      echo "<tr><td>" . __('Default threshold for consumables count') ."</td><td>";
       Dropdown::showInteger('default_consumables_alarm_threshold',
                             $entity->fields["default_consumables_alarm_threshold"], 0, 100, 1,
                             array(self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                                   self::CONFIG_NEVER => __('Never')));
       if ($entity->fields['default_consumables_alarm_threshold'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('default_consumables_alarm_threshold', $entity->getField('entities_id'));
-         echo "<font class='green'>&nbsp;&nbsp;";
-         echo $tid;
-         echo "</font>";
-      }                                  
+         $tid = self::getUsedConfig('default_consumables_alarm_threshold',
+                                    $entity->getField('entities_id'));
+         echo "<font class='green'>&nbsp;&nbsp;".$tid."</font>";
+      }
       echo "</td></tr>";
-      
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='3'>";
       echo _n('Contract','Contracts',2);
-      echo "</th>";      
+      echo "</th>";
       echo "<td>" . __('Alarms on contracts') . "</td><td>";
       $default_value = $entity->fields['use_contracts_alert'];
       Alert::dropdownYesNo(array('name'           => "use_contracts_alert",
@@ -1329,20 +1329,20 @@ class Entity extends CommonTreeDropdown {
          echo "<font class='green'>&nbsp;&nbsp;";
          echo self::getSpecificValueToDisplay('use_contracts_alert', $tid);
          echo "</font>";
-      }                                      
+      }
       echo "</td></tr>";
-      
+
       echo "</tr><td>".__('Default value') . "</td><td>";
-      Contract::dropdownAlert(array('name'        => "default_contract_alert",
-                                 'value'          => $entity->fields["default_contract_alert"],
-                                 'inherit_parent' => ($ID>0 ? 1 : 0)));
+      Contract::dropdownAlert(array('name'           => "default_contract_alert",
+                                    'value'          => $entity->fields["default_contract_alert"],
+                                    'inherit_parent' => ($ID>0 ? 1 : 0)));
       if ($entity->fields['default_contract_alert'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('default_contract_alert', $entity->getField('entities_id'));
          echo "<font class='green'>&nbsp;&nbsp;";
          echo self::getSpecificValueToDisplay('default_contract_alert', $tid);
          echo "</font>";
       }
-                                       
+
       echo "</td></tr>";
       echo "<tr><td>" . __('Send contract alarms before')."</td><td>";
       Alert::dropdownIntegerNever('send_contracts_alert_before_delay',
@@ -1352,17 +1352,18 @@ class Entity extends CommonTreeDropdown {
                                         'unit'           => 'day',
                                         'never_string'   => __('No')));
       if ($entity->fields['send_contracts_alert_before_delay'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('send_contracts_alert_before_delay', $entity->getField('entities_id'));
+         $tid = self::getUsedConfig('send_contracts_alert_before_delay',
+                                    $entity->getField('entities_id'));
          echo "<font class='green'>&nbsp;&nbsp;";
          echo self::getSpecificValueToDisplay('send_contracts_alert_before_delay', $tid);
          echo "</font>";
-      }      
-      echo "</td></tr>";      
+      }
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='3'>";
       _e('Financial and administrative information');
-      echo "</th>";        
+      echo "</th>";
       echo "<td>" . __('Alarms on financial and administrative information') . "</td><td>";
       $default_value = $entity->fields['use_infocoms_alert'];
       Alert::dropdownYesNo(array('name'           => "use_infocoms_alert",
@@ -1374,7 +1375,7 @@ class Entity extends CommonTreeDropdown {
          echo self::getSpecificValueToDisplay('use_infocoms_alert', $tid);
          echo "</font>";
       }
-                                 
+
       echo "</td></tr>";
       echo "<tr><td>" . __('Default value')."</td><td>";
       Infocom::dropdownAlert(array('name'  => 'default_infocom_alert',
@@ -1386,9 +1387,10 @@ class Entity extends CommonTreeDropdown {
          echo self::getSpecificValueToDisplay('default_infocom_alert', $tid);
          echo "</font>";
       }
-                                 
+
       echo "</td></tr>";
-      echo "<tr><td>" . __('Send financial and administrative information alarms before')."</td><td>";
+      echo "<tr><td>" . __('Send financial and administrative information alarms before').
+           "</td><td>";
       Alert::dropdownIntegerNever('send_infocoms_alert_before_delay',
                                   $entity->fields['send_infocoms_alert_before_delay'],
                                   array('max'            => 99,
@@ -1396,17 +1398,18 @@ class Entity extends CommonTreeDropdown {
                                         'unit'           => 'day',
                                         'never_string'   => __('No')));
       if ($entity->fields['send_infocoms_alert_before_delay'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('send_infocoms_alert_before_delay', $entity->getField('entities_id'));
+         $tid = self::getUsedConfig('send_infocoms_alert_before_delay',
+                                    $entity->getField('entities_id'));
          echo "<font class='green'>&nbsp;&nbsp;";
          echo self::getSpecificValueToDisplay('send_infocoms_alert_before_delay', $tid);
          echo "</font>";
-      }                                                
-      echo "</td></tr>";          
+      }
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='2'>";
       echo _n('License', 'Licenses', 2);
-      echo "</th>";         
+      echo "</th>";
       echo "<td>" . __('Alarms on expired licenses') . "</td><td>";
       $default_value = $entity->fields['use_licenses_alert'];
       Alert::dropdownYesNo(array('name'           => "use_licenses_alert",
@@ -1417,7 +1420,7 @@ class Entity extends CommonTreeDropdown {
          echo "<font class='green'>&nbsp;&nbsp;";
          echo self::getSpecificValueToDisplay('use_licenses_alert', $tid);
          echo "</font>";
-      }                                 
+      }
       echo "</td>";
       echo "</td></tr>";
       echo "<tr><td>" . __('Send license alarms before')."</td><td>";
@@ -1428,18 +1431,19 @@ class Entity extends CommonTreeDropdown {
                                         'unit'           => 'day',
                                         'never_string'   => __('No')));
       if ($entity->fields['send_licenses_alert_before_delay'] == self::CONFIG_PARENT) {
-         $tid = self::getUsedConfig('send_licenses_alert_before_delay', $entity->getField('entities_id'));
+         $tid = self::getUsedConfig('send_licenses_alert_before_delay',
+                                    $entity->getField('entities_id'));
          echo "<font class='green'>&nbsp;&nbsp;";
          echo self::getSpecificValueToDisplay('send_licenses_alert_before_delay', $tid);
          echo "</font>";
-      }                                                
+      }
 
       echo "</td></tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='1'>";
       echo _n('Reservation', 'Reservations', 2);
-      echo "</th>";         
+      echo "</th>";
       echo "<td>" . __('Alerts on reservations') . "</td><td>";
       Alert::dropdownIntegerNever('use_reservations_alert',
                                   $entity->fields['use_reservations_alert'],
@@ -1451,13 +1455,13 @@ class Entity extends CommonTreeDropdown {
          echo "<font class='green'>&nbsp;&nbsp;";
          echo self::getSpecificValueToDisplay('use_reservations_alert', $tid);
          echo "</font>";
-      }                                                
+      }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2' rowspan='1'>";
       echo _n('Ticket', 'Tickets', 2);
-      echo "</th>";      
+      echo "</th>";
       echo "<td >". __('Alerts on tickets which are not solved since'). "</td><td>";
       Alert::dropdownIntegerNever('notclosed_delay', $entity->fields["notclosed_delay"],
                                   array('max'            => 99,
@@ -1468,7 +1472,7 @@ class Entity extends CommonTreeDropdown {
          echo "<font class='green'>&nbsp;&nbsp;";
          echo self::getSpecificValueToDisplay('notclosed_delay', $tid);
          echo "</font>";
-      }                                                
+      }
       echo "</td>";
       echo "<td colspan='2'></td></tr>";
 
@@ -1476,9 +1480,7 @@ class Entity extends CommonTreeDropdown {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\"
-                  class='submit'>";
-
+         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>";
          echo "</table></form>";
 
