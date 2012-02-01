@@ -227,7 +227,6 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_profiles_reminders'              => 'entities_id',
                                  'glpi_profiles_users'                  => 'entities_id',
                                  '_glpi_reservationitems'               => 'entities_id',
-                                 'glpi_rulecachesoftwares'              => 'entities_id',
                                  'glpi_rules'                           => 'entities_id',
                                  '_glpi_slalevels'                      => 'entities_id',
                                  'glpi_slas'                            => 'entities_id',
