@@ -255,11 +255,10 @@ function update083to084() {
    foreach (NetworkPortMigration::getMotives() as $key => $name) {
 
       $ADDTODISPLAYPREF['NetworkPortMigration'][] = $optionIndex ++;
-      $query = "ALTER TABLE `glpi_networkportmigrations` ADD $key int(1) default 0";
-      $DB->queryOrDie($query, "0.84 add $key to glpi_networkportmigrations");
-
+      $migration->addField('glpi_networkportmigrations', $key, 'bool');
    }
-
+   $migration->migrationOneTable('glpi_networkportmigrations');
+   
    //TRANS: %s is the name of the table
    logMessage(sprintf(__('Data migration - %s'), "glpi_fqdns"), true);
 
