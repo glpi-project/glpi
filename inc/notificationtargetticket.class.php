@@ -59,13 +59,17 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       }
    }
 
-   function validateSendTo($infos, $notify_me=false) {
+
+   /**
+    * @see inc/NotificationTarget::validateSendTo()
+   **/
+   function validateSendTo(array $infos, $notify_me=false) {
 
       // Check global ones for notification to myself
       if (!parent::validateSendTo($infos, $notify_me)) {
          return false;
       }
-      
+
       // Private object and no right to see private items : do not send
       if ($this->isPrivate() && $infos['additionnaloption']==0) {
          return false;
@@ -159,8 +163,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $events = array('new'               => __('New ticket'),
                       'update'            => __('Update of a ticket'),
                       'solved'            => __('Ticket solved'),
-                      'validation'        => __('Approval request'),
-                      'validation_answer' => __('Approval request answer'),
+                      'validation'        => __('Validation request'),
+                      'validation_answer' => __('Validation request answer'),
                       'add_followup'      => __("New followup"),
                       'update_followup'   => __('Update of a followup'),
                       'delete_followup'   => __('Deletion of a followup'),
@@ -207,7 +211,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
    }
 
 
-   function getDatasForObject(CommonDBTM $item, $options, $simple=false) {
+   /**
+    *
+    * @see inc/NotificationTargetCommonITILObject::getDatasForObject()
+   **/
+   function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
       global $CFG_GLPI;
 
       // Common ITIL datas

@@ -56,7 +56,11 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       return $events;
    }
 
-   function getDatasForObject(CommonDBTM $item, $options, $simple=false) {
+
+   /**
+    * @see inc/NotificationTargetCommonITILObject::getDatasForObject()
+   */
+   function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
       global $CFG_GLPI;
 
       // Common ITIL datas

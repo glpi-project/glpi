@@ -556,11 +556,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
 
    /**
-    * @param $item   CommonDBTM object
+    * @param $item            CommonDBTM object
     * @param $options   array
-    * @param $simple (false by default)
+    * @param $simple          (false by default)
    **/
-   function getDatasForObject(CommonDBTM $item, $options, $simple=false) {
+   function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
       global $CFG_GLPI;
 
       $objettype = strtolower($item->getType());
