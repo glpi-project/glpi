@@ -465,20 +465,20 @@ class Infocom extends CommonDBChild {
     * @param $options array
    **/
    static function dropdownAlert($options) {
-   
+
       if (!isset($options['value'])) {
          $value = 0;
       } else {
          $value = $options['value'];
       }
-      
+
       $tab = array();
       if (isset($options['inherit_parent']) && $options['inherit_parent']) {
          $tab[Entity::CONFIG_PARENT] = __('Inheritance of the parent entity');
       }
-               
+
       $tab += self::getAlertName();
-      
+
       Dropdown::showFromArray($options['name'], $tab, array('value' => $value));
    }
 
@@ -1013,7 +1013,8 @@ class Infocom extends CommonDBChild {
             if ($CFG_GLPI['use_mailing']) {
                echo "<td>".__('Alarms on financial and administrative information')."</td>";
                echo "<td>";
-               echo self::dropdownAlert("alert", $ic->fields["alert"]);
+               self::dropdownAlert(array('name'    => "alert",
+                                         'value'   => $ic->fields["alert"]));
                Alert::displayLastAlert('Infocom', $ic->fields['id']);
                echo "</td>";
             } else {
