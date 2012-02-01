@@ -774,7 +774,7 @@ function update083to084() {
                                       'Drop table glpi_networkportmigrations if empty'));
 
    if (countElementsInTable("glpi_networkportmigrations") == 0) {
-      $migration->dropTable("`glpi_networkportmigrations`");
+      $migration->dropTable("glpi_networkportmigrations");
    }
 
    $migration->addField('glpi_mailcollectors', 'accepted', 'string');
