@@ -47,9 +47,7 @@ if (!defined('GLPI_ROOT')) {
 Session::checkLoginUser();
 
 // Non define case
-if (isset($_POST["sub_type"])) {
-   $type      = $_POST["sub_type"];
-   $rule      = new $type();
+if (isset($_POST["sub_type"]) && $rule = getItemForItemtype($_POST["sub_type"])) {
    $rule->displayCriteriaSelectPattern("pattern", $_POST["criteria"], $_POST['condition']);
 }
 ?>

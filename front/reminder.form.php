@@ -45,26 +45,26 @@ if (isset($_POST["add"])) {
    $remind->check(-1,'w',$_POST);
 
    $newID = $remind->add($_POST);
-   Event::log($newID, "reminder", 4, "tools", 
-               sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
+   Event::log($newID, "reminder", 4, "tools",
+              sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $_POST["name"]));
    Html::back();
 
 } else if (isset($_POST["delete"])) {
    $remind->check($_POST["id"],'w');
 
    $remind->delete($_POST);
-   Event::log($_POST["id"], "reminder", 4, "tools", 
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST["id"], "reminder", 4, "tools",
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $remind->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $remind->check($_POST["id"],'w');   // Right to update the reminder
 
    $remind->update($_POST);
-   Event::log($_POST["id"], "reminder", 4, "tools", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST["id"], "reminder", 4, "tools",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 }  else if (isset($_POST["addvisibility"])) {
@@ -97,8 +97,8 @@ if (isset($_POST["add"])) {
       if (!is_null($item)) {
          $item->add($_POST);
          Event::log($_POST["reminders_id"], "reminder", 4, "tools",
-                     //TRANS: %s is the user login
-                     sprintf(__('%s adds a target'), $_SESSION["glpiname"]));
+                    //TRANS: %s is the user login
+                    sprintf(__('%s adds a target'), $_SESSION["glpiname"]));
       }
    }
    Html::back();
@@ -139,15 +139,15 @@ if (isset($_POST["add"])) {
       }
    }
    Event::log($_POST["reminders_id"], "reminder", 4, "tools",
-               //TRANS: %s is the user login
-               sprintf(__('%s deletes a target'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes a target'), $_SESSION["glpiname"]));
    Html::back();
 
 } else {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      Html::helpHeader(_n('Reminder', 'Reminders', 2),'',$_SESSION["glpiname"]);
+      Html::helpHeader(Reminder::getTypeName(2),'',$_SESSION["glpiname"]);
    } else {
-      Html::header(_n('Reminder', 'Reminders', 2),'',"utils","reminder");
+      Html::header(Reminder::getTypeName(2),'',"utils","reminder");
    }
 
    $remind->showForm($_GET["id"]);

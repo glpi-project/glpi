@@ -46,8 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 Session::checkLoginUser();
 
-if (isset($_POST["sub_type"])) {
-   $rule      = new $_POST["sub_type"]();
+if (isset($_POST["sub_type"]) && $rule = getItemForItemtype($_POST["sub_type"])) {
    $criterias = $rule->getCriterias();
 
    if (count($criterias)) {
@@ -83,5 +82,4 @@ if (isset($_POST["sub_type"])) {
                        "dropdown_condition$randcrit");
    }
 }
-
 ?>

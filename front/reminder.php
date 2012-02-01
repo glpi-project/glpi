@@ -37,17 +37,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkCentralAccess();
 
-Html::header(_n('Reminder', 'Reminders', 2),$_SERVER['PHP_SELF'],"utils","reminder");
+Html::header(Reminder::getTypeName(2),$_SERVER['PHP_SELF'],"utils","reminder");
 
 Search::show('Reminder');
-
-
-// Reminder::showList();
-// 
-// if (Session::haveRight("reminder_public","r")) {
-//    Reminder::showList(false,false);
-//    Reminder::showList(false,true);
-// }
 
 Html::footer();
 ?>
