@@ -608,10 +608,9 @@ arsort($files);
 
 if (count($files)) {
    foreach ($files as $file => $date) {
-      $taille_fic = filesize($path."/".$file)/1024;
-      $taille_fic = (int)$taille_fic;
+      $taille_fic = filesize($path."/".$file);
       echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
-           "<td class='right'>".sprintf(__('%s kB'), $taille_fic)."&nbsp;</td>".
+           "<td class='right'>".Toolbox::getSize($taille_fic)."</td>".
            "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
            "<td>&nbsp;";
            //TRANS: %s is the filename
@@ -647,11 +646,10 @@ arsort($files);
 
 if (count($files)) {
    foreach ($files as $file => $date) {
-      $taille_fic = filesize($path."/".$file)/1024;
-      $taille_fic = (int)$taille_fic;
+      $taille_fic = filesize($path."/".$file);
       echo "<tr class='tab_bg_1'><td colspan='6'><hr noshade></td></tr>".
            "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
-            "<td class='right'>".sprintf(__('%s kB'), $taille_fic)."&nbsp;</td>".
+            "<td class='right'>".Toolbox::getSize($taille_fic)."</td>".
             "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
             "<td>&nbsp;";
             //TRANS: %s is the filename
