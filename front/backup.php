@@ -611,7 +611,7 @@ if (count($files)) {
       $taille_fic = filesize($path."/".$file)/1024;
       $taille_fic = (int)$taille_fic;
       echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
-           "<td class='right'>&nbsp;" . $taille_fic . " kB &nbsp;</td>".
+           "<td class='right'>".sprintf(__('%s kB'), $taille_fic)."&nbsp;</td>".
            "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
            "<td>&nbsp;";
            //TRANS: %s is the filename
@@ -651,7 +651,7 @@ if (count($files)) {
       $taille_fic = (int)$taille_fic;
       echo "<tr class='tab_bg_1'><td colspan='6'><hr noshade></td></tr>".
            "<tr class='tab_bg_2'><td>$file&nbsp;</td>".
-            "<td class='right'>&nbsp;" . $taille_fic . " kB &nbsp;</td>".
+            "<td class='right'>".sprintf(__('%s kB'), $taille_fic)."&nbsp;</td>".
             "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
             "<td>&nbsp;";
             //TRANS: %s is the filename
