@@ -233,7 +233,7 @@ class Planning {
       echo "</td>";
 
       echo "<td rowspan='2' class='center'>";
-      echo "<input type='submit' class='submit' name='submit' value=\"".__s('Save')."\">";
+      echo "<input type='submit' class='submit' name='submit' value=\"".__s('Show')."\">";
       echo "</td>\n";
 
       if ($uID || $gID) {
