@@ -440,7 +440,7 @@ class Infocom extends CommonDBChild {
    /**
     * Get the possible value for infocom alert
     *
-    * @since version 0.83
+    * @since version 0.84 (before in alert.class)
     *
     * @param $val if not set, ask for all values, else for 1 value (default NULL)
     *
@@ -448,7 +448,7 @@ class Infocom extends CommonDBChild {
    **/
    static function getAlertName($val=NULL) {
 
-      $tmp[0] = Dropdown::EMPTY_VALUE;
+      $tmp[0]                  = Dropdown::EMPTY_VALUE;
       $tmp[pow(2, Alert::END)] = __('Warranty expiration date');
 
       if (is_null($val)) {
