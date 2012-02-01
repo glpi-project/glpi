@@ -1378,9 +1378,9 @@ class Entity extends CommonTreeDropdown {
 
       echo "</td></tr>";
       echo "<tr><td>" . __('Default value')."</td><td>";
-      Infocom::dropdownAlert(array('name'  => 'default_infocom_alert',
-                                   'value' => $entity->fields["default_infocom_alert"],
-                                 'inherit_parent' => ($ID>0 ? 1 : 0)));
+      Infocom::dropdownAlert(array('name'           => 'default_infocom_alert',
+                                   'value'          => $entity->fields["default_infocom_alert"],
+                                   'inherit_parent' => ($ID>0 ? 1 : 0)));
       if ($entity->fields['default_infocom_alert'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('default_infocom_alert', $entity->getField('entities_id'));
          echo "<font class='green'>&nbsp;&nbsp;";
