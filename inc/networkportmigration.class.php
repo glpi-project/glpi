@@ -324,6 +324,7 @@ class NetworkPortMigration extends CommonDBChild {
 
 
       $optionIndex = 10;
+      // From 10 to 14
       foreach (self::getMotives() as $motive => $name) {
 
          $tab[$optionIndex]['table']         = $this->getTable();
@@ -334,31 +335,26 @@ class NetworkPortMigration extends CommonDBChild {
          $optionIndex ++;
       }
 
-      $tab[$optionIndex]['table']         = $this->getTable();
-      $tab[$optionIndex]['field']         = 'ip';
-      $tab[$optionIndex]['name']          = IPAddress::getTypeName(1);
-      $optionIndex ++;
+      $tab[20]['table']         = $this->getTable();
+      $tab[20]['field']         = 'ip';
+      $tab[20]['name']          = IPAddress::getTypeName(1);
 
-      $tab[$optionIndex]['table']         = $this->getTable();
-      $tab[$optionIndex]['field']         = 'netmask';
-      $tab[$optionIndex]['name']          = IPNetmask::getTypeName(1);
-      $optionIndex ++;
+      $tab[21]['table']         = $this->getTable();
+      $tab[21]['field']         = 'netmask';
+      $tab[21]['name']          = IPNetmask::getTypeName(1);
 
-      $tab[$optionIndex]['table']         = $this->getTable();
-      $tab[$optionIndex]['field']         = 'subnet';
-      $tab[$optionIndex]['name']          = __('Network address');
-      $optionIndex ++;
+      $tab[22]['table']         = $this->getTable();
+      $tab[22]['field']         = 'subnet';
+      $tab[22]['name']          = __('Network address');
 
-      $tab[$optionIndex]['table']         = $this->getTable();
-      $tab[$optionIndex]['field']         = 'gateway';
-      $tab[$optionIndex]['name']          = IPAddress::getTypeName(1);
-      $optionIndex ++;
+      $tab[23]['table']         = $this->getTable();
+      $tab[23]['field']         = 'gateway';
+      $tab[23]['name']          = IPAddress::getTypeName(1);
 
       if (TableExists('glpi_networkinterfaces')) {
-         $tab[$optionIndex]['table']         = 'glpi_networkinterfaces';
-         $tab[$optionIndex]['field']         = 'name';
-         $tab[$optionIndex]['name']          = __('Network interface');
-         $optionIndex ++;
+         $tab[24]['table']         = 'glpi_networkinterfaces';
+         $tab[24]['field']         = 'name';
+         $tab[24]['name']          = __('Network interface');
       }
 
       return $tab;
