@@ -110,20 +110,22 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Validate send before doing it (may be overloaded : exemple for private tasks or followups)
     *
-    * @param $infos array of destination of the notification
-    * @param $notify_me bool notify me on my action ? ($infos contains users_id to check if the target is me)
+    * @param $infos     array    of destination of the notification
+    * @param $notify_me boolean  notify me on my action ?
+    *                            ($infos contains users_id to check if the target is me)
+    *                            (false by default)
     *
     * @return true
    **/
-   function validateSendTo($infos, $notify_me=false) {
-      
+   function validateSendTo(array $infos, $notify_me=false) {
+
       if (!$notify_me) {
-         if (isset($infos['users_id']) 
-            && $infos['users_id'] === Session::getLoginUserID()) {
+         if (isset($infos['users_id'])
+             && $infos['users_id'] === Session::getLoginUserID()) {
             return false;
          }
       }
-   
+
       return true;
    }
 
@@ -480,8 +482,7 @@ class NotificationTarget extends CommonDBChild {
          if (NotificationMail::isUserAddressValid($new_mail) && !isset($this->target[$new_mail])) {
 
             $param = array('language'           => (empty($new_lang)
-                                                   ? $CFG_GLPI["language"]
-                                                  : $new_lang),
+                                                    ? $CFG_GLPI["language"] : $new_lang),
                            'email'              => $new_mail,
                            'additionnaloption'  => $notificationoption,
                            'username'           => $username);
