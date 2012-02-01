@@ -852,7 +852,7 @@ class NetworkPort extends CommonDBChild {
    }
 
 
-   static function countForitem(CommonDBTM $item) {
+   static function countForItem(CommonDBTM $item) {
 
       return countElementsInTable('glpi_networkports',
                                   "`itemtype` = '".$item->getType()."'
