@@ -184,7 +184,7 @@ class Computer_Device extends CommonDBTM {
     * @return Nothing (display)
    **/
    static function showForComputer(Computer $computer, $withtemplate='') {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       $devtypes = self::getDeviceTypes();
 
@@ -200,17 +200,18 @@ class Computer_Device extends CommonDBTM {
                 "' method='post'>";
          echo "<input type='hidden' name='computers_id' value='$ID'>";
       }
-      $global_colspan = 65;
+      $global_colspan = 63;
 
       echo "<table class='tab_cadre_fixe' >";
 
       echo "<tr><th colspan='$global_colspan'>"._n('Component', 'Components', 2)."</th></tr>";
       echo "<tr><th>".__('Item type')."</th>";
       echo "<th>".__('Name')."</th>";
-      echo "<th>".__('Add')."</th>";
-      echo "<th>".__('Delete all')."</th>";
+      echo "<th colspan='".($global_colspan-3)."'>".__('Characteristics')."</th>";
+//       echo "<th>".__('Add')."</th>";
+//       echo "<th>".__('Delete all')."</th>";
       echo "<th>".__('Delete')."</th>";
-      echo "<th colspan='".($global_colspan-4)."'>".""."</th></tr>";
+      echo "</tr>";
       $nb = 0;
 
       $specificity_units = array('DeviceProcessor'   => __('MHz'),
@@ -281,20 +282,18 @@ class Computer_Device extends CommonDBTM {
                            echo $device->getTypeName(1);
                         }
 
-                        echo "</td><td $rowspan>".$device->getLink()."</td>";
-
-                        echo "<td class='center' $rowspan>";
+                        echo "</td><td $rowspan>".$device->getLink();
+                        echo "&nbsp;<img title='"._sx('button', 'Add')."' alt='"._sx('button', 'Add')."'
+                              onClick=\"Ext.get('quantity_".$itemtype."_".$data['id']."').setDisplayed('block')\"
+                              class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+                        echo "<span id='quantity_".$itemtype."_".$data['id']."' style='display:none'><br>";                        
+                        _e('Add');
+                        echo "&nbsp;";
                         Dropdown::showInteger("quantity_".$itemtype."_".$data['id'], 0, 0, 10);
+                        echo "</span>";
                         echo "</td>";
-
-                        echo "</td><td class='center' $rowspan><input type='checkbox' " .
-                             " name='removeall_".$itemtype."_".$data[$fk]."' value='1'></td>";
                      }
 
-                     echo "<td class='center'>";
-                     echo "<input type='checkbox' name='remove_" .$itemtype."_".$data['id']."'
-                            value='1'>";
-                     echo "</td>";
                      $spec = $device->getFormData();
 
                      if (isset($spec['label']) && count($spec['label'])) {
@@ -332,6 +331,20 @@ class Computer_Device extends CommonDBTM {
                      } else {
                         echo "<td colspan='60'>&nbsp;</td>";
                      }
+
+                     if ($first) {
+//                         echo "<td class='center' $rowspan>";
+//                         Dropdown::showInteger("quantity_".$itemtype."_".$data['id'], 0, 0, 10);
+//                         echo "</td>";
+
+//                         echo "</td><td class='center' $rowspan><input type='checkbox' " .
+//                              " name='removeall_".$itemtype."_".$data[$fk]."' value='1'></td>";
+                     }
+
+                     echo "<td class='center'>";
+                     echo "<input type='checkbox' name='remove_" .$itemtype."_".$data['id']."'
+                            value='1'>";
+                     echo "</td>";
 
                      echo "</tr>";
                      $nb++;
