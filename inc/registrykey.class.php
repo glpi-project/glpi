@@ -38,8 +38,8 @@ if (!defined('GLPI_ROOT')) {
 
 class RegistryKey extends CommonDBTM {
 
-   static function getTypeName($nb=0) {
 
+   static function getTypeName($nb=0) {
       // No plural
       return __('Registry');
    }
@@ -68,9 +68,8 @@ class RegistryKey extends CommonDBTM {
 
    /** Display registry values for a computer
     *
-   * @param $comp Computer
-   *
-   */
+    * @param $comp Computer object
+   **/
    static function showForComputer(Computer $comp) {
       global $DB;
 
@@ -79,12 +78,8 @@ class RegistryKey extends CommonDBTM {
       }
 
       //REGISTRY HIVE
-      $REGISTRY_HIVE = array("HKEY_CLASSES_ROOT",
-                             "HKEY_CURRENT_USER",
-                             "HKEY_LOCAL_MACHINE",
-                             "HKEY_USERS",
-                             "HKEY_CURRENT_CONFIG",
-                             "HKEY_DYN_DATA");
+      $REGISTRY_HIVE = array("HKEY_CLASSES_ROOT", "HKEY_CURRENT_CONFIG", "HKEY_CURRENT_USER",
+                             "HKEY_DYN_DATA", "HKEY_LOCAL_MACHINE", "HKEY_USERS");
 
       $query = "SELECT *
                 FROM `glpi_registrykeys`
@@ -93,7 +88,8 @@ class RegistryKey extends CommonDBTM {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)!=0) {
             echo "<div class='center'><table class='tab_cadre_fixe'>";
-            echo "<tr><th colspan='4'>".sprintf(_n('%d registry key found', '%d registry keys found'),
+            echo "<tr><th colspan='4'>".sprintf(_n('%d registry key found',
+                                                   '%d registry keys found'),
                                                 $DB->numrows($result))."</th></tr>\n";
 
             echo "<tr><th>".__('OCSNG name')."</th>";
@@ -133,7 +129,8 @@ class RegistryKey extends CommonDBTM {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(self::getTypeName(2),
                                               countElementsInTable($this->getTable(),
-                                                                   "computers_id = '".$item->getID()."'"));
+                                                                   "computers_id
+                                                                     = '".$item->getID()."'"));
                }
                return self::getTypeName(2);
          }

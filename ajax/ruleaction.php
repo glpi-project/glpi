@@ -68,5 +68,4 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
    Ajax::updateItem("action_type_span$randaction", $CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",
                     $paramsaction, "dropdown_action_type$randaction");
 }
-
 ?>
