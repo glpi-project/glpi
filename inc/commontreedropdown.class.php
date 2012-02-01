@@ -120,7 +120,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             $input['completename'] =  $input['name'];
          } else {*/
          $input['completename'] = self::getCompleteNameFromParents($parent->fields['completename'],
-                                                                      $input['name']);
+                                                                   $input['name']);
 //          }
       } else {
          $input[$this->getForeignKeyField()] = 0;
@@ -161,6 +161,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    function prepareInputForUpdate($input) {
+
       if (isset($input[$this->getForeignKeyField()])) {
          // Can't move a parent under a child
          if (in_array($input[$this->getForeignKeyField()],

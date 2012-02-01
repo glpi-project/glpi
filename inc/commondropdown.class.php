@@ -422,7 +422,8 @@ abstract class CommonDropdown extends CommonDBTM {
       }
 
       // Replace form (set to new value)
-      echo "<div class='center'><p>" . __('You can also replace all uses of this dropdown by another.') . "</p></div>";
+      echo "<div class='center'>".
+           "<p>". __('You can also replace all uses of this dropdown by another.') ."</p></div>";
       echo "<form action='$target' method='post'>";
       echo "<table class='tab_cadre'><tr><td>";
 

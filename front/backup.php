@@ -76,7 +76,7 @@ if ($compression == 1) {
 
 
 /**
- * genere un fichier backup.xml a partir de base dbhost connecte avec l'utilisateur dbuser
+ * Genere un fichier backup.xml a partir de base dbhost connecte avec l'utilisateur dbuser
  * et le mot de passe dbpassword sur le serveur dbdefault
 **/
 function xmlbackup() {
@@ -163,10 +163,10 @@ function current_time() {
 
 /**  Get data of a table
  *
- * @param $DB DB object
- * @param $table table  name
- * @param $from begin from
- * @param $limit limit to
+ * @param $DB     DB object
+ * @param $table  table  name
+ * @param $from   begin from
+ * @param $limit  limit to
 **/
 function get_content($DB, $table, $from, $limit) {
 
@@ -208,8 +208,8 @@ function get_content($DB, $table, $from, $limit) {
 
 /**  Get structure of a table
  *
- * @param $DB DB object
- * @param $table table  name
+ * @param $DB     DB object
+ * @param $table  table name
 **/
 function get_def($DB, $table) {
 
@@ -229,9 +229,9 @@ function get_def($DB, $table) {
 
 /**  Restore a mysql dump
  *
- * @param $DB DB object
- * @param $dumpFile dump file
- * @param $duree max delay before refresh
+ * @param $DB        DB object
+ * @param $dumpFile  dump file
+ * @param $duree     max delay before refresh
 **/
 function restoreMySqlDump($DB, $dumpFile, $duree) {
    global $DB, $TPSCOUR, $offset, $cpt;
@@ -307,10 +307,10 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
 /**  Backup a glpi DB
  *
- * @param $DB DB object
- * @param $dumpFile dump file
- * @param $duree max delay before refresh
- * @param $rowlimit rowlimit to backup in one time
+ * @param $DB        DB object
+ * @param $dumpFile  dump file
+ * @param $duree     max delay before refresh
+ * @param $rowlimit  rowlimit to backup in one time
 **/
 function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    global $TPSCOUR, $offsettable, $offsetrow, $cpt;

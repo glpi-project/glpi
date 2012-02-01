@@ -230,7 +230,8 @@ function update083to084() {
       }
    }
    if ($backup_tables) {
-      $migration->displayWarning("You can delete backup tables if you have no need of them.", true);
+      $migration->displayWarning("You can delete backup tables if you have no need of them.",
+                                 true);
    }
 
    $originTables = array();
@@ -582,7 +583,8 @@ function update083to084() {
    }
 
    //TRANS: %s is the table or item to migrate
-   $migration->displayMessage(sprintf(__('Data migration - %s'), 'Index mac field and transform address mac to lower'));
+   $migration->displayMessage(sprintf(__('Data migration - %s'),
+                                      'Index mac field and transform address mac to lower'));
 
    foreach (array('glpi_networkports', 'glpi_networkequipments') as $table) {
 
@@ -595,7 +597,8 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   $migration->displayMessage(sprintf(__('Data migration - %s'), 'Update migration of interfaces errors'));
+   $migration->displayMessage(sprintf(__('Data migration - %s'),
+                                      'Update migration of interfaces errors'));
 
    $query = "SELECT id
              FROM `glpi_networkports`
@@ -606,7 +609,8 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportethernets"), true);
+   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportethernets"),
+              true);
 
    // Adding NetworkPortEthernet table
    if (!TableExists('glpi_networkportethernets')) {
@@ -695,7 +699,8 @@ function update083to084() {
    }
 
    //TRANS: %s is the name of the table
-   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportaggregates"), true);
+   logMessage(sprintf(__('Change of the database layout - %s'), "glpi_networkportaggregates"),
+              true);
 
    // Adding NetworkPortAggregate table
    if (!TableExists('glpi_networkportaggregates')) {
@@ -732,7 +737,8 @@ function update083to084() {
 
    $migration->addField('glpi_networkports_vlans', 'tagged', 'char', array('value' => '0'));
 
-   $migration->displayMessage(sprintf(__('Data migration - %s'), 'Update connections between IPAddress and IPNetwork'));
+   $migration->displayMessage(sprintf(__('Data migration - %s'),
+                                      'Update connections between IPAddress and IPNetwork'));
 
    // Here, we are sure that there is only IPv4 addresses. So, the SQL requests are simplified
    $query = "SELECT `id`, `address_3`, `netmask_3`
@@ -782,7 +788,8 @@ function update083to084() {
    $DB->query($query);
 
    $migration->displayWarning("You should have a look at the \"migration cleaner\" tool !", true);
-   $migration->displayWarning("With it, you should re-create the networks topologies and the links between the networks and the addresses", true);
+   $migration->displayWarning("With it, you should re-create the networks topologies and the links between the networks and the addresses",
+                              true);
 
    $lang_to_update = array('ca_CA' => 'ca_ES',
                            'dk_DK' => 'da_DK',
@@ -1020,12 +1027,16 @@ function update083to084() {
       $migration->addField("glpi_entities", 'mail_domain', "string");
       $migration->addField("glpi_entities", 'entity_ldapfilter', "text");
       $migration->addField("glpi_entities", 'mailing_signature', "text");
-      $migration->addField("glpi_entities", 'cartridges_alert_repeat', "integer", array('value' => -2));
-      $migration->addField("glpi_entities", 'consumables_alert_repeat', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'cartridges_alert_repeat', "integer",
+                           array('value' => -2));
+      $migration->addField("glpi_entities", 'consumables_alert_repeat', "integer",
+                           array('value' => -2));
       $migration->addField("glpi_entities", 'use_licenses_alert', "integer", array('value' => -2));
-      $migration->addField("glpi_entities", 'use_contracts_alert', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'use_contracts_alert', "integer",
+                           array('value' => -2));
       $migration->addField("glpi_entities", 'use_infocoms_alert', "integer", array('value' => -2));
-      $migration->addField("glpi_entities", 'use_reservations_alert', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'use_reservations_alert', "integer",
+                           array('value' => -2));
       $migration->addField("glpi_entities", 'autoclose_delay', "integer", array('value' => -2));
       $migration->addField("glpi_entities", 'notclosed_delay', "integer", array('value' => -2));
       $migration->addField("glpi_entities", 'calendars_id', "integer", array('value' => -2));
@@ -1044,10 +1055,14 @@ function update083to084() {
                                              array('value' => -2));
       $migration->addField("glpi_entities", 'autofill_order_date', "string", array('value' => -2));
       $migration->addField("glpi_entities", 'tickettemplates_id', "integer", array('value' => -2));
-      $migration->addField("glpi_entities", 'entities_id_software', "integer", array('value' => -2));
-      $migration->addField("glpi_entities", 'default_contract_alert', "integer", array('value' => -2));
-      $migration->addField("glpi_entities", 'default_infocom_alert', "integer", array('value' => -2));
-      $migration->addField("glpi_entities", 'default_alarm_threshold', "integer", array('value' => -2));
+      $migration->addField("glpi_entities", 'entities_id_software', "integer",
+                           array('value' => -2));
+      $migration->addField("glpi_entities", 'default_contract_alert', "integer",
+                           array('value' => -2));
+      $migration->addField("glpi_entities", 'default_infocom_alert', "integer",
+                           array('value' => -2));
+      $migration->addField("glpi_entities", 'default_alarm_threshold', "integer",
+                           array('value' => -2));
       $migration->migrationOneTable('glpi_entities');
 
       $fields = array('address', 'postcode', 'town', 'state', 'country', 'website',
@@ -1089,31 +1104,31 @@ function update083to084() {
    regenerateTreeCompleteName("glpi_entities");
 
 
-   $migration->displayMessage(sprintf(__('Data migration - - %s'), 
+   $migration->displayMessage(sprintf(__('Data migration - - %s'),
                                          'create validation_answer notification'));
 
    /// TODO : create a new template ?
    // Check if notifications already exists
-   if (countElementsInTable('glpi_notifications', 
-                              "`itemtype` = 'Ticket' 
+   if (countElementsInTable('glpi_notifications',
+                              "`itemtype` = 'Ticket'
                                AND `event` = 'validation_answer'")==0) {
    // No notifications duplicate all
-         
+
       $query = "SELECT *
                 FROM `glpi_notifications`
-                WHERE `itemtype` = 'Ticket' 
-                  AND `event` = 'validation'";
+                WHERE `itemtype` = 'Ticket'
+                      AND `event` = 'validation'";
       foreach ($DB->request($query) as $notif) {
          $query = "INSERT INTO `glpi_notifications`
                            (`name`, `entities_id`, `itemtype`, `event`, `mode`,
                            `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
                            `date_mod`)
-                     VALUES ('".addslashes($notif['name'])." Answer', 
-                             '".$notif['entities_id']."', 'Ticket', 
-                             'validation_answer', '".$notif['mode']."',
-                             '".$notif['notificationtemplates_id']."', 
-                             '".addslashes($notif['comment'])."', '".$notif['is_recursive']."', 
-                             '".$notif['is_active']."', NOW());";
+                   VALUES ('".addslashes($notif['name'])." Answer',
+                           '".$notif['entities_id']."', 'Ticket',
+                           'validation_answer', '".$notif['mode']."',
+                           '".$notif['notificationtemplates_id']."',
+                           '".addslashes($notif['comment'])."', '".$notif['is_recursive']."',
+                           '".$notif['is_active']."', NOW());";
          $DB->queryOrDie($query, "0.84 insert validation_answer notification");
          $newID = $DB->insert_id();
          $query2 = "SELECT *
@@ -1130,36 +1145,42 @@ function update083to084() {
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'various fields'));
 
-   $migration->changeField('glpi_entities', 'default_alarm_threshold', 'default_cartridges_alarm_threshold',
-                           'integer', array('value' => -2));
+   $migration->changeField('glpi_entities', 'default_alarm_threshold',
+                           'default_cartridges_alarm_threshold', 'integer', array('value' => -2));
    $migration->migrationOneTable('glpi_entities');
-   $migration->addField("glpi_entities", 'default_consumables_alarm_threshold', "integer", array('value'  => -2,
-                                                                                                 'update' => 'default_cartridges_alarm_threshold'));
-   $migration->migrationOneTable('glpi_entities');                     
-   // move -1 to Entity::CONFIG_NEVER                                                                            
-   $query = 'UPDATE `glpi_entities` SET `default_consumables_alarm_threshold` = -10 
-                           WHERE `default_consumables_alarm_threshold` = -1';
+   $migration->addField("glpi_entities", 'default_consumables_alarm_threshold', "integer",
+                        array('value'  => -2,
+                              'update' => 'default_cartridges_alarm_threshold'));
+   $migration->migrationOneTable('glpi_entities');
+   // move -1 to Entity::CONFIG_NEVER
+   $query = 'UPDATE `glpi_entities`
+             SET `default_consumables_alarm_threshold` = -10
+             WHERE `default_consumables_alarm_threshold` = -1';
    $DB->query($query);
-   $query = 'UPDATE `glpi_entities` SET `default_cartridges_alarm_threshold` = -10 
-                           WHERE `default_cartridges_alarm_threshold` = -1';
+   $query = 'UPDATE `glpi_entities`
+             SET `default_cartridges_alarm_threshold` = -10
+             WHERE `default_cartridges_alarm_threshold` = -1';
    $DB->query($query);
-   
-   $migration->addField("glpi_entities", 'send_contracts_alert_before_delay', "integer", array('value'  => -2,
-                                                                                         'after'   => 'use_contracts_alert',
-                                                                                         'update' => '0', // No delay for root entity
-                                                                                         'condition' => 'WHERE `id`=0'));
-   $migration->addField("glpi_entities", 'send_infocoms_alert_before_delay', "integer", array('value'  => -2,
-                                                                                        'after'   => 'use_infocoms_alert',
-                                                                                        'update' => '0', // No delay for root entity
-                                                                                        'condition' => 'WHERE `id`=0'));
-   $migration->addField("glpi_entities", 'send_licenses_alert_before_delay', "integer", array('value'  => -2,
-                                                                                        'after'   => 'use_licenses_alert',
-                                                                                        'update' => '0', // No delay for root entity
-                                                                                        'condition' => 'WHERE `id`=0'));
-   
+
+   $migration->addField("glpi_entities", 'send_contracts_alert_before_delay', "integer",
+                        array('value'     => -2,
+                              'after'     => 'use_contracts_alert',
+                              'update'    => '0', // No delay for root entity
+                              'condition' => 'WHERE `id`=0'));
+   $migration->addField("glpi_entities", 'send_infocoms_alert_before_delay', "integer",
+                        array('value'     => -2,
+                              'after'     => 'use_infocoms_alert',
+                              'update'    => '0', // No delay for root entity
+                              'condition' => 'WHERE `id`=0'));
+   $migration->addField("glpi_entities", 'send_licenses_alert_before_delay', "integer",
+                        array('value'     => -2,
+                              'after'     => 'use_licenses_alert',
+                              'update'    => '0', // No delay for root entity
+                              'condition' => 'WHERE `id`=0'));
+
    $migration->addField("glpi_configs", "notification_to_myself", "bool");
    $migration->addField("glpi_users", "notification_to_myself", "tinyint(1) NULL DEFAULT NULL");
-   
+
    $migration->addField("glpi_reservationitems", "is_deleted", "bool");
    $migration->addKey("glpi_reservationitems", "is_deleted");
 

@@ -493,13 +493,13 @@ function getTreeValueName($table, $ID, $wholename="", $level=0) {
 
          if ($wholename == "") {
             $name = $row["name"];
-         } else { 
+         } else {
             $name = $row["name"] . " > ";
          }
-   
+
          $level++;
-         list($tmpname, $level) = getTreeValueName($table, $parentID, $name, $level);
-         $name = $tmpname. $name;
+         list($tmpname, $level)  = getTreeValueName($table, $parentID, $name, $level);
+         $name                   = $tmpname. $name;
       }
    }
    return array($name, $level);
@@ -857,6 +857,7 @@ function regenerateTreeCompleteName($table) {
       }
    }
 }
+
 
 /**
  * Get the ID of the next Item
