@@ -253,8 +253,8 @@ while ($data=$DB->fetch_assoc($result)) {
    if (empty($data['name'])) {
       $data['name' ]= Dropdown::EMPTY_VALUE;
    }
-   echo "<tr class='tab_bg_2'><td>".$data['NAME']."</td>";
-   echo "<td class='right'>".$data['COUNT']."&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
+   echo "<tr class='tab_bg_2'><td>".$data['name']."</td>";
+   echo "<td class='right'>".$data['count']."&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>";
 }
 
 echo "<tr><td colspan='2' height=10></td></tr>";
