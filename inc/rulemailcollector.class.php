@@ -74,10 +74,6 @@ class RuleMailCollector extends Rule {
    }
 
 
-   function getTitleRule($target) {
-   }
-
-
    function getTitle() {
       return __('Rules for assigning a ticket created through a mail receiver');
    }
