@@ -138,50 +138,50 @@ class Rule extends CommonDBTM {
    function getSearchOptions() {
 
       $tab = array();
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false;
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'ranking';
-      $tab[3]['name']          = __('Position');
-      $tab[3]['datatype']      = 'integer';
-      $tab[3]['massiveaction'] = false;
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'ranking';
+      $tab[3]['name']            = __('Position');
+      $tab[3]['datatype']        = 'integer';
+      $tab[3]['massiveaction']   = false;
 
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'description';
-      $tab[4]['name']          = __('Description');
-      $tab[4]['datatype']      = 'string';
-      $tab[4]['massiveaction'] = false;
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'description';
+      $tab[4]['name']            = __('Description');
+      $tab[4]['datatype']        = 'string';
+      $tab[4]['massiveaction']   = false;
 
-      $tab[5]['table']         = $this->getTable();
-      $tab[5]['field']         = 'match';
-      $tab[5]['name']          = __('Logical operator');
-      $tab[5]['datatype']      = 'string';
-      $tab[5]['massiveaction'] = false;
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'match';
+      $tab[5]['name']            = __('Logical operator');
+      $tab[5]['datatype']        = 'string';
+      $tab[5]['massiveaction']   = false;
 
-      $tab[8]['table']     = $this->getTable();
-      $tab[8]['field']     = 'is_active';
-      $tab[8]['name']      = __('Active');
-      $tab[8]['datatype']  = 'bool';
+      $tab[8]['table']           = $this->getTable();
+      $tab[8]['field']           = 'is_active';
+      $tab[8]['name']            = __('Active');
+      $tab[8]['datatype']        = 'bool';
 
-      $tab[16]['table']     = $this->getTable();
-      $tab[16]['field']     = 'comment';
-      $tab[16]['name']      = __('Comments');
-      $tab[16]['datatype']  = 'text';
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __('Entity');
-      $tab[80]['massiveaction'] = false;
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['massiveaction']  = false;
 
-      $tab[86]['table']     = $this->getTable();
-      $tab[86]['field']     = 'is_recursive';
-      $tab[86]['name']      = __('Child entities');
-      $tab[86]['datatype']  = 'bool';
+      $tab[86]['table']          = $this->getTable();
+      $tab[86]['field']          = 'is_recursive';
+      $tab[86]['name']           = __('Child entities');
+      $tab[86]['datatype']       = 'bool';
 
       return $tab;
    }
@@ -190,8 +190,8 @@ class Rule extends CommonDBTM {
    /**
     * Show the rule
     *
-    * @param $ID ID of the rule
-    * @param $options array
+    * @param $ID              ID of the rule
+    * @param $options   array of possible options:
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
@@ -240,7 +240,7 @@ class Rule extends CommonDBTM {
       if (!$this->isNewID($ID)) {
          if ($this->fields["date_mod"]) {
             echo "<br>";
-            printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+            printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
          }
       }
       echo"</td></tr>\n";
@@ -275,10 +275,10 @@ class Rule extends CommonDBTM {
    /**
     * Display a dropdown with all the rule matching
     *
-    * @param $name dropdown name
-    * @param $value default value
-    * @param $restrict may be self::AND_MATCHING or self::OR_MATCHING
-    *                   to restrict to its type / false if both displayed
+    * @param $name         dropdown name
+    * @param $value        default value (default '')
+    * @param $restrict     may be self::AND_MATCHING or self::OR_MATCHING
+    *                      to restrict to its type / false if both displayed (false by default)
    **/
    function dropdownRulesMatch($name, $value='', $restrict=false) {
 
@@ -297,11 +297,11 @@ class Rule extends CommonDBTM {
    /**
     * Get all criterias for a given rule
     *
-    * @param $ID the rule_description ID
-    * @param $withcriterias 1 to retrieve all the criterias for a given rule
-    * @param $withactions  1 to retrive all the actions for a given rule
+    * @param $ID              the rule_description ID
+    * @param $withcriterias   1 to retrieve all the criterias for a given rule (default 0)
+    * @param $withactions     1 to retrive all the actions for a given rule (default 0)
    **/
-   function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0) {
+   function getRuleWithCriteriasAndActions($ID, $withcriterias=0, $withactions=0) {
 
       if ($ID == "") {
          return $this->getEmpty();
