@@ -50,10 +50,10 @@ if (isset($_POST["update"])) {
    if (Session::haveRight("reservation_central","w")
        || Session::getLoginUserID() === $_POST["users_id"]) {
       $_POST['_target'] = $_SERVER['PHP_SELF'];
-      $_POST['_item'] = key($_POST["items"]);
+      $_POST['_item']   = key($_POST["items"]);
       if ($rr->update($_POST)) {
          Html::redirect($CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                      $_POST['_item']."&mois_courant=$begin_month&annee_courante=$begin_year");
+                        $_POST['_item']."&mois_courant=$begin_month&annee_courante=$begin_year");
       }
    }
 
@@ -61,16 +61,16 @@ if (isset($_POST["update"])) {
    $reservationitems_id = key($_POST["items"]);
    if ($rr->delete($_POST)) {
       Event::log($_POST["id"], "reservation", 4, "inventory",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
+                 //TRANS: %s is the user login
+                 sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    }
 
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);
    Html::redirect($CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
+                  "$reservationitems_id&mois_courant=$begin_month&annee_courante=$begin_year");
 
 } else if (isset($_POST["add"])) {
-   $all_ok = true;
+   $all_ok              = true;
    $reservationitems_id = 0;
    if (empty($_POST['users_id'])) {
       $_POST['users_id'] = Session::getLoginUserID();
@@ -78,10 +78,10 @@ if (isset($_POST["update"])) {
    foreach ($_POST['items'] as $reservationitems_id) {
       $_POST['reservationitems_id'] = $reservationitems_id;
 
-      $times = $_POST["periodicity_times"];
-      $begin = $_POST["begin"];
+      $times  = $_POST["periodicity_times"];
+      $begin  = $_POST["begin"];
       list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);
-      $end = $_POST["end"];
+      $end    = $_POST["end"];
       $to_add = 1;
 
       if ($_POST["periodicity"] == "week") {
@@ -105,7 +105,7 @@ if (isset($_POST["update"])) {
          }
       }
       // Positionnement du calendrier au mois de debut
-      $_GET["mois_courant"] = $begin_month;
+      $_GET["mois_courant"]  = $begin_month;
       $_GET["annee_courant"] = $begin_year;
 
       if ($_POST['_ok']) {
@@ -119,7 +119,7 @@ if (isset($_POST["update"])) {
       $toadd = "";
       // Only one reservation
       if (count($_POST['items']) == 1) {
-         $toadd = "?reservationitems_id=$reservationitems_id";
+         $toadd  = "?reservationitems_id=$reservationitems_id";
          $toadd .= "&mois_courant=".$_GET["mois_courant"];
          $toadd .= "&annee_courante=".$_GET["annee_courant"];
       }

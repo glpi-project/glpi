@@ -44,11 +44,17 @@ class Reservation extends CommonDBChild {
    public $items_id = 'reservationitems_id';
 
 
+   /**
+    * @param $nb  integer  for singular or plural
+   **/
    static function getTypeName($nb=0) {
       return _n('Reservation', 'Reservations', $nb);
    }
 
 
+   /**
+    * @see inc/CommonGLPI::getTabNameForItem()
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate && Session::haveRight("reservation_central","r")) {
@@ -58,7 +64,12 @@ class Reservation extends CommonDBChild {
    }
 
 
-      static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+   /**
+    * @param $item         CommonGLPI object
+    * @param $tabnum       (default1)
+    * @param $withtemplate (default0)
+   **/
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType() == 'User') {
          self::showForUser($_POST["id"]);
@@ -85,6 +96,9 @@ class Reservation extends CommonDBChild {
    }
 
 
+   /**
+    * @see inc/CommonDBChild::prepareInputForUpdate()
+   **/
    function prepareInputForUpdate($input) {
 
       $item = 0;
@@ -116,6 +130,9 @@ class Reservation extends CommonDBChild {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::post_updateItem()
+   */
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
@@ -127,6 +144,9 @@ class Reservation extends CommonDBChild {
    }
 
 
+   /**
+    * @see inc/CommonDBChild::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
       // Error on previous added reservation on several add
@@ -136,16 +156,16 @@ class Reservation extends CommonDBChild {
 
       // set new date.
       $this->fields["reservationitems_id"] = $input["reservationitems_id"];
-      $this->fields["begin"] = $input["begin"];
-      $this->fields["end"]   = $input["end"];
+      $this->fields["begin"]               = $input["begin"];
+      $this->fields["end"]                 = $input["end"];
 
       if (!$this->test_valid_date()) {
-         $this->displayError("date",$input["reservationitems_id"]);
+         $this->displayError("date", $input["reservationitems_id"]);
          return false;
       }
 
       if ($this->is_reserved()) {
-         $this->displayError("is_res",$input["reservationitems_id"]);
+         $this->displayError("is_res", $input["reservationitems_id"]);
          return false;
       }
 
@@ -163,6 +183,10 @@ class Reservation extends CommonDBChild {
 
 
    // SPECIFIC FUNCTIONS
+
+   /**
+    * @param $reservationitems_id
+   **/
    function getUniqueGroupFor($reservationitems_id) {
       global $DB;
 
@@ -202,7 +226,7 @@ class Reservation extends CommonDBChild {
       $query = "SELECT *
                 FROM `".$this->getTable()."`
                 WHERE $ID_where
-                         `reservationitems_id` = '".$this->fields["reservationitems_id"]."'
+                      `reservationitems_id` = '".$this->fields["reservationitems_id"]."'
                       AND '".$this->fields["begin"]."' < `end`
                       AND '".$this->fields["end"]."' > `begin`";
       if ($result=$DB->query($query)) {
@@ -227,8 +251,8 @@ class Reservation extends CommonDBChild {
 
    /**
     * display error message
-    * @param $type error type : date / is_res / other
-    * @param $ID ID of the item
+    * @param $type   error type : date / is_res / other
+    * @param $ID     ID of the item
     *
     * @return nothing
    **/
@@ -253,6 +277,9 @@ class Reservation extends CommonDBChild {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::can()
+   **/
    function can($ID, $right, array &$input=NULL) {
 
       if (empty($ID) || $ID<=0) {
@@ -311,7 +338,7 @@ class Reservation extends CommonDBChild {
    /**
    * Show reservation calendar
    *
-   * @param $ID ID of the reservation item (if empty display all)
+   * @param $ID   ID of the reservation item (if empty display all) (default '')
    **/
    static function showCalendar($ID="") {
       global $CFG_GLPI;
@@ -337,22 +364,22 @@ class Reservation extends CommonDBChild {
       $annee_suivante   = $annee_courante;
       $annee_precedente = $annee_courante;
 
-      if ($mois_precedent==0) {
-         $mois_precedent = 12;
-         $annee_precedente--;
+      if ($mois_precedent == 0) {
+         $mois_precedent   = 12;
+         $annee_precedente --;
       }
 
-      if ($mois_suivant==13) {
-         $mois_suivant = 1;
-         $annee_suivante++;
+      if ($mois_suivant == 13) {
+         $mois_suivant   = 1;
+         $annee_suivante ++;
       }
 
-      $monthsarray = Toolbox::getMonthsOfYearArray();
+      $monthsarray   = Toolbox::getMonthsOfYearArray();
 
-      $str_suivant = "?reservationitems_id=$ID&amp;mois_courant=$mois_suivant&amp;".
-                     "annee_courante=$annee_suivante";
+      $str_suivant   = "?reservationitems_id=$ID&amp;mois_courant=$mois_suivant&amp;".
+                        "annee_courante=$annee_suivante";
       $str_precedent = "?reservationitems_id=$ID&amp;mois_courant=$mois_precedent&amp;".
-                       "annee_courante=$annee_precedente";
+                        "annee_courante=$annee_precedente";
 
       if (!empty($ID)) {
          $m = new ReservationItem();
@@ -373,12 +400,12 @@ class Reservation extends CommonDBChild {
          $type = $m->fields["itemtype"];
          $name = NOT_AVAILABLE;
          if ($item = getItemForItemtype($m->fields["itemtype"])) {
-            $type  =$item->getTypeName();
+            $type = $item->getTypeName();
 
             if ($item->getFromDB($m->fields["items_id"])) {
                $name = $item->getName();
             }
-            $name = $type." - ".$name;
+            $name = sprintf(__('%1$s - %2$s'), $type, $name);
          }
 
          $all = "<a class='vsubmit' href='reservation.php?reservationitems_id=&amp;mois_courant=".
@@ -482,7 +509,7 @@ class Reservation extends CommonDBChild {
       }
 
       // voici le remplissage proprement dit
-      if ($mois_courant<10&&strlen($mois_courant)==1) {
+      if ($mois_courant<10 && strlen($mois_courant)==1) {
          $mois_courant = "0".$mois_courant;
       }
 
@@ -513,14 +540,14 @@ class Reservation extends CommonDBChild {
          // il ne faut pas oublie d'aller a la ligne suivante en fin de semaine
          if (($i+$jour_debut_mois)%7==1) {
             echo "</tr>\n";
-            if ($i!=$nb_jour[$mois_courant-1]) {
+            if ($i != $nb_jour[$mois_courant-1]) {
                echo "<tr class='tab_bg_3'>";
             }
          }
       }
 
       // on recommence pour finir le tableau proprement pour les m�es raisons
-      if ($jour_fin_mois!=0) {
+      if ($jour_fin_mois != 0) {
          for ($i=0 ; $i<7-$jour_fin_mois ; $i++) {
             echo "<td class='calendrier_case_white'>&nbsp;</td>";
          }
@@ -534,8 +561,8 @@ class Reservation extends CommonDBChild {
    /**
     * Display for reservation
     *
-    * @param $ID ID of the reservation (empty for create new)
-    * @param $options array
+    * @param $ID              ID of the reservation (empty for create new)
+    * @param $options   array of possibles options:
     *     - item  reservation items ID for creation process
     *     - date date for creation process
    **/
@@ -545,7 +572,7 @@ class Reservation extends CommonDBChild {
          return false;
       }
 
-      $resa = new Reservation();
+      $resa = new self();
 
       if (!empty($ID)) {
          if (!$resa->getFromDB($ID)) {
@@ -637,7 +664,7 @@ class Reservation extends CommonDBChild {
       echo "</td></tr>\n";
 
       if (empty($ID)) {
-         echo "<tr class='tab_bg_2'><td>".__('Rehearsal')."&nbsp;:</td>";
+         echo "<tr class='tab_bg_2'><td>".__('Rehearsal')."</td>";
          echo "<td>";
          echo "<select name='periodicity'>";
          echo "<option value='day'>".__('By day')."</option>\n";
@@ -662,7 +689,8 @@ class Reservation extends CommonDBChild {
          echo "<td class='top center'>";
          echo "<input type='submit' name='delete' value=\"".__s('Purge')."\" class='submit'>";
          if ($resa->fields["group"] > 0) {
-            echo "<br><input type='checkbox' name='_delete_group'>&nbsp;".__s('Delete all rehearsals');
+            echo "<br><input type='checkbox' name='_delete_group'>&nbsp;".
+                  __s('Delete all rehearsals');
          }
          echo "</td><td class='top center'>";
          echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
@@ -675,10 +703,10 @@ class Reservation extends CommonDBChild {
    /**
     * Display for reservation
     *
-    * @param $ID ID a the reservation item (empty to show all)
-    * @param $date date to display
+    * @param $ID     ID a the reservation item (empty to show all)
+    * @param $date   date to display
    **/
-   static function displayReservationDay($ID,$date) {
+   static function displayReservationDay($ID, $date) {
       global $DB;
 
       if (!empty($ID)) {
@@ -714,20 +742,20 @@ class Reservation extends CommonDBChild {
 
                   if ($m->fields["itemtype"] == 'Peripheral') {
                      if (isset($item->fields["peripheraltypes_id"])
-                        && $item->fields["peripheraltypes_id"]!=0) {
+                         && $item->fields["peripheraltypes_id"]!=0) {
 
-                        $typename=Dropdown::getDropdownName("glpi_peripheraltypes",
-                                                            $item->fields["peripheraltypes_id"]);
+                        $typename = Dropdown::getDropdownName("glpi_peripheraltypes",
+                                                              $item->fields["peripheraltypes_id"]);
                      }
                   }
 
-                  list($annee,$mois,$jour)=explode("-",$date);
+                  list($annee,$mois,$jour) = explode("-",$date);
                   echo "<tr class='tab_bg_1'><td>";
                   echo "<a href='reservation.php?reservationitems_id=".$data['id'].
-                        "&amp;mois_courant=$mois&amp;annee_courante=$annee'>$typename - ".
-                        $item->getName()."</a></td></tr>\n";
+                        "&amp;mois_courant=$mois&amp;annee_courante=$annee'>".
+                        sprintf(__('%1$s - %2$s'), $typename ,$item->getName())."</a></td></tr>\n";
                   echo "<tr><td>";
-                  self::displayReservationsForAnItem($data['id'],$date);
+                  self::displayReservationsForAnItem($data['id'], $date);
                   echo "</td></tr>\n";
                }
             }
@@ -739,10 +767,10 @@ class Reservation extends CommonDBChild {
    /**
     * Display a reservation
     *
-    * @param $ID ID a the reservation item
-    * @param $date date to display
+    * @param $ID     ID a the reservation item
+    * @param $date   date to display
    **/
-   static function displayReservationsForAnItem($ID,$date) {
+   static function displayReservationsForAnItem($ID, $date) {
       global $DB;
 
       $users_id = Session::getLoginUserID();
@@ -754,8 +782,8 @@ class Reservation extends CommonDBChild {
 
       $query = "SELECT *
                 FROM `glpi_reservations`
-                WHERE '$debut' < `end`
-                      AND '$fin' > `begin`
+                WHERE '".$debut."' < `end`
+                      AND '".$fin."' > `begin`
                       AND `reservationitems_id` = '$ID'
                 ORDER BY `begin`";
 
@@ -795,9 +823,9 @@ class Reservation extends CommonDBChild {
                $rand  = mt_rand();
                $modif = $modif_end = "";
                if ($resa->can($row['id'],"w")) {
-                  $modif = "<a id='content_".$ID.$rand."'
-                             href='reservation.form.php?id=".$row['id']."'>";
-                  $modif_end = "</a>";
+                  $modif      = "<a id='content_".$ID.$rand."'
+                                  href='reservation.form.php?id=".$row['id']."'>";
+                  $modif_end  = "</a>";
                   $modif_end .= Html::showToolTip($row["comment"],
                                                   array('applyto' => "content_".$ID.$rand,
                                                         'display' => false));
@@ -819,8 +847,8 @@ class Reservation extends CommonDBChild {
    /**
     * Display reservations for an item
     *
-    * @param $item CommonDBTM object for which the reservation tab need to be displayed
-    * @param $withtemplate integer : withtemplate param
+    * @param $item            CommonDBTM object for which the reservation tab need to be displayed
+    * @param $withtemplate    withtemplate param (default '')
    **/
    static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $DB, $CFG_GLPI;
@@ -840,7 +868,7 @@ class Reservation extends CommonDBChild {
          // Print reservation in progress
          $query = "SELECT *
                    FROM `glpi_reservations`
-                   WHERE `end` > '$now'
+                   WHERE `end` > '".$now."'
                          AND `reservationitems_id` = '".$ri->fields['id']."'
                    ORDER BY `begin`";
          $result = $DB->query($query);
@@ -849,7 +877,7 @@ class Reservation extends CommonDBChild {
 
          if ($ri->fields["is_active"]) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                   $ri->fields['id']."' >".__('Current and future reservations')."</a>";
+                   $ri->fields['id']."'>".__('Current and future reservations')."</a>";
          } else {
             _e('Current and future reservations');
          }
@@ -870,8 +898,8 @@ class Reservation extends CommonDBChild {
                echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
                echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
                echo "<td class='center'>";
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$data["users_id"]."'>".
-                     getUserName($data["users_id"])."</a></td>";
+               echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".
+                      $data["users_id"]."'>".getUserName($data["users_id"])."</a></td>";
                echo "<td class='center'>".nl2br($data["comment"])."</td>";
                echo "<td class='center'>";
                list($annee, $mois, $jour) = explode("-", $data["begin"]);
@@ -888,7 +916,7 @@ class Reservation extends CommonDBChild {
          // Print old reservations
          $query = "SELECT *
                    FROM `glpi_reservations`
-                   WHERE `end` <= '$now'
+                   WHERE `end` <= '".$now."'
                          AND `reservationitems_id` = '".$ri->fields['id']."'
                    ORDER BY `begin` DESC";
          $result = $DB->query($query);
@@ -918,8 +946,8 @@ class Reservation extends CommonDBChild {
                echo "<td class='center'>".Html::convDateTime($data["begin"])."</td>";
                echo "<td class='center'>".Html::convDateTime($data["end"])."</td>";
                echo "<td class='center'>";
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$data["users_id"]."'>".
-                     getUserName($data["users_id"])."</a></td>";
+               echo "<a href='".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".
+                      $data["users_id"]."'>".getUserName($data["users_id"])."</a></td>";
                echo "<td class='center'>".nl2br($data["comment"])."</td>";
                echo "<td class='center'>";
                list($annee, $mois ,$jour) = explode("-", $data["begin"]);
@@ -956,7 +984,7 @@ class Reservation extends CommonDBChild {
       // Print reservation in progress
       $query = "SELECT *
                 FROM `glpi_reservations`
-                WHERE `end` > '$now'
+                WHERE `end` > '".$now."'
                       AND `users_id` = '$ID'
                 ORDER BY `begin`";
       $result = $DB->query($query);
@@ -1011,7 +1039,7 @@ class Reservation extends CommonDBChild {
       // Print old reservations
       $query = "SELECT *
                 FROM `glpi_reservations`
-                WHERE `end` <= '$now'
+                WHERE `end` <= '".$now."'
                       AND `users_id` = '$ID'
                 ORDER BY `begin` DESC";
       $result = $DB->query($query);
