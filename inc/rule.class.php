@@ -327,10 +327,8 @@ class Rule extends CommonDBTM {
 
    /**
     * display title for action form
-    *
-    * @param $target where to go if action
    **/
-   function getTitleAction($target) {
+   function getTitleAction() {
 
       foreach ($this->getActions() as $key => $val) {
          if (isset($val['force_actions'])
@@ -391,7 +389,7 @@ class Rule extends CommonDBTM {
          $canedit = false;
          $style   = "class='tab_cadre'";
       }
-      $this->getTitleAction(Toolbox::getItemTypeFormURL(get_class($this)));
+      $this->getTitleAction();
 
       if (($this->maxActionsCount()==0 || sizeof($this->actions) < $this->maxActionsCount())
           && $canedit) {
