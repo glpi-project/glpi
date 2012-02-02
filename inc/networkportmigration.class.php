@@ -235,7 +235,7 @@ class NetworkPortMigration extends CommonDBChild {
          $gateway_cell = "th";
          echo "<tr class='tab_bg_1'><th>" . $motives['invalid_gateway'] ."</th>\n<td colspan=3>";
          if (isset($network)) {
-            echo __('Append a correct gateway to the network:') . $network->getLink();
+            printf(__('Append a correct gateway to the network %s'), $network->getLink());
          } else {
             echo __('Unknown network:') .
                  " <a href='".Toolbox::getItemTypeFormURL('IPNetwork')."'>" .
