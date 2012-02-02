@@ -27,7 +27,7 @@
  --------------------------------------------------------------------------
  */
 /*!
-  \brief affiche le rapport r�eau par switch
+  \brief affiche le rapport reseau par switch
  */
 
 define('GLPI_ROOT', '..');
@@ -45,6 +45,7 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
    echo "<div class='center'><h2>".sprintf(__('Network report by hardware: %s'),$name)."</h2></div>".
         "<br>";
 
+   // TODO : must be review at the end of Damien's work
    $query = "SELECT `glpi_networkports`.`name` AS port, `glpi_networkports`.`ip`AS ip,
                     `glpi_networkports`.`mac` AS mac, `glpi_networkports`.`id` AS IDport,
                     `glpi_networkequipments`.`name` AS switch
@@ -66,15 +67,15 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
       echo "<th>".__('Connected devices')."</th></tr>\n";
 
       while ($ligne = $DB->fetch_array($result)) {
-         $switch = $ligne['switch'];
-         $port = $ligne['port'];
-         $nw = new NetworkPort_NetworkPort();
+         $switch            = $ligne['switch'];
+         $port              = $ligne['port'];
+         $nw                = new NetworkPort_NetworkPort();
          $networkports_id_1 = $nw->getOppositeContact($ligne['IDport']);
-         $np = new NetworkPort();
-         $ip2 = "";
-         $mac2 = "";
-         $portordi = "";
-         $ordi = "";
+         $np                = new NetworkPort();
+         $ip2               = "";
+         $mac2              = "";
+         $portordi          = "";
+         $ordi              = "";
 
          if ($networkports_id_1) {
             $np->getFromDB($networkports_id_1);
@@ -85,11 +86,11 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
                }
             }
 
-            $ip2 = $np->fields['ip'];
-            $mac2 = $np->fields['mac'];
+            $ip2      = $np->fields['ip'];
+            $mac2     = $np->fields['mac'];
             $portordi = $np->fields['name'];
          }
-         $ip = $ligne['ip'];
+         $ip  = $ligne['ip'];
          $mac = $ligne['mac'];
 
          //inserer ces valeures dans un tableau

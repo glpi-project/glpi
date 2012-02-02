@@ -45,7 +45,7 @@ $items = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
                'SoftwareLicense');
 
 # Titre
-echo "<div class='center b'><big>".__('Device list')."</big></div><br><br>";
+echo "<div class='center b spaced'><big>".__('Device list')."</big></div>";
 
 # Request All
 if ((isset($_POST["item_type"][0]) && $_POST["item_type"][0] == '0')
@@ -59,19 +59,19 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
       if (in_array($val,$items)) {
          $itemtable = getTableForItemType($val);
 
-         $deleted_field="`$itemtable`.`is_deleted`";
-         $location_field="`glpi_locations`.`completename`";
-         $add_leftjoin="LEFT JOIN `glpi_locations`
-                            ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)";
-         $template_condition="`$itemtable`.`is_template` ='0'";
+         $deleted_field       = "`$itemtable`.`is_deleted`";
+         $location_field      = "`glpi_locations`.`completename`";
+         $add_leftjoin        = "LEFT JOIN `glpi_locations`
+                                    ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)";
+         $template_condition  = "`$itemtable`.`is_template` = '0'";
          if ($val=='SoftwareLicense') {
-            $deleted_field="`glpi_softwares`.`is_deleted`";
-            $location_field="''";
-            $add_leftjoin="LEFT JOIN `glpi_softwares` ON (`glpi_softwares`.`id`
+            $deleted_field       = "`glpi_softwares`.`is_deleted`";
+            $location_field      = "''";
+            $add_leftjoin        = "LEFT JOIN `glpi_softwares`
+                                       ON (`glpi_softwares`.`id`
                                                       = `glpi_softwarelicenses`.`softwares_id`)";
-            $template_condition="`glpi_softwares`.`is_template` ='0'";
+            $template_condition  = "`glpi_softwares`.`is_template` = '0'";
          }
-
 
 
          $query[$val] = "SELECT `$itemtable`.`name` AS itemname,
@@ -101,7 +101,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
 
          if (isset($_POST["annee"][0]) && $_POST["annee"][0] != 'toutes') {
             $query[$val] .= " AND ( ";
-            $first = true;
+            $first        = true;
             foreach ($_POST["annee"] as $key2 => $val2) {
                if (!$first) {
                   $query[$val] .= " OR ";
@@ -132,8 +132,8 @@ if (isset($query) && count($query)) {
             echo "<th>".__('Entity')."</th>";
          }
          echo "<th>".__('Location')."</th>";
-         echo "<th>".__s('Date of purchase')."</th>";
-         echo "<th>".__s('Warranty expiration date')."</th>";
+         echo "<th>".__('Date of purchase')."</th>";
+         echo "<th>".__('Warranty expiration date')."</th>";
          echo "<th>".__('Contract Type')."</th>";
          echo "<th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th></tr>";
