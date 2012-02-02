@@ -360,8 +360,8 @@ class Rule extends CommonDBTM {
    /**
     * Display all rules actions
     *
-    * @param $rules_id  rule ID
-    * @param $options array iof options : may be readonly
+    * @param $rules_id        rule ID
+    * @param $options   array of options : may be readonly
    **/
    function showActionsList($rules_id, $options=array()) {
 
@@ -488,17 +488,6 @@ class Rule extends CommonDBTM {
    }
 
 
-   /**
-    * Get maximum number of criterias of the Rule (0 = unlimited)
-    *
-    * @return the maximum number of criterias
-   **/
-   function maxCriteriasCount() {
-      // Unlimited
-      return 0;
-   }
-
-
    function maybeRecursive() {
       return false;
    }
@@ -513,8 +502,7 @@ class Rule extends CommonDBTM {
 
       $canedit = $this->can($rules_id, "w");
 
-      if (($this->maxCriteriasCount()==0 || sizeof($this->criterias) < $this->maxCriteriasCount())
-          && $canedit) {
+      if ($canedit) {
 
          echo "<form name='criteriasaddform' method='post' action='".
                 Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
