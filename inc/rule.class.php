@@ -718,9 +718,9 @@ class Rule extends CommonDBTM {
    /**
     * Process the rule
     *
-    * @param $input the input data used to check criterias
-    * @param $output the initial ouput array used to be manipulate by actions
-    * @param $params parameters for all internal functions
+    * @param &$input    the input data used to check criterias
+    * @param &$output   the initial ouput array used to be manipulate by actions
+    * @param &$params   parameters for all internal functions
     *
     * @return the output array updated by actions. If rule matched add field _rule_process to return value
    **/
@@ -1125,7 +1125,7 @@ class Rule extends CommonDBTM {
       $this->testCriterias($input, $check_results);
 
       //Process the rule
-      $this->process($input, $output, $params, false);
+      $this->process($input, $output, $params);
 
       $criteria = new $this->rulecriteriaclass();
 
