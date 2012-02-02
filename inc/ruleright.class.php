@@ -108,40 +108,6 @@ class RuleRight extends Rule {
 
 
    /**
-    * Filter actions if needed
-    *
-    *  @param $actions the actions array
-    *
-    * @return the filtered actions array
-   **/
-   function filterActions($actions) {
-
-      $RuleAction    = new RuleAction();
-      $this->actions = $RuleAction->getRuleActions($this->fields["id"]);
-
-      foreach ($this->actions as $action) {
-         switch ($action->fields["field"]) {
-            case "_affect_entity_by_dn" :
-               unset($actions["_affect_entity_by_tag"]);
-               unset($actions["entities_id"]);
-               break;
-
-            case "_affect_entity_by_tag" :
-               unset($actions["_affect_entity_by_dn"]);
-               unset($actions["entities_id"]);
-               break;
-
-            case "entities_id" :
-               unset($actions["_affect_entity_by_tag"]);
-               unset($actions["_affect_entity_by_dn"]);
-               break;
-         }
-      }
-      return $actions;
-   }
-
-
-   /**
     * Execute the actions as defined in the rule
     * @param $output the result of the actions
     * @param $params the parameters

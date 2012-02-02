@@ -515,7 +515,8 @@ class Rule extends CommonDBTM {
       echo "<form name='criteriasform' id='criteriasform' method='post' action='".
              Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>". _n('Criteria', 'Criteria', 2)."</th></tr>\n";
+      echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>". _n('Criteria', 'Criteria', 2).
+           "</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       if ($canedit) {
@@ -550,9 +551,9 @@ class Rule extends CommonDBTM {
    function dropdownCriterias() {
       global $CFG_GLPI;
 
-      $items = array();
-      $group = array();
-      $groupname = '';
+      $items      = array();
+      $group      = array();
+      $groupname  = '';
 
       foreach ($this->getCriterias() as $ID => $crit) {
          // Manage group system
@@ -561,7 +562,7 @@ class Rule extends CommonDBTM {
                asort($group);
                $items[$groupname] = $group;
             }
-            $group = array();
+            $group     = array();
             $groupname = $crit;
          } else {
             $group[$ID] = $crit['name'];
@@ -591,6 +592,7 @@ class Rule extends CommonDBTM {
 
       return key($items);
    }
+
 
    /**
     * Display the dropdown of the actions for the rule
@@ -641,18 +643,6 @@ class Rule extends CommonDBTM {
                                     $CFG_GLPI["root_doc"]."/ajax/ruleaction.php", $params);
 
       return $value;
-   }
-
-
-   /**
-    * Filter actions if needed
-    *
-    * @param $actions the actions array
-    *
-    * @return the filtered actions array
-   **/
-   function filterActions($actions) {
-      return $actions;
    }
 
 
