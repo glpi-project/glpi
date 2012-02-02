@@ -260,10 +260,6 @@ class RuleRight extends Rule {
    }
 
 
-   function getTitleRule($target) {
-   }
-
-
    function getTitle() {
       return __('Automatic user assignment');
    }
@@ -274,7 +270,7 @@ class RuleRight extends Rule {
 
       if (!count($criterias)) {
          $criterias['common'] = __('Global criterias');
-      
+
          $criterias['LDAP_SERVER']['table']     = 'glpi_authldaps';
          $criterias['LDAP_SERVER']['field']     = 'name';
          $criterias['LDAP_SERVER']['name']      = __('LDAP directory');
