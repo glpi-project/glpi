@@ -179,7 +179,7 @@ class RuleImportComputer extends Rule {
    /**
     * Add more criteria specific to this type of rule
    **/
-   static function addMoreCriteria() {
+   static function addMoreCriteria($criterion='') {
 
       return array(Rule::PATTERN_FIND     => __('is already present in GLPI'),
                    self::PATTERN_IS_EMPTY => __('is empty in GLPI'));
