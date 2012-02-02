@@ -347,15 +347,6 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * display title for criteria form
-    *
-    * @param $target where to go if action
-   **/
-   function getTitleCriteria($target) {
-   }
-
-
-   /**
     * Get maximum number of Actions of the Rule (0 = unlimited)
     *
     * @return the maximum number of actions
@@ -521,7 +512,6 @@ class Rule extends CommonDBTM {
    function showCriteriasList($rules_id) {
 
       $canedit = $this->can($rules_id, "w");
-      $this->getTitleCriteria(Toolbox::getItemTypeFormURL(get_class($this)));
 
       if (($this->maxCriteriasCount()==0 || sizeof($this->criterias) < $this->maxCriteriasCount())
           && $canedit) {
