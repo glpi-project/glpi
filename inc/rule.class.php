@@ -126,17 +126,6 @@ class Rule extends CommonDBTM {
 
 
    /**
-    * Get additional header for rule
-    *
-    * @param $target where to go if link needed
-    *
-    * @return nothing display
-   **/
-   function getTitleRule($target) {
-   }
-
-
-   /**
     * Get title used in rule
     *
     * @return Title of the rule
@@ -457,7 +446,7 @@ class Rule extends CommonDBTM {
    **/
    function addActionForm($rules_id) {
       // CFG_GLPI needed by ruleaction.php
-      global $CFG_GLPI; 
+      global $CFG_GLPI;
 
       $ra = new $this->ruleactionclass();
 
@@ -488,8 +477,8 @@ class Rule extends CommonDBTM {
    **/
    function addCriteriaForm($rules_id) {
       // CFG_GLPI needed by rulecriteria.php
-      global $CFG_GLPI; 
-      
+      global $CFG_GLPI;
+
       echo "<div class='firstbloc'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='4'>" . _n('Criteria', 'Criteria', 1) . "</tr>";
@@ -588,7 +577,7 @@ class Rule extends CommonDBTM {
       $items = array();
       $group = array();
       $groupname = '';
-      
+
       foreach ($this->getCriterias() as $ID => $crit) {
          // Manage group system
          if (!is_array($crit)) {
@@ -606,7 +595,7 @@ class Rule extends CommonDBTM {
          asort($group);
          $items[$groupname] = $group;
       }
-      
+
       $rand   = Dropdown::showFromArray("criteria", $items);
       $params = array('criteria' => '__VALUE__',
                       'rand'     => $rand,
