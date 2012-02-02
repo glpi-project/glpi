@@ -41,7 +41,7 @@ Session::checkRight("reports", "r");
 Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
 
 if (empty($_POST["date1"]) && empty($_POST["date2"])) {
-   $year = date("Y")-1;
+   $year           = date("Y")-1;
    $_POST["date1"] = date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
    $_POST["date2"] = date("Y-m-d");
 }
@@ -50,7 +50,7 @@ if (!empty($_POST["date1"])
     && !empty($_POST["date2"])
     && strcmp($_POST["date2"], $_POST["date1"])<0) {
 
-   $tmp = $_POST["date1"];
+   $tmp            = $_POST["date1"];
    $_POST["date1"] = $_POST["date2"];
    $_POST["date2"] = $tmp;
 }
@@ -78,9 +78,9 @@ $valeurgraphtot      = array();
 
 /** Display an infocom report
  *
- * @param $itemtype item type
- * @param $begin begin date
- * @param $end end date
+ * @param $itemtype  item type
+ * @param $begin     begin date
+ * @param $end       end date
 **/
 function display_infocoms_report($itemtype, $begin, $end) {
    global $DB, $valeurtot, $valeurnettetot, $valeurnettegraphtot, $valeurgraphtot, $CFG_GLPI;
@@ -113,8 +113,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
    $display_entity = Session::isMultiEntitiesMode();
 
    $result = $DB->query($query);
-   if ($DB->numrows($result)>0) {
-      $item = new $itemtype();
+   if ($DB->numrows($result)>0 && $item = getItemForItemtype($itemtype)) {
 
       echo "<h2>".$item->getTypeName(1)."</h2>";
 
@@ -124,8 +123,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
       }
 
       echo "<th>".__('Value')."</th><th>".__('ANV')."</th>";
-      echo "<th>".__('TCO')."</th><th>".__s('Date of purchase')."</th>";
-      echo "<th>".__('Startup date')."</th><th>".__s('Warranty expiration date')."</th></tr>";
+      echo "<th>".__('TCO')."</th><th>".__('Date of purchase')."</th>";
+      echo "<th>".__('Startup date')."</th><th>".__('Warranty expiration date')."</th></tr>";
 
       $valeursoustot      = 0;
       $valeurnettesoustot = 0;
@@ -144,9 +143,9 @@ function display_infocoms_report($itemtype, $begin, $end) {
                                        $line["sink_coeff"], $line["buy_date"], $line["use_date"],
                                        $CFG_GLPI["date_tax"], "n");
 
-         $tmp = Infocom::Amort($line["sink_type"], $line["value"], $line["sink_time"],
-                               $line["sink_coeff"], $line["buy_date"], $line["use_date"],
-                               $CFG_GLPI["date_tax"], "all");
+         $tmp         = Infocom::Amort($line["sink_type"], $line["value"], $line["sink_time"],
+                                       $line["sink_coeff"], $line["buy_date"], $line["use_date"],
+                                       $CFG_GLPI["date_tax"], "all");
 
          if (is_array($tmp) && count($tmp)>0) {
             foreach ($tmp["annee"] as $key => $val) {
@@ -176,19 +175,20 @@ function display_infocoms_report($itemtype, $begin, $end) {
             echo "<td>".$line['entname']."</td>";
          }
 
-         echo "<td class='right'>".Html::formatNumber($line["value"])."</td><td class='right'>".
-               Html::formatNumber($valeurnette)."</td><td class='right'>".
-               Infocom::showTco($line["ticket_tco"],$line["value"])."</td><td>".
-               Html::convDate($line["buy_date"])."</td><td>".Html::convDate($line["use_date"]).
-               "</td><td>".Infocom::getWarrantyExpir($line["buy_date"], $line["warranty_duration"]).
-               "</td></tr>";
+         echo "<td class='right'>".Html::formatNumber($line["value"])."</td>".
+              "<td class='right'>".Html::formatNumber($valeurnette)."</td>".
+              "<td class='right'>".Infocom::showTco($line["ticket_tco"], $line["value"])."</td>".
+              "<td>".Html::convDate($line["buy_date"])."</td>".
+              "<td>".Html::convDate($line["use_date"])."</td>".
+              "<td>".Infocom::getWarrantyExpir($line["buy_date"], $line["warranty_duration"]).
+              "</td></tr>";
       }
 
-      $valeurtot += $valeursoustot;
+      $valeurtot      += $valeursoustot;
       $valeurnettetot += $valeurnettesoustot;
 
 
-      $tmpmsg = sprintf('Total: Value=%1$s - Account net value=%2$s',
+      $tmpmsg = sprintf(__('Total: Value=%1$s - Account net value=%2$s'),
                         Html::formatNumber($valeursoustot),
                         Html::formatNumber($valeurnettesoustot));
       echo "<tr><td colspan='6' class='center'><h3>$tmpmsg</h3></td></tr>";
@@ -262,7 +262,7 @@ if (($i%2)==0) {
 echo "</td></tr></table>";
 
 
-$tmpmsg = sprintf('Total: Value=%1$s - Account net value=%2$s',
+$tmpmsg = sprintf(__('Total: Value=%1$s - Account net value=%2$s'),
                   Html::formatNumber($valeurtot),
                   Html::formatNumber($valeurnettetot));
 echo "<div class='center'><h3>$tmpmsg</h3></div>";

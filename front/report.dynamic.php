@@ -40,7 +40,7 @@ Session::checkCentralAccess();
 if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
    if ($_GET["display_type"] < 0) {
       $_GET["display_type"] = -$_GET["display_type"];
-      $_GET["export_all"] = 1;
+      $_GET["export_all"]   = 1;
    }
 
    // PDF case
@@ -81,7 +81,7 @@ if (isset($_GET["item_type"]) && isset($_GET["display_type"])) {
                              $params["start"], $val, $val2);
             }
          } else if (isset($_GET["type"]) && $_GET["type"] == "hardwares") {
-            Stat::showItems("",$_GET["date1"], $_GET["date2"], $_GET['start']);
+            Stat::showItems("", $_GET["date1"], $_GET["date2"], $_GET['start']);
          }
          break;
 
