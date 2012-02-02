@@ -48,10 +48,10 @@ class ReservationItem extends CommonDBTM {
    /**
     * Retrieve an item from the database for a specific item
     *
-    *@param $ID ID of the item
-    *@param $itemtype type of the item
+    * @param $itemtype   type of the item
+    * @param $ID         ID of the item
     *
-    *@return true if succeed else false
+    * @return true if succeed else false
    **/
    function getFromDBbyItem($itemtype, $ID) {
       global $DB;
@@ -81,6 +81,9 @@ class ReservationItem extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
       if (!$this->getFromDBbyItem($input['itemtype'], $input['items_id'])) {
@@ -140,7 +143,7 @@ class ReservationItem extends CommonDBTM {
       $tab[23]['field']          = 'name';
       $tab[23]['name']           = __('Manufacturer');
 
-      $tab[24]['table']          =     'glpi_users';
+      $tab[24]['table']          = 'glpi_users';
       $tab[24]['field']          = 'name';
       $tab[24]['linkfield']      = 'users_id_tech';
       $tab[24]['name']           = __('Technician in charge of the hardware');
@@ -154,6 +157,9 @@ class ReservationItem extends CommonDBTM {
    }
 
 
+   /**
+    * @param $item   CommonDBTM object
+   **/
    static function showActivationFormForItem(CommonDBTM $item) {
 
       if (!Session::haveRight("reservation_central","w")) {
@@ -171,7 +177,7 @@ class ReservationItem extends CommonDBTM {
          return false;
       }
 
-      $ri = new ReservationItem();
+      $ri = new self();
 
       echo "<div><form method='post' name=form action='".
                   Toolbox::getItemTypeFormURL('ReservationItem')."'>";
@@ -194,7 +200,7 @@ class ReservationItem extends CommonDBTM {
          echo "<span class='small_space'>";
          echo "<input type='submit' name='delete' value=\"".__s('Prohibit reservations')."\"
                class='submit' ".
-               Html::addConfirmationOnAction(array(__('Are you sure you want do return this non-reservable item ?'),
+               Html::addConfirmationOnAction(array(__('Are you sure you want to return this non-reservable item ?'),
                                                    __('That will remove all the reservations in progress.'))).">";
          echo "</span></td>";
       } else {
@@ -217,7 +223,7 @@ class ReservationItem extends CommonDBTM {
          return false;
       }
 
-      $r = new ReservationItem();
+      $r = new self();
 
       if ($r->getFromDB($ID)) {
          $type = $r->fields["itemtype"];
@@ -236,7 +242,7 @@ class ReservationItem extends CommonDBTM {
 
          // Ajouter le nom du materiel
          echo "<tr class='tab_bg_1'><td>".__('Item')."</td>";
-         echo "<td class='b'>$type - $name</td></tr>\n";
+         echo "<td class='b'>".sprintf(__('%1$s - %2$s'), $type, $name)."</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";
          echo "<td><textarea name='comment' cols='30' rows='10' >".$r->fields["comment"];
@@ -249,9 +255,8 @@ class ReservationItem extends CommonDBTM {
          echo "</table></form></div>";
          return true;
 
-      } else {
-         return false;
       }
+      return false;
    }
 
 
@@ -262,14 +267,13 @@ class ReservationItem extends CommonDBTM {
          return false;
       }
 
-      $ri = new ReservationItem();
-      $ok = false;
+      $ri         = new self();
+      $ok         = false;
       $showentity = Session::isMultiEntitiesMode();
 
       echo "<div class='center'><form name='form' method='get' action='reservation.form.php'>";
       echo "<table class='tab_cadre'>";
-      echo "<tr><th colspan='".($showentity?"5":"4")."'>"._n('Reservable item', 'Reservable items',1).
-           "</th></tr>\n";
+      echo "<tr><th colspan='".($showentity?"5":"4")."'>".self::getTypeName(1)."</th></tr>\n";
 
       foreach ($CFG_GLPI["reservation_types"] as $itemtype) {
          if (!($item = getItemForItemtype($itemtype))) {
@@ -289,7 +293,7 @@ class ReservationItem extends CommonDBTM {
                    LEFT JOIN `glpi_locations`
                         ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)
                    WHERE `glpi_reservationitems`.`is_active` = '1'
-                         AND `glpi_reservationitems`.`is_deleted` = '0'  
+                         AND `glpi_reservationitems`.`is_deleted` = '0'
                          AND `$itemtable`.`is_deleted` = '0'".
                          getEntitiesRestrictRequest(" AND", $itemtable, '',
                                                     $_SESSION['glpiactiveentities'],
@@ -300,7 +304,8 @@ class ReservationItem extends CommonDBTM {
          if ($result=$DB->query($query)) {
             while ($row=$DB->fetch_array($result)) {
                echo "<tr class='tab_bg_2'><td>";
-               echo "<input type='checkbox' name='item[".$row["id"]."]' value='".$row["id"]."'></td>";
+               echo "<input type='checkbox' name='item[".$row["id"]."]' value='".$row["id"]."'>".
+                    "</td>";
                $typename = $item->getTypeName();
                if ($itemtype == 'Peripheral') {
                   $item->getFromDB($row['items_id']);
@@ -311,12 +316,13 @@ class ReservationItem extends CommonDBTM {
                                                            $item->fields["peripheraltypes_id"]);
                   }
                }
-               echo "<td><a href='reservation.php?reservationitems_id=".$row['id']."'>$typename - ".
-                     $row["name"]."</a></td>";
+               echo "<td><a href='reservation.php?reservationitems_id=".$row['id']."'>".
+                          sprintf(__('%1$s - %2$s'), $typename, $row["name"])."</a></td>";
                echo "<td>".$row["location"]."</td>";
                echo "<td>".nl2br($row["comment"])."</td>";
                if ($showentity) {
-                  echo "<td>".Dropdown::getDropdownName("glpi_entities", $row["entities_id"])."</td>";
+                  echo "<td>".Dropdown::getDropdownName("glpi_entities", $row["entities_id"]).
+                       "</td>";
                }
                echo "</tr>\n";
                $ok = true;
@@ -333,6 +339,11 @@ class ReservationItem extends CommonDBTM {
    }
 
 
+   /**
+    * @param $name
+    *
+    * @return an array
+   **/
    static function cronInfo($name) {
       return array('description' => __('Alerts on reservations'));
    }
@@ -341,10 +352,10 @@ class ReservationItem extends CommonDBTM {
    /**
     * Cron action on reservation : alert on end of reservations
     *
-    * @param $task to log, if NULL use display
+    * @param $task to log, if NULL use display (default NULL)
     *
     * @return 0 : nothing to do 1 : done with success
-    **/
+   **/
    static function cronReservation($task=NULL) {
       global $DB, $CFG_GLPI;
 
@@ -379,22 +390,24 @@ class ReservationItem extends CommonDBTM {
                              AND `glpi_alerts`.`date` IS NULL";
 
          foreach ($DB->request($query_end) as $data) {
-            $item_resa = new $data["itemtype"]();
-            if ($item_resa->getFromDB($data["items_id"])) {
-               $data['item_name'] = $item_resa->getName();
-               $data['entity'] = $entity;
-               $items_infos[$entity][$data['resaid']] = $data;
+            if ($item_resa = getItemForItemtype($data['itemtype'])) {
+               if ($item_resa->getFromDB($data["items_id"])) {
+                  $data['item_name']                     = $item_resa->getName();
+                  $data['entity']                        = $entity;
+                  $items_infos[$entity][$data['resaid']] = $data;
 
-               if (!isset($items_messages[$entity])) {
-                  $items_messages[$entity] = __('Device reservations expiring today')."<br />";
+                  if (!isset($items_messages[$entity])) {
+                     $items_messages[$entity] = __('Device reservations expiring today')."<br>";
+                  }
+                  $items_messages[$entity] .= sprintf(__('%1$s - %2$s'), $item_resa->getTypeName(),
+                                                      $item_resa->getName())."<br>";
                }
-               $items_messages[$entity] .= $item_resa->getTypeName()." - ".$item_resa->getName()."<br />";
             }
          }
       }
 
       foreach ($items_infos as $entity => $items) {
-         $resitem = new ReservationItem();
+         $resitem = new self();
          if (NotificationEvent::raiseEvent("alert", new Reservation(),
                                            array('entities_id' => $entity,
                                                  'items'       => $items))) {
@@ -405,13 +418,16 @@ class ReservationItem extends CommonDBTM {
                $task->log(Dropdown::getDropdownName("glpi_entities",
                                                     $entity).":  $message\n");
             } else {
-               Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                                                                          $entity).":  $message");
+               //TRANS: %1$s is a name, %2$s is text of message
+               Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'),
+                                                        Dropdown::getDropdownName("glpi_entities",
+                                                                                  $entity),
+                                                        $message));
             }
 
-            $alert = new Alert();
+            $alert             = new Alert();
             $input["itemtype"] = 'Reservation';
-            $input["type"] = Alert::END;
+            $input["type"]     = Alert::END;
             foreach ($items as $resaid => $item) {
                $input["items_id"] = $resaid;
                $alert->add($input);
@@ -421,7 +437,7 @@ class ReservationItem extends CommonDBTM {
          } else {
             $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
             //TRANS: %s is entity name
-            $msg = sprintf(__('%s: send reservation alert failed'), $entityname);
+            $msg = sprintf(__('Send reservation alert failed for %s'), $entityname);
             if ($task) {
                $task->log($msg);
             } else {
@@ -438,7 +454,7 @@ class ReservationItem extends CommonDBTM {
    **/
    function showDebug() {
 
-      $resa = new Reservation();
+      $resa                                = new Reservation();
       $resa->fields['id']                  = '1';
       $resa->fields['reservationitems_id'] = $this->getField('id');
       $resa->fields['begin']               = $_SESSION['glpi_currenttime'];
