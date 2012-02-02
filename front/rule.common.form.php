@@ -95,17 +95,17 @@ if (isset($_POST["delete_criteria"])) {
    $rulecollection->checkGlobal('w');
    $rule->update($_POST);
 
-   Event::log($_POST['id'], "rules", 4, "setup", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST['id'], "rules", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["add"])) {
    $rulecollection->checkGlobal('w');
 
    $newID = $rule->add($_POST);
-   Event::log($newID, "rules", 4, "setup", 
-      sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $newID));
+   Event::log($newID, "rules", 4, "setup",
+              sprintf(__('%1$s adds the item %2%s'), $_SESSION["glpiname"], $newID));
    Html::redirect($_SERVER['HTTP_REFERER']."?id=$newID");
 
 } else if (isset($_POST["delete"])) {
@@ -113,13 +113,13 @@ if (isset($_POST["delete_criteria"])) {
    $rulecollection->deleteRuleOrder($_POST["ranking"]);
    $rule->delete($_POST);
 
-   Event::log($_POST["id"], "rules", 4, "setup", 
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST["id"], "rules", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $rule->redirectToList();
 }
 
-Html::header(_n('Rule', 'Rules', 2), $_SERVER['PHP_SELF'], 'admin',
+Html::header(Rule::getTypenName(2), $_SERVER['PHP_SELF'], 'admin',
              $rulecollection->menu_type, $rulecollection->menu_option);
 
 $rule->showForm($_GET["id"]);

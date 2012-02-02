@@ -172,7 +172,7 @@ class Group_User extends CommonDBRelation{
                  "</a>&nbsp;";
 
             if ($data["is_dynamic"]) {
-               echo "<span class='b'>&nbsp;(D)</span>";
+               echo "<span class='b'>&nbsp;".__('(D)')."</span>";
             }
             echo "</td>";
             $i++;
@@ -422,7 +422,7 @@ class Group_User extends CommonDBRelation{
             }
             echo "<td>".$user->getLink();
             if ($data["is_dynamic"]) {
-               echo "<span class='b'>&nbsp;(D)</span>";
+               echo "<span class='b'>&nbsp;".__('(D)')."</span>";
             }
             if ($tree) {
                echo "</td><td>";

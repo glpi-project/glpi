@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 Session::checkCentralAccess();
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {
-   Html::header(_n('Rule', 'Rules', 2), $_SERVER['PHP_SELF'], "admin", "dictionnary", "cache");
+   Html::header(Rule::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "dictionnary", "cache");
 }
 
 if (isset($_GET["sub_type"])) {
@@ -51,9 +51,10 @@ if (isset($_GET["sub_type"])) {
       if (!isset($_GET["rules_id"])) {
          $rulecollection->showCacheStatusForRuleType();
       } else {
-         $rule = new $_GET["sub_type"]();
-         $rule->getRuleWithCriteriasAndActions($_GET["rules_id"],0,0);
-         $rule->showCacheStatusByRule($_SERVER["HTTP_REFERER"]);
+         if ($rule = getItemForItemtype($_GET["sub_type"])) {
+            $rule->getRuleWithCriteriasAndActions($_GET["rules_id"],0,0);
+            $rule->showCacheStatusByRule($_SERVER["HTTP_REFERER"]);
+         }
       }
    }
 }
