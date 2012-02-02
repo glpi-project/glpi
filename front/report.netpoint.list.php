@@ -40,11 +40,13 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
 
    Report::title();
 
-   $name = Dropdown::getDropdownName("glpi_netpoints",$_POST["prise"]);
+   $name = Dropdown::getDropdownName("glpi_netpoints", $_POST["prise"]);
 
    // Titre
-   echo "<div class='center'><h2>".sprintf(__('Network report by outlet: %s'), $name)."</h2></div><br>";
+   echo "<div class='center spaced'><h2>".sprintf(__('Network report by outlet: %s'), $name)."</h2>".
+        "</div>";
 
+   // TODO : must be review at the end of Damien's work
    $query = "SELECT `glpi_locations`.`name`, `glpi_locations`.`id`,
                     `glpi_netpoints`.`name` AS prise, `glpi_networkports`.`name` AS port,
                     `glpi_networkports`.`ip`, `glpi_networkports`.`mac`,
@@ -77,16 +79,16 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
       echo "</tr>";
 
       while ($ligne = $DB->fetch_array($result)) {
-         $prise = $ligne['prise'];
-         $ID = $ligne['id'];
-         $lieu = Dropdown::getDropdownName("glpi_locations",$ID);
-         $nw = new NetworkPort_NetworkPort();
+         $prise             = $ligne['prise'];
+         $ID                = $ligne['id'];
+         $lieu              = Dropdown::getDropdownName("glpi_locations",$ID);
+         $nw                = new NetworkPort_NetworkPort();
          $networkports_id_1 = $nw->getOppositeContact($ligne['IDport']);
-         $np = new NetworkPort();
-         $ordi = "";
-         $ip2 = "";
-         $mac2 = "";
-         $portordi = "";
+         $np                = new NetworkPort();
+         $ordi              = "";
+         $ip2               = "";
+         $mac2              = "";
+         $portordi          = "";
 
          if ($networkports_id_1) {
             $np->getFromDB($networkports_id_1);
@@ -96,17 +98,17 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
                   $ordi = $item->getName();
                }
             }
-            $ip2 = $np->fields['ip'];
-            $mac2 = $np->fields['mac'];
+            $ip2      = $np->fields['ip'];
+            $mac2     = $np->fields['mac'];
             $portordi = $np->fields['name'];
          }
 
-         $ip = $ligne['ip'];
-         $mac = $ligne['mac'];
+         $ip   = $ligne['ip'];
+         $mac  = $ligne['mac'];
          $port = $ligne['port'];
          $np->getFromDB($ligne['IDport']);
 
-         $nd = new NetworkEquipment();
+         $nd     = new NetworkEquipment();
          $nd->getFromDB($np->fields["items_id"]);
          $switch = $nd->fields["name"];
 
