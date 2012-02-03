@@ -202,7 +202,7 @@ class RuleCachedCollection extends RuleCollection {
    /**
     * Insert data in cache
     *
-    * @param input input data array
+    * @param input   input data array
     * @param $output output data array
    **/
    function insertDataInCache($input, $output) {
@@ -229,7 +229,8 @@ class RuleCachedCollection extends RuleCollection {
          $new_values .= " ,'".addslashes($output[$param])."'";
       }
 
-      $sql = "INSERT INTO `".$this->cache_table."` (".$into_old."`rules_id`".$into_new.")
+      $sql = "INSERT INTO `".$this->cache_table."`
+                     (".$into_old."`rules_id`".$into_new.")
               VALUES (".$old_values.$output["_ruleid"].$new_values.")";
       $DB->query($sql);
    }
