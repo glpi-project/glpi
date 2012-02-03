@@ -76,6 +76,9 @@ class RuleCollection extends CommonDBTM {
    }
 
 
+   /**
+    * @param $entity (default 0)
+   **/
    function setEntity($entity=0) {
       $this->entity = $entity;
    }
@@ -85,6 +88,7 @@ class RuleCollection extends CommonDBTM {
       return $this->canView();
    }
 
+
    function isEntityAssign() {
       return false;
    }
@@ -93,9 +97,12 @@ class RuleCollection extends CommonDBTM {
    /**
     * Get Collection Size : retrieve the number of rules
     *
+    * @param $recursive (true by default)
+    *
     * @return : number of rules
    **/
    function getCollectionSize($recursive=true) {
+
       return countElementsInTable("glpi_rules",
                                   "sub_type='".$this->getRuleClassName()."'".
                                             getEntitiesRestrictRequest(" AND", "glpi_rules",
@@ -104,6 +111,9 @@ class RuleCollection extends CommonDBTM {
    }
 
 
+   /**
+    * @param $options   array
+   **/
    function getRuleListQuery($options=array()) {
 
       $p['active']    = true;
