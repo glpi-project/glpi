@@ -1102,7 +1102,7 @@ class Rule extends CommonDBTM {
          echo "<input type='checkbox' name='item[" . $fields["id"] . "]' value='1' $sel>";
          echo "</td>";
       }
-      $this->showMinimalAction($fields);
+      echo $this->getMinimalActionText($fields);
       echo "</tr>\n";
    }
 
@@ -1217,16 +1217,6 @@ class Rule extends CommonDBTM {
       $text .= "<td>" . $this->getCriteriaDisplayPattern($fields["criteria"], $fields["condition"],
                                                          $fields["pattern"]) . "</td>";
       return $text;
-   }
-
-
-   /**
-    * Show the minimal infos for the action rule
-    *
-    * @param $fields datas used to display the action
-   **/
-   function showMinimalAction($fields) {
-      echo $this->getMinimalActionText($fields);
    }
 
 
