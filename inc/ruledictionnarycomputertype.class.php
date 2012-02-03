@@ -45,7 +45,7 @@ class RuleDictionnaryComputerType extends RuleDictionnaryDropdown {
 
    function getCriterias() {
 
-      $criterias = array();
+      $criterias                  = array();
       $criterias['name']['field'] = 'name';
       $criterias['name']['name']  = __('Type');
       $criterias['name']['table'] = 'glpi_computertypes';
@@ -54,9 +54,12 @@ class RuleDictionnaryComputerType extends RuleDictionnaryDropdown {
    }
 
 
+   /**
+    * @see inc/Rule::getActions()
+   **/
    function getActions() {
 
-      $actions = array();
+      $actions                          = array();
       $actions['name']['name']          = __('Type');
       $actions['name']['force_actions'] = array('append_regex_result', 'assign','regex_result');
 

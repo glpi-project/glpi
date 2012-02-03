@@ -45,7 +45,7 @@ class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown {
 
    function getCriterias() {
 
-      $criterias = array();
+      $criterias                  = array();
       $criterias['name']['field'] = 'name';
       $criterias['name']['name']  = __('Operating system');
       $criterias['name']['table'] = 'glpi_operatingsystems';
@@ -53,15 +53,17 @@ class RuleDictionnaryOperatingSystem extends RuleDictionnaryDropdown {
    }
 
 
+   /**
+    * @see inc/Rule::getActions()
+   **/
    function getActions() {
 
-      $actions = array();
-      $actions['name']['name'] = __('Operating system');
+      $actions                          = array();
+      $actions['name']['name']          = __('Operating system');
       $actions['name']['force_actions'] = array('append_regex_result', 'assign', 'regex_result');
 
       return $actions;
    }
 
 }
-
 ?>

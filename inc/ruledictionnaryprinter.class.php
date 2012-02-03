@@ -55,11 +55,17 @@ class RuleDictionnaryPrinter extends RuleCached {
    }
 
 
+   /**
+    * @see inc/Rule::maxActionsCount()
+   **/
    function maxActionsCount() {
       return 4;
    }
 
 
+   /**
+    * @see inc/RuleCached::showCacheRuleHeader()
+   **/
    function showCacheRuleHeader() {
 
       echo "<tr><th colspan='3'>" . __('Cache information') . "</th>";
@@ -75,6 +81,9 @@ class RuleDictionnaryPrinter extends RuleCached {
    }
 
 
+   /**
+    * @see inc/RuleCached::showCacheRuleDetail()
+   **/
    function showCacheRuleDetail($fields) {
 
       echo "<td class='tab_bg_2'>" . $fields["old_value"] . "</td>";
@@ -99,6 +108,9 @@ class RuleDictionnaryPrinter extends RuleCached {
    }
 
 
+   /**
+    * @see inc/Rule::getCriterias()
+   **/
    function getCriterias() {
 
       $criterias = array();
@@ -118,9 +130,13 @@ class RuleDictionnaryPrinter extends RuleCached {
    }
 
 
+   /**
+    * @see inc/Rule::getActions()
+   **/
    function getActions() {
 
-      $actions = array();
+      $actions                               = array();
+
       $actions['name']['name']               = __('Name');
       $actions['name']['force_actions']      = array('assign', 'regex_result');
 

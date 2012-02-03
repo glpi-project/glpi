@@ -62,6 +62,9 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
       return __('Dictionnary of printers');
    }
@@ -82,12 +85,14 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    }
 
 
-   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(),
-                                    $params=array()) {
+   /**
+    * @see inc/RuleCollection::replayRulesOnExistingDB()
+   **/
+   function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
       global $DB;
 
       if (isCommandLine()) {
-         echo "replayRulesOnExistingDB started : " . date("r") . "\n";
+         printf(__('Replay rules on existing database started on %s')."\n", date("r"));
       }
       $nb = 0;
       $i  = $offset;
@@ -116,8 +121,9 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
       while ($input = $DB->fetch_array($res)) {
          if (!($i % $step)) {
             if (isCommandLine()) {
-               echo date("H:i:s") . " replayRulesOnExistingDB : $i/$nb (" .
-                    round(memory_get_usage() / (1024 * 1024), 2) . " Mo)\n";
+               //TRANS: %1$s is a date, %2$s is a row, %3$s is total row, %4$s is memory
+               printf(__('%1$s - replay rules on existing database: %2$s/%3$s (%4$s Mio)')."\n",
+                      date("H:i:s"), $i, $nb, round(memory_get_usage() / (1024 * 1024), 2));
             } else {
                Html::changeProgressBarPosition($i, $nb, "$i / $nb");
             }
@@ -165,20 +171,24 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
       }
 
       if (isCommandLine()) {
-         echo "replayRulesOnExistingDB : $i/$nb               \n";
+         printf(__('Replay rules on existing database: %1$s/%2$s')."\n", $i, $nb);
       } else {
          Html::changeProgressBarPosition($i, $nb, "$i / $nb");
       }
 
       if (isCommandLine()) {
-         echo "replayRulesOnExistingDB ended : " . date("r") . "\n";
+         printf(__('Replay rules on existing database on %s')."\n", date("r"));
       }
 
       return ($i == $nb ? -1 : $i);
    }
 
 
-   static function somethingHasChanged($res_rule, $input) {
+   /**
+    * @param $res_rule  array
+    * @param $input     array
+   **/
+   static function somethingHasChanged(array $res_rule, array $input) {
 
       if ((isset($res_rule["name"]) && $res_rule["name"] != $input["name"])
           || (isset($res_rule["manufacturer"]) && $res_rule["manufacturer"] != '')
@@ -192,12 +202,12 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    /**
     * Replay dictionnary on several printers
     *
-    * @param $IDs array of printers IDs to replay
-    * @param $res_rule array of rule results
+    * @param $IDs       array of printers IDs to replay
+    * @param $res_rule  array of rule results
     *
     * @return Query result handler
    **/
-   function replayDictionnaryOnPrintersByID($IDs, $res_rule=array()) {
+   function replayDictionnaryOnPrintersByID(array $IDs, $res_rule=array()) {
       global $DB;
 
       $new_printers  = array();
@@ -227,7 +237,10 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    }
 
 
-   function putOldPrintersInTrash($IDS = array()) {
+   /**
+    * @param $IDS array
+   */
+   function putOldPrintersInTrash($IDS=array()) {
 
       $printer = new Printer();
       foreach ($IDS as $id) {
@@ -239,13 +252,13 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    /**
     * Replay dictionnary on one printer
     *
-    * @param $new_printers array containing new printers already computed
-    * @param $res_rule array of rule results
-    * @param $params array
-    * @param $printers_ids array containing replay printer need to be trashed
+    * @param &$new_printers   array containing new printers already computed
+    * @param $res_rule        array of rule results
+    * @param $params          array
+    * @param &$printers_ids   array containing replay printer need to be trashed
    **/
-   function replayDictionnaryOnOnePrinter(& $new_printers, $res_rule, $params = array(),
-                                          & $printers_ids) {
+   function replayDictionnaryOnOnePrinter(array &$new_printers, array $res_rule, $params=array(),
+                                          array &$printers_ids) {
       global $DB;
 
       $p['id']           = 0;
@@ -315,8 +328,9 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
 
    /**
     * Move direct connections from old printer to the new one
-    * @param $ID the old printer's id
-    * @param $new_printers_id the new printer's id
+    *
+    * @param $ID                 the old printer's id
+    * @param $new_printers_id    the new printer's id
     *
     * @return nothing
    **/

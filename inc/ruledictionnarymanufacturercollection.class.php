@@ -47,13 +47,16 @@ class RuleDictionnaryManufacturerCollection extends RuleDictionnaryDropdownColle
    **/
    function __construct() {
 
-      $this->item_table="glpi_manufacturers";
+      $this->item_table  = "glpi_manufacturers";
       //Init cache system values
       $this->initCache("glpi_rulecachemanufacturers");
-      $this->menu_option="manufacturers";
+      $this->menu_option = "manufacturers";
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
       return __('Dictionary of manufacturers');
    }

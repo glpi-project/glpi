@@ -39,12 +39,15 @@ class RuleDictionnaryOperatingSystemCollection extends RuleDictionnaryDropdownCo
    **/
    function __construct() {
 
-      $this->item_table = "glpi_operatingsystems";
+      $this->item_table  = "glpi_operatingsystems";
       $this->initCache("glpi_rulecacheoperatingsystems");
       $this->menu_option = "os";
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
       return __('Dictionnary of operating systems');
    }
