@@ -186,7 +186,8 @@ class RuleCollection extends CommonDBTM {
          $p[$key] = $value;
       }
 
-      $this->RuleList       = new SingletonRuleList($this->getRuleClassName(), $this->entity);
+      // no need to use SingletonRuleList::getInstance because we read only 1 page
+      $this->RuleList       = new SingletonRuleList();
       $this->RuleList->list = array();
 
       //Select all the rules of a different type
