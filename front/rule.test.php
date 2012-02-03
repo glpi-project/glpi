@@ -55,7 +55,9 @@ if (isset($_POST["rules_id"])) {
    $rules_id = 0;
 }
 
-$rule = new $sub_type();
+if (!$rule = getItemForItemtype($sub_type)) {
+   exit;
+}
 $rule->checkGlobal('r');
 
 $test_rule_output = null;
@@ -64,7 +66,7 @@ if (!strpos($_SERVER['PHP_SELF'],"popup")) {
    Html::header(__('Setup'),$_SERVER['PHP_SELF'],"config","display");
 }
 
-$rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'],$rules_id);
+$rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'], $rules_id);
 
 if (isset($_POST["test_rule"])) {
    $params = array();
@@ -81,10 +83,10 @@ if (isset($_POST["test_rule"])) {
    //Add rules specific POST fields to the param array
    $params = $rule->addSpecificParamsForPreview($params);
 
-   $input = $rule->prepareInputDataForProcess($_POST,$params);
+   $input = $rule->prepareInputDataForProcess($_POST, $params);
    //$rule->regex_results = array();
    echo "<br>";
-   $rule->showRulePreviewResultsForm($_SERVER['PHP_SELF'],$input,$params);
+   $rule->showRulePreviewResultsForm($_SERVER['PHP_SELF'], $input, $params);
 }
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")) {

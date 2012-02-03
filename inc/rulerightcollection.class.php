@@ -59,7 +59,10 @@ class RuleRightCollection extends RuleCollection {
    }
 
 
-   function cleanTestOutputCriterias($output) {
+   /**
+    * @see inc/RuleCollection::cleanTestOutputCriterias()
+   */
+   function cleanTestOutputCriterias(array $output) {
 
       if (isset($output["_rule_process"])) {
          unset($output["_rule_process"]);
@@ -68,7 +71,10 @@ class RuleRightCollection extends RuleCollection {
    }
 
 
-   function showTestResults($rule, $output, $global_result) {
+   /**
+    * @see inc/RuleCollection::showTestResults()
+   */
+   function showTestResults($rule, array $output, $global_result) {
 
       $actions = $rule->getActions();
       echo "<tr><th colspan='4'>" . __('Rule results') . "</th></tr>";
@@ -156,6 +162,8 @@ class RuleRightCollection extends RuleCollection {
 
    /**
     * Get all the fields needed to perform the rule
+    *
+    * @see inc/RuleCollection::getFieldsToLookFor()
    **/
    function getFieldsToLookFor() {
       global $DB;

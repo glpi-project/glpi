@@ -208,8 +208,8 @@ class RuleCollection extends CommonDBTM {
    /**
     * Get Collection Datas : retrieve descriptions and rules
     *
-    * @param $retrieve_criteria Retrieve the criterias of the rules ?
-    * @param $retrieve_action Retrieve the action of the rules ?
+    * @param $retrieve_criteria  Retrieve the criterias of the rules ? (default 0)
+    * @param $retrieve_action    Retrieve the action of the rules ? (default 0)
    **/
    function getCollectionDatas($retrieve_criteria=0, $retrieve_action=0) {
       global $DB;
@@ -257,7 +257,6 @@ class RuleCollection extends CommonDBTM {
 
    /**
     * Get a instance of the class to manipulate rule of this collection
-    *
    **/
    function getRuleClass() {
 
@@ -285,10 +284,10 @@ class RuleCollection extends CommonDBTM {
    /**
     * Replay Collection on DB
     *
-    * @param $offset  first row to work on
-    * @param $maxtime float : max system time to stop working
-    * @param $items   array containg items to replay. If empty -> all
-    * @param $params  additional parameters if needed
+    * @param $offset             first row to work on (default 0)
+    * @param $maxtime   float    max system time to stop working (default 0)
+    * @param $items     array    containg items to replay. If empty -> all
+    * @param $params    array    additional parameters if needed
     *
     * @return -1 if all rows done, else offset for next run
    **/
@@ -344,7 +343,7 @@ class RuleCollection extends CommonDBTM {
       if ($this->use_output_rule_process_as_next_input) {
          //The engine keep the result of a rule to be processed further
          echo "<span class='center b'>".
-                __('The engine passes the result of a rule to the following ones.')."</span><br>";
+                __('The engine passes the result of a rule to the following one.')."</span><br>";
       }
       echo "</th></tr>";
       echo "</table>\n";
@@ -355,7 +354,7 @@ class RuleCollection extends CommonDBTM {
     * Show the list of rules
     *
     * @param $target
-    * @param $options
+    * @param $options   array
     *
     * @return nothing
    **/
@@ -449,8 +448,8 @@ class RuleCollection extends CommonDBTM {
 
          if ($this->can_replay_rules) {
             echo "</td>"; // close td of Html::openArrowMassives
-            echo "<td><input type='submit' name='replay_rule' value='" . __s('Replay the dictionary rules') .
-                       "' class='submit'></td>";
+            echo "<td><input type='submit' name='replay_rule' value='" .
+                   __s('Replay the dictionary rules') ."' class='submit'></td>";
             echo "<td>"; // open td for Html::closeArrowMassives
          }
          $options = array();
@@ -491,7 +490,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * Modify rule's ranking and automatically reorder all rules
     *
-    * @param $ID the rule ID whose ranking must be modified
+    * @param $ID     the rule ID whose ranking must be modified
     * @param $action up or down
    **/
    function changeRuleOrder($ID, $action) {
@@ -565,12 +564,11 @@ class RuleCollection extends CommonDBTM {
    /**
     * Move a rule in an ordered collection
     *
-    * @param $ID of the rule to move
-    * @param $ref_ID of the rule position  (0 means all, so before all or after all)
-    * @param $type of move : after or before
+    * @param $ID        of the rule to move
+    * @param $ref_ID    of the rule position  (0 means all, so before all or after all)
+    * @param $type      of move : after or before ( default $type='after')
     *
     * @return true if all ok
-    *
    **/
    function moveRule($ID, $ref_ID, $type='after') {
       global $DB;
@@ -699,10 +697,10 @@ class RuleCollection extends CommonDBTM {
    /**
     * Show form displaying results for rule collection preview
     *
-    * @param $target where to go
-    * @param $values data array
+    * @param $target       where to go
+    * @param $values array of data
     **/
-   function showRulesEnginePreviewCriteriasForm($target, $values) {
+   function showRulesEnginePreviewCriteriasForm($target, array $values) {
       global $DB;
 
       $input = $this->prepareInputDataForTestProcess();
@@ -735,8 +733,7 @@ class RuleCollection extends CommonDBTM {
          $rule->showSpecificCriteriasForPreview($_POST);
 
          echo "<tr><td class='tab_bg_2 center' colspan='2'>";
-         echo "<input type='submit' name='test_all_rules' value='" . __s('Test') .
-                "' class='submit'>";
+         echo "<input type='submit' name='test_all_rules' value='". __s('Test')."' class='submit'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getRuleClassName() . "'>";
          echo "</td></tr>\n";
          echo "</table></div>";
@@ -753,9 +750,9 @@ class RuleCollection extends CommonDBTM {
    /**
     * Test all the rules collection
     *
-    * @param input the input data used to check criterias
-    * @param output the initial ouput array used to be manipulate by actions
-    * @param params parameters for all internal functions
+    * @param input   array the input data used to check criterias
+    * @param output  array the initial ouput array used to be manipulate by actions
+    * @param params  array parameters for all internal functions
     *
     * @return the output array updated by actions
    **/
@@ -771,14 +768,14 @@ class RuleCollection extends CommonDBTM {
 
             //If the rule is active, process it
             if ($rule->fields["is_active"]) {
-               $output["_rule_process"] = false;
+               $output["_rule_process"]                     = false;
                $output["result"][$rule->fields["id"]]["id"] = $rule->fields["id"];
                $rule->process($input, $output, $params);
 
                if ($output["_rule_process"] && $this->stop_on_first_match) {
                   unset($output["_rule_process"]);
                   $output["result"][$rule->fields["id"]]["result"] = 1;
-                  $output["_ruleid"] = $rule->fields["id"];
+                  $output["_ruleid"]                               = $rule->fields["id"];
                   return $output;
 
                } else if ($output["_rule_process"]) {
@@ -806,7 +803,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * Prepare input datas for the rules collection
     *
-    * @param $input the input data used to check criterias
+    * @param $input  the input data used to check criterias
     * @param $params parameters
     *
     * @return the updated input datas
@@ -841,10 +838,10 @@ class RuleCollection extends CommonDBTM {
    /**
     * Show form displaying results for rule engine preview
     *
-    * @param $target where to go
-    * @param $input data array
+    * @param $target          where to go
+    * @param $input  array of data
    **/
-   function showRulesEnginePreviewResultsForm($target, $input) {
+   function showRulesEnginePreviewResultsForm($target, array $input) {
 
       $output = array();
 
@@ -897,11 +894,11 @@ class RuleCollection extends CommonDBTM {
    /**
     * Unset criterias from the rule's ouput results (begins by _)
     *
-    * @param $output clean output array to clean
+    * @param $output    array clean output array to clean
     *
     * @return cleaned array
    **/
-   function cleanTestOutputCriterias($output) {
+   function cleanTestOutputCriterias(array $output) {
 
       //If output array contains keys begining with _ : drop it
       foreach ($output as $criteria => $value) {
@@ -916,13 +913,13 @@ class RuleCollection extends CommonDBTM {
    /**
     * Show test results for a rule
     *
-    * @param $rule rule object
-    * @param $output Output data array
-    * @param $global_result boolean : global result
+    * @param $rule                     rule object
+    * @param $output          array    output data array
+    * @param $global_result   boolean  global result
     *
     * @return cleaned array
     **/
-   function showTestResults($rule, $output, $global_result) {
+   function showTestResults($rule, array $output, $global_result) {
 
       $actions = $rule->getActions();
       echo "<table class='tab_cadrehov'>";
@@ -945,6 +942,9 @@ class RuleCollection extends CommonDBTM {
    }
 
 
+   /**
+    * @param $output
+   **/
    function preProcessPreviewResults($output) {
       return $this->cleanTestOutputCriterias($output);
    }
@@ -962,8 +962,9 @@ class RuleCollection extends CommonDBTM {
    /**
     * Get rulecollection classname by giving his itemtype
     *
-    * @param $itemtype itemtype
-    * @param $check_dictionnary_type check if the itemtype is a dictionnary or not
+    * @param $itemtype                 itemtype
+    * @param $check_dictionnary_type   check if the itemtype is a dictionnary or not
+    *                                  (false by default)
     *
     * @return the rulecollection class or null
     */
@@ -1033,6 +1034,9 @@ class RuleCollection extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonGLPI::defineTabs()
+   **/
    function defineTabs($options=array()) {
 
       $ong = array();
@@ -1042,6 +1046,9 @@ class RuleCollection extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonGLPI::getTabNameForItem()
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item instanceof RuleCollection){
