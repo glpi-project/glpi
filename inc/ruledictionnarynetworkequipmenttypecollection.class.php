@@ -39,12 +39,15 @@ class RuleDictionnaryNetworkEquipmentTypeCollection extends RuleDictionnaryDropd
    **/
    function __construct() {
 
-      $this->item_table = "glpi_networkequipmenttypes";
+      $this->item_table  = "glpi_networkequipmenttypes";
       $this->initCache("glpi_rulecachenetworkequipmenttypes");
       $this->menu_option = "type.networking";
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
       return __('Dictionnary of network equipment types');
    }

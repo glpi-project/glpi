@@ -53,6 +53,9 @@ class RuleDictionnaryComputerTypeCollection extends RuleDictionnaryDropdownColle
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
       return __('Dictionnary of computer types');
    }

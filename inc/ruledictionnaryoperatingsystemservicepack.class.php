@@ -43,9 +43,12 @@ class RuleDictionnaryOperatingSystemServicePack extends RuleDictionnaryDropdown 
    }
 
 
+   /**
+    * @see inc/Rule::getCriterias()
+   **/
    function getCriterias() {
 
-      $criterias = array();
+      $criterias                  = array();
       $criterias['name']['field'] = 'name';
       $criterias['name']['name']  = __('Service Pack');
       $criterias['name']['table'] = 'glpi_operatingsystemservicepacks';
@@ -54,9 +57,12 @@ class RuleDictionnaryOperatingSystemServicePack extends RuleDictionnaryDropdown 
    }
 
 
+   /**
+    * @see inc/Rule::getActions()
+   **/
    function getActions() {
 
-      $actions = array();
+      $actions                          = array();
       $actions['name']['name']          = __('Service Pack');
       $actions['name']['force_actions'] = array('append_regex_result', 'assign', 'regex_result');
 
@@ -64,5 +70,4 @@ class RuleDictionnaryOperatingSystemServicePack extends RuleDictionnaryDropdown 
    }
 
 }
-
 ?>

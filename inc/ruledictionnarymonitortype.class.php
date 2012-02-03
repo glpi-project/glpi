@@ -43,9 +43,12 @@ class RuleDictionnaryMonitorType extends RuleDictionnaryDropdown {
    }
 
 
+   /**
+    * @see inc/Rule::getCriterias()
+   **/
    function getCriterias() {
 
-      $criterias = array();
+      $criterias                  = array();
       $criterias['name']['field'] = 'name';
       $criterias['name']['name']  = __('Type');
       $criterias['name']['table'] = 'glpi_monitortypes';
@@ -54,9 +57,12 @@ class RuleDictionnaryMonitorType extends RuleDictionnaryDropdown {
    }
 
 
+   /**
+    * @see inc/Rule::getActions()
+   **/
    function getActions() {
 
-      $actions = array();
+      $actions                          = array();
       $actions['name']['name']          = __('Type');
       $actions['name']['force_actions'] = array('append_regex_result', 'assign', 'regex_result');
 

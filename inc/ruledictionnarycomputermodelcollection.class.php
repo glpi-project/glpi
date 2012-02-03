@@ -46,14 +46,17 @@ class RuleDictionnaryComputerModelCollection extends RuleDictionnaryDropdownColl
    **/
    function __construct() {
 
-      $this->item_table="glpi_computermodels";
+      $this->item_table  = "glpi_computermodels";
       //Init cache system values
       $this->initCache("glpi_rulecachecomputermodels", array("name"         => "old_value",
                                                              "manufacturer" => "manufacturer"));
-      $this->menu_option="model.computer";
+      $this->menu_option = "model.computer";
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
       return __('Dictionnary of computer models');
    }

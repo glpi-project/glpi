@@ -46,15 +46,17 @@ class RuleDictionnaryMonitorTypeCollection extends RuleDictionnaryDropdownCollec
    **/
    function __construct() {
 
-      $this->item_table="glpi_monitortypes";
+      $this->item_table  = "glpi_monitortypes";
       //Init cache system values
       $this->initCache("glpi_rulecachemonitortypes");
       $this->menu_option = "type.monitor";
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
-
       return __('Dictionnary of monitor types');
    }
 

@@ -39,13 +39,16 @@ class RuleDictionnaryPeripheralModelCollection extends RuleDictionnaryDropdownCo
    **/
    function __construct() {
 
-      $this->item_table="glpi_peripheralmodels";
+      $this->item_table  = "glpi_peripheralmodels";
       $this->initCache("glpi_rulecacheperipheralmodels", array("name"         => "old_value",
                                                                "manufacturer" => "manufacturer"));
       $this->menu_option = "model.peripheral";
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
       return __('Dictionnary of device models');
    }

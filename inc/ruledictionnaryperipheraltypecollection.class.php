@@ -45,6 +45,9 @@ class RuleDictionnaryPeripheralTypeCollection extends RuleDictionnaryDropdownCol
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
       return __('Dictionnary of device types');
    }

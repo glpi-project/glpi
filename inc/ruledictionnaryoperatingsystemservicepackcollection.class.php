@@ -45,6 +45,9 @@ class RuleDictionnaryOperatingSystemServicePackCollection extends RuleDictionnar
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
       return __('Dictionnary of Service Packs');
    }

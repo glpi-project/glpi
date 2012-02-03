@@ -44,6 +44,9 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
    var $item_table = "";
 
 
+   /**
+    * @see inc/RuleCollection::replayRulesOnExistingDB()
+   **/
    function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
       global $DB;
 
@@ -53,7 +56,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       }
 
       if (isCommandLine()) {
-         echo "replayRulesOnExistingDB started : " . date("r") . "\n";
+         printf(__('Replay rules on existing database started on %s')."\n", date("r"));
       }
 
       // Get All items
@@ -68,14 +71,15 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       $i  = $offset;
       if ($result && $nb>$offset) {
          // Step to refresh progressbar
-         $step = ($nb>20 ? floor($nb/20) : 1);
-         $send = array();
+         $step              = ($nb>20 ? floor($nb/20) : 1);
+         $send              = array();
          $send["tablename"] = $this->item_table;
 
          while ($data = $DB->fetch_array($result)) {
             if (!($i % $step)) {
                if (isCommandLine()) {
-                  echo "replayRulesOnExistingDB : $i/$nb\r";
+                  //TRANS: %1$s is a row, %2$s is total rows
+                  printf(__('Replay rules on existing database: %1$s/%2$s')."\r", $i, $nb);
                } else {
                   Html::changeProgressBarPosition($i, $nb, "$i / $nb");
                }
@@ -106,7 +110,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       }
 
       if (isCommandLine()) {
-         echo "replayRulesOnExistingDB ended : " . date("r") . "\n";
+         printf(__('Replay rules on existing database started on %s')."\n", date("r"));
       } else {
          Html::changeProgressBarPosition($i, $nb, "$i / $nb");
       }
@@ -117,8 +121,8 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
    /**
     * Replay collection rules on an existing DB for model dropdowns
     *
-    * @param $offset offset used to begin
-    * @param $maxtime maximum time of process (reload at the end)
+    * @param $offset    offset used to begin (default 0)
+    * @param $maxtime   maximum time of process (reload at the end) (default 0)
     *
     * @return -1 on completion else current offset
    **/
@@ -126,12 +130,12 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       global $DB;
 
       if (isCommandLine()) {
-         echo "replayRulesOnExistingDB started : " . date("r") . "\n";
+         printf(__('Replay rules on existing database started on %s')."\n", date("r"));
       }
 
       // Model check : need to check using manufacturer extra data
       if (strpos($this->item_table,'models')===false) {
-         echo "Error replaying rules";
+         _e('Error replaying rules');
          return false;
       }
 
@@ -167,7 +171,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
             if (!($i % $step)) {
 
                if (isCommandLine()) {
-                  echo "replayRulesOnExistingDB : $i/$nb\r";
+                  printf(__('Replay rules on existing database: %1$s/%2$s')."\r", $i, $nb);
                } else {
                   Html::changeProgressBarPosition($i, $nb, "$i / $nb");
                }
@@ -261,7 +265,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       }
 
       if (isCommandLine()) {
-         echo "replayRulesOnExistingDB ended : " . date("r") . "\n";
+         printf(__('Replay rules on existing database ended on %s')."\n", date("r"));;
       } else {
          Html::changeProgressBarPosition($i, $nb, "$i / $nb");
       }

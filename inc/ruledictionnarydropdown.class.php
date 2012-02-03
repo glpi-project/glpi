@@ -40,11 +40,17 @@ class RuleDictionnaryDropdown extends RuleCached {
    public $show_cache = false;
 
 
+   /**
+    * @see inc/Rule::maxActionsCount()
+   **/
    function maxActionsCount() {
       return 1;
    }
 
 
+   /**
+    * @see inc/RuleCached::showCacheRuleHeader()
+   **/
    function showCacheRuleHeader() {
 
       if ($this->show_cache) {
@@ -59,6 +65,9 @@ class RuleDictionnaryDropdown extends RuleCached {
    }
 
 
+   /**
+    * @see inc/RuleCached::showCacheRuleDetail()
+   **/
    function showCacheRuleDetail($fields) {
 
       if ($this->show_cache) {
