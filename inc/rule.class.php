@@ -946,11 +946,6 @@ class Rule extends CommonDBTM {
                   }
                   $output[$action->fields["field"]] = $res;
                   break;
-
-               default :
-                  //Each type can add his own actions
-                  $output = $this->executeSpecificActions($output,$params);
-                  break;
             }
          }
       }
@@ -1833,22 +1828,11 @@ class Rule extends CommonDBTM {
 
    /**
     * Add more actions specific to this type of rule
+    *
+    * @param $value
    **/
    function displayAdditionRuleActionValue($value) {
       return $value;
-   }
-
-
-   /**
-    * Method for each type to manage his own actions
-    *
-    * @param output the rule's execution actions
-    * @param params additional parameters that may be used
-    *
-    * @return the rule's execution array modified
-   **/
-   function executeSpecificActions($output, $params) {
-      return $output;
    }
 
 
