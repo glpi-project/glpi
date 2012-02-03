@@ -772,7 +772,7 @@ class Rule extends CommonDBTM {
          }
 
       } else { // OR MATCHING
-         $doactions           = false;
+         $doactions = false;
          foreach ($this->criterias as $criteria) {
             $definition_criteria = $this->getCriteria($criteria->fields['criteria']);
 
@@ -789,17 +789,16 @@ class Rule extends CommonDBTM {
       //If all simple criteria match, and if necessary, check complex criteria
       if ($doactions) {
          return $this->findWithGlobalCriteria($input);
-      } else {
-         return false;
       }
+      return false;
    }
 
 
    /**
     * Check criterias
     *
-    * @param $input the input data used to check criterias
-    * @param $check_results
+    * @param $input           the input data used to check criterias
+    * @param &$check_results
     *
     * @return boolean if criterias match
    **/
@@ -820,8 +819,8 @@ class Rule extends CommonDBTM {
    /**
     * Process a criteria of a rule
     *
-    * @param $criteria criteria to check
-    * @param $input the input data used to check criterias
+    * @param &$criteria  criteria to check
+    * @param &$input     the input data used to check criterias
    **/
    function checkCriteria(&$criteria, &$input) {
 
@@ -838,8 +837,8 @@ class Rule extends CommonDBTM {
                                           $criteria->fields["condition"],
                                           $input[$criteria->fields["criteria"]]);
 
-         $res = RuleCriteria::match($criteria, $value, $this->criterias_results,
-                                    $partial_regex_result);
+         $res   = RuleCriteria::match($criteria, $value, $this->criterias_results,
+                                      $partial_regex_result);
       } else {
          //If the value if, in fact, an array of values
          // Negative condition : Need to match all condition (never be)
@@ -893,14 +892,16 @@ class Rule extends CommonDBTM {
       return $res;
    }
 
+
    function findWithGlobalCriteria($input) {
       return true;
    }
 
+
    /**
     * Specific prepare input datas for the rule
     *
-    * @param $input the input data used to check criterias
+    * @param $input  the input data used to check criterias
     * @param $params parameters
     *
     * @return the updated input datas
@@ -982,10 +983,10 @@ class Rule extends CommonDBTM {
    /**
     * Show the minimal form for the rule
     *
-    * @param $target link to the form page
-    * @param $first is it the first rule ?
-    * @param $last is it the last rule ?
-    * @param $display_entities display entities / make it read only display
+    * @param $target             link to the form page
+    * @param $first              is it the first rule ?(false by default)
+    * @param $last               is it the last rule ? (false by default)
+    * @param $display_entities   display entities / make it read only display (false by default)
    **/
    function showMinimalForm($target, $first=false, $last=false, $display_entities=false) {
       global $CFG_GLPI;
@@ -1020,7 +1021,7 @@ class Rule extends CommonDBTM {
       if ($display_entities) {
          $rec = '';
          if ($this->maybeRecursive() && $this->fields['is_recursive']) {
-            $rec =' <span class="b">&nbsp;(R)</span>';
+            $rec = "<span class='b'>&nbsp;".__('(R)')."</span>";
          }
          echo "<td>".Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']).
                      "$rec</td>";
@@ -1051,6 +1052,9 @@ class Rule extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
       // Before adding, add the ranking of the new rule
@@ -1065,7 +1069,7 @@ class Rule extends CommonDBTM {
    function getNextRanking() {
       global $DB;
 
-      $sql = "SELECT max(`ranking`) AS rank
+      $sql = "SELECT MAX(`ranking`) AS rank
               FROM `glpi_rules`
               WHERE `sub_type` = '".$this->getType()."'";
       $result = $DB->query($sql);
