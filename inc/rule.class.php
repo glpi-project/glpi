@@ -1110,9 +1110,9 @@ class Rule extends CommonDBTM {
    /**
     * Show preview result of a rule
     *
-    * @param $target where to go if action
-    * @param $input input data array
-    * @param $params params used (see addSpecificParamsForPreview)
+    * @param $target    where to go if action
+    * @param $input     input data array
+    * @param $params    params used (see addSpecificParamsForPreview)
    **/
    function showRulePreviewResultsForm($target, $input, $params) {
 
@@ -1186,8 +1186,8 @@ class Rule extends CommonDBTM {
    /**
     * Show the minimal form for the criteria rule
     *
-    * @param $fields datas used to display the criteria
-    * @param $canedit can edit the criterias rule ?
+    * @param $fields    datas used to display the criteria
+    * @param $canedit   can edit the criterias rule ?
    **/
    function showMinimalCriteriaForm($fields, $canedit) {
 
