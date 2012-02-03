@@ -308,13 +308,11 @@ class Rule extends CommonDBTM {
 
       } else if ($ret=$this->getFromDB($ID)) {
 
-         if ($withactions) {
-            $RuleAction    = new $this->ruleactionclass();
+         if ($withactions && ($RuleAction = getItemForItemtype($this->ruleactionclass))) {
             $this->actions = $RuleAction->getRuleActions($ID);
          }
 
-         if ($withcriterias) {
-            $RuleCriterias   = new $this->rulecriteriaclass();
+         if ($withcriterias && ($RuleCriterias = getItemForItemtype($this->rulecriteriaclass))) {
             $this->criterias = $RuleCriterias->getRuleCriterias($ID);
          }
 
@@ -437,25 +435,25 @@ class Rule extends CommonDBTM {
       // CFG_GLPI needed by ruleaction.php
       global $CFG_GLPI;
 
-      $ra = new $this->ruleactionclass();
+      if ($ra = getItemForItemtype($this->ruleactionclass)) {
+         echo "<div class='firstbloc'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th colspan='4'>" . _n('Action', 'Actions', 1) . "</tr>";
 
-      echo "<div class='firstbloc'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr><th colspan='4'>" . _n('Action', 'Actions', 1) . "</tr>";
-
-      echo "<tr class='tab_bg_1 center'>";
-      echo "<td>"._n('Action', 'Actions', 1) . "</td><td>";
-      $val = $this->dropdownActions($ra->getAlreadyUsedForRuleID($rules_id, $this->getType()));
-      echo "</td><td class='left'><span id='action_span'>\n";
-      $_POST["sub_type"] = $this->getType();
-      $_POST["field"]    = $val;
-      include (GLPI_ROOT."/ajax/ruleaction.php");
-      echo "</span></td>\n";
-      echo "<td class='tab_bg_2 left' width='80px'>";
-      echo "<input type='hidden' name='".$this->rules_id_field."' value='".$this->fields["id"]."'>";
-      echo "<input type='submit' name='add_action' value=\"".__s('Add')."\" class='submit'>";
-      echo "</td></tr>\n";
-      echo "</table></div>";
+         echo "<tr class='tab_bg_1 center'>";
+         echo "<td>"._n('Action', 'Actions', 1) . "</td><td>";
+         $val = $this->dropdownActions($ra->getAlreadyUsedForRuleID($rules_id, $this->getType()));
+         echo "</td><td class='left'><span id='action_span'>\n";
+         $_POST["sub_type"] = $this->getType();
+         $_POST["field"]    = $val;
+         include (GLPI_ROOT."/ajax/ruleaction.php");
+         echo "</span></td>\n";
+         echo "<td class='tab_bg_2 left' width='80px'>";
+         echo "<input type='hidden' name='".$this->rules_id_field."' value='".$this->fields["id"]."'>";
+         echo "<input type='submit' name='add_action' value=\"".__s('Add')."\" class='submit'>";
+         echo "</td></tr>\n";
+         echo "</table></div>";
+      }
    }
 
 
@@ -1126,7 +1124,9 @@ class Rule extends CommonDBTM {
       //Process the rule
       $this->process($input, $output, $params);
 
-      $criteria = new $this->rulecriteriaclass();
+      if (!$criteria = getItemForItemtype($this->rulecriteriaclass)) {
+         return;
+      }
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadrehov'>";
@@ -1139,7 +1139,7 @@ class Rule extends CommonDBTM {
       echo "<td class='center b'>".__('Validation')."</td>";
       echo "</tr>\n";
 
-      foreach ($check_results as $ID=>$criteria_result) {
+      foreach ($check_results as $ID => $criteria_result) {
          echo "<tr class='tab_bg_1'>";
          $criteria->getFromDB($criteria_result["id"]);
          echo $this->getMinimalCriteriaText($criteria->fields);
@@ -1209,6 +1209,9 @@ class Rule extends CommonDBTM {
    }
 
 
+   /**
+    * @param $fields
+   */
    function getMinimalCriteriaText($fields) {
 
       $text  = "<td>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
@@ -1220,6 +1223,9 @@ class Rule extends CommonDBTM {
    }
 
 
+   /**
+    * @param $fields
+   **/
    function getMinimalActionText($fields) {
 
       $text  = "<td>" . $this->getActionName($fields["field"]) . "</td>";
@@ -1233,9 +1239,9 @@ class Rule extends CommonDBTM {
    /**
     * Return a value associated with a pattern associated to a criteria to display it
     *
-    * @param $ID the given criteria
+    * @param $ID        the given criteria
     * @param $condition condition used
-    * @param $pattern the pattern
+    * @param $pattern   the pattern
    **/
    function getCriteriaDisplayPattern($ID, $condition, $pattern) {
 
@@ -1244,8 +1250,7 @@ class Rule extends CommonDBTM {
           || $condition == self::PATTERN_FIND) {
           return __('Yes');
 
-      } else if (in_array($condition, array(self::PATTERN_IS,
-                                            self::PATTERN_IS_NOT,
+      } else if (in_array($condition, array(self::PATTERN_IS, self::PATTERN_IS_NOT,
                                             self::PATTERN_UNDER))) {
          $crit = $this->getCriteria($ID);
 
@@ -1259,8 +1264,9 @@ class Rule extends CommonDBTM {
                   $addentity = "";
                   if ($this->isEntityAssign()) {
                      $itemtype = getItemTypeForTable($crit["table"]);
-                     $item     = new $itemtype();
-                     if ($item->isEntityAssign() && $item->getFromDB($pattern)) {
+                     if ($item->isEntityAssign()
+                         && $item->getFromDB($pattern)
+                         && $item = getItemForItemtype($itemtype)) {
                         $addentity = '&nbsp;('.Dropdown::getDropdownName('glpi_entities',
                                                                          $item->getEntityID()).')';
                      }
@@ -1273,7 +1279,7 @@ class Rule extends CommonDBTM {
 
                case "dropdown_tracking_itemtype" :
                   if ($item = getItemForItemtype($pattern)) {
-                     return $item->getTypeName();
+                     return $item->getTypeName(1);
                   }
                   if (empty($pattern)) {
                      return __('General');
@@ -1304,9 +1310,9 @@ class Rule extends CommonDBTM {
    /**
     * Used to get specific criteria patterns
     *
-    * @param $ID the given criteria
+    * @param $ID        the given criteria
     * @param $condition condition used
-    * @param $pattern the pattern
+    * @param $pattern   the pattern
     *
     * @return a value associated with the criteria, or false otherwise
    **/
@@ -1318,11 +1324,11 @@ class Rule extends CommonDBTM {
    /**
     * Display item used to select a pattern for a criteria
     *
-    * @param $name criteria name
-    * @param $ID the given criteria
+    * @param $name      criteria name
+    * @param $ID        the given criteria
     * @param $condition condition used
-    * @param $value the pattern
-    * @param $test Is to test rule ?
+    * @param $value     the pattern (default '')
+    * @param $test      Is to test rule ? (false by default)
    **/
    function displayCriteriaSelectPattern($name, $ID, $condition, $value="", $test=false) {
 
@@ -1331,8 +1337,7 @@ class Rule extends CommonDBTM {
       $tested  = false;
 
       if (isset($crit['type'])
-          && ($test || in_array($condition, array(self::PATTERN_IS,
-                                                  self::PATTERN_IS_NOT,
+          && ($test || in_array($condition, array(self::PATTERN_IS, self::PATTERN_IS_NOT,
                                                   self::PATTERN_UNDER)))) {
 
          switch ($crit['type']) {
@@ -1360,8 +1365,7 @@ class Rule extends CommonDBTM {
                break;
 
             case "dropdown_tracking_itemtype" :
-               Dropdown::dropdownTypes($name, 0 ,
-                                       array_keys(Ticket::getAllTypesForHelpdesk()));
+               Dropdown::dropdownTypes($name, 0 , array_keys(Ticket::getAllTypesForHelpdesk()));
                $display = true;
                break;
 
@@ -1397,8 +1401,7 @@ class Rule extends CommonDBTM {
          $display = true;
       }
 
-      if (!$display) {
-         $rc = new $this->rulecriteriaclass();
+      if (!$display && ($rc = getItemForItemtype($this->rulecriteriaclass))) {
          Html::autocompletionTextField($rc, "pattern", array('name'  => $name,
                                                              'value' => $value,
                                                              'size'  => 70));
@@ -1409,8 +1412,8 @@ class Rule extends CommonDBTM {
    /**
     * Return a "display" value associated with a pattern associated to a criteria
     *
-    * @param $ID the given action
-    * @param $value the value
+    * @param $ID     the given action
+    * @param $value  the value
    **/
    function getActionValue($ID, $value) {
 
@@ -1461,15 +1464,14 @@ class Rule extends CommonDBTM {
    /**
     * Return a value associated with a pattern associated to a criteria to display it
     *
-    * @param $ID the given criteria
+    * @param $ID        the given criteria
     * @param $condition condition used
-    * @param $value the pattern
+    * @param $value     the pattern
    **/
    function getCriteriaValue($ID, $condition, $value) {
 
-      if (!in_array($condition, array(self::PATTERN_IS,
-                                      self::PATTERN_IS_NOT,
-                                      self::PATTERN_UNDER,))) {
+      if (!in_array($condition, array(self::PATTERN_IS, self::PATTERN_IS_NOT,
+                                      self::PATTERN_UNDER))) {
          $crit = $this->getCriteria($ID);
          if (isset($crit['type'])) {
 
@@ -1523,24 +1525,23 @@ class Rule extends CommonDBTM {
    /**
     * Criteria form used to preview rule
     *
-    * @param $target target of the form
-    * @param $rules_id ID of the rule
+    * @param $target    target of the form
+    * @param $rules_id  ID of the rule
    **/
    function showRulePreviewCriteriasForm($target, $rules_id) {
       global $DB;
 
       $criterias = $this->getCriterias();
 
-      if ($this->getRuleWithCriteriasAndActions($rules_id,1,0)) {
+      if ($this->getRuleWithCriteriasAndActions($rules_id, 1, 0)) {
          echo "<form name='testrule_form' id='testrule_form' method='post' action='$target'>\n";
          echo "<div class='spaced'>";
          echo "<table class='tab_cadre'>";
          echo "<tr><th colspan='3'>" . _n('Criteria', 'Criteria', 2) . "</th></tr>";
 
-         $type_match = ($this->fields["match"]==self::AND_MATCHING
-                        ?__('and'):__('or'));
+         $type_match        = ($this->fields["match"]==self::AND_MATCHING ?__('and') :__('or'));
          $already_displayed = array();
-         $first = true;
+         $first             = true;
 
          //Brower all criterias
          foreach ($this->criterias as $criteria) {
@@ -1561,7 +1562,7 @@ class Rule extends CommonDBTM {
 
                echo "</td>";
                $criteria_constants = $criterias[$criteria->fields["criteria"]];
-               echo "<td>".$criteria_constants["name"]."&nbsp;:&nbsp;</td>";
+               echo "<td>".$criteria_constants["name"]."</td>";
                echo "<td>";
                $value = "";
                if (isset($_POST[$criteria->fields["criteria"]])) {
@@ -1577,8 +1578,7 @@ class Rule extends CommonDBTM {
          $this->showSpecificCriteriasForPreview($_POST);
 
          echo "<tr><td class='tab_bg_2 center' colspan='3'>";
-         echo "<input type='submit' name='test_rule' value=\"".__s('Test')."\"
-                class='submit'>";
+         echo "<input type='submit' name='test_rule' value=\"".__s('Test')."\" class='submit'>";
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getType() . "'>";
          echo "</td></tr>\n";
@@ -1587,6 +1587,9 @@ class Rule extends CommonDBTM {
    }
 
 
+   /**
+    * @param $output
+   **/
    function preProcessPreviewResults($output) {
       return $output;
    }
@@ -1595,11 +1598,9 @@ class Rule extends CommonDBTM {
    /**
     * Dropdown rules for a defined sub_type of rule
     *
-    * Parameters which could be used in options array :
+    * @param $options   array of possible options:
     *    - name : string / name of the select (default is depending itemtype)
     *    - sub_type : integer / sub_type of rule
-    *
-    * @param $options possible options
    **/
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI;
@@ -1655,6 +1656,9 @@ class Rule extends CommonDBTM {
    }
 
 
+   /**
+    * @param $sub_type
+   **/
    static function getActionsByType($sub_type) {
 
       if ($rule = getItemForItemtype($sub_type)) {
@@ -1682,7 +1686,8 @@ class Rule extends CommonDBTM {
       $query = "SELECT `".$this->getTable()."`.`id`
                 FROM `".getTableForItemType($this->ruleactionclass)."`,
                      `".$this->getTable()."`
-                WHERE `".getTableForItemType($this->ruleactionclass)."`.".$this->rules_id_field." = `".$this->getTable()."`.`id`
+                WHERE `".getTableForItemType($this->ruleactionclass)."`.".$this->rules_id_field."
+                           = `".$this->getTable()."`.`id`
                       AND `".$this->getTable()."`.`sub_type` = '".get_class($this)."'";
 
       foreach ($crit as $field => $value) {
@@ -1692,12 +1697,15 @@ class Rule extends CommonDBTM {
       foreach ($DB->request($query) as $rule) {
          $affect_rule = new Rule();
          $affect_rule->getRuleWithCriteriasAndActions($rule["id"], 0, 1);
-         $rules[] = $affect_rule;
+         $rules[]     = $affect_rule;
       }
       return $rules;
    }
 
 
+   /**
+    * @param $ID
+   **/
    function showNewRuleForm($ID) {
 
       echo "<form method='post' action='".Toolbox::getItemTypeFormURL('Entity')."'>";
@@ -1723,6 +1731,9 @@ class Rule extends CommonDBTM {
    }
 
 
+   /**
+    * @param $item
+   **/
    function showAndAddRuleForm($item) {
 
       $canedit = Session::haveRight($this->right, "w");
@@ -1762,8 +1773,10 @@ class Rule extends CommonDBTM {
          echo "</tr>\n";
 
          Session::initNavigateListItems(get_class($this),
-               //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-               sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
+                              //TRANS: %1$s is the itemtype name,
+                              //       %2$s is the name of the item (used for headings of a list)
+                                        sprintf(__('%1$s = %2$s'),
+                                                $item->getTypeName(1), $item->getName()));
 
          foreach ($rules as $rule) {
             Session::addToNavigateListItems(get_class($this), $rule->fields["id"]);
@@ -1797,6 +1810,9 @@ class Rule extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonGLPI::defineTabs()
+   **/
    function defineTabs($options=array()) {
 
       $ong = array();
