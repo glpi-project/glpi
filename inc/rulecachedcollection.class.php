@@ -50,17 +50,17 @@ class RuleCachedCollection extends RuleCollection {
    /**
     * Init a cache rule collection
     *
-    * @param $cache_table cache table used
-    * @param $input_params Input parameters to store
-    * @param $output_params Output parameters to store
+    * @param $cache_table           cache table used
+    * @param $input_params    array input parameters to store (default "name" => "old_value")
+    * @param $output_params   array output parameters to store (default "name" => "new_value")
     *
     * @return nothing
    **/
    function initCache($cache_table, $input_params=array("name" => "old_value"),
                       $output_params=array("name" => "new_value")) {
 
-      $this->can_replay_rules    = true;
-      $this->stop_on_first_match = true;
+      $this->can_replay_rules             = true;
+      $this->stop_on_first_match          = true;
       $this->cache_table                  = $cache_table;
       $this->cache_params["input_value"]  = $input_params;
       $this->cache_params["output_value"] = $output_params;
@@ -79,9 +79,8 @@ class RuleCachedCollection extends RuleCollection {
 
       echo "<div class='spaced center'>";
       echo "<a class='vsubmit' href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
-            "/front/popup.php?popup=show_cache&amp;sub_type=".
-            $this->getRuleClassName()."' ,'glpipopup', ".
-            "'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".
+            "/front/popup.php?popup=show_cache&amp;sub_type=".$this->getRuleClassName()."' , ".
+            "'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".
             __('Cache information')."</a></div>";
    }
 
@@ -89,10 +88,11 @@ class RuleCachedCollection extends RuleCollection {
    /**
     * Process all the rules collection
     *
-    * @param input the input data used to check criterias
-    * @param output the initial ouput array used to be manipulate by actions
-    * @param params parameters for all internal functions
-    * @param force_no_cache don't write rule's result into cache (for preview mode mainly)
+    * @param input            array the input data used to check criterias
+    * @param output           array the initial ouput array used to be manipulate by actions
+    * @param params           array parameters for all internal functions
+    * @param force_no_cache         don't write rule's result into cache (for preview mode mainly)
+    *                               (false by default)
     *
     * @return the output array updated by actions
    **/
@@ -106,7 +106,7 @@ class RuleCachedCollection extends RuleCollection {
          $output["_rule_process"] = true;
          return array_merge($output, $new_values);
       }
-      $output = parent::processAllRules($input, $output, $params);
+      $output = parent::processAllRules($input, $output, $params, $force_no_cache);
 
       if (!$force_no_cache && isset($output["_ruleid"])) {
          $this->insertDataInCache($input, $output);

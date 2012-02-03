@@ -71,6 +71,9 @@ class RuleCached extends Rule {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::post_updateItem()
+   **/
    function post_updateItem($history=1) {
 
       // Clean cache in all case (match, active, ranking, add/delete criteria/action)
@@ -79,9 +82,9 @@ class RuleCached extends Rule {
 
 
    /**
-   * Show cache statis for a current rule
-   *
-   * @param $target where to go
+    * Show cache statis for a current rule
+    *
+    * @param $target where to go
    **/
    function showCacheStatusByRule($target) {
       global $DB;
