@@ -39,7 +39,7 @@ class RuleDictionnaryPrinterModelCollection extends RuleDictionnaryDropdownColle
    **/
    function __construct() {
 
-      $this->item_table="glpi_printermodels";
+      $this->item_table  = "glpi_printermodels";
       //Init cache system values
       $this->initCache("glpi_rulecacheprintermodels", array("name"         => "old_value",
                                                             "manufacturer" => "manufacturer"));
@@ -47,6 +47,9 @@ class RuleDictionnaryPrinterModelCollection extends RuleDictionnaryDropdownColle
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
       return __('Dictionnary of printer models');
    }

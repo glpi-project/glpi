@@ -64,6 +64,9 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
       return __('Dictionnary of software');
    }
@@ -84,6 +87,9 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    }
 
 
+   /**
+    * @see inc/RuleCollection::warningBeforeReplayRulesOnExistingDB()
+   **/
    function warningBeforeReplayRulesOnExistingDB($target) {
       global $CFG_GLPI;
 
@@ -115,6 +121,9 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    }
 
 
+   /**
+    * @see inc/RuleCollection::replayRulesOnExistingDB()
+   **/
    function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
       global $DB;
 
@@ -152,8 +161,8 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          while ($input = $DB->fetch_array($res)) {
             if (!($i % $step)) {
                if (isCommandLine()) {
-                  echo date("H:i:s") . " replayRulesOnExistingDB : $i/$nb (" .
-                       round(memory_get_usage() / (1024 * 1024), 2) . " Mo)\n";
+                  printf(__('%1$s - replay rules on existing database: %2$s/%3$s (%4$s Mio)')."\n",
+                      date("H:i:s"), $i, $nb, round(memory_get_usage() / (1024 * 1024), 2));
                } else {
                   Html::changeProgressBarPosition($i, $nb, "$i / $nb");
                }
@@ -202,7 +211,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          } // each distinct software
 
          if (isCommandLine()) {
-            echo "replayRulesOnExistingDB : $i/$nb               \n";
+            printf(__('Replay rules on existing database: %1$s/%2$s')."   \n", $i, $nb);
          } else {
             Html::changeProgressBarPosition($i, $nb, "$i / $nb");
          }
@@ -213,7 +222,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
       }
 
       if (isCommandLine()) {
-         echo "replayRulesOnExistingDB ended : " . date("r") . "\n";
+         printf(__('Replay rules on existing database ended on %s')."\n", date("r"));
       }
 
       return ($i == $nb ? -1 : $i);
@@ -223,12 +232,12 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    /**
     * Replay dictionnary on several softwares
     *
-    * @param $IDs array of software IDs to replay
-    * @param $res_rule array of rule results
+    * @param $IDs       array of software IDs to replay
+    * @param $res_rule  array of rule results
     *
     * @return Query result handler
    **/
-   function replayDictionnaryOnSoftwaresByID($IDs, $res_rule=array()) {
+   function replayDictionnaryOnSoftwaresByID(array $IDs, $res_rule=array()) {
       global $DB;
 
       $new_softs  = array();
@@ -266,16 +275,16 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    /**
     * Replay dictionnary on one software
     *
-    * @param $new_softs array containing new softwares already computed
-    * @param $res_rule array of rule results
-    * @param $ID ID of the software
-    * @param $entity working entity ID
-    * @param $name softwrae name
-    * @param $manufacturer manufacturer ID
-    * @param $soft_ids array containing replay software need to be trashed
+    * @param &$new_softs      array containing new softwares already computed
+    * @param $res_rule        array of rule results
+    * @param $ID                    ID of the software
+    * @param $entity                working entity ID
+    * @param $name                  softwrae name
+    * @param $manufacturer          manufacturer ID
+    * @param &$soft_ids       array containing replay software need to be trashed
    **/
-   function replayDictionnaryOnOneSoftware(& $new_softs, $res_rule, $ID, $entity, $name,
-                                           $manufacturer, & $soft_ids) {
+   function replayDictionnaryOnOneSoftware(array &$new_softs, array $res_rule, $ID, $entity, $name,
+                                           $manufacturer, array &$soft_ids) {
       global $DB;
 
       $input["name"]         = $name;
@@ -362,8 +371,8 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
     * Delete a list of softwares
     *
     * @param $soft_ids array containing replay software need to be trashed
-   */
-   function putOldSoftsInTrash($soft_ids) {
+   **/
+   function putOldSoftsInTrash(array $soft_ids) {
       global $DB;
 
       if (count($soft_ids) > 0) {
@@ -394,12 +403,12 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    /**
     * Change software's name, and move versions if needed
     *
-    * @param $ID old software ID
-    * @param $new_software_id new software ID
-    * @param $version_id version ID to move
-    * @param $old_version old version name
-    * @param $new_version new version name
-    * @param $entity entity ID
+    * @param $ID                    old software ID
+    * @param $new_software_id       new software ID
+    * @param $version_id            version ID to move
+    * @param $old_version           old version name
+    * @param $new_version           new version name
+    * @param $entity                entity ID
    */
    function moveVersions($ID, $new_software_id, $version_id, $old_version, $new_version, $entity) {
       global $DB;
