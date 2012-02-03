@@ -1107,11 +1107,6 @@ class Rule extends CommonDBTM {
    }
 
 
-   function preProcessResults($results) {
-      return $results;
-   }
-
-
    /**
     * Show preview result of a rule
     *
