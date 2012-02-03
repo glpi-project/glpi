@@ -1860,12 +1860,12 @@ class Rule extends CommonDBTM {
    /**
     * Clean Rule with Action or Criteria linked to an item
     *
-    * @param $item Object
-    * @param $field string name (default is FK to item)
-    * @param $ruleitem object (instance of Rules of SlaLevel)
-    * @param $table string (glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias)
-    * @param $valfield string (value or pattern)
-    * @param $fieldfield string (criteria of field)
+    * @param $item                  Object
+    * @param $field        string   name (default is FK to item)
+    * @param $ruleitem              object (instance of Rules of SlaLevel)
+    * @param $table        string   (glpi_ruleactions, glpi_rulescriterias or glpi_slalevelcriterias)
+    * @param $valfield     string   (value or pattern)
+    * @param $fieldfield   string   (criteria of field)
    **/
    private static function cleanForItemActionOrCriteria($item, $field, $ruleitem, $table,
                                                         $valfield, $fieldfield) {
@@ -1909,8 +1909,8 @@ class Rule extends CommonDBTM {
    /**
     * Clean Rule with Action is assign to an item
     *
-    * @param $item Object
-    * @param $field string name (default is FK to item)
+    * @param $item            Object
+    * @param $field  string   name (default is FK to item) (default '')
    **/
    static function cleanForItemAction($item, $field='') {
 
@@ -1925,8 +1925,8 @@ class Rule extends CommonDBTM {
    /**
     * Clean Rule with Criteria on an item
     *
-    * @param $item Object
-    * @param $field string name (default is FK to item)
+    * @param $item            Object
+    * @param $field  string   name (default is FK to item) (default '')
    **/
    static function cleanForItemCriteria($item, $field='') {
 
@@ -1935,6 +1935,9 @@ class Rule extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonGLPI::getTabNameForItem()
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
@@ -1961,19 +1964,21 @@ class Rule extends CommonDBTM {
                                                   AND `glpi_rules`.`sub_type`
                                                          IN ('".implode("','",$types)."')
                                                   AND `glpi_ruleactions`.`field` = 'entities_id'
-                                                  AND `glpi_ruleactions`.`value` = '".$item->getID()."'");
+                                                  AND `glpi_ruleactions`.`value`
+                                                            = '".$item->getID()."'");
                   }
 
-                  return self::createTabEntry(_n('Rule', 'Rules', 2), $nb);
+                  return self::createTabEntry(self::getTypeName(2), 2);
                }
                return $this->getTypeName(2);
 
             case 'SLA' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(_n('Rule', 'Rules', 2),
+                  return self::createTabEntry(self::getTypeName(2),
                                               countElementsInTable('glpi_ruleactions',
                                                                    "`field` = 'slas_id'
-                                                                    AND `value` = '".$item->getID()."'"));
+                                                                     AND `value`
+                                                                        = '".$item->getID()."'"));
                }
                return $this->getTypeName(2);
 
@@ -1987,6 +1992,11 @@ class Rule extends CommonDBTM {
    }
 
 
+   /**
+    * @param $item         CommonGLPI object
+    * @param $tabnum       (default 1)
+    * @param $withtemplate (default 0)
+   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType() == 'Entity') {
