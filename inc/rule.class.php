@@ -1826,7 +1826,7 @@ class Rule extends CommonDBTM {
    /**
     * Add more criteria specific to this type of rule
    **/
-   static function addMoreCriteria($criterion = '') {
+   static function addMoreCriteria() {
       return array();
    }
 
