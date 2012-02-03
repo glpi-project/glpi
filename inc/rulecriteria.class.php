@@ -43,6 +43,9 @@ class RuleCriteria extends CommonDBChild {
    public $dohistory = true;
 
 
+   /**
+    * @param $rule_type (default 'Rule)
+   **/
    function __construct($rule_type='Rule') {
       $this->itemtype = $rule_type;
    }
@@ -51,6 +54,8 @@ class RuleCriteria extends CommonDBChild {
    /**
     * Get title used in rule
     *
+    * @param $nb  integer  for singular or plural (default 0)
+    *
     * @return Title of the rule
    **/
    static function getTypeName($nb=0) {
@@ -58,10 +63,14 @@ class RuleCriteria extends CommonDBChild {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::getName()
+   **/
    function getName($with_comment=0) {
 
-      $rule = new $this->itemtype();
-      return Html::clean($rule->getMinimalCriteriaText($this->fields));
+      if ($rule = getItemForItemtype($this->itemtype)) {
+         return Html::clean($rule->getMinimalCriteriaText($this->fields));
+      }
    }
 
 
@@ -108,7 +117,7 @@ class RuleCriteria extends CommonDBChild {
 
       $rules_list = array();
       while ($rule = $DB->fetch_assoc($result)) {
-         $tmp          = new RuleCriteria();
+         $tmp          = new self();
          $tmp->fields  = $rule;
          $rules_list[] = $tmp;
       }
@@ -117,14 +126,13 @@ class RuleCriteria extends CommonDBChild {
    }
 
 
-
    /**
     * Try to match a definied rule
     *
-    * @param $criterion RuleCriteria object
-    * @param $field the field to match
-    * @param $criterias_results
-    * @param $regex_result
+    * @param &$criterion         RuleCriteria object
+    * @param $field              the field to match
+    * @param &$criterias_results
+    * @param &$regex_result
     *
     * @return true if the field match the rule, false if it doesn't match
    **/
@@ -265,9 +273,9 @@ class RuleCriteria extends CommonDBChild {
    /**
     * Return the condition label by giving his ID
     *
-    * @param $ID condition's ID
-    * @param $itemtype itemtype
-    * @param $criterion
+    * @param $ID        condition's ID
+    * @param $itemtype  itemtype
+    * @param $criterion (default '')
     *
     * @return condition's label
    **/
@@ -282,8 +290,8 @@ class RuleCriteria extends CommonDBChild {
 
 
    /**
-    * @param $itemtype itemtype
-    * @param $criterion
+    * @param $itemtype  itemtype
+    * @param $criterion (default '')
     *
     * @return array of criteria
    **/
@@ -306,14 +314,15 @@ class RuleCriteria extends CommonDBChild {
          $criteria[$key] = $value;
       }
       /// Add Under criteria if tree dropdown table used
-      $item = new $itemtype();
-      $crit = $item->getCriteria($criterion);
+      if ($item = getItemForItemtype($itemtype)) {
+         $crit = $item->getCriteria($criterion);
 
-      if (isset($crit['type']) && $crit['type'] == 'dropdown') {
-         $crititemtype = getItemtypeForTable($crit['table']);
-         $item         = new $crititemtype();
-         if ($item instanceof CommonTreeDropdown) {
-            $criteria[Rule::PATTERN_UNDER] = __('under');
+         if (isset($crit['type']) && $crit['type'] == 'dropdown') {
+            $crititemtype = getItemtypeForTable($crit['table']);
+            if ($item = getItemForItemtype($crititemtype)
+                && $item instanceof CommonTreeDropdown) {
+               $criteria[Rule::PATTERN_UNDER] = __('under');
+            }
          }
       }
 
@@ -323,6 +332,9 @@ class RuleCriteria extends CommonDBChild {
 
    /**
     * Display a dropdown with all the criterias
+    *
+    * @param $itemtype
+    * @param $params    array
    **/
    static function dropdownConditions($itemtype, $params=array()) {
 

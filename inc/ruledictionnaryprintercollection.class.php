@@ -67,7 +67,10 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    }
 
 
-   function cleanTestOutputCriterias($output) {
+   /**
+    * @see inc/RuleCollection::cleanTestOutputCriterias()
+   **/
+   function cleanTestOutputCriterias(array $output) {
 
       //If output array contains keys begining with _ : drop it
       foreach ($output as $criteria => $value) {

@@ -63,11 +63,17 @@ class RuleTicketCollection extends RuleCollection {
    }
 
 
+   /**
+    * @see inc/RuleCollection::showInheritedTab()
+   **/
    function showInheritedTab() {
       return Session::haveRight('rule_ticket','r') && ($this->entity);
    }
 
 
+   /**
+    * @see inc/RuleCollection::showChildrensTab()
+   **/
    function showChildrensTab() {
       return Session::haveRight('rule_ticket','r') && (count($_SESSION['glpiactiveentities']) > 1);
    }

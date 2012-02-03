@@ -37,7 +37,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkCentralAccess();
 
-Html::header(__('Rules'), $_SERVER['PHP_SELF'], "admin", "rule", -1);
+Html::header(Rule::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "rule", -1);
 
 echo "<table class='tab_cadre'>";
 echo "<tr><th>" . __('Rule type') . "</th></tr>";
