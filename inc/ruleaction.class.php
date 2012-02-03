@@ -42,6 +42,9 @@ class RuleAction extends CommonDBChild {
    public $dohistory = true;
 
 
+   /**
+    * @param $rule_type
+   **/
    function __construct($rule_type='Rule') {
       $this->itemtype = $rule_type;
    }
@@ -50,17 +53,23 @@ class RuleAction extends CommonDBChild {
    /**
     * Get title used in rule
     *
+    * @param $nb  integer  (default 0)
+    *
     * @return Title of the rule
    **/
    static function getTypeName($nb=0) {
-      return _n('Action','Actions',$nb);
+      return _n('Action', 'Actions', $nb);
    }
 
 
+   /**
+    * @see inc/CommonDBTM::getName()
+   **/
    function getName($with_comment=0) {
 
-      $rule = new $this->itemtype();
-      return Html::clean($rule->getMinimalActionText($this->fields));
+      if ($rule = getItemForItemtype($this->itemtype)) {
+         return Html::clean($rule->getMinimalActionText($this->fields));
+      }
    }
 
 
@@ -69,7 +78,7 @@ class RuleAction extends CommonDBChild {
       $tab = array();
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'action_type';
-      $tab[1]['name']          = _n('Action','Actions',1);
+      $tab[1]['name']          = self::getTypeName(1);
       $tab[1]['massiveaction'] = false;
 
       $tab[2]['table']         = $this->getTable();
@@ -106,7 +115,7 @@ class RuleAction extends CommonDBChild {
 
       $rules_actions = array();
       while ($rule = $DB->fetch_assoc($result)) {
-         $tmp = new RuleAction();
+         $tmp             = new self();
          $tmp->fields     = $rule;
          $rules_actions[] = $tmp;
       }
@@ -117,10 +126,10 @@ class RuleAction extends CommonDBChild {
    /**
     * Add an action
     *
-    * @param $action action type
-    * @param $ruleid rule ID
-    * @param $field field name
-    * @param $value value
+    * @param $action    action type
+    * @param $ruleid    rule ID
+    * @param $field  field name
+    * @param $value  value
    **/
    function addActionByAttributes($action, $ruleid, $field, $value) {
 
@@ -134,23 +143,28 @@ class RuleAction extends CommonDBChild {
 
    /**
     * Display a dropdown with all the possible actions
+    *
+    * @param $sub_type
+    * @param $name
+    * @param $value     (default '')
    **/
    static function dropdownActions($sub_type, $name, $value='') {
 
-      $rule = new $sub_type();
-      $actions_options = $rule->getActions();
+      if ($rule = getItemForItemtype($sub_type)) {
+         $actions_options = $rule->getActions();
 
-      $actions = array("assign");
-      if (isset($actions_options[$value]['force_actions'])) {
-         $actions = $actions_options[$value]['force_actions'];
+         $actions = array("assign");
+         if (isset($actions_options[$value]['force_actions'])) {
+            $actions = $actions_options[$value]['force_actions'];
+         }
+
+         $elements = array();
+         foreach ($actions as $action) {
+            $elements[$action] = self::getActionByID($action);
+         }
+
+         return Dropdown::showFromArray($name, $elements, array('value' => $value));
       }
-
-      $elements = array();
-      foreach ($actions as $action) {
-         $elements[$action] = self::getActionByID($action);
-      }
-
-      return Dropdown::showFromArray($name,$elements,array('value' => $value));
    }
 
 
@@ -158,7 +172,7 @@ class RuleAction extends CommonDBChild {
 
       return array('assign'              => __('Assign'),
                    'regex_result'        => __('Assign the value from regular expression'),
-                   'append_regex_result' => __('Add the result from regular expression'),
+                   'append_regex_result' => __('Add the result of regular expression'),
                    'affectbyip'          => __('Assign: equipment by IP address'),
                    'affectbyfqdn'        => __('Assign: equipment by name + domain'),
                    'affectbymac'         => __('Assign: equipment by MAC address'),
@@ -168,6 +182,9 @@ class RuleAction extends CommonDBChild {
    }
 
 
+   /**
+    * @param $ID
+   **/
    static function getActionByID($ID) {
 
       $actions = self::getActions();
@@ -178,6 +195,10 @@ class RuleAction extends CommonDBChild {
    }
 
 
+   /**
+    * @param $action
+    * @param $regex_result
+   **/
    static function getRegexResultById($action, $regex_result) {
 
       $results = array();
@@ -195,27 +216,35 @@ class RuleAction extends CommonDBChild {
    }
 
 
+   /**
+    * @param $rules_id
+    * @param $sub_type
+   **/
    function getAlreadyUsedForRuleID($rules_id, $sub_type) {
       global $DB;
 
-      $rule = new $sub_type();
-      $actions_options = $rule->getActions();
+      if ($rule = getItemForItemtype($sub_type)) {
+         $actions_options = $rule->getActions();
 
-      $actions = array();
-      $res = $DB->query("SELECT `field`
-                         FROM `".$this->getTable()."`
-                         WHERE `".$this->items_id."` = '".$rules_id."'");
+         $actions = array();
+         $res = $DB->query("SELECT `field`
+                            FROM `".$this->getTable()."`
+                            WHERE `".$this->items_id."` = '".$rules_id."'");
 
-      while ($action = $DB->fetch_array($res)) {
-         if (isset($actions_options[$action["field"]])) {
-            $actions[$action["field"]] = $action["field"];
+         while ($action = $DB->fetch_array($res)) {
+            if (isset($actions_options[$action["field"]])) {
+               $actions[$action["field"]] = $action["field"];
+            }
          }
+         return $actions;
       }
-      return $actions;
    }
 
 
-   function displayActionSelectPattern($options = array()) {
+   /**
+    * @param $options   array
+   **/
+   function displayActionSelectPattern($options=array()) {
 
       $display = false;
 
@@ -232,7 +261,7 @@ class RuleAction extends CommonDBChild {
 
                switch($actions[$options["field"]]['type']) {
                   case "dropdown" :
-                     $table = $actions[$options["field"]]['table'];
+                     $table   = $actions[$options["field"]]['table'];
                      Dropdown::show(getItemTypeForTable($table), array('name' => "value"));
                      $display = true;
                      break;
@@ -265,7 +294,7 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   case "dropdown_priority" :
-                     if ($_POST["action_type"]!='compute') {
+                     if ($_POST["action_type"] != 'compute') {
                         Ticket::dropdownPriority("value");
                      }
                      $display = true;
@@ -300,8 +329,9 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   default :
-                     $rule = new $options["sub_type"]();
-                     $display = $rule->displayAdditionalRuleAction($actions[$options["field"]]);
+                     if ($rule = getItemForItemtype($options["sub_type"])) {
+                        $display = $rule->displayAdditionalRuleAction($actions[$options["field"]]);
+                     }
                      break;
                }
             }
