@@ -644,13 +644,16 @@ class RuleCollection extends CommonDBTM {
    /**
     * Process all the rules collection
     *
-    * @param input the input data used to check criterias
-    * @param output the initial ouput array used to be manipulate by actions
-    * @param params parameters for all internal functions
+    * @param input            array the input data used to check criterias
+    * @param output           array the initial ouput array used to be manipulate by actions
+    * @param params           array parameters for all internal functions
+    * @param force_no_cache         don't write rule's result into cache (for preview mode mainly)
+    *                               (false by default)
     *
     * @return the output array updated by actions
    **/
-   function processAllRules($input=array() ,$output=array(), $params=array()) {
+   function processAllRules($input=array() ,$output=array(), $params=array(),
+                            $force_no_cache=false) {
 
       // Get Collection datas
       $this->getCollectionDatas(1,1);
