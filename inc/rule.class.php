@@ -1142,7 +1142,7 @@ class Rule extends CommonDBTM {
       foreach ($check_results as $ID=>$criteria_result) {
          echo "<tr class='tab_bg_1'>";
          $criteria->getFromDB($criteria_result["id"]);
-         $this->showMinimalCriteria($criteria->fields);
+         echo $this->getMinimalCriteriaText($criteria->fields);
          if ($criteria->fields['condition'] != self::PATTERN_FIND) {
             echo "<td class='b'>".Dropdown::getYesNo($criteria_result["result"])."</td></tr>\n";
          } else {
@@ -1204,18 +1204,8 @@ class Rule extends CommonDBTM {
          echo "</td>";
       }
 
-      $this->showMinimalCriteria($fields);
-      echo "</tr>\n";
-   }
-
-
-   /**
-    * Show the minimal infos for the criteria rule
-    *
-    * @param $fields datas used to display the criteria
-   **/
-   function showMinimalCriteria($fields) {
       echo $this->getMinimalCriteriaText($fields);
+      echo "</tr>\n";
    }
 
 
