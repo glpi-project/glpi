@@ -45,6 +45,9 @@ class RuleDictionnaryPrinterTypeCollection extends RuleDictionnaryDropdownCollec
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
       return __('Dictionnary of printer types');
    }

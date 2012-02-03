@@ -43,12 +43,16 @@ class RuleDictionnaryPrinterModel extends RuleDictionnaryDropdown {
    }
 
 
+   /**
+    * @see inc/Rule::getCriterias()
+   **/
    function getCriterias() {
 
-      $criterias = array();
-      $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = __('Model');
-      $criterias['name']['table'] = 'glpi_printermodels';
+      $criterias                          = array();
+
+      $criterias['name']['field']         = 'name';
+      $criterias['name']['name']          = __('Model');
+      $criterias['name']['table']         = 'glpi_printermodels';
 
       $criterias['manufacturer']['field'] = 'name';
       $criterias['manufacturer']['name']  = __('Manufacturer');
@@ -58,14 +62,16 @@ class RuleDictionnaryPrinterModel extends RuleDictionnaryDropdown {
    }
 
 
+   /**
+    * @see inc/Rule::getActions()
+   **/
    function getActions() {
 
-      $actions = array();
+      $actions                          = array();
       $actions['name']['name']          = __('Model');
       $actions['name']['force_actions'] = array('assign', 'regex_result', 'append_regex_result');
       return $actions;
    }
 
 }
-
 ?>

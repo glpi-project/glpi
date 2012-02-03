@@ -177,7 +177,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
       }
 
       if (isCommandLine()) {
-         printf(__('Replay rules on existing database on %s')."\n", date("r"));
+         printf(__('Replay rules on existing database ended on %s')."\n", date("r"));
       }
 
       return ($i == $nb ? -1 : $i);

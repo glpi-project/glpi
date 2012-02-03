@@ -52,16 +52,26 @@ class RuleDictionnarySoftware extends RuleCached {
    public $can_sort = true;
 
 
+   /**
+    * @see inc/Rule::getTitle()
+   **/
    function getTitle() {
+      //TRANS: plural for software
       return __('Dictionnary of software');
    }
 
 
+   /**
+    * @see inc/Rule::maxActionsCount()
+   **/
    function maxActionsCount() {
       return 4;
    }
 
 
+   /**
+    * @see inc/RuleCached::showCacheRuleHeader()
+   **/
    function showCacheRuleHeader() {
 
       echo "<tr><th colspan='4'>" . __('Cache information') . "</th>";
@@ -80,6 +90,9 @@ class RuleDictionnarySoftware extends RuleCached {
    }
 
 
+   /**
+    * @see inc/RuleCached::showCacheRuleDetail()
+   **/
    function showCacheRuleDetail($fields) {
 
       echo "<td class='tab_bg_2'>" . $fields["old_value"] . "</td>";
@@ -111,9 +124,13 @@ class RuleDictionnarySoftware extends RuleCached {
    }
 
 
+   /**
+    * @see inc/Rule::getCriterias()
+   **/
    function getCriterias() {
 
-      $criterias = array();
+      $criterias                          = array();
+
       $criterias['name']['field']         = 'name';
       $criterias['name']['name']          = __('Software');
       $criterias['name']['table']         = 'glpi_softwares';
@@ -133,34 +150,42 @@ class RuleDictionnarySoftware extends RuleCached {
    }
 
 
+   /**
+    * @see inc/Rule::getActions()
+   **/
    function getActions() {
 
-      $actions = array();
-      $actions['name']['name']          = __('Software');
-      $actions['name']['force_actions'] = array('assign', 'regex_result');
+      $actions                                  = array();
 
-      $actions['_ignore_ocs_import']['name'] = __('To be unaware of import');
-      $actions['_ignore_ocs_import']['type'] = 'yesonly';
+      $actions['name']['name']                  = _n('Software', 'Software', 1);
+      $actions['name']['force_actions']         = array('assign', 'regex_result');
 
-      $actions['version']['name']          = _n('Version', 'Versions',1);
-      $actions['version']['force_actions'] = array('assign','regex_result', 'append_regex_result');
+      $actions['_ignore_ocs_import']['name']    = __('To be unaware of import');
+      $actions['_ignore_ocs_import']['type']    = 'yesonly';
 
-      $actions['manufacturer']['name']  = __('Publisher');
-      $actions['manufacturer']['table'] = 'glpi_manufacturers';
-      $actions['manufacturer']['type']  = 'dropdown';
+      $actions['version']['name']               = _n('Version', 'Versions',1);
+      $actions['version']['force_actions']      = array('assign','regex_result',
+                                                        'append_regex_result');
 
-      $actions['is_helpdesk_visible']['name']  = __('Associable to a ticket');
-      $actions['is_helpdesk_visible']['table'] = 'glpi_softwares';
-      $actions['is_helpdesk_visible']['type']  = 'yesno';
+      $actions['manufacturer']['name']          = __('Publisher');
+      $actions['manufacturer']['table']         = 'glpi_manufacturers';
+      $actions['manufacturer']['type']          = 'dropdown';
 
-      $actions['new_entities_id']['name']  = __('Entity');
-      $actions['new_entities_id']['table'] = 'glpi_entities';
-      $actions['new_entities_id']['type']  = 'dropdown';
+      $actions['is_helpdesk_visible']['name']   = __('Associable to a ticket');
+      $actions['is_helpdesk_visible']['table']  = 'glpi_softwares';
+      $actions['is_helpdesk_visible']['type']   = 'yesno';
+
+      $actions['new_entities_id']['name']       = __('Entity');
+      $actions['new_entities_id']['table']      = 'glpi_entities';
+      $actions['new_entities_id']['type']       = 'dropdown';
 
       return $actions;
    }
 
 
+   /**
+    * @see inc/Rule::addSpecificParamsForPreview()
+   **/
    function addSpecificParamsForPreview($params) {
 
       if (isset($_POST["version"])) {
@@ -171,9 +196,7 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
    /**
-    * Function used to display type specific criterias during rule's preview
-    *
-    * @param $fields fields values
+    * @see inc/Rule::showSpecificCriteriasForPreview()
    **/
    function showSpecificCriteriasForPreview($fields) {
 
@@ -200,5 +223,4 @@ class RuleDictionnarySoftware extends RuleCached {
 
 
 }
-
 ?>
