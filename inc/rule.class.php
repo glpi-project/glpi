@@ -1837,14 +1837,21 @@ class Rule extends CommonDBTM {
 
 
    /**
-    *
+    * @param $condition
+    * @param $criteria
+    * @param $name
+    * @param $value
+    * @param $test         (false by default)
    **/
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test=false) {
       return false;
    }
 
 
-   function displayAdditionalRuleAction($action,$params = array()) {
+   /**
+    * @param $action array
+   **/
+   function displayAdditionalRuleAction(array $action) {
       return false;
    }
 

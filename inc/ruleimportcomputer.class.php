@@ -212,7 +212,10 @@ class RuleImportComputer extends Rule {
    }
 
 
-   function displayAdditionalRuleAction($action, $params=array()) {
+   /**
+    * @see inc/Rule::displayAdditionalRuleAction()
+   **/
+   function displayAdditionalRuleAction(array $action) {
 
       switch ($action['type']) {
          case 'fusion_type' :

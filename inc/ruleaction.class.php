@@ -301,8 +301,7 @@ class RuleAction extends CommonDBChild {
 
                   default :
                      $rule = new $options["sub_type"]();
-                     $display = $rule->displayAdditionalRuleAction($actions[$options["field"]],
-                                                                   $options);
+                     $display = $rule->displayAdditionalRuleAction($actions[$options["field"]]);
                      break;
                }
             }
