@@ -1339,7 +1339,7 @@ class Html {
          
          $menu['utils']['content']['migration']['options']['networkportmigration']['title'] = __('Network port migration');
          $menu['utils']['content']['migration']['options']['networkportmigration']['page']  = '/front/networkportmigration.php';
-         $menu['utils']['content']['migration']['options']['networkportmigration']['links']['show']  = '/front/networkportmigration.php';
+         $menu['utils']['content']['migration']['options']['networkportmigration']['links']['search']  = '/front/networkportmigration.php';
          
       }
 
