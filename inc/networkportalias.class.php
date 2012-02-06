@@ -51,9 +51,9 @@ class NetworkPortAlias extends NetworkPortInstantiation {
 
       // Try to get mac address from the instantiation ...
 
-      if (!isset($input['mac']) && isset($input['links_id'])) {
+      if (!isset($input['mac']) && isset($input['networkports_id_alias'])) {
          $networkPort = new NetworkPort();
-         if ($networkPort->getFromDB($input['links_id'])) {
+         if ($networkPort->getFromDB($input['networkports_id_alias'])) {
             $input['mac']            = $networkPort->getField('mac');
          }
       }

@@ -50,8 +50,8 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
 
    function prepareInputForAdd($input) {
 
-      if ((isset($input['links_id'])) && is_array($input['links_id'])) {
-         $input['links_id'] = exportArrayToDB($input['links_id']);
+      if ((isset($input['networkports_id_list'])) && is_array($input['networkports_id_list'])) {
+         $input['networkports_id_list'] = exportArrayToDB($input['networkports_id_list']);
       }
       return parent::prepareInputForAdd($input);
    }
@@ -59,8 +59,8 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
 
    function prepareInputForUpdate($input) {
 
-      if ((isset($input['links_id'])) && is_array($input['links_id'])) {
-         $input['links_id'] = exportArrayToDB($input['links_id']);
+      if ((isset($input['networkports_id_list'])) && is_array($input['networkports_id_list'])) {
+         $input['networkports_id_list'] = exportArrayToDB($input['networkports_id_list']);
       }
       return parent::prepareInputForAdd($input);
    }
@@ -68,9 +68,9 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
 
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
 
-      if (isset($this->fields['links_id'])
-          && is_string($this->fields['links_id'])) {
-         $this->fields['links_id'] = importArrayFromDB($this->fields['links_id']);
+      if (isset($this->fields['networkports_id_list'])
+          && is_string($this->fields['networkports_id_list'])) {
+         $this->fields['networkports_id_list'] = importArrayFromDB($this->fields['networkports_id_list']);
       }
 
       echo "<tr class='tab_bg_1'>";
@@ -101,9 +101,9 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
    function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
                                       $canedit, $options=array()) {
 
-      if (isset($this->fields['links_id'])
-          && is_string($this->fields['links_id'])) {
-         $this->fields['links_id'] = importArrayFromDB($this->fields['links_id']);
+      if (isset($this->fields['networkports_id_list'])
+          && is_string($this->fields['networkports_id_list'])) {
+         $this->fields['networkports_id_list'] = importArrayFromDB($this->fields['networkports_id_list']);
       }
 
       $table->addElement($this->getInstantiationNetworkPortHTMLTable(), "Origin", $this->getID(),

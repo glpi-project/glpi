@@ -357,13 +357,17 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       $netports = array();
 
-      if (isset($this->fields['links_id'])) {
-
-         if (is_array($this->fields['links_id'])) {
-            $links_id = $this->fields['links_id'];
-         } else {
-            $links_id = array($this->fields['links_id']);
+      // Manage alias
+      if (isset($this->fields['networkports_id_alias'])) {
+         $links_id = $this->fields['networkports_id_alias'];
+         $netport = new NetworkPort();
+         if ($netport->getFromDB($links_id)) {
+            $netports[] = $netport->getLink();
          }
+      }
+      // Manage aggregate
+      if (isset($this->fields['networkports_id_list'])) {    
+         $links_id = $this->fields['networkports_id_list'];
 
          $netport = new NetworkPort();
          foreach ($links_id as $id) {
@@ -401,13 +405,15 @@ class NetworkPortInstantiation extends CommonDBChild {
       $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
       echo "<td>" . __('Origin port') . "</td><td>\n";
-
-      if (!isset($this->fields['links_id'])) {
-         $links_id = array();
-      } else if (!is_array($this->fields['links_id'])) {
-         $links_id = array($this->fields['links_id']);
-      } else {
-         $links_id = $this->fields['links_id'];
+      $links_id = array();
+      
+      // Manage alias ports
+      if (isset($this->fields['networkports_id_alias'])) {
+         $links_id = array($this->fields['networkports_id_alias']);
+      } 
+      // Manage aggregate ports
+      if (isset($this->fields['networkports_id_list'])) {
+         $links_id = $this->fields['networkports_id_list'];
       }
 
       // Only one available NetworkPort => copy its MAC to the aggregate or alias port
@@ -446,7 +452,7 @@ class NetworkPortInstantiation extends CommonDBChild {
       }
 
       if ($multiple) {
-         echo "<select name='links_id[]' multiple>";
+         echo "<select name='networkports_id_list[]' multiple>";
       } else {
          echo "
    function updateForm(devID) {
@@ -456,7 +462,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    }
 </script>\n";
 
-         echo "<select name='links_id' ";
+         echo "<select name='networkports_id_alias' ";
          echo "onchange='updateForm(this.options[this.selectedIndex].value)'>\n";
       }
 
