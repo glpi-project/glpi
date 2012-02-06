@@ -44,25 +44,25 @@ if (isset($_GET["globalsearch"])) {
    $searchtext=$_GET["globalsearch"];
 
    foreach ($CFG_GLPI["globalsearch_types"] as $itemtype) {
-      $item = new $itemtype();
-      if ($item->canView()) {
+      if ($item = getItemForItemtype($itemtype)
+          && $item->canView()) {
          $_GET["reset"]        = 'reset';
          $_GET["display_type"] = Search::GLOBAL_SEARCH;
 
          Search::manageGetValues($itemtype,false,true);
 
          if ($_GET["field"][0] =='view') {
-            $_GET["contains"][0]   = $searchtext;
-            $_GET["searchtype"][0] = 'contains';
+            $_GET["contains"][0]                    = $searchtext;
+            $_GET["searchtype"][0]                  = 'contains';
             $_SESSION["glpisearchcount"][$itemtype] = 1;
 
          } else {
             $_GET["field"][1] = 'view';
-            $_GET["contains"][1]   = $searchtext;
-            $_GET["searchtype"][1] = 'contains';
+            $_GET["contains"][1]                    = $searchtext;
+            $_GET["searchtype"][1]                  = 'contains';
             $_SESSION["glpisearchcount"][$itemtype] = 2;
          }
-         Search::showList($itemtype,$_GET);
+         Search::showList($itemtype, $_GET);
          unset($_GET["contains"]);
          unset($_GET["searchtype"]);
          echo "<hr>";
