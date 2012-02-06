@@ -414,7 +414,11 @@ class NetworkPort extends CommonDBChild {
                                      sprintf(__('%1$s = %2$s'),
                                              $item->getTypeName(1), $item->getName()));
 
-      foreach (self::getNetworkPortInstantiations() as $portType) {
+      $porttypes = self::getNetworkPortInstantiations();
+      // Manage NetworkportMigration
+      $porttypes[] = '';
+
+      foreach ($porttypes as $portType) {
 
          $query = "SELECT `id`
                    FROM `glpi_networkports`
@@ -431,11 +435,13 @@ class NetworkPort extends CommonDBChild {
 
             if ($number_port != 0) {
                $is_active_network_port = true;
-
+               if (empty($portType)) {
+                  $portType = 'NetworkPortMigration';
+               }
                $table = new HTMLTable();
                //TRANS: %1$s is the type name, %2$s is the port type, %3$d is the port's number
-               $name  = sprintf(__('%1$s (%2$s): %3$d'), self::getTypeName($number_port),
-                                call_user_func(array($portType, 'getTypeName')), $number_port);
+               $name = sprintf(__('%1$s (%2$s): %3$d'), self::getTypeName($number_port),
+                              call_user_func(array($portType, 'getTypeName')), $number_port);
                $table->addGlobalName($name);
 
                if ($withtemplate != 2 && $canedit) {
@@ -449,23 +455,31 @@ class NetworkPort extends CommonDBChild {
 
                NetworkName::getHTMLTableHeaderForItem(__CLASS__, $table, 'Name', $table_options);
 
-               call_user_func_array(array($portType, 'getInstantiationHTMLTableHeaders'),
-                                    array(&$table, 'Name'));
-
+               if ($portType != 'NetworkPortMigration') {
+                  call_user_func_array(array($portType, 'getInstantiationHTMLTableHeaders'),
+                                       array(&$table, 'Name'));
+               }
+               
                while ($devid = $DB->fetch_row($result)) {
                   $netport->getFromDB(current($devid));
                   // This is added by HTMLTable
                   // Session::addToNavigateListItems('NetworkPort', $netport->fields["id"]);
 
-                 if ($withtemplate != 2 && $canedit) {
+                  // No massive action for migration ports
+                  if ($withtemplate != 2 && $canedit && $portType != 'NetworkPortMigration') {
                      $table->addElement("<input type='checkbox' name='del_port[" .
                                           $netport->fields["id"]."]' value='1'>",
                                         "checkbox", $netport->getID());
                   }
                   $content = "<span class='b'>";
                   if ($canedit && $withtemplate != 2) {
-                     $content .= "<a href=\"" . $CFG_GLPI["root_doc"] .
-                                   "/front/networkport.form.php?id=".$netport->fields["id"] ."\">";
+                     if ($portType != 'NetworkPortMigration') {
+                        $content .= "<a href=\"" . $CFG_GLPI["root_doc"] .
+                                    "/front/networkport.form.php?id=".$netport->fields["id"] ."\">";
+                     } else {
+                        $content .= "<a href=\"" . $CFG_GLPI["root_doc"] .
+                                    "/front/networkportmigration.form.php?id=".$netport->fields["id"] ."\">";
+                     }
                   }
                   $content .= $netport->fields["logical_number"];
 
@@ -506,13 +520,14 @@ class NetworkPort extends CommonDBChild {
          echo "</table>";
       }
 
-      if ($canedit && $withtemplate != 2) {
+      if ($is_active_network_port && $canedit && $withtemplate != 2) {
          Html::openArrowMassives("networking_ports$rand", true);
          Dropdown::showForMassiveAction('NetworkPort');
          $actions = array();
          Html::closeArrowMassives($actions);
          echo "</form>";
       }
+      
    }
 
 
