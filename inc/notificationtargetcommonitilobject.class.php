@@ -759,7 +759,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.impact'                => __('Impact'),
                     $objettype.'.priority'              => __('Priority'),
                     $objettype.'.time'                  => __('Total duration'),
-                    $objettype.'.creationdate'          => __('Opening date '),
+                    $objettype.'.creationdate'          => __('Opening date'),
                     $objettype.'.closedate'             => __('Closing date'),
                     $objettype.'.solvedate'             => __('Date of solving'),
                     $objettype.'.duedate'               => __('Due date'),
