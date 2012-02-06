@@ -359,7 +359,8 @@ $RELATION = array("glpi_authldaps"
 
                   "glpi_networkports"
                         => array('glpi_networkportaggregates'     => 'networkports_id',
-                                 'glpi_networkportaliases'        => 'networkports_id',
+                                 'glpi_networkportaliases'        => array('networkports_id',
+                                                                           'networkports_id_alias'),
                                  'glpi_networkportdialups'        => 'networkports_id',
                                  'glpi_networkportethernets'      => 'networkports_id',
                                  'glpi_networkportlocals'         => 'networkports_id',

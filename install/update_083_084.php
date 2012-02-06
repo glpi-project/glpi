@@ -737,7 +737,7 @@ function update083to084() {
       $query = "CREATE TABLE `glpi_networkportaggregates` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `networkports_id` int(11) NOT NULL DEFAULT '0',
-                  `links_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
+                  `networkports_id_list` TEXT DEFAULT NULL
                              COMMENT 'array of associated networkports_id',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`)
@@ -755,10 +755,10 @@ function update083to084() {
       $query = "CREATE TABLE `glpi_networkportaliases` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `networkports_id` int(11) NOT NULL DEFAULT '0',
-                  `links_id` int(11) NOT NULL DEFAULT '0',
+                  `networkports_id_alias` int(11) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`),
-                  KEY `links_id` (`links_id`)
+                  KEY `networkports_id_alias` (`networkports_id_alias`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_networkportaliases");
 
