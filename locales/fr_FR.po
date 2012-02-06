@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-02-06 10:56+0100\n"
-"PO-Revision-Date: 2012-02-06 10:00+0000\n"
+"POT-Creation-Date: 2012-02-06 11:45+0100\n"
+"PO-Revision-Date: 2012-02-06 10:46+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: French (France) (http://www.transifex.net/projects/p/GLPI/team/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -218,7 +218,7 @@ msgstr "avant"
 #: inc/notificationtargetreservation.class.php:55
 #: inc/notificationtargetticket.class.php:597
 #: inc/notimportedemail.class.php:91 inc/problem.class.php:1083
-#: inc/rulemailcollector.class.php:92 inc/ticket.class.php:4190
+#: inc/rulemailcollector.class.php:104 inc/ticket.class.php:4190
 #: inc/ticket.class.php:4427 inc/ticketfollowup.class.php:654
 msgid "Requester"
 msgstr "Demandeur"
@@ -757,7 +757,7 @@ msgstr "%s a restauré l'élément"
 #: front/user.form.php:103
 #, php-format
 msgid "%s purges the item"
-msgstr "%s a purgé l'élément"
+msgstr "%s purge l'élément"
 
 #. TRANS: %s is the user login
 #: front/budget.form.php:96 front/cartridgeitem.form.php:91
@@ -782,7 +782,7 @@ msgstr "%s a purgé l'élément"
 #: front/user.form.php:121
 #, php-format
 msgid "%s updates the item"
-msgstr "%s a mis à jour l'élément"
+msgstr "%s met à jour l'élément"
 
 #: front/budget.form.php:114 front/dropdown.common.form.php:124
 #: front/ldap.group.import.php:75 front/ldap.group.import.php:110
@@ -1159,7 +1159,7 @@ msgstr[1] "Logiciels"
 #: inc/ruledictionnaryprinter.class.php:122
 #: inc/ruledictionnaryprinter.class.php:146
 #: inc/ruledictionnaryprintermodel.class.php:58
-#: inc/ruleimportcomputer.class.php:120 inc/search.class.php:4672
+#: inc/ruleimportcomputer.class.php:125 inc/search.class.php:4672
 msgid "Manufacturer"
 msgid_plural "Manufacturers"
 msgstr[0] "Fabricant"
@@ -1198,7 +1198,7 @@ msgstr[1] "Imprimantes"
 #: inc/ruledictionnaryphonemodel.class.php:71
 #: inc/ruledictionnaryprintermodel.class.php:54
 #: inc/ruledictionnaryprintermodel.class.php:71
-#: inc/ruleimportcomputer.class.php:117
+#: inc/ruleimportcomputer.class.php:122
 msgid "Model"
 msgid_plural "Models"
 msgstr[0] "Modèle"
@@ -1502,7 +1502,7 @@ msgstr "ID"
 #: inc/ocsserver.class.php:2896 inc/ocsserver.class.php:3028
 #: inc/peripheral.class.php:260 inc/peripheral.class.php:389
 #: inc/phone.class.php:258 inc/printer.class.php:360 inc/printer.class.php:542
-#: inc/ruleimportcomputer.class.php:114 inc/ruleocs.class.php:141
+#: inc/ruleimportcomputer.class.php:119 inc/ruleocs.class.php:153
 #: inc/search.class.php:4645 inc/software.class.php:479
 #: inc/softwarelicense.class.php:179 inc/softwarelicense.class.php:263
 #: inc/softwarelicense.class.php:578 inc/softwarelicense.class.php:694
@@ -1741,7 +1741,7 @@ msgstr "%s passe un élément en gestion unitaire"
 #: inc/entity.class.php:829
 #, php-format
 msgid "%s adds the item"
-msgstr "%s a ajouté l'élément"
+msgstr "%s ajoute l'élément"
 
 #. TRANS: %s is the user login
 #: front/networkname.form.php:80
@@ -1765,7 +1765,7 @@ msgstr "%s a ajouté plusieurs ports réseau"
 #: front/networkport.form.php:120 front/networkportmigration.form.php:69
 #, php-format
 msgid "%s deletes several network ports"
-msgstr "%s a supprimé plusieurs ports réseau"
+msgstr "%s supprime plusieurs ports réseau"
 
 #. TRANS: %s is the user login
 #: front/networkport.form.php:193
@@ -1799,7 +1799,7 @@ msgstr ""
 
 #: front/networkportmigration.form.php:89
 msgid "NetworkPort is not available ..."
-msgstr "ort réseau non valide..."
+msgstr "Port réseau non valide..."
 
 #: front/ocsng.clean.php:39 front/ocsng.import.php:40 front/ocsng.link.php:40
 #: front/ocsng.php:42 front/ocsng.php:69 front/ocsng.sync.php:40
@@ -2037,7 +2037,7 @@ msgstr "Nom"
 #: inc/rule.class.php:178 inc/rulecollection.class.php:407
 #: inc/ruledictionnarysoftware.class.php:145
 #: inc/ruledictionnarysoftware.class.php:178
-#: inc/rulemailcollector.class.php:189 inc/ruleocs.class.php:151
+#: inc/rulemailcollector.class.php:204 inc/ruleocs.class.php:167
 #: inc/ruleright.class.php:281 inc/rulerightcollection.class.php:145
 #: inc/ruleticket.class.php:275 inc/search.class.php:4681
 #: inc/sla.class.php:227 inc/software.class.php:409 inc/software.class.php:780
@@ -2064,7 +2064,7 @@ msgstr[1] "Entités"
 #: inc/notificationtargetproblem.class.php:224
 #: inc/notificationtargetticket.class.php:555 inc/ocsserver.class.php:338
 #: inc/ocsserver.class.php:3041 inc/peripheral.class.php:219
-#: inc/phone.class.php:217 inc/printer.class.php:319 inc/ruleocs.class.php:155
+#: inc/phone.class.php:217 inc/printer.class.php:319 inc/ruleocs.class.php:171
 #: inc/software.class.php:248
 msgid "Location"
 msgid_plural "Locations"
@@ -2235,7 +2235,7 @@ msgstr "Port de l'équipement"
 #: front/report.netpoint.list.php:74 front/report.netpoint.list.php:77
 #: front/report.switch.list.php:63 front/report.switch.list.php:66
 #: inc/devicenetworkcard.class.php:48 inc/devicenetworkcard.class.php:97
-#: inc/networkport.class.php:736 inc/ruleimportcomputer.class.php:104
+#: inc/networkport.class.php:736 inc/ruleimportcomputer.class.php:108
 msgid "MAC address"
 msgstr "Adresse Mac"
 
@@ -3088,13 +3088,13 @@ msgstr "Tous les mois"
 #: inc/dropdown.class.php:552 inc/entity.class.php:1353
 #: inc/entity.class.php:1399 inc/entity.class.php:1432
 #: inc/entity.class.php:1974 inc/entity.class.php:2027
-#: inc/ruleimportcomputer.class.php:169 inc/search.class.php:2992
+#: inc/ruleimportcomputer.class.php:182 inc/search.class.php:2992
 msgid "No"
 msgstr "Non"
 
 #: inc/alert.class.php:121 inc/bookmark.class.php:579 inc/config.class.php:746
 #: inc/dropdown.class.php:533 inc/dropdown.class.php:550
-#: inc/rule.class.php:1246 inc/ruleimportcomputer.class.php:192
+#: inc/rule.class.php:1246 inc/ruleimportcomputer.class.php:208
 #: inc/search.class.php:2994
 msgid "Yes"
 msgstr "Oui"
@@ -3409,7 +3409,7 @@ msgstr "Champ de l'identifiant"
 #: inc/networkalias.class.php:378 inc/networkequipment.class.php:343
 #: inc/networkequipment.class.php:474 inc/networkname.class.php:173
 #: inc/networkport.class.php:580 inc/networkport.class.php:769
-#: inc/networkportmigration.class.php:285 inc/notification.class.php:135
+#: inc/networkportmigration.class.php:288 inc/notification.class.php:135
 #: inc/notification.class.php:228
 #: inc/notificationtargetreservation.class.php:141
 #: inc/notificationtemplate.class.php:115
@@ -4419,8 +4419,8 @@ msgstr[1] "Solutions"
 #: inc/problem.class.php:941 inc/reminder.class.php:335
 #: inc/reminder.class.php:636 inc/rule.class.php:156 inc/rule.class.php:220
 #: inc/rule.class.php:1713 inc/rule.class.php:1766
-#: inc/rulecollection.class.php:403 inc/ruleimportcomputer.class.php:112
-#: inc/ruleocs.class.php:136 inc/ruleright.class.php:86
+#: inc/rulecollection.class.php:403 inc/ruleimportcomputer.class.php:117
+#: inc/ruleocs.class.php:148 inc/ruleright.class.php:86
 #: inc/ruleticket.class.php:197 inc/ticket.class.php:1513
 #: inc/ticket.class.php:2954 inc/ticket.class.php:3716
 #: inc/ticket.class.php:4192 inc/ticketfollowup.class.php:467
@@ -5325,7 +5325,7 @@ msgstr "Usager numéro"
 #: inc/networkequipment.class.php:349 inc/networkequipment.class.php:507
 #: inc/ocsserver.class.php:263 inc/ocsserver.class.php:3033
 #: inc/printer.class.php:417 inc/printer.class.php:627
-#: inc/ruleimportcomputer.class.php:100 inc/ruleocs.class.php:108
+#: inc/ruleimportcomputer.class.php:104 inc/ruleocs.class.php:120
 msgid "Domain"
 msgid_plural "Domains"
 msgstr[0] "Domaine"
@@ -5419,8 +5419,8 @@ msgstr "Mémoire (Mio))"
 
 #: inc/computer.class.php:923 inc/dropdown.class.php:680
 #: inc/networkinterface.class.php:43 inc/networkport.class.php:765
-#: inc/networkportmigration.class.php:300
-#: inc/networkportmigration.class.php:357
+#: inc/networkportmigration.class.php:303
+#: inc/networkportmigration.class.php:360
 msgid "Network interface"
 msgid_plural "Network interfaces"
 msgstr[0] "Interface réseau"
@@ -5509,8 +5509,8 @@ msgstr "OCSNG"
 msgid "Imported from OCSNG"
 msgstr "Importé depuis OCSNG"
 
-#: inc/computer.class.php:1089 inc/ruleimportcomputer.class.php:98
-#: inc/ruleocs.class.php:103
+#: inc/computer.class.php:1089 inc/ruleimportcomputer.class.php:102
+#: inc/ruleocs.class.php:115
 msgid "OCSNG TAG"
 msgstr "TAG OCSNG"
 
@@ -7903,7 +7903,8 @@ msgstr "Source"
 msgid "Service"
 msgstr "Service"
 
-#: inc/event.class.php:246 inc/notificationtargetfieldunicity.class.php:79
+#: inc/event.class.php:246 inc/event.class.php:300
+#: inc/notificationtargetfieldunicity.class.php:79
 msgid "Message"
 msgstr "Message"
 
@@ -8471,8 +8472,8 @@ msgstr "Expirant le : %s"
 msgid "Comments on financial and administrative information"
 msgstr "Commentaires sur les informations financières et administratives"
 
-#: inc/ipaddress.class.php:141 inc/ruleimportcomputer.class.php:106
-#: inc/ruleocs.class.php:126
+#: inc/ipaddress.class.php:141 inc/ruleimportcomputer.class.php:110
+#: inc/ruleocs.class.php:138
 msgid "IP address"
 msgid_plural "IP addresses"
 msgstr[0] "Adresse IP"
@@ -8490,7 +8491,7 @@ msgstr "Version d'IP"
 
 #: inc/ipnetwork.class.php:86 inc/ipnetwork.class.php:157
 #: inc/networkport.class.php:675 inc/networkport.class.php:756
-#: inc/networkportmigration.class.php:297
+#: inc/networkportmigration.class.php:300
 msgid "Gateway"
 msgstr "Passerelle"
 
@@ -9063,8 +9064,8 @@ msgid_plural "Network aliases"
 msgstr[0] "Alias réseau"
 msgstr[1] "Alias réseau"
 
-#: inc/networkalias.class.php:376 inc/ruleimportcomputer.class.php:108
-#: inc/ruleocs.class.php:131
+#: inc/networkalias.class.php:376 inc/ruleimportcomputer.class.php:112
+#: inc/ruleocs.class.php:143
 msgid "Computer's name"
 msgstr "Nom de l'ordinateur"
 
@@ -9177,7 +9178,7 @@ msgid "Netmask"
 msgstr "Masque de sous-réseau"
 
 #: inc/networkport.class.php:668 inc/networkport.class.php:751
-#: inc/ruleimportcomputer.class.php:102 inc/ruleocs.class.php:121
+#: inc/ruleimportcomputer.class.php:106 inc/ruleocs.class.php:133
 msgid "Subnet"
 msgstr "Sous-réseau"
 
@@ -9259,88 +9260,92 @@ msgstr "Elément non lié à un objet"
 msgid "Local loop"
 msgstr "Boucle locale"
 
-#: inc/networkportmigration.class.php:116
+#: inc/networkportmigration.class.php:49
+msgid "Network port migration"
+msgstr ""
+
+#: inc/networkportmigration.class.php:119
 msgid "Undefined interface"
 msgstr "Interface non définie"
 
-#: inc/networkportmigration.class.php:118
+#: inc/networkportmigration.class.php:121
 msgid "Invalid network (already defined or with invalid addresses)"
 msgstr "Réseau incorrect (déjà défini ou comportant des adresses incorrectes)"
 
-#: inc/networkportmigration.class.php:120
+#: inc/networkportmigration.class.php:123
 msgid "Gateway not include inside the network"
 msgstr "Passerelle non comprise dans le réseau"
 
-#: inc/networkportmigration.class.php:122
+#: inc/networkportmigration.class.php:125
 msgid "Invalid IP address"
 msgstr "Adresse IP incorrecte"
 
-#: inc/networkportmigration.class.php:202
-msgid "Transform this NetworkPort to: "
-msgstr "Transformer ce port réseau en :"
-
-#: inc/networkportmigration.class.php:220
-#, php-format
-msgid "NetworkPort information conflicting with %s"
-msgstr "Informations du port en conflit avec %s"
+#: inc/networkportmigration.class.php:205
+msgid "Transform this network port to: "
+msgstr ""
 
 #: inc/networkportmigration.class.php:223
+#, php-format
+msgid "Network port information conflicting with %s"
+msgstr ""
+
+#: inc/networkportmigration.class.php:226
 msgid "Invalid address or netmask"
 msgstr "Adresse ou masque réseau invalide"
 
-#: inc/networkportmigration.class.php:225
+#: inc/networkportmigration.class.php:228
 msgid "No conflicting network"
 msgstr "Aucun réseau en conflit"
 
-#: inc/networkportmigration.class.php:228
+#: inc/networkportmigration.class.php:231
 msgid "you may have to add a network"
 msgstr "Vous devrez ajouter un réseau"
 
-#: inc/networkportmigration.class.php:238
+#: inc/networkportmigration.class.php:241
 #, php-format
 msgid "Append a correct gateway to the network %s"
 msgstr "Ajouter une passerelle valide au réseau %s"
 
-#: inc/networkportmigration.class.php:240
+#: inc/networkportmigration.class.php:243
 msgid "Unknown network:"
 msgstr "Réseau inconnu :"
 
-#: inc/networkportmigration.class.php:242
+#: inc/networkportmigration.class.php:245
 msgid "add a network"
 msgstr "ajouter un réseau"
 
-#: inc/networkportmigration.class.php:255
-msgid "Add a correct IP to the NetworkPort"
-msgstr "e IP valide à un port réseau"
+#: inc/networkportmigration.class.php:258
+msgid "Add a correct IP to the network port"
+msgstr ""
 
-#: inc/networkportmigration.class.php:257
-msgid "Unknown NetworkPort !"
-msgstr "Port réseau inconnu !"
+#: inc/networkportmigration.class.php:260
+msgid "Unknown network port !"
+msgstr ""
 
-#: inc/networkportmigration.class.php:264
+#: inc/networkportmigration.class.php:267
 msgid "I don't understand why this migration error is not deleted."
 msgstr ""
 "Je ne comprend pas pourquoi cette erreur de migration n'est pas supprimée."
 
-#: inc/networkportmigration.class.php:266
-#: inc/networkportmigration.class.php:271
+#: inc/networkportmigration.class.php:269
+#: inc/networkportmigration.class.php:274
 msgid "You can delete this migration error"
 msgstr "Vous pouvez supprimer cette erreur de migration"
 
-#: inc/networkportmigration.class.php:268
+#: inc/networkportmigration.class.php:271
 msgid "At all events"
 msgstr ""
 
-#: inc/networkportmigration.class.php:276
-msgid "Original NetworkPort information"
-msgstr "Information sur le port reseau initial"
+#: inc/networkportmigration.class.php:279
+msgid "Original network port information"
+msgstr ""
 
-#: inc/networkportmigration.class.php:288
-#: inc/networkportmigration.class.php:348
+#: inc/networkportmigration.class.php:291
+#: inc/networkportmigration.class.php:351
 msgid "Network address"
 msgstr "Adresse réseau"
 
-#: inc/networkportmigration.class.php:310
+#: inc/networkportmigration.class.php:313
 msgid "Unknown interface"
 msgstr "Interface inconnue"
 
@@ -9356,8 +9361,8 @@ msgstr "Attention! Les prises réseaux des deux éléments ne correspondent pas"
 #. TRANS: %1$s is a name, %2$s is the new name
 #: inc/networkport_networkport.class.php:193
 #: inc/networkport_networkport.class.php:209
-#: inc/networkport_networkport.class.php:282
-#: inc/networkport_networkport.class.php:307
+#: inc/networkport_networkport.class.php:283
+#: inc/networkport_networkport.class.php:308
 #, php-format
 msgid "From #%1$s to %2$s"
 msgstr "De #%1$s à %2$s"
@@ -9365,8 +9370,8 @@ msgstr "De #%1$s à %2$s"
 #. TRANS: %1$s is a name, %2$s is the new name
 #: inc/networkport_networkport.class.php:198
 #: inc/networkport_networkport.class.php:213
-#: inc/networkport_networkport.class.php:286
-#: inc/networkport_networkport.class.php:311
+#: inc/networkport_networkport.class.php:287
+#: inc/networkport_networkport.class.php:312
 #, php-format
 msgid "From %1$s to #%2$s"
 msgstr "De %1$s à #%2$s"
@@ -10145,19 +10150,19 @@ msgid_plural "Refused emails"
 msgstr[0] "Courriel rejeté"
 msgstr[1] "Courriels rejetés"
 
-#: inc/notimportedemail.class.php:65 inc/rulemailcollector.class.php:105
+#: inc/notimportedemail.class.php:65 inc/rulemailcollector.class.php:117
 msgid "From email header"
 msgstr "Entête From de l'email"
 
-#: inc/notimportedemail.class.php:70 inc/rulemailcollector.class.php:109
+#: inc/notimportedemail.class.php:70 inc/rulemailcollector.class.php:121
 msgid "To email header"
 msgstr "Entête To de l'email"
 
-#: inc/notimportedemail.class.php:75 inc/rulemailcollector.class.php:96
+#: inc/notimportedemail.class.php:75 inc/rulemailcollector.class.php:108
 msgid "Subject email header"
 msgstr "Entête Subject de l'email"
 
-#: inc/notimportedemail.class.php:80 inc/rulemailcollector.class.php:87
+#: inc/notimportedemail.class.php:80 inc/rulemailcollector.class.php:99
 #: inc/ruleticket.class.php:290
 msgid "Mails receiver"
 msgstr "Collecteur courriels"
@@ -10178,7 +10183,7 @@ msgstr "Impossible d'affecter le courriel à une entité"
 msgid "Email not found. Impossible import"
 msgstr "Courriel absent. Import impossible"
 
-#: inc/ocslink.class.php:43 inc/ruleimportcomputer.class.php:129
+#: inc/ocslink.class.php:43 inc/ruleimportcomputer.class.php:135
 msgid "OCSNG link"
 msgid_plural "OCSNG links"
 msgstr[0] "Liaison OCSNG"
@@ -10225,8 +10230,8 @@ msgstr "Composants verrouillés"
 msgid "No field locked"
 msgstr "Aucun champ verrouillé"
 
-#: inc/ocsserver.class.php:100 inc/ruleimportcomputer.class.php:94
-#: inc/ruleocs.class.php:113
+#: inc/ocsserver.class.php:100 inc/ruleimportcomputer.class.php:98
+#: inc/ruleocs.class.php:125
 msgid "OCSNG server"
 msgid_plural "OCSNG servers"
 msgstr[0] "Serveur OCSNG"
@@ -11126,12 +11131,12 @@ msgid "Add users from an external source"
 msgstr "Ajout d'utilisateurs depuis une source externe"
 
 #: inc/profile.class.php:1186 inc/profile.class.php:1555
-#: inc/ruleocs.class.php:47 inc/ruleocscollection.class.php:69
+#: inc/ruleocs.class.php:47 inc/ruleocscollection.class.php:75
 msgid "Rules for assigning a computer to an entity"
 msgstr "Règles d'affectation d'un ordinateur à une entité"
 
 #: inc/profile.class.php:1189 inc/profile.class.php:1550
-#: inc/rulemailcollector.class.php:78
+#: inc/rulemailcollector.class.php:87
 #: inc/rulemailcollectorcollection.class.php:48
 msgid "Rules for assigning a ticket created through a mail receiver"
 msgstr "Règles d'affectation d'un ticket ouvert par courriel"
@@ -11843,7 +11848,7 @@ msgstr "Nouveau fabricant"
 #: inc/ruledictionnaryprinter.class.php:143
 #: inc/ruledictionnarysoftware.class.php:87
 #: inc/ruledictionnarysoftware.class.php:163
-#: inc/ruleimportcomputer.class.php:132 inc/ruleocs.class.php:163
+#: inc/ruleimportcomputer.class.php:138 inc/ruleocs.class.php:179
 #: inc/ruleright.class.php:312
 msgid "To be unaware of import"
 msgstr "Ignorer l'import"
@@ -11926,104 +11931,104 @@ msgstr "Logiciel mis dans la corbeille par les règles du dictionnaire GLPI"
 msgid "Rules for import and link computers"
 msgstr "Règles d'import et de liaison des ordinateurs"
 
-#: inc/ruleimportcomputer.class.php:79
+#: inc/ruleimportcomputer.class.php:83
 msgid "Target entity for the computer"
 msgstr "entité de destination de l'ordinateur"
 
-#: inc/ruleimportcomputer.class.php:85
+#: inc/ruleimportcomputer.class.php:89
 msgid "Find computers in GLPI having the status"
 msgstr "Chercher les ordinateurs dans GLPI dont le statut est"
 
-#: inc/ruleimportcomputer.class.php:142
+#: inc/ruleimportcomputer.class.php:148
 msgid "Link if possible"
 msgstr "Liaison si possible"
 
-#: inc/ruleimportcomputer.class.php:144
+#: inc/ruleimportcomputer.class.php:150
 msgid "Link if possible, otherwise imports declined"
 msgstr "Liaison si possible, sinon import refusé"
 
-#: inc/ruleimportcomputer.class.php:170
+#: inc/ruleimportcomputer.class.php:183
 msgid "Yes if equal"
 msgstr "Oui si égal"
 
-#: inc/ruleimportcomputer.class.php:171
+#: inc/ruleimportcomputer.class.php:184
 msgid "Yes if empty"
 msgstr "Oui si vide"
 
-#: inc/ruleimportcomputer.class.php:184
+#: inc/ruleimportcomputer.class.php:197
 msgid "is already present in GLPI"
 msgstr "est déjà présent dans GLPI"
 
-#: inc/ruleimportcomputer.class.php:185
+#: inc/ruleimportcomputer.class.php:198
 msgid "is empty in GLPI"
 msgstr "est vide dans GLPI"
 
-#: inc/rulemailcollector.class.php:101
+#: inc/rulemailcollector.class.php:113
 msgid "Email body"
 msgstr "Corps du courriel"
 
-#: inc/rulemailcollector.class.php:114
+#: inc/rulemailcollector.class.php:126
 msgid "In-Reply-To email header"
 msgstr "Entête In-Reply-To de l'email"
 
-#: inc/rulemailcollector.class.php:118 inc/ruleticket.class.php:294
+#: inc/rulemailcollector.class.php:130 inc/ruleticket.class.php:294
 msgid "X-Priority email header"
 msgstr "Entête X-Priority de l'email"
 
-#: inc/rulemailcollector.class.php:122
+#: inc/rulemailcollector.class.php:134
 msgid "X-Auto-Response-Suppress email header"
 msgstr "Entête X-Auto-Response-Suppress de l'email"
 
-#: inc/rulemailcollector.class.php:126
+#: inc/rulemailcollector.class.php:138
 msgid "Auto-Submitted email header"
 msgstr "Entête Auto-Submitted de l'email"
 
-#: inc/rulemailcollector.class.php:131
+#: inc/rulemailcollector.class.php:143
 msgid "X-UCE-Status email header"
 msgstr "Entête X-UCE-Status de l'email"
 
-#: inc/rulemailcollector.class.php:135
+#: inc/rulemailcollector.class.php:147
 msgid "Received email header"
 msgstr "Entête Received de l'email"
 
-#: inc/rulemailcollector.class.php:141
-msgid "User : Group"
-msgstr "Groupes de l'utilisateur"
+#: inc/rulemailcollector.class.php:153
+msgid "User: Group"
+msgstr ""
 
-#: inc/rulemailcollector.class.php:148
+#: inc/rulemailcollector.class.php:160
 msgid "Mail domain is known"
 msgstr "Domaine de messagerie connu"
 
-#: inc/rulemailcollector.class.php:156
+#: inc/rulemailcollector.class.php:168
 msgid "User featuring the profile"
 msgstr "Utilisateur possédant le profil"
 
-#: inc/rulemailcollector.class.php:165
+#: inc/rulemailcollector.class.php:177
 msgid "User featuring a single profile"
 msgstr "Utilisateur possédant une seule fois le profil"
 
-#: inc/rulemailcollector.class.php:174
+#: inc/rulemailcollector.class.php:186
 msgid "User with a single profile"
 msgstr "Utilisateur possédant un seul profil"
 
-#: inc/rulemailcollector.class.php:193
+#: inc/rulemailcollector.class.php:208
 msgid "Entity from domain"
 msgstr "Entité depuis domaine"
 
-#: inc/rulemailcollector.class.php:197 inc/ruleocs.class.php:159
+#: inc/rulemailcollector.class.php:212 inc/ruleocs.class.php:175
 #: inc/ruleright.class.php:290
 msgid "Entity from TAG"
 msgstr "Entité depuis TAG"
 
-#: inc/rulemailcollector.class.php:201
+#: inc/rulemailcollector.class.php:216
 msgid "Entity based on user's profile"
 msgstr "Entité depuis profil de l'utilisateur"
 
-#: inc/rulemailcollector.class.php:205
+#: inc/rulemailcollector.class.php:220
 msgid "Reject email (without email response)"
 msgstr "Refuser courriel (pas de réponse par courriel))"
 
-#: inc/rulemailcollector.class.php:209
+#: inc/rulemailcollector.class.php:224
 msgid "Reject email (with email response)"
 msgstr "Refuser courriel (avec réponse par courriel))"
 
