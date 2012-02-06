@@ -939,7 +939,7 @@ class Reminder extends CommonDBTM {
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url.
                      "&amp;type=day'>";
                echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv.png' alt=\"". __s('Planning').
-                     "\" title=\"".sprintf(__s('From %1$s to 2%$s'),
+                     "\" title=\"".sprintf(__s('From %1$s to %2$s'),
                                            Html::convDateTime($data["begin"]),
                                            Html::convDateTime($data["end"]))."\">";
                echo "</a></span>";
