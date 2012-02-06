@@ -986,6 +986,10 @@ class Html {
          $menu['inventory']['content']['networking']['links']['search']
                                                                   = '/front/networkequipment.php';
 
+         $menu['inventory']['content']['networking']['options']['networkport']['title'] = _n('Network port', 'Network ports', 2);
+         $menu['inventory']['content']['networking']['options']['networkport']['page'] = '/front/networkport.form.php';
+         $menu['inventory']['content']['networking']['options']['networkport']['links'] = array();
+
          if (Session::haveRight("networking","w")) {
             $menu['inventory']['content']['networking']['links']['add']
                               = '/front/setup.templates.php?'.'itemtype=NetworkEquipment&amp;add=1';
@@ -2180,7 +2184,6 @@ class Html {
          if (!empty($option)
              && isset($menu[$sector]['content'][$item]['options'][$option]['links'])
              && is_array($menu[$sector]['content'][$item]['options'][$option]['links'])) {
-
             $links = $menu[$sector]['content'][$item]['options'][$option]['links'];
 
          // Without option case : only item links
