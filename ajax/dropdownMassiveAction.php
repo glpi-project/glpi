@@ -225,6 +225,14 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                       __s('Add')."'>";
          break;
 
+      case "transform_to" :
+         Dropdown::dropdownTypes('transform_to', "NetworkPortEthernet", 
+                                 NetworkPort::getNetworkPortInstantiations());
+                                       
+         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+                     __s('Save')."'>";
+         break;
+         
       case "add_document" :
          Document::dropdown(array('name' => 'docID'));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".

@@ -202,17 +202,12 @@ class NetworkPortMigration extends CommonDBChild {
          $interface_cell = "th";
 
          echo "<tr class='tab_bg_1'><th>". $motives['unknown_interface_type'] ."</th>\n".
-              "<td>" .__('Transform this network port to:');
+              "<td>" .__('Transform this network port to');
          echo "</td><td colspan=2>";
-         echo "<select name='transform_to'>\n";
-         foreach (NetworkPort::getNetworkPortInstantiations() as $network_type) {
-            echo "\t<option value='$network_type'";
-            if ($network_type == "NetworkPortEthernet") {
-               echo " selected";
-            }
-            echo ">".call_user_func(array($network_type, 'getTypeName'))."</option>\n";
-         }
-         echo "</select></td></tr>\n";
+         Dropdown::dropdownTypes('transform_to', "NetworkPortEthernet", 
+                                 NetworkPort::getNetworkPortInstantiations());
+                                                        
+         echo "</td></tr>\n";
       }
 
       if ($this->fields['invalid_network'] == 1) {
