@@ -706,13 +706,14 @@ class NetworkPort extends CommonDBChild {
       $tab[22]['joinparams']    = array('beforejoin' => array('table'      => 'glpi_networkports',
                                                               'joinparams' => $joinparams));
 
-      $tab[87]['table']         = 'glpi_networkinterfaces';
-      $tab[87]['field']         = 'name';
-      $tab[87]['name']          = __('Interface');
-      $tab[87]['forcegroupby']  = true;
-      $tab[87]['massiveaction'] = false;
-      $tab[87]['joinparams']    = array('beforejoin' => array('table'      => 'glpi_networkports',
-                                                              'joinparams' => $joinparams));
+      ///TODO does not exists anymore
+//       $tab[87]['table']         = 'glpi_networkinterfaces';
+//       $tab[87]['field']         = 'name';
+//       $tab[87]['name']          = __('Interface');
+//       $tab[87]['forcegroupby']  = true;
+//       $tab[87]['massiveaction'] = false;
+//       $tab[87]['joinparams']    = array('beforejoin' => array('table'      => 'glpi_networkports',
+//                                                               'joinparams' => $joinparams));
 
       $netportjoin = array(array('table'      => 'glpi_networkports',
                                  'joinparams' => array('jointype' => 'itemtype_item')),
@@ -781,9 +782,10 @@ class NetworkPort extends CommonDBChild {
       $tab[9]['field']         = 'name';
       $tab[9]['name']          = _n('Network outlet', 'Network outlets', 1);
 
-      $tab[10]['table']        = 'glpi_networkinterfaces';
-      $tab[10]['field']        = 'name';
-      $tab[10]['name']         = _n('Network interface', 'Network interfaces', 1);
+      ///TODO Does not exists anymore
+//       $tab[10]['table']        = 'glpi_networkinterfaces';
+//       $tab[10]['field']        = 'name';
+//       $tab[10]['name']         = _n('Network interface', 'Network interfaces', 1);
 
       $tab[16]['table']        = $this->getTable();
       $tab[16]['field']        = 'comment';
