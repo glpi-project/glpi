@@ -59,8 +59,10 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
    global $DB, $migration;
 
    // Retrieve all the networks from the current network ports and add them to the IPNetworks
-   $query = "SELECT `ip`, `id`, `entities_id`, `itemtype`, `items_id`
-             FROM `$itemtable`
+   $query = "SELECT `ip`, `id`, `entities_id`, ".
+                     ($itemtype=='NetworkEquipment'?"'NetworkEquipment' as itemtype":"`itemtype`").
+                     ", ".($itemtype=='NetworkEquipment'?"`id` as items_is":"`items_id`").
+             "FROM `$itemtable`
              WHERE `ip` <> ''";
 
    $networkName = new NetworkName();
@@ -126,23 +128,46 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
 function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
    global $DB, $migration;
 
-   $query = "SELECT `name`, `id`, `mac`, ";
+   $query = "SELECT `origin_glpi_networkports`.`name`, `origin_glpi_networkports`.`id`, 
+                    `origin_glpi_networkports`.`mac`, ";
+
+   $addleftjoin = '';
+   $manage_netinterface = false;
+   if ($port instanceof NetworkPortEthernet) {
+      $addleftjoin = "LEFT JOIN `glpi_networkinterfaces` 
+                        ON (`origin_glpi_networkports`.`networkinterfaces_id` = `glpi_networkinterfaces` .`id`)";
+      $query.= "`glpi_networkinterfaces`.`name` AS networkinterface, ";
+      $manage_netinterface = true;
+   }
 
    foreach ($fields as $SQL_field => $field) {
       $query .= "$SQL_field AS $field, ";
    }
-   $query .= "    `itemtype`, `items_id`
-              FROM `origin_glpi_networkports`
-              WHERE `id` IN (SELECT `id`
+   $query .= "`origin_glpi_networkports`.`itemtype`, `origin_glpi_networkports`.`items_id`
+              FROM `origin_glpi_networkports` $addleftjoin
+              WHERE `origin_glpi_networkports`.`id` IN (SELECT `id`
                              FROM `glpi_networkports`
                              WHERE `instantiation_type` = '".$port->getType()."')";
-
    foreach ($DB->request($query) as $portInformation) {
       $input = array('networkports_id' => $portInformation['id']);
+      if ($manage_netinterface) {
+         if (preg_match('/TX/i',$portInformation['networkinterface'])) {
+            $input['type'] = 'T';
+         }
+         if (preg_match('/SX/i',$portInformation['networkinterface'])) {
+            $input['type'] = 'SX';
+         }
+         if (preg_match('/LX/i',$portInformation['networkinterface'])) {
+            $input['type'] = 'LX';
+         }
+         unset($portInformation['networkinterface']);
+      }
+      
+      
       foreach ($fields as $field) {
          $input[$field] = $portInformation[$field];
       }
-
+      
       if (($setNetworkCard) && ($portInformation['itemtype'] == 'Computer')) {
          $query = "SELECT link.`id` AS link_id,
                           device.`designation` AS name
@@ -542,6 +567,7 @@ function update083to084() {
              FROM `glpi_networkinterfaces`";
 
    foreach ($DB->request($query) as $entry) {
+      $instantiation_type = "";
       switch ($entry['name']) {
          case 'Local' :
             $instantiation_type = "NetworkPortLocal";
@@ -560,11 +586,15 @@ function update083to084() {
             break;
 
          default:
-            $instantiation_type = "";
+            if (preg_match('/TX/i',$entry['name'])
+               || preg_match('/SX/i',$entry['name'])
+               || preg_match('/Ethernet/i',$entry['name'])) {
+               $instantiation_type = "NetworkPortEthernet";
+            }
             break;
 
        }
-      if (isset($instantiation_type)) {
+      if (!empty($instantiation_type)) {
          $query = "UPDATE `glpi_networkports`
                    SET `instantiation_type` = '$instantiation_type'
                    WHERE `id` IN (SELECT `id`
@@ -775,6 +805,7 @@ function update083to084() {
 
    if (countElementsInTable("glpi_networkportmigrations") == 0) {
       $migration->dropTable("glpi_networkportmigrations");
+      $migration->dropTable("glpi_networkportinterfaces");
    }
 
    $migration->addField('glpi_mailcollectors', 'accepted', 'string');
