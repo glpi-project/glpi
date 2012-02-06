@@ -255,7 +255,7 @@ class NetworkPortMigration extends CommonDBChild {
          if ($networkPort->getFromDB($this->getID())) {
             $number_real_errors ++;
             echo "<a href='" . $networkPort->getLinkURL() . "'>" .
-                 __('Add a correct IP to the NetworkPort') . "</a>";
+                 __('Add a correct IP to the network port') . "</a>";
          } else {
             _e('Unknown NetworkPort !');
          }
