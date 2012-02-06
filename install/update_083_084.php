@@ -618,7 +618,7 @@ function update083to084() {
                   `networkports_id` int(11) NOT NULL DEFAULT '0',
                   `computers_devicenetworkcards_id` int(11) NOT NULL DEFAULT '0',
                   `netpoints_id` int(11) NOT NULL DEFAULT '0',
-                  `type` varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'T, LX, SX',
+                  `type` varchar(10) COLLATE utf8_unicode_ci DEFAULT '' COMMENT 'T, LX, SX',
                   `speed` int(11) NOT NULL DEFAULT '10' COMMENT '10, 100, 1000, 10000',
                   PRIMARY KEY (`id`),
                   UNIQUE KEY `networkports_id` (`networkports_id`),
@@ -630,6 +630,7 @@ function update083to084() {
       $DB->queryOrDie($query, "0.84 create glpi_networkportethernets");
 
       $port = new NetworkPortEthernet();
+      ///TODO add type T SX LX
       updateNetworkPortInstantiation($port, array('`netpoints_id`' => 'netpoints_id'),
                                      true);
    }
