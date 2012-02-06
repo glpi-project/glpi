@@ -1,10 +1,10 @@
 <?php 
 /*
- * @version $Id$
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@
 
  You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //ja_JP
 
@@ -44,8 +44,8 @@ $LANG['backup'][23]="Mysqlエラー：";
 $LANG['backup'][24]="画面は自動的に切り替わります。そうならない場合にはクリックしてください。"; 
 
 $LANG['bookmark'][1]="ブックマーク"; 
-$LANG['bookmark'][2]="Partial load of the bookmark."; // en_GB string to be translated
-$LANG['bookmark'][3]="まだブックマークを行っていません。"; 
+$LANG['bookmark'][2]="ブックマークの一部が読み込まれました。"; 
+$LANG['bookmark'][3]="まだブックマークを保存していません。"; 
 $LANG['bookmark'][4]="新しいブックマーク"; 
 $LANG['bookmark'][5]="公開ブックマーク"; 
 $LANG['bookmark'][6]="デフォルトで許可"; 
