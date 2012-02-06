@@ -1336,6 +1336,11 @@ class Html {
           && countElementsInTable('glpi_networkportmigrations') > 0) {
          $menu['utils']['content']['migration']['title']           = __('Migration cleaner');
          $menu['utils']['content']['migration']['page']            = '/front/migration_cleaner.php';
+         
+         $menu['utils']['content']['migration']['options']['networkportmigration']['title'] = __('Network port migration');
+         $menu['utils']['content']['migration']['options']['networkportmigration']['page']  = '/front/networkportmigration.php';
+         $menu['utils']['content']['migration']['options']['networkportmigration']['links']['show']  = '/front/networkportmigration.php';
+         
       }
 
 
