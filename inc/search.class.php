@@ -1923,7 +1923,7 @@ class Search {
             return " ORDER BY `".$table."`.`name` $order";
 
          case "glpi_networkequipments.ip" :
-         case "glpi_networkports.ip" :
+         case "glpi_ipaddresses.name" :
             return " ORDER BY INET_ATON($table$addtable.$field) $order ";
       }
 
@@ -2736,7 +2736,7 @@ class Search {
             }
             return "";
 
-         case "glpi_networkports.ip" :
+         case "glpi_ipaddresses.name" :
             $search  = array("/\&lt;/","/\&gt;/");
             $replace = array("<",">");
             $val = preg_replace($search, $replace, $val);
