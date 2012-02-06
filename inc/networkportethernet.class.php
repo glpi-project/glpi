@@ -62,7 +62,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Ethernet port type') . "</td><td>\n";
-      Dropdown::showFromArray('type', array('T'  => __('Twisted pair (RJ-45)'),
+      Dropdown::showFromArray('type', array(''   => Dropdown::EMPTY_VALUE,
+                                            'T'  => __('Twisted pair (RJ-45)'),
                                             'SX' => __('Multimode fiber'),
                                             'LX' => __('Single mode fiber')),
                               array('value' => $this->fields['type']));
