@@ -1103,7 +1103,7 @@ function update083to084() {
    regenerateTreeCompleteName("glpi_entities");
 
 
-   $migration->displayMessage(sprintf(__('Data migration - - %s'),
+   $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'create validation_answer notification'));
 
    /// TODO : create a new template ?
