@@ -78,6 +78,9 @@ class RuleOcsCollection extends RuleCollection {
 
    /**
     * @see inc/RuleCollection::prepareInputDataForProcess()
+    *
+    * @param $input           input data
+    * @param $computers_id
    **/
    function prepareInputDataForProcess($input, $computers_id) {
       global $DBocs;

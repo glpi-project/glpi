@@ -43,6 +43,7 @@ class RuleRight extends Rule {
    public $orderby             = "name";
    public $specific_parameters = true;
 
+
    /**
     * Constructor
    **/
@@ -62,17 +63,26 @@ class RuleRight extends Rule {
    }
 
 
+   /**
+    * @see inc/Rule::preProcessPreviewResults()
+   **/
    function preProcessPreviewResults($output) {
       return $output;
    }
 
 
+   /**
+    * @see inc/Rule::maxActionsCount()
+   **/
    function maxActionsCount() {
       // Unlimited
       return 4;
    }
 
 
+   /**
+    * @see inc/Rule::showNewRuleForm()
+   **/
    function showNewRuleForm($ID) {
 
       echo "<form method='post' action='".Toolbox::getItemTypeFormURL('Entity')."'>";
@@ -109,8 +119,12 @@ class RuleRight extends Rule {
 
    /**
     * Execute the actions as defined in the rule
+    *
+    * @see inc/Rule::executeActions()
+    *
     * @param $output the result of the actions
     * @param $params the parameters
+    *
     * @return the fields modified
    **/
    function executeActions($output, $params) {
@@ -231,11 +245,14 @@ class RuleRight extends Rule {
    }
 
 
+   /**
+    * @see inc/Rule::getCriterias()
+   **/
    function getCriterias() {
       static $criterias = array();
 
       if (!count($criterias)) {
-         $criterias['common'] = __('Global criterias');
+         $criterias['common']                   = __('Global criterias');
 
          $criterias['LDAP_SERVER']['table']     = 'glpi_authldaps';
          $criterias['LDAP_SERVER']['field']     = 'name';
@@ -253,20 +270,20 @@ class RuleRight extends Rule {
          $criterias['MAIL_SERVER']['virtual']   = true;
          $criterias['MAIL_SERVER']['id']        = 'mail_server';
 
-         $criterias['MAIL_EMAIL']['table']     = '';
-         $criterias['MAIL_EMAIL']['field']     = '';
-         $criterias['MAIL_EMAIL']['name']      = _n('Email', 'Emails', 1);
-         $criterias['MAIL_EMAIL']['linkfield'] = '';
-         $criterias['MAIL_EMAIL']['virtual']   = true;
-         $criterias['MAIL_EMAIL']['id']        = 'mail_email';
+         $criterias['MAIL_EMAIL']['table']      = '';
+         $criterias['MAIL_EMAIL']['field']      = '';
+         $criterias['MAIL_EMAIL']['name']       = _n('Email', 'Emails', 1);
+         $criterias['MAIL_EMAIL']['linkfield']  = '';
+         $criterias['MAIL_EMAIL']['virtual']    = true;
+         $criterias['MAIL_EMAIL']['id']         = 'mail_email';
 
-         $criterias['GROUPS']['table']     = 'glpi_groups';
-         $criterias['GROUPS']['field']     = 'completename';
-         $criterias['GROUPS']['name']      = __('Imported group from an LDAP directory');
-         $criterias['GROUPS']['linkfield'] = '';
-         $criterias['GROUPS']['type']      = 'dropdown';
-         $criterias['GROUPS']['virtual']   = true;
-         $criterias['GROUPS']['id']        = 'groups';
+         $criterias['GROUPS']['table']          = 'glpi_groups';
+         $criterias['GROUPS']['field']          = 'completename';
+         $criterias['GROUPS']['name']           = __('Imported group from an LDAP directory');
+         $criterias['GROUPS']['linkfield']      = '';
+         $criterias['GROUPS']['type']           = 'dropdown';
+         $criterias['GROUPS']['virtual']        = true;
+         $criterias['GROUPS']['id']             = 'groups';
 
          //Dynamically add all the ldap criterias to the current list of rule's criterias
          $this->addSpecificCriteriasToArray($criterias);
@@ -275,9 +292,13 @@ class RuleRight extends Rule {
    }
 
 
+   /**
+    * @see inc/Rule::getActions()
+   **/
    function getActions() {
 
-      $actions = array();
+      $actions                                              = array();
+
       $actions['entities_id']['name']                       = __('Entity');
       $actions['entities_id']['type']                       = 'dropdown';
       $actions['entities_id']['table']                      = 'glpi_entities';
@@ -319,6 +340,8 @@ class RuleRight extends Rule {
 
    /**
     * Get all ldap rules criterias from the DB and add them into the RULES_CRITERIAS
+    *
+    * @param &$criterias
    **/
    function addSpecificCriteriasToArray(&$criterias) {
 

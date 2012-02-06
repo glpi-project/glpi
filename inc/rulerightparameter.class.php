@@ -41,6 +41,9 @@ class RuleRightParameter extends CommonDropdown {
 
    var $refresh_page = true;
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
       //LDAP parameters MUST be in lower case

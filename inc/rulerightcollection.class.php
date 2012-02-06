@@ -134,8 +134,8 @@ class RuleRightCollection extends RuleCollection {
    /**
     * Display action using its name
     *
-    * @param $name action name
-    * @param $value default value
+    * @param $name   action name
+    * @param $value  default value
    **/
    function displayActionByName($name, $value) {
 
@@ -191,7 +191,9 @@ class RuleRightCollection extends RuleCollection {
    /**
     * Get the attributes needed for processing the rules
     *
-    * @param $input input datas
+    * @see inc/RuleCollection::prepareInputDataForProcess()
+    *
+    * @param $input  input datas
     * @param $params extra parameters given
     *
     * @return an array of attributes
