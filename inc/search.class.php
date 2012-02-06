@@ -4763,12 +4763,12 @@ class Search {
    /**
     * Convert an array to be add in url
     *
-    * @param $name         name of array
-    * @param $array  array to be added
+    * @param $name                  name of array
+    * @param $array  string/array   to be added
     *
     * @return string to add
    **/
-   static function getArrayUrlLink($name, array $array) {
+   static function getArrayUrlLink($name, $array) {
 
       $out = "";
       if (is_array($array) && count($array)>0) {
