@@ -249,13 +249,14 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
                $npnet->update(array('id'  => $npnet->fields['id'],
                                     'mac' => ''));
             }
-            if ($np1->fields['ip'] == $np2->fields['ip']) {
-               $npnet->update(array('id'      => $npnet->fields['id'],
-                                    'ip'      => '',
-                                    'netmask' => '',
-                                    'subnet'  => '',
-                                    'gateway' => ''));
-            }
+            // since 0.84 No more ip field. Maybe several IPs
+//             if ($np1->fields['ip'] == $np2->fields['ip']) {
+//                $npnet->update(array('id'      => $npnet->fields['id'],
+//                                     'ip'      => '',
+//                                     'netmask' => '',
+//                                     'subnet'  => '',
+//                                     'gateway' => ''));
+//             }
             // Unset netpoint from common device
             $npdev->update(array('id'           => $npdev->fields['id'],
                                  'netpoints_id' => 0));
