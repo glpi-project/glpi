@@ -126,6 +126,34 @@ if (isset($_POST["action"])
    $nbko      = 0;
 
    switch($_POST["action"]) {
+      case "transform_to":
+         if (!empty($_POST["transform_to"])) {
+            $networkport = new NetworkPort();
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val == 1) {
+                  if ($networkport->can($key,'w') && $item->can($key,'d')) {
+                     if ($networkport->switchInstantiationType($_POST['transform_to']) !== false) {
+                        $instantiation             = $networkport->getInstantiation();
+                        $input                     = $item->fields;
+                        $input['networkports_id']  = $input['id'];
+                        unset($input['id']);
+                        if ($instantiation->add($input)) {
+                           $item->delete(array('id' => $key));
+                        } else {
+                           $nbko++;                        
+                        }
+                     } else {
+                        $nbko++;
+                     }
+                  } else {
+                     $nbnoright++;
+                  }
+               }
+            }         
+         } else {
+             $nbko++;
+         }
+         break;
       case "connect_to_computer" :
          if (isset($_POST["connect_item"]) && $_POST["connect_item"]) {
             $conn = new Computer_Item();

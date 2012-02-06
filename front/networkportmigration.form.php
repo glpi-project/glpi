@@ -80,8 +80,9 @@ if (isset($_GET["delete"])) {
          $input                     = $np->fields;
          $input['networkports_id']  = $input['id'];
          unset($input['id']);
-         $instantiation->add($input);
-         $np->delete($_POST);
+         if ($instantiation->add($input)) {
+            $np->delete($_POST);
+         }
       } else {
          Session::addMessageAfterRedirect(__('Cannot change a migration network port to an unknown one'));
       }

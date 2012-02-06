@@ -506,7 +506,7 @@ class Dropdown {
          }
 
          $eltvalue = $element*HOUR_TIMESTAMP;
-         echo "<option value='$eltvalue'".($eltvalue==$value?" selected ":"").">".$display_value.
+         echo "<option value='$eltvalue'".($eltvalue==$value?" selected":"").">".$display_value.
               "</option>";
       }
       echo "</select>";
@@ -1259,7 +1259,6 @@ class Dropdown {
             $param[$key] = $val;
          }
       }
-
       // readonly mode
       if ($param['readonly']) {
          echo "<input type='hidden' name='$name' value='".$param['value']."'>";
@@ -1285,14 +1284,14 @@ class Dropdown {
                echo "<optgroup label=\"".htmlentities($key)."\">";
                foreach ($val as $key2 => $val2) {
                   if (!isset($param['used'][$key2])) {
-                     echo "<option value='".$key2."'".($param['value']==$key2?" selected ":"").">".
+                     echo "<option value='".$key2."'".($param['value']==$key2?" selected":"").">".
                             $val2."</option>";
                   }
                               }
                echo "</optgroup>";
             } else {
                if (!isset($param['used'][$key])) {
-                  echo "<option value='".$key."'".($param['value']==$key?" selected ":"").">".$val.
+                  echo "<option value='".$key."'".($param['value']==$key?" selected":"").">".$val.
                        "</option>";
                }
             }
@@ -1630,7 +1629,11 @@ class Dropdown {
                      echo "<option value='delete_email'>".__('Delete emails')."</option>";
                      echo "<option value='import_email'>".__('Import')."</option>";
                   break;
-
+                  
+               case 'NetworkPortMigration':
+                     echo "<option value='transform_to'>".__('Transform this network port to')."</option>";
+                  break;
+                  
                case 'Problem' :
                   $tmp = new ProblemTask();
                   if ($tmp->canCreate()) {
