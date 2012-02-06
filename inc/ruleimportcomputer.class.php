@@ -65,6 +65,9 @@ class RuleImportComputer extends Rule {
    }
 
 
+   /**
+    * @see inc/Rule::maxActionsCount()
+   **/
    function maxActionsCount() {
       // Unlimited
       return 1;
@@ -73,12 +76,13 @@ class RuleImportComputer extends Rule {
 
    function getCriterias() {
 
-      $criterias = array();
-      $criterias['entities_id']['table']     = 'glpi_entities';
-      $criterias['entities_id']['field']     = 'entities_id';
-      $criterias['entities_id']['name']      = __('Target entity for the computer');
-      $criterias['entities_id']['linkfield'] = 'entities_id';
-      $criterias['entities_id']['type']      = 'dropdown';
+      $criterias                                 = array();
+
+      $criterias['entities_id']['table']         = 'glpi_entities';
+      $criterias['entities_id']['field']         = 'entities_id';
+      $criterias['entities_id']['name']          = __('Target entity for the computer');
+      $criterias['entities_id']['linkfield']     = 'entities_id';
+      $criterias['entities_id']['type']          = 'dropdown';
 
       $criterias['states_id']['table']           = 'glpi_states';
       $criterias['states_id']['field']           = 'name';
@@ -89,35 +93,36 @@ class RuleImportComputer extends Rule {
       $criterias['states_id']['is_global']       = true;
       $criterias['states_id']['allow_condition'] = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT);
 
-      $criterias['ocsservers_id']['table']     = 'glpi_ocsservers';
-      $criterias['ocsservers_id']['field']     = 'name';
-      $criterias['ocsservers_id']['name']      = _n('OCSNG server', 'OCSNG servers', 1);
-      $criterias['ocsservers_id']['linkfield'] = '';
-      $criterias['ocsservers_id']['type']      = 'dropdown';
+      $criterias['ocsservers_id']['table']       = 'glpi_ocsservers';
+      $criterias['ocsservers_id']['field']       = 'name';
+      $criterias['ocsservers_id']['name']        = _n('OCSNG server', 'OCSNG servers', 1);
+      $criterias['ocsservers_id']['linkfield']   = '';
+      $criterias['ocsservers_id']['type']        = 'dropdown';
 
-      $criterias['TAG']['name']        = __('OCSNG TAG');
+      $criterias['TAG']['name']                  = __('OCSNG TAG');
 
-      $criterias['DOMAIN']['name']     = __('Domain');
+      $criterias['DOMAIN']['name']               = __('Domain');
 
-      $criterias['IPSUBNET']['name']   = __('Subnet');
+      $criterias['IPSUBNET']['name']             = __('Subnet');
 
-      $criterias['MACADDRESS']['name'] = __('MAC address');
+      $criterias['MACADDRESS']['name']           = __('MAC address');
 
-      $criterias['IPADDRESS']['name']  = __('IP address');
+      $criterias['IPADDRESS']['name']            = __('IP address');
 
-      $criterias['name']['name']            = __("Computer's name");
-      $criterias['name']['allow_condition'] = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT,
-                                                    self::PATTERN_IS_EMPTY, Rule::PATTERN_FIND);
+      $criterias['name']['name']                 = __("Computer's name");
+      $criterias['name']['allow_condition']      = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT,
+                                                         self::PATTERN_IS_EMPTY,
+                                                         Rule::PATTERN_FIND);
 
-      $criterias['DESCRIPTION']['name']   = __('Description');
+      $criterias['DESCRIPTION']['name']          = __('Description');
 
-      $criterias['serial']['name']        = __('Serial number');
+      $criterias['serial']['name']               = __('Serial number');
 
       // Model as Text to allow text criteria (contains, regex, ...)
-      $criterias['model']['name']         = __('Model');
+      $criterias['model']['name']                = __('Model');
 
       // Manufacturer as Text to allow text criteria (contains, regex, ...)
-      $criterias['manufacturer']['name']  = __('Manufacturer');
+      $criterias['manufacturer']['name']         = __('Manufacturer');
 
       return $criterias;
    }
@@ -125,7 +130,8 @@ class RuleImportComputer extends Rule {
 
    function getActions() {
 
-      $actions = array();
+      $actions                           = array();
+
       $actions['_fusion']['name']        = __('OCSNG link');
       $actions['_fusion']['type']        = 'fusion_type';
 
@@ -148,6 +154,8 @@ class RuleImportComputer extends Rule {
    /**
     * Add more action values specific to this type of rule
     *
+    * @see inc/Rule::displayAdditionRuleActionValue()
+    *
     * @param value the value for this action
     *
     * @return the label's value or ''
@@ -162,6 +170,11 @@ class RuleImportComputer extends Rule {
    }
 
 
+   /**
+    * @param $criteria
+    * @param $name
+    * @param $value
+   **/
    function manageSpecificCriteriaValues($criteria, $name, $value) {
 
       switch ($criteria['type']) {
@@ -186,6 +199,9 @@ class RuleImportComputer extends Rule {
    }
 
 
+   /**
+    * @see inc/Rule::getAdditionalCriteriaDisplayPattern()
+   **/
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
 
       if ($condition == self::PATTERN_IS_EMPTY) {
@@ -195,6 +211,9 @@ class RuleImportComputer extends Rule {
    }
 
 
+   /**
+    * @see inc/Rule::displayAdditionalRuleCondition()
+   **/
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test=false) {
 
       if ($test) {
@@ -226,6 +245,9 @@ class RuleImportComputer extends Rule {
    }
 
 
+   /**
+    * @param $ID
+   **/
    function getCriteriaByID($ID) {
 
       $criteria = array();
@@ -238,6 +260,9 @@ class RuleImportComputer extends Rule {
    }
 
 
+   /**
+    * @see inc/Rule::findWithGlobalCriteria()
+   **/
    function findWithGlobalCriteria($input) {
       global $DB;
 
@@ -396,6 +421,8 @@ class RuleImportComputer extends Rule {
    /**
     * Execute the actions as defined in the rule
     *
+    * @see inc/Rule::executeActions()
+    *
     * @param $output the fields to manipulate
     * @param $params parameters
     *
@@ -435,7 +462,7 @@ class RuleImportComputer extends Rule {
    /**
     * Function used to display type specific criterias during rule's preview
     *
-    * @param $fields fields values
+    * @see inc/Rule::showSpecificCriteriasForPreview()
    **/
    function showSpecificCriteriasForPreview($fields) {
 
@@ -452,6 +479,9 @@ class RuleImportComputer extends Rule {
    }
 
 
+   /**
+    * @see inc/Rule::preProcessPreviewResults()
+   **/
    function preProcessPreviewResults($output) {
       return OcsServer::previewRuleImportProcess($output);
    }

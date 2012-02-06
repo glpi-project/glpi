@@ -64,101 +64,113 @@ class RuleMailCollector extends Rule {
    }
 
 
+   /**
+    * @see inc/Rule::preProcessPreviewResults()
+   **/
    function preProcessPreviewResults($output) {
       return $output;
    }
 
 
+   /**
+    * @see inc/Rule::maxActionsCount()
+   **/
    function maxActionsCount() {
       return 1;
    }
 
 
+   /**
+    * @see inc/Rule::getTitle()
+   **/
    function getTitle() {
       return __('Rules for assigning a ticket created through a mail receiver');
    }
 
 
+   /**
+    * @see inc/Rule::getCriterias()
+   **/
    function getCriterias() {
 
-      $criterias = array();
+      $criterias                                      = array();
 
-      $criterias['mailcollector']['field'] = 'name';
-      $criterias['mailcollector']['name']  = __('Mails receiver');
-      $criterias['mailcollector']['table'] = 'glpi_mailcollectors';
-      $criterias['mailcollector']['type']  = 'dropdown';
+      $criterias['mailcollector']['field']            = 'name';
+      $criterias['mailcollector']['name']             = __('Mails receiver');
+      $criterias['mailcollector']['table']            = 'glpi_mailcollectors';
+      $criterias['mailcollector']['type']             = 'dropdown';
 
-      $criterias['_users_id_requester']['field'] = 'name';
-      $criterias['_users_id_requester']['name']  = __('Requester');
-      $criterias['_users_id_requester']['table'] = 'glpi_users';
-      $criterias['_users_id_requester']['type']  = 'dropdown';
+      $criterias['_users_id_requester']['field']      = 'name';
+      $criterias['_users_id_requester']['name']       = __('Requester');
+      $criterias['_users_id_requester']['table']      = 'glpi_users';
+      $criterias['_users_id_requester']['type']       = 'dropdown';
 
-      $criterias['subject']['name']  = __('Subject email header');
-      $criterias['subject']['field'] = 'subject';
-      $criterias['subject']['table'] = '';
-      $criterias['subject']['type']  = 'text';
+      $criterias['subject']['name']                   = __('Subject email header');
+      $criterias['subject']['field']                  = 'subject';
+      $criterias['subject']['table']                  = '';
+      $criterias['subject']['type']                   = 'text';
 
-      $criterias['content']['name']  = __('Email body');
-      $criterias['content']['table'] = '';
-      $criterias['content']['type']  = 'text';
+      $criterias['content']['name']                   = __('Email body');
+      $criterias['content']['table']                  = '';
+      $criterias['content']['type']                   = 'text';
 
-      $criterias['from']['name']  = __('From email header');
-      $criterias['from']['table'] = '';
-      $criterias['from']['type']  = 'text';
+      $criterias['from']['name']                      = __('From email header');
+      $criterias['from']['table']                     = '';
+      $criterias['from']['type']                      = 'text';
 
-      $criterias['to']['name']  = __('To email header');
-      $criterias['to']['table'] = '';
-      $criterias['to']['type']  = 'text';
+      $criterias['to']['name']                        = __('To email header');
+      $criterias['to']['table']                       = '';
+      $criterias['to']['type']                        = 'text';
 
 
-      $criterias['in_reply_to']['name']  = __('In-Reply-To email header');
-      $criterias['in_reply_to']['table'] = '';
-      $criterias['in_reply_to']['type']  = 'text';
+      $criterias['in_reply_to']['name']               = __('In-Reply-To email header');
+      $criterias['in_reply_to']['table']              = '';
+      $criterias['in_reply_to']['type']               = 'text';
 
-      $criterias['x-priority']['name']  = __('X-Priority email header');
-      $criterias['x-priority']['table'] = '';
-      $criterias['x-priority']['type']  = 'text';
+      $criterias['x-priority']['name']                = __('X-Priority email header');
+      $criterias['x-priority']['table']               = '';
+      $criterias['x-priority']['type']                = 'text';
 
       $criterias['x-auto-response-suppress']['name']  = __('X-Auto-Response-Suppress email header');
       $criterias['x-auto-response-suppress']['table'] = '';
       $criterias['x-auto-response-suppress']['type']  = 'text';
 
-      $criterias['auto-submitted']['name']  = __('Auto-Submitted email header');
-      $criterias['auto-submitted']['table'] = '';
-      $criterias['auto-submitted']['type']  = 'text';
+      $criterias['auto-submitted']['name']            = __('Auto-Submitted email header');
+      $criterias['auto-submitted']['table']           = '';
+      $criterias['auto-submitted']['type']            = 'text';
 
       /// Renater spam matching : X-UCE-Status = Yes
-      $criterias['x-uce-status']['name']  = __('X-UCE-Status email header');
-      $criterias['x-uce-status']['table'] = '';
-      $criterias['x-uce-status']['type']  = 'text';
+      $criterias['x-uce-status']['name']              = __('X-UCE-Status email header');
+      $criterias['x-uce-status']['table']             = '';
+      $criterias['x-uce-status']['type']              = 'text';
 
-      $criterias['received']['name']  = __('Received email header');
-      $criterias['received']['table'] = '';
-      $criterias['received']['type']  = 'text';
+      $criterias['received']['name']                  = __('Received email header');
+      $criterias['received']['table']                 = '';
+      $criterias['received']['type']                  = 'text';
 
-      $criterias['GROUPS']['table']     = 'glpi_groups';
-      $criterias['GROUPS']['field']     = 'completename';
-      $criterias['GROUPS']['name']      = __('User : Group');
-      $criterias['GROUPS']['linkfield'] = '';
-      $criterias['GROUPS']['type']      = 'dropdown';
-      $criterias['GROUPS']['virtual']   = true;
-      $criterias['GROUPS']['id']        = 'groups';
+      $criterias['GROUPS']['table']                   = 'glpi_groups';
+      $criterias['GROUPS']['field']                   = 'completename';
+      $criterias['GROUPS']['name']                    = __('User: Group');
+      $criterias['GROUPS']['linkfield']               = '';
+      $criterias['GROUPS']['type']                    = 'dropdown';
+      $criterias['GROUPS']['virtual']                 = true;
+      $criterias['GROUPS']['id']                      = 'groups';
 
-      $criterias['KNOWN_DOMAIN']['field']           = 'name';
-      $criterias['KNOWN_DOMAIN']['name']            = __('Mail domain is known');
-      $criterias['KNOWN_DOMAIN']['table']           = 'glpi_entities';
-      $criterias['KNOWN_DOMAIN']['type']            = 'yesno';
-      $criterias['KNOWN_DOMAIN']['virtual']         = true;
-      $criterias['KNOWN_DOMAIN']['id']              = 'entitydatas';
-      $criterias['KNOWN_DOMAIN']['allow_condition'] = array(Rule::PATTERN_IS);
+      $criterias['KNOWN_DOMAIN']['field']             = 'name';
+      $criterias['KNOWN_DOMAIN']['name']              = __('Mail domain is known');
+      $criterias['KNOWN_DOMAIN']['table']             = 'glpi_entities';
+      $criterias['KNOWN_DOMAIN']['type']              = 'yesno';
+      $criterias['KNOWN_DOMAIN']['virtual']           = true;
+      $criterias['KNOWN_DOMAIN']['id']                = 'entitydatas';
+      $criterias['KNOWN_DOMAIN']['allow_condition']   = array(Rule::PATTERN_IS);
 
-      $criterias['PROFILES']['field']           = 'name';
-      $criterias['PROFILES']['name']            = __('User featuring the profile');
-      $criterias['PROFILES']['table']           = 'glpi_profiles';
-      $criterias['PROFILES']['type']            = 'dropdown';
-      $criterias['PROFILES']['virtual']         = true;
-      $criterias['PROFILES']['id']              = 'profiles';
-      $criterias['PROFILES']['allow_condition'] = array(Rule::PATTERN_IS);
+      $criterias['PROFILES']['field']                 = 'name';
+      $criterias['PROFILES']['name']                  = __('User featuring the profile');
+      $criterias['PROFILES']['table']                 = 'glpi_profiles';
+      $criterias['PROFILES']['type']                  = 'dropdown';
+      $criterias['PROFILES']['virtual']               = true;
+      $criterias['PROFILES']['id']                    = 'profiles';
+      $criterias['PROFILES']['allow_condition']          = array(Rule::PATTERN_IS);
 
       if (Session::isMultiEntitiesMode()) {
          $criterias['UNIQUE_PROFILE']['field']           = 'name';
@@ -170,41 +182,44 @@ class RuleMailCollector extends Rule {
          $criterias['UNIQUE_PROFILE']['allow_condition'] = array(Rule::PATTERN_IS);
       }
 
-      $criterias['ONE_PROFILE']['field']           = 'name';
-      $criterias['ONE_PROFILE']['name']            = __('User with a single profile');
-      $criterias['ONE_PROFILE']['table']           = '';
-      $criterias['ONE_PROFILE']['type']            = 'yesonly';
-      $criterias['ONE_PROFILE']['virtual']         = true;
-      $criterias['ONE_PROFILE']['id']              = 'profiles';
-      $criterias['ONE_PROFILE']['allow_condition'] = array(Rule::PATTERN_IS);
+      $criterias['ONE_PROFILE']['field']              = 'name';
+      $criterias['ONE_PROFILE']['name']               = __('User with a single profile');
+      $criterias['ONE_PROFILE']['table']              = '';
+      $criterias['ONE_PROFILE']['type']               = 'yesonly';
+      $criterias['ONE_PROFILE']['virtual']            = true;
+      $criterias['ONE_PROFILE']['id']                 = 'profiles';
+      $criterias['ONE_PROFILE']['allow_condition']    = array(Rule::PATTERN_IS);
 
       return $criterias;
    }
 
 
+   /**
+    * @see inc/Rule::getActions()
+   **/
    function getActions() {
 
       $actions = array();
 
-      $actions['entities_id']['name']  = __('Entity');
-      $actions['entities_id']['type']  = 'dropdown';
-      $actions['entities_id']['table'] = 'glpi_entities';
+      $actions['entities_id']['name']                       = __('Entity');
+      $actions['entities_id']['type']                       = 'dropdown';
+      $actions['entities_id']['table']                      = 'glpi_entities';
 
       $actions['_affect_entity_by_domain']['name']          = __('Entity from domain');
       $actions['_affect_entity_by_domain']['type']          = 'text';
       $actions['_affect_entity_by_domain']['force_actions'] = array('regex_result');
 
-      $actions['_affect_entity_by_tag']['name']          = __('Entity from TAG');
-      $actions['_affect_entity_by_tag']['type']          = 'text';
-      $actions['_affect_entity_by_tag']['force_actions'] = array('regex_result');
+      $actions['_affect_entity_by_tag']['name']             = __('Entity from TAG');
+      $actions['_affect_entity_by_tag']['type']             = 'text';
+      $actions['_affect_entity_by_tag']['force_actions']    = array('regex_result');
 
-      $actions['_affect_entity_by_user_entity']['name']  = __("Entity based on user's profile");
-      $actions['_affect_entity_by_user_entity']['type']  = 'yesonly';
-      $actions['_affect_entity_by_user_entity']['table'] = '';
+      $actions['_affect_entity_by_user_entity']['name']     = __("Entity based on user's profile");
+      $actions['_affect_entity_by_user_entity']['type']     = 'yesonly';
+      $actions['_affect_entity_by_user_entity']['table']    = '';
 
-      $actions['_refuse_email_no_response']['name']  = __('Reject email (without email response)');
-      $actions['_refuse_email_no_response']['type']  = 'yesonly';
-      $actions['_refuse_email_no_response']['table'] = '';
+      $actions['_refuse_email_no_response']['name']    = __('Reject email (without email response)');
+      $actions['_refuse_email_no_response']['type']    = 'yesonly';
+      $actions['_refuse_email_no_response']['table']   = '';
 
       $actions['_refuse_email_with_response']['name']  = __('Reject email (with email response)');
       $actions['_refuse_email_with_response']['type']  = 'yesonly';
@@ -214,6 +229,9 @@ class RuleMailCollector extends Rule {
    }
 
 
+   /**
+    * @see inc/Rule::executeActions()
+   **/
    function executeActions($output,$params) {
 
       if (count($this->actions)) {
@@ -252,8 +270,9 @@ class RuleMailCollector extends Rule {
                         if ($profile) {
                            $entities = array();
                            if (isset($params['_users_id_requester'])) { // Not set when testing
-                              $entities = Profile_User::getEntitiesForProfileByUser($params['_users_id_requester'],
-                                                                                    $profile);
+                              $entities
+                                 = Profile_User::getEntitiesForProfileByUser($params['_users_id_requester'],
+                                                                             $profile);
                            }
 
                            //Case 2 : check if there's only one profile for this user
@@ -324,5 +343,4 @@ class RuleMailCollector extends Rule {
    }
 
 }
-
 ?>
