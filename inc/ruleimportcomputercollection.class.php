@@ -63,7 +63,7 @@ class RuleImportComputerCollection extends RuleCollection {
    /**
     * @see inc/RuleCollection::prepareInputDataForProcess()
    **/
-   function prepareInputDataForProcess($input,$params) {
+   function prepareInputDataForProcess($input, $params) {
       global $DBocs;
 
       if (!isset($input['ocsid']) && isset($input['id'])) {

@@ -43,6 +43,9 @@ class RuleTicketCollection extends RuleCollection {
    public $menu_option                           = 'ticket';
 
 
+   /**
+    * @param $entity (default 0)
+   **/
    function __construct($entity=0) {
       $this->entity = $entity;
    }
@@ -58,6 +61,9 @@ class RuleTicketCollection extends RuleCollection {
    }
 
 
+   /**
+    * @see inc/RuleCollection::preProcessPreviewResults()
+    */
    function preProcessPreviewResults($output) {
       return Ticket::showPreviewAssignAction($output);
    }
@@ -79,7 +85,10 @@ class RuleTicketCollection extends RuleCollection {
    }
 
 
-   function prepareInputDataForProcess($input,$params) {
+   /**
+    * @see inc/RuleCollection::prepareInputDataForProcess()
+   **/
+   function prepareInputDataForProcess($input, $params) {
 
       // Pass x-priority header if exists
       if (isset($input['_head']['x-priority'])) {

@@ -49,11 +49,15 @@ class RuleSoftwareCategory extends Rule {
    public $right    = 'rule_softwarecategories';
    public $can_sort = true;
 
+
    function getTitle() {
       return __('Rules for assigning a category to software');
    }
 
 
+   /**
+    * @see inc/Rule::maxActionsCount()
+   **/
    function maxActionsCount() {
       return 1;
    }
@@ -61,25 +65,27 @@ class RuleSoftwareCategory extends Rule {
 
    function getCriterias() {
 
-      $criterias = array();
-      $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = _n('Software', 'Software', 2);
-      $criterias['name']['table'] = 'glpi_softwares';
+      $criterias                          = array();
+
+      $criterias['name']['field']         = 'name';
+      $criterias['name']['name']          = _n('Software', 'Software', 2);
+      $criterias['name']['table']         = 'glpi_softwares';
 
       $criterias['manufacturer']['field'] = 'name';
       $criterias['manufacturer']['name']  = __('Publisher');
       $criterias['manufacturer']['table'] = 'glpi_manufacturers';
 
-      $criterias['comment']['field'] = 'comment';
-      $criterias['comment']['name']  = __('Comments');
-      $criterias['comment']['table'] = 'glpi_softwares';
+      $criterias['comment']['field']      = 'comment';
+      $criterias['comment']['name']       = __('Comments');
+      $criterias['comment']['table']      = 'glpi_softwares';
       return $criterias;
    }
 
 
    function getActions() {
 
-      $actions = array();
+      $actions                                   = array();
+
       $actions['softwarecategories_id']['name']  = __('Category');
       $actions['softwarecategories_id']['type']  = 'dropdown';
       $actions['softwarecategories_id']['table'] = 'glpi_softwarecategories';
