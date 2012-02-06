@@ -51,13 +51,16 @@ class RuleOcsCollection extends RuleCollection {
    /**
     * Constructor
     *
-    * @param $ocsservers_id ID of the OCS server
+    * @param $ocsservers_id ID of the OCS server (default -1)
    **/
    function __construct($ocsservers_id=-1) {
       $this->ocsservers_id = $ocsservers_id;
    }
 
 
+   /**
+    * @see inc/RuleCollection::canList()
+   **/
    function canList() {
       global $CFG_GLPI;
 
@@ -65,11 +68,17 @@ class RuleOcsCollection extends RuleCollection {
    }
 
 
+   /**
+    * @see inc/RuleCollection::getTitle()
+   **/
    function getTitle() {
       return __('Rules for assigning a computer to an entity');
    }
 
 
+   /**
+    * @see inc/RuleCollection::prepareInputDataForProcess()
+   **/
    function prepareInputDataForProcess($input, $computers_id) {
       global $DBocs;
 
@@ -160,7 +169,7 @@ class RuleOcsCollection extends RuleCollection {
    /**
     *  * Get fields needed to process criterias
     *
-    * @param $withouttable fields without tablename ?
+    * @param $withouttable fields without tablename ? (default 0)
     *
     * @return an array of needed fields
    **/
