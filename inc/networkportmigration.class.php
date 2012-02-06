@@ -202,7 +202,7 @@ class NetworkPortMigration extends CommonDBChild {
          $interface_cell = "th";
 
          echo "<tr class='tab_bg_1'><th>". $motives['unknown_interface_type'] ."</th>\n".
-              "<td colspan=3>" .__('Transform this NetworkPort to: ');
+              "<td colspan=3>" .__('Transform this network port to: ');
          echo "<select name='transform_to'>\n";
          foreach (NetworkPort::getNetworkPortInstantiations() as $network_type) {
             echo "\t<option value='$network_type'";
@@ -220,7 +220,7 @@ class NetworkPortMigration extends CommonDBChild {
          $address_cell = "th";
          echo "<tr class='tab_bg_1'><th>" .$motives['invalid_network'] ."</th>\n<td colspan=3>";
          if (isset($network)) {
-            printf(__('NetworkPort information conflicting with %s'), $network->getLink());
+            printf(__('Network port information conflicting with %s'), $network->getLink());
          } else {
             if (!isset($address) || !isset($netmask)) {
                _e('Invalid address or netmask');
@@ -257,7 +257,7 @@ class NetworkPortMigration extends CommonDBChild {
             echo "<a href='" . $networkPort->getLinkURL() . "'>" .
                  __('Add a correct IP to the network port') . "</a>";
          } else {
-            _e('Unknown NetworkPort !');
+            _e('Unknown network port !');
          }
          echo "</td></tr>\n";
       }
@@ -276,7 +276,7 @@ class NetworkPortMigration extends CommonDBChild {
 
       echo "<tr class='tab_bg_1'><td colspan='4'>&nbsp;</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'><th colspan='4'>" .__('Original NetworkPort information') ."</th>".
+      echo "<tr class='tab_bg_1'><th colspan='4'>" .__('Original network port information') ."</th>".
            "</tr>\n";
 
       echo "<tr class='tab_bg_1'><td>";
