@@ -435,13 +435,18 @@ class NetworkPort extends CommonDBChild {
 
             if ($number_port != 0) {
                $is_active_network_port = true;
-               if (empty($portType)) {
-                  $portType = 'NetworkPortMigration';
-               }
+               
                $table = new HTMLTable();
-               //TRANS: %1$s is the type name, %2$s is the port type, %3$d is the port's number
-               $name = sprintf(__('%1$s (%2$s): %3$d'), self::getTypeName($number_port),
-                              call_user_func(array($portType, 'getTypeName')), $number_port);
+               $save_canedit = $canedit;
+               
+               if (!empty($portType)) {
+                  //TRANS: %1$s is the type name, %2$s is the port type, %3$d is the port's number
+                  $name = sprintf(__('%1$s (%2$s): %3$d'), self::getTypeName($number_port),
+                                 call_user_func(array($portType, 'getTypeName')), $number_port);
+               } else {
+                  $name = __('Network ports waiting for manual migration');
+                  $canedit = false;
+               }
                $table->addGlobalName($name);
 
                if ($withtemplate != 2 && $canedit) {
@@ -455,7 +460,7 @@ class NetworkPort extends CommonDBChild {
 
                NetworkName::getHTMLTableHeaderForItem(__CLASS__, $table, 'Name', $table_options);
 
-               if ($portType != 'NetworkPortMigration') {
+               if (!empty($portType)) {
                   call_user_func_array(array($portType, 'getInstantiationHTMLTableHeaders'),
                                        array(&$table, 'Name'));
                }
@@ -466,14 +471,15 @@ class NetworkPort extends CommonDBChild {
                   // Session::addToNavigateListItems('NetworkPort', $netport->fields["id"]);
 
                   // No massive action for migration ports
-                  if ($withtemplate != 2 && $canedit && $portType != 'NetworkPortMigration') {
+                  if ($withtemplate != 2 && $canedit && !empty($portType)) {
                      $table->addElement("<input type='checkbox' name='del_port[" .
                                           $netport->fields["id"]."]' value='1'>",
                                         "checkbox", $netport->getID());
                   }
                   $content = "<span class='b'>";
-                  if ($canedit && $withtemplate != 2) {
-                     if ($portType != 'NetworkPortMigration') {
+                  // Display likn based on default rights
+                  if ($save_canedit && $withtemplate != 2) {
+                     if (!empty($portType)) {
                         $content .= "<a href=\"" . $CFG_GLPI["root_doc"] .
                                     "/front/networkport.form.php?id=".$netport->fields["id"] ."\">";
                      } else {
@@ -509,7 +515,7 @@ class NetworkPort extends CommonDBChild {
 
                $table->display();
                unset($table);
-
+               $canedit = $save_canedit;
             }
             echo "</div>";
          }
