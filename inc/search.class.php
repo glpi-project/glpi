@@ -2749,9 +2749,9 @@ class Search {
                   }
                }
                $regs[1] .= $regs[2];
-               return $link." (INET_ATON(`$table`.`$field`) ".$regs[1]." ".ip2long($regs[3]).") ";
+               return $link." (INET_ATON(`$table`.`$field`) ".$regs[1]." INET_ATON('".$regs[3]."')) ";
             }
-            
+
 //             return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
             break;
          case "glpi_tickets.status" :
@@ -2886,7 +2886,7 @@ class Search {
          $tocompute = $searchopt[$ID]["computation"];
          $tocompute = str_replace("TABLE", "`$table`", $tocompute);
       }
-      
+
       // Preformat items
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
