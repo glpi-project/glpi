@@ -297,7 +297,7 @@ class Event extends CommonDBTM {
                      "date"     => array(__('Date'), ""),
                      "service"  => array(__('Service'), "width='8%'"),
                      "level"    => array(__('Level'), "width='8%'"),
-                     "message"  => array(___('Message'), "width='50%'"));
+                     "message"  => array(__('Message'), "width='50%'"));
 
       // define default sorting
       if (!isset($items[$sort])) {
