@@ -340,10 +340,6 @@ class Ocslink extends CommonDBTM {
          $first       = true;
 
          foreach ($locked_disk as $key => $val) {
-            $querySearchLockedDisk = "SELECT `id`
-                                       FROM `glpi_computervirtualmachines`
-                                       WHERE `id` = '$key'";
-            $resultSearchDisk = $DB->query($querySearchLockedDisk);
             $nb = countElementsInTable('glpi_computervirtualmachines', "`id`='$key'");
             if ($nb == 0) {
                $header = true;
