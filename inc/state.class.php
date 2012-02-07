@@ -40,16 +40,16 @@ if (!defined('GLPI_ROOT')) {
 class State extends CommonTreeDropdown {
 
    static function getTypeName($nb=0) {
-      return _n('Status of items', 'Status of items',$nb);
+      return _n('Status of items', 'Status of items', $nb);
    }
 
 
    /**
     * Dropdown of states for behaviour config
     *
-    * @param $name select name
-    * @param $lib string to add for -1 value
-    * @param $value default value
+    * @param $name            select name
+    * @param $lib    string   to add for -1 value (default '')
+    * @param $value           default value (default 0)
    **/
    static function dropdownBehaviour($name, $lib="", $value=0) {
       global $DB;
