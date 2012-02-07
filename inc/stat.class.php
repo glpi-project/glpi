@@ -41,10 +41,20 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Stat {
    /// TODO clean type names : technicien -> tech enterprise -> supplier
-   static function getItems($itemtype,$date1, $date2, $type, $parent=0) {
+
+   /**
+    * @param $itemtype
+    * @param $date1
+    * @param $date2
+    * @param $type
+    * @param $parent    (default 0)
+   **/
+   static function getItems($itemtype, $date1, $date2, $type, $parent=0) {
       global $CFG_GLPI, $DB;
 
-      $item = new $itemtype();
+      if (!$item = getItemForItemtype($itemtype)) {
+         return;
+      }
       $val  = array();
       $cond = '';
 
@@ -162,8 +172,7 @@ class Stat {
 
          // DEVICE CASE
          default :
-            $item = new $type();
-            if ($item instanceof CommonDevice) {
+            if (($item = getItemForItemtype($type)) && $item instanceof CommonDevice) {
                $device_table = $item->getTable();
 
                //select devices IDs (table row)
@@ -185,8 +194,7 @@ class Stat {
                // Dropdown case for computers
                $field = "name";
                $table = getTableFOrItemType($type);
-               $item  = new $type();
-               if ($item instanceof CommonTreeDropdown) {
+               if (($item = getItemForItemtype($type)) && $item instanceof CommonTreeDropdown) {
                   $field = "completename";
                }
                $where = '';
@@ -216,7 +224,16 @@ class Stat {
    }
 
 
-   static function getDatas($itemtype, $type, $date1, $date2, $start, $value, $value2="") {
+   /**
+    * @param $itemtype
+    * @param $type
+    * @param $date1
+    * @param $date2
+    * @param $start
+    * @param $value     array
+    * @param $value2             (default '')
+   **/
+   static function getDatas($itemtype, $type, $date1, $date2, $start, array $value, $value2="") {
 
       $export_data = array();
 
@@ -271,7 +288,16 @@ class Stat {
    }
 
 
-   static function show($itemtype, $type, $date1, $date2, $start, $value, $value2="") {
+   /**
+    * @param $itemtype
+    * @param $type
+    * @param $date1
+    * @param $date2
+    * @param $start
+    * @param $value     array
+    * @param $value2          (default '')
+   **/
+   static function show($itemtype, $type, $date1, $date2, $start, array $value, $value2="") {
       global $CFG_GLPI;
 
       // Set display type for export if define
@@ -409,7 +435,7 @@ class Stat {
          $row_num = 1;
 
          for ($i=$start ; $i< $numrows && $i<($end_display) ; $i++) {
-            $row_num++;
+            $row_num  ++;
             $item_num = 1;
             echo Search::showNewLine($output_type, $i%2);
             if ($output_type == Search::HTML_OUTPUT
@@ -444,10 +470,10 @@ class Stat {
             echo Search::showItem($output_type, $nb_opened, $item_num, $row_num);
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $solved    = self::constructEntryValues($itemtype, "inter_solved", $date1, $date2, $type,
-                                                    $value[$i]["id"], $value2);
+            $solved    = self::constructEntryValues($itemtype, "inter_solved", $date1, $date2,
+                                                    $type, $value[$i]["id"], $value2);
             $nb_solved = array_sum($solved);
-            if ($nb_opened>0 && $nb_solved >0) {
+            if ($nb_opened>0 && $nb_solved>0) {
                $nb_solved .= ' ('.round($nb_solved*100/$nb_opened).'%)';
             }
             echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
@@ -462,8 +488,8 @@ class Stat {
             echo Search::showItem($output_type, $nb_solved_late, $item_num, $row_num);
 
             //le nombre d'intervention closes - the number of closed intervention
-            $closed    = self::constructEntryValues($itemtype, "inter_closed", $date1, $date2, $type,
-                                                    $value[$i]["id"], $value2);
+            $closed    = self::constructEntryValues($itemtype, "inter_closed", $date1, $date2,
+                                                    $type, $value[$i]["id"], $value2);
             $nb_closed = array_sum($closed);
 
             if ($nb_opened>0 && $nb_closed >0) {
@@ -621,16 +647,32 @@ class Stat {
    }
 
 
+   /**
+    * @param $itemtype
+    * @param $type
+    * @param $begin              (default '')
+    * @param $end                (default '')
+    * @param $param              (default '')
+    * @param $value              (default '')
+    * @param $value2             (default '')
+    */
    static function constructEntryValues($itemtype, $type, $begin="", $end="", $param="", $value="",
                                         $value2="") {
       global $DB;
 
-      $item           = new $itemtype();
+      if (!$item = getItemForItemtype($itemtype)) {
+         return;
+      }
       $table          = $item->getTable();
       $fkfield        = $item->getForeignKeyField();
-      $userlinkclass  = new $item->userlinkclass();
+
+      if (!$userlinkclass = $item->userlinkclass) {
+         return;
+      }
       $userlinktable  = $userlinkclass->getTable();
-      $grouplinkclass = new $item->grouplinkclass();
+      if (!$grouplinkclass = $item->grouplinkclass) {
+         return;
+      }
       $grouplinktable = $grouplinkclass->getTable();
       $tasktable      = getTableForItemType($item->getType().'Task');
 
@@ -1024,8 +1066,8 @@ class Stat {
 
    /** Get groups assigned to tickets between 2 dates
     *
-    * @param $entrees array : array containing data to displayed
-    * @param $options array : options
+    * @param $entrees   array containing data to displayed
+    * @param $options   array of possible options:
     *     - title string title displayed (default empty)
     *     - showtotal boolean show total in title (default false)
     *     - width integer width of the graph (default 700)
@@ -1037,7 +1079,7 @@ class Stat {
     *
     * @return array contains the distinct groups assigned to a tickets
    **/
-   static function showGraph($entrees, $options=array()) {
+   static function showGraph(array $entrees, $options=array()) {
       global $CFG_GLPI;
 
       if ($uid=Session::getLoginUserID(false)) {
@@ -1114,14 +1156,14 @@ class Stat {
             case 'stack' :
                $graph                                       = new ezcGraphBarChart();
                $graph->options->fillLines                   = 210;
-               $graph->xAxis->axisLabelRenderer = new ezcGraphAxisRotatedBoxedLabelRenderer();
+               $graph->xAxis->axisLabelRenderer       = new ezcGraphAxisRotatedBoxedLabelRenderer();
                $graph->xAxis->axisLabelRenderer->angle      = 45;
                $graph->xAxis->axisSpace                     = .2;
                $graph->yAxis->min                           = 0;
-               $graph->palette  = new GraphPalette();
+               $graph->palette                              = new GraphPalette();
                $graph->options->font->maxFontSize           = 15;
                $graph->title->background                    = '#EEEEEC';
-               $graph->renderer = new ezcGraphRenderer3d();
+               $graph->renderer                             = new ezcGraphRenderer3d();
                $graph->renderer->options->legendSymbolGleam = .5;
                $graph->renderer->options->barChartGleam     = .5;
 
@@ -1143,16 +1185,16 @@ class Stat {
                // No break default case
 
             default :
-               $graph           = new ezcGraphLineChart();
+               $graph                                       = new ezcGraphLineChart();
                $graph->options->fillLines                   = 210;
-               $graph->xAxis->axisLabelRenderer = new ezcGraphAxisRotatedLabelRenderer();
+               $graph->xAxis->axisLabelRenderer             = new ezcGraphAxisRotatedLabelRenderer();
                $graph->xAxis->axisLabelRenderer->angle      = 45;
                $graph->xAxis->axisSpace                     = .2;
                $graph->yAxis->min                           = 0;
-               $graph->palette  = new GraphPalette();
+               $graph->palette                              = new GraphPalette();
                $graph->options->font->maxFontSize           = 15;
                $graph->title->background                    = '#EEEEEC';
-               $graph->renderer = new ezcGraphRenderer3d();
+               $graph->renderer                             = new ezcGraphRenderer3d();
                $graph->renderer->options->legendSymbolGleam = .5;
                $graph->renderer->options->barChartGleam     = .5;
                $graph->renderer->options->depth             = 0.07;
@@ -1255,11 +1297,11 @@ class Stat {
                }
                ksort($values);
                // Print labels
-               fwrite($fp,$_SESSION["glpicsv_delimiter"]);
+               fwrite($fp, $_SESSION["glpicsv_delimiter"]);
                foreach ($labels as $val) {
                   fwrite($fp, $val.$_SESSION["glpicsv_delimiter"]);
                }
-               fwrite($fp,"\n");
+               fwrite($fp, "\n");
                foreach ($values as $key => $data) {
                   fwrite($fp, $key.$_SESSION["glpicsv_delimiter"]);
                   foreach ($data as $value) {
@@ -1291,6 +1333,12 @@ class Stat {
    }
 
 
+   /**
+    * @param $target
+    * @param $date1
+    * @param $date2
+    * @param $start
+   **/
    static function showItems($target, $date1, $date2, $start) {
       global $DB, $CFG_GLPI;
 
@@ -1403,7 +1451,8 @@ class Stat {
       $show_problem = Session::haveRight("edit_all_problem", "1")
                       || Session::haveRight("show_all_problem", "1");
 
-      $opt_list["Ticket"] = __('Tickets');
+      $opt_list["Ticket"]  = __('Tickets');
+
       $stat_list["Ticket"]["Ticket_Global"]["name"]   = __('Global');
       $stat_list["Ticket"]["Ticket_Global"]["file"]   = "stat.global.php?itemtype=Ticket";
       $stat_list["Ticket"]["Ticket_Ticket"]["name"]   = __('By ticket');
@@ -1415,6 +1464,7 @@ class Stat {
 
       if ($show_problem) {
          $opt_list["Problem"] = _n('Problem', 'Problems', 2);
+
          $stat_list["Problem"]["Problem_Global"]["name"]    = __('Global');
          $stat_list["Problem"]["Problem_Global"]["file"]    = "stat.global.php?itemtype=Problem";
          $stat_list["Problem"]["Problem_Problem"]["name"]   = __('By problem');

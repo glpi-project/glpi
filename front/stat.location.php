@@ -62,11 +62,17 @@ if (!empty($_REQUEST["date1"])
 if (!isset($_REQUEST["start"])) {
    $_REQUEST["start"] = 0;
 }
+// Why this test ?? For me it's doing nothing
 if (isset($_REQUEST["dropdown"])) {
    $_REQUEST["dropdown"] = $_REQUEST["dropdown"];
 }
+
 if (empty($_REQUEST["dropdown"])) {
    $_REQUEST["dropdown"] = "ComputerType";
+}
+
+if (!isset($_REQUEST['itemtype'])) {
+   $_REQUEST['itemtype'] = 'Ticket';
 }
 
 Stat::title();
@@ -105,9 +111,9 @@ echo "<input type='hidden' name='itemtype' value='". $_REQUEST['itemtype'] ."'>"
 echo "<input type='submit' class='submit' name='submit' value='".__s('Display report')."'></td></tr>";
 
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
-Html::showDateFormItem("date2",$_REQUEST["date2"]);
+Html::showDateFormItem("date2", $_REQUEST["date2"]);
 echo "</td><td class='center'>";
-Dropdown::showYesNo('showgraph',$_REQUEST['showgraph']);
+Dropdown::showYesNo('showgraph', $_REQUEST['showgraph']);
 echo "</td>";
 echo "</tr>";
 echo "</table></form>";
@@ -133,7 +139,7 @@ if (!($item instanceof CommonDevice)) {
 
 } else {
 //   echo "Device";
-   $type = "device";
+   $type  = "device";
    $field = $_REQUEST["dropdown"];
 
    $val = Stat::getItems($_REQUEST['itemtype'], $_REQUEST["date1"], $_REQUEST["date2"],
@@ -164,7 +170,7 @@ if (!$_REQUEST['showgraph']) {
       Stat::showGraph(array(__('Number opened') => $cleandata),
                       array('title'     => __('Number opened'),
                             'showtotal' => 1,
-                            'unit'      => __('Ticket(s)'),
+                            'unit'      => __('Tickets'),
                             'type'      => 'pie'));
    }
 
@@ -176,7 +182,7 @@ if (!$_REQUEST['showgraph']) {
       Stat::showGraph(array(__('Number solved') => $cleandata),
                       array('title'     => __('Number solved'),
                             'showtotal' => 1,
-                            'unit'      => __('Ticket(s)'),
+                            'unit'      => __('Tickets'),
                             'type'      => 'pie'));
    }
 
@@ -188,7 +194,7 @@ if (!$_REQUEST['showgraph']) {
       Stat::showGraph(array(__('Number resolved late') => $cleandata),
                       array('title'     => __('Number resolved late'),
                             'showtotal' => 1,
-                            'unit'      => __('Ticket(s)'),
+                            'unit'      => __('Tickets'),
                             'type'      => 'pie'));
    }
 
@@ -200,7 +206,7 @@ if (!$_REQUEST['showgraph']) {
       Stat::showGraph(array(__('Number closed') => $cleandata),
                       array('title'     => __('Number closed'),
                             'showtotal' => 1,
-                            'unit'      => __('Ticket(s)'),
+                            'unit'      => __('Tickets'),
                             'type'      => 'pie'));
    }
 
@@ -212,7 +218,7 @@ if (!$_REQUEST['showgraph']) {
       Stat::showGraph(array(__('Satisfaction survey') => $cleandata),
                       array('title'     => __('Satisfaction survey'),
                             'showtotal' => 1,
-                            'unit'      => __('Ticket(s)'),
+                            'unit'      => __('Tickets'),
                             'type'      => 'pie'));
    }
 

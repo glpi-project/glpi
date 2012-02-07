@@ -39,7 +39,9 @@ Html::header(__('Statistics'), $_SERVER['PHP_SELF'], "maintain", "stat");
 
 Session::checkRight("statistic", "1");
 
-$item  = new $_REQUEST['itemtype'];
+if (!$item = getItemForItemtype($_REQUEST['itemtype'])) {
+   exit;
+}
 
 if (empty($_POST["date1"]) && empty($_POST["date2"])) {
    if (isset($_GET["date1"])) {
@@ -241,31 +243,33 @@ switch($_GET["type"]) {
    case "device" :
       $val1 = $_GET["id"];
       $val2 = $_GET["champ"];
-      $item = new $_GET["champ"]();
-      $device_table = $item->getTable();
-      $next = getNextItem($device_table, $_GET["id"], '', 'designation');
-      $prev = getPreviousItem($device_table, $_GET["id"], '', 'designation');
+      if ($item = getItemForItemtype($_GET["champ"])) {
+         $device_table = $item->getTable();
+         $next = getNextItem($device_table, $_GET["id"], '', 'designation');
+         $prev = getPreviousItem($device_table, $_GET["id"], '', 'designation');
 
-      $query = "SELECT `designation`
-                FROM `".$device_table."`
-                WHERE `id` = '".$_GET['id']."'";
-      $result = $DB->query($query);
+         $query = "SELECT `designation`
+                   FROM `".$device_table."`
+                   WHERE `id` = '".$_GET['id']."'";
+         $result = $DB->query($query);
 
-      $title = $item->getTypeName()."&nbsp;: ".$DB->result($result,0,"designation");
+         $title = $item->getTypeName()."&nbsp;: ".$DB->result($result,0,"designation");
+      }
       break;
 
    case "comp_champ" :
       $val1  = $_GET["id"];
       $val2  = $_GET["champ"];
-      $item  = new $_GET["champ"]();
-      $table = $item->getTable();
-      $next  = getNextItem($table, $_GET["id"]);
-      $prev  = getPreviousItem($table, $_GET["id"]);
-      $title = $item->getTypeName()."&nbsp;: ".Dropdown::getDropdownName($table, $_GET["id"]);
+      if ($item = getItemForItemtype($_GET["champ"])) {
+         $table = $item->getTable();
+         $next  = getNextItem($table, $_GET["id"]);
+         $prev  = getPreviousItem($table, $_GET["id"]);
+         $title = $item->getTypeName()."&nbsp;: ".Dropdown::getDropdownName($table, $_GET["id"]);
+      }
       break;
 }
 
-echo "<div align='center'>";
+echo "<div class='center'>";
 echo "<table class='tab_cadre_navigation'>";
 echo "<tr><td>";
 if ($prev > 0) {
@@ -302,7 +306,6 @@ echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
 Html::showDateFormItem("date2", $_POST["date2"]);
 echo "</td></tr>";
 echo "</table></div>";
-
 
 
 
@@ -351,7 +354,7 @@ foreach ($available as $key => $name) {
 
 Stat::showGraph($toprint, array('title'     => __('Number of tickets'),
                                 'showtotal' => 1,
-                                'unit'      => __('Ticket(s)')));
+                                'unit'      => __('Tickets')));
 
 //Temps moyen de resolution d'intervention
 $values2['avgsolved'] = Stat::constructEntryValues($_REQUEST['itemtype'], "inter_avgsolvedtime",
@@ -399,7 +402,6 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
 
 
 
-
 echo "<div class='center'>";
 
 $show_all2 = false;
@@ -421,7 +423,7 @@ foreach ($available as $key => $name) {
 }
 
 Stat::showGraph($toprint, array('title'     => __('Average time'),
-                                'unit'      => __('Hour(s)'),
+                                'unit'      => __('Hours'),
                                 'showtotal' => 1,
                                 'datatype'  => 'average'));
 
@@ -458,7 +460,7 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
 
    Stat::showGraph($toprint, array('title'     => __('Satisfaction survey'),
                                  'showtotal' => 1,
-                                 'unit'      => __('Ticket(s)')));
+                                 'unit'      => __('Tickets')));
 
    $values['avgsatisfaction'] = Stat::constructEntryValues($_REQUEST['itemtype'],
                                                            "inter_avgsatisfaction",

@@ -57,7 +57,9 @@ if (!empty($_REQUEST["date1"])
 
 Stat::title();
 
-$item = new $_REQUEST['itemtype']();
+if (!$item = getItemForItemtype($_REQUEST['itemtype'])) {
+   exit;
+}
 
 echo "<form method='get' name='form' action='stat.global.php'><div class='center'>";
 echo "<table class='tab_cadre'>";
@@ -97,7 +99,6 @@ $show_all = false;
 if (!isset($_REQUEST['graph']) || count($_REQUEST['graph'])==0) {
    $show_all = true;
 }
-
 
 foreach ($available as $key => $name) {
    echo "<input type='checkbox' onchange='submit()' name='graph[$key]' ".
@@ -184,7 +185,7 @@ foreach ($available as $key => $name) {
 }
 
 Stat::showGraph($toprint, array('title'     => __('Average time'),
-                                'unit'      => __('Hour(s)'),
+                                'unit'      => __('Hours'),
                                 'showtotal' => 1,
                                 'datatype'  => 'average'));
 
@@ -222,7 +223,7 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
 
    Stat::showGraph($toprint, array('title'     => __('Satisfaction survey'),
                                    'showtotal' => 1,
-                                   'unit'      => __('Ticket(s)')));
+                                   'unit'      => __('Tickets')));
 
 
    $values['avgsatisfaction'] = Stat::constructEntryValues($_REQUEST['itemtype'],
