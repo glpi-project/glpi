@@ -83,7 +83,7 @@ class Migration {
     * @param $title string
    **/
    function displayTitle($title) {
-      echo "<h3>".htmlentities($title, ENT_COMPAT, "UTF-8")."</h3>";
+      echo "<h3>".Html::entities_deep($title)."</h3>";
    }
 
 
@@ -96,7 +96,7 @@ class Migration {
    function displayWarning($msg, $red=false) {
 
       echo ($red ? "<div class='red'><p>" : "<p><span class='b'>") .
-            htmlentities($msg, ENT_COMPAT, "UTF-8") . ($red ? "</p></div>" : "</span></p>");
+            Html::entities_deep($msg) . ($red ? "</p></div>" : "</span></p>");
    }
 
 

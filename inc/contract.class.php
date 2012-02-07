@@ -1424,8 +1424,12 @@ class Contract extends CommonDBTM {
       $tmp[0]                     = Dropdown::EMPTY_VALUE;
       $tmp[pow(2, Alert::END)]    = __('End');
       $tmp[pow(2, Alert::NOTICE)] = __('Notice');
-      $tmp[(pow(2, Alert::END)+pow(2, Alert::NOTICE))]
+      $tmp[(pow(2, Alert::END) + pow(2, Alert::NOTICE))]
                                   = __('End + Notice');
+      $tmp[pow(2, Alert::PERIODICITY)] 
+                                  = __('Periodicity');                                  
+      $tmp[pow(2, Alert::PERIODICITY) + pow(2, Alert::NOTICE)] 
+                                  = __('Periodicity + Notice');                                  
 
       if (is_null($val)) {
          return $tmp;
