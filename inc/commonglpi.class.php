@@ -52,7 +52,7 @@ class CommonGLPI {
     *
     * @return string
    **/
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       return __('General');
    }
 
