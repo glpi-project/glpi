@@ -105,8 +105,8 @@ class SoftwareVersion extends CommonDBChild {
    /**
     * Print the Software / version form
     *
-    * @param $ID Integer : Id of the version or the template to print
-    * @param $options array
+    * @param $ID        integer  Id of the version or the template to print
+    * @param $options   array    of possible options:
     *     - target form target
     *     - softwares_id ID of the software for add process
     *
@@ -147,7 +147,7 @@ class SoftwareVersion extends CommonDBChild {
          echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
       }
       echo "<a href='software.form.php?id=".$softwares_id."'>".
-             Dropdown::getDropdownName("glpi_softwares",$softwares_id)."</a>";
+             Dropdown::getDropdownName("glpi_softwares", $softwares_id)."</a>";
       echo "</td>";
       echo "<td rowspan='4' class='middle'>".__('Comments')."</td>";
       echo "<td class='center middle' rowspan='4'>";
@@ -168,8 +168,8 @@ class SoftwareVersion extends CommonDBChild {
       echo "</td></tr>\n";
 
       // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
-      if (SoftwareLicense::countForVersion($ID)>0
-          || Computer_SoftwareVersion::countForVersion($ID)>0) {
+      if (SoftwareLicense::countForVersion($ID) > 0
+          || Computer_SoftwareVersion::countForVersion($ID) > 0) {
              $options['candel'] = false;
       }
       $this->showFormButtons($options);
@@ -181,7 +181,7 @@ class SoftwareVersion extends CommonDBChild {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                 = array();
       $tab['common']       = __('Characteristics');
 
       $tab[2]['table']     = $this->getTable();
@@ -209,12 +209,10 @@ class SoftwareVersion extends CommonDBChild {
    /**
     * Make a select box for  software to install
     *
-    * Parameters which could be used in options array :
+    * @param $options array of possible options:
     *    - name : string / name of the select (default is softwareversions_id)
     *    - softwares_id : integer / ID of the software
     *    - value : integer / value of the selected version
-    *
-    * @param options options used
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -251,7 +249,7 @@ class SoftwareVersion extends CommonDBChild {
     * @param $soft Software object
     * @return nothing
    **/
-   static function showForSoftware($soft) {
+   static function showForSoftware(Software $soft) {
       global $DB, $CFG_GLPI;
 
       $softwares_id = $soft->getField('id');
@@ -273,12 +271,13 @@ class SoftwareVersion extends CommonDBChild {
       Session::initNavigateListItems('SoftwareVersion',
             //TRANS : %1$s is the itemtype name,
             //       %2$s is the name of the item (used for headings of a list)
-            sprintf(__('%1$s = %2$s'), $soft->getTypeName(1), $soft->getName()));
+                                     sprintf(__('%1$s = %2$s'), $soft->getTypeName(1),
+                                             $soft->getName()));
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
             echo "<table class='tab_cadre'><tr>";
-            echo "<th>"._n('Version', 'Versions',2)."</th>";
+            echo "<th>".self::getTypeName(2)."</th>";
             echo "<th>".__('Status')."</th>";
             echo "<th>".__('Operating system')."</th>";
             echo "<th>"._n('Installation', 'Installations', 2)."</th>";
@@ -333,7 +332,8 @@ class SoftwareVersion extends CommonDBChild {
                if ($_SESSION['glpishow_count_on_tabs']) {
                   return self::createTabEntry(self::getTypeName(2),
                                               countElementsInTable($this->getTable(),
-                                                                   "softwares_id = '".$item->getID()."'"));
+                                                                   "softwares_id
+                                                                        = '".$item->getID()."'"));
                }
                return self::getTypeName(2);
          }

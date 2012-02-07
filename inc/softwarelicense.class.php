@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -117,8 +115,8 @@ class SoftwareLicense extends CommonDBTM {
    /**
     * Print the Software / license form
     *
-    * @param $ID Integer : Id of the version or the template to print
-    * @param $options array
+    * @param $ID        integer  Id of the version or the template to print
+    * @param $options   array    of possible options:
     *     - target form target
     *     - softwares_id ID of the software for add process
     *
@@ -155,7 +153,7 @@ class SoftwareLicense extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Software')."</td>";
+      echo "<td>".Software::getTypeName(1)."</td>";
       echo "<td>";
       if ($ID>0) {
          $softwares_id = $this->fields["softwares_id"];
@@ -252,7 +250,7 @@ class SoftwareLicense extends CommonDBTM {
    function getSearchOptions() {
 
       // Only use for History (not by search Engine)
-      $tab = array();
+      $tab                       = array();
 
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'name';
@@ -302,8 +300,14 @@ class SoftwareLicense extends CommonDBTM {
    }
 
 
-   static function cronInfo($name) {
-
+   /**
+    * Give cron information
+    *
+    * @param $name : task's name
+    *
+    * @return arrray of information
+   **/
+      static function cronInfo($name) {
       return array('description' => __('Send alarms on expired licenses'));
    }
 
@@ -311,7 +315,7 @@ class SoftwareLicense extends CommonDBTM {
    /**
     * Cron action on softwares : alert on expired licences
     *
-    * @param $task to log, if NULL display
+    * @param $task to log, if NULL display (default NULL)
     *
     * @return 0 : nothing to do 1 : done with success
    **/
@@ -353,25 +357,26 @@ class SoftwareLicense extends CommonDBTM {
 
          foreach ($DB->request($query) as $license) {
             $name     = $license['softname'].' - '.$license['name'].' - '.$license['serial'];
-            //TRANS: %1$s is the expiration date, %2$s the license information
-            $message .= sprintf(__('Expired license on %1$s: %2$s'),
+            //TRANS: %1$s the license name, %2$s is the expiration date
+            $message .= sprintf(__('License %1$s expired on %2$s'),
                                 Html::convDate($license["expire"]), $name)."<br>\n";
             $items[$license['id']] = $license;
          }
 
          if (!empty($items)) {
-            $alert = new Alert();
+            $alert                  = new Alert();
             $options['entities_id'] = $entity;
             $options['licenses']    = $items;
 
-            if (NotificationEvent::raiseEvent('alert', new SoftwareLicense(), $options)) {
+            if (NotificationEvent::raiseEvent('alert', new self(), $options)) {
+               $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
                if ($task) {
-                  $task->log(Dropdown::getDropdownName("glpi_entities", $entity)." :  $message\n");
-                   $task->addVolume(1);
+                  //TRANS: %1$s is the entity, %2$s is the message
+                  $task->log(sprintf(__('%1$s: %2$s')."\n", $entityname, $message));
+                  $task->addVolume(1);
                 } else {
-                  Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                                                                             $entity).
-                                                    " :  $message");
+                  Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'),
+                                                           $entityname, $message));
                }
 
                $input["type"]     = Alert::END;
@@ -403,8 +408,9 @@ class SoftwareLicense extends CommonDBTM {
    /**
     * Get number of bought licenses of a version
     *
-    * @param $softwareversions_id version ID
-    * @param $entity to search for licenses in (default = all active entities)
+    * @param $softwareversions_id   version ID
+    * @param $entity                to search for licenses in (default = all active entities)
+    *                               (default '')
     *
     * @return number of installations
    */
@@ -469,9 +475,9 @@ class SoftwareLicense extends CommonDBTM {
    static function showForSoftware($software) {
       global $DB, $CFG_GLPI;
 
-      $softwares_id = $software->getField('id');
-      $license  = new SoftwareLicense();
-      $computer = new Computer();
+      $softwares_id  = $software->getField('id');
+      $license       = new self();
+      $computer      = new Computer();
 
       if (!$software->can($softwares_id,"r")) {
          return false;
@@ -509,7 +515,8 @@ class SoftwareLicense extends CommonDBTM {
 
       Session::initNavigateListItems('SoftwareLicense',
             //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-            sprintf(__('%1$s = %2$s'),$software->getTypeName(1), $software->getName()));
+                                     sprintf(__('%1$s = %2$s'), $software->getTypeName(1),
+                                             $software->getName()));
 
       if ($number < 1) {
          echo "<table class='tab_cadre_fixe'>";
@@ -527,7 +534,7 @@ class SoftwareLicense extends CommonDBTM {
       }
 
       // Display the pager
-      Html::printAjaxPager(_n('License', 'Licenses',2), $start, $number);
+      Html::printAjaxPager(self::getTypeName(2), $start, $number);
 
       $rand = mt_rand();
       $query = "SELECT `glpi_softwarelicenses`.*,

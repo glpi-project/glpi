@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -123,7 +121,7 @@ class Software extends CommonDBTM {
       }
 
       if (isset($input["id"]) && $input["id"]>0) {
-         $input["_oldID"]=$input["id"];
+         $input["_oldID"] = $input["id"];
       }
       unset($input['id']);
       unset($input['withtemplate']);
@@ -213,8 +211,8 @@ class Software extends CommonDBTM {
    /**
     * Print the Software form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer  ID of the item
+    * @param $options   array    of possible options:
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
@@ -261,7 +259,7 @@ class Software extends CommonDBTM {
                            'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>" . __('Associable to a ticket') . "</td><td>";
-      Dropdown::showYesNo('is_helpdesk_visible',$this->fields['is_helpdesk_visible']);
+      Dropdown::showYesNo('is_helpdesk_visible', $this->fields['is_helpdesk_visible']);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -305,10 +303,10 @@ class Software extends CommonDBTM {
       echo "</td><td>";
       if (isset($options['withtemplate']) && $options['withtemplate']) {
          //TRANS: %s is the datetime of insertion
-         printf(__('Created on %s'),Html::convDateTime($_SESSION["glpi_currenttime"]));
+         printf(__('Created on %s'), Html::convDateTime($_SESSION["glpi_currenttime"]));
       } else {
          //TRANS: %s is the datetime of insertion
-         printf(__('Last update on %s'),Html::convDateTime($this->fields["date_mod"]));
+         printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
       echo "</td></tr>\n";
 
@@ -339,7 +337,7 @@ class Software extends CommonDBTM {
    function getSearchOptions() {
 
       // Only use for History (not by search Engine)
-      $tab = array();
+      $tab                       = array();
 
       $tab[1]['table']           = $this->getTable();
       $tab[1]['field']           = 'name';
@@ -422,7 +420,7 @@ class Software extends CommonDBTM {
                                                           AND NEWTABLE.`is_template` = '0'",
                                          'beforejoin' => array('table' => 'glpi_softwareversions',
                                                                'joinparams'
-                                                                       => array('jointype' => 'child')));
+                                                                  => array('jointype' => 'child')));
 
 
       $tab[86]['table']          = $this->getTable();
@@ -529,9 +527,9 @@ class Software extends CommonDBTM {
    /**
     * Make a select box for  software to install
     *
-    * @param $myname select name
-    * @param $entity_restrict Restrict to a defined entity
-    * @param $massiveaction is it a massiveaction select ?
+    * @param $myname          select name
+    * @param $entity_restrict restrict to a defined entity
+    * @param $massiveaction   is it a massiveaction select ? (default 0)
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -563,9 +561,9 @@ class Software extends CommonDBTM {
    /**
     * Make a select box for license software to associate
     *
-    * @param $myname select name
-    * @param $entity_restrict Restrict to a defined entity
-    * @param $massiveaction is it a massiveaction select ?
+    * @param $myname          select name
+    * @param $entity_restrict restrict to a defined entity
+    * @param $massiveaction   is it a massiveaction select ? (default 0)
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -588,7 +586,8 @@ class Software extends CommonDBTM {
 
       $default = "<select name='$myname'><option value='0'>".Dropdown::EMPTY_VALUE." </option>
                   </select>";
-      Ajax::dropdown($use_ajax, "/ajax/dropdownSelectSoftwareLicense.php", $params, $default, $rand);
+      Ajax::dropdown($use_ajax, "/ajax/dropdownSelectSoftwareLicense.php", $params, $default,
+                     $rand);
 
       return $rand;
    }
@@ -597,11 +596,11 @@ class Software extends CommonDBTM {
    /**
     * Create a new software
     *
-    * @param name the software's name
-    * @param manufacturer the software's manufacturer
-    * @param entity the entity in which the software must be added
-    * @param comment
-    * @param is_recursive must the software be recursive (boolean)
+    * @param name                   the software's name
+    * @param manufacturer           the software's manufacturer
+    * @param entity                 the entity in which the software must be added
+    * @param comment                (default '')
+    * @param is_recursive  boolean  must the software be recursive (false by default))
     *
     * @return the software's ID
    **/
@@ -650,11 +649,11 @@ class Software extends CommonDBTM {
    /**
     * Add a Software. If already exist in trash restore it
     *
-    * @param name the software's name
-    * @param manufacturer the software's manufacturer
-    * @param entity the entity in which the software must be added
-    * @param comment comment
-    * @param is_recursive must the software be recursive (boolean)
+    * @param name                   the software's name
+    * @param manufacturer           the software's manufacturer
+    * @param entity                 the entity in which the software must be added
+    * @param comment                comment (default '')
+    * @param is_recursive  boolean  must the software be recursive (false by default)
    */
    function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment='', $is_recursive=false) {
       global $DB;
@@ -691,12 +690,12 @@ class Software extends CommonDBTM {
    /**
     * Put software in trash because it's been removed by GLPI software dictionnary
     *
-    * @param $ID  the ID of the software to put in trash
-    * @param $comment the comment to add to the already existing software's comment
+    * @param $ID        the ID of the software to put in trash
+    * @param $comment   the comment to add to the already existing software's comment (default '')
     *
     * @return boolean (success)
    **/
-   function putInTrash($ID, $comment = '') {
+   function putInTrash($ID, $comment='') {
       global $CFG_GLPI;
 
       $this->getFromDB($ID);
@@ -750,7 +749,7 @@ class Software extends CommonDBTM {
    function showMergeCandidates() {
       global $DB, $CFG_GLPI;
 
-      $ID = $this->getField('id');
+      $ID   = $this->getField('id');
       $this->check($ID,"w");
       $rand = mt_rand();
 

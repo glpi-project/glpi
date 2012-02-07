@@ -75,7 +75,7 @@ class SolutionTemplate extends CommonDropdown {
    **/
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab              = parent::getSearchOptions();
 
       $tab[4]['name']   = __('Content');
       $tab[4]['field']  = 'content';
@@ -89,7 +89,10 @@ class SolutionTemplate extends CommonDropdown {
    }
 
 
-   function displaySpecificTypeField($ID, $field = array()) {
+   /**
+    * @see inc/CommonDropdown::displaySpecificTypeField()
+   **/
+   function displaySpecificTypeField($ID, $field=array()) {
 
       switch ($field['type']) {
          case 'tinymce' :
