@@ -88,7 +88,8 @@ class PlanningRecall extends CommonDBTM {
    static function manageDatas(array $data) {
       // Check data informations
       if (!isset($data['itemtype']) || !isset($data['items_id'])
-         || !isset($data['users_id']) || !isset($data['before_time'])) {
+         || !isset($data['users_id']) || !isset($data['before_time'])
+         || !isset($data['field'])) {
          return false;   
       }
       $pr = new self();
@@ -98,14 +99,33 @@ class PlanningRecall extends CommonDBTM {
          if ($data['before_time'] != $pr->fields['before_time']) {
             // Recall exists and is different : update datas and clean alert
             if ($pr->can($pr->fields['id'],'w')) {
-               $pr->update(array('id'          => $pr->fields['id'],
-                                 'before_time' => $data['before_time']));
+               if ($item=getItemForItemtype($data['itemtype'])) {
+                  if ($item->getFromDB($data['items_id'])
+                     && isset($item->fields[$data['field']])
+                     && !empty($item->fields[$data['field']])) {
+                     $when = date("Y-m-d H:i:s",
+                                 strtotime($item->fields[$data['field']]) - $data['before_time']);
+                     $pr->update(array('id'          => $pr->fields['id'],
+                                       'before_time' => $data['before_time'],
+                                       'when'        => $when));
+                     
+                  }
+               }
             }
          }
       } else {
          // Recall does not exists : create it
          if ($pr->can(-1,'w',$data)) {
-            $pr->add($data);
+               if ($item=getItemForItemtype($data['itemtype'])) {
+                  $item->getFromDB($data['items_id']);
+                  if ($item->getFromDB($data['items_id'])
+                     && isset($item->fields[$data['field']])
+                     && !empty($item->fields[$data['field']])) {
+                     $data['when'] = date("Y-m-d H:i:s",
+                                 strtotime($item->fields[$data['field']]) - $data['before_time']);
+                     $pr->add($data);
+                  }
+               }
          }
       }
    }
@@ -119,6 +139,8 @@ class PlanningRecall extends CommonDBTM {
     *    - itemtype : string itemtype 
     *    - items_id : integer id of the item
     *    - users_id : integer id of the user (if not set used login user)
+    *    - value : integer preselected value for before_time
+    *    - field : string field used as time mark (default begin)
     *
     * @param $options possible options
     *
@@ -128,10 +150,11 @@ class PlanningRecall extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       // Default values
-      $p['itemtype']       = '';
-      $p['items_id']       = 0;
-      $p['users_id']       = Session::getLoginUserID();
-      $p['value']          = Entity::CONFIG_NEVER;
+      $p['itemtype'] = '';
+      $p['items_id'] = 0;
+      $p['users_id'] = Session::getLoginUserID();
+      $p['value']    = Entity::CONFIG_NEVER;
+      $p['field']    = 'begin';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -165,6 +188,7 @@ class PlanningRecall extends CommonDBTM {
       echo "<input type='hidden' name='_planningrecall[itemtype]' value='".$p['itemtype']."'>";
       echo "<input type='hidden' name='_planningrecall[items_id]' value='".$p['items_id']."'>";
       echo "<input type='hidden' name='_planningrecall[users_id]' value='".$p['users_id']."'>";
+      echo "<input type='hidden' name='_planningrecall[field]' value='".$p['field']."'>";
       return true;
    }
    
@@ -198,7 +222,24 @@ class PlanningRecall extends CommonDBTM {
       }
 
       $cron_status   = 0;
-
+      $query = "SELECT `glpi_planningrecalls`.*
+                  FROM `glpi_planningrecalls`
+                  LEFT JOIN `glpi_alerts`
+                     ON (`glpi_planningrecalls`.`id` = `glpi_alerts`.`items_id`
+                        AND `glpi_alerts`.`itemtype` = 'PlanningReminder'
+                        AND `glpi_alerts`.`type`='".Alert::ACTION."')
+                        WHERE `glpi_contracts`.`begin_date` IS NOT NULL
+                              AND `glpi_contracts`.`duration` <> '0'
+                              AND `glpi_contracts`.`notice` <> '0'
+                              AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
+                                                   INTERVAL `glpi_contracts`.`duration` MONTH),
+                                          CURDATE()) > '0'
+                              AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
+                                                   INTERVAL (`glpi_contracts`.`duration`
+                                                               -`glpi_contracts`.`notice`) MONTH),
+                                          CURDATE()) < '$before'
+                              AND `glpi_alerts`.`date` IS NULL
+                              AND `glpi_contracts`.`entities_id` = '".$entity."'";
       return $cron_status;
    }   
 }

@@ -3827,9 +3827,11 @@ CREATE TABLE `glpi_planningrecalls` (
   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `users_id` int(11) NOT NULL DEFAULT '0',
   `before_time` int(11) NOT NULL DEFAULT '-10',
+  `when` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`itemtype`,`items_id`,`users_id`),
   KEY `users_id` (`users_id`),
+  KEY `when` (`when`),
   KEY `before_time` (`before_time`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
