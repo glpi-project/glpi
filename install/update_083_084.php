@@ -1174,6 +1174,47 @@ function update083to084() {
       }
    }
 
+   $migration->displayMessage(sprintf(__('Data migration - %s'),
+                                      'create contracts notification'));
+
+   $from_to = array('end'    => 'periodicity',
+                    'notice' => 'periodicitynotice');
+   foreach ($from_to as $from => $to) {
+      // Check if notifications already exists
+      if (countElementsInTable('glpi_notifications',
+                              "`itemtype` = 'Contract'
+                                 AND `event` = '$to'")==0) {
+      // No notifications duplicate all
+   
+         $query = "SELECT *
+                  FROM `glpi_notifications`
+                  WHERE `itemtype` = 'Contract'
+                        AND `event` = '$from'";
+         foreach ($DB->request($query) as $notif) {
+            $query = "INSERT INTO `glpi_notifications`
+                           (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                           `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
+                           `date_mod`)
+                     VALUES ('".addslashes($notif['name'])." Periodicity',
+                              '".$notif['entities_id']."', 'Contract',
+                              '$to', '".$notif['mode']."',
+                              '".$notif['notificationtemplates_id']."',
+                              '".addslashes($notif['comment'])."', '".$notif['is_recursive']."',
+                              '".$notif['is_active']."', NOW());";
+            $DB->queryOrDie($query, "0.84 insert contract $to notification");
+            $newID  = $DB->insert_id();
+            $query2 = "SELECT *
+                     FROM `glpi_notificationtargets`
+                     WHERE `notifications_id` = '".$notif['id']."'";
+            foreach ($DB->request($query2) as $target) {
+               $query = "INSERT INTO `glpi_notificationtargets`
+                              (`notifications_id`, `type`, `items_id`)
+                        VALUES ($newID, '".$target['type']."', '".$target['items_id']."')";
+               $DB->queryOrDie($query, "0.84 insert targets for ĉontract $to notification");
+            }
+         }
+      }
+   }
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'planing recalls'));
 
    if (!TableExists('glpi_planningrecalls')) {
