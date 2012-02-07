@@ -40,7 +40,7 @@ if (!isset($_GET["synthese"])) {
 }
 Session::checkCentralAccess();
 
-Html::header(_n('Status of items', 'Status of items',2),$_SERVER['PHP_SELF'],"inventory","state");
+Html::header(State::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "state");
 
 if ($_GET["synthese"] == "yes") {
    State::showSummary($_SERVER['PHP_SELF']);
