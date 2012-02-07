@@ -467,7 +467,9 @@ class Reminder extends CommonDBTM {
    function prepareInputForUpdate($input) {
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
-
+      if (isset($input['_planningrecall'])) {
+         PlanningRecall::manageDatas($input['_planningrecall']);
+      }
       if (isset($input["name"])) {
          $input["name"] = trim($input["name"]);
 
@@ -634,7 +636,10 @@ class Reminder extends CommonDBTM {
       }
       echo "</td>";
       if ($ID && $this->fields["is_planned"]) {
-         echo "<td>"._x('Recall')."</td><td>ii</td>";
+         echo "<td>".__('Recall')."</td><td>";
+         PlanningRecall::dropdown(array('itemtype' =>'Reminder',
+                                        'items_id' => $ID));
+         echo "</td>";
       } else {
          echo "<td colspan='2'></td>";
       }
