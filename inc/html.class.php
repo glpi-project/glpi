@@ -1839,10 +1839,10 @@ class Html {
 
       if (($CFG_GLPI['use_mailing'] && Session::haveRight("notification","r"))
           || Session::haveRight("config","w")) {
-         $menu['config']['content']['mailing']['title'] = _n('Notification', 'NotificationS', 2);
+         $menu['config']['content']['mailing']['title'] = _n('Notification', 'Notifications', 2);
          $menu['config']['content']['mailing']['page']  = '/front/setup.notification.php';
          $menu['config']['content']['mailing']['options']['notification']['title']
-                                                        = _n('Notification', 'NotificationS', 2);
+                                                        = _n('Notification', 'Notifications', 2);
          $menu['config']['content']['mailing']['options']['notification']['page']
                                                         = '/front/notification.php';
          $menu['config']['content']['mailing']['options']['notification']['links']['add']

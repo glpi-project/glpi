@@ -53,39 +53,49 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
       $events = $this->getAllEvents();
 
       $this->datas['##recall.action##'] = $events[$event];
-
-
-//       $this->datas['##reservation.user##'] = "";
-//       $user_tmp = new User();
-//       if ($user_tmp->getFromDB($this->obj->getField('users_id'))) {
-//          $this->datas['##reservation.user##'] = $user_tmp->getName();
-//       }
-//       $this->datas['##reservation.begin##']   = Html::convDateTime($this->obj->getField('begin'));
-//       $this->datas['##reservation.end##']     = Html::convDateTime($this->obj->getField('end'));
-//       $this->datas['##reservation.comment##'] = $this->obj->getField('comment');
-// 
-//       $reservationitem = new ReservationItem();
-//       $reservationitem->getFromDB($this->obj->getField('reservationitems_id'));
-//       $itemtype = $reservationitem->getField('itemtype');
-// 
-//       if ($item = getItemForItemtype($itemtype)) {
-//          $item->getFromDB($reservationitem->getField('items_id'));
-//          $this->datas['##reservation.itemtype##']    = $item->getTypeName(1);
-//          $this->datas['##reservation.item.name##']   = $item->getField('name');
-//          $this->datas['##reservation.item.entity##']
-//                      = Dropdown::getDropdownName('glpi_entities', $item->getField('entities_id'));
-// 
-//          if ($item->isField('users_id_tech')) {
-//                $this->datas['##reservation.item.tech##']
-//                            = Dropdown::getDropdownName('glpi_users',
-//                                                          $item->getField('users_id_tech'));
-//          }
-//          $this->datas['##reservation.url##']
-//                      = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=".
-//                                  strtolower($itemtype)."_".$reservationitem->getField('id'));
-//       }
-
-
+      $this->datas['##recall.itemtype##'] = $this->target_object->getTypeName(1);
+      $this->datas['##recall.item.URL##'] = '';
+      // For task show parent link
+      if ($this->target_object instanceof CommonDBChild 
+               || $this->target_object instanceof CommonITILTask) {
+         $item2 = $this->target_object->getItem();
+         $this->datas['##recall.item.url##'] = $item2->getLinkURL();
+      } else {
+         $this->datas['##recall.item.url##'] = $this->target_object->getLinkURL();
+      }
+      
+      $this->datas['##recall.item.name##'] = $this->target_object->getField('name');
+      $this->datas['##recall.item.content##'] = '';
+      if ($this->target_object->isField('content')) {
+         $this->datas['##recall.item.content##'] = $this->target_object->getField('content');
+      }
+      if ($this->target_object->isField('text')) {
+         $this->datas['##recall.item.content##'] = $this->target_object->getField('text');
+      }
+      $this->datas['##recall.item.is_private##'] = '';
+      if ($this->target_object->isField('is_private')) {
+         $this->datas['##recall.item.is_private##'] = Dropdown::getYesNo($this->target_object->getField('is_private'));
+      }
+            
+      $this->datas['##recall.item.date_mod##'] = '';
+      if ($this->target_object->isField('date_mod')) {
+         $this->datas['##recall.item.date_mod##'] = Html::convDateTime($this->target_object->getField('date_mod'));
+      }
+      
+      
+      $this->datas['##recall.item.user##'] = '';
+      $user_tmp = new User();
+      if ($user_tmp->getFromDB($this->target_object->getField('users_id'))) {
+         $this->datas['##recall.item.user##'] = $user_tmp->getName();
+      }
+      
+      $this->datas['##recall.planning.state##'] = '';
+      if ($this->target_object->isField('state')) {
+         $this->datas['##recall.planning.state##'] = Planning::getState($this->target_object->getField('state'));
+      }
+      
+      $this->datas['##recall.planning.begin##'] = Html::convDateTime($this->target_object->getField('begin'));
+      $this->datas['##recall.planning.end##'] = Html::convDateTime($this->target_object->getField('end'));
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -98,44 +108,24 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
 
    function getTags() {
 
-      $tags_all = array('recall.action'   => _n('Event', 'Events', 1),);
+      $tags_all = array('recall.action'            => _n('Event', 'Events', 1),
+                        'recall.item.user'         => __('Writer'),
+                        'recall.item.date_mod'     => __('Last update'),
+                        'recall.item.name'         => __('Title'),
+                        'recall.item.is_private'   => __('Private'),
+                        'recall.item.content'      => __('Description'),
+                        'recall.item.url'          => __('URL'),
+                        'recall.itemtype'          => __('Item type'),
+                        'recall.planning.begin'    => __('Start date'),
+                        'recall.planning.state'    => __('Status'),
+                        'recall.planning.end'      => __('End date'),
+                        );
 
       foreach ($tags_all as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
                                    'label' => $label,
                                    'value' => true));
       }
-
-//       $tags_except_alert = array('reservation.user'        => __('Writer'),
-//                                  'reservation.begin'       => __('Start date'),
-//                                  'reservation.end'         => __('End date'),
-//                                  'reservation.comment'     => __('Comments'),
-//                                  'reservation.item.entity' => __('Entity'),
-//                                  'reservation.item.name'   => __('Associated item'),
-//                                  'reservation.item.tech'   => __('Technician in charge of the hardware'));
-// 
-//       foreach ($tags_except_alert as $tag => $label) {
-//          $this->addTagToList(array('tag'    => $tag,
-//                                    'label'  => $label,
-//                                    'value'  => true,
-//                                    'events' => array('new', 'update', 'delete')));
-//       }
-// 
-//       $this->addTagToList(array('tag'     => 'items',
-//                                 'label'   => __('Device list'),
-//                                 'value'   => false,
-//                                 'foreach' => true,
-//                                 'events'  => array('alert')));
-// 
-//       $tag_alert = array('reservation.expirationdate' => __('End date'),
-//                          'reservation.entity'         => __('Entity'));
-// 
-//       foreach ($tag_alert as $tag => $label) {
-//          $this->addTagToList(array('tag'    => $tag,
-//                                    'label'  => $label,
-//                                    'value'  => true,
-//                                    'events' => array('alert')));
-//       }
 
       asort($this->tag_descriptions);
    }
@@ -149,17 +139,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
     * @return the object associated with the itemtype
    **/
    function getObjectItem($event='') {
-
       if ($this->obj) {
-         $ri = new ReservationItem();
-
-         if ($ri->getFromDB($this->obj->getField('reservationitems_id'))) {
-            $itemtype = $ri->getField('itemtype');
-
-            if ($itemtype != NOT_AVAILABLE
-                && $itemtype != ''
-                && ($item = getItemForItemtype($itemtype))) {
-               $item->getFromDB($ri->getField('items_id'));
+         if ($item = getItemForItemtype($this->obj->getField('itemtype'))) {
+            if ($item->getFromDB($this->obj->getField('items_id'))) {
                $this->target_object = $item;
             }
          }

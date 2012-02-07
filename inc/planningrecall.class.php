@@ -228,18 +228,24 @@ class PlanningRecall extends CommonDBTM {
                      ON (`glpi_planningrecalls`.`id` = `glpi_alerts`.`items_id`
                         AND `glpi_alerts`.`itemtype` = 'PlanningReminder'
                         AND `glpi_alerts`.`type`='".Alert::ACTION."')
-                        WHERE `glpi_contracts`.`begin_date` IS NOT NULL
-                              AND `glpi_contracts`.`duration` <> '0'
-                              AND `glpi_contracts`.`notice` <> '0'
-                              AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
-                                                   INTERVAL `glpi_contracts`.`duration` MONTH),
-                                          CURDATE()) > '0'
-                              AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`,
-                                                   INTERVAL (`glpi_contracts`.`duration`
-                                                               -`glpi_contracts`.`notice`) MONTH),
-                                          CURDATE()) < '$before'
-                              AND `glpi_alerts`.`date` IS NULL
-                              AND `glpi_contracts`.`entities_id` = '".$entity."'";
+                        WHERE `glpi_planningrecalls`.`when` IS NOT NULL
+                              AND `glpi_planningrecalls`.`when` < NOW()
+                              AND `glpi_alerts`.`date` IS NULL";
+      $pr = new PlanningRecall();
+      foreach ($DB->request($query) as $data) {
+         $pr->getFromDB($data['id']);
+         if (NotificationEvent::raiseEvent('planningrecall', $pr)) {
+         
+            $cron_status = 1;                             
+            $task->addVolume(1);
+            $alert = new Alert();
+            $input["itemtype"] = 'PlanningRecall';
+            $input["type"] = Alert::ACTION;
+            $input["items_id"] = $data['id'];
+
+//             $alert->add($input);
+         }
+      }
       return $cron_status;
    }   
 }
