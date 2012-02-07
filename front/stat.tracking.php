@@ -39,7 +39,9 @@ Html::header(__('Statistics'), '', "maintain", "stat");
 
 Session::checkRight("statistic", "1");
 
-$item = new $_REQUEST['itemtype']();
+if (!$item = getItemForItemtype($_REQUEST['itemtype'])) {
+   exit;
+}
 
 if (empty($_REQUEST["type"])) {
    $_REQUEST["type"] = "user";
