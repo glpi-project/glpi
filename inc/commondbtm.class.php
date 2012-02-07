@@ -911,7 +911,6 @@ class CommonDBTM extends CommonGLPI {
 
                }
             }
-
             if (count($this->updates)) {
                if (array_key_exists('date_mod',$this->fields)) {
                   // is a non blacklist field exists
@@ -1350,7 +1349,7 @@ class CommonDBTM extends CommonGLPI {
 
    /**
     * Have I the global right to add an item for the Object
-    * May be overloaded if needed (ex KnowbaseItem)
+    * May be overloaded if needed (ex Ticket)
     *
     * @since version 0.83
     *

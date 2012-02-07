@@ -37,7 +37,17 @@ class PlanningRecall extends CommonDBTM {
    static function getTypeName($nb=0) {
       return _n('Planning recall', 'Planning recalls', $nb);
    }
+   
+   function canCreate() {
+      return true;
+   }
+   
+   function canCreateItem() {      
+      return $this->fields['users_id'] == Session::getLoginUserID();
+   }
+      
    ///TODO create Cron job
+   
    
    /**
     * Retrieve an item from the database
@@ -51,17 +61,11 @@ class PlanningRecall extends CommonDBTM {
    function getFromDBForItemAndUser($itemtype, $items_id, $users_id) {
       global $DB;
 
-      // Make new database object and fill variables
-      if (empty($ID)) {
-         return false;
-      }
-
       $query = "SELECT *
                 FROM `".$this->getTable()."`
                 WHERE `itemtype` = '$itemtype'
                   AND `items_id` = '$items_id'
                   AND `users_id` = '$users_id'";
-
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $this->fields = $DB->fetch_assoc($result);
@@ -70,6 +74,12 @@ class PlanningRecall extends CommonDBTM {
       }
       return false;
    }
+   
+   function post_updateItem($history=1) {
+         $alert = new Alert();
+         $alert->clear($this->getType(), $this->fields['id'], Alert::ACTION);   
+   }
+  
    /**
     * Manage recall set
     *
@@ -77,15 +87,27 @@ class PlanningRecall extends CommonDBTM {
    **/        
    static function manageDatas(array $data) {
       // Check data informations
-      
+      if (!isset($data['itemtype']) || !isset($data['items_id'])
+         || !isset($data['users_id']) || !isset($data['before_time'])) {
+         return false;   
+      }
+      $pr = new self();
       // Datas OK : check if recall already exists
-      
-      // Recall exists and is different : update datas and clean alert
-      
-      // Recall does not exists : create it
-      
-      print_r($data);
-      exit();
+      if ($pr->getFromDBForItemAndUser($data['itemtype'], $data['items_id'], 
+                                       $data['users_id'])) {
+         if ($data['before_time'] != $pr->fields['before_time']) {
+            // Recall exists and is different : update datas and clean alert
+            if ($pr->can($pr->fields['id'],'w')) {
+               $pr->update(array('id'          => $pr->fields['id'],
+                                 'before_time' => $data['before_time']));
+            }
+         }
+      } else {
+         // Recall does not exists : create it
+         if ($pr->can(-1,'w',$data)) {
+            $pr->add($data);
+         }
+      }
    }
    
    /**
@@ -123,7 +145,7 @@ class PlanningRecall extends CommonDBTM {
             return false;
          }
       }
-      $pr = new PlanningRecall();
+      $pr = new self();
       // Get recall for item and user
       if ($pr->getFromDBForItemAndUser($p['itemtype'], $p['items_id'], $p['users_id'])) {
          $p['value'] = $pr->fields['before_time'];

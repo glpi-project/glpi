@@ -46,6 +46,7 @@ class Alert extends CommonDBTM {
    const END       = 2;
    const NOTICE    = 3;
    const NOTCLOSED = 4;
+   const ACTION    = 5;   
 
 
    function prepareInputForAdd($input) {
