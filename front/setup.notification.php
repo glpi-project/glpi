@@ -39,21 +39,21 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkSeveralRightsOr(array('notification' => 'r',
                                     'config'       => 'w'));
 
-Html::header(_n('Notification', 'Notifications',2), $_SERVER['PHP_SELF'],"config","mailing",-1);
+Html::header(_n('Notification', 'Notifications',2), $_SERVER['PHP_SELF'], "config", "mailing", -1);
 
 if (isset($_GET['activate'])) {
-   $config = new Config();
-   $tmp['id'] = $CFG_GLPI['id'];
+   $config             = new Config();
+   $tmp['id']          = $CFG_GLPI['id'];
    $tmp['use_mailing'] = 1;
    $config->update($tmp);
    Html::back();
 }
 
 if (!$CFG_GLPI['use_mailing']) {
-   echo "<div align='center'<p>";
+   echo "<div class='center'<p>";
    if (Session::haveRight("config","w")) {
       echo "<a class='vsubmit' href='setup.notification.php?activate=1'>" .
-               __('Enable followup via email') ."</a></p></div>";
+             __('Enable followup via email') ."</a></p></div>";
    }
 
 } else {
@@ -66,18 +66,20 @@ if (!$CFG_GLPI['use_mailing']) {
       echo "<table class='tab_cadre'>";
       echo "<tr><th>" . _n('Notification', 'Notifications',2)."</th></tr>";
       if (Session::haveRight("config","r")) {
-         echo "<tr class='tab_bg_1'><td class='center'><a href='notificationmailsetting.form.php'>" .
-               __('Email followups configuration') ."</a></td></tr>";
+         echo "<tr class='tab_bg_1'><td class='center'>".
+              "<a href='notificationmailsetting.form.php'>". __('Email followups configuration') .
+              "</a></td></tr>";
             echo "<tr class='tab_bg_1'><td class='center'><a href='notificationtemplate.php'>" .
                   _n('Notification template', 'Notification templates', 2) ."</a></td> </tr>";
       }
 
       if (Session::haveRight("notification","r") && $CFG_GLPI['use_mailing']) {
-         echo "<tr class='tab_bg_1'><td class='center'><a href='notification.php'>" . 
-               _n('Notification', 'Notifications',2) ."</a></td></tr>";
+         echo "<tr class='tab_bg_1'><td class='center'>".
+              "<a href='notification.php'>". _n('Notification', 'Notifications',2)."</a></td></tr>";
       } else {
-            echo "<tr class='tab_bg_1'><td class='center'>" . 
-            __('Impossible to configure the notifications: please configure your email followup using the above configuration.') ."</td></tr>";
+            echo "<tr class='tab_bg_1'><td class='center'>" .
+            __('Impossible to configure the notifications: please configure your email followup using the above configuration.') .
+                 "</td></tr>";
       }
       echo "</table>";
    }
