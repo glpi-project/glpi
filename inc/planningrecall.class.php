@@ -140,11 +140,8 @@ class PlanningRecall extends CommonDBTM {
       }
       if (!($item = getItemForItemtype($p['itemtype']))) {
          return false;
-      } else {
-         if (!$item->getFromDB($p['items_id'])) {
-            return false;
-         }
-      }
+      } // Do not check items_id and item get because may be used when creating item (task for example) 
+      
       $pr = new self();
       // Get recall for item and user
       if ($pr->getFromDBForItemAndUser($p['itemtype'], $p['items_id'], $p['users_id'])) {
@@ -171,5 +168,38 @@ class PlanningRecall extends CommonDBTM {
       return true;
    }
    
+   
+   /**
+    * Give cron information
+    *
+    * @param $name : task's name
+    *
+    * @return arrray of information
+   **/
+   static function cronInfo($name) {
+
+      switch ($name) {
+         case 'planningrecall' :
+            return array('description' => __('Send planning recalls'));
+      }
+      return array();
+   }
+   
+   /**
+    * Cron action on contracts : alert depending of the config : on notice and expire
+    *
+    * @param $task for log, if NULL display (default NULL)
+   **/
+   static function cronPlanningRecall($task=NULL) {
+      global $DB, $CFG_GLPI;
+
+      if (!$CFG_GLPI["use_mailing"]) {
+         return 0;
+      }
+
+      $cron_status   = 0;
+
+      return $cron_status;
+   }   
 }
 ?>

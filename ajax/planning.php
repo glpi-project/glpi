@@ -122,6 +122,14 @@ if ($default_delay==0) {
 }
 
 echo "</td></tr>\n";
+
+if ((!isset($_POST["id"]) || $_POST["id"]==0)
+   && isset($_POST['itemtype'])) {
+   echo "<tr class='tab_bg_2'><td>".__('Recall')."</td><td>";
+            PlanningRecall::dropdown(array('itemtype' => $_POST['itemtype'],
+                                           'items_id' => $_POST['items_id']));
+   echo "</td></tr>";
+}
 echo "</table>\n";
 
 Html::ajaxFooter();
