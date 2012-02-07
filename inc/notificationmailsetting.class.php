@@ -189,9 +189,7 @@ class NotificationMailSetting extends CommonDBTM {
                                MAIL_SMTPTLS => $LANG['setup'][653]);
          Dropdown::showFromArray("smtp_mode", $mail_methods,
                                  array('value' => $CFG_GLPI["smtp_mode"]));
-         echo "</td><td colspan='2' class='center'>";
-         echo "<input class='submit' type='submit' name='test_smtp_send' value=\"".
-                $LANG['setup'][229]."\">";
+         echo "</td><td colspan='2' class='center'>&nbsp;";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td >" . $LANG['setup'][232] . "&nbsp;:</td>";
@@ -214,6 +212,7 @@ class NotificationMailSetting extends CommonDBTM {
          echo "</tr>";
       }
       $options['candel'] = false;
+      $options['addbuttons'] = array('test_smtp_send' => $LANG['setup'][229]);
       $this->showFormButtons($options);
 
       /*

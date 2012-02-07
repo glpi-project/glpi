@@ -1639,6 +1639,7 @@ class CommonDBTM extends CommonGLPI {
     *     - colspan for each column (default 2)
     *     - candel : set to false to hide "delete" button
     *     - canedit : set to false to hide all buttons
+    *     - addbuttons : array of buttons to add     
     *
    **/
    function showFormButtons($options=array()) {
@@ -1655,6 +1656,7 @@ class CommonDBTM extends CommonGLPI {
       $params['withtemplate'] = '';
       $params['candel']       = true;
       $params['canedit']      = true;
+      $params['addbuttons']   = array();
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1724,6 +1726,18 @@ class CommonDBTM extends CommonGLPI {
       echo "</td>";
       echo "</tr>\n";
 
+      if ($params['canedit'] && count($params['addbuttons'])) {
+         echo "<tr>";
+         if (($params['colspan']*2 - count($params['addbuttons'])) >0) {
+            echo "<td colspan='".($params['colspan']*2 - count($params['addbuttons']))."'>&nbsp;</td>";
+         }
+         foreach ($params['addbuttons'] as $key => $val) {
+            echo "<td><input class='submit' type='submit' name='$key' value=\"".
+                Html::entities_deep($val)."\"></td>";
+         }
+         echo "</tr>";
+      }
+      
       // Close for Form
       echo "</table></div></form>";
    }
