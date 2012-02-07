@@ -37,5 +37,117 @@ class PlanningRecall extends CommonDBTM {
    static function getTypeName($nb=0) {
       return _n('Planning recall', 'Planning recalls', $nb);
    }
+   ///TODO create Cron job
+   
+   /**
+    * Retrieve an item from the database
+    *
+    * @param $itemtype string itemtype to get
+    * @param $items_id integer id of the item
+    * @param $users_id integer id of the user
+    *
+    * @return true if succeed else false
+   **/
+   function getFromDBForItemAndUser($itemtype, $items_id, $users_id) {
+      global $DB;
+
+      // Make new database object and fill variables
+      if (empty($ID)) {
+         return false;
+      }
+
+      $query = "SELECT *
+                FROM `".$this->getTable()."`
+                WHERE `itemtype` = '$itemtype'
+                  AND `items_id` = '$items_id'
+                  AND `users_id` = '$users_id'";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            $this->fields = $DB->fetch_assoc($result);
+            return true;
+         }
+      }
+      return false;
+   }
+   /**
+    * Manage recall set
+    *
+    * @param $data array of data to manage
+   **/        
+   static function manageDatas(array $data) {
+      // Check data informations
+      
+      // Datas OK : check if recall already exists
+      
+      // Recall exists and is different : update datas and clean alert
+      
+      // Recall does not exists : create it
+      
+      print_r($data);
+      exit();
+   }
+   
+   /**
+    * Make a select box with recall times
+    *
+    * Mandatory options : itemtype, items_id
+    *
+    * Parameters which could be used in options array :
+    *    - itemtype : string itemtype 
+    *    - items_id : integer id of the item
+    *    - users_id : integer id of the user (if not set used login user)
+    *
+    * @param $options possible options
+    *
+    * @return nothing (print out an HTML select box) / return false if mandatory fields are not ok
+   **/
+   static function dropdown($options=array()) {
+      global $DB, $CFG_GLPI;
+
+      // Default values
+      $p['itemtype']       = '';
+      $p['items_id']       = 0;
+      $p['users_id']       = Session::getLoginUserID();
+      $p['value']          = Entity::CONFIG_NEVER;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+      if (!($item = getItemForItemtype($p['itemtype']))) {
+         return false;
+      } else {
+         if (!$item->getFromDB($p['items_id'])) {
+            return false;
+         }
+      }
+      $pr = new PlanningRecall();
+      // Get recall for item and user
+      if ($pr->getFromDBForItemAndUser($p['itemtype'], $p['items_id'], $p['users_id'])) {
+         $p['value'] = $pr->fields['before_time'];
+      }
+      
+      $possible_values = array();
+      $possible_values[Entity::CONFIG_NEVER] = __('No');
+      $possible_values[0] = __('Begin');
+      for ($i=1 ; $i<24 ; $i++) {
+         $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('- %1$d hour','+ %1$d hours',$i),
+                                                            $i);
+      }
+
+      for ($i=1 ; $i<30 ; $i++) {
+         $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('- %1$d day','+ %1$d days',$i), $i);
+      }
+      ksort($possible_values);
+      
+      Dropdown::showFromArray('_planningrecall[before_time]', $possible_values, array('value' => $p['value']));
+      echo "<input type='hidden' name='_planningrecall[itemtype]' value='".$p['itemtype']."'>";
+      echo "<input type='hidden' name='_planningrecall[items_id]' value='".$p['items_id']."'>";
+      echo "<input type='hidden' name='_planningrecall[users_id]' value='".$p['users_id']."'>";
+      return true;
+   }
+   
 }
 ?>

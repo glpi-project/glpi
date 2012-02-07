@@ -2298,7 +2298,7 @@ class User extends CommonDBTM {
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI;
 
-      // Defautl values
+      // Default values
       $p['name']           = 'users_id';
       $p['value']          = '';
       $p['right']          = 'id';

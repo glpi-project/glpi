@@ -47,7 +47,7 @@ class SlaLevel_Ticket extends CommonDBTM {
     *
     * @return true if succeed else false
    **/
-   function getFromDBForTicket ($ID) {
+   function getFromDBForTicket($ID) {
       global $DB;
 
       // Make new database object and fill variables
@@ -76,7 +76,7 @@ class SlaLevel_Ticket extends CommonDBTM {
     *
     * @return nothing
    **/
-   static function deleteForTicket ($tickets_id) {
+   static function deleteForTicket($tickets_id) {
       global $DB;
 
       $query1 = "DELETE
