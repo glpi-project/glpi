@@ -139,6 +139,10 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
 
+      if (isset($input['_planningrecall'])) {
+         PlanningRecall::manageDatas($input['_planningrecall']);
+      }
+
 //      $input["actiontime"] = $input["hour"]*HOUR_TIMESTAMP+$input["minute"]*MINUTE_TIMESTAMP;
 
       if (isset($input['update']) && $uid=Session::getLoginUserID()) { // Change from task form
@@ -262,6 +266,11 @@ abstract class CommonITILTask  extends CommonDBTM {
 
    function post_addItem() {
       global $CFG_GLPI;
+
+      if (isset($this->input['_planningrecall'])) {
+         $this->input['_planningrecall']['items_id'] = $this->fields['id'];
+         PlanningRecall::manageDatas($this->input['_planningrecall']);
+      }
 
       $donotif = $CFG_GLPI["use_mailing"];
 
@@ -787,7 +796,10 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($this->maybePrivate()) {
          $rowspan++;
       }
-
+      // Recall
+      if (!empty($this->fields["begin"])) {
+         $rowspan++;
+      }
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='$rowspan' class='middle right'>".__('Description')."</td>";
       echo "<td class='center middle' rowspan='$rowspan'>".
@@ -848,7 +860,9 @@ abstract class CommonITILTask  extends CommonDBTM {
                             'id'       => $this->fields["id"],
                             'begin'    => $this->fields["begin"],
                             'end'      => $this->fields["end"],
-                            'entity'   => $item->fields["entities_id"]);
+                            'entity'   => $item->fields["entities_id"],
+                            'itemtype' => $this->getType(),
+                            'items_id' => $this->getID());
             Ajax::updateItemJsCode('viewplan', $CFG_GLPI["root_doc"] . "/ajax/planning.php", $params);
             echo "}";
             echo "</script>\n";
@@ -876,7 +890,9 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo "Ext.get('plan').setDisplayed('none');";
             $params = array('form'     => 'followups',
                             'users_id' => Session::getLoginUserID(),
-                            'entity'   => $_SESSION["glpiactive_entity"]);
+                            'entity'   => $_SESSION["glpiactive_entity"],
+                            'itemtype' => $this->getType(),
+                            'items_id' => $this->getID());
             Ajax::updateItemJsCode('viewplan', $CFG_GLPI["root_doc"]."/ajax/planning.php", $params);
             echo "};";
             echo "</script>";
@@ -892,6 +908,13 @@ abstract class CommonITILTask  extends CommonDBTM {
       }
 
       echo "</td></tr>";
+
+      if (!empty($this->fields["begin"])) {
+         echo "<tr class='tab_bg_1'><td>".__('Recall')."</td><td>";
+         PlanningRecall::dropdown(array('itemtype' => $this->getType(),
+                                        'items_id' => $this->getID()));  
+         echo "</td></tr>";
+      } 
 
       $this->showFormButtons($options);
 

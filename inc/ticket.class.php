@@ -3564,9 +3564,11 @@ class Ticket extends CommonITILObject {
 
       echo "<th class='left' rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype').
              __('Associated element')."".$tt->getMandatoryMark('itemtype');
-      echo "<img title='"._sx('button', 'Update')."' alt='"._sx('button', 'Update')."'
-                  onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
-                  class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";
+      if ($canupdate) {
+         echo "&nbsp;<img title='"._sx('button', 'Update')."' alt='"._sx('button', 'Update')."'
+                     onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
+                     class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";
+      }                     
       echo $tt->getEndHiddenFieldText('itemtype');
       echo "</th>";
       echo "<td rowspan='2'>";

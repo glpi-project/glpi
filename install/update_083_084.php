@@ -1228,6 +1228,14 @@ function update083to084() {
       }
    }
 
+   if (!countElementsInTable('glpi_crontasks', "`itemtype`='PlanningRecall' AND `name`='planningrecall'")) {
+      $query = "INSERT INTO `glpi_crontasks`
+                       (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
+                        `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)
+                VALUES ('PlanningRecall', 'planningrecall', 300, NULL, 1, 1, 3,
+                        0, 24, 30, NULL, NULL, NULL)";
+      $DB->queryOrDie($query, "0.84 populate glpi_crontasks for planningrecall");
+   }
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'various fields'));
 
