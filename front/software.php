@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("software", "r");
 
-Html::header(_n('Software', 'Software', 2), $_SERVER['PHP_SELF'], "inventory", "software");
+Html::header(Software::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "software");
 
 Search::show('Software');
 
