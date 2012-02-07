@@ -625,13 +625,20 @@ class Reminder extends CommonDBTM {
          if ($canedit) {
             echo "</span>";
          }
+         
       }
 
       if ($canedit) {
          echo "</div>\n";
          echo "<div id='viewplan'>\n</div>\n";
       }
-      echo "</td><td colspan='2'></td></tr>\n";
+      echo "</td>";
+      if ($ID && $this->fields["is_planned"]) {
+         echo "<td>"._x('Recall')."</td><td>ii</td>";
+      } else {
+         echo "<td colspan='2'></td>";
+      }
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'><td>".__('Description')."</td>".
            "<td colspan='3'>";

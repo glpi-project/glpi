@@ -31,11 +31,11 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class PlanningReminder
-class PlanningReminder extends CommonDBTM {
+// Class PlanningRecall
+class PlanningRecall extends CommonDBTM {
 
    static function getTypeName($nb=0) {
-      return _n('Planning reminder', 'Planning reminders', $nb);
+      return _n('Planning recall', 'Planning recalls', $nb);
    }
 }
 ?>
