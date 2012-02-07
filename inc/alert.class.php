@@ -179,6 +179,25 @@ class Alert extends CommonDBTM {
       return false;
    }
 
+   /**
+    * @param $itemtype  (default '')
+    * @param $items_id  (default '')
+    * @param $type      (default '')
+   **/
+   static function getAlertDate($itemtype='', $items_id='', $type='') {
+      global $DB;
+
+      $query = "SELECT `date`
+                FROM `glpi_alerts`
+                WHERE `itemtype` = '$itemtype'
+                      AND `type` = '$type'
+                      AND `items_id` = '$items_id'";
+      $result = $DB->query($query);
+      if ($DB->numrows($result)) {
+         return $DB->result($result,0,'date');
+      }
+      return false;
+   }
 
    /**
     * @param $itemtype

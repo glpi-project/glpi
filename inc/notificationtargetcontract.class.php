@@ -37,8 +37,10 @@ class NotificationTargetContract extends NotificationTarget {
 
    function getEvents() {
 
-      return array('end'    => __('End of contract'),
-                   'notice' => __('Notice'));
+      return array('end'               => __('End of contract'),
+                   'notice'            => __('Notice'),
+                   'periodicity'       => __('Periodicity'),
+                   'periodicitynotice' => __('Periodicity notice'));
    }
 
 
@@ -69,16 +71,41 @@ class NotificationTargetContract extends NotificationTarget {
             $tmp['##contract.type##'] = "";
          }
 
-         $tmp['##contract.time##'] = Infocom::getWarrantyExpir($contract["begin_date"],
-                                                               $contract["duration"],
-                                                               $contract["notice"]);
+         switch ($event) {
+            case 'end':
+               $tmp['##contract.time##'] = Infocom::getWarrantyExpir($contract["begin_date"],
+                                                                  $contract["duration"]);
+               break;
+            case 'notice':
+               $tmp['##contract.time##'] = Infocom::getWarrantyExpir($contract["begin_date"],
+                                                                  $contract["duration"],
+                                                                  $contract["notice"]);
+               break;
+            case 'periodicity':
+            case 'periodicitynotice':
+               $tmp['##contract.time##'] =  Html::convDate($contract["alert_date"]);
+               break;
+         }
+      
          $tmp['##contract.url##']   = urldecode($CFG_GLPI["url_base"].
                                                 "/index.php?redirect=contract_".$id);
          $this->datas['contracts'][] = $tmp;
       }
 
-      $this->datas['##lang.contract.time##'] = ($event==Alert::END ? __('Contract expired since the')
-                                                                   : __('Contract with notice since the'));
+      switch ($event) {
+         case 'end':
+            $this->datas['##lang.contract.time##'] = __('Contract expired since the');
+            break;
+         case 'notice':
+            $this->datas['##lang.contract.time##'] =  __('Contract with notice since the');
+            break;
+         case 'periodicity':
+            $this->datas['##lang.contract.time##'] =  __('Contract reached the end of a period since the');
+            break;
+         case 'periodicitynotice':
+            $this->datas['##lang.contract.time##'] =  __('Contract with notice for the current period since the');
+            break;
+      }
 
       $this->getTags();
       foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
