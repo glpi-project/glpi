@@ -42,7 +42,7 @@ class TicketSatisfaction extends CommonDBTM {
    public $history_blacklist = array('date_answered');
 
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       return __('Satisfaction');
    }
 

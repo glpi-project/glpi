@@ -581,7 +581,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                     'ticket.numberoftasks'         => __('Number of tasks'),
                     'ticket.numberoflinkedtickets' => __('Number of linked tickets'),
                     'ticket.numberofproblems'      => __('Number of problems'),
-                    'ticket.action'                => _n('Event', 'Events', 1),
                     'ticket.autoclose'             => __('Automatic closing of solved tickets after'),
                     'ticket.globalvalidation'      => __('Global approval status'),
                   );
