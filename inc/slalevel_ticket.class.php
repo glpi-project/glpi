@@ -106,11 +106,11 @@ class SlaLevel_Ticket extends CommonDBTM {
    /**
     * Cron for ticket's automatic close
     *
-    * @param $task : crontask object
+    * @param $task : CronTask object
     *
     * @return integer (0 : nothing done - 1 : done)
    **/
-   static function cronSlaTicket($task) {
+   static function cronSlaTicket(CronTask $task) {
       global $DB;
 
       $tot = 0;
@@ -132,11 +132,11 @@ class SlaLevel_Ticket extends CommonDBTM {
    /**
     * Do a specific SLAlevel for a ticket
     *
-    * @param $data array data of a entry of slalevels_tickets
+    * @param $data array data of an entry of slalevels_tickets
     *
     * @return nothing
    **/
-   static function doLevelForTicket($data) {
+   static function doLevelForTicket(array $data) {
 
       $ticket         = new Ticket();
       $slalevelticket = new self();
@@ -160,7 +160,7 @@ class SlaLevel_Ticket extends CommonDBTM {
                if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'],0,1)
                    && $sla->getFromDB($ticket->fields['slas_id'])) {
                   // Process rules
-                  $input = $slalevel->executeActions($input,array());
+                  $input = $slalevel->executeActions($input, array());
                }
 
                // Put next level in todo list
@@ -212,5 +212,4 @@ class SlaLevel_Ticket extends CommonDBTM {
    }
 
 }
-
 ?>

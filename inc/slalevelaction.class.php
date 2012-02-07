@@ -52,5 +52,4 @@ class SlaLevelAction extends RuleAction {
    }
 
 }
-
 ?>
