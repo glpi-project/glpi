@@ -850,14 +850,23 @@ class Reminder extends CommonDBTM {
 
       echo $users_id;
       echo "</a>";
-
+      $recall='';
+      if (isset($val['reminders_id'])) {
+         $pr = new PlanningRecall();
+         if ($pr->getFromDBForItemAndUser($val['itemtype'], 
+                                          $val['reminders_id'], 
+                                          Session::getLoginUserID())) {
+            $recall = "<br><span class='b'>".sprintf(__('Recall on %s'), Html::convDateTime($pr->fields['when']))."<span>";
+         }         
+      }
+      
+      
       if ($complete) {
          echo "<br><span class='b'>".Planning::getState($val["state"])."</span><br>";
-         echo $val["text"];
-
+         echo $val["text"].$recall;
       } else {
          Html::showToolTip("<span class='b'>".Planning::getState($val["state"])."</span><br>
-                              ".$val["text"],
+                              ".$val["text"].$recall,
                            array('applyto' => "reminder_".$val["reminders_id"].$rand));
       }
       echo "";

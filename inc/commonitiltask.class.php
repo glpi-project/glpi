@@ -689,6 +689,17 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "</a>";
 
+      $recall='';
+      if (isset($val[getForeignKeyFieldForItemType($itemtype)])) {
+         $pr = new PlanningRecall();
+         if ($pr->getFromDBForItemAndUser($val['itemtype'], 
+                                          $val[getForeignKeyFieldForItemType($itemtype)], 
+                                          Session::getLoginUserID())) {
+            $recall = "<br><span class='b'>".sprintf(__('Recall on %s'), Html::convDateTime($pr->fields['when']))."<span>";
+         }         
+      }
+
+
       if ($complete) {
          echo "<br><span class='b'>";
          if (isset($val["state"])) {
@@ -696,6 +707,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
          echo sprintf(__('Priority: %s'),$parent->getPriorityName($val["priority"]));
          echo "<br>".__('Description')."</span><br>".$val["content"];
+         echo $recall;
 
       } else {
          $content = "<span class='b'>";
@@ -703,7 +715,7 @@ abstract class CommonITILTask  extends CommonDBTM {
             $content .= Planning::getState($val["state"])."<br>";
          }
          $content .= sprintf(__('Priority: %s'),$parent->getPriorityName($val["priority"])).
-                    "<br>".__('Description')."</span><br>".$val["content"].
+                    "<br>".__('Description')."</span><br>".$val["content"].$recall.
                     "</div>";
          Html::showToolTip($content, array('applyto' => "content_tracking_".$val["id"].$rand));
       }
