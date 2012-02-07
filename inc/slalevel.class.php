@@ -68,9 +68,12 @@ class SlaLevel extends RuleTicket {
               FROM `glpi_slalevels_tickets`
               WHERE `".$this->rules_id_field."` = '".$this->fields['id']."'";
       $DB->query($sql);
-
    }
 
+
+   /**
+    * @param $sla SLA object
+   **/
    function showForSLA(SLA $sla) {
       global $DB;
 
@@ -81,7 +84,7 @@ class SlaLevel extends RuleTicket {
 
       $canedit = $sla->can($ID,'w');
 
-      $rand = mt_rand();
+      $rand    = mt_rand();
       echo "<form name='slalevel_form$rand' id='slalevel_form$rand' method='post' action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
@@ -104,9 +107,9 @@ class SlaLevel extends RuleTicket {
                                              => self::getAlreadyUsedExecutionTime($sla->fields['id'])));
 
          echo "</td><td class='center'>".__('Active')."</td><td>";
-         Dropdown::showYesNo("is_active",array('value'=>1));
+         Dropdown::showYesNo("is_active",array('value' => 1));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button', 'Add')."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table></div>";
@@ -124,12 +127,12 @@ class SlaLevel extends RuleTicket {
             echo "<th>".__('Active')."</th>";
             echo "</tr>";
             Session::initNavigateListItems('SlaLevel',
-         //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
+            //TRANS: %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                                            sprintf(__('%1$s = %2$s'), $sla->getTypeName(1),
                                                    $sla->getName()));
 
             while ($data = $DB->fetch_array($result)) {
-               Session::addToNavigateListItems('SlaLevel',$data["id"]);
+               Session::addToNavigateListItems('SlaLevel', $data["id"]);
 
                echo "<tr class='tab_bg_2'>";
                echo "<td width='10'>";
@@ -159,7 +162,7 @@ class SlaLevel extends RuleTicket {
                echo "</tr>";
                echo "<tr class='tab_bg_1'><td colspan='4'>";
                $this->getRuleWithCriteriasAndActions($data['id'],0,1);
-               $this->showActionsList($data["id"],array('readonly'=>true));
+               $this->showActionsList($data["id"], array('readonly' => true));
                echo "</td></tr>";
             }
 
@@ -176,10 +179,10 @@ class SlaLevel extends RuleTicket {
 
    function getActions() {
 
-      $actions = parent::getActions();
+      $actions                            = parent::getActions();
 
       unset($actions['slas_id']);
-      $actions['recall']['name']          = __('Automatic reminders of SLAs');
+      $actions['recall']['name']          = __('Automatic reminders of SLA');
       $actions['recall']['type']          = 'yesonly';
       $actions['recall']['force_actions'] = array('send');
       return $actions;
@@ -189,8 +192,8 @@ class SlaLevel extends RuleTicket {
    /**
     * Show the rule
     *
-    * @param $ID ID of the rule
-    * @param $options options
+    * @param $ID              ID of the rule
+    * @param $options   array of possible options
     *
     * @return nothing
    **/
@@ -203,28 +206,26 @@ class SlaLevel extends RuleTicket {
          $this->check(-1,'w');
       }
 
-      $canedit=$this->can($this->right,"w");
+      $canedit = $this->can($this->right,"w");
 
       $this->showTabs($options);
       $this->showFormHeader($options);
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      Html::autocompletionTextField($this,"name");
+      Html::autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td>".__('Active')."</td>";
       echo "<td>";
-      Dropdown::showYesNo("is_active",$this->fields["is_active"]);
+      Dropdown::showYesNo("is_active", $this->fields["is_active"]);
       echo"</td></tr>\n";
 
       $sla = new SLA();
       $sla->getFromDB($this->fields['slas_id']);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('SLA')."</td>";
-      echo "<td>";
-      echo $sla->getLink();
-      echo "</td>";
+      echo "<td>".SLA::getTypeName(1)."</td>";
+      echo "<td>".$sla->getLink()."</td>";
       echo "<td>".__('Execution')."</td>";
       echo "<td>";
 
@@ -245,15 +246,15 @@ class SlaLevel extends RuleTicket {
    /**
     * Dropdown execution time for SLA
     *
-    * @param $name string name of the select
-    * @param $options array of options : may be :
-    *           - value : default value
-    *           - max_time : max time to use
-    *           - used : already used values
+    * @param $name      string   name of the select
+    * @param $options   array    of possible options:
+    *       - value : default value
+    *       - max_time : max time to use
+    *       - used : already used values
     *
     * @return nothing
    **/
-   static function dropdownExecutionTime ($name, $options=array()) {
+   static function dropdownExecutionTime($name, $options=array()) {
 
       $p['value']    = '';
       $p['max_time'] = 4*DAY_TIMESTAMP;
@@ -351,12 +352,12 @@ class SlaLevel extends RuleTicket {
    /**
     * Get next level for a SLA
     *
-    * @param $slas_id integer id of the SLA
-    * @param $slalevels_id integer id of the current SLA level
+    * @param $slas_id         integer id of the SLA
+    * @param $slalevels_id    integer id of the current SLA level
     *
     * @return id of the sla level : 0 if not exists
    **/
-   static function getNextSlaLevel($slas_id,$slalevels_id) {
+   static function getNextSlaLevel($slas_id, $slalevels_id) {
       global $DB;
 
       $query = "SELECT `execution_time`
@@ -402,7 +403,7 @@ class SlaLevel extends RuleTicket {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='SLA') {
+      if ($item->getType() == 'SLA') {
          $slalevel = new self();
          $slalevel->showForSLA($item);
       }

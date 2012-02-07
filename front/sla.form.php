@@ -56,22 +56,22 @@ if (isset($_POST["add"])) {
    $sla->check($_GET["id"], 'w');
    $sla->delete($_POST);
 
-   Event::log($_GET["id"], "slas", 4, "setup", 
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
+   Event::log($_GET["id"], "slas", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $sla->redirectToList();
 
 } else if (isset($_POST["update"])) {
    $sla->check($_GET["id"], 'w');
    $sla->update($_POST);
 
-   Event::log($_GET["id"], "slas", 4, "setup", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+   Event::log($_GET["id"], "slas", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else {
-   Html::header(_n('SLA', 'SLAs', 2), $_SERVER['PHP_SELF'], "config", "sla");
+   Html::header(SLA::getTypeName(2), $_SERVER['PHP_SELF'], "config", "sla");
 
    $sla->showForm($_GET["id"]);
    Html::footer();

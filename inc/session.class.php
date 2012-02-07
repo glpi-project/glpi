@@ -61,6 +61,7 @@ class Session {
     * Init session for the user is defined
     *
     * @param $auth Auth object to init session
+    *
     * @return nothing
    **/
    static function init(Auth $auth) {
@@ -138,7 +139,7 @@ class Session {
 
             } else {
                $auth->auth_succeded = false;
-               $auth->addToError(__('You do not have access to this application because your account was deactivated or removed'));
+               $auth->addToError(__("You don't have access to this application because your account was deactivated or removed"));
             }
 
          } else {
@@ -226,8 +227,8 @@ class Session {
 
    /** Add an item to the navigate through search results list
     *
-    * @param $itemtype device type
-    * @param $ID ID of the item
+    * @param $itemtype  device type
+    * @param $ID        ID of the item
    **/
    static function addToNavigateListItems($itemtype, $ID) {
       $_SESSION['glpilistitems'][$itemtype][] = $ID;
@@ -236,8 +237,8 @@ class Session {
 
     /** Initialise a list of items to use navigate through search results
      *
-     * @param $itemtype device type
-     * @param $title titre de la liste
+     * @param $itemtype    device type
+     * @param $title        titre de la liste (default '')
     **/
     static function initNavigateListItems($itemtype, $title="") {
 
@@ -265,8 +266,9 @@ class Session {
     * Change active entity to the $ID one. Update glpiactiveentities session variable.
     * Reload groups related to this entity.
     *
-    * @param $ID : ID of the new active entity ("all"=>load all possible entities)
-    * @param $is_recursive : also display sub entities of the active entity ?
+    * @param $ID              ID of the new active entity ("all"=>load all possible entities)
+    *                         (default 'all')
+    * @param $is_recursive    also display sub entities of the active entity ? (false by default)
     *
     * @return Nothing
    **/
@@ -275,7 +277,7 @@ class Session {
       $newentities = array();
       $newroots    = array();
       if (isset($_SESSION['glpiactiveprofile'])) {
-         if ($ID=="all") {
+         if ($ID == "all") {
             $ancestors = array();
             foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
                $ancestors = array_unique(array_merge(getAncestorsOf("glpi_entities", $val['id']),
@@ -296,9 +298,9 @@ class Session {
          } else {
             /// Check entity validity
             $ancestors = getAncestorsOf("glpi_entities", $ID);
-            $ok = false;
+            $ok        = false;
             foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
-               if ($val['id']== $ID || in_array($val['id'], $ancestors)) {
+               if ($val['id'] == $ID || in_array($val['id'], $ancestors)) {
                   // Not recursive or recursive and root entity is recursive
                   if (!$is_recursive || $val['is_recursive']) {
                      $ok = true;
@@ -323,17 +325,18 @@ class Session {
       }
 
       if (count($newentities)>0) {
-         $_SESSION['glpiactiveentities']        = $newentities;
-         $_SESSION['glpiactiveentities_string'] = "'".implode("', '", $newentities)."'";
-         $active = reset($newentities);
-         $_SESSION['glpiparententities']        = $ancestors;
-         $_SESSION['glpiparententities_string'] = implode("', '" ,$ancestors);
+         $_SESSION['glpiactiveentities']           = $newentities;
+         $_SESSION['glpiactiveentities_string']    = "'".implode("', '", $newentities)."'";
+         $active                                   = reset($newentities);
+         $_SESSION['glpiparententities']           = $ancestors;
+         $_SESSION['glpiparententities_string']    = implode("', '" ,$ancestors);
          if (!empty($_SESSION['glpiparententities_string'])) {
             $_SESSION['glpiparententities_string'] = "'".$_SESSION['glpiparententities_string']."'";
          }
          // Active entity loading
          $_SESSION["glpiactive_entity"]           = $active;
-         $_SESSION["glpiactive_entity_name"]      = Dropdown::getDropdownName("glpi_entities", $active);
+         $_SESSION["glpiactive_entity_name"]      = Dropdown::getDropdownName("glpi_entities",
+                                                                              $active);
          $_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities", $active);
          if ($is_recursive) {
             $_SESSION["glpiactive_entity_name"]      .= __('(tree structure)');
@@ -344,7 +347,7 @@ class Session {
             $_SESSION["glpiactive_entity_shortname"] .= " (".__('Show all').")";
          }
 
-         if (countElementsInTable('glpi_entities')<count($_SESSION['glpiactiveentities'])) {
+         if (countElementsInTable('glpi_entities') < count($_SESSION['glpiactiveentities'])) {
             $_SESSION['glpishowallentities'] = 1;
          } else {
             $_SESSION['glpishowallentities'] = 0;
@@ -428,7 +431,7 @@ class Session {
                 FROM `glpi_profiles_users`
                 INNER JOIN `glpi_profiles`
                      ON (`glpi_profiles_users`.`profiles_id` = `glpi_profiles`.`id`)
-                WHERE `glpi_profiles_users`.`users_id` =' $userID'
+                WHERE `glpi_profiles_users`.`users_id` = ' $userID'
                 ORDER BY `glpi_profiles`.`name`";
       $result = $DB->query($query);
 
@@ -499,7 +502,8 @@ class Session {
     *
     * Get the default language from current user in $_SESSION["glpilanguage"].
     * And load the dict that correspond.
-    * @param $forcelang Force to load a specific lang
+    *
+    * @param $forcelang Force to load a specific lang (default '')
     *
     * @return nothing (make an include)
    **/
@@ -545,8 +549,7 @@ class Session {
       $TRANSLATE = new Zend_Translate(array('adapter'        => 'gettext',
                                             'content'        => GLPI_ROOT.$newfile,
                                             'locale'         => $trytoload,
-                                            'disableNotices' => true) // no warning for empty languages
-                                     );
+                                            'disableNotices' => true)); // no warning for empty languages
 
       // Load plugin dicts
       if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])) {
@@ -580,7 +583,7 @@ class Session {
     * @since version 0.84
     *
     * @return Boolean
-    */
+   **/
    static function isCron() {
 
       return (isset($_SESSION["glpicronuserrunning"])
@@ -593,10 +596,9 @@ class Session {
    /**
     * Get the Login User ID or return cron user ID for cron jobs
     *
-    * @param $force_human boolean : force human / do not return cron user
+    * @param $force_human boolean   force human / do not return cron user (false by default)
     *
-    * return false if user is not logged in
-    *
+    * @return false if user is not logged in
     * @return int or string : int for user id, string for cron jobs
    **/
    static function getLoginUserID($force_human=true) {
@@ -688,7 +690,7 @@ class Session {
     * Check if I have the right $right to module $module (conpare to session variable)
     *
     * @param $module Module to check
-    * @param $right Right to check
+    * @param $right  Right to check
     *
     * @return Nothing : display error if not permit
    **/
@@ -766,8 +768,8 @@ class Session {
    /**
     * Check if you could access (read) to the entity of id = $ID
     *
-    * @param $ID : ID of the entity
-    * @param $is_recursive : boolean if recursive item
+    * @param $ID                    ID of the entity
+    * @param $is_recursive boolean  if recursive item (default 0)
     *
     * @return Boolean : read access to entity
    **/
@@ -804,12 +806,12 @@ class Session {
    /**
     * Check if you could access to one entity of an list
     *
-    * @param $tab : list ID of entities
-    * @param $is_recursive : boolean if recursive item
+    * @param $tab                   list ID of entities
+    * @param $is_recursive boolean  if recursive item (default 0)
     *
     * @return Boolean :
    **/
-   static function haveAccessToOneOfEntities($tab, $is_recursive = 0) {
+   static function haveAccessToOneOfEntities($tab, $is_recursive=0) {
 
       if (is_array($tab) && count($tab)) {
          foreach ($tab as $val) {
@@ -849,7 +851,7 @@ class Session {
     * Have I the right $right to module $module (conpare to session variable)
     *
     * @param $module Module to check
-    * @param $right Right to check
+    * @param $right  Right to check
     *
     * @return Boolean : session variable have more than the right specified for the module
    **/
@@ -894,10 +896,10 @@ class Session {
    /**
     * Add a message to be displayed after redirect
     *
-    * @param $msg Message to add
-    * @param $check_once Check if the message is not already added
-    * @param $message_type message type (INFO, ERROR)
-    * @param $reset clear previous added message
+    * @param $msg             Message to add
+    * @param $check_once      Check if the message is not already added (false by default)
+    * @param $message_type    Message type (INFO, ERROR) (default INFO)
+    * @param $reset           Clear previous added message (false by default)
    **/
    static function addMessageAfterRedirect($msg, $check_once=false, $message_type=INFO,
                                            $reset=false) {
@@ -937,8 +939,8 @@ class Session {
    /**
     *  Force active Tab for an itemtype
     *
-    * @param $itemtype :item type
-    * @param $tab : ID of the tab
+    * @param $itemtype  item type
+    * @param $tab       ID of the tab
    **/
    static function setActiveTab($itemtype, $tab) {
       $_SESSION['glpi_tabs'][strtolower($itemtype)] = $tab;
@@ -951,9 +953,9 @@ class Session {
     *
     * @since version 0.83
     *
-    * @param $itemtype  String name of itemtype
-    * @param $name      String name of the option
-    * @param $defvalue  Mixed default value for option
+    * @param $itemtype  String   name of itemtype
+    * @param $name      String   name of the option
+    * @param $defvalue           mixed default value for option
     *
     * @return Mixed value of the option
    **/

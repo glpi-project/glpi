@@ -39,8 +39,8 @@ if (isset($_POST["update"])) {
    $item->update($_POST);
 
    Event::log($_POST["id"], "slas", 4, "config",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates a slalevel'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s updates a slalevel'), $_SESSION["glpiname"]));
 
    Html::back();
 
@@ -49,8 +49,8 @@ if (isset($_POST["update"])) {
 
    if ($item->add($_POST)) {
       Event::log($_POST["slas_id"], "slas", 4, "config",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -65,16 +65,16 @@ if (isset($_POST["update"])) {
          }
       }
       Event::log($_POST["slas_id"], "slas", 4, "config",
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes several slalevels'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes several slalevels'), $_SESSION["glpiname"]));
 
    } else if (isset($_POST['id'])) {
       $item->check($_POST['id'], 'd');
       $ok = $item->delete($_POST);
       if ($ok) {
          Event::log($_POST["id"], "slas", 4, "config",
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes a slalevel'), $_SESSION["glpiname"]));
+                    //TRANS: %s is the user login
+                    sprintf(__('%s deletes a slalevel'), $_SESSION["glpiname"]));
       }
       $item->redirectToList();
    }
@@ -109,7 +109,7 @@ if (isset($_POST["update"])) {
    Html::back();
 
  } else {//print computer information
-   Html::header(_n('Escalation level', 'Escalation levels', 2), $_SERVER['PHP_SELF'], "config", "sla");
+   Html::header(SlaLevel::getTypeName(2), $_SERVER['PHP_SELF'], "config", "sla");
    //show computer form to add
    $item->showForm($_GET["id"]);
    Html::footer();

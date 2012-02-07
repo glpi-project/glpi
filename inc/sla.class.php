@@ -46,7 +46,6 @@ class SLA extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-
       // Acronymous, no plural
       return __('SLA');
    }
@@ -66,7 +65,6 @@ class SLA extends CommonDBTM {
     * Define calendar of the ticket using the SLA when using this calendar as sla-s calendar
     *
     * @param $calendars_id calendars_id of the ticket
-    *
    **/
    function setTicketCalendar($calendars_id) {
 
@@ -130,8 +128,8 @@ class SLA extends CommonDBTM {
    /**
     * Print the sla form
     *
-    * @param $ID integer ID of the item
-    * @param $options array
+    * @param $ID        integer  ID of the item
+    * @param $options   array    of possible options:
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
@@ -198,7 +196,7 @@ class SLA extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                       = array();
       $tab['common']             = __('Characteristics');
 
       $tab[1]['table']           = $this->getTable();
@@ -239,8 +237,9 @@ class SLA extends CommonDBTM {
    /**
     * Get due date based on a sla
     *
-    * @param $start_date datetime start date
-    * @param $additional_delay integer additional delay to add or substract (for waiting time)
+    * @param $start_date         datetime start date
+    * @param $additional_delay   integer  additional delay to add or substract (for waiting time)
+    *                                     (default 0)
     *
     * @return due date time (NULL if sla not exists)
    **/
@@ -272,9 +271,10 @@ class SLA extends CommonDBTM {
    /**
     * Get execution date of a sla level
     *
-    * @param $start_date datetime start date
-    * @param $slalevels_id integer sla level id
-    * @param $additional_delay integer additional delay to add or substract (for waiting time)
+    * @param $start_date         datetime    start date
+    * @param $slalevels_id       integer     sla level id
+    * @param $additional_delay   integer     additional delay to add or substract (for waiting time)
+    *                                        (default 0)
     *
     * @return execution date time (NULL if sla not exists)
    **/
@@ -311,14 +311,14 @@ class SLA extends CommonDBTM {
    /**
     * Get active time between to date time for the active calendar
     *
-    * @param $start datetime begin
-    * @param $end datetime end
+    * @param $start  datetime begin
+    * @param $end    datetime end
     *
     * @return timestamp of delay
    **/
    function getActiveTimeBetween($start, $end) {
 
-      if ($end<$start) {
+      if ($end < $start) {
          return 0;
       }
 
@@ -353,10 +353,10 @@ class SLA extends CommonDBTM {
    function addLevelToDo(Ticket $ticket) {
 
       if ($ticket->fields["slalevels_id"]>0) {
-         $toadd = array();
-         $toadd['date'] = $this->computeExecutionDate($ticket->fields['date'],
-                                                      $ticket->fields['slalevels_id'],
-                                                      $ticket->fields['sla_waiting_duration']);
+         $toadd                 = array();
+         $toadd['date']         = $this->computeExecutionDate($ticket->fields['date'],
+                                                              $ticket->fields['slalevels_id'],
+                                                              $ticket->fields['sla_waiting_duration']);
          $toadd['slalevels_id'] = $ticket->fields["slalevels_id"];
          $toadd['tickets_id']   = $ticket->fields["id"];
          $slalevelticket        = new SlaLevel_Ticket();
