@@ -113,7 +113,7 @@ foreach ($available as $key => $name) {
    }
 }
 
-Stat::showGraph($toprint, array('title'     => __('Number'),
+Stat::showGraph($toprint, array('title'     => __('Quantity'),
                                 'showtotal' => 1,
                                 'unit'      => $item->getTypeName(2)));
 

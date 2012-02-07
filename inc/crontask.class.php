@@ -993,7 +993,7 @@ class CronTask extends CommonDBTM{
             echo "<table class='tab_cadrehov'><tr>";
             echo "<th>".__('Date')."</th>";
             echo "<th>".__('Total duration')."</th>";
-            echo "<th>".__('Number')."</th>";
+            echo "<th>".__('Quantity')."</th>";
             echo "<th>".__('Description')."</th>";
             echo "</tr>\n";
 
