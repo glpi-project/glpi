@@ -175,12 +175,12 @@ class PlanningRecall extends CommonDBTM {
       $possible_values[Entity::CONFIG_NEVER] = __('No');
       $possible_values[0] = __('Begin');
       for ($i=1 ; $i<24 ; $i++) {
-         $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('- %1$d hour','+ %1$d hours',$i),
+         $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('- %1$d hour','- %1$d hours',$i),
                                                             $i);
       }
 
       for ($i=1 ; $i<30 ; $i++) {
-         $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('- %1$d day','+ %1$d days',$i), $i);
+         $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('- %1$d day','- %1$d days',$i), $i);
       }
       ksort($possible_values);
       
@@ -243,7 +243,7 @@ class PlanningRecall extends CommonDBTM {
             $input["type"] = Alert::ACTION;
             $input["items_id"] = $data['id'];
 
-//             $alert->add($input);
+            $alert->add($input);
          }
       }
       return $cron_status;

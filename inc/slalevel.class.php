@@ -277,7 +277,7 @@ class SlaLevel extends RuleTicket {
          }
          if (!in_array(-$i*HOUR_TIMESTAMP,$p['used'])) {
             if ($p['max_time'] >= $i*HOUR_TIMESTAMP) {
-               $possible_values[-$i*HOUR_TIMESTAMP] = sprintf(_n('- %1$d hour','+ %1$d hours',$i),
+               $possible_values[-$i*HOUR_TIMESTAMP] = sprintf(_n('- %1$d hour','- %1$d hours',$i),
                                                               $i);
             }
          }
@@ -289,7 +289,7 @@ class SlaLevel extends RuleTicket {
          }
          if (!in_array(-$i*DAY_TIMESTAMP,$p['used'])) {
             if ($p['max_time'] >= $i*DAY_TIMESTAMP) {
-               $possible_values[-$i*DAY_TIMESTAMP] = sprintf(_n('- %1$d day','+ %1$d days',$i), $i);
+               $possible_values[-$i*DAY_TIMESTAMP] = sprintf(_n('- %1$d day','- %1$d days',$i), $i);
             }
          }
       }

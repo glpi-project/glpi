@@ -1210,7 +1210,17 @@ function update083to084() {
                           (`notificationtemplates_id`, `language`, `subject`,
                            `content_text`,
                            `content_html`)
-                   VALUES ($notid, '', '', '', '')";
+                   VALUES ($notid, '', '##recall.action##: ##recall.item.name##', '##recall.action##: ##recall.item.name## 
+
+##recall.item.content## 
+
+##lang.recall.planning.begin##: ##recall.planning.begin##
+##lang.recall.planning.end##: ##recall.planning.end##
+##lang.recall.planning.state##: ##recall.planning.state##
+##lang.recall.item.private##: ##recall.item.private##', '&lt;p&gt;##recall.action##: &lt;a href=\"##recall.item.url##\"&gt;##recall.item.name##&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;##recall.item.content##&lt;/p&gt;
+&lt;p&gt;##lang.recall.planning.begin##: ##recall.planning.begin##&lt;br /&gt;##lang.recall.planning.end##: ##recall.planning.end##&lt;br /&gt;##lang.recall.planning.state##: ##recall.planning.state##&lt;br /&gt;##lang.recall.item.private##: ##recall.item.private##&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;')";
          $DB->queryOrDie($query, "0.84 add planning recall notification translation");
 
 
@@ -1218,7 +1228,7 @@ function update083to084() {
                            (`name`, `entities_id`, `itemtype`, `event`, `mode`,
                            `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
                            `date_mod`)
-                     VALUES ('Planning recall', 0, 'PlanningRecall', 'reminder', 'mail',
+                     VALUES ('Planning recall', 0, 'PlanningRecall', 'planningrecall', 'mail',
                            $notid, '', 1, 1, NOW())";
          $DB->queryOrDie($query, "0.84 add planning recall notification");
          $notifid = $DB->insert_id();

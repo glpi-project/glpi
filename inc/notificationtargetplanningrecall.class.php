@@ -37,7 +37,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
 
    function getEvents() {
 
-      return array('reminder' => __('Planning recall'));
+      return array('planningrecall' => __('Planning recall'));
    }
 
 
@@ -49,7 +49,6 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;
 
-      //----------- Reservation infos -------------- //
       $events = $this->getAllEvents();
 
       $this->datas['##recall.action##'] = $events[$event];
@@ -59,12 +58,24 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
       if ($this->target_object instanceof CommonDBChild 
                || $this->target_object instanceof CommonITILTask) {
          $item2 = $this->target_object->getItem();
-         $this->datas['##recall.item.url##'] = $item2->getLinkURL();
+         $this->datas['##recall.item.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php".
+                                                            "?redirect=".strtolower($item2->getType())."_".$item2->getID());
+
       } else {
-         $this->datas['##recall.item.url##'] = $this->target_object->getLinkURL();
+         $this->datas['##recall.item.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php".
+                                                            "?redirect=".strtolower($this->target_object->getType())."_".$this->target_object->getID());
+      }
+      $this->datas['##recall.item.name##'] = '';
+      if ($this->target_object->isField('name')) {
+         $this->datas['##recall.item.name##'] = $this->target_object->getField('name');
+      } else {
+         if ($item2 = $this->target_object->getItem()) {
+            if ($item2->isField('name')) {
+               $this->datas['##recall.item.name##'] = $item2->getField('name');
+            }
+         }
       }
       
-      $this->datas['##recall.item.name##'] = $this->target_object->getField('name');
       $this->datas['##recall.item.content##'] = '';
       if ($this->target_object->isField('content')) {
          $this->datas['##recall.item.content##'] = $this->target_object->getField('content');
@@ -72,9 +83,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
       if ($this->target_object->isField('text')) {
          $this->datas['##recall.item.content##'] = $this->target_object->getField('text');
       }
-      $this->datas['##recall.item.is_private##'] = '';
+      $this->datas['##recall.item.private##'] = '';
       if ($this->target_object->isField('is_private')) {
-         $this->datas['##recall.item.is_private##'] = Dropdown::getYesNo($this->target_object->getField('is_private'));
+         $this->datas['##recall.item.private##'] = Dropdown::getYesNo($this->target_object->getField('is_private'));
       }
             
       $this->datas['##recall.item.date_mod##'] = '';
@@ -112,7 +123,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
                         'recall.item.user'         => __('Writer'),
                         'recall.item.date_mod'     => __('Last update'),
                         'recall.item.name'         => __('Title'),
-                        'recall.item.is_private'   => __('Private'),
+                        'recall.item.private'      => __('Private'),
                         'recall.item.content'      => __('Description'),
                         'recall.item.url'          => __('URL'),
                         'recall.itemtype'          => __('Item type'),
