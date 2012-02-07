@@ -336,10 +336,10 @@ class Ocslink extends CommonDBTM {
          }
 
          // Search locked computervirtualmachines
-         $locked_disk = importArrayFromDB($data["import_vm"]);
-         $first       = true;
+         $locked_vm = importArrayFromDB($data["import_vm"]);
+         $first     = true;
 
-         foreach ($locked_disk as $key => $val) {
+         foreach ($locked_vm as $key => $val) {
             $nb = countElementsInTable('glpi_computervirtualmachines', "`id`='$key'");
             if ($nb == 0) {
                $header = true;
