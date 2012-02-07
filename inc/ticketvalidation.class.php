@@ -191,6 +191,10 @@ class TicketValidation  extends CommonDBChild {
             if (isset($this->input['_auto_update'])) {
                $input['_auto_update'] = $this->input['_auto_update'];
             }
+            // to know update by rules
+            if (isset($this->input["_rule_process"])) {
+               $input['_rule_process'] = $this->input["_rule_process"];
+            }
 
             $job->update($input);
          }

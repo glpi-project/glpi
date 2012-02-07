@@ -592,7 +592,7 @@ class Ticket extends CommonITILObject {
             unset($input["_itil_assign"]);
          }
       }
-
+      
       $check_allowed_fields_for_template = false;
       if (is_numeric(Session::getLoginUserID(false)) && !Session::haveRight("update_ticket","1")) {
 
@@ -602,9 +602,10 @@ class Ticket extends CommonITILObject {
          if ($this->canApprove() && isset($input["status"])) {
             $allowed_fields[] = 'status';
          }
-         // for post-only with validate right
+         // for post-only with validate right or validation created by rules
          $ticketval = new TicketValidation();
-         if (TicketValidation::canValidate($this->fields['id']) || $ticketval->canCreate()) {
+         if (TicketValidation::canValidate($this->fields['id']) || $ticketval->canCreate()
+            || isset($input["_rule_process"])) {
             $allowed_fields[] = 'global_validation';
          }
          // Manage assign and steal right
@@ -771,7 +772,6 @@ class Ticket extends CommonITILObject {
          unset($input["items_id"]);
          unset($input["itemtype"]);
       }
-
       //Action for send_validation rule
       if (isset($this->input["_add_validation"]) && $this->input["_add_validation"]>0) {
          $validation = new TicketValidation();
@@ -1284,8 +1284,14 @@ class Ticket extends CommonITILObject {
          $validation = new Ticketvalidation();
          $values['tickets_id']        = $this->fields['id'];
          $values['users_id_validate'] = $this->input["_add_validation"];
+         // to know update by rules
+         if (isset($this->input["_rule_process"])) {
+            $values['_rule_process'] = $this->input["_rule_process"];
+         }
 
+         // Cron or rule process of hability to do
          if (!is_numeric(Session::getLoginUserID(false))
+             || isset($this->input["_rule_process"])
              || $validation->can(-1, 'w', $values)) { // cron or allowed user
             $validation->add($values);
 
