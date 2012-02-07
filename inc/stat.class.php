@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
  *  Computer class
 **/
 class Stat {
-   /// TODO clean type names : technicien -> tech enterprise -> supplier
+
 
    /**
     * @param $itemtype
@@ -67,7 +67,7 @@ class Stat {
             $val = $item->getUsedTechTaskBetween($date1, $date2);
             break;
 
-         case "enterprise" :
+         case "suppliers_id_assign" :
             $val = $item->getUsedSupplierBetween($date1, $date2);
             break;
 
@@ -701,10 +701,6 @@ class Stat {
                               ON (`$tasktable`.`$fkfield` = `$table`.`id`)";
             break;
 
-         case "enterprise" :
-            $WHERE .= " AND `$table`.`suppliers_id_assign` = '$value'";
-            break;
-
          case "user" :
             $LEFTJOIN = $LEFTJOINUSER;
             $WHERE   .= " AND (`$userlinktable`.`users_id` = '$value'
@@ -727,14 +723,6 @@ class Stat {
                                 AND `$userlinktable`.`type` = '".CommonITILObject::REQUESTER."')";
             break;
 
-         case "users_id_recipient" :
-            $WHERE .= " AND `$table`.`users_id_recipient` = '$value'";
-            break;
-
-         case "type" :
-            $WHERE .= " AND `$table`.`type` = '$value'";
-            break;
-
          case "itilcategories_tree" :
             if ($value == $value2) {
                $categories = array($value);
@@ -743,25 +731,6 @@ class Stat {
             }
             $condition  = implode("','",$categories);
             $WHERE .= " AND `$table`.`itilcategories_id` IN ('$condition')";
-            break;
-
-         case "itilcategories_id" :
-            /*
-            Drop this =>  Flat display, don't count child (use tree display for that)
-
-            if (!empty($value)) {
-               // do not merge for pie chart
-               if (!isset($_REQUEST['showgraph']) || !$_REQUEST['showgraph']) {
-                  $categories = getSonsOf("glpi_itilcategories", $value);
-                  $condition  = implode("','",$categories);
-                  $WHERE .= " AND `$table`.`itilcategories_id` IN ('$condition')";
-               } else {
-                  $WHERE .= " AND `$table`.`itilcategories_id` = '$value' ";
-               }
-
-            } else {             */
-
-            $WHERE .= " AND `$table`.`itilcategories_id` = '$value' ";
             break;
 
          case 'group_tree' :
@@ -797,6 +766,10 @@ class Stat {
          case "urgency" :
          case "impact" :
          case "priority" :
+         case "suppliers_id_assign" :
+         case "users_id_recipient" :
+         case "type" :
+         case "itilcategories_id" :
             $WHERE .= " AND `$table`.`$param` = '$value'";
             break;
 

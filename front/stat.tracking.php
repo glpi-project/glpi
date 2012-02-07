@@ -106,7 +106,7 @@ $items = array(__('Requester')       => $requester,
                                                    => array('title' => __('Group')),
                                               'groups_tree_assign'
                                                    => array('title' => __('Group tree')),
-                                              'enterprise'
+                                              'suppliers_id_assign'
                                                    => array('title' => __('Supplier'))));
 
 $INSELECT = "";

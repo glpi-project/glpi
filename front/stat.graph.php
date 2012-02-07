@@ -87,7 +87,7 @@ switch($_GET["type"]) {
       $title = sprintf(__('Technician: %s'), $item->getAssignName($_GET["id"], 'User', 1));
       break;
 
-   case "enterprise" :
+   case "suppliers_id_assign" :
       $val1  = $_GET["id"];
       $val2  = "";
       $next  = getNextItem("glpi_suppliers", $_GET["id"]);
