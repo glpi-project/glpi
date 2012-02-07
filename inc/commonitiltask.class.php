@@ -190,6 +190,12 @@ abstract class CommonITILTask  extends CommonDBTM {
    function post_updateItem($history=1) {
       global $CFG_GLPI;
 
+
+      if (in_array("begin",$this->updates)){
+         PlanningRecall::managePlanningUpdates($this->getType(), $this->getID(), 
+                                               $this->fields["begin"]);
+      }
+
       $update_done = false;
       $itemtype    = $this->getItilObjectItemType();
       $item        = new $itemtype();

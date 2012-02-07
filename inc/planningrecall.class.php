@@ -131,6 +131,26 @@ class PlanningRecall extends CommonDBTM {
    }
    
    /**
+    * Update planning recal date when changing begin of planning
+    *
+    * @param $itemtype string itemtype to get
+    * @param $items_id integer id of the item
+    * @param $begin datetime new begin date
+    *
+    * @return true if succeed else false
+   **/   
+   static function managePlanningUpdates($itemtype, $items_id, $begin) {
+      global $DB;
+      
+      $query = "UPDATE `glpi_planningrecalls`
+                  SET `when` = DATE_SUB('$begin', INTERVAL `before_time` SECOND)
+                  WHERE `itemtype` = '$itemtype'
+                    AND `items_id` = '$items_id';";
+      return $DB->query($query);
+   
+   }
+   
+   /**
     * Make a select box with recall times
     *
     * Mandatory options : itemtype, items_id
