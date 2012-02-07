@@ -31,13 +31,13 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-// Class NotificationTarget
-class NotificationTargetPlanningReminder extends NotificationTarget {
+// Class NotificationTargetPlanningRecall
+class NotificationTargetPlanningRecall extends NotificationTarget {
 
 
    function getEvents() {
 
-      return array('reminder' => __('Planning reminder'));
+      return array('reminder' => __('Planning recall'));
    }
 
 
@@ -52,7 +52,7 @@ class NotificationTargetPlanningReminder extends NotificationTarget {
       //----------- Reservation infos -------------- //
       $events = $this->getAllEvents();
 
-      $this->datas['##reminder.action##'] = $events[$event];
+      $this->datas['##recall.action##'] = $events[$event];
 
 
 //       $this->datas['##reservation.user##'] = "";
@@ -98,7 +98,7 @@ class NotificationTargetPlanningReminder extends NotificationTarget {
 
    function getTags() {
 
-      $tags_all = array('reminder.action'   => _n('Event', 'Events', 1),);
+      $tags_all = array('recall.action'   => _n('Event', 'Events', 1),);
 
       foreach ($tags_all as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
