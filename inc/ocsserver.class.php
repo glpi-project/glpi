@@ -4344,8 +4344,9 @@ class OcsServer extends CommonDBTM {
 
       $virtualmachine = new ComputerVirtualMachine();
       if ($DBocs->numrows($result) > 0) {
-         while ($line = $DBocs->fetch_array($result)) {
+         while ($line = $DBocs->fetch_assoc($result)) {
             $line = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($line));
+            $vm         = array();
             $vm['name'] = $line['NAME'];
             $vm['vcpu'] = $line['VCPU'];
             $vm['ram']  = $line['MEMORY'];
