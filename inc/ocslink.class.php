@@ -335,6 +335,28 @@ class Ocslink extends CommonDBTM {
             }
          }
 
+         // Search locked computervirtualmachines
+         $locked_disk = importArrayFromDB($data["import_vm"]);
+         $first       = true;
+
+         foreach ($locked_disk as $key => $val) {
+            $querySearchLockedDisk = "SELECT `id`
+                                       FROM `glpi_computervirtualmachines`
+                                       WHERE `id` = '$key'";
+            $resultSearchDisk = $DB->query($querySearchLockedDisk);
+            $nb = countElementsInTable('glpi_computervirtualmachines', "`id`='$key'");
+            if ($nb == 0) {
+               $header = true;
+               if ($first) {
+                  echo "<tr><th colspan='2'>" . $LANG['computers'][57] . "</th></tr>\n";
+                  $first = false;
+               }
+               echo "<tr class='tab_bg_1'><td class='right' width='50%'>" . $val . "</td>";
+               echo "<td class='left' width='50%'>";
+               echo "<input type='checkbox' name='lockvm[" . $key . "]'></td></tr>\n";
+            }
+         }
+
          // Search for locked devices
          $locked_dev = importArrayFromDB($data["import_device"]);
          if (!in_array(OcsServer::IMPORT_TAG_078, $locked_dev)) {

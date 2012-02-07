@@ -57,6 +57,7 @@ if (isset($_POST["unlock_monitor"])) {
                     "lockperiph"  => "import_peripheral",
                     "lockip"      => "import_ip",
                     "lockdevice"  => "import_device",
+                    "lockvm"      => "import_vm",
                     "lockfield"   => "computer_update");
    foreach ($actions as $lock => $field) {
       if (isset($_POST[$lock]) && count($_POST[$lock])) {
