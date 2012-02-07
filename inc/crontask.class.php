@@ -1044,7 +1044,7 @@ class CronTask extends CommonDBTM{
             echo "<th>".__('Date')."</th>";
             echo "<th>".__('Status')."</th>";
             echo "<th>". __('Duration')."</th>";
-            echo "<th>".__('Number')."</th>";
+            echo "<th>".__('Quantity')."</th>";
             echo "<th>".__('Description')."</th>";
             echo "</tr>\n";
 
