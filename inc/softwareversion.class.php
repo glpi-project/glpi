@@ -295,12 +295,12 @@ class SoftwareVersion extends CommonDBChild {
                echo "<td class='right'>".Dropdown::getDropdownName('glpi_operatingsystems',
                                                                    $data['operatingsystems_id']);
                echo "</td>";
-               echo "<td class='right'>$nb&nbsp;&nbsp;</td>";
+               echo "<td class='numerique'>$nb</td>";
                echo "<td>".$data['comment']."</td></tr>\n";
             }
 
             echo "<tr class='tab_bg_1'><td class='right b' colspan='3'>".__('Total')."</td>";
-            echo "<td class='right b'>$tot&nbsp;&nbsp;</td><td>";
+            echo "<td class='numerique b'>$tot</td><td>";
             if ($canedit) {
                echo "<a class='vsubmit' href='softwareversion.form.php?softwares_id=$softwares_id'>".
                       __('Add a version')."</a>";

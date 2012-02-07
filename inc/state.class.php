@@ -114,7 +114,7 @@ class State extends CommonTreeDropdown {
 
          foreach ($state_type as $key => $itemtype) {
             if ($item = getItemForItemtype($itemtype)) {
-               echo "<th>".$item->getTypeName()."</th>";
+               echo "<th>".$item->getTypeName(2)."</th>";
                $total[$itemtype] = 0;
             } else {
                unset($state_type[$key]);
@@ -132,7 +132,7 @@ class State extends CommonTreeDropdown {
          $tot = 0;
          echo "<tr class='tab_bg_2'><td>---</td>";
          foreach ($state_type as $itemtype) {
-            echo "<td class='center tab_bg_1'>";
+            echo "<td class='numerique'>";
 
             if (isset($states[0][$itemtype])) {
                echo $states[0][$itemtype];
@@ -144,7 +144,7 @@ class State extends CommonTreeDropdown {
 
             echo "</td>";
          }
-         echo "<td class='right b'>$tot &nbsp;&nbsp;</td></tr>";
+         echo "<td class='numerique b'>$tot</td></tr>";
 
          while ($data=$DB->fetch_array($result)) {
             $tot = 0;
@@ -154,7 +154,7 @@ class State extends CommonTreeDropdown {
                    "1&amp;start=0'>".$data["completename"]."</a></td>";
 
             foreach ($state_type as $itemtype) {
-               echo "<td class='center tab_bg_1'>";
+               echo "<td class='numerique'>";
 
                if (isset($states[$data["id"]][$itemtype])) {
                   echo $states[$data["id"]][$itemtype];
@@ -166,7 +166,7 @@ class State extends CommonTreeDropdown {
 
                echo "</td>";
             }
-            echo "<td class='right b'>$tot &nbsp;&nbsp;</td>";
+            echo "<td class='numerique b'>$tot</td>";
             echo "</tr>";
          }
          echo "<tr class='tab_bg_2'><td class='center b'>".__('Total')."</td>";
@@ -177,7 +177,7 @@ class State extends CommonTreeDropdown {
             $tot += $total[$itemtype];
          }
 
-         echo "<td class='right b '>$tot &nbsp;&nbsp;</td></tr>";
+         echo "<td class='numerique b'>$tot</td></tr>";
          echo "</table></div>";
 
       } else {
