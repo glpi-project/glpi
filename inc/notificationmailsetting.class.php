@@ -184,9 +184,7 @@ class NotificationMailSetting extends CommonDBTM {
                                MAIL_SMTPTLS => __('SMTP+TLS'));
          Dropdown::showFromArray("smtp_mode", $mail_methods,
                                  array('value' => $CFG_GLPI["smtp_mode"]));
-         echo "</td><td colspan='2' class='center'>";
-         echo "<input class='submit' type='submit' name='test_smtp_send' value=\"".
-                __s('Send a test email to the administrator')."\">";
+         echo "</td><td colspan='2' class='center'>&nbsp;";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td >" . __('SMTP host') . "</td>";
@@ -210,6 +208,7 @@ class NotificationMailSetting extends CommonDBTM {
          echo "</tr>";
       }
       $options['candel'] = false;
+      $options['addbuttons'] = array('test_smtp_send' => __('Send a test email to the administrator'));
       $this->showFormButtons($options);
 
    }

@@ -1281,7 +1281,7 @@ class Dropdown {
          foreach ($elements as $key => $val) {
             // optgroup management
             if (is_array($val)) {
-               echo "<optgroup label=\"".htmlentities($key)."\">";
+               echo "<optgroup label=\"".Html::entities_deep($key)."\">";
                foreach ($val as $key2 => $val2) {
                   if (!isset($param['used'][$key2])) {
                      echo "<option value='".$key2."'".($param['value']==$key2?" selected":"").">".

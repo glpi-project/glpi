@@ -42,11 +42,12 @@ if (!defined('GLPI_ROOT')) {
 class Alert extends CommonDBTM {
 
    // ALERTS TYPE
-   const THRESHOLD = 1;
-   const END       = 2;
-   const NOTICE    = 3;
-   const NOTCLOSED = 4;
-   const ACTION    = 5;   
+   const THRESHOLD   = 1;
+   const END         = 2;
+   const NOTICE      = 3;
+   const NOTCLOSED   = 4;
+   const ACTION      = 5;
+   const PERIODICITY = 6;   
 
 
    function prepareInputForAdd($input) {
