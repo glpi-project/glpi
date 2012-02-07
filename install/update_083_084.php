@@ -61,8 +61,8 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
    // Retrieve all the networks from the current network ports and add them to the IPNetworks
    $query = "SELECT `ip`, `id`, `entities_id`, ".
                      ($itemtype=='NetworkEquipment'?"'NetworkEquipment' as itemtype":"`itemtype`").
-                     ", ".($itemtype=='NetworkEquipment'?"`id` as items_is":"`items_id`").
-             "FROM `$itemtable`
+                     ", ".($itemtype=='NetworkEquipment'?"`id` as items_id":"`items_id`").
+             " FROM `$itemtable`
              WHERE `ip` <> ''";
 
    $networkName = new NetworkName();
@@ -1183,9 +1183,11 @@ function update083to084() {
                   `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
                   `users_id` int(11) NOT NULL DEFAULT '0',
                   `before_time` int(11) NOT NULL DEFAULT '-10',
+                  `when` datetime DEFAULT NULL,
                   PRIMARY KEY (`id`),
                   KEY `users_id` (`users_id`),
                   KEY `before_time` (`before_time`),
+                  KEY `when` (`when`),
                   UNIQUE KEY `unicity` (`itemtype`,`items_id`, `users_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_planningrecalls");      
