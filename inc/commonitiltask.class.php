@@ -56,6 +56,21 @@ abstract class CommonITILTask  extends CommonDBTM {
       return false;
    }
 
+   /**
+    * Get the item associated with the current object. 
+    *
+    * @since version 0.84
+    *
+    * @return object of the concerned item or false on error
+   **/
+   function getItem() {
+      if ($item = getItemForItemtype($this->getItilObjectItemType())) {
+         if ($item->getFromDB($this->fields[$item->getForeignKeyField()])) {
+            return $item;
+         }
+     }
+     return false;
+   }
 
    /**
     * can read the parent ITIL Object ?
@@ -829,7 +844,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       if ($this->maybePrivate()) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Public')."</td>";
+         echo "<td>".__('Private')."</td>";
          echo "<td>";
          Dropdown::showYesNo('is_private',$this->fields["is_private"]);
          echo "</td>";
@@ -987,7 +1002,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "<th>" . __('Description') . "</th><th>" .  __('Duration') . "</th>";
          echo "<th>" . __('Writer') . "</th>";
          if ($this->maybePrivate() && $showprivate) {
-            echo "<th>" . __('Public') . "</th>";
+            echo "<th>" . __('Private') . "</th>";
          }
          echo "<th>" . __('Planning') . "</th></tr>\n";
 
