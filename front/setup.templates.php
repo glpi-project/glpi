@@ -45,9 +45,9 @@ if (isset($_GET["itemtype"])) {
    $link = Toolbox::getItemTypeFormURL($_GET["itemtype"]);
    $item = str_replace(".form.php","",$link);
    $item = str_replace("front/","",$item);
-   Html::header(__('Manage templates...'),$_SERVER['PHP_SELF'],"inventory",$item);
+   Html::header(__('Manage templates...'), $_SERVER['PHP_SELF'], "inventory", $item);
 
-   CommonDBTM::listTemplates($_GET["itemtype"],$link,$_GET["add"]);
+   CommonDBTM::listTemplates($_GET["itemtype"], $link, $_GET["add"]);
 
    Html::footer();
 }

@@ -38,14 +38,14 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "r");
 
-Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'],"config","extauth",-1);
+Html::header(__('External authentication sources'), $_SERVER['PHP_SELF'], "config", "extauth", -1);
 
 echo "<table class='tab_cadre'>";
 echo "<tr><th>&nbsp;" . __('External authentications') . "</th></tr>";
 if (Session::haveRight("config","w")) {
    echo "<tr class='tab_bg_1'><td class='center b'><a href='auth.settings.php'>";
+   echo __('Setup')."</a></td></tr>";
 }
-echo __('Setup')."</a></td></tr>";
 echo "<tr class='tab_bg_1'><td class='center b'>";
 if (Toolbox::canUseLdap()) {
    echo "<a href='authldap.php'>". _n('LDAP directory', 'LDAP directories', 2)."</a>";
@@ -62,8 +62,8 @@ if (Toolbox::canUseImapPop()) {
    echo "<p>".__('Impossible to use email server as external source of connection').'</p>';
 }
 echo "</td> </tr>";
-echo "<tr class='tab_bg_1'><td class='center'><a href='auth.others.php'>" . __('Others authentication methods') .
-      "</a></td></tr>";
+echo "<tr class='tab_bg_1'><td class='center'>".
+     "<a href='auth.others.php'>" . __('Others authentication methods') ."</a></td></tr>";
 echo "</table>";
 
 Html::footer();

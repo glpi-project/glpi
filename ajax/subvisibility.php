@@ -45,10 +45,10 @@ Session::checkLoginUser();
 
 if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
     && isset($_REQUEST['items_id']) && $_REQUEST['items_id'] > 0) {
+
    switch ($_REQUEST['type']) {
       case 'Group' :
       case 'Profile' :
-
          $params = array('value' => $_SESSION['glpiactive_entity']);
          if (Session::isViewAllEntities()) {
             $params['toadd'] = array(-1 => __('No restriction'));
@@ -58,7 +58,6 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
          _e('Child entities: ');
          Dropdown::showYesNo('is_recursive');
          break;
-
    }
 }
 ?>

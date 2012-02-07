@@ -48,7 +48,7 @@ Session::checkLoginUser();
 
 if (isset($_REQUEST['searchtype'])) {
    $searchopt         = unserialize(stripslashes($_REQUEST['searchopt']));
-      
+
    $_REQUEST['value'] = rawurldecode(stripslashes($_REQUEST['value']));
 
    $addmeta = "";
@@ -65,48 +65,6 @@ if (isset($_REQUEST['searchtype'])) {
       case "morethan" :
       case "lessthan" :
       case "under" :
-        // Specific cases with linkfield
-//         if (!$display && isset($searchopt['linkfield'])) {
-//             // Specific cases
-//             switch ($searchopt['table'].".".$searchopt['linkfield']) {
-//                case "glpi_users_validation.users_id_validate" :
-//                   User::dropdown(array('name'     => $inputname,
-//                                        'value'    => $_REQUEST['value'],
-//                                        'comments' => false,
-//                                        'right'    => 'validate_ticket'));
-//                   $display = true;
-//                   break;
-//
-//                case "glpi_users_validation.users_id" :
-//                   User::dropdown(array('name'     => $inputname,
-//                                        'value'    => $_REQUEST['value'],
-//                                        'comments' => false,
-//                                        'right'    => 'create_validation'));
-//                   $display = true;
-//                   break;
-//             }
-//          }
-
-        // Specific cases with linkfield
-//         if (!$display && isset($searchopt['linkfield'])) {
-//             switch ($_REQUEST['itemtype'].".".$searchopt['linkfield']) {
-//                case "Ticket.users_id_recipient" :
-// //                case "Ticket.users_id" :
-//                   User::dropdown(array('name'  => $inputname,
-//                                        'value' => $_REQUEST['value'],
-//                                        'right' => 'all'));
-//                   $display = true;
-//                   break;
-//
-// //                case "Ticket.users_id_assign" :
-// //                   User::dropdown(array('name'  => $inputname,
-// //                                        'value' => $_REQUEST['value'],
-// //                                        'right' => 'own_ticket'));
-// //                   $display = true;
-// //                   break;
-//             }
-//         }
-
         if (!$display && isset($searchopt['field'])) {
             // Specific cases
             switch ($searchopt['table'].".".$searchopt['field']) {
@@ -182,9 +140,10 @@ if (isset($_REQUEST['searchtype'])) {
                   break;
 
                case "glpi_tickets.global_validation" :
-                  TicketValidation::dropdownStatus($inputname, array('value'  => $_REQUEST['value'],
-                                                                     'global' => true,
-                                                                     'all'    => 1));
+                  TicketValidation::dropdownStatus($inputname,
+                                                   array('value'  => $_REQUEST['value'],
+                                                         'global' => true,
+                                                         'all'    => 1));
                   $display =true;
                   break;
 
@@ -192,8 +151,8 @@ if (isset($_REQUEST['searchtype'])) {
                   User::dropdown(array('name'     => $inputname,
                                        'value'    => $_REQUEST['value'],
                                        'comments' => false,
-                                       'right'    => isset($searchopt['filter'])?$searchopt['filter']
-                                                                                :'all'));
+                                       'right'    => isset($searchopt['filter'])
+                                                      ?$searchopt['filter'] :'all'));
                   $display = true;
                   break;
 
@@ -297,5 +256,4 @@ if (isset($_REQUEST['searchtype'])) {
                Html::cleanInputText($_REQUEST['value'])."\">";
    }
 }
-
 ?>
