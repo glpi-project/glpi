@@ -342,7 +342,7 @@ function update083to084() {
                   PRIMARY KEY (`id`),
                   KEY `textual` (`name`),
                   KEY `binary` (`binary_0`, `binary_1`, `binary_2`, `binary_3`),
-                  KEY `item` (`items_id`,`itemtype`)
+                  KEY `item` (`itemtype`, `items_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
 
       $DB->queryOrDie($query, "0.84 create glpi_ipaddresses");
@@ -502,7 +502,7 @@ function update083to084() {
                   PRIMARY KEY (`id`),
                   KEY `FQDN` (`name`,`fqdns_id`),
                   KEY `name` (`name`),
-                  KEY `item` (`items_id`, `itemtype`),
+                  KEY `item` (`itemtype`, `items_id`),
                   KEY `fqdns_id` (`fqdns_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_networknames");
@@ -1173,6 +1173,61 @@ function update083to084() {
          }
       }
    }
+
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'planing reminders'));
+
+   if (!TableExists('glpi_planningreminders')) {
+      $query = "CREATE TABLE `glpi_planningreminders` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `items_id` int(11) NOT NULL DEFAULT '0',
+                  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+                  `users_id` int(11) NOT NULL DEFAULT '0',
+                  `when` datetime DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `item` (`itemtype`,`items_id`),
+                  KEY `users_id` (`users_id`),
+                  KEY `when` (`when`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.84 add table glpi_planningreminders");      
+   }
+
+   $query = "SELECT *
+             FROM `glpi_notificationtemplates`
+             WHERE `itemtype` = 'PlanningReminder'";
+
+   if ($result=$DB->query($query)) {
+      if ($DB->numrows($result)==0) {
+         $query = "INSERT INTO `glpi_notificationtemplates`
+                          (`name`, `itemtype`, `date_mod`)
+                   VALUES ('Planning reminder', 'PlanningReminder', NOW())";
+         $DB->queryOrDie($query, "0.84 add planning reminder notification");
+         $notid = $DB->insert_id();
+
+         ///TODO complete template
+         $query = "INSERT INTO `glpi_notificationtemplatetranslations`
+                          (`notificationtemplates_id`, `language`, `subject`,
+                           `content_text`,
+                           `content_html`)
+                   VALUES ($notid, '', '', '', '')";
+         $DB->queryOrDie($query, "0.84 add planning reminder notification translation");
+
+
+         $query = "INSERT INTO `glpi_notifications`
+                           (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                           `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
+                           `date_mod`)
+                     VALUES ('Planning reminder', 0, 'PlanningReminder', 'reminder', 'mail',
+                           $notid, '', 1, 1, NOW())";
+         $DB->queryOrDie($query, "0.84 add planning reminder notification");
+         $notifid = $DB->insert_id();
+
+         $query = "INSERT INTO `glpi_notificationtargets`
+                           (`id`, `notifications_id`, `type`, `items_id`)
+                     VALUES (NULL, $notifid, ".Notification::USER_TYPE.", ".Notification::AUTHOR.");";
+         $DB->queryOrDie($query, "0.84 add planning reminder notification target");
+      }
+   }
+
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'various fields'));
 
