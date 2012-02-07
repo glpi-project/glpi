@@ -1184,9 +1184,9 @@ function update083to084() {
                   `users_id` int(11) NOT NULL DEFAULT '0',
                   `before_time` int(11) NOT NULL DEFAULT '-10',
                   PRIMARY KEY (`id`),
-                  KEY `item` (`itemtype`,`items_id`),
                   KEY `users_id` (`users_id`),
-                  KEY `before_time` (`before_time`)
+                  KEY `before_time` (`before_time`),
+                  UNIQUE KEY `unicity` (`itemtype`,`items_id`, `users_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_planningrecalls");      
    }
