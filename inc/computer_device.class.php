@@ -545,7 +545,7 @@ class Computer_Device extends CommonDBTM {
           && (isset($this->fields['specificity'])
               && $this->fields['specificity'] == $this->input['specificity'])
           && ((isset($this->fields['devicememories_id'])
-              && $this->fields['devicememories_id'] == $this->input['devicememories_id']))) {
+               && (!isset($this->input['devicememories_id']) || $this->fields['devicememories_id'] == $this->input['devicememories_id'])))) {
          // No change
          return false;
       }
