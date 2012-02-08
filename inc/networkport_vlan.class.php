@@ -65,7 +65,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
                 FROM `glpi_networkports_vlans`
                 WHERE `id` = '$ID'";
       if ($result = $DB->query($query)) {
-         $data = $DB->fetch_array($result);
+         $data = $DB->fetch_assoc($result);
 
          // Delete VLAN
          $query = "DELETE
@@ -223,7 +223,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
          echo "\n<table>";
-         while ($line = $DB->fetch_array($result)) {
+         while ($line = $DB->fetch_assoc($result)) {
             $used[$line["vlans_id"]] = $line["vlans_id"];
             echo "<tr><td>";
             if ((isset($line["tagged"])) && ($line["tagged"] == 1)) {

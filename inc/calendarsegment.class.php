@@ -325,7 +325,7 @@ class CalendarSegment extends CommonDBChild {
       $daysofweek = Toolbox::getDaysOfWeekArray();
 
       if ($DB->numrows($result) >0) {
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
 

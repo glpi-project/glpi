@@ -57,7 +57,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    }
 
    /**
-    * Get the item associated with the current object. 
+    * Get the item associated with the current object.
     *
     * @since version 0.84
     *
@@ -192,7 +192,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
 
       if (in_array("begin",$this->updates)){
-         PlanningRecall::managePlanningUpdates($this->getType(), $this->getID(), 
+         PlanningRecall::managePlanningUpdates($this->getType(), $this->getID(),
                                                $this->fields["begin"]);
       }
 
@@ -531,7 +531,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       $interv = array();
 
       if ($DB->numrows($result)>0) {
-         for ($i=0 ; $data=$DB->fetch_array($result) ; $i++) {
+         for ($i=0 ; $data=$DB->fetch_assoc($result) ; $i++) {
             if ($item->getFromDB($data["id"])) {
                if ($parentitem->getFromDBwithData($item->fields[$parentitem->getForeignKeyField()],0)) {
                   $key = $data["begin"]."$$$".$i;
@@ -692,11 +692,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       $recall='';
       if (isset($val[getForeignKeyFieldForItemType($itemtype)])) {
          $pr = new PlanningRecall();
-         if ($pr->getFromDBForItemAndUser($val['itemtype'], 
-                                          $val[getForeignKeyFieldForItemType($itemtype)], 
+         if ($pr->getFromDBForItemAndUser($val['itemtype'],
+                                          $val[getForeignKeyFieldForItemType($itemtype)],
                                           Session::getLoginUserID())) {
             $recall = "<br><span class='b'>".sprintf(__('Recall on %s'), Html::convDateTime($pr->fields['when']))."<span>";
-         }         
+         }
       }
 
 
@@ -945,9 +945,9 @@ abstract class CommonITILTask  extends CommonDBTM {
       if (!empty($this->fields["begin"])) {
          echo "<tr class='tab_bg_1'><td>".__('Recall')."</td><td>";
          PlanningRecall::dropdown(array('itemtype' => $this->getType(),
-                                        'items_id' => $this->getID()));  
+                                        'items_id' => $this->getID()));
          echo "</td></tr>";
-      } 
+      }
 
       $this->showFormButtons($options);
 
@@ -1024,7 +1024,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          }
          echo "<th>" . __('Planning') . "</th></tr>\n";
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             if ($this->getFromDB($data['id'])) {
                $this->showInObjectSumnary($item, $rand, $showprivate);
             }

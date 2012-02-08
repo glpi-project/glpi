@@ -986,7 +986,7 @@ class Stat {
 
       $result = $DB->query($query);
       if ($result && $DB->numrows($result)>0) {
-         while ($row = $DB->fetch_array($result)) {
+         while ($row = $DB->fetch_assoc($result)) {
             $date = $row['date_unix'];
             //$visites = round($row['total_visites']);
             $entrees["$date"] = $row['total_visites'];

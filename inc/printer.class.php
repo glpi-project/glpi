@@ -212,7 +212,7 @@ class Printer  extends CommonDBTM {
          if ($DB->numrows($result)>0) {
             $contractitem = new Contract_Item();
 
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
                                         'itemtype'     => $this->getType(),
                                         'items_id'     => $this->fields['id']));
@@ -229,7 +229,7 @@ class Printer  extends CommonDBTM {
          if ($DB->numrows($result)>0) {
             $docitem = new Document_Item();
 
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype'     => $this->getType(),
                                    'items_id'     => $this->fields['id']));
@@ -251,7 +251,7 @@ class Printer  extends CommonDBTM {
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();
 
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $data['_no_auto_action'] = true;
                $conn->delete($data);
             }
@@ -683,7 +683,7 @@ class Printer  extends CommonDBTM {
 
       if ($DB->numrows($result_search) > 0) {
          //Printer already exists for this entity, get his ID
-         $data = $DB->fetch_array($result_search);
+         $data = $DB->fetch_assoc($result_search);
          $ID   = $data["id"];
 
          // restore software
@@ -729,7 +729,7 @@ class Printer  extends CommonDBTM {
                                                true);
 
       $res_printer = $DB->query($sql);
-      if ($printer = $DB->fetch_array($res_printer)) {
+      if ($printer = $DB->fetch_assoc($res_printer)) {
          $id = $printer["id"];
       } else {
          $input["name"]             = $name;

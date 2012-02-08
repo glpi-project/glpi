@@ -131,7 +131,7 @@ class SlaLevel extends RuleTicket {
                                            sprintf(__('%1$s = %2$s'), $sla->getTypeName(1),
                                                    $sla->getName()));
 
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                Session::addToNavigateListItems('SlaLevel', $data["id"]);
 
                echo "<tr class='tab_bg_2'>";

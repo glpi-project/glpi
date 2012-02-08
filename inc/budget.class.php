@@ -193,7 +193,7 @@ class Budget extends CommonDropdown{
 
          if ($DB->numrows($result)>0) {
             $docitem = new Document_Item();
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype'     => $this->getType(),
                                    'items_id'     => $this->fields['id']));
@@ -450,7 +450,7 @@ class Budget extends CommonDropdown{
       $found_types          = array();
 
       if ($DB->numrows($result)) {
-         while ($types = $DB->fetch_array($result)) {
+         while ($types = $DB->fetch_assoc($result)) {
             if (!($item = getItemForItemtype($types['itemtype']))) {
                continue;
             }
@@ -476,7 +476,7 @@ class Budget extends CommonDropdown{
 
             if ($result_infos = $DB->query($query_infos)) {
                //Store, for each entity, the budget spent
-               while ($values = $DB->fetch_array($result_infos)) {
+               while ($values = $DB->fetch_assoc($result_infos)) {
                   if (!isset($entities_values[$values['entities_id']])) {
                      $entities_values[$values['entities_id']] = 0;
                   }

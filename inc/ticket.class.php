@@ -2228,7 +2228,7 @@ class Ticket extends CommonITILObject {
                if ($DB->numrows($result)>0) {
                   $type_name = $item->getTypeName($nb);
 
-                  while ($data = $DB->fetch_array($result)) {
+                  while ($data = $DB->fetch_assoc($result)) {
                      $output = $data["name"];
                      if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
                         $output .= " (".$data['id'].")";
@@ -2269,7 +2269,7 @@ class Ticket extends CommonITILObject {
 
             $first = true;
             if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
                   if ($first) {
                      $first = false;
                   } else {
@@ -2303,7 +2303,7 @@ class Ticket extends CommonITILObject {
                         if (!isset($already_add[$itemtype])) {
                            $already_add[$itemtype] = array();
                         }
-                        while ($data = $DB->fetch_array($result)) {
+                        while ($data = $DB->fetch_assoc($result)) {
                            if (!in_array($data["id"],$already_add[$itemtype])) {
                               $output = '';
                               if (isset($data["name"])) {
@@ -2370,7 +2370,7 @@ class Ticket extends CommonITILObject {
                   $result = $DB->query($query);
                   if ($DB->numrows($result) > 0) {
                      $type_name = $item->getTypeName();
-                     while ($data=$DB->fetch_array($result)) {
+                     while ($data=$DB->fetch_assoc($result)) {
                         if (!in_array($data["id"],$already_add[$itemtype])) {
                            $output = $data["name"];
                            if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
@@ -2422,7 +2422,7 @@ class Ticket extends CommonITILObject {
                   if (!isset($already_add['Software'])) {
                      $already_add['Software'] = array();
                   }
-                  while ($data=$DB->fetch_array($result)) {
+                  while ($data=$DB->fetch_assoc($result)) {
                      if (!in_array($data["id"],$already_add['Software'])) {
                         $output = "$type_name - ".$data["name"]." (v. ".$data["version"].")".
                                   ($_SESSION["glpiis_ids_visible"]?" (".$data["id"].")":"");
@@ -2617,7 +2617,7 @@ class Ticket extends CommonITILObject {
 
       $i = 0;
       if ($DB->numrows($result)) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetch_assoc($result)) {
             $totalcost += self::trackingTotalCost($data["actiontime"], $data["cost_time"],
                                                   $data["cost_fixed"], $data["cost_material"]);
          }

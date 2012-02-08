@@ -152,7 +152,7 @@ class XML {
          fputs($fp, "   </fields>\n");
          // And NOW the Data ...
          fputs($fp, "   <rows>\n");
-         while ($row = $DB->fetch_array($result)) {
+         while ($row = $DB->fetch_row($result)) {
             fputs($fp, "      <row>\n");
             for ($j=0 ; $j<$i ; $j++) {
                $FieldName = "";   // Name of TAG

@@ -477,7 +477,7 @@ abstract class CommonDropdown extends CommonDBTM {
                         if (!function_exists('OcsServer::mergeOcsArray')) {
                            include_once (GLPI_ROOT . "/inc/ocsng.function.php");
                         }
-                        while ($data=$DB->fetch_array($result)) {
+                        while ($data=$DB->fetch_assoc($result)) {
                            OcsServer::mergeOcsArray($data['id'],array($field),"computer_update");
                         }
                      }

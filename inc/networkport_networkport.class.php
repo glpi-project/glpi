@@ -151,7 +151,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
                          WHERE `networkports_id` = '$npdev' ";
                $DB->query($query);
 
-               while ($data = $DB->fetch_array($result)) {
+               while ($data = $DB->fetch_assoc($result)) {
                   $query = "INSERT INTO `glpi_networkports_vlans`
                                    (`networkports_id`, `vlans_id`)
                             VALUES ('$npdev', '".$data['vlans_id']."')";

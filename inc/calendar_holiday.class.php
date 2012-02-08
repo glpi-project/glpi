@@ -111,7 +111,7 @@ class Calendar_Holiday extends CommonDBRelation {
                                         sprintf(__('%1$s = %2$s'), $calendar->getTypeName(1),
                                                 $calendar->fields["name"]));
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             Session::addToNavigateListItems('Holiday', $data["id"]);
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";

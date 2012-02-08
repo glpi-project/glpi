@@ -435,10 +435,10 @@ class NetworkPort extends CommonDBChild {
 
             if ($number_port != 0) {
                $is_active_network_port = true;
-               
+
                $table = new HTMLTable();
                $save_canedit = $canedit;
-               
+
                if (!empty($portType)) {
                   //TRANS: %1$s is the type name, %2$s is the port type, %3$d is the port's number
                   $name = sprintf(__('%1$s (%2$s): %3$d'), self::getTypeName($number_port),
@@ -464,7 +464,7 @@ class NetworkPort extends CommonDBChild {
                   call_user_func_array(array($portType, 'getInstantiationHTMLTableHeaders'),
                                        array(&$table, 'Name'));
                }
-               
+
                while ($devid = $DB->fetch_row($result)) {
                   $netport->getFromDB(current($devid));
                   // This is added by HTMLTable
@@ -533,7 +533,7 @@ class NetworkPort extends CommonDBChild {
          Html::closeArrowMassives($actions);
          echo "</form>";
       }
-      
+
    }
 
 
@@ -830,7 +830,7 @@ class NetworkPort extends CommonDBChild {
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
 
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetch_assoc($result)) {
 
             $np->getFromDB($data["id"]);
             unset($np->fields["id"]);

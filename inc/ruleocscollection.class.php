@@ -127,7 +127,7 @@ class RuleOcsCollection extends RuleCollection {
 
          //May have more than one line : for example in case of multiple network cards
          if ($DBocs->numrows($result) > 0) {
-            while ($datas = $DBocs->fetch_array($result)) {
+            while ($datas = $DBocs->fetch_assoc($result)) {
                foreach ($fields as $field) {
                   if ($field != "OCS_SERVER" && isset($datas[$field])) {
                      $ocs_datas[$field][] = $datas[$field];

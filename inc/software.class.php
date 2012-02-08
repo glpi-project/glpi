@@ -160,7 +160,7 @@ class Software extends CommonDBTM {
          if ($DB->numrows($result) > 0) {
             $contractitem = new Contract_Item();
 
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
                                         'itemtype'     => $this->getType(),
                                         'items_id'     => $this->fields['id']));
@@ -176,7 +176,7 @@ class Software extends CommonDBTM {
 
          if ($DB->numrows($result) > 0) {
             $docitem = new Document_Item();
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype'     => $this->getType(),
                                    'items_id'     => $this->fields['id']));
@@ -197,7 +197,7 @@ class Software extends CommonDBTM {
       if ($result2 = $DB->query($query2)) {
          if ($DB->numrows($result2)) {
             $lic = new SoftwareLicense();
-            while ($data = $DB->fetch_array($result2)) {
+            while ($data = $DB->fetch_assoc($result2)) {
                $lic->delete(array("id" => $data["id"]));
             }
          }
@@ -620,7 +620,7 @@ class Software extends CommonDBTM {
                                                true);
 
       $res_soft = $DB->query($sql);
-      if ($soft = $DB->fetch_array($res_soft)) {
+      if ($soft = $DB->fetch_assoc($res_soft)) {
          $id = $soft["id"];
       } else {
          $input["name"]                = $name;
@@ -668,7 +668,7 @@ class Software extends CommonDBTM {
 
       if ($DB->numrows($result_search) > 0) {
          //Software already exists for this entity, get his ID
-         $data = $DB->fetch_array($result_search);
+         $data = $DB->fetch_assoc($result_search);
          $ID   = $data["id"];
 
          // restore software

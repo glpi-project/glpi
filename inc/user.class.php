@@ -2155,7 +2155,7 @@ class User extends CommonDBTM {
                $result = $DB->query($query);
 
                if ($DB->numrows($result)) {
-                  while ($data=$DB->fetch_array($result)) {
+                  while ($data=$DB->fetch_assoc($result)) {
                         $users[$data["id"]] = $data["id"];
                   }
                }
@@ -2531,7 +2531,7 @@ class User extends CommonDBTM {
       if ($number > 0) {
          $first = true;
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             if ($first) {
                $first = false;
             } else {
@@ -2574,7 +2574,7 @@ class User extends CommonDBTM {
             $type_name = $item->getTypeName();
 
             if ($DB->numrows($result) > 0) {
-               while ($data = $DB->fetch_array($result)) {
+               while ($data = $DB->fetch_assoc($result)) {
                   $cansee = $item->can($data["id"],"r");
                   $link = $data["name"];
                   if ($cansee) {
@@ -2647,7 +2647,7 @@ class User extends CommonDBTM {
 
 
                if ($DB->numrows($result) >0) {
-                  while ($data = $DB->fetch_array($result)) {
+                  while ($data = $DB->fetch_assoc($result)) {
                      $cansee = $item->can($data["id"],"r");
                      $link = $data["name"];
                      if ($cansee) {

@@ -266,7 +266,7 @@ class Link extends CommonDBTM {
             $ipmac[0]['number'] = '';
          }
          if ($DB->numrows($result2)>0) {
-            while ($data2=$DB->fetch_array($result2)) {
+            while ($data2=$DB->fetch_assoc($result2)) {
                $ipmac[$data2['id']]['ip']     = $data2["ip"];
                $ipmac[$data2['id']]['mac']    = $data2["mac"];
                $ipmac[$data2['id']]['number'] = $data2["logical_number"];

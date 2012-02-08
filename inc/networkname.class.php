@@ -534,7 +534,7 @@ class NetworkName extends FQDNLabel {
       $address = new self();
 
       if ($DB->numrows($result) > 0) {
-         while ($line = $DB->fetch_array($result)) {
+         while ($line = $DB->fetch_assoc($result)) {
 
             if ($address->getFromDB($line["id"])) {
 

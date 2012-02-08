@@ -429,7 +429,7 @@ class Cartridge extends CommonDBTM {
 
       if ($result=$DB->query($query)) {
          $number = $DB->numrows($result);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetch_assoc($result)) {
             $date_in  = Html::convDate($data["date_in"]);
             $date_use = Html::convDate($data["date_use"]);
             $date_out = Html::convDate($data["date_out"]);
@@ -612,7 +612,7 @@ class Cartridge extends CommonDBTM {
       $pages_printed    = 0;
       $nb_pages_printed = 0;
 
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetch_assoc($result)) {
          $date_in  = Html::convDate($data["date_in"]);
          $date_use = Html::convDate($data["date_use"]);
          $date_out = Html::convDate($data["date_out"]);

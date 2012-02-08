@@ -269,6 +269,7 @@ class DBmysql {
 
    /**
     * Fetch array of the next row of a Mysql query
+    * Please prefer fetch_row or fetch_assoc
     *
     * @param $result MySQL result handler
     *
@@ -580,7 +581,7 @@ class DBmysql {
        $nb     = 0;
 
 
-       while ($line = $DB->fetch_array($result)) {
+       while ($line = $DB->fetch_row($result)) {
           $table = $line[0];
 
        // For big database to reduce delay of migration

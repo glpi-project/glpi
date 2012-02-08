@@ -678,7 +678,7 @@ class CronTask extends CommonDBTM{
       $nom    = addslashes($nom);
       $query  = "SELECT GET_LOCK('$nom', 0)";
       $result = $DB->query($query);
-      list($lock_ok) = $DB->fetch_array($result);
+      list($lock_ok) = $DB->fetch_row($result);
 
       if ($lock_ok) {
          self::$lockname = $nom;

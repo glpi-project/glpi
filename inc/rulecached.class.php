@@ -103,7 +103,7 @@ class RuleCached extends Rule {
       $res_count = $DB->query($query);
       $this->showCacheRuleHeader();
 
-      while ($datas = $DB->fetch_array($res_count)) {
+      while ($datas = $DB->fetch_assoc($res_count)) {
          echo "<tr>";
          $this->showCacheRuleDetail($datas);
          echo "</tr>\n";

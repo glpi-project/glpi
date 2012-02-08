@@ -950,7 +950,7 @@ class Contract extends CommonDBTM {
                       AND `glpi_contracts_suppliers`.`contracts_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
       $out = "";
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetch_assoc($result)) {
          $out .= Dropdown::getDropdownName("glpi_suppliers", $data['id'])."<br>";
       }
       return $out;
@@ -1380,7 +1380,7 @@ class Contract extends CommonDBTM {
          echo "<option value='-1'>".Dropdown::EMPTY_VALUE."</option>";
       }
       $prev = -1;
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetch_assoc($result)) {
          if ($p['nochecklimit']
              || $data["max_links_allowed"]==0
              || $data["max_links_allowed"]>countElementsInTable("glpi_contracts_items",

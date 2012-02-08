@@ -96,7 +96,7 @@ class State extends CommonTreeDropdown {
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result)>0) {
-                     while ($data=$DB->fetch_array($result)) {
+                     while ($data=$DB->fetch_assoc($result)) {
                         $states[$data["states_id"]][$itemtype] = $data["cpt"];
                      }
                   }
@@ -146,7 +146,7 @@ class State extends CommonTreeDropdown {
          }
          echo "<td class='numerique b'>$tot</td></tr>";
 
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetch_assoc($result)) {
             $tot = 0;
             echo "<tr class='tab_bg_2'><td class='b'>";
             echo "<a href='".$CFG_GLPI['root_doc']."/front/states.php?reset=reset&amp;contains[0]=".

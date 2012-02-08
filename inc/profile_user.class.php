@@ -149,7 +149,7 @@ class Profile_User extends CommonDBTM {
       $result = $DB->query($query);
 
       if ($DB->numrows($result) >0) {
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
 
@@ -266,7 +266,7 @@ class Profile_User extends CommonDBTM {
                                         sprintf(__('%1$s = %2$s'), $entity->getTypeName(1),
                                                 $entity->getName()));
 
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetch_assoc($result)) {
             echo "<tr><th colspan='$headerspan'>".sprintf(__('Profile: %s'), $data["name"]);
             echo "</th></tr>";
 
@@ -289,7 +289,7 @@ class Profile_User extends CommonDBTM {
             if ($DB->numrows($result2)>0) {
                $i = 0;
 
-               while ($data2=$DB->fetch_array($result2)) {
+               while ($data2=$DB->fetch_assoc($result2)) {
                   Session::addToNavigateListItems('User',$data2["id"]);
 
                   if ($i%$nb_per_line==0) {
@@ -400,7 +400,7 @@ class Profile_User extends CommonDBTM {
          if ($DB->numrows($result)!=0) {
             $temp = -1;
 
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                if ($data["entity"]!=$temp) {
 
                   while ($i%$nb_per_line!=0) {

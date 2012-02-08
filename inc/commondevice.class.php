@@ -179,7 +179,7 @@ abstract class CommonDevice extends CommonDropdown {
 
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
-         $line = $DB->fetch_array($result);
+         $line = $DB->fetch_assoc($result);
          return $line['id'];
       }
       return $this->add($input);

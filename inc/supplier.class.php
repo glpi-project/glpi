@@ -371,7 +371,7 @@ class Supplier extends CommonDBTM {
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
          sprintf(__('%1$s = %2$s'),$this->getTypeName(1), $this->getName()));
 
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetch_assoc($result)) {
             $ID                = $data["ID_ent"];
             $used[$data["id"]] = $data["id"];
             Session::addToNavigateListItems('Contact',$data["id"]);
@@ -631,7 +631,7 @@ class Supplier extends CommonDBTM {
       echo "</tr>";
 
       $used = array();
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetch_assoc($result)) {
          $cID        = $data["id"];
          $used[$cID] = $cID;
          $assocID    = $data["assocID"];

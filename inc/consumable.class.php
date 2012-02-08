@@ -399,7 +399,7 @@ class Consumable extends CommonDBTM {
 
       if ($result = $DB->query($query)) {
          $number = $DB->numrows($result);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetch_assoc($result)) {
             $date_in  = Html::convDate($data["date_in"]);
             $date_out = Html::convDate($data["date_out"]);
 
@@ -468,7 +468,7 @@ class Consumable extends CommonDBTM {
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $used[$data['itemtype'].'####'.$data['items_id']][$data["consumableitems_id"]]
                   = $data["count"];
             }
@@ -486,7 +486,7 @@ class Consumable extends CommonDBTM {
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $new[$data["consumableitems_id"]] = $data["count"];
             }
          }
@@ -499,7 +499,7 @@ class Consumable extends CommonDBTM {
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $types[$data["id"]] = $data["name"];
             }
          }
