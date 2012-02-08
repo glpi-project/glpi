@@ -4329,37 +4329,37 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">"._x('ticket', 'New')."</a></td>";
-      echo "<td>".$status["new"]."</td></tr>";
+      echo "<td class='numerique'>".$status["new"]."</td></tr>";
 
       $options['contains'][0]    = 'assign';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">".__('Processing (assigned)')."</a></td>";
-      echo "<td>".$status["assign"]."</td></tr>";
+      echo "<td class='numerique'>".$status["assign"]."</td></tr>";
 
       $options['contains'][0]    = 'plan';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">".__('Processing (planned)')."</a></td>";
-      echo "<td>".$status["plan"]."</td></tr>";
+      echo "<td class='numerique'>".$status["plan"]."</td></tr>";
 
       $options['contains'][0]   = 'waiting';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">".__('Pending')."</a></td>";
-      echo "<td>".$status["waiting"]."</td></tr>";
+      echo "<td class='numerique'>".$status["waiting"]."</td></tr>";
 
       $options['contains'][0]    = 'solved';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">".__('Solved')."</a></td>";
-      echo "<td>".$status["solved"]."</td></tr>";
+      echo "<td class='numerique'>".$status["solved"]."</td></tr>";
 
       $options['contains'][0]    = 'closed';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">".__('Closed')."</a></td>";
-      echo "<td>".$status["closed"]."</td></tr>";
+      echo "<td class='numerique'>".$status["closed"]."</td></tr>";
 
       echo "</table><br>";
    }
