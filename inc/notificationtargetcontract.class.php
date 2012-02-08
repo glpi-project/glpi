@@ -74,13 +74,15 @@ class NotificationTargetContract extends NotificationTarget {
          switch ($event) {
             case 'end':
                $tmp['##contract.time##'] = Infocom::getWarrantyExpir($contract["begin_date"],
-                                                                  $contract["duration"]);
+                                                                     $contract["duration"]);
                break;
+
             case 'notice':
                $tmp['##contract.time##'] = Infocom::getWarrantyExpir($contract["begin_date"],
-                                                                  $contract["duration"],
-                                                                  $contract["notice"]);
+                                                                     $contract["duration"],
+                                                                     $contract["notice"]);
                break;
+
             case 'periodicity':
             case 'periodicitynotice':
                $tmp['##contract.time##'] =  Html::convDate($contract["alert_date"]);
@@ -96,14 +98,19 @@ class NotificationTargetContract extends NotificationTarget {
          case 'end':
             $this->datas['##lang.contract.time##'] = __('Contract expired since the');
             break;
+
          case 'notice':
             $this->datas['##lang.contract.time##'] =  __('Contract with notice since the');
             break;
+
          case 'periodicity':
-            $this->datas['##lang.contract.time##'] =  __('Contract reached the end of a period since the');
+            $this->datas['##lang.contract.time##']
+                        =  __('Contract reached the end of a period since the');
             break;
+
          case 'periodicitynotice':
-            $this->datas['##lang.contract.time##'] =  __('Contract with notice for the current period since the');
+            $this->datas['##lang.contract.time##']
+                        =  __('Contract with notice for the current period since the');
             break;
       }
 

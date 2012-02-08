@@ -1736,14 +1736,16 @@ class CommonDBTM extends CommonGLPI {
       }
       echo "</td>";
       echo "</tr>\n";
-      if ($params['canedit'] && count($params['addbuttons'])) {
+      if ($params['canedit']
+          && count($params['addbuttons'])) {
          echo "<tr>";
          if (($params['colspan']*2 - count($params['addbuttons'])) >0) {
-            echo "<td colspan='".($params['colspan']*2 - count($params['addbuttons']))."'>&nbsp;</td>";
+            echo "<td colspan='".($params['colspan']*2 - count($params['addbuttons']))."'>&nbsp;".
+                 "</td>";
          }
          foreach ($params['addbuttons'] as $key => $val) {
             echo "<td><input class='submit' type='submit' name='$key' value=\"".
-                Html::entities_deep($val)."\"></td>";
+                        Html::entities_deep($val)."\"></td>";
          }
          echo "</tr>";
       }
