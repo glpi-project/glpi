@@ -577,7 +577,7 @@ class DBmysql {
           $migration->setVersion('999'); // to force new ajax zone
           $migration->displayMessage("optimize - start");
        }
-       $result = $DB->list_tables("glpi_%");
+       $result = $DB->list_tables();
        $nb     = 0;
 
 
