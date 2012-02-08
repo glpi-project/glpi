@@ -56,6 +56,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       return false;
    }
 
+
    /**
     * Get the item associated with the current object.
     *
@@ -64,6 +65,7 @@ abstract class CommonITILTask  extends CommonDBTM {
     * @return object of the concerned item or false on error
    **/
    function getItem() {
+
       if ($item = getItemForItemtype($this->getItilObjectItemType())) {
          if ($item->getFromDB($this->fields[$item->getForeignKeyField()])) {
             return $item;
@@ -71,6 +73,7 @@ abstract class CommonITILTask  extends CommonDBTM {
      }
      return false;
    }
+
 
    /**
     * can read the parent ITIL Object ?
@@ -689,13 +692,15 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "</a>";
 
-      $recall='';
+      $recall = '';
       if (isset($val[getForeignKeyFieldForItemType($itemtype)])) {
          $pr = new PlanningRecall();
          if ($pr->getFromDBForItemAndUser($val['itemtype'],
                                           $val[getForeignKeyFieldForItemType($itemtype)],
                                           Session::getLoginUserID())) {
-            $recall = "<br><span class='b'>".sprintf(__('Recall on %s'), Html::convDateTime($pr->fields['when']))."<span>";
+            $recall = "<br><span class='b'>".sprintf(__('Recall on %s'),
+                                                     Html::convDateTime($pr->fields['when'])).
+                      "<span>";
          }
       }
 

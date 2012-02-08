@@ -650,7 +650,9 @@ class Reminder extends CommonDBTM {
       }
       echo "</td>";
       ///TODO find a solution to permit everybody to send recall
-      if ($canedit && $ID && $this->fields["is_planned"]) {
+      if ($canedit
+          && $ID
+          && $this->fields["is_planned"]) {
          echo "<td>".__('Recall')."</td><td>";
          PlanningRecall::dropdown(array('itemtype' =>'Reminder',
                                         'items_id' => $ID));
@@ -850,13 +852,14 @@ class Reminder extends CommonDBTM {
 
       echo $users_id;
       echo "</a>";
-      $recall='';
+      $recall = '';
       if (isset($val['reminders_id'])) {
          $pr = new PlanningRecall();
-         if ($pr->getFromDBForItemAndUser($val['itemtype'],
-                                          $val['reminders_id'],
+         if ($pr->getFromDBForItemAndUser($val['itemtype'], $val['reminders_id'],
                                           Session::getLoginUserID())) {
-            $recall = "<br><span class='b'>".sprintf(__('Recall on %s'), Html::convDateTime($pr->fields['when']))."<span>";
+            $recall = "<br><span class='b'>".sprintf(__('Recall on %s'),
+                                                     Html::convDateTime($pr->fields['when'])).
+                      "<span>";
          }
       }
 

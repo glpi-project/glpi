@@ -60,8 +60,8 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
 
    // Retrieve all the networks from the current network ports and add them to the IPNetworks
    $query = "SELECT `ip`, `id`, `entities_id`, ".
-                     ($itemtype=='NetworkEquipment'?"'NetworkEquipment' AS itemtype":"`itemtype`").
-                     ", ".($itemtype=='NetworkEquipment'?"`id` AS items_id":"`items_id`")."
+                     ($itemtype=='NetworkEquipment'?"'NetworkEquipment' AS itemtype":"`itemtype`").",
+                     ".($itemtype=='NetworkEquipment'?"`id` AS items_id":"`items_id`")."
              FROM `$itemtable`
              WHERE `ip` <> ''";
 
@@ -1185,40 +1185,38 @@ function update083to084() {
    foreach ($from_to as $from => $to) {
       // Check if notifications already exists
       if (countElementsInTable('glpi_notifications',
-                              "`itemtype` = 'Contract'
-                                 AND `event` = '$to'")==0) {
+                               "`itemtype` = 'Contract' AND `event` = '$to'")==0) {
       // No notifications duplicate all
 
          $query = "SELECT *
-                  FROM `glpi_notifications`
-                  WHERE `itemtype` = 'Contract'
-                        AND `event` = '$from'";
+                   FROM `glpi_notifications`
+                   WHERE `itemtype` = 'Contract'
+                         AND `event` = '$from'";
          foreach ($DB->request($query) as $notif) {
             $query = "INSERT INTO `glpi_notifications`
-                           (`name`, `entities_id`, `itemtype`, `event`, `mode`,
-                           `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
-                           `date_mod`)
-                     VALUES ('".addslashes($notif['name'])." Periodicity',
-                              '".$notif['entities_id']."', 'Contract',
-                              '$to', '".$notif['mode']."',
+                             (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                              `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
+                              `date_mod`)
+                      VALUES ('".addslashes($notif['name'])." Periodicity',
+                              '".$notif['entities_id']."', 'Contract', '$to', '".$notif['mode']."',
                               '".$notif['notificationtemplates_id']."',
                               '".addslashes($notif['comment'])."', '".$notif['is_recursive']."',
                               '".$notif['is_active']."', NOW());";
-            $DB->queryOrDie($query, "0.84 insert contract $to notification");
+            $DB->queryOrDie($query, "0.84 insert contract ".$to." notification");
             $newID  = $DB->insert_id();
             $query2 = "SELECT *
-                     FROM `glpi_notificationtargets`
-                     WHERE `notifications_id` = '".$notif['id']."'";
+                       FROM `glpi_notificationtargets`
+                       WHERE `notifications_id` = '".$notif['id']."'";
             foreach ($DB->request($query2) as $target) {
                $query = "INSERT INTO `glpi_notificationtargets`
-                              (`notifications_id`, `type`, `items_id`)
-                        VALUES ($newID, '".$target['type']."', '".$target['items_id']."')";
-               $DB->queryOrDie($query, "0.84 insert targets for ĉontract $to notification");
+                                (`notifications_id`, `type`, `items_id`)
+                         VALUES ('".$newID."', '".$target['type']."', '".$target['items_id']."')";
+               $DB->queryOrDie($query, "0.84 insert targets for ĉontract ".$to." notification");
             }
          }
       }
    }
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'planing recalls'));
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'planning recalls'));
 
    if (!TableExists('glpi_planningrecalls')) {
       $query = "CREATE TABLE `glpi_planningrecalls` (

@@ -219,12 +219,12 @@ class Contract extends CommonDBTM {
                             array(0 => __('Unlimited')));
       echo "</td>";
 
-      if (Entity::getUsedConfig("use_contracts_alert",$this->fields["entities_id"])) {
-         echo "<td>".__('Email Alarms')."</td>";
+      if (Entity::getUsedConfig("use_contracts_alert", $this->fields["entities_id"])) {
+         echo "<td>".__('Email alarms')."</td>";
          echo "<td>";
 
          self::dropdownAlert(array('name'  => "alert",
-                                 'value' => $this->fields["alert"]));
+                                   'value' => $this->fields["alert"]));
          Alert::displayLastAlert(__CLASS__, $ID);
          echo "</td>";
       } else {
@@ -1185,6 +1185,7 @@ class Contract extends CommonDBTM {
                      case 'notice' :
                         $contract_messages[$type][$entity] = __('Contract entered in notice time:')."<br>";
                         break;
+
                      case 'end' :
                         $contract_messages[$type][$entity] = __('Contract ended:')."<br>";
                         break;
@@ -1198,15 +1199,17 @@ class Contract extends CommonDBTM {
          $query_periodicity = "SELECT `glpi_contracts`.*
                                FROM `glpi_contracts`
                                WHERE `glpi_contracts`.`alert` & ".pow(2,Alert::PERIODICITY)." > '0'
-                                 AND `glpi_contracts`.`entities_id` = '".$entity."' ";
+                                     AND `glpi_contracts`.`entities_id` = '".$entity."' ";
 
          // Foreach ones :
          foreach ($DB->request($query_periodicity) as $data) {
             $entity = $data['entities_id'];
             // Compute end date + 12 month : do not send alerts after
-            $end_alert = date('Y-m-d', strtotime($data['begin_date']." +".($data['duration']+12)." month"));
-            if (!empty($data['begin_date']) && $data['periodicity']
-               && $end_alert > date('Y-m-d')) {
+            $end_alert = date('Y-m-d',
+                              strtotime($data['begin_date']." +".($data['duration']+12)." month"));
+            if (!empty($data['begin_date'])
+                && $data['periodicity']
+                && $end_alert > date('Y-m-d')) {
                $todo = array('periodicity' => Alert::PERIODICITY);
                if ($data['alert']&pow(2,Alert::NOTICE)) {
                   $todo['periodicitynotice'] = Alert::NOTICE;
@@ -1218,12 +1221,16 @@ class Contract extends CommonDBTM {
                }
                // compute next alert date based on already send alerts (or not)
                foreach ($todo as $type => $event) {
-                  $next_alerts[$type] = date('Y-m-d', strtotime($data['begin_date']." -".($before)." day"));
+                  $next_alerts[$type] = date('Y-m-d',
+                                             strtotime($data['begin_date']." -".($before)." day"));
                   if ($type==Alert::NOTICE) {
-                     $next_alerts[$type] = date('Y-m-d', strtotime($next_alerts[$type]." -".($data['notice'])." month"));
+                     $next_alerts[$type]
+                           = date('Y-m-d',
+                                  strtotime($next_alerts[$type]." -".($data['notice'])." month"));
                   }
 
-                  $today_limit = date('Y-m-d', strtotime(date('Y-m-d')." -".($data['periodicity'])." month"));
+                  $today_limit = date('Y-m-d',
+                                      strtotime(date('Y-m-d')." -" .($data['periodicity'])." month"));
 
                   // Init previous by begin date if not set
                   if (empty($previous_alerts[$type])) {
@@ -1232,15 +1239,19 @@ class Contract extends CommonDBTM {
 
                   while ($next_alerts[$type] < $previous_alerts[$type]
                         && $next_alerts[$type] < $end_alert) {
-                     $next_alerts[$type] = date('Y-m-d', strtotime($next_alerts[$type]." +".($data['periodicity'])." month"));
+                     $next_alerts[$type]
+                        = date('Y-m-d',
+                               strtotime($next_alerts[$type]." +".($data['periodicity'])." month"));
                   }
 
                   // If this date is passed : clean alerts and send again
                   if ($next_alerts[$type] <= date('Y-m-d')) {
-                     $alert = new Alert();
+                     $alert            = new Alert();
                      $alert->clear(__CLASS__, $data['id'], $event);
-                     $real_alert_date = date('Y-m-d', strtotime($next_alerts[$type]." +".($before)." day"));
-                     $message = $data["name"].": ".Html::convDate($real_alert_date)."<br>\n";
+                     $real_alert_date  = date('Y-m-d',
+                                              strtotime($next_alerts[$type]." +".($before)." day"));
+                     $message          = sprintf(__('%1$s: %2$s')."<br>\n",
+                                                 $data["name"], Html::convDate($real_alert_date));
                      $data['alert_date'] = $real_alert_date;
                      $contract_infos[$type][$entity][$data['id']] = $data;
 
@@ -1249,6 +1260,7 @@ class Contract extends CommonDBTM {
                            $contract_messages[$type][$entity]
                                  = __('Contract entered in notice time for period:')."<br>";
                            break;
+
                         case 'periodicity' :
                            $contract_messages[$type][$entity] = __('Contract period ended:')."<br>";
                            break;
@@ -1267,23 +1279,22 @@ class Contract extends CommonDBTM {
          if (isset($contract_infos[$event]) && count($contract_infos[$event])) {
             foreach ($contract_infos[$event] as $entity => $contracts) {
                if (NotificationEvent::raiseEvent($event, new self(),
-                                                array('entities_id' => $entity,
-                                                      'contracts'   => $contracts))) {
-                  $message = $contract_messages[$event][$entity];
+                                                 array('entities_id' => $entity,
+                                                       'contracts'   => $contracts))) {
+                  $message     = $contract_messages[$event][$entity];
                   $cron_status = 1;
+                  $entityname  = Dropdown::getDropdownName("glpi_entities", $entity);
                   if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities",
-                                                         $entity).":  $message\n");
+                     $task->log(sprintf(__('%1$s: %2$s')."\n", $entityname, $message));
                      $task->addVolume(1);
                   } else {
-                     Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                                                                              $entity).
-                                                      ":  $message");
+                     Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'),
+                                                              $entityname, $message));
                   }
 
-                  $alert = new Alert();
-                  $input["itemtype"] = __CLASS__;
-                  $input["type"] = $type;
+                  $alert               = new Alert();
+                  $input["itemtype"]   = __CLASS__;
+                  $input["type"]       = $type;
                   foreach ($contracts as $id => $contract) {
                      $input["items_id"] = $id;
 
@@ -1503,15 +1514,12 @@ class Contract extends CommonDBTM {
    **/
    static function getAlertName($val=NULL) {
 
-      $tmp[0]                     = Dropdown::EMPTY_VALUE;
-      $tmp[pow(2, Alert::END)]    = __('End');
-      $tmp[pow(2, Alert::NOTICE)] = __('Notice');
-      $tmp[(pow(2, Alert::END) + pow(2, Alert::NOTICE))]
-                                  = __('End + Notice');
-      $tmp[pow(2, Alert::PERIODICITY)]
-                                  = __('Period end');
-      $tmp[pow(2, Alert::PERIODICITY) + pow(2, Alert::NOTICE)]
-                                  = __('Period end + Notice');
+      $tmp[0]                                                  = Dropdown::EMPTY_VALUE;
+      $tmp[pow(2, Alert::END)]                                 = __('End');
+      $tmp[pow(2, Alert::NOTICE)]                              = __('Notice');
+      $tmp[(pow(2, Alert::END) + pow(2, Alert::NOTICE))]       = __('End + Notice');
+      $tmp[pow(2, Alert::PERIODICITY)]                         = __('Period end');
+      $tmp[pow(2, Alert::PERIODICITY) + pow(2, Alert::NOTICE)] = __('Period end + Notice');
 
       if (is_null($val)) {
          return $tmp;

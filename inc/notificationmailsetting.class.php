@@ -167,7 +167,8 @@ class NotificationMailSetting extends CommonDBTM {
          echo " </td></tr>";
          if (!function_exists('mail')) {
              echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-             echo "<span class='red'>" . __('The PHP mail function is unknown or is not activated on your system.') .
+             echo "<span class='red'>" .
+                    __('The PHP mail function is unknown or is not activated on your system.') .
                   "</span><br>". __('The use of a SMTP is needed.') . "</td></tr>";
          }
 
@@ -184,8 +185,8 @@ class NotificationMailSetting extends CommonDBTM {
                                MAIL_SMTPTLS => __('SMTP+TLS'));
          Dropdown::showFromArray("smtp_mode", $mail_methods,
                                  array('value' => $CFG_GLPI["smtp_mode"]));
-         echo "</td><td colspan='2' class='center'>&nbsp;";
-         echo "</td></tr>";
+         echo "</td><td colspan='2'>&nbsp;</td>";
+         echo "</tr>";
 
          echo "<tr class='tab_bg_2'><td >" . __('SMTP host') . "</td>";
          echo "<td><input type='text' name='smtp_host' size='40' value='".$CFG_GLPI["smtp_host"]."'>";
@@ -207,7 +208,7 @@ class NotificationMailSetting extends CommonDBTM {
       } else {
          echo "</tr>";
       }
-      $options['candel'] = false;
+      $options['candel']     = false;
       $options['addbuttons'] = array('test_smtp_send' => __('Send a test email to the administrator'));
       $this->showFormButtons($options);
 

@@ -47,7 +47,7 @@ class Alert extends CommonDBTM {
    const NOTICE      = 3;
    const NOTCLOSED   = 4;
    const ACTION      = 5;
-   const PERIODICITY = 6;   
+   const PERIODICITY = 6;
 
 
    function prepareInputForAdd($input) {
@@ -136,11 +136,11 @@ class Alert extends CommonDBTM {
       $p['max']   = 100;
       $p['step']  = 1;
       $p['toadd'] = array();
-      
+
       if (isset($options['inherit_parent']) && $options['inherit_parent']) {
          $p['toadd'][-2] = __('Inheritance of the parent entity');
       }
-      
+
       $never_string = __('Never');
       if (isset($options['never_string']) && $options['never_string']) {
          $never_string = $options['never_string'];
@@ -179,7 +179,10 @@ class Alert extends CommonDBTM {
       return false;
    }
 
+
    /**
+    * @since version 0.84
+    *
     * @param $itemtype  (default '')
     * @param $items_id  (default '')
     * @param $type      (default '')
@@ -198,6 +201,7 @@ class Alert extends CommonDBTM {
       }
       return false;
    }
+
 
    /**
     * @param $itemtype

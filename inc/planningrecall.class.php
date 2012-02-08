@@ -176,8 +176,8 @@ class PlanningRecall extends CommonDBTM {
     *    - itemtype : string itemtype
     *    - items_id : integer id of the item
     *    - users_id : integer id of the user (if not set used login user)
-    *    - value : integer preselected value for before_time
-    *    - field : string field used as time mark (default begin)
+    *    - value    : integer preselected value for before_time
+    *    - field    : string  field used as time mark (default begin)
     *
     * @return nothing (print out an HTML select box) / return false if mandatory fields are not ok
    **/
