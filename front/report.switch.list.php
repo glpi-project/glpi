@@ -66,7 +66,7 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
       echo "<th>".__('MAC address')."</th>";
       echo "<th>".__('Connected devices')."</th></tr>\n";
 
-      while ($ligne = $DB->fetch_array($result)) {
+      while ($ligne = $DB->fetch_assoc($result)) {
          $switch            = $ligne['switch'];
          $port              = $ligne['port'];
          $nw                = new NetworkPort_NetworkPort();

@@ -70,7 +70,7 @@ if (isset($_POST["locations_id"]) && $_POST["locations_id"]) {
       echo "<th>".__('MAC address')."</th>";
       echo "<th>".__('Connected devices')."</th></tr>";
 
-      while ($ligne = $DB->fetch_array($result)) {
+      while ($ligne = $DB->fetch_assoc($result)) {
          $lieu              = $ligne["completename"];
          $prise             = $ligne['prise'];
          $port              = $ligne['port'];

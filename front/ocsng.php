@@ -61,7 +61,7 @@ if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
    $result = $DB->query($sql);
 
    if ($DB->numrows($result) > 0) {
-      $datas = $DB->fetch_array($result);
+      $datas = $DB->fetch_assoc($result);
       $name = $datas["name"];
    }
    echo "<div class='center'>";

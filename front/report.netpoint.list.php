@@ -78,7 +78,7 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
       echo "<th>".__('Connected devices')."</th>";
       echo "</tr>";
 
-      while ($ligne = $DB->fetch_array($result)) {
+      while ($ligne = $DB->fetch_assoc($result)) {
          $prise             = $ligne['prise'];
          $ID                = $ligne['id'];
          $lieu              = Dropdown::getDropdownName("glpi_locations",$ID);
