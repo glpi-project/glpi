@@ -173,7 +173,7 @@ class State extends CommonTreeDropdown {
          $tot = 0;
 
          foreach ($state_type as $itemtype) {
-            echo "<td class='center b'>".$total[$itemtype]."</td>";
+            echo "<td class='numerique b'>".$total[$itemtype]."</td>";
             $tot += $total[$itemtype];
          }
 
