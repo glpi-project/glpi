@@ -126,7 +126,7 @@ if (isset($query) && count($query)) {
          echo "<th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
          echo "</tr>";
-         while ( $data = $DB->fetch_array($result)) {
+         while ( $data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'>";
             if ($data['itemname']) {
                echo "<td> ".$data['itemname']." </td>";

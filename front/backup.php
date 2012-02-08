@@ -87,7 +87,7 @@ function xmlbackup() {
 
    $result = $DB->list_tables();
    $i      = 0;
-   while ($line = $DB->fetch_array($result)) {
+   while ($line = $DB->fetch_row($result)) {
       // on se limite aux tables prefixees _glpi
       if (strstr($line[0],"glpi_")) {
          $table = $line[0];
@@ -219,7 +219,7 @@ function get_def($DB, $table) {
    $query  = "SHOW CREATE TABLE `$table`";
    $result = $DB->query($query);
    $DB->query("SET SESSION sql_quote_show_create = 1");
-   $row = $DB->fetch_array($result);
+   $row = $DB->fetch_row($result);
 
    $def .= preg_replace("/AUTO_INCREMENT=\w+/i","",$row[1]);
    $def .= ";";
@@ -335,7 +335,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
 
    $result = $DB->list_tables();
    $numtab = 0;
-   while ($t = $DB->fetch_array($result)) {
+   while ($t = $DB->fetch_row($result)) {
       // on se  limite aux tables prefixees _glpi
       if (strstr($t[0],"glpi_")) {
          $tables[$numtab] = $t[0];

@@ -113,7 +113,7 @@ if (isset($_POST["send"])) {
                 ORDER BY `name`";
       $result = $DB->query($query);
 
-      while ($ligne = $DB->fetch_array($result)) {
+      while ($ligne = $DB->fetch_assoc($result)) {
          $Comp_num = $ligne['id'];
          $Contact  = $ligne['contact'];
          $Computer = $ligne['name'];
@@ -139,7 +139,7 @@ if (isset($_POST["send"])) {
              ORDER BY `name`";
    $result = $DB->query($query);
 
-   while ($ligne = $DB->fetch_array($result)) {
+   while ($ligne = $DB->fetch_assoc($result)) {
       $Comp_num = $ligne['id'];
       $Computer = $ligne['name'];
       echo " <tr class='tab_find' onClick=\"fillidfield('Software',".$Comp_num.")\">";

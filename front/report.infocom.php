@@ -131,7 +131,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
       $valeurnettegraph   = array();
       $valeurgraph        = array();
 
-      while ($line=$DB->fetch_array($result)) {
+      while ($line=$DB->fetch_assoc($result)) {
          if (isset($line["is_global"]) && $line["is_global"]
              && $item->getFromDB($line["items_id"])) {
             $line["value"] *= Computer_Item::countForItem($item);
