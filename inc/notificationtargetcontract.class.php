@@ -86,7 +86,7 @@ class NotificationTargetContract extends NotificationTarget {
                $tmp['##contract.time##'] =  Html::convDate($contract["alert_date"]);
                break;
          }
-      
+
          $tmp['##contract.url##']   = urldecode($CFG_GLPI["url_base"].
                                                 "/index.php?redirect=contract_".$id);
          $this->datas['contracts'][] = $tmp;
@@ -121,7 +121,7 @@ class NotificationTargetContract extends NotificationTarget {
 
       $tags = array('contract.action'  => _n('Event', 'Events', 1),
                     'contract.name'    => __('Name'),
-                    'contract.number'  => __('Number'),
+                    'contract.number'  => _x('Phone', 'Number'),
                     'contract.type'    => __('Type'),
                     'contract.entity'  => __('Entity'));
 

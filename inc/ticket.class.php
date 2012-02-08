@@ -1239,7 +1239,7 @@ class Ticket extends CommonITILObject {
          if (isset($this->input["_rule_process"])) {
             $values['_rule_process'] = $this->input["_rule_process"];
          }
-         
+
          // Cron or rule process of hability to do
          if (Session::isCron()
              || isset($this->input["_rule_process"])
@@ -3568,7 +3568,7 @@ class Ticket extends CommonITILObject {
          echo "&nbsp;<img title='"._sx('button', 'Update')."' alt='"._sx('button', 'Update')."'
                      onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
                      class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";
-      }                     
+      }
       echo $tt->getEndHiddenFieldText('itemtype');
       echo "</th>";
       echo "<td rowspan='2'>";
@@ -4323,7 +4323,7 @@ class Ticket extends CommonITILObject {
                 "\">".__('Ticket followup')."</a></th></tr>";
       }
       echo "</th></tr>";
-      echo "<tr><th>"._n('Ticket','Tickets',2)."</th><th>".__('Number')."</th></tr>";
+      echo "<tr><th>"._n('Ticket','Tickets',2)."</th><th>"._x('Quantity', 'Number')."</th></tr>";
 
       $options['contains'][0]    = 'new';
       echo "<tr class='tab_bg_2'>";
@@ -5197,7 +5197,7 @@ class Ticket extends CommonITILObject {
                    LEFT JOIN `glpi_ticketsatisfactions`
                        ON `glpi_ticketsatisfactions`.`tickets_id` = `glpi_tickets`.`id`
                    WHERE `glpi_tickets`.`entities_id` = '$entity'
-                         AND `glpi_tickets`.`is_deleted` = 0                   
+                         AND `glpi_tickets`.`is_deleted` = 0
                          AND `glpi_tickets`.`status` = 'closed'
                          AND `glpi_tickets`.`closedate` > '$max_closedate'
                          AND ADDDATE(`glpi_tickets`.`closedate`, INTERVAL $delay DAY)<=NOW()
