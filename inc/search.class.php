@@ -2751,9 +2751,9 @@ class Search {
                $regs[1] .= $regs[2];
                return $link." (INET_ATON(`$table`.`$field`) ".$regs[1]." INET_ATON('".$regs[3]."')) ";
             }
-
 //             return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
             break;
+
          case "glpi_tickets.status" :
          case "glpi_problems.status" :
          case "glpi_changes.status" :

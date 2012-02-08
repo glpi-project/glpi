@@ -140,7 +140,7 @@ if (isset($_POST["action"])
                         if ($instantiation->add($input)) {
                            $item->delete(array('id' => $key));
                         } else {
-                           $nbko++;                        
+                           $nbko++;
                         }
                      } else {
                         $nbko++;
@@ -149,11 +149,12 @@ if (isset($_POST["action"])
                      $nbnoright++;
                   }
                }
-            }         
+            }
          } else {
              $nbko++;
          }
          break;
+
       case "connect_to_computer" :
          if (isset($_POST["connect_item"]) && $_POST["connect_item"]) {
             $conn = new Computer_Item();

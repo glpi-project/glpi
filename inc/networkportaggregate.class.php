@@ -70,7 +70,8 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
 
       if (isset($this->fields['networkports_id_list'])
           && is_string($this->fields['networkports_id_list'])) {
-         $this->fields['networkports_id_list'] = importArrayFromDB($this->fields['networkports_id_list']);
+         $this->fields['networkports_id_list']
+                        = importArrayFromDB($this->fields['networkports_id_list']);
       }
 
       echo "<tr class='tab_bg_1'>";
@@ -103,7 +104,8 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
 
       if (isset($this->fields['networkports_id_list'])
           && is_string($this->fields['networkports_id_list'])) {
-         $this->fields['networkports_id_list'] = importArrayFromDB($this->fields['networkports_id_list']);
+         $this->fields['networkports_id_list']
+                        = importArrayFromDB($this->fields['networkports_id_list']);
       }
 
       $table->addElement($this->getInstantiationNetworkPortHTMLTable(), "Origin", $this->getID(),
