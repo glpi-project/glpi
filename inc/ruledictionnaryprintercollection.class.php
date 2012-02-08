@@ -118,7 +118,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
       $nb   = $DB->numrows($res) + $offset;
       $step = ($nb > 1000 ? 50 : ($nb > 20 ? floor($DB->numrows($res) / 20) : 1));
 
-      while ($input = $DB->fetch_array($res)) {
+      while ($input = $DB->fetch_assoc($res)) {
          if (!($i % $step)) {
             if (isCommandLine()) {
                //TRANS: %1$s is a date, %2$s is a row, %3$s is total row, %4$s is memory
@@ -153,7 +153,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
 
             if ($DB->numrows($res_printer) > 0) {
                //Store all the printer's IDs in an array
-               while ($result = $DB->fetch_array($res_printer)) {
+               while ($result = $DB->fetch_assoc($res_printer)) {
                   $IDs[] = $result["id"];
                }
                //Replay dictionnary on all the printers
@@ -227,7 +227,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
 
          $res_printer = $DB->query($sql);
          if ($DB->numrows($res_printer)) {
-            $printer = $DB->fetch_array($res_printer);
+            $printer = $DB->fetch_assoc($res_printer);
             //For each printer
             $this->replayDictionnaryOnOnePrinter($new_printers, $res_rule, $printer, $delete_ids);
          }

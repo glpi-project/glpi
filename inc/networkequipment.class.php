@@ -116,7 +116,7 @@ class NetworkEquipment extends CommonDBTM {
 
          if ($DB->numrows($result)>0) {
             $contractitem = new Contract_Item();
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
                                         'itemtype'     => $this->getType(),
                                         'items_id'     => $this->fields['id']));
@@ -132,7 +132,7 @@ class NetworkEquipment extends CommonDBTM {
 
          if ($DB->numrows($result)>0) {
             $docitem = new Document_Item();
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype'     => $this->getType(),
                                    'items_id'     => $this->fields['id']));

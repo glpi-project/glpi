@@ -158,7 +158,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          $nb   = $DB->numrows($res) + $offset;
          $step = ($nb > 1000 ? 50 : ($nb > 20 ? floor($DB->numrows($res) / 20) : 1));
 
-         while ($input = $DB->fetch_array($res)) {
+         while ($input = $DB->fetch_assoc($res)) {
             if (!($i % $step)) {
                if (isCommandLine()) {
                   printf(__('%1$s - replay rules on existing database: %2$s/%3$s (%4$s Mio)')."\n",
@@ -194,7 +194,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
                if ($DB->numrows($res_soft) > 0) {
                   //Store all the software's IDs in an array
-                  while ($result = $DB->fetch_array($res_soft)) {
+                  while ($result = $DB->fetch_assoc($res_soft)) {
                      $IDs[] = $result["id"];
                   }
                   //Replay dictionnary on all the softwares
@@ -255,7 +255,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
                                        AND `gs`.`id` = '$ID'");
 
          if ($DB->numrows($res_soft)) {
-            $soft = $DB->fetch_array($res_soft);
+            $soft = $DB->fetch_assoc($res_soft);
             //For each software
             $this->replayDictionnaryOnOneSoftware($new_softs, $res_rule, $ID,
                                                   (isset($res_rule['new_entities_id'])
@@ -349,7 +349,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
                             FROM `glpi_softwareversions`
                             WHERE `softwares_id` = '$ID'");
 
-      while ($version = $DB->fetch_array($result)) {
+      while ($version = $DB->fetch_assoc($result)) {
          $input["version"] = addslashes($version["name"]);
          $old_version_name = $input["version"];
 
@@ -393,7 +393,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
                           ORDER BY `cpt`");
 
          $software = new Software();
-         while ($soft = $DB->fetch_array($res_countsoftinstall)) {
+         while ($soft = $DB->fetch_assoc($res_countsoftinstall)) {
             $software->putInTrash($soft["id"], __('Software deleted by GLPI dictionary rules'));
          }
       }

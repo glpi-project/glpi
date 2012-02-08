@@ -109,7 +109,7 @@ class Problem_Ticket extends CommonDBRelation{
                                                 $problem->fields["name"]));
 
          $i = 0;
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Ticket', $data["id"]);
             Ticket::showShort($data['id'], false, Search::HTML_OUTPUT, $i, $data['linkID']);
@@ -185,7 +185,7 @@ class Problem_Ticket extends CommonDBRelation{
                                                 $ticket->getTypeName(1), $ticket->fields["name"]));
 
          $i = 0;
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Problem', $data["id"]);
             Problem::showShort($data['id'], false, Search::HTML_OUTPUT, $i, $data['linkID']);

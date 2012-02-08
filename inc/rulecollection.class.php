@@ -229,7 +229,7 @@ class RuleCollection extends CommonDBTM {
          if ($result) {
             $this->RuleList->list = array();
 
-            while ($rule=$DB->fetch_array($result)) {
+            while ($rule=$DB->fetch_assoc($result)) {
                //For each rule, get a Rule object with all the criterias and actions
                $tempRule = $this->getRuleClass();
 
@@ -527,7 +527,7 @@ class RuleCollection extends CommonDBTM {
 
             if ($result2 = $DB->query($sql2)) {
                if ($DB->numrows($result2)==1) {
-                  list($other_ID,$new_rank) = $DB->fetch_array($result2);
+                  list($other_ID,$new_rank) = $DB->fetch_row($result2);
 
                   $rule = $this->getRuleClass();
                   return ($rule->update(array('id'      => $ID,
@@ -590,7 +590,7 @@ class RuleCollection extends CommonDBTM {
                    FROM `glpi_rules`
                    WHERE `sub_type` ='".$this->getRuleClassName()."' ";
          $result = $DB->query($query);
-         $ligne  = $DB->fetch_array($result);
+         $ligne  = $DB->fetch_assoc($result);
          $rank   = $ligne['maxi'];
 
       } else {
@@ -828,7 +828,7 @@ class RuleCollection extends CommonDBTM {
                                AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
                                AND `glpi_rules`.`sub_type` = '".$this->getRuleClassName()."'");
 
-      while ($data = $DB->fetch_array($res)) {
+      while ($data = $DB->fetch_assoc($res)) {
          $input[] = $data["criteria"];
       }
       return $input;

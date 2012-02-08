@@ -265,7 +265,7 @@ class NetworkAlias extends FQDNLabel {
             echo "\n<ul>";
          }
 
-         while ($line = $DB->fetch_array($result)) {
+         while ($line = $DB->fetch_assoc($result)) {
             if ($alias->getFromDB($line["id"])) {
                if ($fromForm) {
                   echo "<tr><td><a href='" . $alias->getLinkURL(). "'>";

@@ -1029,7 +1029,7 @@ class KnowbaseItem extends CommonDBTM {
             // Num of the row (1=header_line)
             $row_num = 1;
             for ($i=0 ; $i<$numrows_limit ; $i++) {
-               $data = $DB->fetch_array($result_limit);
+               $data = $DB->fetch_assoc($result_limit);
 
                Session::addToNavigateListItems('KnowbaseItem', $data["id"]);
                // Column num
@@ -1173,7 +1173,7 @@ class KnowbaseItem extends CommonDBTM {
       if ($number > 0) {
          echo "<table class='tab_cadrehov'>";
          echo "<tr><th>".$title."</th></tr>";
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_2'><td class='left'>";
             echo "<a ".($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".
                   $target."?id=".$data["id"]."\">".Html::resume_text($data["name"],80)."</a></td>".

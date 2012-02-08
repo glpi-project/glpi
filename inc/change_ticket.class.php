@@ -108,7 +108,7 @@ class Change_Ticket extends CommonDBRelation{
                                         sprintf(__('%1$s = %2$s'), $change->getTypeName(1),
                                                 $change->fields["name"]));
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Ticket', $data["id"]);
             echo "<tr class='tab_bg_1'>";
@@ -194,7 +194,7 @@ class Change_Ticket extends CommonDBRelation{
                                         sprintf(__('%1$s = %2$s'),
                                                 $ticket->getTypeName(1), $ticket->fields["name"]));
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Change', $data["id"]);
             echo "<tr class='tab_bg_1'>";

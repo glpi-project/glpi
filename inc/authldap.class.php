@@ -372,7 +372,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<td class='center b'>".__('List of LDAP directory replicates')."</td>".
               "<td class='center'></td></tr>";
 
-         while ($ldap_replicate = $DB->fetch_array($result)) {
+         while ($ldap_replicate = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'><td class='center' width='10'>";
             if (isset($_GET["select"]) && $_GET["select"] == "all") {
                $sel = "checked";
@@ -1403,7 +1403,7 @@ class AuthLDAP extends CommonDBTM {
 
             $res = $DB->query($sql);
             //If the group exists in DB -> unset it from the LDAP groups
-            while ($group = $DB->fetch_array($res)) {
+            while ($group = $DB->fetch_assoc($res)) {
                $glpi_groups[$group["name"]] = 1;
             }
             $ligne = 0;
@@ -1550,7 +1550,7 @@ class AuthLDAP extends CommonDBTM {
 
       if ($DB->numrows($result) == 1) {
          //If only one server, do not show the choose ldap server window
-         $ldap                    = $DB->fetch_array($result);
+         $ldap                    = $DB->fetch_assoc($result);
          $_SESSION["ldap_server"] = $ldap["id"];
          Html::redirect($_SERVER['PHP_SELF']);
       }
@@ -2681,7 +2681,7 @@ class AuthLDAP extends CommonDBTM {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)>0) {
-         while ($replicate = $DB->fetch_array($result)) {
+         while ($replicate = $DB->fetch_assoc($result)) {
             $replicates[] = array("id"   => $replicate["id"],
                                   "host" => $replicate["host"],
                                   "port" => $replicate["port"]);

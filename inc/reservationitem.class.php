@@ -302,7 +302,7 @@ class ReservationItem extends CommonDBTM {
                             `$itemtable`.`name`";
 
          if ($result=$DB->query($query)) {
-            while ($row=$DB->fetch_array($result)) {
+            while ($row=$DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'><td>";
                echo "<input type='checkbox' name='item[".$row["id"]."]' value='".$row["id"]."'>".
                     "</td>";

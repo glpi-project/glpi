@@ -728,7 +728,7 @@ class Reservation extends CommonDBChild {
 
          if ($DB->numrows($result)>0) {
             $m = new ReservationItem();
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $m->getFromDB($data['id']);
 
                if (!($item = getItemForItemtype($m->fields["itemtype"]))) {
@@ -790,7 +790,7 @@ class Reservation extends CommonDBChild {
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)>0) {
             echo "<table width='100%'>";
-            while ($row=$DB->fetch_array($result)) {
+            while ($row=$DB->fetch_assoc($result)) {
                echo "<tr>";
                $user->getFromDB($row["users_id"]);
                $display = "";

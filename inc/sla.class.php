@@ -101,7 +101,7 @@ class SLA extends CommonDBTM {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $slalevel = new SlaLevel();
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $slalevel->delete($data);
             }
          }
@@ -115,7 +115,7 @@ class SLA extends CommonDBTM {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $ticket = new Ticket();
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $ticket->deleteSLA($data['id']);
             }
          }

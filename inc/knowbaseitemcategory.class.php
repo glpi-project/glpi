@@ -131,7 +131,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
 
             if ($result=$DB->query($query)) {
                if ($DB->numrows($result)) {
-                  while ($data=$DB->fetch_array($result)) {
+                  while ($data=$DB->fetch_assoc($result)) {
                      if (!in_array($data['knowbaseitemcategories_id'], $tmp)) {
                         $tmp[] = $data['knowbaseitemcategories_id'];
                         $tmp   = array_merge($tmp,
@@ -202,7 +202,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
 
          if ($DB->numrows($result)>0) {
             $i = 0;
-            while ($row=$DB->fetch_array($result)) {
+            while ($row=$DB->fetch_assoc($result)) {
                // on affiche les résultats sur trois colonnes
                if ($i%3==0) {
                   echo "<tr>";

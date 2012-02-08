@@ -412,7 +412,7 @@ class Contact extends CommonDBTM{
                                         sprintf(__('%1$s = %2$s'),
                                                 $this->getTypeName(1), $this->getName()));
 
-         while ($data= $DB->fetch_array($result)) {
+         while ($data= $DB->fetch_assoc($result)) {
             $ID = $data["id"];
             Session::addToNavigateListItems('Supplier', $data["entID"]);
             $used[$data["entID"]] = $data["entID"];

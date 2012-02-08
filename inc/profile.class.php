@@ -1910,7 +1910,7 @@ class Profile extends CommonDBTM {
 
       //New rule -> get the next free ranking
       if ($DB->numrows($res)) {
-         while ($data=$DB->fetch_array($res)) {
+         while ($data=$DB->fetch_assoc($res)) {
             $profiles[$data['id']] = $data['name'];
          }
       }

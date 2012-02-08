@@ -618,13 +618,13 @@ class Computer_Item extends CommonDBRelation{
                          AND `glpi_computers_items`.`itemtype` = '".$item->getType()."'";
          $result = $DB->query($query);
 
-         if ($data=$DB->fetch_array($result)) {
+         if ($data=$DB->fetch_assoc($result)) {
             // First one, keep the existing one
 
             // The others = clone the existing object
             unset($input['id']);
             $conn = new self();
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $temp = clone $item;
                unset($temp->fields['id']);
                if ($newID=$temp->add($temp->fields)) {

@@ -1894,7 +1894,7 @@ class Rule extends CommonDBTM {
             if ($DB->numrows($result)>0) {
                $input['is_active'] = 0;
 
-               while ($data = $DB->fetch_array($result)) {
+               while ($data = $DB->fetch_assoc($result)) {
                   $input['id'] = $data[$fieldid];
                   $ruleitem->update($input);
                }

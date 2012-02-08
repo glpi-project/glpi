@@ -75,7 +75,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
          $send              = array();
          $send["tablename"] = $this->item_table;
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             if (!($i % $step)) {
                if (isCommandLine()) {
                   //TRANS: %1$s is a row, %2$s is total rows
@@ -167,7 +167,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
          $step    = ($nb>20 ? floor($nb/20) : 1);
          $tocheck = array();
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             if (!($i % $step)) {
 
                if (isCommandLine()) {
@@ -237,7 +237,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                   if ($DB->numrows($result)) {
                      // Get compatible cartridge type
                      $carttype = array();
-                     while ($data=$DB->fetch_array($result)) {
+                     while ($data=$DB->fetch_assoc($result)) {
                         $carttype[] = $data['cartridgeitems_id'];
                      }
                      // Delete cartrodges_assoc

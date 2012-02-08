@@ -582,7 +582,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $installed = array();
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             if ($data["softwarecategories_id"]!=$cat) {
                self::displayCategoryFooter($cat, $rand, $canedit);
                $cat = self::displayCategoryHeader($computers_id, $data, $rand, $canedit);

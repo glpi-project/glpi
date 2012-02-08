@@ -529,7 +529,7 @@ class CommonDBTM extends CommonGLPI {
          $result = $DB->query($query);
 
          if ($DB->numrows($result)) {
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
 
                if ($CFG_GLPI["keep_tickets_on_delete"]==1) {
                   $job->update(array('id'       => $data["id"],
@@ -1747,7 +1747,7 @@ class CommonDBTM extends CommonGLPI {
          }
          echo "</tr>";
       }
-         
+
 
       // Close for Form
       echo "</table></div></form>";
@@ -3191,7 +3191,7 @@ class CommonDBTM extends CommonGLPI {
             echo "<tr><th>".$item->getTypeName(1)."</th><th>".__('Templates')."</th></tr>";
          }
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $templname = $data["template_name"];
             if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
                $templname.= "(".$data["id"].")";

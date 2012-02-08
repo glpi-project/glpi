@@ -42,7 +42,7 @@ class Phone extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory            = true;
-   
+
    protected $forward_entity_to = array('Infocom', 'NetworkPort', 'ReservationItem');
 
 
@@ -114,7 +114,7 @@ class Phone extends CommonDBTM {
          if ($DB->numrows($result)>0) {
             $contractitem = new Contract_Item();
 
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
                                         'itemtype'     => $this->getType(),
                                         'items_id'     => $this->fields['id']));
@@ -131,7 +131,7 @@ class Phone extends CommonDBTM {
          if ($DB->numrows($result)>0) {
             $docitem = new Document_Item();
 
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype'     => $this->getType(),
                                    'items_id'     => $this->fields['id']));
@@ -154,7 +154,7 @@ class Phone extends CommonDBTM {
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();
 
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $data['_no_auto_action'] = true;
                $conn->delete($data);
             }

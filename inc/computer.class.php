@@ -339,7 +339,7 @@ class Computer extends CommonDBTM {
                    WHERE `computers_id` = '".$this->input["_oldID"]."'";
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $disk = new ComputerDisk();
                $disk->getfromDB($data['id']);
                unset($disk->fields["id"]);
@@ -363,7 +363,7 @@ class Computer extends CommonDBTM {
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             $contractitem = new Contract_Item();
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
                                         'itemtype'     => $this->getType(),
                                         'items_id'     => $this->fields['id']));
@@ -378,7 +378,7 @@ class Computer extends CommonDBTM {
          $result=$DB->query($query);
          if ($DB->numrows($result)>0) {
             $docitem = new Document_Item();
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype'     => $this->getType(),
                                    'items_id'     => $this->fields['id']));
@@ -396,7 +396,7 @@ class Computer extends CommonDBTM {
 
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $conn->add(array('computers_id' => $this->fields['id'],
                                 'itemtype'     => $data["itemtype"],
                                 'items_id'     => $data["items_id"]));
@@ -421,7 +421,7 @@ class Computer extends CommonDBTM {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)>0) {
             $conn = new Computer_Item();
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $data['_no_auto_action'] = true;
                $conn->delete($data);
             }
@@ -632,7 +632,7 @@ class Computer extends CommonDBTM {
 
          $result = $DB->query($query);
          if ($DB->numrows($result)==1) {
-            $dataocs = $DB->fetch_array($result);
+            $dataocs = $DB->fetch_assoc($result);
          }
       }
 
@@ -676,7 +676,7 @@ class Computer extends CommonDBTM {
                       WHERE `computers_id` = '$ID'";
 
             $result_agent_version = $DB->query($query);
-            $data_version = $DB->fetch_array($result_agent_version);
+            $data_version = $DB->fetch_assoc($result_agent_version);
 
             $ocs_config = OcsServer::getConfig(OcsServer::getByMachineID($ID));
 

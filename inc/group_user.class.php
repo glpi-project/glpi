@@ -309,7 +309,7 @@ class Group_User extends CommonDBRelation{
       $result = $DB->query($query);
 
       if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetch_assoc($result)) {
             // Add to display list, according to criterion
             if (empty($crit) || $data[$crit]) {
                $members[] = $data;

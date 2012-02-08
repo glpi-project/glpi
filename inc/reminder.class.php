@@ -293,7 +293,7 @@ class Reminder extends CommonDBTM {
          $this->input['_planningrecall']['items_id'] = $this->fields['id'];
          PlanningRecall::manageDatas($this->input['_planningrecall']);
       }
-      
+
    }
 
 
@@ -308,10 +308,10 @@ class Reminder extends CommonDBTM {
                                        array('Reminder' => array($this->fields['id'])));
       }
       if (in_array("begin",$this->updates)){
-         PlanningRecall::managePlanningUpdates($this->getType(), $this->getID(), 
+         PlanningRecall::managePlanningUpdates($this->getType(), $this->getID(),
                                                $this->fields["begin"]);
       }
-      
+
    }
 
 
@@ -477,11 +477,11 @@ class Reminder extends CommonDBTM {
    function prepareInputForUpdate($input) {
 
       Toolbox::manageBeginAndEndPlanDates($input['plan']);
-      
+
       if (isset($input['_planningrecall'])) {
          PlanningRecall::manageDatas($input['_planningrecall']);
       }
-      
+
       if (isset($input["name"])) {
          $input["name"] = trim($input["name"]);
 
@@ -641,7 +641,7 @@ class Reminder extends CommonDBTM {
          if ($canedit) {
             echo "</span>";
          }
-         
+
       }
 
       if ($canedit) {
@@ -743,7 +743,7 @@ class Reminder extends CommonDBTM {
          $result2 = $DB->query($query2);
 
          if ($DB->numrows($result2)>0) {
-            for ($i=0 ; $data=$DB->fetch_array($result2) ; $i++) {
+            for ($i=0 ; $data=$DB->fetch_assoc($result2) ; $i++) {
                $key                          = $data["begin"]."$$".$i;
                $interv[$key]["itemtype"]     = 'Reminder';
                $interv[$key]["reminders_id"] = $data["id"];
@@ -853,14 +853,14 @@ class Reminder extends CommonDBTM {
       $recall='';
       if (isset($val['reminders_id'])) {
          $pr = new PlanningRecall();
-         if ($pr->getFromDBForItemAndUser($val['itemtype'], 
-                                          $val['reminders_id'], 
+         if ($pr->getFromDBForItemAndUser($val['itemtype'],
+                                          $val['reminders_id'],
                                           Session::getLoginUserID())) {
             $recall = "<br><span class='b'>".sprintf(__('Recall on %s'), Html::convDateTime($pr->fields['when']))."<span>";
-         }         
+         }
       }
-      
-      
+
+
       if ($complete) {
          echo "<br><span class='b'>".Planning::getState($val["state"])."</span><br>";
          echo $val["text"].$recall;
@@ -959,7 +959,7 @@ class Reminder extends CommonDBTM {
 
          $rand = mt_rand();
 
-         while ($data =$DB->fetch_array($result)) {
+         while ($data =$DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_2'><td><div class='relative reminder_list'>";
             echo "<a id='content_reminder_".$data["id"].$rand."'
                   href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$data["id"]."'>".

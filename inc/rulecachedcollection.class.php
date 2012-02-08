@@ -141,7 +141,7 @@ class RuleCachedCollection extends RuleCollection {
       echo "<td class='tab_bg_1'>".__('Objects in cache')."</td></tr>\n";
 
       $total = 0;
-      while ($datas = $DB->fetch_array($res_count)) {
+      while ($datas = $DB->fetch_assoc($res_count)) {
          echo "<tr><td class='tab_bg_2'>";
          echo "<a href='".$CFG_GLPI['root_doc']."/front/popup.php?popup=show_cache&amp;sub_type=".
                 $this->getRuleClassName()."&amp;rules_id=".$datas["rules_id"]."'>".$datas["name"].

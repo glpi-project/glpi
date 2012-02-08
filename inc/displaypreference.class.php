@@ -88,7 +88,7 @@ class DisplayPreference extends CommonDBTM {
 
       $prefs = array();
       if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetch_assoc($result)) {
             array_push($prefs, $data["num"]);
          }
       }
@@ -298,7 +298,7 @@ class DisplayPreference extends CommonDBTM {
 
          $i = 0;
          if ($numrows) {
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                if ($data["num"]!=1 && isset($searchopt[$data["num"]])) {
                   echo "<tr class='tab_bg_2'>";
                   echo "<td class='center' width='50%' >";
@@ -451,7 +451,7 @@ class DisplayPreference extends CommonDBTM {
       $i = 0;
 
       if ($numrows) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetch_assoc($result)) {
 
             if ($data["num"]!=1 && isset($searchopt[$data["num"]])) {
 

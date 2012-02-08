@@ -454,7 +454,7 @@ class Session {
             $result2 = $DB->query($query2);
 
             if ($DB->numrows($result2)) {
-               while ($data = $DB->fetch_array($result2)) {
+               while ($data = $DB->fetch_assoc($result2)) {
                   // Do not override existing entity if define as recursive
                   if (!isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
                      || $data['is_recursive']) {
@@ -490,7 +490,7 @@ class Session {
                                                     $_SESSION['glpiactiveentities'],true);
       $result_gp = $DB->query($query_gp);
       if ($DB->numrows($result_gp)) {
-         while ($data = $DB->fetch_array($result_gp)) {
+         while ($data = $DB->fetch_assoc($result_gp)) {
             $_SESSION["glpigroups"][] = $data["groups_id"];
          }
       }

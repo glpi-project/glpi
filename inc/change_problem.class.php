@@ -112,7 +112,7 @@ class Change_Problem extends CommonDBRelation{
                                         sprintf(__('%1$s = %2$s'), $problem->getTypeName(1),
                                                 $problem->fields["name"]));
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Change', $data["id"]);
             echo "<tr class='tab_bg_1'>";
@@ -195,7 +195,7 @@ class Change_Problem extends CommonDBRelation{
                                         sprintf(__('%1$s = %2$s'),
                                                 $change->getTypeName(1), $change->fields["name"]));
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $used[$data['id']] = $data['id'];
             Session::addToNavigateListItems('Problem', $data["id"]);
             echo "<tr class='tab_bg_1'>";

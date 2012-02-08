@@ -291,7 +291,7 @@ function countElementsInTable($table, $condition="") {
    }
 
    $result = $DB->query($query);
-   $ligne  = $DB->fetch_array($result);
+   $ligne  = $DB->fetch_assoc($result);
    return $ligne['cpt'];
 }
 
@@ -480,14 +480,14 @@ function getTreeValueName($table, $ID, $wholename="", $level=0) {
 
    $parentIDfield = getForeignKeyFieldForTable($table);
 
-   $query = "SELECT *
+   $query = "SELECT `name`, `$parentIDfield`
              FROM `$table`
              WHERE `id` = '$ID'";
    $name = "";
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)>0) {
-         $row      = $DB->fetch_array($result);
+         $row      = $DB->fetch_assoc($result);
          $parentID = $row[$parentIDfield];
 
 
@@ -621,7 +621,7 @@ function getSonsOf($table, $IDf) {
              ORDER BY `name`";
 
    if (($result=$DB->query($query)) && ($DB->numrows($result)>0)) {
-      while ($row=$DB->fetch_array($result)) {
+      while ($row=$DB->fetch_assoc($result)) {
          $id_found[$row['id']] = $row['id'];
          $found[$row['id']]    = $row['id'];
       }
@@ -641,7 +641,7 @@ function getSonsOf($table, $IDf) {
 
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
-         while ($row=$DB->fetch_array($result)) {
+         while ($row=$DB->fetch_assoc($result)) {
             if (!isset($id_found[$row['id']])) {
                $id_found[$row['id']] = $row['id'];
                $found[$row['id']]    = $row['id'];
@@ -702,7 +702,7 @@ function getTreeForItem($table, $IDf) {
              ORDER BY `name`";
 
    if (($result=$DB->query($query)) && ($DB->numrows($result)>0)) {
-      while ($row=$DB->fetch_array($result)) {
+      while ($row=$DB->fetch_assoc($result)) {
          $id_found[$row['id']]['parent'] = $IDf;
          $id_found[$row['id']]['name']   = $row['name'];
          $found[$row['id']]              = $row['id'];
@@ -723,7 +723,7 @@ function getTreeForItem($table, $IDf) {
 
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
-         while ($row=$DB->fetch_array($result)) {
+         while ($row=$DB->fetch_assoc($result)) {
             if (!isset($id_found[$row['id']])) {
                $id_found[$row['id']]['parent'] = $row[$parentIDfield];
                $id_found[$row['id']]['name']   = $row['name'];
@@ -847,7 +847,7 @@ function regenerateTreeCompleteName($table) {
 
    $result = $DB->query($query);
    if ($DB->numrows($result)>0) {
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetch_assoc($result)) {
          list($name, $level) = getTreeValueName($table, $data['id']);
          $query = "UPDATE `$table`
                    SET `completename` = '".addslashes($name)."',
@@ -1345,7 +1345,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
          $resultNo = $DB->query($query);
 
          if ($DB->numrows($resultNo)>0) {
-            $data  = $DB->fetch_array($resultNo);
+            $data  = $DB->fetch_assoc($resultNo);
             $newNo = $data['lastNo'] + 1;
          } else {
             $newNo = 0;

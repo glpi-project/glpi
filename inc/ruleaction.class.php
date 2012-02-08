@@ -231,7 +231,7 @@ class RuleAction extends CommonDBChild {
                             FROM `".$this->getTable()."`
                             WHERE `".$this->items_id."` = '".$rules_id."'");
 
-         while ($action = $DB->fetch_array($res)) {
+         while ($action = $DB->fetch_assoc($res)) {
             if (isset($actions_options[$action["field"]])) {
                $actions[$action["field"]] = $action["field"];
             }

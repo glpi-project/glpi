@@ -358,7 +358,7 @@ class Transfer extends CommonDBTM {
 
             if ($result = $DB->query($query)) {
                if ($DB->numrows($result)>0) {
-                  while ($data=$DB->fetch_array($result)) {
+                  while ($data=$DB->fetch_assoc($result)) {
                      $conn = new Computer_Item();
                      $conn->delete(array('id'             => $data['id'],
                                          '_no_history'    => true,
@@ -378,7 +378,7 @@ class Transfer extends CommonDBTM {
 
             if ($result = $DB->query($query)) {
                if ($DB->numrows($result)>0) {
-                  while ($data=$DB->fetch_array($result)) {
+                  while ($data=$DB->fetch_assoc($result)) {
 
                      if ($item->getFromDB($data['items_id'])
                          && $item->isRecursive()
@@ -414,7 +414,7 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
                   $query = "DELETE
                             FROM `glpi_computers_softwareversions`
                             WHERE `id` = '".$data['id']."'";
@@ -433,7 +433,7 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
                   $query = "DELETE
                             FROM `glpi_computers_softwareversions`
                             WHERE `id` = '".$data['id']."'";
@@ -451,7 +451,7 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
                   $query = "DELETE
                             FROM `glpi_softwareversions`
                             WHERE `id` = '".$data['id']."'";
@@ -475,7 +475,7 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
 
                   if ($data['is_recursive'] && in_array($data['entities_id'],
                                                         $to_entity_ancestors)) {
@@ -539,7 +539,7 @@ class Transfer extends CommonDBTM {
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result)>0) {
-                     while ($data=$DB->fetch_array($result)) {
+                     while ($data=$DB->fetch_assoc($result)) {
                         $this->addToBeTransfer('Ticket', $data['id']);
                      }
                   }
@@ -566,7 +566,7 @@ class Transfer extends CommonDBTM {
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result)>0) {
-                     while ($data=$DB->fetch_array($result)) {
+                     while ($data=$DB->fetch_assoc($result)) {
                         $query = "DELETE
                                   FROM `glpi_contracts_items`
                                   WHERE `id` = '".$data['id']."'";
@@ -583,7 +583,7 @@ class Transfer extends CommonDBTM {
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result)>0) {
-                     while ($data=$DB->fetch_array($result)) {
+                     while ($data=$DB->fetch_assoc($result)) {
                         $query = "DELETE
                                   FROM `glpi_contracts_items`
                                   WHERE `id` = '".$data['id']."'";
@@ -604,7 +604,7 @@ class Transfer extends CommonDBTM {
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result)>0) {
-                     while ($data=$DB->fetch_array($result)) {
+                     while ($data=$DB->fetch_assoc($result)) {
 
                         if ($data['is_recursive'] && in_array($data['entities_id'],
                                                               $to_entity_ancestors)) {
@@ -636,7 +636,7 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
                   $query = "DELETE
                             FROM `glpi_contracts_suppliers`
                             WHERE `id` = '".$data['id']."'";
@@ -653,7 +653,7 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
                   $query = "DELETE
                             FROM `glpi_contracts_suppliers`
                             WHERE `id` = '".$data['id']."'";
@@ -672,7 +672,7 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
 
                   if ($data['is_recursive'] && in_array($data['entities_id'],
                                                         $to_entity_ancestors)) {
@@ -696,7 +696,7 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
 
                   if ($data['is_recursive'] && in_array($data['entities_id'],
                                                         $to_entity_ancestors)) {
@@ -725,7 +725,7 @@ class Transfer extends CommonDBTM {
 
                   if ($result = $DB->query($query)) {
                      if ($DB->numrows($result)>0) {
-                        while ($data=$DB->fetch_array($result)) {
+                        while ($data=$DB->fetch_assoc($result)) {
                            $query = "DELETE
                                      FROM `glpi_infocoms`
                                      WHERE `id` = '".$data['id']."'";
@@ -745,7 +745,7 @@ class Transfer extends CommonDBTM {
 
                   if ($result = $DB->query($query)) {
                      if ($DB->numrows($result)>0) {
-                        while ($data=$DB->fetch_array($result)) {
+                        while ($data=$DB->fetch_assoc($result)) {
 
                            if ($data['is_recursive'] && in_array($data['entities_id'],
                                                                  $to_entity_ancestors)) {
@@ -781,7 +781,7 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
                   $query = "DELETE
                             FROM `glpi_contacts_suppliers`
                             WHERE `id` = '".$data['id']."'";
@@ -799,7 +799,7 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
                   $query = "DELETE
                             FROM `glpi_contacts_suppliers`
                             WHERE `id` = '".$data['id']."'";
@@ -819,7 +819,7 @@ class Transfer extends CommonDBTM {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
 
                   if ($data['is_recursive'] && in_array($data['entities_id'],
                                                         $to_entity_ancestors)) {
@@ -855,7 +855,7 @@ class Transfer extends CommonDBTM {
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result)>0) {
-                     while ($data=$DB->fetch_array($result)) {
+                     while ($data=$DB->fetch_assoc($result)) {
                         $query = "DELETE
                                   FROM `glpi_documents_items`
                                   WHERE `id` = '".$data['id']."'";
@@ -874,7 +874,7 @@ class Transfer extends CommonDBTM {
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result)>0) {
-                     while ($data=$DB->fetch_array($result)) {
+                     while ($data=$DB->fetch_assoc($result)) {
 
                         if ($data['is_recursive'] && in_array($data['entities_id'],
                                                               $to_entity_ancestors)) {
@@ -906,7 +906,7 @@ class Transfer extends CommonDBTM {
 
             if ($result = $DB->query($query)) {
                if ($DB->numrows($result)>0) {
-                  while ($data=$DB->fetch_array($result)) {
+                  while ($data=$DB->fetch_assoc($result)) {
                      $this->addToBeTransfer('CartridgeItem',$data['cartridgeitems_id']);
                   }
                }
@@ -1175,7 +1175,7 @@ class Transfer extends CommonDBTM {
 
             if ($result=$DB->query($query)) {
                if ($DB->numrows($result)) {
-                  $data  = $DB->fetch_array($result);
+                  $data  = $DB->fetch_assoc($result);
                   $data  = Toolbox::addslashes_deep($data);
                   $locID = $this->transferDropdownLocation($data['locations_id']);
 
@@ -1234,7 +1234,7 @@ class Transfer extends CommonDBTM {
             $cart     = new Cartridge();
             $carttype = new CartridgeItem();
 
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetch_assoc($result)) {
                $need_clean_process = false;
 
                // Foreach cartridges
@@ -1558,7 +1558,7 @@ class Transfer extends CommonDBTM {
                if ($result=$DB->query($query)) {
                   //// If exists : increment number by 1
                   if ($DB->numrows($result)>0) {
-                     $data     = $DB->fetch_array($result);
+                     $data     = $DB->fetch_assoc($result);
                      $newlicID = $data['id'];
                      $license->update(array('id'     => $data['id'],
                                             'number' => $data['number']+1));
@@ -1692,7 +1692,7 @@ class Transfer extends CommonDBTM {
             if ($DB->numrows($result)>0) {
                // Foreach get item
 
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
                   $need_clean_process = false;
                   $item_ID            = $data['contracts_id'];
                   $newcontractID      = -1;
@@ -1714,7 +1714,7 @@ class Transfer extends CommonDBTM {
 
                      if ($result_type = $DB->query($query)) {
                         if ($DB->numrows($result_type)>0) {
-                           while (($data_type=$DB->fetch_array($result_type)) && $canbetransfer) {
+                           while (($data_type=$DB->fetch_assoc($result_type)) && $canbetransfer) {
                               $dtype = $data_type['itemtype'];
 
                               if (isset($this->item_search[$dtype])) {
@@ -1861,7 +1861,7 @@ class Transfer extends CommonDBTM {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)>0) {
             // Foreach get item
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetch_assoc($result)) {
                   $need_clean_process = false;
                   $item_ID            = $data['documents_id'];
                   $newdocID           = -1;
@@ -1883,7 +1883,7 @@ class Transfer extends CommonDBTM {
 
                      if ($result_type = $DB->query($query)) {
                         if ($DB->numrows($result_type) >0) {
-                           while (($data_type=$DB->fetch_array($result_type)) && $canbetransfer) {
+                           while (($data_type=$DB->fetch_assoc($result_type)) && $canbetransfer) {
                               $dtype = $data_type['itemtype'];
                               if (isset($this->item_search[$dtype])) {
                                  // No items to transfer -> exists links
@@ -2067,7 +2067,7 @@ class Transfer extends CommonDBTM {
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result) != 0) {
             // Foreach get item
-            while ($data = $DB->fetch_array($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $item_ID = $data['items_id'];
                if ($link_item->getFromDB($item_ID)) {
                   // If global :
@@ -2264,7 +2264,7 @@ class Transfer extends CommonDBTM {
                // Transfer
                case 2 :
                   // Same Item / Copy Item -> update entity
-                  while ($data = $DB->fetch_array($result)) {
+                  while ($data = $DB->fetch_assoc($result)) {
                      $input                = $this->transferTicketAdditionalInformations($data);
                      $input['id']          = $data['id'];
                      $input['entities_id'] = $this->to;
@@ -2280,7 +2280,7 @@ class Transfer extends CommonDBTM {
                // Clean ref : keep ticket but clean link
                case 1 :
                   // Same Item / Copy Item : keep and clean ref
-                  while ($data = $DB->fetch_array($result)) {
+                  while ($data = $DB->fetch_assoc($result)) {
                      $job->update(array('id'       => $data['id'],
                                         'itemtype' => 0,
                                         'items_id' => 0));
@@ -2292,7 +2292,7 @@ class Transfer extends CommonDBTM {
                case 0 :
                   // Same item -> delete
                   if ($ID == $newID) {
-                     while ($data = $DB->fetch_array($result)) {
+                     while ($data = $DB->fetch_assoc($result)) {
                         $job->delete(array('id' => $data['id']));
                      }
                   }
@@ -2436,7 +2436,7 @@ class Transfer extends CommonDBTM {
 
                if ($result = $DB->query($query)) {
                   if ($DB->numrows($result) != 0) {
-                     while ($data = $DB->fetch_array($result)) {
+                     while ($data = $DB->fetch_assoc($result)) {
                         $data = Toolbox::addslashes_deep($data);
                         $query = "INSERT
                                   INTO `glpi_logs`
@@ -2477,7 +2477,7 @@ class Transfer extends CommonDBTM {
             if ($DB->numrows($result) != 0) {
                $cartitem = new CartridgeItem();
 
-               while ($data = $DB->fetch_array($result)) {
+               while ($data = $DB->fetch_assoc($result)) {
                   $data = Toolbox::addslashes_deep($data);
                   $cartitem->addCompatibleType($newID, $data["printermodels_id"]);
                }
@@ -2663,7 +2663,7 @@ class Transfer extends CommonDBTM {
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result) >0) {
                // Foreach get item
-               while ($data = $DB->fetch_array($result)) {
+               while ($data = $DB->fetch_assoc($result)) {
                   $need_clean_process = false;
                   $item_ID            = $data['contacts_id'];
                   $newcontactID       = -1;
@@ -2895,7 +2895,7 @@ class Transfer extends CommonDBTM {
                case 0 :
                   // Not a copy -> delete
                   if ($ID == $newID) {
-                     while ($data = $DB->fetch_array($result)) {
+                     while ($data = $DB->fetch_assoc($result)) {
                         $np->delete(array('id' => $data['id']));
                      }
                      // Only case of ocs link update is needed (if netports are keep nothing to do)
@@ -2913,7 +2913,7 @@ class Transfer extends CommonDBTM {
                case 1 :
                   // Not a copy -> disconnect
                   if ($ID == $newID) {
-                     while ($data = $DB->fetch_array($result)) {
+                     while ($data = $DB->fetch_assoc($result)) {
                         if ($nn->getFromDBForNetworkPort($data['id'])) {
                            $nn->delete($data);
                         }
@@ -2925,7 +2925,7 @@ class Transfer extends CommonDBTM {
                         }
                      }
                   } else { // Copy -> copy netports
-                     while ($data = $DB->fetch_array($result)) {
+                     while ($data = $DB->fetch_assoc($result)) {
                         $data = Toolbox::addslashes_deep($data);
                         unset($data['id']);
                         $data['items_id'] = $newID;
@@ -2941,7 +2941,7 @@ class Transfer extends CommonDBTM {
                default :
                   // Copy -> Copy netpoints (do not keep links)
                   if ($ID != $newID) {
-                     while ($data = $DB->fetch_array($result)) {
+                     while ($data = $DB->fetch_assoc($result)) {
                         unset($data['id']);
                         $data['items_id'] = $newID;
                         $data['netpoints_id']
@@ -2950,7 +2950,7 @@ class Transfer extends CommonDBTM {
                         $np->add($data);
                      }
                   } else {
-                     while ($data = $DB->fetch_array($result)) {
+                     while ($data = $DB->fetch_assoc($result)) {
                         // Not a copy -> only update netpoint
                         if ($data['netpoints_id']) {
                            $netpointID  = $this->transferDropdownNetpoint($data['netpoints_id']);

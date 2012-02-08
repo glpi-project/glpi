@@ -166,7 +166,7 @@ class TicketFollowup  extends CommonDBTM {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      
+
       if ($item->getType() == 'Ticket') {
          if (Session::haveRight('observe_ticket','1')){
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -618,7 +618,7 @@ class TicketFollowup  extends CommonDBTM {
          }
          echo "</tr>\n";
 
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             if ($this->getFromDB($data['id'])) {
                $this->showInTicketSumnary($ticket, $rand, $showprivate);
             }
@@ -654,7 +654,7 @@ class TicketFollowup  extends CommonDBTM {
                   <tr><th>".__('Date')."</th><th>".__('Requester')."</th>
                   <th>".__('Description')."</th></tr>\n";
 
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetch_assoc($result)) {
             $out .= "<tr class='tab_bg_3'>
                      <td class='center'>".Html::convDateTime($data["date"])."</td>
                      <td class='center'>".getUserName($data["users_id"],1)."</td>
