@@ -225,7 +225,7 @@ class Contract extends CommonDBTM {
 
          self::dropdownAlert(array('name'  => "alert",
                                  'value' => $this->fields["alert"]));
-         Alert::displayLastAlert('Contract', $ID);
+         Alert::displayLastAlert(__CLASS__, $ID);
          echo "</td>";
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
@@ -294,7 +294,7 @@ class Contract extends CommonDBTM {
 
       $tab[29]['table']          = 'glpi_contracts';
       $tab[29]['field']          = 'name';
-      $tab[29]['name']           = __('Contract');
+      $tab[29]['name']           = self::getTypeName(1);
       $tab[29]['forcegroupby']   = true;
       $tab[29]['datatype']       = 'itemlink';
       $tab[29]['itemlink_type']  = 'Contract';
@@ -602,7 +602,7 @@ class Contract extends CommonDBTM {
       echo "<table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset\">".
-             __('Contract')."</a></th></tr>";
+             self::getTypeName(1)."</a></th></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset&amp;".
@@ -1020,7 +1020,7 @@ class Contract extends CommonDBTM {
       echo "</tr>";
 
       if ($number>0) {
-         Session::initNavigateListItems('Contract',
+         Session::initNavigateListItems(__CLASS__,
                               //TRANS : %1$s is the itemtype name,
                               //         %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
@@ -1029,10 +1029,10 @@ class Contract extends CommonDBTM {
       $contracts = array();
       while ($i < $number) {
          $cID = $DB->result($result, $i, "contracts_id");
-         Session::addToNavigateListItems('Contract',$cID);
+         Session::addToNavigateListItems(__CLASS__,$cID);
          $contracts[] = $cID;
-         $assocID = $DB->result($result, $i, "id");
-         $con = new Contract();
+         $assocID     = $DB->result($result, $i, "id");
+         $con         = new self();
          $con->getFromDB($cID);
          echo "<tr class='tab_bg_1".($con->fields["is_deleted"]?"_2":"")."'>";
          echo "<td class='center b'>";
@@ -1214,7 +1214,7 @@ class Contract extends CommonDBTM {
 
                // Get previous alerts
                foreach ($todo as $type => $event) {
-                  $previous_alerts[$type] = Alert::getAlertDate('Contract',$data['id'], $event);
+                  $previous_alerts[$type] = Alert::getAlertDate(__CLASS__, $data['id'], $event);
                }
                // compute next alert date based on already send alerts (or not)
                foreach ($todo as $type => $event) {
@@ -1238,7 +1238,7 @@ class Contract extends CommonDBTM {
                   // If this date is passed : clean alerts and send again
                   if ($next_alerts[$type] <= date('Y-m-d')) {
                      $alert = new Alert();
-                     $alert->clear('Contract', $data['id'], $event);
+                     $alert->clear(__CLASS__, $data['id'], $event);
                      $real_alert_date = date('Y-m-d', strtotime($next_alerts[$type]." +".($before)." day"));
                      $message = $data["name"].": ".Html::convDate($real_alert_date)."<br>\n";
                      $data['alert_date'] = $real_alert_date;
@@ -1246,7 +1246,8 @@ class Contract extends CommonDBTM {
 
                      switch ($type) {
                         case 'periodicitynotice' :
-                           $contract_messages[$type][$entity] = __('Contract entered in notice time for period:')."<br>";
+                           $contract_messages[$type][$entity]
+                                 = __('Contract entered in notice time for period:')."<br>";
                            break;
                         case 'periodicity' :
                            $contract_messages[$type][$entity] = __('Contract period ended:')."<br>";
@@ -1281,7 +1282,7 @@ class Contract extends CommonDBTM {
                   }
 
                   $alert = new Alert();
-                  $input["itemtype"] = 'Contract';
+                  $input["itemtype"] = __CLASS__;
                   $input["type"] = $type;
                   foreach ($contracts as $id => $contract) {
                      $input["items_id"] = $id;
