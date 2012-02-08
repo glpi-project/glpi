@@ -75,7 +75,7 @@ class FieldUnicity extends CommonDropdown {
                          'label' => __('Record into the database denied'),
                          'type'  => 'bool'),
                    array('name'  => 'action_notify',
-                         'label' => __(),
+                         'label' => __('Send a notification'),
                          'type'  => 'bool'));
    }
 
