@@ -89,13 +89,11 @@ function xmlbackup() {
    $i      = 0;
    while ($line = $DB->fetch_row($result)) {
       // on se limite aux tables prefixees _glpi
-      if (strstr($line[0],"glpi_")) {
-         $table = $line[0];
+      $table = $line[0];
 
-         $query[$i] = "SELECT *
-                       FROM `$table`";
-         $i++;
-      }
+      $query[$i] = "SELECT *
+                    FROM `$table`";
+      $i++;
    }
 
    //le nom du fichier a generer...
@@ -336,11 +334,8 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
    $result = $DB->list_tables();
    $numtab = 0;
    while ($t = $DB->fetch_row($result)) {
-      // on se  limite aux tables prefixees _glpi
-      if (strstr($t[0],"glpi_")) {
-         $tables[$numtab] = $t[0];
-         $numtab++;
-      }
+      $tables[$numtab] = $t[0];
+      $numtab++;
    }
 
    for ( ; $offsettable<$numtab ; $offsettable++) {

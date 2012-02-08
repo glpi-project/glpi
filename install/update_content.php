@@ -151,10 +151,8 @@ function UpdateContent($DB, $duree, $rowlimit, $conv_utf8, $complete_utf8) {
    $result = $DB->list_tables();
    $numtab = 0;
    while ($t=$DB->fetch_row($result)) {
-      if (strstr($t[0],"glpi_")) {
-         $tables[$numtab] = $t[0];
-         $numtab++;
-      }
+      $tables[$numtab] = $t[0];
+      $numtab++;
    }
 
    for ( ; $offsettable<$numtab ; $offsettable++) {
