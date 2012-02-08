@@ -79,7 +79,7 @@ $result = User::getSqlSearchResult(false, $_POST['right'], $_POST["entity_restri
 $users = array();
 
 if ($DB->numrows($result)) {
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetch_assoc($result)) {
       $users[$data["id"]] = formatUserName($data["id"], $data["name"], $data["realname"],
                                            $data["firstname"]);
       $logins[$data["id"]] = $data["name"];

@@ -68,7 +68,7 @@ echo "<select name='softwares_id' id='item_type$rand'>\n";
 echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>\n";
 
 if ($DB->numrows($result)) {
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetch_assoc($result)) {
       $softwares_id = $data["id"];
       $output       = $data["name"];
       echo "<option value='$softwares_id' title=\"".Html::cleanInputText($output)."\">".

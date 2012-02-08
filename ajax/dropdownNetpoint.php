@@ -133,7 +133,7 @@ if (!empty($output) && $output!="&nbsp;") {
 }
 
 if ($DB->numrows($result)) {
-   while ($data =$DB->fetch_array($result)) {
+   while ($data =$DB->fetch_assoc($result)) {
       $output     = $data['netpname'];
       $loc        = $data['loc'];
       $ID         = $data['id'];

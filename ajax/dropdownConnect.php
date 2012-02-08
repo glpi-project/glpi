@@ -154,7 +154,7 @@ echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 if ($DB->numrows($result)) {
    $prev = -1;
 
-   while ($data = $DB->fetch_array($result)) {
+   while ($data = $DB->fetch_assoc($result)) {
       if ($multi && $data["entities_id"]!=$prev) {
          if ($prev>=0) {
             echo "</optgroup>";
