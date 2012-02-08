@@ -116,7 +116,7 @@ if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$
 echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
 if ($DB->numrows($result)) {
-   while ($data = $DB->fetch_array($result)) {
+   while ($data = $DB->fetch_assoc($result)) {
       $output = $data['name'];
 
       if ($_POST['table']!="glpi_softwares" && !$itemtypeisplugin) {

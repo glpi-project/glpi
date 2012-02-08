@@ -96,7 +96,7 @@ if ($result=$DB->query($query)) {
    echo '{"totalCount":'.$totnum.',"items":[';
    if ($DB->numrows($result)>0) {
       $first = true;
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetch_assoc($result)) {
          if ($first) {
             $first = false;
          } else {

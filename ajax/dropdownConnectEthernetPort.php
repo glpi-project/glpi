@@ -78,7 +78,7 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
    echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
    if ($DB->numrows($result)) {
-      while ($data = $DB->fetch_array($result)) {
+      while ($data = $DB->fetch_assoc($result)) {
          // Device name + port name
          $output = $output_long = $data['cname'];
 

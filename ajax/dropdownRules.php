@@ -81,7 +81,7 @@ if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$
 }
 
 if ($DB->numrows($result)) {
-   while ($data =$DB->fetch_array($result)) {
+   while ($data =$DB->fetch_assoc($result)) {
       $ID   = $data['id'];
       $name = $data['name'];
       echo "<option value='$ID' title=\"".Html::cleanInputText($name)."\">".

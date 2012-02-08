@@ -194,7 +194,7 @@ if ($item instanceof CommonTreeDropdown) {
              $where
              ORDER BY $add_order `completename`
              $LIMIT";
-   
+
    if ($result = $DB->query($query)) {
       echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."'
              size='1'";
@@ -239,7 +239,7 @@ if ($item instanceof CommonTreeDropdown) {
       if ($DB->numrows($result)) {
          $prev = -1;
 
-         while ($data =$DB->fetch_array($result)) {
+         while ($data =$DB->fetch_assoc($result)) {
             $ID     = $data['id'];
             $level  = $data['level'];
             $output = $data['name'];
@@ -469,7 +469,7 @@ if ($item instanceof CommonTreeDropdown) {
       if ($DB->numrows($result)) {
          $prev = -1;
 
-         while ($data =$DB->fetch_array($result)) {
+         while ($data =$DB->fetch_assoc($result)) {
             $output = $data[$field];
 
             if ($displaywith) {

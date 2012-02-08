@@ -102,7 +102,7 @@ if (isset($_REQUEST['node'])) {
          if ($DB->numrows($result)) {
             $pos = 0;
 
-            while ($row = $DB->fetch_array($result)) {
+            while ($row = $DB->fetch_assoc($result)) {
                $path['text']      = $row['name'];
                $path['id']        = $row['id'];
                $path['position']  = $pos;
