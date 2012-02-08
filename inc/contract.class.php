@@ -1009,7 +1009,7 @@ class Contract extends CommonDBTM {
 
       echo "<tr><th>".__('Name')."</th>";
       echo "<th>".__('Entity')."</th>";
-      echo "<th>".__('Number')."</th>";
+      echo "<th>"._x('Phone', 'Number')."</th>";
       echo "<th>".__('Contract Type')."</th>";
       echo "<th>".__('Supplier')."</th>";
       echo "<th>".__('Start date')."</th>";
