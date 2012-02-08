@@ -204,7 +204,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Number')."</td>";
+      echo "<td>"._x('Quantity', 'Number')."</td>";
       echo "<td>";
       Dropdown::showInteger("number", $this->fields["number"], 1, 1000, 1,
                             array(-1 => __('Unlimited')));
@@ -269,7 +269,7 @@ class SoftwareLicense extends CommonDBTM {
 
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'number';
-      $tab[4]['name']            = __('Number');
+      $tab[4]['name']            = _x('Quantity', 'Number');
       $tab[4]['datatype']        = 'number';
 
       $tab[5]['table']           = 'glpi_softwarelicensetypes';
@@ -585,7 +585,7 @@ class SoftwareLicense extends CommonDBTM {
                    ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Serial number')."</a></th>";
             echo "<th>".($sort=="`number`"?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=number&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Number').
+                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>"._x('Quantity', 'Number').
                  "</a></th>";
             echo "<th>".__('Affected computers')."</th>";
             echo "<th>".($sort=="`typename`"?$sort_img:"").
