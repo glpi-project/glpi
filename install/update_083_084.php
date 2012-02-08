@@ -90,7 +90,7 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
          $result = $DB->query($query);
 
          if ($DB->numrows($result) == 1) {
-            $data     =$DB->fetch_array($result);
+            $data     =$DB->fetch_assoc($result);
             $domainID = $data['id'];
          }
 
@@ -128,13 +128,13 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
 function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
    global $DB, $migration;
 
-   $query = "SELECT `origin_glpi_networkports`.`name`, `origin_glpi_networkports`.`id`, 
+   $query = "SELECT `origin_glpi_networkports`.`name`, `origin_glpi_networkports`.`id`,
                     `origin_glpi_networkports`.`mac`, ";
 
    $addleftjoin = '';
    $manage_netinterface = false;
    if ($port instanceof NetworkPortEthernet) {
-      $addleftjoin = "LEFT JOIN `glpi_networkinterfaces` 
+      $addleftjoin = "LEFT JOIN `glpi_networkinterfaces`
                         ON (`origin_glpi_networkports`.`networkinterfaces_id` = `glpi_networkinterfaces` .`id`)";
       $query.= "`glpi_networkinterfaces`.`name` AS networkinterface, ";
       $manage_netinterface = true;
@@ -162,12 +162,12 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
          }
          unset($portInformation['networkinterface']);
       }
-      
-      
+
+
       foreach ($fields as $field) {
          $input[$field] = $portInformation[$field];
       }
-      
+
       if (($setNetworkCard) && ($portInformation['itemtype'] == 'Computer')) {
          $query = "SELECT link.`id` AS link_id,
                           device.`designation` AS name
@@ -283,7 +283,7 @@ function update083to084() {
       $migration->addField('glpi_networkportmigrations', $key, 'bool');
    }
    $migration->migrationOneTable('glpi_networkportmigrations');
-   
+
    //TRANS: %s is the name of the table
    logMessage(sprintf(__('Data migration - %s'), "glpi_fqdns"), true);
 
@@ -1185,7 +1185,7 @@ function update083to084() {
                               "`itemtype` = 'Contract'
                                  AND `event` = '$to'")==0) {
       // No notifications duplicate all
-   
+
          $query = "SELECT *
                   FROM `glpi_notifications`
                   WHERE `itemtype` = 'Contract'
@@ -1231,7 +1231,7 @@ function update083to084() {
                   KEY `when` (`when`),
                   UNIQUE KEY `unicity` (`itemtype`,`items_id`, `users_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.84 add table glpi_planningrecalls");      
+      $DB->queryOrDie($query, "0.84 add table glpi_planningrecalls");
    }
 
    $query = "SELECT *
@@ -1251,9 +1251,9 @@ function update083to084() {
                           (`notificationtemplates_id`, `language`, `subject`,
                            `content_text`,
                            `content_html`)
-                   VALUES ($notid, '', '##recall.action##: ##recall.item.name##', '##recall.action##: ##recall.item.name## 
+                   VALUES ($notid, '', '##recall.action##: ##recall.item.name##', '##recall.action##: ##recall.item.name##
 
-##recall.item.content## 
+##recall.item.content##
 
 ##lang.recall.planning.begin##: ##recall.planning.begin##
 ##lang.recall.planning.end##: ##recall.planning.end##

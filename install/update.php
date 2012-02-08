@@ -244,7 +244,7 @@ function display_new_locations() {
    }
    echo "</tr>";
 
-   while ($data = $DB->fetch_array($result)) {
+   while ($data = $DB->fetch_assoc($result)) {
       echo "<tr class=tab_bg_1>";
       for ($i=0 ; $i<=$MAX_LEVEL ; $i++) {
 
@@ -286,7 +286,7 @@ function display_old_locations() {
              ORDER BY `name`";
    $result = $DB->query($query);
 
-   while ($data = $DB->fetch_array($result)) {
+   while ($data = $DB->fetch_assoc($result)) {
       echo "<span class='b'>".$data['name']."</span> - ";
    }
 
@@ -327,7 +327,7 @@ function location_create_new($split_char, $add_first) {
       $root_ID = 0;
    }
 
-   while ($data =  $DB->fetch_array($result)) {
+   while ($data =  $DB->fetch_assoc($result)) {
 
       if (!empty($split_char)) {
          $splitter = explode($split_char, $data['name']);
@@ -478,7 +478,7 @@ function changeVarcharToID($table1, $table2, $chps) {
              WHERE `$table2`.`name` = `$table1`.`$chps`";
    $result = $DB->queryOrDie($query);
 
-   while ($line = $DB->fetch_array($result)) {
+   while ($line = $DB->fetch_assoc($result)) {
       $query = "UPDATE `$table1`
                 SET `temp` = ". $line["row2"] ."
                 WHERE `ID` = '". $line["row1"] ."'";
