@@ -197,12 +197,12 @@ class Computer_Device extends CommonDBTM {
       echo "<div class='spaced'>";
       $rand = mt_rand();
       if ($canedit) {
-         echo "<form id='form_device_action$rand' name='form_device_action$rand' 
+         echo "<form id='form_device_action$rand' name='form_device_action$rand'
                      action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";
          echo "<input type='hidden' name='computers_id' value='$ID'>";
       }
       $global_colspan = 63;
-      
+
       if (!$canedit) {
          $global_colspan--;
       }
@@ -292,17 +292,22 @@ class Computer_Device extends CommonDBTM {
                         echo "<td $rowspan>";
 
                         if ($device->canView()) {
-                           echo "<a href='".$device->getSearchURL()."'>".$device->getTypeName(1)."</a>";
+                           echo "<a href='".$device->getSearchURL()."'>".$device->getTypeName(1).
+                                "</a>";
                         } else {
                            echo $device->getTypeName(1);
                         }
 
                         echo "</td><td $rowspan>".$device->getLink();
                         if ($canedit) {
-                           echo "&nbsp;<img title='"._sx('button', 'Add')."' alt='"._sx('button', 'Add')."'
-                                 onClick=\"Ext.get('quantity_".$itemtype."_".$data['id']."').setDisplayed('block')\"
-                                 class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
-                           echo "<span id='quantity_".$itemtype."_".$data['id']."' style='display:none'><br>";                        
+                           echo "&nbsp;<img title='"._sx('button', 'Add')."' alt='".
+                                 _sx('button', 'Add')."'
+                                 onClick=\"Ext.get('quantity_".$itemtype."_".$data['id']."').
+                                          setDisplayed('block')\"
+                                 class='pointer' src='".$CFG_GLPI["root_doc"].
+                                 "/pics/add_dropdown.png'>";
+                           echo "<span id='quantity_".$itemtype."_".$data['id']."' ".
+                                       "style='display:none'><br>";
                            _e('Add');
                            echo "&nbsp;";
                            Dropdown::showInteger("quantity_".$itemtype."_".$data['id'], 0, 0, 10);

@@ -60,9 +60,9 @@ function createNetworkNamesFromItems($itemtype, $itemtable) {
 
    // Retrieve all the networks from the current network ports and add them to the IPNetworks
    $query = "SELECT `ip`, `id`, `entities_id`, ".
-                     ($itemtype=='NetworkEquipment'?"'NetworkEquipment' as itemtype":"`itemtype`").
-                     ", ".($itemtype=='NetworkEquipment'?"`id` as items_id":"`items_id`").
-             " FROM `$itemtable`
+                     ($itemtype=='NetworkEquipment'?"'NetworkEquipment' AS itemtype":"`itemtype`").
+                     ", ".($itemtype=='NetworkEquipment'?"`id` AS items_id":"`items_id`")."
+             FROM `$itemtable`
              WHERE `ip` <> ''";
 
    $networkName = new NetworkName();
@@ -131,12 +131,13 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
    $query = "SELECT `origin_glpi_networkports`.`name`, `origin_glpi_networkports`.`id`,
                     `origin_glpi_networkports`.`mac`, ";
 
-   $addleftjoin = '';
+   $addleftjoin         = '';
    $manage_netinterface = false;
    if ($port instanceof NetworkPortEthernet) {
       $addleftjoin = "LEFT JOIN `glpi_networkinterfaces`
-                        ON (`origin_glpi_networkports`.`networkinterfaces_id` = `glpi_networkinterfaces` .`id`)";
-      $query.= "`glpi_networkinterfaces`.`name` AS networkinterface, ";
+                        ON (`origin_glpi_networkports`.`networkinterfaces_id`
+                              = `glpi_networkinterfaces` .`id`)";
+      $query .= "`glpi_networkinterfaces`.`name` AS networkinterface, ";
       $manage_netinterface = true;
    }
 
@@ -144,20 +145,22 @@ function updateNetworkPortInstantiation($port, $fields, $setNetworkCard) {
       $query .= "$SQL_field AS $field, ";
    }
    $query .= "`origin_glpi_networkports`.`itemtype`, `origin_glpi_networkports`.`items_id`
-              FROM `origin_glpi_networkports` $addleftjoin
-              WHERE `origin_glpi_networkports`.`id` IN (SELECT `id`
-                             FROM `glpi_networkports`
-                             WHERE `instantiation_type` = '".$port->getType()."')";
+              FROM `origin_glpi_networkports`
+              $addleftjoin
+              WHERE `origin_glpi_networkports`.`id`
+                                     IN (SELECT `id`
+                                         FROM `glpi_networkports`
+                                         WHERE `instantiation_type` = '".$port->getType()."')";
    foreach ($DB->request($query) as $portInformation) {
       $input = array('networkports_id' => $portInformation['id']);
       if ($manage_netinterface) {
-         if (preg_match('/TX/i',$portInformation['networkinterface'])) {
+         if (preg_match('/TX/i', $portInformation['networkinterface'])) {
             $input['type'] = 'T';
          }
-         if (preg_match('/SX/i',$portInformation['networkinterface'])) {
+         if (preg_match('/SX/i', $portInformation['networkinterface'])) {
             $input['type'] = 'SX';
          }
-         if (preg_match('/LX/i',$portInformation['networkinterface'])) {
+         if (preg_match('/LX/i', $portInformation['networkinterface'])) {
             $input['type'] = 'LX';
          }
          unset($portInformation['networkinterface']);
@@ -586,9 +589,9 @@ function update083to084() {
             break;
 
          default:
-            if (preg_match('/TX/i',$entry['name'])
-               || preg_match('/SX/i',$entry['name'])
-               || preg_match('/Ethernet/i',$entry['name'])) {
+            if (preg_match('/TX/i', $entry['name'])
+                || preg_match('/SX/i', $entry['name'])
+                || preg_match('/Ethernet/i', $entry['name'])) {
                $instantiation_type = "NetworkPortEthernet";
             }
             break;
@@ -1251,14 +1254,16 @@ function update083to084() {
                           (`notificationtemplates_id`, `language`, `subject`,
                            `content_text`,
                            `content_html`)
-                   VALUES ($notid, '', '##recall.action##: ##recall.item.name##', '##recall.action##: ##recall.item.name##
+                   VALUES ($notid, '', '##recall.action##: ##recall.item.name##',
+                           '##recall.action##: ##recall.item.name##
 
 ##recall.item.content##
 
 ##lang.recall.planning.begin##: ##recall.planning.begin##
 ##lang.recall.planning.end##: ##recall.planning.end##
 ##lang.recall.planning.state##: ##recall.planning.state##
-##lang.recall.item.private##: ##recall.item.private##', '&lt;p&gt;##recall.action##: &lt;a href=\"##recall.item.url##\"&gt;##recall.item.name##&lt;/a&gt;&lt;/p&gt;
+##lang.recall.item.private##: ##recall.item.private##',
+'&lt;p&gt;##recall.action##: &lt;a href=\"##recall.item.url##\"&gt;##recall.item.name##&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;##recall.item.content##&lt;/p&gt;
 &lt;p&gt;##lang.recall.planning.begin##: ##recall.planning.begin##&lt;br /&gt;##lang.recall.planning.end##: ##recall.planning.end##&lt;br /&gt;##lang.recall.planning.state##: ##recall.planning.state##&lt;br /&gt;##lang.recall.item.private##: ##recall.item.private##&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;br /&gt;&lt;br /&gt;&lt;/p&gt;')";
@@ -1266,22 +1271,23 @@ function update083to084() {
 
 
          $query = "INSERT INTO `glpi_notifications`
-                           (`name`, `entities_id`, `itemtype`, `event`, `mode`,
+                          (`name`, `entities_id`, `itemtype`, `event`, `mode`,
                            `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
                            `date_mod`)
-                     VALUES ('Planning recall', 0, 'PlanningRecall', 'planningrecall', 'mail',
-                           $notid, '', 1, 1, NOW())";
+                   VALUES ('Planning recall', 0, 'PlanningRecall', 'planningrecall', 'mail',
+                             $notid, '', 1, 1, NOW())";
          $DB->queryOrDie($query, "0.84 add planning recall notification");
          $notifid = $DB->insert_id();
 
          $query = "INSERT INTO `glpi_notificationtargets`
-                           (`id`, `notifications_id`, `type`, `items_id`)
-                     VALUES (NULL, $notifid, ".Notification::USER_TYPE.", ".Notification::AUTHOR.");";
+                          (`id`, `notifications_id`, `type`, `items_id`)
+                   VALUES (NULL, $notifid, ".Notification::USER_TYPE.", ".Notification::AUTHOR.");";
          $DB->queryOrDie($query, "0.84 add planning recall notification target");
       }
    }
 
-   if (!countElementsInTable('glpi_crontasks', "`itemtype`='PlanningRecall' AND `name`='planningrecall'")) {
+   if (!countElementsInTable('glpi_crontasks',
+                             "`itemtype`='PlanningRecall' AND `name`='planningrecall'")) {
       $query = "INSERT INTO `glpi_crontasks`
                        (`itemtype`, `name`, `frequency`, `param`, `state`, `mode`, `allowmode`,
                         `hourmin`, `hourmax`, `logs_lifetime`, `lastrun`, `lastcode`, `comment`)

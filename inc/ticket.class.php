@@ -437,7 +437,8 @@ class Ticket extends CommonITILObject {
 
                case 3 :
                   $satisfaction = new TicketSatisfaction();
-                  if ($item->fields['status'] == 'closed' && $satisfaction->getFromDB($_POST["id"])) {
+                  if ($item->fields['status'] == 'closed'
+                      && $satisfaction->getFromDB($_POST["id"])) {
                      $satisfaction->showSatisfactionForm($item);
                   } else {
                      echo "<p class='center b'>".__('No generated survey')."</p>";
@@ -543,7 +544,8 @@ class Ticket extends CommonITILObject {
 
             // must own_ticket to grab a non assign ticket
             if ($this->countUsers(parent::ASSIGN)==0) {
-               if ((!Session::haveRight("steal_ticket","1") && !Session::haveRight("own_ticket","1"))
+               if ((!Session::haveRight("steal_ticket","1")
+                     && !Session::haveRight("own_ticket","1"))
                    || !isset($input["_itil_assign"]['users_id'])
                    || ($input["_itil_assign"]['users_id'] != Session::getLoginUserID())) {
                   unset($input["_itil_assign"]);
@@ -583,8 +585,9 @@ class Ticket extends CommonITILObject {
          }
          // for post-only with validate right or validation created by rules
          $ticketval = new TicketValidation();
-         if (TicketValidation::canValidate($this->fields['id']) || $ticketval->canCreate()
-            || isset($input["_rule_process"])) {
+         if (TicketValidation::canValidate($this->fields['id'])
+             || $ticketval->canCreate()
+             || isset($input["_rule_process"])) {
             $allowed_fields[] = 'global_validation';
          }
          // Manage assign and steal right
@@ -682,7 +685,8 @@ class Ticket extends CommonITILObject {
          }
          if (count($mandatory_missing)) {
             //TRANS: %s are the fields concerned
-            $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),implode(", ",$mandatory_missing));
+            $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
+                               implode(", ",$mandatory_missing));
             Session::addMessageAfterRedirect($message, false, ERROR);
             return false;
          }
@@ -769,7 +773,8 @@ class Ticket extends CommonITILObject {
             $validation->add($values);
 
             Event::log($this->fields['id'], "ticket", 4, "tracking",
-                  sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"], $this->fields['id']));
+                       sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
+                               $this->fields['id']));
          }
       }
 
@@ -952,7 +957,8 @@ class Ticket extends CommonITILObject {
                   }
                   if (count($mandatory_missing)) {
                      //TRANS: %s are the fields concerned
-                     $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),implode(", ",$mandatory_missing));
+                     $message = sprintf(__('Mandatory fields are not filled. Please correct: %s'),
+                                        implode(", ",$mandatory_missing));
                      Session::addMessageAfterRedirect($message, false, ERROR);
                      return false;
                   }
@@ -1137,7 +1143,8 @@ class Ticket extends CommonITILObject {
 
       // Log this event
       Event::log($this->fields['id'], "ticket", 4, "tracking",
-                  sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $this->fields['id']));
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"],
+                         $this->fields['id']));
 
       if (isset($this->input["_followup"])
           && is_array($this->input["_followup"])
@@ -1247,7 +1254,8 @@ class Ticket extends CommonITILObject {
             $validation->add($values);
 
             Event::log($this->fields['id'], "ticket", 4, "tracking",
-                       sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"], $this->fields['id']));
+                       sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
+                               $this->fields['id']));
          }
       }
 

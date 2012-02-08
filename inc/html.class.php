@@ -986,9 +986,12 @@ class Html {
          $menu['inventory']['content']['networking']['links']['search']
                                                                   = '/front/networkequipment.php';
 
-         $menu['inventory']['content']['networking']['options']['networkport']['title'] = _n('Network port', 'Network ports', 2);
-         $menu['inventory']['content']['networking']['options']['networkport']['page'] = '/front/networkport.form.php';
-         $menu['inventory']['content']['networking']['options']['networkport']['links'] = array();
+         $menu['inventory']['content']['networking']['options']['networkport']['title']
+                                                   = _n('Network port', 'Network ports', 2);
+         $menu['inventory']['content']['networking']['options']['networkport']['page']
+                                                   = '/front/networkport.form.php';
+         $menu['inventory']['content']['networking']['options']['networkport']['links']
+                                                   = array();
 
          if (Session::haveRight("networking","w")) {
             $menu['inventory']['content']['networking']['links']['add']
@@ -1338,13 +1341,16 @@ class Html {
 
       if (TableExists('glpi_networkportmigrations')
           && countElementsInTable('glpi_networkportmigrations') > 0) {
-         $menu['utils']['content']['migration']['title']           = __('Migration cleaner');
-         $menu['utils']['content']['migration']['page']            = '/front/migration_cleaner.php';
-         
-         $menu['utils']['content']['migration']['options']['networkportmigration']['title'] = __('Network port migration');
-         $menu['utils']['content']['migration']['options']['networkportmigration']['page']  = '/front/networkportmigration.php';
-         $menu['utils']['content']['migration']['options']['networkportmigration']['links']['search']  = '/front/networkportmigration.php';
-         
+         $menu['utils']['content']['migration']['title']    = __('Migration cleaner');
+         $menu['utils']['content']['migration']['page']     = '/front/migration_cleaner.php';
+
+         $menu['utils']['content']['migration']['options']['networkportmigration']['title']
+                                                = __('Network port migration');
+         $menu['utils']['content']['migration']['options']['networkportmigration']['page']
+                                                = '/front/networkportmigration.php';
+         $menu['utils']['content']['migration']['options']['networkportmigration']['links']['search']
+                                                = '/front/networkportmigration.php';
+
       }
 
 

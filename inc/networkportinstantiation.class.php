@@ -360,16 +360,15 @@ class NetworkPortInstantiation extends CommonDBChild {
       // Manage alias
       if (isset($this->fields['networkports_id_alias'])) {
          $links_id = $this->fields['networkports_id_alias'];
-         $netport = new NetworkPort();
+         $netport  = new NetworkPort();
          if ($netport->getFromDB($links_id)) {
             $netports[] = $netport->getLink();
          }
       }
       // Manage aggregate
-      if (isset($this->fields['networkports_id_list'])) {    
+      if (isset($this->fields['networkports_id_list'])) {
          $links_id = $this->fields['networkports_id_list'];
-
-         $netport = new NetworkPort();
+         $netport  = new NetworkPort();
          foreach ($links_id as $id) {
             if ($netport->getFromDB($id)) {
                $netports[] = $netport->getLink();
@@ -406,11 +405,11 @@ class NetworkPortInstantiation extends CommonDBChild {
 
       echo "<td>" . __('Origin port') . "</td><td>\n";
       $links_id = array();
-      
+
       // Manage alias ports
       if (isset($this->fields['networkports_id_alias'])) {
          $links_id = array($this->fields['networkports_id_alias']);
-      } 
+      }
       // Manage aggregate ports
       if (isset($this->fields['networkports_id_list'])) {
          $links_id = $this->fields['networkports_id_list'];

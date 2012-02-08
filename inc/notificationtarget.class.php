@@ -32,6 +32,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Class NotificationTarget
+// @since version 0.84
 class NotificationTarget extends CommonDBChild {
 
    var $prefix = '';
