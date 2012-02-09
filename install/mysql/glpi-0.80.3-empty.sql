@@ -1660,11 +1660,6 @@ CREATE TABLE `glpi_events` (
   KEY `item` (`type`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_events` VALUES ('1','-1','system','2011-01-18 11:40:45','login','3','glpi connexion de l\'IP: 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('2','-1','system','2011-03-04 11:35:25','login','3','glpi connexion de l\'IP: 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('3','-1','system','2011-06-28 11:34:39','login','3','glpi connexion de l\'IP: 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('4','-1','system','2011-08-30 08:22:29','login','3','glpi connexion de l\'IP: 127.0.0.1');
-
 ### Dump table glpi_fieldblacklists
 
 DROP TABLE IF EXISTS `glpi_fieldblacklists`;
