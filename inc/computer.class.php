@@ -899,7 +899,7 @@ class Computer extends CommonDBTM {
 
       $tab[10]['table']          = 'glpi_devicememories';
       $tab[10]['field']          = 'designation';
-      $tab[10]['name']           = __('Memory Type');
+      $tab[10]['name']           = __('Memory type');
       $tab[10]['forcegroupby']   = true;
       $tab[10]['usehaving']      = true;
       $tab[10]['massiveaction']  = false;

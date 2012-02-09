@@ -576,7 +576,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       $datas["##$objettype.urlapprove##"]   = urldecode($CFG_GLPI["url_base"].
                                                         "/index.php?redirect=".$objettype."_".
-                                                        $item->getField("id")."_4");
+                                                        $item->getField("id")."_".$item->getType().'$2');
 
 
       $datas["##$objettype.entity##"]       = Dropdown::getDropdownName('glpi_entities',

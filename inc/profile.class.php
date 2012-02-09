@@ -1284,7 +1284,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Document Type')."</td><td>";
+      echo "<td>".__('Document type')."</td><td>";
       self::dropdownNoneReadWrite("typedoc", $this->fields["typedoc"], 1, 1, 1);
       echo "</td>";
       echo "<td>"._n('External link', 'External links',2)."</td><td>";
@@ -1510,7 +1510,7 @@ class Profile extends CommonDBTM {
 
       $tab[45]['table']          = $this->getTable();
       $tab[45]['field']          = 'typedoc';
-      $tab[45]['name']           = __('Document Type');
+      $tab[45]['name']           = __('Document type');
       $tab[45]['datatype']       = 'right';
 
       $tab[46]['table']          = $this->getTable();

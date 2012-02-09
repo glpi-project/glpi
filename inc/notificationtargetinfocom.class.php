@@ -64,7 +64,7 @@ class NotificationTargetInfocom extends NotificationTarget {
          $tmp['##infocom.url##']            = urldecode($CFG_GLPI["url_base"].
                                                         "/index.php?redirect=".
                                                         strtolower($item['itemtype'])."_".
-                                                        $item['items_id']."_4");
+                                                        $item['items_id']."_Infocom");
          $this->datas['infocoms'][] = $tmp;
       }
 
