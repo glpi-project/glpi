@@ -931,7 +931,7 @@ class Infocom extends CommonDBChild {
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Amortization Type')."</td><td >";
+            echo "<td>".__('Amortization type')."</td><td >";
             if ($withtemplate == 2) {
                echo self::getAmortTypeName($ic->fields["sink_type"]);
             } else {
@@ -1231,7 +1231,7 @@ class Infocom extends CommonDBChild {
 
       $tab[57]['table']          = 'glpi_infocoms';
       $tab[57]['field']          = 'sink_type';
-      $tab[57]['name']           = __('Amortization Type');
+      $tab[57]['name']           = __('Amortization type');
       $tab[57]['forcegroupby']   = true;
       $tab[57]['joinparams']     = $joinparams;
 
@@ -1243,7 +1243,7 @@ class Infocom extends CommonDBChild {
 
       $tab[59]['table']          = 'glpi_infocoms';
       $tab[59]['field']          = 'alert';
-      $tab[59]['name']           = __('Email Alarms');
+      $tab[59]['name']           = __('Email alarms');
       $tab[59]['forcegroupby']   = true;
       $tab[59]['joinparams']     = $joinparams;
 
@@ -1348,7 +1348,7 @@ class Infocom extends CommonDBChild {
 
       $tab[15]['table']          = $this->getTable();
       $tab[15]['field']          = 'sink_type';
-      $tab[15]['name']           = __('Amortization Type');
+      $tab[15]['name']           = __('Amortization type');
       $tab[15]['datatype']       = 'integer';
 
       $tab[16]['table']          = $this->getTable();

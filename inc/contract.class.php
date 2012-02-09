@@ -148,7 +148,7 @@ class Contract extends CommonDBTM {
       echo "<td>".__('Name')."</td><td>";
       Html::autocompletionTextField($this, "name");
       echo "</td>";
-      echo "<td>".__('Contract Type')."</td><td >";
+      echo "<td>".__('Contract type')."</td><td >";
       Dropdown::show('ContractType', array('value' => $this->fields["contracttypes_id"]));
       echo "</td></tr>";
 
@@ -499,7 +499,7 @@ class Contract extends CommonDBTM {
 
       $tab[59]['table']          = $this->getTable();
       $tab[59]['field']          = 'alert';
-      $tab[59]['name']           = __('Email Alarms');
+      $tab[59]['name']           = __('Email alarms');
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';
@@ -1010,7 +1010,7 @@ class Contract extends CommonDBTM {
       echo "<tr><th>".__('Name')."</th>";
       echo "<th>".__('Entity')."</th>";
       echo "<th>"._x('Phone', 'Number')."</th>";
-      echo "<th>".__('Contract Type')."</th>";
+      echo "<th>".__('Contract type')."</th>";
       echo "<th>".__('Supplier')."</th>";
       echo "<th>".__('Start date')."</th>";
       echo "<th>".__('Initial contract period')."</th>";

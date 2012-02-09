@@ -325,7 +325,7 @@ class Document extends CommonDBTM {
 
       if ($ID>0) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Current File')."</td>";
+         echo "<td>".__('Current file')."</td>";
          echo "<td>".$this->getDownloadLink('',45);
          echo "<input type='hidden' name='current_filepath' value='".$this->fields["filepath"]."'>";
          echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
@@ -356,7 +356,7 @@ class Document extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('MIME Type')."</td>";
+      echo "<td>".__('MIME type')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "mime");
 
@@ -680,7 +680,7 @@ class Document extends CommonDBTM {
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'mime';
-      $tab[5]['name']            = __('MIME Type');
+      $tab[5]['name']            = __('MIME type');
       $tab[5]['datatype']        = 'string';
 
       $tab[16]['table']          = $this->getTable();
@@ -1324,9 +1324,9 @@ class Document extends CommonDBTM {
          echo "<tr><th>".__('Name')."</th>";
          echo "<th>".__('Entity')."</th>";
          echo "<th>".__('File')."</th>";
-         echo "<th>".__('Web Link')."</th>";
+         echo "<th>".__('Web link')."</th>";
          echo "<th>".__('Heading')."</th>";
-         echo "<th>".__('MIME Type')."</th>";
+         echo "<th>".__('MIME type')."</th>";
 
          if ($withtemplate<2) {
             echo "<th>&nbsp;</th>";
