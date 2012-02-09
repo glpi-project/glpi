@@ -4598,7 +4598,7 @@ class Ticket extends CommonITILObject {
          echo "</td></tr>";
       }
       if ($item->getID() && $item->getType()=='User') {
-         echo "<tr><td class='tab_bg_2 center b' colspan='9'>";
+         echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
          echo "<a class='vsubmit' href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?_users_id_requester=".
                 $item->getID()."\">".__('New ticket for this item...')."</a>";
          echo "</td></tr>";
