@@ -473,7 +473,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
             if ($inquest->fields['type'] == 1) {
                $datas['##ticket.urlsatisfaction##']
                            = urldecode($CFG_GLPI["url_base"]."/index.php?redirect=ticket_".
-                                       $item->getField("id")."_10");
+                                       $item->getField("id").'_Ticket$3');
             // external inquest
             } else if ($inquest->fields['type'] == 2) {
                $datas['##ticket.urlsatisfaction##']
