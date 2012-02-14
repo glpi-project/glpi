@@ -1,10 +1,10 @@
 <?php 
 /*
- * @version $Id$
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@
 
  You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //ee_ET
 
@@ -395,7 +395,7 @@ $LANG['computers'][65]="List of host machines"; // en_GB string to be translated
 $LANG['computers'][66]="Virtuaalmasinad"; 
 $LANG['computers'][67]="Virtualization systems"; // en_GB string to be translated
 $LANG['computers'][68]="Virtualization Models"; // en_GB string to be translated
-$LANG['computers'][69]="States of the virtual machine"; // en_GB string to be translated
+$LANG['computers'][69]="State(s) of the virtual machines"; // en_GB string to be translated
 
 $LANG['connect'][0]="Otseühendused"; 
 $LANG['connect'][1]="Pole ühendatud."; 
@@ -1382,7 +1382,7 @@ $LANG['ocsconfig'][19]="Unit import on serial number"; // en_GB string to be tra
 $LANG['ocsconfig'][20]="Behavior to the deletion of a computer in OCSNG"; // en_GB string to be translated
 $LANG['ocsconfig'][21]="See OCSNG informations"; // en_GB string to be translated
 $LANG['ocsconfig'][22]="Manual OCSNG synchronization"; // en_GB string to be translated
-$LANG['ocsconfig'][23]="Activate the OCSNG mode"; // en_GB string to be translated
+$LANG['ocsconfig'][23]="Enable the OCSNG mode"; // en_GB string to be translated
 $LANG['ocsconfig'][24]="OCSNG mode"; // en_GB string to be translated
 $LANG['ocsconfig'][27]="Üldinfo"; 
 $LANG['ocsconfig'][28]="Items synchronization from OCSNG"; // en_GB string to be translated
@@ -1754,7 +1754,7 @@ $LANG['rulesengine'][87]="Software deleted by GLPI dictionary rules"; // en_GB s
 $LANG['rulesengine'][90]="Work in progress..."; // en_GB string to be translated
 $LANG['rulesengine'][91]="Task completed."; // en_GB string to be translated
 $LANG['rulesengine'][92]="Warning before running rename based on the dictionary rules"; // en_GB string to be translated
-$LANG['rulesengine'][93]="Warning! This operation can put merged software in the trash.<br>Sure to notify your users."; // en_GB string to be translated
+$LANG['rulesengine'][93]="Warning! This operation can put merged software in the trash.<br>Make sure to notify your users."; // en_GB string to be translated
 $LANG['rulesengine'][94]="FUSION"; // en_GB string to be translated
 $LANG['rulesengine'][95]="Manufacturer choice"; // en_GB string to be translated
 $LANG['rulesengine'][96]="Replay dictionary rules for the manufacturer(s)<br> ( ----- = All)"; // en_GB string to be translated
@@ -1815,6 +1815,8 @@ $LANG['search'][1]="näitab kõikki";
 $LANG['search'][2]="sisaldab"; 
 $LANG['search'][3]="under"; // en_GB string to be translated
 $LANG['search'][4]="sorteeri"; 
+$LANG['search'][5]="Selection too large, massive action disabled."; // en_GB string to be translated
+$LANG['search'][6]="To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration."; // en_GB string to be translated
 $LANG['search'][8]="Algusaeg"; 
 $LANG['search'][9]="Lõpuaeg"; 
 $LANG['search'][11]="Nähtavad asjad"; 
@@ -1843,7 +1845,7 @@ $LANG['setup'][10]="Nime vormindus";
 $LANG['setup'][11]="Automatically refresh the list of tickets"; // en_GB string to be translated
 $LANG['setup'][12]="Pre-select me as a technician when creating a ticket"; // en_GB string to be translated
 $LANG['setup'][14]="E-post"; 
-$LANG['setup'][15]="Emails"; // en_GB string to be translated
+$LANG['setup'][15]="Email addresses"; // en_GB string to be translated
 $LANG['setup'][18]="Kasutaja"; 
 $LANG['setup'][19]="Salasõna"; 
 $LANG['setup'][20]="Salasõna uuesti"; 
@@ -1923,6 +1925,7 @@ $LANG['setup'][127]="Autocompletion of text fields"; // en_GB string to be trans
 $LANG['setup'][128]="Kuupäeva vormindus"; 
 $LANG['setup'][129]="Näita GLPI ID numbrit"; 
 $LANG['setup'][130]="Number of days this action logs are stored"; // en_GB string to be translated
+$LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="Näita terviklikku nime hierarhilistes rippmenüüdes"; 
 $LANG['setup'][135]="Tavarežiim"; 
 $LANG['setup'][136]="Tõlkerežiim"; 
@@ -1978,8 +1981,8 @@ $LANG['setup'][201]="Email followups configuration"; // en_GB string to be trans
 $LANG['setup'][202]="Luba täiendused e-kirjaga"; 
 $LANG['setup'][203]="Saatja aadress"; 
 $LANG['setup'][204]="Allkiri"; 
-$LANG['setup'][205]="Test email sent to administrator"; // en_GB string to be translated
-$LANG['setup'][206]="Failed to send test email to administrator"; // en_GB string to be translated
+$LANG['setup'][205]="Kontrollkiri administraatorile saadetud"; 
+$LANG['setup'][206]="Kontrollkirja saatmine administraatorile ebaõnnestus"; 
 $LANG['setup'][207]="Vastuse aadress (valikuline)"; 
 $LANG['setup'][208]="Saatja nimi"; 
 $LANG['setup'][209]="Vastusesaaja nimi (valikuline)"; 
@@ -2103,7 +2106,7 @@ $LANG['setup'][721]="Information about system installation and configuration"; /
 $LANG['setup'][722]="To copy/paste in your support request"; // en_GB string to be translated
 $LANG['setup'][732]="Domain of electronic mail service"; // en_GB string to be translated
 $LANG['setup'][800]="MySQL replikeerimine"; 
-$LANG['setup'][801]="Enable the MySQL replicate"; // en_GB string to be translated
+$LANG['setup'][801]="Enable the MySQL replica"; // en_GB string to be translated
 $LANG['setup'][802]="Database"; // en_GB string to be translated
 $LANG['setup'][803]="Difference between master and slave"; // en_GB string to be translated
 $LANG['setup'][804]="Use the slave for the search engine"; // en_GB string to be translated
@@ -2315,7 +2318,7 @@ $LANG['users'][20]="Delete from managers"; // en_GB string to be translated
 $LANG['users'][21]="Default email"; // en_GB string to be translated
 $LANG['users'][22]="Users titles"; // en_GB string to be translated
 $LANG['users'][23]="Users categories"; // en_GB string to be translated
-$LANG['users'][24]="Add to delegatees"; // en_GB string to be translated
+$LANG['users'][24]="Add to delegates"; // en_GB string to be translated
 $LANG['users'][25]="Delete from delegatees"; // en_GB string to be translated
 
 $LANG['validation'][0]="Kinnitus"; 
