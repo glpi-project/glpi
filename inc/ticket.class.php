@@ -3246,13 +3246,10 @@ class Ticket extends CommonITILObject {
          }
       }
       echo "</th></tr>";
+      
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='left' colspan='2'>";
-
-      echo "<table>";
-      echo "<tr>";
-      echo "<td><span class='tracking_small'>".__('Opening date')."</span></td>";
-      echo "<td>";
+      echo "<th width='$colsize1%'>".__('Opening date')."</th>";
+      echo "<td width='$colsize2%'>";
       $date = $this->fields["date"];
 
       if ($canupdate) {
@@ -3261,52 +3258,22 @@ class Ticket extends CommonITILObject {
          echo Html::convDateTime($date);
       }
 
-      echo "</td></tr>";
-      if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".__('By')."</span></td><td>";
-         if ($canupdate) {
-            User::dropdown(array('name'   => 'users_id_recipient',
-                                 'value'  => $this->fields["users_id_recipient"],
-                                 'entity' => $this->fields["entities_id"],
-                                 'right'  => 'all'));
-         } else {
-            echo getUserName($this->fields["users_id_recipient"], $showuserlink);
-         }
-         echo "</td></tr>";
-      }
-      echo "</table>";
       echo "</td>";
-
-      echo "<td class='left' colspan='2'>";
-      echo "<table>";
-
-      if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".__('Last update')."</span></td>";
-         echo "<td><span class='tracking_small'>".Html::convDateTime($this->fields["date_mod"])."\n";
-         if ($this->fields['users_id_lastupdater']>0) {
-            printf(__('By %s'), getUserName($this->fields["users_id_lastupdater"], $showuserlink));
-         }
-         echo "</span>";
-         echo "</td></tr>";
-      }
-
       // SLA
-      echo "<tr>";
-      echo "<td>".$tt->getBeginHiddenFieldText('due_date');
-      echo "<span class='tracking_small'>".__('Due date')."</span>";
+      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('due_date');
+      _e('Due date');
       if (!$ID) {
          echo $tt->getMandatoryMark('due_date');
       }
       echo $tt->getEndHiddenFieldText('due_date');
-      echo "</td>";
-      echo "<td>";
+      echo "</th>";
+      echo "<td width='$colsize4%'>";
       if ($ID) {
          if ($this->fields["slas_id"]>0) {
-            echo "<span class='tracking_small'>&nbsp;";
-            echo Html::convDateTime($this->fields["due_date"])."</span>";
-
-            echo "</td></tr><tr><td><span class='tracking_small'>".__('SLA')."</span>";
-            echo "</td><td><span class='tracking_small'>";
+             echo "<table width='100%'><tr><td>";
+            echo Html::convDateTime($this->fields["due_date"]);
+            echo "</td><td>".__('SLA')."</td>";
+            echo "<td>";
             echo Dropdown::getDropdownName("glpi_slas", $this->fields["slas_id"]);
             $commentsla = "";
             $slalevel   = new SlaLevel();
@@ -3334,7 +3301,8 @@ class Ticket extends CommonITILObject {
                echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value='".
                     __s('Delete')."'>";
             }
-            echo "</span>";
+            echo "</td>";
+            echo "</tr></table>";
 
          } else {
             echo "<table><tr><td>";
@@ -3380,35 +3348,59 @@ class Ticket extends CommonITILObject {
          echo $tt->getEndHiddenFieldValue('slas_id',$this);
          echo "</td></tr></table>";
       }
-
-      echo "</td></tr>";
-
+      echo "</td>";      
+      echo "</tr>";
+      
       if ($ID) {
-         switch ($this->fields["status"]) {
-            case 'closed' :
-               echo "<tr>";
-               echo "<td><span class='tracking_small'>".__('Close date')."</span></td>";
-               echo "<td>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th width='$colsize1%'>".__('By')."</th>";
+         echo "<td width='$colsize2%'>";
+         if ($canupdate) {
+            User::dropdown(array('name'   => 'users_id_recipient',
+                                 'value'  => $this->fields["users_id_recipient"],
+                                 'entity' => $this->fields["entities_id"],
+                                 'right'  => 'all'));
+         } else {
+            echo getUserName($this->fields["users_id_recipient"], $showuserlink);
+         }
+         
+         echo "</td>";
+         echo "<th width='$colsize3%'>".__('Last update')."</th>";
+         echo "<td width='$colsize4%'>";
+         if ($this->fields['users_id_lastupdater']>0) {
+            //TRANS: %1$s is the update date, %2$s is the last updater name
+            printf(__('%1$s by %2$s'), Html::convDateTime($this->fields["date_mod"]),
+                                       getUserName($this->fields["users_id_lastupdater"], $showuserlink));
+         }
+         echo "</td>";         
+         
+         echo "</tr>";
+      }
+      
+      if ($ID && (in_array($this->fields["status"], $this->getSolvedStatusArray())
+                  || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
+                  
+         echo "<tr>";
+         echo "<th width='$colsize1%'>".__('Solve date')."</th>";
+         echo "<td width='$colsize2%'>";
+         Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false,
+                                    $canupdate);
+         echo "</td>";
+         if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
+               echo "<th width='$colsize3%'>".__('Close date')."</th>";
+               echo "<td width='$colsize4%'>";
                Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false,
                                           $canupdate);
-               echo "</td></tr>";
-               break;
-
-            case 'solved' :
-               echo "<tr>";
-               echo "<td><span class='tracking_small'>".__('Solve date')."</span></td>";
-               echo "<td>";
-               Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false,
-                                          $canupdate);
-               echo "</td></tr>";
-               break;
+               echo "</td>";
+         } else {
+            echo "<td colspan='2'>&nbsp;</td>";
          }
+
+         echo "</tr>";
+
       }
 
-      echo "</table>";
-
-      echo "</td></tr>";
-
+      
       if ($ID) {
          echo "</table>";
          echo "<table  class='tab_cadre_fixe'>";
