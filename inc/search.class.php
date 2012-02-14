@@ -1069,7 +1069,7 @@ class Search {
                                                 $split2[1]."' ";
                                        $out .= "href=\"".
                                                 Toolbox::getItemTypeFormURL($p['itemtype2'][$j]).
-                                                "?id=".$p['itemtype2'][$j]."\">";
+                                                "?id=".$split2[1]."\">";
                                        $out .= $split2[0].$unit;
                                        if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
                                           $out .= " (".$split2[1].")";
