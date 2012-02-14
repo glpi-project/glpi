@@ -2751,7 +2751,7 @@ class Ticket extends CommonITILObject {
                           '_users_id_requester'
                                        => $options['_users_id_requester'],
                           '_users_id_requester_notif'
-                                       => $options['_users_id_requester_notif']['use_notification'],
+                                       => $options['_users_id_requester_notif'],
                           'use_notification'
                                        => $options['_users_id_requester_notif']['use_notification'],
                           'entity_restrict'
