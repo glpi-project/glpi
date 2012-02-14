@@ -306,6 +306,7 @@ class TicketRecurrent extends CommonDropdown {
     * @return boolean
    **/
    static function createTicket($data) {
+      global $LANG;
 
       $result = false;
       $tt = new TicketTemplate();
@@ -335,10 +336,20 @@ class TicketRecurrent extends CommonDropdown {
          $input['entities_id'] = $data['entities_id'];
 
          $ticket = new Ticket();
-         if ($ticket->add($input)) {
+         if ($tid=$ticket->add($input)) {
+            $msg = $LANG['common'][23]." ($tid)"; // Success
             $result = true;
+         } else {
+            $msg = $LANG['common'][118]; // Failure
          }
+      } else {
+         $msg = $LANG['common'][24]; // Not defined
       }
+      $changes[0] = 0;
+      $changes[1] = '';
+      $changes[2] = addslashes($msg);
+      Log::history($data['id'], __CLASS__, $changes, '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
+
 
       // Compute next creation date
       $tr = new self();
