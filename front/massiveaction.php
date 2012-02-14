@@ -36,8 +36,6 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkCentralAccess();
-toolbox::logDebug("Count", count($_POST['item']));
-
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -265,7 +263,6 @@ if (isset($_POST["action"])
          break;
 
       case "update" :
-         /// TODO add right checks
          $searchopt = Search::getCleanedOptions($_POST["itemtype"],'w');
          if (isset($searchopt[$_POST["id_field"]])) {
             /// Infocoms case
@@ -373,7 +370,6 @@ if (isset($_POST["action"])
          break;
 
       case "duplicate" : // For calendar duplicate in another entity
-         /// TODO manage right management
          if (method_exists($item,'duplicate')) {
             $options = array();
             if ($item->isEntityAssign()) {
@@ -384,10 +380,14 @@ if (isset($_POST["action"])
                   if ($item->getFromDB($key)) {
                      if (!$item->isEntityAssign()
                          || ($_POST['entities_id'] != $item->getEntityID())) {
-                        if ($item->duplicate($options)) {
-                           $nbok++;
+                        if ($item->can(-1,'w',$options)) {
+                           if ($item->duplicate($options)) {
+                              $nbok++;
+                           } else {
+                              $nbko++;
+                           }
                         } else {
-                           $nbko++;
+                           $nbnoright++;
                         }
                      } else {
                         $nbko++;
@@ -565,7 +565,6 @@ if (isset($_POST["action"])
          break;
 
       case "change_authtype" :
-         /// TODO manage rights
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
                $ids[] = $key;
@@ -583,24 +582,27 @@ if (isset($_POST["action"])
          break;
 
       case "unlock_ocsng_field" :
-         /// TODO manage rights
          $fields = OcsServer::getLockableFields();
          if ($_POST['field'] == 'all' || isset($fields[$_POST['field']])) {
             foreach ($_POST["item"] as $key => $val) {
                if ($val == 1) {
-                  if ($_POST['field'] == 'all') {
-                     if (OcsServer::replaceOcsArray($key, array(), "computer_update")) {
-                        $nbok++;
+                  if ($item->can($key,'w')) {
+                     if ($_POST['field'] == 'all') {
+                        if (OcsServer::replaceOcsArray($key, array(), "computer_update")) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
                      } else {
-                        $nbko++;
+                        if (OcsServer::deleteInOcsArray($key, $_POST['field'], "computer_update",
+                                                      true)) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
                      }
                   } else {
-                     if (OcsServer::deleteInOcsArray($key, $_POST['field'], "computer_update",
-                                                     true)) {
-                        $nbok++;
-                     } else {
-                        $nbko++;
-                     }
+                     $nbnoright++;
                   }
                }
             }
@@ -613,57 +615,60 @@ if (isset($_POST["action"])
       case "unlock_ocsng_software" :
       case "unlock_ocsng_ip" :
       case "unlock_ocsng_disk" :
-         /// TODO manage rights
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
-               switch ($_POST["action"]) {
-                  case "unlock_ocsng_monitor" :
-                     if (OcsServer::unlockItems($key, "import_monitor")) {
-                        $nbok++;
-                     } else {
-                        $nbko++;
-                     }
-                     break;
-
-                  case "unlock_ocsng_printer" :
-                     if (OcsServer::unlockItems($key, "import_printer")) {
-                        $nbok++;
-                     } else {
-                        $nbko++;
-                     }
-                     break;
-
-                  case "unlock_ocsng_peripheral" :
-                     if (OcsServer::unlockItems($key, "import_peripheral")) {
-                        $nbok++;
-                     } else {
-                        $nbko++;
-                     }
-                     break;
-
-                  case "unlock_ocsng_software" :
-                     if (OcsServer::unlockItems($key, "import_software")) {
-                        $nbok++;
-                     } else {
-                        $nbko++;
-                     }
-                     break;
-
-                  case "unlock_ocsng_ip" :
-                     if (OcsServer::unlockItems($key, "import_ip")) {
-                        $nbok++;
-                     } else {
-                        $nbko++;
-                     }
-                     break;
-
-                  case "unlock_ocsng_disk" :
-                     if (OcsServer::unlockItems($key, "import_disk")) {
-                        $nbok++;
-                     } else {
-                        $nbko++;
-                     }
-                     break;
+               if ($item->can($key,'w')) {
+                  switch ($_POST["action"]) {
+                     case "unlock_ocsng_monitor" :
+                        if (OcsServer::unlockItems($key, "import_monitor")) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
+                        break;
+   
+                     case "unlock_ocsng_printer" :
+                        if (OcsServer::unlockItems($key, "import_printer")) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
+                        break;
+   
+                     case "unlock_ocsng_peripheral" :
+                        if (OcsServer::unlockItems($key, "import_peripheral")) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
+                        break;
+   
+                     case "unlock_ocsng_software" :
+                        if (OcsServer::unlockItems($key, "import_software")) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
+                        break;
+   
+                     case "unlock_ocsng_ip" :
+                        if (OcsServer::unlockItems($key, "import_ip")) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
+                        break;
+   
+                     case "unlock_ocsng_disk" :
+                        if (OcsServer::unlockItems($key, "import_disk")) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
+                        break;
+                  }
+               } else {
+                  $nbnoright++;
                }
             }
          }
