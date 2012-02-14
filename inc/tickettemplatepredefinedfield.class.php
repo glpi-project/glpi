@@ -62,7 +62,17 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       return Session::haveRight('tickettemplate', 'r');
    }
 
+   function getName($with_comment=0) {
 
+      $tt = new TicketTemplate();
+      $fields = $tt->getAllowedFieldsNames(true);
+      
+      if (isset($fields[$this->fields["num"]])) {
+         return $fields[$this->fields["num"]];
+      }
+      return NOT_AVAILABLE;
+   }
+   
    function prepareInputForAdd($input) {
 
       // Use massiveaction system to manage add system.

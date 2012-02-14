@@ -52,7 +52,17 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       return _n('Mandatory field', 'Mandatory fields', $nb);
    }
 
+   function getName($with_comment=0) {
 
+      $tt = new TicketTemplate();
+      $fields = $tt->getAllowedFieldsNames(true);
+      
+      if (isset($fields[$this->fields["num"]])) {
+         return $fields[$this->fields["num"]];
+      }
+      return NOT_AVAILABLE;
+   }
+   
    function canCreate() {
       return Session::haveRight('tickettemplate', 'w');
    }
