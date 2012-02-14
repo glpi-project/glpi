@@ -3180,6 +3180,13 @@ class Ticket extends CommonITILObject {
       if (!isset($options['template_preview'])) {
          $this->showTabs($options);
       }
+	
+
+      // In percent
+      $colsize1='13';
+      $colsize2='29';
+      $colsize3='13';
+      $colsize4='45';
 
       $canupdate_descr = $canupdate || ($this->fields['status'] == 'new'
                                         && $this->isUser(parent::REQUESTER,
@@ -3408,8 +3415,8 @@ class Ticket extends CommonITILObject {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".__('Type')."</th>";
-      echo "<td width='40%'>";
+      echo "<th width='$colsize1%'>".__('Type')."</th>";
+      echo "<td width='$colsize2%'>";
       // Permit to set type when creating ticket without update right
       if ($canupdate || !$ID) {
          $opt = array('value' => $this->fields["type"]);
@@ -3432,10 +3439,10 @@ class Ticket extends CommonITILObject {
          echo self::getTicketTypeName($this->fields["type"]);
       }
       echo "</td>";
-      echo "<th>".__('Category');
+      echo "<th width='$colsize3%'>".__('Category');
       echo $tt->getMandatoryMark('itilcategories_id');
       echo "</th>";
-      echo "<td >";
+      echo "<td width='$colsize4%'>";
       // Permit to set category when creating ticket without update right
       if ($canupdate || !$ID || $canupdate_descr) {
          $opt = array('value'  => $this->fields["itilcategories_id"],
@@ -3484,9 +3491,9 @@ class Ticket extends CommonITILObject {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$tt->getBeginHiddenFieldText('status').__('Status').
+      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('status').__('Status').
              $tt->getMandatoryMark('status'). $tt->getEndHiddenFieldText('status')."</th>";
-      echo "<td width='40%'>";
+      echo "<td width='$colsize2%'>";
       echo $tt->getBeginHiddenFieldValue('status');
       if ($canupdate) {
          self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
@@ -3496,10 +3503,10 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldValue('status',$this);
 
       echo "</td>";
-      echo "<th class='left'>".$tt->getBeginHiddenFieldText('requesttypes_id').__('Request source').
+      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('requesttypes_id').__('Request source').
              $tt->getMandatoryMark('requesttypes_id').
              $tt->getEndHiddenFieldText('requesttypes_id')."</th>";
-      echo "<td>";
+      echo "<td width='$colsize4%'>";
       echo $tt->getBeginHiddenFieldValue('requesttypes_id');
       if ($canupdate) {
          Dropdown::show('RequestType', array('value' => $this->fields["requesttypes_id"]));
@@ -3570,7 +3577,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldValue('impact',$this);
       echo "</td>";
 
-      echo "<th class='left' rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype').
+      echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype').
              __('Associated element')."".$tt->getMandatoryMark('itemtype');
       if ($canupdate) {
          echo "&nbsp;<img title='"._sx('button', 'Update')."' alt='"._sx('button', 'Update')."'
@@ -3637,7 +3644,7 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th class='left'>".__('Priority').$tt->getMandatoryMark('priority').
+      echo "<th>".__('Priority').$tt->getMandatoryMark('priority').
            "</th>";
       echo "<td>";
       $idajax     = 'change_priority_' . mt_rand();
@@ -3684,9 +3691,9 @@ class Ticket extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$tt->getBeginHiddenFieldText('name').__('Title').
+      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('name').__('Title').
              $tt->getMandatoryMark('name'). $tt->getEndHiddenFieldText('name')."</th>";
-      echo "<td width='90%' colspan='3'>";
+      echo "<td width='".(100-$colsize1)."%' colspan='3'>";
       if (!$ID || $canupdate_descr) {
          echo $tt->getBeginHiddenFieldText('name');
 
@@ -3695,7 +3702,7 @@ class Ticket extends CommonITILObject {
          echo "function showName$rand() {\n";
          echo "Ext.get('name$rand').setDisplayed('none');";
          $params = array('maxlength' => 250,
-                         'size'      => 115,
+                         'size'      => 90,
                          'name'      => 'name',
                          'data'      => rawurlencode($this->fields["name"]));
          Ajax::updateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php",
@@ -3730,9 +3737,9 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$tt->getBeginHiddenFieldText('content').__('Description').
+      echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('content').__('Description').
              $tt->getMandatoryMark('content'). $tt->getEndHiddenFieldText('content')."</th>";
-      echo "<td width='90%' colspan='3'>";
+      echo "<td width='".(100-$colsize1)."%' colspan='3'>";
       if (!$ID || $canupdate_descr) { // Admin =oui on autorise la modification de la description
          echo $tt->getBeginHiddenFieldText('content');
 
@@ -3741,7 +3748,7 @@ class Ticket extends CommonITILObject {
          echo "function showDesc$rand() {\n";
          echo "Ext.get('desc$rand').setDisplayed('none');";
          $params = array('rows'  => 6,
-                         'cols'  => 115,
+                         'cols'  => 90,
                          'name'  => 'content',
                          'data'  => rawurlencode($this->fields["content"]));
          Ajax::updateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php",
@@ -3774,7 +3781,7 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_1'>";
       // Permit to add doc when creating a ticket
       if (!$ID) {
-         echo "<th>".sprintf(__('File (%s)'), Document::getMaxUploadSize());
+         echo "<th width='$colsize1%'>".sprintf(__('File (%s)'), Document::getMaxUploadSize());
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
                __s('Help')."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
                "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
@@ -3782,7 +3789,7 @@ class Ticket extends CommonITILObject {
          self::showDocumentAddButton();
 
          echo "</th>";
-         echo "<td><div id='uploadfiles'><input type='file' name='filename[]' size='25'>";
+         echo "<td width='$colsize2%'><div id='uploadfiles'><input type='file' name='filename[]' size='20'>";
          echo "</div></td>";
 
       } else {
@@ -3794,7 +3801,7 @@ class Ticket extends CommonITILObject {
       }
 
       if ($view_linked_tickets) {
-         echo "<th width='10%'>";
+         echo "<th width='$colsize3%'>";
          _e('Linked tickets');
 
          $rand_linked_ticket = mt_rand();
@@ -3807,7 +3814,7 @@ class Ticket extends CommonITILObject {
          }
 
          echo '</th>';
-         echo "<td width='50%'>";
+         echo "<td width='$colsize4%'>";
          if ($canupdate) {
             echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
             Ticket_Ticket::dropdownLinks('_link[link]',

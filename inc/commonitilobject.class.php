@@ -2119,7 +2119,6 @@ abstract class CommonITILObject extends CommonDBTM {
                                         => ($type==self::REQUESTER || $type==self::OBSERVER),
                                 'use_notification'
                                     => $options["_users_id_".$typename."_notif"]['use_notification']);
-
          if (isset($options["_users_id_".$typename."_notif"]['alternative_email'])) {
             $paramscomment['alternative_email']
                            = $options["_users_id_".$typename."_notif"]['alternative_email'];
@@ -2220,8 +2219,8 @@ abstract class CommonITILObject extends CommonDBTM {
       // Manage actors : requester and assign
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th rowspan='2' width='10%'>".__('Actor')."&nbsp;:</th>";
-      echo "<th width='30%'>".__('Requester');
+      echo "<th rowspan='2' width='13%'>".__('Actor')."&nbsp;:</th>";
+      echo "<th width='29%'>".__('Requester');
       $rand_requester = -1;
       $candeleterequester    = false;
 
@@ -2237,7 +2236,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "</th>";
 
-      echo "<th width='30%'>".__('Watcher');
+      echo "<th width='29%'>".__('Watcher');
       $rand_observer       = -1;
       $candeleteobserver   = false;
 
@@ -2266,7 +2265,7 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "</th>";
 
-      echo "<th width='30%'>".__('Assigned to');
+      echo "<th width='29%'>".__('Assigned to');
       $rand_assign      = -1;
       $candeleteassign  = false;
       if ($ID
