@@ -67,7 +67,17 @@ class TicketTemplateMandatoryField extends CommonDBChild {
       return Session::haveRight('tickettemplate', 'r');
    }
 
+   function getName($with_comment=0) {
 
+      $tt = new TicketTemplate();
+      $fields = $tt->getAllowedFieldsNames(true);
+      
+      if (isset($fields[$this->fields["num"]])) {
+         return $fields[$this->fields["num"]];
+      }
+      return NOT_AVAILABLE;
+   }
+   
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
