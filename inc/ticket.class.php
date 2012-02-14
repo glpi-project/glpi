@@ -2820,7 +2820,8 @@ class Ticket extends CommonITILObject {
 
 
       // Set default values...
-      $values = array('_users_id_requester_notif' => array('use_notification' => ($email==""?0:1)),
+      $values = array('_users_id_requester_notif' => array('use_notification'  => ($email==""?0:1),
+                                                           'alternative_email' => ''),
                       'nodelegate'                => 1,
                       '_users_id_requester'       => 0,
                       'name'                      => '',
@@ -2838,8 +2839,7 @@ class Ticket extends CommonITILObject {
                                                                                $_SESSION['glpiactive_entity'],
                                                                                '', Ticket::INCIDENT_TYPE),
                       '_right'                    => "id");
-
-
+      
       // Restore saved value or override with page parameter
       foreach ($values as $name => $value) {
          if (!isset($options[$name])) {
@@ -2871,12 +2871,12 @@ class Ticket extends CommonITILObject {
                           '_users_id_requester'
                                        => $options['_users_id_requester'],
                           '_users_id_requester_notif'
-                                       => $options['_users_id_requester_notif']['use_notification'],
+                                       => $options['_users_id_requester_notif'],
                           'use_notification'
                                        => $options['_users_id_requester_notif']['use_notification'],
                           'entity_restrict'
                                        => $_SESSION["glpiactive_entity"]);
-
+                                       
          Ajax::UpdateItemOnSelectEvent("dropdown_nodelegate".$rand, "show_result".$rand,
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownDelegationUsers.php",
                                        $params);
@@ -2891,7 +2891,6 @@ class Ticket extends CommonITILObject {
          } else {
             $options['_right'] = "delegate";
          }
-
          $self->showActorAddFormOnCreate(self::REQUESTER, $options);
          echo "</div>";
          echo "</td></tr>";

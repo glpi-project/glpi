@@ -51,8 +51,9 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
       $default_email = $user->getDefaultEmail();
       $emails        = $user->getAllEmails();
    }
-
-   if (isset($_REQUEST['alternative_email']) && !empty($_REQUEST['alternative_email'])) {
+   
+   if (isset($_REQUEST['alternative_email']) && !empty($_REQUEST['alternative_email'])
+      && empty($default_email)) {
       $default_email = $_REQUEST['alternative_email'];
    }   
 
@@ -71,6 +72,9 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
        && !empty($default_email)
        && NotificationMail::isUserAddressValid($default_email)) {
       echo $default_email;
+      // Clean alternative email
+      echo "<input type='hidden' size='25' name='".$_REQUEST['field']."[alternative_email]'
+            value=''>";
 
    } else if (count($emails) > 1) {
       // Several emails : select in the list
