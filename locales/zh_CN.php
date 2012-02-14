@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="空";
 $LANG['ocsconfig'][57]="等长度编码"; 
 $LANG['ocsconfig'][58]="在OCSNG上两台电脑自动连接GLPI。<br>这个选项是登录帐户在手动连接和同步程序之间。"; 
 $LANG['ocsconfig'][59]="OCSNG控制台的网络地址"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="OCS固定资产NG"; 
 $LANG['ocsng'][1]="已经导入的计算机的同步"; 

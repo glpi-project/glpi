@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="prázdne";
 $LANG['ocsconfig'][57]="je rovné"; 
 $LANG['ocsconfig'][58]="Automaticky zlúčiť pripojenie s počítačom GLPI prostredníctvom OCS. Táto voľba je preberaná jedine synchronizačnými skriptami (nie pri práci ručne)."; 
 $LANG['ocsconfig'][59]="URL adresa konzoly OCS"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="Inventár OCS NG"; 
 $LANG['ocsng'][1]="Synchronizovať už naimportované počítače"; 

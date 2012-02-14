@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="пустой";
 $LANG['ocsconfig'][57]="равный"; 
 $LANG['ocsconfig'][58]="Используетя для автоматической связи компьютера в GLPI с компьютером в OCSNG.<br />Эта опция учитывается при ручной связи компьютеров и в скриптах синхронизации."; 
 $LANG['ocsconfig'][59]="URL консоли управления OCSNG"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="Сервер OCSNG"; 
 $LANG['ocsng'][1]="Синхронизация уже импортированных компьютеров"; 

@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="tukšs";
 $LANG['ocsconfig'][57]="vienāds"; 
 $LANG['ocsconfig'][58]="The link automatically connects a GLPI computer with one in OCSNG.<br>This option is taken into account during manual link and by synchronization scripts."; // en_GB string to be translated
 $LANG['ocsconfig'][59]="Web adrese uz OCSNG konfigurācijas lapu"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="OCS Inventory NG"; 
 $LANG['ocsng'][1]="Sinhronizēt jau importētos datorus"; 

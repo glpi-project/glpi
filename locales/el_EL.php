@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="Κενό";
 $LANG['ocsconfig'][57]="ίσον"; 
 $LANG['ocsconfig'][58]="Η σύνδεση συνδέει αυτόματα ένα GLPI υπολογιστή με έναν στο OCSNG.<br>Αυτή η επιλογή λαμβάνεται υπόψη σε χειροκίνητη σύνδεση ή από scripts συγχρονισμού."; 
 $LANG['ocsconfig'][59]="URL της OCSNG κονσόλας"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="OCS Απογραφή NG"; 
 $LANG['ocsng'][1]="Συγχρονισμός υπολογιστών που έχουν εισαχθεί ήδη"; 

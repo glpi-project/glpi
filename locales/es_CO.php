@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="vacío";
 $LANG['ocsconfig'][57]="igual"; 
 $LANG['ocsconfig'][58]="El enlace une automáticamente un computador de GLPI con uno de OCS.<br>Esta opción es sólo para la sincronización automática, no para la manual."; 
 $LANG['ocsconfig'][59]="Dirección Web de la consola OCS-NG"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="Inventario OCS NG"; 
 $LANG['ocsng'][1]="Sincronización de computadores ya importados"; 

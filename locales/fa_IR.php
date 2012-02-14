@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="خالی";
 $LANG['ocsconfig'][57]="برابر"; 
 $LANG['ocsconfig'][58]="پیوند به طور خودکار متصل به رایانه GLPI با یکی در OCSNG. <br> این گزینه در طی پیوند دستی حساب و توسط اسکریپت های هماهنگ سازی گرفته شده است."; 
 $LANG['ocsconfig'][59]="نشانی وب از میز فرمان OCSNG"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="NG فهرست اموال OCS"; 
 $LANG['ocsng'][1]="رایانه های همگام سازی شده قبلا درون برد شده اند"; 

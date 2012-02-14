@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="tom";
 $LANG['ocsconfig'][57]="lika med"; 
 $LANG['ocsconfig'][58]="Denna länk förbinder automatiskt en GLPI-dator med en i OCSNG.<br> Man tar hänsyn till detta alternativ under manuell länkning och i script för synkronisering."; 
 $LANG['ocsconfig'][59]="Web address of the OCSNG console"; // en_GB string to be translated
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="OCS Inventory NG"; 
 $LANG['ocsng'][1]="Synkronisera datorer som redan är importerade"; 

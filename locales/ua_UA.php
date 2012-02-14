@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="пустий";
 $LANG['ocsconfig'][57]="дорівнює"; 
 $LANG['ocsconfig'][58]="Зв’язок автоматично підключає сервер GLPI до сервера OCSNG.<br>Ця опція використовується при ручному підключенні та скриптами синхронізації."; 
 $LANG['ocsconfig'][59]="Веб адреса консолі OCSNG"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="OCS Inventory NG"; 
 $LANG['ocsng'][1]="Синхронізовані комп’ютери вже імпортовані"; 

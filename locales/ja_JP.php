@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="空白";
 $LANG['ocsconfig'][57]="同等"; 
 $LANG['ocsconfig'][58]="リンクによりGLPIのコンピュータは自動的にOCSNG内のそれと接続されます。<br>このオプションは手動リンク中でかつ同期スクリプトによる場合のみ選択可能です。"; 
 $LANG['ocsconfig'][59]="OCSNGコンソールのURL"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="OCS Inventory NG"; 
 $LANG['ocsng'][1]="インポートされたコンピュータを同期"; 

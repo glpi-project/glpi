@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="vazio";
 $LANG['ocsconfig'][57]="igual"; 
 $LANG['ocsconfig'][58]="Este endereço liga automaticamente uma máquina no glpi com outra no OCSNG.<br>Esta opção é tida em conta durante a ligação manual assim como com os scripts de sincronização."; 
 $LANG['ocsconfig'][59]="Endereço web do servidor OCSNG"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="OCS Inventory NG"; 
 $LANG['ocsng'][1]="Sincronização de máquinas já importadas"; 

@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="prázdné";
 $LANG['ocsconfig'][57]="rovná se"; 
 $LANG['ocsconfig'][58]="Propojení automaticky spojí počítač v GLPI s počítačem v OCSNG.<br>Tato možnost se využije během ručního spojení a synchronizačními skripty."; 
 $LANG['ocsconfig'][59]="Webová adresa konzole OCSNG"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="Obsah NG OCS"; 
 $LANG['ocsng'][1]="Synchronizovat již naimportované počítače"; 

@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="Bos";
 $LANG['ocsconfig'][57]="Esit"; 
 $LANG['ocsconfig'][58]="Bu bağlantı; OCSNG de bulunan bilgisayar ile GLPI bilgisayarını otomatik olarak bağlar. <br> Bu seçenek, manuel bağlantı sırasında ve senkronizasyon betikleri tarafından dikkate alınır."; 
 $LANG['ocsconfig'][59]="OCSNG konsolu web adresi"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="OCS Inventory NG"; 
 $LANG['ocsng'][1]="Daha önceden aktarılmış bilgisayarları eşitle"; 

@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="vuoto";
 $LANG['ocsconfig'][57]="uguale"; 
 $LANG['ocsconfig'][58]="La connessione unirà automaticamente il computer in GLPI con uno in OCS-NG.<br>Questa opzione viene presa in considerazione durante il collegamento manuale e dagli script di sincronizzazione."; 
 $LANG['ocsconfig'][59]="Indirizzo web della console OCS-NG (URL)"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="OCS Inventory NG"; 
 $LANG['ocsng'][1]="Sincronizza i computer già importati"; 
