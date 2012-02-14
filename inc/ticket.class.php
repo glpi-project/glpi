@@ -3301,9 +3301,9 @@ class Ticket extends CommonITILObject {
 
       // In percent
       $colsize1='13';
-      $colsize2='27';
+      $colsize2='29';
       $colsize3='13';
-      $colsize4='47';
+      $colsize4='45';
 
       $canupdate_descr = $canupdate || ($this->fields['status'] == 'new'
                                         && $this->isUser(parent::REQUESTER,
@@ -3688,7 +3688,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldValue('impact',$this);
       echo "</td>";
 
-      echo "<th class='left' rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype').
+      echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype').
                 $LANG['document'][14]."&nbsp;: ".$tt->getMandatoryMark('itemtype');
       if ($canupdate) {
          echo "<img title=\"".$LANG['buttons'][14]."\" alt=\"".$LANG['buttons'][14]."\"
@@ -3754,7 +3754,7 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th class='left'>".$LANG['joblist'][2]."&nbsp;:".$tt->getMandatoryMark('priority').
+      echo "<th>".$LANG['joblist'][2]."&nbsp;:".$tt->getMandatoryMark('priority').
            "</th>";
       echo "<td>";
       $idajax     = 'change_priority_' . mt_rand();
