@@ -1656,20 +1656,20 @@ function update0803to083() {
    $renametables = array('TicketSolutionType'     => 'SolutionType',
                          'TicketSolutionTemplate' => 'SolutionTemplate',
                          'TicketCategory'         => 'ITILCategory');
-   
-   $itemtype_tables = array("glpi_bookmarks"          => 'itemtype', 
-                            "glpi_bookmarks_users"    => 'itemtype', 
+
+   $itemtype_tables = array("glpi_bookmarks"          => 'itemtype',
+                            "glpi_bookmarks_users"    => 'itemtype',
                             "glpi_displaypreferences" => 'itemtype',
-                            "glpi_logs"               => 'itemtype', 
+                            "glpi_logs"               => 'itemtype',
                             "glpi_events"             => 'type',);
-                               
+
    foreach($itemtype_tables as $table => $field) {
       foreach ($renametables as $key => $val) {
             $query = "UPDATE `$table`
                      SET `$field` = '".$val."'
                      WHERE `$field` = '".$key."'";
-            $DB->queryOrDie($query, "0.83 update itemtype of table $table for $val"));
-      }   
+            $DB->queryOrDie($query, "0.83 update itemtype of table $table for $val");
+      }
    }
 
    // ************ Keep it at the end **************
