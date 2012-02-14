@@ -4125,6 +4125,22 @@ class Ticket extends CommonITILObject {
          $num = 0;
          if ($showgrouptickets) {
             switch ($status) {
+               case "toapprove" :
+                  foreach ($_SESSION['glpigroups'] as $gID) {
+                     $options['field'][$num]      = 71; // groups_id
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = $gID;
+                     $options['link'][$num]       = ($num==0?'AND':'OR');
+                     $num++;
+                     $options['field'][$num]      = 12; // status
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = 'solved';
+                     $options['link'][$num]       = 'AND';
+                     $num++;
+                  }
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
+                  break;            
                case "waiting" :
                   foreach ($_SESSION['glpigroups'] as $gID) {
                      $options['field'][$num]      = 8; // groups_id_assign
@@ -4242,23 +4258,6 @@ class Ticket extends CommonITILObject {
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][17]."</a>";
 
-                  break;
-
-               case "toapprove" :
-                  foreach ($_SESSION['glpigroups'] as $gID) {
-                     $options['field'][$num]      = 71; // groups_id
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = $gID;
-                     $options['link'][$num]       = ($num==0?'AND':'OR');
-                     $num++;
-                     $options['field'][$num]      = 12; // status
-                     $options['searchtype'][$num] = 'equals';
-                     $options['contains'][$num]   = 'solved';
-                     $options['link'][$num]       = 'AND';
-                     $num++;
-                  }
-                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
                   break;
 
                case "toapprove" :
