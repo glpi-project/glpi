@@ -1981,12 +1981,9 @@ abstract class CommonITILObject extends CommonDBTM {
                      'user'  => $LANG['common'][34],
                      'group' => $LANG['common'][35]);
 
-      // Not useful because we have a special place to add supplier
-      /*
       if ($withsupplier && $type == self::ASSIGN) {
          $types['supplier'] = $LANG['financial'][26];
       }
-      */
 
       switch ($type) {
          case self::REQUESTER :
@@ -2412,7 +2409,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<td>";
       if ($rand_assign>=0) {
          self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'],
-                                $is_hidden);
+                                $is_hidden, $this->fields["suppliers_id_assign"]==0);
       }
 
       // Assign User
@@ -2469,7 +2466,8 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // Supplier
-      if ($this->canAssign() && !$is_hidden['suppliers_id_assign']) {
+      if ($this->canAssign() && !$is_hidden['suppliers_id_assign']
+         && $this->fields["suppliers_id_assign"]) {
          echo self::getActorIcon('supplier', self::ASSIGN);
          /// For ticket templates : mandatories
          if (isset($options['_tickettemplate'])) {
