@@ -1172,7 +1172,9 @@ class Html {
          }
       }
 
-      if (Session::haveRight("show_planning","1") || Session::haveRight("show_all_planning","1")) {
+      if (Session::haveRight("show_planning","1") 
+         || Session::haveRight("show_all_planning","1")
+         || Session::haveRight("show_group_planning","1")) {
          $menu['maintain']['content']['planning']['title']           = __('Planning');
          $menu['maintain']['content']['planning']['shortcut']        = 'p';
          $menu['maintain']['content']['planning']['page']            = '/front/planning.php';

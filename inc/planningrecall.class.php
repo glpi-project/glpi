@@ -51,26 +51,30 @@ class PlanningRecall extends CommonDBTM {
    }
 
 
-   static function isActivated() {
+   static function isAvailable() {
       global $CFG_GLPI;
       
       // Cache in session
-      if (isset($_SESSION['glpiplanningreminder_isactivated'])) {
-         return $_SESSION['glpiplanningreminder_isactivated'];
+      if (isset($_SESSION['glpiplanningreminder_isavailable'])) {
+         return $_SESSION['glpiplanningreminder_isavailable'];
       }
       
-      $_SESSION['glpiplanningreminder_isactivated'] = 0;
+      $_SESSION['glpiplanningreminder_isavailable'] = 0;
       if ($CFG_GLPI["use_mailing"]) {
          $task = new Crontask();
          if ($task->getFromDBbyName('PlanningRecall','planningrecall')) {
             // Only disabled by config
             if ($task->isDisabled()!=1) {
-               $_SESSION['glpiplanningreminder_isactivated'] = 1;
+               if (Session::haveRight("show_planning", "1") 
+                  || Session::haveRight("show_all_planning", "1")
+                  || Session::haveRight("show_group_planning","1")) {
+                  $_SESSION['glpiplanningreminder_isavailable'] = 1;
+               }
             }
          }
       }
    
-      return $_SESSION['glpiplanningreminder_isactivated'];
+      return $_SESSION['glpiplanningreminder_isavailable'];
    }
 
    /**
