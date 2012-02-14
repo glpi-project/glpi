@@ -593,7 +593,11 @@ class Reminder extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      Planning::dropdownState("state", $this->fields["state"]);
+      if ($canedit) {
+         Planning::dropdownState("state", $this->fields["state"]);
+      } else {
+         echo Planning::getState($this->fields["state"]);
+      }
       echo "</td>\n";
       echo "</tr>\n";
 
@@ -649,17 +653,22 @@ class Reminder extends CommonDBTM {
          echo "<div id='viewplan'>\n</div>\n";
       }
       echo "</td>";
-      ///TODO find a solution to permit everybody to send recall
-      if ($canedit
-          && $ID
+
+      if ($ID
           && $this->fields["is_planned"]
           && PlanningRecall::isAvailable()) {
-         echo "<td>".__('Recall')."</td><td>";
-         PlanningRecall::dropdown(array('itemtype' =>'Reminder',
-                                        'items_id' => $ID));
-         echo "</td>";
-      } else {
-         echo "<td colspan='2'></td>";
+         echo "<td>".__('Recall')."</td>";
+         if ($canedit) {
+            echo "<td>";
+            PlanningRecall::dropdown(array('itemtype' =>'Reminder',
+                                          'items_id' => $ID));
+            echo "</td>";
+         } else { // No edit right : use specific Planning Recall Form
+            echo "<td>";
+            PlanningRecall::specificForm(array('itemtype' => 'Reminder',
+                                               'items_id' => $ID));
+            echo "</td>";
+         }
       }
       echo "</tr>\n";
 
@@ -890,7 +899,7 @@ class Reminder extends CommonDBTM {
       $reminder = new self();
 
       $users_id = Session::getLoginUserID();
-      $today    = $_SESSION["glpi_currenttime"];
+      $today    = date('Y-m-d');
 
       $restrict_visibility = " AND (`glpi_reminders`.`begin_view_date` IS NULL
                                     OR `glpi_reminders`.`begin_view_date` < '$today')

@@ -144,9 +144,13 @@ class PlanningRecall extends CommonDBTM {
 
                      $when = date("Y-m-d H:i:s",
                                   strtotime($item->fields[$data['field']]) - $data['before_time']);
-                     $pr->update(array('id'          => $pr->fields['id'],
-                                       'before_time' => $data['before_time'],
-                                       'when'        => $when));
+                     if ($data['before_time']>=0) {
+                        $pr->update(array('id'          => $pr->fields['id'],
+                                          'before_time' => $data['before_time'],
+                                          'when'        => $when));
+                     } else {
+                        $pr->delete(array('id' => $pr->fields['id']));
+                     }
                   }
                }
             }
@@ -163,7 +167,9 @@ class PlanningRecall extends CommonDBTM {
                      $data['when'] = date("Y-m-d H:i:s",
                                           strtotime($item->fields[$data['field']])
                                                       - $data['before_time']);
-                     $pr->add($data);
+                     if ($data['before_time']>=0) {                                                      
+                        $pr->add($data);
+                     }
                   }
                }
          }
@@ -251,6 +257,45 @@ class PlanningRecall extends CommonDBTM {
       return true;
    }
 
+   /**
+    * Dispaly specific form when no edit right
+    *
+    * Mandatory options : itemtype, items_id
+    *
+    * @param $options array of possible options:
+    *    - itemtype : string itemtype
+    *    - items_id : integer id of the item
+    *    - users_id : integer id of the user (if not set used login user)
+    *    - value    : integer preselected value for before_time
+    *    - field    : string  field used as time mark (default begin)
+    *
+    * @return nothing (print out an HTML select box) / return false if mandatory fields are not ok
+   **/
+   static function specificForm($options=array()) {
+      global $CFG_GLPI;
+      // Default values
+      $p['itemtype'] = '';
+      $p['items_id'] = 0;
+      $p['users_id'] = Session::getLoginUserID();
+      $p['value']    = Entity::CONFIG_NEVER;
+      $p['field']    = 'begin';
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+      if (!($item = getItemForItemtype($p['itemtype']))) {
+         return false;
+      } // Do not check items_id and item get because may be used when creating item (task for example)
+      
+      echo "<form method='post' action='".$CFG_GLPI['root_doc']."/front/planningrecall.form.php'>";
+      self::dropdown($options);
+      echo " <input type='submit' name='update' value=\"".__s('Save')."\"
+         class='submit'>";
+
+      echo "</form>";
+   }
 
    /**
     * Give cron information
