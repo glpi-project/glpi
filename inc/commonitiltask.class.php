@@ -791,15 +791,31 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "<td>";
 
-      if (isset($this->fields["state"])) {
-         echo Planning::getState($this->fields["state"])."<br>";
-      }
       if (empty($this->fields["begin"])) {
+         if (isset($this->fields["state"])) {
+            echo Planning::getState($this->fields["state"])."<br>";
+         }
          _e('None');
       } else {
-         echo Html::convDateTime($this->fields["begin"])."<br>->".
-              Html::convDateTime($this->fields["end"])."<br>".
-              getUserName($this->fields["users_id_tech"]);
+         echo "<table>";
+         if (isset($this->fields["state"])) {
+            echo "<tr><td>".__('State')."</td><td>";
+            echo Planning::getState($this->fields["state"])."</td></tr>";
+         }
+         echo "<tr><td>".__('Begin')."</td><td>";
+         echo Html::convDateTime($this->fields["begin"])."</td></tr>";
+         echo "<tr><td>".__('End')."</td><td>";
+         echo Html::convDateTime($this->fields["end"])."</td></tr>";
+         echo "<tr><td>".__('By')."</td><td>";
+         echo getUserName($this->fields["users_id_tech"])."</td></tr>";
+         if (PlanningRecall::isAvailable()) {
+            echo "<tr><td>".__('Recall')."</td><td>";
+            PlanningRecall::specificForm(array('itemtype' => $this->getType(),
+                                               'items_id' => $this->fields["id"]));
+            
+            echo "</td></tr>";
+         }
+         echo "</table>";         
       }
       echo "</td>";
 
