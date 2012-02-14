@@ -675,7 +675,6 @@ if (isset($_POST["action"])
          break;
 
       case "force_ocsng_update" :
-         /// TODO check rights
          // First time
          if (!isset($_GET['multiple_actions'])) {
             $_SESSION['glpi_massiveaction']['POST']      = $_POST;
@@ -688,32 +687,44 @@ if (isset($_POST["action"])
             }
             $_SESSION['glpi_massiveaction']['item_count']
                      = count($_SESSION['glpi_massiveaction']['items']);
+            $_SESSION['glpi_massiveaction']['items_ok']        = 0;
+            $_SESSION['glpi_massiveaction']['items_ko']        = 0;
+            $_SESSION['glpi_massiveaction']['items_nbnoright'] = 0;
             Html::redirect($_SERVER['PHP_SELF'].'?multiple_actions=1');
 
          } else {
             if (count($_SESSION['glpi_massiveaction']['items']) >0) {
                $key = array_pop($_SESSION['glpi_massiveaction']['items']);
-               //Try to get the OCS server whose machine belongs
-               $query = "SELECT `ocsservers_id`, `id`
-                           FROM `glpi_ocslinks`
-                           WHERE `computers_id` = '$key'";
-               $result = $DB->query($query);
-               if ($DB->numrows($result) == 1) {
-                  $data = $DB->fetch_assoc($result);
-                  if ($data['ocsservers_id'] != -1) {
-                     //Force update of the machine
-                     OcsServer::updateComputer($data['id'], $data['ocsservers_id'], 1, 1);
+               if ($item->can($key,'w')) {
+                  //Try to get the OCS server whose machine belongs
+                  $query = "SELECT `ocsservers_id`, `id`
+                              FROM `glpi_ocslinks`
+                              WHERE `computers_id` = '$key'";
+                  $result = $DB->query($query);
+                  if ($DB->numrows($result) == 1) {
+                     $data = $DB->fetch_assoc($result);
+                     if ($data['ocsservers_id'] != -1) {
+                        //Force update of the machine
+                        OcsServer::updateComputer($data['id'], $data['ocsservers_id'], 1, 1);
+                        $_SESSION['glpi_massiveaction']['items_ok']++;
+                     } else {
+                        $_SESSION['glpi_massiveaction']['items_ko']++;
+                     }
+                  } else {
+                     $_SESSION['glpi_massiveaction']['items_ko']++;
                   }
+               } else {
+                  $_SESSION['glpi_massiveaction']['items_nbnoright']++;
                }
                Html::redirect($_SERVER['PHP_SELF'].'?multiple_actions=1');
             } else {
-               $REDIRECT = $_SESSION['glpi_massiveaction']['REDIRECT'];
+               $REDIRECT  = $_SESSION['glpi_massiveaction']['REDIRECT'];
+               $nbok      = $_SESSION['glpi_massiveaction']['items_ok'];
+               $nbko      = $_SESSION['glpi_massiveaction']['items_ko'];
+               $nbnoright = $_SESSION['glpi_massiveaction']['items_nbnoright'];
                unset($_SESSION['glpi_massiveaction']);
-               Html::redirect($REDIRECT);
             }
          }
-         /// TODO  Unable to manage numbers with redirect
-         $nbok++;
          break;
 
       case "compute_software_category" :
@@ -741,18 +752,21 @@ if (isset($_POST["action"])
          break;
 
       case "replay_dictionnary" :
-         /// TODO check rights
          $softdictionnayrule = new RuleDictionnarySoftwareCollection();
          $ids                = array();
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
-               $ids[] = $key;
+               if ($item->can($key,'w')) {
+                  $ids[] = $key;
+               } else {
+                  $nbnoright++;
+               }
             }
          }
          if ($softdictionnayrule->replayRulesOnExistingDB(0, 0, $ids)>0){
-            $nbok++;
+            $nbok+=count($ids);
          } else {
-            $nbko++;
+            $nbko+=count($ids);
          }
 
          break;
@@ -1006,41 +1020,51 @@ if (isset($_POST["action"])
 
       case 'delete_email' :
       case 'import_email' :
-         /// TODO check rights
-         $emails_ids = array();
-         foreach ($_POST["item"] as $key => $val) {
-            if ($val == 1) {
-               $emails_ids[$key] = $key;
+         if (!$item->canCreate()) {
+            $nbko++;
+         } else {
+            $emails_ids = array();
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val == 1) {
+                  $emails_ids[$key] = $key;
+               }
             }
+            if (!empty($emails_ids)) {
+               $mailcollector = new MailCollector();
+               if ($_POST["action"] == 'delete_email') {
+                  $mailcollector->deleteOrImportSeveralEmails($emails_ids, 0);
+               }
+               else {
+                  $mailcollector->deleteOrImportSeveralEmails($emails_ids, 1, $_POST['entities_id']);
+               }
+            }
+            $nbok++;
          }
-         if (!empty($emails_ids)) {
-            $mailcollector = new MailCollector();
-            if ($_POST["action"] == 'delete_email') {
-               $mailcollector->deleteOrImportSeveralEmails($emails_ids, 0);
-            }
-            else {
-               $mailcollector->deleteOrImportSeveralEmails($emails_ids, 1, $_POST['entities_id']);
-            }
-         }
-         /// TODO not able to know it is ok
-         $nbok++;
          break;
 
       default :
          // Plugin specific actions
          $split = explode('_',$_POST["action"]);
+         $res = '';
          if ($split[0] == 'plugin' && isset($split[1])) {
             // Normalized name plugin_name_action
             // Allow hook from any plugin on any (core or plugin) type
-            Plugin::doOneHook($split[1], 'MassiveActionsProcess', $_POST);
+            $res = Plugin::doOneHook($split[1], 'MassiveActionsProcess', $_POST);
 
          } else if ($plug=isPluginItemType($_POST["itemtype"])) {
             // non-normalized name
             // hook from the plugin defining the type
-            Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $_POST);
+            $res = Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $_POST);
          }
-         /// TODO : find a way to have stats
-         $nbok++;
+
+         if (is_array($res) && isset($res['ok']) && isset($res['ko']) 
+               && isset($res['noright'])) {
+            $nbok      = $res['ok'];
+            $nbko      = $res['ko'];
+            $nbnoright = $res['noright'];                     
+         } else {
+            $nbok++;
+         }
    }
    // Default message : all ok
    $message = __('Operation successful');
