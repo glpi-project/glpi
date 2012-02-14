@@ -5007,7 +5007,7 @@ class OcsServer extends CommonDBTM {
                // Config says import monitor with serial number only
                // Restrict SQL query ony for monitors with serial present
                if ($cfg_ocs["import_monitor"]==4) {
-                  $query = $query."AND `SERIAL` NOT LIKE ''";
+                  $query = $query." AND `SERIAL` NOT LIKE ''";
                }
                          
                $result = $DBocs->query($query);
