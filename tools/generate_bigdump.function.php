@@ -1816,24 +1816,35 @@ function generate_entity($ID_entity) {
 
 
    // Ajout contacts
-   $items = array("Jean Dupont", "John Smith", "Louis Durand", "Pierre Martin", "Auguste Dubois",
-                  "Jean Dufour", "Albert Dupin", "Julien Duval", "Guillaume Petit", "Bruno Grange",
-                  "Maurice Bernard", "Francois Bonnet", "Laurent Richard", "Richard Leroy",
-                  "Henri Dumont", "Clement Fontaine");
+   $prenoms = array("Jean", "John", "Louis", "Pierre", "Auguste",
+                  "Albert", "Julien", "Guillaume", "Bruno",
+                  "Maurice", "Francois", "Laurent", "Richard",
+                  "Henri", "Clement");
+   $noms = array("Dupont", "Smith", "Durand", "Martin", "Dubois",
+                  "Dufour", "Dupin", "Duval", "Petit", "Grange",
+                  "Bernard", "Bonnet", "Richard", "Leroy",
+                  "Dumont", "Fontaine");
+
 
    $FIRST["contacts"] = getMaxItem("glpi_contacts")+1;
    $c                 = new Contact();
    $cs                = new Contact_Supplier();
    for ($i=0 ; $i<$MAX['contacts'] ; $i++) {
-      if (isset($items[$i])) {
-         $val = $items[$i];
+      if (isset($noms[$i])) {
+         $val = $noms[$i];
       } else {
-         $val = "contact $i";
+         $val = "name $i";
+      }
+      if (isset($prenoms[$i])) {
+         $val2 = $prenoms[$i];
+      } else {
+         $val2 = "firstname $i";
       }
 
       $contactID = $c->add(array('entities_id'        => $ID_entity,
                                  'is_recursive'       => 0,
                                  'name'               => "$val-$ID_entity",
+                                 'firstname'          => $val2,
                                  'contacttypes_id'    => mt_rand(1,$MAX['contact_type']),
                                  'usertitles_id'      => mt_rand(0,$MAX['user_title']),
                                  'phone'              => "phone $i",
