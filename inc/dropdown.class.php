@@ -1048,12 +1048,12 @@ class Dropdown {
     *    - value : default value
    **/
    static function showTimeStamp($myname, $options = array()) {
-      global $LANG;
+      global $LANG, $CFG_GLPI;
 
       $params['value']       = 0;
       $params['min']         = 0;
       $params['max']         = DAY_TIMESTAMP;
-      $params['step']        = 15*MINUTE_TIMESTAMP;
+      $params['step']        = $CFG_GLPI["time_step"]*MINUTE_TIMESTAMP;
       $params['emptylabel']  = self::EMPTY_VALUE;
 
       if (is_array($options) && count($options)) {
@@ -1084,6 +1084,9 @@ class Dropdown {
             $values[$i] = $day.'&nbsp;'.$LANG['calendar'][12].'&nbsp;';
          }
          if ($hour > 0 || $minute > 0) {
+            if ($minute<10) {
+               $minute='0'.$minute;
+            }
             $values[$i] .= $hour.$LANG['gmt'][2].($minute==0?'':$minute);
          }
       }
