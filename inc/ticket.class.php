@@ -3360,7 +3360,7 @@ class Ticket extends CommonITILObject {
       echo "</th></tr>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'><span class='tracking_small'>".$LANG['joblist'][11]."&nbsp;:</th>";
+      echo "<th width='$colsize1%'>".$LANG['joblist'][11]."&nbsp;:</th>";
       echo "<td width='$colsize2%'>";
       $date = $this->fields["date"];
 
