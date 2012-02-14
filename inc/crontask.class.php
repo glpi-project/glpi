@@ -126,7 +126,7 @@ class CronTask extends CommonDBTM{
    /**
     * Give a task state
     *
-    * @return interger 0 : task is enabled
+    * @return integer 0 : task is enabled
     *    if disable : 1: by config, 2: by system lock, 3: by plugin
     *
    **/

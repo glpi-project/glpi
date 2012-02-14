@@ -50,8 +50,6 @@ class PlanningRecall extends CommonDBTM {
       return $this->fields['users_id'] == Session::getLoginUserID();
    }
 
-   ///TODO create Cron job
-
 
    /**
     * Retrieve an item from the database
