@@ -277,8 +277,13 @@ class TicketRecurrent extends CommonDropdown {
                       AND `glpi_ticketrecurrents`.`is_active` = 1";
 
       foreach ($DB->request($query) as $data) {
-         $tot++;
-         self::createTicket($data);
+         if (self::createTicket($data)) {
+            $tot++;
+         } else {
+            //TRANS: %s is a name
+            $task->log(sprintf(__('Failed to create recurrent ticket %s'),
+                               $data['name']));
+         }
       }
 
       $task->setVolume($tot);
@@ -291,11 +296,12 @@ class TicketRecurrent extends CommonDropdown {
     *
     * @param $data array data of a entry of glpi_ticketrecurrents
     *
-    * @return nothing
+    * @return boolean
    **/
    static function createTicket($data) {
 
-      $tt = new TicketTemplate();
+      $result = false;
+      $tt     = new TicketTemplate();
 
       // Create ticket based on ticket template and entity information of ticketrecurrent
       if ($tt->getFromDB($data['tickettemplates_id'])) {
@@ -322,7 +328,9 @@ class TicketRecurrent extends CommonDropdown {
          $input['entities_id'] = $data['entities_id'];
 
          $ticket = new Ticket();
-         $ticket->add($input);
+         if ($ticket->add($input)) {
+            $result = true;
+         }
       }
 
       // Compute next creation date
@@ -335,6 +343,8 @@ class TicketRecurrent extends CommonDropdown {
                                                                      $data['create_before']);
          $tr->update($input);
       }
+
+      return $result;
    }
 
 }
