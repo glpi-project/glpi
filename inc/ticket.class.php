@@ -3358,13 +3358,10 @@ class Ticket extends CommonITILObject {
          }
       }
       echo "</th></tr>";
+      
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='left' colspan='2'>";
-
-      echo "<table>";
-      echo "<tr>";
-      echo "<td><span class='tracking_small'>".$LANG['joblist'][11]."&nbsp;: </span></td>";
-      echo "<td>";
+      echo "<th width='$colsize1%'><span class='tracking_small'>".$LANG['joblist'][11]."&nbsp;:</th>";
+      echo "<td width='$colsize2%'>";
       $date = $this->fields["date"];
 
       if ($canupdate) {
@@ -3373,53 +3370,24 @@ class Ticket extends CommonITILObject {
          echo Html::convDateTime($date);
       }
 
-      echo "</td></tr>";
-      if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".$LANG['common'][95]." &nbsp;:</span></td><td>";
-         if ($canupdate) {
-            User::dropdown(array('name'   => 'users_id_recipient',
-                                 'value'  => $this->fields["users_id_recipient"],
-                                 'entity' => $this->fields["entities_id"],
-                                 'right'  => 'all'));
-         } else {
-            echo getUserName($this->fields["users_id_recipient"], $showuserlink);
-         }
-         echo "</td></tr>";
-      }
-      echo "</table>";
       echo "</td>";
-
-      echo "<td class='left' colspan='2'>";
-      echo "<table>";
-
-      if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td>";
-         echo "<td><span class='tracking_small'>".Html::convDateTime($this->fields["date_mod"])."\n";
-         if ($this->fields['users_id_lastupdater']>0) {
-            echo $LANG['common'][95]."&nbsp;";
-            echo getUserName($this->fields["users_id_lastupdater"], $showuserlink);
-         }
-         echo "</span>";
-         echo "</td></tr>";
-      }
-
       // SLA
-      echo "<tr>";
-      echo "<td>".$tt->getBeginHiddenFieldText('due_date');
-      echo "<span class='tracking_small'>".$LANG['sla'][5]."&nbsp;:</span>";
+      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('due_date');
+      echo $LANG['sla'][5]."&nbsp;:";
       if (!$ID) {
          echo $tt->getMandatoryMark('due_date');
       }
       echo $tt->getEndHiddenFieldText('due_date');
-      echo "</td>";
-      echo "<td>";
+      echo "</th>";
+      echo "<td width='$colsize4%'>";
       if ($ID) {
          if ($this->fields["slas_id"]>0) {
-            echo "<span class='tracking_small'>&nbsp;";
-            echo Html::convDateTime($this->fields["due_date"])."</span>";
+            echo "<table width='100%'><tr><td>";
+         
+            echo Html::convDateTime($this->fields["due_date"]);
 
-            echo "</td></tr><tr><td><span class='tracking_small'>".$LANG['sla'][1]."&nbsp;:</span>";
-            echo "</td><td><span class='tracking_small'>";
+            echo "</td><td>".$LANG['sla'][1]."&nbsp;:";
+            echo "</td><td>";
             echo Dropdown::getDropdownName("glpi_slas", $this->fields["slas_id"]);
             $commentsla = "";
             $slalevel   = new SlaLevel();
@@ -3446,7 +3414,7 @@ class Ticket extends CommonITILObject {
                echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value='".
                     $LANG['buttons'][6]."'>";
             }
-            echo "</span>";
+            echo "</td></tr></table>";
 
          } else {
             echo "<table><tr><td>";
@@ -3492,33 +3460,50 @@ class Ticket extends CommonITILObject {
          echo "</td></tr></table>";
       }
 
-      echo "</td></tr>";
-
+      echo "</td></tr>";      
+      
       if ($ID) {
-         switch ($this->fields["status"]) {
-            case 'closed' :
-               echo "<tr>";
-               echo "<td><span class='tracking_small'>".$LANG['joblist'][12]."&nbsp;: </span></td>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th>".$LANG['common'][95]." &nbsp;:</th>";
+         echo "<td>";
+         if ($canupdate) {
+            User::dropdown(array('name'   => 'users_id_recipient',
+                                 'value'  => $this->fields["users_id_recipient"],
+                                 'entity' => $this->fields["entities_id"],
+                                 'right'  => 'all'));
+         } else {
+            echo getUserName($this->fields["users_id_recipient"], $showuserlink);
+         }
+         echo "</td>";
+         echo "<th>".$LANG['common'][26]."&nbsp;:</th>";
+         echo "<td>".Html::convDateTime($this->fields["date_mod"])."\n";
+         if ($this->fields['users_id_lastupdater']>0) {
+            echo $LANG['common'][95]."&nbsp;";
+            echo getUserName($this->fields["users_id_lastupdater"], $showuserlink);
+         }
+         echo "</td>";
+         echo "</tr>";   
+      }
+
+      if ($ID && ($this->fields["status"]=='solved' 
+                  || $this->fields["status"]=='closed')) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<th>".$LANG['joblist'][14]."&nbsp;:</th>";
+         echo "<td>";
+         Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false,
+                                    $canupdate);
+         echo "</td>";
+         if ($this->fields["status"]=='closed') {
+               echo "<th>".$LANG['joblist'][12]."&nbsp;:</th>";
                echo "<td>";
                Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false,
                                           $canupdate);
-               echo "</td></tr>";
-               break;
-
-            case 'solved' :
-               echo "<tr>";
-               echo "<td><span class='tracking_small'>".$LANG['joblist'][14]."&nbsp;: </span></td>";
-               echo "<td>";
-               Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false,
-                                          $canupdate);
-               echo "</td></tr>";
-               break;
+               echo "</td>";         
+         } else {
+            echo "<td colspan='2'>&nbsp;</td>";
          }
+         echo "</tr>";
       }
-
-      echo "</table>";
-
-      echo "</td></tr>";
 
       if ($ID) {
          echo "</table>";
