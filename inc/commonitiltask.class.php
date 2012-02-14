@@ -697,7 +697,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $recall = '';
       if (isset($val[getForeignKeyFieldForItemType($itemtype)]) 
-            && PlanningRecall::isActivated()) {
+            && PlanningRecall::isAvailable()) {
          $pr = new PlanningRecall();
          if ($pr->getFromDBForItemAndUser($val['itemtype'],
                                           $val[getForeignKeyFieldForItemType($itemtype)],
@@ -951,7 +951,7 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "</td></tr>";
 
-      if (!empty($this->fields["begin"]) && PlanningRecall::isActivated()) {
+      if (!empty($this->fields["begin"]) && PlanningRecall::isAvailable()) {
          echo "<tr class='tab_bg_1'><td>".__('Recall')."</td><td>";
          PlanningRecall::dropdown(array('itemtype' => $this->getType(),
                                         'items_id' => $this->getID()));
