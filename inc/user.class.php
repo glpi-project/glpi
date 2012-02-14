@@ -2629,7 +2629,9 @@ class User extends CommonDBTM {
                "<th>".$LANG['entity'][0]."</th>".
                "<th>".$LANG['common'][16]."</th>".
                "<th>".$LANG['common'][19]."</th>".
-               "<th>".$LANG['common'][20]."</th><th>&nbsp;</th></tr>";
+               "<th>".$LANG['common'][20]."</th>".
+               "<th>".$LANG['state'][0]."</th>".
+               "<th>&nbsp;</th></tr>";
 
          foreach ($type_group as $itemtype) {
             if (!($item = getItemForItemtype($itemtype))) {
@@ -2682,6 +2684,12 @@ class User extends CommonDBTM {
                      } else {
                         echo '&nbsp;';
                      }
+                     echo "</td><td class='center'>";
+                     if (isset($data["states_id"])) {
+                        echo Dropdown::getDropdownName("glpi_states",$data['states_id']);
+                     } else {
+                        echo '&nbsp;';
+                     }                     
                      echo "</td><td class='center'>$linktype</td></tr>";
                   }
                }
