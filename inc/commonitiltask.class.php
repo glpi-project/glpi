@@ -259,6 +259,10 @@ abstract class CommonITILTask  extends CommonDBTM {
          $input["users_id"] = $uid;
       }
 
+      if (!isset($input["is_private"])) {
+         $input['is_private'] = 0;
+      }
+
       $input["date"] = $_SESSION["glpi_currenttime"];
 
       return $input;

@@ -310,6 +310,10 @@ class TicketFollowup  extends CommonDBTM {
       }
       unset($input["add_close"]);
 
+      if (!isset($input["is_private"])) {
+         $input['is_private'] = 0;
+      }
+
       if (isset($input["add_reopen"])) {
          if ($input["content"] == '') {
             Session::addMessageAfterRedirect($LANG['jobresolution'][5], false, ERROR);
