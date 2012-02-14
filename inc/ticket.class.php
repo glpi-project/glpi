@@ -3300,10 +3300,10 @@ class Ticket extends CommonITILObject {
       }
 
       // In percent
-      $colsize1='10';
-      $colsize2='30';
-      $colsize3='15';
-      $colsize4='45';
+      $colsize1='13';
+      $colsize2='27';
+      $colsize3='13';
+      $colsize4='47';
 
       $canupdate_descr = $canupdate || ($this->fields['status'] == 'new'
                                         && $this->isUser(parent::REQUESTER,
@@ -3614,7 +3614,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldValue('status',$this);
 
       echo "</td>";
-      echo "<th class='left' width='$colsize3%'>".$tt->getBeginHiddenFieldText('requesttypes_id').$LANG['job'][44].
+      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('requesttypes_id').$LANG['job'][44].
                 "&nbsp;:".$tt->getMandatoryMark('requesttypes_id').
                 $tt->getEndHiddenFieldText('requesttypes_id')."</th>";
       echo "<td width='$colsize4%'>";
@@ -3813,7 +3813,7 @@ class Ticket extends CommonITILObject {
          echo "function showName$rand() {\n";
          echo "Ext.get('name$rand').setDisplayed('none');";
          $params = array('maxlength' => 250,
-                         'size'      => 115,
+                         'size'      => 90,
                          'name'      => 'name',
                          'data'      => rawurlencode($this->fields["name"]));
          Ajax::updateItemJsCode("viewname$rand", $CFG_GLPI["root_doc"]."/ajax/inputtext.php",
@@ -3860,7 +3860,7 @@ class Ticket extends CommonITILObject {
          echo "function showDesc$rand() {\n";
          echo "Ext.get('desc$rand').setDisplayed('none');";
          $params = array('rows'  => 6,
-                         'cols'  => 115,
+                         'cols'  => 90,
                          'name'  => 'content',
                          'data'  => rawurlencode($this->fields["content"]));
          Ajax::updateItemJsCode("viewdesc$rand", $CFG_GLPI["root_doc"]."/ajax/textarea.php",
