@@ -1098,11 +1098,12 @@ class Dropdown {
     *    - value : default value
    **/
    static function showTimeStamp($myname, $options=array()) {
+      global $CFG_GLPI;
 
       $params['value']       = 0;
       $params['min']         = 0;
       $params['max']         = DAY_TIMESTAMP;
-      $params['step']        = 15*MINUTE_TIMESTAMP;
+      $params['step']        = $CFG_GLPI["time_step"]*MINUTE_TIMESTAMP;
       $params['emptylabel']  = self::EMPTY_VALUE;
 
       if (is_array($options) && count($options)) {
@@ -1134,6 +1135,10 @@ class Dropdown {
          $values[$i] = '';
          if ($day > 0) {
             if ($hour > 0 || $minute > 0) {
+               if ($minute<10) {
+                  $minute='0'.$minute;
+               }
+            
                //TRANS: %1$d is the number of days, %2$d the number of hours,
                //       %3$s the number of minutes : display 1 day 3h15
                $values[$i] = sprintf(_n('%1$d day %2$dh%3$s','%1$d days %2$dh%3$s', $day),
@@ -1143,6 +1148,10 @@ class Dropdown {
             }
 
          } else if ($hour > 0 || $minute > 0) {
+            if ($minute<10) {
+               $minute='0'.$minute;
+            }
+         
             //TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
             $values[$i] = sprintf(__('%1$dh%2$s'), $hour, $minute);
          }
