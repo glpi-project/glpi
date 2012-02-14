@@ -328,10 +328,19 @@ class TicketRecurrent extends CommonDropdown {
          $input['entities_id'] = $data['entities_id'];
 
          $ticket = new Ticket();
-         if ($ticket->add($input)) {
+         if ($tid = $ticket->add($input)) {
+            $msg = sprintf(__('Ticket %d successfully created'), $tid);
             $result = true;
+         } else {
+            $msg = __('Ticket creation failed (check mandatory fields)');
          }
+      } else {
+         $msg = __('Ticket creation failed (no template)');
       }
+      $changes[0] = 0;
+      $changes[1] = '';
+      $changes[2] = addslashes($msg);
+      Log::history($data['id'], __CLASS__, $changes, '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
 
       // Compute next creation date
       $tr = new self();
