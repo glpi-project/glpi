@@ -1973,7 +1973,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return nothing display
    **/
-   static function showActorAddForm($type, $rand_type, $entities_id, $is_hidden = array(), 
+   static function showActorAddForm($type, $rand_type, $entities_id, $is_hidden = array(),
                                     $withsupplier=false, $inobject=true) {
       global $LANG, $CFG_GLPI;
 
@@ -1981,9 +1981,12 @@ abstract class CommonITILObject extends CommonDBTM {
                      'user'  => $LANG['common'][34],
                      'group' => $LANG['common'][35]);
 
+      // Not useful because we have a special place to add supplier
+      /*
       if ($withsupplier && $type == self::ASSIGN) {
          $types['supplier'] = $LANG['financial'][26];
       }
+      */
 
       switch ($type) {
          case self::REQUESTER :
@@ -2013,11 +2016,11 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             if (isset($is_hidden['_groups_id_assign']) && $is_hidden['_groups_id_assign']) {
                unset($types['group']);
-            }      
-            if (isset($types['supplier']) 
+            }
+            if (isset($types['supplier'])
                && isset($is_hidden['suppliers_id_assign']) && $is_hidden['suppliers_id_assign']) {
                unset($types['supplier']);
-            }                    
+            }
             break;
 
          default :
@@ -2030,7 +2033,7 @@ abstract class CommonITILObject extends CommonDBTM {
                         'actortype'       => $typename,
                         'allow_email'     => ($type==self::OBSERVER || $type==self::REQUESTER),
                         'entity_restrict' => $entities_id);
-   
+
          Ajax::updateItemOnSelectEvent("dropdown__itil_".$typename."[_type]$rand",
                                        "showitilactor".$typename."_$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownItilActors.php",
@@ -2195,17 +2198,17 @@ abstract class CommonITILObject extends CommonDBTM {
       if (Session::haveRight('user','r')) {
          $showuserlink = 1;
       }
-      
-      // check is_hidden fields 
+
+      // check is_hidden fields
       foreach (array('_users_id_requester', '_groups_id_requester',
                      '_users_id_observer', '_groups_id_observer',
                      '_users_id_assign', '_groups_id_assign',
                      'suppliers_id_assign') as $f) {
          $is_hidden[$f] = false;
-         if (isset($options['_tickettemplate']) 
+         if (isset($options['_tickettemplate'])
             && $options['_tickettemplate']->isHiddenField($f)) {
-            $is_hidden[$f] = true;    
-         }              
+            $is_hidden[$f] = true;
+         }
       }
 
       // Manage actors : requester and assign
@@ -2220,7 +2223,7 @@ abstract class CommonITILObject extends CommonDBTM {
          && (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester'])) {
          $rand_requester = mt_rand();
          echo "&nbsp;&nbsp;";
-         
+
          echo "<img title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
                     onClick=\"Ext.get('itilactor$rand_requester').setDisplayed('block')\"
                     class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
@@ -2304,7 +2307,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   echo '<br>';
                   $reqdisplay=true;
                }
-            }            
+            }
          }
 
          //If user have access to more than one entity, then display a combobox : Ticket case
@@ -2328,7 +2331,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Requester Group
       if (!$ID) {
-               
+
          if ($this->canAdminActors() && !$is_hidden['_groups_id_requester']) {
             echo self::getActorIcon('group', self::REQUESTER);
             /// For ticket templates : mandatories
@@ -2362,7 +2365,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       // Observer
       if (!$ID) {
-               
+
          if ($this->canAdminActors() && !$is_hidden['_users_id_observer']) {
             $this->showActorAddFormOnCreate(self::OBSERVER, $options);
             echo '<hr>';
@@ -2409,12 +2412,12 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<td>";
       if ($rand_assign>=0) {
          self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'],
-                                $is_hidden, $this->fields["suppliers_id_assign"]==0);
+                                $is_hidden);
       }
 
       // Assign User
       if (!$ID) {
-      
+
          if ($this->canAssign() && !$is_hidden['_users_id_assign']) {
             $this->showActorAddFormOnCreate(self::ASSIGN, $options);
             echo '<hr>';
