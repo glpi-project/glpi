@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-02-08 15:34+0100\n"
-"PO-Revision-Date: 2012-02-08 14:37+0000\n"
+"PO-Revision-Date: 2012-02-14 07:21+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
-"Language-Team: Galician (Spain) (http://www.transifex.net/projects/p/GLPI/team/gl_ES/)\n"
+"Language-Team: Galician (Spain) (http://www.transifex.net/projects/p/GLPI/language/gl_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -377,8 +377,7 @@ msgstr "Disociar"
 
 #: ajax/dropdownTrackingDeviceType.php:49 front/find_num.php:80
 msgid "Enter the first letters (user, item name, serial or asset number)"
-msgstr ""
-"Teclee as primeiras letras (usuario, nome, número de serie ou de inventario)"
+msgstr "Teclee as primeiras letras (usuario, nome, número de serie ou de inventario)"
 
 #: ajax/entitytreesons.php:84 ajax/entitytreesons.php:87
 #: ajax/entitytreesons.php:122 ajax/entitytreesons.php:125
@@ -540,19 +539,14 @@ msgstr "Acceso denegado"
 msgid ""
 "The version of the database is not compatible with the version of the "
 "installed files. An update is necessary."
-msgstr ""
-"A súa versión da base de datos non é compatible coa versión do código "
-"instalado. É necesaria unha actualización."
+msgstr "A súa versión da base de datos non é compatible coa versión do código instalado. É necesaria unha actualización."
 
 #: config/config.php:188
 msgid ""
 "You are trying to use GLPI with files from an earlier version to the version"
 " of the database. Please install the GLPI files corresponding to the version"
 " of your database."
-msgstr ""
-"Está intentando utilizar GLPI cunha versión da base de datos prevista para "
-"unha versión superior. Por favor, instale a versión correspondente á súa "
-"base de datos."
+msgstr "Está intentando utilizar GLPI cunha versión da base de datos prevista para unha versión superior. Por favor, instale a versión correspondente á súa base de datos."
 
 #: config/config.php:193 install/install.php:175 install/install.php:184
 msgid "Try again"
@@ -2431,9 +2425,7 @@ msgstr[1] "Modelos de notificacións"
 msgid ""
 "Impossible to configure the notifications: please configure your email "
 "followup using the above configuration."
-msgstr ""
-"Imposible configurar as notificacións : configure primero o seguimento por "
-"correo electrónico"
+msgstr "Imposible configurar as notificacións : configure primero o seguimento por correo electrónico"
 
 #: front/setup.templates.php:48 inc/html.class.php:2236
 msgid "Manage templates..."
@@ -2530,7 +2522,7 @@ msgstr "Pechado"
 #: inc/ticket.class.php:4334
 msgctxt "Quantity"
 msgid "Number"
-msgstr ""
+msgstr "Número"
 
 #: front/stat.global.php:145 front/stat.graph.php:385
 #: inc/commonitilobject.class.php:2872 inc/stat.class.php:418
@@ -3597,8 +3589,7 @@ msgstr "Filtro de procura para usuarios"
 msgid ""
 "Warning: The request exceeds the limit of the directory. The results are "
 "only partial."
-msgstr ""
-"Coidado: A resposta supera o límite do LDAP. Os resultados son parciais"
+msgstr "Coidado: A resposta supera o límite do LDAP. Os resultados son parciais"
 
 #: inc/authldap.class.php:1003 inc/authldap.class.php:1063
 #: inc/ocsserver.class.php:2566 inc/ocsserver.class.php:2586
@@ -3801,8 +3792,7 @@ msgstr "Cadea de conexión obtida"
 
 #: inc/authmail.class.php:176
 msgid "Email domain Name (users email will be login@domain)"
-msgstr ""
-"Nome de dominio IMAP/POP <br>(correo electrónico de tipo login@dominio)"
+msgstr "Nome de dominio IMAP/POP <br>(correo electrónico de tipo login@dominio)"
 
 #. TRANS: %s is the datetime of update
 #. TRANS: %s is the datetime of insertion
@@ -4346,9 +4336,7 @@ msgstr "Vista global"
 #, php-format
 msgid ""
 "For security reasons, please change the password for the default users: %s"
-msgstr ""
-"Por seguridade, por favor, cambia os contrasinais dos usuarios por defecto: "
-"%s"
+msgstr "Por seguridade, por favor, cambia os contrasinais dos usuarios por defecto: %s"
 
 #: inc/central.class.php:156 inc/central.class.php:157 inc/html.class.php:2351
 msgid "MySQL replica: read only"
@@ -4687,9 +4675,7 @@ msgstr "Nome do persoal"
 
 #: inc/commondbtm.class.php:1879
 msgid "You are not allowed to change the visibility flag for child entities."
-msgstr ""
-"Vostede non ten os permisos suficientes para modificar a visibilidade nas "
-"subentidades"
+msgstr "Vostede non ten os permisos suficientes para modificar a visibilidade nas subentidades"
 
 #: inc/commondbtm.class.php:1884
 msgid "Can't change this attribute. It's inherited from its parent."
@@ -4697,8 +4683,7 @@ msgstr "Este elemento é dependiente doutro. A modificación non está permitida
 
 #: inc/commondbtm.class.php:1888
 msgid "Flag change forbidden. Linked items found."
-msgstr ""
-"A existencia de elementos ligados impiden a modificación deste atributo"
+msgstr "A existencia de elementos ligados impiden a modificación deste atributo"
 
 #: inc/commondbtm.class.php:1892
 msgid "Change visibility in child entities"
@@ -4807,8 +4792,7 @@ msgstr "Non pode borrar este elemento porque posúe sub-elementos"
 
 #: inc/commondropdown.class.php:406
 msgid "Caution: you're about to remove a heading used for one or more items."
-msgstr ""
-"Coidado: está a piques de borrar un título usado para un ou máis elementos."
+msgstr "Coidado: está a piques de borrar un título usado para un ou máis elementos."
 
 #: inc/commondropdown.class.php:411
 msgid ""
@@ -5246,9 +5230,7 @@ msgstr "Nome completo"
 msgid ""
 "Alternate username updated. The connected items have been updated using this"
 " alternate username."
-msgstr ""
-"Modificación do contacto adicional. Os elementos conectados collen como "
-"contacto o do computador."
+msgstr "Modificación do contacto adicional. Os elementos conectados collen como contacto o do computador."
 
 #: inc/computer.class.php:223 inc/computer_item.class.php:191
 msgid ""
@@ -5259,9 +5241,7 @@ msgstr ""
 #: inc/computer.class.php:261 inc/computer_item.class.php:211
 msgid ""
 "Status updated. The connected items have been updated using this status."
-msgstr ""
-"Modificación do estado. Os elementos relacionados actualizáronse co estado "
-"do computador."
+msgstr "Modificación do estado. Os elementos relacionados actualizáronse co estado do computador."
 
 #: inc/computer.class.php:303 inc/computer_item.class.php:176
 msgid ""
@@ -5812,8 +5792,7 @@ msgstr "Transferencia automática de computadores"
 
 #: inc/config.class.php:348
 msgid "Template for the automatic transfer of computers in another entity"
-msgstr ""
-"Modelo para a transferencia automática dos ordenadores noutra entidade"
+msgstr "Modelo para a transferencia automática dos ordenadores noutra entidade"
 
 #: inc/config.class.php:353
 msgid "No automatic transfer"
@@ -5859,9 +5838,7 @@ msgstr "Borrar estado"
 
 #: inc/config.class.php:434
 msgid "Automatically add users from an external authentication source"
-msgstr ""
-"Inserción automática de usuarios a partir de fontes externas de "
-"autenticación"
+msgstr "Inserción automática de usuarios a partir de fontes externas de autenticación"
 
 #: inc/config.class.php:436
 msgid "Add a user without accreditation from a LDAP directory"
@@ -6146,8 +6123,7 @@ msgstr "Probas de escritura de ficheiros dump"
 
 #: inc/config.class.php:1194
 msgid "Check write permissions for automatic actions files"
-msgstr ""
-"Proba de permisos de escritura de para ficheiros de accións automáticas"
+msgstr "Proba de permisos de escritura de para ficheiros de accións automáticas"
 
 #: inc/config.class.php:1196
 msgid "Checking write permissions for cache files"
@@ -6373,12 +6349,12 @@ msgstr[1] "Tipos de contratos"
 #: inc/supplier.class.php:626
 msgctxt "Phone"
 msgid "Number"
-msgstr ""
+msgstr "Número"
 
 #: inc/contract.class.php:163 inc/contract.class.php:439
 #: inc/ticket.class.php:1892
 msgid "Cost"
-msgstr "Costo"
+msgstr "Custo"
 
 #: inc/contract.class.php:172 inc/contract.class.php:420
 #: inc/contract.class.php:1016 inc/supplier.class.php:629
@@ -6414,7 +6390,7 @@ msgstr "Cantidade máxima de elementos (0=sen límites)"
 #: inc/contract.class.php:223 inc/contract.class.php:502
 #: inc/infocom.class.php:1246
 msgid "Email alarms"
-msgstr ""
+msgstr "Alertas por email"
 
 #: inc/contract.class.php:239
 msgid "Support hours"
@@ -6621,8 +6597,7 @@ msgstr "Periodo de execución"
 
 #: inc/crontask.class.php:445
 msgid "Number of days this action logs are stored"
-msgstr ""
-"Tempo en días que se conservarán os rexistros desta tarefa (0 para infinito)"
+msgstr "Tempo en días que se conservarán os rexistros desta tarefa (0 para infinito)"
 
 #: inc/crontask.class.php:447
 msgid "Infinite"
@@ -6746,8 +6721,7 @@ msgstr "Borrado logs antigos"
 
 #: inc/crontask.class.php:1309
 msgid "How long system logs are keep in database (in days, 0 for infinite)"
-msgstr ""
-"Tempo de conservación dos logs na base de datos (en días, 0 para permanente)"
+msgstr "Tempo de conservación dos logs na base de datos (en días, 0 para permanente)"
 
 #: inc/crontask.class.php:1312
 msgid "Database optimization"
@@ -7034,7 +7008,7 @@ msgstr "Engadido por %s"
 
 #: inc/document.class.php:328
 msgid "Current file"
-msgstr ""
+msgstr "Ficheiro actual"
 
 #: inc/document.class.php:336 inc/ticket.class.php:2975
 #: inc/ticket.class.php:3777
@@ -7059,7 +7033,7 @@ msgstr "Asunto"
 #: inc/document.class.php:1329 inc/documenttype.class.php:54
 #: inc/documenttype.class.php:84
 msgid "MIME type"
-msgstr ""
+msgstr "Tipo MIME"
 
 #: inc/document.class.php:364 inc/document.class.php:718
 msgid "Checksum (SHA1)"
@@ -7157,7 +7131,7 @@ msgstr[1] "Documentos asociados"
 
 #: inc/document.class.php:1327
 msgid "Web link"
-msgstr ""
+msgstr "Ligazón web"
 
 #: inc/document.class.php:1452
 msgid "Add a new file"
@@ -7738,9 +7712,7 @@ msgstr "Valores das regras xenéricas para a asignación ás entidades"
 msgid ""
 "These parameters are used as actions in generic rules for assignment to "
 "entities"
-msgstr ""
-"Estos parámetros empréganse como accións nas regras xenéricas para a "
-"asignación ás entidades"
+msgstr "Estos parámetros empréganse como accións nas regras xenéricas para a asignación ás entidades"
 
 #: inc/entity.class.php:1019
 msgid "Mail domain surrogates entity"
@@ -7748,8 +7720,7 @@ msgstr "Entidade substituta de dominio de correo (revisar)"
 
 #: inc/entity.class.php:1026
 msgid "Values used in the interface to search users from a LDAP directory"
-msgstr ""
-"Valores utilizados na interface de busca dos usuarios dun directorio LDAP"
+msgstr "Valores utilizados na interface de busca dos usuarios dun directorio LDAP"
 
 #: inc/entity.class.php:1038
 msgid "LDAP filter associated to the entity (if necessary)"
@@ -8153,7 +8124,7 @@ msgstr[1] ""
 msgid "SLA"
 msgid_plural "SLA"
 msgstr[0] "SLA (acordo de nivel de servizo)"
-msgstr[1] "SLAs"
+msgstr[1] "SLA (acordo de nivel de servizo)"
 
 #. TRANS: menu title for "General setup""
 #: inc/html.class.php:1873
@@ -8212,9 +8183,7 @@ msgstr ""
 #: inc/html.class.php:2389 inc/toolbox.class.php:1005
 #: inc/toolbox.class.php:1008
 msgid "You will find it on the GLPI-PROJECT.org site."
-msgstr ""
-"Atoparaa na páxina: <a href='http://glpi-project.org/' target='_blank'>http"
-"://glpi-project.org</a>."
+msgstr "Atoparaa na páxina: <a href='http://glpi-project.org/' target='_blank'>http://glpi-project.org</a>."
 
 #: inc/html.class.php:2391 inc/toolbox.class.php:1004
 #: inc/toolbox.class.php:1007 inc/toolbox.class.php:1013
@@ -8435,7 +8404,7 @@ msgstr "Prezo extensión garantía"
 #: inc/infocom.class.php:934 inc/infocom.class.php:1234
 #: inc/infocom.class.php:1351
 msgid "Amortization type"
-msgstr ""
+msgstr "Tipo de amortización"
 
 #: inc/infocom.class.php:943 inc/infocom.class.php:1228
 #: inc/infocom.class.php:1346
@@ -8860,9 +8829,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:208
 msgid "mbstring extension not found. Warning with charsets used."
-msgstr ""
-"A extensión mbstring non está dispoñible. Teña coidado cos xogos de "
-"carácteres que utiliza."
+msgstr "A extensión mbstring non está dispoñible. Teña coidado cos xogos de carácteres que utiliza."
 
 #: inc/mailcollector.class.php:212
 msgid "Name (Email address)"
@@ -8878,8 +8845,7 @@ msgstr ""
 
 #: inc/mailcollector.class.php:243 inc/mailcollector.class.php:309
 msgid "Maximum size of each file imported by the mail receiver"
-msgstr ""
-"Gateway de correo: tamaño máximo de cada ficheiro adxunto (0 : sen límite)"
+msgstr "Gateway de correo: tamaño máximo de cada ficheiro adxunto (0 : sen límite)"
 
 #: inc/mailcollector.class.php:270
 msgid "Get email tickets now"
@@ -10272,8 +10238,7 @@ msgstr "URL da consola de OCSNG"
 
 #: inc/ocsserver.class.php:411
 msgid "Limit the import to the following tags (separator $, nothing for all)"
-msgstr ""
-"Limitar a importación ás tags seguintes (separador $; nada, para todos)"
+msgstr "Limitar a importación ás tags seguintes (separador $; nada, para todos)"
 
 #: inc/ocsserver.class.php:416
 msgid "Exclude the following tags (separator $, nothing for all)"
@@ -10306,8 +10271,7 @@ msgstr "Utilizar o dicionario de software de OCSNG"
 
 #: inc/ocsserver.class.php:484
 msgid "Number of items to synchronize via the automatic OCSNG action"
-msgstr ""
-"Cantidade de elementos a sincronizar mediante tarefas programadas con OCSNG"
+msgstr "Cantidade de elementos a sincronizar mediante tarefas programadas con OCSNG"
 
 #: inc/ocsserver.class.php:490
 msgid "Behavior to the deletion of a computer in OCSNG"
@@ -10376,17 +10340,13 @@ msgstr "A configuración de OCSNG non é correcta. (Debe activar TRACE_DELETED)"
 msgid ""
 "Access denied on OCSNG database (Need write rights on hardware.CHECKSUM "
 "necessary)"
-msgstr ""
-"Acceso denegado á base de datos de OCSNG. (É necesario ter permiso de "
-"escritura sobre hardware.CHECKSUM.)"
+msgstr "Acceso denegado á base de datos de OCSNG. (É necesario ter permiso de escritura sobre hardware.CHECKSUM.)"
 
 #: inc/ocsserver.class.php:617
 msgid ""
 "Access denied on OCSNG database (Delete rights in deleted_equiv table "
 "necessary)"
-msgstr ""
-"Acceso denegado á base de datos de OCSNG. (É necesario ter permiso de "
-"borrado sobre deleted_equiv)"
+msgstr "Acceso denegado á base de datos de OCSNG. (É necesario ter permiso de borrado sobre deleted_equiv)"
 
 #: inc/ocsserver.class.php:619
 msgid "Connection to OCSNG database successful"
@@ -10618,7 +10578,7 @@ msgstr "Semana"
 
 #: inc/planning.class.php:228
 msgid "Month"
-msgstr ""
+msgstr "mes"
 
 #: inc/planning.class.php:245
 msgid "Download the planning in Ical format"
@@ -11640,8 +11600,7 @@ msgstr "o"
 msgid ""
 "It is possible to affect the result of a regular expression using the string"
 " #0"
-msgstr ""
-"Pode afectar ao resultado dunha expresión regular utilizando a cadea #0"
+msgstr "Pode afectar ao resultado dunha expresión regular utilizando a cadea #0"
 
 #: inc/rule.class.php:524 inc/rule.class.php:1132
 #: inc/rulecriteria.class.php:88
@@ -11925,9 +11884,7 @@ msgstr "Coidado antes de executar regras de renomeado do dicionario"
 msgid ""
 "Warning! This operation can put merged software in the trash.<br>Sure to "
 "notify your users."
-msgstr ""
-"Coidado! Esta operación pode pór software no lixo.<br>Asegúrese de "
-"notificarllo aos seus usuarios."
+msgstr "Coidado! Esta operación pode pór software no lixo.<br>Asegúrese de notificarllo aos seus usuarios."
 
 #: inc/ruledictionnarysoftwarecollection.class.php:107
 msgid "Manufacturer choice"
@@ -11935,8 +11892,7 @@ msgstr "Escolla un fabricante"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:109
 msgid "Replay dictionary rules for the manufacturer(s)<br> ( ----- = All)"
-msgstr ""
-"Repetir as regras de dicionario para o(s) fabricante(s)<br> ( ----- = Todo)"
+msgstr "Repetir as regras de dicionario para o(s) fabricante(s)<br> ( ----- = Todo)"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:397
 msgid "Software deleted by GLPI dictionary rules"
@@ -12396,7 +12352,7 @@ msgstr "Incidencias creadas"
 
 #: inc/ticket.class.php:391 inc/ticket.class.php:2554
 msgid "Costs"
-msgstr "Costas"
+msgstr "Custos"
 
 #: inc/ticket.class.php:444
 msgid "No generated survey"
@@ -12563,9 +12519,7 @@ msgstr "Próximo nivel: %s"
 msgid ""
 "The assignment of a SLA to a ticket causes the recalculation of the due "
 "date."
-msgstr ""
-"A asignación dunha SLA a unha incidencia provoca o recálculo do seu "
-"vencemento."
+msgstr "A asignación dunha SLA a unha incidencia provoca o recálculo do seu vencemento."
 
 #: inc/ticket.class.php:3344
 msgid "Escalations defined in the SLA will be triggered under this new date."
@@ -12774,9 +12728,7 @@ msgstr ""
 msgid ""
 "The selected user has no valid email address. The request has been created, "
 "without email confirmation."
-msgstr ""
-"O usuario elixido non ten correo electrónico. A petición creouse pero o "
-"envío de correo fallou."
+msgstr "O usuario elixido non ten correo electrónico. A petición creouse pero o envío de correo fallou."
 
 #: inc/ticketvalidation.class.php:234
 msgid "If approval is denied, specify a reason."
@@ -12885,9 +12837,7 @@ msgstr "Proba sesión de autoinicio"
 msgid ""
 "session.auto_start is activated. See .htaccess file in the GLPI root for "
 "more information."
-msgstr ""
-"session.auto_start está activada. Revisar o ficheiro .htaccess no raíz de "
-"GLPI para máis información"
+msgstr "session.auto_start está activada. Revisar o ficheiro .htaccess no raíz de GLPI para máis información"
 
 #: inc/toolbox.class.php:736
 msgid "Test if Session_use_trans_sid is used"
@@ -12909,9 +12859,7 @@ msgstr "Proba da extensión magic_quotes_sybase"
 msgid ""
 "GLPI does not work with the magic_quotes_sybase option ; Please turn it off "
 "and retry"
-msgstr ""
-"GLPI non pode funcionar coa opción magic_quotes_sybase. Por favor desactive "
-"esta opción e reintente"
+msgstr "GLPI non pode funcionar coa opción magic_quotes_sybase. Por favor desactive esta opción e reintente"
 
 #: inc/toolbox.class.php:764 inc/toolbox.class.php:766
 msgid "The magic_quotes_sybase option isn't active on your server - Perfect !"
@@ -12924,9 +12872,7 @@ msgstr "Proba das funcions  json"
 #: inc/toolbox.class.php:775
 msgid ""
 "GLPI can't work correctly without the json_encode and json_decode functions"
-msgstr ""
-"GLPI non pode funcionar correctamente sen as funcións json_encode e "
-"json_decode"
+msgstr "GLPI non pode funcionar correctamente sen as funcións json_encode e json_decode"
 
 #: inc/toolbox.class.php:781 inc/toolbox.class.php:783
 #: inc/toolbox.class.php:797 inc/toolbox.class.php:799
@@ -13149,8 +13095,7 @@ msgstr "Pode engadir máis elementos ou transferir os que hai agora"
 
 #: inc/transfer.class.php:3225
 msgid "Think of making a backup before transferring items."
-msgstr ""
-"Recoméndase facer unha copia de seguridade antes de transferir elementos."
+msgstr "Recoméndase facer unha copia de seguridade antes de transferir elementos."
 
 #: inc/transfer.class.php:3227
 msgid "Items to transfer"
@@ -13274,24 +13219,18 @@ msgstr "Usuario borrado de LDAP"
 
 #: inc/user.class.php:2802
 msgid "Please confirm your email address and enter your new password."
-msgstr ""
-"Por favor, confirme o seu correo electronico e introduza o seu novo "
-"contrasinal."
+msgstr "Por favor, confirme o seu correo electronico e introduza o seu novo contrasinal."
 
 #: inc/user.class.php:2824 inc/user.class.php:2880
 msgid ""
 "Your password reset request has expired or is invalid. Please renew it."
-msgstr ""
-"A súa pregunta para reiniciar o contrasinal expirou ou é inválida. Volva "
-"configurala"
+msgstr "A súa pregunta para reiniciar o contrasinal expirou ou é inválida. Volva configurala"
 
 #: inc/user.class.php:2843
 msgid ""
 "Please enter your email address. A email will be sent to you and you will be"
 " able to choose a new password."
-msgstr ""
-"Por favor, introduza a súa dirección de correo electrónico. Un correo "
-"electrónico seralle enviado e poderá elixir un contrasinal novo."
+msgstr "Por favor, introduza a súa dirección de correo electrónico. Un correo electrónico seralle enviado e poderá elixir un contrasinal novo."
 
 #: inc/user.class.php:2868
 msgid "Reset password successful."
@@ -13301,8 +13240,7 @@ msgstr "Contrasinal cambiada."
 msgid ""
 "The authentication method configuration doesn't allow you to change your "
 "password."
-msgstr ""
-"A configuración de autenticación non lle permite cambiar o seu contrasinal."
+msgstr "A configuración de autenticación non lle permite cambiar o seu contrasinal."
 
 #: inc/user.class.php:2888 inc/user.class.php:2930
 msgid "Email address not found."
@@ -13390,9 +13328,7 @@ msgstr "Instalación ou actualización de GLPI"
 
 #: install/install.php:124
 msgid "Choose 'Install' for a completely new installation of GLPI."
-msgstr ""
-"Elixa 'Instalación' para unha nova instalación completa de GLPI (os datos "
-"importados por GLPI serán os datos predeterminados)"
+msgstr "Elixa 'Instalación' para unha nova instalación completa de GLPI (os datos importados por GLPI serán os datos predeterminados)"
 
 #: install/install.php:125
 msgid ""
@@ -13503,9 +13439,7 @@ msgstr "post-only/post-only para a conta postonly"
 
 #: install/install.php:432
 msgid "You can delete or modify these accounts as well as the initial data."
-msgstr ""
-"Pode borrar ou modificar estas contas así como as primeiras entradas na base"
-" de datos."
+msgstr "Pode borrar ou modificar estas contas así como as primeiras entradas na base de datos."
 
 #: install/install.php:433 install/update_content.php:377
 #: install/update.php:901
@@ -13515,9 +13449,7 @@ msgstr "Utilizar GLPI"
 #: install/install.php:468
 msgid ""
 "Can't create the database connection file, please verify file permissions."
-msgstr ""
-"Imposible crear o ficheiro de conexión á base de datos, comprobe os permisos"
-" sobre os ficheiros"
+msgstr "Imposible crear o ficheiro de conexión á base de datos, comprobe os permisos sobre os ficheiros"
 
 #: install/install.php:524
 msgid "Beginning of the installation"
@@ -13646,8 +13578,7 @@ msgstr "A actualización foi correcta, a súa base de datos está actualizada"
 
 #: install/update.php:194
 msgid "You must now proceed to updating your database content"
-msgstr ""
-"Agora debe proceder á actualización do contido anterior da súa base de datos"
+msgstr "Agora debe proceder á actualización do contido anterior da súa base de datos"
 
 #: install/update.php:196
 msgid "Continue ?"
@@ -13663,17 +13594,13 @@ msgstr "A nova estrutura é jerárquica"
 
 #: install/update.php:411
 msgid "Provide a delimiter in order to automate the new hierarchy generation."
-msgstr ""
-"Si utiliza un carácter de separación pode indicalo para automatizar a "
-"xeración da xerarquía"
+msgstr "Si utiliza un carácter de separación pode indicalo para automatizar a xeración da xerarquía"
 
 #: install/update.php:412
 msgid ""
 "You can also specify a root location which will include all the generated "
 "locations."
-msgstr ""
-"Pode tamén especificar un lugar de base que incluirá todos os lugares "
-"xerados."
+msgstr "Pode tamén especificar un lugar de base que incluirá todos os lugares xerados."
 
 #: install/update.php:414
 msgid "Delimiter"
@@ -13712,16 +13639,10 @@ msgstr ""
 msgid ""
 "All users having administrators rights have have been updated to 'super-"
 "admin' rights with the creation of his new user type."
-msgstr ""
-"Todos os administradores teñen permisos de 'super-admin'.Taméneste novo tipo"
-" de usuario."
+msgstr "Todos os administradores teñen permisos de 'super-admin'.Taméneste novo tipo de usuario."
 
 #: install/update.php:909
 msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
-msgstr ""
-"A conexión á base de datos fallou, comprobe os parámetros de conexión que "
-"figuran no ficheiro config_db.php"
-
-
+msgstr "A conexión á base de datos fallou, comprobe os parámetros de conexión que figuran no ficheiro config_db.php"

@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-02-08 15:34+0100\n"
-"PO-Revision-Date: 2012-02-08 14:37+0000\n"
+"PO-Revision-Date: 2012-02-14 07:20+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
-"Language-Team: Polish (Poland) (http://www.transifex.net/projects/p/GLPI/team/pl_PL/)\n"
+"Language-Team: Polish (Poland) (http://www.transifex.net/projects/p/GLPI/language/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -58,13 +58,11 @@ msgstr ""
 
 #: index.php:135
 msgid "You must activate the JavaScript function of your navigator"
-msgstr ""
-"Do prawidłowej obsługi musisz włączyć JavaScript w swojej przeglądarce"
+msgstr "Do prawidłowej obsługi musisz włączyć JavaScript w swojej przeglądarce"
 
 #: index.php:141
 msgid "You must accept cookies to reach this application"
-msgstr ""
-"Do prawidłowego używania tej strony musisz włączyć akceptacje plików cookies"
+msgstr "Do prawidłowego używania tej strony musisz włączyć akceptacje plików cookies"
 
 #: index.php:145 inc/config.class.php:1193
 msgid "Checking write permissions for session files"
@@ -380,8 +378,7 @@ msgstr "Cofnij skojarzenie"
 
 #: ajax/dropdownTrackingDeviceType.php:49 front/find_num.php:80
 msgid "Enter the first letters (user, item name, serial or asset number)"
-msgstr ""
-"Wpisz pierwsze litery (nazwy użytkownika, pozycji lub numeru seryjnego)"
+msgstr "Wpisz pierwsze litery (nazwy użytkownika, pozycji lub numeru seryjnego)"
 
 #: ajax/entitytreesons.php:84 ajax/entitytreesons.php:87
 #: ajax/entitytreesons.php:122 ajax/entitytreesons.php:125
@@ -544,19 +541,14 @@ msgstr "Dostęp zabroniony"
 msgid ""
 "The version of the database is not compatible with the version of the "
 "installed files. An update is necessary."
-msgstr ""
-"Wersja bazy danych nie jest kompatybilna z wersją zainstalowanych plików. "
-"Konieczna jest aktualizacja."
+msgstr "Wersja bazy danych nie jest kompatybilna z wersją zainstalowanych plików. Konieczna jest aktualizacja."
 
 #: config/config.php:188
 msgid ""
 "You are trying to use GLPI with files from an earlier version to the version"
 " of the database. Please install the GLPI files corresponding to the version"
 " of your database."
-msgstr ""
-"Próbujesz użyć GLPI z plikami z wcześniejszej wersji niż obecna wersja bazy "
-"danych. Proszę zainstaluj wersje plików GLPI odpowiednią dla twojej wersji "
-"bazy danych."
+msgstr "Próbujesz użyć GLPI z plikami z wcześniejszej wersji niż obecna wersja bazy danych. Proszę zainstaluj wersje plików GLPI odpowiednią dla twojej wersji bazy danych."
 
 #: config/config.php:193 install/install.php:175 install/install.php:184
 msgid "Try again"
@@ -2435,8 +2427,7 @@ msgstr[2] ""
 
 #: front/setup.auth.php:62 inc/authmail.class.php:201
 msgid "Impossible to use email server as external source of connection"
-msgstr ""
-"Niemożliwe użycie serwera pocztowego jako zewnętrznego źródła połączenia"
+msgstr "Niemożliwe użycie serwera pocztowego jako zewnętrznego źródła połączenia"
 
 #: front/setup.auth.php:66
 msgid "Others authentication methods"
@@ -2573,7 +2564,7 @@ msgstr "Zamknięte"
 #: inc/ticket.class.php:4334
 msgctxt "Quantity"
 msgid "Number"
-msgstr ""
+msgstr "Numer"
 
 #: front/stat.global.php:145 front/stat.graph.php:385
 #: inc/commonitilobject.class.php:2872 inc/stat.class.php:418
@@ -3648,8 +3639,7 @@ msgstr "Szukaj filtru dla użytkowników"
 msgid ""
 "Warning: The request exceeds the limit of the directory. The results are "
 "only partial."
-msgstr ""
-"Uwaga: Zapytania przekracza limit katalogu. Wyniki mogą być częściowe."
+msgstr "Uwaga: Zapytania przekracza limit katalogu. Wyniki mogą być częściowe."
 
 #: inc/authldap.class.php:1003 inc/authldap.class.php:1063
 #: inc/ocsserver.class.php:2566 inc/ocsserver.class.php:2586
@@ -4412,9 +4402,7 @@ msgstr "Widok ogólny"
 #, php-format
 msgid ""
 "For security reasons, please change the password for the default users: %s"
-msgstr ""
-"Ze względów bezpieczeństwa należy zmienić hasła dla użytkowników domyślnych:"
-" %s"
+msgstr "Ze względów bezpieczeństwa należy zmienić hasła dla użytkowników domyślnych: %s"
 
 #: inc/central.class.php:156 inc/central.class.php:157 inc/html.class.php:2351
 msgid "MySQL replica: read only"
@@ -4765,8 +4753,7 @@ msgstr "Nie masz uprawnień do zmiany flag widzialności dla pododdziałów."
 
 #: inc/commondbtm.class.php:1884
 msgid "Can't change this attribute. It's inherited from its parent."
-msgstr ""
-"Nie mogę zmienić tego atrybutu. Jest dziedziczony z obiektu nadrzędnego."
+msgstr "Nie mogę zmienić tego atrybutu. Jest dziedziczony z obiektu nadrzędnego."
 
 #: inc/commondbtm.class.php:1888
 msgid "Flag change forbidden. Linked items found."
@@ -4880,9 +4867,7 @@ msgstr "Nie możesz usunąć pozycji, ponieważ posiada pod-pozycje"
 
 #: inc/commondropdown.class.php:406
 msgid "Caution: you're about to remove a heading used for one or more items."
-msgstr ""
-"Ostrzeżenie: masz zamiar usunąć nagłówek używany przez jeden lub więcej "
-"elementów"
+msgstr "Ostrzeżenie: masz zamiar usunąć nagłówek używany przez jeden lub więcej elementów"
 
 #: inc/commondropdown.class.php:411
 msgid ""
@@ -5322,9 +5307,7 @@ msgstr "Pełna Nazwa"
 msgid ""
 "Alternate username updated. The connected items have been updated using this"
 " alternate username."
-msgstr ""
-"Kontakt uaktualniony. Podłączone pozycje zostały uaktualnione z użyciem tego"
-" alternatywnego kontaktu."
+msgstr "Kontakt uaktualniony. Podłączone pozycje zostały uaktualnione z użyciem tego alternatywnego kontaktu."
 
 #: inc/computer.class.php:223 inc/computer_item.class.php:191
 msgid ""
@@ -5335,8 +5318,7 @@ msgstr ""
 #: inc/computer.class.php:261 inc/computer_item.class.php:211
 msgid ""
 "Status updated. The connected items have been updated using this status."
-msgstr ""
-"Status uaktualniony. Połączone pozycje zostały uaktualnione do tego statusu."
+msgstr "Status uaktualniony. Połączone pozycje zostały uaktualnione do tego statusu."
 
 #: inc/computer.class.php:303 inc/computer_item.class.php:176
 msgid ""
@@ -5834,8 +5816,7 @@ msgstr ""
 
 #: inc/config.class.php:250
 msgid "Don't use dynamic display if the number of items is less than"
-msgstr ""
-"Nie używaj dynamicznego wyświetlaniajeżeli liczba pozycji jest mniejsza niż"
+msgstr "Nie używaj dynamicznego wyświetlaniajeżeli liczba pozycji jest mniejsza niż"
 
 #: inc/config.class.php:254
 msgid ""
@@ -6472,7 +6453,7 @@ msgstr[2] ""
 #: inc/supplier.class.php:626
 msgctxt "Phone"
 msgid "Number"
-msgstr ""
+msgstr "Numer"
 
 #: inc/contract.class.php:163 inc/contract.class.php:439
 #: inc/ticket.class.php:1892
@@ -6513,7 +6494,7 @@ msgstr "Maksymalna liczba pozycji"
 #: inc/contract.class.php:223 inc/contract.class.php:502
 #: inc/infocom.class.php:1246
 msgid "Email alarms"
-msgstr ""
+msgstr "E-mail alamowy"
 
 #: inc/contract.class.php:239
 msgid "Support hours"
@@ -7148,7 +7129,7 @@ msgstr "Dodane przez %s"
 
 #: inc/document.class.php:328
 msgid "Current file"
-msgstr ""
+msgstr "Aktualny Plik"
 
 #: inc/document.class.php:336 inc/ticket.class.php:2975
 #: inc/ticket.class.php:3777
@@ -7173,7 +7154,7 @@ msgstr "Nagłówek"
 #: inc/document.class.php:1329 inc/documenttype.class.php:54
 #: inc/documenttype.class.php:84
 msgid "MIME type"
-msgstr ""
+msgstr "Typ MIME"
 
 #: inc/document.class.php:364 inc/document.class.php:718
 msgid "Checksum (SHA1)"
@@ -7272,7 +7253,7 @@ msgstr[2] ""
 
 #: inc/document.class.php:1327
 msgid "Web link"
-msgstr ""
+msgstr "Link www"
 
 #: inc/document.class.php:1452
 msgid "Add a new file"
@@ -8424,7 +8405,7 @@ msgstr ""
 
 #: inc/html.class.php:3267
 msgid "last Friday"
-msgstr ""
+msgstr "ostatni piątek"
 
 #: inc/html.class.php:3268
 msgid "last Saturday"
@@ -8587,7 +8568,7 @@ msgstr "Koniec gwarancji"
 #: inc/infocom.class.php:934 inc/infocom.class.php:1234
 #: inc/infocom.class.php:1351
 msgid "Amortization type"
-msgstr ""
+msgstr "Typ amortyzacji"
 
 #: inc/infocom.class.php:943 inc/infocom.class.php:1228
 #: inc/infocom.class.php:1346
@@ -10543,16 +10524,13 @@ msgstr "Niepoprawna konfiguracja OCSNG (TRACE_DELETED musi być aktywne)"
 msgid ""
 "Access denied on OCSNG database (Need write rights on hardware.CHECKSUM "
 "necessary)"
-msgstr ""
-"Dostęp do bazy OCS zabroniony (Potrzebny do zapisania w hardware.CHECKSUM)"
+msgstr "Dostęp do bazy OCS zabroniony (Potrzebny do zapisania w hardware.CHECKSUM)"
 
 #: inc/ocsserver.class.php:617
 msgid ""
 "Access denied on OCSNG database (Delete rights in deleted_equiv table "
 "necessary)"
-msgstr ""
-"Dostęp do bazy OCSNG zabroniony (Usunięcie praw w tabeli deleted_equiv "
-"wymagane)"
+msgstr "Dostęp do bazy OCSNG zabroniony (Usunięcie praw w tabeli deleted_equiv wymagane)"
 
 #: inc/ocsserver.class.php:619
 msgid "Connection to OCSNG database successful"
@@ -10667,11 +10645,11 @@ msgstr ""
 
 #: inc/ocsserver.class.php:5636
 msgid "Imported computers"
-msgstr ""
+msgstr "Zaimportowane komputery"
 
 #: inc/ocsserver.class.php:5637
 msgid "Synchronized computers"
-msgstr ""
+msgstr "Zsynchronizowanie komputerów"
 
 #: inc/ocsserver.class.php:5638
 msgid "Linked computers"
@@ -10699,7 +10677,7 @@ msgstr "Statystyka połączenia z OCSNG"
 
 #: inc/ocsserver.class.php:5700
 msgid "Process completed"
-msgstr ""
+msgstr "proces zakończony"
 
 #: inc/ocsserver.class.php:5831 inc/rule.class.php:406
 msgid "Action type"
@@ -10715,7 +10693,7 @@ msgstr ""
 
 #: inc/ocsserver.class.php:5844
 msgid "New computer created in GLPI"
-msgstr ""
+msgstr "Nowy komputer utworzony w GLPI"
 
 #: inc/ocsserver.class.php:5855
 msgid "Link with computer"
@@ -11341,8 +11319,7 @@ msgstr "Reguły wpływające na komputer jako jednostkę"
 #: inc/rulemailcollector.class.php:87
 #: inc/rulemailcollectorcollection.class.php:48
 msgid "Rules for assigning a ticket created through a mail receiver"
-msgstr ""
-"Reguły przyporządkowywania zgłoszeń utworzonych przez odbiorców poczty"
+msgstr "Reguły przyporządkowywania zgłoszeń utworzonych przez odbiorców poczty"
 
 #: inc/profile.class.php:1195 inc/profile.class.php:1565
 msgid "Rules for assigning a category to a software"
@@ -11818,9 +11795,7 @@ msgstr "lub"
 msgid ""
 "It is possible to affect the result of a regular expression using the string"
 " #0"
-msgstr ""
-"Możesz wykorzystać wyniki wyrażeń regularnych używając ciągu znaków #0 "
-"(gdzie 0 to kolejne wyniki w nawiasach)"
+msgstr "Możesz wykorzystać wyniki wyrażeń regularnych używając ciągu znaków #0 (gdzie 0 to kolejne wyniki w nawiasach)"
 
 #: inc/rule.class.php:524 inc/rule.class.php:1132
 #: inc/rulecriteria.class.php:88
@@ -12098,17 +12073,13 @@ msgstr "Publikujący"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:101
 msgid "Warning before running rename based on the dictionary rules"
-msgstr ""
-"Ostrzeżenie przed uruchomieniem przemianowania na podstawie reguł "
-"słownikowych"
+msgstr "Ostrzeżenie przed uruchomieniem przemianowania na podstawie reguł słownikowych"
 
 #: inc/ruledictionnarysoftwarecollection.class.php:105
 msgid ""
 "Warning! This operation can put merged software in the trash.<br>Sure to "
 "notify your users."
-msgstr ""
-"Uwaga! Ta operacja może umieścić połączone oprogramowanie w koszu.<br> "
-"Powiedz o tym swoim użytkownikom."
+msgstr "Uwaga! Ta operacja może umieścić połączone oprogramowanie w koszu.<br> Powiedz o tym swoim użytkownikom."
 
 #: inc/ruledictionnarysoftwarecollection.class.php:107
 msgid "Manufacturer choice"
@@ -12964,9 +12935,7 @@ msgstr ""
 msgid ""
 "The selected user has no valid email address. The request has been created, "
 "without email confirmation."
-msgstr ""
-"Wybrany użytkownik nie ma poprawnego adresu e-mail. Zgłoszenie zostało "
-"utworzone, bez wysłania potwierdzenia e-mail."
+msgstr "Wybrany użytkownik nie ma poprawnego adresu e-mail. Zgłoszenie zostało utworzone, bez wysłania potwierdzenia e-mail."
 
 #: inc/ticketvalidation.class.php:234
 msgid "If approval is denied, specify a reason."
@@ -13075,9 +13044,7 @@ msgstr "Automatyczny start sesji testowej"
 msgid ""
 "session.auto_start is activated. See .htaccess file in the GLPI root for "
 "more information."
-msgstr ""
-"session.auto_start jest aktywny. W celu dalszych informacji zobacz plik "
-".htaccess w katalogu głównym GLPI."
+msgstr "session.auto_start jest aktywny. W celu dalszych informacji zobacz plik .htaccess w katalogu głównym GLPI."
 
 #: inc/toolbox.class.php:736
 msgid "Test if Session_use_trans_sid is used"
@@ -13099,14 +13066,11 @@ msgstr "test rozszerzenia magic_quotes_sybase"
 msgid ""
 "GLPI does not work with the magic_quotes_sybase option ; Please turn it off "
 "and retry"
-msgstr ""
-"GLPI nie działa z opcją magic_quotes_sybase; proszę wyłącz ją i spróbuj "
-"ponownie"
+msgstr "GLPI nie działa z opcją magic_quotes_sybase; proszę wyłącz ją i spróbuj ponownie"
 
 #: inc/toolbox.class.php:764 inc/toolbox.class.php:766
 msgid "The magic_quotes_sybase option isn't active on your server - Perfect !"
-msgstr ""
-"Opcja magic_quotes_sybase nie jest aktywna na twoim serwerze - Idealnie!"
+msgstr "Opcja magic_quotes_sybase nie jest aktywna na twoim serwerze - Idealnie!"
 
 #: inc/toolbox.class.php:771
 msgid "Test json functions"
@@ -13115,8 +13079,7 @@ msgstr "Test funkcji: json"
 #: inc/toolbox.class.php:775
 msgid ""
 "GLPI can't work correctly without the json_encode and json_decode functions"
-msgstr ""
-"GLPI nie może pracować poprawnie bez funkcji: json_encode i json_decode"
+msgstr "GLPI nie może pracować poprawnie bez funkcji: json_encode i json_decode"
 
 #: inc/toolbox.class.php:781 inc/toolbox.class.php:783
 #: inc/toolbox.class.php:797 inc/toolbox.class.php:799
@@ -13335,9 +13298,7 @@ msgstr ""
 msgid ""
 "You can continue to add elements to be transferred or execute the transfer "
 "now"
-msgstr ""
-"Możesz kontynuować aby dodać elementy do transferowanych lub transferować "
-"elementy teraz"
+msgstr "Możesz kontynuować aby dodać elementy do transferowanych lub transferować elementy teraz"
 
 #: inc/transfer.class.php:3225
 msgid "Think of making a backup before transferring items."
@@ -13685,9 +13646,7 @@ msgstr "post-only/post-only konto tylko do pisania wiadomości"
 
 #: install/install.php:432
 msgid "You can delete or modify these accounts as well as the initial data."
-msgstr ""
-"Możesz usunąć lub zmodyfikować te konta tak jak przed datą pierwszego "
-"wprowadzenia do bazy danych."
+msgstr "Możesz usunąć lub zmodyfikować te konta tak jak przed datą pierwszego wprowadzenia do bazy danych."
 
 #: install/install.php:433 install/update_content.php:377
 #: install/update.php:901
@@ -13697,9 +13656,7 @@ msgstr "Używaj GLPI"
 #: install/install.php:468
 msgid ""
 "Can't create the database connection file, please verify file permissions."
-msgstr ""
-"Nie mogę utworzyć pliku połączenia z bazą danych, prosze zweryfikuj prawa "
-"tego pliku"
+msgstr "Nie mogę utworzyć pliku połączenia z bazą danych, prosze zweryfikuj prawa tego pliku"
 
 #: install/install.php:524
 msgid "Beginning of the installation"
@@ -13844,17 +13801,13 @@ msgstr "Nowa struktura jest hierarchiczna"
 
 #: install/update.php:411
 msgid "Provide a delimiter in order to automate the new hierarchy generation."
-msgstr ""
-"Jeżeli starczy ci nerwów, możesz ustawić porządek dla automatycznego "
-"generowania nowych hierarchii."
+msgstr "Jeżeli starczy ci nerwów, możesz ustawić porządek dla automatycznego generowania nowych hierarchii."
 
 #: install/update.php:412
 msgid ""
 "You can also specify a root location which will include all the generated "
 "locations."
-msgstr ""
-"Możesz również ustawić główną lokalizacje która zawiera lokalizacje "
-"wygenerowane."
+msgstr "Możesz również ustawić główną lokalizacje która zawiera lokalizacje wygenerowane."
 
 #: install/update.php:414
 msgid "Delimiter"
@@ -13893,16 +13846,10 @@ msgstr ""
 msgid ""
 "All users having administrators rights have have been updated to 'super-"
 "admin' rights with the creation of his new user type."
-msgstr ""
-"Teraz wszyscy administratorzy posiadają prawa 'super-admin'. Nowy użytkownik"
-" został również dodany."
+msgstr "Teraz wszyscy administratorzy posiadają prawa 'super-admin'. Nowy użytkownik został również dodany."
 
 #: install/update.php:909
 msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
-msgstr ""
-"Połączenie z bazą danych nieudane, sprawdź parametry połączenia w pliku "
-"config_db.php"
-
-
+msgstr "Połączenie z bazą danych nieudane, sprawdź parametry połączenia w pliku config_db.php"

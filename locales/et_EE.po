@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-02-08 15:34+0100\n"
-"PO-Revision-Date: 2012-02-08 14:36+0000\n"
+"PO-Revision-Date: 2012-02-08 15:32+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
-"Language-Team: Estonian (Estonia) (http://www.transifex.net/projects/p/GLPI/team/et_EE/)\n"
+"Language-Team: Estonian (Estonia) (http://www.transifex.net/projects/p/GLPI/language/et_EE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -377,8 +377,7 @@ msgstr "Lahuta"
 
 #: ajax/dropdownTrackingDeviceType.php:49 front/find_num.php:80
 msgid "Enter the first letters (user, item name, serial or asset number)"
-msgstr ""
-"Sisesta esimesed tähed (kasutaja, seadme nimi, seeria- või inventarinumber)"
+msgstr "Sisesta esimesed tähed (kasutaja, seadme nimi, seeria- või inventarinumber)"
 
 #: ajax/entitytreesons.php:84 ajax/entitytreesons.php:87
 #: ajax/entitytreesons.php:122 ajax/entitytreesons.php:125
@@ -540,9 +539,7 @@ msgstr "Ligipääs keelatud"
 msgid ""
 "The version of the database is not compatible with the version of the "
 "installed files. An update is necessary."
-msgstr ""
-"Andmebaasi versioon ei ole paigaldatava GLPI versiooniga ühilduv. Andmebaasi"
-" uuendus on vajalik."
+msgstr "Andmebaasi versioon ei ole paigaldatava GLPI versiooniga ühilduv. Andmebaasi uuendus on vajalik."
 
 #: config/config.php:188
 msgid ""
@@ -2525,7 +2522,7 @@ msgstr "Suletud"
 #: inc/ticket.class.php:4334
 msgctxt "Quantity"
 msgid "Number"
-msgstr ""
+msgstr "Lepingunumber"
 
 #: front/stat.global.php:145 front/stat.graph.php:385
 #: inc/commonitilobject.class.php:2872 inc/stat.class.php:418
@@ -5233,9 +5230,7 @@ msgstr "Täis nimi"
 msgid ""
 "Alternate username updated. The connected items have been updated using this"
 " alternate username."
-msgstr ""
-"Alternatiivne kasutajanimi uuendatud. Ühendatud seadmete alternatiivsed "
-"kasutajanimed on samuti uuendatud."
+msgstr "Alternatiivne kasutajanimi uuendatud. Ühendatud seadmete alternatiivsed kasutajanimed on samuti uuendatud."
 
 #: inc/computer.class.php:223 inc/computer_item.class.php:191
 msgid ""
@@ -6354,7 +6349,7 @@ msgstr[1] "Lepingu tüübid"
 #: inc/supplier.class.php:626
 msgctxt "Phone"
 msgid "Number"
-msgstr ""
+msgstr "Lepingunumber"
 
 #: inc/contract.class.php:163 inc/contract.class.php:439
 #: inc/ticket.class.php:1892
@@ -13235,9 +13230,7 @@ msgstr ""
 msgid ""
 "Please enter your email address. A email will be sent to you and you will be"
 " able to choose a new password."
-msgstr ""
-"Palun sisesta oma e-posti aadress. Sulle saadetakse kiri, mille abil saad "
-"valida uue salasõna."
+msgstr "Palun sisesta oma e-posti aadress. Sulle saadetakse kiri, mille abil saad valida uue salasõna."
 
 #: inc/user.class.php:2868
 msgid "Reset password successful."
@@ -13653,5 +13646,3 @@ msgid ""
 "Connection to database failed, verify the connection parameters included in "
 "config_db.php file"
 msgstr ""
-
-
