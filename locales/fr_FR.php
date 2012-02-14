@@ -1580,6 +1580,7 @@ $LANG['ocsconfig'][56] = "vide";
 $LANG['ocsconfig'][57] = "égal";
 $LANG['ocsconfig'][58] = "La liaison fusionne automatiquement un ordinateur GLPI avec un d'OCSNG.<br>Cette option est prise en compte lors de la liaison manuelle et par les scripts de synchronisation.";
 $LANG['ocsconfig'][59] = "Chemin d'accès web de la console OCSNG";
+$LANG['ocsconfig'][60] = "Import unique numéro de série uniquement";
 
 
 $LANG['ocsng'][0]  = "OCS Inventory NG";

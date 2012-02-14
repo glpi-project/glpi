@@ -436,7 +436,8 @@ class OcsServer extends CommonDBTM {
       $import_array2 = array("0" => $LANG['mailgate'][8],
                              "1" => $LANG['ocsconfig'][10],
                              "2" => $LANG['ocsconfig'][12],
-                             "3" => $LANG['ocsconfig'][19]);
+                             "3" => $LANG['ocsconfig'][19],
+                             "4" => $LANG['ocsconfig'][60]);
 
       $periph = $this->fields["import_periph"];
       $monitor = $this->fields["import_monitor"];
@@ -5003,6 +5004,12 @@ class OcsServer extends CommonDBTM {
                $query = "SELECT DISTINCT `CAPTION`, `MANUFACTURER`, `DESCRIPTION`, `SERIAL`, `TYPE`
                          FROM `monitors`
                          WHERE `HARDWARE_ID` = '$ocsid'";
+               // Config says import monitor with serial number only
+               // Restrict SQL query ony for monitors with serial present
+               if ($cfg_ocs["import_monitor"]==4) {
+                  $query = $query."AND `SERIAL` NOT LIKE ''";
+               }
+                         
                $result = $DBocs->query($query);
                $lines       = array();
                $checkserial = true;
