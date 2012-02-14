@@ -1048,11 +1048,11 @@ class Search {
                          && isset($p['contains2'][$j])
                          && strlen($p['contains2'][$j])>0) {
                         if (!isset($already_printed[$p['itemtype2'][$j].$p['field2'][$j]])) {
-
                            // General case
                            if (strpos($data["META_$j"],"$$$$")===false) {
+                              print_r($data["META_$j"]);
                               $out = self::giveItem($p['itemtype2'][$j], $p['field2'][$j], $data,
-                                                    $j, 1);
+                                                      $j, 1);
                               echo self::showItem($output_type, $out, $item_num, $row_num);
 
                            // Case of GROUP_CONCAT item : split item and multilline display
@@ -1087,16 +1087,21 @@ class Search {
                                     // Manage Link to item
                                     $split2 = explode("$$", $split[$k]);
                                     if (isset($split2[1])) {
-                                       $out .= "<a id='".$p['itemtype2'][$j].'_'.$data["id"].'_'.
-                                                $split2[1]."' ";
-                                       $out .= "href=\"".
-                                                Toolbox::getItemTypeFormURL($p['itemtype2'][$j]).
-                                                "?id=".$p['itemtype2'][$j]."\">";
-                                       $out .= $split2[0].$unit;
-                                       if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
-                                          $out .= " (".$split2[1].")";
+                                       if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['datatype'])
+                                          && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['datatype'] == 'itemlink') {
+                                          $out .= "<a id='".$p['itemtype2'][$j].'_'.$data["id"].'_'.
+                                                   $split2[1]."' ";
+                                          $out .= "href=\"".
+                                                   Toolbox::getItemTypeFormURL($p['itemtype2'][$j]).
+                                                   "?id=".$split2[1]."\">";
+                                          $out .= $split2[0].$unit;
+                                          if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
+                                             $out .= " (".$split2[1].")";
+                                          }
+                                          $out .= "</a>";
+                                       } else {
+                                          $out .= $split2[0].$unit;
                                        }
-                                       $out .= "</a>";
                                     } else {
                                        $out .= $split[$k].$unit;
                                     }
@@ -2160,7 +2165,8 @@ class Search {
             if ($itemtype != 'Group' && $itemtype != 'User') {
                if ($meta
                    || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-                  return " GROUP_CONCAT(DISTINCT `$table$addtable`.`$field` SEPARATOR '$$$$')
+                  return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`$field`,'$$',
+                                                        `$table$addtable`.`id`) SEPARATOR '$$$$')
                                        AS ".$NAME."_$num, ";
                }
                return " `$table$addtable`.`$field` AS ".$NAME."_$num, ";
@@ -2224,10 +2230,10 @@ class Search {
                            AS ".$NAME."_".$num."_2, ";
 
          case "glpi_networkports.mac" :
-            $port = " GROUP_CONCAT(DISTINCT `$table$addtable`.`$field` SEPARATOR '$$$$')
+            $port = " GROUP_CONCAT(`$table$addtable`.`$field` SEPARATOR '$$$$')
                          AS ".$NAME."_$num, ";
             if ($itemtype == 'Computer') {
-               $port .= " GROUP_CONCAT(DISTINCT `glpi_computers_devicenetworkcards`.`specificity`
+               $port .= " GROUP_CONCAT(`glpi_computers_devicenetworkcards`.`specificity`
                                        SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
             }
             return $port;
@@ -2268,7 +2274,8 @@ class Search {
          case "glpi_softwareversions.name" :
             if ($meta) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`) SEPARATOR '$$$$')
+                                                     `$table$addtable`.`$field`, '$$', 
+                                                     `$table$addtable`.`id`) SEPARATOR '$$$$')
                            AS ".$NAME."_".$num.", ";
             }
             break;
@@ -2280,22 +2287,26 @@ class Search {
          case "glpi_softwareversions.comment" :
             if ($meta) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`) SEPARATOR '$$$$')
+                                                     `$table$addtable`.`$field`,'$$', 
+                                                     `$table$addtable`.`id`) SEPARATOR '$$$$')
                            AS ".$NAME."_".$num.", ";
             }
             return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`name`, ' - ',
-                                                  `$table$addtable`.`$field`) SEPARATOR '$$$$')
+                                                  `$table$addtable`.`$field`,'$$', 
+                                                     `$table$addtable`.`id`) SEPARATOR '$$$$')
                         AS ".$NAME."_".$num.", ";
 
          case "glpi_states.name" :
             if ($meta && $meta_type == 'Software') {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
                                                      `glpi_softwareversions$addtable`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`) SEPARATOR '$$$$')
+                                                     `$table$addtable`.`$field`,'$$', 
+                                                     `$table$addtable`.`id`) SEPARATOR '$$$$')
                            AS ".$NAME."_".$num.", ";
             } else if ($itemtype == 'Software') {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwareversions`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`) SEPARATOR '$$$$')
+                                                     `$table$addtable`.`$field`,'$$', 
+                                                     `$table$addtable`.`id`) SEPARATOR '$$$$')
                            AS ".$NAME."_".$num.", ";
             }
             break;
@@ -2333,7 +2344,8 @@ class Search {
          }
       }
 
-      $tocompute = "`$table$addtable`.`$field`";
+      $tocompute   = "`$table$addtable`.`$field`";
+      $tocomputeid = "`$table$addtable`.`id`";
 
       if (isset($searchopt[$ID]["computation"])) {
          $tocompute = $searchopt[$ID]["computation"];
@@ -2380,11 +2392,10 @@ class Search {
                         `$table$addtable`.`id` AS ".$NAME."_".$num."_2, ";
          }
       }
-
       // Default case
       if ($meta
          || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-         return " GROUP_CONCAT(DISTINCT $tocompute SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+         return " GROUP_CONCAT(DISTINCT CONCAT($tocompute,'$$',$tocomputeid) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
       }
       return "$tocompute AS ".$NAME."_$num, ";
    }
@@ -4312,7 +4323,6 @@ class Search {
                return __('Default value');
          }
       }
-
       // Manage items with need group by / group_concat
       if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
          $out   = "";
@@ -4327,8 +4337,9 @@ class Search {
                if ($count_display) {
                   $out .= $separate;
                }
+               $withoutid = explode("$$", $split[$k]);
                $count_display++;
-               $out .= $split[$k].$unit;
+               $out .= $withoutid[0].$unit;
             }
          }
          return $out;
@@ -4343,8 +4354,10 @@ class Search {
       if (!empty($specific)) {
          return $specific;
       }
-
-      return $data[$NAME.$num].$unit;
+      // Manage auto CONCAT id
+      $split = explode('$$',$data[$NAME.$num]);
+      
+      return $split[0].$unit;
    }
 
 
