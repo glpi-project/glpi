@@ -436,7 +436,8 @@ class OcsServer extends CommonDBTM {
       $import_array2 = array("0" => __('No import'),
                              "1" => __('Global import'),
                              "2" => __('Unit import'),
-                             "3" => __('Unit import on serial number'));
+                             "3" => __('Unit import on serial number'),
+                             "4" => __('Unit import serial number only'));
 
       $periph   = $this->fields["import_periph"];
       $monitor  = $this->fields["import_monitor"];
@@ -5086,6 +5087,11 @@ class OcsServer extends CommonDBTM {
                $query = "SELECT DISTINCT `CAPTION`, `MANUFACTURER`, `DESCRIPTION`, `SERIAL`, `TYPE`
                          FROM `monitors`
                          WHERE `HARDWARE_ID` = '$ocsid'";
+               // Config says import monitor with serial number only
+               // Restrict SQL query ony for monitors with serial present
+               if ($cfg_ocs["import_monitor"]==4) {
+                  $query = $query." AND `SERIAL` NOT LIKE ''";
+               }                         
                $result = $DBocs->query($query);
                $lines       = array();
                $checkserial = true;
