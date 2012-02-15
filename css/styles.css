@@ -633,9 +633,6 @@ td { }
    border:1px dotted #000000;
 }
 
-.tab_bg_1 td .ux-datetime-date, .tab_bg_1 td .ux-datetime-time
-{              padding: 0 4px 0 0; }
-
 
 td.numerique {
    text-align:right;
