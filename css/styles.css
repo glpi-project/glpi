@@ -518,7 +518,7 @@ td { }
 .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, .tab_cadrehov_pointer th, .tab_cadre_report th {
    font-size: 12px;
    font-weight: bold;
-   background-color: #e1cc7b;
+   background-color: #E1D39E;
    text-align: center;
    -moz-border-radius: 4px;
    -webkit-border-radius: 4px;
