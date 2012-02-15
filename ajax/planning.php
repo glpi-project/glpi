@@ -126,7 +126,7 @@ echo "</td></tr>\n";
 if ((!isset($_POST["id"]) || $_POST["id"]==0)
     && isset($_POST['itemtype'])
     && PlanningRecall::isAvailable()) {
-   echo "<tr class='tab_bg_2'><td>".__('Recall')."</td><td>";
+   echo "<tr class='tab_bg_2'><td>"._x('Planning','Reminder')."</td><td>";
    PlanningRecall::dropdown(array('itemtype' => $_POST['itemtype'],
                                   'items_id' => $_POST['items_id']));
    echo "</td></tr>";

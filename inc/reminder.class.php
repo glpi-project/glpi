@@ -657,7 +657,7 @@ class Reminder extends CommonDBTM {
       if ($ID
           && $this->fields["is_planned"]
           && PlanningRecall::isAvailable()) {
-         echo "<td>".__('Recall')."</td>";
+         echo "<td>"._x('Planning','Reminder')."</td>";
          if ($canedit) {
             echo "<td>";
             PlanningRecall::dropdown(array('itemtype' =>'Reminder',
