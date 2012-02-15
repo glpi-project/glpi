@@ -179,6 +179,13 @@ class Planning {
              title=\"".__s('Previous')."\"></a>";
       echo "</td>";
       echo "<td>";
+      
+//       $types=array('Mon planning', 'Mon planning + Mes groupes', 'Choix d un user', 'Choix d un groupe');
+//       echo "<select>";
+//       foreach ($types as $type) {
+//          echo "<option>$type</option>";
+//       }
+//       echo "</select>";
       if (Session::haveRight("show_all_planning","1")) {
          echo "<input type='radio' id='radio_user' name='usertype' value='user' ".
                 ($usertype=="user"?"checked":"").">";
@@ -220,7 +227,7 @@ class Planning {
 
       echo "<td>";
       Html::showDateFormItem("date", $date, false);
-      echo '<hr>';
+      echo '</td><td>';
 
       echo "<select name='type'>";
       echo "<option value='day' ".($type=="day"?" selected ":"").">".__('Day')."</option>";
