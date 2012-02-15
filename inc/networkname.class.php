@@ -599,7 +599,7 @@ class NetworkName extends FQDNLabel {
          if (!empty($_REQUEST["order"])) {
             $order = $_REQUEST["order"];
          } else {
-            $order = "`name`";
+            $order = "name";
          }
 
          $table_options['dont_display'] = array('IPNetwork'    => true);
