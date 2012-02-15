@@ -1129,7 +1129,7 @@ class Dropdown {
          $day        = floor($i/DAY_TIMESTAMP);
          $hour       = floor(($i%DAY_TIMESTAMP)/HOUR_TIMESTAMP);
          $minute     = floor(($i%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP);
-         if ($minute == 0) {
+         if ($minute === '0') {
             $minute='00';
          }
          $values[$i] = '';
