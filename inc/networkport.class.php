@@ -61,7 +61,7 @@ class NetworkPort extends CommonDBChild {
    static function getNetworkPortInstantiations() {
 
       return array('NetworkPortEthernet', 'NetworkPortWifi', 'NetworkPortLocal',
-                   'NetworkPortAggregate', 'NetworkPortAlias', 'NetworkPortDialup');
+                   'NetworkPortAlias', 'NetworkPortAggregate', 'NetworkPortDialup');
    }
 
 
@@ -332,6 +332,7 @@ class NetworkPort extends CommonDBChild {
       $this->addStandardTab('NetworkPort_Vlan', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
       $this->addStandardTab('NetworkPortInstantiation', $ong, $options);
+      $this->addStandardTab('NetworkPort', $ong, $options);
 
       return $ong;
    }
@@ -367,7 +368,12 @@ class NetworkPort extends CommonDBChild {
       }
 
       $netport = new self();
-      $canedit = $item->can($items_id, 'w');
+
+      if ($itemtype == 'NetworkPort') {
+         $canedit = false;
+      } else {
+         $canedit = $item->can($items_id, 'w');
+      }
 
       // Show Add Form
       if ($canedit
@@ -414,19 +420,45 @@ class NetworkPort extends CommonDBChild {
                                      sprintf(__('%1$s = %2$s'),
                                              $item->getTypeName(1), $item->getName()));
 
-      $porttypes = self::getNetworkPortInstantiations();
-      // Manage NetworkportMigration
-      $porttypes[] = '';
+      if ($itemtype == 'NetworkPort') {
+         $porttypes = array('NetworkPortAlias', 'NetworkPortAggregate');
+      } else {
+         $porttypes = self::getNetworkPortInstantiations();
+         // Manage NetworkportMigration
+         $porttypes[] = '';
+      }
 
       foreach ($porttypes as $portType) {
 
-         $query = "SELECT `id`
-                   FROM `glpi_networkports`
-                   WHERE `items_id` = '$items_id'
-                         AND `itemtype` = '$itemtype'
-                         AND `instantiation_type` = '$portType'
-                   ORDER BY `name`,
-                            `logical_number`";
+         if ($itemtype == 'NetworkPort') {
+
+            switch ($portType) {
+
+            case 'NetworkPortAlias':
+               $search_table   = 'glpi_networkportaliases';
+               $search_request = "`networkports_id_alias`='$items_id'";
+               break;
+
+            case 'NetworkPortAggregate':
+               $search_table   = 'glpi_networkportaggregates';
+               $search_request = "`networkports_id_list` like '%\"$items_id\"%'";
+               break;
+            }
+
+            $query = "SELECT `networkports_id` as id
+                      FROM  `$search_table`
+                      WHERE $search_request";
+
+         } else {
+            $query = "SELECT `id`
+                      FROM `glpi_networkports`
+                      WHERE `items_id` = '$items_id'
+                            AND `itemtype` = '$itemtype'
+                            AND `instantiation_type` = '$portType'
+                      ORDER BY `name`,
+                               `logical_number`";
+         }
+
 
          if ($result = $DB->query($query)) {
             echo "<div class='spaced'>";
@@ -878,7 +910,29 @@ class NetworkPort extends CommonDBChild {
             return (self::getTypeName(2));
          }
       }
-      return '';
+
+      if ($item->getType() == 'NetworkPort') {
+         $nbAlias = countElementsInTable('glpi_networkportaliases',
+                                         "`networkports_id_alias`='".$item->getField('id')."'");
+         if ($nbAlias > 0) {
+            $aliases = self::createTabEntry(NetworkPortAlias::getTypeName($nbAlias), $nbAlias);
+         } else {
+            $aliases = '';
+         }
+         $nbAggregates = countElementsInTable('glpi_networkportaggregates',
+                                              "`networkports_id_list` like '%\"".$item->getField('id')."\"%'");
+         if ($nbAggregates > 0) {
+            $aggregates = self::createTabEntry(NetworkPortAggregate::getTypeName($nbAggregates),
+                                               $nbAggregates);
+         } else {
+            $aggregates = '';
+         }
+         if (!empty($aggregates) && !empty($aliases)) {
+            return $aliases.'/'.$aggregates;
+         }
+         return $aliases.$aggregates;
+      }
+     return '';
    }
 
 
@@ -893,7 +947,8 @@ class NetworkPort extends CommonDBChild {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       global $CFG_GLPI;
 
-      if (in_array($item->getType(), $CFG_GLPI["networkport_types"])) {
+      if (in_array($item->getType(), $CFG_GLPI["networkport_types"])
+          || ($item->getType() == 'NetworkPort')) {
          self::showForItem($item);
          return true;
       }
