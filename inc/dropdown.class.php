@@ -57,6 +57,8 @@ class Dropdown {
     *    - rand : integer / already computed rand value
     *    - condition : string / aditional SQL condition to limit display
     *    - displaywith : array / array of field to display with request
+    *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)
+    *    - display_emptychoice : Display emptychoice ? (default true)
     *
     * @param $itemtype        itemtype used for create dropdown
     * @param $options   array of possible options
@@ -375,16 +377,29 @@ class Dropdown {
     * Make a select box for device type
     *
     * @param $name         name of the select box
-    * @param $value        default device type (default '')
     * @param $types  array of types to display
     * @param $used   array Already used items ID: not to display in dropdown
+    * Parameters which could be used in options array :
+    *    - value : integer / preselected value (default '')
+    *    - used : array / Already used items ID: not to display in dropdown (default empty)
+    *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)    
     *
     * @return nothing (print out an HTML select box)
    **/
-   static function dropdownTypes($name, $value='', $types=array(), $used=array()) {
+   static function showItemTypes($name, $types=array(), $options=array()) {
       global $CFG_GLPI;
 
-      $options = array('' => self::EMPTY_VALUE);
+      $params['value']       = '';
+      $params['used']        = array();
+      $params['emptylabel'] = self::EMPTY_VALUE;
+ 
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      $options = array('' => $params['emptylabel']);
 
       if (count($types)) {
          foreach ($types as $type) {
@@ -394,8 +409,8 @@ class Dropdown {
          }
       }
       asort($options);
-      return self::showFromArray($name, $options, array('value' => $value,
-                                                        'used'  => $used));
+      return self::showFromArray($name, $options, array('value' => $params['value'],
+                                                        'used'  => $params['used']));
    }
 
 
@@ -430,8 +445,7 @@ class Dropdown {
             $tabs[$data[$p['field']]] = $data[$p['field']];
          }
       }
-
-      return self::dropdownTypes($name, $p['value'],$tabs);
+      return self::showItemTypes($name, $tabs, array('value' => $p['value']));
    }
 
 

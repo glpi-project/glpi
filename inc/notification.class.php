@@ -144,13 +144,12 @@ class Notification extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . __('Type') . "</td>";
       echo "<td>";
       if (Session::haveRight('config', 'w') && $this->getEntityID() == 0) {
-         $rand = Dropdown::dropdownTypes("itemtype", $this->fields['itemtype'],
-                                         $CFG_GLPI["notificationtemplates_types"]);
+         $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI["notificationtemplates_types"],
+                                          array('value' =>$this->fields['itemtype']));
       } else {
-         $rand = Dropdown::dropdownTypes("itemtype", $this->fields['itemtype'],
-                                         array_diff($CFG_GLPI["notificationtemplates_types"],
-                                                    array('Crontask', 'DBConnection', 'User')));
-
+         $rand = Dropdown::showItemTypes('itemtype', array_diff($CFG_GLPI["notificationtemplates_types"],
+                                                                array('Crontask', 'DBConnection', 'User')),
+                                          array('value' =>$this->fields['itemtype']));
       }
 
       $params = array('itemtype' => '__VALUE__');

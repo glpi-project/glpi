@@ -226,8 +226,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "transform_to" :
-         Dropdown::dropdownTypes('transform_to', "NetworkPortEthernet", 
-                                 NetworkPort::getNetworkPortInstantiations());
+         Dropdown::showItemTypes('transform_to', NetworkPort::getNetworkPortInstantiations(), array('value'=>'NetworkPortEthernet'));
                                        
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
                      __s('Save')."'>";

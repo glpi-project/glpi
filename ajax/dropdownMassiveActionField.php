@@ -167,8 +167,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
 
                   case "itemtypename" :
                      if (isset($search['itemtype_list'])) {
-                        Dropdown::dropdownTypes($search["linkfield"], '',
-                                                $CFG_GLPI[$search['itemtype_list']]);
+                        Dropdown::showItemTypes($search["linkfield"], $CFG_GLPI[$search['itemtype_list']]);
                         $already_display = true;
                      }
                      break;
