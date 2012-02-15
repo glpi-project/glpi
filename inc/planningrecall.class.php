@@ -238,14 +238,25 @@ class PlanningRecall extends CommonDBTM {
 
       $possible_values                       = array();
       $possible_values[Entity::CONFIG_NEVER] = __('No');
-      $possible_values[0]                    = __('Begin');
-      for ($i=1 ; $i<24 ; $i++) {
-         $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('- %1$d hour','- %1$d hours',$i), $i);
-      }
+      
+      $min_values = array(0,15,30,45);
+      foreach ($min_values as $val) {
+         $possible_values[$val*MINUTE_TIMESTAMP] = sprintf(_n('%1$d minute','%1$d minutes',$val), $val);
+      }      
+      
+      $h_values = array(1,2,3,4,12);
+      foreach ($h_values as $val) {
+         $possible_values[$val*HOUR_TIMESTAMP] = sprintf(_n('%1$d hour','%1$d hours',$val), $val);
+      }      
+      $d_values = array(1,2);
+      foreach ($d_values as $val) {
+         $possible_values[$val*DAY_TIMESTAMP] = sprintf(_n('%1$d day','%1$d days',$val), $val);
+      }      
+      $w_values = array(1);
+      foreach ($w_values as $val) {
+         $possible_values[$val*7*DAY_TIMESTAMP] = sprintf(_n('%1$d week','%1$d weeks',$val), $val);
+      }      
 
-      for ($i=1 ; $i<30 ; $i++) {
-         $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('- %1$d day','- %1$d days',$i), $i);
-      }
       ksort($possible_values);
 
       Dropdown::showFromArray('_planningrecall[before_time]', $possible_values,
