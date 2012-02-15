@@ -339,8 +339,8 @@ class Session {
                                                                               $active);
          $_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities", $active);
          if ($is_recursive) {
-            $_SESSION["glpiactive_entity_name"]      .= __('(tree structure)');
-            $_SESSION["glpiactive_entity_shortname"] .= __('(tree structure)');
+            $_SESSION["glpiactive_entity_name"]      .= ' '.__('(tree structure)');
+            $_SESSION["glpiactive_entity_shortname"] .= ' '.__('(tree structure)');
          }
          if ($ID=="all") {
             $_SESSION["glpiactive_entity_name"]      .= " (".__('Show all').")";
