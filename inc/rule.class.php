@@ -1360,7 +1360,7 @@ class Rule extends CommonDBTM {
                break;
 
             case "dropdown_tracking_itemtype" :
-               Dropdown::dropdownTypes($name, 0 , array_keys(Ticket::getAllTypesForHelpdesk()));
+               Dropdown::showItemTypes($name, array_keys(Ticket::getAllTypesForHelpdesk()));
                $display = true;
                break;
 

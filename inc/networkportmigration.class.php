@@ -204,8 +204,8 @@ class NetworkPortMigration extends CommonDBChild {
          echo "<tr class='tab_bg_1'><th>". $motives['unknown_interface_type'] ."</th>\n".
               "<td>" .__('Transform this network port to');
          echo "</td><td colspan=2>";
-         Dropdown::dropdownTypes('transform_to', "NetworkPortEthernet", 
-                                 NetworkPort::getNetworkPortInstantiations());
+         Dropdown::showItemTypes('transform_to', NetworkPort::getNetworkPortInstantiations(),
+                                 array('value'=>"NetworkPortEthernet"));
                                                         
          echo "</td></tr>\n";
       }

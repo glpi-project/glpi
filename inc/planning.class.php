@@ -226,8 +226,7 @@ class Planning {
       echo "</td>";
 
       echo "<td>";
-      /// TODO default value is 'All events' need to change dropdownTypes proto
-      Dropdown::dropdownTypes('itemtype', $itemtype, $CFG_GLPI['planning_types']);
+      Dropdown::showItemTypes('itemtype', $CFG_GLPI['planning_types'], array('value'=>$itemtype));
       echo "</td>";
 
       echo "<td>";

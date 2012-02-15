@@ -106,10 +106,9 @@ class NotificationTemplate extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Type') . "</td><td colspan='3'>";
-      Dropdown::dropdownTypes("itemtype",
-                              ($this->fields['itemtype']?$this->fields['itemtype']
-                                                        :'Ticket'),
-                              $CFG_GLPI["notificationtemplates_types"]);
+      Dropdown::showItemTypes('itemtype', $CFG_GLPI["notificationtemplates_types"],
+                              array('value' => ($this->fields['itemtype']?$this->fields['itemtype']
+                                             :'Ticket')));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Comments')."</td>";

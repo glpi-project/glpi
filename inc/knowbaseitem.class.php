@@ -1302,7 +1302,7 @@ class KnowbaseItem extends CommonDBTM {
          $types[] = 'Entity';
       }
 
-      $addrand = Dropdown::dropdownTypes('_type', '', $types);
+      $addrand = Dropdown::showItemTypes('_type', $types);
       $params  = array('type'  => '__VALUE__',
                        'right' => ($this->getfield('is_faq') ? 'faq' : 'knowbase'));
 

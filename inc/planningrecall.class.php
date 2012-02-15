@@ -237,7 +237,7 @@ class PlanningRecall extends CommonDBTM {
       }
 
       $possible_values                       = array();
-      $possible_values[Entity::CONFIG_NEVER] = __('No');
+      $possible_values[Entity::CONFIG_NEVER] = __('None');
       
       $min_values = array(0,15,30,45);
       foreach ($min_values as $val) {
