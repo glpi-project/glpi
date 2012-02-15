@@ -226,6 +226,11 @@ class Planning {
       echo "</td>";
 
       echo "<td>";
+      /// TODO default value is 'All events' need to change dropdownTypes proto
+      Dropdown::dropdownTypes('itemtype', $itemtype, $CFG_GLPI['planning_types']);
+      echo "</td>";
+
+      echo "<td>";
       Html::showDateFormItem("date", $date, false);
       echo '</td><td>';
 
@@ -235,9 +240,7 @@ class Planning {
       echo "<option value='month' ".($type=="month"?" selected ":"").">".__('Month')."</option>";
       echo "</select></td>\n";
 
-      echo "<td>";
-      Dropdown::dropdownTypes('itemtype', $itemtype, $CFG_GLPI['planning_types']);
-      echo "</td>";
+
 
       echo "<td rowspan='2' class='center'>";
       echo "<input type='submit' class='submit' name='submit' value=\"".__s('Show')."\">";
