@@ -561,7 +561,7 @@ class OcsServer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td class='center'>" . __('OCSNG user password') . "</td>\n";
-      echo "<td><input type='password' name='ocs_db_passwd' value='' autocomplete='off'>";
+      echo "<td><input type='password' name='ocs_db_passwd' value=''>";
       if ($ID > 0) {
          echo "<br><input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
       }
@@ -575,7 +575,6 @@ class OcsServer extends CommonDBTM {
       echo "</td>";
       echo "</tr>\n";
 
-      echo "</tr>\n";
       echo "<tr class='tab_bg_1'><td class='center'>" .__('Active') . "</td>\n";
       echo "<td>";
       Dropdown::showYesNo('is_active',$this->fields["is_active"]);
@@ -5091,7 +5090,7 @@ class OcsServer extends CommonDBTM {
                // Restrict SQL query ony for monitors with serial present
                if ($cfg_ocs["import_monitor"]==4) {
                   $query = $query." AND `SERIAL` NOT LIKE ''";
-               }                         
+               }
                $result = $DBocs->query($query);
                $lines       = array();
                $checkserial = true;
