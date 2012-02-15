@@ -809,7 +809,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "<tr><td>".__('By')."</td><td>";
          echo getUserName($this->fields["users_id_tech"])."</td></tr>";
          if (PlanningRecall::isAvailable()) {
-            echo "<tr><td>".__('Recall')."</td><td>";
+            echo "<tr><td>"._x('Planning','Reminder')."</td><td>";
             PlanningRecall::specificForm(array('itemtype' => $this->getType(),
                                                'items_id' => $this->fields["id"]));
             
@@ -968,7 +968,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</td></tr>";
 
       if (!empty($this->fields["begin"]) && PlanningRecall::isAvailable()) {
-         echo "<tr class='tab_bg_1'><td>".__('Recall')."</td><td>";
+         echo "<tr class='tab_bg_1'><td>"._x('Planning','Reminder')."</td><td>";
          PlanningRecall::dropdown(array('itemtype' => $this->getType(),
                                         'items_id' => $this->getID()));
          echo "</td></tr>";

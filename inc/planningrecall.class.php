@@ -37,7 +37,7 @@ class PlanningRecall extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      return _n('Planning recall', 'Planning recalls', $nb);
+      return _n('Planning reminder', 'Planning reminders', $nb);
    }
 
 
