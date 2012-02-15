@@ -171,7 +171,7 @@ class Planning {
       }
 
       echo "<div class='center'><form method='get' name='form' action='planning.php'>\n";
-      echo "<table class='tab_cadre'><tr class='tab_bg_1'>";
+      echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'>";
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
                         "&amp;date=$prev&amp;usertype=$usertype&amp;gID=$gID&amp;itemtype=$itemtype\">";
