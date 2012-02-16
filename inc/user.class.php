@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -2684,7 +2682,7 @@ class User extends CommonDBTM {
                      } else {
                         echo '&nbsp;';
                      }
-                     
+
                      echo "</td><td class='center'>$linktype</td></tr>";
                   }
                }

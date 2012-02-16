@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -1663,11 +1662,11 @@ function update0803to083() {
                             "glpi_logs"               => 'itemtype',
                             "glpi_events"             => 'type',);
 
-   foreach($itemtype_tables as $table => $field) {
+   foreach ($itemtype_tables as $table => $field) {
       foreach ($renametables as $key => $val) {
             $query = "UPDATE `$table`
-                     SET `$field` = '".$val."'
-                     WHERE `$field` = '".$key."'";
+                      SET `$field` = '".$val."'
+                      WHERE `$field` = '".$key."'";
             $DB->queryOrDie($query, "0.83 update itemtype of table $table for $val");
       }
    }

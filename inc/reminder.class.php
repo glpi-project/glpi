@@ -645,7 +645,6 @@ class Reminder extends CommonDBTM {
          if ($canedit) {
             echo "</span>";
          }
-
       }
 
       if ($canedit) {
@@ -658,17 +657,15 @@ class Reminder extends CommonDBTM {
           && $this->fields["is_planned"]
           && PlanningRecall::isAvailable()) {
          echo "<td>"._x('Planning','Reminder')."</td>";
+         echo "<td>";
          if ($canedit) {
-            echo "<td>";
-            PlanningRecall::dropdown(array('itemtype' =>'Reminder',
-                                          'items_id' => $ID));
-            echo "</td>";
+            PlanningRecall::dropdown(array('itemtype' => 'Reminder',
+                                           'items_id' => $ID));
          } else { // No edit right : use specific Planning Recall Form
-            echo "<td>";
             PlanningRecall::specificForm(array('itemtype' => 'Reminder',
                                                'items_id' => $ID));
-            echo "</td>";
          }
+         echo "</td>";
       }
       echo "</tr>\n";
 

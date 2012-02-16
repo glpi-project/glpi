@@ -55,7 +55,8 @@ if ($_POST["nodelegate"] == 1) {
 }
 
 if (isset($_POST['_users_id_requester_notif']) && !empty($_POST['_users_id_requester_notif'])) {
-   $_POST['_users_id_requester_notif'] = unserialize(stripslashes($_POST['_users_id_requester_notif']));
+   $_POST['_users_id_requester_notif']
+            = unserialize(stripslashes($_POST['_users_id_requester_notif']));
 }
 
 $ticket = new Ticket();
