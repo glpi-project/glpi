@@ -182,7 +182,7 @@ class Plugin extends CommonDBTM {
                                           'locale'  => $coretrytoload));
          $translation_included = true;
       }
-      
+
       if (!$translation_included) {
          if (file_exists($dir.$trytoload.'.php')) {
             include ($dir.$trytoload.'.php');
