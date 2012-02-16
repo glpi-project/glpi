@@ -197,6 +197,18 @@ class NetworkName extends FQDNLabel {
       $tab[13]['forcegroupby']  = true;
       $tab[13]['massiveaction'] = false;
 
+      $tab[20]['table']        = $this->getTable();
+      $tab[20]['field']        = 'itemtype';
+      $tab[20]['name']         = __('Type');
+      $tab[20]['datatype']     = 'itemtype';
+      $tab[20]['massiveation'] = false;
+
+      $tab[21]['table']        = $this->getTable();
+      $tab[21]['field']        = 'items_id';
+      $tab[21]['name']         = __('id');
+      $tab[21]['datatype']     = 'integer';
+      $tab[21]['massiveation'] = false;
+
       return $tab;
    }
 
