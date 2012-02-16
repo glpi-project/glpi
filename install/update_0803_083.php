@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -1892,31 +1891,31 @@ function update0803to083() {
    $migration->addKey('glpi_computervirtualmachines', 'virtualmachinesystems_id');
    $migration->addKey('glpi_computervirtualmachines', 'vcpu');
    $migration->addKey('glpi_computervirtualmachines', 'ram');
-   
+
 //   $ADDTODISPLAYPREF['KnowbaseItem'] = array(2,3,4,5,6,7);
 
 
    $renametables = array('TicketSolutionType'     => 'SolutionType',
                          'TicketSolutionTemplate' => 'SolutionTemplate',
                          'TicketCategory'         => 'ITILCategory');
-   
-   $itemtype_tables = array("glpi_bookmarks"          => 'itemtype', 
-                            "glpi_bookmarks_users"    => 'itemtype', 
+
+   $itemtype_tables = array("glpi_bookmarks"          => 'itemtype',
+                            "glpi_bookmarks_users"    => 'itemtype',
                             "glpi_displaypreferences" => 'itemtype',
-                            "glpi_logs"               => 'itemtype', 
+                            "glpi_logs"               => 'itemtype',
                             "glpi_events"             => 'type',);
-                               
-   foreach($itemtype_tables as $table => $field) {
+
+   foreach ($itemtype_tables as $table => $field) {
       foreach ($renametables as $key => $val) {
             $query = "UPDATE `$table`
-                     SET `$field` = '".$val."'
-                     WHERE `$field` = '".$key."'";
+                      SET `$field` = '".$val."'
+                      WHERE `$field` = '".$key."'";
             $DB->query($query)
             or die("0.83 update itemtype of table $table for $val" . $LANG['update'][90] .
-                  $DB->error());
-      }   
+                   $DB->error());
+      }
    }
-   
+
    // ************ Keep it at the end **************
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
