@@ -592,7 +592,7 @@ class Ticket extends CommonITILObject {
             unset($input["_itil_assign"]);
          }
       }
-      
+
       $check_allowed_fields_for_template = false;
       if (is_numeric(Session::getLoginUserID(false)) && !Session::haveRight("update_ticket","1")) {
 
@@ -787,7 +787,8 @@ class Ticket extends CommonITILObject {
             $validation->add($values);
 
             Event::log($this->fields['id'], "ticket", 4, "tracking",
-                       $_SESSION["glpiname"]."  ".$LANG['log'][21]);
+                       (is_numeric(Session::getLoginUserID(false))?$_SESSION["glpiname"]:'cron')
+                       ."  ".$LANG['log'][21]);
          }
       }
 
@@ -2839,7 +2840,7 @@ class Ticket extends CommonITILObject {
                                                                                $_SESSION['glpiactive_entity'],
                                                                                '', Ticket::INCIDENT_TYPE),
                       '_right'                    => "id");
-      
+
       // Restore saved value or override with page parameter
       foreach ($values as $name => $value) {
          if (!isset($options[$name])) {
@@ -2876,7 +2877,7 @@ class Ticket extends CommonITILObject {
                                        => $options['_users_id_requester_notif']['use_notification'],
                           'entity_restrict'
                                        => $_SESSION["glpiactive_entity"]);
-                                       
+
          Ajax::UpdateItemOnSelectEvent("dropdown_nodelegate".$rand, "show_result".$rand,
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownDelegationUsers.php",
                                        $params);
@@ -3357,7 +3358,7 @@ class Ticket extends CommonITILObject {
          }
       }
       echo "</th></tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>".$LANG['joblist'][11]."&nbsp;:</th>";
       echo "<td width='$colsize2%'>";
@@ -3382,7 +3383,7 @@ class Ticket extends CommonITILObject {
       if ($ID) {
          if ($this->fields["slas_id"]>0) {
             echo "<table width='100%'><tr><td>";
-         
+
             echo Html::convDateTime($this->fields["due_date"]);
 
             echo "</td><td>".$LANG['sla'][1]."&nbsp;:";
@@ -3459,8 +3460,8 @@ class Ticket extends CommonITILObject {
          echo "</td></tr></table>";
       }
 
-      echo "</td></tr>";      
-      
+      echo "</td></tr>";
+
       if ($ID) {
          echo "<tr class='tab_bg_1'>";
          echo "<th>".$LANG['common'][95]." &nbsp;:</th>";
@@ -3481,10 +3482,10 @@ class Ticket extends CommonITILObject {
             echo getUserName($this->fields["users_id_lastupdater"], $showuserlink);
          }
          echo "</td>";
-         echo "</tr>";   
+         echo "</tr>";
       }
 
-      if ($ID && ($this->fields["status"]=='solved' 
+      if ($ID && ($this->fields["status"]=='solved'
                   || $this->fields["status"]=='closed')) {
          echo "<tr class='tab_bg_1'>";
          echo "<th>".$LANG['joblist'][14]."&nbsp;:</th>";
@@ -3497,7 +3498,7 @@ class Ticket extends CommonITILObject {
                echo "<td>";
                Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false,
                                           $canupdate);
-               echo "</td>";         
+               echo "</td>";
          } else {
             echo "<td colspan='2'>&nbsp;</td>";
          }
@@ -4130,7 +4131,7 @@ class Ticket extends CommonITILObject {
                   }
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
-                  break;            
+                  break;
                case "waiting" :
                   foreach ($_SESSION['glpigroups'] as $gID) {
                      $options['field'][$num]      = 8; // groups_id_assign
@@ -5328,7 +5329,7 @@ class Ticket extends CommonITILObject {
                    LEFT JOIN `glpi_ticketsatisfactions`
                        ON `glpi_ticketsatisfactions`.`tickets_id` = `glpi_tickets`.`id`
                    WHERE `glpi_tickets`.`entities_id` = '$entity'
-                         AND `glpi_tickets`.`is_deleted` = 0                   
+                         AND `glpi_tickets`.`is_deleted` = 0
                          AND `glpi_tickets`.`status` = 'closed'
                          AND `glpi_tickets`.`closedate` > '$max_closedate'
                          AND ADDDATE(`glpi_tickets`.`closedate`, INTERVAL $delay DAY)<=NOW()
