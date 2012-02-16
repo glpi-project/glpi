@@ -43,7 +43,8 @@ if (!defined('GLPI_ROOT')) {
 * attributes are not empty.
 * This object is usefull for SQL research and binary<=>textual conversions. There is no update
 * mecanism. Entries in the database are create "on the fly" when creating or updating addresses
-* To add an address to an item, the form must include the showInputField() method that display
+* To add an address to an item, the form must include the IPAddress::showAddButtonForChildItem()
+* and IPAddress::showFieldsForItemForm inherited from CommDBChild method that display
 * the HTML TEXTAREA field with previous addresses. When validating the addresses, the item must
 * call, before updating or adding the item the checkInputFromItem() method. This method will
 * validate all the IP addresses and sorting them as invalid, new or already defined. After having
@@ -250,32 +251,6 @@ class IPAddress extends CommonDBChild {
 
       // Don't forget set local object from DB field
       $this->setAddressFromArray($this->fields, "version", "name", "binary");
-   }
-
-
-   /**
-    * Display the input field inside the form : a textarea that contains previous addresses for
-    * the given item
-    *
-    * @param $itemtype           type of the item that owns the addresses
-    * @param $items_id           id of the item that owns the addresses
-    * @param $objectFieldName    the name of the field inside the form
-   **/
-   static function showInputField($itemtype, $items_id, $objectFieldName) {
-      global $DB;
-
-      $query = "SELECT `name`
-                FROM `glpi_ipaddresses`
-                WHERE `items_id` = '$items_id'
-                      AND `itemtype` = '$itemtype'
-                ORDER BY `version`";
-
-      $addresses = array();
-      foreach ($DB->request($query) as $address) {
-         $addresses[] = $address["name"];
-      }
-      echo "<textarea cols='45' rows='".(count($addresses) + 3)."' name='$objectFieldName' >".
-             implode("\n", $addresses)."</textarea>\n";
    }
 
 

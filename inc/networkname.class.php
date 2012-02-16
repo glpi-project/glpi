@@ -153,12 +153,11 @@ class NetworkName extends FQDNLabel {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      $address = new IPAddress();
-      echo "<td rowspan='2'>".$address->getTypeName(2);
-      $address->showAddButtonForChildItem($this, '_ipaddresses');
-      echo "</td>";
-      echo "<td rowspan='2'>";
-      $address->showFieldsForItemForm($this, '_ipaddresses', 'name');
+
+      echo "<td>".IPNetwork::getTypeName(2)."&nbsp;";
+      Html::showToolTip(__('IP Network is not included in the database. However, you can see current available networks.'));
+      echo "</td><td>";
+      IPNetwork::displayNetworkPropertiesForIPAddressSelection($this->getEntityID());
       echo "</td>\n";
 
       echo "<td>".FQDN::getTypeName(1)."</td><td>";
@@ -167,9 +166,19 @@ class NetworkName extends FQDNLabel {
                            'name'        => 'fqdns_id',
                            'entity'      => $this->getEntityID(),
                            'displaywith' => array('view')));
-      echo "</td></tr>\n";
+      echo "</td>\n";
+
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
+      $address = new IPAddress();
+      echo "<td>".$address->getTypeName(2);
+      $address->showAddButtonForChildItem($this, '_ipaddresses');
+      echo "</td>";
+      echo "<td>";
+      $address->showFieldsForItemForm($this, '_ipaddresses', 'name');
+      echo "</td>\n";
+
       echo "<td>".__('Comments')."</td>";
       echo "<td><textarea cols='45' rows='4' name='comment' >".$this->fields["comment"];
       echo "</textarea></td>\n";
