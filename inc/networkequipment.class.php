@@ -340,8 +340,8 @@ class NetworkEquipment extends CommonDBTM {
                                     'entity'    => $this->fields["entities_id"],
                                     'condition' => '`is_itemgroup`'));
       echo "</td>";
-      echo "<td rowspan='7'>".__('Comments')."</td>";
-      echo "<td rowspan='7'>
+      echo "<td rowspan='6'>".__('Comments')."</td>";
+      echo "<td rowspan='6'>
             <textarea cols='45' rows='12' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
@@ -349,12 +349,6 @@ class NetworkEquipment extends CommonDBTM {
       echo "<td>".__('Domain')."</td>";
       echo "<td>";
       Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('IP')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "ip");
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -488,11 +482,6 @@ class NetworkEquipment extends CommonDBTM {
       $tab[14]['name']           = __('Memory (Mio)');
       $tab[14]['datatype']       = 'number';
 
-      $tab[12]['table']          = $this->getTable();
-      $tab[12]['field']          = 'ip';
-      $tab[12]['name']           = __('IP')." (".__('Network device').")";
-      $tab[12]['datatype']       = 'ip';
-
       $tab[13]['table']          = $this->getTable();
       $tab[13]['field']          = 'mac';
       $tab[13]['name']           = __('MAC')." (".__('Network device').")";
@@ -530,6 +519,24 @@ class NetworkEquipment extends CommonDBTM {
       $tab[86]['field']          = 'is_recursive';
       $tab[86]['name']           = __('Child entities');
       $tab[86]['datatype']       = 'bool';
+
+
+      $tab[20]['table']         = 'glpi_ipaddresses';
+      $tab[20]['field']         = 'name';
+      $tab[20]['name']          = __('IP');
+      $tab[20]['forcegroupby']  = true;
+      $tab[20]['massiveaction'] = false;
+      $tab[20]['joinparams']    = array('jointype'          => 'itemtype_item',
+                                        'specific_itemtype' => 'NetworkName',
+                                        'beforejoin'
+                                         => array('table'      => 'glpi_networknames',
+                                                  'joinparams'
+                                                   => array('jointype'          => 'itemtype_item',
+                                                            'specific_itemtype' => 'NetworkEquipment',
+                                                            'beforejoin'
+                                                             => array('table'      => 'glpi_networkequipments',
+                                                                      'joinparams' => array('jointype' => 'itemtype_item')))));
+
 
       return $tab;
    }

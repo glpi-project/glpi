@@ -614,6 +614,8 @@ function update083to084() {
       $migration->dropField('glpi_networkports', $field);
    }
 
+   $migration->dropField('glpi_networkequipments', 'ip');
+
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'Index mac field and transform address mac to lower'));
