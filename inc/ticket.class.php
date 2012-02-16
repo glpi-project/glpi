@@ -3180,13 +3180,13 @@ class Ticket extends CommonITILObject {
       if (!isset($options['template_preview'])) {
          $this->showTabs($options);
       }
-	
+
 
       // In percent
-      $colsize1='13';
-      $colsize2='29';
-      $colsize3='13';
-      $colsize4='45';
+      $colsize1 = '13';
+      $colsize2 = '29';
+      $colsize3 = '13';
+      $colsize4 = '45';
 
       $canupdate_descr = $canupdate || ($this->fields['status'] == 'new'
                                         && $this->isUser(parent::REQUESTER,
@@ -3239,14 +3239,14 @@ class Ticket extends CommonITILObject {
 
       } else {
          if ($ismultientities) {
-            echo sprintf(__('The ticket will be added in the entity %s'),
-                           Dropdown::getDropdownName("glpi_entities", $this->fields['entities_id']));
+            printf(__('The ticket will be added in the entity %s'),
+                   Dropdown::getDropdownName("glpi_entities", $this->fields['entities_id']));
          } else {
             _e('New ticket');
          }
       }
       echo "</th></tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>".__('Opening date')."</th>";
       echo "<td width='$colsize2%'>";
@@ -3270,7 +3270,7 @@ class Ticket extends CommonITILObject {
       echo "<td width='$colsize4%'>";
       if ($ID) {
          if ($this->fields["slas_id"]>0) {
-             echo "<table width='100%'><tr><td>";
+            echo "<table width='100%'><tr><td>";
             echo Html::convDateTime($this->fields["due_date"]);
             echo "</td><td>".__('SLA')."</td>";
             echo "<td>";
@@ -3278,18 +3278,18 @@ class Ticket extends CommonITILObject {
             $commentsla = "";
             $slalevel   = new SlaLevel();
             if ($slalevel->getFromDB($this->fields['slalevels_id'])) {
-               $commentsla .= '<span class="b">'.sprintf(__('Escalation level: %s'), $slalevel->getName()).
-                              '</span><br><br>';
+               $commentsla .= '<span class="b spaced">'.sprintf(__('Escalation level: %s'),
+                                                         $slalevel->getName()).'</span><br>';
             }
 
             $nextaction = new SlaLevel_Ticket();
             if ($nextaction->getFromDBForTicket($this->fields["id"])) {
-               $commentsla .= '<span class="b">'.sprintf(__('Next escalation: %s'),
-                                                Html::convDateTime($nextaction->fields['date'])).
-                              '</span><br>';
+               $commentsla .= '<span class="b spaced">'.
+                                sprintf(__('Next escalation: %s'),
+                                        Html::convDateTime($nextaction->fields['date'])).'</span>';
                if ($slalevel->getFromDB($nextaction->fields['slalevels_id'])) {
-                  $commentsla .= '<span class="b">'.sprintf(__('Escalation level: %s'), $slalevel->getName())
-                                 .'</span><br>';
+                  $commentsla .= '<span class="b spaced">'.sprintf(__('Escalation level: %s'),
+                                                                   $slalevel->getName()).'</span>';
                }
             }
             $slaoptions = array();
@@ -3348,9 +3348,9 @@ class Ticket extends CommonITILObject {
          echo $tt->getEndHiddenFieldValue('slas_id',$this);
          echo "</td></tr></table>";
       }
-      echo "</td>";      
+      echo "</td>";
       echo "</tr>";
-      
+
       if ($ID) {
          echo "<tr class='tab_bg_1'>";
          echo "<th width='$colsize1%'>".__('By')."</th>";
@@ -3363,23 +3363,24 @@ class Ticket extends CommonITILObject {
          } else {
             echo getUserName($this->fields["users_id_recipient"], $showuserlink);
          }
-         
+
          echo "</td>";
          echo "<th width='$colsize3%'>".__('Last update')."</th>";
          echo "<td width='$colsize4%'>";
          if ($this->fields['users_id_lastupdater']>0) {
             //TRANS: %1$s is the update date, %2$s is the last updater name
             printf(__('%1$s by %2$s'), Html::convDateTime($this->fields["date_mod"]),
-                                       getUserName($this->fields["users_id_lastupdater"], $showuserlink));
+                                       getUserName($this->fields["users_id_lastupdater"],
+                                                   $showuserlink));
          }
-         echo "</td>";         
-         
+         echo "</td>";
+
          echo "</tr>";
       }
-      
+
       if ($ID && (in_array($this->fields["status"], $this->getSolvedStatusArray())
                   || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
-                  
+
          echo "<tr>";
          echo "<th width='$colsize1%'>".__('Solve date')."</th>";
          echo "<td width='$colsize2%'>";
@@ -3387,20 +3388,17 @@ class Ticket extends CommonITILObject {
                                     $canupdate);
          echo "</td>";
          if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
-               echo "<th width='$colsize3%'>".__('Close date')."</th>";
-               echo "<td width='$colsize4%'>";
-               Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false,
-                                          $canupdate);
-               echo "</td>";
+            echo "<th width='$colsize3%'>".__('Close date')."</th>";
+            echo "<td width='$colsize4%'>";
+            Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false,
+                                       $canupdate);
+            echo "</td>";
          } else {
             echo "<td colspan='2'>&nbsp;</td>";
          }
-
          echo "</tr>";
-
       }
 
-      
       if ($ID) {
          echo "</table>";
          echo "<table  class='tab_cadre_fixe'>";
@@ -3495,8 +3493,8 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldValue('status',$this);
 
       echo "</td>";
-      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('requesttypes_id').__('Request source').
-             $tt->getMandatoryMark('requesttypes_id').
+      echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('requesttypes_id').
+             __('Request source'). $tt->getMandatoryMark('requesttypes_id').
              $tt->getEndHiddenFieldText('requesttypes_id')."</th>";
       echo "<td width='$colsize4%'>";
       echo $tt->getBeginHiddenFieldValue('requesttypes_id');
@@ -3524,8 +3522,8 @@ class Ticket extends CommonITILObject {
 
       } else {
          $idurgency = "value_urgency".mt_rand();
-         echo "<input id='$idurgency' type='hidden' name='urgency' value='".$this->fields["urgency"].
-              "'>";
+         echo "<input id='$idurgency' type='hidden' name='urgency' value='".
+                $this->fields["urgency"]."'>";
          echo parent::getUrgencyName($this->fields["urgency"]);
       }
       echo "</td>";
@@ -3776,13 +3774,14 @@ class Ticket extends CommonITILObject {
          echo "<th width='$colsize1%'>".sprintf(__('File (%s)'), Document::getMaxUploadSize());
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt=\"".
                __s('Help')."\" onclick=\"window.open('".$CFG_GLPI["root_doc"].
-               "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+               "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,".
+               "height=800')\">";
          echo "&nbsp;";
          self::showDocumentAddButton();
 
          echo "</th>";
-         echo "<td width='$colsize2%'><div id='uploadfiles'><input type='file' name='filename[]' size='20'>";
-         echo "</div></td>";
+         echo "<td width='$colsize2%'>";
+         echo "<div id='uploadfiles'><input type='file' name='filename[]' size='20'></div></td>";
 
       } else {
          echo "<th colspan='2'>";
@@ -4033,9 +4032,10 @@ class Ticket extends CommonITILObject {
                      $num++;
                   }
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".
-                        __('Your tickets to close')."</a>";
-                  break;            
+                         Toolbox::append_params($options,'&amp;')."\">".__('Your tickets to close').
+                       "</a>";
+                  break;
+
                case "waiting" :
                   foreach ($_SESSION['glpigroups'] as $gID) {
                      $options['field'][$num]      = 8; // groups_id_assign
@@ -4050,7 +4050,8 @@ class Ticket extends CommonITILObject {
                      $num++;
                   }
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".__('Tickets on pending status')."</a>";
+                         Toolbox::append_params($options,'&amp;')."\">".
+                         __('Tickets on pending status')."</a>";
                   break;
 
                   case "process" :
@@ -4067,7 +4068,8 @@ class Ticket extends CommonITILObject {
                         $num++;
                      }
                      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                           Toolbox::append_params($options,'&amp;')."\">".__('Tickets to be processed')."</a>";
+                            Toolbox::append_params($options,'&amp;')."\">".
+                            __('Tickets to be processed')."</a>";
                      break;
 
                   case "requestbyself" :
@@ -4104,7 +4106,8 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".__('Tickets on pending status')."</a>";
+                         Toolbox::append_params($options,'&amp;')."\">".
+                         __('Tickets on pending status')."</a>";
                   break;
 
                case "process" :
@@ -4119,7 +4122,8 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".__('Tickets to be processed')."</a>";
+                         Toolbox::append_params($options,'&amp;')."\">".
+                         __('Tickets to be processed')."</a>";
                   break;
 
                case "tovalidate" :

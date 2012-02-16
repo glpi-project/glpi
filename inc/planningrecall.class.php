@@ -53,29 +53,30 @@ class PlanningRecall extends CommonDBTM {
 
    static function isAvailable() {
       global $CFG_GLPI;
-      
+
       // Cache in session
       if (isset($_SESSION['glpiplanningreminder_isavailable'])) {
          return $_SESSION['glpiplanningreminder_isavailable'];
       }
-      
+
       $_SESSION['glpiplanningreminder_isavailable'] = 0;
       if ($CFG_GLPI["use_mailing"]) {
          $task = new Crontask();
          if ($task->getFromDBbyName('PlanningRecall','planningrecall')) {
             // Only disabled by config
-            if ($task->isDisabled()!=1) {
-               if (Session::haveRight("show_planning", "1") 
-                  || Session::haveRight("show_all_planning", "1")
-                  || Session::haveRight("show_group_planning","1")) {
+            if ($task->isDisabled() != 1) {
+               if (Session::haveRight("show_planning", "1")
+                   || Session::haveRight("show_all_planning", "1")
+                   || Session::haveRight("show_group_planning","1")) {
                   $_SESSION['glpiplanningreminder_isavailable'] = 1;
                }
             }
          }
       }
-   
+
       return $_SESSION['glpiplanningreminder_isavailable'];
    }
+
 
    /**
     * Retrieve an item from the database
@@ -144,7 +145,7 @@ class PlanningRecall extends CommonDBTM {
 
                      $when = date("Y-m-d H:i:s",
                                   strtotime($item->fields[$data['field']]) - $data['before_time']);
-                     if ($data['before_time']>=0) {
+                     if ($data['before_time'] >= 0) {
                         $pr->update(array('id'          => $pr->fields['id'],
                                           'before_time' => $data['before_time'],
                                           'when'        => $when));
@@ -167,7 +168,7 @@ class PlanningRecall extends CommonDBTM {
                      $data['when'] = date("Y-m-d H:i:s",
                                           strtotime($item->fields[$data['field']])
                                                       - $data['before_time']);
-                     if ($data['before_time']>=0) {                                                      
+                     if ($data['before_time'] >= 0) {
                         $pr->add($data);
                      }
                   }
@@ -238,24 +239,24 @@ class PlanningRecall extends CommonDBTM {
 
       $possible_values                       = array();
       $possible_values[Entity::CONFIG_NEVER] = __('None');
-      
+
       $min_values = array(0,15,30,45);
       foreach ($min_values as $val) {
          $possible_values[$val*MINUTE_TIMESTAMP] = sprintf(_n('%1$d minute','%1$d minutes',$val), $val);
-      }      
-      
+      }
+
       $h_values = array(1,2,3,4,12);
       foreach ($h_values as $val) {
          $possible_values[$val*HOUR_TIMESTAMP] = sprintf(_n('%1$d hour','%1$d hours',$val), $val);
-      }      
+      }
       $d_values = array(1,2);
       foreach ($d_values as $val) {
          $possible_values[$val*DAY_TIMESTAMP] = sprintf(_n('%1$d day','%1$d days',$val), $val);
-      }      
+      }
       $w_values = array(1);
       foreach ($w_values as $val) {
          $possible_values[$val*7*DAY_TIMESTAMP] = sprintf(_n('%1$d week','%1$d weeks',$val), $val);
-      }      
+      }
 
       ksort($possible_values);
 
@@ -267,6 +268,7 @@ class PlanningRecall extends CommonDBTM {
       echo "<input type='hidden' name='_planningrecall[field]' value='".$p['field']."'>";
       return true;
    }
+
 
    /**
     * Dispaly specific form when no edit right
@@ -284,6 +286,7 @@ class PlanningRecall extends CommonDBTM {
    **/
    static function specificForm($options=array()) {
       global $CFG_GLPI;
+
       // Default values
       $p['itemtype'] = '';
       $p['items_id'] = 0;
@@ -299,14 +302,14 @@ class PlanningRecall extends CommonDBTM {
       if (!($item = getItemForItemtype($p['itemtype']))) {
          return false;
       } // Do not check items_id and item get because may be used when creating item (task for example)
-      
+
       echo "<form method='post' action='".$CFG_GLPI['root_doc']."/front/planningrecall.form.php'>";
       self::dropdown($options);
-      echo " <input type='submit' name='update' value=\"".__s('Save')."\"
-         class='submit'>";
+      echo " <input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
 
       echo "</form>";
    }
+
 
    /**
     * Give cron information

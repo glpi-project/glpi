@@ -696,8 +696,8 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "</a>";
 
       $recall = '';
-      if (isset($val[getForeignKeyFieldForItemType($itemtype)]) 
-            && PlanningRecall::isAvailable()) {
+      if (isset($val[getForeignKeyFieldForItemType($itemtype)])
+          && PlanningRecall::isAvailable()) {
          $pr = new PlanningRecall();
          if ($pr->getFromDBForItemAndUser($val['itemtype'],
                                           $val[getForeignKeyFieldForItemType($itemtype)],
@@ -812,10 +812,10 @@ abstract class CommonITILTask  extends CommonDBTM {
             echo "<tr><td>"._x('Planning','Reminder')."</td><td>";
             PlanningRecall::specificForm(array('itemtype' => $this->getType(),
                                                'items_id' => $this->fields["id"]));
-            
+
             echo "</td></tr>";
          }
-         echo "</table>";         
+         echo "</table>";
       }
       echo "</td>";
 
@@ -967,7 +967,9 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "</td></tr>";
 
-      if (!empty($this->fields["begin"]) && PlanningRecall::isAvailable()) {
+      if (!empty($this->fields["begin"])
+          && PlanningRecall::isAvailable()) {
+
          echo "<tr class='tab_bg_1'><td>"._x('Planning','Reminder')."</td><td>";
          PlanningRecall::dropdown(array('itemtype' => $this->getType(),
                                         'items_id' => $this->getID()));

@@ -1817,13 +1817,13 @@ function generate_entity($ID_entity) {
 
    // Ajout contacts
    $prenoms = array("Jean", "John", "Louis", "Pierre", "Auguste",
-                  "Albert", "Julien", "Guillaume", "Bruno",
-                  "Maurice", "Francois", "Laurent", "Richard",
-                  "Henri", "Clement");
-   $noms = array("Dupont", "Smith", "Durand", "Martin", "Dubois",
-                  "Dufour", "Dupin", "Duval", "Petit", "Grange",
-                  "Bernard", "Bonnet", "Richard", "Leroy",
-                  "Dumont", "Fontaine");
+                    "Albert", "Julien", "Guillaume", "Bruno",
+                    "Maurice", "Francois", "Laurent", "Richard",
+                    "Henri", "Clement");
+   $noms    = array("Dupont", "Smith", "Durand", "Martin", "Dubois",
+                    "Dufour", "Dupin", "Duval", "Petit", "Grange",
+                    "Bernard", "Bonnet", "Richard", "Leroy",
+                    "Dumont", "Fontaine");
 
 
    $FIRST["contacts"] = getMaxItem("glpi_contacts")+1;

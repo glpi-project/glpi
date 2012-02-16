@@ -2219,10 +2219,10 @@ abstract class CommonITILObject extends CommonDBTM {
       // Manage actors : requester and assign
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th rowspan='2' width='13%'>".__('Actor')."&nbsp;:</th>";
+      echo "<th rowspan='2' width='13%'>".__('Actor')."</th>";
       echo "<th width='29%'>".__('Requester');
-      $rand_requester = -1;
-      $candeleterequester    = false;
+      $rand_requester      = -1;
+      $candeleterequester  = false;
 
       if ($ID
           && $this->canAdminActors()
@@ -2479,8 +2479,9 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // Supplier
-      if ($this->canAssign() && !$is_hidden['suppliers_id_assign'] 
-         && $this->fields["suppliers_id_assign"]) {
+      if ($this->canAssign()
+          && !$is_hidden['suppliers_id_assign']
+          && $this->fields["suppliers_id_assign"]) {
          echo self::getActorIcon('supplier', self::ASSIGN);
          /// For ticket templates : mandatories
          if (isset($options['_tickettemplate'])) {

@@ -626,7 +626,7 @@ if (isset($_POST["action"])
                            $nbko++;
                         }
                         break;
-   
+
                      case "unlock_ocsng_printer" :
                         if (OcsServer::unlockItems($key, "import_printer")) {
                            $nbok++;
@@ -634,7 +634,7 @@ if (isset($_POST["action"])
                            $nbko++;
                         }
                         break;
-   
+
                      case "unlock_ocsng_peripheral" :
                         if (OcsServer::unlockItems($key, "import_peripheral")) {
                            $nbok++;
@@ -642,7 +642,7 @@ if (isset($_POST["action"])
                            $nbko++;
                         }
                         break;
-   
+
                      case "unlock_ocsng_software" :
                         if (OcsServer::unlockItems($key, "import_software")) {
                            $nbok++;
@@ -650,7 +650,7 @@ if (isset($_POST["action"])
                            $nbko++;
                         }
                         break;
-   
+
                      case "unlock_ocsng_ip" :
                         if (OcsServer::unlockItems($key, "import_ip")) {
                            $nbok++;
@@ -658,7 +658,7 @@ if (isset($_POST["action"])
                            $nbko++;
                         }
                         break;
-   
+
                      case "unlock_ocsng_disk" :
                         if (OcsServer::unlockItems($key, "import_disk")) {
                            $nbok++;
@@ -698,8 +698,8 @@ if (isset($_POST["action"])
                if ($item->can($key,'w')) {
                   //Try to get the OCS server whose machine belongs
                   $query = "SELECT `ocsservers_id`, `id`
-                              FROM `glpi_ocslinks`
-                              WHERE `computers_id` = '$key'";
+                            FROM `glpi_ocslinks`
+                            WHERE `computers_id` = '$key'";
                   $result = $DB->query($query);
                   if ($DB->numrows($result) == 1) {
                      $data = $DB->fetch_assoc($result);
@@ -764,9 +764,9 @@ if (isset($_POST["action"])
             }
          }
          if ($softdictionnayrule->replayRulesOnExistingDB(0, 0, $ids)>0){
-            $nbok+=count($ids);
+            $nbok += count($ids);
          } else {
-            $nbko+=count($ids);
+            $nbko += count($ids);
          }
 
          break;
@@ -1057,11 +1057,13 @@ if (isset($_POST["action"])
             $res = Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $_POST);
          }
 
-         if (is_array($res) && isset($res['ok']) && isset($res['ko']) 
-               && isset($res['noright'])) {
+         if (is_array($res)
+             && isset($res['ok'])
+             && isset($res['ko'])
+             && isset($res['noright'])) {
             $nbok      = $res['ok'];
             $nbko      = $res['ko'];
-            $nbnoright = $res['noright'];                     
+            $nbnoright = $res['noright'];
          } else {
             $nbok++;
          }

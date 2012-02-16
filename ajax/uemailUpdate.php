@@ -59,13 +59,13 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
       $default_notif = $_REQUEST['use_notification'];
    }
 
-   if (isset($_REQUEST['alternative_email']) && !empty($_REQUEST['alternative_email'])
-      && empty($default_email)) {
+   if (isset($_REQUEST['alternative_email'])
+       && !empty($_REQUEST['alternative_email'])
+       && empty($default_email)) {
       $default_email = $_REQUEST['alternative_email'];
-   }  
-   
-   $rand = Dropdown::showYesNo($_REQUEST['field'].'[use_notification]', $default_notif);
+   }
 
+   $rand = Dropdown::showYesNo($_REQUEST['field'].'[use_notification]', $default_notif);
 
    $email_string = '';
    // Only one email
@@ -75,7 +75,7 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
       $email_string =  $default_email;
       // Clean alternative email
       echo "<input type='hidden' size='25' name='".$_REQUEST['field']."[alternative_email]'
-            value=''>";      
+             value=''>";
 
    } else if (count($emails) > 1) {
       // Several emails : select in the list
@@ -91,10 +91,10 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
       $email_string = "<input type='text' size='25' name='".$_REQUEST['field']."[alternative_email]'
             value='$default_email'>";
    }
-   
+
    echo '<br>';
    echo sprintf(__('Email: %s'), $email_string);
-   
+
 }
 
 Ajax::commonDropdownUpdateItem($_POST);
