@@ -62,7 +62,7 @@ class Framework_GLPI extends PHPUnit_Framework_TestSuite {
       global $DB;
 
       // Store Max(id) for each glpi tables
-      $result = $DB->list_tables("glpi_%");
+      $result = $DB->list_tables();
       while ($data=$DB->fetch_row($result)) {
          $query = "SELECT MAX(`id`) AS MAXID
                    FROM `".$data[0]."`";
