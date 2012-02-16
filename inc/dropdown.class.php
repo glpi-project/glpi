@@ -703,7 +703,8 @@ class Dropdown {
                     __('Internet')
                         => array('IPNetwork'    => _n('IP network', 'IP networks', 2),
                                  'FQDN'         => _n('Internet domain', 'Internet domains', 2),
-                                 'WifiNetwork'  => _n('Wifi network', 'Wifi networks', 2)),
+                                 'WifiNetwork'  => _n('Wifi network', 'Wifi networks', 2),
+                                 'NetworkName'  => _n('Network name', 'Network names', 2)),
 
                     __('Software')
                         => array('SoftwareCategory' => _n('Software category',
