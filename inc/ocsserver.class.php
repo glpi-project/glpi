@@ -561,7 +561,7 @@ class OcsServer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td class='center'>" . __('OCSNG user password') . "</td>\n";
-      echo "<td><input type='password' name='ocs_db_passwd' value=''>";
+      echo "<td><input type='password' name='ocs_db_passwd' value='' autocomplete='off'>";
       if ($ID > 0) {
          echo "<br><input type='checkbox' name='_blank_passwd'>&nbsp;".__('Clear');
       }
