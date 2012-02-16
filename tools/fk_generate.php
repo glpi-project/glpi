@@ -40,13 +40,9 @@ $result = $DB->list_tables();
 $numtab = 0;
 
 while ($t=$DB->fetch_array($result)) {
-
-   // on se  limite aux tables prefixees _glpi
-   if (strstr($t[0],"glpi_")) {
-      $query = "ALTER TABLE `$t[0]`
-                TYPE = innodb";
-      $DB->query($query);
-   }
+   $query = "ALTER TABLE `$t[0]`
+             TYPE = innodb";
+   $DB->query($query);
 }
 
 $relations = getDbRelations();
