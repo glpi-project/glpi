@@ -749,12 +749,11 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *
     * @param $start
     * @param $end                         (default NULL)
-    * @param $excludeBroadcastAndNetwork  (false by default)
    **/
-   function computeNetworkRange(&$start, &$end=NULL, $excludeBroadcastAndNetwork=false) {
+   function computeNetworkRange(&$start, &$end=NULL) {
 
       self::computeNetworkRangeFromAdressAndNetmask($this->getAddress(), $this->getNetmask(),
-                                                    $start, $end, $excludeBroadcastAndNetwork);
+                                                    $start, $end, $this->fields['addressable']);
    }
 
 
@@ -910,48 +909,28 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       }
    }
 
-   static function displayNetworkPropertiesForIPAddressSelection($entities_id = -1) {
-      global $DB;
 
-      $query = "SELECT `id`, `completename`, `address`, `netmask`, `gateway`
-                FROM `glpi_ipnetworks`";
-      if ($entities_id != -1) {
-         if (!is_array($entities_id)) {
-            $entities_id = array($entities_id);
-         }
-         $query .="WHERE `entities_id` IN ('" . implode("', '", $entities_id) . "')";
-      }
+   /**
+    * Show all available IPNetwork for a given entity
+    *
+    * @param $entities_id entity of the IPNetworks (-1 for all entities)
+    *
+   **/
+   static function showIPNetworkProperties($entities_id = -1) {
+      global $CFG_GLPI;
 
-      echo "\n<script type='text/javascript'>\n\tvar network_characteristics = [];\n";
-
-      foreach ($DB->request($query) as $network) {
-         echo "\tnetwork_characteristics[".$network['id']."] = {
-                       name: '".$network['completename']."',
-                       address: '".$network['address']."',
-                       netmask: '".$network['netmask']."',
-                       gateway: '".$network['gateway']."'};\n";
-      }
-
-      echo "\n\n\tfunction display_network(ipnetworks_id) {
-               if (network_characteristics[ipnetworks_id] !== undefined) {
-                  newText = '<br><b>' + network_characteristics[ipnetworks_id].name + '</b><br>';
-                  newText += network_characteristics[ipnetworks_id].address + '/';
-                  newText += network_characteristics[ipnetworks_id].netmask;
-                  if (network_characteristics[ipnetworks_id].gateway != '') {
-                       newText += '<br>".__('Gateway').": '
-                       newText += network_characteristics[ipnetworks_id].gateway;
-                  }
-               } else {
-                  newText = '';
-               }
-               document.getElementById('network_description').innerHTML = newText;
-            }";
-
-      echo "\n</script>\n";
-
+      $rand = mt_rand();
       Dropdown::show('IPNetwork', array('entity' => $entities_id,
-                                        'on_change' => 'display_network(this.options[this.selectedIndex].value)'));
-      echo "<span id='network_description'></span>";
+                                        'rand' => $rand));
+
+      $params = array('ipnetworks_id'   => '__VALUE__');
+
+      Ajax::updateItemOnSelectEvent("dropdown_ipnetworks_id$rand", "show_ipnetwork_$rand",
+                                    $CFG_GLPI["root_doc"]. "/ajax/dropdownShowIPNetwork.php",
+                                    $params);
+
+      echo "<span id='show_ipnetwork_$rand'>&nbsp;</span>\n";
+
    }
 }
 ?>
