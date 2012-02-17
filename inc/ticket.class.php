@@ -3126,18 +3126,28 @@ class Ticket extends CommonITILObject {
 
    /**
     * @since version 0.83
+    *
+    * @param $entity integer  entities_id usefull is function called by cron
    **/
-   static function getDefaultValues() {
+   static function getDefaultValues($entity=0) {
+      global $CFG_GLPI;
 
-      $users_id_requester = Session::getLoginUserID();
-      // No default requester if own ticket right = tech and update_ticket right to update requester
-      if (Session::haveRight('own_ticket',1) && Session::haveRight('update_ticket',1)) {
+      if (is_numeric(Session::getLoginUserID(false))) {
+         $users_id_requester = Session::getLoginUserID();
+         // No default requester if own ticket right = tech and update_ticket right to update requester
+         if (Session::haveRight('own_ticket',1) && Session::haveRight('update_ticket',1)) {
+            $users_id_requester = 0;
+         }
+         $entity      = $_SESSION['glpiactive_entity'];
+         $requesttype = $_SESSION['glpidefault_requesttypes_id'];
+      } else {
          $users_id_requester = 0;
+         $requesttype        = $CFG_GLPI['default_requesttypes_id'];
       }
 
       // Set default values...
       return  array('_users_id_requester'       => $users_id_requester,
-                    '_users_id_requester_notif' => array('use_notification' => 1,
+                    '_users_id_requester_notif' => array('use_notification'  => 1,
                                                          'alternative_email' => ''),
                     '_groups_id_requester'      => 0,
                     '_users_id_assign'          => 0,
@@ -3157,10 +3167,10 @@ class Ticket extends CommonITILObject {
                     'urgency'                   => 3,
                     'impact'                    => 3,
                     'priority'                  => self::computePriority(3, 3),
-                    'requesttypes_id'           => $_SESSION["glpidefault_requesttypes_id"],
+                    'requesttypes_id'           => $requesttype,
                     'actiontime'                => 0,
                     'date'                      => $_SESSION["glpi_currenttime"],
-                    'entities_id'               => $_SESSION["glpiactive_entity"],
+                    'entities_id'               => $entity,
                     'status'                    => 'new',
                     'followup'                  => array(),
                     'itemtype'                  => '',
