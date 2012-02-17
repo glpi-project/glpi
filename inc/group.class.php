@@ -104,6 +104,7 @@ class Group extends CommonTreeDropdown {
             case 'Group' :
                $ong = array();
 
+               $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $nb = countElementsInTable($this->getTable(), "`groups_id` = '".$item->getID()."'");
                }
