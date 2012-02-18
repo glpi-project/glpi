@@ -945,5 +945,27 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       echo "<span id='show_ipnetwork_$rand'>&nbsp;</span>\n";
 
    }
+
+
+   /**
+    * Override title function to display the link to reinitialisation of the network tree
+    **/
+   function title() {
+      parent::title();
+
+      if ((Session::haveRight('internet', 'w')) &&
+          (Session::haveAccessToEntity(0))) {
+
+         echo "<div class='spaced' id='tabsbody'>";
+         echo "<table class='tab_cadre_fixe'>";
+
+         echo "<tr><td class='center'><a href='".$_SERVER['PHP_SELF']."?action=reinit_network'>".
+            __('Reinit the network topology') . "</a></td></tr>";
+
+         echo "</table>";
+         echo "</div>";
+
+     }
+   }
 }
 ?>
