@@ -518,6 +518,7 @@ class NetworkName extends FQDNLabel {
     * @param $options   array of possible options:
     *       - 'dont_display' : array of the elements that must not be display
     *       - 'SQL_options'  : SQL options to add after WHERE request
+    *       - 'order'        : Order to display the NetworkNames
     *
    **/
    static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
@@ -531,21 +532,42 @@ class NetworkName extends FQDNLabel {
 
       switch ($item->getType()) {
       case 'IPNetwork':
+         $query = "SELECT `glpi_networknames`.`id`
+                   FROM `glpi_networknames`, `glpi_ipaddresses`, `glpi_ipaddresses_ipnetworks`
+                   WHERE `glpi_networknames`.`id` = `glpi_ipaddresses`.`items_id`
+                      AND `glpi_ipaddresses`.`itemtype` = 'NetworkName'
+                      AND `glpi_ipaddresses`.`id` =`glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
+                      AND `glpi_ipaddresses_ipnetworks`.`ipnetworks_id` = '".$item->getID()."'";
+         if (isset($options['order'])) {
+            switch ($options['order']) {
+            case 'name':
+               $query .= " ORDER BY `glpi_networknames`.`name`";
+               break;
+            case 'ip':
+               $query .= " ORDER BY `glpi_ipaddresses`.`binary_3`,
+                                    `glpi_ipaddresses`.`binary_2`,
+                                    `glpi_ipaddresses`.`binary_1`,
+                                    `glpi_ipaddresses`.`binary_0`";
+               break;
+            }
+         }
+         break;
+
       case 'FQDN' :
-         $where_criterion = $item->getCriterionForMatchingNetworkNames();
+         $query = "SELECT `glpi_networknames`.`id`
+                   FROM `glpi_networknames`
+                   WHERE `fqdns_id` = '".$item->fields["id"]."'
+                   ORDER BY `glpi_networknames`.`name`";
          break;
 
       case 'NetworkEquipment' :
       case 'NetworkPort' :
-         $where_criterion = "`itemtype` = '".$item->getType()."'
-                             AND `items_id` = '".$item->getID()."'";
+         $query = "SELECT `id`
+                   FROM `glpi_networknames`
+                   WHERE `itemtype` = '".$item->getType()."'
+                        AND `items_id` = '".$item->getID()."'";
          break;
       }
-
-
-      $query = "SELECT `id`
-                FROM `glpi_networknames`
-                WHERE $where_criterion";
 
       if (isset($options['SQL_options'])) {
          $query .= " ".$options['SQL_options'];
@@ -617,19 +639,22 @@ class NetworkName extends FQDNLabel {
             $start = 0;
          }
 
-         if (!empty($_REQUEST["order"])) {
-            $order = $_REQUEST["order"];
-         } else {
-            $order = "name";
+         if ($item->getType() == 'IPNetwork') {
+            if (!empty($_REQUEST["order"])) {
+               $table_options['order'] = $_REQUEST["order"];
+            } else {
+               $table_options['order'] = 'name';
+            }
+
+            $table_options['dont_display'] = array('IPNetwork' => true);
+            $table_options['column_links'] =
+                 array('NetworkName' => 'javascript:reloadTab("order=name");',
+                      'IPAddress'   => 'javascript:reloadTab("order=ip");');
+
          }
 
-         $table_options['dont_display'] = array('IPNetwork'    => true);
-         $table_options['SQL_options']  = "ORDER BY `$order`
-                                           LIMIT ".$_SESSION['glpilist_limit']."
+         $table_options['SQL_options']  = "LIMIT ".$_SESSION['glpilist_limit']."
                                            OFFSET $start";
-         $table_options['column_links'] =
-               array('NetworkName' => 'javascript:reloadTab("order=name");',
-                     'IPAddress'   => 'javascript:reloadTab("order=ip_addresses");');
 
          $canedit = false;
 
@@ -644,16 +669,24 @@ class NetworkName extends FQDNLabel {
       self::getHTMLTableHeaderForItem($item->getType(), $table, "", $table_options);
 
       // Reorder the columns for better display
-      $table->setColumnOrder(array('NetworkName', 'IPAddress', 'NetworkAlias'));
+      switch ($item->getType()) {
+         case 'NetworkEquipment' :
+            break;
+         case 'NetworkPort' :
+            break;
+         case 'IPNetwork' :
+            $table->setColumnOrder(array('NetworkName', 'IPAddress', 'NetworkAlias'));
+            break;
+        case 'FQDN' :
+            break;
+      }
 
       self::getHTMLTableForItem($item, $table, $canedit, true, $table_options);
 
       if ($table->getNumberOfRows() > 0) {
 
          if (($item->getType() == 'IPNetwork') || ($item->getType() == 'FQDN')) {
-            $number = countElementsInTable($address->getTable(),
-                                           $item->getCriterionForMatchingNetworkNames());
-            Html::printAjaxPager(self::getTypeName(2), $start, $number);
+            Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
          }
          Session::initNavigateListItems(__CLASS__,
                                  //TRANS : %1$s is the itemtype name,
@@ -714,29 +747,43 @@ class NetworkName extends FQDNLabel {
    }
 
 
+   static function countForItem(CommonDBTM $item) {
+      global $DB;
+
+      switch ($item->getType()) {
+
+      case 'IPNetwork':
+         $query = "SELECT DISTINCT count(*) as cpt
+                   FROM `glpi_ipaddresses`, `glpi_ipaddresses_ipnetworks`
+                   WHERE `glpi_ipaddresses`.`itemtype` = 'NetworkName'
+                        AND `glpi_ipaddresses`.`id` =`glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
+                        AND `glpi_ipaddresses_ipnetworks`.`ipnetworks_id` = '3'";
+         $result = $DB->query($query);
+         $ligne  = $DB->fetch_assoc($result);
+         return $ligne['cpt'];
+         break;
+
+      case 'FQDN' :
+         return countElementsInTable('glpi_networknames',
+                                     "`fqdns_id` = '".$item->fields["id"]."'");
+         break;
+
+      case 'NetworkEquipment' :
+      case 'NetworkPort' :
+
+         return countElementsInTable('glpi_networknames',
+                                     "itemtype = '".$item->getType()."'
+                                        AND items_id='".$item->getID()."'");
+         break;
+      }
+   }
+
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getID() && $item->can($item->getField('id'),'r')) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            $numberElements = 0;
-
-            switch ($item->getType()) {
-               case 'IPNetwork':
-               case 'FQDN' :
-                  $numberElements = countElementsInTable($this->getTable(),
-                                                         $item->getCriterionForMatchingNetworkNames());
-                  break;
-
-               case 'NetworkEquipment' :
-               case 'NetworkPort' :
-
-                  $numberElements = countElementsInTable($this->getTable(),
-                                                        "itemtype = '".$item->getType()."'
-                                                           AND items_id='".$item->getID()."'");
-                  break;
-
-            }
-            return self::createTabEntry(self::getTypeName(2), $numberElements);
+            return self::createTabEntry(self::getTypeName(2), self::countForItem($item));
          }
          return self::getTypeName(2);
       }
