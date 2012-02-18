@@ -394,12 +394,14 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *
     * @return list of networks (see searchNetworks())
    **/
-   static function searchNetworksContainingIP($IP, $entityID=-1, $recursive=true, $fields="") {
+   static function searchNetworksContainingIP($IP, $entityID=-1, $recursive=true,
+                                              $fields="", $where = "") {
 
-      return self::searchNetworks("contains", array("address"  => $IP,
-                                                    "netmask"  => array(0xffffffff, 0xffffffff,
+      return self::searchNetworks('contains', array('address'  => $IP,
+                                                    'netmask'  => array(0xffffffff, 0xffffffff,
                                                                         0xffffffff, 0xffffffff),
-                                                    "fields"   => $fields), $entityID, $recursive);
+                                                    'fields'   => $fields,
+                                                    'where'    => $where), $entityID, $recursive);
    }
 
 
@@ -414,6 +416,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *    - address (see \ref parameterType) : the address for the query
     *    - netmask (see \ref parameterType) : the netmask for the query
     *    - exclude IDs : the IDs to exclude from the query (for instance, $this->getID())
+    *    - where : filters to add to the SQL request
     *
     * @param $entityID        the entity on which the selection should occur (-1 => the current active
     *                         entity) (default -1)
@@ -554,6 +557,10 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $ORDER = array();
       for ($i = $startIndex ; $i < 4 ; ++$i) {
          $ORDER[] = "BIT_COUNT(`".$netmaskDB[$i]."`) $ORDER_ORIENTATION";
+      }
+
+      if (!empty($condition["where"])) {
+         $WHERE .= " AND " . $condition["where"];
       }
 
       $query = "SELECT $FIELDS
