@@ -36,6 +36,16 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+if ((isset($_GET['action'])) && ($_GET['action'] == 'reinit_network')
+    && (Session::haveRight('internet', 'w')) && (Session::haveAccessToEntity(0))) {
+
+   IPNetwork::recreateTree();
+   Session::addMessageAfterRedirect(__('Successfully recreated network tree !'));
+
+   Html::back();
+}
+
+
 $dropdown = new IPNetwork();
 include (GLPI_ROOT . "/front/dropdown.common.php");
 ?>
