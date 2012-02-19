@@ -127,20 +127,6 @@ class FQDN extends CommonDropdown {
 
 
    /**
-    * Get SQL searching criterion to know if a NetworkName uses this as FQDN
-    *
-    * @return SQL request "WHERE" element
-   **/
-   function getCriterionForMatchingNetworkNames() {
-
-      if (!empty($this->fields["id"])) {
-         return "`fqdns_id` = '".$this->fields["id"]."'";
-      }
-      return "";
-   }
-
-
-   /**
     * @return the FQDN of the element, or "" if invalid FQDN
    **/
    function getFQDN() {
