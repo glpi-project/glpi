@@ -630,22 +630,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
 
    /**
-    * Get SQL searching criterion to know if a NetworkName uses this as FQDN
-    *
-    * @return SQL request "WHERE" element
-   **/
-   function getCriterionForMatchingNetworkNames() {
-
-      return "`id` IN (SELECT `glpi_ipaddresses`.`items_id`
-                       FROM `glpi_ipaddresses_ipnetworks`, `glpi_ipaddresses`
-                       WHERE `glpi_ipaddresses_ipnetworks`.`ipnetworks_id` = '".$this->getID()."'
-                             AND `glpi_ipaddresses`.`id`
-                                 = `glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
-                             AND `glpi_ipaddresses`.`itemtype` = 'NetworkName')";
-   }
-
-
-   /**
     * Check to see if an IP is inside a given network
     * See : \ref ipAddressToNetwork
     *
