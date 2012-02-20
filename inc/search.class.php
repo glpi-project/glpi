@@ -1050,9 +1050,8 @@ class Search {
                         if (!isset($already_printed[$p['itemtype2'][$j].$p['field2'][$j]])) {
                            // General case
                            if (strpos($data["META_$j"],"$$$$")===false) {
-                              print_r($data["META_$j"]);
                               $out = self::giveItem($p['itemtype2'][$j], $p['field2'][$j], $data,
-                                                      $j, 1);
+                                                    $j, 1);
                               echo self::showItem($output_type, $out, $item_num, $row_num);
 
                            // Case of GROUP_CONCAT item : split item and multilline display
@@ -2274,7 +2273,7 @@ class Search {
          case "glpi_softwareversions.name" :
             if ($meta) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`, '$$', 
+                                                     `$table$addtable`.`$field`, '$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
                            AS ".$NAME."_".$num.", ";
             }
@@ -2287,12 +2286,12 @@ class Search {
          case "glpi_softwareversions.comment" :
             if ($meta) {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`,'$$', 
+                                                     `$table$addtable`.`$field`,'$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
                            AS ".$NAME."_".$num.", ";
             }
             return " GROUP_CONCAT(DISTINCT CONCAT(`$table$addtable`.`name`, ' - ',
-                                                  `$table$addtable`.`$field`,'$$', 
+                                                  `$table$addtable`.`$field`,'$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
                         AS ".$NAME."_".$num.", ";
 
@@ -2300,12 +2299,12 @@ class Search {
             if ($meta && $meta_type == 'Software') {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwares`.`name`, ' - ',
                                                      `glpi_softwareversions$addtable`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`,'$$', 
+                                                     `$table$addtable`.`$field`,'$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
                            AS ".$NAME."_".$num.", ";
             } else if ($itemtype == 'Software') {
                return " GROUP_CONCAT(DISTINCT CONCAT(`glpi_softwareversions`.`name`, ' - ',
-                                                     `$table$addtable`.`$field`,'$$', 
+                                                     `$table$addtable`.`$field`,'$$',
                                                      `$table$addtable`.`id`) SEPARATOR '$$$$')
                            AS ".$NAME."_".$num.", ";
             }
@@ -4356,7 +4355,7 @@ class Search {
       }
       // Manage auto CONCAT id
       $split = explode('$$',$data[$NAME.$num]);
-      
+
       return $split[0].$unit;
    }
 
