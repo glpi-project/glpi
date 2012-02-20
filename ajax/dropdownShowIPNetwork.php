@@ -53,13 +53,12 @@ if ($network->can($_POST['ipnetworks_id'], 'r')) {
 
    $network->computeNetworkRange($start, $end);
 
-   echo __('IP network') . "&nbsp;: $address/$netmask<br>\n";
-   echo __('First/last addresses') . "&nbsp;: " . $start->getTextual() . "/" .
-        $end->getTextual();
+   //TRANS: %1$s is address, %2$s is netmask
+   printf(__('IP network: %1$s/%2$s')."<br>`n", $address, $netmask);
+   printf(__('First/last addresses: %1$s/%2$s'), $start->getTextual(), $end->getTextual());
    if (!empty($gateway)) {
       echo "<br>\n";
-      echo __('Gateway') . "&nbsp;: $gateway\n";
+      printf(__('Gateway: %s')."\n", $gateway);
    }
 }
-
 ?>
