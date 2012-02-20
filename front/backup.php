@@ -88,7 +88,6 @@ function xmlbackup() {
    $result = $DB->list_tables();
    $i      = 0;
    while ($line = $DB->fetch_row($result)) {
-      // on se limite aux tables prefixees _glpi
       $table = $line[0];
 
       $query[$i] = "SELECT *
