@@ -391,17 +391,19 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *                   entities will be search (true by default)
     * @param $fields    list of fields to return in the result (default : only ID of the networks)
     *                   (default '')
+    * @param $where     (default '')
     *
     * @return list of networks (see searchNetworks())
    **/
    static function searchNetworksContainingIP($IP, $entityID=-1, $recursive=true,
-                                              $fields="", $where = "") {
+                                              $fields="", $where="") {
 
       return self::searchNetworks('contains', array('address'  => $IP,
                                                     'netmask'  => array(0xffffffff, 0xffffffff,
                                                                         0xffffffff, 0xffffffff),
                                                     'fields'   => $fields,
-                                                    'where'    => $where), $entityID, $recursive);
+                                                    'where'    => $where),
+                                  $entityID, $recursive);
    }
 
 
@@ -742,8 +744,9 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     * @param $end                         (default NULL)
     * @param $excludeBroadcastAndNetwork  Don't provide extremties addresses
     *                                     ($this->fields['addressable'] by default)
+    *                                     (default '')
    **/
-   function computeNetworkRange(&$start, &$end=NULL, $excludeBroadcastAndNetwork = '') {
+   function computeNetworkRange(&$start, &$end=NULL, $excludeBroadcastAndNetwork='') {
 
       if (!is_bool($excludeBroadcastAndNetwork)) {
          $excludeBroadcastAndNetwork = ($this->fields['addressable'] == 1);
@@ -910,24 +913,23 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    /**
     * Show all available IPNetwork for a given entity
     *
-    * @param $entities_id entity of the IPNetworks (-1 for all entities)
-    *
+    * @param $entities_id  entity of the IPNetworks (-1 for all entities)
+    *                      (default -1)
    **/
-   static function showIPNetworkProperties($entities_id = -1) {
+   static function showIPNetworkProperties($entities_id=-1) {
       global $CFG_GLPI;
 
       $rand = mt_rand();
       Dropdown::show('IPNetwork', array('entity' => $entities_id,
-                                        'rand' => $rand));
+                                        'rand'   => $rand));
 
-      $params = array('ipnetworks_id'   => '__VALUE__');
+      $params = array('ipnetworks_id' => '__VALUE__');
 
       Ajax::updateItemOnSelectEvent("dropdown_ipnetworks_id$rand", "show_ipnetwork_$rand",
                                     $CFG_GLPI["root_doc"]. "/ajax/dropdownShowIPNetwork.php",
                                     $params);
 
       echo "<span id='show_ipnetwork_$rand'>&nbsp;</span>\n";
-
    }
 
 
@@ -937,14 +939,14 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function title() {
       parent::title();
 
-      if ((Session::haveRight('internet', 'w')) &&
-          (Session::haveAccessToEntity(0))) {
+      if (Session::haveRight('internet', 'w')
+          && Session::haveAccessToEntity(0)) {
 
          echo "<div class='spaced' id='tabsbody'>";
          echo "<table class='tab_cadre_fixe'>";
 
          echo "<tr><td class='center'><a href='".$_SERVER['PHP_SELF']."?action=reinit_network'>".
-            __('Reinit the network topology') . "</a></td></tr>";
+               __('Reinit the network topology') . "</a></td></tr>";
 
          echo "</table>";
          echo "</div>";
