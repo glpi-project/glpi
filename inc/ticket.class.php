@@ -3145,6 +3145,8 @@ class Ticket extends CommonITILObject {
          $requesttype        = $CFG_GLPI['default_requesttypes_id'];
       }
 
+      $type = EntityData::getUsedConfig('tickettype', $entity, '', Ticket::INCIDENT_TYPE);
+
       // Set default values...
       return  array('_users_id_requester'       => $users_id_requester,
                     '_users_id_requester_notif' => array('use_notification'  => 1,
@@ -3180,7 +3182,7 @@ class Ticket extends CommonITILObject {
                     'due_date'                  => 'NULL',
                     'slas_id'                   => 0,
                     '_add_validation'           => 0,
-                    'type'                      => -1);
+                    'type'                      => $type);
 
    }
 
