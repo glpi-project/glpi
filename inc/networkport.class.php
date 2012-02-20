@@ -912,14 +912,15 @@ class NetworkPort extends CommonDBChild {
          $nbAlias = countElementsInTable('glpi_networkportaliases',
                                          "`networkports_id_alias` = '".$item->getField('id')."'");
          if ($nbAlias > 0) {
-            $aliases = self::createTabEntry(NetworkPortAlias::getTypeName($nbAlias), $nbAlias);
+            $aliases = self::createTabEntry(NetworkPortAlias::getTypeName(2), $nbAlias);
          } else {
             $aliases = '';
          }
          $nbAggregates = countElementsInTable('glpi_networkportaggregates',
-                                              "`networkports_id_list` like '%\"".$item->getField('id')."\"%'");
+                                              "`networkports_id_list`
+                                                   LIKE '%\"".$item->getField('id')."\"%'");
          if ($nbAggregates > 0) {
-            $aggregates = self::createTabEntry(NetworkPortAggregate::getTypeName($nbAggregates),
+            $aggregates = self::createTabEntry(NetworkPortAggregate::getTypeName(2),
                                                $nbAggregates);
          } else {
             $aggregates = '';
