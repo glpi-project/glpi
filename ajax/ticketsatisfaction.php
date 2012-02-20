@@ -62,7 +62,7 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
       echo "<tr class='tab_bg_1'><td width='50%'>".__('Create survey after')."</td>";
       echo "<td>";
       Dropdown::showInteger('inquest_delay', $inquest_delay, 1, 90, 1,
-                            array('0' => __('As soon as possible')),
+                            array('0'    => __('As soon as possible')),
                             array('unit' => 'day'));
       echo "</td></tr>";
 
@@ -70,8 +70,9 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
            "<td colspan='1'>".__('Rate to trigger survey')."</td>";
       echo "<td colspan='1'>";
       Dropdown::showInteger('inquest_rate', $inquest_rate, 10, 100, 10,
-                            array(0 => __('Disabled')));
-      echo "&nbsp;%</td></tr>";
+                            array(0      => __('Disabled')),
+                            array('unit' => '%'));
+      echo "</td></tr>";
 
       if ($max_closedate != '') {
          echo "<tr class='tab_bg_1'><td colspan='1'>". __('For tickets closed after')."</td>";
