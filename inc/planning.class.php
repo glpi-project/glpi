@@ -179,7 +179,7 @@ class Planning {
              title=\"".__s('Previous')."\"></a>";
       echo "</td>";
       echo "<td>";
-      
+
 //       $types=array('Mon planning', 'Mon planning + Mes groupes', 'Choix d un user', 'Choix d un groupe');
 //       echo "<select>";
 //       foreach ($types as $type) {
@@ -226,7 +226,7 @@ class Planning {
       echo "</td>";
 
       echo "<td>";
-      Dropdown::showItemTypes('itemtype', $CFG_GLPI['planning_types'], array('value'=>$itemtype));
+      Dropdown::showItemTypes('itemtype', $CFG_GLPI['planning_types'], array('value' => $itemtype));
       echo "</td>";
 
       echo "<td>";
@@ -254,7 +254,7 @@ class Planning {
                      title=\"".__s('Download the planning in Ical format')."\">".
                "<span style='font-size:10px'>".__('Ical')."</span></a>";
          echo "<br>";
-   
+
          // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
          echo "<a target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
                "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.

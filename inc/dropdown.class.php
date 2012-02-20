@@ -376,13 +376,13 @@ class Dropdown {
    /**
     * Make a select box for device type
     *
-    * @param $name         name of the select box
-    * @param $types  array of types to display
-    * @param $used   array Already used items ID: not to display in dropdown
+    * @param $name            name of the select box
+    * @param $types     array of types to display
+    * @param $options   array Already used items ID: not to display in dropdown
     * Parameters which could be used in options array :
-    *    - value : integer / preselected value (default '')
-    *    - used : array / Already used items ID: not to display in dropdown (default empty)
-    *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)    
+    *    - value      : integer / preselected value (default '')
+    *    - used       : array / Already used items ID: not to display in dropdown (default empty)
+    *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -392,7 +392,7 @@ class Dropdown {
       $params['value']       = '';
       $params['used']        = array();
       $params['emptylabel'] = self::EMPTY_VALUE;
- 
+
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
@@ -1145,15 +1145,15 @@ class Dropdown {
          $hour       = floor(($i%DAY_TIMESTAMP)/HOUR_TIMESTAMP);
          $minute     = floor(($i%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP);
          if ($minute === '0') {
-            $minute='00';
+            $minute = '00';
          }
          $values[$i] = '';
          if ($day > 0) {
             if ($hour > 0 || $minute > 0) {
-               if ($minute<10) {
-                  $minute='0'.$minute;
+               if ($minute < 10) {
+                  $minute = '0'.$minute;
                }
-            
+
                //TRANS: %1$d is the number of days, %2$d the number of hours,
                //       %3$s the number of minutes : display 1 day 3h15
                $values[$i] = sprintf(_n('%1$d day %2$dh%3$s','%1$d days %2$dh%3$s', $day),
@@ -1166,7 +1166,7 @@ class Dropdown {
             if ($minute<10) {
                $minute='0'.$minute;
             }
-         
+
             //TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
             $values[$i] = sprintf(__('%1$dh%2$s'), $hour, $minute);
          }
@@ -1653,11 +1653,11 @@ class Dropdown {
                      echo "<option value='delete_email'>".__('Delete emails')."</option>";
                      echo "<option value='import_email'>".__('Import')."</option>";
                   break;
-                  
+
                case 'NetworkPortMigration':
                      echo "<option value='transform_to'>".__('Transform this network port to')."</option>";
                   break;
-                  
+
                case 'Problem' :
                   $tmp = new ProblemTask();
                   if ($tmp->canCreate()) {

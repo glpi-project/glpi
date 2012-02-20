@@ -145,7 +145,8 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          $paramsmassaction = array('authtype' => '__VALUE__');
 
          Ajax::updateItemOnSelectEvent("dropdown_authtype$rand", "show_massiveaction_field",
-                                       $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",
+                                       $CFG_GLPI["root_doc"].
+                                          "/ajax/dropdownMassiveActionAuthMethods.php",
                                        $paramsmassaction);
          echo "<span id='show_massiveaction_field'>";
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
@@ -163,7 +164,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "activate_infocoms" :
       case "delete_email" :
       case 'reset' :
-         echo "<input type='submit' name='massiveaction' class='submit' value='". __s('Post')."'>\n";
+         echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>\n";
          break;
 
       case "unlock_ocsng_field" :
@@ -180,7 +181,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
       case "unlock_ocsng_printer" :
       case "unlock_ocsng_disk" :
       case "unlock_ocsng_ip" :
-         echo "<input type='submit' name='massiveaction' class='submit' value='". __s('Unlock')."'>";
+         echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Unlock')."'>";
          break;
 
       case "install" :
@@ -226,12 +227,13 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          break;
 
       case "transform_to" :
-         Dropdown::showItemTypes('transform_to', NetworkPort::getNetworkPortInstantiations(), array('value'=>'NetworkPortEthernet'));
-                                       
+         Dropdown::showItemTypes('transform_to', NetworkPort::getNetworkPortInstantiations(),
+                                 array('value' => 'NetworkPortEthernet'));
+
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
                      __s('Save')."'>";
          break;
-         
+
       case "add_document" :
          Document::dropdown(array('name' => 'docID'));
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".

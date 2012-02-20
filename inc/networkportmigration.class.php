@@ -205,8 +205,8 @@ class NetworkPortMigration extends CommonDBChild {
               "<td>" .__('Transform this network port to');
          echo "</td><td colspan=2>";
          Dropdown::showItemTypes('transform_to', NetworkPort::getNetworkPortInstantiations(),
-                                 array('value'=>"NetworkPortEthernet"));
-                                                        
+                                 array('value' => "NetworkPortEthernet"));
+
          echo "</td></tr>\n";
       }
 

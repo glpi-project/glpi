@@ -240,16 +240,17 @@ class PlanningRecall extends CommonDBTM {
       $possible_values                       = array();
       $possible_values[Entity::CONFIG_NEVER] = __('None');
 
-      $min_values = array(0,15,30,45);
+      $min_values = array(0, 15, 30, 45);
       foreach ($min_values as $val) {
-         $possible_values[$val*MINUTE_TIMESTAMP] = sprintf(_n('%1$d minute','%1$d minutes',$val), $val);
+         $possible_values[$val*MINUTE_TIMESTAMP] = sprintf(_n('%1$d minute','%1$d minutes',$val),
+                                                           $val);
       }
 
-      $h_values = array(1,2,3,4,12);
+      $h_values = array(1, 2, 3, 4, 12);
       foreach ($h_values as $val) {
          $possible_values[$val*HOUR_TIMESTAMP] = sprintf(_n('%1$d hour','%1$d hours',$val), $val);
       }
-      $d_values = array(1,2);
+      $d_values = array(1, 2);
       foreach ($d_values as $val) {
          $possible_values[$val*DAY_TIMESTAMP] = sprintf(_n('%1$d day','%1$d days',$val), $val);
       }
