@@ -52,17 +52,23 @@ class TicketTemplateHiddenField extends CommonDBChild {
       return _n('Hidden field', 'Hidden fields', $nb);
    }
 
+
+   /**
+    * @see inc/CommonDBTM::getName()
+    *
+    * @since version 0.84
+   **/
    function getName($with_comment=0) {
 
-      $tt = new TicketTemplate();
+      $tt     = new TicketTemplate();
       $fields = $tt->getAllowedFieldsNames(true);
-      
+
       if (isset($fields[$this->fields["num"]])) {
          return $fields[$this->fields["num"]];
       }
       return NOT_AVAILABLE;
    }
-   
+
    function canCreate() {
       return Session::haveRight('tickettemplate', 'w');
    }

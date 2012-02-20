@@ -2394,7 +2394,8 @@ class Search {
       // Default case
       if ($meta
          || (isset($searchopt[$ID]["forcegroupby"]) && $searchopt[$ID]["forcegroupby"])) {
-         return " GROUP_CONCAT(DISTINCT CONCAT($tocompute,'$$',$tocomputeid) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+         return " GROUP_CONCAT(DISTINCT CONCAT($tocompute,'$$',$tocomputeid) SEPARATOR '$$$$')
+                     AS ".$NAME."_$num, ";
       }
       return "$tocompute AS ".$NAME."_$num, ";
    }

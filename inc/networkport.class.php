@@ -431,21 +431,18 @@ class NetworkPort extends CommonDBChild {
       foreach ($porttypes as $portType) {
 
          if ($itemtype == 'NetworkPort') {
-
             switch ($portType) {
+               case 'NetworkPortAlias' :
+                  $search_table   = 'glpi_networkportaliases';
+                  $search_request = "`networkports_id_alias`='$items_id'";
+                  break;
 
-            case 'NetworkPortAlias':
-               $search_table   = 'glpi_networkportaliases';
-               $search_request = "`networkports_id_alias`='$items_id'";
-               break;
-
-            case 'NetworkPortAggregate':
-               $search_table   = 'glpi_networkportaggregates';
-               $search_request = "`networkports_id_list` like '%\"$items_id\"%'";
-               break;
+               case 'NetworkPortAggregate' :
+                  $search_table   = 'glpi_networkportaggregates';
+                  $search_request = "`networkports_id_list` like '%\"$items_id\"%'";
+                  break;
             }
-
-            $query = "SELECT `networkports_id` as id
+            $query = "SELECT `networkports_id` AS id
                       FROM  `$search_table`
                       WHERE $search_request";
 
@@ -913,7 +910,7 @@ class NetworkPort extends CommonDBChild {
 
       if ($item->getType() == 'NetworkPort') {
          $nbAlias = countElementsInTable('glpi_networkportaliases',
-                                         "`networkports_id_alias`='".$item->getField('id')."'");
+                                         "`networkports_id_alias` = '".$item->getField('id')."'");
          if ($nbAlias > 0) {
             $aliases = self::createTabEntry(NetworkPortAlias::getTypeName($nbAlias), $nbAlias);
          } else {
