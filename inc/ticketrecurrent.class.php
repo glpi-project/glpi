@@ -306,7 +306,7 @@ class TicketRecurrent extends CommonDropdown {
       // Create ticket based on ticket template and entity information of ticketrecurrent
       if ($tt->getFromDB($data['tickettemplates_id'])) {
          // Get default values for ticket
-         $input = Ticket::getDefaultValues();
+         $input = Ticket::getDefaultValues($data['entities_id']);
          // Apply tickettemplates predefined values
          $ttp        = new TicketTemplatePredefinedField();
          $predefined = $ttp->getPredefinedFields($data['tickettemplates_id'], true);
