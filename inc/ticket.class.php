@@ -2914,10 +2914,10 @@ class Ticket extends CommonITILObject {
          $tt->getFromDBWithDatas($template_id, true);
       }
 
+      $field = '';
       if ($options['type'] && $options['itilcategories_id']) {
          $categ = new ITILCategory();
          if ($categ->getFromDB($options['itilcategories_id'])) {
-            $field = '';
             switch ($options['type']) {
                case self::INCIDENT_TYPE :
                   $field = 'tickettemplates_id_incident';
