@@ -50,7 +50,7 @@ if (isset($_GET["delete"])) {
    $np->delete($_GET);
    Event::log($_GET['id'], "networkport", 5, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
 
    Html::redirect($CFG_GLPI["root_doc"]."/front/networkportmigration.php");
 
@@ -87,7 +87,7 @@ if (isset($_GET["delete"])) {
          Session::addMessageAfterRedirect(__('Cannot change a migration network port to an unknown one'));
       }
    } else {
-      Session::addMessageAfterRedirect(__('NetworkPort is not available ...'));
+      Session::addMessageAfterRedirect(__('Network port is not available ...'));
       $np->delete($_POST);
    }
 

@@ -55,8 +55,8 @@ if (isset($_POST["add"])) {
          }
       }
       Event::log($_POST["problems_id"], "problem", 4, "tracking",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 

@@ -70,7 +70,8 @@ if (isset($_POST["activate"])) {
    Html::back();
 }
 
-if ((strpos($_SERVER['PHP_SELF'],"popup") && $_REQUEST["itemtype"])) {
+if ((strpos($_SERVER['PHP_SELF'],"popup")
+    && $_REQUEST["itemtype"])) {
    $setupdisplay->showTabs(array('displaytype' => $_REQUEST['itemtype']));
    echo "<div id='tabcontent'>&nbsp;</div>";
    echo "<script type='text/javascript'>loadDefaultTab();</script>";

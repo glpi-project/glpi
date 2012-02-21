@@ -43,7 +43,7 @@ if (isset($_POST["add"])) {
    $newID = $nn->add($_POST);
    Event::log($newID, "networkname", 5, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s adds the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s adds an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["delete"])) {
@@ -51,7 +51,7 @@ if (isset($_POST["add"])) {
    $nn->delete($_POST);
    Event::log($_POST["id"], "networkname", 5, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    if ($node = getItemForItemtype($nn->fields["itemtype"])) {
       if ($node->can($nn->fields["items_id"], 'r')) {
          Html::redirect($node->getLinkURL());
@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
    $nn->update($_POST);
    Event::log($_POST["id"], "networkname", 4, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST['assign_address'])) { // From NetworkPort or NetworkEquipement
@@ -89,7 +89,7 @@ if (isset($_POST["add"])) {
       $nn->delete($_GET);
       Event::log($nn->getID(), $nn->getType(), 5, "inventory",
                  //TRANS: %s is the user login
-                 sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
+                 sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
    } else {
       $nn->check($_GET['id'],'w');
       NetworkName::unaffectAddressByID($_GET['id']);

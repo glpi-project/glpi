@@ -64,7 +64,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
    AuthLdap::showUserImportForm($authldap);
 
    if (isset($_SESSION['ldap_import']['authldaps_id'])
-       && $_SESSION['ldap_import']['authldaps_id'] != NOT_AVAILABLE
+       && ($_SESSION['ldap_import']['authldaps_id'] != NOT_AVAILABLE)
        && isset($_SESSION['ldap_import']['criterias'])
        && !empty($_SESSION['ldap_import']['criterias'])) {
 
@@ -101,7 +101,7 @@ if ($_SESSION['ldap_import']['action'] == 'show') {
       }
 
    } else {
-      if (count($_POST['toprocess']) >0) {
+      if (count($_POST['toprocess']) > 0) {
          $_SESSION["ldap_process_count"] = 0;
          $_SESSION["authldaps_id"] = $_SESSION['ldap_import']['authldaps_id'];
 

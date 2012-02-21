@@ -124,7 +124,7 @@ if (isset($_POST["action"])
    $nbko      = 0;
 
    switch($_POST["action"]) {
-      case "transform_to":
+      case "transform_to" :
          if (!empty($_POST["transform_to"])) {
             $networkport = new NetworkPort();
             foreach ($_POST["item"] as $key => $val) {
@@ -282,7 +282,7 @@ if (isset($_POST["action"])
                   if ($val == 1) {
                      if ($item->getFromDB($key)) {
                         if ($link_entity_type < 0
-                            || $link_entity_type == $item->getEntityID()
+                            || ($link_entity_type == $item->getEntityID())
                             || ($ent->fields["is_recursive"]
                                 && in_array($link_entity_type, getAncestorsOf("glpi_entities",
                                             $item->getEntityID())))) {
@@ -327,12 +327,12 @@ if (isset($_POST["action"])
                $itemtype2 = getItemTypeForTable($searchopt[$_POST["id_field"]]["table"]);
                if ($item2 = getItemForItemtype($itemtype2)) {
 
-                  if ($searchopt[$_POST["id_field"]]["table"] != $itemtable
+                  if (($searchopt[$_POST["id_field"]]["table"] != $itemtable)
                       && $item2->isEntityAssign()
                       && $item->isEntityAssign()) {
                      if ($item2->getFromDB($_POST[$_POST["field"]])) {
                         if (isset($item2->fields["entities_id"])
-                            && $item2->fields["entities_id"] >=0) {
+                            && ($item2->fields["entities_id"] >= 0)) {
 
                            if (isset($item2->fields["is_recursive"])
                                && $item2->fields["is_recursive"]) {
@@ -349,7 +349,7 @@ if (isset($_POST["action"])
                foreach ($_POST["item"] as $key => $val) {
                   if ($val == 1) {
                      if ($item->can($key,'w')) {
-                        if (count($link_entity_type) == 0
+                        if ((count($link_entity_type) == 0)
                             || in_array($item->fields["entities_id"],$link_entity_type)) {
                            if ($item->update(array('id'            => $key,
                                                    $_POST["field"] => $_POST[$_POST["field"]]))) {
@@ -401,7 +401,7 @@ if (isset($_POST["action"])
          break;
 
       case "install" :
-         if (isset($_POST['softwareversions_id']) && $_POST['softwareversions_id']>0) {
+         if (isset($_POST['softwareversions_id']) && ($_POST['softwareversions_id'] > 0)) {
             $inst = new Computer_SoftwareVersion();
             foreach ($_POST['item'] as $key => $val) {
                if ($val == 1) {
@@ -443,9 +443,9 @@ if (isset($_POST["action"])
       case "add_userprofile" :
          $right = new Profile_User();
          if (isset($_POST['profiles_id'])
-             && $_POST['profiles_id'] > 0
+             && ($_POST['profiles_id'] > 0)
              && isset($_POST['entities_id'])
-             && $_POST['entities_id'] >= 0) {
+             && ($_POST['entities_id'] >= 0)) {
 
             $input['entities_id']  = $_POST['entities_id'];
             $input['profiles_id']  = $_POST['profiles_id'];
@@ -693,7 +693,7 @@ if (isset($_POST["action"])
             Html::redirect($_SERVER['PHP_SELF'].'?multiple_actions=1');
 
          } else {
-            if (count($_SESSION['glpi_massiveaction']['items']) >0) {
+            if (count($_SESSION['glpi_massiveaction']['items']) > 0) {
                $key = array_pop($_SESSION['glpi_massiveaction']['items']);
                if ($item->can($key,'w')) {
                   //Try to get the OCS server whose machine belongs
@@ -932,7 +932,8 @@ if (isset($_POST["action"])
             Session::checkRight('config', 'w');
             $crontask = new CronTask();
             foreach ($_POST["item"] as $key => $val) {
-               if ($val==1 && $crontask->getFromDB($key)) {
+               if (($val == 1)
+                   && $crontask->getFromDB($key)) {
                   if ($crontask->resetDate()) {
                      $nbok++;
                   } else {
@@ -951,7 +952,8 @@ if (isset($_POST["action"])
             $parent = new $_POST["itemtype"]();
             if ($parent->getFromDB($_POST['parent'])) {
                foreach ($_POST["item"] as $key => $val) {
-                  if ($val==1 && $item->can($key,'w')) {
+                  if (($val == 1)
+                      && $item->can($key,'w')) {
                      // Check if parent is not a child of the original one
                      if (!in_array($parent->getID(), getSonsOf($item->getTable(),
                                    $item->getID()))) {
@@ -975,7 +977,7 @@ if (isset($_POST["action"])
       case 'merge' :
          $fk = $item->getForeignKeyField();
          foreach ($_POST["item"] as $key => $val) {
-            if ($val==1) {
+            if ($val == 1) {
                if ($item->can($key,'w')) {
                   if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
                      if ($item->update(array('id'           => $key,
@@ -1045,7 +1047,7 @@ if (isset($_POST["action"])
       default :
          // Plugin specific actions
          $split = explode('_',$_POST["action"]);
-         $res = '';
+         $res   = '';
          if ($split[0] == 'plugin' && isset($split[1])) {
             // Normalized name plugin_name_action
             // Allow hook from any plugin on any (core or plugin) type
@@ -1075,13 +1077,13 @@ if (isset($_POST["action"])
       $message = __('Failed operation');
       if ($nbnoright) {
          //TRANS: %$1d and %$2d are numbers
-         $message .= "<br>".sprintf(__('(%1$d authorizations problem(s), %2$d failure(s))'),
+         $message .= "<br>".sprintf(__('(%1$d authorizations problems, %2$d failures)'),
                                      $nbnoright, $nbko);
       }
    } else if ($nbnoright || $nbko) {
       // Partial success
       $message = __('Operation performed partially successful');
-      $message .= "<br>".sprintf(__('(%1$d authorizations problem(s), %2$d failure(s))'),
+      $message .= "<br>".sprintf(__('(%1$d authorizations problems, %2$d failures)'),
                                  $nbnoright, $nbko);
    }
    Session::addMessageAfterRedirect($message);

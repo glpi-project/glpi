@@ -90,10 +90,11 @@ if ($_GET["id"] == "new") {
    $kb->update($_POST);
    Event::log($_POST["id"], "knowbaseitem", 5, "tools",
               //TRANS: %s is the user login
-              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_POST['id']);
 
-} else if (isset($_GET["id"]) && strcmp($_GET["modify"],"yes") == 0) {
+} else if (isset($_GET["id"])
+           && (strcmp($_GET["modify"],"yes") == 0)) {
    // modifier un item dans la base de connaissance
    $kb->check($_GET["id"],'r');
 
@@ -101,23 +102,26 @@ if ($_GET["id"] == "new") {
    $kb->showForm($_GET["id"]);
    Html::footer();
 
-} else if (isset($_GET["id"]) && strcmp($_GET["delete"],"yes") == 0) {
+} else if (isset($_GET["id"])
+           && (strcmp($_GET["delete"],"yes") == 0)) {
    // effacer un item dans la base de connaissances
    $kb->check($_GET["id"],'w');
 
    $kb->delete($_GET);
    Event::log($_GET["id"], "knowbaseitem", 5, "tools",
               //TRANS: %s is the user login
-              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $kb->redirectToList();
 
-} else if (isset($_GET["id"]) && strcmp($_GET["addtofaq"],"yes") == 0) {
+} else if (isset($_GET["id"])
+           && (strcmp($_GET["addtofaq"],"yes") == 0)) {
    // ajouter  un item dans la faq
    $kb->check($_GET["id"],'w');
    $kb->addToFaq();
    Html::back();
 
-} else if (isset($_GET["id"]) && strcmp($_GET["removefromfaq"],"yes") == 0) {
+} else if (isset($_GET["id"])
+           && (strcmp($_GET["removefromfaq"],"yes") == 0)) {
    // retirer  un item de la faq
    $kb->check($_GET["id"],'w');
    $kb->removeFromFaq($_GET["id"]);
