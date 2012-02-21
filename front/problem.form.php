@@ -56,7 +56,7 @@ if (isset($_POST["add"])) {
    $problem->delete($_POST);
    Event::log($_POST["id"], "problem", 4, "maintain",
               //TRANS: %s is the user login
-              sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
    $problem->redirectToList();
 
 } else if (isset($_POST["restore"])) {
@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
    $problem->restore($_POST);
    Event::log($_POST["id"], "problem", 4, "maintain",
               //TRANS: %s is the user login
-              sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    $problem->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
@@ -74,7 +74,7 @@ if (isset($_POST["add"])) {
    $problem->delete($_REQUEST,1);
    Event::log($_REQUEST["id"], "problem", 4, "maintain",
               //TRANS: %s is the user login
-              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $problem->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -83,7 +83,7 @@ if (isset($_POST["add"])) {
    $problem->update($_POST);
    Event::log($_POST["id"], "problem", 4, "maintain",
               //TRANS: %s is the user login
-              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
 
    // Copy solution to KB redirect to KB
    if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
@@ -98,8 +98,8 @@ if (isset($_POST["add"])) {
    $problem_user->check($_REQUEST['id'], 'w');
    $problem_user->delete($_REQUEST);
 
-   Event::log($_REQUEST['problems_id'], "problem", 4,
-              "maintain", sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
+   Event::log($_REQUEST['problems_id'], "problem", 4, "maintain",
+              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_REQUEST['problems_id']);
 
 } else if (isset($_REQUEST['delete_group'])) {

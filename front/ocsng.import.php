@@ -110,7 +110,7 @@ if (!isset($_POST["import_ok"])) {
    }
 
 } else {
-   if (count($_POST['toimport']) >0) {
+   if (count($_POST['toimport']) > 0) {
       $_SESSION["ocs_import_count"] = 0;
 
       foreach ($_POST['toimport'] as $key => $val) {

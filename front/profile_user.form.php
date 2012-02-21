@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
       } else if (isset($_POST["users_id"])) {
          Event::log($_POST["users_id"], "users", 4, "setup",
                      //TRANS: %s is the user login
-                     sprintf(__('%s deletes a user from an entity'), $_SESSION["glpiname"]));
+                     sprintf(__('%s deletes an entity from a user'), $_SESSION["glpiname"]));
       }
    }
    Html::back();

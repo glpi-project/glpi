@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
 
    Event::log($_POST["id"], "phones", 4, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
    $phone->redirectToList();
 
 } else if (isset($_POST["restore"])) {
@@ -75,7 +75,7 @@ if (isset($_POST["add"])) {
    $phone->restore($_POST);
    Event::log($_POST["id"], "phones", 4, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    $phone->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
@@ -84,7 +84,7 @@ if (isset($_POST["add"])) {
    $phone->delete($_REQUEST,1);
    Event::log($_REQUEST["id"], "phones", 4, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $phone->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -93,7 +93,7 @@ if (isset($_POST["add"])) {
    $phone->update($_POST);
    Event::log($_POST["id"], "phones", 4, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_GET["unglobalize"])) {
