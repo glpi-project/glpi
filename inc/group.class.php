@@ -586,6 +586,8 @@ class Group extends CommonTreeDropdown {
          }
          echo "</tr>";
 
+         $user  = new User();
+         $group = new Group();
          foreach ($datas as $data) {
             if (!($item = getItemForItemtype($data['itemtype']))) {
                continue;
@@ -601,10 +603,14 @@ class Group extends CommonTreeDropdown {
             if ($tree || $user) {
                echo "</td><td>";
                if ($grp = $item->getField($field)) {
-                  echo Dropdown::getDropdownName('glpi_groups', $grp);
+                  if ($group->getFromDB($grp)) {
+                     echo $group->getLink(true);
+                  }
 
                } else if ($usr = $item->getField(str_replace('groups', 'users', $field))) {
-                  echo getUserName($usr);
+                  if ($user->getFromDB($usr)) {
+                     echo $user->getLink(true);
+                  }
                }
             }
             echo "</td></tr>";
