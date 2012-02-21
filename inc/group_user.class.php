@@ -409,6 +409,8 @@ class Group_User extends CommonDBRelation{
          echo "<th>".__('Manager')."</th>";
          echo "<th>".__('Delegatee')."</th></tr>";
 
+         $tmpgrp = new Group();
+
          for ($i=$start, $j=0 ; $i<$number && $j<$_SESSION['glpilist_limit'] ; $i++, $j++) {
             $data = $used[$i];
             $user->getFromDB($data["id"]);
@@ -426,7 +428,9 @@ class Group_User extends CommonDBRelation{
             }
             if ($tree) {
                echo "</td><td>";
-               echo Dropdown::getDropdownName('glpi_groups', $data['groups_id']);
+               if ($tmpgrp->getFromDB($data['groups_id'])) {
+                  echo $tmpgrp->getLink(true);
+               }
             }
             echo "</td><td class='center'>";
             if ($data['is_manager']) {
