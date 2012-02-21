@@ -46,7 +46,8 @@ Session::checkRight("software", "w");
 $rand  = mt_rand();
 $where = "";
 
-if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
+if ((strlen($_POST['searchText']) > 0)
+    && ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])) {
    $where .=" AND `name` ".Search::makeTextSearch($_POST['searchText'])." ";
 }
 

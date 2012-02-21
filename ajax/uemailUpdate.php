@@ -42,7 +42,7 @@ if (strpos($_SERVER['PHP_SELF'],"uemailUpdate.php")) {
 
 Session::checkLoginUser();
 
-if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
+if ((isset($_REQUEST['field']) && ($_REQUEST["value"] > 0))
     || (isset($_REQUEST['allow_email']) && $_REQUEST['allow_email'])) {
    $user          = new User();
    $default_email = "";
@@ -68,7 +68,7 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
 
    $email_string = '';
    // Only one email
-   if (count($emails) ==  1
+   if ((count($emails) == 1)
        && !empty($default_email)
        && NotificationMail::isUserAddressValid($default_email)) {
       $email_string =  $default_email;

@@ -56,7 +56,7 @@ if (isset($_REQUEST['node'])) {
    $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
 
    // Root node
-   if ($_REQUEST['node']== -1) {
+   if ($_REQUEST['node'] == -1) {
       $pos = 0;
 
       foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity) {

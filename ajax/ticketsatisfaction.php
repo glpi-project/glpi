@@ -79,7 +79,7 @@ if (isset($_REQUEST['inquest_config']) && isset($_REQUEST['entities_id'])) {
          echo "<td colspan='1'>" . Html::convDateTime($max_closedate)."</td></tr>";
       }
 
-      if ($_REQUEST['inquest_config']==2 ) {
+      if ($_REQUEST['inquest_config'] == 2) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Valid tags')."</td><td>".
                "[TICKET_ID] [TICKET_NAME] [TICKET_CREATEDATE] [TICKET_SOLVEDATE] ".

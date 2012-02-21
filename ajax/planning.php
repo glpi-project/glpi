@@ -40,7 +40,7 @@ Html::header_nocache();
 
 Session::checkCentralAccess();
 
-if (isset($_POST["id"]) && $_POST["id"]>0) {
+if (isset($_POST["id"]) && ($_POST["id"] > 0)) {
    echo "<input type='hidden' name='plan[id]' value='".$_POST["id"]."'>";
 }
 
@@ -50,7 +50,7 @@ if (isset($_POST["begin"]) && !empty($_POST["begin"])) {
 } else {
    $minute = (floor(date('i')/10)*10);
 
-   if ($minute<10) {
+   if ($minute < 10) {
       $minute = '0'.$minute;
    }
    $begin = date("Y-m-d H").":$minute:00";
@@ -116,14 +116,14 @@ $params = array('duration'     => '__VALUE__',
 Ajax::updateItemOnSelectEvent("dropdown_plan[_duration]$rand", "date_end$rand",
                               $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
 
-if ($default_delay==0) {
+if ($default_delay == 0) {
    $params['duration'] = 0;
   Ajax::updateItem("date_end$rand", $CFG_GLPI["root_doc"]."/ajax/planningend.php", $params);
 }
 
 echo "</td></tr>\n";
 
-if ((!isset($_POST["id"]) || $_POST["id"]==0)
+if ((!isset($_POST["id"]) || ($_POST["id"] == 0))
     && isset($_POST['itemtype'])
     && PlanningRecall::isAvailable()) {
    echo "<tr class='tab_bg_2'><td>"._x('Planning','Reminder')."</td><td>";

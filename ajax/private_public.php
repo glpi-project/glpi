@@ -67,8 +67,8 @@ if (isset($_POST['is_private'])) {
          Dropdown::show('Entity', array('value' => $val));
          _e(' + Child entities: ');
          Dropdown::showYesNo('is_recursive', $_POST["is_recursive"]);
-         echo " - ";
-         echo "<a onClick='setPrivate".$_POST['rand']."()'>".__('Set personal')."</a>";
+         $link = "<a onClick='setPrivate".$_POST['rand']."()'>".__('Set personal')."</a>";
+         printf(__(' - %s'), $link);
          break;
    }
 }

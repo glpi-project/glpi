@@ -39,7 +39,7 @@ Html::header_nocache();
 
 Session::checkRight("transfer", "r");
 
-if (isset($_POST["id"]) && $_POST["id"]>0) {
+if (isset($_POST["id"]) && ($_POST["id"] > 0)) {
    $transfer = new Transfer();
    $transfer->showForm($_POST["id"],
                        array('target' => $CFG_GLPI["root_doc"]."/front/transfer.action.php"));

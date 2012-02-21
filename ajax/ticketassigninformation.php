@@ -43,7 +43,7 @@ if (strpos($_SERVER['PHP_SELF'],"ticketassigninformation.php")) {
 
 Session::checkLoginUser();
 
-if (isset($_REQUEST['users_id_assign']) && $_REQUEST['users_id_assign'] > 0) {
+if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
 
    $ticket = new Ticket();
 

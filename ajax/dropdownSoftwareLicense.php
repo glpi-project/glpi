@@ -42,7 +42,7 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownSoftwareLicense.php")) {
 
 Session::checkRight("software", "w");
 
-if ($_POST['softwares_id']>0) {
+if ($_POST['softwares_id'] > 0) {
    if (!isset($_POST['value'])) {
       $_POST['value'] = 0;
    }
@@ -70,7 +70,7 @@ if ($_POST['softwares_id']>0) {
          $output = $data['name'];
 
          if (empty($output) || $_SESSION['glpiis_ids_visible']) {
-            $output .= " ($ID)";
+            $output .= "&nbsp;".sprintf(__('(%s)'), $ID);
          }
          echo "<option ".($ID==$_POST['value']?"selected":"")." value='$ID' title=\"".
                 Html::cleanInputText($output)."\">".$output."</option>";

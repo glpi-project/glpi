@@ -40,12 +40,13 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 // Make a select box
-if (isset($_POST["itemtype"]) && CommonITILObject::isPossibleToAssignType($_POST["itemtype"])) {
+if (isset($_POST["itemtype"])
+    && CommonITILObject::isPossibleToAssignType($_POST["itemtype"])) {
    $table = getTableForItemType($_POST["itemtype"]);
    $rand  = mt_rand();
 
    // Message for post-only
-   if (!isset($_POST["admin"]) || $_POST["admin"]==0) {
+   if (!isset($_POST["admin"]) || ($_POST["admin"] == 0)) {
       echo "<br>".__('Enter the first letters (user, item name, serial or asset number)');
    }
 

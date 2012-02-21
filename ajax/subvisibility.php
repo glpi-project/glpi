@@ -44,7 +44,7 @@ if (strpos($_SERVER['PHP_SELF'],"subvisibility.php")) {
 Session::checkLoginUser();
 
 if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
-    && isset($_REQUEST['items_id']) && $_REQUEST['items_id'] > 0) {
+    && isset($_REQUEST['items_id']) && ($_REQUEST['items_id'] > 0)) {
 
    switch ($_REQUEST['type']) {
       case 'Group' :

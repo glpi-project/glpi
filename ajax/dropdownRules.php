@@ -58,13 +58,13 @@ $sql = "SELECT `id`, `name`, `ranking`
         FROM `glpi_rules`
         WHERE `sub_type` = '".$_POST["type"]."'";
 
-if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
+if ($_POST['searchText'] == $CFG_GLPI["ajax_wildcard"]) {
    $LIMIT = "";
 } else {
    $sql .= " AND `name` ".Search::makeTextSearch($_POST['searchText']);
 }
 
-if (isset($_POST['entity_restrict']) && $_POST['entity_restrict']!='') {
+if (isset($_POST['entity_restrict']) && ($_POST['entity_restrict'] != '')) {
    $sql .= " AND `glpi_rules`.`entities_id` = '".$_POST['entity_restrict']."'";
 }
 
@@ -74,7 +74,8 @@ $result = $DB->query($sql);
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['myname']."' size='1'>";
 
-if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
+if (($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
+    && ($DB->numrows($result) == $NBMAX)) {
    echo "<option value='0'>".__('--Limited view--')."</option>";
 } else {
    echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
