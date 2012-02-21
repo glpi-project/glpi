@@ -85,15 +85,14 @@ if (!isset($_POST["import_ok"])) {
    }
    OcsServer::manageDeleted($_SESSION["ocsservers_id"]);
    OcsServer::showComputersToAdd($_SESSION["ocsservers_id"], $_SESSION["change_import_mode"],
-                                 $_GET['check'], $_GET['start'], $_SESSION['glpiactiveentities'],
-                                 1);
+                                 $_GET['check'], $_GET['start'], $_SESSION['glpiactiveentities'], 1);
 
 } else {
-   if (isset($_POST['tolink']) && count($_POST['tolink']) >0) {
+   if (isset($_POST['tolink']) && (count($_POST['tolink']) > 0)) {
       $_SESSION["ocs_link_count"] = 0;
 
       foreach ($_POST['tolink'] as $ocsid => $computers_id) {
-         if ($computers_id >0) {
+         if ($computers_id > 0) {
             $_SESSION["ocs_link"][] = array('ocsid'        => $ocsid,
                                             'computers_id' => $computers_id);
             $_SESSION["ocs_link_count"]++;

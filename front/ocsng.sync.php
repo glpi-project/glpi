@@ -78,7 +78,7 @@ if (!isset($_POST["update_ok"])) {
    }
 
 } else {
-   if (count($_POST['toupdate']) >0) {
+   if (count($_POST['toupdate']) > 0) {
       $_SESSION["ocs_update_count"] = 0;
 
       foreach ($_POST['toupdate'] as $key => $val) {

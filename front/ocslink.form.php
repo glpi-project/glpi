@@ -79,5 +79,4 @@ if (isset($_POST["unlock_monitor"])) {
 } else {
    Html::displayErrorAndDie("lost");
 }
-
 ?>
