@@ -41,6 +41,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Config extends CommonDBTM {
 
+   // From CommonGLPI
+   protected $displaylist         = false;
+
    // From CommonDBTM
    public $auto_message_on_action = false;
    public $showdebug              = true;
