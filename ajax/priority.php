@@ -41,7 +41,10 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_POST["urgency"]) && isset($_POST["impact"]) && isset($_POST["priority"])) {
+if (isset($_POST["urgency"])
+    && isset($_POST["impact"])
+    && isset($_POST["priority"])) {
+
    $priority = Ticket::computePriority($_POST["urgency"], $_POST["impact"]);
 
    if ($_POST["priority"]) {

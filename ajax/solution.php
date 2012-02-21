@@ -45,7 +45,7 @@ $rand = mt_rand();
 
 Html::initEditorSystem("solution$rand");
 
-if (isset($_POST['value']) && $_POST['value'] > 0) {
+if (isset($_POST['value']) && ($_POST['value'] > 0)) {
    $template = new SolutionTemplate();
 
    if ($template->getFromDB($_POST['value'])) {

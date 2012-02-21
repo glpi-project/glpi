@@ -49,7 +49,9 @@ Session::checkLoginUser();
    $addmeta = "";
 
 // Non define case
-if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
+if (isset($_POST["itemtype"])
+    && isset($_POST["field"]) ) {
+
    if (isset($_POST['meta']) && $_POST['meta']) {
       $addmeta = '2';
    } else {
@@ -61,7 +63,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
    // is it a valid action for type ?
    if (count($actions)
        && (empty($_POST['searchtype']) || !isset($actions[$_POST['searchtype']]))) {
-      $tmp = $actions;
+      $tmp                 = $actions;
       unset($tmp['searchopt']);
       $_POST['searchtype'] = key($tmp);
       unset($tmp);
@@ -113,5 +115,4 @@ if (isset($_POST["itemtype"]) && isset($_POST["field"]) ) {
                                  $CFG_GLPI["root_doc"]."/ajax/searchoptionvalue.php",
                                  $paramsaction);
 }
-
 ?>

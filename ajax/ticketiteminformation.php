@@ -52,7 +52,7 @@ if (isset($_REQUEST["my_items"]) && !empty($_REQUEST["my_items"])) {
 }
 
 if (isset($_REQUEST['itemtype'])
-    && isset($_REQUEST['items_id']) && $_REQUEST['items_id'] > 0) {
+    && isset($_REQUEST['items_id']) && ($_REQUEST['items_id'] > 0)) {
    // Security
    if (!class_exists($_REQUEST['itemtype']) ) {
       exit();
@@ -64,9 +64,9 @@ if (isset($_REQUEST['itemtype'])
                                                               $_REQUEST['items_id'], $days);
 
    $nb = count($data);
-   echo sprintf(_n('%s ticket in progress or recently solved on this item.',
-                   '%s tickets in progress or recently solved on this item.', $nb),
-                $nb);
+   printf(_n('%s ticket in progress or recently solved on this item.',
+             '%s tickets in progress or recently solved on this item.', $nb),
+          $nb);
 
    if ($nb) {
       $content = '';

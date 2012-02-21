@@ -220,7 +220,8 @@ if (isset($_REQUEST['searchtype'])) {
             }
 
             //Could display be handled by a plugin ?
-            if (!$display && $plug = isPluginItemType(getItemTypeForTable($searchopt['table']))) {
+            if (!$display
+                && $plug = isPluginItemType(getItemTypeForTable($searchopt['table']))) {
                $function = 'plugin_'.$plug['plugin'].'_searchOptionsValues';
                if (function_exists($function)) {
                   $params = array('name'           => $inputname,

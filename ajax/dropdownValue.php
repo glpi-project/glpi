@@ -76,7 +76,7 @@ if (isset($_POST['condition']) && !empty($_POST['condition'])) {
    $_POST['condition'] = rawurldecode(stripslashes($_POST['condition']));
 }
 
-if (!isset($_POST['emptylabel']) || $_POST['emptylabel'] == '') {
+if (!isset($_POST['emptylabel']) || ($_POST['emptylabel'] == '')) {
    $_POST['emptylabel'] = Dropdown::EMPTY_VALUE;
 }
 
@@ -179,7 +179,7 @@ if ($item instanceof CommonTreeDropdown) {
       }
 
       // no multi view for entitites
-      if ($_POST['itemtype']=="Entity") {
+      if ($_POST['itemtype'] == "Entity") {
          $multi = false;
       }
 
@@ -204,7 +204,8 @@ if ($item instanceof CommonTreeDropdown) {
       }
       echo ">";
 
-      if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
+      if (($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
+          && ($DB->numrows($result) == $NBMAX)) {
          echo "<option class='tree' value='0'>".__('--Limited view--')."</option>";
       }
 
@@ -222,13 +223,15 @@ if ($item instanceof CommonTreeDropdown) {
 
       $outputval = Dropdown::getDropdownName($table, $_POST['value']);
 
-      if (Toolbox::strlen($outputval)!=0 && $outputval!="&nbsp;") {
+      if ((Toolbox::strlen($outputval) != 0)
+          && ($outputval != "&nbsp;")) {
 
-         if (Toolbox::strlen($outputval)>$_POST["limit"]) {
+         if (Toolbox::strlen($outputval) > $_POST["limit"]) {
             // Completename for tree dropdown : keep right
             $outputval = "&hellip;".Toolbox::substr($outputval, -$_POST["limit"]);
          }
-         if ($_SESSION["glpiis_ids_visible"] || Toolbox::strlen($outputval)==0) {
+         if ($_SESSION["glpiis_ids_visible"]
+             || (Toolbox::strlen($outputval) == 0)) {
             $outputval .= " (".$_POST['value'].")";
          }
          echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
@@ -239,7 +242,7 @@ if ($item instanceof CommonTreeDropdown) {
       if ($DB->numrows($result)) {
          $prev = -1;
 
-         while ($data =$DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $ID     = $data['id'];
             $level  = $data['level'];
             $output = $data['name'];
@@ -247,13 +250,14 @@ if ($item instanceof CommonTreeDropdown) {
             if ($displaywith) {
                foreach ($_POST['displaywith'] as $key) {
                   if (isset($data[$key]) && strlen($data[$key])!=0) {
-                     $output .= " - ".$data[$key];
+                     $output .= sprintf(__(' - %s'), $data[$key]);
                   }
                }
             }
 
-            if ($multi && $data["entities_id"]!=$prev) {
-               if ($prev>=0) {
+            if ($multi
+                && ($data["entities_id"] != $prev)) {
+               if ($prev >= 0) {
                   echo "</optgroup>";
                }
                $prev = $data["entities_id"];
@@ -272,17 +276,17 @@ if ($item instanceof CommonTreeDropdown) {
 
             if ($_SESSION['glpiuse_flat_dropdowntree']) {
                $output = $data['completename'];
-               if ($level>1) {
+               if ($level > 1) {
                   $class = "";
                   $raquo = "";
                   $level = 0;
                }
 
             } else { // Need to check if parent is the good one
-               if ($level>1) {
+               if ($level > 1) {
                   // Last parent is not the good one need to display arbo
                   if (!isset($last_level_displayed[$level-1])
-                      || $last_level_displayed[$level-1] != $data[$item->getForeignKeyField()]) {
+                      || ($last_level_displayed[$level-1] != $data[$item->getForeignKeyField()])) {
 
                      $work_level    = $level-1;
                      $work_parentID = $data[$item->getForeignKeyField()];
@@ -325,7 +329,7 @@ if ($item instanceof CommonTreeDropdown) {
 
                      } while ($work_level > 1
                               && (!isset($last_level_displayed[$work_level])
-                                  || $last_level_displayed[$work_level] != $work_parentID));
+                                  || ($last_level_displayed[$work_level] != $work_parentID)));
 
                      echo $to_display;
                   }
@@ -333,7 +337,7 @@ if ($item instanceof CommonTreeDropdown) {
                $last_level_displayed[$level] = $data['id'];
             }
 
-            if (Toolbox::strlen($output)>$_POST["limit"]) {
+            if (Toolbox::strlen($output) > $_POST["limit"]) {
 
                if ($_SESSION['glpiuse_flat_dropdowntree']) {
                   $output = "&hellip;".Toolbox::substr($output, -$_POST["limit"]);
@@ -343,12 +347,12 @@ if ($item instanceof CommonTreeDropdown) {
             }
 
             if ($_SESSION["glpiis_ids_visible"] || Toolbox::strlen($output)==0) {
-               $output .= " ($ID)";
+               $output .= "&nbsp;".sprintf(__('(%s)'), $ID);
             }
             $addcomment = "";
 
             if (isset($data["comment"])) {
-               $addcomment = " - ".$data["comment"];
+               $addcomment = sprintf(__(' - - %s'), $data["comment"]);
             }
             echo "<option value='$ID' $class title=\"".Html::cleanInputText($data['completename'].
                    $addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output.
@@ -367,11 +371,11 @@ if ($item instanceof CommonTreeDropdown) {
    if ($item->isEntityAssign()) {
       $multi = $item->maybeRecursive();
 
-      if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
+      if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"] < 0)) {
          $where .= getEntitiesRestrictRequest("AND", $table, "entities_id",
                                               $_POST["entity_restrict"], $multi);
 
-         if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
+         if (is_array($_POST["entity_restrict"]) && (count($_POST["entity_restrict"]) > 1)) {
             $multi = true;
          }
 
@@ -442,7 +446,8 @@ if ($item instanceof CommonTreeDropdown) {
 
       echo ">";
 
-      if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
+      if (($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
+          && ($DB->numrows($result) == $NBMAX)) {
          echo "<option value='0'>".__('--Limited view--')."</option>";
 
       } else if (!isset($_POST['display_emptychoice']) || $_POST['display_emptychoice']) {
@@ -459,9 +464,9 @@ if ($item instanceof CommonTreeDropdown) {
 
       $output = Dropdown::getDropdownName($table,$_POST['value']);
 
-      if (strlen($output)!=0 && $output!="&nbsp;") {
+      if ((strlen($output) != 0) && ($output != "&nbsp;")) {
          if ($_SESSION["glpiis_ids_visible"]) {
-            $output .= " (".$_POST['value'].")";
+            $output .= "&nbsp;".sprintf(__('(%s)'), $_POST['value']);
          }
          echo "<option selected value='".$_POST['value']."'>".$output."</option>";
       }
@@ -475,7 +480,7 @@ if ($item instanceof CommonTreeDropdown) {
             if ($displaywith) {
                foreach ($_POST['displaywith'] as $key) {
                   if (isset($data[$key]) && strlen($data[$key])!=0) {
-                     $output .= " - ".$data[$key];
+                     $output .= sprintf(__(' -  %s'), $data[$key]);
                   }
                }
             }
@@ -483,14 +488,16 @@ if ($item instanceof CommonTreeDropdown) {
             $addcomment = "";
 
             if (isset($data["comment"])) {
-               $addcomment = " - ".$data["comment"];
+               $addcomment = sprintf(__(' -  %s'), $data["comment"]);
             }
-            if ($_SESSION["glpiis_ids_visible"] || strlen($output)==0) {
-               $output .= " ($ID)";
+            if ($_SESSION["glpiis_ids_visible"]
+                || (strlen($output) == 0)) {
+               $output .= "&nbsp;".sprintf(__('(%s)'), $ID);
             }
 
-            if ($multi && $data["entities_id"]!=$prev) {
-               if ($prev>=0) {
+            if ($multi
+                && ($data["entities_id"] != $prev)) {
+               if ($prev >= 0) {
                   echo "</optgroup>";
                }
                $prev = $data["entities_id"];

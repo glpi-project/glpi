@@ -57,6 +57,7 @@ if ($_POST["type"]) {
       case Ticket::INCIDENT_TYPE :
          $opt['condition'].= " `is_incident`='1'";
          break;
+
       case Ticket::DEMAND_TYPE:
          $opt['condition'].= " `is_request`='1'";
          break;

@@ -103,8 +103,8 @@ if (isset($_POST["on_change"]) && !empty($_POST["on_change"])) {
 
 echo ">";
 
-if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]
-    && $DB->numrows($result)==$CFG_GLPI["dropdown_max"]) {
+if (($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
+    && ($DB->numrows($result) == $CFG_GLPI["dropdown_max"])) {
 
    echo "<option value='0'>".__('--Limited view--')."</option>";
 }
@@ -118,7 +118,7 @@ if ($_POST['all']==0) {
 if (isset($_POST['value'])) {
    $output = getUserName($_POST['value']);
 
-   if (!empty($output) && $output!="&nbsp;") {
+   if (!empty($output) && ($output != "&nbsp;")) {
       echo "<option selected value='".$_POST['value']."'>".$output."</option>";
    }
 }

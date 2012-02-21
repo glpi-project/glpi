@@ -52,7 +52,8 @@ if (!isset($_POST["limit"])) {
    $_POST["limit"] = $_SESSION["glpidropdown_chars_limit"];
 }
 
-if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
+if ((strlen($_POST['searchText']) > 0)
+    && ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])) {
    $where = " WHERE (`glpi_netpoints`.`name` ".Search::makeTextSearch($_POST['searchText'])."
                      OR `glpi_locations`.`completename` ".Search::makeTextSearch($_POST['searchText']).")";
 } else {
@@ -62,17 +63,17 @@ if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wild
 $NBMAX = $CFG_GLPI["dropdown_max"];
 $LIMIT = "LIMIT 0,$NBMAX";
 
-if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
+if ($_POST['searchText'] == $CFG_GLPI["ajax_wildcard"]) {
    $LIMIT = "";
 }
 $location_restrict = false;
 
 if (!(isset($_POST["devtype"])
-      && $_POST["devtype"] != 'NetworkEquipment'
+      && ($_POST["devtype"] != 'NetworkEquipment')
       && isset($_POST["locations_id"])
-      && $_POST["locations_id"]>0)) {
+      && ($_POST["locations_id"] > 0))) {
 
-   if (isset($_POST["entity_restrict"]) && $_POST["entity_restrict"]>=0) {
+   if (isset($_POST["entity_restrict"]) && ($_POST["entity_restrict"] >= 0)) {
       $where .= " AND `glpi_netpoints`.`entities_id` = '".$_POST["entity_restrict"]."'";
    } else {
       $where .= getEntitiesRestrictRequest(" AND ", "glpi_locations");
@@ -99,14 +100,14 @@ if (isset($_POST["devtype"]) && !empty($_POST["devtype"])) {
 
    } else {
       $query .= " != 'NetworkEquipment' )";
-      if (isset($_POST["locations_id"]) && $_POST["locations_id"]>=0) {
+      if (isset($_POST["locations_id"]) && ($_POST["locations_id"] >= 0)) {
          $location_restrict = true;
          $where .= " AND `glpi_netpoints`.`locations_id` = '".$_POST["locations_id"]."' ";
       }
    }
    $where .= " AND `glpi_networkportethernets`.`netpoints_id` IS NULL ";
 
-} else if (isset($_POST["locations_id"]) && $_POST["locations_id"]>=0) {
+} else if (isset($_POST["locations_id"]) && ($_POST["locations_id"] >= 0)) {
    $location_restrict = true;
    $where .= " AND `glpi_netpoints`.`locations_id` = '".$_POST["locations_id"]."' ";
 }
@@ -128,7 +129,7 @@ if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$
 
 $output = Dropdown::getDropdownName('glpi_netpoints', $_POST['value']);
 
-if (!empty($output) && $output!="&nbsp;") {
+if (!empty($output) && ($output != "&nbsp;")) {
    echo "<option selected value='".$_POST['value']."'>".$output."</option>";
 }
 
@@ -140,14 +141,15 @@ if ($DB->numrows($result)) {
       $addcomment = "";
 
       if (isset($data["comment"])) {
-         $addcomment = " - ".$loc." - ".$data["comment"];
+         //TRANS: %1$s is the location, %2$s is the comment
+         $addcomment = sprintf(__(' - %1$s - %2$s'), $loc, $data["comment"]);
       }
       if (!$location_restrict) {
-         $output .= " ($loc)";
+         $output .= "&nbsp;".sprintf(__('(%s)'), $loc);
       }
 
-      echo "<option value='$ID' title=\"".Html::cleanInputText($output.$addcomment)."\"";
-      echo ">".$output."</option>";
+      echo "<option value='$ID' title=\"".Html::cleanInputText($output.$addcomment)."\">".$output.
+           "</option>";
    }
 }
 echo "</select>\n";
