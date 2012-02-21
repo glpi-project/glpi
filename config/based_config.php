@@ -34,7 +34,7 @@ if (!defined('GLPI_ROOT')) {
 
 // Notice problem  for date function :
 if (function_exists('date_default_timezone_set')) {
-   $tz=ini_get('date.timezone');
+   $tz = ini_get('date.timezone');
    if (!empty($tz)) {
       date_default_timezone_set($tz);
    } else {

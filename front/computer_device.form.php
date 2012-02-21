@@ -49,7 +49,7 @@ if (isset($_POST["add"])) {
    $compdev->check(-1, 'w', $_POST);
    $compdev->updateAll($_POST);
    Event::log($_POST["computers_id"], "computers", 4, "inventory",
-                  //TRANS: %s is the user login
+              //TRANS: %s is the user login
               sprintf(__('%s updates components'), $_SESSION["glpiname"]));
    Html::back();
 

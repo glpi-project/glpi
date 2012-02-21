@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    if ($ok) {
       Event::log($_POST["id"], "computers", 4, "inventory",
                  //TRANS: %s is the user login
-                 sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
+                 sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
    }
    $computer->redirectToList();
 
@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
    if ($computer->restore($_POST)) {
       Event::log($_POST["id"],"computers", 4, "inventory",
                  //TRANS: %s is the user login
-                 sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
+                 sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    }
    $computer->redirectToList();
 
@@ -88,7 +88,7 @@ if (isset($_POST["add"])) {
    if ($computer->delete($_REQUEST,1)) {
       Event::log($_REQUEST["id"], "computers", 4, "inventory",
                  //TRANS: %s is the user login
-                 sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+                 sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    }
    $computer->redirectToList();
 
@@ -98,7 +98,7 @@ if (isset($_POST["add"])) {
    $computer->update($_POST);
    Event::log($_POST["id"], "computers", 4, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
 // Disconnect a computer from a printer/monitor/phone/peripheral
@@ -114,7 +114,7 @@ if (isset($_POST["add"])) {
 
 // Connect a computer to a printer/monitor/phone/peripheral
 } else if (isset($_POST["connect"])) {
-   if (isset($_POST["items_id"]) && $_POST["items_id"]>0) {
+   if (isset($_POST["items_id"]) && ($_POST["items_id"] > 0)) {
       $conn = new Computer_Item();
       $conn->check(-1, 'w', $_POST);
       $conn->add($_POST);

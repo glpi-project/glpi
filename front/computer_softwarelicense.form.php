@@ -43,7 +43,7 @@ if (isset($_REQUEST["add"])) {
    if ($_REQUEST['softwarelicenses_id'] > 0 ) {
       $csl->add($_REQUEST);
       Event::log($_REQUEST['softwarelicenses_id'], "softwarelicense", 4, "inventory",
-                     //TRANS: %s is the user login
+                 //TRANS: %s is the user login
                  sprintf(__('%s associates a computer and a license'), $_SESSION["glpiname"]));
 
    }
@@ -73,7 +73,7 @@ if (isset($_REQUEST["add"])) {
       }
    }
    Event::log($_REQUEST["softwarelicenses_id"], "softwarelicense", 5, "inventory",
-               //TRANS: %s is the user login
+              //TRANS: %s is the user login
               sprintf(__('%s dissociates computers to a license'), $_SESSION["glpiname"]));
 
    Html::back();

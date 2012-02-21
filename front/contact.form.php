@@ -42,21 +42,22 @@ if (empty($_GET["id"])) {
    $_GET["id"] = -1;
 }
 
-$contact = new Contact();
+$contact         = new Contact();
 $contactsupplier = new Contact_Supplier();
 
 if (isset($_REQUEST['getvcard'])) {
-   if ($_GET["id"]<0) {
+   if ($_GET["id"] < 0) {
       Html::redirect($CFG_GLPI["root_doc"]."/front/contact.php");
    }
    $contact->check($_GET["id"],'r');
    $contact->generateVcard();
+
 } else if (isset($_POST["add"])) {
    $contact->check(-1,'w',$_POST);
 
    if ($newID = $contact->add($_POST)) {
       Event::log($newID, "contacts", 4, "financial",
-               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    }
    Html::back();
 
@@ -64,9 +65,9 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->check($_POST["id"],'w');
 
    if ($contact->delete($_POST)) {
-      Event::log($_POST["id"], "contacts", 4, "financial", 
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
+      Event::log($_POST["id"], "contacts", 4, "financial",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
    }
    $contact->redirectToList();
 
@@ -74,9 +75,9 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->check($_POST["id"],'w');
 
    if ($contact->restore($_POST)) {
-      Event::log($_POST["id"], "contacts", 4, "financial", 
-            //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));            
+      Event::log($_POST["id"], "contacts", 4, "financial",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    }
    $contact->redirectToList();
 
@@ -84,9 +85,9 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->check($_POST["id"],'w');
 
    if ($contact->delete($_POST,1)) {
-      Event::log($_POST["id"], "contacts", 4, "financial", 
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
+      Event::log($_POST["id"], "contacts", 4, "financial",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    }
    $contact->redirectToList();
 
@@ -94,21 +95,21 @@ if (isset($_REQUEST['getvcard'])) {
    $contact->check($_POST["id"],'w');
 
    if ($contact->update($_POST)) {
-      Event::log($_POST["id"], "contacts", 4, "financial", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+      Event::log($_POST["id"], "contacts", 4, "financial",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
 } else if (isset($_POST["addcontactsupplier"])) {
    $contactsupplier->check(-1,'w',$_POST);
 
-   if (isset($_POST["contacts_id"]) && $_POST["contacts_id"] > 0
-      && isset($_POST["suppliers_id"]) && $_POST["suppliers_id"] > 0) {
+   if (isset($_POST["contacts_id"]) && ($_POST["contacts_id"] > 0)
+      && isset($_POST["suppliers_id"]) && ($_POST["suppliers_id"] > 0)) {
       if ($contactsupplier->add($_POST)) {
          Event::log($_POST["contacts_id"], "contacts", 4, "financial",
-               //TRANS: %s is the user login
-               sprintf(__('%s adds a link with a supplier'), $_SESSION["glpiname"]));
+                    //TRANS: %s is the user login
+                    sprintf(__('%s adds a link with a supplier'), $_SESSION["glpiname"]));
       }
    }
    Html::back();
@@ -118,8 +119,8 @@ if (isset($_REQUEST['getvcard'])) {
 
    if ($contactsupplier->delete($_GET)) {
       Event::log($_GET["contacts_id"], "contacts", 4, "financial",
-               //TRANS: %s is the user login
-               sprintf(__('%s deletes a link with a supplier'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes a link with a supplier'), $_SESSION["glpiname"]));
    }
    Html::back();
 

@@ -47,11 +47,11 @@ Config::detectRootDoc();
 
 
 if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-
+   // no translation
    if (!isCommandLine()) {
       Html::nullHeader("DB Error",$CFG_GLPI["root_doc"]);
       echo "<div class='center'>";
-      echo "<p>Error : GLPI seems to not be installed properly.</p>";
+      echo "<p>Error: GLPI seems to not be installed properly.</p>";
       echo "<p> config_db.php file is missing.</p>";
       echo "<p>Please restart the install process.</p>";
       echo "<p><a class='red' href='".GLPI_ROOT."'>Click here to proceed</a></p>";
@@ -59,7 +59,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       Html::nullFooter();
 
    } else {
-      echo "Error : GLPI seems to not be installed properly.\n";
+      echo "Error: GLPI seems to not be installed properly.\n";
       echo "config_db.php file is missing.\n";
       echo "Please restart the install process.\n";
    }
@@ -159,7 +159,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       }
    }
 
-   if ((!isset($CFG_GLPI["version"]) || trim($CFG_GLPI["version"])!=GLPI_VERSION)
+   if ((!isset($CFG_GLPI["version"]) || (trim($CFG_GLPI["version"]) != GLPI_VERSION))
        && !isset($_GET["donotcheckversion"])) {
 
       Session::loadLanguage();
@@ -176,7 +176,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          echo "</table><br>";
 
          if (!$error) {
-            if (!isset($CFG_GLPI["version"]) || trim($CFG_GLPI["version"])<GLPI_VERSION) {
+            if (!isset($CFG_GLPI["version"]) || (trim($CFG_GLPI["version"]) < GLPI_VERSION)) {
                echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
                echo "<p class='red'>".
                      __('The version of the database is not compatible with the version of the installed files. An update is necessary.')."</p>";

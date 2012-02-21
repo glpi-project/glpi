@@ -71,8 +71,8 @@ if (isset($_POST["add"])) {
    $task->update($_POST);
 
    Event::log($task->getField($fk), strtolower($itemtype), 4, "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates a task'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s updates a task'), $_SESSION["glpiname"]));
    Html::back();
 
 }
