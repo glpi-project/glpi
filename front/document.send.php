@@ -44,7 +44,7 @@ $doc = new Document();
 
 if (isset($_GET['docid'])) { // docid for document
    if (!$doc->getFromDB($_GET['docid'])) {
-      Html::displayErrorAndDie(__('Unknown File'), true);
+      Html::displayErrorAndDie(__('Unknown file'), true);
    }
 
    if (!file_exists(GLPI_DOC_DIR."/".$doc->fields['filepath'])) {
@@ -66,7 +66,8 @@ if (isset($_GET['docid'])) { // docid for document
    $splitter = explode("/",$_GET["file"]);
    if (count($splitter) == 2) {
       $send = false;
-      if ($splitter[0] == "_dumps" && Session::haveRight("backup","w")) {
+      if (($splitter[0] == "_dumps")
+          && Session::haveRight("backup","w")) {
          $send = true;
       }
 
@@ -76,7 +77,7 @@ if (isset($_GET['docid'])) { // docid for document
          Html::displayErrorAndDie(__('Unauthorized access to this file'), true);
       }
    } else {
-      Html::displayErrorAndDie(__('Invalid Filename'), true);
+      Html::displayErrorAndDie(__('Invalid filename'), true);
    }
 }
 ?>

@@ -64,6 +64,7 @@ echo "<script type='text/javascript' src='".$CFG_GLPI["root_doc"]."/script.js'><
 <body>
 <script language="javascript" type="text/javascript">
 function fillidfield(Type,Id) {
+
    window.opener.document.forms["helpdeskform"].elements["items_id"].value = Id;
    window.opener.document.forms["helpdeskform"].elements["itemtype"].value = Type;
    window.close();
@@ -82,7 +83,7 @@ echo "<tr><th height='29'>".__('Enter the first letters (user, item name, serial
 echo "<tr><td class='tab_bg_1 center'>";
 echo "<input name='NomContact' type='text' id='NomContact' >";
 echo "<input type='hidden' name='send' value='1'>"; // bug IE ! La validation par enter ne fonctionne pas sans cette ligne  incroyable mais vrai !
-echo "<input type='submit' name='send' value='". __s('Search')."'>";
+echo "<input type='submit' name='send' value='". _sx('button', 'Search')."'>";
 echo "</td></tr></table></form></div>";
 
 if (isset($_POST["send"])) {
@@ -144,7 +145,7 @@ if (isset($_POST["send"])) {
       $Computer = $ligne['name'];
       echo " <tr class='tab_find' onClick=\"fillidfield('Software',".$Comp_num.")\">";
       echo "<td class='center'>&nbsp;</td>";
-      echo "<td class='center'>&nbsp;".__('Software')."&nbsp;</td>";
+      echo "<td class='center'>&nbsp;"._n('Software', 'Software', 1)."&nbsp;</td>";
       echo "<td class='center b'>&nbsp;$Computer&nbsp;</td>";
       echo "<td class='center'>&nbsp;$Comp_num&nbsp;</td>";
       echo "<td class='center'>&nbsp;</td></tr>";

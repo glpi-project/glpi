@@ -57,7 +57,7 @@ if (isset($_POST["add"])) {
    $group->delete($_POST);
    Event::log($_POST["id"], "groups", 4, "setup",
               //TRANS: %s is the user login
-              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $group->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -65,7 +65,7 @@ if (isset($_POST["add"])) {
    $group->update($_POST);
    Event::log($_POST["id"], "groups", 4, "setup",
               //TRANS: %s is the user login
-              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["adduser"])) {
@@ -77,7 +77,8 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_POST['action']) && $_POST['action']=='deleteuser') {
+} else if (isset($_POST['action'])
+           && ($_POST['action'] == 'deleteuser')) {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key,'w')) {
@@ -90,7 +91,8 @@ if (isset($_POST["add"])) {
               sprintf(__('%s deletes users from a group'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_POST['action']) && $_POST['action']=='unset_manager') {
+} else if (isset($_POST['action'])
+           && ($_POST['action'] == 'unset_manager')) {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key,'w')) {
@@ -104,7 +106,8 @@ if (isset($_POST["add"])) {
               sprintf(__('%s unsets users as manager in a group'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_POST['action']) && $_POST['action']=='set_manager') {
+} else if (isset($_POST['action'])
+           && ($_POST['action'] == 'set_manager')) {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key,'w')) {
@@ -119,7 +122,8 @@ if (isset($_POST["add"])) {
 
    Html::back();
 
-} else if (isset($_POST['action']) && $_POST['action']=='unset_delegate') {
+} else if (isset($_POST['action'])
+           && ($_POST['action'] == 'unset_delegate')) {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key, 'w')) {
@@ -134,7 +138,8 @@ if (isset($_POST["add"])) {
 
    Html::back();
 
-} else if (isset($_POST['action']) && $_POST['action']=='set_delegate') {
+} else if (isset($_POST['action'])
+           && ($_POST['action'] == 'set_delegate')) {
    if (isset($_POST["item"]) && count($_POST["item"])) {
       foreach ($_POST["item"] as $key => $val) {
          if ($groupuser->can($key, 'w')) {
@@ -148,9 +153,11 @@ if (isset($_POST["add"])) {
               sprintf(__('%s sets users as delegatee in a group'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_POST["changegroup"]) && isset($_POST["groups_id"]) && isset($_POST["field"])) {
+} else if (isset($_POST["changegroup"])
+           && isset($_POST["groups_id"])
+           && isset($_POST["field"])) {
    if (isset($_POST['item'])
-       && ($_POST["field"]=='groups_id' || $_POST["field"]=='groups_id_tech' )) {
+       && (($_POST["field"] == 'groups_id') || ($_POST["field"] == 'groups_id_tech'))) {
       foreach ($_POST['item'] as $type => $ids) {
          if ($item = getItemForItemtype($type)) {
             foreach ($ids as $id => $val) {

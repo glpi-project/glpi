@@ -60,18 +60,19 @@ if (isset($_POST["add"])) {
       $dropdown->refreshParentInfos();
       if ($dropdown instanceof CommonDevice) {
          Event::log($newID, get_class($dropdown), 4, "inventory",
-                     sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"],
-                             $_POST["designation"]));
+                    sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"],
+                            $_POST["designation"]));
       } else {
          Event::log($newID, get_class($dropdown), 4, "setup",
-                     sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+                    sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
       }
    }
    Html::back();
 
 } else if (isset($_POST["delete"])) {
    $dropdown->check($_POST["id"],'w');
-   if ($dropdown->isUsed() && empty($_POST["forcedelete"])) {
+   if ($dropdown->isUsed()
+       && empty($_POST["forcedelete"])) {
       Html::header($dropdown->getTypeName(1), $_SERVER['PHP_SELF'], "config",
                    $dropdown->second_level_menu, str_replace('glpi_','',$dropdown->getTable()));
       $dropdown->showDeleteConfirmForm($_SERVER['PHP_SELF']);
@@ -81,8 +82,8 @@ if (isset($_POST["add"])) {
       $dropdown->refreshParentInfos();
 
       Event::log($_POST["id"], get_class($dropdown), 4, "setup",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
       $dropdown->redirectToList();
    }
 
@@ -92,8 +93,8 @@ if (isset($_POST["add"])) {
    $dropdown->refreshParentInfos();
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup",
-            //TRANS: %s is the user login
-            sprintf(__('%s replaces the item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s replaces an item'), $_SESSION["glpiname"]));
    $dropdown->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -102,11 +103,12 @@ if (isset($_POST["add"])) {
    $dropdown->refreshParentInfos();
 
    Event::log($_POST["id"], get_class($dropdown), 4, "setup",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_POST['execute']) && isset($_POST['_method'])) {
+} else if (isset($_POST['execute'])
+           && isset($_POST['_method'])) {
    $method = 'execute'.$_POST['_method'];
    if (method_exists($dropdown, $method)) {
       call_user_func(array(&$dropdown, $method), $_POST);
@@ -118,7 +120,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_GET['popup'])) {
    Html::popHeader($dropdown->getTypeName(1),$_SERVER['PHP_SELF']);
    if (isset($_GET["rand"])) {
-      $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
+      $_SESSION["glpipopup"]["rand"] = $_GET["rand"];
    }
    $dropdown->showForm($_GET["id"]);
    echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";

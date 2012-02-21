@@ -51,7 +51,7 @@ if (isset($_GET["add"])) {
    $ic->delete($_POST);
    Event::log($_POST["id"], "infocom", 4, "financial",
               //TRANS: %s is the user login
-              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["update"])) {
@@ -60,7 +60,7 @@ if (isset($_GET["add"])) {
    $ic->update($_POST);
    Event::log($_POST["id"], "infocom", 4, "financial",
               //TRANS: %s is the user login
-              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else {
@@ -80,7 +80,7 @@ if (isset($_GET["add"])) {
       }
    }
 
-   if (isset($_GET["update"]) && $_GET["update"]==1) {
+   if (isset($_GET["update"]) && ($_GET["update"] == 1)) {
       $withtemplate = 0;
    } else {
       $withtemplate = 2;

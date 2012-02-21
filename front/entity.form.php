@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 $dropdown = new Entity();
 
 // Root entity : no delete
-if (isset($_GET['id']) && $_GET['id']==0) {
+if (isset($_GET['id']) && ($_GET['id'] == 0)) {
    $options = array('canedit' => true,
                     'candel'  => false);
 }

@@ -115,12 +115,11 @@ echo "<td class='top'><table class='tab_cadre'>";
 if (Session::haveRight("rule_dictionnary_dropdown","r")) {
    echo "<tr><th>"._n('Operating system','Operating systems',2)."</th></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnaryoperatingsystem.php'>". _n('Operating system','Operating systems',2).
-         "</a></td></tr>";
+         "<a href='ruledictionnaryoperatingsystem.php'>".
+           _n('Operating system','Operating systems',2)."</a></td></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
-         "<a href='ruledictionnaryoperatingsystemservicepack.php'>". _n('Service Pack',
-                                                                        'Service Packs',2) .
-         "</a></td></tr>";
+         "<a href='ruledictionnaryoperatingsystemservicepack.php'>".
+           _n('Service Pack','Service Packs',2)."</a></td></tr>";
    echo "<tr class='tab_bg_1'><td class='center b'>".
          "<a href='ruledictionnaryoperatingsystemversion.php'>" . _n('Version','Versions',2) .
          "</a></td></tr>";

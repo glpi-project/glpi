@@ -64,8 +64,8 @@ if (isset($_POST["add"])) {
          $name = $_FILES['filename']['name'];
       }
       Event::log($newID, "documents", 4, "document",
-               //TRANS: %s is the user login
-               sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
 
    Html::back();
@@ -75,8 +75,8 @@ if (isset($_POST["add"])) {
 
    if ($doc->delete($_POST)) {
       Event::log($_POST["id"], "documents", 4, "document",
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
    }
    $doc->redirectToList();
 
@@ -85,8 +85,8 @@ if (isset($_POST["add"])) {
 
    if ($doc->restore($_POST)) {
       Event::log($_POST["id"], "documents", 4, "document",
-            //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    }
    $doc->redirectToList();
 
@@ -95,8 +95,8 @@ if (isset($_POST["add"])) {
 
    if ($doc->delete($_POST,1)) {
       Event::log($_POST["id"], "documents", 4, "document",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    }
    $doc->redirectToList();
 
@@ -105,8 +105,8 @@ if (isset($_POST["add"])) {
 
    if ($doc->update($_POST)) {
       Event::log($_POST["id"], "documents", 4, "document",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -114,8 +114,8 @@ if (isset($_POST["add"])) {
    $documentitem->check(-1,'w',$_POST);
    if ($documentitem->add($_POST)) {
       Event::log($_POST["documents_id"], "documents", 4, "document",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -129,8 +129,8 @@ if (isset($_POST["add"])) {
       }
    }
    Event::log($_POST["documents_id"], "documents", 4, "document",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_GET["deletedocumentitem"])
@@ -140,8 +140,8 @@ if (isset($_POST["add"])) {
    $documentitem->check($_GET["id"],'w');
    if ($documentitem->delete(array('id' => $_GET["id"]))) {
       Event::log($_GET["documents_id"], "documents", 4, "document",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 

@@ -61,7 +61,7 @@ if (isset($_POST["add"])) {
       $np->updateDependencies(1);
       Event::log($newID, "networkport", 5, "inventory",
                  //TRANS: %s is the user login
-                 sprintf(__('%s adds the item'), $_SESSION["glpiname"]));
+                 sprintf(__('%s adds an item'), $_SESSION["glpiname"]));
       Html::back();
 
    } else {
@@ -98,7 +98,7 @@ if (isset($_POST["add"])) {
    $np->delete($_POST);
    Event::log($_POST['id'], "networkport", 5, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
 
    if ($item = getItemForItemtype($np->fields['itemtype'])) {
       Html::redirect($item->getFormURL().'?id='.$np->fields['items_id']);
@@ -151,7 +151,7 @@ if (isset($_POST["add"])) {
    $np->updateDependencies(1);
    Event::log($_POST["id"], "networkport", 4, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["connect"])) {
@@ -190,14 +190,15 @@ if (isset($_POST["add"])) {
       }
       Event::log(0, "networkport", 5, "inventory",
                  //TRANS: %s is the user login
-                 sprintf(__('%s associates a VLAN to several network ports'), $_SESSION["glpiname"]));
+                 sprintf(__('%s associates a VLAN to several network ports'),
+                         $_SESSION["glpiname"]));
    }
    Html::back();
 
 } else if (isset($_POST['assign_vlan'])) {
    $npv->check(-1,'w',$_POST);
 
-   if (isset($_POST["vlans_id"]) && $_POST["vlans_id"] >0) {
+   if (isset($_POST["vlans_id"]) && ($_POST["vlans_id"] > 0)) {
       $npv->assignVlan($_POST["networkports_id"], $_POST["vlans_id"],
                        (isset($_POST['tagged']) ? '1' : '0'));
       Event::log(0, "networkport", 5, "inventory",

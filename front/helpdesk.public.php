@@ -71,10 +71,13 @@ if (isset($_GET["redirect"])) {
 
 // redirect if no create ticket right
 if (!Session::haveRight('create_ticket',1)) {
-   if (Session::haveRight('observe_ticket',1) || Session::haveRight('validate_ticket',1)) {
+   if (Session::haveRight('observe_ticket',1)
+       || Session::haveRight('validate_ticket',1)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/ticket.php");
+
    } else if (Session::haveRight('reservation_helpdesk',1)) {
       Html::redirect($CFG_GLPI['root_doc']."/front/reservationitem.php");
+
    } else if (Session::haveRight('faq','r')) {
       Html::redirect($CFG_GLPI['root_doc']."/front/helpdesk.faq.php");
    }
@@ -82,7 +85,7 @@ if (!Session::haveRight('create_ticket',1)) {
 
 Session::checkHelpdeskAccess();
 
-Html::helpHeader(__('New ticket'),$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+Html::helpHeader(__('New ticket'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
 
 if (isset($_GET['create_ticket'])) {
    Ticket::showFormHelpdesk(Session::getLoginUserID());

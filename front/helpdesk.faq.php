@@ -74,7 +74,8 @@ if (isset($_GET["id"])) {
    KnowbaseItem::searchForm($_GET,1);
    KnowbaseItemCategory::showFirstLevel($_GET,1);
    KnowbaseItem::showList($_GET,1);
-   if (!$_GET["knowbaseitemcategories_id"] && strlen($_GET["contains"]) == 0) {
+   if (!$_GET["knowbaseitemcategories_id"]
+       && (strlen($_GET["contains"]) == 0)) {
       KnowbaseItem::showViewGlobal($_SERVER['PHP_SELF'],1) ;
    }
 }
