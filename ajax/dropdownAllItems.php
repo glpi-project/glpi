@@ -54,7 +54,8 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
    $rand     = mt_rand();
    $use_ajax = false;
 
-   if ($CFG_GLPI["use_ajax"] && countElementsInTable($table)>$CFG_GLPI["ajax_limit_count"]) {
+   if ($CFG_GLPI["use_ajax"]
+       && (countElementsInTable($table) > $CFG_GLPI["ajax_limit_count"])) {
       $use_ajax = true;
    }
 

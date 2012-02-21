@@ -52,7 +52,7 @@ if (!$item = getItemForItemtype($_POST['itemtype'])) {
 }
 
 if ($item->isEntityAssign()) {
-   if (isset($_POST["entity_restrict"]) && $_POST["entity_restrict"] >= 0) {
+   if (isset($_POST["entity_restrict"]) && ($_POST["entity_restrict"] >= 0)) {
       $entity = $_POST["entity_restrict"];
    } else {
       $entity = '';
@@ -74,7 +74,8 @@ if ($item->maybeTemplate()) {
    $where .= " AND `is_template` = '0' ";
 }
 
-if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
+if ((strlen($_POST['searchText']) > 0)
+    && ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])) {
    $search = Search::makeTextSearch($_POST['searchText']);
 
    $where .= " AND (`name` ".$search."
@@ -96,7 +97,7 @@ if (in_array($_POST['itemtype'],$CFG_GLPI["helpdesk_visible_types"])) {
 $NBMAX = $CFG_GLPI["dropdown_max"];
 $LIMIT = "LIMIT 0,$NBMAX";
 
-if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
+if ($_POST['searchText'] == $CFG_GLPI["ajax_wildcard"]) {
    $LIMIT = "";
 }
 
@@ -109,8 +110,9 @@ $result = $DB->query($query);
 
 echo "<select id='dropdown_find_num' name='".$_POST['myname']."' size='1'>";
 
-if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
-   echo "<option value='0'>--".__('Limited view')."--</option>";
+if (($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
+    && ($DB->numrows($result) == $NBMAX)) {
+   echo "<option value='0'>".__('--Limited view--')."</option>";
 }
 
 echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
@@ -119,20 +121,22 @@ if ($DB->numrows($result)) {
    while ($data = $DB->fetch_assoc($result)) {
       $output = $data['name'];
 
-      if ($_POST['table']!="glpi_softwares" && !$itemtypeisplugin) {
+      if (($_POST['table'] != "glpi_softwares")
+          && !$itemtypeisplugin) {
          if (!empty($data['contact'])) {
-            $output .= " - ".$data['contact'];
+            $output .= sprintf(__(' - %s'), $data['contact']);
          }
          if (!empty($data['serial'])) {
-            $output .= " - ".$data['serial'];
+            $output .= sprintf(__(' - %s'), $data['serial']);
          }
          if (!empty($data['otherserial'])) {
-            $output .= " - ".$data['otherserial'];
+            $output .= sprintf(__(' - %s'), $data['otherserial']);
          }
       }
 
-      if (empty($output) || $_SESSION['glpiis_ids_visible']) {
-         $output .= " (".$data['id'].")";
+      if (empty($output)
+          || $_SESSION['glpiis_ids_visible']) {
+         $output .= "&nbsp;".sprintf(__('(%s)'), $data['id']);
       }
       echo "<option value='".$data['id']."' title=\"".Html::cleanInputText($output)."\">".
             Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"])."</option>";

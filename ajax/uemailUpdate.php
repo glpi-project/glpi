@@ -59,8 +59,7 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
       $default_notif = $_REQUEST['use_notification'];
    }
 
-   if (isset($_REQUEST['alternative_email'])
-       && !empty($_REQUEST['alternative_email'])
+   if (isset($_REQUEST['alternative_email']) && !empty($_REQUEST['alternative_email'])
        && empty($default_email)) {
       $default_email = $_REQUEST['alternative_email'];
    }
@@ -93,7 +92,7 @@ if ((isset($_REQUEST['field']) && $_REQUEST["value"]>0)
    }
 
    echo '<br>';
-   echo sprintf(__('Email: %s'), $email_string);
+   printf(__('Email: %s'), $email_string);
 
 }
 

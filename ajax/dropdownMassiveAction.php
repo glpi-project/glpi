@@ -38,7 +38,8 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
+if (isset($_POST["action"])
+    && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
 
    if (!($item = getItemForItemtype($_POST['itemtype']))) {
       exit();
@@ -96,8 +97,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
          Rule::dropdown(array('sub_type'        => $_POST['sub_type'],
                               'name'            => "ranking",
                               'entity_restrict' => $condition));
-         echo "<input type='submit' name='massiveaction' class='submit' value='".
-                __s('Move')."'>\n";
+         echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Move')."'>\n";
          break;
 
       case "add_followup" :
@@ -129,10 +129,9 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
 
       case "link_ticket" :
          $rand = Ticket_Ticket::dropdownLinks('link');
-         echo __('Ticket ID').' ';
-         echo "<input type='text' name='tickets_id_1' value='' size='10'>\n";
-         echo "<input type='submit' name='massiveaction' class='submit' value='".
-                __s('Post')."'>";
+         _e('Ticket ID');
+         echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
+         echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";
 
          break;
 
@@ -309,7 +308,7 @@ if (isset($_POST["action"]) && isset($_POST["itemtype"]) && !empty($_POST["itemt
                if ($val["field"]!='id'
                    && $key != 1
                    // Permit entities_id is explicitly activate
-                   && ($val["linkfield"]!='entities_id'
+                   && (($val["linkfield"] != 'entities_id')
                        || (isset($val['massiveaction']) && $val['massiveaction']))) {
 
                   if (!isset($val['massiveaction']) || $val['massiveaction']) {

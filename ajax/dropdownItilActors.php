@@ -41,7 +41,8 @@ Html::header_nocache();
 Session::checkCentralAccess();
 
 // Make a select box
-if (isset($_POST["type"]) && isset($_POST["actortype"])) {
+if (isset($_POST["type"])
+    && isset($_POST["actortype"])) {
    $rand = mt_rand();
 
    switch ($_POST["type"]) {
@@ -49,7 +50,7 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
          $right = 'all';
          /// TODO : review depending of itil object
          // Only steal or own ticket whit empty assign
-         if ($_POST["actortype"]=='assign') {
+         if ($_POST["actortype"] == 'assign') {
             $right = "own_ticket";
             if (!Session::haveRight("assign_ticket","1")) {
                $right = 'id';
@@ -62,17 +63,17 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
                           'ldap_import' => true);
 
          if ($CFG_GLPI["use_mailing"]) {
-            $withemail = (isset($_POST["allow_email"]) ? $_POST["allow_email"] : false);
+            $withemail     = (isset($_POST["allow_email"]) ? $_POST["allow_email"] : false);
             $paramscomment = array('value'       => '__VALUE__',
                                    'allow_email' => $withemail,
                                    'field'       => "_itil_".$_POST["actortype"]);
             // Fix rand value
             $options['rand']     = $rand;
-            $options['toupdate'] = array('value_fieldname'
-                                                      => 'value',
-                                         'to_update'  => "notif_user_$rand",
-                                         'url'        => $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
-                                         'moreparams' => $paramscomment);
+            $options['toupdate'] = array('value_fieldname' => 'value',
+                                         'to_update'       => "notif_user_$rand",
+                                         'url'             => $CFG_GLPI["root_doc"].
+                                                                  "/ajax/uemailUpdate.php",
+                                         'moreparams'      => $paramscomment);
          }
          $rand = User::dropdown($options);
 
@@ -82,8 +83,9 @@ if (isset($_POST["type"]) && isset($_POST["actortype"])) {
                echo __('Email followup').'&nbsp;';
                $rand = Dropdown::showYesNo('_itil_'.$_POST["actortype"].'[use_notification]', 1);
                echo '<br>';
-               echo sprintf(__('Email: %s'), "<input type='text' size='25' name='_itil_".
-                                               $_POST["actortype"]."[alternative_email]'>");
+               printf(__('Email: %s'),
+                      "<input type='text' size='25' name='_itil_".$_POST["actortype"].
+                        "[alternative_email]'>");
             }
             echo "</span>";
          }
