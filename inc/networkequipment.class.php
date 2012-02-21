@@ -56,7 +56,7 @@ class NetworkEquipment extends CommonDBTM {
       global $LANG;
 
       if ($nb>1) {
-         return $LANG['Menu'][2];
+         return $LANG['Menu'][1];
       }
       return $LANG['help'][26];
    }
