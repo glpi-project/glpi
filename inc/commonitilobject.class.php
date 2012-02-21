@@ -1046,8 +1046,8 @@ abstract class CommonITILObject extends CommonDBTM {
              && is_array($this->input['_additional_groups_requesters'])
              && count($this->input['_additional_groups_requesters'])) {
 
-            $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
-                            'type'                                 => self::REQUESTER);
+            $input2 = array($groupactors->getItilObjectForeignKey() => $this->fields['id'],
+                            'type'                                  => self::REQUESTER);
 
             foreach ($this->input['_additional_groups_requesters'] as $tmp) {
                if ($tmp > 0) {
@@ -1062,8 +1062,8 @@ abstract class CommonITILObject extends CommonDBTM {
              && is_array($this->input['_additional_groups_observers'])
              && count($this->input['_additional_groups_observers'])) {
 
-            $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
-                            'type'                                 => self::OBSERVER);
+            $input2 = array($groupactors->getItilObjectForeignKey() => $this->fields['id'],
+                            'type'                                  => self::OBSERVER);
 
             foreach ($this->input['_additional_groups_observers'] as $tmp) {
                if ($tmp > 0) {
@@ -1078,13 +1078,13 @@ abstract class CommonITILObject extends CommonDBTM {
              && is_array($this->input['_additional_groups_assigns'])
              && count($this->input['_additional_groups_assigns'])) {
 
-            $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
-                            'type'                                 => self::ASSIGN);
+            $input2 = array($groupactors->getItilObjectForeignKey() => $this->fields['id'],
+                            'type'                                  => self::ASSIGN);
 
             foreach ($this->input['_additional_groups_assigns'] as $tmp) {
                if ($tmp > 0) {
                   $input2['groups_id'] = $tmp;
-                  $useractors->add($input2);
+                  $groupactors->add($input2);
                }
             }
          }
