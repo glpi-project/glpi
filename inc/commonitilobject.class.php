@@ -1039,6 +1039,55 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
+      if (!is_null($groupactors)) {
+         // Requester
+         if (isset($this->input['_additional_groups_requesters'])
+             && is_array($this->input['_additional_groups_requesters'])
+             && count($this->input['_additional_groups_requesters'])) {
+
+            $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
+                            'type'                                 => self::REQUESTER);
+
+            foreach ($this->input['_additional_groups_requesters'] as $tmp) {
+               if ($tmp > 0) {
+                  $input2['groups_id'] = $tmp;
+                  $groupactors->add($input2);
+               }
+            }
+         }
+
+         // Observers
+         if (isset($this->input['_additional_groups_observers'])
+             && is_array($this->input['_additional_groups_observers'])
+             && count($this->input['_additional_groups_observers'])) {
+
+            $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
+                            'type'                                 => self::OBSERVER);
+
+            foreach ($this->input['_additional_groups_observers'] as $tmp) {
+               if ($tmp > 0) {
+                  $input2['groups_id'] = $tmp;
+                  $groupactors->add($input2);
+               }
+            }
+         }
+
+         // Assigns
+         if (isset($this->input['_additional_groups_assigns'])
+             && is_array($this->input['_additional_groups_assigns'])
+             && count($this->input['_additional_groups_assigns'])) {
+
+            $input2 = array($useractors->getItilObjectForeignKey() => $this->fields['id'],
+                            'type'                                 => self::ASSIGN);
+
+            foreach ($this->input['_additional_groups_assigns'] as $tmp) {
+               if ($tmp > 0) {
+                  $input2['groups_id'] = $tmp;
+                  $useractors->add($input2);
+               }
+            }
+         }
+      }
 
       // Additional actors : using default notification parameters
       if (!is_null($useractors)) {
