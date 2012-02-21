@@ -41,6 +41,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class Config extends CommonDBTM {
 
+   // From CommonGLPI
+   protected $displaylist         = false;
+
    // From CommonDBTM
    public $auto_message_on_action = false;
    public $showdebug              = true;
@@ -542,7 +545,7 @@ class Config extends CommonDBTM {
       echo "</td><td>" . $LANG['setup'][223] . "&nbsp;:</td><td>";
       Dropdown::showHours('planning_begin', $CFG_GLPI["planning_begin"]);
       echo "&nbsp;->&nbsp;";
-      Dropdown::showHours('planning_end', $CFG_GLPI["planning_end"]);      
+      Dropdown::showHours('planning_end', $CFG_GLPI["planning_end"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
