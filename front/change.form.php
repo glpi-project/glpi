@@ -56,8 +56,8 @@ if (isset($_POST["add"])) {
 
    $change->delete($_POST);
    Event::log($_POST["id"], "change", 4, "maintain",
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
    $change->redirectToList();
 
 } else if (isset($_POST["restore"])) {
@@ -65,8 +65,8 @@ if (isset($_POST["add"])) {
 
    $change->restore($_POST);
    Event::log($_POST["id"], "change", 4, "maintain",
-            //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s restores the item'), $_SESSION["glpiname"]));
    $change->redirectToList();
 
 } else if (isset($_REQUEST["purge"])) {
@@ -74,8 +74,8 @@ if (isset($_POST["add"])) {
    $change->delete($_REQUEST,1);
 
    Event::log($_REQUEST["id"], "change", 4, "maintain",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
    $change->redirectToList();
 
 } else if (isset($_POST["update"])) {
@@ -83,8 +83,8 @@ if (isset($_POST["add"])) {
 
    $change->update($_POST);
    Event::log($_POST["id"], "change", 4, "maintain",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
 
    Html::back();
 
@@ -93,8 +93,8 @@ if (isset($_POST["add"])) {
    $change_user->check($_REQUEST['id'], 'w');
    $change_user->delete($_REQUEST);
 
-   Event::log($_REQUEST['changes_id'], "change", 4,
-              "maintain", sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
+   Event::log($_REQUEST['changes_id'], "change", 4, "maintain",
+              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_REQUEST['changes_id']);
 
 } else if (isset($_REQUEST['delete_group'])) {

@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("contact_enterprise", "r");
 
-Html::header(_n('Contact', 'Contacts', 2), $_SERVER['PHP_SELF'], "financial", "contact");
+Html::header(Contact::getTypeName(2), $_SERVER['PHP_SELF'], "financial", "contact");
 
 Search::show('Contact');
 

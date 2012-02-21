@@ -44,14 +44,16 @@ if (isset($_POST["update"])) {
    $crontask->update($_POST);
    Html::back();
 
-} else if (isset($_GET['resetdate']) && isset($_GET["id"])) {
+} else if (isset($_GET['resetdate'])
+           && isset($_GET["id"])) {
    Session::checkRight('config', 'w');
    if ($crontask->getFromDB($_GET["id"])) {
        $crontask->resetDate();
    }
    Html::back();
 
-} else if (isset($_GET['resetstate']) && isset($_GET["id"])) {
+} else if (isset($_GET['resetstate'])
+           && isset($_GET["id"])) {
    Session::checkRight('config', 'w');
    if ($crontask->getFromDB($_GET["id"])) {
        $crontask->resetState();

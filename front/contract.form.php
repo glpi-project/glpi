@@ -32,7 +32,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -55,7 +54,7 @@ if (isset($_POST["add"])) {
 
    if ($newID = $contract->add($_POST)) {
       Event::log($newID, "contracts", 4, "financial",
-               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
+                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_POST["name"]));
    }
    Html::back();
 
@@ -63,9 +62,9 @@ if (isset($_POST["add"])) {
    $contract->check($_POST['id'],'w');
 
    if ($contract->delete($_POST)) {
-      Event::log($_POST["id"], "contracts", 4, "financial", 
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));            
+      Event::log($_POST["id"], "contracts", 4, "financial",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
    }
    $contract->redirectToList();
 
@@ -73,9 +72,9 @@ if (isset($_POST["add"])) {
    $contract->check($_POST['id'],'w');
 
    if ($contract->restore($_POST)) {
-      Event::log($_POST["id"], "contracts", 4, "financial", 
-            //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));            
+      Event::log($_POST["id"], "contracts", 4, "financial",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    }
    $contract->redirectToList();
 
@@ -83,9 +82,9 @@ if (isset($_POST["add"])) {
    $contract->check($_POST['id'],'w');
 
    if ($contract->delete($_POST,1)) {
-      Event::log($_POST["id"], "contracts", 4, "financial", 
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));            
+      Event::log($_POST["id"], "contracts", 4, "financial",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    }
    $contract->redirectToList();
 
@@ -93,9 +92,9 @@ if (isset($_POST["add"])) {
    $contract->check($_POST['id'],'w');
 
    if ($contract->update($_POST)) {
-      Event::log($_POST["id"], "contracts", 4, "financial", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+      Event::log($_POST["id"], "contracts", 4, "financial",
+                 //TRANS: %s is the user login
+                 sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -104,8 +103,8 @@ if (isset($_POST["add"])) {
 
    if ($contractitem->add($_POST)) {
       Event::log($_POST["contracts_id"], "contracts", 4, "financial",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -118,8 +117,8 @@ if (isset($_POST["add"])) {
       }
    }
    Event::log($_POST["contracts_id"], "contracts", 4, "financial",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_GET["deleteitem"])) {
@@ -127,8 +126,8 @@ if (isset($_POST["add"])) {
 
    if ($contractitem->delete($_GET)) {
       Event::log($_GET["contracts_id"], "contracts", 4, "financial",
-                  //TRANS: %s is the user login
-                  sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes a link with an item'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -137,8 +136,8 @@ if (isset($_POST["add"])) {
 
    if ($contractsupplier->add($_POST)) {
       Event::log($_POST["contracts_id"], "contracts", 4, "financial",
-               //TRANS: %s is the user login
-               sprintf(__('%s adds a link with a supplier'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s adds a link with a supplier'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -147,8 +146,8 @@ if (isset($_POST["add"])) {
 
    if ($contractsupplier->delete($_GET)) {
       Event::log($_GET["contracts_id"], "contracts", 4, "financial",
-               //TRANS: %s is the user login
-               sprintf(__('%s deletes a link with a supplier'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes a link with a supplier'), $_SESSION["glpiname"]));
    }
    Html::back();
 

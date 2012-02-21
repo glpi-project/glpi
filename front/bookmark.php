@@ -59,17 +59,20 @@ if (isset($_POST["add"])) {
    $bookmark->update($_POST);
    $_GET["action"] = "load";
 
-} else if ($_GET["action"] == "edit" && isset($_GET['mark_default']) && isset($_GET["id"])) {
+} else if ($_GET["action"] == "edit"
+           && isset($_GET['mark_default'])
+           && isset($_GET["id"])) {
    $bookmark->check($_GET["id"], 'w');
 
-   if ($_GET["mark_default"] >0) {
+   if ($_GET["mark_default"] > 0) {
       $bookmark->mark_default($_GET["id"]);
-   } else if ($_GET["mark_default"]==0) {
+   } else if ($_GET["mark_default"] == 0) {
       $bookmark->unmark_default($_GET["id"]);
    }
    $_GET["action"] = "load";
 
-} else if ($_GET["action"] == "load" && isset($_GET["id"]) && $_GET["id"]>0) {
+} else if (($_GET["action"] == "load")
+           && isset($_GET["id"]) && ($_GET["id"] > 0)) {
    $bookmark->check($_GET["id"], 'r');
    $bookmark->load($_GET["id"]);
 
@@ -92,7 +95,7 @@ if (isset($_POST["add"])) {
 
 if ($_GET["action"] == "edit") {
 
-   if (isset($_GET['id']) && $_GET['id']>0) {
+   if (isset($_GET['id']) && ($_GET['id'] > 0)) {
       // Modify
       $bookmark->check($_GET["id"], 'w');
       $bookmark->showForm($_GET['id']);

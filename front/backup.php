@@ -35,7 +35,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (isset($_GET['action']) && $_GET['action'] == 'check_version') {
+if (isset($_GET['action']) && ($_GET['action'] == 'check_version')) {
    Session::checkRight("check_update", "r");
    Toolbox::checkNewVersionAvailable(0, true);
    Html::back();
@@ -50,16 +50,16 @@ Html::header(__('Maintenance'), $_SERVER['PHP_SELF'], "admin", "backup");
 
 $max_time = min(get_cfg_var("max_execution_time"), get_cfg_var("max_input_time"));
 
-if ($max_time==0) {
+if ($max_time == 0) {
    $defaulttimeout  = 60;
    $defaultrowlimit = 5;
 
-} else if ($max_time >5) {
+} else if ($max_time > 5) {
    $defaulttimeout  = $max_time-2;
    $defaultrowlimit = 5;
 
 } else {
-   $defaulttimeout  = max(1,$max_time-2);
+   $defaulttimeout  = max(1, $max_time-2);
    $defaultrowlimit = 2;
 }
 
@@ -124,7 +124,7 @@ function xmlbackup() {
    //sinon affiche un lien vers le fichier XML genere
 
    if ($A->IsError == 1) {
-      echo "ERR : ".$A->ErrorString;
+      printf(__('ERROR:'), $A->ErrorString);
    }
 
    //fin de fonction xmlbackup
@@ -255,7 +255,7 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
    if ($offset != 0) {
       if (fseek($fileHandle,$offset,SEEK_SET) != 0) { //erreur
          //TRANS: %s is the number of the byte
-         echo printf(__("Unable to find the byte %s"), Html::formatNumber($offset, false, 0));
+         printf(__("Unable to find the byte %s"), Html::formatNumber($offset, false, 0));
          echo "<br>";
          return false;
       }
@@ -266,7 +266,8 @@ function restoreMySqlDump($DB, $dumpFile, $duree) {
 
    while (!feof($fileHandle)) {
       current_time();
-      if ($duree > 0 && $TPSCOUR >= $duree) { //on atteint la fin du temps imparti
+      if (($duree > 0)
+          && ($TPSCOUR >= $duree)) { //on atteint la fin du temps imparti
          return true;
       }
 
@@ -346,7 +347,8 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
          $cpt++;
       }
       current_time();
-      if ($duree > 0 && $TPSCOUR >= $duree) { //on atteint la fin du temps imparti
+      if (($duree > 0)
+          && ($TPSCOUR >= $duree)) { //on atteint la fin du temps imparti
          return true;
       }
       $fin = 0;
@@ -354,7 +356,7 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
          $todump    = get_content($DB,$tables[$offsettable],$offsetrow,$rowlimit);
          $rowtodump = substr_count($todump, "INSERT INTO");
 
-         if ($rowtodump >0) {
+         if ($rowtodump > 0) {
             fwrite ($fileHandle,$todump);
             $cpt       += $rowtodump;
             $offsetrow += $rowlimit;
@@ -362,7 +364,8 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
                $fin = 1;
             }
             current_time();
-            if ($duree >0 && $TPSCOUR >= $duree) { //on atteint la fin du temps imparti
+            if (($duree > 0)
+                && ($TPSCOUR >= $duree)) { //on atteint la fin du temps imparti
                return true;
             }
 
@@ -376,7 +379,8 @@ function backupMySql($DB, $dumpFile, $duree, $rowlimit) {
          $offsetrow = -1;
       }
       current_time();
-      if ($duree > 0 && $TPSCOUR >= $duree) { //on atteint la fin du temps imparti
+      if (($duree > 0)
+          && ($TPSCOUR >= $duree)) { //on atteint la fin du temps imparti
          return true;
       }
    }
@@ -481,14 +485,13 @@ if (isset($_GET["dump"]) && $_GET["dump"] != "") {
 
 // ################################## dump XML #############################
 
-if (isset($_GET["xmlnow"]) && $_GET["xmlnow"] !="") {
+if (isset($_GET["xmlnow"]) && ($_GET["xmlnow"] != "")) {
    xmlbackup();
 }
 
 // ################################## fin dump XML #############################
 
-if (isset($_GET["file"])
-    && $_GET["file"] != ""
+if (isset($_GET["file"]) && ($_GET["file"] != "")
     && is_file($path."/".$_GET["file"])) {
 
    $_SESSION['TRY_OLD_CONFIG_FIRST'] = true;
@@ -548,7 +551,7 @@ if (isset($_GET["file"])
    }
 }
 
-if (isset($_GET["delfile"]) && $_GET["delfile"] != "") {
+if (isset($_GET["delfile"]) && ($_GET["delfile"] != "")) {
    $filename = $_GET["delfile"];
    if (is_file($path."/".$_GET["delfile"])) {
       unlink($path."/".$_GET["delfile"]);
@@ -588,14 +591,13 @@ echo "<br><table class='tab_cadre' cellpadding='5'>".
      "<th colspan='3'>&nbsp;</th>".
      "</tr>";
 
-$dir = opendir($path);
+$dir   = opendir($path);
 $files = array();
 while ($file = readdir($dir)) {
-   if ($file != "."
-       && $file != ".."
+   if (($file != ".") && ($file != "..")
        && preg_match("/\.sql$/i",$file)) {
 
-      $files[$file]=filemtime($path."/".$file);
+      $files[$file] = filemtime($path."/".$file);
    }
 }
 arsort($files);
@@ -610,8 +612,7 @@ if (count($files)) {
            //TRANS: %s is the filename
            $string = sprintf(__s('Delete the file %s ?'), $file);
            echo "<a href=\"javascript:confirmAction('$string', 'backup.php?delfile=$file')\">".
-                  __('Delete').
-           "</a>&nbsp;</td>".
+                  __('Delete')."</a>&nbsp;</td>".
            "<td>&nbsp;";
            //TRANS: %s is the filename
            $string = sprintf(__s('Replace the current database with the backup file %s ?'), $file);
@@ -624,13 +625,12 @@ if (count($files)) {
 }
 closedir($dir);
 
-$dir = opendir($path);
+$dir   = opendir($path);
 unset($files);
 $files = array();
 
 while ($file = readdir($dir)) {
-   if ($file != "."
-       && $file != ".."
+   if (($file != ".") && ($file != "..")
        && preg_match("/\.xml$/i",$file)) {
 
       $files[$file] = filemtime($path."/".$file);
@@ -648,9 +648,8 @@ if (count($files)) {
             "<td>&nbsp;";
             //TRANS: %s is the filename
             $string = sprintf(__s('Delete this file %s ?'),$file);
-            echo "<a href=\"javascript:confirmAction('$string',
-                                                     'backup.php?delfile=$file')\">".__('Delete').
-             "</a>&nbsp;</td>".
+            echo "<a href=\"javascript:confirmAction('$string', 'backup.php?delfile=$file')\">".
+                   __('Delete')."</a>&nbsp;</td>".
             "<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>".
             "<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".__('Download')."</a>".
             "</td></tr>";

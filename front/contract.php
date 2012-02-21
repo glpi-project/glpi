@@ -32,13 +32,12 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("contract", "r");
 
-Html::header(_n('Contract', 'Contracts', 2), $_SERVER['PHP_SELF'], "financial", "contract");
+Html::header(Contract::getTypeName(2), $_SERVER['PHP_SELF'], "financial", "contract");
 
 Search::show('Contract');
 

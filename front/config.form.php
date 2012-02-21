@@ -45,8 +45,7 @@ if (!empty($_POST["update_auth"])) {
 }
 if (!empty($_POST["update"])) {
    $config->update($_POST);
-   if (isset($_POST["use_ocs_mode"])
-       && $_POST["use_ocs_mode"]
+   if (isset($_POST["use_ocs_mode"]) && $_POST["use_ocs_mode"]
        && !$CFG_GLPI["use_ocs_mode"]) {
       Html::redirect(Toolbox::getItemTypeSearchURL('OcsServer'));
    } else {

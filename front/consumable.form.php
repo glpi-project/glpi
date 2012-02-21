@@ -32,7 +32,6 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
@@ -71,7 +70,8 @@ if (isset($_POST["add_several"])) {
 } else if (isset($_POST["give"])) {
    $constype->check($_POST["cartridgeitems_id"],'w');
 
-   if ($_POST["items_id"] > 0 && !empty($_POST['itemtype'])) {
+   if (($_POST["items_id"] > 0)
+       && !empty($_POST['itemtype'])) {
       if (isset($_POST["out"])) {
          foreach ($_POST["out"] as $key => $val) {
             $con->out($key,$_POST['itemtype'],$_POST["items_id"]);

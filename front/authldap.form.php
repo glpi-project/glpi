@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -72,14 +71,14 @@ if (isset($_POST["update"])) {
    $config_ldap->getFromDB($_POST["id"]);
 
    if (AuthLdap::testLDAPConnection($_POST["id"])) {
-      //TRANS: %s is the description of the test
+                                       //TRANS: %s is the description of the test
       $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test successful: %s'),
-      //TRANS: %s is the name of the LDAP main server
+                                               //TRANS: %s is the name of the LDAP main server
                                                sprintf(__('Main server %s'), $ldap->fields["name"]));
    } else {
-      //TRASN: %s is the description of the test
+                                       //TRANS: %s is the description of the test
       $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test failed: %s'),
-      //TRANS: %s is the name of the LDAP main server
+                                               //TRANS: %s is the name of the LDAP main server
                                                sprintf(__('Main server %s'), $ldap->fields["name"]));
    }
    Html::back();
@@ -90,15 +89,15 @@ if (isset($_POST["update"])) {
       $replicate->getFromDB($replicate_id);
 
       if (AuthLdap::testLDAPConnection($_POST["id"],$replicate_id)) {
-         // %s is the description of the test
+                                          //TRANS: %s is the description of the test
          $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test successful: %s'),
-         // %s is the name of the LDAP main server
-                                               sprintf(__('Replicate %s'),$ldap->fields["name"]));
+                                                  //TRANS: %s is the name of the LDAP main server
+                                                  sprintf(__('Replicate %s'), $ldap->fields["name"]));
       } else {
-         // %s is the description of the test
+                                           //TRANS: %s is the description of the test
          $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test failed: %s'),
-         // %s is the name of the LDAP main server
-                                               sprintf(__('Replicate %s'),$ldap->fields["name"]));
+                                                  //TRANS: %s is the name of the LDAP main server
+                                                  sprintf(__('Replicate %s'), $ldap->fields["name"]));
       }
    }
    Html::back();
