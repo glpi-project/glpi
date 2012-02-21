@@ -47,17 +47,18 @@ if (!isset($_POST['parenttype'])) {
    exit();
 }
 
-$item   = new $_POST['type']();
-$parent = new $_POST['parenttype']();
+if ($item = getItemForItemtype($_POST['type'])
+    && $parent = getItemForItemtype($_POST['parenttype'])) {
 
-if (isset($_POST[$parent->getForeignKeyField()])
-    && isset($_POST["id"])
-    && $parent->getFromDB($_POST[$parent->getForeignKeyField()])) {
+   if (isset($_POST[$parent->getForeignKeyField()])
+       && isset($_POST["id"])
+       && $parent->getFromDB($_POST[$parent->getForeignKeyField()])) {
 
-   $item->showForm($_POST["id"], array('parent' => $parent));
+      $item->showForm($_POST["id"], array('parent' => $parent));
 
-} else {
-   _e('Access denied');
+   } else {
+      _e('Access denied');
+   }
 }
 
 Html::ajaxFooter();

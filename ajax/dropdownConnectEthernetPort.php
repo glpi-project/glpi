@@ -43,7 +43,8 @@ Html::header_nocache();
 Session::checkRight("networking", "w");
 
 // Make a select box
-if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
+if (class_exists($_POST["itemtype"])
+    && isset($_POST["item"])) {
    $table = getTableForItemType($_POST["itemtype"]);
 
    $query = "SELECT DISTINCT `glpi_networkports_networkports`.`id` AS wid,
@@ -83,20 +84,20 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["item"])) {
          $output = $output_long = $data['cname'];
 
          if (!empty($data['nname'])) {
-            $output      .= " - ".$data['nname'];
-            $output_long .= " - " . printf(__('The port %s'), $data['nname']);
+            $output      .= sprintf(__(' - %s'), $data['nname']);
+            $output_long .= sprintf(__(' - The port %s'), $data['nname']);
          }
 
          // display netpoint (which will be copied)
          if (!empty($data['npname'])) {
-            $output      .= " - ".$data['npname'];
-            $output_long .= " - " . printf(__('Network outlet %s'), $data['npname']);
+            $output      .= sprintf(__(' - %s'), $data['npname']);
+            $output_long .= sprintf(__(' - Network outlet %s'), $data['npname']);
          }
          $ID = $data['did'];
 
          if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
-            $output      .= " ($ID)";
-            $output_long .= " ($ID)";
+            $output      .= "$nbsp;".sprintf(__('(%s)'), $ID);
+            $output_long .= "$nbsp;".sprintf(__('(%s)'), $ID);
          }
          $output = Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"]);
          echo "<option value='$ID' title=\"".Html::cleanInputText($output_long)."\">".$output;

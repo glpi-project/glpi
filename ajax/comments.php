@@ -42,7 +42,8 @@ Html::header_nocache();
 
 Session::checkLoginUser();
 
-if (isset($_REQUEST["table"]) && isset($_REQUEST["value"])) {
+if (isset($_REQUEST["table"])
+    && isset($_REQUEST["value"])) {
    // Security
    if (!TableExists($_REQUEST['table']) ) {
       exit();
@@ -50,7 +51,7 @@ if (isset($_REQUEST["table"]) && isset($_REQUEST["value"])) {
 
    switch ($_REQUEST["table"]) {
       case "glpi_users" :
-         if ($_REQUEST['value']==0) {
+         if ($_REQUEST['value'] == 0) {
             $tmpname['link']    = $CFG_GLPI['root_doc']."/front/user.php";
             $tmpname['comment'] = "";
          } else {

@@ -64,7 +64,10 @@ if (isset($_POST["entity_restrict"])
 
 // Make a select box
 $table = getTableForItemType($_POST["idtable"]);
-$item  = new $_POST["idtable"]();
+if (!$item = getItemForItemtype($_POST['idtable'])) {
+   exit;
+}
+
 $where = "";
 
 if ($item->maybeDeleted()) {
@@ -74,7 +77,8 @@ if ($item->maybeTemplate()) {
    $where .= " AND `$table`.`is_template` = '0' ";
 }
 
-if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
+if ((strlen($_POST['searchText']) > 0)
+    && ($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])) {
    $where .= " AND (`$table`.`name` ".Search::makeTextSearch($_POST['searchText'])."
                     OR `$table`.`otherserial` ".Search::makeTextSearch($_POST['searchText'])."
                     OR `$table`.`serial` ".Search::makeTextSearch($_POST['searchText'])." )";
@@ -82,16 +86,16 @@ if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wild
 
 $multi = $item->maybeRecursive();
 
-if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)) {
+if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"] < 0)) {
    $where .= getEntitiesRestrictRequest(" AND ", $table, '', $_POST["entity_restrict"], $multi);
-   if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
+   if (is_array($_POST["entity_restrict"]) && (count($_POST["entity_restrict"]) > 1)) {
       $multi = true;
    }
 
 } else {
    $where .= getEntitiesRestrictRequest(" AND ", $table, '', $_SESSION['glpiactiveentities'],
                                         $multi);
-   if (count($_SESSION['glpiactiveentities'])>1) {
+   if (count($_SESSION['glpiactiveentities']) > 1) {
       $multi = true;
    }
 }
@@ -146,8 +150,9 @@ $result = $DB->query($query);
 
 echo "<select name='".$_POST['myname']."' size='1'>";
 
-if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
-   echo "<option value='0'>--".__('Limited view')."--</option>";
+if (($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
+    && ($DB->numrows($result) == $NBMAX)) {
+   echo "<option value='0'>".__('--Limited view--')."</option>";
 }
 echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
@@ -165,14 +170,15 @@ if ($DB->numrows($result)) {
       $output = $data['name'];
       $ID     = $data['id'];
 
-      if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
-         $output .= " ($ID)";
+      if ($_SESSION["glpiis_ids_visible"]
+          || empty($output)) {
+         $output .= "$nbsp;".sprintf(__('(%s)'), $ID);
       }
       if (!empty($data['serial'])) {
-         $output .= " - ".$data["serial"];
+         $output .= sprintf(__(' - %s'), $data["serial"]);
       }
       if (!empty($data['otherserial'])) {
-         $output .= " - ".$data["otherserial"];
+         $output .= sprintf(__(' - %s'), $data["otherserial"]);
       }
 
       echo "<option value='$ID' title=\"".Html::cleanInputText($output)."\">".

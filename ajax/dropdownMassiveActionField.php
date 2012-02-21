@@ -49,7 +49,8 @@ if (in_array($_POST["itemtype"], $CFG_GLPI["infocom_types"])) {
    $item->checkGlobal("w");
 }
 
-if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]) {
+if (isset($_POST["itemtype"])
+    && isset($_POST["id_field"]) && $_POST["id_field"]) {
    $search = Search::getOptions($_POST["itemtype"]);
    if (!isset($search[$_POST["id_field"]])) {
       exit();
@@ -58,7 +59,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
    $FIELDNAME_PRINTED = false;
    $USE_TABLE         = false;
 
-   if ($search["table"]==getTableForItemType($_POST["itemtype"])) { // field type
+   if ($search["table"] == getTableForItemType($_POST["itemtype"])) { // field type
       switch ($search["table"].".".$search["linkfield"]) {
          case "glpi_cartridgeitems.alarm_threshold" :
          case "glpi_consumableitems.alarm_threshold" :
@@ -68,7 +69,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
          case "glpi_contracts.duration" :
          case "glpi_contracts.notice" :
             Dropdown::showInteger($search["linkfield"], 0, 0, 120, 1, array(),
-                                  array('unit'=>'month'));
+                                  array('unit' => 'month'));
             break;
 
          case "glpi_softwarelicenses.number" :
@@ -229,7 +230,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
                   break;
 
                case "sink_time" :
-                  Dropdown::showInteger("sink_time",0,0,15);
+                  Dropdown::showInteger("sink_time", 0, 0, 15);
                   break;
 
                case "warranty_duration" :
@@ -357,8 +358,7 @@ if (isset($_POST["itemtype"]) && isset($_POST["id_field"]) && $_POST["id_field"]
       }
    }
 
-   echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
-                __s('Post')."'>";
+   echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";
    if ($USE_TABLE) {
       echo "</td></tr></table>";
    }

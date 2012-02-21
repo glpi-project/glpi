@@ -48,13 +48,15 @@ $newgroup       = "";
 $items_in_group = 0;
 $searchopt      = Search::getCleanedOptions($_POST["itemtype"], 'r', false);
 echo "<table width='100%'><tr><td class='right'>";
-echo "<select id='Search2".$_POST["itemtype"].$_POST["num"]."' name='field2[".$_POST["num"]."]' size='1'>";
+echo "<select id='Search2".$_POST["itemtype"].$_POST["num"]."' name='field2[".$_POST["num"]."]'
+       size='1'>";
 
 foreach ($searchopt as $key => $val) {
 
    // print groups
    if (!is_array($val)) {
-      if (!empty($newgroup) && $items_in_group>0) {
+      if (!empty($newgroup)
+          && $items_in_group>0) {
          echo $newgroup;
          $first_group = false;
       }
@@ -73,14 +75,15 @@ foreach ($searchopt as $key => $val) {
          if ($key == $_POST["field"]) {
             $newgroup .= "selected";
          }
-         $newgroup .= ">". Toolbox::substr($val["name"], 0,
-                                           $_SESSION['glpidropdown_chars_limit']) ."</option>\n";
+         $newgroup .= ">". Toolbox::substr($val["name"], 0, $_SESSION['glpidropdown_chars_limit']) .
+                      "</option>\n";
          $items_in_group++;
       }
    }
 }
 
-if (!empty($newgroup) && $items_in_group>0) {
+if (!empty($newgroup)
+    && $items_in_group > 0) {
    echo $newgroup;
 }
 if (!$first_group) {
@@ -102,16 +105,15 @@ $_POST['meta']       = 1;
 include (GLPI_ROOT."/ajax/searchoption.php");
 echo "</span>\n";
 
-$params = array('field'       => '__VALUE__',
-                 'itemtype'   => $_POST["itemtype"],
-                 'num'        => $_POST["num"],
-                 'value'      => $_POST["value"],
-                 'searchtype' => $_POST["searchtype2"],
-                 'meta'       => 1);
+$params = array('field'      => '__VALUE__',
+                'itemtype'   => $_POST["itemtype"],
+                'num'        => $_POST["num"],
+                'value'      => $_POST["value"],
+                'searchtype' => $_POST["searchtype2"],
+                'meta'       => 1);
 
 Ajax::updateItemOnSelectEvent("Search2".$_POST["itemtype"].$_POST["num"],
                               "Search2Span".$_POST["itemtype"].$_POST["num"],
                               $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params);
 echo '</td></tr></table>';
-
 ?>

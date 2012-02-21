@@ -43,24 +43,25 @@ if (strpos($_SERVER['PHP_SELF'],"visibility.php")) {
 
 Session::checkLoginUser();
 
-if (isset($_REQUEST['type']) && !empty($_REQUEST['type']) && isset($_REQUEST['right'])) {
+if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
+    && isset($_REQUEST['right'])) {
    $display = false;
    $rand    = mt_rand();
 
    switch ($_REQUEST['type']) {
-      case 'User':
+      case 'User' :
          User::dropdown(array('right' => $_REQUEST['right']));
          $display = true;
          break;
 
-      case 'Group':
-         $params = array('rand' => $rand);
-         $params['toupdate']
-                 = array('value_fieldname' => 'value',
-                         'to_update'       => "subvisibility$rand",
-                         'url'             => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
-                         'moreparams'      => array('items_id' => '__VALUE__',
-                                                    'type'     => $_REQUEST['type']));
+      case 'Group' :
+         $params             = array('rand' => $rand);
+         $params['toupdate'] = array('value_fieldname'
+                                                  => 'value',
+                                     'to_update'  => "subvisibility$rand",
+                                     'url'        => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
+                                     'moreparams' => array('items_id' => '__VALUE__',
+                                                           'type'     => $_REQUEST['type']));
 
          Dropdown::show('Group', $params);
 
@@ -69,7 +70,7 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type']) && isset($_REQUEST['ri
          $display = true;
          break;
 
-      case 'Entity':
+      case 'Entity' :
          Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities'],
                                         'value'  => $_SESSION['glpiactive_entity']));
 
@@ -79,27 +80,26 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type']) && isset($_REQUEST['ri
          $display = true;
          break;
 
-      case 'Profile':
-         $params = array('rand'      => $rand,
-                         'condition' => "`".$_REQUEST['right']."` IN ('r','w')");
-         $params['toupdate']
-                 = array('value_fieldname' => 'value',
-                         'to_update'       => "subvisibility$rand",
-                         'url'             => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
-                         'moreparams'      => array('items_id' => '__VALUE__',
-                                                    'type'     => $_REQUEST['type']));
+      case 'Profile' :
+         $params             = array('rand'      => $rand,
+                                     'condition' => "`".$_REQUEST['right']."` IN ('r','w')");
+         $params['toupdate'] = array('value_fieldname'
+                                                  => 'value',
+                                     'to_update'  => "subvisibility$rand",
+                                     'url'        => $CFG_GLPI["root_doc"]."/ajax/subvisibility.php",
+                                     'moreparams' => array('items_id' => '__VALUE__',
+                                                           'type'     => $_REQUEST['type']));
 
          Dropdown::show('Profile', $params);
 
          echo "<span id='subvisibility$rand'></span>";
 
-         $display= true;
+         $display = true;
          break;
    }
 
    if ($display) {
-      echo "&nbsp;<input type='submit' name='addvisibility' value=\"".__s('Add')."\"
-                   class='submit'>";
+      echo "&nbsp;<input type='submit' name='addvisibility' value=\"".__s('Add')."\" class='submit'>";
    }
 }
 ?>
