@@ -1039,8 +1039,9 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
+      // Additional groups actors
       if (!is_null($groupactors)) {
-         // Requester
+         // Requesters
          if (isset($this->input['_additional_groups_requesters'])
              && is_array($this->input['_additional_groups_requesters'])
              && count($this->input['_additional_groups_requesters'])) {
