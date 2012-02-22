@@ -68,7 +68,7 @@ if (isset($_REQUEST['getvcard'])) {
       Html::redirect($CFG_GLPI["root_doc"]."/front/user.php");
    }
    $user->check($_GET['id'], 'r');
-   $user->generateVcard($_GET["id"]);
+   $user->generateVcard();
 
 } else if (isset($_POST["add"])) {
    $user->check(-1, 'w', $_POST);
