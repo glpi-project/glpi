@@ -347,15 +347,15 @@ if ($item instanceof CommonTreeDropdown) {
             }
 
             if ($_SESSION["glpiis_ids_visible"] || Toolbox::strlen($output)==0) {
-               $output .= "&nbsp;".sprintf(__('(%s)'), $ID);
+               $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
             }
-            $addcomment = "";
 
+            $title = $data['completename'];
             if (isset($data["comment"])) {
-               $addcomment = sprintf(__(' - - %s'), $data["comment"]);
+               $title = sprintf(__('%1$s - %2$s'), $title, $data["comment"]);
             }
-            echo "<option value='$ID' $class title=\"".Html::cleanInputText($data['completename'].
-                   $addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output.
+            echo "<option value='$ID' $class title=\"".Html::cleanInputText($title).
+                 "\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output.
                  "</option>";
          }
          if ($multi) {
@@ -466,7 +466,7 @@ if ($item instanceof CommonTreeDropdown) {
 
       if ((strlen($output) != 0) && ($output != "&nbsp;")) {
          if ($_SESSION["glpiis_ids_visible"]) {
-            $output .= "&nbsp;".sprintf(__('(%s)'), $_POST['value']);
+            $output = sprintf(__('%1$s (%2$s)'), $output, $_POST['value']);
          }
          echo "<option selected value='".$_POST['value']."'>".$output."</option>";
       }
@@ -480,19 +480,20 @@ if ($item instanceof CommonTreeDropdown) {
             if ($displaywith) {
                foreach ($_POST['displaywith'] as $key) {
                   if (isset($data[$key]) && strlen($data[$key])!=0) {
-                     $output .= sprintf(__(' -  %s'), $data[$key]);
+                     $output = sprintf(__('%1$s - %2$s'), $output, $data[$key]);
                   }
                }
             }
             $ID = $data['id'];
             $addcomment = "";
-
+            $title = $output;
             if (isset($data["comment"])) {
-               $addcomment = sprintf(__(' -  %s'), $data["comment"]);
+               $title = sprintf(__('%1$s - %2$s'), $title, $data["comment"]);
             }
             if ($_SESSION["glpiis_ids_visible"]
                 || (strlen($output) == 0)) {
-               $output .= "&nbsp;".sprintf(__('(%s)'), $ID);
+               //TRANS: %1$s is the name, %2$s the ID
+               $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
             }
 
             if ($multi
@@ -504,7 +505,7 @@ if ($item instanceof CommonTreeDropdown) {
                echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
             }
 
-            echo "<option value='$ID' title=\"".Html::cleanInputText($output.$addcomment)."\">".
+            echo "<option value='$ID' title=\"".Html::cleanInputText($title)."\">".
                   Toolbox::substr($output, 0, $_POST["limit"])."</option>";
          }
 
