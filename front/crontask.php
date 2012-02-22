@@ -60,7 +60,7 @@ if ($crontask->getNeedToRun(CronTask::MODE_INTERNAL)) {
                       sprintf(__('Next task to run: %s'), $crontask->fields['name']),
                       array($_SERVER['PHP_SELF']."?execute=1" => __('Execute')));
 } else {
-   Html::displayTitle(GLPI_ROOT.'/pics/ok.png', __s('No action pending'), __s('No action pending'));
+   Html::displayTitle(GLPI_ROOT.'/pics/ok.png', __('No action pending'), __('No action pending'));
 }
 
 Search::show('CronTask');
