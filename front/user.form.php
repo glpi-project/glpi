@@ -52,7 +52,7 @@ if (!isset($_GET["order"])) {
 
 $user      = new User();
 $groupuser = new Group_User();
-//print_r($_POST);exit();
+
 if (empty($_GET["id"]) && isset($_GET["name"])) {
 
    $user->getFromDBbyName($_GET["name"]);
