@@ -54,7 +54,7 @@ if (empty($_POST["date1"]) && empty($_POST["date2"])) {
 
 if (!empty($_POST["date1"])
     && !empty($_POST["date2"])
-    && strcmp($_POST["date2"],$_POST["date1"]) < 0) {
+    && (strcmp($_POST["date2"],$_POST["date1"]) < 0)) {
 
    $tmp            = $_POST["date1"];
    $_POST["date1"] = $_POST["date2"];
@@ -237,7 +237,7 @@ switch($_GET["type"]) {
          $prev = $val1-1;
       }
       $title = sprintf(__('Request source: %s'), Dropdown::getDropdownName("glpi_requesttypes",
-                                                                     $_GET["id"]));
+                                                                           $_GET["id"]));
       break;
 
    case "device" :
@@ -245,15 +245,16 @@ switch($_GET["type"]) {
       $val2 = $_GET["champ"];
       if ($item = getItemForItemtype($_GET["champ"])) {
          $device_table = $item->getTable();
-         $next = getNextItem($device_table, $_GET["id"], '', 'designation');
-         $prev = getPreviousItem($device_table, $_GET["id"], '', 'designation');
+         $next         = getNextItem($device_table, $_GET["id"], '', 'designation');
+         $prev         = getPreviousItem($device_table, $_GET["id"], '', 'designation');
 
          $query = "SELECT `designation`
                    FROM `".$device_table."`
                    WHERE `id` = '".$_GET['id']."'";
          $result = $DB->query($query);
 
-         $title = $item->getTypeName()."&nbsp;: ".$DB->result($result,0,"designation");
+         $title = sprintf(__('%1$s: %2$s'),
+                          $item->getTypeName(), $DB->result($result,0,"designation"));
       }
       break;
 
@@ -264,7 +265,8 @@ switch($_GET["type"]) {
          $table = $item->getTable();
          $next  = getNextItem($table, $_GET["id"]);
          $prev  = getPreviousItem($table, $_GET["id"]);
-         $title = $item->getTypeName()."&nbsp;: ".Dropdown::getDropdownName($table, $_GET["id"]);
+         $title = sprintf(__('%1$s: %2$s'),
+                          $item->getTypeName(), Dropdown::getDropdownName($table, $_GET["id"]));
       }
       break;
 }
@@ -310,7 +312,7 @@ echo "</table></div>";
 
 
 $show_all = false;
-if (!isset($_REQUEST['graph']) || count($_REQUEST['graph'])==0) {
+if (!isset($_REQUEST['graph']) || (count($_REQUEST['graph']) == 0)) {
    $show_all = true;
 }
 
@@ -405,7 +407,7 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
 echo "<div class='center'>";
 
 $show_all2 = false;
-if (!isset($_REQUEST['graph2']) || count($_REQUEST['graph2'])==0) {
+if (!isset($_REQUEST['graph2']) || (count($_REQUEST['graph2']) == 0)) {
    $show_all2 = true;
 }
 
@@ -458,7 +460,7 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
       }
    }
 
-   Stat::showGraph($toprint, array('title'     => __('Satisfaction survey'),
+   Stat::showGraph($toprint, array('title'   => __('Satisfaction survey'),
                                  'showtotal' => 1,
                                  'unit'      => __('Tickets')));
 

@@ -48,7 +48,7 @@ if (empty($_REQUEST["date1"]) && empty($_REQUEST["date2"])) {
 
 if (!empty($_REQUEST["date1"])
     && !empty($_REQUEST["date2"])
-    && strcmp($_REQUEST["date2"],$_REQUEST["date1"]) < 0) {
+    && (strcmp($_REQUEST["date2"],$_REQUEST["date1"]) < 0)) {
 
    $tmp               = $_REQUEST["date1"];
    $_REQUEST["date1"] = $_REQUEST["date2"];
@@ -96,7 +96,7 @@ $available = array('total'  => __('Opened'),
 echo "<div class='center'>";
 
 $show_all = false;
-if (!isset($_REQUEST['graph']) || count($_REQUEST['graph'])==0) {
+if (!isset($_REQUEST['graph']) || (count($_REQUEST['graph']) == 0)) {
    $show_all = true;
 }
 
@@ -165,15 +165,14 @@ if ($_REQUEST['itemtype']=='Ticket') {
 echo "<div class='center'>";
 
 $show_all2 = false;
-if (!isset($_REQUEST['graph2']) || count($_REQUEST['graph2'])==0) {
+if (!isset($_REQUEST['graph2']) || (count($_REQUEST['graph2']) == 0)) {
    $show_all2 = true;
 }
 
 
 foreach ($available as $key => $name) {
    echo "<input type='checkbox' onchange='submit()' name='graph2[$key]' ".
-          ($show_all2||isset($_REQUEST['graph2'][$key])?"checked":"")."> ".
-         $name."&nbsp;";
+          ($show_all2||isset($_REQUEST['graph2'][$key])?"checked":"")."> ".$name."&nbsp;";
 }
 echo "</div>";
 

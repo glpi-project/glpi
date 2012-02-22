@@ -48,5 +48,4 @@ if (isset($_REQUEST["update"])) {
 } else if (isset($_REQUEST["id"])) {
    $ticket_user->showUserNotificationForm($_REQUEST["id"]);
 }
-
 ?>

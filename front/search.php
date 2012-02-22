@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -44,7 +42,7 @@ if (isset($_GET["globalsearch"])) {
    $searchtext=$_GET["globalsearch"];
 
    foreach ($CFG_GLPI["globalsearch_types"] as $itemtype) {
-      if ($item = getItemForItemtype($itemtype)
+      if (($item = getItemForItemtype($itemtype))
           && $item->canView()) {
          $_GET["reset"]        = 'reset';
          $_GET["display_type"] = Search::GLOBAL_SEARCH;

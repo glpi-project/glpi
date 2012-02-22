@@ -52,7 +52,7 @@ if (empty($_REQUEST["date1"]) && empty($_REQUEST["date2"])) {
 
 if (!empty($_REQUEST["date1"])
     && !empty($_REQUEST["date2"])
-    && strcmp($_REQUEST["date2"], $_REQUEST["date1"]) < 0) {
+    && (strcmp($_REQUEST["date2"], $_REQUEST["date1"]) < 0)) {
 
    $tmp               = $_REQUEST["date1"];
    $_REQUEST["date1"] = $_REQUEST["date2"];
@@ -81,13 +81,14 @@ echo "<form method='get' name='form' action='stat.location.php'>";
 
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td rowspan='2'>";
 echo "<select name='dropdown'>";
-echo "<optgroup label=\"".__s('Dropdowns')."\">";
+echo "<optgroup label=\""._sn('Dropdown','Dropdowns',2)."\">";
 echo "<option value='ComputerType' ".($_REQUEST["dropdown"]=="ComputerType"?"selected":"").">".
        __('Type')."</option>";
 echo "<option value='ComputerModel' ".($_REQUEST["dropdown"]=="ComputerModel"?"selected":"").">".
        __('Model')."</option>";
 echo "<option value='OperatingSystem' ".
-      ($_REQUEST["dropdown"]=="OperatingSystem"?"selected":"").">".__('Operating system')."</option>";
+      ($_REQUEST["dropdown"]=="OperatingSystem"?"selected":"").">".__('Operating system').
+     "</option>";
 echo "<option value='Location' ".($_REQUEST["dropdown"]=="Location"?"selected":"").">".
       __('Location')."</option>";
 echo "</optgroup>";

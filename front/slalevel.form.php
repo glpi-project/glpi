@@ -40,7 +40,7 @@ if (isset($_POST["update"])) {
 
    Event::log($_POST["id"], "slas", 4, "config",
               //TRANS: %s is the user login
-              sprintf(__('%s updates a slalevel'), $_SESSION["glpiname"]));
+              sprintf(__('%s updates a sla level'), $_SESSION["glpiname"]));
 
    Html::back();
 
@@ -66,7 +66,7 @@ if (isset($_POST["update"])) {
       }
       Event::log($_POST["slas_id"], "slas", 4, "config",
                  //TRANS: %s is the user login
-                 sprintf(__('%s deletes several slalevels'), $_SESSION["glpiname"]));
+                 sprintf(__('%s deletes several sla levels'), $_SESSION["glpiname"]));
 
    } else if (isset($_POST['id'])) {
       $item->check($_POST['id'], 'd');
@@ -74,7 +74,7 @@ if (isset($_POST["update"])) {
       if ($ok) {
          Event::log($_POST["id"], "slas", 4, "config",
                     //TRANS: %s is the user login
-                    sprintf(__('%s deletes a slalevel'), $_SESSION["glpiname"]));
+                    sprintf(__('%s deletes a sla level'), $_SESSION["glpiname"]));
       }
       $item->redirectToList();
    }

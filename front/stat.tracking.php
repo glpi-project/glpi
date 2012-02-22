@@ -63,7 +63,7 @@ if (empty($_REQUEST["date1"]) && empty($_REQUEST["date2"])) {
 
 if (!empty($_REQUEST["date1"])
     && !empty($_REQUEST["date2"])
-    && strcmp($_REQUEST["date2"],$_REQUEST["date1"]) < 0) {
+    && (strcmp($_REQUEST["date2"],$_REQUEST["date1"]) < 0)) {
 
    $tmp               = $_REQUEST["date1"];
    $_REQUEST["date1"] = $_REQUEST["date2"];
@@ -150,8 +150,8 @@ $params = array('type'   => $_REQUEST["type"],
 
 Html::printPager($_REQUEST['start'], count($val), $CFG_GLPI['root_doc'].'/front/stat.tracking.php',
                  "date1=".$_REQUEST["date1"]."&amp;date2=".$_REQUEST["date2"].
-                 "&amp;type=".$_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"].
-                 "&amp;itemtype=".$_REQUEST["itemtype"]."&amp;value2=".$_REQUEST['value2'],
+                     "&amp;type=".$_REQUEST["type"]."&amp;showgraph=".$_REQUEST["showgraph"].
+                     "&amp;itemtype=".$_REQUEST["itemtype"]."&amp;value2=".$_REQUEST['value2'],
                  'Stat', $params);
 
 if (!$_REQUEST['showgraph']) {
