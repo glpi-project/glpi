@@ -48,18 +48,18 @@ foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
       if ($plug = isPluginItemType($rulecollectionclass)) {
          $function = 'plugin_version_'.strtolower($plug['plugin']);
          $plugname = $function();
-         $title = $plugname['name'].' - ';
+         $title = sprintf(__('%1$s - %2$s'), $plugname['name'], $rulecollection->getTitle());
       } else {
-         $title = '';
+         $title = $rulecollection->getTitle();
       }
-      $title .= $rulecollection->getTitle();
       echo "<tr class='tab_bg_1'><td class='center b'>";
       echo "<a href='".Toolbox::getItemTypeSearchURL($rulecollection->getRuleClassName())."'>";
       echo $title."</a></td></tr>";
    }
 }
 
-if (Session::haveRight("transfer","r" ) && Session::isMultiEntitiesMode()) {
+if (Session::haveRight("transfer","r" )
+    && Session::isMultiEntitiesMode()) {
    echo "<tr class='tab_bg_1'><td class='center b'>";
    echo "<a href='".$CFG_GLPI['root_doc']."/front/transfer.php'>".__('Transfer')."</a>";
    echo "</td></tr>";
