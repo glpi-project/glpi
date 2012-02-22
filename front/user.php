@@ -37,9 +37,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("user", "r");
 
-Html::header(_n('User', 'Users', 2), '', "admin", "user");
+Html::header(User::getTypeName(2), '', "admin", "user");
 
-$user=new User();
+$user = new User();
 $user->title();
 
 Search::show('User');
