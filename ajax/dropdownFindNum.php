@@ -136,7 +136,7 @@ if ($DB->numrows($result)) {
 
       if (empty($output)
           || $_SESSION['glpiis_ids_visible']) {
-         $output .= "&nbsp;".sprintf(__('(%s)'), $data['id']);
+         $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
       }
       echo "<option value='".$data['id']."' title=\"".Html::cleanInputText($output)."\">".
             Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"])."</option>";

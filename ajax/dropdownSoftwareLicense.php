@@ -70,7 +70,7 @@ if ($_POST['softwares_id'] > 0) {
          $output = $data['name'];
 
          if (empty($output) || $_SESSION['glpiis_ids_visible']) {
-            $output .= "&nbsp;".sprintf(__('(%s)'), $ID);
+            $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
          }
          echo "<option ".($ID==$_POST['value']?"selected":"")." value='$ID' title=\"".
                 Html::cleanInputText($output)."\">".$output."</option>";

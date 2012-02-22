@@ -140,15 +140,17 @@ if ($DB->numrows($result)) {
       $ID         = $data['id'];
       $addcomment = "";
 
+      $title = $output;
       if (isset($data["comment"])) {
          //TRANS: %1$s is the location, %2$s is the comment
-         $addcomment = sprintf(__(' - %1$s - %2$s'), $loc, $data["comment"]);
+         $title = sprintf(__('%1$s - %2$s'), $title, $loc);
+         $title = sprintf(__('%1$s - %2$s'), $title, $data["comment"]);
       }
       if (!$location_restrict) {
-         $output .= "&nbsp;".sprintf(__('(%s)'), $loc);
+         $output = sprintf(__('%1$s (%2$s)'), $output, $loc);
       }
 
-      echo "<option value='$ID' title=\"".Html::cleanInputText($output.$addcomment)."\">".$output.
+      echo "<option value='$ID' title=\"".Html::cleanInputText($title)."\">".$output.
            "</option>";
    }
 }
