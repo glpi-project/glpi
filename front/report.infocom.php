@@ -48,7 +48,7 @@ if (empty($_POST["date1"]) && empty($_POST["date2"])) {
 
 if (!empty($_POST["date1"])
     && !empty($_POST["date2"])
-    && strcmp($_POST["date2"], $_POST["date1"])<0) {
+    && (strcmp($_POST["date2"],$_POST["date1"]) < 0)) {
 
    $tmp            = $_POST["date1"];
    $_POST["date1"] = $_POST["date2"];
@@ -113,7 +113,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
    $display_entity = Session::isMultiEntitiesMode();
 
    $result = $DB->query($query);
-   if ($DB->numrows($result)>0 && $item = getItemForItemtype($itemtype)) {
+   if (($DB->numrows($result) > 0)
+       && ($item = getItemForItemtype($itemtype))) {
 
       echo "<h2>".$item->getTypeName(1)."</h2>";
 
@@ -148,9 +149,9 @@ function display_infocoms_report($itemtype, $begin, $end) {
                                        $line["sink_coeff"], $line["buy_date"], $line["use_date"],
                                        $CFG_GLPI["date_tax"], "all");
 
-         if (is_array($tmp) && count($tmp)>0) {
+         if (is_array($tmp) && (count($tmp) > 0)) {
             foreach ($tmp["annee"] as $key => $val) {
-               if ($tmp["vcnetfin"][$key]>0) {
+               if ($tmp["vcnetfin"][$key] > 0) {
                   if (!isset($valeurnettegraph[$val])) {
                      $valeurnettegraph[$val] = 0;
                   }
@@ -161,7 +162,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
 
          if (!empty($line["buy_date"])) {
             $year = substr($line["buy_date"],0,4);
-            if ($line["value"]>0) {
+            if ($line["value"] > 0) {
                if (!isset($valeurgraph[$year])) {
                   $valeurgraph[$year] = 0;
                }
@@ -194,7 +195,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
                         Html::formatNumber($valeurnettesoustot));
       echo "<tr><td colspan='6' class='center'><h3>$tmpmsg</h3></td></tr>";
 
-      if (count($valeurnettegraph)>0) {
+      if (count($valeurnettegraph) > 0) {
          echo "<tr><td colspan='5' class='center'>";
          ksort($valeurnettegraph);
          $valeurnettegraphdisplay = array_map('round', $valeurnettegraph);
@@ -213,7 +214,7 @@ function display_infocoms_report($itemtype, $begin, $end) {
          echo "</td></tr>";
       }
 
-      if (count($valeurgraph)>0) {
+      if (count($valeurgraph) > 0) {
          echo "<tr><td colspan='5' class='center'>";
 
          ksort($valeurgraph);
@@ -242,21 +243,21 @@ $types = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
 $i = 0;
 echo "<table><tr><td class='top'>";
 
-while (count($types)>0) {
+while (count($types) > 0) {
    $type = array_shift($types);
 
    if (display_infocoms_report($type, $_POST["date1"], $_POST["date2"])) {
       echo "</td>";
       $i++;
 
-      if (($i%2)==0) {
+      if (($i%2) == 0) {
          echo "</tr><tr>";
       }
       echo "<td class='top'>";
    }
 }
 
-if (($i%2)==0) {
+if (($i%2) == 0) {
    echo "&nbsp;</td><td>&nbsp;";
 }
 
@@ -268,12 +269,12 @@ $tmpmsg = sprintf(__('Total: Value=%1$s - Account net value=%2$s'),
                   Html::formatNumber($valeurnettetot));
 echo "<div class='center'><h3>$tmpmsg</h3></div>";
 
-if (count($valeurnettegraphtot)>0) {
+if (count($valeurnettegraphtot) > 0) {
    $valeurnettegraphtotdisplay = array_map('round', $valeurnettegraphtot);
    Stat::showGraph(array(__('Account net value') => $valeurnettegraphtotdisplay),
                    array('title' => __('Account net value')));
 }
-if (count($valeurgraphtot)>0) {
+if (count($valeurgraphtot) > 0) {
    $valeurgraphtotdisplay = array_map('round', $valeurgraphtot);
    Stat::showGraph(array(__('Value') => $valeurgraphtotdisplay),
                    array('title' => __('Value')));

@@ -56,7 +56,8 @@ if (isset($_POST["add"])) {
    $prof->delete($_POST);
    $prof->redirectToList();
 
-} else if (isset($_POST["update"]) || isset($_POST["interface"])) {
+} else if (isset($_POST["update"])
+           || isset($_POST["interface"])) {
    $prof->check($_POST['id'],'w');
 
    $prof->update($_POST);

@@ -70,7 +70,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else if (isset($_POST["moveentity"])) {
-   if (isset($_POST['entities_id']) && $_POST['entities_id'] >= 0) {
+   if (isset($_POST['entities_id']) && ($_POST['entities_id'] >= 0)) {
       foreach ($_POST["item"] as $key => $val) {
          if ($val == 1) {
             if ($right->can($key,'w')) {

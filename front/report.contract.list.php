@@ -47,7 +47,7 @@ $items = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
 echo "<span class='big b'>".__('List of the hardware under contract')."</span><br><br>";
 
 # Request All
-if ((isset($_POST["item_type"][0]) && $_POST["item_type"][0] == '0')
+if ((isset($_POST["item_type"][0]) && ($_POST["item_type"][0] == '0'))
     || !isset($_POST["item_type"])) {
    $_POST["item_type"] = $items;
 }
@@ -86,7 +86,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                          WHERE `$itemtable`.`is_template` ='0' ".
                                getEntitiesRestrictRequest("AND",$itemtable);
 
-         if (isset($_POST["annee"][0]) && $_POST["annee"][0] != 'toutes') {
+         if (isset($_POST["annee"][0]) && ($_POST["annee"][0] != 'toutes')) {
             $query[$val] .= " AND ( ";
             $first = true;
             foreach ($_POST["annee"] as $key2 => $val2) {
@@ -122,7 +122,7 @@ if (isset($query) && count($query)) {
          echo "<th>".__('Location')."</th>";
          echo "<th>".__('Date of purchase')."</th>";
          echo "<th>".__('Warranty expiration date')."</th>";
-         echo "<th>".__('Contract Type')."</th>";
+         echo "<th>".__('Contract type')."</th>";
          echo "<th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th>";
          echo "</tr>";
