@@ -87,7 +87,7 @@ if (isset($_GET["delete"])) {
          Session::addMessageAfterRedirect(__('Cannot change a migration network port to an unknown one'));
       }
    } else {
-      Session::addMessageAfterRedirect(__('Network port is not available ...'));
+      Session::addMessageAfterRedirect(__('Network port is not available...'));
       $np->delete($_POST);
    }
 
