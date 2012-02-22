@@ -242,21 +242,21 @@ class PlanningRecall extends CommonDBTM {
 
       $min_values = array(0, 15, 30, 45);
       foreach ($min_values as $val) {
-         $possible_values[$val*MINUTE_TIMESTAMP] = sprintf(_n('%1$d minute','%1$d minutes',$val),
+         $possible_values[$val*MINUTE_TIMESTAMP] = sprintf(_n('%d minute','%d minutes',$val),
                                                            $val);
       }
 
       $h_values = array(1, 2, 3, 4, 12);
       foreach ($h_values as $val) {
-         $possible_values[$val*HOUR_TIMESTAMP] = sprintf(_n('%1$d hour','%1$d hours',$val), $val);
+         $possible_values[$val*HOUR_TIMESTAMP] = sprintf(_n('%d hour','%d hours',$val), $val);
       }
       $d_values = array(1, 2);
       foreach ($d_values as $val) {
-         $possible_values[$val*DAY_TIMESTAMP] = sprintf(_n('%1$d day','%1$d days',$val), $val);
+         $possible_values[$val*DAY_TIMESTAMP] = sprintf(_n('%d day','%d days',$val), $val);
       }
       $w_values = array(1);
       foreach ($w_values as $val) {
-         $possible_values[$val*7*DAY_TIMESTAMP] = sprintf(_n('%1$d week','%1$d weeks',$val), $val);
+         $possible_values[$val*7*DAY_TIMESTAMP] = sprintf(_n('%d week','%d weeks',$val), $val);
       }
 
       ksort($possible_values);
