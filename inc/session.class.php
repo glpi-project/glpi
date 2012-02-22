@@ -862,9 +862,9 @@ class Session {
    static function addMessageAfterRedirect($msg, $check_once=false, $message_type=INFO,
                                            $reset=false) {
 
-      // Do not display of cron jobs messages in user interface
-      if (self::getLoginUserID() === self::getLoginUserID(false)) {
-         if (!empty($msg)) {
+      if (!empty($msg)) {
+         // Do not display of cron jobs messages in user interface
+         if (self::getLoginUserID() === self::getLoginUserID(false)) {
 
             if ($reset) {
                $_SESSION["MESSAGE_AFTER_REDIRECT"]='';
@@ -888,6 +888,11 @@ class Session {
                   default: // INFO
                      $_SESSION["MESSAGE_AFTER_REDIRECT"] .= "<h3>$toadd</h3>";
                }
+            }
+         } else {
+            // We are in cron mode
+            if ($message_type == ERROR) {
+               Toolbox::logInFile('cron', $msg."\n");
             }
          }
       }
