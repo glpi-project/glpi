@@ -190,8 +190,10 @@ abstract class FQDNLabel extends CommonDBChild {
                     'NetworkAlias' => 'glpi_networkaliases') as $class => $table) {
          $query = "SELECT `id`
                    FROM `$table`
-                   WHERE `name` = '$label'
-                   AND `fqdns_id` = '$fqdns_id'";
+                   WHERE `name` = '$label'";
+         if ($fqdns_id > 0) {
+            $query .= " AND `fqdns_id` = '$fqdns_id'";
+         }
 
          foreach ($DB->request($query) as $element) {
             $IDs[$class][] = $element['id'];
@@ -218,11 +220,12 @@ abstract class FQDNLabel extends CommonDBChild {
       }
 
       $position = strpos($fqdn, ".");
-      $label    = strtolower(substr( $fqdn, 0, $position));
-      $fqdns_id = FQDN::getFQDNIDByFQDN(substr( $fqdn, $position + 1));
-
-      if ($fqdns_id < 0) {
-         return array();
+      if ($position !== false) {
+         $label    = strtolower(substr( $fqdn, 0, $position));
+         $fqdns_id = FQDN::getFQDNIDByFQDN(substr( $fqdn, $position + 1));
+      } else {
+         $label    = $fqdn;
+         $fqdns_id = -1;
       }
 
       foreach (self::getIDsByLabelAndFQDNID($label, $fqdns_id) as $class => $IDs) {
