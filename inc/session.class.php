@@ -340,11 +340,11 @@ class Session {
          $_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities", $active);
          if ($is_recursive || $ID=="all") {
             //TRANS: %s is the entity name
-            $_SESSION["glpiactive_entity_name"]      = sprintf(__('%s (tree structure)'), 
+            $_SESSION["glpiactive_entity_name"]      = sprintf(__('%s (tree structure)'),
                                                                $_SESSION["glpiactive_entity_name"]);
-            $_SESSION["glpiactive_entity_shortname"] = sprintf(__('%s (tree structure)'), 
+            $_SESSION["glpiactive_entity_shortname"] = sprintf(__('%s (tree structure)'),
                                                                $_SESSION["glpiactive_entity_shortname"]);
-         } 
+         }
 
          if (countElementsInTable('glpi_entities') < count($_SESSION['glpiactiveentities'])) {
             $_SESSION['glpishowallentities'] = 1;
@@ -903,9 +903,15 @@ class Session {
    static function addMessageAfterRedirect($msg, $check_once=false, $message_type=INFO,
                                            $reset=false) {
 
-      // Do not display of cron jobs messages in user interface
-      if (!self::isCron()) {
-         if (!empty($msg)) {
+      if (!empty($msg)) {
+         if (self::isCron()) {
+            // We are in cron mode
+            // Do not display message in user interface, but record error
+            if ($message_type == ERROR) {
+               Toolbox::logInFile('cron', $msg."\n");
+            }
+
+         } else {
 
             if ($reset) {
                $_SESSION["MESSAGE_AFTER_REDIRECT"]='';
