@@ -3419,7 +3419,7 @@ class Ticket extends CommonITILObject {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".__('Type')."</th>";
+      echo "<th width='$colsize1%'>".__('Type').$tt->getMandatoryMark('type')."</th>";
       echo "<td width='$colsize2%'>";
       // Permit to set type when creating ticket without update right
       if ($canupdate || !$ID) {
