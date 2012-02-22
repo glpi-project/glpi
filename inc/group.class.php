@@ -43,7 +43,7 @@ class Group extends CommonTreeDropdown {
 
 
    static function getTypeName($nb=0) {
-      _n('Group', 'Groups', $nb);
+      return _n('Group', 'Groups', $nb);
    }
 
 
@@ -155,7 +155,7 @@ class Group extends CommonTreeDropdown {
 
       $this->addStandardTab('Group', $ong, $options);
       if ($this->fields['is_usergroup']) {
-         $this->addStandardTab('User', $ong, $options);
+         $this->addStandardTab('Group_User', $ong, $options);
       }
       if ($this->fields['is_notify']) {
          $this->addStandardTab('NotificationTarget', $ong, $options);
