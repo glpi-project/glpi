@@ -145,22 +145,11 @@ class User extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       switch ($item->getType()) {
-         case __CLASS__:
+         case __CLASS__ :
             $ong = array();
             $ong[1] = __('Used items');
             $ong[2] = __('Managed items');
             return $ong;
-
-         case 'Group' :
-            if (Session::haveRight("user","r")) {
-               if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(self::getTypeName(2),
-                                              countElementsInTable("glpi_groups_users",
-                                                                   "`groups_id` = '".$item->getID()."'" ));
-               }
-               return self::getTypeName(2);
-            }
-            break;
 
          case 'Preference' :
             return __('Main');
@@ -175,10 +164,6 @@ class User extends CommonDBTM {
       switch ($item->getType()) {
          case __CLASS__ :
             $item->showItems($tabnum==2);
-            return true;
-
-         case 'Group' :
-            Group_User::showForGroup($item);
             return true;
 
          case 'Preference' :
