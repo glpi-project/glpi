@@ -45,8 +45,8 @@ if (isset($_POST["update"])) {
    $inquest->update($_POST);
 
    Event::log($inquest->getField('tickets_id'), "ticket", 4, "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
+              //TRANS: %s is the user login
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 }
 

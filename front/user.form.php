@@ -50,7 +50,7 @@ if (!isset($_GET["order"])) {
    $_GET["order"] = "";
 }
 
-$user = new User();
+$user      = new User();
 $groupuser = new Group_User();
 //print_r($_POST);exit();
 if (empty($_GET["id"]) && isset($_GET["name"])) {
@@ -84,23 +84,23 @@ if (isset($_REQUEST['getvcard'])) {
    $user->check($_POST['id'], 'w');
    $user->delete($_POST);
    Event::log($_POST["id"], "users", 4, "setup",
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));   
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
    $user->redirectToList();
 
 } else if (isset($_POST["restore"])) {
    $user->check($_POST['id'], 'w');
    $user->restore($_POST);
-   Event::log($_POST["id"], "users", 4, "setup", 
-            //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));   
+   Event::log($_POST["id"], "users", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    $user->redirectToList();
 
 } else if (isset($_POST["purge"])) {
    $user->check($_POST['id'], 'w');
    $user->delete($_POST, 1);
-   Event::log($_POST["id"], "users", 4, "setup",          //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));   
+   Event::log($_POST["id"], "users", 4, "setup",
+              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    $user->redirectToList();
 
 } else if (isset($_POST["force_ldap_resynch"])) {
@@ -117,16 +117,16 @@ if (isset($_REQUEST['getvcard'])) {
    $user->check($_POST['id'], 'w');
    $user->update($_POST);
    Event::log($_POST['id'], "users", 5, "setup",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));      
+              //TRANS: %s is the user login
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["addgroup"])) {
    $groupuser->check(-1,'w',$_POST);
    if ($groupuser->add($_POST)) {
       Event::log($_POST["users_id"], "users", 4, "setup",
-               //TRANS: %s is the user login
-               sprintf(__('%s adds a user to a group'), $_SESSION["glpiname"]));
+                 //TRANS: %s is the user login
+                 sprintf(__('%s adds a user to a group'), $_SESSION["glpiname"]));
    }
    Html::back();
 
@@ -138,9 +138,9 @@ if (isset($_REQUEST['getvcard'])) {
          }
       }
    }
-   Event::log($_POST["users_id"], "users", 4, "setup", 
-               //TRANS: %s is the user login
-               sprintf(__('%s deletes users from a group'), $_SESSION["glpiname"]));
+   Event::log($_POST["users_id"], "users", 4, "setup",
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes users from a group'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["change_auth_method"])) {
@@ -155,7 +155,7 @@ if (isset($_REQUEST['getvcard'])) {
 } else {
    if (!isset($_GET["ext_auth"])) {
       Session::checkRight("user", "r");
-      Html::header(_n('User','Users',2), '', "admin", "user");
+      Html::header(User::getTypeName(2), '', "admin", "user");
       $user->showForm($_GET["id"]);
       Html::footer();
 
@@ -176,12 +176,13 @@ if (isset($_REQUEST['getvcard'])) {
             $user->check(-1, 'w', $input);
             $newID = $user->add($input);
             Event::log($newID, "users", 4, "setup",
-                        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $_GET["login"]));
+                       sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"],
+                               $_GET["login"]));
          }
          Html::back();
       }
 
-      Html::header(_n('User','Users',2), '', "admin", "user");
+      Html::header(User::getTypeName(2), '', "admin", "user");
       User::showAddExtAuthForm();
       Html::footer();
    }

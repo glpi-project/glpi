@@ -67,20 +67,19 @@ if (isset($_POST["add"])) {
       }
    }
    $track->update($_POST);
-   Event::log($_POST["id"], "ticket", 4, "tracking", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));         
-   
+   Event::log($_POST["id"], "ticket", 4, "tracking",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
 
    // Copy solution to KB redirect to KB
    if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
-      Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=new&itemtype=Ticket&items_id=".
-                   $_POST["id"]);
+      Html::redirect($CFG_GLPI["root_doc"].
+                     "/front/knowbaseitem.form.php?id=new&itemtype=Ticket&items_id=".$_POST["id"]);
    } else {
       if ($track->can($_POST["id"],'r')) {
          Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
       }
-      Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this ticket'), 
+      Session::addMessageAfterRedirect(__('You have been redirected because you no longer have access to this ticket'),
                                        true, ERROR);
       Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.php");
    }
@@ -89,9 +88,9 @@ if (isset($_POST["add"])) {
    $track->check($_POST['id'],'d');
    if ($track->delete($_POST)) {
       Event::log($_POST["id"], "ticket", 4, "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));         
-      
+                 //TRANS: %s is the user login
+                 sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
+
    }
    $track->redirectToList();
 
@@ -99,8 +98,8 @@ if (isset($_POST["add"])) {
    $track->check($_POST['id'],'d');
    if ($track->delete($_POST, 1)) {
       Event::log($_POST["id"], "ticket", 4, "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s purges the item'), $_SESSION["glpiname"]));         
+                 //TRANS: %s is the user login
+                 sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    }
    $track->redirectToList();
 
@@ -108,8 +107,8 @@ if (isset($_POST["add"])) {
    $track->check($_POST['id'], 'd');
    if ($track->restore($_POST)) {
       Event::log($_POST["id"], "ticket", 4, "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s restores the item'), $_SESSION["glpiname"]));         
+                 //TRANS: %s is the user login
+                 sprintf(__('%s restores an item'), $_SESSION["glpiname"]));
    }
    $track->redirectToList();
 
@@ -117,9 +116,9 @@ if (isset($_POST["add"])) {
    $track->check($_POST["id"],'w');
 
    $track->deleteSLA($_POST["id"]);
-   Event::log($_POST["id"], "ticket", 4, "tracking", 
-            //TRANS: %s is the user login
-            sprintf(__('%s updates the item'), $_SESSION["glpiname"]));            
+   Event::log($_POST["id"], "ticket", 4, "tracking",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
 
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_POST["id"]);
 
@@ -130,7 +129,7 @@ if (isset($_POST["add"])) {
    $ticket_ticket->delete($_REQUEST);
 
    Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
-               //TRANS: %s is the user login 
+              //TRANS: %s is the user login
               sprintf(__('%s deletes link between tickets'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
 
@@ -139,9 +138,9 @@ if (isset($_POST["add"])) {
    $ticket_user->check($_REQUEST['id'], 'w');
    $ticket_user->delete($_REQUEST);
 
-   Event::log($_REQUEST['tickets_id'], "ticket", 4,
-               //TRANS: %s is the user login 
-              "tracking", sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
+   Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
 
 } else if (isset($_REQUEST['delete_group'])) {
@@ -163,13 +162,13 @@ if (isset($_POST["add"])) {
    $ticket_user->add($input);
 
    Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));         
+              //TRANS: %s is the user login
+              sprintf(__('%s adds an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
 
 }
 
-if (isset($_GET["id"]) && $_GET["id"]>0) {
+if (isset($_GET["id"]) && ($_GET["id"] > 0)) {
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
       Html::helpHeader(Ticket::getTypeName(2), '', $_SESSION["glpiname"]);
    } else {
@@ -177,7 +176,7 @@ if (isset($_GET["id"]) && $_GET["id"]>0) {
    }
 
    $available_options = array('load_kb_sol');
-   $options = array();
+   $options           = array();
    foreach ($available_options as $key) {
       if (isset($_GET[$key])) {
          $options[$key] = $_GET[$key];

@@ -47,12 +47,12 @@ if (empty($_POST["_type"])
 $track = new Ticket();
 
 // Security check
-if (empty($_POST) || count($_POST) == 0) {
+if (empty($_POST) || (count($_POST) == 0)) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
 }
 
 if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
-   Html::nullHeader(_n('Ticket','Tickets',2));
+   Html::nullHeader(Ticket::getTypeName(2));
 } else if ($_POST["_from_helpdesk"]) {
    Html::helpHeader(__('Simplified interface'), '', $_SESSION["glpiname"]);
 } else {
@@ -67,7 +67,8 @@ if (isset($_POST["_my_items"]) && !empty($_POST["_my_items"])) {
    }
 }
 
-if (!isset($_POST["itemtype"]) || (empty($_POST["items_id"]) && $_POST["itemtype"] != 0)) {
+if (!isset($_POST["itemtype"])
+    || (empty($_POST["items_id"]) && ($_POST["itemtype"] != 0))) {
    $_POST["itemtype"] = '';
    $_POST["items_id"] = 0;
 }
@@ -92,10 +93,8 @@ if (isset($_POST['add'])) {
       echo "<div class='center'>";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'><br>";
       Html::displayMessageAfterRedirect();
-      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>";
-      echo __('Back')."</a>";
-
-      echo "</div>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>".
+            __('Back')."</a></div>";
 
    }
    Html::nullFooter();

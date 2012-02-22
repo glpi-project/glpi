@@ -54,7 +54,7 @@ if (isset($_POST["add"])) {
                  //TRANS: %s is the user login, %2$s is the version id
                  sprintf(__('%1$s adds the version %2$s'), $_SESSION["glpiname"], $newID));
       Html::redirect($CFG_GLPI["root_doc"]."/front/software.form.php?id=".
-                       $version->fields['softwares_id']);
+                     $version->fields['softwares_id']);
    }
    Html::back();
 
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
    Html::back();
 
 } else {
-   Html::header(Software::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "software");
+   Html::header(SoftwareVersion::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "software");
    $version->showForm($_GET["id"], array('softwares_id' => $_GET["softwares_id"]));
    Html::footer();
 }

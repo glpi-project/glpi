@@ -45,18 +45,19 @@ if (isset($_POST["add"])) {
    $fup->add($_POST);
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds a followup'), $_SESSION["glpiname"]));         
+              //TRANS: %s is the user login
+              sprintf(__('%s adds a followup'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_POST['add_close']) || isset($_POST['add_reopen'])) {
+} else if (isset($_POST['add_close'])
+           || isset($_POST['add_reopen'])) {
    $ticket = new Ticket();
    if ($ticket->getFromDB($_POST["tickets_id"]) && $ticket->canApprove()) {
       $fup->add($_POST);
 
       Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s approves or refuses a solution'), $_SESSION["glpiname"]));         
+                 //TRANS: %s is the user login
+                 sprintf(__('%s approves or refuses a solution'), $_SESSION["glpiname"]));
       Html::back();
    }
 
@@ -65,8 +66,8 @@ if (isset($_POST["add"])) {
    $fup->update($_POST);
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates a followup'), $_SESSION["glpiname"]));         
+              //TRANS: %s is the user login
+              sprintf(__('%s updates a followup'), $_SESSION["glpiname"]));
    Html::redirect(Toolbox::getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 
 } else if (isset($_POST["delete"])) {
@@ -74,8 +75,8 @@ if (isset($_POST["add"])) {
    $fup->delete($_POST);
 
    Event::log($fup->getField('tickets_id'), "ticket", 4, "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes a followup'), $_SESSION["glpiname"]));         
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes a followup'), $_SESSION["glpiname"]));
    Html::redirect(Toolbox::getItemTypeFormURL('Ticket')."?id=".$fup->getField('tickets_id'));
 }
 

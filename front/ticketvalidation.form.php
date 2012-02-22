@@ -42,16 +42,16 @@ if (!isset($_GET["id"])) {
 }
 
 $validation = new Ticketvalidation();
-$ticket = new Ticket();
-$user = new User();
+$ticket     = new Ticket();
+$user       = new User();
 
 if (isset($_POST["add"])) {
    $validation->check(-1,'w',$_POST);
    $validation->add($_POST);
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s adds an approval'), $_SESSION["glpiname"]));         
+              //TRANS: %s is the user login
+              sprintf(__('%s adds an approval'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["update"])) {
@@ -59,8 +59,8 @@ if (isset($_POST["add"])) {
    $validation->update($_POST);
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s updates an approval'), $_SESSION["glpiname"]));         
+              //TRANS: %s is the user login
+              sprintf(__('%s updates an approval'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["delete"])) {
@@ -68,8 +68,8 @@ if (isset($_POST["add"])) {
    $validation->delete($_POST);
 
    Event::log($validation->getField('tickets_id'), "ticket", 4, "tracking",
-            //TRANS: %s is the user login
-            sprintf(__('%s deletes an approval'), $_SESSION["glpiname"]));         
+              //TRANS: %s is the user login
+              sprintf(__('%s deletes an approval'), $_SESSION["glpiname"]));
    Html::back();
 }
 
