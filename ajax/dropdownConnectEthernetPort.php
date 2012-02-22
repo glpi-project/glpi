@@ -98,8 +98,8 @@ if (class_exists($_POST["itemtype"])
          $ID = $data['did'];
 
          if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
-            $output      .= "$nbsp;".sprintf(__('(%s)'), $ID);
-            $output_long .= "$nbsp;".sprintf(__('(%s)'), $ID);
+            $output      .= "&nbsp;".sprintf(__('(%s)'), $ID);
+            $output_long .= "&nbsp;".sprintf(__('(%s)'), $ID);
          }
          $output = Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"]);
          echo "<option value='$ID' title=\"".Html::cleanInputText($output_long)."\">".$output;

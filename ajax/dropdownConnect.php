@@ -172,7 +172,7 @@ if ($DB->numrows($result)) {
 
       if ($_SESSION["glpiis_ids_visible"]
           || empty($output)) {
-         $output .= "$nbsp;".sprintf(__('(%s)'), $ID);
+         $output .= "&nbsp;".sprintf(__('(%s)'), $ID);
       }
       if (!empty($data['serial'])) {
          $output = sprintf(__('%1$s - %2$s'), $output, $data["serial"]);

@@ -417,7 +417,7 @@ class Ajax {
     * @param $use_ajax     Use ajax search system (if not display a standard dropdown)
     * @param $relativeurl  Relative URL to the root directory of GLPI
     * @param $params       array of parameters to send to ajax URL
-    * @param $default      Default datas t print in case of $use_ajax (default $nbsp;)
+    * @param $default      Default datas t print in case of $use_ajax (default &nbsp;)
     * @param $rand         Random parameter used (default 0)
    **/
    static function dropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;", $rand=0) {
