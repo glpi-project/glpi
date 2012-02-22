@@ -250,7 +250,7 @@ if ($item instanceof CommonTreeDropdown) {
             if ($displaywith) {
                foreach ($_POST['displaywith'] as $key) {
                   if (isset($data[$key]) && strlen($data[$key])!=0) {
-                     $output .= sprintf(__(' - %s'), $data[$key]);
+                     $output = sprintf(__('%1$s - %2$s'), $output, $data[$key]);
                   }
                }
             }

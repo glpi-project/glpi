@@ -124,13 +124,13 @@ if ($DB->numrows($result)) {
       if (($_POST['table'] != "glpi_softwares")
           && !$itemtypeisplugin) {
          if (!empty($data['contact'])) {
-            $output .= sprintf(__(' - %s'), $data['contact']);
+            $output = sprintf(__('%1$s - %2$s'), $output, $data['contact']);
          }
          if (!empty($data['serial'])) {
-            $output .= sprintf(__(' - %s'), $data['serial']);
+            $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
          }
          if (!empty($data['otherserial'])) {
-            $output .= sprintf(__(' - %s'), $data['otherserial']);
+            $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
          }
       }
 
