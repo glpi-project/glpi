@@ -84,14 +84,16 @@ if (class_exists($_POST["itemtype"])
          $output = $output_long = $data['cname'];
 
          if (!empty($data['nname'])) {
-            $output      .= sprintf(__(' - %s'), $data['nname']);
-            $output_long .= sprintf(__(' - The port %s'), $data['nname']);
+            $output      = sprintf(__('%1$s - %2$s'), $output, $data['nname']);
+            //TRANS: %1$s is device name, %2$s is port name
+            $output_long = sprintf(__('%1$s - The port %2$s'), $output_long, $data['nname']);
          }
 
          // display netpoint (which will be copied)
          if (!empty($data['npname'])) {
-            $output      .= sprintf(__(' - %s'), $data['npname']);
-            $output_long .= sprintf(__(' - Network outlet %s'), $data['npname']);
+            $output      = sprintf(__('%1$s - %2$s'), $output, $data['npname']);
+            //TRANS: %1$s is a string (device name - port name...), %2$s is network outlet name
+            $output_long = sprintf(__('%1$s - Network outlet %2$s'), $output_long, $data['npname']);
          }
          $ID = $data['did'];
 

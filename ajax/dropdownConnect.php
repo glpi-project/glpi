@@ -175,10 +175,10 @@ if ($DB->numrows($result)) {
          $output .= "$nbsp;".sprintf(__('(%s)'), $ID);
       }
       if (!empty($data['serial'])) {
-         $output .= sprintf(__(' - %s'), $data["serial"]);
+         $output = sprintf(__('%1$s - %2$s'), $output, $data["serial"]);
       }
       if (!empty($data['otherserial'])) {
-         $output .= sprintf(__(' - %s'), $data["otherserial"]);
+         $output = sprintf(__('%1$s - %2$s'), $output, $data["otherserial"]);
       }
 
       echo "<option value='$ID' title=\"".Html::cleanInputText($output)."\">".

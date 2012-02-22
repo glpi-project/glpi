@@ -71,7 +71,7 @@ if ($_POST['softwares_id'] > 0) {
             $output .= "&nbsp;".sprintf(__('(%s)'), $ID);
          }
          if (!empty($data['sname'])) {
-            $output .= sprintf(__(' - %s'), $data['sname']);
+            $output = sprintf(__('%1$s - %2$s'), $output, $data['sname']);
          }
          echo "<option ".($ID==$_POST['value']?"selected":"")." value='$ID' title=\"".
                Html::cleanInputText($output)."\">".$output."</option>";
