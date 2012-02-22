@@ -488,8 +488,9 @@ class Html {
    **/
    static function displayTitle($ref_pic_link="", $ref_pic_text="", $ref_title="", $ref_btts="") {
 
-      echo "<div class='center'><table class='tab_glpi'><tr>";
+      $ref_pic_text = htmlentities($ref_pic_text, ENT_QUOTES, 'UTF-8');
 
+      echo "<div class='center'><table class='tab_glpi'><tr>";
       if ($ref_pic_link!="") {
          echo "<td><img src='".$ref_pic_link."' alt=\"".$ref_pic_text."\" title=\"".$ref_pic_text."\">
                </td>";
@@ -1172,7 +1173,7 @@ class Html {
          }
       }
 
-      if (Session::haveRight("show_planning","1") 
+      if (Session::haveRight("show_planning","1")
          || Session::haveRight("show_all_planning","1")
          || Session::haveRight("show_group_planning","1")) {
          $menu['maintain']['content']['planning']['title']           = __('Planning');
