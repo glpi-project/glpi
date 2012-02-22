@@ -42,8 +42,8 @@ if (isset($_POST["switch"]) && $_POST["switch"]) {
    Html::header(Report::getTypeName(2), $_SERVER['PHP_SELF'], "utils", "report");
 
    $name = Dropdown::getDropdownName("glpi_networkequipments",$_POST["switch"]);
-   echo "<div class='center'><h2>".sprintf(__('Network report by hardware: %s'),$name)."</h2></div>".
-        "<br>";
+   echo "<div class='center spaced'><h2>".sprintf(__('Network report by hardware: %s'),$name).
+        "</h2></div>";
 
    // TODO : must be review at the end of Damien's work
    $query = "SELECT `glpi_networkports`.`name` AS port, `glpi_networkports`.`ip`AS ip,

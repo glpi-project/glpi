@@ -48,7 +48,7 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 if (isset($_POST["update"])) {
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);
    if (Session::haveRight("reservation_central","w")
-       || Session::getLoginUserID() === $_POST["users_id"]) {
+       || (Session::getLoginUserID() === $_POST["users_id"])) {
       $_POST['_target'] = $_SERVER['PHP_SELF'];
       $_POST['_item']   = key($_POST["items"]);
       if ($rr->update($_POST)) {
@@ -62,7 +62,7 @@ if (isset($_POST["update"])) {
    if ($rr->delete($_POST)) {
       Event::log($_POST["id"], "reservation", 4, "inventory",
                  //TRANS: %s is the user login
-                 sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+                 sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    }
 
    list($begin_year,$begin_month,$begin_day) = explode("-",$_POST["begin"]);
@@ -90,7 +90,7 @@ if (isset($_POST["update"])) {
       $_POST['_target'] = $_SERVER['PHP_SELF'];
 
       $_POST['_ok'] = true;
-      if ($times >1 ) {
+      if ($times > 1 ) {
          $_POST['group'] = $rr->getUniqueGroupFor($reservationitems_id);
       }
 
@@ -99,7 +99,7 @@ if (isset($_POST["update"])) {
          $_POST["end"]    = date('Y-m-d H:i:s', strtotime($end." +".($i*$to_add)." day"));
 
          if (Session::haveRight("reservation_central","w")
-             || Session::getLoginUserID() === $_POST["users_id"]) {
+             || (Session::getLoginUserID() === $_POST["users_id"])) {
             unset($rr->fields["id"]);
             $_POST['_ok'] = $rr->add($_POST);
          }
@@ -131,7 +131,7 @@ if (isset($_POST["update"])) {
       $_GET['date'] = date('Y-m-d');
    }
    if (empty($_GET["id"])
-       && (!isset($_GET['item']) || count($_GET['item']) == 0 )) {
+       && (!isset($_GET['item']) || (count($_GET['item']) == 0 ))) {
       Html::back();
    }
    if (!empty($_GET["id"])

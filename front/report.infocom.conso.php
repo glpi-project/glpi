@@ -47,7 +47,7 @@ if (empty($_POST["date1"]) && empty($_POST["date2"])) {
 
 if (!empty($_POST["date1"])
     && !empty($_POST["date2"])
-    && strcmp($_POST["date2"], $_POST["date1"]) < 0) {
+    && (strcmp($_POST["date2"],$_POST["date1"]) < 0)) {
 
    $tmp            = $_POST["date1"];
    $_POST["date1"] = $_POST["date2"];
@@ -120,7 +120,8 @@ function display_infocoms_report($itemtype, $begin, $end) {
    }
 
    if ($result = $DB->query($query)) {
-      if ($DB->numrows($result) >0 && $item = getItemForItemtype($itemtype)) {
+      if (($DB->numrows($result) > 0)
+          && ($item = getItemForItemtype($itemtype))) {
 
          echo "<h2>".$item->getTypeName(1)."</h2>";
          echo "<table class='tab_cadre'>";
@@ -153,10 +154,10 @@ function display_infocoms_report($itemtype, $begin, $end) {
                                           $line["sink_coeff"], $line["buy_date"], $line["use_date"],
                                           $CFG_GLPI["date_tax"], "all");
 
-            if (is_array($tmp) && count($tmp) >0) {
+            if (is_array($tmp) && (count($tmp) > 0)) {
                foreach ($tmp["annee"] as $key => $val) {
 
-                  if ($tmp["vcnetfin"][$key] >0) {
+                  if ($tmp["vcnetfin"][$key] > 0) {
                      if (!isset($valeurnettegraph[$val])) {
                         $valeurnettegraph[$val] = 0;
                      }
@@ -232,14 +233,14 @@ $types = array('Cartridge', 'Consumable', 'SoftwareLicense');
 
 $i = 0;
 echo "<table width='90%'><tr><td class='center top'>";
-while (count($types)>0) {
+while (count($types) > 0) {
    $type = array_shift($types);
 
    if (display_infocoms_report($type,  $_POST["date1"],$_POST["date2"])) {
       echo "</td>";
       $i++;
 
-      if (($i%2)==0) {
+      if (($i%2) == 0) {
          echo "</tr><tr>";
       }
 
@@ -247,7 +248,7 @@ while (count($types)>0) {
    }
 }
 
-if (($i%2)==0) {
+if (($i%2) == 0) {
    echo "&nbsp;</td><td>&nbsp;";
 }
 

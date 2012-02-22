@@ -43,8 +43,8 @@ $ri = new ReservationItem();
 if (isset($_REQUEST["add"])) {
    if ($newID = $ri->add($_REQUEST)) {
       Event::log($newID, "reservationitem", 4, "inventory",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"],
-                         $_REQUEST["itemtype"]."-".$_REQUEST["items_id"]));
+                 sprintf(__('%1$s adds the item %2$s (%3$d)'), $_SESSION["glpiname"],
+                         $_REQUEST["itemtype"], $_REQUEST["items_id"]));
    }
    Html::back();
 
@@ -53,7 +53,7 @@ if (isset($_REQUEST["add"])) {
 
    Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s deletes the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s deletes an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_REQUEST["purge"])) {
@@ -61,7 +61,7 @@ if (isset($_REQUEST["add"])) {
 
    Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s purges the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_REQUEST["restore"])) {
@@ -69,14 +69,14 @@ if (isset($_REQUEST["add"])) {
 
    Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s retores the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s retores an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_REQUEST["update"])) {
    $ri->update($_REQUEST);
    Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s updates the item'), $_SESSION["glpiname"]));
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
 } else {

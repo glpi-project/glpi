@@ -48,7 +48,7 @@ $items = array('Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
 echo "<div class='center b spaced'><big>".__('Device list')."</big></div>";
 
 # Request All
-if ((isset($_POST["item_type"][0]) && $_POST["item_type"][0] == '0')
+if ((isset($_POST["item_type"][0]) && ($_POST["item_type"][0] == '0'))
     || !isset($_POST["item_type"])) {
    $_POST["item_type"] = $items;
 }
@@ -64,7 +64,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
          $add_leftjoin        = "LEFT JOIN `glpi_locations`
                                     ON (`$itemtable`.`locations_id` = `glpi_locations`.`id`)";
          $template_condition  = "`$itemtable`.`is_template` = '0'";
-         if ($val=='SoftwareLicense') {
+         if ($val == 'SoftwareLicense') {
             $deleted_field       = "`glpi_softwares`.`is_deleted`";
             $location_field      = "''";
             $add_leftjoin        = "LEFT JOIN `glpi_softwares`
@@ -99,7 +99,7 @@ if (isset($_POST["item_type"]) && is_array($_POST["item_type"])) {
                          WHERE $template_condition ".
                                getEntitiesRestrictRequest("AND",$itemtable);
 
-         if (isset($_POST["annee"][0]) && $_POST["annee"][0] != 'toutes') {
+         if (isset($_POST["annee"][0]) && ($_POST["annee"][0] != 'toutes')) {
             $query[$val] .= " AND ( ";
             $first        = true;
             foreach ($_POST["annee"] as $key2 => $val2) {
@@ -134,7 +134,7 @@ if (isset($query) && count($query)) {
          echo "<th>".__('Location')."</th>";
          echo "<th>".__('Date of purchase')."</th>";
          echo "<th>".__('Warranty expiration date')."</th>";
-         echo "<th>".__('Contract Type')."</th>";
+         echo "<th>".__('Contract type')."</th>";
          echo "<th>".__('Start date')."</th>";
          echo "<th>".__('End date')."</th></tr>";
 

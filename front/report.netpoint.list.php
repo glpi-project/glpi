@@ -43,8 +43,8 @@ if (isset($_POST["prise"]) && $_POST["prise"]) {
    $name = Dropdown::getDropdownName("glpi_netpoints", $_POST["prise"]);
 
    // Titre
-   echo "<div class='center spaced'><h2>".sprintf(__('Network report by outlet: %s'), $name)."</h2>".
-        "</div>";
+   echo "<div class='center spaced'><h2>".sprintf(__('Network report by outlet: %s'), $name).
+        "</h2></div>";
 
    // TODO : must be review at the end of Damien's work
    $query = "SELECT `glpi_locations`.`name`, `glpi_locations`.`id`,
