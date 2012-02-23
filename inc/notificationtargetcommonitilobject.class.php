@@ -647,6 +647,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $datas["##$objettype.openbyuser##"] = $user_tmp->getName();
       }
 
+      $datas["##$objettype.lastupdater##"] = '';
+      if ($item->getField('users_id_lastupdater')) {
+         $user_tmp = new User();
+         $user_tmp->getFromDB($item->getField('users_id_lastupdater'));
+         $datas["##$objettype.lastupdater##"] = $user_tmp->getName();
+      }
+
       $datas["##$objettype.assigntousers##"] = '';
       if ($item->countUsers(CommonITILObject::ASSIGN)) {
          $users = array();
@@ -767,9 +774,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'author.id'                         => __('Requester ID'),
                     'author.name'                       => __('Requester'),
                     'author.location'                   => __('Requester location'),
-                    'author.phone'                      =>  __('Phone'),
-                    'author.phone2'                     =>  __('Phone 2'),
+                    'author.phone'                      => __('Phone'),
+                    'author.phone2'                     => __('Phone 2'),
                     $objettype.'.openbyuser'            => __('Writer'),
+                    $objettype.'.lastupdater'           => __('Last updater'),
                     $objettype.'.assigntousers'         => __('Assigned to technicians'),
                     $objettype.'.assigntosupplier'      => __('Assigned to a supplier'),
                     $objettype.'.groups'                => __('Requester groups'),
