@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -62,7 +61,7 @@ class Bookmark extends CommonDBTM {
 
    function defineTabs($options=array()) {
 
-      $ong = array();
+      $ong               = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
       $ong['no_all_tab'] = true;
       return $ong;
@@ -73,8 +72,8 @@ class Bookmark extends CommonDBTM {
 
       switch ($item->getType()) {
          case __CLASS__:
-            $ong = array();
-            $ong[1] = __('Personal');
+            $ong     = array();
+            $ong[1]  = __('Personal');
             if (Session::haveRight('bookmark_public','r')) {
                $ong[2] = __('Public');
             }
@@ -107,7 +106,7 @@ class Bookmark extends CommonDBTM {
 
       $taburl = parse_url(rawurldecode($input['url']));
 
-      $index = strpos($taburl["path"], "plugins");
+      $index  = strpos($taburl["path"], "plugins");
       if (!$index) {
          $index = strpos($taburl["path"], "front");
       }
@@ -130,7 +129,8 @@ class Bookmark extends CommonDBTM {
    function pre_updateInDB() {
 
       // Set new user if initial user have been deleted
-      if ($this->fields['users_id']==0 && $uid=Session::getLoginUserID()) {
+      if (($this->fields['users_id'] == 0)
+          && $uid=Session::getLoginUserID()) {
          $this->input['users_id']  = $uid;
          $this->fields['users_id'] = $uid;
          $this->updates[]          = "users_id";
@@ -186,7 +186,7 @@ class Bookmark extends CommonDBTM {
       if (isset($options['itemtype'])) {
          echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
       }
-      if (isset($options['type']) && $options['type'] != 0) {
+      if (isset($options['type']) && ($options['type'] != 0)) {
          echo "<input type='hidden' name='type' value='".$options['type']."'>";
       }
 
@@ -196,7 +196,7 @@ class Bookmark extends CommonDBTM {
 
       echo "<table class='tab_cadre_report' width='".self::WIDTH."px'>";
       echo "<tr><th>&nbsp;</th><th>";
-      if ($ID>0) {
+      if ($ID > 0) {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
          printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
       } else {
@@ -209,7 +209,7 @@ class Bookmark extends CommonDBTM {
       Html::autocompletionTextField($this, "name", array('user' => $this->fields["users_id"]));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>".__('Type')."&nbsp;:</td>";
+      echo "<tr class='tab_bg_2'><td>".__('Type')."</td>";
       echo "<td>";
 
       if ($this->canCreate()) {
@@ -218,9 +218,9 @@ class Bookmark extends CommonDBTM {
                                            $this->fields["is_recursive"]);
       } else {
          if ($this->fields["is_private"]) {
-            echo __('Private');
+            _e('Private');
          } else {
-            echo __('Public');
+            _e('Public');
          }
       }
       echo "</td></tr>";
@@ -312,11 +312,11 @@ class Bookmark extends CommonDBTM {
                unset($query_tab['link']);
                $new_key = 0;
                foreach ($query_tab_save['field'] as $key => $val) {
-                  if ($val != 'view' && $val != 'all' && !isset($opt[$val])) {
+                  if (($val != 'view') && ($val != 'all') && !isset($opt[$val])) {
                      $query_tab['glpisearchcount']--;
                      $partial_load = true;
                   } else {
-                     $query_tab['field'][$new_key]      = $val;
+                     $query_tab['field'][$new_key] = $val;
                      if (isset($query_tab_save['searchtype'])
                          && isset($query_tab_save['searchtype'][$key])) {
                         $query_tab['searchtype'][$new_key] = $query_tab_save['searchtype'][$key];
@@ -378,9 +378,9 @@ class Bookmark extends CommonDBTM {
    /**
     * load a bookmark
     *
-    * @param $ID        ID of the bookmark
-    * @param $opener    boolean load bookmark in opener window ? false -> current window
-    *                   (true by default)
+    * @param $ID                 ID of the bookmark
+    * @param $opener    boolean  load bookmark in opener window ? false -> current window
+    *                            (true by default)
     *
     * @return nothing
    **/

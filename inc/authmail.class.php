@@ -158,12 +158,12 @@ class AuthMail extends CommonDBTM {
       }
 
       if (Toolbox::canUseImapPop()) {
-         $options['colspan']=1;
+         $options['colspan'] = 1;
          $this->showTabs($options);
          $this->showFormHeader($options);
 
          echo "<tr class='tab_bg_1'><td>" . __('Name') . "</td>";
-         echo "<td><input size='30' type='text' name='name' value='" . $this->fields["name"] . "'>";
+         echo "<td><input size='30' type='text' name='name' value='". $this->fields["name"] ."'>";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -222,7 +222,8 @@ class AuthMail extends CommonDBTM {
                     autocomplete='off'></td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         echo "<input type='submit' name='test' class='submit' value=\"".__s('Test')."\"></td>";
+         echo "<input type='submit' name='test' class='submit' value=\"".__s('button','Test')."\">".
+              "</td>";
          echo "</tr></table></div></form>";
       }
    }
