@@ -138,9 +138,7 @@ if ($DB->numrows($result)) {
       $output     = $data['netpname'];
       $loc        = $data['loc'];
       $ID         = $data['id'];
-      $addcomment = "";
-
-      $title = $output;
+      $title      = $output;
       if (isset($data["comment"])) {
          //TRANS: %1$s is the location, %2$s is the comment
          $title = sprintf(__('%1$s - %2$s'), $title, $loc);

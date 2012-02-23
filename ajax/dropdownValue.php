@@ -295,10 +295,10 @@ if ($item instanceof CommonTreeDropdown) {
                      do {
                         // Get parent
                         if ($item->getFromDB($work_parentID)) {
-                           $addcomment = "";
+                           $title = $item->fields['completename'];
 
                            if (isset($item->fields["comment"])) {
-                              $addcomment = " - ".$item->fields["comment"];
+                              $title = sprintf(__('%1$s - %2$s'), $title, $item->fields["comment"]);
                            }
                            $output2 = $item->getName();
                            if (Toolbox::strlen($output2)>$_POST["limit"]) {
@@ -314,8 +314,7 @@ if ($item instanceof CommonTreeDropdown) {
                            }
 
                            $to_display = "<option disabled value='$work_parentID' $class2
-                                           title=\"".Html::cleanInputText($item->fields['completename'].
-                                             $addcomment)."\">".
+                                           title=\"".Html::cleanInputText($title)."\">".
                                          str_repeat("&nbsp;&nbsp;&nbsp;", $work_level).
                                          $raquo2.$output2."</option>".$to_display;
 
