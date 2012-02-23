@@ -179,19 +179,28 @@ abstract class FQDNLabel extends CommonDBChild {
     *
     * @param $label     string   label to search for
     * @param $fqdns_id           the id of the FQDN that owns the label
+    * @param $wildcard_search (bool) true if we search with wildcard
     *
     * @return array two arrays (NetworkName and NetworkAlias) of the IDs
     **/
-   static function getIDsByLabelAndFQDNID($label, $fqdns_id) {
+   static function getIDsByLabelAndFQDNID($label, $fqdns_id, $wildcard_search = false) {
       global $DB;
+
+      if ($wildcard_search) {
+         $relation = '=';
+      } else {
+         $relation = 'LIKE';
+      }
 
       $IDs = array();
       foreach(array('NetworkName'  => 'glpi_networknames',
                     'NetworkAlias' => 'glpi_networkaliases') as $class => $table) {
          $query = "SELECT `id`
                    FROM `$table`
-                   WHERE `name` = '$label'";
-         if ($fqdns_id > 0) {
+                   WHERE `name` $relation '$label'";
+         if ((is_array($fqdns_id)) and (count($fqdns_id) > 0)) {
+            $query .= " AND `fqdns_id` in ('". implode('\', \'', $fqdns_id). "')";
+         } else if ((is_int($fqdns_id)) && ($fqdns_id > 0)) {
             $query .= " AND `fqdns_id` = '$fqdns_id'";
          }
 
@@ -207,22 +216,25 @@ abstract class FQDNLabel extends CommonDBChild {
     * Look for "computer name" inside all databases
     *
     * @param $fqdn name to search (for instance : forge.indepnet.net)
+    * @param $wildcard_search (bool) true if we search with wildcard
     *
     * @return (array) each value of the array (corresponding to one NetworkPort) is an array of the
     *                 items from the master item to the NetworkPort
     **/
-   static function getItemsByFQDN($fqdn) {
+   static function getItemsByFQDN($fqdn, $wildcard_search = false) {
 
       $FQNDs_with_Items = array();
 
-      if (!FQDN::checkFQDN($fqdn)) {
-         return array();
+      if (!$wildcard_search) {
+         if (!FQDN::checkFQDN($fqdn)) {
+            return array();
+         }
       }
 
       $position = strpos($fqdn, ".");
       if ($position !== false) {
          $label    = strtolower(substr( $fqdn, 0, $position));
-         $fqdns_id = FQDN::getFQDNIDByFQDN(substr( $fqdn, $position + 1));
+         $fqdns_id = FQDN::getFQDNIDByFQDN(substr( $fqdn, $position + 1), $wildcard_search);
       } else {
          $label    = $fqdn;
          $fqdns_id = -1;
