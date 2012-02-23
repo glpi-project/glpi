@@ -101,8 +101,6 @@ function __($str) {
  * @return protected string (with htmlentities)
 **/
 function __s($str) {
-
-//   return  "__s".addslashes($TRANSLATE->_($str));
    return htmlentities(__($str), ENT_QUOTES, 'UTF-8');
 }
 
@@ -112,14 +110,12 @@ function __s($str) {
  *
  * @since version 0.84
  *
- * @param $ctx : context
- * @param $str : string
+ * @param $ctx string    context
+ * @param $str string   to translate
  *
  * @return protected string (with htmlentities)
 **/
 function _sx($ctx, $str) {
-
-//   return  "__s".addslashes($TRANSLATE->_($str));
    return htmlentities(_x($ctx, $str), ENT_QUOTES, 'UTF-8');
 }
 
@@ -141,7 +137,7 @@ function _e($str) {
  *
  * @param $sing      string in singular
  * @param $plural    string in plural
- * @param $nb        to select singular or plurial
+ * @param $nb               to select singular or plurial
  *
  * @return translated string
 **/
@@ -159,7 +155,7 @@ function _n($sing, $plural, $nb) {
  *
  * @param $sing      string in singular
  * @param $plural    string in plural
- * @param $nb        to select singular or plurial
+ * @param $nb               to select singular or plurial
  *
  * @return protected string (with htmlentities)
 **/
@@ -173,15 +169,15 @@ function _sn($sing, $plural, $nb) {
 /**
  * For context in translation
  *
- * @param $ctx : context
- * @param $str : string
+ * @param $ctx string   context
+ * @param $str string   to translate
  *
  * @return string
 **/
 function _x($ctx, $str) {
 
    // simulate pgettext
-   $msg = $ctx."\004".$str;
+   $msg   = $ctx."\004".$str;
    $trans = __($msg);
 
    if ($trans == $msg) {
@@ -194,15 +190,15 @@ function _x($ctx, $str) {
 /**
  * Echo for context in translation
  *
- * @param $ctx : context
- * @param $str : string
+ * @param $ctx string   context
+ * @param $str string   to translated
  *
  * @return string
 **/
 function _ex($ctx, $str) {
 
    // simulate pgettext
-   $msg = $ctx."\004".$str;
+   $msg   = $ctx."\004".$str;
    $trans = __($msg);
 
    if ($trans == $msg) {
@@ -215,24 +211,25 @@ function _ex($ctx, $str) {
 /**
  * For context in plural translation
  *
- * @param $ctx       context
- * @param $sing      string in singular
- * @param $plural    string in plural
- * @param $nb        to select singular or plurial
+ * @param $ctx       string   context
+ * @param $sing      string   in singular
+ * @param $plural    string   in plural
+ * @param $nb                 to select singular or plurial
  *
  * @return string
 **/
 function _nx($ctx, $sing, $plural, $nb) {
 
    // simulate pgettext
-   $singmsg = $ctx."\004".$sing;
-   $pluralmsg = $ctx."\004".$plural;
-   $trans = _n($singmsg, $pluralmsg, $nb);
+   $singmsg    = $ctx."\004".$sing;
+   $pluralmsg  = $ctx."\004".$plural;
+   $trans      = _n($singmsg, $pluralmsg, $nb);
 
    if ($trans == $singmsg) {
       // No translation
       return $sing;
-   } else if ($trans == $pluralmsg) {
+   }
+   if ($trans == $pluralmsg) {
       // No translation
       return $plural;
    }
@@ -254,7 +251,7 @@ function __autoload($classname) {
    }
 
    $dir = GLPI_ROOT . "/inc/";
-   if ($plug=isPluginItemType($classname)) {
+   if ($plug = isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
       $dir      = GLPI_ROOT . "/plugins/$plugname/inc/";
       $item     = strtolower($plug['class']);
@@ -299,7 +296,7 @@ function __autoload($classname) {
       if (file_exists("$dir$item.class.php")) {
          include_once("$dir$item.class.php");
          if (isset($_SESSION['glpi_use_mode'])
-             && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+             && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
             $DEBUG_AUTOLOAD[] = $classname;
          }
 
