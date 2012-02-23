@@ -51,8 +51,9 @@ if (isset($_POST['is_private'])) {
          echo "<input type='hidden' name='is_private' value='1'>\n";
          echo "<input type='hidden' name='entities_id' value='-1'>\n";
          echo "<input type='hidden' name='is_recursive' value='0'>\n";
-         echo __('Personal'). " - ";
-         echo "<a onClick='setPublic".$_POST['rand']."()'>".__('Set public')."</a>";
+         $private =  __('Personal');
+         $link    = "<a onClick='setPublic".$_POST['rand']."()'>".__('Set public')."</a>";
+         printf(__('%1$s - %2$s'), $private, $link);
          break;
 
       case false :
