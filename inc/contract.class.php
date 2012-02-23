@@ -788,9 +788,9 @@ class Contract extends CommonDBTM {
       if ($DB->numrows($result)==0) {
          _e('No associated item');
       } else if ($DB->numrows($result)==1) {
-         _e('Associated item');
+         echo _n('Associated item', 'Associated items', 1);
       } else {
-         _e('Associated items');
+         echo _n('Associated item', 'Associated items', 2);
       }
       echo "</th></tr>";
       if ($canedit) {
@@ -880,7 +880,7 @@ class Contract extends CommonDBTM {
                   if ($prem) {
                      $name = $item->getTypeName($nb);
                      echo "<td class='center top' rowspan='$nb'>".
-                            ($nb>1 ? sprinf(__('%1$s: %2$d'), $name, $nb): $name)."</td>";
+                            ($nb>1 ? sprintf(__('%1$s: %2$d'), $name, $nb): $name)."</td>";
                   }
                   echo "<td class='center'>";
                   echo Dropdown::getDropdownName("glpi_entities",$data['entity'])."</td>";

@@ -470,9 +470,9 @@ class Supplier extends CommonDBTM {
       if ($DB->numrows($result)==0) {
          _e('No associated item');
       } else if ($DB->numrows($result)==1) {
-         _e('Associated item');
+         echo _n('Associated item', 'Associated items', 1);
       } else {
-         _e('Associated items');
+         echo _n('Associated item', 'Associated items', 2);
       }
       echo "</th></tr>";
       echo "<tr><th>".__('Type')."</th>";

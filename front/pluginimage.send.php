@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (!isset($_GET["name"]) || !isset($_GET["plugin"])) {
    Event::log("-1", "system", 2, "security",
               //TRANS: %s is user name
-              sprinf(__('%s made a bad usage.'), $_SESSION["glpiname"]));
+              sprintf(__('%s made a bad usage.'), $_SESSION["glpiname"]));
    die("security");
 }
 
@@ -50,7 +50,7 @@ if ((basename($_GET["name"]) != $_GET["name"])
     || (basename($_GET["plugin"]) != $_GET["plugin"])) {
 
    Event::log("-1", "system", 1, "security",
-              sprinf(__('%s tried to use a non standard path.'), $_SESSION["glpiname"]));
+              sprintf(__('%s tried to use a non standard path.'), $_SESSION["glpiname"]));
    die("security");
 }
 $Path = GLPI_PLUGIN_DOC_DIR."/".$_GET["plugin"]."/";
