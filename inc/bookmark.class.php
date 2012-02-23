@@ -439,7 +439,7 @@ class Bookmark extends CommonDBTM {
                    WHERE `users_id` = '".Session::getLoginUserID()."'
                          AND `itemtype` = '".$this->fields['itemtype']."'";
 
-         if ($result=$DB->query($query)) {
+         if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                // already exists update it
                $updateID = $DB->result($result, 0, 0);
@@ -466,7 +466,8 @@ class Bookmark extends CommonDBTM {
       global $DB;
 
       // Get bookmark / Only search bookmark
-      if ($this->getFromDB($ID) && $this->fields['type'] = self::SEARCH) {
+      if ($this->getFromDB($ID)
+          && ($this->fields['type'] == self::SEARCH)) {
          $dd = new Bookmark_User();
          // Is default view for this itemtype already exists ?
          $query = "SELECT `id`
