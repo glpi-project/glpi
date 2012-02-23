@@ -141,28 +141,42 @@ class FQDN extends CommonDropdown {
    /**
     * Search FQDN id from string FDQDN
     *
-    * @param $fqdn string value of the fdqn (for instance : indeptnet.net)
+    * @param $fqdn            (string) value of the fdqn (for instance : indeptnet.net)
+    * @param $wildcard_search (bool) true if we search with wildcard
     *
-    * @return the FQDN of the element, or "" if invalid FQDN
+    * @return if $wildcard_search == false : the id of the fqdn, -1 if not found or several answers
+    *         if $wildcard_search == true : an array of the id of the fqdn
    **/
-   static function getFQDNIDByFQDN($fqdn) {
+   static function getFQDNIDByFQDN($fqdn, $wildcard_search = false) {
       global $DB;
 
       if (empty($fqdn)) {
          return 0;
       }
 
-      $query = "SELECT `id`
-                FROM `glpi_fqdns`
-                WHERE  `fqdn`='".strtolower ($fqdn)."'";
-
-      $result = $DB->query($query);
-
-      if ($DB->numrows($result) != 1) {
-         return -1;
+      if ($wildcard_search) {
+         $relation = 'like';
+      } else {
+         $relation = '=';
       }
 
-      return $DB->result($result, 0, "id");
+      $query = "SELECT `id`
+                FROM `glpi_fqdns`
+                WHERE `fqdn` $relation '".strtolower ($fqdn)."'";
+
+      $fqdns_id_list = array();
+      foreach ($DB->request($query) as $line) {
+         $fqdns_id_list[] = $line['id'];
+      }
+
+      if (!$wildcard_search) {
+         if (count($fqdns_id_list) != 1) {
+            return -1;
+         }
+         return $fqdns_id_list[0];
+      }
+
+      return $fqdns_id_list;
    }
 
 

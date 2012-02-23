@@ -142,33 +142,42 @@ class NetworkPortInstantiation extends CommonDBChild {
 
 
   /**
-    * Get all NetworkPort that have a specific MAC address
+    * Get all NetworkPort and NetworkEquipments that have a specific MAC address
     *
     * @param $mac address to search
+    * @param $wildcard_search (bool) true if we search with wildcard
     *
     * @return (array) each value of the array (corresponding to one NetworkPort) is an array of the
     *                 items from the master item to the NetworkPort
    **/
-   static function getItemsByMac($mac) {
+   static function getItemsByMac($mac, $wildcard_search = false) {
       global $DB;
 
-      // TODO : Have to update it !
+      if ($wildcard_search) {
+         $relation = 'LIKE';
+      } else {
+         $relation = '=';
+      }
 
       $mac              = strtolower($mac);
       $macItemWithItems = array();
-      $netport          = new NetworkPort();
 
-      $query = "SELECT `id`
-                FROM `".$netport->getTable()."`
-                WHERE `mac` = '$mac'";
-      foreach ($DB->request($query) as $element) {
-         if ($netport->getFromDB($element['id'])) {
+      foreach (array('NetworkPort', 'NetworkEquipment') as $netporttype) {
+         $netport = new $netporttype();
 
-            if ($netport instanceof CommonDBChild) {
-               $netportWithItems[] = array_merge(array_reverse($netport->recursivelyGetItems()),
-                                                 array(clone $netport));
-            } else {
-               $macItemWithItems[] = array(clone $netport);
+         $query = "SELECT `id`
+                   FROM `".$netport->getTable()."`
+                   WHERE `mac` $relation '$mac'";
+
+         foreach ($DB->request($query) as $element) {
+            if ($netport->getFromDB($element['id'])) {
+
+               if ($netport instanceof CommonDBChild) {
+                  $macItemWithItems[] = array_merge(array_reverse($netport->recursivelyGetItems()),
+                                                    array(clone $netport));
+               } else {
+                  $macItemWithItems[] = array(clone $netport);
+               }
             }
          }
       }
