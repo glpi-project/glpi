@@ -125,7 +125,8 @@ if (isset($_POST['value'])) {
 
 if (count($users)) {
    foreach ($users as $ID => $output) {
-      echo "<option value='$ID' title=\"".Html::cleanInputText($output." - ".$logins[$ID])."\">".
+      $title = sprintf(__('%1$s - %2$s'), $output, $logins[$ID]);
+      echo "<option value='$ID' title=\"".Html::cleanInputText($title)."\">".
              Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"])."</option>";
    }
 }
