@@ -476,7 +476,7 @@ class Bookmark extends CommonDBTM {
                          AND `bookmarks_id` = '$ID'
                          AND `itemtype` = '".$this->fields['itemtype']."'";
 
-         if ($result=$DB->query($query)) {
+         if ($result = $DB->query($query)) {
             if ($DB->numrows($result) > 0) {
                // already exists delete it
                $deleteID = $DB->result($result,0,0);
@@ -535,11 +535,11 @@ class Bookmark extends CommonDBTM {
             $current_type      = -1;
             $current_type_name = NOT_AVAILABLE;
             while ($this->fields = $DB->fetch_assoc($result)) {
-               if ($current_type!=$this->fields['itemtype']) {
+               if ($current_type != $this->fields['itemtype']) {
                   $current_type      = $this->fields['itemtype'];
                   $current_type_name = NOT_AVAILABLE;
 
-                  if ($current_type=="States") {
+                  if ($current_type == "States") {
                      $current_type_name = __('Status');
                   } else if ($item = getItemForItemtype($current_type)) {
                      $current_type_name = $item->getTypeName(1);
@@ -551,7 +551,7 @@ class Bookmark extends CommonDBTM {
                echo "<td width='10px'>";
                if ($canedit) {
                   $sel = "";
-                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
                   echo "<input type='checkbox' name='bookmark[".$this->fields["id"]."]'". $sel.">";
@@ -613,8 +613,8 @@ class Bookmark extends CommonDBTM {
               rawurlencode($_SERVER["REQUEST_URI"])."' ,'glpipopup', 'height=500, width=".
               (self::WIDTH+250).", top=100, left=100, scrollbars=yes' );w.focus();\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'
-             title=\"".__s('Save as bookmark')."\"
-             alt=\"".__s('Save as bookmark')."\" class='calendrier'>";
+             title=\"".__s('Save as bookmark')."\" alt=\"".__s('Save as bookmark')."\"
+             class='calendrier'>";
       echo "</a>";
    }
 

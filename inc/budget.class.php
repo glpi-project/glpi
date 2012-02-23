@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -103,7 +102,7 @@ class Budget extends CommonDropdown{
     * Print the contact form
     *
     * @param $ID        integer ID of the item
-    * @param $options   array
+    * @param $options   array of possible options:
     *     - target for the Form
     *     - withtemplate : template or basic item
     *
@@ -132,13 +131,14 @@ class Budget extends CommonDropdown{
       echo "</td>";
 
       echo "<td rowspan='$rowspan' class='middle right'>".__('Comments')."</td>";
-      echo "<td class='center middle' rowspan='$rowspan'><textarea cols='45' rows='4'
-             name='comment' >".$this->fields["comment"]."</textarea></td></tr>";
+      echo "<td class='center middle' rowspan='$rowspan'>".
+           "<textarea cols='45' rows='4' name='comment' >".$this->fields["comment"]."</textarea>".
+           "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Value')."</td>";
       echo "<td><input type='text' name='value' size='14'
-             value='".Html::formatNumber($this->fields["value"], true)."'></td></tr>";
+                 value='".Html::formatNumber($this->fields["value"], true)."'></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start date')."</td>";
@@ -152,7 +152,7 @@ class Budget extends CommonDropdown{
       Html::showDateFormItem("end_date", $this->fields["end_date"]);
       echo "</td></tr>";
 
-      if ($ID>0) {
+      if ($ID > 0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Last update')."</td>";
          echo "<td>";
@@ -169,7 +169,7 @@ class Budget extends CommonDropdown{
 
    function prepareInputForAdd($input) {
 
-      if (isset($input["id"])&&$input["id"]>0) {
+      if (isset($input["id"]) && ($input["id"] > 0)) {
          $input["_oldID"] = $input["id"];
       }
       unset($input['id']);
@@ -193,7 +193,7 @@ class Budget extends CommonDropdown{
 
          if ($DB->numrows($result)>0) {
             $docitem = new Document_Item();
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype'     => $this->getType(),
                                    'items_id'     => $this->fields['id']));
@@ -285,12 +285,12 @@ class Budget extends CommonDropdown{
       echo "<tr><th colspan='2'>";
       Html::printPagerForm();
       echo "</th><th colspan='4'>";
-      if ($DB->numrows($result)==0) {
+      if ($DB->numrows($result) == 0) {
          _e('No associated item');
-      } else if ($DB->numrows($result)==1) {
-         _e('Associated item');
+      } else if ($DB->numrows($result) == 1) {
+         echo _n('Associated item', 'Associated items', 1);
       } else {
-         _e('Associated items');
+         echo _n('Associated item', 'Associated items', 2);
       }
       echo "</th></tr>";
 
@@ -358,14 +358,14 @@ class Budget extends CommonDropdown{
                break;
             }
 
-            if ($result_linked=$DB->query($query)) {
+            if ($result_linked = $DB->query($query)) {
                $nb = $DB->numrows($result_linked);
 
-               if ($nb>$_SESSION['glpilist_limit']) {
+               if ($nb > $_SESSION['glpilist_limit']) {
                   echo "<tr class='tab_bg_1'>";
                   $name = $item->getTypeName($nb);
                   //TRANS: %1$s is a name, %2$d is a number
-                  echo "<td class='center'>".sprinf(__('%1$s: %2$d'), $name, $nb)."</td>";
+                  echo "<td class='center'>".sprintf(__('%1$s: %2$d'), $name, $nb)."</td>";
                   echo "<td class='center' colspan='2'>";
                   echo "<a href='". $item->getSearchURL() . "?" .
                         rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" .
@@ -376,10 +376,6 @@ class Budget extends CommonDropdown{
 
                } else if ($nb) {
                   for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
-                     $ID = "";
-                     if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                        $ID = " (".$data["id"].")";
-                     }
                      $name = NOT_AVAILABLE;
                      if ($item->getFromDB($data["id"])) {
                         $name = $item->getLink();
@@ -388,7 +384,7 @@ class Budget extends CommonDropdown{
                      if ($prem) {
                         $name = $item->getTypeName($nb);
                         echo "<td class='center top' rowspan='$nb'>".
-                              ($nb>1 ? sprinf(__('%1$s: %2$d'), $name, $nb) : $name)."</td>";
+                              ($nb>1 ? sprintf(__('%1$s: %2$d'), $name, $nb) : $name)."</td>";
                      }
                      echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                           $data["entities_id"]);
@@ -411,7 +407,7 @@ class Budget extends CommonDropdown{
          }
       }
       if ($num>0) {
-         echo "<tr class='tab_bg_2'><td class='center b'>".sprintf(__('Total = %s'), $num).
+         echo "<tr class='tab_bg_2'><td class='center b'>".sprintf(__('Total= %s'), $num).
               "</td><td colspan='5'>&nbsp;</td></tr> ";
       }
       echo "</table></div>";
@@ -438,8 +434,8 @@ class Budget extends CommonDropdown{
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_infocoms`
                 WHERE `budgets_id` = '$budgets_id'
-                     AND `itemtype` NOT IN ('".implode("','",$ignore)."')".
-                     getEntitiesRestrictRequest(" AND", 'glpi_infocoms', "entities_id")."
+                      AND `itemtype` NOT IN ('".implode("','",$ignore)."')".
+                      getEntitiesRestrictRequest(" AND", 'glpi_infocoms', "entities_id")."
                 GROUP BY `itemtype`";
 
       $result = $DB->query($query);
@@ -447,7 +443,7 @@ class Budget extends CommonDropdown{
 
       $entities_values     = array();
       $entitiestype_values = array();
-      $found_types          = array();
+      $found_types         = array();
 
       if ($DB->numrows($result)) {
          while ($types = $DB->fetch_assoc($result)) {
@@ -456,7 +452,7 @@ class Budget extends CommonDropdown{
             }
 
             $found_types[$types['itemtype']] = $item->getTypeName(1);
-            $table = getTableForItemType($types['itemtype']);
+            $table       = getTableForItemType($types['itemtype']);
             $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`,
                                    `$table`.`entities_id`
                             FROM `$table`
