@@ -525,7 +525,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
             foreach ($options['items'] as $object) {
                $item->getFromDB($object['id']);
                $tmp = $this->getDatasForObject($item, $options, true);
-               
+
                $this->datas[$objettypes][] = $tmp;
             }
          }
@@ -633,6 +633,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $user_tmp = new User();
          $user_tmp->getFromDB($item->getField('users_id_recipient'));
          $datas["##$objettype.openbyuser##"] = $user_tmp->getName();
+      }
+
+      $datas["##$objettype.lastupdater##"] = '';
+      if ($item->getField('users_id_lastupdater')) {
+         $user_tmp = new User();
+         $user_tmp->getFromDB($item->getField('users_id_lastupdater'));
+         $datas["##$objettype.lastupdater##"] = $user_tmp->getName();
       }
 
       $datas["##$objettype.assigntousers##"] = '';
@@ -759,6 +766,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     'author.phone'                      => $LANG['help'][35],
                     'author.phone2'                     => $LANG['help'][35].' 2',
                     $objettype.'.openbyuser'            => $LANG['common'][37],
+                    $objettype.'.lastupdater'           => $LANG['common'][101],
                     $objettype.'.assigntousers'         => $LANG['job'][5]." - ".$LANG['job'][3],
                     $objettype.'.assigntosupplier'      => $LANG['job'][5]." - ".
                                                             $LANG['financial'][26],
