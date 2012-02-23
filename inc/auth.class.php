@@ -172,11 +172,11 @@ class Auth {
          return false;
       }
 
-      $this->ldap_connection = AuthLdap::tryToConnectToServer($ldap_method, $login, $password);
+      $this->ldap_connection   = AuthLdap::tryToConnectToServer($ldap_method, $login, $password);
       $this->user_deleted_ldap = false;
 
       if ($this->ldap_connection) {
-         $params['method'] = AuthLDAP::IDENTIFIER_LOGIN;
+         $params['method']                             = AuthLDAP::IDENTIFIER_LOGIN;
          $params['fields'][AuthLDAP::IDENTIFIER_LOGIN] = $ldap_method['login_field'];
          $infos = AuthLdap::searchUserDn($this->ldap_connection,
                                          array('basedn'            => $ldap_method['basedn'],
@@ -193,11 +193,10 @@ class Auth {
             //Hook to implement to restrict access by checking the ldap directory
             if (Plugin::doHookFunction("restrict_ldap_auth", $dn)) {
                return $dn;
-            } else {
-               $this->addToError(__('User not authorized to connect in GLPI'));
-               //Use is present by has no right to connect because of a plugin
-               return false;
             }
+            $this->addToError(__('User not authorized to connect in GLPI'));
+            //Use is present by has no right to connect because of a plugin
+            return false;
 
          } else {
             // Incorrect login
@@ -253,7 +252,7 @@ class Auth {
          if ($DB->numrows($result) == 1) {
             $password_db = $DB->result($result, 0, "password");
             // MD5 password
-            if (strlen($password_db)==32) {
+            if (strlen($password_db) == 32) {
                $password_post = md5($password);
             } else {
                $password_post = sha1($password);
@@ -261,13 +260,13 @@ class Auth {
 
             if (strcmp($password_db, $password_post) == 0) {
                // Update password to sha1
-               if (strlen($password_db)==32) {
-                  $input['id'] = $DB->result($result, 0, "id");
+               if (strlen($password_db) == 32) {
+                  $input['id']        = $DB->result($result, 0, "id");
                   // Set glpiID to allow passwod update
                   $_SESSION['glpiID'] = $input['id'];
                   $input['password']  = $password;
                   $input['password2'] = $password;
-                  $user = new User();
+                  $user               = new User();
                   $user->update($input);
                }
                return true;
@@ -330,7 +329,7 @@ class Auth {
             // CN=john.doe/OU=Department/O=Company/C=xx/Email=john@comapy.tld/L=City/
             $sslattribs = explode('/', $_SERVER['SSL_CLIENT_S_DN']);
             while ($sslattrib = next($sslattribs)) {
-               list($key,$val) = explode('=', $sslattrib);
+               list($key,$val)      = explode('=', $sslattrib);
                $sslattributes[$key] = $val;
             }
             if (isset($sslattributes[$CFG_GLPI["x509_email_field"]])
@@ -415,20 +414,20 @@ class Auth {
       $this->user_present  = 1;
       $this->auth_succeded = false;
       //In case the user was deleted in the LDAP directory
-      $user_deleted_ldap = false;
+      $user_deleted_ldap   = false;
 
       // Trim login_name : avoid LDAP search errors
       $login_name = trim($login_name);
 
-      if (!$noauto && $authtype=self::checkAlternateAuthSystems()) {
+      if (!$noauto && ($authtype = self::checkAlternateAuthSystems())) {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
 
             // Used for log when login process failed
-            $login_name          = $this->user->fields['name'];
-            $this->auth_succeded = true;
-            $this->extauth       = 1;
-            $this->user_present  = $this->user->getFromDBbyName(addslashes($login_name));
+            $login_name                     = $this->user->fields['name'];
+            $this->auth_succeded            = true;
+            $this->extauth                  = 1;
+            $this->user_present             = $this->user->getFromDBbyName(addslashes($login_name));
             $this->user->fields['authtype'] = $authtype;
             // if LDAP enabled too, get user's infos from LDAP
             $this->user->fields["auths_id"] = $CFG_GLPI['authldaps_id_extra'];
@@ -491,7 +490,7 @@ class Auth {
                   $this->auth_succeded = $this->connection_db(addslashes($login_name),
                                                               $login_password);
                   if ($this->auth_succeded) {
-                     $this->extauth = 0;
+                     $this->extauth                  = 0;
                      $this->user_present = $this->user->getFromDBbyName(addslashes($login_name));
                      $this->user->fields["authtype"] = self::DB_GLPI;
                      $this->user->fields["password"] = $login_password;
@@ -591,17 +590,18 @@ class Auth {
 
          if ($this->auth_succeded) {
             if (GLPI_DEMO_MODE) {
-               Event::log(-1, "system", 3, "login", $login_name . " logged in: " . $ip);
+               // not translation in GLPI_DEMO_MODE
+               Event::log(-1, "system", 3, "login", $login_name." log in from ".$ip);
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
-               Event::log(-1, "system", 3, "login", sprintf(__('Login of %1$s from IP %2$s'),
+               Event::log(-1, "system", 3, "login", sprintf(__('%1$s log out from IP %2$s'),
                                                             $login_name, $ip));
             }
 
          } else {
             if (GLPI_DEMO_MODE) {
                Event::log(-1, "system", 3, "login", "login",
-                          "connection failed: " . $login_name . " ($ip)");
+                          "Connection failed for " . $login_name . " ($ip)");
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
                Event::log(-1, "system", 3, "login", sprintf(__('Failed login for %1$s from IP %2$s'),
@@ -832,7 +832,7 @@ class Auth {
    static function isAlternateAuthWithLdap($authtype) {
       global $CFG_GLPI;
 
-      return (self::isAlternateAuth($authtype) && $CFG_GLPI["authldaps_id_extra"] > 0);
+      return (self::isAlternateAuth($authtype) && ($CFG_GLPI["authldaps_id_extra"] > 0));
    }
 
 
@@ -893,7 +893,7 @@ class Auth {
 
    /** Display refresh button in the user page
     *
-    * @param $user User
+    * @param $user User object
     *
     * @return nothing
    **/
@@ -1033,7 +1033,7 @@ class Auth {
          echo "<tr class='tab_bg_2'><td class='center'>" . __('Root directory (optional)')."</td>";
          echo "<td><input type='text' name='cas_uri' value=\"".$CFG_GLPI["cas_uri"]."\"></td></tr>\n";
          //TRANS: for CAS SSO system
-         echo "<tr class='tab_bg_2'><td class='center'>" . __('Logout fallback URL') . "</td>";
+         echo "<tr class='tab_bg_2'><td class='center'>" . __('Log out fallback URL') . "</td>";
          echo "<td><input type='text' name='cas_logout' value=\"".$CFG_GLPI["cas_logout"]."\"></td>".
               "</tr>\n";
       } else {
