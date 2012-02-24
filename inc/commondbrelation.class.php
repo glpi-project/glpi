@@ -79,16 +79,16 @@ abstract class CommonDBRelation extends CommonDBTM {
    /**
     * Check right on an item
     *
-    * @param $ID     ID of the item (-1 if new item)
-    * @param $right  Right to check : r / w / recursive
-    * @param $input  array of input data (used for adding item) (default NULL)
+    * @param $ID            ID of the item (-1 if new item)
+    * @param $right         Right to check : r / w / recursive
+    * @param &$input  array of input data (used for adding item) (default NULL)
     *
     * @return boolean
    **/
    function can($ID, $right, array &$input=NULL) {
 
-      if ($ID>0) {
-         if (!isset($this->fields['id']) || $this->fields['id']!=$ID) {
+      if ($ID > 0) {
+         if (!isset($this->fields['id']) || ($this->fields['id'] != $ID)) {
             // Item not found : no right
             if (!$this->getFromDB($ID)) {
                return false;
@@ -129,13 +129,14 @@ abstract class CommonDBRelation extends CommonDBTM {
          }
       } else {
          // id==0 is used in some relation (tickets_users)
-         if ($input[$this->items_id_2]>0 && !$item2->getFromDB($input[$this->items_id_2])) {
+         if (($input[$this->items_id_2] > 0)
+             && !$item2->getFromDB($input[$this->items_id_2])) {
             return false;
          }
       }
 
       // Read right checked on both item
-      if ($right=='r') {
+      if ($right == 'r') {
          return true;
       }
 
@@ -143,7 +144,7 @@ abstract class CommonDBRelation extends CommonDBTM {
       // No check if checking only itemtype1
       if (!$this->checks_only_for_itemtype1
           && $this->check_entities
-          && $right!='d') {
+          && ($right != 'd')) {
 
          if ($item1->isEntityAssign() && $item2->isEntityAssign()) {
 
@@ -159,14 +160,14 @@ abstract class CommonDBRelation extends CommonDBTM {
             if ($item1->getEntityID() == $item2->getEntityID()) {
                $checkentity = true;
 
-            } else if ($item1->isRecursive() && in_array($item1->getEntityID(),
-                                                         getAncestorsOf("glpi_entities",
-                                                                        $item2->getEntityID()))) {
+            } else if ($item1->isRecursive()
+                       && in_array($item1->getEntityID(), getAncestorsOf("glpi_entities",
+                                                                         $item2->getEntityID()))) {
                $checkentity = true;
 
-            } else if ($item2->isRecursive() && in_array($item2->getEntityID(),
-                                                         getAncestorsOf("glpi_entities",
-                                                                        $item1->getEntityID()))) {
+            } else if ($item2->isRecursive()
+                       && in_array($item2->getEntityID(), getAncestorsOf("glpi_entities",
+                                                                         $item1->getEntityID()))) {
                $checkentity = true;
 
             } else {
@@ -288,7 +289,8 @@ abstract class CommonDBRelation extends CommonDBTM {
                       Log::HISTORY_DEL_RELATION);
       }
 
-      if (!$this->logs_only_for_itemtype1 && $item2->dohistory) {
+      if (!$this->logs_only_for_itemtype1
+          && $item2->dohistory) {
          $changes[0] = '0';
          $changes[1] = addslashes($item1->getNameID(false, true));
          $changes[2] = "";
