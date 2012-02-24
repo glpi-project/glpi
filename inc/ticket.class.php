@@ -3029,7 +3029,7 @@ class Ticket extends CommonITILObject {
          $requesttype        = $CFG_GLPI['default_requesttypes_id'];
       }
 
-      $type = EntityData::getUsedConfig('tickettype', $entity, '', Ticket::INCIDENT_TYPE);
+      $type = Entity::getUsedConfig('tickettype', $entity, '', Ticket::INCIDENT_TYPE);
 
       // Set default values...
       return  array('_users_id_requester'       => $users_id_requester,
@@ -3681,7 +3681,8 @@ class Ticket extends CommonITILObject {
               "</th>";
          echo "<td colspan='3'>";
          echo $tt->getBeginHiddenFieldValue('actiontime');
-         Dropdown::showTimeStamp('actiontime', array('value' => $values['actiontime']));
+         Dropdown::showTimeStamp('actiontime', array('value' => $values['actiontime'],
+                                                     'addfirstminutes' => true));
          echo $tt->getEndHiddenFieldValue('actiontime',$this);
          echo "</td>";
          echo "</tr>";

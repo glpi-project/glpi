@@ -899,7 +899,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       Dropdown::showTimeStamp("actiontime",array('min'   => 0,
                                                 'max'   => 8*HOUR_TIMESTAMP,
-                                                'value' => $this->fields["actiontime"]));
+                                                'value' => $this->fields["actiontime"],
+                                                'addfirstminutes' => true));
 
       echo "</td></tr>\n";
 

@@ -47,13 +47,12 @@ if (!isset($_POST['parenttype'])) {
    exit();
 }
 
-if ($item = getItemForItemtype($_POST['type'])
-    && $parent = getItemForItemtype($_POST['parenttype'])) {
+if (($item = getItemForItemtype($_POST['type']))
+    && ($parent = getItemForItemtype($_POST['parenttype']))) {
 
    if (isset($_POST[$parent->getForeignKeyField()])
        && isset($_POST["id"])
        && $parent->getFromDB($_POST[$parent->getForeignKeyField()])) {
-
       $item->showForm($_POST["id"], array('parent' => $parent));
 
    } else {
