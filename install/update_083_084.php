@@ -1374,6 +1374,8 @@ function update083to084() {
       $DB->queryOrDie($query, "0.84 create glpi_slalevelcriterias");
    }
 
+   $migration->addField("glpi_slalevels", 'match', "CHAR(10) DEFAULT NULL COMMENT 'see define.php *_MATCHING constant'");
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
