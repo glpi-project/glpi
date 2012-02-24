@@ -1084,7 +1084,7 @@ class Search {
                                     $count_display++;
 
                                     // Manage Link to item
-                                    $split2 = explode("$$", $split[$k]);
+                                    $split2 = self::explodeWithID"$$", $split[$k]);
                                     if (isset($split2[1])) {
                                        if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['datatype'])
                                           && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['datatype'] == 'itemlink') {
@@ -4185,7 +4185,7 @@ class Search {
 
                   for ($k=0 ; $k<count($split) ; $k++) {
                      if (strlen(trim($split[$k]))>0) {
-                        $split2 = explode("$$", $split[$k]);
+                        $split2 = self::explodeWithID("$$", $split[$k]);
                         if (isset($split2[1]) && $split2[1]>0) {
                            if ($count_display) {
                               $out .= $separate;
@@ -4337,7 +4337,7 @@ class Search {
                if ($count_display) {
                   $out .= $separate;
                }
-               $withoutid = explode("$$", $split[$k]);
+               $withoutid = self::explodeWithID("$$", $split[$k]);
                $count_display++;
                $out .= $withoutid[0].$unit;
             }
@@ -4355,7 +4355,7 @@ class Search {
          return $specific;
       }
       // Manage auto CONCAT id
-      $split = explode('$$',$data[$NAME.$num]);
+      $split = self::explodeWithID('$$',$data[$NAME.$num]);
 
       return $split[0].$unit;
    }
@@ -5443,6 +5443,21 @@ class Search {
       return $SEARCH;
    }
 
+   static function explodeWithID($pattern, $subject) {
+      $tab = explode($pattern,$subject);
+      
+      if (!is_numeric($tab[1])) {
+         // Report $ to tab[0]
+         if (preg_match('/^(\\$*)(.*)/',$tab[1],$matchs)) {
+            if (isset($matchs[2]) && is_numeric($matchs[2])) {
+               $tab[1] = $matchs[2];
+               $tab[0] .= $matchs[1];
+            }
+         }
+      }
+      
+      return $tab;
+   }
 
 }
 ?>
