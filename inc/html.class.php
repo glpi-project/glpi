@@ -317,7 +317,7 @@ class Html {
       $time = floor($time);
 
       // Force display seconds if time is null
-      if ($time==0) {
+      if ($time<MINUTE_TIMESTAMP) {
          $display_sec = true;
       }
 
@@ -346,7 +346,7 @@ class Html {
          return sprintf(__('%1$d hour(s) %2$d minute(s)'), $units['hour'], $units['minute']);
       }
 
-      if ($units['minute']>0 || (!$display_sec && empty($out))) {
+      if ($units['minute']>0) {
          if ($display_sec) {
             //TRANS:  %1$d number of minutes,  %2$d number of seconds
             return sprintf(__('%1$d minute(s) %2$d second(s)'), $units['minute'], $units['second']);

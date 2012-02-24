@@ -1084,7 +1084,7 @@ class Search {
                                     $count_display++;
 
                                     // Manage Link to item
-                                    $split2 = self::explodeWithID"$$", $split[$k]);
+                                    $split2 = self::explodeWithID("$$", $split[$k]);
                                     if (isset($split2[1])) {
                                        if (isset($searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['datatype'])
                                           && $searchopt[$p['itemtype2'][$j]][$p['field2'][$j]]['datatype'] == 'itemlink') {
