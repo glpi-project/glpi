@@ -48,7 +48,8 @@ abstract class CommonDevice extends CommonDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if ($item->getType() == 'Computer' && Session::haveRight("computer","r")) {
+      if (($item->getType() == 'Computer')
+          && Session::haveRight("computer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb    = 0;
             $types =  Computer_Device::getDeviceTypes();
@@ -121,9 +122,9 @@ abstract class CommonDevice extends CommonDropdown {
    **/
    function getName($with_comment=0) {
 
-      $toadd="";
+      $toadd = "";
       if ($with_comment) {
-         $toadd="&nbsp;".$this->getComments();
+         $toadd = sprintf(__('%1$s - %2$s'), $toadd, $this->getComments());
       }
 
       if (isset($this->fields['designation']) && !empty($this->fields['designation'])) {
@@ -178,7 +179,7 @@ abstract class CommonDevice extends CommonDropdown {
                 WHERE `designation` = '" . $input['designation'] . "'";
 
       $result = $DB->query($query);
-      if ($DB->numrows($result)>0) {
+      if ($DB->numrows($result) > 0) {
          $line = $DB->fetch_assoc($result);
          return $line['id'];
       }
