@@ -110,11 +110,11 @@ class RuleCriteria extends CommonDBChild {
       global $DB;
 
       $sql = "SELECT *
-              FROM `glpi_rulecriterias`
-              WHERE `rules_id` = '$ID'
+              FROM `".$this->getTable()."`
+              WHERE `".$this->items_id."` = '$ID'
               ORDER BY `id`";
+              
       $result = $DB->query($sql);
-
       $rules_list = array();
       while ($rule = $DB->fetch_assoc($result)) {
          $tmp          = new self();

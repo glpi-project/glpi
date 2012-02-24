@@ -1359,6 +1359,21 @@ function update083to084() {
    $migration->addField("glpi_configs", 'x509_o_restrict', "string", array('after' => 'x509_email_field'));
    $migration->addField("glpi_configs", 'x509_cn_restrict', "string", array('after' => 'x509_email_field'));
 
+   if (!TableExists('glpi_slalevelcriterias')) {
+      $query = "CREATE TABLE `glpi_slalevelcriterias` (
+               `id` int(11) NOT NULL AUTO_INCREMENT,
+               `slalevels_id` int(11) NOT NULL DEFAULT '0',
+               `criteria` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+               `condition` int(11) NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
+               `pattern` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+               PRIMARY KEY (`id`),
+               KEY `slalevels_id` (`slalevels_id`),
+               KEY `condition` (`condition`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      //TRANS: %1$s is the title of the update, %2$s is the DB error
+      $DB->queryOrDie($query, "0.84 create glpi_slalevelcriterias");
+   }
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

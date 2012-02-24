@@ -307,11 +307,11 @@ class Rule extends CommonDBTM {
          return $this->getEmpty();
 
       } else if ($ret=$this->getFromDB($ID)) {
-
+//          echo $this->rulecriteriaclass;
          if ($withactions && ($RuleAction = getItemForItemtype($this->ruleactionclass))) {
             $this->actions = $RuleAction->getRuleActions($ID);
          }
-
+         
          if ($withcriterias && ($RuleCriterias = getItemForItemtype($this->rulecriteriaclass))) {
             $this->criterias = $RuleCriterias->getRuleCriterias($ID);
          }
@@ -823,7 +823,6 @@ class Rule extends CommonDBTM {
    function checkCriteria(&$criteria, &$input) {
 
       $partial_regex_result = array();
-
       // Undefine criteria field : set to blank
       if (!isset($input[$criteria->fields["criteria"]])) {
          $input[$criteria->fields["criteria"]] = '';
@@ -1281,6 +1280,9 @@ class Rule extends CommonDBTM {
                   }
                   break;
 
+               case "dropdown_status" :
+                  return Ticket::getStatus($pattern);
+
                case "dropdown_priority" :
                   return Ticket::getPriorityName($pattern);
 
@@ -1378,6 +1380,11 @@ class Rule extends CommonDBTM {
                Ticket::dropdownPriority($name, $value);
                $display = true;
                break;
+            
+            case "dropdown_status" :
+               Ticket::dropdownStatus($name, $value);
+               $display = true;
+               break;            
 
             case "dropdown_tickettype" :
                Ticket::dropdownType($name, array('value' => $value));
@@ -2021,10 +2028,10 @@ class Rule extends CommonDBTM {
          $rule = new RuleTicket();
          $rule->showAndAddRuleForm($item);
 
-      } else if ($item->getType() == 'SlaLevel') {
-         $rule = new RuleTicket();
-         $item->getRuleWithCriteriasAndActions($item->getID(), 0, 1);
-         $item->showActionsList($item->getID());
+//       } else if ($item->getType() == 'SlaLevel') {
+//          $rule = new RuleTicket();
+//          $item->getRuleWithCriteriasAndActions($item->getID(), 0, 1);
+//          $item->showActionsList($item->getID());
 
       } else if ($item instanceof Rule) {
          $item->getRuleWithCriteriasAndActions($item->getID(), 1, 1);
