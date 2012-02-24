@@ -157,10 +157,16 @@ class SlaLevel_Ticket extends CommonDBTM {
                $input['id'] = $ticket->getID();
                $input['_auto_update'] = true;
 
-               if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'],0,1)
+               if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'],1,1)
                    && $sla->getFromDB($ticket->fields['slas_id'])) {
+                   $doit = true;
+                   if (count($slalevel->criterias)) {
+                     $doit = $slalevel->checkCriterias($ticket->fields);
+                   }
                   // Process rules
-                  $input = $slalevel->executeActions($input, array());
+                  if ($doit) {
+                     $input = $slalevel->executeActions($input, array());
+                  }
                }
 
                // Put next level in todo list

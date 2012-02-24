@@ -4721,10 +4721,22 @@ CREATE TABLE `glpi_slalevelactions` (
   `action_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `match` char(10) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'see define.php *_MATCHING constant',
   PRIMARY KEY (`id`),
   KEY `slalevels_id` (`slalevels_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+DROP TABLE IF EXISTS `glpi_slalevelcriterias`;
+CREATE TABLE `glpi_slalevelcriterias` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `slalevels_id` int(11) NOT NULL DEFAULT '0',
+  `criteria` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `condition` int(11) NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
+  `pattern` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `slalevels_id` (`slalevels_id`),
+  KEY `condition` (`condition`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ### Dump table glpi_slalevels
 

@@ -42,7 +42,7 @@ class SlaLevel extends RuleTicket {
    protected $rules_id_field    = 'slalevels_id';
    protected $ruleactionclass   = 'SlaLevelAction';
    // No criteria
-   protected $rulecriteriaclass = '';
+   protected $rulecriteriaclass = 'SlaLevelCriteria';
 
    public $right='sla';
 
@@ -188,7 +188,16 @@ class SlaLevel extends RuleTicket {
       return $actions;
    }
 
+   function getCriterias() {
 
+      $actions                            = parent::getActions();
+
+      unset($actions['slas_id']);
+      $actions['status']['name']          = __('Status');
+      $actions['status']['type']          = 'dropdown_status';
+      return $actions;
+   }
+   
    /**
     * Show the rule
     *
@@ -237,6 +246,12 @@ class SlaLevel extends RuleTicket {
                                         'value'
                                              => $this->fields['execution_time']));
       echo "</td></tr>\n";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Logical operator')."</td>";
+      echo "<td>";
+      $this->dropdownRulesMatch("match", $this->fields["match"], $this->restrict_matching);
+      echo "</td>";
+      echo "<td colspan='2'>&nbsp;</td></tr>";
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
