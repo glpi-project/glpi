@@ -129,7 +129,7 @@ class Change extends CommonITILObject {
    **/
    function canApprove() {
 
-      return ($this->fields["users_id_recipient"] === Session::getLoginUserID()
+      return (($this->fields["users_id_recipient"] === Session::getLoginUserID())
               || $this->isUser(parent::REQUESTER, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(parent::REQUESTER, $_SESSION["glpigroups"])));
@@ -167,7 +167,7 @@ class Change extends CommonITILObject {
                   $nb = countElementsInTable('glpi_changes_problems',
                                              "`problems_id` = '".$item->getID()."'");
                }
-            return self::createTabEntry(self::getTypeName(2), $nb);
+               return self::createTabEntry(self::getTypeName(2), $nb);
 
             case 'Ticket' :
                if ($_SESSION['glpishow_count_on_tabs']) {
@@ -283,18 +283,16 @@ class Change extends CommonITILObject {
       if ($donotif && $CFG_GLPI["use_mailing"]) {
          $mailtype = "update";
 
-         if (isset($this->input["status"])
-             && $this->input["status"]
+         if (isset($this->input["status"]) && $this->input["status"]
              && in_array("status",$this->updates)
-             && $this->input["status"]=="solved") {
+             && ($this->input["status"] == "solved")) {
 
             $mailtype = "solved";
          }
 
-         if (isset($this->input["status"])
-             && $this->input["status"]
+         if (isset($this->input["status"]) && $this->input["status"]
              && in_array("status",$this->updates)
-             && $this->input["status"]=="closed") {
+             && ($this->input["status"] == "closed")) {
 
             $mailtype = "closed";
          }
@@ -355,7 +353,7 @@ class Change extends CommonITILObject {
          $this->getFromDB($this->fields['id']);
 
          $type = "new";
-         if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
+         if (isset($this->fields["status"]) && ($this->fields["status"] == "solved")) {
             $type = "solved";
          }
          NotificationEvent::raiseEvent($type, $this);
@@ -838,7 +836,7 @@ class Change extends CommonITILObject {
       if ($ID) {
          echo "<tr><td><span class='tracking_small'>".__('Last update')."</span></td>";
          echo "<td><span class='tracking_small'>".Html::convDateTime($this->fields["date_mod"])."\n";
-         if ($this->fields['users_id_lastupdater']>0) {
+         if ($this->fields['users_id_lastupdater'] > 0) {
             //TRANS: %s is the user name
             printf(__('By %s'), getUserName($this->fields["users_id_lastupdater"], $showuserlink));
          }
@@ -850,7 +848,7 @@ class Change extends CommonITILObject {
       echo "<tr>";
       echo "<td><span class='tracking_small'>".__('Due date')."</span></td>";
       echo "<td>";
-      if ($this->fields["due_date"]=='NULL') {
+      if ($this->fields["due_date"] == 'NULL') {
          $this->fields["due_date"] = '';
       }
       Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true);
@@ -1041,7 +1039,7 @@ class Change extends CommonITILObject {
    function showPlanForm() {
 
       $this->check($this->getField('id'), 'r');
-      $canedit = $this->can($this->getField('id'), 'w');
+      $canedit            = $this->can($this->getField('id'), 'w');
 
       $options            = array();
       $options['canedit'] = false;

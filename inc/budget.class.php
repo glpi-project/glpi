@@ -407,7 +407,7 @@ class Budget extends CommonDropdown{
          }
       }
       if ($num>0) {
-         echo "<tr class='tab_bg_2'><td class='center b'>".sprintf(__('Total= %s'), $num).
+         echo "<tr class='tab_bg_2'><td class='center b'>".sprintf(__('Total = %s'), $num).
               "</td><td colspan='5'>&nbsp;</td></tr> ";
       }
       echo "</table></div>";
