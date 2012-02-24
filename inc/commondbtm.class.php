@@ -690,7 +690,7 @@ class CommonDBTM extends CommonGLPI {
             $this->fields['date_mod'] = $_SESSION["glpi_currenttime"];
          }
 
-         if ($this->checkUnicity(true,$options)) {
+         if ($this->checkUnicity(true, $options)) {
 
             if ($this->addToDB()) {
                $this->addMessageOnAddAction();
@@ -886,7 +886,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       // Valid input for update
-      if ($this->checkUnicity(false,$options)) {
+      if ($this->checkUnicity(false, $options)) {
          if ($this->input && is_array($this->input)) {
             // Fill the update-array with changes
             $x = 0;
