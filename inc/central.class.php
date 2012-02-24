@@ -96,19 +96,19 @@ class Central extends CommonGLPI {
       echo "<td class='top'><br>";
       echo "<table >";
       if ($showticket) {
-         echo "<tr><td class='top' width='450px'>";
+         echo "<tr><td class='central'>";
          Ticket::showCentralCount();
          echo "</td></tr>";
       }
       if (Session::haveRight("contract","r")) {
-         echo "<tr><td class='top' width='450px'>";
+         echo "<tr><td class='central'>";
          Contract::showCentral();
          echo "</td></tr>";
       }
       echo "</table></td>";
 
       if (Session::haveRight("logs","r")) {
-         echo "<td class='top' width='450px'>";
+         echo "<td class='central'>";
 
          //Show last add events
          Event::showForUser($_SESSION["glpiname"]);
@@ -142,8 +142,8 @@ class Central extends CommonGLPI {
                $user->getFromDBbyName($login);
                $accounts[] = "<a href='".$user->getLinkURL()."'>".$login."</a>";
             }
-            $message= sprintf(__('For security reasons, please change the password for the default users: %s'),
-                              implode(" ", $accounts));
+            $message = sprintf(__('For security reasons, please change the password for the default users: %s'),
+                               implode(" ", $accounts));
 
             echo "<tr><th colspan='2'><br>";
             Html::displayTitle(GLPI_ROOT."/pics/warning.png", $message, $message);
@@ -151,7 +151,8 @@ class Central extends CommonGLPI {
          }
       }
 
-      if ($DB->isSlave() && !$DB->first_connection) {
+      if ($DB->isSlave()
+          && !$DB->first_connection) {
          echo "<tr><th colspan='2'><br>";
          Html::displayTitle(GLPI_ROOT."/pics/warning.png", __('MySQL replica: read only'),
                             __('MySQL replica: read only'));
@@ -160,41 +161,41 @@ class Central extends CommonGLPI {
       echo "<tr><td class='top'><table>";
 
       if (Session::haveRight('validate_ticket',1)) {
-         echo "<tr><td class='top' width='450px'><br>";
+         echo "<tr><td class='central'><br>";
          Ticket::showCentralList(0,"tovalidate",false);
          echo "</td></tr>";
       }
-      echo "<tr><td class='top' width='450px'>";
+      echo "<tr><td class='central'>";
       Ticket::showCentralList(0, "toapprove", false);
       echo "</td></tr>";
-      echo "<tr><td class='top' width='450px'>";
+      echo "<tr><td class='central'>";
       Ticket::showCentralList(0, "rejected", false);
       echo "</td></tr>";
 
-      echo "<tr><td class='top' width='450px'>";
+      echo "<tr><td class='central'>";
       Ticket::showCentralList(0, "requestbyself", false);
       echo "</td></tr>";
       if ($showticket) {
-         echo "<tr><td class='top' width='450px'>";
+         echo "<tr><td class='central'>";
          Ticket::showCentralList(0, "process", false);
          echo "</td></tr>";
-         echo "<tr><td class='top' width='450px'>";
+         echo "<tr><td class='central'>";
          Ticket::showCentralList(0, "waiting", false);
          echo "</td></tr>";
       }
 
       echo "</table></td>";
       echo "<td class='top'><table><tr>";
-      echo "<td class='top' width='450px'><br>";
+      echo "<td class='central'><br>";
       Planning::showCentral(Session::getLoginUserID());
       echo "</td></tr>";
 
-      echo "<tr><td class='top' width='450px'>";
+      echo "<tr><td class='central'>";
       Reminder::showListForCentral();
       echo "</td></tr>";
 
       if (Session::haveRight("reminder_public","r")) {
-         echo "<tr><td class='top' width='450px'>";
+         echo "<tr><td class='central'>";
          Reminder::showListForCentral(false);
          echo "</td></tr>";
       }
@@ -214,12 +215,12 @@ class Central extends CommonGLPI {
       echo "<tr><td class='top'><table>";
 
       if ($showticket) {
-         echo "<tr><td class='top' width='450px'><br>";
+         echo "<tr><td class='central'><br>";
          Ticket::showCentralList(0, "process", true);
          echo "</td></tr>";
       }
       if (Session::haveRight('show_group_ticket','1')) {
-         echo "<tr><td  class='top' width='450px'><br>";
+         echo "<tr><td  class='central'><br>";
          Ticket::showCentralList(0, "waiting", true);
          echo "</td></tr>";
       }
@@ -227,14 +228,14 @@ class Central extends CommonGLPI {
       echo "<td class='top'><table>";
 
       if (Session::haveRight('show_group_ticket','1')) {
-         echo "<tr><td  class='top' width='450px'><br>";
+         echo "<tr><td  class='central'><br>";
          Ticket::showCentralList(0, "toapprove", true);
          echo "</td></tr>";
-         echo "<tr><td  class='top' width='450px'>";
+         echo "<tr><td  class='central'>";
          Ticket::showCentralList(0, "requestbyself", true);
          echo "</td></tr>";
       } else {
-         echo "<tr><td  class='top' width='450px'><br>";
+         echo "<tr><td  class='central'><br>";
          Ticket::showCentralList(0, "waiting", true);
          echo "</td></tr>";
       }
