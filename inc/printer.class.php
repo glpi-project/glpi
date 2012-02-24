@@ -367,7 +367,7 @@ class Printer  extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "contact");
       echo "</td>\n";
-      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number').
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Inventory number'),
                           (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
            "</td>\n";
       echo "<td>";
