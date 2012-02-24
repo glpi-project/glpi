@@ -244,7 +244,8 @@ $CFG_GLPI["notificationtemplates_types"]  = array('Cartridge', 'Consumable', 'Co
 
 $CFG_GLPI["notificationmethods_types"]    = array('NotificationMail');
 
-$CFG_GLPI["union_search_type"]            = array('ReservationItem' => "reservation_types",
+$CFG_GLPI["union_search_type"]            = array('Internet'        => 'networkport_types', 
+                                                  'ReservationItem' => "reservation_types",
                                                   'States'          => "state_types");
 
 $CFG_GLPI["systeminformations_types"]     = array('AuthLDAP', 'DBConnection', 'MailCollector',

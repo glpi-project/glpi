@@ -43,7 +43,7 @@ class Search {
    const PDF_OUTPUT_LANDSCAPE = 2;
    const CSV_OUTPUT           = 3;
    const PDF_OUTPUT_PORTRAIT  = 4;
-
+   
 
    /**
     * Display search engine for an type
@@ -77,7 +77,7 @@ class Search {
       // Instanciate an object to access method
       $item = NULL;
 
-      if ($itemtype != 'States') {
+      if ($itemtype != 'States' && $itemtype != 'Internet') {
          $item = getItemForItemtype($itemtype);
       }
 
@@ -202,7 +202,6 @@ class Search {
       foreach ($toview as $key => $val) {
          $SELECT .= self::addSelect($itemtype, $val, $key, 0);
       }
-
 
       //// 2 - FROM AND LEFT JOIN
       // Set reference table
@@ -609,10 +608,18 @@ class Search {
                $citem  = new $ctype();
                if ($citem->canView()) {
                   // State case
-                  if ($itemtype == 'States') {
+                  if ($itemtype == 'States' || $itemtype == 'Internet' ) {
                      $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                               $ctable, $tmpquery);
-                     $query_num .= " AND `$ctable`.`states_id` > '0' ";
+                     $query_num = str_replace($itemtype,
+                                              $ctype, $tmpquery);
+                                              
+                     if ($itemtype == 'States') {                                              
+                        $query_num .= " AND `$ctable`.`states_id` > '0' ";
+                     }
+                     if ($itemtype == 'Internet') {                                          
+                        $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
+                     }
 
                      // Add deleted if item have it
                      if ($citem && $citem->maybeDeleted()) {
@@ -626,7 +633,7 @@ class Search {
 
                   } else {// Ref table case
                      $reftable = getTableForItemType($itemtype);
-                     if ($item->maybeDeleted()) {
+                     if ($item && $item->maybeDeleted()) {
                         $tmpquery = str_replace("`".$CFG_GLPI["union_search_type"][$itemtype]."`.`is_deleted`",
                                                 "`$reftable`.`is_deleted`", $tmpquery);
                      }
@@ -690,13 +697,21 @@ class Search {
                }
                $tmpquery = "";
                // State case
-               if ($itemtype == 'States') {
+               if ($itemtype == 'States' || $itemtype == 'Internet') {
                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                               $FROM.
                               $WHERE;
+                  
                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                           $ctable, $tmpquery);
-                  $tmpquery .= " AND `$ctable`.`states_id` > '0' ";
+                  $tmpquery = str_replace($itemtype,
+                                             $ctype, $tmpquery);
+                  if ($itemtype == 'States') {                                          
+                     $tmpquery .= " AND `$ctable`.`states_id` > '0' ";
+                  }
+                  if ($itemtype == 'Internet') {                                          
+                     $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
+                  }
 
                   // Add deleted if item have it
                   if ($citem && $citem->maybeDeleted()) {
@@ -707,7 +722,6 @@ class Search {
                   if ($citem && $citem->maybeTemplate()) {
                      $tmpquery .= " AND `$ctable`.`is_template` = '0' ";
                   }
-
                } else {// Ref table case
                   $reftable = getTableForItemType($itemtype);
 
@@ -1427,7 +1441,7 @@ class Search {
 
       // Instanciate an object to access method
       $item = NULL;
-      if ($itemtype!='States') {
+      if ($itemtype!='States' && $itemtype!='Internet') {
          $item = getItemForItemtype($itemtype);
       }
 
@@ -1985,7 +1999,7 @@ class Search {
 
       $toview = array();
       $item   = NULL;
-      if ($itemtype!='States') {
+      if ($itemtype!='States' && $itemtype!='Internet') {
          $item = getItemForItemtype($itemtype);
       }
       // Add first element (name)
@@ -2015,7 +2029,7 @@ class Search {
       $itemtable = getTableForItemType($itemtype);
       $item      = NULL;
       $mayberecursive = false;
-      if ($itemtype!='States') {
+      if ($itemtype!='States' && $itemtype!='Internet') {
          $item = getItemForItemtype($itemtype);
          $mayberecursive = $item->maybeRecursive();
       }
@@ -2066,7 +2080,8 @@ class Search {
     * @return select string
    **/
    static function addSelect($itemtype, $ID, $num, $meta=0, $meta_type=0) {
-
+      global $CFG_GLPI;
+      
       $searchopt   = &self::getOptions($itemtype);
       $table       = $searchopt[$ID]["table"];
       $field       = $searchopt[$ID]["field"];
@@ -2074,11 +2089,14 @@ class Search {
       $NAME        = "ITEM";
       $complexjoin = '';
 
+
       if (isset($searchopt[$ID]['joinparams'])) {
          $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
       }
 
-      if (($table != getTableForItemType($itemtype) || !empty($complexjoin))
+      if ((($table != getTableForItemType($itemtype) && (!isset($CFG_GLPI["union_search_type"][$itemtype]) 
+                                                         || $CFG_GLPI["union_search_type"][$itemtype] != $table) ) 
+            || !empty($complexjoin))
           && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
@@ -2094,7 +2112,7 @@ class Search {
             $addtable .= "_".$meta_type;
          }
       }
-
+      
       // Plugin can override core definition for its type
       if ($plug=isPluginItemType($itemtype)) {
          $function = 'plugin_'.$plug['plugin'].'_addSelect';
@@ -3044,7 +3062,8 @@ class Search {
       // Default case
       if (in_array($searchtype, array('equals', 'notequals','under'))) {
 
-         if ($table != getTableForItemType($itemtype) || $itemtype == 'States') {
+         if ($table != getTableForItemType($itemtype) || $itemtype == 'States'
+            || $itemtype == 'Internet') {
             $out = " $link (`$table`.`id`".$SEARCH;
          } else {
             $out = " $link (`$table`.`$field`".$SEARCH;
@@ -3200,7 +3219,7 @@ class Search {
       // Rename table for meta left join
       $AS = "";
       $nt = $new_table;
-
+      
       // Multiple link possibilies case
 //       if ($new_table=="glpi_users"
 //           || $new_table=="glpi_groups"
@@ -4434,6 +4453,7 @@ class Search {
       $default_values["sort"]        = 1;
 
       if ($itemtype!='States'
+         && $itemtype!='Internet'
          && class_exists($itemtype)
          && method_exists($itemtype,'getDefaultSearchRequest')) {
 
@@ -4625,68 +4645,93 @@ class Search {
       if (!isset($search[$itemtype])) {
 
          // standard type first
-         if ($itemtype=='States') {
-            $search[$itemtype]['common']           = __('Characteristics');
+         switch ($itemtype) {
+            case 'Internet' :
+               $search[$itemtype]['common']           = __('Characteristics');
+               
+               $search[$itemtype][1]['table']          = 'networkport_types';
+               $search[$itemtype][1]['field']          = 'name';
+               $search[$itemtype][1]['name']           = __('Name');
+               $search[$itemtype][1]['datatype']       = 'itemlink';
+               $search[$itemtype][1]['searchtype']     = 'contains';
+               
+               $search[$itemtype][2]['table']          = 'networkport_types';
+               $search[$itemtype][2]['field']          = 'id';
+               $search[$itemtype][2]['name']           = __('ID');
+               $search[$itemtype][2]['searchtype']     = 'contains';
+   
+               $search[$itemtype][31]['table']         = 'glpi_states';
+               $search[$itemtype][31]['field']         = 'completename';
+               $search[$itemtype][31]['name']          = __('Status');
 
-            $search['States'][1]['table']          = 'state_types';
-            $search['States'][1]['field']          = 'name';
-            $search['States'][1]['name']           = __('Name');
-            $search['States'][1]['datatype']       = 'itemlink';
-            $search['States'][1]['searchtype']     = 'contains';
-
-            $search['States'][2]['table']          = 'state_types';
-            $search['States'][2]['field']          = 'id';
-            $search['States'][2]['name']           = __('ID');
-            $search['States'][2]['searchtype']     = 'contains';
-
-            $search['States'][31]['table']         = 'glpi_states';
-            $search['States'][31]['field']         = 'completename';
-            $search['States'][31]['name']          = __('Status');
-
-            $search['States'] += Location::getSearchOptionsToAdd();
-
-            $search['States'][5]['table']          = 'state_types';
-            $search['States'][5]['field']          = 'serial';
-            $search['States'][5]['name']           = __('Serial number');
-
-            $search['States'][6]['table']          = 'state_types';
-            $search['States'][6]['field']          = 'otherserial';
-            $search['States'][6]['name']           = __('Inventory number');
-
-            $search['States'][16]['table']         = 'state_types';
-            $search['States'][16]['field']         = 'comment';
-            $search['States'][16]['name']          = __('Comments');
-            $search['States'][16]['datatype']      = 'text';
-
-            $search['States'][70]['table']         = 'glpi_users';
-            $search['States'][70]['field']         = 'name';
-            $search['States'][70]['name']          = __('User');
-
-            $search['States'][71]['table']         = 'glpi_groups';
-            $search['States'][71]['field']         = 'completename';
-            $search['States'][71]['name']          = __('Group');
-
-            $search['States'][19]['table']         = 'state_types';
-            $search['States'][19]['field']         = 'date_mod';
-            $search['States'][19]['name']          = __('Last update');
-            $search['States'][19]['datatype']      = 'datetime';
-            $search['States'][19]['massiveaction'] = false;
-
-            $search['States'][23]['table']         = 'glpi_manufacturers';
-            $search['States'][23]['field']         = 'name';
-            $search['States'][23]['name']          = __('Manufacturer');
-
-            $search['States'][24]['table']         = 'glpi_users';
-            $search['States'][24]['field']         = 'name';
-            $search['States'][24]['linkfield']     = 'users_id_tech';
-            $search['States'][24]['name']          = __('Technician in charge of the hardware');
-
-            $search['States'][80]['table']         = 'glpi_entities';
-            $search['States'][80]['field']         = 'completename';
-            $search['States'][80]['name']          = __('Entity');
-
-         } else if ($item = getItemForItemtype($itemtype)) {
-            $search[$itemtype] = $item->getSearchOptions();
+               $search[$itemtype] += NetworkPort::getSearchOptionsToAdd('networkport_types');
+               break;               
+            case 'States' :
+               $search[$itemtype]['common']           = __('Characteristics');
+   
+               $search[$itemtype][1]['table']          = 'state_types';
+               $search[$itemtype][1]['field']          = 'name';
+               $search[$itemtype][1]['name']           = __('Name');
+               $search[$itemtype][1]['datatype']       = 'itemlink';
+               $search[$itemtype][1]['searchtype']     = 'contains';
+   
+               $search[$itemtype][2]['table']          = 'state_types';
+               $search[$itemtype][2]['field']          = 'id';
+               $search[$itemtype][2]['name']           = __('ID');
+               $search[$itemtype][2]['searchtype']     = 'contains';
+   
+               $search[$itemtype][31]['table']         = 'glpi_states';
+               $search[$itemtype][31]['field']         = 'completename';
+               $search[$itemtype][31]['name']          = __('Status');
+   
+               $search[$itemtype] += Location::getSearchOptionsToAdd();
+   
+               $search[$itemtype][5]['table']          = 'state_types';
+               $search[$itemtype][5]['field']          = 'serial';
+               $search[$itemtype][5]['name']           = __('Serial number');
+   
+               $search[$itemtype][6]['table']          = 'state_types';
+               $search[$itemtype][6]['field']          = 'otherserial';
+               $search[$itemtype][6]['name']           = __('Inventory number');
+   
+               $search[$itemtype][16]['table']         = 'state_types';
+               $search[$itemtype][16]['field']         = 'comment';
+               $search[$itemtype][16]['name']          = __('Comments');
+               $search[$itemtype][16]['datatype']      = 'text';
+   
+               $search[$itemtype][70]['table']         = 'glpi_users';
+               $search[$itemtype][70]['field']         = 'name';
+               $search[$itemtype][70]['name']          = __('User');
+   
+               $search[$itemtype][71]['table']         = 'glpi_groups';
+               $search[$itemtype][71]['field']         = 'completename';
+               $search[$itemtype][71]['name']          = __('Group');
+   
+               $search[$itemtype][19]['table']         = 'state_types';
+               $search[$itemtype][19]['field']         = 'date_mod';
+               $search[$itemtype][19]['name']          = __('Last update');
+               $search[$itemtype][19]['datatype']      = 'datetime';
+               $search[$itemtype][19]['massiveaction'] = false;
+   
+               $search[$itemtype][23]['table']         = 'glpi_manufacturers';
+               $search[$itemtype][23]['field']         = 'name';
+               $search[$itemtype][23]['name']          = __('Manufacturer');
+   
+               $search[$itemtype][24]['table']         = 'glpi_users';
+               $search[$itemtype][24]['field']         = 'name';
+               $search[$itemtype][24]['linkfield']     = 'users_id_tech';
+               $search[$itemtype][24]['name']          = __('Technician in charge of the hardware');
+   
+               $search[$itemtype][80]['table']         = 'glpi_entities';
+               $search[$itemtype][80]['field']         = 'completename';
+               $search[$itemtype][80]['name']          = __('Entity');
+               break;
+               
+            default :
+               if ($item = getItemForItemtype($itemtype)) {
+                  $search[$itemtype] = $item->getSearchOptions();
+               }
+               break;
          }
 
          if (Session::getLoginUserID() && in_array($itemtype, $CFG_GLPI["ticket_types"])) {
@@ -4737,13 +4782,13 @@ class Search {
                $search[$itemtype] += $plugsearch;
             }
          }
-
          // Complete linkfield if not define
-         if ($itemtype==='States') {
-            $itemtable = 'states_types';
+         if (!isset($item)) { // Special union type
+            $itemtable = $CFG_GLPI['union_search_type'][$itemtype];
          } else {
             $itemtable = $item->getTable();
          }
+         
          foreach ($search[$itemtype] as $key => $val) {
             if (!is_array($val)) {
                // skip sub-menu
