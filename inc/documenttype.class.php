@@ -47,9 +47,10 @@ class DocumentType  extends CommonDropdown {
                    array('name'  => 'is_uploadable',
                          'label' => __('Authorized download'),
                          'type'  => 'bool'),
-                   array('name'  => 'ext',
-                         'label' => __('Extension'),
-                         'type'  => 'text'),
+                   array('name'    => 'ext',
+                         'label'   => __('Extension'),
+                         'type'    => 'text',
+                         'comment' => __('May be a regular expresion')),
                    array('name'  => 'mime',
                          'label' => __('MIME type'),
                          'type'  => 'text'));
