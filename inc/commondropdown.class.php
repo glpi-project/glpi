@@ -166,7 +166,7 @@ abstract class CommonDropdown extends CommonDBTM {
             echo "&nbsp;";
             Html::showToolTip($field['comment']);
          }
-         echo "&nbsp;:</td><td>";
+         echo "</td><td>";
          switch ($field['type']) {
             case 'UserDropdown' :
                User::dropdown(array('name'   => $field['name'],
