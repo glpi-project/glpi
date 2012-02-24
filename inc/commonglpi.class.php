@@ -143,7 +143,9 @@ class CommonGLPI {
       }
 
       // Object with class with 'addtabon' attribute
-      if (isset(self::$othertabs[$this->getType()]) && !$this->isNewItem()) {
+      if (isset(self::$othertabs[$this->getType()])
+          && !$this->isNewItem()) {
+
          foreach(self::$othertabs[$this->getType()] as $typetab) {
             $this->addStandardTab($typetab, $onglets, $options);
          }
@@ -161,9 +163,9 @@ class CommonGLPI {
    /**
     * Add standard define tab
     *
-    * @param $itemtype  itemtype link to the tab
-    * @param $ong       array defined tab array
-    * @param $options   array of options (for withtemplate)
+    * @param $itemtype         itemtype link to the tab
+    * @param &$ong       array defined tab array
+    * @param $options    array of options (for withtemplate)
     *
     *  @return nothing (set the tab array)
    **/
@@ -182,7 +184,8 @@ class CommonGLPI {
             break;
 
          default :
-            if (!is_integer($itemtype) && ($obj = getItemForItemtype($itemtype))) {
+            if (!is_integer($itemtype)
+                && ($obj = getItemForItemtype($itemtype))) {
                $titles = $obj->getTabNameForItem($this, $withtemplate);
                if (!is_array($titles)) {
                   $titles = array(1 => $titles);
@@ -207,8 +210,8 @@ class CommonGLPI {
     *
     * @since version 0.83
     *
-    * @param $item            CommonDBTM object for which the tab need to be displayed
-    * @param $withtemplate    boolean is a template object ? (default 0)
+    * @param $item                     CommonDBTM object for which the tab need to be displayed
+    * @param $withtemplate    boolean  is a template object ? (default 0)
     *
     *  @return string tab name
    **/
@@ -222,9 +225,9 @@ class CommonGLPI {
     *
     * @since version 0.83
     *
-    * @param $item         CommonGLPI object for which the tab need to be displayed
-    * @param $tabnum       integer tab number (default 1)
-    * @param $withtemplate boolean is a template object ? (default 0)
+    * @param $item                  CommonGLPI object for which the tab need to be displayed
+    * @param $tabnum       integer  tab number (default 1)
+    * @param $withtemplate boolean  is a template object ? (default 0)
     *
     * @return true
    **/
@@ -236,9 +239,9 @@ class CommonGLPI {
    /**
     * display standard tab contents
     *
-    * @param $item         CommonGLPI object for which the tab need to be displayed
-    * @param $tab          string tab name
-    * @param $withtemplate boolean is a template object ? (default 0)
+    * @param $item                  CommonGLPI object for which the tab need to be displayed
+    * @param $tab          string   tab name
+    * @param $withtemplate boolean  is a template object ? (default 0)
     *
     * @return true
    **/
@@ -276,8 +279,7 @@ class CommonGLPI {
                $tabnum = $data[1];
             }
 
-            if (!is_integer($itemtype)
-                && $itemtype!='empty'
+            if (!is_integer($itemtype) && ($itemtype != 'empty')
                 && ($obj = getItemForItemtype($itemtype))) {
                return $obj->displayTabContentForItem($item, $tabnum, $withtemplate);
             }
@@ -299,7 +301,8 @@ class CommonGLPI {
    static function createTabEntry($text, $nb=0) {
 
       if ($nb) {
-         $text .= "<sup>($nb)</sup>";
+         //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
+         $text = sprintf(__('%1$s %2$d'), $text, "<sup>($nb)</sup>");
       }
       return $text;
    }
@@ -315,7 +318,7 @@ class CommonGLPI {
       if (isset($_GET['withtemplate'])
           && !empty($_GET['withtemplate'])) {
          Html::redirect($CFG_GLPI["root_doc"]."/front/setup.templates.php?add=0&itemtype=".
-                     $this->getType());
+                        $this->getType());
 
       } else if (isset($_SESSION['glpilisturl'][$this->getType()])
                  && !empty($_SESSION['glpilisturl'][$this->getType()])) {
@@ -338,6 +341,7 @@ class CommonGLPI {
       return false;
    }
 
+
     /**
     * is the current object a new one - Always true here (virtual Objet)
     *
@@ -348,6 +352,7 @@ class CommonGLPI {
    function isNewID($ID) {
       return true;
    }
+
 
    /**
     * Show onglets
@@ -443,11 +448,11 @@ class CommonGLPI {
             echo $glpilisttitle;
 
          } else {
-            echo __('List');
+            _e('List');
          }
-         echo "</a>&nbsp;:&nbsp;</li>";
+         echo "</a></li>";
 
-         if ($first >=0) {
+         if ($first >= 0) {
             echo "<li><a href='$cleantarget?id=$first$extraparamhtml'><img src='".
                        $CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('First').
                        "\" title=\"".__s('First')."\"></a></li>";
@@ -456,7 +461,7 @@ class CommonGLPI {
                        __s('First')."\" title=\"".__s('First')."\"></li>";
          }
 
-         if ($prev >=0) {
+         if ($prev >= 0) {
             echo "<li><a href='$cleantarget?id=$prev$extraparamhtml'><img src='".
                        $CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous').
                        "\" title=\"".__s('Previous')."\"></a></li>";
@@ -469,7 +474,7 @@ class CommonGLPI {
             echo "<li>".($current+1) . "/" . count($glpilistitems)."</li>";
          }
 
-         if ($next >=0) {
+         if ($next >= 0) {
             echo "<li><a href='$cleantarget?id=$next$extraparamhtml'><img src='".
                        $CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
                        "\" title=\"".__s('Next')."\"></a></li>";
@@ -478,7 +483,7 @@ class CommonGLPI {
                        __s('Next')."\" title=\"".__s('Next')."\"></li>";
          }
 
-         if ($last >=0) {
+         if ($last >= 0) {
             echo "<li><a href='$cleantarget?id=$last$extraparamhtml'><img src=\"".
                        $CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__s('Last').
                        "\" title=\"".__s('Last')."\"></a></li>";
@@ -492,7 +497,7 @@ class CommonGLPI {
       echo "<div id='tabspanel' class='center-h'></div>";
 
       $active      = 0;
-      $onglets = $this->defineAllTabs($options);
+      $onglets     = $this->defineAllTabs($options);
 
       $display_all = true;
       if (isset($onglets['no_all_tab'])) {
@@ -501,8 +506,8 @@ class CommonGLPI {
       }
 
       $class = $this->getType();
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
-          && ($ID > 0 || $this->showdebug)
+      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+          && (($ID > 0) || $this->showdebug)
           && (method_exists($class, 'showDebug')
               || in_array($class, $CFG_GLPI["infocom_types"])
               || in_array($class, $CFG_GLPI["reservation_types"]))) {

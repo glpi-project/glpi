@@ -61,6 +61,9 @@ abstract class CommonITILActor extends CommonDBRelation {
    }
 
 
+   /**
+    * @param $items_id
+   **/
    function getActors($items_id) {
       global $DB;
 
@@ -76,6 +79,10 @@ abstract class CommonITILActor extends CommonDBRelation {
    }
 
 
+   /**
+    * @param $items_id
+    * @param $email
+   **/
    function isAlternateEmailForITILObject($items_id, $email) {
       global $DB;
 
@@ -96,24 +103,24 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       return (parent::canUpdateItem()
               || (isset($this->fields['users_id'])
-                  && $this->fields['users_id'] == Session::getLoginUserID()));
+                  && ($this->fields['users_id'] == Session::getLoginUserID())));
    }
 
 
    /**
     * Check right on an item - overloaded to check user access to its datas
     *
-    * @param $ID     ID of the item (-1 if new item)
-    * @param $right  Right to check : r / w / recursive
-    * @param $input  array of input data (used for adding item) (default NULL)
+    * @param $ID            ID of the item (-1 if new item)
+    * @param $right         Right to check : r / w / recursive
+    * @param &$input  array of input data (used for adding item) (default NULL)
     *
     * @return boolean
    **/
    function can($ID, $right, array &$input=NULL) {
 
-      if ($ID>0) {
+      if ($ID > 0) {
          if (isset($this->fields['users_id'])
-             && $this->fields['users_id']===Session::getLoginUserID()) {
+             && ($this->fields['users_id'] === Session::getLoginUserID())) {
             return true;
          }
       }
@@ -124,7 +131,7 @@ abstract class CommonITILActor extends CommonDBRelation {
    /**
     * Print the object user form for notification
     *
-    * @param $ID        integer ID of the item
+    * @param $ID              integer ID of the item
     * @param $options   array
     *
     * @return Nothing (display)
@@ -166,12 +173,12 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       echo "<tr class='tab_bg_1'><td>".__('Email')."</td>";
       echo "<td>";
-      if (count($emails) ==  1
+      if ((count($emails) ==  1)
           && !empty($default_email)
           && NotificationMail::isUserAddressValid($default_email)) {
          echo $default_email;
 
-      } else if (count($emails) >  1) {
+      } else if (count($emails) > 1) {
          // Several emails : select in the list
          echo "<select name='alternative_email' value=''>";
          echo "<option value='' ".(empty($this->fields['alternative_email'])?'selected':'').">".
@@ -192,7 +199,7 @@ abstract class CommonITILActor extends CommonDBRelation {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='2'>";
-      echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
+      echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
 
@@ -212,11 +219,11 @@ abstract class CommonITILActor extends CommonDBRelation {
       $item = new $this->itemtype_1();
 
       if ($item->getFromDB($this->fields[$this->getItilObjectForeignKey()])) {
-         if ($item->fields["suppliers_id_assign"] == 0
-             && $item->countUsers(CommonITILObject::ASSIGN) == 0
-             && $item->countGroups(CommonITILObject::ASSIGN) == 0
-             && $item->fields['status'] != 'closed'
-             && $item->fields['status'] != 'solved') {
+         if (($item->fields["suppliers_id_assign"] == 0)
+             && ($item->countUsers(CommonITILObject::ASSIGN) == 0)
+             && ($item->countGroups(CommonITILObject::ASSIGN) == 0)
+             && ($item->fields['status'] != 'closed')
+             && ($item->fields['status'] != 'solved')) {
 
             $item->update(array('id'     => $this->fields[$this->getItilObjectForeignKey()],
                                 'status' => 'new'));

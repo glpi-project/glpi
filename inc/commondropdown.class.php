@@ -113,6 +113,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
 
    function displayHeader() {
+
       if (empty($this->third_level_menu)) {
         $this->third_level_menu = $this->getType();
       }
@@ -147,14 +148,14 @@ abstract class CommonDropdown extends CommonDBTM {
       }
       echo "</td>";
 
-      echo "<td rowspan='".($nb+1)."'>";
-      echo __('Comments')."</td>";
+      echo "<td rowspan='".($nb+1)."'>". __('Comments')."</td>";
       echo "<td rowspan='".($nb+1)."'>
             <textarea cols='45' rows='".($nb+2)."' name='comment' >".$this->fields["comment"];
       echo "</textarea></td></tr>\n";
 
       foreach ($fields as $field) {
-         if ($field['name']=='entities_id' && $ID==0) {
+         if (($field['name'] == 'entities_id')
+             && ($ID == 0)) {
             // No display for root entity
             echo "<tr class='tab_bg_1'><td>&nbsp;</td></tr>";
             break;
@@ -211,12 +212,11 @@ abstract class CommonDropdown extends CommonDBTM {
                break;
 
             case 'parent' :
-               if ($field['name']=='entities_id') {
+               if ($field['name'] == 'entities_id') {
                   $restrict = -1;
                } else {
                   $restrict = $this->getEntityID();
                }
- //              print_r(getSonsOf($this->getTable(), $ID));
                Dropdown::show(getItemTypeForTable($this->getTable()),
                               array('value'  => $this->fields[$field['name']],
                                     'name'   => $field['name'],
@@ -349,7 +349,7 @@ abstract class CommonDropdown extends CommonDBTM {
       $RELATION = getDbRelations();
       if (isset($RELATION[$this->getTable()])) {
          foreach ($RELATION[$this->getTable()] as $tablename => $field) {
-            if ($tablename[0]!='_') {
+            if ($tablename[0] != '_') {
                if (!is_array($field)) {
                   $query = "SELECT COUNT(*) AS cpt
                             FROM `$tablename`
@@ -407,16 +407,17 @@ abstract class CommonDropdown extends CommonDBTM {
 
       if (!$this->must_be_replace) {
          // Delete form (set to 0)
-         echo "<p>".
-               __('If you confirm the deletion, all uses of this dropdown will be blanked.') .
+         echo "<p>".__('If you confirm the deletion, all uses of this dropdown will be blanked.') .
               "</p>";
          echo "<form action='$target' method='post'>";
          echo "<table class='tab_cadre'><tr>";
          echo "<td><input type='hidden' name='id' value='$ID'>";
          echo "<input type='hidden' name='forcedelete' value='1'>";
-         echo "<input class='submit' type='submit' name='delete' value=\"".__s('Confirm')."\">";
+         echo "<input class='submit' type='submit' name='delete'
+                value=\""._sx('button','Confirm')."\">";
          echo "</td>";
-         echo "<td><input class='submit' type='submit' name='annuler' value=\"".__s('Cancel')."\">";
+         echo "<td><input class='submit' type='submit' name='annuler'
+                    value=\""._sx('button','Cancel')."\">";
          echo "</td></tr></table>\n";
          echo "</form>";
       }
@@ -429,7 +430,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       if ($this instanceof CommonTreeDropdown) {
          // TreeDropdown => default replacement is parent
-         $fk=$this->getForeignKeyField();
+         $fk = $this->getForeignKeyField();
          Dropdown::show(getItemTypeForTable($this->getTable()),
                         array('name'   => '_replace_by',
                               'value'  => $this->fields[$fk],
@@ -444,9 +445,9 @@ abstract class CommonDropdown extends CommonDBTM {
       }
       echo "<input type='hidden' name='id' value='$ID'/>";
       echo "</td><td>";
-      echo "<input class='submit' type='submit' name='replace' value=\"".__s('Replace')."\">";
+      echo "<input class='submit' type='submit' name='replace' value=\""._sx('button','Replace')."\">";
       echo "</td><td>";
-      echo "<input class='submit' type='submit' name='annuler' value=\"".__s('Cancel')."\">";
+      echo "<input class='submit' type='submit' name='annuler' value=\""._sx('button','Cancel')."\">";
       echo "</td></tr></table>\n";
       echo "</form>";
       echo "</div>";
@@ -506,7 +507,7 @@ abstract class CommonDropdown extends CommonDBTM {
    /**
     * check if a dropdown already exists (before import)
     *
-    * @param $input  array of value to import (name)
+    * @param &$input  array of value to import (name)
     *
     * @return the ID of the new (or -1 if not found)
    **/
@@ -514,10 +515,10 @@ abstract class CommonDropdown extends CommonDBTM {
       global $DB;
 
       if (!empty($input["name"])) {
-
          $query = "SELECT `id`
                    FROM `".$this->getTable()."`
                    WHERE `name` = '".$input["name"]."'";
+
          if ($this->isEntityAssign()) {
             $query .= getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
                                                  $input['entities_id'], $this->maybeRecursive());
@@ -555,7 +556,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       // Check twin :
       if ($ID = $this->findID($input)) {
-         if ($ID>0) {
+         if ($ID > 0) {
             return $ID;
          }
       }
@@ -578,7 +579,7 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * @return integer : dropdown id.
    **/
-   function importExternal($value, $entities_id = -1, $external_params=array(), $comment="",
+   function importExternal($value, $entities_id=-1, $external_params=array(), $comment="",
                            $add=true) {
 
       $value = trim($value);
