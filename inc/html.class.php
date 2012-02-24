@@ -317,7 +317,7 @@ class Html {
       $time = floor($time);
 
       // Force display seconds if time is null
-      if ($time==0) {
+      if ($time<MINUTE_TIMESTAMP) {
          $display_sec = true;
       }
 
@@ -332,7 +332,7 @@ class Html {
          $out .= " ".$units['hour']."&nbsp;".Toolbox::ucfirst($LANG['gmt'][1]);
       }
 
-      if ($units['minute']>0 || (!$display_sec && empty($out))) {
+      if ($units['minute']>0) {
          $out .= " ".$units['minute']."&nbsp;".$LANG['stats'][33];
       }
 
