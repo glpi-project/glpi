@@ -332,7 +332,7 @@ class Html {
          $out .= " ".$units['hour']."&nbsp;".Toolbox::ucfirst($LANG['gmt'][1]);
       }
 
-      if ($units['minute']>0) {
+      if ($units['minute']>0 || (!$display_sec && empty($out))) {
          $out .= " ".$units['minute']."&nbsp;".$LANG['stats'][33];
       }
 
