@@ -1403,7 +1403,7 @@ $LANG['ocsconfig'][56]="空";
 $LANG['ocsconfig'][57]="等於"; 
 $LANG['ocsconfig'][58]="透過一個OCSNG自動連接GLPI 電腦.<br>此選項只考慮以腳本做同步,而非手動做同步."; 
 $LANG['ocsconfig'][59]="OCSNG控制台的網址"; 
-$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
+$LANG['ocsconfig'][60]="僅導入裝置序號"; 
 
 $LANG['ocsng'][0]="OCS固定資產NG"; 
 $LANG['ocsng'][1]="同步已經導入的電腦"; 

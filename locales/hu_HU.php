@@ -1403,7 +1403,7 @@ $LANG['ocsconfig'][56]="üres";
 $LANG['ocsconfig'][57]="egyenlő"; 
 $LANG['ocsconfig'][58]="A kapcsolat automatikusan párosítja az itt található gépeket az OCS tartalmával. Csak automatikus (szkripttel megvalósított) szinkronizáció esetén van jelentősége."; 
 $LANG['ocsconfig'][59]="OCS felület címe"; 
-$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
+$LANG['ocsconfig'][60]="Csak sorozatszám importálása"; 
 
 $LANG['ocsng'][0]="OCS Inventory NG"; 
 $LANG['ocsng'][1]="Már importált gépek szinkronizálása"; 

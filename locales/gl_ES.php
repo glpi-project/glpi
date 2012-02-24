@@ -671,7 +671,7 @@ $LANG['financial'][22]="Tipo de amortización";
 $LANG['financial'][23]="Duración de amortización"; 
 $LANG['financial'][24]="Engadir Contacto..."; 
 $LANG['financial'][25]="Engadir Provedor..."; 
-$LANG['financial'][26]="Provedor"; 
+$LANG['financial'][26]="Fornecedor"; 
 $LANG['financial'][27]="Data de entrega"; 
 $LANG['financial'][28]="Data do pedido"; 
 $LANG['financial'][29]="Data de inicio da garantía"; 
@@ -1403,7 +1403,7 @@ $LANG['ocsconfig'][56]="baleiro";
 $LANG['ocsconfig'][57]="igual"; 
 $LANG['ocsconfig'][58]="A ligazón une automaticamente un computador GLPI cun de OCSNG.<br>Esta opción tense en conta na sincronización automática e na manual."; 
 $LANG['ocsconfig'][59]="URL da consola de OCSNG"; 
-$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
+$LANG['ocsconfig'][60]="Dependencia de importación sobre o número de serie"; 
 
 $LANG['ocsng'][0]="Inventario OCS NG"; 
 $LANG['ocsng'][1]="Sincronización de computadores xa importados"; 
