@@ -1063,7 +1063,7 @@ class Search {
                                     $count_display++;
 
                                     // Manage Link to item
-                                    $split2 = explode("$$", $split[$k]);
+                                    $split2 = self::explodeWithID("$$", $split[$k]);
                                     if (isset($split2[1])) {
                                        $out .= "<a id='".$p['itemtype2'][$j].'_'.$data["id"].'_'.
                                                 $split2[1]."' ";
@@ -4166,7 +4166,11 @@ class Search {
 
                   for ($k=0 ; $k<count($split) ; $k++) {
                      if (strlen(trim($split[$k]))>0) {
-                        $split2 = explode("$$", $split[$k]);
+                        $split2 = self::explodeWithID("$$", $split[$k]);
+                        // integer begin by 
+                        if ($split2[1][0] == '$') {
+                           
+                        }
                         if (isset($split2[1]) && $split2[1]>0) {
                            if ($count_display) {
                               $out .= $separate;
@@ -5416,7 +5420,22 @@ class Search {
       }
       return $SEARCH;
    }
-
+   
+   static function explodeWithID($pattern, $subject) {
+      $tab = explode($pattern,$subject);
+      
+      if (!is_numeric($tab[1])) {
+         // Report $ to tab[0]
+         if (preg_match('/^(\\$*)(.*)/',$tab[1],$matchs)) {
+            if (isset($matchs[2]) && is_numeric($matchs[2])) {
+               $tab[1] = $matchs[2];
+               $tab[0] .= $matchs[1];
+            }
+         }
+      }
+      
+      return $tab;
+   }
 
 }
 
