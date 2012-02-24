@@ -51,10 +51,8 @@ class Change_Item extends CommonDBRelation{
    function prepareInputForAdd($input) {
 
       if (empty($input['itemtype'])
-          || empty($input['items_id'])
-          || $input['items_id']==0
-          || empty($input['changes_id'])
-          || $input['changes_id']==0) {
+          || empty($input['items_id']) || ($input['items_id'] == 0)
+          || empty($input['changes_id']) || ($input['changes_id'] == 0)) {
          return false;
       }
 
@@ -171,17 +169,19 @@ class Change_Item extends CommonDBRelation{
             $nb            = $DB->numrows($result_linked);
 
             for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
-               $ID = "";
-               if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                  $ID = " (".$data["id"].")";
+               $link     = Toolbox::getItemTypeFormURL($itemtype);
+               $linkname = $data["name"];
+               if ($_SESSION["glpiis_ids_visible"]
+                   || empty($data["name"])) {
+                  $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
                }
-               $link = Toolbox::getItemTypeFormURL($itemtype);
-               $name = "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."$ID</a>";
+               $name = "<a href=\"".$link."?id=".$data["id"]."\">".$linkname."</a>";
 
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   $sel = "";
-                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                  if (isset($_GET["select"])
+                      && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
                   echo "<td width='10'>";
@@ -208,7 +208,7 @@ class Change_Item extends CommonDBRelation{
       }
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='2'>".
-             ($totalnb>0? sprintf(__('Total = %s'), $totalnb) : "&nbsp;");
+             ($totalnb>0 ? sprintf(__('Total = %s'), $totalnb) : "&nbsp;");
       echo "</td><td colspan='4'>&nbsp;</td></tr> ";
 
       if ($canedit) {
@@ -250,7 +250,7 @@ class Change_Item extends CommonDBRelation{
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='Change') {
+      if ($item->getType() == 'Change') {
          self::showForChange($item);
       }
       return true;
