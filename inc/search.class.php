@@ -5424,7 +5424,7 @@ class Search {
    static function explodeWithID($pattern, $subject) {
       $tab = explode($pattern,$subject);
       
-      if (!is_numeric($tab[1])) {
+      if (isset($tab[1]) && !is_numeric($tab[1])) {
          // Report $ to tab[0]
          if (preg_match('/^(\\$*)(.*)/',$tab[1],$matchs)) {
             if (isset($matchs[2]) && is_numeric($matchs[2])) {
