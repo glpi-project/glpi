@@ -77,6 +77,9 @@ class CalendarSegment extends CommonDBChild {
 
    /**
     * Duplicate all segments from a calendar to his clone
+    *
+    * @param $oldid
+    * @param $newid
    **/
    function cloneCalendar($oldid, $newid) {
       global $DB;
@@ -156,9 +159,9 @@ class CalendarSegment extends CommonDBChild {
                       AND (`begin` < '$end_time')
                       AND ('$begin_time' < `end`)";
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                list($hour, $minute ,$second) = explode(':', $data['TDIFF']);
                $sum += $hour*HOUR_TIMESTAMP+$minute*MINUTE_TIMESTAMP+$second;
             }
@@ -191,9 +194,9 @@ class CalendarSegment extends CommonDBChild {
                      AND ('$begin_time' < `end`)
                 ORDER BY `begin`";
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                list($hour, $minute, $second) = explode(':', $data['TDIFF']);
                $tstamp = $hour*HOUR_TIMESTAMP+$minute*MINUTE_TIMESTAMP+$second;
 
@@ -234,7 +237,7 @@ class CalendarSegment extends CommonDBChild {
                 WHERE `calendars_id` = '$calendars_id'
                       AND `day` = '$day'";
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             return $DB->result($result,0,0);
          }
@@ -261,7 +264,7 @@ class CalendarSegment extends CommonDBChild {
                 WHERE `calendars_id` = '$calendars_id'
                       AND `day` = '$day'";
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             return $DB->result($result,0,0);
          }
