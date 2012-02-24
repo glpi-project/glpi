@@ -91,8 +91,8 @@ class Cartridge extends CommonDBTM {
       if (in_array('pages', $this->updates)) {
          $printer = new Printer();
          if ($printer->getFromDB($this->fields['printers_id'])
-             && ($this->fields['pages'] > $printer->getField('last_pages_counter')
-                 || $this->oldvalues['pages'] == $printer->getField('last_pages_counter'))) {
+             && (($this->fields['pages'] > $printer->getField('last_pages_counter'))
+                 || ($this->oldvalues['pages'] == $printer->getField('last_pages_counter')))) {
 
             $printer->update(array('id'                 => $printer->getID(),
                                    'last_pages_counter' => $this->fields['pages'] ));
@@ -101,7 +101,10 @@ class Cartridge extends CommonDBTM {
    }
 
 
-   function restore(array $input,$history=1) {
+   /**
+    * @see inc/CommonDBTM::restore()
+    */
+   function restore(array $input, $history=1) {
       global $DB;
 
       $query = "UPDATE `".$this->getTable()."`
@@ -110,7 +113,8 @@ class Cartridge extends CommonDBTM {
                     `printers_id` = '0'
                 WHERE `id`='".$input["id"]."'";
 
-      if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
+      if ($result = $DB->query($query)
+          && ($DB->affected_rows() > 0)) {
          return true;
       }
       return false;
@@ -160,7 +164,8 @@ class Cartridge extends CommonDBTM {
                    WHERE (`id`='".$DB->result($result,0,0)."'
                           AND `date_use` IS NULL)";
 
-         if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
+         if ($result = $DB->query($query)
+             && ($DB->affected_rows() > 0)) {
             return true;
          }
 
@@ -187,7 +192,8 @@ class Cartridge extends CommonDBTM {
                 SET `date_out` = '".date("Y-m-d")."'
                 WHERE `id`='$ID'";
 
-      if ($result = $DB->query($query) && $DB->affected_rows() > 0) {
+      if ($result = $DB->query($query)
+          && ($DB->affected_rows() > 0)) {
          return true;
       }
       return false;
@@ -209,13 +215,13 @@ class Cartridge extends CommonDBTM {
       /// TODO to be more useful permit to have several columns and display number in it
       // Get total
       $total = self::getTotalNumber($tID);
-      $out = "";
-      if ($total!=0) {
-         $unused = self::getUnusedNumber($tID);
-         $used   = self::getUsedNumber($tID);
-         $old    = self::getOldNumber($tID);
-         $highlight = "";
-         if ($unused<=$alarm_threshold) {
+      $out   = "";
+      if ($total != 0) {
+         $unused     = self::getUnusedNumber($tID);
+         $used       = self::getUsedNumber($tID);
+         $old        = self::getOldNumber($tID);
+         $highlight  = "";
+         if ($unused <= $alarm_threshold) {
             $highlight = "tab_bg_1_2";
          }
 
@@ -348,8 +354,8 @@ class Cartridge extends CommonDBTM {
    /**
     * Print out the cartridges of a defined type
     *
-    * @param $cartitem  object of CartridgeItem class
-    * @param $show_old  boolean : show old cartridges or not (default 0)
+    * @param $cartitem  object   of CartridgeItem class
+    * @param $show_old  boolean  show old cartridges or not (default 0)
     *
     * @return Nothing (displays)
    **/
@@ -368,9 +374,6 @@ class Cartridge extends CommonDBTM {
 
       if ($result = $DB->query($query)) {
          $total  = $DB->result($result, 0, "count");
-//          $unused = self::getUnusedNumber($tID);
-//          $used   = self::getUsedNumber($tID);
-//          $old    = self::getOldNumber($tID);
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          if (!$show_old) {
@@ -427,9 +430,9 @@ class Cartridge extends CommonDBTM {
 
       $pages = array();
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          $number = $DB->numrows($result);
-         while ($data=$DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $date_in  = Html::convDate($data["date_in"]);
             $date_use = Html::convDate($data["date_use"]);
             $date_out = Html::convDate($data["date_out"]);
@@ -442,30 +445,30 @@ class Cartridge extends CommonDBTM {
             echo "<td class='center'>".$date_use."</td>";
             echo "<td class='center'>";
             if (!is_null($date_use)) {
-               if ($data["printID"]>0) {
-                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/printer.form.php?id=".
-                        $data["printID"]."'><span class='b'>".$data["printname"];
+               if ($data["printID"] > 0) {
+                  $printname = $data["printname"];
                   if ($_SESSION['glpiis_ids_visible']) {
-                     echo " (".$data["printID"].")";
+                     $printname = sprintf(__('%1$s (%2$s)'), $printname, $data["printID"]);
                   }
-                  echo "</span></a>";
+                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/printer.form.php?id=".
+                        $data["printID"]."'><span class='b'>".$printname."</span></a>";
                } else {
                   echo NOT_AVAILABLE;
                }
-               $tmp_dbeg = explode("-",$data["date_in"]);
-               $tmp_dend = explode("-",$data["date_use"]);
+               $tmp_dbeg       = explode("-",$data["date_in"]);
+               $tmp_dend       = explode("-",$data["date_use"]);
                $stock_time_tmp = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
                                  - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
-               $stock_time += $stock_time_tmp;
+               $stock_time    += $stock_time_tmp;
             }
             echo "</td><td class='center'>";
             echo $date_out;
             if ($show_old) {
-               $tmp_dbeg = explode("-",$data["date_use"]);
-               $tmp_dend = explode("-",$data["date_out"]);
-               $use_time_tmp = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
-                               - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
-               $use_time += $use_time_tmp;
+               $tmp_dbeg      = explode("-",$data["date_use"]);
+               $tmp_dend      = explode("-",$data["date_out"]);
+               $use_time_tmp  = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
+                                 - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
+               $use_time     += $use_time_tmp;
             }
 
             echo "</td>";
@@ -475,12 +478,12 @@ class Cartridge extends CommonDBTM {
                   $pages[$printer] = $data['init_pages_counter'];
                }
                echo "<td class='center'>";
-               if ($pages[$printer]<$data['pages']) {
-                  $pages_printed += $data['pages']-$pages[$printer];
+               if ($pages[$printer] < $data['pages']) {
+                  $pages_printed   += $data['pages']-$pages[$printer];
                   $nb_pages_printed++;
-                  $pp = $data['pages']-$pages[$printer];
-                  echo sprintf(_n('%d printed page','%d printed pages',$pp), $pp);
-                  $pages[$printer] = $data['pages'];
+                  $pp               = $data['pages']-$pages[$printer];
+                  printf(_n('%d printed page','%d printed pages',$pp), $pp);
+                  $pages[$printer]  = $data['pages'];
                }
                echo "</td>";
             }
@@ -498,14 +501,15 @@ class Cartridge extends CommonDBTM {
             echo "<td class='center'>";
             if ($canedit) {
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?delete=delete&amp;id=".
-                     $data["id"]."&amp;tID=$tID'>".__s('Delete')."</a>";
+                     $data["id"]."&amp;tID=$tID'>".__('Delete')."</a>";
             } else {
                 echo "&nbsp;";
             }
             echo "</td></tr>";
          }
-         if ($show_old&&$number>0) {
-            if ($nb_pages_printed==0) {
+         if ($show_old
+             && ($number > 0)) {
+            if ($nb_pages_printed == 0) {
                 $nb_pages_printed = 1;
             }
             echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
@@ -526,7 +530,7 @@ class Cartridge extends CommonDBTM {
    /**
     * Print out a link to add directly a new cartridge from a cartridge item.
     *
-    * @param $cartitem object of CartridgeItem class
+    * @param $cartitem  CartridgeItem object
     *
     * @return Nothing (displays)
    **/
@@ -555,8 +559,8 @@ class Cartridge extends CommonDBTM {
    /**
     * Show installed cartridges
     *
-    * @param $printer   object Printer
-    * @param $old       boolean : old cartridges or not ? (default 0)
+    * @param $printer            Printer object
+    * @param $old       boolean  old cartridges or not ? (default 0)
     *
     * @return nothing (display)
    **/
@@ -589,12 +593,12 @@ class Cartridge extends CommonDBTM {
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $i = 0;
+      $i      = 0;
 
       $pages = $printer->fields['init_pages_counter'];
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-      if ($old==0) {
+      if ($old == 0) {
          echo "<tr><th colspan='5'>".__('Used cartridges')."</th></tr>";
       } else {
          echo "<tr><th colspan='7'>".__('Worn cartridges')."</th></tr>";
@@ -602,7 +606,7 @@ class Cartridge extends CommonDBTM {
       echo "<tr><th>".__('ID')."</th><th>"._n('Cartridge model','Cartridge models',1)."</th>";
       echo "<th>".__('Add date')."</th>";
       echo "<th>".__('Use date')."</th>";
-      if ($old!=0) {
+      if ($old != 0) {
          echo "<th>".__('End date')."</th><th>".__('Printer counter')."</th>";
       }
 
@@ -612,7 +616,7 @@ class Cartridge extends CommonDBTM {
       $pages_printed    = 0;
       $nb_pages_printed = 0;
 
-      while ($data=$DB->fetch_assoc($result)) {
+      while ($data = $DB->fetch_assoc($result)) {
          $date_in  = Html::convDate($data["date_in"]);
          $date_use = Html::convDate($data["date_use"]);
          $date_out = Html::convDate($data["date_out"]);
@@ -620,31 +624,31 @@ class Cartridge extends CommonDBTM {
          echo "<td class='center'>".$data["id"]."</td>";
          echo "<td class='center b'>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php?id=".$data["tID"]."\">".
-                $data["type"]." - ".$data["ref"]."</a></td>";
+                sprintf(__('%1$s - %2$s'), $data["type"], $data["ref"])."</a></td>";
          echo "<td class='center'>".$date_in."</td>";
          echo "<td class='center'>".$date_use;
 
-         $tmp_dbeg = explode("-", $data["date_in"]);
-         $tmp_dend = explode("-", $data["date_use"]);
+         $tmp_dbeg       = explode("-", $data["date_in"]);
+         $tmp_dend       = explode("-", $data["date_use"]);
 
          $stock_time_tmp = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
                            - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
-         $stock_time += $stock_time_tmp;
+         $stock_time    += $stock_time_tmp;
 
-         if ($old!=0) {
+         if ($old != 0) {
             echo "</td>";
             echo "<td class='center'>".$date_out;
          }
-         if ($old!=0) {
-            $tmp_dbeg = explode("-", $data["date_use"]);
-            $tmp_dend = explode("-", $data["date_out"]);
+         if ($old != 0) {
+            $tmp_dbeg      = explode("-", $data["date_use"]);
+            $tmp_dend      = explode("-", $data["date_out"]);
 
-            $use_time_tmp = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
-                            - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
-            $use_time+=$use_time_tmp;
+            $use_time_tmp  = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
+                              - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
+            $use_time     += $use_time_tmp;
          }
          echo "</td><td class='center'>";
-         if ($old!=0) {
+         if ($old != 0) {
             if ($canedit) {
                echo "<form method='post' action=\"".$CFG_GLPI["root_doc"].
                     "/front/cartridge.form.php\">";
@@ -657,12 +661,12 @@ class Cartridge extends CommonDBTM {
                echo "<input type='text' name='pages' value=\"".$data['pages']."\" size='10'>";
             }
 
-            if ($pages<$data['pages']) {
-               $pages_printed += $data['pages']-$pages;
+            if ($pages < $data['pages']) {
+               $pages_printed   += $data['pages']-$pages;
                $nb_pages_printed++;
-               $pp=$data['pages']-$pages;
-               echo sprintf(_n('%d printed page','%d printed pages',$pp), $pp);
-               $pages = $data['pages'];
+               $pp                = $data['pages']-$pages;
+               printf(_n('%d printed page','%d printed pages',$pp), $pp);
+               $pages            = $data['pages'];
             }
             echo "</td><td class='center'>";
          }
@@ -680,28 +684,29 @@ class Cartridge extends CommonDBTM {
             echo "</span></td></tr>";
          }
       }
-      if ($old==0 && $canedit) {
+      if (($old == 0)
+          && $canedit) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='3'>";
          echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
          echo "<input type='hidden' name='printers_id' value='$instID'>";
 
          if (CartridgeItem::dropdownForPrinter($printer)) {
-            echo "&nbsp;<input type='submit' name='install' value=\"".__s('Install')."\"
+            echo "&nbsp;<input type='submit' name='install' value=\""._sx('button','Install')."\"
                          class='submit'>";
          }
          echo "</form></td><td class='tab_bg_2 center'>&nbsp;";
          echo "</td></tr>";
 
       } else { // Print average
-         if ($number>0) {
-            if ($nb_pages_printed==0) {
+         if ($number > 0) {
+            if ($nb_pages_printed == 0) {
                $nb_pages_printed = 1;
             }
             echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
-            echo "<td class='center'>".__('Average Time in stock')."<br>";
+            echo "<td class='center'>".__('Average time in stock')."<br>";
             $time_stock = round($stock_time/$number/60/60/24/30.5,1);
             echo sprintf(_n('%d month', '%d months', $time_stock), $time_stock)."</td>";
-            echo "<td class='center'>".__('Average Time in use')."<br>";
+            echo "<td class='center'>".__('Average time in use')."<br>";
             $time_use = round($use_time/$number/60/60/24/30.5,1);
             echo sprintf(_n('%d month', '%d months', $time_use), $time_use)."</td>";
             echo "<td class='center'>".__('Average number of printed pages')."<br>";
@@ -745,7 +750,8 @@ class Cartridge extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate && Session::haveRight("cartridge","r"))
+      if (!$withtemplate
+          && Session::haveRight("cartridge","r"))
          switch ($item->getType()) {
             case 'Printer' :
                if ($_SESSION['glpishow_count_on_tabs']) {

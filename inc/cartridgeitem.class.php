@@ -81,7 +81,7 @@ class CartridgeItem extends CommonDBTM {
          $name = $this->fields["name"];
 
          if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
-            $name .= " - ".$this->fields["ref"];
+            $name = sprintf(__(' %1$s - %2$s'), $name, $this->fields["ref"]);
          }
          return $name.$toadd;
       }
@@ -97,6 +97,7 @@ class CartridgeItem extends CommonDBTM {
                 FROM `glpi_cartridges`
                 WHERE `cartridgeitems_id` = '".$this->fields['id']."'";
       $DB->query($query);
+
       // Delete all cartridge assoc
       $query2 = "DELETE
                  FROM `glpi_cartridgeitems_printermodels`
@@ -109,7 +110,8 @@ class CartridgeItem extends CommonDBTM {
 
       $this->fields["alarm_threshold"] = Entity::getUsedConfig("cartriges_alert_repeat",
                                                                $this->fields["entities_id"],
-                                                               "default_cartridges_alarm_threshold", 10);
+                                                               "default_cartridges_alarm_threshold",
+                                                               10);
    }
 
 
@@ -160,12 +162,14 @@ class CartridgeItem extends CommonDBTM {
    function addCompatibleType($cartridgeitems_id, $printermodels_id) {
       global $DB;
 
-      if ($cartridgeitems_id>0 && $printermodels_id>0) {
+      if (($cartridgeitems_id > 0)
+          && ($printermodels_id > 0)) {
          $query = "INSERT INTO `glpi_cartridgeitems_printermodels`
                           (`cartridgeitems_id`, `printermodels_id`)
                    VALUES ('$cartridgeitems_id', '$printermodels_id');";
 
-         if ($result = $DB->query($query) && $DB->affected_rows()>0) {
+         if ($result = $DB->query($query)
+             && ($DB->affected_rows() > 0)) {
             return true;
          }
       }
@@ -177,7 +181,7 @@ class CartridgeItem extends CommonDBTM {
     * Print the cartridge type form
     *
     * @param $ID        integer ID of the item
-    * @param $options   array
+    * @param $options   array os possible options:
     *     - target for the Form
     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
     *
@@ -266,7 +270,7 @@ class CartridgeItem extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                       = array();
       $tab['common']             = __('Characteristics');
 
       $tab[1]['table']           = $this->getTable();
@@ -385,7 +389,7 @@ class CartridgeItem extends CommonDBTM {
                   //TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
                   $message .= sprintf(__('Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s - Remaining %3$d'),
                                       $cartridge["cartname"], $cartridge["cartref"], $unused);
-                  $message.='<br>';
+                  $message .='<br>';
 
                   $items[$cartridge["cartID"]] = $cartridge;
 
@@ -399,29 +403,28 @@ class CartridgeItem extends CommonDBTM {
             if (!empty($items)) {
                $options['entities_id'] = $entity;
                $options['cartridges']  = $items;
+
+               $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
                if (NotificationEvent::raiseEvent('alert', new Cartridge(), $options)) {
                   if ($task) {
-                     $task->log(Dropdown::getDropdownName("glpi_entities", $entity)
-                               ."&nbsp;:  $message\n");
+                     $task->log(sprintf(__('%1$s: %2$s')."\n", $entityname, $message));
                      $task->addVolume(1);
                   } else {
-                     Session::addMessageAfterRedirect(Dropdown::getDropdownName("glpi_entities",
-                                                                                $entity)
-                                                      ."&nbsp;:  $message");
+                     Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'),
+                                                               $entityname, $message));
                   }
 
                   $input["type"]     = Alert::THRESHOLD;
                   $input["itemtype"] = 'CartridgeItem';
 
                   // add alerts
-                  foreach ($items as $ID=>$consumable) {
+                  foreach ($items as $ID => $consumable) {
                      $input["items_id"] = $ID;
                      $alert->add($input);
                      unset($alert->fields['id']);
                   }
 
                } else {
-                  $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
                   //TRANS: %s is entity name
                   $msg = sprintf(__('%s: send cartridge alert failed'), $entityname);
                   if ($task) {
@@ -511,7 +514,7 @@ class CartridgeItem extends CommonDBTM {
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $i = 0;
+      $i      = 0;
 
       echo "<div class='spaced'>";
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php\">";

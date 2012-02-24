@@ -58,8 +58,8 @@ class Calendar_Holiday extends CommonDBRelation {
 
       if (!isset($input['holidays_id'])
           || !isset($input['calendars_id'])
-          || $input['calendars_id'] <= 0
-          || $input['holidays_id'] <= 0) {
+          || ($input['calendars_id'] <= 0)
+          || ($input['holidays_id'] <= 0)) {
          return false;
       }
       return $input;
@@ -81,7 +81,7 @@ class Calendar_Holiday extends CommonDBRelation {
 
       $canedit = $calendar->can($ID,'w');
 
-      $rand=mt_rand();
+      $rand    = mt_rand();
       echo "<form name='calendarholiday_form$rand' id='calendarholiday_form$rand' method='post'
              action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -104,7 +104,7 @@ class Calendar_Holiday extends CommonDBRelation {
 
       $used = array();
 
-      if ($DB->numrows($result) >0) {
+      if ($DB->numrows($result) > 0) {
 
          Session::initNavigateListItems('Holiday',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
