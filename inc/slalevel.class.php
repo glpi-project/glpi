@@ -160,8 +160,10 @@ class SlaLevel extends RuleTicket {
                                                       :__('Due date'))."</td>";
                echo "<td>".Dropdown::getYesNo($data["is_active"])."</td>";
                echo "</tr>";
-               echo "<tr class='tab_bg_1'><td colspan='4'>";
-               $this->getRuleWithCriteriasAndActions($data['id'],0,1);
+               echo "<tr class='tab_bg_1'><td colspan='2'>";
+               $this->getRuleWithCriteriasAndActions($data['id'],1,1);
+               $this->showCriteriasList($data["id"], array('readonly' => true));
+               echo "</td><td colspan='2'>";
                $this->showActionsList($data["id"], array('readonly' => true));
                echo "</td></tr>";
             }

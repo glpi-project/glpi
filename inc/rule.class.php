@@ -495,10 +495,26 @@ class Rule extends CommonDBTM {
     * Display all rules criterias
     *
     * @param $rules_id
+    * @param $options   array of options : may be readonly    
    **/
-   function showCriteriasList($rules_id) {
+   function showCriteriasList($rules_id, $options=array()) {
+
+      $p['readonly'] = false;
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
 
       $canedit = $this->can($rules_id, "w");
+      $style   = "class='tab_cadre_fixe'";
+
+      if ($p['readonly']) {
+         $canedit = false;
+         $style   = "class='tab_cadre'";
+      }
+
 
       if ($canedit) {
 
@@ -510,9 +526,11 @@ class Rule extends CommonDBTM {
 
       echo "<div class='spaced'>";
 
-      echo "<form name='criteriasform' id='criteriasform' method='post' action='".
+      if ($canedit) {
+            echo "<form name='criteriasform' id='criteriasform' method='post' action='".
              Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
-      echo "<table class='tab_cadre_fixe'>";
+      }
+      echo "<table $style>";
       echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>". _n('Criteria', 'Criteria', 2).
            "</th></tr>\n";
 
@@ -537,7 +555,10 @@ class Rule extends CommonDBTM {
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          Html::closeArrowMassives(array('delete_criteria' => __('Delete')));
       }
-      echo "</form></div>\n";
+      if ($canedit) {
+         echo "</form>";
+      }
+      echo "</div>\n";
    }
 
 
