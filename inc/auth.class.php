@@ -335,13 +335,40 @@ class Auth {
             if (isset($sslattributes[$CFG_GLPI["x509_email_field"]])
                 && NotificationMail::isUserAddressValid($sslattributes[$CFG_GLPI["x509_email_field"]])
                 && self::isValidLogin($sslattributes[$CFG_GLPI["x509_email_field"]])) {
+               
+               $restrict = false;
+               $CFG_GLPI["x509_ou_restrict"] = trim($CFG_GLPI["x509_ou_restrict"]);
+               if (!empty($CFG_GLPI["x509_ou_restrict"])) {
+                  $split = explode ('$',$CFG_GLPI["x509_ou_restrict"]);
+                  
+                  if (!in_array($sslattributes['OU'], $split)) {
+                     $restrict = true;                             
+                  }
+               }
+               $CFG_GLPI["x509_o_restrict"] = trim($CFG_GLPI["x509_o_restrict"]);
+               if (!empty($CFG_GLPI["x509_o_restrict"])) {
+                  $split = explode ('$',$CFG_GLPI["x509_o_restrict"]);
+                  
+                  if (!in_array($sslattributes['O'], $split)) {
+                     $restrict = true;                             
+                  }
+               }
+               $CFG_GLPI["x509_cn_restrict"] = trim($CFG_GLPI["x509_cn_restrict"]);
+               if (!empty($CFG_GLPI["x509_cn_restrict"])) {
+                  $split = explode ('$',$CFG_GLPI["x509_cn_restrict"]);
+                  
+                  if (!in_array($sslattributes['CN'], $split)) {
+                     $restrict = true;                             
+                  }
+               }
 
-               $this->user->fields['name'] = $sslattributes[$CFG_GLPI["x509_email_field"]];
-
-               // Can do other things if need : only add it here
-               $this->user->fields['email'] = $this->user->fields['name'];
-
-               return true;
+               if (!$restrict) {
+                  $this->user->fields['name'] = $sslattributes[$CFG_GLPI["x509_email_field"]];
+   
+                  // Can do other things if need : only add it here
+                  $this->user->fields['email'] = $this->user->fields['name'];
+                  return true;
+               }
             }
             break;
       }
@@ -1052,6 +1079,19 @@ class Auth {
       echo "<td class='center'>". __('Email attribute for x509 authentication') ."</td>";
       echo "<td><input type='text' name='x509_email_field' value=\"".$CFG_GLPI["x509_email_field"]."\">";
       echo "</td></tr>\n";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center'>". __('Restrict OU for x509 authentication (separator $)') ."</td>";
+      echo "<td><input type='text' name='x509_ou_restrict' value=\"".$CFG_GLPI["x509_ou_restrict"]."\">";
+      echo "</td></tr>\n";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center'>". __('Restrict CN for x509 authentication (separator $)') ."</td>";
+      echo "<td><input type='text' name='x509_cn_restrict' value=\"".$CFG_GLPI["x509_cn_restrict"]."\">";
+      echo "</td></tr>\n";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center'>". __('Restrict O for x509 authentication (separator $)') ."</td>";
+      echo "<td><input type='text' name='x509_o_restrict' value=\"".$CFG_GLPI["x509_o_restrict"]."\">";
+      echo "</td></tr>\n";
+
 
       // Autres config
       echo "<tr><th>" . __('Other authentication sent in the HTTP request')."</th><th>";
