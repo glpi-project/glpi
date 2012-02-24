@@ -634,6 +634,10 @@ td { }
    border:1px dotted #000000;
 }
 
+td.central {
+   vertical-align:top;
+   width:450px;
+}
 
 td.numerique {
    text-align:right;
