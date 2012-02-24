@@ -1217,8 +1217,6 @@ class AuthLDAP extends CommonDBTM {
             if (!empty($ldap_users[$user['name']])) {
                //If entry was modified or if script should synchronize all the users
                if (($values['action'] == self::ACTION_ALL)
-                  // TODO : je pige pas comment on peut soustraire un timestamp d'un nom
-                  // version correcte : $ldap_users[$user['name']]['timestamp'] ???
                    || ($ldap_users[$user['name']] - strtotime($user['date_sync']) > 0)) {
 
                   $glpi_users[] = array('id'        => $user['id'],
