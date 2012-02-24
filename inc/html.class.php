@@ -1788,7 +1788,8 @@ class Html {
       $addconfig = array();
       $menu['config']['title'] = __('Setup');
 
-      if (Session::haveRight("dropdown","r") || Session::haveRight("entity_dropdown","r")) {
+      if (Session::haveRight("dropdown","r") || Session::haveRight("entity_dropdown","r")
+          || Session::haveRight("internet","r")) {
          $menu['config']['content']['dropdowns']['title']    = _n('Dropdown', 'Dropdowns', 2);
          $menu['config']['content']['dropdowns']['shortcut'] = 'n';
          $menu['config']['content']['dropdowns']['page']     = '/front/dropdown.php';
