@@ -1354,6 +1354,10 @@ function update083to084() {
    $migration->addField("glpi_contacts", 'town', "string");
    $migration->addField("glpi_contacts", 'state', "string");
    $migration->addField("glpi_contacts", 'country', "string");
+   
+   $migration->addField("glpi_configs", 'x509_ou_restrict', "string", array('after' => 'x509_email_field'));
+   $migration->addField("glpi_configs", 'x509_o_restrict', "string", array('after' => 'x509_email_field'));
+   $migration->addField("glpi_configs", 'x509_cn_restrict', "string", array('after' => 'x509_email_field'));
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
