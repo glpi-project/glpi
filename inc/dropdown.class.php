@@ -1046,22 +1046,23 @@ class Dropdown {
     *    - min : min value : default 0
     *    - max : max value : default DAY_TIMESTAMP
     *    - value : default value
+    *    - addfirstminutes : add first minutes before first step (default false)
    **/
    static function showTimeStamp($myname, $options = array()) {
       global $LANG, $CFG_GLPI;
 
-      $params['value']       = 0;
-      $params['min']         = 0;
-      $params['max']         = DAY_TIMESTAMP;
-      $params['step']        = $CFG_GLPI["time_step"]*MINUTE_TIMESTAMP;
-      $params['emptylabel']  = self::EMPTY_VALUE;
+      $params['value']            = 0;
+      $params['min']              = 0;
+      $params['max']              = DAY_TIMESTAMP;
+      $params['step']             = $CFG_GLPI["time_step"]*MINUTE_TIMESTAMP;
+      $params['emptylabel']       = self::EMPTY_VALUE;
+      $params['addfirstminutes']  = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
          }
       }
-
       // Manage min :
       $params['min'] = floor($params['min']/$params['step'])*$params['step'];
 
@@ -1075,19 +1076,36 @@ class Dropdown {
       $params['value'] = floor(($params['value'])/$params['step'])*$params['step'];
 
       $values = array(0  => $params['emptylabel']);
-      for ($i = $params['min'] ; $i <= $params['max']; $i+=$params['step']) {
-         $day        = floor($i/DAY_TIMESTAMP);
-         $hour       = floor(($i%DAY_TIMESTAMP)/HOUR_TIMESTAMP);
-         $minute     = floor(($i%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP);
-         $values[$i] = '';
-         if ($day > 0) {
-            $values[$i] = $day.'&nbsp;'.$LANG['calendar'][12].'&nbsp;';
+
+      if ($params['value']) {
+         $values[$params['value']] = '';
+      }
+      
+      if ($params['addfirstminutes']) {
+         for ($i=MINUTE_TIMESTAMP; $i<$params['min']; $i+=MINUTE_TIMESTAMP) {
+            $values[$i] = '';
          }
-         if ($hour > 0 || $minute > 0) {
-            if ($minute<10) {
-               $minute='0'.$minute;
+      }
+
+      for ($i = $params['min'] ; $i <= $params['max']; $i+=$params['step']) {
+         $values[$i] = '';
+      }
+      
+      foreach ($values as $i => $val){
+         if (empty($val)) {      
+            $day        = floor($i/DAY_TIMESTAMP);
+            $hour       = floor(($i%DAY_TIMESTAMP)/HOUR_TIMESTAMP);
+            $minute     = floor(($i%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP);
+            $values[$i] = '';
+            if ($day > 0) {
+               $values[$i] = $day.'&nbsp;'.$LANG['calendar'][12].'&nbsp;';
             }
-            $values[$i] .= $hour.$LANG['gmt'][2].($minute==0?'':$minute);
+            if ($hour > 0 || $minute > 0) {
+               if ($minute<10) {
+                  $minute='0'.$minute;
+               }
+               $values[$i] .= $hour.$LANG['gmt'][2].($minute==0?'':$minute);
+            }
          }
       }
 

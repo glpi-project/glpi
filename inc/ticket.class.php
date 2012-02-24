@@ -3794,7 +3794,8 @@ class Ticket extends CommonITILObject {
               "</th>";
          echo "<td colspan='3'>";
          echo $tt->getBeginHiddenFieldValue('actiontime');
-         Dropdown::showTimeStamp('actiontime', array('value' => $values['actiontime']));
+         Dropdown::showTimeStamp('actiontime', array('value' => $values['actiontime'], 
+                                                     'addfirstminutes' => true));
          echo $tt->getEndHiddenFieldValue('actiontime',$this);
          echo "</td>";
          echo "</tr>";
