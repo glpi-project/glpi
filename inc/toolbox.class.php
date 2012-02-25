@@ -830,8 +830,64 @@ class Toolbox {
             break;
       }
       $suberr = Config::checkWriteAccessToDirs();
+      if ($suberr > $error) {
+         $error = $suberr;
+      }
 
-      return ($suberr ? $suberr : $error);
+      $suberr = self::checkSELinux();
+      if ($suberr > $error) {
+         $error = $suberr;
+      }
+
+      return $error;
+   }
+
+
+   /**
+    * Check SELinux configuration
+    *
+    *  @return integer 0: OK, 1:Warning, 2:Error
+    **/
+   static function checkSELinux() {
+
+      if (DIRECTORY_SEPARATOR!='/' || !file_exists('/usr/sbin/getenforce')) {
+         // This is not a SELinux system
+         return 0;
+      }
+
+      $mode = exec("/usr/sbin/getenforce");
+      //TRANS: %s is mode name (Permissive, Enforcing of Disabled)
+      $msg = sprintf(__('SELinux mode is %s'), $mode);
+      echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
+      // All modes should be ok
+      echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='$mode' title='$mode'></td></tr>";
+      if (!strcasecmp($mode, 'Disabled')) {
+         // Other test are not useful
+         return 0;
+      }
+
+      $err = 0;
+
+      // No need to check file context as checkWriteAccessToDirs will show issues
+
+      // Enforcing mode will block some feature (notif, ...)
+      // Permissive mode will write lot of stuff in audit.log
+
+      $bools = array('httpd_can_network_connect', 'httpd_can_network_connect_db', 'httpd_can_sendmail');
+      foreach ($bools as $bool) {
+         $state = exec('/usr/sbin/getsebool '.$bool);
+         //TRANS: %s is an option name
+         $msg = sprintf(__('SELinux boolean configuration for %s'), $state);
+         echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
+         if (substr($state, -2) == 'on') {
+            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='$state' title='$state'></td></tr>";
+         } else {
+            echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png' alt='$state' title='$state'></td></tr>";
+            $err = 1;
+         }
+      }
+
+      return $err;
    }
 
 
@@ -880,7 +936,7 @@ class Toolbox {
             break;
          }
       }
-      //TRANS: %1$s is a number maybe float or string and %2$s the unit 
+      //TRANS: %1$s is a number maybe float or string and %2$s the unit
       return sprintf(__('%1$s %2$s'),round($size, 2),$val);
    }
 
