@@ -4167,9 +4167,9 @@ class Search {
                   for ($k=0 ; $k<count($split) ; $k++) {
                      if (strlen(trim($split[$k]))>0) {
                         $split2 = self::explodeWithID("$$", $split[$k]);
-                        // integer begin by 
+                        // integer begin by
                         if ($split2[1][0] == '$') {
-                           
+
                         }
                         if (isset($split2[1]) && $split2[1]>0) {
                            if ($count_display) {
@@ -4581,7 +4581,7 @@ class Search {
       $opts  = &self::getOptions($itemtype);
 
       foreach ($opts as $num => $opt) {
-         if ($opt['table']==$table && $opt['field']==$field) {
+         if (is_array($opt) && $opt['table']==$table && $opt['field']==$field) {
             return $num;
          }
       }
@@ -5420,10 +5420,10 @@ class Search {
       }
       return $SEARCH;
    }
-   
+
    static function explodeWithID($pattern, $subject) {
       $tab = explode($pattern,$subject);
-      
+
       if (isset($tab[1]) && !is_numeric($tab[1])) {
          // Report $ to tab[0]
          if (preg_match('/^(\\$*)(.*)/',$tab[1],$matchs)) {
@@ -5433,7 +5433,7 @@ class Search {
             }
          }
       }
-      
+
       return $tab;
    }
 
