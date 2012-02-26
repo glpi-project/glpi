@@ -4513,7 +4513,7 @@ class Ticket extends CommonITILObject {
          $options['reset']         ='reset';
 
          echo "<div class='center'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='9'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
+         echo "<tr><th colspan='10'>".$LANG['central'][10]." ($number)&nbsp;: &nbsp;";
          echo "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                 Toolbox::append_params($options,'&amp;')."'>".$LANG['buttons'][40]."</a>";
          echo "</th></tr>";
