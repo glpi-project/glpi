@@ -253,6 +253,8 @@ class Link extends CommonDBTM {
 
       } else { // Return sevral links id several IP / MAC
          $links = array();
+
+         //TODO rewrite this for new IP management
          $query2 = "SELECT `id`, `ip`, `mac`, `logical_number`
                     FROM `glpi_networkports`
                     WHERE `items_id` = '".$item->fields['id']."'
