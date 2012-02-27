@@ -354,6 +354,8 @@ class Link extends CommonDBTM {
             if (empty($name)) {
                $name = $data["link"];
             }
+            $names = self::generateLinkContents($name, $item);
+
             $file = trim($data["data"]);
 
             if (empty($file)) {
@@ -361,6 +363,7 @@ class Link extends CommonDBTM {
                $links = self::generateLinkContents($data['link'], $item);
                $i     = 1;
                foreach ($links as $key => $link) {
+                  $name =  (isset($names[$key]) ? $names[$key] : reset($names));
                   echo "<tr class='tab_bg_2'>";
                   $url = $link;
                   echo "<td class='center'><a href='$url' target='_blank'>$name #$i : $link</a>";
@@ -373,6 +376,7 @@ class Link extends CommonDBTM {
                $links = self::generateLinkContents($data['data'], $item);
                $i     = 1;
                foreach ($links as $key => $link) {
+                  $name =  (isset($names[$key]) ? $names[$key] : reset($names));
                   if (isset($files[$key])) {
                      // a different name for each file, ex name = foo-[IP].txt
                      $file = $files[$key];
