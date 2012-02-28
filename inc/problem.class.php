@@ -743,6 +743,10 @@ class Problem extends CommonITILObject {
         return false;
       }
 
+      // In percent
+      $colsize1='13';
+      $colsize2='37';  
+      
       // Set default options
       if (!$ID) {
          $values = array('_users_id_requester'       => Session::getLoginUserID(),
@@ -799,89 +803,73 @@ class Problem extends CommonITILObject {
       $this->showFormHeader($options);
 
       echo "<tr>";
-      echo "<th class='left' colspan='2'>";
-
+      echo "<th width='$colsize1%'>".$LANG['joblist'][11]."&nbsp;:</th>";
+      echo "<td class='left' width='$colsize2%'>";
       if (isset($options['tickets_id'])) {
          echo "<input type='hidden' name='_tickets_id' value='".$options['tickets_id']."'>";
       }
 
-      echo "<table>";
-      echo "<tr>";
-      echo "<td><span class='tracking_small'>".$LANG['joblist'][11]."&nbsp;: </span></td>";
-      echo "<td>";
       $date = $this->fields["date"];
       if (!$ID) {
          $date = date("Y-m-d H:i:s");
       }
       Html::showDateTimeFormItem("date", $date, 1, false);
 
-      echo "</td></tr>";
-      if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".$LANG['common'][95]." &nbsp;:</span></td><td>";
-         User::dropdown(array('name'   => 'users_id_recipient',
-                              'value'  => $this->fields["users_id_recipient"],
-                              'entity' => $this->fields["entities_id"],
-                              'right'  => 'all'));
-         echo "</td></tr>";
-      }
-      echo "</table>";
-      echo "</th>";
+      echo "</td>";
+      echo "<th width='$colsize1%'>".$LANG['sla'][5]."&nbsp;:</th>";
+      echo "<td width='$colsize2%' class='left'>";
 
-      echo "<th class='left' colspan='2'>";
-      echo "<table>";
-
-      if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".$LANG['common'][26]."&nbsp;:</span></td>";
-         echo "<td><span class='tracking_small'>".Html::convDateTime($this->fields["date_mod"])."\n";
-         if ($this->fields['users_id_lastupdater']>0) {
-            echo $LANG['common'][95]."&nbsp;";
-            echo getUserName($this->fields["users_id_lastupdater"], $showuserlink);
-         }
-         echo "</span>";
-         echo "</td></tr>";
-      }
-
-      // SLA
-      echo "<tr>";
-      echo "<td><span class='tracking_small'>".$LANG['sla'][5]."&nbsp;: </span></td>";
-      echo "<td>";
       if ($this->fields["due_date"]=='NULL') {
          $this->fields["due_date"] = '';
       }
       Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true);
       echo "</td></tr>";
-
+      
       if ($ID) {
-         switch ($this->fields["status"]) {
-            case 'closed' :
-               echo "<tr>";
-               echo "<td><span class='tracking_small'>".$LANG['joblist'][12]."&nbsp;: </span></td>";
+         echo "<tr><th>".$LANG['common'][95]." &nbsp;:</td><td>";
+         User::dropdown(array('name'   => 'users_id_recipient',
+                              'value'  => $this->fields["users_id_recipient"],
+                              'entity' => $this->fields["entities_id"],
+                              'right'  => 'all'));
+         echo "</td>";
+      
+         echo "<th>".$LANG['common'][26]."&nbsp;:</th>";
+         echo "<td>".Html::convDateTime($this->fields["date_mod"])."\n";
+         if ($this->fields['users_id_lastupdater']>0) {
+            echo $LANG['common'][95]."&nbsp;";
+            echo getUserName($this->fields["users_id_lastupdater"], $showuserlink);
+         }
+         echo "</td></tr>";
+      }	 
+	 
+      if ($ID && (in_array($this->fields["status"], $this->getSolvedStatusArray())
+                  || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<th>".$LANG['joblist'][14]."&nbsp;:</th>";
+         echo "<td>";
+         Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
+         echo "</td>";
+         if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
+               echo "<th>".$LANG['joblist'][12]."&nbsp;:</th>";
                echo "<td>";
                Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false);
-               echo "</td></tr>";
-               break;
-
-            case 'solved' :
-            case 'observe' :
-               echo "<tr>";
-               echo "<td><span class='tracking_small'>".$LANG['joblist'][14]."&nbsp;: </span></td>";
-               echo "<td>";
-               Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
-               echo "</td></tr>";
-               break;
+               echo "</td>";
+         } else {
+            echo "<td colspan='2'>&nbsp;</td>";
          }
+         echo "</tr>";
       }
 
       echo "</table>";
-      echo "</th></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['joblist'][0]."&nbsp;: </th>";
-      echo "<td>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr>";
+      echo "<th width='$colsize1%'>".$LANG['joblist'][0]."&nbsp;: </th>";
+      echo "<td width='$colsize2%'>";
       self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
       echo "</td>";
-      echo "<th>".$LANG['joblist'][29]."&nbsp;: </th>";
-      echo "<td>";
+      echo "<th width='$colsize1%'>".$LANG['joblist'][29]."&nbsp;: </th>";
+      echo "<td width='$colsize2%'>";
       // Only change during creation OR when allowed to change priority OR when user is the creator
       $idurgency = self::dropdownUrgency("urgency", $this->fields["urgency"]);
       echo "</td>";
@@ -922,8 +910,8 @@ class Problem extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".$LANG['common'][57]."&nbsp;:</th>";
-      echo "<td colspan='5'>";
+      echo "<th width='$colsize1%'>".$LANG['common'][57]."&nbsp;:</th>";
+      echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showName$rand() {\n";
@@ -953,7 +941,7 @@ class Problem extends CommonITILObject {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['joblist'][6]."&nbsp;:&nbsp;</th>";
-      echo "<td colspan='5'>";
+      echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showDesc$rand() {\n";
@@ -980,7 +968,7 @@ class Problem extends CommonITILObject {
       }
       echo "</td>";
       echo "</tr>";
-      $options['colspan'] = 3;
+      $options['colspan'] = 2;
       $this->showFormButtons($options);
       $this->addDivForTabs();
 
