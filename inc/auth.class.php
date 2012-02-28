@@ -621,7 +621,7 @@ class Auth {
                Event::log(-1, "system", 3, "login", $login_name." log in from ".$ip);
             } else {
                //TRANS: %1$s is the login of the user and %2$s its IP address
-               Event::log(-1, "system", 3, "login", sprintf(__('%1$s log out from IP %2$s'),
+               Event::log(-1, "system", 3, "login", sprintf(__('%1$s log in from IP %2$s'),
                                                             $login_name, $ip));
             }
 
@@ -1080,15 +1080,15 @@ class Auth {
       echo "<td><input type='text' name='x509_email_field' value=\"".$CFG_GLPI["x509_email_field"]."\">";
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>". __('Restrict OU for x509 authentication (separator $)') ."</td>";
+      echo "<td class='center'>". sprintf(__('Restrict %s field for x509 authentication (separator $)'),'OU') ."</td>";
       echo "<td><input type='text' name='x509_ou_restrict' value=\"".$CFG_GLPI["x509_ou_restrict"]."\">";
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>". __('Restrict CN for x509 authentication (separator $)') ."</td>";
+      echo "<td class='center'>". sprintf(__('Restrict %s field for x509 authentication (separator $)'),'CN') ."</td>";
       echo "<td><input type='text' name='x509_cn_restrict' value=\"".$CFG_GLPI["x509_cn_restrict"]."\">";
       echo "</td></tr>\n";
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>". __('Restrict O for x509 authentication (separator $)') ."</td>";
+      echo "<td class='center'>". sprintf(__('Restrict %s field for x509 authentication (separator $)'),'O') ."</td>";
       echo "<td><input type='text' name='x509_o_restrict' value=\"".$CFG_GLPI["x509_o_restrict"]."\">";
       echo "</td></tr>\n";
 

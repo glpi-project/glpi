@@ -76,7 +76,7 @@ echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name='".$_POST['
 
 if (($_POST['searchText'] != $CFG_GLPI["ajax_wildcard"])
     && ($DB->numrows($result) == $NBMAX)) {
-   echo "<option value='0'>".__('--Limited view--')."</option>";
+   echo "<option value='0'>--".__('Limited view')."--</option>";
 } else {
    echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 }
