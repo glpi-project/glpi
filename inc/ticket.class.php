@@ -3658,18 +3658,22 @@ class Ticket extends CommonITILObject {
       // Display validation state
       echo "<th>";
       if (!$ID) {
-         echo $LANG['validation'][26]."&nbsp;:&nbsp;";
+         echo $tt->getBeginHiddenFieldText('_add_validation');
+         echo $LANG['validation'][26]."&nbsp;:".$tt->getMandatoryMark('_add_validation');
+         echo $tt->getEndHiddenFieldText('_add_validation');
       } else {
          echo $LANG['validation'][0]."&nbsp;:&nbsp;";
       }
       echo "</th>";
       echo "<td>";
       if (!$ID) {
+         echo $tt->getBeginHiddenFieldValue('_add_validation');
          if (Session::haveRight('create_validation',1)) {
             User::dropdown(array('name'   => "_add_validation",
                                  'entity' => $this->fields['entities_id'],
                                  'right'  => 'validate_ticket'));
          }
+         echo $tt->getEndHiddenFieldValue('_add_validation',$this);
       } else {
          if ($canupdate) {
             TicketValidation::dropdownStatus('global_validation',

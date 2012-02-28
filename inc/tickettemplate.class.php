@@ -196,22 +196,31 @@ class TicketTemplate extends CommonDropdown {
                                                                      'items_id',
                                                                      'glpi_tickets')] = 'items_id';
          }
+         // Add validation request 
+         $allowed_fields[$withtypandcategory][$with_items_id][-2]= '_add_validation';
+         
       }
 
       return $allowed_fields[$withtypandcategory][$with_items_id];
 
-     /// TODO ADD : validation_request : _add_validation : change num storage in DB / add hidden searchOption ?
      /// TODO ADD : linked tickets ? : array passed. How to manage it ? store array in DB + add hidden searchOption ?
    }
 
 
    function getAllowedFieldsNames($withtypandcategory=0, $with_items_id=1) {
-
+      global $LANG;
+      
       $searchOption = Search::getOptions('Ticket');
       $tab          = $this->getAllowedFields($withtypandcategory, $with_items_id);
       foreach ($tab as $ID => $shortname) {
-         if (isset($searchOption[$ID]['name'])) {
-            $tab[$ID] = $searchOption[$ID]['name'];
+         switch ($ID) {
+         case -2 :
+            $tab[-2] = $LANG['validation'][26];
+            break;
+         default :
+            if (isset($searchOption[$ID]['name'])) {
+               $tab[$ID] = $searchOption[$ID]['name'];
+            }
          }
       }
       return $tab;
