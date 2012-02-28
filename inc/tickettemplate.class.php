@@ -214,13 +214,13 @@ class TicketTemplate extends CommonDropdown {
       $tab          = $this->getAllowedFields($withtypandcategory, $with_items_id);
       foreach ($tab as $ID => $shortname) {
          switch ($ID) {
-         case -2 :
-            $tab[-2] = $LANG['validation'][26];
-            break;
-         default :
-            if (isset($searchOption[$ID]['name'])) {
-               $tab[$ID] = $searchOption[$ID]['name'];
-            }
+            case -2 :
+               $tab[-2] = $LANG['validation'][26];
+               break;
+            default :
+               if (isset($searchOption[$ID]['name'])) {
+                  $tab[$ID] = $searchOption[$ID]['name'];
+               }
          }
       }
       return $tab;

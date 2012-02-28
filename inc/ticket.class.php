@@ -3507,15 +3507,15 @@ class Ticket extends CommonITILObject {
          echo "</tr>";
       }
 
-      if ($ID && ($this->fields["status"]=='solved'
-                  || $this->fields["status"]=='closed')) {
+      if ($ID && (in_array($this->fields["status"], $this->getSolvedStatusArray())
+                  || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
          echo "<tr class='tab_bg_1'>";
          echo "<th>".$LANG['joblist'][14]."&nbsp;:</th>";
          echo "<td>";
          Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false,
                                     $canupdate);
          echo "</td>";
-         if ($this->fields["status"]=='closed') {
+         if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
                echo "<th>".$LANG['joblist'][12]."&nbsp;:</th>";
                echo "<td>";
                Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false,
