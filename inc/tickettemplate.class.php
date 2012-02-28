@@ -192,6 +192,8 @@ class TicketTemplate extends CommonDropdown {
                                                                      'items_id',
                                                                      'glpi_tickets')] = 'items_id';
          }
+         // Add validation request 
+         $allowed_fields[$withtypeandcategory][$with_items_id][-2]= '_add_validation';
       }
 
       return $allowed_fields[$withtypeandcategory][$with_items_id];
@@ -206,8 +208,14 @@ class TicketTemplate extends CommonDropdown {
       $searchOption = Search::getOptions('Ticket');
       $tab          = $this->getAllowedFields($withtypeandcategory, $with_items_id);
       foreach ($tab as $ID => $shortname) {
-         if (isset($searchOption[$ID]['name'])) {
-            $tab[$ID] = $searchOption[$ID]['name'];
+         switch ($ID) {
+            case -2 :
+               $tab[-2] = __('Approval request');
+               break;
+            default :
+               if (isset($searchOption[$ID]['name'])) {
+                  $tab[$ID] = $searchOption[$ID]['name'];
+               }
          }
       }
       return $tab;
