@@ -1153,7 +1153,7 @@ class Dropdown {
       
       
       if ($params['addfirstminutes']) {
-         for ($i=MINUTE_TIMESTAMP; $i<$params['min']; $i+=MINUTE_TIMESTAMP) {
+         for ($i=MINUTE_TIMESTAMP; $i<max($params['min'], 10*MINUTE_TIMESTAMP); $i+=MINUTE_TIMESTAMP) {
             $values[$i] = '';
          }
       }    
