@@ -328,7 +328,7 @@ class Ajax {
          if (is_array($datas) && count($datas)) {
             // Put it in array
             if (isset($datas['to_update'])) {
-               $datas[] = $datas;
+               $datas = array($datas);
             }
             foreach ($datas as $data) {
                $paramsupdate = array();
