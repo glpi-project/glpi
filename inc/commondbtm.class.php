@@ -3240,7 +3240,7 @@ class CommonDBTM extends CommonGLPI {
          while ($data = $DB->fetch_assoc($result)) {
             $templname = $data["template_name"];
             if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
-               $templname = sprintf(__('%1$s (%2$s'), $templname, $data["id"]);
+               $templname = sprintf(__('%1$s (%2$s)'), $templname, $data["id"]);
             }
             if ($item->canCreate() && !$add) {
                echo "<tr><td class='tab_bg_1 center'>";
