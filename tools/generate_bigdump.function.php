@@ -1595,7 +1595,7 @@ function generate_entity($ID_entity) {
                         '".date("Y-m-d",intval($date2))."', '0.0000', '0', '', NULL, '')";
       $DB->query($query) or die("PB REQUETE ".$query);
    }
-   $LAST["document"] = getMaxItem("glpi_documents");
+   $LAST["budget"] = getMaxItem("glpi_budgets");
 
 
    // glpi_suppliers
