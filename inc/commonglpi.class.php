@@ -302,7 +302,7 @@ class CommonGLPI {
 
       if ($nb) {
          //TRANS: %1$s is the name of the tab, $2$d is number of items in the tab between ()
-         $text = sprintf(__('%1$s %2$d'), $text, "<sup>($nb)</sup>");
+         $text = sprintf(__('%1$s %2$s'), $text, "<sup>($nb)</sup>");
       }
       return $text;
    }
