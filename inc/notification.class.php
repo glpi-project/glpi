@@ -334,7 +334,9 @@ class Notification extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       foreach ($DB->request('glpi_entitydatas', array('entities_id' => $entity)) as $data) {
-         return $data['mailing_signature'];
+         if (!empty($data['mailing_signature'])) {
+            return $data['mailing_signature'];
+         }
       }
       return $CFG_GLPI['mailing_signature'];
 
