@@ -1256,7 +1256,7 @@ class Config extends CommonDBTM {
             echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
                   sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."\n";
          } else {
-            echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
+            echo "<td><img src='".GLPI_ROOT."/pics/orangebutton.png'>".
                  "<p class='red'>".__s("The file was created but can't be deleted.")."</p>".
                  sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."</td></tr>";
          }
