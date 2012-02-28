@@ -717,7 +717,7 @@ class Toolbox {
 
       } else if ($error != 2) {
          echo "<td class='red'>";
-         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
+         echo "<img src='".GLPI_ROOT."/pics/orangebutton.png'>".
                 __('Make sure that sessions support has been activated in your php.ini')."</td></tr>";
          $error = 1;
       }
@@ -882,7 +882,7 @@ class Toolbox {
          if (substr($state, -2) == 'on') {
             echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='$state' title='$state'></td></tr>";
          } else {
-            echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png' alt='$state' title='$state'></td></tr>";
+            echo "<td><img src='".GLPI_ROOT."/pics/orangebutton.png' alt='$state' title='$state'></td></tr>";
             $err = 1;
          }
       }
