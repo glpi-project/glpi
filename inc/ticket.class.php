@@ -1236,30 +1236,62 @@ class Ticket extends CommonITILObject {
       }
 
       parent::post_addItem();
-
       //Action for send_validation rule
-      if (isset($this->input["_add_validation"]) && $this->input["_add_validation"]>0) {
-
-         $validation = new Ticketvalidation();
-         $values['tickets_id']        = $this->fields['id'];
-         $values['users_id_validate'] = $this->input["_add_validation"];
-         // to know update by rules
-         if (isset($this->input["_rule_process"])) {
-            $values['_rule_process'] = $this->input["_rule_process"];
+      if (isset($this->input["_add_validation"])) {
+         $validations_to_send = array();
+         if (!is_array($this->input["_add_validation"])) {
+             $this->input["_add_validation"][] = $this->input["_add_validation"];
          }
-
-         // Cron or rule process of hability to do
-         if (Session::isCron()
-             || isset($this->input["_rule_process"])
-             || $validation->can(-1, 'w', $values)) { // cron or allowed user
-            $validation->add($values);
-
-            Event::log($this->fields['id'], "ticket", 4, "tracking",
-                       sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
-                               $this->fields['id']));
+         foreach ($this->input["_add_validation"] as $validation) {
+            switch ($validation) {
+               case 'requester_supervisor':
+                  if (isset($this->input['_groups_id_requester']) && $this->input['_groups_id_requester']) {
+                     $users=Group_User::getGroupUsers($this->input['_groups_id_requester'], "is_manager='1'");
+                     foreach ($users as $data) {
+                        $validations_to_send[] = $data['id'];  
+                     }
+                  }
+                  break;
+               case 'assign_supervisor':
+                  if (isset($this->input['_groups_id_assign']) && $this->input['_groups_id_assign']) {
+                     $users=Group_User::getGroupUsers($this->input['_groups_id_assign'], "is_manager='1'");
+                     foreach ($users as $data) {
+                        $validations_to_send[] = $data['id'];  
+                     }
+                  }
+                  break;
+               default :
+                  $validations_to_send[] = $validation;
+            }
+         
+         }
+         // Keep only one
+         $validations_to_send = array_unique($validations_to_send);
+         
+         $validation = new TicketValidation();
+         
+         foreach ($validations_to_send as $users_id) {
+            if ($users_id > 0) {
+               $values = array();
+               $values['tickets_id']        = $this->fields['id'];
+               $values['users_id_validate'] = $users_id;
+               // to know update by rules
+               if (isset($this->input["_rule_process"])) {
+                  $values['_rule_process'] = $this->input["_rule_process"];
+               }
+      
+               // Cron or rule process of hability to do
+               if (Session::isCron()
+                  || isset($this->input["_rule_process"])
+                  || $validation->can(-1, 'w', $values)) { // cron or allowed user
+                  $validation->add($values);
+                  Event::log($this->fields['id'], "ticket", 4, "tracking",
+                           sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
+                                    $this->fields['id']));
+               }
+            }
          }
       }
-
       // Processing Email
       if ($CFG_GLPI["use_mailing"]) {
          // Clean reload of the ticket

@@ -50,18 +50,23 @@ class Group_User extends CommonDBRelation{
    public $logs_only_for_itemtype1   = false;
 
 
-   static function getUserGroups($users_id) {
+   static function getUserGroups($users_id, $condition='') {
       global $DB;
 
       $groups = array();
       $query = "SELECT `glpi_groups`.*,
                        `glpi_groups_users`.`id` AS IDD,
                        `glpi_groups_users`.`id`  as linkID,
-                       `glpi_groups_users`.`is_dynamic` AS is_dynamic
+                       `glpi_groups_users`.`is_dynamic` AS is_dynamic,
+                       `glpi_groups_users`.`is_manager` AS is_manager,
+                       `glpi_groups_users`.`is_userdelegate` AS is_userdelegate
                 FROM `glpi_groups_users`
                 LEFT JOIN `glpi_groups` ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
-                WHERE `glpi_groups_users`.`users_id` = '$users_id'
-                ORDER BY `glpi_groups`.`name`";
+                WHERE `glpi_groups_users`.`users_id` = '$users_id' ";
+      if (!empty($condition)) {
+         $query .= " AND $condition ";
+      }
+      $query.=" ORDER BY `glpi_groups`.`name`";
 
       foreach ($DB->request($query) as $data) {
          $groups[] = $data;
@@ -69,7 +74,30 @@ class Group_User extends CommonDBRelation{
       return $groups;
    }
 
+   static function getGroupUsers($groups_id, $condition='') {
+      global $DB;
 
+      $users = array();
+      $query = "SELECT `glpi_users`.*,
+                       `glpi_groups_users`.`id` AS IDD,
+                       `glpi_groups_users`.`id`  as linkID,
+                       `glpi_groups_users`.`is_dynamic` AS is_dynamic,
+                       `glpi_groups_users`.`is_manager` AS is_manager,
+                       `glpi_groups_users`.`is_userdelegate` AS is_userdelegate
+                FROM `glpi_groups_users`
+                LEFT JOIN `glpi_users` ON (`glpi_users`.`id` = `glpi_groups_users`.`users_id`)
+                WHERE `glpi_groups_users`.`groups_id` = '$groups_id'";
+      if (!empty($condition)) {
+         $query .= " AND $condition ";
+      }
+      $query .= "ORDER BY `glpi_users`.`name`";
+
+      foreach ($DB->request($query) as $data) {
+         $users[] = $data;
+      }
+      return $users;
+   }
+   
    /**  Show groups of a user
     *
     * @param $user the user
