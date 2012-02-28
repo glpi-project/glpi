@@ -2100,8 +2100,8 @@ $LANG['setup'][12]  = "Pré-sélection comme technicien lors de la création de 
 
 $LANG['setup'][14]  = "Adresse de messagerie";
 $LANG['setup'][15]  = "Adresses de messagerie";
-$LANG['setup'][16]  = "SELinux mode is";
-$LANG['setup'][17]  = "SELinux boolean configuration for";
+$LANG['setup'][16]  = "SELinux en mode";
+$LANG['setup'][17]  = "SELinux : configuration du booléen";
 $LANG['setup'][18]  = "Identifiant";
 $LANG['setup'][19]  = "Mot de passe";
 $LANG['setup'][20]  = "Confirmation mot de passe";
