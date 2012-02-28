@@ -460,7 +460,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
          echo "<input type='submit' name='test_ldap' class='submit' value=\"".
-                __s('button','Test')."\">";
+                _sx('button','Test')."\">";
          echo "</td></tr>";
          echo "</table></div></form>";
       }
@@ -1352,7 +1352,7 @@ class AuthLDAP extends CommonDBTM {
 
             echo "<tr class='tab_bg_1'><td colspan='$colspan' class='center'>";
             echo "<input class='submit' type='submit' name='".$form_action."' value='".
-                   __s('button','Import') . "'>";
+                   _sx('button','Import') . "'>";
             echo "</td></tr>";
             echo "</table></form></div>";
             Html::printPager($start, $numrows, $target, $parameters);
@@ -1578,7 +1578,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          echo "<input class='submit' type='submit' name='ldap_showusers' value=\"".
-               __s('button','Post') . "\"></td></tr>";
+               _sx('button','Post') . "\"></td></tr>";
 
       } else {
          //No ldap server
@@ -2255,7 +2255,7 @@ class AuthLDAP extends CommonDBTM {
                                        'display_emptychoice'
                                                       => false));
                   echo "&nbsp;<input class='submit' type='submit' name='change_directory'
-                        value=\"".__s('button','To change')."\">";
+                        value=\""._sx('button','To change')."\">";
                   echo "</td></tr>";
                }
 
@@ -2355,7 +2355,7 @@ class AuthLDAP extends CommonDBTM {
          if ($_SESSION['ldap_import']['authldaps_id']) {
             echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
             echo "<input class='submit' type='submit' name='search' value=\"".
-                   __s('button','Search')."\">";
+                   _sx('button','Search')."\">";
             echo "</td></tr>";
          } else {
             echo "<tr class='tab_bg_2'><".
