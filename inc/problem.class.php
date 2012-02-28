@@ -730,6 +730,10 @@ class Problem extends CommonITILObject {
         return false;
       }
 
+      // In percent
+      $colsize1='13';
+      $colsize2='37';  
+      
       // Set default options
       if (!$ID) {
          $values = array('_users_id_requester'       => Session::getLoginUserID(),
@@ -786,88 +790,73 @@ class Problem extends CommonITILObject {
       $this->showFormHeader($options);
 
       echo "<tr>";
-      echo "<th class='left' colspan='2'>";
+      echo "<th class='left' width='$colsize1%'>";
+      _e('Opening date');
+      echo "<td class='left' width='$colsize2%'>";
 
       if (isset($options['tickets_id'])) {
          echo "<input type='hidden' name='_tickets_id' value='".$options['tickets_id']."'>";
       }
 
-      echo "<table>";
-      echo "<tr>";
-      echo "<td><span class='tracking_small'>".__('Opening date')."</span></td>";
-      echo "<td>";
       $date = $this->fields["date"];
       if (!$ID) {
          $date = date("Y-m-d H:i:s");
       }
       Html::showDateTimeFormItem("date", $date, 1, false);
+      echo "</td>";
+      echo "<th width='$colsize1%'>".__('Due date')."</th>";
+      echo "<td width='$colsize2%' class='left'>";
 
-      echo "</td></tr>";
-      if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".__('By')."</span></td><td>";
-         User::dropdown(array('name'   => 'users_id_recipient',
-                              'value'  => $this->fields["users_id_recipient"],
-                              'entity' => $this->fields["entities_id"],
-                              'right'  => 'all'));
-         echo "</td></tr>";
-      }
-      echo "</table>";
-      echo "</th>";
-
-      echo "<th class='left' colspan='2'>";
-      echo "<table>";
-
-      if ($ID) {
-         echo "<tr><td><span class='tracking_small'>".__('Last update')."</span></td>";
-         echo "<td><span class='tracking_small'>".Html::convDateTime($this->fields["date_mod"])."\n";
-         if ($this->fields['users_id_lastupdater']>0) {
-            printf(__('By %s'), getUserName($this->fields["users_id_lastupdater"], $showuserlink));
-         }
-         echo "</span>";
-         echo "</td></tr>";
-      }
-
-      // SLA
-      echo "<tr>";
-      echo "<td><span class='tracking_small'>".__('Due date')."</span></td>";
-      echo "<td>";
       if ($this->fields["due_date"]=='NULL') {
          $this->fields["due_date"] = '';
       }
       Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true);
-      echo "</td></tr>";
 
+      echo "</td></tr>";
+      
       if ($ID) {
-         switch ($this->fields["status"]) {
-            case 'closed' :
-               echo "<tr>";
-               echo "<td><span class='tracking_small'>".__('Closing date')."</span></td>";
+         echo "<tr><th>".__('By')."</th><td>";
+         User::dropdown(array('name'   => 'users_id_recipient',
+                              'value'  => $this->fields["users_id_recipient"],
+                              'entity' => $this->fields["entities_id"],
+                              'right'  => 'all'));
+         echo "</td>";
+         echo "<th>".__('Last update')."</td>";
+         echo "<td>".Html::convDateTime($this->fields["date_mod"])."\n";
+         if ($this->fields['users_id_lastupdater']>0) {
+            printf(__('By %s'), getUserName($this->fields["users_id_lastupdater"], $showuserlink));
+         }
+         echo "</td></tr>";
+      }
+      
+      if ($ID && (in_array($this->fields["status"], $this->getSolvedStatusArray())
+                  || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<th>".__('Date of solving')."</th>";
+         echo "<td>";
+         Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
+         echo "</td>";
+         if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
+               echo "<th>".__('Closing date')."</th>";
                echo "<td>";
                Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false);
-               echo "</td></tr>";
-               break;
-
-            case 'solved' :
-            case 'observe' :
-               echo "<tr>";
-               echo "<td><span class='tracking_small'>".__('Date of solving')."</span></td>";
-               echo "<td>";
-               Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
-               echo "</td></tr>";
-               break;
+               echo "</td>";
+         } else {
+            echo "<td colspan='2'>&nbsp;</td>";
          }
+         echo "</tr>";
       }
-
       echo "</table>";
-      echo "</th></tr>";
+
+      echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th>".__('Status')."</th>";
-      echo "<td>";
+      echo "<th width='$colsize1%'>".__('Status')."</th>";
+      echo "<td width='$colsize2%'>";
       self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
       echo "</td>";
-      echo "<th>".__('Urgency')."</th>";
-      echo "<td>";
+      echo "<th width='$colsize1%'>".__('Urgency')."</th>";
+      echo "<td width='$colsize2%'>";
       // Only change during creation OR when allowed to change priority OR when user is the creator
       $idurgency = self::dropdownUrgency("urgency", $this->fields["urgency"]);
       echo "</td>";
@@ -908,8 +897,8 @@ class Problem extends CommonITILObject {
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='10%'>".__('Title')."</th>";
-      echo "<td colspan='5'>";
+      echo "<th width='$colsize1%'>".__('Title')."</th>";
+      echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showName$rand() {\n";
@@ -939,7 +928,7 @@ class Problem extends CommonITILObject {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>".__('Description')."</th>";
-      echo "<td colspan='5'>";
+      echo "<td colspan='3'>";
       $rand = mt_rand();
       echo "<script type='text/javascript' >\n";
       echo "function showDesc$rand() {\n";
@@ -966,7 +955,7 @@ class Problem extends CommonITILObject {
       }
       echo "</td>";
       echo "</tr>";
-      $options['colspan'] = 3;
+      $options['colspan'] = 2;
       $this->showFormButtons($options);
       $this->addDivForTabs();
 
