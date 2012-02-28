@@ -1236,10 +1236,10 @@ class Config extends CommonDBTM {
 
       } else {
          if ($fordebug) {
-            echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".$LANG['install'][97]." : ".
+            echo "<img src='".GLPI_ROOT."/pics/orangebutton.png'>".$LANG['install'][97]." : ".
                            GLPI_LOG_DIR."\n";
          } else {
-            echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
+            echo "<td><img src='".GLPI_ROOT."/pics/orangebutton.png'>".
                       "<p class='red'>".$LANG['install'][19]."</p>".
                       $LANG['install'][97]."'".GLPI_LOG_DIR."'</td></tr>";
          }
