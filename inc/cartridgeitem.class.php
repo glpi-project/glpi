@@ -81,7 +81,7 @@ class CartridgeItem extends CommonDBTM {
          $name = $this->fields["name"];
 
          if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
-            $name = sprintf(__(' %1$s - %2$s'), $name, $this->fields["ref"]);
+            $name = sprintf(__('%1$s - %2$s'), $name, $this->fields["ref"]);
          }
          return $name.$toadd;
       }

@@ -222,7 +222,7 @@ class AuthMail extends CommonDBTM {
                     autocomplete='off'></td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-         echo "<input type='submit' name='test' class='submit' value=\"".__s('button','Test')."\">".
+         echo "<input type='submit' name='test' class='submit' value=\""._sx('button','Test')."\">".
               "</td>";
          echo "</tr></table></div></form>";
       }

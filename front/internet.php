@@ -130,12 +130,13 @@ if (isset($_POST['search'])) {
       break;
    }
    if (isset($items)) {
-      echo "<tr><th>$msg";
+      echo "<tr><th>";
       if ($allow_wildcard) {
-         echo __('&nbsp;(allow wildcards)');
+         echo sprintf('%1$s (%2$s)', $msg, __('allow wildcards'))
       } else {
-         echo __('&nbsp;(exact match)');
+         echo sprintf('%1$s (%2$s)', $msg, __('exact match'))
       }
+
       echo "</th></tr>";
       foreach ($items as $item) {
          echo "<tr><td>";
