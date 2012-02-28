@@ -115,6 +115,7 @@ class ComputerDisk extends CommonDBChild {
          $comp->getFromDB($computers_id);
          // Create item
          $input = array('entities_id' => $comp->getEntityID());
+         $options['entities_id'] = $comp->getEntityID();
          $this->check(-1, 'w', $input);
       }
 
