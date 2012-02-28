@@ -1253,7 +1253,7 @@ class Config extends CommonDBTM {
 
       } else {
          if ($fordebug) {
-            echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
+            echo "<img src='".GLPI_ROOT."/pics/orangebutton.png'>".
                   sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."\n";
          } else {
             echo "<td><img src='".GLPI_ROOT."/pics/orangebutton.png'>".
