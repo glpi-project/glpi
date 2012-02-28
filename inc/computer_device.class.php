@@ -319,7 +319,7 @@ class Computer_Device extends CommonDBTM {
                         echo "</td>";
                         $group = $itemtype.mt_rand();
                         if ($canedit) {
-                           echo "<td $rowspan>";
+                           echo "<td $rowspan class='center'>";
                            echo "<a href='#' onclick= \"if ( toggleCheckboxes('$group') ) return false;\">".__('All')."</a>";
                            echo "</td>";
                         
