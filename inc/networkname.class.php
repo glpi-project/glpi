@@ -155,7 +155,7 @@ class NetworkName extends FQDNLabel {
       echo "<tr class='tab_bg_1'>";
 
       echo "<td>".IPNetwork::getTypeName(2)."&nbsp;";
-      Html::showToolTip(__('IP Network is not included in the database. However, you can see current available networks.'));
+      Html::showToolTip(__('IP network is not included in the database. However, you can see current available networks.'));
       echo "</td><td>";
       IPNetwork::showIPNetworkProperties($this->getEntityID());
       echo "</td>\n";
