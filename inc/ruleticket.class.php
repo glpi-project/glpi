@@ -120,7 +120,22 @@ class RuleTicket extends Rule {
                   break;
 
                case "add_validation" :
-                  $output['_add_validation'] = $action->fields["value"];
+                  if (isset($output['_add_validation']) && !is_array($output['_add_validation'])) {
+                     $output['_add_validation'] = array($output['_add_validation']);
+                  }
+                  switch ($action->fields['field']) {
+                     case 'users_id_validate_requester_supervisor' :
+                        $output['_add_validation'][] = 'requester_supervisor';
+                        break;
+                     case 'users_id_validate_assign_supervisor' :
+                        $output['_add_validation'][] = 'assign_supervisor';
+                        break;                        
+                     default :
+                        $output['_add_validation'][] = $action->fields["value"];       
+                        break;
+                  
+                  }
+                  
                   break;
 
                case "assign" :
@@ -361,6 +376,14 @@ class RuleTicket extends Rule {
       $actions['users_id_validate']['name']           = __('Send an approval request');
       $actions['users_id_validate']['type']           = 'dropdown_users_validate';
       $actions['users_id_validate']['force_actions']  = array('add_validation');
+
+      $actions['users_id_validate_requester_supervisor']['name']          = __('Approval request to requester group supervisor');
+      $actions['users_id_validate_requester_supervisor']['type']          = 'yesno';
+      $actions['users_id_validate_requester_supervisor']['force_actions'] = array('add_validation');
+
+      $actions['users_id_validate_assign_supervisor']['name']          = __('Approval request to technician group supervisor');
+      $actions['users_id_validate_assign_supervisor']['type']          = 'yesno';
+      $actions['users_id_validate_assign_supervisor']['force_actions'] = array('add_validation');
 
       return $actions;
    }
