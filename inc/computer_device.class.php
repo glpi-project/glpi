@@ -201,7 +201,8 @@ class Computer_Device extends CommonDBTM {
                      action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";
          echo "<input type='hidden' name='computers_id' value='$ID'>";
       }
-      $global_colspan = 63;
+//       $global_colspan = 64;
+      $global_colspan = 4;
 
       if (!$canedit) {
          $global_colspan--;
@@ -211,12 +212,12 @@ class Computer_Device extends CommonDBTM {
 
       echo "<tr><th colspan='$global_colspan'>"._n('Component', 'Components', 2)."</th></tr>";
       echo "<tr>";
+      echo "<th>".__('Item type')."</th>";
+      echo "<th>".__('Name')."</th>";
       if ($canedit) {
          echo "<th>".__('Delete')."</th>";
       }
-      echo "<th>".__('Item type')."</th>";
-      echo "<th>".__('Name')."</th>";
-      echo "<th colspan='60'>".__('Characteristics')."</th>";
+      echo "<th>".__('Characteristics')."</th>";
 //       echo "<th>".__('Add')."</th>";
 //       echo "<th>".__('Delete all')."</th>";
       echo "</tr>";
@@ -228,6 +229,8 @@ class Computer_Device extends CommonDBTM {
                                  'DeviceGraphicCard' => __('Mio'));
 
       $numberOfPreviousItem = 0;
+      $firstcomponent = true;
+
       foreach ($devtypes as $itemtype) {
          Session::initNavigateListItems($itemtype,
                               //TRANS : %1$s is the itemtype name,
@@ -253,12 +256,18 @@ class Computer_Device extends CommonDBTM {
                       WHERE `computers_id` = '$ID'
                       GROUP BY `$fk`";
 
+            
             foreach ($DB->request($query) as $deviceFromSQL) {
 
-               if ($numberOfPreviousItem * $deviceFromSQL['nb'] > 1) {
-                  echo "<tr><td colspan='$global_colspan'><hr></td></tr>";
+               if ($firstcomponent) {
+                  $firstcomponent = false;
+               } else  {
+                  echo "</table></td></tr>\n";
                }
-
+               
+               if ($numberOfPreviousItem * $deviceFromSQL['nb'] > 1) {
+                  echo "<tr><td colspan='$global_colspan'><hr></td></tr>\n";
+               }
                $numberOfPreviousItem = $deviceFromSQL['nb'];
 
                $query = "SELECT `id`,
@@ -270,25 +279,19 @@ class Computer_Device extends CommonDBTM {
                          ORDER BY `id`";
 
                $first = true;
-
+               $group = '';
                foreach ($DB->request($query) as $data) {
                   Session::addToNavigateListItems($itemtype, $data[$fk]);
 
                   if ($device->getFromDB($data[$fk])) {
-                     echo "<tr class='tab_bg_2'>";
-
-                     if ($canedit) {
-                        echo "<td class='center'>";
-                        echo "<input type='checkbox' name='remove_" .$itemtype."_".$data['id']."'
-                              value='1'>";
-                        echo "</td>";
-                     }
-
                      if ($first) {
-                        if ($deviceFromSQL['nb'] > 1)
+                        echo "<tr class='tab_bg_2'>";
+                        if ($deviceFromSQL['nb'] > 1) {
                            $rowspan = "rowspan='".$deviceFromSQL['nb']."'";
-                        else
+                        } else {
                            $rowspan = "";
+                        }
+                        $rowspan = "";
                         echo "<td $rowspan>";
 
                         if ($device->canView()) {
@@ -313,6 +316,22 @@ class Computer_Device extends CommonDBTM {
                            Dropdown::showInteger("quantity_".$itemtype."_".$data['id'], 0, 0, 10);
                            echo "</span>";
                         }
+                        echo "</td>";
+                        $group = $itemtype.mt_rand();
+                        if ($canedit) {
+                           echo "<td $rowspan>";
+                           echo "<a href='#' onclick= \"if ( toggleCheckboxes('$group') ) return false;\">".__('All')."</a>";
+                           echo "</td>";
+                        
+                        }
+                        echo "<td class='left'><table width='100%' class='tab_format' id='$group'>\n";
+                        
+                     }
+                     echo "<tr>";
+                     if ($canedit) {
+                        echo "<td class='center' width='10px'>";
+                        echo "<input id='$group' type='checkbox' name='remove_" .$itemtype."_".$data['id']."'
+                              value='1'>";
                         echo "</td>";
                      }
 
@@ -354,31 +373,39 @@ class Computer_Device extends CommonDBTM {
                         echo "<td colspan='60'>&nbsp;</td>";
                      }
 
-                     echo "</tr>";
+                     echo "</tr>\n";
                      $nb++;
+                     $first = false;
                   }
-                  $first = false;
                }
             }
          }
+      }
+      
+      if (!$firstcomponent) {
+         echo "</table></td></tr>\n";
       }
 
       if ($canedit) {
          if ($nb > 0) {
             echo "<tr><td colspan='$global_colspan'><hr></td></tr>";
-            echo "<tr><td colspan='3 class='left'>";
+            echo "<tr>";
+            echo "<td colspan='3' class='tab_bg_1 center'>";
+            echo "<input type='submit' class='submit' name='updateall' value='".
+                   __s('Save')."'></td>";
+            
+            
+            echo "<td colpsan='2' class='left'>";
             Html::openArrowMassives("form_device_action$rand", false);
             Html::closeArrowMassives(array());
             echo "</td>";
-            echo "<td colspan='".($global_colspan-3)."' class='tab_bg_1 center'>";
-            echo "<input type='submit' class='submit' name='updateall' value='".
-                   __s('Save')."'></td></tr>";
+            echo "</tr>";
          }
 
-         echo "<tr><td colspan='60' class='tab_bg_1 right'>";
+         echo "<tr><td colspan='3' class='tab_bg_1 right'>";
 //                __('Add a new component')."&nbsp;&nbsp;";
          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
-         echo "</td><td colspan='".($global_colspan-60)."'>";
+         echo "</td><td colspan='".($global_colspan-3)."'>";
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr></table></form>";
 
