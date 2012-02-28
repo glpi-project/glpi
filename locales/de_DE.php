@@ -1343,7 +1343,7 @@ $LANG['networking'][11]="Netzwerk-Ports gefunden";
 $LANG['networking'][12]="network port found"; // en_GB string to be translated
 $LANG['networking'][14]="IP"; 
 $LANG['networking'][15]="MAC"; 
-$LANG['networking'][17]="<span title=\'WÃ¤hle GerÃ¤tetyp.\nIns Suchfeld daneben * oder Suchmaske.\nWÃ¤hle GerÃ¤t.\nKlicke Verbinden\'>Verbunden mit</span>"; 
+$LANG['networking'][17]="Verbunden mit"; 
 $LANG['networking'][19]="Netzwerkschnittstelle hinzufügen …"; 
 $LANG['networking'][21]="Port-Nummer"; 
 $LANG['networking'][25]="an"; 
@@ -1847,6 +1847,8 @@ $LANG['setup'][11]="Automatically refresh the list of tickets"; // en_GB string 
 $LANG['setup'][12]="Pre-select me as a technician when creating a ticket"; // en_GB string to be translated
 $LANG['setup'][14]="E-Mail"; 
 $LANG['setup'][15]="Email addresses"; // en_GB string to be translated
+$LANG['setup'][16]="SELinux mode is"; // en_GB string to be translated
+$LANG['setup'][17]="SELinux boolean configuration for"; // en_GB string to be translated
 $LANG['setup'][18]="Anmeldung"; 
 $LANG['setup'][19]="Passwort"; 
 $LANG['setup'][20]="Bestätigung Passwort"; 
