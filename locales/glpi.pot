@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-28 08:31+0100\n"
+"POT-Creation-Date: 2012-02-28 08:48+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -90,13 +90,14 @@ msgstr ""
 #: ajax/dropdownValue.php:253 ajax/dropdownValue.php:301
 #: ajax/dropdownValue.php:354 ajax/dropdownValue.php:482
 #: ajax/dropdownValue.php:490 ajax/private_public.php:56 front/rule.php:51
-#: inc/cartridge.class.php:627 inc/commondbtm.class.php:2439
-#: inc/commondevice.class.php:127 inc/commonitilobject.class.php:1225
-#: inc/commonitiltask.class.php:769 inc/consumable.class.php:543
-#: inc/infocom.class.php:385 inc/infocom.class.php:823
-#: inc/networkportinstantiation.class.php:502 inc/reservation.class.php:408
-#: inc/reservation.class.php:756 inc/reservationitem.class.php:245
-#: inc/reservationitem.class.php:320 inc/reservationitem.class.php:402
+#: inc/cartridge.class.php:627 inc/cartridgeitem.class.php:84
+#: inc/commondbtm.class.php:2439 inc/commondevice.class.php:127
+#: inc/commonitilobject.class.php:1225 inc/commonitiltask.class.php:769
+#: inc/consumable.class.php:543 inc/infocom.class.php:385
+#: inc/infocom.class.php:823 inc/networkportinstantiation.class.php:502
+#: inc/reservation.class.php:408 inc/reservation.class.php:756
+#: inc/reservationitem.class.php:245 inc/reservationitem.class.php:320
+#: inc/reservationitem.class.php:402
 #, php-format
 msgid "%1$s - %2$s"
 msgstr ""
@@ -1751,12 +1752,12 @@ msgstr ""
 msgid "List of MAC that are \"%s\""
 msgstr ""
 
-#: front/internet2.php:135
-msgid "&nbsp;(allow wildcards)"
+#: front/internet2.php:136
+msgid "allow wildcards"
 msgstr ""
 
-#: front/internet2.php:137
-msgid "&nbsp;(exact match)"
+#: front/internet2.php:138
+msgid "exact match"
 msgstr ""
 
 #: front/ipnetwork.php:44 front/migration_cleaner.php:48
@@ -3606,12 +3607,6 @@ msgstr ""
 msgid "Test of connection to LDAP directory"
 msgstr ""
 
-#: inc/authldap.class.php:463 inc/authldap.class.php:1355
-#: inc/authldap.class.php:1581 inc/authldap.class.php:2258
-#: inc/authldap.class.php:2358 inc/authmail.class.php:225
-msgid "button"
-msgstr ""
-
 #: inc/authldap.class.php:479
 msgid "Binding to the LDAP directory"
 msgstr ""
@@ -4368,11 +4363,6 @@ msgstr[1] ""
 
 #: inc/cartridge.class.php:678
 msgid "End of life"
-msgstr ""
-
-#: inc/cartridgeitem.class.php:84
-#, php-format
-msgid " %1$s - %2$s"
 msgstr ""
 
 #: inc/cartridgeitem.class.php:218 inc/cartridgeitem.class.php:290
