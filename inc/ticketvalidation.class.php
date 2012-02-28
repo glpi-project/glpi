@@ -207,7 +207,7 @@ class TicketValidation  extends CommonDBChild {
                Session::addMessageAfterRedirect(sprintf(__('Approval request send to %s'),
                                                         $user->getName()));
             } else {
-               Session::addMessageAfterRedirect(__('The selected user has no valid email address. The request has been created, without email confirmation.'),
+               Session::addMessageAfterRedirect(sprintf(__('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),$user->getName()),
                                                 false, ERROR);
             }
          }
@@ -325,7 +325,6 @@ class TicketValidation  extends CommonDBChild {
       Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
                    Log::HISTORY_LOG_SIMPLE_MESSAGE);
    }
-
 
    /**
     * get the Ticket validation status list
