@@ -319,28 +319,35 @@ class Ajax {
            && (is_array($options["update_item"]) || strlen($options["update_item"])>0)) {
 
          if (!is_array($options["update_item"])) {
-            $data = unserialize(stripslashes($options["update_item"]));
+            $datas = unserialize(stripslashes($options["update_item"]));
          } else {
-            $data = $options["update_item"];
+            $datas = $options["update_item"];
          }
 
-         if (is_array($data) && count($data)) {
-            $paramsupdate = array();
-            if (isset($data['value_fieldname'])) {
-               $paramsupdate = array($data['value_fieldname'] => '__VALUE__');
+
+         if (is_array($datas) && count($datas)) {
+            // Put it in array
+            if (isset($datas['to_update'])) {
+               $datas[] = $datas;
             }
-
-            if (isset($data["moreparams"])
-                 && is_array($data["moreparams"])
-                 && count($data["moreparams"])) {
-
-               foreach ($data["moreparams"] as $key => $val) {
-                  $paramsupdate[$key] = $val;
+            foreach ($datas as $data) {
+               $paramsupdate = array();
+               if (isset($data['value_fieldname'])) {
+                  $paramsupdate = array($data['value_fieldname'] => '__VALUE__');
                }
+   
+               if (isset($data["moreparams"])
+                  && is_array($data["moreparams"])
+                  && count($data["moreparams"])) {
+   
+                  foreach ($data["moreparams"] as $key => $val) {
+                     $paramsupdate[$key] = $val;
+                  }
+               }
+   
+               Ajax::updateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"],
+                                             $data['to_update'], $data['url'], $paramsupdate);
             }
-
-            Ajax::updateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"],
-                                           $data['to_update'], $data['url'], $paramsupdate);
          }
       }
    }

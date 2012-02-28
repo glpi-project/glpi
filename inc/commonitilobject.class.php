@@ -2170,8 +2170,19 @@ abstract class CommonITILObject extends CommonDBTM {
                                      'to_update'       => "notif_".$typename."_$rand",
                                      'url'             => $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
                                      'moreparams'      => $paramscomment);
-
       }
+      
+      if ($type == self::ASSIGN) {
+         if (isset($params['toupdate']) && is_array($params['toupdate'])) {
+            $toupdate[] = $params['toupdate'];
+            $toupdate[] = array('value_fieldname' => 'value',
+                                'to_update'       => "countassign_".$typename."_$rand",
+                                'url'             => $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
+                                'moreparams'      => array('users_id_assign' => '__VALUE__'));
+            $params['toupdate'] = $toupdate;
+         }
+      }
+      
       // List all users in the active entities
       User::dropdown($params);
 
@@ -2204,16 +2215,15 @@ abstract class CommonITILObject extends CommonDBTM {
          // Display active tickets for a tech
          // Need to update information on dropdown changes
          if ($type == self::ASSIGN) {
-            Ajax::updateItemOnSelectEvent("dropdown__users_id_".$typename.$rand,
-                                          "actor_".$typename."_$rand",
-                                          $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
-                                          array('users_id_assign' => '__VALUE__'));
-            echo "<span id='actor_".$typename."_$rand'>";
-            if ($options["_users_id_".$typename] > 0) {
-               $_REQUEST['users_id_assign'] = $options["_users_id_".$typename];
-               include_once GLPI_ROOT.'/ajax/ticketassigninformation.php';
-            }
-            echo "</span>";
+            echo "<span id='countassign_".$typename."_$rand'>";
+            echo "</span>";         
+            
+            echo "<script type='text/javascript'>";
+            Ajax::updateItemJsCode("countassign_".$typename."_$rand",
+                                 $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php", 
+                                 array('users_id_assign' => '__VALUE__'),
+                                 "dropdown__users_id_".$typename.$rand);
+            echo "</script>";
          }
       }
 
