@@ -1,10 +1,10 @@
 <?php 
 /*
- * @version $Id$
+ * @version $Id$ 
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@
 
  You should have received a copy of the GNU General Public License
  along with GLPI. If not, see <http://www.gnu.org/licenses/>.
- --------------------------------------------------------------------------
+ -------------------------------------------------------------------------
  */
 //de_DE
 
@@ -127,15 +127,15 @@ $LANG['calendar'][15]="Jahr(e)";
 $LANG['calendar'][16]="Heute"; 
 $LANG['calendar'][17]="Spezifizieren Sie ein Datum"; 
 $LANG['calendar'][18]="last Sunday"; // en_GB string to be translated
-$LANG['calendar'][19]="last Monday"; // en_GB string to be translated
-$LANG['calendar'][20]="last Tuesday"; // en_GB string to be translated
-$LANG['calendar'][21]="last Wednesday"; // en_GB string to be translated
+$LANG['calendar'][19]="letzten Montag"; 
+$LANG['calendar'][20]="letzten Dienstag"; 
+$LANG['calendar'][21]="letzten Mittwoch"; 
 $LANG['calendar'][22]="last Thursday"; // en_GB string to be translated
 $LANG['calendar'][23]="last Friday"; // en_GB string to be translated
 $LANG['calendar'][24]="last Saturday"; // en_GB string to be translated
 $LANG['calendar'][25]="Beginning of the month"; // en_GB string to be translated
 $LANG['calendar'][26]="Beginning of the year"; // en_GB string to be translated
-$LANG['calendar'][27]="Today"; // en_GB string to be translated
+$LANG['calendar'][27]="Heute"; 
 
 $LANG['calendarD'][0]="S"; 
 $LANG['calendarD'][1]="M"; 
@@ -343,7 +343,7 @@ $LANG['common'][109]="Technikergruppe";
 $LANG['common'][110]="No change of entity"; // en_GB string to be translated
 $LANG['common'][111]="Used Items"; // en_GB string to be translated
 $LANG['common'][112]="Managed Items"; // en_GB string to be translated
-$LANG['common'][113]="Visibility"; // en_GB string to be translated
+$LANG['common'][113]="Sichtbarkeit"; 
 $LANG['common'][114]="ID TAG"; // en_GB string to be translated
 $LANG['common'][115]="Intervall"; 
 $LANG['common'][116]="ein Ziel hinzufügen"; 
@@ -372,7 +372,7 @@ $LANG['computers'][25]="Größe der Festplatte";
 $LANG['computers'][36]="Typ der Festplatte"; 
 $LANG['computers'][37]="kein Monitor verbunden."; 
 $LANG['computers'][38]="kein Drucker verbunden"; 
-$LANG['computers'][46]="Virtual machine"; // en_GB string to be translated
+$LANG['computers'][46]="Virtuelle Maschine"; 
 $LANG['computers'][47]="kein verbundenes Gerät"; 
 $LANG['computers'][48]="Standort aktualisiert. Die verbunden Geräte erhalten den gleichen Standort."; 
 $LANG['computers'][49]="Kontakt aktualisiert. Die mit dem Kontakt verbunden Einträge wurden ebenfalls aktualisiert."; 
@@ -395,7 +395,7 @@ $LANG['computers'][65]="Liste der Host Maschinen";
 $LANG['computers'][66]="Liste der virtuellen Maschinen"; 
 $LANG['computers'][67]="Virtualization systems"; // en_GB string to be translated
 $LANG['computers'][68]="Virtualization Models"; // en_GB string to be translated
-$LANG['computers'][69]="States of the virtual machine"; // en_GB string to be translated
+$LANG['computers'][69]="State(s) of the virtual machines"; // en_GB string to be translated
 
 $LANG['connect'][0]="Lokale Anschlüsse"; 
 $LANG['connect'][1]="Nicht verbunden"; 
@@ -598,12 +598,12 @@ $LANG['dropdown'][16]="Interface Type"; // en_GB string to be translated
 $LANG['dropdown'][17]="Case Type"; // en_GB string to be translated
 $LANG['dropdown'][18]="Phone power supply type"; // en_GB string to be translated
 $LANG['dropdown'][19]="File systems"; // en_GB string to be translated
-$LANG['dropdown'][20]="Computer Model"; // en_GB string to be translated
+$LANG['dropdown'][20]="Computermodell"; 
 $LANG['dropdown'][21]="Networking Model"; // en_GB string to be translated
 $LANG['dropdown'][22]="Printer Model"; // en_GB string to be translated
 $LANG['dropdown'][23]="Monitor Model"; // en_GB string to be translated
 $LANG['dropdown'][24]="Device Model"; // en_GB string to be translated
-$LANG['dropdown'][25]="Phone Model"; // en_GB string to be translated
+$LANG['dropdown'][25]="Telefonmodell"; 
 $LANG['dropdown'][26]="Document Heading"; // en_GB string to be translated
 $LANG['dropdown'][27]="Knowledge base categories"; // en_GB string to be translated
 $LANG['dropdown'][28]="Operating systems"; // en_GB string to be translated
@@ -611,7 +611,7 @@ $LANG['dropdown'][29]="Versions of the operating systems"; // en_GB string to be
 $LANG['dropdown'][30]="Service Packs"; 
 $LANG['dropdown'][31]="Update Sources"; // en_GB string to be translated
 $LANG['dropdown'][32]="Network Interfaces"; // en_GB string to be translated
-$LANG['dropdown'][33]="Firmwares"; // en_GB string to be translated
+$LANG['dropdown'][33]="Firmwares"; 
 $LANG['dropdown'][34]="Domains"; 
 
 $LANG['entity'][0]="Einheit"; 
@@ -753,7 +753,7 @@ $LANG['gmt'][2]="Std.";
 
 $LANG['group'][0]="Visible in a ticket"; // en_GB string to be translated
 $LANG['group'][1]="Can be notified"; // en_GB string to be translated
-$LANG['group'][2]="Can contain"; // en_GB string to be translated
+$LANG['group'][2]="Kann beinhalten"; 
 $LANG['group'][3]="Child groups"; // en_GB string to be translated
 
 $LANG['help'][1]="Prioritätsberechnungsmatrix"; 
@@ -961,7 +961,7 @@ $LANG['joblist'][1]="Nur meine";
 $LANG['joblist'][2]="Priorität"; 
 $LANG['joblist'][3]="Persönliche + Gruppe(n)"; 
 $LANG['joblist'][4]="zugewiesen"; 
-$LANG['joblist'][5]="Created tickets"; // en_GB string to be translated
+$LANG['joblist'][5]="Erstellte Tickets"; 
 $LANG['joblist'][6]="Beschreibung"; 
 $LANG['joblist'][7]="Neues Ticket für dieses Gerät erstellen …"; 
 $LANG['joblist'][8]="Kein bestehendes Supportticket"; 
@@ -1005,7 +1005,7 @@ $LANG['jobresolution'][6]="Solution template"; // en_GB string to be translated
 
 $LANG['knowbase'][1]="FAQ's"; 
 $LANG['knowbase'][2]="Unpublished articles"; // en_GB string to be translated
-$LANG['knowbase'][3]="Unpublished"; // en_GB string to be translated
+$LANG['knowbase'][3]="Unveröffentlicht"; 
 $LANG['knowbase'][5]="Put this item in the FAQ"; // en_GB string to be translated
 $LANG['knowbase'][6]="Select a category for this item :"; // en_GB string to be translated
 $LANG['knowbase'][7]="Element aus der FAQ entfernen"; 
@@ -1217,7 +1217,7 @@ $LANG['mailgate'][16]="AW:";
 $LANG['mailing'][0]="-----------------------"; 
 $LANG['mailing'][1]="======================================="; 
 $LANG['mailing'][2]="Prefix for notifications"; // en_GB string to be translated
-$LANG['mailing'][3]="Automatically generated by GLPI"; // en_GB string to be translated
+$LANG['mailing'][3]="Automatisch von GLPI generiert"; 
 $LANG['mailing'][4]="Verlauf der Anmerkungen"; 
 $LANG['mailing'][5]="Beschreibung der Supportanfrage"; 
 $LANG['mailing'][6]="CSS"; 
@@ -1403,6 +1403,7 @@ $LANG['ocsconfig'][56]="leer";
 $LANG['ocsconfig'][57]="gleich"; 
 $LANG['ocsconfig'][58]="Automatische Verbindung eines Objekts in GLPI mit dem in OCSNG.<br>Diese Option greift bei manuellen Verknüfpungen sowie bei den automatischen Synchronisationsskripten."; 
 $LANG['ocsconfig'][59]="URL der OCSNG-Konsole"; 
+$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
 
 $LANG['ocsng'][0]="OCS Inventory NG"; 
 $LANG['ocsng'][1]="Synchronisierung der bereits importierten Computer"; 
@@ -1448,12 +1449,12 @@ $LANG['ocsng'][48]="Die OCSNG-ID des Geräts hat sich geändert";
 $LANG['ocsng'][49]="Agent"; 
 $LANG['ocsng'][50]="Gesperrte IP(s)"; 
 $LANG['ocsng'][52]="Gesperrte Software"; 
-$LANG['ocsng'][53]="OCSNG links"; // en_GB string to be translated
+$LANG['ocsng'][53]="Verknüpfung mit OCSNG"; 
 $LANG['ocsng'][54]="Software wurde durch die OCSNG-Synchronisation in den Papierkorb verschoben"; 
 $LANG['ocsng'][55]="Gesperrte(s) Laufwerk(e)"; 
 $LANG['ocsng'][56]="Gesperrte Hardwarekomponenten"; 
 $LANG['ocsng'][57]="OCSNG Schnittstelle"; 
-$LANG['ocsng'][58]="OCSNG link"; // en_GB string to be translated
+$LANG['ocsng'][58]="Verknüpfung mit OCSNG"; 
 $LANG['ocsng'][59]="Existiert in GLPI"; 
 $LANG['ocsng'][60]="Existiert in OCSNG"; 
 $LANG['ocsng'][61]="No item to clean"; // en_GB string to be translated
@@ -1754,7 +1755,7 @@ $LANG['rulesengine'][87]="Software deleted by GLPI dictionary rules"; // en_GB s
 $LANG['rulesengine'][90]="Bearbeitung läuft …"; 
 $LANG['rulesengine'][91]="Bearbeitung abgeschlossen"; 
 $LANG['rulesengine'][92]="Warning before running rename based on the dictionary rules"; // en_GB string to be translated
-$LANG['rulesengine'][93]="Warning! This operation can put merged software in the trash.<br>Sure to notify your users."; // en_GB string to be translated
+$LANG['rulesengine'][93]="Warning! This operation can put merged software in the trash.<br>Make sure to notify your users."; // en_GB string to be translated
 $LANG['rulesengine'][94]="FUSION"; 
 $LANG['rulesengine'][95]="Herstellerauswahl"; 
 $LANG['rulesengine'][96]="Replay dictionary rules for the manufacturer(s)<br> ( ----- = All)"; // en_GB string to be translated
@@ -1815,6 +1816,8 @@ $LANG['search'][1]="für alle";
 $LANG['search'][2]="enthält"; 
 $LANG['search'][3]="under"; // en_GB string to be translated
 $LANG['search'][4]="sortiert nach"; 
+$LANG['search'][5]="Selection too large, massive action disabled."; // en_GB string to be translated
+$LANG['search'][6]="To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration."; // en_GB string to be translated
 $LANG['search'][8]="Anfangsdatum"; 
 $LANG['search'][9]="Gültig bis"; 
 $LANG['search'][11]="angezeigten Feldern"; 
@@ -1826,7 +1829,7 @@ $LANG['search'][18]="Suchkriterium löschen";
 $LANG['search'][19]="globales Suchkriterium hinzufügen"; 
 $LANG['search'][20]="globales Suchkriterium hinzufügen"; 
 $LANG['search'][21]="weniger als"; 
-$LANG['search'][22]="More than"; // en_GB string to be translated
+$LANG['search'][22]="Mehr als"; 
 $LANG['search'][23]="zurück"; 
 $LANG['search'][24]="weiter"; 
 
@@ -1843,7 +1846,7 @@ $LANG['setup'][10]="Anzeige der Vor- und Nachnamen";
 $LANG['setup'][11]="Automatically refresh the list of tickets"; // en_GB string to be translated
 $LANG['setup'][12]="Pre-select me as a technician when creating a ticket"; // en_GB string to be translated
 $LANG['setup'][14]="E-Mail"; 
-$LANG['setup'][15]="Emails"; // en_GB string to be translated
+$LANG['setup'][15]="Email addresses"; // en_GB string to be translated
 $LANG['setup'][18]="Anmeldung"; 
 $LANG['setup'][19]="Passwort"; 
 $LANG['setup'][20]="Bestätigung Passwort"; 
@@ -1923,6 +1926,7 @@ $LANG['setup'][127]="Autocompletion of text fields"; // en_GB string to be trans
 $LANG['setup'][128]="Datums Format"; 
 $LANG['setup'][129]="Zeige die GLPI IDs"; 
 $LANG['setup'][130]="Anzahl Tage für Aufbewahrung der Protokolle"; 
+$LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="Kompletten Namen in hierarchischen Dropdown-Listen anzeigen"; 
 $LANG['setup'][135]="Normal"; 
 $LANG['setup'][136]="Übersetzung"; 
@@ -2086,7 +2090,7 @@ $LANG['setup'][620]="Verknüpfung";
 $LANG['setup'][621]="Suchfilter für Einheiten"; 
 $LANG['setup'][622]="Attribut das der Einheit entspricht"; 
 $LANG['setup'][623]="Import der Einheiten aus einem LDAP-Verzeichnis"; 
-$LANG['setup'][624]="Links"; // en_GB string to be translated
+$LANG['setup'][624]="Verknüpfungen"; 
 $LANG['setup'][650]="PHP"; 
 $LANG['setup'][651]="SMTP"; 
 $LANG['setup'][652]="SMTP+SSL"; 
@@ -2095,7 +2099,7 @@ $LANG['setup'][660]="Mailserver";
 $LANG['setup'][661]="Impossible to configure the notifications : please configure your email follow-up using the above configuration."; // en_GB string to be translated
 $LANG['setup'][703]="Allgemein"; 
 $LANG['setup'][704]="Benachrichtigung"; 
-$LANG['setup'][705]="Notification"; // en_GB string to be translated
+$LANG['setup'][705]="Benachrichtigung"; 
 $LANG['setup'][707]="Meldungen zu Reservierungen"; 
 $LANG['setup'][708]="Meldungen zu den ungeschlossenen Tickets seit"; 
 $LANG['setup'][720]="System Informationen"; 
@@ -2139,7 +2143,7 @@ $LANG['sla'][8]="Next escalation"; // en_GB string to be translated
 $LANG['sla'][9]="Automatische Erinnerungen von SLAs"; 
 $LANG['sla'][10]="24/7"; 
 $LANG['sla'][11]="Calendar of ticket"; // en_GB string to be translated
-$LANG['sla'][12]="Assign a SLA"; // en_GB string to be translated
+$LANG['sla'][12]="SLA zuweisen"; 
 $LANG['sla'][13]="The assignment of a SLA to a ticket causes the recalculation of the due date."; // en_GB string to be translated
 $LANG['sla'][14]="Escalations defined in the SLA will be triggered under this new date."; // en_GB string to be translated
 $LANG['sla'][15]="Escalation levels"; // en_GB string to be translated
@@ -2155,7 +2159,7 @@ $LANG['software'][8]="Füge Lizenz hinzu";
 $LANG['software'][9]="Betroffene Computer"; 
 $LANG['software'][10]="Entity for software creation"; // en_GB string to be translated
 $LANG['software'][11]="Lizenzen"; 
-$LANG['software'][12]="License"; // en_GB string to be translated
+$LANG['software'][12]="Lizenz"; 
 $LANG['software'][16]="Installierte Programme"; 
 $LANG['software'][17]="installierte Software"; 
 $LANG['software'][19]="Installiert"; 
@@ -2315,7 +2319,7 @@ $LANG['users'][20]="Delete from managers"; // en_GB string to be translated
 $LANG['users'][21]="Default email"; // en_GB string to be translated
 $LANG['users'][22]="Users titles"; // en_GB string to be translated
 $LANG['users'][23]="Benutzer Kategorieren"; 
-$LANG['users'][24]="Add to delegatees"; // en_GB string to be translated
+$LANG['users'][24]="Add to delegates"; // en_GB string to be translated
 $LANG['users'][25]="Delete from delegatees"; // en_GB string to be translated
 
 $LANG['validation'][0]="Genehmigung"; 
