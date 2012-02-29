@@ -821,7 +821,7 @@ class Problem extends CommonITILObject {
                               'entity' => $this->fields["entities_id"],
                               'right'  => 'all'));
          echo "</td>";
-         echo "<th>".__('Last update')."</td>";
+         echo "<th>".__('Last update')."</th>";
          echo "<td>".Html::convDateTime($this->fields["date_mod"])."\n";
          if ($this->fields['users_id_lastupdater']>0) {
             printf(__('By %s'), getUserName($this->fields["users_id_lastupdater"], $showuserlink));
