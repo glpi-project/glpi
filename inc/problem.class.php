@@ -826,7 +826,7 @@ class Problem extends CommonITILObject {
       echo "</td></tr>";
       
       if ($ID) {
-         echo "<tr><th>".$LANG['common'][95]." &nbsp;:</td><td>";
+         echo "<tr><th>".$LANG['common'][95]." &nbsp;:</th><td>";
          User::dropdown(array('name'   => 'users_id_recipient',
                               'value'  => $this->fields["users_id_recipient"],
                               'entity' => $this->fields["entities_id"],
