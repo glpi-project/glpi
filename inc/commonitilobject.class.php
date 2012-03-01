@@ -949,8 +949,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
    function post_addItem() {
 
-      // Add document if needed
-      $this->addFiles($this->fields['id']);
+      // Add document if needed, without notification
+      $this->addFiles($this->fields['id'], 0);
 
       $useractors = NULL;
       // Add user groups linked to ITIL objects
