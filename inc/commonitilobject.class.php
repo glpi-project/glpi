@@ -1152,11 +1152,12 @@ abstract class CommonITILObject extends CommonDBTM {
     * create document if needed
     * create link from document to ITIL object
     *
-    * @param $id of the ITIL object
+    * @param $id        Integer  ID of the ITIL object
+    * @param $donotif   Boolean  if we want to raise notification
     *
     * @return array of doc added name
    **/
-   function addFiles($id) {
+   function addFiles($id, $donotif=1) {
       global $LANG, $CFG_GLPI;
 
       if (!isset($_FILES) || !isset($_FILES['filename'])) {
@@ -1208,6 +1209,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
             if ($docID>0) {
                if ($docitem->add(array('documents_id' => $docID,
+                                       '_do_notif'    => $donotif,
                                        'itemtype'     => $this->getType(),
                                        'items_id'     => $id))) {
                   $docadded[] = stripslashes($doc->fields["name"]." - ".$doc->fields["filename"]);
@@ -1219,6 +1221,8 @@ abstract class CommonITILObject extends CommonDBTM {
                     && $_FILES['filename']['error']) {
             Session::addMessageAfterRedirect($LANG['document'][46], false, ERROR);
          }
+         // Only notification for the first New doc
+         $donotif = 0;
       }
       unset ($_FILES);
       return $docadded;
@@ -2171,7 +2175,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                      'url'             => $CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",
                                      'moreparams'      => $paramscomment);
       }
-      
+
       if ($type == self::ASSIGN) {
          if (isset($params['toupdate']) && is_array($params['toupdate'])) {
             $toupdate[] = $params['toupdate'];
@@ -2182,7 +2186,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $params['toupdate'] = $toupdate;
          }
       }
-      
+
       // List all users in the active entities
       User::dropdown($params);
 
@@ -2216,11 +2220,11 @@ abstract class CommonITILObject extends CommonDBTM {
          // Need to update information on dropdown changes
          if ($type == self::ASSIGN) {
             echo "<span id='countassign_".$typename."_$rand'>";
-            echo "</span>";         
-            
+            echo "</span>";
+
             echo "<script type='text/javascript'>";
             Ajax::updateItemJsCode("countassign_".$typename."_$rand",
-                                 $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php", 
+                                 $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
                                  array('users_id_assign' => '__VALUE__'),
                                  "dropdown__users_id_".$typename.$rand);
             echo "</script>";
