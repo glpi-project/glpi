@@ -1178,9 +1178,6 @@ class MailCollector  extends CommonDBTM {
             }
 
             if (file_put_contents($path.$filename, $message)) {
-               // $this->files['multiple'] = true;
-               // $j = (isset($this->files['filename']['name']) ? count($this->files['filename']['name']) : 0);
-
                $this->files['filename']['size'][]     = $structure->bytes;
                $this->files['filename']['name'][]     = $filename;
                $this->files['filename']['tmp_name'][] = $path.$filename;
