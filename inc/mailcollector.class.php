@@ -1178,12 +1178,14 @@ class MailCollector  extends CommonDBTM {
             }
 
             if (file_put_contents($path.$filename, $message)) {
-//               $this->files['multiple'] = true;
-               $j = count($this->files)-1;
-               $this->files['filename'][$j]['size']     = $structure->bytes;
-               $this->files['filename'][$j]['name']     = $filename;
-               $this->files['filename'][$j]['tmp_name'] = $path.$filename;
-               $this->files['filename'][$j]['type']     = $this->get_mime_type($structure);
+               // $this->files['multiple'] = true;
+               // $j = (isset($this->files['filename']['name']) ? count($this->files['filename']['name']) : 0);
+
+               $this->files['filename']['size'][]     = $structure->bytes;
+               $this->files['filename']['name'][]     = $filename;
+               $this->files['filename']['tmp_name'][] = $path.$filename;
+               $this->files['filename']['type'][]     = $this->get_mime_type($structure);
+               $this->files['filename']['error'][]    = 0;
             }
          } // fetchbody
       } // Single part
