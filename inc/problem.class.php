@@ -802,7 +802,7 @@ class Problem extends CommonITILObject {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>".$LANG['joblist'][11]."&nbsp;:</th>";
       echo "<td class='left' width='$colsize2%'>";
       if (isset($options['tickets_id'])) {
@@ -826,7 +826,7 @@ class Problem extends CommonITILObject {
       echo "</td></tr>";
       
       if ($ID) {
-         echo "<tr><th>".$LANG['common'][95]." &nbsp;:</th><td>";
+         echo "<tr class='tab_bg_1'><th>".$LANG['common'][95]." &nbsp;:</th><td>";
          User::dropdown(array('name'   => 'users_id_recipient',
                               'value'  => $this->fields["users_id_recipient"],
                               'entity' => $this->fields["entities_id"],
@@ -863,7 +863,7 @@ class Problem extends CommonITILObject {
       echo "</table>";
 
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>".$LANG['joblist'][0]."&nbsp;: </th>";
       echo "<td width='$colsize2%'>";
       self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
