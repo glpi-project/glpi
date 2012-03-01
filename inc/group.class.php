@@ -117,7 +117,8 @@ class Group extends CommonTreeDropdown {
                   $ong[2] = $LANG['common'][112];
                }
                if ($item->getField('is_usergroup')
-                   && Session::haveRight('config', 'r')
+                   && Session::haveRight("group", "w")
+                   && Session::haveRight("user_authtype", "w")
                    && AuthLdap::useAuthLdap()) {
                   $ong[3] = $LANG['setup'][3];
                }
