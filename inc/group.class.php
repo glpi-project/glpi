@@ -371,7 +371,9 @@ class Group extends CommonTreeDropdown {
              $this->getFormURL()."'>";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
-      if (Session::haveRight("config","r") && AuthLdap::useAuthLdap()) {
+      if (Session::haveRight("group", "w")
+                   && Session::haveRight("user_authtype", "w")
+                   && AuthLdap::useAuthLdap()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>".__('In users')."</td></tr>";
 
