@@ -789,7 +789,7 @@ class Problem extends CommonITILObject {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-      echo "<tr>";
+      echo "<tr class='tab_bg_1'>";
       echo "<th class='left' width='$colsize1%'>";
       _e('Opening date');
       echo "<td class='left' width='$colsize2%'>";
@@ -815,7 +815,7 @@ class Problem extends CommonITILObject {
       echo "</td></tr>";
       
       if ($ID) {
-         echo "<tr><th>".__('By')."</th><td>";
+         echo "<tr class='tab_bg_1'><th>".__('By')."</th><td>";
          User::dropdown(array('name'   => 'users_id_recipient',
                               'value'  => $this->fields["users_id_recipient"],
                               'entity' => $this->fields["entities_id"],
