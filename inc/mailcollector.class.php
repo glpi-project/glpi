@@ -649,6 +649,7 @@ class MailCollector  extends CommonDBTM {
       if (isset($tkt['tickets_id'])) {
          // it's a reply to a previous ticket
          $job = new Ticket();
+         $tu  = new Ticket_User();
 
          // Check if ticket  exists and users_id exists in GLPI
          /// TODO check if users_id have right to add a followup to the ticket
@@ -656,7 +657,7 @@ class MailCollector  extends CommonDBTM {
              && $job->fields['status'] != 'closed'
              && ($CFG_GLPI['use_anonymous_followups']
                  || $tkt['_users_id_requester'] > 0
-                 || $job->isAlternateEmailForITILObject($tkt['tickets_id'], $head['from']))) {
+                 || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $head['from']))) {
 
             $content        = explode("\n", $tkt['content']);
             $tkt['content'] = "";
