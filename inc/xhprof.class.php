@@ -47,7 +47,10 @@ if (!defined('GLPI_ROOT')) {
  * php-errors.log will give you the URL of the result.
  */
 class XHProf {
+   // TODO get this from config_path
    const XHPROF_PATH = '/usr/share';
+   const XHPROF_URL  = '/xhprof';
+
    static private $run = false;
 
    function __construct($msg='') {
@@ -79,7 +82,7 @@ class XHProf {
          $runs = new XHProfRuns_Default();
          $id = $runs->save_run($data, 'glpi');
 
-         $link = "http://".$_SERVER['HTTP_HOST']."/xhprof/index.php?run=$id&source=glpi";
+         $link = "http://".$_SERVER['HTTP_HOST'].self::XHPROF_URL."/index.php?run=$id&source=glpi";
          Toolbox::logDebug("Stop profiling with XHProf, result URL", $link);
 
          self::$run = false;
