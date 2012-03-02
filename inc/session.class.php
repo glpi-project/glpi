@@ -542,13 +542,24 @@ class Session {
       if (empty($newfile) || !is_file(GLPI_ROOT . $newfile)) {
          $newfile = "/locales/en_GB.mo";
       }
+      $TRANSLATE = NULL;
 
+      if (function_exists('apc_fetch')) { // Try from APC cache
+         $key = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
+         $TRANSLATE = apc_fetch($key);
+      }
 
       // New localization system :
-      $TRANSLATE = new Zend_Translate(array('adapter'        => 'gettext',
-                                            'content'        => GLPI_ROOT.$newfile,
-                                            'locale'         => $trytoload,
-                                            'disableNotices' => true)); // no warning for empty languages
+      if (!$TRANSLATE) {
+         $TRANSLATE = new Zend_Translate(array('adapter'        => 'gettext',
+                                               'content'        => GLPI_ROOT.$newfile,
+                                               'locale'         => $trytoload,
+                                               'disableNotices' => true)); // no warning for empty languages
+
+         if (function_exists('apc_fetch')) { // Save to APC cache
+            $tmp = apc_store($key, $TRANSLATE);
+         }
+      }
 
       // Load plugin dicts
       if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])) {
