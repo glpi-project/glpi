@@ -113,7 +113,7 @@ class RuleCriteria extends CommonDBChild {
               FROM `".$this->getTable()."`
               WHERE `".$this->items_id."` = '$ID'
               ORDER BY `id`";
-              
+
       $result = $DB->query($sql);
       $rules_list = array();
       while ($rule = $DB->fetch_assoc($result)) {
@@ -158,12 +158,6 @@ class RuleCriteria extends CommonDBChild {
 
       $pattern = trim($pattern);
 
-      if ($condition != Rule::REGEX_MATCH && $condition != Rule::REGEX_NOT_MATCH) {
-         //Perform comparison with fields in lower case
-         $field   = Toolbox::strtolower($field);
-         $pattern = Toolbox::strtolower($pattern);
-      }
-
       switch ($condition) {
          case Rule::PATTERN_EXISTS :
             return ($field != '');
@@ -174,17 +168,24 @@ class RuleCriteria extends CommonDBChild {
          case Rule::PATTERN_IS :
             if (is_array($field)) {
                // Special case (used only by UNIQUE_PROFILE, for now)
+               // $pattern is an ID
                if (in_array($pattern, $field)) {
                   $criterias_results[$criteria] = $pattern;
                   return true;
                }
             } else if ($field == $pattern) {
+               //Perform comparison with fields in lower case
+               $field   = Toolbox::strtolower($field);
+               $pattern = Toolbox::strtolower($pattern);
                $criterias_results[$criteria] = $pattern;
                return true;
             }
             return false;
 
          case Rule::PATTERN_IS_NOT :
+            //Perform comparison with fields in lower case
+            $field   = Toolbox::strtolower($field);
+            $pattern = Toolbox::strtolower($pattern);
             if ($field != $pattern) {
                $criterias_results[$criteria] = $pattern;
                return true;
@@ -200,7 +201,7 @@ class RuleCriteria extends CommonDBChild {
             return false;
 
          case Rule::PATTERN_END :
-            $value = "/".$pattern."$/";
+            $value = "/".$pattern."$/i";
             if (preg_match($value, $field) > 0) {
                $criterias_results[$criteria] = $pattern;
                return true;
@@ -211,7 +212,7 @@ class RuleCriteria extends CommonDBChild {
             if (empty($pattern)) {
                return false;
             }
-            $value = strpos($field,$pattern);
+            $value = mb_stripos($field, $pattern, 0, 'UTF-8');
             if (($value !== false) && $value == 0) {
                $criterias_results[$criteria] = $pattern;
                return true;
@@ -222,7 +223,7 @@ class RuleCriteria extends CommonDBChild {
             if (empty($pattern)) {
                return false;
             }
-            $value = strpos($field,$pattern);
+            $value = mb_stripos($field, $pattern, 0, 'UTF-8');
             if (($value !== false) && $value >= 0) {
                $criterias_results[$criteria] = $pattern;
                return true;
@@ -233,7 +234,7 @@ class RuleCriteria extends CommonDBChild {
             if (empty($pattern)) {
                return false;
             }
-            $value = strpos($field,$pattern);
+            $value = mb_stripos($field, $pattern, 0, 'UTF-8');
             if ($value === false) {
                $criterias_results[$criteria] = $pattern;
                return true;
