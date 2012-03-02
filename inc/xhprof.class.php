@@ -62,7 +62,9 @@ class XHProf {
 
       if (!self::$run && function_exists('xhprof_enable')) {
          xhprof_enable();
-         Toolbox::logDebug("Start profiling with XHProf", $msg);
+         if (class_exists('Toolbox')) {
+            Toolbox::logDebug("Start profiling with XHProf", $msg);
+         }
          self::$run = true;
       }
    }
