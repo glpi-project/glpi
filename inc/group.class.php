@@ -576,7 +576,7 @@ class Group extends CommonTreeDropdown {
          }
          echo "</tr>";
 
-         $user  = new User();
+         $tuser = new User();
          $group = new Group();
 
          foreach ($datas as $data) {
@@ -600,8 +600,8 @@ class Group extends CommonTreeDropdown {
                   }
 
                } else if ($usr = $item->getField(str_replace('groups', 'users', $field))) {
-                  if ($user->getFromDB($usr)) {
-                     echo $user->getLink(true);
+                  if ($tuser->getFromDB($usr)) {
+                     echo $tuser->getLink(true);
                   }
                }
             }
