@@ -414,7 +414,7 @@ class KnowbaseItem extends CommonDBTM {
    function prepareInputForUpdate($input) {
 
       // set title for question if empty
-      if (empty($input["name"])) {
+      if (isset($input["name"]) && empty($input["name"])) {
          $input["name"] = __('New item');
       }
       return $input;
