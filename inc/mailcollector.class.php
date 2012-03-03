@@ -345,7 +345,7 @@ class MailCollector  extends CommonDBTM {
                if (isset($rejected[$head['message_id']])) {
                   if ($action == 1) {
                      $tkt = array();
-                     $tkt = $this->buildTicket($i, array('mailcollectors_id' => $mailcollector_id,
+                     $tkt = $this->buildTicket($i, array('mailgates_id' => $mailcollector_id,
                                                          'play_rules'        => false));
                      $tkt['_users_id_requester'] = $rejected[$head['message_id']]['users_id'];
                      $tkt['entities_id']         = $entity;
@@ -439,7 +439,7 @@ class MailCollector  extends CommonDBTM {
                      $delete_mail = true;
                      $refused++;
                   } else if (isset($tkt['entities_id']) || isset($tkt['tickets_id'])) {
-                     $tkt['_mailgate'] = $mailgateID;
+
                      $result           = imap_fetchheader($this->marubox, $i);
 
                      // Is a mail responding of an already existgin ticket ?
@@ -552,7 +552,8 @@ class MailCollector  extends CommonDBTM {
                                            // **Key Are (subject,to,toOth,toNameOth,from,fromName)
       $tkt = array();
       $tkt['_blacklisted'] = false;
-
+      // For RuleTickets
+      $tkt['_mailgate']    = $options['mailgates_id'];
       // Detect if it is a mail reply
       $glpi_message_match = "/GLPI-([0-9]+)\.[0-9]+\.[0-9]+@\w*/";
 
