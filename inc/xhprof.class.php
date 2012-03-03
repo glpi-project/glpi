@@ -38,16 +38,18 @@ if (!defined('GLPI_ROOT')) {
  *
  * Install the pecl/xhprof extension
  *
+ * Add XHPROF_PATH and XHPROF_URL in config/config_path.php (if needed)
+ *
  * Before the code
- *    $prof = new XHProf();
+ *    $prof = new XHProf("something useful");
  *
  * If the code contains an exit() or a redirect() you must also call (before)
- *    $prof->stop();
+ *    unset($prof);
  *
  * php-errors.log will give you the URL of the result.
  */
 class XHProf {
-   // TODO get this from config_path
+   // this can be overloaded in config/config_path.php
    const XHPROF_PATH = '/usr/share';
    const XHPROF_URL  = '/xhprof';
 
@@ -76,13 +78,16 @@ class XHProf {
 
       if (self::$run) {
          $data = xhprof_disable();
-         include_once self::XHPROF_PATH.'/xhprof_lib/utils/xhprof_lib.php';
-         include_once self::XHPROF_PATH.'/xhprof_lib/utils/xhprof_runs.php';
+
+         $incl = (defined('XHPROF_PATH') ? XHPROF_PATH : self::XHPROF_PATH);
+         include_once $incl.'/xhprof_lib/utils/xhprof_lib.php';
+         include_once $incl.'/xhprof_lib/utils/xhprof_runs.php';
 
          $runs = new XHProfRuns_Default();
          $id = $runs->save_run($data, 'glpi');
 
-         $link = "http://".$_SERVER['HTTP_HOST'].self::XHPROF_URL."/index.php?run=$id&source=glpi";
+         $url = (defined('XHPROF_URL') ? XHPROF_URL : self::XHPROF_URL);
+         $link = "http://".$_SERVER['HTTP_HOST']."$url/index.php?run=$id&source=glpi";
          Toolbox::logDebug("Stop profiling with XHProf, result URL", $link);
 
          self::$run = false;
