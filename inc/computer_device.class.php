@@ -201,37 +201,51 @@ class Computer_Device extends CommonDBTM {
                      action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";
          echo "<input type='hidden' name='computers_id' value='$ID'>";
       }
-//       $global_colspan = 64;
-      $global_colspan = 4;
 
-      if (!$canedit) {
-         $global_colspan--;
-      }
+      $table = new HTMLTable_();
 
-      echo "<table class='tab_cadre_fixe'>";
+      $table->setTitle(_n('Component', 'Components', 2));
 
-      echo "<tr><th colspan='$global_colspan'>"._n('Component', 'Components', 2)."</th></tr>";
-      echo "<tr>";
-      echo "<th>".__('Item type')."</th>";
-      echo "<th>".__('Name')."</th>";
+      $common_column = $table->addHeader('common', __('Common elements'));
+
       if ($canedit) {
-         echo "<th>".__('Delete')."</th>";
+         $delete_column   = $table->addHeader('delete', __('Delete'));
       }
-      echo "<th>".__('Characteristics')."</th>";
-//       echo "<th>".__('Add')."</th>";
-//       echo "<th>".__('Delete all')."</th>";
-      echo "</tr>";
-      $nb = 0;
+      $specific_column = $table->addHeader('specificities', __('Specificities'));
 
-      $specificity_units = array('DeviceProcessor'   => __('MHz'),
-                                 'DeviceMemory'      => __('Mio'),
-                                 'DeviceHardDrive'   => __('Mio'),
-                                 'DeviceGraphicCard' => __('Mio'));
+      foreach ($devtypes as $itemtype_index => $itemtype) {
+         $device_group = '';
 
-      $numberOfPreviousItem = 0;
-      $firstcomponent = true;
+         $table_group = $table->createGroup($itemtype, '');
 
-      foreach ($devtypes as $itemtype) {
+         $previous_header = $itemtype_column = $table_group->addHeader($common_column, 'itemtype',
+                                                                       __('Item type'));
+         $previous_header = $name_column     = $table_group->addHeader($common_column, 'name',
+                                                                       __('Name'),
+                                                                       $previous_header);
+         $name_column->setItemType($itemtype);
+
+         if ($canedit) {
+            $previous_header = $delete_all  = $table_group->addHeader($delete_column, 'all',
+                                                                      __('All'), $previous_header);
+         }
+
+         $device_chars = $itemtype::getHTMLTableHeaderForComputer_Device($table_group,
+                                                                         $specific_column,
+                                                                         $previous_header);
+
+         if ($canedit) {
+            $previous_header = $delete_one  = $table_group->addHeader($delete_column, 'one',
+                                                                      __('One'), $previous_header);
+         }
+
+         $specificities     = $itemtype::getSpecifityLabel();
+         $specificity_names = array_values($specificities);
+         if (count($specificity_names) > 0) {
+            $link_char   = $table_group->addHeader($specific_column, 'link', $specificity_names[0],
+                                                   $previous_header);
+         }
+
          Session::initNavigateListItems($itemtype,
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
@@ -239,7 +253,6 @@ class Computer_Device extends CommonDBTM {
                                                 $computer->getTypeName(1), $computer->getName()));
 
          if ($device=getItemForItemtype($itemtype)) {
-            $specificities = $device->getSpecifityLabel();
             $specif_fields = array_keys($specificities);
             $specif_text   = implode(',',$specif_fields);
 
@@ -256,162 +269,115 @@ class Computer_Device extends CommonDBTM {
                       WHERE `computers_id` = '$ID'
                       GROUP BY `$fk`";
 
-            
             foreach ($DB->request($query) as $deviceFromSQL) {
+               $current_row = $table_group->createRow();
+               $device_group = $itemtype.mt_rand();
 
-               if ($firstcomponent) {
-                  $firstcomponent = false;
-               } else  {
-                  echo "</table></td></tr>\n";
-               }
-               
-               if ($numberOfPreviousItem * $deviceFromSQL['nb'] > 1) {
-                  echo "<tr><td colspan='$global_colspan'><hr></td></tr>\n";
-               }
-               $numberOfPreviousItem = $deviceFromSQL['nb'];
+               $current_row->setHTMLID($device_group);
 
-               $query = "SELECT `id`,
-                                `$fk`
-                                $specif_text
-                         FROM `$linktable`
-                         WHERE `computers_id` = '$ID'
-                               AND `$fk` = '".$deviceFromSQL[$fk]."'
-                         ORDER BY `id`";
+              if ($device->getFromDB($deviceFromSQL[$fk])) {
+                  if ($device->canView()) {
+                     $cell_value = "<a href='".$device->getSearchURL()."'>" .
+                        $device->getTypeName(1).
+                        "</a>";
+                  } else {
+                     $cell_value = $device->getTypeName(1);
+                  }
+                  $itemtype_cell = $current_row->addCell($itemtype_column, $cell_value);
+                  $itemtype_cell->setHTMLStyle('text-align: right;');
 
-               $first = true;
-               $group = '';
-               foreach ($DB->request($query) as $data) {
-                  Session::addToNavigateListItems($itemtype, $data[$fk]);
 
-                  if ($device->getFromDB($data[$fk])) {
-                     if ($first) {
-                        echo "<tr class='tab_bg_2'>";
-                        if ($deviceFromSQL['nb'] > 1) {
-                           $rowspan = "rowspan='".$deviceFromSQL['nb']."'";
-                        } else {
-                           $rowspan = "";
-                        }
-                        $rowspan = "";
-                        echo "<td $rowspan>";
-
-                        if ($device->canView()) {
-                           echo "<a href='".$device->getSearchURL()."'>".$device->getTypeName(1).
-                                "</a>";
-                        } else {
-                           echo $device->getTypeName(1);
-                        }
-
-                        echo "</td><td $rowspan>".$device->getLink();
-                        if ($canedit) {
-                           echo "&nbsp;<img title='"._sx('button', 'Add')."' alt='".
-                                 _sx('button', 'Add')."'
-                                 onClick=\"Ext.get('quantity_".$itemtype."_".$data['id']."').
+                  $cell_value = $device->getLink();
+                  if ($canedit) {
+                     $cell_value .= "&nbsp;<img title='"._sx('button', 'Add')."' alt='".
+                        _sx('button', 'Add')."'
+                                 onClick=\"Ext.get('quantity_".$itemtype."_".$device->getID()."').
                                           setDisplayed('block')\"
                                  class='pointer' src='".$CFG_GLPI["root_doc"].
-                                 "/pics/add_dropdown.png'>";
-                           echo "<span id='quantity_".$itemtype."_".$data['id']."' ".
-                                       "style='display:none'><br>";
-                           _e('Add');
-                           echo "&nbsp;";
-                           Dropdown::showInteger("quantity_".$itemtype."_".$data['id'], 0, 0, 10);
-                           echo "</span>";
-                        }
-                        echo "</td>";
-                        $group = $itemtype.mt_rand();
-                        if ($canedit) {
-                           echo "<td $rowspan class='center'>";
-                           echo "<a href='#' onclick= \"if ( toggleCheckboxes('$group') ) return false;\">".__('All')."</a>";
-                           echo "</td>";
-                        
-                        }
-                        echo "<td class='left'><table width='100%' class='tab_format' id='$group'>\n";
-                        
-                     }
-                     echo "<tr>";
+                        "/pics/add_dropdown.png'>";
+                     $cell_value .= "<span id='quantity_".$itemtype."_".$device->getID()."' ".
+                        "style='display:none'><br>";
+                     $cell_value .= __('Add');
+                     $cell_value .= "&nbsp;";
+                     //$cell_value .= Dropdown::showInteger("quantity_" . $itemtype . "_" .
+                     //                                     $device->getID(), 0, 0, 10, 1, array(),
+                     //                                     array('display' => false));
+                     $cell_value .= "</span>";
+                  }
+                  $name_cell = $current_row->addCell($name_column, $cell_value, $itemtype_cell,
+                                                     $device->getID());
+
+                  if ($canedit) {
+                     $cell_value = "<a href='#' onclick= \"if ( toggleCheckboxes('$device_group')".
+                        ") return false;\">".__('All')."</a>";
+                     $global_anchor = $current_row->addCell($delete_all, $cell_value, $name_cell);
+                     $global_anchor->setHTMLStyle('text-align: center;');
+                  } else {
+                     $global_anchor = $name_cell;
+                  }
+
+                  $specificities = $device->getFormData();
+
+                  $device->getHTMLTableCellsForComputer_Device($current_row, $device_chars,
+                                                               $global_anchor);
+
+                  $links_specifications = array();
+                  $query = "SELECT `id`,
+                                   `$fk`
+                                   $specif_text
+                            FROM `$linktable`
+                            WHERE `computers_id` = '$ID'
+                                  AND `$fk` = '".$device->getID()."'
+                            ORDER BY `id`";
+
+                  foreach ($DB->request($query) as $data) {
+
                      if ($canedit) {
-                        echo "<td class='center' width='10px'>";
-                        echo "<input id='$group' type='checkbox' name='remove_" .$itemtype."_".$data['id']."'
-                              value='1'>";
-                        echo "</td>";
-                     }
-
-                     $spec = $device->getFormData();
-
-                     if (isset($spec['label']) && count($spec['label'])) {
-                        $colspan = (60/count($spec['label']));
-
-                        foreach ($spec['label'] as $i => $label) {
-
-                           if (isset($spec['value'][$i])) {
-                              echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
-                              echo $spec['value'][$i]."</td>";
-
-                           } else if ($canedit) {
-                              // Specificity
-                              echo "<td class='right' colspan='$colspan'>" .
-                                     $spec['label'][$i]."&nbsp;: ";
-                              echo "<input type='text' name='value_" . $itemtype . "_" .
-                                     $data['id'] . "' value='" . $data['specificity'] .
-                                     "' size='".$spec['size']."'>";
-                              if (isset($specificity_units[$device->getType()])) {
-                                 echo '&nbsp;'.$specificity_units[$device->getType()];
-                              }
-                              echo "</td>";
-
-                           } else {
-                              echo "<td colspan='$colspan'>".$spec['label'][$i]."&nbsp;: ";
-                              echo $data['specificity'];
-
-                              if (isset($specificity_units[$device->getType()])) {
-                                 echo '&nbsp;'.$specificity_units[$device->getType()];
-                              }
-
-                              echo "</td>";
-                           }
-                        }
+                        $cell_value = "<input id='$device_group' type='checkbox' name='remove_" .
+                                      $itemtype."_".$data['id']."' value='1'>";
+                        $local_anchor = $current_row->addCell($delete_one, $cell_value,
+                                                              $global_anchor);
+                        $local_anchor->setHTMLStyle('text-align: center;');
                      } else {
-                        echo "<td colspan='60'>&nbsp;</td>";
+                        $local_anchor = $global_anchor;
                      }
 
-                     echo "</tr>\n";
-                     $nb++;
-                     $first = false;
+                     if (isset($data['specificity'])) {
+                        if ($canedit) {
+                           // Specificity
+                           $cell_value = "<input type='text' name='value_" . $itemtype . "_" .
+                              $data['id'] . "' value='" . $data['specificity'] .
+                              "' size='".$specificities['size']."'>";
+                        } else {
+                           $cell_value = $data['specificity'];
+                        }
+                        $link_spec = $current_row->addCell($link_char,
+                                                           $cell_value,
+                                                           $local_anchor);
+                        $link_spec->setHTMLStyle('text-align: center;');
+                     }
                   }
                }
             }
          }
       }
-      
-      if (!$firstcomponent) {
-         echo "</table></td></tr>\n";
-      }
+
+      $table->display();
 
       if ($canedit) {
-         if ($nb > 0) {
-            echo "<tr><td colspan='$global_colspan'><hr></td></tr>";
-            echo "<tr>";
-            echo "<td colspan='3' class='tab_bg_1 center'>";
-            echo "<input type='submit' class='submit' name='updateall' value='".
-                   __s('Save')."'></td>";
-            
-            
-            echo "<td colpsan='2' class='left'>";
-            Html::openArrowMassives("form_device_action$rand", false);
-            Html::closeArrowMassives(array());
-            echo "</td>";
-            echo "</tr>";
-         }
 
-         echo "<tr><td colspan='3' class='tab_bg_1 right'>";
-//                __('Add a new component')."&nbsp;&nbsp;";
+         Html::openArrowMassives("form_device_action$rand", false);
+         Html::closeArrowMassives(array());
+
+
+         echo __('Add a new component')." - ";
          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
-         echo "</td><td colspan='".($global_colspan-3)."'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
-         echo "</td></tr></table></form>";
 
-      } else {
-         echo "</table>";
+         echo "<input type='submit' class='submit' name='updateall' value='" . __s('Save')."'>";
+
+         echo "</form>";
       }
+
       echo "</div>";
    }
 

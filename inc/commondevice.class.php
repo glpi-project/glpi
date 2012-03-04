@@ -144,6 +144,18 @@ abstract class CommonDevice extends CommonDropdown {
    }
 
 
+   static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
+                                                        HTMLTable_SuperHeader $super,
+                                                        HTMLTable_Header &$previous_header) {
+      return array();
+   }
+
+
+   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers,
+                                                HTMLTable_Cell &$previous_cell) {
+   }
+
+
    /**
     * Return the specifities localized name for the Device
     *
