@@ -246,65 +246,115 @@ class Link extends CommonDBTM {
                                                           $item->getField('groups_id')), $link);
          }
       }
-      $ipmac = array();
 
-      if (!strstr($link,"[IP]") && !strstr($link,"[MAC]")) {
+      $replace_IP  = strstr($link,"[IP]");
+      $replace_MAC = strstr($link,"[MAC]");
+
+      if (!$replace_IP && !$replace_MAC) {
          return array($link);
 
-      } else { // Return sevral links id several IP / MAC
-         $links = array();
-
-         //TODO rewrite this for new IP management
-         $query2 = "SELECT `id`, `ip`, `mac`, `logical_number`
-                    FROM `glpi_networkports`
-                    WHERE `items_id` = '".$item->fields['id']."'
-                          AND `itemtype` = '".get_class($item)."'
-                    ORDER BY `logical_number`";
-         $result2 = $DB->query($query2);
-
-         if (get_class($item) == 'NetworkEquipment') {
-            $ipmac[0]['ip']     = $item->getField('ip');
-            $ipmac[0]['mac']    = $item->getField('mac');
-            $ipmac[0]['number'] = '';
-         }
-         if ($DB->numrows($result2)>0) {
-            while ($data2=$DB->fetch_assoc($result2)) {
-               $ipmac[$data2['id']]['ip']     = $data2["ip"];
-               $ipmac[$data2['id']]['mac']    = $data2["mac"];
-               $ipmac[$data2['id']]['number'] = $data2["logical_number"];
-            }
-         }
-
-         if (count($ipmac)>0) {
-            foreach ($ipmac as $key => $val) {
-               $tmplink = $link;
-               $disp    = 1;
-               if (strstr($link,"[IP]")) {
-                  if (empty($val['ip'])) {
-                     $disp = 0;
-                  } else {
-                     $tmplink = str_replace("[IP]", $val['ip'], $tmplink);
-                  }
-               }
-               if (strstr($link,"[MAC]")) {
-                  if (empty($val['mac'])) {
-                     $disp = 0;
-                  } else {
-                     $tmplink = str_replace("[MAC]", $val['mac'], $tmplink);
-                  }
-               }
-
-               if ($disp) {
-                  $links[$key] = $tmplink;
-               }
-            }
-         }
-
-         if (count($links)) {
-            return $links;
-         }
-         return array($link);
       }
+      // Return sevral links id several IP / MAC
+
+      $ipmac = array();
+      if (get_class($item) == 'NetworkEquipment') {
+         if ($replace_IP) {
+            $query2 = "SELECT `glpi_ipaddresses`.`id`,
+                              `glpi_ipaddresses`.`name` as ip
+                       FROM `glpi_networknames`, `glpi_ipaddresses`
+                       WHERE `glpi_networknames`.`items_id` = '" . $item->getID() . "'
+                              AND `glpi_networknames`.`itemtype` = 'NetworkEquipment'
+                              AND `glpi_ipaddresses`.`itemtype` = 'NetworkName'
+                              AND `glpi_ipaddresses`.`items_id` = `glpi_networknames`.`id`";
+            foreach ($DB->request($query2) as $data2) {
+               $ipmac['ip'.$data2['id']]['ip']     = $data2["ip"];
+               $ipmac['ip'.$data2['id']]['mac']    = $item->getField('mac');
+            }
+         }
+         if ($replace_MAC) {
+            // If there is no entry, then, we must at least define the mac of the item ...
+            if (count($ipmac) == 0) {
+               $ipmac['mac0']['ip']     = '';
+               $ipmac['mac0']['mac']    = $item->getField('mac');
+            }
+         }
+      }
+
+      if ($replace_IP) {
+         $query2 = "SELECT `glpi_ipaddresses`.`id`,
+                           `glpi_networkports`.`mac`,
+                           `glpi_ipaddresses`.`name` as ip
+                    FROM `glpi_networkports`, `glpi_networknames`, `glpi_ipaddresses`
+                    WHERE `glpi_networkports`.`items_id` = '" . $item->getID() . "'
+                           AND `glpi_networkports`.`itemtype` = '" . $item->getType() . "'
+                           AND `glpi_networknames`.`itemtype` = 'NetworkPort'
+                           AND `glpi_networknames`.`items_id` = `glpi_networkports`.`id`
+                           AND `glpi_ipaddresses`.`itemtype` = 'NetworkName'
+                           AND `glpi_ipaddresses`.`items_id` = `glpi_networknames`.`id`";
+
+         foreach ($DB->request($query2) as $data2) {
+            $ipmac['ip'.$data2['id']]['ip']  = $data2["ip"];
+            $ipmac['ip'.$data2['id']]['mac'] = $data2["mac"];
+         }
+      }
+
+      if ($replace_MAC) {
+         if ($replace_IP) {
+            $query2 = "SELECT `glpi_networkports`.`id`,
+                              `glpi_networkports`.`mac`
+                       FROM `glpi_networkports`
+                       LEFT JOIN `glpi_networknames`
+                             ON (`glpi_networknames`.`items_id` = `glpi_networkports`.`id`
+                             AND `glpi_networknames`.`itemtype` = 'NetworkPort')
+                       WHERE `glpi_networkports`.`items_id` = '" . $item->getID() . "'
+                              AND `glpi_networkports`.`itemtype` = '" . $item->getType() . "'
+                         AND `glpi_networknames`.`id` IS NULL
+                       GROUP BY `glpi_networkports`.`mac`";
+         } else {
+            $query2 = "SELECT `glpi_networkports`.`id`,
+                              `glpi_networkports`.`mac`
+                       FROM `glpi_networkports`
+                       WHERE `glpi_networkports`.`items_id` = '" . $item->getID() . "'
+                              AND `glpi_networkports`.`itemtype` = '" . $item->getType() . "'
+                       GROUP BY `glpi_networkports`.`mac`";
+         }
+
+         foreach ($DB->request($query2) as $data2) {
+            $ipmac['mac'.$data2['id']]['ip']  = '';
+            $ipmac['mac'.$data2['id']]['mac'] = $data2["mac"];
+         }
+      }
+
+      $links = array();
+      if (count($ipmac)>0) {
+         foreach ($ipmac as $key => $val) {
+            $tmplink = $link;
+            $disp    = 1;
+            if (strstr($link,"[IP]")) {
+               if (empty($val['ip'])) {
+                  $disp = 0;
+               } else {
+                  $tmplink = str_replace("[IP]", $val['ip'], $tmplink);
+               }
+            }
+            if (strstr($link,"[MAC]")) {
+               if (empty($val['mac'])) {
+                  $disp = 0;
+               } else {
+                  $tmplink = str_replace("[MAC]", $val['mac'], $tmplink);
+               }
+            }
+
+            if ($disp) {
+               $links[$key] = $tmplink;
+            }
+         }
+      }
+
+      if (count($links)) {
+         return $links;
+      }
+      return array($link);
    }
 
 
