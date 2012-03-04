@@ -73,12 +73,12 @@ class HTMLTable_ extends HTMLTable_Base {
    }
 
 
-   function addHeader($header_name, $value, HTMLTable_Header $father = NULL) {
+   function addHeader($header_name, $content, HTMLTable_Header $father = NULL) {
       try {
          if (count($this->groups) > 0) {
             throw new Exception(__('Implementation error : must define all headers before any subgroups'));
          }
-         return $this->appendHeader(new HTMLTable_SuperHeader($this, $header_name, $value,
+         return $this->appendHeader(new HTMLTable_SuperHeader($this, $header_name, $content,
                                                        $father));
       } catch (Exception $e) {
          echo __FILE__." ".__LINE__." : ".$e->getMessage()."<br>\n";
@@ -86,10 +86,10 @@ class HTMLTable_ extends HTMLTable_Base {
    }
 
 
-   function createGroup($name, $value) {
+   function createGroup($name, $content) {
       if (!empty($name)) {
          if (!isset($this->groups[$name])) {
-            $this->groups[$name] = new HTMLTable_Group($this, $name, $value);
+            $this->groups[$name] = new HTMLTable_Group($this, $name, $content);
          }
       }
       return $this->getGroup($name);

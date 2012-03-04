@@ -80,10 +80,10 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
    }
 
 
-   function __construct(HTMLTable_ $table, $name, $value,
+   function __construct(HTMLTable_ $table, $name, $content,
                         HTMLTable_Header $father = NULL) {
       $this->table = $table;
-      parent::__construct($name, $value, $father);
+      parent::__construct($name, $content, $father);
    }
 
 

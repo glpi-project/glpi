@@ -59,7 +59,7 @@ class HTMLTable_Row extends HTMLTable_Entity {
    }
 
 
-   function addCell(HTMLTable_Header $header, $value, HTMLTable_Cell $father = NULL,
+   function addCell(HTMLTable_Header $header, $content, HTMLTable_Cell $father = NULL,
                     $items_id = 0) {
       try {
          if (!$this->group->haveHeader($header)) {
@@ -71,7 +71,7 @@ class HTMLTable_Row extends HTMLTable_Entity {
             $this->cells[$header_name] = array();
          }
 
-         $cell = new HTMLTable_Cell($this, $header, $value, $father, $items_id);
+         $cell = new HTMLTable_Cell($this, $header, $content, $father, $items_id);
          $this->cells[$header_name][] = $cell;
          $this->empty = false;
          return $cell;

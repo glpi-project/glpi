@@ -59,9 +59,9 @@ class HTMLTable_SubHeader extends HTMLTable_Header {
 
 
    function __construct(HTMLTable_SuperHeader $header, $name,
-                        $value, HTMLTable_Header $father = NULL) {
+                        $content, HTMLTable_Header $father = NULL) {
       $this->header = $header;
-      parent::__construct($name, $value, $father);
+      parent::__construct($name, $content, $father);
    }
 
 

@@ -37,10 +37,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-abstract class HTMLTable_Header {
+abstract class HTMLTable_Header extends HTMLTable_Entity {
 
    private $name;
-   private $value;
    private $father;
    private $itemtype;
    private $colSpan = 1;
@@ -51,9 +50,9 @@ abstract class HTMLTable_Header {
    abstract function isSuperHeader();
 
 
-   function __construct($name, $value, HTMLTable_Header $father = NULL) {
+   function __construct($name, $content, HTMLTable_Header $father = NULL) {
+      parent::__construct($content);
       $this->name = $name;
-      $this->value = $value;
       $this->itemtype = '';
       $this->father = $father;
    }
@@ -74,11 +73,6 @@ abstract class HTMLTable_Header {
    }
 
 
-   function getValue() {
-      return $this->value;
-   }
-
-
    function setColSpan($colSpan) {
       $this->colSpan = $colSpan;
    }
@@ -90,7 +84,9 @@ abstract class HTMLTable_Header {
 
 
    function getTableHeader() {
-      echo "<th colspan='".$this->colSpan."'>".$this->getValue()."</th>";
+      echo "<th colspan='".$this->colSpan."'>";
+      $this->displayContent();
+      echo "</th>";
    }
 
 

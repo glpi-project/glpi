@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class HTMLTable_Group extends HTMLTable_Base {
 
    private $name;
-   private $value;
+   private $content;
    private $new_headers = array();
    private $table;
    private $rows = array();
@@ -49,19 +49,15 @@ class HTMLTable_Group extends HTMLTable_Base {
       return $this->table->getHeader($super_header_name);
    }
 
-   function __construct(HTMLTable_ $table, $name, $value) {
+   function __construct(HTMLTable_ $table, $name, $content) {
       parent::__construct(false);
       $this->table = $table;
       $this->name = $name;
-      $this->value = $value;
+      $this->content = $content;
    }
 
    function getName() {
       return $this->name;
-   }
-
-   function getValue() {
-      return $this->value;
    }
 
    function haveHeader(HTMLTable_Header $header) {
@@ -74,12 +70,12 @@ class HTMLTable_Group extends HTMLTable_Base {
    }
 
    function addHeader(HTMLTable_SuperHeader $super_header, $name,
-                      $value, HTMLTable_Header $father = NULL) {
+                      $content, HTMLTable_Header $father = NULL) {
       try {
          if (isset($this->ordered_headers)) {
             throw new Exception(__('Implementation error : must define all headers before any row'));
          }
-         return $this->appendHeader(new HTMLTable_SubHeader($super_header, $name, $value,
+         return $this->appendHeader(new HTMLTable_SubHeader($super_header, $name, $content,
                                                      $father));
       } catch (Exception $e) {
          echo __FILE__." ".__LINE__." : ".$e->getMessage()."<br>\n";
@@ -128,8 +124,8 @@ class HTMLTable_Group extends HTMLTable_Base {
    function display($totalNumberOfColumn) {
       if ($this->getNumberOfRows() > 0) {
 
-         if (!empty($this->value)) {
-            echo "\t<tr><th colspan='$totalNumberOfColumn'>".$this->value."</th></tr>\n";
+         if (!empty($this->content)) {
+            echo "\t<tr><th colspan='$totalNumberOfColumn'>".$this->content."</th></tr>\n";
          }
 
          echo "<tr>";
