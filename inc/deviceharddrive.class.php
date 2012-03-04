@@ -45,7 +45,8 @@ class DeviceHardDrive extends CommonDevice {
 
 
    static function getSpecifityLabel() {
-      return array('specificity' => __('Capacity'));
+      //TRANS: (MB) is for MegaBytes
+      return array('specificity' => __('Capacity (MB)'));
    }
 
 

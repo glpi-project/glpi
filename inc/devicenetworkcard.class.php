@@ -131,5 +131,43 @@ class DeviceNetworkCard extends CommonDevice {
       return $this->add($input);
    }
 
+
+   static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
+                                                        HTMLTable_SuperHeader $super,
+                                                        HTMLTable_Header &$previous_header) {
+
+      $elements        = array();
+
+      $previous_header = $elements['band'] = $group->addHeader($super, 'bandwidth',
+                                                               __('Flow'), $previous_header);
+
+      $previous_header = $elements['manu'] = $group->addHeader($super, 'manufacturer',
+                                                               __('Manufacturer'),
+                                                               $previous_header);
+
+      return $elements;
+   }
+
+
+   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers,
+                                                HTMLTable_Cell &$previous_cell) {
+
+      if ($this->fields["bandwidth"]) {
+         $cell_value = $this->fields["bandwidth"];
+      } else {
+         $cell_value = '';
+      }
+      $previous_cell = $row->addCell($headers['band'], $cell_value, $previous_cell);
+      $previous_cell->setHTMLStyle('text-align: center;');
+
+      if (!empty($this->fields["manufacturers_id"])) {
+         $cell_value = Dropdown::getDropdownName("glpi_manufacturers",
+                                                 $this->fields["manufacturers_id"]);
+      } else {
+         $cell_value = '';
+      }
+      $previous_cell = $row->addCell($headers['manu'], $cell_value, $previous_cell);
+      $previous_cell->setHTMLStyle('text-align: center;');
+   }
 }
 ?>

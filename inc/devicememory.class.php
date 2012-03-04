@@ -45,7 +45,8 @@ class DeviceMemory extends CommonDevice {
 
 
    static function getSpecifityLabel() {
-      return array('specificity' => __('Size'));
+      //TRANS: (MB) is for MegaBytes
+      return array('specificity' => __('Size (MB)'));
    }
 
 
@@ -113,6 +114,42 @@ class DeviceMemory extends CommonDevice {
       $data['size']    = 10;
 
       return $data;
+   }
+
+
+   static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
+                                                        HTMLTable_SuperHeader $super,
+                                                        HTMLTable_Header &$previous_header) {
+
+      $elements        = array();
+
+      $previous_header = $elements['type'] = $group->addHeader($super, 'type',
+                                                               __('Type'), $previous_header);
+      $previous_header = $elements['freq'] = $group->addHeader($super, 'frequency',
+                                                               __('Frequency'), $previous_header);
+
+      return $elements;
+   }
+
+   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers,
+                                                HTMLTable_Cell &$previous_cell) {
+
+      if ($this->fields["devicememorytypes_id"]) {
+         $cell_value = Dropdown::getDropdownName("glpi_devicememorytypes",
+                                                 $this->fields["devicememorytypes_id"]);
+      } else {
+         $cell_value = '';
+      }
+      $previous_cell = $row->addCell($headers['type'], $cell_value, $previous_cell);
+      $previous_cell->setHTMLStyle('text-align: center;');
+
+      if (!empty($this->fields["frequence"])) {
+         $cell_value = $this->fields["frequence"];
+      } else {
+         $cell_value = '';
+      }
+      $previous_cell = $row->addCell($headers['freq'], $cell_value, $previous_cell);
+      $previous_cell->setHTMLStyle('text-align: center;');
    }
 
 }

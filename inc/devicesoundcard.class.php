@@ -83,5 +83,43 @@ class DeviceSoundCard extends CommonDevice {
       return $data;
    }
 
+
+   static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
+                                                        HTMLTable_SuperHeader $super,
+                                                        HTMLTable_Header &$previous_header) {
+
+      $elements        = array();
+
+      $previous_header = $elements['type'] = $group->addHeader($super, 'type',
+                                                               __('Type'), $previous_header);
+
+      $previous_header = $elements['manu'] = $group->addHeader($super, 'manufacturer',
+                                                               __('Manufacturer'),
+                                                               $previous_header);
+
+      return $elements;
+   }
+
+   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers,
+                                                HTMLTable_Cell &$previous_cell) {
+
+      if ($this->fields["type"]) {
+         $cell_value = $this->fields["type"];
+      } else {
+         $cell_value = '';
+      }
+      $previous_cell = $row->addCell($headers['type'], $cell_value, $previous_cell);
+      $previous_cell->setHTMLStyle('text-align: center;');
+
+      if (!empty($this->fields["manufacturers_id"])) {
+         $cell_value = Dropdown::getDropdownName("glpi_manufacturers",
+                                                 $this->fields["manufacturers_id"]);
+      } else {
+         $cell_value = '';
+      }
+      $previous_cell = $row->addCell($headers['manu'], $cell_value, $previous_cell);
+      $previous_cell->setHTMLStyle('text-align: center;');
+   }
+
 }
 ?>
