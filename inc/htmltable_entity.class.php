@@ -42,6 +42,12 @@ abstract class HTMLTable_Entity {
    private $html_id;
    private $html_style;
    private $html_class;
+   private $content;
+
+
+   function __construct($content) {
+      $this->content = $content;
+   }
 
 
    function setHTMLID($html_id) {
@@ -68,6 +74,31 @@ abstract class HTMLTable_Entity {
       }
       if (!empty($this->html_class)) {
          echo " class='".$this->html_class."'";
+      }
+   }
+
+
+   function setContent($content) {
+      $this->content = $content;
+   }
+
+
+   function displayContent() {
+      if (is_string($this->content)) {
+         echo $this->content;
+      } else if (is_array($this->content)) {
+         foreach ($this->content as $content) {
+            if (is_string($content)) {
+               echo $content;
+            } else if (isset($content['function'])) {
+               if (isset($content['parameters'])) {
+                  $parameters = $content['parameters'];
+               } else {
+                  $parameters = array();
+               }
+               call_user_func_array ($content['function'], $parameters);
+            }
+         }
       }
    }
 }

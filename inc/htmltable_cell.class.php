@@ -41,15 +41,14 @@ class HTMLTable_Cell extends HTMLTable_Entity {
 
    private $row;
    private $header;
-   private $value;
    private $father;
    private $items_id;
    private $sons = array();
 
-   function __construct($row, $header, $value, HTMLTable_Cell $father = NULL, $items_id = 0) {
+   function __construct($row, $header, $content, HTMLTable_Cell $father = NULL, $items_id = 0) {
+      parent::__construct($content);
       $this->row = $row;
       $this->header = $header;
-      $this->value = $value;
       $this->father = $father;
       $this->items_id = $items_id;
 
@@ -131,7 +130,9 @@ class HTMLTable_Cell extends HTMLTable_Entity {
                echo " rowspan='".$this->numberOfLines."'";
             }
             $this->displayEntityAttributs();
-            echo ">" . $this->value . "</td>\n";
+            echo ">";
+            $this->displayContent();
+            echo "</td>\n";
          }
          return true;
       }

@@ -206,7 +206,7 @@ class Computer_Device extends CommonDBTM {
 
       $table->setTitle(_n('Component', 'Components', 2));
 
-      $common_column = $table->addHeader('common', __('Common elements'));
+      $common_column = $table->addHeader('common', __('Type of component'));
 
       if ($canedit) {
          $delete_column   = $table->addHeader('delete', __('Delete'));
@@ -214,45 +214,54 @@ class Computer_Device extends CommonDBTM {
       $specific_column = $table->addHeader('specificities', __('Specificities'));
 
       foreach ($devtypes as $itemtype_index => $itemtype) {
-         $device_group = '';
-
-         $table_group = $table->createGroup($itemtype, '');
-
-         $previous_header = $itemtype_column = $table_group->addHeader($common_column, 'itemtype',
-                                                                       __('Item type'));
-         $previous_header = $name_column     = $table_group->addHeader($common_column, 'name',
-                                                                       __('Name'),
-                                                                       $previous_header);
-         $name_column->setItemType($itemtype);
-
-         if ($canedit) {
-            $previous_header = $delete_all  = $table_group->addHeader($delete_column, 'all',
-                                                                      __('All'), $previous_header);
-         }
-
-         $device_chars = $itemtype::getHTMLTableHeaderForComputer_Device($table_group,
-                                                                         $specific_column,
-                                                                         $previous_header);
-
-         if ($canedit) {
-            $previous_header = $delete_one  = $table_group->addHeader($delete_column, 'one',
-                                                                      __('One'), $previous_header);
-         }
-
-         $specificities     = $itemtype::getSpecifityLabel();
-         $specificity_names = array_values($specificities);
-         if (count($specificity_names) > 0) {
-            $link_char   = $table_group->addHeader($specific_column, 'link', $specificity_names[0],
-                                                   $previous_header);
-         }
-
-         Session::initNavigateListItems($itemtype,
-                              //TRANS : %1$s is the itemtype name,
-                              //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'),
-                                                $computer->getTypeName(1), $computer->getName()));
-
          if ($device=getItemForItemtype($itemtype)) {
+
+            $device_group = '';
+
+            $table_group = $table->createGroup($itemtype, '');
+
+
+            if ($device->canView()) {
+               $header_value = "<a href='".$device->getSearchURL()."'>" .
+                               $device->getTypeName(1) . "</a>";
+            } else {
+               $header_value = $device->getTypeName(1);
+            }
+
+            $previous_header = $name_column     = $table_group->addHeader($common_column, 'name',
+                                                                       $header_value);
+            $name_column->setItemType($itemtype);
+
+            if ($canedit) {
+               $previous_header = $delete_all  = $table_group->addHeader($delete_column, 'all',
+                                                                         __(''),
+                                                                         $previous_header);
+            }
+
+            $device_chars = $itemtype::getHTMLTableHeaderForComputer_Device($table_group,
+                                                                            $specific_column,
+                                                                            $previous_header);
+
+            if ($canedit) {
+               $previous_header = $delete_one  = $table_group->addHeader($delete_column, 'one',
+                                                                         __(''),
+                                                                         $previous_header);
+            }
+
+            $specificities     = $itemtype::getSpecifityLabel();
+            $specificity_names = array_values($specificities);
+            if (count($specificity_names) > 0) {
+               $link_char   = $table_group->addHeader($specific_column, 'link',
+                                                      $specificity_names[0], $previous_header);
+            }
+
+            Session::initNavigateListItems($itemtype,
+                               //TRANS : %1$s is the itemtype name,
+                               //        %2$s is the name of the item (used for headings of a list)
+                                           sprintf(__('%1$s = %2$s'),
+                                                   $computer->getTypeName(1),
+                                                   $computer->getName()));
+
             $specif_fields = array_keys($specificities);
             $specif_text   = implode(',',$specif_fields);
 
@@ -275,7 +284,7 @@ class Computer_Device extends CommonDBTM {
 
                $current_row->setHTMLID($device_group);
 
-              if ($device->getFromDB($deviceFromSQL[$fk])) {
+               if ($device->getFromDB($deviceFromSQL[$fk])) {
                   if ($device->canView()) {
                      $cell_value = "<a href='".$device->getSearchURL()."'>" .
                         $device->getTypeName(1).
@@ -283,28 +292,25 @@ class Computer_Device extends CommonDBTM {
                   } else {
                      $cell_value = $device->getTypeName(1);
                   }
-                  $itemtype_cell = $current_row->addCell($itemtype_column, $cell_value);
-                  $itemtype_cell->setHTMLStyle('text-align: right;');
-
 
                   $cell_value = $device->getLink();
                   if ($canedit) {
+                     $field_name = "quantity_".$itemtype."_".$ID."_".$device->getID();
                      $cell_value .= "&nbsp;<img title='"._sx('button', 'Add')."' alt='".
                         _sx('button', 'Add')."'
-                                 onClick=\"Ext.get('quantity_".$itemtype."_".$device->getID()."').
-                                          setDisplayed('block')\"
+                                 onClick=\"Ext.get('$field_name').setDisplayed('block')\"
                                  class='pointer' src='".$CFG_GLPI["root_doc"].
                         "/pics/add_dropdown.png'>";
-                     $cell_value .= "<span id='quantity_".$itemtype."_".$device->getID()."' ".
+                     $cell_value .= "<span id='$field_name' ".
                         "style='display:none'><br>";
                      $cell_value .= __('Add');
                      $cell_value .= "&nbsp;";
-                     //$cell_value .= Dropdown::showInteger("quantity_" . $itemtype . "_" .
-                     //                                     $device->getID(), 0, 0, 10, 1, array(),
-                     //                                     array('display' => false));
-                     $cell_value .= "</span>";
+                     $cell_value = array($cell_value,
+                                         array('function' => 'Dropdown::showInteger',
+                                               'parameters' => array($field_name, 0, 0, 10)),
+                                         "</span>");
                   }
-                  $name_cell = $current_row->addCell($name_column, $cell_value, $itemtype_cell,
+                  $name_cell = $current_row->addCell($name_column, $cell_value, NULL,
                                                      $device->getID());
 
                   if ($canedit) {
@@ -437,8 +443,9 @@ class Computer_Device extends CommonDBTM {
     * @param $itemtype     itemtype of device
     * @param $compDevID    computer device ID
    **/
-   private function addDevices($newNumber, $itemtype, $compDevID) {
+   private function addDevices($newNumber, $itemtype, $computers_id, $devices_id) {
       global $DB;
+
 
       $linktable = getTableForItemType('Computer_'.$itemtype);
       $this->forceTable($linktable);
@@ -447,14 +454,27 @@ class Computer_Device extends CommonDBTM {
       if ($item = getItemForItemtype($itemtype)) {
          $specif_fields = $item->getSpecifityLabel();
 
-         if (!$this->getFromDB($compDevID)) {
+         $device = new $itemtype();
+         if (!$device->getFromDB($devices_id)) {
             return false;
          }
+
+         $input = array('computers_id' => $computers_id,
+                        '_itemtype'    => $itemtype,
+                        $fk            => $devices_id,
+                        'specificity'  => $device->getField('specif_default'));
+
+         for ($i=0 ; $i<$newNumber ; $i++) {
+            $this->add($input);
+         }
+
+         return;
 
          $query = "SELECT `id`
                    FROM `$linktable`
                    WHERE `computers_id` = '".$this->fields["computers_id"]."'
                          AND `$fk` = '".$this->fields[$fk]."'";
+
 
          if (count($specif_fields)) {
             foreach ($specif_fields as $field => $name) {
@@ -462,6 +482,7 @@ class Computer_Device extends CommonDBTM {
             }
          }
 
+         echo __FILE__." ".__LINE__." : $query<br>\n";
          if (($result = $DB->query($query)) && ($newNumber > 0)) {
             $input = array('computers_id' => $this->fields["computers_id"],
                            '_itemtype'    => $itemtype,
@@ -531,10 +552,6 @@ class Computer_Device extends CommonDBTM {
          $data = explode("_",$key);
          if (count($data) == 3) {
             switch ($data[0]) {
-               case 'quantity' :
-                  $this->addDevices($val, $data[1],$data[2]);
-                  break;
-
                case 'value' :
                   $this->updateSpecificity($val,$data[1],$data[2]);
                   break;
@@ -546,6 +563,13 @@ class Computer_Device extends CommonDBTM {
                case 'removeall' :
                   $this->removeDevices($data[1], $data[2]);
                   break;
+            }
+         } elseif (count($data) == 4) {
+            switch ($data[0]) {
+               case 'quantity' :
+                  $this->addDevices($val, $data[1],$data[2],$data[3]);
+                  break;
+
             }
          }
       }
