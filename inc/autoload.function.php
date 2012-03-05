@@ -241,7 +241,7 @@ function _nx($ctx, $sing, $plural, $nb) {
  *
  * @param $classname : class to load
 **/
-function __autoload($classname) {
+function glpi_autoload($classname) {
    global $DEBUG_AUTOLOAD, $CFG_GLPI;
    static $notfound = array();
 
@@ -307,4 +307,8 @@ function __autoload($classname) {
       }
    }
 }
+
+// Use spl autoload to allow stackable autoload.
+spl_autoload_register('glpi_autoload');
+
 ?>
