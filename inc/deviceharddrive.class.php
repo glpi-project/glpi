@@ -128,5 +128,69 @@ class DeviceHardDrive extends CommonDevice {
       return $data;
    }
 
+
+   static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
+                                                        HTMLTable_SuperHeader $super,
+                                                        HTMLTable_Header &$previous_header) {
+
+      $elements        = array();
+
+      $previous_header = $elements['rpm'] = $group->addHeader($super, 'rpm',
+                                                              __('Rpm'),
+                                                              $previous_header);
+
+      $previous_header = $elements['cache'] = $group->addHeader($super, 'cache',
+                                                                __('Cache'),
+                                                                $previous_header);
+
+      $previous_header = $elements['inter'] = $group->addHeader($super, 'interface',
+                                                                __('Interface'), $previous_header);
+
+      $previous_header = $elements['manu'] = $group->addHeader($super, 'manufacturer',
+                                                               __('Manufacturer'),
+                                                               $previous_header);
+
+      return $elements;
+   }
+
+   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers,
+                                                HTMLTable_Cell &$previous_cell) {
+
+      if ($this->fields["rpm"]) {
+         $cell_value = $this->fields["rpm"];
+      } else {
+         $cell_value = '';
+      }
+      $previous_cell = $row->addCell($headers['rpm'], $cell_value, $previous_cell);
+      $previous_cell->setHTMLStyle('text-align: center;');
+
+      if ($this->fields["cache"]) {
+         $cell_value = $this->fields["cache"];
+      } else {
+         $cell_value = '';
+      }
+      $previous_cell = $row->addCell($headers['cache'], $cell_value, $previous_cell);
+      $previous_cell->setHTMLStyle('text-align: center;');
+
+      if ($this->fields["interfacetypes_id"]) {
+         $cell_value = Dropdown::getDropdownName("glpi_interfacetypes",
+                                                 $this->fields["interfacetypes_id"]);
+      } else {
+         $cell_value = '';
+      }
+      $previous_cell = $row->addCell($headers['inter'], $cell_value, $previous_cell);
+      $previous_cell->setHTMLStyle('text-align: center;');
+
+      if (!empty($this->fields["manufacturers_id"])) {
+         $cell_value = Dropdown::getDropdownName("glpi_manufacturers",
+                                                 $this->fields["manufacturers_id"]);
+      } else {
+         $cell_value = '';
+      }
+      $previous_cell = $row->addCell($headers['manu'], $cell_value, $previous_cell);
+      $previous_cell->setHTMLStyle('text-align: center;');
+   }
+
+
 }
 ?>
