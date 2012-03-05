@@ -763,8 +763,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $this->check($ID,'r');
       } else {
          // Create item
-         $input = array($fkfield => $item->getField('id'),
-                        'entities_id');
+         $input = array($fkfield => $item->getField('id'));
          $this->check(-1,'w',$input);
       }
 
