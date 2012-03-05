@@ -50,7 +50,7 @@ if (!defined('GLPI_ROOT')) {
  */
 class XHProf {
    // this can be overloaded in config/config_path.php
-   const XHPROF_PATH = '/usr/share';
+   const XHPROF_PATH = '/usr/share/xhprof/xhprof_lib';
    const XHPROF_URL  = '/xhprof';
 
    static private $run = false;
@@ -80,8 +80,8 @@ class XHProf {
          $data = xhprof_disable();
 
          $incl = (defined('XHPROF_PATH') ? XHPROF_PATH : self::XHPROF_PATH);
-         include_once $incl.'/xhprof_lib/utils/xhprof_lib.php';
-         include_once $incl.'/xhprof_lib/utils/xhprof_runs.php';
+         include_once $incl.'/utils/xhprof_lib.php';
+         include_once $incl.'/utils/xhprof_runs.php';
 
          $runs = new XHProfRuns_Default();
          $id = $runs->save_run($data, 'glpi');
