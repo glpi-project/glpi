@@ -126,16 +126,27 @@ class HTMLTable_ extends HTMLTable_Base {
       }
       echo ">";
 
+      echo "\t<thead>";
       if (isset($this->title)) {
-         echo "<tr><th colspan='$totalNumberOfColumn'>".$this->title."</th></tr>";
+         echo "\t\t<tr><th colspan='$totalNumberOfColumn'>".$this->title."</th></tr>\n";
       }
 
-      echo "<tr>";
+      echo "\t\t<tr>";
       foreach ($this->getHeaderOrder() as $header_name) {
          $header = $this->getHeader($header_name);
          echo "\t\t".$header->getTableHeader()."\n";
       }
-      echo "</tr>";
+      echo "</tr>\n";
+      echo "\t</thead>\n";
+
+      echo "\t<tfoot>";
+      echo "\t\t<tr>";
+      foreach ($this->getHeaderOrder() as $header_name) {
+         $header = $this->getHeader($header_name);
+         echo "\t\t".$header->getTableHeader()."\n";
+      }
+      echo "</tr>\n";
+      echo "\t</tfoot>\n";
 
       foreach ($this->groups as $group) {
         $group->display($totalNumberOfColumn);
