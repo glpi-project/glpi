@@ -135,7 +135,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       Log::history($this->getField($item->getForeignKeyField()), $this->getItilObjectItemType(),
                    $changes, $this->getType(), Log::HISTORY_DELETE_SUBITEM);
 
-      $options = array('task_id'     => $this->fields["id"], 
+      $options = array('task_id'     => $this->fields["id"],
                         // Force is_private with data / not available
                         'is_private' => $this->isPrivate());
       NotificationEvent::raiseEvent('delete_task', $item, $options);
@@ -393,7 +393,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          $tab[4]['name']     = $LANG['job'][9]. " ".$LANG['common'][77];
          $tab[4]['datatype'] = 'bool';
       }
-      
+
       $tab[5]['table'] = 'glpi_users';
       $tab[5]['field'] = 'name';
       $tab[5]['name']  = $LANG['financial'][43];
@@ -763,7 +763,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          $this->check($ID,'r');
       } else {
          // Create item
-         $input = array($fkfield => $item->getField('id'));
+         $input = array($fkfield => $item->getField('id'),
+                        'entities_id');
          $this->check(-1,'w',$input);
       }
 
@@ -793,7 +794,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][36]."&nbsp;:</td><td>";
-      Dropdown::show('TaskCategory', array('value' => $this->fields["taskcategories_id"]));
+      Dropdown::show('TaskCategory', array('value'  => $this->fields["taskcategories_id"],
+                                           'entity' => $item->fields["entities_id"]));
       echo "</td></tr>\n";
 
       if (isset($this->fields["state"])) {
