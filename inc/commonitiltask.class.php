@@ -886,7 +886,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Category')."</td><td>";
-      Dropdown::show('TaskCategory', array('value' => $this->fields["taskcategories_id"]));
+      Dropdown::show('TaskCategory', array('value'  => $this->fields["taskcategories_id"],
+                                           'entity' => $item->fields["entities_id"]));
       echo "</td></tr>\n";
 
       if (isset($this->fields["state"])) {
