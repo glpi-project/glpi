@@ -207,7 +207,6 @@ class Computer_Device extends CommonDBTM {
       $table->setTitle(_n('Component', 'Components', 2));
 
       $common_column = $table->addHeader('common', __('Type of component'));
-
       if ($canedit) {
          $delete_column   = $table->addHeader('delete', __('Delete'));
       }
@@ -216,10 +215,7 @@ class Computer_Device extends CommonDBTM {
       foreach ($devtypes as $itemtype_index => $itemtype) {
          if ($device=getItemForItemtype($itemtype)) {
 
-            $device_group = '';
-
             $table_group = $table->createGroup($itemtype, '');
-
 
             if ($device->canView()) {
                $header_value = "<a href='".$device->getSearchURL()."'>" .
@@ -439,11 +435,11 @@ class Computer_Device extends CommonDBTM {
     *
     * @since version 0.84
     *
-    * @param $newNumber     number of links to add
+    * @param $numberToAdd  number of links to add
     * @param $itemtype     itemtype of device
     * @param $compDevID    computer device ID
    **/
-   private function addDevices($newNumber, $itemtype, $computers_id, $devices_id) {
+   private function addDevices($numberToAdd, $itemtype, $computers_id, $devices_id) {
       global $DB;
 
 
@@ -464,37 +460,8 @@ class Computer_Device extends CommonDBTM {
                         $fk            => $devices_id,
                         'specificity'  => $device->getField('specif_default'));
 
-         for ($i=0 ; $i<$newNumber ; $i++) {
+         for ($i = 0 ; $i < $numberToAdd ; $i ++) {
             $this->add($input);
-         }
-
-         return;
-
-         $query = "SELECT `id`
-                   FROM `$linktable`
-                   WHERE `computers_id` = '".$this->fields["computers_id"]."'
-                         AND `$fk` = '".$this->fields[$fk]."'";
-
-
-         if (count($specif_fields)) {
-            foreach ($specif_fields as $field => $name) {
-               $query .= " AND `$field` = '".addslashes($this->fields[$field])."' ";
-            }
-         }
-
-         echo __FILE__." ".__LINE__." : $query<br>\n";
-         if (($result = $DB->query($query)) && ($newNumber > 0)) {
-            $input = array('computers_id' => $this->fields["computers_id"],
-                           '_itemtype'    => $itemtype,
-                           $fk            => $this->fields[$fk]);
-            if (count($specif_fields)) {
-               foreach ($specif_fields as $field => $name) {
-                  $input[$field] = addslashes($this->fields["specificity"]);
-               }
-            }
-            for ($i=0 ; $i<$newNumber ; $i++) {
-               $this->add($input);
-            }
          }
       }
    }
@@ -546,6 +513,11 @@ class Computer_Device extends CommonDBTM {
     * @param $input array of datas from the input form
    **/
    function updateAll(array $input) {
+
+      if ((!empty($input['itemtype'])) && (!empty($input['items_id']))) {
+         $this->addDevices(1, $input['itemtype'], $input['computers_id'], $input['items_id']);
+      }
+
 
       // Update quantity
       foreach ($input as $key => $val) {
