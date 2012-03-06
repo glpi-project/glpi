@@ -54,22 +54,22 @@ class HTMLTable_Cell extends HTMLTable_Entity {
 
       $this->itemtype = $this->header->getItemType();
       if ((!empty($this->itemtype)) && ($this->items_id == 0)) {
-         throw new Exception(__('Implementation error : header requires an item id'));
+         throw new Exception('Implementation error : header requires an item id');
       }
 
       if (!is_null($this->father)) {
 
          if ($this->father->row != $this->row) {
-            throw new Exception(__('Implementation error : cell and its father must have the same row'));
+            throw new Exception('Implementation error : cell and its father must have the same row');
          }
 
          if ($this->father->header != $this->header->getFather()) {
-            throw new Exception(__('Implementation error : cell and its father are not coherent regarding headers'));
+            throw new Exception('Implementation error : cell and its father are not coherent regarding headers');
          }
 
         $this->father->addSon($this, $header);
       } else if (!is_null($this->header->getFather())) {
-         throw new Exception(__('Implementation error : cell must have a father'));
+         throw new Exception('Implementation error : cell must have a father');
       }
    }
 

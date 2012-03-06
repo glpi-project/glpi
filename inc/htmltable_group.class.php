@@ -73,7 +73,7 @@ class HTMLTable_Group extends HTMLTable_Base {
                       $content, HTMLTable_Header $father = NULL) {
       try {
          if (isset($this->ordered_headers)) {
-            throw new Exception(__('Implementation error : must define all headers before any row'));
+            throw new Exception('Implementation error : must define all headers before any row');
          }
          return $this->appendHeader(new HTMLTable_SubHeader($super_header, $name, $content,
                                                      $father));

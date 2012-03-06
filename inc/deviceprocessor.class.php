@@ -59,7 +59,7 @@ class DeviceProcessor extends CommonDevice {
 
 
    static function getSpecifityLabel() {
-      return array('specificity' => __('Frequency (MHz)'));
+      return array('specificity' => sprintf(__('%1$s (%2$s)'), __('Frequency'), __('MHz')));
    }
 
 

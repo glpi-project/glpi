@@ -46,7 +46,7 @@ class DeviceMemory extends CommonDevice {
 
    static function getSpecifityLabel() {
       //TRANS: (MB) is for MegaBytes
-      return array('specificity' => __('Size (MB)'));
+      return array('specificity' => sprintf(__('%1$s (%2$s)'), __('Size'), __('Mio')));
    }
 
 
