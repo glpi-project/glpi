@@ -46,7 +46,7 @@ class DeviceGraphicCard extends CommonDevice {
 
    static function getSpecifityLabel() {
       //TRANS: (MB) is for MegaBytes
-      return array('specificity' => sprintf(__('%1$s (%2$s)'), __('Mémory'), __('Mio')));
+      return array('specificity' => sprintf(__('%1$s (%2$s)'), __('Memory'), __('Mio')));
    }
 
 

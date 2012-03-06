@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-06 11:06+0100\n"
+"POT-Creation-Date: 2012-03-06 11:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -115,6 +115,7 @@ msgid "%1$s - Network outlet %2$s"
 msgstr ""
 
 #. TRANS: %1$s is the name, %2$s the ID
+#. TRANS: (MB) is for MegaBytes
 #: ajax/dropdownConnectEthernetPort.php:101
 #: ajax/dropdownConnectEthernetPort.php:102 ajax/dropdownConnect.php:175
 #: ajax/dropdownFindNum.php:139 ajax/dropdownInstallVersion.php:71
@@ -122,7 +123,9 @@ msgstr ""
 #: ajax/dropdownValue.php:349 ajax/dropdownValue.php:468
 #: ajax/dropdownValue.php:495 inc/cartridge.class.php:451
 #: inc/change_item.class.php:176 inc/commondbtm.class.php:3243
-#: inc/commonitiltask.class.php:399
+#: inc/commonitiltask.class.php:399 inc/devicegraphiccard.class.php:49
+#: inc/deviceharddrive.class.php:49 inc/devicememory.class.php:49
+#: inc/deviceprocessor.class.php:62
 #, php-format
 msgid "%1$s (%2$s)"
 msgstr ""
@@ -723,8 +726,8 @@ msgstr ""
 
 #: front/backup.php:589 inc/devicecase.class.php:51
 #: inc/devicecase.class.php:62 inc/devicecase.class.php:77
-#: inc/devicememory.class.php:113 inc/monitor.class.php:308
-#: inc/monitor.class.php:468
+#: inc/devicememory.class.php:49 inc/devicememory.class.php:113
+#: inc/monitor.class.php:308 inc/monitor.class.php:468
 msgid "Size"
 msgstr ""
 
@@ -5485,6 +5488,7 @@ msgstr ""
 
 #: inc/computer.class.php:892 inc/devicememory.class.php:63
 #: inc/deviceprocessor.class.php:53 inc/deviceprocessor.class.php:57
+#: inc/deviceprocessor.class.php:62
 msgid "MHz"
 msgstr ""
 
@@ -5671,8 +5675,10 @@ msgid "Add a new component"
 msgstr ""
 
 #: inc/computerdisk.class.php:178 inc/computerdisk.class.php:183
-#: inc/devicegraphiccard.class.php:59 inc/deviceharddrive.class.php:59
-#: inc/deviceharddrive.class.php:66 inc/devicememory.class.php:59
+#: inc/devicegraphiccard.class.php:49 inc/devicegraphiccard.class.php:59
+#: inc/deviceharddrive.class.php:49 inc/deviceharddrive.class.php:59
+#: inc/deviceharddrive.class.php:66 inc/devicememory.class.php:49
+#: inc/devicememory.class.php:59
 msgid "Mio"
 msgstr ""
 
@@ -7007,21 +7013,17 @@ msgstr ""
 msgid "Speed"
 msgstr ""
 
-#. TRANS: (MB) is for MegaBytes
-#: inc/devicegraphiccard.class.php:49
-msgid "Memory (MB)"
-msgstr ""
-
-#: inc/devicegraphiccard.class.php:57 inc/devicegraphiccard.class.php:72
-msgid "Memory by default"
-msgstr ""
-
-#: inc/devicegraphiccard.class.php:97 inc/devicememory.class.php:43
-#: inc/ocsserver.class.php:294 inc/printer.class.php:427
+#: inc/devicegraphiccard.class.php:49 inc/devicegraphiccard.class.php:97
+#: inc/devicememory.class.php:43 inc/ocsserver.class.php:294
+#: inc/printer.class.php:427
 msgid "Memory"
 msgid_plural "Memories"
 msgstr[0] ""
 msgstr[1] ""
+
+#: inc/devicegraphiccard.class.php:57 inc/devicegraphiccard.class.php:72
+msgid "Memory by default"
+msgstr ""
 
 #: inc/deviceharddrive.class.php:43 inc/ocsserver.class.php:298
 msgid "Hard Drive"
@@ -7029,9 +7031,8 @@ msgid_plural "Hard Drives"
 msgstr[0] ""
 msgstr[1] ""
 
-#. TRANS: (MB) is for MegaBytes
-#: inc/deviceharddrive.class.php:49
-msgid "Capacity (MB)"
+#: inc/deviceharddrive.class.php:49 inc/deviceharddrive.class.php:125
+msgid "Capacity"
 msgstr ""
 
 #: inc/deviceharddrive.class.php:57 inc/deviceharddrive.class.php:79
@@ -7048,23 +7049,14 @@ msgstr ""
 msgid "Cache"
 msgstr ""
 
-#: inc/deviceharddrive.class.php:125
-msgid "Capacity"
-msgstr ""
-
-#. TRANS: (MB) is for MegaBytes
-#: inc/devicememory.class.php:49
-msgid "Size (MB)"
-msgstr ""
-
 #: inc/devicememory.class.php:57 inc/devicememory.class.php:76
 msgid "Size by default"
 msgstr ""
 
 #: inc/devicememory.class.php:61 inc/devicememory.class.php:81
 #: inc/devicememory.class.php:108 inc/devicememory.class.php:129
-#: inc/deviceprocessor.class.php:55 inc/deviceprocessor.class.php:77
-#: inc/deviceprocessor.class.php:103
+#: inc/deviceprocessor.class.php:55 inc/deviceprocessor.class.php:62
+#: inc/deviceprocessor.class.php:77 inc/deviceprocessor.class.php:103
 msgid "Frequency"
 msgstr ""
 
@@ -7107,10 +7099,6 @@ msgstr ""
 
 #: inc/deviceprocessor.class.php:51 inc/deviceprocessor.class.php:72
 msgid "Frequency by default"
-msgstr ""
-
-#: inc/deviceprocessor.class.php:62
-msgid "Frequency (MHz)"
 msgstr ""
 
 #: inc/displaypreference.class.php:241
@@ -8513,45 +8501,6 @@ msgstr ""
 
 #: inc/html.class.php:3990 inc/html.class.php:3995
 msgid "Display (number of items)"
-msgstr ""
-
-#: inc/htmltable_base.class.php:58
-msgid ""
-"Implementation error : appendHeader requires HTMLTable_Header as parameter"
-msgstr ""
-
-#: inc/htmltable_base.class.php:62 inc/htmltable_base.class.php:66
-#, php-format
-msgid "Implementation error : invalid super header name \"%s\""
-msgstr ""
-
-#: inc/htmltable_cell.class.php:57
-msgid "Implementation error : header requires an item id"
-msgstr ""
-
-#: inc/htmltable_cell.class.php:63
-msgid "Implementation error : cell and its father must have the same row"
-msgstr ""
-
-#: inc/htmltable_cell.class.php:67
-msgid ""
-"Implementation error : cell and its father are not coherent regarding headers"
-msgstr ""
-
-#: inc/htmltable_cell.class.php:72
-msgid "Implementation error : cell must have a father"
-msgstr ""
-
-#: inc/htmltable_.class.php:79
-msgid "Implementation error : must define all headers before any subgroups"
-msgstr ""
-
-#: inc/htmltable_group.class.php:76
-msgid "Implementation error : must define all headers before any row"
-msgstr ""
-
-#: inc/htmltable_row.class.php:66
-msgid "Unavailable header !"
 msgstr ""
 
 #: inc/infocom.class.php:339
