@@ -230,7 +230,7 @@ class Computer_Device extends CommonDBTM {
 
             if ($canedit) {
                $previous_header = $delete_all  = $table_group->addHeader($delete_column, 'all',
-                                                                         __(''),
+                                                                         '',
                                                                          $previous_header);
             }
 
@@ -240,7 +240,7 @@ class Computer_Device extends CommonDBTM {
 
             if ($canedit) {
                $previous_header = $delete_one  = $table_group->addHeader($delete_column, 'one',
-                                                                         __(''),
+                                                                         '',
                                                                          $previous_header);
             }
 
