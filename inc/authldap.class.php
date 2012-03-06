@@ -2548,11 +2548,7 @@ class AuthLDAP extends CommonDBTM {
       }
       if ($enabled) {
          echo "<td>";
-         if ($_SESSION['ldap_import']['mode'] == self::ACTION_IMPORT) {
-            echo $LANG['ldap'][49];
-         } else {
-            echo $LANG['ldap'][50];
-         }
+         echo $LANG['ldap'][50];
          echo "</td><td colspan='3'>";
          $infsup  = array('<' => $LANG['search'][22],
                           '>' => $LANG['search'][21]);
