@@ -2093,21 +2093,22 @@ class User extends CommonDBTM {
     * Get all groups where the current user have delegating
     *
     * @since version 0.83
-    *
+    * @param $entities_id ID of the entity to restrict
     * @return array of groups id
    **/
-   static function getDelegateGroupsForUser() {
-
-      $restrict = " `users_id` = '".Session::getLoginUserID()."'
-                   AND `glpi_groups_users`.`is_userdelegate` = '1'";
-
-      $datas  = getAllDatasFromTable("glpi_groups_users", $restrict);
+   static function getDelegateGroupsForUser($entities_id='') {
+      global $DB;
+      $query = "SELECT DISTINCT `glpi_groups_users`.`groups_id`
+                  FROM `glpi_groups_users` INNER JOIN `glpi_groups`
+                        ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`) 
+                  WHERE `glpi_groups_users`.`users_id` = '".Session::getLoginUserID()."'
+                   AND `glpi_groups_users`.`is_userdelegate` = '1' ".
+                   getEntitiesRestrictRequest("AND","glpi_groups",'',$entities_id,1);
+      
       $groups = array();
-      if (count($datas)) {
-         foreach ($datas as $link) {
-            $groups[$link['groups_id']] = $link['groups_id'];
-         }
-      }
+      foreach ($DB->request($query) as $data) {
+         $groups[$data['groups_id']] = $data['groups_id'];
+      }             
       return $groups;
    }
 
@@ -2148,7 +2149,7 @@ class User extends CommonDBTM {
             break;
 
          case "delegate" :
-            $groups = self::getDelegateGroupsForUser();
+            $groups = self::getDelegateGroupsForUser($entity_restrict);
             $users  = array();
             if (count($groups)) {
                $query = "SELECT `glpi_users`.`id`

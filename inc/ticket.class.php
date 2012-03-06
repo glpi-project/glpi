@@ -2840,6 +2840,7 @@ class Ticket extends CommonITILObject {
                       'itilcategories_id'         => 0,
                       'urgency'                   => 3,
                       'itemtype'                  => '',
+                      'entities_id'               => $_SESSION['glpiactive_entity'],
                       'items_id'                  => 0,
                       'plan'                      => array(),
                       'global_validation'         => 'none',
@@ -2861,14 +2862,14 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-
+      
       if (!$ticket_template) {
          echo "<form method='post' name='helpdeskform' action='".
                $CFG_GLPI["root_doc"]."/front/tracking.injector.php' enctype='multipart/form-data'>";
       }
 
 
-      $delegating = User::getDelegateGroupsForUser();
+      $delegating = User::getDelegateGroupsForUser($options['entities_id']);
 
       if (count($delegating)) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -3299,7 +3300,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-
+      
       // Put ticket template on $values for actors
       $values['_tickettemplate'] = $tt;
 

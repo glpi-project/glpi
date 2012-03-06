@@ -2186,7 +2186,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $params['toupdate'] = $toupdate;
          }
       }
-
+      
       // List all users in the active entities
       User::dropdown($params);
 
@@ -2354,7 +2354,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $this->showActorAddFormOnCreate(self::REQUESTER, $options);
             $reqdisplay=true;
          } else {
-            $delegating = User::getDelegateGroupsForUser();
+            $delegating = User::getDelegateGroupsForUser($options['entities_id']);
             if (count($delegating) && !$is_hidden['_users_id_requester']) {
                //$this->getDefaultActor(self::REQUESTER);
                $options['_right'] = "delegate";
