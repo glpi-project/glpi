@@ -977,7 +977,7 @@ class AuthLDAP extends CommonDBTM {
       $results       = array();
       $limitexceeded = false;
       $ldap_users    = self::getAllUsers($values, $results, $limitexceeded);
-
+      
       if (is_array($ldap_users)) {
          $numrows     = count($ldap_users);
          $action      = "toprocess";
@@ -1151,7 +1151,7 @@ class AuthLDAP extends CommonDBTM {
                                                                $values['days']);
             $filter           = "(&$filter $filter_timestamp)";
          }
-
+         
          $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
 
          if ($sr) {
@@ -1195,7 +1195,6 @@ class AuthLDAP extends CommonDBTM {
       } else {
          return false;
       }
-
       $glpi_users = array();
       $sql        = "SELECT *
                      FROM `glpi_users`";
@@ -2574,11 +2573,7 @@ class AuthLDAP extends CommonDBTM {
       }
       if ($enabled) {
          echo "<td>";
-         if ($_SESSION['ldap_import']['mode'] == self::ACTION_IMPORT) {
-            _e('View users added since');
-         } else {
-            _e('View users updated since');
-         }
+         _e('View users updated since');
          echo "</td><td colspan='3'>";
          $infsup  = array('<' => __('More than'),
                           '>' => __('Less than'));
