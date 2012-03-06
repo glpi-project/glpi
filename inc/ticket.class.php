@@ -2742,6 +2742,7 @@ class Ticket extends CommonITILObject {
                       'urgency'              => 3,
                       'itemtype'             => '',
                       'items_id'             => 0,
+                      'entities_id'          => $_SESSION['glpiactive_entity'],
                       'plan'                 => array(),
                       'global_validation'    => 'none',
                       'due_date'             => 'NULL',
@@ -2770,7 +2771,7 @@ class Ticket extends CommonITILObject {
       }
 
 
-      $delegating = User::getDelegateGroupsForUser();
+      $delegating = User::getDelegateGroupsForUser($options['entities_id']);
 
       if (count($delegating)) {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -3257,6 +3258,8 @@ class Ticket extends CommonITILObject {
             // If entity is not in the list of user's entities,
             // then use as default value the first value of the user's entites list
             $this->fields["entities_id"] = $this->userentities[0];
+            // Pass to values
+            $values['entities_id'] = $this->userentities[0];
          }
       }
 
