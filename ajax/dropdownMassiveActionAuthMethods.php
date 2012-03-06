@@ -55,11 +55,13 @@ if ($_POST["authtype"] > 0) {
 
       case Auth::LDAP :
       case Auth::EXTERNAL :
-         Dropdown::show('AuthLDAP', array('name' => "auths_id"));
+         Dropdown::show('AuthLDAP', array('name' => "auths_id",
+                                          'condition' => "`is_active` = 1"));
          break;
 
       case Auth::MAIL :
-         Dropdown::show('AuthMail', array('name' => "auths_id"));
+         Dropdown::show('AuthMail', array('name' => "auths_id",
+                                          'condition' => "`is_active` = 1"));
          break;
    }
 
