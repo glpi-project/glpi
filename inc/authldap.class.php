@@ -237,7 +237,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][159] . "&nbsp;:</td>";
          echo "<td colspan='3'>";
-         echo "<textarea cols='100' rows='4' name='condition'>".$this->fields["condition"]."</textarea>";
+         echo "<textarea cols='100' rows='1' name='condition'>".$this->fields["condition"]."</textarea>";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . $LANG['setup'][154] . "&nbsp;:</td>";
