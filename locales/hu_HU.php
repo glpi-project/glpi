@@ -350,6 +350,7 @@ $LANG['common'][116]="Cél hozzáadása";
 $LANG['common'][117]="A művelet végrehajtása részben sikerült"; 
 $LANG['common'][118]="Sikertelen művelet"; 
 $LANG['common'][119]="hiba(k)"; 
+$LANG['common'][120]="Caution! You are not the author of this element. Delete targets can result in loss of access to that element."; // en_GB string to be translated
 $LANG['common'][121]="hitelesítési probléma(ák)"; 
 $LANG['common'][123]="Megbízott"; 
 

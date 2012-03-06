@@ -350,6 +350,7 @@ $LANG['common'][116]="Engadir un destino";
 $LANG['common'][117]="A operación realizada rematou con éxito parcialmente"; 
 $LANG['common'][118]="A operación fallou"; 
 $LANG['common'][119]="erro(s)"; 
+$LANG['common'][120]="Caution! You are not the author of this element. Delete targets can result in loss of access to that element."; // en_GB string to be translated
 $LANG['common'][121]="Problema(s) de autorización"; 
 $LANG['common'][123]="Delegados"; 
 

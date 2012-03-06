@@ -350,6 +350,7 @@ $LANG['common'][116]="Agregar destino";
 $LANG['common'][117]="Operation performed partially successful"; // en_GB string to be translated
 $LANG['common'][118]="Operación fallida"; 
 $LANG['common'][119]="falla(s)"; 
+$LANG['common'][120]="Caution! You are not the author of this element. Delete targets can result in loss of access to that element."; // en_GB string to be translated
 $LANG['common'][121]="autorización(es) de problema(s)"; 
 $LANG['common'][123]="Delegado"; 
 

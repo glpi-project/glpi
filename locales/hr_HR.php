@@ -350,6 +350,7 @@ $LANG['common'][116]="Dodaj odredište";
 $LANG['common'][117]="Operacija djelomično uspješno obavljena"; 
 $LANG['common'][118]="Neuspjela operacija"; 
 $LANG['common'][119]="kvarovi"; 
+$LANG['common'][120]="Caution! You are not the author of this element. Delete targets can result in loss of access to that element."; // en_GB string to be translated
 $LANG['common'][121]="autorizacijski problemi"; 
 $LANG['common'][123]="Delegator"; 
 

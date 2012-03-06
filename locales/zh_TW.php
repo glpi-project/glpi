@@ -350,6 +350,7 @@ $LANG['common'][116]="新增一個目標";
 $LANG['common'][117]="執行的操作 部分 成功"; 
 $LANG['common'][118]="操作失敗"; 
 $LANG['common'][119]="失敗"; 
+$LANG['common'][120]="Caution! You are not the author of this element. Delete targets can result in loss of access to that element."; // en_GB string to be translated
 $LANG['common'][121]="授權問題"; 
 $LANG['common'][123]="授權債務人"; 
 

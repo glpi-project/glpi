@@ -1285,7 +1285,11 @@ class Reminder extends CommonDBTM {
       echo "</table>";
       if ($canedit) {
          Html::openArrowMassives("remindervisibility_form$rand", true);
-         Html::closeArrowMassives(array('deletevisibility' => $LANG['buttons'][6]));
+         $confirm= array();
+         if ($this->fields['users_id'] != Session::getLoginUserID()) {
+            $confirm = array('deletevisibility' => $LANG['common'][120]);
+         }         
+         Html::closeArrowMassives(array('deletevisibility' => $LANG['buttons'][6]), $confirm);
          echo "</form>";
       }
 

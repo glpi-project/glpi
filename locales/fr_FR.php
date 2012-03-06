@@ -377,7 +377,7 @@ $LANG['common'][116] = "Ajouter une cible";
 $LANG['common'][117] = "Opération réalisée partiellement avec succès";
 $LANG['common'][118] = "Opération échouée";
 $LANG['common'][119] = "échec(s)";
-
+$LANG['common'][120] = "Attention ! Vous n'êtes pas l'auteur de cet élément. Supprimer des cibles peut entrainer la perte d'accès à cet élément.";
 $LANG['common'][121] = "problème(s) d'habilitation";
 
 $LANG['common'][123] = "Délégataire";

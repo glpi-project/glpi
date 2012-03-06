@@ -350,6 +350,7 @@ $LANG['common'][116]="Добавить цель";
 $LANG['common'][117]="Частично успешное выполнение операции"; 
 $LANG['common'][118]="Failed operation"; // en_GB string to be translated
 $LANG['common'][119]="Сбои"; 
+$LANG['common'][120]="Caution! You are not the author of this element. Delete targets can result in loss of access to that element."; // en_GB string to be translated
 $LANG['common'][121]="проблема(ы) авторизации"; 
 $LANG['common'][123]="Delegatee"; // en_GB string to be translated
 

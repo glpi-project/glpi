@@ -350,6 +350,7 @@ $LANG['common'][116]="הוסף יעד";
 $LANG['common'][117]="Operation performed partially successful"; // en_GB string to be translated
 $LANG['common'][118]="Failed operation"; // en_GB string to be translated
 $LANG['common'][119]="failure(s)"; // en_GB string to be translated
+$LANG['common'][120]="Caution! You are not the author of this element. Delete targets can result in loss of access to that element."; // en_GB string to be translated
 $LANG['common'][121]="authorizations problem(s)"; // en_GB string to be translated
 $LANG['common'][123]="Delegatee"; // en_GB string to be translated
 

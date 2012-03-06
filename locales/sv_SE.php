@@ -350,6 +350,7 @@ $LANG['common'][116]="Add a target"; // en_GB string to be translated
 $LANG['common'][117]="Operation performed partially successful"; // en_GB string to be translated
 $LANG['common'][118]="Misslyckad operation"; 
 $LANG['common'][119]="fel"; 
+$LANG['common'][120]="Caution! You are not the author of this element. Delete targets can result in loss of access to that element."; // en_GB string to be translated
 $LANG['common'][121]="Problem med auktorisering"; 
 $LANG['common'][123]="Delegerade"; 
 

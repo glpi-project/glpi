@@ -350,6 +350,7 @@ $LANG['common'][116]="voeg een doel toe";
 $LANG['common'][117]="Uitgevoerde operatie slechts partieel gelukt"; 
 $LANG['common'][118]="Operatie mislukt"; 
 $LANG['common'][119]="fout(en)"; 
+$LANG['common'][120]="Caution! You are not the author of this element. Delete targets can result in loss of access to that element."; // en_GB string to be translated
 $LANG['common'][121]="autorisatie problem(en)"; 
 $LANG['common'][123]="Gedelegeerde"; 
 

@@ -2842,13 +2842,18 @@ class Html {
     * show arrow for massives actions : closing
     *
     * @param $actions array of action : $name -> $label
+    * @param $confirm array of confirmation string (optional)
    **/
-   static function closeArrowMassives($actions) {
-
+   static function closeArrowMassives($actions, $confirm = array()) {
+      
       if (count($actions)) {
          foreach($actions as $name => $label) {
             if (!empty($name)) {
-               echo "<input type='submit' name='$name' value=\"$label\" class='submit'>&nbsp;";
+               echo "<input type='submit' name='$name' value=\"$label\" ";
+               if (is_array($confirm) && isset($confirm[$name])) {
+                  echo self::addConfirmationOnAction($confirm[$name]);
+               }
+               echo "class='submit'>&nbsp;";
             }
          }
       }
