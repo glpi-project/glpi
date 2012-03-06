@@ -55,15 +55,15 @@ abstract class HTMLTable_Base  {
 
    function appendHeader(HTMLTable_Header $header_object, $allow_super_header = false) {
       if (!$header_object instanceof HTMLTable_Header) {
-         throw new Exception(__('Implementation error : appendHeader requires HTMLTable_Header as parameter'));
+         throw new Exception('Implementation error : appendHeader requires HTMLTable_Header as parameter');
       }
       $header_object->getHeaderAndSubHeaderName($header_name, $subHeader_name);
       if (($header_object->isSuperHeader()) && (!$this->super) && (!$allow_super_header)) {
-         throw new Exception(sprintf(__('Implementation error : invalid super header name "%s"'),
+         throw new Exception(sprintf('Implementation error : invalid super header name "%s"',
                                      $header_name));
       }
       if ((!$header_object->isSuperHeader()) && ($this->super)) {
-         throw new Exception(sprintf(__('Implementation error : invalid super header name "%s"'),
+         throw new Exception(sprintf('Implementation error : invalid super header name "%s"',
                                      $header_name));
       }
 

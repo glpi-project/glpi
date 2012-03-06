@@ -76,7 +76,7 @@ class HTMLTable_ extends HTMLTable_Base {
    function addHeader($header_name, $content, HTMLTable_Header $father = NULL) {
       try {
          if (count($this->groups) > 0) {
-            throw new Exception(__('Implementation error : must define all headers before any subgroups'));
+            throw new Exception('Implementation error : must define all headers before any subgroups');
          }
          return $this->appendHeader(new HTMLTable_SuperHeader($this, $header_name, $content,
                                                        $father));
