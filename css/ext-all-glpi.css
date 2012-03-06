@@ -529,3 +529,7 @@ strong {
 .x-tip-anchor {
    background-image:url(../pics/extjs/qtip/tip-anchor-sprite.gif);
 }
+.tab_bg_1 td .ux-datetime-date, .tab_bg_1 td .ux-datetime-time
+{              
+   padding: 0 4px 0 0; 
+}
