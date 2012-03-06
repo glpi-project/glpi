@@ -1173,7 +1173,12 @@ class Reminder extends CommonDBTM {
       echo "</table>";
       if ($canedit) {
          Html::openArrowMassives("remindervisibility_form$rand", true);
-         Html::closeArrowMassives(array('deletevisibility' => __('Delete')));
+         $confirm= array();
+         if ($this->fields['users_id'] != Session::getLoginUserID()) {
+            $confirm = array('deletevisibility' => __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.'));
+         }         
+         
+         Html::closeArrowMassives(array('deletevisibility' => __('Delete')), $confirm);
          echo "</form>";
       }
 
