@@ -74,12 +74,12 @@ if (isset($_POST["update"])) {
                                        //TRANS: %s is the description of the test
       $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test successful: %s'),
                                                //TRANS: %s is the name of the LDAP main server
-                                               sprintf(__('Main server %s'), $ldap->fields["name"]));
+                                               sprintf(__('Main server %s'), $config_ldap->fields["name"]));
    } else {
                                        //TRANS: %s is the description of the test
       $_SESSION["LDAP_TEST_MESSAGE"] = sprintf(__('Test failed: %s'),
                                                //TRANS: %s is the name of the LDAP main server
-                                               sprintf(__('Main server %s'), $ldap->fields["name"]));
+                                               sprintf(__('Main server %s'), $config_ldap->fields["name"]));
    }
    Html::back();
 
