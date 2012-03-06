@@ -2181,7 +2181,6 @@ abstract class CommonITILObject extends CommonDBTM {
       $rand   = mt_rand();
       $params = array('name'        => '_users_id_'.$typename,
                       'value'       => $options["_users_id_".$typename],
-                      'entity'      => $options['entities_id'],
                       'right'       => $right,
                       'rand'        => $rand,
                       'ldap_import' => true);
@@ -2189,6 +2188,8 @@ abstract class CommonITILObject extends CommonDBTM {
       if ($this->userentity_oncreate
           && ($type == self::REQUESTER)) {
          $params['on_change'] = 'submit()';
+      } else { // Force entity search if needed
+         $params['entity'] = $options['entities_id'];
       }
 
 
