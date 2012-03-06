@@ -3350,6 +3350,8 @@ class Ticket extends CommonITILObject {
             // If entity is not in the list of user's entities,
             // then use as default value the first value of the user's entites list
             $this->fields["entities_id"] = $this->userentities[0];
+            // Pass to values
+            $values['entities_id'] = $this->userentities[0];
          }
       }
 
