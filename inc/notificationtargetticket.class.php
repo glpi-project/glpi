@@ -242,7 +242,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       $datas['##ticket.autoclose##']             = __('Never');
       $datas['##lang.ticket.autoclosewarning##'] = "";
-      if ($autoclose_value >= 0) {
+      if ($autoclose_value > 0) {
                $datas['##ticket.autoclose##'] = $autoclose_value;
                $datas['##lang.ticket.autoclosewarning##']
                            //TRANS: %s is the number of day before auto closing
