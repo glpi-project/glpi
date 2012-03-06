@@ -235,7 +235,7 @@ class AuthLDAP extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>" . __('Connection filter') . "</td>";
          echo "<td colspan='3'>";
-         echo "<input type='text' name='condition' value='".$this->fields["condition"]."' size='100'>";
+         echo "<textarea cols='100' rows='4' name='condition'>".$this->fields["condition"]."</textarea>";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . __('BaseDN') . "</td>";
@@ -613,7 +613,7 @@ class AuthLDAP extends CommonDBTM {
       $tab[6]['table']          = $this->getTable();
       $tab[6]['field']          = 'condition';
       $tab[6]['name']           = __('Connection filter');
-      $tab[6]['datatype']       = 'string';
+      $tab[6]['datatype']       = 'text';
 
       $tab[7]['table']          = $this->getTable();
       $tab[7]['field']          = 'is_default';
