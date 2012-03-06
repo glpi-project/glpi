@@ -127,7 +127,7 @@ class DeviceGraphicCard extends CommonDevice {
          $cell_value = '';
       }
       $previous_cell = $row->addCell($headers['inter'], $cell_value, $previous_cell);
-      $previous_cell->setHTMLStyle('text-align: center;');
+      $previous_cell->setHTMLClass('center');
 
       if (!empty($this->fields["manufacturers_id"])) {
          $cell_value = Dropdown::getDropdownName("glpi_manufacturers",
@@ -136,7 +136,7 @@ class DeviceGraphicCard extends CommonDevice {
          $cell_value = '';
       }
       $previous_cell = $row->addCell($headers['manu'], $cell_value, $previous_cell);
-      $previous_cell->setHTMLStyle('text-align: center;');
+      $previous_cell->setHTMLClass('center');
    }
 
 }
