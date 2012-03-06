@@ -1849,7 +1849,8 @@ class AuthLDAP extends CommonDBTM {
 
       //Get all the ldap directories
       $sql = "SELECT COUNT(*)
-              FROM `glpi_authldaps`";
+              FROM `glpi_authldaps`
+              WHERE `is_active` = 1";
       $result = $DB->query($sql);
 
       if ($DB->result($result,0,0) > 0) {

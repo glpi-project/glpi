@@ -459,7 +459,8 @@ class Auth {
             // if LDAP enabled too, get user's infos from LDAP
             $this->user->fields["auths_id"] = $CFG_GLPI['authldaps_id_extra'];
             if (Toolbox::canUseLdap()) {
-               if (isset($this->authtypes["ldap"][$this->user->fields["auths_id"]])) {
+               if (isset($this->authtypes["ldap"][$this->user->fields["auths_id"]])
+                  && $this->authtypes["ldap"][$this->user->fields["auths_id"]]['is_active']) {
                   $ldap_method = $this->authtypes["ldap"][$this->user->fields["auths_id"]];
                   $ds = AuthLdap::connectToServer($ldap_method["host"],
                                                   $ldap_method["port"],
@@ -672,7 +673,8 @@ class Auth {
       $methods[self::DB_GLPI] = __('Authentication on GLPI database');
 
       $sql = "SELECT COUNT(*) AS cpt
-              FROM `glpi_authldaps`";
+              FROM `glpi_authldaps`
+              WHERE `is_active` = 1";
       $result = $DB->query($sql);
 
       if ($DB->result($result, 0, "cpt") > 0) {
@@ -681,7 +683,8 @@ class Auth {
       }
 
       $sql = "SELECT COUNT(*) AS cpt
-              FROM `glpi_authmails`";
+              FROM `glpi_authmails`
+              WHERE `is_active` = 1";
       $result = $DB->query($sql);
 
       if ($DB->result($result,0,"cpt") > 0) {
@@ -937,7 +940,8 @@ class Auth {
                // <- Bad idea : id not exists unable to change anything
                $sql = "SELECT `name`
                        FROM `glpi_authldaps`
-                       WHERE `id` = '" . $user->getField('auths_id') . "'";
+                       WHERE `id` = '" . $user->getField('auths_id') . "'
+                           AND `is_active` = 1";
                $result = $DB->query($sql);
                if ($DB->numrows($result) > 0) {
                   echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
@@ -958,7 +962,8 @@ class Auth {
                if ($CFG_GLPI['authldaps_id_extra']) {
                   $sql = "SELECT `name`
                           FROM `glpi_authldaps`
-                          WHERE `id` = '" .$CFG_GLPI['authldaps_id_extra']."'";
+                          WHERE `id` = '" .$CFG_GLPI['authldaps_id_extra']."'
+                              AND `is_active` = 1";
                   $result = $DB->query($sql);
 
                   if ($DB->numrows($result) > 0) {
