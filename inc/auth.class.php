@@ -433,7 +433,8 @@ class Auth {
             // if LDAP enabled too, get user's infos from LDAP
             $this->user->fields["auths_id"] = $CFG_GLPI['authldaps_id_extra'];
             if (Toolbox::canUseLdap()) {
-               if (isset($this->authtypes["ldap"][$this->user->fields["auths_id"]])) {
+               if (isset($this->authtypes["ldap"][$this->user->fields["auths_id"]])
+                  && $this->authtypes["ldap"][$this->user->fields["auths_id"]]['is_active']) {
                   $ldap_method = $this->authtypes["ldap"][$this->user->fields["auths_id"]];
                   $ds = AuthLdap::connectToServer($ldap_method["host"],
                                                   $ldap_method["port"],
