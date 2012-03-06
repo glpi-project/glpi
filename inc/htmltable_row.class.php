@@ -63,7 +63,7 @@ class HTMLTable_Row extends HTMLTable_Entity {
                     $items_id = 0) {
       try {
          if (!$this->group->haveHeader($header)) {
-            throw new Exception(__('Unavailable header !'));
+            throw new Exception('Unavailable header !');
          }
 
          $header_name = $header->getCompositeName();
