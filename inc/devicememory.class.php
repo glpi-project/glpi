@@ -141,7 +141,7 @@ class DeviceMemory extends CommonDevice {
          $cell_value = '';
       }
       $previous_cell = $row->addCell($headers['type'], $cell_value, $previous_cell);
-      $previous_cell->setHTMLStyle('text-align: center;');
+      $previous_cell->setHTMLClass('center');
 
       if (!empty($this->fields["frequence"])) {
          $cell_value = $this->fields["frequence"];
@@ -149,7 +149,7 @@ class DeviceMemory extends CommonDevice {
          $cell_value = '';
       }
       $previous_cell = $row->addCell($headers['freq'], $cell_value, $previous_cell);
-      $previous_cell->setHTMLStyle('text-align: center;');
+      $previous_cell->setHTMLClass('center');
    }
 
 }

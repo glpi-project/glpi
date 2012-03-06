@@ -313,7 +313,7 @@ class Computer_Device extends CommonDBTM {
                      $cell_value = "<a href='#' onclick= \"if ( toggleCheckboxes('$device_group')".
                         ") return false;\">".__('All')."</a>";
                      $global_anchor = $current_row->addCell($delete_all, $cell_value, $name_cell);
-                     $global_anchor->setHTMLStyle('text-align: center;');
+                     $global_anchor->setHTMLClass('center');
                   } else {
                      $global_anchor = $name_cell;
                   }
@@ -339,7 +339,7 @@ class Computer_Device extends CommonDBTM {
                                       $itemtype."_".$data['id']."' value='1'>";
                         $local_anchor = $current_row->addCell($delete_one, $cell_value,
                                                               $global_anchor);
-                        $local_anchor->setHTMLStyle('text-align: center;');
+                        $local_anchor->setHTMLClass('center');
                      } else {
                         $local_anchor = $global_anchor;
                      }
@@ -356,7 +356,7 @@ class Computer_Device extends CommonDBTM {
                         $link_spec = $current_row->addCell($link_char,
                                                            $cell_value,
                                                            $local_anchor);
-                        $link_spec->setHTMLStyle('text-align: center;');
+                        $link_spec->setHTMLClass('center');
                      }
                   }
                }
