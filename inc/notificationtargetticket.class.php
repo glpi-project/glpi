@@ -230,9 +230,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas['##lang.ticket.autoclosewarning##'] = "";
       if ($autoclose_value >= 0) {
                $datas['##ticket.autoclose##'] = $autoclose_value;
+      } 
+      if ($autoclose_value > 0) {
                $datas['##lang.ticket.autoclosewarning##']
                            = $LANG['job'][54]." ".$autoclose_value." ".Toolbox::ucfirst($LANG['calendar'][12]);
-      }
+      } 
 
       $datas['##ticket.sla##'] = '';
       if ($item->getField('slas_id')) {
