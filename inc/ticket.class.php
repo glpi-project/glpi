@@ -1237,7 +1237,7 @@ class Ticket extends CommonITILObject {
       if (isset($this->input["_add_validation"])) {
          $validations_to_send = array();
          if (!is_array($this->input["_add_validation"])) {
-             $this->input["_add_validation"][] = $this->input["_add_validation"];
+             $this->input["_add_validation"] = array($this->input["_add_validation"]);
          }
          foreach ($this->input["_add_validation"] as $validation) {
             switch ($validation) {
