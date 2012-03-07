@@ -631,7 +631,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    protected function saveInput() {
       $_SESSION['saveInput'][$this->getType()] = $this->input;
-      toolbox::logDebug("saveInput", $_SESSION['saveInput']);
+      //toolbox::logDebug("saveInput", $_SESSION['saveInput']);
    }
 
    /**
@@ -641,7 +641,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    protected function clearSavedInput() {
       unset($_SESSION['saveInput'][$this->getType()]);
-      toolbox::logDebug("clearSavedInput", $_SESSION['saveInput']);
+      //toolbox::logDebug("clearSavedInput", $_SESSION['saveInput']);
    }
 
    /**
@@ -656,12 +656,12 @@ class CommonDBTM extends CommonGLPI {
    protected function restoreInput(Array $default=array()) {
 
       if (isset($_SESSION['saveInput'][$this->getType()])) {
-         toolbox::logDebug("restoreInput from session");
+         //toolbox::logDebug("restoreInput from session");
          //return Toolbox::stripslashes_deep($_SESSION['saveInput'][$this->getType()]);
          return array_map(array('Html','cleanPostForTextArea'),
                           $_SESSION['saveInput'][$this->getType()]);
       }
-      toolbox::logDebug("restoreInput from default");
+      //toolbox::logDebug("restoreInput from default");
       return $default;
    }
 
