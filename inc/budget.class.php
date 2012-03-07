@@ -110,18 +110,12 @@ class Budget extends CommonDropdown{
     **/
    function showForm($ID, $options=array()) {
 
-      $use_cache = true;
-
       $rowspan = 4;
       if ($ID > 0) {
          $rowspan++;
-         $this->check($ID, 'r');
-      } else {
-         // Create item
-         $input = $this->restoreInput();
-         $this->check(-1, 'w', $input);
       }
 
+      $this->initForm($ID, $options);
       $this->showTabs($options);
       $this->showFormHeader($options);
 

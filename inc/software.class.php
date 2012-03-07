@@ -219,20 +219,12 @@ class Software extends CommonDBTM {
     *@return boolean item found
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI;
 
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $input = $this->restoreInput();
-         $this->check(-1, 'w', $input);
-      }
-
-      $canedit = $this->can($ID,'w');
-
+      $this->initForm($ID, $options);
       $this->showTabs($options);
       $this->showFormHeader($options);
+
+      $canedit = $this->can($ID,'w');
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('Name') . "</td>";

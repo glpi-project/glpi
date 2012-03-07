@@ -1824,6 +1824,46 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * Initialize item and check right before managing the edit form
+    *
+    * @sinve version 0.84
+    *
+    * @param $ID       Integer  ID of the item/template
+    * @param $options  Array    of possible options:
+    *     - withtemplate : 1 for newtemplate, 2 for newobject from template
+    *
+    * @return value of withtemplate option (exit of no right)
+   **/
+   function initForm($ID, Array $options=array()) {
+
+      if (isset($options['withtemplate'])
+          && $options['withtemplate']==2
+          && !$this->isNewID($ID)) {
+         // Create item from template
+
+         // Check read right on the template
+         $this->check($ID, 'r');
+         // Restore saved input or template data
+         $input = $this->restoreInput($this->fields);
+         // Check create right
+         $this->check(-1, 'w', $input);
+
+      } else if ($this->isNewID($ID)) {
+         // Restore saved input if available
+         $input = $this->restoreInput();
+         // Create item
+         $this->check(-1, 'w', $input);
+
+      } else {
+         // Modify item
+         $this->check($ID,'r');
+      }
+
+      return (isset($options['withtemplate']) ? $options['withtemplate'] : '');
+   }
+
+
+   /**
     *
     * Display a 2 columns Header 1 for ID, 1 for recursivity menu
     * Open the form is user can edit
@@ -3258,6 +3298,9 @@ class CommonDBTM extends CommonGLPI {
       if (!$item->maybeTemplate()) {
          return false;
       }
+
+      // Avoid to get old data
+      $item->clearSavedInput();
 
       //Check is user have minimum right r
       if (!$item->canView()

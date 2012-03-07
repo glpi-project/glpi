@@ -138,16 +138,8 @@ class Contact extends CommonDBTM{
     * @return Nothing (display)
    **/
    function showForm($ID, $options=array()) {
-      global $CFG_GLPI;
 
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $input = $this->restoreInput();
-         $this->check(-1, 'w', $input);
-      }
-
+      $this->initForm($ID, $options);
       $this->showTabs($options);
       $this->showFormHeader($options);
 
@@ -225,8 +217,8 @@ class Contact extends CommonDBTM{
       Dropdown::show('UserTitle', array('value' => $this->fields["usertitles_id"]));
       echo "<td>&nbsp;</td><td class='center'>";
       if ($ID>0) {
-         echo "<a target=''_blank' href='".$CFG_GLPI["root_doc"].
-                "/front/contact.form.php?getvcard=1&amp;id=$ID'>".__('Vcard')."</a>";
+         echo "<a target=''_blank' href='".$this->getFormURL().
+                "?getvcard=1&amp;id=$ID'>".__('Vcard')."</a>";
       }
       echo "</td></tr>";
 
