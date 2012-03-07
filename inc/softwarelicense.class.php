@@ -138,7 +138,8 @@ class SoftwareLicense extends CommonDBTM {
          $this->check($ID,'r');
       } else {
          // Create item
-         $this->check(-1,'w');
+         $input = $this->restoreInput();
+         $this->check(-1, 'w', $input);
          $this->fields['softwares_id'] = $softwares_id;
          $this->fields['number']       = 1;
          $soft                         = new Software();

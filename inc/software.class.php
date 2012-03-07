@@ -225,7 +225,8 @@ class Software extends CommonDBTM {
          $this->check($ID,'r');
       } else {
          // Create item
-         $this->check(-1,'w');
+         $input = $this->restoreInput();
+         $this->check(-1, 'w', $input);
       }
 
       $canedit = $this->can($ID,'w');
