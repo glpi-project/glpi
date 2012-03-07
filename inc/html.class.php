@@ -238,6 +238,9 @@ class Html {
    **/
    static function cleanPostForTextArea($value) {
 
+      if (is_array($value)) {
+         return array_map(array(__CLASS__, __METHOD__), $value);
+      }
       $order   = array('\r\n',
                        '\n',
                        "\\'",
@@ -1096,7 +1099,7 @@ class Html {
          $menu['inventory']['content']['internet']['shortcut']         = '';
          $menu['inventory']['content']['internet']['page']             = '/front/internet.php';
          $menu['inventory']['content']['internet']['links']['search']  = '/front/internet.php';
-      
+
          $menu['inventory']['content']['internet2']['title']            = __('Internet2');
          $menu['inventory']['content']['internet2']['shortcut']         = '';
          $menu['inventory']['content']['internet2']['page']             = '/front/internet2.php';
