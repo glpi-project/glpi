@@ -224,21 +224,7 @@ class NetworkEquipment extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
 
-      // Show device or blank form
-
-      if (!Session::haveRight("networking","r")) {
-         return false;
-      }
-
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $input = $this->restoreInput();
-         $this->check(-1, 'w', $input);
-      }
-
-
+      $this->initForm($ID, $options);
       $this->showTabs($options);
       $this->showFormHeader($options);
 
