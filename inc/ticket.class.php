@@ -944,7 +944,6 @@ class Ticket extends CommonITILObject {
 
       // Do not check mandatory on auto import (mailgates)
       if (!isset($input['_auto_import'])) {
-         $_SESSION["helpdeskSaved"] = $input;
          if (isset($input['_tickettemplates_id']) && $input['_tickettemplates_id']) {
             $tt = new TicketTemplate();
             if ($tt->getFromDBWithDatas($input['_tickettemplates_id'])) {
@@ -967,8 +966,6 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-
-      unset($_SESSION["helpdeskSaved"]);
 
       if (!isset($input["requesttypes_id"])) {
          $input["requesttypes_id"] = RequestType::getDefault('helpdesk');
@@ -1248,7 +1245,7 @@ class Ticket extends CommonITILObject {
                   if (isset($this->input['_groups_id_requester']) && $this->input['_groups_id_requester']) {
                      $users=Group_User::getGroupUsers($this->input['_groups_id_requester'], "is_manager='1'");
                      foreach ($users as $data) {
-                        $validations_to_send[] = $data['id'];  
+                        $validations_to_send[] = $data['id'];
                      }
                   }
                   break;
@@ -1256,20 +1253,20 @@ class Ticket extends CommonITILObject {
                   if (isset($this->input['_groups_id_assign']) && $this->input['_groups_id_assign']) {
                      $users=Group_User::getGroupUsers($this->input['_groups_id_assign'], "is_manager='1'");
                      foreach ($users as $data) {
-                        $validations_to_send[] = $data['id'];  
+                        $validations_to_send[] = $data['id'];
                      }
                   }
                   break;
                default :
                   $validations_to_send[] = $validation;
             }
-         
+
          }
          // Keep only one
          $validations_to_send = array_unique($validations_to_send);
-         
+
          $validation = new TicketValidation();
-         
+
          foreach ($validations_to_send as $users_id) {
             if ($users_id > 0) {
                $values = array();
@@ -1279,7 +1276,7 @@ class Ticket extends CommonITILObject {
                if (isset($this->input["_rule_process"])) {
                   $values['_rule_process'] = $this->input["_rule_process"];
                }
-      
+
                // Cron or rule process of hability to do
                if (Session::isCron()
                   || isset($this->input["_rule_process"])
@@ -2755,10 +2752,11 @@ class Ticket extends CommonITILObject {
 
 
       // Restore saved value or override with page parameter
+      $saved = $this->restoreInput();
       foreach ($values as $name => $value) {
          if (!isset($options[$name])) {
-            if (isset($_SESSION["helpdeskSaved"][$name])) {
-               $options[$name] = $_SESSION["helpdeskSaved"][$name];
+            if (isset($saved[$name])) {
+               $options[$name] = $saved[$name];
             } else {
                $options[$name] = $value;
             }
@@ -2891,8 +2889,6 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-
-      unset($_SESSION["helpdeskSaved"]);
 
       if ($CFG_GLPI['urgency_mask']==(1<<3) || $tt->isHiddenField('urgency')) {
          // Dont show dropdown if only 1 value enabled or field is hidden
@@ -3114,10 +3110,11 @@ class Ticket extends CommonITILObject {
       }
 
       // Restore saved value or override with page parameter
+      $saved = $this->restoreInput();
       foreach ($default_values as $name => $value) {
          if (!isset($values[$name])) {
-            if (isset($_SESSION["helpdeskSaved"][$name])) {
-               $values[$name] = $_SESSION["helpdeskSaved"][$name];
+            if (isset($saved[$name])) {
+               $values[$name] = $saved[$name];
             } else {
                $values[$name] = $value;
             }
@@ -3128,9 +3125,6 @@ class Ticket extends CommonITILObject {
       $values['name']    = stripslashes($values['name']);
       $values['content'] = Html::cleanPostForTextArea($values['content']);
 
-      if (isset($_SESSION["helpdeskSaved"])) {
-         unset($_SESSION["helpdeskSaved"]);
-      }
       if ($values['type'] <= 0) {
          $values['type'] = Entity::getUsedConfig('tickettype', $values['entities_id'], '',
                                                  Ticket::INCIDENT_TYPE);
