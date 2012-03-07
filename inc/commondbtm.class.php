@@ -658,8 +658,7 @@ class CommonDBTM extends CommonGLPI {
       if (isset($_SESSION['saveInput'][$this->getType()])) {
          //toolbox::logDebug("restoreInput from session");
          //return Toolbox::stripslashes_deep($_SESSION['saveInput'][$this->getType()]);
-         $saved =  array_map(array('Html','cleanPostForTextArea'),
-                             $_SESSION['saveInput'][$this->getType()]);
+         $saved = Html::cleanPostForTextArea($_SESSION['saveInput'][$this->getType()]);
 
          // clear saved data when restored (only need once)
          unset($_SESSION['saveInput'][$this->getType()]);
