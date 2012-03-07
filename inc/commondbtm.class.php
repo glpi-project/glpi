@@ -624,6 +624,46 @@ class CommonDBTM extends CommonGLPI {
    function cleanDBonMarkDeleted() {
    }
 
+   /**
+    * Save the input data in the Session
+    *
+    * @since version 0.84
+   **/
+   protected function saveInput() {
+      $_SESSION['saveInput'][$this->getType()] = $this->input;
+      toolbox::logDebug("saveInput", $_SESSION['saveInput']);
+   }
+
+   /**
+    * Clear the saved data stored in the session
+    *
+    * @since version 0.84
+   **/
+   protected function clearSavedInput() {
+      unset($_SESSION['saveInput'][$this->getType()]);
+      toolbox::logDebug("clearSavedInput", $_SESSION['saveInput']);
+   }
+
+   /**
+    * Get the data saved in the session
+    *
+    * @since version 0.84
+    *
+    * @param $default   Array of value used if session is empty
+    *
+    * @return Array of value
+   **/
+   protected function restoreInput(Array $default=array()) {
+
+      if (isset($_SESSION['saveInput'][$this->getType()])) {
+         toolbox::logDebug("restoreInput from session");
+         //return Toolbox::stripslashes_deep($_SESSION['saveInput'][$this->getType()]);
+         return array_map(array('Html','cleanPostForTextArea'),
+                          $_SESSION['saveInput'][$this->getType()]);
+      }
+      toolbox::logDebug("restoreInput from default");
+      return $default;
+   }
 
    // Common functions
    /**
@@ -645,6 +685,12 @@ class CommonDBTM extends CommonGLPI {
 
       // Store input in the object to be available in all sub-method / hook
       $this->input = $input;
+
+      if (isset($this->input['add'])) {
+         // Input from the interface
+         // Save this data to be available if add fail
+         $this->saveInput();
+      }
 
       // Call the plugin hook - $this->input can be altered
       // This hook get the data from the form, not yet altered
@@ -723,6 +769,11 @@ class CommonDBTM extends CommonGLPI {
                   Infocom::manageDateOnStatusChange($this);
                }
                Plugin::doHook("item_add", $this);
+
+               // As add have suceed, clean the old input value
+               if (isset($this->input['_add'])) {
+                  $this->clearSavedInput();
+               }
                return $this->fields['id'];
             }
          }
