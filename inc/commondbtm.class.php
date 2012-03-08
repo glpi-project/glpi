@@ -1639,7 +1639,7 @@ class CommonDBTM extends CommonGLPI {
     *     - colspan for each column (default 2)
     *     - candel : set to false to hide "delete" button
     *     - canedit : set to false to hide all buttons
-    *     - addbuttons : array of buttons to add     
+    *     - addbuttons : array of buttons to add
     *
    **/
    function showFormButtons($options=array()) {
@@ -1737,7 +1737,7 @@ class CommonDBTM extends CommonGLPI {
          }
          echo "</tr>";
       }
-      
+
       // Close for Form
       echo "</table></div></form>";
    }
@@ -2778,6 +2778,9 @@ class CommonDBTM extends CommonGLPI {
                   }
                   $where_global = getEntitiesRestrictRequest(" AND", $this->getTable(), '',
                                                              $entities);
+                  if ($this->maybeTemplate()) {
+                     $where_global .= " AND NOT `is_template`";
+                  }
 
                   //If update, exclude ID of the current object
                   if (!$add) {
