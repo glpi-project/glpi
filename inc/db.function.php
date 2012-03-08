@@ -446,7 +446,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false) {
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)==1) {
          $name    = $DB->result($result,0,"completename");
-         $comment = "<span class='b'>".__('Complete Name:')."&nbsp;</span>".$name.
+         $comment = "<span class='b'>".sprintf('%s: ',__('Complete name'))."</span>".$name.
                      "<br><span class='b'>".__('Comments')."&nbsp;</span>".
                      nl2br($DB->result($result, 0, "comment"));
       }

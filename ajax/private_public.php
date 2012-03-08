@@ -66,10 +66,11 @@ if (isset($_POST['is_private'])) {
          echo "<input type='hidden' name='is_private' value='0'>\n";
          echo __('Public')."&nbsp;";
          Dropdown::show('Entity', array('value' => $val));
-         _e(' + Child entities: ');
+         echo "&nbsp;";
+         _e('Child entities');
+         echo "&nbsp;";
          Dropdown::showYesNo('is_recursive', $_POST["is_recursive"]);
-         $link = "<a onClick='setPrivate".$_POST['rand']."()'>".__('Set personal')."</a>";
-         printf(__(' - %s'), $link);
+         echo "&nbsp;<a onClick='setPrivate".$_POST['rand']."()'>".__('Set personal')."</a>";
          break;
    }
 }

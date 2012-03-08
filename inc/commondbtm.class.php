@@ -2421,39 +2421,43 @@ class CommonDBTM extends CommonGLPI {
 
       /// TODO manage it as table to have clean gettext view or use getComment of classes
       $comment = "";
+      $toadd= array();
       if ($this->isField('completename')) {
-         $comment .= "<span class='b'>".__('Complete Name: ')."</span>".
-                      $this->getField('completename')."<br>";
+         $toadd[] = array('name' => __('Complete name'),
+                          'value' => nl2br($this->getField('completename')));
       }
 
       if ($this->isField('serial')) {
-         $comment .= "<span class='b'>".__('Serial number: ')."</span>".
-                     $this->getField('serial')."<br>";
+         $toadd[] = array('name' => __('Serial number'),
+                          'value' => nl2br($this->getField('serial')));
       }
 
       if ($this->isField('otherserial')) {
-         $comment .= "<span class='b'>".__('Inventory number: ')."</span>".
-                     $this->getField('otherserial')."<br>";
+         $toadd[] = array('name' => __('Inventory number'),
+                          'value' => nl2br($this->getField('otherserial')));
       }
 
       if ($this->isField('states_id') && $this->getType()!='State') {
          $tmp = Dropdown::getDropdownName('glpi_states', $this->getField('states_id'));
          if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-            $comment .= "<span class='b'>".__('Status: ')."</span>".$tmp."<br>";
+            $toadd[] = array('name' => __('Status'),
+                             'value' => $tmp);
          }
       }
 
       if ($this->isField('locations_id') && $this->getType()!='Location') {
          $tmp = Dropdown::getDropdownName("glpi_locations", $this->getField('locations_id'));
          if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-            $comment .= "<span class='b'>".__('Location: ')."</span>".$tmp."<br>";
+            $toadd[] = array('name' => __('Location'),
+                             'value' => $tmp);
          }
       }
 
       if ($this->isField('users_id')) {
          $tmp = getUserName($this->getField('users_id'));
          if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-            $comment .= "<span class='b'>".__('User: ')."</span>".$tmp."<br>";
+            $toadd[] = array('name' => __('User'),
+                             'value' => $tmp);
          }
       }
 
@@ -2461,31 +2465,39 @@ class CommonDBTM extends CommonGLPI {
           && ($this->getType() != 'Group')) {
          $tmp = Dropdown::getDropdownName("glpi_groups",$this->getField('groups_id'));
          if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-            $comment .= "<span class='b'>".__('Group: ')."</span>".$tmp."<br>";
+            $toadd[] = array('name' => __('Group'),
+                             'value' => $tmp);
          }
       }
 
       if ($this->isField('users_id_tech')) {
          $tmp = getUserName($this->getField('users_id_tech'));
          if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-            $comment .= "<span class='b'>".__('Technician in charge of the hardware: ').
-                        "</span>".$tmp."<br>";
+            $toadd[] = array('name' => __('Technician in charge of the hardware'),
+                             'value' => $tmp);
          }
       }
 
       if ($this->isField('contact')) {
-         $comment .= "<span class='b'>".__('Alternate username: ')."</span>".
-                      $this->getField('contact')."<br>";
+         $toadd[] = array('name' => __('Alternate username'),
+                          'value' => nl2br($this->getField('contact')));
       }
 
       if ($this->isField('contact_num')) {
-         $comment .= "<span class='b'>".__('Alternate username number: ')."</span>".
-                     $this->getField('contact_num')."<br>";
+         $toadd[] = array('name' => __('Alternate username number'),
+                          'value' => nl2br($this->getField('contact_num')));
       }
       if (($this instanceof CommonDropdown)
           && $this->isField('comment')) {
-         $comment .= "<span class='b'>".__('Comments: ')."</span>".
-                      nl2br($this->getField('comment'))."<br>";
+         $toadd[] = array('name' => __('Comments'),
+                          'value' => nl2br($this->getField('comment')));
+      }
+
+      if (count($toadd)) {
+         foreach ($toadd as $data) {
+         $comment .= sprintf(__('%1$s: %2$s'),"<span class='b'>".$data['name'], 
+                                               "</span>".$data['value'])."<br>";
+         }
       }
 
       if (!empty($comment)) {
