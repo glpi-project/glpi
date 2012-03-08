@@ -380,7 +380,8 @@ class DBConnection extends CommonDBTM {
       foreach ($hosts as $num => $name) {
          $diff = self::getReplicateDelay($num);
          //TRANS: %s is namez of server Mysql
-         echo sprintf(__('Mysql server: %s, '), $name);
+         echo sprintf(__('Mysql server: %s'), $name);
+         echo " - ";
          if ($diff > 1000000000) {
             echo __s("can't connect to the database") . "<br>";
          } else if ($diff) {

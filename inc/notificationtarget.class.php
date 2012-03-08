@@ -288,7 +288,7 @@ class NotificationTarget extends CommonDBChild {
                    ORDER BY `prof`";
 
          foreach ($DB->request($query) as $data) {
-            $options .= "<option value='".$data["id"]."'>".sprintf(__('Profile: %s'), $data["prof"]).
+            $options .= "<option value='".$data["id"]."'>".sprintf(__('%1$s: %2$s'), __('Profile'), $data["prof"]).
                         "</option>";
 
             if (isset($this->notification_targets[Notification::PROFILE_TYPE."_".$data["items_id"]])) {
@@ -614,7 +614,7 @@ class NotificationTarget extends CommonDBChild {
       global $DB;
 
       foreach ($DB->request('glpi_profiles') as $data) {
-         $this->addTarget($data["id"], sprintf(__('Profile: %s'), $data["name"]),
+         $this->addTarget($data["id"], sprintf(__('%1$s: %2$s'), __('Profile'), $data["name"]),
                           Notification::PROFILE_TYPE);
       }
    }

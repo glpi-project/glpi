@@ -1149,29 +1149,29 @@ function getUserName($ID, $link=0) {
             }
 
             if (!empty($data["phone"])) {
-               $user["comment"] .= sprintf(__('Phone : %s'), $data["phone"])."<br>";
+               $user["comment"] .= sprintf(__('%1$s: %2$s'), __('Phone'), $data["phone"])."<br>";
             }
 
             if (!empty($data["mobile"])) {
-               $user["comment"] .= __('Mobile phone')."&nbsp;: ".$data["mobile"]."<br>";
+               $user["comment"] .= sprintf(__('%1$s: %2$s'), __('Mobile phone'), $data["mobile"])."<br>";
             }
 
             if ($data["locations_id"]>0) {
-               $user["comment"] .= __('Location')."&nbsp;: ".
-                                   Dropdown::getDropdownName("glpi_locations",
-                                                             $data["locations_id"])."<br>";
+               $user["comment"] .= sprintf(__('%1$s: %2$s'), __('Location'), 
+                                                            Dropdown::getDropdownName("glpi_locations",
+                                                             $data["locations_id"]))."<br>";
             }
 
             if ($data["usertitles_id"]>0) {
-               $user["comment"] .= __('Title')."&nbsp;: ".
-                                   Dropdown::getDropdownName("glpi_usertitles",
-                                                             $data["usertitles_id"])."<br>";
+               $user["comment"] .= sprintf(__('%1$s: %2$s'), __('Title'), 
+                                                            Dropdown::getDropdownName("glpi_usertitles",
+                                                             $data["usertitles_id"]))."<br>";
             }
 
             if ($data["usercategories_id"]>0) {
-               $user["comment"] .= __('Category')."&nbsp;: ".
-                                   Dropdown::getDropdownName("glpi_usercategories",
-                                                             $data["usercategories_id"])."<br>";
+               $user["comment"] .= sprintf(__('%1$s: %2$s'), __('Category'), 
+                                                            Dropdown::getDropdownName("glpi_usercategories",
+                                                             $data["usercategories_id"]))."<br>";
             }
 
          } else {

@@ -7,14 +7,15 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2012.
 # Nelly Mahu-Lasson <nini.lasson@orange.fr>, 2012.
 # Remi Collet <fedora@famillecollet.com>, 2012.
+#   <sylvain@briallon.fr>, 2012.
 # Xavier CAILLAUD <tsmr@thetsmr.fr>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-03-06 11:19+0100\n"
-"PO-Revision-Date: 2012-03-06 10:19+0000\n"
-"Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
+"PO-Revision-Date: 2012-03-08 10:19+0000\n"
+"Last-Translator: Glooob <sylvain@briallon.fr>\n"
 "Language-Team: French (France) (http://www.transifex.net/projects/p/GLPI/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -158,7 +159,7 @@ msgstr "Suivi par courriel"
 #: inc/commonitilobject.class.php:2020
 #, php-format
 msgid "Email: %s"
-msgstr "Courriel: %s"
+msgstr "Courriel : %s"
 
 #: ajax/dropdownMassiveActionAddActor.php:48
 #: ajax/dropdownMassiveAction.php:215 ajax/dropdownMassiveAction.php:225
@@ -537,11 +538,11 @@ msgstr "Pas de restriction"
 
 #: ajax/subvisibility.php:56
 msgid "Entity: "
-msgstr "Entité: "
+msgstr "Entité : "
 
 #: ajax/subvisibility.php:58 ajax/visibility.php:77
 msgid "Child entities: "
-msgstr "Sous-entités: "
+msgstr "Sous-entités : "
 
 #. TRANS: %d is number of objects for the user
 #: ajax/ticketassigninformation.php:65 inc/change.class.php:598
@@ -634,7 +635,7 @@ msgstr "Test échoué"
 #: front/authldap.form.php:75 front/authldap.form.php:93
 #, php-format
 msgid "Test successful: %s"
-msgstr "Test réussi: %s"
+msgstr "Test réussi : %s"
 
 #. TRANS: %s is the name of the LDAP main server
 #: front/authldap.form.php:77 front/authldap.form.php:82
@@ -646,7 +647,7 @@ msgstr "Serveur principal %s"
 #: front/authldap.form.php:80 front/authldap.form.php:98
 #, php-format
 msgid "Test failed: %s"
-msgstr "Test échoué: %s"
+msgstr "Test échoué : %s"
 
 #. TRANS: %s is the name of the LDAP main server
 #: front/authldap.form.php:95 front/authldap.form.php:100
@@ -1170,7 +1171,7 @@ msgstr "Prochaine exécution"
 #: front/crontask.php:60
 #, php-format
 msgid "Next task to run: %s"
-msgstr "Prochaine action a exécuter : %s"
+msgstr "Prochaine action à exécuter : %s"
 
 #: front/crontask.php:61 inc/crontask.class.php:512
 #: inc/transfer.class.php:3012
@@ -2375,7 +2376,7 @@ msgstr "Total : Valeur=%1$s - Valeur nette comptable=%2$s"
 #: front/report.location.list.php:42
 #, php-format
 msgid "Network report by location: %s"
-msgstr "Rapport réseau pour le lieu: %s"
+msgstr "Rapport réseau pour le lieu : %s"
 
 #: front/report.location.list.php:63 inc/dropdown.class.php:697
 #: inc/netpoint.class.php:56 inc/networkport.class.php:739
@@ -2416,7 +2417,7 @@ msgstr "Périphériques connectés"
 #: front/report.netpoint.list.php:46
 #, php-format
 msgid "Network report by outlet: %s"
-msgstr "Rapport réseau par prise: %s"
+msgstr "Rapport réseau par prise : %s"
 
 #: front/report.networking.php:45 inc/report.class.php:76
 msgid "Network report"
@@ -2437,7 +2438,7 @@ msgstr "Par prise"
 #: front/report.switch.list.php:45
 #, php-format
 msgid "Network report by hardware: %s"
-msgstr "Rapport réseau par équipement: %s"
+msgstr "Rapport réseau par équipement : %s"
 
 #: front/report.year.list.php:48 inc/budget.class.php:373
 #: inc/contract.class.php:859 inc/notificationtargetcartridge.class.php:92
@@ -2738,17 +2739,17 @@ msgstr "Satisfaction"
 #: front/stat.graph.php:79 front/stat.graph.php:87
 #, php-format
 msgid "Technician: %s"
-msgstr "Technicien: %s"
+msgstr "Technicien : %s"
 
 #: front/stat.graph.php:95
 #, php-format
 msgid "Supplier: %s"
-msgstr "Fournisseur: %s"
+msgstr "Fournisseur : %s"
 
 #: front/stat.graph.php:103 front/stat.graph.php:111
 #, php-format
 msgid "Username: %s"
-msgstr "Nom d'utilisateur: %s"
+msgstr "Nom d'utilisateur : %s"
 
 #: front/stat.graph.php:124 front/stat.graph.php:225
 #: inc/knowbaseitem.class.php:722 inc/knowbaseitem.class.php:969
@@ -2759,45 +2760,45 @@ msgstr "Catégorie : %s"
 #: front/stat.graph.php:135
 #, php-format
 msgid "Type: %s"
-msgstr "Type: %s"
+msgstr "Type : %s"
 
 #. TRANS: %s is the name of the group
 #: front/stat.graph.php:150 front/stat.graph.php:158
 #: inc/notificationtarget.class.php:312
 #, php-format
 msgid "Group: %s"
-msgstr "Groupe: %s"
+msgstr "Groupe : %s"
 
 #: front/stat.graph.php:171 inc/commonitiltask.class.php:723
 #: inc/commonitiltask.class.php:732
 #, php-format
 msgid "Priority: %s"
-msgstr "Priorité: %s"
+msgstr "Priorité : %s"
 
 #: front/stat.graph.php:184
 #, php-format
 msgid "Urgency: %s"
-msgstr "Urgence: %s"
+msgstr "Urgence : %s"
 
 #: front/stat.graph.php:197
 #, php-format
 msgid "Impact: %s"
-msgstr "Impact: %s"
+msgstr "Impact : %s"
 
 #: front/stat.graph.php:206
 #, php-format
 msgid "Title: %s"
-msgstr "Titre: %s"
+msgstr "Titre : %s"
 
 #: front/stat.graph.php:215
 #, php-format
 msgid "Solution type: %s"
-msgstr "Type de solution: %s"
+msgstr "Type de solution : %s"
 
 #: front/stat.graph.php:239
 #, php-format
 msgid "Request source: %s"
-msgstr "Source de la demande: %s"
+msgstr "Source de la demande : %s"
 
 #. TRANS: %1$s is the auth method type, %2$s the auth method name or link
 #. TRANS: %1$s is a name, %2$s is text of message
@@ -4482,7 +4483,7 @@ msgstr "Vue globale"
 #, php-format
 msgid ""
 "For security reasons, please change the password for the default users: %s"
-msgstr "Pour des raisons de sécurité, veuillez changer le mot de passe par défaut pour le(s) utilisateur(s): %s"
+msgstr "Pour des raisons de sécurité, veuillez changer le mot de passe par défaut pour le(s) utilisateur(s) : %s"
 
 #: inc/central.class.php:157 inc/central.class.php:158 inc/html.class.php:2366
 msgid "MySQL replica: read only"
@@ -4764,31 +4765,31 @@ msgstr "%1$s : ID %2$d"
 #: inc/commondbtm.class.php:823
 #, php-format
 msgid "Item successfully added: %s"
-msgstr "Élément ajouté avec succès: %s"
+msgstr "Élément ajouté avec succès : %s"
 
 #. TRANS : %s is the description of the updated item
 #: inc/commondbtm.class.php:1049
 #, php-format
 msgid "Item successfully updated: %s"
-msgstr "Élément modifié avec succès: %s"
+msgstr "Élément modifié avec succès : %s"
 
 #. TRANS : %s is the description of the updated item
 #: inc/commondbtm.class.php:1217
 #, php-format
 msgid "Item successfully deleted: %s"
-msgstr "Élément mis à la corbeille avec succès: %s"
+msgstr "Élément mis à la corbeille avec succès : %s"
 
 #. TRANS : %s is the description of the updated item
 #: inc/commondbtm.class.php:1253
 #, php-format
 msgid "Item successfully purged: %s"
-msgstr "Élément supprimé définitivement avec succès: %s"
+msgstr "Élément supprimé définitivement avec succès : %s"
 
 #. TRANS : %s is the description of the updated item
 #: inc/commondbtm.class.php:1348
 #, php-format
 msgid "Item successfully restored: %s"
-msgstr "Élément restauré avec succès: %s"
+msgstr "Élément restauré avec succès : %s"
 
 #: inc/commondbtm.class.php:1736 inc/ticket.class.php:3911
 msgid "Confirm the final deletion ?"
@@ -4877,7 +4878,7 @@ msgstr "%1$s (%2$d) %3$s"
 #: inc/commondbtm.class.php:2669
 #, php-format
 msgid "At least one field has an incorrect value: %s"
-msgstr "Au moins un champ a une valeur incorrecte: %s"
+msgstr "Au moins un champ a une valeur incorrecte : %s"
 
 #: inc/commondbtm.class.php:2717
 #, php-format
@@ -5299,7 +5300,7 @@ msgstr "Suivi public"
 #: inc/commonitiltask.class.php:615
 #, php-format
 msgid "%1$s: from %2$s to %3$s:"
-msgstr "%1$s: du %2$s au %3$s"
+msgstr "%1$s : du %2$s au %3$s"
 
 #. TRANS: %1$s is the start time of a planned item, %2$s is the end
 #: inc/commonitiltask.class.php:670
@@ -5755,7 +5756,7 @@ msgstr "Pas de téléphone connecté"
 #: inc/computer_item.class.php:540
 #, php-format
 msgid "Computer: %s"
-msgstr "Ordinateur: %s"
+msgstr "Ordinateur : %s"
 
 #: inc/computer_item.class.php:552
 msgid "Not connected"
@@ -6664,7 +6665,7 @@ msgstr "Envoi des alertes sur les contrats"
 
 #: inc/contract.class.php:1186
 msgid "Contract entered in notice time:"
-msgstr "Contrat entré dans la période de préavis ::"
+msgstr "Contrat entré dans la période de préavis :"
 
 #: inc/contract.class.php:1190
 msgid "Contract ended:"
@@ -6958,7 +6959,7 @@ msgstr "échec de connexion à la base"
 #: inc/dbconnection.class.php:387
 #, php-format
 msgid "Difference between master and slave: %s"
-msgstr "Écart entre le maître et l'esclave: %s"
+msgstr "Écart entre le maître et l'esclave : %s"
 
 #: inc/dbconnection.class.php:390
 msgid "Difference between master and slave: None"
@@ -8111,7 +8112,7 @@ msgstr "Domaine internet déjà définit dans les entitées visibles"
 #: inc/fqdnlabel.class.php:135
 #, php-format
 msgid "Invalid internet name: %s"
-msgstr "Nom Internet invalide: %s"
+msgstr "Nom Internet invalide : %s"
 
 #: inc/group.class.php:108 inc/group.class.php:524
 msgid "Used Items"
@@ -8736,7 +8737,7 @@ msgstr "Nom de la catégorie"
 
 #: inc/knowbaseitem.class.php:480
 msgid "Select a category for this item:"
-msgstr "Sélectionner une catégorie pour cet élément ::"
+msgstr "Sélectionner une catégorie pour cet élément :"
 
 #: inc/knowbaseitem.class.php:486 inc/knowbaseitem.class.php:725
 #: inc/knowbaseitem.class.php:1016 inc/knowbaseitem.class.php:1230
@@ -8755,7 +8756,7 @@ msgstr "Contenu"
 #: inc/knowbaseitem.class.php:505 inc/knowbaseitem.class.php:745
 #, php-format
 msgid "Writer: %s"
-msgstr "Rédacteur: %s"
+msgstr "Rédacteur : %s"
 
 #. TRANS: %d is the number of view
 #: inc/knowbaseitem.class.php:523 inc/knowbaseitem.class.php:765
@@ -8920,7 +8921,7 @@ msgstr "Restaurer l'élément"
 #: inc/log.class.php:361
 #, php-format
 msgid "Add a component: %s"
-msgstr "Ajout d'un composant: %s"
+msgstr "Ajout d'un composant : %s"
 
 #. TRANS: %1$s is the old_value, %2$s is the new_value
 #: inc/log.class.php:373
@@ -8932,7 +8933,7 @@ msgstr "Modification du composant : \"%1$s\" par  \"%2$s\""
 #: inc/log.class.php:383
 #, php-format
 msgid "Deletion of a component: %s"
-msgstr "Suppression d'un composant: %s"
+msgstr "Suppression d'un composant : %s"
 
 #. TRANS: %s is the software name
 #: inc/log.class.php:389
@@ -8950,13 +8951,13 @@ msgstr "Désinstallation du logiciel : %s"
 #: inc/log.class.php:404
 #, php-format
 msgid "Disconnect the item: %s"
-msgstr "Déconnexion de l'élément \"%s\""
+msgstr "Déconnexion de l'élément : \"%s\""
 
 #. TRANS: %s is the item name
 #: inc/log.class.php:413
 #, php-format
 msgid "Connect the item: %s"
-msgstr "Connexion de l'élément \"%s\""
+msgstr "Connexion de l'élément : \"%s\""
 
 #. TRANS: %s is value imported
 #: inc/log.class.php:420
@@ -8991,13 +8992,13 @@ msgstr "Ajout d'un lien avec l'élément \"%s\""
 #: inc/log.class.php:481
 #, php-format
 msgid "Deletion of a link with an item: %s"
-msgstr "Suppression d'un lien avec l'élément \"%s\""
+msgstr "Identifiant : %s"
 
 #. TRANS: %1$s is the item name, %2$s is the value
 #: inc/log.class.php:491
 #, php-format
 msgid "Add an item: %1$s (%2$s)"
-msgstr "Ajout d'un élément: %1$s (%2$s)"
+msgstr "Ajout d'un élément : %1$s (%2$s)"
 
 #. TRANS: %1$s is the item name, %2$s is the value
 #: inc/log.class.php:502
@@ -9252,8 +9253,8 @@ msgstr "id"
 #, php-format
 msgid "Invalid IP address: %s"
 msgid_plural "Invalid IP addresses: %s"
-msgstr[0] "Adresse IP %s invalide"
-msgstr[1] "Adresses IP %s invalides"
+msgstr[0] "Adresse IP invalide : %s"
+msgstr[1] "Adresses IP invalides : %s"
 
 #: inc/networkname.class.php:427
 msgid ""
@@ -9535,12 +9536,12 @@ msgstr ""
 #: inc/networkport_vlan.class.php:194 inc/networkport_vlan.class.php:235
 #, php-format
 msgid "ID TAG: %s"
-msgstr "TAG ID: %s"
+msgstr "TAG ID : %s"
 
 #: inc/networkport_vlan.class.php:195 inc/networkport_vlan.class.php:236
 #, php-format
 msgid "Comments: %s"
-msgstr "Commentaires: %s"
+msgstr "Commentaires : %s"
 
 #: inc/networkportwifi.class.php:46
 msgid "Wifi port"
@@ -9673,7 +9674,7 @@ msgstr "Restant"
 #: inc/profile_user.class.php:270 inc/profile_user.class.php:371
 #, php-format
 msgid "Profile: %s"
-msgstr "Profil: %s"
+msgstr "Profil : %s"
 
 #. TRANS: %s is the name of the group
 #: inc/notificationtarget.class.php:335 inc/notificationtarget.class.php:642
@@ -10244,7 +10245,7 @@ msgstr "Vous avez demandé la réinitialisation de votre mot de passe."
 
 #: inc/notificationtargetuser.class.php:116
 msgid "Just follow this link (you have one day):"
-msgstr "Il vous suffit de suivre ce lien (vous avez une journée) : ):"
+msgstr "Il vous suffit de suivre ce lien (vous avez une journée) :"
 
 #: inc/notificationtemplate.class.php:119
 msgid "CSS"
@@ -10312,7 +10313,7 @@ msgstr "Valeur unique"
 #: inc/notificationtemplatetranslation.class.php:349
 #, php-format
 msgid "Label: %s"
-msgstr "Libellé: %s"
+msgstr "Libellé : %s"
 
 #: inc/notimportedemail.class.php:56
 msgid "Refused email"
@@ -10362,7 +10363,7 @@ msgstr[1] "Liaisons OCSNG"
 #: inc/ocslink.class.php:84
 #, php-format
 msgid "OCSNG TAG: %s"
-msgstr "TAG OCSNG: %s"
+msgstr "TAG OCSNG : %s"
 
 #: inc/ocslink.class.php:173
 msgid "Locked fields"
@@ -10985,7 +10986,7 @@ msgstr "Résolu le %s"
 #: inc/problem.class.php:1163 inc/ticket.class.php:4788
 #, php-format
 msgid "Due date: %s"
-msgstr "Date d'échéance: %s"
+msgstr "Date d'échéance : %s"
 
 #: inc/problem.class.php:1167 inc/ticket.class.php:4792
 #, php-format
@@ -11481,7 +11482,7 @@ msgstr "Ajouter au planning"
 #: inc/reminder.class.php:799 inc/reminder.class.php:838
 #, php-format
 msgid "From %1$s to %2$s: %3$s"
-msgstr "De %1$s à %2$s: %3$s"
+msgstr "De %1$s à %2$s : %3$s"
 
 #. TRANS: %1$s is the start time of a planned item, %2$s is its name
 #: inc/reminder.class.php:849
@@ -11845,13 +11846,13 @@ msgstr "Inactive"
 #: inc/rulecollection.class.php:1058
 #, php-format
 msgid "Rules applied: %s"
-msgstr "Règles appliquées: %s"
+msgstr "Règles appliquées : %s"
 
 #. TRANS: %s is the entity name
 #: inc/rulecollection.class.php:1065
 #, php-format
 msgid "Local rules: %s"
-msgstr "Règles locales: %s"
+msgstr "Règles locales : %s"
 
 #: inc/rulecollection.class.php:1071
 msgid "Rules applicable in the sub-entities"
@@ -12536,7 +12537,7 @@ msgstr "Conserver le statut"
 #: inc/state.class.php:70
 #, php-format
 msgid "Set status: %s"
-msgstr "Prendre le statut: %s"
+msgstr "Prendre le statut : %s"
 
 #: inc/supplier.class.php:256 inc/supplier.class.php:353
 msgid "Associated contacts"
@@ -12712,12 +12713,12 @@ msgstr "Le ticket sera ajouté dans l'entité %s"
 #: inc/ticket.class.php:3330 inc/ticket.class.php:3340
 #, php-format
 msgid "Escalation level: %s"
-msgstr "Niveau d'escalade: %s"
+msgstr "Niveau d'escalade : %s"
 
 #: inc/ticket.class.php:3337
 #, php-format
 msgid "Next escalation: %s"
-msgstr "Prochaine escalade: %s"
+msgstr "Prochaine escalade : %s"
 
 #: inc/ticket.class.php:3367
 msgid ""
@@ -13363,7 +13364,7 @@ msgstr "Erreur : les deux mots de passe ne sont pas identiques"
 
 #: inc/user.class.php:1396
 msgid "Add user..."
-msgstr "Ajouter utilisateur."
+msgstr "Ajouter utilisateur..."
 
 #: inc/user.class.php:1401
 msgid "... From an external source"
@@ -13395,7 +13396,7 @@ msgstr "Dernière connection le %s"
 #: inc/user.class.php:1671
 #, php-format
 msgid "Login: %s"
-msgstr "Identifiant: %s"
+msgstr "Identifiant : %s"
 
 #: inc/user.class.php:1784
 msgid "Use GLPI in mode"
@@ -13603,7 +13604,7 @@ msgstr "Impossible de se connecter à la base de données"
 #: install/install.php:221 install/install.php:349 install/install.php:397
 #, php-format
 msgid "The server answered: %s"
-msgstr "Le serveur a répondu: %s"
+msgstr "Le serveur a répondu : %s"
 
 #: install/install.php:224
 msgid "The server or/and user field is empty"
@@ -13615,15 +13616,15 @@ msgstr "Connexion à la base de données réussie"
 
 #: install/install.php:238
 msgid "Please select a database:"
-msgstr "Veuillez sélectionner une base de données ::"
+msgstr "Veuillez sélectionner une base de données :"
 
 #: install/install.php:252
 msgid "Create a new database or use an existing one:"
-msgstr "Créer une nouvelle base ou utiliser une base existante ::"
+msgstr "Créer une nouvelle base ou utiliser une base existante :"
 
 #: install/install.php:264
 msgid "Please select the database to update:"
-msgstr "Veuillez sélectionner la base de données à mettre à jour ::"
+msgstr "Veuillez sélectionner la base de données à mettre à jour :"
 
 #: install/install.php:291
 msgid "Initialization of the database"
@@ -13631,7 +13632,7 @@ msgstr "Initialisation de la base de données."
 
 #: install/install.php:348
 msgid "Impossible to use the database:"
-msgstr "Impossible d'utiliser la base ::"
+msgstr "Impossible d'utiliser la base :"
 
 #: install/install.php:355 install/install.php:371 install/install.php:387
 msgid "OK - database was initialized"
@@ -13659,7 +13660,7 @@ msgstr "L'installation est terminée"
 
 #: install/install.php:427
 msgid "Default logins / passwords are:"
-msgstr "Les identifiants et mots de passe par défaut sont ::"
+msgstr "Les identifiants et mots de passe par défaut sont :"
 
 #: install/install.php:428
 msgid "glpi/glpi for the  administrator account"
@@ -13747,7 +13748,7 @@ msgstr "Site Web : %s"
 #: install/update_0681_07.php:567
 #, php-format
 msgid "Phone: %s"
-msgstr "Téléphone: %s"
+msgstr "Téléphone : %s"
 
 #: install/update_0681_07.php:574
 #, php-format
