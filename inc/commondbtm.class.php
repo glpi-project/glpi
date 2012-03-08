@@ -2778,7 +2778,8 @@ class CommonDBTM extends CommonGLPI {
                   }
                   $where_global = getEntitiesRestrictRequest(" AND", $this->getTable(), '',
                                                              $entities);
-                  if ($this->maybeTemplate()) {
+                  $tmp = clone $this;
+                  if ($tmp->maybeTemplate()) {
                      $where_global .= " AND NOT `is_template`";
                   }
 
