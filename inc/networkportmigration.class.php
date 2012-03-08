@@ -236,9 +236,8 @@ class NetworkPortMigration extends CommonDBChild {
          if (isset($network)) {
             printf(__('Append a correct gateway to the network %s'), $network->getLink());
          } else {
-            echo __('Unknown network:') .
-                 " <a href='".Toolbox::getItemTypeFormURL('IPNetwork')."'>" .
-                  __('add a network')."</a>";
+            printf(__('Unknown network: %s'),"<a href='".Toolbox::getItemTypeFormURL('IPNetwork')."'>" .
+                  __('Add a network')."</a>");
          }
          echo "</td></tr>\n";
       }

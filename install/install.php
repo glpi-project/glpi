@@ -425,7 +425,7 @@ function step7() {
 
    echo "<h2>".__('The installation is finished')."</h2>";
    echo "<p>".__('Default logins / passwords are:')."</p>";
-   echo "<p><ul><li> ".__('glpi/glpi for the  administrator account')."</li>";
+   echo "<p><ul><li> ".__('glpi/glpi for the administrator account')."</li>";
    echo "<li>".__('tech/tech for the technician account')."</li>";
    echo "<li>".__('normal/normal for the normal account')."</li>";
    echo "<li>".__('post-only/postonly for the postonly account')."</li></ul></p>";

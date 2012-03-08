@@ -74,7 +74,8 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
          Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities'],
                                         'value'  => $_SESSION['glpiactive_entity']));
 
-         _e('Child entities: ');
+         _e('Child entities');
+         echo "&nbsp;";
          Dropdown::showYesNo('is_recursive');
 
          $display = true;

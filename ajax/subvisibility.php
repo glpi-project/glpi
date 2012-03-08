@@ -53,9 +53,12 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
          if (Session::isViewAllEntities()) {
             $params['toadd'] = array(-1 => __('No restriction'));
          }
-         _e('Entity: ');
+         _e('Entity');
+         echo "&nbsp;";
          Dropdown::show('Entity', $params);
-         _e('Child entities: ');
+         echo "&nbsp;";
+         _e('Child entities');
+         echo "&nbsp;";
          Dropdown::showYesNo('is_recursive');
          break;
    }
