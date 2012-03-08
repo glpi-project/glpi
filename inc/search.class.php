@@ -77,7 +77,7 @@ class Search {
       // Instanciate an object to access method
       $item = NULL;
 
-      if ($itemtype != 'States' && $itemtype != 'Internet') {
+      if (($itemtype != 'States') && ($itemtype != 'Internet')) {
          $item = getItemForItemtype($itemtype);
       }
 
@@ -608,7 +608,7 @@ class Search {
                $citem  = new $ctype();
                if ($citem->canView()) {
                   // State case
-                  if ($itemtype == 'States' || $itemtype == 'Internet' ) {
+                  if (($itemtype == 'States') || ($itemtype == 'Internet')) {
                      $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                               $ctable, $tmpquery);
                      $query_num = str_replace($itemtype,
@@ -697,15 +697,14 @@ class Search {
                }
                $tmpquery = "";
                // State case
-               if ($itemtype == 'States' || $itemtype == 'Internet') {
+               if (($itemtype == 'States') || ($itemtype == 'Internet')) {
                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                               $FROM.
                               $WHERE;
 
                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                           $ctable, $tmpquery);
-                  $tmpquery = str_replace($itemtype,
-                                             $ctype, $tmpquery);
+                  $tmpquery = str_replace($itemtype, $ctype, $tmpquery);
                   if ($itemtype == 'States') {
                      $tmpquery .= " AND `$ctable`.`states_id` > '0' ";
                   }
@@ -1441,7 +1440,7 @@ class Search {
 
       // Instanciate an object to access method
       $item = NULL;
-      if ($itemtype!='States' && $itemtype!='Internet') {
+      if (($itemtype != 'States') && ($itemtype != 'Internet')) {
          $item = getItemForItemtype($itemtype);
       }
 
@@ -1999,7 +1998,7 @@ class Search {
 
       $toview = array();
       $item   = NULL;
-      if ($itemtype!='States' && $itemtype!='Internet') {
+      if (($itemtype != 'States') && ($itemtype != 'Internet')) {
          $item = getItemForItemtype($itemtype);
       }
       // Add first element (name)
@@ -2029,7 +2028,7 @@ class Search {
       $itemtable = getTableForItemType($itemtype);
       $item      = NULL;
       $mayberecursive = false;
-      if ($itemtype!='States' && $itemtype!='Internet') {
+      if (($itemtype != 'States') && ($itemtype != 'Internet')) {
          $item = getItemForItemtype($itemtype);
          $mayberecursive = $item->maybeRecursive();
       }
@@ -2094,10 +2093,11 @@ class Search {
          $complexjoin = self::computeComplexJoinID($searchopt[$ID]['joinparams']);
       }
 
-      if ((($table != getTableForItemType($itemtype) && (!isset($CFG_GLPI["union_search_type"][$itemtype])
-                                                         || $CFG_GLPI["union_search_type"][$itemtype] != $table) )
-            || !empty($complexjoin))
-          && $searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table)) {
+      if (((($table != getTableForItemType($itemtype))
+            && (!isset($CFG_GLPI["union_search_type"][$itemtype])
+                || ($CFG_GLPI["union_search_type"][$itemtype] != $table)))
+           || !empty($complexjoin))
+          && ($searchopt[$ID]["linkfield"] != getForeignKeyFieldForTable($table))) {
          $addtable .= "_".$searchopt[$ID]["linkfield"];
       }
 
@@ -3062,8 +3062,9 @@ class Search {
       // Default case
       if (in_array($searchtype, array('equals', 'notequals','under'))) {
 
-         if ($table != getTableForItemType($itemtype) || $itemtype == 'States'
-            || $itemtype == 'Internet') {
+         if (($table != getTableForItemType($itemtype))
+             || ($itemtype == 'States')
+             || ($itemtype == 'Internet')) {
             $out = " $link (`$table`.`id`".$SEARCH;
          } else {
             $out = " $link (`$table`.`$field`".$SEARCH;
@@ -4452,10 +4453,10 @@ class Search {
       $default_values["searchtype2"] = "";
       $default_values["sort"]        = 1;
 
-      if ($itemtype!='States'
-         && $itemtype!='Internet'
-         && class_exists($itemtype)
-         && method_exists($itemtype,'getDefaultSearchRequest')) {
+      if (($itemtype != 'States')
+          && ($itemtype != 'Internet')
+          && class_exists($itemtype)
+          && method_exists($itemtype,'getDefaultSearchRequest')) {
 
          $default_values = array_merge($default_values,
                                        call_user_func(array($itemtype,
@@ -4647,7 +4648,7 @@ class Search {
          // standard type first
          switch ($itemtype) {
             case 'Internet' :
-               $search[$itemtype]['common']           = __('Characteristics');
+               $search[$itemtype]['common']            = __('Characteristics');
 
                $search[$itemtype][1]['table']          = 'networkport_types';
                $search[$itemtype][1]['field']          = 'name';
@@ -4666,8 +4667,9 @@ class Search {
 
                $search[$itemtype] += NetworkPort::getSearchOptionsToAdd('networkport_types');
                break;
+
             case 'States' :
-               $search[$itemtype]['common']           = __('Characteristics');
+               $search[$itemtype]['common']            = __('Characteristics');
 
                $search[$itemtype][1]['table']          = 'state_types';
                $search[$itemtype][1]['field']          = 'name';
