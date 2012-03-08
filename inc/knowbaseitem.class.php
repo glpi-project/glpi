@@ -502,7 +502,7 @@ class KnowbaseItem extends CommonDBTM {
             echo "<div class='baskb'>";
             if ($this->fields["users_id"]) {
                //TRANS: %s is the writer name
-               printf(__('Writer: %s'), getUserName($this->fields["users_id"],"1"));
+               printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],"1"));
             }
 
             echo "<span class='baskb_right'>";
@@ -742,7 +742,7 @@ class KnowbaseItem extends CommonDBTM {
             $linkusers_id = 0;
          }
 
-         printf(__('Writer: %s'), getUserName($this->fields["users_id"], $linkusers_id));
+         printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"], $linkusers_id));
          echo "<br>";
       }
 

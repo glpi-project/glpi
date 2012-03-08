@@ -536,19 +536,19 @@ function update0681to07() {
                   if (!empty($comments)) {
                      $comments .= "\n";
                   }
-                  $comments .= sprintf(__('Address : %s'), $data['address']);
+                  $comments .= sprintf(__('%1$s: %2$s'), __('Address'), $data['address']);
                }
 
                if (!empty($data['postcode']) || !empty($data['town'])) {
                   if (!empty($comments)) {
-                     $comments .= __('Address :');
+                     $comments = sprintf('%1$s %2$s', $comments, __('Address'))."\n";
                   }
                   $comments .= $data['postcode'] . " " . $data['town'];
                }
 
                if (!empty($data['state']) || !empty($data['country'])) {
                   if (!empty($comments)) {
-                     $comments .= __('Address :');
+                     $comments = sprintf('%1$s %2$s', $comments, __('Address'))."\n";
                   }
                   $comments .= $data['country'] . " " . $data['state'];
                }
@@ -557,28 +557,28 @@ function update0681to07() {
                   if (!empty($comments)) {
                      $comments .= "\n";
                   }
-                  $comments .= sprintf(__('Website : %s'), $data['website']);
+                  $comments .= sprintf(__('%1$s: %2$s'), __('Website'), $data['website']);
                }
 
                if (!empty($data['phonenumber'])) {
                   if (!empty($comments)) {
                      $comments .= "\n";
                   }
-                  $comments .= sprintf(__('Phone: %s'), $data['phonenumber']);
+                  $comments .= sprintf(__('%1$s: %2$s'), __('Phone'), $data['phonenumber']);
                }
 
                if (!empty($data['fax'])) {
                   if (!empty($comments)) {
                      $comments .= "\n";
                   }
-                  $comments .= sprintf(__('Fax : %s'), $data['fax']);
+                  $comments .= sprintf(__('%1$s: %2$s'), __('Fax'), $data['fax']);
                }
 
                if (!empty($data['email'])) {
                   if (!empty($comments)) {
                      $comments .= "\n";
                   }
-                  $comments .= sprintf(__('Email : %s'), $data['email']);
+                  $comments .= sprintf(__('%1$s: %2$s'), __('Email'), $data['email']);
                }
 
                if (!empty($data['comments'])) {

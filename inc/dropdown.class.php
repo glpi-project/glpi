@@ -276,47 +276,47 @@ class Dropdown {
                         break;
 
                      case "glpi_contacts" :
-                        $name .= " ".$data["firstname"];
+                        $name = sprintf('%1$s %2$s', $name, $data["firstname"]);
                         if (!empty($data["phone"])) {
-                           $comment .= "<br><span class='b'>". __('Phone: ')."</span>".
-                                        $data["phone"];
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Phone'), 
+                                               "</span>".$data['phone']);
                         }
                         if (!empty($data["phone2"])) {
-                           $comment .= "<br><span class='b'>". __('Phone 2: ')."</span>".
-                                        $data["phone2"];
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Phone 2'), 
+                                               "</span>".$data['phone2']);
                         }
                         if (!empty($data["mobile"])) {
-                           $comment .= "<br><span class='b'>".__('Mobile phone: ')."</span>".
-                                        $data["mobile"];
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Mobile phone'), 
+                                               "</span>".$data['mobile']);
                         }
                         if (!empty($data["fax"])) {
-                           $comment .= "<br><span class='b'>".__('Fax: ')." </span>".
-                                        $data["fax"];
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Fax'), 
+                                               "</span>".$data['fax']);
                         }
                         if (!empty($data["email"])) {
-                           $comment .= "<br><span class='b'>".__('Email: ')."</span>".
-                                        $data["email"];
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Email'), 
+                                               "</span>".$data['email']);
                         }
                         break;
 
                      case "glpi_suppliers" :
                         if (!empty($data["phonenumber"])) {
-                           $comment .= "<br><span class='b'>". __('Phone: ')."</span> ".
-                                        $data["phonenumber"];
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Phone'), 
+                                               "</span>".$data['phonenumber']);
                         }
                         if (!empty($data["fax"])) {
-                           $comment .= "<br><span class='b'>".__('Fax: ')." </span> ".
-                                        $data["fax"];
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Fax'), 
+                                               "</span>".$data['fax']);
                         }
                         if (!empty($data["email"])) {
-                           $comment .= "<br><span class='b'>".__('Email: ')." </span> ".
-                                        $data["email"];
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Email'), 
+                                               "</span>".$data['email']);
                         }
                         break;
 
                      case "glpi_netpoints" :
-                        $name .= " (".self::getDropdownName("glpi_locations",
-                                                                $data["locations_id"]).")";
+                        $name = sprintf('%1$s %2$s',$name, "(".self::getDropdownName("glpi_locations",
+                                                                $data["locations_id"]).")");
                         break;
                   }
                }

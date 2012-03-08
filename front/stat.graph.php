@@ -76,7 +76,7 @@ switch($_GET["type"]) {
       $val2  = "";
       $next  = getNextItem("glpi_users", $_GET["id"]);
       $prev  = getPreviousItem("glpi_users", $_GET["id"]);
-      $title = sprintf(__('Technician: %s'), $item->getAssignName($_GET["id"], 'User', 1));
+      $title = sprintf(__('%1$s: %2$s'), __('Technician'), $item->getAssignName($_GET["id"], 'User', 1));
       break;
 
    case "technicien_followup" :
@@ -84,7 +84,7 @@ switch($_GET["type"]) {
       $val2  = "";
       $next  = getNextItem("glpi_users", $_GET["id"]);
       $prev  = getPreviousItem("glpi_users", $_GET["id"]);
-      $title = sprintf(__('Technician: %s'), $item->getAssignName($_GET["id"], 'User', 1));
+      $title = sprintf(__('%1$s: %2$s'), __('Technician'), $item->getAssignName($_GET["id"], 'User', 1));
       break;
 
    case "suppliers_id_assign" :
@@ -92,7 +92,7 @@ switch($_GET["type"]) {
       $val2  = "";
       $next  = getNextItem("glpi_suppliers", $_GET["id"]);
       $prev  = getPreviousItem("glpi_suppliers", $_GET["id"]);
-      $title = sprintf(__('Supplier: %s'), $item->getAssignName($_GET["id"], 'Supplier', 1));
+      $title = sprintf(__('%1$s: %2$s'), __('Supplier'), $item->getAssignName($_GET["id"], 'Supplier', 1));
       break;
 
    case "user" :
@@ -100,7 +100,7 @@ switch($_GET["type"]) {
       $val2  = "";
       $next  = getNextItem("glpi_users", $_GET["id"]);
       $prev  = getPreviousItem("glpi_users", $_GET["id"]);
-      $title = sprintf(__('Username: %s'), getUserName($_GET["id"],1));
+      $title = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"],1));
       break;
 
    case "users_id_recipient" :
@@ -108,7 +108,7 @@ switch($_GET["type"]) {
       $val2  = "";
       $next  = getNextItem("glpi_users", $_GET["id"]);
       $prev  = getPreviousItem("glpi_users", $_GET["id"]);
-      $title = sprintf(__('Username: %s'), getUserName($_GET["id"],1));
+      $title = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"],1));
       break;
 
    case "itilcategories_tree" :
@@ -121,7 +121,7 @@ switch($_GET["type"]) {
       $val2  = "";
       $next  = getNextItem("glpi_itilcategories", $_GET["id"], $cond, 'completename');
       $prev  = getPreviousItem("glpi_itilcategories", $_GET["id"], $cond, 'completename');
-      $title = sprintf(__('Category: %s'), Dropdown::getDropdownName("glpi_itilcategories",
+      $title = sprintf(__('%1$s: %2$s'), __('Categry'), Dropdown::getDropdownName("glpi_itilcategories",
                                                                      $_GET["id"]));
       break;
 
@@ -132,7 +132,7 @@ switch($_GET["type"]) {
       // Only 2 items
       $next  = ($_GET["id"]%2)+1;
       $prev  = ($_GET["id"]%2)+1;
-      $title = sprintf(__('Type: %s'), Ticket::getTicketTypeName($_GET["id"]));
+      $title = sprintf(__('%1$s: %2$s'), __('Type'), Ticket::getTicketTypeName($_GET["id"]));
       break;
 
    case 'group_tree' :
@@ -147,7 +147,7 @@ switch($_GET["type"]) {
       $val2  = "";
       $next  = getNextItem("glpi_groups", $_GET["id"], $cond);
       $prev  = getPreviousItem("glpi_groups", $_GET["id"], $cond);
-      $title = sprintf(__('Group: %s'), Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
+      $title = sprintf(__('%1$s: %2$s'), __('Group'), Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
       break;
 
    case "groups_id_assign" :
@@ -155,7 +155,7 @@ switch($_GET["type"]) {
       $val2  = "";
       $next  = getNextItem("glpi_groups", $_GET["id"]);
       $prev  = getPreviousItem("glpi_groups", $_GET["id"]);
-      $title = sprintf(__('Group: %s'), Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
+      $title = sprintf(__('%1$s: %2$s'), __('Group'), Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
       break;
 
    case "priority" :
@@ -168,7 +168,7 @@ switch($_GET["type"]) {
       if ($val1 > 1) {
          $prev = $val1-1;
       }
-      $title = sprintf(__('Priority: %s'), $item->getPriorityName($_GET["id"]));
+      $title = sprintf(__('%1$s: %2$s'), __('Priority'), $item->getPriorityName($_GET["id"]));
       break;
 
    case "urgency" :
@@ -181,7 +181,7 @@ switch($_GET["type"]) {
       if ($val1 > 1) {
          $prev = $val1-1;
       }
-      $title = sprintf(__('Urgency: %s'), $item->getUrgencyName($_GET["id"]));
+      $title = sprintf(__('%1$s: %2$s'), __('Urgency'), $item->getUrgencyName($_GET["id"]));
       break;
 
    case "impact" :
@@ -194,7 +194,7 @@ switch($_GET["type"]) {
       if ($val1 > 1) {
          $prev = $val1-1;
       }
-      $title = sprintf(__('Impact: %s'), $item->getImpactName($_GET["id"]));
+      $title = sprintf(__('%1$s: %2$s'), __('Impact'), $item->getImpactName($_GET["id"]));
       break;
 
    case "usertitles_id" :
@@ -203,7 +203,7 @@ switch($_GET["type"]) {
       $next  = $prev = 0;
       $next  = getNextItem("glpi_usertitles", $_GET["id"]);
       $prev  = getPreviousItem("glpi_usertitles", $_GET["id"]);
-      $title = sprintf(__('Title: %s'), Dropdown::getDropdownName("glpi_usertitles", $_GET["id"]));
+      $title = sprintf(__('%1$s: %2$s'), __('Title'), Dropdown::getDropdownName("glpi_usertitles", $_GET["id"]));
       break;
 
    case "solutiontypes_id" :
@@ -212,7 +212,7 @@ switch($_GET["type"]) {
       $next  = $prev = 0;
       $next  = getNextItem("glpi_solutiontypes", $_GET["id"]);
       $prev  = getPreviousItem("glpi_solutiontypes", $_GET["id"]);
-      $title = sprintf(__('Solution type: %s'), Dropdown::getDropdownName("glpi_solutiontypes",
+      $title = sprintf(__('%1$s: %2$s'), __('Solution type'), Dropdown::getDropdownName("glpi_solutiontypes",
                                                                           $_GET["id"]));
       break;
 
@@ -222,7 +222,7 @@ switch($_GET["type"]) {
       $next  = $prev=0;
       $next  = getNextItem("glpi_usercategories", $_GET["id"]);
       $prev  = getPreviousItem("glpi_usercategories", $_GET["id"]);
-      $title = sprintf(__('Category: %s'), Dropdown::getDropdownName("glpi_usercategories",
+      $title = sprintf(__('%1$s: %2$s'), __('Category'), Dropdown::getDropdownName("glpi_usercategories",
                                                                      $_GET["id"]));
       break;
 
@@ -236,7 +236,7 @@ switch($_GET["type"]) {
       if ($val1 > 0) {
          $prev = $val1-1;
       }
-      $title = sprintf(__('Request source: %s'), Dropdown::getDropdownName("glpi_requesttypes",
+      $title = sprintf(__('%1$s: %2$s'), __('Request source'), Dropdown::getDropdownName("glpi_requesttypes",
                                                                            $_GET["id"]));
       break;
 

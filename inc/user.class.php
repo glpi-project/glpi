@@ -1668,7 +1668,7 @@ class User extends CommonDBTM {
          echo "<div class='center'>";
          echo "<form method='post' name='user_manager' action='".$target."'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='4'>" . sprintf(__('Login: %s'), $this->fields["name"]);
+         echo "<tr><th colspan='4'>" . sprintf(__('%1$s: %2$s'), __('Login'), $this->fields["name"]);
          echo "<input type='hidden' name='name' value='" . $this->fields["name"] . "'>";
          echo "<input type='hidden' name='id' value='" . $this->fields["id"] . "'>";
          echo "</th></tr>";

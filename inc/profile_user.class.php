@@ -267,7 +267,7 @@ class Profile_User extends CommonDBTM {
                                                 $entity->getName()));
 
          while ($data=$DB->fetch_assoc($result)) {
-            echo "<tr><th colspan='$headerspan'>".sprintf(__('Profile: %s'), $data["name"]);
+            echo "<tr><th colspan='$headerspan'>".sprintf(__('%1$s: %2$s'), __('Profile'), $data["name"]);
             echo "</th></tr>";
 
             $query = "SELECT `glpi_users`.*,
@@ -368,7 +368,7 @@ class Profile_User extends CommonDBTM {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'><tr>";
-      echo "<th>".sprintf(__('Profile: %s'), $prof->fields["name"])."</th></tr>\n";
+      echo "<th>".sprintf(__('%1$s: %2$s'), __('Profile'), $prof->fields["name"])."</th></tr>\n";
 
       echo "<tr><th colspan='2'>".__('Users (D=Dynamic, R=Recursive)')."</th></tr>";
       echo "</table>\n";

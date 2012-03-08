@@ -191,8 +191,8 @@ class NetworkPort_Vlan extends CommonDBRelation {
             $content = sprintf(__('%s - Untagged'), Dropdown::getDropdownName("glpi_vlans",
                                                                               $line["vlans_id"]));
          }
-         $content .= Html::showToolTip(sprintf(__('ID TAG: %s'), $line['vlantag'])."<br>".
-                                       sprintf(__('Comments: %s'), $line['vlancomment']),
+         $content .= Html::showToolTip(sprintf(__('%1$s: %2$s'), __('ID TAG'), $line['vlantag'])."<br>".
+                                       sprintf(__('%1$s: %2$s'), __('Comments'), $line['vlancomment']),
                                        array('display' => false));
          if ($canedit) {
             $content .= "<a href='" . $CFG_GLPI["root_doc"] .
@@ -232,8 +232,8 @@ class NetworkPort_Vlan extends CommonDBRelation {
             } else {
                echo sprintf(__('%s - Untagged'), Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]));
             }
-            Html::showToolTip(sprintf(__('ID TAG: %s'), $line['vlantag'])."<br>".
-                              sprintf(__('Comments: %s'), $line['vlancomment']));
+            Html::showToolTip(sprintf(__('%1$s: %2$s'), __('ID TAG'),  $line['vlantag'])."<br>".
+                              sprintf(__('%1$s: %2$s'), __('Comments'),  $line['vlancomment']));
 
 
             echo "</td>\n<td>";

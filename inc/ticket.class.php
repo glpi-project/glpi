@@ -4779,7 +4779,7 @@ class Ticket extends CommonITILObject {
                ($output_type == Search::HTML_OUTPUT?'<br>':'').
                   Html::convDateTime($job->fields['begin_waiting_date']));
          } else if ($job->fields['due_date']) {
-            $second_col = sprintf(__('Due date: %s'),
+            $second_col = sprintf(__('%1$s: %2$s'), __('Due date'),
                ($output_type == Search::HTML_OUTPUT?'<br>':'').
                   Html::convDateTime($job->fields['due_date']));
          } else {
