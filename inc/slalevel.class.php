@@ -190,16 +190,23 @@ class SlaLevel extends RuleTicket {
       return $actions;
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @see inc/RuleTicket::getCriterias()
+   **/
    function getCriterias() {
 
-      $actions                            = parent::getActions();
+      $actions                      = parent::getActions();
 
       unset($actions['slas_id']);
-      $actions['status']['name']          = __('Status');
-      $actions['status']['type']          = 'dropdown_status';
+      $actions['status']['name']    = __('Status');
+      $actions['status']['type']    = 'dropdown_status';
       return $actions;
    }
-   
+
+
    /**
     * Show the rule
     *
@@ -239,7 +246,6 @@ class SlaLevel extends RuleTicket {
       echo "<td>".$sla->getLink()."</td>";
       echo "<td>".__('Execution')."</td>";
       echo "<td>";
-
       self::dropdownExecutionTime('execution_time',
                                   array('max_time'
                                              => $sla->fields['resolution_time'],
@@ -248,6 +254,7 @@ class SlaLevel extends RuleTicket {
                                         'value'
                                              => $this->fields['execution_time']));
       echo "</td></tr>\n";
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Logical operator')."</td>";
       echo "<td>";

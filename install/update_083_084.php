@@ -1354,7 +1354,7 @@ function update083to084() {
    $migration->addField("glpi_contacts", 'town', "string");
    $migration->addField("glpi_contacts", 'state', "string");
    $migration->addField("glpi_contacts", 'country', "string");
-   
+
    $migration->addField("glpi_configs", 'x509_ou_restrict', "string", array('after' => 'x509_email_field'));
    $migration->addField("glpi_configs", 'x509_o_restrict', "string", array('after' => 'x509_email_field'));
    $migration->addField("glpi_configs", 'x509_cn_restrict', "string", array('after' => 'x509_email_field'));
@@ -1370,11 +1370,11 @@ function update083to084() {
                KEY `slalevels_id` (`slalevels_id`),
                KEY `condition` (`condition`)
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-      //TRANS: %1$s is the title of the update, %2$s is the DB error
       $DB->queryOrDie($query, "0.84 create glpi_slalevelcriterias");
    }
 
-   $migration->addField("glpi_slalevels", 'match', "CHAR(10) DEFAULT NULL COMMENT 'see define.php *_MATCHING constant'");
+   $migration->addField("glpi_slalevels", 'match',
+                        "CHAR(10) DEFAULT NULL COMMENT 'see define.php *_MATCHING constant'");
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate

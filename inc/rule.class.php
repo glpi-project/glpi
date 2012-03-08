@@ -311,7 +311,7 @@ class Rule extends CommonDBTM {
          if ($withactions && ($RuleAction = getItemForItemtype($this->ruleactionclass))) {
             $this->actions = $RuleAction->getRuleActions($ID);
          }
-         
+
          if ($withcriterias && ($RuleCriterias = getItemForItemtype($this->rulecriteriaclass))) {
             $this->criterias = $RuleCriterias->getRuleCriterias($ID);
          }
@@ -495,7 +495,7 @@ class Rule extends CommonDBTM {
     * Display all rules criterias
     *
     * @param $rules_id
-    * @param $options   array of options : may be readonly    
+    * @param $options   array of options : may be readonly
    **/
    function showCriteriasList($rules_id, $options=array()) {
 
@@ -527,8 +527,8 @@ class Rule extends CommonDBTM {
       echo "<div class='spaced'>";
 
       if ($canedit) {
-            echo "<form name='criteriasform' id='criteriasform' method='post' action='".
-             Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
+         echo "<form name='criteriasform' id='criteriasform' method='post' action='".
+                Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
       }
       echo "<table $style>";
       echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>". _n('Criteria', 'Criteria', 2).
@@ -1401,11 +1401,11 @@ class Rule extends CommonDBTM {
                Ticket::dropdownPriority($name, $value);
                $display = true;
                break;
-            
+
             case "dropdown_status" :
                Ticket::dropdownStatus($name, $value);
                $display = true;
-               break;            
+               break;
 
             case "dropdown_tickettype" :
                Ticket::dropdownType($name, array('value' => $value));

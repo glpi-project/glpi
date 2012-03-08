@@ -1216,17 +1216,18 @@ class Document extends CommonDBTM {
          }
       }
       // Not found try with regex one
-      $query="SELECT *
-              FROM `glpi_documenttypes`
-              WHERE `ext` LIKE '/%/'
-                    AND `is_uploadable`='1'";
-      
+      $query = "SELECT *
+                FROM `glpi_documenttypes`
+                WHERE `ext` LIKE '/%/'
+                      AND `is_uploadable` = '1'";
+
       foreach ($DB->request($query) as $data) {
-         if (preg_match(Toolbox::unclean_cross_side_scripting_deep($data['ext'])."i",$ext,$results)>0) {
+         if (preg_match(Toolbox::unclean_cross_side_scripting_deep($data['ext'])."i",
+                        $ext, $results) > 0) {
             return Toolbox::strtoupper($ext);
-         }      
+         }
       }
-      
+
       return "";
    }
 
