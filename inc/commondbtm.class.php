@@ -2928,6 +2928,11 @@ class CommonDBTM extends CommonGLPI {
                   $where_global = getEntitiesRestrictRequest(" AND", $this->getTable(), '',
                                                              $entities);
 
+                  $tmp = clone $this;
+                  if ($tmp->maybeTemplate()) {
+                     $where_global .= " AND NOT `is_template`";
+                  }
+
                   //If update, exclude ID of the current object
                   if (!$add) {
                      $where .= " AND `".$this->getTable()."`.`id` NOT IN (".$this->input['id'].") ";
