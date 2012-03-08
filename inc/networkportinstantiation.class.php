@@ -144,22 +144,23 @@ class NetworkPortInstantiation extends CommonDBChild {
   /**
     * Get all NetworkPort and NetworkEquipments that have a specific MAC address
     *
-    * @param $mac address to search
-    * @param $wildcard_search (bool) true if we search with wildcard
+    * @param $mac                      address to search
+    * @param $wildcard_search boolean  true if we search with wildcard (false by default)
     *
     * @return (array) each value of the array (corresponding to one NetworkPort) is an array of the
     *                 items from the master item to the NetworkPort
    **/
-   static function getItemsByMac($mac, $wildcard_search = false) {
+   static function getItemsByMac($mac, $wildcard_search=false) {
       global $DB;
 
       if ($wildcard_search) {
-         $relation = 'LIKE';
+         // TODO Damien : si tu mets LIKE il faut que tu précises où tu veux ta chaine ($label% : en début, %$label : à la fin
+         // j'ai fait la modif pour que la chaine recherchée soit comprise dans fqdn, peut importe l'emplacement
+         $relation = "LIKE '%".strtolower($mac)."%'";
       } else {
-         $relation = '=';
+         $relation = "= '".strtolower($mac)."'";
       }
 
-      $mac              = strtolower($mac);
       $macItemWithItems = array();
 
       foreach (array('NetworkPort', 'NetworkEquipment') as $netporttype) {
@@ -167,7 +168,7 @@ class NetworkPortInstantiation extends CommonDBChild {
 
          $query = "SELECT `id`
                    FROM `".$netport->getTable()."`
-                   WHERE `mac` $relation '$mac'";
+                   WHERE `mac` $relation ";
 
          foreach ($DB->request($query) as $element) {
             if ($netport->getFromDB($element['id'])) {

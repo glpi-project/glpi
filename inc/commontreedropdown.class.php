@@ -165,13 +165,13 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if (isset($input[$this->getForeignKeyField()])) {
          // Can't move a parent under a child
          if (in_array($input[$this->getForeignKeyField()],
-               getSonsOf($this->getTable(), $input['id']))) {
+             getSonsOf($this->getTable(), $input['id']))) {
          return false;
          }
          // Parent changes => clear ancestors and update its level and completename
          if ($input[$this->getForeignKeyField()] != $this->fields[$this->getForeignKeyField()]) {
-         $input["ancestors_cache"] = NULL;
-         return $this->adaptTreeFieldsFromUpdateOrAdd($input);
+            $input["ancestors_cache"] = NULL;
+            return $this->adaptTreeFieldsFromUpdateOrAdd($input);
          }
       }
 
@@ -271,7 +271,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
 
    function post_updateItem($history=1) {
-      $ID = $this->getID();
+
+      $ID           = $this->getID();
       $changeParent = in_array($this->getForeignKeyField(), $this->updates);
       $this->regenerateTreeUnderID($ID, in_array('name', $this->updates), $changeParent);
       $this->recursiveCleanSonsAboveID($ID);
@@ -287,7 +288,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
             $this->recursiveCleanSonsAboveID($oldParentID);
             if ($history) {
                if ($parent->getFromDB($oldParentID)) {
-               $oldParentNameID = $parent->getNameID();
+                  $oldParentNameID = $parent->getNameID();
                }
                $changes[0] = '0';
                $changes[1] = addslashes($this->getNameID());
@@ -300,7 +301,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          if ($newParentID > 0) {
             if ($history) {
                if ($parent->getFromDB($newParentID)) {
-               $newParentNameID = $parent->getNameID();
+                  $newParentNameID = $parent->getNameID();
                }
                $changes[0] = '0';
                $changes[1] = '';
@@ -363,7 +364,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    function showChildren() {
       global $DB, $CFG_GLPI;
 
-      $ID = $this->getID();
+      $ID            = $this->getID();
       $this->check($ID, 'r');
       $fields        = $this->getAdditionalFields();
       $nb            = count($fields);
@@ -380,7 +381,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
          echo "<tr class='tab_bg_1'><td>".__('Name')."</td><td>";
          Html::autocompletionTextField($this, "name", array('value' => ''));
 
-         if ($entity_assign && $this->getForeignKeyField()!='entities_id') {
+         if ($entity_assign
+             && ($this->getForeignKeyField() != 'entities_id')) {
             echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          }
 
@@ -468,7 +470,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    **/
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                          = array();
       $tab['common']                = __('Characteristics');
 
       $tab[1]['table']              = $this->getTable();
@@ -558,11 +560,11 @@ abstract class CommonTreeDropdown extends CommonDropdown {
    /**
     * check if a tree dropdown already exists (before import)
     *
-    * @param $input array of value to import (name, ...)
+    * @param &$input array of value to import (name, ...)
     *
     * @return the ID of the new (or -1 if not found)
    **/
-   function findID (array &$input) {
+   function findID(array &$input) {
       global $DB;
 
       if (isset($input['completename'])) {

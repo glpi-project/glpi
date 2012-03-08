@@ -345,7 +345,8 @@ if ($item instanceof CommonTreeDropdown) {
                }
             }
 
-            if ($_SESSION["glpiis_ids_visible"] || Toolbox::strlen($output)==0) {
+            if ($_SESSION["glpiis_ids_visible"]
+                || (Toolbox::strlen($output) == 0)) {
                $output = sprintf(__('%1$s (%2$s)'), $output, $ID);
             }
 
