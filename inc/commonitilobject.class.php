@@ -2017,7 +2017,7 @@ abstract class CommonITILObject extends CommonDBTM {
                   if (empty($uemail) && $user->getFromDB($d['users_id'])) {
                      $uemail = $user->getDefaultEmail();
                   }
-                  $text .= sprintf(__('Email: %s'), $uemail);
+                  $text .= sprintf(__('%1$s: %2$s'),__('Email'), $uemail);
                   if (!NotificationMail::isUserAddressValid($uemail)) {
                      $text .= "<span class='red'>".__('Invalid email address')."</span>";
                   }

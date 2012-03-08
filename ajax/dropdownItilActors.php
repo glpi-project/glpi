@@ -83,7 +83,7 @@ if (isset($_POST["type"])
                echo __('Email followup').'&nbsp;';
                $rand = Dropdown::showYesNo('_itil_'.$_POST["actortype"].'[use_notification]', 1);
                echo '<br>';
-               printf(__('Email: %s'),
+               printf(__('%1$s: %2$s'),__('Email'),
                       "<input type='text' size='25' name='_itil_".$_POST["actortype"].
                         "[alternative_email]'>");
             }

@@ -69,7 +69,7 @@ if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
    echo "</div>";
 
    echo "<div class='center'><table class='tab_cadre'>";
-   echo "<tr><th>" . sprintf(__('OCSNG server: %s'), $name) . "</th></tr>";
+   echo "<tr><th>" . sprintf(__('%1$s: %2$s'), __('OCSNG server'), $name) . "</th></tr>";
 
    if (Session::haveRight('ocsng','w')) {
       echo "<tr class='tab_bg_1'><td class='center b'><a href='ocsng.import.php'>".

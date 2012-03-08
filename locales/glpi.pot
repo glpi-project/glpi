@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-08 12:01+0100\n"
+"POT-Creation-Date: 2012-03-08 12:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -148,11 +148,79 @@ msgstr ""
 msgid "Email followup"
 msgstr ""
 
-#: ajax/dropdownItilActors.php:86 ajax/uemailUpdate.php:95
-#: inc/commonitilobject.class.php:2020
+#. TRANS: %1$s is the auth method type, %2$s the auth method name or link
+#. TRANS : %s is the description of the added item
+#. TRANS : %s is the description of the updated item
+#. TRANS: %s is the list of the failed fields
+#. TRANS: %s is the writer name
+#. TRANS: %s is the component name
+#. TRANS: %s is the software name
+#. TRANS: %s is the item name
+#. TRANS: %s is the name of the group
+#. TRANS: %1$s is a name, %2$s is text of message
+#. TRANS: %1$s is the entity, %2$s is the message
+#: ajax/dropdownItilActors.php:86 ajax/uemailUpdate.php:95 front/ocsng.php:72
+#: front/stat.graph.php:79 front/stat.graph.php:87 front/stat.graph.php:95
+#: front/stat.graph.php:103 front/stat.graph.php:111 front/stat.graph.php:124
+#: front/stat.graph.php:135 front/stat.graph.php:150 front/stat.graph.php:158
+#: front/stat.graph.php:171 front/stat.graph.php:184 front/stat.graph.php:197
+#: front/stat.graph.php:206 front/stat.graph.php:215 front/stat.graph.php:225
+#: front/stat.graph.php:239 front/stat.graph.php:256 front/stat.graph.php:268
+#: inc/auth.class.php:715 inc/auth.class.php:717 inc/auth.class.php:723
+#: inc/auth.class.php:725 inc/authldap.class.php:383
+#: inc/cartridgeitem.class.php:410 inc/cartridgeitem.class.php:413
+#: inc/commondbtm.class.php:878 inc/commondbtm.class.php:1104
+#: inc/commondbtm.class.php:1272 inc/commondbtm.class.php:1308
+#: inc/commondbtm.class.php:1403 inc/commondbtm.class.php:2498
+#: inc/commondbtm.class.php:2776 inc/commondbtm.class.php:2855
+#: inc/commonitilobject.class.php:2020 inc/commonitilobject.class.php:2251
+#: inc/commonitiltask.class.php:723 inc/commonitiltask.class.php:732
+#: inc/computer_item.class.php:540 inc/contract.class.php:1253
+#: inc/contract.class.php:1288 inc/contract.class.php:1291
+#: inc/db.function.php:1152 inc/db.function.php:1156 inc/db.function.php:1160
+#: inc/db.function.php:1166 inc/db.function.php:1172
+#: inc/dropdown.class.php:281 inc/dropdown.class.php:285
+#: inc/dropdown.class.php:289 inc/dropdown.class.php:293
+#: inc/dropdown.class.php:297 inc/dropdown.class.php:304
+#: inc/dropdown.class.php:308 inc/dropdown.class.php:312
+#: inc/knowbaseitem.class.php:505 inc/knowbaseitem.class.php:722
+#: inc/knowbaseitem.class.php:745 inc/knowbaseitem.class.php:969
+#: inc/log.class.php:361 inc/log.class.php:383 inc/log.class.php:389
+#: inc/log.class.php:395 inc/log.class.php:404 inc/log.class.php:413
+#: inc/networkport_vlan.class.php:194 inc/networkport_vlan.class.php:195
+#: inc/networkport_vlan.class.php:235 inc/networkport_vlan.class.php:236
+#: inc/notificationtarget.class.php:291 inc/notificationtarget.class.php:312
+#: inc/notificationtarget.class.php:617
+#: inc/notificationtemplatetranslation.class.php:349 inc/ocslink.class.php:84
+#: inc/problem.class.php:1163 inc/profile_user.class.php:270
+#: inc/profile_user.class.php:371 inc/reservationitem.class.php:422
+#: inc/softwarelicense.class.php:376 inc/softwarelicense.class.php:379
+#: inc/ticket.class.php:4782 inc/user.class.php:1671
+#: install/update_0681_07.php:539 install/update_0681_07.php:560
+#: install/update_0681_07.php:567 install/update_0681_07.php:574
+#: install/update_0681_07.php:581
 #, php-format
-msgid "Email: %s"
+msgid "%1$s: %2$s"
 msgstr ""
+
+#: ajax/dropdownItilActors.php:86 ajax/uemailUpdate.php:95
+#: inc/authldap.class.php:499 inc/authldap.class.php:679
+#: inc/authldap.class.php:2307 inc/commonitilactor.class.php:174
+#: inc/commonitilobject.class.php:2020 inc/contact.class.php:197
+#: inc/contact.class.php:276 inc/db.function.php:1148
+#: inc/dropdown.class.php:297 inc/dropdown.class.php:312
+#: inc/entity.class.php:443 inc/entity.class.php:930
+#: inc/entitydata.class.php:236 inc/html.class.php:1911
+#: inc/notification.class.php:287 inc/notification.class.php:300
+#: inc/notificationevent.class.php:207 inc/ruleright.class.php:275
+#: inc/supplier.class.php:149 inc/supplier.class.php:240
+#: inc/supplier.class.php:356 inc/user.class.php:1547 inc/user.class.php:1717
+#: inc/user.class.php:1910 inc/user.class.php:2797 inc/useremail.class.php:49
+#: install/update_0681_07.php:581 install/update_0723_078.php:3699
+msgid "Email"
+msgid_plural "Emails"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ajax/dropdownMassiveActionAddActor.php:48
 #: ajax/dropdownMassiveAction.php:215 ajax/dropdownMassiveAction.php:225
@@ -2027,10 +2095,12 @@ msgstr ""
 msgid "Successful"
 msgstr ""
 
-#: front/ocsng.php:72
-#, php-format
-msgid "OCSNG server: %s"
-msgstr ""
+#: front/ocsng.php:72 inc/ocsserver.class.php:100
+#: inc/ruleimportcomputer.class.php:98 inc/ruleocs.class.php:125
+msgid "OCSNG server"
+msgid_plural "OCSNG servers"
+msgstr[0] ""
+msgstr[1] ""
 
 #: front/ocsng.php:76 inc/html.class.php:1339 inc/ocsserver.class.php:2895
 #: inc/ocsserver.class.php:3004 inc/ocsserver.class.php:3014
@@ -2735,45 +2805,6 @@ msgstr ""
 msgid "Satisfaction"
 msgstr ""
 
-#. TRANS: %1$s is the auth method type, %2$s the auth method name or link
-#. TRANS: %s is the writer name
-#. TRANS: %1$s is a name, %2$s is text of message
-#. TRANS: %1$s is the entity, %2$s is the message
-#: front/stat.graph.php:79 front/stat.graph.php:87 front/stat.graph.php:95
-#: front/stat.graph.php:103 front/stat.graph.php:111 front/stat.graph.php:124
-#: front/stat.graph.php:135 front/stat.graph.php:150 front/stat.graph.php:158
-#: front/stat.graph.php:171 front/stat.graph.php:184 front/stat.graph.php:197
-#: front/stat.graph.php:206 front/stat.graph.php:215 front/stat.graph.php:225
-#: front/stat.graph.php:239 front/stat.graph.php:256 front/stat.graph.php:268
-#: inc/auth.class.php:715 inc/auth.class.php:717 inc/auth.class.php:723
-#: inc/auth.class.php:725 inc/authldap.class.php:383
-#: inc/cartridgeitem.class.php:410 inc/cartridgeitem.class.php:413
-#: inc/commondbtm.class.php:2498 inc/commondbtm.class.php:2855
-#: inc/commonitilobject.class.php:2251 inc/computer_item.class.php:540
-#: inc/contract.class.php:1253 inc/contract.class.php:1288
-#: inc/contract.class.php:1291 inc/db.function.php:1152
-#: inc/db.function.php:1156 inc/db.function.php:1160 inc/db.function.php:1166
-#: inc/db.function.php:1172 inc/dropdown.class.php:281
-#: inc/dropdown.class.php:285 inc/dropdown.class.php:289
-#: inc/dropdown.class.php:293 inc/dropdown.class.php:297
-#: inc/dropdown.class.php:304 inc/dropdown.class.php:308
-#: inc/dropdown.class.php:312 inc/knowbaseitem.class.php:505
-#: inc/knowbaseitem.class.php:745 inc/networkport_vlan.class.php:194
-#: inc/networkport_vlan.class.php:195 inc/networkport_vlan.class.php:235
-#: inc/networkport_vlan.class.php:236 inc/notificationtarget.class.php:291
-#: inc/notificationtarget.class.php:617
-#: inc/notificationtemplatetranslation.class.php:349 inc/ocslink.class.php:84
-#: inc/problem.class.php:1163 inc/profile_user.class.php:270
-#: inc/profile_user.class.php:371 inc/reservationitem.class.php:422
-#: inc/softwarelicense.class.php:376 inc/softwarelicense.class.php:379
-#: inc/ticket.class.php:4782 inc/user.class.php:1671
-#: install/update_0681_07.php:539 install/update_0681_07.php:560
-#: install/update_0681_07.php:567 install/update_0681_07.php:574
-#: install/update_0681_07.php:581
-#, php-format
-msgid "%1$s: %2$s"
-msgstr ""
-
 #: front/stat.graph.php:79 front/stat.graph.php:87
 #: inc/commonitilobject.class.php:1859 inc/commonitilobject.class.php:1935
 #: inc/commonitiltask.class.php:432 inc/ruleticket.class.php:248
@@ -2827,8 +2858,25 @@ msgid_plural "Users"
 msgstr[0] ""
 msgstr[1] ""
 
-#: front/stat.graph.php:124
-msgid "Categry"
+#: front/stat.graph.php:124 front/stat.graph.php:225
+#: front/stat.tracking.php:84 front/stat.tracking.php:86
+#: inc/authldap.class.php:528 inc/authldap.class.php:668
+#: inc/authldap.class.php:2317 inc/change.class.php:458
+#: inc/change.class.php:894 inc/commonitiltask.class.php:888
+#: inc/commonitiltask.class.php:1083 inc/db.function.php:1172
+#: inc/knowbaseitem.class.php:722 inc/knowbaseitem.class.php:830
+#: inc/knowbaseitem.class.php:969 inc/knowbaseitem.class.php:1021
+#: inc/knowbaseitem.class.php:1220
+#: inc/notificationtargetcommonitilobject.class.php:761
+#: inc/notificationtargetproblem.class.php:210
+#: inc/notificationtargetticket.class.php:571 inc/problem.class.php:467
+#: inc/problem.class.php:866 inc/problem.class.php:1075
+#: inc/rulesoftwarecategory.class.php:89 inc/ruleticket.class.php:217
+#: inc/ruleticket.class.php:320 inc/software.class.php:243
+#: inc/software.class.php:361 inc/ticket.class.php:1632
+#: inc/ticket.class.php:2921 inc/ticket.class.php:3475
+#: inc/ticket.class.php:4499 inc/user.class.php:1553 inc/user.class.php:2034
+msgid "Category"
 msgstr ""
 
 #: front/stat.graph.php:150 front/stat.graph.php:158
@@ -2843,7 +2891,7 @@ msgstr ""
 #: inc/html.class.php:1461 inc/itilcategory.class.php:121
 #: inc/knowbaseitem.class.php:1363 inc/monitor.class.php:280
 #: inc/monitor.class.php:431 inc/networkequipment.class.php:324
-#: inc/networkequipment.class.php:444
+#: inc/networkequipment.class.php:444 inc/notificationtarget.class.php:312
 #: inc/notificationtargetproblem.class.php:229
 #: inc/notificationtargetticket.class.php:562 inc/ocsserver.class.php:345
 #: inc/ocsserver.class.php:3042 inc/peripheral.class.php:282
@@ -2860,6 +2908,7 @@ msgstr[1] ""
 
 #: front/stat.graph.php:171 front/stat.tracking.php:90
 #: inc/change.class.php:422 inc/change.class.php:909
+#: inc/commonitiltask.class.php:723 inc/commonitiltask.class.php:732
 #: inc/notificationtargetcommonitilobject.class.php:767
 #: inc/problem.class.php:431 inc/problem.class.php:882
 #: inc/problem.class.php:1071 inc/ruleticket.class.php:300
@@ -2917,25 +2966,6 @@ msgid "Solution type"
 msgid_plural "Solution types"
 msgstr[0] ""
 msgstr[1] ""
-
-#: front/stat.graph.php:225 front/stat.tracking.php:84
-#: front/stat.tracking.php:86 inc/authldap.class.php:528
-#: inc/authldap.class.php:668 inc/authldap.class.php:2317
-#: inc/change.class.php:458 inc/change.class.php:894
-#: inc/commonitiltask.class.php:888 inc/commonitiltask.class.php:1083
-#: inc/db.function.php:1172 inc/knowbaseitem.class.php:830
-#: inc/knowbaseitem.class.php:1021 inc/knowbaseitem.class.php:1220
-#: inc/notificationtargetcommonitilobject.class.php:761
-#: inc/notificationtargetproblem.class.php:210
-#: inc/notificationtargetticket.class.php:571 inc/problem.class.php:467
-#: inc/problem.class.php:866 inc/problem.class.php:1075
-#: inc/rulesoftwarecategory.class.php:89 inc/ruleticket.class.php:217
-#: inc/ruleticket.class.php:320 inc/software.class.php:243
-#: inc/software.class.php:361 inc/ticket.class.php:1632
-#: inc/ticket.class.php:2921 inc/ticket.class.php:3475
-#: inc/ticket.class.php:4499 inc/user.class.php:1553 inc/user.class.php:2034
-msgid "Category"
-msgstr ""
 
 #: front/stat.graph.php:239 front/stat.tracking.php:95
 #: inc/dropdown.class.php:623 inc/notificationtargetticket.class.php:552
@@ -3656,24 +3686,6 @@ msgstr ""
 #: inc/authldap.class.php:491 inc/user.class.php:1569 inc/user.class.php:2008
 msgid "Administrative number"
 msgstr ""
-
-#: inc/authldap.class.php:499 inc/authldap.class.php:679
-#: inc/authldap.class.php:2307 inc/commonitilactor.class.php:174
-#: inc/contact.class.php:197 inc/contact.class.php:276
-#: inc/db.function.php:1148 inc/dropdown.class.php:297
-#: inc/dropdown.class.php:312 inc/entity.class.php:443
-#: inc/entity.class.php:930 inc/entitydata.class.php:236
-#: inc/html.class.php:1911 inc/notification.class.php:287
-#: inc/notification.class.php:300 inc/notificationevent.class.php:207
-#: inc/ruleright.class.php:275 inc/supplier.class.php:149
-#: inc/supplier.class.php:240 inc/supplier.class.php:356
-#: inc/user.class.php:1547 inc/user.class.php:1717 inc/user.class.php:1910
-#: inc/user.class.php:2797 inc/useremail.class.php:49
-#: install/update_0681_07.php:581 install/update_0723_078.php:3699
-msgid "Email"
-msgid_plural "Emails"
-msgstr[0] ""
-msgstr[1] ""
 
 #: inc/authldap.class.php:502 inc/authldap.class.php:685
 #: inc/authldap.class.php:2308
@@ -4735,34 +4747,24 @@ msgstr ""
 msgid "%1$s: ID %2$d"
 msgstr ""
 
-#. TRANS : %s is the description of the added item
 #: inc/commondbtm.class.php:878
-#, php-format
-msgid "Item successfully added: %s"
+msgid "Item successfully added"
 msgstr ""
 
-#. TRANS : %s is the description of the updated item
 #: inc/commondbtm.class.php:1104
-#, php-format
-msgid "Item successfully updated: %s"
+msgid "Item successfully updated"
 msgstr ""
 
-#. TRANS : %s is the description of the updated item
 #: inc/commondbtm.class.php:1272
-#, php-format
-msgid "Item successfully deleted: %s"
+msgid "Item successfully deleted"
 msgstr ""
 
-#. TRANS : %s is the description of the updated item
 #: inc/commondbtm.class.php:1308
-#, php-format
-msgid "Item successfully purged: %s"
+msgid "Item successfully purged"
 msgstr ""
 
-#. TRANS : %s is the description of the updated item
 #: inc/commondbtm.class.php:1403
-#, php-format
-msgid "Item successfully restored: %s"
+msgid "Item successfully restored"
 msgstr ""
 
 #: inc/commondbtm.class.php:1791 inc/ticket.class.php:3905
@@ -4821,10 +4823,8 @@ msgstr ""
 msgid "%1$s (%2$d) %3$s"
 msgstr ""
 
-#. TRANS: %s is the list of the failed fields
 #: inc/commondbtm.class.php:2776
-#, php-format
-msgid "At least one field has an incorrect value: %s"
+msgid "At least one field has an incorrect value"
 msgstr ""
 
 #: inc/commondbtm.class.php:2824
@@ -5268,11 +5268,6 @@ msgstr ""
 #: inc/commonitiltask.class.php:711 inc/reminder.class.php:867
 #, php-format
 msgid "Recall on %s"
-msgstr ""
-
-#: inc/commonitiltask.class.php:723 inc/commonitiltask.class.php:732
-#, php-format
-msgid "Priority: %s"
 msgstr ""
 
 #: inc/commonitiltask.class.php:809 inc/commonitiltask.class.php:978
@@ -8577,7 +8572,7 @@ msgstr ""
 
 #: inc/infocom.class.php:1003
 #, php-format
-msgid "Valid to: %s"
+msgid "Valid to %s"
 msgstr ""
 
 #: inc/infocom.class.php:1252
@@ -8731,11 +8726,6 @@ msgstr ""
 msgid "Are you sure you want to delete this item?"
 msgstr ""
 
-#: inc/knowbaseitem.class.php:722 inc/knowbaseitem.class.php:969
-#, php-format
-msgid "Category: %s"
-msgstr ""
-
 #: inc/knowbaseitem.class.php:755
 msgid "Unpublished"
 msgstr ""
@@ -8856,10 +8846,8 @@ msgstr ""
 msgid "Restore the item"
 msgstr ""
 
-#. TRANS: %s is the component name
 #: inc/log.class.php:361
-#, php-format
-msgid "Add a component: %s"
+msgid "Add a component"
 msgstr ""
 
 #. TRANS: %1$s is the old_value, %2$s is the new_value
@@ -8868,34 +8856,24 @@ msgstr ""
 msgid "Change the component: %1$s by: %2$s"
 msgstr ""
 
-#. TRANS: %s is the component name
 #: inc/log.class.php:383
-#, php-format
-msgid "Deletion of a component: %s"
+msgid "Deletion of a component"
 msgstr ""
 
-#. TRANS: %s is the software name
 #: inc/log.class.php:389
-#, php-format
-msgid "Install software: %s"
+msgid "Install a software"
 msgstr ""
 
-#. TRANS: %s is the software name
 #: inc/log.class.php:395
-#, php-format
-msgid "Uninstall software: %s"
+msgid "Uninstall a software"
 msgstr ""
 
-#. TRANS: %s is the item name
 #: inc/log.class.php:404
-#, php-format
-msgid "Disconnect the item: %s"
+msgid "Disconnect the item"
 msgstr ""
 
-#. TRANS: %s is the item name
 #: inc/log.class.php:413
-#, php-format
-msgid "Connect the item: %s"
+msgid "Connect the item"
 msgstr ""
 
 #. TRANS: %s is value imported
@@ -8957,7 +8935,7 @@ msgstr ""
 
 #: inc/log.class.php:577
 #, php-format
-msgid "Change: %1$s by: %2$s"
+msgid "Change: %1$s by %2$s"
 msgstr ""
 
 #: inc/mailcollector.class.php:208
@@ -9599,12 +9577,6 @@ msgstr ""
 #: inc/notificationtargetcartridge.class.php:81
 #: inc/notificationtargetconsumable.class.php:83
 msgid "Remaining"
-msgstr ""
-
-#. TRANS: %s is the name of the group
-#: inc/notificationtarget.class.php:312
-#, php-format
-msgid "Group: %s"
 msgstr ""
 
 #. TRANS: %s is the name of the group
@@ -10326,13 +10298,6 @@ msgstr ""
 #: inc/ocslink.class.php:388
 msgid "No field locked"
 msgstr ""
-
-#: inc/ocsserver.class.php:100 inc/ruleimportcomputer.class.php:98
-#: inc/ruleocs.class.php:125
-msgid "OCSNG server"
-msgid_plural "OCSNG servers"
-msgstr[0] ""
-msgstr[1] ""
 
 #: inc/ocsserver.class.php:136 inc/ocsserver.class.php:408
 msgid "Import options"

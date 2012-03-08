@@ -875,7 +875,7 @@ class CommonDBTM extends CommonGLPI {
 
          // Do not display quotes
          //TRANS : %s is the description of the added item
-         Session::addMessageAfterRedirect(sprintf(__('Item successfully added: %s'),
+         Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'), __('Item successfully added'),
                                                   stripslashes($display)));
 
       }
@@ -1101,7 +1101,7 @@ class CommonDBTM extends CommonGLPI {
             $display = $this->getLink();
          }
          //TRANS : %s is the description of the updated item
-         Session::addMessageAfterRedirect(sprintf(__('Item successfully updated: %s'), $display));
+         Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'), __('Item successfully updated'), $display));
 
       }
 
@@ -1269,7 +1269,7 @@ class CommonDBTM extends CommonGLPI {
             $display = $this->getLink();
          }
          //TRANS : %s is the description of the updated item
-         Session::addMessageAfterRedirect(sprintf(__('Item successfully deleted: %s'), $display));
+         Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'), __('Item successfully deleted'), $display));
 
       }
    }
@@ -1305,7 +1305,7 @@ class CommonDBTM extends CommonGLPI {
             $display = $this->getLink();
          }
          //TRANS : %s is the description of the updated item
-         Session::addMessageAfterRedirect(sprintf(__('Item successfully purged: %s'), $display));
+         Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'), __('Item successfully purged'), $display));
       }
    }
 
@@ -1400,7 +1400,7 @@ class CommonDBTM extends CommonGLPI {
             $display = $this->getLink();
          }
          //TRANS : %s is the description of the updated item
-         Session::addMessageAfterRedirect(sprintf(__('Item successfully restored: %s'),$display));
+         Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'), __('Item successfully restored'), $display));
       }
    }
 
@@ -2773,7 +2773,7 @@ class CommonDBTM extends CommonGLPI {
       if ($display && count($fails)) {
          //Display a message to indicate that one or more value where filtered
          //TRANS: %s is the list of the failed fields
-         $message = sprintf(__('At least one field has an incorrect value: %s'),
+         $message = sprintf(__('%1$s: %2$s'), __('At least one field has an incorrect value'),
                             implode(',',$fails));
          Session::addMessageAfterRedirect($message, INFO, true);
       }
