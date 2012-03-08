@@ -177,19 +177,21 @@ abstract class FQDNLabel extends CommonDBChild {
    /**
     * Get all label IDs corresponding to given string label and FQDN ID
     *
-    * @param $label     string   label to search for
-    * @param $fqdns_id           the id of the FQDN that owns the label
-    * @param $wildcard_search (bool) true if we search with wildcard
+    * @param $label           string   label to search for
+    * @param $fqdns_id        integer  the id of the FQDN that owns the label
+    * @param $wildcard_search boolean  true if we search with wildcard (false by default)
     *
     * @return array two arrays (NetworkName and NetworkAlias) of the IDs
     **/
-   static function getIDsByLabelAndFQDNID($label, $fqdns_id, $wildcard_search = false) {
+   static function getIDsByLabelAndFQDNID($label, $fqdns_id, $wildcard_search=false) {
       global $DB;
 
       if ($wildcard_search) {
-         $relation = '=';
+         $relation = "= '$label'";
       } else {
-         $relation = 'LIKE';
+         // TODO Damien : si tu mets LIKE il faut que tu précises où tu veux ta chaine ($label% : en début, %$label : à la fin
+         // j'ai fait la modif pour que la chaine recherchée soit comprise dans le nom, peut importe l'emplacement
+         $relation = "LIKE '%$label%'";
       }
 
       $IDs = array();
@@ -197,9 +199,10 @@ abstract class FQDNLabel extends CommonDBChild {
                     'NetworkAlias' => 'glpi_networkaliases') as $class => $table) {
          $query = "SELECT `id`
                    FROM `$table`
-                   WHERE `name` $relation '$label'";
-         if ((is_array($fqdns_id)) and (count($fqdns_id) > 0)) {
-            $query .= " AND `fqdns_id` in ('". implode('\', \'', $fqdns_id). "')";
+                   WHERE `name` $relation ";
+
+         if ((is_array($fqdns_id)) && (count($fqdns_id) > 0)) {
+            $query .= " AND `fqdns_id` IN ('". implode('\', \'', $fqdns_id). "')";
          } else if ((is_int($fqdns_id)) && ($fqdns_id > 0)) {
             $query .= " AND `fqdns_id` = '$fqdns_id'";
          }
@@ -215,13 +218,13 @@ abstract class FQDNLabel extends CommonDBChild {
    /**
     * Look for "computer name" inside all databases
     *
-    * @param $fqdn name to search (for instance : forge.indepnet.net)
-    * @param $wildcard_search (bool) true if we search with wildcard
+    * @param $fqdn                     name to search (for instance : forge.indepnet.net)
+    * @param $wildcard_search boolean  true if we search with wildcard (false by default)
     *
     * @return (array) each value of the array (corresponding to one NetworkPort) is an array of the
     *                 items from the master item to the NetworkPort
     **/
-   static function getItemsByFQDN($fqdn, $wildcard_search = false) {
+   static function getItemsByFQDN($fqdn, $wildcard_search=false) {
 
       $FQNDs_with_Items = array();
 

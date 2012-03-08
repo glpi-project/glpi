@@ -141,13 +141,13 @@ class FQDN extends CommonDropdown {
    /**
     * Search FQDN id from string FDQDN
     *
-    * @param $fqdn            (string) value of the fdqn (for instance : indeptnet.net)
-    * @param $wildcard_search (bool) true if we search with wildcard
+    * @param $fqdn            string   value of the fdqn (for instance : indeptnet.net)
+    * @param $wildcard_search boolean  true if we search with wildcard (false by default)
     *
     * @return if $wildcard_search == false : the id of the fqdn, -1 if not found or several answers
     *         if $wildcard_search == true : an array of the id of the fqdn
    **/
-   static function getFQDNIDByFQDN($fqdn, $wildcard_search = false) {
+   static function getFQDNIDByFQDN($fqdn, $wildcard_search=false) {
       global $DB;
 
       if (empty($fqdn)) {
@@ -155,14 +155,16 @@ class FQDN extends CommonDropdown {
       }
 
       if ($wildcard_search) {
-         $relation = 'like';
+         // TODO Damien : si tu mets LIKE il faut que tu précises où tu veux ta chaine ($label% : en début, %$label : à la fin
+         // j'ai fait la modif pour que la chaine recherchée soit comprise dans fqdn, peut importe l'emplacement
+         $relation = "LIKE '%".strtolower($fqdn)."%'";
       } else {
-         $relation = '=';
+         $relation = "= '".strtolower($fqdn)."'";
       }
 
       $query = "SELECT `id`
                 FROM `glpi_fqdns`
-                WHERE `fqdn` $relation '".strtolower ($fqdn)."'";
+                WHERE `fqdn` $relation ";
 
       $fqdns_id_list = array();
       foreach ($DB->request($query) as $line) {
