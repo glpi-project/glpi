@@ -939,6 +939,9 @@ class Ticket extends CommonITILObject {
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
 
+      // save value before clean;
+      $title = $input['name'];
+
       // Standard clean datas
       $input =  parent::prepareInputForAdd($input);
 
@@ -951,6 +954,12 @@ class Ticket extends CommonITILObject {
                   $mandatory_missing = array();
                   $fieldsname = $tt->getAllowedFieldsNames(true);
                   foreach ($tt->mandatory as $key => $val) {
+                     // for title if mandatory (restore initial value
+                     if ($key == 'name') {
+                        $input['name']                     = $title;
+                        $_SESSION["helpdeskSaved"]['name'] = $input['name'];
+                     }
+
                      if (!isset($input[$key]) || empty($input[$key]) ||$input[$key] == 'NULL') {
                         $mandatory_missing[$key] = $fieldsname[$val];
                      }
