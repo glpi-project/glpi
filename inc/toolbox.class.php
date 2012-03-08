@@ -846,8 +846,10 @@ class Toolbox {
    /**
     * Check SELinux configuration
     *
+    * @since version 0.84
+    *
     *  @return integer 0: OK, 1:Warning, 2:Error
-    **/
+   **/
    static function checkSELinux() {
 
       if (DIRECTORY_SEPARATOR!='/' || !file_exists('/usr/sbin/getenforce')) {

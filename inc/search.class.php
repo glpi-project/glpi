@@ -4622,7 +4622,9 @@ class Search {
       $opts  = &self::getOptions($itemtype);
 
       foreach ($opts as $num => $opt) {
-         if (is_array($opt) && $opt['table']==$table && $opt['field']==$field) {
+         if (is_array($opt)
+             && ($opt['table'] == $table)
+             && ($opt['field'] == $field)) {
             return $num;
          }
       }
