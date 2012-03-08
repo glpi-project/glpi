@@ -852,14 +852,15 @@ class Toolbox {
    **/
    static function checkSELinux() {
 
-      if (DIRECTORY_SEPARATOR!='/' || !file_exists('/usr/sbin/getenforce')) {
+      if ((DIRECTORY_SEPARATOR != '/')
+          || !file_exists('/usr/sbin/getenforce')) {
          // This is not a SELinux system
          return 0;
       }
 
       $mode = exec("/usr/sbin/getenforce");
       //TRANS: %s is mode name (Permissive, Enforcing of Disabled)
-      $msg = sprintf(__('SELinux mode is %s'), $mode);
+      $msg  = sprintf(__('SELinux mode is %s'), $mode);
       echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
       // All modes should be ok
       echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='$mode' title='$mode'></td></tr>";
@@ -875,18 +876,22 @@ class Toolbox {
       // Enforcing mode will block some feature (notif, ...)
       // Permissive mode will write lot of stuff in audit.log
 
-      $bools = array('httpd_can_network_connect', 'httpd_can_network_connect_db', 'httpd_can_sendmail');
+      $bools = array('httpd_can_network_connect', 'httpd_can_network_connect_db',
+                     'httpd_can_sendmail');
       foreach ($bools as $bool) {
          $state = exec('/usr/sbin/getsebool '.$bool);
          //TRANS: %s is an option name
          $msg = sprintf(__('SELinux boolean configuration for %s'), $state);
          echo "<tr class='tab_bg_1'><td class='left b'>$msg</td>";
          if (substr($state, -2) == 'on') {
-            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='$state' title='$state'></td></tr>";
+            echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt='$state' title='$state'>".
+                 "</td>";
          } else {
-            echo "<td><img src='".GLPI_ROOT."/pics/orangebutton.png' alt='$state' title='$state'></td></tr>";
+            echo "<td><img src='".GLPI_ROOT."/pics/orangebutton.png' alt='$state' title='$state'>".
+                 "</td>";
             $err = 1;
          }
+         echo "</tr>";
       }
 
       return $err;
