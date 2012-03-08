@@ -719,7 +719,7 @@ class KnowbaseItem extends CommonDBTM {
                   ?"knowbaseitem.php"
                   :"helpdesk.faq.php").
              "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
-      echo "<tr class='tab_bg_3'><th colspan='4'>".sprintf(__('Category: %s'), $tmp);
+      echo "<tr class='tab_bg_3'><th colspan='4'>".sprintf(__('%1$s: %2$s'), __('Category'), $tmp);
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".__('Subject')."</h2>";
@@ -966,7 +966,7 @@ class KnowbaseItem extends CommonDBTM {
          if ($KbCategory->getFromDB($params["knowbaseitemcategories_id"])) {
             $title = (empty($KbCategory->fields['name']) ?"(".$params['knowbaseitemcategories_id'].")"
                                                          : $KbCategory->fields['name']);
-            $title = sprintf(__('Category: %s'), $title);
+            $title = sprintf(__('%1$s: %2$s'), __('Category'), $title);
          }
 
          Session::initNavigateListItems('KnowbaseItem', $title);

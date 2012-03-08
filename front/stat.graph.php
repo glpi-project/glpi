@@ -121,7 +121,7 @@ switch($_GET["type"]) {
       $val2  = "";
       $next  = getNextItem("glpi_itilcategories", $_GET["id"], $cond, 'completename');
       $prev  = getPreviousItem("glpi_itilcategories", $_GET["id"], $cond, 'completename');
-      $title = sprintf(__('%1$s: %2$s'), __('Categry'), Dropdown::getDropdownName("glpi_itilcategories",
+      $title = sprintf(__('%1$s: %2$s'), __('Category'), Dropdown::getDropdownName("glpi_itilcategories",
                                                                      $_GET["id"]));
       break;
 

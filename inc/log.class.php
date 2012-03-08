@@ -358,7 +358,7 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the component name
-                  $tmp['change'] = sprintf(__('Add a component: %s'), $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a component'), $data["new_value"]);
                   break;
 
                case self::HISTORY_UPDATE_DEVICE :
@@ -380,19 +380,19 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the component name
-                  $tmp['change'] = sprintf(__('Deletion of a component: %s'), $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Deletion of a component'), $data["old_value"]);
                   break;
 
                case self::HISTORY_INSTALL_SOFTWARE :
                   $tmp['field']  = __('Software');
                   //TRANS: %s is the software name
-                  $tmp['change'] = sprintf(__('Install software: %s'), $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Install a software'), $data["new_value"]);
                   break;
 
                case self::HISTORY_UNINSTALL_SOFTWARE :
                   $tmp['field']  = __('Software');
                   //TRANS: %s is the software name
-                  $tmp['change'] = sprintf(__('Uninstall software: %s'), $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Uninstall a software'), $data["old_value"]);
                   break;
 
                case self::HISTORY_DISCONNECT_DEVICE :
@@ -401,7 +401,7 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the item name
-                  $tmp['change'] = sprintf(__('Disconnect the item: %s'), $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Disconnect the item'), $data["old_value"]);
                   break;
 
                case self::HISTORY_CONNECT_DEVICE :
@@ -410,7 +410,7 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the item name
-                  $tmp['change'] = sprintf(__('Connect the item: %s'), $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Connect the item'), $data["new_value"]);
                   break;
 
                case self::HISTORY_OCS_IMPORT :
@@ -574,7 +574,7 @@ class Log extends CommonDBTM {
                   break;
             }
             if (empty($tmp['change'])) {
-               $tmp['change'] = sprintf(__('Change: %1$s by: %2$s'),
+               $tmp['change'] = sprintf(__('Change: %1$s by %2$s'),
                                         $data["old_value"], $data["new_value"]);
             }
          }

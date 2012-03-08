@@ -92,7 +92,7 @@ if ((isset($_REQUEST['field']) && ($_REQUEST["value"] > 0))
    }
 
    echo '<br>';
-   printf(__('Email: %s'), $email_string);
+   printf(__('%1$s: %2$s'),__('Email'), $email_string);
 
 }
 

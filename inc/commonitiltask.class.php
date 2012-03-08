@@ -720,7 +720,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (isset($val["state"])) {
             echo Planning::getState($val["state"])."<br>";
          }
-         echo sprintf(__('Priority: %s'), $parent->getPriorityName($val["priority"]));
+         echo sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"]));
          echo "<br>".__('Description')."</span><br>".$val["content"];
          echo $recall;
 
@@ -729,7 +729,7 @@ abstract class CommonITILTask  extends CommonDBTM {
          if (isset($val["state"])) {
             $content .= Planning::getState($val["state"])."<br>";
          }
-         $content .= sprintf(__('Priority: %s'), $parent->getPriorityName($val["priority"])).
+         $content .= sprintf(__('%1$s: %2$s'), __('Priority'), $parent->getPriorityName($val["priority"])).
                     "<br>".__('Description')."</span><br>".$val["content"].$recall.
                     "</div>";
          Html::showToolTip($content, array('applyto' => "content_tracking_".$val["id"].$rand));

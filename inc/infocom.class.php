@@ -1000,7 +1000,7 @@ class Infocom extends CommonDBChild {
             $tmpdat = self::getWarrantyExpir($ic->fields["warranty_date"],
                                              $ic->fields["warranty_duration"]);
             if ($tmpdat) {
-               echo "<span class='small_space'>".sprintf(__('Valid to: %s'), $tmpdat)."</span>";
+               echo "<span class='small_space'>".sprintf(__('Valid to %s'), $tmpdat)."</span>";
             }
             echo "</td></tr>";
 
