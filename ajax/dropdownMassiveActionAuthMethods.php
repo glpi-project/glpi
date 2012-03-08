@@ -39,7 +39,7 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-Session::checkRight("user", "w");
+Session::checkRight('user_authtype', 'w');
 
 if ($_POST["authtype"] > 0) {
    $name = 'massiveaction';

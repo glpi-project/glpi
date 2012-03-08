@@ -879,7 +879,7 @@ class Auth {
    static function showSynchronizationForm(User $user) {
       global $LANG, $DB, $CFG_GLPI;
 
-      if (Session::haveRight("user", "w")) {
+      if (Session::haveRight("user_authtype", "w")) {
          echo "<form method='post' action='".Toolbox::getItemTypeFormURL('User')."'>";
          echo "<div class='firstbloc'>";
 
