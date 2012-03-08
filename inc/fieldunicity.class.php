@@ -308,7 +308,6 @@ class FieldUnicity extends CommonDropdown {
       $tab[4]['name']          = $LANG['common'][17];
       $tab[4]['massiveaction'] = false;
       $tab[4]['datatype']      = 'itemtypename';
-      $tab[4]['forcegroupby']  = true;
 
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'action_refuse';
@@ -339,7 +338,6 @@ class FieldUnicity extends CommonDropdown {
       $tab[80]['table']        = 'glpi_entities';
       $tab[80]['field']        = 'completename';
       $tab[80]['name']         = $LANG['entity'][0];
-      $tab[80]['forcegroupby'] = true;
 
       return $tab;
    }
