@@ -50,13 +50,17 @@ class Group_User extends CommonDBRelation{
    public $logs_only_for_itemtype1   = false;
 
 
+   /**
+    * @param unknown_type $users_id
+    * @param unknown_type $condition
+   **/
    static function getUserGroups($users_id, $condition='') {
       global $DB;
 
       $groups = array();
       $query = "SELECT `glpi_groups`.*,
                        `glpi_groups_users`.`id` AS IDD,
-                       `glpi_groups_users`.`id`  as linkID,
+                       `glpi_groups_users`.`id` AS linkID,
                        `glpi_groups_users`.`is_dynamic` AS is_dynamic,
                        `glpi_groups_users`.`is_manager` AS is_manager,
                        `glpi_groups_users`.`is_userdelegate` AS is_userdelegate
@@ -74,13 +78,20 @@ class Group_User extends CommonDBRelation{
       return $groups;
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @param $groups_id
+    * @param $condition
+    */
    static function getGroupUsers($groups_id, $condition='') {
       global $DB;
 
       $users = array();
       $query = "SELECT `glpi_users`.*,
                        `glpi_groups_users`.`id` AS IDD,
-                       `glpi_groups_users`.`id`  as linkID,
+                       `glpi_groups_users`.`id` AS linkID,
                        `glpi_groups_users`.`is_dynamic` AS is_dynamic,
                        `glpi_groups_users`.`is_manager` AS is_manager,
                        `glpi_groups_users`.`is_userdelegate` AS is_userdelegate
@@ -97,7 +108,8 @@ class Group_User extends CommonDBRelation{
       }
       return $users;
    }
-   
+
+
    /**  Show groups of a user
     *
     * @param $user the user

@@ -731,9 +731,9 @@ class Problem extends CommonITILObject {
       }
 
       // In percent
-      $colsize1='13';
-      $colsize2='37';  
-      
+      $colsize1 = '13';
+      $colsize2 = '37';
+
       // Set default options
       if (!$ID) {
          $values = array('_users_id_requester'       => Session::getLoginUserID(),
@@ -813,7 +813,7 @@ class Problem extends CommonITILObject {
       Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true);
 
       echo "</td></tr>";
-      
+
       if ($ID) {
          echo "<tr class='tab_bg_1'><th>".__('By')."</th><td>";
          User::dropdown(array('name'   => 'users_id_recipient',
@@ -823,24 +823,25 @@ class Problem extends CommonITILObject {
          echo "</td>";
          echo "<th>".__('Last update')."</th>";
          echo "<td>".Html::convDateTime($this->fields["date_mod"])."\n";
-         if ($this->fields['users_id_lastupdater']>0) {
+         if ($this->fields['users_id_lastupdater'] > 0) {
             printf(__('By %s'), getUserName($this->fields["users_id_lastupdater"], $showuserlink));
          }
          echo "</td></tr>";
       }
-      
-      if ($ID && (in_array($this->fields["status"], $this->getSolvedStatusArray())
-                  || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
+
+      if ($ID
+          && (in_array($this->fields["status"], $this->getSolvedStatusArray())
+              || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
          echo "<tr class='tab_bg_1'>";
          echo "<th>".__('Date of solving')."</th>";
          echo "<td>";
          Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
          echo "</td>";
          if (in_array($this->fields["status"], $this->getClosedStatusArray())) {
-               echo "<th>".__('Closing date')."</th>";
-               echo "<td>";
-               Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false);
-               echo "</td>";
+            echo "<th>".__('Closing date')."</th>";
+            echo "<td>";
+            Html::showDateTimeFormItem("closedate", $this->fields["closedate"], 1, false);
+            echo "</td>";
          } else {
             echo "<td colspan='2'>&nbsp;</td>";
          }

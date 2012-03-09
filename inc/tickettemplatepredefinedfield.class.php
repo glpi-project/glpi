@@ -266,11 +266,11 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
             $display_fields[-1] = Dropdown::EMPTY_VALUE;
             $display_fields    += $fields;
-            
-            // Force validation request as used 
+
+            // Force validation request as used
             $used[-2] = -2;
-            $rand_dp = Dropdown::showFromArray('num', $display_fields, array('used' => $used,
-                                                                             'toadd'));
+            $rand_dp  = Dropdown::showFromArray('num', $display_fields, array('used' => $used,
+                                                                              'toadd'));
             echo "</td><td colspan='2' class='top'>";
             $paramsmassaction = array('id_field'        => '__VALUE__',
                                       'itemtype'        => 'Ticket',

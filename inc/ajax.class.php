@@ -343,24 +343,24 @@ class Ajax {
             if (isset($datas['to_update'])) {
                $datas = array($datas);
             }
-            foreach ($datas as $data) {         
+            foreach ($datas as $data) {
                $paramsupdate = array();
                if (isset($data['value_fieldname'])) {
                   $paramsupdate = array($data['value_fieldname'] => '__VALUE__');
                }
-               
+
                if (isset($data["moreparams"])
-                  && is_array($data["moreparams"])
-                  && count($data["moreparams"])) {
-   
+                   && is_array($data["moreparams"])
+                   && count($data["moreparams"])) {
+
                   foreach ($data["moreparams"] as $key => $val) {
                      $paramsupdate[$key] = $val;
                   }
                }
-   
+
              self::updateItemOnSelectEvent("dropdown_".$options["myname"].$options["rand"],
-                                          $data['to_update'], $data['url'], $paramsupdate);
-            }                                          
+                                           $data['to_update'], $data['url'], $paramsupdate);
+            }
          }
       }
    }
