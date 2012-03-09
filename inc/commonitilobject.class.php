@@ -2261,9 +2261,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
             echo "<script type='text/javascript'>";
             Ajax::updateItemJsCode("countassign_".$typename."_$rand",
-                                 $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
-                                 array('users_id_assign' => '__VALUE__'),
-                                 "dropdown__users_id_".$typename.$rand);
+                                   $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
+                                   array('users_id_assign' => '__VALUE__'),
+                                   "dropdown__users_id_".$typename.$rand);
             echo "</script>";
          }
       }

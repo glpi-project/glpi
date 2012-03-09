@@ -1250,22 +1250,28 @@ class Ticket extends CommonITILObject {
          }
          foreach ($this->input["_add_validation"] as $validation) {
             switch ($validation) {
-               case 'requester_supervisor':
-                  if (isset($this->input['_groups_id_requester']) && $this->input['_groups_id_requester']) {
-                     $users=Group_User::getGroupUsers($this->input['_groups_id_requester'], "is_manager='1'");
+               case 'requester_supervisor' :
+                  if (isset($this->input['_groups_id_requester'])
+                      && $this->input['_groups_id_requester']) {
+                     $users = Group_User::getGroupUsers($this->input['_groups_id_requester'],
+                                                        "is_manager='1'");
                      foreach ($users as $data) {
                         $validations_to_send[] = $data['id'];
                      }
                   }
                   break;
-               case 'assign_supervisor':
-                  if (isset($this->input['_groups_id_assign']) && $this->input['_groups_id_assign']) {
-                     $users=Group_User::getGroupUsers($this->input['_groups_id_assign'], "is_manager='1'");
+
+               case 'assign_supervisor' :
+                  if (isset($this->input['_groups_id_assign'])
+                      && $this->input['_groups_id_assign']) {
+                     $users = Group_User::getGroupUsers($this->input['_groups_id_assign'],
+                                                        "is_manager='1'");
                      foreach ($users as $data) {
                         $validations_to_send[] = $data['id'];
                      }
                   }
                   break;
+
                default :
                   $validations_to_send[] = $validation;
             }
@@ -1274,11 +1280,11 @@ class Ticket extends CommonITILObject {
          // Keep only one
          $validations_to_send = array_unique($validations_to_send);
 
-         $validation = new TicketValidation();
+         $validation          = new TicketValidation();
 
          foreach ($validations_to_send as $users_id) {
             if ($users_id > 0) {
-               $values = array();
+               $values                      = array();
                $values['tickets_id']        = $this->fields['id'];
                $values['users_id_validate'] = $users_id;
                // to know update by rules
@@ -1288,12 +1294,12 @@ class Ticket extends CommonITILObject {
 
                // Cron or rule process of hability to do
                if (Session::isCron()
-                  || isset($this->input["_rule_process"])
-                  || $validation->can(-1, 'w', $values)) { // cron or allowed user
+                   || isset($this->input["_rule_process"])
+                   || $validation->can(-1, 'w', $values)) { // cron or allowed user
                   $validation->add($values);
                   Event::log($this->fields['id'], "ticket", 4, "tracking",
-                           sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
-                                    $this->fields['id']));
+                             sprintf(__('%1$s updates the item %2$s'), $_SESSION["glpiname"],
+                                     $this->fields['id']));
                }
             }
          }
