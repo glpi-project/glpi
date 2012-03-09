@@ -2071,22 +2071,26 @@ class User extends CommonDBTM {
     * Get all groups where the current user have delegating
     *
     * @since version 0.83
-    * @param $entities_id ID of the entity to restrict
+    *
+    * @param $entities_id ID of the entity to restrict (default '')
+    *
     * @return array of groups id
    **/
    static function getDelegateGroupsForUser($entities_id='') {
       global $DB;
+
       $query = "SELECT DISTINCT `glpi_groups_users`.`groups_id`
-                  FROM `glpi_groups_users` INNER JOIN `glpi_groups`
-                        ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`) 
-                  WHERE `glpi_groups_users`.`users_id` = '".Session::getLoginUserID()."'
-                   AND `glpi_groups_users`.`is_userdelegate` = '1' ".
-                   getEntitiesRestrictRequest("AND","glpi_groups",'',$entities_id,1);
-      
+                FROM `glpi_groups_users`
+                INNER JOIN `glpi_groups`
+                        ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
+                WHERE `glpi_groups_users`.`users_id` = '".Session::getLoginUserID()."'
+                      AND `glpi_groups_users`.`is_userdelegate` = '1' ".
+                      getEntitiesRestrictRequest("AND","glpi_groups",'',$entities_id,1);
+
       $groups = array();
       foreach ($DB->request($query) as $data) {
          $groups[$data['groups_id']] = $data['groups_id'];
-      }             
+      }
       return $groups;
    }
 

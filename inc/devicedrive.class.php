@@ -110,6 +110,13 @@ class DeviceDrive extends CommonDevice {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $group              HTMLTable_Group object
+    * @param $super              HTMLTable_SuperHeader object
+    * @param &$previous_header   HTMLTable_Header object
+   **/
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
                                                         HTMLTable_SuperHeader $super,
                                                         HTMLTable_Header &$previous_header) {
@@ -120,8 +127,7 @@ class DeviceDrive extends CommonDevice {
                                                                  __('Writing ability'),
                                                                  $previous_header);
 
-      $previous_header = $elements['speed'] = $group->addHeader($super, 'speed',
-                                                                __('Speed'),
+      $previous_header = $elements['speed'] = $group->addHeader($super, 'speed', __('Speed'),
                                                                 $previous_header);
 
       $previous_header = $elements['inter'] = $group->addHeader($super, 'interface',
@@ -134,6 +140,12 @@ class DeviceDrive extends CommonDevice {
       return $elements;
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @see inc/CommonDevice::getHTMLTableCellsForComputer_Device()
+   **/
    function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers,
                                                 HTMLTable_Cell &$previous_cell) {
 

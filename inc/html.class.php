@@ -2932,7 +2932,7 @@ class Html {
     * @param $actions array of action : $name -> $label
     * @param $confirm array of confirmation string (optional)
    **/
-   static function closeArrowMassives($actions, $confirm = array()) {
+   static function closeArrowMassives($actions, $confirm=array()) {
 
       if (count($actions)) {
          foreach($actions as $name => $label) {

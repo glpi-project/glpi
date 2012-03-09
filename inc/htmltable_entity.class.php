@@ -65,6 +65,8 @@ abstract class HTMLTable_Entity {
 
 
    /**
+    * userfull ? function never called
+    *
     * @param $html_style
    **/
    function setHTMLStyle($html_style) {
