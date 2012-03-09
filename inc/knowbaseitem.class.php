@@ -742,7 +742,8 @@ class KnowbaseItem extends CommonDBTM {
             $linkusers_id = 0;
          }
 
-         printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"], $linkusers_id));
+         printf(__('%1$s: %2$s'), __('Writer'), getUserName($this->fields["users_id"],
+                $linkusers_id));
          echo "<br>";
       }
 

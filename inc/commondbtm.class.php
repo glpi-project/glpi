@@ -624,6 +624,7 @@ class CommonDBTM extends CommonGLPI {
    function cleanDBonMarkDeleted() {
    }
 
+
    /**
     * Save the input data in the Session
     *
@@ -631,8 +632,8 @@ class CommonDBTM extends CommonGLPI {
    **/
    protected function saveInput() {
       $_SESSION['saveInput'][$this->getType()] = $this->input;
-      //toolbox::logDebug("saveInput", $_SESSION['saveInput']);
    }
+
 
    /**
     * Clear the saved data stored in the session
@@ -641,8 +642,8 @@ class CommonDBTM extends CommonGLPI {
    **/
    protected function clearSavedInput() {
       unset($_SESSION['saveInput'][$this->getType()]);
-      //toolbox::logDebug("clearSavedInput", $_SESSION['saveInput']);
    }
+
 
    /**
     * Get the data saved in the session
@@ -656,8 +657,6 @@ class CommonDBTM extends CommonGLPI {
    protected function restoreInput(Array $default=array()) {
 
       if (isset($_SESSION['saveInput'][$this->getType()])) {
-         //toolbox::logDebug("restoreInput from session");
-         //return Toolbox::stripslashes_deep($_SESSION['saveInput'][$this->getType()]);
          $saved = Html::cleanPostForTextArea($_SESSION['saveInput'][$this->getType()]);
 
          // clear saved data when restored (only need once)
@@ -665,9 +664,10 @@ class CommonDBTM extends CommonGLPI {
 
          return $saved;
       }
-      //toolbox::logDebug("restoreInput from default");
+
       return $default;
    }
+
 
    // Common functions
    /**
@@ -1841,7 +1841,7 @@ class CommonDBTM extends CommonGLPI {
    function initForm($ID, Array $options=array()) {
 
       if (isset($options['withtemplate'])
-          && $options['withtemplate']==2
+          && ($options['withtemplate'] == 2)
           && !$this->isNewID($ID)) {
          // Create item from template
 
@@ -2421,26 +2421,26 @@ class CommonDBTM extends CommonGLPI {
 
       /// TODO manage it as table to have clean gettext view or use getComment of classes
       $comment = "";
-      $toadd= array();
+      $toadd   = array();
       if ($this->isField('completename')) {
-         $toadd[] = array('name' => __('Complete name'),
+         $toadd[] = array('name'  => __('Complete name'),
                           'value' => nl2br($this->getField('completename')));
       }
 
       if ($this->isField('serial')) {
-         $toadd[] = array('name' => __('Serial number'),
+         $toadd[] = array('name'  => __('Serial number'),
                           'value' => nl2br($this->getField('serial')));
       }
 
       if ($this->isField('otherserial')) {
-         $toadd[] = array('name' => __('Inventory number'),
+         $toadd[] = array('name'  => __('Inventory number'),
                           'value' => nl2br($this->getField('otherserial')));
       }
 
       if ($this->isField('states_id') && $this->getType()!='State') {
          $tmp = Dropdown::getDropdownName('glpi_states', $this->getField('states_id'));
          if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-            $toadd[] = array('name' => __('Status'),
+            $toadd[] = array('name'  => __('Status'),
                              'value' => $tmp);
          }
       }
@@ -2448,7 +2448,7 @@ class CommonDBTM extends CommonGLPI {
       if ($this->isField('locations_id') && $this->getType()!='Location') {
          $tmp = Dropdown::getDropdownName("glpi_locations", $this->getField('locations_id'));
          if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-            $toadd[] = array('name' => __('Location'),
+            $toadd[] = array('name'  => __('Location'),
                              'value' => $tmp);
          }
       }
@@ -2456,7 +2456,7 @@ class CommonDBTM extends CommonGLPI {
       if ($this->isField('users_id')) {
          $tmp = getUserName($this->getField('users_id'));
          if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-            $toadd[] = array('name' => __('User'),
+            $toadd[] = array('name'  => __('User'),
                              'value' => $tmp);
          }
       }
@@ -2465,7 +2465,7 @@ class CommonDBTM extends CommonGLPI {
           && ($this->getType() != 'Group')) {
          $tmp = Dropdown::getDropdownName("glpi_groups",$this->getField('groups_id'));
          if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-            $toadd[] = array('name' => __('Group'),
+            $toadd[] = array('name'  => __('Group'),
                              'value' => $tmp);
          }
       }
@@ -2473,30 +2473,31 @@ class CommonDBTM extends CommonGLPI {
       if ($this->isField('users_id_tech')) {
          $tmp = getUserName($this->getField('users_id_tech'));
          if ((strlen($tmp) != 0) && ($tmp != '&nbsp;')) {
-            $toadd[] = array('name' => __('Technician in charge of the hardware'),
+            $toadd[] = array('name'  => __('Technician in charge of the hardware'),
                              'value' => $tmp);
          }
       }
 
       if ($this->isField('contact')) {
-         $toadd[] = array('name' => __('Alternate username'),
+         $toadd[] = array('name'  => __('Alternate username'),
                           'value' => nl2br($this->getField('contact')));
       }
 
       if ($this->isField('contact_num')) {
-         $toadd[] = array('name' => __('Alternate username number'),
+         $toadd[] = array('name'  => __('Alternate username number'),
                           'value' => nl2br($this->getField('contact_num')));
       }
       if (($this instanceof CommonDropdown)
           && $this->isField('comment')) {
-         $toadd[] = array('name' => __('Comments'),
+         $toadd[] = array('name'  => __('Comments'),
                           'value' => nl2br($this->getField('comment')));
       }
 
       if (count($toadd)) {
          foreach ($toadd as $data) {
-         $comment .= sprintf(__('%1$s: %2$s'),"<span class='b'>".$data['name'], 
-                                               "</span>".$data['value'])."<br>";
+         $comment .= sprintf(__('%1$s: %2$s')."<br>",
+                             "<span class='b'>".$data['name'],
+                             "</span>".$data['value']);
          }
       }
 

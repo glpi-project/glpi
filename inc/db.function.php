@@ -445,10 +445,12 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false) {
 
    if ($result=$DB->query($query)) {
       if ($DB->numrows($result)==1) {
-         $name    = $DB->result($result,0,"completename");
-         $comment = "<span class='b'>".sprintf('%s: ',__('Complete name'))."</span>".$name.
-                     "<br><span class='b'>".__('Comments')."&nbsp;</span>".
-                     nl2br($DB->result($result, 0, "comment"));
+         $name     = $DB->result($result,0,"completename");
+         $comment  = sprintf(__('%1$s: %2$s')."<br>",
+                             "<span class='b'>".__('Complete name'),
+                             "</span>".$name);
+         $comment .= "<span class='b'>".__('Comments')."&nbsp;</span>".
+                      nl2br($DB->result($result, 0, "comment"));
       }
    }
 
@@ -1149,29 +1151,30 @@ function getUserName($ID, $link=0) {
             }
 
             if (!empty($data["phone"])) {
-               $user["comment"] .= sprintf(__('%1$s: %2$s'), __('Phone'), $data["phone"])."<br>";
+               $user["comment"] .= sprintf(__('%1$s: %2$s')."<br>", __('Phone'), $data["phone"]);
             }
 
             if (!empty($data["mobile"])) {
-               $user["comment"] .= sprintf(__('%1$s: %2$s'), __('Mobile phone'), $data["mobile"])."<br>";
+               $user["comment"] .= sprintf(__('%1$s: %2$s')."<br>", __('Mobile phone'),
+                                           $data["mobile"]);
             }
 
             if ($data["locations_id"]>0) {
-               $user["comment"] .= sprintf(__('%1$s: %2$s'), __('Location'), 
-                                                            Dropdown::getDropdownName("glpi_locations",
-                                                             $data["locations_id"]))."<br>";
+               $user["comment"] .= sprintf(__('%1$s: %2$s')."<br>", __('Location'),
+                                           Dropdown::getDropdownName("glpi_locations",
+                                                                     $data["locations_id"]));
             }
 
             if ($data["usertitles_id"]>0) {
-               $user["comment"] .= sprintf(__('%1$s: %2$s'), __('Title'), 
-                                                            Dropdown::getDropdownName("glpi_usertitles",
-                                                             $data["usertitles_id"]))."<br>";
+               $user["comment"] .= sprintf(__('%1$s: %2$s')."<br>", __('Title'),
+                                           Dropdown::getDropdownName("glpi_usertitles",
+                                                                     $data["usertitles_id"]));
             }
 
             if ($data["usercategories_id"]>0) {
-               $user["comment"] .= sprintf(__('%1$s: %2$s'), __('Category'), 
-                                                            Dropdown::getDropdownName("glpi_usercategories",
-                                                             $data["usercategories_id"]))."<br>";
+               $user["comment"] .= sprintf(__('%1$s: %2$s')."<br>", __('Category'),
+                                           Dropdown::getDropdownName("glpi_usercategories",
+                                                                     $data["usercategories_id"]));
             }
 
          } else {

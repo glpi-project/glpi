@@ -4783,24 +4783,24 @@ class Ticket extends CommonITILObject {
          // Second column
          if ($job->fields['status']=='closed') {
             $second_col = sprintf(__('Closed on %s'),
-               ($output_type == Search::HTML_OUTPUT?'<br>':'').
-                  Html::convDateTime($job->fields['closedate']));
+                                  ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                    Html::convDateTime($job->fields['closedate']));
          } else if ($job->fields['status']=='solved') {
             $second_col = sprintf(__('Solved on %s'),
-               ($output_type == Search::HTML_OUTPUT?'<br>':'').
-                  Html::convDateTime($job->fields['solvedate']));
+                                  ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                    Html::convDateTime($job->fields['solvedate']));
          } else if ($job->fields['begin_waiting_date']) {
             $second_col = sprintf(__('Put on hold on %s'),
-               ($output_type == Search::HTML_OUTPUT?'<br>':'').
-                  Html::convDateTime($job->fields['begin_waiting_date']));
+                                  ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                    Html::convDateTime($job->fields['begin_waiting_date']));
          } else if ($job->fields['due_date']) {
             $second_col = sprintf(__('%1$s: %2$s'), __('Due date'),
-               ($output_type == Search::HTML_OUTPUT?'<br>':'').
-                  Html::convDateTime($job->fields['due_date']));
+                                  ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                    Html::convDateTime($job->fields['due_date']));
          } else {
             $second_col = sprintf(__('Opened on %s'),
-               ($output_type == Search::HTML_OUTPUT?'<br>':'').
-                  Html::convDateTime($job->fields['date']));
+                                  ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                    Html::convDateTime($job->fields['date']));
          }
 
          echo Search::showItem($output_type, $second_col, $item_num, $row_num, $align." width=130");

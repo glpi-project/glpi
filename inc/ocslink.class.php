@@ -81,7 +81,8 @@ class Ocslink extends CommonDBTM {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>" . __('OCS Inventory NG') . "</th>";
             echo "<tr class='tab_bg_2'>";
-            echo "<td class='center'>".sprintf(__('%1$s: %2$s'),__('OCSNG TAG'), $data['tag'])."</td></tr>";
+            echo "<td class='center'>".sprintf(__('%1$s: %2$s'),__('OCSNG TAG'), $data['tag']).
+                 "</td></tr>";
          }
       }
    }
