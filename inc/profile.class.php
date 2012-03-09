@@ -792,7 +792,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Add a followup to tickets of associated group(s)')."</td><td>";
+      echo "<td>".__('Add a followup to tickets of associated groups')."</td><td>";
       Dropdown::showYesNo("group_add_followups", $this->fields["group_add_followups"]);
       echo "</td>";
       echo "<td>".__('Add a task to all tickets')."</td><td>";
