@@ -288,7 +288,8 @@ class NotificationTarget extends CommonDBChild {
                    ORDER BY `prof`";
 
          foreach ($DB->request($query) as $data) {
-            $options .= "<option value='".$data["id"]."'>".sprintf(__('%1$s: %2$s'), __('Profile'), $data["prof"]).
+            $options .= "<option value='".$data["id"]."'>".sprintf(__('%1$s: %2$s'), __('Profile'),
+                                                                   $data["prof"]).
                         "</option>";
 
             if (isset($this->notification_targets[Notification::PROFILE_TYPE."_".$data["items_id"]])) {

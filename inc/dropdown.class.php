@@ -276,47 +276,57 @@ class Dropdown {
                         break;
 
                      case "glpi_contacts" :
-                        $name = sprintf('%1$s %2$s', $name, $data["firstname"]);
+                        //TRANS: %1$s is the name, %2$s is the firstname
+                        $name = sprintf(__('%1$s %2$s'), $name, $data["firstname"]);
                         if (!empty($data["phone"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Phone'),
-                                               "</span>".$data['phone']);
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                      "<span class='b'>".__('Phone'),
+                                                      "</span>".$data['phone']);
                         }
                         if (!empty($data["phone2"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Phone 2'),
-                                               "</span>".$data['phone2']);
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                      "<span class='b'>".__('Phone 2'),
+                                                      "</span>".$data['phone2']);
                         }
                         if (!empty($data["mobile"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Mobile phone'),
-                                               "</span>".$data['mobile']);
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                      "<span class='b'>".__('Mobile phone'),
+                                                      "</span>".$data['mobile']);
                         }
                         if (!empty($data["fax"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Fax'),
-                                               "</span>".$data['fax']);
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                      "<span class='b'>".__('Fax'),
+                                                      "</span>".$data['fax']);
                         }
                         if (!empty($data["email"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Email'),
-                                               "</span>".$data['email']);
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                      "<span class='b'>".__('Email'),
+                                                      "</span>".$data['email']);
                         }
                         break;
 
                      case "glpi_suppliers" :
                         if (!empty($data["phonenumber"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Phone'),
-                                               "</span>".$data['phonenumber']);
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                      "<span class='b'>".__('Phone'),
+                                                      "</span>".$data['phonenumber']);
                         }
                         if (!empty($data["fax"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Fax'),
-                                               "</span>".$data['fax']);
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                      "<span class='b'>".__('Fax'),
+                                                      "</span>".$data['fax']);
                         }
                         if (!empty($data["email"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),"<span class='b'>".__('Email'),
-                                               "</span>".$data['email']);
+                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                      "<span class='b'>".__('Email'),
+                                                      "</span>".$data['email']);
                         }
                         break;
 
                      case "glpi_netpoints" :
-                        $name = sprintf('%1$s %2$s',$name, "(".self::getDropdownName("glpi_locations",
-                                                                $data["locations_id"]).")");
+                        $name = sprintf(__('%1$s (%2$s)'), $name,
+                                        self::getDropdownName("glpi_locations",
+                                                              $data["locations_id"]));
                         break;
                   }
                }

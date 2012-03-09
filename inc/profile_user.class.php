@@ -267,7 +267,8 @@ class Profile_User extends CommonDBTM {
                                                 $entity->getName()));
 
          while ($data=$DB->fetch_assoc($result)) {
-            echo "<tr><th colspan='$headerspan'>".sprintf(__('%1$s: %2$s'), __('Profile'), $data["name"]);
+            echo "<tr><th colspan='$headerspan'>".sprintf(__('%1$s: %2$s'), __('Profile'),
+                                                          $data["name"]);
             echo "</th></tr>";
 
             $query = "SELECT `glpi_users`.*,

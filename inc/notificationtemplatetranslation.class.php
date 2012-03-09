@@ -346,7 +346,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
          echo "<tr class='tab_bg_1'><td>".$tag."</td>
                <td>";
                if ($values['type']==NotificationTarget::TAG_LANGUAGE) {
-                  echo sprintf(__('%1$s: %2$s'), __('Label'), $values['label']);
+                  printf(__('%1$s: %2$s'), __('Label'), $values['label']);
                } else {
                   echo $values['label'];
                }

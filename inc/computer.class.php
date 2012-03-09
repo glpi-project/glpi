@@ -625,7 +625,7 @@ class Computer extends CommonDBTM {
                    WHERE `computers_id` = '$ID'";
 
          $result = $DB->query($query);
-         if ($result && $DB->numrows($result)==1) {
+         if ($result && ($DB->numrows($result) == 1)) {
             $dataocs = $DB->fetch_assoc($result);
          }
       }
