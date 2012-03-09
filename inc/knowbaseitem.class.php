@@ -1444,10 +1444,11 @@ class KnowbaseItem extends CommonDBTM {
       echo "</table>";
       if ($canedit) {
          Html::openArrowMassives("knowbaseitemvisibility_form$rand", true);
-         $confirm= array();
+         $confirm = array();
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
-            $confirm = array('deletevisibility' => __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.'));
-         }               
+            $confirm = array('deletevisibility'
+                              => __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.'));
+         }
          Html::closeArrowMassives(array('deletevisibility' => __('Delete')), $confirm);
          echo "</form>";
       }

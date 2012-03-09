@@ -254,28 +254,28 @@ class Link extends CommonDBTM {
          return array($link);
 
       }
-      // Return sevral links id several IP / MAC
+      // Return several links id several IP / MAC
 
       $ipmac = array();
       if (get_class($item) == 'NetworkEquipment') {
          if ($replace_IP) {
             $query2 = "SELECT `glpi_ipaddresses`.`id`,
-                              `glpi_ipaddresses`.`name` as ip
+                              `glpi_ipaddresses`.`name` AS ip
                        FROM `glpi_networknames`, `glpi_ipaddresses`
                        WHERE `glpi_networknames`.`items_id` = '" . $item->getID() . "'
-                              AND `glpi_networknames`.`itemtype` = 'NetworkEquipment'
-                              AND `glpi_ipaddresses`.`itemtype` = 'NetworkName'
-                              AND `glpi_ipaddresses`.`items_id` = `glpi_networknames`.`id`";
+                             AND `glpi_networknames`.`itemtype` = 'NetworkEquipment'
+                             AND `glpi_ipaddresses`.`itemtype` = 'NetworkName'
+                             AND `glpi_ipaddresses`.`items_id` = `glpi_networknames`.`id`";
             foreach ($DB->request($query2) as $data2) {
-               $ipmac['ip'.$data2['id']]['ip']     = $data2["ip"];
-               $ipmac['ip'.$data2['id']]['mac']    = $item->getField('mac');
+               $ipmac['ip'.$data2['id']]['ip']  = $data2["ip"];
+               $ipmac['ip'.$data2['id']]['mac'] = $item->getField('mac');
             }
          }
          if ($replace_MAC) {
             // If there is no entry, then, we must at least define the mac of the item ...
             if (count($ipmac) == 0) {
-               $ipmac['mac0']['ip']     = '';
-               $ipmac['mac0']['mac']    = $item->getField('mac');
+               $ipmac['mac0']['ip']    = '';
+               $ipmac['mac0']['mac']   = $item->getField('mac');
             }
          }
       }
@@ -283,14 +283,14 @@ class Link extends CommonDBTM {
       if ($replace_IP) {
          $query2 = "SELECT `glpi_ipaddresses`.`id`,
                            `glpi_networkports`.`mac`,
-                           `glpi_ipaddresses`.`name` as ip
+                           `glpi_ipaddresses`.`name` AS ip
                     FROM `glpi_networkports`, `glpi_networknames`, `glpi_ipaddresses`
                     WHERE `glpi_networkports`.`items_id` = '" . $item->getID() . "'
-                           AND `glpi_networkports`.`itemtype` = '" . $item->getType() . "'
-                           AND `glpi_networknames`.`itemtype` = 'NetworkPort'
-                           AND `glpi_networknames`.`items_id` = `glpi_networkports`.`id`
-                           AND `glpi_ipaddresses`.`itemtype` = 'NetworkName'
-                           AND `glpi_ipaddresses`.`items_id` = `glpi_networknames`.`id`";
+                          AND `glpi_networkports`.`itemtype` = '" . $item->getType() . "'
+                          AND `glpi_networknames`.`itemtype` = 'NetworkPort'
+                          AND `glpi_networknames`.`items_id` = `glpi_networkports`.`id`
+                          AND `glpi_ipaddresses`.`itemtype` = 'NetworkName'
+                          AND `glpi_ipaddresses`.`items_id` = `glpi_networknames`.`id`";
 
          foreach ($DB->request($query2) as $data2) {
             $ipmac['ip'.$data2['id']]['ip']  = $data2["ip"];
@@ -305,17 +305,17 @@ class Link extends CommonDBTM {
                        FROM `glpi_networkports`
                        LEFT JOIN `glpi_networknames`
                              ON (`glpi_networknames`.`items_id` = `glpi_networkports`.`id`
-                             AND `glpi_networknames`.`itemtype` = 'NetworkPort')
+                                 AND `glpi_networknames`.`itemtype` = 'NetworkPort')
                        WHERE `glpi_networkports`.`items_id` = '" . $item->getID() . "'
-                              AND `glpi_networkports`.`itemtype` = '" . $item->getType() . "'
-                         AND `glpi_networknames`.`id` IS NULL
+                             AND `glpi_networkports`.`itemtype` = '" . $item->getType() . "'
+                             AND `glpi_networknames`.`id` IS NULL
                        GROUP BY `glpi_networkports`.`mac`";
          } else {
             $query2 = "SELECT `glpi_networkports`.`id`,
                               `glpi_networkports`.`mac`
                        FROM `glpi_networkports`
                        WHERE `glpi_networkports`.`items_id` = '" . $item->getID() . "'
-                              AND `glpi_networkports`.`itemtype` = '" . $item->getType() . "'
+                             AND `glpi_networkports`.`itemtype` = '" . $item->getType() . "'
                        GROUP BY `glpi_networkports`.`mac`";
          }
 
@@ -326,7 +326,7 @@ class Link extends CommonDBTM {
       }
 
       $links = array();
-      if (count($ipmac)>0) {
+      if (count($ipmac) > 0) {
          foreach ($ipmac as $key => $val) {
             $tmplink = $link;
             $disp    = 1;

@@ -235,9 +235,8 @@ class TicketRecurrent extends CommonDropdown {
          if ($now > $timestart) {
             $times = floor(($now-$timestart) / $periodicity);
             return date("Y-m-d H:i:s", $timestart+($times+1)*$periodicity);
-         } else {
-            return date("Y-m-d H:i:s", $timestart);
          }
+         return date("Y-m-d H:i:s", $timestart);
       }
 
       return 'NULL';

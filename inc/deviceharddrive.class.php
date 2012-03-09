@@ -45,7 +45,6 @@ class DeviceHardDrive extends CommonDevice {
 
 
    static function getSpecifityLabel() {
-      //TRANS: (MB) is for MegaBytes
       return array('specificity' => sprintf(__('%1$s (%2$s)'), __('Capacity'), __('Mio')));
    }
 
@@ -129,18 +128,23 @@ class DeviceHardDrive extends CommonDevice {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $group              HTMLTable_Group object
+    * @param $super              HTMLTable_SuperHeader object
+    * @param &$previous_header   HTMLTable_Header object
+   **/
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
                                                         HTMLTable_SuperHeader $super,
                                                         HTMLTable_Header &$previous_header) {
 
       $elements        = array();
 
-      $previous_header = $elements['rpm'] = $group->addHeader($super, 'rpm',
-                                                              __('Rpm'),
+      $previous_header = $elements['rpm'] = $group->addHeader($super, 'rpm', __('Rpm'),
                                                               $previous_header);
 
-      $previous_header = $elements['cache'] = $group->addHeader($super, 'cache',
-                                                                __('Cache'),
+      $previous_header = $elements['cache'] = $group->addHeader($super, 'cache', __('Cache'),
                                                                 $previous_header);
 
       $previous_header = $elements['inter'] = $group->addHeader($super, 'interface',
@@ -153,6 +157,12 @@ class DeviceHardDrive extends CommonDevice {
       return $elements;
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @see inc/CommonDevice::getHTMLTableCellsForComputer_Device()
+   **/
    function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers,
                                                 HTMLTable_Cell &$previous_cell) {
 

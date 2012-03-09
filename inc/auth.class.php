@@ -335,36 +335,36 @@ class Auth {
             if (isset($sslattributes[$CFG_GLPI["x509_email_field"]])
                 && NotificationMail::isUserAddressValid($sslattributes[$CFG_GLPI["x509_email_field"]])
                 && self::isValidLogin($sslattributes[$CFG_GLPI["x509_email_field"]])) {
-               
+
                $restrict = false;
                $CFG_GLPI["x509_ou_restrict"] = trim($CFG_GLPI["x509_ou_restrict"]);
                if (!empty($CFG_GLPI["x509_ou_restrict"])) {
                   $split = explode ('$',$CFG_GLPI["x509_ou_restrict"]);
-                  
+
                   if (!in_array($sslattributes['OU'], $split)) {
-                     $restrict = true;                             
+                     $restrict = true;
                   }
                }
                $CFG_GLPI["x509_o_restrict"] = trim($CFG_GLPI["x509_o_restrict"]);
                if (!empty($CFG_GLPI["x509_o_restrict"])) {
                   $split = explode ('$',$CFG_GLPI["x509_o_restrict"]);
-                  
+
                   if (!in_array($sslattributes['O'], $split)) {
-                     $restrict = true;                             
+                     $restrict = true;
                   }
                }
                $CFG_GLPI["x509_cn_restrict"] = trim($CFG_GLPI["x509_cn_restrict"]);
                if (!empty($CFG_GLPI["x509_cn_restrict"])) {
                   $split = explode ('$',$CFG_GLPI["x509_cn_restrict"]);
-                  
+
                   if (!in_array($sslattributes['CN'], $split)) {
-                     $restrict = true;                             
+                     $restrict = true;
                   }
                }
 
                if (!$restrict) {
                   $this->user->fields['name'] = $sslattributes[$CFG_GLPI["x509_email_field"]];
-   
+
                   // Can do other things if need : only add it here
                   $this->user->fields['email'] = $this->user->fields['name'];
                   return true;
@@ -941,7 +941,7 @@ class Auth {
                $sql = "SELECT `name`
                        FROM `glpi_authldaps`
                        WHERE `id` = '" . $user->getField('auths_id') . "'
-                           AND `is_active` = 1";
+                             AND `is_active` = 1";
                $result = $DB->query($sql);
                if ($DB->numrows($result) > 0) {
                   echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
@@ -963,7 +963,7 @@ class Auth {
                   $sql = "SELECT `name`
                           FROM `glpi_authldaps`
                           WHERE `id` = '" .$CFG_GLPI['authldaps_id_extra']."'
-                              AND `is_active` = 1";
+                                AND `is_active` = 1";
                   $result = $DB->query($sql);
 
                   if ($DB->numrows($result) > 0) {
