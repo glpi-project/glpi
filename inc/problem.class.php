@@ -767,6 +767,7 @@ class Problem extends CommonITILObject {
                          'impact'                    => 3,
                          'content'                   => '',
                          'name'                      => '',
+                         'entities_id'               => $_SESSION['glpiactive_entity'],
                          'itilcategories_id'         => 0);
          foreach ($values as $key => $val) {
             if (!isset($options[$key])) {
