@@ -37,31 +37,46 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/**
+ * @since version 0.84
+**/
 class HTMLTable_SubHeader extends HTMLTable_Header {
 
    // The headers of each column
    private $header;
+
+
+   /**
+    * @param $header    HTMLTable_SuperHeader object
+    * @param $name
+    * @param $content
+    * @param $father    HTMLTable_Header object (default NULL)
+   **/
+   function __construct(HTMLTable_SuperHeader $header, $name,  $content,
+                        HTMLTable_Header $father=NULL) {
+
+      $this->header = $header;
+      parent::__construct($name, $content, $father);
+   }
+
 
    function isSuperHeader() {
       return false;
    }
 
 
+   /**
+    * @see inc/HTMLTable_Header::getHeaderAndSubHeaderName()
+   **/
   function getHeaderAndSubHeaderName(&$header_name, &$subheader_name) {
-      $header_name = $this->header->getName();
+
+      $header_name    = $this->header->getName();
       $subheader_name = parent::getName();
    }
 
 
    function getCompositeName() {
       return $this->header->getCompositeName().$this->getName();
-   }
-
-
-   function __construct(HTMLTable_SuperHeader $header, $name,
-                        $content, HTMLTable_Header $father = NULL) {
-      $this->header = $header;
-      parent::__construct($name, $content, $father);
    }
 
 
@@ -75,6 +90,9 @@ class HTMLTable_SubHeader extends HTMLTable_Header {
    }
 
 
+   /**
+    * @param $numberOfSubHeaders
+   **/
    function updateColSpan($numberOfSubHeaders) {
       $this->setColSpan($this->header->getColSpan() / $numberOfSubHeaders);
    }

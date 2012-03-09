@@ -57,9 +57,11 @@ class HTMLTable_ extends HTMLTable_Base {
 
    private $groups = array();
 
+
    function __construct() {
       parent::__construct(true);
    }
+
 
    /**
     * We can define a global name for the table : this will print as header that colspan all columns
@@ -73,20 +75,31 @@ class HTMLTable_ extends HTMLTable_Base {
    }
 
 
+   /**
+    * @param $header_name
+    * @param $content
+    * @param $father          HTMLTable_Header object (default NULL)
+   **/
    function addHeader($header_name, $content, HTMLTable_Header $father = NULL) {
+
       try {
          if (count($this->groups) > 0) {
-            throw new Exception('Implementation error : must define all headers before any subgroups');
+            throw new Exception('Implementation error: must define all headers before any subgroups');
          }
          return $this->appendHeader(new HTMLTable_SuperHeader($this, $header_name, $content,
-                                                       $father));
+                                                              $father));
       } catch (Exception $e) {
          echo __FILE__." ".__LINE__." : ".$e->getMessage()."<br>\n";
       }
    }
 
 
+   /**
+    * @param $name
+    * @param $content
+   **/
    function createGroup($name, $content) {
+
       if (!empty($name)) {
          if (!isset($this->groups[$name])) {
             $this->groups[$name] = new HTMLTable_Group($this, $name, $content);
@@ -96,19 +109,26 @@ class HTMLTable_ extends HTMLTable_Base {
    }
 
 
+   /**
+    * @param $group_name
+   **/
    function getGroup($group_name) {
+
       if (isset($this->groups[$group_name])) {
          return $this->groups[$group_name];
       }
       return false;
    }
 
+
    /**
     * Display the table
     *
+    * @param $table_html_id   (default '')
+    *
     * @return nothing (display only)
    **/
-   function display($table_html_id = '') {
+   function display($table_html_id='') {
 
       foreach ($this->groups as $group) {
          $group->prepareDisplay();

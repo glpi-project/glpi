@@ -1,3 +1,4 @@
+
 <?php
 /*
  * @version $Id: HEADER 15930 2011-10-25 10:47:55Z jmd $
@@ -37,6 +38,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/**
+ * @since version 0.84
+**/
 class HTMLTable_SuperHeader extends HTMLTable_Header {
 
    // The headers of each column
@@ -44,11 +48,30 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
    private $table;
 
 
-   private static function PPCM($first,$second) {
+   /**
+    * @param $table     HTMLTable_ object
+    * @param $name
+    * @param $content
+    * @param $father    HTMLTable_Header objet (default NULL)
+   **/
+   function __construct(HTMLTable_ $table, $name, $content,
+                        HTMLTable_Header $father = NULL) {
+
+      $this->table = $table;
+      parent::__construct($name, $content, $father);
+   }
+
+
+   /**
+    * @param $first
+    * @param $second
+   **/
+   private static function PPCM($first, $second) {
+
       $result = $first * $second;
       while($first > 1){
          $reste = $first % $second;
-         if($reste == 0 ){
+         if ($reste == 0 ){
             $result = $result / $second;
             break;  // sorti quand resultat trouvé
          }
@@ -64,8 +87,12 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
    }
 
 
+   /**
+    * @see inc/HTMLTable_Header::getHeaderAndSubHeaderName()
+   **/
    function getHeaderAndSubHeaderName(&$header_name, &$subheader_name) {
-      $header_name = $this->getName();
+
+      $header_name    = $this->getName();
       $subheader_name = '';
    }
 
@@ -80,13 +107,9 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
    }
 
 
-   function __construct(HTMLTable_ $table, $name, $content,
-                        HTMLTable_Header $father = NULL) {
-      $this->table = $table;
-      parent::__construct($name, $content, $father);
-   }
-
-
+   /**
+    * @param $number
+   **/
    function updateNumberOfSubHeader($number) {
       $this->setColSpan(self::ppcm($number, $this->getColSpan()));
    }

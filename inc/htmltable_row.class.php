@@ -37,6 +37,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/**
+ * @since version 0.84
+**/
 class HTMLTable_Row extends HTMLTable_Entity {
 
    private $group;
@@ -45,12 +48,16 @@ class HTMLTable_Row extends HTMLTable_Entity {
    private $numberOfSubRows = 1;
 
 
-   function notEmpty() {
-      return !$this->empty;
-   }
-
+   /**
+    * @param $group
+   **/
    function __construct($group) {
       $this->group = $group;
+   }
+
+
+   function notEmpty() {
+      return !$this->empty;
    }
 
 
@@ -59,8 +66,15 @@ class HTMLTable_Row extends HTMLTable_Entity {
    }
 
 
-   function addCell(HTMLTable_Header $header, $content, HTMLTable_Cell $father = NULL,
-                    $items_id = 0) {
+   /**
+    * @param $header    HTMLTable_Header object
+    * @param $content
+    * @param $father    HTMLTable_Cell object (default NULL)
+    * @param $items_id  (default 0)
+    */
+   function addCell(HTMLTable_Header $header, $content, HTMLTable_Cell $father=NULL,
+                    $items_id=0) {
+
       try {
          if (!$this->group->haveHeader($header)) {
             throw new Exception('Unavailable header !');
@@ -76,13 +90,14 @@ class HTMLTable_Row extends HTMLTable_Entity {
          $this->empty = false;
          return $cell;
       } catch (Exception $e) {
-         echo __FILE__." ".__LINE__." : ".$e->getMessage()."<br>\n";
+         printf(__('%1$s %2$s: %3$s')."<br>\n", __FILE__, __LINE__, $e->getMessage());
       }
       return false;
    }
 
 
    function prepareDisplay() {
+
       if ($this->empty) {
          return false;
       }
@@ -109,7 +124,11 @@ class HTMLTable_Row extends HTMLTable_Entity {
    }
 
 
+   /**
+    * @param $headers
+   **/
    function display($headers) {
+
       echo "\t\t<tbody";
       $this->displayEntityAttributs();
       echo ">";
