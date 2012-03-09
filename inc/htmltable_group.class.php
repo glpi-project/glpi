@@ -37,6 +37,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/**
+ * @since v ersion 0.84
+**/
 class HTMLTable_Group extends HTMLTable_Base {
 
    private $name;
@@ -45,22 +48,39 @@ class HTMLTable_Group extends HTMLTable_Base {
    private $table;
    private $rows = array();
 
+
+   /**
+    * @param $table     HTMLTable_ object
+    * @param $name
+    * @param $content
+   **/
+   function __construct(HTMLTable_ $table, $name, $content) {
+
+      parent::__construct(false);
+      $this->table      = $table;
+      $this->name       = $name;
+      $this->content    = $content;
+   }
+
+
+   /**
+    * @see inc/HTMLTable_Base::getSuperHeader()
+   **/
    protected function getSuperHeader($super_header_name) {
       return $this->table->getHeader($super_header_name);
    }
 
-   function __construct(HTMLTable_ $table, $name, $content) {
-      parent::__construct(false);
-      $this->table = $table;
-      $this->name = $name;
-      $this->content = $content;
-   }
 
    function getName() {
       return $this->name;
    }
 
+
+   /**
+    * @param $header    HTMLTable_Header object
+   **/
    function haveHeader(HTMLTable_Header $header) {
+
       foreach ($this->ordered_headers as $local_header) {
          if ($local_header == $header) {
             return true;
@@ -69,35 +89,44 @@ class HTMLTable_Group extends HTMLTable_Base {
       return false;
    }
 
-   function addHeader(HTMLTable_SuperHeader $super_header, $name,
-                      $content, HTMLTable_Header $father = NULL) {
+
+   /**
+    * @param $super_header    HTMLTable_SuperHeader object
+    * @param $name
+    * @param $content
+    * @param $father          HTMLTable_Header object (default NULL)
+    */
+   function addHeader(HTMLTable_SuperHeader $super_header, $name, $content,
+                      HTMLTable_Header $father=NULL) {
+
       try {
          if (isset($this->ordered_headers)) {
-            throw new Exception('Implementation error : must define all headers before any row');
+            throw new Exception('Implementation error: must define all headers before any row');
          }
          return $this->appendHeader(new HTMLTable_SubHeader($super_header, $name, $content,
                                                      $father));
       } catch (Exception $e) {
-         echo __FILE__." ".__LINE__." : ".$e->getMessage()."<br>\n";
+         printf(__('%1$s %2$s: %3$s')."<br>\n", __FILE__, __LINE__, $e->getMessage());
       }
    }
 
 
    private function completeHeaders() {
+
       if (!isset($this->ordered_headers)) {
          $this->ordered_headers = array();
 
          foreach ($this->table->getHeaderOrder() as $header_name) {
-            $header = $this->table->getHeader($header_name);
-            $header_names = $this->getHeaderOrder($header_name);
+            $header        = $this->table->getHeader($header_name);
+            $header_names  = $this->getHeaderOrder($header_name);
             if (!$header_names) {
                $this->ordered_headers[] = $header;
             } else {
                $numberOfSubHeaders = count($header_names);
                $header->updateNumberOfSubHeader($numberOfSubHeaders);
                foreach($header_names as $sub_header_name) {
-                  $header = $this->getHeader($header_name, $sub_header_name);
-                  $this->ordered_headers[] = $header;
+                  $header                     = $this->getHeader($header_name, $sub_header_name);
+                  $this->ordered_headers[]    = $header;
                   $header->numberOfSubHeaders = $numberOfSubHeaders;
                }
             }
@@ -107,21 +136,27 @@ class HTMLTable_Group extends HTMLTable_Base {
 
 
    function createRow() {
+
       $this->completeHeaders();
-      $new_row = new HTMLTable_Row($this);
+      $new_row      = new HTMLTable_Row($this);
       $this->rows[] = $new_row;
       return $new_row;
    }
 
 
    function prepareDisplay() {
+
       foreach ($this->rows as $row) {
          $row->prepareDisplay();
       }
    }
 
 
+   /**
+    * @param $totalNumberOfColumn
+   **/
    function display($totalNumberOfColumn) {
+
       if ($this->getNumberOfRows() > 0) {
 
          if (!empty($this->content)) {
@@ -152,7 +187,9 @@ class HTMLTable_Group extends HTMLTable_Base {
       }
    }
 
+
    function getNumberOfRows() {
+
       $numberOfRows = 0;
       foreach ($this->rows as $row) {
          if ($row->notEmpty()) {

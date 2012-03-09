@@ -37,6 +37,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/**
+ * @since version 0.84
+**/
 abstract class HTMLTable_Entity {
 
    private $html_id;
@@ -45,27 +48,40 @@ abstract class HTMLTable_Entity {
    private $content;
 
 
+   /**
+    * @param $content
+   **/
    function __construct($content) {
       $this->content = $content;
    }
 
 
+   /**
+    * @param $html_id
+   **/
    function setHTMLID($html_id) {
       $this->html_id = $html_id;
    }
 
 
+   /**
+    * @param $html_style
+   **/
    function setHTMLStyle($html_style) {
       $this->html_style = $html_style;
    }
 
 
+   /**
+    * @param $html_class
+   **/
    function setHTMLClass($html_class) {
       $this->html_class = $html_class;
    }
 
 
    function displayEntityAttributs() {
+
       if (!empty($this->html_id)) {
          echo " id='".$this->html_id."'";
       }
@@ -78,12 +94,16 @@ abstract class HTMLTable_Entity {
    }
 
 
+   /**
+    * @param $content
+   **/
    function setContent($content) {
       $this->content = $content;
    }
 
 
    function displayContent() {
+
       if (is_string($this->content)) {
          echo $this->content;
       } else if (is_array($this->content)) {
@@ -102,5 +122,4 @@ abstract class HTMLTable_Entity {
       }
    }
 }
-
 ?>

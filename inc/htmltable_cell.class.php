@@ -37,6 +37,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+/**
+ * @since version 0.84
+**/
 class HTMLTable_Cell extends HTMLTable_Entity {
 
    private $row;
@@ -45,46 +48,65 @@ class HTMLTable_Cell extends HTMLTable_Entity {
    private $items_id;
    private $sons = array();
 
-   function __construct($row, $header, $content, HTMLTable_Cell $father = NULL, $items_id = 0) {
-      parent::__construct($content);
-      $this->row = $row;
-      $this->header = $header;
-      $this->father = $father;
-      $this->items_id = $items_id;
 
-      $this->itemtype = $this->header->getItemType();
+   /**
+    * @param $row
+    * @param $header
+    * @param $content
+    * @param $father    HTMLTable_Cell object (default NULL)
+    * @param $items_id  (default 0)
+   **/
+   function __construct($row, $header, $content, HTMLTable_Cell $father=NULL, $items_id=0) {
+
+      parent::__construct($content);
+      $this->row        = $row;
+      $this->header     = $header;
+      $this->father     = $father;
+      $this->items_id   = $items_id;
+
+      $this->itemtype   = $this->header->getItemType();
       if ((!empty($this->itemtype)) && ($this->items_id == 0)) {
-         throw new Exception('Implementation error : header requires an item id');
+         throw new Exception('Implementation error: header requires an item id');
       }
 
       if (!is_null($this->father)) {
 
          if ($this->father->row != $this->row) {
-            throw new Exception('Implementation error : cell and its father must have the same row');
+            throw new Exception('Implementation error: cell and its father must have the same row');
          }
 
          if ($this->father->header != $this->header->getFather()) {
-            throw new Exception('Implementation error : cell and its father are not coherent regarding headers');
+            throw new Exception('Implementation error: cell and its father are not coherent regarding headers');
          }
 
         $this->father->addSon($this, $header);
+
       } else if (!is_null($this->header->getFather())) {
          throw new Exception('Implementation error : cell must have a father');
       }
    }
 
+
    function getHeader() {
       return $this->header;
    }
 
+
+   /**
+    * @param $son          HTMLTable_Cell object
+    * @param $sons_header  HTMLTable_Header object
+   **/
    function addSon(HTMLTable_Cell $son, HTMLTable_Header $sons_header) {
+
       if (!isset($this->sons[$sons_header->getName()])) {
          $this->sons[$sons_header->getName()] = array();
       }
       $this->sons[$sons_header->getName()][] = $son;
    }
 
+
    function computeNumberOfLines() {
+
       if (!isset($this->numberOfLines)) {
          $this->numberOfLines = 1;
          if (count($this->sons) > 0) {
@@ -103,7 +125,11 @@ class HTMLTable_Cell extends HTMLTable_Entity {
    }
 
 
+   /**
+    * @param &$start
+   **/
    function computeStartEnd(&$start) {
+
       if (!isset($this->start)) {
          $this->start = $start;
          foreach ($this->sons as $sons_by_header) {
@@ -119,8 +145,14 @@ class HTMLTable_Cell extends HTMLTable_Entity {
    }
 
 
+   /**
+    * @param $index
+   **/
    function display($index) {
-      if (($index >= $this->start) && ($index < $this->start + $this->numberOfLines)) {
+
+      if (($index >= $this->start)
+          && ($index < $this->start + $this->numberOfLines)) {
+
          if ($index == $this->start) {
             if (!empty($this->itemtype)) {
                Session::addToNavigateListItems($this->itemtype, $this->items_id);
@@ -139,5 +171,4 @@ class HTMLTable_Cell extends HTMLTable_Entity {
       return false;
    }
 }
-
 ?>

@@ -545,7 +545,7 @@ class Session {
       $TRANSLATE = NULL;
 
       if (function_exists('apc_fetch')) { // Try from APC cache
-         $key = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
+         $key       = "glpi".sha1_file(GLPI_ROOT.$newfile); // Use content to detect changes
          $TRANSLATE = apc_fetch($key);
       }
 

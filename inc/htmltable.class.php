@@ -173,7 +173,7 @@ class HTMLTable {
 
    /**
     * Add a cell in the current row
-    * Be carefull that if an alement is added with the same ID, nothing occurs
+    * Be carefull that if an element is added with the same ID, nothing occurs
     *
     * @param $value         the value to print inside the cell or the method to call
     * @param $headers_name  the name of the column
@@ -181,10 +181,11 @@ class HTMLTable {
     * @param $fathers_id    the id of the father inside its column (the column of the father is
     *                       given during the definition of the columne), 0 if there is no father
     *                       (default 0)
+    * @param $cell_html_id  (default '')
     *
     * @return nothing
    **/
-   function addElement($value, $headers_name, $cells_id=0, $fathers_id=0, $cell_html_id = '') {
+   function addElement($value, $headers_name, $cells_id=0, $fathers_id=0, $cell_html_id='') {
 
       if (!isset($this->currentRow)) {
          $this->currentRow = array();
@@ -229,9 +230,11 @@ class HTMLTable {
     * Used at the end of a line. computer all rendering elements such as rowspan or total number of
     * lines used by the row
     *
+    * @param $row_html_id   (default '')
+    *
     * @return nothing
    **/
-   function closeRow($row_html_id = '') {
+   function closeRow($row_html_id='') {
 
       if (isset($this->currentRow)) {
          $numberOfLines = 0;
@@ -284,9 +287,11 @@ class HTMLTable {
    /**
     * Display the table
     *
+    * @param $table_html_id   (default '')
+    *
     * @return nothing (display only)
    **/
-   function display($table_html_id = '') {
+   function display($table_html_id='') {
 
       if (!isset($this->headers)) {
          return;

@@ -45,7 +45,9 @@ if (isset($_GET["redirect"])) {
    Toolbox::manageRedirect($_GET["redirect"]);
 }
 
+
 function displayItemSearchLink($itemtype) {
+
    echo "<table class='tab_cadrehov' >";
    echo "<tr><th colspan='2'>";
    echo "<a href='".Toolbox::getItemTypeSearchURL($itemtype)."'>";
