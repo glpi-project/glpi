@@ -56,6 +56,11 @@ class HTMLTable_Row extends HTMLTable_Entity {
    }
 
 
+   function getGroup() {
+      return $this->group;
+   }
+
+
    function notEmpty() {
       return !$this->empty;
    }

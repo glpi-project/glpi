@@ -77,7 +77,8 @@ class HTMLTable_Cell extends HTMLTable_Entity {
          }
 
          if ($this->father->header != $this->header->getFather()) {
-            throw new Exception('Implementation error: cell and its father are not coherent regarding headers');
+            throw new Exception('Implementation error: cell and its father are not coherent
+                                 regarding headers');
          }
 
         $this->father->addSon($this, $header);

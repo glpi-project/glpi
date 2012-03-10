@@ -840,7 +840,26 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   /**
+   static function getHTMLTableHeader($itemtype, HTMLTable_Group $group,
+                                      HTMLTable_SuperHeader $header,
+                                      HTMLTable_Header $father,
+                                      $options=array()) {
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      $content = self::getTypeName();
+      if (isset($options['column_links'][$column_name])) {
+         $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
+      }
+      $this_header = $group->addHeader($header, $column_name, $content, $father);
+
+      IPNetwork::getHTMLTableHeader(__CLASS__, $group, $header, $this_header);
+
+   }
+    /**
     * Get HTMLTable columns headers for a given item type
     *
     * @param $itemtype           The type of the item
@@ -870,6 +889,36 @@ class IPAddress extends CommonDBChild {
    }
 
 
+   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father, $canedit,
+                                        $options=array()) {
+      global $DB, $CFG_GLPI;
+
+      if (isset($options['dont_display']['IPAddress'])) {
+         return;
+      }
+
+      $header= $row->getGroup()->getHeader('Internet', __CLASS__);
+      if (!$header) {
+         return;
+      }
+
+      $item = $father->getItem();
+
+      $query = "SELECT `id`
+                FROM `glpi_ipaddresses`
+                WHERE `items_id` = '" . $item->getID() . "'
+                      AND `itemtype` = '" . $item->getType() . "'";
+
+      $result = $DB->query($query);
+      $address = new self();
+      foreach ($DB->request($query) as $ipaddress) {
+         if ($address->getFromDB($ipaddress['id'])) {
+            $this_cell = $row->addCell($header, $address->fields['name'], $father, $address);
+
+            IPNetwork::getHTMLTable_ForItem($row, $this_cell, $canedit, $options);
+         }
+      }
+   }
    /**
     * Get HTMLTable row for a given item
     *
