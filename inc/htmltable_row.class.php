@@ -70,10 +70,10 @@ class HTMLTable_Row extends HTMLTable_Entity {
     * @param $header    HTMLTable_Header object
     * @param $content
     * @param $father    HTMLTable_Cell object (default NULL)
-    * @param $items_id  (default 0)
+    * @param $item      The item associated with the current cell (default NULL)
     */
    function addCell(HTMLTable_Header $header, $content, HTMLTable_Cell $father=NULL,
-                    $items_id=0) {
+                    CommonDBTM $item = NULL) {
 
       try {
          if (!$this->group->haveHeader($header)) {
@@ -85,7 +85,7 @@ class HTMLTable_Row extends HTMLTable_Entity {
             $this->cells[$header_name] = array();
          }
 
-         $cell = new HTMLTable_Cell($this, $header, $content, $father, $items_id);
+         $cell = new HTMLTable_Cell($this, $header, $content, $father, $item);
          $this->cells[$header_name][] = $cell;
          $this->empty = false;
          return $cell;
