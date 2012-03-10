@@ -168,14 +168,15 @@ class NetworkAlias extends FQDNLabel {
 
    static function getHTMLTableHeader($itemtype, HTMLTable_Group $group,
                                       HTMLTable_SuperHeader $header,
-                                      HTMLTable_Header $father,
+                                      HTMLTable_Header $father = NULL,
                                       $options=array()) {
-      if ($itemtype != 'NetworkName') {
-         return;
-      }
 
       $column_name = __CLASS__;
       if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      if ($itemtype != 'NetworkName') {
          return;
       }
 
@@ -271,11 +272,18 @@ class NetworkAlias extends FQDNLabel {
     *       - 'dont_display' : array of the elements that must not be display
     *
    **/
-   static function getHTMLTable_ForItem(HTMLTable_Row $row,  HTMLTable_Cell $father, $canedit,
-                                        $options=array()) {
+   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
+                                        CommonDBTM $item = NULL, array $options) {
       global $DB, $CFG_GLPI;
 
-      $item = $father->getItem();
+      if (!empty($father)) {
+         $item = $father->getItem();
+      } else {
+         if (empty($item)) {
+            return;
+         }
+      }
+
       if ($item->getType() != 'NetworkName') {
          return;
       }
@@ -290,14 +298,23 @@ class NetworkAlias extends FQDNLabel {
          return;
       }
 
-      $query = "SELECT `id`
-                FROM `glpi_networkaliases`
-                WHERE `networknames_id` = '".$item->getID()."'";
+      $canedit              = ((isset($options['canedit']))   && ($options['canedit']));
+      $createRow            = ((isset($options['createRow'])) && ($options['createRow']));
+      $options['createRow'] = false;
 
-      $alias  = new self();
-      $result = $DB->query($query);
+      $query                = "SELECT `id`
+                               FROM `glpi_networkaliases`
+                               WHERE `networknames_id` = '".$item->getID()."'";
+
+      $alias                = new self();
+
       foreach ($DB->request($query) as $line) {
          if ($alias->getFromDB($line["id"])) {
+
+            if ($createRow) {
+               $row = $row->createRow();
+            }
+
             $content = "<a href='" . $alias->getLinkURL(). "'>".$alias->getInternetName()."</a>";
             if ($canedit) {
                $content .= "<a href='" . $alias->getFormURL(). "?remove_alias=remove&id=";

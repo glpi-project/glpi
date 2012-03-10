@@ -477,7 +477,7 @@ class NetworkName extends FQDNLabel {
 
    static function getHTMLTableHeader($itemtype, HTMLTable_Group $group,
                                       HTMLTable_SuperHeader $header,
-                                      HTMLTable_Header $father,
+                                      HTMLTable_Header $father = NULL,
                                       $options=array()) {
 
       $column_name = __CLASS__;
@@ -528,8 +528,8 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father, $canedit,
-                                        $options=array()) {
+   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
+                                        CommonDBTM $item = NULL, array $options) {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
@@ -542,7 +542,13 @@ class NetworkName extends FQDNLabel {
          return;
       }
 
-      $item = $father->getItem();
+      if (!empty($father)) {
+         $item = $father->getItem();
+      } else {
+         if (empty($item)) {
+            return;
+         }
+      }
 
       switch ($item->getType()) {
          case 'IPNetwork' :
@@ -587,43 +593,46 @@ class NetworkName extends FQDNLabel {
       if (isset($options['SQL_options'])) {
          $query .= " ".$options['SQL_options'];
       }
-      $result = $DB->query($query);
 
-      $address = new self();
+      $canedit              = ((isset($options['canedit']))   && ($options['canedit']));
+      $createRow            = ((isset($options['createRow'])) && ($options['createRow']));
+      $options['createRow'] = false;
+      $address              = new self();
 
-      if ($DB->numrows($result) > 0) {
-         while ($line = $DB->fetch_assoc($result)) {
+      foreach ($DB->request($query) as $line) {
+         if ($address->getFromDB($line["id"])) {
 
-            if ($address->getFromDB($line["id"])) {
-
-               $content      = "<a href='" . $address->getLinkURL(). "'>";
-               $internetName = $address->getInternetName();
-               if (empty($internetName)) {
-                  $content .= "(".$line["id"].")";
-               } else {
-                  $content .= $internetName;
-               }
-               $content .= "</a>";
-
-               if ($canedit) {
-                  $content .= "&nbsp;- <a href='" . $address->getFormURL() .
-                              "?remove_address=unaffect&id=" . $address->getID() . "'>&nbsp;".
-                              "<img src=\"" . $CFG_GLPI["root_doc"] .
-                              "/pics/sub_dropdown.png\" alt=\"" . __s('Dissociate') .
-                              "\" title=\"" . __s('Dissociate') . "\"></a>";
-                  $content .= "&nbsp;- <a href='" . $address->getFormURL() .
-                              "?remove_address=purge&id=" . $address->getID() . "'>&nbsp;".
-                              "<img src=\"" . $CFG_GLPI["root_doc"] .
-                              "/pics/delete.png\" alt=\"" . __s('Purge') . "\" title=\"" .
-                              __s('Purge') . "\"></a>";
-               }
-
-               $this_cell = $row->addCell($header, $content, $father, $address);
-
-               NetworkAlias::getHTMLTable_ForItem($row, $this_cell, $canedit, $options);
-               IPAddress::getHTMLTable_ForItem($row, $this_cell, $canedit, $options);
-
+            if ($createRow) {
+               $row = $row->createAnotherRow();
             }
+
+            $content      = "<a href='" . $address->getLinkURL(). "'>";
+            $internetName = $address->getInternetName();
+            if (empty($internetName)) {
+               $content .= "(".$line["id"].")";
+            } else {
+               $content .= $internetName;
+            }
+            $content .= "</a>";
+
+            if ($canedit) {
+               $content .= "&nbsp;- <a href='" . $address->getFormURL() .
+                           "?remove_address=unaffect&id=" . $address->getID() . "'>&nbsp;".
+                           "<img src=\"" . $CFG_GLPI["root_doc"] .
+                           "/pics/sub_dropdown.png\" alt=\"" . __s('Dissociate') .
+                           "\" title=\"" . __s('Dissociate') . "\"></a>";
+               $content .= "&nbsp;- <a href='" . $address->getFormURL() .
+                           "?remove_address=purge&id=" . $address->getID() . "'>&nbsp;".
+                           "<img src=\"" . $CFG_GLPI["root_doc"] .
+                           "/pics/delete.png\" alt=\"" . __s('Purge') . "\" title=\"" .
+                           __s('Purge') . "\"></a>";
+            }
+
+            $this_cell = $row->addCell($header, $content, $father, $address);
+
+            NetworkAlias::getHTMLTable_ForItem($row, $this_cell, NULL, $options);
+            IPAddress::getHTMLTable_ForItem($row, $this_cell, NULL, $options);
+
          }
       }
    }
@@ -751,7 +760,7 @@ class NetworkName extends FQDNLabel {
    static function showForItem(CommonGLPI $item, $withtemplate=0) {
       global $DB, $CFG_GLPI;
 
-      $table_options = array();
+      $table_options = array('createRow' => true);
 
       if (($item->getType() == 'IPNetwork') || ($item->getType() == 'FQDN')) {
          if (isset($_REQUEST["start"])) {
@@ -783,11 +792,17 @@ class NetworkName extends FQDNLabel {
          $canedit = true;
       }
 
-      $address  = new self();
-      $table    = new HTMLTable();
-      $table->addGlobalName(self::getTypeName(2));
+      $table_options['canedit']   = $canedit;
 
-      self::getHTMLTableHeaderForItem($item->getType(), $table, "", $table_options);
+      $table  = new HTMLTable_();
+      $column  = $table->addHeader('Internet', self::getTypeName(2));
+      $t_group = $table->createGroup('Main', '');
+
+      $address  = new self();
+
+      self::getHTMLTableHeader(__CLASS__, $t_group, $column);
+
+      $t_row   = $t_group->createRow();
 
       // Reorder the columns for better display
       switch ($item->getType()) {
@@ -797,11 +812,11 @@ class NetworkName extends FQDNLabel {
             break;
 
          case 'IPNetwork' :
-            $table->setColumnOrder(array('NetworkName', 'IPAddress', 'NetworkAlias'));
+            //$table->setColumnOrder(array('NetworkName', 'IPAddress', 'NetworkAlias'));
             break;
       }
 
-      self::getHTMLTableForItem($item, $table, $canedit, true, $table_options);
+      self::getHTMLTable_ForItem($t_row, NULL, $item, $table_options);
 
       if ($table->getNumberOfRows() > 0) {
 

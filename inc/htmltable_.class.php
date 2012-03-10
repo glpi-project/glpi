@@ -130,11 +130,11 @@ class HTMLTable_ extends HTMLTable_Base {
    **/
    function display($table_html_id='') {
 
-      $totalNumberOfRow = 0;
       foreach ($this->groups as $group) {
          $group->prepareDisplay();
-         $totalNumberOfRow += $group->getNumberOfRows();
       }
+
+      $totalNumberOfRow = $this->getNumberOfRows();
 
       $totalNumberOfColumn = 0;
       foreach ($this->getHeaders() as $header) {
@@ -183,6 +183,15 @@ class HTMLTable_ extends HTMLTable_Base {
 
       echo "</table>\n";
 
+   }
+
+
+   function getNumberOfRows() {
+      $numberOfRow = 0;
+      foreach ($this->groups as $group) {
+         $numberOfRow += $group->getNumberOfRows();
+      }
+      return $numberOfRow;
    }
 
 }
