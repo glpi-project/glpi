@@ -475,6 +475,28 @@ class NetworkName extends FQDNLabel {
    }
 
 
+   static function getHTMLTableHeader($itemtype, HTMLTable_Group $group,
+                                      HTMLTable_SuperHeader $header,
+                                      HTMLTable_Header $father,
+                                      $options=array()) {
+
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      $content = self::getTypeName();
+      if (isset($options['column_links'][$column_name])) {
+         $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
+      }
+      $this_header = $group->addHeader($header, $column_name, $content, $father);
+
+      NetworkAlias::getHTMLTableHeader(__CLASS__, $group, $header, $this_header);
+      IPAddress::getHTMLTableHeader(__CLASS__, $group, $header, $this_header);
+   }
+
+
    /**
     * Get HTMLTable columns headers for a given item type
     *
@@ -505,6 +527,106 @@ class NetworkName extends FQDNLabel {
       IPAddress::getHTMLTableHeaderForItem(__CLASS__, $table, $column_name, $options);
    }
 
+
+   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father, $canedit,
+                                        $options=array()) {
+      global $DB, $CFG_GLPI;
+
+      $column_name = __CLASS__;
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      $header= $row->getGroup()->getHeader('Internet', __CLASS__);
+      if (!$header) {
+         return;
+      }
+
+      $item = $father->getItem();
+
+      switch ($item->getType()) {
+         case 'IPNetwork' :
+            $query = "SELECT `glpi_networknames`.`id`
+                      FROM `glpi_networknames`, `glpi_ipaddresses`, `glpi_ipaddresses_ipnetworks`
+                      WHERE `glpi_networknames`.`id` = `glpi_ipaddresses`.`items_id`
+                            AND `glpi_ipaddresses`.`itemtype` = 'NetworkName'
+                            AND `glpi_ipaddresses`.`id` =`glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
+                            AND `glpi_ipaddresses_ipnetworks`.`ipnetworks_id` = '".$item->getID()."'";
+            if (isset($options['order'])) {
+               switch ($options['order']) {
+                  case 'name' :
+                     $query .= " ORDER BY `glpi_networknames`.`name`";
+                     break;
+
+                  case 'ip' :
+                     $query .= " ORDER BY `glpi_ipaddresses`.`binary_3`,
+                                          `glpi_ipaddresses`.`binary_2`,
+                                          `glpi_ipaddresses`.`binary_1`,
+                                          `glpi_ipaddresses`.`binary_0`";
+                     break;
+               }
+            }
+            break;
+
+         case 'FQDN' :
+            $query = "SELECT `glpi_networknames`.`id`
+                      FROM `glpi_networknames`
+                      WHERE `fqdns_id` = '".$item->fields["id"]."'
+                      ORDER BY `glpi_networknames`.`name`";
+            break;
+
+         case 'NetworkEquipment' :
+         case 'NetworkPort' :
+            $query = "SELECT `id`
+                      FROM `glpi_networknames`
+                      WHERE `itemtype` = '".$item->getType()."'
+                            AND `items_id` = '".$item->getID()."'";
+            break;
+      }
+
+      if (isset($options['SQL_options'])) {
+         $query .= " ".$options['SQL_options'];
+      }
+      $result = $DB->query($query);
+
+      $address = new self();
+
+      if ($DB->numrows($result) > 0) {
+         while ($line = $DB->fetch_assoc($result)) {
+
+            if ($address->getFromDB($line["id"])) {
+
+               $content      = "<a href='" . $address->getLinkURL(). "'>";
+               $internetName = $address->getInternetName();
+               if (empty($internetName)) {
+                  $content .= "(".$line["id"].")";
+               } else {
+                  $content .= $internetName;
+               }
+               $content .= "</a>";
+
+               if ($canedit) {
+                  $content .= "&nbsp;- <a href='" . $address->getFormURL() .
+                              "?remove_address=unaffect&id=" . $address->getID() . "'>&nbsp;".
+                              "<img src=\"" . $CFG_GLPI["root_doc"] .
+                              "/pics/sub_dropdown.png\" alt=\"" . __s('Dissociate') .
+                              "\" title=\"" . __s('Dissociate') . "\"></a>";
+                  $content .= "&nbsp;- <a href='" . $address->getFormURL() .
+                              "?remove_address=purge&id=" . $address->getID() . "'>&nbsp;".
+                              "<img src=\"" . $CFG_GLPI["root_doc"] .
+                              "/pics/delete.png\" alt=\"" . __s('Purge') . "\" title=\"" .
+                              __s('Purge') . "\"></a>";
+               }
+
+               $this_cell = $row->addCell($header, $content, $father, $address);
+
+               NetworkAlias::getHTMLTable_ForItem($row, $this_cell, $canedit, $options);
+               IPAddress::getHTMLTable_ForItem($row, $this_cell, $canedit, $options);
+
+            }
+         }
+      }
+   }
 
    /**
     * Get HTMLTable row for a given item

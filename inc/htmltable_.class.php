@@ -80,7 +80,7 @@ class HTMLTable_ extends HTMLTable_Base {
     * @param $content
     * @param $father          HTMLTable_Header object (default NULL)
    **/
-   function addHeader($header_name, $content, HTMLTable_Header $father = NULL) {
+   function addHeader($header_name, $content, HTMLTable_SuperHeader $father = NULL) {
 
       try {
          if (count($this->groups) > 0) {
@@ -130,8 +130,10 @@ class HTMLTable_ extends HTMLTable_Base {
    **/
    function display($table_html_id='') {
 
+      $totalNumberOfRow = 0;
       foreach ($this->groups as $group) {
          $group->prepareDisplay();
+         $totalNumberOfRow += $group->getNumberOfRows();
       }
 
       $totalNumberOfColumn = 0;
@@ -151,25 +153,32 @@ class HTMLTable_ extends HTMLTable_Base {
          echo "\t\t<tr><th colspan='$totalNumberOfColumn'>".$this->title."</th></tr>\n";
       }
 
-      echo "\t\t<tr>";
-      foreach ($this->getHeaderOrder() as $header_name) {
-         $header = $this->getHeader($header_name);
-         echo "\t\t".$header->getTableHeader()."\n";
-      }
-      echo "</tr>\n";
-      echo "\t</thead>\n";
+      if ($totalNumberOfRow == 0) {
+         echo "\t\t<tr><td class='center' colspan='$totalNumberOfColumn'>" . __('None') .
+              "</td></tr>\n";
 
-      echo "\t<tfoot>";
-      echo "\t\t<tr>";
-      foreach ($this->getHeaderOrder() as $header_name) {
-         $header = $this->getHeader($header_name);
-         echo "\t\t".$header->getTableHeader()."\n";
-      }
-      echo "</tr>\n";
-      echo "\t</tfoot>\n";
+      } else {
 
-      foreach ($this->groups as $group) {
-        $group->display($totalNumberOfColumn);
+         echo "\t\t<tr>";
+         foreach ($this->getHeaderOrder() as $header_name) {
+            $header = $this->getHeader($header_name);
+            echo "\t\t".$header->getTableHeader()."\n";
+         }
+         echo "</tr>\n";
+         echo "\t</thead>\n";
+
+         echo "\t<tfoot>";
+         echo "\t\t<tr>";
+         foreach ($this->getHeaderOrder() as $header_name) {
+            $header = $this->getHeader($header_name);
+            echo "\t\t".$header->getTableHeader()."\n";
+         }
+         echo "</tr>\n";
+         echo "\t</tfoot>\n";
+
+         foreach ($this->groups as $group) {
+            $group->display($totalNumberOfColumn);
+         }
       }
 
       echo "</table>\n";

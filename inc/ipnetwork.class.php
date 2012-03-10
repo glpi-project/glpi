@@ -844,6 +844,23 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
+   static function getHTMLTableHeader($itemtype, HTMLTable_Group $group,
+                                      HTMLTable_SuperHeader $header,
+                                      HTMLTable_Header $father,
+                                      $options=array()) {
+
+      if ($itemtype != 'IPAddress') {
+         return;
+      }
+
+      $column_name = __CLASS__;
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      $content = self::getTypeName();
+      $this_header = $group->addHeader($header, $column_name, $content, $father);
+   }
    /**
     * Get HTMLTable columns headers for a given item type
     *
@@ -881,6 +898,35 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *       -'dont_display' : array of the elements that must not be display
     *
    **/
+   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father, $canedit,
+                                        $options=array()) {
+      global $DB, $CFG_GLPI;
+
+      $item = $father->getItem();
+
+      if ($item->getType() != 'IPAddress') {
+         return;
+      }
+
+      $header= $row->getGroup()->getHeader('Internet', __CLASS__);
+      if (!$header) {
+         return;
+      }
+
+      $network = new self();
+
+      foreach (self::searchNetworksContainingIP($item) as $networks_id) {
+         if ($network->getFromDB($networks_id)){
+            $content = $network->getAddress()->getTextual() . "/" .
+               $network->getNetmask()->getTextual();
+            if ($network->fields['addressable'] == 1) {
+               $content = "<span class='b'>".$content."</span>";
+            }
+            $content .= " - " . $network->getLink();
+            $this_cell = $row->addCell($header, $content, $father, $item);
+         }
+      }
+   }
    static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
                                        $options=array()) {
       global $DB, $CFG_GLPI;

@@ -428,7 +428,32 @@ class NetworkPort extends CommonDBChild {
          $porttypes[] = '';
       }
 
+      $table_ = new HTMLTable_();
+      $number_port = self::countForItem($item);
+      $name = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
+      $table_->setTitle($name);
+
+      if ($withtemplate != 2 && $canedit) {
+         $c_checkbox = $table_->addHeader("&nbsp;", "checkbox");
+      } else {
+         $c_checkbox = NULL;
+      }
+
+      $c_number  = $table_->addHeader('NetworkPort', "#", $c_checkbox);
+      $c_name    = $table_->addHeader("Name", __('Name'), $c_number);
+      $c_network = $table_->addHeader('Internet', __('Network informations'));
+      $c_charact = $table_->addHeader('Characteristics', __('Characteristics'), $c_name);
+
       foreach ($porttypes as $portType) {
+
+         if (empty($portType)) {
+            $t_group = $table_->createGroup('Migration',
+                                            __('Network ports waiting for manual migration'));
+         } else {
+            $t_group = $table_->createGroup($portType, $portType::getTypeName(2));
+         }
+
+         NetworkName::getHTMLTableHeader(__CLASS__, $t_group, $c_network, $c_name);
 
          if ($itemtype == 'NetworkPort') {
             switch ($portType) {
@@ -495,6 +520,8 @@ class NetworkPort extends CommonDBChild {
                }
 
                while ($devid = $DB->fetch_row($result)) {
+                  $t_row = $t_group->createRow();
+
                   $netport->getFromDB(current($devid));
                   // This is added by HTMLTable
                   // Session::addToNavigateListItems('NetworkPort', $netport->fields["id"]);
@@ -503,9 +530,14 @@ class NetworkPort extends CommonDBChild {
                   if ($withtemplate != 2
                       && $canedit
                       && !empty($portType)) {
+                     $ce_checkbox =  $t_row->addCell($c_checkbox,
+                                                     "<input type='checkbox' name='del_port[" .
+                                                     $netport->fields["id"]."]' value='1'>");
                      $table->addElement("<input type='checkbox' name='del_port[" .
                                           $netport->fields["id"]."]' value='1'>",
                                         "checkbox", $netport->getID());
+                  } else {
+                     $ce_checkbox = NULL;
                   }
                   $content = "<span class='b'>";
                   // Display link based on default rights
@@ -530,12 +562,20 @@ class NetworkPort extends CommonDBChild {
                   $content .= Html::showToolTip($netport->fields['comment'],
                                                 array('display' => false));
 
+                  $ce_number = $t_row->addCell($c_number, $content, $ce_checkbox, $netport);
+
                   $table->addElement($content, "NetworkPort", $netport->getID());
+
+                  $ce_name = $t_row->addCell($c_name, $netport->fields["name"], $ce_number,
+                                             $netport);
 
                   $table->addElement($netport->fields["name"], "Name", $netport->getID());
 
                   NetworkName::getHTMLTableForItem($netport, $table, $canedit, false,
                                                    $table_options);
+
+                  NetworkName::getHTMLTable_ForItem($t_row, $ce_name, $canedit,
+                                                    $table_options);
 
                   $instantiation = $netport->getInstantiation();
                   if ($instantiation !== false) {
@@ -554,6 +594,9 @@ class NetworkPort extends CommonDBChild {
             echo "</div>";
          }
       }
+
+      //$table_->display();
+      unset($table_);
 
       if (!$is_active_network_port) {
          echo "<table class='tab_cadre_fixe'><tr><th>".__('No network port found')."</th></tr>";

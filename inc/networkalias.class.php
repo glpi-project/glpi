@@ -166,6 +166,24 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
+   static function getHTMLTableHeader($itemtype, HTMLTable_Group $group,
+                                      HTMLTable_SuperHeader $header,
+                                      HTMLTable_Header $father,
+                                      $options=array()) {
+      if ($itemtype != 'NetworkName') {
+         return;
+      }
+
+      $column_name = __CLASS__;
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      $content = self::getTypeName();
+      $this_header = $group->addHeader($header, $column_name, $content, $father);
+    }
+
+
     /**
     * Get HTMLTable columns headers for a given item type
     *
@@ -237,6 +255,59 @@ class NetworkAlias extends FQDNLabel {
             if ($close_row) {
                $table->closeRow();
             }
+         }
+      }
+   }
+
+
+   /**
+    * Get HTMLTable row for a given item
+    *
+    * @param $item            CommonDBTM object
+    * @param $table           HTMLTable object: the table to update
+    * @param $canedit         display the edition elements (ie : add, remove, ...)
+    * @param $close_row       set to true if we must close the row at the end of the current element
+    * @param $options   array of possible options:
+    *       - 'dont_display' : array of the elements that must not be display
+    *
+   **/
+   static function getHTMLTable_ForItem(HTMLTable_Row $row,  HTMLTable_Cell $father, $canedit,
+                                        $options=array()) {
+      global $DB, $CFG_GLPI;
+
+      $item = $father->getItem();
+      if ($item->getType() != 'NetworkName') {
+         return;
+      }
+
+      $column_name = __CLASS__;
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      $header= $row->getGroup()->getHeader('Internet', $column_name);
+      if (!$header) {
+         return;
+      }
+
+      $query = "SELECT `id`
+                FROM `glpi_networkaliases`
+                WHERE `networknames_id` = '".$item->getID()."'";
+
+      $alias  = new self();
+      $result = $DB->query($query);
+      foreach ($DB->request($query) as $line) {
+         if ($alias->getFromDB($line["id"])) {
+            $content = "<a href='" . $alias->getLinkURL(). "'>".$alias->getInternetName()."</a>";
+            if ($canedit) {
+               $content .= "<a href='" . $alias->getFormURL(). "?remove_alias=remove&id=";
+               $content .= $alias->getID() . "'>&nbsp;";
+               $content .= "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" ;
+               $content .= __s('Delete') . "\" title=\"" . __s('Delete') . "\"></a>";
+            }
+
+            $row->addCell($header, $content, $father, $item);
+
          }
       }
    }
