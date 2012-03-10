@@ -153,12 +153,16 @@ class NetworkPortInstantiation extends CommonDBChild {
    static function getItemsByMac($mac, $wildcard_search=false) {
       global $DB;
 
+      $mac = strtolower($mac);
       if ($wildcard_search) {
-         // TODO Damien : si tu mets LIKE il faut que tu précises où tu veux ta chaine ($label% : en début, %$label : à la fin
-         // j'ai fait la modif pour que la chaine recherchée soit comprise dans fqdn, peut importe l'emplacement
-         $relation = "LIKE '%".strtolower($mac)."%'";
+         $count = 0;
+         $mac = str_replace('*', '%', $mac, $count);
+         if ($count == 0) {
+            $mac = '%'.$mac.'%';
+         }
+         $relation = "LIKE '$mac'";
       } else {
-         $relation = "= '".strtolower($mac)."'";
+         $relation = "= '$mac'";
       }
 
       $macItemWithItems = array();

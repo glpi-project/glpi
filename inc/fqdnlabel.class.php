@@ -186,12 +186,16 @@ abstract class FQDNLabel extends CommonDBChild {
    static function getIDsByLabelAndFQDNID($label, $fqdns_id, $wildcard_search=false) {
       global $DB;
 
+      $label = strtolower($label);
       if ($wildcard_search) {
-         $relation = "= '$label'";
+         $count = 0;
+         $label = str_replace('*', '%', $label, $count);
+         if ($count == 0) {
+            $label = '%'.$label.'%';
+         }
+         $relation = "LIKE '$label'";
       } else {
-         // TODO Damien : si tu mets LIKE il faut que tu précises où tu veux ta chaine ($label% : en début, %$label : à la fin
-         // j'ai fait la modif pour que la chaine recherchée soit comprise dans le nom, peut importe l'emplacement
-         $relation = "LIKE '%$label%'";
+         $relation = "= '$label'";
       }
 
       $IDs = array();
@@ -243,7 +247,7 @@ abstract class FQDNLabel extends CommonDBChild {
          $fqdns_id = -1;
       }
 
-      foreach (self::getIDsByLabelAndFQDNID($label, $fqdns_id) as $class => $IDs) {
+      foreach (self::getIDsByLabelAndFQDNID($label, $fqdns_id, $wildcard_search) as $class => $IDs) {
          if ($FQDNlabel = getItemForItemtype($class)) {
             foreach ($IDs as $ID) {
                if ($FQDNlabel->getFromDB($ID)) {

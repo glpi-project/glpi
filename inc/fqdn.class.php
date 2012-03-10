@@ -154,12 +154,16 @@ class FQDN extends CommonDropdown {
          return 0;
       }
 
+      $fqdn = strtolower($fqdn);
       if ($wildcard_search) {
-         // TODO Damien : si tu mets LIKE il faut que tu précises où tu veux ta chaine ($label% : en début, %$label : à la fin
-         // j'ai fait la modif pour que la chaine recherchée soit comprise dans fqdn, peut importe l'emplacement
-         $relation = "LIKE '%".strtolower($fqdn)."%'";
+         $count = 0;
+         $fqdn = str_replace('*', '%', $fqdn, $count);
+         if ($count == 0) {
+            $fqdn = '%'.$fqdn.'%';
+         }
+         $relation = "LIKE '$fqdn'";
       } else {
-         $relation = "= '".strtolower($fqdn)."'";
+         $relation = "= '$fqdn'";
       }
 
       $query = "SELECT `id`

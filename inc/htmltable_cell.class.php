@@ -47,6 +47,7 @@ class HTMLTable_Cell extends HTMLTable_Entity {
    private $father;
    private $items_id;
    private $sons = array();
+   private $item;
 
 
    /**
@@ -89,6 +90,19 @@ class HTMLTable_Cell extends HTMLTable_Entity {
 
    function getHeader() {
       return $this->header;
+   }
+
+
+   function setItem($item) {
+      $this->item = $item;
+   }
+
+
+   function getItem() {
+      if (isset($this->item)) {
+         return $this->item;
+      }
+      return false;
    }
 
 
