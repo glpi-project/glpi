@@ -842,7 +842,7 @@ class IPAddress extends CommonDBChild {
 
    static function getHTMLTableHeader($itemtype, HTMLTable_Group $group,
                                       HTMLTable_SuperHeader $header,
-                                      HTMLTable_Header $father,
+                                      HTMLTable_Header $father = NULL,
                                       $options=array()) {
       $column_name = __CLASS__;
 
@@ -889,8 +889,8 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father, $canedit,
-                                        $options=array()) {
+   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
+                                        CommonDBTM $item = NULL, array $options) {
       global $DB, $CFG_GLPI;
 
       if (isset($options['dont_display']['IPAddress'])) {
@@ -902,20 +902,34 @@ class IPAddress extends CommonDBChild {
          return;
       }
 
-      $item = $father->getItem();
+      if (!empty($father)) {
+         $item = $father->getItem();
+      } else {
+         if (empty($item)) {
+            return;
+         }
+      }
 
-      $query = "SELECT `id`
-                FROM `glpi_ipaddresses`
-                WHERE `items_id` = '" . $item->getID() . "'
-                      AND `itemtype` = '" . $item->getType() . "'";
+      $query                = "SELECT `id`
+                               FROM `glpi_ipaddresses`
+                               WHERE `items_id` = '" . $item->getID() . "'
+                                     AND `itemtype` = '" . $item->getType() . "'";
 
-      $result = $DB->query($query);
-      $address = new self();
+      $canedit              = ((isset($options['canedit']))   && ($options['canedit']));
+      $createRow            = ((isset($options['createRow'])) && ($options['createRow']));
+      $options['createRow'] = false;
+      $address              = new self();
+
       foreach ($DB->request($query) as $ipaddress) {
          if ($address->getFromDB($ipaddress['id'])) {
+
+            if ($createRow) {
+               $row = $row->createRow();
+            }
+
             $this_cell = $row->addCell($header, $address->fields['name'], $father, $address);
 
-            IPNetwork::getHTMLTable_ForItem($row, $this_cell, $canedit, $options);
+            IPNetwork::getHTMLTable_ForItem($row, $this_cell, NULL, $options);
          }
       }
    }

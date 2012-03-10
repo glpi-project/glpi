@@ -846,7 +846,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
    static function getHTMLTableHeader($itemtype, HTMLTable_Group $group,
                                       HTMLTable_SuperHeader $header,
-                                      HTMLTable_Header $father,
+                                      HTMLTable_Header $father = NULL,
                                       $options=array()) {
 
       if ($itemtype != 'IPAddress') {
@@ -898,11 +898,17 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     *       -'dont_display' : array of the elements that must not be display
     *
    **/
-   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father, $canedit,
-                                        $options=array()) {
+   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
+                                        CommonDBTM $item = NULL, array $options) {
       global $DB, $CFG_GLPI;
 
-      $item = $father->getItem();
+      if (!empty($father)) {
+         $item = $father->getItem();
+      } else {
+         if (empty($item)) {
+            return;
+         }
+      }
 
       if ($item->getType() != 'IPAddress') {
          return;
@@ -913,10 +919,17 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          return;
       }
 
-      $network = new self();
+      $createRow            = ((isset($options['createRow'])) && ($options['createRow']));
+      $options['createRow'] = false;
+      $network              = new self();
 
       foreach (self::searchNetworksContainingIP($item) as $networks_id) {
          if ($network->getFromDB($networks_id)){
+
+            if ($createRow) {
+               $row = $row->createRow();
+            }
+
             $content = $network->getAddress()->getTextual() . "/" .
                $network->getNetmask()->getTextual();
             if ($network->fields['addressable'] == 1) {

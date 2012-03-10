@@ -510,7 +510,7 @@ class NetworkPort extends CommonDBChild {
                $table->addHeader("#", 'NetworkPort', "", 'NetworkPort');
                $table->addHeader(__('Name'), "Name");
 
-               $table_options = array();
+               $table_options = array('canedit' => $canedit);
 
                NetworkName::getHTMLTableHeaderForItem(__CLASS__, $table, 'Name', $table_options);
 
@@ -574,8 +574,7 @@ class NetworkPort extends CommonDBChild {
                   NetworkName::getHTMLTableForItem($netport, $table, $canedit, false,
                                                    $table_options);
 
-                  NetworkName::getHTMLTable_ForItem($t_row, $ce_name, $canedit,
-                                                    $table_options);
+                  NetworkName::getHTMLTable_ForItem($t_row, $ce_name, NULL, $table_options);
 
                   $instantiation = $netport->getInstantiation();
                   if ($instantiation !== false) {

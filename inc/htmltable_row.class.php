@@ -71,6 +71,11 @@ class HTMLTable_Row extends HTMLTable_Entity {
    }
 
 
+   function createAnotherRow() {
+      return $this->group->createRow();
+   }
+
+
    /**
     * @param $header    HTMLTable_Header object
     * @param $content
