@@ -310,8 +310,7 @@ class Computer_Device extends CommonDBTM {
                                                'parameters' => array($field_name, 0, 0, 10)),
                                     "</span>");
                   }
-                  $name_cell = $current_row->addCell($name_column, $cell_value, NULL,
-                                                     $device->getID());
+                  $name_cell = $current_row->addCell($name_column, $cell_value, NULL, $device);
 
                   if ($canedit) {
                      $cell_value = "<a href='#' onclick= \"if ( toggleCheckboxes('$device_group')".

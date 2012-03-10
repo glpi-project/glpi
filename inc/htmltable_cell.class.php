@@ -45,7 +45,6 @@ class HTMLTable_Cell extends HTMLTable_Entity {
    private $row;
    private $header;
    private $father;
-   private $items_id;
    private $sons = array();
    private $item;
 
@@ -55,20 +54,21 @@ class HTMLTable_Cell extends HTMLTable_Entity {
     * @param $header
     * @param $content
     * @param $father    HTMLTable_Cell object (default NULL)
-    * @param $items_id  (default 0)
+    * @param $item      The item associated with the current cell (default NULL)
    **/
-   function __construct($row, $header, $content, HTMLTable_Cell $father=NULL, $items_id=0) {
+   function __construct($row, $header, $content, HTMLTable_Cell $father=NULL,
+                        CommonDBTM $item = NULL) {
 
       parent::__construct($content);
       $this->row        = $row;
       $this->header     = $header;
       $this->father     = $father;
-      $this->items_id   = $items_id;
-
-      $this->itemtype   = $this->header->getItemType();
-      if ((!empty($this->itemtype)) && ($this->items_id == 0)) {
-         throw new Exception('Implementation error: header requires an item id');
+      if (!empty($item)) {
+         $this->item = clone $item;
+      } else {
+         $this->item = NULL;
       }
+      $this->itemtype   = $this->header->getItemType();
 
       if (!is_null($this->father)) {
 
@@ -85,6 +85,15 @@ class HTMLTable_Cell extends HTMLTable_Entity {
       } else if (!is_null($this->header->getFather())) {
          throw new Exception('Implementation error : cell must have a father');
       }
+
+     if (!empty($this->itemtype)) {
+         if (empty($this->item)) {
+            throw new Exception('Implementation error: header requires an item');
+         }
+         if (!($this->item instanceof $this->itemtype)) {
+            throw new Exception('Implementation error: type mismatch between header and celle');
+         }
+      }
    }
 
 
@@ -93,13 +102,8 @@ class HTMLTable_Cell extends HTMLTable_Entity {
    }
 
 
-   function setItem($item) {
-      $this->item = $item;
-   }
-
-
    function getItem() {
-      if (isset($this->item)) {
+      if (!empty($this->item)) {
          return $this->item;
       }
       return false;
@@ -169,7 +173,7 @@ class HTMLTable_Cell extends HTMLTable_Entity {
 
          if ($index == $this->start) {
             if (!empty($this->itemtype)) {
-               Session::addToNavigateListItems($this->itemtype, $this->items_id);
+               Session::addToNavigateListItems($this->item->getType(), $this->item->getID());
             }
             echo "\t\t\t<td colspan='".$this->header->getColSpan()."'";
             if ($this->numberOfLines > 1) {
