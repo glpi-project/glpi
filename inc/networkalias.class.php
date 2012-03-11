@@ -166,10 +166,10 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
-   static function getHTMLTableHeader($itemtype, HTMLTable_Group $group,
-                                      HTMLTable_SuperHeader $header,
-                                      HTMLTable_Header $father = NULL,
-                                      $options=array()) {
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Group $group,
+                                              HTMLTable_SuperHeader $header,
+                                              HTMLTable_Header $father = NULL,
+                                              $options=array()) {
 
       $column_name = __CLASS__;
       if (isset($options['dont_display'][$column_name])) {
@@ -185,103 +185,15 @@ class NetworkAlias extends FQDNLabel {
     }
 
 
-    /**
-    * Get HTMLTable columns headers for a given item type
-    *
-    * @param $itemtype        The type of the item
-    * @param $table           HTMLTable object: the table to update
-    * @param $fathers_name    The name of the father element (default '')
-    * @param $options   array of possible options:
-    *       -  'dont_display' : array of the columns that must not be display
-    *
-   **/
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name="",
-                                             $options=array()) {
-
-      if ($itemtype != 'NetworkName') {
-         return;
-      }
-
-      $column_name = __CLASS__;
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      $table->addHeader(NetworkAlias::getTypeName(), $column_name, $fathers_name);
-   }
-
-
-   /**
-    * Get HTMLTable row for a given item
-    *
-    * @param $item            CommonDBTM object
-    * @param $table           HTMLTable object: the table to update
-    * @param $canedit         display the edition elements (ie : add, remove, ...)
-    * @param $close_row       set to true if we must close the row at the end of the current element
-    * @param $options   array of possible options:
-    *       - 'dont_display' : array of the elements that must not be display
-    *
-   **/
-   static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
-                                       $options=array()) {
+   static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
+                                        HTMLTable_Cell $father = NULL, array $options) {
       global $DB, $CFG_GLPI;
 
-      if ($item->getType() != 'NetworkName') {
-         return;
-      }
-
-      $column_name = __CLASS__;
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      $query = "SELECT `id`
-                FROM `glpi_networkaliases`
-                WHERE `networknames_id` = '".$item->getID()."'";
-
-      $alias  = new self();
-      $result = $DB->query($query);
-      foreach ($DB->request($query) as $line) {
-         if ($alias->getFromDB($line["id"])) {
-            $content = "<a href='" . $alias->getLinkURL(). "'>".$alias->getInternetName()."</a>";
-            if ($canedit) {
-               $content .= "<a href='" . $alias->getFormURL(). "?remove_alias=remove&id=";
-               $content .= $alias->getID() . "'>&nbsp;";
-               $content .= "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt=\"" ;
-               $content .= __s('Delete') . "\" title=\"" . __s('Delete') . "\"></a>";
-            }
-
-            $table->addElement($content, $column_name, $line["id"], $item->getID());
-
-            if ($close_row) {
-               $table->closeRow();
-            }
-         }
-      }
-   }
-
-
-   /**
-    * Get HTMLTable row for a given item
-    *
-    * @param $item            CommonDBTM object
-    * @param $table           HTMLTable object: the table to update
-    * @param $canedit         display the edition elements (ie : add, remove, ...)
-    * @param $close_row       set to true if we must close the row at the end of the current element
-    * @param $options   array of possible options:
-    *       - 'dont_display' : array of the elements that must not be display
-    *
-   **/
-   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
-                                        CommonDBTM $item = NULL, array $options) {
-      global $DB, $CFG_GLPI;
-
-      if (!empty($father)) {
-         $item = $father->getItem();
-      } else {
-         if (empty($item)) {
+      if (empty($item)) {
+         if (empty($father)) {
             return;
          }
+         $item = $father->getItem();
       }
 
       if ($item->getType() != 'NetworkName') {

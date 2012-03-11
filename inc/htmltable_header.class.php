@@ -46,6 +46,7 @@ abstract class HTMLTable_Header extends HTMLTable_Entity {
    private $father;
    private $itemtype;
    private $colSpan = 1;
+   private $numberCells = 0;
 
 
    abstract protected function getTable();
@@ -93,15 +94,29 @@ abstract class HTMLTable_Header extends HTMLTable_Entity {
    }
 
 
+   function addCell() {
+      $this->numberCells ++ ;
+   }
+
+
+   function hasToDisplay() {
+      return ($this->numberCells > 0);
+   }
+
+
    function getColSpan() {
       return $this->colSpan;
    }
 
 
-   function getTableHeader() {
+   function displayTableHeader($with_content) {
 
       echo "<th colspan='".$this->colSpan."'>";
-      $this->displayContent();
+      if ($with_content) {
+         $this->displayContent();
+      } else {
+         echo "&nbsp;";
+      }
       echo "</th>";
    }
 

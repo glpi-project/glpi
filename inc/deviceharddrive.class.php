@@ -172,7 +172,6 @@ class DeviceHardDrive extends CommonDevice {
          $cell_value = '';
       }
       $previous_cell = $row->addCell($headers['rpm'], $cell_value, $previous_cell);
-      $previous_cell->setHTMLClass('center');
 
       if ($this->fields["cache"]) {
          $cell_value = $this->fields["cache"];
@@ -180,7 +179,6 @@ class DeviceHardDrive extends CommonDevice {
          $cell_value = '';
       }
       $previous_cell = $row->addCell($headers['cache'], $cell_value, $previous_cell);
-      $previous_cell->setHTMLClass('center');
 
       if ($this->fields["interfacetypes_id"]) {
          $cell_value = Dropdown::getDropdownName("glpi_interfacetypes",
@@ -189,7 +187,6 @@ class DeviceHardDrive extends CommonDevice {
          $cell_value = '';
       }
       $previous_cell = $row->addCell($headers['inter'], $cell_value, $previous_cell);
-      $previous_cell->setHTMLClass('center');
 
       if (!empty($this->fields["manufacturers_id"])) {
          $cell_value = Dropdown::getDropdownName("glpi_manufacturers",
@@ -198,7 +195,6 @@ class DeviceHardDrive extends CommonDevice {
          $cell_value = '';
       }
       $previous_cell = $row->addCell($headers['manu'], $cell_value, $previous_cell);
-      $previous_cell->setHTMLClass('center');
    }
 
 

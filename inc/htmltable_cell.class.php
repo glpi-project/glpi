@@ -37,6 +37,10 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
+class HTMLTable_CellFatherSameRow extends Exception {}
+class HTMLTable_CellFatherCoherentHeader extends Exception {}
+class HTMLTable_CellWithoutFather extends Exception {}
+
 /**
  * @since version 0.84
 **/
@@ -73,27 +77,57 @@ class HTMLTable_Cell extends HTMLTable_Entity {
       if (!is_null($this->father)) {
 
          if ($this->father->row != $this->row) {
-            throw new Exception('Implementation error: cell and its father must have the same row');
+            throw new HTMLTable_CellSameRow();
          }
 
          if ($this->father->header != $this->header->getFather()) {
-            throw new Exception('Implementation error: cell and its father are not coherent
-                                 regarding headers');
+
+            if (($this->father->header instanceof HTMLTable_Header)
+                && ($this->header->getFather() instanceof HTMLTable_Header)) {
+               throw new HTMLTable_CellFatherCoherentHeader($this->header->getFather()->getName() .
+                                                            ' != ' .
+                                                            $this->father->header->getName());
+            }
+
+            if ($this->father->header instanceof HTMLTable_Header) {
+               throw new HTMLTable_CellFatherCoherentHeader('NULL != '.
+                                                            $this->father->header->getName());
+            }
+
+            if ($this->header->getFather() instanceof HTMLTable_Header) {
+               throw new HTMLTable_CellFatherCoherentHeader($this->header->getFather()->getName() .
+                                                            ' != NULL');
+            }
+
+            throw new HTMLTable_CellFatherCoherentHeader('NULL != NULL');
+
          }
 
-        $this->father->addSon($this, $header);
+         $this->father->addSon($this, $header);
 
       } else if (!is_null($this->header->getFather())) {
-         throw new Exception('Implementation error : cell must have a father');
+         throw HTMLTable_CellWithoutFather();
       }
 
-     if (!empty($this->itemtype)) {
+      if (!empty($this->itemtype)) {
          if (empty($this->item)) {
             throw new Exception('Implementation error: header requires an item');
          }
          if (!($this->item instanceof $this->itemtype)) {
-            throw new Exception('Implementation error: type mismatch between header and celle');
+            throw new Exception('Implementation error: type mismatch between header and cell');
          }
+      }
+
+      $this->copyAttributsFrom($this->header);
+      if (is_string($content)) {
+         $string = trim($content);
+         $string = str_replace('&nbsp;', '', $string);
+         $string = str_replace('<br>', '', $string);
+         if (!empty($string)) {
+            $this->header->addCell();
+         }
+      } else {
+         $this->header->addCell();
       }
    }
 

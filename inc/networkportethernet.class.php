@@ -84,56 +84,49 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
   }
 
 
-   /**
-    * @param $table              HTMLTable object
-    * @param $fathers_name       (default '')
-    * @param $options      array
-   **/
-   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name="",
-                                                    $options=array()) {
+   static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
+                                                     HTMLTable_SuperHeader $header,
+                                                     HTMLTable_Header &$father = NULL,
+                                                     $options=array()) {
 
       // TODO : try to transfert to Interface DeviceNetworkCard::getHTMLTableHeaderForItem...
-      $table->addHeader(__('Interface'), "Interface", $fathers_name);
-      $table->addHeader(__('MAC'), "MAC", $fathers_name);
-      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $table, $fathers_name);
-      // TODO : try to transfert to Interface Netpoint::getHTMLTableHeaderForItem...
-      $table->addHeader(__('Network outlet'), "Outlet", $fathers_name);
-      $table->addHeader(__('Connected to'), "Connected", $fathers_name);
+      $father = $group->addHeader($header, 'Interface', __('Interface'), $father);
+      $father = $group->addHeader($header, 'MAC', __('MAC'), $father);
+      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $group, $header, $father);
+      // TODO : try to transfert to Interface Netpoint::getHTMLTableHeader_ForItem...
+      $father = $group->addHeader($header, 'Outlet', __('Network outlet'), $father);
+      $father = $group->addHeader($header, 'Connected', __('Connected to'), $father);
 
-   }
+  }
 
 
-   /**
-    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
-    */
-   function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
-                                      $canedit, $options=array()) {
+   function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
+                                       HTMLTable_Row $row, HTMLTable_Cell &$father,
+                                       $canedit, $options=array()) {
 
       $compdev = new Computer_Device();
       $device  = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
-                                                   $this->fields['computers_devicenetworkcards_id']);
+                                                         $this->fields['computers_devicenetworkcards_id']);
 
-      if ($device) {
-         $table->addElement($device->getLink(), "Interface", $this->getID(), $netport->getID());
-      }
+      $father = $row->addCell($row->getHeader('Instantiation', 'Interface'),
+                              ($device ? $device->getLink() : ''), $father);
 
-      $table->addElement($netport->fields["mac"], "MAC", $this->getID(),$netport->getID());
+      $father = $row->addCell($row->getHeader('Instantiation', 'MAC'), $netport->fields["mac"],
+                              $father);
 
-      $table->addElement(Dropdown::getDropdownName("glpi_netpoints",
-                                                   $this->fields["netpoints_id"]),
-                         "Outlet", $this->getID(),$netport->getID());
+      $father = $row->addCell($row->getHeader('Instantiation', 'Outlet'),
+                              Dropdown::getDropdownName("glpi_netpoints",
+                                                        $this->fields["netpoints_id"]),
+                              $father);
 
-      NetworkPort_Vlan::getHTMLTableForItem($netport, $table, $canedit, false);
+      NetworkPort_Vlan::getHTMLTableForItem($row, $netport, $father, $options);
 
-      if (isset($options['withtemplate'])) {
-         $withtemplate = $options['withtemplate'];
-      } else {
-         $withtemplate = '';
-      }
-
-      $table->addElement(array('function'   => array(__CLASS__, 'showConnection'),
-                               'parameters' => array($item, $netport, $withtemplate)),
-                         "Connected", $this->getID(),$netport->getID());
+      $father = $row->addCell($row->getHeader('Instantiation', 'Connected'),
+                              array(array('function'   => array(__CLASS__, 'showConnection'),
+                                          'parameters' => array($item, $netport,
+                                                                (isset($options['withtemplate'])
+                                                                 && $options['withtemplate'])))),
+                              $father);
    }
 
 
@@ -160,15 +153,13 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
         if ($device2 = getItemForItemtype($netport->fields["itemtype"])) {
 
             if ($device2->getFromDB($netport->fields["items_id"])) {
-               echo "\n<table width='100%'>\n";
-               echo "<tr " . ($device2->fields["is_deleted"] ? "class='tab_bg_2_2'" : "") . ">";
-               echo "<td><span class='b'>";
+               echo "<span class='b'>";
 
                if ($device2->can($device2->fields["id"], 'r')) {
                   echo $netport->getLink();
                   echo "</span>\n";
                   Html::showToolTip($netport->fields['comment']);
-                  echo "&nbsp;".__('on') . "<span class='b'>".$device2->getLink()."</span>";
+                  echo " ".__('on') . " <span class='b'>".$device2->getLink()."</span>";
 
                   if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
                      echo "<br>(". Dropdown::getDropdownName("glpi_entities",
@@ -177,14 +168,14 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
                   // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
                   if ($canedit || $device2->can($device2->fields["id"], 'w')) {
-                     echo "</td>\n<td class='right'><span class='b'>";
+                     echo " <span class='b'>";
 
                      if ($withtemplate != 2) {
                         echo "<a href=\"".$netport->getFormURL()."?disconnect=".
                               "disconnect&amp;id=".$contact->fields['id']."\">". __('Disconnect').
                              "</a>";
                      } else {
-                        "&nbsp;";
+                        echo "";
                      }
 
                      echo "</span>";
@@ -201,16 +192,11 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                                                           $device2->getEntityID()) .")";
                }
 
-               echo "</td></tr></table>\n";
             }
          }
 
       } else {
-         echo "\n<table width='100%'><tr>";
-
          if ($canedit) {
-            echo "<td>";
-
             if ($withtemplate != 2 && $withtemplate != 1) {
                self::dropdownConnect($ID, array('name'        => 'dport',
                                                 'entity'      => $device1->fields["entities_id"],
@@ -218,12 +204,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
             } else {
                echo "&nbsp;";
             }
-
-            echo "</td>\n";
          }
-
-         echo "<td><div id='not_connected_display$ID'>" . __('Not connected.') . "</div></td>";
-         echo "</tr></table>\n";
+         echo "<div id='not_connected_display$ID'>" . __('Not connected.') . "</div>";
       }
    }
 

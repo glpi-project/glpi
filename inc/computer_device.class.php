@@ -216,9 +216,11 @@ class Computer_Device extends CommonDBTM {
 
       $common_column = $table->addHeader('common', __('Type of component'));
       if ($canedit) {
-         $delete_column   = $table->addHeader('delete', __('Delete'));
+         $delete_column = $table->addHeader('delete', __('Delete'));
+         $delete_column->setHTMLClass('center');
       }
       $specific_column = $table->addHeader('specificities', __('Specificities'));
+      $specific_column->setHTMLClass('center');
 
       foreach ($devtypes as $itemtype_index => $itemtype) {
          if ($device = getItemForItemtype($itemtype)) {
@@ -316,7 +318,6 @@ class Computer_Device extends CommonDBTM {
                      $cell_value = "<a href='#' onclick= \"if ( toggleCheckboxes('$device_group')".
                                      ") return false;\">".__('All')."</a>";
                      $global_anchor = $current_row->addCell($delete_all, $cell_value, $name_cell);
-                     $global_anchor->setHTMLClass('center');
                   } else {
                      $global_anchor = $name_cell;
                   }
@@ -342,7 +343,6 @@ class Computer_Device extends CommonDBTM {
                                           $itemtype."_".$data['id']."' value='1'>";
                         $local_anchor = $current_row->addCell($delete_one, $cell_value,
                                                               $global_anchor);
-                        $local_anchor->setHTMLClass('center');
                      } else {
                         $local_anchor = $global_anchor;
                      }
@@ -357,7 +357,6 @@ class Computer_Device extends CommonDBTM {
                            $cell_value = $data['specificity'];
                         }
                         $link_spec = $current_row->addCell($link_char, $cell_value, $local_anchor);
-                        $link_spec->setHTMLClass('center');
                      }
                   }
                }
@@ -365,7 +364,8 @@ class Computer_Device extends CommonDBTM {
          }
       }
 
-      $table->display();
+      $table->display(array('display_super_for_each_group' => false,
+                            'display_title_for_each_group' => false));
 
       if ($canedit) {
 

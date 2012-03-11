@@ -122,6 +122,11 @@ class NetworkPortInstantiation extends CommonDBChild {
    static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name="",
                                                     $options=array()) {
    }
+   static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
+                                                     HTMLTable_SuperHeader $header,
+                                                     HTMLTable_Header &$father = NULL,
+                                                     $options=array()) {
+   }
 
 
    /**
@@ -139,7 +144,10 @@ class NetworkPortInstantiation extends CommonDBChild {
    function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
                                       $canedit, $options=array()) {
    }
-
+   function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
+                                       HTMLTable_Row $row, HTMLTable_Cell &$father,
+                                       $canedit, $options=array()) {
+   }
 
   /**
     * Get all NetworkPort and NetworkEquipments that have a specific MAC address

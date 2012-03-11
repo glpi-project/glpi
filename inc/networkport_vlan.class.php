@@ -130,42 +130,22 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
-   /**
-    * Get HTMLTable columns headers for a given item type
-    *
-    * @param $itemtype     The type of the item
-    * @param $table        The table to update
-    * @param $fathers_name The name of the father element
-    * @param $options:
-    *                 'dont_display' : array of the columns that must not be display
-    *
-   **/
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name = "",
-                                             $options=array()) {
-
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Group $group,
+                                              HTMLTable_SuperHeader $header,
+                                              HTMLTable_Header $father = NULL,
+                                              $options=array()) {
       $column_name = __CLASS__;
 
       if (isset($options['dont_display'][$column_name])) {
          return;
       }
 
-      $table->addHeader(__('VLAN'), $column_name, $fathers_name);
+      $group->addHeader($header, $column_name, __('VLAN'), $father);
    }
 
 
-   /**
-    * Get HTMLTable row for a given item
-    *
-    * @param $item            CommonDBTM object
-    * @param $table           HTMLTable object: the table to update
-    * @param $canedit         display the edition elements (ie : add, remove, ...)
-    * @param $close_row       set to true if we must close the row at the end of the current element
-    * @param $options   array of possible options:
-    *       - 'dont_display' : array of the elements that must not be display
-    *
-   **/
-   static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
-                                       $options=array()) {
+   static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
+                                        HTMLTable_Cell $father = NULL, array $options) {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
@@ -173,6 +153,15 @@ class NetworkPort_Vlan extends CommonDBRelation {
       if (isset($options['dont_display'][$column_name])) {
          return;
       }
+
+      if (empty($item)) {
+         if (empty($father)) {
+            return;
+         }
+         $item = $father->getItem();
+      }
+
+      $canedit = ((isset($options['canedit']))   && ($options['canedit']));
 
       $query = "SELECT `glpi_networkports_vlans`.*,
                        `glpi_vlans`.`tag` AS vlantag,
@@ -202,7 +191,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
                           __s('Dissociate') . "\" title=\"" . __s('Dissociate') . "\"></a>";
          }
 
-         $table->addElement($content, $column_name, $line["vlans_id"], $item->getID());
+         $this_cell = $row->addCell($row->getHeader('', __CLASS__), $content, $father);
       }
    }
 

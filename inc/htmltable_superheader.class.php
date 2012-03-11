@@ -113,5 +113,10 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
    function updateNumberOfSubHeader($number) {
       $this->setColSpan(self::ppcm($number, $this->getColSpan()));
    }
+
+   function hasToDisplay() {
+      return true;
+   }
+
 }
 ?>
