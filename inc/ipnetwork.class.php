@@ -844,10 +844,10 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
-   static function getHTMLTableHeader($itemtype, HTMLTable_Group $group,
-                                      HTMLTable_SuperHeader $header,
-                                      HTMLTable_Header $father = NULL,
-                                      $options=array()) {
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Group $group,
+                                              HTMLTable_SuperHeader $header,
+                                              HTMLTable_Header $father = NULL,
+                                              $options=array()) {
 
       if ($itemtype != 'IPAddress') {
          return;
@@ -861,53 +861,17 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $content = self::getTypeName();
       $this_header = $group->addHeader($header, $column_name, $content, $father);
    }
-   /**
-    * Get HTMLTable columns headers for a given item type
-    *
-    * @param $itemtype           The type of the item
-    * @param $table              HTMLTable object: the table to update
-    * @param $fathers_name       The name of the father element (default '')
-    * @param $options      array of possible options:
-    *       - 'dont_display' : array of the columns that must not be display
-    *
-   **/
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name="",
-                                             $options=array()) {
-
-      if ($itemtype != 'IPAddress') {
-         return;
-      }
-
-      $column_name = __CLASS__;
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      $table->addHeader(IPNetwork::getTypeName(1), $column_name, $fathers_name);
-   }
 
 
-   /**
-    * Get HTMLTable row for a given item
-    *
-    * @param $item            CommonDBTM object
-    * @param &$table          HTMLTable object : the table to update
-    * @param $canedit         display the edition elements (ie : add, remove, ...)
-    * @param $close_row       set to true if we must close the row at the end of the current element
-    * @param $options   array of possible options:
-    *       -'dont_display' : array of the elements that must not be display
-    *
-   **/
-   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
-                                        CommonDBTM $item = NULL, array $options) {
+   static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL, 
+                                        HTMLTable_Cell $father = NULL, array $options) {
       global $DB, $CFG_GLPI;
 
-      if (!empty($father)) {
-         $item = $father->getItem();
-      } else {
-         if (empty($item)) {
+      if (empty($item)) {
+         if (empty($father)) {
             return;
          }
+         $item = $father->getItem();
       }
 
       if ($item->getType() != 'IPAddress') {
@@ -937,33 +901,6 @@ class IPNetwork extends CommonImplicitTreeDropdown {
             }
             $content .= " - " . $network->getLink();
             $this_cell = $row->addCell($header, $content, $father, $item);
-         }
-      }
-   }
-   static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
-                                       $options=array()) {
-      global $DB, $CFG_GLPI;
-
-      if ($item->getType() != 'IPAddress') {
-         return;
-      }
-
-      $network = new self();
-
-      foreach (self::searchNetworksContainingIP($item) as $networks_id) {
-         if ($network->getFromDB($networks_id)){
-            $content = $network->getAddress()->getTextual() . "/" .
-               $network->getNetmask()->getTextual();
-            if ($network->fields['addressable'] == 1) {
-               $content = "<span class='b'>".$content."</span>";
-            }
-            $content .= " - " . $network->getLink();
-            $table->addElement($content, "IPNetwork", $network->getID(),
-                               $item->getID());
-
-            if ($close_row) {
-               $table->closeRow();
-            }
          }
       }
    }

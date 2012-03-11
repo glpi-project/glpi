@@ -155,7 +155,6 @@ class DeviceDrive extends CommonDevice {
          $cell_value = '';
       }
       $previous_cell = $row->addCell($headers['writer'], $cell_value, $previous_cell);
-      $previous_cell->setHTMLClass('center');
 
       if ($this->fields["speed"]) {
          $cell_value = $this->fields["speed"];
@@ -163,7 +162,6 @@ class DeviceDrive extends CommonDevice {
          $cell_value = '';
       }
       $previous_cell = $row->addCell($headers['speed'], $cell_value, $previous_cell);
-      $previous_cell->setHTMLClass('center');
 
       if ($this->fields["interfacetypes_id"]) {
          $cell_value = Dropdown::getDropdownName("glpi_interfacetypes",
@@ -172,7 +170,6 @@ class DeviceDrive extends CommonDevice {
          $cell_value = '';
       }
       $previous_cell = $row->addCell($headers['inter'], $cell_value, $previous_cell);
-      $previous_cell->setHTMLClass('center');
 
       if (!empty($this->fields["manufacturers_id"])) {
          $cell_value = Dropdown::getDropdownName("glpi_manufacturers",
@@ -181,7 +178,6 @@ class DeviceDrive extends CommonDevice {
          $cell_value = '';
       }
       $previous_cell = $row->addCell($headers['manu'], $cell_value, $previous_cell);
-      $previous_cell->setHTMLClass('center');
    }
 
 }

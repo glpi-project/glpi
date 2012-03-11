@@ -57,7 +57,8 @@ class HTMLTable_SubHeader extends HTMLTable_Header {
 
       $this->header = $header;
       parent::__construct($name, $content, $father);
-   }
+      $this->copyAttributsFrom($this->header);
+    }
 
 
    function isSuperHeader() {

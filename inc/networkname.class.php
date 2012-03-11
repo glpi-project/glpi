@@ -475,10 +475,10 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   static function getHTMLTableHeader($itemtype, HTMLTable_Group $group,
-                                      HTMLTable_SuperHeader $header,
-                                      HTMLTable_Header $father = NULL,
-                                      $options=array()) {
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Group $group,
+                                              HTMLTable_SuperHeader $header,
+                                              HTMLTable_Header $father = NULL,
+                                              $options=array()) {
 
       $column_name = __CLASS__;
 
@@ -492,44 +492,13 @@ class NetworkName extends FQDNLabel {
       }
       $this_header = $group->addHeader($header, $column_name, $content, $father);
 
-      NetworkAlias::getHTMLTableHeader(__CLASS__, $group, $header, $this_header);
-      IPAddress::getHTMLTableHeader(__CLASS__, $group, $header, $this_header);
+      NetworkAlias::getHTMLTableHeaderForItem(__CLASS__, $group, $header, $this_header);
+      IPAddress::getHTMLTableHeaderForItem(__CLASS__, $group, $header, $this_header);
    }
 
 
-   /**
-    * Get HTMLTable columns headers for a given item type
-    *
-    * @param $itemtype           The type of the item
-    * @param $table              HTMLTable object: the table to update
-    * @param $fathers_name       The name of the father element (default '')
-    * @param $options      array of possible options:
-    *       - 'dont_display' : array of the columns that must not be display
-    *       - 'column_links' : array of links for a given column
-    *
-   **/
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name="",
-                                             $options=array()) {
-
-      $column_name = __CLASS__;
-
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      $header = self::getTypeName();
-      if (isset($options['column_links'][$column_name])) {
-         $header = "<a href='".$options['column_links'][$column_name]."'>$header</a>";
-      }
-      $table->addHeader($header, $column_name, $fathers_name, __CLASS__);
-
-      NetworkAlias::getHTMLTableHeaderForItem(__CLASS__, $table, $column_name, $options);
-      IPAddress::getHTMLTableHeaderForItem(__CLASS__, $table, $column_name, $options);
-   }
-
-
-   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
-                                        CommonDBTM $item = NULL, array $options) {
+   static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
+                                        HTMLTable_Cell $father = NULL, array $options) {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
@@ -542,12 +511,11 @@ class NetworkName extends FQDNLabel {
          return;
       }
 
-      if (!empty($father)) {
-         $item = $father->getItem();
-      } else {
-         if (empty($item)) {
+      if (empty($item)) {
+         if (empty($father)) {
             return;
          }
+         $item = $father->getItem();
       }
 
       switch ($item->getType()) {
@@ -630,119 +598,9 @@ class NetworkName extends FQDNLabel {
 
             $this_cell = $row->addCell($header, $content, $father, $address);
 
-            NetworkAlias::getHTMLTable_ForItem($row, $this_cell, NULL, $options);
-            IPAddress::getHTMLTable_ForItem($row, $this_cell, NULL, $options);
+            NetworkAlias::getHTMLTableForItem($row, NULL, $this_cell, $options);
+            IPAddress::getHTMLTableForItem($row, NULL, $this_cell, $options);
 
-         }
-      }
-   }
-
-   /**
-    * Get HTMLTable row for a given item
-    *
-    * @param $item            CommonDBTM object
-    * @param $table           HTMLTable object: tThe table to update
-    * @param $canedit         display the edition elements (ie : add, remove, ...)
-    * @param $close_row       set to true if we must close the row at the end of the current element
-    * @param $options   array of possible options:
-    *       - 'dont_display' : array of the elements that must not be display
-    *       - 'SQL_options'  : SQL options to add after WHERE request
-    *       - 'order'        : Order to display the NetworkNames
-    *
-   **/
-   static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
-                                       $options=array()) {
-      global $DB, $CFG_GLPI;
-
-      $column_name = __CLASS__;
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      switch ($item->getType()) {
-         case 'IPNetwork' :
-            $query = "SELECT `glpi_networknames`.`id`
-                      FROM `glpi_networknames`, `glpi_ipaddresses`, `glpi_ipaddresses_ipnetworks`
-                      WHERE `glpi_networknames`.`id` = `glpi_ipaddresses`.`items_id`
-                            AND `glpi_ipaddresses`.`itemtype` = 'NetworkName'
-                            AND `glpi_ipaddresses`.`id` =`glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
-                            AND `glpi_ipaddresses_ipnetworks`.`ipnetworks_id` = '".$item->getID()."'";
-            if (isset($options['order'])) {
-               switch ($options['order']) {
-                  case 'name' :
-                     $query .= " ORDER BY `glpi_networknames`.`name`";
-                     break;
-
-                  case 'ip' :
-                     $query .= " ORDER BY `glpi_ipaddresses`.`binary_3`,
-                                          `glpi_ipaddresses`.`binary_2`,
-                                          `glpi_ipaddresses`.`binary_1`,
-                                          `glpi_ipaddresses`.`binary_0`";
-                     break;
-               }
-            }
-            break;
-
-         case 'FQDN' :
-            $query = "SELECT `glpi_networknames`.`id`
-                      FROM `glpi_networknames`
-                      WHERE `fqdns_id` = '".$item->fields["id"]."'
-                      ORDER BY `glpi_networknames`.`name`";
-            break;
-
-         case 'NetworkEquipment' :
-         case 'NetworkPort' :
-            $query = "SELECT `id`
-                      FROM `glpi_networknames`
-                      WHERE `itemtype` = '".$item->getType()."'
-                            AND `items_id` = '".$item->getID()."'";
-            break;
-      }
-
-      if (isset($options['SQL_options'])) {
-         $query .= " ".$options['SQL_options'];
-      }
-      $result = $DB->query($query);
-
-      $address = new self();
-
-      if ($DB->numrows($result) > 0) {
-         while ($line = $DB->fetch_assoc($result)) {
-
-            if ($address->getFromDB($line["id"])) {
-
-               $content      = "<a href='" . $address->getLinkURL(). "'>";
-               $internetName = $address->getInternetName();
-               if (empty($internetName)) {
-                  $content .= "(".$line["id"].")";
-               } else {
-                  $content .= $internetName;
-               }
-               $content .= "</a>";
-
-               if ($canedit) {
-                  $content .= "&nbsp;- <a href='" . $address->getFormURL() .
-                              "?remove_address=unaffect&id=" . $address->getID() . "'>&nbsp;".
-                              "<img src=\"" . $CFG_GLPI["root_doc"] .
-                              "/pics/sub_dropdown.png\" alt=\"" . __s('Dissociate') .
-                              "\" title=\"" . __s('Dissociate') . "\"></a>";
-                  $content .= "&nbsp;- <a href='" . $address->getFormURL() .
-                              "?remove_address=purge&id=" . $address->getID() . "'>&nbsp;".
-                              "<img src=\"" . $CFG_GLPI["root_doc"] .
-                              "/pics/delete.png\" alt=\"" . __s('Purge') . "\" title=\"" .
-                              __s('Purge') . "\"></a>";
-               }
-
-               $table->addElement($content, $column_name, $address->getID(), $item->getID());
-
-               NetworkAlias::getHTMLTableForItem($address, $table, $canedit, false, $options);
-
-               IPAddress::getHTMLTableForItem($address, $table, $canedit, false, $options);
-
-               if ($close_row) {
-                  $table->closeRow();
-               }
-            }
          }
       }
    }
@@ -800,7 +658,7 @@ class NetworkName extends FQDNLabel {
 
       $address  = new self();
 
-      self::getHTMLTableHeader(__CLASS__, $t_group, $column);
+      self::getHTMLTableHeaderForItem(__CLASS__, $t_group, $column);
 
       $t_row   = $t_group->createRow();
 
@@ -816,7 +674,7 @@ class NetworkName extends FQDNLabel {
             break;
       }
 
-      self::getHTMLTable_ForItem($t_row, NULL, $item, $table_options);
+      self::getHTMLTableForItem($t_row, $item, NULL, $table_options);
 
       if ($table->getNumberOfRows() > 0) {
 
@@ -828,7 +686,9 @@ class NetworkName extends FQDNLabel {
                                  //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
                                                 $item->getTypeName(1), $item->getName()));
-         $table->display();
+         $table->display(array('display_title_for_each_group' => false,
+                               'display_thead'                => false,
+                               'display_tfoot'                => false));
       } else {
          echo "<table class='tab_cadre_fixe'><tr><th>".__('No network name found')."</th></tr>";
          echo "</table>";

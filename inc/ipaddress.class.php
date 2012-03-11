@@ -840,10 +840,10 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   static function getHTMLTableHeader($itemtype, HTMLTable_Group $group,
-                                      HTMLTable_SuperHeader $header,
-                                      HTMLTable_Header $father = NULL,
-                                      $options=array()) {
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Group $group,
+                                              HTMLTable_SuperHeader $header,
+                                              HTMLTable_Header $father = NULL,
+                                              $options=array()) {
       $column_name = __CLASS__;
 
       if (isset($options['dont_display'][$column_name])) {
@@ -856,41 +856,13 @@ class IPAddress extends CommonDBChild {
       }
       $this_header = $group->addHeader($header, $column_name, $content, $father);
 
-      IPNetwork::getHTMLTableHeader(__CLASS__, $group, $header, $this_header);
-
-   }
-    /**
-    * Get HTMLTable columns headers for a given item type
-    *
-    * @param $itemtype           The type of the item
-    * @param &$table             HTMLTable object: the table to update
-    * @param $fathers_name       The name of the father element (default '')
-    * @param $options      array of possible options:
-    *       - 'dont_display' : array of the columns that must not be display
-    *       - 'column_links' : array of links for a given column
-   **/
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable &$table, $fathers_name="",
-                                             $options=array()) {
-
-      $column_name = __CLASS__;
-
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      $header = self::getTypeName();
-      if (isset($options['column_links'][$column_name])) {
-         $header = "<a href='".$options['column_links'][$column_name]."'>$header</a>";
-      }
-      $table->addHeader($header, $column_name, $fathers_name);
-
-      IPNetwork::getHTMLTableHeaderForItem(__CLASS__, $table, $column_name, $options);
+      IPNetwork::getHTMLTableHeaderForItem(__CLASS__, $group, $header, $this_header);
 
    }
 
 
-   static function getHTMLTable_ForItem(HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
-                                        CommonDBTM $item = NULL, array $options) {
+   static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
+                                        HTMLTable_Cell $father = NULL, array $options) {
       global $DB, $CFG_GLPI;
 
       if (isset($options['dont_display']['IPAddress'])) {
@@ -902,12 +874,11 @@ class IPAddress extends CommonDBChild {
          return;
       }
 
-      if (!empty($father)) {
-         $item = $father->getItem();
-      } else {
-         if (empty($item)) {
+      if (empty($item)) {
+         if (empty($father)) {
             return;
          }
+         $item = $father->getItem();
       }
 
       $query                = "SELECT `id`
@@ -929,45 +900,7 @@ class IPAddress extends CommonDBChild {
 
             $this_cell = $row->addCell($header, $address->fields['name'], $father, $address);
 
-            IPNetwork::getHTMLTable_ForItem($row, $this_cell, NULL, $options);
-         }
-      }
-   }
-   /**
-    * Get HTMLTable row for a given item
-    *
-    * @param $item            CommonDBTM object
-    * @param &$table          HTMLTable object: the table to update
-    * @param $canedit         display the edition elements (ie : add, remove, ...)
-    * @param $close_row       set to true if we must close the row at the end of the current element
-    * @param $options   array of possible options:
-    *       - 'dont_display' : array of the elements that must not be display
-   **/
-   static function getHTMLTableForItem(CommonDBTM $item, HTMLTable &$table, $canedit, $close_row,
-                                       $options=array()) {
-      global $DB, $CFG_GLPI;
-
-      if (isset($options['dont_display']['IPAddress'])) {
-         return;
-      }
-
-      $query = "SELECT `id`
-                FROM `glpi_ipaddresses`
-                WHERE `items_id` = '" . $item->getID() . "'
-                      AND `itemtype` = '" . $item->getType() . "'";
-
-      $result = $DB->query($query);
-      $address = new self();
-      foreach ($DB->request($query) as $ipaddress) {
-         if ($address->getFromDB($ipaddress['id'])) {
-            $table->addElement($address->fields['name'], "IPAddress", $address->getID(),
-                               $item->getID());
-
-            IPNetwork::getHTMLTableForItem($address, $table, $canedit, false, $options);
-
-            if ($close_row) {
-               $table->closeRow();
-            }
+            IPNetwork::getHTMLTableForItem($row, NULL, $this_cell, $options);
          }
       }
    }

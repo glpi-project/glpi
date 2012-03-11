@@ -85,24 +85,19 @@ class HTMLTable_Row extends HTMLTable_Entity {
    function addCell(HTMLTable_Header $header, $content, HTMLTable_Cell $father=NULL,
                     CommonDBTM $item = NULL) {
 
-      try {
-         if (!$this->group->haveHeader($header)) {
-            throw new Exception('Unavailable header !');
-         }
-
-         $header_name = $header->getCompositeName();
-         if (!isset($this->cells[$header_name])) {
-            $this->cells[$header_name] = array();
-         }
-
-         $cell = new HTMLTable_Cell($this, $header, $content, $father, $item);
-         $this->cells[$header_name][] = $cell;
-         $this->empty = false;
-         return $cell;
-      } catch (Exception $e) {
-         printf(__('%1$s %2$s: %3$s')."<br>\n", __FILE__, __LINE__, $e->getMessage());
+      if (!$this->group->haveHeader($header)) {
+         throw new Exception('Unavailable header !');
       }
-      return false;
+
+      $header_name = $header->getCompositeName();
+      if (!isset($this->cells[$header_name])) {
+         $this->cells[$header_name] = array();
+      }
+
+      $cell = new HTMLTable_Cell($this, $header, $content, $father, $item);
+      $this->cells[$header_name][] = $cell;
+      $this->empty = false;
+      return $cell;
    }
 
 
@@ -161,6 +156,10 @@ class HTMLTable_Row extends HTMLTable_Entity {
          echo "\t\t</tr>";
       }
       echo "\t\t</tbody>\n";
+   }
+
+   function getHeader($header_name, $sub_header_name) {
+      return $this->group->getHeader($header_name, $sub_header_name);
    }
 }
 ?>

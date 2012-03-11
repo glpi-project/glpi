@@ -82,15 +82,11 @@ class HTMLTable_ extends HTMLTable_Base {
    **/
    function addHeader($header_name, $content, HTMLTable_SuperHeader $father = NULL) {
 
-      try {
-         if (count($this->groups) > 0) {
-            throw new Exception('Implementation error: must define all headers before any subgroups');
-         }
-         return $this->appendHeader(new HTMLTable_SuperHeader($this, $header_name, $content,
-                                                              $father));
-      } catch (Exception $e) {
-         echo __FILE__." ".__LINE__." : ".$e->getMessage()."<br>\n";
+      if (count($this->groups) > 0) {
+         throw new Exception('Implementation error: must define all headers before any subgroups');
       }
+      return $this->appendHeader(new HTMLTable_SuperHeader($this, $header_name, $content,
+                                                           $father));
    }
 
 
@@ -121,6 +117,18 @@ class HTMLTable_ extends HTMLTable_Base {
    }
 
 
+   function displaySuperHeader() {
+      echo "\t\t<tr>";
+      foreach ($this->getHeaderOrder() as $header_name) {
+         $header = $this->getHeader($header_name);
+         echo "\t\t";
+         $header->displayTableHeader(true);
+         echo "\n";
+      }
+      echo "</tr>\n";
+   }
+
+
    /**
     * Display the table
     *
@@ -128,7 +136,15 @@ class HTMLTable_ extends HTMLTable_Base {
     *
     * @return nothing (display only)
    **/
-   function display($table_html_id='') {
+   function display(array $params) {
+
+      $p['html_id']                      = '';
+      $p['display_thead']                = true;
+      $p['display_tfoot']                = true;
+
+      foreach ($params as $key => $val) {
+         $p[$key] = $val;
+      }
 
       foreach ($this->groups as $group) {
          $group->prepareDisplay();
@@ -143,8 +159,8 @@ class HTMLTable_ extends HTMLTable_Base {
       }
 
       echo "<table class='tab_cadre_fixe'";
-      if (!empty($table_html_id)) {
-         echo " id='$table_html_id'";
+      if (!empty($p['html_id'])) {
+         echo " id='".$p['html_id']."'";
       }
       echo ">";
 
@@ -159,27 +175,23 @@ class HTMLTable_ extends HTMLTable_Base {
 
       } else {
 
-         echo "\t\t<tr>";
-         foreach ($this->getHeaderOrder() as $header_name) {
-            $header = $this->getHeader($header_name);
-            echo "\t\t".$header->getTableHeader()."\n";
+         if ($p['display_thead']) {
+            echo "\t<thead>\n";
+            $this->displaySuperHeader();
+            echo "\t</thead>\n";
          }
-         echo "</tr>\n";
-         echo "\t</thead>\n";
-
-         echo "\t<tfoot>";
-         echo "\t\t<tr>";
-         foreach ($this->getHeaderOrder() as $header_name) {
-            $header = $this->getHeader($header_name);
-            echo "\t\t".$header->getTableHeader()."\n";
-         }
-         echo "</tr>\n";
-         echo "\t</tfoot>\n";
 
          foreach ($this->groups as $group) {
-            $group->display($totalNumberOfColumn);
+            $group->display($totalNumberOfColumn, $p);
          }
-      }
+
+         if ($p['display_tfoot']) {
+            echo "\t<tfoot>\n";
+            $this->displaySuperHeader();
+            echo "\t</tfoot>\n";
+         }
+
+     }
 
       echo "</table>\n";
 

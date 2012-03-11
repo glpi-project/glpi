@@ -36,6 +36,9 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+class HTMLTable_UnknownHeader extends Exception {}
+class HTMLTable_UnknownHeaders extends Exception {}
+class HTMLTable_UnknownHeadersOrder extends Exception {}
 
 /**
  * @since version 0.84
@@ -108,7 +111,14 @@ abstract class HTMLTable_Base  {
       if (isset($this->headers[$header_name][$sub_header_name])) {
          return $this->headers[$header_name][$sub_header_name];
       }
-      return false;
+      if ($header_name == '') {
+         foreach ($this->headers as $name => $headers) {
+            if (isset($headers[$sub_header_name])) {
+               return $headers[$sub_header_name];
+            }
+         }
+      }
+      throw new HTMLTable_UnknownHeader($header_name.":".$sub_header_name);
    }
 
 
@@ -123,7 +133,7 @@ abstract class HTMLTable_Base  {
       if (isset($this->headers[$header_name])) {
          return $this->headers[$header_name];
       }
-      return false;
+      throw new HTMLTable_UnknownHeaders($header_name);
    }
 
 
@@ -138,9 +148,8 @@ abstract class HTMLTable_Base  {
       if (isset($this->headers_sub_order[$header_name])) {
          return $this->headers_sub_order[$header_name];
       }
-      return false;
+      throw new  HTMLTable_UnknownHeadersOrder($header_name);
+
    }
-
-
 }
 ?>
