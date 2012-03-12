@@ -60,10 +60,13 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
+   /**
+    * @see inc/CommonGLPI::getTabNameForItem()
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate
-          && $item->getType()=='Computer'
+          && ($item->getType() == 'Computer')
           && Session::haveRight("computer","r")) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
@@ -77,6 +80,11 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
+   /**
+    * @param $item         CommonGLPI object
+    * @param $tabnum       (default 1)
+    * @param $withtemplate (default 0)
+   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       self::showForVirtualMachine($item);
@@ -85,10 +93,13 @@ class ComputerVirtualMachine extends CommonDBChild {
    }
 
 
+   /**
+    * @see inc/CommonDBChild::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
       // Not attached to computer -> not added
-      if (!isset($input['computers_id']) || $input['computers_id'] <= 0) {
+      if (!isset($input['computers_id']) || ($input['computers_id'] <= 0)) {
          return false;
       }
 
@@ -137,7 +148,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       } else {
          $comp->getFromDB($computers_id);
          // Create item
-         $input = array('entities_id' => $comp->getEntityID());
+         $input                  = array('entities_id' => $comp->getEntityID());
          $options['entities_id'] = $comp->getEntityID();
          $this->check(-1, 'w', $input);
       }
@@ -145,8 +156,8 @@ class ComputerVirtualMachine extends CommonDBChild {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-      if ($ID>0) {
-        $computers_id=$this->fields["computers_id"];
+      if ($ID > 0) {
+        $computers_id = $this->fields["computers_id"];
       } else {
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
       }
@@ -182,7 +193,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       Html::autocompletionTextField($this, "uuid");
       echo "</td>";
 
-      echo "<td>".__('Processor(s) number')."</td>";
+      echo "<td>"._x('quantity', 'Processors number')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "vcpu");
       echo "</td></tr>";
@@ -233,7 +244,7 @@ class ComputerVirtualMachine extends CommonDBChild {
 
       echo "<div class='center'>";
 
-      if (isset($comp->fields['uuid']) && $comp->fields['uuid'] != '') {
+      if (isset($comp->fields['uuid']) && ($comp->fields['uuid'] != '')) {
          $where = "LOWER(`uuid`)".self::getUUIDRestrictRequest($comp->fields['uuid']);
          $hosts = getAllDatasFromTable('glpi_computervirtualmachines', $where);
 
@@ -316,12 +327,12 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "<th>".__('Virtualization model')."</th>";
          echo "<th>".__('State of the virtual machine')."</th>";
          echo "<th>".__('UUID')."</th>";
-         echo "<th>".__('Processor(s) number')."</th>";
+         echo "<th>"._x('quantity', 'Processors number')."</th>";
          echo "<th>".__('Memory (Mio)')."</th>";
          echo "<th>".__('Machine')."</th>";
          echo "</tr>";
 
-         Session::initNavigateListItems(__CLASS__,
+         Session::initNavigateListItems('ComputerVirtualMachine',
                                         __('Computer')." = ".(empty($comp->fields['name'])
                                                                ? "($ID)" : $comp->fields['name']));
          $vm = new self();
@@ -350,8 +361,8 @@ class ComputerVirtualMachine extends CommonDBChild {
             if ($link_computer = self::findVirtualMachine($virtualmachine)) {
                $computer = new Computer();
                if ($computer->can($link_computer,'r')) {
-                  $url = "<a href='computer.form.php?id=".$link_computer."'>";
-                  $url.= $computer->fields["name"]."</a>";
+                  $url  = "<a href='computer.form.php?id=".$link_computer."'>";
+                  $url .= $computer->fields["name"]."</a>";
 
                   $tooltip = "<table><tr><td>".__('Name')."</td><td>".$computer->fields['name'].
                              '</td></tr>';
@@ -368,7 +379,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             }
             echo "</td>";
             echo "</tr>";
-            Session::addToNavigateListItems(__CLASS_, $virtualmachine['id']);
+            Session::addToNavigateListItems('ComputerVirtualMachine', $virtualmachine['id']);
 
          }
       }
@@ -421,7 +432,7 @@ class ComputerVirtualMachine extends CommonDBChild {
             $in .= " ,'".strtolower($reverse_uuid)."'";
          }
       }
-      $in.= ")";
+      $in .= ")";
 
       return $in;
    }

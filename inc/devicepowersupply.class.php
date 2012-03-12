@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class DevicePowerSupply extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      return _n('Power Supply', 'Power Supplies', $nb);
+      return _n('Power supply', 'Power supplies', $nb);
    }
 
 
