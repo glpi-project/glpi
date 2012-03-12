@@ -137,16 +137,16 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
       foreach ($DB->request($sql) as $ID => $data) {
          $nb = self::countForLicense($softwarelicense_id,$ID);
-         if ($nb>0) {
+         if ($nb > 0) {
             echo "<tr class='tab_bg_2'><td>" . $data["completename"] . "</td>";
-            echo "<td class='right'>".$nb."</td></tr>\n";
+            echo "<td class='numerique'>".$nb."</td></tr>\n";
             $tot += $nb;
          }
       }
 
-      if ($tot>0) {
-         echo "<tr class='tab_bg_1'><td class='right b'>".__('Total')."</td>";
-         echo "<td class='right b'>".$tot."</td></tr>\n";
+      if ($tot > 0) {
+         echo "<tr class='tab_bg_1'><td class='center b'>".__('Total')."</td>";
+         echo "<td class='numerique b '>".$tot."</td></tr>\n";
       } else {
          echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __('No item found') . "</td></tr>\n";
       }
@@ -161,7 +161,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     *
     * @return nothing
    **/
-   static function showForLicense (SoftwareLicense $license) {
+   static function showForLicense(SoftwareLicense $license) {
       global $DB, $CFG_GLPI;
 
       $searchID = $license->getField('id');
@@ -179,7 +179,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          $start = 0;
       }
 
-      if (isset($_REQUEST["order"]) && $_REQUEST["order"]=="DESC") {
+      if (isset($_REQUEST["order"]) && ($_REQUEST["order"] == "DESC")) {
          $order = "DESC";
       } else {
          $order = "ASC";
@@ -199,14 +199,14 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                        INNER JOIN `glpi_computers`
                            ON (`glpi_computers_softwarelicenses`.`computers_id`
                                  = `glpi_computers`.`id`)
-                       WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id` = '$searchID'" .
+                       WHERE `glpi_computers_softwarelicenses`.`softwarelicenses_id` = '$searchID'".
                              getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                              AND `glpi_computers`.`is_deleted` = '0'
                              AND `glpi_computers`.`is_template` = '0'";
 
       $number = 0;
-      if ($result =$DB->query($query_number)) {
-         $number  = $DB->result($result,0,0);
+      if ($result = $DB->query($query_number)) {
+         $number = $DB->result($result, 0, 0);
       }
 
       echo "<div class='center'>";
@@ -273,10 +273,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
-      $rand=mt_rand();
+      $rand = mt_rand();
 
-      if ($result=$DB->query($query)) {
-         if ($data=$DB->fetch_assoc($result)) {
+      if ($result = $DB->query($query)) {
+         if ($data = $DB->fetch_assoc($result)) {
 
             $soft = new Software();
             $soft->getFromDB($license->fields['softwares_id']);
@@ -285,8 +285,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             Session::initNavigateListItems('Computer',
                   //TRANS : %1$s is the itemtype name,
                   //        %2$s is the name of the item (used for headings of a list)
-                                           sprintf(__('%1$s = %2$s'), $soft->getTypeName(1),
-                                                   $soft->fields["name"]." - " . $data["vername"]));
+                  //        %3$s is the sofware license version name
+                                           sprintf(__('%1$s = %2$s - %3$s'),
+                                                   $soft->getTypeName(1),
+                                                   $soft->fields["name"], $data["vername"]));
 
             $sort_img = "<img src='" . $CFG_GLPI["root_doc"] . "/pics/" .
                         ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt='' title=''>";
@@ -340,7 +342,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
                $compname = $data['compname'];
                if (empty($compname) || $_SESSION['glpiis_ids_visible']) {
-                  $compname .= " (".$data['cID'].")";
+                  $compname = sprintf(__('%1$s (%2$s)'), $compname, $data['cID']);
                }
 
                if ($canshowcomputer) {
@@ -372,7 +374,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                                     'used'      => array($searchID)));
 
                echo "&nbsp;<input type='submit' name='move' value=\"".
-                     __s('Move')."\" class='submit'>&nbsp;";
+                     _sx('button','Move')."\" class='submit'>&nbsp;";
                Html::closeArrowMassives(array('delete' => __('Delete')));
 
                echo "</form>";
@@ -462,6 +464,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
 
+   /**
+    * @see inc/CommonGLPI::getTabNameForItem()
+   **/
   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       switch ($item->getType()) {
@@ -480,9 +485,14 @@ class Computer_SoftwareLicense extends CommonDBRelation {
    }
 
 
+   /**
+    * @param $item         CommonGLPI object
+    * @param $tabnum       (default 1)
+    * @param $withtemplate (default 0)
+   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='SoftwareLicense') {
+      if ($item->getType() == 'SoftwareLicense') {
          switch ($tabnum) {
             case 1 :
                self::showForLicenseByEntity($item);

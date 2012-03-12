@@ -58,21 +58,22 @@ class HTMLTable_Cell extends HTMLTable_Entity {
     * @param $header
     * @param $content
     * @param $father    HTMLTable_Cell object (default NULL)
-    * @param $item      The item associated with the current cell (default NULL)
+    * @param $item      CommonDBTM object: The item associated with the current cell (default NULL)
    **/
    function __construct($row, $header, $content, HTMLTable_Cell $father=NULL,
-                        CommonDBTM $item = NULL) {
+                        CommonDBTM $item=NULL) {
 
       parent::__construct($content);
       $this->row        = $row;
       $this->header     = $header;
       $this->father     = $father;
+
       if (!empty($item)) {
          $this->item = clone $item;
       } else {
          $this->item = NULL;
       }
-      $this->itemtype   = $this->header->getItemType();
+      $this->itemtype = $this->header->getItemType();
 
       if (!is_null($this->father)) {
 
@@ -138,6 +139,7 @@ class HTMLTable_Cell extends HTMLTable_Entity {
 
 
    function getItem() {
+
       if (!empty($this->item)) {
          return $this->item;
       }

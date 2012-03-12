@@ -58,8 +58,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
    function prepareInputForAdd($input) {
 
-      if (!isset($input['computers_id']) || $input['computers_id'] <= 0
-          || !isset($input['softwareversions_id']) || $input['softwareversions_id'] <= 0) {
+      if (!isset($input['computers_id']) || ($input['computers_id'] <= 0)
+          || !isset($input['softwareversions_id']) || ($input['softwareversions_id'] <= 0)) {
          return false;
       }
 
@@ -73,6 +73,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
+   /**
+    * @param $computers_id
+   **/
    function updateDatasForComputer($computers_id) {
       global $DB;
 
@@ -94,6 +97,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @param $softwareversions_id   version ID
     * @param $entity                to search for computer in (default '' = all active entities)
+    *                               (default '')
     *
     * @return number of installations
    **/
@@ -156,7 +160,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @return nothing
    **/
-   static function showForSoftware (Software $software) {
+   static function showForSoftware(Software $software) {
       self::showInstallations($software->getField('id'), 'softwares_id');
    }
 
@@ -168,7 +172,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
     *
     * @return nothing
    **/
-   static function showForVersion (SoftwareVersion $version) {
+   static function showForVersion(SoftwareVersion $version) {
       self::showInstallations($version->getField('id'), 'id');
    }
 
@@ -197,7 +201,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $start = 0;
       }
 
-      if (isset($_REQUEST["order"]) && $_REQUEST["order"]=="DESC") {
+      if (isset($_REQUEST["order"]) && ($_REQUEST["order"] == "DESC")) {
          $order = "DESC";
       } else {
          $order = "ASC";
@@ -209,7 +213,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $sort = "`".implode("` $order,`",$tmp)."`";
 
       } else {
-         if ($crit=="softwares_id") {
+         if ($crit == "softwares_id") {
             $sort = "`entity` $order, `version`, `compname`";
          } else {
             $sort = "`entity` $order, `compname`";
@@ -217,7 +221,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
 
       // Total Number of events
-      if ($crit=="softwares_id") {
+      if ($crit == "softwares_id") {
          // Software ID
          $query_number = "SELECT COUNT(*) AS cpt
                           FROM `glpi_computers_softwareversions`
@@ -239,7 +243,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                           INNER JOIN `glpi_computers`
                               ON (`glpi_computers_softwareversions`.`computers_id`
                                     = `glpi_computers`.`id`)
-                          WHERE `glpi_computers_softwareversions`.`softwareversions_id` = '$searchID'".
+                          WHERE `glpi_computers_softwareversions`.`softwareversions_id`
+                                       = '$searchID'".
                                 getEntitiesRestrictRequest(' AND', 'glpi_computers') ."
                                 AND `glpi_computers`.`is_deleted` = '0'
                                 AND `glpi_computers`.`is_template` = '0'";
@@ -247,7 +252,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $number = 0;
       if ($result =$DB->query($query_number)) {
-         $number  = $DB->result($result,0,0);
+         $number = $DB->result($result,0,0);
       }
 
 
@@ -300,17 +305,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $rand = mt_rand();
 
-      if ($result=$DB->query($query)) {
-         if ($data=$DB->fetch_assoc($result)) {
-            $softwares_id = $data['sID'];
+      if ($result = $DB->query($query)) {
+         if ($data = $DB->fetch_assoc($result)) {
+            $softwares_id  = $data['sID'];
+            $soft          = new Software();
+            $showEntity    = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
+            $linkUser      = Session::haveRight('user', 'r');
+            $title         = $soft->fields["name"];
 
-            $soft       = new Software();
-            $showEntity = ($soft->getFromDB($softwares_id) && $soft->isRecursive());
-            $linkUser   = Session::haveRight('user', 'r');
-            $title      = $soft->fields["name"];
-
-            if ($crit=="id") {
-               $title .= " - " . $data["vername"];
+            if ($crit == "id") {
+               $title = sprintf(__('%1$s - %2$s'), $title, $data["vername"]);
             }
 
             Session::initNavigateListItems('Computer',
@@ -320,8 +324,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                                                    $soft->getTypeName(1), $title));
 
 
-            $sort_img="<img src='".$CFG_GLPI["root_doc"]."/pics/".
-                        ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt='' title=''>";
+            $sort_img = "<img src='".$CFG_GLPI["root_doc"]."/pics/".
+                          ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt=''
+                          title=''>";
 
             if ($canedit) {
                echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post'
@@ -334,7 +339,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                echo "<table class='tab_cadre_fixehov'><tr>";
             }
 
-            if ($crit=="softwares_id") {
+            if ($crit == "softwares_id") {
                echo "<th>".($sort=="`vername`"?$sort_img:"").
                     "<a href='javascript:reloadTab(\"sort=vername&amp;order=".
                       ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>"._n('Version', 'Versions',2).
@@ -382,14 +387,14 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                   echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
                }
 
-               if ($crit=="softwares_id") {
-                  echo "<td><a href='softwareversion.form.php?id=".$data['vID']."'>".$data['version'];
-                  echo "</a></td>";
+               if ($crit == "softwares_id") {
+                  echo "<td><a href='softwareversion.form.php?id=".$data['vID']."'>".
+                        $data['version']."</a></td>";
                }
 
                $compname = $data['compname'];
                if (empty($compname) || $_SESSION['glpiis_ids_visible']) {
-                  $compname .= " (".$data['cID'].")";
+                  $compname = sprintf(__('%1$s (%2$s)'), $compname, $data['cID']);
                }
 
                if ($canshowcomputer) {
@@ -415,19 +420,22 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
                if (count($lics)) {
                   foreach ($lics as $data) {
-                     echo "<a href='softwarelicense.form.php?id=".$data['id']."'>".$data['name'];
-                     echo "</a> - ".$data['serial'];
+                     $serial = $data['serial'];
 
                      if (!empty($data['type'])) {
-                        echo "&nbsp;(".$data['type'].")";
+                        $serial = sprintf(__('%1$s (%2$s)'), $serial, $data['type']);
                      }
+
+                     echo "<a href='softwarelicense.form.php?id=".$data['id']."'>".$data['name'];
+                     echo "</a> - ".$serial;
+
                      echo "<br>";
                   }
                }
                echo "</td>";
                echo "</tr>\n";
 
-            } while ($data=$DB->fetch_assoc($result));
+            } while ($data = $DB->fetch_assoc($result));
 
             echo "</table>\n";
 
@@ -436,7 +444,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                SoftwareVersion::dropdown(array('name'         => 'versionID',
                                                'softwares_id' => $softwares_id));
                echo "&nbsp;<input type='submit' name='moveinstalls' value='".
-                     __s('Move')."' class='submit'>&nbsp;";
+                     _sx('button', 'Move')."' class='submit'>&nbsp;";
                Html::closeArrowMassives(array('deleteinstalls' => __('Delete')));
 
                echo "</form>";
@@ -481,16 +489,16 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       foreach ($DB->request($sql) as $ID => $data) {
          $nb = self::countForVersion($softwareversions_id,$ID);
-         if ($nb>0) {
+         if ($nb > 0) {
             echo "<tr class='tab_bg_2'><td>" . $data["completename"] . "</td>";
-            echo "<td class='right'>".$nb."</td></tr>\n";
+            echo "<td class='numerique'>".$nb."</td></tr>\n";
             $tot += $nb;
          }
       }
 
-      if ($tot>0) {
-         echo "<tr class='tab_bg_1'><td class='right b'>".__('Total')."</td>";
-         echo "<td class='right b'>".$tot."</td></tr>\n";
+      if ($tot > 0) {
+         echo "<tr class='tab_bg_1'><td class='center b'>".__('Total')."</td>";
+         echo "<td class='numerique b'>".$tot."</td></tr>\n";
       } else {
          echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __('No item found') . "</td></tr>\n";
       }
@@ -536,21 +544,23 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 WHERE `glpi_computers_softwareversions`.`computers_id` = '$computers_id'
                 ORDER BY `softwarecategories_id`, `softname`, `version`";
       $result = $DB->query($query);
-      $i = 0;
+      $i      = 0;
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
-      if ((empty($withtemplate) || $withtemplate != 2) && $canedit) {
+      if ((empty($withtemplate) || ($withtemplate != 2))
+          && $canedit) {
          echo "<tr class='tab_bg_1'><td class='center' colspan='3'>";
          echo "<form method='post' action='".
                 $CFG_GLPI["root_doc"]."/front/computer_softwareversion.form.php'>";
          echo _n('Software', 'Software', 2)."&nbsp;&nbsp;";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
-         echo "<input type='submit' name='install' value=\"".__s('Install')."\" class='submit'>";
+         echo "<input type='submit' name='install' value=\""._sx('button', 'Install')."\"
+                class='submit'>";
          echo "</form>";
          echo "</td>";
-         echo "<td class='cneter' clospan='2'>";
+         echo "<td class='center' clospan='2'>";
          echo "<form method='post' action='".$CFG_GLPI["root_doc"].
                 "/front/computer_softwarelicense.form.php'>";
          echo _n('License', 'Licenses', 2)."&nbsp;&nbsp;";
@@ -568,7 +578,6 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $cat = -1;
 
-
       Session::initNavigateListItems('Software',
                            //TRANS : %1$s is the itemtype name,
                            //        %2$s is the name of the item (used for headings of a list)
@@ -583,7 +592,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       $installed = array();
       if ($DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
-            if ($data["softwarecategories_id"]!=$cat) {
+            if ($data["softwarecategories_id"] != $cat) {
                self::displayCategoryFooter($cat, $rand, $canedit);
                $cat = self::displayCategoryHeader($computers_id, $data, $rand, $canedit);
             }
@@ -713,7 +722,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<a href=\"javascript:showHideDiv('softcat$cat$rand','imgcat$cat','" . GLPI_ROOT .
              "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
       echo "<img alt='' name='imgcat$cat' src='".GLPI_ROOT."/pics/folder".
-             (!$display ? '' : "-open") . ".png'>&nbsp;<span class='b'>" . $catname . "</span>";
+             (!$display ? '' : "-open") . ".png'>&nbsp;<span class='b'>". $catname. "</span>";
       echo "</a></td></tr>";
 
       echo "<tr class='tab_bg_2'><td colspan='5'>";
@@ -756,12 +765,14 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       }
       echo "<td class='center b'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/software.form.php?id=".$data['softwares_id']."'>";
-      echo $data["softname"] . ($_SESSION["glpiis_ids_visible"] ?" (".$data['softwares_id'].")":"");
+      echo ($_SESSION["glpiis_ids_visible"] ? sprintf(__('%1$s (%2$s)'),
+                                                      $data["softname"], $data['softwares_id'])
+                                            : $data["softname"]);
       echo "</a></td>";
       echo "<td>" . $data["state"] . "</td>";
 
       echo "<td>" . $data["version"];
-      if ((empty($withtemplate) || $withtemplate != 2)
+      if ((empty($withtemplate) || ($withtemplate != 2))
           && $canedit) {
 
          echo " - <a href='" . $CFG_GLPI["root_doc"] . "/front/computer_softwareversion.form.php".
@@ -786,17 +797,21 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       $licids = array();
       foreach ($DB->request($query) as $licdata) {
-         $licids[] = $licdata['id'];
-         echo "<span class='b'>". $licdata['name'] . "</span> -&nbsp;".$licdata['serial']." ";
+         $licids[]  = $licdata['id'];
+         $licserial = $licdata['serial'];
+
          if (!empty($licdata['type'])) {
-            echo "(".$licdata['type'].")&nbsp; ";
+            $licserial = sprintf(__('%1$s (%2$s)'), $licserial, $licdata['type']);
          }
+
+         echo "<span class='b'>". $licdata['name']. "</span> - ".$licserial;
+
          $link_item = Toolbox::getItemTypeFormURL('SoftwareLicense');
          $link      = $link_item."?id=".$licdata['id'];
-         $comment = "<table><tr><td>".__('Name')."</td>"."<td>".
-                     $licdata['name']."</td></tr><tr><td>".__('Serial number').
-                     "</td><td>".$licdata['serial']."</td></tr><tr><td>".
-                     __('Comments').'</td><td>'.$licdata['comment'].'</td></tr></table>';
+         $comment   = "<table><tr><td>".__('Name')."</td><td>".$licdata['name']."</td></tr>".
+                        "<tr><td>".__('Serial number')."</td><td>".$licdata['serial']."</td></tr>".
+                        "<tr><td>". __('Comments').'</td><td>'.$licdata['comment'].'</td></tr>".
+                      "</table>';
 
          Html::showToolTip($comment, array('link' => $link));
          echo "<br>";
@@ -838,9 +853,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
       echo "<tr class='tab_bg_1'>";
       if ($canedit) {
          echo "<td>";
-         if ((empty($withtemplate) || $withtemplate != 2)
-             && $ID>0) {
-
+         if ((empty($withtemplate) || ($withtemplate != 2))
+             && ($ID > 0)) {
             echo "<input type='checkbox' name='softversion_$ID'>";
          }
          echo "</td>";
@@ -848,24 +862,30 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       echo "<td class='center b'>";
       echo "<a href='".$CFG_GLPI["root_doc"]."/front/software.form.php?id=".$data['softwares_id']."'>";
-      echo $data["softname"] . ($_SESSION["glpiis_ids_visible"] ?" (".$data['softwares_id'].")" :"");
+      echo ($_SESSION["glpiis_ids_visible"] ? sprintf(__('%1$s (%2$s)'),
+                                                      $data["softname"], $data['softwares_id'])
+                                            : $data["softname"]);
       echo "</a></td>";
       echo "<td>" . $data["state"] . "</td>";
 
       echo "<td>" . $data["version"];
-      if ((empty($withtemplate) || $withtemplate != 2)
-          && $canedit && $ID>0) {
+      if ((empty($withtemplate) || ($withtemplate != 2))
+          && $canedit
+          && ($ID > 0)) {
 
          echo " - <a href='".$CFG_GLPI["root_doc"] ."/front/computer_softwareversion.form.php".
                "?install=install&amp;softwareversions_id=$ID&amp;computers_id=$computers_id'>";
          echo "<span class='b'>" .__('Install')."</span></a>";
       }
 
-      echo "</td></td><td class='b'>" . $data["name"] . " -&nbsp;".$data["serial"]."&nbsp; ";
+      $serial = $data["serial"];
+
       if ($data["softwarelicensetypes_id"]) {
-         echo " (". Dropdown::getDropdownName("glpi_softwarelicensetypes",
-                                              $data["softwarelicensetypes_id"]).")&nbsp; ";
+         $serial = sprintf(__('%1$s (%2$s)'), $serial,
+                           Dropdown::getDropdownName("glpi_softwarelicensetypes",
+                                                     $data["softwarelicensetypes_id"]));
       }
+      echo "</td></td><td class='b'>" .$data["name"]." - ". $serial;
 
       $comment = "<table><tr><td>".__('Name')."</td>"."<td>".$data['name']."</td></tr>".
                  "<tr><td>".__('Serial number')."</td><td>".$data['serial']."</td></tr>".
@@ -1009,6 +1029,9 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
+   /**
+    * @see inc/CommonGLPI::getTabNameForItem()
+   **/
   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       switch ($item->getType()) {
@@ -1050,6 +1073,11 @@ class Computer_SoftwareVersion extends CommonDBRelation {
    }
 
 
+   /**
+    * @param $item            CommonGLPI object
+    * @param $tabnum          (default 1)
+    * @param $withtemplate    (default 0)
+   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType()=='Software') {
