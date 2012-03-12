@@ -41,16 +41,27 @@ if (!defined('GLPI_ROOT')) {
 /// Create a smart HTML table. The table allows cells to depend on other ones. As such, it is
 /// possible to have rowspan for cells that are "father" of other ones. If a "father" has several
 /// sons, then, it "rowspans" on all.
-/// Each column has a header defined by its value (ie. : what is printed inside the "th" cell), its
-/// name (the one that is used by a cell to know where to put it) and a fathers_name, that is the
-/// name of the column that is the father.
-/// We work on "active" row. We can add elements in the active row. But we must "closeRow()" the
-/// active row each time we skip to next row
+/// The table integrates the notion of group of rows (HTMLTable_Group). For instance, for
+/// Computer_Device, each group represents a kind of device (network card, graphique card,
+/// processor, memory, ...).
+/// There is HTMLTable_SuperHeader that defines global headers for all groups. Each group cat cut
+/// these HTMLTable_SuperHeader as as many HTMLTable_SubHeader as necessary. There is an automatic
+/// organisation of the headers between groups.
 ///
-/// Each cell of the table is define by a column name and its ID inside the column.
+/// The (strict) order of definition of the table is:
+///    * Define all HTMLTable_SuperHeader that are used by each group: HTMLTable_::addHeader()
+///    * Define one HTMLTable_Group: HTMLTable_::createGroup()
+///      * Define all HTMLTable_SubHeader depending of previously defined HTMLTable_SuperHeader
+///                                       for the gvien group: HTMLTable_Group::addHeader()
+///      * Create all HTMLTable_Row for the given group: HTMLTable_Group::createRow()
+///          * Create all HTMLTable_Cell for the given row : HTMLTable_Row::addCell()
+/// and so on for each group.
+/// When done, call HTMLTable_::display() to render the table.
+///
+/// A column that don't have any content is collapse
 ///
 /// For further explaination, refer to NetworkPort and all its dependencies (NetworkName, IPAddress,
-/// IPNetwork, ...)
+/// IPNetwork, ...) or Computer_Device and each kind of device.
 /// @since 0.84
 class HTMLTable_ extends HTMLTable_Base {
 
@@ -76,9 +87,14 @@ class HTMLTable_ extends HTMLTable_Base {
 
 
    /**
-    * @param $header_name
-    * @param $content
-    * @param $father          HTMLTable_Header object (default NULL)
+    * create a new HTMLTable_SuperHeader
+    *
+    * @param $header_name (string)           The name that can be refered by getHeader()
+    * @param $content (string or array)      The content (see HTMLTable_Entity for the format)
+    *                                        of the header
+    * @param $father (HTMLTable_SuperHeader) the father of this header (default NULL = none)
+    *
+    * @return nothing
    **/
    function addHeader($header_name, $content, HTMLTable_SuperHeader $father = NULL) {
 
@@ -91,8 +107,13 @@ class HTMLTable_ extends HTMLTable_Base {
 
 
    /**
-    * @param $name
-    * @param $content
+    * @param $name (string)             The name  of the group, to be able to retrieve the group
+    *                                   later with HTMLTable_::getHeader()
+    * @param $content (string or array) The title of the group : display before the group itself
+    *
+    * TODO : study to be sure that the order is the one we have defined ...
+    *
+    * @return nothing
    **/
    function createGroup($name, $content) {
 
@@ -106,7 +127,11 @@ class HTMLTable_ extends HTMLTable_Base {
 
 
    /**
-    * @param $group_name
+    * Retrieve a group by its name
+    *
+    * @param $group_name (string) the group name
+    *
+    * @return nothing
    **/
    function getGroup($group_name) {
 
@@ -117,7 +142,11 @@ class HTMLTable_ extends HTMLTable_Base {
    }
 
 
+   /**
+    * Display the super headers, for the global table, or the groups
+   **/
    function displaySuperHeader() {
+
       echo "\t\t<tr>";
       foreach ($this->getHeaderOrder() as $header_name) {
          $header = $this->getHeader($header_name);
@@ -130,9 +159,31 @@ class HTMLTable_ extends HTMLTable_Base {
 
 
    /**
-    * Display the table
+    * get the total number of rows (ie.: the sum of each group number of rows)
     *
-    * @param $table_html_id   (default '')
+    * Beware that a row is counted only if it is not empty (ie.: at least one addCell)
+    *
+    * @return the total number of rows
+   **/
+   function getNumberOfRows() {
+
+      $numberOfRow = 0;
+      foreach ($this->groups as $group) {
+         $numberOfRow += $group->getNumberOfRows();
+      }
+      return $numberOfRow;
+   }
+
+
+   /**
+    * Display the table itself
+    *
+    * @param $params (array):
+    *    'html_id'                      the global HTML ID of the table
+    *    'display_thead'                display the header before the first group
+    *    'display_tfoot'                display the header at the end of the table
+    *    'display_super_for_each_group' display the super header befor each group
+    *    'display_title_for_each_group' display the title of each group
     *
     * @return nothing (display only)
    **/
@@ -164,8 +215,7 @@ class HTMLTable_ extends HTMLTable_Base {
       }
       echo ">";
 
-      echo "\t<thead>";
-      if (isset($this->title)) {
+      if (!empty($this->title)) {
          echo "\t\t<tr><th colspan='$totalNumberOfColumn'>".$this->title."</th></tr>\n";
       }
 
@@ -197,14 +247,6 @@ class HTMLTable_ extends HTMLTable_Base {
 
    }
 
-
-   function getNumberOfRows() {
-      $numberOfRow = 0;
-      foreach ($this->groups as $group) {
-         $numberOfRow += $group->getNumberOfRows();
-      }
-      return $numberOfRow;
-   }
 
 }
 ?>
