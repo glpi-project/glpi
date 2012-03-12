@@ -160,6 +160,11 @@ class HTMLTable_Cell extends HTMLTable_Entity {
    }
 
 
+   function getNumberOfLines() {
+      return $this->numberOfLines;
+   }
+
+
    function computeNumberOfLines() {
 
       if (!isset($this->numberOfLines)) {
@@ -168,7 +173,8 @@ class HTMLTable_Cell extends HTMLTable_Entity {
             foreach ($this->sons as $headered_sons) {
                $numberOfLinesForHeader = 0;
                foreach ($headered_sons as $son) {
-                  $numberOfLinesForHeader += $son->computeNumberOfLines();
+                  $son->computeNumberOfLines();
+                  $numberOfLinesForHeader += $son->getNumberOfLines();
                }
                if ($this->numberOfLines < $numberOfLinesForHeader) {
                   $this->numberOfLines = $numberOfLinesForHeader;
@@ -176,7 +182,29 @@ class HTMLTable_Cell extends HTMLTable_Entity {
             }
          }
       }
-      return $this->numberOfLines;
+   }
+
+
+   function addToNumberOfLines($value) {
+      $this->numberOfLines += $value;
+   }
+
+
+   static function updateCellSteps(array $cells, $totalNumberOflines) {
+      $numberOfLines = 0;
+      foreach ($cells as $cell) {
+         $numberOfLines += $cell->getNumberOfLines();
+      }
+
+      $numberEmpty = $totalNumberOflines - $numberOfLines;
+      $step = floor($numberEmpty / (count($cells) + 1));
+      $last = $numberEmpty % (count($cells) + 1);
+      $index = 0;
+
+      foreach ($cells as $cell) {
+         $cell->addToNumberOfLines($step + ($index < $last ? 1 : 0));
+         $index ++;
+      }
    }
 
 
@@ -188,6 +216,9 @@ class HTMLTable_Cell extends HTMLTable_Entity {
       if (!isset($this->start)) {
          $this->start = $start;
          foreach ($this->sons as $sons_by_header) {
+
+            self::updateCellSteps($sons_by_header, $this->getNumberOfLines());
+
             $son_start = $this->start;
             foreach ($sons_by_header as $son) {
                $son->computeStartEnd($son_start);
