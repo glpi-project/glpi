@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
   This class is used to manage the consumables.
   @see ConsumableItem
   @author Julien Dombre
- */
+**/
 class Consumable extends CommonDBTM {
 
    // From CommonDBTM
@@ -96,6 +96,9 @@ class Consumable extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::restore()
+   **/
    function restore(array $input, $history=1) {
       global $DB;
 
@@ -124,7 +127,9 @@ class Consumable extends CommonDBTM {
    function out($ID, $itemtype='', $items_id=0) {
       global $DB;
 
-      if (!empty($itemtype) && $items_id > 0) {
+      if (!empty($itemtype)
+          && ($items_id > 0)) {
+
          $query = "UPDATE `".$this->getTable()."`
                    SET `date_out` = '".date("Y-m-d")."',
                        `itemtype` = '$itemtype',
@@ -212,12 +217,12 @@ class Consumable extends CommonDBTM {
       // Get total
       $total = self::getTotalNumber($tID);
 
-      if ($total!=0) {
+      if ($total != 0) {
          $unused = self::getUnusedNumber($tID);
          $old    = self::getOldNumber($tID);
 
-         $highlight="";
-         if ($unused<=$alarm_threshold) {
+         $highlight = "";
+         if ($unused <= $alarm_threshold) {
             $highlight = "class='tab_bg_1_2'";
          }
          //TRANS: For consumable. %1$d is total number, %2$d is unused number, %3$d is old number
@@ -228,7 +233,7 @@ class Consumable extends CommonDBTM {
             $out = "<div $highlight>".$tmptxt."</div";
          }
       } else {
-         if (!$nohtml) {
+         if ($nohtml) {
             $out = __('No consumable');
          } else {
             $out = "<div class='tab_bg_1_2'><i>".__('No consumable')."</i></div>";
@@ -315,7 +320,7 @@ class Consumable extends CommonDBTM {
          echo "<tr><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name='consumableitems_id' value='$ID'>\n";
          Dropdown::showInteger('to_add',1,1,100);
-         echo " <input type='submit' name='add_several' value=\"".__s('Add consumables')."\"
+         echo " <input type='submit' name='add_several' value=\""._sx('button','Add consumables')."\"
                 class='submit'>";
          echo "</td></tr>";
          echo "</table></form></div>";
@@ -365,7 +370,9 @@ class Consumable extends CommonDBTM {
          }
          echo "<th width='200px'>".__('Financial and administrative information')."</th>";
 
-         if (!$show_old && $canedit && $DB->result($result,0,0)!=0) {
+         if (!$show_old
+             && $canedit
+             && ($DB->result($result,0,0) != 0)) {
             echo "<th colspan='".($canedit?'2':'1')."'>";
 
             Dropdown::showAllItems("items_id", 0, 0,$consitem->fields["entities_id"],
@@ -373,7 +380,8 @@ class Consumable extends CommonDBTM {
 
 /*            User::dropdown(array('value'  => $consitem->fields["entities_id"],
                                  'right'  => 'all'));*/
-            echo "&nbsp;<input type='submit' class='submit' name='give' value='".__s('Give')."'>";
+            echo "&nbsp;<input type='submit' class='submit' name='give'
+                         value='"._sx('button', 'Give')."'>";
             echo "</th>";
          } else {
             echo "<th colspan='".($canedit?'2':'1')."'>&nbsp;</th>";
@@ -382,7 +390,7 @@ class Consumable extends CommonDBTM {
 
       }
 
-      $where     = "";
+      $where = "";
       if (!$show_old) { // NEW
          $where = " AND `date_out` IS NULL
                   ORDER BY `date_in`, `id`";
@@ -399,7 +407,7 @@ class Consumable extends CommonDBTM {
 
       if ($result = $DB->query($query)) {
          $number = $DB->numrows($result);
-         while ($data=$DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $date_in  = Html::convDate($data["date_in"]);
             $date_out = Html::convDate($data["date_out"]);
 
@@ -410,9 +418,10 @@ class Consumable extends CommonDBTM {
 
             if ($show_old) {
                echo "<td class='center'>";
-               if ($item = getItemForItemtype($data['itemtype'])
-                   && $item->getFromDB($data['items_id'])) {
-                  echo $item->getLink();
+               if ($item = getItemForItemtype($data['itemtype'])) {
+                  if ($item->getFromDB($data['items_id'])) {
+                     echo $item->getLink();
+                  }
                }
                echo "</td>";
             }
@@ -420,16 +429,15 @@ class Consumable extends CommonDBTM {
             Infocom::showDisplayLink('Consumable', $data["id"],1);
             echo "</td>";
 
-            if (!$show_old && $canedit) {
+            if ($canedit) {
                echo "<td class='center'>";
-               echo "<input type='checkbox' name='out[".$data["id"]."]'>";
-               echo "</td>";
-            }
-            if ($show_old && $canedit) {
-               echo "<td class='center'>";
-               echo "<a href='".
-                      $CFG_GLPI["root_doc"]."/front/consumable.form.php?restore=restore&amp;id=".
-                      $data["id"]."&amp;tID=$tID'>".__('Back to stock')."</a>";
+               if (!$show_old) {
+                  echo "<input type='checkbox' name='out[".$data["id"]."]'>";
+               } else {
+                  echo "<a href='".
+                         $CFG_GLPI["root_doc"]."/front/consumable.form.php?restore=restore&amp;id=".
+                         $data["id"]."&amp;tID=$tID'>".__('Back to stock')."</a>";
+               }
                echo "</td>";
             }
             echo "<td class='center'>";
@@ -460,15 +468,15 @@ class Consumable extends CommonDBTM {
                 FROM `glpi_consumables`
                 WHERE `date_out` IS NOT NULL
                       AND `consumableitems_id` IN (SELECT `id`
-                                                   FROM `glpi_consumableitems`
-                                                   ".getEntitiesRestrictRequest("WHERE",
+                                                   FROM `glpi_consumableitems` ".
+                                                   getEntitiesRestrictRequest("WHERE",
                                                                            "glpi_consumableitems").")
                 GROUP BY `itemtype`, `items_id`, `consumableitems_id`";
       $used = array();
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $used[$data['itemtype'].'####'.$data['items_id']][$data["consumableitems_id"]]
                   = $data["count"];
             }
@@ -478,15 +486,15 @@ class Consumable extends CommonDBTM {
                 FROM `glpi_consumables`
                 WHERE `date_out` IS NULL
                       AND `consumableitems_id` IN (SELECT `id`
-                                                   FROM `glpi_consumableitems`
-                                                   ".getEntitiesRestrictRequest("WHERE",
+                                                   FROM `glpi_consumableitems` ".
+                                                   getEntitiesRestrictRequest("WHERE",
                                                                            "glpi_consumableitems").")
                 GROUP BY `consumableitems_id`";
       $new = array();
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $new[$data["consumableitems_id"]] = $data["count"];
             }
          }
@@ -494,19 +502,19 @@ class Consumable extends CommonDBTM {
 
       $types = array();
       $query = "SELECT *
-                FROM `glpi_consumableitems`
-                ".getEntitiesRestrictRequest("WHERE","glpi_consumableitems");
+                FROM `glpi_consumableitems` ".
+                getEntitiesRestrictRequest("WHERE","glpi_consumableitems");
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $types[$data["id"]] = $data["name"];
             }
          }
       }
       asort($types);
       $total = array();
-      if (count($types)>0) {
+      if (count($types) > 0) {
          // Produce headline
          echo "<div class='center'><table class='tab_cadrehov'><tr>";
 
@@ -529,9 +537,9 @@ class Consumable extends CommonDBTM {
             }
             echo "<td class='center'>".$new[$id_type]."</td>";
             $total[$id_type] += $new[$id_type];
-            $tot += $new[$id_type];
+            $tot             += $new[$id_type];
          }
-         echo "<td class='center'>".$tot."</td>";
+         echo "<td class='numerique'>".$tot."</td>";
          echo "</tr>";
 
          foreach ($used as $itemtype_items_id => $val) {
@@ -550,18 +558,18 @@ class Consumable extends CommonDBTM {
                }
                echo "<td class='center'>".$val[$id_type]."</td>";
                $total[$id_type] += $val[$id_type];
-               $tot += $val[$id_type];
+               $tot             += $val[$id_type];
             }
-         echo "<td class='center'>".$tot."</td>";
+         echo "<td class='numerique'>".$tot."</td>";
          echo "</tr>";
          }
          echo "<tr class='tab_bg_1'><td class='b'>".__('Total')."</td>";
          $tot = 0;
          foreach ($types as $id_type => $type) {
             $tot += $total[$id_type];
-            echo "<td class='center'>".$total[$id_type]."</td>";
+            echo "<td class='numerique'>".$total[$id_type]."</td>";
          }
-         echo "<td class='center'>".$tot."</td>";
+         echo "<td class='numerique'>".$tot."</td>";
          echo "</tr>";
          echo "</table></div>";
 
