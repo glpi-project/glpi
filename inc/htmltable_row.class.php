@@ -111,7 +111,8 @@ class HTMLTable_Row extends HTMLTable_Entity {
       foreach ($this->cells as $cellsOfHeader) {
          $numberOfSubRowsPerHeader = 0;
          foreach ($cellsOfHeader as $cell) {
-            $numberOfSubRowsPerHeader += $cell->computeNumberOfLines();
+            $cell->computeNumberOfLines();
+            $numberOfSubRowsPerHeader += $cell->getNumberOfLines();
          }
          if ($this->numberOfSubRows < $numberOfSubRowsPerHeader) {
             $this->numberOfSubRows = $numberOfSubRowsPerHeader;
@@ -119,6 +120,9 @@ class HTMLTable_Row extends HTMLTable_Entity {
       }
 
       foreach ($this->cells as $cellsOfHeader) {
+
+         HTMLTable_Cell::updateCellSteps($cellsOfHeader, $this->numberOfSubRows);
+
          $start = 0;
          foreach ($cellsOfHeader as $cell) {
             $cell->computeStartEnd($start);
