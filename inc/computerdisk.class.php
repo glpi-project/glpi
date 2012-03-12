@@ -60,10 +60,13 @@ class ComputerDisk extends CommonDBChild {
    }
 
 
+   /**
+    * @see inc/CommonDBChild::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
       // Not attached to computer -> not added
-      if (!isset($input['computers_id']) || $input['computers_id'] <= 0) {
+      if (!isset($input['computers_id']) || ($input['computers_id'] <= 0)) {
          return false;
       }
 
@@ -82,10 +85,15 @@ class ComputerDisk extends CommonDBChild {
    }
 
 
+   /**
+    * @see inc/CommonGLPI::getTabNameForItem()
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       // can exists for template
-      if ($item->getType() == 'Computer' && Session::haveRight("computer","r")) {
+      if (($item->getType() == 'Computer')
+          && Session::haveRight("computer","r")) {
+
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable('glpi_computerdisks',
@@ -97,6 +105,11 @@ class ComputerDisk extends CommonDBChild {
    }
 
 
+   /**
+    * @param $item            CommonGLPI object
+    * @param $tabnum          (default 1)
+    * @param $withtemplate    (default 0)
+    */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       self::showForComputer($item, $withtemplate);
@@ -122,7 +135,7 @@ class ComputerDisk extends CommonDBChild {
         $computers_id = $options['computers_id'];
       }
 
-      if (!Session::haveRight("computer","w")) {
+      if (!Session::haveRight("computer", "w")) {
         return false;
       }
 
@@ -134,17 +147,17 @@ class ComputerDisk extends CommonDBChild {
       } else {
          $comp->getFromDB($computers_id);
          // Create item
-         $input = array('entities_id' => $comp->getEntityID());
+         $input                  = array('entities_id' => $comp->getEntityID());
          $options['entities_id'] = $comp->getEntityID();
-         
+
          $this->check(-1, 'w', $input);
       }
 
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-      if ($ID>0) {
-        $computers_id=$this->fields["computers_id"];
+      if ($ID > 0) {
+        $computers_id = $this->fields["computers_id"];
       } else {
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
       }
@@ -203,7 +216,8 @@ class ComputerDisk extends CommonDBChild {
 
       $ID = $comp->fields['id'];
 
-      if (!$comp->getFromDB($ID) || !$comp->can($ID, "r")) {
+      if (!$comp->getFromDB($ID)
+          || !$comp->can($ID, "r")) {
          return false;
       }
       $canedit = $comp->can($ID, "w");
@@ -217,7 +231,7 @@ class ComputerDisk extends CommonDBChild {
                           ON (`glpi_computerdisks`.`filesystems_id` = `glpi_filesystems`.`id`)
                 WHERE (`computers_id` = '$ID')";
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='7'>".self::getTypeName($DB->numrows($result))."</th></tr>";
 
@@ -237,13 +251,15 @@ class ComputerDisk extends CommonDBChild {
                                         sprintf(__('%1$s = %2$s'),
                                                 $comp->getTypeName(1), $comp->getName()));
 
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
-                  echo "<td><a href='computerdisk.form.php?id=".$data['id']."'>".
-                             $data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
+                  $name = (empty($data['name'])? sprintf(__('%1$s (%2$s)'),
+                                                         $data['name'], $data['id'])
+                                               : $data['name']);
+                  echo "<td><a href='computerdisk.form.php?id=".$data['id']."'>".$name."</a></td>";
                } else {
-                  echo "<td>".$data['name'].(empty($data['name'])?$data['id']:"")."</td>";
+                  echo "<td>".$name."</td>";
                }
                echo "<td>".$data['device']."</td>";
                echo "<td>".$data['mountpoint']."</td>";
@@ -255,8 +271,8 @@ class ComputerDisk extends CommonDBChild {
                echo "<td class='right'>$tmp<span class='small_space'></span></td>";
                echo "<td>";
                $percent = 0;
-               if ($data['totalsize']>0) {
-                  $percent=round(100*$data['freesize']/$data['totalsize']);
+               if ($data['totalsize'] > 0) {
+                  $percent = round(100*$data['freesize']/$data['totalsize']);
                }
                Html::displayProgressBar('100', $percent, array('simple'       => true,
                                                                'forcepadding' => false));
@@ -269,7 +285,8 @@ class ComputerDisk extends CommonDBChild {
             echo "<tr><th colspan='7'>".__('No item found')."</th></tr>";
          }
 
-         if ($canedit &&!(!empty($withtemplate) && $withtemplate == 2)) {
+         if ($canedit
+             && !(!empty($withtemplate) && ($withtemplate == 2))) {
             echo "<tr><td colspan='7' class='center'>";
             echo "<a class='vsubmit' href='computerdisk.form.php?computers_id=$ID&amp;withtemplate=".
                    $withtemplate."'>".__('Add a volume')."</a></td></tr>";

@@ -71,6 +71,9 @@ class Computer extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonGLPI::defineTabs()
+   **/
    function defineTabs($options=array()) {
 
       $ong = array();
@@ -110,12 +113,17 @@ class Computer extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::post_updateItem()
+   **/
    function post_updateItem($history=1) {
       global $DB, $CFG_GLPI;
 
       // Manage changes for OCS if more than 1 element (date_mod)
       // Need dohistory==1 if dohistory==2 no locking fields
-      if ($this->fields["is_ocs_import"] && $history==1 && count($this->updates)>1) {
+      if ($this->fields["is_ocs_import"]
+          && ($history == 1)
+          && (count($this->updates) > 1)) {
          OcsServer::mergeOcsArray($this->fields["id"], $this->updates, "computer_update");
       }
 
@@ -128,7 +136,7 @@ class Computer extends CommonDBTM {
 
       for ($i=0 ; $i<count($this->updates) ; $i++) {
          // Update contact of attached items
-         if (($this->updates[$i]=="contact" || $this->updates[$i]=="contact_num")
+         if ((($this->updates[$i] == "contact") || ($this->updates[$i] == "contact_num"))
              && $CFG_GLPI["is_contact_autoupdate"]) {
 
             $items = array('Monitor', 'Peripheral', 'Phone', 'Printer');
@@ -142,22 +150,22 @@ class Computer extends CommonDBTM {
                          FROM `glpi_computers_items`
                          WHERE `computers_id` = '".$this->fields["id"]."'
                                AND `itemtype` = '".$t."'";
-               if ($result=$DB->query($query)) {
+               if ($result = $DB->query($query)) {
                   $resultnum = $DB->numrows($result);
-                  $item = new $t();
-                  if ($resultnum>0) {
+                  $item      = new $t();
+                  if ($resultnum > 0) {
                      for ($j=0 ; $j<$resultnum ; $j++) {
                         $tID = $DB->result($result, $j, "items_id");
                         $item->getFromDB($tID);
                         if (!$item->getField('is_global')) {
-                           if ($item->getField('contact')!=$this->fields['contact']
-                               || $item->getField('contact_num')!=$this->fields['contact_num']) {
+                           if ($item->getField('contact') != $this->fields['contact']
+                               || ($item->getField('contact_num') != $this->fields['contact_num'])) {
 
                               $tmp["id"]          = $item->getField('id');
                               $tmp['contact']     = $this->fields['contact'];
                               $tmp['contact_num'] = $this->fields['contact_num'];
                               $item->update($tmp);
-                              $update_done = true;
+                              $update_done        = true;
                            }
                         }
                      }
@@ -173,11 +181,12 @@ class Computer extends CommonDBTM {
          }
 
          // Update users and groups of attached items
-         if (($this->updates[$i]=="users_id"
-              && $this->fields["users_id"]!=0
+         if ((($this->updates[$i] == "users_id")
+              && ($this->fields["users_id"] != 0)
               && $CFG_GLPI["is_user_autoupdate"])
-             ||($this->updates[$i]=="groups_id" && $this->fields["groups_id"]!=0
-                && $CFG_GLPI["is_group_autoupdate"])) {
+             || (($this->updates[$i] == "groups_id")
+                 && ($this->fields["groups_id"] != 0)
+                 && $CFG_GLPI["is_group_autoupdate"])) {
 
             $items = array('Monitor', 'Peripheral', 'Phone', 'Printer');
 
@@ -191,16 +200,16 @@ class Computer extends CommonDBTM {
                          WHERE `computers_id` = '".$this->fields["id"]."'
                                AND `itemtype` = '".$t."'";
 
-               if ($result=$DB->query($query)) {
+               if ($result = $DB->query($query)) {
                   $resultnum = $DB->numrows($result);
-                  $item = new $t();
-                  if ($resultnum>0) {
+                  $item      = new $t();
+                  if ($resultnum > 0) {
                      for ($j=0 ; $j<$resultnum ; $j++) {
                         $tID = $DB->result($result, $j, "items_id");
                         $item->getFromDB($tID);
                         if (!$item->getField('is_global')) {
-                           if ($item->getField('users_id')!=$this->fields["users_id"]
-                               ||$item->getField('groups_id')!=$this->fields["groups_id"]) {
+                           if (($item->getField('users_id') != $this->fields["users_id"])
+                               || ($item->getField('groups_id') != $this->fields["groups_id"])) {
 
                               $tmp["id"] = $item->getField('id');
 
@@ -226,8 +235,9 @@ class Computer extends CommonDBTM {
          }
 
          // Update state of attached items
-         if ($this->updates[$i]=="states_id" && $CFG_GLPI["state_autoupdate_mode"]<0) {
-            $items = array('Monitor', 'Peripheral', 'Phone', 'Printer');
+         if (($this->updates[$i] == "states_id")
+             && ($CFG_GLPI["state_autoupdate_mode"] < 0)) {
+            $items       = array('Monitor', 'Peripheral', 'Phone', 'Printer');
             $update_done = false;
 
             foreach ($items as $t) {
@@ -236,20 +246,20 @@ class Computer extends CommonDBTM {
                          WHERE `computers_id` = '".$this->fields["id"]."'
                                AND `itemtype` = '".$t."'";
 
-               if ($result=$DB->query($query)) {
+               if ($result = $DB->query($query)) {
                   $resultnum = $DB->numrows($result);
-                  $item = new $t();
+                  $item      = new $t();
 
-                  if ($resultnum>0) {
+                  if ($resultnum > 0) {
                      for ($j=0 ; $j<$resultnum ; $j++) {
                         $tID = $DB->result($result, $j, "items_id");
                         $item->getFromDB($tID);
                         if (!$item->getField('is_global')) {
-                           if ($item->getField('states_id')!=$this->fields["states_id"]) {
+                           if ($item->getField('states_id') != $this->fields["states_id"]) {
                               $tmp["id"]        = $item->getField('id');
                               $tmp["states_id"] = $this->fields["states_id"];
                               $item->update($tmp);
-                              $update_done = true;
+                              $update_done      = true;
                            }
                         }
                      }
@@ -264,11 +274,11 @@ class Computer extends CommonDBTM {
          }
 
          // Update loction of attached items
-         if ($this->updates[$i]=="locations_id"
-             && $this->fields["locations_id"]!=0
+         if (($this->updates[$i] == "locations_id")
+             && ($this->fields["locations_id"] != 0)
              && $CFG_GLPI["is_location_autoupdate"]) {
 
-            $items = array('Monitor', 'Peripheral', 'Phone', 'Printer');
+            $items       = array('Monitor', 'Peripheral', 'Phone', 'Printer');
             $update_done = false;
             $updates2[0] = "locations_id";
 
@@ -278,20 +288,20 @@ class Computer extends CommonDBTM {
                          WHERE `computers_id` = '".$this->fields["id"]."'
                                AND `itemtype` = '".$t."'";
 
-               if ($result=$DB->query($query)) {
+               if ($result = $DB->query($query)) {
                   $resultnum = $DB->numrows($result);
-                  $item = new $t();
+                  $item      = new $t();
 
-                  if ($resultnum>0) {
+                  if ($resultnum > 0) {
                      for ($j=0 ; $j<$resultnum ; $j++) {
                         $tID = $DB->result($result, $j, "items_id");
                         $item->getFromDB($tID);
                         if (!$item->getField('is_global')) {
-                           if ($item->getField('locations_id')!=$this->fields["locations_id"]) {
+                           if ($item->getField('locations_id') != $this->fields["locations_id"]) {
                               $tmp["id"]           = $item->getField('id');
                               $tmp["locations_id"] = $this->fields["locations_id"];
                               $item->update($tmp);
-                              $update_done = true;
+                              $update_done         = true;
                            }
                         }
                      }
@@ -308,9 +318,12 @@ class Computer extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
-      if (isset($input["id"]) && $input["id"]>0) {
+      if (isset($input["id"]) && ($input["id"] > 0)) {
          $input["_oldID"] = $input["id"];
       }
       unset($input['id']);
@@ -330,16 +343,16 @@ class Computer extends CommonDBTM {
          $compdev->cloneComputer($this->input["_oldID"], $this->fields['id']);
 
          // ADD Infocoms
-         $ic= new Infocom();
+         $ic = new Infocom();
          $ic->cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD volumes
-         $query = "SELECT `id`
-                   FROM `glpi_computerdisks`
-                   WHERE `computers_id` = '".$this->input["_oldID"]."'";
-         $result=$DB->query($query);
-         if ($DB->numrows($result)>0) {
-            while ($data=$DB->fetch_assoc($result)) {
+         $query  = "SELECT `id`
+                    FROM `glpi_computerdisks`
+                    WHERE `computers_id` = '".$this->input["_oldID"]."'";
+         $result = $DB->query($query);
+         if ($DB->numrows($result) > 0) {
+            while ($data = $DB->fetch_assoc($result)) {
                $disk = new ComputerDisk();
                $disk->getfromDB($data['id']);
                unset($disk->fields["id"]);
@@ -356,14 +369,14 @@ class Computer extends CommonDBTM {
          $inst->cloneComputer($this->input["_oldID"], $this->fields['id']);
 
          // ADD Contract
-         $query = "SELECT `contracts_id`
-                   FROM `glpi_contracts_items`
-                   WHERE `items_id` = '".$this->input["_oldID"]."'
-                         AND `itemtype` = '".$this->getType()."';";
-         $result=$DB->query($query);
-         if ($DB->numrows($result)>0) {
+         $query  = "SELECT `contracts_id`
+                    FROM `glpi_contracts_items`
+                    WHERE `items_id` = '".$this->input["_oldID"]."'
+                          AND `itemtype` = '".$this->getType()."';";
+         $result = $DB->query($query);
+         if ($DB->numrows($result) > 0) {
             $contractitem = new Contract_Item();
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
                                         'itemtype'     => $this->getType(),
                                         'items_id'     => $this->fields['id']));
@@ -371,14 +384,14 @@ class Computer extends CommonDBTM {
          }
 
          // ADD Documents
-         $query = "SELECT `documents_id`
-                   FROM `glpi_documents_items`
-                   WHERE `items_id` = '".$this->input["_oldID"]."'
-                         AND `itemtype` = '".$this->getType()."';";
-         $result=$DB->query($query);
-         if ($DB->numrows($result)>0) {
+         $query  = "SELECT `documents_id`
+                    FROM `glpi_documents_items`
+                    WHERE `items_id` = '".$this->input["_oldID"]."'
+                          AND `itemtype` = '".$this->getType()."';";
+         $result = $DB->query($query);
+         if ($DB->numrows($result) > 0) {
             $docitem = new Document_Item();
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype'     => $this->getType(),
                                    'items_id'     => $this->fields['id']));
@@ -389,12 +402,12 @@ class Computer extends CommonDBTM {
          NetworkPort::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // Add connected devices
-         $query = "SELECT *
-                   FROM `glpi_computers_items`
-                   WHERE `computers_id` = '".$this->input["_oldID"]."';";
+         $query  = "SELECT *
+                    FROM `glpi_computers_items`
+                    WHERE `computers_id` = '".$this->input["_oldID"]."';";
          $result = $DB->query($query);
 
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             $conn = new Computer_Item();
             while ($data=$DB->fetch_assoc($result)) {
                $conn->add(array('computers_id' => $this->fields['id'],
@@ -409,9 +422,9 @@ class Computer extends CommonDBTM {
    function cleanDBonPurge() {
       global $DB;
 
-      $query = "DELETE
-                FROM `glpi_computers_softwareversions`
-                WHERE `computers_id` = '".$this->fields['id']."'";
+      $query  = "DELETE
+                 FROM `glpi_computers_softwareversions`
+                 WHERE `computers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
 
       $query = "SELECT `id`
@@ -419,7 +432,7 @@ class Computer extends CommonDBTM {
                 WHERE `computers_id` = '".$this->fields['id']."'";
 
       if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             $conn = new Computer_Item();
             while ($data = $DB->fetch_assoc($result)) {
                $data['_no_auto_action'] = true;
@@ -428,17 +441,17 @@ class Computer extends CommonDBTM {
          }
       }
 
-      $query = "DELETE
-                FROM `glpi_registrykeys`
-                WHERE `computers_id` = '".$this->fields['id']."'";
+      $query  = "DELETE
+                 FROM `glpi_registrykeys`
+                 WHERE `computers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
 
       $compdev = new Computer_Device();
       $compdev->cleanDBonItemDelete('Computer', $this->fields['id']);
 
-      $query = "DELETE
-                FROM `glpi_ocslinks`
-                WHERE `computers_id` = '".$this->fields['id']."'";
+      $query  = "DELETE
+                 FROM `glpi_ocslinks`
+                 WHERE `computers_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
 
       $disk = new ComputerDisk();
@@ -473,7 +486,7 @@ class Computer extends CommonDBTM {
            "</td>";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name",
-                             (isset($options['withtemplate']) && $options['withtemplate']==2),
+                             (isset($options['withtemplate']) && ( $options['withtemplate']== 2)),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
@@ -540,7 +553,7 @@ class Computer extends CommonDBTM {
            "</td>";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial",
-                             (isset($options['withtemplate']) && $options['withtemplate']==2),
+                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, 'otherserial', array('value' => $objectName));
       echo "</td></tr>\n";
@@ -632,7 +645,7 @@ class Computer extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      if ((!isset($options['withtemplate']) || $options['withtemplate']==0)
+      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
           && !empty($this->fields['template_name'])) {
          echo "<span class='small_space'>";
          printf(__('Created from the template %s'), $this->fields['template_name']);
@@ -670,9 +683,9 @@ class Computer extends CommonDBTM {
                       WHERE `computers_id` = '$ID'";
 
             $result_agent_version = $DB->query($query);
-            $data_version = $DB->fetch_assoc($result_agent_version);
+            $data_version         = $DB->fetch_assoc($result_agent_version);
 
-            $ocs_config = OcsServer::getConfig(OcsServer::getByMachineID($ID));
+            $ocs_config           = OcsServer::getConfig(OcsServer::getByMachineID($ID));
 
             //If have write right on OCS and ocsreports url is not empty in OCS config
             if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
@@ -683,7 +696,8 @@ class Computer extends CommonDBTM {
             }
 
             if ($data_version["ocs_agent_version"] != NULL) {
-               echo '<tr><td>'.__('Agent').'</td><td>'.$data_version["ocs_agent_version"].'</td></tr>';
+               echo '<tr><td>'.__('Agent').'</td>'.
+                    '<td>'.$data_version["ocs_agent_version"].'</td></tr>';
             }
 
          } else {
@@ -736,7 +750,7 @@ class Computer extends CommonDBTM {
    function getSearchOptions() {
       global $CFG_GLPI;
 
-      $tab = array();
+      $tab                       = array();
       $tab['common']             = __('Characteristics');
 
       $tab[1]['table']           = $this->getTable();
@@ -932,7 +946,7 @@ class Computer extends CommonDBTM {
 
       $tab[13]['table']          = 'glpi_devicegraphiccards';
       $tab[13]['field']          = 'designation';
-      $tab[13]['name']           = __('Graphics Card');
+      $tab[13]['name']           = __('Graphics card');
       $tab[13]['forcegroupby']   = true;
       $tab[13]['massiveaction']  = false;
       $tab[13]['joinparams']     = array('beforejoin'
@@ -941,7 +955,7 @@ class Computer extends CommonDBTM {
 
       $tab[14]['table']          = 'glpi_devicemotherboards';
       $tab[14]['field']          = 'designation';
-      $tab[14]['name']           = __('System Board');
+      $tab[14]['name']           = __('System board');
       $tab[14]['forcegroupby']   = true;
       $tab[14]['massiveaction']  = false;
       $tab[14]['joinparams']     = array('beforejoin'
@@ -972,7 +986,7 @@ class Computer extends CommonDBTM {
 
       $tab[39]['table']          = 'glpi_devicepowersupplies';
       $tab[39]['field']          = 'designation';
-      $tab[39]['name']           = __('Power Supply');
+      $tab[39]['name']           = __('Power supply');
       $tab[39]['forcegroupby']   = true;
       $tab[39]['usehaving']      = true;
       $tab[39]['massiveaction']  = false;

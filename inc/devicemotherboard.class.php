@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class DeviceMotherboard extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      return _n('System Board', 'System Boards', $nb);
+      return _n('System board', 'System boards', $nb);
    }
 
 

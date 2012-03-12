@@ -89,6 +89,8 @@ class Config extends CommonDBTM {
    /**
     * Prepare input datas for updating the item
     *
+    * @see inc/CommonDBTM::prepareInputForUpdate()
+    *
     * @param $input array of datas used to update the item
     *
     * @return the modified $input array
@@ -270,7 +272,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
+      echo "<input type='submit' name='update' class='submit' value=\""._sx('button','Save')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -314,7 +316,7 @@ class Config extends CommonDBTM {
                                        $CFG_GLPI["peripherals_management_restrict"]);
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td>" . __('Softwares category deleted by the dictionary rules') .
+      echo "<tr class='tab_bg_2'><td>" . __('Software category deleted by the dictionary rules') .
            "</td><td>";
       Dropdown::show('SoftwareCategory',
                      array('value' => $CFG_GLPI["softwarecategories_id_ondelete"],
@@ -407,7 +409,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='6' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
+      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -449,7 +451,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update_auth' class='submit' value=\"".__s('Save')."\">";
+      echo "<input type='submit' name='update_auth' class='submit' value=\""._sx('button', 'Save')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -476,7 +478,7 @@ class Config extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       $active = DBConnection::isDBSlaveActive();
 
-      echo "<tr class='tab_bg_2'><th colspan='4'>" . _n('Mysql replicate', 'Mysql replicates',2) .
+      echo "<tr class='tab_bg_2'><th colspan='4'>" . _n('Mysql replica', 'Mysql replicas',2) .
            "</th></tr>";
       $DBSlave = DBConnection::getDBSlaveConf();
 
@@ -513,7 +515,7 @@ class Config extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
+      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -569,7 +571,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Keep tickets when purging hardwares in the inventory') . "</td><td>";
+      echo "<td>" . __('Keep tickets when purging hardware in the inventory') . "</td><td>";
       Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
       echo "</td><td colspan='2'>&nbsp;</td>";
       echo "</tr>";
@@ -606,7 +608,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='b' colspan='2'>".__('Urgency')."&nbsp;:</td>";
+      echo "<td class='b' colspan='2'>".__('Urgency')."</td>";
 
       for ($impact=5 ; $impact>=1 ; $impact--) {
          echo "<td>&nbsp;</td>";
@@ -651,7 +653,7 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='7' class='center'>";
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
+      echo "<input type='submit' name='update' class='submit' value=\""._sx('button','Save')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -677,9 +679,9 @@ class Config extends CommonDBTM {
       if (array_key_exists('last_login',$data)) {
          $userpref = true;
          if ($data["id"] === Session::getLoginUserID()) {
-            $url      = $CFG_GLPI['root_doc']."/front/preference.php";
+            $url  = $CFG_GLPI['root_doc']."/front/preference.php";
          } else {
-            $url      = $CFG_GLPI['root_doc']."/front/user.form.php";
+            $url  = $CFG_GLPI['root_doc']."/front/user.form.php";
          }
       }
 
@@ -694,7 +696,7 @@ class Config extends CommonDBTM {
       echo "<td>" . __('Results to display by page')."</td><td>";
       // Limit using global config
       Dropdown::showInteger('list_limit',
-                            ($data['list_limit']<$CFG_GLPI['list_limit_max']
+                            (($data['list_limit'] < $CFG_GLPI['list_limit_max'])
                              ? $data['list_limit'] : $CFG_GLPI['list_limit_max']),
                             5, $CFG_GLPI['list_limit_max'], 5);
       echo "</td><td>" . __('Date format') ."</td>";
@@ -742,7 +744,8 @@ class Config extends CommonDBTM {
       Dropdown::showFromArray('csv_delimiter', $values, array('value' => $data["csv_delimiter"]));
       echo "</td>";
 
-      if (!$userpref || $CFG_GLPI['show_count_on_tabs'] != -1) {
+      if (!$userpref
+          || ($CFG_GLPI['show_count_on_tabs'] != -1)) {
          echo "<td>".__('Display counts in tabs')."</td><td>";
 
          $values = array(0 => __('No'),
@@ -816,17 +819,17 @@ class Config extends CommonDBTM {
          echo "<td colspan='3'>";
 
          echo "<table><tr>";
-         echo "<td bgcolor='" . $data["priority_1"] . "'>1&nbsp;:&nbsp;";
+         echo "<td bgcolor='" . $data["priority_1"] . "'>1&nbsp;";
          echo "<input type='text' name='priority_1' size='7' value='".$data["priority_1"]."'></td>";
-         echo "<td bgcolor='" . $data["priority_2"] . "'>2&nbsp;:&nbsp;";
+         echo "<td bgcolor='" . $data["priority_2"] . "'>2&nbsp;";
          echo "<input type='text' name='priority_2' size='7' value='".$data["priority_2"]."'></td>";
-         echo "<td bgcolor='" . $data["priority_3"] . "'>3&nbsp;:&nbsp;";
+         echo "<td bgcolor='" . $data["priority_3"] . "'>3&nbsp;";
          echo "<input type='text' name='priority_3' size='7' value='".$data["priority_3"]."'></td>";
-         echo "<td bgcolor='" . $data["priority_4"] . "'>4&nbsp;:&nbsp;";
+         echo "<td bgcolor='" . $data["priority_4"] . "'>4&nbsp;";
          echo "<input type='text' name='priority_4' size='7' value='".$data["priority_4"]."'></td>";
-         echo "<td bgcolor='" . $data["priority_5"] . "'>5&nbsp;:&nbsp;";
+         echo "<td bgcolor='" . $data["priority_5"] . "'>5&nbsp;";
          echo "<input type='text' name='priority_5' size='7' value='".$data["priority_5"]."'></td>";
-         echo "<td bgcolor='" . $data["priority_6"] . "'>6&nbsp;:&nbsp;";
+         echo "<td bgcolor='" . $data["priority_6"] . "'>6&nbsp;";
          echo "<input type='text' name='priority_6' size='7' value='".$data["priority_6"]."'></td>";
          echo "</tr></table>";
 
@@ -862,7 +865,7 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
+      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
       echo "</td></tr>";
 
       echo "</table></div>";
@@ -927,8 +930,8 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
-      echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\"></td>";
-      echo "</tr>";
+      echo "<input type='submit' name='update' class='submit' value=\""._sx('button', 'Save')."\">";
+      echo "</td></tr>";
 
       echo "</table>";
       echo "</form>";
@@ -941,7 +944,6 @@ class Config extends CommonDBTM {
        $oldlang = $_SESSION['glpilanguage'];
        // Keep this, for some function call which still use translation (ex showAllReplicateDelay)
        Session::loadLanguage('en_GB');
-
 
       // No need to translate, this part always display in english (for copy/paste to forum)
 
@@ -1008,7 +1010,7 @@ class Config extends CommonDBTM {
     *
     * @param $name   select name
     * @param $value  default value
-    */
+   **/
    static function dropdownGlobalManagement($name, $value) {
 
       $choices[0] = __('Yes - Restrict to unit management for manual add');
@@ -1032,9 +1034,9 @@ class Config extends CommonDBTM {
       // Search in order : ID or extjs dico or tinymce dico / native lang / english name / extjs dico / tinymce dico
       // ID  or extjs dico or tinymce dico
       foreach ($CFG_GLPI["languages"] as $ID => $language) {
-         if (strcasecmp($lang,$ID) == 0
-             || strcasecmp($lang,$language[2]) == 0
-             || strcasecmp($lang,$language[3]) == 0) {
+         if ((strcasecmp($lang,$ID) == 0)
+             || (strcasecmp($lang,$language[2]) == 0)
+             || (strcasecmp($lang,$language[3]) == 0)) {
             return $ID;
          }
       }
@@ -1061,16 +1063,17 @@ class Config extends CommonDBTM {
       global $CFG_GLPI;
 
       if (!isset($CFG_GLPI["root_doc"])) {
-         if ( !isset($_SERVER['REQUEST_URI']) ) {
+         if (!isset($_SERVER['REQUEST_URI']) ) {
             $_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
          }
 
          $currentdir = getcwd();
          chdir(GLPI_ROOT);
-         $glpidir = str_replace(str_replace('\\', '/',getcwd()),"",str_replace('\\', '/',$currentdir));
+         $glpidir    = str_replace(str_replace('\\', '/',getcwd()), "",
+                                   str_replace('\\', '/',$currentdir));
          chdir($currentdir);
-         $globaldir = Html::cleanParametersURL($_SERVER['REQUEST_URI']);
-         $globaldir = preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$globaldir);
+         $globaldir  = Html::cleanParametersURL($_SERVER['REQUEST_URI']);
+         $globaldir  = preg_replace("/\/[0-9a-zA-Z\.\-\_]+\.php/","",$globaldir);
 
          $CFG_GLPI["root_doc"] = str_replace($glpidir,"",$globaldir);
          $CFG_GLPI["root_doc"] = preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
@@ -1102,6 +1105,9 @@ class Config extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonGLPI::getTabNameForItem()
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       switch ($item->getType()) {
@@ -1123,7 +1129,7 @@ class Config extends CommonDBTM {
             $tabs[5] = __('System information');
 
             if (DBConnection::isDBSlaveActive()) {
-               $tabs[6]  = _n('Mysql replicate', 'Mysql replicates',2);  // Slave
+               $tabs[6]  = _n('Mysql replica', 'Mysql replicas', 2);  // Slave
             }
             return $tabs;
       }
@@ -1131,18 +1137,23 @@ class Config extends CommonDBTM {
    }
 
 
+   /**
+    * @param $item         CommonGLPI object
+    * @param $tabnum       (default 1)
+    * @param $withtemplate (default 0)
+   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       global $CFG_GLPI;
 
-      if ($item->getType()=='Preference') {
+      if ($item->getType() == 'Preference') {
          $config = new self();
-         $user = new User();
+         $user   = new User();
          if ($user->getFromDB(Session::getLoginUserID())) {
             $user->computePreferences();
             $config->showFormUserPrefs($user->fields);
          }
 
-      } else if ($item->getType()=='User') {
+      } else if ($item->getType() == 'User') {
          $config = new self();
          $item->computePreferences();
          $config->showFormUserPrefs($item->fields);
@@ -1189,16 +1200,19 @@ class Config extends CommonDBTM {
    static function checkWriteAccessToDirs($fordebug=false) {
 
       $dir_to_check = array(GLPI_CONFIG_DIR
-                                          => __('Checking write permissions for setting files'),
-                            GLPI_DOC_DIR  => __('Checking write permissions for document files'),
-                            GLPI_DUMP_DIR => __('Checking write permissions for dump files'),
+                                    => __('Checking write permissions for setting files'),
+                            GLPI_DOC_DIR
+                                    => __('Checking write permissions for document files'),
+                            GLPI_DUMP_DIR
+                                    => __('Checking write permissions for dump files'),
                             GLPI_SESSION_DIR
-                                          => __('Checking write permissions for session files'),
-                            GLPI_CRON_DIR => __('Check write permissions for automatic actions files'),
+                                    => __('Checking write permissions for session files'),
+                            GLPI_CRON_DIR
+                                    => __('Checking write permissions for automatic actions files'),
                             GLPI_CACHE_DIR
-                                          => __('Checking write permissions for cache files'),
+                                    => __('Checking write permissions for cache files'),
                             GLPI_GRAPH_DIR
-                                          => __('Checking write permissions for graphic files'));
+                                    => __('Checking write permissions for graphic files'));
       $error = 0;
 
       foreach ($dir_to_check as $dir => $message) {
@@ -1215,8 +1229,8 @@ class Config extends CommonDBTM {
          if ($tmperror > 0) {
             if ($fordebug) {
                echo "<img src='".GLPI_ROOT."/pics/redbutton.png'> ".
-                  sprintf(__('Check permissions to the directory: %s'), $dir).
-                  " ".$errors[$tmperror]."\n";
+                     sprintf(__('Check permissions to the directory: %s'), $dir).
+                     " ".$errors[$tmperror]."\n";
             } else {
                echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'><p class='red'>".
                     $errors[$tmperror]."</p> ".
@@ -1229,8 +1243,8 @@ class Config extends CommonDBTM {
                echo "<img src='".GLPI_ROOT."/pics/greenbutton.png'>$dir : OK\n";
             } else {
                echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-                          __('A file and a directory have be created and deleted - Perfect !')."\"
-                          title=\"".__('A file and a directory have be created and deleted - Perfect !')."\">".
+                          __s('A file and a directory have be created and deleted - Perfect !')."\"
+                          title=\"".__s('A file and a directory have be created and deleted - Perfect !')."\">".
                     "</td></tr>";
             }
          }
@@ -1238,8 +1252,8 @@ class Config extends CommonDBTM {
 
       // Only write test for GLPI_LOG as SElinux prevent removing log file.
       if (!$fordebug) {
-         echo "<tr class='tab_bg_1'><td class='b left'>". __('Checking write permissions for log files').
-              "</td>";
+         echo "<tr class='tab_bg_1'><td class='b left'>".
+               __('Checking write permissions for log files')."</td>";
       }
 
       if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
@@ -1247,8 +1261,8 @@ class Config extends CommonDBTM {
             echo "<img src='".GLPI_ROOT."/pics/greenbutton.png'>".GLPI_LOG_DIR." : OK\n";
          } else {
             echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-                       __('A file was created - Perfect !')."\" title=\"".
-                       __('A file was created - Perfect !')."\"></td></tr>";
+                       __s('A file was created - Perfect !')."\" title=\"".
+                       __s('A file was created - Perfect !')."\"></td></tr>";
          }
 
       } else {
@@ -1257,7 +1271,7 @@ class Config extends CommonDBTM {
                   sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."\n";
          } else {
             echo "<td><img src='".GLPI_ROOT."/pics/orangebutton.png'>".
-                 "<p class='red'>".__s("The file was created but can't be deleted.")."</p>".
+                 "<p class='red'>".__("The file was created but can't be deleted.")."</p>".
                  sprintf(__('Check permissions to the directory: %s'), GLPI_LOG_DIR)."</td></tr>";
          }
          $error = 1;

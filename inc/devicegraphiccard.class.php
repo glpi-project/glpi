@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class DeviceGraphicCard extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      return _n('Graphics Card', 'Graphics Cards', $nb);
+      return _n('Graphics card', 'Graphics cards', $nb);
    }
 
 
