@@ -44,6 +44,7 @@ class Contract extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
+
    static function getTypeName($nb=0) {
       return _n('Contract', 'Contracts', $nb);
    }
@@ -132,12 +133,7 @@ class Contract extends CommonDBTM {
    **/
    function showForm($ID,$options=array()) {
 
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w');
-      }
+      $this->initForm($ID, $options);
 
       $can_edit = $this->can($ID,'w');
 
@@ -170,8 +166,8 @@ class Contract extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Initial contract period')."</td><td>";
-      Dropdown::showInteger("duration", $this->fields["duration"], 1, 120,
-                            1, array(0 => Dropdown::EMPTY_VALUE), array('unit' => 'month'));
+      Dropdown::showInteger("duration", $this->fields["duration"], 1, 120, 1,
+                            array(0 => Dropdown::EMPTY_VALUE), array('unit' => 'month'));
       if (!empty($this->fields["begin_date"])) {
          echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
                                                $this->fields["duration"]);
@@ -192,9 +188,10 @@ class Contract extends CommonDBTM {
                             array('unit' => 'month'));
       echo "</td>";
       echo "<td>".__('Notice')."</td><td>";
-      Dropdown::showInteger("notice", $this->fields["notice"], 0, 120,
-                            1, array(), array('unit' => 'month'));
-      if (!empty($this->fields["begin_date"]) && $this->fields["notice"]>0) {
+      Dropdown::showInteger("notice", $this->fields["notice"], 0, 120, 1,
+                            array(), array('unit' => 'month'));
+      if (!empty($this->fields["begin_date"])
+          && ($this->fields["notice"] > 0)) {
          echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
                                                $this->fields["duration"], $this->fields["notice"]);
       }
@@ -214,7 +211,7 @@ class Contract extends CommonDBTM {
                             array('unit' => 'month'));
       echo "</td></tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__s('Max number of items')."</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Max number of items')."</td><td>";
       Dropdown::showInteger("max_links_allowed", $this->fields["max_links_allowed"], 1, 200, 1,
                             array(0 => __('Unlimited')));
       echo "</td>";
@@ -276,12 +273,13 @@ class Contract extends CommonDBTM {
 
    static function getSearchOptionsToAdd() {
 
-      $tab             = array();
-      $tab['contract'] = self::getTypeName(2);
+      $tab                       = array();
+      $tab['contract']           = self::getTypeName(2);
 
-      $joinparams = array('beforejoin' => array('table'      => 'glpi_contracts_items',
-                                                'joinparams' => array('jointype'
-                                                                        => 'itemtype_item')));
+      $joinparams                = array('beforejoin'
+                                          => array('table'      => 'glpi_contracts_items',
+                                                   'joinparams' => array('jointype'
+                                                                            => 'itemtype_item')));
 
       $tab[139]['table']         = 'glpi_contracts_items';
       $tab[139]['field']         = 'count';
@@ -303,7 +301,7 @@ class Contract extends CommonDBTM {
 
       $tab[30]['table']          = 'glpi_contracts';
       $tab[30]['field']          = 'num';
-      $tab[30]['name']           = __('Contract number');
+      $tab[30]['name']           = sprintf(__('%1$s %2$s'), __('Contract'), _x('Phone', 'number'));
       $tab[30]['forcegroupby']   = true;
       $tab[30]['massiveaction']  = false;
       $tab[30]['joinparams']     = $joinparams;
@@ -311,21 +309,22 @@ class Contract extends CommonDBTM {
 
       $tab[130]['table']         = 'glpi_contracts';
       $tab[130]['field']         = 'duration';
-      $tab[130]['name']          = __('Contract duration');
+      $tab[130]['name']          = sprintf(__('%1$s %2$s'), __('Contract'),__('Duration'));
       $tab[130]['forcegroupby']  = true;
       $tab[130]['massiveaction'] = false;
       $tab[130]['joinparams']    = $joinparams;
 
       $tab[131]['table']         = 'glpi_contracts';
       $tab[131]['field']         = 'periodicity';
-      $tab[131]['name']          = __('Contract periodicity');
+                                    //TRANS: %1$s is Contract, %2$s is field name
+      $tab[131]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Periodicity'));
       $tab[131]['forcegroupby']  = true;
       $tab[131]['massiveaction'] = false;
       $tab[131]['joinparams']    = $joinparams;
 
       $tab[132]['table']         = 'glpi_contracts';
       $tab[132]['field']         = 'begin_date';
-      $tab[132]['name']          = __('Contract start date');
+      $tab[132]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Start date'));
       $tab[132]['forcegroupby']  = true;
       $tab[132]['datatype']      = 'date';
       $tab[132]['massiveaction'] = false;
@@ -333,14 +332,14 @@ class Contract extends CommonDBTM {
 
       $tab[133]['table']         = 'glpi_contracts';
       $tab[133]['field']         = 'accounting_number';
-      $tab[133]['name']          = __('Contract account number');
+      $tab[133]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Account number'));
       $tab[133]['forcegroupby']  = true;
       $tab[133]['massiveaction'] = false;
       $tab[133]['joinparams']    = $joinparams;
 
       $tab[134]['table']         = 'glpi_contracts';
       $tab[134]['field']         = 'end_date';
-      $tab[134]['name']          = __('Contract end date');
+      $tab[134]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('End date'));
       $tab[134]['forcegroupby']  = true;
       $tab[134]['datatype']      = 'date_delay';
       $tab[134]['datafields'][1] = 'begin_date';
@@ -352,14 +351,14 @@ class Contract extends CommonDBTM {
 
       $tab[135]['table']         = 'glpi_contracts';
       $tab[135]['field']         = 'notice';
-      $tab[135]['name']          = __('Contract notice');
+      $tab[135]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Notice'));
       $tab[135]['forcegroupby']  = true;
       $tab[135]['massiveaction'] = false;
       $tab[135]['joinparams']    = $joinparams;
 
       $tab[136]['table']         = 'glpi_contracts';
       $tab[136]['field']         = 'cost';
-      $tab[136]['name']          = __('Contract cost');
+      $tab[136]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Cost'));
       $tab[136]['forcegroupby']  = true;
       $tab[136]['datatype']      = 'decimal';
       $tab[136]['massiveaction'] = false;
@@ -367,14 +366,14 @@ class Contract extends CommonDBTM {
 
       $tab[137]['table']         = 'glpi_contracts';
       $tab[137]['field']         = 'billing';
-      $tab[137]['name']          = __('Contract invoice period');
+      $tab[137]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Invoice period'));
       $tab[137]['forcegroupby']  = true;
       $tab[137]['massiveaction'] = false;
       $tab[137]['joinparams']    = $joinparams;
 
       $tab[138]['table']         = 'glpi_contracts';
       $tab[138]['field']         = 'renewal';
-      $tab[138]['name']          = __('Contract renewal');
+      $tab[138]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Renewal'));
       $tab[138]['forcegroupby']  = true;
       $tab[138]['massiveaction'] = false;
       $tab[138]['joinparams']    = $joinparams;
@@ -385,7 +384,7 @@ class Contract extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                       = array();
       $tab['common']             = __('Characteristics');
 
       $tab[1]['table']           = $this->getTable();
@@ -417,7 +416,7 @@ class Contract extends CommonDBTM {
 
       $tab[6]['table']           = $this->getTable();
       $tab[6]['field']           = 'duration';
-      $tab[6]['name']            = __('Initial contract period');
+      $tab[6]['name']            = __('Duration');
 
       $tab[20]['table']          = $this->getTable();
       $tab[20]['field']          = 'end_date';
@@ -441,7 +440,7 @@ class Contract extends CommonDBTM {
 
       $tab[21]['table']          = $this->getTable();
       $tab[21]['field']          = 'periodicity';
-      $tab[21]['name']           = __('Contract renewal period');
+      $tab[21]['name']           = __('Periodicity');
       $tab[21]['massiveaction']  = false;
 
       $tab[22]['table']          = $this->getTable();
@@ -508,7 +507,7 @@ class Contract extends CommonDBTM {
 
       $tab[72]['table']          = 'glpi_contracts_items';
       $tab[72]['field']          = 'count';
-      $tab[72]['name']           = __('Number of items');
+      $tab[72]['name']           = _x('Quantity', 'Number of items');
       $tab[72]['forcegroupby']   = true;
       $tab[72]['usehaving']      = true;
       $tab[72]['datatype']       = 'number';
@@ -528,7 +527,7 @@ class Contract extends CommonDBTM {
    static function showCentral() {
       global $DB,$CFG_GLPI;
 
-      if (!Session::haveRight("contract","r")) {
+      if (!Session::haveRight("contract", "r")) {
          return false;
       }
 
@@ -542,7 +541,7 @@ class Contract extends CommonDBTM {
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )>-30
                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )<'0'";
-      $result = $DB->query($query);
+      $result    = $DB->query($query);
       $contract0 = $DB->result($result,0,0);
 
       // contrats  echeance j-7
@@ -554,7 +553,7 @@ class Contract extends CommonDBTM {
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )>'0'
                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )<='7'";
-      $result = $DB->query($query);
+      $result    = $DB->query($query);
       $contract7 = $DB->result($result, 0, 0);
 
       // contrats echeance j -30
@@ -566,7 +565,7 @@ class Contract extends CommonDBTM {
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )>'7'
                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                            `glpi_contracts`.`duration` MONTH),CURDATE() )<'30'";
-      $result = $DB->query($query);
+      $result     = $DB->query($query);
       $contract30 = $DB->result($result,0,0);
 
       // contrats avec préavis echeance j-7
@@ -581,7 +580,7 @@ class Contract extends CommonDBTM {
                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                            (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
                                            MONTH),CURDATE() )<='7'";
-      $result = $DB->query($query);
+      $result       = $DB->query($query);
       $contractpre7 = $DB->result($result,0,0);
 
       // contrats avec préavis echeance j -30
@@ -596,7 +595,7 @@ class Contract extends CommonDBTM {
                       AND DATEDIFF(ADDDATE(`glpi_contracts`.`begin_date`, INTERVAL
                                            (`glpi_contracts`.`duration`-`glpi_contracts`.`notice`)
                                            MONTH),CURDATE() )<'30'";
-      $result = $DB->query($query);
+      $result        = $DB->query($query);
       $contractpre30 = $DB->result($result,0,0);
 
       echo "<table class='tab_cadrehov'>";
@@ -653,7 +652,8 @@ class Contract extends CommonDBTM {
 
       $instID = $this->fields['id'];
 
-      if (!$this->can($instID,'r') || !Session::haveRight("contact_enterprise","r")) {
+      if (!$this->can($instID,'r')
+          || !Session::haveRight("contact_enterprise","r")) {
          return false;
       }
       $canedit = $this->can($instID,'w');
@@ -675,15 +675,15 @@ class Contract extends CommonDBTM {
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $i = 0;
+      $i      = 0;
 
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='6'>";
-      if ($DB->numrows($result)==0) {
+      if ($DB->numrows($result) == 0) {
          _e('No associated supplier');
-      } else if ($DB->numrows($result)==1) {
-         _e('Associated supplier');
+      } else if ($DB->numrows($result) == 1) {
+         echo _n('Associated supplier', 'Associated suppliers', 1);
       } else {
          echo _n('Associated supplier', 'Associated suppliers', 2);
       }
@@ -697,7 +697,7 @@ class Contract extends CommonDBTM {
 
       $used = array();
       while ($i < $number) {
-         $ID = $DB->result($result, $i, "id");
+         $ID      = $DB->result($result, $i, "id");
          $website = $DB->result($result, $i, "glpi_suppliers.website");
          if (!empty($website)) {
             $website = $DB->result($result, $i, "website");
@@ -706,15 +706,16 @@ class Contract extends CommonDBTM {
             }
             $website = "<a target=_blank href='$website'>".$DB->result($result, $i, "website")."</a>";
          }
-         $entID = $DB->result($result, $i, "entID");
-         $entity = $DB->result($result, $i, "entity");
-         $used[$entID] = $entID;
-         $entname = Dropdown::getDropdownName("glpi_suppliers", $entID);
+         $entID         = $DB->result($result, $i, "entID");
+         $entity        = $DB->result($result, $i, "entity");
+         $used[$entID]  = $entID;
+         $entname       = Dropdown::getDropdownName("glpi_suppliers", $entID);
          echo "<tr class='tab_bg_1'><td class='center'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=$entID'>".$entname;
-         if ($_SESSION["glpiis_ids_visible"] || empty($entname)) {
-            echo " ($entID)";
+         if ($_SESSION["glpiis_ids_visible"]
+             || empty($entname)) {
+            $entname = " (".$entID.")";
          }
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/supplier.form.php?id=$entID'>".$entname;
          echo "</a></td>";
          echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",$entity)."</td>";
          echo "<td class='center'>";
@@ -741,7 +742,7 @@ class Contract extends CommonDBTM {
          } else {
             $nb = countElementsInTableForEntity("glpi_suppliers", $this->fields["entities_id"]);
          }
-         if ($nb>count($used)) {
+         if ($nb > count($used)) {
             echo "<tr class='tab_bg_1'><td class='right' colspan='2'>";
             echo "<input type='hidden' name='contracts_id' value='$instID'>";
             Dropdown::show('Supplier',
@@ -749,7 +750,7 @@ class Contract extends CommonDBTM {
                                  'entity'       => $this->fields["entities_id"],
                                  'entity_sons'  => $this->fields["is_recursive"]));
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='addcontractsupplier' value=\"".__s('Add')."\"
+            echo "<input type='submit' name='addcontractsupplier' value=\""._sx('Button', 'Add')."\"
                    class='submit'>";
             echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
             echo "</tr>";
@@ -773,7 +774,7 @@ class Contract extends CommonDBTM {
          return false;
       }
       $canedit = $this->can($instID,'w');
-      $rand = mt_rand();
+      $rand    = mt_rand();
 
       $query = "SELECT DISTINCT `itemtype`
                 FROM `glpi_contracts_items`
@@ -785,9 +786,9 @@ class Contract extends CommonDBTM {
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='5'>";
-      if ($DB->numrows($result)==0) {
+      if ($DB->numrows($result) == 0) {
          _e('No associated item');
-      } else if ($DB->numrows($result)==1) {
+      } else if ($DB->numrows($result) == 1) {
          echo _n('Associated item', 'Associated items', 1);
       } else {
          echo _n('Associated item', 'Associated items', 2);
@@ -821,11 +822,11 @@ class Contract extends CommonDBTM {
          }
          if ($item->canView()) {
             $itemtable = getTableForItemType($itemtype);
-            $query = "SELECT `$itemtable`.*,
-                             `glpi_contracts_items`.`id` AS IDD,
-                             `glpi_entities`.`id` AS entity
-                      FROM `glpi_contracts_items`,
-                           `$itemtable`";
+            $query     = "SELECT `$itemtable`.*,
+                                 `glpi_contracts_items`.`id` AS IDD,
+                                 `glpi_entities`.`id` AS entity
+                          FROM `glpi_contracts_items`,
+                               `$itemtable`";
             if ($itemtype != 'Entity') {
                $query .= " LEFT JOIN `glpi_entities`
                                  ON (`$itemtable`.`entities_id`=`glpi_entities`.`id`) ";
@@ -842,9 +843,9 @@ class Contract extends CommonDBTM {
                       ORDER BY `glpi_entities`.`completename`, `$itemtable`.`name`";
 
             $result_linked = $DB->query($query);
-            $nb = $DB->numrows($result_linked);
+            $nb            = $DB->numrows($result_linked);
 
-            if ($nb>$_SESSION['glpilist_limit']) {
+            if ($nb > $_SESSION['glpilist_limit']) {
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   echo "<td>&nbsp;</td>";
@@ -859,19 +860,20 @@ class Contract extends CommonDBTM {
                      "&amp;start=0". "'>" . __('Device list')."</a></td>";
                echo "<td class='center'>-</td><td class='center'>-</td></tr>";
 
-            } else if ($nb>0) {
+            } else if ($nb > 0) {
                for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
-                  $ID = "";
-                  if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                     $ID = " (".$data["id"].")";
+                  $name = $data["name"];
+                  if ($_SESSION["glpiis_ids_visible"]
+                      || empty($data["name"])) {
+                     $name = " (".$data["id"].")";
                   }
                   $link = Toolbox::getItemTypeFormURL($itemtype);
-                  $name = "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."$ID</a>";
+                  $name = "<a href=\"".$link."?id=".$data["id"]."\">".$name."</a>";
 
                   echo "<tr class='tab_bg_1'>";
                   if ($canedit) {
                      $sel = "";
-                     if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                     if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                         $sel = "checked";
                      }
                      echo "<td width='10'>";
@@ -880,7 +882,7 @@ class Contract extends CommonDBTM {
                   if ($prem) {
                      $name = $item->getTypeName($nb);
                      echo "<td class='center top' rowspan='$nb'>".
-                            ($nb>1 ? sprintf(__('%1$s: %2$d'), $name, $nb): $name)."</td>";
+                            ($nb  >1 ? sprintf(__('%1$s: %2$d'), $name, $nb): $name)."</td>";
                   }
                   echo "<td class='center'>";
                   echo Dropdown::getDropdownName("glpi_entities",$data['entity'])."</td>";
@@ -893,7 +895,7 @@ class Contract extends CommonDBTM {
                          (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
                   echo "<td class='center'>";
                   if (isset($data["states_id"])) {
-                     echo Dropdown::getDropdownName("glpi_states",$data['states_id']);
+                     echo Dropdown::getDropdownName("glpi_states", $data['states_id']);
                   } else {
                      echo '&nbsp;';
                   }
@@ -906,19 +908,19 @@ class Contract extends CommonDBTM {
       }
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='2'>".
-            ($totalnb>0 ? sprintf(__('Total = %s'), $totalnb) : "&nbsp;");
+            ($totalnb > 0 ? sprintf(__('%1$s = %2$s'), __('Total'), $totalnb) : "&nbsp;");
       echo "</td><td colspan='5'>&nbsp;</td></tr> ";
 
       if ($canedit) {
-         if ($this->fields['max_links_allowed']==0
-             || $this->fields['max_links_allowed'] > $totalnb) {
+         if (($this->fields['max_links_allowed'] == 0)
+             || ($this->fields['max_links_allowed'] > $totalnb)) {
 
             echo "<tr class='tab_bg_1'><td colspan='5' class='right'>";
             Dropdown::showAllItems("items_id", 0, 0,
                                    ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
                                    $CFG_GLPI["contract_types"]);
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='additem' value=\"".__s('Add')."\"
+            echo "<input type='submit' name='additem' value=\""._sx('Button', 'Add')."\"
                    class='submit'>";
             echo "</td><td>&nbsp;</td></tr>";
          }
@@ -949,8 +951,8 @@ class Contract extends CommonDBTM {
                 WHERE `glpi_contracts_suppliers`.`suppliers_id` = `glpi_suppliers`.`id`
                       AND `glpi_contracts_suppliers`.`contracts_id` = '".$this->fields['id']."'";
       $result = $DB->query($query);
-      $out = "";
-      while ($data=$DB->fetch_assoc($result)) {
+      $out    = "";
+      while ($data = $DB->fetch_assoc($result)) {
          $out .= Dropdown::getDropdownName("glpi_suppliers", $data['id'])."<br>";
       }
       return $out;
@@ -969,7 +971,7 @@ class Contract extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $itemtype = $item->getType();
-      $ID = $item->fields['id'];
+      $ID       = $item->fields['id'];
 
       if (!Session::haveRight("contract","r") || !$item->can($ID,"r")) {
          return false;
@@ -989,7 +991,7 @@ class Contract extends CommonDBTM {
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $i = 0;
+      $i      = 0;
 
       echo "<div class='spaced'>";
       if ($withtemplate!=2) {
@@ -998,10 +1000,10 @@ class Contract extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='8'>";
 
-      if ($number==0) {
+      if ($number == 0) {
          _e('No associated contract');
-      } else if ($number==1) {
-         _e('Associated contract');
+      } else if ($number == 1) {
+         echo _n ('Associated contract', 'Associated contracts', 1);
       } else {
          echo _n ('Associated contract', 'Associated contracts', 2);
       }
@@ -1014,12 +1016,12 @@ class Contract extends CommonDBTM {
       echo "<th>".__('Supplier')."</th>";
       echo "<th>".__('Start date')."</th>";
       echo "<th>".__('Initial contract period')."</th>";
-      if ($withtemplate!=2) {
+      if ($withtemplate != 2) {
          echo "<th>&nbsp;</th>";
       }
       echo "</tr>";
 
-      if ($number>0) {
+      if ($number > 0) {
          Session::initNavigateListItems(__CLASS__,
                               //TRANS : %1$s is the itemtype name,
                               //         %2$s is the name of the item (used for headings of a list)
@@ -1028,7 +1030,7 @@ class Contract extends CommonDBTM {
       }
       $contracts = array();
       while ($i < $number) {
-         $cID = $DB->result($result, $i, "contracts_id");
+         $cID         = $DB->result($result, $i, "contracts_id");
          Session::addToNavigateListItems(__CLASS__,$cID);
          $contracts[] = $cID;
          $assocID     = $DB->result($result, $i, "id");
@@ -1036,11 +1038,12 @@ class Contract extends CommonDBTM {
          $con->getFromDB($cID);
          echo "<tr class='tab_bg_1".($con->fields["is_deleted"]?"_2":"")."'>";
          echo "<td class='center b'>";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>".
-                $con->fields["name"];
-         if ($_SESSION["glpiis_ids_visible"] || empty($con->fields["name"])) {
-            echo " (".$con->fields["id"].")";
+         $name = $con->fields["name"];
+         if ($_SESSION["glpiis_ids_visible"]
+             || empty($con->fields["name"])) {
+            $name = " (".$con->fields["id"].")";
          }
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>".$name;
          echo "</a></td>";
          echo "<td class='center'>";
          echo Dropdown::getDropdownName("glpi_entities", $con->fields["entities_id"])."</td>";
@@ -1050,20 +1053,23 @@ class Contract extends CommonDBTM {
               "</td>";
          echo "<td class='center'>".$con->getSuppliersNames()."</td>";
          echo "<td class='center'>".Html::convDate($con->fields["begin_date"])."</td>";
-         echo "<td class='center'>".$con->fields["duration"]." ".__('month');
-         if ($con->fields["begin_date"]!='' && !empty($con->fields["begin_date"])) {
+
+         echo "<td class='center'>".$con->fields["duration"]." "._n('month', 'months',
+                                                                    $con->fields["duration"]);
+         if (($con->fields["begin_date"] != '')
+             && !empty($con->fields["begin_date"])) {
             echo " -> ".Infocom::getWarrantyExpir($con->fields["begin_date"],
                                                   $con->fields["duration"]);
          }
          echo "</td>";
 
-         if ($withtemplate!=2) {
+         if ($withtemplate != 2) {
             echo "<td class='tab_bg_2 center'>";
             if ($canedit) {
                echo "<a href='".$CFG_GLPI["root_doc"].
                      "/front/contract.form.php?deleteitem=deleteitem&amp;id=$assocID&amp;contracts_id=$cID'>";
-               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".
-                     __s('Delete')."'></a>";
+               echo "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".__s('Delete')."'>".
+                    "</a>";
             } else {
                echo "&nbsp;";
             }
@@ -1078,17 +1084,18 @@ class Contract extends CommonDBTM {
                   getEntitiesRestrictRequest("AND", "glpi_contracts", "entities_id",
                                              $item->getEntityID(), true);
       $result = $DB->query($q);
-      $nb = $DB->numrows($result);
+      $nb     = $DB->numrows($result);
 
       if ($canedit) {
-         if ($withtemplate!=2 && $nb>count($contracts)) {
+         if (($withtemplate != 2)
+             && ($nb > count($contracts))) {
             echo "<tr class='tab_bg_1'><td class='right' colspan='3'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
             echo "<input type='hidden' name='itemtype' value='$itemtype'>";
             self::dropdown(array('entity' => $item->getEntityID(),
                                  'used'   => $contracts));
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='additem' value=\"".__s('Add')."\"
+            echo "<input type='submit' name='additem' value=\""._sx('Button', 'Add')."\"
                    class='submit'>";
             echo "</td>";
             echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
@@ -1096,7 +1103,7 @@ class Contract extends CommonDBTM {
       }
       echo "</table>";
 
-      if ($withtemplate!=2) {
+      if ($withtemplate != 2) {
          echo "</form>";
       }
       echo "</div>";
@@ -1131,7 +1138,7 @@ class Contract extends CommonDBTM {
       $contract_messages             = array();
 
       foreach (Entity::getEntitiesToNotify('use_contracts_alert') as $entity => $value) {
-         $before = Entity::getUsedConfig('send_contracts_alert_before_delay', $entity);
+         $before       = Entity::getUsedConfig('send_contracts_alert_before_delay', $entity);
          $query_notice = "SELECT `glpi_contracts`.*
                           FROM `glpi_contracts`
                           LEFT JOIN `glpi_alerts`
@@ -1174,20 +1181,22 @@ class Contract extends CommonDBTM {
 
          foreach ($querys as $type => $query) {
             foreach ($DB->request($query) as $data) {
-               $entity = $data['entities_id'];
-               $message = $data["name"].": ".Infocom::getWarrantyExpir($data["begin_date"],
-                                                                       $data["duration"],
-                                                                       $data["notice"])."<br>\n";
+               $entity  = $data['entities_id'];
+
+               $message = sprintf(__('%1$s: %2$s')."<br>\n", $data["name"],
+                                  Infocom::getWarrantyExpir($data["begin_date"],
+                                                            $data["duration"], $data["notice"]));
                $contract_infos[$type][$entity][$data['id']] = $data;
 
-                if (!isset($contract_messages[$type][$entity])) {
+               if (!isset($contract_messages[$type][$entity])) {
                   switch ($type) {
                      case 'notice' :
-                        $contract_messages[$type][$entity] = __('Contract entered in notice time:')."<br>";
+                        $contract_messages[$type][$entity] = __('Contract entered in notice time').
+                                                             "<br>";
                         break;
 
                      case 'end' :
-                        $contract_messages[$type][$entity] = __('Contract ended:')."<br>";
+                        $contract_messages[$type][$entity] = __('Contract ended')."<br>";
                         break;
                   }
                }
@@ -1203,13 +1212,13 @@ class Contract extends CommonDBTM {
 
          // Foreach ones :
          foreach ($DB->request($query_periodicity) as $data) {
-            $entity = $data['entities_id'];
+            $entity    = $data['entities_id'];
             // Compute end date + 12 month : do not send alerts after
             $end_alert = date('Y-m-d',
                               strtotime($data['begin_date']." +".($data['duration']+12)." month"));
             if (!empty($data['begin_date'])
                 && $data['periodicity']
-                && $end_alert > date('Y-m-d')) {
+                && ($end_alert > date('Y-m-d'))) {
                $todo = array('periodicity' => Alert::PERIODICITY);
                if ($data['alert']&pow(2,Alert::NOTICE)) {
                   $todo['periodicitynotice'] = Alert::NOTICE;
@@ -1223,7 +1232,7 @@ class Contract extends CommonDBTM {
                foreach ($todo as $type => $event) {
                   $next_alerts[$type] = date('Y-m-d',
                                              strtotime($data['begin_date']." -".($before)." day"));
-                  if ($type==Alert::NOTICE) {
+                  if ($type == Alert::NOTICE) {
                      $next_alerts[$type]
                            = date('Y-m-d',
                                   strtotime($next_alerts[$type]." -".($data['notice'])." month"));
@@ -1237,8 +1246,8 @@ class Contract extends CommonDBTM {
                      $previous_alerts[$type] = $today_limit;
                   }
 
-                  while ($next_alerts[$type] < $previous_alerts[$type]
-                        && $next_alerts[$type] < $end_alert) {
+                  while (($next_alerts[$type] < $previous_alerts[$type])
+                         && ($next_alerts[$type] < $end_alert)) {
                      $next_alerts[$type]
                         = date('Y-m-d',
                                strtotime($next_alerts[$type]." +".($data['periodicity'])." month"));
@@ -1246,11 +1255,11 @@ class Contract extends CommonDBTM {
 
                   // If this date is passed : clean alerts and send again
                   if ($next_alerts[$type] <= date('Y-m-d')) {
-                     $alert            = new Alert();
+                     $alert              = new Alert();
                      $alert->clear(__CLASS__, $data['id'], $event);
-                     $real_alert_date  = date('Y-m-d',
-                                              strtotime($next_alerts[$type]." +".($before)." day"));
-                     $message          = sprintf(__('%1$s: %2$s')."<br>\n",
+                     $real_alert_date    = date('Y-m-d',
+                                                strtotime($next_alerts[$type]." +".($before)." day"));
+                     $message            = sprintf(__('%1$s: %2$s')."<br>\n",
                                                  $data["name"], Html::convDate($real_alert_date));
                      $data['alert_date'] = $real_alert_date;
                      $contract_infos[$type][$entity][$data['id']] = $data;
@@ -1258,11 +1267,11 @@ class Contract extends CommonDBTM {
                      switch ($type) {
                         case 'periodicitynotice' :
                            $contract_messages[$type][$entity]
-                                 = __('Contract entered in notice time for period:')."<br>";
+                                 = __('Contract entered in notice time for period')."<br>";
                            break;
 
                         case 'periodicity' :
-                           $contract_messages[$type][$entity] = __('Contract period ended:')."<br>";
+                           $contract_messages[$type][$entity] = __('Contract period ended')."<br>";
                            break;
                      }
                      $contract_messages[$type][$entity] .= $message;
@@ -1304,8 +1313,8 @@ class Contract extends CommonDBTM {
 
                } else {
                   $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
-                  //TRANS: %s is entity name
-                  $msg = sprintf(__('%s: send contract alert failed'), $entityname);
+                  //TRANS: %1$s is entity name, %2$s is the message
+                  $msg = sprintf(__('%1$s: %2$s'), $entityname, __('send contract alert failed'));
                   if ($task) {
                      $task->log($msg);
                   } else {
@@ -1324,6 +1333,7 @@ class Contract extends CommonDBTM {
     * Print a select with contracts
     *
     * Print a select named $name with contracts options and selected value $value
+    * @param $options   array of possible options:
     *    - name : string / name of the select (default is contracts_id)
     *    - value : integer / preselected value (default 0)
     *    - entity : integer or array / restrict to a defined entity or array of entities
@@ -1332,8 +1342,6 @@ class Contract extends CommonDBTM {
     *                   only available if entity is a single value not an array (default false)
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - nochecklimit : boolean / disable limit for nomber of device (for supplier, default false)
-    *
-    * @param $options   array of possible options
     *
     * @return Nothing (display)
    **/
@@ -1354,8 +1362,10 @@ class Contract extends CommonDBTM {
          }
       }
 
-      if (!($p['entity']<0) && $p['entity_sons']) {
+      if (!($p['entity'] < 0)
+          && $p['entity_sons']) {
          if (is_array($p['entity'])) {
+            // no translation needed (only for dev)
             echo "entity_sons options is not available with array of entity";
          } else {
             $p['entity'] = getSonsOf('glpi_entities',$p['entity']);
@@ -1364,9 +1374,9 @@ class Contract extends CommonDBTM {
 
       $entrest = "";
       $idrest = "";
-      if ($p['entity']>=0) {
-         $entrest = getEntitiesRestrictRequest("AND", "glpi_contracts", "entities_id", $p['entity'],
-                                               true);
+      if ($p['entity'] >= 0) {
+         $entrest = getEntitiesRestrictRequest("AND", "glpi_contracts", "entities_id",
+                                               $p['entity'], true);
       }
       if (count($p['used'])) {
          $idrest = " AND `glpi_contracts`.`id` NOT IN('".implode("','",$p['used'])."') ";
@@ -1382,40 +1392,43 @@ class Contract extends CommonDBTM {
       echo "<select name='".$p['name']."'>";
 
       if ($p['value'] > 0) {
-         $output = Dropdown::getDropdownName('glpi_contracts',$p['value']);
+         $output = Dropdown::getDropdownName('glpi_contracts', $p['value']);
          if ($_SESSION["glpiis_ids_visible"]) {
-            $output .= " (".$p['value'].")";
+            $output = sprintf(__('%1$s (%2$s)'), $output, $p['value']);
          }
          echo "<option selected value='".$p['value']."'>".$output."</option>";
       } else {
          echo "<option value='-1'>".Dropdown::EMPTY_VALUE."</option>";
       }
       $prev = -1;
-      while ($data=$DB->fetch_assoc($result)) {
+      while ($data = $DB->fetch_assoc($result)) {
          if ($p['nochecklimit']
-             || $data["max_links_allowed"]==0
-             || $data["max_links_allowed"]>countElementsInTable("glpi_contracts_items",
-                                                                "contracts_id = '".$data['id']."'" )) {
-            if ($data["entities_id"]!=$prev) {
-               if ($prev>=0) {
+             || ($data["max_links_allowed"] == 0)
+             || ($data["max_links_allowed"] > countElementsInTable("glpi_contracts_items",
+                                                                   "contracts_id
+                                                                     = '".$data['id']."'" ))) {
+            if ($data["entities_id"] != $prev) {
+               if ($prev >= 0) {
                   echo "</optgroup>";
                }
                $prev = $data["entities_id"];
                echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
             }
 
-            if ($_SESSION["glpiis_ids_visible"] || empty($output)) {
-               $data["name"] .= " (".$data["id"].")";
+            $name = $data["name"];
+            if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
+               $name = " (".$data["id"].")";
             }
 
             echo "<option  value='".$data["id"]."'>";
-            echo Toolbox::substr($data["name"]." - #".$data["num"]." - ".
-                                 Html::convDateTime($data["begin_date"]), 0,
-                                                    $_SESSION["glpidropdown_chars_limit"]);
+            //TRANS: %1$s is a name, %2$s is a contract number, %3$s is a begin date
+            echo Toolbox::substr(sprintf(__('%1$s - #%2$s - %3$s'), $name, $data["num"],
+                                         Html::convDateTime($data["begin_date"])),
+                                 0, $_SESSION["glpidropdown_chars_limit"]);
             echo "</option>";
          }
       }
-      if ($prev>=0) {
+      if ($prev >= 0) {
          echo "</optgroup>";
       }
       echo "</select>";
@@ -1474,7 +1487,8 @@ class Contract extends CommonDBTM {
 
       if (stristr($value, __('Tacit'))) {
          return 1;
-      } else if (stristr($value, __('Express'))) {
+      }
+      if (stristr($value, __('Express'))) {
          return 2;
       }
       return 0;
@@ -1484,7 +1498,7 @@ class Contract extends CommonDBTM {
    /**
     * @param $options array
    **/
-   static function dropdownAlert($options) {
+   static function dropdownAlert(array $options) {
 
       if (!isset($options['value'])) {
          $value = 0;
