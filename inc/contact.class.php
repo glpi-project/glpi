@@ -96,7 +96,7 @@ class Contact extends CommonDBTM{
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            if ($data=$DB->fetch_assoc($result)) {
+            if ($data = $DB->fetch_assoc($result)) {
                return $data;
             }
          }
@@ -186,7 +186,7 @@ class Contact extends CommonDBTM{
       echo "<td>";
       Html::autocompletionTextField($this, "fax");
       echo "</td>";
-      echo "<td>".__('Postal Code')."</td>";
+      echo "<td>".__('Postal code')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "postcode", array('size' => 10));
       _e(' City ');
@@ -216,7 +216,7 @@ class Contact extends CommonDBTM{
       echo "<tr class='tab_bg_1'><td>" . __('Title') . "</td><td>";
       Dropdown::show('UserTitle', array('value' => $this->fields["usertitles_id"]));
       echo "<td>&nbsp;</td><td class='center'>";
-      if ($ID>0) {
+      if ($ID > 0) {
          echo "<a target=''_blank' href='".$this->getFormURL().
                 "?getvcard=1&amp;id=$ID'>".__('Vcard')."</a>";
       }
@@ -232,7 +232,7 @@ class Contact extends CommonDBTM{
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                      = array();
       $tab['common']            = __('Characteristics');
 
       $tab[1]['table']          = $this->getTable();
@@ -287,7 +287,7 @@ class Contact extends CommonDBTM{
 
       $tab[83]['table']         = $this->getTable();
       $tab[83]['field']         = 'postcode';
-      $tab[83]['name']          = __('Postal Code');
+      $tab[83]['name']          = __('Postal code');
 
       $tab[85]['table']         = $this->getTable();
       $tab[85]['field']         = 'state';
@@ -374,16 +374,16 @@ class Contact extends CommonDBTM{
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $i = 0;
+      $i      = 0;
 
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
       echo "<tr><th colspan='7'>";
-      if ($DB->numrows($result)==0) {
+      if ($DB->numrows($result) == 0) {
          _e('No associated supplier');
-      } else if ($DB->numrows($result)==1) {
-         _e('Associated supplier');
+      } else if ($DB->numrows($result) == 1) {
+         echo _n('Associated supplier', 'Associated suppliers', 1);
       } else {
          echo _n('Associated supplier', 'Associated suppliers', 2);
       }
@@ -398,14 +398,14 @@ class Contact extends CommonDBTM{
       echo "<th>&nbsp;</th></tr>";
 
       $used = array();
-      if ($number>0) {
+      if ($number > 0) {
          Session::initNavigateListItems('Supplier',
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
                                                 $this->getTypeName(1), $this->getName()));
 
-         while ($data= $DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $ID = $data["id"];
             Session::addToNavigateListItems('Supplier', $data["entID"]);
             $used[$data["entID"]] = $data["entID"];
@@ -452,15 +452,15 @@ class Contact extends CommonDBTM{
             $nb = countElementsInTableForEntity("glpi_suppliers", $this->fields["entities_id"]);
          }
 
-         if ($nb>count($used)) {
+         if ($nb > count($used)) {
             echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='4'>";
             echo "<input type='hidden' name='contacts_id' value='$instID'>";
             Dropdown::show('Supplier', array('used'        => $used,
                                              'entity'      => $this->fields["entities_id"],
                                              'entity_sons' => $this->fields["is_recursive"]));
 
-            echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier' value='".__s('Add').
-                               "' class='submit'>";
+            echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier'
+                               value='"._sx('button', 'Add')."' class='submit'>";
             echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
             echo "</tr>";
          }

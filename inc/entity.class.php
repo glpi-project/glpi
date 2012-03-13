@@ -543,7 +543,7 @@ class Entity extends CommonTreeDropdown {
 
       $tab[25]['table']         = $this->getTable();
       $tab[25]['field']         = 'postcode';
-      $tab[25]['name']          = __('Postal Code');
+      $tab[25]['name']          = __('Postal code');
       $tab[25]['datatype']      = 'string';
 
       $tab[26]['table']         = $this->getTable();
@@ -933,7 +933,7 @@ class Entity extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Postal Code')."</td>";
+      echo "<td>".__('Postal code')."</td>";
       echo "<td>";
       Html::autocompletionTextField($entity,"postcode", array('size' => 7));
       _e(' City ');
