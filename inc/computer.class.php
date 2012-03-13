@@ -672,7 +672,7 @@ class Computer extends CommonDBTM {
          if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
             echo OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
                                                                $data_version["ocsid"],
-                                                               $LANG['ocsng'][57]);
+                                                               $LANG['ocsng'][58]);
          } else {
             echo $LANG['ocsng'][58];
          }
