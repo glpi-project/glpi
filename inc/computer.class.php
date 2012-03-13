@@ -667,6 +667,12 @@ class Computer extends CommonDBTM {
       echo "<td >";
       Html::autocompletionTextField($this, 'os_license_number');
       echo "</td>";
+      $query = "SELECT `ocs_agent_version`, `ocsid`
+                     FROM `glpi_ocslinks`
+                     WHERE `computers_id` = '$ID'";
+
+      $result_agent_version = $DB->query($query);
+      $data_version = $DB->fetch_array($result_agent_version);
       if ($ocs_show) {
          echo "<th colspan='2'>";
          if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
@@ -704,12 +710,6 @@ class Computer extends CommonDBTM {
          
          echo "</td></tr>";
          
-         $query = "SELECT `ocs_agent_version`, `ocsid`
-                     FROM `glpi_ocslinks`
-                     WHERE `computers_id` = '$ID'";
-
-         $result_agent_version = $DB->query($query);
-         $data_version = $DB->fetch_array($result_agent_version);
          if ($data_version["ocs_agent_version"] != NULL) {
             echo "<tr><td>".$LANG['ocsng'][49]."&nbsp;:</td><td>".$data_version["ocs_agent_version"].'</td></tr>';
          }
@@ -722,7 +722,7 @@ class Computer extends CommonDBTM {
          
          echo "</table>";
          echo "</td>";
-      }   
+      } 
 
       echo "</tr>\n";
 
