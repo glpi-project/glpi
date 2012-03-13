@@ -645,6 +645,9 @@ td.numerique {
    padding-right:4%;
 }
 
+td.nopadding { 
+   padding:0;
+}
 
 /* ################--------------- Pager  ---------------#################### */
 
