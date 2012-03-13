@@ -50,15 +50,15 @@ class Contract_Item extends CommonDBRelation{
    /**
     * Check right on an contract - overloaded to check max_links_allowed
     *
-    * @param $ID           ID of the item (-1 if new item)
-    * @param $right        Right to check : r / w / recursive
-    * @param $input  array of input data (used for adding item)
+    * @param $ID              ID of the item (-1 if new item)
+    * @param $right           Right to check : r / w / recursive
+    * @param &$input    array of input data (used for adding item) (default NULL)
     *
     * @return boolean
    **/
    function can($ID, $right, array &$input=NULL) {
 
-      if ($ID<0) {
+      if ($ID < 0) {
          // Ajout
          $contract = new Contract();
 
@@ -66,8 +66,9 @@ class Contract_Item extends CommonDBRelation{
             return false;
          }
          if ($contract->fields['max_links_allowed'] > 0
-             && countElementsInTable($this->getTable(), "`contracts_id`='".$input['contracts_id']."'")
-                                     >= $contract->fields['max_links_allowed']) {
+             && countElementsInTable($this->getTable(),
+                                     "`contracts_id`='".$input['contracts_id']."'")
+                                       >= $contract->fields['max_links_allowed']) {
                return false;
          }
       }
@@ -82,7 +83,7 @@ class Contract_Item extends CommonDBRelation{
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                     = array();
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
@@ -103,6 +104,9 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
+   /**
+    * @pram $item    CommonDBTM object
+   **/
    static function countForItem(CommonDBTM $item) {
 
       return countElementsInTable('glpi_contracts_items',
@@ -111,6 +115,9 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
+   /**
+    * @param $item   Contract object
+   **/
    static function countForContract(Contract $item) {
 
       $restrict = "`glpi_contracts_items`.`contracts_id` = '".$item->getField('id')."'
@@ -123,6 +130,9 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
+   /**
+    * @see inc/CommonGLPI::getTabNameForItem()
+   **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $CFG_GLPI;
 
@@ -148,6 +158,11 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
+   /**
+    * @param $item         CommonGLPI object
+    * @param $tabnum       (default 1)
+    * @param $withtemplate (default 0)
+   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       global $CFG_GLPI;
 
