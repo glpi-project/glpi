@@ -2705,7 +2705,7 @@ class Ticket extends CommonITILObject {
     *
     * @return nothing (print the helpdesk)
    **/
-   static function showFormHelpdesk($ID, $ticket_template=false) {
+   function showFormHelpdesk($ID, $ticket_template=false) {
       global $DB, $CFG_GLPI;
 
       if (!Session::haveRight("create_ticket","1")) {
@@ -2765,6 +2765,9 @@ class Ticket extends CommonITILObject {
                                                                       '', Ticket::INCIDENT_TYPE),
                       '_right'               => "id");
 
+      if (!$ticket_template) {
+         $values = $_REQUEST;
+      }
 
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
@@ -2904,7 +2907,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-
+      
       if ($CFG_GLPI['urgency_mask']==(1<<3) || $tt->isHiddenField('urgency')) {
          // Dont show dropdown if only 1 value enabled or field is hidden
          echo "<input type='hidden' name='urgency' value='".$options['urgency']."'>";

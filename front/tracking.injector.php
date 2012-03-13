@@ -100,7 +100,7 @@ if (isset($_POST['add'])) {
    Html::nullFooter();
 
 } else { // reload display form
-   Ticket::showFormHelpdesk(Session::getLoginUserID());
+   $track->showFormHelpdesk(Session::getLoginUserID());
    Html::helpFooter();
 }
 ?>
