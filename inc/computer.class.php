@@ -651,7 +651,7 @@ class Computer extends CommonDBTM {
          echo "<th colspan='2'>";
          if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
             echo OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
-                                                               $data_version["ocsid"],
+                                                               $dataocs["ocsid"],
                                                                _e('OCSNG link'));
          } else {
             _e('OCSNG link');
@@ -684,14 +684,8 @@ class Computer extends CommonDBTM {
          
          echo "</td></tr>";
          
-         $query = "SELECT `ocs_agent_version`, `ocsid`
-                     FROM `glpi_ocslinks`
-                     WHERE `computers_id` = '$ID'";
-
-         $result_agent_version = $DB->query($query);
-         $data_version = $DB->fetch_array($result_agent_version);
-         if ($data_version["ocs_agent_version"] != NULL) {
-            echo "<tr><td>".__('Agent')."</td><td>".$data_version["ocs_agent_version"].'</td></tr>';
+         if ($dataocs["ocs_agent_version"] != NULL) {
+            echo "<tr><td>".__('Agent')."</td><td>".$dataocs["ocs_agent_version"].'</td></tr>';
          }
          if (Session::haveRight("sync_ocsng","w")) {
             echo "</tr><td>".__('Auto update OCSNG')."</td>";
