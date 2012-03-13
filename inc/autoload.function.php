@@ -88,7 +88,6 @@ function __autoload($classname) {
    if (empty($classname) || is_numeric($classname)) {
       return false;
    }
-
    $dir = GLPI_ROOT . "/inc/";
    if ($plug=isPluginItemType($classname)) {
       $plugname = strtolower($plug['plugin']);
@@ -111,14 +110,23 @@ function __autoload($classname) {
       }
 
    } else {
+//    echo $classname;
       // Is ezComponent class ?
       if (preg_match('/^ezc([A-Z][a-z]+)/',$classname,$matches)) {
          include_once(GLPI_EZC_BASE);
          ezcBase::autoload($classname);
          return true;
       }
+      // Is phpCAS class ?
+      if (preg_match('/^CAS_.*/',$classname,$matches)) {
+
+         include_once(GLPI_PHPCAS);
+         CAS_autoload($classname);
+         return true;
+      }
+      
       $item = strtolower($classname);
-   }
+   } 
 
    // No errors for missing classes due to implementation
    if (!in_array($item,$CFG_GLPI['missingclasses'])){
