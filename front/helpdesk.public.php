@@ -88,7 +88,8 @@ Session::checkHelpdeskAccess();
 Html::helpHeader(__('New ticket'), $_SERVER['PHP_SELF'], $_SESSION["glpiname"]);
 
 if (isset($_GET['create_ticket'])) {
-   Ticket::showFormHelpdesk(Session::getLoginUserID());
+   $ticket = new Ticket();
+   $ticket->showFormHelpdesk(Session::getLoginUserID());
 
 } else {
    echo "<table class='tab_cadre_central'><tr>";
