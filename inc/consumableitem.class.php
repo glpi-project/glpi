@@ -136,18 +136,7 @@ class ConsumableItem extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      // Show ConsumableItem or blank form
-      if (!Session::haveRight("consumable","r")) {
-         return false;
-      }
-
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w');
-      }
-
+      $this->initForm($ID, $options);
       $this->showTabs($options);
       $this->showFormHeader($options);
 
