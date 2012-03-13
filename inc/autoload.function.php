@@ -114,15 +114,13 @@ function __autoload($classname) {
       // Is ezComponent class ?
       if (preg_match('/^ezc([A-Z][a-z]+)/',$classname,$matches)) {
          include_once(GLPI_EZC_BASE);
-         ezcBase::autoload($classname);
-         return true;
+         return ezcBase::autoload($classname);
       }
       // Is phpCAS class ?
       if (preg_match('/^CAS_.*/',$classname,$matches)) {
 
          include_once(GLPI_PHPCAS);
-         CAS_autoload($classname);
-         return true;
+         return CAS_autoload($classname);
       }
       
       $item = strtolower($classname);
