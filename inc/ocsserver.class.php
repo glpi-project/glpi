@@ -287,7 +287,7 @@ class OcsServer extends CommonDBTM {
       echo "<td class='tab_bg_2 top'>\n";
 
       echo "<table width='100%'>";
-      echo "<tr class='tab_bg_2'><td class='center'>" . __('Processor') . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . _n('Processor', 'Processors', 2) . " </td>\n<td>";
       Dropdown::showYesNo("import_device_processor", $this->fields["import_device_processor"]);
       echo "</td></tr>\n";
 
@@ -295,19 +295,19 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_device_memory", $this->fields["import_device_memory"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>".__('Hard drive'). " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>"._n('Hard drive', 'Hard drives', 2). " </td>\n<td>";
       Dropdown::showYesNo("import_device_hdd", $this->fields["import_device_hdd"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . __('Network card'). " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . _n('Network card', 'Network cards', 2). " </td>\n<td>";
       Dropdown::showYesNo("import_device_iface", $this->fields["import_device_iface"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>". __('Graphics card'). "</td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>". _n('Graphics card', 'Graphics cards', 2). "</td>\n<td>";
       Dropdown::showYesNo("import_device_gfxcard", $this->fields["import_device_gfxcard"]);
       echo "&nbsp;&nbsp;</td></tr>";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . __('Soundcard'). " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . _n('Soundcard', 'Soundcards', 2). " </td>\n<td>";
       Dropdown::showYesNo("import_device_sound", $this->fields["import_device_sound"]);
       echo "</td></tr>\n";
 
@@ -315,7 +315,7 @@ class OcsServer extends CommonDBTM {
       Dropdown::showYesNo("import_device_drive", $this->fields["import_device_drive"]);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'><td class='center'>" . __('Modems') . " </td>\n<td>";
+      echo "<tr class='tab_bg_2'><td class='center'>" . _n('Modem','Modems',2) . " </td>\n<td>";
       Dropdown::showYesNo("import_device_modem", $this->fields["import_device_modem"]);
       echo "</td></tr>\n";
 

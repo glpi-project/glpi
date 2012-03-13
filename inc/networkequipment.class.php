@@ -352,7 +352,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Memory (Mio)')."</td>";
+      echo "<td>".sprintf(__('%1$s (%2$s)'),__('Memory'),__('Mio'))."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "ram");
       echo "</td></tr>";
@@ -466,7 +466,7 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab[14]['table']          = $this->getTable();
       $tab[14]['field']          = 'ram';
-      $tab[14]['name']           = __('Memory (Mio)');
+      $tab[14]['name']           = sprintf(__('%1$s (%2$s)'),__('Memory'),__('Mio'));
       $tab[14]['datatype']       = 'number';
 
       $tab[13]['table']          = $this->getTable();
