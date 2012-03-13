@@ -2054,6 +2054,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $rand_type    integer  rand value of div to use
     * @param $entities_id  integer  entity ID
     * @param $is_hidden    array    of hidden fields (if empty consider as not hidden)
+    * @param $withgroup boolean : allow adding a group (true by default)    
     * @param $withsupplier boolean  allow adding a supplier (only one possible in ASSIGN case)
     *                               (false by default)
     * @param $inobject     boolean  display in ITIL object ? (true by default)
@@ -2061,7 +2062,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return nothing display
    **/
    static function showActorAddForm($type, $rand_type, $entities_id, $is_hidden=array(),
-                                    $withsupplier=false, $inobject=true) {
+                                    $withgroup = true, $withsupplier=false, $inobject=true) {
       global $CFG_GLPI;
 
       $types = array(''      => Dropdown::EMPTY_VALUE,
@@ -2520,7 +2521,8 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<td>";
       if ($rand_assign >= 0) {
          self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'],
-                                $is_hidden, $this->fields["suppliers_id_assign"]==0);
+                                $is_hidden, $this->canAssign(), 
+                                $this->canAssign() && ($this->fields["suppliers_id_assign"]==0));
       }
 
       // Assign User
