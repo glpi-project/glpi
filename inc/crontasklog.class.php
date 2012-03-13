@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -54,7 +53,7 @@ class CronTaskLog extends CommonDBTM{
    static function cleanOld($id, $days) {
       global $DB;
 
-      $secs = $days * DAY_TIMESTAMP;
+      $secs      = $days * DAY_TIMESTAMP;
 
       $query_exp = "DELETE
                     FROM `glpi_crontasklogs`
@@ -71,13 +70,13 @@ class CronTaskLog extends CommonDBTM{
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'CronTask' :
-               $ong = array();
+               $ong    = array();
                $ong[1] = __('Statistics');
                if ($_SESSION['glpishow_count_on_tabs']) {
                   $ong[2] = self::createTabEntry(_n('Log', 'Logs', 2),
                                                  countElementsInTable($this->getTable(),
                                                                       "crontasks_id
-                                                                           = '".$item->getID()."'"));
+                                                                        = '".$item->getID()."'"));
                } else {
                   $ong[2] = _n('Log', 'Logs', 2);
                }

@@ -45,11 +45,10 @@ if (!defined('GLPI_ROOT')) {
 **/
 function getForeignKeyFieldForTable($table) {
 
-   if (strpos($table,'glpi_')===false) {
+   if (strpos($table,'glpi_') === false) {
       return "";
    }
-
-  return str_replace("glpi_","",$table)."_id";
+   return str_replace("glpi_","",$table)."_id";
 }
 
 
@@ -73,10 +72,11 @@ function getForeignKeyFieldForItemType($itemtype) {
  * @return string table name corresponding to a foreign key name
 **/
 function getTableNameForForeignKeyField($fkname) {
-   if (strpos($fkname,'_id')===false) {
+
+   if (strpos($fkname,'_id') === false) {
       return "";
    }
-  return "glpi_".preg_replace("/_id.*/", "", $fkname);
+   return "glpi_".preg_replace("/_id.*/", "", $fkname);
 }
 
 
@@ -115,10 +115,10 @@ function getItemTypeForTable($table) {
          $table = Toolbox::ucfirst(getSingular($table));
       }
 
-      $itemtype=$prefix.$table;
+      $itemtype = $prefix.$table;
       // Get real existence of itemtype
       if ($item = getItemForItemtype($itemtype)) {
-         $itemtype = get_class($item);
+         $itemtype                                   = get_class($item);
          $CFG_GLPI['glpiitemtypetables'][$inittable] = $itemtype;
          $CFG_GLPI['glpitablesitemtype'][$itemtype]  = $inittable;
          return $itemtype;
@@ -147,7 +147,7 @@ function getTableForItemType($itemtype) {
    } else {
       $prefix = "glpi_";
 
-      if ($plug=isPluginItemType($itemtype)) {
+      if ($plug = isPluginItemType($itemtype)) {
          $prefix .= "plugin_".strtolower($plug['plugin'])."_";
          $table   = strtolower($plug['class']);
       } else {
@@ -253,7 +253,6 @@ function getSingular($string) {
 }
 
 
-
 /**
  * Is a table used for devices
  *
@@ -264,7 +263,8 @@ function getSingular($string) {
 function isDeviceTable($tablename) {
 
    // begin by glpi_devices but Not types tables (end = types)
-   return (preg_match('/^glpi_devices', $tablename) && !preg_match('/types$', $tablename));
+   return (preg_match('/^glpi_devices', $tablename)
+           && !preg_match('/types$', $tablename));
 }
 
 
@@ -328,7 +328,7 @@ function countElementsInTableForMyEntities($table, $condition='') {
  *
  * @return int nb of elements in table
 **/
-function countElementsInTableForEntity($table,$entity,$condition='') {
+function countElementsInTableForEntity($table, $entity, $condition='') {
 
    /// TODO clean it / maybe include when review of SQL requests
    $itemtype = getItemTypeForTable($table);
@@ -356,6 +356,7 @@ function countElementsInTableForEntity($table,$entity,$condition='') {
 **/
 function getAllDatasFromTable($table, $condition='', $usecache=false, $order='') {
    global $DB;
+
    static $cache = array();
 
    if (empty($condition) && empty($order) && $usecache && isset($cache[$table])) {
@@ -373,8 +374,8 @@ function getAllDatasFromTable($table, $condition='', $usecache=false, $order='')
       $query .= " ORDER BY $order ";
    }
 
-   if ($result=$DB->query($query)) {
-      while ($data=$DB->fetch_assoc($result)) {
+   if ($result = $DB->query($query)) {
+      while ($data = $DB->fetch_assoc($result)) {
          $datas[$data['id']] = $data;
       }
    }
@@ -407,8 +408,8 @@ function getTreeLeafValueName($table, $ID, $withcomment=false) {
              FROM `$table`
              WHERE `id` = '$ID'";
 
-   if ($result=$DB->query($query)) {
-      if ($DB->numrows($result)==1) {
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result) == 1) {
          $name    = $DB->result($result, 0, "name");
          $comment = $DB->result($result, 0, "comment");
       }
@@ -443,8 +444,8 @@ function getTreeValueCompleteName($table, $ID, $withcomment=false) {
              FROM `$table`
              WHERE `id` = '$ID'";
 
-   if ($result=$DB->query($query)) {
-      if ($DB->numrows($result)==1) {
+   if ($result = $DB->query($query)) {
+      if ($DB->numrows($result) == 1) {
          $name     = $DB->result($result,0,"completename");
          $comment  = sprintf(__('%1$s: %2$s')."<br>",
                              "<span class='b'>".__('Complete name'),
@@ -487,7 +488,7 @@ function getTreeValueName($table, $ID, $wholename="", $level=0) {
              WHERE `id` = '$ID'";
    $name = "";
 
-   if ($result=$DB->query($query)) {
+   if ($result = $DB->query($query)) {
       if ($DB->numrows($result)>0) {
          $row      = $DB->fetch_assoc($result);
          $parentID = $row[$parentIDfield];
@@ -524,12 +525,15 @@ function getAncestorsOf($table, $items_id) {
    $parentIDfield = getForeignKeyFieldForTable($table);
    $use_cache     = FieldExists($table, "ancestors_cache");
 
-   if ($use_cache && $items_id>0) {
+   if ($use_cache
+       && ($items_id > 0)) {
+
       $query = "SELECT `ancestors_cache`, `$parentIDfield`
                 FROM `$table`
                 WHERE `id` = '$items_id'";
 
-      if (($result=$DB->query($query)) && ($DB->numrows($result)>0)) {
+      if (($result = $DB->query($query))
+          && ($DB->numrows($result) > 0)) {
          $ancestors = trim($DB->result($result, 0, 0));
          $parent    = $DB->result($result, 0, 1);
 
@@ -539,12 +543,13 @@ function getAncestorsOf($table, $items_id) {
          }
 
          // Recursive solution for table with-cache
-         if ($parent>0) {
+         if ($parent > 0) {
             $id_found = getAncestorsOf($table, $parent);
          }
 
          // ID=0 only exists for Entities
-         if ($parent>0 || $table=='glpi_entities') {
+         if (($parent > 0)
+             || ($table == 'glpi_entities')) {
             $id_found[$parent] = $parent;
          }
 
@@ -561,7 +566,7 @@ function getAncestorsOf($table, $items_id) {
    // Get the leafs of previous founded item
    // iterative solution for table without cache
    $IDf = $items_id;
-   while ($IDf>0) {
+   while ($IDf > 0) {
       // Get next elements
       $query = "SELECT `$parentIDfield`
                 FROM `$table`
@@ -569,12 +574,13 @@ function getAncestorsOf($table, $items_id) {
 
       $result = $DB->query($query);
       if ($DB->numrows($result)>0) {
-         $IDf  =$DB->result($result,0,0);
+         $IDf = $DB->result($result,0,0);
       } else {
          $IDf = 0;
       }
 
-      if (!isset($id_found[$IDf]) && ($IDf>0 || $table=='glpi_entities')) {
+      if (!isset($id_found[$IDf])
+          && (($IDf > 0) || ($table == 'glpi_entities'))) {
          $id_found[$IDf] = $IDf;
       } else {
          $IDf = 0;
@@ -599,12 +605,15 @@ function getSonsOf($table, $IDf) {
    $parentIDfield = getForeignKeyFieldForTable($table);
    $use_cache     = FieldExists($table, "sons_cache");
 
-   if ($use_cache && $IDf>0) {
+   if ($use_cache
+       && ($IDf > 0)) {
+
       $query = "SELECT `sons_cache`
                 FROM `$table`
                 WHERE `id` = '$IDf'";
 
-      if (($result=$DB->query($query)) && ($DB->numrows($result)>0)) {
+      if (($result = $DB->query($query))
+          && ($DB->numrows($result) > 0)) {
          $sons = trim($DB->result($result, 0, 0));
          if (!empty($sons)) {
             return importArrayFromDB($sons, true);
@@ -622,15 +631,16 @@ function getSonsOf($table, $IDf) {
              WHERE `$parentIDfield` = '$IDf'
              ORDER BY `name`";
 
-   if (($result=$DB->query($query)) && ($DB->numrows($result)>0)) {
-      while ($row=$DB->fetch_assoc($result)) {
+   if (($result = $DB->query($query))
+       && ($DB->numrows($result) > 0)) {
+      while ($row = $DB->fetch_assoc($result)) {
          $id_found[$row['id']] = $row['id'];
          $found[$row['id']]    = $row['id'];
       }
    }
 
    // Get the leafs of previous founded item
-   while (count($found)>0) {
+   while (count($found) > 0) {
       $first = true;
       // Get next elements
       $query = "SELECT `id`
@@ -642,8 +652,8 @@ function getSonsOf($table, $IDf) {
       $found = array();
 
       $result = $DB->query($query);
-      if ($DB->numrows($result)>0) {
-         while ($row=$DB->fetch_assoc($result)) {
+      if ($DB->numrows($result) > 0) {
+         while ($row = $DB->fetch_assoc($result)) {
             if (!isset($id_found[$row['id']])) {
                $id_found[$row['id']] = $row['id'];
                $found[$row['id']]    = $row['id'];
@@ -653,7 +663,9 @@ function getSonsOf($table, $IDf) {
    }
 
    // Store cache datas in DB
-   if ($use_cache && $IDf>0) {
+   if ($use_cache
+       && ($IDf > 0)) {
+
       $query = "UPDATE `$table`
                 SET `sons_cache`='".exportArrayToDB($id_found)."'
                 WHERE `id` = '$IDf';";
@@ -703,8 +715,10 @@ function getTreeForItem($table, $IDf) {
              WHERE `$parentIDfield` = '$IDf'
              ORDER BY `name`";
 
-   if (($result=$DB->query($query)) && ($DB->numrows($result)>0)) {
-      while ($row=$DB->fetch_assoc($result)) {
+   if (($result = $DB->query($query))
+       && ($DB->numrows($result) > 0)) {
+
+      while ($row = $DB->fetch_assoc($result)) {
          $id_found[$row['id']]['parent'] = $IDf;
          $id_found[$row['id']]['name']   = $row['name'];
          $found[$row['id']]              = $row['id'];
@@ -712,7 +726,7 @@ function getTreeForItem($table, $IDf) {
    }
 
    // Get the leafs of previous founded item
-   while (count($found)>0) {
+   while (count($found) > 0) {
       $first = true;
       // Get next elements
       $query = "SELECT *
@@ -724,8 +738,8 @@ function getTreeForItem($table, $IDf) {
       $found = array();
 
       $result = $DB->query($query);
-      if ($DB->numrows($result)>0) {
-         while ($row=$DB->fetch_assoc($result)) {
+      if ($DB->numrows($result) > 0) {
+         while ($row = $DB->fetch_assoc($result)) {
             if (!isset($id_found[$row['id']])) {
                $id_found[$row['id']]['parent'] = $row[$parentIDfield];
                $id_found[$row['id']]['name']   = $row['name'];
@@ -753,7 +767,7 @@ function contructTreeFromList($list, $root) {
 
    $tree = array();
    foreach ($list as $ID => $data) {
-      if ($data['parent']==$root) {
+      if ($data['parent'] == $root) {
          unset($list[$ID]);
          $tree[$ID]['name'] = $data['name'];
          $tree[$ID]['tree'] = contructTreeFromList($list, $ID);
@@ -781,13 +795,12 @@ function contructListFromTree($tree, $parent=0) {
          foreach ($data['tree'] as $ID => $underdata) {
             $list[$ID] = $root;
 
-            if (is_array($underdata['tree'])&&count($underdata['tree'])) {
+            if (is_array($underdata['tree']) && count($underdata['tree'])) {
                $list += contructListFromTree($underdata['tree'], $ID);
             }
 
          }
       }
-
    }
    return $list;
 }
@@ -810,27 +823,13 @@ function getRealQueryForTreeItem($table, $IDf, $reallink="") {
    }
 
    if (empty($reallink)) {
-      $reallink = $table.".id";
+      $reallink = "`".$table."`.`id`";
    }
+
    $id_found = getSonsOf($table, $IDf);
 
    // Construct the final request
-   if (count($id_found)>0) {
-      $ret = " ( ";
-      $i   = 0;
-
-      foreach ($id_found as $key => $val) {
-         if ($i>0) {
-            $ret .= " OR ";
-         }
-         $ret .= "$reallink = '$val' ";
-         $i++;
-      }
-      $ret .= ") ";
-      return $ret;
-   }
-
-   return " ( $reallink = '$IDf') ";
+   return $reallink." IN ('".implode("','", $id_found)."')";
 }
 
 
@@ -848,7 +847,7 @@ function regenerateTreeCompleteName($table) {
              FROM `$table`";
 
    $result = $DB->query($query);
-   if ($DB->numrows($result)>0) {
+   if ($DB->numrows($result) > 0) {
       while ($data=$DB->fetch_assoc($result)) {
          list($name, $level) = getTreeValueName($table, $data['id']);
          $query = "UPDATE `$table`
@@ -882,13 +881,13 @@ function getNextItem($table, $ID, $condition="", $nextprev_item="name") {
    $item     = new $itemtype();
    $search   = $ID;
 
-   if ($nextprev_item!="id") {
+   if ($nextprev_item != "id") {
       $query = "SELECT `$nextprev_item`
                 FROM `$table`
                 WHERE `id` = '$ID'";
 
-      if ($result=$DB->query($query)) {
-         if ($DB->numrows($result)>0) {
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) > 0) {
             $search = addslashes($DB->result($result, 0, 0));
          } else {
             $nextprev_item = "id";
@@ -897,7 +896,7 @@ function getNextItem($table, $ID, $condition="", $nextprev_item="name") {
    }
 
    $LEFTJOIN = '';
-   if ($table=="glpi_users") {
+   if ($table == "glpi_users") {
       $LEFTJOIN = " LEFT JOIN `glpi_profiles_users`
                            ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)";
    }
@@ -908,7 +907,7 @@ function getNextItem($table, $ID, $condition="", $nextprev_item="name") {
              WHERE (`$table`.`$nextprev_item` > '$search' ";
 
    // Same name case
-   if ($nextprev_item!="id") {
+   if ($nextprev_item != "id") {
       $query .= " OR (`$table`.`".$nextprev_item."` = '$search'
                       AND `$table`.`id` > '$ID') ";
    }
@@ -927,13 +926,13 @@ function getNextItem($table, $ID, $condition="", $nextprev_item="name") {
    }
 
    // Restrict to active entities
-   if ($table=="glpi_entities") {
+   if ($table == "glpi_entities") {
       $query .= getEntitiesRestrictRequest("AND", $table, '', '', true);
 
    } else if ($item->isEntityAssign()) {
       $query .= getEntitiesRestrictRequest("AND", $table, '', '', $item->maybeRecursive());
 
-   } else if ($table=="glpi_users") {
+   } else if ($table == "glpi_users") {
       $query .= getEntitiesRestrictRequest("AND", "glpi_profiles_users");
    }
 
@@ -941,7 +940,8 @@ function getNextItem($table, $ID, $condition="", $nextprev_item="name") {
                         `$table`.`id` ASC";
 
    $result = $DB->query($query);
-   if ($result && $DB->numrows($result)>0) {
+   if ($result
+       && ($DB->numrows($result) > 0)) {
       return $DB->result($result, 0, "id");
    }
 
@@ -970,13 +970,13 @@ function getPreviousItem($table, $ID, $condition="", $nextprev_item="name") {
    $item     = new $itemtype();
    $search   = $ID;
 
-   if ($nextprev_item!="id") {
+   if ($nextprev_item != "id") {
       $query = "SELECT `$nextprev_item`
                 FROM `$table`
                 WHERE `id` = '$ID'";
 
       $result = $DB->query($query);
-      if ($DB->numrows($result)>0) {
+      if ($DB->numrows($result) > 0) {
          $search = addslashes($DB->result($result, 0, 0));
       } else {
          $nextprev_item = "id";
@@ -984,7 +984,7 @@ function getPreviousItem($table, $ID, $condition="", $nextprev_item="name") {
    }
 
    $LEFTJOIN = '';
-   if ($table=="glpi_users") {
+   if ($table == "glpi_users") {
       $LEFTJOIN = " LEFT JOIN `glpi_profiles_users`
                            ON (`glpi_users`.`id` = `glpi_profiles_users`.`users_id`)";
    }
@@ -995,7 +995,7 @@ function getPreviousItem($table, $ID, $condition="", $nextprev_item="name") {
              WHERE (`$table`.`$nextprev_item` < '$search' ";
 
    // Same name case
-   if ($nextprev_item!="id") {
+   if ($nextprev_item != "id") {
       $query .= " OR (`$table`.`$nextprev_item` = '$search'
                       AND `$table`.`id` < '$ID') ";
    }
@@ -1014,13 +1014,13 @@ function getPreviousItem($table, $ID, $condition="", $nextprev_item="name") {
    }
 
    // Restrict to active entities
-   if ($table=="glpi_entities") {
+   if ($table == "glpi_entities") {
       $query .= getEntitiesRestrictRequest("AND", $table, '', '', true);
 
    } else if ($item->isEntityAssign()) {
       $query .= getEntitiesRestrictRequest("AND", $table, '', '', $item->maybeRecursive());
 
-   } else if ($table=="glpi_users") {
+   } else if ($table == "glpi_users") {
       $query .= getEntitiesRestrictRequest("AND", "glpi_profiles_users");
    }
 
@@ -1028,7 +1028,8 @@ function getPreviousItem($table, $ID, $condition="", $nextprev_item="name") {
                         `$table`.`id` DESC";
 
    $result = $DB->query($query);
-   if ($result&&$DB->numrows($result)>0) {
+   if ($result
+       && ($DB->numrows($result) > 0)) {
       return $DB->result($result, 0, "id");
    }
 
@@ -1054,23 +1055,22 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
 
    $before = "";
    $after  = "";
-   $viewID = "";
 
    $order = $CFG_GLPI["names_format"];
-   if (isset($_SESSION["glpinames_format"]) && !$force_config ) {
+   if (isset($_SESSION["glpinames_format"]) && !$force_config) {
       $order = $_SESSION["glpinames_format"];
    }
 
    $id_visible = $CFG_GLPI["is_ids_visible"];
-   if (isset($_SESSION["glpiis_ids_visible"]) && !$force_config ) {
+   if (isset($_SESSION["glpiis_ids_visible"]) && !$force_config) {
       $id_visible = $_SESSION["glpiis_ids_visible"];
    }
 
 
-   if (strlen($realname)>0) {
+   if (strlen($realname) > 0) {
       $temp = $realname;
 
-      if (strlen($firstname)>0) {
+      if (strlen($firstname) > 0) {
          if ($order == User::FIRSTNAME_BEFORE) {
             $temp = $firstname." ".$temp;
          } else {
@@ -1078,7 +1078,8 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
          }
       }
 
-      if ($cut>0 && Toolbox::strlen($temp)>$cut) {
+      if (($cut > 0)
+          && (Toolbox::strlen($temp) > $cut)) {
          $temp = Toolbox::substr($temp, 0, $cut)." ...";
       }
 
@@ -1086,17 +1087,18 @@ function formatUserName($ID, $login, $realname, $firstname, $link=0, $cut=0, $fo
       $temp = $login;
    }
 
-   if ($ID>0
-       && (strlen($temp)==0 || $id_visible)) {
-      $viewID = "&nbsp;($ID)";
+   if ($ID > 0
+       && ((strlen($temp) == 0) || $id_visible)) {
+      $temp = sprintf(__('%1$s (%2$s)'), $temp, $ID);
    }
 
-   if ($link==1&&$ID>0) {
+   if (($link == 1)
+       && ($ID > 0)) {
       $before = "<a title=\"".$temp."\" href='".$CFG_GLPI["root_doc"]."/front/user.form.php?id=".$ID."'>";
       $after  = "</a>";
    }
 
-   $username = $before.$temp.$viewID.$after;
+   $username = $before.$temp.$after;
    return $username;
 }
 
@@ -1114,7 +1116,7 @@ function getUserName($ID, $link=0) {
    global $DB, $CFG_GLPI;
 
    $user = "";
-   if ($link==2) {
+   if ($link == 2) {
       $user = array("name"    => "",
                     "link"    => "",
                     "comment" => "");
@@ -1126,28 +1128,28 @@ function getUserName($ID, $link=0) {
                 WHERE `id` = '$ID'";
       $result = $DB->query($query);
 
-      if ($link==2) {
+      if ($link == 2) {
          $user = array("name"    => "",
                        "comment" => "",
                        "link"    => "");
       }
 
-      if ($DB->numrows($result)==1) {
+      if ($DB->numrows($result) == 1) {
          $data     = $DB->fetch_assoc($result);
          $username = formatUserName($data["id"], $data["name"], $data["realname"],
                                     $data["firstname"], $link);
 
-         if ($link==2) {
+         if ($link == 2) {
             $user["name"]    = $username;
             $user["link"]    = $CFG_GLPI["root_doc"]."/front/user.form.php?id=".$ID;
-            $user["comment"] = __('Name')."&nbsp;: ".$username."<br>".__('Login').
-                               "&nbsp;: ".$data["name"]."<br>";
+            $user["comment"] = sprintf(__('%1$s: %2$s'), __('Name'), $username)."<br>".
+                               sprintf(__('%1$s: %2$s'), __('Login'), $data["name"])."<br>";
 
             /// TODO review comment management / first use table to display.
 
             $email = UserEmail::getDefaultForUser($ID);
             if (!empty($email)) {
-               $user["comment"] .= _n('Email', 'Emails', 1)."&nbsp;: $email<br>";
+               $user["comment"] .= sprintf(__('%1$s: %2$s')."<br>", __('Email'), $email);
             }
 
             if (!empty($data["phone"])) {
@@ -1159,19 +1161,19 @@ function getUserName($ID, $link=0) {
                                            $data["mobile"]);
             }
 
-            if ($data["locations_id"]>0) {
+            if ($data["locations_id"] > 0) {
                $user["comment"] .= sprintf(__('%1$s: %2$s')."<br>", __('Location'),
                                            Dropdown::getDropdownName("glpi_locations",
                                                                      $data["locations_id"]));
             }
 
-            if ($data["usertitles_id"]>0) {
+            if ($data["usertitles_id"] > 0) {
                $user["comment"] .= sprintf(__('%1$s: %2$s')."<br>", __('Title'),
                                            Dropdown::getDropdownName("glpi_usertitles",
                                                                      $data["usertitles_id"]));
             }
 
-            if ($data["usercategories_id"]>0) {
+            if ($data["usercategories_id"] > 0) {
                $user["comment"] .= sprintf(__('%1$s: %2$s')."<br>", __('Category'),
                                            Dropdown::getDropdownName("glpi_usercategories",
                                                                      $data["usercategories_id"]));
@@ -1200,8 +1202,8 @@ function TableExists($tablename) {
    $result = $DB->list_tables("%".$tablename."%");
 
    if ($rcount = $DB->numrows($result)) {
-      while ($data=$DB->fetch_row($result)) {
-         if ($data[0]===$tablename) {
+      while ($data = $DB->fetch_row($result)) {
+         if ($data[0] === $tablename) {
             return true;
          }
       }
@@ -1248,8 +1250,8 @@ function isIndex($table, $field) {
    $result = $DB->query("SHOW INDEX FROM `$table`");
 
    if ($result && $DB->numrows($result)) {
-      while ($data=$DB->fetch_assoc($result)) {
-         if ($data["Key_name"]==$field) {
+      while ($data = $DB->fetch_assoc($result)) {
+         if ($data["Key_name"] == $field) {
             return true;
          }
       }
@@ -1275,15 +1277,15 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
    $len = Toolbox::strlen($objectName);
 
    if ($isTemplate
-       && $len > 8
-       && Toolbox::substr($objectName,0,4) === '&lt;'
-       && Toolbox::substr($objectName,$len - 4,4) === '&gt;') {
+       && ($len > 8)
+       && (Toolbox::substr($objectName,0,4) === '&lt;')
+       && (Toolbox::substr($objectName,$len - 4,4) === '&gt;')) {
 
       $autoNum = Toolbox::substr($objectName, 4, $len - 8);
       $mask    = '';
 
       if (preg_match( "/\\#{1,10}/", $autoNum, $mask)) {
-         $global  = strpos($autoNum, '\\g') !== false && $itemtype != 'Infocom' ? 1 : 0;
+         $global  = ((strpos($autoNum, '\\g') !== false) && ($itemtype != 'Infocom')) ? 1 : 0;
          $autoNum = str_replace(array('\\y',
                                       '\\Y',
                                       '\\m',
@@ -1317,7 +1319,8 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
                                AND `is_deleted` = '0'
                                AND `is_template` = '0'";
 
-               if ($CFG_GLPI["use_autoname_by_entity"] && $entities_id>=0) {
+               if ($CFG_GLPI["use_autoname_by_entity"]
+                   && ($entities_id >= 0)) {
                   $query .=" AND `entities_id` = '$entities_id' ";
                }
 
@@ -1337,7 +1340,8 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
                $query .= " AND `is_deleted` = '0'
                            AND `is_template` = '0'";
 
-               if ($CFG_GLPI["use_autoname_by_entity"] && $entities_id>=0) {
+               if ($CFG_GLPI["use_autoname_by_entity"]
+                   && ($entities_id >= 0)) {
                   $query .= " AND `entities_id` = '$entities_id' ";
                }
             }
@@ -1347,7 +1351,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
                    FROM (".$query.") AS Num";
          $resultNo = $DB->query($query);
 
-         if ($DB->numrows($resultNo)>0) {
+         if ($DB->numrows($resultNo) > 0) {
             $data  = $DB->fetch_assoc($resultNo);
             $newNo = $data['lastNo'] + 1;
          } else {
@@ -1409,7 +1413,7 @@ function formatOutputWebLink($link) {
  *
  * @return sql
 **/
-function getDateRequest($field,$begin, $end) {
+function getDateRequest($field, $begin, $end) {
 
    $sql = '';
    if (!empty($begin)) {
@@ -1456,7 +1460,8 @@ function importArrayFromDB($DATA) {
       foreach (explode(" ", $DATA) as $ITEM) {
          $A = explode("=>", $ITEM);
 
-         if (strlen($A[0])>0 && isset($A[1])) {
+         if ((strlen($A[0]) > 0)
+             && isset($A[1])) {
             $TAB[urldecode($A[0])] = urldecode($A[1]);
          }
       }
@@ -1493,7 +1498,7 @@ function getDbRelations() {
 
    // Add plugins relations
    $plug_rel = Plugin::getDatabaseRelations();
-   if (count($plug_rel)>0) {
+   if (count($plug_rel) > 0) {
       $RELATION = array_merge_recursive($RELATION,$plug_rel);
    }
    return $RELATION;
@@ -1524,13 +1529,13 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
 
    // !='0' needed because consider as empty
    if (!$complete_request
-       && $value!='0'
+       && ($value != '0')
        && empty($value)
        && isset($_SESSION['glpishowallentities'])
        && $_SESSION['glpishowallentities']) {
 
       // Not ADD "AND 1" if not needed
-      if (trim($separator)=="AND") {
+      if (trim($separator) == "AND") {
          return "";
       }
       return $query." 1 ) ";
@@ -1540,7 +1545,7 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
       $query .= "`$table`.";
    }
    if (empty($field)) {
-      if ($table=='glpi_entities') {
+      if ($table == 'glpi_entities') {
          $field = "id";
       } else {
          $field = "entities_id";
@@ -1552,7 +1557,7 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
    if (is_array($value)) {
       $query .= " IN ('" . implode("','",$value) . "') ";
    } else {
-      if (strlen($value)==0) {
+      if (strlen($value) == 0) {
          $query .= " IN (".$_SESSION['glpiactiveentities_string'].") ";
       } else {
          $query .= " = '$value' ";
@@ -1568,7 +1573,7 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
          }
          $ancestors = array_diff($ancestors, $value);
 
-      } else if (strlen($value)==0) {
+      } else if (strlen($value) == 0) {
          $ancestors = $_SESSION['glpiparententities'];
 
       } else {
@@ -1576,7 +1581,7 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
       }
 
       if (count($ancestors)) {
-         if ($table=='glpi_entities') {
+         if ($table == 'glpi_entities') {
             $query .= " OR `$table`.`$field` IN ('" . implode("','",$ancestors) . "')";
          } else {
             $query .= " OR (`$table`.`is_recursive`='1'
@@ -1588,5 +1593,4 @@ function getEntitiesRestrictRequest($separator="AND", $table="", $field="",$valu
 
    return $query;
 }
-
 ?>
