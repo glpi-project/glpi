@@ -101,7 +101,6 @@ if (isset($_REQUEST['getvcard'])) {
 
 } else if (isset($_POST["force_ldap_resynch"])) {
    Session::checkRight('user_authtype', 'w');
-   $user->check($_POST['id'], 'r');
 
    $user->getFromDB($_POST["id"]);
    AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
@@ -137,7 +136,6 @@ if (isset($_REQUEST['getvcard'])) {
 
 } else if (isset($_POST["change_auth_method"])) {
    Session::checkRight('user_authtype', 'w');
-   $user->check($_POST['id'], 'r');
 
    if (isset($_POST["auths_id"])) {
       User::changeAuthMethod(array($_POST["id"]), $_POST["authtype"], $_POST["auths_id"]);
