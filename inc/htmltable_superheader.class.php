@@ -1,4 +1,3 @@
-
 <?php
 /*
  * @version $Id: HEADER 15930 2011-10-25 10:47:55Z jmd $
@@ -39,19 +38,21 @@ if (!defined('GLPI_ROOT')) {
 
 
 /**
+ * Only an HTMLTable_ can create an HTMLTable_SuperHeader.
  * @since version 0.84
 **/
 class HTMLTable_SuperHeader extends HTMLTable_Header {
 
-   // The headers of each column
+   /// The headers of each column
    private $headerSets = array();
+   /// The table that owns the current super header
    private $table;
 
 
    /**
-    * @param $table     HTMLTable_ object
-    * @param $name
-    * @param $content
+    * @param $table     HTMLTable_ table owning the current header
+    * @param $name      (string) the name of the header
+    * @param $content   see HTMLTable_Entity#content
     * @param $father    HTMLTable_Header objet (default NULL)
    **/
    function __construct(HTMLTable_ $table, $name, $content,
@@ -63,25 +64,32 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
 
 
    /**
+    * Compute the Least Common Multiple of two integers
+    *
     * @param $first
     * @param $second
+    *
+    * @return integer LCM of $first and $second
    **/
-   private static function PPCM($first, $second) {
+   private static function LCM($first, $second) {
 
       $result = $first * $second;
       while($first > 1){
          $reste = $first % $second;
          if ($reste == 0 ){
             $result = $result / $second;
-            break;  // sorti quand resultat trouvé
+            break;  // leave when LCM is found
          }
          $first = $second;
          $second = $reste;
       }
-      return $result; // retourne le resultat
+      return $result;
    }
 
 
+   /**
+    * @see inc/HTMLTable_Header::isSuperHeader()
+   **/
    function isSuperHeader() {
       return true;
    }
@@ -97,6 +105,9 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
    }
 
 
+   /**
+    * @see inc/HTMLTable_Header::getCompositeName()
+   **/
    function getCompositeName() {
       return $this->getName().':';
    }
@@ -108,12 +119,21 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
 
 
    /**
-    * @param $number
+    * compute the total number of current super header colspan: it is the Least Common
+    * Multiple of the colspan of each subHeader it owns.
+    *
+    * @param $number the colspan for this header given by the group
    **/
    function updateNumberOfSubHeader($number) {
-      $this->setColSpan(self::ppcm($number, $this->getColSpan()));
+      $this->setColSpan(self::LCM($number, $this->getColSpan()));
    }
 
+   /**
+    * @see inc/HTMLTable_Header::getCompositeName()
+    * The super headers always have to be displayed, conversely to sub headers
+    *
+    * @return always true
+   **/
    function hasToDisplay() {
       return true;
    }
