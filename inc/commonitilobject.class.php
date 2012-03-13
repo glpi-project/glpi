@@ -2314,7 +2314,10 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th rowspan='2' width='13%'>".__('Actor')."</th>";
-      echo "<th width='29%'>".__('Requester');
+      echo "<th width='29%'>";
+      if (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester']) {
+         _e('Requester');
+      }
       $rand_requester      = -1;
       $candeleterequester  = false;
 
@@ -2330,7 +2333,10 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "</th>";
 
-      echo "<th width='29%'>".__('Watcher');
+      echo "<th width='29%'>";
+      if (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer']) {
+         _e('Watcher');
+      }
       $rand_observer       = -1;
       $candeleteobserver   = false;
 
@@ -2359,7 +2365,12 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "</th>";
 
-      echo "<th width='29%'>".__('Assigned to');
+      echo "<th width='29%'>";
+      if (!$is_hidden['_users_id_assign']
+              || !$is_hidden['_groups_id_assign']
+              || !$is_hidden['suppliers_id_assign']) {
+         _e('Assigned to');
+      }
       $rand_assign      = -1;
       $candeleteassign  = false;
       if ($ID
