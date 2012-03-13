@@ -916,7 +916,7 @@ class Computer extends CommonDBTM {
 
       $tab[35]['table']          = 'glpi_computers_devicememories';
       $tab[35]['field']          = 'specificity';
-      $tab[35]['name']           = __('Memory (Mio)');
+      $tab[35]['name']           = sprintf(__('%1$s (%2$s)'),__('Memory'),__('Mio'));
       $tab[35]['forcegroupby']   = true;
       $tab[35]['usehaving']      = true;
       $tab[35]['datatype']       = 'number';

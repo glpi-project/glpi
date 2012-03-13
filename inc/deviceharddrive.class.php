@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class DeviceHardDrive extends CommonDevice {
 
    static function getTypeName($nb=0) {
-      return _n('Hard Drive', 'Hard Drives', $nb);
+      return _n('Hard drive', 'Hard drives', $nb);
    }
 
 

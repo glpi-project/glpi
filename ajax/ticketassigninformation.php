@@ -62,8 +62,8 @@ if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
    $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
 
    //TRANS: %d is number of objects for the user
-   echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>";
-   printf(__('(Processing: %d)'), $ticket->countActiveObjectsForTech($_REQUEST['users_id_assign']));
-   echo "</a>";
+   echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(";
+   printf(__('%1$s: %2$s'), __('Processing'), $ticket->countActiveObjectsForTech($_REQUEST['users_id_assign']));
+   echo ")</a>";
 }
 ?>

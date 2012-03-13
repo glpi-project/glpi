@@ -301,7 +301,7 @@ class Contract extends CommonDBTM {
 
       $tab[30]['table']          = 'glpi_contracts';
       $tab[30]['field']          = 'num';
-      $tab[30]['name']           = sprintf(__('%1$s %2$s'), __('Contract'), _x('Phone', 'number'));
+      $tab[30]['name']           = __('Contract number');
       $tab[30]['forcegroupby']   = true;
       $tab[30]['massiveaction']  = false;
       $tab[30]['joinparams']     = $joinparams;
@@ -1421,10 +1421,9 @@ class Contract extends CommonDBTM {
             }
 
             echo "<option  value='".$data["id"]."'>";
-            //TRANS: %1$s is a name, %2$s is a contract number, %3$s is a begin date
-            echo Toolbox::substr(sprintf(__('%1$s - #%2$s - %3$s'), $name, $data["num"],
-                                         Html::convDateTime($data["begin_date"])),
-                                 0, $_SESSION["glpidropdown_chars_limit"]);
+            $tmp = sprintf(__('%1$s - %2$s'), $name, $data["num"]);
+            $tmp = sprintf(__('%1$s - %2$s'), $tmp, Html::convDateTime($data["begin_date"]));
+            echo Toolbox::substr($tmp, 0, $_SESSION["glpidropdown_chars_limit"]);
             echo "</option>";
          }
       }

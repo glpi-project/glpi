@@ -915,22 +915,22 @@ class CronTask extends CommonDBTM{
 
             echo "<tr class='tab_bg_2'><td>".__('Minimal time')."</td>";
             //TRANS: %s is the number of seconds
-            echo "<td class='right'>".sprintf(_n('%s sec', '%s secs', $data['elapsedmin']),
+            echo "<td class='right'>".sprintf(_n('%s second', '%s seconds', $data['elapsedmin']),
                                               number_format($data['elapsedmin'], 2));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".__('Maximal time')."</td>";
-            echo "<td class='right'>".sprintf(_n('%s sec', '%s secs', $data['elapsedmax']),
+            echo "<td class='right'>".sprintf(_n('%s second', '%s seconds', $data['elapsedmax']),
                                               number_format($data['elapsedmax'], 2));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_2'><td>".__('Average time')."</td>";
-            echo "<td class='right b'>".sprintf(_n('%s sec', '%s secs', $data['elapsedavg']),
+            echo "<td class='right b'>".sprintf(_n('%s second', '%s seconds', $data['elapsedavg']),
                                                 number_format($data['elapsedavg'],2));
             echo "</td></tr>";
 
             echo "<tr class='tab_bg_1'><td>".__('Total duration')."</td>";
-            echo "<td class='right'>".sprintf(_n('%s sec', '%s secs', $data['elapsedtot']),
+            echo "<td class='right'>".sprintf(_n('%s second', '%s seconds', $data['elapsedtot']),
                                               number_format($data['elapsedtot'],2));
             echo "</td></tr>";
          }
@@ -1021,7 +1021,7 @@ class CronTask extends CommonDBTM{
                           $data['crontasklogs_id']."\");'>".Html::convDateTime($data['date']).
                     "</a></td>";
                           //TRANS: %s is a number of seconds, 's' is for second
-               echo "<td class='right'>".sprintf(__('%ss'), number_format($data['elapsed'], 3)).
+               echo "<td class='right'>".sprintf(_n('%s second','%s seconds',intval($data['elapsed'])), number_format($data['elapsed'], 3)).
                     "&nbsp;&nbsp;&nbsp;</td>";
                echo "<td class='numerique'>".$data['volume']."</td>";
                echo "<td>".$data['content']."</td>";
@@ -1087,7 +1087,7 @@ class CronTask extends CommonDBTM{
                      echo "<td>".__('Running')."</td>";
                }
 
-               echo "<td class='right'>".sprintf(__('%ss'), number_format($data['elapsed'], 3)).
+               echo "<td class='right'>".sprintf(_n('%s second', '%s seconds', intval($data['elapsed'])), number_format($data['elapsed'], 3)).
                     "&nbsp;&nbsp;</td>";
                echo "<td class='numerique'>".$data['volume']."</td>";
                echo "<td>".$data['content']."</td>";
