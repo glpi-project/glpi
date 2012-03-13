@@ -209,7 +209,7 @@ class NotificationMailSetting extends CommonDBTM {
          echo "</td></tr>";
 
       } else {
-         echo "</tr>";
+         echo "<td colspan='2'></td></tr>";
       }
       $options['candel'] = false;
       $options['addbuttons'] = array('test_smtp_send' => $LANG['setup'][229]);
