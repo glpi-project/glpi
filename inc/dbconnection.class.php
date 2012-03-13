@@ -41,7 +41,7 @@ class DBConnection extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      return _n('Mysql replicate', 'Mysql replicates', $nb);
+      return _n('Mysql replica', 'Mysql replicas', $nb);
    }
 
 
@@ -240,7 +240,7 @@ class DBConnection extends CommonDBTM {
                   $res = self::switchToSlave();
                }
                if ($res) {
-                  $DB->first_connection=false;
+                  $DB->first_connection = false;
                }
             }
          }
@@ -309,6 +309,9 @@ class DBConnection extends CommonDBTM {
    }
 
 
+   /**
+    * @param $name
+   **/
    static function cronInfo($name) {
 
       return array('description' => __('Check the MySQL replica'),
@@ -345,7 +348,7 @@ class DBConnection extends CommonDBTM {
                $task->log(sprintf(__s("Mysql server: %s can't connect to the database"), $name));
             } else {
                                   //TRANS: %1$s is the server name, %2$s is the time
-               $task->log(sprintf(__('Mysql server: %1$s, Difference between master and slave: %2$s'),
+               $task->log(sprintf(__('Mysql server: %1$s, difference between master and slave: %2$s'),
                                   $name, Html::timestampToString($diff, true)));
             }
 
@@ -383,22 +386,25 @@ class DBConnection extends CommonDBTM {
          printf(__('%1$s: %2$s'), __('Mysql server'), $name);
          echo " - ";
          if ($diff > 1000000000) {
-            echo __s("can't connect to the database") . "<br>";
+            echo __("can't connect to the database") . "<br>";
          } else if ($diff) {
-            echo sprintf(__('Difference between master and slave: %s'),
-                         Html::timestampToString($diff, 1)) . "<br>";
+            printf(__('%1$s: %2$s')."<br>", __('Difference between master and slave'),
+                   Html::timestampToString($diff, 1));
          } else {
-            echo __('Difference between master and slave: None') . "<br>";
+            printf(__('%1$s: %2$s')."<br>", __('Difference between master and slave'), __('None'));
          }
       }
    }
 
 
+   /**
+    * @param $width
+   **/
    function showSystemInformations($width) {
 
       // No need to translate, this part always display in english (for copy/paste to forum)
 
-      echo "<tr class='tab_bg_2'><th>Mysql replicates</th></tr>";
+      echo "<tr class='tab_bg_2'><th>".self::getTypeName(2)."</th></tr>";
 
       echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
       if (self::isDBSlaveActive()) {
@@ -418,7 +424,7 @@ class DBConnection extends CommonDBTM {
    **/
    static function changeCronTaskStatus($enable=true) {
 
-      $cron = new CronTask();
+      $cron           = new CronTask();
       $cron->getFromDBbyName('DBConnection', 'CheckDBreplicate');
       $input['id']    = $cron->fields['id'];
       $input['state'] = ($enable?1:0);
