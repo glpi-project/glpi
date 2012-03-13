@@ -333,8 +333,9 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "</tr>";
 
          Session::initNavigateListItems('ComputerVirtualMachine',
-                                        __('Computer')." = ".(empty($comp->fields['name'])
-                                                               ? "($ID)" : $comp->fields['name']));
+                                        sprintf(__('%1$s = %2$s'), __('Computer'),
+                                                (empty($comp->fields['name'])
+                                                   ? "($ID)" : $comp->fields['name'])));
          $vm = new self();
          foreach ($virtualmachines as $virtualmachine) {
             $vm->getFromDB($virtualmachine['id']);
