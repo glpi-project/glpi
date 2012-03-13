@@ -3404,15 +3404,15 @@ class Ticket extends CommonITILObject {
       }
       echo $tt->getEndHiddenFieldText('due_date');
       echo "</th>";
-      echo "<td width='$colsize4%'>";
+      echo "<td width='$colsize4%' class='nopadding'>";
       if ($ID) {
          if ($this->fields["slas_id"]>0) {
-            echo "<table width='100%'><tr><td>";
+            echo "<table width='100%'><tr><td class='nopadding'>";
 
             echo Html::convDateTime($this->fields["due_date"]);
 
             echo "</td><td>".$LANG['sla'][1]."&nbsp;:";
-            echo "</td><td>";
+            echo "</td><td class='nopadding'>";
             echo Dropdown::getDropdownName("glpi_slas", $this->fields["slas_id"]);
             $commentsla = "";
             $slalevel   = new SlaLevel();
@@ -3442,7 +3442,7 @@ class Ticket extends CommonITILObject {
             echo "</td></tr></table>";
 
          } else {
-            echo "<table><tr><td>";
+            echo "<table><tr><td class='nopadding'>";
             echo $tt->getBeginHiddenFieldValue('due_date');
             Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
             echo $tt->getEndHiddenFieldValue('due_date',$this);
@@ -3467,7 +3467,7 @@ class Ticket extends CommonITILObject {
          }
 
       } else { // New Ticket
-         echo "<table><tr><td>";
+         echo "<table><tr><td class='nopadding'>";
          if ($this->fields["due_date"]=='NULL') {
             $this->fields["due_date"]='';
          }
@@ -3475,10 +3475,10 @@ class Ticket extends CommonITILObject {
          Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
          echo $tt->getEndHiddenFieldValue('due_date',$this);
          echo "</td>";
-         echo "<td>".$tt->getBeginHiddenFieldText('slas_id').$LANG['sla'][1]."&nbsp;:".
+         echo "<td class='nopadding'>".$tt->getBeginHiddenFieldText('slas_id').$LANG['sla'][1]."&nbsp;:".
                      $tt->getMandatoryMark('slas_id').
                      $tt->getEndHiddenFieldText('slas_id')."</td>";
-         echo "<td>".$tt->getBeginHiddenFieldValue('slas_id');
+         echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue('slas_id');
          Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
                                     'value'  => $this->fields["slas_id"]));
          echo $tt->getEndHiddenFieldValue('slas_id',$this);

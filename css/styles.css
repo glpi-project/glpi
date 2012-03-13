@@ -576,7 +576,9 @@ td { }
    background:  url("../pics/fond_th.png") repeat-x; 
 }
 
-
+td.nopadding { 
+   padding:0;
+}
 
 /* ################--------------- Bouton navigation   ---------------#################### */
 /* (obsolète mais encore utilisés) */
