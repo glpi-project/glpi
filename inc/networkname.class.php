@@ -485,12 +485,18 @@ class NetworkName extends FQDNLabel {
       if (isset($options['dont_display'][$column_name])) {
          return;
       }
+      
+      $canedit              = ((isset($options['canedit']))   && ($options['canedit']));
 
       $content = self::getTypeName();
       if (isset($options['column_links'][$column_name])) {
          $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
       }
       $this_header = $group->addHeader($header, $column_name, $content, $father);
+      if ($canedit) {
+         $this_header = $group->addHeader($header, 'button1', '', $father);
+         $this_header = $group->addHeader($header, 'button2', '', $father);
+      }
 
       NetworkAlias::getHTMLTableHeaderForItem(__CLASS__, $group, $header, $this_header);
       IPAddress::getHTMLTableHeaderForItem(__CLASS__, $group, $header, $this_header);
@@ -566,7 +572,11 @@ class NetworkName extends FQDNLabel {
       $createRow            = ((isset($options['createRow'])) && ($options['createRow']));
       $options['createRow'] = false;
       $address              = new self();
-
+      if ($canedit) {
+         $headerbutton1 = $row->getGroup()->getHeader('Internet', 'button1');
+         $headerbutton2 = $row->getGroup()->getHeader('Internet', 'button2');
+      }
+      
       foreach ($DB->request($query) as $line) {
          if ($address->getFromDB($line["id"])) {
 
@@ -583,20 +593,22 @@ class NetworkName extends FQDNLabel {
             }
             $content .= "</a>";
 
+            $this_cell = $row->addCell($header, $content, $father, $address);
             if ($canedit) {
-               $content .= "&nbsp;- <a href='" . $address->getFormURL() .
+               $content = "<a href='" . $address->getFormURL() .
                            "?remove_address=unaffect&id=" . $address->getID() . "'>&nbsp;".
                            "<img src=\"" . $CFG_GLPI["root_doc"] .
                            "/pics/sub_dropdown.png\" alt=\"" . __s('Dissociate') .
                            "\" title=\"" . __s('Dissociate') . "\"></a>";
-               $content .= "&nbsp;- <a href='" . $address->getFormURL() .
+               $this_cell = $row->addCell($headerbutton1, $content, $father, $address);
+               
+               $content = "<a href='" . $address->getFormURL() .
                            "?remove_address=purge&id=" . $address->getID() . "'>&nbsp;".
                            "<img src=\"" . $CFG_GLPI["root_doc"] .
                            "/pics/delete.png\" alt=\"" . __s('Purge') . "\" title=\"" .
-                           __s('Purge') . "\"></a>";
+                           __s('Purge') . "\"></a>";            
+               $this_cell = $row->addCell($headerbutton2, $content, $father, $address);
             }
-
-            $this_cell = $row->addCell($header, $content, $father, $address);
 
             NetworkAlias::getHTMLTableForItem($row, NULL, $this_cell, $options);
             IPAddress::getHTMLTableForItem($row, NULL, $this_cell, $options);
@@ -657,8 +669,8 @@ class NetworkName extends FQDNLabel {
       $t_group = $table->createGroup('Main', '');
 
       $address  = new self();
-
-      self::getHTMLTableHeaderForItem(__CLASS__, $t_group, $column);
+      
+      self::getHTMLTableHeaderForItem(__CLASS__, $t_group, $column, NULL, $table_options);
 
       $t_row   = $t_group->createRow();
 
