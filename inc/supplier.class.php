@@ -158,7 +158,7 @@ class Supplier extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Postal Code')."</td>";
+      echo "<td>".__('Postal code')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "postcode", array('size' => 10));
       _e(' City ');
@@ -216,7 +216,7 @@ class Supplier extends CommonDBTM {
 
       $tab[14]['table'] = $this->getTable();
       $tab[14]['field'] = 'postcode';
-      $tab[14]['name']  = __('Postal Code');
+      $tab[14]['name']  = __('Postal code');
 
       $tab[12]['table'] = $this->getTable();
       $tab[12]['field'] = 'state';
