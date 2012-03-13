@@ -320,6 +320,28 @@ function toggleCheckboxes( container_id ) {
 	return true;
 }
 
+/**
+ * Check all checkboxes inside the given element as the same state as a reference one (toggle this one before)
+ * the given element is usaly a table or a div containing the table or tables
+ *
+ * @param    reference_id    DOM element
+ * @param    container_id    DOM element
+ */
+function checkAsCheckboxes( reference_id, container_id ) {
+
+        var ref =  document.getElementById(reference_id);
+	var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
+		for ( var j = 0; j < checkboxes.length; j++ ) {
+			checkbox=checkboxes[j];
+			if ( checkbox && checkbox.type == 'checkbox' ) {
+				if ( checkbox.disabled == false) {
+                                    checkbox.checked = ref.checked;
+				}
+			}
+		}
+
+	return true;
+}
 
 function confirmAction(text,where){
 	if (confirm(text)) {
