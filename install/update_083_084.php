@@ -1376,6 +1376,19 @@ function update083to084() {
    $migration->addField("glpi_slalevels", 'match',
                         "CHAR(10) DEFAULT NULL COMMENT 'see define.php *_MATCHING constant'");
 
+   if (!TableExists('glpi_blacklists')) {
+      $query = "CREATE TABLE `glpi_blacklists` (
+               `id` int(11) NOT NULL AUTO_INCREMENT,
+               `type` int(11) NOT NULL DEFAULT '0',
+               `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+               `comment` text COLLATE utf8_unicode_ci,
+               PRIMARY KEY (`id`),
+               KEY `type` (`type`),
+               KEY `name` (`name`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "0.84 create glpi_blacklists");
+   }
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
