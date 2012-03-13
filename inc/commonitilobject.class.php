@@ -2028,7 +2028,7 @@ abstract class CommonITILObject extends CommonDBTM {
     * @return nothing display
    **/
    static function showActorAddForm($type, $rand_type, $entities_id, $is_hidden = array(),
-                                    $withsupplier=false, $inobject=true) {
+                                    $withgroup = true, $withsupplier=false, $inobject=true) {
       global $LANG, $CFG_GLPI;
 
       $types = array(''      => Dropdown::EMPTY_VALUE,
@@ -2077,6 +2077,11 @@ abstract class CommonITILObject extends CommonDBTM {
          default :
             return false;
       }
+      
+      if (isset($types['group']) && !$withgroup) {
+         unset($types['group']);
+      }
+      
       if (count($types)>1) {
          echo "<div ".($inobject?"style='display:none'":'')." id='itilactor$rand_type'>";
          $rand   = Dropdown::showFromArray("_itil_".$typename."[_type]", $types);
@@ -2474,7 +2479,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<td>";
       if ($rand_assign>=0) {
          self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'],
-                                $is_hidden, $this->fields["suppliers_id_assign"]==0);
+                                $is_hidden, $this->canAssign(), $this->canAssign() && $this->fields["suppliers_id_assign"]==0);
       }
 
       // Assign User
