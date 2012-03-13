@@ -107,25 +107,42 @@ class HTMLTable_Row extends HTMLTable_Entity {
          return false;
       }
 
+      // First, compute the total nomber of rows ...
       $this->numberOfSubRows = 0;
       foreach ($this->cells as $cellsOfHeader) {
-         $numberOfSubRowsPerHeader = 0;
-         foreach ($cellsOfHeader as $cell) {
-            $cell->computeNumberOfLines();
-            $numberOfSubRowsPerHeader += $cell->getNumberOfLines();
-         }
-         if ($this->numberOfSubRows < $numberOfSubRowsPerHeader) {
-            $this->numberOfSubRows = $numberOfSubRowsPerHeader;
+
+         if (isset($cellsOfHeader[0])) {
+            $header = $cellsOfHeader[0]->getHeader();
+            if (is_null($header->getFather())) {
+
+               $numberOfSubRowsPerHeader = 0;
+               foreach ($cellsOfHeader as $cell) {
+                  $cell->computeNumberOfLines();
+                  $numberOfSubRowsPerHeader += $cell->getNumberOfLines();
+               }
+               if ($this->numberOfSubRows < $numberOfSubRowsPerHeader) {
+                  $this->numberOfSubRows = $numberOfSubRowsPerHeader;
+               }
+            }
          }
       }
 
+      // Then notify each cell and compute its starting row
       foreach ($this->cells as $cellsOfHeader) {
 
-         HTMLTable_Cell::updateCellSteps($cellsOfHeader, $this->numberOfSubRows);
+         if (isset($cellsOfHeader[0])) {
+            $header = $cellsOfHeader[0]->getHeader();
 
-         $start = 0;
-         foreach ($cellsOfHeader as $cell) {
-            $cell->computeStartEnd($start);
+            // Only do this for cells that don't have father: they will propagate this to there sons
+            if (is_null($header->getFather())) {
+
+               HTMLTable_Cell::updateCellSteps($cellsOfHeader, $this->numberOfSubRows);
+
+               $start = 0;
+               foreach ($cellsOfHeader as $cell) {
+                  $cell->computeStartEnd($start);
+               }
+            }
          }
       }
 

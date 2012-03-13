@@ -197,8 +197,8 @@ class HTMLTable_Cell extends HTMLTable_Entity {
       }
 
       $numberEmpty = $totalNumberOflines - $numberOfLines;
-      $step = floor($numberEmpty / (count($cells) + 1));
-      $last = $numberEmpty % (count($cells) + 1);
+      $step = floor($numberEmpty / (count($cells)));
+      $last = $numberEmpty % (count($cells));
       $index = 0;
 
       foreach ($cells as $cell) {
