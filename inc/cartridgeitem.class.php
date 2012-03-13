@@ -189,18 +189,7 @@ class CartridgeItem extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
 
-   // Show CartridgeItem or blank form
-      if (!Session::haveRight("cartridge", "r")) {
-        return false;
-      }
-
-      if ($ID > 0) {
-         $this->check($ID, 'r');
-      } else {
-         // Create item
-         $this->check(-1, 'w');
-      }
-
+      $this->initForm($ID, $options);
       $this->showTabs($options);
       $this->showFormHeader($options);
 
