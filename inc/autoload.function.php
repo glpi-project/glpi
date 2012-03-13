@@ -80,7 +80,7 @@ function isPluginItemType($classname) {
 }
 
 
-function __autoload($classname) {
+function glpi_autoload($classname) {
    global $DEBUG_AUTOLOAD, $CFG_GLPI;
    static $notfound = array();
 
@@ -116,15 +116,9 @@ function __autoload($classname) {
          include_once(GLPI_EZC_BASE);
          return ezcBase::autoload($classname);
       }
-      // Is phpCAS class ?
-      if (preg_match('/^CAS_.*/',$classname,$matches)) {
 
-         include_once(GLPI_PHPCAS);
-         return CAS_autoload($classname);
-      }
-      
       $item = strtolower($classname);
-   } 
+   }
 
    // No errors for missing classes due to implementation
    if (!in_array($item,$CFG_GLPI['missingclasses'])){
@@ -143,4 +137,22 @@ function __autoload($classname) {
       }
    }
 }
+
+if (function_exists('spl_autoload_register')) {
+   // Requires PHP >= 5.1.2
+   spl_autoload_register('glpi_autoload');
+} else {
+   // For old PHP < 5.1.2 (tips, to check, in php.ini disable_functions = spl_autoload_register)
+   function __autoload($class) {
+      // Is phpCAS class ?
+      if (preg_match('/^CAS_.*/', $class)) {
+
+         include_once(GLPI_PHPCAS);
+         return CAS_autoload($class);
+      }
+      // GLPI class
+      return glpi_autoload($class);
+   }
+}
+
 ?>
