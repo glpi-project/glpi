@@ -253,10 +253,10 @@ class ComputerDisk extends CommonDBChild {
 
             while ($data = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
+               $name = (empty($data['name'])? sprintf(__('%1$s (%2$s)'),
+                                                      $data['name'], $data['id'])
+                                            : $data['name']);
                if ($canedit) {
-                  $name = (empty($data['name'])? sprintf(__('%1$s (%2$s)'),
-                                                         $data['name'], $data['id'])
-                                               : $data['name']);
                   echo "<td><a href='computerdisk.form.php?id=".$data['id']."'>".$name."</a></td>";
                } else {
                   echo "<td>".$name."</td>";
