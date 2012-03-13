@@ -667,17 +667,11 @@ class Computer extends CommonDBTM {
       echo "<td >";
       Html::autocompletionTextField($this, 'os_license_number');
       echo "</td>";
-      $query = "SELECT `ocs_agent_version`, `ocsid`
-                     FROM `glpi_ocslinks`
-                     WHERE `computers_id` = '$ID'";
-
-      $result_agent_version = $DB->query($query);
-      $data_version = $DB->fetch_array($result_agent_version);
       if ($ocs_show) {
          echo "<th colspan='2'>";
          if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
             echo OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
-                                                               $data_version["ocsid"],
+                                                               $dataocs["ocsid"],
                                                                $LANG['ocsng'][58]);
          } else {
             echo $LANG['ocsng'][58];
@@ -710,8 +704,8 @@ class Computer extends CommonDBTM {
          
          echo "</td></tr>";
          
-         if ($data_version["ocs_agent_version"] != NULL) {
-            echo "<tr><td>".$LANG['ocsng'][49]."&nbsp;:</td><td>".$data_version["ocs_agent_version"].'</td></tr>';
+         if ($dataocs["ocs_agent_version"] != NULL) {
+            echo "<tr><td>".$LANG['ocsng'][49]."&nbsp;:</td><td>".$dataocs["ocs_agent_version"].'</td></tr>';
          }
          if (Session::haveRight("sync_ocsng","w")) {
             echo "</tr><td>".$LANG['ocsng'][6]." ".$LANG['ocsconfig'][0]."&nbsp;:</td>";
@@ -735,28 +729,6 @@ class Computer extends CommonDBTM {
       echo "</tr>";
 
 
-/*         if (Session::haveRight("ocsng","r")) {
-            echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id="
-                  .OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
-   
-            $ocs_config = OcsServer::getConfig(OcsServer::getByMachineID($ID));
-   
-            //If have write right on OCS and ocsreports url is not empty in OCS config
-            if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
-               echo ", ".OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
-                                                                  $data_version["ocsid"],
-                                                                  $LANG['ocsng'][57]);
-            }
-   
-            if ($data_version["ocs_agent_version"] != NULL) {
-               echo " , ".$LANG['ocsng'][49]."&nbsp;: ".$data_version["ocs_agent_version"];
-            }
-   
-         } else {
-            echo $LANG['common'][52]." ".OcsServer::getServerNameByID($ID);
-         }      
-         
-      }*/
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='center'>".$datestring.$date;
       if (!$template && !empty($this->fields['template_name'])) {
