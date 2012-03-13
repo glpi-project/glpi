@@ -2283,7 +2283,10 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th rowspan='2' width='13%'>".$LANG['common'][103]."&nbsp;:</th>";
-      echo "<th width='29%'>".$LANG['job'][4];
+      echo "<th width='29%'>";
+      if (!$is_hidden['_users_id_requester'] || !$is_hidden['_groups_id_requester']) {
+         echo $LANG['job'][4];
+      }
       $rand_requester = -1;
       $candeleterequester    = false;
 
@@ -2299,7 +2302,10 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "</th>";
 
-      echo "<th width='29%'>".$LANG['common'][104];
+      echo "<th width='29%'>";
+      if (!$is_hidden['_users_id_observer'] || !$is_hidden['_groups_id_observer']) {
+         echo $LANG['common'][104];
+      }
       $rand_observer = -1;
       $candeleteobserver    = false;
 
@@ -2325,7 +2331,11 @@ abstract class CommonITILObject extends CommonDBTM {
       }
       echo "</th>";
 
-      echo "<th width='29%'>".$LANG['job'][5];
+      echo "<th width='29%'>";
+      if ((!$is_hidden['_users_id_assign'] || !$is_hidden['_groups_id_assign']
+               || !$is_hidden['suppliers_id_assign'])) {
+         echo $LANG['job'][5];
+      }
       $rand_assign = -1;
       $candeleteassign    = false;
 
