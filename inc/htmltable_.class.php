@@ -217,7 +217,9 @@ class HTMLTable_ extends HTMLTable_Base {
       echo ">";
 
       if (!empty($this->title)) {
+         echo "\t<thead>\n";
          echo "\t\t<tr><th colspan='$totalNumberOfColumn'>".$this->title."</th></tr>\n";
+         echo "\t</thead>\n";
       }
 
       if ($totalNumberOfRow == 0) {
