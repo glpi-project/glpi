@@ -109,7 +109,8 @@ class HTMLTable_ extends HTMLTable_Base {
    /**
     * @param $name (string)             The name  of the group, to be able to retrieve the group
     *                                   later with HTMLTable_::getHeader()
-    * @param $content (string or array) The title of the group : display before the group itself
+    * @param $content ( @see HTMLTable_Entity::content) The title of the group : display before
+    *                                                   the group itself
     *
     * TODO : study to be sure that the order is the one we have defined ...
     *
