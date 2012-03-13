@@ -619,7 +619,7 @@ class NetworkName extends FQDNLabel {
       global $DB, $CFG_GLPI;
 
       $table_options = array('createRow' => true);
-
+      
       if (($item->getType() == 'IPNetwork') || ($item->getType() == 'FQDN')) {
          if (isset($_REQUEST["start"])) {
             $start = $_REQUEST["start"];
@@ -663,6 +663,7 @@ class NetworkName extends FQDNLabel {
       $t_row   = $t_group->createRow();
 
       // Reorder the columns for better display
+      $display_table = true;
       switch ($item->getType()) {
          case 'NetworkEquipment' :
          case 'NetworkPort' :
@@ -676,22 +677,29 @@ class NetworkName extends FQDNLabel {
 
       self::getHTMLTableForItem($t_row, $item, NULL, $table_options);
 
-      if ($table->getNumberOfRows() > 0) {
+      // Do not display table for netwokrport if only one networkname
+      if ($item->getType() == 'NetworkPort' && $table->getNumberOfRows() <=1) {
+         $display_table = false;
+      }
 
-         if (($item->getType() == 'IPNetwork') || ($item->getType() == 'FQDN')) {
-            Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
+      if ($display_table) {
+         if ($table->getNumberOfRows() > 0) {
+   
+            if (($item->getType() == 'IPNetwork') || ($item->getType() == 'FQDN')) {
+               Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
+            }
+            Session::initNavigateListItems(__CLASS__,
+                                    //TRANS : %1$s is the itemtype name,
+                                    //        %2$s is the name of the item (used for headings of a list)
+                                          sprintf(__('%1$s = %2$s'),
+                                                   $item->getTypeName(1), $item->getName()));
+            $table->display(array('display_title_for_each_group' => false,
+                                  'display_thead'                => false,
+                                  'display_tfoot'                => false));
+         } else {
+            echo "<table class='tab_cadre_fixe'><tr><th>".__('No network name found')."</th></tr>";
+            echo "</table>";
          }
-         Session::initNavigateListItems(__CLASS__,
-                                 //TRANS : %1$s is the itemtype name,
-                                 //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(__('%1$s = %2$s'),
-                                                $item->getTypeName(1), $item->getName()));
-         $table->display(array('display_title_for_each_group' => false,
-                               'display_thead'                => false,
-                               'display_tfoot'                => false));
-      } else {
-         echo "<table class='tab_cadre_fixe'><tr><th>".__('No network name found')."</th></tr>";
-         echo "</table>";
       }
 
       if (($item->getType() == 'NetworkEquipment') || ($item->getType() == 'NetworkPort')) {
