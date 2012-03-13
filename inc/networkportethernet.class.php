@@ -113,13 +113,13 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $father = $row->addCell($row->getHeader('Instantiation', 'MAC'), $netport->fields["mac"],
                               $father);
+      NetworkPort_Vlan::getHTMLTableForItem($row, $netport, $father, $options);
+
 
       $father = $row->addCell($row->getHeader('Instantiation', 'Outlet'),
                               Dropdown::getDropdownName("glpi_netpoints",
                                                         $this->fields["netpoints_id"]),
                               $father);
-
-      NetworkPort_Vlan::getHTMLTableForItem($row, $netport, $father, $options);
 
       $father = $row->addCell($row->getHeader('Instantiation', 'Connected'),
                               array(array('function'   => array(__CLASS__, 'showConnection'),
