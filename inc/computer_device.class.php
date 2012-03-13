@@ -215,12 +215,13 @@ class Computer_Device extends CommonDBTM {
       $table->setTitle(_n('Component', 'Components', 2));
 
       $common_column = $table->addHeader('common', __('Type of component'));
+      $specific_column = $table->addHeader('specificities', __('Specificities'));
+      $specific_column->setHTMLClass('center');
+
       if ($canedit) {
          $delete_column = $table->addHeader('delete', __('Delete'));
          $delete_column->setHTMLClass('center');
       }
-      $specific_column = $table->addHeader('specificities', __('Specificities'));
-      $specific_column->setHTMLClass('center');
 
       foreach ($devtypes as $itemtype_index => $itemtype) {
          if ($device = getItemForItemtype($itemtype)) {
@@ -315,8 +316,9 @@ class Computer_Device extends CommonDBTM {
                   $name_cell = $current_row->addCell($name_column, $cell_value, NULL, $device);
 
                   if ($canedit) {
-                     $cell_value = "<a href='#' onclick= \"if ( toggleCheckboxes('$device_group')".
-                                     ") return false;\">".__('All')."</a>";
+                     $cell_value = "<input type='checkbox' name='removeall_$device_group' id='removeall_$device_group' 
+                                          onclick= \"if ( checkAsCheckboxes('removeall_$device_group','$device_group')".
+                                     ") {return true;}\">";
                      $global_anchor = $current_row->addCell($delete_all, $cell_value, $name_cell);
                   } else {
                      $global_anchor = $name_cell;
