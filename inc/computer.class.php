@@ -578,9 +578,35 @@ class Computer extends CommonDBTM {
                                     'condition' => '`is_itemgroup`'));
 
       echo "</td>";
-      echo "<td rowspan='9'>".__('Comments')."</td>";
-      echo "<td rowspan='9' class='middle'>";
-      echo "<textarea cols='45' rows='15' name='comment' >".$this->fields["comment"]."</textarea>";
+      
+      // Get OCS Datas :
+      $dataocs = array();
+      $rowspan = 10;
+      $ocs_show = false;
+      
+      if (!empty($ID)
+          && $this->fields["is_ocs_import"]
+          && Session::haveRight("view_ocsng","r")) {
+
+         $query = "SELECT *
+                   FROM `glpi_ocslinks`
+                   WHERE `computers_id` = '$ID'";
+
+         $result = $DB->query($query);
+         if ($DB->numrows($result)==1) {
+            $dataocs = $DB->fetch_array($result);
+         }
+      }      
+      
+      if (count($dataocs)) {
+         $ocs_config = OcsServer::getConfig(OcsServer::getByMachineID($ID));
+         $ocs_show = true;
+         $rowspan -=4;    
+      }
+            
+      echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
+      echo "<td rowspan='$rowspan' class='middle'>";
+      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -619,29 +645,66 @@ class Computer extends CommonDBTM {
       echo "<td>".__('Serial of the operating system')."</td>";
       echo "<td >";
       Html::autocompletionTextField($this, 'os_license_number');
-      echo "</td></tr>\n";
+      echo "</td>";
+      ///TODO create get_inventory_plugin_information_title and display : manage rowspan based on datas get
+      if ($ocs_show) {
+         echo "<th colspan='2'>";
+         if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
+            echo OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
+                                                               $data_version["ocsid"],
+                                                               _e('OCSNG link'));
+         } else {
+            _e('OCSNG link');
+         }
+         echo "</th>";
+      }
+            
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('UUID')."</td>";
       echo "<td >";
       Html::autocompletionTextField($this, 'uuid');
-      echo "</td></tr>\n";
-
-      // Get OCS Datas :
-      $dataocs = array();
-      if (!empty($ID)
-          && $this->fields["is_ocs_import"]
-          && Session::haveRight("view_ocsng","r")) {
-
-         $query = "SELECT *
-                   FROM `glpi_ocslinks`
-                   WHERE `computers_id` = '$ID'";
-
-         $result = $DB->query($query);
-         if ($result && ($DB->numrows($result) == 1)) {
-            $dataocs = $DB->fetch_assoc($result);
+      echo "</td>";
+      ///TODO create get_inventory_plugin_information and get information to display
+      if ($ocs_show) {
+         echo "<td colspan='2' rowspan='3'>";
+         echo "<table class='format'><tr><td>";
+         echo __('Last OCSNG inventory date')."</td><td>".Html::convDateTime($dataocs["last_ocs_update"]);
+         echo "</td></tr><tr><td>";
+         echo __('Import date in GLPI')."</td><td> ".Html::convDateTime($dataocs["last_update"]);
+         echo "</td></tr>";
+         echo "<tr><td>".__('Server')."</td><td>";
+         if (Session::haveRight("ocsng","r")) {
+            echo "<a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id="
+                  .OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
+         } else {
+            echo OcsServer::getServerNameByID($ID);
          }
-      }
+         
+         echo "</td></tr>";
+         
+         $query = "SELECT `ocs_agent_version`, `ocsid`
+                     FROM `glpi_ocslinks`
+                     WHERE `computers_id` = '$ID'";
+
+         $result_agent_version = $DB->query($query);
+         $data_version = $DB->fetch_array($result_agent_version);
+         if ($data_version["ocs_agent_version"] != NULL) {
+            echo "<tr><td>".__('Agent')."</td><td>".$data_version["ocs_agent_version"].'</td></tr>';
+         }
+         if (Session::haveRight("sync_ocsng","w")) {
+            echo "</tr><td>".__('Auto update OCSNG')."</td>";
+            echo "<td>";
+            Dropdown::showYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
+            echo "</td></tr>";
+         }     
+         
+         echo "</table>";
+         echo "</td>";
+      }        
+      echo "</tr>\n";
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
@@ -661,67 +724,9 @@ class Computer extends CommonDBTM {
          //TRANS: %s is the datetime of update
          printf(__('Last update on %s'), Html::convDateTime($this->fields["date_mod"]));
       }
-
-      if (!empty($ID)
-          && $this->fields["is_ocs_import"]
-          && Session::haveRight("view_ocsng","r")
-          && count($dataocs)) {
-
-         echo "<br>";
-         echo '<table>';
-         echo '<tr><td>'.__('Last OCSNG inventory date').'</td>'.
-              '<td>'.Html::convDateTime($dataocs["last_ocs_update"]).'</td></tr>';
-         echo '<tr><td>'.__('Import date in GLPI').'</td>'.
-              '<td>'.Html::convDateTime($dataocs["last_update"]).'</td></tr>';
-         if (Session::haveRight("ocsng","r")) {
-            $tmp = " <a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id=" .
-                   OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
-            echo '<tr><td>'.__('Server').'</td><td>'.$tmp.'</td></tr>';
-
-            $query = "SELECT `ocs_agent_version`, `ocsid`
-                      FROM `glpi_ocslinks`
-                      WHERE `computers_id` = '$ID'";
-
-            $result_agent_version = $DB->query($query);
-            $data_version         = $DB->fetch_assoc($result_agent_version);
-
-            $ocs_config           = OcsServer::getConfig(OcsServer::getByMachineID($ID));
-
-            //If have write right on OCS and ocsreports url is not empty in OCS config
-            if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
-               echo '<tr><td colspan=2>'.
-                      OcsServer::getComputerLinkToOcsConsole(OcsServer::getByMachineID($ID),
-                                                             $data_version["ocsid"],
-                                                             __('OCSNG interface')).'</td></tr>';
-            }
-
-            if ($data_version["ocs_agent_version"] != NULL) {
-               echo '<tr><td>'.__('Agent').'</td>'.
-                    '<td>'.$data_version["ocs_agent_version"].'</td></tr>';
-            }
-
-         } else {
-            echo '<tr><td>'.__('Server').'</td><td>'.OcsServer::getServerNameByID($ID).'</td></tr>';
-         }
-         echo "</table>";
-
-      }
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      if (!empty($ID)
-          && $this->fields["is_ocs_import"]
-          && Session::haveRight("view_ocsng","r")
-          && Session::haveRight("sync_ocsng","w")
-          && count($dataocs)) {
-
-         echo "<td >".__('Auto update OCSNG')."</td>";
-         echo "<td >";
-         Dropdown::showYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
-         echo "</td>";
-      } else {
-         echo "<td colspan='2'></td>";
-      }
       echo "<td>".__('Update Source')."</td>";
       echo "<td >";
       Dropdown::show('AutoUpdateSystem', array('value' => $this->fields["autoupdatesystems_id"]));
