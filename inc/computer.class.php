@@ -599,9 +599,39 @@ class Computer extends CommonDBTM {
                                     'condition' => '`is_itemgroup`'));
 
       echo "</td>";
-      echo "<td rowspan='9'>".$LANG['common'][25]."&nbsp;:</td>";
-      echo "<td rowspan='9' class='middle'>";
-      echo "<textarea cols='45' rows='15' name='comment' >".$this->fields["comment"]."</textarea>";
+      
+      // Get OCS Datas :
+      $dataocs = array();
+      if (!empty($ID)
+          && $this->fields["is_ocs_import"]
+          && Session::haveRight("view_ocsng","r")) {
+
+         $query = "SELECT *
+                   FROM `glpi_ocslinks`
+                   WHERE `computers_id` = '$ID'";
+
+         $result = $DB->query($query);
+         if ($DB->numrows($result)==1) {
+            $dataocs = $DB->fetch_array($result);
+         }
+      }      
+      
+      $rowspan = 10;
+      
+      $ocs_show = false;
+      
+      if (!empty($ID)
+          && $this->fields["is_ocs_import"]
+          && Session::haveRight("view_ocsng","r")
+          && count($dataocs)) {
+         $ocs_config = OcsServer::getConfig(OcsServer::getByMachineID($ID));
+         $ocs_show = true;
+         $rowspan -=4;    
+      }
+      
+      echo "<td rowspan='$rowspan'>".$LANG['common'][25]."&nbsp;:</td>";
+      echo "<td rowspan='$rowspan' class='middle'>";
+      echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -640,93 +670,108 @@ class Computer extends CommonDBTM {
       echo "<td>".$LANG['computers'][10]."&nbsp;:</td>";
       echo "<td >";
       Html::autocompletionTextField($this, 'os_license_number');
-      echo "</td></tr>\n";
+      echo "</td>";
+      if ($ocs_show) {
+         echo "<th colspan='2'>";
+         if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
+            echo OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
+                                                               $data_version["ocsid"],
+                                                               $LANG['ocsng'][57]);
+         } else {
+            echo $LANG['ocsng'][58];
+         }
+         echo "</th>";
+      }
+         
+
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['computers'][58]."&nbsp;:</td>";
       echo "<td >";
       Html::autocompletionTextField($this, 'uuid');
-      echo "</td></tr>\n";
-
-      // Get OCS Datas :
-      $dataocs = array();
-      if (!empty($ID)
-          && $this->fields["is_ocs_import"]
-          && Session::haveRight("view_ocsng","r")) {
-
-         $query = "SELECT *
-                   FROM `glpi_ocslinks`
-                   WHERE `computers_id` = '$ID'";
-
-         $result = $DB->query($query);
-         if ($DB->numrows($result)==1) {
-            $dataocs = $DB->fetch_array($result);
+      echo "</td>";
+      if ($ocs_show) {
+         echo "<td colspan='2' rowspan='3'>";
+         echo "<table class='format'><tr><td>";
+         echo $LANG['ocsng'][14]."&nbsp;:</td><td>".Html::convDateTime($dataocs["last_ocs_update"]);
+         echo "</td></tr><tr><td>";
+         echo $LANG['ocsng'][13]."&nbsp;:</td><td> ".Html::convDateTime($dataocs["last_update"]);
+         echo "</td></tr>";
+         echo "<tr><td>".$LANG['common'][52]."&nbsp;:</td><td>";
+         if (Session::haveRight("ocsng","r")) {
+            echo "<a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id="
+                  .OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
+         } else {
+            echo OcsServer::getServerNameByID($ID);
          }
-      }
+         
+         echo "</td></tr>";
+         
+         $query = "SELECT `ocs_agent_version`, `ocsid`
+                     FROM `glpi_ocslinks`
+                     WHERE `computers_id` = '$ID'";
 
+         $result_agent_version = $DB->query($query);
+         $data_version = $DB->fetch_array($result_agent_version);
+         if ($data_version["ocs_agent_version"] != NULL) {
+            echo "<tr><td>".$LANG['ocsng'][49]."&nbsp;:</td><td>".$data_version["ocs_agent_version"].'</td></tr>';
+         }
+         if (Session::haveRight("sync_ocsng","w")) {
+            echo "</tr><td>".$LANG['ocsng'][6]." ".$LANG['ocsconfig'][0]."&nbsp;:</td>";
+            echo "<td>";
+            Dropdown::showYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
+            echo "</td></tr>";
+         }     
+         
+         echo "</table>";
+         echo "</td>";
+      }   
+
+      echo "</tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['computers'][51]."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::show('AutoUpdateSystem', array('value' => $this->fields["autoupdatesystems_id"]));
+      echo "</td>";
+      
+      echo "</tr>";
+
+
+/*         if (Session::haveRight("ocsng","r")) {
+            echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id="
+                  .OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
+   
+            $ocs_config = OcsServer::getConfig(OcsServer::getByMachineID($ID));
+   
+            //If have write right on OCS and ocsreports url is not empty in OCS config
+            if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
+               echo ", ".OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
+                                                                  $data_version["ocsid"],
+                                                                  $LANG['ocsng'][57]);
+            }
+   
+            if ($data_version["ocs_agent_version"] != NULL) {
+               echo " , ".$LANG['ocsng'][49]."&nbsp;: ".$data_version["ocs_agent_version"];
+            }
+   
+         } else {
+            echo $LANG['common'][52]." ".OcsServer::getServerNameByID($ID);
+         }      
+         
+      }*/
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='center'>".$datestring.$date;
       if (!$template && !empty($this->fields['template_name'])) {
          echo "<span class='small_space'>(".$LANG['common'][13]."&nbsp;: ".
                $this->fields['template_name'].")</span>";
       }
-      if (!empty($ID)
-          && $this->fields["is_ocs_import"]
-          && Session::haveRight("view_ocsng","r")
-          && count($dataocs)) {
-
-         echo "<br>";
-         echo $LANG['ocsng'][14]."&nbsp;: ".Html::convDateTime($dataocs["last_ocs_update"]);
-         echo "<br>";
-         echo $LANG['ocsng'][13]."&nbsp;: ".Html::convDateTime($dataocs["last_update"]);
-         echo "<br>";
-         if (Session::haveRight("ocsng","r")) {
-            echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsserver.form.php?id="
-                 .OcsServer::getByMachineID($ID)."'>".OcsServer::getServerNameByID($ID)."</a>";
-            $query = "SELECT `ocs_agent_version`, `ocsid`
-                      FROM `glpi_ocslinks`
-                      WHERE `computers_id` = '$ID'";
-
-            $result_agent_version = $DB->query($query);
-            $data_version = $DB->fetch_array($result_agent_version);
-
-            $ocs_config = OcsServer::getConfig(OcsServer::getByMachineID($ID));
-
-            //If have write right on OCS and ocsreports url is not empty in OCS config
-            if (Session::haveRight("ocsng","w") && $ocs_config["ocs_url"] != '') {
-               echo ", ".OcsServer::getComputerLinkToOcsConsole (OcsServer::getByMachineID($ID),
-                                                                 $data_version["ocsid"],
-                                                                 $LANG['ocsng'][57]);
-            }
-
-            if ($data_version["ocs_agent_version"] != NULL) {
-               echo " , ".$LANG['ocsng'][49]."&nbsp;: ".$data_version["ocs_agent_version"];
-            }
-
-         } else {
-            echo $LANG['common'][52]." ".OcsServer::getServerNameByID($ID);
-         }
-      }
+      
+    
+      
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_1'>";
-      if (!empty($ID)
-          && $this->fields["is_ocs_import"]
-          && Session::haveRight("view_ocsng","r")
-          && Session::haveRight("sync_ocsng","w")
-          && count($dataocs)) {
-
-         echo "<td >".$LANG['ocsng'][6]." ".$LANG['ocsconfig'][0]."&nbsp;:</td>";
-         echo "<td >";
-         Dropdown::showYesNo("_auto_update_ocs",$dataocs["use_auto_update"]);
-         echo "</td>";
-      } else {
-         echo "<td colspan='2'></td>";
-      }
-      echo "<td>".$LANG['computers'][51]."&nbsp;:</td>";
-      echo "<td >";
-      Dropdown::show('AutoUpdateSystem', array('value' => $this->fields["autoupdatesystems_id"]));
-      echo "</td></tr>";
 
       $this->showFormButtons($options);
       $this->addDivForTabs();
