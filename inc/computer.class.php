@@ -602,6 +602,9 @@ class Computer extends CommonDBTM {
       
       // Get OCS Datas :
       $dataocs = array();
+      $rowspan = 10;
+      $ocs_show = false;
+      
       if (!empty($ID)
           && $this->fields["is_ocs_import"]
           && Session::haveRight("view_ocsng","r")) {
@@ -616,14 +619,7 @@ class Computer extends CommonDBTM {
          }
       }      
       
-      $rowspan = 10;
-      
-      $ocs_show = false;
-      
-      if (!empty($ID)
-          && $this->fields["is_ocs_import"]
-          && Session::haveRight("view_ocsng","r")
-          && count($dataocs)) {
+      if (count($dataocs)) {
          $ocs_config = OcsServer::getConfig(OcsServer::getByMachineID($ID));
          $ocs_show = true;
          $rowspan -=4;    
