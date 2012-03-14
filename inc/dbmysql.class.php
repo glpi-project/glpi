@@ -106,7 +106,7 @@ class DBmysql {
     *
     * try to connect
     *
-    * @param $choice integer, host number (feult NULL)
+    * @param $choice integer, host number (default NULL)
     *
     * @return nothing
    **/
@@ -143,7 +143,7 @@ class DBmysql {
       if ($this->dbh) { // connexion ok
          @mysql_query("SET NAMES '" . (isset($this->dbenc) ? $this->dbenc : "utf8") . "'",
                       $this->dbh);
-         $select= mysql_select_db($this->dbdefault)
+         $select = mysql_select_db($this->dbdefault)
                   or $this->error = 1;
 
          if ($select) { // select ok
@@ -168,11 +168,11 @@ class DBmysql {
    function query($query) {
       global $CFG_GLPI, $DEBUG_SQL, $SQL_TOTAL_REQUEST;
 
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
+      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
           && $CFG_GLPI["debug_sql"]) {
          $SQL_TOTAL_REQUEST++;
          $DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST] = $query;
-         $TIMER = new Timer();
+         $TIMER                                    = new Timer();
          $TIMER->start();
       }
 
@@ -201,14 +201,14 @@ class DBmysql {
             $error .= $_SERVER["SCRIPT_FILENAME"]. "\n";
             Toolbox::logInFile("sql-errors", $error."\n");
 
-            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
+            if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
                 && $CFG_GLPI["debug_sql"]) {
                $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
             }
          }
       }
 
-      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
+      if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
           && $CFG_GLPI["debug_sql"]) {
          $TIME                                   = $TIMER->getTime();
          $DEBUG_SQL["times"][$SQL_TOTAL_REQUEST] = $TIME;
@@ -506,9 +506,9 @@ class DBmysql {
 
          // do not strip comments due to problems when # in begin of a data line
          $formattedQuery .= $buffer;
-         if (substr(rtrim($formattedQuery),-1) == ";"
-             && substr(rtrim($formattedQuery),-4) != "&gt;"
-             && substr(rtrim($formattedQuery),-4) != "160;") {
+         if ((substr(rtrim($formattedQuery),-1) == ";")
+             && (substr(rtrim($formattedQuery),-4) != "&gt;")
+             && (substr(rtrim($formattedQuery),-4) != "160;")) {
 
             if (Toolbox::get_magic_quotes_runtime()) {
                $formattedQuerytorun = stripslashes($formattedQuery);
@@ -575,7 +575,7 @@ class DBmysql {
        if (!is_null($migration) && method_exists($migration,'displayMessage')) {
           $migration->displayTitle(__('Optimizing tables'));
           $migration->setVersion('999'); // to force new ajax zone
-          $migration->displayMessage("optimize - start");
+          $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('start')));
        }
        $result = $DB->list_tables();
        $nb     = 0;
@@ -585,10 +585,11 @@ class DBmysql {
           $table = $line[0];
 
        // For big database to reduce delay of migration
-          if ($cron || countElementsInTable($table) < 15000000) {
+          if ($cron
+              || (countElementsInTable($table) < 15000000)) {
 
              if (!is_null($migration) && method_exists($migration,'displayMessage')) {
-                $migration->displayMessage("optimize - $table");
+                $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), $table));
              }
 
              $query = "OPTIMIZE TABLE `".$table."` ;";
@@ -599,7 +600,7 @@ class DBmysql {
        $DB->free_result($result);
 
        if (!is_null($migration) && method_exists($migration,'displayMessage') ){
-          $migration->displayMessage("optimize - end");
+          $migration->displayMessage(sprintf(__('%1$s - %2$s'), __('optimize'), __('end')));
        }
 
        return $nb;
@@ -644,16 +645,16 @@ class DBmysqlIterator  implements Iterator {
          $start   = 0;
          if (is_array($crit) && count($crit)) {
             foreach ($crit as $key => $val) {
-               if ($key==="FIELDS") {
+               if ($key === "FIELDS") {
                   $field = $val;
                   unset($crit[$key]);
-               } else if ($key==="ORDER") {
+               } else if ($key === "ORDER") {
                   $orderby = $val;
                   unset($crit[$key]);
-               } else if ($key==="LIMIT") {
+               } else if ($key === "LIMIT") {
                   $limit = $val;
                   unset($crit[$key]);
-               } else if ($key==="START") {
+               } else if ($key === "START") {
                   $start = $val;
                   unset($crit[$key]);
                }
@@ -697,9 +698,9 @@ class DBmysqlIterator  implements Iterator {
             $this->sql .= " ORDER BY `$orderby`";
          }
 
-         if (is_numeric($limit) && $limit>0) {
+         if (is_numeric($limit) && ($limit > 0)) {
             $this->sql .= " LIMIT $limit";
-            if (is_numeric($start) && $start>0) {
+            if (is_numeric($start) && ($start > 0)) {
                $this->sql .= " OFFSET $start";
             }
          }
@@ -734,17 +735,17 @@ class DBmysqlIterator  implements Iterator {
             // No Key case => recurse.
             $ret .= "(" . $this->analyseCrit($value, $bool) . ")";
 
-         } else if ($name==="OR" || $name==="AND") {
+         } else if (($name === "OR") || ($name === "AND")) {
             // Binary logical operator
             $ret .= "(" . $this->analyseCrit($value, $name) . ")";
 
-         } else if ($name==="NOT") {
+         } else if ($name === "NOT") {
             // Uninary logicial operator
             $ret .= " NOT (" . $this->analyseCrit($value, "AND") . ")";
 
-         } else if ($name==="FKEY") {
+         } else if ($name === "FKEY") {
             // Foreign Key condition
-            if (is_array($value) && count($value)==2) {
+            if (is_array($value) && (count($value) == 2)) {
                reset($value);
                list($t1,$f1) = each($value);
                list($t2,$f2) = each($value);

@@ -68,7 +68,7 @@ class DeviceMemory extends CommonDevice {
 
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                 = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'specif_default';

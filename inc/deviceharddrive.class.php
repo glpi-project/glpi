@@ -71,7 +71,7 @@ class DeviceHardDrive extends CommonDevice {
 
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                 = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'specif_default';
@@ -151,8 +151,7 @@ class DeviceHardDrive extends CommonDevice {
                                                                 __('Interface'), $previous_header);
 
       $previous_header = $elements['manu'] = $group->addHeader($super, 'manufacturer',
-                                                               __('Manufacturer'),
-                                                               $previous_header);
+                                                               __('Manufacturer'), $previous_header);
 
       return $elements;
    }
