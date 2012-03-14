@@ -1030,12 +1030,15 @@ function update083to084() {
    if (TableExists('glpi_entitydatas')) {
       $migration->changeField('glpi_entities', 'id', 'id', 'integer');
       $migration->migrationOneTable('glpi_entities');
-      // Create root entity
-      $query = "INSERT INTO `glpi_entities`
-                       (`id`, `name`, `entities_id`, `level`)
-                VALUES (0,'".addslashes(__('Root entity'))."', '-1', '1');";
+      // pour que la procedure soit re-entrante
+      if (countElementsInTable("glpi_entities", "id=0") < 1) {
+         // Create root entity
+         $query = "INSERT INTO `glpi_entities`
+                          (`id`, `name`, `entities_id`, `level`)
+                   VALUES (0,'".addslashes(__('Root entity'))."', '-1', '1');";
 
-      $DB->queryOrDie($query, '0.84 insert root entity into glpi_entities');
+         $DB->queryOrDie($query, '0.84 insert root entity into glpi_entities');
+      }
 //       $newID = $DB->insert_id();
 //       $query = "UPDATE `glpi_entities`
 //                 SET `id` = '0'
