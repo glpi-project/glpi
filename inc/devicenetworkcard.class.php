@@ -63,7 +63,7 @@ class DeviceNetworkCard extends CommonDevice {
 
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                 = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'specif_default';
@@ -124,7 +124,7 @@ class DeviceNetworkCard extends CommonDevice {
       }
 
       $result = $DB->query($query);
-      if ($DB->numrows($result)>0) {
+      if ($DB->numrows($result) > 0) {
          $line = $DB->fetch_assoc($result);
          return $line['id'];
       }

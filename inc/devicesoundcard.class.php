@@ -55,7 +55,7 @@ class DeviceSoundCard extends CommonDevice {
 
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                 = parent::getSearchOptions();
 
       $tab[12]['table']    = $this->getTable();
       $tab[12]['field']    = 'type';
