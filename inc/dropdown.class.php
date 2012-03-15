@@ -1391,8 +1391,8 @@ class Dropdown {
          if ($params['management_restrict'] == 2) {
             echo "&nbsp;<a title=\"".__s('Duplicate the element as many times as there are connections').
                  "\" href=\"javascript:confirmAction('".
-                 __s('Do you really want to use unitary management for this item ?')."\\n".
-                 __s('Duplicate the element as many times as there are connections').
+                 __s('Do you really want to use unitary management for this item ?',1)."\\n".
+                 __s('Duplicate the element as many times as there are connections',1).
                  "','".$params['target']."?unglobalize=unglobalize&amp;id=$ID')\">".
                  __('Use unitary management')."</a>&nbsp;";
 
