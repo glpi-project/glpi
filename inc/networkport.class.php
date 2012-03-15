@@ -444,7 +444,8 @@ class NetworkPort extends CommonDBChild {
       $c_number  = $table->addHeader('NetworkPort', "#");
       $c_name    = $table->addHeader("Name", __('Name'));
       $c_instant = $table->addHeader('Instantiation', __('Characteristics'));
-      $c_network = $table->addHeader('Internet', __('Internet informations'));
+      $c_network = $table->addHeader('Internet',
+                                     _n(__('Internet information'),__('Internet information'), 2));
 
       $c_name->setItemType('NetworkPort');
       $c_name->setHTMLClass('center');
