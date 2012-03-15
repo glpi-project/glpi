@@ -75,8 +75,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' ".
          "media='screen' >\n";
    echo "<![endif]-->";
-   echo "<script type='text/javascript'><!--document.getElementById('var_login_name').focus();-->".
-         "</script>";
+//    echo "<script type='text/javascript'><!--document.getElementById('var_login_name').focus();-->".
+//          "</script>";
 
    echo "</head>";
 

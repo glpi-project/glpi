@@ -144,7 +144,7 @@ class Ajax {
                   }
 
                   echo "{
-                     title: \"".$val['title']."\",
+                     title: \"".addslashes($val['title'])."\",
                      id: '$key',";
                   if (!empty($key) && $key != 'empty') {
                      echo "autoLoad: {url: '".$val['url']."',
