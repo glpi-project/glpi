@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -42,26 +40,30 @@ function update0712to0713() {
 		$query = "ALTER TABLE `glpi_rule_cache_software` ADD `ignore_ocs_import` VARCHAR( 255 ) NULL ;";
 		$DB->query($query) or die("0.71.3 add ignore_ocs_import field in dictionnary cache " . $LANG['update'][90] . $DB->error());
 	}
-	
+
 	// Update to longtext for fields which may be very long
 	if (FieldExists("glpi_kbitems", "answer")) {
-		
-		if (isIndex("glpi_kbitems","fulltext")){ // to avoid pb in altering column answer 		 
+
+		if (isIndex("glpi_kbitems","fulltext")){ // to avoid pb in altering column answer
 			$query = "ALTER TABLE `glpi_kbitems` DROP INDEX `fulltext`";
 			$DB->query($query) or die("0.71.3 alter kbitem drop index Fulltext " . $LANG['update'][90] . $DB->error());
-		}  
-		$query = "ALTER TABLE `glpi_kbitems` CHANGE `answer` `answer` LONGTEXT NULL DEFAULT NULL  ";
+		}
+      // field question : only to change latin1 to utf-8 if not done in update 0.68.3 to 0.71
+      // before creating index fulltext based on 2 fields (perhaps both are not in same encoding)
+		$query = "ALTER TABLE `glpi_kbitems`
+                CHANGE `question` `question` TEXT,
+                CHANGE `answer` `answer` LONGTEXT NULL DEFAULT NULL  ";
 		$DB->query($query) or die("0.71.3 alter kbitem answer field to longtext " . $LANG['update'][90] . $DB->error());
-		
+
 		$query = "ALTER TABLE `glpi_kbitems` ADD FULLTEXT `fulltext` (`question`,`answer`)";
 		$DB->query($query) or die("0.71.3 alter kbitem re-add index Fulltext " . $LANG['update'][90] . $DB->error());
-		
+
 	}
 	if (FieldExists("glpi_tracking", "contents")) {
 		$query = "ALTER TABLE `glpi_tracking` CHANGE `contents` `contents` LONGTEXT NULL DEFAULT NULL  ";
 		$DB->query($query) or die("0.71.3 alter tracking contents field to longtext " . $LANG['update'][90] . $DB->error());
 	}
-		
-	
-} 
+
+
+}
 ?>
