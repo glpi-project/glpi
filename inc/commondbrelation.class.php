@@ -77,6 +77,20 @@ abstract class CommonDBRelation extends CommonDBTM {
 
 
    /**
+    * Must we chech than the item, for relation 2, exists
+    *
+    * @since : version to be defined
+    *
+    * @param $input Array of data to be added
+    *
+    * @return boolean
+    */
+   function mustRelation2Exists(Array &$input) {
+      return true;
+   }
+
+
+   /**
     * Check right on an item
     *
     * @param $ID            ID of the item (-1 if new item)
@@ -128,9 +142,7 @@ abstract class CommonDBRelation extends CommonDBTM {
             return false;
          }
       } else {
-         // TODO : need to be improved, only some classe should allow relation to 0
-         // id==0 is used in some relation (tickets_users)
-         if (($input[$this->items_id_2] > 0)
+         if ($this->mustRelation2Exists($input)
              && !$item2->getFromDB($input[$this->items_id_2])) {
             return false;
          }

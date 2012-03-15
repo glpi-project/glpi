@@ -61,6 +61,21 @@ abstract class CommonITILActor extends CommonDBRelation {
    }
 
 
+   function mustRelation2Exists(Array &$input) {
+
+      // Anonymous user (only email) as requester or observer
+      if (isset($input['users_id'])
+          && ($input['users_id'] == 0)
+          && isset($input['alternative_email'])
+          && !empty($input['alternative_email'])
+          && isset($input['type'])
+          && ($input['type'] != CommonITILObject::ASSIGN)) {
+         return false;
+      }
+      return true;
+   }
+
+
    /**
     * @param $items_id
    **/
