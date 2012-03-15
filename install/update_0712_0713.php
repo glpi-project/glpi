@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -56,7 +54,10 @@ function update0712to0713() {
          or die("0.71.3 alter kbitem drop index Fulltext " . $LANG['update'][90] . $DB->error());
       }
 
+      // field question : only to change latin1 to utf-8 if not done in update 0.68.3 to 0.71
+      // before creating index fulltext based on 2 fields (perhaps both are not in same encoding)
       $query = "ALTER TABLE `glpi_kbitems`
+                CHANGE `question` `question` TEXT,
                 CHANGE `answer` `answer` LONGTEXT NULL DEFAULT NULL ";
       $DB->query($query)
       or die("0.71.3 alter kbitem answer field to longtext " . $LANG['update'][90] . $DB->error());

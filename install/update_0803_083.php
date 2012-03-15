@@ -731,6 +731,10 @@ function update0803to083() {
    $migration->addField("glpi_reminders", 'begin_view_date', "datetime");
    $migration->addField("glpi_reminders", 'end_view_date', "datetime");
 
+   // only to change latin1 to utf-8 if not done in update 0.68.3 to 0.71
+   // because there is an index fulltext based on 2 fields (perhaps both are not in same encoding)
+   $migration->changeField("glpi_knowbaseitems", 'answer', 'answer', "longtext");
+
    $migration->changeField("glpi_knowbaseitems", 'question', 'name', "text");
 
    $migration->addField("glpi_configs", "ajax_min_textsearch_load", "integer",
