@@ -68,7 +68,7 @@ class Document extends CommonDBTM {
 
       // From Ticket Document Tab => check right to add followup.
       if (isset($this->fields['tickets_id'])
-          && $this->fields['tickets_id']>0) {
+          && ($this->fields['tickets_id'] > 0)) {
 
          $ticket = new Ticket();
          if ($ticket->getFromDB($this->fields['tickets_id'])) {
@@ -97,8 +97,8 @@ class Document extends CommonDBTM {
       if (!empty($this->fields["filepath"])) {
          if (is_file(GLPI_DOC_DIR."/".$this->fields["filepath"])
              && !is_dir(GLPI_DOC_DIR."/".$this->fields["filepath"])
-             && countElementsInTable($this->getTable(),
-                                     "`sha1sum`='".$this->fields["sha1sum"]."'")<=1) {
+             && (countElementsInTable($this->getTable(),
+                                     "`sha1sum`='".$this->fields["sha1sum"]."'") <= 1)) {
 
             if (unlink(GLPI_DOC_DIR."/".$this->fields["filepath"])) {
                Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
@@ -117,8 +117,8 @@ class Document extends CommonDBTM {
 
       // Can exist for template
       if (Session::haveRight("document","r")
-          || $item->getType() == 'Ticket'
-          || $item->getType() == 'KnowbaseItem') {
+          || ($item->getType() == 'Ticket')
+          || ($item->getType() == 'KnowbaseItem')) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2), Document_Item::countForItem($item));
@@ -148,13 +148,16 @@ class Document extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
       global $CFG_GLPI, $DB;
 
       // security (don't accept filename from $_POST)
       unset($input['filename']);
 
-      if ($uid=Session::getLoginUserID()) {
+      if ($uid = Session::getLoginUserID()) {
          $input["users_id"] = Session::getLoginUserID();
       }
 
@@ -164,7 +167,7 @@ class Document extends CommonDBTM {
       if (isset($input["items_id"])
           && isset($input["itemtype"])
           && ($item = getItemForItemtype($input["itemtype"]))
-          && $input["items_id"]>0) {
+          && ($input["items_id"] > 0)) {
 
          $typename = $item->getTypeName(1);
          $name     = NOT_AVAILABLE;
@@ -172,7 +175,10 @@ class Document extends CommonDBTM {
          if ($item->getFromDB($input["items_id"])) {
             $name = $item->getNameID();
          }
-         $input["name"] = addslashes(Html::resume_text(__('Document')." $typename - ".$name, 200));
+         //TRANS: %1$s is Document, %2$s is item type, %3$s is item name
+         $input["name"] = addslashes(Html::resume_text(sprintf(__('%1$s: %2$s -%3$s'),
+                                                               __('Document'), $typename, $name),
+                                                       200));
          $create_from_item = true;
       }
 
@@ -228,8 +234,9 @@ class Document extends CommonDBTM {
 
       if (isset($this->input["items_id"])
           && isset($this->input["itemtype"])
-          && ($this->input["items_id"] > 0
-              || ($this->input["items_id"]==0 && $this->input["itemtype"]=='Entity'))
+          && (($this->input["items_id"] > 0)
+              || (($this->input["items_id"] == 0)
+                  && ($this->input["itemtype"] == 'Entity')))
           && !empty($this->input["itemtype"])) {
 
          $docitem = new Document_Item();
@@ -239,11 +246,14 @@ class Document extends CommonDBTM {
 
          Event::log($this->fields['id'], "documents", 4, "document",
                   //TRANS: %s is the user login
-                  sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
+                    sprintf(__('%s adds a link with an item'), $_SESSION["glpiname"]));
       }
    }
 
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForUpdate()
+   **/
    function prepareInputForUpdate($input) {
 
       // security (don't accept filename from $_POST)
@@ -286,21 +296,15 @@ class Document extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w');
-      }
-
+      $this->initForm($ID, $options);
       $this->showTabs($options);
       $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
 
-      if ($ID>0) {
+      if ($ID > 0) {
          echo "<tr><th colspan='2'>";
          if ($this->fields["users_id"]>0) {
-            echo sprintf(__('Added by %s'), getUserName($this->fields["users_id"], 1));
+            printf(__('Added by %s'), getUserName($this->fields["users_id"], 1));
          } else {
             echo "&nbsp;";
          }
@@ -323,7 +327,7 @@ class Document extends CommonDBTM {
       echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
-      if ($ID>0) {
+      if ($ID > 0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Current file')."</td>";
          echo "<td>".$this->getDownloadLink('',45);
@@ -333,7 +337,7 @@ class Document extends CommonDBTM {
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('File (%s)'), self::getMaxUploadSize())."</td>";
+      echo "<td>".sprintf(__('%1$s (%2$s)'), __('File'), self::getMaxUploadSize())."</td>";
       echo "<td><input type='file' name='filename' value='".$this->fields["filename"]."' size='39'>";
       echo "</td></tr>";
 
@@ -360,8 +364,8 @@ class Document extends CommonDBTM {
       echo "<td>";
       Html::autocompletionTextField($this, "mime");
 
-      if ($ID>0) {
-         echo "</td><td>".__('Checksum (SHA1)')."</td>";
+      if ($ID > 0) {
+         echo "</td><td>".sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1'))."</td>";
          echo "<td>".$this->fields["sha1sum"];
       }
       echo "</td></tr>";
@@ -418,7 +422,7 @@ class Document extends CommonDBTM {
 
       $splitter = explode("/",$this->fields['filename']);
 
-      if (count($splitter)==2) {
+      if (count($splitter) == 2) {
          // Old documents in EXT/filename
          $fileout = $splitter[1];
       } else {
@@ -426,7 +430,7 @@ class Document extends CommonDBTM {
          $fileout = $this->fields['filename'];
       }
 
-      if (Toolbox::strlen($fileout)>$len) {
+      if (Toolbox::strlen($fileout) > $len) {
          $fileout = Toolbox::substr($fileout,0,$len)."&hellip;";
       }
 
@@ -441,8 +445,8 @@ class Document extends CommonDBTM {
                    WHERE `ext` LIKE '".$splitter[0]."'
                          AND `icon` <> ''";
 
-         if ($result=$DB->query($query)) {
-            if ($DB->numrows($result)>0) {
+         if ($result = $DB->query($query)) {
+            if ($DB->numrows($result) > 0) {
                $icon = $DB->result($result,0,'icon');
                $out .= "&nbsp;<img class='middle' style='margin-left:3px; margin-right:6px;' alt=\"".
                                $fileout."\" title=\"".$fileout."\" src='".
@@ -497,11 +501,11 @@ class Document extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       if (isset($_SESSION["glpiactiveprofile"]["interface"])
-          && $_SESSION["glpiactiveprofile"]["interface"]=="central") {
+          && ($_SESSION["glpiactiveprofile"]["interface"] == "central")) {
 
          // My doc Check and Common doc right access
          if ($this->can($this->fields["id"],'r')
-             || $this->fields["users_id"]===Session::getLoginUserID()) {
+             || ($this->fields["users_id"] === Session::getLoginUserID())) {
             return true;
          }
 
@@ -515,7 +519,7 @@ class Document extends CommonDBTM {
                    WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
                          AND ".Reminder::addVisibilityRestrict();
          $result = $DB->query($query);
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             return true;
          }
 
@@ -530,7 +534,7 @@ class Document extends CommonDBTM {
                       WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
                             AND ".KnowbaseItem::addVisibilityRestrict();
             $result = $DB->query($query);
-            if ($DB->numrows($result)>0) {
+            if ($DB->numrows($result) > 0) {
                return true;
             }
          }
@@ -546,7 +550,7 @@ class Document extends CommonDBTM {
                             AND `glpi_knowbaseitems`.`is_faq` = '1'
                             AND ".KnowbaseItem::addVisibilityRestrict();
             $result = $DB->query($query);
-            if ($DB->numrows($result)>0) {
+            if ($DB->numrows($result) > 0) {
                return true;
             }
          }
@@ -563,7 +567,7 @@ class Document extends CommonDBTM {
                                AND `documents_id`='".$this->fields["id"]."'";
 
                $result = $DB->query($query);
-               if ($DB->numrows($result)>0) {
+               if ($DB->numrows($result) > 0) {
                   return true;
                }
             }
@@ -572,7 +576,7 @@ class Document extends CommonDBTM {
       } else if (Session::getLoginUserID()) { // ! central
 
          // Check if it is my doc
-         if ($this->fields["users_id"]===Session::getLoginUserID()) {
+         if ($this->fields["users_id"] === Session::getLoginUserID()) {
             return true;
          }
 
@@ -586,7 +590,7 @@ class Document extends CommonDBTM {
                    WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
                          AND ".Reminder::addVisibilityRestrict();
          $result = $DB->query($query);
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             return true;
          }
 
@@ -603,7 +607,7 @@ class Document extends CommonDBTM {
                             AND ".KnowbaseItem::addVisibilityRestrict();
 
             $result = $DB->query($query);
-            if ($DB->numrows($result)>0) {
+            if ($DB->numrows($result) > 0) {
                return true;
             }
          }
@@ -620,7 +624,7 @@ class Document extends CommonDBTM {
                                AND `documents_id` = '".$this->fields["id"]."'";
 
                $result = $DB->query($query);
-               if ($DB->numrows($result)>0) {
+               if ($DB->numrows($result) > 0) {
                   return true;
                }
             }
@@ -640,7 +644,7 @@ class Document extends CommonDBTM {
                          AND `glpi_knowbaseitems`.`is_recursive` = '1'";
 
          $result = $DB->query($query);
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             return true;
          }
       }
@@ -651,7 +655,7 @@ class Document extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                       = array();
       $tab['common']             = __('Characteristics');
 
       $tab[1]['table']           = $this->getTable();
@@ -715,7 +719,7 @@ class Document extends CommonDBTM {
 
       $tab[20]['table']          = $this->getTable();
       $tab[20]['field']          = 'sha1sum';
-      $tab[20]['name']           = __('Checksum (SHA1)');
+      $tab[20]['name']           = sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1'));
       $tab[20]['massiveaction']  = false;
 
       $tab[72]['table']          = 'glpi_documents_items';
@@ -763,9 +767,9 @@ class Document extends CommonDBTM {
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='".($canedit?6:5)."'>";
 
-      if ($DB->numrows($result)==0) {
+      if ($DB->numrows($result) == 0) {
          _e('No associated item');
-      } else if ($DB->numrows($result)==1) {
+      } else if ($DB->numrows($result) == 1) {
          echo _n('Associated item', 'Associated items', 1);
       } else {
          echo _n('Associated item', 'Associated items', 2);
@@ -791,14 +795,14 @@ class Document extends CommonDBTM {
          }
 
          if ($item->canView()) {
-            $column="name";
+            $column = "name";
             if ($itemtype == 'Ticket') {
                $column = "id";
             }
 
             $itemtable = getTableForItemType($itemtype);
-            $query = "SELECT `$itemtable`.*,
-                             `glpi_documents_items`.`id` AS IDD, ";
+            $query     = "SELECT `$itemtable`.*,
+                                 `glpi_documents_items`.`id` AS IDD, ";
 
             if ($itemtype == 'KnowbaseItem') {
                $query .= "-1 AS entity
@@ -828,7 +832,7 @@ class Document extends CommonDBTM {
                   }
                }
             } else {
-               $query.= getEntitiesRestrictRequest(" AND ", $itemtable, '', '',
+               $query .= getEntitiesRestrictRequest(" AND ", $itemtable, '', '',
                                                    $item->maybeRecursive());
             }
 
@@ -836,7 +840,7 @@ class Document extends CommonDBTM {
                $query .= " AND `$itemtable`.`is_template` = '0'";
             }
 
-            if ($itemtype =='KnowbaseItem') {
+            if ($itemtype == 'KnowbaseItem') {
                $query .= " ORDER BY `$itemtable`.`$column`";
             } else {
                $query .= " ORDER BY `glpi_entities`.`completename`, `$itemtable`.`$column`";
@@ -849,7 +853,7 @@ class Document extends CommonDBTM {
             if ($result_linked=$DB->query($query)) {
                if ($DB->numrows($result_linked)) {
 
-                  while ($data=$DB->fetch_assoc($result_linked)) {
+                  while ($data = $DB->fetch_assoc($result_linked)) {
                      $ID = "";
 
                      if ($itemtype == 'Ticket') {
