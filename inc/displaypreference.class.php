@@ -44,6 +44,9 @@ class DisplayPreference extends CommonDBTM {
    protected $displaylist = false;
 
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
       global $DB;
 
@@ -77,7 +80,7 @@ class DisplayPreference extends CommonDBTM {
       $result = $DB->query($query);
 
       // GET default serach options
-      if ($DB->numrows($result)==0) {
+      if ($DB->numrows($result) == 0) {
          $query = "SELECT *
                    FROM `glpi_displaypreferences`
                    WHERE `itemtype` = '$itemtype'
@@ -87,8 +90,8 @@ class DisplayPreference extends CommonDBTM {
       }
 
       $prefs = array();
-      if ($DB->numrows($result)>0) {
-         while ($data=$DB->fetch_assoc($result)) {
+      if ($DB->numrows($result) > 0) {
+         while ($data = $DB->fetch_assoc($result)) {
             array_push($prefs, $data["num"]);
          }
       }
@@ -115,7 +118,7 @@ class DisplayPreference extends CommonDBTM {
       $result = $DB->query($query);
 
       if ($DB->numrows($result)) {
-         while ($data=$DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             unset($data["id"]);
             $data["users_id"] = $input["users_id"];
             $this->fields     = $data;
@@ -125,11 +128,14 @@ class DisplayPreference extends CommonDBTM {
       } else {
          // No items in the global config
          $searchopt = Search::getOptions($input["itemtype"]);
-         if (count($searchopt)>1) {
+         if (count($searchopt) > 1) {
             $done = false;
 
             foreach ($searchopt as $key => $val) {
-               if (is_array($val) && $key!=1 && !$done) {
+               if (is_array($val)
+                   && ($key != 1)
+                   && !$done) {
+
                   $data["users_id"] = $input["users_id"];
                   $data["itemtype"] = $input["itemtype"];
                   $data["rank"]     = 1;
@@ -215,7 +221,7 @@ class DisplayPreference extends CommonDBTM {
       }
 
       $item = NULL;
-      if ($itemtype != 'States' && $itemtype != 'Internet') {
+      if (($itemtype != 'States') && ($itemtype != 'Internet')) {
          $item = getItemForItemtype($itemtype);
       }
 
@@ -232,14 +238,14 @@ class DisplayPreference extends CommonDBTM {
       $numrows = 0;
       $numrows = $DB->numrows($result);
 
-      if ($numrows==0) {
+      if ($numrows == 0) {
          Session::checkRight("search_config", "w");
          echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>";
          echo "<form method='post' action='$target'>";
          echo "<input type='hidden' name='itemtype' value='$itemtype'>";
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
-         echo __('No personal criteria. Create personal parameters?')."<span class='small_space'>";
-         echo "<input type='submit' name='activate' value=\"".__s('Post')."\" class='submit'>";
+         echo __('No personal criteria. Create personal parameters ?')."<span class='small_space'>";
+         echo "<input type='submit' name='activate' value=\""._sx('Button', 'Post')."\" class='submit'>";
          echo "</span></form></th></tr></table>\n";
 
       } else {
@@ -263,7 +269,8 @@ class DisplayPreference extends CommonDBTM {
                }
                echo "<optgroup label=\"$val\">";
 
-            } else if ($key!=1 && !in_array($key,$already_added)) {
+            } else if (($key != 1)
+                       && !in_array($key,$already_added)) {
                echo "<option value='$key'>".$val["name"]."</option>\n";
             }
          }
@@ -272,7 +279,7 @@ class DisplayPreference extends CommonDBTM {
             echo "</optgroup>\n";
          }
          echo "</select><span class='small_space'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('Button', 'Add')."\" class='submit'>";
          echo "</span></form>";
          echo "</td></tr>\n";
 
@@ -287,7 +294,7 @@ class DisplayPreference extends CommonDBTM {
          if (Session::isMultiEntitiesMode()
              && (isset($CFG_GLPI["union_search_type"][$itemtype])
                  || ($item && $item->maybeRecursive())
-                 || count($_SESSION["glpiactiveentities"])>1)
+                 || (count($_SESSION["glpiactiveentities"]) > 1))
              && isset($searchopt[80])) {
 
             echo "<tr class='tab_bg_2'>";
@@ -298,13 +305,13 @@ class DisplayPreference extends CommonDBTM {
 
          $i = 0;
          if ($numrows) {
-            while ($data=$DB->fetch_assoc($result)) {
-               if ($data["num"]!=1 && isset($searchopt[$data["num"]])) {
+            while ($data = $DB->fetch_assoc($result)) {
+               if (($data["num"] !=1) && isset($searchopt[$data["num"]])) {
                   echo "<tr class='tab_bg_2'>";
                   echo "<td class='center' width='50%' >";
                   echo $searchopt[$data["num"]]["name"]."</td>";
 
-                  if ($i!=0) {
+                  if ($i != 0) {
                      echo "<td class='center middle'>";
                      echo "<form method='post' action='$target'>";
                      echo "<input type='hidden' name='id' value='".$data["id"]."'>";
@@ -319,7 +326,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<td>&nbsp;</td>";
                   }
 
-                  if ($i!=$numrows-1) {
+                  if ($i != ($numrows-1)) {
                      echo "<td class='center middle'>";
                      echo "<form method='post' action='$target'>";
                      echo "<input type='hidden' name='id' value='".$data["id"]."'>";
@@ -372,7 +379,7 @@ class DisplayPreference extends CommonDBTM {
       $IDuser = 0;
 
       $item = NULL;
-      if ($itemtype != 'States' && $itemtype != 'Internet') {
+      if (($itemtype != 'States') && ($itemtype != 'Internet')) {
          $item = getItemForItemtype($itemtype);
       }
 
@@ -411,7 +418,8 @@ class DisplayPreference extends CommonDBTM {
                }
                echo "<optgroup label=\"$val\">";
 
-            } else if ($key!=1 && !in_array($key,$already_added)) {
+            } else if (($key != 1)
+                       && !in_array($key,$already_added)) {
                echo "<option value='$key'>".$val["name"]."</option>";
             }
          }
@@ -421,7 +429,7 @@ class DisplayPreference extends CommonDBTM {
          }
 
          echo "</select><span class='small_space'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('Button', 'Add')."\" class='submit'>";
          echo "</span></form>";
          echo "</td></tr>";
       }
@@ -439,7 +447,7 @@ class DisplayPreference extends CommonDBTM {
       if (Session::isMultiEntitiesMode()
           && (isset($CFG_GLPI["union_search_type"][$itemtype])
               || ($item && $item->maybeRecursive())
-              || count($_SESSION["glpiactiveentities"])>1)
+              || (count($_SESSION["glpiactiveentities"]) > 1))
           && isset($searchopt[80])) {
 
          echo "<tr class='tab_bg_2'>";
@@ -453,14 +461,15 @@ class DisplayPreference extends CommonDBTM {
       if ($numrows) {
          while ($data=$DB->fetch_assoc($result)) {
 
-            if ($data["num"]!=1 && isset($searchopt[$data["num"]])) {
+            if (($data["num"] != 1)
+                && isset($searchopt[$data["num"]])) {
 
                echo "<tr class='tab_bg_2'><td class='center' width='50%'>";
                echo $searchopt[$data["num"]]["name"];
                echo "</td>";
 
                if ($global_write) {
-                  if ($i!=0) {
+                  if ($i != 0) {
                      echo "<td class='center middle'>";
                      echo "<form method='post' action='$target'>";
                      echo "<input type='hidden' name='id' value='".$data["id"]."'>";
@@ -476,7 +485,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<td>&nbsp;</td>\n";
                   }
 
-                  if ($i!=$numrows-1) {
+                  if ($i != ($numrows-1)) {
                      echo "<td class='center middle'>";
                      echo "<form method='post' action='$target'>";
                      echo "<input type='hidden' name='id' value='".$data["id"]."'>";
@@ -531,7 +540,7 @@ class DisplayPreference extends CommonDBTM {
                 GROUP BY `itemtype`";
 
       $req = $DB->request($query);
-      if ($req->numrows()>0) {
+      if ($req->numrows() > 0) {
          echo "<form name='formprefs' id='formprefs' action='$url' method='post'>";
          echo "<input type='hidden' name='users_id' value='$users_id'>";
          echo "<table class='tab_cadre_fixe'>";
@@ -544,7 +553,7 @@ class DisplayPreference extends CommonDBTM {
             } else {
                $name = $data["itemtype"];
             }
-            echo "<td>$name</td><td class='right'>".$data['nb']."</td>";
+            echo "<td>$name</td><td class='numerique'>".$data['nb']."</td>";
             echo "</tr>";
          }
          echo "</table>";
