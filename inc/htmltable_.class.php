@@ -214,7 +214,7 @@ class HTMLTable_ extends HTMLTable_Base {
       if (!empty($p['html_id'])) {
          echo " id='".$p['html_id']."'";
       }
-      echo ">";
+      echo " border='1'>";
 
       if (!empty($this->title)) {
          echo "\t<thead>\n";
