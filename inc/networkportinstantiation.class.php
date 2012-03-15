@@ -287,7 +287,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                foreach ($deviceFields as $field) {
                   $deviceInformations[] = "$field: '".$availableDevice[$field]."'";
                }
-
+               addslashes_deep($deviceInformations);
                // Fill the javascript array
                echo "  deviceAttributs[$linkID] = {".implode(', ', $deviceInformations)."};\n";
             }

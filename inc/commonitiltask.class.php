@@ -780,8 +780,8 @@ abstract class CommonITILTask  extends CommonDBTM {
          echo "function viewEditFollowup" . $item->fields['id'] . $this->fields["id"] . "$rand() {\n";
          $params = array('type'       => $this->getType(),
                          'parenttype' => $item->getType(),
-                                         $item->getForeignKeyField()
-                                             => $this->fields[$item->getForeignKeyField()],
+                         $item->getForeignKeyField()
+                                      => $this->fields[$item->getForeignKeyField()],
                          'id'         => $this->fields["id"]);
          Ajax::updateItemJsCode("viewfollowup" . $item->fields['id'] . "$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
