@@ -1390,10 +1390,10 @@ class Dropdown {
 
          if ($params['management_restrict'] == 2) {
             echo "&nbsp;<a title=\"".__s('Duplicate the element as many times as there are connections').
-                 "\" href=\"javascript:confirmAction('".
-                 __s('Do you really want to use unitary management for this item ?',1)."\\n".
-                 __s('Duplicate the element as many times as there are connections',1).
-                 "','".$params['target']."?unglobalize=unglobalize&amp;id=$ID')\">".
+                 "\" href=\"#\" ".HTML::addConfirmationOnAction(
+                 array(__('Do you really want to use unitary management for this item ?'),
+                 __('Duplicate the element as many times as there are connections')),
+                 "window.location='".$params['target']."?unglobalize=unglobalize&amp;id=$ID'").">".
                  __('Use unitary management')."</a>&nbsp;";
 
             echo "<img alt=\"".__s('Duplicate the element as many times as there are connections').

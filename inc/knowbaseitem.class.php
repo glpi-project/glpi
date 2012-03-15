@@ -650,9 +650,9 @@ class KnowbaseItem extends CommonDBTM {
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt=\"".__s('Edit').
                "\" title=\"".__s('Edit')."\"></a></td>\n";
          echo "<td class='center' width='33%'>";
-         echo "<a class='icon_nav_move' href=\"javascript:confirmAction('".
-                __s('Are you sure you want to delete this item?')."','".$CFG_GLPI["root_doc"].
-                "/front/knowbaseitem.form.php?id=$ID&amp;delete=yes')\">";
+         echo "<a class='icon_nav_move' href=\"#\" ".
+                HTML::addConfirmationOnAction(__("Are you sure you want to delete this item?"),
+                "window.location='".$CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=$ID&amp;delete=yes'").">";
          echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt=\"".__s('Purge').
                "\" title=\"".__s('Purge')."\"></a></td>";
          echo "</tr>";
