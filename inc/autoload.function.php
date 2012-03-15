@@ -96,11 +96,16 @@ function __($str) {
 /**
  * For translation
  *
- * @param $str : string
+ * @param $str    string
+ * @param $forJs  boolean  string used or not in javascript
  *
  * @return protected string (with htmlentities)
 **/
-function __s($str) {
+function __s($str, $forJs=0) {
+
+   If ($forJs == 1) {
+      return addslashes(__($str));
+   }
    return htmlentities(__($str), ENT_QUOTES, 'UTF-8');
 }
 
