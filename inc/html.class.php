@@ -664,7 +664,7 @@ class Html {
 
        echo "<script type='text/javascript'>";
        echo "var glpi_progressbar=new Ext.ProgressBar({
-          text:\"$msg\",
+          text:\"".addslashes($msg)."\",
           id:'progress_bar',
           applyTo:'doaction_progress'
        });";
@@ -679,7 +679,7 @@ class Html {
      * @return nothing
     **/
     static function changeProgressBarMessage($msg="&nbsp;") {
-       echo "<script type='text/javascript'>glpi_progressbar.updateText(\"$msg\")</script>\n";
+       echo "<script type='text/javascript'>glpi_progressbar.updateText(\"".addslashes($msg)."\")</script>\n";
     }
 
 
@@ -703,7 +703,7 @@ class Html {
        } else {
           $pct = $crt/$tot;
        }
-       echo "<script type='text/javascript'>glpi_progressbar.updateProgress(\"$pct\",\"$msg\");".
+       echo "<script type='text/javascript'>glpi_progressbar.updateProgress(\"$pct\",\"".addslashes($msg)."\");".
             "</script>\n";
        self::glpi_flush();
     }
@@ -861,7 +861,7 @@ class Html {
       echo "<!--[if IE]>" ;
       echo "<script type='text/javascript'>\n";
       echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator-ie\">".
-            __('Loading...')."<\/span>';\n";
+            addslashes(__('Loading...'))."<\/span>';\n";
       echo "</script>\n";
       echo "<![endif]-->";
 
@@ -3483,7 +3483,7 @@ class Html {
             closeAction:'hide',
             modal: true,
             autoScroll: true,
-            title: \"".__s('Select the desired entity')."\",
+            title: \"".addslashes(__('Select the desired entity'))."\",
             autoLoad: '".$CFG_GLPI['root_doc']."/ajax/entitytree.php?target=$target'
          });";
          echo "</script>";
@@ -3602,7 +3602,7 @@ class Html {
       }
 
       if (!empty($param['title'])) {
-         $out .= ",title: \"".$param['title']."\"";
+         $out .= ",title: \"".addslashes($param['title'])."\"";
       }
       $out .= ",contentEl: '".$param['contentid']."'";
       $out .= "});";

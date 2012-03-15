@@ -743,7 +743,7 @@ class Entity extends CommonTreeDropdown {
       $rand = mt_rand();
 
       echo "<div class='center'>";
-      echo "<span class='b'>".__s('Select the desired entity')." ( <img src='".$CFG_GLPI["root_doc"].
+      echo "<span class='b'>".__s('Select the desired entity')."<br>( <img src='".$CFG_GLPI["root_doc"].
             "/pics/entity_all.png' alt=''> ".__s('to see the entity and its sub-entities').")</span>".
             "<br>";
       echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".
