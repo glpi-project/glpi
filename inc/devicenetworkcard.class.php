@@ -142,13 +142,9 @@ class DeviceNetworkCard extends CommonDevice {
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
                                                         HTMLTable_SuperHeader $super) {
 
-      $elements        = array();
+      $group->addHeader($super, 'bandwidth', __('Flow'));
+      $group->addHeader($super, 'manufacturer', __('Manufacturer'));
 
-      $elements['band'] = $group->addHeader($super, 'bandwidth', __('Flow'));
-
-      $elements['manu'] = $group->addHeader($super, 'manufacturer', __('Manufacturer'));
-
-      return $elements;
    }
 
 
@@ -157,22 +153,18 @@ class DeviceNetworkCard extends CommonDevice {
     *
     * @see inc/CommonDevice::getHTMLTableCellsForComputer_Device()
     */
-   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers) {
+   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
 
       if ($this->fields["bandwidth"]) {
-         $cell_value = $this->fields["bandwidth"];
-      } else {
-         $cell_value = '';
+         $row->addCell($row->getHeader('specificities', 'bandwidth'), $this->fields["bandwidth"]);
       }
-      $row->addCell($headers['band'], $cell_value);
 
       if (!empty($this->fields["manufacturers_id"])) {
-         $cell_value = Dropdown::getDropdownName("glpi_manufacturers",
-                                                 $this->fields["manufacturers_id"]);
-      } else {
-         $cell_value = '';
+         $row->addCell($row->getHeader('specificities', 'manufacturer'),
+                       Dropdown::getDropdownName("glpi_manufacturers",
+                                                 $this->fields["manufacturers_id"]));
       }
-      $row->addCell($headers['manu'], $cell_value);
+
    }
 }
 ?>

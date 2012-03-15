@@ -126,13 +126,9 @@ class DeviceMemory extends CommonDevice {
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
                                                         HTMLTable_SuperHeader $super) {
 
-      $elements        = array();
+      $group->addHeader($super, 'type', __('Type'));
+      $group->addHeader($super, 'frequency', __('Frequency'));
 
-      $elements['type'] = $group->addHeader($super, 'type', __('Type'));
-
-      $elements['freq'] = $group->addHeader($super, 'frequency', __('Frequency'));
-
-      return $elements;
    }
 
 
@@ -141,22 +137,18 @@ class DeviceMemory extends CommonDevice {
     *
     * @see inc/CommonDevice::getHTMLTableCellsForComputer_Device()
    **/
-   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers) {
+   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
 
       if ($this->fields["devicememorytypes_id"]) {
-         $cell_value = Dropdown::getDropdownName("glpi_devicememorytypes",
-                                                 $this->fields["devicememorytypes_id"]);
-      } else {
-         $cell_value = '';
+         $row->addCell($row->getHeader('specificities', 'type'),
+                       Dropdown::getDropdownName("glpi_devicememorytypes",
+                                                 $this->fields["devicememorytypes_id"]));
       }
-      $row->addCell($headers['type'], $cell_value);
 
       if (!empty($this->fields["frequence"])) {
-         $cell_value = $this->fields["frequence"];
-      } else {
-         $cell_value = '';
+         $row->addCell($row->getHeader('specificities', 'frequency'), $this->fields["frequence"]);
       }
-      $row->addCell($headers['freq'], $cell_value);
+
    }
 
 }

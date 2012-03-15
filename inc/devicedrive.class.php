@@ -120,17 +120,11 @@ class DeviceDrive extends CommonDevice {
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
                                                         HTMLTable_SuperHeader $super) {
 
-      $elements        = array();
+      $group->addHeader($super, 'writer', __('Writing ability'));
+      $group->addHeader($super, 'speed', __('Speed'));
+      $group->addHeader($super, 'interface', __('Interface'));
+      $group->addHeader($super, 'manufacturer', __('Manufacturer'));
 
-      $elements['writer'] = $group->addHeader($super, 'writer', __('Writing ability'));
-
-      $elements['speed'] = $group->addHeader($super, 'speed', __('Speed'));
-
-      $elements['inter'] = $group->addHeader($super, 'interface', __('Interface'));
-
-      $elements['manu'] = $group->addHeader($super, 'manufacturer', __('Manufacturer'));
-
-      return $elements;
    }
 
 
@@ -139,37 +133,29 @@ class DeviceDrive extends CommonDevice {
     *
     * @see inc/CommonDevice::getHTMLTableCellsForComputer_Device()
    **/
-   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers) {
+   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
 
       if ($this->fields["is_writer"]) {
-         $cell_value = Dropdown::getYesNo($this->fields["is_writer"]);
-      } else {
-         $cell_value = '';
+         $row->addCell($row->getHeader('specificities', 'writer'),
+                       Dropdown::getYesNo($this->fields["is_writer"]));
       }
-      $row->addCell($headers['writer'], $cell_value);
 
       if ($this->fields["speed"]) {
-         $cell_value = $this->fields["speed"];
-      } else {
-         $cell_value = '';
+         $row->addCell($row->getHeader('specificities', 'speed'), $this->fields["speed"]);
       }
-      $row->addCell($headers['speed'], $cell_value);
+
 
       if ($this->fields["interfacetypes_id"]) {
-         $cell_value = Dropdown::getDropdownName("glpi_interfacetypes",
-                                                 $this->fields["interfacetypes_id"]);
-      } else {
-         $cell_value = '';
+         $row->addCell($row->getHeader('specificities', 'inter'),
+                       Dropdown::getDropdownName("glpi_interfacetypes",
+                                                 $this->fields["interfacetypes_id"]));
       }
-      $row->addCell($headers['inter'], $cell_value);
 
       if (!empty($this->fields["manufacturers_id"])) {
-         $cell_value = Dropdown::getDropdownName("glpi_manufacturers",
-                                                 $this->fields["manufacturers_id"]);
-      } else {
-         $cell_value = '';
+         $row->addCell($row->getHeader('specificities', 'manufacturer'),
+                       Dropdown::getDropdownName("glpi_manufacturers",
+                                                 $this->fields["manufacturers_id"]));
       }
-      $row->addCell($headers['manu'], $cell_value);
    }
 
 }
