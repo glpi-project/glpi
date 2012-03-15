@@ -441,30 +441,30 @@ class NetworkPort extends CommonDBChild {
          $c_checkbox = NULL;
       }
 
-      $c_number  = $table->addHeader('NetworkPort', "#", $c_checkbox);
-      $c_name    = $table->addHeader("Name", __('Name'), $c_number);
+      $c_number  = $table->addHeader('NetworkPort', "#");
+      $c_name    = $table->addHeader("Name", __('Name'));
       $c_instant = $table->addHeader('Instantiation', __('Characteristics'));
       $c_network = $table->addHeader('Internet', __('Internet informations'));
 
+      $c_name->setItemType('NetworkPort');
       $c_name->setHTMLClass('center');
       $c_instant->setHTMLClass('center');
       $c_network->setHTMLClass('center');
 
       foreach ($porttypes as $portType) {
 
-         $father = $c_name;
          if (empty($portType)) {
             $t_group = $table->createGroup('Migration',
-                                            __('Network ports waiting for manual migration'));
-            NetworkPortMigration::getInstantiationHTMLTable_Headers($t_group, $c_instant, $father,
+                                           __('Network ports waiting for manual migration'));
+            NetworkPortMigration::getInstantiationHTMLTable_Headers($t_group, $c_instant,
                                                                     $table_options);
          } else {
             $t_group = $table->createGroup($portType, $portType::getTypeName(2));
-            $portType::getInstantiationHTMLTable_Headers($t_group, $c_instant, $father,
-                                                         $table_options);
+            $portType::getInstantiationHTMLTable_Headers($t_group, $c_instant, $table_options);
          }
 
-         NetworkName::getHTMLTableHeaderForItem(__CLASS__, $t_group, $c_network, $father, $table_options);
+         NetworkName::getHTMLTableHeaderForItem(__CLASS__, $t_group, $c_network, $c_name,
+                                                $table_options);
 
          if ($itemtype == 'NetworkPort') {
             switch ($portType) {
@@ -552,18 +552,17 @@ class NetworkPort extends CommonDBChild {
                   $content .= Html::showToolTip($netport->fields['comment'],
                                                 array('display' => false));
 
-                  $father = $t_row->addCell($c_number, $content, $ce_checkbox, $netport);
+                  $t_row->addCell($c_number, $content);
 
-                  $father = $t_row->addCell($c_name, $netport->fields["name"], $father,
-                                             $netport);
+                  $cell_name = $t_row->addCell($c_name, $netport->fields["name"], NULL, $netport);
 
                   $instantiation = $netport->getInstantiation();
                   if ($instantiation !== false) {
-                     $instantiation->getInstantiationHTMLTable_($netport, $item, $t_row, $father,
+                     $instantiation->getInstantiationHTMLTable_($netport, $item, $t_row,
                                                                 $table_options);
                      unset($instantiation);
                   }
-                  NetworkName::getHTMLTableForItem($t_row, $netport, $father, $table_options);
+                  NetworkName::getHTMLTableForItem($t_row, $netport, $cell_name, $table_options);
 
                }
 

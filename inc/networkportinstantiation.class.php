@@ -119,12 +119,8 @@ class NetworkPortInstantiation extends CommonDBChild {
     *       - 'dont_display' : array of the columns that must not be display
     *
    **/
-   static function getInstantiationHTMLTableHeaders(HTMLTable &$table, $fathers_name="",
-                                                    $options=array()) {
-   }
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
                                                      HTMLTable_SuperHeader $header,
-                                                     HTMLTable_Header &$father = NULL,
                                                      $options=array()) {
    }
 
@@ -141,12 +137,8 @@ class NetworkPortInstantiation extends CommonDBChild {
     *       - 'withtemplate' : integer withtemplate param
     *
    **/
-   function getInstantiationHTMLTable(NetworkPort $netport, CommonDBTM $item, HTMLTable &$table,
-                                      $canedit, $options=array()) {
-   }
    function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
-                                       HTMLTable_Row $row, HTMLTable_Cell &$father,
-                                       $canedit, $options=array()) {
+                                       HTMLTable_Row $row, $canedit, $options=array()) {
    }
 
   /**
