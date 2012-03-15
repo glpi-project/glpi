@@ -50,7 +50,7 @@ class DocumentType  extends CommonDropdown {
                    array('name'    => 'ext',
                          'label'   => __('Extension'),
                          'type'    => 'text',
-                         'comment' => __('May be a regular expresion')),
+                         'comment' => __('May be a regular expression')),
                    array('name'  => 'mime',
                          'label' => __('MIME type'),
                          'type'  => 'text'));
@@ -69,7 +69,7 @@ class DocumentType  extends CommonDropdown {
    **/
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                       = parent::getSearchOptions();
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'ext';
@@ -86,7 +86,7 @@ class DocumentType  extends CommonDropdown {
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'is_uploadable';
-      $tab[5]['name']            = __('Download');
+      $tab[5]['name']            = __('Authorized download');
       $tab[5]['datatype']        = 'bool';
 
       return $tab;
