@@ -124,15 +124,13 @@ class DeviceMemory extends CommonDevice {
     * @param &$previous_header   HTMLTable_Header object
    **/
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
-                                                        HTMLTable_SuperHeader $super,
-                                                        HTMLTable_Header &$previous_header) {
+                                                        HTMLTable_SuperHeader $super) {
 
       $elements        = array();
 
-      $previous_header = $elements['type'] = $group->addHeader($super, 'type',
-                                                               __('Type'), $previous_header);
-      $previous_header = $elements['freq'] = $group->addHeader($super, 'frequency',
-                                                               __('Frequency'), $previous_header);
+      $elements['type'] = $group->addHeader($super, 'type', __('Type'));
+
+      $elements['freq'] = $group->addHeader($super, 'frequency', __('Frequency'));
 
       return $elements;
    }
@@ -143,8 +141,7 @@ class DeviceMemory extends CommonDevice {
     *
     * @see inc/CommonDevice::getHTMLTableCellsForComputer_Device()
    **/
-   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers,
-                                                HTMLTable_Cell &$previous_cell) {
+   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers) {
 
       if ($this->fields["devicememorytypes_id"]) {
          $cell_value = Dropdown::getDropdownName("glpi_devicememorytypes",
@@ -152,14 +149,14 @@ class DeviceMemory extends CommonDevice {
       } else {
          $cell_value = '';
       }
-      $previous_cell = $row->addCell($headers['type'], $cell_value, $previous_cell);
+      $row->addCell($headers['type'], $cell_value);
 
       if (!empty($this->fields["frequence"])) {
          $cell_value = $this->fields["frequence"];
       } else {
          $cell_value = '';
       }
-      $previous_cell = $row->addCell($headers['freq'], $cell_value, $previous_cell);
+      $row->addCell($headers['freq'], $cell_value);
    }
 
 }

@@ -235,32 +235,33 @@ class Computer_Device extends CommonDBTM {
                $header_value = $device->getTypeName(1);
             }
 
-            $previous_header = $name_column = $table_group->addHeader($common_column, 'name',
-                                                                      $header_value);
+            $name_column = $table_group->addHeader($common_column, 'name',
+                                                   $header_value);
 
             if ($canedit) {
-               $previous_header = $delete_all = $table_group->addHeader($delete_column, 'all',
-                                                                        _('All'), $previous_header);
+               $delete_all = $table_group->addHeader($delete_column, 'all',
+                                                     _('All'));
             }
-            
+
             $name_column->setItemType($itemtype);
             $device_chars = $itemtype::getHTMLTableHeaderForComputer_Device($table_group,
-                                                                            $specific_column,
-                                                                            $previous_header);
+                                                                            $specific_column);
 
             $specificities     = $itemtype::getSpecifityLabel();
             $specificity_names = array_values($specificities);
             if (count($specificity_names) > 0) {
-               $previous_header = $link_char = $table_group->addHeader($specific_column, 'link',
-                                                                        $specificity_names[0], $previous_header);
+               $link_char = $table_group->addHeader($specific_column, 'link',
+                                                    $specificity_names[0]);
+               $column_anchor = $link_char;
+            } else {
+               $column_anchor = NULL;
             }
+
             if ($canedit) {
-               $previous_header = $delete_one  = $table_group->addHeader($delete_column, 'one',
-                                                                         __('Delete'),
-                                                                         $previous_header);
+               $delete_one  = $table_group->addHeader($delete_column, 'one', __('Delete'),
+                                                      $column_anchor);
             }
-            
-            
+
             Session::initNavigateListItems($itemtype,
                                //TRANS : %1$s is the itemtype name,
                                //        %2$s is the name of the item (used for headings of a list)
@@ -313,19 +314,20 @@ class Computer_Device extends CommonDBTM {
                                                'parameters' => array($field_name, 0, 0, 10)),
                                     "</span>");
                   }
-                  $global_anchor = $name_cell = $current_row->addCell($name_column, $cell_value, NULL, $device);
+                  $name_cell = $current_row->addCell($name_column, $cell_value, NULL, $device);
 
                   if ($canedit) {
-                     $cell_value = "<input type='checkbox' name='removeall_$device_group' id='removeall_$device_group' 
-                                          onclick= \"if ( checkAsCheckboxes('removeall_$device_group','$device_group')".
-                                     ") {return true;}\">";
-                     $global_anchor = $current_row->addCell($delete_all, $cell_value, $global_anchor);
+                     $cell_value = "<input type='checkbox' name='removeall_$device_group'
+                                          id='removeall_$device_group'
+                                          onclick= \"if ( checkAsCheckboxes('removeall_$device_group',
+                                                                            '$device_group'))
+                                                         {return true;}\">";
+                     $current_row->addCell($delete_all, $cell_value);
                   }
 
                   $specificities = $device->getFormData();
-                  $device->getHTMLTableCellsForComputer_Device($current_row, $device_chars,
-                                                               $global_anchor);
-                  
+                  $device->getHTMLTableCellsForComputer_Device($current_row, $device_chars);
+
                   $links_specifications = array();
                   $query = "SELECT `id`,
                                    `$fk`
@@ -336,7 +338,6 @@ class Computer_Device extends CommonDBTM {
                             ORDER BY `id`";
 
                   foreach ($DB->request($query) as $data) {
-                     $local_anchor = $global_anchor;   
 
                      if (isset($data['specificity'])) {
                         if ($canedit) {
@@ -347,15 +348,16 @@ class Computer_Device extends CommonDBTM {
                         } else {
                            $cell_value = $data['specificity'];
                         }
-                        $link_spec = $local_anchor = $current_row->addCell($link_char, $cell_value, $local_anchor);
-                     } 
-                  
+                        $cell_anchor = $current_row->addCell($link_char, $cell_value);
+                     } else {
+                        $cell_anchor = NULL;
+                     }
+
                       if ($canedit) {
                          $cell_value   = "<input id='$device_group' type='checkbox' name='remove_" .
                                            $itemtype."_".$data['id']."' value='1'>";
-                         $local_anchor = $current_row->addCell($delete_one, $cell_value,
-                                                               $local_anchor);
-                       } 
+                         $current_row->addCell($delete_one, $cell_value, $cell_anchor);
+                       }
                   }
                }
             }

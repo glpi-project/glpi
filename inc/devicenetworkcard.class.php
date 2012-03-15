@@ -140,17 +140,13 @@ class DeviceNetworkCard extends CommonDevice {
     * @param $previous_header    HTMLTable_Header object
     */
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
-                                                        HTMLTable_SuperHeader $super,
-                                                        HTMLTable_Header &$previous_header) {
+                                                        HTMLTable_SuperHeader $super) {
 
       $elements        = array();
 
-      $previous_header = $elements['band'] = $group->addHeader($super, 'bandwidth',
-                                                               __('Flow'), $previous_header);
+      $elements['band'] = $group->addHeader($super, 'bandwidth', __('Flow'));
 
-      $previous_header = $elements['manu'] = $group->addHeader($super, 'manufacturer',
-                                                               __('Manufacturer'),
-                                                               $previous_header);
+      $elements['manu'] = $group->addHeader($super, 'manufacturer', __('Manufacturer'));
 
       return $elements;
    }
@@ -161,15 +157,14 @@ class DeviceNetworkCard extends CommonDevice {
     *
     * @see inc/CommonDevice::getHTMLTableCellsForComputer_Device()
     */
-   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers,
-                                                HTMLTable_Cell &$previous_cell) {
+   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers) {
 
       if ($this->fields["bandwidth"]) {
          $cell_value = $this->fields["bandwidth"];
       } else {
          $cell_value = '';
       }
-      $previous_cell = $row->addCell($headers['band'], $cell_value, $previous_cell);
+      $row->addCell($headers['band'], $cell_value);
 
       if (!empty($this->fields["manufacturers_id"])) {
          $cell_value = Dropdown::getDropdownName("glpi_manufacturers",
@@ -177,7 +172,7 @@ class DeviceNetworkCard extends CommonDevice {
       } else {
          $cell_value = '';
       }
-      $previous_cell = $row->addCell($headers['manu'], $cell_value, $previous_cell);
+      $row->addCell($headers['manu'], $cell_value);
    }
 }
 ?>

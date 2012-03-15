@@ -136,22 +136,17 @@ class DeviceHardDrive extends CommonDevice {
     * @param &$previous_header   HTMLTable_Header object
    **/
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
-                                                        HTMLTable_SuperHeader $super,
-                                                        HTMLTable_Header &$previous_header) {
+                                                        HTMLTable_SuperHeader $super) {
 
       $elements        = array();
 
-      $previous_header = $elements['rpm'] = $group->addHeader($super, 'rpm', __('Rpm'),
-                                                              $previous_header);
+      $elements['rpm'] = $group->addHeader($super, 'rpm', __('Rpm'));
 
-      $previous_header = $elements['cache'] = $group->addHeader($super, 'cache', __('Cache'),
-                                                                $previous_header);
+      $elements['cache'] = $group->addHeader($super, 'cache', __('Cache'));
 
-      $previous_header = $elements['inter'] = $group->addHeader($super, 'interface',
-                                                                __('Interface'), $previous_header);
+      $elements['inter'] = $group->addHeader($super, 'interface', __('Interface'));
 
-      $previous_header = $elements['manu'] = $group->addHeader($super, 'manufacturer',
-                                                               __('Manufacturer'), $previous_header);
+      $elements['manu'] = $group->addHeader($super, 'manufacturer', __('Manufacturer'));
 
       return $elements;
    }
@@ -162,22 +157,21 @@ class DeviceHardDrive extends CommonDevice {
     *
     * @see inc/CommonDevice::getHTMLTableCellsForComputer_Device()
    **/
-   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers,
-                                                HTMLTable_Cell &$previous_cell) {
+   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers) {
 
       if ($this->fields["rpm"]) {
          $cell_value = $this->fields["rpm"];
       } else {
          $cell_value = '';
       }
-      $previous_cell = $row->addCell($headers['rpm'], $cell_value, $previous_cell);
+      $row->addCell($headers['rpm'], $cell_value);
 
       if ($this->fields["cache"]) {
          $cell_value = $this->fields["cache"];
       } else {
          $cell_value = '';
       }
-      $previous_cell = $row->addCell($headers['cache'], $cell_value, $previous_cell);
+      $row->addCell($headers['cache'], $cell_value);
 
       if ($this->fields["interfacetypes_id"]) {
          $cell_value = Dropdown::getDropdownName("glpi_interfacetypes",
@@ -185,7 +179,7 @@ class DeviceHardDrive extends CommonDevice {
       } else {
          $cell_value = '';
       }
-      $previous_cell = $row->addCell($headers['inter'], $cell_value, $previous_cell);
+      $row->addCell($headers['inter'], $cell_value);
 
       if (!empty($this->fields["manufacturers_id"])) {
          $cell_value = Dropdown::getDropdownName("glpi_manufacturers",
@@ -193,7 +187,7 @@ class DeviceHardDrive extends CommonDevice {
       } else {
          $cell_value = '';
       }
-      $previous_cell = $row->addCell($headers['manu'], $cell_value, $previous_cell);
+      $row->addCell($headers['manu'], $cell_value);
    }
 
 
