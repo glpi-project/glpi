@@ -45,7 +45,7 @@ class DocumentType  extends CommonDropdown {
                          'label' => __('Icon'),
                          'type'  => 'icon'),
                    array('name'  => 'is_uploadable',
-                         'label' => __('Authorized download'),
+                         'label' => __('Authorized upload'),
                          'type'  => 'bool'),
                    array('name'    => 'ext',
                          'label'   => __('Extension'),
@@ -86,7 +86,7 @@ class DocumentType  extends CommonDropdown {
 
       $tab[5]['table']           = $this->getTable();
       $tab[5]['field']           = 'is_uploadable';
-      $tab[5]['name']            = __('Authorized download');
+      $tab[5]['name']            = __('Authorized upload');
       $tab[5]['datatype']        = 'bool';
 
       return $tab;
