@@ -850,11 +850,10 @@ class Document extends CommonDBTM {
                $soft = new Software();
             }
 
-            if ($result_linked=$DB->query($query)) {
+            if ($result_linked = $DB->query($query)) {
                if ($DB->numrows($result_linked)) {
 
                   while ($data = $DB->fetch_assoc($result_linked)) {
-                     $ID = "";
 
                      if ($itemtype == 'Ticket') {
                         //TRANS: %s is the id or the link to the ticket
@@ -863,24 +862,25 @@ class Document extends CommonDBTM {
 
                      if ($itemtype == 'SoftwareLicense') {
                         $soft->getFromDB($data['softwares_id']);
-                        $data["name"] = $data["name"].' - '.$soft->fields['name'];
+                        $data["name"] = sprintf(__('%1s - %2s'), $data["name"],
+                                                $soft->fields['name']);
                      }
-
+                     $linkname = $data["name"];
                      if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                        $ID = " (".$data["id"].")";
+                        $linkname = sprintf(__('%1$s (%2s)'), $linkname, $data["id"]);
                      }
 
                      $link = Toolbox::getItemTypeFormURL($itemtype);
-                     $name = "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."$ID</a>";
+                     $name = "<a href=\"".$link."?id=".$data["id"]."\">".$linkname."</a>";
 
                      echo "<tr class='tab_bg_1'>";
 
                      if ($canedit) {
                         echo "<td width='10'>";
-                        $sel="";
+                        $sel = "";
 
-                        if (isset($_GET["select"]) && $_GET["select"]=="all") {
-                           $sel="checked";
+                        if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
+                           $sel = "checked";
                         }
                         echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
                         echo "</td>";
@@ -911,7 +911,8 @@ class Document extends CommonDBTM {
                                  $CFG_GLPI["document_types"]);
          echo "</td>";
          echo "<td colspan='2' class='center'>";
-         echo "<input type='submit' name='adddocumentitem' value='". __s('Add')."' class='submit'>";
+         echo "<input type='submit' name='adddocumentitem' value='". _sx('Button', 'Add')."'
+                class='submit'>";
          echo "</td></tr>";
          echo "</table>";
 
@@ -962,7 +963,7 @@ class Document extends CommonDBTM {
       $fullpath = GLPI_DOC_DIR."/_uploads/".$filename;
 
       if (!is_dir(GLPI_DOC_DIR."/_uploads")) {
-         Session::addMessageAfterRedirect(__s("Upload directory doesn't exist"), false, ERROR);
+         Session::addMessageAfterRedirect(__("Upload directory doesn't exist"), false, ERROR);
          return false;
       }
 
@@ -983,16 +984,16 @@ class Document extends CommonDBTM {
       if (isset($input['current_filepath'])
           && !empty($input['current_filepath'])
           && is_file(GLPI_DOC_DIR."/".$input['current_filepath'])
-          && countElementsInTable('glpi_documents',
-                                  "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".
-                                             $input['current_filepath'])."'")<=1) {
+          && (countElementsInTable('glpi_documents',
+                                   "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".
+                                             $input['current_filepath'])."'") <= 1)) {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
-            Session::addMessageAfterRedirectsprintf(__s('Succesful deletion of the file %s'),
-                                                     $input['current_filename']);
+            Session::addMessageAfterRedirectsprintf(__('Succesful deletion of the file %s'),
+                                                    $input['current_filename']);
          } else {
             // TRANS: %1$s is the curent filename, %2$s is its directory
-            Session::addMessageAfterRedirect(sprintf(__s('Failed to delete the file %1$s (%2$s)'),
+            Session::addMessageAfterRedirect(sprintf(__('Failed to delete the file %1$s (%2$s)'),
                                                      $input['current_filename'],
                                                      GLPI_DOC_DIR."/".$input['current_filepath']),
                                              false, ERROR);
@@ -1000,7 +1001,8 @@ class Document extends CommonDBTM {
       }
 
       // Local file : try to detect mime type
-      if (function_exists('finfo_open') && $finfo = finfo_open(FILEINFO_MIME)) {
+      if (function_exists('finfo_open')
+          && ($finfo = finfo_open(FILEINFO_MIME))) {
          $input['mime'] = finfo_file($finfo, $fullpath);
          finfo_close($finfo);
 
@@ -1008,7 +1010,8 @@ class Document extends CommonDBTM {
          $input['mime'] = mime_content_type($fullpath);
       }
 
-      if (is_writable(GLPI_DOC_DIR."/_uploads/") && is_writable ($fullpath)) { // Move if allowed
+      if (is_writable(GLPI_DOC_DIR."/_uploads/")
+          && is_writable ($fullpath)) { // Move if allowed
 
          if (self::renameForce($fullpath, GLPI_DOC_DIR."/".$new_path)) {
             Session::addMessageAfterRedirect(__('Document move succeeded.'));
@@ -1039,14 +1042,17 @@ class Document extends CommonDBTM {
    /**
     * Upload a new file
     *
-    * @param $input     array of datas need for add/update (will be completed)
-    * @param $FILEDESC  FILE descriptor
+    * @param &$input    array of datas need for add/update (will be completed)
+    * @param $FILEDESC        FILE descriptor
     *
     * @return true on success
    **/
    static function uploadDocument(array &$input, $FILEDESC) {
 
-      if (!count($FILEDESC) || empty($FILEDESC['name']) || !is_file($FILEDESC['tmp_name'])) {
+      if (!count($FILEDESC)
+          || empty($FILEDESC['name'])
+          || !is_file($FILEDESC['tmp_name'])) {
+
          switch ($FILEDESC['error']) {
             case 1 :
             case 2 :
@@ -1054,7 +1060,7 @@ class Document extends CommonDBTM {
                break;
 
             case 4 :
-//                Session::addMessageAfterRedirect(__s('No file specified.'),false,ERROR);
+//                Session::addMessageAfterRedirect(__('No file specified.'),false,ERROR);
                break;
          }
 
@@ -1072,16 +1078,16 @@ class Document extends CommonDBTM {
       // Delete old file (if not used by another doc)
       if (isset($input['current_filepath'])
           && !empty($input['current_filepath'])
-          && countElementsInTable('glpi_documents',
+          && (countElementsInTable('glpi_documents',
                                   "`sha1sum`='".sha1_file(GLPI_DOC_DIR."/".
-                                             $input['current_filepath'])."'")<=1) {
+                                             $input['current_filepath'])."'") <= 1)) {
 
          if (unlink(GLPI_DOC_DIR."/".$input['current_filepath'])) {
-            Session::addMessageAfterRedirect(sprintf(__s('Succesful deletion of the file %s'),
+            Session::addMessageAfterRedirect(sprintf(__('Succesful deletion of the file %s'),
                                                      $input['current_filename']));
          } else {
             // TRANS: %1$s is the curent filename, %2$s is its directory
-            Session::addMessageAfterRedirect(sprintf(__s('Failed to delete the file %1$s (%2$s)'),
+            Session::addMessageAfterRedirect(sprintf(__('Failed to delete the file %1$s (%2$s)'),
                                                      $input['current_filename'],
                                                      GLPI_DOC_DIR."/".$input['current_filepath']),
                                              false, ERROR);
@@ -1089,7 +1095,7 @@ class Document extends CommonDBTM {
       }
 
       // Mime type from client
-      if (isset($FILEDESC['type'])&& !empty($FILEDESC['type'])) {
+      if (isset($FILEDESC['type']) && !empty($FILEDESC['type'])) {
          $input['mime'] = $FILEDESC['type'];
       }
 
@@ -1104,7 +1110,7 @@ class Document extends CommonDBTM {
          $input['sha1sum']  = $sha1sum;
          return true;
       }
-      Session::addMessageAfterRedirect(__s('Potential upload attack or file too large. Moving temporary file failed.'),
+      Session::addMessageAfterRedirect(__('Potential upload attack or file too large. Moving temporary file failed.'),
                                        false, ERROR);
       return false;
    }
@@ -1125,7 +1131,7 @@ class Document extends CommonDBTM {
          $message = __('Unauthorized file type');
 
          if (Session::haveRight('dropdown','r')) {
-            $dt = new DocumentType();
+            $dt       = new DocumentType();
             $message .= " <a target='_blank' href='".$dt->getSearchURL()."'>
                          <img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\"></a>";
          }
@@ -1141,7 +1147,8 @@ class Document extends CommonDBTM {
       }
       $subdir = $dir.'/'.substr($sha1sum,0,2);
 
-      if (!is_dir(GLPI_DOC_DIR."/".$subdir) && @mkdir(GLPI_DOC_DIR."/".$subdir,0777,true)) {
+      if (!is_dir(GLPI_DOC_DIR."/".$subdir)
+          && @mkdir(GLPI_DOC_DIR."/".$subdir,0777,true)) {
          Session::addMessageAfterRedirect(sprintf(__('Create the directory %s'),
                                                   GLPI_DOC_DIR."/".$subdir));
       }
@@ -1169,7 +1176,7 @@ class Document extends CommonDBTM {
 
          if ($handle = opendir(GLPI_DOC_DIR."/_uploads")) {
             while (false !== ($file = readdir($handle))) {
-               if ($file != "." && $file != "..") {
+               if (($file != ".") && ($file != "..")) {
                   $dir = self::isValidDoc($file);
                   if (!empty($dir)) {
                      $uploaded_files[] = $file;
@@ -1193,7 +1200,7 @@ class Document extends CommonDBTM {
          }
 
       } else {
-         echo __s("Upload directory doesn't exist");
+         _e("Upload directory doesn't exist");
       }
    }
 
@@ -1215,7 +1222,7 @@ class Document extends CommonDBTM {
                     AND `is_uploadable`='1'";
 
       if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             return Toolbox::strtoupper($ext);
          }
       }
@@ -1251,8 +1258,8 @@ class Document extends CommonDBTM {
          return false;
       }
 
-      if ($item->getType() != 'Ticket'
-          && $item->getType() != 'KnowbaseItem'
+      if (($item->getType() != 'Ticket')
+          && ($item->getType() != 'KnowbaseItem')
           && !Session::haveRight('document','r')) {
          return false;
       }
@@ -1266,13 +1273,12 @@ class Document extends CommonDBTM {
       }
       $linkparam = '';
 
-      if (get_class($item)=='Ticket') {
+      if (get_class($item) == 'Ticket') {
          $linkparam = "&amp;tickets_id=".$item->fields['id'];
       }
 
-      $canedit =  $item->canadditem('Document');
-
-      $is_recursive=$item->isRecursive();
+      $canedit       =  $item->canadditem('Document');
+      $is_recursive  = $item->isRecursive();
 
       $query = "SELECT `glpi_documents_items`.`id` AS assocID,
                        `glpi_entities`.`id` AS entity,
@@ -1318,9 +1324,9 @@ class Document extends CommonDBTM {
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $i = 0;
+      $i      = 0;
 
-      if ($withtemplate!=2) {
+      if ($withtemplate != 2) {
          echo "<form method='post' action=\"".
                 $CFG_GLPI["root_doc"]."/front/document.form.php\" enctype=\"multipart/form-data\">";
       }
@@ -1328,9 +1334,9 @@ class Document extends CommonDBTM {
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>";
 
-      if ($number==0) {
+      if ($number == 0) {
          _e('No associated document');
-      } else if ($number==1) {
+      } else if ($number == 1) {
          echo _n('Associated document', 'Associated documents', 1);
       } else {
          echo _n('Associated document', 'Associated documents', 2);
@@ -1345,7 +1351,7 @@ class Document extends CommonDBTM {
          echo "<th>".__('Heading')."</th>";
          echo "<th>".__('MIME type')."</th>";
 
-         if ($withtemplate<2) {
+         if ($withtemplate < 2) {
             echo "<th>&nbsp;</th>";
          }
          echo "</tr>";
@@ -1363,8 +1369,8 @@ class Document extends CommonDBTM {
                                                    $item->getTypeName(1), $item->getName()));
          }
 
-         $document = new Document();
-         while ($data=$DB->fetch_assoc($result)) {
+         $document = new self();
+         while ($data = $DB->fetch_assoc($result)) {
             $docID        = $data["id"];
             $link         = NOT_AVAILABLE;
             $downloadlink = NOT_AVAILABLE;
@@ -1398,10 +1404,11 @@ class Document extends CommonDBTM {
             echo "</td>";
             echo "<td class='center'>".$data["mime"]."</td>";
 
-            if ($withtemplate<2) {
+            if ($withtemplate < 2) {
                echo "<td class='tab_bg_2 center b'>";
 
-               if ($canedit && $_SESSION["glpiactiveprofile"]["interface"] != 'helpdesk') {
+               if ($canedit
+                   && ($_SESSION["glpiactiveprofile"]["interface"] != 'helpdesk')) {
                   echo "<a href='".$CFG_GLPI["root_doc"];
                   echo "/front/document.form.php?deletedocumentitem=1&amp;id=$assocID";
                   echo "&amp;itemtype=".$item->getType()."&amp;items_id=$ID&amp;documents_id=$docID'>";
@@ -1435,7 +1442,7 @@ class Document extends CommonDBTM {
             }
          }
 
-         if ($withtemplate<2) {
+         if ($withtemplate < 2) {
             $limit = getEntitiesRestrictRequest(" AND ","glpi_documents",'',$entities,true);
             $q = "SELECT COUNT(*)
                   FROM `glpi_documents`
@@ -1443,7 +1450,7 @@ class Document extends CommonDBTM {
                   $limit";
 
             $result = $DB->query($q);
-            $nb = $DB->result($result,0,0);
+            $nb     = $DB->result($result,0,0);
 
             echo "<tr class='tab_bg_1'>";
 //            echo "<th class='right'>".__('Add a new file')."</th>";
@@ -1457,7 +1464,7 @@ class Document extends CommonDBTM {
             echo "<input type='hidden' name='is_recursive' value='$is_recursive'>";
             echo "<input type='hidden' name='itemtype' value='".$item->getType()."'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
-            if ($item->getType()=='Ticket') {
+            if ($item->getType() == 'Ticket') {
                echo "<input type='hidden' name='tickets_id' value='$ID'>";
                echo "<input type='hidden' name='documentcategories_id' value='".
                       $CFG_GLPI["documentcategories_id_forticket"]."'>";
@@ -1466,21 +1473,23 @@ class Document extends CommonDBTM {
             echo "(".self::getMaxUploadSize().")&nbsp;";
             echo "</td>";
             echo "<td colspan='2' class='center'>";
-            echo "<input type='submit' name='add' value=\"".__('Add a new file')."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\""._sx('Button', 'Add a new file')."\"
+                   class='submit'>";
             echo "</td></tr>";
 
             if ($item->getType() == 'Document') {
                $used[$ID] = $ID;
             }
 
-            if (Session::haveRight('document','r') && $nb>count($used)) {
+            if (Session::haveRight('document','r')
+                && ($nb > count($used))) {
                echo "<tr class='tab_bg_1'>";
                echo "<td colspan='5' class='center'>";
                self::dropdown(array('entity' => $entities ,
                                     'used'   => $used));
                echo "</td><td colspan='2' class='center'>";
                echo "<input type='submit' name='adddocumentitem' value=\"".
-                      __('Associate an existing document')."\" class='submit'>";
+                      _sx('Button', 'Associate an existing document')."\" class='submit'>";
                echo "</td>";
                echo "</tr>";
             }
@@ -1537,7 +1546,7 @@ class Document extends CommonDBTM {
       echo "<select name='_rubdoc' id='rubdoc$rand'>";
       echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
-      while ($data=$DB->fetch_assoc($result)) {
+      while ($data = $DB->fetch_assoc($result)) {
          echo "<option value='".$data['id']."'>".$data['name']."</option>";
       }
       echo "</select>";
