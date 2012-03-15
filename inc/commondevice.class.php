@@ -152,8 +152,7 @@ abstract class CommonDevice extends CommonDropdown {
     * @param &$previous_header   HTMLTable_Header object
    **/
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
-                                                        HTMLTable_SuperHeader $super,
-                                                        HTMLTable_Header &$previous_header) {
+                                                        HTMLTable_SuperHeader $super) {
       return array();
    }
 
@@ -165,8 +164,7 @@ abstract class CommonDevice extends CommonDropdown {
     * @param $headers
     * @param &$previous_cell  HTMLTable_Cell object
     */
-   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers,
-                                                HTMLTable_Cell &$previous_cell) {
+   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers) {
    }
 
 
