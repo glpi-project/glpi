@@ -164,7 +164,7 @@ abstract class CommonDevice extends CommonDropdown {
     * @param $headers
     * @param &$previous_cell  HTMLTable_Cell object
     */
-   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row, $headers) {
+   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
    }
 
 
