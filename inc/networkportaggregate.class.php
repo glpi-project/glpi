@@ -83,12 +83,11 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
 
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
                                                      HTMLTable_SuperHeader $header,
-                                                     HTMLTable_Header &$father = NULL,
                                                      $options=array()) {
 
-      $father = $group->addHeader($header, 'Origin', __('Original port'), $father);
-      $father = $group->addHeader($header, 'MAC', __('MAC'), $father);
-      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $group, $header, $father);
+      $group->addHeader($header, 'Origin', __('Original port'));
+      $group->addHeader($header, 'MAC', __('MAC'));
+      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $group, $header);
 
    }
 
@@ -97,8 +96,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
     * @see NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
    function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
-                                       HTMLTable_Row $row, HTMLTable_Cell &$father,
-                                       $canedit, $options=array()) {
+                                       HTMLTable_Row $row, $canedit, $options=array()) {
 
       if (isset($this->fields['networkports_id_list'])
           && is_string($this->fields['networkports_id_list'])) {
@@ -106,13 +104,12 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
                         = importArrayFromDB($this->fields['networkports_id_list']);
       }
 
-      $father = $row->addCell($row->getHeader('Instantiation', 'Origin'),
-                              $this->getInstantiationNetworkPortHTMLTable(), $father);
+      $row->addCell($row->getHeader('Instantiation', 'Origin'),
+                    $this->getInstantiationNetworkPortHTMLTable());
 
-      $father = $row->addCell($row->getHeader('Instantiation', 'MAC'), $netport->fields["mac"],
-                              $father);
+      $row->addCell($row->getHeader('Instantiation', 'MAC'), $netport->fields["mac"]);
 
-      NetworkPort_Vlan::getHTMLTableForItem($row, $netport, $father, $options);
+      NetworkPort_Vlan::getHTMLTableForItem($row, $netport, NULL, $options);
 
    }
 }
