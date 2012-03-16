@@ -430,23 +430,24 @@ class Cartridge extends CommonDBTM {
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          if (!$show_old) {
-            echo "<tr><th colspan='7'>".self::getCount($tID,-1)."</th>";
-            echo "<th colspan='2'>&nbsp;</th></tr>";
+            echo "<tr><th colspan='8'>".self::getCount($tID,-1)."</th>";
+            echo "</tr>";
          } else { // Old
-            echo "<tr><th colspan='8'>".$LANG['cartridges'][35]."</th>";
-            echo "<th colspan='2'>&nbsp;</th></tr>";
+            echo "<tr><th colspan='10'>".$LANG['cartridges'][35]."</th>";
+            echo "</tr>";
          }
          $i = 0;
          echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
          echo "<th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th>";
-         echo "<th>".$LANG['cartridges'][27]."</th><th>".$LANG['search'][9]."</th>";
+         echo "<th>".$LANG['cartridges'][27]."</th>";
 
          if ($show_old) {
+            echo "<th>".$LANG['search'][9]."</th>";
             echo "<th>".$LANG['cartridges'][39]."</th>";
          }
 
-         echo "<th>".$LANG['financial'][3]."</th>";
-         echo "<th colspan='2'>&nbsp;</th>";
+         echo "<th width='18%'>".$LANG['financial'][3]."</th>";
+         echo "<th colspan='2'>".$LANG['rulesengine'][7]."</th>";
 
          echo "</tr>";
       }
@@ -514,9 +515,9 @@ class Cartridge extends CommonDBTM {
                                  - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
                $stock_time += $stock_time_tmp;
             }
-            echo "</td><td class='center'>";
-            echo $date_out;
             if ($show_old) {
+               echo "</td><td class='center'>";
+               echo $date_out;
                $tmp_dbeg = explode("-",$data["date_use"]);
                $tmp_dend = explode("-",$data["date_out"]);
                $use_time_tmp = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
@@ -536,7 +537,9 @@ class Cartridge extends CommonDBTM {
                   $nb_pages_printed++;
                   echo ($data['pages']-$pages[$printer])." ".$LANG['printers'][31];
                   $pages[$printer] = $data['pages'];
-               }
+               } else if ($data['pages']!=0) {
+                  echo "<span class='tab_bg_1_2'>".$LANG['cartridges'][3]."</span>";
+  	       }
                echo "</td>";
             }
             echo "<td class='center'>";
@@ -553,7 +556,7 @@ class Cartridge extends CommonDBTM {
             echo "<td class='center'>";
             if ($canedit) {
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?delete=delete&amp;id=".
-                     $data["id"]."&amp;tID=$tID'>".$LANG['buttons'][6]."</a>";
+                     $data["id"]."&amp;tID=$tID'><img title=\"".$LANG['buttons'][6]."\" alt=\"".$LANG['buttons'][6]."\" src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
             } else {
                 echo "&nbsp;";
             }

@@ -181,6 +181,7 @@ $LANG['calendarM'][11] = "Décembre";
 $LANG['cartridges'][0]  = "Cartouche";
 $LANG['cartridges'][1]  = "Modèle de cartouche";
 $LANG['cartridges'][2]  = "Modèles de cartouche";
+$LANG['cartridges'][3]  = "Erreur de compteur";
 
 $LANG['cartridges'][9]  = "Aucune cartouche";
 $LANG['cartridges'][10] = "Toner";
