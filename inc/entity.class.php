@@ -955,8 +955,6 @@ class Entity extends CommonTreeDropdown {
       if ($canedit) {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
-         echo "<input type='hidden' name='id' value='$ID'>";
-
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
          echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
 
@@ -1044,8 +1042,6 @@ class Entity extends CommonTreeDropdown {
      if ($canedit) {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='2'>";
-         echo "<input type='hidden' name='id' value='$ID'>";
-
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
          echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
 
@@ -1177,8 +1173,6 @@ class Entity extends CommonTreeDropdown {
       if ($canedit) {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
-         echo "<input type='hidden' name='entities_id' value='$ID'>";
-
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
          echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
 
