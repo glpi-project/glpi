@@ -862,12 +862,12 @@ class Document extends CommonDBTM {
 
                      if ($itemtype == 'SoftwareLicense') {
                         $soft->getFromDB($data['softwares_id']);
-                        $data["name"] = sprintf(__('%1s - %2s'), $data["name"],
+                        $data["name"] = sprintf(__('%1$s - %2$s'), $data["name"],
                                                 $soft->fields['name']);
                      }
                      $linkname = $data["name"];
                      if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                        $linkname = sprintf(__('%1$s (%2s)'), $linkname, $data["id"]);
+                        $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
                      }
 
                      $link = Toolbox::getItemTypeFormURL($itemtype);
