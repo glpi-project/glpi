@@ -39,7 +39,8 @@ class Dropdown {
    /**
     * Print out an HTML "<select>" for a dropdown with preselected value
     *
-    * Parameters which could be used in options array :
+    * @param $itemtype        itemtype used for create dropdown
+    * @param $options   array of possible options:
     *    - name : string / name of the select (default is depending itemtype)
     *    - value : integer / preselected value (default -1)
     *    - comments : boolean / is the comments displayed near the dropdown (default true)
@@ -60,9 +61,6 @@ class Dropdown {
     *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)
     *    - display_emptychoice : Display emptychoice ? (default true)
     *
-    * @param $itemtype        itemtype used for create dropdown
-    * @param $options   array of possible options
-    *
     * @return boolean : false if error and random id if OK
    **/
    static function show($itemtype, $options=array()) {
@@ -75,7 +73,7 @@ class Dropdown {
       $table = $item->getTable();
 
       $params['name']        = $item->getForeignKeyField();
-      $params['value']       = ($itemtype=='Entity' ? $_SESSION['glpiactive_entity'] : '');
+      $params['value']       = (($itemtype == 'Entity') ? $_SESSION['glpiactive_entity'] : '');
       $params['comments']    = true;
       $params['entity']      = -1;
       $params['entity_sons'] = false;
@@ -103,12 +101,13 @@ class Dropdown {
       $limit_length = $_SESSION["glpidropdown_chars_limit"];
 
       // Check default value for dropdown : need to be a numeric
-      if (strlen($params['value'])==0 || !is_numeric($params['value'])) {
+      if ((strlen($params['value']) == 0) || !is_numeric($params['value'])) {
          $params['value'] = 0;
       }
 
-      if ($params['value'] > 0
-         || ($itemtype == "Entity" && $params['value'] >= 0)) {
+      if (($params['value'] > 0)
+         || (($itemtype == "Entity")
+             && ($params['value'] >= 0))) {
          $tmpname = self::getDropdownName($table, $params['value'], 1);
 
          if ($tmpname["name"] != "&nbsp;") {
@@ -121,7 +120,7 @@ class Dropdown {
                   $limit_length = max(Toolbox::strlen($name) - $pos,
                                       $_SESSION["glpidropdown_chars_limit"]);
 
-                  if (Toolbox::strlen($name)>$limit_length) {
+                  if (Toolbox::strlen($name) > $limit_length) {
                      $name = "&hellip;".Toolbox::substr($name, -$limit_length);
                   }
 
@@ -136,8 +135,10 @@ class Dropdown {
       }
 
       // Manage entity_sons
-      if (!($params['entity']<0) && $params['entity_sons']) {
+      if (!($params['entity'] < 0)
+          && $params['entity_sons']) {
          if (is_array($params['entity'])) {
+            // translation not needed - only for debug
             echo "entity_sons options is not available with array of entity";
          } else {
             $params['entity'] = getSonsOf('glpi_entities',$params['entity']);
@@ -149,7 +150,7 @@ class Dropdown {
          $nb = 0;
 
          if ($item->isEntityAssign()) {
-            if (!($params['entity']<0)) {
+            if (!($params['entity'] < 0)) {
                $nb = countElementsInTableForEntity($table, $params['entity'], $params['condition']);
             } else {
                $nb = countElementsInTableForMyEntities($table, $params['condition']);
@@ -161,7 +162,7 @@ class Dropdown {
 
          $nb -= count($params['used']);
 
-         if ($nb>$CFG_GLPI["ajax_limit_count"]) {
+         if ($nb > $CFG_GLPI["ajax_limit_count"]) {
             $use_ajax = true;
          }
       }
@@ -193,8 +194,8 @@ class Dropdown {
          $options_tooltip = array('contentid' => "comment_".$params['name'].$params['rand']);
 
          if ($item->canView()
-            && $params['value'] && $item->getFromDB($params['value'])
-            && $item->canViewItem()) {
+             && $params['value'] && $item->getFromDB($params['value'])
+             && $item->canViewItem()) {
 
             $options_tooltip['link']       = $item->getLinkURL();
             $options_tooltip['linktarget'] = '_blank';
@@ -203,8 +204,8 @@ class Dropdown {
          Html::showToolTip($comment,$options_tooltip);
 
          if (($item instanceof CommonDropdown)
-              && $item->canCreate()
-              && !isset($_GET['popup'])) {
+             && $item->canCreate()
+             && !isset($_GET['popup'])) {
 
                echo "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
@@ -213,13 +214,15 @@ class Dropdown {
                      "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
          }
          // Display specific Links
-         if ($itemtype=="Supplier") {
+         if ($itemtype == "Supplier") {
             if ($item->getFromDB($params['value'])) {
                echo $item->getLinks();
             }
          }
 
-         if ($itemtype=='ITILCategory' && Session::haveRight('knowbase','r')) {
+         if (($itemtype == 'ITILCategory')
+             && Session::haveRight('knowbase','r')) {
+
             if ($params['value'] && $item->getFromDB($params['value'])) {
                echo '&nbsp;'.$item->getLinks();
             }
@@ -249,86 +252,79 @@ class Dropdown {
 
       if ($item instanceof CommonTreeDropdown) {
          return getTreeValueCompleteName($table,$id,$withcomment);
+      }
 
-      } else {
-         $name    = "";
-         $comment = "";
+      $name    = "";
+      $comment = "";
 
-         if ($id) {
-            $query = "SELECT *
-                      FROM `". $table ."`
-                      WHERE `id` = '". $id ."'";
-            /// TODO reviewx comment management...
-            if ($result = $DB->query($query)) {
-               if ($DB->numrows($result) != 0) {
-                  $data = $DB->fetch_assoc($result);
-                  $name = $data["name"];
+      if ($id) {
+         $query = "SELECT *
+                   FROM `". $table ."`
+                   WHERE `id` = '". $id ."'";
+         /// TODO review comment management...
+         if ($result = $DB->query($query)) {
+            if ($DB->numrows($result) != 0) {
+               $data = $DB->fetch_assoc($result);
+               $name = $data["name"];
 
-                  if (isset($data["comment"])) {
-                     $comment = $data["comment"];
-                  }
+               if (isset($data["comment"])) {
+                  $comment = $data["comment"];
+               }
 
-                  switch ($table) {
-                     case "glpi_computers" :
-                        if (empty($name)) {
-                           $name = "($id)";
-                        }
-                        break;
+               switch ($table) {
+                  case "glpi_computers" :
+                     if (empty($name)) {
+                        $name = "($id)";
+                     }
+                     break;
 
-                     case "glpi_contacts" :
-                        //TRANS: %1$s is the name, %2$s is the firstname
-                        $name = sprintf(__('%1$s %2$s'), $name, $data["firstname"]);
-                        if (!empty($data["phone"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                      "<span class='b'>".__('Phone'),
-                                                      "</span>".$data['phone']);
-                        }
-                        if (!empty($data["phone2"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                      "<span class='b'>".__('Phone 2'),
-                                                      "</span>".$data['phone2']);
-                        }
-                        if (!empty($data["mobile"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                      "<span class='b'>".__('Mobile phone'),
-                                                      "</span>".$data['mobile']);
-                        }
-                        if (!empty($data["fax"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                      "<span class='b'>".__('Fax'),
-                                                      "</span>".$data['fax']);
-                        }
-                        if (!empty($data["email"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                      "<span class='b'>".__('Email'),
-                                                      "</span>".$data['email']);
-                        }
-                        break;
+                  case "glpi_contacts" :
+                     //TRANS: %1$s is the name, %2$s is the firstname
+                     $name = sprintf(__('%1$s %2$s'), $name, $data["firstname"]);
+                     if (!empty($data["phone"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
+                                                   "</span>".$data['phone']);
+                     }
+                     if (!empty($data["phone2"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                   "<span class='b'>".__('Phone 2'),
+                                                   "</span>".$data['phone2']);
+                     }
+                     if (!empty($data["mobile"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'),
+                                                   "<span class='b'>".__('Mobile phone'),
+                                                   "</span>".$data['mobile']);
+                     }
+                     if (!empty($data["fax"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Fax'),
+                                                   "</span>".$data['fax']);
+                     }
+                     if (!empty($data["email"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
+                                                   "</span>".$data['email']);
+                     }
+                     break;
 
-                     case "glpi_suppliers" :
-                        if (!empty($data["phonenumber"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                      "<span class='b'>".__('Phone'),
-                                                      "</span>".$data['phonenumber']);
-                        }
-                        if (!empty($data["fax"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                      "<span class='b'>".__('Fax'),
-                                                      "</span>".$data['fax']);
-                        }
-                        if (!empty($data["email"])) {
-                           $comment .= "<br>".sprintf(__('%1$s: %2$s'),
-                                                      "<span class='b'>".__('Email'),
-                                                      "</span>".$data['email']);
-                        }
-                        break;
+                  case "glpi_suppliers" :
+                     if (!empty($data["phonenumber"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Phone'),
+                                                   "</span>".$data['phonenumber']);
+                     }
+                     if (!empty($data["fax"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Fax'),
+                                                   "</span>".$data['fax']);
+                     }
+                     if (!empty($data["email"])) {
+                        $comment .= "<br>".sprintf(__('%1$s: %2$s'), "<span class='b'>".__('Email'),
+                                                   "</span>".$data['email']);
+                     }
+                     break;
 
-                     case "glpi_netpoints" :
-                        $name = sprintf(__('%1$s (%2$s)'), $name,
-                                        self::getDropdownName("glpi_locations",
-                                                              $data["locations_id"]));
-                        break;
-                  }
+                  case "glpi_netpoints" :
+                     $name = sprintf(__('%1$s (%2$s)'), $name,
+                                     self::getDropdownName("glpi_locations",
+                                                           $data["locations_id"]));
+                     break;
                }
             }
          }
@@ -362,20 +358,20 @@ class Dropdown {
 
       if (count($ids)) {
          $itemtype = getItemTypeForTable($table);
-         $item     = new $itemtype();
+         if ($item = getItemForItemtype($itemtype)) {
+            $field    = 'name';
+            if ($item instanceof CommonTreeDropdown) {
+               $field = 'completename';
+            }
 
-         $field    = 'name';
-         if ($item instanceof CommonTreeDropdown) {
-            $field = 'completename';
-         }
+            $query = "SELECT `id`, `$field`
+                      FROM `$table`
+                      WHERE `id` IN (".implode(',',$ids).")";
 
-         $query = "SELECT `id`, `$field`
-                   FROM `$table`
-                   WHERE `id` IN (".implode(',',$ids).")";
-
-         if ($result=$DB->query($query)) {
-            while ($data=$DB->fetch_assoc($result)) {
-               $tabs[$data['id']] = $data[$field];
+            if ($result = $DB->query($query)) {
+               while ($data = $DB->fetch_assoc($result)) {
+                  $tabs[$data['id']] = $data[$field];
+               }
             }
          }
       }
@@ -399,9 +395,9 @@ class Dropdown {
    static function showItemTypes($name, $types=array(), $options=array()) {
       global $CFG_GLPI;
 
-      $params['value']       = '';
-      $params['used']        = array();
-      $params['emptylabel'] = self::EMPTY_VALUE;
+      $params['value']        = '';
+      $params['used']         = array();
+      $params['emptylabel']   = self::EMPTY_VALUE;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -450,8 +446,8 @@ class Dropdown {
                 FROM `".getTableForItemType($itemtype_ref)."`";
 
       $tabs = array();
-      if ($result=$DB->query($query)) {
-         while ($data=$DB->fetch_assoc($result)) {
+      if ($result = $DB->query($query)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $tabs[$data[$p['field']]] = $data[$p['field']];
          }
       }
@@ -499,11 +495,13 @@ class Dropdown {
             echo "</select>";
 
          } else {
-            echo "Error reading directory $store_path";
+            //TRANS: %s is the store path
+            printf(__('Error reading directory %s'), $store_path);
          }
 
       } else {
-         echo "Error $store_path is not a directory";
+         //TRANS: %s is the store path
+         printf(__('Error: %s is not a directory'), $store_path);
       }
    }
 
@@ -517,14 +515,15 @@ class Dropdown {
    static function showGMT($name, $value='') {
 
       $elements = array(-12, -11, -10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0,
-                        1, 2, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9, 9.5, 10, 11, 12, 13);
+                        '+1', '+2', '+3', '+3.5', '+4', '+4.5', '+5', '+5.5', '+6', '+6.5', '+7',
+                        '+8', '+9', '+9.5', '+10', '+11', '+12', '+13');
 
       echo "<select name='$name' id='dropdown_".$name."'>";
 
       foreach ($elements as $element) {
          if ($element != 0) {
-            $display_value = __('GMT').($element > 0?" +":" ").$element." ".
-                             ($element > 0? __('hour') :__('hours'));
+            $display_value = sprintf(__('%1$s %2$s'), __('GMT'),
+                                     sprintf(_n('%s hour', '%s hours', $element), $element));
          } else {
             $display_value = __('GMT');
          }
@@ -623,7 +622,7 @@ class Dropdown {
             = array(__('Common')
                         => array('Location'        => _n('Location', 'Locations', 2),
                                  'State'           => _n('Status of items', 'Status of items', 2),
-                                 'Manufacturer'    => Manufacturer::getTypeName(2)),
+                                 'Manufacturer'    => _n('Manufacturer', 'Manufacturers', 2)),
 
                     __('Assistance')
                         => array('ITILCategory'     =>  _n('Category of ticket',
@@ -663,8 +662,7 @@ class Dropdown {
                                                                'Computer models', 2),
                                  'NetworkEquipmentModel' => _n('Networking equipment model',
                                                                'Networking equipment models', 2),
-                                 'PrinterModel'          => _n('Printer model',
-                                                               'Printer models', 2),
+                                 'PrinterModel'          => _n('Printer model', 'Printer models', 2),
                                  'MonitorModel'          => _n('Monitor model', 'Monitor models', 2),
                                  'PeripheralModel'       => _n('Peripheral model',
                                                                'Peripheral models', 2),
@@ -695,10 +693,10 @@ class Dropdown {
                                                              'Operating systems', 2),
                                  'OperatingSystemVersion'
                                                       => _n('Version of the operating system',
-                                                            'Versions of the operating systems', 2),
+                                                            'Versions of the operating system', 2),
                                  'OperatingSystemServicePack'
-                                                      => _n('Service Pack', 'Service Packs', 2),
-                                 'AutoUpdateSystem'   => _n('Update Source', 'Update Sources', 2)),
+                                                      => _n('Service pack', 'Service packs', 2),
+                                 'AutoUpdateSystem'   => _n('Update source', 'Update sources', 2)),
 
                     __('Networking')
                         => array('NetworkInterface'         => _n('Network interface',
@@ -751,7 +749,7 @@ class Dropdown {
                }
             }
 
-            if (count($optgroup[$label])==0) {
+            if (count($optgroup[$label]) == 0) {
                unset($optgroup[$label]);
             }
          }
@@ -770,7 +768,7 @@ class Dropdown {
    static function showItemTypeMenu($title, $optgroup, $value='') {
 
       echo "<table class='tab_cadre'>";
-      echo "<tr class='tab_bg_1'><td class='b'>&nbsp;".$title."&nbsp;: ";
+      echo "<tr class='tab_bg_1'><td class='b'>&nbsp;".$title."&nbsp; ";
       echo "<select id='menu_nav'>";
 
       foreach ($optgroup as $label => $dp) {
@@ -789,7 +787,7 @@ class Dropdown {
          echo "</optgroup>";
       }
       echo "</select>&nbsp;";
-      echo "<input type='submit' name='add' value=\"".__s('Search')."\" class='submit' ";
+      echo "<input type='submit' name='add' value=\""._sx('Button', 'Search')."\" class='submit' ";
       echo "onClick='document.location=document.getElementById(\"menu_nav\").value;'";
       echo ">&nbsp;</td></tr>";
       echo "</table><br>";
@@ -814,7 +812,7 @@ class Dropdown {
       foreach ($optgroup as $label => $dp) {
          $nb += count($dp);
       }
-      $step = ($nb>15 ? ($nb/3) : $nb);
+      $step = ($nb > 15 ? ($nb/3) : $nb);
 
       echo "<table><tr class='top'><td><table class='tab_cadre'>";
       $i = 1;
@@ -824,8 +822,8 @@ class Dropdown {
 
          foreach ($dp as $key => $val) {
             $class="class='tab_bg_4'";
-            $itemtype = new $key();
-            if ($itemtype->isEntityAssign()) {
+            if (($itemtype = getItemForItemtype($key))
+                && $itemtype->isEntityAssign()) {
                $class="class='tab_bg_2'";
             }
             echo "<tr $class><td><a href='".Toolbox::getItemTypeSearchURL($key)."'>";
@@ -833,7 +831,7 @@ class Dropdown {
             $i++;
          }
 
-         if ($i>=$step) {
+         if ($i >= $step) {
             echo "</table></td><td width='25'>&nbsp;</td><td><table class='tab_cadre'>";
             $step += $step;
          }
@@ -866,7 +864,7 @@ class Dropdown {
             $values[$key] = $val[0];
          }
       }
-      self::showFromArray($myname,$values,$options);
+      self::showFromArray($myname, $values, $options);
    }
 
 
@@ -903,48 +901,49 @@ class Dropdown {
       $end   = 24;
       $step  = $CFG_GLPI["time_step"];
       // Check if the $step is Ok for the $value field
-      $split = explode(":",$value);
+      $split = explode(":", $value);
 
       // Valid value XX:YY ou XX:YY:ZZ
-      if (count($split)==2 || count($split)==3) {
+      if ((count($split) == 2) || (count($split) == 3)) {
          $min = $split[1];
 
          // Problem
-         if (($min%$step)!=0) {
+         if (($min%$step) != 0) {
             // set minimum step
             $step = 5;
          }
       }
 
       if ($limit_planning) {
-         $plan_begin = explode(":",$CFG_GLPI["planning_begin"]);
-         $plan_end   = explode(":",$CFG_GLPI["planning_end"]);
+         $plan_begin = explode(":", $CFG_GLPI["planning_begin"]);
+         $plan_end   = explode(":", $CFG_GLPI["planning_end"]);
          $begin      = (int) $plan_begin[0];
          $end        = (int) $plan_end[0];
       }
       echo "<select name=\"$name\">";
 
       for ($i=$begin ; $i<$end ; $i++) {
-         if ($i<10) {
+         if ($i < 10) {
             $tmp = "0".$i;
          } else {
             $tmp = $i;
          }
 
          for ($j=0 ; $j<60 ; $j+=$step) {
-            if ($j<10) {
+            if ($j < 10) {
                $val = $tmp.":0$j";
             } else {
                $val = $tmp.":$j";
             }
 
-            echo "<option value='$val' ".($value==$val.":00"||$value==$val?" selected ":"").">$val
-                  </option>";
+            echo "<option value='$val' ".(($value == $val.":00") || ($value == $val) ?" selected ":"").
+                 ">$val</option>";
          }
       }
       // Last item
       $val = $end.":00";
-      echo "<option value='$val' ".($value==$val.":00"||$value==$val?" selected ":"").">$val</option>";
+      echo "<option value='$val' ".(($value == $val.":00") || ($value == $val) ?" selected ":"").
+           ">$val</option>";
       echo "</select>";
    }
 
@@ -963,14 +962,14 @@ class Dropdown {
    static function showItemType($types='', $options=array()) {
       global $CFG_GLPI;
 
-      $params['name']        = 'itemtype';
-      $params['value']       = '';
-      $params['rand']        = mt_rand();
-      $params['on_change']   = '';
-      $params['plural']      = false;
+      $params['name']                = 'itemtype';
+      $params['value']               = '';
+      $params['rand']                = mt_rand();
+      $params['on_change']           = '';
+      $params['plural']              = false;
       //Parameters about choice 0
       //Empty choice's label
-      $params['emptylabel']  = self::EMPTY_VALUE;
+      $params['emptylabel']          = self::EMPTY_VALUE;
       //Display emptychoice ?
       $params['display_emptychoice'] = true;
 
@@ -1004,7 +1003,7 @@ class Dropdown {
          }
 
          foreach ($options as $key => $val) {
-            $sel = ($key===$params['value'] ? 'selected' : '');
+            $sel = (($key === $params['value']) ? 'selected' : '');
             echo "<option value='".$key."' $sel>".$val."</option>";
          }
          echo "</select>";
@@ -1046,14 +1045,14 @@ class Dropdown {
 
          echo "<br><span id='show_$myname$rand'>&nbsp;</span>\n";
 
-         if ($value>0) {
+         if ($value > 0) {
             echo "<script type='text/javascript' >\n";
             echo "window.document.getElementById('itemtype$rand').value='".$value_type."';";
             echo "</script>\n";
 
             $params["idtable"] = $value_type;
             Ajax::updateItem("show_$myname$rand", $CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",
-                           $params);
+                             $params);
          }
       }
       return $rand;
@@ -1078,7 +1077,7 @@ class Dropdown {
 
       if (count($toadd)) {
          foreach ($toadd as $key => $val) {
-            echo "<option value='$key' ".($key==$value?" selected ":"").">";
+            echo "<option value='$key' ".(($key == $value) ?" selected ":"").">";
             echo $val."</option>";
          }
       }
@@ -1108,7 +1107,7 @@ class Dropdown {
 
             }
          }
-         echo "<option value='$i' ".($i==$value?" selected ":"").">$txt</option>";
+         echo "<option value='$i' ".(($i == $value) ?" selected ":"").">$txt</option>";
       }
       echo "</select>";
 
@@ -1155,7 +1154,7 @@ class Dropdown {
       // Floor with MINUTE_TIMESTAMP for rounded purpose
       $params['value'] = floor(($params['value'])/$params['step'])*$params['step'];
 
-      $values = array(0  => $params['emptylabel']);
+      $values = array(0 => $params['emptylabel']);
 
       if ($params['value']) {
          $values[$params['value']] = '';
@@ -1340,15 +1339,15 @@ class Dropdown {
                echo "<optgroup label=\"".Html::entities_deep($key)."\">";
                foreach ($val as $key2 => $val2) {
                   if (!isset($param['used'][$key2])) {
-                     echo "<option value='".$key2."'".($param['value']==$key2?" selected":"").">".
+                     echo "<option value='".$key2."'".(($param['value'] == $key2) ?" selected":"").">".
                             $val2."</option>";
                   }
                               }
                echo "</optgroup>";
             } else {
                if (!isset($param['used'][$key])) {
-                  echo "<option value='".$key."'".($param['value']==$key?" selected":"").">".$val.
-                       "</option>";
+                  echo "<option value='".$key."'".(($param['value'] == $key) ?" selected":"").">".
+                         $val."</option>";
                }
             }
          }
@@ -1385,8 +1384,9 @@ class Dropdown {
          }
       }
 
-      if ($params['value'] && empty($params['withtemplate'])) {
-         echo __('Global management');
+      if ($params['value']
+          && empty($params['withtemplate'])) {
+         _e('Global management');
 
          if ($params['management_restrict'] == 2) {
             echo "&nbsp;<a title=\"".__s('Duplicate the element as many times as there are connections').
@@ -1509,56 +1509,63 @@ class Dropdown {
 
          echo "<select name='massiveaction' id='massiveaction'>";
          echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
-         if (!in_array($itemtype,$CFG_GLPI["massiveaction_noupdate_types"])
-             && (($isadmin && $itemtype != 'Ticket')
-                 || (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canUpdate())
-                 || ($itemtype == 'Ticket' && Session::haveRight('update_ticket',1)))) {
+         if (!in_array($itemtype, $CFG_GLPI["massiveaction_noupdate_types"])
+             && (($isadmin
+                  && ($itemtype != 'Ticket'))
+                 || (in_array($itemtype, $CFG_GLPI["infocom_types"])
+                     && $infocom->canUpdate())
+                 || (($itemtype == 'Ticket')
+                     && Session::haveRight('update_ticket', 1)))) {
 
             //TRANS: select action 'update' (before doing it)
             echo "<option value='update'>"._x('button', 'Update')."</option>";
          }
 
-         if (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canCreate() ) {
+         if (in_array($itemtype, $CFG_GLPI["infocom_types"])
+             && $infocom->canCreate() ) {
             echo "<option value='activate_infocoms'>".
                   __('Enable the financial and administrative information')."</option>";
          }
 
-         if ($is_deleted && !in_array($itemtype,$CFG_GLPI["massiveaction_nodelete_types"])) {
+         if ($is_deleted
+             && !in_array($itemtype,$CFG_GLPI["massiveaction_nodelete_types"])) {
             if ($isadmin) {
-               echo "<option value='purge'>".__('Purge')."</option>";
-               echo "<option value='restore'>".__('Restore')."</option>";
+               echo "<option value='purge'>"._x('button', 'Purge')."</option>";
+               echo "<option value='restore'>"._x('button', 'Restore')."</option>";
             }
 
          } else {
             // No delete for entities and tracking of not have right
             if (!in_array($itemtype,$CFG_GLPI["massiveaction_nodelete_types"])
-                && (($isadmin && $itemtype != 'Ticket')
-                    || ($itemtype == 'Ticket' && Session::haveRight('delete_ticket',1)))) {
+                && (($isadmin
+                     && ($itemtype != 'Ticket'))
+                    || (($itemtype == 'Ticket')
+                        && Session::haveRight('delete_ticket', 1)))) {
 
                if ($item->maybeDeleted()) {
-                  echo "<option value='delete'>".__('Delete')."</option>";
+                  echo "<option value='delete'>"._x('button', 'Delete')."</option>";
                } else {
-                  echo "<option value='purge'>".__('Purge')."</option>";
+                  echo "<option value='purge'>"._x('button', 'Purge')."</option>";
                }
             }
-            if ($isadmin && in_array($itemtype, array('Phone', 'Printer', 'Peripheral',
-                                                      'Monitor'))) {
+            if ($isadmin
+                && in_array($itemtype, array('Monitor', 'Peripheral', 'Phone', 'Printer'))) {
 
-               echo "<option value='connect'>".__('Connect')."</option>";
-               echo "<option value='disconnect'>".__('Disconnect')."</option>";
+               echo "<option value='connect'>"._x('button', 'Connect')."</option>";
+               echo "<option value='disconnect'>"._x('button', 'Disconnect')."</option>";
             }
 
             if (in_array($itemtype,$CFG_GLPI["document_types"])) {
                $doc = new Document();
                if ($doc->canView()) {
-                  echo "<option value='add_document'>".__('Add a document')."</option>";
+                  echo "<option value='add_document'>"._x('button', 'Add a document')."</option>";
                }
             }
 
             if (in_array($itemtype,$CFG_GLPI["contract_types"])) {
                $contract = new Contract();
                if ($contract->canUpdate()) {
-                  echo "<option value='add_contract'>".__('Add a contract')."</option>";
+                  echo "<option value='add_contract'>"._x('button', 'Add a contract')."</option>";
                }
             }
 
@@ -1571,21 +1578,22 @@ class Dropdown {
                                              'Software', 'SoftwareLicense', 'Supplier', 'Ticket'))
                 && $isadmin) {
 
-               echo "<option value='add_transfer_list'>".__('Add to transfer list')."</option>";
+               echo "<option value='add_transfer_list'>"._x('button', 'Add to transfer list').
+                    "</option>";
             }
 
             switch ($itemtype) {
                case 'Software' :
-                  if ($isadmin && countElementsInTable("glpi_rules",
-                                                       "sub_type='RuleSoftwareCategory'")>0) {
-
+                  if ($isadmin
+                      && (countElementsInTable("glpi_rules",
+                                               "sub_type='RuleSoftwareCategory'") > 0)) {
                      echo "<option value='compute_software_category'>".
                             __('Recalculate the category')."</option>";
                   }
 
                   if (Session::haveRight("rule_dictionnary_software","w")
-                      && countElementsInTable("glpi_rules","sub_type='RuleDictionnarySoftware'")>0) {
-
+                      && (countElementsInTable("glpi_rules",
+                                               "sub_type='RuleDictionnarySoftware'") > 0)) {
                      echo "<option value='replay_dictionnary'>".
                             __('Replay the dictionary rules')."</option>";
                   }
@@ -1593,8 +1601,8 @@ class Dropdown {
 
                case 'Computer' :
                   if ($isadmin) {
-                     echo "<option value='connect_to_computer'>".__('Connect')."</option>";
-                     echo "<option value='install'>".__('Install')."</option>";
+                     echo "<option value='connect_to_computer'>"._x('button', 'Connect')."</option>";
+                     echo "<option value='install'>"._x('button', 'Install')."</option>";
 
                      if ($CFG_GLPI['use_ocs_mode']) {
 
@@ -1624,17 +1632,17 @@ class Dropdown {
 
                case 'Supplier' :
                   if ($isadmin) {
-                     echo "<option value='add_contact'>".__('Add Contact...')."</option>";
+                     echo "<option value='add_contact'>"._x('button', 'Add a contact')."</option>";
                   }
                   break;
 
                case 'Calendar' :
-                  echo "<option value='duplicate'>".__('Duplicate')."</option>";
+                  echo "<option value='duplicate'>"._x('button', 'Duplicate')."</option>";
                   break;
 
                case 'Contact' :
                   if ($isadmin) {
-                     echo "<option value='add_enterprise'>".__('Add Supplier...')."</option>";
+                     echo "<option value='add_enterprise'>"._x('button', 'Add a supplier')."</option>";
                   }
                   break;
 
@@ -1646,7 +1654,7 @@ class Dropdown {
 
                   if (Session::haveRight("user_authtype","w")) {
                      echo "<option value='change_authtype'>".
-                            __('Change of the authentication method')."</option>";
+                            _x('button', 'Change the authentication method')."</option>";
                      echo "<option value='force_user_ldap_update'>".
                             __('Force synchronization')."</option>";
                   }
@@ -1655,7 +1663,7 @@ class Dropdown {
                case 'Ticket' :
                   $tmp = new TicketFollowup();
                   if ($tmp->canCreate()
-                      && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
+                      && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
                      echo "<option value='add_followup'>".__('Add a new followup')."</option>";
                   }
 
@@ -1671,7 +1679,7 @@ class Dropdown {
 
                   if (Session::haveRight("update_ticket","1")) {
                      echo "<option value='add_actor'>".__('Add an actor')."</option>";
-                     echo "<option value='link_ticket'>".__('Link tickets')."</option>";
+                     echo "<option value='link_ticket'>"._x('button', 'Link tickets')."</option>";
                   }
 
                   break;
@@ -1683,7 +1691,7 @@ class Dropdown {
 
                case 'NotImportedEmail':
                      echo "<option value='delete_email'>".__('Delete emails')."</option>";
-                     echo "<option value='import_email'>".__('Import')."</option>";
+                     echo "<option value='import_email'>"._x('button', 'Import')."</option>";
                   break;
 
                case 'NetworkPortMigration':
@@ -1706,17 +1714,18 @@ class Dropdown {
             if (($item instanceof CommonTreeDropdown)
                 && (!($item instanceof CommonImplicitTreeDropdown))) {
                if ($isadmin) {
-                  echo "<option value='move_under'>".__('Move')."</option>";
+                  echo "<option value='move_under'>"._x('button', 'Move')."</option>";
                }
             }
 
-            if ($itemtype!='Entity'
-                && $itemtype!='Calendar'
+            if (($itemtype != 'Entity')
+                && ($itemtype != 'Calendar')
                 && ($item instanceof CommonDropdown)
                 && $item->maybeRecursive()) {
 
-               if ($isadmin && (count($_SESSION['glpiactiveentities'])>1)) {
-                  echo "<option value='merge'>".__('Transfer and Merge');
+               if ($isadmin
+                   && (count($_SESSION['glpiactiveentities']) > 1)) {
+                  echo "<option value='merge'>".__('Transfer and merge');
                   echo "</option>";
                }
             }
@@ -1765,14 +1774,14 @@ class Dropdown {
    static function getGlobalSwitch($value=0) {
 
       switch ($value) {
-         default :
-            return "";
-
          case 0 :
             return __('Unit management');
 
          case 1 :
             return __('Global management');
+
+         default :
+            return "";
       }
    }
 
