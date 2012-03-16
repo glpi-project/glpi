@@ -1279,9 +1279,10 @@ class Rule extends CommonDBTM {
                   $addentity = "";
                   if ($this->isEntityAssign()) {
                      $itemtype = getItemTypeForTable($crit["table"]);
-                     if ($item->isEntityAssign()
-                         && $item->getFromDB($pattern)
-                         && $item = getItemForItemtype($itemtype)) {
+                     $item = getItemForItemtype($itemtype);
+                     if ($item
+                           && $item->getFromDB($pattern)
+                              && $item->isEntityAssign()) {
                         $addentity = '&nbsp;('.Dropdown::getDropdownName('glpi_entities',
                                                                          $item->getEntityID()).')';
                      }
