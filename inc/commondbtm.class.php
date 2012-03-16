@@ -1948,6 +1948,7 @@ class CommonDBTM extends CommonGLPI {
 
       echo "<tr><th colspan='".$params['colspan']."'>";
 
+      $entiyname = '';
       if (!empty($params['withtemplate']) && ($params['withtemplate'] == 2)
           && !$this->isNewID($ID)) {
 
@@ -1964,18 +1965,17 @@ class CommonDBTM extends CommonGLPI {
          _e('New item');
       } else {
          //TRANS: %1$s is the Itemtype name and $2$d the ID of the item
-         printf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
+         $entiyname = sprintf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
+      }
+      if (isset($this->fields["entities_id"])
+          && Session::isMultiEntitiesMode()
+          && $this->isEntityAssign()) {
+         printf(__('%1$s (%2$s)'), $entiyname,
+                 Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]));
       }
 
 
       echo "</th><th colspan='".$params['colspan']."'>";
-
-      $entiyname = '';
-      if (isset($this->fields["entities_id"])
-          && Session::isMultiEntitiesMode()
-          && $this->isEntityAssign()) {
-         $entiyname = Dropdown::getDropdownName("glpi_entities", $this->fields["entities_id"]);
-      }
       if (get_class($this) == 'Entity') {
          // is recursive but cannot be change
 
