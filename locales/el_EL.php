@@ -169,6 +169,7 @@ $LANG['calendarM'][11]="Δεκέμβριος";
 $LANG['cartridges'][0]="Φυσίγγιο"; 
 $LANG['cartridges'][1]="Cartridge Model"; // en_GB string to be translated
 $LANG['cartridges'][2]="Cartridge Models"; // en_GB string to be translated
+$LANG['cartridges'][3]="Counter error"; // en_GB string to be translated
 $LANG['cartridges'][9]="Ανύπαρκτο φυσίγγιο"; 
 $LANG['cartridges'][10]="Γραφίτης"; 
 $LANG['cartridges'][11]="Μελάνης"; 

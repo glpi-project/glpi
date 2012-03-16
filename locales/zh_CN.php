@@ -169,6 +169,7 @@ $LANG['calendarM'][11]="12月";
 $LANG['cartridges'][0]="墨盒"; 
 $LANG['cartridges'][1]="Cartridge Model"; // en_GB string to be translated
 $LANG['cartridges'][2]="Cartridge Models"; // en_GB string to be translated
+$LANG['cartridges'][3]="Counter error"; // en_GB string to be translated
 $LANG['cartridges'][9]="没有墨盒"; 
 $LANG['cartridges'][10]="碳粉"; 
 $LANG['cartridges'][11]="喷墨打印机"; 

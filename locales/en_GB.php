@@ -169,6 +169,7 @@ $LANG['calendarM'][11]="December";
 $LANG['cartridges'][0]="Cartridge"; 
 $LANG['cartridges'][1]="Cartridge Model"; 
 $LANG['cartridges'][2]="Cartridge Models"; 
+$LANG['cartridges'][3]="Counter error"; 
 $LANG['cartridges'][9]="No cartridge"; 
 $LANG['cartridges'][10]="Toner"; 
 $LANG['cartridges'][11]="Ink-Jet"; 

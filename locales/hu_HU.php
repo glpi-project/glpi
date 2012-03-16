@@ -169,6 +169,7 @@ $LANG['calendarM'][11]="December";
 $LANG['cartridges'][0]="Patron"; 
 $LANG['cartridges'][1]="Patron modell"; 
 $LANG['cartridges'][2]="Patron modellek"; 
+$LANG['cartridges'][3]="Counter error"; // en_GB string to be translated
 $LANG['cartridges'][9]="Nincs patron"; 
 $LANG['cartridges'][10]="Toner"; 
 $LANG['cartridges'][11]="Tintasugaras"; 

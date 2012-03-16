@@ -169,6 +169,7 @@ $LANG['calendarM'][11]="دسامبر";
 $LANG['cartridges'][0]="قاب نوار"; 
 $LANG['cartridges'][1]="مدل قاب نوار"; 
 $LANG['cartridges'][2]="مدل قاب نوار"; 
+$LANG['cartridges'][3]="Counter error"; // en_GB string to be translated
 $LANG['cartridges'][9]="بدون قاب نوار"; 
 $LANG['cartridges'][10]="تونر"; 
 $LANG['cartridges'][11]="جوهرافشان"; 

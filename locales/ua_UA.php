@@ -169,6 +169,7 @@ $LANG['calendarM'][11]="Грудень";
 $LANG['cartridges'][0]="Картридж"; 
 $LANG['cartridges'][1]="Cartridge Model"; // en_GB string to be translated
 $LANG['cartridges'][2]="Cartridge Models"; // en_GB string to be translated
+$LANG['cartridges'][3]="Counter error"; // en_GB string to be translated
 $LANG['cartridges'][9]="Немає картриджа"; 
 $LANG['cartridges'][10]="Тонер"; 
 $LANG['cartridges'][11]="Чорнило"; 

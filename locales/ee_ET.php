@@ -169,6 +169,7 @@ $LANG['calendarM'][11]="Detsember";
 $LANG['cartridges'][0]="Kassetid"; 
 $LANG['cartridges'][1]="Cartridge Model"; // en_GB string to be translated
 $LANG['cartridges'][2]="Cartridge Models"; // en_GB string to be translated
+$LANG['cartridges'][3]="Counter error"; // en_GB string to be translated
 $LANG['cartridges'][9]="Pole kassette"; 
 $LANG['cartridges'][10]="Toner"; // en_GB string to be translated
 $LANG['cartridges'][11]="Ink-Jet"; // en_GB string to be translated

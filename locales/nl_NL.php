@@ -169,6 +169,7 @@ $LANG['calendarM'][11]="december";
 $LANG['cartridges'][0]="Inktpatroon"; 
 $LANG['cartridges'][1]="Inktpatroon model"; 
 $LANG['cartridges'][2]="Inktpatronen modellen"; 
+$LANG['cartridges'][3]="Counter error"; // en_GB string to be translated
 $LANG['cartridges'][9]="Geen inktpatroon"; 
 $LANG['cartridges'][10]="Toner"; 
 $LANG['cartridges'][11]="Inktjet"; 

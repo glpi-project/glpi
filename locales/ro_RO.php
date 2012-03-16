@@ -169,6 +169,7 @@ $LANG['calendarM'][11]="Decembrie";
 $LANG['cartridges'][0]="Cartuș"; 
 $LANG['cartridges'][1]="Cartridge Model"; // en_GB string to be translated
 $LANG['cartridges'][2]="Cartridge Models"; // en_GB string to be translated
+$LANG['cartridges'][3]="Counter error"; // en_GB string to be translated
 $LANG['cartridges'][9]="Fără cartuș"; 
 $LANG['cartridges'][10]="Toner"; 
 $LANG['cartridges'][11]="Ink-Jet"; // en_GB string to be translated

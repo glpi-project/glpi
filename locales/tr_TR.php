@@ -169,6 +169,7 @@ $LANG['calendarM'][11]="Aralık";
 $LANG['cartridges'][0]="Kartuş"; 
 $LANG['cartridges'][1]="Kartuş Modeli"; 
 $LANG['cartridges'][2]="Kartuş Modelleri"; 
+$LANG['cartridges'][3]="Counter error"; // en_GB string to be translated
 $LANG['cartridges'][9]="Kartuş yok"; 
 $LANG['cartridges'][10]="Toner"; 
 $LANG['cartridges'][11]="Mürekkep püskürtmeli"; 

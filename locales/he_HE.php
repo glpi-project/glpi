@@ -169,6 +169,7 @@ $LANG['calendarM'][11]="דצמבר";
 $LANG['cartridges'][0]="מחסנית"; 
 $LANG['cartridges'][1]="דגם מחסנית"; 
 $LANG['cartridges'][2]="דגמי מחסניות"; 
+$LANG['cartridges'][3]="Counter error"; // en_GB string to be translated
 $LANG['cartridges'][9]="אין מחסניות במלאי"; 
 $LANG['cartridges'][10]="טונר"; 
 $LANG['cartridges'][11]="הזרקת דיו"; 

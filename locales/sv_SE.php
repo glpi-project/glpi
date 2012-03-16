@@ -169,6 +169,7 @@ $LANG['calendarM'][11]="december";
 $LANG['cartridges'][0]="Patron/toner"; 
 $LANG['cartridges'][1]="Modell för patroner/toners"; 
 $LANG['cartridges'][2]="Modeller för patroner/toners"; 
+$LANG['cartridges'][3]="Counter error"; // en_GB string to be translated
 $LANG['cartridges'][9]="Ingen patron/toner"; 
 $LANG['cartridges'][10]="Toner"; 
 $LANG['cartridges'][11]="Ink-Jet"; // en_GB string to be translated
