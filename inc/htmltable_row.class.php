@@ -179,8 +179,8 @@ class HTMLTable_Row extends HTMLTable_Entity {
       echo "\t\t</tbody>\n";
    }
 
-   function getHeader($header_name, $sub_header_name) {
-      return $this->group->getHeader($header_name, $sub_header_name);
+   function getHeaderByName($name, $sub_name = NULL) {
+      return $this->group->getHeaderByName($name, $sub_name);
    }
 }
 ?>

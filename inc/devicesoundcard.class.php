@@ -94,8 +94,8 @@ class DeviceSoundCard extends CommonDevice {
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
                                                         HTMLTable_SuperHeader $super) {
 
-      $group->addHeader($super, 'type', __('Type'));
-      $group->addHeader($super, 'manufacturer', __('Manufacturer'));
+      $group->addHeader('type', __('Type'), $super);
+      $group->addHeader('manufacturer', __('Manufacturer'), $super);
 
    }
 
@@ -108,11 +108,11 @@ class DeviceSoundCard extends CommonDevice {
    function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
 
       if ($this->fields["type"]) {
-         $row->addCell($row->getHeader('specificities', 'type'), $this->fields["type"]);
+         $row->addCell($row->getHeaderByName('specificities', 'type'), $this->fields["type"]);
       }
 
       if (!empty($this->fields["manufacturers_id"])) {
-         $row->addCell($row->getHeader('specificities', 'manufacturer'),
+         $row->addCell($row->getHeaderByName('specificities', 'manufacturer'),
                        Dropdown::getDropdownName("glpi_manufacturers",
                                                  $this->fields["manufacturers_id"]));
       }

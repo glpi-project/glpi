@@ -475,8 +475,8 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Group $group,
-                                              HTMLTable_SuperHeader $header,
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Base $base,
+                                              HTMLTable_SuperHeader $super = NULL,
                                               HTMLTable_Header $father = NULL,
                                               $options=array()) {
 
@@ -492,19 +492,19 @@ class NetworkName extends FQDNLabel {
       if (isset($options['column_links'][$column_name])) {
          $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
       }
-      $name_header = $group->addHeader($header, $column_name, $content, $father);
+      $name_header = $base->addHeader($column_name, $content, $super, $father);
       if ($canedit) {
-         $group->addHeader($header, 'button1', '', $name_header);
-         $group->addHeader($header, 'button2', '', $name_header);
+         $base->addHeader('button1', '', $super, $name_header);
+         $base->addHeader('button2', '', $super, $name_header);
       }
 
-      NetworkAlias::getHTMLTableHeaderForItem(__CLASS__, $group, $header, $name_header);
-      IPAddress::getHTMLTableHeaderForItem(__CLASS__, $group, $header, $name_header);
+      NetworkAlias::getHTMLTableHeaderForItem(__CLASS__, $base, $super, $name_header);
+      IPAddress::getHTMLTableHeaderForItem(__CLASS__, $base, $super, $name_header);
    }
 
 
    static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
-                                        HTMLTable_Cell $father = NULL, array $options) {
+                                        HTMLTable_Cell $father = NULL, array $options = array()) {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
@@ -512,7 +512,7 @@ class NetworkName extends FQDNLabel {
          return;
       }
 
-      $header= $row->getGroup()->getHeader('Internet', __CLASS__);
+      $header= $row->getGroup()->getHeaderByName('Internet', __CLASS__);
       if (!$header) {
          return;
       }
@@ -573,8 +573,8 @@ class NetworkName extends FQDNLabel {
       $options['createRow'] = false;
       $address              = new self();
       if ($canedit) {
-         $headerbutton1 = $row->getGroup()->getHeader('Internet', 'button1');
-         $headerbutton2 = $row->getGroup()->getHeader('Internet', 'button2');
+         $headerbutton1 = $row->getGroup()->getHeaderByName('Internet', 'button1');
+         $headerbutton2 = $row->getGroup()->getHeaderByName('Internet', 'button2');
       }
 
       foreach ($DB->request($query) as $line) {

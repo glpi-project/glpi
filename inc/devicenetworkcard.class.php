@@ -142,8 +142,8 @@ class DeviceNetworkCard extends CommonDevice {
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
                                                         HTMLTable_SuperHeader $super) {
 
-      $group->addHeader($super, 'bandwidth', __('Flow'));
-      $group->addHeader($super, 'manufacturer', __('Manufacturer'));
+      $group->addHeader('bandwidth', __('Flow'), $super);
+      $group->addHeader('manufacturer', __('Manufacturer'), $super);
 
    }
 
@@ -156,15 +156,52 @@ class DeviceNetworkCard extends CommonDevice {
    function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
 
       if ($this->fields["bandwidth"]) {
-         $row->addCell($row->getHeader('specificities', 'bandwidth'), $this->fields["bandwidth"]);
+         $row->addCell($row->getHeaderByName('specificities', 'bandwidth'),
+                       $this->fields["bandwidth"]);
       }
 
       if (!empty($this->fields["manufacturers_id"])) {
-         $row->addCell($row->getHeader('specificities', 'manufacturer'),
+         $row->addCell($row->getHeaderByName('specificities', 'manufacturer'),
                        Dropdown::getDropdownName("glpi_manufacturers",
                                                  $this->fields["manufacturers_id"]));
       }
 
    }
+
+
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Base $base,
+                                             HTMLTable_SuperHeader $super = NULL,
+                                             HTMLTable_Header $father = NULL,
+                                             $options=array()) {
+
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      $base->addHeader($column_name, __('Interface'), $super, $father);
+
+   }
+
+
+   static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
+                                        HTMLTable_Cell $father = NULL, array $options = array()) {
+
+
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      $compdev = new Computer_Device();
+      $card_id = $item->fields['computers_devicenetworkcards_id'];
+      $device  = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard", $card_id);
+
+      $row->addCell($row->getHeaderByName($column_name), ($device ? $device->getLink() : ''));
+
+   }
+
 }
 ?>

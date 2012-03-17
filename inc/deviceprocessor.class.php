@@ -117,7 +117,7 @@ class DeviceProcessor extends CommonDevice {
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
                                                         HTMLTable_SuperHeader $super) {
 
-      $group->addHeader($super, 'manufacturer', __('Manufacturer'));
+      $group->addHeader('manufacturer', __('Manufacturer'), $super);
 
    }
 
@@ -130,7 +130,7 @@ class DeviceProcessor extends CommonDevice {
    function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
 
       if (!empty($this->fields["manufacturers_id"])) {
-         $row->addCell($row->getHeader('specificities', 'manufacturer'),
+         $row->addCell($row->getHeaderByName('specificities', 'manufacturer'),
                        Dropdown::getDropdownName("glpi_manufacturers",
                                                  $this->fields["manufacturers_id"]));
       }

@@ -166,8 +166,8 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Group $group,
-                                              HTMLTable_SuperHeader $header,
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Base $base,
+                                              HTMLTable_SuperHeader $super = NULL,
                                               HTMLTable_Header $father = NULL,
                                               $options=array()) {
 
@@ -181,12 +181,12 @@ class NetworkAlias extends FQDNLabel {
       }
 
       $content = self::getTypeName();
-      $this_header = $group->addHeader($header, $column_name, $content, $father);
+      $this_header = $base->addHeader($column_name, $content, $super, $father);
     }
 
 
    static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
-                                        HTMLTable_Cell $father = NULL, array $options) {
+                                        HTMLTable_Cell $father = NULL, array $options = array()) {
       global $DB, $CFG_GLPI;
 
       if (empty($item)) {
@@ -205,7 +205,7 @@ class NetworkAlias extends FQDNLabel {
          return;
       }
 
-      $header= $row->getGroup()->getHeader('Internet', $column_name);
+      $header= $row->getGroup()->getHeaderByName('Internet', $column_name);
       if (!$header) {
          return;
       }

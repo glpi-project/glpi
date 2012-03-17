@@ -380,5 +380,36 @@ class Netpoint extends CommonDropdown {
       echo "</div>\n";
    }
 
+
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Base $base,
+                                             HTMLTable_SuperHeader $super = NULL,
+                                             HTMLTable_Header $father = NULL,
+                                             $options=array()) {
+
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      $base->addHeader($column_name, __('Network outlet'), $super, $father);
+
+   }
+
+
+   static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
+                                       HTMLTable_Cell $father = NULL, array $options) {
+
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      $row->addCell($row->getHeaderByName($column_name),
+                    Dropdown::getDropdownName("glpi_netpoints",
+                                              $item->fields["netpoints_id"]));
+   }
+
 }
 ?>

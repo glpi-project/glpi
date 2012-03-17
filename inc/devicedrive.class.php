@@ -120,10 +120,10 @@ class DeviceDrive extends CommonDevice {
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
                                                         HTMLTable_SuperHeader $super) {
 
-      $group->addHeader($super, 'writer', __('Writing ability'));
-      $group->addHeader($super, 'speed', __('Speed'));
-      $group->addHeader($super, 'interface', __('Interface'));
-      $group->addHeader($super, 'manufacturer', __('Manufacturer'));
+      $group->addHeader('writer', __('Writing ability'), $super);
+      $group->addHeader('speed', __('Speed'), $super);
+      $group->addHeader('interface', __('Interface'), $super);
+      $group->addHeader('manufacturer', __('Manufacturer'), $super);
 
    }
 
@@ -136,23 +136,23 @@ class DeviceDrive extends CommonDevice {
    function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
 
       if ($this->fields["is_writer"]) {
-         $row->addCell($row->getHeader('specificities', 'writer'),
+         $row->addCell($row->getHeaderByName('specificities', 'writer'),
                        Dropdown::getYesNo($this->fields["is_writer"]));
       }
 
       if ($this->fields["speed"]) {
-         $row->addCell($row->getHeader('specificities', 'speed'), $this->fields["speed"]);
+         $row->addCell($row->getHeaderByName('specificities', 'speed'), $this->fields["speed"]);
       }
 
 
       if ($this->fields["interfacetypes_id"]) {
-         $row->addCell($row->getHeader('specificities', 'inter'),
+         $row->addCell($row->getHeaderByName('specificities', 'inter'),
                        Dropdown::getDropdownName("glpi_interfacetypes",
                                                  $this->fields["interfacetypes_id"]));
       }
 
       if (!empty($this->fields["manufacturers_id"])) {
-         $row->addCell($row->getHeader('specificities', 'manufacturer'),
+         $row->addCell($row->getHeaderByName('specificities', 'manufacturer'),
                        Dropdown::getDropdownName("glpi_manufacturers",
                                                  $this->fields["manufacturers_id"]));
       }

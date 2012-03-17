@@ -110,8 +110,8 @@ class DeviceGraphicCard extends CommonDevice {
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
                                                         HTMLTable_SuperHeader $super) {
 
-      $group->addHeader($super, 'interface', __('Interface'));
-      $group->addHeader($super, 'manufacturer', __('Manufacturer'));
+      $group->addHeader('interface', __('Interface'), $super);
+      $group->addHeader('manufacturer', __('Manufacturer'), $super);
 
    }
 
@@ -124,13 +124,13 @@ class DeviceGraphicCard extends CommonDevice {
    function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
 
       if ($this->fields["interfacetypes_id"]) {
-         $row->addCell($row->getHeader('specificities', 'interface'),
+         $row->addCell($row->getHeaderByName('specificities', 'interface'),
                        Dropdown::getDropdownName("glpi_interfacetypes",
                                                  $this->fields["interfacetypes_id"]));
       }
 
       if (!empty($this->fields["manufacturers_id"])) {
-         $row->addCell($row->getHeader('specificities', 'manufacturer'),
+         $row->addCell($row->getHeaderByName('specificities', 'manufacturer'),
                        Dropdown::getDropdownName("glpi_manufacturers",
                                                  $this->fields["manufacturers_id"]));
       }

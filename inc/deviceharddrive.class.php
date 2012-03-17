@@ -138,10 +138,10 @@ class DeviceHardDrive extends CommonDevice {
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
                                                         HTMLTable_SuperHeader $super) {
 
-      $group->addHeader($super, 'rpm', __('Rpm'));
-      $group->addHeader($super, 'cache', __('Cache'));
-      $group->addHeader($super, 'interface', __('Interface'));
-      $group->addHeader($super, 'manufacturer', __('Manufacturer'));
+      $group->addHeader('rpm', __('Rpm'), $super);
+      $group->addHeader('cache', __('Cache'), $super);
+      $group->addHeader('interface', __('Interface'), $super);
+      $group->addHeader('manufacturer', __('Manufacturer'), $super);
 
    }
 
@@ -154,21 +154,21 @@ class DeviceHardDrive extends CommonDevice {
    function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
 
       if ($this->fields["rpm"]) {
-         $row->addCell($row->getHeader('specificities', 'rpm'), $this->fields["rpm"]);
+         $row->addCell($row->getHeaderByName('specificities', 'rpm'), $this->fields["rpm"]);
       }
 
       if ($this->fields["cache"]) {
-         $row->addCell($row->getHeader('specificities', 'cache'), $this->fields["cache"]);
+         $row->addCell($row->getHeaderByName('specificities', 'cache'), $this->fields["cache"]);
       }
 
       if ($this->fields["interfacetypes_id"]) {
-         $row->addCell($row->getHeader('specificities', 'interface'),
+         $row->addCell($row->getHeaderByName('specificities', 'interface'),
                        Dropdown::getDropdownName("glpi_interfacetypes",
                                                  $this->fields["interfacetypes_id"]));
       }
 
       if (!empty($this->fields["manufacturers_id"])) {
-         $row->addCell($row->getHeader('specificities', 'manufacturer'),
+         $row->addCell($row->getHeaderByName('specificities', 'manufacturer'),
                        Dropdown::getDropdownName("glpi_manufacturers",
                                                  $this->fields["manufacturers_id"]));
       }

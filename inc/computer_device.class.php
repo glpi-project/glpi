@@ -235,12 +235,10 @@ class Computer_Device extends CommonDBTM {
                $header_value = $device->getTypeName(1);
             }
 
-            $name_column = $table_group->addHeader($common_column, 'name',
-                                                   $header_value);
+            $name_column = $table_group->addHeader('name', $header_value, $common_column);
 
             if ($canedit) {
-               $delete_all = $table_group->addHeader($delete_column, 'all',
-                                                     _('All'));
+               $delete_all = $table_group->addHeader('all', _('All'), $delete_column);
             }
 
             $name_column->setItemType($itemtype);
@@ -249,16 +247,16 @@ class Computer_Device extends CommonDBTM {
             $specificities     = $itemtype::getSpecifityLabel();
             $specificity_names = array_values($specificities);
             if (count($specificity_names) > 0) {
-               $link_char = $table_group->addHeader($specific_column, 'link',
-                                                    $specificity_names[0]);
+               $link_char = $table_group->addHeader('link', $specificity_names[0],
+                                                     $specific_column);
                $column_anchor = $link_char;
             } else {
                $column_anchor = NULL;
             }
 
             if ($canedit) {
-               $delete_one  = $table_group->addHeader($delete_column, 'one', __('Delete'),
-                                                      $column_anchor);
+               $delete_one  = $table_group->addHeader('one', __('Delete'), $delete_column,
+                                                       $column_anchor);
             }
 
             Session::initNavigateListItems($itemtype,

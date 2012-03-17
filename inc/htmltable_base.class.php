@@ -60,14 +60,6 @@ abstract class HTMLTable_Base  {
 
 
    /**
-    * @param unknown_type $super_header_name
-   **/
-   protected function getSuperHeader($super_header_name) {
-      return $this->getHeader($super_header_name);
-   }
-
-
-   /**
     * @param $header_object         HTMLTable_Header object
     * @param $allow_super_header    (false by default
    **/
@@ -102,23 +94,68 @@ abstract class HTMLTable_Base  {
    }
 
 
-   /**
-    * @param $header_name
-    * @param $sub_header_name (default '')
-   **/
-   function getHeader($header_name, $sub_header_name='') {
+   abstract function tryAddHeader();
 
-      if (isset($this->headers[$header_name][$sub_header_name])) {
-         return $this->headers[$header_name][$sub_header_name];
+
+   /**
+    * create a new HTMLTable_Header
+    *
+    * Depending of "$this" type, this head will be an HTMLTable_SuperHeader of a HTMLTable_SubHeader
+    *
+    * @param $header_name (string)           The name that can be refered by getHeaderByName()
+    * @param $content (string or array)      The content (see HTMLTable_Entity for the format)
+    *                                        of the header
+    * @param $father (HTMLTable_SuperHeader) the header that contains this new header only used
+    *                                        for HTMLTable_SubHeader (ie: $this instanceof
+    *                                        HTMLTable_Group)
+    *
+    * @exception Exception                   If there is no super header while creating a sub
+    *                                        header or a super header while creating a super one
+    *
+    * @return the HTMLTable_Header           that have been created
+   **/
+   function addHeader($name, $content, HTMLTable_SuperHeader $super_header = NULL,
+                       HTMLTable_Header $father = NULL) {
+      $this->tryAddHeader();
+      if (is_null($super_header)) {
+         if (!$this->super) {
+            throw new Exception('A sub header requires a super header');
+         }
+         return $this->appendHeader(new HTMLTable_SuperHeader($this, $name, $content,
+                                                              $father));
       }
-      if ($header_name == '') {
-         foreach ($this->headers as $name => $headers) {
-            if (isset($headers[$sub_header_name])) {
-               return $headers[$sub_header_name];
-            }
+      if ($this->super) {
+         throw new Exception('Cannot attach a super heade to another header');
+      }
+      return $this->appendHeader(new HTMLTable_SubHeader($super_header, $name, $content,
+                                                         $father));
+   }
+
+
+   function getSuperHeaderByName($name) {
+      return $this->getHeaderByName($name, '');
+   }
+
+
+   /**
+    * @param $name
+    * @param $sub_name
+   **/
+   function getHeaderByName($name, $sub_name = NULL) {
+
+      if (is_string($sub_name)) {
+         if (isset($this->headers[$name][$sub_name])) {
+            return $this->headers[$name][$sub_name];
+         }
+         throw new HTMLTable_UnknownHeader($name.':'.$sub_name);
+      }
+
+      foreach ($this->headers as $header) {
+         if (isset($header[$name])) {
+            return $header[$name];
          }
       }
-      throw new HTMLTable_UnknownHeader($header_name.":".$sub_header_name);
+      throw new HTMLTable_UnknownHeader($name);
    }
 
 
