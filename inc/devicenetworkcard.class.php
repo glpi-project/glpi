@@ -139,67 +139,74 @@ class DeviceNetworkCard extends CommonDevice {
     * @param $super              HTMLTable_SuperHeader  object
     * @param $previous_header    HTMLTable_Header object
     */
-   static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
-                                                        HTMLTable_SuperHeader $super) {
+   static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
+                                      HTMLTable_SuperHeader $super = NULL,
+                                      HTMLTable_Header $father = NULL,
+                                      $options=array()) {
 
-      $group->addHeader('bandwidth', __('Flow'), $super);
-      $group->addHeader('manufacturer', __('Manufacturer'), $super);
+      $column_name = __CLASS__;
 
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      switch ($itemtype) {
+         case 'NetworkPortEthernet':
+         case 'NetworkPortWifi':
+            $base->addHeader($column_name, __('Interface'), $super, $father);
+            break;
+         case 'Computer_Device':
+            $base->addHeader('bandwidth', __('Flow'), $super, $father);
+            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+            break;
+      }
    }
 
 
    /**
     * since version 0.84
-    *
-    * @see inc/CommonDevice::getHTMLTableCellsForComputer_Device()
     */
-   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
-
-      if ($this->fields["bandwidth"]) {
-         $row->addCell($row->getHeaderByName('specificities', 'bandwidth'),
-                       $this->fields["bandwidth"]);
-      }
-
-      if (!empty($this->fields["manufacturers_id"])) {
-         $row->addCell($row->getHeaderByName('specificities', 'manufacturer'),
-                       Dropdown::getDropdownName("glpi_manufacturers",
-                                                 $this->fields["manufacturers_id"]));
-      }
-
-   }
-
-
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Base $base,
-                                             HTMLTable_SuperHeader $super = NULL,
-                                             HTMLTable_Header $father = NULL,
-                                             $options=array()) {
-
-      $column_name = __CLASS__;
-
-      if (isset($options['dont_display'][$column_name])) {
-         return;
-      }
-
-      $base->addHeader($column_name, __('Interface'), $super, $father);
-
-   }
-
-
-   static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
-                                        HTMLTable_Cell $father = NULL, array $options = array()) {
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
+                                            HTMLTable_Cell $father = NULL,
+                                            array $options = array()) {
 
 
       $column_name = __CLASS__;
 
       if (isset($options['dont_display'][$column_name])) {
          return;
+      }
+
+      if (empty($item)) {
+         if (empty($father)) {
+            return;
+         }
+         $item = $father->getItem();
       }
 
       $compdev = new Computer_Device();
       $card_id = $item->fields['computers_devicenetworkcards_id'];
       $device  = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard", $card_id);
 
-      $row->addCell($row->getHeaderByName($column_name), ($device ? $device->getLink() : ''));
+      $row->addCell($row->getHeaderByName($column_name), ($device ? $device->getLink() : ''),
+                    $father);
+
+   }
+
+   function getHTMLTableCell($item_type, HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
+                             array $options = array()) {
+
+
+      switch ($item_type) {
+         case 'Computer_Device':
+            if ($this->fields["bandwidth"]) {
+               $row->addCell($row->getHeaderByName('specificities', 'bandwidth'),
+                             $this->fields["bandwidth"], $father);
+            }
+
+            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
+            break;
+      }
 
    }
 

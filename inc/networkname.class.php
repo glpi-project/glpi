@@ -475,7 +475,7 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Base $base,
+   static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
                                               HTMLTable_SuperHeader $super = NULL,
                                               HTMLTable_Header $father = NULL,
                                               $options=array()) {
@@ -498,12 +498,12 @@ class NetworkName extends FQDNLabel {
          $base->addHeader('button2', '', $super, $name_header);
       }
 
-      NetworkAlias::getHTMLTableHeaderForItem(__CLASS__, $base, $super, $name_header);
-      IPAddress::getHTMLTableHeaderForItem(__CLASS__, $base, $super, $name_header);
+      NetworkAlias::getHTMLTableHeader(__CLASS__, $base, $super, $name_header);
+      IPAddress::getHTMLTableHeader(__CLASS__, $base, $super, $name_header);
    }
 
 
-   static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
                                         HTMLTable_Cell $father = NULL, array $options = array()) {
       global $DB, $CFG_GLPI;
 
@@ -610,8 +610,8 @@ class NetworkName extends FQDNLabel {
                $row->addCell($headerbutton2, $content, $name_cell, $address);
             }
 
-            NetworkAlias::getHTMLTableForItem($row, NULL, $name_cell, $options);
-            IPAddress::getHTMLTableForItem($row, NULL, $name_cell, $options);
+            NetworkAlias::getHTMLTableCellsForItem($row, NULL, $name_cell, $options);
+            IPAddress::getHTMLTableCellsForItem($row, NULL, $name_cell, $options);
 
          }
       }
@@ -670,7 +670,7 @@ class NetworkName extends FQDNLabel {
 
       $address  = new self();
       
-      self::getHTMLTableHeaderForItem(__CLASS__, $t_group, $column, NULL, $table_options);
+      self::getHTMLTableHeader(__CLASS__, $t_group, $column, NULL, $table_options);
 
       $t_row   = $t_group->createRow();
 
@@ -687,7 +687,7 @@ class NetworkName extends FQDNLabel {
             break;
       }
 
-      self::getHTMLTableForItem($t_row, $item, NULL, $table_options);
+      self::getHTMLTableCellsForItem($t_row, $item, NULL, $table_options);
 
       // Do not display table for netwokrport if only one networkname
       if ($item->getType() == 'NetworkPort' && $table->getNumberOfRows() <=1) {

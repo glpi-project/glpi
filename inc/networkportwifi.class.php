@@ -100,12 +100,12 @@ class NetworkPortWifi extends NetworkPortInstantiation {
                                                      HTMLTable_SuperHeader $super,
                                                      $options=array()) {
 
-      DeviceNetworkCard::getHTMLTableHeaderForItem('NetworkPortEthernet', $group, $super);
+      DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super);
       $group->addHeader('MAC', __('MAC'), $super);
       $group->addHeader('ESSID', __('ESSID'), $super);
       $group->addHeader('Mode', __('Wifi mode'), $super);
       $group->addHeader('Version', __('Wifi protocol version'), $super);
-      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $group, $super);
+      NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super);
       //$group->addHeader('Connected', __('Connected to'), $super);
    }
 
@@ -114,7 +114,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
                                        HTMLTable_Row $row,
                                        $canedit, $options=array()) {
 
-      DeviceNetworkCard::getHTMLTableForItem($row, $this, NULL, $options);
+      DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, NULL, $options);
 
       $row->addCell($row->getHeaderByName('Instantiation', 'MAC'), $netport->fields["mac"]);
 
@@ -126,7 +126,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
       $row->addCell($row->getHeaderByName('Instantiation', 'Version'), $this->fields['version']);
 
-      NetworkPort_Vlan::getHTMLTableForItem($row, $netport, NULL, $options);
+      NetworkPort_Vlan::getHTMLTableCellsForItem($row, $netport, NULL, $options);
 
       /*
       if (isset($options['withtemplate'])) {

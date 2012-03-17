@@ -135,42 +135,50 @@ class DeviceHardDrive extends CommonDevice {
     * @param $super              HTMLTable_SuperHeader object
     * @param &$previous_header   HTMLTable_Header object
    **/
-   static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
-                                                        HTMLTable_SuperHeader $super) {
+   static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
+                                      HTMLTable_SuperHeader $super = NULL,
+                                      HTMLTable_Header $father = NULL,
+                                      $options=array()) {
 
-      $group->addHeader('rpm', __('Rpm'), $super);
-      $group->addHeader('cache', __('Cache'), $super);
-      $group->addHeader('interface', __('Interface'), $super);
-      $group->addHeader('manufacturer', __('Manufacturer'), $super);
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      switch ($itemtype) {
+         case 'Computer_Device':
+            $base->addHeader('rpm', __('Rpm'), $super, $father);
+            $base->addHeader('cache', __('Cache'), $super, $father);
+            InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+            break;
+      }
 
    }
 
 
    /**
     * @since version 0.84
-    *
-    * @see inc/CommonDevice::getHTMLTableCellsForComputer_Device()
    **/
-   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
+   function getHTMLTableCell($item_type, HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
+                             array $options = array()) {
 
-      if ($this->fields["rpm"]) {
-         $row->addCell($row->getHeaderByName('specificities', 'rpm'), $this->fields["rpm"]);
-      }
+      switch ($item_type) {
+         case 'Computer_Device':
+            if ($this->fields["rpm"]) {
+               $row->addCell($row->getHeaderByName('specificities', 'rpm'), $this->fields["rpm"]);
+            }
 
-      if ($this->fields["cache"]) {
-         $row->addCell($row->getHeaderByName('specificities', 'cache'), $this->fields["cache"]);
-      }
+            if ($this->fields["cache"]) {
+               $row->addCell($row->getHeaderByName('specificities', 'cache'),
+                             $this->fields["cache"]);
+            }
 
-      if ($this->fields["interfacetypes_id"]) {
-         $row->addCell($row->getHeaderByName('specificities', 'interface'),
-                       Dropdown::getDropdownName("glpi_interfacetypes",
-                                                 $this->fields["interfacetypes_id"]));
-      }
+            InterfaceType::getHTMLTableCellsForItem($row, $this, NULL, $options);
 
-      if (!empty($this->fields["manufacturers_id"])) {
-         $row->addCell($row->getHeaderByName('specificities', 'manufacturer'),
-                       Dropdown::getDropdownName("glpi_manufacturers",
-                                                 $this->fields["manufacturers_id"]));
+            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
+            break;
       }
 
    }

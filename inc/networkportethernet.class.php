@@ -88,10 +88,10 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                                                      HTMLTable_SuperHeader $super,
                                                      $options=array()) {
 
-     DeviceNetworkCard::getHTMLTableHeaderForItem('NetworkPortEthernet', $group, $super);
+     DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super);
       $group->addHeader('MAC', __('MAC'), $super);
-      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $group, $super);
-      Netpoint::getHTMLTableHeaderForItem('NetworkPortEthernet', $group, $super);
+      NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super);
+      Netpoint::getHTMLTableHeader('NetworkPortEthernet', $group, $super);
       $group->addHeader('Outlet', __('Network outlet'), $super);
       $group->addHeader('Connected', __('Connected to'), $super);
 
@@ -102,13 +102,13 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                                        HTMLTable_Row $row,
                                        $canedit, $options=array()) {
 
-      DeviceNetworkCard::getHTMLTableForItem($row, $this, NULL, $options);
+      DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, NULL, $options);
 
       $row->addCell($row->getHeaderByName('Instantiation', 'MAC'), $netport->fields["mac"]);
 
-      NetworkPort_Vlan::getHTMLTableForItem($row, $netport, NULL, $options);
+      NetworkPort_Vlan::getHTMLTableCellsForItem($row, $netport, NULL, $options);
 
-      Netpoint::getHTMLTableForItem($row, $this, NULL, $options);
+      Netpoint::getHTMLTableCellsForItem($row, $this, NULL, $options);
 
       $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                     array(array('function'   => array(__CLASS__, 'showConnection'),

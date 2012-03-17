@@ -242,7 +242,9 @@ class Computer_Device extends CommonDBTM {
             }
 
             $name_column->setItemType($itemtype);
-            $itemtype::getHTMLTableHeaderForComputer_Device($table_group, $specific_column);
+            if (method_exists($itemtype, 'getHTMLTableHeader')) {
+               $itemtype::getHTMLTableHeader(__CLASS__, $table_group, $specific_column);
+            }
 
             $specificities     = $itemtype::getSpecifityLabel();
             $specificity_names = array_values($specificities);
@@ -323,7 +325,9 @@ class Computer_Device extends CommonDBTM {
                   }
 
                   $specificities = $device->getFormData();
-                  $device->getHTMLTableCellsForComputer_Device($current_row);
+                  if (method_exists($device, 'getHTMLTableCell')) {
+                     $device->getHTMLTableCell(__CLASS__, $current_row);
+                  }
 
                   $links_specifications = array();
                   $query = "SELECT `id`,

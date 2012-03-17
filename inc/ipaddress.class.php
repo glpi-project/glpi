@@ -840,7 +840,7 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Base $base,
+   static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
                                               HTMLTable_SuperHeader $super = NULL,
                                               HTMLTable_Header $father = NULL,
                                               $options=array()) {
@@ -856,12 +856,12 @@ class IPAddress extends CommonDBChild {
       }
       $this_header = $base->addHeader($column_name, $content, $super, $father);
 
-      IPNetwork::getHTMLTableHeaderForItem(__CLASS__, $base, $super, $this_header);
+      IPNetwork::getHTMLTableHeader(__CLASS__, $base, $super, $this_header);
 
    }
 
 
-   static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
                                         HTMLTable_Cell $father = NULL, array $options = array()) {
       global $DB, $CFG_GLPI;
 
@@ -900,7 +900,7 @@ class IPAddress extends CommonDBChild {
 
             $this_cell = $row->addCell($header, $address->fields['name'], $father, $address);
 
-            IPNetwork::getHTMLTableForItem($row, NULL, $this_cell, $options);
+            IPNetwork::getHTMLTableCellsForItem($row, NULL, $this_cell, $options);
          }
       }
    }

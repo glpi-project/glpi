@@ -166,7 +166,7 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Base $base,
+   static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
                                               HTMLTable_SuperHeader $super = NULL,
                                               HTMLTable_Header $father = NULL,
                                               $options=array()) {
@@ -185,7 +185,7 @@ class NetworkAlias extends FQDNLabel {
     }
 
 
-   static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
                                         HTMLTable_Cell $father = NULL, array $options = array()) {
       global $DB, $CFG_GLPI;
 
