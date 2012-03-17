@@ -464,7 +464,7 @@ class NetworkPort extends CommonDBChild {
             $portType::getInstantiationHTMLTable_Headers($t_group, $c_instant, $table_options);
          }
 
-         NetworkName::getHTMLTableHeaderForItem(__CLASS__, $t_group, $c_network, NULL,
+         NetworkName::getHTMLTableHeader(__CLASS__, $t_group, $c_network, NULL,
                                                 $table_options);
 
          if ($itemtype == 'NetworkPort') {
@@ -563,7 +563,7 @@ class NetworkPort extends CommonDBChild {
                                                                 $table_options);
                      unset($instantiation);
                   }
-                  NetworkName::getHTMLTableForItem($t_row, $netport, NULL, $table_options);
+                  NetworkName::getHTMLTableCellsForItem($t_row, $netport, NULL, $table_options);
 
                }
 

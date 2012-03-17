@@ -117,44 +117,50 @@ class DeviceDrive extends CommonDevice {
     * @param $super              HTMLTable_SuperHeader object
     * @param &$previous_header   HTMLTable_Header object
    **/
-   static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
-                                                        HTMLTable_SuperHeader $super) {
+   static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
+                                      HTMLTable_SuperHeader $super = NULL,
+                                      HTMLTable_Header $father = NULL,
+                                      $options=array()) {
 
-      $group->addHeader('writer', __('Writing ability'), $super);
-      $group->addHeader('speed', __('Speed'), $super);
-      $group->addHeader('interface', __('Interface'), $super);
-      $group->addHeader('manufacturer', __('Manufacturer'), $super);
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      switch ($itemtype) {
+         case 'Computer_Device':
+            $base->addHeader('writer', __('Writing ability'), $super, $father);
+            $base->addHeader('speed', __('Speed'), $super, $father);
+            InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+            break;
+      }
 
    }
 
 
    /**
     * @since version 0.84
-    *
-    * @see inc/CommonDevice::getHTMLTableCellsForComputer_Device()
    **/
-   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
+   function getHTMLTableCell($item_type, HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
+                             array $options = array()) {
 
-      if ($this->fields["is_writer"]) {
-         $row->addCell($row->getHeaderByName('specificities', 'writer'),
-                       Dropdown::getYesNo($this->fields["is_writer"]));
-      }
+      switch ($item_type) {
+         case 'Computer_Device':
+            if ($this->fields["is_writer"]) {
+               $row->addCell($row->getHeaderByName('specificities', 'writer'),
+                             Dropdown::getYesNo($this->fields["is_writer"]), $father);
+            }
 
-      if ($this->fields["speed"]) {
-         $row->addCell($row->getHeaderByName('specificities', 'speed'), $this->fields["speed"]);
-      }
+            if ($this->fields["speed"]) {
+               $row->addCell($row->getHeaderByName('specificities', 'speed'),
+                             $this->fields["speed"], $father);
+            }
 
 
-      if ($this->fields["interfacetypes_id"]) {
-         $row->addCell($row->getHeaderByName('specificities', 'inter'),
-                       Dropdown::getDropdownName("glpi_interfacetypes",
-                                                 $this->fields["interfacetypes_id"]));
-      }
-
-      if (!empty($this->fields["manufacturers_id"])) {
-         $row->addCell($row->getHeaderByName('specificities', 'manufacturer'),
-                       Dropdown::getDropdownName("glpi_manufacturers",
-                                                 $this->fields["manufacturers_id"]));
+            InterfaceType::getHTMLTableCellsForItem($row, $this, NULL, $options);
+            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
       }
    }
 

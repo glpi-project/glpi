@@ -37,11 +37,41 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class InterfaceType (Interface is a reserved keyword)
+/// @TODO study if we should integrate getHTMLTableHeader and getHTMLTableCellsForItem ...
 class InterfaceType extends CommonDropdown {
 
    static function getTypeName($nb=0) {
       return _n('Interface type (Hard drive...)', 'Interface types (Hard drive...)', $nb);
    }
 
+
+   static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
+                                             HTMLTable_SuperHeader $super = NULL,
+                                             HTMLTable_Header $father = NULL,
+                                             $options=array()) {
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      $base->addHeader($column_name, __('Interface'), $super, $father);
+   }
+
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
+                                            HTMLTable_Cell $father = NULL,
+                                            array $options = array()) {
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      if ($item->fields["interfacetypes_id"]) {
+         $row->addCell($row->getHeaderByName($column_name),
+                       Dropdown::getDropdownName("glpi_interfacetypes",
+                                                 $item->fields["interfacetypes_id"]));
+      }
+   }
 }
 ?>

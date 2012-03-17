@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Class Manufacturer
+/// @TODO study if we should integrate getHTMLTableHeader and getHTMLTableCellsForItem ...
 class Manufacturer extends CommonDropdown {
 
 
@@ -71,5 +72,35 @@ class Manufacturer extends CommonDropdown {
       Rule::cleanForItemAction($this, 'manufacturer');
    }
 
+
+   static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
+                                             HTMLTable_SuperHeader $super = NULL,
+                                             HTMLTable_Header $father = NULL,
+                                             $options=array()) {
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      $base->addHeader($column_name, __('Manufacturer'), $super, $father);
+   }
+
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
+                                            HTMLTable_Cell $father = NULL,
+                                            array $options = array()) {
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      if (!empty($item->fields["manufacturers_id"])) {
+         $row->addCell($row->getHeaderByName($column_name),
+                       Dropdown::getDropdownName("glpi_manufacturers",
+                                                 $item->fields["manufacturers_id"]),
+                       $father);
+      }
+   }
 }
 ?>

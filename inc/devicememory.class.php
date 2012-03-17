@@ -123,31 +123,47 @@ class DeviceMemory extends CommonDevice {
     * @param $super              HTMLTable_SuperHeader object
     * @param &$previous_header   HTMLTable_Header object
    **/
-   static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
-                                                        HTMLTable_SuperHeader $super) {
+   static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
+                                      HTMLTable_SuperHeader $super = NULL,
+                                      HTMLTable_Header $father = NULL,
+                                      $options=array()) {
 
-      $group->addHeader('type', __('Type'), $super);
-      $group->addHeader('frequency', __('Frequency'), $super);
+      $column_name = __CLASS__;
+
+      if (isset($options['dont_display'][$column_name])) {
+         return;
+      }
+
+      switch ($itemtype) {
+         case 'Computer_Device':
+            $base->addHeader('type', __('Type'), $super, $father);
+            $base->addHeader('frequency', __('Frequency'), $super, $father);
+            break;
+      }
 
    }
 
 
    /**
     * @since version 0.84
-    *
-    * @see inc/CommonDevice::getHTMLTableCellsForComputer_Device()
    **/
-   function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
+   function getHTMLTableCell($item_type, HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
+                             array $options = array()) {
 
-      if ($this->fields["devicememorytypes_id"]) {
-         $row->addCell($row->getHeaderByName('specificities', 'type'),
-                       Dropdown::getDropdownName("glpi_devicememorytypes",
-                                                 $this->fields["devicememorytypes_id"]));
-      }
+      switch ($item_type) {
+         case 'Computer_Device':
 
-      if (!empty($this->fields["frequence"])) {
-         $row->addCell($row->getHeaderByName('specificities', 'frequency'),
-                       $this->fields["frequence"]);
+            if ($this->fields["devicememorytypes_id"]) {
+               $row->addCell($row->getHeaderByName('specificities', 'type'),
+                             Dropdown::getDropdownName("glpi_devicememorytypes",
+                                                       $this->fields["devicememorytypes_id"]),
+                             $father);
+            }
+
+            if (!empty($this->fields["frequence"])) {
+               $row->addCell($row->getHeaderByName('specificities', 'frequency'),
+                             $this->fields["frequence"], $father);
+            }
       }
 
    }
