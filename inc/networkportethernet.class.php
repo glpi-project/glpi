@@ -85,16 +85,15 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
-                                                     HTMLTable_SuperHeader $header,
+                                                     HTMLTable_SuperHeader $super,
                                                      $options=array()) {
 
-      // TODO : try to transfert to Interface DeviceNetworkCard::getHTMLTableHeaderForItem...
-      $group->addHeader($header, 'Interface', __('Interface'));
-      $group->addHeader($header, 'MAC', __('MAC'));
-      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $group, $header);
-      // TODO : try to transfert to Interface Netpoint::getHTMLTableHeader_ForItem...
-      $group->addHeader($header, 'Outlet', __('Network outlet'));
-      $group->addHeader($header, 'Connected', __('Connected to'));
+     DeviceNetworkCard::getHTMLTableHeaderForItem('NetworkPortEthernet', $group, $super);
+      $group->addHeader('MAC', __('MAC'), $super);
+      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $group, $super);
+      Netpoint::getHTMLTableHeaderForItem('NetworkPortEthernet', $group, $super);
+      $group->addHeader('Outlet', __('Network outlet'), $super);
+      $group->addHeader('Connected', __('Connected to'), $super);
 
   }
 
@@ -103,26 +102,19 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                                        HTMLTable_Row $row,
                                        $canedit, $options=array()) {
 
-      $compdev = new Computer_Device();
-      $device  = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
-                                                         $this->fields['computers_devicenetworkcards_id']);
+      DeviceNetworkCard::getHTMLTableForItem($row, $this, NULL, $options);
 
-      $row->addCell($row->getHeader('Instantiation', 'Interface'),
-                              ($device ? $device->getLink() : ''));
+      $row->addCell($row->getHeaderByName('Instantiation', 'MAC'), $netport->fields["mac"]);
 
-      $row->addCell($row->getHeader('Instantiation', 'MAC'), $netport->fields["mac"]);
       NetworkPort_Vlan::getHTMLTableForItem($row, $netport, NULL, $options);
 
+      Netpoint::getHTMLTableForItem($row, $this, NULL, $options);
 
-      $row->addCell($row->getHeader('Instantiation', 'Outlet'),
-                              Dropdown::getDropdownName("glpi_netpoints",
-                                                        $this->fields["netpoints_id"]));
-
-      $row->addCell($row->getHeader('Instantiation', 'Connected'),
-                              array(array('function'   => array(__CLASS__, 'showConnection'),
-                                          'parameters' => array($item, $netport,
-                                                                (isset($options['withtemplate'])
-                                                                 && $options['withtemplate'])))));
+      $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
+                    array(array('function'   => array(__CLASS__, 'showConnection'),
+                                'parameters' => array($item, $netport,
+                                                      (isset($options['withtemplate'])
+                                                       && $options['withtemplate'])))));
    }
 
 

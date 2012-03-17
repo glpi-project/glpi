@@ -844,8 +844,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Group $group,
-                                              HTMLTable_SuperHeader $header,
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Base $base,
+                                              HTMLTable_SuperHeader $super = NULL,
                                               HTMLTable_Header $father = NULL,
                                               $options=array()) {
 
@@ -859,12 +859,12 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       }
 
       $content = self::getTypeName();
-      $this_header = $group->addHeader($header, $column_name, $content, $father);
+      $this_header = $base->addHeader($column_name, $content, $super, $father);
    }
 
 
    static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL, 
-                                        HTMLTable_Cell $father = NULL, array $options) {
+                                        HTMLTable_Cell $father = NULL, array $options = array()) {
       global $DB, $CFG_GLPI;
 
       if (empty($item)) {
@@ -878,7 +878,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          return;
       }
 
-      $header= $row->getGroup()->getHeader('Internet', __CLASS__);
+      $header= $row->getGroup()->getHeaderByName('Internet', __CLASS__);
       if (!$header) {
          return;
       }

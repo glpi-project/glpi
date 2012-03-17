@@ -130,22 +130,22 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Group $group,
-                                              HTMLTable_SuperHeader $header,
-                                              HTMLTable_Header $father = NULL,
-                                              $options=array()) {
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Base $base,
+                                             HTMLTable_SuperHeader $super = NULL,
+                                             HTMLTable_Header $father = NULL,
+                                             $options=array()) {
       $column_name = __CLASS__;
 
       if (isset($options['dont_display'][$column_name])) {
          return;
       }
 
-      $group->addHeader($header, $column_name, __('VLAN'), $father);
+      $base->addHeader($column_name, __('VLAN'), $super, $father);
    }
 
 
    static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
-                                        HTMLTable_Cell $father = NULL, array $options) {
+                                        HTMLTable_Cell $father = NULL, array $options = array()) {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
@@ -191,7 +191,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
                           __s('Dissociate') . "\" title=\"" . __s('Dissociate') . "\"></a>";
          }
 
-         $this_cell = $row->addCell($row->getHeader('', __CLASS__), $content, $father);
+         $this_cell = $row->addCell($row->getHeaderByName($column_name), $content, $father);
       }
    }
 

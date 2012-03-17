@@ -63,14 +63,6 @@ class HTMLTable_Group extends HTMLTable_Base {
    }
 
 
-   /**
-    * @see inc/HTMLTable_Base::getSuperHeader()
-   **/
-   protected function getSuperHeader($super_header_name) {
-      return $this->table->getHeader($super_header_name);
-   }
-
-
    function getName() {
       return $this->name;
    }
@@ -94,21 +86,11 @@ class HTMLTable_Group extends HTMLTable_Base {
    }
 
 
-   /**
-    * @param $super_header    HTMLTable_SuperHeader object
-    * @param $name
-    * @param $content
-    * @param $father          HTMLTable_Header object (default NULL)
-    */
-   function addHeader(HTMLTable_SuperHeader $super_header, $name, $content,
-                      HTMLTable_Header $father=NULL) {
-
+   function tryAddHeader() {
       if (isset($this->ordered_headers)) {
          throw new Exception('Implementation error: must define all headers before any row');
       }
-      return $this->appendHeader(new HTMLTable_SubHeader($super_header, $name, $content,
-                                                         $father));
-   }
+    }
 
 
    private function completeHeaders() {
@@ -117,13 +99,13 @@ class HTMLTable_Group extends HTMLTable_Base {
          $this->ordered_headers = array();
 
          foreach ($this->table->getHeaderOrder() as $header_name) {
-            $header        = $this->table->getHeader($header_name);
+            $header        = $this->table->getSuperHeaderByName($header_name);
             $header_names  = $this->getHeaderOrder($header_name);
             if (!$header_names) {
                $this->ordered_headers[] = $header;
             } else {
                foreach($header_names as $sub_header_name) {
-                  $this->ordered_headers[] = $this->getHeader($header_name, $sub_header_name);
+                  $this->ordered_headers[] = $this->getHeaderByName($header_name, $sub_header_name);
                }
             }
          }
@@ -143,7 +125,7 @@ class HTMLTable_Group extends HTMLTable_Base {
    function prepareDisplay() {
 
       foreach ($this->table->getHeaderOrder() as $super_header_name) {
-         $super_header = $this->table->getHeader($super_header_name);
+         $super_header = $this->table->getSuperHeaderByName($super_header_name);
 
          try {
 
@@ -151,7 +133,7 @@ class HTMLTable_Group extends HTMLTable_Base {
             $count = 0;
 
             foreach($sub_header_names as $sub_header_name) {
-               $sub_header = $this->getHeader($super_header_name, $sub_header_name);
+               $sub_header = $this->getHeaderByName($super_header_name, $sub_header_name);
                if ($sub_header->hasToDisplay()) {
                   $count ++;
                }
@@ -162,7 +144,7 @@ class HTMLTable_Group extends HTMLTable_Base {
             } else {
                $super_header->updateNumberOfSubHeader($count);
                foreach($sub_header_names as $sub_header_name) {
-                  $sub_header = $this->getHeader($super_header_name, $sub_header_name);
+                  $sub_header = $this->getHeaderByName($super_header_name, $sub_header_name);
                   if ($sub_header->hasToDisplay()) {
                      $this->ordered_headers[]        = $sub_header;
                      $sub_header->numberOfSubHeaders = $count;

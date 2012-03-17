@@ -359,7 +359,7 @@ class NetworkPortMigration extends CommonDBChild {
    }
 
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
-                                                     HTMLTable_SuperHeader $header,
+                                                     HTMLTable_SuperHeader $super,
                                                      $options=array()) {
    }
 }

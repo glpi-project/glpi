@@ -126,8 +126,8 @@ class DeviceMemory extends CommonDevice {
    static function getHTMLTableHeaderForComputer_Device(HTMLTable_Group $group,
                                                         HTMLTable_SuperHeader $super) {
 
-      $group->addHeader($super, 'type', __('Type'));
-      $group->addHeader($super, 'frequency', __('Frequency'));
+      $group->addHeader('type', __('Type'), $super);
+      $group->addHeader('frequency', __('Frequency'), $super);
 
    }
 
@@ -140,13 +140,14 @@ class DeviceMemory extends CommonDevice {
    function getHTMLTableCellsForComputer_Device(HTMLTable_Row $row) {
 
       if ($this->fields["devicememorytypes_id"]) {
-         $row->addCell($row->getHeader('specificities', 'type'),
+         $row->addCell($row->getHeaderByName('specificities', 'type'),
                        Dropdown::getDropdownName("glpi_devicememorytypes",
                                                  $this->fields["devicememorytypes_id"]));
       }
 
       if (!empty($this->fields["frequence"])) {
-         $row->addCell($row->getHeader('specificities', 'frequency'), $this->fields["frequence"]);
+         $row->addCell($row->getHeaderByName('specificities', 'frequency'),
+                       $this->fields["frequence"]);
       }
 
    }

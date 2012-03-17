@@ -840,8 +840,8 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Group $group,
-                                              HTMLTable_SuperHeader $header,
+   static function getHTMLTableHeaderForItem($itemtype, HTMLTable_Base $base,
+                                              HTMLTable_SuperHeader $super = NULL,
                                               HTMLTable_Header $father = NULL,
                                               $options=array()) {
       $column_name = __CLASS__;
@@ -854,22 +854,22 @@ class IPAddress extends CommonDBChild {
       if (isset($options['column_links'][$column_name])) {
          $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
       }
-      $this_header = $group->addHeader($header, $column_name, $content, $father);
+      $this_header = $base->addHeader($column_name, $content, $super, $father);
 
-      IPNetwork::getHTMLTableHeaderForItem(__CLASS__, $group, $header, $this_header);
+      IPNetwork::getHTMLTableHeaderForItem(__CLASS__, $base, $super, $this_header);
 
    }
 
 
    static function getHTMLTableForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
-                                        HTMLTable_Cell $father = NULL, array $options) {
+                                        HTMLTable_Cell $father = NULL, array $options = array()) {
       global $DB, $CFG_GLPI;
 
       if (isset($options['dont_display']['IPAddress'])) {
          return;
       }
 
-      $header= $row->getGroup()->getHeader('Internet', __CLASS__);
+      $header= $row->getGroup()->getHeaderByName('Internet', __CLASS__);
       if (!$header) {
          return;
       }

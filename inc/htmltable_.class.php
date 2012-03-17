@@ -86,29 +86,16 @@ class HTMLTable_ extends HTMLTable_Base {
    }
 
 
-   /**
-    * create a new HTMLTable_SuperHeader
-    *
-    * @param $header_name (string)           The name that can be refered by getHeader()
-    * @param $content (string or array)      The content (see HTMLTable_Entity for the format)
-    *                                        of the header
-    * @param $father (HTMLTable_SuperHeader) the father of this header (default NULL = none)
-    *
-    * @return nothing
-   **/
-   function addHeader($header_name, $content, HTMLTable_SuperHeader $father = NULL) {
-
+   function tryAddHeader() {
       if (count($this->groups) > 0) {
          throw new Exception('Implementation error: must define all headers before any subgroups');
       }
-      return $this->appendHeader(new HTMLTable_SuperHeader($this, $header_name, $content,
-                                                           $father));
    }
 
 
    /**
     * @param $name (string)             The name  of the group, to be able to retrieve the group
-    *                                   later with HTMLTable_::getHeader()
+    *                                   later with HTMLTable_::getHeaderByName()
     * @param $content ( @see HTMLTable_Entity::content) The title of the group : display before
     *                                                   the group itself
     *
@@ -150,7 +137,7 @@ class HTMLTable_ extends HTMLTable_Base {
 
       echo "\t\t<tr>";
       foreach ($this->getHeaderOrder() as $header_name) {
-         $header = $this->getHeader($header_name);
+         $header = $this->getSuperHeaderByName($header_name);
          echo "\t\t";
          $header->displayTableHeader(true);
          echo "\n";

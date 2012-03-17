@@ -48,10 +48,10 @@ class NetworkPortDialup extends NetworkPortInstantiation {
 
 
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
-                                                     HTMLTable_SuperHeader $header,
+                                                     HTMLTable_SuperHeader $super,
                                                      $options=array()) {
 
-      $group->addHeader($header, 'MAC', __('MAC'));
+      $group->addHeader('MAC', __('MAC'), $super);
 
    }
 
@@ -59,7 +59,7 @@ class NetworkPortDialup extends NetworkPortInstantiation {
    function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
                                        HTMLTable_Row $row, $canedit, $options=array()) {
 
-      $row->addCell($row->getHeader('Instantiation', 'MAC'), $netport->fields["mac"]);
+      $row->addCell($row->getHeaderByName('Instantiation', 'MAC'), $netport->fields["mac"]);
 
    }
 

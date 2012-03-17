@@ -120,7 +120,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     *
    **/
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
-                                                     HTMLTable_SuperHeader $header,
+                                                     HTMLTable_SuperHeader $super,
                                                      $options=array()) {
    }
 
@@ -287,7 +287,7 @@ class NetworkPortInstantiation extends CommonDBChild {
                foreach ($deviceFields as $field) {
                   $deviceInformations[] = "$field: '".$availableDevice[$field]."'";
                }
-               addslashes_deep($deviceInformations);
+               //addslashes_deep($deviceInformations);
                // Fill the javascript array
                echo "  deviceAttributs[$linkID] = {".implode(', ', $deviceInformations)."};\n";
             }

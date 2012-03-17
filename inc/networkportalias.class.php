@@ -94,12 +94,12 @@ class NetworkPortAlias extends NetworkPortInstantiation {
 
 
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
-                                                     HTMLTable_SuperHeader $header,
+                                                     HTMLTable_SuperHeader $super,
                                                      $options=array()) {
 
-      $group->addHeader($header, 'Origin', __('Origin port'));
-      $group->addHeader($header, 'MAC', __('MAC'));
-      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $group, $header);
+      $group->addHeader('Origin', __('Origin port'), $super);
+      $group->addHeader('MAC', __('MAC'), $super);
+      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $group, $super);
 
    }
 
@@ -107,10 +107,10 @@ class NetworkPortAlias extends NetworkPortInstantiation {
    function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
                                        HTMLTable_Row $row, $canedit, $options=array()) {
 
-      $row->addCell($row->getHeader('Instantiation', 'Origin'),
+      $row->addCell($row->getHeaderByName('Instantiation', 'Origin'),
                     $this->getInstantiationNetworkPortHTMLTable());
 
-      $row->addCell($row->getHeader('Instantiation', 'MAC'), $netport->fields["mac"]);
+      $row->addCell($row->getHeaderByName('Instantiation', 'MAC'), $netport->fields["mac"]);
 
       NetworkPort_Vlan::getHTMLTableForItem($row, $netport, NULL, $options);
 

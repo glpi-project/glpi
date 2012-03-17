@@ -97,17 +97,16 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
 
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
-                                                     HTMLTable_SuperHeader $header,
+                                                     HTMLTable_SuperHeader $super,
                                                      $options=array()) {
 
-      // TODO : try to transfert to Interface DeviceNetworkCard::getHTMLTableHeaderForItem...
-      $group->addHeader($header, 'Interface', __('Interface'));
-      $group->addHeader($header, 'MAC', __('MAC'));
-      $group->addHeader($header, 'ESSID', __('ESSID'));
-      $group->addHeader($header, 'Mode', __('Wifi mode'));
-      $group->addHeader($header, 'Version', __('Wifi protocol version'));
-      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $group, $header);
-      //$group->addHeader($header, 'Connected', __('Connected to'));
+      DeviceNetworkCard::getHTMLTableHeaderForItem('NetworkPortEthernet', $group, $super);
+      $group->addHeader('MAC', __('MAC'), $super);
+      $group->addHeader('ESSID', __('ESSID'), $super);
+      $group->addHeader('Mode', __('Wifi mode'), $super);
+      $group->addHeader('Version', __('Wifi protocol version'), $super);
+      NetworkPort_Vlan::getHTMLTableHeaderForItem('NetworkPort', $group, $super);
+      //$group->addHeader('Connected', __('Connected to'), $super);
    }
 
 
@@ -115,22 +114,17 @@ class NetworkPortWifi extends NetworkPortInstantiation {
                                        HTMLTable_Row $row,
                                        $canedit, $options=array()) {
 
-      $compdev = new Computer_Device();
-      $device  = $compdev->getDeviceFromComputerDeviceID("DeviceNetworkCard",
-                 $this->fields['computers_devicenetworkcards_id']);
+      DeviceNetworkCard::getHTMLTableForItem($row, $this, NULL, $options);
 
-      $row->addCell($row->getHeader('Instantiation', 'Interface'),
-                    ($device ? $device->getLink() : ''));
+      $row->addCell($row->getHeaderByName('Instantiation', 'MAC'), $netport->fields["mac"]);
 
-      $row->addCell($row->getHeader('Instantiation', 'MAC'), $netport->fields["mac"]);
-
-      $row->addCell($row->getHeader('Instantiation', 'ESSID'),
+      $row->addCell($row->getHeaderByName('Instantiation', 'ESSID'),
                     Dropdown::getDropdownName("glpi_wifinetworks",
                                               $this->fields["wifinetworks_id"]));
 
-      $row->addCell($row->getHeader('Instantiation', 'Mode'), $this->fields['mode']);
+      $row->addCell($row->getHeaderByName('Instantiation', 'Mode'), $this->fields['mode']);
 
-      $row->addCell($row->getHeader('Instantiation', 'Version'), $this->fields['version']);
+      $row->addCell($row->getHeaderByName('Instantiation', 'Version'), $this->fields['version']);
 
       NetworkPort_Vlan::getHTMLTableForItem($row, $netport, NULL, $options);
 
