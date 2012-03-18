@@ -538,9 +538,10 @@ class Toolbox {
     * @return addslashes value
    **/
    static function addslashes_deep($value) {
+      global $DB;
 
       $value = is_array($value) ? array_map(array(__CLASS__, 'addslashes_deep'), $value)
-                                : (is_null($value) ? NULL : mysql_real_escape_string($value));
+                                : (is_null($value) ? NULL : $DB->escape($value));
 
       return $value;
    }
@@ -686,18 +687,18 @@ class Toolbox {
       }
 
       // Check for mysql extension ni php
-      echo "<tr class='tab_bg_1'><td class='left b'>".__('Mysql extension test.')."</td>";
-      if (!function_exists("mysql_query")) {
-         echo "<td class='red'>";
-         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
-               __('You must install the MySQL extension for PHP.')."</td></tr>";
-         $error = 2;
-      } else {
+      echo "<tr class='tab_bg_1'><td class='left b'>".__('MySQL Improved extension test.')."</td>";
+      if (class_exists("mysqli")) {
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-               __s('Ok - the function mysql_query() exist - Perfect !').
+               __s('Ok - the MySQLi class exist - Perfect !').
                "\" title=\"".
-               __s('Ok - the function mysql_query() exist - Perfect !').
+               __s('Ok - the MySQLi class exist - Perfect !').
                "\"></td></tr>";
+         echo "<td class='red'>";
+      } else {
+         echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
+               __('You must install the MySQL Improved extension for PHP.')."</td></tr>";
+         $error = 2;
       }
 
       // session test

@@ -137,24 +137,36 @@ class DBmysql {
          $host = $this->dbhost;
       }
 
-      $this->dbh = @mysql_connect($host, $this->dbuser, rawurldecode($this->dbpassword))
-                   or $this->error = 1;
+      $this->dbh = new mysqli($host, $this->dbuser, rawurldecode($this->dbpassword));
 
-      if ($this->dbh) { // connexion ok
-         @mysql_query("SET NAMES '" . (isset($this->dbenc) ? $this->dbenc : "utf8") . "'",
-                      $this->dbh);
-         $select = mysql_select_db($this->dbdefault)
-                  or $this->error = 1;
+      if ($this->dbh->connect_error) {
+         $this->connected = false;
+         $this->error     = 1;
+      } else {
+         $this->dbh->query("SET NAMES '" . (isset($this->dbenc) ? $this->dbenc : "utf8") . "'");
+
+         $select = $this->dbh->select_db($this->dbdefault);
 
          if ($select) { // select ok
             $this->connected = true;
          } else { // select wrong
             $this->connected = false;
+            $this->error     = 1;
          }
-
-      } else { // connexion wrong
-         $this->connected = false;
       }
+   }
+
+
+   /**
+    * Escapes special characters in a string for use in an SQL statement,
+    * taking into account the current charset of the connection
+    *
+    * @param $string     String to escape
+    *
+    * @return String escaped
+   **/
+   function escape($string) {
+      return $this->dbh->real_escape_string($string);
    }
 
 
@@ -176,37 +188,33 @@ class DBmysql {
          $TIMER->start();
       }
 
-      $res = @mysql_query($query,$this->dbh);
+      $res = @$this->dbh->query($query);
       if (!$res) {
-         $this->connect();
-         $res = mysql_query($query,$this->dbh);
-         if (!$res) {
-            $error = "*** MySQL query error : \n***\nSQL: ".addslashes($query)."\nError: ".
-                      mysql_error()."\n";
+         $error = "*** MySQL query error : \n***\nSQL: ".addslashes($query)."\nError: ".
+                   $this->dbh->error."\n";
 
-            if (function_exists("debug_backtrace")) {
-               $error .= "Backtrace :\n";
-               $traces = debug_backtrace();
-               foreach ($traces as $trace) {
-                  $error .= (isset($trace["file"]) ? $trace["file"] : "") . "&nbsp;:" .
-                            (isset($trace["line"]) ? $trace["line"] : "") . "\t\t" .
-                            (isset($trace["class"]) ? $trace["class"] : "") .
-                            (isset($trace["type"]) ? $trace["type"] : "") .
-                            (isset($trace["function"]) ? $trace["function"]."()" : "") ."\n";
-               }
-            } else {
-               $error .= "Script : " ;
+         if (function_exists("debug_backtrace")) {
+            $error .= "Backtrace :\n";
+            $traces = debug_backtrace();
+            foreach ($traces as $trace) {
+               $error .= (isset($trace["file"]) ? $trace["file"] : "") . "&nbsp;:" .
+                         (isset($trace["line"]) ? $trace["line"] : "") . "\t\t" .
+                         (isset($trace["class"]) ? $trace["class"] : "") .
+                         (isset($trace["type"]) ? $trace["type"] : "") .
+                         (isset($trace["function"]) ? $trace["function"]."()" : "") ."\n";
             }
-
-            $error .= $_SERVER["SCRIPT_FILENAME"]. "\n";
-            Toolbox::logInFile("sql-errors", $error."\n");
-
-            if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-                && $CFG_GLPI["debug_sql"]) {
-               $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
-            }
+         } else {
+            $error .= "Script : " ;
          }
-      }
+
+         $error .= $_SERVER["SCRIPT_FILENAME"]. "\n";
+         Toolbox::logInFile("sql-errors", $error."\n");
+
+         if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+             && $CFG_GLPI["debug_sql"]) {
+            $DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST] = $this->error();
+         }
+         }
 
       if (($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
           && $CFG_GLPI["debug_sql"]) {
@@ -248,10 +256,14 @@ class DBmysql {
    **/
    function result($result, $i, $field) {
 
-      $value = Toolbox::get_magic_quotes_runtime()
-                  ? Toolbox::stripslashes_deep(mysql_result($result, $i, $field))
-                  : mysql_result($result, $i, $field);
-      return $value;
+      if (($res = $result->data_seek($i))
+          && ($data = $result->fetch_array())
+          && isset($data[$field])) {
+         return (Toolbox::get_magic_quotes_runtime()
+                    ? Toolbox::stripslashes_deep($data[$field])
+                    : $data[$field]);
+      }
+      return NULL;
    }
 
 
@@ -263,7 +275,7 @@ class DBmysql {
     * @return number of rows
    **/
    function numrows($result) {
-      return mysql_num_rows($result);
+      return $result->num_rows;
    }
 
 
@@ -277,10 +289,9 @@ class DBmysql {
    **/
    function fetch_array($result) {
 
-      $value = Toolbox::get_magic_quotes_runtime()
-                  ? Toolbox::stripslashes_deep(mysql_fetch_array($result))
-                  : mysql_fetch_array($result);
-      return $value;
+      return (Toolbox::get_magic_quotes_runtime()
+                  ? Toolbox::stripslashes_deep($result->fetch_array())
+                  : $result->fetch_array());
    }
 
 
@@ -293,10 +304,9 @@ class DBmysql {
    **/
    function fetch_row($result) {
 
-      $value = Toolbox::get_magic_quotes_runtime()
-                  ? Toolbox::stripslashes_deep(mysql_fetch_row($result))
-                  : mysql_fetch_row($result);
-      return $value;
+      return (Toolbox::get_magic_quotes_runtime()
+                  ? Toolbox::stripslashes_deep($result->fetch_row())
+                  : $result->fetch_row());
    }
 
 
@@ -309,10 +319,9 @@ class DBmysql {
    **/
    function fetch_assoc($result) {
 
-      $value = Toolbox::get_magic_quotes_runtime()
-                  ? Toolbox::stripslashes_deep(mysql_fetch_assoc($result))
-                  : mysql_fetch_assoc($result);
-      return $value;
+      return (Toolbox::get_magic_quotes_runtime()
+                  ? Toolbox::stripslashes_deep($result->fetch_assoc())
+                  : $result->fetch_assoc());
    }
 
 
@@ -325,7 +334,7 @@ class DBmysql {
     * @return boolean
    **/
    function data_seek($result, $num) {
-      return mysql_data_seek($result, $num);
+      return $result->data_seek($num);
    }
 
 
@@ -335,7 +344,7 @@ class DBmysql {
     * @return item ID
    **/
    function insert_id() {
-      return mysql_insert_id($this->dbh);
+      return $this->dbh->insert_id;
    }
 
 
@@ -347,7 +356,7 @@ class DBmysql {
     * @return number of fields
    **/
    function num_fields($result) {
-      return mysql_num_fields($result);
+      return $result->field_count;
    }
 
 
@@ -360,7 +369,9 @@ class DBmysql {
     * @return name of the field
    **/
    function field_name($result, $nb) {
-      return mysql_field_name($result, $nb);
+
+      $finfo = $result->fetch_fields();
+      return $finfo[$nb]->name;
    }
 
 
@@ -373,7 +384,8 @@ class DBmysql {
     * @return flags of the field
    **/
    function field_flags($result, $field) {
-      return mysql_field_flags($result, $field);
+      $finfo = $result->fetch_fields();
+      return $finfo[$nb]->flags;
    }
 
 
@@ -407,7 +419,7 @@ class DBmysql {
       if ($result) {
          if ($this->numrows($result) > 0) {
             $cache[$table] = array();
-            while ($data = mysql_fetch_assoc($result)) {
+            while ($data = $result->fetch_assoc()) {
                $cache[$table][$data["Field"]] = $data;
             }
             return $cache[$table];
@@ -424,7 +436,7 @@ class DBmysql {
     * @return number of affected rows on success, and -1 if the last query failed.
    **/
    function affected_rows() {
-      return mysql_affected_rows($this->dbh);
+      return $this->dbh->affected_rows;
    }
 
 
@@ -436,7 +448,7 @@ class DBmysql {
     * @return Returns TRUE on success or FALSE on failure.
    **/
    function free_result($result) {
-      return mysql_free_result($result);
+      return $result->free();
    }
 
 
@@ -446,7 +458,7 @@ class DBmysql {
     * @return error number from the last MySQL function, or 0 (zero) if no error occurred.
    **/
    function errno() {
-      return mysql_errno($this->dbh);
+      return $this->dbh->errno;
    }
 
 
@@ -456,7 +468,7 @@ class DBmysql {
     * @return error text from the last MySQL function, or '' (empty string) if no error occurred.
    **/
    function error() {
-      return mysql_error($this->dbh);
+      return $this->dbh->error;
    }
 
 
@@ -468,7 +480,7 @@ class DBmysql {
    function close() {
 
       if ($this->dbh) {
-         return @mysql_close($this->dbh);
+         return @$this->dbh->close();
       }
       return false;
    }
