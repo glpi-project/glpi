@@ -308,11 +308,11 @@ class Computer_Device extends CommonDBTM {
                                              "/pics/add_dropdown.png'>";
                      $cell_value .= "<span id='$field_name' style='display:none'><br>";
                      $cell_value .= __('Add')."&nbsp;";
-                     $cell_value .= array($cell_value,
+
+                     $cell_value  = array($cell_value,
                                          array('function'   => 'Dropdown::showInteger',
                                                'parameters' => array($field_name, 0, 0, 10)),
                                     "</span>");
-                     //TODO  PHP Notice: Array to string conversion in /work/GLPI/trunk/inc/computer_device.class.php at line 314
                   }
                   $name_cell = $current_row->addCell($name_column, $cell_value, NULL, $device);
 
