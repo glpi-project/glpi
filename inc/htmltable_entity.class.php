@@ -39,6 +39,10 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  * @since version 0.84
+ *
+ * The base entity for the table. The entity is the base of kind of cell (header or not). It
+ * provides facilities to manage the cells such as attributs or specific content (mixing of strings
+ * and call of method during table display)
 **/
 abstract class HTMLTable_Entity {
 
@@ -46,18 +50,17 @@ abstract class HTMLTable_Entity {
    private $html_style;
    private $html_class;
 
-   /**
-    * The content of a cell, header, ...
-    * Can simply be a string. But it can also be a call to a specific function during the rendering
-    * of the table in case of direct display function (for instance: Dropdown::showInteger).
-    * A function call is an array containing two elements : 'function', the name the function and
-    * 'parameters', an array of the parameters given to the function.
-   **/
    private $content;
 
 
    /**
-    * @param $content
+    * Constructor of an entity
+    *
+    * @param $content The content of a cell, header, ... Can simply be a string. But it can also
+    *                 be a call to a specific function during the rendering of the table in case
+    *                 of direct display function (for instance: Dropdown::showInteger). A function
+    *                 call is an array containing two elements : 'function', the name the function
+    *                 and 'parameters', an array of the parameters given to the function.
    **/
    function __construct($content) {
       $this->content = $content;

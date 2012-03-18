@@ -164,7 +164,16 @@ class HTMLTable_Group extends HTMLTable_Base {
 
 
    /**
-    * @param $totalNumberOfColumn
+    * Display the current group (with headers and rows)
+    *
+    * @param $totalNumberOfColumn        Total number of columns : to span correctly the title
+    * @param $params (array) :
+    *     'display_super_for_each_group' display the super header (ie.: big header of the table)
+    *                                    before the group specific headers
+    *     'display_title_for_each_group' display the title of the header before the group
+    *                                    specific headers
+    *
+    * @return nothing (display only)
    **/
    function display($totalNumberOfColumn, array $params) {
 

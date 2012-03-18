@@ -102,22 +102,23 @@ abstract class HTMLTable_Base  {
     *
     * Depending of "$this" type, this head will be an HTMLTable_SuperHeader of a HTMLTable_SubHeader
     *
-    * @param $header_name (string)           The name that can be refered by getHeaderByName()
-    * @param $content (string or array)      The content (see HTMLTable_Entity for the format)
+    * @param $name (string)                  The name that can be refered by getHeaderByName()
+    * @param $content (string or array)      The content (see HTMLTable_Entity#content)
     *                                        of the header
-    * @param $father (HTMLTable_SuperHeader) the header that contains this new header only used
+    * @param $super (HTMLTable_SuperHeader)  the header that contains this new header only used
     *                                        for HTMLTable_SubHeader (ie: $this instanceof
     *                                        HTMLTable_Group)
+    * @param $father (HTMLTable_Header)      the father of the current header
     *
     * @exception Exception                   If there is no super header while creating a sub
     *                                        header or a super header while creating a super one
     *
     * @return the HTMLTable_Header           that have been created
    **/
-   function addHeader($name, $content, HTMLTable_SuperHeader $super_header = NULL,
+   function addHeader($name, $content, HTMLTable_SuperHeader $super = NULL,
                        HTMLTable_Header $father = NULL) {
       $this->tryAddHeader();
-      if (is_null($super_header)) {
+      if (is_null($super)) {
          if (!$this->super) {
             throw new Exception('A sub header requires a super header');
          }
@@ -127,7 +128,7 @@ abstract class HTMLTable_Base  {
       if ($this->super) {
          throw new Exception('Cannot attach a super heade to another header');
       }
-      return $this->appendHeader(new HTMLTable_SubHeader($super_header, $name, $content,
+      return $this->appendHeader(new HTMLTable_SubHeader($super, $name, $content,
                                                          $father));
    }
 

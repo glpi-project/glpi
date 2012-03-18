@@ -131,9 +131,9 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
 
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
-                                             HTMLTable_SuperHeader $super = NULL,
-                                             HTMLTable_Header $father = NULL,
-                                             $options=array()) {
+                                      HTMLTable_SuperHeader $super = NULL,
+                                      HTMLTable_Header $father = NULL,
+                                      $options=array()) {
       $column_name = __CLASS__;
 
       if (isset($options['dont_display'][$column_name])) {

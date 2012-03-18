@@ -49,7 +49,7 @@ class HTMLTable_SubHeader extends HTMLTable_Header {
    /**
     * @param $header    HTMLTable_SuperHeader object
     * @param $name
-    * @param $content
+    * @param $content   see HTMLTable_Entity#__construct()
     * @param $father    HTMLTable_Header object (default NULL)
    **/
    function __construct(HTMLTable_SuperHeader $header, $name,  $content,
@@ -66,10 +66,7 @@ class HTMLTable_SubHeader extends HTMLTable_Header {
    }
 
 
-   /**
-    * @see inc/HTMLTable_Header::getHeaderAndSubHeaderName()
-   **/
-  function getHeaderAndSubHeaderName(&$header_name, &$subheader_name) {
+   function getHeaderAndSubHeaderName(&$header_name, &$subheader_name) {
 
       $header_name    = $this->header->getName();
       $subheader_name = parent::getName();
