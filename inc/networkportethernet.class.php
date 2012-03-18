@@ -88,7 +88,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                                                      HTMLTable_SuperHeader $super,
                                                      $options=array()) {
 
-     DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super);
+      DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super);
       $group->addHeader('MAC', __('MAC'), $super);
       NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super);
       Netpoint::getHTMLTableHeader('NetworkPortEthernet', $group, $super);

@@ -52,7 +52,7 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
    /**
     * @param $table     HTMLTable_ table owning the current header
     * @param $name      (string) the name of the header
-    * @param $content   see HTMLTable_Entity#content
+    * @param $content   see HTMLTable_Entity#__construct()
     * @param $father    HTMLTable_Header objet (default NULL)
    **/
    function __construct(HTMLTable_ $table, $name, $content,
@@ -87,17 +87,11 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
    }
 
 
-   /**
-    * @see inc/HTMLTable_Header::isSuperHeader()
-   **/
    function isSuperHeader() {
       return true;
    }
 
 
-   /**
-    * @see inc/HTMLTable_Header::getHeaderAndSubHeaderName()
-   **/
    function getHeaderAndSubHeaderName(&$header_name, &$subheader_name) {
 
       $header_name    = $this->getName();
@@ -105,9 +99,6 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
    }
 
 
-   /**
-    * @see inc/HTMLTable_Header::getCompositeName()
-   **/
    function getCompositeName() {
       return $this->getName().':';
    }
@@ -129,7 +120,6 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
    }
 
    /**
-    * @see inc/HTMLTable_Header::getCompositeName()
     * The super headers always have to be displayed, conversely to sub headers
     *
     * @return always true

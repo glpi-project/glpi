@@ -56,7 +56,7 @@ class HTMLTable_Cell extends HTMLTable_Entity {
    /**
     * @param $row
     * @param $header
-    * @param $content
+    * @param $content   see HTMLTable_Entity#__construct()
     * @param $father    HTMLTable_Cell object (default NULL)
     * @param $item      CommonDBTM object: The item associated with the current cell (default NULL)
    **/

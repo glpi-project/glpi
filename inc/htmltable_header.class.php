@@ -49,15 +49,35 @@ abstract class HTMLTable_Header extends HTMLTable_Entity {
    private $numberCells = 0;
 
 
+   /**
+    * get the table of the header (for a subheader, it is the table of its super header)
+    *
+    * @return HTMLTable_ the table owning the current header
+   **/
    abstract protected function getTable();
+
+   /**
+    * get its name and subname : usefull for instance to create an index for arrays
+    *
+    * @param $header_name [out] (string) header name
+    * @param $subheader_name [out] (string) sub header name ( = '' in case of super header)
+    *
+    * @return nothing
+   **/
    abstract function getHeaderAndSubHeaderName(&$header_name, &$subheader_name);
+
+   /**
+    * check to see if it is a super header or not
+    *
+    * @return true if this is a super header
+   **/
    abstract function isSuperHeader();
 
 
    /**
-    * @param $name
-    * @param $content
-    * @param $father    HTMLTable_Header object (default NULL)
+    * @param $name (string)             the name of the header
+    * @param $content                   see HTMLTable_Entity#__construct()
+    * @param $father (HTMLTable_Header) the father of the current column (default NULL)
    **/
    function __construct($name, $content, HTMLTable_Header $father = NULL) {
 
