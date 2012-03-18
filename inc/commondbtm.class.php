@@ -957,7 +957,7 @@ class CommonDBTM extends CommonGLPI {
                      $this->fields[$key] = 'NULL';
                   }
 
-                  if (mysql_real_escape_string($this->fields[$key]) != $this->input[$key]) {
+                  if ($DB->escape($this->fields[$key]) != $this->input[$key]) {
                      if ($key != "id") {
 
                         // Store old values
