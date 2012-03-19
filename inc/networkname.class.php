@@ -475,10 +475,18 @@ class NetworkName extends FQDNLabel {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $itemtype
+    * @param $base            HTMLTable_Base object
+    * @param $super           HTMLTable_SuperHeader object (default NULL
+    * @param $father          HTMLTable_Header object (default NULL)
+    * @param $options   array
+   **/
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
-                                              HTMLTable_SuperHeader $super = NULL,
-                                              HTMLTable_Header $father = NULL,
-                                              $options=array()) {
+                                      HTMLTable_SuperHeader $super=NULL,
+                                      HTMLTable_Header $father=NULL, $options=array()) {
 
       $column_name = __CLASS__;
 
@@ -486,7 +494,7 @@ class NetworkName extends FQDNLabel {
          return;
       }
 
-      $canedit              = ((isset($options['canedit']))   && ($options['canedit']));
+      $canedit = (isset($options['canedit']) && $options['canedit']);
 
       $content = self::getTypeName();
       if (isset($options['column_links'][$column_name])) {
@@ -503,8 +511,16 @@ class NetworkName extends FQDNLabel {
    }
 
 
-   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
-                                        HTMLTable_Cell $father = NULL, array $options = array()) {
+   /**
+    * @since version 0.84
+    *
+    * @param $row             HTMLTable_Row object
+    * @param $item            CommonDBTM object (default NULL)
+    * @param $father          HTMLTable_Cell object (default NULL)
+    * @param $options   array
+    */
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item=NULL,
+                                        HTMLTable_Cell $father=NULL, array $options=array()) {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
@@ -530,8 +546,11 @@ class NetworkName extends FQDNLabel {
                       FROM `glpi_networknames`, `glpi_ipaddresses`, `glpi_ipaddresses_ipnetworks`
                       WHERE `glpi_networknames`.`id` = `glpi_ipaddresses`.`items_id`
                             AND `glpi_ipaddresses`.`itemtype` = 'NetworkName'
-                            AND `glpi_ipaddresses`.`id` =`glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
-                            AND `glpi_ipaddresses_ipnetworks`.`ipnetworks_id` = '".$item->getID()."'";
+                            AND `glpi_ipaddresses`.`id`
+                                 =`glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
+                            AND `glpi_ipaddresses_ipnetworks`.`ipnetworks_id`
+                                 = '".$item->getID()."'";
+
             if (isset($options['order'])) {
                switch ($options['order']) {
                   case 'name' :
@@ -568,8 +587,8 @@ class NetworkName extends FQDNLabel {
          $query .= " ".$options['SQL_options'];
       }
 
-      $canedit              = ((isset($options['canedit']))   && ($options['canedit']));
-      $createRow            = ((isset($options['createRow'])) && ($options['createRow']));
+      $canedit              = (isset($options['canedit']) && $options['canedit']);
+      $createRow            = (isset($options['createRow']) && $options['createRow']);
       $options['createRow'] = false;
       $address              = new self();
       if ($canedit) {
@@ -631,7 +650,7 @@ class NetworkName extends FQDNLabel {
       global $DB, $CFG_GLPI;
 
       $table_options = array('createRow' => true);
-      
+
       if (($item->getType() == 'IPNetwork') || ($item->getType() == 'FQDN')) {
          if (isset($_REQUEST["start"])) {
             $start = $_REQUEST["start"];
@@ -662,14 +681,14 @@ class NetworkName extends FQDNLabel {
          $canedit = true;
       }
 
-      $table_options['canedit']   = $canedit;
+      $table_options['canedit']  = $canedit;
 
-      $table  = new HTMLTable_();
-      $column  = $table->addHeader('Internet', self::getTypeName(2));
-      $t_group = $table->createGroup('Main', '');
+      $table                     = new HTMLTable_();
+      $column                    = $table->addHeader('Internet', self::getTypeName(2));
+      $t_group                   = $table->createGroup('Main', '');
 
-      $address  = new self();
-      
+      $address                   = new self();
+
       self::getHTMLTableHeader(__CLASS__, $t_group, $column, NULL, $table_options);
 
       $t_row   = $t_group->createRow();
@@ -696,7 +715,7 @@ class NetworkName extends FQDNLabel {
 
       if ($display_table) {
          if ($table->getNumberOfRows() > 0) {
-   
+
             if (($item->getType() == 'IPNetwork') || ($item->getType() == 'FQDN')) {
                Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
             }

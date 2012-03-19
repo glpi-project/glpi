@@ -435,7 +435,8 @@ class NetworkPort extends CommonDBChild {
 
       $table->setTitle($name);
 
-      if ($withtemplate != 2 && $canedit) {
+      if (($withtemplate != 2)
+          && $canedit) {
          $c_checkbox = $table->addHeader('checkbox','&nbsp;');
       } else {
          $c_checkbox = NULL;
@@ -465,7 +466,7 @@ class NetworkPort extends CommonDBChild {
          }
 
          NetworkName::getHTMLTableHeader(__CLASS__, $t_group, $c_network, NULL,
-                                                $table_options);
+                                         $table_options);
 
          if ($itemtype == 'NetworkPort') {
             switch ($portType) {
@@ -521,19 +522,19 @@ class NetworkPort extends CommonDBChild {
                   // Session::addToNavigateListItems('NetworkPort', $netport->fields["id"]);
 
                   // No massive action for migration ports
-                  if ($withtemplate != 2
+                  if (($withtemplate != 2)
                       && $canedit
                       && !empty($portType)) {
                      $ce_checkbox =  $t_row->addCell($c_checkbox,
                                                      "<input type='checkbox' name='del_port[" .
-                                                     $netport->fields["id"]."]' value='1'>");
+                                                       $netport->fields["id"]."]' value='1'>");
                   } else {
                      $ce_checkbox = NULL;
                   }
                   $content = "<span class='b'>";
                   // Display link based on default rights
                   if ($save_canedit
-                      && $withtemplate != 2) {
+                      && ($withtemplate != 2)) {
 
                      if (!empty($portType)) {
                         $content .= "<a href=\"" . $CFG_GLPI["root_doc"] .
@@ -546,7 +547,8 @@ class NetworkPort extends CommonDBChild {
                   }
                   $content .= $netport->fields["logical_number"];
 
-                  if ($canedit && $withtemplate != 2) {
+                  if ($canedit
+                      && ($withtemplate != 2)) {
                      $content .= "</a>";
                   }
                   $content .= "</span>";

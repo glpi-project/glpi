@@ -129,8 +129,8 @@ class HTMLTable_Group extends HTMLTable_Base {
 
          try {
 
-            $sub_header_names   = $this->getHeaderOrder($super_header_name);
-            $count = 0;
+            $sub_header_names = $this->getHeaderOrder($super_header_name);
+            $count            = 0;
 
             foreach($sub_header_names as $sub_header_name) {
                $sub_header = $this->getHeaderByName($super_header_name, $sub_header_name);
@@ -166,8 +166,8 @@ class HTMLTable_Group extends HTMLTable_Base {
    /**
     * Display the current group (with headers and rows)
     *
-    * @param $totalNumberOfColumn        Total number of columns : to span correctly the title
-    * @param $params (array) :
+    * @param $totalNumberOfColumn         Total number of columns : to span correctly the title
+    * @param $params                array of possible options:
     *     'display_super_for_each_group' display the super header (ie.: big header of the table)
     *                                    before the group specific headers
     *     'display_title_for_each_group' display the title of the header before the group
@@ -186,7 +186,8 @@ class HTMLTable_Group extends HTMLTable_Base {
 
       if ($this->getNumberOfRows() > 0) {
 
-         if (($p['display_title_for_each_group']) && (!empty($this->content))) {
+         if ($p['display_title_for_each_group']
+             && !empty($this->content)) {
             echo "\t<tr><th colspan='$totalNumberOfColumn'>".$this->content."</th></tr>\n";
          }
 

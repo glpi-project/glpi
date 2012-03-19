@@ -81,7 +81,7 @@ class HTMLTable_Row extends HTMLTable_Entity {
     * @param $content
     * @param $father    HTMLTable_Cell object (default NULL)
     * @param $item      CommonDBTM object: The item associated with the current cell (default NULL)
-    */
+   **/
    function addCell(HTMLTable_Header $header, $content, HTMLTable_Cell $father=NULL,
                     CommonDBTM $item=NULL) {
 

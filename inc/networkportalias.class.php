@@ -93,6 +93,11 @@ class NetworkPortAlias extends NetworkPortInstantiation {
    }
 
 
+   /**
+    * @param $group              HTMLTable_Group object
+    * @param $super              HTMLTable_SuperHeader object
+    * @param $options   array
+   **/
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
                                                      HTMLTable_SuperHeader $super,
                                                      $options=array()) {
@@ -100,10 +105,12 @@ class NetworkPortAlias extends NetworkPortInstantiation {
       $group->addHeader('Origin', __('Origin port'), $super);
       $group->addHeader('MAC', __('MAC'), $super);
       NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super);
-
    }
 
 
+   /**
+    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable_()
+   **/
    function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
                                        HTMLTable_Row $row, $canedit, $options=array()) {
 

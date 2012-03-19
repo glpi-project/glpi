@@ -84,6 +84,11 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
   }
 
 
+  /**
+   * @param $group               HTMLTable_Group object
+   * @param $super               HTMLTable_SuperHeader object
+   * @param $options    array
+  **/
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
                                                      HTMLTable_SuperHeader $super,
                                                      $options=array()) {
@@ -98,9 +103,11 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
   }
 
 
+  /**
+   * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable_()
+  **/
    function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
-                                       HTMLTable_Row $row,
-                                       $canedit, $options=array()) {
+                                       HTMLTable_Row $row, $canedit, $options=array()) {
 
       DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, NULL, $options);
 
@@ -147,7 +154,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                   echo $netport->getLink();
                   echo "</span>\n";
                   Html::showToolTip($netport->fields['comment']);
-                  echo " ".__('on') . " <span class='b'>".$device2->getLink()."</span>";
+                  //TRANS: %s is a link
+                  echo "&nbsp;".sprintf(__('on %s'),
+                                        "<span class='b'>".$device2->getLink()."</span>");
 
                   if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
                      echo "<br>(". Dropdown::getDropdownName("glpi_entities",
@@ -155,7 +164,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                   }
 
                   // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
-                  if ($canedit || $device2->can($device2->fields["id"], 'w')) {
+                  if ($canedit
+                      || $device2->can($device2->fields["id"], 'w')) {
                      echo " <span class='b'>";
 
                      if ($withtemplate != 2) {

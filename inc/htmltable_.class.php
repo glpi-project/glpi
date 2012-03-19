@@ -166,7 +166,7 @@ class HTMLTable_ extends HTMLTable_Base {
    /**
     * Display the table itself
     *
-    * @param $params (array):
+    * @param $params    array of possible options:
     *    'html_id'                      the global HTML ID of the table
     *    'display_thead'                display the header before the first group
     *    'display_tfoot'                display the header at the end of the table
@@ -177,9 +177,9 @@ class HTMLTable_ extends HTMLTable_Base {
    **/
    function display(array $params) {
 
-      $p['html_id']                      = '';
-      $p['display_thead']                = true;
-      $p['display_tfoot']                = true;
+      $p['html_id']        = '';
+      $p['display_thead']  = true;
+      $p['display_tfoot']  = true;
 
       foreach ($params as $key => $val) {
          $p[$key] = $val;
@@ -193,7 +193,7 @@ class HTMLTable_ extends HTMLTable_Base {
 
       $totalNumberOfColumn = 0;
       foreach ($this->getHeaders() as $header) {
-         $colspan = $header['']->getColSpan();
+         $colspan              = $header['']->getColSpan();
          $totalNumberOfColumn += $colspan;
       }
 

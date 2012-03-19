@@ -45,7 +45,7 @@ abstract class HTMLTable_Header extends HTMLTable_Entity {
    private $name;
    private $father;
    private $itemtype;
-   private $colSpan = 1;
+   private $colSpan     = 1;
    private $numberCells = 0;
 
 
@@ -56,15 +56,17 @@ abstract class HTMLTable_Header extends HTMLTable_Entity {
    **/
    abstract protected function getTable();
 
+
    /**
     * get its name and subname : usefull for instance to create an index for arrays
     *
-    * @param $header_name [out] (string) header name
-    * @param $subheader_name [out] (string) sub header name ( = '' in case of super header)
+    * @param $header_name [out]     string   header name
+    * @param $subheader_name [out]  string   sub header name ( = '' in case of super header)
     *
     * @return nothing
    **/
    abstract function getHeaderAndSubHeaderName(&$header_name, &$subheader_name);
+
 
    /**
     * check to see if it is a super header or not
@@ -75,13 +77,15 @@ abstract class HTMLTable_Header extends HTMLTable_Entity {
 
 
    /**
-    * @param $name (string)             the name of the header
-    * @param $content                   see HTMLTable_Entity#__construct()
-    * @param $father (HTMLTable_Header) the father of the current column (default NULL)
+    * @param $name      string   the name of the header
+    * @param $content            see HTMLTable_Entity#__construct()
+    * @param $father             HTMLTable_Header object:
+    *                            the father of the current column (default NULL)
    **/
    function __construct($name, $content, HTMLTable_Header $father = NULL) {
 
       parent::__construct($content);
+
       $this->name       = $name;
       $this->itemtype   = '';
       $this->father     = $father;
@@ -129,6 +133,9 @@ abstract class HTMLTable_Header extends HTMLTable_Entity {
    }
 
 
+   /**
+    * @param $with_content
+   **/
    function displayTableHeader($with_content) {
 
       echo "<th colspan='".$this->colSpan."'>";
