@@ -844,10 +844,18 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $itemtype
+    * @param $base                  HTMLTable_Base object
+    * @param $super                 HTMLTable_SuperHeader object (default NULL)
+    * @param $father                HTMLTable_Header object (default NULL)
+    * @param $options      array
+   **/
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
-                                              HTMLTable_SuperHeader $super = NULL,
-                                              HTMLTable_Header $father = NULL,
-                                              $options=array()) {
+                                      HTMLTable_SuperHeader $super=NULL,
+                                      HTMLTable_Header $father=NULL, $options=array()) {
 
       if ($itemtype != 'IPAddress') {
          return;
@@ -858,13 +866,21 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          return;
       }
 
-      $content = self::getTypeName();
+      $content     = self::getTypeName();
       $this_header = $base->addHeader($column_name, $content, $super, $father);
    }
 
 
-   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL, 
-                                        HTMLTable_Cell $father = NULL, array $options = array()) {
+   /**
+    * @since version 0.84
+    *
+    * @param $row                HTMLTable_Row object
+    * @param $item               CommonDBTM object (default NULL)
+    * @param $father             HTMLTable_Cell object (default NULL)
+    * @param $options   array
+   **/
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item=NULL,
+                                            HTMLTable_Cell $father=NULL, array $options=array()) {
       global $DB, $CFG_GLPI;
 
       if (empty($item)) {
@@ -883,7 +899,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          return;
       }
 
-      $createRow            = ((isset($options['createRow'])) && ($options['createRow']));
+      $createRow            = (isset($options['createRow']) && $options['createRow']);
       $options['createRow'] = false;
       $network              = new self();
 
@@ -893,13 +909,13 @@ class IPNetwork extends CommonImplicitTreeDropdown {
             if ($createRow) {
                $row = $row->createRow();
             }
-
-            $content = $network->getAddress()->getTextual() . "/" .
-               $network->getNetmask()->getTextual();
+            //TRANS: %1$s is address, %2$s is netmask
+            $content = sprintf(__('%1$s / %2$s'), $network->getAddress()->getTextual(),
+                               $network->getNetmask()->getTextual());
             if ($network->fields['addressable'] == 1) {
                $content = "<span class='b'>".$content."</span>";
             }
-            $content .= " - " . $network->getLink();
+            $content = sprintf(__('%1$s - %2$s'), $content, $network->getLink());
             $this_cell = $row->addCell($header, $content, $father, $item);
          }
       }

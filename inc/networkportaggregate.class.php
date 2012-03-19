@@ -81,6 +81,11 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
    }
 
 
+   /**
+    * @param $group              HTMLTable_Group object
+    * @param $super              HTMLTable_SuperHeader object
+    * @param $options   array
+   **/
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
                                                      HTMLTable_SuperHeader $super,
                                                      $options=array()) {
@@ -88,7 +93,6 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
       $group->addHeader('Origin', __('Original port'), $super);
       $group->addHeader('MAC', __('MAC'), $super);
       NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super);
-
    }
 
 

@@ -96,6 +96,11 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    }
 
 
+   /**
+    * @param $group              HTMLTable_Group object
+    * @param $super              HTMLTable_SuperHeader object
+    * @param $options   array
+   **/
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
                                                      HTMLTable_SuperHeader $super,
                                                      $options=array()) {
@@ -110,9 +115,11 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    }
 
 
+   /**
+    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable_()
+   **/
    function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
-                                       HTMLTable_Row $row,
-                                       $canedit, $options=array()) {
+                                       HTMLTable_Row $row, $canedit, $options=array()) {
 
       DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, NULL, $options);
 
@@ -141,6 +148,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       */
 
    }
+
 
    function getSearchOptions() {
 

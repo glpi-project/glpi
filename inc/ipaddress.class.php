@@ -840,10 +840,17 @@ class IPAddress extends CommonDBChild {
    }
 
 
+   /**
+    * @param $itemtype
+    * @param $base                  HTMLTable_Base object
+    * @param $super                 HTMLTable_SuperHeader object (default NULL)
+    * @param $father                HTMLTable_Header object (default NULL)
+    * @param $options      array
+   **/
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
-                                              HTMLTable_SuperHeader $super = NULL,
-                                              HTMLTable_Header $father = NULL,
-                                              $options=array()) {
+                                      HTMLTable_SuperHeader $super=NULL,
+                                      HTMLTable_Header $father=NULL, $options=array()) {
+
       $column_name = __CLASS__;
 
       if (isset($options['dont_display'][$column_name])) {
@@ -861,8 +868,14 @@ class IPAddress extends CommonDBChild {
    }
 
 
-   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
-                                        HTMLTable_Cell $father = NULL, array $options = array()) {
+   /**
+    * @param $row                HTMLTable_Row object
+    * @param $item               CommonDBTM object (default NULL)
+    * @param $father             HTMLTable_Cell object (default NULL)
+    * @param $options   array
+   **/
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item=NULL,
+                                            HTMLTable_Cell $father=NULL, array $options=array()) {
       global $DB, $CFG_GLPI;
 
       if (isset($options['dont_display']['IPAddress'])) {
@@ -886,8 +899,8 @@ class IPAddress extends CommonDBChild {
                                WHERE `items_id` = '" . $item->getID() . "'
                                      AND `itemtype` = '" . $item->getType() . "'";
 
-      $canedit              = ((isset($options['canedit']))   && ($options['canedit']));
-      $createRow            = ((isset($options['createRow'])) && ($options['createRow']));
+      $canedit              = (isset($options['canedit']) && $options['canedit']);
+      $createRow            = (isset($options['createRow']) && $options['createRow']);
       $options['createRow'] = false;
       $address              = new self();
 

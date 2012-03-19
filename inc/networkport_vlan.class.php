@@ -130,10 +130,19 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $itemtype
+    * @param $base                  HTMLTable_Base object
+    * @param $super                 HTMLTable_SuperHeader object (default NULL)
+    * @param $father                HTMLTable_Header object (default NULL)
+    * @param $options      array
+   **/
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
-                                      HTMLTable_SuperHeader $super = NULL,
-                                      HTMLTable_Header $father = NULL,
-                                      $options=array()) {
+                                      HTMLTable_SuperHeader $super=NULL,
+                                      HTMLTable_Header $father=NULL, $options=array()) {
+
       $column_name = __CLASS__;
 
       if (isset($options['dont_display'][$column_name])) {
@@ -144,8 +153,16 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
-   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
-                                        HTMLTable_Cell $father = NULL, array $options = array()) {
+   /**
+    * @since version 0.84
+    *
+    * @param $row                HTMLTable_Row object
+    * @param $item               CommonDBTM object (default NULL)
+    * @param $father             HTMLTable_Cell object (default NULL)
+    * @param $options   array
+   **/
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item=NULL,
+                                        HTMLTable_Cell $father=NULL, array $options=array()) {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
@@ -161,7 +178,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          $item = $father->getItem();
       }
 
-      $canedit = ((isset($options['canedit']))   && ($options['canedit']));
+      $canedit = (isset($options['canedit']) && $options['canedit']);
 
       $query = "SELECT `glpi_networkports_vlans`.*,
                        `glpi_vlans`.`tag` AS vlantag,
@@ -172,16 +189,20 @@ class NetworkPort_Vlan extends CommonDBRelation {
                 WHERE `networkports_id` = '".$item->getID()."'";
 
       foreach ($DB->request($query) as $line) {
-         if ((isset($line["tagged"])) && ($line["tagged"] == 1)) {
+         if (isset($line["tagged"]) && ($line["tagged"] == 1)) {
             //TRANS: %s is the VLAN name
-            $content = sprintf(__('%s - Tagged'), Dropdown::getDropdownName("glpi_vlans",
-                                                                            $line["vlans_id"]));
+            $content = sprintf(__('%1$s - %2$s'),
+                               Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]),
+                               __('Tagged'));
          } else {
-            $content = sprintf(__('%s - Untagged'), Dropdown::getDropdownName("glpi_vlans",
-                                                                              $line["vlans_id"]));
+            $content = sprintf(__('%1$s - %2$s'),
+                               Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]),
+                               __('Untagged'));
          }
-         $content .= Html::showToolTip(sprintf(__('%1$s: %2$s'), __('ID TAG'), $line['vlantag'])."<br>".
-                                       sprintf(__('%1$s: %2$s'), __('Comments'), $line['vlancomment']),
+         $content .= Html::showToolTip(sprintf(__('%1$s: %2$s'),
+                                               __('ID TAG'), $line['vlantag'])."<br>".
+                                       sprintf(__('%1$s: %2$s'),
+                                               __('Comments'), $line['vlancomment']),
                                        array('display' => false));
          if ($canedit) {
             $content .= "<a href='" . $CFG_GLPI["root_doc"] .

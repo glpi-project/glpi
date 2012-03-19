@@ -113,8 +113,8 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * Get HTMLTable columns headers for a given item type
     *
-    * @param &$table          HTMLTable object: the table to update
-    * @param $fathers_name    The name of the father element (default '')
+    * @param $group           HTMLTable_Group object
+    * @param $super           HTMLTable_SuperHeader object
     * @param $options   array of possible options:
     *       - 'dont_display' : array of the columns that must not be display
     *
@@ -130,7 +130,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     *
     * @param $netport         NetworkPort object
     * @param $item            CommonDBTM object
-    * @param $table           HTMLTable object; the table to update
+    * @param $row             HTMLTable_Row object
     * @param $canedit         display the edition elements (ie : add, remove, ...)
     * @param $options   array of possible options:
     *       - 'dont_display' : array of the elements that must not be display
@@ -140,6 +140,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
                                        HTMLTable_Row $row, $canedit, $options=array()) {
    }
+
 
   /**
     * Get all NetworkPort and NetworkEquipments that have a specific MAC address

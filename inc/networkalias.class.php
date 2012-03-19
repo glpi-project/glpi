@@ -166,10 +166,18 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $itemtype
+    * @param $base                  HTMLTable_Base object
+    * @param $super                 HTMLTable_SuperHeader object (default NULL)
+    * @param $father                HTMLTable_Header object (default NULL)
+    * @param $options      array
+   **/
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
-                                              HTMLTable_SuperHeader $super = NULL,
-                                              HTMLTable_Header $father = NULL,
-                                              $options=array()) {
+                                      HTMLTable_SuperHeader $super=NULL,
+                                      HTMLTable_Header $father=NULL, $options=array()) {
 
       $column_name = __CLASS__;
       if (isset($options['dont_display'][$column_name])) {
@@ -180,13 +188,21 @@ class NetworkAlias extends FQDNLabel {
          return;
       }
 
-      $content = self::getTypeName();
+      $content     = self::getTypeName();
       $this_header = $base->addHeader($column_name, $content, $super, $father);
     }
 
 
-   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
-                                        HTMLTable_Cell $father = NULL, array $options = array()) {
+    /**
+     * @since version 0.84
+     *
+    * @param $row                HTMLTable_Row object
+    * @param $item               CommonDBTM object (default NULL)
+    * @param $father             HTMLTable_Cell object (default NULL)
+    * @param $options   array
+   **/
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item=NULL,
+                                        HTMLTable_Cell $father=NULL, array $options=array()) {
       global $DB, $CFG_GLPI;
 
       if (empty($item)) {
@@ -205,13 +221,13 @@ class NetworkAlias extends FQDNLabel {
          return;
       }
 
-      $header= $row->getGroup()->getHeaderByName('Internet', $column_name);
+      $header = $row->getGroup()->getHeaderByName('Internet', $column_name);
       if (!$header) {
          return;
       }
 
-      $canedit              = ((isset($options['canedit']))   && ($options['canedit']));
-      $createRow            = ((isset($options['createRow'])) && ($options['createRow']));
+      $canedit              = (isset($options['canedit']) && $options['canedit']);
+      $createRow            = (isset($options['createRow']) && $options['createRow']);
       $options['createRow'] = false;
 
       $query                = "SELECT `id`

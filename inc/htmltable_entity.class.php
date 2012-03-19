@@ -67,7 +67,11 @@ abstract class HTMLTable_Entity {
    }
 
 
+   /**
+    * @param $origin
+   **/
    function copyAttributsFrom(HTMLTable_Entity $origin) {
+
       $this->html_id    = $origin->html_id;
       $this->html_style = $origin->html_style;
       $this->html_class = $origin->html_class;

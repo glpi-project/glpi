@@ -36,8 +36,8 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class HTMLTable_UnknownHeader extends Exception {}
-class HTMLTable_UnknownHeaders extends Exception {}
+class HTMLTable_UnknownHeader       extends Exception {}
+class HTMLTable_UnknownHeaders      extends Exception {}
 class HTMLTable_UnknownHeadersOrder extends Exception {}
 
 /**
@@ -102,21 +102,23 @@ abstract class HTMLTable_Base  {
     *
     * Depending of "$this" type, this head will be an HTMLTable_SuperHeader of a HTMLTable_SubHeader
     *
-    * @param $name (string)                  The name that can be refered by getHeaderByName()
-    * @param $content (string or array)      The content (see HTMLTable_Entity#content)
-    *                                        of the header
-    * @param $super (HTMLTable_SuperHeader)  the header that contains this new header only used
-    *                                        for HTMLTable_SubHeader (ie: $this instanceof
-    *                                        HTMLTable_Group)
-    * @param $father (HTMLTable_Header)      the father of the current header
+    * @param $name      string            The name that can be refered by getHeaderByName()
+    * @param $content   string or array   The content (see HTMLTable_Entity#content) of the header
+    * @param $super                       HTMLTable_SuperHeader object:
+    *                                     the header that contains this new header only used
+    *                                     for HTMLTable_SubHeader (default NULL)
+    *                                     (ie: $this instanceof HTMLTable_Group)
+    * @param $father                      HTMLTable_Header object: the father of the current header
+    *                                     (default NULL)
     *
-    * @exception Exception                   If there is no super header while creating a sub
-    *                                        header or a super header while creating a super one
+    * @exception Exception                If there is no super header while creating a sub
+    *                                     header or a super header while creating a super one
     *
-    * @return the HTMLTable_Header           that have been created
+    * @return the HTMLTable_Header        that have been created
    **/
-   function addHeader($name, $content, HTMLTable_SuperHeader $super = NULL,
-                       HTMLTable_Header $father = NULL) {
+   function addHeader($name, $content, HTMLTable_SuperHeader $super=NULL,
+                      HTMLTable_Header $father=NULL) {
+
       $this->tryAddHeader();
       if (is_null($super)) {
          if (!$this->super) {
@@ -126,13 +128,15 @@ abstract class HTMLTable_Base  {
                                                               $father));
       }
       if ($this->super) {
-         throw new Exception('Cannot attach a super heade to another header');
+         throw new Exception('Cannot attach a super header to another header');
       }
-      return $this->appendHeader(new HTMLTable_SubHeader($super, $name, $content,
-                                                         $father));
+      return $this->appendHeader(new HTMLTable_SubHeader($super, $name, $content, $father));
    }
 
 
+   /**
+    * @param $name
+   **/
    function getSuperHeaderByName($name) {
       return $this->getHeaderByName($name, '');
    }

@@ -37,9 +37,9 @@ if (!defined('GLPI_ROOT')) {
 }
 
 
-class HTMLTable_CellFatherSameRow extends Exception {}
-class HTMLTable_CellFatherCoherentHeader extends Exception {}
-class HTMLTable_CellWithoutFather extends Exception {}
+class HTMLTable_CellFatherSameRow         extends Exception {}
+class HTMLTable_CellFatherCoherentHeader  extends Exception {}
+class HTMLTable_CellWithoutFather         extends Exception {}
 
 /**
  * @since version 0.84
