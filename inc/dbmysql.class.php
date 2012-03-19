@@ -623,6 +623,14 @@ class DBmysql {
 
        return $nb;
     }
+
+   public function getInfo() {
+      // No translation, used in sysinfo
+      return array('Parameters'       => $this->dbuser."@".$this->dbhost."/".$this->dbdefault,
+                   'Server version'   => $this->dbh->server_info,
+                   'Host info'        => $this->dbh->host_info);
+                   // 'Server status'    => $this->dbh->stat(),
+   }
 }
 
 
@@ -831,6 +839,5 @@ class DBmysqlIterator  implements Iterator {
    public function numrows() {
       return ($this->res ? $this->conn->numrows($this->res) : 0);
    }
-
 }
 ?>
