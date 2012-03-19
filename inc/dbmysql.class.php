@@ -167,6 +167,8 @@ class DBmysql {
     * Escapes special characters in a string for use in an SQL statement,
     * taking into account the current charset of the connection
     *
+    * @since version 0.84
+    *
     * @param $string     String to escape
     *
     * @return String escaped
