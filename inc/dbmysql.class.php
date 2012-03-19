@@ -624,6 +624,13 @@ class DBmysql {
        return $nb;
     }
 
+   /**
+    * Get  information about DB connection for showSystemInformations
+    *
+    * @since version 0.84
+    *
+    * @return Array of label / value
+    */
    public function getInfo() {
       // No translation, used in sysinfo
       return array('Parameters'       => $this->dbuser."@".$this->dbhost."/".$this->dbdefault,
