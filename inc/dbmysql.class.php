@@ -140,7 +140,8 @@ class DBmysql {
       $hostport = explode(":", $host);
       if (count($hostport) < 2) {
          // Host
-         $this->dbh = new mysqli($host, $this->dbuser, rawurldecode($this->dbpassword));
+         $this->dbh = new mysqli($host, $this->dbuser, rawurldecode($this->dbpassword),
+                                 $this->dbdefault);
 
       } else if (intval($hostport[1])>0) {
          // Host:port
@@ -157,15 +158,7 @@ class DBmysql {
          $this->error     = 1;
       } else {
          $this->dbh->query("SET NAMES '" . (isset($this->dbenc) ? $this->dbenc : "utf8") . "'");
-
-         $select = $this->dbh->select_db($this->dbdefault);
-
-         if ($select) { // select ok
-            $this->connected = true;
-         } else { // select wrong
-            $this->connected = false;
-            $this->error     = 1;
-         }
+         $this->connected = true;
       }
    }
 
