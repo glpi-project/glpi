@@ -244,7 +244,7 @@ class AuthMail extends CommonDBTM {
       //Get all the pop/imap servers
       $sql = "SELECT count(*)
               FROM `glpi_authmails`
-                AND `is_active` = 1";
+              WHERE `is_active` = 1";
       $result = $DB->query($sql);
 
       if ($DB->result($result, 0, 0) > 0) {
