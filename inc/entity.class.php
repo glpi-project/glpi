@@ -1598,12 +1598,13 @@ class Entity extends CommonTreeDropdown {
 
       if ($entity->fields["tickettemplates_id"] == self::CONFIG_PARENT) {
          echo "<font class='green'>&nbsp;&nbsp;";
+
          $tt  = new TicketTemplate();
-         $tid = self::getUsedConfig('tickettemplates_id', $ID);
+         $tid = self::getUsedConfig('tickettemplates_id', $ID, '', 0);
          if (!$tid) {
             echo Dropdown::EMPTY_VALUE;
          } else if ($tt->getFromDB($tid)) {
-            echo "- ".$tt->getLink();
+            echo $tt->getLink();
          }
          echo "</font>";
       }
@@ -1620,7 +1621,7 @@ class Entity extends CommonTreeDropdown {
       Dropdown::show('Calendar', $options);
 
       if ($entity->fields["calendars_id"] == self::CONFIG_PARENT) {
-         echo "<br><font class='green'>";
+         echo "<font class='green'>&nbsp;&nbsp;";
          $calendar = new Calendar();
          $cid = self::getUsedConfig('calendars_id', $ID, '', 0);
          if (!$cid) {
