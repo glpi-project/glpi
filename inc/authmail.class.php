@@ -239,18 +239,7 @@ class AuthMail extends CommonDBTM {
     * @return boolean
    **/
    static function useAuthMail() {
-      global $DB;
-
-      //Get all the pop/imap servers
-      $sql = "SELECT count(*)
-              FROM `glpi_authmails`
-              WHERE `is_active` = 1";
-      $result = $DB->query($sql);
-
-      if ($DB->result($result, 0, 0) > 0) {
-         return true;
-      }
-      return false;
+      return (countElementsInTable('glpi_authmails', "`is_active`") > 0);
    }
 
 
