@@ -1596,7 +1596,8 @@ class Entity extends CommonTreeDropdown {
 
       Dropdown::show('TicketTemplate', $options);
 
-      if ($entity->fields["tickettemplates_id"] == self::CONFIG_PARENT) {
+      if (($entity->fields["tickettemplates_id"] == self::CONFIG_PARENT)
+          && ($ID != 0)) {
          echo "<font class='green'>&nbsp;&nbsp;";
 
          $tt  = new TicketTemplate();
@@ -1615,12 +1616,13 @@ class Entity extends CommonTreeDropdown {
       $options = array('value'      => $entity->fields["calendars_id"],
                        'emptylabel' => __('24/7'));
 
-      if ($ID) {
+      if ($ID != 0) {
          $options['toadd'] = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'));
       }
       Dropdown::show('Calendar', $options);
 
-      if ($entity->fields["calendars_id"] == self::CONFIG_PARENT) {
+      if (($entity->fields["calendars_id"] == self::CONFIG_PARENT)
+          && ($ID != 0)) {
          echo "<font class='green'>&nbsp;&nbsp;";
          $calendar = new Calendar();
          $cid = self::getUsedConfig('calendars_id', $ID, '', 0);
@@ -1640,9 +1642,10 @@ class Entity extends CommonTreeDropdown {
          $toadd = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'));
       }
       Ticket::dropdownType('tickettype', array('value' => $entity->fields["tickettype"],
-                                               'toadd'  =>$toadd));
+                                               'toadd' => $toadd));
 
-      if ($entity->fields['tickettype'] == self::CONFIG_PARENT) {
+      if (($entity->fields['tickettype'] == self::CONFIG_PARENT)
+          && ($ID != 0)) {
          echo "<font class='green'>&nbsp;&nbsp;";
          echo Ticket::getTicketTypeName(self::getUsedConfig('tickettype', $ID, '',
                                                             Ticket::INCIDENT_TYPE));
@@ -1661,7 +1664,8 @@ class Entity extends CommonTreeDropdown {
       Dropdown::showFromArray('auto_assign_mode', $autoassign,
                               array('value' => $entity->fields["auto_assign_mode"]));
 
-      if ($entity->fields['auto_assign_mode'] == self::CONFIG_PARENT && $ID != 0) {
+      if (($entity->fields['auto_assign_mode'] == self::CONFIG_PARENT)
+          && ($ID != 0)) {
          $auto_assign_mode = self::getUsedConfig('auto_assign_mode', $entity->fields['entities_id']);
          echo "<font class='green'>&nbsp;&nbsp;";
          echo $autoassign[$auto_assign_mode];
@@ -1684,13 +1688,14 @@ class Entity extends CommonTreeDropdown {
       Dropdown::showInteger('autoclose_delay', $entity->fields['autoclose_delay'], 1, 99, 1,
                             $autoclose, array('unit' => 'day'));
 
-      if ($entity->fields['autoclose_delay'] == self::CONFIG_PARENT && $ID != 0) {
+      if (($entity->fields['autoclose_delay'] == self::CONFIG_PARENT)
+          && ($ID != 0)) {
          $autoclose_mode = self::getUsedConfig('autoclose_delay', $entity->fields['entities_id'],
                                                '', self::CONFIG_NEVER);
 
          echo "<br><font class='green'>&nbsp;&nbsp;";
          if ($autoclose_mode >= 0) {
-            printf(_n('%d day','%d days',$autoclose_mode),$autoclose_mode);
+            printf(_n('%d day','%d days',$autoclose_mode), $autoclose_mode);
          } else {
             echo $autoclose[$autoclose_mode];
          }
@@ -1721,14 +1726,15 @@ class Entity extends CommonTreeDropdown {
       echo "</td></tr>\n";
 
       // Do not display for root entity in inherit case
-      if ($entity->fields['inquest_config'] == self::CONFIG_PARENT && $ID !=0) {
+      if (($entity->fields['inquest_config'] == self::CONFIG_PARENT)
+          && ($ID !=0)) {
          $inquestconfig = self::getUsedConfig('inquest_config', $entity->fields['entities_id']);
          $inquestrate   = self::getUsedConfig('inquest_config', $entity->fields['entities_id'],
                                               'inquest_rate');
          echo "<tr><td colspan='4' class='green center'>";
 
          if ($inquestrate == 0) {
-            echo __('Disabled');
+            -e('Disabled');
          } else {
             echo $typeinquest[$inquestconfig].'<br>';
             $inqconf = self::getUsedConfig('inquest_config', $entity->fields['entities_id'],
@@ -1752,8 +1758,8 @@ class Entity extends CommonTreeDropdown {
 
       $_REQUEST = array('inquest_config' => $entity->fields['inquest_config'],
                         'entities_id'    => $ID);
-      $params = array('inquest_config' => '__VALUE__',
-                      'entities_id'    => $ID);
+      $params   = array('inquest_config' => '__VALUE__',
+                        'entities_id'    => $ID);
       echo "<div id='inquestconfig'>";
       include GLPI_ROOT.'/ajax/ticketsatisfaction.php';
       echo "</div>\n";
@@ -1764,7 +1770,7 @@ class Entity extends CommonTreeDropdown {
          echo "<tr>";
          echo "<td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\"
+         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
                   class='submit'>";
 
          echo "</td></tr>";
@@ -1805,11 +1811,12 @@ class Entity extends CommonTreeDropdown {
          if (isset($entity->fields[$fieldref])) {
             // Numerical value
             if (is_numeric($default_value)
-                && $entity->fields[$fieldref] != self::CONFIG_PARENT) {
+                && ($entity->fields[$fieldref] != self::CONFIG_PARENT)) {
                return $entity->fields[$fieldval];
             }
             // String value
-            if (!is_numeric($default_value) && $entity->fields[$fieldref]) {
+            if (!is_numeric($default_value)
+                && $entity->fields[$fieldref]) {
                return $entity->fields[$fieldval];
             }
          }

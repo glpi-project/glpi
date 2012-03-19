@@ -48,7 +48,7 @@ class Event extends CommonDBTM {
    function prepareInputForAdd($input) {
       global $CFG_GLPI;
 
-      if (isset($input['level']) && $input['level'] <= $CFG_GLPI["event_loglevel"]) {
+      if (isset($input['level']) && ($input['level'] <= $CFG_GLPI["event_loglevel"])) {
          return $input;
       }
       return false;
@@ -146,7 +146,7 @@ class Event extends CommonDBTM {
    static function displayItemLogID($type, $items_id) {
       global $CFG_GLPI;
 
-      if ($items_id=="-1" || $items_id=="0") {
+      if (($items_id == "-1") || ($items_id == "0")) {
          echo "&nbsp;";//$item;
       } else {
          switch ($type) {
@@ -157,8 +157,8 @@ class Event extends CommonDBTM {
 
             case "infocom" :
                echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"].
-                     "/front/infocom.form.php?id=$items_id','infocoms','location=infocoms,width=".
-                     "1000,height=400,scrollbars=no')\">$items_id</a>";
+                     "/front/infocom.form.php?id=".$items_id."','infocoms','location=infocoms,width=".
+                     "1000,height=400,scrollbars=no')\">".$items_id."</a>";
                break;
 
             case "devices" :
@@ -167,7 +167,7 @@ class Event extends CommonDBTM {
 
             case "reservationitem" :
                echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?reservationitems_id=".
-                     $items_id."\">$items_id</a>";
+                     $items_id."\">".$items_id."</a>";
                break;
 
             default :
@@ -177,8 +177,7 @@ class Event extends CommonDBTM {
                   $url  =  $item->getFormURL();
                }
                if (!empty($url)) {
-                  echo "<a href=\"$url?id=".$items_id;
-                  echo "\">$items_id</a>";
+                  echo "<a href=\"".$url."?id=".$items_id."\">".$items_id."</a>";
                } else {
                   echo $items_id;
                }
@@ -212,7 +211,7 @@ class Event extends CommonDBTM {
       // Query Database
       $query = "SELECT *
                 FROM `glpi_events`
-                WHERE `message` LIKE '".$usersearch.addslashes(__('add the item'))."%'
+                WHERE `message` LIKE '".$usersearch.addslashes(__('adds the item'))."%'
                 ORDER BY `date` DESC
                 LIMIT 0,".intval($_SESSION['glpilist_limit']);
 
@@ -224,16 +223,16 @@ class Event extends CommonDBTM {
 
       // No Events in database
       if ($number < 1) {
-         echo "<br><table class='tab_cadrehov'>";
+         echo "<br><div class='spaced'><table class='tab_cadrehov'>";
          echo "<tr><th>".__('No Event')."</th></tr>";
-         echo "</table><br>";
+         echo "</table></div>";
          return;
       }
 
       // Output events
       $i = 0;
 
-      echo "<br><table class='tab_cadrehov'>";
+      echo "<br><div class='spaced'><table class='tab_cadrehov'>";
       echo "<tr><th colspan='5'>";
       //TRANS: %d is the number of item to display
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/event.php\">".
@@ -263,16 +262,16 @@ class Event extends CommonDBTM {
             }
          }
 
-         echo "<tr class='tab_bg_2'><td>$itemtype :</td>";
+         echo "<tr class='tab_bg_2'><td>".$itemtype."</td>";
          echo "<td class='center'>";
          self::displayItemLogID($type, $items_id);
          echo "</td><td class='center'>".Html::convDateTime($date)."</td>";
-         echo "<td class='center'>".$logService[$service]."</td><td>$message</td></tr>";
+         echo "<td class='center'>".$logService[$service]."</td><td>".$message."</td></tr>";
 
          $i++;
       }
 
-      echo "</table><br>";
+      echo "</table></div>";
    }
 
 
@@ -303,7 +302,7 @@ class Event extends CommonDBTM {
       if (!isset($items[$sort])) {
          $sort = "date";
       }
-      if ($order!="ASC") {
+      if ($order != "ASC") {
          $order = "DESC";
       }
 
@@ -337,14 +336,14 @@ class Event extends CommonDBTM {
 
       foreach ($items as $field => $args) {
          echo "<th ".$args[1].">";
-         if ($sort==$field) {
-            if ($order=="DESC") {
+         if ($sort == $field) {
+            if ($order == "DESC") {
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
             } else {
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
             }
          }
-         echo "<a href='$target?sort=$field&amp;order=".($order=="ASC"?"DESC":"ASC")."'>".$args[0].
+         echo "<a href='$target?sort=$field&amp;order=".(($order=="ASC")?"DESC":"ASC")."'>".$args[0].
               "</a></th>";
       }
       echo "</tr>";
@@ -369,12 +368,12 @@ class Event extends CommonDBTM {
          }
 
          echo "<tr class='tab_bg_2'>";
-         echo "<td>$itemtype :</td>";
+         echo "<td>$itemtype</td>";
          echo "<td class='center b'>";
          self::displayItemLogID($type, $items_id);
          echo "</td><td>".Html::convDateTime($date)."</td>";
          echo "<td class='center'>".(isset($logService[$service])?$logService[$service]:$service);
-         echo "</td><td class='center'>$level</td><td>$message</td></tr>";
+         echo "</td><td class='center'>".$level."</td><td>".$message."</td></tr>";
 
          $i++;
       }
@@ -403,7 +402,8 @@ class Event extends CommonDBTM {
        $nb_login = $DB->result($result, 0, 0);
        $date     = $DB->result($result2, 0, 0);
        // Only for DEMO mode (not need to be translated)
-       echo '<span class="b">'.$nb_login.'</span> logins since '.$date ;
+       printf(_n('%1$s login since %2$s', '%1$s logins since %2$s', $nb_login),
+              '<span class="b">'.$nb_login.'</span>', $date);
     }
 
 }
