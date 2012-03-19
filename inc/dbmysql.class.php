@@ -137,7 +137,13 @@ class DBmysql {
          $host = $this->dbhost;
       }
 
-      $this->dbh = new mysqli($host, $this->dbuser, rawurldecode($this->dbpassword));
+      $hostport = explode(":", $host);
+      if (count($hostport) > 1) {
+         $this->dbh = new mysqli($hostport[0], $this->dbuser, rawurldecode($this->dbpassword),
+                                 $this->dbdefault, $hostport[1]);
+      } else {
+         $this->dbh = new mysqli($host, $this->dbuser, rawurldecode($this->dbpassword));
+      }
 
       if ($this->dbh->connect_error) {
          $this->connected = false;
