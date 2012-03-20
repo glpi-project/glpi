@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-20 13:10+0100\n"
+"POT-Creation-Date: 2012-03-20 13:23+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -873,7 +873,7 @@ msgstr ""
 #: inc/commonitilobject.class.php:2954 inc/commonitiltask.class.php:421
 #: inc/commonitiltask.class.php:878 inc/commonitiltask.class.php:1060
 #: inc/crontask.class.php:1012 inc/crontask.class.php:1064
-#: inc/event.class.php:243 inc/event.class.php:296
+#: inc/event.class.php:246 inc/event.class.php:299
 #: inc/knowbaseitem.class.php:1225 inc/log.class.php:279
 #: inc/notificationtargetfieldunicity.class.php:82
 #: inc/notimportedemail.class.php:101 inc/ocsserver.class.php:2897
@@ -7933,7 +7933,7 @@ msgid "to see the entity and its sub-entities"
 msgstr ""
 
 #. TRANS: %s is the user login
-#: inc/entity.class.php:831
+#: inc/entity.class.php:831 inc/event.class.php:212
 #, php-format
 msgid "%s adds the item"
 msgstr ""
@@ -8079,37 +8079,33 @@ msgstr[1] ""
 msgid "Security"
 msgstr ""
 
-#: inc/event.class.php:214
-msgid "adds the item"
-msgstr ""
-
-#: inc/event.class.php:227 inc/event.class.php:323
+#: inc/event.class.php:230 inc/event.class.php:326
 msgid "No Event"
 msgstr ""
 
-#: inc/event.class.php:239
+#: inc/event.class.php:242
 #, php-format
 msgid "Last %d events"
 msgstr ""
 
-#: inc/event.class.php:242 inc/event.class.php:295
+#: inc/event.class.php:245 inc/event.class.php:298
 msgid "Source"
 msgstr ""
 
-#: inc/event.class.php:244 inc/event.class.php:297
+#: inc/event.class.php:247 inc/event.class.php:300
 msgid "Service"
 msgstr ""
 
-#: inc/event.class.php:245 inc/event.class.php:299
+#: inc/event.class.php:248 inc/event.class.php:302
 #: inc/notificationtargetfieldunicity.class.php:79
 msgid "Message"
 msgstr ""
 
-#: inc/event.class.php:298
+#: inc/event.class.php:301
 msgid "Level"
 msgstr ""
 
-#: inc/event.class.php:405
+#: inc/event.class.php:408
 #, php-format
 msgid "%1$s login since %2$s"
 msgid_plural "%1$s logins since %2$s"
