@@ -2574,21 +2574,31 @@ class Search {
                                ($val==0?" OR `$table`.`id` IS NULL":'').') ';
             }
 
+            $tmplink = 'OR';
+            if ($nott) {
+               $tmplink = 'AND';   
+            }
+
             $toadd = '';
             if ($itemtype == 'Ticket') {
                if (isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
                   && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])) {
                   $bj = $searchopt[$ID]["joinparams"]["beforejoin"];
                   $linktable = $bj['table'].'_'.self::computeComplexJoinID($bj['joinparams']);
-                  $toadd = "`$linktable`.`alternative_email` $SEARCH OR ";
+                  $toadd = makeTextCriteria("`$linktable`.`alternative_email`",$val,$nott, $tmplink);
                }
             }
 
-            return $link." ($toadd `$table`.`$name1` $SEARCH
-                            OR `$table`.`$name2` $SEARCH
-                            OR CONCAT(`$table`.`$name1`, ' ',
-                                      `$table`.`$name2`) $SEARCH".
-                            makeTextCriteria("`$table`.`$field`",$val,$nott,'OR').") ";
+            $toadd2='';
+            if ($nott && $val!='NULL' && $val!='null') {
+               $toadd2 = " OR `$table`.`$field` IS NULL";
+            }     
+            
+            return $link." ((`$table`.`$name1` $SEARCH
+                            $tmplink `$table`.`$name2` $SEARCH
+                            $tmplink `$table`.`$field` $SEARCH
+                            $tmplink CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH ) 
+                            $toadd2) $toadd";
 
 //          case "glpi_groups.name" :
 //             $linkfield = "";
@@ -2663,15 +2673,26 @@ class Search {
                $name1 = 'name';
                $name2 = 'firstname';
             }
+            
+            $tmplink = 'OR';
+            if ($nott) {
+               $tmplink = 'AND';   
+            }      
+                        
             return $link." (`$table`.`$name1` $SEARCH
-                            OR `$table`.`$name2` $SEARCH
-                            OR CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
+                            $tmplink `$table`.`$name2` $SEARCH
+                            $tmplink CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
 
          case "glpi_auth_tables.name" :
+         
+            $tmplink = 'OR';
+            if ($nott) {
+               $tmplink = 'AND';   
+            }         
             $user_searchopt = self::getOptions('User');
             return $link." (`glpi_authmails".$addtable."_".
                            self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`name` $SEARCH
-                            OR `glpi_authldaps".$addtable."_".
+                            $tmplink `glpi_authldaps".$addtable."_".
                            self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`name` $SEARCH ) ";
 
          case "glpi_contracts.renewal" :
@@ -2737,8 +2758,21 @@ class Search {
             break;
 
          case "glpi_tickets_tickets.tickets_id_1" :
-            return $link." (`$table`.`tickets_id_1` = '$val'
-                            OR `$table`.`tickets_id_2` = '$val')";
+         
+            $tmplink = 'OR';
+            $compare = '=';
+            if ($nott) {
+               $tmplink = 'AND';   
+               $compare = '<>';
+            }   
+            $toadd2 = '';
+            if ($nott && $val!='NULL' && $val!='null') {
+               $toadd2 = " OR `$table`.`$field` IS NULL";
+            }              
+         
+            return $link." (((`$table`.`tickets_id_1` $compare '$val'
+                             $tmplink `$table`.`tickets_id_2` $compare '$val')
+                            AND `glpi_tickets`.`id` <> '$val') $toadd2)";
 
          case "glpi_tickets.priority" :
          case "glpi_tickets.impact" :
