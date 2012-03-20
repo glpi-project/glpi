@@ -1931,6 +1931,17 @@ class Ticket extends CommonITILObject {
       $tab[91]['massiveaction'] = false;
       $tab[91]['joinparams']    = array('jointype' => 'child');
       
+      $tab[93]['table']         = 'glpi_users';
+      $tab[93]['field']         = 'name';
+      $tab[93]['name']          = $LANG['job'][9]." - ".$LANG['common'][37];
+      $tab[93]['datatype']      = 'itemlink';
+      $tab[93]['itemlink_type'] = 'User';
+      $tab[93]['forcegroupby']  = true;
+      $tab[93]['massiveaction'] = false;
+      $tab[93]['joinparams']    = array('beforejoin'
+                                        => array('table'      => 'glpi_ticketfollowups',
+                                                 'joinparams' => array('jointype' => 'child')));
+
 
       $tab += $this->getSearchOptionsStats();
 
@@ -2021,6 +2032,17 @@ class Ticket extends CommonITILObject {
          $tab[92]['splititems']    = true;
          $tab[92]['massiveaction'] = false;
          $tab[92]['joinparams']    = array('jointype' => 'child');
+
+         $tab[94]['table']         = 'glpi_users';
+         $tab[94]['field']         = 'name';
+         $tab[94]['name']          = $LANG['job'][7]." - ".$LANG['common'][37];
+         $tab[94]['datatype']      = 'itemlink';
+         $tab[94]['itemlink_type'] = 'User';
+         $tab[94]['forcegroupby']  = true;
+         $tab[94]['massiveaction'] = false;
+         $tab[94]['joinparams']    = array('beforejoin'
+                                          => array('table'      => 'glpi_tickettasks',
+                                                   'joinparams' => array('jointype' => 'child')));
 
          $tab['solution'] = $LANG['jobresolution'][1];
 
