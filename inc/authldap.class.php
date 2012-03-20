@@ -977,7 +977,7 @@ class AuthLDAP extends CommonDBTM {
       $results       = array();
       $limitexceeded = false;
       $ldap_users    = self::getAllUsers($values, $results, $limitexceeded);
-      
+
       if (is_array($ldap_users)) {
          $numrows     = count($ldap_users);
          $action      = "toprocess";
@@ -1151,7 +1151,7 @@ class AuthLDAP extends CommonDBTM {
                                                                $values['days']);
             $filter           = "(&$filter $filter_timestamp)";
          }
-         
+
          $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
 
          if ($sr) {
@@ -1306,7 +1306,7 @@ class AuthLDAP extends CommonDBTM {
                              onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" .
                              __('Uncheck all') . "</a>";
             //TRANS: %1$s and %2$s are links
-            printf(__('%1$s/%2$s'), $linkcheck, $linkuncheck);
+            printf(__('%1$s / %2$s'), $linkcheck, $linkuncheck);
 
             echo "<table class='tab_cadre'>";
             echo "<tr><th>" . __('Import'). "</th>";
