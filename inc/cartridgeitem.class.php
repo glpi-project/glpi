@@ -463,12 +463,11 @@ class CartridgeItem extends CommonDBTM {
          if ($DB->numrows($result)) {
             echo "<select name='cartridgeitems_id' size=1>";
             while ($data= $DB->fetch_assoc($result)) {
-               //TRANS: %1$s is the name of the cartrige type, $2$s the reference,
-               //       $3$d the number of free cartridges for the reference, %4$s the location
-               echo "<option value='".$data["tID"]."'>".sprintf(__('%1$s - %2$s (%3$d) - %4$s'),
-                                                                $data["name"], $data["ref"],
-                                                                $data["cpt"], $data["location"]).
-                    "</option>";
+               $text = sprintf(__('%1$s - %2$s'), $data["name"], $data["ref"]);
+               $text = sprintf(__('%1$s (%2$s)'), $text, $data["cpt"]);
+               $text = sprintf(__('%1$s - %2$s'), $text, $data["location"]);
+
+               echo "<option value='".$data["tID"]."'>".$text."</option>";
             }
             echo "</select>";
             return true;

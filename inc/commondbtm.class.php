@@ -867,7 +867,7 @@ class CommonDBTM extends CommonGLPI {
       if ($addMessAfterRedirect) {
          if (($name = $this->getName()) == NOT_AVAILABLE) {
             //TRANS: %1$s is the itemtype, %2$d is the id of the item
-            $this->fields['name'] = sprintf(__('%1$s: ID %2$d'),
+            $this->fields['name'] = sprintf(__('%1$s - ID %2$d'),
                                             $this->getTypeName(1), $this->fields['id']);
          }
          $display = (isset($this->input['_no_message_link'])?$this->getNameID()
@@ -1090,7 +1090,7 @@ class CommonDBTM extends CommonGLPI {
             $this->fields['name'] = stripslashes($this->fields['name']);
          } else {
             //TRANS: %1$s is the itemtype, %2$d is the id of the item
-            $this->fields['name'] = sprintf(__('%1$s: ID %2$d'),
+            $this->fields['name'] = sprintf(__('%1$s - ID %2$d'),
                                             $this->getTypeName(1), $this->fields['id']);
          }
 
