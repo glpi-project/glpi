@@ -4325,6 +4325,21 @@ class Search {
                return str_replace(' ', '&nbsp;', Html::formatNumber($data[$NAME.$num])).$unit;
 
             case "bool" :
+               if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
+                  $out   = "";
+                  $split = explode("$$$$", $data[$NAME.$num]);
+                  $count_display = 0;
+                  for ($k=0 ; $k<count($split) ; $k++) {
+                     if (strlen(trim($split[$k]))>0) {
+                        if ($count_display) {
+                           $out .= "<br>";
+                        }
+                        $count_display++;
+                        $out .= Dropdown::getYesNo($split[$k]).$unit;
+                     }
+                  }
+                  return $out;
+               }            
                return Dropdown::getYesNo($data[$NAME.$num]).$unit;
 
             case "right":
