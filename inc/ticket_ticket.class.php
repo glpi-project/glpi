@@ -132,10 +132,9 @@ class Ticket_Ticket extends CommonDBRelation {
                                <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
                                 alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
                }
-
-               //TRANS: linked tickets : %1$s is the link type, %2$s the name of the linked ticket, %3$s optionals links / icons
-               printf(__('%1$s %2$s %3$s'),self::getLinkName($data['link']),
-                     $ticket->getLink(), $icons);
+               $text = sprintf(__('%1$s %2$s'), self::getLinkName($data['link']),
+                               $ticket->getLink());
+               printf(__('%1$s %2$s'), $text, $icons);
 
             }
             echo '<br>';

@@ -1860,7 +1860,7 @@ class Ticket extends CommonITILObject {
       $tab[93]['joinparams']    = array('beforejoin'
                                         => array('table'      => 'glpi_ticketfollowups',
                                                  'joinparams' => array('jointype' => 'child')));
-                                                 
+
       $tab += $this->getSearchOptionsStats();
 
       $tab[150]['table']         = $this->getTable();
@@ -1971,7 +1971,7 @@ class Ticket extends CommonITILObject {
          $tab[95]['joinparams']    = array('beforejoin'
                                           => array('table'      => 'glpi_tickettasks',
                                                    'joinparams' => array('jointype'  => 'child')));
-                                                   
+
          $tab['solution'] = _n('Solution', 'Solutions', 1);
 
          $tab[23]['table'] = 'glpi_solutiontypes';
@@ -2958,7 +2958,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      
+
       if ($CFG_GLPI['urgency_mask']==(1<<3) || $tt->isHiddenField('urgency')) {
          // Dont show dropdown if only 1 value enabled or field is hidden
          echo "<input type='hidden' name='urgency' value='".$options['urgency']."'>";
@@ -3341,9 +3341,9 @@ class Ticket extends CommonITILObject {
       if ($ID) {
 
          if ($ismultientities) {
-            //TRANS: %1$s is the Itemtype name and $2$d the ID of the item, %3$s is the entity name
-            printf(__('%1$s - ID %2$d (%3$s)'),$this->getTypeName(1),$ID,
-                  Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
+            $text = sprintf(__('%1$s - ID %2$d'), $this->getTypeName(1), $ID);
+            printf(__('%1$s (%2$s)'), $text,
+                   Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
 
          } else {
             printf(__('%1$s - ID %2$d'),$this->getTypeName(1),$ID);
