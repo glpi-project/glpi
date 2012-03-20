@@ -507,8 +507,9 @@ class NetworkPort extends CommonDBChild {
 
                if (!empty($portType)) {
                   //TRANS: %1$s is the type name, %2$s is the port type, %3$d is the port's number
-                  $name = sprintf(__('%1$s (%2$s): %3$d'), self::getTypeName($number_port),
-                                  call_user_func(array($portType, 'getTypeName')), $number_port);
+                  $name = sprintf(__('%1$s (%2$s)'), self::getTypeName($number_port),
+                                  call_user_func(array($portType, 'getTypeName')));
+                  $name = sprintf(__('%1$s: %2$d'), $name, $number_port);
                } else {
                   $name    = __('Network ports waiting for manual migration');
                   $canedit = false;

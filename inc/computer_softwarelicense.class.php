@@ -282,13 +282,10 @@ class Computer_SoftwareLicense extends CommonDBRelation {
             $soft->getFromDB($license->fields['softwares_id']);
             $showEntity = ($license->isRecursive());
 
-            Session::initNavigateListItems('Computer',
-                  //TRANS : %1$s is the itemtype name,
-                  //        %2$s is the name of the item (used for headings of a list)
-                  //        %3$s is the sofware license version name
-                                           sprintf(__('%1$s = %2$s - %3$s'),
-                                                   $soft->getTypeName(1),
-                                                   $soft->fields["name"], $data["vername"]));
+            $text = sprintf(__('%1$s = %2$s'), $soft->getTypeName(1), $soft->fields["name"]);
+            $text = sprintf(__('%1$s - %2$s'), $text, $data["vername"]);
+
+            Session::initNavigateListItems('Computer', $text);
 
             $sort_img = "<img src='" . $CFG_GLPI["root_doc"] . "/pics/" .
                         ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "' alt='' title=''>";
