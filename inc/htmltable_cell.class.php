@@ -185,21 +185,29 @@ class HTMLTable_Cell extends HTMLTable_Entity {
    }
 
 
+   /**
+    * @param $value
+   **/
    function addToNumberOfLines($value) {
       $this->numberOfLines += $value;
    }
 
 
+   /**
+    * @param $cells                 array
+    * @param $totalNumberOflines
+   **/
    static function updateCellSteps(array $cells, $totalNumberOflines) {
+
       $numberOfLines = 0;
       foreach ($cells as $cell) {
          $numberOfLines += $cell->getNumberOfLines();
       }
 
       $numberEmpty = $totalNumberOflines - $numberOfLines;
-      $step = floor($numberEmpty / (count($cells)));
-      $last = $numberEmpty % (count($cells));
-      $index = 0;
+      $step        = floor($numberEmpty / (count($cells)));
+      $last        = $numberEmpty % (count($cells));
+      $index       = 0;
 
       foreach ($cells as $cell) {
          $cell->addToNumberOfLines($step + ($index < $last ? 1 : 0));

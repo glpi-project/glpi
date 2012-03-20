@@ -44,15 +44,15 @@ if (!defined('GLPI_ROOT')) {
 /// The table integrates the notion of group of rows (HTMLTable_Group). For instance, for
 /// Computer_Device, each group represents a kind of device (network card, graphique card,
 /// processor, memory, ...).
-/// There is HTMLTable_SuperHeader that defines global headers for all groups. Each group cat cut
-/// these HTMLTable_SuperHeader as as many HTMLTable_SubHeader as necessary. There is an automatic
+/// There is HTMLTable_SuperHeader that defines global headers for all groups. Each group can cut
+/// these HTMLTable_SuperHeader as many HTMLTable_SubHeader as necessary. There is an automatic
 /// organisation of the headers between groups.
 ///
 /// The (strict) order of definition of the table is:
 ///    * Define all HTMLTable_SuperHeader that are used by each group: HTMLTable_::addHeader()
 ///    * Define one HTMLTable_Group: HTMLTable_::createGroup()
 ///      * Define all HTMLTable_SubHeader depending of previously defined HTMLTable_SuperHeader
-///                                       for the gvien group: HTMLTable_Group::addHeader()
+///                                       for the given group: HTMLTable_Group::addHeader()
 ///      * Create all HTMLTable_Row for the given group: HTMLTable_Group::createRow()
 ///          * Create all HTMLTable_Cell for the given row : HTMLTable_Row::addCell()
 /// and so on for each group.
@@ -94,10 +94,10 @@ class HTMLTable_ extends HTMLTable_Base {
 
 
    /**
-    * @param $name (string)             The name  of the group, to be able to retrieve the group
-    *                                   later with HTMLTable_::getHeaderByName()
-    * @param $content ( @see HTMLTable_Entity::content) The title of the group : display before
-    *                                                   the group itself
+    * @param $name      string   The name of the group, to be able to retrieve the group
+    *                            later with HTMLTable_::getHeaderByName()
+    * @param $content            (@see inc/HTMLTable_Entity::content)
+    *                             The title of the group : display before the group itself
     *
     * TODO : study to be sure that the order is the one we have defined ...
     *

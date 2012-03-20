@@ -50,10 +50,10 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
 
 
    /**
-    * @param $table     HTMLTable_ table owning the current header
-    * @param $name      (string) the name of the header
-    * @param $content   see HTMLTable_Entity#__construct()
-    * @param $father    HTMLTable_SuperHeader objet (default NULL)
+    * @param $table              HTMLTable_ object: table owning the current header
+    * @param $name      string   the name of the header
+    * @param $content            see inc/HTMLTable_Entity#__construct()
+    * @param $father             HTMLTable_SuperHeader objet (default NULL)
    **/
    function __construct(HTMLTable_ $table, $name, $content, HTMLTable_SuperHeader $father=NULL) {
 

@@ -97,7 +97,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
 
 
    /**
-    * @see NetworkPortInstantiation::getInstantiationHTMLTable()
+    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable()
    **/
    function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
                                        HTMLTable_Row $row, $canedit, $options=array()) {
