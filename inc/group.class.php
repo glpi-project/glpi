@@ -93,22 +93,24 @@ class Group extends CommonTreeDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate && Session::haveRight("group","r")) {
+      if (!$withtemplate
+          && Session::haveRight("group","r")) {
          switch ($item->getType()) {
             case 'Group' :
                $ong = array();
 
                $nb = 0;
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  $nb = countElementsInTable($this->getTable(), "`groups_id` = '".$item->getID()."'");
+                  $nb = countElementsInTable($this->getTable(),
+                                             "`groups_id` = '".$item->getID()."'");
                }
                $ong[4] = self::createTabEntry($this->getTypeName(2), $nb);
 
                if ($item->getField('is_itemgroup')) {
-                  $ong[1] = __('Used Items');
+                  $ong[1] = __('Used items');
                }
                if ($item->getField('is_assign')) {
-                  $ong[2] = __('Managed Items');
+                  $ong[2] = __('Managed items');
                }
                if ($item->getField('is_usergroup')
                    && Session::haveRight("group", "w")
@@ -181,15 +183,9 @@ class Group extends CommonTreeDropdown {
    **/
    function showForm($ID, $options=array()) {
 
-      if ($ID > 0) {
-         $this->check($ID, 'r');
-      } else {
-         // Create item
-         $this->check(-1, 'w');
-      }
-
+      $this->initForm($ID, $options);
       $this->showTabs($options);
-      $options['colspan']=4;
+      $options['colspan'] = 4;
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -208,7 +204,7 @@ class Group extends CommonTreeDropdown {
                      array('value'  => $this->fields['groups_id'],
                            'name'   => 'groups_id',
                            'entity' => $this->fields['entities_id'],
-                           'used'   => ($ID>0 ? getSonsOf($this->getTable(), $ID) : array())));
+                           'used'   => (($ID > 0) ? getSonsOf($this->getTable(), $ID) : array())));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -292,7 +288,6 @@ class Group extends CommonTreeDropdown {
       $tab = parent::getSearchOptions();
 
       if (AuthLdap::useAuthLdap()) {
-
          $tab[3]['table']       = $this->getTable();
          $tab[3]['field']       = 'ldap_field';
          $tab[3]['name']        = __('Attribute of the user containing its groups');
@@ -326,12 +321,12 @@ class Group extends CommonTreeDropdown {
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'is_itemgroup';
-      $tab[14]['name']          = __('Can contain items');
+      $tab[14]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), __('Items'));
       $tab[14]['datatype']      = 'bool';
 
       $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'is_usergroup';
-      $tab[15]['name']          = __('Can contain users');
+      $tab[15]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), User::getTypeName(2));
       $tab[15]['datatype']      = 'bool';
 
       $tab[70]['table']         = 'glpi_users';
@@ -358,14 +353,12 @@ class Group extends CommonTreeDropdown {
    }
 
 
+   /**
+    * @param $ID
+   **/
    function showLDAPForm ($ID) {
 
-      if ($ID > 0) {
-         $this->check($ID, 'r');
-      } else {
-         // Create item
-         $this->check(-1, 'w');
-      }
+      $this->initForm($ID, $options);
 
       echo "<form name='groupldap_form' id='groupldap_form' method='post' action='".
              $this->getFormURL()."'>";
@@ -517,11 +510,11 @@ class Group extends CommonTreeDropdown {
       if ($tech) {
          $types = $CFG_GLPI['linkgroup_tech_types'];
          $field = 'groups_id_tech';
-         $title = __('Managed Items');
+         $title = __('Managed items');
       } else {
          $types = $CFG_GLPI['linkgroup_types'];
          $field = 'groups_id';
-         $title = __('Used Items');
+         $title = __('Used items');
       }
 
       $tree = Session::getSavedOption(__CLASS__, 'tree', 0);
@@ -556,7 +549,7 @@ class Group extends CommonTreeDropdown {
       }
       echo "</td></tr></table>";
 
-      $datas  = array();
+      $datas = array();
       if ($type) {
          $types = array($type);
       }
@@ -572,7 +565,8 @@ class Group extends CommonTreeDropdown {
          echo "<table class='tab_cadre_fixe'><tr><th width='10'>&nbsp</th>";
          echo "<th>".__('Type')."</th><th>".__('Name')."</th><th>".__('Entity')."</th>";
          if ($tree || $user) {
-            echo "<th>".self::getTypeName(1)." / ".User::getTypeName(1)."</th>";
+            echo "<th>".sprintf(__('%1$s / %2$s'), self::getTypeName(1), User::getTypeName(1)).
+                 "</th>";
          }
          echo "</tr>";
 

@@ -174,6 +174,7 @@ abstract class FQDNLabel extends CommonDBChild {
       return parent::prepareInputForUpdate($input);
    }
 
+
    /**
     * Get all label IDs corresponding to given string label and FQDN ID
     *

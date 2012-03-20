@@ -59,6 +59,7 @@ class FQDN extends CommonDropdown {
 
 
    function getAdditionalFields() {
+
       return array(array('name'    => 'fqdn',
                          'label'   => __('FQDN'),
                          'type'    => 'text',
@@ -157,7 +158,7 @@ class FQDN extends CommonDropdown {
       $fqdn = strtolower($fqdn);
       if ($wildcard_search) {
          $count = 0;
-         $fqdn = str_replace('*', '%', $fqdn, $count);
+         $fqdn  = str_replace('*', '%', $fqdn, $count);
          if ($count == 0) {
             $fqdn = '%'.$fqdn.'%';
          }
@@ -203,11 +204,11 @@ class FQDN extends CommonDropdown {
 
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab              = parent::getSearchOptions();
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'fqdn';
-      $tab[11]['name']     = __('FQDN');
+      $tab[11]['table'] = $this->getTable();
+      $tab[11]['field'] = 'fqdn';
+      $tab[11]['name']  = __('FQDN');
 
       return $tab;
    }
