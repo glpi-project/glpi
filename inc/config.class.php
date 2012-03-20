@@ -507,7 +507,8 @@ class Config extends CommonDBTM {
       $values = array(0 => __('Never'),
                       1 => __('If synced (all changes)'),
                       2 => __('If synced (current user changes)'),
-                      3 => __('Always'));
+                      3 => __('If synced or read-only account'),
+                      4 => __('Always'));
       Dropdown::showFromArray('use_slave_for_search', $values,
                               array('value' => $CFG_GLPI["use_slave_for_search"]));
       echo "<td colspan='2'>&nbsp;</td>";

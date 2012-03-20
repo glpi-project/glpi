@@ -987,5 +987,23 @@ class Session {
       return $defvalue;
    }
 
+   /**
+    * Is the current account read-only
+    *
+    * since version 0.84
+    *
+    * @return Boolean
+    */
+   static function isReadOnlyAccount() {
+
+      foreach ($_SESSION['glpiactiveprofile'] as $name => $val) {
+         if (is_string($val)
+             && ($name != 'search_config')
+             && $val == 'w') {
+            return false;
+         }
+      }
+      return true;
+   }
 }
 ?>
