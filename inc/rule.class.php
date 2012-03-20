@@ -573,13 +573,16 @@ class Rule extends CommonDBTM {
       $items      = array();
       $group      = array();
       $groupname  = '';
-
+      $first = NULL;
       foreach ($this->getCriterias() as $ID => $crit) {
          // Manage group system
          if (!is_array($crit)) {
             if (count($group)) {
                asort($group);
                $items[$groupname] = $group;
+               if (is_null($first)) {
+                  $first = key($group);
+               }
             }
             $group     = array();
             $groupname = $crit;
@@ -590,6 +593,9 @@ class Rule extends CommonDBTM {
       if (count($group)) {
          asort($group);
          $items[$groupname] = $group;
+         if (is_null($first)) {
+            $first = key($group);
+         }
       }
 
       $rand   = Dropdown::showFromArray("criteria", $items);
@@ -608,8 +614,8 @@ class Rule extends CommonDBTM {
                 "?popup=1&amp;rand=".$params['rand']."' ,'glpipopup', 'height=400, ".
                 "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
       }
-
-      return key($items);
+      
+      return $first;
    }
 
 
