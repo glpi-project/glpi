@@ -214,7 +214,7 @@ class Computer_Device extends CommonDBTM {
 
       $table->setTitle(_n('Component', 'Components', 2));
 
-      $common_column = $table->addHeader('common', __('Type of component'));
+      $common_column   = $table->addHeader('common', __('Type of component'));
       $specific_column = $table->addHeader('specificities', __('Specificities'));
       $specific_column->setHTMLClass('center');
 
@@ -318,9 +318,9 @@ class Computer_Device extends CommonDBTM {
 
                   if ($canedit) {
                      $cell_value = "<input type='checkbox' name='removeall_$device_group'
-                                          id='removeall_$device_group'
-                                          onclick= \"if ( checkAsCheckboxes('removeall_$device_group',
-                                                                            '$device_group'))
+                                     id='removeall_$device_group'
+                                     onclick= \"if ( checkAsCheckboxes('removeall_$device_group',
+                                                                       '$device_group'))
                                                          {return true;}\">";
                      $current_row->addCell($delete_all, $cell_value);
                   }
