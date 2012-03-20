@@ -1136,7 +1136,7 @@ class KnowbaseItem extends CommonDBTM {
                              AND `glpi_knowbaseitems_users`.`users_id` IS NULL";
       } else {
          // Only published
-         $faq_limit .= "AND (`glpi_entities_knowbaseitems`.`entities_id` IS NOT NULL
+         $faq_limit .= " AND (`glpi_entities_knowbaseitems`.`entities_id` IS NOT NULL
                              OR `glpi_knowbaseitems_profiles`.`profiles_id` IS NOT NULL
                              OR `glpi_groups_knowbaseitems`.`groups_id` IS NOT NULL
                              OR `glpi_knowbaseitems_users`.`users_id` IS NOT NULL)";
