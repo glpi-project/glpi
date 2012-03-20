@@ -378,7 +378,7 @@ class DBConnection extends CommonDBTM {
       if (is_array($DBSlave->dbhost)) {
          $hosts = $DBSlave->dbhost;
       } else {
-         $hosts = array($DBslave->dbhost);
+         $hosts = array($DBSlave->dbhost);
       }
 
       foreach ($hosts as $num => $name) {
