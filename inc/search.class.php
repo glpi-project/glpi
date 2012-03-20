@@ -2654,6 +2654,12 @@ class Search {
                                ($val==0?" OR `$table`.`id` IS NULL":'').') ';
             }
             $toadd = '';
+            
+            $tmplink = 'OR';
+            if ($nott) {
+               $tmplink = 'AND';   
+            }
+            
             if ($itemtype == 'Ticket' || $itemtype == 'Problem') {
                if (isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
                    && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
@@ -2662,14 +2668,22 @@ class Search {
 
                   $bj        = $searchopt[$ID]["joinparams"]["beforejoin"];
                   $linktable = $bj['table'].'_'.self::computeComplexJoinID($bj['joinparams']);
-                  $toadd     = "`$linktable`.`alternative_email` $SEARCH OR ";
+                  //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
+                  $toadd = self::makeTextCriteria("`$linktable`.`alternative_email`",$val,$nott, $tmplink);
                }
             }
-
-            return $link." ($toadd `$table`.`$name1` $SEARCH
-                            OR `$table`.`$name2` $SEARCH
-                            OR CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH".
-                            self::makeTextCriteria("`$table`.`$field`",$val,$nott,'OR').") ";
+            $toadd2='';
+            if ($nott && $val!='NULL' && $val!='null') {
+               $toadd2 = " OR `$table`.`$field` IS NULL";
+            }            
+            return $link." ((`$table`.`$name1` $SEARCH
+                            $tmplink `$table`.`$name2` $SEARCH
+                            $tmplink `$table`.`$field` $SEARCH
+                            $tmplink CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH ) 
+                            $toadd2) $toadd";
+                            
+                            
+                            
 
 //          case "glpi_groups.name" :
 //             $linkfield = "";
@@ -2736,16 +2750,27 @@ class Search {
                $name1 = 'name';
                $name2 = 'firstname';
             }
+            
+            $tmplink = 'OR';
+            if ($nott) {
+               $tmplink = 'AND';   
+            }            
             return $link." (`$table`.`$name1` $SEARCH
-                            OR `$table`.`$name2` $SEARCH
-                            OR CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
+                            $tmplink `$table`.`$name2` $SEARCH
+                            $tmplink CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
 
          case "glpi_auth_tables.name" :
             $user_searchopt = self::getOptions('User');
+            
+            $tmplink = 'OR';
+            if ($nott) {
+               $tmplink = 'AND';   
+            }      
+                    
             return $link." (`glpi_authmails".$addtable."_".
                            self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`name`
                            $SEARCH
-                            OR `glpi_authldaps".$addtable."_".
+                           $tmplink `glpi_authldaps".$addtable."_".
                            self::computeComplexJoinID($user_searchopt[30]['joinparams'])."`.`name`
                            $SEARCH ) ";
 
@@ -2844,9 +2869,20 @@ class Search {
             break;
 
          case "glpi_tickets_tickets.tickets_id_1" :
-            return $link." ((`$table`.`tickets_id_1` = '$val'
-                             OR `$table`.`tickets_id_2` = '$val')
-                            AND `glpi_tickets`.`id` <> '$val')";
+            $tmplink = 'OR';
+            $compare = '=';
+            if ($nott) {
+               $tmplink = 'AND';   
+               $compare = '<>';
+            }   
+            $toadd2 = '';
+            if ($nott && $val!='NULL' && $val!='null') {
+               $toadd2 = " OR `$table`.`$field` IS NULL";
+            }              
+         
+            return $link." (((`$table`.`tickets_id_1` $compare '$val'
+                             $tmplink `$table`.`tickets_id_2` $compare '$val')
+                            AND `glpi_tickets`.`id` <> '$val') $toadd2)";
 
          case "glpi_tickets.priority" :
          case "glpi_tickets.impact" :
