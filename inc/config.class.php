@@ -504,7 +504,12 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Use the slave for the search engine') . "</td><td>";
-      Dropdown::showYesNo("use_slave_for_search", $CFG_GLPI["use_slave_for_search"]);
+      $values = array(0 => __('Never'),
+                      1 => __('If synced (all changes)'),
+                      2 => __('If synced (current user changes)'),
+                      3 => __('Always'));
+      Dropdown::showFromArray('use_slave_for_search', $values,
+                              array('value' => $CFG_GLPI["use_slave_for_search"]));
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
 
