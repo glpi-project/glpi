@@ -51,22 +51,22 @@ class Group_User extends CommonDBRelation{
 
 
    /**
-    * @param unknown_type $users_id
-    * @param unknown_type $condition
+    * @param $users_id
+    * @param $condition    (default '')
    **/
    static function getUserGroups($users_id, $condition='') {
       global $DB;
 
       $groups = array();
-      $query = "SELECT `glpi_groups`.*,
-                       `glpi_groups_users`.`id` AS IDD,
-                       `glpi_groups_users`.`id` AS linkID,
-                       `glpi_groups_users`.`is_dynamic` AS is_dynamic,
-                       `glpi_groups_users`.`is_manager` AS is_manager,
-                       `glpi_groups_users`.`is_userdelegate` AS is_userdelegate
-                FROM `glpi_groups_users`
-                LEFT JOIN `glpi_groups` ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
-                WHERE `glpi_groups_users`.`users_id` = '$users_id' ";
+      $query  = "SELECT `glpi_groups`.*,
+                        `glpi_groups_users`.`id` AS IDD,
+                        `glpi_groups_users`.`id` AS linkID,
+                        `glpi_groups_users`.`is_dynamic` AS is_dynamic,
+                        `glpi_groups_users`.`is_manager` AS is_manager,
+                        `glpi_groups_users`.`is_userdelegate` AS is_userdelegate
+                 FROM `glpi_groups_users`
+                 LEFT JOIN `glpi_groups` ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
+                 WHERE `glpi_groups_users`.`users_id` = '$users_id' ";
       if (!empty($condition)) {
          $query .= " AND $condition ";
       }
@@ -83,8 +83,8 @@ class Group_User extends CommonDBRelation{
     * @since version 0.84
     *
     * @param $groups_id
-    * @param $condition
-    */
+    * @param $condition    (default '')
+   **/
    static function getGroupUsers($groups_id, $condition='') {
       global $DB;
 
@@ -112,13 +112,14 @@ class Group_User extends CommonDBRelation{
 
    /**  Show groups of a user
     *
-    * @param $user the user
+    * @param $user   User object
    **/
    static function showForUser(User $user) {
       global $CFG_GLPI;
 
       $ID = $user->fields['id'];
-      if (!Session::haveRight("group","r") || !$user->can($ID,'r')) {
+      if (!Session::haveRight("group","r")
+          || !$user->can($ID,'r')) {
          return false;
       }
 
@@ -165,7 +166,7 @@ class Group_User extends CommonDBRelation{
                                           'used'      => $used,
                                           'condition' => '`is_usergroup`'));
             echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='addgroup' value=\"".__s('Add')."\"
+            echo "<input type='submit' name='addgroup' value=\""._sx('button','Add')."\"
                    class='submit'>";
          } else {
             _e('None');
@@ -177,7 +178,9 @@ class Group_User extends CommonDBRelation{
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixehov'><tr>";
-      echo "<th colspan='$headerspan'>".__('Groups (D=Dynamic)')."</th>";
+      echo "<th colspan='$headerspan'>".sprintf(__('%1$s (%2$s)'),
+                                                Group::getTypeName(2), __('D=Dynamic')).
+           "</th>";
       echo "</tr>";
 
 
@@ -191,7 +194,7 @@ class Group_User extends CommonDBRelation{
          $i = 0;
          foreach ($groups as $data) {
             Session::addToNavigateListItems('Group', $data["id"]);
-            if ($i%$nb_per_line == 0) {
+            if (($i%$nb_per_line) == 0) {
                if ($i != 0) {
                   echo "</tr>";
                }
@@ -201,14 +204,15 @@ class Group_User extends CommonDBRelation{
             if ($canedit) {
                echo "<td width='10'>";
                $sel = "";
-               if (isset($_GET["select"]) && $_GET["select"]=="all") {
+               if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                   $sel = "checked";
                }
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
                echo "</td>";
             }
             echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?id=".$data["id"]."'>".
-                  $data["completename"].($_SESSION["glpiis_ids_visible"]?" (".$data["id"].")":"").
+                   sprintf(__('%1$s (%2$s)'), $data["completename"],
+                           ($_SESSION["glpiis_ids_visible"] ? $data["id"] :"")).
                  "</a>&nbsp;";
 
             if ($data["is_dynamic"]) {
@@ -218,7 +222,7 @@ class Group_User extends CommonDBRelation{
             $i++;
          }
 
-         while ($i%$nb_per_line != 0) {
+         while (($i%$nb_per_line) != 0) {
             if ($canedit) {
                echo "<td>&nbsp;</td>";
             }
@@ -249,7 +253,7 @@ class Group_User extends CommonDBRelation{
     *
     * @since version 0.83
     *
-    * @param $group           Object
+    * @param $group                    Group object
     * @param $used_ids        Array    of already add users
     * @param $entityrestrict  Array    of entities
     * @param $crit            String   for criteria (for default dropdown)
@@ -276,16 +280,14 @@ class Group_User extends CommonDBRelation{
                               'used'   => $used_ids));
 
          echo "</td><td>".__('Manager')."</td><td>";
-         Dropdown::showYesNo('is_manager',
-                             ($crit == 'is_manager' ? 1 : 0));
+         Dropdown::showYesNo('is_manager', (($crit == 'is_manager') ? 1 : 0));
 
          echo "</td><td>".__('Delegatee')."</td><td>";
-         Dropdown::showYesNo('is_userdelegate',
-                             ($crit == 'is_userdelegate' ? 1 : 0));
+         Dropdown::showYesNo('is_userdelegate', (($crit == 'is_userdelegate') ? 1 : 0));
 
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='hidden' name'is_dynamic' value='0'>";
-         echo "<input type='submit' name='adduser' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='adduser' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
          echo "</table></div></form>";
       }
@@ -297,7 +299,7 @@ class Group_User extends CommonDBRelation{
     *
     * @since version 0.83
     *
-    * @param $group     Object
+    * @param $group              Group object
     * @param $members   Array    filled on output of member (filtered)
     * @param $ids       Array    of ids (not filtered)
     * @param $crit      String   filter (is_manager, is_userdelegate) (default '')
@@ -313,7 +315,7 @@ class Group_User extends CommonDBRelation{
          $entityrestrict = getSonsOf('glpi_entities', $group->fields['entities_id']);
 
          // active entity could be a child of object entity
-         if ($_SESSION['glpiactive_entity'] != $group->fields['entities_id']
+         if (($_SESSION['glpiactive_entity'] != $group->fields['entities_id'])
              && in_array($_SESSION['glpiactive_entity'], $entityrestrict)) {
             $entityrestrict = getSonsOf('glpi_entities', $_SESSION['glpiactive_entity']);
          }
@@ -348,14 +350,14 @@ class Group_User extends CommonDBRelation{
 
       $result = $DB->query($query);
 
-      if ($DB->numrows($result)>0) {
+      if ($DB->numrows($result) > 0) {
          while ($data=$DB->fetch_assoc($result)) {
             // Add to display list, according to criterion
             if (empty($crit) || $data[$crit]) {
                $members[] = $data;
             }
             // Add to member list (member of sub-group are not member)
-            if ($data['groups_id']==$group->getID()) {
+            if ($data['groups_id'] == $group->getID()) {
                $ids[]  = $data['id'];
             }
          }
@@ -370,13 +372,14 @@ class Group_User extends CommonDBRelation{
     *
     * @since version 0.83
     *
-    * @param $group the group
+    * @param $group  Group object: the group
    **/
    static function showForGroup(Group $group) {
       global $DB, $CFG_GLPI;
 
       $ID = $group->fields['id'];
-      if (!Session::haveRight("user","r") || !$group->can($ID,'r')) {
+      if (!Session::haveRight("user","r")
+          || !$group->can($ID,'r')) {
          return false;
       }
 
@@ -424,7 +427,9 @@ class Group_User extends CommonDBRelation{
 
       // Display results
       if ($number) {
-         Html::printAjaxPager(__('Users (D=Dynamic)'), $start, $number);
+         Html::printAjaxPager(sprintf(__('%1$s (%2$s)'),
+                                      User::getTypeName(2), __('D=Dynamic')),
+                              $start, $number);
 
          Session::initNavigateListItems('User',
                               //TRANS : %1$s is the itemtype name,
@@ -451,7 +456,7 @@ class Group_User extends CommonDBRelation{
 
          $tmpgrp = new Group();
 
-         for ($i=$start, $j=0 ; $i<$number && $j<$_SESSION['glpilist_limit'] ; $i++, $j++) {
+         for ($i=$start, $j=0 ; ($i < $number) && ($j < $_SESSION['glpilist_limit']) ; $i++, $j++) {
             $data = $used[$i];
             $user->getFromDB($data["id"]);
             Session::addToNavigateListItems('User', $data["id"]);
@@ -509,7 +514,7 @@ class Group_User extends CommonDBRelation{
    **/
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                       = array();
       $tab['common']             = __('Characteristics');
 
       $tab[2]['table']           = $this->getTable();
@@ -545,7 +550,7 @@ class Group_User extends CommonDBRelation{
       if ($only_dynamic) {
          $crit['is_dynamic'] = '1';
       }
-      $obj = new Group_User();
+      $obj = new self();
       $obj->deleteByCriteria($crit);
    }
 
