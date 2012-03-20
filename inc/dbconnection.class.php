@@ -191,6 +191,11 @@ class DBConnection extends CommonDBTM {
                     FROM `glpi_logs`";
 
             switch ($CFG_GLPI['use_slave_for_search']) {
+               case 3 : // If synced or read-only account
+                  if (Session::isReadOnlyAccount()) {
+                     return $DBread;
+                  }
+                  // nobreak;
                case 1 : // If synced (all changes)
                   $slave  = $DBread->request($sql)->next();
                   $master = $DB->request($sql)->next();
