@@ -176,8 +176,9 @@ class Document extends CommonDBTM {
             $name = $item->getNameID();
          }
          //TRANS: %1$s is Document, %2$s is item type, %3$s is item name
-         $input["name"] = addslashes(Html::resume_text(sprintf(__('%1$s: %2$s - %3$s'),
-                                                               __('Document'), $typename, $name),
+         $input["name"] = addslashes(Html::resume_text(sprintf(__('%1$s: %2$s'),
+                                                               __('Document'), 
+                                                       sprintf(__('%1$s - %2$s'),$typename, $name)),
                                                        200));
          $create_from_item = true;
       }
