@@ -33,10 +33,10 @@ chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 
 if (isset($_SERVER['argv'])) {
    for ($i=1 ; $i<$_SERVER['argc'] ; $i++) {
-      $it            = explode("=",$_SERVER['argv'][$i], 2);
-      $it[0]         = preg_replace('/^--/', '', $it[0]);
+      $it = explode("=",$_SERVER['argv'][$i], 2);
+      $it[0] = preg_replace('/^--/', '', $it[0]);
 
-      $_GET[$it[0]]  = (isset($it[1]) ? $it[1] : true);
+      $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
    }
 }
 if (isset($_GET['help'])) {
@@ -54,13 +54,13 @@ if (isset($_GET['help'])) {
 }
 
 $nbproc = (isset($_GET['process']) ? intval($_GET['process']) : 1);
-if ($nbproc < 1) {
-   die(sprintf(__('%1$s (%2$s)')."\n", __('Invalid number of process'), $nbproc));
+if ($nbproc<1) {
+   die("** Invalid number of process ($nbproc)\n");
 
-} else if (($nbproc > 1)
+} else if ($nbproc > 1
            && !(function_exists('pcntl_fork')
            && function_exists('posix_getpid'))) {
-   die(__('Multi process need PCNTL and POSIX extension (GNU/Linux only)')."\n");
+   die ("** Multi process need PCNTL and POSIX extension (GNU/Linux only)\n");
 }
 
 
@@ -77,7 +77,7 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
 
    // Re-establish DB connexion - mandatory in each forked process
    if (!DBConnection::switchToMaster()) {
-      printf(__('%1$s: %2$s')."\n", $pid, __('lost DB connection'));
+      echo " $pid: lost DB connection\n";
       return 0;
    }
    // Server from entity (if not given from option)
@@ -89,10 +89,7 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
    if ($entity->getFromDB($id=$data['entities_id'])) {
       $tps = microtime(true);
       if ($verb) {
-         //TRANS: %1$s is pid, %2$s is Synchonizing entity, %3$s is entity name
-         echo sprintf(__('%1$s: %2$s %3$s'), $pid, __('Synchonizing entity'),
-                       $entity->getField('completename'))."<br>";
-         echo "($id, ".sprintf(__('%1$s = %2$s')."\n", __('mail'), $mail).")";
+         echo "  $pid: Synchonizing entity '".$entity->getField('completename')."' ($id, mail=$mail)\n";
       }
 
       $sql = "SELECT DISTINCT glpi_users.*
@@ -105,6 +102,7 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
       }
       $sql .= ")
                WHERE glpi_users.authtype = ".Auth::LDAP;
+
       if ($server > 0) {
          $sql .= " AND glpi_users.auths_id = $server";
       }
@@ -127,62 +125,57 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
                                                       $row['auths_id']);
          if ($result) {
             $results[$result['action']] += 1;
-            $users[$row['id']] = $row['name'];
+            $users[$row['id']]           = $row['name'];
 
             if ($result['action'] == AuthLDAP::USER_SYNCHRONIZED) {
                if ($verb) {
-                  //TRANS: %1$s is pid, %2$s is username, %3$d is actual row, %4$d is total row
-                  printf(__('%1$s: User %2$s synchronized (%3$d/%4$d)')."\n",
-                         $pid, $row['name'], __('Synchronized'), $i, $nb);
+                  echo "  $pid: User '".$row['name']."' synchronized ($i/$nb)\n";
                }
             } else if ($verb) {
-               printf(__('%1$s: User %2$s %3$s')."\n", $pid, $row['name'], __('deleted'));
+               echo "  $pid: User '".$row['name']."' deleted\n";
             }
          } else if ($verb) {
-            printf(__('%1$s: User %2$s %3$s')."\n", $pid, $row['name'], __('problem with LDAP'));
+            echo "  $pid: Problem with LDAP for user '".$row['name']."'\n";
          }
       }
       $tps = microtime(true)-$tps;
-      printf("  %d: Entity: '%s' Synchronized: %d, Deleted from LDAP: %d, Time: %.2f\"\n",
+      printf("  %d: Entity '%s' - Synchronized: %d, Deleted from LDAP: %d, Time: %.2f\"\n",
              $pid, $entity->getField('completename'), $results[AuthLDAP::USER_SYNCHRONIZED],
-            $results[AuthLDAP::USER_DELETED_LDAP], $tps);
+             $results[AuthLDAP::USER_DELETED_LDAP], $tps);
 
       if ($mail) {
          $report = '';
-         $user   = new User();
+         $user = new User();
          foreach ($users as $id => $name) {
             if ($user->getFromDB($id)) {
                $logs = Log::getHistoryData($user, 0, $_SESSION['glpilist_limit'],
                                            "`date_mod`='".$_SESSION['glpi_currenttime']."'");
                if (count($logs)) {
-                  $report .= "\n".printf(__('%1$s (%2$s)')."\n", $name, $user->getName());
+                  $report .= "\n$name (". $user->getName() .")\n";
                   foreach ($logs as $log) {
                      $report .= "\t";
                      if ($log['field']) {
-                        $report .= sprintf(__('%1$s: %2$s')."\n", $log['field'],
-                                           Html::clean($log['change']));
-                     } else {
-                        $report .= Html::clean($log['change'])."\n";
+                        $report .= $log['field'].": ";
                      }
+                     $report .= Html::clean($log['change'])."\n";
                   }
                }
             } else {
-               $report .= "\n".sprintf(__('%1$s %2$s'), $name."\n\t", __('deleted'))."\n";
+               $report .= "\n".$name."\n\t deleted\n";
             }
          }
          if ($report) {
-            $report  = __('Synchronization of already imported users')."\n".
-                       sprintf(__('%1$s: %2$s'), __('Entity'), $entity->getField('completename'))."\n".
-                       sprintf(__('%1$s: %2$s'), __('Date'),
-                               Html::convDateTime($_SESSION['glpi_currenttime'])) . "\n" .
+            $report  = "Synchronization of already imported users\n ".
+                       "Entité: " .$entity->getField('completename') . "\n ".
+                       "Date: " . Html::convDateTime($_SESSION['glpi_currenttime']) . "\n " .
                        $report;
             $entdata = new Entity();
             $mmail   = new NotificationMail();
             $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
             $mmail->From      = $CFG_GLPI["admin_email"];
             $mmail->FromName  = "GLPI";
-            $mmail->Subject   = sprintf(__('%1$s %2$s'), "[GLPI]", __('LDAP directory link'));
-            $mmail->Body = $report."\n--\n".$CFG_GLPI["mailing_signature"];
+            $mmail->Subject   = "[GLPI] LDAP directory link";
+            $mmail->Body      = $report."\n--\n".$CFG_GLPI["mailing_signature"];
 
             if (($mail & 1)
                 && $entdata->getFromDB($entity->getField('id'))
@@ -190,7 +183,7 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
                $mmail->AddAddress($entdata->fields['admin_email']);
             } else {
                if (($mail & 1) && $verb) {
-                  printf(__('%1$s: %2$s')."\n", $pid, __('No address found for email entity'));
+                  echo "  $pid: No address found for email entity\n";
                }
                $mail = ($mail & 2);
             }
@@ -199,17 +192,17 @@ function syncEntity ($pid, $data, $server, $prof, $verb, $mail) {
                $mmail->AddAddress($CFG_GLPI['admin_email']);
             } else {
                if (($mail & 2) && $verb) {
-                  printf(__('%1$s: %2$s')."\n", $pid, __('No address found for email admin'));
+                  echo "  $pid: No address found for email admin\n";
                }
                $mail = ($mail & 1);
             }
             if ($mail) {
                if ($mmail->Send() && $verb) {
-                   printf(__('%1$s: %2$s')."\n", $pid, __('Report send by email'));
+                  echo "  $pid: Report sent by email\n";
                }
             } else {
-               printf(__('%1$s: Cannot send report to %2$s (email address invalid)')."\n",
-                         $pid, $entity->getField('completename'));
+               echo "  $pid: Cannot send report (".$entity->getField('completename').") ".
+                     "invalid address\n";
             }
          }
       }
@@ -241,11 +234,11 @@ if (isset($_GET['entity'])) {
       $server = AuthLdap::getDefault();
       $crit   = array('authldaps_id' => array(0, $server));
       if ($verb) {
-         printf(__('Use default LDAP server %d')."\n", $server);
+         printf("+ Use default LDAP server: %d\n", $server);
       }
    }
 } else {
-   die(__('Entity or server option is mandatory')."\n");
+   die("** Entity or server option is mandatory\n");
 }
 
 if (isset($_GET['limit'])) {
@@ -275,40 +268,36 @@ foreach ($DB->request('glpi_entitydatas', $crit) as $row) {
    $rows[] = $row;
 }
 if ($verb) {
-   printf(_n('%d entity to synchronize', '%d entities to synchronize', count($rows))."\n",
-          count($rows));
+   printf("+ %d entities to synchronize\n", count($rows));
 }
 
 // DB connection could not be shared with forked process
 $DB->close();
 
 foreach ($rows as $row) {
-   if ($nbproc == 1) {
+   if ($nbproc==1) {
       $nb += syncEntity(0, $row, $server, $prof, $verb, $mail);
       continue;
    }
-   while (count($pids) >= $nbproc) {
-      $pid = pcntl_wait($status);
+   while (count($pids)>=$nbproc) {
+      $pid=pcntl_wait($status);
       if ($pid < 0) {
-         die (__('Could not wait')."\n");
+         die ("** Could not wait\n");
       } else {
          $nb++;
          unset($pids[$pid]);
          if ($verb) {
-            printf(__('%1$s: %2$s')."\n", $pid, __('ended'));
+            echo "- $pid: ended\n";
          }
       }
    }
    $pid = pcntl_fork();
    if ($pid < 0) {
-      die(__('Could not fork')."\n");
+      die("** Could not fork\n");
    } else if ($pid) {
       $pids[$pid] = $pid;
       if ($verb) {
-         $mes = sprintf(__('%1$s: %2$s'), $pid, __('started'));
-         $mes = sprintf(__('%1$s %2$s'), $mes, "-");
-         printf(__('%1$s %2$s')."\n", $mes,
-                sprintf(__('%1$s %2$s'), count($pids), __('running')));
+         echo "+ $pid: started, ".count($pids)." running\n";
       }
    } else  {
       syncEntity(posix_getpid(), $row, $server, $prof, $verb, $mail);
@@ -319,25 +308,21 @@ foreach ($rows as $row) {
 while (count($pids) > 0) {
    $pid = pcntl_wait($status);
    if ($pid < 0) {
-      die(__('Could not wait')."\n");
+      die("** Cound not wait\n");
    } else {
       $nb++;
       unset($pids[$pid]);
       if ($verb) {
-         $mes = sprintf(__('%1$s: %2$s'), $pid, __('ended'));
-         $mes = sprintf(__('%1$s %2$s'), $mes, "-");
-         printf(__('%1$s %2$s')."\n", $mes,
-                sprintf(_n('waiting for %d running process', 'waiting for %d running processes',
-                           count($pids)), count($pids)));
+         echo "+ $pid: ended, waiting for " . count($pids) . " running process\n";
       }
    }
 }
 
 $tps = microtime(true)-$tps;
-if ($nbproc==1) {
-   printf(_n('%1$d user synchronized in %2$s', '%1$d users synchronized in %2$s', $nb)."\n", $nb,
+if ($nbproc == 1) {
+   printf("%d users synchronized in %s\n", $nb,
           Html::clean(Html::timestampToString(round($tps,0),true)));
 } else {
-   printf(_n('%1$d entity synchronized in %2$s', '%1$d entities synchronized in %2$s', $nb)."\n",
-          $nb, Html::clean(Html::timestampToString(round($tps,0),true)));
+   printf("%d entities synchronized in %s\n", $nb,
+          Html::clean(Html::timestampToString(round($tps,0),true)));
 }
