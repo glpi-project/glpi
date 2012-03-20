@@ -430,12 +430,19 @@ class FieldUnicity extends CommonDropdown {
             $where_template = "";
          }
 
-         $where_fields_string = implode(',', $where_fields);
+         $where_fields_string = "";
+         foreach ($where_fields as $where_field) {
+            if (getTableNameForForeignKeyField($where_field)) {
+               $where_fields_string.= " AND `$where_field` IS NOT NULL AND `$where_field` <> '0'";
+            } else {
+               $where_fields_string.= " AND `$where_field` IS NOT NULL AND `$where_field` <> ''";
+            }
+         }
          $query = "SELECT $fields_string,
                           COUNT(*) AS cpt
                    FROM `".$item->getTable()."`
                    WHERE `".$item->getTable()."`.`entities_id` IN (".implode(',',$entities).")
-                        $where_template
+                        $where_template $where_fields_string
                    GROUP BY $fields_string
                    ORDER BY cpt DESC";
          $results = array();
@@ -459,7 +466,12 @@ class FieldUnicity extends CommonDropdown {
             foreach ($results as $result) {
                echo "<tr class='tab_bg_2'>";
                foreach ($fields as $field) {
-                  echo "<td>".$result[$field]."</td>";
+                  $table = getTableNameForForeignKeyField($field);
+                  if ($table != '') {
+                     echo "<td>".Dropdown::getDropdownName($table, $result[$field])."</td>";
+                  } else {
+                     echo "<td>".$result[$field]."</td>";
+                  }
                }
                echo "<td>".$result['cpt']."</td></tr>";
             }
