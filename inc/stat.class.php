@@ -1414,7 +1414,7 @@ class Stat {
             if (isset($data[1]["comment"]))
                $comment = $data[1]["comment"];
             
-            echo "<option value='$file' title=\"".Html::cleanInputText($comment)."\">".$name."</option>";
+            echo "<option value='".$CFG_GLPI["root_doc"]."/front/".$file."' title=\"".Html::cleanInputText($comment)."\">".$name."</option>";
             $i++;
          }
          echo "</optgroup>";

@@ -88,7 +88,7 @@ class Report {
          $val = $data[0];
          $name = $report_list["$val"]["name"];
          $file = $report_list["$val"]["file"];
-         echo "<option value='$file'>".$name."</option>";
+         echo "<option value='".$CFG_GLPI["root_doc"]."/front/".$file."'>".$name."</option>";
          $i++;
       }
 
