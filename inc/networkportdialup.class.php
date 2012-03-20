@@ -71,7 +71,7 @@ class NetworkPortDialup extends NetworkPortInstantiation {
 
 
    /**
-    * @see NetworkPortInstantiation::showInstantiationForm()
+    * @see inc/NetworkPortInstantiation::showInstantiationForm()
    */
    function showInstantiationForm(NetworkPort $netport, $options=array(), $recursiveItems) {
 
