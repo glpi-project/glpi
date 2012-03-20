@@ -1465,7 +1465,8 @@ class Stat {
                $comment = $data[1]["comment"];
             }
 
-            echo "<option value='$file' title=\"".Html::cleanInputText($comment)."\">".$name.
+            echo "<option value='".$CFG_GLPI["root_doc"]."/front/".$file."' 
+                     title=\"".Html::cleanInputText($comment)."\">".$name.
                  "</option>";
             $i++;
          }
