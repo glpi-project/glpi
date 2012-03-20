@@ -563,8 +563,9 @@ abstract class CommonITILTask  extends CommonDBTM {
                         $interv[$key]["state"]                  = $data["state"];
                      }
                      $interv[$key][$parentitem->getForeignKeyField()]
-                                                = $item->fields[$parentitem->getForeignKeyField()];
-                     $interv[$key]["users_id"]  = $data["users_id"];
+                                                     = $item->fields[$parentitem->getForeignKeyField()];
+                     $interv[$key]["users_id"]       = $data["users_id"];
+                     $interv[$key]["users_id_tech"]  = $data["users_id_tech"];
 
                      if (strcmp($begin,$data["begin"]) > 0) {
                         $interv[$key]["begin"] = $begin;
@@ -696,7 +697,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($who <= 0) { // show tech for "show all and show group"
          echo "<br>";
          //TRANS: %s is user name
-         printf(__('By %s'), getUserName($val["users_id"]));
+         printf(__('By %s'), getUserName($val["users_id_tech"]));
       }
 
       echo "</a>";
