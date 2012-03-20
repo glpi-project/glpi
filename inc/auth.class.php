@@ -728,10 +728,10 @@ class Auth {
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {
-                  //TRANS: %1$s is the auth method type, %2$s an optional method type
-                  //       %3$s the name of the opt method
-                  return sprintf(__('%1$s + %2$s: %3$s'),
-                                 __('CAS'), $auth->getTypeName(1), $auth->getLink());
+                  return sprintf(__('%1$s: %2$s'), 
+                                 sprintf(__('%1$s + %2$s'),
+                                         __('CAS'), $auth->getTypeName(1)), 
+                                 $auth->getLink());
                }
             }
             return __('CAS');
@@ -740,11 +740,10 @@ class Auth {
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {
-                  //TRANS: %1$s is the auth method type, %2$s an optional method type
-                  //       %3$s the name of the opt method
-                  return sprintf(__('%1$s + %2$s: %3$s'),
-                                 __('x509 certificate authentication'),
-                                    $auth->getTypeName(1), $auth->getLink());
+                  return sprintf(__('%1$s: %2$s'), 
+                                 sprintf(__('%1$s + %2$s'),
+                                         __('CAS'), $auth->getTypeName(1)), 
+                                 $auth->getLink());
                }
             }
             return __('x509 certificate authentication');
@@ -753,10 +752,10 @@ class Auth {
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {
-                  //TRANS: %1$s is the auth method type, %2$s an optional method type
-                  //       %3$s the name of the opt method
-                  return sprintf(__('%1$s + %2$s: %3$s'),
-                                 __('Other'), $auth->getTypeName(1), $auth->getLink());
+                  return sprintf(__('%1$s: %2$s'), 
+                                 sprintf(__('%1$s + %2$s'),
+                                         __('CAS'), $auth->getTypeName(1)), 
+                                 $auth->getLink());
                }
             }
             return __('Other');
