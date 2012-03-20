@@ -161,7 +161,6 @@ $obsoleted = array(
    'popHeader'                         =>  'Html::popHeader',
    'printAjaxPager'                    =>  'Html::printAjaxPager',
    'printCleanArray'                   =>  'Html::printCleanArray',
-   'printHelpDesk'                     =>  'Ticket::showFormHelpdesk',
    'printPager'                        =>  'Html::printPager',
    'printPagerForm'                    =>  'Html::printPagerForm',
    'refreshDropdownPopupInMainWindow'  =>  'Ajax::refreshDropdownPopupInMainWindow',
