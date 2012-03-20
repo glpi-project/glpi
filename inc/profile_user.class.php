@@ -129,7 +129,7 @@ class Profile_User extends CommonDBTM {
 
       echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>"._n('Entity', 'Entities', 2)."</th>";
-      echo "<th>".__('Profile (D=Dynamic, R=Recursive)');
+      echo "<th>".sprintf(__('%1$s (%2$s)'), self::getTypeName(2), __('D=Dynamic, R=Recursive'));
       echo "</th></tr>";
 
       $query = "SELECT DISTINCT `glpi_profiles_users`.`id` AS linkID,
@@ -248,7 +248,8 @@ class Profile_User extends CommonDBTM {
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='$headerspan'>".__('Users (D=Dynamic, R=Recursive)')."</th></tr>";
+      echo "<tr><th colspan='$headerspan'>".sprintf(__('%1$s (%2$s)'), _n('User', 'Users', 2),
+                                                    __('D=Dynamic, R=Recursive'))."</th></tr>";
 
       $query = "SELECT DISTINCT `glpi_profiles`.`id`, `glpi_profiles`.`name`
                 FROM `glpi_profiles_users`
@@ -371,7 +372,8 @@ class Profile_User extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'><tr>";
       echo "<th>".sprintf(__('%1$s: %2$s'), __('Profile'), $prof->fields["name"])."</th></tr>\n";
 
-      echo "<tr><th colspan='2'>".__('Users (D=Dynamic, R=Recursive)')."</th></tr>";
+      echo "<tr><th colspan='2'>".sprintf(__('%1$s (%2$s)'), _n('User', 'Users', 2),
+                                          __('D=Dynamic, R=Recursive'))."</th></tr>";
       echo "</table>\n";
 
       $query = "SELECT `glpi_users`.*,
