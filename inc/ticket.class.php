@@ -1906,7 +1906,7 @@ class Ticket extends CommonITILObject {
 
          $tab[26]['table']         = 'glpi_tickettasks';
          $tab[26]['field']         = 'content';
-         $tab[26]['name']          = __('Number of duplicated tickets');
+         $tab[26]['name']          = __('Task description');
          $tab[26]['forcegroupby']  = true;
          $tab[26]['splititems']    = true;
          $tab[26]['massiveaction'] = false;
@@ -1930,6 +1930,15 @@ class Ticket extends CommonITILObject {
          $tab[20]['joinparams']    = array('beforejoin'
                                            => array('table'      => 'glpi_tickettasks',
                                                     'joinparams' => array('jointype' => 'child')));
+
+         $tab[92]['table']         = 'glpi_tickettasks';
+         $tab[92]['field']         = 'is_private';
+         $tab[92]['name']          = __('Private');
+         $tab[92]['datatype']      = 'bool';
+         $tab[92]['forcegroupby']  = true;
+         $tab[92]['splititems']    = true;
+         $tab[92]['massiveaction'] = false;
+         $tab[92]['joinparams']    = array('jointype' => 'child');
 
          $tab['solution'] = _n('Solution', 'Solutions', 1);
 
