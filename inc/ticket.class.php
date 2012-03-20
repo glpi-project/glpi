@@ -1841,6 +1841,16 @@ class Ticket extends CommonITILObject {
                                           => array('table'      => 'glpi_ticketfollowups',
                                                    'joinparams' => array('jointype' => 'child')));
 
+      $tab[91]['table']         = 'glpi_ticketfollowups';
+      $tab[91]['field']         = 'is_private';
+      $tab[91]['name']          = __('Private');
+      $tab[91]['datatype']      = 'bool';
+      $tab[91]['forcegroupby']  = true;
+      $tab[91]['splititems']    = true;
+      $tab[91]['massiveaction'] = false;
+      $tab[91]['joinparams']    = array('jointype' => 'child');
+
+
       $tab += $this->getSearchOptionsStats();
 
       $tab[150]['table']         = $this->getTable();
