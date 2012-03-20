@@ -1843,14 +1843,24 @@ class Ticket extends CommonITILObject {
 
       $tab[91]['table']         = 'glpi_ticketfollowups';
       $tab[91]['field']         = 'is_private';
-      $tab[91]['name']          = __('Private');
+      $tab[91]['name']          = __('Private followup');
       $tab[91]['datatype']      = 'bool';
       $tab[91]['forcegroupby']  = true;
       $tab[91]['splititems']    = true;
       $tab[91]['massiveaction'] = false;
       $tab[91]['joinparams']    = array('jointype' => 'child');
 
-
+      $tab[93]['table']         = 'glpi_users';
+      $tab[93]['field']         = 'name';
+      $tab[93]['name']          = __('Followup writer');
+      $tab[93]['datatype']      = 'itemlink';
+      $tab[93]['itemlink_type'] = 'User';
+      $tab[93]['forcegroupby']  = true;
+      $tab[93]['massiveaction'] = false;
+      $tab[93]['joinparams']    = array('beforejoin'
+                                        => array('table'      => 'glpi_ticketfollowups',
+                                                 'joinparams' => array('jointype' => 'child')));
+                                                 
       $tab += $this->getSearchOptionsStats();
 
       $tab[150]['table']         = $this->getTable();
@@ -1933,12 +1943,23 @@ class Ticket extends CommonITILObject {
 
          $tab[92]['table']         = 'glpi_tickettasks';
          $tab[92]['field']         = 'is_private';
-         $tab[92]['name']          = __('Private');
+         $tab[92]['name']          = __('Private task');
          $tab[92]['datatype']      = 'bool';
          $tab[92]['forcegroupby']  = true;
          $tab[92]['splititems']    = true;
          $tab[92]['massiveaction'] = false;
          $tab[92]['joinparams']    = array('jointype' => 'child');
+
+         $tab[94]['table']         = 'glpi_users';
+         $tab[94]['field']         = 'name';
+         $tab[94]['name']          = __('Task writer');
+         $tab[94]['datatype']      = 'itemlink';
+         $tab[94]['itemlink_type'] = 'User';
+         $tab[94]['forcegroupby']  = true;
+         $tab[94]['massiveaction'] = false;
+         $tab[94]['joinparams']    = array('beforejoin'
+                                          => array('table'      => 'glpi_tickettasks',
+                                                   'joinparams' => array('jointype' => 'child')));
 
          $tab['solution'] = _n('Solution', 'Solutions', 1);
 
