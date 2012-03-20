@@ -75,7 +75,7 @@ class Fieldblacklist extends CommonDropdown {
    **/
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                       = parent::getSearchOptions();
 
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'itemtype';
@@ -98,6 +98,9 @@ class Fieldblacklist extends CommonDropdown {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
       $input = parent::prepareInputForAdd($input);
@@ -105,6 +108,9 @@ class Fieldblacklist extends CommonDropdown {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForUpdate()
+   **/
    function prepareInputForUpdate($input) {
 
       $input = parent::prepareInputForUpdate($input);
@@ -186,33 +192,34 @@ class Fieldblacklist extends CommonDropdown {
       if (!isset($this->fields['entities_id'])) {
          $this->fields['entities_id'] = $_SESSION['glpiactive_entity'];
       }
-      $target = new $this->fields['itemtype']();
 
-      $criteria = array();
-      foreach ($DB->list_fields($target->getTable()) as $field) {
-         $searchOption = $target->getSearchOptionByField('field', $field['Field']);
+      if ($target = getItemForItemtype($this->fields['itemtype'])) {
+         $criteria = array();
+         foreach ($DB->list_fields($target->getTable()) as $field) {
+            $searchOption = $target->getSearchOptionByField('field', $field['Field']);
 
-         if (empty($searchOption)) {
-            if ($table = getTableNameForForeignKeyField($field['Field'])) {
-               $searchOption = $target->getSearchOptionByField('field', 'name', $table);
+            if (empty($searchOption)) {
+               if ($table = getTableNameForForeignKeyField($field['Field'])) {
+                  $searchOption = $target->getSearchOptionByField('field', 'name', $table);
+               }
+            }
+
+            if (!empty($searchOption)
+                && !in_array($field['Type'], $target->getUnallowedFieldsForUnicity())
+                && !in_array($field['Field'], $target->getUnallowedFieldsForUnicity())) {
+               $criteria[$field['Field']] = $searchOption['name'];
             }
          }
+         $rand   = Dropdown::showFromArray('field', $criteria,
+                                           array('value' => $this->fields['field']));
 
-         if (!empty($searchOption)
-             && !in_array($field['Type'],$target->getUnallowedFieldsForUnicity())
-             && !in_array($field['Field'],$target->getUnallowedFieldsForUnicity())) {
-            $criteria[$field['Field']] = $searchOption['name'];
-         }
+         $params = array('itemtype' => $this->fields['itemtype'],
+                         'id_field' => '__VALUE__',
+                         'id'       => $this->fields['id']);
+         Ajax::updateItemOnSelectEvent("dropdown_field$rand", "span_values",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownValuesBlacklist.php",
+                                       $params);
       }
-      $rand   = Dropdown::showFromArray('field', $criteria,
-                                        array('value' => $this->fields['field']));
-
-      $params = array('itemtype' => $this->fields['itemtype'],
-                      'id_field' => '__VALUE__',
-                      'id'       => $this->fields['id']);
-      Ajax::updateItemOnSelectEvent("dropdown_field$rand", "span_values",
-                                    $CFG_GLPI["root_doc"]."/ajax/dropdownValuesBlacklist.php",
-                                    $params);
       echo "</span>";
    }
 
@@ -228,18 +235,19 @@ class Fieldblacklist extends CommonDropdown {
       }
       echo "<span id='span_values' name='span_values'>";
       if ($this->fields['itemtype'] != '') {
-         $item = new $this->fields['itemtype']();
-         $searchOption = $item->getSearchOptionByField('field', $field);
-         if (isset($searchOption['linkfield'])) {
-            $linkfield = $searchOption['linkfield'];
-         } else {
-            $linkfield = $searchOption['field'];
-         }
+         if ($item = getItemForItemtype($this->fields['itemtype'])) {
+            $searchOption = $item->getSearchOptionByField('field', $field);
+            if (isset($searchOption['linkfield'])) {
+               $linkfield = $searchOption['linkfield'];
+            } else {
+               $linkfield = $searchOption['field'];
+            }
 
-         if ($linkfield == $this->fields['field']) {
-            $value = $this->fields['value'];
-         } else {
-            $value = '';
+            if ($linkfield == $this->fields['field']) {
+               $value = $this->fields['value'];
+            } else {
+               $value = '';
+            }
          }
 
          //If field is a foreign key on another table or not
@@ -294,7 +302,7 @@ class Fieldblacklist extends CommonDropdown {
                       AND `value` = '$value'".
                       getEntitiesRestrictRequest(" AND", "glpi_fieldblacklists", "entities_id",
                                                  $entities_id, true);
-      return ($DB->result($DB->query($query),0,'cpt')?true:false);
+      return ($DB->result($DB->query($query), 0, 'cpt') ?true :false);
    }
 
 }

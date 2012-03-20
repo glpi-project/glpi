@@ -99,7 +99,7 @@ class FieldUnicity extends CommonDropdown {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
-         if ($item->getType()==$this->getType()) {
+         if ($item->getType() == $this->getType()) {
             return __('Duplicates');
          }
       }
@@ -245,41 +245,42 @@ class FieldUnicity extends CommonDropdown {
 
       $unicity_fields = explode(',', $unicity->fields['fields']);
       //Search option for this type
-      $target = new $unicity->fields['itemtype']();
+      if ($target = getItemForItemtype($unicity->fields['itemtype'])) {
 
-      //Construct list
-      echo "<span id='span_fields' name='span_fields'>";
-      echo "<select name='_fields[]' multiple size='15' style='width:400px'>";
+         //Construct list
+         echo "<span id='span_fields' name='span_fields'>";
+         echo "<select name='_fields[]' multiple size='15' style='width:400px'>";
 
-      foreach ($DB->list_fields(getTableForItemType($unicity->fields['itemtype'])) as $field) {
-         $searchOption = $target->getSearchOptionByField('field', $field['Field']);
+         foreach ($DB->list_fields(getTableForItemType($unicity->fields['itemtype'])) as $field) {
+            $searchOption = $target->getSearchOptionByField('field', $field['Field']);
 
-         if (empty($searchOption)) {
-            if ($table = getTableNameForForeignKeyField($field['Field'])) {
-               $searchOption = $target->getSearchOptionByField('field', 'name', $table);
+            if (empty($searchOption)) {
+               if ($table = getTableNameForForeignKeyField($field['Field'])) {
+                  $searchOption = $target->getSearchOptionByField('field', 'name', $table);
+               }
+            }
+
+            if (!empty($searchOption)
+                && !in_array($field['Type'], $blacklisted_types)
+                && !in_array($field['Field'], $target->getUnallowedFieldsForUnicity())) {
+
+               echo "<option value='".$field['Field']."'";
+               if (isset($unicity_fields)
+                   && in_array($field['Field'], $unicity_fields)) {
+                  echo " selected ";
+               }
+               echo  ">".$searchOption['name']."</option>";
             }
          }
-
-         if (!empty($searchOption)
-             && !in_array($field['Type'],$blacklisted_types)
-             && !in_array($field['Field'],$target->getUnallowedFieldsForUnicity())) {
-
-            echo "<option value='".$field['Field']."'";
-            if (isset($unicity_fields) && in_array($field['Field'],$unicity_fields)) {
-               echo " selected ";
-            }
-            echo  ">".$searchOption['name']."</option>";
-         }
+         echo "</select></span>";
       }
-
-      echo "</select></span>";
    }
 
 
    function getSearchOptions() {
 
-      $tab = array();
-      $tab['common']             = __('Fields unicity');
+      $tab                       = array();
+      $tab['common']             = self::getTypeName();
 
       $tab[1]['table']           = $this->getTable();
       $tab[1]['field']           = 'name';
@@ -347,7 +348,8 @@ class FieldUnicity extends CommonDropdown {
    **/
    static function checkBeforeInsert($input) {
 
-      if (!$input['itemtype'] || empty($input['_fields'])) {
+      if (!$input['itemtype']
+          || empty($input['_fields'])) {
          Session::addMessageAfterRedirect(__("It's mandatory to select a type and at least one field"),
                                           true, ERROR);
          $input = array();
@@ -399,10 +401,11 @@ class FieldUnicity extends CommonDropdown {
    static function showDoubles(FieldUnicity $unicity) {
       global $DB;
 
-
       $fields       = array();
       $where_fields = array();
-      $item         = new $unicity->fields['itemtype']();
+      if (!$item = getItemForItemtype($unicity->fields['itemtype'])) {
+         return;
+      }
       foreach (explode(',',$unicity->fields['fields']) as $field) {
          $fields[]       = $field;
          $where_fields[] = $field;
@@ -446,6 +449,7 @@ class FieldUnicity extends CommonDropdown {
             echo "<td class='center' colspan='$colspan'>".__('No item to display')."</td></tr>";
          } else {
             echo "<tr class='tab_bg_2'>";
+               toolbox::logdebug("fields ", $fields, "result ", $results);
             foreach ($fields as $field) {
                $searchOption = $item->getSearchOptionByField('field',$field);
                echo "<th>".$searchOption["name"]."</th>";
@@ -457,7 +461,7 @@ class FieldUnicity extends CommonDropdown {
                foreach ($fields as $field) {
                   echo "<td>".$result[$field]."</td>";
                }
-               echo "<td>".$result['cpt']."</td></tr>";
+               echo "<td class='numerique'>".$result['cpt']."</td></tr>";
             }
          }
 
