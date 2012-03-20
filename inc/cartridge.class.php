@@ -416,7 +416,7 @@ class Cartridge extends CommonDBTM {
       if (!$cartitem->can($tID,'r')) {
          return false;
       }
-      $canedit = $cartitem->can($tID,'r');
+      $canedit = $cartitem->can($tID,'w');
 
       $query = "SELECT count(*) AS COUNT
                 FROM `glpi_cartridges`
@@ -430,10 +430,10 @@ class Cartridge extends CommonDBTM {
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          if (!$show_old) {
-            echo "<tr><th colspan='8'>".self::getCount($tID,-1)."</th>";
+            echo "<tr><th colspan='".($canedit?'8':'6')."'>".self::getCount($tID,-1)."</th>";
             echo "</tr>";
          } else { // Old
-            echo "<tr><th colspan='10'>".$LANG['cartridges'][35]."</th>";
+            echo "<tr><th colspan='".($canedit?'10':'8')."'>".$LANG['cartridges'][35]."</th>";
             echo "</tr>";
          }
          $i = 0;
@@ -447,7 +447,9 @@ class Cartridge extends CommonDBTM {
          }
 
          echo "<th width='18%'>".$LANG['financial'][3]."</th>";
-         echo "<th colspan='2'>".$LANG['rulesengine'][7]."</th>";
+         if ($canedit) {
+            echo "<th colspan='2'>".$LANG['rulesengine'][7]."</th>";
+         }
 
          echo "</tr>";
       }
@@ -545,36 +547,37 @@ class Cartridge extends CommonDBTM {
             echo "<td class='center'>";
             Infocom::showDisplayLink('Cartridge',$data["id"],1);
             echo "</td>";
-            echo "<td class='center'>";
-            if (!is_null($date_use) && $canedit) {
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?restore=restore&amp;id=".
-                     $data["id"]."&amp;tID=$tID'>".$LANG['consumables'][37]."</a>";
-            } else {
-                echo "&nbsp;";
-            }
-            echo "</td>";
-            echo "<td class='center'>";
             if ($canedit) {
+               echo "<td class='center'>";
+               if (!is_null($date_use)) {
+                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?restore=restore&amp;id=".
+                        $data["id"]."&amp;tID=$tID'>".$LANG['consumables'][37]."</a>";
+               } else {
+                  echo "&nbsp;";
+               }
+               echo "</td>";
+            }
+            if ($canedit) {
+               echo "<td class='center'>";
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?delete=delete&amp;id=".
                      $data["id"]."&amp;tID=$tID'><img title=\"".$LANG['buttons'][6]."\" alt=\"".$LANG['buttons'][6]."\" src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
-            } else {
-                echo "&nbsp;";
+               echo "</td>";
             }
-            echo "</td></tr>";
+            echo "</tr>";
          }
          if ($show_old&&$number>0) {
             if ($nb_pages_printed==0) {
                 $nb_pages_printed = 1;
             }
             echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
-            echo "<td class='center'>".$LANG['cartridges'][40]."&nbsp;:<br>";
+            echo "<td class='center b'>".$LANG['cartridges'][40]."&nbsp;:<br>";
             echo round($stock_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
             echo "<td>&nbsp;</td>";
-            echo "<td class='center'>".$LANG['cartridges'][41]."&nbsp;:<br>";
+            echo "<td class='center b'>".$LANG['cartridges'][41]."&nbsp;:<br>";
             echo round($use_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
-            echo "<td class='center'>".$LANG['cartridges'][42]."&nbsp;:<br>";
+            echo "<td class='center b'>".$LANG['cartridges'][42]."&nbsp;:<br>";
             echo round($pages_printed/$nb_pages_printed)."</td>";
-            echo "<td colspan='3'>&nbsp;</td></tr>";
+            echo "<td colspan='".($canedit?'3':'1')."'>&nbsp;</td></tr>";
          }
       }
       echo "</table></div>\n\n";
@@ -655,9 +658,9 @@ class Cartridge extends CommonDBTM {
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       if ($old==0) {
-         echo "<tr><th colspan='5'>".$LANG['cartridges'][33]."&nbsp;:</th></tr>";
+         echo "<tr><th colspan='".($canedit?'5':'4')."'>".$LANG['cartridges'][33]."&nbsp;:</th></tr>";
       } else {
-         echo "<tr><th colspan='7'>".$LANG['cartridges'][35]."&nbsp;:</th></tr>";
+         echo "<tr><th colspan='".($canedit?'7':'6')."'>".$LANG['cartridges'][35]."&nbsp;:</th></tr>";
       }
       echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['cartridges'][12]."</th>";
       echo "<th>".$LANG['cartridges'][24]."</th>";
@@ -665,8 +668,10 @@ class Cartridge extends CommonDBTM {
       if ($old!=0) {
          echo "<th>".$LANG['search'][9]."</th><th>".$LANG['cartridges'][39]."</th>";
       }
-
-      echo "<th>&nbsp;</th></tr>";
+      if ($canedit) {
+         echo "<th>".$LANG['rulesengine'][7]."</th>";
+      }
+      echo "</tr>";
       $stock_time       = 0;
       $use_time         = 0;
       $pages_printed    = 0;
@@ -678,7 +683,7 @@ class Cartridge extends CommonDBTM {
          $date_out = Html::convDate($data["date_out"]);
          echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
          echo "<td class='center'>".$data["id"]."</td>";
-         echo "<td class='center b'>";
+         echo "<td class='center'>";
          echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridgeitem.form.php?id=".$data["tID"]."\">".
                 $data["type"]." - ".$data["ref"]."</a></td>";
          echo "<td class='center'>".$date_in."</td>";
@@ -694,38 +699,37 @@ class Cartridge extends CommonDBTM {
          if ($old!=0) {
             echo "</td>";
             echo "<td class='center'>".$date_out;
-         }
-         if ($old!=0) {
+
             $tmp_dbeg = explode("-", $data["date_use"]);
             $tmp_dend = explode("-", $data["date_out"]);
 
             $use_time_tmp = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
                             - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
             $use_time+=$use_time_tmp;
-         }
-         echo "</td><td class='center'>";
-         if ($old!=0) {
+            
+            echo "</td><td class='center'>";
+            
             if ($canedit) {
                echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
                echo "<input type='hidden' name='cID' value='".$data['id']."'>";
-               echo "<input type='text' name='pages' value=\"".$data['pages']."\" size='10'>";
+               echo "<input type='text' name='pages' value=\"".$data['pages']."\" size='6'>";
                echo "<input type='image' name='update_pages' value='update_pages'
                       src='".$CFG_GLPI["root_doc"]."/pics/actualiser.png' class='calendrier'>";
                echo "</form>";
             } else {
-               echo "<input type='text' name='pages' value=\"".$data['pages']."\" size='10'>";
+               echo "<input type='text' name='pages' value=\"".$data['pages']."\" size='6'>";
             }
 
             if ($pages<$data['pages']) {
                $pages_printed += $data['pages']-$pages;
                $nb_pages_printed++;
-               echo ($data['pages']-$pages)." ".$LANG['printers'][31];
+               echo "&nbsp;".($data['pages']-$pages)." ".$LANG['printers'][31];
                $pages = $data['pages'];
             }
-            echo "</td><td class='center'>";
          }
+         echo "</td>";
          if ($canedit) {
-            echo "<span class='small_space'>";
+            echo "<td class='center'>";
             if (is_null($date_out)) {
                echo "<a href='".$CFG_GLPI["root_doc"].
                       "/front/cartridge.form.php?uninstall=uninstall&amp;id=".$data["id"].
@@ -733,36 +737,40 @@ class Cartridge extends CommonDBTM {
             } else {
                echo "<a href='".$CFG_GLPI["root_doc"].
                       "/front/cartridge.form.php?delete=delete&amp;id=".$data["id"].
-                      "&amp;tID=".$data["tID"]."'>".$LANG['buttons'][6]."</a>";
+                      "&amp;tID=".$data["tID"]."'><img title=\"".$LANG['buttons'][6]."\" alt=\"".$LANG['buttons'][6]."\" src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
             }
-            echo "</span></td></tr>";
+            echo "</td></tr>";
          }
       }
-      if ($old==0 && $canedit) {
-         echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='3'>";
-         echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
-         echo "<input type='hidden' name='pID' value='$instID'>";
-
-         if (CartridgeItem::dropdownForPrinter($printer)) {
-            echo "&nbsp;<input type='submit' name='install' value=\"".$LANG['buttons'][4]."\"
-                         class='submit'>";
+      if ($old==0) {
+         if ($canedit) {
+            echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='3'>";
+            echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
+            echo "<input type='hidden' name='pID' value='$instID'>";
+   
+            if (CartridgeItem::dropdownForPrinter($printer)) {
+               echo "&nbsp;<input type='submit' name='install' value=\"".$LANG['buttons'][4]."\"
+                           class='submit'>";
+            }
+            echo "</form></td><td class='tab_bg_2 center'>&nbsp;";
+            echo "</td></tr>";
          }
-         echo "</form></td><td class='tab_bg_2 center'>&nbsp;";
-         echo "</td></tr>";
-
       } else { // Print average
          if ($number>0) {
             if ($nb_pages_printed==0) {
                $nb_pages_printed = 1;
             }
-            echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
-            echo "<td class='center'>".$LANG['cartridges'][40]."&nbsp;:<br>";
+            echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
+            echo "<td class='center b'>".$LANG['cartridges'][40]."&nbsp;:<br>";
             echo round($stock_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
-            echo "<td class='center'>".$LANG['cartridges'][41].":<br>";
+            echo "<td class='center b'>".$LANG['cartridges'][41].":<br>";
             echo round($use_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
-            echo "<td class='center'>".$LANG['cartridges'][42].":<br>";
+            echo "<td class='center b'>".$LANG['cartridges'][42].":<br>";
             echo round($pages_printed/$nb_pages_printed)."</td>";
-            echo "<td>&nbsp;</td></tr>";
+            if ($canedit) {
+               echo "<td>&nbsp;</td>";
+            }
+            echo "</tr>";
          }
       }
       echo "</table></div>";
