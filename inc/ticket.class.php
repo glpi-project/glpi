@@ -2044,6 +2044,18 @@ class Ticket extends CommonITILObject {
                                           => array('table'      => 'glpi_tickettasks',
                                                    'joinparams' => array('jointype' => 'child')));
 
+         $tab[95]['table']         = 'glpi_users';
+         $tab[95]['field']         = 'name';
+         $tab[95]['linkfield']     = 'users_id_tech';
+         $tab[95]['name']          = $LANG['job'][7]." - ".$LANG['job'][6];
+         $tab[95]['datatype']      = 'itemlink';
+         $tab[95]['itemlink_type'] = 'User';
+         $tab[95]['forcegroupby']  = true;
+         $tab[95]['massiveaction'] = false;
+         $tab[95]['joinparams']    = array('beforejoin'
+                                          => array('table'      => 'glpi_tickettasks',
+                                                   'joinparams' => array('jointype'  => 'child')));
+                                                   
          $tab['solution'] = $LANG['jobresolution'][1];
 
          $tab[23]['table'] = 'glpi_solutiontypes';
