@@ -539,10 +539,15 @@ class User extends CommonDBTM {
 
       // Add default profile
       if (!$rulesplayed) {
+         $affectation = array();
          if (isset($this->input['_profiles_id']) && $this->input['_profiles_id']) {
             $profile = $this->input['_profiles_id'];
+            // Choosen in form, so not dynamic
+            $affectation['is_dynamic']   = 0;
          } else {
             $profile = Profile::getDefault();
+            // Default right as dynamic. If dynamic rights are set it will disappear.
+            $affectation['is_dynamic']   = 1;
          }
          if ($profile) {
             if (isset($this->input["_entities_id"])) {
@@ -560,8 +565,6 @@ class User extends CommonDBTM {
             $affectation["profiles_id"]  = $profile;
             $affectation["users_id"]     = $this->fields["id"];
             $affectation["is_recursive"] = 0;
-            // Default right as dynamic. If dynamic rights are set it will disappear.
-            $affectation["is_dynamic"]   = 1;
             $right = new Profile_User();
             $right->add($affectation);
          }
