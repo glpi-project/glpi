@@ -42,14 +42,11 @@ class Blacklist extends CommonDropdown {
    // From CommonDBTM
    public $dohistory = true;
 
-   // IP
    const IP     = 1;
-   // MAC
    const MAC    = 2;
-   // SERIAL
    const SERIAL = 3;
-   // UUID
    const UUID   = 4;   
+   const EMAIL  = 5;   
 
    function canCreate() {
       return Session::haveRight('config', 'w');
@@ -93,9 +90,10 @@ class Blacklist extends CommonDropdown {
       $tab[11]['name']     = __('Value');
       $tab[11]['datatype'] = 'text';
 
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'type';
-      $tab[12]['name']     = _n('Type','Types',1);
+      $tab[12]['table']      = $this->getTable();
+      $tab[12]['field']      = 'type';
+      $tab[12]['name']       = _n('Type','Types',1);
+      $tab[12]['searchtype'] = array('equals', 'notequals');
 
       return $tab;
    }
@@ -108,13 +106,24 @@ class Blacklist extends CommonDropdown {
    }
 
    function displaySpecificTypeField($ID, $field=array()) {
-      print_r($field);
       if ($field['name'] == 'type') {
-         echo "i";
          self::dropdownType($field['name'], array('value' => $this->fields['type']));
-      
       }
    }
+
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'type' :
+            $types = self::getTypes();
+            return $types[$values[$field]];
+      }
+      return parent::getSpecificValueToDisplay($field, $values[$field], $options);
+   }
+
 
    /**
     * Dropdown of blacklist types
@@ -162,6 +171,7 @@ class Blacklist extends CommonDropdown {
       $options[self::MAC]    = __('MAC');
       $options[self::SERIAL] = __('Serial number');
       $options[self::UUID]   = __('UUID');
+      $options[self::EMAIL]  = _n('Email','Emails',1);
 
       return $options;
    }

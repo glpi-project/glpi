@@ -1391,6 +1391,7 @@ function update083to084() {
                KEY `name` (`name`)
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "0.84 create glpi_blacklists");
+      $ADDTODISPLAYPREF['Blacklist'] = array(12,11);
    }
 
    // ************ Keep it at the end **************
