@@ -171,7 +171,12 @@ class Profile_User extends CommonDBTM {
                echo "</a>";
             }
             echo "</td>";
-            echo "<td>".$data["name"];
+            if (Session::haveRight('profile', 'r')) {
+               echo "<td><a href='".Toolbox::getItemTypeFormURL('Profile')."?id=".$data["id"]."'>";
+               echo $data["name"]."</a>";
+            } else {
+               echo "<td>".$data["name"];
+            }
 
             if ($data["is_dynamic"] || $data["is_recursive"]) {
                echo "<span class='b'>&nbsp;(";
