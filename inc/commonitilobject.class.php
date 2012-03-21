@@ -2218,10 +2218,11 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($params['toupdate']) && is_array($params['toupdate'])) {
             $toupdate[] = $params['toupdate'];
          }
-         $toupdate[] = array('value_fieldname' => 'value',
-                              'to_update'       => "countassign_".$typename."_$rand",
-                              'url'             => $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
-                              'moreparams'      => array('users_id_assign' => '__VALUE__'));
+         $toupdate[]         = array('value_fieldname' => 'value',
+                                     'to_update'       => "countassign_".$typename."_$rand",
+                                     'url'
+                                       => $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
+                                     'moreparams'      => array('users_id_assign' => '__VALUE__'));
          $params['toupdate'] = $toupdate;
       }
 

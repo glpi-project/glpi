@@ -249,8 +249,8 @@ class Computer_Device extends CommonDBTM {
             $specificities     = $itemtype::getSpecifityLabel();
             $specificity_names = array_values($specificities);
             if (count($specificity_names) > 0) {
-               $link_char = $table_group->addHeader('link', $specificity_names[0],
-                                                     $specific_column);
+               $link_char     = $table_group->addHeader('link', $specificity_names[0],
+                                                        $specific_column);
                $column_anchor = $link_char;
             } else {
                $column_anchor = NULL;
@@ -258,7 +258,7 @@ class Computer_Device extends CommonDBTM {
 
             if ($canedit) {
                $delete_one  = $table_group->addHeader('one', __('Delete'), $delete_column,
-                                                       $column_anchor);
+                                                      $column_anchor);
             }
 
             Session::initNavigateListItems($itemtype,
