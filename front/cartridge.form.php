@@ -47,15 +47,30 @@ if (!isset($_GET["cID"])) {
 $cart = new Cartridge();
 $cartype = new CartridgeItem();
 
-if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
-   $cart->check($_POST["cID"],'w');
+if (isset($_POST["update_cart_use"])) {
+   if (isset($_POST['date_use'])) {
+      foreach ($_POST["date_use"] as $key => $value) {
+         $cart->check($key,'w');
 
-   if ($cart->updatePages($_POST['pages'])) {
-      Event::log(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][94]);
+         if ($cart->updateCartUse($value)) {
+            Event::log(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][94]);
+         }
+      }
    }
    Html::back();
-
-} else if (isset($_POST["add_several"])) {
+} else if (isset($_POST["update_cart_out"])) {
+   if (isset($_POST['date_out'])) {
+      foreach ($_POST["date_out"] as $key => $value) {
+         $cart->check($key,'w');
+         if (isset($_POST['pages'][$key])) {
+            if ($cart->updateCartOut($_POST['pages'][$key], $value)) {
+               Event::log(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][94]);
+            }
+         }
+      }
+   }
+   Html::back();
+}  else if (isset($_POST["add_several"])) {
    $cartype->check($_POST["tID"],'w');
 
    for ($i=0 ; $i<$_POST["to_add"] ; $i++) {
