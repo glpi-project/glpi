@@ -106,7 +106,7 @@ class Html {
    **/
    static function convDate($time) {
 
-      if (is_null($time) || $time=='NULL') {
+      if (is_null($time) || ($time == 'NULL')) {
          return NULL;
       }
 
@@ -145,7 +145,7 @@ class Html {
    **/
    static function convDateTime($time) {
 
-      if (is_null($time) || $time=='NULL') {
+      if (is_null($time) || ($time == 'NULL')) {
          return NULL;
       }
 
@@ -203,7 +203,7 @@ class Html {
     **/
     static function resume_text($string, $length=255) {
 
-       if (strlen($string)>$length) {
+       if (strlen($string) > $length) {
           $string = Toolbox::substr($string, 0, $length)."&nbsp;(...)";
        }
 
@@ -221,7 +221,7 @@ class Html {
      **/
     static function resume_name($string, $length=255) {
 
-       if (strlen($string)>$length) {
+       if (strlen($string) > $length) {
           $string = Toolbox::substr($string, 0, $length)."...";
        }
 
@@ -269,15 +269,14 @@ class Html {
       global $CFG_GLPI;
 
       // Php 5.3 : number_format() expects parameter 1 to be double,
-      if ($number=="") {
+      if ($number == "") {
          $number = 0;
 
-      } else if ($number=="-") { // used for not defines value (from Infocom::Amort, p.e.)
+      } else if ($number == "-") { // used for not defines value (from Infocom::Amort, p.e.)
          return "-";
       }
 
-      $number = doubleval($number);
-
+      $number  = doubleval($number);
       $decimal = $CFG_GLPI["decimal_number"];
       if ($forcedecimal>=0) {
          $decimal = $forcedecimal;
@@ -313,55 +312,55 @@ class Html {
    static function timestampToString($time, $display_sec=true) {
 
       $sign = '';
-      if ($time<0) {
+      if ($time < 0) {
          $sign = '- ';
          $time = abs($time);
       }
       $time = floor($time);
 
       // Force display seconds if time is null
-      if ($time<MINUTE_TIMESTAMP) {
+      if ($time < MINUTE_TIMESTAMP) {
          $display_sec = true;
       }
 
       $units = Toolbox::getTimestampTimeUnits($time);
       $out   = $sign;
 
-      if ($units['day']>0) {
+      if ($units['day'] > 0) {
          if ($display_sec) {
             //TRANS: %1$d number of days, %2$d number of hours, %3$d number of minutes,
             //       %4$d number of seconds
-            return sprintf(__('%1$d day(s) %2$d hour(s) %3$d minute(s) %4$d second(s)'),
+            return sprintf(__('%1$d days %2$d hours %3$d minutes %4$d seconds'),
                            $units['day'], $units['hour'], $units['minute'], $units['second']);
          }
          //TRANS: %1$d number of days, %2$d number of hours,   %3$d number of minutes
-         return sprintf(__('%1$d day(s) %2$d hour(s) %3$d minute(s)'),
+         return sprintf(__('%1$d days %2$d hours %3$d minutes'),
                         $units['day'], $units['hour'], $units['minute']);
       }
 
-      if ($units['hour']>0) {
+      if ($units['hour'] > 0) {
          if ($display_sec) {
             //TRANS: %1$d number of hours, %2$d number of minutes, %3$d number of seconds
-            return sprintf(__('%1$d hour(s) %2$d minute(s) %3$d second(s)'),
+            return sprintf(__('%1$d hours %2$d minutes %3$d seconds'),
                            $units['hour'], $units['minute'], $units['second']);
          }
          //TRANS: %1$d number of hours, %2$d number of minutes
-         return sprintf(__('%1$d hour(s) %2$d minute(s)'), $units['hour'], $units['minute']);
+         return sprintf(__('%1$d hours %2$d minutes'), $units['hour'], $units['minute']);
       }
 
       if ($units['minute']>0) {
          if ($display_sec) {
             //TRANS:  %1$d number of minutes,  %2$d number of seconds
-            return sprintf(__('%1$d minute(s) %2$d second(s)'), $units['minute'], $units['second']);
+            return sprintf(_('%1$d minutes %2$d seconds'), $units['minute'], $units['second']);
          }
          //TRANS: %1$d number of minutes
-         return sprintf(__('%1$d minute(s)'), $units['minute']);
+         return sprintf(_n('%1$d minute', '%1$d minutes', $units['minute']), $units['minute']);
 
       }
 
       if ($display_sec) {
          //TRANS:  %1$d number of seconds
-         return sprintf(__('%1$d second(s)'), $units['second']);
+         return sprintf(_n('%1$s second', '%1$s seconds', $units['second']), $units['second']);
       }
       return '';
    }
@@ -499,7 +498,7 @@ class Html {
                </td>";
       }
 
-      if ($ref_title!="") {
+      if ($ref_title != "") {
          echo "<td><span class='vsubmit'>".$ref_title."</span></td>";
       }
 
@@ -536,14 +535,14 @@ class Html {
             foreach ($DEBUG_SQL['queries'] as $num => $query) {
                echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
                echo str_ireplace("ORDER BY","<br>ORDER BY",
-                           str_ireplace("SORT","<br>SORT",
-                                 str_ireplace("LEFT JOIN","<br>LEFT JOIN",
-                                       str_ireplace("INNER JOIN","<br>INNER JOIN",
-                                             str_ireplace("WHERE","<br>WHERE",
-                                                   str_ireplace("FROM","<br>FROM",
-                                                         str_ireplace("UNION","<br>UNION<br>",
-                                                               str_replace(">","&gt;",
-                                                                   str_replace("<","&lt;",$query)))))))));
+                        str_ireplace("SORT","<br>SORT",
+                           str_ireplace("LEFT JOIN","<br>LEFT JOIN",
+                                 str_ireplace("INNER JOIN","<br>INNER JOIN",
+                                       str_ireplace("WHERE","<br>WHERE",
+                                          str_ireplace("FROM","<br>FROM",
+                                             str_ireplace("UNION","<br>UNION<br>",
+                                                str_replace(">","&gt;",
+                                                   str_replace("<","&lt;",$query)))))))));
                echo "</td><td>";
                echo $DEBUG_SQL['times'][$num];
                echo "</td><td>";
@@ -716,7 +715,7 @@ class Html {
      *
      * @param $width       Width    of the progress bar
      * @param $percent     Percent  of the progress bar
-     * @param $options     array    options :
+     * @param $options     array of possible options:
      *            - title : string title to display (default Progesssion)
      *            - simple : display a simple progress bar (no title / only percent)
      *            - forcepadding : boolean force str_pad to force refresh (default true)
@@ -856,7 +855,7 @@ class Html {
       echo " Ext.Updater.defaults.loadScripts = true;\n";
       // JMD : validator doesn't accept html in script , must escape html element to validate
       echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator center\">".
-            __('Loading...')."<\/span>';\n";
+            addslashes(__('Loading...'))."<\/span>';\n";
       echo "//]]> \n";
       echo "</script>\n";
 
@@ -932,7 +931,7 @@ class Html {
 
 
       // INVENTORY
-      $showstate = false;
+      $showstate                  = false;
       $menu['inventory']['title'] = __('Inventory');
 
       if (Session::haveRight("computer","r")) {
@@ -1102,7 +1101,7 @@ class Html {
          $menu['inventory']['content']['internet']['page']             = '/front/internet.php';
          $menu['inventory']['content']['internet']['links']['search']  = '/front/internet.php';
 
-         $menu['inventory']['content']['internet2']['title']            = __('Internet2');
+         $menu['inventory']['content']['internet2']['title']            = __('Internet 2');
          $menu['inventory']['content']['internet2']['shortcut']         = '';
          $menu['inventory']['content']['internet2']['page']             = '/front/internet2.php';
          $menu['inventory']['content']['internet2']['links']['search']  = '/front/internet2.php';
@@ -1169,7 +1168,8 @@ class Html {
          $menu['maintain']['content']['ticket']['links']['add'] = '/front/ticket.form.php';
       }
 
-      if (Session::haveRight("show_all_problem","1") || Session::haveRight("show_my_problem","1")) {
+      if (Session::haveRight("show_all_problem","1")
+          || Session::haveRight("show_my_problem","1")) {
          $menu['maintain']['content']['problem']['title']           = _n('Problem', 'Problems', 2);
          $menu['maintain']['content']['problem']['shortcut']        = '';
          $menu['maintain']['content']['problem']['page']            = '/front/problem.php';
@@ -1179,7 +1179,8 @@ class Html {
          }
       }
 
-      if (Session::haveRight("show_all_change","1") || Session::haveRight("show_my_change","1")) {
+      if (Session::haveRight("show_all_change","1")
+          || Session::haveRight("show_my_change","1")) {
          $menu['maintain']['content']['change']['title']           = _n('Change', 'Changes', 2);
          $menu['maintain']['content']['change']['shortcut']        = '';
          $menu['maintain']['content']['change']['page']            = '/front/change.php';
@@ -1359,7 +1360,7 @@ class Html {
       }
 
       if (TableExists('glpi_networkportmigrations')
-          && countElementsInTable('glpi_networkportmigrations') > 0) {
+          && (countElementsInTable('glpi_networkportmigrations') > 0)) {
          $menu['utils']['content']['migration']['title']    = __('Migration cleaner');
          $menu['utils']['content']['migration']['page']     = '/front/migration_cleaner.php';
 
@@ -1409,13 +1410,15 @@ class Html {
                   $menu['plugins']['default'] = $menu['plugins']['content'][$key]['page'];
                }
 
-               if ($sector=="plugins" && $item==$key) {
+               if (($sector == "plugins")
+                   && ($item == $key)) {
+
                   if (isset($PLUGIN_HOOKS["submenu_entry"][$key])
                       && is_array($PLUGIN_HOOKS["submenu_entry"][$key])) {
 
                      foreach ($PLUGIN_HOOKS["submenu_entry"][$key] as $name => $link) {
                         // New complete option management
-                        if ($name=="options") {
+                        if ($name == "options") {
                            $menu['plugins']['content'][$key]['options'] = $link;
                         } else { // Keep it for compatibility
 
@@ -1493,7 +1496,8 @@ class Html {
          $menu['admin']['content']['rule']['shortcut'] = '';
          $menu['admin']['content']['rule']['page']     = '/front/rule.php';
 
-         if ($sector=='admin' && $item == 'rule') {
+         if (($sector == 'admin')
+             && ($item == 'rule')) {
             foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
                $rulecollection = new $rulecollectionclass();
                if ($rulecollection->canList()) {
@@ -1506,7 +1510,7 @@ class Html {
                                  = Toolbox::getItemTypeSearchURL($ruleclassname, false);
                   if ($rulecollection->canCreate()) {
                      $menu['admin']['content']['rule']['options'][$rulecollection->menu_option]['links']['add']
-                                    = Toolbox::getItemTypeFormURL($ruleclassname, false);
+                                 = Toolbox::getItemTypeFormURL($ruleclassname, false);
                   }
                }
             }
@@ -1514,7 +1518,8 @@ class Html {
       }
 
 
-      if (Session::haveRight("transfer","r" ) && Session::isMultiEntitiesMode()) {
+      if (Session::haveRight("transfer","r" )
+          && Session::isMultiEntitiesMode()) {
          $menu['admin']['content']['rule']['options']['transfer']['title'] = __('Transfer');
          $menu['admin']['content']['rule']['options']['transfer']['page']  = "/front/transfer.php";
          $menu['admin']['content']['rule']['options']['transfer']['links']['search']
@@ -1537,7 +1542,8 @@ class Html {
          $menu['admin']['content']['dictionnary']['shortcut'] = '';
          $menu['admin']['content']['dictionnary']['page']     = '/front/dictionnary.php';
 
-         if ($sector=='admin' && $item == 'dictionnary') {
+         if (($sector == 'admin')
+             && ($item == 'dictionnary')) {
             $menu['admin']['content']['dictionnary']['options']['manufacturers']['title']
                            = _n('Manufacturer', 'Manufacturers', 2);
             $menu['admin']['content']['dictionnary']['options']['manufacturers']['page']
@@ -1720,7 +1726,8 @@ class Html {
             }
 
 
-            $menu['admin']['content']['dictionnary']['options']['os']['title'] = __('Operating system');
+            $menu['admin']['content']['dictionnary']['options']['os']['title']
+                           = __('Operating system');
             $menu['admin']['content']['dictionnary']['options']['os']['page']
                            = '/front/ruledictionnaryoperatingsystem.php';
             $menu['admin']['content']['dictionnary']['options']['os']['links']['search']
@@ -1813,22 +1820,23 @@ class Html {
 
          $menu['config']['default'] = '/front/dropdown.php';
 
-         if ($item=="dropdowns") {
+         if ($item == "dropdowns") {
             $dps = Dropdown::getStandardDropdownItemTypes();
 
             foreach ($dps as $tab) {
                foreach ($tab as $key => $val) {
                   if ($key == $option) {
-                     $tmp = new $key();
-                     $menu['config']['content']['dropdowns']['options'][$option]['title']
+                     if ($tmp = getItemForItemtype($key)) {
+                        $menu['config']['content']['dropdowns']['options'][$option]['title']
                                     = $val;
-                     $menu['config']['content']['dropdowns']['options'][$option]['page']
+                        $menu['config']['content']['dropdowns']['options'][$option]['page']
                                     = $tmp->getSearchURL(false);
-                     $menu['config']['content']['dropdowns']['options'][$option]['links']['search']
+                        $menu['config']['content']['dropdowns']['options'][$option]['links']['search']
                                     = $tmp->getSearchURL(false);
-                     if ($tmp->canCreate()) {
-                        $menu['config']['content']['dropdowns']['options'][$option]['links']['add']
+                        if ($tmp->canCreate()) {
+                           $menu['config']['content']['dropdowns']['options'][$option]['links']['add']
                                     = $tmp->getFormURL(false);
+                        }
                      }
                   }
                }
@@ -1841,21 +1849,22 @@ class Html {
          $menu['config']['content']['device']['title'] = _n('Component', 'Components', 2);
          $menu['config']['content']['device']['page']  = '/front/device.php';
 
-         if ($item=="device") {
+         if ($item == "device") {
             $dps = Dropdown::getDeviceItemTypes();
 
             foreach ($dps as $tab) {
                foreach ($tab as $key => $val) {
                   if ($key == $option) {
-                     $tmp = new $key();
-                     $menu['config']['content']['device']['options'][$option]['title'] = $val;
-                     $menu['config']['content']['device']['options'][$option]['page']
+                     if ($tmp = getItemForItemtype($key)) {
+                        $menu['config']['content']['device']['options'][$option]['title'] = $val;
+                        $menu['config']['content']['device']['options'][$option]['page']
                                     = $tmp->getSearchURL(false);
-                     $menu['config']['content']['device']['options'][$option]['links']['search']
+                        $menu['config']['content']['device']['options'][$option]['links']['search']
                                     = $tmp->getSearchURL(false);
-                     if ($tmp->canCreate()) {
-                        $menu['config']['content']['device']['options'][$option]['links']['add']
+                        if ($tmp->canCreate()) {
+                           $menu['config']['content']['device']['options'][$option]['links']['add']
                                     = $tmp->getFormURL(false);
+                        }
                      }
                   }
                }
@@ -1898,13 +1907,13 @@ class Html {
          $menu['config']['content']['control']['page']   = '/front/control.php';
 
          $menu['config']['content']['control']['options']['FieldUnicity']['title']
-                        = __('Fields unicity');
+                                                         = __('Fields unicity');
          $menu['config']['content']['control']['options']['FieldUnicity']['page']
-                        = '/front/fieldunicity.php';
+                                                         = '/front/fieldunicity.php';
          $menu['config']['content']['control']['options']['FieldUnicity']['links']['add']
-                        = '/front/fieldunicity.form.php';
+                                                         = '/front/fieldunicity.form.php';
          $menu['config']['content']['control']['options']['FieldUnicity']['links']['search']
-                        = '/front/fieldunicity.php';
+                                                         = '/front/fieldunicity.php';
 
          $menu['config']['content']['crontask']['title']           = _n('Automatic action',
                                                                         'Automatic actions', 2);
@@ -1970,7 +1979,8 @@ class Html {
       }
 
 
-      if ($CFG_GLPI["use_ocs_mode"] && Session::haveRight("config","w")) {
+      if ($CFG_GLPI["use_ocs_mode"]
+          && Session::haveRight("config","w")) {
          $menu['config']['content']['ocsng']['title']           = __('OCSNG mode');
          $menu['config']['content']['ocsng']['page']            = '/front/ocsserver.php';
          $menu['config']['content']['ocsng']['links']['search'] = '/front/ocsserver.php';
@@ -2046,7 +2056,7 @@ class Html {
 
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
                  addslashes(Dropdown::getLanguageName($_SESSION['glpilanguage']))."\">".
-                 __(Dropdown::getLanguageName($_SESSION['glpilanguage']))."</a></li>";
+                 Dropdown::getLanguageName($_SESSION['glpilanguage'])."</a></li>";
 
       echo "</ul>";
       echo "<div class='sep'></div>";
@@ -2056,11 +2066,11 @@ class Html {
       echo "<div id='c_recherche' >\n";
       echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
       echo "<div id='boutonRecherche'>";
-      echo "<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/search.png' value='OK' title=\"".
-             __s('Post')."\"  alt=\"".__s('Post')."\"></div>";
-      echo "<div id='champRecherche'><input size='15' type='text' name='globalsearch' value='".
-             __s('Search')."' onfocus=\"this.value='';\"></div>";
-      echo "</form>";
+      echo "<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/search.png' value='OK'
+             title=\"". __s('Post')."\"  alt=\"".__s('Post')."\"></div>";
+      echo "<div id='champRecherche'><input size='15' type='text' name='globalsearch'
+                                      value='". __s('Search')."' onfocus=\"this.value='';\"><";
+      echo "/div></form>";
 
       echo "<div class='sep'></div>\n";
       echo "</div>";
@@ -2076,11 +2086,11 @@ class Html {
             echo "<li id='menu$i' onmouseover=\"javascript:menuAff('menu$i','menu');\" >";
             $link = "#";
 
-            if (isset($data['default'])&&!empty($data['default'])) {
+            if (isset($data['default']) && !empty($data['default'])) {
                $link = $CFG_GLPI["root_doc"].$data['default'];
             }
 
-            if (Toolbox::strlen($data['title'])>14) {
+            if (Toolbox::strlen($data['title']) > 14) {
                $data['title'] = Toolbox::substr($data['title'], 0, 14)."...";
             }
             echo "<a href='$link' class='itemP'>".$data['title']."</a>";
@@ -2090,16 +2100,14 @@ class Html {
 
             // list menu item
             foreach ($data['content'] as $key => $val) {
-               if (isset($val['page'])&& isset($val['title'])) {
+               if (isset($val['page'])
+                   && isset($val['title'])) {
                   echo "<li><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
 
                   if (isset($val['shortcut']) && !empty($val['shortcut'])) {
                      if (!isset($already_used_shortcut[$val['shortcut']])) {
                         echo " accesskey='".$val['shortcut']."'";
                         $already_used_shortcut[$val['shortcut']] = $val['shortcut'];
-                     } else {
-                        // for debug
-                        //Toolbox::logDebug($val['shortcut']." already used");
                      }
                      echo ">".Toolbox::shortcut($val['title'], $val['shortcut'])."</a></li>\n";
                   } else {
@@ -2127,7 +2135,7 @@ class Html {
          if (isset($menu[$sector]['content']) && is_array($menu[$sector]['content'])) {
             $ssmenu = $menu[$sector]['content'];
 
-            if (count($ssmenu)>12) {
+            if (count($ssmenu) > 12) {
                foreach ($ssmenu as $key => $val) {
                   if (isset($val['hide'])) {
                      unset($ssmenu[$key]);
@@ -2137,10 +2145,11 @@ class Html {
             }
 
             foreach ($ssmenu as $key => $val) {
-               if (isset($val['page'])&&isset($val['title'])) {
+               if (isset($val['page'])
+                   && isset($val['title'])) {
                   echo "<li><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
 
-                  if (isset($val['shortcut'])&&!empty($val['shortcut'])) {
+                  if (isset($val['shortcut']) && !empty($val['shortcut'])) {
                      echo ">".Toolbox::shortcut($val['title'], $val['shortcut'])."</a></li>\n";
                   } else {
                      echo ">".$val['title']."</a></li>\n";
@@ -2162,8 +2171,8 @@ class Html {
       echo "<ul>";
 
       // Display item
-      echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"".
-                 __s('Home')."\">".__('Home')."</a> ></li>";
+      echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/central.php' title=\"". __s('Home')."\">".
+            __('Home')."</a> ></li>";
 
       if (isset($menu[$sector])) {
          $link = "/front/central.php";
@@ -2228,23 +2237,23 @@ class Html {
                    alt=\"". __s('Add')."\"></a>";
 
          } else {
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' title=\"".
-                    __s('Add')."\" alt=\"". __s('Add')."\">";
+            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' title=\"".__s('Add')."\"
+                   alt=\"". __s('Add')."\">";
          }
          echo "</li>";
 
          // Search Item
          if (isset($links['search'])) {
             echo "<li><a href='".$CFG_GLPI["root_doc"].$links['search']."'>";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' title=\"".
-                    __s('Search')."\" alt=\"".__s('Search')."\"></a></li>";
+            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png'
+                   title=\"".__s('Search')."\" alt=\"".__s('Search')."\"></a></li>";
 
          } else {
-            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png' title=\"".
-                       __s('Search')."\" alt=\"".__s('Search')."\"></li>";
+            echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png'
+                       title=\"".__s('Search')."\" alt=\"".__s('Search')."\"></li>";
          }
          // Links
-         if (count($links)>0) {
+         if (count($links) > 0) {
             foreach ($links as $key => $val) {
 
                switch ($key) {
@@ -2295,13 +2304,13 @@ class Html {
       // Display MENU ALL
       echo "<div id='show_all_menu' onmouseover=\"completecleandisplay('show_all_menu');\">";
       $items_per_columns = 15;
-      $i = -1;
+      $i                 = -1;
       echo "<table><tr><td class='top'><table>";
 
       foreach ($menu as $part => $data) {
          if (isset($data['content']) && count($data['content'])) {
 
-            if ($i>$items_per_columns) {
+            if ($i > $items_per_columns) {
                $i = 0;
                echo "</table></td><td class='top'><table>";
             }
@@ -2319,12 +2328,13 @@ class Html {
             // list menu item
             foreach ($data['content'] as $key => $val) {
 
-               if ($i>$items_per_columns) {
+               if ($i > $items_per_columns) {
                   $i = 0;
                   echo "</table></td><td class='top'><table>";
                }
 
-               if (isset($val['page']) && isset($val['title'])) {
+               if (isset($val['page'])
+                   && isset($val['title'])) {
                   echo "<tr><td><a href='".$CFG_GLPI["root_doc"].$val['page']."'";
 
                   if (isset($data['shortcut']) && !empty($data['shortcut'])) {
@@ -2367,7 +2377,8 @@ class Html {
 
       echo "<div id='page' >";
 
-      if ($DB->isSlave() && !$DB->first_connection) {
+      if ($DB->isSlave()
+          && !$DB->first_connection) {
          echo "<div id='dbslave-float'>";
          echo "<a href='#see_debug'>".__('MySQL replica: read only')."</a>";
          echo "</div>";
@@ -2397,19 +2408,21 @@ class Html {
 
       echo "<div id='footer' >";
       echo "<table width='100%'><tr><td class='left'><span class='copyright'>";
-      echo $TIMER_DEBUG->getTime()." s - ";
+      $timedebug = sprintf(_n('%1$s second', '%1$s seconds', $TIMER_DEBUG->getTime()),
+                           $TIMER_DEBUG->getTime());
 
       if (function_exists("memory_get_usage")) {
-         echo Toolbox::getSize(memory_get_usage());
+         $timedebug = sprintf(__('%1$s - %2$s'), $timedebug, Toolbox::getSize(memory_get_usage()));
       }
+      echo $timedebug;
       echo "</span></td>";
 
       if (!empty($CFG_GLPI["founded_new_version"])) {
          echo "<td class='copyright'>";
          $latest_version = "<a href='http://www.glpi-project.org' target='_blank' title=\"".
-                 __s('You will find it on the GLPI-PROJECT.org site.')."\"> ".
-                preg_replace('/0$/','',$CFG_GLPI["founded_new_version"])."</a>";
-         echo sprintf(__('A new version is available: %s.'), $latest_version);
+                              __s('You will find it on the GLPI-PROJECT.org site.')."\"> ".
+                           preg_replace('/0$/','',$CFG_GLPI["founded_new_version"])."</a>";
+         printf(__('A new version is available: %s.'), $latest_version);
 
          echo "</td>";
       }
@@ -2460,8 +2473,8 @@ class Html {
    /**
     * Print a simple HTML head with links
     *
-    * @param $title title of the page
-    * @param $links array of links to display
+    * @param $title        title of the page
+    * @param $links array  of links to display
    **/
    static function simpleHeader($title, $links=array()) {
       global $CFG_GLPI, $HEADER_LOADED;
@@ -2480,8 +2493,8 @@ class Html {
       // Main Headline
       echo "<div id='header'>";
       echo "<div id='c_logo'>";
-      echo "<a href='".$CFG_GLPI["root_doc"]."' accesskey='1' title=\"".
-             __s('Home')."\"><span class='invisible'>Logo</span></a></div>";
+      echo "<a href='".$CFG_GLPI["root_doc"]."' accesskey='1' title=\"".__s('Home')."\">".
+           "<span class='invisible'>Logo</span></a></div>";
 
       // Les préférences + lien déconnexion
       echo "<div id='c_preference'>";
@@ -2566,8 +2579,7 @@ class Html {
 
       echo "<li><a href='".(empty($CFG_GLPI["helpdesk_doc_url"])?
                  "http://glpi-project.org/help-helpdesk":$CFG_GLPI["helpdesk_doc_url"]).
-                 "' target='_blank' title=\"".__s('Help')."\"> ".__('Help').
-           "</a></li>";
+                 "' target='_blank' title=\"".__s('Help')."\"> ".__('Help')."</a></li>";
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/preference.php' title=\"".
                   __s('Settings')."\">".__('Settings')."</a></li>\n";
 
@@ -2641,7 +2653,7 @@ class Html {
          }
       }
 
-      if (isset($plugins) && count($plugins)>0) {
+      if (isset($plugins) && (count($plugins) > 0)) {
          $list = array();
 
          foreach ($plugins as $key => $val) {
@@ -2679,11 +2691,11 @@ class Html {
       echo "<div id='c_ssmenu2'>";
       echo "<ul>";
       echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php' title=\"".
-          __s('Home')."\">".__('Home')."></a></li>";
+                 __s('Home')."\">".__('Home')."></a></li>";
       echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
       if (Session::haveRight('validate_ticket',1)) {
-         $opt = array();
+         $opt                  = array();
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
          $opt['searchtype'][0] = 'equals';
@@ -2707,7 +2719,8 @@ class Html {
       }
       echo "<li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>";
 
-      if (Session::haveRight('create_ticket',1) && strpos($_SERVER['PHP_SELF'],"ticket")) {
+      if (Session::haveRight('create_ticket',1)
+          && strpos($_SERVER['PHP_SELF'],"ticket")) {
          echo "<li><a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?create_ticket=1'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title=\"".__s('Add').
                 "\" alt=\"".__s('Add')."\"></a></li>";
@@ -2885,7 +2898,8 @@ class Html {
    static function glpi_flush() {
 
       flush();
-      if (function_exists("ob_flush") && ob_get_length () !== FALSE) {
+      if (function_exists("ob_flush")
+          && (ob_get_length() !== FALSE)) {
          ob_flush();
       }
    }
@@ -3042,7 +3056,7 @@ class Html {
                                         $maxTime='') {
       global $CFG_GLPI;
 
-      if ($time_step<0) {
+      if ($time_step < 0) {
          $time_step = $CFG_GLPI['time_step'];
       }
 
@@ -3066,7 +3080,7 @@ class Html {
          $minMinute = 0;
 
          // Check time in interval
-         if (!empty($hour_value) && $hour_value<$minTime) {
+         if (!empty($hour_value) && ($hour_value < $minTime)) {
             $hour_value = $minTime;
          }
       }
@@ -3076,8 +3090,8 @@ class Html {
          $maxMinute = 59;
 
          // Check time in interval
-         if (!empty($hour_value) && $hour_value>$maxTime) {
-            $hour_value =$maxTime;
+         if (!empty($hour_value) && ($hour_value > $maxTime)) {
+            $hour_value = $maxTime;
          }
       }
 
@@ -3109,10 +3123,10 @@ class Html {
       $output .= ",timeConfig: {
          altFormats:'H:i:s',increment: $time_step,$empty";
 
-      if (!empty($minTime) && $minTime!='00:00:00') {
+      if (!empty($minTime) && ($minTime != '00:00:00')) {
          $output .= ",minValue: '".$minTime."'";
       }
-      if (!empty($maxTime) && $maxTime!='24:00:00') {
+      if (!empty($maxTime) && ($maxTime != '24:00:00')) {
          $output .= ",maxValue: '".$maxTime."'";
       }
 
@@ -3159,7 +3173,7 @@ class Html {
     *
     * @param $element         name of the html element
     * @param $value           default value (default '')
-    * @param $options   array of options may be :
+    * @param $options   array of possible options:
     *      - with_time display with time selection ? (default false)
     *      - with_future display with future date selection ? (default false)
     *      - with_days display specific days selection TODAY, BEGINMONTH, LASTMONDAY... ? (default true)
@@ -3182,8 +3196,8 @@ class Html {
       $rand = mt_rand();
 
       // Validate value
-      if ($value!='NOW'
-          && $value!='TODAY'
+      if (($value != 'NOW')
+          && ($value != 'TODAY')
           && !preg_match("/\d{4}-\d{2}-\d{2}.*/",$value)
           && !strstr($value,'HOUR')
           && !strstr($value,'DAY')
@@ -3209,7 +3223,7 @@ class Html {
       $dates = Html::getGenericDateTimeSearchItems($options);
 
       foreach ($dates as $key => $val) {
-         echo "<option value='$key' ".($value===$key?'selected':'').">$val</option>";
+         echo "<option value='$key' ".(($value === $key) ?'selected':'').">$val</option>";
       }
 
       echo "</select>";
@@ -3238,7 +3252,7 @@ class Html {
     *
     * @since version 0.83
     *
-    * @param $options : array of options may be :
+    * @param $options   array of possible options:
     *      - with_time display with time selection ? (default false)
     *      - with_future display with future date selection ? (default false)
     *      - with_days display specific days selection TODAY, BEGINMONTH, LASTMONDAY... ? (default true)
@@ -3275,12 +3289,12 @@ class Html {
 
       if ($params['with_time']) {
          for ($i=1 ; $i<=24 ; $i++) {
-            $dates['-'.$i.'HOUR'] = sprintf(_n('- %d hour','- %d hours',$i),$i);
+            $dates['-'.$i.'HOUR'] = sprintf(_n('- %d hour', '- %d hours', $i), $i);
          }
       }
 
       for ($i=1 ; $i<=7 ; $i++) {
-         $dates['-'.$i.'DAY'] = sprintf(_n('- %d day','- %d days',$i),$i);
+         $dates['-'.$i.'DAY'] = sprintf(_n('- %d day', '- %d days', $i), $i);
       }
 
       if ($params['with_days']) {
@@ -3294,7 +3308,7 @@ class Html {
       }
 
       for ($i=1 ; $i<=10 ; $i++) {
-         $dates['-'.$i.'WEEK'] = sprintf(_n('- %d week','- %d weeks',$i),$i);
+         $dates['-'.$i.'WEEK'] = sprintf(_n('- %d week', '- %d weeks', $i), $i);
       }
 
       if ($params['with_days']) {
@@ -3302,7 +3316,7 @@ class Html {
       }
 
       for ($i=1 ; $i<=12 ; $i++) {
-         $dates['-'.$i.'MONTH'] = sprintf(_n('- %d month','- %d months',$i),$i);
+         $dates['-'.$i.'MONTH'] = sprintf(_n('- %d month', '- %d months', $i), $i);
       }
 
       if ($params['with_days']) {
@@ -3310,30 +3324,30 @@ class Html {
       }
 
       for ($i=1 ; $i<=10 ; $i++) {
-         $dates['-'.$i.'YEAR'] = sprintf(_n('- %d year','- %d years',$i),$i);
+         $dates['-'.$i.'YEAR'] = sprintf(_n('- %d year', '- %d years', $i), $i);
       }
 
       if ($params['with_future']) {
          if ($params['with_time']) {
             for ($i=1 ; $i<=24 ; $i++) {
-               $dates[$i.'HOUR'] = sprintf(_n('+ %d hour','+ %d hours',$i),$i);
+               $dates[$i.'HOUR'] = sprintf(_n('+ %d hour', '+ %d hours', $i), $i);
             }
          }
 
          for ($i=1 ; $i<=7 ; $i++) {
-            $dates[$i.'DAY'] = sprintf(_n('+ %d day','+ %d days',$i),$i);
+            $dates[$i.'DAY'] = sprintf(_n('+ %d day', '+ %d days', $i), $i);
          }
 
          for ($i=1 ; $i<=10 ; $i++) {
-            $dates[$i.'WEEK'] = sprintf(_n('+ %d week','+ %d weeks',$i),$i);
+            $dates[$i.'WEEK'] = sprintf(_n('+ %d week', '+ %d weeks', $i), $i);
          }
 
          for ($i=1 ; $i<=12 ; $i++) {
-            $dates[$i.'MONTH'] = sprintf(_n('+ %d month','+ %d months',$i),$i);
+            $dates[$i.'MONTH'] = sprintf(_n('+ %d month', '+ %d months', $i), $i);
          }
 
          for ($i=1 ; $i<=10 ; $i++) {
-            $dates[$i.'YEAR'] = sprintf(_n('+ %d year','+ %d years',$i),$i);
+            $dates[$i.'YEAR'] = sprintf(_n('+ %d year', '+ %d years', $i), $i);
          }
       }
       return $dates;
@@ -3411,7 +3425,7 @@ class Html {
       if (preg_match("/^(-?)(\d+)(\w+)$/",$val,$matches)) {
          if (in_array($matches[3], array('YEAR', 'MONTH', 'WEEK', 'DAY', 'HOUR'))) {
             $nb = intval($matches[2]);
-            if ($matches[1]=='-') {
+            if ($matches[1] == '-') {
                $nb = -$nb;
             }
             // Use it to have a clean delay computation (MONTH / YEAR have not always the same duration)
@@ -3441,7 +3455,7 @@ class Html {
 
                case "HOUR" :
                   $format_use = "Y-m-d H:i:s";
-                  $hour += $nb;
+                  $hour      += $nb;
                   break;
             }
             return date($format_use, mktime ($hour, $minute, $second, $month, $day, $year));
@@ -3467,7 +3481,7 @@ class Html {
 
          foreach ($_SESSION["glpiprofiles"] as $key => $val) {
             echo '<option value="'.$key.'" '.
-                   ($_SESSION["glpiactiveprofile"]["id"]==$key?'selected':'').'>'.$val['name'].
+                   (($_SESSION["glpiactiveprofile"]["id"] == $key) ?'selected':'').'>'.$val['name'].
                  '</option>';
          }
          echo '</select></form></li>';
@@ -3491,7 +3505,7 @@ class Html {
          echo "</script>";
 
          echo "<a onclick='entity_window.show();' href='#modal_entity_content' title=\"".
-                $_SESSION["glpiactive_entity_name"].
+                addslashes($_SESSION["glpiactive_entity_name"]).
                 "\" class='entity_select' id='global_entity_select'>".
                 $_SESSION["glpiactive_entity_shortname"]."</a>";
 
@@ -3504,8 +3518,7 @@ class Html {
     * Show a tooltip on an item
     *
     * @param $content   string   data to put in the tooltip
-    * @param $options   array    of possible options
-    * Parameters which could be used in options array :
+    * @param $options   array    of possible options:
     *   - applyto : string / id of the item to apply tooltip (default empty).
     *                  If not set display an icon
     *   - title : string / title to display (default empty)
@@ -3623,8 +3636,7 @@ class Html {
     *
     * @param $item            item object used for create dropdown
     * @param $field           field to search for autocompletion
-    * @param $options   array of possible options
-    * Parameters which could be used in options array :
+    * @param $options   array of possible options:
     *    - name : string / name of the select (default is field parameter)
     *    - value : integer / preselected value (default value of the item object)
     *    - size : integer / size of the text field
@@ -3659,7 +3671,8 @@ class Html {
          }
       }
 
-      if ($CFG_GLPI["use_ajax"] && $CFG_GLPI["use_ajax_autocompletion"]) {
+      if ($CFG_GLPI["use_ajax"]
+          && $CFG_GLPI["use_ajax_autocompletion"]) {
          $rand = mt_rand();
          $name = "field_".$params['name'].$rand;
          echo "<input ".$params['option']." id='text$name' type='text' name='".$params['name'].
@@ -3674,10 +3687,10 @@ class Html {
                   itemtype: '".$item->getType()."',
                   field: '$field'";
 
-               if ($params['entity']>=0) {
+               if ($params['entity'] >= 0) {
                   $output .= ",entity_restrict: ".$params['entity'];
                }
-               if ($params['user']>=0) {
+               if ($params['user'] >= 0) {
                   $output .= ",user_restrict: ".$params['user'];
                }
                $output .= "
@@ -3771,15 +3784,15 @@ class Html {
 
       // And the human is viewing from start to end
       $current_end = $current_start+$list_limit-1;
-      if ($current_end>$numrows) {
+      if ($current_end > $numrows) {
          $current_end = $numrows;
       }
       // Empty case
-      if ($current_end==0) {
+      if ($current_end == 0) {
          $current_start = 0;
       }
       // Backward browsing
-      if ($current_start-$list_limit<=0) {
+      if ($current_start-$list_limit <= 0) {
          $back = 0;
       } else {
          $back = $start-$list_limit;
@@ -3793,7 +3806,7 @@ class Html {
       echo "<tr>\n";
 
       // Back and fast backward button
-      if (!$start==0) {
+      if (!$start == 0) {
          echo "<th class='left'><a href='javascript:reloadTab(\"start=0\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('Start').
                 "\" title=\"".__s('Start')."\"></a></th>";
@@ -3813,7 +3826,7 @@ class Html {
       echo "</td>\n";
 
       // Forward and fast forward button
-      if ($forward<$numrows) {
+      if ($forward < $numrows) {
          echo "<th class='right'><a href='javascript:reloadTab(\"start=$forward\");'>
                <img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next').
                 "\" title=\"".__s('Next')."\"></a></th>";
@@ -3839,7 +3852,7 @@ class Html {
 
       if (count($tab)) {
          echo "<table class='tab_cadre'>";
-         echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
+         echo "<tr><th>".__('KEY')."</th><th>=></th><th>".__('VALUE')."</th></tr>";
 
          foreach ($tab as $key => $val) {
             echo "<tr class='tab_bg_1'><td class='top right'>";
@@ -3895,12 +3908,12 @@ class Html {
       }
 
       // Empty case
-      if ($current_end==0) {
+      if ($current_end == 0) {
          $current_start = 0;
       }
 
       // Backward browsing
-      if ($current_start-$list_limit<=0) {
+      if ($current_start-$list_limit <= 0) {
          $back = 0;
       } else {
          $back = $start-$list_limit;
@@ -3911,7 +3924,7 @@ class Html {
       echo "<tr>";
 
       // Back and fast backward button
-      if (!$start==0) {
+      if (!$start == 0) {
          echo "<th class='left'>";
          echo "<a href='$target?$parameters&amp;start=0'>";
          echo "<img src='".$CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__s('Start').
@@ -3931,14 +3944,14 @@ class Html {
 
       if (!empty($item_type_output)
           && isset($_SESSION["glpiactiveprofile"])
-          && $_SESSION["glpiactiveprofile"]["interface"]=="central") {
+          && ($_SESSION["glpiactiveprofile"]["interface"] == "central")) {
 
          echo "<td class='tab_bg_2' width='30%'>";
          echo "<form method='GET' action='".$CFG_GLPI["root_doc"]."/front/report.dynamic.php'
                 target='_blank'>";
          echo "<input type='hidden' name='item_type' value='$item_type_output'>";
 
-         if ($item_type_output_param!=0) {
+         if ($item_type_output_param != 0) {
             echo "<input type='hidden' name='item_type_param' value='".
                    serialize($item_type_output_param)."'>";
          }
@@ -3958,7 +3971,7 @@ class Html {
 
       echo "<td width='50%' class='tab_bg_2 b'>";
       //TRANS: %1$d, %2$d, %3$d are page numbers
-      echo sprintf(__('From %1$d to %2$d on %3$d'), $current_start, $current_end, $numrows);
+      printf(__('From %1$d to %2$d on %3$d'), $current_start, $current_end, $numrows);
       echo "</td>\n";
 
       // Forward and fast forward button
