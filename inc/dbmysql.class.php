@@ -198,7 +198,8 @@ class DBmysql {
 
       $res = @$this->dbh->query($query);
       if (!$res) {
-         $error = "*** MySQL query error : \n***\nSQL: ".addslashes($query)."\nError: ".
+         // no translation for error logs
+         $error = "*** MySQL query error: \n***\nSQL: ".addslashes($query)."\nError: ".
                    $this->dbh->error."\n";
 
          if (function_exists("debug_backtrace")) {
@@ -626,6 +627,7 @@ class DBmysql {
        return $nb;
     }
 
+
    /**
     * Get  information about DB connection for showSystemInformations
     *
@@ -634,6 +636,7 @@ class DBmysql {
     * @return Array of label / value
     */
    public function getInfo() {
+
       // No translation, used in sysinfo
       return array('Parameters'       => $this->dbuser."@".$this->dbhost."/".$this->dbdefault,
                    'Server version'   => $this->dbh->server_info,

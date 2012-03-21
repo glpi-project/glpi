@@ -207,7 +207,7 @@ class DeviceNetworkCard extends CommonDevice {
                              array $options=array()) {
 
       switch ($item_type) {
-         case 'Computer_Device':
+         case 'Computer_Device' :
             if ($this->fields["bandwidth"]) {
                $row->addCell($row->getHeaderByName('specificities', 'bandwidth'),
                              $this->fields["bandwidth"], $father);

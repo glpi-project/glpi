@@ -150,7 +150,7 @@ class DeviceDrive extends CommonDevice {
                              array $options=array()) {
 
       switch ($item_type) {
-         case 'Computer_Device':
+         case 'Computer_Device' :
             if ($this->fields["is_writer"]) {
                $row->addCell($row->getHeaderByName('specificities', 'writer'),
                              Dropdown::getYesNo($this->fields["is_writer"]), $father);
