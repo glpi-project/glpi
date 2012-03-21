@@ -1422,7 +1422,7 @@ class User extends CommonDBTM {
       $title   = _n('User', 'Users', 2);
 
       if ($this->canCreate()) {
-         $buttons["user.form.php?new=1"] = __('Add user...');
+         $buttons["user.form.php"] = __('Add user...');
          $title = "";
 
          if (Auth::useAuthExt()) {
