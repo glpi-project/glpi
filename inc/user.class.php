@@ -55,12 +55,15 @@ class User extends CommonDBTM {
 
    function canCreate() {
 
+      return Session::haveRight('user', 'w');
+      /*
       if (Session::haveRight('user', 'w')             // Write right
           && (Session::haveAccessToEntity(0) // Access to root entity (required when no default profile)
               || Profile::getDefault()>0)) { // Default profile will be given in current entity
          return true;
       }
       return false;
+      */
    }
 
 
@@ -90,8 +93,27 @@ class User extends CommonDBTM {
 
 
    function canCreateItem() {
-      // New user : no entity defined
-      return true;
+
+      // Form loading (yes this seems uggly...)
+      if (empty($_REQUEST)) {
+         // New user : no entity defined
+         return true;
+      }
+      // Will be created from form, with selected entity/profile
+      if (isset($_POST['_profiles_id'])
+          && $_POST['_profiles_id']>0
+          && Profile::currentUserHaveMoreRightThan(array($_POST['_profiles_id']))
+          && isset($_POST['_entities_id'])
+          && Session::haveAccessToEntity($_POST['_entities_id'])) {
+         return true;
+      }
+      // Will be created with default value
+      if (Session::haveAccessToEntity(0) // Access to root entity (required when no default profile)
+          || Profile::getDefault()>0) {
+         return true;
+      }
+
+      return false;
    }
 
 
@@ -517,11 +539,15 @@ class User extends CommonDBTM {
 
       // Add default profile
       if (!$rulesplayed) {
-         $profile = Profile::getDefault();
+         if (isset($this->input['_profiles_id']) && $this->input['_profiles_id']) {
+            $profile = $this->input['_profiles_id'];
+         } else {
+            $profile = Profile::getDefault();
+         }
          if ($profile) {
             if (isset($this->input["_entities_id"])) {
                // entities_id (user's pref) always set in prepareInputForAdd
-               // use _entities_id for default right (but this seems not used)
+               // use _entities_id for default right
                $affectation["entities_id"] = $this->input["_entities_id"];
 
             } else if (isset($_SESSION['glpiactive_entity'])) {
@@ -1594,8 +1620,17 @@ class User extends CommonDBTM {
       }
       echo "</td></tr>";
 
-      //don't display is creation of a new user'
-      if (!empty($ID)) {
+      if (empty($ID)) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>" .  __('Profile') . "</td><td>";
+         Profile::dropdownUnder(array('name'  => '_profiles_id',
+                                      'value' => Profile::getDefault()));
+
+         echo "</td><td>" .  __('Entity') . "</td><td>";
+         Dropdown::show('Entity', array('name'   => '_entities_id',
+                                        'entity' => $_SESSION['glpiactive_entity']));
+         echo "</td></tr>";
+      } else {
          if ($caneditpassword) {
             echo "<tr class='tab_bg_1'>";
             echo "<td>" .  __('Default profile') . "</td><td>";
@@ -1606,7 +1641,7 @@ class User extends CommonDBTM {
             Dropdown::showFromArray("profiles_id", $options,
                                     array('value' => $this->fields["profiles_id"]));
 
-            echo "<td>" .  __('Default entity') . "</td><td>";
+            echo "</td><td>" .  __('Default entity') . "</td><td>";
             $entities = Profile_User::getUserEntities($this->fields['id'],1);
             Dropdown::show('Entity', array('value'  => $this->fields["entities_id"],
                                            'entity' => $entities));
