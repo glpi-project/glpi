@@ -1391,7 +1391,23 @@ function update083to084() {
                KEY `name` (`name`)
                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
       $DB->queryOrDie($query, "0.84 create glpi_blacklists");
+      
       $ADDTODISPLAYPREF['Blacklist'] = array(12,11);
+      
+      $toinsert=array(Blacklist::IP  => array('empty IP'  => '', 
+                                              'localhost' => '127.0.0.1', 
+                                              'zero IP'   => '0.0.0.0'),
+                      Blacklist::MAC => array('empty MAC' => ''),
+                     );
+      foreach ($toinsert as $type => $datas) {
+         if (count($datas)) {
+            foreach ($datas as $name => $value) {
+               $query = "INSERT INTO `glpi_blacklists` (`type`,`name`,`value`)
+                           VALUES ('$type','".addslashes($name)."','".addslashes($value)."');";
+               $DB->queryOrDie($query, "0.84 insert datas to glpi_blacklists");
+            }   
+         }
+      }
    }
 
    // ************ Keep it at the end **************
