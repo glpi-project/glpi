@@ -46,17 +46,31 @@ if (!isset($_GET["id"])) {
 
 $cart    = new Cartridge();
 $cartype = new CartridgeItem();
+if (isset($_POST["update_cart_use"])) {
+   if (isset($_POST['date_use'])) {
+      foreach ($_POST["date_use"] as $key => $value) {
+         $cart->check($key,'w');
 
-if (isset($_POST["update_pages"]) || isset($_POST["update_pages_x"])) {
-   $cart->check($_POST["id"],'w');
-
-   if ($cart->updatePages($_POST['pages'])) {
-      Event::log(0, "cartridges", 4, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s updates cartridges'), $_SESSION["glpiname"]));
+         if ($cart->updateCartUse($value)) {
+            Event::log(0, "cartridges", 4, "inventory", 
+                       sprintf(__('%s updates cartridges'), $_SESSION["glpiname"]));
+         }
+      }
    }
    Html::back();
-
+} else if (isset($_POST["update_cart_out"])) {
+   if (isset($_POST['date_out'])) {
+      foreach ($_POST["date_out"] as $key => $value) {
+         $cart->check($key,'w');
+         if (isset($_POST['pages'][$key])) {
+            if ($cart->updateCartOut($_POST['pages'][$key], $value)) {
+               Event::log(0, "cartridges", 4, "inventory", 
+                          sprintf(__('%s updates cartridges'), $_SESSION["glpiname"]));
+            }
+         }
+      }
+   }
+   Html::back();
 } else if (isset($_POST["add_several"])) {
    $cartype->check($_POST["cartridgeitems_id"],'w');
 
