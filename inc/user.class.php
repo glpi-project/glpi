@@ -94,8 +94,8 @@ class User extends CommonDBTM {
 
    function canCreateItem() {
 
-      // Form loading (yes this seems uggly...)
-      if (empty($_REQUEST)) {
+      // Form loading (yes this seems uggly..., <=1 because of [PHPSESSID])
+      if (count($_REQUEST) <= 1) {
          // New user : no entity defined
          return true;
       }
