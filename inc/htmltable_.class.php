@@ -87,6 +87,7 @@ class HTMLTable_ extends HTMLTable_Base {
 
 
    function tryAddHeader() {
+
       if (count($this->groups) > 0) {
          throw new Exception('Implementation error: must define all headers before any subgroups');
       }

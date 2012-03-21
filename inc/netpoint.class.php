@@ -381,10 +381,18 @@ class Netpoint extends CommonDropdown {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $itemtype
+    * @param $base            HTMLTable_Base object
+    * @param $super           HTMLTable_SuperHeader object (default NULL
+    * @param $father          HTMLTable_Header object (default NULL)
+    * @param $options   array
+   **/
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
-                                             HTMLTable_SuperHeader $super = NULL,
-                                             HTMLTable_Header $father = NULL,
-                                             $options=array()) {
+                                      HTMLTable_SuperHeader $super=NULL,
+                                      HTMLTable_Header $father=NULL, $options=array()) {
 
       $column_name = __CLASS__;
 
@@ -397,8 +405,16 @@ class Netpoint extends CommonDropdown {
    }
 
 
-   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
-                                       HTMLTable_Cell $father = NULL, array $options) {
+   /**
+    * @since version 0.84
+    *
+    * @param $row             HTMLTable_Row object
+    * @param $item            CommonDBTM object (default NULL)
+    * @param $father          HTMLTable_Cell object (default NULL)
+    * @param $options   array
+   **/
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item=NULL,
+                                            HTMLTable_Cell $father=NULL, array $options) {
 
       $column_name = __CLASS__;
 
@@ -407,8 +423,7 @@ class Netpoint extends CommonDropdown {
       }
 
       $row->addCell($row->getHeaderByName($column_name),
-                    Dropdown::getDropdownName("glpi_netpoints",
-                                              $item->fields["netpoints_id"]));
+                    Dropdown::getDropdownName("glpi_netpoints", $item->fields["netpoints_id"]));
    }
 
 }

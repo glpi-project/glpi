@@ -416,7 +416,7 @@ class Cartridge extends CommonDBTM {
          echo "<tr><th>".__('ID')."</th><th>".__('State')."</th>";
          echo "<th>".__('Add date')."</th><th>".__('Use date')."</th>";
          echo "<th>".__('Used on')."</th>";
-         
+
 
          if ($show_old) {
             echo "<th>".__('End date')."</th>";
@@ -517,7 +517,7 @@ class Cartridge extends CommonDBTM {
                   $pp               = $data['pages']-$pages[$printer];
                   printf(_n('%d printed page','%d printed pages',$pp), $pp);
                   $pages[$printer]  = $data['pages'];
-               } else if ($data['pages']!=0) {
+               } else if ($data['pages'] != 0) {
                   echo "<span class='tab_bg_1_2'>".__('Counter error')."</span>";
   	       }
                echo "</td>";
@@ -525,7 +525,7 @@ class Cartridge extends CommonDBTM {
             echo "<td class='center'>";
             Infocom::showDisplayLink('Cartridge',$data["id"],1);
             echo "</td>";
-            
+
             if ($canedit) {
                echo "<td class='center'>";
                if (!is_null($date_use)) {
@@ -539,7 +539,8 @@ class Cartridge extends CommonDBTM {
             if ($canedit) {
                echo "<td class='center'>";
                echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?delete=delete&amp;id=".
-                     $data["id"]."&amp;tID=$tID'><img title=\"".__s('Delete')."\" alt=\"".__s('Delete')."\" src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
+                     $data["id"]."&amp;tID=$tID'><img title=\"".__s('Delete')."\" alt=\"".
+                     __s('Delete')."\" src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
               echo "</td>";
             }
             echo "</tr>";
@@ -669,12 +670,12 @@ class Cartridge extends CommonDBTM {
                 sprintf(__('%1$s - %2$s'), $data["type"], $data["ref"])."</a></td>";
          echo "<td class='center'>".$date_in."</td>";
          echo "<td class='center'>";
-         
+
          if ($old==0 && $canedit) {
             Html::showDateFormItem("date_use[$cart_id]", $date_use, true, true, $date_in);
          } else {
             echo $date_use;
-         }  
+         }
 
          $tmp_dbeg       = explode("-", $data["date_in"]);
          $tmp_dend       = explode("-", $data["date_use"]);
@@ -690,7 +691,7 @@ class Cartridge extends CommonDBTM {
                Html::showDateFormItem("date_out[$cart_id]", $date_out, true, true, $date_use);
             } else {
                echo $date_out;
-            }            
+            }
 
             $tmp_dbeg      = explode("-", $data["date_use"]);
             $tmp_dend      = explode("-", $data["date_out"]);
@@ -698,9 +699,9 @@ class Cartridge extends CommonDBTM {
             $use_time_tmp  = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
                               - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
             $use_time     += $use_time_tmp;
-            
+
             echo "</td><td class='left'>";
-            
+
             if ($canedit) {
                echo "<input type='text' name='pages[$cart_id]' value=\"".$data['pages']."\" size='6'>";
             } else {
@@ -771,7 +772,7 @@ class Cartridge extends CommonDBTM {
       echo "</table></div>";
       if ($canedit) {
          echo "</form>";
-      }      
+      }
    }
 
 

@@ -144,9 +144,9 @@ abstract class HTMLTable_Base  {
 
    /**
     * @param $name
-    * @param $sub_name
+    * @param $sub_name (default NULL)
    **/
-   function getHeaderByName($name, $sub_name = NULL) {
+   function getHeaderByName($name, $sub_name=NULL) {
 
       if (is_string($sub_name)) {
          if (isset($this->headers[$name][$sub_name])) {

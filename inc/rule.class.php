@@ -614,7 +614,7 @@ class Rule extends CommonDBTM {
                 "?popup=1&amp;rand=".$params['rand']."' ,'glpipopup', 'height=400, ".
                 "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
       }
-      
+
       return $first;
    }
 
@@ -1285,10 +1285,10 @@ class Rule extends CommonDBTM {
                   $addentity = "";
                   if ($this->isEntityAssign()) {
                      $itemtype = getItemTypeForTable($crit["table"]);
-                     $item = getItemForItemtype($itemtype);
+                     $item     = getItemForItemtype($itemtype);
                      if ($item
-                           && $item->getFromDB($pattern)
-                              && $item->isEntityAssign()) {
+                         && $item->getFromDB($pattern)
+                         && $item->isEntityAssign()) {
                         $addentity = '&nbsp;('.Dropdown::getDropdownName('glpi_entities',
                                                                          $item->getEntityID()).')';
                      }
