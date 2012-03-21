@@ -1326,8 +1326,10 @@ class Rule extends CommonDBTM {
                   $addentity = "";
                   if ($this->isEntityAssign()) {
                      $itemtype = getItemTypeForTable($crit["table"]);
-                     $item     = new $itemtype();
-                     if ($item->isEntityAssign() && $item->getFromDB($pattern)) {
+                     $item     = getItemForItemtype($itemtype);
+                     if ($item
+                         && $item->isEntityAssign()
+                         && $item->getFromDB($pattern)) {
                         $addentity = '&nbsp;('.Dropdown::getDropdownName('glpi_entities',
                                                                          $item->getEntityID()).')';
                      }
@@ -2019,7 +2021,7 @@ class Rule extends CommonDBTM {
                   $collection = new RuleMailCollectorCollection();
                   if ($collection->canList()) {
                      $types[] = 'RuleMailCollector';
-                  }         
+                  }
                   $nb=0;
                   if (count($types)) {
                      $nb = countElementsInTable(array('glpi_rules','glpi_ruleactions'),
@@ -2028,7 +2030,7 @@ class Rule extends CommonDBTM {
                                                 AND `glpi_ruleactions`.`field` = 'entities_id'
                                                 AND `glpi_ruleactions`.`value` = '".$item->getID()."'");
                   }
-               
+
                   return self::createTabEntry($LANG['rulesengine'][17],$nb);
                }
                return $this->getTypeName(2);
