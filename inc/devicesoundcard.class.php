@@ -87,14 +87,15 @@ class DeviceSoundCard extends CommonDevice {
    /**
     * @since version 0.84
     *
-    * @param $group              HTMLTable_Group object
-    * @param $super              HTMLTable_SuperHeader object
-    * @param &$previous_header   HTMLTable_Header object
+    * @param $itemtype
+    * @param $base               HTMLTable_Base object
+    * @param $super              HTMLTable_SuperHeader object (default NULL)
+    * @param $father             HTMLTable_Header object (default NULL)
+    * @param $options   array
    **/
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
-                                      HTMLTable_SuperHeader $super = NULL,
-                                      HTMLTable_Header $father = NULL,
-                                      $options=array()) {
+                                      HTMLTable_SuperHeader $super=NULL,
+                                      HTMLTable_Header $father=NULL, $options=array()) {
 
       $column_name = __CLASS__;
 
@@ -103,7 +104,7 @@ class DeviceSoundCard extends CommonDevice {
       }
 
       switch ($itemtype) {
-         case 'Computer_Device':
+         case 'Computer_Device' :
             $base->addHeader('type', __('Type'), $super, $father);
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             break;
@@ -114,12 +115,14 @@ class DeviceSoundCard extends CommonDevice {
 
    /**
     * @since version 0.84
+    *
+    * @see inc/CommonDevice::getHTMLTableCell()
    **/
-   function getHTMLTableCell($item_type, HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
-                             array $options = array()) {
+   function getHTMLTableCell($item_type, HTMLTable_Row $row, HTMLTable_Cell $father=NULL,
+                             array $options=array()) {
 
       switch ($item_type) {
-         case 'Computer_Device':
+         case 'Computer_Device' :
             if ($this->fields["type"]) {
                $row->addCell($row->getHeaderByName('specificities', 'type'), $this->fields["type"],
                              $father);

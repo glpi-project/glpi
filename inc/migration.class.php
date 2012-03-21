@@ -71,7 +71,8 @@ class Migration {
       $fin = time();
       $tps = Html::timestampToString($fin-$this->deb);
       echo "<script type='text/javascript'>document.getElementById('migration_message_".
-             $this->version."').innerHTML=\"<p class='center'>".addslashes($msg)." ($tps)</p>\";</script>\n";
+             $this->version."').innerHTML=\"<p class='center'>".addslashes($msg)." ($tps)</p>\";".
+           "</script>\n";
 
       Html::glpi_flush();
    }

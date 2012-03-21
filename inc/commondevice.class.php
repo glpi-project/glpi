@@ -149,19 +149,20 @@ abstract class CommonDevice extends CommonDropdown {
     * get the HTMLTable Header for the current device according to the type of the item that
     * is requesting
     *
-    * @param $itemtype (string)             the type of the item
-    * @param $base (HTMLTable_Base)         the element on which adding the header (ie.: HTMLTable_
-    *                                       or HTMLTable_Group)
-    * @param $super (HTMLTable_SuperHeader) the super header (in case of adding to HTMLTable_Group)
-    * @param $father (HTMLTable_Header)     the father of the current headers
-    * @param $options (array)               parameter such as restriction
+    * @param $itemtype  string   the type of the item
+    * @param $base               HTMLTable_Base object:the element on which adding the header
+    *                            (ie.: HTMLTable_ or HTMLTable_Group)
+    * @param $super              HTMLTable_SuperHeader object: the super header
+    *                            (in case of adding to HTMLTable_Group) (default NULL)
+    * @param $father             HTMLTable_Header object: the father of the current headers
+    *                            (default NULL)
+    * @param $options   array    parameter such as restriction
     *
     * @return nothing (elements added to $base)
    **/
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
-                                      HTMLTable_SuperHeader $super = NULL,
-                                      HTMLTable_Header $father = NULL,
-                                      $options=array()) {
+                                      HTMLTable_SuperHeader $super=NULL,
+                                      HTMLTable_Header $father = NULL, $options=array()) {
    }
 
 
@@ -170,15 +171,15 @@ abstract class CommonDevice extends CommonDropdown {
     *
     * Adding $this values to an HTMLTable_ according to the type of the item that is requesting
     *
-    * @param $itemtype (string)       the type of the item
-    * @param $row (HTMLTable_Row)     the row on which adding the cells
-    * @param $father (HTMLTable_Cell) the father of this cell
-    * @param $options (array)         parameter such as restriction
+    * @param $itemtype  string   the type of the item
+    * @param $row                HTMLTable_Row object: the row on which adding the cells
+    * @param $father             HTMLTable_Cell object: the father of this cell (default NULL)
+    * @param $options   array    parameter such as restriction
     *
     * @return nothing (elements added to $base)
-    */
-   function getHTMLTableCell($item_type, HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
-                             array $options = array()) {
+   **/
+   function getHTMLTableCell($item_type, HTMLTable_Row $row, HTMLTable_Cell $father=NULL,
+                             array $options=array()) {
    }
 
 
