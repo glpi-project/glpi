@@ -784,8 +784,9 @@ class Cartridge extends CommonDBTM {
          if ($canedit) {
             echo "<tr class='tab_bg_1'><td colspan='2' class='center'>";
             echo "<input type='hidden' name='pID' value='$instID'>";
-            echo "<input type='submit' name='update_cart_use' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-   
+            if ($number > 0) {
+               echo "<input type='submit' name='update_cart_use' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+            }
             echo "</td><td  colspan='3' class='tab_bg_2 center'>";
             if (CartridgeItem::dropdownForPrinter($printer)) {
                echo "&nbsp;<input type='submit' name='install' value=\"".$LANG['buttons'][4]."\"
