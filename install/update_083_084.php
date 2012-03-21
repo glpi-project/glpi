@@ -1384,6 +1384,7 @@ function update083to084() {
                `id` int(11) NOT NULL AUTO_INCREMENT,
                `type` int(11) NOT NULL DEFAULT '0',
                `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+               `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                `comment` text COLLATE utf8_unicode_ci,
                PRIMARY KEY (`id`),
                KEY `type` (`type`),
