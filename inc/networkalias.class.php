@@ -193,16 +193,16 @@ class NetworkAlias extends FQDNLabel {
     }
 
 
-    /**
-     * @since version 0.84
-     *
+   /**
+    * @since version 0.84
+    *
     * @param $row                HTMLTable_Row object
     * @param $item               CommonDBTM object (default NULL)
     * @param $father             HTMLTable_Cell object (default NULL)
     * @param $options   array
    **/
    static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item=NULL,
-                                        HTMLTable_Cell $father=NULL, array $options=array()) {
+                                            HTMLTable_Cell $father=NULL, array $options=array()) {
       global $DB, $CFG_GLPI;
 
       if (empty($item)) {

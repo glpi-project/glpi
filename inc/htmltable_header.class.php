@@ -82,7 +82,7 @@ abstract class HTMLTable_Header extends HTMLTable_Entity {
     * @param $father             HTMLTable_Header object:
     *                            the father of the current column (default NULL)
    **/
-   function __construct($name, $content, HTMLTable_Header $father = NULL) {
+   function __construct($name, $content, HTMLTable_Header $father=NULL) {
 
       parent::__construct($content);
 

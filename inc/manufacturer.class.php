@@ -73,10 +73,19 @@ class Manufacturer extends CommonDropdown {
    }
 
 
+   /**
+    * @since version 0.84
+    *
+    * @param $itemtype
+    * @param $base                  HTMLTable_Base object
+    * @param $super                 HTMLTable_SuperHeader object (default NULL)
+    * @param $father                HTMLTable_Header object (default NULL)
+    * @param $options      array
+   **/
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
-                                             HTMLTable_SuperHeader $super = NULL,
-                                             HTMLTable_Header $father = NULL,
-                                             $options=array()) {
+                                      HTMLTable_SuperHeader $super=NULL,
+                                      HTMLTable_Header $father=NULL, $options=array()) {
+
       $column_name = __CLASS__;
 
       if (isset($options['dont_display'][$column_name])) {
@@ -86,9 +95,19 @@ class Manufacturer extends CommonDropdown {
       $base->addHeader($column_name, __('Manufacturer'), $super, $father);
    }
 
-   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
-                                            HTMLTable_Cell $father = NULL,
+
+   /**
+    * @since version 0.84
+    *
+    * @param $row                HTMLTable_Row object
+    * @param $item               CommonDBTM object (default NULL)
+    * @param $father             HTMLTable_Cell object (default NULL)
+    * @param $options   array
+   **/
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item=NULL,
+                                            HTMLTable_Cell $father=NULL,
                                             array $options = array()) {
+
       $column_name = __CLASS__;
 
       if (isset($options['dont_display'][$column_name])) {
@@ -102,5 +121,6 @@ class Manufacturer extends CommonDropdown {
                        $father);
       }
    }
+
 }
 ?>

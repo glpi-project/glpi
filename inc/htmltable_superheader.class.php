@@ -121,6 +121,7 @@ class HTMLTable_SuperHeader extends HTMLTable_Header {
       $this->setColSpan(self::LCM($number, $this->getColSpan()));
    }
 
+
    /**
     * The super headers always have to be displayed, conversely to sub headers
     *

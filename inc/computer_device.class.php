@@ -310,8 +310,8 @@ class Computer_Device extends CommonDBTM {
                      $cell_value .= __('Add')."&nbsp;";
 
                      $cell_value  = array($cell_value,
-                                         array('function'   => 'Dropdown::showInteger',
-                                               'parameters' => array($field_name, 0, 0, 10)),
+                                          array('function'   => 'Dropdown::showInteger',
+                                                'parameters' => array($field_name, 0, 0, 10)),
                                     "</span>");
                   }
                   $name_cell = $current_row->addCell($name_column, $cell_value, NULL, $device);
