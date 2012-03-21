@@ -88,7 +88,7 @@ class Dropdown {
       //Empty choice's label
       $params['emptylabel'] = self::EMPTY_VALUE;
       //Display emptychoice ?
-      $params['display_emptychoice'] = true;
+      $params['display_emptychoice'] = ($itemtype != 'Entity');
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1392,8 +1392,8 @@ class Dropdown {
          if ($params['management_restrict'] == 2) {
             echo "&nbsp;<a title=\"".__s('Duplicate the element as many times as there are connections').
                  "\" href=\"#\" ".HTML::addConfirmationOnAction(
-                 array(__('Do you really want to use unitary management for this item ?'),
-                 __('Duplicate the element as many times as there are connections')),
+                           array(__('Do you really want to use unitary management for this item ?'),
+                                 __('Duplicate the element as many times as there are connections')),
                  "window.location='".$params['target']."?unglobalize=unglobalize&amp;id=$ID'").">".
                  __('Use unitary management')."</a>&nbsp;";
 
