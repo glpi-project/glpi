@@ -406,12 +406,12 @@ class DBConnection extends CommonDBTM {
    **/
    static function showAllReplicateDelay() {
 
-      $DBSlave = self::getDBSlaveConf();
+      $DBslave = self::getDBSlaveConf();
 
-      if (is_array($DBSlave->dbhost)) {
-         $hosts = $DBSlave->dbhost;
+      if (is_array($DBslave->dbhost)) {
+         $hosts = $DBslave->dbhost;
       } else {
-         $hosts = array($DBSlave->dbhost);
+         $hosts = array($DBslave->dbhost);
       }
 
       foreach ($hosts as $num => $name) {
