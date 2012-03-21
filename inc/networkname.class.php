@@ -709,7 +709,8 @@ class NetworkName extends FQDNLabel {
       self::getHTMLTableCellsForItem($t_row, $item, NULL, $table_options);
 
       // Do not display table for netwokrport if only one networkname
-      if ($item->getType() == 'NetworkPort' && $table->getNumberOfRows() <=1) {
+      if (($item->getType() == 'NetworkPort')
+          && ($table->getNumberOfRows() <= 1)) {
          $display_table = false;
       }
 
@@ -722,7 +723,7 @@ class NetworkName extends FQDNLabel {
             Session::initNavigateListItems(__CLASS__,
                                     //TRANS : %1$s is the itemtype name,
                                     //        %2$s is the name of the item (used for headings of a list)
-                                          sprintf(__('%1$s = %2$s'),
+                                           sprintf(__('%1$s = %2$s'),
                                                    $item->getTypeName(1), $item->getName()));
             $table->display(array('display_title_for_each_group' => false,
                                   'display_thead'                => false,
