@@ -465,7 +465,7 @@ class Config extends CommonDBTM {
     * @return Nothing (display)
    **/
    function showFormDBSlave() {
-      global $DB, $CFG_GLPI, $DBSlave;
+      global $DB, $CFG_GLPI, $DBslave;
 
       if (!Session::haveRight("config", "w")) {
          return false;
@@ -480,26 +480,26 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><th colspan='4'>" . _n('Mysql replica', 'Mysql replicas',2) .
            "</th></tr>";
-      $DBSlave = DBConnection::getDBSlaveConf();
+      $DBslave = DBConnection::getDBSlaveConf();
 
-      if (is_array($DBSlave->dbhost)) {
-         $host = implode(' ', $DBSlave->dbhost);
+      if (is_array($DBslave->dbhost)) {
+         $host = implode(' ', $DBslave->dbhost);
       } else {
-         $host = $DBSlave->dbhost;
+         $host = $DBslave->dbhost;
       }
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Mysql server') . "</td>";
       echo "<td><input type='text' name='_dbreplicate_dbhost' size='40' value='$host'></td>";
       echo "<td>" . __('Database') . "</td>";
-      echo "<td><input type='text' name='_dbreplicate_dbdefault' value='".$DBSlave->dbdefault."'>";
+      echo "<td><input type='text' name='_dbreplicate_dbdefault' value='".$DBslave->dbdefault."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Mysql user') . "</td>";
-      echo "<td><input type='text' name='_dbreplicate_dbuser' value='".$DBSlave->dbuser."'></td>";
+      echo "<td><input type='text' name='_dbreplicate_dbuser' value='".$DBslave->dbuser."'></td>";
       echo "<td>" . __('Mysql password') . "</td>";
       echo "<td><input type='password' name='_dbreplicate_dbpassword' value='".
-                 $DBSlave->dbpassword."'>";
+                 $DBslave->dbpassword."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -514,7 +514,7 @@ class Config extends CommonDBTM {
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
 
-      if ($DBSlave->connected && !$DB->isSlave()) {
+      if ($DBslave->connected && !$DB->$DBslave()) {
          echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
          DBConnection::showAllReplicateDelay();
          echo "</td></tr>";
