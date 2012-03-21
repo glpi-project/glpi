@@ -135,14 +135,15 @@ class DeviceNetworkCard extends CommonDevice {
    /**
     * @since version 0.84
     *
-    * @param $group              HTMLTable_Group object
-    * @param $super              HTMLTable_SuperHeader  object
-    * @param $previous_header    HTMLTable_Header object
-    */
+    * @param $itemtype
+    * @param $base               HTMLTable_Base object
+    * @param $super              HTMLTable_SuperHeader object (default NULL)
+    * @param $father             HTMLTable_Header object (default NULL)
+    * @param $options   array
+   **/
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
-                                      HTMLTable_SuperHeader $super = NULL,
-                                      HTMLTable_Header $father = NULL,
-                                      $options=array()) {
+                                      HTMLTable_SuperHeader $super=NULL,
+                                      HTMLTable_Header $father=NULL, $options=array()) {
 
       $column_name = __CLASS__;
 
@@ -151,11 +152,12 @@ class DeviceNetworkCard extends CommonDevice {
       }
 
       switch ($itemtype) {
-         case 'NetworkPortEthernet':
-         case 'NetworkPortWifi':
+         case 'NetworkPortEthernet' :
+         case 'NetworkPortWifi' :
             $base->addHeader($column_name, __('Interface'), $super, $father);
             break;
-         case 'Computer_Device':
+
+         case 'Computer_Device' :
             $base->addHeader('bandwidth', __('Flow'), $super, $father);
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             break;
@@ -165,11 +167,15 @@ class DeviceNetworkCard extends CommonDevice {
 
    /**
     * since version 0.84
+    *
+    * @param $row             HTMLTable_Row object
+    * @param $item            CommonDBTM  object (default NULL)
+    * @param $father          HTMLTable_Cell object (default NULL)
+    * @param $options   array
     */
-   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item = NULL,
+   static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item=NULL,
                                             HTMLTable_Cell $father = NULL,
-                                            array $options = array()) {
-
+                                            array $options=array()) {
 
       $column_name = __CLASS__;
 
@@ -190,12 +196,16 @@ class DeviceNetworkCard extends CommonDevice {
 
       $row->addCell($row->getHeaderByName($column_name), ($device ? $device->getLink() : ''),
                     $father);
-
    }
 
-   function getHTMLTableCell($item_type, HTMLTable_Row $row, HTMLTable_Cell $father = NULL,
-                             array $options = array()) {
 
+   /**
+    * @since version 0.84
+    *
+    * @see inc/CommonDevice::getHTMLTableCell()
+   **/
+   function getHTMLTableCell($item_type, HTMLTable_Row $row, HTMLTable_Cell $father=NULL,
+                             array $options=array()) {
 
       switch ($item_type) {
          case 'Computer_Device':
@@ -203,11 +213,9 @@ class DeviceNetworkCard extends CommonDevice {
                $row->addCell($row->getHeaderByName('specificities', 'bandwidth'),
                              $this->fields["bandwidth"], $father);
             }
-
             Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             break;
       }
-
    }
 
 }

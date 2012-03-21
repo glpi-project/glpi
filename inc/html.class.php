@@ -679,7 +679,9 @@ class Html {
      * @return nothing
     **/
     static function changeProgressBarMessage($msg="&nbsp;") {
-       echo "<script type='text/javascript'>glpi_progressbar.updateText(\"".addslashes($msg)."\")</script>\n";
+
+       echo "<script type='text/javascript'>glpi_progressbar.updateText(\"".addslashes($msg)."\")".
+            "</script>\n";
     }
 
 

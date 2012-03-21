@@ -79,7 +79,7 @@ abstract class CommonDBRelation extends CommonDBTM {
    /**
     * Must we chech than the item, for relation 2, exists
     *
-    * @since : version to be defined
+    * @since version 0.84
     *
     * @param $input Array of data to be added
     *
