@@ -1628,7 +1628,7 @@ class User extends CommonDBTM {
 
          echo "</td><td>" .  __('Entity') . "</td><td>";
          Dropdown::show('Entity', array('name'   => '_entities_id',
-                                        'entity' => $_SESSION['glpiactive_entity']));
+                                        'entity' => $_SESSION['glpiactiveentities']));
          echo "</td></tr>";
       } else {
          if ($caneditpassword) {
