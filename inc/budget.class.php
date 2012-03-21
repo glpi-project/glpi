@@ -359,8 +359,8 @@ class Budget extends CommonDropdown{
                if ($nb > $_SESSION['glpilist_limit']) {
                   echo "<tr class='tab_bg_1'>";
                   $name = $item->getTypeName($nb);
-                  //TRANS: %1$s is a name, %2$d is a number
-                  echo "<td class='center'>".sprintf(__('%1$s: %2$d'), $name, $nb)."</td>";
+                  //TRANS: %1$s is a name, %2$s is a number
+                  echo "<td class='center'>".sprintf(__('%1$s: %2$s'), $name, $nb)."</td>";
                   echo "<td class='center' colspan='2'>";
                   echo "<a href='". $item->getSearchURL() . "?" .
                         rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$budgets_id) . "&" .
@@ -379,7 +379,7 @@ class Budget extends CommonDropdown{
                      if ($prem) {
                         $name = $item->getTypeName($nb);
                         echo "<td class='center top' rowspan='$nb'>".
-                              ($nb>1 ? sprintf(__('%1$s: %2$d'), $name, $nb) : $name)."</td>";
+                              ($nb>1 ? sprintf(__('%1$s: %2$s'), $name, $nb) : $name)."</td>";
                      }
                      echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                           $data["entities_id"]);
