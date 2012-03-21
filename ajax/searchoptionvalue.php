@@ -174,6 +174,10 @@ if (isset($_REQUEST['searchtype'])) {
                   CronTask::dropdownState($inputname, $_REQUEST['value']);
                   $display = true;
                   break;
+               case "glpi_blacklists.type" :
+                  Blacklist::dropdownType($inputname, array('value' => $_REQUEST['value']));
+                  $display = true;
+                  break;
             }
 
             // Standard datatype usage
