@@ -75,7 +75,7 @@ class Holiday extends CommonDropdown {
    **/
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                 = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'begin_date';
@@ -96,13 +96,16 @@ class Holiday extends CommonDropdown {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
       $input = parent::prepareInputForAdd($input);
 
       if (empty($input['end_date'])
-          || $input['end_date'] == 'NULL'
-          || $input['end_date'] < $input['begin_date']) {
+          || ($input['end_date'] == 'NULL')
+          || ($input['end_date'] < $input['begin_date'])) {
 
          $input['end_date'] = $input['begin_date'];
       }
@@ -110,13 +113,16 @@ class Holiday extends CommonDropdown {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForUpdate()
+   **/
    function prepareInputForUpdate($input) {
 
       $input = parent::prepareInputForUpdate($input);
 
       if (empty($input['end_date'])
-          || $input['end_date'] == 'NULL'
-          || $input['end_date'] < $input['begin_date']) {
+          || ($input['end_date'] == 'NULL')
+          || ($input['end_date'] < $input['begin_date'])) {
 
          $input['end_date'] = $input['begin_date'];
       }
