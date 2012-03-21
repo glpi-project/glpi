@@ -289,10 +289,10 @@ class Consumable extends CommonDBTM {
    static function getStatus($cID) {
 
       if (self::isNew($cID)) {
-         return _x('consumable', 'New');
+         return _nx('consumable', 'New', 'New',1);
 
       } else if (self::isOld($cID)) {
-         return _x('consumable', 'Used');
+         return _nx('consumable', 'Used', 'Used',1);
       }
    }
 
@@ -356,15 +356,16 @@ class Consumable extends CommonDBTM {
          }
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          if (!$show_old) {
-            echo "<tr><th colspan='7'>";
+            echo "<tr><th colspan=".($canedit?'6':'4').">";
             echo self::getCount($tID, -1);
             echo "</th></tr>";
          } else { // Old
-            echo "<tr><th colspan='8'>".__('Used consumables')."</th></tr>";
+            echo "<tr><th colspan='".($canedit?'8':'6')."'>".__('Used consumables')."</th></tr>";
          }
          $i = 0;
          echo "<tr><th>".__('ID')."</th><th>".__('State')."</th>";
-         echo "<th>".__('Add date')."</th><th>".__('Use date')."</th>";
+         echo "<th>".__('Add date')."</th>";
+         echo "<th>".__('Use date')."</th>";
          if ($show_old) {
             echo "<th>".__('Give to')."</th>";
          }
@@ -439,12 +440,15 @@ class Consumable extends CommonDBTM {
                          $data["id"]."&amp;tID=$tID'>".__('Back to stock')."</a>";
                }
                echo "</td>";
+            
+               echo "<td class='center'>";
+               echo "<a href='".
+                     $CFG_GLPI["root_doc"]."/front/consumable.form.php?delete=delete&amp;id=".
+                     $data["id"]."&amp;tID=$tID'><img title=\"".__s('Delete')."\" alt=\"".
+                        __s('Delete')."\" src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
+               echo "</td>";
             }
-            echo "<td class='center'>";
-            echo "<a href='".
-                   $CFG_GLPI["root_doc"]."/front/consumable.form.php?delete=delete&amp;id=".
-                   $data["id"]."&amp;tID=$tID'>".__('Delete')."</a>";
-            echo "</td></tr>";
+            echo "</tr>";
          }
       }
       echo "</table></div>";
