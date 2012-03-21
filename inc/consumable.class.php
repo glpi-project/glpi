@@ -331,7 +331,7 @@ class Consumable extends CommonDBTM {
          return $LANG['consumables'][20];
 
       } else if (self::isOld($cID)) {
-         return $LANG['consumables'][22];
+         return $LANG['consumables'][21];
       }
    }
 
@@ -397,16 +397,17 @@ class Consumable extends CommonDBTM {
          }
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
          if (!$show_old) {
-            echo "<tr><th colspan='7'>";
+            echo "<tr><th colspan=".($canedit?'6':'4').">";
             echo self::getCount($tID, -1);
             echo "</th></tr>";
          } else { // Old
-            echo "<tr><th colspan='8'>".$LANG['consumables'][35]."</th></tr>";
+            echo "<tr><th colspan='".($canedit?'8':'6')."'>".$LANG['consumables'][35]."</th></tr>";
          }
          $i = 0;
          echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th>";
-         echo "<th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th>";
+         echo "<th>".$LANG['cartridges'][24]."</th>";
          if ($show_old) {
+            echo "<th>".$LANG['consumables'][26]."</th>";
             echo "<th>".$LANG['consumables'][31]."</th>";
          }
          echo "<th width='200px'>".$LANG['financial'][3]."</th>";
@@ -453,7 +454,9 @@ class Consumable extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='center'>".$data["id"]."</td>";
             echo "<td class='center'>".self::getStatus($data["id"])."</td>";
             echo "<td class='center'>".$date_in."</td>";
-            echo "<td class='center'>".$date_out."</td>";
+            if ($show_old) {
+               echo "<td class='center'>".$date_out."</td>";
+            }
 
             if ($show_old) {
                echo "<td class='center'>";
@@ -467,23 +470,23 @@ class Consumable extends CommonDBTM {
             Infocom::showDisplayLink('Consumable', $data["id"],1);
             echo "</td>";
 
-            if (!$show_old && $canedit) {
+            if ($canedit) {
                echo "<td class='center'>";
-               echo "<input type='checkbox' name='out[".$data["id"]."]'>";
+               if (!$show_old) {
+                  echo "<input type='checkbox' name='out[".$data["id"]."]'>";
+               } else {
+                  echo "<a href='".
+                        $CFG_GLPI["root_doc"]."/front/consumable.form.php?restore=restore&amp;id=".
+                        $data["id"]."&amp;tID=$tID'>".$LANG['consumables'][37]."</a>";
+               }
                echo "</td>";
-            }
-            if ($show_old && $canedit) {
                echo "<td class='center'>";
                echo "<a href='".
-                      $CFG_GLPI["root_doc"]."/front/consumable.form.php?restore=restore&amp;id=".
-                      $data["id"]."&amp;tID=$tID'>".$LANG['consumables'][37]."</a>";
+                     $CFG_GLPI["root_doc"]."/front/consumable.form.php?delete=delete&amp;id=".
+                     $data["id"]."&amp;tID=$tID'><img title=\"".$LANG['buttons'][6]."\" alt=\"".$LANG['buttons'][6]."\" src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
                echo "</td>";
             }
-            echo "<td class='center'>";
-            echo "<a href='".
-                   $CFG_GLPI["root_doc"]."/front/consumable.form.php?delete=delete&amp;id=".
-                   $data["id"]."&amp;tID=$tID'>".$LANG['buttons'][6]."</a>";
-            echo "</td></tr>";
+            echo "</tr>";
          }
       }
       echo "</table></div>";
