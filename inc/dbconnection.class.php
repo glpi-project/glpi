@@ -196,6 +196,7 @@ class DBConnection extends CommonDBTM {
                      return $DBread;
                   }
                   // nobreak;
+
                case 1 : // If synced (all changes)
                   $slave  = $DBread->request($sql)->next();
                   $master = $DB->request($sql)->next();
@@ -206,7 +207,7 @@ class DBConnection extends CommonDBTM {
                   }
                   break;
 
-               case 2 : // If synced (current user changes)
+               case 2 : // If synced (current user changes or profile in read only)
                   if (!isset($_SESSION['glpi_maxhistory'])) {
                      // No change yet
                      return $DBread;

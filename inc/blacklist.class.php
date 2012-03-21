@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// Blacklist class
+/// @since version 0.84
 class Blacklist extends CommonDropdown {
 
    // From CommonDBTM
@@ -45,8 +46,9 @@ class Blacklist extends CommonDropdown {
    const IP     = 1;
    const MAC    = 2;
    const SERIAL = 3;
-   const UUID   = 4;   
-   const EMAIL  = 5;   
+   const UUID   = 4;
+   const EMAIL  = 5;
+
 
    function canCreate() {
       return Session::haveRight('config', 'w');
@@ -83,12 +85,12 @@ class Blacklist extends CommonDropdown {
    **/
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                    = parent::getSearchOptions();
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'value';
-      $tab[11]['name']     = __('Value');
-      $tab[11]['datatype'] = 'text';
+      $tab[11]['table']       = $this->getTable();
+      $tab[11]['field']       = 'value';
+      $tab[11]['name']        = __('Value');
+      $tab[11]['datatype']    = 'text';
 
       $tab[12]['table']      = $this->getTable();
       $tab[12]['field']      = 'type';
@@ -98,19 +100,36 @@ class Blacklist extends CommonDropdown {
       return $tab;
    }
 
+
+   /**
+    * @see inc/CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
-      if ((!isset($input['name']) || empty($input['name'])) && isset($input['value'])) {
+
+      if ((!isset($input['name']) || empty($input['name']))
+          && isset($input['value'])) {
          $input['name'] = $input['value'];
       }
       return $input;
    }
 
+
+   /**
+    * @see inc/CommonDropdown::displaySpecificTypeField()
+   **/
    function displaySpecificTypeField($ID, $field=array()) {
+
       if ($field['name'] == 'type') {
          self::dropdownType($field['name'], array('value' => $this->fields['type']));
       }
    }
 
+
+   /**
+    * @param $field
+    * @param $values
+    * @param $options   array
+    */
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -128,10 +147,8 @@ class Blacklist extends CommonDropdown {
    /**
     * Dropdown of blacklist types
     *
-    * @param $name select name
-    * @param $options array of options
-    *
-    * Parameters which could be used in options array :
+    * @param $name            select name
+    * @param $options   array of possible options:
     *    - value : integer / preselected value (default 0)
     *    - toadd : array / array of specific values to add at the begining
     *    - on_change : string / value to transmit to "onChange"
@@ -159,7 +176,8 @@ class Blacklist extends CommonDropdown {
 
       return Dropdown::showFromArray($name, $items, $params);
    }
-   
+
+
    /**
     * Get blacklist types
     *
@@ -175,15 +193,17 @@ class Blacklist extends CommonDropdown {
 
       return $options;
    }
-   
+
+
    /**
     * Get blacklisted items for a specific type
     *
     * @param $type type to get (see constants)
-    * 
+    *
     * @return array of blacklisted items
    **/
    static function getBlacklistedItems($type) {
+
       $datas = getAllDatasFromTable('glpi_blacklists', "type = '$type'");
       $items = array();
       if (count($datas)) {
@@ -193,7 +213,8 @@ class Blacklist extends CommonDropdown {
       }
       return $items;
    }
-   
+
+
    /**
     * Get blacklisted IP
     *
@@ -202,7 +223,8 @@ class Blacklist extends CommonDropdown {
    static function getIPs() {
       return self::getBlacklistedItems(self::IP);
    }
-   
+
+
    /**
     * Get blacklisted MAC
     *
@@ -211,7 +233,8 @@ class Blacklist extends CommonDropdown {
    static function getMACs() {
       return self::getBlacklistedItems(self::MAC);
    }
-   
+
+
    /**
     * Get blacklisted Serial number
     *
@@ -221,6 +244,7 @@ class Blacklist extends CommonDropdown {
       return self::getBlacklistedItems(self::SERIAL);
    }
 
+
    /**
     * Get blacklisted UUID
     *
@@ -229,7 +253,8 @@ class Blacklist extends CommonDropdown {
    static function getUUIDs() {
       return self::getBlacklistedItems(self::UUID);
    }
-   
+
+
    /**
     * Get blacklisted Emails
     *

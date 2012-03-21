@@ -2654,12 +2654,12 @@ class Search {
                                ($val==0?" OR `$table`.`id` IS NULL":'').') ';
             }
             $toadd = '';
-            
+
             $tmplink = 'OR';
             if ($nott) {
-               $tmplink = 'AND';   
+               $tmplink = 'AND';
             }
-            
+
             if ($itemtype == 'Ticket' || $itemtype == 'Problem') {
                if (isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
                    && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
@@ -2669,21 +2669,23 @@ class Search {
                   $bj        = $searchopt[$ID]["joinparams"]["beforejoin"];
                   $linktable = $bj['table'].'_'.self::computeComplexJoinID($bj['joinparams']);
                   //$toadd     = "`$linktable`.`alternative_email` $SEARCH $tmplink ";
-                  $toadd = self::makeTextCriteria("`$linktable`.`alternative_email`",$val,$nott, $tmplink);
+                  $toadd     = self::makeTextCriteria("`$linktable`.`alternative_email`", $val,
+                                                      $nott, $tmplink);
                }
             }
-            $toadd2='';
-            if ($nott && $val!='NULL' && $val!='null') {
+            $toadd2 = '';
+            if ($nott
+                && ($val != 'NULL') && ($val != 'null')) {
                $toadd2 = " OR `$table`.`$field` IS NULL";
-            }            
+            }
             return $link." ((`$table`.`$name1` $SEARCH
                             $tmplink `$table`.`$name2` $SEARCH
                             $tmplink `$table`.`$field` $SEARCH
-                            $tmplink CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH ) 
+                            $tmplink CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH )
                             $toadd2) $toadd";
-                            
-                            
-                            
+
+
+
 
 //          case "glpi_groups.name" :
 //             $linkfield = "";
@@ -2750,23 +2752,23 @@ class Search {
                $name1 = 'name';
                $name2 = 'firstname';
             }
-            
+
             $tmplink = 'OR';
             if ($nott) {
-               $tmplink = 'AND';   
-            }            
+               $tmplink = 'AND';
+            }
             return $link." (`$table`.`$name1` $SEARCH
                             $tmplink `$table`.`$name2` $SEARCH
                             $tmplink CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
 
          case "glpi_auth_tables.name" :
             $user_searchopt = self::getOptions('User');
-            
+
             $tmplink = 'OR';
             if ($nott) {
-               $tmplink = 'AND';   
-            }      
-                    
+               $tmplink = 'AND';
+            }
+
             return $link." (`glpi_authmails".$addtable."_".
                            self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`name`
                            $SEARCH
@@ -2872,14 +2874,15 @@ class Search {
             $tmplink = 'OR';
             $compare = '=';
             if ($nott) {
-               $tmplink = 'AND';   
+               $tmplink = 'AND';
                $compare = '<>';
-            }   
+            }
             $toadd2 = '';
-            if ($nott && $val!='NULL' && $val!='null') {
+            if ($nott
+                && ($val != 'NULL') && ($val != 'null')) {
                $toadd2 = " OR `$table`.`$field` IS NULL";
-            }              
-         
+            }
+
             return $link." (((`$table`.`tickets_id_1` $compare '$val'
                              $tmplink `$table`.`tickets_id_2` $compare '$val')
                             AND `glpi_tickets`.`id` <> '$val') $toadd2)";
@@ -4362,11 +4365,11 @@ class Search {
 
             case "bool" :
                if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
-                  $out   = "";
-                  $split = explode("$$$$", $data[$NAME.$num]);
+                  $out           = "";
+                  $split         = explode("$$$$", $data[$NAME.$num]);
                   $count_display = 0;
                   for ($k=0 ; $k<count($split) ; $k++) {
-                     if (strlen(trim($split[$k]))>0) {
+                     if (strlen(trim($split[$k])) > 0) {
                         if ($count_display) {
                            $out .= "<br>";
                         }
@@ -4375,7 +4378,7 @@ class Search {
                      }
                   }
                   return $out;
-               }            
+               }
                return Dropdown::getYesNo($data[$NAME.$num]).$unit;
 
             case "right":

@@ -519,7 +519,7 @@ class MailCollector  extends CommonDBTM {
             imap_expunge($this->marubox);
             $this->close_mailbox();   //Close Mail Box
 
-            //TRANS: %1, %2, %3 and %4 are number of messages
+            //TRANS: %1$d, %2$d, %3$d, %4$d and %5$d are number of messages
             $msg = sprintf(__('Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d, blacklisted=%5$d'),
                            $tot, $this->fetch_emails, $refused, $error, $blacklisted);
             if ($display) {
@@ -582,9 +582,9 @@ class MailCollector  extends CommonDBTM {
       $blacklisted_emails[] = $this->fields['name'];
       if (Toolbox::inArrayCaseCompare($head['from'], $blacklisted_emails)) {
          $tkt['_blacklisted'] = true;
-         return $tkt;            
+         return $tkt;
       }
-      
+
       // max size = 0 : no import attachments
       if ($this->fields['filesize_max']>0) {
          if (is_writable(GLPI_DOC_DIR."/_tmp/")) {
@@ -619,7 +619,7 @@ class MailCollector  extends CommonDBTM {
          foreach ($head['tos'] as $to) {
             if ($to != $head['from']
                 && !Toolbox::inArrayCaseCompare($to, $blacklisted_emails) // not blacklisted emails
-                && ($tmp=User::getOrImportByEmail($to)) > 0) {
+                && ($tmp = User::getOrImportByEmail($to)) > 0) {
                $tkt['_additional_observers'][] = array('users_id'         => $tmp,
                                                        'use_notification' => 1);
             }

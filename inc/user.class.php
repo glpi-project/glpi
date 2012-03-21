@@ -101,7 +101,7 @@ class User extends CommonDBTM {
       }
       // Will be created from form, with selected entity/profile
       if (isset($_POST['_profiles_id'])
-          && $_POST['_profiles_id']>0
+          && ($_POST['_profiles_id'] > 0)
           && Profile::currentUserHaveMoreRightThan(array($_POST['_profiles_id']))
           && isset($_POST['_entities_id'])
           && Session::haveAccessToEntity($_POST['_entities_id'])) {
@@ -109,7 +109,7 @@ class User extends CommonDBTM {
       }
       // Will be created with default value
       if (Session::haveAccessToEntity(0) // Access to root entity (required when no default profile)
-          || Profile::getDefault()>0) {
+          || (Profile::getDefault() > 0)) {
          return true;
       }
 

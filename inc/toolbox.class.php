@@ -1770,16 +1770,20 @@ class Toolbox {
 
       return $tab;
    }
+
+
    /**
     * Do a in_array search comparing string using strcasecmp
     *
-    * @param $string string to search
-    * @param $datas array to search to search
     * @since version 0.84
+    *
+    * @param $string    string   to search
+    * @param $datas     array    to search to search
+    *
     * @return boolean : string founded ?
-   **/   
+   **/
    static function inArrayCaseCompare($string, $datas=array()) {
-   
+
       if (count($datas)) {
          foreach ($datas as $tocheck) {
             if (strcasecmp($string, $tocheck) == 0) {
@@ -1787,7 +1791,6 @@ class Toolbox {
             }
          }
       }
-   
       return false;
    }
 
