@@ -50,7 +50,7 @@ class Vlan extends CommonDropdown {
 
       return array(array('name'     => 'tag',
                          'label'    => __('ID TAG'),
-                         'type'     => 'number',
+                         'type'     => '',
                          'list'     => true));
    }
 

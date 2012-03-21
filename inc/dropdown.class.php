@@ -622,7 +622,8 @@ class Dropdown {
             = array(__('Common')
                         => array('Location'        => _n('Location', 'Locations', 2),
                                  'State'           => _n('Status of items', 'Status of items', 2),
-                                 'Manufacturer'    => _n('Manufacturer', 'Manufacturers', 2)),
+                                 'Manufacturer'    => _n('Manufacturer', 'Manufacturers', 2),
+                                 'Blacklist'       => _n('Blacklist','Blacklists',2)),
 
                     __('Assistance')
                         => array('ITILCategory'     =>  _n('Category of ticket',
