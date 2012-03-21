@@ -987,6 +987,7 @@ class Session {
       return $defvalue;
    }
 
+
    /**
     * Is the current account read-only
     *
@@ -999,11 +1000,12 @@ class Session {
       foreach ($_SESSION['glpiactiveprofile'] as $name => $val) {
          if (is_string($val)
              && ($name != 'search_config')
-             && $val == 'w') {
+             && ($val == 'w')) {
             return false;
          }
       }
       return true;
    }
+
 }
 ?>

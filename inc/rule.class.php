@@ -573,7 +573,7 @@ class Rule extends CommonDBTM {
       $items      = array();
       $group      = array();
       $groupname  = '';
-      $first = NULL;
+      $first      = NULL;
       foreach ($this->getCriterias() as $ID => $crit) {
          // Manage group system
          if (!is_array($crit)) {

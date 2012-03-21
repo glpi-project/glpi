@@ -427,7 +427,7 @@ class FieldUnicity extends CommonDropdown {
          } else {
             $where_template = "";
          }
-         
+
          $where_fields_string = "";
          foreach ($where_fields as $where_field) {
             if (getTableNameForForeignKeyField($where_field)) {
@@ -440,7 +440,8 @@ class FieldUnicity extends CommonDropdown {
                           COUNT(*) AS cpt
                    FROM `".$item->getTable()."`
                    WHERE `".$item->getTable()."`.`entities_id` IN (".implode(',',$entities).")
-                         $where_template $where_fields_string
+                         $where_template
+                         $where_fields_string
                    GROUP BY $fields_string
                    ORDER BY cpt DESC";
          $results = array();

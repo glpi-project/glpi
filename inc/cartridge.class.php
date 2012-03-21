@@ -135,35 +135,40 @@ class Cartridge extends CommonDBTM {
                                  'pages' => $pages));
    }
 
+
    /**
-   * Update dates use value of a cartridge
-   *
-   *@param $date_use  date_use value
-   *
-   *@return boolean : true for success
+    * Update dates use value of a cartridge
+    *
+    * @since version 0.84
+    *
+    * @param $date_use  date_use value
+    *
+    * @return boolean : true for success
    **/
    function updateCartUse($date_use) {
-      global $DB;
 
       return $this->update(array('id'       => $this->fields['id'],
                                  'date_use' => $date_use));
    }
 
+
    /**
-   * Update count pages and date out value of a cartridge
-   *
-   *@param $pages  count pages value
-   *@param $date_out  date_out value
-   *
-   *@return boolean : true for success
+    * Update count pages and date out value of a cartridge
+    *
+    * @since version 0.84
+    *
+    * @param $pages  count pages value
+    * @param $date_out  date_out value
+    *
+    *@return boolean : true for success
    **/
    function updateCartOut($pages, $date_out) {
-      global $DB;
 
       return $this->update(array('id'       => $this->fields['id'],
                                  'date_out' => $date_out,
                                  'pages'    => $pages));
    }
+
 
    /**
     * Link a cartridge to a printer.
@@ -671,7 +676,8 @@ class Cartridge extends CommonDBTM {
          echo "<td class='center'>".$date_in."</td>";
          echo "<td class='center'>";
 
-         if ($old==0 && $canedit) {
+         if (($old == 0)
+             && $canedit) {
             Html::showDateFormItem("date_use[$cart_id]", $date_use, true, true, $date_in);
          } else {
             echo $date_use;
@@ -727,17 +733,19 @@ class Cartridge extends CommonDBTM {
             } else {
                echo "<a href='".$CFG_GLPI["root_doc"].
                       "/front/cartridge.form.php?delete=delete&amp;id=".$data["id"].
-                      "&amp;tID=".$data["tID"]."'><img title=\"".__s('Delete')."\" alt=\"".__s('Delete')."\" src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
+                      "&amp;tID=".$data["tID"]."'><img title=\"".__s('Delete')."\"
+                      alt=\"".__s('Delete')."\" src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
             }
             echo "</td></tr>";
          }
       }
-      if (($old == 0)) {
+      if ($old == 0) {
          if ($canedit) {
             echo "<tr class='tab_bg_1'><td colspan='2' class='center'>";
             echo "<input type='hidden' name='printers_id' value='$instID'>";
             if ($number > 0) {
-               echo "<input type='submit' name='update_cart_use' value=\""._sx('button','Save')."\" class='submit'>";
+               echo "<input type='submit' name='update_cart_use' value=\""._sx('button','Save')."\"
+                      class='submit'>";
             }
             echo "</td><td  colspan='3' class='tab_bg_2 center'>";
 
@@ -763,7 +771,8 @@ class Cartridge extends CommonDBTM {
             echo round($pages_printed/$nb_pages_printed)."</td>";
             if ($canedit) {
                echo "<td>";
-               echo "<input type='submit' name='update_cart_out' value=\""._sx('button','Save')."\" class='submit'>";
+               echo "<input type='submit' name='update_cart_out' value=\""._sx('button','Save')."\"
+                      class='submit'>";
                echo "</td>";
             }
             echo "</tr>";
