@@ -850,8 +850,8 @@ class Contract extends CommonDBTM {
                if ($canedit) {
                   echo "<td>&nbsp;</td>";
                }
-               //TRANS: %1$s is a type name, %2$d is a number
-               echo "<td class='center'>".sprintf(__('%1$s: %2$d'), $item->getTypeName($nb), $nb).
+               //TRANS: %1$s is a type name, %2$s is a number
+               echo "<td class='center'>".sprintf(__('%1$s: %2$s'), $item->getTypeName($nb), $nb).
                     "</td>";
                echo "<td class='center' colspan='2'>";
                echo "<a href='". Toolbox::getItemTypeSearchURL($itemtype) . "?" .
@@ -882,7 +882,7 @@ class Contract extends CommonDBTM {
                   if ($prem) {
                      $name = $item->getTypeName($nb);
                      echo "<td class='center top' rowspan='$nb'>".
-                            ($nb  >1 ? sprintf(__('%1$s: %2$d'), $name, $nb): $name)."</td>";
+                            ($nb  >1 ? sprintf(__('%1$s: %2$s'), $name, $nb): $name)."</td>";
                   }
                   echo "<td class='center'>";
                   echo Dropdown::getDropdownName("glpi_entities",$data['entity'])."</td>";

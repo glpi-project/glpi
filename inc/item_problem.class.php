@@ -191,7 +191,7 @@ class Item_Problem extends CommonDBRelation{
                if ($prem) {
                   $name = $item->getTypeName($nb);
                   echo "<td class='center top' rowspan='$nb'>".
-                         ($nb>1 ? sprintf(__('%1$s: %2$d'), $name, $nb) : $name)."</td>";
+                         ($nb>1 ? sprintf(__('%1$s: %2$s'), $name, $nb) : $name)."</td>";
                }
                echo "<td class='center'>";
                echo Dropdown::getDropdownName("glpi_entities", $data['entity'])."</td>";

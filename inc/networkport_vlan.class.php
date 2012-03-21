@@ -190,7 +190,6 @@ class NetworkPort_Vlan extends CommonDBRelation {
 
       foreach ($DB->request($query) as $line) {
          if (isset($line["tagged"]) && ($line["tagged"] == 1)) {
-            //TRANS: %s is the VLAN name
             $content = sprintf(__('%1$s - %2$s'),
                                Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]),
                                __('Tagged'));
@@ -237,10 +236,11 @@ class NetworkPort_Vlan extends CommonDBRelation {
             $used[$line["vlans_id"]] = $line["vlans_id"];
             echo "<tr><td>";
             if ((isset($line["tagged"])) && ($line["tagged"] == 1)) {
-               //TRANS: %s is the VLAN name
-               echo sprintf(__('%s - Tagged'), Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]));
+               printf(__('%1$s - %2$s'),
+                      Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]), __('Tagged'));
             } else {
-               echo sprintf(__('%s - Untagged'), Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]));
+               printf(__('%1$s - %2$s'),
+                      Dropdown::getDropdownName("glpi_vlans", $line["vlans_id"]), __('Untagged'));
             }
             Html::showToolTip(sprintf(__('%1$s: %2$s'), __('ID TAG'),  $line['vlantag'])."<br>".
                               sprintf(__('%1$s: %2$s'), __('Comments'),  $line['vlancomment']));
