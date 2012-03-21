@@ -424,9 +424,10 @@ class MailCollector  extends CommonDBTM {
 
          if ($this->marubox) {
             // Get Total Number of Unread Email in mail box
-            $tot     = $this->getTotalMails(); //Total Mails in Inbox Return integer value
-            $error   = 0;
-            $refused = 0;
+            $tot         = $this->getTotalMails(); //Total Mails in Inbox Return integer value
+            $error       = 0;
+            $refused     = 0;
+            $blacklisted = 0;
 
             for ($i=1 ; $i<=$tot && $this->fetch_emails<$this->maxfetch_emails ; $i++) {
                $tkt = $this->buildTicket($i, array('mailgates_id' => $mailgateID,
@@ -443,6 +444,7 @@ class MailCollector  extends CommonDBTM {
                // Manage blacklisted emails
                if (isset($tkt['_blacklisted']) && $tkt['_blacklisted']) {
                   $this->deleteMails($i, self::REFUSED_FOLDER);
+                  $blacklisted++;
                // entities_id set when new ticket / tickets_id when new followup
                } else if (((isset($tkt['entities_id']) || isset($tkt['tickets_id']))
                            && $user_condition)
@@ -518,8 +520,8 @@ class MailCollector  extends CommonDBTM {
             $this->close_mailbox();   //Close Mail Box
 
             //TRANS: %1, %2, %3 and %4 are number of messages
-            $msg = sprintf(__('Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d'),
-                           $tot, $this->fetch_emails, $refused, $error);
+            $msg = sprintf(__('Number of messages: available=%1$d, retrieved=%2$d, refused=%3$d, errors=%4$d, blacklisted=%5$d'),
+                           $tot, $this->fetch_emails, $refused, $error, $blacklisted);
             if ($display) {
                Session::addMessageAfterRedirect($msg, false, ($error ? ERROR : INFO));
             } else {
@@ -574,7 +576,15 @@ class MailCollector  extends CommonDBTM {
          $tkt['_blacklisted'] = true;
          return $tkt;
       }
-
+      // manage blacklist
+      $blacklisted_emails = Blacklist::getEmails();
+      // Add name of the mailcollector as blacklisted
+      $blacklisted_emails[] = $this->fields['name'];
+      if (Toolbox::inArrayCaseCompare($head['from'], $blacklisted_emails)) {
+         $tkt['_blacklisted'] = true;
+         return $tkt;            
+      }
+      
       // max size = 0 : no import attachments
       if ($this->fields['filesize_max']>0) {
          if (is_writable(GLPI_DOC_DIR."/_tmp/")) {
@@ -597,7 +607,7 @@ class MailCollector  extends CommonDBTM {
       if (count($head['ccs'])) {
          foreach ($head['ccs'] as $cc) {
             if ($cc != $head['from']
-                && strcasecmp($cc, $this->fields['name'])
+                && !Toolbox::inArrayCaseCompare($cc, $blacklisted_emails) // not blacklisted emails
                 && ($tmp=User::getOrImportByEmail($cc)) > 0) {
                $tkt['_additional_observers'][] = array('users_id'         => $tmp,
                                                        'use_notification' => 1);
@@ -608,7 +618,7 @@ class MailCollector  extends CommonDBTM {
       if (count($head['tos'])) {
          foreach ($head['tos'] as $to) {
             if ($to != $head['from']
-                && strcasecmp($to, $this->fields['name'])
+                && !Toolbox::inArrayCaseCompare($to, $blacklisted_emails) // not blacklisted emails
                 && ($tmp=User::getOrImportByEmail($to)) > 0) {
                $tkt['_additional_observers'][] = array('users_id'         => $tmp,
                                                        'use_notification' => 1);
