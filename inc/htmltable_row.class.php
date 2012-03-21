@@ -179,6 +179,11 @@ class HTMLTable_Row extends HTMLTable_Entity {
       echo "\t\t</tbody>\n";
    }
 
+
+   /**
+    * @param $name
+    * @param $sub_name  (default NULL)
+   */
    function getHeaderByName($name, $sub_name = NULL) {
       return $this->group->getHeaderByName($name, $sub_name);
    }

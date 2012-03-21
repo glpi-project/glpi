@@ -162,7 +162,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
     * @param $options   array
    **/
    static function getHTMLTableCellsForItem(HTMLTable_Row $row, CommonDBTM $item=NULL,
-                                        HTMLTable_Cell $father=NULL, array $options=array()) {
+                                            HTMLTable_Cell $father=NULL, array $options=array()) {
       global $DB, $CFG_GLPI;
 
       $column_name = __CLASS__;
