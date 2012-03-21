@@ -161,7 +161,7 @@ class Blacklist extends CommonDropdown {
    }
    
    /**
-    * Get ticket types
+    * Get blacklist types
     *
     * @return array of types
    **/
@@ -175,5 +175,69 @@ class Blacklist extends CommonDropdown {
 
       return $options;
    }
+   
+   /**
+    * Get blacklisted items for a specific type
+    *
+    * @param $type type to get (see constants)
+    * 
+    * @return array of blacklisted items
+   **/
+   static function getBlacklistedItems($type) {
+      $datas = getAllDatasFromTable('glpi_blacklists', "type = '$type'");
+      $items = array();
+      if (count($datas)) {
+         foreach ($datas as $val) {
+            $items[] = $val['value'];
+         }
+      }
+      return $items;
+   }
+   
+   /**
+    * Get blacklisted IP
+    *
+    * @return array of blacklisted IP
+   **/
+   static function getIPs() {
+      return self::getBlacklistedItems(self::IP);
+   }
+   
+   /**
+    * Get blacklisted MAC
+    *
+    * @return array of blacklisted MAC
+   **/
+   static function getMACs() {
+      return self::getBlacklistedItems(self::MAC);
+   }
+   
+   /**
+    * Get blacklisted Serial number
+    *
+    * @return array of blacklisted Serial number
+   **/
+   static function getSerialNumbers() {
+      return self::getBlacklistedItems(self::SERIAL);
+   }
+
+   /**
+    * Get blacklisted UUID
+    *
+    * @return array of blacklisted UUID
+   **/
+   static function getUUIDs() {
+      return self::getBlacklistedItems(self::UUID);
+   }
+   
+   /**
+    * Get blacklisted Emails
+    *
+    * @return array of blacklisted Emails
+   **/
+   static function getEmails() {
+      return self::getBlacklistedItems(self::EMAIL);
+   }
+
 }
 ?>
