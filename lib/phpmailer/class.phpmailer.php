@@ -1345,13 +1345,25 @@ class PHPMailer {
           return false;
         }
       }
-      if (PHP_VERSION < 6) {
-        $magic_quotes = get_magic_quotes_runtime();
-        set_magic_quotes_runtime(0);
+      // GLPI magic_quotes stuff Backport from PHPMailer 5.2.1 for PHP 5.4.0 compatibility
+      $magic_quotes = get_magic_quotes_runtime();
+      if ($magic_quotes) {
+        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+          set_magic_quotes_runtime(0);
+        } else {
+          ini_set('magic_quotes_runtime', 0);
+        }
       }
       $file_buffer  = file_get_contents($path);
       $file_buffer  = $this->EncodeString($file_buffer, $encoding);
-      if (PHP_VERSION < 6) { set_magic_quotes_runtime($magic_quotes); }
+      if ($magic_quotes) {
+        if (version_compare(PHP_VERSION, '5.3.0', '<')) {
+          set_magic_quotes_runtime($magic_quotes);
+        } else {
+          ini_set('magic_quotes_runtime', $magic_quotes);
+        }
+      }
+
       return $file_buffer;
     } catch (Exception $e) {
       $this->SetError($e->getMessage());
