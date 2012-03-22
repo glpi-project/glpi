@@ -305,7 +305,13 @@ class Auth {
             return true;
 
          case self::EXTERNAL :
-            $login_string = $_SERVER[$CFG_GLPI["existing_auth_server_field"]];
+            $ssovariable = Dropdown::getDropdownName('glpi_ssovariables',
+                                                     $CFG_GLPI["ssovariables_id"]);
+            if (isset($_SERVER[$ssovariable])) {
+               $login_string = $_SERVER[$ssovariable];
+            } else {
+               $login_string = $_REQUEST[$ssovariable];
+            }
             $login        = $login_string;
             $pos          = stripos($login_string,"\\");
             if (!$pos === false) {
@@ -728,9 +734,9 @@ class Auth {
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {
-                  return sprintf(__('%1$s: %2$s'), 
+                  return sprintf(__('%1$s: %2$s'),
                                  sprintf(__('%1$s + %2$s'),
-                                         __('CAS'), $auth->getTypeName(1)), 
+                                         __('CAS'), $auth->getTypeName(1)),
                                  $auth->getLink());
                }
             }
@@ -740,9 +746,9 @@ class Auth {
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {
-                  return sprintf(__('%1$s: %2$s'), 
+                  return sprintf(__('%1$s: %2$s'),
                                  sprintf(__('%1$s + %2$s'),
-                                         __('CAS'), $auth->getTypeName(1)), 
+                                         __('CAS'), $auth->getTypeName(1)),
                                  $auth->getLink());
                }
             }
@@ -752,9 +758,9 @@ class Auth {
             if ($auths_id > 0) {
                $auth = new AuthLdap();
                if ($auth->getFromDB($auths_id)) {
-                  return sprintf(__('%1$s: %2$s'), 
+                  return sprintf(__('%1$s: %2$s'),
                                  sprintf(__('%1$s + %2$s'),
-                                         __('CAS'), $auth->getTypeName(1)), 
+                                         __('CAS'), $auth->getTypeName(1)),
                                  $auth->getLink());
                }
             }
@@ -826,7 +832,7 @@ class Auth {
       }
 
       // Existing auth method
-      if (!empty($CFG_GLPI["existing_auth_server_field"])) {
+      if (!empty($CFG_GLPI["ssovariables_id"])) {
          return true;
       }
 
@@ -895,11 +901,14 @@ class Auth {
             return self::X509;
          }
       }
-
       // Existing auth method
-      if (!empty($CFG_GLPI["existing_auth_server_field"])
-          && isset($_SERVER[$CFG_GLPI["existing_auth_server_field"]])
-          && !empty($_SERVER[$CFG_GLPI["existing_auth_server_field"]])) {
+      //Look for the field in $_SERVER AND $_REQUEST
+      $ssovariable = Dropdown::getDropdownName('glpi_ssovariables', $CFG_GLPI["ssovariables_id"]);
+      if ($CFG_GLPI["ssovariables_id"]
+          && (isset($_SERVER[$ssovariable])
+          && !empty($_SERVER[$ssovariable])
+             || (isset($_REQUEST[$ssovariable])
+             && !empty($_REQUEST[$ssovariable])))) {
 
          if ($redirect) {
             Html::redirect("login.php".$redir_string);
@@ -1097,37 +1106,19 @@ class Auth {
       echo "</td></tr>\n";
 
 
-      // Autres config
+      //Other configuration
       echo "<tr><th>" . __('Other authentication sent in the HTTP request')."</th><th>";
-      if (!empty($CFG_GLPI["existing_auth_server_field"])) {
+      if (!empty($CFG_GLPI["ssovariables_id"])) {
          _e('Enabled');
       }
       echo "</th></tr>\n";
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>". __('Field storage of the login in the HTTP request')."</td>";
-      echo "<td><select name='existing_auth_server_field'>";
-      echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='HTTP_AUTH_USER' " .
-             ($CFG_GLPI["existing_auth_server_field"]=="HTTP_AUTH_USER" ? " selected " : "").">".
-             "HTTP_AUTH_USER</option>\n";
-      echo "<option value='REMOTE_USER' " .
-             ($CFG_GLPI["existing_auth_server_field"]=="REMOTE_USER" ? " selected " : "") . ">".
-             "REMOTE_USER</option>\n";
-      echo "<option value='PHP_AUTH_USER' " .
-             ($CFG_GLPI["existing_auth_server_field"]=="PHP_AUTH_USER" ? " selected " : "").">".
-             "PHP_AUTH_USER</option>\n";
-      echo "<option value='USERNAME' " .
-             ($CFG_GLPI["existing_auth_server_field"]=="USERNAME" ? " selected " : "") . ">".
-             "USERNAME</option>\n";
-      echo "<option value='REDIRECT_REMOTE_USER' " .
-             ($CFG_GLPI["existing_auth_server_field"]=="REDIRECT_REMOTE_USER" ? " selected " : "") .
-            ">REDIRECT_REMOTE_USER</option>\n";
-      //For apache mod_proxy
-      echo "<option value='HTTP_REMOTE_USER' " .
-             ($CFG_GLPI["existing_auth_server_field"]=="HTTP_REMOTE_USER" ? " selected " : "") .">".
-             "HTTP_REMOTE_USER</option>\n";
-      echo "</select>";
-      echo "</td></tr>\n";
+      echo "<td>";
+      Dropdown::show('SsoVariable', array('name'  => 'ssovariables_id',
+                                          'value' => $CFG_GLPI["ssovariables_id"]));
+      echo "</td>";
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>" . __('Remove the domain of logins like login@domain')."</td><td>";
