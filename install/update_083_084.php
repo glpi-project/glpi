@@ -1410,6 +1410,13 @@ function update083to084() {
       }
    }
 
+   $query  = "SELECT `id` FROM `glpi_rulerightparameters` where `name`='(LDAP) MemberOf'";
+   $result = $DB->query($query);
+   if (!$DB->numrows($result)) {
+      $query = "INSERT INTO `glpi_rulerightparameters` VALUES (NULL,'(LDAP) MemberOf','memberof','');";
+      $DB->queryOrDie($query, "0.84 insert (LDAP) MemberOf in glpi_rulerightparameters");
+   }
+   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

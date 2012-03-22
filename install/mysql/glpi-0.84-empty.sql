@@ -4703,6 +4703,7 @@ INSERT INTO `glpi_rulerightparameters` VALUES ('9','(LDAP)Manager','manager','')
 INSERT INTO `glpi_rulerightparameters` VALUES ('10','(LDAP)DistinguishedName','dn','');
 INSERT INTO `glpi_rulerightparameters` VALUES ('12','(AD)User ID','samaccountname','');
 INSERT INTO `glpi_rulerightparameters` VALUES ('13','(LDAP) Title','title','');
+INSERT INTO `glpi_rulerightparameters` VALUES ('14','(LDAP) MemberOf','memberof','');
 
 ### Dump table glpi_rules
 
