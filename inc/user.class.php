@@ -1555,7 +1555,11 @@ class User extends CommonDBTM {
                //TRANS: %s is the date of last sync
                echo '<br>'.sprintf(__('Last synchronization on %s'), HTML::convDateTime($this->fields["date_sync"]));
             }
-
+            if (!empty($this->fields["user_dn"])) {
+               //TRANS: %s is the user dn
+               echo '<br>'.sprintf(__('User DN %s'), $this->fields["user_dn"]);
+            }
+            
             echo "</td>";
          } else {
             echo "<td colspan='2'>&nbsp;</td>";
