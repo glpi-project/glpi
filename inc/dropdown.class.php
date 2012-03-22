@@ -728,8 +728,14 @@ class Dropdown {
 
                     __('Fields unicity')
                         => array('Fieldblacklist' => _n('Ignored value for the unicity',
-                                                        'Ignored values for the unicity', 2))
-
+                                                        'Ignored values for the unicity', 2)),
+                        
+                    __('External authentications')
+                        => array('SsoVariable' => _n('Field storage of the login in the HTTP request',
+                                                     'Fields storage of the login in the HTTP request',
+                                                     2))
+                        
+                        
                  ); //end $opt
 
          $plugdrop = Plugin::getDropdowns();

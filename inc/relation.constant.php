@@ -566,6 +566,9 @@ $RELATION = array("glpi_authldaps"
                                     'glpi_solutiontemplates'   => 'solutiontypes_id',
                                     'glpi_problems'            => 'solutiontypes_id'),
 
+                  "glpi_ssovariables"
+                           => array('glpi_configs'             => 'ssovariables_id'),
+                           
                   "glpi_transfers"
                         => array('glpi_configs' => 'transfers_id_auto'),
 

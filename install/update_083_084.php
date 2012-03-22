@@ -1417,6 +1417,45 @@ function update083to084() {
       $DB->queryOrDie($query, "0.84 insert (LDAP) MemberOf in glpi_rulerightparameters");
    }
    
+   if (!TableExists('glpi_ssovariables')) {
+      $query = "CREATE TABLE `glpi_ssovariables` (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                `comment` text COLLATE utf8_unicode_ci NOT NULL,
+                PRIMARY KEY (`id`)
+               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+      $DB->queryOrDie($query, "0.84 create glpi_ssovariables");
+      $query = "INSERT INTO `glpi_ssovariables` (`id`, `name`, `comment`) VALUES
+                           (1, 'HTTP_AUTH_USER', ''),
+                           (2, 'REMOTE_USER', ''),
+                           (3, 'PHP_AUTH_USER', ''),
+                           (4, 'USERNAME', ''),
+                           (5, 'REDIRECT_REMOTE_USER', ''),
+                           (6, 'HTTP_REMOTE_USER', '');";
+      $DB->queryOrDie($query, "0.84 add values from  glpi_ssovariables");
+   }
+   if ($migration->addField('glpi_configs', 'ssovariables_id', 'integer')) {
+      $migration->migrationOneTable('glpi_configs');
+      //Get configuration
+      $query = "SELECT `existing_auth_server_field` FROM `glpi_configs`";
+      $result = $DB->query($query);
+      $existing_auth_server_field = $DB->result($result, 0, "existing_auth_server_field");
+      if ($existing_auth_server_field) {
+         //Get dropdown value for existing_auth_server_field
+         $query = "SELECT `id` FROM `glpi_ssovariables`
+                   WHERE `name`='$existing_auth_server_field'";
+         $result = $DB->query($query);
+         //Update config
+         if ($DB->numrows($result) > 0) {
+            $query = "UPDATE `glpi_configs` SET `ssovariables_id`='".$DB->result($result, 0, "id")."'";
+            $DB->queryOrDie($query, "0.84 update glpi_configs");
+         }
+         //Drop old field
+      }
+      $migration->dropField('glpi_configs', 'existing_auth_server_field');
+   }
+   
+   
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
