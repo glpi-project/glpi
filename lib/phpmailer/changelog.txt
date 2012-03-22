@@ -3,6 +3,44 @@ ChangeLog
 NOTE: THIS VERSION OF PHPMAILER IS DESIGNED FOR PHP5/PHP6.
       IT WILL NOT WORK WITH PHP4.
 
+Version 5.2.1 (January 16, 2012)
+* Closed several bugs
+* Performance improvements
+* MsgHTML() now returns the message as required.
+* New method: GetSentMIMEMessage() (returns full copy of sent message)
+
+Version 5.2 (July 19, 2011)
+* protected MIME body and header
+* better DKIM DNS Resource Record support
+* better aly handling
+* htmlfilter class added to extras
+* moved to Apache Extras
+
+Version 5.1 (October 20, 2009)
+* fixed filename issue with AddStringAttachment (thanks to Tony)
+* fixed "SingleTo" property, now works with Senmail, Qmail, and SMTP in
+  addition to PHP mail()
+* added DKIM digital signing functionality
+  New properties:
+  - DKIM_domain (sets the domain name)
+  - DKIM_private (holds DKIM private key)
+  - DKIM_passphrase (holds your DKIM passphrase)
+  - DKIM_selector (holds the DKIM "selector")
+  - DKIM_identity (holds the identifying email address)
+* added callback function support
+  - callback function parameters include:
+    result, to, cc, bcc, subject and body
+  * see the test/test_callback.php file for usage.
+* added "auto" identity functionality
+  - can automatically add:
+    - Return-path (if Sender not set)
+    - Reply-To (if ReplyTo not set)
+  - can be disabled:
+    - $mail->SetFrom('yourname@yourdomain.com','First Last',false);
+    - or by adding the $mail->Sender and/or $mail->ReplyTo properties
+  Note: "auto" identity added to help with emails ending up in spam
+  or junk boxes because of missing headers
+
 Version 5.0.2 (May 24, 2009)
 * Fix for missing attachments when inline graphics are present
 * Fix for missing Cc in header when using SMTP (mail was sent,
