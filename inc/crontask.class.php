@@ -749,16 +749,18 @@ class CronTask extends CommonDBTM{
                   if ($crontask->start()) { // Lock in DB + log start
                      $taskname = $crontask->fields['name'];
                      //TRANS: %1$s is mode (external or internal), %2$s is an order number,
-                     //       %3$s is action (Launch or can't start),
-                     //       %4$s is the name of the crontask
-                     $msgcron = sprintf(__('%1$s #%2$s: %3$s %4$s')."\n",
-                                        $prefix, $i, __('Launch'), $crontask->fields['name']);
+                     $msgcron = sprintf(__('%1$s #%2$s'), $prefix, $i);
+                     $msgcron = sprintf(__('%1$s: %2$s'), $msgcron,
+                                        sprintf(__('%1$s %2$s')."\n",
+                                                __('Launch'), $crontask->fields['name']));
                      Toolbox::logInFile('cron', $msgcron);
                      $retcode = call_user_func($fonction, $crontask);
                      $crontask->end($retcode); // Unlock in DB + log end
                   } else {
-                     $msgcron = sprintf(__('%1$s #%2$s: %3$s %4$s')."\n",
-                                        $prefix, $i, __("Can't start"), $crontask->fields['name']);
+                     $msgcron = sprintf(__('%1$s #%2$s'), $prefix, $i);
+                     $msgcron = sprintf(__('%1$s: %2$s'), $msgcron,
+                                        sprintf(__('%1$s %2$s')."\n",
+                                                __("Can't start"), $crontask->fields['name']));
                      Toolbox::logInFile('cron', $msgcron);
                   }
 
@@ -769,16 +771,18 @@ class CronTask extends CommonDBTM{
                   Toolbox::logInFile('php-errors',
                                      sprintf(__('Undefined function %s (for cron)')."\n",
                                              $fonction));
-                  $msgcron = sprintf(__('%1$s #%2$s: %3$s %4$s')."\n",
-                                     $prefix, $i, __("Can't start"), $crontask->fields['name']);
+                  $msgcron = sprintf(__('%1$s #%2$s'), $prefix, $i);
+                  $msgcron = sprintf(__('%1$s: %2$s'), $msgcron,
+                                     sprintf(__('%1$s %2$s')."\n",
+                                             __("Can't start"), $crontask->fields['name']));
                   Toolbox::logInFile('cron', $msgcron ."\n".
                                              sprintf(__('Undefined function %s (for cron)')."\n",
                                                      $fonction));
                }
 
             } else if ($i==1) {
-               $msgcron = sprintf(__('%1$s #%2$s: %3$s %4$s')."\n",
-                                     $prefix, $i, __("Nothing to launch"), '');
+               $msgcron = sprintf(__('%1$s #%2$s'), $prefix, $i);
+               $msgcron = sprintf(__('%1$s: %2$s'), $msgcron, __('Nothing to launch'));
                Toolbox::logInFile('cron', $msgcron);
             }
          } // end for
