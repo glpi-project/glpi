@@ -585,7 +585,9 @@ class Log extends CommonDBTM {
 
 
    /**
-    * @since version 0.84
+    * Actions done after the ADD of the item in the database
+    *
+    * @since version 0.83
     *
     * @see inc/CommonDBTM::post_addItem()
    **/

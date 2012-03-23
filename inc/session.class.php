@@ -991,7 +991,7 @@ class Session {
    /**
     * Is the current account read-only
     *
-    * since version 0.84
+    * since version 0.83
     *
     * @return Boolean
     */
