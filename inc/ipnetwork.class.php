@@ -67,7 +67,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                 = parent::getSearchOptions();
 
       $tab[10]['table']    = $this->getTable();
       $tab[10]['field']    = 'version';
@@ -140,14 +140,17 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       unset($this->netmask);
       unset($this->gateway);
 
-      if (isset($this->fields["address"]) && isset($this->fields["netmask"])) {
-         $this->fields["network"] = $this->fields["address"]."/".$this->fields["netmask"];
+      if (isset($this->fields["address"])
+          && isset($this->fields["netmask"])) {
+         $this->fields["network"] = sprintf(__('%1$s / %2$s'), $this->fields["address"],
+                                            $this->fields["netmask"]);
       }
 
    }
 
 
    function getAdditionalFields() {
+
       return array(array('name'     => 'network',
                          'label'    => self::getTypeName(1),
                          'type'     => 'text',
@@ -186,6 +189,9 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
+   /**
+    * @param $input
+   **/
    function prepareInput($input) {
 
       // If $this->fields["network"] is not set then, we are adding a new network
@@ -230,7 +236,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          // TODO : what is the best way ? recursive or not ?
          $sameNetworks = self::searchNetworks("equals", $params, $entities_id, false);
          // Check unicity !
-         if ($sameNetworks && count($sameNetworks) > 0) {
+         if ($sameNetworks && (count($sameNetworks) > 0)) {
             return array('error' => __('Network already defined in visible entities'),
                          'input' => false);
          }
@@ -245,7 +251,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
          $previousNetmask = new IPNetmask();
          $previousNetmask->setAddressFromArray($this->fields, "version", "netmask", "netmask");
 
-         if ($previousAddress->equals($address) && $previousNetmask->equals($netmask)) {
+         if ($previousAddress->equals($address)
+             && $previousNetmask->equals($netmask)) {
             $this->networkUpdate = false;
          } else {
             $this->networkUpdate = true;
@@ -275,12 +282,12 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
          if (!empty($input["gateway"])) {
             if (!$gateway->setAddressFromString($input["gateway"])
-                || (!self::checkIPFromNetwork($gateway, $address, $netmask))){
+                || !self::checkIPFromNetwork($gateway, $address, $netmask)) {
                $returnValue['error'] = __('Invalid gateway address');
 
                if (!empty($this->fields["gateway"])) {
                   if (!$gateway->setAddressFromString($this->fields["gateway"])
-                      || (!self::checkIPFromNetwork($gateway, $address, $netmask))) {
+                      || !self::checkIPFromNetwork($gateway, $address, $netmask)) {
                      $gateway->disableAddress();
                   }
                } else {
@@ -297,6 +304,9 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
+   /**
+    * @see inc/CommonImplicitTreeDropdown::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
       $preparedInput = $this->prepareInput($input);
@@ -314,6 +324,9 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
+   /**
+    * @see inc/CommonImplicitTreeDropdown::prepareInputForUpdate()
+   **/
    function prepareInputForUpdate($input) {
 
       $preparedInput = $this->prepareInput($input);
@@ -342,6 +355,9 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    }
 
 
+   /**
+    * @see inc/CommonImplicitTreeDropdown::post_updateItem()
+   **/
    function post_updateItem($history=1) {
 
       if ($this->networkUpdate) {
@@ -460,7 +476,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $netmaskDB  = array('netmask_0', 'netmask_1', 'netmask_2', 'netmask_3');
 
       $WHERE      = "";
-      if (isset($condition["address"]) && isset($condition["netmask"])) {
+      if (isset($condition["address"])
+          && isset($condition["netmask"])) {
          $addressPa = new IPAddress($condition["address"]);
 
          // Check version equality ...
@@ -621,7 +638,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $result = array();
       for ($i = ($version == 4 ? 3 : 0) ; $i < 4 ; ++$i) {
          $result[] = "(`$tableName`.`".$binaryFieldPrefix."_$i` & '".$this->fields["netmask_$i"]."')
-                      = ('".$start[$i]."')";
+                       = ('".$start[$i]."')";
       }
 
       $result = "`$tableName`.`version` = '$version'
@@ -647,6 +664,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       $IPNetmask  = array(0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff);
       $relativity = self::checkNetworkRelativity($address, $IPNetmask, $networkAddress,
                                                   $networkNetmask, $version);
+
       return ($relativity == "equals") || ($relativity == "second contains first");
    }
 
@@ -670,6 +688,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
     */
    static function checkNetworkRelativity($firstAddress, $firstNetmask, $secondAddress,
                                           $secondNetmask, $version=0) {
+
       if ($firstAddress instanceof IPAddress) {
          if ($version == 0) {
             $version = $firstAddress->getVersion();
