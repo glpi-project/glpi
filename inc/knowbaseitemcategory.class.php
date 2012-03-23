@@ -99,7 +99,8 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       $faq_limit = '';
 
       if ($faq) {
-         if (!$CFG_GLPI["use_public_faq"] && !Session::haveRight("faq","r")) {
+         if (!$CFG_GLPI["use_public_faq"]
+             && !Session::haveRight("faq","r")) {
             return false;
          }
 
@@ -115,10 +116,11 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          }
 
          // Get All FAQ categories
-         if (true || !isset($_SESSION['glpi_faqcategories'])) {
+         if (true
+             || !isset($_SESSION['glpi_faqcategories'])) {
 
             $_SESSION['glpi_faqcategories'] = '(0)';
-            $tmp = array();
+            $tmp   = array();
             $query = "SELECT DISTINCT `glpi_knowbaseitems`.`knowbaseitemcategories_id`
                       FROM `glpi_knowbaseitems`
                       ".KnowbaseItem::addVisibilityJoins()."
@@ -129,9 +131,9 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                             AND ".KnowbaseItem::addVisibilityRestrict()."
                             $faq_limit";
 
-            if ($result=$DB->query($query)) {
+            if ($result = $DB->query($query)) {
                if ($DB->numrows($result)) {
-                  while ($data=$DB->fetch_assoc($result)) {
+                  while ($data = $DB->fetch_assoc($result)) {
                      if (!in_array($data['knowbaseitemcategories_id'], $tmp)) {
                         $tmp[] = $data['knowbaseitemcategories_id'];
                         $tmp   = array_merge($tmp,
@@ -170,7 +172,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       }
 
       // Show category
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_central'>";
          echo "<tr><td colspan='3'><a href='".$params['target']."'>";
          echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png' class='bottom'></a>";
@@ -180,16 +182,16 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
             $tmpID     = $params["knowbaseitemcategories_id"];
             $todisplay = "";
 
-            while ($tmpID!=0) {
+            while ($tmpID != 0) {
                $query2 = "SELECT *
                           FROM `glpi_knowbaseitemcategories`
                           WHERE `glpi_knowbaseitemcategories`.`id` = '$tmpID'
                                 $faq_limit";
                $result2 = $DB->query($query2);
 
-               if ($DB->numrows($result2)==1) {
-                  $data  = $DB->fetch_assoc($result2);
-                  $tmpID = $data["knowbaseitemcategories_id"];
+               if ($DB->numrows($result2) == 1) {
+                  $data      = $DB->fetch_assoc($result2);
+                  $tmpID     = $data["knowbaseitemcategories_id"];
                   $todisplay = "<a href='".$params['target']."?knowbaseitemcategories_id=".
                                  $data["id"]."'>".$data["name"]."</a>".(empty($todisplay)?"":" > ").
                                  $todisplay;
@@ -200,11 +202,11 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
             echo " > ".$todisplay;
          }
 
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             $i = 0;
             while ($row=$DB->fetch_assoc($result)) {
                // on affiche les résultats sur trois colonnes
-               if ($i%3==0) {
+               if (($i%3) == 0) {
                   echo "<tr>";
                }
                $ID = $row["id"];
@@ -215,7 +217,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                       $row["name"]."</a></span>";
                echo "<div class='kb_resume'>".Html::resume_text($row['comment'],60)."</div>";
 
-               if ($i%3==2) {
+               if (($i%3) == 2) {
                   echo "</tr>";
                }
                $i++;

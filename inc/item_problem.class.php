@@ -48,13 +48,16 @@ class Item_Problem extends CommonDBRelation{
    public $items_id_2 = 'items_id';
 
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
       if (empty($input['itemtype'])
           || empty($input['items_id'])
-          || $input['items_id']==0
+          || ($input['items_id'] == 0)
           || empty($input['problems_id'])
-          || $input['problems_id']==0) {
+          || ($input['problems_id'] == 0)) {
          return false;
       }
 
@@ -69,6 +72,9 @@ class Item_Problem extends CommonDBRelation{
    }
 
 
+   /**
+    * @param $item   CommonDBTM object
+   **/
    static function countForItem(CommonDBTM $item) {
 
       $restrict = "`glpi_items_problems`.`problems_id` = `glpi_problems`.`id`
@@ -110,9 +116,9 @@ class Item_Problem extends CommonDBRelation{
 
       echo "<div class='center'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='5'>";
-      if ($DB->numrows($result)==0) {
+      if ($DB->numrows($result) == 0) {
          _e('No associated item');
-      } else if ($DB->numrows($result)==1) {
+      } else if ($DB->numrows($result) == 1) {
          echo _n('Associated item', 'Associated items', 1);
       } else {
          echo _n('Associated item', 'Associated items', 2);
@@ -172,17 +178,18 @@ class Item_Problem extends CommonDBRelation{
             $nb            = $DB->numrows($result_linked);
 
             for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
-               $ID = "";
-               if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                  $ID = " (".$data["id"].")";
+               $link = $data["name"];
+               if ($_SESSION["glpiis_ids_visible"]
+                   || empty($data["name"])) {
+                  $link = " (".$data["id"].")";
                }
                $link = Toolbox::getItemTypeFormURL($itemtype);
-               $name = "<a href=\"".$link."?id=".$data["id"]."\">".$data["name"]."$ID</a>";
+               $name = "<a href=\"".$link."?id=".$data["id"]."\">".$link."</a>";
 
                echo "<tr class='tab_bg_1'>";
                if ($canedit) {
                   $sel = "";
-                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
                   echo "<td width='10'>";
@@ -191,17 +198,17 @@ class Item_Problem extends CommonDBRelation{
                if ($prem) {
                   $name = $item->getTypeName($nb);
                   echo "<td class='center top' rowspan='$nb'>".
-                         ($nb>1 ? sprintf(__('%1$s: %2$s'), $name, $nb) : $name)."</td>";
+                         (($nb > 1) ? sprintf(__('%1$s: %2$s'), $name, $nb) : $name)."</td>";
                }
                echo "<td class='center'>";
                echo Dropdown::getDropdownName("glpi_entities", $data['entity'])."</td>";
                echo "<td class='center".
                         (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
                echo ">".$name."</td>";
+               echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-").
+                    "</td>";
                echo "<td class='center'>".
-                        (isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
-               echo "<td class='center'>".
-                        (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
+                      (isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
                echo "</tr>";
             }
             $totalnb += $nb;
@@ -209,7 +216,7 @@ class Item_Problem extends CommonDBRelation{
       }
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='2'>".
-             ($totalnb>0 ? sprintf(__('Total = %s'), $totalnb) :"&nbsp;");
+             (($totalnb > 0) ? sprintf(__('%1$s = %2$s'), __('Total'), $totalnb) :"&nbsp;");
       echo "</td><td colspan='4'>&nbsp;</td></tr> ";
 
       if ($canedit) {
@@ -222,7 +229,7 @@ class Item_Problem extends CommonDBRelation{
                                 ($problem->fields['is_recursive']?-1:$problem->fields['entities_id']),
                                 $types);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td><td>&nbsp;</td></tr>";
          echo "</table>";
 
