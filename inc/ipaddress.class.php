@@ -109,10 +109,13 @@ class IPAddress extends CommonDBChild {
          return false;
       }
 
-      if (!empty($this->fields['itemtype']) && !empty($this->fields['items_id'])) {
-         $item = new $this->fields['itemtype']();
-         if ($item->getFromDB($this->fields['items_id'])) {
-            return $item->canCreate();
+      if (!empty($this->fields['itemtype'])
+          && !empty($this->fields['items_id'])) {
+
+         if ($item = getItemForItemtype($this->fields['itemtype'])) {
+            if ($item->getFromDB($this->fields['items_id'])) {
+               return $item->canCreate();
+            }
          }
       }
 
@@ -126,7 +129,9 @@ class IPAddress extends CommonDBChild {
          return false;
       }
 
-      if (!empty($this->fields['itemtype']) && !empty($this->fields['items_id'])) {
+      if (!empty($this->fields['itemtype'])
+          && !empty($this->fields['items_id'])) {
+
          if ($item = getItemForItemtype($this->fields['itemtype'])) {
             if ($item->getFromDB($this->fields['items_id'])) {
                return $item->canView();
@@ -207,6 +212,7 @@ class IPAddress extends CommonDBChild {
     * @return true is succeffully defined
    **/
    function setAddressFromArray(array $array, $versionField, $textualField, $binaryField) {
+
       // First, we empty the fields to notify that this address is not valid
       $this->disableAddress();
 
@@ -234,6 +240,9 @@ class IPAddress extends CommonDBChild {
    }
 
 
+   /**
+    * @see inc/CommonDBChild::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
       // Update $input to get information from the local object
@@ -378,6 +387,9 @@ class IPAddress extends CommonDBChild {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::post_updateItem()
+   **/
    function post_updateItem($history=1) {
       IPAddress_IPNetwork::addIPAddress($this);
    }
@@ -511,7 +523,8 @@ class IPAddress extends CommonDBChild {
       if (empty($address) || !is_string($address)) {
          return false;
       }
-      if (!empty($itemtype) && ($items_id > 0)) {
+      if (!empty($itemtype)
+          && ($items_id > 0)) {
          $query = "SELECT `id`
                    FROM `".$this->getTable()."`
                    WHERE `items_id` = '$items_id'
@@ -599,7 +612,8 @@ class IPAddress extends CommonDBChild {
       if ((!is_array($address)) || (count($address) != 4)) {
          return false;
       }
-      if (!empty($itemtype) && ($items_id > 0)) {
+      if (!empty($itemtype)
+          && ($items_id > 0)) {
          $query = "SELECT `id`
                    FROM `".$this->getTable()."`
                    WHERE `items_id` = '$items_id'
@@ -784,6 +798,7 @@ class IPAddress extends CommonDBChild {
       return $addressesWithItems;
    }
 
+
    /**
     * Get an Object ID by its IP address (only if one result is found in the entity)
     *
@@ -825,7 +840,8 @@ class IPAddress extends CommonDBChild {
       // To normalise the address, just make new one
       $ipaddress = new self($ipaddress);
 
-      if ((count($this->binary) != 4) || (count($ipaddress->binary) != 4)
+      if ((count($this->binary) != 4)
+          || (count($ipaddress->binary) != 4)
           || ($this->version != $ipaddress->version)) {
          return false;
       }
