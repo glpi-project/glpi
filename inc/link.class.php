@@ -101,18 +101,11 @@ class Link extends CommonDBTM {
    * @param $options array
    *     - target filename : where to go when done.
    *
-   *@return Nothing (display)
-   *
+   * @return Nothing (display)
    **/
    function showForm($ID, $options=array()) {
 
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w');
-      }
-
+      $this->initForm($ID, $options);
       $this->showTabs($options);
       $this->showFormHeader($options);
 
@@ -144,7 +137,7 @@ class Link extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                      = array();
       $tab['common']            = __('Characteristics');
 
       $tab[1]['table']          = $this->getTable();
@@ -152,7 +145,7 @@ class Link extends CommonDBTM {
       $tab[1]['name']           = __('Name');
       $tab[1]['datatype']       = 'itemlink';
       $tab[1]['itemlink_type']  = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab[1]['massiveaction']  = false;
 
       $tab[2]['table']          = $this->getTable();
       $tab[2]['field']          = 'id';
@@ -187,64 +180,55 @@ class Link extends CommonDBTM {
       if (strstr($link,"[ID]")) {
          $link = str_replace("[ID]", $item->fields['id'],$link);
       }
-      if (strstr($link,"[LOGIN]") && isset($_SESSION["glpiname"])) {
-         if (isset($_SESSION["glpiname"])) {
-            $link = str_replace("[LOGIN]", $_SESSION["glpiname"],$link);
-         }
+      if (strstr($link,"[LOGIN]")
+          && isset($_SESSION["glpiname"])) {
+         $link = str_replace("[LOGIN]", $_SESSION["glpiname"], $link);
       }
 
       if (strstr($link,"[NAME]")) {
          $link = str_replace("[NAME]", $item->getName(), $link);
       }
-      if (strstr($link,"[SERIAL]")) {
-         if ($item->isField('serial')) {
+      if (strstr($link,"[SERIAL]")
+          && $item->isField('serial')) {
             $link = str_replace("[SERIAL]", $item->getField('serial'), $link);
-         }
       }
-      if (strstr($link,"[OTHERSERIAL]")) {
-         if ($item->isField('otherserial')) {
+      if (strstr($link,"[OTHERSERIAL]")
+          && $item->isField('otherserial')) {
             $link=str_replace("[OTHERSERIAL]",$item->getField('otherserial'),$link);
-         }
       }
-      if (strstr($link,"[LOCATIONID]")) {
-         if ($item->isField('locations_id')) {
+      if (strstr($link,"[LOCATIONID]")
+          && $item->isField('locations_id')) {
             $link = str_replace("[LOCATIONID]", $item->getField('locations_id'), $link);
-         }
       }
-      if (strstr($link,"[LOCATION]")) {
-         if ($item->isField('locations_id')) {
+      if (strstr($link,"[LOCATION]")
+          && $item->isField('locations_id')) {
             $link = str_replace("[LOCATION]",
                                 Dropdown::getDropdownName("glpi_locations",
                                                           $item->getField('locations_id')), $link);
-         }
       }
-      if (strstr($link,"[NETWORK]")) {
-         if ($item->isField('networks_id')) {
+      if (strstr($link,"[NETWORK]")
+          && $item->isField('networks_id')) {
             $link = str_replace("[NETWORK]",
                                 Dropdown::getDropdownName("glpi_networks",
                                                           $item->getField('networks_id')), $link);
-         }
       }
-      if (strstr($link,"[DOMAIN]")) {
-         if ($item->isField('domains_id')) {
+      if (strstr($link,"[DOMAIN]")
+          && $item->isField('domains_id')) {
             $link = str_replace("[DOMAIN]",
                                 Dropdown::getDropdownName("glpi_domains",
                                                           $item->getField('domains_id')), $link);
-         }
       }
-      if (strstr($link,"[USER]")) {
-         if ($item->isField('users_id')) {
+      if (strstr($link,"[USER]")
+          && $item->isField('users_id')) {
             $link = str_replace("[USER]",
                                 Dropdown::getDropdownName("glpi_users",
                                                           $item->getField('users_id')), $link);
-         }
       }
-      if (strstr($link,"[GROUP]")) {
-         if ($item->isField('groups_id')) {
+      if (strstr($link,"[GROUP]")
+          && $item->isField('groups_id')) {
             $link = str_replace("[GROUP]",
                                 Dropdown::getDropdownName("glpi_groups",
                                                           $item->getField('groups_id')), $link);
-         }
       }
 
       $replace_IP  = strstr($link,"[IP]");
@@ -252,7 +236,6 @@ class Link extends CommonDBTM {
 
       if (!$replace_IP && !$replace_MAC) {
          return array($link);
-
       }
       // Return several links id several IP / MAC
 
@@ -299,25 +282,23 @@ class Link extends CommonDBTM {
       }
 
       if ($replace_MAC) {
+         $left  = '';
+         $where = '';
          if ($replace_IP) {
-            $query2 = "SELECT `glpi_networkports`.`id`,
-                              `glpi_networkports`.`mac`
-                       FROM `glpi_networkports`
-                       LEFT JOIN `glpi_networknames`
+            $left  = " LEFT JOIN `glpi_networknames`
                              ON (`glpi_networknames`.`items_id` = `glpi_networkports`.`id`
-                                 AND `glpi_networknames`.`itemtype` = 'NetworkPort')
-                       WHERE `glpi_networkports`.`items_id` = '" . $item->getID() . "'
-                             AND `glpi_networkports`.`itemtype` = '" . $item->getType() . "'
-                             AND `glpi_networknames`.`id` IS NULL
-                       GROUP BY `glpi_networkports`.`mac`";
-         } else {
-            $query2 = "SELECT `glpi_networkports`.`id`,
-                              `glpi_networkports`.`mac`
-                       FROM `glpi_networkports`
-                       WHERE `glpi_networkports`.`items_id` = '" . $item->getID() . "'
-                             AND `glpi_networkports`.`itemtype` = '" . $item->getType() . "'
-                       GROUP BY `glpi_networkports`.`mac`";
+                                 AND `glpi_networknames`.`itemtype` = 'NetworkPort')";
+            $where = " AND `glpi_networknames`.`id` IS NULL";
          }
+
+         $query2 = "SELECT `glpi_networkports`.`id`,
+                           `glpi_networkports`.`mac`
+                    FROM `glpi_networkports`
+                    $left
+                    WHERE `glpi_networkports`.`items_id` = '" . $item->getID() . "'
+                          AND `glpi_networkports`.`itemtype` = '" . $item->getType() . "'
+                    $where
+                    GROUP BY `glpi_networkports`.`mac`";
 
          foreach ($DB->request($query2) as $data2) {
             $ipmac['mac'.$data2['id']]['ip']  = '';
@@ -391,16 +372,15 @@ class Link extends CommonDBTM {
 
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
 
-      if ($DB->numrows($result)>0) {
+      if ($DB->numrows($result) > 0) {
          echo "<tr><th>".self::getTypeName(2)."</th></tr>";
-         while ($data=$DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $name = $data["name"];
             if (empty($name)) {
                $name = $data["link"];
             }
             $names = self::generateLinkContents($name, $item);
-
-            $file = trim($data["data"]);
+            $file  = trim($data["data"]);
 
             if (empty($file)) {
                // Generate links
@@ -410,8 +390,10 @@ class Link extends CommonDBTM {
                   $name =  (isset($names[$key]) ? $names[$key] : reset($names));
                   echo "<tr class='tab_bg_2'>";
                   $url = $link;
-                  echo "<td class='center'><a href='$url' target='_blank'>$name #$i : $link</a>";
-                  echo "</td></tr>";
+                  echo "<td class='center'><a href='$url' target='_blank'>";
+                  $linkname = sprintf(__('%1$s #%2$s'), $name, $i);
+                  $linkname = printf(__('%1$s: %2$s'), $linkname, $link);
+                  echo "</a></td></tr>";
                   $i++;
                }
             } else {
@@ -432,8 +414,10 @@ class Link extends CommonDBTM {
                   $url = $CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['id'].
                          "&amp;itemtype=".$item->getType().
                          "&amp;id=".$item->getID()."&amp;rank=$key";
-                  echo "<td class='center'><a href='$url' target='_blank'>$name #$i : $file</a>";
-                  echo "</td></tr>";
+                  echo "<td class='center'><a href='$url' target='_blank'>";
+                  $linkname = sprintf(__('%1$s #%2$s'), $name, $i);
+                  $linkname = printf(__('%1$s: %2$s'), $linkname, $file);
+                  echo "</a></td></tr>";
                   $i++;
                }
             }

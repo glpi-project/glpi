@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -57,7 +56,8 @@ class Link_ItemType extends CommonDBTM{
       $canedit = $link->can($links_id, 'w');
       $canrecu = $link->can($links_id, 'recursive');
 
-      if (!Session::haveRight("link","r") || !$link->can($links_id, 'r')) {
+      if (!Session::haveRight("link","r")
+          || !$link->can($links_id, 'r')) {
          return false;
       }
 
@@ -67,8 +67,8 @@ class Link_ItemType extends CommonDBTM{
                 ORDER BY `itemtype`";
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $i = 0;
-      $used = array();
+      $i      = 0;
+      $used   = array();
 
       echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/link_itemtype.form.php\">";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -82,21 +82,22 @@ class Link_ItemType extends CommonDBTM{
          $typename = NOT_AVAILABLE;
          if ($item = getItemForItemtype($itemtype)) {
             $typename = $item->getTypeName(1);
+            echo "<tr class='tab_bg_1'>";
+            echo "<td class='center'>$typename</td>";
+            echo "<td class='center b'>";
+            echo "<a href='".$CFG_GLPI["root_doc"].
+                  "/front/link_itemtype.form.php?delete=deletedevice&amp;id=$ID&amp;links_id=$links_id'>
+                  ".__('Delete')."</a></td></tr>";
+            $used[$itemtype] = $itemtype;
+            $i++;
          }
-         echo "<tr class='tab_bg_1'>";
-         echo "<td class='center'>$typename</td>";
-         echo "<td class='center b'>";
-         echo "<a href='".$CFG_GLPI["root_doc"].
-                "/front/link_itemtype.form.php?delete=deletedevice&amp;id=$ID&amp;links_id=$links_id'>
-                ".__('Delete')."</a></td></tr>";
-         $used[$itemtype] = $itemtype;
-         $i++;
       }
       if ($canedit) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
          echo "<input type='hidden' name='links_id' value='$links_id'>";
          Dropdown::showItemTypes('itemtype', $CFG_GLPI["link_types"], array('used' => $used));
-         echo "&nbsp;&nbsp;<input type='submit' name='add' value=\"". __s('Add')."\" class='submit'>";
+         echo "&nbsp;&nbsp;<input type='submit' name='add' value=\"". _sx('button','Add')."\"
+                            class='submit'>";
          echo "</td></tr>";
       }
       echo "</table></div></form>";
@@ -122,7 +123,7 @@ class Link_ItemType extends CommonDBTM{
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='Link') {
+      if ($item->getType() == 'Link') {
          self::showForLink($item);
       }
       return true;
