@@ -2601,10 +2601,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    static function dropdown($options=array()) {
 
-      echo "This function cannot be used for the moment. Use Dropdown::show instead.";
-      /*
-      Dropdown::show(get_called_class(),$options);
-      */
+      Dropdown::show(get_called_class(), $options);
    }
 
 
