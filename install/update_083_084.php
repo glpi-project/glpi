@@ -1362,6 +1362,10 @@ function update083to084() {
    $migration->addField("glpi_configs", 'x509_o_restrict', "string", array('after' => 'x509_email_field'));
    $migration->addField("glpi_configs", 'x509_cn_restrict', "string", array('after' => 'x509_email_field'));
 
+   $migration->addField('glpi_configs', 'allow_search_view',   'integer', array('value' => 2));
+   $migration->addField('glpi_configs', 'allow_search_all',    'bool',    array('value' => 1));
+   $migration->addField('glpi_configs', 'allow_search_global', 'bool',    array('value' => 1));
+
    if (!TableExists('glpi_slalevelcriterias')) {
       $query = "CREATE TABLE `glpi_slalevelcriterias` (
                `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1416,7 +1420,7 @@ function update083to084() {
       $query = "INSERT INTO `glpi_rulerightparameters` VALUES (NULL,'(LDAP) MemberOf','memberof','');";
       $DB->queryOrDie($query, "0.84 insert (LDAP) MemberOf in glpi_rulerightparameters");
    }
-   
+
    if (!TableExists('glpi_ssovariables')) {
       $query = "CREATE TABLE `glpi_ssovariables` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1454,8 +1458,8 @@ function update083to084() {
       }
       $migration->dropField('glpi_configs', 'existing_auth_server_field');
    }
-   
-   
+
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
