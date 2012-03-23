@@ -2073,7 +2073,7 @@ class Html {
                                          value='". __s('Search')."' onfocus=\"this.value='';\">";
          echo "</div></form>";
       }
-      echo "</div>";
+      //echo "</div>";
 
       echo "<div class='sep'></div>\n";
       echo "</div>";
