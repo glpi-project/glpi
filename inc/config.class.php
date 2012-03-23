@@ -269,6 +269,22 @@ class Config extends CommonDBTM {
                     $CFG_GLPI["ajax_wildcard"] . "'></td>";
          echo "</tr>";
       }
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Search engine')."</td></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('Items seen') . "</td><td>";
+      $values = array(0 => __('Disabled'),
+                      1 => __('Enabled'),
+                      2 => __('Default value'));
+      Dropdown::showFromArray('allow_search_view', $values,
+                              array('value' => $CFG_GLPI['allow_search_view']));
+      echo "</td><td>". __('Global search')."</td><td>";
+      Dropdown::showYesNo('allow_search_global', $CFG_GLPI['allow_search_global']);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('All') . "</td><td>";
+      Dropdown::showYesNo('allow_search_all', $CFG_GLPI['allow_search_all']);
+      echo "</td><td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";

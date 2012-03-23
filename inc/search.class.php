@@ -105,6 +105,13 @@ class Search {
          $p['start'] = 0;
       }
 
+      if (in_array('all', $p['field']) && !$CFG_GLPI['allow_search_all']) {
+         Html::displayRightError();
+      }
+      if (in_array('view', $p['field']) && !$CFG_GLPI['allow_search_view']) {
+         Html::displayRightError();
+      }
+
       // Manage defautll seachtype value : for bookmark compatibility
       if (count($p['contains'])) {
          foreach ($p['contains'] as $key => $val) {
@@ -1541,11 +1548,13 @@ class Search {
 
          // display select box to define search item
          echo "<select id='Search$itemtype$i' name=\"field[$i]\" size='1'>";
-         echo "<option value='view' ";
-         if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "view") {
-            echo "selected";
+         if ($CFG_GLPI['allow_search_view']==2) {
+            echo "<option value='view' ";
+            if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "view") {
+               echo "selected";
+            }
+            echo ">".__('Items seen')."</option>\n";
          }
-         echo ">".__('Items seen')."</option>\n";
 
          reset($options);
          $first_group = true;
@@ -1589,11 +1598,20 @@ class Search {
             echo $group;
          }
 
-         echo "<option value='all' ";
-         if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "all") {
-            echo "selected";
+         if ($CFG_GLPI['allow_search_view']==1) {
+            echo "<option value='view' ";
+            if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "view") {
+               echo "selected";
+            }
+            echo ">".__('Items seen')."</option>\n";
          }
-         echo ">".__('All')."</option>";
+         if ($CFG_GLPI['allow_search_all']) {
+            echo "<option value='all' ";
+            if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "all") {
+               echo "selected";
+            }
+            echo ">".__('All')."</option>";
+         }
          echo "</select>\n";
 
          echo "</td><td class='left'>";
