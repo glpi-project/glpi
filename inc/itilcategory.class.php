@@ -187,7 +187,7 @@ class ITILCategory extends CommonTreeDropdown {
          $title = __('FAQ');
 
          if (isset($_SESSION['glpiactiveprofile'])
-             && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
+             && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
             $title = __('Knowledge base');
          }
 
@@ -242,7 +242,8 @@ class ITILCategory extends CommonTreeDropdown {
       $itilcategory = new self();
       $ID           = $tt->fields['id'];
 
-      if (!$tt->getFromDB($ID) || !$tt->can($ID, "r")) {
+      if (!$tt->getFromDB($ID)
+          || !$tt->can($ID, "r")) {
          return false;
       }
       $ttm  = new self();
@@ -271,7 +272,7 @@ class ITILCategory extends CommonTreeDropdown {
             echo "<th>".__('Request')."</th>";
             echo "</tr>";
 
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
                $itilcategory->getFromDB($data['id']);
                echo "<td>".$itilcategory->getLink(1)."</td>";

@@ -514,7 +514,7 @@ class Config extends CommonDBTM {
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
 
-      if ($DBslave->connected && !$DB->$DBslave()) {
+      if ($DBslave->connected && !$DB->isSlave()) {
          echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
          DBConnection::showAllReplicateDelay();
          echo "</td></tr>";

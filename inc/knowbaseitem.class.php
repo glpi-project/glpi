@@ -62,7 +62,7 @@ class KnowbaseItem extends CommonDBTM {
 
       return (Session::haveRight('knowbase', 'r')
               || Session::haveRight('faq', 'r')
-              || (Session::getLoginUserID()===false && $CFG_GLPI["use_public_faq"]));
+              || ((Session::getLoginUserID() === false) && $CFG_GLPI["use_public_faq"]));
    }
 
 
@@ -76,7 +76,7 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields["is_faq"]) {
          return (((Session::haveRight('knowbase', 'r') || Session::haveRight('faq', 'r'))
                   && $this->haveVisibilityAccess())
-                 || (Session::getLoginUserID() === false && $this->isPubliclyVisible()));
+                 || ((Session::getLoginUserID() === false) && $this->isPubliclyVisible()));
       }
       return (Session::haveRight("knowbase", "r") && $this->haveVisibilityAccess());
    }
@@ -85,7 +85,7 @@ class KnowbaseItem extends CommonDBTM {
    function canUpdateItem() {
 
       // Personal knowbase or visibility and write access
-      return ($this->fields['users_id'] == Session::getLoginUserID()
+      return (($this->fields['users_id'] == Session::getLoginUserID())
               || ((($this->fields["is_faq"] && Session::haveRight("faq", "w"))
                    || (!$this->fields["is_faq"] && Session::haveRight("knowbase", "w")))
                   && $this->haveVisibilityAccess()));
@@ -147,7 +147,8 @@ class KnowbaseItem extends CommonDBTM {
    **/
    function post_getEmpty() {
 
-      if (Session::haveRight("faq", "w") && !Session::haveRight("knowbase", "w")) {
+      if (Session::haveRight("faq", "w")
+          && !Session::haveRight("knowbase", "w")) {
          $this->fields["is_faq"] = 1;
       }
    }
@@ -219,7 +220,8 @@ class KnowbaseItem extends CommonDBTM {
    function haveVisibilityAccess() {
 
       // No public knowbaseitem right : no visibility check
-      if (!Session::haveRight('faq', 'r') && !Session::haveRight('knowbase', 'r') ) {
+      if (!Session::haveRight('faq', 'r')
+          && !Session::haveRight('knowbase', 'r') ) {
          return false;
       }
 
@@ -236,6 +238,7 @@ class KnowbaseItem extends CommonDBTM {
       // Groups
       if (count($this->groups)
           && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
+
          foreach ($this->groups as $key => $data) {
             foreach ($data as $group) {
                if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
@@ -259,6 +262,7 @@ class KnowbaseItem extends CommonDBTM {
       // Entities
       if (count($this->entities)
           && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+
          foreach ($this->entities as $key => $data) {
             foreach ($data as $entity) {
                $entities = array($entity['entities_id']);
@@ -285,7 +289,7 @@ class KnowbaseItem extends CommonDBTM {
                // Restrict to entities
                $entities = array($profile['entities_id']);
                if ($profile['is_recursive']) {
-                  $entities = getSonsOf('glpi_entities',$profile['entities_id']);
+                  $entities = getSonsOf('glpi_entities', $profile['entities_id']);
                }
                if (Session::haveAccessToOneOfEntities($entities, true)) {
                   return true;
@@ -325,7 +329,8 @@ class KnowbaseItem extends CommonDBTM {
 
       // Profiles
       if ($forceall
-          || (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id']))) {
+          || (isset($_SESSION["glpiactiveprofile"])
+              && isset($_SESSION["glpiactiveprofile"]['id']))) {
          $join .= " LEFT JOIN `glpi_knowbaseitems_profiles`
                         ON (`glpi_knowbaseitems_profiles`.`knowbaseitems_id`
                               = `glpi_knowbaseitems`.`id`) ";
@@ -368,7 +373,8 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       // Profiles
-      if (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
+      if (isset($_SESSION["glpiactiveprofile"])
+          && isset($_SESSION["glpiactiveprofile"]['id'])) {
          $restrict .= " OR (`glpi_knowbaseitems_profiles`.`profiles_id`
                                  = '".$_SESSION["glpiactiveprofile"]['id']."'
                             AND (`glpi_knowbaseitems_profiles`.`entities_id` < 0
@@ -388,6 +394,9 @@ class KnowbaseItem extends CommonDBTM {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
       // set new date if not exists
@@ -401,16 +410,21 @@ class KnowbaseItem extends CommonDBTM {
          $input["name"] = __('New item');
       }
 
-      if (Session::haveRight("faq", "w") && !Session::haveRight("knowbase", "w")) {
+      if (Session::haveRight("faq", "w")
+          && !Session::haveRight("knowbase", "w")) {
          $input["is_faq"] = 1;
       }
-      if (!Session::haveRight("faq", "w") && Session::haveRight("knowbase", "w")) {
+      if (!Session::haveRight("faq", "w")
+          && Session::haveRight("knowbase", "w")) {
          $input["is_faq"] = 0;
       }
       return $input;
    }
 
 
+   /**
+    * @see inc/CommonDBTM::prepareInputForUpdate()
+   **/
    function prepareInputForUpdate($input) {
 
       // set title for question if empty
@@ -433,16 +447,12 @@ class KnowbaseItem extends CommonDBTM {
    function showForm($ID, $options=array()) {
 
       // show kb item form
-      if (!Session::haveRight("knowbase","w" ) && !Session::haveRight("faq","w")) {
+      if (!Session::haveRight("knowbase","w" )
+          && !Session::haveRight("faq","w")) {
          return false;
       }
 
-      if ($ID >0) {
-         $this->check($ID,'r');
-      } else {
-        $this->check(-1,'w');
-      }
-
+      $this->initForm($ID, $options);
       $canedit = $this->can($ID,'w');
       $canrecu = $this->can($ID,'recursive');
 
@@ -477,7 +487,7 @@ class KnowbaseItem extends CommonDBTM {
 
          echo "<fieldset>";
          echo "<legend>".__('Category name')."</legend>";
-         echo "<div class='center'>".__('Select a category for this item:');
+         echo "<div class='center'>".__('Select a category for this item')."&nbsp;";
          Dropdown::show('KnowbaseItemCategory',
                         array('value' => $this->fields["knowbaseitemcategories_id"]));
          echo "</div></fieldset>";
@@ -490,11 +500,10 @@ class KnowbaseItem extends CommonDBTM {
 
          echo "<fieldset>";
          echo "<legend>".__('Content')."</legend>";
-         echo "<div class='center'>";
+         echo "<div class='center spaced'>";
          echo "<textarea cols='80' rows='30' id='answer' name='answer'>".$this->fields["answer"];
          echo "</textarea></div></fieldset>";
 
-         echo "<br>";
 
          if (!empty($ID)) {
             echo "<fieldset>";
@@ -520,8 +529,8 @@ class KnowbaseItem extends CommonDBTM {
 
             echo "<span class='baskb_right'>";
             //TRANS: %d is the number of view
-            echo sprintf(_n('%d view', '%d views', $this->fields["view"]),$this->fields["view"]).
-                 "</span></div>";
+            printf(_n('%d view', '%d views', $this->fields["view"]),$this->fields["view"]);
+            echo "</span></div>";
 
             echo "</fieldset>";
          }
@@ -542,22 +551,23 @@ class KnowbaseItem extends CommonDBTM {
 //          echo "<br><br>" .
          echo __('Put this item in the FAQ')."&nbsp;";
 
-         if (Session::haveRight("faq","w") && Session::haveRight("knowbase","w")) {
+         if (Session::haveRight("faq","w")
+             && Session::haveRight("knowbase","w")) {
             Dropdown::showYesNo('is_faq', $this->fields["is_faq"]);
          } else {
             echo Dropdown::getYesNo($this->fields["is_faq"]);
          }
 
          echo "<br><br>";
-         if ($ID>0) {
-            echo "<input type='submit' class='submit' name='update' value=\"".__s('Save')."\">";
+         if ($ID > 0) {
+            echo "<input type='submit' class='submit' name='update' value=\""._sx('button','Save')."\">";
          } else {
             echo "<input type='hidden' name='users_id' value=\"".Session::getLoginUserID()."\">";
-            echo "<input type='submit' class='submit' name='add' value=\"".__s('Add')."\">";
+            echo "<input type='submit' class='submit' name='add' value=\""._sx('button','Add')."\">";
          }
 
          echo "<span class='big_space'>";
-         echo "<input type='reset' class='submit' value=\"".__s('Blank')."\"></span>";
+         echo "<input type='reset' class='submit' value=\""._sx('button','Blank')."\"></span>";
          echo "</p></form></div>";
          return true;
       }
@@ -612,7 +622,8 @@ class KnowbaseItem extends CommonDBTM {
       global $CFG_GLPI;
 
       $ID = $this->fields['id'];
-      if (!$this->can($ID,'r') || Session::getLoginUserID()===false) {
+      if (!$this->can($ID,'r')
+          || (Session::getLoginUserID() === false)) {
          return false;
       }
 
@@ -704,8 +715,8 @@ class KnowbaseItem extends CommonDBTM {
       $this->updateCounter();
 
       $knowbaseitemcategories_id = $this->fields["knowbaseitemcategories_id"];
-      $fullcategoryname = getTreeValueCompleteName("glpi_knowbaseitemcategories",
-                                                   $knowbaseitemcategories_id);
+      $fullcategoryname          = getTreeValueCompleteName("glpi_knowbaseitemcategories",
+                                                            $knowbaseitemcategories_id);
 
       if (!$inpopup) {
          $this->showTabs($options);
@@ -716,7 +727,7 @@ class KnowbaseItem extends CommonDBTM {
 
       $tmp = "<a href='".$CFG_GLPI["root_doc"]."/front/".
              (isset($_SESSION['glpiactiveprofile'])
-              && $_SESSION['glpiactiveprofile']['interface']=="central"
+              && ($_SESSION['glpiactiveprofile']['interface'] == "central")
                   ?"knowbaseitem.php"
                   :"helpdesk.faq.php").
              "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
@@ -811,9 +822,10 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_2 center'><td>";
       echo "<input type='text' size='30' name='contains' value=\"".
              stripslashes(Html::cleanInputText($params["contains"]))."\"></td>";
-      echo "<td><input type='submit' value=\"".__s('Search')."\" class='submit'></td></tr>";
+      echo "<td><input type='submit' value=\""._sx('button','Search')."\" class='submit'></td></tr>";
       echo "</table>";
-      if (isset($options['itemtype']) && isset($options['items_id'])) {
+      if (isset($options['itemtype'])
+          && isset($options['items_id'])) {
          echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
          echo "<input type='hidden' name='items_id' value='".$options['items_id']."'>";
       }
@@ -832,7 +844,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td class='center'>".__('Category')."&nbsp;";
          Dropdown::show('KnowbaseItemCategory',
                         array('value' => '$params["knowbaseitemcategories_id)"]'));
-         echo "</td><td><input type='submit' value=\"".__s('Post')."\" class='submit'></td>";
+         echo "</td><td><input type='submit' value=\""._sx('button','Post')."\" class='submit'></td>";
          echo "</tr></table></form></td>";
       }
       echo "</tr></table></div>";
@@ -855,7 +867,7 @@ class KnowbaseItem extends CommonDBTM {
       $where = "";
       $order = "";
       $score = "";
-      $join = self::addVisibilityJoins();
+      $join  = self::addVisibilityJoins();
 
       // Build query
       if (Session::getLoginUserID()) {
@@ -875,7 +887,7 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       // a search with $contains
-      if (strlen($params["contains"])>0) {
+      if (strlen($params["contains"]) > 0) {
          $search  = Toolbox::unclean_cross_side_scripting_deep($params["contains"]);
 
          $score   = " ,MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer`)
@@ -977,7 +989,8 @@ class KnowbaseItem extends CommonDBTM {
          $list_limit = $_SESSION['glpilist_limit'];
 
          // Limit the result, if no limit applies, use prior result
-         if ($numrows>$list_limit && !isset($_GET['export_all'])) {
+         if (($numrows > $list_limit)
+             && !isset($_GET['export_all'])) {
             $query_limit   = $query ." LIMIT ".intval($params["start"]).", ".intval($list_limit)." ";
             $result_limit  = $DB->query($query_limit);
             $numrows_limit = $DB->numrows($result_limit);
@@ -987,7 +1000,7 @@ class KnowbaseItem extends CommonDBTM {
             $result_limit  = $result;
          }
 
-         if ($numrows_limit>0) {
+         if ($numrows_limit > 0) {
             // Set display type for export if define
             $output_type = Search::HTML_OUTPUT;
 
@@ -999,15 +1012,17 @@ class KnowbaseItem extends CommonDBTM {
             $parameters = "start=".$params["start"]."&amp;knowbaseitemcategories_id=".
                           $params['knowbaseitemcategories_id']."&amp;contains=".
                           $params["contains"]."&amp;is_faq=$faq";
-            if (isset($options['itemtype']) && isset($options['items_id'])) {
+
+            if (isset($options['itemtype'])
+                && isset($options['items_id'])) {
                $parameters .= "&amp;items_id=".$options['items_id']."&amp;itemtype=".
                                $options['itemtype'];
             }
 
             if ($output_type == Search::HTML_OUTPUT) {
                Html::printPager($params['start'], $numrows,
-                                Toolbox::getItemTypeSearchURL('KnowbaseItem'),
-                                $parameters, 'KnowbaseItem');
+                                Toolbox::getItemTypeSearchURL('KnowbaseItem'), $parameters,
+                                'KnowbaseItem');
             }
 
             $nbcols = 1;
@@ -1024,7 +1039,7 @@ class KnowbaseItem extends CommonDBTM {
 
             if (isset($options['itemtype'])
                 && isset($options['items_id'])
-                && $output_type == Search::HTML_OUTPUT) {
+                && ($output_type == Search::HTML_OUTPUT)) {
                echo Search::showHeaderItem($output_type, '&nbsp;', $header_num);
             }
 
@@ -1040,7 +1055,8 @@ class KnowbaseItem extends CommonDBTM {
                echo Search::showNewLine($output_type, $i%2);
 
                if ($output_type == Search::HTML_OUTPUT) {
-                  if (isset($options['itemtype']) && isset($options['items_id'])) {
+                  if (isset($options['itemtype'])
+                      && isset($options['items_id'])) {
                      $href = " href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
                               "/front/popup.php?popup=show_kb&amp;id=".$data['id']."' ,'glpipopup', ".
                               "'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"" ;
@@ -1068,7 +1084,7 @@ class KnowbaseItem extends CommonDBTM {
 
                if (isset($options['itemtype'])
                    && isset($options['items_id'])
-                   && $output_type == Search::HTML_OUTPUT) {
+                   && ($output_type == Search::HTML_OUTPUT)) {
 
                   $content = "<a href='".Toolbox::getItemTypeFormURL($options['itemtype']).
                                "?load_kb_sol=".$data['id']."&amp;id=".$options['items_id'].
@@ -1083,8 +1099,8 @@ class KnowbaseItem extends CommonDBTM {
             }
 
             // Display footer
-            if ($output_type == Search::PDF_OUTPUT_LANDSCAPE
-                || $output_type == Search::PDF_OUTPUT_PORTRAIT) {
+            if (($output_type == Search::PDF_OUTPUT_LANDSCAPE)
+                || ($output_type == Search::PDF_OUTPUT_PORTRAIT)) {
                echo Search::showFooter($output_type,
                                        Dropdown::getDropdownName("glpi_knowbaseitemcategories",
                                                                  $params['knowbaseitemcategories_id']));
@@ -1094,8 +1110,8 @@ class KnowbaseItem extends CommonDBTM {
             echo "<br>";
             if ($output_type == Search::HTML_OUTPUT) {
                Html::printPager($params['start'], $numrows,
-                                Toolbox::getItemTypeSearchURL('KnowbaseItem'),
-                                $parameters, 'KnowbaseItem');
+                                Toolbox::getItemTypeSearchURL('KnowbaseItem'), $parameters,
+                                'KnowbaseItem');
             }
 
          } else {
@@ -1117,7 +1133,7 @@ class KnowbaseItem extends CommonDBTM {
    static function showRecentPopular($target, $type, $faq=0) {
       global $DB;
 
-      if ($type=="recent") {
+      if ($type == "recent") {
          $orderby = "ORDER BY `date` DESC";
          $title   = __('Recent entries');
 
@@ -1142,8 +1158,8 @@ class KnowbaseItem extends CommonDBTM {
          }
       }
 
-      if ($type=="notpublished") {
-         $title = __('Unpublished articles');
+      if ($type == "notpublished") {
+         $title     = __('Unpublished articles');
          // not published = no visibility set
          $faq_limit = "WHERE `glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."'
                              AND `glpi_entities_knowbaseitems`.`entities_id` IS NULL
@@ -1175,7 +1191,7 @@ class KnowbaseItem extends CommonDBTM {
       if ($number > 0) {
          echo "<table class='tab_cadrehov'>";
          echo "<tr><th>".$title."</th></tr>";
-         while ($data=$DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_2'><td class='left'>";
             echo "<a ".($data['is_faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".
                   $target."?id=".$data["id"]."\">".Html::resume_text($data["name"],80)."</a></td>".
@@ -1209,7 +1225,7 @@ class KnowbaseItem extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                      = array();
       $tab['common']            = __('Characteristics');
 
       $tab[2]['table']          = $this->getTable();
@@ -1335,7 +1351,7 @@ class KnowbaseItem extends CommonDBTM {
                if ($canedit) {
                   echo "<td>";
                   $sel = "";
-                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
                   echo "<input type='checkbox' name='user[".$data["id"]."]' value='1' $sel>";
@@ -1356,7 +1372,7 @@ class KnowbaseItem extends CommonDBTM {
                if ($canedit) {
                   echo "<td>";
                   $sel = "";
-                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
                   echo "<input type='checkbox' name='group[".$data["id"]."]' value='1' $sel>";
@@ -1364,16 +1380,19 @@ class KnowbaseItem extends CommonDBTM {
                }
                echo "<td>".__('Group')."</td>";
                echo "<td>";
-               $names = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
-               echo $names["name"]." ";
-               echo Html::showToolTip($names["comment"]);
+               $names     = Dropdown::getDropdownName('glpi_groups', $data['groups_id'],1);
+               $groupname = sprintf(__('%1$s %2$s'), $names["name"],
+                                    Html::showToolTip($names["comment"]));
                if ($data['entities_id'] >= 0) {
-                  echo " / ";
-                  echo Dropdown::getDropdownName('glpi_entities',$data['entities_id']);
+                  $groupname = sprintf(__('%1$s / %2$s'), $groupname,
+                                       Dropdown::getDropdownName('glpi_entities',
+                                                                 $data['entities_id']));
                   if ($data['is_recursive']) {
-                     echo " <span class='b'>&nbsp;".__('(R)')."</span>";
+                     $groupname = sprintf(__('%1$s %2$s'), $groupname,
+                                          "<span class='b'>&nbsp;".__('(R)')."</span>");
                   }
                }
+               echo $groupname;
                echo "</td>";
                echo "</tr>";
             }
@@ -1388,7 +1407,7 @@ class KnowbaseItem extends CommonDBTM {
                if ($canedit) {
                   echo "<td>";
                   $sel = "";
-                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
                   echo "<input type='checkbox' name='entity[".$data["id"]."]' value='1' $sel>";
@@ -1396,12 +1415,14 @@ class KnowbaseItem extends CommonDBTM {
                }
                echo "<td>".__('Entity')."</td>";
                echo "<td>";
-               $names = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
-               echo $names["name"]." ";
-               echo Html::showToolTip($names["comment"]);
+               $names      = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
+               $entityname = sprintf(__('%1$s %2$s'), $names["name"],
+                                    Html::showToolTip($names["comment"]));
                if ($data['is_recursive']) {
-                  echo " <span class='b'>&nbsp;".__('(R)')."</span>";
+                  $entityname = sprintf(__('%1$s %2$s'), $entityname,
+                                        "<span class='b'>&nbsp;".__('(R)')."</span>");
                }
+               echo $entityname;
                echo "</td>";
                echo "</tr>";
             }
@@ -1416,7 +1437,7 @@ class KnowbaseItem extends CommonDBTM {
                if ($canedit) {
                   echo "<td>";
                   $sel = "";
-                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
                   echo "<input type='checkbox' name='profile[".$data["id"]."]' value='1' $sel>";
@@ -1424,16 +1445,19 @@ class KnowbaseItem extends CommonDBTM {
                }
                echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
                echo "<td>";
-               $names = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id'], 1);
-               echo $names["name"]." ";
-               echo Html::showToolTip($names["comment"]);
+               $names       = Dropdown::getDropdownName('glpi_profiles', $data['profiles_id'], 1);
+               $profilename = sprintf(__('%1$s %2$s'), $names["name"],
+                                    Html::showToolTip($names["comment"]));
                if ($data['entities_id'] >= 0) {
-                  echo " / ";
-                  echo Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
+                  $profilename = sprintf(__('%1$s / %2$s'), $profilename,
+                                       Dropdown::getDropdownName('glpi_entities',
+                                                                 $data['entities_id']));
                   if ($data['is_recursive']) {
-                     echo " <span class='b'>&nbsp;".__('(R)')."</span>";
+                     $profilename = sprintf(__('%1$s %2$s'), $profilename,
+                                        "<span class='b'>&nbsp;".__('(R)')."</span>");
                   }
                }
+               echo $profilename;
                echo "</td>";
                echo "</tr>";
             }
