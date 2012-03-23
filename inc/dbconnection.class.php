@@ -188,7 +188,41 @@ class DBConnection extends CommonDBTM {
          $DBread = new DBSlave();
 
          if ($DBread->connected) {
-            return $DBread;
+            $sql = "SELECT MAX(`id`) AS maxid
+                    FROM `glpi_logs`";
+            switch ($CFG_GLPI['use_slave_for_search']) {
+               case 3 : // If synced or read-only account
+                  if (Session::isReadOnlyAccount()) {
+                     return $DBread;
+                  }
+                  // nobreak;
+
+               case 1 : // If synced (all changes)
+                  $slave  = $DBread->request($sql)->next();
+                  $master = $DB->request($sql)->next();
+                  if (isset($slave['maxid']) && isset($master['maxid'])
+                      && ($slave['maxid'] == $master['maxid'])) {
+                     // Latest Master change available on Slave
+                     return $DBread;
+                  }
+                  break;
+
+               case 2 : // If synced (current user changes or profile in read only)
+                  if (!isset($_SESSION['glpi_maxhistory'])) {
+                     // No change yet
+                     return $DBread;
+                  }
+                  $slave  = $DBread->request($sql)->next();
+                  if (isset($slave['maxid'])
+                      && ($slave['maxid'] >= $_SESSION['glpi_maxhistory'])) {
+                     // Latest current user change avaiable on Slave
+                     return $DBread;
+                  }
+                  break;
+
+               default: // Always
+                  return $DBread;
+            }
          }
       }
       return $DB;

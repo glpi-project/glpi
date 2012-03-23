@@ -239,7 +239,7 @@ class Log extends CommonDBTM {
                         '$old_value', '$new_value')";
 
       if ($DB->query($query)) {
-         return $DB->insert_id();
+         return $_SESSION['glpi_maxhistory'] = $DB->insert_id();
       }
       return false;
    }
@@ -573,5 +573,16 @@ class Log extends CommonDBTM {
       return $changes;
    }
 
+
+   /**
+    * Actions done after the ADD of the item in the database
+    *
+    * @since version 0.83
+    *
+    * @see inc/CommonDBTM::post_addItem()
+   **/
+   function post_addItem() {
+      $_SESSION['glpi_maxhistory'] = $this->fields['id'];
+   }
 }
 ?>

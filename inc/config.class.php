@@ -498,7 +498,13 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . $LANG['setup'][804] . "&nbsp;:</td><td>";
-      Dropdown::showYesNo("use_slave_for_search", $CFG_GLPI["use_slave_for_search"]);
+      $values = array(0 => $LANG['setup'][307],    // Never
+                      1 => $LANG['setup'][830],    // If synced (all changes)
+                      2 => $LANG['setup'][831],    // If synced (current user changes)
+                      3 => $LANG['setup'][832],    // If synced or read-only account
+                      4 => $LANG['setup'][805]);   // Always
+      Dropdown::showFromArray('use_slave_for_search', $values,
+                              array('value' => $CFG_GLPI["use_slave_for_search"]));
       echo "<td colspan='2'>&nbsp;</td>";
       echo "</tr>";
 

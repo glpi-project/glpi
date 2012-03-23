@@ -2410,7 +2410,7 @@ $LANG['setup'][801] = "Activer le réplicat MySQL";
 $LANG['setup'][802] = "Base";
 $LANG['setup'][803] = "Écart entre le maître et l'esclave";
 $LANG['setup'][804] = "Utiliser l'esclave pour le moteur de recherche";
-
+$LANG['setup'][805] = "Toujours";
 $LANG['setup'][806] = "Durée maximum de désynchronisation (en minutes)";
 $LANG['setup'][807] = "La base de donnée esclave est désynchronisée. L'écart est de";
 $LANG['setup'][808] = "Base de données esclave désynchronisée !";
@@ -2432,6 +2432,9 @@ $LANG['setup'][826] = "Doublons";
 $LANG['setup'][827] = "Alerte enregistrement en doublon";
 $LANG['setup'][828] = "Valeur ignorée pour l'unicité";
 $LANG['setup'][829] = "Valeurs ignorées pour l'unicité";
+$LANG['setup'][830] = "Si synchronisé (tous les changements)";
+$LANG['setup'][831] = "Si synchronisé (changements de l'utilisateur)";
+$LANG['setup'][832] = "Si synchronisé ou compte en lecture seule";
 
 $LANG['sla'][1]  = "SLA";
 $LANG['sla'][2]  = "Temps maximum de résolution";
