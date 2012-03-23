@@ -1546,19 +1546,20 @@ class Search {
          }
 
 
+         $selected = $first = '';
          // display select box to define search item
          echo "<select id='Search$itemtype$i' name=\"field[$i]\" size='1'>";
          if ($CFG_GLPI['allow_search_view']==2) {
             echo "<option value='view' ";
             if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "view") {
                echo "selected";
+               $selected    = 'view';
             }
             echo ">".__('Items seen')."</option>\n";
          }
 
          reset($options);
          $first_group = true;
-         $selected    = 'view';
          $str_limit   = 28;
          $nb_in_group = 0;
          $group = '';
@@ -1586,6 +1587,8 @@ class Search {
                   if (is_array($p['field']) && isset($p['field'][$i]) && $key == $p['field'][$i]) {
                      $group .= "selected";
                      $selected = $key;
+                  } else if (empty($first)) {
+                     $first = $key;
                   }
                   $group .= ">". Toolbox::substr($val["name"], 0, $str_limit) ."</option>\n";
                }
@@ -1597,11 +1600,11 @@ class Search {
          if ($nb_in_group) {
             echo $group;
          }
-
          if ($CFG_GLPI['allow_search_view']==1) {
             echo "<option value='view' ";
             if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "view") {
                echo "selected";
+               $selected = 'view';
             }
             echo ">".__('Items seen')."</option>\n";
          }
@@ -1609,8 +1612,12 @@ class Search {
             echo "<option value='all' ";
             if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "all") {
                echo "selected";
+               $selected = 'all';
             }
             echo ">".__('All')."</option>";
+         }
+         if (empty($selected)) {
+            $selected = $first;
          }
          echo "</select>\n";
 
@@ -4515,7 +4522,7 @@ class Search {
       $default_values["is_deleted"]  = 0;
       $default_values["distinct"]    = "N";
       $default_values["link"]        = array();
-      $default_values["field"]       = array(0 => "view");
+      $default_values["field"]       = array();
       $default_values["contains"]    = array(0 => "");
       $default_values["searchtype"]  = array(0 => "contains");
       $default_values["link2"]       = array();
