@@ -1,4 +1,4 @@
-<?php
+)<?php
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -1171,9 +1171,11 @@ class AuthLDAP extends CommonDBTM {
                   if (in_array($config_ldap->fields['login_field'], $info[$ligne])) {
                      $ldap_users[$info[$ligne][$config_ldap->fields['login_field']][0]]
                         = $info[$ligne][$config_ldap->fields['login_field']][0];
-                     $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["timestamp"]
+                        $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["timestamp"]
                         = self::ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],
                                                     $config_ldap->fields['time_offset']);
+                        $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["user_dn"]
+                        = $info[$ligne]['dn'];
                   }
 
                } else {
@@ -1185,7 +1187,11 @@ class AuthLDAP extends CommonDBTM {
                      $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["timestamp"]
                         = self::ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],
                                                     $config_ldap->fields['time_offset']);
-                   }
+                     $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["user_dn"]
+                        = $info[$ligne]['dn'];
+                     $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["name"]
+                        = $info[$ligne][$config_ldap->fields['login_field']][0];
+                  }
                }
             }
          } else {
@@ -1196,7 +1202,7 @@ class AuthLDAP extends CommonDBTM {
          return false;
       }
       $glpi_users = array();
-      $sql        = "SELECT *
+      $sql        = "SELECT `id`, `name`, `date_sync`, `user_dn`
                      FROM `glpi_users`";
 
       if ($values['mode'] != self::ACTION_IMPORT) {
@@ -1206,22 +1212,33 @@ class AuthLDAP extends CommonDBTM {
       $sql .= " ORDER BY `name` ".$values['order'];
 
       foreach ($DB->request($sql) as $user) {
+         $tmpuser = new User();
+         
          //Ldap add : fill the array with the login of the user
          if ($values['mode'] == self::ACTION_IMPORT) {
             $glpi_users[$user['name']] = $user['name'];
-
          } else {
             //Ldap synchronisation : look if the user exists in the directory
             //and compares the modifications dates (ldap and glpi db)
-            if (!empty($ldap_users[$user['name']])) {
-               //If entry was modified or if script should synchronize all the users
-               if (($values['action'] == self::ACTION_ALL)
+            $userfound = false;
+            if (!empty($ldap_users[$user['name']])
+               || $userfound = self::dnExistsInLdap($user_infos, $user['user_dn'])) {
+                  //If entry was modified or if script should synchronize all the users
+                  if ($userfound) {
+                     //Get user in DB with this dn
+                     $tmpuser->getFromDBByDn($user['user_dn']);
+                     $glpi_users[] = array('id'        => $user['id'],
+                                           'user'      => $userfound['name'],
+                                           'timestamp' => $user_infos[$userfound['name']]['timestamp'],
+                                           'date_sync' => $tmpuser->fields['date_sync'],
+                                           'dn'        => $user['user_dn']);
+               } elseif (($values['action'] == self::ACTION_ALL)
                    || ($ldap_users[$user['name']] - strtotime($user['date_sync']) > 0)) {
-
                   $glpi_users[] = array('id'        => $user['id'],
                                         'user'      => $user['name'],
                                         'timestamp' => $user_infos[$user['name']]['timestamp'],
-                                        'date_sync' => $user['date_sync']);
+                                        'date_sync' => $user['date_sync'],
+                                        'dn'        => $user['user_dn']);
                }
 
             // Only manage deleted user if ALL (because of entity visibility in delegated mode)
@@ -1240,13 +1257,17 @@ class AuthLDAP extends CommonDBTM {
 
       //If add, do the difference between ldap users and glpi users
       if ($values['mode'] == self::ACTION_IMPORT) {
-         $diff = array_diff_ukey($ldap_users,$glpi_users,'strcasecmp');
-         $list = array();
-
+         $diff    = array_diff_ukey($ldap_users,$glpi_users,'strcasecmp');
+         $list    = array();
+         $tmpuser = new User();
+         
          foreach ($diff as $user) {
-            $list[] = array("user"      => $user,
-                            "timestamp" => $user_infos[$user]["timestamp"],
-                            "date_sync" => Dropdown::EMPTY_VALUE);
+            //If user dn exists in DB, it means that user login field has changed
+            if (!$tmpuser->getFromDBByDn($user_infos[$user]["user_dn"])) {
+               $list[] = array("user"      => $user,
+                               "timestamp" => $user_infos[$user]["timestamp"],
+                               "date_sync" => Dropdown::EMPTY_VALUE);
+            }
          }
          if ($values['order'] == 'DESC') {
             rsort($list);
@@ -1259,7 +1280,25 @@ class AuthLDAP extends CommonDBTM {
       return $glpi_users;
    }
 
-
+   /**
+    *
+    * Check if an user DN exists in an ldap user search resulset
+    * @since
+    * @param $ldap_infos ldap user search result
+    * @param $user_dn user dn to look for
+    * @return false if the user dn doesn't exists, user ldap infos otherwise
+    */
+   static function dnExistsInLdap($ldap_infos, $user_dn) {
+      $found = false;
+      foreach ($ldap_infos as $ldap_info) {
+         if ($ldap_info['user_dn'] == $user_dn) {
+            $found = $ldap_info;
+            break;
+         }
+      }
+      return $found;
+   }
+   
    /** Show LDAP groups to add or synchronise in an entity
     *
     * @param $target    target page for the form
@@ -1664,8 +1703,14 @@ class AuthLDAP extends CommonDBTM {
                                'id'     => $user->fields["id"]);
                }
                $input = $user->fields;
-               $input['id'] = User::getIdByName($login);
-
+               //Get the ID by user name
+               if ($id = User::getIdByfield('name', $login)) {
+               } else {
+                  //In case user id as changed : get id by dn
+                  $id = User::getIdByfield('user_dn', $user_dn);
+               }
+               $input['id'] = $id;
+               
                if ($display) {
                   $input['update'] = 1;
                }
@@ -1677,7 +1722,7 @@ class AuthLDAP extends CommonDBTM {
 
          }
          if ($action != self::ACTION_IMPORT) {
-            $users_id = User::getIdByName($params['value']);
+            $users_id = User::getIdByField('name', $params['value']);
             User::manageDeletedUserInLdap($users_id);
             return array('action' => self::USER_DELETED_LDAP,
                          'id'     => $users_id);
@@ -1922,10 +1967,19 @@ class AuthLDAP extends CommonDBTM {
       $user_dn  = $auth->connection_ldap($ldap_method, $login, $password);
       error_reporting($oldlevel);
 
+      $auth->auth_succeded            = true;
+      $auth->extauth                  = 1;
+      
       if ($user_dn) {
-         $auth->auth_succeded            = true;
-         $auth->extauth                  = 1;
-         $auth->user_present             = $auth->user->getFromDBbyName(addslashes($login));
+         //There's already an user existing in DB with the same DN but it's login field has changed
+         if ($auth->user->getFromDBbyDn($user_dn)) {
+            //Change user login
+            $auth->user->fields['name'] = $login;
+            $auth->user_present = true;
+         //The user is a new user
+         } else {
+            $auth->user_present             = $auth->user->getFromDBbyName(addslashes($login));
+         }
          $auth->user->getFromLDAP($auth->ldap_connection, $ldap_method, $user_dn, $login,
                                   !$auth->user_present);
          $auth->user->fields["authtype"] = Auth::LDAP;

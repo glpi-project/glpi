@@ -455,7 +455,6 @@ class Auth {
       if (!$noauto && ($authtype = self::checkAlternateAuthSystems())) {
          if ($this->getAlternateAuthSystemsUserLogin($authtype)
              && !empty($this->user->fields['name'])) {
-
             // Used for log when login process failed
             $login_name                     = $this->user->fields['name'];
             $this->auth_succeded            = true;
@@ -511,9 +510,9 @@ class Auth {
          if (empty($login_name) || empty($login_password)) {
             $this->addToError(__('Empty login or password'));
          } else {
-            // exists=0 -> no exist
-            // exists=1 -> exist with password
-            // exists=2 -> exist without password
+            // exists=0 -> user doesn't yet exist
+            // exists=1 -> user is present in DB but with password
+            // exists=2 -> user is present in DB but without password
             $exists = $this->userExists(array('name' => addslashes($login_name)));
 
             // Pas en premier car sinon on ne fait pas le blankpassword
