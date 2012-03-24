@@ -1504,7 +1504,7 @@ class OcsServer extends CommonDBTM {
                      break;
 
                   case 'contact' :
-                    if ($users_id = User::getIDByName($ocs_fields[$ocs_field])) {
+                    if ($users_id = User::getIDByField('name', $ocs_fields[$ocs_field])) {
                        $input[$glpi_field] = $users_id;
                     }
                      break;

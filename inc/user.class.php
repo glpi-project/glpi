@@ -351,7 +351,36 @@ class User extends CommonDBTM {
       return false;
    }
 
+   /**
+    * Retrieve an item from the database using it's dn
+    *
+    * @param $user_dn dn of the user
+    *
+    * @return true if succeed else false
+   **/
+   function getFromDBbyDn($user_dn) {
+      global $DB;
 
+      if (empty($user_dn)) {
+         return false;
+      }
+      
+      $query = "SELECT *
+                FROM `".$this->getTable()."`
+                WHERE `user_dn` = '$user_dn'";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 1) {
+            return false;
+         }
+         $this->fields = $DB->fetch_assoc($result);
+         if (is_array($this->fields) && count($this->fields)) {
+            return true;
+         }
+      }
+      return false;
+   }
+   
    /**
     * Retrieve an item from the database using its email
     *
@@ -2796,12 +2825,12 @@ class User extends CommonDBTM {
    }
 
 
-   static function getIdByName($login) {
+   static function getIdByField($field, $login) {
       global $DB;
 
       $query = "SELECT `id`
                 FROM `glpi_users`
-                WHERE `name` = '".addslashes($login)."'";
+                WHERE `$field` = '".addslashes($login)."'";
       $result = $DB->query($query);
 
       if ($DB->numrows($result) == 1) {
@@ -2809,8 +2838,7 @@ class User extends CommonDBTM {
       }
       return false;
    }
-
-
+   
    /**
     * Show form for password recovery
    **/
