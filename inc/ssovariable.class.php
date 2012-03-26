@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -36,19 +35,26 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
+/**
+ * @since veresion 0.84
+**/
 class SsoVariable extends CommonDropdown {
 
    var $refresh_page = true;
+
 
    function canCreate() {
       return Session::haveRight('config', 'w');
    }
 
+
    function canView() {
       return Session::haveRight('config', 'r');
    }
 
+
    static function getTypeName($nb=0) {
+
       return _n('Field storage of the login in the HTTP request',
                 'Fields storage of the login in the HTTP request', $nb);
    }

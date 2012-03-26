@@ -561,14 +561,14 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_tickets_users'       => 'tickets_id'),
 
                   "glpi_solutiontypes"
-                           => array('glpi_changes'             => 'solutiontypes_id',
+                        => array('glpi_changes'             => 'solutiontypes_id',
                                     'glpi_tickets'             => 'solutiontypes_id',
                                     'glpi_solutiontemplates'   => 'solutiontypes_id',
                                     'glpi_problems'            => 'solutiontypes_id'),
 
                   "glpi_ssovariables"
-                           => array('glpi_configs'             => 'ssovariables_id'),
-                           
+                        => array('glpi_configs' => 'ssovariables_id'),
+
                   "glpi_transfers"
                         => array('glpi_configs' => 'transfers_id_auto'),
 
