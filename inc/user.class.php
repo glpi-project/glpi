@@ -2830,7 +2830,9 @@ class User extends CommonDBTM {
 
 
    /**
-    * @param $field     new param since version 0.84
+    * @since version 0.84
+    *
+    * @param $field
     * @param $login
    **/
    static function getIdByField($field, $login) {
@@ -2846,6 +2848,7 @@ class User extends CommonDBTM {
       }
       return false;
    }
+
 
    /**
     * Show form for password recovery
