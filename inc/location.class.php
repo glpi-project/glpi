@@ -77,7 +77,7 @@ class Location extends CommonTreeDropdown {
 
    static function getSearchOptionsToAdd() {
 
-      $tab = array();
+      $tab                      = array();
 
       $tab[3]['table']          = 'glpi_locations';
       $tab[3]['field']          = 'completename';
@@ -109,7 +109,7 @@ class Location extends CommonTreeDropdown {
    **/
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                 = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'building';
@@ -139,5 +139,6 @@ class Location extends CommonTreeDropdown {
       Rule::cleanForItemAction($this);
       Rule::cleanForItemCriteria($this, 'users_locations');
    }
+
 }
 ?>
