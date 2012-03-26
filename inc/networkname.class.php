@@ -60,9 +60,11 @@ class NetworkName extends FQDNLabel {
          return false;
       }
 
-      if (!empty($this->fields['itemtype']) && !empty($this->fields['items_id'])) {
-         $item = new $this->fields['itemtype']();
-         if ($item->getFromDB($this->fields['items_id'])) {
+      if (!empty($this->fields['itemtype'])
+          && !empty($this->fields['items_id'])) {
+
+         if (($item = getItemForItemtype($this->fields['itemtype']))
+             && $item->getFromDB($this->fields['items_id'])) {
             return $item->canCreate();
          }
       }
@@ -77,9 +79,11 @@ class NetworkName extends FQDNLabel {
          return false;
       }
 
-      if (!empty($this->fields['itemtype']) && !empty($this->fields['items_id'])) {
-         $item = new $this->fields['itemtype']();
-         if ($item->getFromDB($this->fields['items_id'])) {
+      if (!empty($this->fields['itemtype'])
+          && !empty($this->fields['items_id'])) {
+
+         if (($item = getItemForItemtype($this->fields['itemtype']))
+             && $item->getFromDB($this->fields['items_id'])) {
             return $item->canView();
          }
       }
@@ -116,15 +120,7 @@ class NetworkName extends FQDNLabel {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("internet", "r")) {
-         return false;
-      }
-
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         $this->check(-1, 'w', $options);
-      }
+      $this->initForm($ID, $options);
 
       $recursiveItems = $this->recursivelyGetItems();
       if (count($recursiveItems) == 0) {
@@ -140,9 +136,9 @@ class NetworkName extends FQDNLabel {
 
       echo "<tr class='tab_bg_1'><td>";
       $this->displayRecursiveItems($recursiveItems, 'Type');
-      echo "&nbsp;:</td>\n<td>";
+      echo "</td>\n<td>";
 
-      if (!($ID>0)) {
+      if (!($ID > 0)) {
          echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
          echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
       }
@@ -191,7 +187,7 @@ class NetworkName extends FQDNLabel {
 
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                      = parent::getSearchOptions();
 
       $tab[12]['table']         = 'glpi_fqdns';
       $tab[12]['field']         = 'fqdn';
@@ -212,7 +208,7 @@ class NetworkName extends FQDNLabel {
 
       $tab[21]['table']        = $this->getTable();
       $tab[21]['field']        = 'items_id';
-      $tab[21]['name']         = __('id');
+      $tab[21]['name']         = __('ID');
       $tab[21]['datatype']     = 'integer';
       $tab[21]['massiveation'] = false;
 
@@ -234,8 +230,8 @@ class NetworkName extends FQDNLabel {
                                                     self::getType(), $this->getID());
 
          if (count($addresses["invalid"]) > 0) {
-            $msg = sprintf(_n('Invalid IP address: %s', 'Invalid IP addresses: %s',
-                              count($addresses["invalid"])),
+            $msg = sprintf(__('%1$s: %2$s'), _n('Invalid IP address', 'Invalid IP addresses',
+                                               count($addresses["invalid"])),
                            implode (', ',$addresses["invalid"]));
             Session::addMessageAfterRedirect($msg, false, ERROR);
             unset($addresses["invalid"]);
@@ -345,7 +341,6 @@ class NetworkName extends FQDNLabel {
     *
     * @param $items_id  the id of the item
     * @param $itemtype  the type of the item
-    *
    **/
    static function unaffectAddressesOfItem($items_id, $itemtype) {
       global $DB;
@@ -603,14 +598,11 @@ class NetworkName extends FQDNLabel {
                $row = $row->createAnotherRow();
             }
 
-            $content      = "<a href='" . $address->getLinkURL(). "'>";
             $internetName = $address->getInternetName();
             if (empty($internetName)) {
-               $content .= "(".$line["id"].")";
-            } else {
-               $content .= $internetName;
+               $internetName = "(".$line["id"].")";
             }
-            $content .= "</a>";
+            $content  = "<a href='" . $address->getLinkURL(). "'>".$internetName."</a>";
 
             $name_cell = $row->addCell($header, $content, $father, $address);
             if ($canedit) {
@@ -746,7 +738,7 @@ class NetworkName extends FQDNLabel {
 
          echo "<tr><td class='center'>";
          echo "<a href=\"" . $address->getFormURL()."?items_id=$items_id&itemtype=$itemtype\">";
-         echo __('New one')."</a>";
+         echo _x('network name','New one')."</a>";
          echo "</td></tr>\n";
 
          echo "<tr><td class='center'>";
@@ -758,7 +750,7 @@ class NetworkName extends FQDNLabel {
          echo "&nbsp;";
          Dropdown::show(__CLASS__, array('name'      => 'addressID',
                                          'condition' => '`items_id`=0'));
-         echo "&nbsp;<input type='submit' name='assign_address' value='" . __s('Associate') .
+         echo "&nbsp;<input type='submit' name='assign_address' value='" . _sx('button','Associate') .
                       "' class='submit'>";
          echo "</form>\n";
          echo "</td></tr>\n";
@@ -777,12 +769,15 @@ class NetworkName extends FQDNLabel {
          case 'NetworkPort' :
          case 'IPNetwork' :
          case 'FQDN' :
-             self::showForItem($item, $withtemplate);
+            self::showForItem($item, $withtemplate);
             break;
       }
    }
 
 
+   /**
+    * @param $item      CommonDBTM object
+   **/
    static function countForItem(CommonDBTM $item) {
       global $DB;
 
@@ -821,5 +816,6 @@ class NetworkName extends FQDNLabel {
       }
       return '';
    }
+
 }
 ?>

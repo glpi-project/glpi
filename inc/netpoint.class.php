@@ -94,7 +94,7 @@ class Netpoint extends CommonDropdown {
    **/
    function executeAddMulti(array $input) {
 
-      $this->check(-1,'w',$input);
+      $this->check(-1, 'w', $input);
       for ($i=$input["_from"] ; $i<=$input["_to"] ; $i++) {
          $input["name"] = $input["_before"].$i.$input["_after"];
          $this->add($input);
@@ -122,7 +122,7 @@ class Netpoint extends CommonDropdown {
       global $CFG_GLPI;
 
       $rand          = mt_rand();
-      $name          = "------";
+      $name          = Dropdown::EMPTY_VALUE;
       $comment       = "";
       $limit_length  = $_SESSION["glpidropdown_chars_limit"];
       if (empty($value)) {
@@ -138,7 +138,8 @@ class Netpoint extends CommonDropdown {
       }
       $use_ajax = false;
       if ($CFG_GLPI["use_ajax"]) {
-         if ($locations_id < 0 || $devtype == 'NetworkEquipment') {
+         if (($locations_id < 0)
+             || ($devtype == 'NetworkEquipment')) {
             $nb = countElementsInTableForEntity("glpi_netpoints", $entity_restrict);
          } else if ($locations_id > 0) {
             $nb = countElementsInTable("glpi_netpoints", "locations_id=$locations_id ");
@@ -170,7 +171,7 @@ class Netpoint extends CommonDropdown {
       if ($display_comment) {
          Html::showToolTip($comment);
 
-         $item = new Netpoint();
+         $item = new self();
          if ($item->canCreate()) {
             echo "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
                   "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;' ".
@@ -257,7 +258,7 @@ class Netpoint extends CommonDropdown {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='Location') {
+      if ($item->getType() == 'Location') {
          self::showForLocation($item);
       }
       return true;
@@ -356,7 +357,7 @@ class Netpoint extends CommonDropdown {
          Html::autocompletionTextField($item, "name", array('value' => ''));
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
-         echo "<td><input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<td><input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
 
@@ -373,7 +374,7 @@ class Netpoint extends CommonDropdown {
          echo "<input type='hidden' name='entities_id' value='".$_SESSION['glpiactive_entity']."'>";
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
          echo "<input type='hidden' name='_method' value='AddMulti'></td>";
-         echo "<td><input type='submit' name='execute' value=\"".__s('Add')."\" class='submit'>";
+         echo "<td><input type='submit' name='execute' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       }
