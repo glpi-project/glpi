@@ -1043,7 +1043,7 @@ class Profile extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       $tabstatus = Problem::getAllStatusArray();
 
-      echo "<th colspan='".(count($tabstatus)+1)."'>".__('Life cycle of tickets')."</th>";
+      echo "<th colspan='".(count($tabstatus)+1)."'>".__('Life cycle of problems')."</th>";
       echo "<tr class='tab_bg_1'><td class='b center'>".__('From \ To');
       echo "<input type='hidden' name='_cycles_problem' value='1'</td>";
       foreach ($tabstatus as $label) {
