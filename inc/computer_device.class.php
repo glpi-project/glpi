@@ -542,7 +542,7 @@ class Computer_Device extends CommonDBTM {
                   break;
             }
 
-         } elseif (count($data) == 4) {
+         } else if (count($data) == 4) {
             switch ($data[0]) {
                case 'quantity' :
                   $this->addDevices($val, $data[1],$data[2],$data[3]);

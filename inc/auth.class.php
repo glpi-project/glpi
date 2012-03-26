@@ -511,7 +511,7 @@ class Auth {
             $this->addToError(__('Empty login or password'));
          } else {
             // exists=0 -> user doesn't yet exist
-            // exists=1 -> user is present in DB but with password
+            // exists=1 -> user is present in DB with password
             // exists=2 -> user is present in DB but without password
             $exists = $this->userExists(array('name' => addslashes($login_name)));
 

@@ -1368,15 +1368,16 @@ function update083to084() {
 
    if (!TableExists('glpi_slalevelcriterias')) {
       $query = "CREATE TABLE `glpi_slalevelcriterias` (
-               `id` int(11) NOT NULL AUTO_INCREMENT,
-               `slalevels_id` int(11) NOT NULL DEFAULT '0',
-               `criteria` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-               `condition` int(11) NOT NULL DEFAULT '0' COMMENT 'see define.php PATTERN_* and REGEX_* constant',
-               `pattern` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-               PRIMARY KEY (`id`),
-               KEY `slalevels_id` (`slalevels_id`),
-               KEY `condition` (`condition`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `slalevels_id` int(11) NOT NULL DEFAULT '0',
+                  `criteria` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `condition` int(11) NOT NULL DEFAULT '0'
+                              COMMENT 'see define.php PATTERN_* and REGEX_* constant',
+                  `pattern` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `slalevels_id` (`slalevels_id`),
+                  KEY `condition` (`condition`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_slalevelcriterias");
    }
 
@@ -1385,15 +1386,15 @@ function update083to084() {
 
    if (!TableExists('glpi_blacklists')) {
       $query = "CREATE TABLE `glpi_blacklists` (
-               `id` int(11) NOT NULL AUTO_INCREMENT,
-               `type` int(11) NOT NULL DEFAULT '0',
-               `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-               `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-               `comment` text COLLATE utf8_unicode_ci,
-               PRIMARY KEY (`id`),
-               KEY `type` (`type`),
-               KEY `name` (`name`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `type` int(11) NOT NULL DEFAULT '0',
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  PRIMARY KEY (`id`),
+                  KEY `type` (`type`),
+                  KEY `name` (`name`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_blacklists");
 
       $ADDTODISPLAYPREF['Blacklist'] = array(12,11);
@@ -1414,44 +1415,54 @@ function update083to084() {
       }
    }
 
-   $query  = "SELECT `id` FROM `glpi_rulerightparameters` where `name`='(LDAP) MemberOf'";
+   $query  = "SELECT `id`
+              FROM `glpi_rulerightparameters`
+              WHERE `name` = '(LDAP) MemberOf'";
    $result = $DB->query($query);
    if (!$DB->numrows($result)) {
-      $query = "INSERT INTO `glpi_rulerightparameters` VALUES (NULL,'(LDAP) MemberOf','memberof','');";
+      $query = "INSERT INTO `glpi_rulerightparameters`
+                VALUES (NULL, '(LDAP) MemberOf', 'memberof', '')";
       $DB->queryOrDie($query, "0.84 insert (LDAP) MemberOf in glpi_rulerightparameters");
    }
 
    if (!TableExists('glpi_ssovariables')) {
       $query = "CREATE TABLE `glpi_ssovariables` (
-                `id` int(11) NOT NULL AUTO_INCREMENT,
-                `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-                `comment` text COLLATE utf8_unicode_ci NOT NULL,
-                PRIMARY KEY (`id`)
-               ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci NOT NULL,
+                  PRIMARY KEY (`id`)
+                ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_ssovariables");
-      $query = "INSERT INTO `glpi_ssovariables` (`id`, `name`, `comment`) VALUES
-                           (1, 'HTTP_AUTH_USER', ''),
-                           (2, 'REMOTE_USER', ''),
-                           (3, 'PHP_AUTH_USER', ''),
-                           (4, 'USERNAME', ''),
-                           (5, 'REDIRECT_REMOTE_USER', ''),
-                           (6, 'HTTP_REMOTE_USER', '');";
+
+      $query = "INSERT INTO `glpi_ssovariables`
+                       (`id`, `name`, `comment`)
+                VALUES (1, 'HTTP_AUTH_USER', ''),
+                       (2, 'REMOTE_USER', ''),
+                       (3, 'PHP_AUTH_USER', ''),
+                       (4, 'USERNAME', ''),
+                       (5, 'REDIRECT_REMOTE_USER', ''),
+                       (6, 'HTTP_REMOTE_USER', '')";
       $DB->queryOrDie($query, "0.84 add values from  glpi_ssovariables");
    }
+
    if ($migration->addField('glpi_configs', 'ssovariables_id', 'integer')) {
       $migration->migrationOneTable('glpi_configs');
       //Get configuration
-      $query = "SELECT `existing_auth_server_field` FROM `glpi_configs`";
+      $query = "SELECT `existing_auth_server_field`
+                FROM `glpi_configs`";
       $result = $DB->query($query);
+
       $existing_auth_server_field = $DB->result($result, 0, "existing_auth_server_field");
       if ($existing_auth_server_field) {
          //Get dropdown value for existing_auth_server_field
-         $query = "SELECT `id` FROM `glpi_ssovariables`
-                   WHERE `name`='$existing_auth_server_field'";
+         $query = "SELECT `id`
+                   FROM `glpi_ssovariables`
+                   WHERE `name` = '$existing_auth_server_field'";
          $result = $DB->query($query);
          //Update config
          if ($DB->numrows($result) > 0) {
-            $query = "UPDATE `glpi_configs` SET `ssovariables_id`='".$DB->result($result, 0, "id")."'";
+            $query = "UPDATE `glpi_configs`
+                      SET `ssovariables_id` = '".$DB->result($result, 0, "id")."'";
             $DB->queryOrDie($query, "0.84 update glpi_configs");
          }
          //Drop old field

@@ -351,8 +351,11 @@ class User extends CommonDBTM {
       return false;
    }
 
+
    /**
     * Retrieve an item from the database using it's dn
+    *
+    * @since version 0.84
     *
     * @param $user_dn dn of the user
     *
@@ -364,7 +367,7 @@ class User extends CommonDBTM {
       if (empty($user_dn)) {
          return false;
       }
-      
+
       $query = "SELECT *
                 FROM `".$this->getTable()."`
                 WHERE `user_dn` = '$user_dn'";
@@ -380,7 +383,8 @@ class User extends CommonDBTM {
       }
       return false;
    }
-   
+
+
    /**
     * Retrieve an item from the database using its email
     *
@@ -1588,7 +1592,7 @@ class User extends CommonDBTM {
                //TRANS: %s is the user dn
                echo '<br>'.sprintf(__('User DN %s'), $this->fields["user_dn"]);
             }
-            
+
             echo "</td>";
          } else {
             echo "<td colspan='2'>&nbsp;</td>";
@@ -2825,6 +2829,10 @@ class User extends CommonDBTM {
    }
 
 
+   /**
+    * @param $field     new param since version 0.84
+    * @param $login
+   **/
    static function getIdByField($field, $login) {
       global $DB;
 
@@ -2838,7 +2846,7 @@ class User extends CommonDBTM {
       }
       return false;
    }
-   
+
    /**
     * Show form for password recovery
    **/
