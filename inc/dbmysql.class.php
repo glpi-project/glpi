@@ -643,6 +643,45 @@ class DBmysql {
                    'Host info'        => $this->dbh->host_info);
                    // 'Server status'    => $this->dbh->stat(),
    }
+
+   /**
+    * Get a global DB lock
+    *
+    * @param $name  String : name of the lock
+    *
+    * @since version 0.84
+    *
+    * @return Boolean
+    */
+   public function getLock($name) {
+
+      $name          = addslashes($this->dbdefault.'.'.$name);
+      $query         = "SELECT GET_LOCK('$name', 0)";
+      $result        = $this->query($query);
+      list($lock_ok) = $this->fetch_row($result);
+
+      return $lock_ok;
+   }
+
+
+   /**
+    * Release a global DB lock
+    *
+    * @param $name  String : name of the lock
+    *
+    * @since version 0.84
+    *
+    * @return Boolean
+    */
+   public function releaseLock($name) {
+
+      $name   = addslashes($this->dbdefault.'.'.$name);
+      $query  = "SELECT RELEASE_LOCK('$name')";
+      $result = $this->query($query);
+      list($lock_ok) = $this->fetch_row($result);
+
+      return $lock_ok;
+   }
 }
 
 
