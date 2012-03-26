@@ -217,18 +217,20 @@ class ITILCategory extends CommonTreeDropdown {
       if (Session::haveRight("entity_dropdown","r")) {
          switch ($item->getType()) {
             case 'TicketTemplate' :
-               $ong[1] = $this->getTypeName(1);
+               $ong[1] = $this->getTypeName(2);
                return $ong;
          }
       }
-      return '';
+      return parent::getTabNameForItem($item, $withtemplate);
    }
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      self::showForTicketTemplate($item, $withtemplate);
-      return true;
+      if ($item->getType()=='TicketTemplate') {
+         self::showForTicketTemplate($item, $withtemplate);
+      }
+      return parent::displayTabContentForItem($item, $tabnum, $withtemplate);
    }
 
 
