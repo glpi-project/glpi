@@ -39,6 +39,9 @@ class Migration {
    private $deb;
 
 
+   /**
+    * @param $ver    number of new version of GLPI
+   **/
    function __construct($ver) {
 
       $this->deb = time();
@@ -292,7 +295,8 @@ class Migration {
       if (FieldExists($table, $oldfield, false)) {
          // in order the function to be replayed
          // Drop new field if name changed
-         if ($oldfield != $newfield && FieldExists($table, $newfield)) {
+         if (($oldfield != $newfield)
+             && FieldExists($table, $newfield)) {
             $this->change[$table][] = "DROP `$newfield` ";
          }
 
@@ -413,7 +417,9 @@ class Migration {
    function copyTable($oldtable, $newtable) {
       global $DB;
 
-      if (!TableExists("$newtable") && TableExists("$oldtable")) {
+      if (!TableExists("$newtable")
+          && TableExists("$oldtable")) {
+
          $query = "CREATE TABLE `$newtable` LIKE `$oldtable`";
          $DB->queryOrDie($query, $this->version." create $newtable");
 
@@ -438,7 +444,9 @@ class Migration {
    function insertInTable($table, array $input) {
       global $DB;
 
-      if (TableExists("$table") && is_array($input) && (count($input) > 0)) {
+      if (TableExists("$table")
+          && is_array($input) && (count($input) > 0)) {
+
          $fields = array();
          $values = array();
          foreach ($input as $field => $value) {
