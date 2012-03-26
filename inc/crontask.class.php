@@ -671,24 +671,22 @@ class CronTask extends CommonDBTM{
 
 
    /**
-    * Get a global database lock
+    * Get a global database lock for cron
+    *
+    * @return Boolean
    **/
    static private function get_lock() {
       global $DB;
 
       // Changer de nom toutes les heures en cas de blocage MySQL (ca arrive)
-      $nom           = $DB->dbdefault . ".glpicron." . intval(time()/HOUR_TIMESTAMP-340000);
+      $nom = "glpicron." . intval(time()/HOUR_TIMESTAMP-340000);
 
-      $nom           = addslashes($nom);
-      $query         = "SELECT GET_LOCK('$nom', 0)";
-      $result        = $DB->query($query);
-      list($lock_ok) = $DB->fetch_row($result);
-
-      if ($lock_ok) {
+      if ($DB->getLock($nom)) {
          self::$lockname = $nom;
+         return true;
       }
 
-      return $lock_ok;
+      return false;
    }
 
 
@@ -699,9 +697,8 @@ class CronTask extends CommonDBTM{
       global $DB;
 
       if (self::$lockname) {
-         $nom    = self::$lockname;
-         $query  = "SELECT RELEASE_LOCK('$nom')";
-         $result = $DB->query($query);
+         $DB->releaseLock(self::$lockname);
+         self::$lockname = '';
       }
    }
 
