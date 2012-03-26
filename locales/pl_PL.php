@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Włącz replikację MySQL";
 $LANG['setup'][802]="Baza danych"; 
 $LANG['setup'][803]="Różnice pomiędzy głównym i pomocniczym"; 
 $LANG['setup'][804]="Use the slave for the search engine"; // en_GB string to be translated
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Maksymalne rozsynchronizowanie (w minutach)"; 
 $LANG['setup'][807]="Baza zapasowa jest rozsynchronizowana. Różnice to:"; 
 $LANG['setup'][808]="baza zapasowa jest rozsynchronizowana!"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Duplikaty";
 $LANG['setup'][827]="Alarm duplikatów danych"; 
 $LANG['setup'][828]="Ignored value for the unicity"; // en_GB string to be translated
 $LANG['setup'][829]="Ignored values for the unicity"; // en_GB string to be translated
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Maksymalny czas na rozwiązanie"; 

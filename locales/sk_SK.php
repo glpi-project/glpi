@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Zapnúť MySQL replikáciu";
 $LANG['setup'][802]="Databáza"; 
 $LANG['setup'][803]="Rozdiel medzi master a slave"; 
 $LANG['setup'][804]="Použiť replikovanú databázu pre vyhľadávanie"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Maximálny rozdiel medzi master a slave"; 
 $LANG['setup'][807]="Podriadená databáza je nesynchronizovaná. Rozdiel je v:"; 
 $LANG['setup'][808]="Podriadená databáza mimo synchronizácie!"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Duplicity";
 $LANG['setup'][827]="Upozornenie na duplicitný záznam"; 
 $LANG['setup'][828]="Ignorované hodnoty jedinečnosti"; 
 $LANG['setup'][829]="Ignorované hodnoty pre jednoznačnosť"; 
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Maximálny čas na vyriešenie"; 

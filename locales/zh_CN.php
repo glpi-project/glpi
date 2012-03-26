@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="允许复制该MySQL";
 $LANG['setup'][802]="数据库"; 
 $LANG['setup'][803]="主机和分机间的区别"; 
 $LANG['setup'][804]="用作搜索引擎的从属对象"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="主机和分机之间的最大延迟（分）"; 
 $LANG['setup'][807]="从属不同步。不同的是："; 
 $LANG['setup'][808]="从数据库不同步！"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="多重记录";
 $LANG['setup'][827]="重复数据记录警告"; 
 $LANG['setup'][828]="由于唯一性而忽略的值"; 
 $LANG['setup'][829]="Ignored values for the unicity"; // en_GB string to be translated
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="最长解决时间"; 

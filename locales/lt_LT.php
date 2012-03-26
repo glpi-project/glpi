@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Enable the MySQL replica"; // en_GB string to be translated
 $LANG['setup'][802]="Duomenų bazė"; 
 $LANG['setup'][803]="Skirtumas tarp vedančio ir vedamojo"; 
 $LANG['setup'][804]="Use the slave for the search engine"; // en_GB string to be translated
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Max delay between master and slave (minutes)"; // en_GB string to be translated
 $LANG['setup'][807]="The slave base is desynchronized. The difference is of:"; // en_GB string to be translated
 $LANG['setup'][808]="Vedamoji duomenų bazė nesinchronizuota"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Duplicates"; // en_GB string to be translated
 $LANG['setup'][827]="Alert on duplicate record"; // en_GB string to be translated
 $LANG['setup'][828]="Ignored value for the unicity"; // en_GB string to be translated
 $LANG['setup'][829]="Ignored values for the unicity"; // en_GB string to be translated
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; // en_GB string to be translated
 $LANG['sla'][2]="Maximum time to resolve"; // en_GB string to be translated

@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Habilitar réplica do MySQL";
 $LANG['setup'][802]="Banco de Dados"; 
 $LANG['setup'][803]="Diferença entre mestre e escravo"; 
 $LANG['setup'][804]="Use o escravo para o mecanismo de busca"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Diferença máxima entre mestre e escravo (minutos)"; 
 $LANG['setup'][807]="A base escrava está descincronizada. A diferença é de:"; 
 $LANG['setup'][808]="Banco de dados escravo fora de sincronização"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Duplicados";
 $LANG['setup'][827]="Alerta de registros duplicados"; 
 $LANG['setup'][828]="Ignorado o valor para unicidade"; 
 $LANG['setup'][829]="Valores ignorados para unicidade"; 
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Tempo máximo para solucionar"; 

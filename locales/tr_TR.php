@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="MySQL replikasyonunu etkinleştir";
 $LANG['setup'][802]="Veritabani"; 
 $LANG['setup'][803]="Birincil ve ikincil arasındaki fark"; 
 $LANG['setup'][804]="Arama motoru için alt öğeyi kullanın"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Maximum master ve slave (dakika) arasında gecikme"; 
 $LANG['setup'][807]="Slave baz uyumsuz. Aradaki fark:"; 
 $LANG['setup'][808]="Slave veritabanı eşitleme!"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Çoğalt";
 $LANG['setup'][827]="Çift kayıtlarda uyarı gönder"; 
 $LANG['setup'][828]="Unicity için değeri göz ardı et"; 
 $LANG['setup'][829]="Unicity yoksayılır değerleri"; 
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Azami çözüm süresi"; 

@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Attiva la replica MySQL";
 $LANG['setup'][802]="Base"; 
 $LANG['setup'][803]="Scarto tra master e slave"; 
 $LANG['setup'][804]="Utilizza il secondario per il motore di ricerca"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Periodo massimo fuori sincronia (in minuti)"; 
 $LANG['setup'][807]="Il database slave non è sincronizzato. Lo scarto è di:"; 
 $LANG['setup'][808]="Database slave non sincronizzato!"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Duplicati";
 $LANG['setup'][827]="Avviso di record duplicato"; 
 $LANG['setup'][828]="Valore ignorato per l'unicità"; 
 $LANG['setup'][829]="Ignored values for the unicity"; // en_GB string to be translated
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Tempo massimo di risoluzione"; 

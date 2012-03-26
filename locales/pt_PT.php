@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Habilitar réplica do mysql";
 $LANG['setup'][802]="Base de Dados"; 
 $LANG['setup'][803]="Diferença entre principal e secundário"; 
 $LANG['setup'][804]="Utilize a base de dados secundária como motor de pesquisa"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Atraso máximo entre base dados principal e secundária (minutos)"; 
 $LANG['setup'][807]="A base de dados secundária está dessincronizada. A diferença é:"; 
 $LANG['setup'][808]="base de dados secundária dessincronizada!"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Duplicates";
 $LANG['setup'][827]="aviso em campos duplicados"; 
 $LANG['setup'][828]="Valor ignorado para a unicidade"; 
 $LANG['setup'][829]="Ignored values for the unicity"; // en_GB string to be translated
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Tempo máximo para resolução"; 

@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Replika engedélyezés";
 $LANG['setup'][802]="Adatbázis"; 
 $LANG['setup'][803]="Mester és szolga közötti különbség"; 
 $LANG['setup'][804]="Szolga adatbázis használata kereséshez"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Max késleltetés mester és szolga között (percben)"; 
 $LANG['setup'][807]="A szolga nincs szinkronban. Különbségek :"; 
 $LANG['setup'][808]="A szolga adatbázis nincs szinkronban!"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Duplikátumok";
 $LANG['setup'][827]="Figyelmeztetés duplikált rekordra"; 
 $LANG['setup'][828]="Figyelmen kívül hagyott érték"; 
 $LANG['setup'][829]="Egyediségnél figyelmen kívül hagyott értékek"; 
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Maximum megoldási idő"; 

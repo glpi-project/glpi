@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Ενεργοποίησε το αντίγραφο MySQL";
 $LANG['setup'][802]="Βάση Δεδομένων"; 
 $LANG['setup'][803]="Διαφορά μεταξύ πρωτεύοντος και ακολούθου"; 
 $LANG['setup'][804]="Χρήση του σκλάβου σαν μηχανή αναζήτησης"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Μέγιστη καθυστέρηση μεταξύ πρωτεύοντος και ακολούθου (λεπτά)"; 
 $LANG['setup'][807]="Η ακόλουθη βάση δεδομένων είναι αποσυγχρονισμένη. Η διαφορά είναι:"; 
 $LANG['setup'][808]="Η ακόλουθη βάση είναι εκτός συγχρονισμού"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Διπλότυπα";
 $LANG['setup'][827]="Ειδοποίηση διπλότυπης εγγραφής"; 
 $LANG['setup'][828]="Αγνόηση πεδίου για μοναδικότητα"; 
 $LANG['setup'][829]="Ignored values for the unicity"; // en_GB string to be translated
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Μέγιστος χρόνος επίλυσης"; 

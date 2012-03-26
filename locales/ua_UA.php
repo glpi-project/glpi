@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Включити реплікацію MySQL";
 $LANG['setup'][802]="База"; 
 $LANG['setup'][803]="Різниця між головним і підлеглим"; 
 $LANG['setup'][804]="Use the slave for the search engine"; // en_GB string to be translated
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Максимальна затримка між master та slave (хвилин)"; 
 $LANG['setup'][807]="Резервна БД  розсинхронізована. Різниця:"; 
 $LANG['setup'][808]="Підлегла БД не синхронізована!"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Дублікати";
 $LANG['setup'][827]="Повідомлення про дублювання записів"; 
 $LANG['setup'][828]="Ігнорувати значення для унікальності"; 
 $LANG['setup'][829]="Ignored values for the unicity"; // en_GB string to be translated
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; // en_GB string to be translated
 $LANG['sla'][2]="Максимальний час для вирішення"; 

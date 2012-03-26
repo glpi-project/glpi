@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Replica MySQL activeren";
 $LANG['setup'][802]="Database"; 
 $LANG['setup'][803]="Verschil tussen master en slave"; 
 $LANG['setup'][804]="Gebruik de slaaf-server voor de zoekmotor"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Maximale desynchonisatieverschil tussen master en slave (in minuten)"; 
 $LANG['setup'][807]="De slave-database is gedesynchroniseerd, het verschil is"; 
 $LANG['setup'][808]="'Slaaf' database niet in sync!"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Duplicaten";
 $LANG['setup'][827]="Alarm voor duplicaat record"; 
 $LANG['setup'][828]="Waarde genegeerd wegen uniciteit"; 
 $LANG['setup'][829]="Waar genegeerd door uniciteit"; 
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Maximum tijd voor het bereiken van een oplossing"; 

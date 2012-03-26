@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Aktivér MySQL replika";
 $LANG['setup'][802]="Database"; 
 $LANG['setup'][803]="Forskel mellem master og slave"; 
 $LANG['setup'][804]="Brug slaven til søgemaskinen"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Maks. forsinkelse mellem master og slave (minutter)"; 
 $LANG['setup'][807]="The slave base is desynchronized. The difference is of:"; // en_GB string to be translated
 $LANG['setup'][808]="Slave database out of sync!"; // en_GB string to be translated
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Dubletter";
 $LANG['setup'][827]="Advarsel ved duplikeret indgang"; 
 $LANG['setup'][828]="Ignoreret værdi for entydighed"; 
 $LANG['setup'][829]="Ignored values for the unicity"; // en_GB string to be translated
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Maksimum løsningstid"; 

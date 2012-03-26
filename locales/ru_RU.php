@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Включить MySQL репликацию";
 $LANG['setup'][802]="База"; 
 $LANG['setup'][803]="Время синхронизации"; 
 $LANG['setup'][804]="Использовать подчиненных при поиске"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Максимальная продолжительность десинхронизации (в минутах)"; 
 $LANG['setup'][807]="Резервная база данных не синхронизирована. Отличие в"; 
 $LANG['setup'][808]="Подчиненная ДБ не синхронизирована!"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Дубликаты";
 $LANG['setup'][827]="Оповестить о доблировании записи"; 
 $LANG['setup'][828]="Игнорировать уникальность значений"; 
 $LANG['setup'][829]="Ignored values for the unicity"; // en_GB string to be translated
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Максимальное время для решения"; 

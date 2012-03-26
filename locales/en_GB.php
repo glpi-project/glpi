@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Enable the MySQL replica";
 $LANG['setup'][802]="Database"; 
 $LANG['setup'][803]="Difference between master and slave"; 
 $LANG['setup'][804]="Use the slave for the search engine"; 
+$LANG['setup'][805]="Always"; 
 $LANG['setup'][806]="Max delay between master and slave (minutes)"; 
 $LANG['setup'][807]="The slave base is desynchronized. The difference is of:"; 
 $LANG['setup'][808]="Slave database out of sync!"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Duplicates";
 $LANG['setup'][827]="Alert on duplicate record"; 
 $LANG['setup'][828]="Ignored value for the unicity"; 
 $LANG['setup'][829]="Ignored values for the unicity"; 
+$LANG['setup'][830]="If synced (all changes)"; 
+$LANG['setup'][831]="If synced (current user changes)"; 
+$LANG['setup'][832]="If synced or read-only account"; 
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Maximum time to resolve"; 

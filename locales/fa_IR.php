@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="فعال کردن تکرار MySQL";
 $LANG['setup'][802]="پایگاه داده"; 
 $LANG['setup'][803]="تفاوت بین اصلی و پیرو"; 
 $LANG['setup'][804]="استفاده از پیرو برای موتور جستجو"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="تاخیر حداکثر بین اصلی و فرعی(دقیقه)"; 
 $LANG['setup'][807]="پایگاه پیرو غیرهمسان است. تفاوت آن:"; 
 $LANG['setup'][808]="پایگاه داده پیرو خارج از همسان سازی است!"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="تکراری ها";
 $LANG['setup'][827]="هشدار بر ثبت تکراری"; 
 $LANG['setup'][828]="مقدار نادیده گرفته برای یکتایی"; 
 $LANG['setup'][829]="Ignored values for the unicity"; // en_GB string to be translated
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="زمان حداکثر برای رفع کردن"; 

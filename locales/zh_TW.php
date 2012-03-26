@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="啟用複製";
 $LANG['setup'][802]="資料庫"; 
 $LANG['setup'][803]="Master 和 Slave之間的差異"; 
 $LANG['setup'][804]="使用從站的搜索引擎"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Master 和 Slave間允許最大延遲 (分)"; 
 $LANG['setup'][807]="Slave 不同步. 不同的地方:"; 
 $LANG['setup'][808]="Slave 資料庫未同步!"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="重複";
 $LANG['setup'][827]="對重複記錄警告"; 
 $LANG['setup'][828]="忽略值的唯一性"; 
 $LANG['setup'][829]="忽略唯一值"; 
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="服務等級"; 
 $LANG['sla'][2]="最大的解決時間"; 

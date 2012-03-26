@@ -2115,6 +2115,7 @@ $LANG['setup'][801]="Enable the MySQL replica"; // en_GB string to be translated
 $LANG['setup'][802]="Databas"; 
 $LANG['setup'][803]="Skillnad mellan master och slave"; 
 $LANG['setup'][804]="Använd slaven som sökmotor"; 
+$LANG['setup'][805]="Always"; // en_GB string to be translated
 $LANG['setup'][806]="Max delay between master and slave (minutes)"; // en_GB string to be translated
 $LANG['setup'][807]="Slavdatabasen är ej synkroniserad. Skillnaden består av:"; 
 $LANG['setup'][808]="Slavdatabasen är ej i synk!"; 
@@ -2136,6 +2137,9 @@ $LANG['setup'][826]="Duplikat";
 $LANG['setup'][827]="Larm vid duplicerade registreringar"; 
 $LANG['setup'][828]="Ignored value for the unicity"; // en_GB string to be translated
 $LANG['setup'][829]="Ignored values for the unicity"; // en_GB string to be translated
+$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
+$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
+$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="Maximal tid för lösning"; 
