@@ -223,14 +223,16 @@ class ITILCategory extends CommonTreeDropdown {
                return $ong;
          }
       }
-      return '';
+      return parent::getTabNameForItem($item, $withtemplate);
    }
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      self::showForTicketTemplate($item, $withtemplate);
-      return true;
+      if ($item->getType()=='TicketTemplate') {
+         self::showForTicketTemplate($item, $withtemplate);
+      }
+      return parent::displayTabContentForItem($item, $tabnum, $withtemplate);
    }
 
 
