@@ -904,10 +904,8 @@ class Auth {
       //Look for the field in $_SERVER AND $_REQUEST
       $ssovariable = Dropdown::getDropdownName('glpi_ssovariables', $CFG_GLPI["ssovariables_id"]);
       if ($CFG_GLPI["ssovariables_id"]
-          && (isset($_SERVER[$ssovariable])
-          && !empty($_SERVER[$ssovariable])
-             || (isset($_REQUEST[$ssovariable])
-             && !empty($_REQUEST[$ssovariable])))) {
+          && ((isset($_SERVER[$ssovariable]) && !empty($_SERVER[$ssovariable]))
+              || (isset($_REQUEST[$ssovariable]) && !empty($_REQUEST[$ssovariable])))) {
 
          if ($redirect) {
             Html::redirect("login.php".$redir_string);
