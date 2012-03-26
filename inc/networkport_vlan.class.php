@@ -53,11 +53,13 @@ class NetworkPort_Vlan extends CommonDBRelation {
    function getSearchOptions() {
 
       $tab = parent::getSearchOptions();
-
       return $tab;
    }
 
 
+   /**
+    * @param $ID
+   **/
    function unassignVlanbyID($ID) {
       global $DB;
 
@@ -86,6 +88,10 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
+   /**
+    * @param $portID
+    * @param $vlanID
+   **/
    function unassignVlan($portID, $vlanID) {
       global $DB;
 
@@ -107,6 +113,11 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
+   /**
+    * @param $port
+    * @param $vlan
+    * @param $tagged
+   **/
    function assignVlan($port, $vlan, $tagged) {
       global $DB;
 
@@ -122,7 +133,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
             if (!in_array($vlan,$vlans)) {
                $query = "INSERT INTO `glpi_networkports_vlans`
                                 (`networkports_id`,`vlans_id`,`tagged`)
-                        VALUES ('$contact_id','$vlan','$tagged')";
+                         VALUES ('$contact_id','$vlan','$tagged')";
                $DB->query($query);
             }
          }
@@ -149,7 +160,7 @@ class NetworkPort_Vlan extends CommonDBRelation {
          return;
       }
 
-      $base->addHeader($column_name, __('VLAN'), $super, $father);
+      $base->addHeader($column_name, Vlan::getTypeName(), $super, $father);
    }
 
 
@@ -216,6 +227,11 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
+   /**
+    * @param $ID
+    * @param $canedit
+    * @param $withtemplate
+   **/
    static function showForNetworkPort($ID, $canedit, $withtemplate) {
       global $DB, $CFG_GLPI;
 
@@ -265,29 +281,32 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
+   /**
+    * @param $ID
+   **/
    static function showForNetworkPortForm ($ID) {
       global $DB, $CFG_GLPI;
 
       $port = new NetworkPort();
 
-      if ($ID && $port->can($ID,'w')) {
+      if ($ID
+          && $port->can($ID,'w')) {
 
          echo "\n<div class='center'>";
-         echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php'>";
+         echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/networkport.form.php'>";
          echo "<input type='hidden' name='networkports_id' value='$ID'>\n";
 
          echo "<table class='tab_cadre'>";
-         echo "<tr><th colspan='2'>" . __('VLAN') . "</th></tr>\n";
+         echo "<tr><th colspan='2'>" . Vlan::getTypeName() . "</th></tr>\n";
 
          echo "<tr class='tab_bg_2'><td colspan='2'>";
          $used = self::showForNetworkPort($ID, true,0);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_2'><td>".__('Associate a VLAN');
-         Dropdown::show('Vlan',
-                        array('used' => $used));
+         Vlan::dropdown(array('used' => $used));
          echo "</td><td rowspan='2'>";
-         echo "<input type='submit' name='assign_vlan' value=\"".__s('Associate')."\"
+         echo "<input type='submit' name='assign_vlan' value=\""._sx('button','Associate')."\"
                 class='submit'>";
          echo "</td></tr>";
 
@@ -300,13 +319,16 @@ class NetworkPort_Vlan extends CommonDBRelation {
    }
 
 
+   /**
+    * @param $portID
+   **/
    static function getVlansForNetworkPort($portID) {
       global $DB;
 
       $vlans = array();
       $query = "SELECT `vlans_id`
-               FROM `glpi_networkports_vlans`
-               WHERE `networkports_id` = '$portID'";
+                FROM `glpi_networkports_vlans`
+                WHERE `networkports_id` = '$portID'";
       foreach ($DB->request($query) as $data) {
          $vlans[$data['vlans_id']] = $data['vlans_id'];
       }
@@ -321,12 +343,12 @@ class NetworkPort_Vlan extends CommonDBRelation {
          switch ($item->getType()) {
             case 'NetworkPort' :
                if ($_SESSION['glpishow_count_on_tabs']) {
-                  return self::createTabEntry(__('VLAN'),
+                  return self::createTabEntry(Vlan::getTypeName(),
                                               countElementsInTable($this->getTable(),
                                                                    "networkports_id
                                                                         = '".$item->getID()."'"));
                }
-               return __('VLAN');
+               return Vlan::getTypeName();
          }
       }
       return '';

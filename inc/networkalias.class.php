@@ -114,15 +114,7 @@ class NetworkAlias extends FQDNLabel {
    **/
    function showForm ($ID, $options=array()) {
 
-      if (!Session::haveRight("internet", "r")) {
-         return false;
-      }
-
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         $this->check(-1, 'w', $options);
-      }
+      $this->initForm($ID, $options);
 
       $recursiveItems = $this->recursivelyGetItems();
       if (count($recursiveItems) == 0) {
@@ -140,7 +132,7 @@ class NetworkAlias extends FQDNLabel {
       $this->displayRecursiveItems($recursiveItems, 'Type');
       echo "&nbsp;:</td>\n<td>";
 
-      if (!($ID>0)) {
+      if (!($ID > 0)) {
          echo "<input type='hidden' name='networknames_id' value='".
                $this->fields["networknames_id"]."'>\n";
       }
@@ -150,7 +142,7 @@ class NetworkAlias extends FQDNLabel {
       echo "</td></tr>\n";
 
       echo "<tr>";
-      echo "<td>".FQDN::getTypeName()."&nbsp;:</td><td>";
+      echo "<td>".FQDN::getTypeName()."</td><td>";
       Dropdown::show(getItemTypeForTable(getTableNameForForeignKeyField("fqdns_id")),
                      array('value'        => $this->fields["fqdns_id"],
                            'name'         => 'fqdns_id',
@@ -353,7 +345,6 @@ class NetworkAlias extends FQDNLabel {
     *
     * @param $item                     the FQDN owning the aliases
     * @param $withtemplate  integer    withtemplate param
-    *
    **/
    static function showForFQDN(CommonGLPI $item, $withtemplate) {
       global $DB;
@@ -445,7 +436,8 @@ class NetworkAlias extends FQDNLabel {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if ($item->getID() && $item->can($item->getField('id'),'r')) {
+      if ($item->getID()
+          && $item->can($item->getField('id'),'r')) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             switch ($item->getType()) {
                case 'NetworkName' :
@@ -467,11 +459,11 @@ class NetworkAlias extends FQDNLabel {
 
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                     = parent::getSearchOptions();
 
-      $tab[12]['table']         = 'glpi_fqdns';
-      $tab[12]['field']         = 'fqdn';
-      $tab[12]['name']          = FQDN::getTypeName(1);
+      $tab[12]['table']        = 'glpi_fqdns';
+      $tab[12]['field']        = 'fqdn';
+      $tab[12]['name']         = FQDN::getTypeName(1);
 
       $tab[20]['table']        = 'glpi_networknames';
       $tab[20]['field']        = 'name';

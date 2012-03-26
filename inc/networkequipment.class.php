@@ -85,7 +85,7 @@ class NetworkEquipment extends CommonDBTM {
 
    function prepareInputForAdd($input) {
 
-      if (isset($input["id"])&&$input["id"]>0) {
+      if (isset($input["id"]) && ($input["id"] > 0)) {
          $input["_oldID"] = $input["id"];
       }
       unset($input['id']);
@@ -114,7 +114,7 @@ class NetworkEquipment extends CommonDBTM {
                          AND `itemtype` = '".$this->getType()."'";
          $result = $DB->query($query);
 
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             $contractitem = new Contract_Item();
             while ($data=$DB->fetch_assoc($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
@@ -130,7 +130,7 @@ class NetworkEquipment extends CommonDBTM {
                          AND `itemtype` = '".$this->getType()."'";
          $result = $DB->query($query);
 
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             $docitem = new Document_Item();
             while ($data=$DB->fetch_assoc($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
@@ -162,7 +162,8 @@ class NetworkEquipment extends CommonDBTM {
       global $DB;
 
       $ID = $this->fields['id'];
-      if ($ID<0 || !$this->fields['is_recursive']) {
+      if (($ID < 0)
+          || !$this->fields['is_recursive']) {
          return true;
       }
       if (!parent::canUnrecurs()) {
@@ -200,7 +201,7 @@ class NetworkEquipment extends CommonDBTM {
                    // For each itemtype which are entity dependant
                    if ($item->isEntityAssign()) {
                       if (countElementsInTable($itemtable, "id IN (".$data["ids"].")
-                                               AND entities_id NOT IN $entities")>0) {
+                                               AND entities_id NOT IN $entities") > 0) {
                          return false;
                       }
                    }
@@ -235,25 +236,24 @@ class NetworkEquipment extends CommonDBTM {
            "</td>";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name",
-                             (isset($options['withtemplate']) && $options['withtemplate']==2),
+                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, "name", array('value' => $objectName));
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      Dropdown::show('State', array('value' => $this->fields["states_id"]));
+      State::dropdown(array('value' => $this->fields["states_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Location')."</td>";
       echo "<td>";
-      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
-                                       'entity' => $this->fields["entities_id"]));
+      Location::dropdown(array('value'  => $this->fields["locations_id"],
+                              'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
-      Dropdown::show('NetworkEquipmentType',
-                     array('value' => $this->fields["networkequipmenttypes_id"]));
+      NetworkEquipmentType::dropdown(array('value' => $this->fields["networkequipmenttypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -266,21 +266,20 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Manufacturer')."</td>";
       echo "<td>";
-      Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
+      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Dropdown::show('Group', array('name'      => 'groups_id_tech',
+      Group::dropdown(array('name'      => 'groups_id_tech',
                                     'value'     => $this->fields['groups_id_tech'],
                                     'entity'    => $this->fields['entities_id'],
                                     'condition' => '`is_assign`'));
       echo "</td>";
       echo "<td>".__('Model')."</td>";
       echo "<td>";
-      Dropdown::show('NetworkEquipmentModel',
-                     array('value' => $this->fields["networkequipmentmodels_id"]));
+      NetworkEquipmentModel::dropdown(array('value' => $this->fields["networkequipmentmodels_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -303,7 +302,7 @@ class NetworkEquipment extends CommonDBTM {
            "</td>";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial",
-                             (isset($options['withtemplate']) && $options['withtemplate']==2),
+                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, "otherserial", array('value' => $objectName));
       echo "</td></tr>";
@@ -317,15 +316,15 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Network')."</td>";
       echo "<td>";
-      Dropdown::show('Network', array('value' => $this->fields["networks_id"]));
+      Network::dropdown(array('value' => $this->fields["networks_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
-      Dropdown::show('Group', array('value'     => $this->fields["groups_id"],
-                                    'entity'    => $this->fields["entities_id"],
-                                    'condition' => '`is_itemgroup`'));
+      Group::dropdown(array('value'     => $this->fields["groups_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => '`is_itemgroup`'));
       echo "</td>";
       echo "<td rowspan='6'>".__('Comments')."</td>";
       echo "<td rowspan='6'>
@@ -335,7 +334,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Domain')."</td>";
       echo "<td>";
-      Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
+      Domain::dropdown(array('value' => $this->fields["domains_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -347,8 +346,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Firmware', 'Firmwares', 1)."</td>";
       echo "<td>";
-      Dropdown::show('NetworkEquipmentFirmware',
-                     array('value' => $this->fields["networkequipmentfirmwares_id"]));
+      NetworkEquipmentFirmware::dropdown(array('value' => $this->fields["networkequipmentfirmwares_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -359,7 +357,7 @@ class NetworkEquipment extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      if ((!isset($options['withtemplate']) || $options['withtemplate']==0)
+      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
           && !empty($this->fields['template_name'])) {
          echo "<span class='small_space'>";
          printf(__('Created from the template %s'), $this->fields['template_name']);
@@ -386,7 +384,7 @@ class NetworkEquipment extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                       = array();
       $tab['common']             = __('Characteristics');
 
       $tab[1]['table']           = $this->getTable();
@@ -471,7 +469,7 @@ class NetworkEquipment extends CommonDBTM {
 
       $tab[13]['table']          = $this->getTable();
       $tab[13]['field']          = 'mac';
-      $tab[13]['name']           = __('MAC')." (".__('Network device').")";
+      $tab[13]['name']           = sprintf(__('%1$s (%2$s)'), __('MAC'), __('Network device'));
       $tab[13]['datatype']       = 'mac';
 
       $tab[32]['table']          = 'glpi_networks';
@@ -521,8 +519,11 @@ class NetworkEquipment extends CommonDBTM {
                                                    => array('jointype'          => 'itemtype_item',
                                                             'specific_itemtype' => 'NetworkEquipment',
                                                             'beforejoin'
-                                                             => array('table'      => 'glpi_networkequipments',
-                                                                      'joinparams' => array('jointype' => 'itemtype_item')))));
+                                                             => array('table'
+                                                                        => 'glpi_networkequipments',
+                                                                      'joinparams'
+                                                                        => array('jointype'
+                                                                                  => 'itemtype_item')))));
 
 
       return $tab;

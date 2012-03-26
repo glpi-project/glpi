@@ -67,7 +67,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
                       OR `networkports_id_2` = '$ID'";
 
       if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             $this->fields = $DB->fetch_assoc($result);
             return true;
          }
@@ -95,18 +95,19 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       // Check netpoint for copy
       $source      = "";
       $destination = "";
-      if (isset($ps->fields['netpoints_id']) && $ps->fields['netpoints_id'] != 0) {
+      if (isset($ps->fields['netpoints_id']) && ($ps->fields['netpoints_id'] != 0)) {
          $source = $ps->fields['netpoints_id'];
       }
 
-      if (isset($pd->fields['netpoints_id']) && $pd->fields['netpoints_id'] != 0) {
+      if (isset($pd->fields['netpoints_id']) && ($pd->fields['netpoints_id'] != 0)) {
          $destination = $pd->fields['netpoints_id'];
       }
 
       // Update Item
       $updates[0] = 'netpoints_id';
 
-      if (empty($source) && !empty($destination)) {
+      if (empty($source)
+          && !empty($destination)) {
          $ps->fields['netpoints_id'] = $destination;
          $ps->updateInDB($updates);
          Session::addMessageAfterRedirect(__('Automatic update of network outlets'));
@@ -124,19 +125,20 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       $npnet = -1;
       $npdev = -1;
 
-      if ($ps->fields["itemtype"] != 'NetworkEquipment'
-          && $pd->fields["itemtype"] == 'NetworkEquipment') {
+      if (($ps->fields["itemtype"] != 'NetworkEquipment')
+          && ($pd->fields["itemtype"] == 'NetworkEquipment')) {
          $npnet = $dport;
          $npdev = $sport;
       }
 
-      if ($pd->fields["itemtype"] != 'NetworkEquipment'
-          && $ps->fields["itemtype"] == 'NetworkEquipment') {
+      if (($pd->fields["itemtype"] != 'NetworkEquipment')
+          && ($ps->fields["itemtype"] == 'NetworkEquipment')) {
          $npnet = $sport;
          $npdev = $dport;
       }
 
-      if ($npnet > 0 && $npdev > 0) {
+      if (($npnet > 0)
+          && ($npdev > 0)) {
          // Get networking VLAN
          // Unset MAC and IP from networking device
          $query = "SELECT *
@@ -230,14 +232,14 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
          $npnet = NULL;
          $npdev = NULL;
 
-         if ($np1->fields["itemtype"] != 'NetworkEquipment'
-             && $np2->fields["itemtype"] == 'NetworkEquipment') {
+         if (($np1->fields["itemtype"] != 'NetworkEquipment')
+             && ($np2->fields["itemtype"] == 'NetworkEquipment')) {
             $npnet = $np2;
             $npdev = $np1;
          }
 
-         if ($np2->fields["itemtype"] != 'NetworkEquipment'
-             && $np1->fields["itemtype"] == 'NetworkEquipment') {
+         if (($np2->fields["itemtype"] != 'NetworkEquipment')
+             && ($np1->fields["itemtype"] == 'NetworkEquipment')) {
             $npnet = $np2;
             $npdev = $np1;
          }
@@ -332,8 +334,8 @@ class NetworkPort_NetworkPort extends CommonDBRelation {
       if ($this->getFromDBForNetworkPort($ID)) {
          if ($this->fields['networkports_id_1'] == $ID) {
             return $this->fields['networkports_id_2'];
-
-         } else if ($this->fields['networkports_id_2'] == $ID) {
+         }
+         if ($this->fields['networkports_id_2'] == $ID) {
             return $this->fields['networkports_id_1'];
          }
          return false;
