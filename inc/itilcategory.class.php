@@ -219,7 +219,7 @@ class ITILCategory extends CommonTreeDropdown {
       if (Session::haveRight("entity_dropdown","r")) {
          switch ($item->getType()) {
             case 'TicketTemplate' :
-               $ong[1] = $this->getTypeName();
+               $ong[1] = $this->getTypeName(2);
                return $ong;
          }
       }
