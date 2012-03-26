@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -125,12 +124,13 @@ class Log extends CommonDBTM {
                continue;
             }
             // Linkfield or standard field not massive action enable
-            if ($val2['linkfield'] == $key
-                || ($key == $val2['field'] && $val2['table'] == $item->getTable())) {
+            if (($val2['linkfield'] == $key)
+                || (($key == $val2['field'])
+                    && ($val2['table'] == $item->getTable()))) {
                $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
                // 1st case : Ticket specific dropdown case (without table)
-               if ($real_type=='Ticket'
+               if (($real_type == 'Ticket')
                    && in_array($key, array('global_validation', 'impact', 'items_id', 'itemtype',
                                            'priority', 'status', 'type', 'urgency'))) {
                   $changes = array($id_search_option,
@@ -141,24 +141,25 @@ class Log extends CommonDBTM {
                   if (in_array($real_type, $oktype)) {
                      // 2nd case : use getValueToDisplay();
                      $changes = array($key2,
-                                addslashes($item->getValueToDisplay($searchopt[$key2],
-                                                                    $oldvalues)),
-                                addslashes($item->getValueToDisplay($searchopt[$key2],
-                                                                    $values)));
+                                      addslashes($item->getValueToDisplay($searchopt[$key2],
+                                                                          $oldvalues)),
+                                     addslashes($item->getValueToDisplay($searchopt[$key2],
+                                                                         $values)));
                   } else {
                      // 3rd case : text field -> keep datas
                      $changes = array($id_search_option, addslashes($oldval), $values[$key]);
                   }
 
-               } else {
+//               } else {
 //                      if ($val2['table'] == 'glpi_users_validation') {
 //                         $val2['table'] = 'glpi_users';
-//                      }
+//               }
 
                   // other cases ; link field -> get data from dropdown
                   if ($val2["table"] != 'glpi_auth_tables') {
                      $changes = array($id_search_option,
-                                      addslashes(Dropdown::getDropdownName($val2["table"], $oldval)),
+                                      addslashes(Dropdown::getDropdownName($val2["table"],
+                                                                           $oldval)),
                                       addslashes(Dropdown::getDropdownName($val2["table"],
                                                                            $values[$key])));
                   }
@@ -199,7 +200,7 @@ class Log extends CommonDBTM {
       $old_value        = $changes[1];
       $new_value        = $changes[2];
 
-      if ($uid=Session::getLoginUserID(false)) {
+      if ($uid = Session::getLoginUserID(false)) {
          if (is_numeric($uid)) {
             $username = getUserName($uid,$link=0);
          } else { // For cron management
@@ -214,10 +215,10 @@ class Log extends CommonDBTM {
       $new_value = $DB->escape(Toolbox::substr(stripslashes($new_value), 0, 180));
 
       // Security to be sure that values do not pass over the max length
-      if (Toolbox::strlen($old_value)>255) {
+      if (Toolbox::strlen($old_value) > 255) {
          $old_value = Toolbox::substr($old_value,0,250);
       }
-      if (Toolbox::strlen($new_value)>255) {
+      if (Toolbox::strlen($new_value) > 255) {
          $new_value = Toolbox::substr($new_value,0,250);
       }
 
@@ -279,14 +280,14 @@ class Log extends CommonDBTM {
       echo "<tr><th>".__('ID')."</th><th>".__('Date')."</th>";
       echo "<th>".__('User')."</th><th>".__('Field')."</th>";
       //TRANS: a noun, modification, change
-      echo "<th>".__('Update')."</th></tr>";
+      echo "<th>"._x('name', 'Update')."</th></tr>";
 
-      foreach (self::getHistoryData($item,$start,$_SESSION['glpilist_limit']) as $data) {
+      foreach (self::getHistoryData($item,$start, $_SESSION['glpilist_limit']) as $data) {
          if ($data['display_history']) {
             // show line
             echo "<tr class='tab_bg_2'>";
-            echo "<td>".$data['id']."</td><td>".$data['date_mod'].
-                 "</td><td>".$data['user_name']."</td><td>".$data['field']."</td>";
+            echo "<td>".$data['id']."</td><td>".$data['date_mod']."</td>".
+                 "<td>".$data['user_name']."</td><td>".$data['field']."</td>";
             echo "<td width='60%'>".$data['change']."</td></tr>";
          }
       }
@@ -358,7 +359,8 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the component name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a component'), $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add the component'),
+                                           $data["new_value"]);
                   break;
 
                case self::HISTORY_UPDATE_DEVICE :
@@ -370,7 +372,7 @@ class Log extends CommonDBTM {
                      $tmp['change'] = $specif_fields['specificity']." : ";
                   }
                   //TRANS: %1$s is the old_value, %2$s is the new_value
-                  $tmp['change'] .= sprintf(__('Change the component: %1$s by: %2$s'),
+                  $tmp['change'] .= sprintf(__('Change the component %1$s by %2$s'),
                                             $data[ "old_value"], $data[ "new_value"]);
                   break;
 
@@ -380,19 +382,22 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the component name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Deletion of a component'), $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Deletion of the component'),
+                                           $data["old_value"]);
                   break;
 
                case self::HISTORY_INSTALL_SOFTWARE :
                   $tmp['field']  = __('Software');
                   //TRANS: %s is the software name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Install a software'), $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Install the software'),
+                                           $data["new_value"]);
                   break;
 
                case self::HISTORY_UNINSTALL_SOFTWARE :
                   $tmp['field']  = __('Software');
                   //TRANS: %s is the software name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Uninstall a software'), $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Uninstall the software'),
+                                           $data["old_value"]);
                   break;
 
                case self::HISTORY_DISCONNECT_DEVICE :
@@ -401,7 +406,8 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the item name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Disconnect the item'), $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Disconnect the item'),
+                                           $data["old_value"]);
                   break;
 
                case self::HISTORY_CONNECT_DEVICE :
@@ -410,14 +416,15 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the item name
-                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Connect the item'), $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Connect the item'),
+                                           $data["new_value"]);
                   break;
 
                case self::HISTORY_OCS_IMPORT :
                   if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field']  = "";
-                     //TRANS: %s is value imported
-                     $tmp['change'] = sprintf(__('Imported from OCSNG: %s'), $data["new_value"]);
+                     $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Imported from OCSNG'),
+                                              $data["new_value"]);
                   } else {
                      $tmp['display_history'] = false;
                   }
@@ -426,8 +433,8 @@ class Log extends CommonDBTM {
                case self::HISTORY_OCS_DELETE :
                   if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field']  ="";
-                     //TRANS: %s is the value deleted
-                     $tmp['change'] = sprintf(__('Deleted in OCSNG: %s'), $data["old_value"]);
+                     $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Deleted in OCSNG'),
+                                              $data["old_value"]);
                   } else {
                      $tmp['display_history'] = false;
                   }
@@ -440,7 +447,7 @@ class Log extends CommonDBTM {
                         $tmp['field'] = $item->getTypeName(1);
                      }
                      //TRANS: %s is the value linked
-                     $tmp['change'] = sprintf(__('Linked with an OCSNG computer: %s'),
+                     $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Linked with an OCSNG computer'),
                                               $data["new_value"]);
 
                   } else {
@@ -469,7 +476,8 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the item name
-                  $tmp['change'] = sprintf(__('Add a link with an item: %s'), $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'),
+                                           $data["old_value"]);
                   break;
 
                case self::HISTORY_DEL_RELATION :
@@ -478,7 +486,7 @@ class Log extends CommonDBTM {
                      $tmp['field'] = $item->getTypeName(1);
                   }
                   //TRANS: %s is the item name
-                  $tmp['change'] = sprintf(__('Deletion of a link with an item: %s'),
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Deletion of a link with an item'),
                                            $data["old_value"]);
                   break;
 
@@ -487,9 +495,9 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName(1);
                   }
-                  //TRANS: %1$s is the item name, %2$s is the value
-                  $tmp['change'] = sprintf(__('Add an item: %1$s (%2$s)'),
-                                           $tmp['field'], $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add an item'),
+                                           sprintf(__('%1$s (%2$s)'), $tmp['field'],
+                                                   $data["new_value"]));
 
                   break;
 
@@ -498,9 +506,9 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName(1);
                   }
-                  //TRANS: %1$s is the item name, %2$s is the value
-                  $tmp['change'] = sprintf(__('Update an item: %1$s (%2$s)'),
-                                           $tmp['field'], $data["new_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Update an item'),
+                                           sprintf(__('%1$s (%2$s)'), $tmp['field'],
+                                                   $data["new_value"]));
                   break;
 
                case self::HISTORY_DELETE_SUBITEM :
@@ -508,9 +516,9 @@ class Log extends CommonDBTM {
                   if ($item = getItemForItemtype($data["itemtype_link"])) {
                      $tmp['field'] = $item->getTypeName(1);
                   }
-                  //TRANS: %1$s is the item name, %2$s is the value
-                  $tmp['change'] = sprintf(__('Deletion of an item: %1$s (%2$s)'),
-                                           $tmp['field'], $data["old_value"]);
+                  $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Deletion of an item'),
+                                           sprintf(__('%1$s (%2$s)'), $tmp['field'],
+                                                   $data["old_value"]));
                   break;
             }
 
@@ -518,7 +526,7 @@ class Log extends CommonDBTM {
             $fieldname = "";
             // It's not an internal device
             foreach ($SEARCHOPTION as $key2 => $val2) {
-               if ($key2==$data["id_search_option"]) {
+               if ($key2 == $data["id_search_option"]) {
                   $tmp['field'] =  $val2["name"];
                   $fieldname    = $val2["field"];
 
@@ -574,7 +582,7 @@ class Log extends CommonDBTM {
                   break;
             }
             if (empty($tmp['change'])) {
-               $tmp['change'] = sprintf(__('Change: %1$s by %2$s'),
+               $tmp['change'] = sprintf(__('Change %1$s by %2$s'),
                                         $data["old_value"], $data["new_value"]);
             }
          }
@@ -594,5 +602,6 @@ class Log extends CommonDBTM {
    function post_addItem() {
       $_SESSION['glpi_maxhistory'] = $this->fields['id'];
    }
+
 }
 ?>
