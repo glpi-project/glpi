@@ -424,6 +424,7 @@ $LANG['consumables'][23]="状態";
 $LANG['consumables'][26]="使用日"; 
 $LANG['consumables'][31]="Give to"; // en_GB string to be translated
 $LANG['consumables'][32]="ユーザに消耗品を割り当て"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="使用済み消耗品"; 
 $LANG['consumables'][36]="在庫の場所"; 
 $LANG['consumables'][37]="在庫に戻す"; 

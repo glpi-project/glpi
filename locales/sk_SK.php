@@ -424,6 +424,7 @@ $LANG['consumables'][23]="Stav";
 $LANG['consumables'][26]="Použiť dátum"; 
 $LANG['consumables'][31]="Give to"; // en_GB string to be translated
 $LANG['consumables'][32]="Dať"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="Použitý spotrebný tovar"; 
 $LANG['consumables'][36]="Umiestnenie inventára"; 
 $LANG['consumables'][37]="Späť na inventár"; 

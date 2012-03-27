@@ -424,6 +424,7 @@ $LANG['consumables'][23]="Stare";
 $LANG['consumables'][26]="Data folosirii"; 
 $LANG['consumables'][31]="Give to"; // en_GB string to be translated
 $LANG['consumables'][32]="Preda"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="Used consumables"; // en_GB string to be translated
 $LANG['consumables'][36]="Locatie stoc"; 
 $LANG['consumables'][37]="Inapoi la stocuri"; 

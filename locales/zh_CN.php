@@ -424,6 +424,7 @@ $LANG['consumables'][23]="状态";
 $LANG['consumables'][26]="使用日期"; 
 $LANG['consumables'][31]="Give to"; // en_GB string to be translated
 $LANG['consumables'][32]="分配"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="已使用的耗材"; 
 $LANG['consumables'][36]="库存位置"; 
 $LANG['consumables'][37]="返回库存"; 

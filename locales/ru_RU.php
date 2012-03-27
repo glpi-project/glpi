@@ -424,6 +424,7 @@ $LANG['consumables'][23]="Состояние";
 $LANG['consumables'][26]="Дата использования"; 
 $LANG['consumables'][31]="Выдать"; 
 $LANG['consumables'][32]="Выдать"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="Использованные расходные материалы"; 
 $LANG['consumables'][36]="Местонахождение"; 
 $LANG['consumables'][37]="Вернуть на склад"; 

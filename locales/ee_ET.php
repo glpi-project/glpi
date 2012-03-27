@@ -424,6 +424,7 @@ $LANG['consumables'][23]="Olek";
 $LANG['consumables'][26]="Kasutamise kuupäev"; 
 $LANG['consumables'][31]="Give to"; // en_GB string to be translated
 $LANG['consumables'][32]="Anna"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="Kasutuses kulumaterjal"; 
 $LANG['consumables'][36]="Ladu"; 
 $LANG['consumables'][37]="Tagasi lattu"; 

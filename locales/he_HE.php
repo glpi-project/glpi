@@ -424,6 +424,7 @@ $LANG['consumables'][23]="מצב";
 $LANG['consumables'][26]="תאריך הנפקה"; 
 $LANG['consumables'][31]="Give to"; // en_GB string to be translated
 $LANG['consumables'][32]="נפק"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="ציוד מתכלה בשימוש"; 
 $LANG['consumables'][36]="מיקום מלאי"; 
 $LANG['consumables'][37]="חזרה למלאי"; 

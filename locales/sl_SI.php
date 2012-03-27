@@ -424,6 +424,7 @@ $LANG['consumables'][23]="Stanje";
 $LANG['consumables'][26]="Uporabjeno (izdano)"; 
 $LANG['consumables'][31]="Give to"; // en_GB string to be translated
 $LANG['consumables'][32]="Daj-dodeli"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="Used consumables"; // en_GB string to be translated
 $LANG['consumables'][36]="Lokacija zaloge"; 
 $LANG['consumables'][37]="Vrni na zalogo"; 

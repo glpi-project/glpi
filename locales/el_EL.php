@@ -424,6 +424,7 @@ $LANG['consumables'][23]="Κατάσταση";
 $LANG['consumables'][26]="Ημερομηνία χρήσης"; 
 $LANG['consumables'][31]="Give to"; // en_GB string to be translated
 $LANG['consumables'][32]="Δώσε"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="Χρησιμοποιημένα αναλώσιμα"; 
 $LANG['consumables'][36]="Τοποθεσία στην αποθήκη"; 
 $LANG['consumables'][37]="Επιστροφή στην αποθήκη"; 

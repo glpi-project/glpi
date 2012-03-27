@@ -424,6 +424,7 @@ $LANG['consumables'][23]="Estado";
 $LANG['consumables'][26]="Data de uso"; 
 $LANG['consumables'][31]="Entregar para"; 
 $LANG['consumables'][32]="Dar"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="Insumos utilizados"; 
 $LANG['consumables'][36]="Localização no estoque"; 
 $LANG['consumables'][37]="Voltar ao estoque"; 

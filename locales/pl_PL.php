@@ -424,6 +424,7 @@ $LANG['consumables'][23]="Stan";
 $LANG['consumables'][26]="Użyj daty"; 
 $LANG['consumables'][31]="Przekaż do"; 
 $LANG['consumables'][32]="Daj"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="Użyte materiały eksploatacyjne"; 
 $LANG['consumables'][36]="Miejsce składowania"; 
 $LANG['consumables'][37]="Powrót do magazynu"; 

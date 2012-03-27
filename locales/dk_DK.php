@@ -424,6 +424,7 @@ $LANG['consumables'][23]="Tilstand";
 $LANG['consumables'][26]="Udløbsdato"; 
 $LANG['consumables'][31]="Giv til"; 
 $LANG['consumables'][32]="Giv"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="Brugte forbrugsvarer"; 
 $LANG['consumables'][36]="Lager beliggenhed"; 
 $LANG['consumables'][37]="Tilbage til lager"; 

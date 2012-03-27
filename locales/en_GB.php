@@ -424,6 +424,7 @@ $LANG['consumables'][23]="State";
 $LANG['consumables'][26]="Use date"; 
 $LANG['consumables'][31]="Give to"; 
 $LANG['consumables'][32]="Give"; 
+$LANG['consumables'][33]="Given to"; 
 $LANG['consumables'][35]="Used consumables"; 
 $LANG['consumables'][36]="Stock location"; 
 $LANG['consumables'][37]="Back to stock"; 

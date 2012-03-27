@@ -424,6 +424,7 @@ $LANG['consumables'][23]="Staat";
 $LANG['consumables'][26]="Gebruiksdatum"; 
 $LANG['consumables'][31]="Geef aan"; 
 $LANG['consumables'][32]="Geef"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="Gebruikte verbruiksartikelen"; 
 $LANG['consumables'][36]="Magazijnlocatie"; 
 $LANG['consumables'][37]="Terug naar magazijn"; 

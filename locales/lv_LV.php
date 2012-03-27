@@ -424,6 +424,7 @@ $LANG['consumables'][23]="Stāvoklis";
 $LANG['consumables'][26]="Izlietots"; 
 $LANG['consumables'][31]="Give to"; // en_GB string to be translated
 $LANG['consumables'][32]="Izsniegt"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="Izlietojamie materiāli lietošanā"; 
 $LANG['consumables'][36]="Atrašanās vieta noliktavā"; 
 $LANG['consumables'][37]="Atgriezt noliktavā"; 

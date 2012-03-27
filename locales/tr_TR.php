@@ -424,6 +424,7 @@ $LANG['consumables'][23]="Durum";
 $LANG['consumables'][26]="Kullanim tarihi"; 
 $LANG['consumables'][31]="Ver"; 
 $LANG['consumables'][32]="Ver"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="Kullanılmış Sarf Malzemeleri"; 
 $LANG['consumables'][36]="Stok lokasyonu"; 
 $LANG['consumables'][37]="Stoklara Don"; 

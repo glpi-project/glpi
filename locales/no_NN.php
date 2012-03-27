@@ -424,6 +424,7 @@ $LANG['consumables'][23]="Status";
 $LANG['consumables'][26]="Bruks dato"; 
 $LANG['consumables'][31]="Give to"; // en_GB string to be translated
 $LANG['consumables'][32]="Gi"; 
+$LANG['consumables'][33]="Given to"; // en_GB string to be translated
 $LANG['consumables'][35]="Used consumables"; // en_GB string to be translated
 $LANG['consumables'][36]="Lager plassering"; 
 $LANG['consumables'][37]="Tilbake til start"; 
