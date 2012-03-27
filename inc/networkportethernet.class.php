@@ -119,7 +119,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                     array(array('function'   => array(__CLASS__, 'showConnection'),
-                                'parameters' => array($item, $netport,
+                                'parameters' => array($item, clone $netport,
                                                       (isset($options['withtemplate'])
                                                        && $options['withtemplate'])))));
    }
