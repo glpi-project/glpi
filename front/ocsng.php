@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkSeveralRightsOr(array('ocsng'        => 'r',
                                     'clean_ocsng'  => 'r'));
 
-Html::header(__('OCS Inventory NG'), $_SERVER['PHP_SELF'], "utils","ocsng");
+Html::header('OCS Inventory NG', $_SERVER['PHP_SELF'], "utils","ocsng");
 if (isset($_SESSION["ocs_import"])) {
    unset ($_SESSION["ocs_import"]);
 }
@@ -65,7 +65,7 @@ if (isset($_GET["ocsservers_id"]) && $_GET["ocsservers_id"]) {
    }
    echo "<div class='center'>";
    echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/logoOcs.png' alt='" .
-         __s('OCS Inventory NG') . "' title=\"" . __s('OCS Inventory NG') . "\" ></td>";
+         'OCS Inventory NG' . "' title=\"" . 'OCS Inventory NG' . "\" ></td>";
    echo "</div>";
 
    echo "<div class='center'><table class='tab_cadre'>";

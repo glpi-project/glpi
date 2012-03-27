@@ -80,7 +80,7 @@ class Ocslink extends CommonDBTM {
 
             echo "<div class='center'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>" . __('OCS Inventory NG') . "</th>";
+            echo "<tr><th>OCS Inventory NG</th>";
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center'>".sprintf(__('%1$s: %2$s'),__('OCSNG TAG'), $data['tag']).
                  "</td></tr>";
@@ -141,7 +141,7 @@ class Ocslink extends CommonDBTM {
             echo "<form method='post' action=\"$target\">";
             echo "<input type='hidden' name='id' value='$ID'>";
             echo "<table class='tab_cadre_fixe'>";
-            echo "<tr><th>".__('OCS Inventory NG')."</th></tr>";
+            echo "<tr><th>OCS Inventory NG</th></tr>";
 
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo "<input type='hidden' name='resynch_id' value='" . $data["id"] . "'>";
