@@ -1590,7 +1590,7 @@ class User extends CommonDBTM {
             }
             if (!empty($this->fields["user_dn"])) {
                //TRANS: %s is the user dn
-               echo '<br>'.sprintf(__('User DN %s'), $this->fields["user_dn"]);
+               echo '<br>'.sprintf(__('%1$s: %2$s'), __('User DN'), $this->fields["user_dn"]);
             }
 
             echo "</td>";

@@ -3855,7 +3855,8 @@ class Html {
 
       if (count($tab)) {
          echo "<table class='tab_cadre'>";
-         echo "<tr><th>".__('KEY')."</th><th>=></th><th>".__('VALUE')."</th></tr>";
+         // For debug / no gettext
+         echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
 
          foreach ($tab as $key => $val) {
             echo "<tr class='tab_bg_1'><td class='top right'>";
