@@ -580,12 +580,12 @@ class TicketValidation  extends CommonDBChild {
 
       if ($number) {
          $colonnes = array(__('State'),
-                           __('Request date'),
+                           sprintf(__('%1$s: %2$s'), __('Request'), __('Date')),
                            __('Approval requester'),
-                           __('Request comments'),
+                           sprintf(__('%1$s: %2$s'), __('Request'), __('Comments')),
                            __('Approval date'),
                            __('Approver'),
-                           __('Request comments'));
+                           sprintf(__('%1$s: %2$s'), __('Request'), __('Comments')));
          $nb_colonnes = count($colonnes);
 
          echo "<table class='tab_cadre_fixehov'>";
@@ -775,7 +775,7 @@ class TicketValidation  extends CommonDBChild {
 
       $tab[4]['table']    = $this->getTable();
       $tab[4]['field']    = 'submission_date';
-      $tab[4]['name']     = __('Request date');
+      $tab[4]['name']     = sprintf(__('%1$s: %2$s'), __('Request'), __('Date'));
       $tab[4]['datatype'] = 'datetime';
 
       $tab[5]['table']    = $this->getTable();

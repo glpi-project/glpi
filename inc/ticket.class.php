@@ -1321,10 +1321,11 @@ class Ticket extends CommonITILObject {
       if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
          Session::addMessageAfterRedirect(__('Your ticket has been registered, its treatment is in progress.').
                                           //TRANS: %s is the id or the link to the ticket
-                                          " (".sprintf(__('Ticket %s'),
-                                          "<a href='".$CFG_GLPI["root_doc"].
-                                            "/front/ticket.form.php?id=".$this->fields['id']."'>".
-                                          $this->fields['id']."</a>)"));
+                                          " (".sprintf(__('%1$s: %2$s'), __('Ticket'),
+                                                       "<a href='".$CFG_GLPI["root_doc"].
+                                                         "/front/ticket.form.php?id=".
+                                                         $this->fields['id']."'>".
+                                                         $this->fields['id']."</a>").")");
       }
 
    }
@@ -1715,7 +1716,7 @@ class Ticket extends CommonITILObject {
 
       $tab[53]['table']         = 'glpi_ticketvalidations';
       $tab[53]['field']         = 'comment_submission';
-      $tab[53]['name']          = __('Request comments');
+      $tab[53]['name']          = sprintf(__('%1$s: %2$s'), __('Request'), __('Comments'));
       $tab[53]['datatype']      = 'text';
       $tab[53]['forcegroupby']  = true;
       $tab[53]['massiveaction'] = false;
@@ -1739,7 +1740,8 @@ class Ticket extends CommonITILObject {
 
       $tab[56]['table']         = 'glpi_ticketvalidations';
       $tab[56]['field']         = 'submission_date';
-      $tab[56]['name']          = __('Request date');
+      $tab[56]['name']          = sprintf(__('%1$s: %2$s'), __('Request'), __('Date'));
+
       $tab[56]['datatype']      = 'datetime';
       $tab[56]['forcegroupby']  = true;
       $tab[56]['massiveaction'] = false;
@@ -1877,7 +1879,7 @@ class Ticket extends CommonITILObject {
           || Session::haveRight("show_assign_ticket","1")
           || Session::haveRight("own_ticket","1")) {
 
-         $tab['linktickets'] = __('Linked tickets');
+         $tab['linktickets'] = _n('Linked ticket', 'Linked tickets', 2);
 
          $tab[40]['table']         = 'glpi_tickets_tickets';
          $tab[40]['field']         = 'tickets_id_1';
@@ -3914,7 +3916,7 @@ class Ticket extends CommonITILObject {
 
       if ($view_linked_tickets) {
          echo "<th width='$colsize3%'>";
-         _e('Linked tickets');
+         echo _n('Linked ticket', 'Linked tickets', 2);
 
          $rand_linked_ticket = mt_rand();
 
@@ -3931,7 +3933,7 @@ class Ticket extends CommonITILObject {
             echo "<div style='display:none' id='linkedticket$rand_linked_ticket'>";
             Ticket_Ticket::dropdownLinks('_link[link]',
                                          (isset($values["_link"])?$values["_link"]['link']:''));
-            echo __('Ticket ID')." ";
+            printf(__('%1$s: %2$s'), __('Ticket'), __('ID'));
             echo "<input type='hidden' name='_link[tickets_id_1]' value='$ID'>\n";
             echo "<input type='text' name='_link[tickets_id_2]'
                          value='".(isset($values["_link"])?$values["_link"]['tickets_id_2']:'')."'

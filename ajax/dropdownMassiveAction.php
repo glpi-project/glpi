@@ -129,7 +129,7 @@ if (isset($_POST["action"])
 
       case "link_ticket" :
          $rand = Ticket_Ticket::dropdownLinks('link');
-         _e('Ticket ID');
+         printf(__('%1$s: %2$s'), __('Ticket'), __('ID'));
          echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
          echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";
 
