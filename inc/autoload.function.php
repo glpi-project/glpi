@@ -289,7 +289,7 @@ function glpi_autoload($classname) {
          return true;
       }
       // Do not try to load phpcas using GLPi autoload
-      if (preg_match('/^CAS_.*/', $class)) {
+      if (preg_match('/^CAS_.*/', $classname)) {
          return false;
       }
             
