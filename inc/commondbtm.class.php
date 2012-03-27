@@ -1844,7 +1844,6 @@ class CommonDBTM extends CommonGLPI {
           && ($options['withtemplate'] == 2)
           && !$this->isNewID($ID)) {
          // Create item from template
-
          // Check read right on the template
          $this->check($ID, 'r');
          // Restore saved input or template data
@@ -1854,10 +1853,9 @@ class CommonDBTM extends CommonGLPI {
 
       } else if ($this->isNewID($ID)) {
          // Restore saved input if available
-         $input = $this->restoreInput();
+         $input = $this->restoreInput($options);
          // Create item
          $this->check(-1, 'w', $input);
-
       } else {
          // Modify item
          $this->check($ID,'r');

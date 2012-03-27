@@ -770,7 +770,7 @@ function update083to084() {
       // New element, so, we don't need to create items
    }
 
-   $migration->addField('glpi_networkports_vlans', 'tagged', 'char', array('value' => '0'));
+   $migration->addField('glpi_networkports_vlans', 'tagged', 'bool', array('value' => '0'));
 
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'Update connections between IPAddress and IPNetwork'));
