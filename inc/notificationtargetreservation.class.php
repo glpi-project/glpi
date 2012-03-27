@@ -44,6 +44,9 @@ class NotificationTargetReservation extends NotificationTarget {
    }
 
 
+   /**
+    * @see inc/NotificationTarget::getAdditionalTargets()
+   **/
    function getAdditionalTargets($event='') {
 
       if ($event != 'alert') {
@@ -57,17 +60,20 @@ class NotificationTargetReservation extends NotificationTarget {
    }
 
 
+   /**
+    * @see inc/NotificationTarget::getDatasForTemplate()
+   **/
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;
 
       //----------- Reservation infos -------------- //
-      $events = $this->getAllEvents();
+      $events                                = $this->getAllEvents();
 
       $this->datas['##reservation.action##'] = $events[$event];
 
       if ($event != 'alert') {
          $this->datas['##reservation.user##'] = "";
-         $user_tmp = new User();
+         $user_tmp                            = new User();
          if ($user_tmp->getFromDB($this->obj->getField('users_id'))) {
             $this->datas['##reservation.user##'] = $user_tmp->getName();
          }
@@ -77,7 +83,7 @@ class NotificationTargetReservation extends NotificationTarget {
 
          $reservationitem = new ReservationItem();
          $reservationitem->getFromDB($this->obj->getField('reservationitems_id'));
-         $itemtype = $reservationitem->getField('itemtype');
+         $itemtype        = $reservationitem->getField('itemtype');
 
          if ($item = getItemForItemtype($itemtype)) {
             $item->getFromDB($reservationitem->getField('items_id'));
@@ -186,8 +192,7 @@ class NotificationTargetReservation extends NotificationTarget {
          if ($ri->getFromDB($this->obj->getField('reservationitems_id'))) {
             $itemtype = $ri->getField('itemtype');
 
-            if ($itemtype != NOT_AVAILABLE
-                && $itemtype != ''
+            if (($itemtype != NOT_AVAILABLE) && ($itemtype != '')
                 && ($item = getItemForItemtype($itemtype))) {
                $item->getFromDB($ri->getField('items_id'));
                $this->target_object = $item;

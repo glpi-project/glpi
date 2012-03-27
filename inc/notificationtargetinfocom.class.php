@@ -49,22 +49,23 @@ class NotificationTargetInfocom extends NotificationTarget {
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;
 
-      $events = $this->getAllEvents();
+      $events                                 = $this->getAllEvents();
 
       $this->datas['##infocom.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                           $options['entities_id']);
       $this->datas['##infocom.action##']      = $events[$event];
 
       foreach ($options['items'] as $id => $item) {
-         $tmp = array();
-         $obj = new $item['itemtype']();
-         $tmp['##infocom.itemtype##']       = $obj->getTypeName(1);
-         $tmp['##infocom.item##']           = $item['item_name'];
-         $tmp['##infocom.expirationdate##'] = $item['warrantyexpiration'];
-         $tmp['##infocom.url##']            = urldecode($CFG_GLPI["url_base"].
-                                                        "/index.php?redirect=".
-                                                        strtolower($item['itemtype'])."_".
-                                                        $item['items_id']."_Infocom");
+         $tmp                                = array();
+         if ($obj = getItemForItemtype($item['itemtype'])) {
+            $tmp['##infocom.itemtype##']       = $obj->getTypeName(1);
+            $tmp['##infocom.item##']           = $item['item_name'];
+            $tmp['##infocom.expirationdate##'] = $item['warrantyexpiration'];
+            $tmp['##infocom.url##']            = urldecode($CFG_GLPI["url_base"].
+                                                           "/index.php?redirect=".
+                                                           strtolower($item['itemtype'])."_".
+                                                           $item['items_id']."_Infocom");
+         }
          $this->datas['infocoms'][] = $tmp;
       }
 

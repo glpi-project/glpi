@@ -231,7 +231,7 @@ class Group extends CommonTreeDropdown {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
-      echo "<td>".__('Items')."</td>";
+      echo "<td>"._n('Item', 'Items', 2)."</td>";
       echo "<td>";
       dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
       echo "</td>";
@@ -321,7 +321,7 @@ class Group extends CommonTreeDropdown {
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'is_itemgroup';
-      $tab[14]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), __('Items'));
+      $tab[14]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), _n('Item', 'Items', 2));
       $tab[14]['datatype']      = 'bool';
 
       $tab[15]['table']         = $this->getTable();

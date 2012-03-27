@@ -249,7 +249,7 @@ class Item_Problem extends CommonDBRelation{
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Problem' :
-               return __('Items');
+               return _n('Item', 'Items', 2);
 
             default :
                // Direct one

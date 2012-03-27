@@ -49,7 +49,7 @@ class NotificationTargetConsumable extends NotificationTarget {
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;
 
-      $events = $this->getAllEvents();
+      $events                                    = $this->getAllEvents();
 
       $this->datas['##consumable.entity##']      = Dropdown::getDropdownName('glpi_entities',
                                                                              $options['entities_id']);

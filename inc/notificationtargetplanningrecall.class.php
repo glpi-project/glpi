@@ -54,14 +54,14 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
    function getDatasForTemplate($event, $options=array()) {
       global $CFG_GLPI;
 
-      $events = $this->getAllEvents();
+      $events                             = $this->getAllEvents();
 
       $this->datas['##recall.action##']   = $events[$event];
       $this->datas['##recall.itemtype##'] = $this->target_object->getTypeName(1);
       $this->datas['##recall.item.URL##'] = '';
       // For task show parent link
-      if ($this->target_object instanceof CommonDBChild
-          || $this->target_object instanceof CommonITILTask) {
+      if (($this->target_object instanceof CommonDBChild)
+          || ($this->target_object instanceof CommonITILTask)) {
          $item2                              = $this->target_object->getItem();
          $this->datas['##recall.item.url##'] = urldecode($CFG_GLPI["url_base"]."/index.php".
                                                          "?redirect=".strtolower($item2->getType()).
@@ -78,10 +78,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
       if ($this->target_object->isField('name')) {
          $this->datas['##recall.item.name##'] = $this->target_object->getField('name');
       } else {
-         if ($item2 = $this->target_object->getItem()) {
-            if ($item2->isField('name')) {
-               $this->datas['##recall.item.name##'] = $item2->getField('name');
-            }
+         if (($item2 = $this->target_object->getItem())
+             && $item2->isField('name')) {
+            $this->datas['##recall.item.name##'] = $item2->getField('name');
          }
       }
 
@@ -106,7 +105,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
 
 
       $this->datas['##recall.item.user##'] = '';
-      $user_tmp = new User();
+      $user_tmp                            = new User();
       if ($user_tmp->getFromDB($this->target_object->getField('users_id'))) {
          $this->datas['##recall.item.user##'] = $user_tmp->getName();
       }
@@ -168,10 +167,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget {
    function getObjectItem($event='') {
 
       if ($this->obj) {
-         if ($item = getItemForItemtype($this->obj->getField('itemtype'))) {
-            if ($item->getFromDB($this->obj->getField('items_id'))) {
-               $this->target_object = $item;
-            }
+         if (($item = getItemForItemtype($this->obj->getField('itemtype')))
+             && $item->getFromDB($this->obj->getField('items_id'))) {
+            $this->target_object = $item;
          }
       }
    }

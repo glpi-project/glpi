@@ -36,7 +36,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
    var $private_profiles = array();
 
-   public $html_tags = array('##problem.solution.description##');
+   public $html_tags     = array('##problem.solution.description##');
 
 
    /**
@@ -59,12 +59,12 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
    /**
     * @see inc/NotificationTargetCommonITILObject::getDatasForObject()
-   */
+   **/
    function getDatasForObject(CommonDBTM $item, array $options, $simple=false) {
       global $CFG_GLPI;
 
       // Common ITIL datas
-      $datas = parent::getDatasForObject($item, $options, $simple);
+      $datas                       = parent::getDatasForObject($item, $options, $simple);
 
       $datas["##problem.impacts"]  = $item->getField('impactcontent');
       $datas["##problem.causes"]   = $item->getField('causecontent');
@@ -106,7 +106,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
          $tasks = getAllDatasFromTable('glpi_problemtasks', $restrict);
 
          foreach ($tasks as $task) {
-            $tmp = array();
+            $tmp                          = array();
             $tmp['##task.author##']       = Html::clean(getUserName($task['users_id']));
             $tmp['##task.category##']     = Dropdown::getDropdownName('glpi_taskcategories',
                                                                       $task['taskcategories_id']);
@@ -238,7 +238,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       //Foreach global tags
       $tags = array('tasks'    => _n('Task', 'Tasks', 2),
                     'tickets'  => _n('Ticket', 'Tickets', 2),
-                    'items'    => __('Items'));
+                    'items'    => _n('Item', 'Items', 2));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'     => $tag,
@@ -249,7 +249,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
 
       //Tags with just lang
       $tags = array('ticket.tickets'   => _n('Ticket', 'Tickets', 2),
-                    'items'            => __('Items'));
+                    'items'            => _n('Item', 'Items', 2));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,
@@ -259,11 +259,11 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject {
       }
 
       //Tags without lang
-      $tags = array('ticket.id'        => __('Ticket ID'),
-                    'ticket.date'      => __('Ticket date'),
-                    'ticket.url'       => __('Ticket URL'),
-                    'ticket.title'     => __('Ticket title'),
-                    'ticket.content'   => __('Ticket description'));
+      $tags = array('ticket.id'        => sprintf(__('%1$s: %2$s'), __('Ticket'), __('ID')),
+                    'ticket.date'      => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Date')),
+                    'ticket.url'       => sprintf(__('%1$s: %2$s'), __('Ticket'), __('URL')),
+                    'ticket.title'     => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Title')),
+                    'ticket.content'   => sprintf(__('%1$s: %2$s'), __('Ticket'), __('Description')));
 
       foreach ($tags as $tag => $label) {
          $this->addTagToList(array('tag'   => $tag,

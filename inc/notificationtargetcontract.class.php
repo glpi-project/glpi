@@ -55,12 +55,12 @@ class NotificationTargetContract extends NotificationTarget {
 
       $this->datas['##contract.entity##'] = Dropdown::getDropdownName('glpi_entities',
                                                                       $options['entities_id']);
-      $events = $this->getEvents();
-      //TRANS: %s is the type of alarm : on end or notice
-      $this->datas['##contract.action##'] = sprintf(__('Contracts alarm - %s'), $events[$event]);
+      $events                             = $this->getEvents();
+      $this->datas['##contract.action##'] = sprintf(__('%1$s - %2$s'), __('Contracts alarm'),
+                                                    $events[$event]);
 
       foreach ($options['contracts'] as $id => $contract) {
-         $tmp = array();
+         $tmp                        = array();
          $tmp['##contract.name##']   = $contract['name'];
          $tmp['##contract.number##'] = $contract['num'];
 
@@ -89,8 +89,8 @@ class NotificationTargetContract extends NotificationTarget {
                break;
          }
 
-         $tmp['##contract.url##']   = urldecode($CFG_GLPI["url_base"].
-                                                "/index.php?redirect=contract_".$id);
+         $tmp['##contract.url##']    = urldecode($CFG_GLPI["url_base"].
+                                                 "/index.php?redirect=contract_".$id);
          $this->datas['contracts'][] = $tmp;
       }
 

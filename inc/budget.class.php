@@ -74,7 +74,7 @@ class Budget extends CommonDropdown{
          switch ($item->getType()) {
             case __CLASS__ :
                return array (1 => __('Main'),
-                             2 => __('Items'));
+                             2 => _n('Item', 'Items', 2));
          }
       }
       return '';
