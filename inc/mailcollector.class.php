@@ -868,16 +868,10 @@ class MailCollector  extends CommonDBTM {
 
     ///Connect To the Mail Box
    function connect() {
-      if (version_compare(PHP_VERSION, '5.3.2', '>=')) {
-         // to disable authentication with GSSAPI or NTLM: This solves the problem with Exchange
-         $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
-                                     Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
-                                     CL_EXPUNGE, 1, array('DISABLE_AUTHENTICATOR' => 'GSSAPI'));
-      } else {
-         $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
-                                     Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
-                                     CL_EXPUNGE, 1);
-      }
+
+      $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
+                                  Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
+                                  CL_EXPUNGE, 1);
    }
 
 
