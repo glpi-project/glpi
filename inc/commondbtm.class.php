@@ -792,10 +792,11 @@ class CommonDBTM extends CommonGLPI {
     * Get the link to an item
     *
     * @param $with_comment Display comments (default 0)
+    * @param $additional_options string additional options to add to <a> 
     *
     * @return string : HTML link
    **/
-   function getLink($with_comment=0) {
+   function getLink($with_comment=0, $additional_options='') {
       global $CFG_GLPI;
 
       if (!isset($this->fields['id'])) {
@@ -816,7 +817,7 @@ class CommonDBTM extends CommonGLPI {
       $link .= (strpos($link,'?') ? '&amp;':'?').'id=' . $this->fields['id'];
       $link .= ($this->isTemplate() ? "&amp;withtemplate=1" : "");
 
-      return "<a href='$link'>".$this->getNameID($with_comment)."</a>";
+      return "<a $additional_options href='$link'>".$this->getNameID($with_comment)."</a>";
 
    }
 
@@ -2827,7 +2828,7 @@ class CommonDBTM extends CommonGLPI {
 
       foreach ($doubles as $double) {
          $doubles_text = array();
-
+//          print_r($double);
          if (in_array('CommonDBChild',class_parents($this))) {
             if ($this->getField($this->itemtype)) {
                $item = new $double['itemtype']();
@@ -2837,8 +2838,13 @@ class CommonDBTM extends CommonGLPI {
 
             $item->getFromDB($double['items_id']);
          } else {
-            $item = new self();
-            $item->fields = $double;
+            $item = getItemForItemtype($this->getType());
+            $item->getFromDB($double['id']);
+         }
+
+         $double_text = '';
+         if ($item->canView() && $item->canViewItem()) {
+            $double_text = $item->getLink(0,"target='_blank'");
          }
 
          foreach ($this->getUnicityFieldsToDisplayInErrorMessage() as $key => $value) {
@@ -2848,15 +2854,20 @@ class CommonDBTM extends CommonGLPI {
                   $field_value = Dropdown::getDropdownName(getTableNameForForeignKeyField($key),
                                                            $field_value);
                }
-               $doubles_text[] = sprintf(__('%1$s: %2$s'), $value, $field_value);
+               $new_text = sprintf(__('%1$s: %2$s'), $value, $field_value);
+               if (empty($double_text)) {
+                  $double_text = $new_text;
+               } else {
+                  $double_text = sprintf('%1$s - %2$s', $double_text, $new_text);
+               }
             }
          }
          // Add information on item in trash
          if ($item->isField('is_deleted') && $item->getField('is_deleted')) {
-            $doubles_text[] = __('Item in the trash');
+            $double_text = sprintf('%1$s - %2$s', $double_text, __('Item in the trash'));
          }
 
-         $message_text .= "<br>[".implode(' - ',$doubles_text)."]";
+         $message_text .= "<br>[$double_text]";
       }
       return $message_text;
    }
