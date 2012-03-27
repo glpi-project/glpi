@@ -48,7 +48,7 @@ Html::header($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 if (!isset($_GET["contains"]) && isset($_GET["itemtype"]) && isset($_GET["items_id"])) {
    $item = new $_GET["itemtype"]();
    if ($item->getFromDB($_GET["items_id"])) {
-      $_GET["contains"] = $item->getField('name');
+      $_GET["contains"] = addslashes($item->getField('name'));
    }
 }
 
