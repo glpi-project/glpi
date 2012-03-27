@@ -213,7 +213,8 @@ class NotificationTemplate extends CommonDBTM {
          //Get template's language data for in this language
          $options['additionnaloption'] = $additionnaloption;
          $data = &$target->getForTemplate($event,$options);
-
+         $footer_string = $LANG['mailing'][3]." ".GLPI_VERSION;
+         
          //Restore default language
          Session::loadLanguage();
          if ($plug = isPluginItemType(get_class($target->obj))) {
@@ -265,7 +266,7 @@ class NotificationTemplate extends CommonDBTM {
                         </head>
                         <body>".self::process($template_datas['content_html'], $data_html).
                      "<br><br>".$signature_html.
-                     "<br>".$LANG['mailing'][3]." ".GLPI_VERSION."</body></html>";
+                     "<br>$footer_string</body></html>";
             }
 
             $lang['content_text']
