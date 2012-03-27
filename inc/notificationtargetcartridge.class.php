@@ -55,7 +55,7 @@ class NotificationTargetCartridge extends NotificationTarget {
       $this->datas['##cartridge.action##'] = $events[$event];
 
       foreach ($options['cartridges'] as $id => $cartridge) {
-         $tmp = array();
+         $tmp                            = array();
          $tmp['##cartridge.item##']      = $cartridge['cartname'];
          $tmp['##cartridge.reference##'] = $cartridge['cartref'];
          $tmp['##cartridge.remaining##'] = cartridge::getUnusedNumber($id);

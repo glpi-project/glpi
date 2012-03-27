@@ -34,8 +34,12 @@ if (!defined('GLPI_ROOT')) {
 // Class NotificationTarget
 class NotificationTargetDBConnection extends NotificationTarget {
 
-   //Overwrite the function in NotificationTarget because there's only one target to be notified
 
+   /**
+    * Overwrite the function in NotificationTarget because there's only one target to be notified
+    *
+    * @see inc/NotificationTarget::getNotificationTargets()
+   **/
    function getNotificationTargets($entity) {
 
       $this->addProfilesToTargets();
@@ -45,7 +49,7 @@ class NotificationTargetDBConnection extends NotificationTarget {
 
 
    function getEvents() {
-      return array('desynchronization' => __('Desynchronization MySQL replication'));
+      return array('desynchronization' => __('Desynchronization MySQL replica'));
    }
 
 

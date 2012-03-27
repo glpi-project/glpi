@@ -241,7 +241,7 @@ class Change_Item extends CommonDBRelation{
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Change' :
-               return __('Items');
+               return _n('Item', 'Items', 2);
          }
       }
       return '';
