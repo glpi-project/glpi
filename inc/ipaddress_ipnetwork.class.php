@@ -69,7 +69,7 @@ class IPAddress_IPNetwork extends CommonDBRelation {
       }
 
       // Then, look each IP address contained inside current Network
-      $query = "SELECT `".$ipnetworks_id."` AS ipnetworks_id,
+      $query = "SELECT '".$ipnetworks_id."' AS ipnetworks_id,
                        `id` AS ipaddresses_id
                 FROM `glpi_ipaddresses`
                 WHERE ".$network->getWHEREForMatchingElement('glpi_ipaddresses', 'binary',
