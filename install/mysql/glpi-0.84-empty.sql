@@ -2879,7 +2879,7 @@ CREATE TABLE `glpi_networkports_vlans` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `networkports_id` int(11) NOT NULL DEFAULT '0',
   `vlans_id` int(11) NOT NULL DEFAULT '0',
-  `tagged` char(1) COLLATE utf8_unicode_ci DEFAULT '0',
+  `tagged` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`networkports_id`,`vlans_id`),
   KEY `vlans_id` (`vlans_id`)
