@@ -61,7 +61,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
          echo "<tr class='tab_bg_1'>\n";
          $this->showNetworkCardField($netport, $options, $recursiveItems);
          echo "<td>" . WifiNetwork::getTypeName(1) . "</td><td>";
-         Dropdown::show('WifiNetwork', array('value'  => $this->fields["wifinetworks_id"]));
+         WifiNetwork::dropdown(array('value'  => $this->fields["wifinetworks_id"]));
          echo "</td>";
          echo "</tr>\n";
 
