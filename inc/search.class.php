@@ -2650,7 +2650,7 @@ class Search {
       if ($plug=isPluginItemType($itemtype)) {
          $function = 'plugin_'.$plug['plugin'].'_addWhere';
          if (function_exists($function)) {
-            $out = $function($link,$nott,$itemtype,$ID,$val);
+            $out = $function($link, $nott, $itemtype, $ID, $val, $searchtype);
             if (!empty($out)) {
                return $out;
             }
@@ -2966,7 +2966,7 @@ class Search {
             $plug = $matches[1];
             $function = 'plugin_'.$plug.'_addWhere';
             if (function_exists($function)) {
-               $out = $function($link, $nott, $itemtype, $ID, $val);
+               $out = $function($link, $nott, $itemtype, $ID, $val, $searchtype);
                if (!empty($out)) {
                   return $out;
                }
