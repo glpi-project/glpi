@@ -376,6 +376,10 @@ class NetworkPort extends CommonDBChild {
       } else {
          $canedit = $item->can($items_id, 'w');
       }
+      $showmassiveactions = false;
+      if ($withtemplate!=2) {
+         $showmassiveactions = count(Dropdown::getMassiveActions(__CLASS__));
+      }
 
       // Show Add Form
       if ($canedit
@@ -406,8 +410,7 @@ class NetworkPort extends CommonDBChild {
          echo "</td></tr></table></div></form>\n";
       }
 
-      if ($canedit
-          && ($withtemplate != 2)) {
+      if ($showmassiveactions) {
          $checkbox_column = true;
          echo "\n<form id='networking_ports$rand' name='networking_ports$rand' method='post'
                   action='" . $CFG_GLPI["root_doc"] ."/front/networkport.form.php'>\n";
@@ -586,8 +589,7 @@ class NetworkPort extends CommonDBChild {
       }
 
       if ($is_active_network_port
-          && $canedit
-          && ($withtemplate != 2)) {
+          && $showmassiveactions) {
          Html::openArrowMassives("networking_ports$rand", true);
          Dropdown::showForMassiveAction('NetworkPort');
          $actions = array();
