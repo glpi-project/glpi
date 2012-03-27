@@ -148,16 +148,16 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
         if ($device2 = getItemForItemtype($netport->fields["itemtype"])) {
 
             if ($device2->getFromDB($netport->fields["items_id"])) {
-               echo "<span class='b'>";
 
                if ($device2->can($device2->fields["id"], 'r')) {
-                  echo $netport->getLink();
-                  echo "</span>\n";
-                  Html::showToolTip($netport->fields['comment']);
-                  //TRANS: %s is a link
-                  echo "&nbsp;".sprintf(__('on %s'),
-                                        "<span class='b'>".$device2->getLink()."</span>");
-
+                  $networklink = $netport->getLink();
+                  $tooltip = Html::showToolTip($netport->fields['comment'],
+                                               array('display' => false));
+                  $netlink = sprintf(__('%1$s %2$s'),
+                                     "<span class='b'>".$networklink."</span>\n", $tooltip);
+                  //TRANS: %1$s and %2$s are links
+                  echo "&nbsp;". sprintf(__('%1$s on %2$s'),
+                                         $netlink, "<span class='b'>".$device2->getLink()."</span>");
                   if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
                      echo "<br>(". Dropdown::getDropdownName("glpi_entities",
                                                              $device2->getEntityID()) .")";
@@ -181,11 +181,13 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
                } else {
                   if (rtrim($netport->fields["name"]) != "") {
+                     $netname = $netport->fields["name"];
                      echo $netport->fields["name"];
                   } else {
-                     _e('Without name');
+                     $netname = __('Without name');
                   }
-                  echo "</span> " . __('on') . " <span class='b'>".$device2->getName()."</span>";
+                  printf(__('%1$s on %2$s'), "<span class='b'>".$netname."</span>",
+                         "<span class='b'>".$device2->getName()."</span>");
                   echo "<br>(" .Dropdown::getDropdownName("glpi_entities",
                                                           $device2->getEntityID()) .")";
                }
@@ -195,7 +197,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       } else {
          if ($canedit) {
-            if ($withtemplate != 2 && $withtemplate != 1) {
+            if (($withtemplate != 2) && ($withtemplate != 1)) {
                self::dropdownConnect($ID, array('name'        => 'dport',
                                                 'entity'      => $device1->fields["entities_id"],
                                                 'entity_sons' => $device1->isRecursive()));
@@ -237,7 +239,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       }
 
       // Manage entity_sons
-      if (!($p['entity']<0) && $p['entity_sons']) {
+      if (!($p['entity'] < 0) && $p['entity_sons']) {
          if (is_array($p['entity'])) {
             _e('entity_sons options are not available with array of entity');
          } else {
@@ -277,7 +279,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                      = array();
       $tab['common']            = __('Characteristics');
 
       $tab[10]['table']         = $this->getTable();
