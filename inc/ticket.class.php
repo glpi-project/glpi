@@ -3259,7 +3259,7 @@ class Ticket extends CommonITILObject {
       if (!isset($options['template_preview'])) {
          $values = $_REQUEST;
       }
-
+      
       // Restore saved value or override with page parameter
       foreach ($default_values as $name => $value) {
          if (!isset($values[$name])) {
@@ -3353,7 +3353,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      
+     
       // Put ticket template on $values for actors
       $values['_tickettemplate'] = $tt;
 
@@ -3727,7 +3727,8 @@ class Ticket extends CommonITILObject {
          if (Session::haveRight('create_validation',1)) {
             User::dropdown(array('name'   => "_add_validation",
                                  'entity' => $this->fields['entities_id'],
-                                 'right'  => 'validate_ticket'));
+                                 'right'  => 'validate_ticket',
+                                 'value'  => $values['_add_validation']));
          }
          echo $tt->getEndHiddenFieldValue('_add_validation',$this);
       } else {
