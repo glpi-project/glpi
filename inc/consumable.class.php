@@ -365,27 +365,25 @@ class Consumable extends CommonDBTM {
          $i = 0;
          echo "<tr><th>".__('ID')."</th><th>".__('State')."</th>";
          echo "<th>".__('Add date')."</th>";
-         echo "<th>".__('Use date')."</th>";
          if ($show_old) {
-            echo "<th>".__('Give to')."</th>";
+            echo "<th>".__('Use date')."</th>";
+            echo "<th>".__('Given to')."</th>";
          }
          echo "<th width='200px'>".__('Financial and administrative information')."</th>";
 
-         if (!$show_old
-             && $canedit
-             && ($DB->result($result,0,0) != 0)) {
-            echo "<th colspan='".($canedit?'2':'1')."'>";
-
-            Dropdown::showAllItems("items_id", 0, 0,$consitem->fields["entities_id"],
-                                   $CFG_GLPI["consumables_types"]);
-
-/*            User::dropdown(array('value'  => $consitem->fields["entities_id"],
-                                 'right'  => 'all'));*/
-            echo "&nbsp;<input type='submit' class='submit' name='give'
-                         value='"._sx('button', 'Give')."'>";
-            echo "</th>";
-         } else {
-            echo "<th colspan='".($canedit?'2':'1')."'>&nbsp;</th>";
+         if ($canedit) {
+            if (!$show_old
+               && ($DB->result($result,0,0) != 0)) {
+               echo "<th>";
+   
+               Dropdown::showAllItems("items_id", 0, 0,$consitem->fields["entities_id"],
+                                    $CFG_GLPI["consumables_types"]);
+               echo "&nbsp;<input type='submit' class='submit' name='give'
+                           value='"._sx('button', 'Give')."'>";
+               echo "</th><th>"._n('Action', 'Actions',2)."</th>";
+            } else {
+               echo "<th colspan='2'>"._n('Action', 'Actions',2)."</th>";
+            }
          }
          echo "</tr>";
 
@@ -415,9 +413,8 @@ class Consumable extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='center'>".$data["id"]."</td>";
             echo "<td class='center'>".self::getStatus($data["id"])."</td>";
             echo "<td class='center'>".$date_in."</td>";
-            echo "<td class='center'>".$date_out."</td>";
-
             if ($show_old) {
+               echo "<td class='center'>".$date_out."</td>";
                echo "<td class='center'>";
                if ($item = getItemForItemtype($data['itemtype'])) {
                   if ($item->getFromDB($data['items_id'])) {
