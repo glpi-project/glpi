@@ -37,7 +37,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("ocsng", "w");
 
-Html::header(__('OCS Inventory NG'), $_SERVER['PHP_SELF'], "utils", "ocsng", "sync");
+Html::header('OCS Inventory NG', $_SERVER['PHP_SELF'], "utils", "ocsng", "sync");
 
 $display_list = true;
 

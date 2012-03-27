@@ -36,7 +36,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-Html::header(__('OCS Inventory NG'),$_SERVER['PHP_SELF'], "utils", "ocsng", "clean");
+Html::header('OCS Inventory NG', $_SERVER['PHP_SELF'], "utils", "ocsng", "clean");
 
 if (!isset($_POST["clean_ok"])) {
    Session::checkRight("clean_ocsng", "r");
