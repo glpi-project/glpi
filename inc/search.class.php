@@ -865,8 +865,8 @@ class Search {
                $infoc = new Infocom();
                $isadmin = ($infoc->canUpdate() || $infoc->canCreate());
             }
-
-            if ($isadmin && $output_type == self::HTML_OUTPUT) {
+            $showmassiveactions = count(Dropdown::getMassiveActions($itemtype,$p['is_deleted']));
+            if ($showmassiveactions && $output_type == self::HTML_OUTPUT) {
                echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".
                      $CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
             }
@@ -1027,7 +1027,7 @@ class Search {
 
                if ($output_type == self::HTML_OUTPUT) { // HTML display - massive modif
                   $tmpcheck = "";
-                  if ($isadmin) {
+                  if ($showmassiveactions) {
                      if ($itemtype=='Entity' && !in_array($data["id"],
                                                           $_SESSION["glpiactiveentities"])) {
 
@@ -1338,7 +1338,7 @@ class Search {
 
             // Delete selected item
             if ($output_type == self::HTML_OUTPUT) {
-               if ($isadmin) {
+               if ($showmassiveactions) {
                   $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
                   if (!$max) {
                      $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
@@ -2650,7 +2650,7 @@ class Search {
       if ($plug=isPluginItemType($itemtype)) {
          $function = 'plugin_'.$plug['plugin'].'_addWhere';
          if (function_exists($function)) {
-            $out = $function($link, $nott, $itemtype, $ID, $val, $searchtype);
+            $out = $function($link,$nott,$itemtype,$ID,$val);
             if (!empty($out)) {
                return $out;
             }
@@ -2966,7 +2966,7 @@ class Search {
             $plug = $matches[1];
             $function = 'plugin_'.$plug.'_addWhere';
             if (function_exists($function)) {
-               $out = $function($link, $nott, $itemtype, $ID, $val, $searchtype);
+               $out = $function($link, $nott, $itemtype, $ID, $val);
                if (!empty($out)) {
                   return $out;
                }
