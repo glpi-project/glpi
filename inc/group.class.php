@@ -356,8 +356,9 @@ class Group extends CommonTreeDropdown {
    /**
     * @param $ID
    **/
-   function showLDAPForm ($ID) {
+   function showLDAPForm($ID) {
 
+      $options = array();
       $this->initForm($ID, $options);
 
       echo "<form name='groupldap_form' id='groupldap_form' method='post' action='".
