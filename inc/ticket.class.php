@@ -3656,7 +3656,8 @@ class Ticket extends CommonITILObject {
          if (Session::haveRight('create_validation',1)) {
             User::dropdown(array('name'   => "_add_validation",
                                  'entity' => $this->fields['entities_id'],
-                                 'right'  => 'validate_ticket'));
+                                 'right'  => 'validate_ticket',
+                                 'value'  => $values['_add_validation']));
          }
          echo $tt->getEndHiddenFieldValue('_add_validation',$this);
       } else {
