@@ -2566,7 +2566,7 @@ class Search {
       if ($plug=isPluginItemType($itemtype)) {
          $function = 'plugin_'.$plug['plugin'].'_addWhere';
          if (function_exists($function)) {
-            $out = $function($link,$nott,$itemtype,$ID,$val);
+            $out = $function($link, $nott, $itemtype, $ID, $val, $searchtype);
             if (!empty($out)) {
                return $out;
             }
@@ -2594,14 +2594,14 @@ class Search {
                return " $link (`$table`.`id`".$SEARCH.
                                ($val==0?" OR `$table`.`id` IS NULL":'').') ';
             }
-            
+
             $tmplink = 'OR';
             if ($nott) {
-               $tmplink = 'AND';   
+               $tmplink = 'AND';
             }
-                        
+
             $toadd = '';
-            
+
             if ($itemtype == 'Ticket' || $itemtype == 'Problem') {
                if (isset($searchopt[$ID]["joinparams"]["beforejoin"]["table"])
                   && isset($searchopt[$ID]["joinparams"]["beforejoin"]["joinparams"])
@@ -2617,12 +2617,12 @@ class Search {
             $toadd2='';
             if ($nott && $val!='NULL' && $val!='null') {
                $toadd2 = " OR `$table`.`$field` IS NULL";
-            }     
-            
+            }
+
             return $link." ((`$table`.`$name1` $SEARCH
                             $tmplink `$table`.`$name2` $SEARCH
                             $tmplink `$table`.`$field` $SEARCH
-                            $tmplink CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH ) 
+                            $tmplink CONCAT(`$table`.`$name1`, ' ', `$table`.`$name2`) $SEARCH )
                             $toadd2) $toadd";
 
 //          case "glpi_groups.name" :
@@ -2690,23 +2690,23 @@ class Search {
                $name1 = 'name';
                $name2 = 'firstname';
             }
-            
+
             $tmplink = 'OR';
             if ($nott) {
-               $tmplink = 'AND';   
-            }                
-            
+               $tmplink = 'AND';
+            }
+
             return $link." (`$table`.`$name1` $SEARCH
                             $tmplink `$table`.`$name2` $SEARCH
                             $tmplink CONCAT(`$table`.`$name1`,' ',`$table`.`$name2`) $SEARCH) ";
 
          case "glpi_auth_tables.name" :
-         
+
             $tmplink = 'OR';
             if ($nott) {
-               $tmplink = 'AND';   
+               $tmplink = 'AND';
             }
-                    
+
             $user_searchopt = self::getOptions('User');
             return $link." (`glpi_authmails".$addtable."_".
                            self::computeComplexJoinID($user_searchopt[31]['joinparams'])."`.`name` $SEARCH
@@ -2810,14 +2810,14 @@ class Search {
             $tmplink = 'OR';
             $compare = '=';
             if ($nott) {
-               $tmplink = 'AND';   
+               $tmplink = 'AND';
                $compare = '<>';
-            }   
+            }
             $toadd2 = '';
             if ($nott && $val!='NULL' && $val!='null') {
                $toadd2 = " OR `$table`.`$field` IS NULL";
-            }              
-         
+            }
+
             return $link." (((`$table`.`tickets_id_1` $compare '$val'
                              $tmplink `$table`.`tickets_id_2` $compare '$val')
                             AND `glpi_tickets`.`id` <> '$val') $toadd2)";
@@ -2876,7 +2876,7 @@ class Search {
             $plug = $matches[1];
             $function = 'plugin_'.$plug.'_addWhere';
             if (function_exists($function)) {
-               $out = $function($link, $nott, $itemtype, $ID, $val);
+               $out = $function($link, $nott, $itemtype, $ID, $val, $searchtype);
                if (!empty($out)) {
                   return $out;
                }
@@ -4339,7 +4339,7 @@ class Search {
                      }
                   }
                   return $out;
-               }            
+               }
                return Dropdown::getYesNo($data[$NAME.$num]).$unit;
 
             case "right":
