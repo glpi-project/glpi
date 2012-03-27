@@ -1299,7 +1299,7 @@ class Ticket extends CommonITILObject {
          if (isset($this->input["_rule_process"])) {
             $values['_rule_process'] = $this->input["_rule_process"];
          }
-
+         $values['_ticket_add'] = true;
          // Cron or rule process of hability to do
          if (!is_numeric(Session::getLoginUserID(false))
              || isset($this->input["_rule_process"])

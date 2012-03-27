@@ -195,7 +195,10 @@ class TicketValidation  extends CommonDBChild {
             if (isset($this->input["_rule_process"])) {
                $input['_rule_process'] = $this->input["_rule_process"];
             }
-
+            // No update ticket notif on ticket add
+            if (isset($this->input["_ticket_add"])) {
+               $input['_disablenotif'] = true;
+            }
             $job->update($input);
          }
 
