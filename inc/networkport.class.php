@@ -820,7 +820,7 @@ class NetworkPort extends CommonDBChild {
       $types = array('Computer', 'NetworkEquipment', 'Printer');
 
       foreach ($types as $itemtype) {
-         $result = $this->getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity);
+         $result = self::getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity);
 
          if (!empty ($result)) {
             return $result;
