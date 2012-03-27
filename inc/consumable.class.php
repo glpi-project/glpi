@@ -408,23 +408,23 @@ class Consumable extends CommonDBTM {
          echo "<th>".$LANG['cartridges'][24]."</th>";
          if ($show_old) {
             echo "<th>".$LANG['consumables'][26]."</th>";
-            echo "<th>".$LANG['consumables'][31]."</th>";
+            echo "<th>".$LANG['consumables'][33]."</th>";
          }
          echo "<th width='200px'>".$LANG['financial'][3]."</th>";
 
-         if (!$show_old && $canedit && $DB->result($result,0,0)!=0) {
-            echo "<th colspan='".($canedit?'2':'1')."'>";
-
-            Dropdown::showAllItems("items_id", 0, 0,$consitem->fields["entities_id"],
-                                   $CFG_GLPI["consumables_types"]);
-
-/*            User::dropdown(array('value'  => $consitem->fields["entities_id"],
-                                 'right'  => 'all'));*/
-            echo "&nbsp;<input type='submit' class='submit' name='give' value='".
-                           $LANG['consumables'][32]."'>";
-            echo "</th>";
-         } else {
-            echo "<th colspan='".($canedit?'2':'1')."'>&nbsp;</th>";
+         if ($canedit) {
+            if (!$show_old && $DB->result($result,0,0)!=0) {
+               echo "<th>";
+   
+               Dropdown::showAllItems("items_id", 0, 0,$consitem->fields["entities_id"],
+                                    $CFG_GLPI["consumables_types"]);
+   
+               echo "&nbsp;<input type='submit' class='submit' name='give' value='".
+                              $LANG['consumables'][32]."'>";
+               echo "</th><th>".$LANG['rulesengine'][7]."</th>";
+            } else {
+               echo "<th colspan='2'>".$LANG['rulesengine'][7]."</th>";
+            }
          }
          echo "</tr>";
 
@@ -456,9 +456,6 @@ class Consumable extends CommonDBTM {
             echo "<td class='center'>".$date_in."</td>";
             if ($show_old) {
                echo "<td class='center'>".$date_out."</td>";
-            }
-
-            if ($show_old) {
                echo "<td class='center'>";
                $item = new $data['itemtype']();
                if ($item->getFromDB($data['items_id'])) {
