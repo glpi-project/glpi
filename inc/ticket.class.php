@@ -3408,8 +3408,8 @@ class Ticket extends CommonITILObject {
             }
             $slaoptions = array();
             if (Session::haveRight('config', 'r')) {
+               $slaoptions['link'] = Toolbox::getItemTypeFormURL('SLA')."?id=".$this->fields["slas_id"];
             }
-            $slaoptions['link'] = Toolbox::getItemTypeFormURL('SLA')."?id=".$this->fields["slas_id"];
             Html::showToolTip($commentsla,$slaoptions);
             if ($canupdate) {
                echo "&nbsp;<input type='submit' class='submit' name='sla_delete' value='".
@@ -3424,7 +3424,7 @@ class Ticket extends CommonITILObject {
             Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
             echo $tt->getEndHiddenFieldValue('due_date',$this);
             echo "</td>";
-            if ($this->fields['status'] != 'closed') {
+            if ($this->fields['status'] != 'closed' && $canupdate) {
                echo "<td>";
                echo $tt->getBeginHiddenFieldText('slas_id');
                echo "<span id='sla_action'>";
