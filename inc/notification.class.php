@@ -99,6 +99,7 @@ class Notification extends CommonDBTM {
    // From CommonDBTM
    public $dohistory = true;
 
+
    static function getTypeName($nb=0) {
       return _n('Notification', 'Notifications', $nb);
    }
@@ -117,13 +118,7 @@ class Notification extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w');
-      }
-
+      $this->initForm($ID, $options);
       $this->showTabs($options);
       $this->showFormHeader($options);
 
@@ -133,8 +128,8 @@ class Notification extends CommonDBTM {
       echo "</td>";
 
       echo "<td rowspan='6' class='middle right'>".__('Comments')."</td>";
-      echo "<td class='center middle' rowspan='6'><textarea cols='45' rows='9' name='comment' >"
-            .$this->fields["comment"]."</textarea></td></tr>";
+      echo "<td class='center middle' rowspan='6'><textarea cols='45' rows='9' name='comment' >".
+             $this->fields["comment"]."</textarea></td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Active') . "</td>";
       echo "<td>";
@@ -143,7 +138,8 @@ class Notification extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . __('Type') . "</td>";
       echo "<td>";
-      if (Session::haveRight('config', 'w') && $this->getEntityID() == 0) {
+      if (Session::haveRight('config', 'w')
+          && ($this->getEntityID() == 0)) {
          $rand = Dropdown::showItemTypes('itemtype', $CFG_GLPI["notificationtemplates_types"],
                                           array('value' => $this->fields['itemtype']));
       } else {
@@ -186,7 +182,7 @@ class Notification extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                       = array();
       $tab['common']             = __('Characteristics');
 
       $tab[1]['table']           = $this->getTable();
@@ -254,7 +250,8 @@ class Notification extends CommonDBTM {
 
    function canViewItem() {
 
-      if (($this->fields['itemtype'] == 'Crontask' || $this->fields['itemtype'] == 'DBConnection')
+      if ((($this->fields['itemtype'] == 'Crontask')
+           || ($this->fields['itemtype'] == 'DBConnection'))
           && !Session::haveRight('config', 'w')) {
           return false;
       }
@@ -269,7 +266,8 @@ class Notification extends CommonDBTM {
    **/
    function canCreateItem() {
 
-      if (($this->fields['itemtype'] == 'Crontask' || $this->fields['itemtype'] == 'DBConnection')
+      if ((($this->fields['itemtype'] == 'Crontask')
+           || ($this->fields['itemtype'] == 'DBConnection'))
           && !Session::haveRight('config', 'w')) {
           return false;
       }
@@ -336,7 +334,6 @@ class Notification extends CommonDBTM {
          }
       }
       return $CFG_GLPI['mailing_signature'];
-
    }
 
 
@@ -358,7 +355,7 @@ class Notification extends CommonDBTM {
                                                  $entity, true) ."
                       AND `glpi_notifications`.`is_active`='1'
                 ORDER BY `glpi_entities`.`level` DESC";
-// Toolbox::logDebug($query);
+
       return $DB->request($query);
    }
 

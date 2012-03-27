@@ -44,22 +44,22 @@ require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
 class NotificationMail extends phpmailer implements NotificationInterface {
 
    //! mailing type (new,attrib,followup,finish)
-   var $mailtype = NULL;
+   var $mailtype           = NULL;
    /** Job class variable - job to be mailed
     * @see Job
     */
-   var $job = NULL;
+   var $job                = NULL;
    /** User class variable - user who make changes
     * @see User
     */
-   var $user = NULL;
+   var $user =              NULL;
    /// Is the followupadded private ?
-   var $followupisprivate = NULL;
+   var $followupisprivate  = NULL;
 
    /// Set default variables for all new objects
-   var $WordWrap = 80;
+   var $WordWrap           = 80;
    /// Defaut charset
-   var $CharSet = "utf-8";
+   var $CharSet            = "utf-8";
 
 
    /**
@@ -121,13 +121,13 @@ class NotificationMail extends phpmailer implements NotificationInterface {
          $localLen  = strlen($local);
          $domainLen = strlen($domain);
 
-         if ($localLen < 1 || $localLen > 64) {
+         if (($localLen < 1) || ($localLen > 64)) {
             // local part length exceeded
             $isValid = false;
-         } else if ($domainLen < 1 || $domainLen > 255) {
+         } else if (($domainLen < 1) || ($domainLen > 255)) {
             // domain part length exceeded
             $isValid = false;
-         } else if ($local[0] == '.' || $local[$localLen-1] == '.') {
+         } else if (($local[0] == '.') || ($local[$localLen-1] == '.')) {
             // local part starts or ends with '.'
             $isValid = false;
          } else if (preg_match('/\\.\\./', $local)) {
@@ -167,7 +167,7 @@ class NotificationMail extends phpmailer implements NotificationInterface {
    static function testNotification() {
       global $CFG_GLPI;
 
-      $mmail = new NotificationMail();
+      $mmail = new self();
       $mmail->AddCustomHeader("Auto-Submitted: auto-generated");
       // For exchange
       $mmail->AddCustomHeader("X-Auto-Response-Suppress: OOF, DR, NDR, RN, NRN");
@@ -246,7 +246,8 @@ class NotificationMail extends phpmailer implements NotificationInterface {
          Session::addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo, true);
       } else {
          //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
-         Toolbox::logInFile("mail", sprintf(__('An email was sent to %1$s: %2$s'), $options['to'],
+         Toolbox::logInFile("mail", sprintf(__('%1$s: %2$s'),
+                                            sprintf(__('An email was sent to %s'), $options['to']),
                                             $options['subject']."\n"));
       }
 

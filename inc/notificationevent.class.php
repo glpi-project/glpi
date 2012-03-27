@@ -102,7 +102,7 @@ class NotificationEvent extends CommonDBTM {
          $email_processed    = array();
          $email_notprocessed = array();
          //Get template's information
-         $template = new NotificationTemplate();
+         $template           = new NotificationTemplate();
 
          $notificationtarget = NotificationTarget::getInstance($item,$event,$options);
          $entity             = $notificationtarget->getEntity();
@@ -139,7 +139,8 @@ class NotificationEvent extends CommonDBTM {
                $notificationtarget->getAddressesByTarget($target,$options);
 
                foreach ($notificationtarget->getTargets() as $user_email => $users_infos) {
-                  if ($label || $notificationtarget->validateSendTo($users_infos, $notify_me)) {
+                  if ($label
+                      || $notificationtarget->validateSendTo($users_infos, $notify_me)) {
                      //If the user have not yet been notified
                      if (!isset($email_processed[$users_infos['language']][$users_infos['email']])) {
                         //If ther user's language is the same as the template's one
@@ -150,7 +151,7 @@ class NotificationEvent extends CommonDBTM {
                         }
 
                         if ($template->getTemplateByLanguage($notificationtarget, $users_infos,
-                                                            $event, $options)) {
+                                                             $event, $options)) {
 
                            //Send notification to the user
                            if ($label == '') {
@@ -160,7 +161,8 @@ class NotificationEvent extends CommonDBTM {
                               $notificationtarget->getFromDB($target['id']);
                               echo "<tr class='tab_bg_2'><td>".$label."</td>";
                               echo "<td>".$notificationtarget->getNameID()."</td>";
-                              echo "<td>".$template->getName()." (".$users_infos['language'].")</td>";
+                              echo "<td>".sprintf(__('%1$s (%2$s)'), $template->getName(),
+                                                  $users_infos['language'])."</td>";
                               echo "<td>".$users_infos['email']."</td>";
                               echo "</tr>";
                            }
@@ -195,7 +197,7 @@ class NotificationEvent extends CommonDBTM {
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>"._n('Notification', 'Notifications',2).
-               "</th><th colspan='2'><font color='blue'> (".$item->getTypeName(1).")</font></th></tr>";
+            "</th><th colspan='2'><font color='blue'> (".$item->getTypeName(1).")</font></th></tr>";
 
       $events = array();
       if ($target = NotificationTarget::getInstanceByType(get_class($item))) {
