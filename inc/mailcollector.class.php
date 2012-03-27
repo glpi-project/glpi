@@ -909,6 +909,11 @@ class MailCollector  extends CommonDBTM {
             }
          }
 
+         // secu on subject setting
+         if (!isset($mail_header->subject)) {
+            $mail_header->subject = '';         
+         }
+         
          $mail_details = array('from'       => Toolbox::strtolower($sender->mailbox).'@'.$sender->host,
                                'subject'    => $mail_header->subject,
                                'to'         => Toolbox::strtolower($to->mailbox).'@'.$to->host,
