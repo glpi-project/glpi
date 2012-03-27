@@ -161,7 +161,7 @@ class NotificationMailSetting extends CommonDBTM {
             echo "<span class='red'>&nbsp;".__('Invalid email address')."</span>";
          }
          echo " </td>";
-         echo "<td >" . __('Response name (if needed)') . "</td>";
+         echo "<td >" . __('Response address (if needed)') . "</td>";
          echo "<td><input type='text' name='admin_reply_name' size='40' value='" .
                     $CFG_GLPI["admin_reply_name"] . "'>";
          echo " </td></tr>";
@@ -191,7 +191,7 @@ class NotificationMailSetting extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td >" . __('SMTP host') . "</td>";
          echo "<td><input type='text' name='smtp_host' size='40' value='".$CFG_GLPI["smtp_host"]."'>";
          echo "</td>";
-         echo "<td >" . __('SMTP Login (optional)') . "</td>";
+         echo "<td >" . __('SMTP login (optional)') . "</td>";
          echo "<td><input type='text' name='smtp_username' size='40' value='" .
                     $CFG_GLPI["smtp_username"] . "'></td></tr>";
 
@@ -199,7 +199,7 @@ class NotificationMailSetting extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td >" . __('Port') . "</td>";
          echo "<td><input type='text' name='smtp_port' size='5' value='".$CFG_GLPI["smtp_port"]."'>";
          echo "</td>";
-         echo "<td >" . __('SMTP Password (optional)') . "</td>";
+         echo "<td >" . __('SMTP password (optional)') . "</td>";
          echo "<td><input type='password' name='smtp_passwd' size='40' value='' autocomplete='off'>";
          echo "<br><input type='checkbox' name='_blank_smtp_passwd'>&nbsp;".__('Clear');
 
