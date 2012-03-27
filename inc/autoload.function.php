@@ -288,6 +288,11 @@ function glpi_autoload($classname) {
          Zend_Loader::loadClass($classname);
          return true;
       }
+      // Do not try to load phpcas using GLPi autoload
+      if (preg_match('/^CAS_.*/', $class)) {
+         return false;
+      }
+            
       $item = strtolower($classname);
    }
 
