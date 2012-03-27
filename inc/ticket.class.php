@@ -1287,6 +1287,8 @@ class Ticket extends CommonITILObject {
                $values                      = array();
                $values['tickets_id']        = $this->fields['id'];
                $values['users_id_validate'] = $users_id;
+               $values['_ticket_add'] = true;
+
                // to know update by rules
                if (isset($this->input["_rule_process"])) {
                   $values['_rule_process'] = $this->input["_rule_process"];
