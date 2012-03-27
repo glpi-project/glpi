@@ -408,7 +408,7 @@ class Consumable extends CommonDBTM {
          echo "<th>".$LANG['cartridges'][24]."</th>";
          if ($show_old) {
             echo "<th>".$LANG['consumables'][26]."</th>";
-            echo "<th>".$LANG['consumables'][33]."</th>";
+            echo "<th>".$LANG['consumables'][31]."</th>";
          }
          echo "<th width='200px'>".$LANG['financial'][3]."</th>";
 
