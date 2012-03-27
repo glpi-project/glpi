@@ -200,6 +200,14 @@ class RuleCriteria extends CommonDBChild {
             }
             return false;
 
+         case Rule::PATTERN_NOT_UNDER :
+            $table  = getTableNameForForeignKeyField($criteria);
+            $values = getSonsOf($table, $pattern);
+            if (isset($values[$field])) {
+               return false;
+            }
+            return true;
+
          case Rule::PATTERN_END :
             $value = "/".$pattern."$/i";
             if (preg_match($value, $field) > 0) {
@@ -320,9 +328,11 @@ class RuleCriteria extends CommonDBChild {
 
          if (isset($crit['type']) && $crit['type'] == 'dropdown') {
             $crititemtype = getItemtypeForTable($crit['table']);
-            if ($item = getItemForItemtype($crititemtype)
+
+            if (($item = getItemForItemtype($crititemtype))
                 && $item instanceof CommonTreeDropdown) {
-               $criteria[Rule::PATTERN_UNDER] = __('under');
+               $criteria[Rule::PATTERN_UNDER]     = __('under');
+               $criteria[Rule::PATTERN_NOT_UNDER] = __('not under');
             }
          }
       }
