@@ -505,7 +505,8 @@ class SoftwareLicense extends CommonDBTM {
 
       // Righ type is enough. Can add a License on a software we have Read access
       $canedit = Session::haveRight("software", "w");
-
+      $showmassiveactions = count(Dropdown::getMassiveActions(__CLASS__));
+      
       // Total Number of events
       $number = countElementsInTable("glpi_softwarelicenses",
                                      "glpi_softwarelicenses.softwares_id = $softwares_id " .
@@ -557,7 +558,7 @@ class SoftwareLicense extends CommonDBTM {
 
       if ($result=$DB->query($query)) {
          if ($DB->numrows($result)) {
-            if ($canedit) {
+            if ($showmassiveactions) {
                echo "<form method='post' name='massiveactionlicense_form$rand' id='".
                       "massiveactionlicense_form$rand' action=\"".$CFG_GLPI["root_doc"].
                       "/front/massiveaction.php\">";
@@ -655,7 +656,7 @@ class SoftwareLicense extends CommonDBTM {
             echo "</td></tr>";
             echo "</table>\n";
 
-            if ($canedit) {
+            if ($showmassiveactions) {
                Html::openArrowMassives("massiveactionlicense_form$rand", true);
                Dropdown::showForMassiveAction('SoftwareLicense', 0,
                                               array('softwares_id' => $softwares_id));

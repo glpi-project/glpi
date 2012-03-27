@@ -283,6 +283,10 @@ class NetworkPort extends CommonDBChild {
       }
 
       $canedit = $item->can($items_id, 'w');
+      $showmassiveactions = false;
+      if ($withtemplate!=2) {
+         $showmassiveactions = count(Dropdown::getMassiveActions(__CLASS__));
+      }
 
       // Show Add Form
       if ($canedit
@@ -314,12 +318,10 @@ class NetworkPort extends CommonDBChild {
          if ($DB->numrows($result) != 0) {
             $colspan = 9;
 
-            if ($withtemplate != 2) {
-               if ($canedit) {
-                  $colspan++;
-                  echo "\n<form id='networking_ports$rand' name='networking_ports$rand' method='post'
-                        action='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php'>\n";
-               }
+            if ($showmassiveactions) {
+               $colspan++;
+               echo "\n<form id='networking_ports$rand' name='networking_ports$rand' method='post'
+                     action='" . $CFG_GLPI["root_doc"] . "/front/networkport.form.php'>\n";
             }
 
             echo "<table class='tab_cadre_fixe'>\n";
@@ -333,7 +335,7 @@ class NetworkPort extends CommonDBChild {
             echo "&nbsp;:&nbsp;".$DB->numrows($result)."</th></tr>\n";
 
             echo "<tr>";
-            if ($withtemplate != 2 && $canedit) {
+            if ($showmassiveactions) {
                echo "<th>&nbsp;</th>\n";
             }
             echo "<th>#</th>\n";
@@ -355,7 +357,7 @@ class NetworkPort extends CommonDBChild {
                Session::addToNavigateListItems('NetworkPort', $netport->fields["id"]);
 
                echo "<tr class='tab_bg_1'>\n";
-               if ($withtemplate != 2 && $canedit) {
+               if ($showmassiveactions) {
                   echo "<td class='center' width='20'>";
                   echo "<input type='checkbox' name='del_port[".$netport->fields["id"]."]' value='1'>";
                   echo "</td>\n";
@@ -396,14 +398,11 @@ class NetworkPort extends CommonDBChild {
             }
             echo "</table>\n";
 
-            if ($canedit && $withtemplate != 2) {
+            if ($showmassiveactions) {
                Html::openArrowMassives("networking_ports$rand", true);
                Dropdown::showForMassiveAction('NetworkPort');
                $actions = array();
                Html::closeArrowMassives($actions);
-            }
-
-            if ($canedit && $withtemplate != 2) {
                echo "</form>";
             }
 

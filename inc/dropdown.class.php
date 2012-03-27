@@ -1349,13 +1349,13 @@ class Dropdown {
 
 
    /**
-    * Dropdown of actions for massive action
+    * Get array of massive actions
     *
     * @param $itemtype item type
     * @param $is_deleted massive action for deleted items ?
     * @param $extraparams array of extra parameters
    **/
-   static function showForMassiveAction($itemtype, $is_deleted=0, $extraparams=array()) {
+   static function getMassiveActions($itemtype, $is_deleted=0, $extraparams=array()) {
       global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
 
       /// TODO include in CommonDBTM defining only getAdditionalMassiveAction in sub classes
@@ -1364,49 +1364,32 @@ class Dropdown {
       if (!($item = getItemForItemtype($itemtype))) {
          return false;
       }
-
+      $actions = array();
+      
       if ($itemtype == 'NetworkPort') {
-         echo "<select name='massiveaction' id='massiveaction'>";
-
-         echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
-         echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
-         echo "<option value='assign_vlan'>".$LANG['networking'][55]."</option>";
-         echo "<option value='unassign_vlan'>".$LANG['networking'][58]."</option>";
-         // Interest of this massive action ?
-//          echo "<option value='move'>".$LANG['buttons'][20]."</option>";
-         echo "</select>";
-
-         $params = array('action'  => '__VALUE__',
-                        'itemtype' => $itemtype);
-
-         Ajax::updateItemOnSelectEvent("massiveaction", "show_massiveaction",
-                                       $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionPorts.php",
-                                       $params);
-
-         echo "<span id='show_massiveaction'>&nbsp;</span>\n";
-
+         $actions['delete']        = $LANG['buttons'][6];
+         $actions['assign_vlan']   = $LANG['networking'][55];
+         $actions['unassign_vlan'] = $LANG['networking'][58];
       } else {
          $infocom = new Infocom();
          $isadmin = $item->canUpdate();
 
-         echo "<select name='massiveaction' id='massiveaction'>";
-         echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
+         
          if (!in_array($itemtype,$CFG_GLPI["massiveaction_noupdate_types"])
              && (($isadmin && $itemtype != 'Ticket')
                  || (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canUpdate())
                  || ($itemtype == 'Ticket' && Session::haveRight('update_ticket',1)))) {
-
-            echo "<option value='update'>".$LANG['buttons'][14]."</option>";
+            $actions['update'] = $LANG['buttons'][14];
          }
 
          if (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canCreate() ) {
-            echo "<option value='activate_infocoms'>".$LANG['financial'][68]."</option>";
+            $actions['activate_infocoms'] = $LANG['financial'][68];
          }
 
          if ($is_deleted && !in_array($itemtype,$CFG_GLPI["massiveaction_nodelete_types"])) {
             if ($isadmin) {
-               echo "<option value='purge'>".$LANG['buttons'][22]."</option>";
-               echo "<option value='restore'>".$LANG['buttons'][21]."</option>";
+               $actions['purge']   = $LANG['buttons'][22];
+               $actions['restore'] = $LANG['buttons'][21];
             }
 
          } else {
@@ -1416,29 +1399,28 @@ class Dropdown {
                     || ($itemtype == 'Ticket' && Session::haveRight('delete_ticket',1)))) {
 
                if ($item->maybeDeleted()) {
-                  echo "<option value='delete'>".$LANG['buttons'][6]."</option>";
+                  $actions['delete'] = $LANG['buttons'][6];
                } else {
-                  echo "<option value='purge'>".$LANG['buttons'][22]."</option>";
+                  $actions['purge']   = $LANG['buttons'][6];
                }
             }
             if ($isadmin && in_array($itemtype, array('Phone', 'Printer', 'Peripheral',
                                                       'Monitor'))) {
-
-               echo "<option value='connect'>".$LANG['buttons'][9]."</option>";
-               echo "<option value='disconnect'>".$LANG['buttons'][10]."</option>";
+               $actions['connect']    = $LANG['buttons'][9];
+               $actions['disconnect'] = $LANG['buttons'][10];
             }
 
             if (in_array($itemtype,$CFG_GLPI["document_types"])) {
                $doc = new Document();
                if ($doc->canView()) {
-                  echo "<option value='add_document'>".$LANG['document'][16]."</option>";
+                  $actions['add_document'] = $LANG['document'][16];
                }
             }
 
             if (in_array($itemtype,$CFG_GLPI["contract_types"])) {
                $contract = new Contract();
                if ($contract->canUpdate()) {
-                  echo "<option value='add_contract'>".$LANG['financial'][36]."</option>";
+                  $actions['add_contract'] = $LANG['financial'][36];
                }
             }
 
@@ -1450,124 +1432,120 @@ class Dropdown {
                                              'Peripheral', 'Phone', 'Printer', 'Problem',
                                              'Software', 'SoftwareLicense', 'Supplier', 'Ticket'))
                 && $isadmin) {
-
-               echo "<option value='add_transfer_list'>".$LANG['buttons'][48]."</option>";
+               $actions['add_transfer_list'] = $LANG['buttons'][48];
             }
 
             switch ($itemtype) {
                case 'Software' :
                   if ($isadmin && countElementsInTable("glpi_rules",
                                                        "sub_type='RuleSoftwareCategory'")>0) {
-
-                     echo "<option value='compute_software_category'>".$LANG['rulesengine'][38]." ".
-                           $LANG['rulesengine'][40]."</option>";
+                     $actions['compute_software_category'] = $LANG['rulesengine'][38]." ".
+                                                             $LANG['rulesengine'][40];
                   }
 
                   if (Session::haveRight("rule_dictionnary_software","w")
                       && countElementsInTable("glpi_rules","sub_type='RuleDictionnarySoftware'")>0) {
-
-                     echo "<option value='replay_dictionnary'>".$LANG['rulesengine'][76]."</option>";
+                     $actions['replay_dictionnary'] = $LANG['rulesengine'][76];
                   }
                   break;
 
                case 'Computer' :
                   if ($isadmin) {
-                     echo "<option value='connect_to_computer'>".$LANG['buttons'][9]."</option>";
-                     echo "<option value='install'>".$LANG['buttons'][4]."</option>";
+                     $actions['connect_to_computer'] = $LANG['buttons'][9];
+                     $actions['install']             = $LANG['buttons'][4];
 
                      if ($CFG_GLPI['use_ocs_mode']) {
 
                         if (Session::haveRight("ocsng","w")
                             || Session::haveRight("sync_ocsng","w")) {
-                           echo "<option value='force_ocsng_update'>".$LANG['ldap'][11]."</option>";
+                           $actions['force_ocsng_update'] = $LANG['ldap'][11];
                         }
-
-                        echo "<option value='unlock_ocsng_field'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][16]."</option>";
-                        echo "<option value='unlock_ocsng_monitor'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][30]."</option>";
-                        echo "<option value='unlock_ocsng_peripheral'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][32]."</option>";
-                        echo "<option value='unlock_ocsng_printer'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][34]."</option>";
-                        echo "<option value='unlock_ocsng_software'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][52]."</option>";
-                        echo "<option value='unlock_ocsng_ip'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][50]."</option>";
-                        echo "<option value='unlock_ocsng_disk'>".$LANG['buttons'][38]." ".
-                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][55]."</option>";
+                        $actions['unlock_ocsng_field'] = $LANG['buttons'][38]." ".
+                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][16];
+                        $actions['unlock_ocsng_monitor'] = $LANG['buttons'][38]." ".
+                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][30];
+                        $actions['unlock_ocsng_peripheral'] = $LANG['buttons'][38]." ".
+                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][32];
+                        $actions['unlock_ocsng_printer'] = $LANG['buttons'][38]." ".
+                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][34];
+                        $actions['unlock_ocsng_software'] = $LANG['buttons'][38]." ".
+                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][52];
+                        $actions['unlock_ocsng_ip'] = $LANG['buttons'][38]." ".
+                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][50];
+                        $actions['unlock_ocsng_disk'] = $LANG['buttons'][38]." ".
+                              $LANG['ocsconfig'][0]." - ".$LANG['ocsng'][55];
                      }
                   }
                   break;
 
                case 'Supplier' :
                   if ($isadmin) {
-                     echo "<option value='add_contact'>".$LANG['financial'][24]."</option>";
+                     $actions['add_contact'] = $LANG['financial'][24];
                   }
                   break;
 
                case 'Calendar' :
-                  echo "<option value='duplicate'>".$LANG['buttons'][54]."</option>";
+                  $actions['duplicate'] = $LANG['buttons'][54];
                   break;
 
                case 'Contact' :
                   if ($isadmin) {
-                     echo "<option value='add_enterprise'>".$LANG['financial'][25]."</option>";
+                     $actions['add_enterprise'] = $LANG['financial'][25];
                   }
                   break;
 
                case 'User' :
                   if ($isadmin) {
-                     echo "<option value='add_group'>".$LANG['setup'][604]."</option>";
-                     echo "<option value='add_userprofile'>".$LANG['setup'][607]."</option>";
+                     $actions['add_group'] = $LANG['setup'][604];
+                     $actions['add_userprofile'] = $LANG['setup'][607];
                   }
 
                   if (Session::haveRight("user_authtype","w")) {
-                     echo "<option value='change_authtype'>".$LANG['login'][30]."</option>";
-                     echo "<option value='force_user_ldap_update'>".$LANG['ldap'][11]."</option>";
+                     $actions['change_authtype'] = $LANG['login'][30];
+                     $actions['force_user_ldap_update'] = $LANG['ldap'][11];
                   }
                   break;
 
                case 'Ticket' :
                   $tmp = new TicketFollowup();
                   if ($tmp->canCreate() && $_SESSION['glpiactiveprofile']['interface'] == 'central') {
-                     echo "<option value='add_followup'>".$LANG['job'][29]."</option>";
+                     $actions['add_followup'] = $LANG['job'][29];
                   }
 
                   $tmp = new TicketTask();
                   if ($tmp->canCreate()) {
-                     echo "<option value='add_task'>".$LANG['job'][30]."</option>";
+                     $actions['add_task'] = $LANG['job'][30];
                   }
 
                   $tmp = new TicketValidation();
                   if ($tmp->canCreate()) {
+                     $actions['submit_validation'] = $LANG['validation'][26];
                      echo "<option value='submit_validation'>".$LANG['validation'][26]."</option>";
                   }
 
                   if (Session::haveRight("update_ticket","1")) {
-                     echo "<option value='add_actor'>".$LANG['job'][27]."</option>";
-                     echo "<option value='link_ticket'>".$LANG['job'][56]."</option>";
+                     $actions['add_actor']   = $LANG['job'][27];
+                     $actions['link_ticket'] = $LANG['job'][56];
                   }
 
                   break;
 
                case 'CronTask' :
-                  echo "<option value='reset'>".$LANG['buttons'][16]." (".$LANG['crontask'][40].")";
-                  echo "</option>";
+                  $actions['reset'] = $LANG['buttons'][16]." (".$LANG['crontask'][40].")";
                   break;
 
                case 'NotImportedEmail':
-                     echo "<option value='delete_email'>".$LANG['mailing'][133]."</option>";
-                     echo "<option value='import_email'>".$LANG['buttons'][37]."</option>";
+                     $actions['delete_email'] = $LANG['mailing'][133];
+                     $actions['import_email'] = $LANG['buttons'][37];
                   break;
 
                case 'Problem' :
                   $tmp = new ProblemTask();
                   if ($tmp->canCreate()) {
-                     echo "<option value='add_task'>".$LANG['job'][30]."</option>";
+                     $actions['add_task'] = $LANG['job'][30];
                   }
                   if (Session::haveRight("edit_all_problem","1")) {
-                     echo "<option value='add_actor'>".$LANG['job'][27]."</option>";
+                     $actions['add_actor'] = $LANG['job'][27];
                   }
 
                   break;
@@ -1576,7 +1554,7 @@ class Dropdown {
 
             if ($item instanceof CommonTreeDropdown) {
                if ($isadmin) {
-                  echo "<option value='move_under'>".$LANG['buttons'][20]."</option>";
+                  $actions['move_under'] = $LANG['buttons'][20];
                }
             }
 
@@ -1586,23 +1564,47 @@ class Dropdown {
                 && $item->maybeRecursive()) {
 
                if ($isadmin && (count($_SESSION['glpiactiveentities'])>1)) {
-                  echo "<option value='merge'>".$LANG['buttons'][48]." - ".$LANG['software'][48];
-                  echo "</option>";
+                  $actions['merge'] = $LANG['buttons'][48]." - ".$LANG['software'][48];
                }
             }
 
             // Plugin Specific actions
             if (isset($PLUGIN_HOOKS['use_massive_action'])) {
                foreach ($PLUGIN_HOOKS['use_massive_action'] as $plugin => $val) {
-                  $actions = Plugin::doOneHook($plugin,'MassiveActions',$itemtype);
+                  $plug_actions = Plugin::doOneHook($plugin,'MassiveActions',$itemtype);
 
-                  if (count($actions)) {
-                     foreach ($actions as $key => $val) {
-                        echo "<option value = '$key'>$val</option>";
-                     }
+                  if (count($plug_actions)) {
+                     $actions += $plug_actions;
                   }
                }
             }
+         }
+      }
+      return $actions;
+   }
+  /**
+    * Dropdown of actions for massive action
+    *
+    * @param $itemtype item type
+    * @param $is_deleted massive action for deleted items ?
+    * @param $extraparams array of extra parameters
+   **/
+   static function showForMassiveAction($itemtype, $is_deleted=0, $extraparams=array()) {
+      global $CFG_GLPI;
+
+      $actions = self::getMassiveActions($itemtype, $is_deleted);
+
+      if ($itemtype == 'NetworkPort') {
+         $link = $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionPorts.php";
+      } else {
+         $link = $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php";
+      }
+      
+      if (count($actions)) {
+         echo "<select name='massiveaction' id='massiveaction'>";
+         echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
+         foreach ($actions as $key => $val) {
+            echo "<option value = '$key'>$val</option>";
          }
          echo "</select>";
 
@@ -1617,13 +1619,12 @@ class Dropdown {
          }
 
          Ajax::updateItemOnSelectEvent("massiveaction", "show_massiveaction",
-                                       $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
+                                       $link,
                                        $params);
 
          echo "<span id='show_massiveaction'>&nbsp;</span>\n";
       }
    }
-
    /**
     * Get the label associated with a management type
     *

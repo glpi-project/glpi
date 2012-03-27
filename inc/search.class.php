@@ -824,8 +824,8 @@ class Search {
                $infoc = new Infocom();
                $isadmin = ($infoc->canUpdate() || $infoc->canCreate());
             }
-
-            if ($isadmin && $output_type==HTML_OUTPUT) {
+            $showmassiveactions = count(Dropdown::getMassiveActions($itemtype,$p['is_deleted']));
+            if ($showmassiveactions) {
                echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".
                      $CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
             }
@@ -985,7 +985,7 @@ class Search {
 
                if ($output_type==HTML_OUTPUT) { // HTML display - massive modif
                   $tmpcheck = "";
-                  if ($isadmin) {
+                  if ($showmassiveactions) {
                      if ($itemtype=='Entity' && !in_array($data["id"],
                                                           $_SESSION["glpiactiveentities"])) {
 
@@ -1280,7 +1280,7 @@ class Search {
 
             // Delete selected item
             if ($output_type==HTML_OUTPUT) {
-               if ($isadmin) {
+               if ($showmassiveactions) {
                   $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
                   if (!$max) {
                      $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
