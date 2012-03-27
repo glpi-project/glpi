@@ -1519,7 +1519,6 @@ class Dropdown {
                   $tmp = new TicketValidation();
                   if ($tmp->canCreate()) {
                      $actions['submit_validation'] = $LANG['validation'][26];
-                     echo "<option value='submit_validation'>".$LANG['validation'][26]."</option>";
                   }
 
                   if (Session::haveRight("update_ticket","1")) {
