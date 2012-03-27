@@ -1353,9 +1353,8 @@ class Dropdown {
     *
     * @param $itemtype item type
     * @param $is_deleted massive action for deleted items ?
-    * @param $extraparams array of extra parameters
    **/
-   static function getMassiveActions($itemtype, $is_deleted=0, $extraparams=array()) {
+   static function getMassiveActions($itemtype, $is_deleted=0) {
       global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
 
       /// TODO include in CommonDBTM defining only getAdditionalMassiveAction in sub classes
