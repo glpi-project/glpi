@@ -2658,9 +2658,11 @@ abstract class CommonITILObject extends CommonDBTM {
                                                                            $rand_type))));
 
          echo "</td><td colspan='2'>";
-         echo "<a title\"".$LANG['job'][23]."\"
-                href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?itemtype=".$this->getType().
-                "&amp;items_id=".$this->getField('id')."'>".$LANG['job'][23]."</a>";
+         if (Session::haveRight('knowbase','r') || Session::haveRight('faq','r')) {
+            echo "<a title\"".$LANG['job'][23]."\"
+                  href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?itemtype=".$this->getType().
+                  "&amp;items_id=".$this->getField('id')."'>".$LANG['job'][23]."</a>";
+         }
          echo "</td></tr>";
       }
 
@@ -2679,9 +2681,11 @@ abstract class CommonITILObject extends CommonDBTM {
                                         $this->getField('solutiontypes_id'));
       }
       echo "</td><td colspan='2'>&nbsp;</td></tr>";
-      echo "<tr class='tab_bg_2'><td>".$LANG['job'][25]."</td><td>";
-      Dropdown::showYesNo('_sol_to_kb', false);
-      echo "</td><td colspan='2'>&nbsp;</td></tr>";
+      if ($canedit && Session::haveRight('knowbase','w')) {
+         echo "<tr class='tab_bg_2'><td>".$LANG['job'][25]."</td><td>";
+         Dropdown::showYesNo('_sol_to_kb', false);
+         echo "</td><td colspan='2'>&nbsp;</td></tr>";
+      }
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".$LANG['joblist'][6]."&nbsp;: </td><td colspan='3'>";
