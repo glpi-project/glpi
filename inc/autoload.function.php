@@ -116,7 +116,11 @@ function glpi_autoload($classname) {
          include_once(GLPI_EZC_BASE);
          return ezcBase::autoload($classname);
       }
-
+      // Do not try to load phpcas using GLPi autoload
+      if (preg_match('/^CAS_.*/', $class)) {
+         return false;
+      }
+      
       $item = strtolower($classname);
    }
 
@@ -146,7 +150,6 @@ if (function_exists('spl_autoload_register')) {
    function __autoload($class) {
       // Is phpCAS class ?
       if (preg_match('/^CAS_.*/', $class)) {
-
          include_once(GLPI_PHPCAS);
          return CAS_autoload($class);
       }
