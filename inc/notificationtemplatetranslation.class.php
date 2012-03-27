@@ -45,6 +45,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::getName()
+   **/
    function getName($with_comment=0) {
       global $CFG_GLPI;
 
@@ -59,7 +62,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
 
    function defineTabs($options=array()) {
-
 
       $ong = array();
       $ong['empty'] = $this->getTypeName(1); // History as single tab seems "strange"
@@ -97,7 +99,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
           }
        }
 
-      $canedit = Session::haveRight("config", "w");
+      $canedit  = Session::haveRight("config", "w");
 
       $template = new NotificationTemplate();
       $template->getFromDB($notificationtemplates_id);
@@ -171,7 +173,6 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $nID     = $template->getField('id');
       $canedit = Session::haveRight("config", "w");
 
-
       if ($canedit) {
          echo "<div class='center'>".
               "<a class='vsubmit' href='".Toolbox::getItemTypeFormURL('NotificationTemplateTranslation').
@@ -224,6 +225,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
    }
 
 
+   /**
+    * @param $input  array
+   */
    static function cleanContentHtml(array $input) {
 
       $txt = Html::clean(Toolbox::unclean_cross_side_scripting_deep($input['content_html']));
@@ -248,7 +252,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                     = array();
       $tab['common']           = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
@@ -285,7 +289,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       $used_languages = getAllDatasFromTable('glpi_notificationtemplatetranslations',
                                              'notificationtemplates_id='.$language_id);
-      $used = array();
+      $used           = array();
 
       foreach ($used_languages as $used_language) {
          $used[$used_language['language']] = $used_language['language'];
@@ -343,17 +347,17 @@ class NotificationTemplateTranslation extends CommonDBChild {
             $allowed_values = '';
          }
 
-         echo "<tr class='tab_bg_1'><td>".$tag."</td>
-               <td>";
-               if ($values['type']==NotificationTarget::TAG_LANGUAGE) {
-                  printf(__('%1$s: %2$s'), __('Label'), $values['label']);
-               } else {
-                  echo $values['label'];
-               }
-               echo "</td><td>$event</td>
-               <td>".$action."</td>
-               <td>$allowed_values</td>
-               </tr>";
+         echo "<tr class='tab_bg_1'><td>".$tag."</td>".
+              "<td>";
+         if ($values['type'] == NotificationTarget::TAG_LANGUAGE) {
+            printf(__('%1$s: %2$s'), __('Label'), $values['label']);
+         } else {
+               echo $values['label'];
+         }
+         echo "</td><td>".$event."</td>".
+              "<td>".$action."</td>".
+              "<td>".$allowed_values."</td>".
+              "</tr>";
       }
       echo "</table></div>";
    }
@@ -379,7 +383,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='NotificationTemplate') {
+      if ($item->getType() == 'NotificationTemplate') {
          $temp = new self();
          $temp->showSummary($item);
       }

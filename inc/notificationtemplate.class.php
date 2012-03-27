@@ -128,7 +128,7 @@ class NotificationTemplate extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                     = array();
       $tab['common']           = __('Characteristics');
 
       $tab[1]['table']         = $this->getTable();
@@ -156,9 +156,9 @@ class NotificationTemplate extends CommonDBTM {
    /**
     * Display templates available for an itemtype
     *
-    * @param $name the dropdown name
-    * @param $itemtype display templates for this itemtype only
-    * @param $value the dropdown's default value (0 by default)
+    * @param $name      the dropdown name
+    * @param $itemtype  display templates for this itemtype only
+    * @param $value     the dropdown's default value (0 by default)
    **/
    static function dropdownTemplates($name, $itemtype, $value=0) {
       global $DB;
@@ -170,11 +170,15 @@ class NotificationTemplate extends CommonDBTM {
    }
 
 
+   /**
+    * @param $options
+   **/
    function getAdditionnalProcessOption($options) {
 
       //Additionnal option can be given for template processing
       //For the moment, only option to see private tasks & followups is available
-      if (!empty($options) && isset($options['sendprivate'])) {
+      if (!empty($options)
+          && isset($options['sendprivate'])) {
          return 1;
       }
       return 0;
@@ -232,8 +236,8 @@ class NotificationTemplate extends CommonDBTM {
             $template_datas['subject'] = Html::entity_decode_deep($template_datas['subject']);
             $this->signature           = Html::entity_decode_deep($this->signature);
 
-            $lang['subject'] = $target->getSubjectPrefix($event) .
-                               self::process($template_datas['subject'], $data);
+            $lang['subject']     = $target->getSubjectPrefix($event) .
+                                    self::process($template_datas['subject'], $data);
             $lang['content_html'] = '';
 
             //If no html content, then send only in text
@@ -313,7 +317,7 @@ class NotificationTemplate extends CommonDBTM {
                //Manage FIRST & LAST statement
                $foreachvalues = $data[$tag_infos];
                if (!empty($foreachvalues)) {
-                  if (isset($out[1][$id]) && $out[1][$id] != '') {
+                  if (isset($out[1][$id]) && ($out[1][$id] != '')) {
 
                      if ($out[1][$id] == 'FIRST') {
                         $foreachvalues = array_reverse($foreachvalues);
@@ -334,7 +338,7 @@ class NotificationTemplate extends CommonDBTM {
                         $data_lang_foreach[$field] = $value;
                      }
                   }
-                  $tmp = self::processIf($tag_out[1], $data_lang_foreach);
+                  $tmp                    = self::processIf($tag_out[1], $data_lang_foreach);
                   $output_foreach_string .= strtr($tmp, $data_lang_foreach);
                }
                $string = str_replace($tag_out[0],$output_foreach_string, $string);
@@ -389,8 +393,8 @@ class NotificationTemplate extends CommonDBTM {
             } else { // check exact match
 
                if (isset($data['##'.$if_field.'##'])
-                   && Html::entity_decode_deep($data['##'.$if_field.'##'])
-                                                      == Html::entity_decode_deep($out[2][$key])) {
+                   && (Html::entity_decode_deep($data['##'.$if_field.'##'])
+                           == Html::entity_decode_deep($out[2][$key]))) {
 
                   $condition_ok = true;
 
@@ -456,8 +460,8 @@ class NotificationTemplate extends CommonDBTM {
       $user_email = $user_infos['email'];
       $user_name  = $user_infos['username'];
 
-      $sender  = $target->getSender($options);
-      $replyto = $target->getReplyTo($options);
+      $sender     = $target->getSender($options);
+      $replyto    = $target->getReplyTo($options);
 
       $mailing_options['to']          = $user_email;
       $mailing_options['toname']      = $user_name;
@@ -472,7 +476,7 @@ class NotificationTemplate extends CommonDBTM {
          $additionnaloption =  NotificationTarget::NO_OPTION;
       }
 
-      $template_data = $this->templates_by_languages[$additionnaloption][$language];
+      $template_data    = $this->templates_by_languages[$additionnaloption][$language];
       $mailing_options['subject']      = $template_data['subject'];
       $mailing_options['content_html'] = $template_data['content_html'];
       $mailing_options['content_text'] = $template_data['content_text'];

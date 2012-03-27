@@ -55,11 +55,12 @@ class Ocslink extends CommonDBTM {
 
 
    /**
-   * Show OcsLink of an item
-   *
-   * @param $item CommonDBTM object
-   * @param $withtemplate integer : withtemplate param
-   * @return nothing
+    * Show OcsLink of an item
+    *
+    * @param $item                   CommonDBTM object
+    * @param $withtemplate  integer  withtemplate param (default '')
+    *
+    * @return nothing
    **/
    static function showForItem(CommonDBTM $item, $withtemplate='') {
       global $DB;
@@ -91,7 +92,9 @@ class Ocslink extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $CFG_GLPI;
 
-      if (!$withtemplate && $CFG_GLPI["use_ocs_mode"]) {
+      if (!$withtemplate
+          && $CFG_GLPI["use_ocs_mode"]) {
+
          switch ($item->getType()) {
             case 'Computer' :
                if (Session::haveRight('sync_ocsng', 'w') || Session::haveRight('computer', 'w')) {
@@ -106,7 +109,7 @@ class Ocslink extends CommonDBTM {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='Computer') {
+      if ($item->getType() == 'Computer') {
          self::showForItem($item);
          self::editLock($item);
       }
@@ -114,6 +117,9 @@ class Ocslink extends CommonDBTM {
    }
 
 
+   /**
+    * @param $comp   Computer object
+   **/
    static function editLock(Computer $comp) {
       global $DB;
 
@@ -140,7 +146,7 @@ class Ocslink extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td class='center'>";
             echo "<input type='hidden' name='resynch_id' value='" . $data["id"] . "'>";
             echo "<input class=submit type='submit' name='force_ocs_resynch' value=\"" .
-                   __('Force synchronization') . "\">";
+                   __s('Force synchronization') . "\">";
             echo "</form>\n";
             echo "</td><tr>";
          }
@@ -161,7 +167,7 @@ class Ocslink extends CommonDBTM {
             $locked = OcsServer::migrateComputerUpdates($ID, $locked);
          }
 
-         if (count($locked)>0) {
+         if (count($locked) > 0) {
             foreach ($locked as $key => $val) {
                if (!isset($lockable_fields[$val])) {
                   unset($locked[$key]);
@@ -274,10 +280,12 @@ class Ocslink extends CommonDBTM {
                if ($DB->numrows($resultSearchIP) == 0) {
                   $header = true;
                   if ($first) {
-                     echo "<tr><th colspan='2'>" . __('Locked IPs') . "</th></tr>\n";
+                     echo "<tr><th colspan='2'>" . __('Locked IP') . "</th></tr>\n";
                      $first = false;
                   }
-                  echo "<tr class='tab_bg_1'><td class='right' width='50%'>" . str_replace(OcsServer::FIELD_SEPARATOR, ' / ', $val) . "</td>";
+                  echo "<tr class='tab_bg_1'>".
+                       "<td class='right' width='50%'>" .
+                         str_replace(OcsServer::FIELD_SEPARATOR, ' / ', $val) . "</td>";
                   echo "<td class='left' width='50%'>";
                   echo "<input type='checkbox' name='lockip[" . $key . "]'></td></tr>\n";
                }
@@ -298,7 +306,7 @@ class Ocslink extends CommonDBTM {
                if ($DB->numrows($resultSearchSoft) == 0) {
                   $header = true;
                   if ($first) {
-                     echo "<tr><th colspan='2'>" . __('Locked software') . "</th></tr>\n";
+                     echo "<tr><th colspan='2'>" . _x('plural', 'Locked software') . "</th></tr>\n";
                      $first = false;
                   }
                   echo "<tr class='tab_bg_1'>";
@@ -373,21 +381,20 @@ class Ocslink extends CommonDBTM {
                   $first = false;
                }
                $device = new $types[$type]();
-               echo "<tr class='tab_bg_1'><td align='right' width='50%'>";
-               echo $device->getTypeName()."&nbsp;: $nomdev</td>";
+               echo "<tr class='tab_bg_1'><td class='right' width='50%'>";
+               echo sprint(__('%1$s: %2$s'), $device->getTypeName(), $nomdev)."</td>";
                echo "<td class='left' width='50%'>";
                echo "<input type='checkbox' name='lockdevice[" . $key . "]'></td></tr>\n";
             }
          }
 
+         echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          if ($header) {
-            echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-            echo "<input class='submit' type='submit' name='unlock' value='" .
-                  __s('Unlock') . "'></td></tr>";
+            echo "<input class='submit' type='submit' name='unlock' value='".__s('Unlock') . "'>";
          } else {
-            echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
-            echo __('No field locked')."</td></tr>";
+            -e('No field locked');
          }
+         echo "</td></tr>";
 
          echo "</table></form>";
          echo "</div>\n";
