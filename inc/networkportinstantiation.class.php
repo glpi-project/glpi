@@ -253,7 +253,8 @@ class NetworkPortInstantiation extends CommonDBChild {
          $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
          // Network card association is only available for computers
-         if (($lastItem->getType() == 'Computer') && (!$options['several'])) {
+         if (($lastItem->getType() == 'Computer')
+             && !$options['several']) {
 
             // Query each link to network cards
             $query = "SELECT link.`id` AS link_id,
@@ -280,13 +281,15 @@ class NetworkPortInstantiation extends CommonDBChild {
                $linkID               = $availableDevice['link_id'];
                $deviceNames[$linkID] = $availableDevice['name'];
                if (isset($availableDevice['mac'])) {
-                  $deviceNames[$linkID] .= ' - '.$availableDevice['mac'];
+                  $deviceNames[$linkID] = sprintf(__('%1$s - %2$s'), $deviceNames[$linkID],
+                                                  $availableDevice['mac']);
                }
 
                // get fields that must be copied from those of the network card
                $deviceInformations = array();
                foreach ($deviceFields as $field) {
-                  $deviceInformations[] = "$field: '".$availableDevice[$field]."'";
+                  $deviceInformations[] = sprintf(__('%1$s: %2$s'), $field,
+                                                  $availableDevice[$field]);
                }
                //addslashes_deep($deviceInformations);
                // Fill the javascript array
@@ -450,13 +453,14 @@ class NetworkPortInstantiation extends CommonDBChild {
 
          if ($DB->numrows($result) > 0) {
             $array_element_name                  = call_user_func(array($netport_type,
-                                                                  'getTypeName'),
+                                                                        'getTypeName'),
                                                                   $DB->numrows($result));
             $possible_ports[$array_element_name] = array();
 
             while ($portEntry = $DB->fetch_assoc($result)) {
                if ($multiple) {
-                  $portEntry['name'] .= ' - '.$portEntry['mac'];
+                  $portEntry['name'] = sprintf(__('%1$s - %2$s'), $portEntry['name'],
+                                               $portEntry['mac']);
                } else {
                   echo "  device_mac_addresses[".$portEntry['id']."] = '".$portEntry['mac']."'\n";
                }
@@ -481,17 +485,17 @@ class NetworkPortInstantiation extends CommonDBChild {
       }
 
       foreach ($possible_ports as $group => $ports) {
-         echo "   <optgroup label=\"$group\">";
+         echo "<optgroup label=\"$group\">";
 
          foreach ($ports as $id => $name) {
-            echo "      <option value='$id'";
+            echo "<option value='$id'";
             if (in_array($id, $links_id)) {
                echo " selected";
             }
             echo ">$name</option>\n";
          }
 
-         echo "   </optgroup>";
+         echo "</optgroup>";
       }
 
       echo "</select>\n</td>\n";

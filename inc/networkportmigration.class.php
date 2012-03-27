@@ -45,6 +45,7 @@ class NetworkPortMigration extends CommonDBChild {
    public $itemtype  = 'itemtype';
    public $items_id  = 'items_id';
 
+
    static function getTypeName($nb=0) {
       return __('Network port migration');
    }
@@ -236,8 +237,9 @@ class NetworkPortMigration extends CommonDBChild {
          if (isset($network)) {
             printf(__('Append a correct gateway to the network %s'), $network->getLink());
          } else {
-            printf(__('Unknown network: %s'),"<a href='".Toolbox::getItemTypeFormURL('IPNetwork')."'>" .
-                  __('Add a network')."</a>");
+            printf(__('%1$s: %2$s'), __('Unknown network'),
+                   "<a href='".Toolbox::getItemTypeFormURL('IPNetwork')."'>".__('Add a network')."
+                    </a>");
          }
          echo "</td></tr>\n";
       }
@@ -249,8 +251,8 @@ class NetworkPortMigration extends CommonDBChild {
          $networkPort = new NetworkPort();
          if ($networkPort->getFromDB($this->getID())) {
             $number_real_errors ++;
-            echo "<a href='" . $networkPort->getLinkURL() . "'>" .
-                 __('Add a correct IP to the network port') . "</a>";
+            echo "<a href='".$networkPort->getLinkURL()."'>".
+                   __('Add a correct IP to the network port') . "</a>";
          } else {
             _e('Unknown network port !');
          }
@@ -318,17 +320,15 @@ class NetworkPortMigration extends CommonDBChild {
    function getSearchOptions() {
       global $CFG_GLPI;
 
-      $tab = parent::getSearchOptions();
-
+      $tab         = parent::getSearchOptions();
 
       $optionIndex = 10;
       // From 10 to 14
       foreach (self::getMotives() as $motive => $name) {
-
-         $tab[$optionIndex]['table']         = $this->getTable();
-         $tab[$optionIndex]['field']         = $motive;
-         $tab[$optionIndex]['name']          = $name;
-         $tab[$optionIndex]['datatype']      = 'bool';
+         $tab[$optionIndex]['table']      = $this->getTable();
+         $tab[$optionIndex]['field']      = $motive;
+         $tab[$optionIndex]['name']       = $name;
+         $tab[$optionIndex]['datatype']   = 'bool';
 
          $optionIndex ++;
       }
@@ -368,5 +368,6 @@ class NetworkPortMigration extends CommonDBChild {
                                                      HTMLTable_SuperHeader $super,
                                                      $options=array()) {
    }
+
 }
 ?>
