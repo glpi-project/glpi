@@ -1491,7 +1491,7 @@ class Dropdown {
       $actions = array();
       
       if ($itemtype == 'NetworkPort') {
-         $actions['delete']        = __('button', 'Purge');
+         $actions['delete']        = _x('button', 'Purge');
          $actions['assign_vlan']   = __('Associate a VLAN');
          $actions['unassign_vlan'] = __('Dissociate a VLAN');
       } else {
