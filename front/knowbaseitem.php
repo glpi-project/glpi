@@ -51,7 +51,7 @@ if (!isset($_GET["contains"])
 
    if ($item = getItemForItemtype($_GET["itemtype"])) {
       if ($item->getFromDB($_GET["items_id"])) {
-         $_GET["contains"] = $item->getField('name');
+         $_GET["contains"] = addslashes($item->getField('name'));
       }
    }
 }
