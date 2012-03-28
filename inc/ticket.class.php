@@ -4775,8 +4775,18 @@ class Ticket extends CommonITILObject {
    }
 
 
+   /**
+    * Display a line for a ticket
+    *
+    * @param $id                 Integer  ID of the ticket
+    * @param $followups          Boolean  show followup columns
+    * @param $output_type        Integer  type of output
+    * @param $row_num            Integer  row number
+    * @param $id_for_massaction  Integer  default 0 means no massive action
+    *
+    */
    static function showShort($id, $followups, $output_type=Search::HTML_OUTPUT, $row_num=0,
-                             $id_for_massaction=-1) {
+                             $id_for_massaction=0) {
       global $CFG_GLPI;
 
       $rand = mt_rand();
@@ -4788,12 +4798,6 @@ class Ticket extends CommonITILObject {
       // Print links or not in case of user view
       // Make new job object and fill it from database, if success, print it
       $job = new self();
-
-      // If id is specified it will be used as massive aciton id
-      // Used when displaying ticket and wanting to delete a link data
-      if ($id_for_massaction == -1) {
-         $id_for_massaction = $id;
-      }
 
       $candelete   = Session::haveRight("delete_ticket", "1");
       $canupdate   = Session::haveRight("update_ticket", "1");
@@ -4826,7 +4830,8 @@ class Ticket extends CommonITILObject {
          }
 
          if (($candelete || $canupdate)
-             && $output_type == Search::HTML_OUTPUT) {
+             && $output_type == Search::HTML_OUTPUT
+             && $id_for_massaction) {
 
             $sel = "";
             if (isset($_GET["select"]) && $_GET["select"] == "all") {
