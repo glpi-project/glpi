@@ -2828,6 +2828,7 @@ class User extends CommonDBTM {
       Log::history($users_id, 'User', $changes, 0, Log::HISTORY_LOG_SIMPLE_MESSAGE);
    }
 
+
    /**
     *
     * @param $login
@@ -2835,7 +2836,8 @@ class User extends CommonDBTM {
    static function getIdByName($login) {
       self::getIdByField('name', $login);
    }
-   
+
+
    /**
     * @since version 0.84
     *
