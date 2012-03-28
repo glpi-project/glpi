@@ -729,13 +729,13 @@ class Dropdown {
                     __('Fields unicity')
                         => array('Fieldblacklist' => _n('Ignored value for the unicity',
                                                         'Ignored values for the unicity', 2)),
-                        
+
                     __('External authentications')
                         => array('SsoVariable' => _n('Field storage of the login in the HTTP request',
                                                      'Fields storage of the login in the HTTP request',
                                                      2))
-                        
-                        
+
+
                  ); //end $opt
 
          $plugdrop = Plugin::getDropdowns();
@@ -1489,7 +1489,7 @@ class Dropdown {
          return false;
       }
       $actions = array();
-      
+
       if ($itemtype == 'NetworkPort') {
          $actions['delete']        = _x('button', 'Purge');
          $actions['assign_vlan']   = __('Associate a VLAN');
@@ -1594,13 +1594,15 @@ class Dropdown {
                             || Session::haveRight("sync_ocsng","w")) {
                            $actions['force_ocsng_update'] = __('Force synchronization');
                         }
-                        $actions['unlock_ocsng_field']      = __('Unlock the locked fields for OCSNG');
-                        $actions['unlock_ocsng_monitor']    = __('Unlock the locked monitors for OCSNG');
-                        $actions['unlock_ocsng_peripheral'] = __('Unlock the locked devices for OCSNG');
-                        $actions['unlock_ocsng_printer']    = __('Unlock the locked printers for OCSNG');
-                        $actions['unlock_ocsng_software']   = __('Unlock the locked software for OCSNG');
-                        $actions['unlock_ocsng_ip']         = __('Unlock the locked IPs for OCSNG');
-                        $actions['unlock_ocsng_disk']       = __('Unlock the locked volumes for OCSNG');
+                        $actions['unlock_ocsng_field']   = __('Unlock the locked fields for OCSNG');
+                        $actions['unlock_ocsng_monitor'] = __('Unlock the locked monitors for OCSNG');
+                        $actions['unlock_ocsng_peripheral']
+                                                         = __('Unlock the locked devices for OCSNG');
+                        $actions['unlock_ocsng_printer'] = __('Unlock the locked printers for OCSNG');
+                        $actions['unlock_ocsng_software']
+                                                         = __('Unlock the locked software for OCSNG');
+                        $actions['unlock_ocsng_ip']      = __('Unlock the locked IP for OCSNG');
+                        $actions['unlock_ocsng_disk']    = __('Unlock the locked volumes for OCSNG');
                       }
                   }
                   break;
@@ -1628,8 +1630,9 @@ class Dropdown {
                   }
 
                   if (Session::haveRight("user_authtype","w")) {
-                     $actions['change_authtype']        = _x('button', 'Change the authentication method');
-                     $actions['force_user_ldap_update'] = __('Force synchronization');
+                     $actions['change_authtype'] = _x('button', 'Change the authentication method');
+                     $actions['force_user_ldap_update']
+                                                 = __('Force synchronization');
                   }
                   break;
 
@@ -1718,6 +1721,7 @@ class Dropdown {
       return $actions;
    }
 
+
   /**
     * Dropdown of actions for massive action
     *
@@ -1735,7 +1739,7 @@ class Dropdown {
       } else {
          $link = $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php";
       }
-      
+
       if (count($actions)) {
          echo "<select name='massiveaction' id='massiveaction'>";
          echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
@@ -1754,9 +1758,7 @@ class Dropdown {
             }
          }
 
-         Ajax::updateItemOnSelectEvent("massiveaction", "show_massiveaction",
-                                       $link,
-                                       $params);
+         Ajax::updateItemOnSelectEvent("massiveaction", "show_massiveaction", $link, $params);
 
          echo "<span id='show_massiveaction'>&nbsp;</span>\n";
       }

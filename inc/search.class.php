@@ -866,7 +866,8 @@ class Search {
                $isadmin = ($infoc->canUpdate() || $infoc->canCreate());
             }
             $showmassiveactions = count(Dropdown::getMassiveActions($itemtype,$p['is_deleted']));
-            if ($showmassiveactions && $output_type == self::HTML_OUTPUT) {
+            if ($showmassiveactions
+                && ($output_type == self::HTML_OUTPUT)) {
                echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".
                      $CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
             }

@@ -83,9 +83,9 @@ function getNextIP() {
       }
    }
    // Create IPnetwork
-   if ($IP[3]==1) {
+   if ($IP[3] == 1) {
       $net = new IPNetwork();
-      $net->add(array('entities_id'  => 0, 
+      $net->add(array('entities_id'  => 0,
                       'is_recursive' => 1,
                       'name'         => $IP[0].".".$IP[1].".".$IP[2].".0",
                       'addressable'  => 1,
@@ -133,23 +133,21 @@ function getNextMAC() {
 
 /**  Generate bigdump : Create networkport ethernet
  *
- * @param $itemtype      item type
+ * @since version 0.84
+ *
+ * @param $itemtype        item type
  * @param $items_id        item ID
- * @param $entities_id item entity ID
- * @param $locations_id ID of the location trying to link with network equipment
-**/                                      
+ * @param $entities_id     item entity ID
+ * @param $locations_id    ID of the location trying to link with network equipment (default 0)
+**/
 function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_id=0) {
    global $NET_LOC, $NET_PORT, $MAX, $VLAN_LOC;
-   
-//    echo "<br><br>$itemtype-$items_id-$entities_id-$locations_id<br><br>";
-   
+
    // Add networking ports
-   $newIP                 = getNextIP();
-//    print_r($newIP);echo "<br>";
-   $newMAC                = getNextMAC();
-//    echo $newMAC.'<br>';
-   
-   if ($itemtype == 'NetworkEquipment' && $locations_id) {
+   $newIP   = getNextIP();
+   $newMAC  = getNextMAC();
+
+   if (($itemtype == 'NetworkEquipment') && $locations_id) {
       // Find father locations_id;
       $loc = new Location();
       if ($loc->getFromDB($locations_id)) {
@@ -158,56 +156,54 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
          $locations_id = 0;
       }
    }
-//    echo "new locations_id = $locations_id<br>";
-   
+
    //insert netpoint
-   $netpoint = new NetPoint();
+   $netpoint   = new NetPoint();
    $netpointID = $netpoint->add(array('entities_id'  => $entities_id,
                                       'locations_id' => $locations_id,
                                       'name'         => getNextNETPOINT(),
-                                      'comment'      => "comment netpoint $locations_id"));   
-   
+                                      'comment'      => "comment netpoint $locations_id"));
+
    if ($locations_id && !isset($VLAN_LOC[$locations_id])) {
-      $vlanID                = mt_rand(1,$MAX["vlan"]);
+      $vlanID                  = mt_rand(1,$MAX["vlan"]);
       $VLAN_LOC[$locations_id] = $vlanID;
    }
    if (!isset($NET_PORT[$itemtype][$items_id])) {
       $NET_PORT[$itemtype][$items_id]=0;
    }
-   $np = new NetworkPort();
-   $nv = new NetworkPort_Vlan();
+   $np          = new NetworkPort();
+   $nv          = new NetworkPort_Vlan();
    $newportname = "port of $itemtype-$items_id";
-   $refportID = 0;
-   
+   $refportID   = 0;
+
    if ($locations_id && isset($NET_LOC[$locations_id]) && $NET_LOC[$locations_id]) {
-      $refportname = "link port to $itemtype-$items_id";
+      $refportname  = "link port to $itemtype-$items_id";
       $newportname .= " link to NetworkEquipment-".$NET_LOC[$locations_id];
-      $newMAC2 = getNextMAC();
+      $newMAC2      = getNextMAC();
 
       // Create new port on ref item
-      $param = array('itemtype'           => 'NetworkEquipment',
-                     'items_id'           => $NET_LOC[$locations_id],
-                     'entities_id'        => $entities_id,
-                     'logical_number'     => $NET_PORT['NetworkEquipment'][$NET_LOC[$locations_id]]++,
-                     'name'               => $refportname,
-                     'instantiation_type' => 'NetworkPortEthernet',
-                     'mac'                => $newMAC2,
-                     'comment'            => "comment $refportname",
-                     'netpoints_id'       => $netpointID,
-                     'NetworkName_name'   => "$itemtype-$items_id-$entities_id",
+      $param = array('itemtype'                 => 'NetworkEquipment',
+                     'items_id'                 => $NET_LOC[$locations_id],
+                     'entities_id'              => $entities_id,
+                     'logical_number'  => $NET_PORT['NetworkEquipment'][$NET_LOC[$locations_id]]++,
+                     'name'                     => $refportname,
+                     'instantiation_type'       => 'NetworkPortEthernet',
+                     'mac'                      => $newMAC2,
+                     'comment'                  => "comment $refportname",
+                     'netpoints_id'             => $netpointID,
+                     'NetworkName_name'         => "$itemtype-$items_id-$entities_id",
                      'NetworkName__ipaddresses' => array(-100 => $newIP['ip']),
                      );
-//       print_r($param);echo '<br>';
-      $np->splitInputForElements($param);
+
+                     $np->splitInputForElements($param);
       $refportID = $np->add($param);
-//       echo "Ref port = $refportID<br>";
-      $np->updateDependencies(1);      
+      $np->updateDependencies(1);
       if (isset($VLAN_LOC[$locations_id]) && $refportID) {
          $nv->add(array('networkports_id' => $refportID,
                         'vlans_id'        => $VLAN_LOC[$locations_id]));
       }
    }
-   
+
 //    $query = "INSERT INTO `glpi_networkports`
 //                VALUES (NULL, '$netwID', 'NetworkEquipment', '$ID_entity', '0',
 //                      '".$NET_PORT['NetworkEquipment'][$netwID]++."',
@@ -215,30 +211,29 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
 //                      '".$newIP['ip']."', '$newMAC', '$iface', '$netpointID',
 //                      '".$newIP['netwmask']."', '".$newIP['gateway']."',
 //                      '".$newIP['subnet']."','comment')";
-//    $DB->query($query) or die("PB REQUETE ".$query);   
-   
-   $param = array('itemtype'           => $itemtype,
-                  'items_id'           => $items_id,
-                  'entities_id'        => $entities_id,
-                  'logical_number'     => $NET_PORT[$itemtype][$items_id]++,
-                  'name'               => $newportname,
-                  'instantiation_type' => 'NetworkPortEthernet',
-                  'mac'                => $newMAC,
-                  'comment'            => "comment $newportname",
-                  'netpoints_id'       => $netpointID,
-                  'NetworkName_name'   => "$itemtype-$items_id-$entities_id",
+//    $DB->query($query) or die("PB REQUETE ".$query);
+
+   $param = array('itemtype'                 => $itemtype,
+                  'items_id'                 => $items_id,
+                  'entities_id'              => $entities_id,
+                  'logical_number'           => $NET_PORT[$itemtype][$items_id]++,
+                  'name'                     => $newportname,
+                  'instantiation_type'       => 'NetworkPortEthernet',
+                  'mac'                      => $newMAC,
+                  'comment'                  => "comment $newportname",
+                  'netpoints_id'             => $netpointID,
+                  'NetworkName_name'         => "$itemtype-$items_id-$entities_id",
                   'NetworkName__ipaddresses' => array(-100 => $newIP['ip']),
                   );
-//    print_r($param); echo '<br>';
-   $np->splitInputForElements($param);
+
+                  $np->splitInputForElements($param);
    $newportID = $np->add($param);
-//    echo "New port = $newportID<br>";
-   
+
    $np->updateDependencies(1);
    if (isset($VLAN_LOC[$locations_id]) && $newportID) {
       $nv->add(array('networkports_id' => $newportID,
                      'vlans_id'        => $VLAN_LOC[$locations_id]));
-   }   
+   }
    if ($locations_id && $refportID && $newportID) {
       // link ports
       $nn = new Networkport_Networkport();
@@ -246,10 +241,10 @@ function addNetworkEthernetPort($itemtype, $items_id, $entities_id, $locations_i
                      'networkports_id_2' => $newportID,));
    } else {
       if ($locations_id) {
-//          echo "Erreur $refportID - $newportID<br>";
       }
    }
 }
+
 
 /**  Generate bigdump : make an item reservable
  *
