@@ -374,6 +374,9 @@ class Search {
                   }
 
                   foreach ($items as $key2 => $val2) {
+                     if (isset($val2['nosearch']) && $val2['nosearch']) {
+                        continue;
+                     }
                      if (is_array($val2)) {
                         // Add Where clause if not to be done in HAVING CLAUSE
                         if (!isset($val2["usehaving"])) {
