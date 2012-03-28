@@ -537,6 +537,13 @@ class Ticket extends CommonITILObject {
    function prepareInputForUpdate($input) {
       global $LANG, $CFG_GLPI;
 
+      // automatic recalculate if user changes urgence
+      if (isset($input['urgency'])
+          && isset($input['impact'])
+          && !isset($input['priority'])) {
+         $input['priority'] = self::computePriority($input['urgency'], $input['impact']);
+      }
+
 //       if ($CFG_GLPI["is_ticket_title_mandatory"] && isset($input['name']) ) {
 //          $title = trim($input['name']);
 //          if (empty($title)) {
@@ -622,6 +629,7 @@ class Ticket extends CommonITILObject {
              && $this->isUser(parent::REQUESTER,Session::getLoginUserID())) {
             $allowed_fields[] = 'content';
             $allowed_fields[] = 'urgency';
+            $allowed_fields[] = 'priority'; // automatic recalculate if user changes urgence
             $allowed_fields[] = 'itilcategories_id';
             $allowed_fields[] = 'itemtype';
             $allowed_fields[] = 'items_id';
