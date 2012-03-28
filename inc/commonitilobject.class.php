@@ -1857,6 +1857,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       $tab[35]['table']      = getTableForItemType($this->userlinkclass);
       $tab[35]['field']      = 'use_notification';
+      $tab[35]['massiveaction'] = false;
       $tab[35]['name']       = $LANG['job'][19];
       $tab[35]['datatype']   = 'bool';
       $tab[35]['joinparams'] = array('jointype'  => 'child',
@@ -1867,6 +1868,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[34]['field']      = 'alternative_email';
       $tab[34]['name']       = $LANG['joblist'][27];
       $tab[34]['datatype']   = 'email';
+      $tab[34]['massiveaction'] = false;
       $tab[34]['joinparams'] = array('jointype'  => 'child',
                                      'condition' => 'AND NEWTABLE.`type` = '.self::REQUESTER);
 
