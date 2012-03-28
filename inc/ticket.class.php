@@ -1931,7 +1931,7 @@ class Ticket extends CommonITILObject {
       $tab[91]['splititems']    = true;
       $tab[91]['massiveaction'] = false;
       $tab[91]['joinparams']    = array('jointype' => 'child');
-      
+
       $tab[93]['table']         = 'glpi_users';
       $tab[93]['field']         = 'name';
       $tab[93]['name']          = $LANG['job'][9]." - ".$LANG['common'][37];
@@ -2056,7 +2056,7 @@ class Ticket extends CommonITILObject {
          $tab[95]['joinparams']    = array('beforejoin'
                                           => array('table'      => 'glpi_tickettasks',
                                                    'joinparams' => array('jointype'  => 'child')));
-                                                   
+
          $tab['solution'] = $LANG['jobresolution'][1];
 
          $tab[23]['table'] = 'glpi_solutiontypes';
@@ -2916,7 +2916,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-      
+
       if (!$ticket_template) {
          echo "<form method='post' name='helpdeskform' action='".
                $CFG_GLPI["root_doc"]."/front/tracking.injector.php' enctype='multipart/form-data'>";
@@ -3260,7 +3260,7 @@ class Ticket extends CommonITILObject {
       if (!isset($options['template_preview'])) {
          $values = $_REQUEST;
       }
-      
+
       // Restore saved value or override with page parameter
       foreach ($default_values as $name => $value) {
          if (!isset($values[$name])) {
@@ -3354,7 +3354,7 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-     
+
       // Put ticket template on $values for actors
       $values['_tickettemplate'] = $tt;
 
@@ -3752,6 +3752,8 @@ class Ticket extends CommonITILObject {
       if ($canupdate) {
          $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
       } else {
+         $idimpact = "value_impact".mt_rand();
+         echo "<input id='$idimpact' type='hidden' name='impact' value='".$this->fields["impact"]."'>";
          echo parent::getImpactName($this->fields["impact"]);
       }
       echo $tt->getEndHiddenFieldValue('impact',$this);
@@ -3837,7 +3839,7 @@ class Ticket extends CommonITILObject {
          echo "<span id='$idajax'>".parent::getPriorityName($this->fields["priority"])."</span>";
       }
 
-      if ($canupdate) {
+      if ($canupdate || $canupdate_descr) {
          $params = array('urgency'  => '__VALUE0__',
                          'impact'   => '__VALUE1__',
                          'priority' => $idpriority);
@@ -3856,7 +3858,7 @@ class Ticket extends CommonITILObject {
               "</th>";
          echo "<td colspan='3'>";
          echo $tt->getBeginHiddenFieldValue('actiontime');
-         Dropdown::showTimeStamp('actiontime', array('value' => $values['actiontime'], 
+         Dropdown::showTimeStamp('actiontime', array('value' => $values['actiontime'],
                                                      'addfirstminutes' => true));
          echo $tt->getEndHiddenFieldValue('actiontime',$this);
          echo "</td>";
