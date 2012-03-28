@@ -1784,6 +1784,7 @@ class Ticket extends CommonITILObject {
       $tab[31]['table']      = 'glpi_ticketsatisfactions';
       $tab[31]['field']      = 'type';
       $tab[31]['name']       = __('Satisfaction survey type');
+      $tab[31]['massiveaction'] = false;
       $tab[31]['searchtype'] = 'equals';
       $tab[31]['joinparams'] = array('jointype' => 'child');
 
