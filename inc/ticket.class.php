@@ -1287,7 +1287,7 @@ class Ticket extends CommonITILObject {
                $values                      = array();
                $values['tickets_id']        = $this->fields['id'];
                $values['users_id_validate'] = $users_id;
-               $values['_ticket_add'] = true;
+               $values['_ticket_add']       = true;
 
                // to know update by rules
                if (isset($this->input["_rule_process"])) {
@@ -3426,7 +3426,8 @@ class Ticket extends CommonITILObject {
             Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
             echo $tt->getEndHiddenFieldValue('due_date',$this);
             echo "</td>";
-            if ($this->fields['status'] != 'closed' && $canupdate) {
+            if (($this->fields['status'] != 'closed')
+                && $canupdate) {
                echo "<td>";
                echo $tt->getBeginHiddenFieldText('slas_id');
                echo "<span id='sla_action'>";

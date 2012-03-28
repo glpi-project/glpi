@@ -227,7 +227,7 @@ class ITILCategory extends CommonTreeDropdown {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='TicketTemplate') {
+      if ($item->getType() == 'TicketTemplate') {
          self::showForTicketTemplate($item, $withtemplate);
       }
       return parent::displayTabContentForItem($item, $tabnum, $withtemplate);

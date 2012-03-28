@@ -644,6 +644,7 @@ class DBmysql {
                    // 'Server status'    => $this->dbh->stat(),
    }
 
+
    /**
     * Get a global DB lock
     *
@@ -652,7 +653,7 @@ class DBmysql {
     * @since version 0.84
     *
     * @return Boolean
-    */
+   **/
    public function getLock($name) {
 
       $name          = addslashes($this->dbdefault.'.'.$name);
@@ -672,12 +673,12 @@ class DBmysql {
     * @since version 0.84
     *
     * @return Boolean
-    */
+   **/
    public function releaseLock($name) {
 
-      $name   = addslashes($this->dbdefault.'.'.$name);
-      $query  = "SELECT RELEASE_LOCK('$name')";
-      $result = $this->query($query);
+      $name          = addslashes($this->dbdefault.'.'.$name);
+      $query         = "SELECT RELEASE_LOCK('$name')";
+      $result        = $this->query($query);
       list($lock_ok) = $this->fetch_row($result);
 
       return $lock_ok;
