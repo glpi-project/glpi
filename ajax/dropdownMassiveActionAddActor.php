@@ -43,7 +43,7 @@ Session::checkRight('update_ticket', 1);
 
 if ($_POST["actortype"] > 0) {
    $rand = mt_rand();
-   Ticket::showActorAddForm($_POST["actortype"], $rand, $_SESSION['glpiactive_entity'], array(), false, false);
+   Ticket::showActorAddForm($_POST["actortype"], $rand, $_SESSION['glpiactive_entity'], array(), true, false, false);
    echo "&nbsp;<input type='submit' name='add_actor' class='submit' value=\"".$LANG['buttons'][2]."\">";
 }
 
