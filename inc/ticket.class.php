@@ -2820,11 +2820,11 @@ class Ticket extends CommonITILObject {
                                                                       $_SESSION['glpiactive_entity'],
                                                                       '', Ticket::INCIDENT_TYPE),
                       '_right'               => "id");
-
+/**
       if (!$ticket_template) {
          $values = $_REQUEST;
       }
-
+*/
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
       foreach ($values as $name => $value) {
