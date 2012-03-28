@@ -1862,6 +1862,7 @@ class Ticket extends CommonITILObject {
       $tab[31]['field']      = 'type';
       $tab[31]['name']       = $LANG['common'][17];
       $tab[31]['searchtype'] = 'equals';
+      $tab[31]['massiveaction'] = false;
       $tab[31]['joinparams'] = array('jointype' => 'child');
 
       $tab[60]['table']         = 'glpi_ticketsatisfactions';
