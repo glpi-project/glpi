@@ -1893,6 +1893,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[35]['field']         = 'use_notification';
       $tab[35]['name']          = __('Email followup');
       $tab[35]['datatype']      = 'bool';
+      $tab[35]['massiveaction'] = false;
       $tab[35]['joinparams']    = array('jointype'  => 'child',
                                         'condition' => 'AND NEWTABLE.`type` = '.self::REQUESTER);
 
@@ -1901,6 +1902,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[34]['field']         = 'alternative_email';
       $tab[34]['name']          = __('Email for followup');
       $tab[34]['datatype']      = 'email';
+      $tab[34]['massiveaction'] = false;
       $tab[34]['joinparams']    = array('jointype'  => 'child',
                                         'condition' => 'AND NEWTABLE.`type` = '.self::REQUESTER);
 
