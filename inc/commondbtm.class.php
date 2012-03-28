@@ -791,8 +791,8 @@ class CommonDBTM extends CommonGLPI {
    /**
     * Get the link to an item
     *
-    * @param $with_comment Display comments (default 0)
-    * @param $additional_options string additional options to add to <a> 
+    * @param $with_comment                Display comments (default 0)
+    * @param $additional_options  string  additional options to add to <a>
     *
     * @return string : HTML link
    **/

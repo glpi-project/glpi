@@ -377,7 +377,7 @@ class NetworkPort extends CommonDBChild {
          $canedit = $item->can($items_id, 'w');
       }
       $showmassiveactions = false;
-      if ($withtemplate!=2) {
+      if ($withtemplate != 2) {
          $showmassiveactions = count(Dropdown::getMassiveActions(__CLASS__));
       }
 

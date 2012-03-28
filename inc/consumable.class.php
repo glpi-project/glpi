@@ -373,13 +373,12 @@ class Consumable extends CommonDBTM {
 
          if ($canedit) {
             if (!$show_old
-               && ($DB->result($result,0,0) != 0)) {
+                && ($DB->result($result,0,0) != 0)) {
                echo "<th>";
-   
                Dropdown::showAllItems("items_id", 0, 0,$consitem->fields["entities_id"],
-                                    $CFG_GLPI["consumables_types"]);
-               echo "&nbsp;<input type='submit' class='submit' name='give'
-                           value='"._sx('button', 'Give')."'>";
+                                      $CFG_GLPI["consumables_types"]);
+               echo "&nbsp;<input type='submit' class='submit' name='give' value='".
+                            _sx('button', 'Give')."'>";
                echo "</th><th>"._n('Action', 'Actions',2)."</th>";
             } else {
                echo "<th colspan='2'>"._n('Action', 'Actions',2)."</th>";
