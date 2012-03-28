@@ -3845,6 +3845,7 @@ class Html {
 
    /**
     * Clean Printing of and array in a table
+    * ONLY FOR DEBUG
     *
     * @param $tab    the array to display
     * @param $pad    Pad used (default 0)
