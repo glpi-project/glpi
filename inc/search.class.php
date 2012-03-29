@@ -4667,12 +4667,15 @@ class Search {
             $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
             $todel      = array_merge($todel, array_keys($itemstodel));
          }
+         // TODO OCS
+         /*
          if (!$CFG_GLPI['use_ocs_mode']) {
             if (($action=='r' && !Session::haveRight('view_ocsng',$action))
                 || ($action=='w' && !Session::haveRight('sync_ocsng',$action))) {
                $todel = array_merge($todel, array('ocsng', 100, 101, 102, 103, 104));
             }
          }
+         */
       }
       if (!Session::haveRight('notes',$action)) {
          $todel[] = 90;

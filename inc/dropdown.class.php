@@ -1588,13 +1588,17 @@ class Dropdown {
                      $actions['connect_to_computer'] = _x('button', 'Connect');
                      $actions['install']             = _x('button', 'Install');
 
+                     // TODO have a hook to specify a plugin is an import plugin
                      if ($CFG_GLPI['use_ocs_mode']) {
 
+                     // TODO OCS
+                     /*
                         if (Session::haveRight("ocsng","w")
                             || Session::haveRight("sync_ocsng","w")) {
                            $actions['force_ocsng_update'] = __('Force synchronization');
                         }
                         $actions['unlock_ocsng_field']   = __('Unlock the locked fields for OCSNG');
+                        */
                         $actions['unlock_ocsng_monitor'] = __('Unlock the locked monitors for OCSNG');
                         $actions['unlock_ocsng_peripheral']
                                                          = __('Unlock the locked devices for OCSNG');

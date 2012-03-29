@@ -583,7 +583,8 @@ class Computer extends CommonDBTM {
       $dataocs = array();
       $rowspan = 10;
       $ocs_show = false;
-
+/*
+ //TODO OCS
       if (!empty($ID)
           && $this->fields["is_ocs_import"]
           && Session::haveRight("view_ocsng","r")) {
@@ -600,7 +601,7 @@ class Computer extends CommonDBTM {
             $rowspan   -= 4;
          }
       }
-
+*/
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
       echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"].
@@ -645,9 +646,12 @@ class Computer extends CommonDBTM {
       Html::autocompletionTextField($this, 'os_license_number');
       echo "</td>";
       ///TODO create get_inventory_plugin_information_title and display : manage rowspan based on datas get
+/*
+//TODO OCS
       if ($ocs_show) {
          echo "<th colspan='2'>";
-         if (Session::haveRight("ocsng","w")
+
+      if (Session::haveRight("ocsng","w")
              && ($ocs_config["ocs_url"] != '')) {
             echo OcsServer::getComputerLinkToOcsConsole(OcsServer::getByMachineID($ID),
                                                         $dataocs["ocsid"], __('OCSNG link'));
@@ -656,6 +660,7 @@ class Computer extends CommonDBTM {
          }
          echo "</th>";
       }
+*/
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -664,6 +669,7 @@ class Computer extends CommonDBTM {
       Html::autocompletionTextField($this, 'uuid');
       echo "</td>";
       ///TODO create get_inventory_plugin_information and get information to display
+/*   //TODO OCS
       if ($ocs_show) {
          echo "<td colspan='2' rowspan='3'>";
          echo "<table class='format'>";
@@ -696,6 +702,7 @@ class Computer extends CommonDBTM {
          echo "</table>";
          echo "</td>";
       }
+*/
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -1052,7 +1059,7 @@ class Computer extends CommonDBTM {
       $tab[155]['joinparams']    = array('beforejoin'
                                          => array('table'      => 'glpi_computerdisks',
                                                   'joinparams' => array('jointype' => 'child')));
-
+/* // TODO OCS
       if ($CFG_GLPI["use_ocs_mode"]) {
          $tab['ocsng']              = __('OCSNG');
 
@@ -1119,6 +1126,7 @@ class Computer extends CommonDBTM {
          $tab[111]['massiveaction'] = false;
          $tab[111]['joinparams']    = array('jointype' => 'child');
       }
+*/
       $tab['virtualmachine']        = _n('Virtual machine', 'Virtual machines', 2);
 
       $tab[160]['table']            = 'glpi_computervirtualmachines';

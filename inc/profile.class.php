@@ -724,23 +724,6 @@ class Profile extends CommonDBTM {
                                   1, 1, 1);
       echo "</td></tr>\n";
 
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('OCSNG mode')." </td><td>";
-      self::dropdownNoneReadWrite("ocsng", $this->fields["ocsng"], 1, 0, 1);
-      echo "</td>";
-      echo "<td>".__('Manual OCSNG synchronization')."</td><td>";
-      self::dropdownNoneReadWrite("sync_ocsng", $this->fields["sync_ocsng"], 1, 0, 1);
-      echo "</td>";
-      echo "<td>".__('See OCSNG information')."</td><td>";
-      self::dropdownNoneReadWrite("view_ocsng", $this->fields["view_ocsng"], 1, 1, 0);
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Clean links between GLPI and OCSNG')."</td><td>";
-      self::dropdownNoneReadWrite("clean_ocsng", $this->fields["clean_ocsng"], 1, 1, 1);
-      echo "</td><td colspan='4'>";
-      echo "</td></tr>\n";
-
       if ($canedit && $closeform) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='6' class='center'>";
@@ -1470,7 +1453,8 @@ class Profile extends CommonDBTM {
       $tab[38]['field']          = 'reports';
       $tab[38]['name']           = _n('Report', 'Reports', 2);
       $tab[38]['datatype']       = 'right';
-
+// TODO OCS
+/*
       $tab[39]['table']          = $this->getTable();
       $tab[39]['field']          = 'ocsng';
       $tab[39]['name']           = __('OCSNG');
@@ -1485,7 +1469,7 @@ class Profile extends CommonDBTM {
       $tab[41]['field']          = 'sync_ocsng';
       $tab[41]['name']           = __('Manual OCSNG synchronization');
       $tab[41]['datatype']       = 'right';
-
+*/
       $tab['config']             = __('Setup');
 
       $tab[42]['table']          = $this->getTable();

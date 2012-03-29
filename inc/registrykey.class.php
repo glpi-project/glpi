@@ -44,7 +44,8 @@ class RegistryKey extends CommonDBTM {
       return __('Registry');
    }
 
-
+// TODO OCS
+/*
    function canCreate() {
       // Only create on ocsng sync
       return Session::haveRight('sync_ocsng', 'w');
@@ -54,7 +55,7 @@ class RegistryKey extends CommonDBTM {
    function canView() {
       return Session::haveRight('ocsng', 'r');
    }
-
+*/
 
    function cleanDBonPurge() {
       global $DB;
@@ -92,13 +93,16 @@ class RegistryKey extends CommonDBTM {
                                                    '%d registry keys found'),
                                                 $DB->numrows($result))."</th></tr>\n";
 
-            echo "<tr><th>".__('OCSNG name')."</th>";
+            echo "<tr>";
+            // TODO OCS
+            /*<th>".__('OCSNG name')."</th>";*/
             echo "<th>".__('Hive')."</th>";
             echo "<th>".__('Path')."</th>";
             echo "<th>".__('Key/value')."</th></tr>\n";
             while ($data=$DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_1'>";
-               echo "<td>".$data["ocs_name"]."</td>";
+               // TODO OCS
+            /* echo "<td>".$data["ocs_name"]."</td>";*/
                if (isset($REGISTRY_HIVE[$data["hive"]])) {
                   echo "<td>".$REGISTRY_HIVE[$data["hive"]]."</td>";
                } else {

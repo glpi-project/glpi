@@ -92,7 +92,8 @@ class RuleImportComputer extends Rule {
       //Means that this criterion can only be used in a global search query
       $criterias['states_id']['is_global']       = true;
       $criterias['states_id']['allow_condition'] = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT);
-
+// TODO OCS
+/*
       $criterias['ocsservers_id']['table']       = 'glpi_ocsservers';
       $criterias['ocsservers_id']['field']       = 'name';
       $criterias['ocsservers_id']['name']        = _n('OCSNG server', 'OCSNG servers', 1);
@@ -100,7 +101,7 @@ class RuleImportComputer extends Rule {
       $criterias['ocsservers_id']['type']        = 'dropdown';
 
       $criterias['TAG']['name']                  = __('OCSNG TAG');
-
+*/
       $criterias['DOMAIN']['name']               = __('Domain');
 
       $criterias['IPSUBNET']['name']             = __('Subnet');
@@ -131,10 +132,11 @@ class RuleImportComputer extends Rule {
    function getActions() {
 
       $actions                           = array();
-
+// TODO OCS
+/*
       $actions['_fusion']['name']        = __('OCSNG link');
       $actions['_fusion']['type']        = 'fusion_type';
-
+*/
       $actions['_ignore_import']['name'] = __('To be unaware of import');
       $actions['_ignore_import']['type'] = 'yesonly';
 
