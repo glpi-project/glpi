@@ -1475,6 +1475,7 @@ function update083to084() {
    $migration->renameTable('glpi_ocsadmininfoslinks', 'OCS_glpi_ocsadmininfoslinks');
    $migration->renameTable('glpi_ocslinks', 'OCS_glpi_ocslinks');
    $migration->renameTable('glpi_ocsservers', 'OCS_glpi_ocsservers');
+   $migration->renameTable('glpi_registrykeys', 'OCS_glpi_registrykeys');
    // use OCS ?
    if (TableExists('OCS_glpi_ocsservers') && !countElementsInTable('OCS_glpi_ocsservers')) {
       // delete fields managed by plugin OCS
