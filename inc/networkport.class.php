@@ -840,10 +840,10 @@ class NetworkPort extends CommonDBChild {
 
       if ($item = getItemForItemtype($itemtype)) {
 
-         $query = "SELECT `obj.id`
+         $query = "SELECT `obj`.`id`
                    FROM " . $item->getTable() . " AS obj,
                         `glpi_domains` AS gdd
-                   WHERE `obj.entities_id` = '$entity'
+                   WHERE `obj`.`entities_id` = '$entity'
                          AND `obj`.`domains_id` = `gdd`.`id`
                          AND LOWER('$fqdn') = (CONCAT(LOWER(`obj`.`name`), '.' ,
                                                       LOWER(`gdd`.`name`)))";
