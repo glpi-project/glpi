@@ -46,6 +46,7 @@ class Log extends CommonDBTM {
    const HISTORY_UNINSTALL_SOFTWARE = 5;
    const HISTORY_DISCONNECT_DEVICE  = 6;
    const HISTORY_CONNECT_DEVICE     = 7;
+   // TODO
    const HISTORY_OCS_IMPORT         = 8;
    const HISTORY_OCS_DELETE         = 9;
    const HISTORY_OCS_IDCHANGED      = 10;
@@ -419,7 +420,8 @@ class Log extends CommonDBTM {
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Connect the item'),
                                            $data["new_value"]);
                   break;
-
+// TODO OCS
+/*
                case self::HISTORY_OCS_IMPORT :
                   if (Session::haveRight("view_ocsng","r")) {
                      $tmp['field']  = "";
@@ -464,7 +466,7 @@ class Log extends CommonDBTM {
                      $tmp['display_history'] = false;
                   }
                   break;
-
+*/
                case self::HISTORY_LOG_SIMPLE_MESSAGE :
                   $tmp['field']  = "";
                   $tmp['change'] = $data["new_value"];

@@ -1471,6 +1471,20 @@ function update083to084() {
    }
 
 
+   // get out OCS
+   $migration->renameTable('glpi_ocsadmininfoslinks', 'OCS_glpi_ocsadmininfoslinks');
+   $migration->renameTable('glpi_ocslinks', 'OCS_glpi_ocslinks');
+   $migration->renameTable('glpi_ocsservers', 'OCS_glpi_ocsservers');
+   // use OCS ?
+   if (TableExists('OCS_glpi_ocsservers') && !countElementsInTable('OCS_glpi_ocsservers')) {
+      // delete fields managed by plugin OCS
+      $migration->dropField('glpi_profiles', 'ocsng');
+      $migration->dropField('glpi_profiles', 'sync_ocsng');
+      $migration->dropField('glpi_profiles', 'view_ocsng');
+      $migration->dropField('glpi_profiles', 'clean_ocsng');
+   }
+
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

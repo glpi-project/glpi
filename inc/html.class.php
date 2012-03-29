@@ -1334,7 +1334,8 @@ class Html {
          $menu['utils']['content']['report']['page']     = '/front/report.php';
       }
 
-
+/*
+   // TODO OCS
       if ($CFG_GLPI["use_ocs_mode"] && Session::haveRight("ocsng","w")) {
          $menu['utils']['content']['ocsng']['title']                     = __('OCSNG');
          $menu['utils']['content']['ocsng']['page']                      = '/front/ocsng.php';
@@ -1358,7 +1359,7 @@ class Html {
                                           = '/front/ocsng.link.php';
 
       }
-
+*/
       if (TableExists('glpi_networkportmigrations')
           && (countElementsInTable('glpi_networkportmigrations') > 0)) {
          $menu['utils']['content']['migration']['title']    = __('Migration cleaner');
@@ -1978,7 +1979,8 @@ class Html {
          }
       }
 
-
+/*
+// TODO put in plugin OCS
       if ($CFG_GLPI["use_ocs_mode"]
           && Session::haveRight("config","w")) {
          $menu['config']['content']['ocsng']['title']           = __('OCSNG mode');
@@ -1986,7 +1988,7 @@ class Html {
          $menu['config']['content']['ocsng']['links']['search'] = '/front/ocsserver.php';
          $menu['config']['content']['ocsng']['links']['add']    = '/front/ocsserver.form.php';
       }
-
+*/
 
       if (Session::haveRight("link","r")) {
          $menu['config']['content']['link']['title']           = _n('External link',

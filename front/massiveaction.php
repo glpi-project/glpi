@@ -580,6 +580,8 @@ if (isset($_POST["action"])
             $nbnoright++;
          }
          break;
+/*
+ // TODO OCS
 
       case "unlock_ocsng_field" :
          $fields = OcsServer::getLockableFields();
@@ -608,7 +610,7 @@ if (isset($_POST["action"])
             }
          }
          break;
-
+*/
       case "unlock_ocsng_monitor" :
       case "unlock_ocsng_printer" :
       case "unlock_ocsng_peripheral" :
