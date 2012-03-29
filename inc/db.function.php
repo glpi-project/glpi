@@ -1376,14 +1376,11 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id=-1) 
  *@return nothing
 **/
 function closeDBConnections() {
-   global $DB, $DBocs;
+   global $DB;
 
    // Case of not init $DB object
    if (method_exists($DB,"close")) {
       $DB->close();
-      if (isset($DBocs) && method_exists($DBocs,"close")) {
-         $DBocs->close();
-      }
    }
 }
 

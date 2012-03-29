@@ -30,7 +30,8 @@
 if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
-
+// TODO OCS
+// must delete this class but use in update_068_0681
 /// DB class to connect to a OCS server
 class DBocs extends DBmysql {
 
@@ -125,6 +126,7 @@ class DBmysql {
     * @return nothing
    **/
    function connect($choice=NULL) {
+
 
       $this->connected = false;
 
