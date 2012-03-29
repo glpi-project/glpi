@@ -110,6 +110,7 @@ class Ticket extends CommonITILObject {
       return (Session::haveRight('update_ticket', 1)
               || Session::haveRight('create_ticket', 1)
               || Session::haveRight('assign_ticket', 1)
+              || Session::haveRight('own_ticket', 1)
               || Session::haveRight('steal_ticket', 1));
    }
 
