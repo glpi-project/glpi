@@ -473,8 +473,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       $interv = array();
 
-      if (!isset($options['begin']) || ($options['begin'] = 'NULL')
-          || !isset($options['end']) || ($options['end'] = 'NULL')) {
+      if (!isset($options['begin']) || ($options['begin'] == 'NULL')
+          || !isset($options['end']) || ($options['end'] == 'NULL')) {
          return $interv;
       }
 
