@@ -118,7 +118,7 @@ class ProblemTask extends CommonITILTask {
          return false;
       }
 
-      if ($this->fields["users_id"] != Session::getLoginUserID()
+      if (($this->fields["users_id"] != Session::getLoginUserID())
           && !Session::haveRight('edit_all_problem',1)) {
          return false;
       }
@@ -140,7 +140,7 @@ class ProblemTask extends CommonITILTask {
    /**
     * Populate the planning with planned ticket tasks
     *
-    * @param $options   array of options must contains :
+    * @param $options   array of possible options:
     *    - who ID of the user (0 = undefined)
     *    - who_group ID of the group of users (0 = undefined)
     *    - begin Date

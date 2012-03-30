@@ -93,10 +93,10 @@ class PlanningRecall extends CommonDBTM {
       $query = "SELECT *
                 FROM `".$this->getTable()."`
                 WHERE `itemtype` = '$itemtype'
-                  AND `items_id` = '$items_id'
-                  AND `users_id` = '$users_id'";
+                      AND `items_id` = '$items_id'
+                      AND `users_id` = '$users_id'";
       if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             $this->fields = $DB->fetch_assoc($result);
             return true;
          }
@@ -109,8 +109,9 @@ class PlanningRecall extends CommonDBTM {
     * @see inc/CommonDBTM::post_updateItem()
    **/
    function post_updateItem($history=1) {
-         $alert = new Alert();
-         $alert->clear($this->getType(), $this->fields['id'], Alert::ACTION);
+
+      $alert = new Alert();
+      $alert->clear($this->getType(), $this->fields['id'], Alert::ACTION);
    }
 
 
@@ -138,7 +139,7 @@ class PlanningRecall extends CommonDBTM {
          if ($data['before_time'] != $pr->fields['before_time']) {
             // Recall exists and is different : update datas and clean alert
             if ($pr->can($pr->fields['id'],'w')) {
-               if ($item=getItemForItemtype($data['itemtype'])) {
+               if ($item = getItemForItemtype($data['itemtype'])) {
                   if ($item->getFromDB($data['items_id'])
                       && isset($item->fields[$data['field']])
                       && !empty($item->fields[$data['field']])) {
@@ -160,7 +161,7 @@ class PlanningRecall extends CommonDBTM {
       } else {
          // Recall does not exists : create it
          if ($pr->can(-1,'w',$data)) {
-               if ($item=getItemForItemtype($data['itemtype'])) {
+               if ($item = getItemForItemtype($data['itemtype'])) {
                   $item->getFromDB($data['items_id']);
                   if ($item->getFromDB($data['items_id'])
                       && isset($item->fields[$data['field']])
@@ -341,15 +342,16 @@ class PlanningRecall extends CommonDBTM {
          return 0;
       }
 
-      $cron_status   = 0;
-      $query = "SELECT `glpi_planningrecalls`.*
-                FROM `glpi_planningrecalls`
-                LEFT JOIN `glpi_alerts` ON (`glpi_planningrecalls`.`id` = `glpi_alerts`.`items_id`
-                                            AND `glpi_alerts`.`itemtype` = 'PlanningReminder'
-                                            AND `glpi_alerts`.`type`='".Alert::ACTION."')
-                WHERE `glpi_planningrecalls`.`when` IS NOT NULL
-                      AND `glpi_planningrecalls`.`when` < NOW()
-                      AND `glpi_alerts`.`date` IS NULL";
+      $cron_status = 0;
+      $query       = "SELECT `glpi_planningrecalls`.*
+                      FROM `glpi_planningrecalls`
+                      LEFT JOIN `glpi_alerts`
+                           ON (`glpi_planningrecalls`.`id` = `glpi_alerts`.`items_id`
+                               AND `glpi_alerts`.`itemtype` = 'PlanningReminder'
+                               AND `glpi_alerts`.`type`='".Alert::ACTION."')
+                      WHERE `glpi_planningrecalls`.`when` IS NOT NULL
+                            AND `glpi_planningrecalls`.`when` < NOW()
+                            AND `glpi_alerts`.`date` IS NULL";
 
       $pr = new self();
       foreach ($DB->request($query) as $data) {
@@ -368,5 +370,6 @@ class PlanningRecall extends CommonDBTM {
       }
       return $cron_status;
    }
+
 }
 ?>

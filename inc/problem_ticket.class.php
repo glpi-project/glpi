@@ -98,9 +98,9 @@ class Problem_Ticket extends CommonDBRelation{
                 ORDER BY `glpi_tickets`.`name`";
       $result = $DB->query($query);
 
-      $used = array();
+      $used   = array();
 
-      if ($DB->numrows($result) >0) {
+      if ($DB->numrows($result) > 0) {
          Ticket::commonListHeader(Search::HTML_OUTPUT);
          Session::initNavigateListItems('Ticket',
                                  //TRANS : %1$s is the itemtype name,
@@ -124,7 +124,7 @@ class Problem_Ticket extends CommonDBRelation{
                                         'entity'      => $problem->getEntityID(),
                                         'entity_sons' => $problem->isRecursive()));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
       }
 
@@ -175,9 +175,9 @@ class Problem_Ticket extends CommonDBRelation{
                 ORDER BY `glpi_problems`.`name`";
       $result = $DB->query($query);
 
-      $used = array();
+      $used   = array();
 
-      if ($DB->numrows($result) >0) {
+      if ($DB->numrows($result) > 0) {
          Problem::commonListHeader(Search::HTML_OUTPUT);
          Session::initNavigateListItems('Problem',
                               //TRANS : %1$s is the itemtype name,
@@ -200,7 +200,7 @@ class Problem_Ticket extends CommonDBRelation{
          Dropdown::show('Problem', array('used'   => $used,
                                          'entity' => $ticket->getEntityID()));
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
       }
 

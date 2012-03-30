@@ -98,7 +98,8 @@ class Printer  extends CommonDBTM {
 
       $ID = $this->fields['id'];
 
-      if ($ID<0 || !$this->fields['is_recursive']) {
+      if (($ID < 0)
+          || !$this->fields['is_recursive']) {
          return true;
       }
 
@@ -142,7 +143,7 @@ class Printer  extends CommonDBTM {
                   if ($item->isEntityAssign()) {
 
                      if (countElementsInTable($itemtable, "`id` IN (".$data["ids"].")
-                                              AND `entities_id` NOT IN $entities")>0) {
+                                              AND `entities_id` NOT IN $entities") > 0) {
                         return false;
                      }
                   }
@@ -156,7 +157,7 @@ class Printer  extends CommonDBTM {
 
    function prepareInputForAdd($input) {
 
-      if (isset($input["id"]) && $input["id"]>0) {
+      if (isset($input["id"]) && ($input["id"] > 0)) {
          $input["_oldID"]=$input["id"];
       }
       unset($input['id']);
@@ -209,10 +210,10 @@ class Printer  extends CommonDBTM {
                          AND `itemtype` = '".$this->getType()."'";
          $result = $DB->query($query);
 
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             $contractitem = new Contract_Item();
 
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
                                         'itemtype'     => $this->getType(),
                                         'items_id'     => $this->fields['id']));
@@ -229,7 +230,7 @@ class Printer  extends CommonDBTM {
          if ($DB->numrows($result)>0) {
             $docitem = new Document_Item();
 
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype'     => $this->getType(),
                                    'items_id'     => $this->fields['id']));
@@ -248,7 +249,7 @@ class Printer  extends CommonDBTM {
                       AND `items_id` = '".$this->fields['id']."'";
 
       if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             $conn = new Computer_Item();
 
             while ($data = $DB->fetch_assoc($result)) {
@@ -269,7 +270,7 @@ class Printer  extends CommonDBTM {
     * Print the printer form
     *
     * @param $ID        integer ID of the item
-    * @param $options   array
+    * @param $options   array of possible options:
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
@@ -290,24 +291,24 @@ class Printer  extends CommonDBTM {
            "</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name",
-                             (isset($options['withtemplate']) && $options['withtemplate']==2),
+                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>\n";
       echo "<td>".__('Status')."</td>\n";
       echo "<td>";
-      Dropdown::show('State', array('value' => $this->fields["states_id"]));
+      State::dropdown(array('value' => $this->fields["states_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Location')."</td>\n";
       echo "<td>";
-      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
-                                       'entity' => $this->fields["entities_id"]));
+      Location::dropdown(array('value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]));
       echo "</td>\n";
       echo "<td>".__('Type')."</td>\n";
       echo "<td>";
-      Dropdown::show('PrinterType', array('value' => $this->fields["printertypes_id"]));
+      PrinterType::dropdown(array('value' => $this->fields["printertypes_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -320,20 +321,20 @@ class Printer  extends CommonDBTM {
       echo "</td>\n";
       echo "<td>".__('Manufacturer')."</td>\n";
       echo "<td>";
-      Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
+      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Dropdown::show('Group', array('name'      => 'groups_id_tech',
-                                    'value'     => $this->fields['groups_id_tech'],
-                                    'entity'    => $this->fields['entities_id'],
-                                    'condition' => '`is_assign`'));
+      Group::dropdown(array('name'      => 'groups_id_tech',
+                            'value'     => $this->fields['groups_id_tech'],
+                            'entity'    => $this->fields['entities_id'],
+                            'condition' => '`is_assign`'));
       echo "</td>";
       echo "<td>".__('Model')."</td>\n";
       echo "<td>";
-      Dropdown::show('PrinterModel', array('value' => $this->fields["printermodels_id"]));
+      PrinterModel::dropdown(array('value' => $this->fields["printermodels_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -356,7 +357,7 @@ class Printer  extends CommonDBTM {
            "</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial",
-                             (isset($options['withtemplate']) && $options['withtemplate']==2),
+                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, 'otherserial', array('value' => $objectName));
       echo "</td></tr>\n";
@@ -388,19 +389,19 @@ class Printer  extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>\n";
       echo "<td>";
-      Dropdown::show('Group', array('value'     => $this->fields["groups_id"],
-                                    'entity'    => $this->fields["entities_id"],
-                                    'condition' => '`is_itemgroup`'));
+      Group::dropdown(array('value'     => $this->fields["groups_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => '`is_itemgroup`'));
       echo "</td>\n";
       echo "<td>".__('Network')."</td>\n";
       echo "<td>";
-      Dropdown::show('Network', array('value' => $this->fields["networks_id"]));
+      Network::dropdown(array('value' => $this->fields["networks_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Domain')."</td>\n";
       echo "<td>";
-      Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
+      Domain::dropdown(array('value' => $this->fields["domains_id"]));
       echo "</td>";
       echo "<td rowspan='6'>".__('Comments')."</td>\n";
       echo "<td rowspan='6'><textarea cols='45' rows='12' name='comment' >".
@@ -451,7 +452,7 @@ class Printer  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      if ((!isset($options['withtemplate']) || $options['withtemplate']==0)
+      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
           && !empty($this->fields['template_name'])) {
          echo "<span class='small_space'>";
          printf(__('Created from the template %s'), $this->fields['template_name']);
@@ -492,7 +493,7 @@ class Printer  extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                       = array();
       $tab['common']             = __('Characteristics');
 
       $tab[1]['table']           = $this->getTable();

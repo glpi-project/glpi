@@ -60,7 +60,8 @@ class PrinterModel extends CommonDropdown {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if (!$withtemplate && Session::haveRight("printer","r")) {
+      if (!$withtemplate
+          && Session::haveRight("printer","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2), self::countForCartridge($item));
          }
@@ -70,6 +71,9 @@ class PrinterModel extends CommonDropdown {
    }
 
 
+   /**
+    * @param $item   CartridgeItem object
+   **/
    static function countForCartridge(CartridgeItem $item) {
 
       $restrict = "`glpi_cartridgeitems_printermodels`.`cartridgeitems_id`
@@ -87,5 +91,6 @@ class PrinterModel extends CommonDropdown {
       $item->showCompatiblePrinters();
       return true;
    }
+
 }
 ?>

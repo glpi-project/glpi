@@ -272,9 +272,9 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".__('Search engine')."</td></tr>";
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Items seen') . "</td><td>";
-      $values = array(0 => __('Disabled'),
-                      1 => __('Enabled'),
-                      2 => __('Default value'));
+      $values = array(0 => __('No'),
+                      1 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('last criterion')),
+                      2 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('default criterion')));
       Dropdown::showFromArray('allow_search_view', $values,
                               array('value' => $CFG_GLPI['allow_search_view']));
       echo "</td><td>". __('Global search')."</td><td>";
@@ -283,7 +283,10 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('All') . "</td><td>";
-      Dropdown::showYesNo('allow_search_all', $CFG_GLPI['allow_search_all']);
+      $values = array(0 => __('No'),
+                      1 => sprintf(__('%1$s (%2$s)'), __('Yes'), __('last criterion')));
+      Dropdown::showFromArray('allow_search_all', $values,
+                              array('value' => $CFG_GLPI['allow_search_all']));
       echo "</td><td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_2'>";
