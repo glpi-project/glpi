@@ -41,7 +41,7 @@ class OperatingSystemServicePack extends CommonDropdown {
 
    static function getTypeName($nb=0) {
 
-      return _n('Service Pack', 'Service Packs', $nb);
+      return _n('Service pack', 'Service packs', $nb);
    }
 }
 
