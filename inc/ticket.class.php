@@ -4791,9 +4791,9 @@ class Ticket extends CommonITILObject {
     *
     * @param $id                 Integer  ID of the ticket
     * @param $followups          Boolean  show followup columns
-    * @param $output_type        Integer  type of output
-    * @param $row_num            Integer  row number
-    * @param $id_for_massaction  Integer  default 0 means no massive action
+    * @param $output_type        Integer  type of output (default Search::HTML_OUTPUT)
+    * @param $row_num            Integer  row number (default 0)
+    * @param $id_for_massaction  Integer  default 0 means no massive action (default 0)
     *
     */
    static function showShort($id, $followups, $output_type=Search::HTML_OUTPUT, $row_num=0,
@@ -4841,7 +4841,7 @@ class Ticket extends CommonITILObject {
          }
 
          if (($candelete || $canupdate)
-             && $output_type == Search::HTML_OUTPUT
+             && ($output_type == Search::HTML_OUTPUT)
              && $id_for_massaction) {
 
             $sel = "";
