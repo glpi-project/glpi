@@ -94,6 +94,7 @@ class Problem extends CommonITILObject {
 
 
    function canView() {
+
       return (Session::haveRight('show_all_problem', '1')
               || Session::haveRight('show_my_problem', '1'));
    }
@@ -129,7 +130,7 @@ class Problem extends CommonITILObject {
    **/
    function canApprove() {
 
-      return ($this->fields["users_id_recipient"] === Session::getLoginUserID()
+      return (($this->fields["users_id_recipient"] === Session::getLoginUserID())
               || $this->isUser(parent::REQUESTER, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(parent::REQUESTER, $_SESSION["glpigroups"])));
@@ -291,7 +292,8 @@ class Problem extends CommonITILObject {
          $donotif = false;
       }
 
-      if ($donotif && $CFG_GLPI["use_mailing"]) {
+      if ($donotif
+          && $CFG_GLPI["use_mailing"]) {
          $mailtype = "update";
 
          if (isset($this->input["status"])
@@ -323,10 +325,10 @@ class Problem extends CommonITILObject {
 
       $input =  parent::prepareInputForAdd($input);
 
-      if (((isset($input["_users_id_assign"]) && $input["_users_id_assign"]>0)
-           || (isset($input["_groups_id_assign"]) && $input["_groups_id_assign"]>0)
-           || (isset($input["suppliers_id_assign"]) && $input["suppliers_id_assign"]>0))
-          && $input["status"]=="new") {
+      if (((isset($input["_users_id_assign"]) && ($input["_users_id_assign"] > 0))
+           || (isset($input["_groups_id_assign"]) && ($input["_groups_id_assign"] > 0))
+           || (isset($input["suppliers_id_assign"]) && ($input["suppliers_id_assign"] > 0)))
+          && ($input["status"] == "new")) {
 
          $input["status"] = "assign";
       }
@@ -347,7 +349,8 @@ class Problem extends CommonITILObject {
             $pt->add(array('tickets_id'  => $this->input['_tickets_id'],
                            'problems_id' => $this->fields['id']));
 
-            if (!empty($ticket->fields['itemtype']) && $ticket->fields['items_id']>0) {
+            if (!empty($ticket->fields['itemtype'])
+                && ($ticket->fields['items_id'] > 0)) {
                $it = new Item_Problem();
                $it->add(array('problems_id' => $this->fields['id'],
                               'itemtype'    => $ticket->fields['itemtype'],
@@ -362,7 +365,7 @@ class Problem extends CommonITILObject {
          $this->getFromDB($this->fields['id']);
 
          $type = "new";
-         if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
+         if (isset($this->fields["status"]) && ($this->fields["status"] == "solved")) {
             $type = "solved";
          }
          NotificationEvent::raiseEvent($type, $this);
@@ -388,7 +391,7 @@ class Problem extends CommonITILObject {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                      = array();
       $tab['common']            = __('Characteristics');
 
       $tab[1]['table']          = $this->getTable();
@@ -486,7 +489,7 @@ class Problem extends CommonITILObject {
 
       $tab[65]['table']         = 'glpi_items_problems';
       $tab[65]['field']         = 'count';
-      $tab[65]['name']          = __('Number of items');
+      $tab[65]['name']          = _x('quantity','Number of items');
       $tab[65]['forcegroupby']  = true;
       $tab[65]['usehaving']     = true;
       $tab[65]['datatype']      = 'number';
@@ -533,7 +536,7 @@ class Problem extends CommonITILObject {
 
       $tab[28]['table']         = 'glpi_problemtasks';
       $tab[28]['field']         = 'count';
-      $tab[28]['name']          = __('Number of tasks');
+      $tab[28]['name']          = _x('quantity', 'Number of tasks');
       $tab[28]['forcegroupby']  = true;
       $tab[28]['usehaving']     = true;
       $tab[28]['datatype']      = 'number';
@@ -550,7 +553,7 @@ class Problem extends CommonITILObject {
                                           => array('table'      => 'glpi_problemtasks',
                                                    'joinparams' => array('jointype' => 'child')));
 
-      $tab['solution']          = _n('Solution', 'Solutions', 1);
+      $tab['solution']          = _n('Solution', 'Solutions', 2);
 
       $tab[23]['table']         = 'glpi_solutiontypes';
       $tab[23]['field']         = 'name';
@@ -606,6 +609,7 @@ class Problem extends CommonITILObject {
     * @return an array
    **/
    static function getClosedStatusArray() {
+
       // To be overridden by class
       $tab = array('closed');
 
@@ -621,6 +625,7 @@ class Problem extends CommonITILObject {
     * @return an array
    **/
    static function getSolvedStatusArray() {
+
       // To be overridden by class
       $tab = array('observe', 'solved');
 
@@ -636,6 +641,7 @@ class Problem extends CommonITILObject {
     * @return an array
    **/
    static function getProcessStatusArray() {
+
       // To be overridden by class
       $tab = array('accepted', 'assign', 'plan');
 
@@ -723,6 +729,10 @@ class Problem extends CommonITILObject {
    }
 
 
+   /**
+    * @param $ID
+    * @param $options   array
+   **/
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $DB;
 
@@ -775,12 +785,7 @@ class Problem extends CommonITILObject {
          }
       }
 
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w',$options);
-      }
+      $this->initForm($ID, $options);
 
       $showuserlink = 0;
       if (Session::haveRight('user','r')) {
@@ -791,8 +796,7 @@ class Problem extends CommonITILObject {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th class='left' width='$colsize1%'>";
-      _e('Opening date');
+      echo "<th class='left' width='$colsize1%'>"._e('Opening date')."</th>";
       echo "<td class='left' width='$colsize2%'>";
 
       if (isset($options['tickets_id'])) {
@@ -808,7 +812,7 @@ class Problem extends CommonITILObject {
       echo "<th width='$colsize1%'>".__('Due date')."</th>";
       echo "<td width='$colsize2%' class='left'>";
 
-      if ($this->fields["due_date"]=='NULL') {
+      if ($this->fields["due_date"] == 'NULL') {
          $this->fields["due_date"] = '';
       }
       Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true);
@@ -825,7 +829,8 @@ class Problem extends CommonITILObject {
          echo "<th>".__('Last update')."</th>";
          echo "<td>".Html::convDateTime($this->fields["date_mod"])."\n";
          if ($this->fields['users_id_lastupdater'] > 0) {
-            printf(__('By %s'), getUserName($this->fields["users_id_lastupdater"], $showuserlink));
+            printf(__('%1$s: %2$s'), __('By'),
+                   getUserName($this->fields["users_id_lastupdater"], $showuserlink));
          }
          echo "</td></tr>";
       }
@@ -861,8 +866,7 @@ class Problem extends CommonITILObject {
       echo "<td width='$colsize2%'>";
       // Only change during creation OR when allowed to change priority OR when user is the creator
       $idurgency = self::dropdownUrgency("urgency", $this->fields["urgency"]);
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>".__('Category')."</th>";
@@ -870,13 +874,12 @@ class Problem extends CommonITILObject {
       $opt = array('value'     => $this->fields["itilcategories_id"],
                    'entity'    => $this->fields["entities_id"],
                    'condition' => "`is_problem`='1'");
-      Dropdown::show('ITILCategory', $opt);
+      ITILCategory::dropdown($opt);
       echo "</td>";
       echo "<th>".__('Impact')."</th>";
       echo "<td>";
       $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>".__('Total duration')."</th>";
@@ -895,7 +898,7 @@ class Problem extends CommonITILObject {
       echo "</tr>";
       echo "</table>";
 
-      $this->showActorsPartForm($ID,$options);
+      $this->showActorsPartForm($ID, $options);
 
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
@@ -925,8 +928,7 @@ class Problem extends CommonITILObject {
          showName$rand();
          </script>";
       }
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>".__('Description')."</th>";
@@ -955,8 +957,7 @@ class Problem extends CommonITILObject {
          showDesc$rand();
          </script>";
       }
-      echo "</td>";
-      echo "</tr>";
+      echo "</td></tr>";
       $options['colspan'] = 2;
       $this->showFormButtons($options);
       $this->addDivForTabs();
@@ -1127,20 +1128,21 @@ class Problem extends CommonITILObject {
          echo Search::showNewLine($output_type,$row_num%2);
 
          // First column
-         $first_col = "ID : ".$job->fields["id"];
+         $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
          if ($output_type == Search::HTML_OUTPUT) {
             $first_col .= "<br><img src='".$CFG_GLPI["root_doc"]."/pics/".$job->fields["status"].".png'
                            alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
                            self::getStatus($job->fields["status"])."\">";
          } else {
-            $first_col .= " - ".self::getStatus($job->fields["status"]);
+            $first_col = sprintf(__('%1$s - %2$s'), $first_col,
+                                 self::getStatus($job->fields["status"]));
          }
 
          if (($candelete || $canupdate)
-             && $output_type == Search::HTML_OUTPUT) {
+             && ($output_type == Search::HTML_OUTPUT)) {
 
             $sel = "";
-            if (isset($_GET["select"]) && $_GET["select"] == "all") {
+            if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                $sel = "checked";
             }
             if (isset($_SESSION['glpimassiveactionselected'][$id_for_massaction])) {
@@ -1153,21 +1155,21 @@ class Problem extends CommonITILObject {
          echo Search::showItem($output_type, $first_col, $item_num, $row_num, $align);
 
          // Second column
-         if ($job->fields['status']=='closed') {
+         if ($job->fields['status'] == 'closed') {
             $second_col = sprintf(__('Closed on %s'),
-                                  ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                  (($output_type == Search::HTML_OUTPUT)?'<br>':'').
                                     Html::convDateTime($job->fields['closedate']));
-          } else if ($job->fields['status']=='solved') {
+          } else if ($job->fields['status'] == 'solved') {
             $second_col = sprintf(__('Solved on %s'),
-                                  ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                  (($output_type == Search::HTML_OUTPUT)?'<br>':'').
                                     Html::convDateTime($job->fields['solvedate']));
          } else if ($job->fields['due_date']) {
             $second_col = sprintf(__('%1$s: %2$s'), __('Due date'),
-                                  ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                  (($output_type == Search::HTML_OUTPUT)?'<br>':'').
                                     Html::convDateTime($job->fields['due_date']));
          } else {
              $second_col = sprintf(__('Opened on %s'),
-                                   ($output_type == Search::HTML_OUTPUT?'<br>':'').
+                                   (($output_type == Search::HTML_OUTPUT)?'<br>':'').
                                      Html::convDateTime($job->fields['date']));
         }
 
@@ -1187,7 +1189,7 @@ class Problem extends CommonITILObject {
          // Third Column
          echo Search::showItem($output_type,
                                "<span class='b'>".parent::getPriorityName($job->fields["priority"]).
-                                 "</span>",
+                                "</span>",
                                $item_num, $row_num, "$align bgcolor='$bgcolor'");
 
          // Fourth Column
@@ -1195,12 +1197,12 @@ class Problem extends CommonITILObject {
 
          if (isset($job->users[parent::REQUESTER]) && count($job->users[parent::REQUESTER])) {
             foreach ($job->users[parent::REQUESTER] as $d) {
-               $userdata    = getUserName($d["users_id"],2);
-               $fourth_col .= "<span class='b'>".$userdata['name']."</span>&nbsp;";
-               $fourth_col .= Html::showToolTip($userdata["comment"],
-                                                array('link'    => $userdata["link"],
-                                                      'display' => false));
-               $fourth_col .= "<br>";
+               $userdata    = getUserName($d["users_id"], 2);
+               $fourth_col .= "<span class='b'>".$userdata['name']."</span>";
+               $fourth_col  = sprintf(__('%1$s %2$s')."<br>", $fourth_col,
+                                     Html::showToolTip($userdata["comment"],
+                                                       array('link'    => $userdata["link"],
+                                                             'display' => false)));
             }
          }
 
@@ -1219,11 +1221,11 @@ class Problem extends CommonITILObject {
          if (isset($job->users[parent::ASSIGN]) && count($job->users[parent::ASSIGN])) {
             foreach ($job->users[parent::ASSIGN] as $d) {
                $userdata = getUserName($d["users_id"], 2);
-               $fifth_col .= "<span class='b'>".$userdata['name']."</span>&nbsp;";
-               $fifth_col .= Html::showToolTip($userdata["comment"],
-                                               array('link'    => $userdata["link"],
-                                                     'display' => false));
-               $fifth_col .= "<br>";
+               $fifth_col .= "<span class='b'>".$userdata['name']."</span>";
+               $fifth_col  = sprintf(__('%1$s %2$s')."<br>",
+                                     Html::showToolTip($userdata["comment"],
+                                                       array('link'    => $userdata["link"],
+                                                             'display' => false)));
             }
          }
 
@@ -1235,10 +1237,12 @@ class Problem extends CommonITILObject {
          }
 
 
-         if ($job->fields["suppliers_id_assign"]>0) {
-            if (!empty($fifth_col)) {
+         if ($job->fields["suppliers_id_assign"] > 0) {
+            // you have <br> at the end of each foreach, so not useful
+/*            if (!empty($fifth_col)) {
                $fifth_col .= "<br>";
             }
+*/
             $fifth_col .= parent::getAssignName($job->fields["suppliers_id_assign"], 'Supplier', 1);
          }
          echo Search::showItem($output_type, $fifth_col, $item_num, $row_num, $align);
@@ -1264,16 +1268,17 @@ class Problem extends CommonITILObject {
                               "/front/problem.form.php?id=".$job->fields["id"]."\">$eigth_column</a>";
 
             if ($output_type == Search::HTML_OUTPUT) {
-               $eigth_column .= "&nbsp;(".$job->numberOfTasks($showprivate).")";
+               $eigth_column = sprintf(__('%1$s (%2$s)'), $eigth_column,
+                                       $job->numberOfTasks($showprivate));
             }
          }
 
          if ($output_type == Search::HTML_OUTPUT) {
-            $eigth_column .= "&nbsp;".Html::showToolTip($job->fields['content'],
-                                                        array('display' => false,
-                                                              'applyto' => "ticket".
-                                                                           $job->fields["id"].
-                                                                           $rand));
+            $eigth_column = sprintf(__('%1$s %2$s'), $eigth_column,
+                                    Html::showToolTip($job->fields['content'],
+                                                      array('display' => false,
+                                                            'applyto' => "ticket".$job->fields["id"].
+                                                                           $rand)));
          }
 
          echo Search::showItem($output_type, $eigth_column, $item_num, $row_num,
@@ -1354,9 +1359,10 @@ class Problem extends CommonITILObject {
             } else {
                $restrict = "='".$item->getID()."'";
             }
-            $restrict                 = "(`glpi_groups_problems`.`groups_id` $restrict
-                                          AND `glpi_groups_problems`.`type` = ".Ticket::REQUESTER.")";
-            $order                    = '`glpi_problems`.`date_mod` DESC';
+            $restrict   = "(`glpi_groups_problems`.`groups_id` $restrict
+                            AND `glpi_groups_problems`.`type` = ".Ticket::REQUESTER.")";
+            $order      = '`glpi_problems`.`date_mod` DESC';
+
             $options['field'][0]      = 71;
             $options['searchtype'][0] = ($tree ? 'under' : 'equals');
             $options['contains'][0]   = $item->getID();
@@ -1364,9 +1370,9 @@ class Problem extends CommonITILObject {
             break;
 
          default :
-            $restrict                 = "(`items_id` = '".$item->getID()."'
-                                          AND `itemtype` = '".$item->getType()."')";
-            $order                    = '`glpi_problems`.`date_mod` DESC';
+            $restrict   = "(`items_id` = '".$item->getID()."'
+                            AND `itemtype` = '".$item->getType()."')";
+            $order      = '`glpi_problems`.`date_mod` DESC';
 
 //             $options['field'][0]      = 12;
 //             $options['searchtype'][0] = 'equals';
@@ -1452,7 +1458,7 @@ class Problem extends CommonITILObject {
          if ($number > 0) {
             self::commonListHeader(Search::HTML_OUTPUT);
 
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                // Session::addToNavigateListItems(TRACKING_TYPE,$data["id"]);
                self::showShort($data["id"]);
             }

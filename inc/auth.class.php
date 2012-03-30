@@ -1054,7 +1054,7 @@ class Auth {
       // CAS config
       echo "<tr><th>" . __('CAS authentication').'</th><th>';
       if (!empty($CFG_GLPI["cas_host"])) {
-         _e('Enabled');
+         echo _x('authentication','Enabled');
       }
       echo "</th></tr>\n";
 
@@ -1082,7 +1082,7 @@ class Auth {
       // X509 config
       echo "<tr><th>" . __('x509 certificate authentication')."</th><th>";
       if (!empty($CFG_GLPI["x509_email_field"])) {
-         _e('Enabled');
+         echo _x('authentication','Enabled');
       }
       echo "</th></tr>\n";
       echo "<tr class='tab_bg_2'>";
@@ -1106,7 +1106,7 @@ class Auth {
       //Other configuration
       echo "<tr><th>" . __('Other authentication sent in the HTTP request')."</th><th>";
       if (!empty($CFG_GLPI["ssovariables_id"])) {
-         _e('Enabled');
+         echo _x('authentication', 'Enabled');
       }
       echo "</th></tr>\n";
       echo "<tr class='tab_bg_2'>";

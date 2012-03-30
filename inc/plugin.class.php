@@ -84,7 +84,7 @@ class Plugin extends CommonDBTM {
    function init() {
 
       $this->checkStates();
-      $plugins=$this->find('state='.self::ACTIVATED);
+      $plugins                  = $this->find('state='.self::ACTIVATED);
 
       $_SESSION["glpi_plugins"] = array();
 
@@ -119,7 +119,8 @@ class Plugin extends CommonDBTM {
             }
          }
       }
-      if ($withhook && file_exists(GLPI_ROOT . "/plugins/$name/hook.php")) {
+      if ($withhook
+          && file_exists(GLPI_ROOT . "/plugins/$name/hook.php")) {
          include_once(GLPI_ROOT . "/plugins/$name/hook.php");
       }
    }
@@ -139,7 +140,7 @@ class Plugin extends CommonDBTM {
       global $CFG_GLPI, $LANG, $TRANSLATE;
 
       // For compatibility for plugins using $LANG
-      $LANG = array();
+      $LANG      = array();
 
       $trytoload = 'en_GB';
       if (isset($_SESSION['glpilanguage'])) {
@@ -169,7 +170,8 @@ class Plugin extends CommonDBTM {
          $translation_included = true;
 
       } else if (file_exists($dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])) {
-         $TRANSLATE->addTranslation(array('content' => $dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1],
+         $TRANSLATE->addTranslation(array('content'
+                                             => $dir.$CFG_GLPI["languages"][$CFG_GLPI["language"]][1],
                                           'locale'  => $coretrytoload));
          $translation_included = true;
       } else if (file_exists($dir."en_GB.mo")) {
@@ -192,7 +194,7 @@ class Plugin extends CommonDBTM {
             include ($dir . "en_GB.php");
          } else if (file_exists($dir . "fr_FR.php")) {
             include ($dir . "fr_FR.php");
-         }      
+         }
       }
    }
 
@@ -218,9 +220,9 @@ class Plugin extends CommonDBTM {
       $dh            = opendir($dirplug);
 
       while (false !== ($filename = readdir($dh))) {
-         if ($filename!=".svn"
-             && $filename!="."
-             && $filename!=".."
+         if (($filename != ".svn")
+             && ($filename != ".")
+             && ($filename != "..")
              && is_dir($dirplug."/".$filename)) {
 
             // Find version
@@ -246,8 +248,8 @@ class Plugin extends CommonDBTM {
             $install_ok = false;
          } else {
             // Check version
-            if ($file_plugins[$plug]['version']!=$pluglist[$ID]['version']) {
-               $input = $file_plugins[$plug];
+            if ($file_plugins[$plug]['version'] != $pluglist[$ID]['version']) {
+               $input       = $file_plugins[$plug];
                $input['id'] = $ID;
                if ($pluglist[$ID]['version']) {
                   $input['state'] = self::NOTUPDATED;
@@ -257,7 +259,8 @@ class Plugin extends CommonDBTM {
             }
          }
          // Check install is ok for activated plugins
-         if ($install_ok && ($pluglist[$ID]['state'] == self::ACTIVATED)) {
+         if ($install_ok
+             && ($pluglist[$ID]['state'] == self::ACTIVATED)) {
             $usage_ok = true;
             $function = "plugin_".$plug."_check_prerequisites";
             if (function_exists($function)) {
@@ -289,7 +292,7 @@ class Plugin extends CommonDBTM {
             if (isset($data['oldname'])) {
                $checking = $pluglist;
                foreach ($checking as $check) {
-                  if (isset($check['directory']) && $check['directory'] == $data['oldname']) {
+                  if (isset($check['directory']) && ($check['directory'] == $data['oldname'])) {
                      $data['state'] = self::NOTUPDATED;
                      $this->delete(array('id' => $check['id']));
                   }
@@ -297,7 +300,7 @@ class Plugin extends CommonDBTM {
             } else {
                $data['state'] = self::NOTINSTALLED;
             }
-            $data['directory']=$plug;
+            $data['directory'] = $plug;
             $this->add($data);
          }
       }
@@ -313,15 +316,15 @@ class Plugin extends CommonDBTM {
       $this->checkStates();
       echo "<div class='center'><table class='tab_cadrehov'>";
 
-      $pluglist = $this->find("", "name, directory");
-      $i = 0;
+      $pluglist          = $this->find("", "name, directory");
+      $i                 = 0;
       $PLUGIN_HOOKS_SAVE = $PLUGIN_HOOKS;
       echo "<tr><th colspan='8'>".__('Plugins list')."</th></tr>\n";
 
       if (!empty($pluglist)) {
          echo "<tr><th>".__('Name')."</th><th>"._n('Version', 'Versions',1)."</th>";
          echo "<th>".__('License')."</th>";
-         echo "<th>".__('Status')."</th><th>".__('Authors')."</th>";
+         echo "<th>".__('Status')."</th><th>"._n('Author', 'Authors',2)."</th>";
          echo "<th>".__('Website')."</th><th colspan='2'>&nbsp;</th></tr>\n";
 
          foreach ($pluglist as $ID => $plug) {
@@ -331,7 +334,7 @@ class Plugin extends CommonDBTM {
             }
             $i++;
             $class = 'tab_bg_1';
-            if ($i%2==0) {
+            if (($i%2) == 0) {
                $class = 'tab_bg_2';
             }
             echo "<tr class='$class'>";
@@ -377,11 +380,11 @@ class Plugin extends CommonDBTM {
                   break;
 
                case self::ACTIVATED :
-                  _e('Enabled');
+                  echo _x('plugin', 'Enabled');
                   break;
 
                case self::NOTINSTALLED :
-                  _e('Not installed');
+                  echo _x('plugin', 'Not installed');
                   break;
 
                case self::NOTUPDATED :
@@ -389,11 +392,11 @@ class Plugin extends CommonDBTM {
                   break;
 
                case self::TOBECONFIGURED :
-                  _e('Installed / not configured');
+                  echo _x('plugin', 'Installed / not configured');
                   break;
 
                case self::NOTACTIVATED :
-                  _e('Installed / not activated');
+                  echo _x('plugin', 'Installed / not activated');
                   break;
 
                case self::TOBECLEANED :
@@ -417,14 +420,14 @@ class Plugin extends CommonDBTM {
             switch ($plug['state']) {
                case self::ACTIVATED :
                   echo "<td><a class='vsubmit' href='".$this->getSearchURL().
-                             "?id=$ID&amp;action=unactivate'>". __('Disable')."</a></td>";
+                             "?id=$ID&amp;action=unactivate'>". _sx('button','Disable')."</a></td>";
                   echo "<td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      echo "<a class='vsubmit' href='".$this->getSearchURL().
-                            "?id=$ID&amp;action=uninstall'>". __('Uninstall')."</a>";
+                            "?id=$ID&amp;action=uninstall'>". _sx('button','Uninstall')."</a>";
                   } else {
                      //TRANS: %s is the list of missing functions
-                     echo sprintf(__('Non-existent functions: %s'),
+                     echo sprintf(__('%1$s: %2$s'), __('Non-existent function'),
                                   "plugin_".$plug['directory']."_uninstall");
                   }
                   echo "</td>";
@@ -437,16 +440,15 @@ class Plugin extends CommonDBTM {
                   if (function_exists("plugin_".$plug['directory']."_install")
                       && function_exists("plugin_".$plug['directory']."_check_config")) {
 
-                     $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
+                     $function   = 'plugin_' . $plug['directory'] . '_check_prerequisites';
                      $do_install = true;
                      if (function_exists($function)) {
                         $do_install = $function();
                      }
-                     if ($plug['state']==self::NOTUPDATED) {
-                        //TRANS: verb, for button
+                     if ($plug['state'] == self::NOTUPDATED) {
                         $msg = _x('button', 'Upgrade');
                      } else {
-                        $msg = __('Install');
+                        $msg = _x('button', 'Install');
                      }
                      if ($do_install) {
                         echo "<a class='vsubmit' href='".$this->getSearchURL().
@@ -462,20 +464,20 @@ class Plugin extends CommonDBTM {
                         $missing .= " plugin_".$plug['directory']."_check_config";
                      }
                      //TRANS: %s is the list of missing functions
-                     printf(__('Non-existent functions: %s'), $missing);
+                     printf(__('%1$s: %2$s'), __('Non-existent function'),
+                            $missing);
                   }
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      if (function_exists("plugin_".$plug['directory']."_check_config")) {
                         echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
-                               __('Uninstall')."</a>";
+                               _x('button', 'Uninstall')."</a>";
                      } else {
                         // This is an incompatible plugin (0.71), uninstall fonction could crash
                         echo "&nbsp;";
                      }
                   } else {
-                     //TRANS: %s is the list of missing functions
-                     printf(__('Non-existent functions: %s'),
+                     printf(__('%1$s: %2$s'), __('Non-existent function'),
                             "plugin_".$plug['directory']."_uninstall");
                   }
                   echo "</td>";
@@ -491,17 +493,15 @@ class Plugin extends CommonDBTM {
                         Html::redirect($this->getSearchURL());
                      }
                   } else {
-                     //TRANS: %s is the list of missing functions
-                     printf(__('Non-existent functions: %s'),
+                     printf(__('%1$s: %2$s'), __('Non-existent function'),
                             "plugin_".$plug['directory']."_check_config");
                   }
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      echo "<a class='vsubmit' href='".$this->getSearchURL().
-                            "?id=$ID&amp;action=uninstall'>". __('Uninstall')."</a>";
+                            "?id=$ID&amp;action=uninstall'>". _x('button','Uninstall')."</a>";
                   } else {
-                     //TRANS: %s is the list of missing functions
-                     printf(__('Non-existent functions: %s'),
+                     printf(__('%1$s: %2$s'), __('Non-existent function'),
                             "plugin_".$plug['directory']."_uninstall");
                   }
                   echo "</td>";
@@ -512,16 +512,15 @@ class Plugin extends CommonDBTM {
                   $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
                   if (function_exists($function) && $function()) {
                      echo "<a class='vsubmit' href='".$this->getSearchURL().
-                            "?id=$ID&amp;action=activate'>". __('Enable')."</a>";
+                            "?id=$ID&amp;action=activate'>". _x('button','Enable')."</a>";
                   }
                   // Else : reason displayed by the plugin
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      echo "<a class='vsubmit' href='".$this->getSearchURL().
-                            "?id=$ID&amp;action=uninstall'>". __('Uninstall')."</a>";
+                            "?id=$ID&amp;action=uninstall'>". _x('button','Uninstall')."</a>";
                   } else {
-                     //TRANS: %s is the list of missing functions
-                     printf(__('Non-existent functions: %s'),
+                     printf(__('%1$s: %2$s'), __('Non-existent function'),
                             "plugin_".$plug['directory']."_uninstall");
                   }
                   echo "</td>";
@@ -531,7 +530,7 @@ class Plugin extends CommonDBTM {
                default :
                   echo "<td colspan='2'>";
                   echo "<a class='vsubmit' href='".$this->getSearchURL()."?id=$ID&amp;action=clean'>".
-                         __('Clean')."</a>";
+                         _x('button','Clean')."</a>";
                   echo "</td>";
                   break;
             }
@@ -588,7 +587,7 @@ class Plugin extends CommonDBTM {
 
       if ($this->getFromDB($ID)) {
          self::load($this->fields['directory'],true);
-         $function = 'plugin_' . $this->fields['directory'] . '_install';
+         $function   = 'plugin_' . $this->fields['directory'] . '_install';
          $install_ok = false;
          if (function_exists($function)) {
             if ($function()) {
@@ -717,9 +716,9 @@ class Plugin extends CommonDBTM {
    function isInstalled($plugin) {
 
       if ($this->getFromDBbyDir($plugin)) {
-         return ($this->fields['state']    == self::ACTIVATED
-                 || $this->fields['state'] == self::TOBECONFIGURED
-                 || $this->fields['state'] == self::NOTACTIVATED);
+         return (($this->fields['state']    == self::ACTIVATED)
+                 || ($this->fields['state'] == self::TOBECONFIGURED)
+                 || ($this->fields['state'] == self::NOTACTIVATED));
       }
    }
 
@@ -732,7 +731,7 @@ class Plugin extends CommonDBTM {
    function removeFromSession($plugin) {
 
       $key = array_search($plugin,$_SESSION['glpi_plugins']);
-      if ($key!==false) {
+      if ($key !== false) {
          unset($_SESSION['glpi_plugins'][$key]);
       }
    }
@@ -810,8 +809,8 @@ class Plugin extends CommonDBTM {
       }
 
       if (in_array('glpi_infocoms', $glpitables)) {
-         $entities = getAllDatasFromTable('glpi_entities');
-         $entities[0]="Root";
+         $entities    = getAllDatasFromTable('glpi_entities');
+         $entities[0] = "Root";
 
          foreach ($types as $num => $name) {
             $itemtable = getTableForItemType($name);
@@ -834,7 +833,7 @@ class Plugin extends CommonDBTM {
                                                       FROM `$itemtable`
                                                       WHERE `entities_id` = '$entID'
                                                             AND `is_recursive` = '0')";
-                  $DB->queryOrDie($query3, "0.80 update entities_id and is_recursive=0
+                  $DB->queryOrDie($query3, "update entities_id and is_recursive=0
                                   in glpi_infocoms for $name");
 
                   // Recursive ones
@@ -846,8 +845,8 @@ class Plugin extends CommonDBTM {
                                                       FROM `$itemtable`
                                                       WHERE `entities_id` = '$entID'
                                                             AND `is_recursive` = '1')";
-                  $DB->queryOrDie($query3, "0.80 update entities_id and is_recursive=1
-                                 in glpi_infocoms for $name");
+                  $DB->queryOrDie($query3, "update entities_id and is_recursive=1
+                                  in glpi_infocoms for $name");
                } else {
                   $query3 = "UPDATE `glpi_infocoms`
                              SET `entities_id` = '$entID'
@@ -855,8 +854,8 @@ class Plugin extends CommonDBTM {
                                    AND `items_id` IN (SELECT `id`
                                                       FROM `$itemtable`
                                                       WHERE `entities_id` = '$entID')";
-                  $DB->queryOrDie($query3, "0.80 update entities_id in glpi_infocoms
-                        for $name");
+                  $DB->queryOrDie($query3, "update entities_id in glpi_infocoms
+                                  for $name");
                }
             } // each entity
          } // each plugin type
@@ -1002,14 +1001,14 @@ class Plugin extends CommonDBTM {
    static function doHook ($name, $param=NULL) {
       global $PLUGIN_HOOKS;
 
-      if ($param==NULL) {
+      if ($param == NULL) {
          $data = func_get_args();
       } else {
          $data = $param;
       }
 
       // Apply hook only for the item
-      if ($param != NULL && is_object($param)) {
+      if (($param != NULL) && is_object($param)) {
          $itemtype = get_class($param);
          if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
             foreach ($PLUGIN_HOOKS[$name] as $plug => $tab) {
@@ -1046,7 +1045,7 @@ class Plugin extends CommonDBTM {
     * This function executes a hook.
     *
     * @param $name   Name of hook to fire
-    * @param $parm   Parameters (defaultr NULL)
+    * @param $parm   Parameters (default NULL)
     *
     * @return mixed $data
    **/
