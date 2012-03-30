@@ -537,6 +537,13 @@ class Ticket extends CommonITILObject {
       // Get ticket : need for comparison
       $this->getFromDB($input['id']);
 
+      // automatic recalculate if user changes urgence
+      if (isset($input['urgency'])
+          && isset($input['impact'])
+          && !isset($input['priority'])) {
+         $input['priority'] = self::computePriority($input['urgency'], $input['impact']);
+      }
+
       // Security checks
       if (!Session::isCron() && !Session::haveRight("assign_ticket","1")) {
          if (isset($input["_itil_assign"])
@@ -605,6 +612,7 @@ class Ticket extends CommonITILObject {
              && $this->isUser(parent::REQUESTER,Session::getLoginUserID())) {
             $allowed_fields[] = 'content';
             $allowed_fields[] = 'urgency';
+            $allowed_fields[] = 'priority'; // automatic recalculate if user changes urgence
             $allowed_fields[] = 'itilcategories_id';
             $allowed_fields[] = 'itemtype';
             $allowed_fields[] = 'items_id';
@@ -3687,6 +3695,8 @@ class Ticket extends CommonITILObject {
       if ($canupdate) {
          $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
       } else {
+         $idimpact = "value_impact".mt_rand();
+         echo "<input id='$idimpact' type='hidden' name='impact' value='".$this->fields["impact"]."'>";
          echo parent::getImpactName($this->fields["impact"]);
       }
       echo $tt->getEndHiddenFieldValue('impact',$this);
@@ -3773,7 +3783,7 @@ class Ticket extends CommonITILObject {
          echo "<span id='$idajax'>".parent::getPriorityName($this->fields["priority"])."</span>";
       }
 
-      if ($canupdate) {
+      if ($canupdate || $canupdate_descr) {
          $params = array('urgency'  => '__VALUE0__',
                          'impact'   => '__VALUE1__',
                          'priority' => $idpriority);
