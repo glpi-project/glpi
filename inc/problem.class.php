@@ -796,7 +796,7 @@ class Problem extends CommonITILObject {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th class='left' width='$colsize1%'>"._e('Opening date')."</th>";
+      echo "<th class='left' width='$colsize1%'>".__('Opening date')."</th>";
       echo "<td class='left' width='$colsize2%'>";
 
       if (isset($options['tickets_id'])) {
