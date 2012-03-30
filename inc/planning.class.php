@@ -49,7 +49,7 @@ class Planning {
 
       switch ($value) {
          case 0 :
-            return __('Information');
+            return _n('Information', 'Information', 1);
 
          case 1 :
             return __('To do');
@@ -69,9 +69,10 @@ class Planning {
    static function dropdownState($name, $value='') {
 
       echo "<select name='$name' id='$name'>";
-      echo "<option value='0'".($value==0?" selected ":"").">".__('Information')."</option>";
-      echo "<option value='1'".($value==1?" selected ":"").">".__('To do')."</option>";
-      echo "<option value='2'".($value==2?" selected ":"").">".__('Done')."</option>";
+      echo "<option value='0'".(($value == 0)?" selected ":"").">".
+            _n('Information', 'Information', 1)."</option>";
+      echo "<option value='1'".(($value == 1)?" selected ":"").">".__('To do')."</option>";
+      echo "<option value='2'".(($value == 2)?" selected ":"").">".__('Done')."</option>";
       echo "</select>";
    }
 
@@ -97,7 +98,8 @@ class Planning {
                                       'who_group' => 0,
                                       'begin'     => $begin,
                                       'end'       => $end));
-         if (count($data) && method_exists($itemtype,'getAlreadyPlannedInformation')) {
+         if (count($data)
+             && method_exists($itemtype,'getAlreadyPlannedInformation')) {
             foreach ($data as $key => $val) {
                if (!isset($except[$itemtype])
                    || (is_array($except[$itemtype]) && !in_array($val['id'],$except[$itemtype]))) {
@@ -133,17 +135,17 @@ class Planning {
       global $CFG_GLPI;
 
       switch ($type) {
-         case "month":
+         case "month" :
             $split      = explode("-",$date);
             $year_next  = $split[0];
             $month_next = $split[1]+1;
-            if ($month_next>12) {
+            if ($month_next > 12) {
                $year_next++;
                $month_next -= 12;
             }
             $year_prev  = $split[0];
             $month_prev = $split[1]-1;
-            if ($month_prev==0) {
+            if ($month_prev == 0) {
                $year_prev--;
                $month_prev += 12;
             }
@@ -180,15 +182,9 @@ class Planning {
       echo "</td>";
       echo "<td>";
 
-//       $types=array('Mon planning', 'Mon planning + Mes groupes', 'Choix d un user', 'Choix d un groupe');
-//       echo "<select>";
-//       foreach ($types as $type) {
-//          echo "<option>$type</option>";
-//       }
-//       echo "</select>";
       if (Session::haveRight("show_all_planning","1")) {
          echo "<input type='radio' id='radio_user' name='usertype' value='user' ".
-                ($usertype=="user"?"checked":"").">";
+                (($usertype == "user")?"checked":"").">";
          $rand_user = User::dropdown(array('name'   => 'uID',
                                            'value'  => $uID,
                                            'right'  => 'interface',
@@ -196,14 +192,14 @@ class Planning {
                                            'entity' => $_SESSION["glpiactive_entity"]));
          echo "\n<hr>";
          echo "<input type='radio' id='radio_group' name='usertype' value='group' ".
-                ($usertype=="group"?"checked":"").">";
+                (($usertype == "group")?"checked":"").">";
          $rand_group = Dropdown::show('Group', array('value'     => $gID,
                                                      'name'      => 'gID',
                                                      'entity'    => $_SESSION["glpiactive_entity"],
                                                      'condition' => '`is_usergroup`'));
          echo "\n<hr>";
          echo "<input type='radio' id='radio_user_group' name='usertype' value='user_group' ".
-                ($usertype=="user_group"?"checked":"").">";
+                (($usertype == "user_group")?"checked":"").">";
          _e('Personal + groups');
 
          echo "\n<script type='text/javascript'>";
@@ -217,9 +213,9 @@ class Planning {
 
       } else if (Session::haveRight("show_group_planning","1")) {
          echo "<select name='usertype'>";
-         echo "<option value='user' ".($usertype=='user'?'selected':'').">".__('Just my ones');
+         echo "<option value='user' ".(($usertype == 'user')?'selected':'').">".__('Just my ones');
          echo "</option>";
-         echo "<option value='user_group' ".($usertype=='user_group'?'selected':'').">".
+         echo "<option value='user_group' ".(($usertype == 'user_group')?'selected':'').">".
                __('Personal + groups')."</option>";
          echo "</select>";
       }
@@ -234,15 +230,13 @@ class Planning {
       echo '</td><td>';
 
       echo "<select name='type'>";
-      echo "<option value='day' ".($type=="day"?" selected ":"").">".__('Day')."</option>";
-      echo "<option value='week' ".($type=="week"?" selected ":"").">".__('Week')."</option>";
-      echo "<option value='month' ".($type=="month"?" selected ":"").">".__('Month')."</option>";
+      echo "<option value='day' ".(($type == "day")?" selected ":"").">".__('Day')."</option>";
+      echo "<option value='week' ".(($type == "week")?" selected ":"").">".__('Week')."</option>";
+      echo "<option value='month' ".(($type == "month")?" selected ":"").">".__('Month')."</option>";
       echo "</select></td>\n";
 
-
-
       echo "<td rowspan='2' class='center'>";
-      echo "<input type='submit' class='submit' name='submit' value=\"".__s('Show')."\">";
+      echo "<input type='submit' class='submit' name='submit' value=\""._sx('button', 'Show')."\">";
       echo "</td>\n";
 
       if ($uID || $gID) {
@@ -322,7 +316,7 @@ class Planning {
       echo "<td rowspan='2' class='center'>";
       echo "<input type='hidden' name='users_id' value=\"$who\">";
       echo "<input type='submit' class='submit' name='checkavailability' value=\"".
-             __s('Search') ."\">";
+             _sx('button', 'Search') ."\">";
       echo "</td>\n";
 
       echo "</tr>";
@@ -345,7 +339,7 @@ class Planning {
       $plan_end   = explode(":",$CFG_GLPI["planning_end"]);
       $begin_hour = intval($plan_begin[0]);
       $end_hour   = intval($plan_end[0]);
-      if ($plan_end[1]!=0) {
+      if ($plan_end[1] != 0) {
          $end_hour++;
       }
       $colsize = floor((100-15)/($end_hour-$begin_hour));
@@ -355,7 +349,7 @@ class Planning {
 
       for ($i=$begin_hour ; $i<$end_hour ; $i++) {
          $from = ($i<10?'0':'').$i;
-         $to   = (($i+1)<10?'0':'').($i+1);
+         $to   = ((($i+1) < 10)?'0':'').($i+1);
          echo "<th width='$colsize%' colspan='4'>".sprintf(__('From %1$s to %2$s'), $from, $to).
               "<th>";
          $colnumber += 4;
@@ -376,16 +370,16 @@ class Planning {
             $begin_time = date("Y-m-d H:i:s", strtotime($current_day)+($i)*HOUR_TIMESTAMP/4);
             $end_time   = date("Y-m-d H:i:s", strtotime($current_day)+($i+1)*HOUR_TIMESTAMP/4);
             // Init activity interval
-            $begin_act = $end_time;
-            $end_act   = $begin_time;
-
+            $begin_act  = $end_time;
+            $end_act    = $begin_time;
 
             /// TODO : review system if 2 independent task from :10 -> :20 + :40 -> :50
             /// Will view not available from :10 to :50
             /// So do not display text for the moment
             reset($interv);
-            while ($data=current($interv)) {
-               if ($data["begin"]>=$begin_time && $data["end"]<=$end_time) {
+            while ($data = current($interv)) {
+               if (($data["begin"] >= $begin_time)
+                   && ($data["end"] <= $end_time)) {
                   // In
                   if ($begin_act > $data["begin"]) {
                      $begin_act = $data["begin"];
@@ -395,21 +389,24 @@ class Planning {
                   }
 
                   unset($interv[key($interv)]);
-               } else if ($data["begin"]<$begin_time && $data["end"]>$end_time) {
+               } else if (($data["begin"] < $begin_time)
+                          && ($data["end"] > $end_time)) {
                   // Through
                   $begin_act = $begin_time;
                   $end_act   = $end_time;
 
                   next($interv);
-               } else if ($data["begin"]>=$begin_time && $data["begin"]<$end_time) {
+               } else if (($data["begin"] >= $begin_time)
+                          && ($data["begin"] < $end_time)) {
                   // Begin
                   if ($begin_act > $data["begin"]) {
                      $begin_act = $data["begin"];
                   }
-                  $end_act   = $end_time;
+                  $end_act = $end_time;
 
                   next($interv);
-               } else if ($data["end"]>$begin_time && $data["end"]<=$end_time) {
+               } else if (($data["end"] > $begin_time)
+                          && ($data["end"] <= $end_time)) {
                   //End
                   $begin_act = $begin_time;
                   if ($end_act < $data["end"]) {
@@ -425,7 +422,7 @@ class Planning {
                echo "<td class='notavailable'>&nbsp;</td>";
             } else {
                // No activity
-               echo "<td class='available' >&nbsp;</td>";
+               echo "<td class='available'>&nbsp;</td>";
             }
          }
          echo "</tr>";
@@ -462,14 +459,14 @@ class Planning {
       }
 
       // Define some constants
-      $date = explode("-",$when);
-      $time = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
+      $date       = explode("-",$when);
+      $time       = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
 
       $daysinweek = Toolbox::getDaysOfWeekArray();
 
       // Check bisextile years
       list($current_year, $current_month, $current_day) = explode("-", $when);
-      if (($current_year%4)==0) {
+      if (($current_year%4) == 0) {
          $feb = 29;
       } else {
          $feb = 28;
@@ -478,16 +475,16 @@ class Planning {
 
       // Begin of the month
       $begin_month_day = strftime("%w", mktime(0, 0, 0, $current_month, 1, $current_year));
-      if ($begin_month_day==0) {
+      if ($begin_month_day == 0) {
          $begin_month_day = 7;
       }
       $end_month_day = strftime("%w", mktime(0, 0, 0, $current_month, $nb_days[$current_month-1],
                                              $current_year));
 
       // Day of the week
-      $dayofweek = date("w",$time);
+      $dayofweek     = date("w",$time);
       // Cas du dimanche
-      if ($dayofweek==0) {
+      if ($dayofweek == 0) {
          $dayofweek = 7;
       }
 
@@ -556,7 +553,7 @@ class Planning {
       $hour_begin = $tmp[0];
       $tmp        = explode(":", $CFG_GLPI["planning_end"]);
       $hour_end   = $tmp[0];
-      if ($tmp[1]>0) {
+      if ($tmp[1] > 0) {
          $hour_end++;
       }
 
@@ -569,7 +566,7 @@ class Planning {
                   echo "<span class='b'>".self::displayUsingTwoDigits($hour).":00</span><br>";
 
                   // From midnight
-                  if ($hour==$hour_begin) {
+                  if ($hour == $hour_begin) {
                      $begin_time = date("Y-m-d H:i:s",
                                         strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP);
                   } else {
@@ -577,7 +574,7 @@ class Planning {
                                         strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP+$hour*HOUR_TIMESTAMP);
                   }
                   // To midnight
-                  if ($hour==$hour_end) {
+                  if ($hour == $hour_end) {
                      $end_time = date("Y-m-d H:i:s",
                                       strtotime($when)+($i-$dayofweek)*DAY_TIMESTAMP+24*HOUR_TIMESTAMP);
                   } else {
@@ -588,13 +585,17 @@ class Planning {
                   reset($interv);
                   while ($data=current($interv)) {
                      $type = "";
-                     if ($data["begin"]>=$begin_time && $data["end"]<=$end_time) {
+                     if (( $data["begin"]>= $begin_time)
+                         && ($data["end"] <= $end_time)) {
                         $type = "in";
-                     } else if ($data["begin"]<$begin_time && $data["end"]>$end_time) {
+                     } else if (($data["begin"] < $begin_time)
+                                && ($data["end"] > $end_time)) {
                         $type = "through";
-                     } else if ($data["begin"]>=$begin_time && $data["begin"]<$end_time) {
+                     } else if (($data["begin"] >= $begin_time)
+                                && ($data["begin"] < $end_time)) {
                         $type = "begin";
-                     } else if ($data["end"]>$begin_time && $data["end"]<=$end_time) {
+                     } else if (($data["end"] > $begin_time)
+                                && ($data["end"] <= $end_time)) {
                         $type = "end";
                      }
 
@@ -602,7 +603,7 @@ class Planning {
                         next($interv);
                      } else {
                         self::displayPlanningItem($data,$who,$type);
-                        if ($type=="in") {
+                        if ($type == "in") {
                            unset($interv[key($interv)]);
                         } else {
                            next($interv);
@@ -625,13 +626,17 @@ class Planning {
                reset($interv);
                while ($data=current($interv)) {
                   $type = "";
-                  if ($data["begin"]>=$begin_time && $data["end"]<=$end_time) {
+                  if (($data["begin"] >= $begin_time)
+                      && ($data["end"] <= $end_time)) {
                      $type = "in";
-                  } else if ($data["begin"]<$begin_time && $data["end"]>$end_time) {
+                  } else if (($data["begin"] < $begin_time)
+                             && ($data["end"] > $end_time)) {
                      $type = "through";
-                  } else if ($data["begin"]>=$begin_time && $data["begin"]<$end_time) {
+                  } else if (($data["begin"] >= $begin_time)
+                             && ($data["begin"] < $end_time)) {
                      $type = "begin";
-                  } else if ($data["end"]>$begin_time && $data["end"]<=$end_time) {
+                  } else if (($data["end"] > $begin_time)
+                             && ($data["end"] <= $end_time)) {
                      $type = "end";
                   }
 
@@ -639,7 +644,7 @@ class Planning {
                      next($interv);
                   } else {
                      self::displayPlanningItem($data,$who,$type,1);
-                     if ($type=="in") {
+                     if ($type == "in") {
                         unset($interv[key($interv)]);
                      } else {
                         next($interv);
@@ -657,7 +662,7 @@ class Planning {
                echo "<td style='background-color:#ffffff'>&nbsp;</td>";
             }
             // Print real days
-            if ($current_month<10 && strlen($current_month)==1) {
+            if (($current_month < 10) && (strlen($current_month) == 1)) {
                $current_month = "0".$current_month;
             }
             $begin_time = strtotime($begin);
@@ -676,15 +681,19 @@ class Planning {
                $begin_day = date("Y-m-d H:i:s", $time);
                $end_day   = date("Y-m-d H:i:s", $time+DAY_TIMESTAMP);
                reset($interv);
-               while ($data=current($interv)) {
+               while ($data = current($interv)) {
                   $type = "";
-                  if ($data["begin"]>=$begin_day && $data["end"]<=$end_day) {
+                  if (($data["begin"] >= $begin_day)
+                      && ($data["end"] <= $end_day)) {
                      $type = "in";
-                  } else if ($data["begin"]<$begin_day && $data["end"]>$end_day) {
+                  } else if (($data["begin"] < $begin_day)
+                             && ($data["end"] > $end_day)) {
                      $type = "through";
-                  } else if ($data["begin"]>=$begin_day && $data["begin"]<$end_day) {
+                  } else if (($data["begin"] >= $begin_day)
+                             && ($data["begin"] < $end_day)) {
                      $type = "begin";
-                  } else if ($data["end"]>$begin_day && $data["end"]<=$end_day) {
+                  } else if (($data["end"] > $begin_day)
+                             && ($data["end"] <= $end_day)) {
                      $type = "end";
                   }
 
@@ -692,7 +701,7 @@ class Planning {
                      next($interv);
                   } else {
                      self::displayPlanningItem($data,  $who,$type);
-                     if ($type=="in") {
+                     if ($type == "in") {
                         unset($interv[key($interv)]);
                      } else {
                         next($interv);
@@ -703,9 +712,9 @@ class Planning {
                echo "</td>";
 
                // Add break line
-               if (($day+$begin_month_day)%7==1) {
+               if ((($day+$begin_month_day)%7) == 1) {
                   echo "</tr>\n";
-                  if ($day!=$nb_days[$current_month-1]) {
+                  if ($day != $nb_days[$current_month-1]) {
                      echo "<tr>";
                   }
                }
@@ -775,7 +784,7 @@ class Planning {
    static private function displayUsingTwoDigits($time) {
 
       $time = round($time);
-      if ($time<10 && strlen($time)>0) {
+      if (($time < 10) && (strlen($time) > 0)) {
          return "0".$time;
       }
       return $time;
@@ -792,20 +801,21 @@ class Planning {
    static function showCentral($who) {
       global $CFG_GLPI;
 
-      if (!Session::haveRight("show_planning","1") || $who<=0) {
+      if (!Session::haveRight("show_planning","1")
+          || ($who <= 0)) {
          return false;
       }
 
-      $when  = strftime("%Y-%m-%d");
-      $debut = $when;
+      $when   = strftime("%Y-%m-%d");
+      $debut  = $when;
 
       // Get begin and duration
-      $date  = explode("-",$when);
-      $time  = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
-      $begin = $time;
-      $end   = $begin+DAY_TIMESTAMP;
-      $begin = date("Y-m-d H:i:s", $begin);
-      $end   = date("Y-m-d H:i:s", $end);
+      $date   = explode("-",$when);
+      $time   = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
+      $begin  = $time;
+      $end    = $begin+DAY_TIMESTAMP;
+      $begin  = date("Y-m-d H:i:s", $begin);
+      $end    = date("Y-m-d H:i:s", $end);
 
       $params = array('who'       => $who,
                       'who_group' => 0,
@@ -814,7 +824,6 @@ class Planning {
       $interv = array();
       foreach ($CFG_GLPI['planning_types'] as $itemtype) {
          $interv = array_merge($interv,$itemtype::populatePlanning($params));
-
       }
 
       ksort($interv);
@@ -824,14 +833,14 @@ class Planning {
            "</a>";
       echo "</th></tr>";
       $type = '';
-      if (count($interv)>0) {
+      if (count($interv) > 0) {
          foreach ($interv as $key => $val) {
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
-            if ($val["begin"]<$begin) {
+            if ($val["begin"] < $begin) {
                $val["begin"] = $begin;
             }
-            if ($val["end"]>$end) {
+            if ($val["end"] > $end) {
                $val["end"] = $end;
             }
             self::displayPlanningItem($val, $who, 'in');
@@ -859,7 +868,8 @@ class Planning {
    static function generateIcal($who, $who_group, $itemtype='') {
       global $CFG_GLPI;
 
-      if ($who==0 && $who_group==0) {
+      if (($who == 0)
+          && ($who_group == 0)) {
          return false;
       }
 
@@ -878,10 +888,10 @@ class Planning {
       $v->setProperty( "calscale", "GREGORIAN" );
       $interv = array();
 
-      $begin = time()-MONTH_TIMESTAMP*12;
-      $end   = time()+MONTH_TIMESTAMP*12;
-      $begin = date("Y-m-d H:i:s", $begin);
-      $end   = date("Y-m-d H:i:s", $end);
+      $begin  = time()-MONTH_TIMESTAMP*12;
+      $end    = time()+MONTH_TIMESTAMP*12;
+      $begin  = date("Y-m-d H:i:s", $begin);
+      $end    = date("Y-m-d H:i:s", $end);
 
       $params = array('who'       => $who,
                       'who_group' => $who_group,
@@ -897,7 +907,7 @@ class Planning {
          $interv = $itemtype::populatePlanning($params);
       }
 
-      if (count($interv)>0) {
+      if (count($interv) > 0) {
          foreach ($interv as $key => $val) {
             $vevent = new vevent(); //initiate EVENT
             if (isset($val['itemtype'])) {
@@ -919,7 +929,7 @@ class Planning {
             if (isset($val["tickets_id"])) {
                $vevent->setProperty("summary",
                   // TRANS: %1$s is the ticket, %2$s is the device
-                                    printf(__('Ticket # %1$s associated to element # %2$s'),
+                                    sprintf(__('Ticket # %1$s associated to element # %2$s'),
                                            $val["tickets_id"], $val["device"]));
             } else if (isset($val["name"])) {
                $vevent->setProperty( "summary", $val["name"] );
