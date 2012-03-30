@@ -86,7 +86,7 @@ class Peripheral extends CommonDBTM {
 
    function prepareInputForAdd($input) {
 
-      if (isset($input["id"]) && $input["id"]>0) {
+      if (isset($input["id"]) && ($input["id"] > 0)) {
          $input["_oldID"] = $input["id"];
       }
       unset($input['id']);
@@ -114,10 +114,10 @@ class Peripheral extends CommonDBTM {
                          AND `itemtype` = '".$this->getType()."';";
          $result = $DB->query($query);
 
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             $contractitem = new Contract_Item();
 
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $contractitem->add(array('contracts_id' => $data["contracts_id"],
                                         'itemtype'     => $this->getType(),
                                         'items_id'     => $this->fields['id']));
@@ -134,7 +134,7 @@ class Peripheral extends CommonDBTM {
          if ($DB->numrows($result)>0) {
             $docitem = new Document_Item();
 
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                $docitem->add(array('documents_id' => $data["documents_id"],
                                    'itemtype'     => $this->getType(),
                                    'items_id'     => $this->fields['id']));
@@ -190,24 +190,24 @@ class Peripheral extends CommonDBTM {
       echo "</td>";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name",
-                             (isset($options['withtemplate']) && $options['withtemplate']==2),
+                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, "name", array('value' => $objectName));
       echo "</td>\n";
       echo "<td>".__('Status')."</td>\n";
       echo "<td>";
-      Dropdown::show('State', array('value' => $this->fields["states_id"]));
+      State::dropdown(array('value' => $this->fields["states_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Location')."</td>\n";
       echo "<td>";
-      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
-                                       'entity' => $this->fields["entities_id"]));
+      Location::dropdown(array('value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]));
       echo "</td>\n";
       echo "<td>".__('Type')."</td>\n";
       echo "<td>";
-      Dropdown::show('PeripheralType', array('value' => $this->fields["peripheraltypes_id"]));
+      PeripheralType::dropdown(array('value' => $this->fields["peripheraltypes_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -220,20 +220,20 @@ class Peripheral extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Manufacturer')."</td>\n";
       echo "<td>";
-      Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
+      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Dropdown::show('Group', array('name'      => 'groups_id_tech',
-                                    'value'     => $this->fields['groups_id_tech'],
-                                    'entity'    => $this->fields['entities_id'],
-                                    'condition' => '`is_assign`'));
+      Group::dropdown(array('name'      => 'groups_id_tech',
+                            'value'     => $this->fields['groups_id_tech'],
+                            'entity'    => $this->fields['entities_id'],
+                            'condition' => '`is_assign`'));
       echo "</td>";
       echo "<td>".__('Model')."</td>\n";
       echo "<td>";
-      Dropdown::show('PeripheralModel', array('value' => $this->fields["peripheralmodels_id"]));
+      PeripheralModel::dropdown(array('value' => $this->fields["peripheralmodels_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -256,7 +256,7 @@ class Peripheral extends CommonDBTM {
            "</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["otherserial"], "otherserial",
-                             (isset($options['withtemplate']) && $options['withtemplate']==2),
+                             (isset($options['withtemplate']) && ($options['withtemplate'] == 2)),
                              $this->getType(), $this->fields["entities_id"]);
       Html::autocompletionTextField($this, "otherserial", array('value' => $objectName));
       echo "</td></tr>\n";
@@ -281,9 +281,9 @@ class Peripheral extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>\n";
       echo "<td>";
-      Dropdown::show('Group', array('value'     => $this->fields["groups_id"],
-                                    'entity'    => $this->fields["entities_id"],
-                                    'condition' => '`is_itemgroup`'));
+      Group::dropdown(array('value'     => $this->fields["groups_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => '`is_itemgroup`'));
       echo "</td>\n";
       echo "<td rowspan='3'>".__('Comments')."</td>\n";
       echo "<td rowspan='3'>
@@ -298,7 +298,7 @@ class Peripheral extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      if ((!isset($options['withtemplate']) || $options['withtemplate']==0)
+      if ((!isset($options['withtemplate']) || ($options['withtemplate'] == 0))
           && !empty($this->fields['template_name'])) {
          echo "<span class='small_space'>";
          printf(__('Created from the template %s'), $this->fields['template_name']);
@@ -339,7 +339,7 @@ class Peripheral extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                       = array();
       $tab['common']             = __('Characteristics');
 
       $tab[1]['table']           = $this->getTable();
