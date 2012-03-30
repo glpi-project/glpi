@@ -3027,7 +3027,7 @@ class OcsServer extends CommonDBTM {
                    "domains_id"                     => __('Domain'),
                    "networks_id"                    => __('Network'),
                    "operatingsystems_id"            => __('Operating system'),
-                   "operatingsystemservicepacks_id" => __('Service Pack'),
+                   "operatingsystemservicepacks_id" => __('Service pack'),
                    "operatingsystemversions_id"     => __('Version of the operating system'),
                    "os_license_number"              => __('Serial of the operating system'),
                    "os_licenseid"                   => __('Product ID of the operating system'),

@@ -1741,7 +1741,7 @@ class Html {
 
 
             $menu['admin']['content']['dictionnary']['options']['os_sp']['title']
-                           = __('Service Pack');
+                           = __('Service pack');
             $menu['admin']['content']['dictionnary']['options']['os_sp']['page']
                            = '/front/ruledictionnaryoperatingsystemservicepack.php';
             $menu['admin']['content']['dictionnary']['options']['os_sp']['links']['search']

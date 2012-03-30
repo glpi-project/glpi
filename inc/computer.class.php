@@ -621,7 +621,7 @@ class Computer extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Service Pack')."</td>";
+      echo "<td>".__('Service pack')."</td>";
       echo "<td >";
       Dropdown::show('OperatingSystemServicePack',
                      array('value' => $this->fields["operatingsystemservicepacks_id"]));
@@ -793,7 +793,7 @@ class Computer extends CommonDBTM {
 
       $tab[41]['table']          = 'glpi_operatingsystemservicepacks';
       $tab[41]['field']          = 'name';
-      $tab[41]['name']           = __('Service Pack');
+      $tab[41]['name']           = __('Service pack');
 
       $tab[42]['table']          = 'glpi_autoupdatesystems';
       $tab[42]['field']          = 'name';
