@@ -172,30 +172,30 @@ class Profile_User extends CommonDBTM {
             }
             echo $link.($canshowentity ? "</a>" : '');
             echo "</td>";
-            echo "<td>";
+
             if (Session::haveRight('profile', 'r')) {
-               echo "<a href='".Toolbox::getItemTypeFormURL('Profile')."?id=".$data["id"]."'>";
-               echo $data["name"]."</a>";
+               $entname = "<a href='".Toolbox::getItemTypeFormURL('Profile')."?id=".$data["id"]."'>".
+                            $data["name"]."</a>";
             } else {
-               echo $data["name"];
+               $entname =  $data["name"];
             }
 
             if ($data["is_dynamic"] || $data["is_recursive"]) {
-               echo "<span class='b'>&nbsp;(";
+               $entname = sprintf(__('%1$s %2$s'), $entname, "<span class='b'>(");
                if ($data["is_dynamic"]) {
                   //TRANS: letter 'D' for Dynamic
-                  _e('D');
+                  $entname = sprintf(__('%1$s%2$s'), $entname, __('D'));
                }
                if ($data["is_dynamic"] && $data["is_recursive"]) {
-                  echo ", ";
+                  $entname = sprintf(__('%1$s%2$s'), $entname, ", ");
                }
                if ($data["is_recursive"]) {
                   //TRANS: letter 'R' for Recursive
-                  _e('R');
+                  $entname = sprintf(__('%1$s%2$s'), $entname, __('R'));
                }
-               echo ")</span>";
+               $entname = sprintf(__('%1$s%2$s'), $entname, ")</span>");
             }
-            echo "</td>";
+             echo "<td>".$entname."</td>";
          }
          echo "</tr>";
       }
@@ -312,25 +312,24 @@ class Profile_User extends CommonDBTM {
                      echo "<input type='checkbox' name='item[".$data2["linkID"]."]' value='1'>";
                      echo "</td>";
                   }
-                  echo "<td>";
 
-                  echo formatUserName($data2["id"], $data2["name"], $data2["realname"],
-                                      $data2["firstname"], $canshowuser);
+                  $username = formatUserName($data2["id"], $data2["name"], $data2["realname"],
+                                             $data2["firstname"], $canshowuser);
 
                   if ($data2["is_dynamic"] || $data2["is_recursive"]) {
-                     echo "<span class='b'>&nbsp;(";
+                     $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
                      if ($data2["is_dynamic"]) {
-                        _e('D');
+                        $username = sprintf(__('%1$s%2$s'), $username, __('D'));
                      }
                      if ($data2["is_dynamic"] && $data2["is_recursive"]) {
-                        echo ", ";
+                        $username = sprintf(__('%1$s%2$s'), $username, ", ");
                      }
                      if ($data2["is_recursive"]) {
-                        _e('R');
+                        $username = sprintf(__('%1$s%2$s'), $username, __('R'));
                      }
-                     echo ")</span>";
+                     $username = sprintf(__('%1$s%2$s'), $username, ")</span>");
                   }
-                  echo "</td>";
+                  echo "<td>".$username."</td>";
                   $i++;
                }
 
@@ -474,23 +473,24 @@ class Profile_User extends CommonDBTM {
                   echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
                   echo "</td>";
                }
-               echo "<td class='tab_bg_1'>".formatUserName($data["id"], $data["name"],
-                                                           $data["realname"], $data["firstname"], 1);
+
+               $username = formatUserName($data["id"], $data["name"], $data["realname"],
+                                          $data["firstname"], 1);
 
                if ($data["is_dynamic"] || $data["is_recursive"]) {
-                  echo "<span class='b'>&nbsp;(";
+                  $username = sprintf(__('%1$s %2$s'), $username, "<span class='b'>(");
                   if ($data["is_dynamic"]) {
-                     -e('D');
+                     $username = sprintf(__('%1$s%2$s'), $username, __('D'));
                   }
                   if ($data["is_dynamic"] && $data["is_recursive"]) {
-                     echo ", ";
+                     $username = sprintf(__('%1$s%2$s'), $username, ", ");
                   }
                   if ($data["is_recursive"]) {
-                     _e('R');
+                     $username = sprintf(__('%1$s%2$s'), $username, __('R'));
                   }
-                  echo ")</span>";
+                  $username = sprintf(__('%1$s%2$s'), $username, ")</span>");
                }
-               echo "</td>\n";
+               echo "<td class='tab_bg_1'>". $username."</td>\n";
                $i++;
             }
 

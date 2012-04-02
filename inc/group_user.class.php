@@ -210,15 +210,17 @@ class Group_User extends CommonDBRelation{
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
                echo "</td>";
             }
-            echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?id=".$data["id"]."'>".
-                   sprintf(__('%1$s (%2$s)'), $data["completename"],
-                           ($_SESSION["glpiis_ids_visible"] ? $data["id"] :"")).
-                 "</a>&nbsp;";
-
-            if ($data["is_dynamic"]) {
-               echo "<span class='b'>&nbsp;".__('(D)')."</span>";
+            if ($_SESSION["glpiis_ids_visible"]) {
+               $link = sprintf(__('%1$s (%2$s)'), $data["completename"], $data["id"]);
+            } else {
+               $link = $data["completename"];
             }
-            echo "</td>";
+            $href = "<a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?id=".$data["id"]."'>".
+                      $link."</a>";
+            if ($data["is_dynamic"]) {
+               $href = sprintf(__('%1$s (%2$s)'), $href, "<span class='b'>".__('D')."</span>");
+            }
+            echo "<td>".$href."</td>";
             $i++;
          }
 
@@ -467,10 +469,11 @@ class Group_User extends CommonDBRelation{
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
                echo "</td>";
             }
-            echo "<td>".$user->getLink();
+            $link = $user->getLink();
             if ($data["is_dynamic"]) {
-               echo "<span class='b'>&nbsp;".__('(D)')."</span>";
+               $link = sprintf(__('%1$s %2$s'), $link, "<span class='b'>(".__('D').")</span>");
             }
+            echo "<td>".$link;
             if ($tree) {
                echo "</td><td>";
                if ($tmpgrp->getFromDB($data['groups_id'])) {

@@ -1389,7 +1389,7 @@ class KnowbaseItem extends CommonDBTM {
                                                                  $data['entities_id']));
                   if ($data['is_recursive']) {
                      $groupname = sprintf(__('%1$s %2$s'), $groupname,
-                                          "<span class='b'>&nbsp;".__('(R)')."</span>");
+                                          "<span class='b'>(".__('R').")</span>");
                   }
                }
                echo $groupname;
@@ -1420,7 +1420,7 @@ class KnowbaseItem extends CommonDBTM {
                                     Html::showToolTip($names["comment"]));
                if ($data['is_recursive']) {
                   $entityname = sprintf(__('%1$s %2$s'), $entityname,
-                                        "<span class='b'>&nbsp;".__('(R)')."</span>");
+                                        "<span class='b'>(".__('R').")</span>");
                }
                echo $entityname;
                echo "</td>";
@@ -1454,7 +1454,7 @@ class KnowbaseItem extends CommonDBTM {
                                                                  $data['entities_id']));
                   if ($data['is_recursive']) {
                      $profilename = sprintf(__('%1$s %2$s'), $profilename,
-                                        "<span class='b'>&nbsp;".__('(R)')."</span>");
+                                        "<span class='b'>(".__('R').")</span>");
                   }
                }
                echo $profilename;
