@@ -59,20 +59,21 @@ class Profile_User extends CommonDBTM {
 
       $user = new User();
       return $user->can($this->fields['users_id'],'r')
-             && Profile::currentUserHaveMoreRightThan(
-                               array($this->fields['profiles_id'] => $this->fields['profiles_id']))
+             && Profile::currentUserHaveMoreRightThan(array($this->fields['profiles_id']
+                                                               => $this->fields['profiles_id']))
              && Session::haveAccessToEntity($this->fields['entities_id']);
    }
 
 
+   /****/
    function prepareInputForAdd($input) {
 
       if (!isset($input['profiles_id'])
-          || $input['profiles_id'] <= 0
+          || ($input['profiles_id'] <= 0)
           || !isset($input['entities_id'])
-          || $input['entities_id'] < 0
+          || ($input['entities_id'] < 0)
           || !isset($input['users_id'])
-          || $input['users_id'] < 0) {
+          || ($input['users_id'] < 0)) {
 
          Session::addMessageAfterRedirect(__('No selected element or badly defined operation'),
                                           false, ERROR);
@@ -115,13 +116,13 @@ class Profile_User extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td class='center'>";
          echo "<input type='hidden' name='users_id' value='$ID'>";
-         Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
+         Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
          echo "</td><td class='center'>".self::getTypeName(1)."</td><td>";
          Profile::dropdownUnder(array('value' => Profile::getDefault()));
          echo "</td><td>".__('Recursive')."</td><td>";
          Dropdown::showYesNo("is_recursive",0);
          echo "</td><td class='center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
 
          echo "</table></div>";
@@ -148,12 +149,12 @@ class Profile_User extends CommonDBTM {
                 ORDER BY `glpi_profiles`.`name`, `glpi_entities`.`completename`";
       $result = $DB->query($query);
 
-      if ($DB->numrows($result) >0) {
+      if ($DB->numrows($result) > 0) {
          while ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
-
-            if ($canedit && in_array($data["entities_id"], $_SESSION['glpiactiveentities'])) {
+            if ($canedit
+                && in_array($data["entities_id"], $_SESSION['glpiactiveentities'])) {
                echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
             } else {
                echo "&nbsp;";
@@ -161,15 +162,15 @@ class Profile_User extends CommonDBTM {
             echo "</td>";
             echo "<td>";
 
+            $link = $data["completename"];
+            if ($_SESSION["glpiis_ids_visible"]) {
+               $link = sprintf(__('%1$s (%2$s)'), $link, $data["entities_id"]);
+            }
+
             if ($canshowentity) {
                echo "<a href='".Toolbox::getItemTypeFormURL('Entity')."?id=".$data["entities_id"]."'>";
             }
-            echo $data["completename"].
-                 ($_SESSION["glpiis_ids_visible"]?" (".$data["entities_id"].")":"");
-
-            if ($canshowentity) {
-               echo "</a>";
-            }
+            echo $link.($canshowentity ? "</a>" : '');
             echo "</td>";
             echo "<td>";
             if (Session::haveRight('profile', 'r')) {
@@ -247,7 +248,7 @@ class Profile_User extends CommonDBTM {
          echo "</td><td class='tab_bg_2 center'>".__('Recursive')."</td><td>";
          Dropdown::showYesNo("is_recursive", 0);
          echo "</td><td class='tab_bg_2 center'>";
-         echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
          echo "</table></div>";
       }
@@ -266,14 +267,14 @@ class Profile_User extends CommonDBTM {
                      AND `glpi_users`.`is_deleted` = '0'";
 
       $result = $DB->query($query);
-      if ($DB->numrows($result)>0) {
+      if ($DB->numrows($result) > 0) {
 
          Session::initNavigateListItems('User',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'), $entity->getTypeName(1),
                                                 $entity->getName()));
 
-         while ($data=$DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             echo "<tr><th colspan='$headerspan'>".sprintf(__('%1$s: %2$s'), __('Profile'),
                                                           $data["name"]);
             echo "</th></tr>";
@@ -294,14 +295,14 @@ class Profile_User extends CommonDBTM {
                                `glpi_users`.`firstname`";
 
             $result2 = $DB->query($query);
-            if ($DB->numrows($result2)>0) {
+            if ($DB->numrows($result2) > 0) {
                $i = 0;
 
-               while ($data2=$DB->fetch_assoc($result2)) {
+               while ($data2 = $DB->fetch_assoc($result2)) {
                   Session::addToNavigateListItems('User',$data2["id"]);
 
-                  if ($i%$nb_per_line==0) {
-                     if ($i!=0) {
+                  if (($i%$nb_per_line) == 0) {
+                     if ($i  !=0) {
                         echo "</tr>";
                      }
                      echo "<tr class='tab_bg_1'>";
@@ -333,7 +334,7 @@ class Profile_User extends CommonDBTM {
                   $i++;
                }
 
-               while ($i%$nb_per_line!=0) {
+               while (($i%$nb_per_line) != 0) {
                   echo "<td>&nbsp;</td>";
                   if ($canedit) {
                      echo "<td>&nbsp;</td>";
@@ -406,13 +407,13 @@ class Profile_User extends CommonDBTM {
       $canedit_entity = false;
 
       if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)!=0) {
+         if ($DB->numrows($result) != 0) {
             $temp = -1;
 
-            while ($data=$DB->fetch_assoc($result)) {
-               if ($data["entity"]!=$temp) {
+            while ($data = $DB->fetch_assoc($result)) {
+               if ($data["entity"] != $temp) {
 
-                  while ($i%$nb_per_line!=0) {
+                  while (($i%$nb_per_line) != 0) {
                      if ($canedit_entity) {
                         echo "<td width='10'>&nbsp;</td>";
                      }
@@ -420,14 +421,14 @@ class Profile_User extends CommonDBTM {
                      $i++;
                   }
 
-                  if ($i!=0) {
+                  if ($i != 0) {
                      echo "</table>";
 
                      if ($canedit_entity) {
                         Html::openArrowMassives("profileuser_form".$rand."_$temp", true);
                         Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
                         echo "&nbsp;<input type='submit' name='moveentity' value='".
-                              __s('Move')."' class='submit'>&nbsp;";
+                              _sx('button','Move')."' class='submit'>&nbsp;";
                         Html::closeArrowMassives(array('delete' => __('Delete')));
                      }
                      echo "</div></form></td></tr>\n";
@@ -454,8 +455,8 @@ class Profile_User extends CommonDBTM {
                   echo "<table class='tab_cadre_fixe'>\n";
                }
 
-               if ($i%$nb_per_line==0) {
-                  if ($i!=0) {
+               if (($i%$nb_per_line) == 0) {
+                  if ($i != 0) {
                      echo "</tr>\n";
                   }
                   echo "<tr class='tab_bg_1'>\n";
@@ -466,7 +467,7 @@ class Profile_User extends CommonDBTM {
                   echo "<td width='10'>";
                   $sel = "";
 
-                  if (isset($_GET["select"]) && $_GET["select"]=="all") {
+                  if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                      $sel = "checked";
                   }
 
@@ -493,8 +494,8 @@ class Profile_User extends CommonDBTM {
                $i++;
             }
 
-            if ($i%$nb_per_line!=0) {
-               while ($i%$nb_per_line!=0) {
+            if (($i%$nb_per_line) != 0) {
+               while (($i%$nb_per_line) != 0) {
                   if ($canedit_entity) {
                      echo "<td width='10'>&nbsp;</td>";
                   }
@@ -503,13 +504,13 @@ class Profile_User extends CommonDBTM {
                }
             }
 
-            if ($i!=0) {
+            if ($i != 0) {
                echo "</table>\n";
                if ($canedit_entity) {
                   Html::openArrowMassives("profileuser_form".$rand."_$temp", true);
                   Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
-                  echo "&nbsp;<input type='submit' name='moveentity' value='".__s('Move')."'
-                               class='submit'>&nbsp;";
+                  echo "&nbsp;<input type='submit' name='moveentity' value='"._sx('button','Move').
+                               "' class='submit'>&nbsp;";
                   Html::closeArrowMassives(array('delete' => __('Delete')));
                }
                echo "</div></form></td></tr>\n";
@@ -540,7 +541,7 @@ class Profile_User extends CommonDBTM {
                 WHERE `users_id` = '$user_ID'";
       $result = $DB->query($query);
 
-      if ($DB->numrows($result) >0) {
+      if ($DB->numrows($result) > 0) {
          $entities = array();
 
          while ($data = $DB->fetch_assoc($result)) {
@@ -577,11 +578,10 @@ class Profile_User extends CommonDBTM {
       $result = $DB->query($query);
 
       $profiles = array();
-      if ($DB->numrows($result) >0) {
+      if ($DB->numrows($result) > 0) {
          while ($data = $DB->fetch_assoc($result)) {
             $profiles[$data['profiles_id']] = $data['profiles_id'];
          }
-
       }
 
       return $profiles;
@@ -608,7 +608,8 @@ class Profile_User extends CommonDBTM {
 
       $entities = array();
       foreach ($DB->request($query) as $data) {
-         if ($child && $data['is_recursive']) {
+         if ($child
+             && $data['is_recursive']) {
             foreach (getSonsOf('glpi_entities', $data['entities_id']) as $id) {
                $entities[$id] = $id;
             }
@@ -658,6 +659,10 @@ class Profile_User extends CommonDBTM {
    }
 
 
+   /**
+    * @param $user_ID
+    * @param $only_dynamic    (false by default)
+   **/
    static function deleteRights($user_ID, $only_dynamic=false) {
 
       $crit['users_id'] = $user_ID;
@@ -673,7 +678,7 @@ class Profile_User extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                       = array();
       $tab['common']             = __('Characteristics');
 
       $tab[2]['table']           = $this->getTable();
@@ -718,9 +723,9 @@ class Profile_User extends CommonDBTM {
    function getName($with_comment=0) {
 
             //TRANS: D for Dynamic
-      $dyn = __(', D');
+      $dyn = ", ".__('D');
             //TRANS: R for Recursive
-      $rec = __(', R');
+      $rec = ", ".__('R');
       return Dropdown::getDropdownName('glpi_profiles', $this->fields['profiles_id']).', '.
              Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']).
              (isset($this->fields['is_dynamic']) && $this->fields['is_dynamic'] ? $dyn : '').

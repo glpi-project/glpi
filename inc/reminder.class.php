@@ -944,9 +944,9 @@ class Reminder extends CommonDBTM {
 //          echo $query;
          if ($_SESSION['glpiactiveprofile']['interface'] != 'helpdesk') {
             $titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".
-                       __('Public reminders')."</a>";
+                       _n('Public reminder', 'Public reminders', 2)."</a>";
          } else {
-            $titre = __('Public reminders');
+            $titre = _n('Public reminder', 'Public reminders', 2);
          }
       }
 
