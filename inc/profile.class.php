@@ -96,7 +96,7 @@ class Profile extends CommonDBTM {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case __CLASS__ :
-               if ($item->fields['interface']=='helpdesk') {
+               if ($item->fields['interface'] == 'helpdesk') {
                   $ong[1] = __('Simplified interface'); // Helpdesk
 
                } else {
@@ -150,7 +150,7 @@ class Profile extends CommonDBTM {
    function post_updateItem($history=1) {
       global $DB;
 
-      if (in_array('is_default',$this->updates) && $this->input["is_default"]==1) {
+      if (in_array('is_default',$this->updates) && ($this->input["is_default"] == 1)) {
          $query = "UPDATE ". $this->getTable()."
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->input['id']."'";
@@ -162,7 +162,7 @@ class Profile extends CommonDBTM {
    function post_addItem() {
       global $DB;
 
-      if (isset($this->fields['is_default']) && $this->fields["is_default"]==1) {
+      if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
          $query = "UPDATE ". $this->getTable()."
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->fields['id']."'";
@@ -189,8 +189,8 @@ class Profile extends CommonDBTM {
    function prepareInputForUpdate($input) {
 
       // Check for faq
-      if (isset($input["interface"]) && $input["interface"]=='helpdesk') {
-         if (isset($input["faq"]) && $input["faq"]=='w') {
+      if (isset($input["interface"]) && ($input["interface"] == 'helpdesk')) {
+         if (isset($input["faq"]) && ($input["faq"] == 'w')) {
             $input["faq"] == 'r';
          }
       }
@@ -208,7 +208,8 @@ class Profile extends CommonDBTM {
          $cycle = array();
          foreach ($tab as $from => $label) {
             foreach ($tab as $dest => $label) {
-               if ($from!=$dest && $input["_cycle_ticket"][$from][$dest]==0) {
+               if (($from != $dest)
+                   && ($input["_cycle_ticket"][$from][$dest] == 0)) {
                   $cycle[$from][$dest] = 0;
                }
             }
@@ -221,7 +222,8 @@ class Profile extends CommonDBTM {
          $cycle = array();
          foreach ($tab as $from => $label) {
             foreach ($tab as $dest => $label) {
-               if ($from!=$dest && $input["_cycle_problem"][$from][$dest]==0) {
+               if (($from != $dest)
+                   && ($input["_cycle_problem"][$from][$dest] == 0)) {
                   $cycle[$from][$dest] = 0;
                }
             }
@@ -234,7 +236,8 @@ class Profile extends CommonDBTM {
          $cycle = array();
          foreach ($tab as $from => $label) {
             foreach ($tab as $dest => $label) {
-               if ($from!=$dest && $input["_cycle_change"][$from][$dest]==0) {
+               if (($from != $dest)
+                   && ($input["_cycle_change"][$from][$dest] == 0)) {
                   $cycle[$from][$dest] = 0;
                }
             }
@@ -260,9 +263,10 @@ class Profile extends CommonDBTM {
    **/
    function cleanProfile() {
 
-      if ($this->fields["interface"]=="helpdesk") {
+      if ($this->fields["interface"] == "helpdesk") {
          foreach ($this->fields as $key=>$val) {
-            if (!in_array($key,self::$common_fields) && !in_array($key,self::$helpdesk_rights)) {
+            if (!in_array($key,self::$common_fields)
+                && !in_array($key,self::$helpdesk_rights)) {
                unset($this->fields[$key]);
             }
          }
@@ -285,7 +289,6 @@ class Profile extends CommonDBTM {
       // Decode status array
       $fields_to_decode = array('ticket_status','problem_status'/*,'change_status'*/);
       foreach ($fields_to_decode as $val) {
-
          if (isset($this->fields[$val]) && !is_array($this->fields[$val])) {
             $this->fields[$val] = importArrayFromDB($this->fields[$val]);
             // Need to be an array not a null value
@@ -300,7 +303,7 @@ class Profile extends CommonDBTM {
    /**
     * Get SQL restrict request to determine profiles with less rights than the active one
     *
-    * @param $separator Separator used at the beginning of the request (default 'AND')
+    * @param $separator string   Separator used at the beginning of the request (default 'AND')
     *
     * @return SQL restrict string
    **/
@@ -327,7 +330,7 @@ class Profile extends CommonDBTM {
          if (!is_array($val) // Do not include entities field added by login
              && !in_array($key,self::$common_fields)
              && !in_array($key,self::$noright_fields)
-             && ($_SESSION['glpiactiveprofile']['interface']=='central'
+             && (($_SESSION['glpiactiveprofile']['interface'] == 'central')
                  || in_array($key,self::$helpdesk_rights))) {
 
             switch ($val) {
@@ -371,19 +374,19 @@ class Profile extends CommonDBTM {
    static function currentUserHaveMoreRightThan($IDs=array()) {
       global $DB;
 
-      if (count($IDs)==0) {
+      if (count($IDs) == 0) {
          // Check all profiles (means more right than all possible profiles)
          return (countElementsInTable('glpi_profiles')
-                 == countElementsInTable('glpi_profiles',
-                                         self::getUnderActiveProfileRetrictRequest('')));
+                     == countElementsInTable('glpi_profiles',
+                                             self::getUnderActiveProfileRetrictRequest('')));
       }
       $under_profiles = array();
-      $query = "SELECT *
-                FROM `glpi_profiles` ".
-                self::getUnderActiveProfileRetrictRequest("WHERE");
-      $result = $DB->query($query);
+      $query          = "SELECT *
+                         FROM `glpi_profiles` ".
+                         self::getUnderActiveProfileRetrictRequest("WHERE");
+      $result         = $DB->query($query);
 
-      while ($data=$DB->fetch_assoc($result)) {
+      while ($data = $DB->fetch_assoc($result)) {
          $under_profiles[$data['id']] = $data['id'];
       }
 
@@ -422,7 +425,7 @@ class Profile extends CommonDBTM {
     * Print the profile form headers
     *
     * @param $ID        integer : Id of the item to print
-    * @param $options   array
+    * @param $options   array of possible options
     *     - target filename : where to go when done.
     *     - withtemplate boolean : template or basic item
     *
@@ -440,7 +443,7 @@ class Profile extends CommonDBTM {
          // Create item
          $this->check(-1,'w');
          $onfocus = "onfocus=\"if (this.value=='".$this->fields["name"]."') this.value='';\"";
-         $new = true;
+         $new     = true;
       }
 
       $rand = mt_rand();
@@ -461,9 +464,9 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".__("Profile's interface")."</td>";
       echo "<td><select name='interface'>";
-      echo "<option value='helpdesk' ".($this->fields["interface"]=="helpdesk"?"selected":"").">".
+      echo "<option value='helpdesk' ".(($this->fields["interface"] == "helpdesk")?"selected":"").">".
              self::getInterfaceName("helpdesk")."</option>\n";
-      echo "<option value='central' ".($this->fields["interface"]=="central"?"selected":"").">".
+      echo "<option value='central' ".(($this->fields["interface"] == "central")?"selected":"").">".
              self::getInterfaceName("central")."</option>";
       echo "</select></td></tr>\n";
 
@@ -475,7 +478,7 @@ class Profile extends CommonDBTM {
       Dropdown::showYesNo("create_ticket_on_login", $this->fields["create_ticket_on_login"]);
       echo "</td></tr>\n";
 
-      if ($ID>0) {
+      if ($ID > 0) {
          echo "<tr class='tab_bg_1'><td>".__('Last update')."</td>";
          echo "<td>";
          echo ($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
@@ -489,6 +492,7 @@ class Profile extends CommonDBTM {
       return true;
    }
 
+
    /**
     * Print the helpdesk right form for the current profile
    **/
@@ -498,7 +502,7 @@ class Profile extends CommonDBTM {
       if (!Session::haveRight("profile","r")) {
          return false;
       }
-      if ($canedit=Session::haveRight("profile","w")) {
+      if ($canedit = Session::haveRight("profile","w")) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -532,34 +536,31 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Link with items for the creation of tickets')."</td>";
       echo "<td><select name='helpdesk_hardware'>";
-      echo "<option value='0' ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >".
+      echo "<option value='0' ".(($this->fields["helpdesk_hardware"] == 0)?"selected":"")." >".
              Dropdown::EMPTY_VALUE."</option>\n";
       echo "<option value=\"".pow(2, Ticket::HELPDESK_MY_HARDWARE)."\" ".
-             ($this->fields["helpdesk_hardware"]==pow(2, Ticket::HELPDESK_MY_HARDWARE)?"selected":"")." >".
-             __('My devices')."</option>\n";
+             (($this->fields["helpdesk_hardware"] == pow(2, Ticket::HELPDESK_MY_HARDWARE))
+               ?"selected":"")." >". __('My devices')."</option>\n";
       echo "<option value=\"".pow(2, Ticket::HELPDESK_ALL_HARDWARE)."\" ".
-             ($this->fields["helpdesk_hardware"]==pow(2, Ticket::HELPDESK_ALL_HARDWARE)?"selected":"")." >".
-             __('All items')."</option>\n";
+             (($this->fields["helpdesk_hardware"] == pow(2, Ticket::HELPDESK_ALL_HARDWARE))
+               ?"selected":"")." >". __('All items')."</option>\n";
       echo "<option value=\"".(pow(2, Ticket::HELPDESK_MY_HARDWARE)
                                +pow(2, Ticket::HELPDESK_ALL_HARDWARE))."\" ".
-             ($this->fields["helpdesk_hardware"]
-              ==(pow(2, Ticket::HELPDESK_MY_HARDWARE)
-                 +pow(2, Ticket::HELPDESK_ALL_HARDWARE))?"selected":"")." >".
-              __('My devices and all items')."</option>";
+             (($this->fields["helpdesk_hardware"] == (pow(2, Ticket::HELPDESK_MY_HARDWARE)
+                                                      +pow(2, Ticket::HELPDESK_ALL_HARDWARE)))
+               ?"selected":"")." >". __('My devices and all items')."</option>";
       echo "</select></td>\n";
       echo "<td>".__('Associable items to a ticket')."</td>";
       echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
       echo "<select name='helpdesk_item_type[]' multiple size='3'>";
 
       foreach ($CFG_GLPI["ticket_types"] as $key => $itemtype) {
-
          if ($item = getItemForItemtype($itemtype)) {
             if (!isPluginItemType($itemtype)) { // No Plugin for the moment
                echo "<option value='".$itemtype."' ".
-                     (in_array($itemtype,$this->fields["helpdesk_item_type"])?" selected":"").">".
+                     (in_array($itemtype, $this->fields["helpdesk_item_type"])?" selected":"").">".
                      $item->getTypeName()."</option>\n";
             }
-
          } else {
             unset($CFG_GLPI["ticket_types"][$key]);
          }
@@ -579,7 +580,8 @@ class Profile extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('FAQ')."</td><td>";
-      if ($this->fields["interface"]=="helpdesk" && $this->fields["faq"]=='w') {
+      if (($this->fields["interface"] == "helpdesk")
+          && ($this->fields["faq"] == 'w')) {
          $this->fields["faq"] = 'r';
       }
       self::dropdownNoneReadWrite("faq", $this->fields["faq"], 1, 1, 0);
@@ -589,7 +591,7 @@ class Profile extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Public reminders')."</td><td>";
+      echo "<td>"._n('Public reminder', 'Public reminders', 2)."</td><td>";
       self::dropdownNoneReadWrite("reminder_public", $this->fields["reminder_public"], 1, 1, 0);
       echo "</td>";
       echo "<td colspan='2'>&nbsp;</td>";
@@ -697,10 +699,10 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Notes')."</td><td>";
       self::dropdownNoneReadWrite("notes", $this->fields["notes"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".__('Public reminders')."</td><td>";
+      echo "<td>"._n('Public reminder', 'Public reminders', 2)."</td><td>";
       self::dropdownNoneReadWrite("reminder_public", $this->fields["reminder_public"], 1, 1, 1);
       echo "</td>";
-      echo "<td>".__('Public bookmarks')."</td><td>";
+      echo "<td>"._n('Public bookmark', 'Public bookmarks', 2)."</td><td>";
       self::dropdownNoneReadWrite("bookmark_public", $this->fields["bookmark_public"], 1, 1, 1);
       echo "</td></tr>\n";
 
@@ -724,11 +726,12 @@ class Profile extends CommonDBTM {
                                   1, 1, 1);
       echo "</td></tr>\n";
 
-      if ($canedit && $closeform) {
+      if ($canedit
+          && $closeform) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='6' class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       } else {
@@ -741,8 +744,8 @@ class Profile extends CommonDBTM {
    /**
     * Print the Tracking right form for the current profile
     *
-    * @param $openform  boolean open the form (true by default)
-    * @param $closeform boolean close the form (true by default)
+    * @param $openform     boolean  open the form (true by default)
+    * @param $closeform    boolean  close the form (true by default)
    **/
    function showFormTracking($openform=true, $closeform=true) {
       global $CFG_GLPI;
@@ -750,7 +753,8 @@ class Profile extends CommonDBTM {
       if (!Session::haveRight("profile","r")) {
          return false;
       }
-      if (($canedit=Session::haveRight("profile","w")) && $openform) {
+      if (($canedit = Session::haveRight("profile","w"))
+          && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -794,8 +798,7 @@ class Profile extends CommonDBTM {
       echo "<td>&nbsp;</td><td>&nbsp;</td>";
       echo "</tr>\n";
 
-      //TRANS: a noun
-      echo "<tr class='tab_bg_5'><th colspan='6'>".__('Update')."</th>";
+      echo "<tr class='tab_bg_5'><th colspan='6'>"._x('noun','Update')."</th>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
@@ -858,27 +861,24 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('See hardware of my group(s)')."</td><td>";
+      echo "<td>".__('See hardware of my groups')."</td><td>";
       Dropdown::showYesNo("show_group_hardware", $this->fields["show_group_hardware"]);
       echo "</td>";
       echo "<td>".__('Link with items for the creation of tickets')."</td>";
       echo "\n<td><select name='helpdesk_hardware'>";
-      echo "<option value='0' ".($this->fields["helpdesk_hardware"]==0?"selected":"")." >".
+      echo "<option value='0' ".(($this->fields["helpdesk_hardware"] == 0)?"selected":"")." >".
              Dropdown::EMPTY_VALUE."</option>\n";
       echo "<option value=\"".pow(2, Ticket::HELPDESK_MY_HARDWARE)."\" ".
-            ($this->fields["helpdesk_hardware"]
-            == pow(2, Ticket::HELPDESK_MY_HARDWARE)?"selected":"")." >".
-            __('My devices')."</option>\n";
+            (($this->fields["helpdesk_hardware"] == pow(2, Ticket::HELPDESK_MY_HARDWARE))
+              ?"selected":"")." >". __('My devices')."</option>\n";
       echo "<option value=\"".pow(2, Ticket::HELPDESK_ALL_HARDWARE)."\" ".
-            ($this->fields["helpdesk_hardware"]
-            = pow(2, Ticket::HELPDESK_ALL_HARDWARE)?"selected":"")." >".
-            __('All items')."</option>\n";
+            (($this->fields["helpdesk_hardware"] == pow(2, Ticket::HELPDESK_ALL_HARDWARE))
+              ?"selected":"")." >". __('All items')."</option>\n";
       echo "<option value=\"".(pow(2, Ticket::HELPDESK_MY_HARDWARE)
                                +pow(2, Ticket::HELPDESK_ALL_HARDWARE))."\" ".
-            ($this->fields["helpdesk_hardware"]
-             == (pow(2, Ticket::HELPDESK_MY_HARDWARE)
-                 +pow(2, Ticket::HELPDESK_ALL_HARDWARE))?"selected":"")." >".
-            __('My devices and all items')."</option>";
+            (($this->fields["helpdesk_hardware"] == (pow(2, Ticket::HELPDESK_MY_HARDWARE)
+                                                     +pow(2, Ticket::HELPDESK_ALL_HARDWARE)))
+              ?"selected":"")." >". __('My devices and all items')."</option>";
       echo "</select></td>\n";
       echo "<td>".__('Associable items to a ticket')."</td>";
       echo "<td><input type='hidden' name='_helpdesk_item_types' value='1'>";
@@ -944,11 +944,10 @@ class Profile extends CommonDBTM {
       echo "<td>".__('See all problems')."</td><td>";
       Dropdown::showYesNo("show_all_problem", $this->fields["show_all_problem"]);
       echo "</td>";
-      echo "<td>".__('See the problems (actor)')."</td><td>";
+      echo "<td>".__('See problems (author)')."</td><td>";
       Dropdown::showYesNo("show_my_problem", $this->fields["show_my_problem"]);
       echo "</td>";
       echo "</tr>\n";
-
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>".__('Update all changes')."</td><td>";
@@ -957,16 +956,17 @@ class Profile extends CommonDBTM {
       echo "<td>".__('See all changes')."</td><td>";
       Dropdown::showYesNo("show_all_change", $this->fields["show_all_change"]);
       echo "</td>";
-      echo "<td>".__('See the changes (actor)')."</td><td>";
+      echo "<td>".__('See changes (author)')."</td><td>";
       Dropdown::showYesNo("show_my_change", $this->fields["show_my_change"]);
       echo "</td>";
       echo "</tr>\n";
 
-      if ($canedit && $closeform) {
+      if ($canedit
+          && $closeform) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='6' class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       } else {
@@ -979,8 +979,8 @@ class Profile extends CommonDBTM {
    /**
    * Print the Life Cycles form for the current profile
    *
-   * @param $openform boolean open the form
-   * @param $closeform boolean close the form
+   * @param $openform   boolean  open the form (true by default)
+   * @param $closeform  boolean  close the form (true by default)
    **/
    function showFormLifeCycle($openform=true, $closeform=true) {
 
@@ -988,7 +988,8 @@ class Profile extends CommonDBTM {
          return false;
       }
 
-      if (($canedit=Session::haveRight("profile","w")) && $openform) {
+      if (($canedit = Session::haveRight("profile","w"))
+          && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -1010,7 +1011,7 @@ class Profile extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
          foreach ($tabstatus as $dest => $label) {
             echo "<td class='center'>";
-            if ($dest==$from) {
+            if ($dest == $from) {
                echo Dropdown::getYesNo(1);
             } else {
                Dropdown::showYesNo("_cycle_ticket[$from][$dest]",
@@ -1038,7 +1039,7 @@ class Profile extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
          foreach ($tabstatus as $dest => $label) {
             echo "<td class='center'>";
-            if ($dest==$from) {
+            if ($dest == $from) {
                echo Dropdown::getYesNo(1);
             } else {
                Dropdown::showYesNo("_cycle_problem[$from][$dest]",
@@ -1067,7 +1068,7 @@ class Profile extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td class='tab_bg_1'>$label</td>";
          foreach ($tabstatus as $dest => $label) {
             echo "<td class='center'>";
-            if ($dest==$from) {
+            if ($dest == $from) {
                echo Dropdown::getYesNo(1);
             } else {
                Dropdown::showYesNo("_cycle_change[$from][$dest]",
@@ -1079,11 +1080,12 @@ class Profile extends CommonDBTM {
          echo "</tr>\n";
       }
 
-      if ($canedit && $closeform) {
+      if ($canedit
+          && $closeform) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='".(count($tabstatus)+1)."' class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       } else {
@@ -1096,8 +1098,8 @@ class Profile extends CommonDBTM {
    /**
     * Print the central form for a profile
     *
-    * @param $openform  boolean open the form (true by default)
-    * @param $closeform boolean close the form (true by default)
+    * @param $openform     boolean  open the form (true by default)
+    * @param $closeform    boolean  close the form (true by default)
    **/
    function showFormAdmin($openform=true, $closeform=true) {
 
@@ -1106,7 +1108,8 @@ class Profile extends CommonDBTM {
       }
 
       echo "<div class='firstbloc'>";
-      if (($canedit=Session::haveRight("profile","w")) && $openform) {
+      if (($canedit = Session::haveRight("profile","w"))
+          && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -1158,9 +1161,7 @@ class Profile extends CommonDBTM {
       echo "<td colspan='4'>&nbsp;";
       echo "</td></tr>\n";
 
-
-      echo "<tr class='tab_bg_1'><th colspan='3'>"._n('Rule', 'Rules', 2).'</td><td>'.
-             __('Dictionaries')."</th></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Rule', 'Rules', 2)."</th>";
 
       echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Authorizations assignment rules')."</td><td>";
@@ -1179,6 +1180,18 @@ class Profile extends CommonDBTM {
       self::dropdownNoneReadWrite("rule_softwarecategories",
                                   $this->fields["rule_softwarecategories"], 1, 1, 1);
       echo "</td>";
+      echo "<td>".__('Business rules for tickets')."</td><td>";
+      self::dropdownNoneReadWrite("rule_ticket", $this->fields["rule_ticket"], 1, 1, 0);
+      echo "</td>";
+      echo "<td class='tab_bg_1'>".__('Business rules for tickets (entity)')."</td>";
+      echo "<td class='tab_bg_1'>";
+      self::dropdownNoneReadWrite("entity_rule_ticket", $this->fields["entity_rule_ticket"],
+                                  1, 1, 1);
+      echo"</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'><th colspan='6'>"._n('Dictionary', 'Dictionaries', 2)."</th></tr>\n";
+
+      echo "<tr class='tab_bg_4'>";
       echo "<td>".__('Dropdowns dictionary')."</td><td>";
       self::dropdownNoneReadWrite("rule_dictionnary_dropdown",
                                   $this->fields["rule_dictionnary_dropdown"], 1, 1, 1);
@@ -1187,16 +1200,6 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Software dictionary')."</td><td>";
       self::dropdownNoneReadWrite("rule_dictionnary_software",
                                   $this->fields["rule_dictionnary_software"], 1, 1, 1);
-      echo"</td></tr>\n";
-
-      echo "<tr class='tab_bg_4'>";
-      echo "<td>".__('Business rules for tickets')."</td><td>";
-      self::dropdownNoneReadWrite("rule_ticket", $this->fields["rule_ticket"], 1, 1, 0);
-      echo "</td>";
-      echo "<td class='tab_bg_1'>".__('Business rules for tickets (entity)')."</td>";
-      echo "<td class='tab_bg_1'>";
-      self::dropdownNoneReadWrite("entity_rule_ticket", $this->fields["entity_rule_ticket"],
-                                  1, 1, 1);
       echo "</td>";
       echo "<td>".__('Printers dictionnary')."</td><td>";
       self::dropdownNoneReadWrite("rule_dictionnary_printer",
@@ -1204,11 +1207,12 @@ class Profile extends CommonDBTM {
       echo "</td></tr>";
 
 
-      if ($canedit && $closeform) {
+      if ($canedit
+          && $closeform) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='6' class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       } else {
@@ -1222,8 +1226,8 @@ class Profile extends CommonDBTM {
    /**
     * Print the central form for a profile
     *
-    * @param $openform  boolean open the form (true by default)
-    * @param $closeform boolean close the form (true by default)
+    * @param $openform     boolean  open the form (true by default)
+    * @param $closeform    boolean  close the form (true by default)
    **/
    function showFormSetup($openform=true, $closeform=true) {
 
@@ -1232,7 +1236,8 @@ class Profile extends CommonDBTM {
       }
 
       echo "<div class='firstbloc'>";
-      if (($canedit=Session::haveRight("profile","w")) && $openform) {
+      if (($canedit = Session::haveRight("profile","w"))
+          && $openform) {
          echo "<form method='post' action='".$this->getFormURL()."'>";
       }
 
@@ -1258,7 +1263,7 @@ class Profile extends CommonDBTM {
       echo "<td>"._n('Component', 'Components', 2)."</td><td>";
       self::dropdownNoneReadWrite("device", $this->fields["device"], 1, 0, 1);
       echo "</td>";
-      echo "<td>".__('Dropdowns')."</td><td>";
+      echo "<td>"._n('Dropdown', 'Dropdowns', 2)."</td><td>";
       self::dropdownNoneReadWrite("dropdown", $this->fields["dropdown"], 1, 1, 1);
       echo "</td>";
       echo "<td class='tab_bg_2'>".__('Entity dropdowns')."</td>";
@@ -1288,11 +1293,12 @@ class Profile extends CommonDBTM {
       self::dropdownNoneReadWrite("entity_helpdesk", $this->fields["entity_helpdesk"], 1, 1, 1);
       echo "</td></tr>\n";
 
-      if ($canedit && $closeform) {
+      if ($canedit
+          && $closeform) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='6' class='center'>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
          echo "</td></tr>\n";
          echo "</table></form>\n";
       } else {
@@ -1306,7 +1312,7 @@ class Profile extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                       = array();
       $tab['common']             = __('Characteristics');
 
       $tab[1]['table']           = $this->getTable();
@@ -1474,7 +1480,7 @@ class Profile extends CommonDBTM {
 
       $tab[42]['table']          = $this->getTable();
       $tab[42]['field']          = 'dropdown';
-      $tab[42]['name']           = __('Dropdowns');
+      $tab[42]['name']           = _n('Dropdown', 'Dropdowns', 2);
       $tab[42]['datatype']       = 'right';
 
       $tab[43]['table']          = $this->getTable();
@@ -1591,7 +1597,7 @@ class Profile extends CommonDBTM {
 
       $tab[58]['table']          = $this->getTable();
       $tab[58]['field']          = 'group';
-      $tab[58]['name']           = self::getTypeName(2);
+      $tab[58]['name']           = _n('Group', 'Groups', 2);
       $tab[58]['datatype']       = 'right';
 
       $tab[59]['table']          = $this->getTable();
@@ -1782,7 +1788,7 @@ class Profile extends CommonDBTM {
 
       $tab[112]['table']         = $this->getTable();
       $tab[112]['field']         = 'show_my_problem';
-      $tab[112]['name']          = __('See the problems (actor)');
+      $tab[112]['name']          = __('See problems (author)');
       $tab[112]['datatype']      = 'bool';
 
       $tab[113]['table']         = $this->getTable();
@@ -1804,7 +1810,7 @@ class Profile extends CommonDBTM {
 
       $tab[115]['table']         = $this->getTable();
       $tab[115]['field']         = 'show_my_change';
-      $tab[115]['name']          =__('See the changes (actor)');
+      $tab[115]['name']          =__('See changes (author)');
       $tab[115]['datatype']      = 'bool';
 
       $tab[116]['table']         = $this->getTable();
@@ -1826,12 +1832,12 @@ class Profile extends CommonDBTM {
 
       $tab[63]['table']          = $this->getTable();
       $tab[63]['field']          = 'reminder_public';
-      $tab[63]['name']           = __('Public reminders');
+      $tab[63]['name']           = _n('Public reminder', 'Public reminders', 2);
       $tab[63]['datatype']       = 'right';
 
       $tab[64]['table']          = $this->getTable();
       $tab[64]['field']          = 'bookmark_public';
-      $tab[64]['name']           = __('Public bookmarks');
+      $tab[64]['name']           = _n('Public bookmark', 'Public bookmarks', 2);
       $tab[64]['datatype']       = 'right';
 
       return $tab;
@@ -1867,7 +1873,7 @@ class Profile extends CommonDBTM {
    /**
     * Dropdown profiles which have rights under the active one
     *
-    * @param $options array
+    * @param $options array of possible options:
     *    - name : string / name of the select (default is profiles_id)
     *    - value : integer / preselected value (default 0)
     *
@@ -1894,7 +1900,7 @@ class Profile extends CommonDBTM {
 
       //New rule -> get the next free ranking
       if ($DB->numrows($res)) {
-         while ($data=$DB->fetch_assoc($res)) {
+         while ($data = $DB->fetch_assoc($res)) {
             $profiles[$data['id']] = $data['name'];
          }
       }
@@ -1951,5 +1957,6 @@ class Profile extends CommonDBTM {
             return __('Simplified interface');
       }
    }
+
 }
 ?>
