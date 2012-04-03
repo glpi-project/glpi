@@ -93,10 +93,10 @@ class Change_Ticket extends CommonDBRelation{
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
 
-      if ($canedit && $numrows) {
-         Html::openArrowMassives("changeticket_form$rand", true, true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
-      }
+//       if ($canedit && $numrows) {
+//          Html::openArrowMassives("changeticket_form$rand", true, true);
+//          Html::closeArrowMassives(array('delete' => __('Delete')));
+//       }
 
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
@@ -188,10 +188,10 @@ class Change_Ticket extends CommonDBRelation{
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
       
-      if ($canedit && $numrows) {
-         Html::openArrowMassives("changeticket_form$rand", true, true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
-      }
+//       if ($canedit && $numrows) {
+//          Html::openArrowMassives("changeticket_form$rand", true, true);
+//          Html::closeArrowMassives(array('delete' => __('Delete')));
+//       }
 
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";

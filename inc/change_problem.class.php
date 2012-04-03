@@ -94,10 +94,10 @@ class Change_Problem extends CommonDBRelation{
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
       
-      if ($canedit && $numrows) {
+/*      if ($canedit && $numrows) {
          Html::openArrowMassives("changeproblem_form$rand", true, true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
-      }
+      }*/
       
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>"._n('Change - ', 'Changes - ', 2);
@@ -193,10 +193,10 @@ class Change_Problem extends CommonDBRelation{
       $numrows = $DB->numrows($result);
 
 
-      if ($canedit&& $numrows) {
-         Html::openArrowMassives("changeproblem_form$rand", true, true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
-      }
+//       if ($canedit&& $numrows) {
+//          Html::openArrowMassives("changeproblem_form$rand", true, true);
+//          Html::closeArrowMassives(array('delete' => __('Delete')));
+//       }
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>"._n('Problem', 'Problems', 2)."</th></tr>";

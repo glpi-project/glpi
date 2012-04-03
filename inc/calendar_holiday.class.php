@@ -97,10 +97,10 @@ class Calendar_Holiday extends CommonDBRelation {
       echo "<form name='calendarholiday_form$rand' id='calendarholiday_form$rand' method='post'
              action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-      if ($canedit && $numrows) {
-         Html::openArrowMassives("calendarholiday_form$rand", true, true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
-      }
+//       if ($canedit && $numrows) {
+//          Html::openArrowMassives("calendarholiday_form$rand", true, true);
+//          Html::closeArrowMassives(array('delete' => __('Delete')));
+//       }
 
 
 
