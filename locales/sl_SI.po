@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-04-03 08:32+0200\n"
-"PO-Revision-Date: 2012-04-03 06:32+0000\n"
+"PO-Revision-Date: 2012-04-03 07:14+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Slovenian (Slovenia) (http://www.transifex.net/projects/p/GLPI/language/sl_SI/)\n"
 "MIME-Version: 1.0\n"
@@ -3599,7 +3599,7 @@ msgstr ""
 #: inc/auth.class.php:1057 inc/auth.class.php:1085 inc/auth.class.php:1109
 msgctxt "authentication"
 msgid "Enabled"
-msgstr ""
+msgstr "Omogočeno"
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1064
@@ -6387,7 +6387,7 @@ msgstr ""
 
 #: inc/config.class.php:603
 msgid "Keep tickets when purging hardware in the inventory"
-msgstr ""
+msgstr "Ohrani opravila ob dokončnem brisanju (purge) strojne opreme iz seznamov"
 
 #: inc/config.class.php:609
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
@@ -8023,12 +8023,12 @@ msgstr "Obnovi"
 #: inc/dropdown.class.php:1534
 msgctxt "button"
 msgid "Delete"
-msgstr ""
+msgstr "Izbriši"
 
 #: inc/dropdown.class.php:1542 inc/dropdown.class.php:1588
 msgctxt "button"
 msgid "Connect"
-msgstr ""
+msgstr "Poveži"
 
 #: inc/dropdown.class.php:1543
 msgctxt "button"
@@ -8061,7 +8061,7 @@ msgstr ""
 #: inc/dropdown.class.php:1589 inc/plugin.class.php:451
 msgctxt "button"
 msgid "Install"
-msgstr ""
+msgstr "Namesti"
 
 #: inc/dropdown.class.php:1602
 msgid "Unlock the locked monitors for OCSNG"
@@ -8090,7 +8090,7 @@ msgstr ""
 #: inc/dropdown.class.php:1616
 msgctxt "button"
 msgid "Add a contact"
-msgstr ""
+msgstr "Dodaj osebo"
 
 #: inc/dropdown.class.php:1621
 msgctxt "button"
@@ -10737,7 +10737,7 @@ msgstr ""
 #: inc/ocslink.class.php:309
 msgctxt "plural"
 msgid "Locked software"
-msgstr ""
+msgstr "Zaklenjena programska oprema"
 
 #: inc/ocslink.class.php:333
 msgid "Locked volumes"
@@ -11066,7 +11066,7 @@ msgstr "Znamka"
 #: inc/phone.class.php:309 inc/phone.class.php:422
 msgctxt "quantity"
 msgid "Number of lines"
-msgstr ""
+msgstr "Šetvilo vrstic"
 
 #: inc/phone.class.php:314
 msgid "Flags"
@@ -11194,12 +11194,12 @@ msgstr ""
 #: inc/plugin.class.php:383
 msgctxt "plugin"
 msgid "Enabled"
-msgstr ""
+msgstr "Omogočeno"
 
 #: inc/plugin.class.php:387
 msgctxt "plugin"
 msgid "Not installed"
-msgstr ""
+msgstr "Ni inštaliran"
 
 #: inc/plugin.class.php:391
 msgid "To update"
@@ -11208,12 +11208,12 @@ msgstr "Posodobi"
 #: inc/plugin.class.php:395
 msgctxt "plugin"
 msgid "Installed / not configured"
-msgstr ""
+msgstr "Instaliran / ni konfiguriran"
 
 #: inc/plugin.class.php:399
 msgctxt "plugin"
 msgid "Installed / not activated"
-msgstr ""
+msgstr "Instaliran / ni aktiviran"
 
 #: inc/plugin.class.php:404
 msgid "Error / to clean"
@@ -11236,17 +11236,17 @@ msgstr ""
 #: inc/plugin.class.php:474 inc/plugin.class.php:502 inc/plugin.class.php:521
 msgctxt "button"
 msgid "Uninstall"
-msgstr ""
+msgstr "Odstrani"
 
 #: inc/plugin.class.php:515
 msgctxt "button"
 msgid "Enable"
-msgstr ""
+msgstr "Aktiviraj"
 
 #: inc/plugin.class.php:533
 msgctxt "button"
 msgid "Clean"
-msgstr ""
+msgstr "Počisti"
 
 #: inc/plugin.class.php:541
 msgid "No plugin installed"
@@ -11552,7 +11552,7 @@ msgstr "Dodaj naloge vsem opravilom"
 #: inc/profile.class.php:801
 msgctxt "noun"
 msgid "Update"
-msgstr ""
+msgstr "Posodobi"
 
 #: inc/profile.class.php:805 inc/profile.class.php:1652
 msgid "Update a ticket"

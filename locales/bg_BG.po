@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-04-03 08:32+0200\n"
-"PO-Revision-Date: 2012-04-03 06:32+0000\n"
+"PO-Revision-Date: 2012-04-03 07:14+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Bulgarian (Bulgaria) (http://www.transifex.net/projects/p/GLPI/language/bg_BG/)\n"
 "MIME-Version: 1.0\n"
@@ -7698,7 +7698,7 @@ msgstr "Изтриване"
 #: inc/dropdown.class.php:1542 inc/dropdown.class.php:1588
 msgctxt "button"
 msgid "Connect"
-msgstr ""
+msgstr "Свързване"
 
 #: inc/dropdown.class.php:1543
 msgctxt "button"
@@ -10650,7 +10650,7 @@ msgstr "Тип"
 #: inc/phone.class.php:309 inc/phone.class.php:422
 msgctxt "quantity"
 msgid "Number of lines"
-msgstr ""
+msgstr "Брой линии"
 
 #: inc/phone.class.php:314
 msgid "Flags"
@@ -10814,7 +10814,7 @@ msgstr ""
 #: inc/plugin.class.php:474 inc/plugin.class.php:502 inc/plugin.class.php:521
 msgctxt "button"
 msgid "Uninstall"
-msgstr ""
+msgstr "Премахване"
 
 #: inc/plugin.class.php:515
 msgctxt "button"
@@ -11118,7 +11118,7 @@ msgstr ""
 #: inc/profile.class.php:801
 msgctxt "noun"
 msgid "Update"
-msgstr ""
+msgstr "Обновявяне"
 
 #: inc/profile.class.php:805 inc/profile.class.php:1652
 msgid "Update a ticket"

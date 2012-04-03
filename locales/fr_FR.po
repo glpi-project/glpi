@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-04-03 08:32+0200\n"
-"PO-Revision-Date: 2012-04-03 06:46+0000\n"
+"PO-Revision-Date: 2012-04-03 07:18+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: French (France) (http://www.transifex.net/projects/p/GLPI/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -1971,7 +1971,7 @@ msgstr "Rechercher un élément internet"
 
 #: front/internet2.php:96
 msgid "FQDN (Network name or Network alias)"
-msgstr ""
+msgstr "FQDN (Nom réseau ou alias réseau)"
 
 #: front/internet2.php:97 inc/ipaddress.class.php:147
 #: inc/ruleimportcomputer.class.php:111 inc/ruleocs.class.php:138
@@ -1991,7 +1991,7 @@ msgstr "Adresse Mac"
 
 #: front/internet2.php:99
 msgid "Networks owning an address"
-msgstr ""
+msgstr "Réseaux possédant une adresse"
 
 #: front/internet2.php:103
 msgid "Exact match"
@@ -3496,7 +3496,7 @@ msgstr "Authentification par CAS"
 #: inc/auth.class.php:1057 inc/auth.class.php:1085 inc/auth.class.php:1109
 msgctxt "authentication"
 msgid "Enabled"
-msgstr ""
+msgstr "Activée"
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1064
@@ -5982,11 +5982,11 @@ msgstr "Éléments visualisés"
 
 #: inc/config.class.php:276 inc/config.class.php:287
 msgid "last criterion"
-msgstr ""
+msgstr "dernier critère"
 
 #: inc/config.class.php:277
 msgid "default criterion"
-msgstr ""
+msgstr "critère par défaut"
 
 #: inc/config.class.php:280
 msgid "Global search"
@@ -8991,7 +8991,7 @@ msgstr "R"
 msgid ""
 "Caution! You are not the author of this element. Delete targets can result "
 "in loss of access to that element."
-msgstr ""
+msgstr "Attention! Vous n'êtes pas l'auteur de cet élément. Supprimer des cibles peut entraîner la perte de l'accès à cet élément."
 
 #: inc/link.class.php:62 inc/link.class.php:66
 #: inc/notificationtargetticket.class.php:714
@@ -9330,7 +9330,7 @@ msgstr "Nom de l'ordinateur"
 msgid ""
 "IP network is not included in the database. However, you can see current "
 "available networks."
-msgstr ""
+msgstr "Le réseau IP n'est pas inclus dans la base de données. Cependant, vous pouvez voir les réseaux disponibles."
 
 #: inc/networkname.class.php:233 inc/networkportmigration.class.php:126
 msgid "Invalid IP address"
@@ -9728,7 +9728,7 @@ msgstr "Envoyer un courriel de test à l'administrateur"
 
 #: inc/notificationtargetcartridge.class.php:39
 msgid "Cartridges alarm"
-msgstr "Alerte Cartouches"
+msgstr "Alerte cartouches"
 
 #: inc/notificationtargetcartridge.class.php:81
 #: inc/notificationtargetconsumable.class.php:83
@@ -9768,7 +9768,7 @@ msgstr "Superviseur du groupe demandeur"
 
 #: inc/notificationtargetcommonitilobject.class.php:387
 msgid "Technician in charge of the ticket"
-msgstr ""
+msgstr "Technicien chargé du ticket"
 
 #: inc/notificationtargetcommonitilobject.class.php:390
 #: inc/notificationtargetreservation.class.php:57
@@ -9861,7 +9861,7 @@ msgstr "Valeur du statut en base"
 
 #: inc/notificationtargetconsumable.class.php:39
 msgid "Consumables alarm"
-msgstr "Alerte Consommables"
+msgstr "Alerte consommables"
 
 #: inc/notificationtargetcontract.class.php:40
 msgid "End of contract"
@@ -9873,7 +9873,7 @@ msgstr "Préavis de période"
 
 #: inc/notificationtargetcontract.class.php:59
 msgid "Contracts alarm"
-msgstr ""
+msgstr "Alerte contrats"
 
 #: inc/notificationtargetcontract.class.php:99
 #: inc/notificationtargetcontract.class.php:142
@@ -10330,7 +10330,7 @@ msgstr "IPs verrouillées"
 #: inc/ocslink.class.php:309
 msgctxt "plural"
 msgid "Locked software"
-msgstr ""
+msgstr "Logiciels verrouillés"
 
 #: inc/ocslink.class.php:333
 msgid "Locked volumes"
@@ -10509,7 +10509,7 @@ msgstr "Import impossible, l'ordinateur de GLPI est déjà lié à un ordinateur
 
 #: inc/ocsserver.class.php:1523 inc/ocsserver.class.php:2030
 msgid "Swap"
-msgstr ""
+msgstr "Espace d'échange"
 
 #: inc/ocsserver.class.php:2389 inc/ocsserver.class.php:2573
 msgid "Import date in GLPI"
@@ -10657,7 +10657,7 @@ msgstr "Marque"
 #: inc/phone.class.php:309 inc/phone.class.php:422
 msgctxt "quantity"
 msgid "Number of lines"
-msgstr ""
+msgstr "Nombre de lignes"
 
 #: inc/phone.class.php:314
 msgid "Flags"
@@ -10768,8 +10768,8 @@ msgstr "Liste des plugins"
 #: inc/plugin.class.php:327
 msgid "Author"
 msgid_plural "Authors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Auteur"
+msgstr[1] "Auteurs"
 
 #: inc/plugin.class.php:379
 msgctxt "plugin"
@@ -10779,12 +10779,12 @@ msgstr "Nouveau"
 #: inc/plugin.class.php:383
 msgctxt "plugin"
 msgid "Enabled"
-msgstr ""
+msgstr "Activé"
 
 #: inc/plugin.class.php:387
 msgctxt "plugin"
 msgid "Not installed"
-msgstr ""
+msgstr "Non installé"
 
 #: inc/plugin.class.php:391
 msgid "To update"
@@ -10793,12 +10793,12 @@ msgstr "A mettre à jour"
 #: inc/plugin.class.php:395
 msgctxt "plugin"
 msgid "Installed / not configured"
-msgstr ""
+msgstr "Installé/non configuré"
 
 #: inc/plugin.class.php:399
 msgctxt "plugin"
 msgid "Installed / not activated"
-msgstr ""
+msgstr "Installé/non activé"
 
 #: inc/plugin.class.php:404
 msgid "Error / to clean"
@@ -10811,7 +10811,7 @@ msgstr "Web"
 #: inc/plugin.class.php:430 inc/plugin.class.php:467 inc/plugin.class.php:480
 #: inc/plugin.class.php:496 inc/plugin.class.php:504 inc/plugin.class.php:523
 msgid "Non-existent function"
-msgstr ""
+msgstr "Fonction inexistante"
 
 #: inc/plugin.class.php:449
 msgctxt "button"
@@ -10821,17 +10821,17 @@ msgstr "Mettre à jour"
 #: inc/plugin.class.php:474 inc/plugin.class.php:502 inc/plugin.class.php:521
 msgctxt "button"
 msgid "Uninstall"
-msgstr ""
+msgstr "Désinstaller"
 
 #: inc/plugin.class.php:515
 msgctxt "button"
 msgid "Enable"
-msgstr ""
+msgstr "Activer"
 
 #: inc/plugin.class.php:533
 msgctxt "button"
 msgid "Clean"
-msgstr ""
+msgstr "Nettoyer"
 
 #: inc/plugin.class.php:541
 msgid "No plugin installed"
@@ -10868,7 +10868,7 @@ msgstr "Wifi"
 #: inc/problem.class.php:492
 msgctxt "quantity"
 msgid "Number of items"
-msgstr ""
+msgstr "Nombre d'éléments"
 
 #: inc/problem.class.php:531 inc/ticket.class.php:1933
 msgid "Task description"
@@ -10877,7 +10877,7 @@ msgstr "Description de la tâche"
 #: inc/problem.class.php:539
 msgctxt "quantity"
 msgid "Number of tasks"
-msgstr ""
+msgstr "Nombre de tâches"
 
 #: inc/problem.class.php:584
 msgctxt "problem"
@@ -11083,8 +11083,8 @@ msgstr "Valider un ticket"
 #: inc/reminder.class.php:951
 msgid "Public reminder"
 msgid_plural "Public reminders"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Note publique"
+msgstr[1] "Notes publiques"
 
 #: inc/profile.class.php:677
 msgid "Contacts"
@@ -11099,8 +11099,8 @@ msgstr "Informations financières et administratives"
 #: inc/profile.class.php:705 inc/profile.class.php:1840
 msgid "Public bookmark"
 msgid_plural "Public bookmarks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Marque-page public"
+msgstr[1] "Marque-pages publics"
 
 #: inc/profile.class.php:724 inc/profile.class.php:1455
 msgid "Administration of reservations"
@@ -11125,7 +11125,7 @@ msgstr "Ajouter une tâche à tous les tickets"
 #: inc/profile.class.php:801
 msgctxt "noun"
 msgid "Update"
-msgstr ""
+msgstr "Modification"
 
 #: inc/profile.class.php:805 inc/profile.class.php:1652
 msgid "Update a ticket"
@@ -11217,7 +11217,7 @@ msgstr "Voir tous les problèmes"
 
 #: inc/profile.class.php:947 inc/profile.class.php:1791
 msgid "See problems (author)"
-msgstr ""
+msgstr "Voir les problèmes (auteur)"
 
 #: inc/profile.class.php:953 inc/profile.class.php:1823
 msgid "Update all changes"
@@ -11229,7 +11229,7 @@ msgstr "Voir tous les changements"
 
 #: inc/profile.class.php:959 inc/profile.class.php:1813
 msgid "See changes (author)"
-msgstr ""
+msgstr "Voir les changements (auteur)"
 
 #: inc/profile.class.php:1001 inc/profile.class.php:1777
 msgid "Life cycle of tickets"
@@ -11284,8 +11284,8 @@ msgstr "Règles métier pour les tickets (entité)"
 #: inc/profile.class.php:1192
 msgid "Dictionary"
 msgid_plural "Dictionaries"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Dictionnaire"
+msgstr[1] "Dictionnaires"
 
 #: inc/profile.class.php:1195 inc/profile.class.php:1565
 msgid "Dropdowns dictionary"
@@ -11397,18 +11397,18 @@ msgstr "Ajouter au planning"
 #: inc/reminder.class.php:853
 #, php-format
 msgid "Start at %s"
-msgstr ""
+msgstr "Début à %s"
 
 #: inc/reminder.class.php:858
 #, php-format
 msgid "End at %s"
-msgstr ""
+msgstr "Fin à %s"
 
 #: inc/reminder.class.php:925
 msgid "Personal reminder"
 msgid_plural "Personal reminders"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Note personnelle"
+msgstr[1] "Notes personnelles"
 
 #: inc/report.class.php:59
 msgid "Default report"
@@ -11821,7 +11821,7 @@ msgstr "sous"
 
 #: inc/rulecriteria.class.php:335
 msgid "not under"
-msgstr ""
+msgstr "pas sous"
 
 #: inc/ruledictionnarycomputermodelcollection.class.php:61
 #: inc/ruledictionnarymonitormodelcollection.class.php:54

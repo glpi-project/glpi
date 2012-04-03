@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-04-03 08:32+0200\n"
-"PO-Revision-Date: 2012-04-03 06:32+0000\n"
+"PO-Revision-Date: 2012-04-03 07:14+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Chinese (Taiwan) (http://www.transifex.net/projects/p/GLPI/language/zh_TW/)\n"
 "MIME-Version: 1.0\n"
@@ -3434,7 +3434,7 @@ msgstr "CAS認證"
 #: inc/auth.class.php:1057 inc/auth.class.php:1085 inc/auth.class.php:1109
 msgctxt "authentication"
 msgid "Enabled"
-msgstr ""
+msgstr "啟用"
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1064
@@ -5898,7 +5898,7 @@ msgstr "設備管理限制"
 
 #: inc/config.class.php:342
 msgid "Software category deleted by the dictionary rules"
-msgstr ""
+msgstr "透過辭典刪除將影響軟體類別"
 
 #: inc/config.class.php:347
 msgid "Restrict phone management"
@@ -6063,7 +6063,7 @@ msgstr ""
 
 #: inc/config.class.php:603
 msgid "Keep tickets when purging hardware in the inventory"
-msgstr ""
+msgstr "當硬體從資產移除後仍保留問題單"
 
 #: inc/config.class.php:609
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
@@ -7528,12 +7528,12 @@ msgstr "恢復"
 #: inc/dropdown.class.php:1534
 msgctxt "button"
 msgid "Delete"
-msgstr ""
+msgstr "刪除"
 
 #: inc/dropdown.class.php:1542 inc/dropdown.class.php:1588
 msgctxt "button"
 msgid "Connect"
-msgstr ""
+msgstr "連接"
 
 #: inc/dropdown.class.php:1543
 msgctxt "button"
@@ -7566,7 +7566,7 @@ msgstr "依詞典重命名"
 #: inc/dropdown.class.php:1589 inc/plugin.class.php:451
 msgctxt "button"
 msgid "Install"
-msgstr ""
+msgstr "安裝"
 
 #: inc/dropdown.class.php:1602
 msgid "Unlock the locked monitors for OCSNG"
@@ -7595,7 +7595,7 @@ msgstr ""
 #: inc/dropdown.class.php:1616
 msgctxt "button"
 msgid "Add a contact"
-msgstr ""
+msgstr "新增聯絡人"
 
 #: inc/dropdown.class.php:1621
 msgctxt "button"
@@ -10116,7 +10116,7 @@ msgstr ""
 #: inc/ocslink.class.php:309
 msgctxt "plural"
 msgid "Locked software"
-msgstr ""
+msgstr "被鎖定的軟體(s)"
 
 #: inc/ocslink.class.php:333
 msgid "Locked volumes"
@@ -10442,7 +10442,7 @@ msgstr "品牌"
 #: inc/phone.class.php:309 inc/phone.class.php:422
 msgctxt "quantity"
 msgid "Number of lines"
-msgstr ""
+msgstr "行數"
 
 #: inc/phone.class.php:314
 msgid "Flags"
@@ -10561,12 +10561,12 @@ msgstr ""
 #: inc/plugin.class.php:383
 msgctxt "plugin"
 msgid "Enabled"
-msgstr ""
+msgstr "啟用"
 
 #: inc/plugin.class.php:387
 msgctxt "plugin"
 msgid "Not installed"
-msgstr ""
+msgstr "未安裝"
 
 #: inc/plugin.class.php:391
 msgid "To update"
@@ -10575,12 +10575,12 @@ msgstr "要更新"
 #: inc/plugin.class.php:395
 msgctxt "plugin"
 msgid "Installed / not configured"
-msgstr ""
+msgstr "已安裝 / 未設定"
 
 #: inc/plugin.class.php:399
 msgctxt "plugin"
 msgid "Installed / not activated"
-msgstr ""
+msgstr "已安裝 / 未啟用"
 
 #: inc/plugin.class.php:404
 msgid "Error / to clean"
@@ -10603,17 +10603,17 @@ msgstr ""
 #: inc/plugin.class.php:474 inc/plugin.class.php:502 inc/plugin.class.php:521
 msgctxt "button"
 msgid "Uninstall"
-msgstr ""
+msgstr "移除"
 
 #: inc/plugin.class.php:515
 msgctxt "button"
 msgid "Enable"
-msgstr ""
+msgstr "啟動"
 
 #: inc/plugin.class.php:533
 msgctxt "button"
 msgid "Clean"
-msgstr ""
+msgstr "清除"
 
 #: inc/plugin.class.php:541
 msgid "No plugin installed"
@@ -10901,7 +10901,7 @@ msgstr "所有問題單新增一項作業"
 #: inc/profile.class.php:801
 msgctxt "noun"
 msgid "Update"
-msgstr ""
+msgstr "更新"
 
 #: inc/profile.class.php:805 inc/profile.class.php:1652
 msgid "Update a ticket"

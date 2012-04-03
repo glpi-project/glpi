@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-04-03 08:32+0200\n"
-"PO-Revision-Date: 2012-04-03 06:32+0000\n"
+"PO-Revision-Date: 2012-04-03 07:14+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Estonian (Estonia) (http://www.transifex.net/projects/p/GLPI/language/et_EE/)\n"
 "MIME-Version: 1.0\n"
@@ -6171,7 +6171,7 @@ msgstr ""
 
 #: inc/config.class.php:603
 msgid "Keep tickets when purging hardware in the inventory"
-msgstr ""
+msgstr "Säilita riistvaraga seotud teated riistvara hävitamisel"
 
 #: inc/config.class.php:609
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
@@ -7693,12 +7693,12 @@ msgstr "Taasta"
 #: inc/dropdown.class.php:1534
 msgctxt "button"
 msgid "Delete"
-msgstr ""
+msgstr "Kustuta"
 
 #: inc/dropdown.class.php:1542 inc/dropdown.class.php:1588
 msgctxt "button"
 msgid "Connect"
-msgstr ""
+msgstr "Ühenda"
 
 #: inc/dropdown.class.php:1543
 msgctxt "button"
@@ -7731,7 +7731,7 @@ msgstr ""
 #: inc/dropdown.class.php:1589 inc/plugin.class.php:451
 msgctxt "button"
 msgid "Install"
-msgstr ""
+msgstr "Paigalda"
 
 #: inc/dropdown.class.php:1602
 msgid "Unlock the locked monitors for OCSNG"
@@ -7760,7 +7760,7 @@ msgstr ""
 #: inc/dropdown.class.php:1616
 msgctxt "button"
 msgid "Add a contact"
-msgstr ""
+msgstr "Lisa kontakt"
 
 #: inc/dropdown.class.php:1621
 msgctxt "button"
@@ -10323,7 +10323,7 @@ msgstr ""
 #: inc/ocslink.class.php:309
 msgctxt "plural"
 msgid "Locked software"
-msgstr ""
+msgstr "Lukustatud tarkvara"
 
 #: inc/ocslink.class.php:333
 msgid "Locked volumes"
@@ -10650,7 +10650,7 @@ msgstr "Tootemark"
 #: inc/phone.class.php:309 inc/phone.class.php:422
 msgctxt "quantity"
 msgid "Number of lines"
-msgstr ""
+msgstr "Ekraaniridu"
 
 #: inc/phone.class.php:314
 msgid "Flags"
@@ -10777,7 +10777,7 @@ msgstr ""
 #: inc/plugin.class.php:387
 msgctxt "plugin"
 msgid "Not installed"
-msgstr ""
+msgstr "Pole paigaldatud"
 
 #: inc/plugin.class.php:391
 msgid "To update"
@@ -10814,17 +10814,17 @@ msgstr ""
 #: inc/plugin.class.php:474 inc/plugin.class.php:502 inc/plugin.class.php:521
 msgctxt "button"
 msgid "Uninstall"
-msgstr ""
+msgstr "Eemalda"
 
 #: inc/plugin.class.php:515
 msgctxt "button"
 msgid "Enable"
-msgstr ""
+msgstr "Luba"
 
 #: inc/plugin.class.php:533
 msgctxt "button"
 msgid "Clean"
-msgstr ""
+msgstr "Puhasta"
 
 #: inc/plugin.class.php:541
 msgid "No plugin installed"
@@ -11118,7 +11118,7 @@ msgstr "Lisa tegevusi kõigile teadetele"
 #: inc/profile.class.php:801
 msgctxt "noun"
 msgid "Update"
-msgstr ""
+msgstr "Uuenda"
 
 #: inc/profile.class.php:805 inc/profile.class.php:1652
 msgid "Update a ticket"

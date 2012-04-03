@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-04-03 08:32+0200\n"
-"PO-Revision-Date: 2012-04-03 06:32+0000\n"
+"PO-Revision-Date: 2012-04-03 07:14+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Vietnamese (Viet Nam) (http://www.transifex.net/projects/p/GLPI/language/vi_VN/)\n"
 "MIME-Version: 1.0\n"
@@ -6063,7 +6063,7 @@ msgstr ""
 
 #: inc/config.class.php:603
 msgid "Keep tickets when purging hardware in the inventory"
-msgstr ""
+msgstr "Giữ lại ticket khi xoá phần cứng trong kho"
 
 #: inc/config.class.php:609
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
@@ -10901,7 +10901,7 @@ msgstr ""
 #: inc/profile.class.php:801
 msgctxt "noun"
 msgid "Update"
-msgstr ""
+msgstr "Cập nhật"
 
 #: inc/profile.class.php:805 inc/profile.class.php:1652
 msgid "Update a ticket"
