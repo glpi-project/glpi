@@ -3049,7 +3049,7 @@ class Transfer extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td colspan='4' class='center b'>".__('Inventory')."</td></tr>";
+      echo "<td colspan='4' class='center b'>".__('Assets')."</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Network port','Network ports',2)."</td><td>";

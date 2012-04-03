@@ -316,7 +316,7 @@ class Config extends CommonDBTM {
       echo "<input type='hidden' name='id' value='" . $CFG_GLPI["id"] . "'>";
       echo "<table class='tab_cadre_fixe'>";
 
-      echo "<tr><th colspan='4'>" . __('Inventory') . "</th></tr>";
+      echo "<tr><th colspan='4'>" . __('Assets') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
 /*
@@ -1160,7 +1160,7 @@ class Config extends CommonDBTM {
          case __CLASS__ :
             $tabs[1] = __('General setup');   // Display
             $tabs[2] = __('Default values');   // Prefs
-            $tabs[3] = __('Inventory');
+            $tabs[3] = __('Assets');
             $tabs[4] = __('Assistance');
             $tabs[5] = __('System information');
 

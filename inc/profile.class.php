@@ -100,7 +100,7 @@ class Profile extends CommonDBTM {
                   $ong[1] = __('Simplified interface'); // Helpdesk
 
                } else {
-                  $ong[2] = __('Inventory/Management/Tools');
+                  $ong[2] = sprintf(__('%1$s/%2$s'), sprintf(__('%1$s/%2$s'),__('Assets'), __('Management')), __('Tools'));
                   $ong[3] = __('Assistance');
                   $ong[4] = __('Life cycles');
                   $ong[5] = __('Administration');
@@ -629,7 +629,7 @@ class Profile extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       // Inventory
-      echo "<tr class='tab_bg_1'><th colspan='6'>".__('Inventory')."</th></tr>\n";
+      echo "<tr class='tab_bg_1'><th colspan='6'>".__('Assets')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>"._n('Computer', 'Computers', 2)."</td><td>";

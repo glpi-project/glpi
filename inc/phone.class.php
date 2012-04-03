@@ -404,7 +404,7 @@ class Phone extends CommonDBTM {
 
       $tab[6]['table']           = $this->getTable();
       $tab[6]['field']           = 'otherserial';
-      $tab[6]['name']            = __('Inventory Number');
+      $tab[6]['name']            = __('Inventory number');
       $tab[6]['datatype']        = 'string';
 
       $tab[7]['table']           = $this->getTable();

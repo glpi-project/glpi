@@ -288,7 +288,7 @@ class Entity extends CommonTreeDropdown {
                if (Session::haveRight('entity_helpdesk','r')) {
                   $ong[5] = __('Assistance');
                }
-               $ong[6] = __('Inventory');
+               $ong[6] = __('Assets');
 
                return $ong;
          }

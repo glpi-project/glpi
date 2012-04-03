@@ -932,7 +932,7 @@ class Html {
 
       // INVENTORY
       $showstate                  = false;
-      $menu['inventory']['title'] = __('Inventory');
+      $menu['inventory']['title'] = __('Assets');
 
       if (Session::haveRight("computer","r")) {
          $menu['inventory']['default'] = '/front/computer.php';
