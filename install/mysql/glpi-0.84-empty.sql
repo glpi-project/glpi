@@ -2518,7 +2518,7 @@ CREATE TABLE `glpi_mailcollectors` (
   `passwd` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `accepted` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `refused` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `use_ntml` tinyint(1) NOT NULL DEFAULT '0',
+  `use_kerberos` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `is_active` (`is_active`),
   KEY `date_mod` (`date_mod`)
