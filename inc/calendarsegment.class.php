@@ -292,6 +292,14 @@ class CalendarSegment extends CommonDBChild {
              action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
+      $query = "SELECT *
+                FROM `glpi_calendarsegments`
+                WHERE `calendars_id` = '$ID'
+                ORDER BY `day`, `begin`, `end`";
+      $result = $DB->query($query);
+      $numrows = $DB->numrows($result);
+
+
       if ($canedit) {
          echo "<div class='spaced'>";
          echo "<table class='tab_cadre_fixe'>";
@@ -311,6 +319,13 @@ class CalendarSegment extends CommonDBChild {
          echo "</td></tr>";
 
          echo "</table></div>";
+         
+         
+      }
+
+      if ($canedit && $numrows) {
+         Html::openArrowMassives("calendarsegment_form$rand", true, true);
+         Html::closeArrowMassives(array('delete' => __('Delete')));
       }
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
@@ -319,15 +334,10 @@ class CalendarSegment extends CommonDBChild {
       echo "<th>".__('End')."</th>";
       echo "</tr>";
 
-      $query = "SELECT *
-                FROM `glpi_calendarsegments`
-                WHERE `calendars_id` = '$ID'
-                ORDER BY `day`, `begin`, `end`";
-      $result = $DB->query($query);
 
       $daysofweek = Toolbox::getDaysOfWeekArray();
 
-      if ($DB->numrows($result) >0) {
+      if ($numrows) {
          while ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'>";
             echo "<td width='10'>";
@@ -349,7 +359,7 @@ class CalendarSegment extends CommonDBChild {
       }
       echo "</table></div>";
 
-      if ($canedit) {
+      if ($canedit && $numrows) {
          Html::openArrowMassives("calendarsegment_form$rand", true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
       }

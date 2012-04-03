@@ -82,17 +82,7 @@ class Calendar_Holiday extends CommonDBRelation {
       $canedit = $calendar->can($ID,'w');
 
       $rand    = mt_rand();
-      echo "<form name='calendarholiday_form$rand' id='calendarholiday_form$rand' method='post'
-             action='";
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
-
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".__('Name')."</th>";
-      echo "<th>".__('Start')."</th>";
-      echo "<th>".__('End')."</th>";
-      echo "<th>".__('Recurrent')."</th>";
-      echo "</tr>";
-
+      
       $query = "SELECT DISTINCT `glpi_calendars_holidays`.`id` AS linkID,
                                 `glpi_holidays`.*
                 FROM `glpi_calendars_holidays`
@@ -101,10 +91,31 @@ class Calendar_Holiday extends CommonDBRelation {
                 WHERE `glpi_calendars_holidays`.`calendars_id` = '$ID'
                 ORDER BY `glpi_holidays`.`name`";
       $result = $DB->query($query);
+      $numrows = $DB->numrows($result);
+            
+      
+      echo "<form name='calendarholiday_form$rand' id='calendarholiday_form$rand' method='post'
+             action='";
+      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
+      if ($canedit && $numrows) {
+         Html::openArrowMassives("calendarholiday_form$rand", true, true);
+         Html::closeArrowMassives(array('delete' => __('Delete')));
+      }
+
+
+
+      echo "<div class='center'><table class='tab_cadre_fixehov'>";
+      echo "<tr><th colspan='2'>".__('Name')."</th>";
+      echo "<th>".__('Start')."</th>";
+      echo "<th>".__('End')."</th>";
+      echo "<th>".__('Recurrent')."</th>";
+      echo "</tr>";
+
+
 
       $used = array();
 
-      if ($DB->numrows($result) > 0) {
+      if ($numrows) {
 
          Session::initNavigateListItems('Holiday',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
@@ -143,7 +154,7 @@ class Calendar_Holiday extends CommonDBRelation {
 
       echo "</table></div>";
 
-      if ($canedit) {
+      if ($canedit && $numrows) {
          Html::openArrowMassives("calendarholiday_form$rand",true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
       }
