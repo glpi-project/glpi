@@ -815,7 +815,7 @@ function update083to084() {
 
    $migration->addField('glpi_mailcollectors', 'accepted', 'string');
    $migration->addField('glpi_mailcollectors', 'refused', 'string');
-   $migration->addField('glpi_mailcollectors', 'use_ntlm', 'bool', array('value' => 0));
+   $migration->addField('glpi_mailcollectors', 'use_kerberos', 'bool', array('value' => 0));
 
    // Clean display prefs
    $query = "UPDATE `glpi_displaypreferences`

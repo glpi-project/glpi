@@ -230,9 +230,9 @@ class MailCollector  extends CommonDBTM {
       Toolbox::showMailServerConfig($this->fields["host"]);
 
       if (version_compare(PHP_VERSION, '5.3.2', '>=')) {
-         echo "<tr class='tab_bg_1'><td>" . __('Use GSSAPI or NTLM authentication') . "</td>";
+         echo "<tr class='tab_bg_1'><td>" . __('Use Kerberos authentication') . "</td>";
          echo "<td>";
-         Dropdown::showYesNo("use_ntlm", $this->fields["use_ntlm"]);
+         Dropdown::showYesNo("use_kerberos", $this->fields["use_kerberos"]);
          echo "</td></tr>\n";
       }
 
@@ -876,7 +876,7 @@ class MailCollector  extends CommonDBTM {
     ///Connect To the Mail Box
    function connect() {
 
-      if (version_compare(PHP_VERSION, '5.3.2', '<') || $this->fields['use_ntlm']) {
+      if (version_compare(PHP_VERSION, '5.3.2', '<') || $this->fields['use_kerberos']) {
          $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
                                     Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
                                     CL_EXPUNGE, 1);
