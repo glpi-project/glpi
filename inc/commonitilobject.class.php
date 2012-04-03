@@ -2090,7 +2090,7 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @return nothing display
    **/
-   static function showActorAddForm($type, $rand_type, $entities_id, $is_hidden=array(),
+   function showActorAddForm($type, $rand_type, $entities_id, $is_hidden=array(),
                                     $withgroup=true, $withsupplier=false, $inobject=true) {
       global $CFG_GLPI;
 
@@ -2146,6 +2146,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $rand   = Dropdown::showFromArray("_itil_".$typename."[_type]", $types);
       $params = array('type'            => '__VALUE__',
                       'actortype'       => $typename,
+                      'itemtype'        => $this->getType(),
                       'allow_email'     => ($type==self::OBSERVER || $type==self::REQUESTER),
                       'entity_restrict' => $entities_id);
 
@@ -2427,7 +2428,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<td>";
 
       if ($rand_requester >= 0) {
-         self::showActorAddForm(self::REQUESTER, $rand_requester,
+         $this->showActorAddForm(self::REQUESTER, $rand_requester,
                                 $this->fields['entities_id'], $is_hidden);
       }
 
@@ -2510,7 +2511,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<td>";
       if ($rand_observer >= 0) {
-         self::showActorAddForm(self::OBSERVER, $rand_observer,
+         $this->showActorAddForm(self::OBSERVER, $rand_observer,
                                 $this->fields['entities_id'], $is_hidden);
       }
 
@@ -2564,7 +2565,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       echo "<td>";
       if ($rand_assign >= 0) {
-         self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'],
+         $this->showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'],
                                 $is_hidden, $this->canAssign(),
                                 $this->canAssign() && ($this->fields["suppliers_id_assign"] == 0));
       }
