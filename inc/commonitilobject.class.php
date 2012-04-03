@@ -2185,7 +2185,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                      'moreparams'      => $paramscomment);
       }
 
-      if ($type == self::ASSIGN) {
+      if ($itemtype == 'Ticket' && $type == self::ASSIGN) {
          $toupdate = array();
          if (isset($params['toupdate']) && is_array($params['toupdate'])) {
             $toupdate[] = $params['toupdate'];
