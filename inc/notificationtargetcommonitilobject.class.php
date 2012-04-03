@@ -770,8 +770,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $tags = array($objettype.'.id'                    => __('ID'),
                     $objettype.'.title'                 => __('Title'),
                     $objettype.'.url'                   => __('URL'),
-                    $objettype.'.entity'                => __('Entity'),
-                    $objettype.'.shortentity'           => __('Entity'),
                     $objettype.'.category'              => __('Category'),
                     $objettype.'.content'               => __('Description'),
                     $objettype.'.description'           => sprintf(__('%1$s: %2$s'), __('Ticket'),
@@ -825,6 +823,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       //Tags with just lang
       $tags = array($objettype.'.days'               => _n('day', 'days', 2),
                     $objettype.'.attribution'        => __('Assigned to'),
+                    $objettype.'.entity'              => __('Entity'),
                     $objettype.'.nocategoryassigned' => __('No defined category'));
 
       foreach ($tags as $tag => $label) {
@@ -836,6 +835,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       //Tags without lang
       $tags = array($objettype.'.urlapprove'  => __('Web link to approval the solution'),
+                    $objettype.'.entity'      => sprintf(__('%1$s (%2$s)'),
+                                                         __('Entity'), __('Complete name')),
+                    $objettype.'.shortentity' => sprintf(__('%1$s (%2$s)'),
+                                                         __('Entity'), __('Name')),
                     $objettype.'.log.date'    => sprintf(__('%1$s: %2$s'), __('Historical'),
                                                          __('Date')),
                     $objettype.'.log.user'    => sprintf(__('%1$s: %2$s'), __('Historical'),
