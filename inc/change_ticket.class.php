@@ -83,14 +83,6 @@ class Change_Ticket extends CommonDBRelation{
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       $colspan = 1;
 
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>".__('Title')."</th>";
-      if ($change->isRecursive()) {
-         echo "<th>".__('Entity')."</th>";
-         $colspan++;
-      }
-      echo "</tr>";
-
       $query = "SELECT DISTINCT `glpi_changes_tickets`.`id` AS linkID,
                                 `glpi_tickets`.*
                 FROM `glpi_changes_tickets`
@@ -99,9 +91,26 @@ class Change_Ticket extends CommonDBRelation{
                 WHERE `glpi_changes_tickets`.`changes_id` = '$ID'
                 ORDER BY `glpi_tickets`.`name`";
       $result = $DB->query($query);
+      $numrows = $DB->numrows($result);
+
+      if ($canedit && $numrows) {
+         Html::openArrowMassives("changeticket_form$rand", true, true);
+         Html::closeArrowMassives(array('delete' => __('Delete')));
+      }
+
+
+      echo "<div class='center'><table class='tab_cadre_fixehov'>";
+      echo "<tr><th colspan='2'>".__('Title')."</th>";
+      if ($change->isRecursive()) {
+         echo "<th>".__('Entity')."</th>";
+         $colspan++;
+      }
+      echo "</tr>";
+
+
 
       $used = array();
-      if ($DB->numrows($result) > 0) {
+      if ($numrows) {
          Session::initNavigateListItems('Ticket',
                                  //TRANS : %1$s is the itemtype name,
                                  //        %2$s is the name of the item (used for headings of a list)
@@ -141,7 +150,7 @@ class Change_Ticket extends CommonDBRelation{
 
       echo "</table></div>";
 
-      if ($canedit) {
+      if ($canedit && $numrows) {
          Html::openArrowMassives("changeticket_form$rand", true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
       }
@@ -168,6 +177,22 @@ class Change_Ticket extends CommonDBRelation{
              action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       $colspan = 1;
+      
+      $query = "SELECT DISTINCT `glpi_changes_tickets`.`id` AS linkID,
+                                `glpi_changes`.*
+                FROM `glpi_changes_tickets`
+                LEFT JOIN `glpi_changes`
+                     ON (`glpi_changes_tickets`.`changes_id` = `glpi_changes`.`id`)
+                WHERE `glpi_changes_tickets`.`tickets_id` = '$ID'
+                ORDER BY `glpi_changes`.`name`";
+      $result = $DB->query($query);
+      $numrows = $DB->numrows($result);
+      
+      if ($canedit && $numrows) {
+         Html::openArrowMassives("changeticket_form$rand", true, true);
+         Html::closeArrowMassives(array('delete' => __('Delete')));
+      }
+
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>"._n('Change - ', 'Changes - ', 2);
@@ -178,17 +203,10 @@ class Change_Ticket extends CommonDBRelation{
       echo "<tr><th colspan='2'>".__('Title')."</th>";
       echo "</tr>";
 
-      $query = "SELECT DISTINCT `glpi_changes_tickets`.`id` AS linkID,
-                                `glpi_changes`.*
-                FROM `glpi_changes_tickets`
-                LEFT JOIN `glpi_changes`
-                     ON (`glpi_changes_tickets`.`changes_id` = `glpi_changes`.`id`)
-                WHERE `glpi_changes_tickets`.`tickets_id` = '$ID'
-                ORDER BY `glpi_changes`.`name`";
-      $result = $DB->query($query);
+
 
       $used = array();
-      if ($DB->numrows($result) > 0) {
+      if ($numrows) {
          Session::initNavigateListItems('Change',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'), $ticket->getTypeName(1),
@@ -223,7 +241,7 @@ class Change_Ticket extends CommonDBRelation{
 
       echo "</table></div>";
 
-      if ($canedit) {
+      if ($canedit && $numrows) {
          Html::openArrowMassives("changeticket_form$rand", true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
       }

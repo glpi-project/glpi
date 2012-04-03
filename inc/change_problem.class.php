@@ -83,6 +83,22 @@ class Change_Problem extends CommonDBRelation{
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       $colspan = 1;
 
+
+      $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
+                                `glpi_changes`.*
+                FROM `glpi_changes_problems`
+                LEFT JOIN `glpi_changes`
+                     ON (`glpi_changes_problems`.`changes_id` = `glpi_changes`.`id`)
+                WHERE `glpi_changes_problems`.`problems_id` = '$ID'
+                ORDER BY `glpi_changes`.`name`";
+      $result = $DB->query($query);
+      $numrows = $DB->numrows($result);
+      
+      if ($canedit && $numrows) {
+         Html::openArrowMassives("changeproblem_form$rand", true, true);
+         Html::closeArrowMassives(array('delete' => __('Delete')));
+      }
+      
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>"._n('Change - ', 'Changes - ', 2);
       echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?problems_id=$ID'>";
@@ -95,17 +111,10 @@ class Change_Problem extends CommonDBRelation{
       }
       echo "</tr>";
 
-      $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
-                                `glpi_changes`.*
-                FROM `glpi_changes_problems`
-                LEFT JOIN `glpi_changes`
-                     ON (`glpi_changes_problems`.`changes_id` = `glpi_changes`.`id`)
-                WHERE `glpi_changes_problems`.`problems_id` = '$ID'
-                ORDER BY `glpi_changes`.`name`";
-      $result = $DB->query($query);
+
 
       $used = array();
-      if ($DB->numrows($result) >0) {
+      if ($numrows) {
          Session::initNavigateListItems('Change',
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
@@ -145,7 +154,7 @@ class Change_Problem extends CommonDBRelation{
 
       echo "</table></div>";
 
-      if ($canedit) {
+      if ($canedit && $numrows) {
          Html::openArrowMassives("changeproblem_form$rand", true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
       }
@@ -173,11 +182,6 @@ class Change_Problem extends CommonDBRelation{
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       $colspan = 1;
 
-      echo "<div class='center'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>"._n('Problem', 'Problems', 2)."</th></tr>";
-      echo "<tr><th colspan='2'>".__('Title')."</th>";
-      echo "</tr>";
-
       $query = "SELECT DISTINCT `glpi_changes_problems`.`id` AS linkID,
                                 `glpi_problems`.*
                 FROM `glpi_changes_problems`
@@ -186,9 +190,22 @@ class Change_Problem extends CommonDBRelation{
                 WHERE `glpi_changes_problems`.`changes_id` = '$ID'
                 ORDER BY `glpi_problems`.`name`";
       $result = $DB->query($query);
+      $numrows = $DB->numrows($result);
+
+
+      if ($canedit&& $numrows) {
+         Html::openArrowMassives("changeproblem_form$rand", true, true);
+         Html::closeArrowMassives(array('delete' => __('Delete')));
+      }
+
+      echo "<div class='center'><table class='tab_cadre_fixehov'>";
+      echo "<tr><th colspan='2'>"._n('Problem', 'Problems', 2)."</th></tr>";
+      echo "<tr><th colspan='2'>".__('Title')."</th>";
+      echo "</tr>";
+
 
       $used = array();
-      if ($DB->numrows($result) >0) {
+      if ($numrows) {
          Session::initNavigateListItems('Problem',
          //TRANS : %1$s is the itemtype name,
          //        %2$s is the name of the item (used for headings of a list)
@@ -224,7 +241,7 @@ class Change_Problem extends CommonDBRelation{
 
       echo "</table></div>";
 
-      if ($canedit) {
+      if ($canedit&& $numrows) {
          Html::openArrowMassives("changeproblem_form$rand", true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
       }
