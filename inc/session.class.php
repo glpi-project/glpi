@@ -976,6 +976,9 @@ class Session {
     * @return Mixed value of the option
    **/
    static function getSavedOption($itemtype, $name, $defvalue) {
+      toolbox::logDebug("getSavedOption($itemtype, $name, $defvalue)",
+                        (isset($_REQUEST) ? $_REQUEST : NULL),
+                        (isset($_SESSION['glpi_saved']) ? $_SESSION['glpi_saved'] : NULL));
 
       if (isset($_REQUEST[$name])) {
          return $_SESSION['glpi_saved'][$itemtype][$name] = $_REQUEST[$name];
