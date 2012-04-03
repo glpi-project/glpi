@@ -401,6 +401,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       if (!$template->getFromDB($this->fields['notificationtemplates_id'])) {
          return;
       }
+
       if (!($item = getItemForItemtype($template->getField('itemtype')))) {
          return;
       }
@@ -425,13 +426,34 @@ class NotificationTemplateTranslation extends CommonDBChild {
 
       // Preview
       if ($event && $item->getFromDB($id)) {
-         $target = NotificationTarget::getInstance($item, $event);
+         $options = array();
+         // TODO Awfull Hack waiting for https://forge.indepnet.net/issues/3439
+         $multi   = array('alert', 'alertnotclosed', 'end', 'notice',
+                          'periodicity', 'periodicitynotice');
+         if (in_array($event, $multi)) {
+            // Won't work for Cardridge and Consumable
+            switch ($item->getType()) {
+               case 'CronTask':
+                  $fname = 'crontasks';
+                  break;
+
+               case 'Contract':
+                  $fname = 'contracts';
+                  break;
+
+               default:
+                  $fname = 'items';
+            }
+            $options['entities_id'] = $item->getEntityID();
+            $options[$fname]        = array(0 => $item->fields);
+         }
+         $target = NotificationTarget::getInstance($item, $event, $options);
          $infos  = array('language'=> $_SESSION['glpilanguage']);
 
          $template->resetComputedTemplates();
          $template->setSignature(Notification::getMailingSignature($_SESSION['glpiactive_entity']));
 
-         if ($template->getTemplateByLanguage($target, $infos, $event)) {
+         if ($template->getTemplateByLanguage($target, $infos, $event, $options)) {
 
             $data = $template->templates_by_languages[NotificationTarget::NO_OPTION][$_SESSION['glpilanguage']];
 
