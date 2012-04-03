@@ -2518,6 +2518,14 @@ class User extends CommonDBTM {
                    SET `authtype` = '$authtype', `auths_id` = '$server', `password` = ''
                    WHERE `id` IN ('$where')";
          if ($DB->query($query)) {
+            foreach ($IDs as $ID) {
+               $changes[0] = 0;
+               $changes[1] = '';
+               $changes[2] = addslashes(sprintf(__('Update authentification method to: %s'), 
+                                                Auth::getMethodName($authtype, $server)));
+               Log::history($ID, __CLASS__, $changes, '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
+            }
+         
             return true;
          }
       }
