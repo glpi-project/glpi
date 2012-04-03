@@ -454,6 +454,8 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             _e('No item found');
          }
       } // Query
+      Html::printAjaxPager(self::getTypeName(2), $start, $number);
+      
       echo "</div>\n";
    }
 

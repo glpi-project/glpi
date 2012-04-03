@@ -293,6 +293,8 @@ class Log extends CommonDBTM {
          }
       }
       echo "</table></div>";
+      Html::printAjaxPager(self::getTypeName(1), $start, $number);
+      
    }
 
 

@@ -720,6 +720,9 @@ class NetworkName extends FQDNLabel {
             $table->display(array('display_title_for_each_group' => false,
                                   'display_thead'                => false,
                                   'display_tfoot'                => false));
+            if (($item->getType() == 'IPNetwork') || ($item->getType() == 'FQDN')) {
+               Html::printAjaxPager(self::getTypeName(2), $start, self::countForItem($item));
+            }
          } else {
             echo "<table class='tab_cadre_fixe'><tr><th>".__('No network name found')."</th></tr>";
             echo "</table>";

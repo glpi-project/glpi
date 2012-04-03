@@ -617,6 +617,9 @@ class Group extends CommonTreeDropdown {
          echo "&nbsp;";
          Html::closeArrowMassives(array('changegroup' => __('Move')));
       }
+      if ($nb) {
+         Html::printAjaxPager('', $start, $nb);
+      }
 
       echo "</form></div>";
    }

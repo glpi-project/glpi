@@ -346,6 +346,9 @@ class Netpoint extends CommonDropdown {
 
             echo "</form>\n";
          }
+         Html::printAjaxPager(printf(__('Network outlets for %s'), $item->getTreeLink()),
+                              $start, $number);
+         
       }
 
       if ($canedit) {

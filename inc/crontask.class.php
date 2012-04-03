@@ -1035,6 +1035,8 @@ class CronTask extends CommonDBTM{
             _e('No item found');
          }
       } // Query
+      Html::printAjaxPager(__('Last run list'), $start, $number);
+      
       echo "</div>";
    }
 

@@ -429,6 +429,7 @@ class Group_User extends CommonDBRelation{
 
       // Display results
       if ($number) {
+         echo "<div class='spaced'>";
          Html::printAjaxPager(sprintf(__('%1$s (%2$s)'),
                                       User::getTypeName(2), __('D=Dynamic')),
                               $start, $number);
@@ -439,7 +440,6 @@ class Group_User extends CommonDBRelation{
                                         sprintf(__('%1$s = %2$s'),
                                                 $group->getTypeName(1), $group->getName()));
 
-         echo "<div class='spaced'>";
          if ($canedit) {
             echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'
                    action='".$CFG_GLPI['root_doc']."/front/group.form.php'>";
@@ -503,6 +503,10 @@ class Group_User extends CommonDBRelation{
             echo "&nbsp;";
             Html::closeArrowMassives(array('do' => __('Post')));
          }
+         Html::printAjaxPager(sprintf(__('%1$s (%2$s)'),
+                                      User::getTypeName(2), __('D=Dynamic')),
+                              $start, $number);
+         
          echo "</div>";
       } else {
          echo "<p class='center b'>".__('No item found')."</p>";
