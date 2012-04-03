@@ -361,7 +361,34 @@ abstract class CommonITILObject extends CommonDBTM {
                                                           )."')");
    }
 
+   /**
+    * Count active ITIL Objects assigned to a group
+    *
+    * @since version 0.84
+    *
+    * @param $groups_id integer ID of the User
+    *
+    * @return integer
+   **/
+   function countActiveObjectsForTechGroup($groups_id) {
 
+      $linkclass = new $this->grouplinkclass();
+      $itemtable = $this->getTable();
+      $itemtype  = $this->getType();
+      $itemfk    = $this->getForeignKeyField();
+      $linktable = $linkclass->getTable();
+
+      return countElementsInTable(array($itemtable,$linktable),
+                                  "`$linktable`.`$itemfk` = `$itemtable`.`id`
+                                    AND `$linktable`.`groups_id` = '$groups_id'
+                                    AND `$linktable`.`type` = '".self::ASSIGN."'
+                                    AND `$itemtable`.`status`
+                                       NOT IN ('".implode("', '",
+                                                          array_merge($this->getSolvedStatusArray(),
+                                                                      $this->getClosedStatusArray())
+                                                          )."')");
+   }
+   
    function cleanDBonPurge() {
 
       if (!empty($this->grouplinkclass)) {
@@ -2221,7 +2248,7 @@ abstract class CommonITILObject extends CommonDBTM {
             $toupdate[] = $params['toupdate'];
          }
          $toupdate[]         = array('value_fieldname' => 'value',
-                                     'to_update'       => "countassign_".$typename."_$rand",
+                                     'to_update'       => "countassign_$rand",
                                      'url'
                                        => $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
                                      'moreparams'      => array('users_id_assign' => '__VALUE__'));
@@ -2261,11 +2288,11 @@ abstract class CommonITILObject extends CommonDBTM {
          // Display active tickets for a tech
          // Need to update information on dropdown changes
          if ($type == self::ASSIGN) {
-            echo "<span id='countassign_".$typename."_$rand'>";
+            echo "<span id='countassign_$rand'>";
             echo "</span>";
 
             echo "<script type='text/javascript'>";
-            Ajax::updateItemJsCode("countassign_".$typename."_$rand",
+            Ajax::updateItemJsCode("countassign_$rand",
                                    $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
                                    array('users_id_assign' => '__VALUE__'),
                                    "dropdown__users_id_".$typename.$rand);
@@ -2460,11 +2487,13 @@ abstract class CommonITILObject extends CommonDBTM {
                echo $options['_tickettemplate']->getMandatoryMark('_groups_id_requester');
             }
             echo "&nbsp;";
-
+                 
             Dropdown::show('Group', array('name'      => '_groups_id_requester',
                                           'value'     => $options["_groups_id_requester"],
                                           'entity'    => $this->fields["entities_id"],
                                           'condition' => '`is_requester`'));
+                                                   
+                                          
          } else { // predefined value
             if (isset($options["_groups_id_requester"]) && $options["_groups_id_requester"]) {
                echo self::getActorIcon('group', self::REQUESTER)."&nbsp;";
@@ -2580,11 +2609,32 @@ abstract class CommonITILObject extends CommonDBTM {
                echo $options['_tickettemplate']->getMandatoryMark('_groups_id_assign');
             }
             echo "&nbsp;";
-
-            Dropdown::show('Group', array('name'      => '_groups_id_assign',
+            $rand   = mt_rand();
+            $params = array('name'      => '_groups_id_assign',
                                           'value'     => $options["_groups_id_assign"],
                                           'entity'    => $this->fields["entities_id"],
-                                          'condition' => '`is_assign`'));
+                                          'condition' => '`is_assign`',
+                                          'rand'      => $rand);
+                                          
+            if ($this->getType() == 'Ticket') {
+               $params['toupdate'] = array('value_fieldname' => 'value',
+                                           'to_update'       => "countgroupassign_$rand",
+                                           'url'
+                                              => $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
+                                           'moreparams'      => array('groups_id_assign' => '__VALUE__'));
+            }
+
+            Dropdown::show('Group', $params);
+            echo "<span id='countgroupassign_$rand'>";
+            echo "</span>";
+
+            echo "<script type='text/javascript'>";
+            Ajax::updateItemJsCode("countgroupassign_$rand",
+                                   $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
+                                   array('groups_id_assign' => '__VALUE__'),
+                                   "dropdown__groups_id_assign$rand");
+            echo "</script>";
+            
             echo '<hr>';
          } else { // predefined value
             if (isset($options["_groups_id_assign"])
