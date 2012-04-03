@@ -2925,9 +2925,9 @@ class Html {
     *
     * @param $formname  string
     * @param $fixed     boolean  used tab_cadre_fixe in both tables (false by default)
-    * @param $width              only for dictionnary (default '80%')
+    * @param $ontop     display on top of the list
    **/
-   static function openArrowMassives($formname, $fixed=false, $width='80%') {
+   static function openArrowMassives($formname, $fixed=false, $ontop = false) {
       global $CFG_GLPI;
 
       if ($fixed) {
@@ -2936,14 +2936,14 @@ class Html {
          echo "<table class='tab_glpi' width='80%'>";
       }
 
-      echo "<tr><td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left.png' alt=''></td>";
+      echo "<tr><td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($ontop?'-top':'').".png' alt=''></td>";
       echo "<td class='center'>";
       echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\"
              href='#'>".__('Check all')."</a></td>";
       echo "<td>/</td><td class='center'>";
       echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\"
              href='#'>".__('Uncheck all')."</a></td>";
-      echo "<td class='left' width='".$width."'>";
+      echo "<td class='left' width='80%'>";
    }
 
 
@@ -4018,7 +4018,7 @@ class Html {
 
       } else {
          echo "<form method='POST' action =''>\n";
-         echo "<span>".__('Display (number of items)')."</span>";
+         echo "<span>".__('Display (number of items)')."</span>&nbsp;";
          Dropdown::showListLimit("reloadTab(\"glpilist_limit=\"+this.value)");
       }
       echo "</form>";

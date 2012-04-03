@@ -862,6 +862,24 @@ class Search {
                Html::printPager($p['start'], $numrows, $target, $parameters, $itemtype);
             }
 
+            // Define begin and end var for loop
+            // Search case
+            $begin_display = $p['start'];
+            $end_display   = $p['start']+$LIST_LIMIT;
+
+            // No search Case
+            if ($nosearch) {
+               $begin_display = 0;
+               $end_display   = min($numrows-$p['start'], $LIST_LIMIT);
+            }
+
+            // Export All case
+            if ($p['export_all']) {
+               $begin_display = 0;
+               $end_display   = $numrows;
+            }
+
+
             // Form to massive actions
             $isadmin = ($item && $item->canUpdate());
             if (!$isadmin && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
@@ -873,6 +891,7 @@ class Search {
                 && ($output_type == self::HTML_OUTPUT)) {
                echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".
                      $CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
+               self::displayMassiveActions($itemtype, $end_display-$begin_display, $p, true);
             }
 
             // Compute number of columns to display
@@ -899,22 +918,6 @@ class Search {
                $nbcols++;
             }
 
-            // Define begin and end var for loop
-            // Search case
-            $begin_display = $p['start'];
-            $end_display   = $p['start']+$LIST_LIMIT;
-
-            // No search Case
-            if ($nosearch) {
-               $begin_display = 0;
-               $end_display   = min($numrows-$p['start'], $LIST_LIMIT);
-            }
-
-            // Export All case
-            if ($p['export_all']) {
-               $begin_display = 0;
-               $end_display   = $numrows;
-            }
 
             // Display List Header
             echo self::showHeader($output_type, $end_display-$begin_display+1, $nbcols);
@@ -1343,25 +1346,7 @@ class Search {
             // Delete selected item
             if ($output_type == self::HTML_OUTPUT) {
                if ($showmassiveactions) {
-                  $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
-                  if (!$max) {
-                     $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
-                  }
-                  if ($max>0 && $max<($row_num+10)) {
-                     echo "<table class='tab_cadre' width='80%'><tr class='tab_bg_1'>".
-                          "<td><span class='b'>";
-                     echo __('Selection too large, massive action disabled.')."</span>";
-                     if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-                        echo "<br>".__('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
-                     }
-                     echo "</td></tr></table>";
-                  } else {
-                     Html::openArrowMassives("massiveaction_form");
-                     Dropdown::showForMassiveAction($itemtype, $p['is_deleted']);
-                     $options = array();
-                     Html::closeArrowMassives($options);
-                  }
-
+                  self::displayMassiveActions($itemtype, $row_num, $p);
                   // End form for delete item
                   echo "</form>\n";
                } else {
@@ -1380,8 +1365,36 @@ class Search {
       // Clean selection
       $_SESSION['glpimassiveactionselected']=array();
    }
-
-
+   /**
+    * Display massive actions
+    *
+    * @param $itemtype type to display the form
+    * @param $num_displayed integer number of rows displayed
+    * @param $p array of parameters
+    * @param $ontop boolean display on top of the list ?
+    *
+    * @return Array of available itemtype
+   **/
+   static function displayMassiveActions($itemtype, $num_displayed, $p, $ontop=false) {
+      $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
+      if (!$max) {
+         $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
+      }
+      if ($max>0 && $max<($num_displayed+10)) {
+         echo "<table class='tab_cadre' width='80%'><tr class='tab_bg_1'>".
+               "<td><span class='b'>";
+         echo __('Selection too large, massive action disabled.')."</span>";
+         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            echo "<br>".__('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
+         }
+         echo "</td></tr></table>";
+      } else {
+         Html::openArrowMassives("massiveaction_form", false, $ontop);
+         Dropdown::showForMassiveAction($itemtype, $p['is_deleted']);
+         $options = array();
+         Html::closeArrowMassives($options);
+      }   
+      }
    /**
     * Get meta types available for search engine
     *
