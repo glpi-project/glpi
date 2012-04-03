@@ -122,6 +122,12 @@ class Change_Item extends CommonDBRelation{
          echo "<form method='post' name='itemchange_form$rand' id='itemchange_form$rand' action=\"".
                 $CFG_GLPI["root_doc"]."/front/change_item.form.php\">";
          echo "<div class='spaced'>";
+         
+         if ($number) {
+            Html::openArrowMassives("itemchange_form$rand", true, true);
+            Html::closeArrowMassives(array('delete' => __('Delete')));
+         }
+         
          echo "<table class='tab_cadre_fixe'>";
          // massive action checkbox
          echo "<tr><th>&nbsp;</th>";
@@ -222,12 +228,13 @@ class Change_Item extends CommonDBRelation{
                                 $types);
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
+         echo "<input type='hidden' name='changes_id' value='$instID'>";
          echo "</td><td>&nbsp;</td></tr>";
          echo "</table>";
-
-         Html::openArrowMassives("itemchange_form$rand", true);
-         echo "<input type='hidden' name='changes_id' value='$instID'>";
-         Html::closeArrowMassives(array('delete' => __('Delete')));
+         if ($number) {
+            Html::openArrowMassives("itemchange_form$rand", true);
+            Html::closeArrowMassives(array('delete' => __('Delete')));
+         }
 
       } else {
          echo "</table>";
