@@ -1355,6 +1355,7 @@ class Contract extends CommonDBTM {
       $p['entity_sons']    = false;
       $p['used']           = array();
       $p['nochecklimit']   = false;
+      $p['on_change']      = '';
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1389,7 +1390,11 @@ class Contract extends CommonDBTM {
                          `glpi_contracts`.`name` ASC,
                          `glpi_contracts`.`begin_date` DESC";
       $result = $DB->query($query);
-      echo "<select name='".$p['name']."'>";
+      echo "<select name='".$p['name']."'";
+      if (!empty($p["on_change"])) {
+         echo " onChange='".$p["on_change"]."'";
+      }
+      echo '>';
 
       if ($p['value'] > 0) {
          $output = Dropdown::getDropdownName('glpi_contracts', $p['value']);
