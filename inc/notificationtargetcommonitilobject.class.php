@@ -589,8 +589,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       $entity = new Entity();
       if ($entity->getFromDB($this->getEntity())) {
-         $this->datas["##$objettype.entity##"] = $entity->getField('completename');
-         $this->datas["##$objettype.shortentity##"] = $entity->getField('name');
+         $datas["##$objettype.entity##"] = $entity->getField('completename');
+         $datas["##$objettype.shortentity##"] = $entity->getField('name');
       }
 
       $datas["##$objettype.storestatus##"]  = $item->getField('status');
