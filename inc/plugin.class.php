@@ -324,7 +324,7 @@ class Plugin extends CommonDBTM {
       if (!empty($pluglist)) {
          echo "<tr><th>".__('Name')."</th><th>"._n('Version', 'Versions',1)."</th>";
          echo "<th>".__('License')."</th>";
-         echo "<th>"._n('Status','Statuses',1)."</th><th>"._n('Author', 'Authors',2)."</th>";
+         echo "<th>".__('Status')."</th><th>"._n('Author', 'Authors',2)."</th>";
          echo "<th>".__('Website')."</th><th colspan='2'>&nbsp;</th></tr>\n";
 
          foreach ($pluglist as $ID => $plug) {
