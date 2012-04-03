@@ -499,15 +499,15 @@ class AuthLDAP extends CommonDBTM {
       echo "<td>" . __('Email') . "</td>";
       echo "<td><input type='text' name='email1_field' value='".$this->fields["email1_field"]."'>";
       echo "</td>";
-      echo "<td>" . sprintf(__('%1$s %2$s'),__('Email','Emails',1),'2') . "</td>";
+      echo "<td>" . sprintf(__('%1$s %2$s'),__('Email','Emails',1), __('2')) . "</td>";
       echo "<td><input type='text' name='email2_field' value='".$this->fields["email2_field"]."'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . sprintf(__('%1$s %2$s'),__('Email','Emails',1),'3') . "</td>";
+      echo "<td>" . sprintf(__('%1$s %2$s'),__('Email','Emails',1),  __('3')) . "</td>";
       echo "<td><input type='text' name='email3_field' value='".$this->fields["email3_field"]."'>";
       echo "</td>";
-      echo "<td>" . sprintf(__('%1$s %2$s'),__('Email','Emails',1),'4') . "</td>";
+      echo "<td>" . sprintf(__('%1$s %2$s'),__('Email','Emails',1),  __('4')) . "</td>";
       echo "<td><input type='text' name='email4_field' value='".$this->fields["email4_field"]."'>";
       echo "</td></tr>";
 
@@ -682,19 +682,19 @@ class AuthLDAP extends CommonDBTM {
 
       $tab[25]['table']         = $this->getTable();
       $tab[25]['field']         = 'email2_field';
-      $tab[25]['name']          = sprintf(__('%1$s %2$s'),__('Email','Emails',1),'2');
+      $tab[25]['name']          = sprintf(__('%1$s %2$s'),__('Email','Emails',1), __('2'));
       $tab[25]['massiveaction'] = false;
       $tab[25]['datatype']      = 'string';
 
       $tab[26]['table']         = $this->getTable();
       $tab[26]['field']         = 'email3_field';
-      $tab[26]['name']          = sprintf(__('%1$s %2$s'),__('Email','Emails',1),'3');
+      $tab[26]['name']          = sprintf(__('%1$s %2$s'),__('Email','Emails',1), __('3'));
       $tab[26]['massiveaction'] = false;
       $tab[26]['datatype']      = 'string';
 
       $tab[27]['table']         = $this->getTable();
       $tab[27]['field']         = 'email4_field';
-      $tab[27]['name']          = sprintf(__('%1$s %2$s'),__('Email','Emails',1),'4');
+      $tab[27]['name']          = sprintf(__('%1$s %2$s'),__('Email','Emails',1), __('4'));
       $tab[27]['massiveaction'] = false;
       $tab[27]['datatype']      = 'string';
 
@@ -2363,9 +2363,12 @@ class AuthLDAP extends CommonDBTM {
                $field_counter = 0;
                $fields        = array('login_field'     => __('Login'),
                                       'email1_field'    => __('Email'),
-                                      'email2_field'    => sprintf(__('%1$s %2$s'),__('Email','Emails',1),'2'),
-                                      'email3_field'    => sprintf(__('%1$s %2$s'),__('Email','Emails',1),'3'),
-                                      'email4_field'    => sprintf(__('%1$s %2$s'),__('Email','Emails',1),'4'),
+                                      'email2_field'    => sprintf(__('%1$s %2$s'),
+                                                                   __('Email','Emails',1), __('2')),
+                                      'email3_field'    => sprintf(__('%1$s %2$s'),
+                                                                   __('Email','Emails',1), __('3')),
+                                      'email4_field'    => sprintf(__('%1$s %2$s'),
+                                                                   __('Email','Emails',1), __('4')),
                                       'realname_field'  => __('Surname'),
                                       'firstname_field' => __('First name'),
                                       'phone_field'     => __('Phone'),
