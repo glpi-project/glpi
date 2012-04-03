@@ -479,7 +479,7 @@ class Log extends CommonDBTM {
                   }
                   //TRANS: %s is the item name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Add a link with an item'),
-                                           $data["old_value"]);
+                                           $data["new_value"]);
                   break;
 
                case self::HISTORY_DEL_RELATION :
