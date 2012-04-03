@@ -1116,7 +1116,6 @@ function generateGlobalDropdowns() {
                                   'tickettemplates_id_demand'   => 1,
                                   'itilcategories_id'           => $newID));
 
-         $newID2 = $DB->insert_id();
          for ($k=0 ; $k<mt_rand(0,pow($MAX['tracking_category'],1/2)) ; $k++) {
             $newID3 = $dp->add(array('name'                        => "ss-category $k",
                                      'comment'      => "comment category $i s-category $j ss-category $k",
@@ -2446,7 +2445,6 @@ function generate_entity($ID_entity) {
                                                          ?mt_rand(1,$MAX['state']):0)
                            ));
 
-      $monID = $DB->insert_id();
       addDocuments('Monitor', $monID);
       addContracts('Monitor', $monID);
 
