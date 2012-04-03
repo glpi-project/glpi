@@ -48,18 +48,20 @@ class NotificationEvent extends CommonDBTM {
 
    /**
     * @param $itemtype
-    * @param $value     (default '')
-    * @param $options   array to pass to showFromArray
+    * @param $options   array to pass to showFromArray or $value
    **/
-   static function dropdownEvents($itemtype, $value='', $options=array()) {
+   static function dropdownEvents($itemtype, $options=array()) {
 
+      // For compatibility with previous version (where single option was $value)
+      if (!is_array($options)) {
+         $options = array('value' => $options);
+      }
       $events = array();
       $target = NotificationTarget::getInstanceByType($itemtype);
       if ($target) {
          $events = $target->getAllEvents();
       }
       $events[''] = Dropdown::EMPTY_VALUE;
-      $options['value'] = $value;
       Dropdown::showFromArray('event', $events, $options);
    }
 

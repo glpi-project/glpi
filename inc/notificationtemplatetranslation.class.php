@@ -418,8 +418,9 @@ class NotificationTemplateTranslation extends CommonDBChild {
       $item->dropdown(array('value'     => $id,
                             'on_change' => 'reloadTab("'.$key.'="+this.value)'));
       echo "</td><td>".NotificationEvent::getTypeName(1)."&nbsp;";
-      NotificationEvent::dropdownEvents($item->getType(), $event,
-                                        array('on_change' => 'reloadTab("event="+this.value)'));
+      NotificationEvent::dropdownEvents($item->getType(),
+                                        array('value'     => $event,
+                                              'on_change' => 'reloadTab("event="+this.value)'));
       echo "</td>";
 
       // Preview
