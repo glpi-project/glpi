@@ -238,7 +238,7 @@ class Computer_Device extends CommonDBTM {
             $name_column = $table_group->addHeader('name', $header_value, $common_column);
 
             if ($canedit) {
-               $delete_all = $table_group->addHeader('all', _('All'), $delete_column);
+               $delete_all = $table_group->addHeader('all', __('All'), $delete_column);
             }
 
             $name_column->setItemType($itemtype);
@@ -366,19 +366,26 @@ class Computer_Device extends CommonDBTM {
          }
       }
 
+      if ($canedit) {
+//          echo __('Add a new component')."&nbsp;";
+//          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
+// 
+//          echo "<input type='submit' class='submit' name='updateall' value='"._sx('button', 'Save')."'>";
+         Html::openArrowMassives("form_device_action$rand", false, true, true);
+         Html::closeArrowMassives(array());
+      }
+
       $table->display(array('display_super_for_each_group' => false,
                             'display_title_for_each_group' => false,
                             'display_thead'                => false,
                             'display_tfoot'                => false,));
 
       if ($canedit) {
-
-         Html::openArrowMassives("form_device_action$rand", false);
-         Html::closeArrowMassives(array());
-
+         Html::openArrowMassives("form_device_action$rand", false, false, true);
+         Html::closeArrowMassives(array());      
+         
          echo __('Add a new component')."&nbsp;";
          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
-
          echo "<input type='submit' class='submit' name='updateall' value='"._sx('button', 'Save')."'>";
 
          echo "</form>";
