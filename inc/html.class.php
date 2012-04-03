@@ -1088,7 +1088,7 @@ class Html {
 
 
       if ($showstate) {
-         $menu['inventory']['content']['state']['title']            = _n('Status', 'Status', 2);
+         $menu['inventory']['content']['state']['title']            = _n('Status', 'Statuses', 2);
          $menu['inventory']['content']['state']['shortcut']         = '';
          $menu['inventory']['content']['state']['page']             = '/front/states.php';
          $menu['inventory']['content']['state']['links']['search']  = '/front/states.php';

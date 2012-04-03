@@ -540,7 +540,7 @@ class Bookmark extends CommonDBTM {
                   $current_type_name = NOT_AVAILABLE;
 
                   if ($current_type == "States") {
-                     $current_type_name = __('Status');
+                     $current_type_name = _n('Status','Statuses',1);
                   } else if ($item = getItemForItemtype($current_type)) {
                      $current_type_name = $item->getTypeName(1);
                   }
