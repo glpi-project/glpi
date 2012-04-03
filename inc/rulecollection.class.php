@@ -457,6 +457,9 @@ class RuleCollection extends CommonDBTM {
       }
 
       echo "</div></form>";
+      
+      Html::printAjaxPager('', $p['start'], $nb);
+      
       echo "<div class='spaced center'>";
 
       if ($plugin = isPluginItemType($this->getType())) {

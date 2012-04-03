@@ -673,6 +673,8 @@ class SoftwareLicense extends CommonDBTM {
             _e('No item found');
          }
       }
+      Html::printAjaxPager(self::getTypeName(2), $start, $number);
+      
       echo "</div>";
    }
 

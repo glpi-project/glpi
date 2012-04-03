@@ -47,6 +47,10 @@ class NetworkAlias extends FQDNLabel {
    public $dohistory = true;
 
 
+   static function getTypeName($nb=0) {
+      return _n('Network alias', 'Network aliases', $nb);
+   }
+
    function canCreate() {
 
       if (!Session::haveRight('internet', 'w')) {
@@ -80,9 +84,6 @@ class NetworkAlias extends FQDNLabel {
    }
 
 
-   static function getTypeName($nb=0) {
-      return _n('Network alias', 'Network aliases', $nb);
-   }
 
 
    /**
@@ -415,6 +416,8 @@ class NetworkAlias extends FQDNLabel {
          }
 
          echo "</table>\n";
+         Html::printAjaxPager(self::getTypeName($number), $start, $number);
+         
       }
       echo "</div>\n";
    }
