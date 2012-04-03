@@ -390,5 +390,60 @@ class NotificationTemplateTranslation extends CommonDBChild {
       return true;
    }
 
+
+   /**
+    * Display debug information for current object
+    * NotificationTemplateTranslation => translation preview
+   **/
+   function showDebug() {
+
+      $template = new NotificationTemplate();
+      if (!$template->getFromDB($this->fields['notificationtemplates_id'])) {
+         return;
+      }
+      if (!($item = getItemForItemtype($template->getField('itemtype')))) {
+         return;
+      }
+
+      echo "<div class='spaced'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='2'>".__('Preview')."</th></tr>";
+
+      // Criteria Form
+      $key   = getForeignKeyFieldForItemType($item->getType());
+      $id    = Session::getSavedOption(__CLASS__, $key, 0);
+      $event = Session::getSavedOption(__CLASS__, 'event', '');
+
+      echo "<tr class='tab_bg_2'><td>".$item->getTypeName(1)."&nbsp;";
+      $item->dropdown(array('value'     => $id,
+                            'on_change' => 'reloadTab("'.$key.'="+this.value)'));
+      echo "</td><td>".NotificationEvent::getTypeName(1)."&nbsp;";
+      NotificationEvent::dropdownEvents($item->getType(), $event,
+                                        array('on_change' => 'reloadTab("event="+this.value)'));
+      echo "</td>";
+
+      // Preview
+      if ($event && $item->getFromDB($id)) {
+         $target = NotificationTarget::getInstance($item, $event);
+         $infos  = array('language'=> $_SESSION['glpilanguage']);
+
+         $template->resetComputedTemplates();
+         $template->setSignature(Notification::getMailingSignature($_SESSION['glpiactive_entity']));
+
+         if ($template->getTemplateByLanguage($target, $infos, $event)) {
+
+            $data = $template->templates_by_languages[NotificationTarget::NO_OPTION][$_SESSION['glpilanguage']];
+
+            echo "<tr><th colspan='2'>".__('Subject')."</th></tr>";
+            echo "<tr class='tab_bg_2 b'><td colspan='2'>".$data['subject']."</td></tr>";
+
+            echo "<tr><th>".__('Email text body')."</th>";
+            echo "<th>".__('Email HTML body')."</th></tr>";
+            echo "<tr class='tab_bg_2'><td>".nl2br($data['content_text'])."</td>";
+            echo "<td>".$data['content_html']."</td></tr>";
+         }
+      }
+      echo "</table></div>";
+   }
 }
 ?>
