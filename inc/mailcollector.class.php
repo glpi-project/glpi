@@ -876,14 +876,14 @@ class MailCollector  extends CommonDBTM {
     ///Connect To the Mail Box
    function connect() {
 
-      if (version_compare(PHP_VERSION, '5.3.2', '<' || $this->fields['use_ntlm']) {
+      if (version_compare(PHP_VERSION, '5.3.2', '<') || $this->fields['use_ntlm']) {
          $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
                                     Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
                                     CL_EXPUNGE, 1);
       } else {
          $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
                                     Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
-                                    CL_EXPUNGE, 1,, array('DISABLE_AUTHENTICATOR' => 'GSSAPI'));
+                                    CL_EXPUNGE, 1, array('DISABLE_AUTHENTICATOR' => 'GSSAPI'));
       
       }
    }
