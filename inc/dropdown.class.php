@@ -1735,7 +1735,7 @@ class Dropdown {
    **/
    static function showForMassiveAction($itemtype, $is_deleted=0, $extraparams=array()) {
       global $CFG_GLPI;
-
+      $rand = mt_rand();
       $actions = self::getMassiveActions($itemtype, $is_deleted);
 
       if ($itemtype == 'NetworkPort') {
@@ -1745,7 +1745,7 @@ class Dropdown {
       }
 
       if (count($actions)) {
-         echo "<select name='massiveaction' id='massiveaction'>";
+         echo "<select name='massiveaction' id='massiveaction$rand'>";
          echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
          foreach ($actions as $key => $val) {
             echo "<option value = '$key'>$val</option>";
@@ -1762,9 +1762,9 @@ class Dropdown {
             }
          }
 
-         Ajax::updateItemOnSelectEvent("massiveaction", "show_massiveaction", $link, $params);
+         Ajax::updateItemOnSelectEvent("massiveaction$rand", "show_massiveaction$rand", $link, $params);
 
-         echo "<span id='show_massiveaction'>&nbsp;</span>\n";
+         echo "<span id='show_massiveaction$rand'>&nbsp;</span>\n";
       }
    }
 
