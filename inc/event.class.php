@@ -120,7 +120,7 @@ class Event extends CommonDBTM {
                            'dropdown'    => _n('Dropdown', 'Dropdowns', 2),
                            'rules'       => _n('Rule', 'Rules', 2));
 
-      $logService = array('inventory'    => __('Inventory'),
+      $logService = array('inventory'    => __('Assets'),
                           'tracking'     => _n('Ticket', 'Tickets', 2),
                           'maintain'     => __('Assistance'),
                           'planning'     => __('Planning'),
