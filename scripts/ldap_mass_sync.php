@@ -82,13 +82,13 @@ if ($options['before-days'] && $options['after-days']) {
 }
 
 if ($options['before-days']) {
-   $options['days']     = $options['before-days'];
-   $options['operator'] = '>';
+   $options['begin_date'] = date('Y-m-d H:i:s', time()-$options['before-days']*DAY_TIMESTAMP);
+   $options['end_date']   = '';
    unset($options['before-days']);
 }
 if ($options['after-days']) {
-   $options['days']     = $options['after-days'];
-   $options['operator'] = '<';
+   $options['begin_date'] = '';
+   $options['end_date']   = date('Y-m-d H:i:s', time()-$options['after-days']*DAY_TIMESTAMP);
    unset($options['after-days']);
 }
 
