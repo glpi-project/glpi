@@ -3259,7 +3259,6 @@ class Ticket extends CommonITILObject {
 
       // Store predefined fields to be able not to take into account on change template
       $predefined_fields = array();
-
       if (isset($tt->predefined) && count($tt->predefined)) {
          foreach ($tt->predefined as $predeffield => $predefvalue) {
             if (isset($default_values[$predeffield])) {
@@ -3374,8 +3373,16 @@ class Ticket extends CommonITILObject {
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='$colsize1%'>".__('Opening date')."</th>";
+      echo "<th width='$colsize1%'>";
+      echo $tt->getBeginHiddenFieldText('date');
+      _e('Opening date');
+      if (!$ID) {
+         echo $tt->getMandatoryMark('date');
+      }
+      echo $tt->getEndHiddenFieldText('date');
+      echo "</th>";
       echo "<td width='$colsize2%'>";
+      echo $tt->getBeginHiddenFieldValue('date');
       $date = $this->fields["date"];
 
       if ($canupdate) {
@@ -3383,7 +3390,7 @@ class Ticket extends CommonITILObject {
       } else {
          echo Html::convDateTime($date);
       }
-
+      echo $tt->getEndHiddenFieldValue('date', $this);
       echo "</td>";
       // SLA
       echo "<th width='$colsize3%'>".$tt->getBeginHiddenFieldText('due_date');
@@ -3398,7 +3405,7 @@ class Ticket extends CommonITILObject {
          if ($this->fields["slas_id"]>0) {
             echo "<table width='100%'><tr><td class='nopadding'>";
             echo Html::convDateTime($this->fields["due_date"]);
-            echo "</td><td>".__('SLA')."</td>";
+            echo "</td><td class='b'>".__('SLA')."</td>";
             echo "<td class='nopadding'>";
             echo Dropdown::getDropdownName("glpi_slas", $this->fields["slas_id"]);
             $commentsla = "";
@@ -3447,7 +3454,7 @@ class Ticket extends CommonITILObject {
                                                     "cleanhide('sla_action');cleandisplay('sla_choice');").
                      ">".__('Assign a SLA').'</a>';
                echo "</span>";
-               echo "<span id='sla_choice' style='display:none'>".__('SLA')."&nbsp;";
+               echo "<span id='sla_choice' style='display:none'><span  class='b'>".__('SLA')."</span>&nbsp;";
                Dropdown::show('Sla',array('entity' => $this->fields["entities_id"],
                                           'value'  => $this->fields["slas_id"]));
                echo "</span>";
@@ -3466,7 +3473,7 @@ class Ticket extends CommonITILObject {
          Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, false, $canupdate);
          echo $tt->getEndHiddenFieldValue('due_date',$this);
          echo "</td>";
-         echo "<td class='nopadding'>".$tt->getBeginHiddenFieldText('slas_id').__('SLA').
+         echo "<td class='nopadding b'>".$tt->getBeginHiddenFieldText('slas_id').__('SLA').
                      $tt->getMandatoryMark('slas_id').
                      $tt->getEndHiddenFieldText('slas_id')."</td>";
          echo "<td class='nopadding'>".$tt->getBeginHiddenFieldValue('slas_id');

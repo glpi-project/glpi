@@ -103,6 +103,11 @@ class TicketTemplate extends CommonDropdown {
             $this->predefined['due_date']
                         = Html::computeGenericDateTimeSearch($this->predefined['due_date'], false);
          }
+         // Compute date
+         if (isset($this->predefined['date'])) {
+            $this->predefined['date']
+                        = Html::computeGenericDateTimeSearch($this->predefined['date'], false);
+         }
          return true;
       }
       return false;
@@ -164,6 +169,8 @@ class TicketTemplate extends CommonDropdown {
                                                        'glpi_slas')           => 'slas_id',
                      $ticket->getSearchOptionIDByField('field', 'due_date',
                                                        'glpi_tickets')        => 'due_date',
+                     $ticket->getSearchOptionIDByField('field', 'date',
+                                                       'glpi_tickets')        => 'date',
                      $ticket->getSearchOptionIDByField('field', 'actiontime',
                                                        'glpi_tickets')        => 'actiontime',
                      $ticket->getSearchOptionIDByField('field', 'itemtype',
@@ -198,7 +205,6 @@ class TicketTemplate extends CommonDropdown {
 
       return $allowed_fields[$withtypeandcategory][$with_items_id];
 
-     /// TODO ADD : validation_request : _add_validation : change num storage in DB / add hidden searchOption ?
      /// TODO ADD : linked tickets ? : array passed. How to manage it ? store array in DB + add hidden searchOption ?
    }
 
