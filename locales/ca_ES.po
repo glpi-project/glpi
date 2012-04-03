@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
-"POT-Creation-Date: 2012-04-03 15:38+0200\n"
-"PO-Revision-Date: 2012-04-03 13:39+0000\n"
+"POT-Creation-Date: 2012-04-03 15:58+0200\n"
+"PO-Revision-Date: 2012-04-03 13:59+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Catalan (Spain) (http://www.transifex.net/projects/p/GLPI/language/ca_ES/)\n"
 "MIME-Version: 1.0\n"
@@ -499,7 +499,7 @@ msgstr[1] "Seguiment(s)"
 #: inc/problem.class.php:1131 inc/profile_user.class.php:686
 #: inc/reservationitem.class.php:118 inc/search.class.php:4749
 #: inc/search.class.php:4770 inc/sla.class.php:211 inc/software.class.php:344
-#: inc/softwarelicense.class.php:703 inc/supplier.class.php:202
+#: inc/softwarelicense.class.php:705 inc/supplier.class.php:202
 #: inc/ticket.class.php:1591 inc/ticket.class.php:3956 inc/user.class.php:1971
 #: inc/user.class.php:3094
 msgid "ID"
@@ -800,7 +800,7 @@ msgstr ""
 #: inc/ruleright.class.php:302 inc/rulerightcollection.class.php:145
 #: inc/ruleticket.class.php:290 inc/search.class.php:4817
 #: inc/sla.class.php:225 inc/software.class.php:400 inc/software.class.php:772
-#: inc/softwarelicense.class.php:582 inc/softwarelicense.class.php:705
+#: inc/softwarelicense.class.php:582 inc/softwarelicense.class.php:707
 #: inc/stat.class.php:1372 inc/supplier.class.php:270
 #: inc/supplier.class.php:351 inc/supplier.class.php:472
 #: inc/supplier.class.php:618 inc/ticket.class.php:1685
@@ -1491,7 +1491,7 @@ msgstr "Diccionari general"
 #: inc/profile.class.php:1366 inc/ruledictionnarysoftware.class.php:135
 #: inc/ruledictionnarysoftware.class.php:160
 #: inc/rulesoftwarecategory.class.php:71 inc/software.class.php:50
-#: inc/softwarelicense.class.php:706 inc/softwareversion.class.php:142
+#: inc/softwarelicense.class.php:708 inc/softwareversion.class.php:142
 #: install/update_0713_072.php:157 install/update_0713_072.php:509
 msgid "Software"
 msgid_plural "Software"
@@ -1841,7 +1841,7 @@ msgstr "Element associat"
 #: inc/ruleimportcomputer.class.php:120 inc/ruleocs.class.php:153
 #: inc/search.class.php:4781 inc/software.class.php:470
 #: inc/softwarelicense.class.php:178 inc/softwarelicense.class.php:262
-#: inc/softwarelicense.class.php:587 inc/softwarelicense.class.php:704
+#: inc/softwarelicense.class.php:587 inc/softwarelicense.class.php:706
 #: inc/supplier.class.php:474 inc/user.class.php:2622 inc/user.class.php:2696
 msgid "Serial number"
 msgstr "Número de serie"
@@ -2257,11 +2257,11 @@ msgstr "Eliminar o actualitzar, d'un altre mode GLPI no funcionarà correctament
 
 #: front/popup.php:58 inc/authldap.class.php:387 inc/change.class.php:587
 #: inc/rule.class.php:264 inc/rule.class.php:1613
-#: inc/rulecollection.class.php:736
+#: inc/rulecollection.class.php:739
 msgid "Test"
 msgstr "Provar"
 
-#: front/popup.php:63 inc/rulecollection.class.php:471
+#: front/popup.php:63 inc/rulecollection.class.php:474
 msgid "Test rules engine"
 msgstr "Provar el motor de regles"
 
@@ -4190,7 +4190,7 @@ msgstr "Vista principal"
 #: inc/state.class.php:113 inc/ticket.class.php:1597 inc/ticket.class.php:3618
 #: inc/ticket.class.php:4580 inc/user.class.php:2624 inc/user.class.php:2698
 msgid "Status"
-msgid_plural "Status"
+msgid_plural "Statuses"
 msgstr[0] "Estat"
 msgstr[1] "Estat"
 
@@ -7474,7 +7474,7 @@ msgstr "General"
 
 #: inc/dropdown.class.php:624 inc/state.class.php:43
 msgid "Status of items"
-msgid_plural "Status of items"
+msgid_plural "Statuses of items"
 msgstr[0] "Estats dels materials"
 msgstr[1] "Estats dels materials"
 
@@ -8177,7 +8177,7 @@ msgid "System"
 msgstr "sistema"
 
 #: inc/event.class.php:121 inc/html.class.php:1496 inc/profile.class.php:1164
-#: inc/rule.class.php:105 inc/rulecollection.class.php:1062
+#: inc/rule.class.php:105 inc/rulecollection.class.php:1065
 msgid "Rule"
 msgid_plural "Rules"
 msgstr[0] "regla"
@@ -8337,7 +8337,7 @@ msgstr "Afegir un usuari"
 
 #: inc/group_user.class.php:408 inc/rule.class.php:472 inc/rule.class.php:475
 #: inc/rule.class.php:535 inc/rule.class.php:542 inc/rule.class.php:1158
-#: inc/rule.class.php:1572 inc/rulecollection.class.php:714
+#: inc/rule.class.php:1572 inc/rulecollection.class.php:717
 #: inc/rulecriteria.class.php:62 inc/rulerightparameter.class.php:69
 #: inc/rulerightparameter.class.php:86
 msgid "Criteria"
@@ -9362,20 +9362,20 @@ msgid ""
 "them."
 msgstr ""
 
-#: inc/networkname.class.php:724
+#: inc/networkname.class.php:727
 msgid "No network name found"
 msgstr ""
 
-#: inc/networkname.class.php:737
+#: inc/networkname.class.php:740
 msgid "Add a network name"
 msgstr ""
 
-#: inc/networkname.class.php:741
+#: inc/networkname.class.php:744
 msgctxt "network name"
 msgid "New one"
 msgstr ""
 
-#: inc/networkname.class.php:749
+#: inc/networkname.class.php:752
 msgid "Not associated one"
 msgstr ""
 
@@ -10127,7 +10127,7 @@ msgstr "Estat de la petició de validació"
 #: inc/notificationtargetticket.class.php:604
 #: inc/notificationtargetticket.class.php:607
 #: inc/notificationtargetticket.class.php:668 inc/rule.class.php:1161
-#: inc/rule.class.php:1182 inc/rulecollection.class.php:928
+#: inc/rule.class.php:1182 inc/rulecollection.class.php:931
 #: inc/rulerightcollection.class.php:82
 msgid "Validation"
 msgid_plural "Validations"
@@ -11724,11 +11724,11 @@ msgstr "Motiu"
 msgid "Add a criteria"
 msgstr "Afegir criteri"
 
-#: inc/rule.class.php:1155 inc/rulecollection.class.php:859
+#: inc/rule.class.php:1155 inc/rulecollection.class.php:862
 msgid "Result details"
 msgstr "Detall del resultat"
 
-#: inc/rule.class.php:1180 inc/rulecollection.class.php:926
+#: inc/rule.class.php:1180 inc/rulecollection.class.php:929
 #: inc/rulerightcollection.class.php:80
 msgid "Rule results"
 msgstr "Resultat de la regla"
@@ -11761,27 +11761,27 @@ msgstr ""
 msgid "Enable"
 msgstr "Activar"
 
-#: inc/rulecollection.class.php:743
+#: inc/rulecollection.class.php:746
 msgid "No element to be tested"
 msgstr "Cap element per a comprovar"
 
-#: inc/rulecollection.class.php:874
+#: inc/rulecollection.class.php:877
 msgid "Inactive"
 msgstr "Inactiu"
 
 #. TRANS: %s is the entity name
-#: inc/rulecollection.class.php:1058
+#: inc/rulecollection.class.php:1061
 #, php-format
 msgid "Rules applied: %s"
 msgstr "Regles heretades: %s"
 
 #. TRANS: %s is the entity name
-#: inc/rulecollection.class.php:1065
+#: inc/rulecollection.class.php:1068
 #, php-format
 msgid "Local rules: %s"
 msgstr "Regles locals: %s"
 
-#: inc/rulecollection.class.php:1071
+#: inc/rulecollection.class.php:1074
 msgid "Rules applicable in the sub-entities"
 msgstr "Regles de sub-entitats"
 
