@@ -1003,6 +1003,17 @@ class AuthLDAP extends CommonDBTM {
 
             echo "<form method='post' id='ldap_form' name='ldap_form' action='".
                    $_SERVER['PHP_SELF']."'>";
+                   
+            Html::openArrowMassives("ldap_form", true, true);
+            $form_action = "process_ok";
+            $textbutton  = '';
+            if ($_SESSION['ldap_import']['mode']) {
+               $textbutton = __('Synchronize');
+            } else {
+               $textbutton = __('Import');
+            }
+            Html::closeArrowMassives(array($form_action => $textbutton));
+                   
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>".(!$_SESSION['ldap_import']['mode']?__('Import')
                                                               :__('Synchronize'))."</th>";
@@ -1062,13 +1073,6 @@ class AuthLDAP extends CommonDBTM {
             echo "</table>";
 
             Html::openArrowMassives("ldap_form", true);
-            $form_action = "process_ok";
-            $textbutton  = '';
-            if ($_SESSION['ldap_import']['mode']) {
-               $textbutton = __('Synchronize');
-            } else {
-               $textbutton = __('Import');
-            }
             Html::closeArrowMassives(array($form_action => $textbutton));
             echo "</form>";
 
@@ -2194,10 +2198,10 @@ class AuthLDAP extends CommonDBTM {
                $_SESSION['ldap_import'][$field] = $options[$field];
             }
          }
-         if ($_SESSION['ldap_import']['begin_date'] == 'NULL') {
+         if (isset($_SESSION['ldap_import']['begin_date']) && $_SESSION['ldap_import']['begin_date'] == 'NULL') {
             $_SESSION['ldap_import']['begin_date'] = '';
          }
-         if ($_SESSION['ldap_import']['end_date'] == 'NULL') {
+         if (isset($_SESSION['ldap_import']['end_date']) && $_SESSION['ldap_import']['end_date'] == 'NULL') {
             $_SESSION['ldap_import']['end_date'] = '';
          }
          if (!isset($_SESSION['ldap_import']['criterias'])) {

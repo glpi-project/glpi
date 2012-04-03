@@ -523,6 +523,12 @@ class Bookmark extends CommonDBTM {
       if ($result = $DB->query($query)) {
          $rand = mt_rand();
          echo "<form method='post' id='form_load_bookmark$rand' action=\"$target\">";
+         $numrows = $DB->numrows($result);
+         if ($numrows) {
+            Html::openArrowMassives("form_load_bookmark$rand", false, true);
+            Html::closeArrowMassives(array('delete_several' => __('Delete')));
+         }
+         
          echo "<div class='center' id='tabsbody' >";
 
          echo "<table class='tab_cadrehov' width='".self::WIDTH."px'>";
@@ -531,7 +537,7 @@ class Bookmark extends CommonDBTM {
          echo "<th width='20px'>&nbsp;</th>";
          echo "<th>".__('Default view')."</th></tr>";
 
-         if ($DB->numrows($result)) {
+         if ($numrows) {
             $current_type      = -1;
             $current_type_name = NOT_AVAILABLE;
             while ($this->fields = $DB->fetch_assoc($result)) {
