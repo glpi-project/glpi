@@ -891,7 +891,7 @@ class Search {
                 && ($output_type == self::HTML_OUTPUT)) {
                echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".
                      $CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
-               self::displayMassiveActions($itemtype, $end_display-$begin_display, $p, true);
+//                self::displayMassiveActions($itemtype, $end_display-$begin_display, $p, true);
             }
 
             // Compute number of columns to display

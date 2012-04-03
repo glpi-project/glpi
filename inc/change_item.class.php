@@ -123,10 +123,10 @@ class Change_Item extends CommonDBRelation{
                 $CFG_GLPI["root_doc"]."/front/change_item.form.php\">";
          echo "<div class='spaced'>";
          
-         if ($number) {
+/*         if ($number) {
             Html::openArrowMassives("itemchange_form$rand", true, true);
             Html::closeArrowMassives(array('delete' => __('Delete')));
-         }
+         }*/
          
          echo "<table class='tab_cadre_fixe'>";
          // massive action checkbox

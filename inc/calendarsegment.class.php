@@ -323,10 +323,10 @@ class CalendarSegment extends CommonDBChild {
          
       }
 
-      if ($canedit && $numrows) {
-         Html::openArrowMassives("calendarsegment_form$rand", true, true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
-      }
+//       if ($canedit && $numrows) {
+//          Html::openArrowMassives("calendarsegment_form$rand", true, true);
+//          Html::closeArrowMassives(array('delete' => __('Delete')));
+//       }
 
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>".__('Day')."</th>";

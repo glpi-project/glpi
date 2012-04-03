@@ -524,10 +524,10 @@ class Bookmark extends CommonDBTM {
          $rand = mt_rand();
          echo "<form method='post' id='form_load_bookmark$rand' action=\"$target\">";
          $numrows = $DB->numrows($result);
-         if ($numrows) {
+/*         if ($numrows) {
             Html::openArrowMassives("form_load_bookmark$rand", false, true);
             Html::closeArrowMassives(array('delete_several' => __('Delete')));
-         }
+         }*/
          
          echo "<div class='center' id='tabsbody' >";
 
