@@ -753,6 +753,7 @@ class Change extends CommonITILObject {
                          'urgency'                   => 3,
                          'impact'                    => 3,
                          'content'                   => '',
+                         'entities_id'               => $_SESSION['glpiactive_entity'],
                          'name'                      => '',
                          'itilcategories_id'         => 0);
          foreach ($values as $key => $val) {
