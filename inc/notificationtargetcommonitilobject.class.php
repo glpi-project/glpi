@@ -525,8 +525,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       } else {
          if (isset($options['entities_id'])
              && isset($options['items'])) {
-            $this->datas["##$objettype.entity##"]
-                        = Dropdown::getDropdownName('glpi_entities', $options['entities_id']);
+            $entity = new Entity();
+            if ($entity->getFromDB($options['entities_id'])) {
+               $this->datas["##$objettype.entity##"] = $entity->getField('completename');
+               $this->datas["##$objettype.shortentity##"] = $entity->getField('name');
+            }
             if ($item = getItemForItemtype($objettype)) {
                $objettypes = Toolbox::strtolower(getPlural($objettype));
                $items      = array();
@@ -584,9 +587,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                         $item->getField("id")."_".
                                                         $item->getType().'$2');
 
-
-      $datas["##$objettype.entity##"]       = Dropdown::getDropdownName('glpi_entities',
-                                                                        $this->getEntity());
+      $entity = new Entity();
+      if ($entity->getFromDB($this->getEntity())) {
+         $this->datas["##$objettype.entity##"] = $entity->getField('completename');
+         $this->datas["##$objettype.shortentity##"] = $entity->getField('name');
+      }
 
       $datas["##$objettype.storestatus##"]  = $item->getField('status');
       $datas["##$objettype.status##"]
@@ -766,6 +771,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.title'                 => __('Title'),
                     $objettype.'.url'                   => __('URL'),
                     $objettype.'.entity'                => __('Entity'),
+                    $objettype.'.shortentity'           => __('Entity'),
                     $objettype.'.category'              => __('Category'),
                     $objettype.'.content'               => __('Description'),
                     $objettype.'.description'           => sprintf(__('%1$s: %2$s'), __('Ticket'),
