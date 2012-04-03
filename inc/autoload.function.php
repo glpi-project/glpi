@@ -281,7 +281,7 @@ function glpi_autoload($classname) {
       // Is Zend class ?
       if (preg_match('/^Zend/',$classname,$matches)) {
          if (GLPI_ZEND_PATH) {
-            set_include_path(get_include_path() . PATH_SEPARATOR . GLPI_ZEND_PATH);
+            set_include_path(GLPI_ZEND_PATH . PATH_SEPARATOR . get_include_path());
          }
          require_once("Zend/Loader.php");
 
@@ -292,7 +292,7 @@ function glpi_autoload($classname) {
       if (preg_match('/^CAS_.*/', $classname)) {
          return false;
       }
-            
+
       $item = strtolower($classname);
    }
 
