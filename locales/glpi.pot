@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-03 08:32+0200\n"
+"POT-Creation-Date: 2012-04-03 09:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1851,7 +1851,7 @@ msgstr ""
 #: inc/notificationtargetticket.class.php:556 inc/ocsserver.class.php:333
 #: inc/ocsserver.class.php:3023 inc/peripheral.class.php:254
 #: inc/peripheral.class.php:378 inc/phone.class.php:251
-#: inc/printer.class.php:355 inc/printer.class.php:532
+#: inc/phone.class.php:407 inc/printer.class.php:355 inc/printer.class.php:532
 #: inc/search.class.php:4785 inc/software.class.php:477
 #: inc/softwarelicense.class.php:190 inc/softwarelicense.class.php:267
 #: inc/supplier.class.php:475 inc/user.class.php:2615 inc/user.class.php:2689
@@ -5972,9 +5972,9 @@ msgid "Global search"
 msgstr ""
 
 #: inc/config.class.php:319 inc/config.class.php:1163 inc/entity.class.php:291
-#: inc/event.class.php:123 inc/html.class.php:935 inc/profile.class.php:632
-#: inc/transfer.class.php:3052
-msgid "Inventory"
+#: inc/event.class.php:123 inc/html.class.php:935 inc/profile.class.php:103
+#: inc/profile.class.php:632 inc/transfer.class.php:3052
+msgid "Assets"
 msgstr ""
 
 #: inc/config.class.php:328
@@ -7503,14 +7503,15 @@ msgstr[1] ""
 
 #: inc/dropdown.class.php:680 inc/event.class.php:128 inc/html.class.php:1223
 #: inc/infocom.class.php:104 inc/infocom.class.php:111
-#: inc/profile.class.php:674 inc/profile.class.php:1409
-#: inc/transfer.class.php:3165
+#: inc/profile.class.php:103 inc/profile.class.php:674
+#: inc/profile.class.php:1409 inc/transfer.class.php:3165
 msgid "Management"
 msgstr ""
 
 #: inc/dropdown.class.php:684 inc/event.class.php:127 inc/html.class.php:1292
-#: inc/profile.class.php:579 inc/profile.class.php:696
-#: inc/profile.class.php:1352 inc/profile.class.php:1436
+#: inc/profile.class.php:103 inc/profile.class.php:579
+#: inc/profile.class.php:696 inc/profile.class.php:1352
+#: inc/profile.class.php:1436
 msgid "Tools"
 msgstr ""
 
@@ -10651,10 +10652,6 @@ msgstr ""
 msgid "Serial Number"
 msgstr ""
 
-#: inc/phone.class.php:407
-msgid "Inventory Number"
-msgstr ""
-
 #: inc/planning.class.php:52 inc/planning.class.php:73
 msgid "Information"
 msgid_plural "Information"
@@ -10965,7 +10962,8 @@ msgid "Create a problem from this ticket"
 msgstr ""
 
 #: inc/profile.class.php:103
-msgid "Inventory/Management/Tools"
+#, php-format
+msgid "%1$s/%2$s"
 msgstr ""
 
 #: inc/profile.class.php:105
