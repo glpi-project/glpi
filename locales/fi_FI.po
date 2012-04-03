@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-04-03 08:32+0200\n"
-"PO-Revision-Date: 2012-04-03 06:32+0000\n"
+"PO-Revision-Date: 2012-04-03 07:14+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Finnish (Finland) (http://www.transifex.net/projects/p/GLPI/language/fi_FI/)\n"
 "MIME-Version: 1.0\n"
@@ -7693,12 +7693,12 @@ msgstr "Palauta"
 #: inc/dropdown.class.php:1534
 msgctxt "button"
 msgid "Delete"
-msgstr ""
+msgstr "Poista"
 
 #: inc/dropdown.class.php:1542 inc/dropdown.class.php:1588
 msgctxt "button"
 msgid "Connect"
-msgstr ""
+msgstr "Yhdistä"
 
 #: inc/dropdown.class.php:1543
 msgctxt "button"
@@ -7731,7 +7731,7 @@ msgstr ""
 #: inc/dropdown.class.php:1589 inc/plugin.class.php:451
 msgctxt "button"
 msgid "Install"
-msgstr ""
+msgstr "Asenna"
 
 #: inc/dropdown.class.php:1602
 msgid "Unlock the locked monitors for OCSNG"
@@ -10814,17 +10814,17 @@ msgstr ""
 #: inc/plugin.class.php:474 inc/plugin.class.php:502 inc/plugin.class.php:521
 msgctxt "button"
 msgid "Uninstall"
-msgstr ""
+msgstr "Poista"
 
 #: inc/plugin.class.php:515
 msgctxt "button"
 msgid "Enable"
-msgstr ""
+msgstr "Aktivoi"
 
 #: inc/plugin.class.php:533
 msgctxt "button"
 msgid "Clean"
-msgstr ""
+msgstr "Tyhjennä"
 
 #: inc/plugin.class.php:541
 msgid "No plugin installed"
@@ -11118,7 +11118,7 @@ msgstr ""
 #: inc/profile.class.php:801
 msgctxt "noun"
 msgid "Update"
-msgstr ""
+msgstr "Päivitä"
 
 #: inc/profile.class.php:805 inc/profile.class.php:1652
 msgid "Update a ticket"

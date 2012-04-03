@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-04-03 08:32+0200\n"
-"PO-Revision-Date: 2012-04-03 06:32+0000\n"
+"PO-Revision-Date: 2012-04-03 07:14+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: Greek (Greece) (http://www.transifex.net/projects/p/GLPI/language/el_GR/)\n"
 "MIME-Version: 1.0\n"
@@ -3489,7 +3489,7 @@ msgstr "Πιστοποίηση CAS"
 #: inc/auth.class.php:1057 inc/auth.class.php:1085 inc/auth.class.php:1109
 msgctxt "authentication"
 msgid "Enabled"
-msgstr ""
+msgstr "Ενεργός"
 
 #. TRANS: for CAS SSO system
 #: inc/auth.class.php:1064
@@ -6005,7 +6005,7 @@ msgstr "Περιορισμός διαχείρισης συσκευών"
 
 #: inc/config.class.php:342
 msgid "Software category deleted by the dictionary rules"
-msgstr ""
+msgstr "Η κατηγορία λογισμικού  διαγράφτηκε από τους κανόνες λεξικού"
 
 #: inc/config.class.php:347
 msgid "Restrict phone management"
@@ -6171,7 +6171,7 @@ msgstr ""
 
 #: inc/config.class.php:603
 msgid "Keep tickets when purging hardware in the inventory"
-msgstr ""
+msgstr "Κρατήστε τα αιτήματα ενώ εκκαθαρίζετε υλικό από την απογραφή"
 
 #: inc/config.class.php:609
 msgid "Allow anonymous ticket creation (helpdesk.receiver)"
@@ -7693,12 +7693,12 @@ msgstr "Επαναφορά"
 #: inc/dropdown.class.php:1534
 msgctxt "button"
 msgid "Delete"
-msgstr ""
+msgstr "Διαγραφή"
 
 #: inc/dropdown.class.php:1542 inc/dropdown.class.php:1588
 msgctxt "button"
 msgid "Connect"
-msgstr ""
+msgstr "Σύνδεση"
 
 #: inc/dropdown.class.php:1543
 msgctxt "button"
@@ -7731,7 +7731,7 @@ msgstr "Επανάληψη κανόνων λεξικού"
 #: inc/dropdown.class.php:1589 inc/plugin.class.php:451
 msgctxt "button"
 msgid "Install"
-msgstr ""
+msgstr "Εγκατάσταση"
 
 #: inc/dropdown.class.php:1602
 msgid "Unlock the locked monitors for OCSNG"
@@ -7760,7 +7760,7 @@ msgstr ""
 #: inc/dropdown.class.php:1616
 msgctxt "button"
 msgid "Add a contact"
-msgstr ""
+msgstr "Προσθήκη επαφής"
 
 #: inc/dropdown.class.php:1621
 msgctxt "button"
@@ -10323,7 +10323,7 @@ msgstr ""
 #: inc/ocslink.class.php:309
 msgctxt "plural"
 msgid "Locked software"
-msgstr ""
+msgstr "Κλειδωμένο λογισμικό"
 
 #: inc/ocslink.class.php:333
 msgid "Locked volumes"
@@ -10650,7 +10650,7 @@ msgstr "Μάρκα"
 #: inc/phone.class.php:309 inc/phone.class.php:422
 msgctxt "quantity"
 msgid "Number of lines"
-msgstr ""
+msgstr "Αριθμός γραμμών"
 
 #: inc/phone.class.php:314
 msgid "Flags"
@@ -10772,12 +10772,12 @@ msgstr "Νέο"
 #: inc/plugin.class.php:383
 msgctxt "plugin"
 msgid "Enabled"
-msgstr ""
+msgstr "Ενεργός"
 
 #: inc/plugin.class.php:387
 msgctxt "plugin"
 msgid "Not installed"
-msgstr ""
+msgstr "Δεν έχει εγκατασταθεί"
 
 #: inc/plugin.class.php:391
 msgid "To update"
@@ -10786,12 +10786,12 @@ msgstr "Για ενημέρωση"
 #: inc/plugin.class.php:395
 msgctxt "plugin"
 msgid "Installed / not configured"
-msgstr ""
+msgstr "Εγκατεστημένο / μη ρυθμισμένο"
 
 #: inc/plugin.class.php:399
 msgctxt "plugin"
 msgid "Installed / not activated"
-msgstr ""
+msgstr "Εγκατεστημένο / απενεργοποιημένο"
 
 #: inc/plugin.class.php:404
 msgid "Error / to clean"
@@ -10814,17 +10814,17 @@ msgstr ""
 #: inc/plugin.class.php:474 inc/plugin.class.php:502 inc/plugin.class.php:521
 msgctxt "button"
 msgid "Uninstall"
-msgstr ""
+msgstr "Απεγκατάσταση"
 
 #: inc/plugin.class.php:515
 msgctxt "button"
 msgid "Enable"
-msgstr ""
+msgstr "Ενεργοποίηση"
 
 #: inc/plugin.class.php:533
 msgctxt "button"
 msgid "Clean"
-msgstr ""
+msgstr "Καθαρισμός"
 
 #: inc/plugin.class.php:541
 msgid "No plugin installed"
@@ -11118,7 +11118,7 @@ msgstr "Προσθήκη εργασίας σε όλα τα αιτήματα"
 #: inc/profile.class.php:801
 msgctxt "noun"
 msgid "Update"
-msgstr ""
+msgstr "Ενημέρωση"
 
 #: inc/profile.class.php:805 inc/profile.class.php:1652
 msgid "Update a ticket"
