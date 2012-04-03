@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-04-03 15:58+0200\n"
-"PO-Revision-Date: 2012-04-03 13:59+0000\n"
+"PO-Revision-Date: 2012-04-03 14:12+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: French (France) (http://www.transifex.net/projects/p/GLPI/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -7590,13 +7590,13 @@ msgstr "VLANs"
 msgid "IP network"
 msgid_plural "IP networks"
 msgstr[0] "Réseau IP"
-msgstr[1] "Nombre de tâches"
+msgstr[1] "Réseaux IP"
 
 #: inc/dropdown.class.php:714 inc/fqdn.class.php:57
 msgid "Internet domain"
 msgid_plural "Internet domains"
 msgstr[0] "Domaine internet"
-msgstr[1] "Installé / non configuré"
+msgstr[1] "Domaines internet"
 
 #: inc/dropdown.class.php:715 inc/wifinetwork.class.php:130
 msgid "Wifi network"
@@ -8262,13 +8262,13 @@ msgstr "Aucun élément à afficher"
 
 #: inc/fqdn.class.php:64 inc/fqdn.class.php:211
 msgid "FQDN"
-msgstr "Installé / non activé"
+msgstr "FQDN"
 
 #: inc/fqdn.class.php:67
 msgid ""
 "Fully Qualified Domain Name. Use the classical notation (labels separated by"
 " dots). For example: indepnet.net"
-msgstr "Fonction manquante"
+msgstr "Nom de domaine complètement qualifié. Utilisez la notation classique (noms séparés par des points). Par exemple: indepnet.net"
 
 #: inc/fqdn.class.php:85
 msgid "Internet domain name is invalid"
@@ -10819,7 +10819,7 @@ msgstr "A mettre à jour"
 #: inc/plugin.class.php:395
 msgctxt "plugin"
 msgid "Installed / not configured"
-msgstr "Installé/non configuré"
+msgstr "Installé / non configuré"
 
 #: inc/plugin.class.php:399
 msgctxt "plugin"
