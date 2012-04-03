@@ -390,5 +390,39 @@ class NotificationTemplateTranslation extends CommonDBChild {
       return true;
    }
 
+   /**
+    * Display debug information for current object
+   **/
+   function showDebug() {
+
+      $template = new NotificationTemplate();
+      if (!$template->getFromDB($this->fields['notificationtemplates_id'])) {
+         return;
+      }
+      if (!($item = getItemForItemtype($template->getField('itemtype')))) {
+         return;
+      }
+      $key = getForeignKeyFieldForItemType($item->getType());
+      $id  = Session::getSavedOption(__CLASS__, $key, 0);
+      $ev  = Session::getSavedOption(__CLASS__, 'event', '');
+      echo "<div class='spaced'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr><th colspan='2'>".__('Preview')."</th></tr>";
+      //  	content_text  	subject
+
+      echo "<tr class='tab_bg_2'><td>".$item->getTypeName(1)."&nbsp;";
+      $item->dropdown(array('value'     => $id,
+                            'on_change' => 'reloadTab("'.$key.'="+this.value)'));
+      echo "</td><td>".NotificationEvent::getTypeName(1)."&nbsp;";
+      NotificationEvent::dropdownEvents($item->getType(), $ev,
+                                        array('on_change' => 'reloadTab("event="+this.value)'));
+      echo "</td>";
+
+      if ($item->getFromDB($id)) {
+
+      }
+
+      echo "</table></div>";
+   }
 }
 ?>
