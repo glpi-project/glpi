@@ -59,7 +59,7 @@ class NotificationTargetContract extends NotificationTarget {
       $this->datas['##contract.action##'] = sprintf(__('%1$s - %2$s'), __('Contracts alarm'),
                                                     $events[$event]);
 
-      foreach ($options['contracts'] as $id => $contract) {
+      foreach ($options['items'] as $id => $contract) {
          $tmp                        = array();
          $tmp['##contract.name##']   = $contract['name'];
          $tmp['##contract.number##'] = $contract['num'];
@@ -85,7 +85,11 @@ class NotificationTargetContract extends NotificationTarget {
 
             case 'periodicity':
             case 'periodicitynotice':
-               $tmp['##contract.time##'] =  Html::convDate($contract["alert_date"]);
+               if (isset($contract["alert_date"])) {
+                  $tmp['##contract.time##'] =  Html::convDate($contract["alert_date"]);
+               } else if (isset($options['_debug'])) {
+                  $tmp['##contract.time##'] =  Html::convDate($_SESSION['glpi_currenttime']);
+               }
                break;
          }
 
