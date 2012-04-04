@@ -128,7 +128,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       global $DB;
 
       if (!isset($data['id'])) {
-         return 1;
+         return 0;
       }
       $query = "SELECT COUNT(*) AS cpt
                 FROM `glpi_profiles_users`
