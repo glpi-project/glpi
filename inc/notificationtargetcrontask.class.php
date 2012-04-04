@@ -53,7 +53,7 @@ class NotificationTargetCrontask extends NotificationTarget {
       $this->datas['##crontask.action##'] = $events[$event];
 
       $cron                               = new Crontask();
-      foreach ($options['crontasks'] as $id => $crontask) {
+      foreach ($options['items'] as $id => $crontask) {
          $tmp                      = array();
          $tmp['##crontask.name##'] = '';
 

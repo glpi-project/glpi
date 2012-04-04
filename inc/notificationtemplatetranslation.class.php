@@ -436,16 +436,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
                           'periodicity', 'periodicitynotice');
          if (in_array($event, $multi)) {
             // Won't work for Cardridge and Consumable
-            switch ($item->getType()) {
-               case 'CronTask':
-                  $fname = 'crontasks';
-                  break;
-
-               default:
-                  $fname = 'items';
-            }
             $options['entities_id'] = $item->getEntityID();
-            $options[$fname]        = array($item->getID() => $item->fields);
+            $options['items']       = array($item->getID() => $item->fields);
          }
          $target = NotificationTarget::getInstance($item, $event, $options);
          $infos  = array('language'=> $_SESSION['glpilanguage']);
