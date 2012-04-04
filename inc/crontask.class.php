@@ -1036,7 +1036,7 @@ class CronTask extends CommonDBTM{
          }
       } // Query
       Html::printAjaxPager(__('Last run list'), $start, $number);
-      
+
       echo "</div>";
    }
 
@@ -1313,7 +1313,7 @@ class CronTask extends CommonDBTM{
 
       if (count($crontasks)) {
          if (NotificationEvent::raiseEvent("alert", new Crontask(),
-                                           array('crontasks' => $crontasks))) {
+                                           array('items' => $crontasks))) {
             $cron_status = 1;
             $task->addVolume(1);
          }
