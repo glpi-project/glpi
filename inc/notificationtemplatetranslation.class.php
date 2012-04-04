@@ -404,13 +404,21 @@ class NotificationTemplateTranslation extends CommonDBChild {
          return;
       }
 
-      if (!($item = getItemForItemtype($template->getField('itemtype')))) {
+      $itemtype = $template->getField('itemtype');
+      if (!($item = getItemForItemtype($itemtype))) {
          return;
       }
 
       echo "<div class='spaced'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".__('Preview')."</th></tr>";
+
+      if (in_array($itemtype, array('Infocom', 'Cartridge', 'Consumable'))) {
+         // this itemtype doesn't work, need to be fixed
+         echo "<tr class='tab_bg_2 center'><td>".NOT_AVAILABLE."</td>";
+         echo "</table></div>";
+         return;
+      }
 
       // Criteria Form
       $key   = getForeignKeyFieldForItemType($item->getType());
