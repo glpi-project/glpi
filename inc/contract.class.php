@@ -1289,7 +1289,7 @@ class Contract extends CommonDBTM {
             foreach ($contract_infos[$event] as $entity => $contracts) {
                if (NotificationEvent::raiseEvent($event, new self(),
                                                  array('entities_id' => $entity,
-                                                       'contracts'   => $contracts))) {
+                                                       'items'       => $contracts))) {
                   $message     = $contract_messages[$event][$entity];
                   $cron_status = 1;
                   $entityname  = Dropdown::getDropdownName("glpi_entities", $entity);

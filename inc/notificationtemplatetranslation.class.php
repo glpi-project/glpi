@@ -415,7 +415,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
       // Criteria Form
       $key   = getForeignKeyFieldForItemType($item->getType());
       $id    = Session::getSavedOption(__CLASS__, $key, 0);
-      $event = Session::getSavedOption(__CLASS__, 'event', '');
+      $event = Session::getSavedOption(__CLASS__, $key.'_event', '');
 
       echo "<tr class='tab_bg_2'><td>".$item->getTypeName(1)."&nbsp;";
       $item->dropdown(array('value'     => $id,
@@ -423,13 +423,14 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</td><td>".NotificationEvent::getTypeName(1)."&nbsp;";
       NotificationEvent::dropdownEvents($item->getType(),
                                         array('value'     => $event,
-                                              'on_change' => 'reloadTab("event="+this.value)'));
+                                              'on_change' => 'reloadTab("'.$key.'_event="+this.value)'));
       echo "</td>";
 
       // Preview
       if ($event
           && $item->getFromDB($id)) {
-         $options = array();
+         $options = array('_debug' => true);
+
          // TODO Awfull Hack waiting for https://forge.indepnet.net/issues/3439
          $multi   = array('alert', 'alertnotclosed', 'end', 'notice',
                           'periodicity', 'periodicitynotice');
@@ -440,15 +441,11 @@ class NotificationTemplateTranslation extends CommonDBChild {
                   $fname = 'crontasks';
                   break;
 
-               case 'Contract':
-                  $fname = 'contracts';
-                  break;
-
                default:
                   $fname = 'items';
             }
             $options['entities_id'] = $item->getEntityID();
-            $options[$fname]        = array(0 => $item->fields);
+            $options[$fname]        = array($item->getID() => $item->fields);
          }
          $target = NotificationTarget::getInstance($item, $event, $options);
          $infos  = array('language'=> $_SESSION['glpilanguage']);
