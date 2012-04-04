@@ -873,18 +873,21 @@ class MailCollector  extends CommonDBTM {
    }
 
 
-    ///Connect To the Mail Box
+   /**
+     * Connect to the mail box
+   **/
    function connect() {
 
-      if (version_compare(PHP_VERSION, '5.3.2', '<') || $this->fields['use_kerberos']) {
+      if (version_compare(PHP_VERSION, '5.3.2', '<')
+          || $this->fields['use_kerberos']) {
          $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
-                                    Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
-                                    CL_EXPUNGE, 1);
+                                     Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
+                                     CL_EXPUNGE, 1);
       } else {
          $this->marubox = @imap_open($this->fields['host'], $this->fields['login'],
-                                    Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
-                                    CL_EXPUNGE, 1, array('DISABLE_AUTHENTICATOR' => 'GSSAPI'));
-      
+                                     Toolbox::decrypt($this->fields['passwd'], GLPIKEY),
+                                     CL_EXPUNGE, 1, array('DISABLE_AUTHENTICATOR' => 'GSSAPI'));
+
       }
    }
 
@@ -980,7 +983,7 @@ class MailCollector  extends CommonDBTM {
 
          // secu on subject setting
          if (!isset($mail_header->subject)) {
-            $mail_header->subject = '';         
+            $mail_header->subject = '';
          }
 
          $mail_details = array('from'       => Toolbox::strtolower($sender->mailbox).'@'.$sender->host,

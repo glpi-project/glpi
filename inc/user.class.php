@@ -2521,11 +2521,12 @@ class User extends CommonDBTM {
             foreach ($IDs as $ID) {
                $changes[0] = 0;
                $changes[1] = '';
-               $changes[2] = addslashes(sprintf(__('Update authentification method to: %s'), 
+               $changes[2] = addslashes(sprintf(__('%1$s: %2$s'),
+                                                __('Update authentification method to'),
                                                 Auth::getMethodName($authtype, $server)));
                Log::history($ID, __CLASS__, $changes, '', Log::HISTORY_LOG_SIMPLE_MESSAGE);
             }
-         
+
             return true;
          }
       }

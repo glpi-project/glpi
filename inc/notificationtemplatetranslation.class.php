@@ -394,6 +394,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
    /**
     * Display debug information for current object
     * NotificationTemplateTranslation => translation preview
+    *
+    * @since version 0.84
    **/
    function showDebug() {
 
@@ -425,7 +427,8 @@ class NotificationTemplateTranslation extends CommonDBChild {
       echo "</td>";
 
       // Preview
-      if ($event && $item->getFromDB($id)) {
+      if ($event
+          && $item->getFromDB($id)) {
          $options = array();
          // TODO Awfull Hack waiting for https://forge.indepnet.net/issues/3439
          $multi   = array('alert', 'alertnotclosed', 'end', 'notice',

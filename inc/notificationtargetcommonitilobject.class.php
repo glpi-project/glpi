@@ -527,7 +527,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
              && isset($options['items'])) {
             $entity = new Entity();
             if ($entity->getFromDB($options['entities_id'])) {
-               $this->datas["##$objettype.entity##"] = $entity->getField('completename');
+               $this->datas["##$objettype.entity##"]      = $entity->getField('completename');
                $this->datas["##$objettype.shortentity##"] = $entity->getField('name');
             }
             if ($item = getItemForItemtype($objettype)) {
@@ -589,7 +589,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       $entity = new Entity();
       if ($entity->getFromDB($this->getEntity())) {
-         $datas["##$objettype.entity##"] = $entity->getField('completename');
+         $datas["##$objettype.entity##"]      = $entity->getField('completename');
          $datas["##$objettype.shortentity##"] = $entity->getField('name');
       }
 

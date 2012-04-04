@@ -66,6 +66,7 @@ if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
    printf(__('%1$s: %2$s'), __('Processing'),
           $ticket->countActiveObjectsForTech($_REQUEST['users_id_assign']));
    echo ")</a>";
+
 } else if (isset($_REQUEST['groups_id_assign']) && ($_REQUEST['groups_id_assign'] > 0)) {
    $ticket = new Ticket();
 
@@ -79,11 +80,10 @@ if (isset($_REQUEST['users_id_assign']) && ($_REQUEST['users_id_assign'] > 0)) {
    $options2['contains'][1]   = 'notold';
    $options2['link'][1]       = 'AND';
 
-   $options2['reset'] = 'reset';
+   $options2['reset']         = 'reset';
 
    $url = $ticket->getSearchURL()."?".Toolbox::append_params($options2,'&amp;');
 
-   //TRANS: %d is number of objects for the user
    echo "&nbsp;<a href='$url' title=\"".__s('Processing')."\" target='_blank'>(";
    printf(__('%1$s: %2$s'), __('Processing'),
           $ticket->countActiveObjectsForTechGroup($_REQUEST['groups_id_assign']));
