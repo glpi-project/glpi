@@ -1003,7 +1003,7 @@ class AuthLDAP extends CommonDBTM {
 
             echo "<form method='post' id='ldap_form' name='ldap_form' action='".
                    $_SERVER['PHP_SELF']."'>";
-                   
+
 //             Html::openArrowMassives("ldap_form", true, true);
             $form_action = "process_ok";
             $textbutton  = '';
@@ -1013,7 +1013,7 @@ class AuthLDAP extends CommonDBTM {
                $textbutton = __('Import');
             }
 //             Html::closeArrowMassives(array($form_action => $textbutton));
-                   
+
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr><th>".(!$_SESSION['ldap_import']['mode']?__('Import')
                                                               :__('Synchronize'))."</th>";
@@ -1142,7 +1142,7 @@ class AuthLDAP extends CommonDBTM {
          //Search for ldap login AND modifyTimestamp,
          //which indicates the last update of the object in directory
          $attrs = array($config_ldap->fields['login_field'], "modifyTimestamp");
-         
+
          // Try a search to find the DN
          if ($values['ldap_filter'] == '') {
             $filter = "(".$config_ldap->fields['login_field']."=*)";
@@ -2153,8 +2153,8 @@ class AuthLDAP extends CommonDBTM {
    **/
    static function manageValuesInSession($options=array(), $delete=false) {
 
-      $fields = array('action', 'authldaps_id', 'basedn', 'criterias', 'entities_id',
-                      'interface', 'ldap_filter', 'mode', 'begin_date', 'end_date');
+      $fields = array('action', 'authldaps_id', 'basedn', 'begin_date', 'criterias',  'end_date',
+                      'entities_id', 'interface', 'ldap_filter', 'mode');
 
       //If form accessed via popup, do not show expert mode link
       if (isset($options['popup'])) {
@@ -2345,10 +2345,9 @@ class AuthLDAP extends CommonDBTM {
                 && (count($_SESSION['glpiactiveentities']) > 1)) {
                echo "<tr class='tab_bg_2'><td>".__('Select the desired entity')."</td>".
                     "<td colspan='3'>";
-               Dropdown::show('Entity',
-                              array('value'       => $_SESSION['ldap_import']['entities_id'],
-                                    'entity'      => $_SESSION['glpiactiveentities'],
-                                    'on_change'    => 'submit()'));
+               Entity::dropdown(array('value'       => $_SESSION['ldap_import']['entities_id'],
+                                      'entity'      => $_SESSION['glpiactiveentities'],
+                                      'on_change'    => 'submit()'));
                echo "</td></tr>";
             } else {
                //Only one entity is active, store it
@@ -2356,8 +2355,10 @@ class AuthLDAP extends CommonDBTM {
                               $_SESSION['glpiactive_entity']."'></td></tr>";
             }
 
-            if ((isset($_SESSION['ldap_import']['begin_date']) && !empty($_SESSION['ldap_import']['begin_date']))
-               || (isset($_SESSION['ldap_import']['end_date']) && !empty($_SESSION['ldap_import']['end_date']))) {
+            if ((isset($_SESSION['ldap_import']['begin_date'])
+                 && !empty($_SESSION['ldap_import']['begin_date']))
+                || (isset($_SESSION['ldap_import']['end_date'])
+                    && !empty($_SESSION['ldap_import']['end_date']))) {
                $enabled = 1;
             } else {
                $enabled = 0;
@@ -2488,11 +2489,13 @@ class AuthLDAP extends CommonDBTM {
       }
 
       //If time restriction
-      $begin_date = (isset($_SESSION['ldap_import']['begin_date'])?$_SESSION['ldap_import']['begin_date']
-                                                              :NULL);
-      $end_date     = (isset($_SESSION['ldap_import']['end_date'])?$_SESSION['ldap_import']['end_date']
-                                                          :date('Y-m-d H:i:s', time()-DAY_TIMESTAMP));
-      $filter  .= self::addTimestampRestrictions($begin_date, $end_date);
+      $begin_date = (isset($_SESSION['ldap_import']['begin_date'])
+                        ?$_SESSION['ldap_import']['begin_date']
+                        :NULL);
+      $end_date   = (isset($_SESSION['ldap_import']['end_date'])
+                        ?$_SESSION['ldap_import']['end_date']
+                        :date('Y-m-d H:i:s', time()-DAY_TIMESTAMP));
+      $filter    .= self::addTimestampRestrictions($begin_date, $end_date);
 
       $ldap_condition = $authldap->getField('condition');
       //Add entity filter and filter filled in directory's configuration form
@@ -2503,8 +2506,8 @@ class AuthLDAP extends CommonDBTM {
 
 
    /**
-    * @param $begin_date datetime begin date to search (NULL if not take into account)
-    * @param $end_date datetime end date to search (NULL if not take into account)
+    * @param $begin_date   datetime begin date to search (NULL if not take into account)
+    * @param $end_date     datetime end date to search (NULL if not take into account)
    **/
    static function addTimestampRestrictions($begin_date, $end_date) {
 
@@ -2512,12 +2515,12 @@ class AuthLDAP extends CommonDBTM {
       //If begin date
       if (!empty($begin_date)) {
          $stampvalue = self::date2ldapTimeStamp($begin_date);
-         $condition .= "(modifyTimestamp>=".$stampvalue.")";
+         $condition .= "(modifyTimestamp> = ".$stampvalue.")";
       }
       //If end date
       if (!empty($end_date)) {
          $stampvalue = self::date2ldapTimeStamp($end_date);
-         $condition .= "(modifyTimestamp<=".$stampvalue.")";
+         $condition .= "(modifyTimestamp <= ".$stampvalue.")";
       }
       return $condition;
    }
@@ -2644,18 +2647,18 @@ class AuthLDAP extends CommonDBTM {
          echo "</td></tr>";
       }
       if ($enabled) {
+         echo "<td>".__('View updated users')."</td>";
+         echo "<td>".__('from')."</td>";
          echo "<td>";
-         _e('View updated users');
-         echo "</td><td>";
-         _e('from');         
-         echo "</td><td>";
-
-         $begin_date = (isset($_SESSION['ldap_import']['begin_date'])?$_SESSION['ldap_import']['begin_date'] :'');
+         $begin_date = (isset($_SESSION['ldap_import']['begin_date'])
+                           ?$_SESSION['ldap_import']['begin_date'] :'');
          Html::showDateTimeFormItem("begin_date", $begin_date, 1, true);
-         echo "</td><td>";
-         _e('to');
-         echo "</td><td>";
-         $end_date = (isset($_SESSION['ldap_import']['end_date']) ?$_SESSION['ldap_import']['end_date'] :date('Y-m-d H:i:s',time()-DAY_TIMESTAMP));
+         echo "</td>";
+         echo "<td>".__('to')."</td>";
+         echo "<td>";
+         $end_date = (isset($_SESSION['ldap_import']['end_date'])
+                        ?$_SESSION['ldap_import']['end_date']
+                        :date('Y-m-d H:i:s',time()-DAY_TIMESTAMP));
          Html::showDateTimeFormItem("end_date", $end_date, 1, true);
          echo "</td></tr>";
          echo "<tr class='tab_bg_2'><td colspan='4' class='center'>";
