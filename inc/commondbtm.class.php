@@ -2838,7 +2838,7 @@ class CommonDBTM extends CommonGLPI {
 
             $item->getFromDB($double['items_id']);
          } else {
-            $item = getItemForItemtype($this->getType());
+            $item = clone $this;
             $item->getFromDB($double['id']);
          }
 
