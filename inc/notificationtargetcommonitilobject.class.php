@@ -517,8 +517,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       } else {
          if (isset($options['entities_id']) && isset($options['items'])) {
-            $this->datas["##$objettype.entity##"] = Dropdown::getDropdownName('glpi_entities',
-                                                                              $options['entities_id']);
+            $entity = new Entity();
+            if ($entity->getFromDB($options['entities_id'])) {
+               $this->datas["##$objettype.entity##"]      = $entity->getField('completename');
+               $this->datas["##$objettype.shortentity##"] = $entity->getField('name');
+            }
             $item       = new $objettype();
             $objettypes = Toolbox::strtolower(getPlural($objettype));
             $items      = array();
@@ -569,8 +572,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                                                         $item->getField("id")."_".$item->getType().'$2');
 
 
-      $datas["##$objettype.entity##"]       = Dropdown::getDropdownName('glpi_entities',
-                                                                        $this->getEntity());
+      $entity = new Entity();
+      if ($entity->getFromDB($this->getEntity())) {
+         $datas["##$objettype.entity##"]      = $entity->getField('completename');
+         $datas["##$objettype.shortentity##"] = $entity->getField('name');
+      }
 
       $datas["##$objettype.storestatus##"]  = $item->getField('status');
       $datas["##$objettype.status##"]       = CommonITILObject::getGenericStatus($item->getType(),$item->getField('status'));
@@ -746,7 +752,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $tags = array($objettype.'.id'                    => $LANG['common'][2],
                     $objettype.'.title'                 => $LANG['common'][16],
                     $objettype.'.url'                   => $LANG['common'][94],
-                    $objettype.'.entity'                => $LANG['entity'][0],
                     $objettype.'.category'              => $LANG['common'][36],
                     $objettype.'.content'               => $LANG['joblist'][6],
                     $objettype.'.description'           => $LANG['mailing'][5],
@@ -801,6 +806,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       //Tags with just lang
       $tags = array($objettype.'.days'               => Toolbox::ucfirst($LANG['calendar'][12]),
                     $objettype.'.attribution'        => $LANG['job'][5],
+                    $objettype.'.entity'             => $LANG['entity'][0],
                     $objettype.'.nocategoryassigned' => $LANG['mailing'][100]);
 
       foreach ($tags as $tag => $label) {
@@ -812,6 +818,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
 
       //Tags without lang
       $tags = array($objettype.'.urlapprove'  => $LANG['document'][33].' '.$LANG['job'][51],
+                    $objettype.'.entity'      => $LANG['entity'][0].' ('.$LANG['common'][51].')',
+                    $objettype.'.shortentity' => $LANG['entity'][0].' ('.$LANG['common'][16].')',
                     $objettype.'.log.date'    => $LANG['mailing'][144]. ' : '.$LANG['common'][26],
                     $objettype.'.log.user'    => $LANG['mailing'][144]. ' : '.$LANG['common'][34],
                     $objettype.'.log.field'   => $LANG['mailing'][144]. ' : '.$LANG['event'][18],
