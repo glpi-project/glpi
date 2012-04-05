@@ -15,7 +15,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-04-03 15:58+0200\n"
-"PO-Revision-Date: 2012-04-03 14:12+0000\n"
+"PO-Revision-Date: 2012-04-05 06:51+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: French (France) (http://www.transifex.net/projects/p/GLPI/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -3218,7 +3218,7 @@ msgstr "Arborescence des catégories"
 #: inc/ticket.class.php:1573 inc/ticketfollowup.class.php:716
 #: inc/transfer.class.php:97 inc/user.class.php:1959
 msgid "Characteristics"
-msgstr "Technicien chargé du ticket"
+msgstr "Caractéristiques"
 
 #: front/stat.tracking.php:102
 msgid "Technician as assigned"
