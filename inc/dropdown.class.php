@@ -874,11 +874,12 @@ class Dropdown {
     * @param $entity_restrict Restrict to a defined entity
     * @param $types Types used
     * @param $onlyglobal Restrict to global items
+    * @param $checkright      Restrict to items with read rights (false by default)
     *
     * @return nothing (print out an HTML select box)
    **/
    static function showAllItems($myname, $value_type=0, $value=0, $entity_restrict=-1, $types='',
-                                $onlyglobal=false) {
+                                $onlyglobal=false, $checkright=false) {
       global $LANG, $CFG_GLPI;
 
       if (!is_array($types)) {
@@ -890,6 +891,9 @@ class Dropdown {
       foreach ($types as $type) {
          if (class_exists($type)) {
             $item = new $type();
+            if (($checkright == true) && !$item->canView()) {
+               continue;
+            }
             $options[$type] = $item->getTypeName($type);
          }
       }
