@@ -2943,19 +2943,20 @@ class Html {
       } else {
          echo "<td class='left' width='80%'></td>";
       }
-      echo "<td class='center'>";
+      echo "<td class='center' ".(($formname == 'ruleactions_form') ?"width='15%'" : '').">";
       echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\"
              href='#'>".__('Check all')."</a></td>";
-      echo "<td>/</td><td class='center'>";
+      echo "<td>/</td><td class='center' ".(($formname == 'ruleactions_form') ?"width='15%'" : '').">";
       echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\"
              href='#'>".__('Uncheck all')."</a></td>";
-   
+
       if ($onright) {
          echo "<td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-right".($ontop?'-top':'').".png' alt=''>";
       } else {
+
          echo "<td class='left' width='80%'>";
       }
-   
+
    }
 
 
