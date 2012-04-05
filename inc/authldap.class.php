@@ -1008,9 +1008,9 @@ class AuthLDAP extends CommonDBTM {
             $form_action = "process_ok";
             $textbutton  = '';
             if ($_SESSION['ldap_import']['mode']) {
-               $textbutton = __('Synchronize');
+               $textbutton = _x('button','Synchronize');
             } else {
-               $textbutton = __('Import');
+               $textbutton = _x('button','Import');
             }
 //             Html::closeArrowMassives(array($form_action => $textbutton));
 
@@ -2198,10 +2198,12 @@ class AuthLDAP extends CommonDBTM {
                $_SESSION['ldap_import'][$field] = $options[$field];
             }
          }
-         if (isset($_SESSION['ldap_import']['begin_date']) && $_SESSION['ldap_import']['begin_date'] == 'NULL') {
+         if (isset($_SESSION['ldap_import']['begin_date'])
+             && ($_SESSION['ldap_import']['begin_date'] == 'NULL')) {
             $_SESSION['ldap_import']['begin_date'] = '';
          }
-         if (isset($_SESSION['ldap_import']['end_date']) && $_SESSION['ldap_import']['end_date'] == 'NULL') {
+         if (isset($_SESSION['ldap_import']['end_date'])
+             && ($_SESSION['ldap_import']['end_date'] == 'NULL')) {
             $_SESSION['ldap_import']['end_date'] = '';
          }
          if (!isset($_SESSION['ldap_import']['criterias'])) {

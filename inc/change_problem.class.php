@@ -93,12 +93,12 @@ class Change_Problem extends CommonDBRelation{
                 ORDER BY `glpi_changes`.`name`";
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
-      
+
 /*      if ($canedit && $numrows) {
          Html::openArrowMassives("changeproblem_form$rand", true, true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
       }*/
-      
+
       echo "<div class='center'><table class='tab_cadre_fixehov'>";
       echo "<tr><th colspan='2'>"._n('Change - ', 'Changes - ', 2);
       echo "<a href='".Toolbox::getItemTypeFormURL('Change')."?problems_id=$ID'>";
@@ -193,7 +193,7 @@ class Change_Problem extends CommonDBRelation{
       $numrows = $DB->numrows($result);
 
 
-//       if ($canedit&& $numrows) {
+//       if ($canedit && $numrows) {
 //          Html::openArrowMassives("changeproblem_form$rand", true, true);
 //          Html::closeArrowMassives(array('delete' => __('Delete')));
 //       }
@@ -241,7 +241,7 @@ class Change_Problem extends CommonDBRelation{
 
       echo "</table></div>";
 
-      if ($canedit&& $numrows) {
+      if ($canedit && $numrows) {
          Html::openArrowMassives("changeproblem_form$rand", true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
       }
