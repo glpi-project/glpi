@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class State extends CommonTreeDropdown {
 
    static function getTypeName($nb=0) {
-      return _n('Status of items', 'Status of items', $nb);
+      return _n('Status of items', 'Statuses of items', $nb);
    }
 
 
