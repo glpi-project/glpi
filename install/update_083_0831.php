@@ -78,12 +78,6 @@ function update083to0831() {
    // ************ Keep it at the end **************
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
-   // Change is_recursive index
-   $query = ("UPDATE `glpi_displaypreferences`
-              SET `num` = '86'
-              WHERE `itemtype` = 'Group'
-                    AND `num` = '6'");
-   $DB->query($query);
 
    foreach ($ADDTODISPLAYPREF as $type => $tab) {
       $query = "SELECT DISTINCT `users_id`
