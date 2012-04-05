@@ -1368,7 +1368,7 @@ class Dropdown {
       /// for specific actions (return a array of action name and title)
 
       if (!($item = getItemForItemtype($itemtype))) {
-         return false;
+         return array();
       }
       $actions = array();
 
