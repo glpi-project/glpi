@@ -962,7 +962,7 @@ class Dropdown {
     *
     * @param $types           Types used (default "state_types") (default '')
     * @param $options   Array of optional options
-    *        name, value, rand, emptylabel, display_emptychoice, on_change, plural
+    *        name, value, rand, emptylabel, display_emptychoice, on_change, plural, checkright
     *
     * @return integer rand for select id
    **/
@@ -979,6 +979,7 @@ class Dropdown {
       $params['emptylabel']          = self::EMPTY_VALUE;
       //Display emptychoice ?
       $params['display_emptychoice'] = true;
+      $params['checkright']          = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -993,6 +994,9 @@ class Dropdown {
 
       foreach ($types as $type) {
          if ($item = getItemForItemtype($type)) {
+            if ($params['checkright'] && !$item->canView()) {
+               continue;
+            }
             $options[$type] = $item->getTypeName($params['plural'] ? 2 : 1);
          }
       }
@@ -1030,14 +1034,17 @@ class Dropdown {
     * @param $entity_restrict Restrict to a defined entity (default -1)
     * @param $types           Types used (default '')
     * @param $onlyglobal      Restrict to global items (false by default)
+    * @param $checkright      Restrict to items with read rights (false by default)
     *
     * @return nothing (print out an HTML select box)
    **/
    static function showAllItems($myname, $value_type=0, $value=0, $entity_restrict=-1, $types='',
-                                $onlyglobal=false) {
+                                $onlyglobal=false, $checkright=false) {
       global $CFG_GLPI;
 
-      $rand = self::showItemType($types);
+      $options = array();
+      $options['checkright'] = $checkright;
+      $rand = self::showItemType($types, $options);
       if ($rand) {
          $params = array('idtable'          => '__VALUE__',
                           'value'           => $value,
@@ -1735,7 +1742,8 @@ class Dropdown {
    **/
    static function showForMassiveAction($itemtype, $is_deleted=0, $extraparams=array()) {
       global $CFG_GLPI;
-      $rand = mt_rand();
+
+      $rand    = mt_rand();
       $actions = self::getMassiveActions($itemtype, $is_deleted);
 
       if ($itemtype == 'NetworkPort') {
@@ -1762,7 +1770,8 @@ class Dropdown {
             }
          }
 
-         Ajax::updateItemOnSelectEvent("massiveaction$rand", "show_massiveaction$rand", $link, $params);
+         Ajax::updateItemOnSelectEvent("massiveaction$rand", "show_massiveaction$rand", $link,
+                                       $params);
 
          echo "<span id='show_massiveaction$rand'>&nbsp;</span>\n";
       }
