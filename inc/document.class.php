@@ -502,7 +502,7 @@ class Document extends CommonDBTM {
 
       if (isset($_SESSION["glpiactiveprofile"]["interface"])
           && $_SESSION["glpiactiveprofile"]["interface"]=="central") {
-         
+
          // My doc Check and Common doc right access
          if ($this->can($this->fields["id"],'r')
              || $this->fields["users_id"]===Session::getLoginUserID()) {
@@ -515,7 +515,7 @@ class Document extends CommonDBTM {
                    LEFT JOIN `glpi_reminders`
                         ON (`glpi_reminders`.`id` = `glpi_documents_items`.`items_id`
                             AND `glpi_documents_items`.`itemtype` = 'Reminder')
-                   ".Reminder::addVisibilityJoins()."                            
+                   ".Reminder::addVisibilityJoins()."
                    WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
                          AND ".Reminder::addVisibilityRestrict();
          $result = $DB->query($query);
@@ -531,7 +531,7 @@ class Document extends CommonDBTM {
                            ON (`glpi_knowbaseitems`.`id` = `glpi_documents_items`.`items_id`
                                AND `glpi_documents_items`.`itemtype` = 'KnowbaseItem')
                       ".KnowbaseItem::addVisibilityJoins()."
-                      WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."' 
+                      WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
                               AND ".KnowbaseItem::addVisibilityRestrict();
             $result = $DB->query($query);
             if ($DB->numrows($result)>0) {
@@ -547,7 +547,7 @@ class Document extends CommonDBTM {
                                AND `glpi_documents_items`.`itemtype` = 'KnowbaseItem')
                       ".KnowbaseItem::addVisibilityJoins()."
                       WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
-                            AND `glpi_knowbaseitems`.`is_faq` = '1' 
+                            AND `glpi_knowbaseitems`.`is_faq` = '1'
                             AND ".KnowbaseItem::addVisibilityRestrict();
             $result = $DB->query($query);
             if ($DB->numrows($result)>0) {
@@ -574,26 +574,26 @@ class Document extends CommonDBTM {
          }
 
       } else if (Session::getLoginUserID()) { // ! central
-         
+
          // Check if it is my doc
          if ($this->fields["users_id"]===Session::getLoginUserID()) {
             return true;
          }
-         
+
          // Reminder Case
          $query = "SELECT *
                    FROM `glpi_documents_items`
                    LEFT JOIN `glpi_reminders`
                         ON (`glpi_reminders`.`id` = `glpi_documents_items`.`items_id`
                             AND `glpi_documents_items`.`itemtype` = 'Reminder')
-                   ".Reminder::addVisibilityJoins()."                            
+                   ".Reminder::addVisibilityJoins()."
                    WHERE `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
                          AND ".Reminder::addVisibilityRestrict();
          $result = $DB->query($query);
          if ($DB->numrows($result)>0) {
             return true;
          }
-                  
+
          if (Session::haveRight("faq","r")) {
             // Check if it is a FAQ document
             $query = "SELECT *
@@ -605,13 +605,13 @@ class Document extends CommonDBTM {
                             AND `glpi_documents_items`.`documents_id` = '".$this->fields["id"]."'
                             AND `glpi_knowbaseitems`.`is_faq` = '1'
                             AND ".KnowbaseItem::addVisibilityRestrict();
-            
+
             $result = $DB->query($query);
             if ($DB->numrows($result)>0) {
                return true;
             }
          }
-         
+
          // Tracking Case
          if (isset($options["tickets_id"])) {
             $job = new Ticket();
@@ -851,7 +851,7 @@ class Document extends CommonDBTM {
             if ($item->maybeTemplate()) {
                $query .= " AND `$itemtable`.`is_template` = '0'";
             }
-            
+
             if ($itemtype =='KnowbaseItem') {
                $query .= " ORDER BY `$itemtable`.`$column`";
             } else {
@@ -924,7 +924,7 @@ class Document extends CommonDBTM {
          echo "<input type='hidden' name='documents_id' value='$instID'>";
          Dropdown::showAllItems("items_id", 0, 0,
                                 ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
-                                 $CFG_GLPI["document_types"]);
+                                 $CFG_GLPI["document_types"], false, true);
          echo "</td>";
          echo "<td colspan='2' class='center'>";
          echo "<input type='submit' name='adddocumentitem' value='".

@@ -895,7 +895,7 @@ class Dropdown {
     *
     * @param $types     Array of types used (default "state_types")
     * @param $options   Array of optional options
-    *        value, rand, emptylabel, display_emptychoice, on_change
+    *        value, rand, emptylabel, display_emptychoice, on_change, checkright
     *
     * @return integer rand for select id
     */
@@ -911,6 +911,7 @@ class Dropdown {
       $params['emptylabel']  = self::EMPTY_VALUE;
       //Display emptychoice ?
       $params['display_emptychoice'] = true;
+      $params['checkright']          = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -925,6 +926,9 @@ class Dropdown {
 
       foreach ($types as $type) {
          if ($item = getItemForItemtype($type)) {
+            if ($params['checkright'] && !$item->canView()) {
+               continue;
+            }
             $options[$type] = $item->getTypeName($type);
          }
       }
@@ -961,14 +965,17 @@ class Dropdown {
     * @param $entity_restrict Restrict to a defined entity
     * @param $types Types used
     * @param $onlyglobal Restrict to global items
+    * @param $checkright      Restrict to items with read rights (false by default)
     *
     * @return nothing (print out an HTML select box)
    **/
    static function showAllItems($myname, $value_type=0, $value=0, $entity_restrict=-1, $types='',
-                                $onlyglobal=false) {
+                                $onlyglobal=false, $checkright=false) {
       global $CFG_GLPI;
 
-      $rand    = self::showItemType($types);
+      $options = array();
+      $options['checkright'] = $checkright;
+      $rand = self::showItemType($types, $options);
 
       if ($rand) {
          $params = array('idtable'          => '__VALUE__',
@@ -1080,7 +1087,7 @@ class Dropdown {
       if ($params['value']) {
          $values[$params['value']] = '';
       }
-      
+
       if ($params['addfirstminutes']) {
          for ($i=MINUTE_TIMESTAMP; $i<max($params['min'], 10*MINUTE_TIMESTAMP); $i+=MINUTE_TIMESTAMP) {
             $values[$i] = '';
@@ -1090,9 +1097,9 @@ class Dropdown {
       for ($i = $params['min'] ; $i <= $params['max']; $i+=$params['step']) {
          $values[$i] = '';
       }
-      
+
       foreach ($values as $i => $val){
-         if (empty($val)) {      
+         if (empty($val)) {
             $day        = floor($i/DAY_TIMESTAMP);
             $hour       = floor(($i%DAY_TIMESTAMP)/HOUR_TIMESTAMP);
             $minute     = floor(($i%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP);
@@ -1364,7 +1371,7 @@ class Dropdown {
          return false;
       }
       $actions = array();
-      
+
       if ($itemtype == 'NetworkPort') {
          $actions['delete']        = $LANG['buttons'][6];
          $actions['assign_vlan']   = $LANG['networking'][55];
@@ -1373,7 +1380,7 @@ class Dropdown {
          $infocom = new Infocom();
          $isadmin = $item->canUpdate();
 
-         
+
          if (!in_array($itemtype,$CFG_GLPI["massiveaction_noupdate_types"])
              && (($isadmin && $itemtype != 'Ticket')
                  || (in_array($itemtype,$CFG_GLPI["infocom_types"]) && $infocom->canUpdate())
@@ -1597,7 +1604,7 @@ class Dropdown {
       } else {
          $link = $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php";
       }
-      
+
       if (count($actions)) {
          echo "<select name='massiveaction' id='massiveaction'>";
          echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
