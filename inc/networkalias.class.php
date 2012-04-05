@@ -51,6 +51,7 @@ class NetworkAlias extends FQDNLabel {
       return _n('Network alias', 'Network aliases', $nb);
    }
 
+
    function canCreate() {
 
       if (!Session::haveRight('internet', 'w')) {
@@ -417,7 +418,7 @@ class NetworkAlias extends FQDNLabel {
 
          echo "</table>\n";
          Html::printAjaxPager(self::getTypeName($number), $start, $number);
-         
+
       }
       echo "</div>\n";
    }
