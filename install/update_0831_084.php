@@ -216,11 +216,11 @@ function addNetworkPortMigrationError($networkports_id, $motive) {
 
 
 /**
- * Update from 0.83 to 0.84
+ * Update from 0.83.1 to 0.84
  *
  * @return bool for success (will die for most error)
 **/
-function update083to084() {
+function update0831to084() {
    global $DB, $migration;
 
    $GLOBALS['migration_log_file'] = fopen(GLPI_LOG_DIR."/migration_083_084.log", "w");
