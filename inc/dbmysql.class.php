@@ -267,7 +267,7 @@ class DBmysql {
    **/
    function result($result, $i, $field) {
 
-      if (($res = $result->data_seek($i))
+      if ($result && ($result->data_seek($i))
           && ($data = $result->fetch_array())
           && isset($data[$field])) {
          return (Toolbox::get_magic_quotes_runtime()

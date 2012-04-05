@@ -243,7 +243,7 @@ function _nx($ctx, $sing, $plural, $nb) {
 **/
 function glpi_autoload($classname) {
    global $DEBUG_AUTOLOAD, $CFG_GLPI;
-   static $notfound = array();
+   static $notfound = array('xStates' => true);
 
    // empty classname or non concerted plugin
    if (empty($classname) || is_numeric($classname)) {

@@ -622,8 +622,7 @@ class Search {
                      $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                               $ctable, $tmpquery);
                      $query_num = str_replace($itemtype,
-                                              $ctype, $tmpquery);
-
+                                              $ctype, $query_num);
                      if ($itemtype == 'States') {
                         $query_num .= " AND `$ctable`.`states_id` > '0' ";
                      }
@@ -886,12 +885,15 @@ class Search {
                $infoc = new Infocom();
                $isadmin = ($infoc->canUpdate() || $infoc->canCreate());
             }
-            $showmassiveactions = count(Dropdown::getMassiveActions($itemtype,$p['is_deleted']));
-            if ($showmassiveactions
-                && ($output_type == self::HTML_OUTPUT)) {
-               echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".
-                     $CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
-//                self::displayMassiveActions($itemtype, $end_display-$begin_display, $p, true);
+            $showmassiveactions = false;
+            if ($itemtype!='States') {
+               $showmassiveactions = count(Dropdown::getMassiveActions($itemtype,$p['is_deleted']));
+               if ($showmassiveactions
+                  && ($output_type == self::HTML_OUTPUT)) {
+                  echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".
+                        $CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
+   //                self::displayMassiveActions($itemtype, $end_display-$begin_display, $p, true);
+               }
             }
 
             // Compute number of columns to display
