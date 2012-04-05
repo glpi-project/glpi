@@ -72,7 +72,7 @@ function update083to0831() {
                               'update'    => "1",
                               'condition' => " WHERE `config` = 'w'"));
 
-   $migration->addField("glpi_configs", "display_count_on_home", "integer");
+   $migration->addField("glpi_configs", "display_count_on_home", "integer", array('value' => 5));
    $migration->addField("glpi_users", "display_count_on_home", "int(11) NULL DEFAULT NULL");
 
    // ************ Keep it at the end **************
