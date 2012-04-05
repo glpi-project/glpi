@@ -1365,22 +1365,25 @@ class Search {
       // Clean selection
       $_SESSION['glpimassiveactionselected']=array();
    }
+
+
    /**
     * Display massive actions
     *
-    * @param $itemtype type to display the form
-    * @param $num_displayed integer number of rows displayed
-    * @param $p array of parameters
-    * @param $ontop boolean display on top of the list ?
+    * @param $itemtype                 type to display the form
+    * @param $num_displayed   integer  number of rows displayed
+    * @param $p               array    of parameters
+    * @param $ontop                    boolean display on top of the list ?
     *
     * @return Array of available itemtype
    **/
    static function displayMassiveActions($itemtype, $num_displayed, $p, $ontop=false) {
+
       $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
       if (!$max) {
          $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
       }
-      if ($max>0 && $max<($num_displayed+10)) {
+      if (($max > 0) && ($max < ($num_displayed+10))) {
          echo "<table class='tab_cadre' width='80%'><tr class='tab_bg_1'>".
                "<td><span class='b'>";
          echo __('Selection too large, massive action disabled.')."</span>";
@@ -1393,8 +1396,10 @@ class Search {
          Dropdown::showForMassiveAction($itemtype, $p['is_deleted']);
          $options = array();
          Html::closeArrowMassives($options);
-      }   
       }
+   }
+
+
    /**
     * Get meta types available for search engine
     *
