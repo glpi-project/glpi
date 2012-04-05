@@ -63,7 +63,17 @@ function update083to0831() {
       $migration->displayWarning("You can delete backup tables if you have no need of them.", true);
    }
 
-
+   $migration->addField('glpi_configs', 'allow_search_view',   'integer', array('value' => 2));
+   $migration->addField('glpi_configs', 'allow_search_all',    'bool',    array('value' => 1));
+   $migration->addField('glpi_configs', 'allow_search_global', 'bool',    array('value' => 1));
+   
+   $migration->addField("glpi_profiles", "knowbase_admin", "char",
+                        array('after'     => "knowbase",
+                              'update'    => "1",
+                              'condition' => " WHERE `config` = 'w'"));
+   
+   $migration->addField("glpi_configs", "display_count_on_home", "integer");
+   $migration->addField("glpi_users", "display_count_on_home", "int(11) NULL DEFAULT NULL");
 
    // ************ Keep it at the end **************
    $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');

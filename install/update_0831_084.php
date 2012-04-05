@@ -1363,10 +1363,6 @@ function update0831to084() {
    $migration->addField("glpi_configs", 'x509_o_restrict', "string", array('after' => 'x509_email_field'));
    $migration->addField("glpi_configs", 'x509_cn_restrict', "string", array('after' => 'x509_email_field'));
 
-   $migration->addField('glpi_configs', 'allow_search_view',   'integer', array('value' => 2));
-   $migration->addField('glpi_configs', 'allow_search_all',    'bool',    array('value' => 1));
-   $migration->addField('glpi_configs', 'allow_search_global', 'bool',    array('value' => 1));
-
    if (!TableExists('glpi_slalevelcriterias')) {
       $query = "CREATE TABLE `glpi_slalevelcriterias` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
