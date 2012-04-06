@@ -58,7 +58,7 @@ class RequestType extends CommonDropdown {
 
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                      = parent::getSearchOptions();
 
       $tab[14]['table']         = $this->getTable();
       $tab[14]['field']         = 'is_helpdesk_default';
@@ -153,5 +153,6 @@ class RequestType extends CommonDropdown {
    function cleanDBonPurge() {
       Rule::cleanForItemCriteria($this);
    }
+
 }
 ?>
