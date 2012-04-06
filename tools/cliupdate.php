@@ -168,6 +168,10 @@ switch ($current_version) {
       update0803to083();
       // nobreak;
 
+   case "0.83" :
+      include("../install/update_083_0831.php");
+      update083to0831();
+
    case GLPI_VERSION :
       break;
 
@@ -191,8 +195,8 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
 
 } else if (in_array('--force', $_SERVER['argv'])) {
 
-   include("../install/update_0803_083.php");
-   update0803to083();
+   include("../install/update_083_0831.php");
+   update083to0831();
 
    $migration->displayWarning("Forced migration Done.");
 
