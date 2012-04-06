@@ -174,7 +174,13 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          $error = Toolbox::commonCheckForUseGLPI();
          echo "</table><br>";
 
-         if (!$error) {
+         if ($error) {
+            echo "<form action='".$CFG_GLPI["root_doc"]."/index.php' method='post'>";
+            echo "<input type='submit' name='submit' class='submit' value=\"".
+                   $LANG['install'][27]."\">";
+            echo "</form>";
+         }
+         if ($error < 2) {
             if (!isset($CFG_GLPI["version"]) || trim($CFG_GLPI["version"])<GLPI_VERSION) {
                echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
                echo "<p class='red'>".$LANG['update'][88]."</p>";
@@ -186,11 +192,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                echo "<p class='red'>".$LANG['update'][89]."</p>";
             }
 
-         } else {
-            echo "<form action='".$CFG_GLPI["root_doc"]."/index.php' method='post'>";
-            echo "<input type='submit' name='submit' class='submit' value=\"".
-                   $LANG['install'][27]."\">";
-            echo "</form>";
          }
 
          echo "</div>";
