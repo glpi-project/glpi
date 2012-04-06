@@ -621,8 +621,7 @@ class Search {
                   if (($itemtype == 'States') || ($itemtype == 'Internet')) {
                      $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                               $ctable, $tmpquery);
-                     $query_num = str_replace($itemtype,
-                                              $ctype, $query_num);
+                     $query_num = str_replace($itemtype, $ctype, $query_num);
                      if ($itemtype == 'States') {
                         $query_num .= " AND `$ctable`.`states_id` > '0' ";
                      }
@@ -886,12 +885,12 @@ class Search {
                $isadmin = ($infoc->canUpdate() || $infoc->canCreate());
             }
             $showmassiveactions = false;
-            if ($itemtype!='States') {
+            if ($itemtype != 'States') {
                $showmassiveactions = count(Dropdown::getMassiveActions($itemtype,$p['is_deleted']));
                if ($showmassiveactions
-                  && ($output_type == self::HTML_OUTPUT)) {
+                   && ($output_type == self::HTML_OUTPUT)) {
                   echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".
-                        $CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
+                         $CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
    //                self::displayMassiveActions($itemtype, $end_display-$begin_display, $p, true);
                }
             }

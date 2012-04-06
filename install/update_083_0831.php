@@ -66,12 +66,12 @@ function update083to0831() {
    $migration->addField('glpi_configs', 'allow_search_view',   'integer', array('value' => 2));
    $migration->addField('glpi_configs', 'allow_search_all',    'bool',    array('value' => 1));
    $migration->addField('glpi_configs', 'allow_search_global', 'bool',    array('value' => 1));
-   
+
    $migration->addField("glpi_profiles", "knowbase_admin", "char",
                         array('after'     => "knowbase",
                               'update'    => "1",
                               'condition' => " WHERE `config` = 'w'"));
-   
+
    $migration->addField("glpi_configs", "display_count_on_home", "integer", array('value' => 5));
    $migration->addField("glpi_users", "display_count_on_home", "int(11) NULL DEFAULT NULL");
 
@@ -85,7 +85,7 @@ function update083to0831() {
                 WHERE `itemtype` = '$type'";
 
       if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             while ($data = $DB->fetch_assoc($result)) {
                $query = "SELECT MAX(`rank`)
                          FROM `glpi_displaypreferences`
@@ -101,8 +101,8 @@ function update083to0831() {
                             WHERE `users_id` = '".$data['users_id']."'
                                   AND `num` = '$newval'
                                   AND `itemtype` = '$type'";
-                  if ($result2=$DB->query($query)) {
-                     if ($DB->numrows($result2)==0) {
+                  if ($result2 = $DB->query($query)) {
+                     if ($DB->numrows($result2) == 0) {
                         $query = "INSERT INTO `glpi_displaypreferences`
                                          (`itemtype` ,`num` ,`rank` ,`users_id`)
                                   VALUES ('$type', '$newval', '".$rank++."',

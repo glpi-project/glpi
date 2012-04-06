@@ -187,6 +187,7 @@ function _x($ctx, $str) {
    return $trans;
 }
 
+
 /**
  * Echo for context in translation
  *
@@ -207,6 +208,7 @@ function _ex($ctx, $str) {
    }
    echo $trans;
 }
+
 
 /**
  * For context in plural translation
@@ -235,6 +237,7 @@ function _nx($ctx, $sing, $plural, $nb) {
    }
    return $trans;
 }
+
 
 /**
  * To load classes
