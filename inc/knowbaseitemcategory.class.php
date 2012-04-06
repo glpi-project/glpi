@@ -64,23 +64,6 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
 
 
    /**
-    * Report if a dropdown have Child
-    * Used to (dis)allow delete action
-   **/
-   function haveChildren() {
-
-      if (parent::haveChildren()) {
-         return true;
-      }
-      $kb = new KnowbaseItem();
-      $fk = $this->getForeignKeyField();
-      $id = $this->fields['id'];
-
-      return (countElementsInTable($kb->getTable(),"`$fk`='$id'")>0);
-   }
-
-
-   /**
     * Show KB categories
     *
     * @param $options : $_GET
