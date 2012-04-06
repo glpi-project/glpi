@@ -175,7 +175,12 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          $error = Toolbox::commonCheckForUseGLPI();
          echo "</table><br>";
 
-         if (!$error) {
+         if ($error) {
+            echo "<form action='".$CFG_GLPI["root_doc"]."/index.php' method='post'>";
+            echo "<input type='submit' name='submit' class='submit' value=\"".__s('Try again')."\">";
+            echo "</form>";
+         }
+         if ($error < 2) {
             if (!isset($CFG_GLPI["version"]) || (trim($CFG_GLPI["version"]) < GLPI_VERSION)) {
                echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
                echo "<p class='red'>".
@@ -188,10 +193,6 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                      __('You are trying to use GLPI with files from an earlier version to the version of the database. Please install the GLPI files corresponding to the version of your database.')."</p>";
             }
 
-         } else {
-            echo "<form action='".$CFG_GLPI["root_doc"]."/index.php' method='post'>";
-            echo "<input type='submit' name='submit' class='submit' value=\"".__s('Try again')."\">";
-            echo "</form>";
          }
 
          echo "</div>";
