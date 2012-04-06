@@ -82,6 +82,7 @@ class Peripheral  extends CommonDBTM {
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
+      $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
       $this->addStandardTab('Note', $ong, $options);
       $this->addStandardTab('Reservation', $ong, $options);

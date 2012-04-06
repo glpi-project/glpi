@@ -191,16 +191,16 @@ class Problem extends CommonITILObject {
                if (Session::haveRight('observe_ticket','1')) {
                   $ong[4] = $LANG['Menu'][13];
                }
-               return $ong;           
+               return $ong;
          }
       }
-      
+
       switch ($item->getType()) {
          case __CLASS__ :
             return array (1 => $LANG['problem'][3],         // Analysis
                            2 => $LANG['jobresolution'][2],// Solution
-                           4 => $LANG['Menu'][13]); // Stats 
-      }      
+                           4 => $LANG['Menu'][13]); // Stats
+      }
       return '';
    }
 
@@ -231,7 +231,7 @@ class Problem extends CommonITILObject {
                case 4 :
                   $item->showStats();
                   break;
-                  
+
             }
       }
       return true;
@@ -745,8 +745,8 @@ class Problem extends CommonITILObject {
 
       // In percent
       $colsize1='13';
-      $colsize2='37';  
-      
+      $colsize2='37';
+
       // Set default options
       if (!$ID) {
          $values = array('_users_id_requester'       => Session::getLoginUserID(),
@@ -825,7 +825,7 @@ class Problem extends CommonITILObject {
       }
       Html::showDateTimeFormItem("due_date", $this->fields["due_date"], 1, true);
       echo "</td></tr>";
-      
+
       if ($ID) {
          echo "<tr class='tab_bg_1'><th>".$LANG['common'][95]." &nbsp;:</th><td>";
          User::dropdown(array('name'   => 'users_id_recipient',
@@ -833,7 +833,7 @@ class Problem extends CommonITILObject {
                               'entity' => $this->fields["entities_id"],
                               'right'  => 'all'));
          echo "</td>";
-      
+
          echo "<th>".$LANG['common'][26]."&nbsp;:</th>";
          echo "<td>".Html::convDateTime($this->fields["date_mod"])."\n";
          if ($this->fields['users_id_lastupdater']>0) {
@@ -841,8 +841,8 @@ class Problem extends CommonITILObject {
             echo getUserName($this->fields["users_id_lastupdater"], $showuserlink);
          }
          echo "</td></tr>";
-      }	 
-	 
+      }
+
       if ($ID && (in_array($this->fields["status"], $this->getSolvedStatusArray())
                   || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
          echo "<tr class='tab_bg_1'>";
@@ -1289,7 +1289,7 @@ class Problem extends CommonITILObject {
          if ($job->canViewItem()) {
             $eigth_column = "<a id='problem".$job->fields["id"]."$rand' href=\"".$CFG_GLPI["root_doc"].
                             "/front/problem.form.php?id=".$job->fields["id"]."\">$eigth_column</a>";
-                                     
+
             if ($output_type == HTML_OUTPUT) {
                $eigth_column .= "&nbsp;(".$job->numberOfTasks($showprivate).")";
             }
@@ -1395,7 +1395,7 @@ class Problem extends CommonITILObject {
 //             $options['searchtype'][0] = 'equals';
 //             $options['contains'][0]   = 'all';
 //             $options['link'][0]       = 'AND';
-// 
+//
 //             $options['itemtype2'][0]   = $item->getType();
 //             $options['field2'][0]      = Search::getOptionNumber($item->getType(), 'id');
 //             $options['searchtype2'][0] = 'equals';
@@ -1406,8 +1406,8 @@ class Problem extends CommonITILObject {
 
 
       $query = "SELECT ".self::getCommonSelect()."
-                FROM `glpi_problems` 
-                LEFT JOIN `glpi_items_problems` 
+                FROM `glpi_problems`
+                LEFT JOIN `glpi_items_problems`
                   ON (`glpi_problems`.`id` = `glpi_items_problems`.`problems_id`) ".
                   self::getCommonLeftJoin()."
                 WHERE $restrict ".
@@ -1423,7 +1423,11 @@ class Problem extends CommonITILObject {
       if ($number > 0) {
          Session::initNavigateListItems('Problem', $item->getTypeName()." = ".$item->getName());
 
-         echo "<tr><th colspan='8'>";
+         if (count($_SESSION["glpiactiveentities"])>1) {
+            echo "<tr><th colspan='9'>";
+         } else {
+            echo "<tr><th colspan='8'>";
+         }
 
          echo $LANG['job'][21]."&nbsp;:&nbsp;".$number;
 //             echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
@@ -1465,8 +1469,8 @@ class Problem extends CommonITILObject {
       // Tickets for linked items
       if ($subquery = $item->getSelectLinkedItem()) {
          $query = "SELECT ".self::getCommonSelect()."
-                   FROM `glpi_problems` 
-                     LEFT JOIN `glpi_items_problems` 
+                   FROM `glpi_problems`
+                     LEFT JOIN `glpi_items_problems`
                         ON (`glpi_problems`.`id` = `glpi_items_problems`.`problems_id`) ".
                         self::getCommonLeftJoin()."
                    WHERE (`itemtype`,`items_id`) IN (" . $subquery . ")".
