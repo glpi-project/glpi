@@ -86,7 +86,7 @@ class Report {
       echo "<tr><th colspan='2'>".__('Select the report you want to generate')."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo "<select name='statmenu' onchange='window.location.href=this.options
-    [this.selectedIndex].value'>";
+             [this.selectedIndex].value'>";
       echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
 
       $i     = 0;
@@ -120,7 +120,7 @@ class Report {
          echo "<optgroup label=\"". $title ."\">";
 
          foreach ($names as $key => $val) {
-             if ($opt==$val["plug"]) {
+             if ($opt == $val["plug"]) {
                echo "<option value='".$CFG_GLPI["root_doc"]."/plugins/".$key."'>".$val["name"].
                     "</option>";
              }
