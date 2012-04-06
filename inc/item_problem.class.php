@@ -252,16 +252,18 @@ class Item_Problem extends CommonDBRelation{
                return _n('Item', 'Items', 2);
 
             default :
-               // Direct one
-               $nb = countElementsInTable('glpi_items_problems',
-                                          " `itemtype` = '".$item->getType()."'
-                                             AND `items_id` = '".$item->getID()."'");
-               // Linked items
-               if ($subquery = $item->getSelectLinkedItem()) {
-                  $nb += countElementsInTable('glpi_items_problems',
-                                              " (`itemtype`,`items_id`) IN (" . $subquery . ")");
+               if (Session::haveRight("show_all_problem","1")) {
+                  // Direct one
+                  $nb = countElementsInTable('glpi_items_problems',
+                                             " `itemtype` = '".$item->getType()."'
+                                                AND `items_id` = '".$item->getID()."'");
+                  // Linked items
+                  if ($subquery = $item->getSelectLinkedItem()) {
+                     $nb += countElementsInTable('glpi_items_problems',
+                                                 " (`itemtype`,`items_id`) IN (" . $subquery . ")");
+                  }
+                  return self::createTabEntry(Problem::getTypeName(2), $nb);
                }
-               return self::createTabEntry(Problem::getTypeName(2), $nb);
          }
       }
       return '';

@@ -1411,7 +1411,11 @@ class Problem extends CommonITILObject {
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->getName()));
 
-         echo "<tr><th colspan='8'>";
+         if (count($_SESSION["glpiactiveentities"])>1) {
+            echo "<tr><th colspan='9'>";
+         } else {
+            echo "<tr><th colspan='8'>";
+         }
 
          //TRANS : %d is the number of problems
          echo sprintf(_n('Last %d problem','Last %d problems',$number), $number);
