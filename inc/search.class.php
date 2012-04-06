@@ -94,6 +94,12 @@ class Search {
       if ($p['export_all']) {
          $p['start'] = 0;
       }
+      if (in_array('all', $p['field']) && !$CFG_GLPI['allow_search_all']) {
+         Html::displayRightError();
+      }
+      if (in_array('view', $p['field']) && !$CFG_GLPI['allow_search_view']) {
+         Html::displayRightError();
+      }
 
       // Manage defautll seachtype value : for bookmark compatibility
       if (count($p['contains'])) {
@@ -1491,16 +1497,20 @@ class Search {
 
 
          // display select box to define search item
+         $selected = $first = '';
          echo "<select id='Search$itemtype$i' name=\"field[$i]\" size='1'>";
-         echo "<option value='view' ";
-         if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "view") {
-            echo "selected";
+
+         if ($CFG_GLPI['allow_search_view']==2) {
+            echo "<option value='view' ";
+            if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "view") {
+               echo "selected";
+               $selected = 'view';
+            }
+            echo ">".$LANG['search'][11]."</option>\n";
          }
-         echo ">".$LANG['search'][11]."</option>\n";
 
          reset($options);
          $first_group = true;
-         $selected    = 'view';
          $str_limit   = 28;
          $nb_in_group = 0;
          $group = '';
@@ -1528,6 +1538,8 @@ class Search {
                   if (is_array($p['field']) && isset($p['field'][$i]) && $key == $p['field'][$i]) {
                      $group .= "selected";
                      $selected = $key;
+                  } else if (empty($first)) {
+                     $first = $key;
                   }
                   $group .= ">". Toolbox::substr($val["name"], 0, $str_limit) ."</option>\n";
                }
@@ -1540,11 +1552,25 @@ class Search {
             echo $group;
          }
 
-         echo "<option value='all' ";
-         if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "all") {
-            echo "selected";
+         if ($CFG_GLPI['allow_search_view']==1) {
+            echo "<option value='view' ";
+            if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "view") {
+               echo "selected";
+               $selected = 'view';
+            }
+            echo ">".$LANG['search'][11]."</option>\n";
          }
-         echo ">".$LANG['common'][66]."</option>";
+         if ($CFG_GLPI['allow_search_all']) {
+            echo "<option value='all' ";
+            if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "all") {
+               echo "selected";
+               $selected = 'all';
+            }
+            echo ">".$LANG['common'][66]."</option>";
+         }
+         if (empty($selected)) {
+            $selected = $first;
+         }
          echo "</select>\n";
 
          echo "</td><td class='left'>";
@@ -4461,7 +4487,7 @@ class Search {
       $default_values["is_deleted"]  = 0;
       $default_values["distinct"]    = "N";
       $default_values["link"]        = array();
-      $default_values["field"]       = array(0 => "view");
+      $default_values["field"]       = array();
       $default_values["contains"]    = array(0 => "");
       $default_values["searchtype"]  = array(0 => "contains");
       $default_values["link2"]       = array();

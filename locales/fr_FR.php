@@ -2107,6 +2107,10 @@ $LANG['setup'][18]  = "Identifiant";
 $LANG['setup'][19]  = "Mot de passe";
 $LANG['setup'][20]  = "Confirmation mot de passe";
 $LANG['setup'][21]  = "Erreur : les deux mots de passe ne sont pas identiques";
+$LANG['setup'][22]  = "Moteur de recherche";
+$LANG['setup'][23]  = "Dernier critère";
+$LANG['setup'][24]  = "Critère par défaut";
+$LANG['setup'][25]  = "Recherche globale";
 
 $LANG['setup'][35]  = "MHz";
 

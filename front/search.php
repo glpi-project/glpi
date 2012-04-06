@@ -40,6 +40,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkCentralAccess();
 Html::header($LANG['search'][0],$_SERVER['PHP_SELF']);
 
+if (!$CFG_GLPI['allow_search_global']) {
+   Html::displayRightError();
+}
 if (isset($_GET["globalsearch"])) {
    $searchtext=$_GET["globalsearch"];
 

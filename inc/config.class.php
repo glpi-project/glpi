@@ -268,6 +268,27 @@ class Config extends CommonDBTM {
          echo "</tr>";
       }
 
+      echo "<tr class='tab_bg_1'><td colspan='4' class='center b'>".$LANG['setup'][22]."</td></tr>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . $LANG['search'][11] . "</td><td>"; // Items seens
+      $values = array(0 => $LANG['choice'][0],
+                      1 => $LANG['choice'][1].' ('.$LANG['setup'][23].')',
+                      2 => $LANG['choice'][1].' ('.$LANG['setup'][24].')');
+      Dropdown::showFromArray('allow_search_view', $values,
+                              array('value' => $CFG_GLPI['allow_search_view']));
+
+      echo "</td><td>". $LANG['setup'][25]."</td><td>"; // Global search
+      Dropdown::showYesNo('allow_search_global', $CFG_GLPI['allow_search_global']);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . $LANG['common'][66] . "</td><td>"; // All
+      $values = array(0 => $LANG['choice'][0],
+                      1 => $LANG['choice'][1].' ('.$LANG['setup'][23].')');
+      Dropdown::showFromArray('allow_search_all', $values,
+                              array('value' => $CFG_GLPI['allow_search_all']));
+      echo "</td><td colspan='2'></td></tr>";
+
       echo "<tr class='tab_bg_2'>";
       echo "<td colspan='4' class='center'>";
       echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][2]."\">";

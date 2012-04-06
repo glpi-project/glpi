@@ -1968,14 +1968,15 @@ class Html {
 
       /// Search engine
       echo "<div id='c_recherche' >\n";
-      echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
-      echo "<div id='boutonRecherche'>";
-      echo "<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/ok2.png' value='OK' title=\"".
-             $LANG['buttons'][2]."\"  alt=\"".$LANG['buttons'][2]."\"></div>";
-      echo "<div id='champRecherche'><input size='15' type='text' name='globalsearch' value='".
-             $LANG['buttons'][0]."' onfocus=\"this.value='';\"></div>";
-      echo "</form>";
-
+      if ($CFG_GLPI['allow_search_global']) {
+         echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n";
+         echo "<div id='boutonRecherche'>";
+         echo "<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/ok2.png' value='OK' title=\"".
+                $LANG['buttons'][2]."\"  alt=\"".$LANG['buttons'][2]."\"></div>";
+         echo "<div id='champRecherche'><input size='15' type='text' name='globalsearch' value='".
+                $LANG['buttons'][0]."' onfocus=\"this.value='';\"></div>";
+         echo "</form>";
+      }
       echo "<div class='sep'></div>\n";
       echo "</div>";
 
@@ -2845,7 +2846,7 @@ class Html {
     * @param $confirm array of confirmation string (optional)
    **/
    static function closeArrowMassives($actions, $confirm = array()) {
-      
+
       if (count($actions)) {
          foreach($actions as $name => $label) {
             if (!empty($name)) {
