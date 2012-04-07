@@ -2196,6 +2196,7 @@ $LANG['setup'][129] = "Montrer les ID GLPI";
 $LANG['setup'][130] = "Temps en jours de conservation des journaux";
 $LANG['setup'][131] = "Nombre de résultats par page";
 $LANG['setup'][132] = "Afficher le nom complet dans les listes déroulantes arborescentes";
+$LANG['setup'][133] = "Nombre de résultats sur la page d'accueil";
 
 $LANG['setup'][135] = "Normal";
 $LANG['setup'][136] = "Traduction";

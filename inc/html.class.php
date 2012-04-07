@@ -3919,5 +3919,24 @@ class Html {
    }
 
 
+   /**
+    * Create a title for list, as  "List (5 on 35)"
+    *
+    * @param $string String  text for title
+    * @param $num    Integer number of item displayed
+    * @param $tot    Integer number of item existing
+    *
+    * @since version 0.83.1
+    *
+    * @return String
+   **/
+   static function makeTitle ($string, $num, $tot) {
+      global $LANG;
+
+      if ($num < $tot) {
+         return $string." ($num ".$LANG['pager'][3]." $tot)";
+      }
+      return $string." ($num)";
+   }
 }
 ?>

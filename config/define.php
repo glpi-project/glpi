@@ -296,6 +296,7 @@ $CFG_GLPI["debug_sql"] = $CFG_GLPI["debug_vars"] = $CFG_GLPI["debug_lang"] = 1;
 
 // User Prefs fields which override $CFG_GLPI config
 $CFG_GLPI['user_pref_field'] = array('csv_delimiter', 'date_format', 'default_requesttypes_id',
+                                     'display_count_on_home',
                                      'dropdown_chars_limit', 'followup_private',
                                      'is_categorized_soft_expanded', 'is_ids_visible',
                                      'is_not_categorized_soft_expanded', 'language', 'list_limit',

@@ -798,6 +798,13 @@ class Config extends CommonDBTM {
       }
       echo "</td></tr>";
 
+      echo "<tr class='tab_bg_2'>";
+      echo "<td colspan='2'></td>";
+      echo "<td>" . $LANG['setup'][133] . "&nbsp;:</td><td>";
+      Dropdown::showInteger('display_count_on_home', $data['display_count_on_home'], 1, 30);
+      echo "</td></tr>";
+
+
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['title'][24]."</th></tr>";
 

@@ -4199,7 +4199,7 @@ class Ticket extends CommonITILObject {
       $result  = $DB->query($query);
       $numrows = $DB->numrows($result);
 
-      $query  .= " LIMIT ".intval($start).",5";
+      $query  .= " LIMIT ".intval($start).','.intval($_SESSION['glpidisplay_count_on_home']);
       $result  = $DB->query($query);
 
       $i = 0;
@@ -4226,7 +4226,8 @@ class Ticket extends CommonITILObject {
                      $num++;
                   }
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        Html::makeTitle($LANG['central'][18], $number, $numrows)."</a>";
                   break;
                case "waiting" :
                   foreach ($_SESSION['glpigroups'] as $gID) {
@@ -4242,8 +4243,9 @@ class Ticket extends CommonITILObject {
                      $num++;
                   }
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['joblist'][13].
-                        " (".$LANG['joblist'][26].")"."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        Html::makeTitle($LANG['joblist'][13]." (".$LANG['joblist'][26].")",
+                                        $number, $numrows)."</a>";
                   break;
 
                   case "process" :
@@ -4260,7 +4262,8 @@ class Ticket extends CommonITILObject {
                         $num++;
                      }
                      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                           Toolbox::append_params($options,'&amp;')."\">".$LANG['joblist'][13]."</a>";
+                           Toolbox::append_params($options,'&amp;')."\">".
+                           Html::makeTitle($LANG['joblist'][13], $number, $numrows)."</a>";
                      break;
 
                   case "requestbyself" :
@@ -4279,7 +4282,8 @@ class Ticket extends CommonITILObject {
 
                      }
                      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                           Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][9]."</a>";
+                           Toolbox::append_params($options,'&amp;')."\">".
+                           Html::makeTitle($LANG['central'][9], $number, $numrows)."</a>";
             }
 
          } else {
@@ -4296,8 +4300,9 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['joblist'][13].
-                        " (".$LANG['joblist'][26].")"."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        Html::makeTitle($LANG['joblist'][13]." (".$LANG['joblist'][26].")",
+                                        $number, $numrows)."</a>";
                   break;
 
                case "process" :
@@ -4312,7 +4317,8 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['joblist'][13]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        Html::makeTitle($LANG['joblist'][13], $number, $numrows)."</a>";
                   break;
 
                case "tovalidate" :
@@ -4327,7 +4333,8 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]        = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][19]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        Html::makeTitle($LANG['central'][19], $number, $numrows)."</a>";
 
                   break;
 
@@ -4343,7 +4350,8 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][17]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        Html::makeTitle($LANG['central'][17], $number, $numrows)."</a>";
 
                   break;
 
@@ -4369,7 +4377,8 @@ class Ticket extends CommonITILObject {
                   $options['link'][3]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][18]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        Html::makeTitle($LANG['central'][18], $number, $numrows)."</a>";
                   break;
 
                case "requestbyself" :
@@ -4385,7 +4394,8 @@ class Ticket extends CommonITILObject {
                   $options['link'][1]       = 'AND';
 
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                        Toolbox::append_params($options,'&amp;')."\">".$LANG['central'][9]."</a>";
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        Html::makeTitle($LANG['central'][9], $number, $numrows)."</a>";
             }
          }
 
