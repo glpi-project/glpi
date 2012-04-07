@@ -4054,11 +4054,14 @@ class Html {
    static function makeTitle ($string, $num, $tot) {
       global $LANG;
 
-      if ($num < $tot) {
+      if ($num > 0 && $num < $tot) {
          // TRANS %1$d %2$d are numbers (displayed, total)
          $cpt = sprintf(__('%1$d on %2$d'), $num, $tot);
-      } else {
+      } else if ($num) {
          $cpt = $num;
+      } else  {
+         // $num is 0, so means configured to display nothing
+         $cpt = $tot;
       }
       return sprintf(__('%1$s (%2$s)'), $string, $cpt);
    }
