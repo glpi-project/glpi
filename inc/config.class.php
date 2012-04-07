@@ -811,7 +811,7 @@ class Config extends CommonDBTM {
       echo "<td>" . __('Notifications for my changes') . "</td><td>";
       Dropdown::showYesNo("notification_to_myself", $data["notification_to_myself"]);
       echo "</td><td>".__('Results to display on home page')."</td><td>";
-      Dropdown::showInteger('display_count_on_home', $data['display_count_on_home'], 1, 30);
+      Dropdown::showInteger('display_count_on_home', $data['display_count_on_home'], 0, 30);
       echo "</td></tr>";
 
       if ($oncentral) {
