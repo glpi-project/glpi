@@ -1197,8 +1197,15 @@ class Rule extends CommonDBTM {
          echo "<tr class='tab_bg_2'>";
          echo "<td>".__('Result of the regular expression')."</td>";
          echo "<td>";
-         // TODO: Review this part : use this function only for debug
-         Html::printCleanArray($this->regex_results[0]);
+         if (!empty($this->regex_results[0])) {
+            echo "<table class='tab_cadre'>";
+            echo "<tr><th>".__('Key')."</th><th>".__('Value')."</th></tr>";
+            foreach ($this->regex_results[0] as $key => $value) {
+               echo "<tr class='tab_bg_1'>";
+               echo "<td>$key</td><td>$value</td></tr>";
+            }
+            echo "</table>";
+         }
          echo "</td></tr>\n";
       }
       echo "</tr>\n";
