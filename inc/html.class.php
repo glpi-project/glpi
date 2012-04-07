@@ -4040,5 +4040,29 @@ class Html {
    }
 
 
+   /**
+    * Create a title for list, as  "List (5 on 35)"
+    *
+    * @param $string String  text for title
+    * @param $num    Integer number of item displayed
+    * @param $tot    Integer number of item existing
+    *
+    * @since version 0.83.1
+    *
+    * @return String
+    **/
+   static function makeTitle ($string, $num, $tot) {
+      global $LANG;
+
+      if ($num < $tot) {
+         // TRANS %1$d %2$d are numbers (displayed, total)
+         $cpt = sprintf(__('%1$d on %2$d'), $num, $tot);
+      } else {
+         $cpt = $num;
+      }
+      return sprintf(__('%1$s (%2$s)'), $string, $cpt);
+   }
+
+
 }
 ?>

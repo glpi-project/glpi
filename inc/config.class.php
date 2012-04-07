@@ -810,9 +810,9 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Notifications for my changes') . "</td><td>";
       Dropdown::showYesNo("notification_to_myself", $data["notification_to_myself"]);
-      echo "</td>";
-      echo "<td colspan='2'>&nbsp;</td>";
-      echo "</tr>";
+      echo "</td><td>".__('Results to display on home page')."</td><td>";
+      Dropdown::showInteger('display_count_on_home', $data['display_count_on_home'], 1, 30);
+      echo "</td></tr>";
 
       if ($oncentral) {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Assistance')."</th></tr>";
