@@ -4199,12 +4199,15 @@ class Ticket extends CommonITILObject {
       $result  = $DB->query($query);
       $numrows = $DB->numrows($result);
 
-      $query  .= " LIMIT ".intval($start).','.intval($_SESSION['glpidisplay_count_on_home']);
-      $result  = $DB->query($query);
+      if ($_SESSION['glpidisplay_count_on_home'] > 0) {
+         $query  .= " LIMIT ".intval($start).','.intval($_SESSION['glpidisplay_count_on_home']);
+         $result  = $DB->query($query);
+         $number = $DB->numrows($result);
+      } else {
+         $number = 0;
+      }
 
-      $i = 0;
-      $number = $DB->numrows($result);
-      if ($number > 0) {
+      if ($numrows > 0) {
          echo "<table class='tab_cadrehov' style='width:420px'>";
          echo "<tr><th colspan='5'>";
 
@@ -4400,14 +4403,15 @@ class Ticket extends CommonITILObject {
          }
 
          echo "</th></tr>";
-         echo "<tr><th></th>";
-         echo "<th>".$LANG['job'][4]."</th>";
-         echo "<th>".$LANG['document'][14]."</th>";
-         echo "<th>".$LANG['joblist'][6]."</th></tr>";
-         while ($i < $number) {
-            $ID = $DB->result($result, $i, "id");
-            self::showVeryShort($ID);
-            $i++;
+         if ($number) {
+            echo "<tr><th></th>";
+            echo "<th>".$LANG['job'][4]."</th>";
+            echo "<th>".$LANG['document'][14]."</th>";
+            echo "<th>".$LANG['joblist'][6]."</th></tr>";
+            for ($i = 0 ; $i < $number ; $i++) {
+               $ID = $DB->result($result, $i, "id");
+               self::showVeryShort($ID);
+            }
          }
          echo "</table>";
 

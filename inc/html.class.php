@@ -3933,10 +3933,12 @@ class Html {
    static function makeTitle ($string, $num, $tot) {
       global $LANG;
 
-      if ($num < $tot) {
+      if ($num > 0 && $num < $tot) {
          return $string." ($num ".$LANG['pager'][3]." $tot)";
       }
-      return $string." ($num)";
+      // $num is 0, so means configured to display nothing
+      // or $num == $tot
+      return $string." ($tot)";
    }
 }
 ?>
