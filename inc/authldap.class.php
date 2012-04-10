@@ -335,7 +335,7 @@ class AuthLDAP extends CommonDBTM {
          echo "<input type='hidden' name=pagesize' value='0'>";
       }
       echo"</td></tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('How LDAP aliases should be handled') . "</td><td colspan='4'>";
       $alias_options[LDAP_DEREF_NEVER]     = __('Never dereferenced (default)');
@@ -349,7 +349,7 @@ class AuthLDAP extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
       echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
       echo "</td></tr>";
-      
+
       echo "</table></form></div>";
 
    }
@@ -1131,7 +1131,7 @@ class AuthLDAP extends CommonDBTM {
                $limitexceeded = true;
             }
             //$user_infos = array();
-                 
+
             for ($ligne = 0 ; $ligne < $info["count"] ; $ligne++) {
                //If ldap add
                if ($values['mode'] == self::ACTION_IMPORT) {
@@ -1167,7 +1167,7 @@ class AuthLDAP extends CommonDBTM {
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             ldap_control_paged_result_response($ds, $sr, $cookie);
          }
-         
+
       } while($cookie !== null && $cookie != '');
       return true;
    }
@@ -1237,7 +1237,7 @@ class AuthLDAP extends CommonDBTM {
                                                                $values['end_date']);
             $filter           = "(&$filter $filter_timestamp)";
          }
-         
+
          $result = self::searchForUsers($ds, $values, $filter, $attrs, $limitexceeded,
                                         $user_infos, $ldap_users, $config_ldap);
          if (!$result) {
@@ -1246,7 +1246,7 @@ class AuthLDAP extends CommonDBTM {
       } else {
          return false;
       }
-                                  
+
       $glpi_users = array();
       $sql        = "SELECT `id`, `name`, `date_sync`, `user_dn`
                      FROM `glpi_users`";
@@ -1640,7 +1640,7 @@ class AuthLDAP extends CommonDBTM {
 
       $query = "SELECT *
                 FROM `glpi_authldaps`
-                WHERE `is_active`='1'
+                WHERE `is_active` = '1'
                 ORDER BY `name` ASC";
       $result = $DB->query($query);
 
@@ -1661,10 +1661,10 @@ class AuthLDAP extends CommonDBTM {
       if ($DB->numrows($result) > 1) {
          echo "<tr class='tab_bg_2'><td class='center'>" . __('Name') . "</td>";
          echo "<td class='center'>";
-         Dropdown::show('AuthLDAP', array('name'                => 'ldap_server',
-                                          'display_emptychoice' => false,
-                                          'comment'             => true,
-                                          'condition'           => "`is_active`='1'"));
+         AuthLDAP::Dropdown(array('name'                => 'ldap_server',
+                                  'display_emptychoice' => false,
+                                  'comment'             => true,
+                                  'condition'           => "`is_active`='1'"));
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
