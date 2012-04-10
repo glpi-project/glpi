@@ -116,7 +116,15 @@ class Ticket extends CommonITILObject {
 
 
    function canView() {
-      return true;
+
+      return (Session::haveRight("show_all_ticket","1")
+              || Session::haveRight('create_ticket','1')
+              || Session::haveRight('update_ticket','1')
+              || Session::haveRight('show_all_ticket','1')
+              || Session::haveRight("show_assign_ticket",'1')
+              || Session::haveRight("own_ticket",'1')
+              || Session::haveRight('validate_ticket','1')
+              || Session::haveRight("show_group_ticket",'1'));
    }
 
 
