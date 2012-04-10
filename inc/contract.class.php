@@ -826,7 +826,7 @@ class Contract extends CommonDBTM {
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['common'][19]."</th>";
       echo "<th>".$LANG['common'][20]."</th>";
-      echo "<th>".$LANG['state'][0]."</th>";      
+      echo "<th>".$LANG['state'][0]."</th>";
       echo "</tr>";
 
       $totalnb = 0;
@@ -910,7 +910,7 @@ class Contract extends CommonDBTM {
                      echo Dropdown::getDropdownName("glpi_states",$data['states_id']);
                   } else {
                      echo '&nbsp;';
-                  }                         
+                  }
                   echo "</td></tr>";
                }
             }
@@ -929,7 +929,7 @@ class Contract extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
             Dropdown::showAllItems("items_id", 0, 0,
                                    ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
-                                   $CFG_GLPI["contract_types"]);
+                                   $CFG_GLPI["contract_types"], false, true);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\"
                    class='submit'>";
