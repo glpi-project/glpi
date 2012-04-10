@@ -1755,6 +1755,22 @@ function update0803to083() {
       or die ("0.83 update entities_id_software for root entity in glpi_entitydatas ".
               $LANG['update'][90]. $DB->error());
 
+      // For root entity already exists in entitydatas in 0.78
+      $query = "UPDATE `glpi_entitydatas`
+                SET `tickettype` = 1
+                WHERE `entities_id` = 0
+                      AND `tickettype` = 0";
+      $DB->query($query)
+      or die ("0.83 update tickettype for root entity in glpi_entitydatas ".$LANG['update'][90].
+              $DB->error());
+
+      $query = "UPDATE `glpi_entitydatas`
+                SET `inquest_config` = 1
+                WHERE `entities_id` = 0
+                      AND `inquest_config` = 0";
+      $DB->query($query)
+      or die ("0.83 update inquest_config for root entity in glpi_entitydatas ".$LANG['update'][90].
+              $DB->error());
    }
 
    // migration to new values for inherit parent (0 => -2)
@@ -1764,7 +1780,8 @@ function update0803to083() {
       if (FieldExists("glpi_entitydatas", $field_0, false) ) {
          $query = "UPDATE `glpi_entitydatas`
                    SET `$field_0` = '-2'
-                   WHERE `$field_0` = '0'";
+                   WHERE `$field_0` = '0'
+                         AND `entities_id` > 0";
          $DB->query($query)
          or die ("0.83 new value for inherit parent 0 in glpi_entitydatas ".$LANG['update'][90].
                  $DB->error());
