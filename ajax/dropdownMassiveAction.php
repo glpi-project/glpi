@@ -199,7 +199,7 @@ if (isset($_POST["action"])
       case "connect_to_computer" :
          Dropdown::showAllItems("connect_item", 0, 0, $_SESSION["glpiactive_entity"],
                                 array('Monitor', 'Peripheral', 'Phone',  'Printer'),
-                                true);
+                                true, true);
          echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
                       __s('Connect')."'>";
          break;
