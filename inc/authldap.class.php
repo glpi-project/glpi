@@ -134,6 +134,8 @@ class AuthLDAP extends CommonDBTM {
             $this->fields['entity_field']              = 'ou';
             $this->fields['entity_condition']          = '(objectclass=organizationalUnit)';
             $this->fields['use_dn']                    = 1 ;
+            $this->fields['can_support_pagesize']      = 1 ;
+            $this->fields['pagesize']                  = '1000';
             break;
 
          default:
@@ -318,6 +320,23 @@ class AuthLDAP extends CommonDBTM {
       echo"</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>" . __('Use paged results') . "</td><td>";
+      if (self::isLdapPageSizeAvailable(false, false)) {
+         Dropdown::showYesNo('can_support_pagesize', $this->fields["can_support_pagesize"]);
+      } else {
+         echo "<input type='hidden' name='can_support_pagesize' value='0'>".__('No');
+      }
+      echo "</td>";
+      if (self::isLdapPageSizeAvailable(false, false)) {
+         echo "<td>" . __('Page size') . "</td><td>";
+         Dropdown::showInteger("pagesize", $this->fields['pagesize'], 100, 100000, 100);
+      } else {
+         echo "</td>";
+         echo "<input type='hidden' name=pagesize' value='0'>";
+      }
+      echo"</td></tr>";
+      
+      echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('How LDAP aliases should be handled') . "</td><td colspan='4'>";
       $alias_options[LDAP_DEREF_NEVER]     = __('Never dereferenced (default)');
       $alias_options[LDAP_DEREF_ALWAYS]    = __('Always dereferenced');
@@ -330,7 +349,9 @@ class AuthLDAP extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
       echo "<input type='submit' name='update' class='submit' value=\"".__s('Save')."\">";
       echo "</td></tr>";
+      
       echo "</table></form></div>";
+
    }
 
 
@@ -1090,6 +1111,67 @@ class AuthLDAP extends CommonDBTM {
    }
 
 
+   static function searchForUsers($ds, $values, $filter, $attrs, &$limitexceeded, &$user_infos,
+                                  &$ldap_users, $config_ldap) {
+
+      //If paged results cannot be used (PHP < 5.4)
+      $cookie   = '';
+      do {
+         if (self::isLdapPageSizeAvailable($config_ldap)) {
+            ldap_control_paged_result($ds, $config_ldap->fields['pagesize'], true,$cookie);
+         }
+         $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
+         if ($sr) {
+            if (in_array(ldap_errno($ds),array(4,11))) {
+               // openldap return 4 for Size limit exceeded
+               $limitexceeded = true;
+            }
+            $info = self::get_entries_clean($ds, $sr);
+            if (in_array(ldap_errno($ds),array(4,11))) {
+               $limitexceeded = true;
+            }
+            //$user_infos = array();
+                 
+            for ($ligne = 0 ; $ligne < $info["count"] ; $ligne++) {
+               //If ldap add
+               if ($values['mode'] == self::ACTION_IMPORT) {
+                  if (in_array($config_ldap->fields['login_field'], $info[$ligne])) {
+                     $ldap_users[$info[$ligne][$config_ldap->fields['login_field']][0]]
+                        = $info[$ligne][$config_ldap->fields['login_field']][0];
+                     $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["timestamp"]
+                        = self::ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],
+                                                    $config_ldap->fields['time_offset']);
+                     $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["user_dn"]
+                        = $info[$ligne]['dn'];
+                  }
+
+               } else {
+                  //If ldap synchronisation
+                  if (in_array($config_ldap->fields['login_field'],$info[$ligne])) {
+                     $ldap_users[$info[$ligne][$config_ldap->fields['login_field']][0]]
+                        = self::ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],
+                                                    $config_ldap->fields['time_offset']);
+                     $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["timestamp"]
+                        = self::ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],
+                                                    $config_ldap->fields['time_offset']);
+                     $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["user_dn"]
+                        = $info[$ligne]['dn'];
+                     $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["name"]
+                        = $info[$ligne][$config_ldap->fields['login_field']][0];
+                  }
+               }
+            }
+         } else {
+            return false;
+         }
+         if (self::isLdapPageSizeAvailable($config_ldap)) {
+            ldap_control_paged_result_response($ds, $sr, $cookie);
+         }
+         
+      } while($cookie !== null && $cookie != '');
+      return true;
+   }
+
    /** Get the list of LDAP users to add/synchronize
     *
     * @param $options          array of possible options:
@@ -1155,55 +1237,16 @@ class AuthLDAP extends CommonDBTM {
                                                                $values['end_date']);
             $filter           = "(&$filter $filter_timestamp)";
          }
-         $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs);
-
-         if ($sr) {
-            if (in_array(ldap_errno($ds),array(4,11))) {
-               // openldap return 4 for Size limit exceeded
-               $limitexceeded = true;
-            }
-            $info = self::get_entries_clean($ds, $sr);
-            if (in_array(ldap_errno($ds),array(4,11))) {
-               $limitexceeded = true;
-            }
-            $user_infos = array();
-
-            for ($ligne = 0 ; $ligne < $info["count"] ; $ligne++) {
-               //If ldap add
-               if ($values['mode'] == self::ACTION_IMPORT) {
-                  if (in_array($config_ldap->fields['login_field'], $info[$ligne])) {
-                     $ldap_users[$info[$ligne][$config_ldap->fields['login_field']][0]]
-                        = $info[$ligne][$config_ldap->fields['login_field']][0];
-                     $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["timestamp"]
-                        = self::ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],
-                                                    $config_ldap->fields['time_offset']);
-                     $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["user_dn"]
-                        = $info[$ligne]['dn'];
-                  }
-
-               } else {
-                  //If ldap synchronisation
-                  if (in_array($config_ldap->fields['login_field'],$info[$ligne])) {
-                     $ldap_users[$info[$ligne][$config_ldap->fields['login_field']][0]]
-                        = self::ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],
-                                                    $config_ldap->fields['time_offset']);
-                     $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["timestamp"]
-                        = self::ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],
-                                                    $config_ldap->fields['time_offset']);
-                     $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["user_dn"]
-                        = $info[$ligne]['dn'];
-                     $user_infos[$info[$ligne][$config_ldap->fields['login_field']][0]]["name"]
-                        = $info[$ligne][$config_ldap->fields['login_field']][0];
-                  }
-               }
-            }
-         } else {
+         
+         $result = self::searchForUsers($ds, $values, $filter, $attrs, $limitexceeded,
+                                        $user_infos, $ldap_users, $config_ldap);
+         if (!$result) {
             return false;
          }
-
       } else {
          return false;
       }
+                                  
       $glpi_users = array();
       $sql        = "SELECT `id`, `name`, `date_sync`, `user_dn`
                      FROM `glpi_users`";
@@ -2764,5 +2807,18 @@ class AuthLDAP extends CommonDBTM {
       return $replicates;
    }
 
+   /**
+    *
+    * Check if ldap results can be paged or not
+    * This functionnality is available for PHP 5.4 and higer
+    * @since 0.84
+    * return true if maxPageSize can be used, false otherwise
+    */
+   static function isLdapPageSizeAvailable($config_ldap, $check_config_value = true) {
+      return ((!$check_config_value
+               || ($check_config_value && $config_ldap->fields['can_support_pagesize']))
+                  && function_exists('ldap_control_paged_result')
+                     && function_exists('ldap_control_paged_result_response'));
+   }
 }
 ?>
