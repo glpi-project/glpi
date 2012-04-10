@@ -97,11 +97,12 @@ if (!Toolbox::canUseLdap() || !countElementsInTable('glpi_authldaps')) {
 }
 
 $sql = "SELECT `id`, `name`
-        FROM `glpi_authldaps`";
+        FROM `glpi_authldaps`
+        WHERE `is_active`='1'";
 
 //Get the ldap server's id by his name
 if ($options['ldapservers_id'] != NOT_AVAILABLE) {
-   $sql .= " WHERE `id` = '" . $options['ldapservers_id']."'";
+   $sql .= " AND `id` = '" . $options['ldapservers_id']."'";
 }
 
 $result = $DB->query($sql);
