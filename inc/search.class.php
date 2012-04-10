@@ -3675,24 +3675,32 @@ class Search {
    /**
     * Generic Function to display Items
     *
-    * @param $itemtype item type
-    * @param $ID ID of the SEARCH_OPTION item
-    * @param $data array containing data results
-    * @param $num item num in the request
-    * @param $meta is a meta item ?
+    * @param $itemtype              item type
+    * @param $ID                    ID of the SEARCH_OPTION item
+    * @param $data            array containing data results
+    * @param $num                   item num in the request
+    * @param $meta                  is a meta item ?
+    * @param $addobjetparams  array added parameters for union search
     *
     * @return string to print
    **/
-   static function giveItem($itemtype, $ID, $data, $num, $meta=0) {
+   static function giveItem($itemtype, $ID, $data, $num, $meta=0, array $addobjetparams=array()) {
       global $CFG_GLPI,$LANG;
 
       $searchopt = &self::getOptions($itemtype);
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
           && $CFG_GLPI["union_search_type"][$itemtype]==$searchopt[$ID]["table"]) {
 
+         if ($searchopt[$ID]['addobjetparams']) {
+            return self::giveItem($data["TYPE"], $ID, $data, $num, $meta,
+                                  $searchopt[$ID]['addobjetparams']);
+         }
          return self::giveItem($data["TYPE"], $ID, $data, $num, $meta);
       }
 
+      if (count($addobjetparams)) {
+         $searchopt[$ID] = array_merge($searchopt[$ID], $addobjetparams);
+      }
       // Plugin can override core definition for its type
       if ($plug=isPluginItemType($itemtype)) {
          $function = 'plugin_'.$plug['plugin'].'_giveItem';
@@ -4214,7 +4222,13 @@ class Search {
                   }
                   $out  = "<a id='".$itemtype."_".$data[$NAME.$num."_2"]."' href=\"".$link;
                   $out .= (strstr($link,'?') ?'&amp;' :  '?');
-                  $out .= 'id='.$data[$NAME.$num."_2"]."\">".$data[$NAME.$num].$unit;
+                  $out .= 'id='.$data[$NAME.$num."_2"];
+
+                  if (isset($searchopt[$ID]['forcetab'])) {
+                  $out .= "&amp;forcetab=".$searchopt[$ID]['forcetab'];
+                  }
+                  $out .= "\">".$data[$NAME.$num].$unit;
+
                   if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
                      $out .= " (".$data[$NAME.$num."_2"].")";
                   }

@@ -115,6 +115,7 @@ class ReservationItem extends CommonDBTM {
       $tab[1]['name']          = $LANG['common'][16];
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['massiveaction'] = false;
+      $tab[1]['addobjetparams'] = array('forcetab' => 'Reservation$1');
 
       $tab[2]['table']         = 'reservation_types';
       $tab[2]['field']         = 'id';
