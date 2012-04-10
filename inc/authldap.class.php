@@ -1546,8 +1546,9 @@ class AuthLDAP extends CommonDBTM {
    static function ldapChooseDirectory($target) {
       global $DB, $LANG;
 
-      $query = "SELECT *
+        $query = "SELECT *
                 FROM `glpi_authldaps`
+                WHERE `is_active`='1'
                 ORDER BY `name` ASC";
       $result = $DB->query($query);
 
@@ -1570,7 +1571,8 @@ class AuthLDAP extends CommonDBTM {
          echo "<td class='center'>";
          Dropdown::show('AuthLDAP', array('name'                => 'ldap_server',
                                           'display_emptychoice' => false,
-                                          'comment'             => true));
+                                          'comment'             => true,
+                                          'condition'           => "`is_active`='1'"));
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
