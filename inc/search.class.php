@@ -4270,7 +4270,6 @@ class Search {
       }
 
       // Preformat items
-      toolbox::logdebug("earchopt", $searchopt[$ID]);
       if (isset($searchopt[$ID]["datatype"])) {
          switch ($searchopt[$ID]["datatype"]) {
             case "itemlink" :
