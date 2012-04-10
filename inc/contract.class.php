@@ -918,7 +918,7 @@ class Contract extends CommonDBTM {
             echo "<tr class='tab_bg_1'><td colspan='5' class='right'>";
             Dropdown::showAllItems("items_id", 0, 0,
                                    ($this->fields['is_recursive']?-1:$this->fields['entities_id']),
-                                   $CFG_GLPI["contract_types"]);
+                                   $CFG_GLPI["contract_types"], false, true);
             echo "</td><td class='center'>";
             echo "<input type='submit' name='additem' value=\""._sx('Button', 'Add')."\"
                    class='submit'>";

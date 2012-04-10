@@ -530,10 +530,12 @@ class Group extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'><th colspan='3'>$title</tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo __('Type')."&nbsp;";
-      Dropdown::showItemType($types, array('value'     => $type,
-                                           'name'      => 'onlytype',
-                                           'plural'    => true,
-                                           'on_change' => 'reloadTab("start=0&onlytype="+this.value)'));
+      Dropdown::showItemType($types,
+                             array('value'      => $type,
+                                   'name'       => 'onlytype',
+                                   'plural'     => true,
+                                   'on_change'  => 'reloadTab("start=0&onlytype="+this.value)',
+                                   'checkright' => true));
       if ($this->haveChildren()) {
          echo "</td><td class='center'>".__('Child groups')."&nbsp;";
          Dropdown::showYesNo('tree', $tree, -1,
