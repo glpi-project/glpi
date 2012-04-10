@@ -1411,7 +1411,7 @@ class Problem extends CommonITILObject {
                                         sprintf(__('%1$s = %2$s'), $item->getTypeName(1),
                                                 $item->getName()));
 
-         if (count($_SESSION["glpiactiveentities"])>1) {
+         if (count($_SESSION["glpiactiveentities"]) > 1) {
             echo "<tr><th colspan='9'>";
          } else {
             echo "<tr><th colspan='8'>";

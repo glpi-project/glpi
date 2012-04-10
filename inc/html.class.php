@@ -4054,7 +4054,7 @@ class Html {
    static function makeTitle ($string, $num, $tot) {
       global $LANG;
 
-      if ($num > 0 && $num < $tot) {
+      if (($num > 0) && ($num < $tot)) {
          // TRANS %1$d %2$d are numbers (displayed, total)
          $cpt = sprintf(__('%1$d on %2$d'), $num, $tot);
       } else  {
