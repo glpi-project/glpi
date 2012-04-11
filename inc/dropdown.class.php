@@ -1673,7 +1673,6 @@ class Dropdown {
 
                case 'CronTask' :
                   $actions['reset']      = __('Reset last run');
-                  $actions['move_under'] = _x('button', 'Move');
                   break;
 
                case 'NotImportedEmail':
