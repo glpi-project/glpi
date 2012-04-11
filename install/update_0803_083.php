@@ -1771,6 +1771,22 @@ function update0803to083() {
       $DB->query($query)
       or die ("0.83 update inquest_config for root entity in glpi_entitydatas ".$LANG['update'][90].
               $DB->error());
+
+      $query = "UPDATE `glpi_entitydatas`
+                SET `inquest_rate` = 0
+                WHERE `entities_id` = 0
+                      AND `inquest_rate` = '-1'";
+      $DB->query($query)
+      or die ("0.83 update inquest_rate for root entity in glpi_entitydatas ".$LANG['update'][90].
+              $DB->error());
+
+      $query = "UPDATE `glpi_entitydatas`
+                SET `inquest_delay` = 0
+                WHERE `entities_id` = 0
+                      AND `inquest_delay` = '-1'";
+      $DB->query($query)
+      or die ("0.83 update inquest_delay for root entity in glpi_entitydatas ".$LANG['update'][90].
+              $DB->error());
    }
 
    // migration to new values for inherit parent (0 => -2)
