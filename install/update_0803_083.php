@@ -1556,8 +1556,8 @@ function update0803to083() {
    foreach ($fieldparent as $field_parent) {
       if (FieldExists("glpi_entitydatas", $field_parent, false)) {
          $query = "UPDATE `glpi_entitydatas`
-                   SET `$field_parent` = -2
-                   WHERE `$field_parent` = -1";
+                   SET `$field_parent` = '-2'
+                   WHERE `$field_parent` = '-1'";
          $DB->queryOrDie($query, "0.83 new value for inherit parent -1 in glpi_entitydatas");
       }
    }
