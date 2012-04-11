@@ -1672,8 +1672,7 @@ class Dropdown {
                   break;
 
                case 'CronTask' :
-                  echo "<option value='reset'>".__('Reset last run');
-                  echo "</option>";
+                  $actions['reset']      = __('Reset last run');
                   $actions['move_under'] = _x('button', 'Move');
                   break;
 
