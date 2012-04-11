@@ -1936,6 +1936,7 @@ $LANG['setup'][129]="Εμφάνισε GLPI ID";
 $LANG['setup'][130]="Αριθμός ημερών που αποθηκεύονται αυτά τα αρχεία καταγραφής ενεργειών"; 
 $LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="Εμφάνιση πλήρους ονομασίας στις δενδρικές λίστες"; 
+$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
 $LANG['setup'][135]="Κανονικό"; 
 $LANG['setup'][136]="Μετάφραση"; 
 $LANG['setup'][137]="Debug"; 

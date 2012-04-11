@@ -1936,6 +1936,7 @@ $LANG['setup'][129]="Show GLPI ID"; // en_GB string to be translated
 $LANG['setup'][130]="Antal dagar som dessa aktions-loggar sparas"; 
 $LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="Visa det kompletta namnet i trädets dropdown-menyer"; 
+$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
 $LANG['setup'][135]="Normal"; 
 $LANG['setup'][136]="Översättning"; 
 $LANG['setup'][137]="Felsökning"; 

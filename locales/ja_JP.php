@@ -1936,6 +1936,7 @@ $LANG['setup'][129]="GLPI　IDを表示";
 $LANG['setup'][130]="実行ログの保存日数"; 
 $LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="ドロップダウンに完全な名前を表示する"; 
+$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
 $LANG['setup'][135]="標準"; 
 $LANG['setup'][136]="変換"; 
 $LANG['setup'][137]="Debug"; 

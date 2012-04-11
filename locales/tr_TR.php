@@ -1936,6 +1936,7 @@ $LANG['setup'][129]="GLPI ID'sini göster";
 $LANG['setup'][130]="Eylem günlüklerininin saklanacağı gün sayısı"; 
 $LANG['setup'][131]="Sayfa başına sonuç sayısı"; 
 $LANG['setup'][132]="Aşağı açılan menülerinin tam adını göster"; 
+$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
 $LANG['setup'][135]="Normal"; 
 $LANG['setup'][136]="Çeviri"; 
 $LANG['setup'][137]="Debug"; 

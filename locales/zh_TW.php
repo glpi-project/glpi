@@ -1936,6 +1936,7 @@ $LANG['setup'][129]="顯示GLPI ID";
 $LANG['setup'][130]="用於下一個/上一個項目"; 
 $LANG['setup'][131]="每頁顯示數量"; 
 $LANG['setup'][132]="下拉清單顯示完整的名稱"; 
+$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
 $LANG['setup'][135]="正常"; 
 $LANG['setup'][136]="翻譯"; 
 $LANG['setup'][137]="除錯"; 

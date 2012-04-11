@@ -1936,6 +1936,7 @@ $LANG['setup'][129]="Visualizar GLPI ID";
 $LANG['setup'][130]="Numero de dias para manter os registos"; 
 $LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="Mostar nome completo no menu de arvore"; 
+$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
 $LANG['setup'][135]="Normal"; 
 $LANG['setup'][136]="Tradução"; 
 $LANG['setup'][137]="Detecção de erros"; 

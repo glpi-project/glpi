@@ -1936,6 +1936,7 @@ $LANG['setup'][129]="Toon GLPI-ID";
 $LANG['setup'][130]="Aantal dagen dat activiteitenlogs worden opgeslagen"; 
 $LANG['setup'][131]="Aantal resultaten per pagina"; 
 $LANG['setup'][132]="Toon de volledige naam in de dropdowns"; 
+$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
 $LANG['setup'][135]="Normaal"; 
 $LANG['setup'][136]="Vertaling"; 
 $LANG['setup'][137]="Debuggen"; 

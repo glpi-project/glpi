@@ -1936,6 +1936,7 @@ $LANG['setup'][129]="Показывать GLPI ID";
 $LANG['setup'][130]="Количество дней хранения в журнале для этого действия"; 
 $LANG['setup'][131]="Количество результатов на странице"; 
 $LANG['setup'][132]="Отображать полное имя в выпадающих списках"; 
+$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
 $LANG['setup'][135]="Нормальный"; 
 $LANG['setup'][136]="Перевод интерфейса"; 
 $LANG['setup'][137]="Отладка"; 

@@ -1936,6 +1936,7 @@ $LANG['setup'][129]="Mostra gli ID GLPI";
 $LANG['setup'][130]="Per quanto tempo i log delle azioni sono tenuti in archivio (in giorni, 0=sempre)"; 
 $LANG['setup'][131]="Numero di risultati per pagina"; 
 $LANG['setup'][132]="Visualizza il nome completo nei menù a discesa"; 
+$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
 $LANG['setup'][135]="Normale"; 
 $LANG['setup'][136]="Traduzione"; 
 $LANG['setup'][137]="Debug"; 

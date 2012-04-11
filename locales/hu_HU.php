@@ -1936,6 +1936,7 @@ $LANG['setup'][129]="GLPI ID megjelenítése";
 $LANG['setup'][130]="Következő/előző tételek"; 
 $LANG['setup'][131]="Elemek száma oldalanként"; 
 $LANG['setup'][132]="Lista megnyitása"; 
+$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
 $LANG['setup'][135]="Normál"; 
 $LANG['setup'][136]="Fordítás"; 
 $LANG['setup'][137]="Hibakeresés"; 

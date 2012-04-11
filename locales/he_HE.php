@@ -1936,6 +1936,7 @@ $LANG['setup'][129]="הצג GLPI ID";
 $LANG['setup'][130]="Number of days this action logs are stored"; // en_GB string to be translated
 $LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="תפריט עץ שטוח"; 
+$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
 $LANG['setup'][135]="נורמלי"; 
 $LANG['setup'][136]="תרגום"; 
 $LANG['setup'][137]="איתור באגים"; 

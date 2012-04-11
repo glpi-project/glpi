@@ -1936,6 +1936,7 @@ $LANG['setup'][129]="Show GLPI ID"; // en_GB string to be translated
 $LANG['setup'][130]="Number of days this action logs are stored"; // en_GB string to be translated
 $LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
 $LANG['setup'][132]="Izen osoa erakutsi goitibeherakoetan"; 
+$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
 $LANG['setup'][135]="Normal"; // en_GB string to be translated
 $LANG['setup'][136]="Translation"; // en_GB string to be translated
 $LANG['setup'][137]="Debug"; // en_GB string to be translated

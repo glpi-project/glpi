@@ -1936,6 +1936,7 @@ $LANG['setup'][129]="Zobraziť ID GLPI";
 $LANG['setup'][130]="Počet dní zachovania záznamov o tejto udalosti"; 
 $LANG['setup'][131]="Počet výsledkov na stranu"; 
 $LANG['setup'][132]="Zobrazenie úplných mien v strome rolovacích ponúk"; 
+$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
 $LANG['setup'][135]="Normálne"; 
 $LANG['setup'][136]="Preklad"; 
 $LANG['setup'][137]="Ladiť"; 
