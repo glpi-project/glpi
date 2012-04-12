@@ -720,12 +720,12 @@ class Cartridge extends CommonDBTM {
                 $data["type"]." - ".$data["ref"]."</a></td>";
          echo "<td class='center'>".$date_in."</td>";
          echo "<td class='center'>";
-         
+
          if ($old==0 && $canedit) {
-            Html::showDateFormItem("date_use[$cart_id]", $date_use, true, true, $date_in);
+            Html::showDateFormItem("date_use[$cart_id]", $data["date_use"], false, true, $date_in);
          } else {
             echo $date_use;
-         }         
+         }
 
          $tmp_dbeg = explode("-", $data["date_in"]);
          $tmp_dend = explode("-", $data["date_use"]);
@@ -738,10 +738,10 @@ class Cartridge extends CommonDBTM {
             echo "</td>";
             echo "<td class='center'>";
             if ($canedit) {
-               Html::showDateFormItem("date_out[$cart_id]", $date_out, true, true, $date_use);
+               Html::showDateFormItem("date_out[$cart_id]", $data["date_out"], true, true, $date_use);
             } else {
                echo $date_out;
-            }            
+            }
 
             $tmp_dbeg = explode("-", $data["date_use"]);
             $tmp_dend = explode("-", $data["date_out"]);
@@ -749,9 +749,9 @@ class Cartridge extends CommonDBTM {
             $use_time_tmp = mktime(0, 0, 0, $tmp_dend[1], $tmp_dend[2], $tmp_dend[0])
                             - mktime(0, 0, 0, $tmp_dbeg[1], $tmp_dbeg[2], $tmp_dbeg[0]);
             $use_time+=$use_time_tmp;
-            
+
             echo "</td><td class='left'>";
-            
+
             if ($canedit) {
                echo "<input type='text' name='pages[$cart_id]' value=\"".$data['pages']."\" size='6'>";
             } else {
@@ -817,7 +817,7 @@ class Cartridge extends CommonDBTM {
       echo "</table></div>";
       if ($canedit) {
          echo "</form>";
-      }      
+      }
    }
 
 
