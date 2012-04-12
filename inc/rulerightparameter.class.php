@@ -66,7 +66,7 @@ class RuleRightParameter extends CommonDropdown {
    function getAdditionalFields() {
 
       return array(array('name'  => 'value',
-                         'label' => _n('Criteria', 'Criteria', 1),
+                         'label' => _n('Criterion', 'Criteria', 1),
                          'type'  => 'text',
                          'list'  => false));
    }
@@ -83,7 +83,7 @@ class RuleRightParameter extends CommonDropdown {
 
       $tab[11]['table'] = $this->getTable();
       $tab[11]['field'] = 'value';
-      $tab[11]['name']  = _n('Criteria', 'Criteria', 1);
+      $tab[11]['name']  = _n('Criterion', 'Criteria', 1);
 
       return $tab;
    }

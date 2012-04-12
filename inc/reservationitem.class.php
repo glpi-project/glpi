@@ -98,7 +98,7 @@ class ReservationItem extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                       = array();
 
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'comment';
@@ -173,7 +173,6 @@ class ReservationItem extends CommonDBTM {
                return false;
             }
          }
-
       } else {
          return false;
       }
@@ -250,7 +249,7 @@ class ReservationItem extends CommonDBTM {
          echo "</textarea></td></tr>\n";
 
          echo "<tr class='tab_bg_2'><td colspan='2' class='top center'>";
-         echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
          echo "</td></tr>\n";
 
          echo "</table></form></div>";
@@ -302,8 +301,8 @@ class ReservationItem extends CommonDBTM {
                    ORDER BY `$itemtable`.`entities_id`,
                             `$itemtable`.`name`";
 
-         if ($result=$DB->query($query)) {
-            while ($row=$DB->fetch_assoc($result)) {
+         if ($result = $DB->query($query)) {
+            while ($row = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'><td>";
                echo "<input type='checkbox' name='item[".$row["id"]."]' value='".$row["id"]."'>".
                     "</td>";
@@ -311,7 +310,7 @@ class ReservationItem extends CommonDBTM {
                if ($itemtype == 'Peripheral') {
                   $item->getFromDB($row['items_id']);
                   if (isset($item->fields["peripheraltypes_id"])
-                     && $item->fields["peripheraltypes_id"]!=0) {
+                      && ($item->fields["peripheraltypes_id"] != 0)) {
 
                      $typename = Dropdown::getDropdownName("glpi_peripheraltypes",
                                                            $item->fields["peripheraltypes_id"]);
@@ -332,7 +331,7 @@ class ReservationItem extends CommonDBTM {
       }
       if ($ok) {
          echo "<tr class='tab_bg_1 center'><td colspan='".($showentity?"5":"4")."'>";
-         echo "<input type='submit' value=\"".__s('Add')."\" class='submit'></td></tr>\n";
+         echo "<input type='submit' value=\""._sx('button','Add')."\" class='submit'></td></tr>\n";
       }
       echo "</table>\n";
       echo "<input type='hidden' name='id' value=''>";
@@ -371,7 +370,6 @@ class ReservationItem extends CommonDBTM {
 
       foreach (Entity::getEntitiesToNotify('use_reservations_alert') as $entity => $value) {
          $secs = $value * HOUR_TIMESTAMP;
-
 
          // Reservation already begin and reservation ended in $value hours
          $query_end = "SELECT `glpi_reservationitems`.*,
@@ -412,12 +410,13 @@ class ReservationItem extends CommonDBTM {
          if (NotificationEvent::raiseEvent("alert", new Reservation(),
                                            array('entities_id' => $entity,
                                                  'items'       => $items))) {
-            $message = $items_messages[$entity];
+            $message     = $items_messages[$entity];
             $cron_status = 1;
             if ($task) {
                $task->addVolume(1);
-               $task->log(Dropdown::getDropdownName("glpi_entities",
-                                                    $entity).":  $message\n");
+               $task->log(sprintf(__('%1$s: %2$s')."\n",
+                                  Dropdown::getDropdownName("glpi_entities", $entity),
+                                  $message));
             } else {
                //TRANS: %1$s is a name, %2$s is text of message
                Session::addMessageAfterRedirect(sprintf(__('%1$s: %2$s'),

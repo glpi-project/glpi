@@ -457,9 +457,9 @@ class RuleCollection extends CommonDBTM {
       }
 
       echo "</div></form>";
-      
+
       Html::printAjaxPager('', $p['start'], $nb);
-      
+
       echo "<div class='spaced center'>";
 
       if ($plugin = isPluginItemType($this->getType())) {
@@ -714,7 +714,7 @@ class RuleCollection extends CommonDBTM {
          echo "<form name='testrule_form' id='testrulesengine_form' method='post' action='$target'>";
          echo "\n<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='2'>" . _n('Criteria', 'Criteria', 2) . "</th></tr>\n";
+         echo "<tr><th colspan='2'>" . _n('Criterion', 'Criteria', 2) . "</th></tr>\n";
 
          //Brower all criterias
          foreach ($input as $criteria) {

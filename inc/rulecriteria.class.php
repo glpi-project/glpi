@@ -59,7 +59,7 @@ class RuleCriteria extends CommonDBChild {
     * @return Title of the rule
    **/
    static function getTypeName($nb=0) {
-      return _n('Criteria', 'Criteria', $nb);
+      return _n('Criterion', 'Criteria', $nb);
    }
 
 
