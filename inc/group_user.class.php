@@ -405,7 +405,7 @@ class Group_User extends CommonDBRelation{
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'><th colspan='2'>".User::getTypeName(2)."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
-      echo _n('Criteria', 'Criteria', 1)."&nbsp;";
+      echo _n('Criterion', 'Criteria', 1)."&nbsp;";
       $crits = array(''                => Dropdown::EMPTY_VALUE,
                      'is_manager'      => __('Manager'),
                      'is_userdelegate' => __('Delegatee'));
@@ -506,7 +506,7 @@ class Group_User extends CommonDBRelation{
          Html::printAjaxPager(sprintf(__('%1$s (%2$s)'),
                                       User::getTypeName(2), __('D=Dynamic')),
                               $start, $number);
-         
+
          echo "</div>";
       } else {
          echo "<p class='center b'>".__('No item found')."</p>";

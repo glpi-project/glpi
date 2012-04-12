@@ -60,7 +60,7 @@ class Fieldblacklist extends CommonDropdown {
                          'label' => __('Type'),
                          'type'  => 'blacklist_itemtype'),
                    array('name'  => 'field',
-                         'label' => __('Fields'),
+                         'label' => _n('Field', 'Fields', 2),
                          'type'  => 'blacklist_field'),
                    array('name'  => 'value',
                          'label' => __('Value'),
@@ -86,7 +86,7 @@ class Fieldblacklist extends CommonDropdown {
 
       $tab[6]['table']           = $this->getTable();
       $tab[6]['field']           = 'field';
-      $tab[6]['name']            = __('Fields');
+      $tab[6]['name']            = _n('Field', 'Fields', 2);
       $tab[6]['datatype']        = 'string';
 
       $tab[7]['table']           = $this->getTable();

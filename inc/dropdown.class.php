@@ -724,7 +724,7 @@ class Dropdown {
                                  'UserCategory'  => _n('User category', 'User categories', 2)),
 
                     __('Authorizations assignment rules')
-                        => array('RuleRightParameter' => _n('LDAP criteria', 'LDAP criterias', 2)),
+                        => array('RuleRightParameter' => _n('LDAP criterion', 'LDAP criteria', 2)),
 
                     __('Fields unicity')
                         => array('Fieldblacklist' => _n('Ignored value for the unicity',

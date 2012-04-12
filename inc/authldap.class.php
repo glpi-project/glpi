@@ -1574,16 +1574,16 @@ class AuthLDAP extends CommonDBTM {
                        ? $config_ldap->fields['condition'] : "(objectclass=*)");
          }
       }
-      
+
       $cookie   = '';
       do {
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             ldap_control_paged_result($ldap_connection, $config_ldap->fields['pagesize'],
                                       true, $cookie);
          }
-      
+
          $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter , $attrs);
-   
+
          if ($sr) {
             $infos = self::get_entries_clean($ldap_connection, $sr);
             for ($ligne=0 ; $ligne < $infos["count"] ; $ligne++) {
@@ -1594,7 +1594,7 @@ class AuthLDAP extends CommonDBTM {
                      $groups[$infos[$ligne]["dn"]] = (array("cn"          => $infos[$ligne]["cn"][0],
                                                             "search_type" => "groups"));
                   }
-   
+
                } else {
                   if (isset($infos[$ligne][$extra_attribute])) {
                      if (($config_ldap->fields["group_field"] == 'dn')
@@ -1604,7 +1604,7 @@ class AuthLDAP extends CommonDBTM {
                         for ($tmp=$dn ; count($tmptab=explode(',',$tmp,2))==2 ; $tmp=$tmptab[1]) {
                            $ou[] = $tmptab[1];
                         }
-   
+
                         /// Search in DB for group with ldap_group_dn
                         if (($config_ldap->fields["group_field"] == 'dn')
                             && (count($ou) > 0)) {
@@ -1613,13 +1613,13 @@ class AuthLDAP extends CommonDBTM {
                                      WHERE `ldap_group_dn`
                                                 IN ('".implode("', '",
                                                     Toolbox::addslashes_deep($ou))."')";
-   
+
                            foreach ($DB->request($query) as $group) {
                               $groups[$group['ldap_value']] = array("cn"          => $group['ldap_value'],
                                                                     "search_type" => "users");
                            }
                         }
-   
+
                      } else {
                         for ($ligne_extra=0 ; $ligne_extra<$infos[$ligne][$extra_attribute]["count"] ;
                              $ligne_extra++) {
@@ -1637,7 +1637,7 @@ class AuthLDAP extends CommonDBTM {
             ldap_control_paged_result_response($ldap_connection, $sr, $cookie);
          }
       } while($cookie !== null && $cookie != '');
-      
+
       return $groups;
    }
 
@@ -2452,7 +2452,7 @@ class AuthLDAP extends CommonDBTM {
                      $available_fields[$field] = $label;
                   }
                }
-               echo "<tr><th colspan='4'>" . __('Search criterias for users') . "</th></tr>";
+               echo "<tr><th colspan='4'>" . __('Search criteria for users') . "</th></tr>";
                foreach ($available_fields as $field => $label) {
                   if ($field_counter == 0) {
                      echo "<tr class='tab_bg_1'>";
