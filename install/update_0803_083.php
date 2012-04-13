@@ -1523,6 +1523,30 @@ function update0803to083() {
                       AND `entities_id_software` = -2";
       $DB->queryOrDie($query, "0.83 update entities_id_software for root entity in glpi_entitydatas");
 
+            // For root entity already exists in entitydatas in 0.78
+      $query = "UPDATE `glpi_entitydatas`
+                SET `tickettype` = 1
+                WHERE `entities_id` = 0
+                      AND `tickettype` = 0";
+      $DB->queryOrDie($query, "0.83 update tickettype for root entity in glpi_entitydatas");
+
+      $query = "UPDATE `glpi_entitydatas`
+                SET `inquest_config` = 1
+                WHERE `entities_id` = 0
+                      AND `inquest_config` = 0";
+      $DB->queryOrDie($query, "0.83 update inquest_config for root entity in glpi_entitydatas ");
+
+      $query = "UPDATE `glpi_entitydatas`
+                SET `inquest_rate` = 0
+                WHERE `entities_id` = 0
+                      AND `inquest_rate` = '-1'";
+      $DB->queryOrDie($query, "0.83 update inquest_rate for root entity in glpi_entitydatas ");
+
+      $query = "UPDATE `glpi_entitydatas`
+                SET `inquest_delay` = 0
+                WHERE `entities_id` = 0
+                      AND `inquest_delay` = '-1'";
+      $DB->queryOrDie($query, "0.83 update inquest_delay for root entity in glpi_entitydatas ");
    }
 
    // migration to new values for inherit parent (0 => -2)
@@ -1532,7 +1556,8 @@ function update0803to083() {
       if (FieldExists("glpi_entitydatas", $field_0, false) ) {
          $query = "UPDATE `glpi_entitydatas`
                    SET `$field_0` = '-2'
-                   WHERE `$field_0` = '0'";
+                   WHERE `$field_0` = '0'
+                         AND `entities_id` > 0";
          $DB->queryOrDie($query, "0.83 new value for inherit parent 0 in glpi_entitydatas");
       }
    }
