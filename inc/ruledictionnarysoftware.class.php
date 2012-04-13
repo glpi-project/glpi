@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -82,7 +80,7 @@ class RuleDictionnarySoftware extends RuleCached {
       echo "<td class='tab_bg_1 b'>" . __('Original entity value')."</td>";
       echo "<td class='tab_bg_1 b'>" . __('Original publisher')."</td>";
       echo "<td class='tab_bg_1 b'>" . __('Modified value') . "</td>";
-      echo "<td class='tab_bg_1 b'>" . _n('Version', 'Versions',1) . "</td>";
+      echo "<td class='tab_bg_1 b'>" . _n('Version', 'Versions', 1) . "</td>";
       echo "<td class='tab_bg_1 b'>" . __('New publisher') . "</td>";
       echo "<td class='tab_bg_1 b'>" . __('To be unaware of import') . "</td>";
       echo "<td class='tab_bg_1 b'>" . __('Associable to a ticket') . "</td>\n";
@@ -99,12 +97,12 @@ class RuleDictionnarySoftware extends RuleCached {
       echo "<td class='tab_bg_2'>" . Dropdown::getDropdownName("glpi_entities",
                                                                $fields["old_entities_id"]) ."</td>";
       echo "<td class='tab_bg_2'>" . $fields["manufacturer"] . "</td>";
-      echo "<td class='tab_bg_2'>".($fields["new_value"] != '' ? $fields["new_value"]
-                                                               : __('Unchanged'))."</td>";
-      echo "<td class='tab_bg_2'>". ($fields["version"] != '' ? $fields["version"]
-                                                              : __('Unchanged'))."</td>";
+      echo "<td class='tab_bg_2'>".(($fields["new_value"] != '') ? $fields["new_value"]
+                                                                 : __('Unchanged'))."</td>";
+      echo "<td class='tab_bg_2'>". (($fields["version"] != '') ? $fields["version"]
+                                                                : __('Unchanged'))."</td>";
       echo "<td class='tab_bg_2'>".
-             ((isset($fields["new_manufacturer"]) && $fields["new_manufacturer"] != '')
+             ((isset($fields["new_manufacturer"]) && ($fields["new_manufacturer"] != ''))
               ? Dropdown::getDropdownName("glpi_manufacturers", $fields["new_manufacturer"])
               : __('Unchanged')) . "</td>";
       echo "<td class='tab_bg_2'>";
@@ -115,7 +113,7 @@ class RuleDictionnarySoftware extends RuleCached {
       }
       echo "</td>";
       echo "<td class='tab_bg_2'>".
-             ((isset($fields["is_helpdesk_visible"]) && $fields["is_helpdesk_visible"] != '')
+             ((isset($fields["is_helpdesk_visible"]) && ($fields["is_helpdesk_visible"] != ''))
               ? Dropdown::getYesNo($fields["is_helpdesk_visible"])
               : Dropdown::getYesNo(0)) . "</td>";
       $new_entity = (isset($fields['new_entities_id'])?$fields['new_entities_id']
@@ -132,7 +130,7 @@ class RuleDictionnarySoftware extends RuleCached {
       $criterias                          = array();
 
       $criterias['name']['field']         = 'name';
-      $criterias['name']['name']          = __('Software');
+      $criterias['name']['name']          = _n('Software', 'Software', 1);
       $criterias['name']['table']         = 'glpi_softwares';
 
       $criterias['manufacturer']['field'] = 'name';
@@ -215,8 +213,8 @@ class RuleDictionnarySoftware extends RuleCached {
             //display the additionnal field
             echo "<tr class='tab_bg_1'>";
             echo "<td>".$this->fields['match']."</td>";
-            echo "<td>".$actions[$action->fields['field']]['name']."</td><td>";
-            echo "<input type='text' name='version' value='$value'></td></tr>";
+            echo "<td>".$actions[$action->fields['field']]['name']."</td>";
+            echo "<td><input type='text' name='version' value='$value'></td></tr>";
          }
       }
    }

@@ -76,7 +76,8 @@ class RuleCriteria extends CommonDBChild {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                     = array();
+
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'criteria';
       $tab[1]['name']          = __('Name');
@@ -114,7 +115,7 @@ class RuleCriteria extends CommonDBChild {
               WHERE `".$this->items_id."` = '$ID'
               ORDER BY `id`";
 
-      $result = $DB->query($sql);
+      $result     = $DB->query($sql);
       $rules_list = array();
       while ($rule = $DB->fetch_assoc($result)) {
          $tmp          = new self();
@@ -144,7 +145,8 @@ class RuleCriteria extends CommonDBChild {
 
       //If pattern is wildcard, don't check the rule and return true
       //or if the condition is "already present in GLPI" : will be processed later
-      if ($pattern == Rule::RULE_WILDCARD || $condition == Rule::PATTERN_FIND) {
+      if (($pattern == Rule::RULE_WILDCARD)
+          || ($condition == Rule::PATTERN_FIND)) {
          return true;
       }
 
@@ -175,8 +177,8 @@ class RuleCriteria extends CommonDBChild {
                }
             } else if ($field == $pattern) {
                //Perform comparison with fields in lower case
-               $field   = Toolbox::strtolower($field);
-               $pattern = Toolbox::strtolower($pattern);
+               $field                        = Toolbox::strtolower($field);
+               $pattern                      = Toolbox::strtolower($pattern);
                $criterias_results[$criteria] = $pattern;
                return true;
             }
@@ -221,7 +223,7 @@ class RuleCriteria extends CommonDBChild {
                return false;
             }
             $value = mb_stripos($field, $pattern, 0, 'UTF-8');
-            if (($value !== false) && $value == 0) {
+            if (($value !== false) && ($value == 0)) {
                $criterias_results[$criteria] = $pattern;
                return true;
             }
@@ -232,7 +234,7 @@ class RuleCriteria extends CommonDBChild {
                return false;
             }
             $value = mb_stripos($field, $pattern, 0, 'UTF-8');
-            if (($value !== false) && $value >= 0) {
+            if (($value !== false) && ($value >= 0)) {
                $criterias_results[$criteria] = $pattern;
                return true;
             }
@@ -257,7 +259,7 @@ class RuleCriteria extends CommonDBChild {
                // Drop $result[0] : complete match result
                array_shift($results);
                // And add to $regex_result array
-               $regex_result[] = $results;
+               $regex_result[]               = $results;
                $criterias_results[$criteria] = $pattern;
                return true;
             }
@@ -317,7 +319,7 @@ class RuleCriteria extends CommonDBChild {
                          Rule::PATTERN_EXISTS          => __('exists'),
                          Rule::PATTERN_DOES_NOT_EXISTS => __('does not exist'));
 
-      $extra_criteria = call_user_func(array($itemtype,'addMoreCriteria'),$criterion);
+      $extra_criteria = call_user_func(array($itemtype, 'addMoreCriteria'), $criterion);
 
       foreach ($extra_criteria as $key => $value) {
          $criteria[$key] = $value;
@@ -326,7 +328,7 @@ class RuleCriteria extends CommonDBChild {
       if ($item = getItemForItemtype($itemtype)) {
          $crit = $item->getCriteria($criterion);
 
-         if (isset($crit['type']) && $crit['type'] == 'dropdown') {
+         if (isset($crit['type']) && ($crit['type'] == 'dropdown')) {
             $crititemtype = getItemtypeForTable($crit['table']);
 
             if (($item = getItemForItemtype($crititemtype))

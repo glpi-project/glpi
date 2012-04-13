@@ -75,7 +75,8 @@ class RuleAction extends CommonDBChild {
 
    function getSearchOptions() {
 
-      $tab = array();
+      $tab                     = array();
+
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'action_type';
       $tab[1]['name']          = self::getTypeName(1);
@@ -128,8 +129,8 @@ class RuleAction extends CommonDBChild {
     *
     * @param $action    action type
     * @param $ruleid    rule ID
-    * @param $field  field name
-    * @param $value  value
+    * @param $field     field name
+    * @param $value     value
    **/
    function addActionByAttributes($action, $ruleid, $field, $value) {
 
@@ -153,7 +154,7 @@ class RuleAction extends CommonDBChild {
       if ($rule = getItemForItemtype($sub_type)) {
          $actions_options = $rule->getActions();
 
-         $actions = array("assign");
+         $actions         = array("assign");
          if (isset($actions_options[$value]['force_actions'])) {
             $actions = $actions_options[$value]['force_actions'];
          }
@@ -203,8 +204,8 @@ class RuleAction extends CommonDBChild {
 
       $results = array();
 
-      if (count($regex_result)>0) {
-         if (preg_match_all("/#([0-9])/",$action,$results)>0) {
+      if (count($regex_result) > 0) {
+         if (preg_match_all("/#([0-9])/", $action, $results) > 0) {
             foreach ($results[1] as $result) {
                $action = str_replace("#$result",
                                      (isset($regex_result[$result])?$regex_result[$result]:''),
@@ -227,9 +228,9 @@ class RuleAction extends CommonDBChild {
          $actions_options = $rule->getActions();
 
          $actions = array();
-         $res = $DB->query("SELECT `field`
-                            FROM `".$this->getTable()."`
-                            WHERE `".$this->items_id."` = '".$rules_id."'");
+         $res     = $DB->query("SELECT `field`
+                                FROM `".$this->getTable()."`
+                                WHERE `".$this->items_id."` = '".$rules_id."'");
 
          while ($action = $DB->fetch_assoc($res)) {
             if (isset($actions_options[$action["field"]])) {
@@ -316,9 +317,9 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   case "dropdown_management":
-                     Dropdown::showGlobalSwitch(0,array('name'                => 'value',
-                                                        'management_restrict' => 2,
-                                                        'withtemplate'        => false));
+                     Dropdown::showGlobalSwitch(0, array('name'                => 'value',
+                                                         'management_restrict' => 2,
+                                                         'withtemplate'        => false));
                      $display = true;
                      break;
 

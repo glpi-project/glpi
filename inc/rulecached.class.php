@@ -65,6 +65,7 @@ class RuleCached extends Rule {
 
 
    function cleanDBonPurge() {
+
       parent::cleanDBonPurge();
 
       $this->deleteCacheByRuleId($this->fields['id']);
@@ -135,7 +136,7 @@ class RuleCached extends Rule {
 
       echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
       echo "<td class='tab_bg_2'>".
-            ($fields["new_value"]!=''?$fields["new_value"]:__('Unchanged'))."</td>";
+            (($fields["new_value"] != '') ?$fields["new_value"]:__('Unchanged'))."</td>";
    }
 
 }

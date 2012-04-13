@@ -50,7 +50,7 @@ class RuleDictionnaryOperatingSystemServicePack extends RuleDictionnaryDropdown 
 
       $criterias                  = array();
       $criterias['name']['field'] = 'name';
-      $criterias['name']['name']  = __('Service Pack');
+      $criterias['name']['name']  = __('Service pack');
       $criterias['name']['table'] = 'glpi_operatingsystemservicepacks';
 
       return $criterias;
@@ -63,7 +63,7 @@ class RuleDictionnaryOperatingSystemServicePack extends RuleDictionnaryDropdown 
    function getActions() {
 
       $actions                          = array();
-      $actions['name']['name']          = __('Service Pack');
+      $actions['name']['name']          = __('Service pack');
       $actions['name']['force_actions'] = array('append_regex_result', 'assign', 'regex_result');
 
       return $actions;

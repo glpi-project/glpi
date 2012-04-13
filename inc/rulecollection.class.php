@@ -39,23 +39,23 @@ class RuleCollection extends CommonDBTM {
    /// Rule type
    public $sub_type;
    /// process collection stop on first matched rule
-   var $stop_on_first_match = false;
+   var $stop_on_first_match                   = false;
    /// Right needed to use this rule collection
-   var $right = "config";
+   var $right                                 = "config";
    /// field used to order rules
-   var $orderby = "ranking";
+   var $orderby                               = "ranking";
    /// Processing several rules : use result of the previous one to computer the current one
    var $use_output_rule_process_as_next_input = false;
    /// Rule collection can be replay (for dictionnary)
-   var $can_replay_rules = false;
+   var $can_replay_rules                      = false;
    /// List of rules of the rule collection
-   var $RuleList = NULL;
+   var $RuleList                              = NULL;
    /// Menu type
-   var $menu_type = "rule";
+   var $menu_type                             = "rule";
    /// Menu option
-   var $menu_option = "";
+   var $menu_option                           = "";
 
-   var $entity = 0;
+   var $entity                                = 0;
 
 
    /**
@@ -104,10 +104,11 @@ class RuleCollection extends CommonDBTM {
    function getCollectionSize($recursive=true) {
 
       return countElementsInTable("glpi_rules",
-                                  "sub_type='".$this->getRuleClassName()."'".
-                                            getEntitiesRestrictRequest(" AND", "glpi_rules",
-                                                                       "entities_id", $this->entity,
-                                                                       $recursive));
+                                  "sub_type = '".$this->getRuleClassName()."'".
+                                               getEntitiesRestrictRequest(" AND", "glpi_rules",
+                                                                          "entities_id",
+                                                                          $this->entity,
+                                                                          $recursive));
    }
 
 
@@ -195,7 +196,7 @@ class RuleCollection extends CommonDBTM {
       $result = $DB->query($sql);
 
       if ($result) {
-         while ($data=$DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             //For each rule, get a Rule object with all the criterias and actions
             $tempRule               = $this->getRuleClass();
             $tempRule->fields       = $data;
@@ -229,7 +230,7 @@ class RuleCollection extends CommonDBTM {
          if ($result) {
             $this->RuleList->list = array();
 
-            while ($rule=$DB->fetch_assoc($result)) {
+            while ($rule = $DB->fetch_assoc($result)) {
                //For each rule, get a Rule object with all the criterias and actions
                $tempRule = $this->getRuleClass();
 
@@ -375,9 +376,9 @@ class RuleCollection extends CommonDBTM {
                            && ($p['inherited'] || $p['childrens']));
 
       // Do not know what it is ?
-      $canedit = (Session::haveRight($this->right, "w") && !$display_entities);
+      $canedit    = (Session::haveRight($this->right, "w") && !$display_entities);
 
-      $nb = $this->getCollectionSize($p['inherited']);
+      $nb         = $this->getCollectionSize($p['inherited']);
       $p['start'] = (isset($options["start"]) ? $options["start"] : 0);
 
       if ($p['start'] >= $nb) {
@@ -422,7 +423,8 @@ class RuleCollection extends CommonDBTM {
       }
       echo "</table>\n";
 
-      if ($canedit && $nb>0) {
+      if ($canedit
+          && ($nb > 0)) {
          Html::openArrowMassives("ruleactions_form", true);
 
          echo "<select name='massiveaction' id='massiveaction'>";
@@ -449,7 +451,7 @@ class RuleCollection extends CommonDBTM {
          if ($this->can_replay_rules) {
             echo "</td>"; // close td of Html::openArrowMassives
             echo "<td><input type='submit' name='replay_rule' value='" .
-                   __s('Replay the dictionary rules') ."' class='submit'></td>";
+                       __s('Replay the dictionary rules') ."' class='submit'></td>";
             echo "<td>"; // open td for Html::closeArrowMassives
          }
          $options = array();
@@ -504,8 +506,8 @@ class RuleCollection extends CommonDBTM {
               WHERE `id` ='$ID'";
 
       if ($result = $DB->query($sql)) {
-         if ($DB->numrows($result)==1) {
-            $current_rank=$DB->result($result,0,0);
+         if ($DB->numrows($result) == 1) {
+            $current_rank = $DB->result($result, 0, 0);
             // Search rules to switch
             $sql2 = "SELECT `id`, `ranking`
                      FROM `glpi_rules`
@@ -514,14 +516,14 @@ class RuleCollection extends CommonDBTM {
             switch ($action) {
                case "up" :
                   $sql2 .= " AND `ranking` < '$current_rank'
-                           ORDER BY `ranking` DESC
-                           LIMIT 1";
+                            ORDER BY `ranking` DESC
+                            LIMIT 1";
                   break;
 
                case "down" :
                   $sql2 .= " AND `ranking` > '$current_rank'
-                           ORDER BY `ranking` ASC
-                           LIMIT 1";
+                            ORDER BY `ranking` ASC
+                            LIMIT 1";
                   break;
 
                default :
@@ -529,7 +531,7 @@ class RuleCollection extends CommonDBTM {
             }
 
             if ($result2 = $DB->query($sql2)) {
-               if ($DB->numrows($result2)==1) {
+               if ($DB->numrows($result2) == 1) {
                   list($other_ID,$new_rank) = $DB->fetch_row($result2);
 
                   $rule = $this->getRuleClass();
@@ -569,7 +571,7 @@ class RuleCollection extends CommonDBTM {
     *
     * @param $ID        of the rule to move
     * @param $ref_ID    of the rule position  (0 means all, so before all or after all)
-    * @param $type      of move : after or before ( default $type='after')
+    * @param $type      of move : after or before ( default 'after')
     *
     * @return true if all ok
    **/
@@ -601,13 +603,13 @@ class RuleCollection extends CommonDBTM {
          $rank = 1;
       }
 
-      $rule = $this->getRuleClass();
+      $rule   = $this->getRuleClass();
 
       $result = false;
 
       // Move others rules in the collection
       if ($old_rank < $rank) {
-         if ($type=="before") {
+         if ($type == "before") {
             $rank--;
          }
 
@@ -624,7 +626,7 @@ class RuleCollection extends CommonDBTM {
          }
 
       } else if ($old_rank > $rank) {
-         if ($type=="after") {
+         if ($type == "after") {
             $rank++;
          }
 
@@ -645,7 +647,8 @@ class RuleCollection extends CommonDBTM {
       }
 
       // Move the rule
-      if ($result && $old_rank != $rank) {
+      if ($result
+          && ($old_rank != $rank)) {
          $result = $rule->update(array('id'      => $ID,
                                        'ranking' => $rank));
       }
@@ -669,7 +672,7 @@ class RuleCollection extends CommonDBTM {
 
       // Get Collection datas
       $this->getCollectionDatas(1,1);
-      $input = $this->prepareInputDataForProcess($input, $params);
+      $input                      = $this->prepareInputDataForProcess($input, $params);
       $output["_no_rule_matches"] = true;
 
       if (count($this->RuleList->list)) {
@@ -709,7 +712,7 @@ class RuleCollection extends CommonDBTM {
       $input = $this->prepareInputDataForTestProcess();
 
       if (count($input)) {
-         $rule = $this->getRuleClass();
+         $rule      = $this->getRuleClass();
          $criterias = $rule->getCriterias();
          echo "<form name='testrule_form' id='testrulesengine_form' method='post' action='$target'>";
          echo "\n<div class='center'>";
@@ -722,9 +725,9 @@ class RuleCollection extends CommonDBTM {
 
             if (isset($criterias[$criteria])) {
                $criteria_constants = $criterias[$criteria];
-               echo "<td>".$criteria_constants["name"]."&nbsp;:</td>";
+               echo "<td>".$criteria_constants["name"]."</td>";
             } else {
-               echo "<td>".$criteria."&nbsp;:</td>";
+               echo "<td>".$criteria."</td>";
             }
 
             echo "<td>";
@@ -736,7 +739,8 @@ class RuleCollection extends CommonDBTM {
          $rule->showSpecificCriteriasForPreview($_POST);
 
          echo "<tr><td class='tab_bg_2 center' colspan='2'>";
-         echo "<input type='submit' name='test_all_rules' value='". __s('Test')."' class='submit'>";
+         echo "<input type='submit' name='test_all_rules' value='". _sx('button','Test')."'
+                class='submit'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getRuleClassName() . "'>";
          echo "</td></tr>\n";
          echo "</table></div>";
@@ -775,7 +779,8 @@ class RuleCollection extends CommonDBTM {
                $output["result"][$rule->fields["id"]]["id"] = $rule->fields["id"];
                $rule->process($input, $output, $params);
 
-               if ($output["_rule_process"] && $this->stop_on_first_match) {
+               if ($output["_rule_process"]
+                   && $this->stop_on_first_match) {
                   unset($output["_rule_process"]);
                   $output["result"][$rule->fields["id"]]["result"] = 1;
                   $output["_ruleid"]                               = $rule->fields["id"];
@@ -825,11 +830,11 @@ class RuleCollection extends CommonDBTM {
       global $DB;
 
       $input = array();
-      $res = $DB->query("SELECT DISTINCT `glpi_rulecriterias`.`criteria`
-                         FROM `glpi_rulecriterias`, `glpi_rules`
-                         WHERE `glpi_rules`.`is_active` = '1'
-                               AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
-                               AND `glpi_rules`.`sub_type` = '".$this->getRuleClassName()."'");
+      $res   = $DB->query("SELECT DISTINCT `glpi_rulecriterias`.`criteria`
+                           FROM `glpi_rulecriterias`, `glpi_rules`
+                           WHERE `glpi_rules`.`is_active` = '1'
+                                 AND `glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`
+                                 AND `glpi_rules`.`sub_type` = '".$this->getRuleClassName()."'");
 
       while ($data = $DB->fetch_assoc($res)) {
          $input[] = $data["criteria"];
@@ -841,7 +846,7 @@ class RuleCollection extends CommonDBTM {
    /**
     * Show form displaying results for rule engine preview
     *
-    * @param $target          where to go
+    * @param $target       where to go
     * @param $input  array of data
    **/
    function showRulesEnginePreviewResultsForm($target, array $input) {
@@ -884,7 +889,7 @@ class RuleCollection extends CommonDBTM {
          echo "</table>";
       }
 
-      $output = $this->cleanTestOutputCriterias($output);
+      $output        = $this->cleanTestOutputCriterias($output);
       unset($output["result"]);
       $global_result = (count($output)?1:0);
 
@@ -905,7 +910,7 @@ class RuleCollection extends CommonDBTM {
 
       //If output array contains keys begining with _ : drop it
       foreach ($output as $criteria => $value) {
-         if ($criteria[0]=='_') {
+         if ($criteria[0] == '_') {
             unset($output[$criteria]);
          }
       }
@@ -928,8 +933,8 @@ class RuleCollection extends CommonDBTM {
       echo "<table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>" . __('Rule results') . "</th></tr>\n";
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'>".__('Validation')."</td><td><span class='b'>".
-             Dropdown::getYesNo($global_result)."</span></td>";
+      echo "<td class='center'>".__('Validation')."</td>";
+      echo "<td><span class='b'>".Dropdown::getYesNo($global_result)."</span></td>";
 
       $output = $this->preProcessPreviewResults($output);
 
@@ -1042,7 +1047,7 @@ class RuleCollection extends CommonDBTM {
    **/
    function defineTabs($options=array()) {
 
-      $ong = array();
+      $ong               = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
       $ong['no_all_tab'] = true;
       return $ong;

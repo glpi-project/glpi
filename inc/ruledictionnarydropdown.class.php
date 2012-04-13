@@ -72,10 +72,10 @@ class RuleDictionnaryDropdown extends RuleCached {
 
       if ($this->show_cache) {
          echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
-         echo "<td class='tab_bg_2'>".($fields["manufacturer"]!=''?$fields["manufacturer"]:'').
+         echo "<td class='tab_bg_2'>".(($fields["manufacturer"] != '')?$fields["manufacturer"]:'').
               "</td>";
-         echo "<td class='tab_bg_2'>".($fields["new_value"]!='' ? $fields["new_value"]
-                                                                : __('Unchanged'))."</td>";
+         echo "<td class='tab_bg_2'>".(($fields["new_value"] != '') ? $fields["new_value"]
+                                                                    : __('Unchanged'))."</td>";
       } else {
          parent::showCacheRuleDetail($fields);
       }
