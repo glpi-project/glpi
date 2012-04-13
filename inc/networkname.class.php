@@ -439,9 +439,13 @@ class NetworkName extends FQDNLabel {
          $name->getEmpty();
       }
 
-      echo "<tr class='tab_bg_1'><th colspan='4'>" . $name->getTypeName(1);
+      echo "<tr class='tab_bg_1'><th colspan='4'>";
+       // If the networkname is defined, we must be able to edit it. So we make a link
       if ($name->getID() > 0) {
+         echo "<a href='".$name->getLinkURL()."'>".$name->getTypeName(1)."</a>";
          echo "<input type='hidden' name='NetworkName_id' value='".$name->getID()."'>\n";
+      } else {
+         echo $name->getTypeName(1);
       }
       echo "</th></tr>\n";
 
@@ -465,7 +469,7 @@ class NetworkName extends FQDNLabel {
                            'name'        => 'NetworkName_fqdns_id',
                            'entity'      => $name->getEntityID(),
                            'displaywith' => array('view')));
-      echo "</td></tr>\n";
+      echo "</td>\n";
       echo "</tr>\n";
    }
 
