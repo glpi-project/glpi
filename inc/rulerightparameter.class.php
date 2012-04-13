@@ -90,7 +90,7 @@ class RuleRightParameter extends CommonDropdown {
 
 
    static function getTypeName($nb=0) {
-      return _n('LDAP criteria', 'LDAP criterias', $nb);
+      return _n('LDAP criterion', 'LDAP criteria', $nb);
    }
 
 }

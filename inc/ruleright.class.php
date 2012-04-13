@@ -103,12 +103,12 @@ class RuleRight extends Rule {
       echo "<input type=hidden name='entities_id' value='-1'>";
       echo "<input type=hidden name='affectentity' value='$ID'>";
       echo "<input type=hidden name='_method' value='AddRule'>";
-      echo "<input type='submit' name='execute' value=\"".__s('Add')."\" class='submit'>";
+      echo "<input type='submit' name='execute' value=\""._sx('button','Add')."\" class='submit'>";
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='center'>"._n('Profile', 'Profiles', 1) . "</td><td>";
-      Dropdown::show('Profile');
+      Profile::dropdown();
       echo "</td><td><span class='small_space'>".__('Recursive') . "</span></td><td colspan='3'>";
       Dropdown::showYesNo("is_recursive",0);
       echo "</td></tr>\n";
@@ -159,7 +159,7 @@ class RuleRight extends Rule {
                         break;
 
                      case "_ignore_user_import" :
-                        $continue = false;
+                        $continue                   = false;
                         $output_src["_stop_import"] = true;
                         break;
                   } // switch (field)
@@ -216,14 +216,15 @@ class RuleRight extends Rule {
       if ($continue) {
          //Nothing to be returned by the function :
          //Store in session the entity and/or right
-         if ($entity != '' && $right != '') {
+         if (($entity != '')
+             && ($right != '')) {
             $output["_ldap_rules"]["rules_entities_rights"][] = array($entity, $right,
                                                                       $is_recursive);
          } else if ($entity != '') {
 
             if (!is_array($entity)) {
-              $entities_array = array($entity, $is_recursive);
-              $output["_ldap_rules"]["rules_entities"][]=array($entities_array);
+              $entities_array                            = array($entity, $is_recursive);
+              $output["_ldap_rules"]["rules_entities"][] = array($entities_array);
 
             //If it comes from a regex with multiple results
             } else {
@@ -231,7 +232,7 @@ class RuleRight extends Rule {
             }
 
          } else if ($right != '') {
-            $output["_ldap_rules"]["rules_rights"][]=$right;
+            $output["_ldap_rules"]["rules_rights"][] = $right;
          }
 
          return $output;
@@ -252,7 +253,7 @@ class RuleRight extends Rule {
       static $criterias = array();
 
       if (!count($criterias)) {
-         $criterias['common']                   = __('Global criterias');
+         $criterias['common']                   = __('Global criteria');
 
          $criterias['LDAP_SERVER']['table']     = 'glpi_authldaps';
          $criterias['LDAP_SERVER']['field']     = 'name';
@@ -345,7 +346,7 @@ class RuleRight extends Rule {
    **/
    function addSpecificCriteriasToArray(&$criterias) {
 
-      $criterias['ldap'] = __('LDAP criterias');
+      $criterias['ldap'] = __('LDAP criteria');
       foreach (getAllDatasFromTable('glpi_rulerightparameters', '', true) as $datas ) {
          $criterias[$datas["value"]]['name']      = $datas["name"];
          $criterias[$datas["value"]]['field']     = $datas["value"];

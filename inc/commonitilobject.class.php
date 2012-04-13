@@ -1869,7 +1869,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[65]['table']         = 'glpi_groups';
       $tab[65]['field']         = 'completename';
       $tab[65]['datatype']      = 'dropdown';
-      $tab[65]['name']          = __('Watcher group');
+      $tab[65]['name']          = __('Watchers group');
       $tab[65]['forcegroupby']  = true;
       $tab[65]['massiveaction'] = false;
       $tab[65]['condition']     = 'is_requester';
@@ -1905,7 +1905,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[8]['table']          = 'glpi_groups';
       $tab[8]['field']          = 'completename';
       $tab[8]['datatype']       = 'dropdown';
-      $tab[8]['name']           = __('Technician group');
+      $tab[8]['name']           = __('Technicians group');
       $tab[8]['forcegroupby']   = true;
       $tab[8]['massiveaction']  = false;
       $tab[8]['condition']      = 'is_assign';
@@ -1973,11 +1973,11 @@ abstract class CommonITILObject extends CommonDBTM {
             $icontitle = __('Group');
             switch ($type) {
                case self::REQUESTER :
-                  $icontitle = __('Requester group');
+                  $icontitle = __('Requesters group');
                   break;
 
                case self::OBSERVER :
-                  $icontitle = __('Watcher group');
+                  $icontitle = __('Watchers group');
                   break;
 
                case self::ASSIGN :

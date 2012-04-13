@@ -282,7 +282,7 @@ class RuleImportComputer extends Rule {
 
                // is a real complex criteria
                if ($crit->fields["condition"] == Rule::PATTERN_FIND) {
-                  if (!isset($input[$criterion]) || $input[$criterion] == '') {
+                  if (!isset($input[$criterion]) || ($input[$criterion] == '')) {
                      $continue = false;
                   } else  {
                      $complex_criterias[] = $crit;
@@ -400,7 +400,7 @@ class RuleImportComputer extends Rule {
       $result_glpi = $DB->query($sql_glpi);
 
       if ($DB->numrows($result_glpi) > 0) {
-         while ($data=$DB->fetch_assoc($result_glpi)) {
+         while ($data = $DB->fetch_assoc($result_glpi)) {
             $this->criterias_results['found_computers'][] = $data['id'];
          }
          return true;

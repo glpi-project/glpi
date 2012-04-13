@@ -84,7 +84,7 @@ class RuleMailCollector extends Rule {
     * @see inc/Rule::getTitle()
    **/
    function getTitle() {
-      return __('Rules for assigning a ticket created through a mail receiver');
+      return __('Rules for assigning a ticket created through a mails receiver');
    }
 
 
@@ -122,7 +122,6 @@ class RuleMailCollector extends Rule {
       $criterias['to']['table']                       = '';
       $criterias['to']['type']                        = 'text';
 
-
       $criterias['in_reply_to']['name']               = __('In-Reply-To email header');
       $criterias['in_reply_to']['table']              = '';
       $criterias['in_reply_to']['type']               = 'text';
@@ -150,14 +149,15 @@ class RuleMailCollector extends Rule {
 
       $criterias['GROUPS']['table']                   = 'glpi_groups';
       $criterias['GROUPS']['field']                   = 'completename';
-      $criterias['GROUPS']['name']                    = sprintf(__('%1$s: %2$s'),__('User'),__('Group'));
+      $criterias['GROUPS']['name']                    = sprintf(__('%1$s: %2$s'),__('User'),
+                                                                __('Group'));
       $criterias['GROUPS']['linkfield']               = '';
       $criterias['GROUPS']['type']                    = 'dropdown';
       $criterias['GROUPS']['virtual']                 = true;
       $criterias['GROUPS']['id']                      = 'groups';
 
       $criterias['KNOWN_DOMAIN']['field']             = 'name';
-      $criterias['KNOWN_DOMAIN']['name']              = __('Mail domain is known');
+      $criterias['KNOWN_DOMAIN']['name']              = __('Known mail domain');
       $criterias['KNOWN_DOMAIN']['table']             = 'glpi_entities';
       $criterias['KNOWN_DOMAIN']['type']              = 'yesno';
       $criterias['KNOWN_DOMAIN']['virtual']           = true;
@@ -199,7 +199,7 @@ class RuleMailCollector extends Rule {
    **/
    function getActions() {
 
-      $actions = array();
+      $actions                                              = array();
 
       $actions['entities_id']['name']                       = __('Entity');
       $actions['entities_id']['type']                       = 'dropdown';
@@ -217,11 +217,13 @@ class RuleMailCollector extends Rule {
       $actions['_affect_entity_by_user_entity']['type']     = 'yesonly';
       $actions['_affect_entity_by_user_entity']['table']    = '';
 
-      $actions['_refuse_email_no_response']['name']    = __('Reject email (without email response)');
+      $actions['_refuse_email_no_response']['name']    = sprintf(__('%1$s (%2$s)'), __('Reject email'),
+                                                                 __('without email response'));
       $actions['_refuse_email_no_response']['type']    = 'yesonly';
       $actions['_refuse_email_no_response']['table']   = '';
 
-      $actions['_refuse_email_with_response']['name']  = __('Reject email (with email response)');
+      $actions['_refuse_email_with_response']['name']  = sprintf(__('%1$s (%2$s)'), __('Reject email'),
+                                                                 __('with email response'));
       $actions['_refuse_email_with_response']['type']  = 'yesonly';
       $actions['_refuse_email_with_response']['table'] = '';
 
@@ -277,7 +279,7 @@ class RuleMailCollector extends Rule {
 
                            //Case 2 : check if there's only one profile for this user
                            if ((isset($this->criterias_results['ONE_PROFILE'])
-                                && count($entities) == 1)
+                                && (count($entities) == 1))
                                || !isset($this->criterias_results['ONE_PROFILE'])) {
 
                               if (count($entities) == 1) {
@@ -315,8 +317,8 @@ class RuleMailCollector extends Rule {
                case "regex_result" :
                   foreach ($this->regex_results as $regex_result) {
                      $entity_found = -1;
-                     $res = RuleAction::getRegexResultById($action->fields["value"],
-                                                           $regex_result);
+                     $res          = RuleAction::getRegexResultById($action->fields["value"],
+                                                                    $regex_result);
                      if ($res != null) {
                         switch ($action->fields["field"]) {
                            case "_affect_entity_by_domain" :
