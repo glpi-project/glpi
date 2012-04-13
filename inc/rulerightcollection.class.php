@@ -124,7 +124,7 @@ class RuleRightCollection extends RuleCollection {
          if (isset($actions[$criteria])) { // ignore _* fields
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center'>".$actions[$criteria]["name"]."</td>";
-            echo "<td class='center'>".$rule->getActionValue($criteria,$value)."</td></tr>\n";
+            echo "<td class='center'>".$rule->getActionValue($criteria, $value)."</td></tr>\n";
          }
       }
       echo "</tr>";
@@ -207,8 +207,8 @@ class RuleRightCollection extends RuleCollection {
          $rule_fields = $this->getFieldsToLookFor();
 
          //Get all the datas we need from ldap to process the rules
-         $sz         = @ ldap_read($params["connection"], $params["userdn"], "objectClass=*",
-                                   $rule_fields);
+         $sz         = @ldap_read($params["connection"], $params["userdn"], "objectClass=*",
+                                  $rule_fields);
          $rule_input = AuthLDAP::get_entries_clean($params["connection"], $sz);
 
          if (count($rule_input)) {
@@ -266,9 +266,9 @@ class RuleRightCollection extends RuleCollection {
       $fields = array();
       foreach ($criterias as $criteria) {
          if (isset($criteria['virtual']) && $criteria['virtual']) {
-            $fields[]=$criteria['id'];
+            $fields[] = $criteria['id'];
          } else {
-            $fields[]=$criteria['field'];
+            $fields[] = $criteria['field'];
          }
       }
       return $fields;

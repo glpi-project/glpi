@@ -68,7 +68,7 @@ class RuleOcs extends Rule {
    /**
     * @see inc/Rule::executeActions()
    **/
-   function executeActions($output,$params) {
+   function executeActions($output, $params) {
 
       if (count($this->actions)) {
          foreach ($this->actions as $action) {
@@ -83,7 +83,7 @@ class RuleOcs extends Rule {
                      //Get the TAG from the regex's results
                      if (isset($this->regex_results[0])) {
                         $res = RuleAction::getRegexResultById($action->fields["value"],
-                                                             $this->regex_results[0]);
+                                                              $this->regex_results[0]);
                      } else {
                         $res = $action->fields["value"];
                      }

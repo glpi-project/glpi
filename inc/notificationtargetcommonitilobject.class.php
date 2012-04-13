@@ -379,19 +379,19 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $this->addTarget(Notification::SUPPLIER, __('Supplier'));
          $this->addTarget(Notification::SUPERVISOR_ASSIGN_GROUP,
                           __('Manager of the group in charge of the ticket'));
-         $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP, __('Requester group manager'));
+         $this->addTarget(Notification::SUPERVISOR_REQUESTER_GROUP, __('Requesters group manager'));
          $this->addTarget(Notification::ITEM_TECH_IN_CHARGE,
                           __('Technician in charge of the hardware'));
          $this->addTarget(Notification::ITEM_TECH_GROUP_IN_CHARGE,
                           __('Group in charge of the hardware'));
          $this->addTarget(Notification::ASSIGN_TECH, __('Technician in charge of the ticket'));
-         $this->addTarget(Notification::REQUESTER_GROUP, __('Requester group'));
+         $this->addTarget(Notification::REQUESTER_GROUP, __('Requesters group'));
          $this->addTarget(Notification::AUTHOR, __('Requester'));
          $this->addTarget(Notification::ITEM_USER, __('Hardware user'));
          $this->addTarget(Notification::ASSIGN_GROUP, __('Group in charge of the ticket'));
-         $this->addTarget(Notification::OBSERVER_GROUP, __('Watcher group'));
+         $this->addTarget(Notification::OBSERVER_GROUP, __('Watchers group'));
          $this->addTarget(Notification::OBSERVER, __('Watcher'));
-         $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP,__('Watcher group manager'));
+         $this->addTarget(Notification::SUPERVISOR_OBSERVER_GROUP,__('Watchers group manager'));
       }
 
       if (($event == 'validation') || ($event == 'validation_answer')) {
@@ -793,8 +793,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
                     $objettype.'.lastupdater'           => __('Last updater'),
                     $objettype.'.assigntousers'         => __('Assigned to technicians'),
                     $objettype.'.assigntosupplier'      => __('Assigned to a supplier'),
-                    $objettype.'.groups'                => __('Requester groups'),
-                    $objettype.'.observergroups'        => __('Watcher groups'),
+                    $objettype.'.groups'                => __('Requesters groups'),
+                    $objettype.'.observergroups'        => __('Watchers groups'),
                     $objettype.'.assigntogroups'        => __('Assigned to groups'),
                     $objettype.'.solution.type'         => __('Solution type'),
                     $objettype.'.solution.description'  => _n('Solution', 'Solutions', 1),

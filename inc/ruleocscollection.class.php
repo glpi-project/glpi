@@ -89,7 +89,7 @@ class RuleOcsCollection extends RuleCollection {
       $fields          = $this->getFieldsForQuery();
       $rule_parameters = array();
 
-      $select_sql = "";
+      $select_sql      = "";
 
       //Build the select request
       foreach ($fields as $field) {
@@ -101,7 +101,7 @@ class RuleOcsCollection extends RuleCollection {
 
             //TAG and DOMAIN should come from the OCS DB
             default :
-               $select_sql .= ($select_sql != "" ? " , " : "") . $field;
+               $select_sql .= (($select_sql != "") ? " , " : "") . $field;
          }
       }
 
@@ -109,7 +109,8 @@ class RuleOcsCollection extends RuleCollection {
       //Remove all the non duplicated table names
       $from_sql = "FROM `hardware` ";
       foreach ($tables as $table => $linkfield) {
-         if ($table!='hardware' && !empty($linkfield)) {
+         if (($table != 'hardware')
+             && !empty($linkfield)) {
             $from_sql .= " LEFT JOIN `$table` ON (`$table`.`$linkfield` = `hardware`.`ID`)";
          }
       }
@@ -121,15 +122,16 @@ class RuleOcsCollection extends RuleCollection {
                  WHERE `hardware`.`ID` = '$computers_id'";
 
          OcsServer::checkOCSconnection($this->ocsservers_id);
-         $result = $DBocs->query($sql);
-         $ocs_datas = array();
-         $fields = $this->getFieldsForQuery(1);
+         $result     = $DBocs->query($sql);
+         $ocs_datas  = array();
+         $fields     = $this->getFieldsForQuery(1);
 
          //May have more than one line : for example in case of multiple network cards
          if ($DBocs->numrows($result) > 0) {
             while ($datas = $DBocs->fetch_assoc($result)) {
                foreach ($fields as $field) {
-                  if ($field != "OCS_SERVER" && isset($datas[$field])) {
+                  if (($field != "OCS_SERVER")
+                      && isset($datas[$field])) {
                      $ocs_datas[$field][] = $datas[$field];
                   }
                }
@@ -138,7 +140,7 @@ class RuleOcsCollection extends RuleCollection {
          //This cas should never happend but...
          //Sometimes OCS can't find network ports but fill the right ip in hardware table...
          //So let's use the ip to proceed rules (if IP is a criteria of course)
-         if (in_array("IPADDRESS",$fields) && !isset($ocs_datas['IPADDRESS'])) {
+         if (in_array("IPADDRESS", $fields) && !isset($ocs_datas['IPADDRESS'])) {
             $ocs_datas['IPADDRESS'] = OcsServer::getGeneralIpAddress($this->ocsservers_id,
                                                                      $computers_id);
          }
@@ -159,7 +161,7 @@ class RuleOcsCollection extends RuleCollection {
       $tables = array();
       foreach ($rule->getCriterias() as $criteria) {
          if ((!isset($criteria['virtual']) || !$criteria['virtual'])
-             && $criteria['table'] != ''
+             && ($criteria['table'] != '')
              && !isset($tables[$criteria["table"]])) {
 
             $tables[$criteria['table']] = $criteria['linkfield'];
@@ -170,7 +172,7 @@ class RuleOcsCollection extends RuleCollection {
 
 
    /**
-    *  * Get fields needed to process criterias
+    * Get fields needed to process criterias
     *
     * @param $withouttable fields without tablename ? (default 0)
     *
@@ -197,8 +199,9 @@ class RuleOcsCollection extends RuleCollection {
             }
 
             //If the field name is not null AND a table name is provided
-            if (($criteria['field'] != ''
+            if ((($criteria['field'] != '')
                  && (!isset($criteria['virtual']) || !$criteria['virtual']))) {
+
                if ( $criteria['table'] != '') {
                   $fields[] = $criteria['table'].".".$criteria['field'].$as;
                } else {
@@ -225,7 +228,7 @@ class RuleOcsCollection extends RuleCollection {
       foreach ($rule->getCriterias() as $criteria) {
          //If the field name is not null AND a table name is provided
          if ((!isset($criteria['virtual']) || !$criteria['virtual'])
-             && $criteria['linkfield'] != '') {
+             && ($criteria['linkfield'] != '')) {
             $fields[] = $criteria['table'].".".$criteria['linkfield'];
          }
       }
