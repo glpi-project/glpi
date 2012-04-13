@@ -1043,7 +1043,7 @@ class Rule extends CommonDBTM {
          $link = sprintf(__('%1$s %2$s'), $link,
                          Html::showToolTip($this->fields["comment"], array('display' => false)));
       }
-      echo "<td>".$lLink."</td>";
+      echo "<td>".$link."</td>";
       echo "<td>".$this->fields["description"]."</td>";
       echo "<td>".Dropdown::getYesNo($this->fields["is_active"])."</td>";
 
