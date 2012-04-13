@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -68,6 +66,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
     * @see inc/RuleCollection::getTitle()
    **/
    function getTitle() {
+      //TRANS: software in plural
       return __('Dictionnary of software');
    }
 
@@ -79,7 +78,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
       //If output array contains keys begining with _ : drop it
       foreach ($output as $criteria => $value) {
-         if ($criteria[0] == '_' && $criteria != '_ignore_ocs_import') {
+         if (($criteria[0] == '_') && ($criteria != '_ignore_ocs_import')) {
             unset ($output[$criteria]);
          }
       }
@@ -106,13 +105,14 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
            "</td></tr>\n";
       echo "<tr><th colspan='2' class='b'>" . __('Manufacturer choice') . "</th</tr>\n";
       echo "<tr><td class='tab_bg_2 center'>" .
-            __('Replay dictionary rules for the manufacturer(s)<br> ( ----- = All)') . "</td>";
+            __('Replay dictionary rules for manufacturers<br> ( ----- = All)') . "</td>";
       echo "<td class='tab_bg_2 center'>";
-      Dropdown::show('Manufacturer', array('name' => 'manufacturer'));
+      Manufacturer::dropdown(array('name' => 'manufacturer'));
       echo "</td></tr>\n";
 
       echo "<tr><td class='tab_bg_2 center' colspan='2'>";
-      echo "<input type='submit' name='replay_rule' value=\"".__s('Post')."\" class='submit'>";
+      echo "<input type='submit' name='replay_rule' value=\""._sx('button', 'Post')."\"
+             class='submit'>";
       echo "<input type='hidden' name='replay_confirm' value='replay_confirm'";
       echo "</td></tr>";
       echo "</table>\n";
@@ -147,7 +147,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          $sql .= "WHERE `glpi_softwares`.`is_deleted` = '0'
                         AND `glpi_softwares`.`is_template` = '0' ";
 
-         if (isset($params['manufacturer']) && $params['manufacturer'] > 0) {
+         if (isset($params['manufacturer']) && ($params['manufacturer'] > 0)) {
             $sql .= " AND `manufacturers_id` = '" . $params['manufacturer'] . "'";
          }
          if ($offset) {
@@ -156,7 +156,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
          $res  = $DB->query($sql);
          $nb   = $DB->numrows($res) + $offset;
-         $step = ($nb > 1000 ? 50 : ($nb > 20 ? floor($DB->numrows($res) / 20) : 1));
+         $step = (($nb > 1000) ? 50 : (($nb > 20) ? floor($DB->numrows($res) / 20) : 1));
 
          while ($input = $DB->fetch_assoc($res)) {
             if (!($i % $step)) {
@@ -178,11 +178,10 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
             $res_rule = $this->processAllRules($input, array(), array());
             $res_rule = Toolbox::addslashes_deep($res_rule);
 
-            ///TODO Walid : verify my correction for parentheses
-            if ((isset($res_rule["name"]) && $res_rule["name"] != $input["name"])
-                || (isset($res_rule["version"]) && $res_rule["version"] != '')
+            if ((isset($res_rule["name"]) && ($res_rule["name"] != $input["name"]))
+                || (isset($res_rule["version"]) && ($res_rule["version"] != ''))
                 || (isset($res_rule['new_entities_id'])
-                    && $res_rule['new_entities_id'] != $input['entities_id'])) {
+                    && ($res_rule['new_entities_id'] != $input['entities_id']))) {
 
                $IDs = array();
                //Find all the softwares in the database with the same name and manufacturer
@@ -204,7 +203,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
             $i++;
             if ($maxtime) {
                $crt = explode(" ", microtime());
-               if ($crt[0] + $crt[1] > $maxtime) {
+               if (($crt[0] + $crt[1]) > $maxtime) {
                   break;
                }
             }
@@ -225,7 +224,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          printf(__('Replay rules on existing database ended on %s')."\n", date("r"));
       }
 
-      return ($i == $nb ? -1 : $i);
+      return (($i == $nb) ? -1 : $i);
    }
 
 
@@ -297,9 +296,8 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
       }
       $soft = new Software();
 
-      ///TODO walid : check parentheses + params for getSonsOf + comment (parent or child ?)
       //Software's name has changed or entity
-      if ((isset($res_rule["name"]) && $res_rule["name"] != $name)
+      if ((isset($res_rule["name"]) && ($res_rule["name"] != $name))
             //Entity has changed, and new entity is a parent of the current one
           || (!isset($res_rule["name"])
               && isset($res_rule['new_entities_id'])
@@ -320,8 +318,8 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          //New software not already present in this entity
          if (!isset($new_softs[$entity][$new_name])) {
             // create new software or restore it from trash
-            $new_software_id = $soft->addOrRestoreFromTrash($new_name, $manufacturer,
-                                                            $entity, '', true);
+            $new_software_id               = $soft->addOrRestoreFromTrash($new_name, $manufacturer,
+                                                                          $entity, '', true);
             $new_softs[$entity][$new_name] = $new_software_id;
          } else {
             $new_software_id = $new_softs[$entity][$new_name];
@@ -358,8 +356,8 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          } else {
             $new_version_name = $version["name"];
          }
-         if ($ID != $new_software_id
-             || $new_version_name != $old_version_name) {
+         if (($ID != $new_software_id)
+             || ($new_version_name != $old_version_name)) {
             $this->moveVersions($ID, $new_software_id, $version["id"], $old_version_name,
                                 $new_version_name, $entity);
          }
@@ -449,8 +447,8 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    /**
     * Move licenses from a software to another
     *
-    * @param $ID old software ID
-    * @param $new_software_id new software ID
+    * @param $ID                 old software ID
+    * @param $new_software_id    new software ID
    **/
    function moveLicenses($ID, $new_software_id) {
       global $DB;
@@ -467,9 +465,9 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
    /**
     * Check if a version exists
     *
-    * @param $software_id software ID
-    * @param $version_id version ID to search
-    * @param $version version name
+    * @param $software_id  software ID
+    * @param $version_id   version ID to search
+    * @param $version      version name
    **/
    function versionExists($software_id, $version_id, $version) {
       global $DB;
