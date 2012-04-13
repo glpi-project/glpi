@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -88,13 +86,13 @@ class RuleDictionnaryPrinter extends RuleCached {
 
       echo "<td class='tab_bg_2'>" . $fields["old_value"] . "</td>";
       echo "<td class='tab_bg_2'>" . $fields["manufacturer"] . "</td>";
-      echo "<td class='tab_bg_2'>". ($fields["new_value"] != '' ? $fields["new_value"]
-                                                                : __('Unchanged'))."</td>";
+      echo "<td class='tab_bg_2'>". (($fields["new_value"] != '') ? $fields["new_value"]
+                                                                  : __('Unchanged'))."</td>";
       echo "<td class='tab_bg_2'>".
-             ($fields["is_global"] != '' ? Dropdown::getGlobalSwitch($fields["is_global"])
-                                         : __('Unchanged')) . "</td>";
+             (($fields["is_global"] != '') ? Dropdown::getGlobalSwitch($fields["is_global"])
+                                           : __('Unchanged')) . "</td>";
       echo "<td class='tab_bg_2'>" .
-            ((isset($fields["new_manufacturer"]) && $fields["new_manufacturer"] != '')
+            ((isset($fields["new_manufacturer"]) && ($fields["new_manufacturer"] != ''))
              ? Dropdown::getDropdownName("glpi_manufacturers", $fields["new_manufacturer"])
              : __('Unchanged')) . "</td>";
       echo "<td class='tab_bg_2'>";
@@ -113,7 +111,8 @@ class RuleDictionnaryPrinter extends RuleCached {
    **/
    function getCriterias() {
 
-      $criterias = array();
+      $criterias                          = array();
+
       $criterias['name']['field']         = 'name';
       $criterias['name']['name']          = __('Name');
       $criterias['name']['table']         = 'glpi_printers';

@@ -75,7 +75,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
 
       //If output array contains keys begining with _ : drop it
       foreach ($output as $criteria => $value) {
-         if ($criteria[0] == '_' && $criteria != '_ignore_ocs_import') {
+         if (($criteria[0] == '_') && ($criteria != '_ignore_ocs_import')) {
             unset ($output[$criteria]);
          }
       }
@@ -114,7 +114,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
 
       $res  = $DB->query($sql);
       $nb   = $DB->numrows($res) + $offset;
-      $step = ($nb > 1000 ? 50 : ($nb > 20 ? floor($DB->numrows($res) / 20) : 1));
+      $step = (($nb > 1000) ? 50 : (($nb > 20) ? floor($DB->numrows($res) / 20) : 1));
 
       while ($input = $DB->fetch_assoc($res)) {
          if (!($i % $step)) {
@@ -133,7 +133,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
          $res_rule = Toolbox::addslashes_deep($res_rule);
 
          foreach (array('manufacturer', 'is_global', 'name') as $attr) {
-            if (isset($res_rule[$attr]) && $res_rule[$attr] == '') {
+            if (isset($res_rule[$attr]) && ($res_rule[$attr] == '')) {
                unset($res_rule[$attr]);
             }
          }
@@ -178,7 +178,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
          printf(__('Replay rules on existing database ended on %s')."\n", date("r"));
       }
 
-      return ($i == $nb ? -1 : $i);
+      return (($i == $nb) ? -1 : $i);
    }
 
 
@@ -188,9 +188,9 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
    **/
    static function somethingHasChanged(array $res_rule, array $input) {
 
-      if ((isset($res_rule["name"]) && $res_rule["name"] != $input["name"])
-          || (isset($res_rule["manufacturer"]) && $res_rule["manufacturer"] != '')
-          || (isset($res_rule['is_global']) && $res_rule['is_global'] != '')) {
+      if ((isset($res_rule["name"]) && ($res_rule["name"] != $input["name"]))
+          || (isset($res_rule["manufacturer"]) && ($res_rule["manufacturer"] != ''))
+          || (isset($res_rule['is_global']) && ($res_rule['is_global'] != ''))) {
          return true;
       }
       return false;
@@ -281,7 +281,7 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
 
       //Printer's name has changed
       if (isset($res_rule["name"])
-          && $res_rule["name"] != $p['name']) {
+          && ($res_rule["name"] != $p['name'])) {
 
          $manufacturer = "";
 
@@ -338,7 +338,8 @@ class RuleDictionnaryPrinterCollection extends RuleCachedCollection {
       $computeritem = new Computer_Item();
       //For each direct connection of this printer
       foreach (getAllDatasFromTable("glpi_computers_items",
-                                    "`itemtype` = 'Printer' AND `items_id` = '$ID'") as $connection) {
+                                    "`itemtype` = 'Printer'
+                                        AND `items_id` = '$ID'") as $connection) {
 
          //Direct connection exists in the target printer ?
          if (!countElementsInTable("glpi_computers_items",

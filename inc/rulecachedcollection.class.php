@@ -108,7 +108,8 @@ class RuleCachedCollection extends RuleCollection {
       }
       $output = parent::processAllRules($input, $output, $params, $force_no_cache);
 
-      if (!$force_no_cache && isset($output["_ruleid"])) {
+      if (!$force_no_cache
+          && isset($output["_ruleid"])) {
          $this->insertDataInCache($input, $output);
          unset($output["_ruleid"]);
       }
@@ -146,13 +147,14 @@ class RuleCachedCollection extends RuleCollection {
          echo "<a href='".$CFG_GLPI['root_doc']."/front/popup.php?popup=show_cache&amp;sub_type=".
                 $this->getRuleClassName()."&amp;rules_id=".$datas["rules_id"]."'>".$datas["name"].
               "</a></td>";
-         echo "<td class='tab_bg_2'>".$datas["cpt"]."</td></tr>\n";
+         echo "<td class='tab_bg_2 numerique'>".$datas["cpt"]."</td></tr>\n";
          $total += $datas["cpt"];
       }
 
       echo "<tr>\n";
-      echo "<td class='tab_bg_2 b'>".__('Total')." (".$DB->numrows($res_count).")</td>";
-      echo "<td class='tab_bg_2 b'>".$total."</td>";
+      echo "<td class='tab_bg_2 b'>".sprintf(__('%1$s (%2$s)'), __('Total'),
+                                             $DB->numrows($res_count))."</td>";
+      echo "<td class='tab_bg_2 b numerique'>".$total."</td>";
       echo "</tr></table></div>\n";
    }
 
@@ -173,7 +175,7 @@ class RuleCachedCollection extends RuleCollection {
       foreach ($this->cache_params["input_value"] as $param => $value) {
          if (isset($input[$param])) {
             $where .= (!$first?" AND ":"")." `".$value."` = '".$input[$param]."'";
-            $first = false;
+            $first  = false;
          }
       }
       $sql = "SELECT *
@@ -212,7 +214,7 @@ class RuleCachedCollection extends RuleCollection {
       $into_old   = "";
 
       foreach ($this->cache_params["input_value"] as $param => $value) {
-         $into_old .= "`".$value."`, ";
+         $into_old   .= "`".$value."`, ";
          // Input are slashes protected...
          $old_values .= "'".$input[$param]."', ";
       }
@@ -224,7 +226,7 @@ class RuleCachedCollection extends RuleCollection {
          if (!isset($output[$param])) {
             $output[$param] = "";
          }
-         $into_new .= ", `".$value."`";
+         $into_new   .= ", `".$value."`";
          // Output are not slashes protected...
          $new_values .= " ,'".addslashes($output[$param])."'";
       }

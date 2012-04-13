@@ -65,13 +65,14 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       if ($offset) {
          $Sql .= " LIMIT ".intval($offset).",999999999";
       }
-      $result = $DB->query($Sql);
+      $result  = $DB->query($Sql);
 
-      $nb = $DB->numrows($result)+$offset;
-      $i  = $offset;
-      if ($result && $nb>$offset) {
+      $nb      = $DB->numrows($result)+$offset;
+      $i       = $offset;
+      if ($result
+          && ($nb > $offset)) {
          // Step to refresh progressbar
-         $step              = ($nb>20 ? floor($nb/20) : 1);
+         $step              = (($nb > 20) ? floor($nb/20) : 1);
          $send              = array();
          $send["tablename"] = $this->item_table;
 
@@ -91,7 +92,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                                            addslashes($data["comment"]));
             if ($data['id'] != $ID) {
                $tomove[$data['id']] = $ID;
-               $type = GetItemTypeForTable($this->item_table);
+               $type                = GetItemTypeForTable($this->item_table);
 
                if ($dropdown = getItemForItemtype($type)) {
                   $dropdown->delete(array('id'          => $data['id'],
@@ -102,7 +103,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
 
             if ($maxtime) {
                $crt = explode(" ", microtime());
-               if ($crt[0]+$crt[1] > $maxtime) {
+               if (($crt[0]+$crt[1]) > $maxtime) {
                   break;
                }
             }
@@ -114,7 +115,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       } else {
          Html::changeProgressBarPosition($i, $nb, "$i / $nb");
       }
-      return ($i==$nb ? -1 : $i);
+      return (($i == $nb) ? -1 : $i);
    }
 
 
@@ -134,7 +135,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       }
 
       // Model check : need to check using manufacturer extra data
-      if (strpos($this->item_table,'models')===false) {
+      if (strpos($this->item_table,'models') === false) {
          _e('Error replaying rules');
          return false;
       }
@@ -157,14 +158,15 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
       if ($offset) {
          $Sql .= " LIMIT ".intval($offset).",999999999";
       }
-      $result = $DB->query($Sql);
+      $result  = $DB->query($Sql);
 
-      $nb = $DB->numrows($result)+$offset;
-      $i  = $offset;
+      $nb      = $DB->numrows($result)+$offset;
+      $i       = $offset;
 
-      if ($result && $nb>$offset) {
+      if ($result
+          && ($nb > $offset)) {
          // Step to refresh progressbar
-         $step    = ($nb>20 ? floor($nb/20) : 1);
+         $step    = (($nb > 20) ? floor($nb/20) : 1);
          $tocheck = array();
 
          while ($data = $DB->fetch_assoc($result)) {
@@ -189,9 +191,9 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
 
             if ($data['id'] != $ID) {
                $tocheck[$data["id"]][] = $ID;
-               $sql = "UPDATE `$model_table`
-                       SET `$model_field` = '$ID'
-                       WHERE `$model_field` = '".$data['id']."'";
+               $sql                    = "UPDATE `$model_table`
+                                          SET `$model_field` = '$ID'
+                                          WHERE `$model_field` = '".$data['id']."'";
 
                if (empty($data['idmanu'])) {
                   $sql .= " AND (`manufacturers_id` IS NULL
@@ -205,26 +207,27 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
             $i++;
             if ($maxtime) {
                $crt = explode(" ",microtime());
-               if ($crt[0]+$crt[1] > $maxtime) {
+               if (($crt[0]+$crt[1]) > $maxtime) {
                   break;
                }
             }
          }
 
          foreach ($tocheck AS $ID => $tab) {
-            $sql = "SELECT COUNT(*)
-                    FROM `$model_table`
-                    WHERE `$model_field` = '$ID'";
-            $result = $DB->query($sql);
-            $deletecartmodel = false;
+            $sql              = "SELECT COUNT(*)
+                                 FROM `$model_table`
+                                 WHERE `$model_field` = '$ID'";
+            $result           = $DB->query($sql);
+            $deletecartmodel  = false;
 
             // No item left : delete old item
-            if ($result && $DB->result($result,0,0)==0) {
-               $Sql = "DELETE
-                       FROM `".$this->item_table."`
-                       WHERE `id` = '$ID'";
-               $resdel = $DB->query($Sql);
-               $deletecartmodel = true;
+            if ($result
+                && ($DB->result($result,0,0) == 0)) {
+               $Sql              = "DELETE
+                                    FROM `".$this->item_table."`
+                                    WHERE `id` = '$ID'";
+               $resdel           = $DB->query($Sql);
+               $deletecartmodel  = true;
             }
 
             // Manage cartridge assoc Update items
@@ -233,11 +236,11 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                        FROM `glpi_cartridgeitems_printermodels`
                        WHERE `printermodels_id` = '$ID'";
 
-               if ($result=$DB->query($sql)) {
+               if ($result = $DB->query($sql)) {
                   if ($DB->numrows($result)) {
                      // Get compatible cartridge type
                      $carttype = array();
-                     while ($data=$DB->fetch_assoc($result)) {
+                     while ($data = $DB->fetch_assoc($result)) {
                         $carttype[] = $data['cartridgeitems_id'];
                      }
                      // Delete cartrodges_assoc
@@ -248,10 +251,6 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
                         $DB->query($sql);
                      }
                      // Add new assoc
-                     /// TODO delete autoload will do the job
-/*                     if (!class_exists('CartridgeItem')) {
-                        include_once (GLPI_ROOT . "/inc/cartridgeitem.function.php");
-                     }*/
                      $ct = new CartridgeItem();
                      foreach ($carttype as $cartID) {
                         foreach ($tab as $model) {
