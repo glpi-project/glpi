@@ -152,7 +152,8 @@ function import($options) {
       $options['mode']         = $action_to_do;
       $options['authldaps_id'] = $options['ldapservers_id'];
       $users                   = AuthLdap::getAllUsers($options, $results, $limitexceeded);
-
+      $contact_ok              = true;
+      
       if (is_array($users)) {
          foreach ($users as $user) {
             $result = AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
@@ -164,6 +165,8 @@ function import($options) {
             }
             echo ".";
          }
+      } elseif (!$users) {
+         $contact_ok = false;
       }
    }
 
@@ -174,9 +177,13 @@ function import($options) {
       }
       echo "\n";
    }
-   echo "\nImported : ".$results[AuthLDAP::USER_IMPORTED]."\n";
-   echo "Synchronized : ".$results[AuthLDAP::USER_SYNCHRONIZED]."\n";
-   echo "Deleted from LDAP : ".$results[AuthLDAP::USER_DELETED_LDAP]."\n";
+   if ($contact_ok) {
+      echo "\nImported : ".$results[AuthLDAP::USER_IMPORTED]."\n";
+      echo "Synchronized : ".$results[AuthLDAP::USER_SYNCHRONIZED]."\n";
+      echo "Deleted from LDAP : ".$results[AuthLDAP::USER_DELETED_LDAP]."\n";
+   } else {
+      echo "Cannot contact LDAP server!\n";
+   }
    echo "\n\n";
 }
 
