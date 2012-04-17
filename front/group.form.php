@@ -171,6 +171,16 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
+} else if (isset($_GET['popup'])) {
+   Html::popHeader(Group::getTypeName(2),$_SERVER['PHP_SELF']);
+   if (isset($_GET["rand"])) {
+      $_SESSION["glpipopup"]["rand"] = $_GET["rand"];
+   }
+   $group->showForm($_GET["id"]);
+   echo "<div class='center'><br><a href='javascript:window.close()'>".__('Back')."</a>";
+   echo "</div>";
+   Html::popFooter();
+
 } else {
    Html::header(Group::getTypeName(2), $_SERVER['PHP_SELF'], "admin", "group");
    $group->showForm($_GET["id"]);
