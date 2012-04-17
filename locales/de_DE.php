@@ -1820,6 +1820,7 @@ $LANG['search'][3]="unter";
 $LANG['search'][4]="sortiert nach"; 
 $LANG['search'][5]="Auswahl zu groß, Batch-Aktualisierungen deaktiviert."; 
 $LANG['search'][6]="Um den Limit zu erhöhen muss der Wert von max_input_vars oder von suhosin.post.max_vars in der php-Konfiguration geändert werden."; 
+$LANG['search'][7]="not under"; // en_GB string to be translated
 $LANG['search'][8]="Anfangsdatum"; 
 $LANG['search'][9]="Gültig bis"; 
 $LANG['search'][11]="angezeigten Feldern"; 

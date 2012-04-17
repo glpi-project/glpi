@@ -1820,6 +1820,7 @@ $LANG['search'][3]="alatt";
 $LANG['search'][4]="rendezés"; 
 $LANG['search'][5]="A kijelölés túl nagy, tömeges műveletek letiltva."; 
 $LANG['search'][6]="A limit növeléséhez: módosítsd a max_input_vars vagy a suhosin.post.max_vars értékét a php konfigurációjában."; 
+$LANG['search'][7]="not under"; // en_GB string to be translated
 $LANG['search'][8]="Kezdő dátum"; 
 $LANG['search'][9]="Záró dátum"; 
 $LANG['search'][11]="Tétel tartalmaz"; 

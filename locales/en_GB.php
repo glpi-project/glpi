@@ -1820,6 +1820,7 @@ $LANG['search'][3]="under";
 $LANG['search'][4]="sorted by"; 
 $LANG['search'][5]="Selection too large, massive action disabled."; 
 $LANG['search'][6]="To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration."; 
+$LANG['search'][7]="not under"; 
 $LANG['search'][8]="Start date"; 
 $LANG['search'][9]="End date"; 
 $LANG['search'][11]="Items Seen"; 

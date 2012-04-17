@@ -1820,6 +1820,7 @@ $LANG['search'][3]="under"; // en_GB string to be translated
 $LANG['search'][4]="sorteeri"; 
 $LANG['search'][5]="Selection too large, massive action disabled."; // en_GB string to be translated
 $LANG['search'][6]="To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration."; // en_GB string to be translated
+$LANG['search'][7]="not under"; // en_GB string to be translated
 $LANG['search'][8]="Algusaeg"; 
 $LANG['search'][9]="Lõpuaeg"; 
 $LANG['search'][11]="Nähtavad asjad"; 

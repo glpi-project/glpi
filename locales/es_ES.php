@@ -1820,6 +1820,7 @@ $LANG['search'][3]="Debajo de";
 $LANG['search'][4]="Ordenado por"; 
 $LANG['search'][5]="La selección es muy gande, acción desactivada"; 
 $LANG['search'][6]="Para incrementar el límite: cambie max_input_vars o suhosin.post.max_vars en la configuración de php."; 
+$LANG['search'][7]="not under"; // en_GB string to be translated
 $LANG['search'][8]="Fecha inicial"; 
 $LANG['search'][9]="Fecha final"; 
 $LANG['search'][11]="Elementos mostrados"; 

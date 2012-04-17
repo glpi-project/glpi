@@ -1820,6 +1820,7 @@ $LANG['search'][3]="altında";
 $LANG['search'][4]="sıralama"; 
 $LANG['search'][5]="Seçim çok büyük, toplu arama devre dışı bırakılır."; 
 $LANG['search'][6]="Sınır değerini arttırmak için: Php yapılandırma dosyalarında 'max_input_vars' veya 'suhosin.post.max_vars' değerlerini değiştirin."; 
+$LANG['search'][7]="not under"; // en_GB string to be translated
 $LANG['search'][8]="Başlangıç tarihi"; 
 $LANG['search'][9]="Bitiş tarihi"; 
 $LANG['search'][11]="Görülen öğeler"; 

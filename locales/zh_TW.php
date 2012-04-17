@@ -1820,6 +1820,7 @@ $LANG['search'][3]="在";
 $LANG['search'][4]="排序"; 
 $LANG['search'][5]="選擇過大，已停用此大量動作。"; 
 $LANG['search'][6]="為了增加上限：請在PHP配置更改max_input_vars或suhosin.post.max_vars。"; 
+$LANG['search'][7]="not under"; // en_GB string to be translated
 $LANG['search'][8]="開始日期"; 
 $LANG['search'][9]="結束日期"; 
 $LANG['search'][11]="檢視的項目"; 

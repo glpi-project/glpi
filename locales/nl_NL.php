@@ -1820,6 +1820,7 @@ $LANG['search'][3]="onder";
 $LANG['search'][4]="gesorteerd op"; 
 $LANG['search'][5]="Selectie te groot, massale actie zijn niet toegestaan"; 
 $LANG['search'][6]="Om de limiet te verhogen : wijzig max_input_vars of suhosin.post.max_vars in de php configuratie"; 
+$LANG['search'][7]="not under"; // en_GB string to be translated
 $LANG['search'][8]="Begindatum"; 
 $LANG['search'][9]="Einddatum"; 
 $LANG['search'][11]="Geziene items"; 

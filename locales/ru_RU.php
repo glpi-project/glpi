@@ -1820,6 +1820,7 @@ $LANG['search'][3]="under"; // en_GB string to be translated
 $LANG['search'][4]="отсортировано по"; 
 $LANG['search'][5]="Выбор слишком велик, массовые действия отключены."; 
 $LANG['search'][6]="Для увеличения лимита: измените параметр max_input_vars или suhosin.post.max_vars в конфигурации php."; 
+$LANG['search'][7]="not under"; // en_GB string to be translated
 $LANG['search'][8]="Начиная с даты"; 
 $LANG['search'][9]="Заканчивая датой"; 
 $LANG['search'][11]="Видимые объекты"; 
