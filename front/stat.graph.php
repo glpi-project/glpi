@@ -69,45 +69,41 @@ $next  = 0;
 $prev  = 0;
 $title = "";
 $cond  = '';
+$parent = 0;
 
 switch($_GET["type"]) {
    case "technicien" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = getNextItem("glpi_users", $_GET["id"]);
-      $prev  = getPreviousItem("glpi_users", $_GET["id"]);
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('Technician'), $item->getAssignName($_GET["id"], 'User', 1));
       break;
 
    case "technicien_followup" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = getNextItem("glpi_users", $_GET["id"]);
-      $prev  = getPreviousItem("glpi_users", $_GET["id"]);
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('Technician'), $item->getAssignName($_GET["id"], 'User', 1));
       break;
 
    case "suppliers_id_assign" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = getNextItem("glpi_suppliers", $_GET["id"]);
-      $prev  = getPreviousItem("glpi_suppliers", $_GET["id"]);
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('Supplier'), $item->getAssignName($_GET["id"], 'Supplier', 1));
       break;
 
    case "user" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = getNextItem("glpi_users", $_GET["id"]);
-      $prev  = getPreviousItem("glpi_users", $_GET["id"]);
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"],1));
       break;
 
    case "users_id_recipient" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = getNextItem("glpi_users", $_GET["id"]);
-      $prev  = getPreviousItem("glpi_users", $_GET["id"]);
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('User'), getUserName($_GET["id"],1));
       break;
 
@@ -119,8 +115,7 @@ switch($_GET["type"]) {
    case "itilcategories_id" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = getNextItem("glpi_itilcategories", $_GET["id"], $cond, 'completename');
-      $prev  = getPreviousItem("glpi_itilcategories", $_GET["id"], $cond, 'completename');
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"], $parent );
       $title = sprintf(__('%1$s: %2$s'), __('Category'), Dropdown::getDropdownName("glpi_itilcategories",
                                                                      $_GET["id"]));
       break;
@@ -128,10 +123,7 @@ switch($_GET["type"]) {
    case "type" :
       $val1 = $_GET["id"];
       $val2 = "";
-
-      // Only 2 items
-      $next  = ($_GET["id"]%2)+1;
-      $prev  = ($_GET["id"]%2)+1;
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('Type'), Ticket::getTicketTypeName($_GET["id"]));
       break;
 
@@ -145,73 +137,49 @@ switch($_GET["type"]) {
    case "group" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = getNextItem("glpi_groups", $_GET["id"], $cond);
-      $prev  = getPreviousItem("glpi_groups", $_GET["id"], $cond);
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"], $parent );
       $title = sprintf(__('%1$s: %2$s'), __('Group'), Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
       break;
 
    case "groups_id_assign" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = getNextItem("glpi_groups", $_GET["id"]);
-      $prev  = getPreviousItem("glpi_groups", $_GET["id"]);
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('Group'), Dropdown::getDropdownName("glpi_groups", $_GET["id"]));
       break;
 
    case "priority" :
       $val1 = $_GET["id"];
       $val2 = "";
-      $next = $prev = 0;
-      if ($val1 < 6) {
-         $next = $val1+1;
-      }
-      if ($val1 > 1) {
-         $prev = $val1-1;
-      }
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('Priority'), $item->getPriorityName($_GET["id"]));
       break;
 
    case "urgency" :
       $val1 = $_GET["id"];
       $val2 = "";
-      $next = $prev = 0;
-      if ($val1 < 5) {
-         $next = $val1+1;
-      }
-      if ($val1 > 1) {
-         $prev = $val1-1;
-      }
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('Urgency'), $item->getUrgencyName($_GET["id"]));
       break;
 
    case "impact" :
       $val1 = $_GET["id"];
       $val2 = "";
-      $next = $prev = 0;
-      if ($val1 < 5) {
-         $next = $val1+1;
-      }
-      if ($val1 > 1) {
-         $prev = $val1-1;
-      }
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('Impact'), $item->getImpactName($_GET["id"]));
       break;
 
    case "usertitles_id" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = $prev = 0;
-      $next  = getNextItem("glpi_usertitles", $_GET["id"]);
-      $prev  = getPreviousItem("glpi_usertitles", $_GET["id"]);
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('Title'), Dropdown::getDropdownName("glpi_usertitles", $_GET["id"]));
       break;
 
    case "solutiontypes_id" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = $prev = 0;
-      $next  = getNextItem("glpi_solutiontypes", $_GET["id"]);
-      $prev  = getPreviousItem("glpi_solutiontypes", $_GET["id"]);
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('Solution type'), Dropdown::getDropdownName("glpi_solutiontypes",
                                                                           $_GET["id"]));
       break;
@@ -219,9 +187,7 @@ switch($_GET["type"]) {
    case "usercategories_id" :
       $val1  = $_GET["id"];
       $val2  = "";
-      $next  = $prev=0;
-      $next  = getNextItem("glpi_usercategories", $_GET["id"]);
-      $prev  = getPreviousItem("glpi_usercategories", $_GET["id"]);
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('Category'), Dropdown::getDropdownName("glpi_usercategories",
                                                                      $_GET["id"]));
       break;
@@ -229,13 +195,7 @@ switch($_GET["type"]) {
    case "requesttypes_id" :
       $val1 = $_GET["id"];
       $val2 = "";
-      $next = $prev = 0;
-      if ($val1 < 6) {
-         $next = $val1+1;
-      }
-      if ($val1 > 0) {
-         $prev = $val1-1;
-      }
+      $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"] );
       $title = sprintf(__('%1$s: %2$s'), __('Request source'), Dropdown::getDropdownName("glpi_requesttypes",
                                                                            $_GET["id"]));
       break;
@@ -245,8 +205,7 @@ switch($_GET["type"]) {
       $val2 = $_GET["champ"];
       if ($item = getItemForItemtype($_GET["champ"])) {
          $device_table = $item->getTable();
-         $next         = getNextItem($device_table, $_GET["id"], '', 'designation');
-         $prev         = getPreviousItem($device_table, $_GET["id"], '', 'designation');
+         $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["champ"] );
 
          $query = "SELECT `designation`
                    FROM `".$device_table."`
@@ -263,15 +222,31 @@ switch($_GET["type"]) {
       $val2  = $_GET["champ"];
       if ($item = getItemForItemtype($_GET["champ"])) {
          $table = $item->getTable();
-         $next  = getNextItem($table, $_GET["id"]);
-         $prev  = getPreviousItem($table, $_GET["id"]);
+         $values = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["champ"] );
          $title = sprintf(__('%1$s: %2$s'),
                           $item->getTypeName(), Dropdown::getDropdownName($table, $_GET["id"]));
       }
       break;
 }
 
-echo "<div class='center'>";
+// Found next and prev items 
+$foundkey = -1;
+foreach ($values as $key => $val) {
+   if ($val['id'] == $_GET["id"]) {
+      $foundkey = $key; 
+   }
+}
+
+if ($foundkey>=0) {
+   if (isset($values[$foundkey+1])) {
+      $next = $values[$foundkey+1]['id'];
+   }
+   if (isset($values[$foundkey-1])) {
+      $prev = $values[$foundkey-1]['id'];
+   }
+}
+
+echo "<div align='center'>";
 echo "<table class='tab_cadre_navigation'>";
 echo "<tr><td>";
 if ($prev > 0) {
