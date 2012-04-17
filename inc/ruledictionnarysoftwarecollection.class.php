@@ -288,6 +288,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
       $input["name"]         = $name;
       $input["manufacturer"] = $manufacturer;
+      $input["entities_id"]  = $entity;
       $input                 = Toolbox::addslashes_deep($input);
 
       if (empty($res_rule)) {
