@@ -2067,6 +2067,7 @@ $LANG['search'][3]  = "sous";
 $LANG['search'][4]  = "trié par";
 $LANG['search'][5]  = "Sélection trop importante, actions de masse désactivées.";
 $LANG['search'][6]  = "Pour augmenter la limite, modifier la valeur de max_input_vars ou de suhosin.post.max_vars dans la configuration php.";
+$LANG['search'][7]  = "pas sous";
 
 $LANG['search'][8]  = "Date de début";
 $LANG['search'][9]  = "Date de fin";
