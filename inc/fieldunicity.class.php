@@ -473,7 +473,7 @@ class FieldUnicity extends CommonDropdown {
                      echo "<td>".$result[$field]."</td>";
                   }
                }
-               echo "<td class='numerique'>".$result['cpt']."</td></tr>";
+               echo "<td class='numeric'>".$result['cpt']."</td></tr>";
             }
          }
 

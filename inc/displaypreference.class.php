@@ -553,7 +553,7 @@ class DisplayPreference extends CommonDBTM {
             } else {
                $name = $data["itemtype"];
             }
-            echo "<td>$name</td><td class='numerique'>".$data['nb']."</td>";
+            echo "<td>$name</td><td class='numeric'>".$data['nb']."</td>";
             echo "</tr>";
          }
          echo "</table>";

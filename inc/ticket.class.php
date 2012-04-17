@@ -4463,8 +4463,12 @@ class Ticket extends CommonITILObject {
          }
          $query.= ")";
       }
-      $query.= " AND `glpi_tickets`.`is_deleted` = 0 ";
-      $query .= "GROUP BY `status`";
+      $query_deleted = $query;
+      
+      $query .= " AND NOT `glpi_tickets`.`is_deleted` ";
+      $query_deleted .= " AND `glpi_tickets`.`is_deleted` ";
+      $query .= " GROUP BY `status`";
+      $query_deleted .= " GROUP BY `status`";
 
       $result = $DB->query($query);
 
@@ -4480,7 +4484,12 @@ class Ticket extends CommonITILObject {
             $status[$data["status"]] = $data["COUNT"];
          }
       }
-
+      $number_deleted = 0;
+      if ($DB->numrows($result_deleted)>0) {
+         while ($data = $DB->fetch_assoc($result_deleted)) {
+            $number_deleted += $data["COUNT"];
+         }
+      }
       $options['field'][0]      = 12;
       $options['searchtype'][0] = 'equals';
       $options['contains'][0]   = 'process';
@@ -4507,37 +4516,44 @@ class Ticket extends CommonITILObject {
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">"._x('ticket', 'New')."</a></td>";
-      echo "<td class='numerique'>".$status["new"]."</td></tr>";
+      echo "<td class='numeric'>".$status["new"]."</td></tr>";
 
       $options['contains'][0]    = 'assign';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">".__('Processing (assigned)')."</a></td>";
-      echo "<td class='numerique'>".$status["assign"]."</td></tr>";
+      echo "<td class='numeric'>".$status["assign"]."</td></tr>";
 
       $options['contains'][0]    = 'plan';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">".__('Processing (planned)')."</a></td>";
-      echo "<td class='numerique'>".$status["plan"]."</td></tr>";
+      echo "<td class='numeric'>".$status["plan"]."</td></tr>";
 
       $options['contains'][0]   = 'waiting';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">".__('Pending')."</a></td>";
-      echo "<td class='numerique'>".$status["waiting"]."</td></tr>";
+      echo "<td class='numeric'>".$status["waiting"]."</td></tr>";
 
       $options['contains'][0]    = 'solved';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">".__('Solved')."</a></td>";
-      echo "<td class='numerique'>".$status["solved"]."</td></tr>";
+      echo "<td class='numeric'>".$status["solved"]."</td></tr>";
 
       $options['contains'][0]    = 'closed';
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">".__('Closed')."</a></td>";
-      echo "<td class='numerique'>".$status["closed"]."</td></tr>";
+      echo "<td class='numeric'>".$status["closed"]."</td></tr>";
+
+      $options['contains'][0]    = 'all';
+      $options['is_deleted']    = 1;
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                 Toolbox::append_params($options,'&amp;')."\">".__('Deleted')."</a></td>";
+      echo "<td class='numeric'>".$number_deleted."</td></tr>";
 
       echo "</table><br>";
    }
