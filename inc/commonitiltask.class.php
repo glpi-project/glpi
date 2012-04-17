@@ -458,30 +458,30 @@ abstract class CommonITILTask  extends CommonDBTM {
       if ($who_group==="mine") {
          if (count($_SESSION["glpigroups"])) {
             $groups = implode("','",$_SESSION['glpigroups']);
-            $ASSIGN = "`users_id` IN (SELECT DISTINCT `users_id`
+            $ASSIGN = "`users_id_tech` IN (SELECT DISTINCT `users_id`
                                       FROM `glpi_groups_users`
                                       WHERE `groups_id` IN ('$groups'))
                                             AND ";
          } else { // Only personal ones
-            $ASSIGN = "`users_id` = '$who'
+            $ASSIGN = "`users_id_tech` = '$who'
                        AND ";
          }
 
       } else {
          if ($who>0) {
-            $ASSIGN = "`users_id` = '$who'
+            $ASSIGN = "`users_id_tech` = '$who'
                        AND ";
          }
 
          if ($who_group>0) {
-            $ASSIGN = "`users_id` IN (SELECT `users_id`
+            $ASSIGN = "`users_id_tech` IN (SELECT `users_id`
                                       FROM `glpi_groups_users`
                                       WHERE `groups_id` = '$who_group')
                                             AND ";
          }
       }
       if (empty($ASSIGN)) {
-         $ASSIGN = "`users_id` IN (SELECT DISTINCT `glpi_profiles_users`.`users_id`
+         $ASSIGN = "`users_id_tech` IN (SELECT DISTINCT `glpi_profiles_users`.`users_id`
                                    FROM `glpi_profiles`
                                    LEFT JOIN `glpi_profiles_users`
                                      ON (`glpi_profiles`.`id` = `glpi_profiles_users`.`profiles_id`)
