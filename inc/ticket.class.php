@@ -2930,7 +2930,7 @@ class Ticket extends CommonITILObject {
                                                                                '', Ticket::INCIDENT_TYPE),
                       '_right'                    => "id");
 
-      if (!isset($options['template_preview'])) {
+      if (!$ticket_template) {
          $options = $_REQUEST;
       }
 
