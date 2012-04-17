@@ -891,7 +891,8 @@ class Search {
                    && ($output_type == self::HTML_OUTPUT)) {
                   echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".
                          $CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
-   //                self::displayMassiveActions($itemtype, $end_display-$begin_display, $p, true);
+
+                   self::displayMassiveActions($itemtype, $end_display-$begin_display, $p, true);
                }
             }
 
@@ -1379,12 +1380,12 @@ class Search {
     * @return Array of available itemtype
    **/
    static function displayMassiveActions($itemtype, $num_displayed, $p, $ontop=false) {
-
+      global $CFG_GLPI;
       $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
       if (!$max) {
          $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
       }
-      if (($max > 0) && ($max < ($num_displayed+10))) {
+      if (!$ontop && ($max > 0) && ($max < ($num_displayed+10))) {
          echo "<table class='tab_cadre' width='80%'><tr class='tab_bg_1'>".
                "<td><span class='b'>";
          echo __('Selection too large, massive action disabled.')."</span>";
@@ -1393,10 +1394,30 @@ class Search {
          }
          echo "</td></tr></table>";
       } else {
-         Html::openArrowMassives("massiveaction_form", false, $ontop);
-         Dropdown::showForMassiveAction($itemtype, $p['is_deleted']);
-         $options = array();
-         Html::closeArrowMassives($options);
+         // Create Modal window on top
+         if ($ontop) {
+            echo "<div id='massiveactioncontent'></div>";
+            Ajax::createModalWindow('massiveaction_window',
+                                    $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=$itemtype&is_deleted=".$p['is_deleted'],
+                                    array('title'    => __('Execute massive actions'),
+                                          'renderTo' => 'massiveactioncontent'));
+         
+         }
+         echo "<table class='tab_glpi' width='80%'><tr>";
+         echo "<td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($ontop?'-top':'').".png'
+                    alt=''></td>";
+         echo "<td class='left'>";
+         echo "<a onclick='massiveaction_window.show();' href='#modal_massaction_content' title=\"".
+                __s('Execute massive actions').
+                "\">".
+                __s('Execute massive actions')."</a>";
+         echo "</td><td width='80%'>&nbsp;</td>";
+                                      
+         echo "</tr></table>";      
+//          Html::openArrowMassives("massiveaction_form", false, $ontop);
+//          Dropdown::showForMassiveAction($itemtype, $p['is_deleted']);
+//          $options = array();
+//          Html::closeArrowMassives($options);
       }
    }
 

@@ -358,7 +358,7 @@ if (isset($_POST["itemtype"])
       }
    }
 
-   echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";
+   echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";
    if ($USE_TABLE) {
       echo "</td></tr></table>";
    }
