@@ -3103,6 +3103,7 @@ class Ticket extends CommonITILObject {
       echo "</td><td>";
 
       $condition = "`is_helpdeskvisible`='1'";
+      
       switch ($options['type']) {
          case self::DEMAND_TYPE :
             $condition .= " AND `is_request`='1'";
@@ -3111,6 +3112,7 @@ class Ticket extends CommonITILObject {
          default: // self::INCIDENT_TYPE :
             $condition .= " AND `is_incident`='1'";
       }
+      
       $opt = array('value'     => $options['itilcategories_id'],
                                            'condition' => $condition,
                                            'on_change' => 'submit()');
@@ -3667,7 +3669,7 @@ class Ticket extends CommonITILObject {
             $opt['display_emptychoice'] = false;
          }
 
-         switch ($values['type']) {
+         switch ($this->fields['type']) {
             case self::INCIDENT_TYPE :
                $opt['condition'] .= "`is_incident`='1'";
                break;
@@ -3679,6 +3681,7 @@ class Ticket extends CommonITILObject {
             default :
                break;
          }
+
          echo "<span id='show_category_by_type'>";
          Dropdown::show('ITILCategory', $opt);
          echo "</span>";
