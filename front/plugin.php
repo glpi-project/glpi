@@ -48,6 +48,7 @@ function handleObsoleteCall($func) {
           && isset($row['file'])
           && preg_match(':/plugins/(.*)/:', $row['file'], $reg)) {
          $name = $reg[1];
+         break;
       }
    }
    echo "</table>";
