@@ -2967,9 +2967,12 @@ class Ticket extends CommonITILObject {
             if (isset($options[$predeffield])) {
                // Is always default value : not set
                // Set if already predefined field
+               // Set if ticket template change
                if ($options[$predeffield] == $default_values[$predeffield]
                    || (isset($options['_predefined_fields'][$field])
-                       && $options[$predeffield] == $options['_predefined_fields'][$field])) {
+                       && $options[$predeffield] == $options['_predefined_fields'][$field])
+                   || (isset($options['_tickettemplates_id'])
+                       && $options['_tickettemplates_id'] != $tt->getID())) {                       
                   $options[$predeffield]           = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
@@ -3279,9 +3282,12 @@ class Ticket extends CommonITILObject {
             if (isset($default_values[$predeffield])) {
                // Is always default value : not set
                // Set if already predefined field
+               // Set if ticket template change
                if ($values[$predeffield] == $default_values[$predeffield]
                    || (isset($values['_predefined_fields'][$predeffield])
-                             && $values[$predeffield] == $values['_predefined_fields'][$predeffield])) {
+                             && $values[$predeffield] == $values['_predefined_fields'][$predeffield])
+                   || (isset($values['_tickettemplates_id'])
+                        && $values['_tickettemplates_id'] != $tt->getID())) {
                   $values[$predeffield]            = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
