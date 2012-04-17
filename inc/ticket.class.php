@@ -4471,6 +4471,7 @@ class Ticket extends CommonITILObject {
       $query_deleted .= " GROUP BY `status`";
 
       $result = $DB->query($query);
+      $result_deleted = $DB->query($query_deleted);
 
       $status = array('new'     => 0,
                       'assign'  => 0,
