@@ -3510,19 +3510,9 @@ class Html {
       if (Session::isMultiEntitiesMode()) {
          echo "<li>";
 
-         echo "<script type='text/javascript'>";
-         echo "cleanhide('modal_entity_content');";
-         echo "var entity_window=new Ext.Window({
-            layout:'fit',
-            width:800,
-            height:400,
-            closeAction:'hide',
-            modal: true,
-            autoScroll: true,
-            title: \"".addslashes(__('Select the desired entity'))."\",
-            autoLoad: '".$CFG_GLPI['root_doc']."/ajax/entitytree.php?target=$target'
-         });";
-         echo "</script>";
+         Ajax::createModalWindow('entity_window',
+                                 $CFG_GLPI['root_doc']."/ajax/entitytree.php?target=$target",
+                                 array('title' => __('Select the desired entity')));
 
          echo "<a onclick='entity_window.show();' href='#modal_entity_content' title=\"".
                 addslashes($_SESSION["glpiactive_entity_name"]).
