@@ -149,7 +149,7 @@ class TicketRecurrent extends CommonDropdown {
                          'list'  => false),
                    array('name'  => 'periodicity',
                          'label' => $LANG['common'][115],
-                         'type'  => 'timestamp',
+                         'type'  => 'specific_timestamp',
                          'min'   => DAY_TIMESTAMP,
                          'step'  => DAY_TIMESTAMP,
                          'max'   => 2*MONTH_TIMESTAMP),
@@ -160,7 +160,32 @@ class TicketRecurrent extends CommonDropdown {
                          'step'  => HOUR_TIMESTAMP),);
    }
 
+   function displaySpecificTypeField($ID, $field = array()) {
+      global $LANG;
+      switch ($field['name']) {
+         case 'periodicity' :
+            /// TODO : trouble with variable MONTH / YEAR length
+            $possible_values=array();
+            for ($i=1 ; $i<24 ; $i++) {
+               $possible_values[$i*HOUR_TIMESTAMP] = $i." ".Toolbox::ucfirst($LANG['gmt'][1]);
+            }
+            for ($i=1 ; $i<=30 ; $i++) {
+               $possible_values[$i*DAY_TIMESTAMP] = $i." ".Toolbox::ucfirst($LANG['calendar'][12]);
+            }
+            
+            for ($i=1 ; $i<12 ; $i++) {
+               $possible_values[$i*MONTH_TIMESTAMP] = $i." ".Toolbox::ucfirst($LANG['calendar'][14]);
+            }
 
+            for ($i=1 ; $i<5 ; $i++) {
+               $possible_values[$i*365*DAY_TIMESTAMP] = $i." ".Toolbox::ucfirst($LANG['calendar'][15]);
+            }
+
+            Dropdown::showFromArray($field['name'], $possible_values, array('value' => $this->fields[$field['name']]));
+            break;
+      }
+   }
+   
    /**
     * Get search function for the class
     *
