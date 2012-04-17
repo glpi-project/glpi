@@ -721,6 +721,9 @@ class Profile extends CommonDBTM {
       echo "<td>".__('Knowledge base')."</td><td>";
       self::dropdownNoneReadWrite("knowbase", $this->fields["knowbase"], 1, 1, 1);
       echo "</td>";
+      echo "<td>".__('Knowledge base administration')."</td><td>";
+      Dropdown::showYesNo("knowbase_admin", $this->fields["knowbase_admin"]);
+      echo "</td>";
       echo "<td>".__('Administration of reservations')."</td><td colspan='3'>";
       self::dropdownNoneReadWrite("reservation_central", $this->fields["reservation_central"],
                                   1, 1, 1);
