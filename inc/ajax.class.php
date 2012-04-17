@@ -36,6 +36,51 @@ class Ajax {
 
 
    /**
+    * Create modal window 
+    * After display it using $name.show()
+    * May be constraint to a predefined html item setting renderTo options
+    * @param $name name of the js object
+    * @param $url URL to display in modal
+    * @param $options array of options :
+    *              - width (default 800)
+    *              - height (default 400)
+    *              - modal : is a modal window ? (default true) 
+    *              - renderTo : specify a html element to render (default empty to html.body)
+    *              - title : window title (default empty)
+    *              
+   **/
+   static function createModalWindow($name, $url, $options = array() ) {
+
+      $param = array('width'  => 800,
+                     'height' => 400,
+                     'modal'  => true,
+                     'renderTo' => '',
+                     'title'    => '',
+                       );
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            if (isset($param[$key])) {
+               $param[$key] = $val;
+            }
+         }
+      }
+      echo "<script type='text/javascript'>";
+      echo "var $name=new Ext.Window({
+         layout:'fit',
+         width:".$param['width'].",
+         height:".$param['height'].",
+         closeAction:'hide',
+         modal: ".($param['modal']?'true':'false').",
+         ".(!empty($param['renderTo'])?"renderTo: '".$param['renderTo']."',":'')."
+         autoScroll: true,
+         title: \"".addslashes($param['title'])."\",
+         autoLoad: '$url'
+      }); ";
+      echo "</script>";
+   }
+
+
+   /**
     * Call from a popup Windows, refresh the dropdown in main window
    **/
    static function refreshDropdownPopupInMainWindow() {
