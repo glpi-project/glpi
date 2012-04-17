@@ -147,14 +147,14 @@ class RuleCachedCollection extends RuleCollection {
          echo "<a href='".$CFG_GLPI['root_doc']."/front/popup.php?popup=show_cache&amp;sub_type=".
                 $this->getRuleClassName()."&amp;rules_id=".$datas["rules_id"]."'>".$datas["name"].
               "</a></td>";
-         echo "<td class='tab_bg_2 numerique'>".$datas["cpt"]."</td></tr>\n";
+         echo "<td class='tab_bg_2 numeric'>".$datas["cpt"]."</td></tr>\n";
          $total += $datas["cpt"];
       }
 
       echo "<tr>\n";
       echo "<td class='tab_bg_2 b'>".sprintf(__('%1$s (%2$s)'), __('Total'),
                                              $DB->numrows($res_count))."</td>";
-      echo "<td class='tab_bg_2 b numerique'>".$total."</td>";
+      echo "<td class='tab_bg_2 b numeric'>".$total."</td>";
       echo "</tr></table></div>\n";
    }
 

@@ -122,19 +122,19 @@ $number_of_phones = $DB->result($result,0,0);
 
 echo "<table class='tab_cadre' width='80%'>";
 echo "<tr class='tab_bg_2'><td>"._n('Computer', 'Computers', 2)."</td>";
-echo "<td class='numerique'>$number_of_computers</td></tr>";
+echo "<td class='numeric'>$number_of_computers</td></tr>";
 echo "<tr class='tab_bg_2'><td>"._n('Printer', 'Printers', 2)."</td>";
-echo "<td class='numerique'>$number_of_printers</td></tr>";
+echo "<td class='numeric'>$number_of_printers</td></tr>";
 echo "<tr class='tab_bg_2'><td>"._n('Network', 'Networks', 2)."</td>";
-echo "<td class='numerique'>$number_of_networking</td></tr>";
+echo "<td class='numeric'>$number_of_networking</td></tr>";
 echo "<tr class='tab_bg_2'><td>"._n('Software', 'Software', 2)."</td>";
-echo "<td class='numerique'>$number_of_software</td></tr>";
+echo "<td class='numeric'>$number_of_software</td></tr>";
 echo "<tr class='tab_bg_2'><td>"._n('Monitor', 'Monitors', 2)."</td>";
-echo "<td class='numerique'>$number_of_monitors </td></tr>";
+echo "<td class='numeric'>$number_of_monitors </td></tr>";
 echo "<tr class='tab_bg_2'><td>"._n('Device', 'Devices', 2)."</td>";
-echo "<td class='numerique'>$number_of_peripherals</td></tr>";
+echo "<td class='numeric'>$number_of_peripherals</td></tr>";
 echo "<tr class='tab_bg_2'><td>"._n('Phone', 'Phones', 2)."</td>";
-echo "<td class='numerique'>$number_of_phones</td></tr>";
+echo "<td class='numeric'>$number_of_phones</td></tr>";
 
 echo "<tr><td colspan='2' height=10></td></tr>";
 echo "<tr class='tab_bg_1'><td colspan='2' class='b'>".__('Operating system')."</td></tr>";
@@ -156,7 +156,7 @@ while ($data=$DB->fetch_assoc($result)) {
       $data['name'] = Dropdown::EMPTY_VALUE;
    }
    echo "<tr class='tab_bg_2'><td>".$data['name']."</td>";
-   echo "<td class='numerique'>".$data['count']."</td></tr>";
+   echo "<td class='numeric'>".$data['count']."</td></tr>";
 }
 
 echo "<tr><td colspan='2' height=10></td></tr>";
@@ -179,7 +179,7 @@ while ($data=$DB->fetch_assoc($result)) {
       $data['name'] = Dropdown:: EMPTY_VALUE;
    }
    echo "<tr class='tab_bg_2'><td>".$data['name']."</td>";
-   echo "<td class='numerique'>".$data['count']."</td></tr>";
+   echo "<td class='numeric'>".$data['count']."</td></tr>";
 }
 
 echo "<tr><td colspan='2' height=10></td></tr>";
@@ -204,7 +204,7 @@ while ($data=$DB->fetch_assoc($result)) {
       $data['name'] = Dropdown::EMPTY_VALUE;
    }
    echo "<tr class='tab_bg_2'><td>".$data['name']."</td>";
-   echo "<td class='numerique'>".$data['count']."</td></tr>";
+   echo "<td class='numeric'>".$data['count']."</td></tr>";
 }
 
 echo "<tr><td colspan='2' height=10></td></tr>";
@@ -229,7 +229,7 @@ while ($data=$DB->fetch_assoc($result)) {
       $data['name'] = Dropdown::EMPTY_VALUE;
    }
    echo "<tr class='tab_bg_2'><td>".$data['name']."</td>";
-   echo "<td class='numerique'>".$data['count']."</td></tr>";
+   echo "<td class='numeric'>".$data['count']."</td></tr>";
 }
 
 echo "<tr><td colspan='2' height=10></td></tr>";
@@ -254,7 +254,7 @@ while ($data=$DB->fetch_assoc($result)) {
       $data['name' ]= Dropdown::EMPTY_VALUE;
    }
    echo "<tr class='tab_bg_2'><td>".$data['name']."</td>";
-   echo "<td class='numerique'>".$data['count']."</td></tr>";
+   echo "<td class='numeric'>".$data['count']."</td></tr>";
 }
 
 echo "<tr><td colspan='2' height=10></td></tr>";
@@ -279,7 +279,7 @@ while ($data=$DB->fetch_assoc($result)) {
       $data['name'] = Dropdown::EMPTY_VALUE;
    }
    echo "<tr class='tab_bg_2'><td>".$data['name']."</td>";
-   echo "<td class='numerique'>".$data['count']."</td></tr>";
+   echo "<td class='numeric'>".$data['count']."</td></tr>";
 }
 
 echo "</table>";

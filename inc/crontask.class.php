@@ -1024,7 +1024,7 @@ class CronTask extends CommonDBTM{
                                                     intval($data['elapsed'])),
                                                  number_format($data['elapsed'], 3)).
                     "&nbsp;&nbsp;&nbsp;</td>";
-               echo "<td class='numerique'>".$data['volume']."</td>";
+               echo "<td class='numeric'>".$data['volume']."</td>";
                echo "<td>".$data['content']."</td>";
                echo "</tr>\n";
             } while ($data = $DB->fetch_assoc($result));
@@ -1094,7 +1094,7 @@ class CronTask extends CommonDBTM{
                                                     intval($data['elapsed'])),
                                                  number_format($data['elapsed'], 3)).
                     "&nbsp;&nbsp;</td>";
-               echo "<td class='numerique'>".$data['volume']."</td>";
+               echo "<td class='numeric'>".$data['volume']."</td>";
                echo "<td>".$data['content']."</td>";
                echo "</tr>\n";
                $first = false;

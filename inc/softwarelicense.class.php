@@ -624,11 +624,11 @@ class SoftwareLicense extends CommonDBTM {
                   echo "<td>".$data['entity']."</td>";
                }
                echo "<td>".$data['serial']."</td>";
-               echo "<td class='numerique'>".
+               echo "<td class='numeric'>".
                       ($data['number']>0?$data['number']:__('Unlimited'))."</td>";
                $nb_assoc   = Computer_SoftwareLicense::countForLicense($data['id']);
                $tot_assoc += $nb_assoc;
-               echo "<td class='numerique'>$nb_assoc</td>";
+               echo "<td class='numeric'>$nb_assoc</td>";
                echo "<td>".$data['typename']."</td>";
                echo "<td>".$data['buyname']."</td>";
                echo "<td>".$data['usename']."</td>";
@@ -646,9 +646,9 @@ class SoftwareLicense extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='".
                    ($software->isRecursive()?4:3)."' class='right b'>".__('Total')."</td>";
-            echo "<td class='numerique'>".($tot>0?$tot."":__('Unlimited')).
+            echo "<td class='numeric'>".($tot>0?$tot."":__('Unlimited')).
                  "</td>";
-            echo "<td class='numerique'>$tot_assoc</td>";
+            echo "<td class='numeric'>$tot_assoc</td>";
             echo "<td colspan='4' class='center'>";
 
             if ($canedit) {

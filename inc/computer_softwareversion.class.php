@@ -493,14 +493,14 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          $nb = self::countForVersion($softwareversions_id,$ID);
          if ($nb > 0) {
             echo "<tr class='tab_bg_2'><td>" . $data["completename"] . "</td>";
-            echo "<td class='numerique'>".$nb."</td></tr>\n";
+            echo "<td class='numeric'>".$nb."</td></tr>\n";
             $tot += $nb;
          }
       }
 
       if ($tot > 0) {
          echo "<tr class='tab_bg_1'><td class='center b'>".__('Total')."</td>";
-         echo "<td class='numerique b'>".$tot."</td></tr>\n";
+         echo "<td class='numeric b'>".$tot."</td></tr>\n";
       } else {
          echo "<tr class='tab_bg_1'><td colspan='2 b'>" . __('No item found') . "</td></tr>\n";
       }

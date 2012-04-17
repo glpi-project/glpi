@@ -539,7 +539,7 @@ class Consumable extends CommonDBTM {
             $total[$id_type] += $new[$id_type];
             $tot             += $new[$id_type];
          }
-         echo "<td class='numerique'>".$tot."</td>";
+         echo "<td class='numeric'>".$tot."</td>";
          echo "</tr>";
 
          foreach ($used as $itemtype_items_id => $val) {
@@ -560,16 +560,16 @@ class Consumable extends CommonDBTM {
                $total[$id_type] += $val[$id_type];
                $tot             += $val[$id_type];
             }
-         echo "<td class='numerique'>".$tot."</td>";
+         echo "<td class='numeric'>".$tot."</td>";
          echo "</tr>";
          }
          echo "<tr class='tab_bg_1'><td class='b'>".__('Total')."</td>";
          $tot = 0;
          foreach ($types as $id_type => $type) {
             $tot += $total[$id_type];
-            echo "<td class='numerique'>".$total[$id_type]."</td>";
+            echo "<td class='numeric'>".$total[$id_type]."</td>";
          }
-         echo "<td class='numerique'>".$tot."</td>";
+         echo "<td class='numeric'>".$tot."</td>";
          echo "</tr>";
          echo "</table></div>";
 
