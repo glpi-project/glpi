@@ -1751,12 +1751,13 @@ class Dropdown {
       }
 
       if (count($actions)) {
+         _e('Action');echo "&nbsp;";
          echo "<select name='massiveaction' id='massiveaction$rand'>";
          echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
          foreach ($actions as $key => $val) {
             echo "<option value = '$key'>$val</option>";
          }
-         echo "</select>";
+         echo "</select><br><br>";
 
          $params = array('action'     => '__VALUE__',
                          'is_deleted' => $is_deleted,

@@ -65,7 +65,7 @@ if (isset($_POST["action"])
    switch($_POST["action"]) {
       case "activate_rule" :
          Dropdown::showYesNo("activate_rule");
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Activate')."'>\n";
          break;
 
@@ -73,13 +73,13 @@ if (isset($_POST["action"])
          _e('As child of');
          Dropdown::show($_POST['itemtype'], array('name'     => 'parent',
                                                   'comments' => 0));
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Move')."'>\n";
          break;
 
       case 'merge' :
          echo "&nbsp;".$_SESSION['glpiactive_entity_shortname'];
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Merge')."'>\n";
          break;
 
@@ -97,7 +97,7 @@ if (isset($_POST["action"])
          Rule::dropdown(array('sub_type'        => $_POST['sub_type'],
                               'name'            => "ranking",
                               'entity_restrict' => $condition));
-         echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Move')."'>\n";
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".__s('Move')."'>\n";
          break;
 
       case "add_followup" :
@@ -131,7 +131,7 @@ if (isset($_POST["action"])
          $rand = Ticket_Ticket::dropdownLinks('link');
          printf(__('%1$s: %2$s'), __('Ticket'), __('ID'));
          echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
-         echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";
 
          break;
 
@@ -148,7 +148,7 @@ if (isset($_POST["action"])
                                           "/ajax/dropdownMassiveActionAuthMethods.php",
                                        $paramsmassaction);
          echo "<span id='show_massiveaction_field'>";
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Post')."'></span>\n";
          break;
 
@@ -170,7 +170,7 @@ if (isset($_POST["action"])
          $fields['all'] = __('All');
          $fields       += OcsServer::getLockableFields();
          Dropdown::showFromArray("field", $fields);
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Post')."'>";
          break;
 
@@ -186,13 +186,13 @@ if (isset($_POST["action"])
       case "install" :
          Software::dropdownSoftwareToInstall("softwareversions_id",
                                              $_SESSION["glpiactive_entity"], 1);
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Install')."'>";
          break;
 
       case "connect" :
          Computer_Item::dropdownConnect('Computer', $_POST["itemtype"], "connect_item");
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Connect')."'>";
          break;
 
@@ -200,7 +200,7 @@ if (isset($_POST["action"])
          Dropdown::showAllItems("connect_item", 0, 0, $_SESSION["glpiactive_entity"],
                                 array('Monitor', 'Peripheral', 'Phone',  'Printer'),
                                 true, true);
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Connect')."'>";
          break;
 
@@ -211,7 +211,7 @@ if (isset($_POST["action"])
 
       case "add_group" :
          Dropdown::show('Group', array('condition' => '`is_usergroup`'));
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                      __s('Add')."'>";
          break;
 
@@ -221,7 +221,7 @@ if (isset($_POST["action"])
          Profile::dropdownUnder();
          echo ".&nbsp;".__('Recursive')."&nbsp;";
          Dropdown::showYesNo("is_recursive", 0);
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Add')."'>";
          break;
 
@@ -229,37 +229,37 @@ if (isset($_POST["action"])
          Dropdown::showItemTypes('transform_to', NetworkPort::getNetworkPortInstantiations(),
                                  array('value' => 'NetworkPortEthernet'));
 
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                      __s('Save')."'>";
          break;
 
       case "add_document" :
          Document::dropdown(array('name' => 'docID'));
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Add')."'>";
          break;
 
       case "add_contract" :
          Contract::dropdown(array('name' => "contractID"));
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Add')."'>";
          break;
 
       case "add_contact" :
          Dropdown::show('Contact', array('name' => "contactID"));
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Add')."'>";
          break;
 
       case "add_enterprise" :
          Dropdown::show('Supplier', array('name' => "supplierID"));
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Add')."'>";
          break;
 
       case "import_email" :
          Dropdown::show('Entity');
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Import')."'>";
          break;
 
@@ -267,7 +267,7 @@ if (isset($_POST["action"])
          if ($item->isEntityAssign()) {
             Dropdown::show('Entity');
          }
-         echo "&nbsp;<input type='submit' name='massiveaction' class='submit' value='".
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                       __s('Duplicate')."'>";
          break;
 
@@ -352,7 +352,7 @@ if (isset($_POST["action"])
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
                                        $paramsmassaction);
 
-         echo "&nbsp;<span id='show_massiveaction_field'>&nbsp;</span>\n";
+         echo "<br><br><span id='show_massiveaction_field'>&nbsp;</span>\n";
          break;
 
       default :

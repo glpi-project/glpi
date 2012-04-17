@@ -2928,6 +2928,46 @@ class Html {
     * @param $ontop              display on top of the list
     * @param $onright            display on right of the list
    **/
+   static function simpleOpenArrowMassives($formname, $fixed=false, $ontop=false, $onright=false) {
+      global $CFG_GLPI;
+
+      if ($fixed) {
+         echo "<table class='tab_glpi' width='950px'>";
+      } else {
+         echo "<table class='tab_glpi' width='80%'>";
+      }
+
+      echo "<tr>";
+      if (!$onright) {
+         echo "<td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($ontop?'-top':'').".png'
+                    alt=''></td>";
+      } else {
+         echo "<td class='left' width='80%'></td>";
+      }
+      echo "<td class='center' ".(($formname == 'ruleactions_form') ?"width='15%'" : '').">";
+      echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\"
+             href='#'>".__('Check all')."</a></td>";
+      echo "<td>/</td>";
+      echo "<td class='center' ".(($formname == 'ruleactions_form') ?"width='15%'" : '').">";
+      echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\"
+             href='#'>".__('Uncheck all')."</a></td>";
+
+      if ($onright) {
+         echo "<td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-right".($ontop?'-top':'').".png'
+                    alt=''>";
+      } else {
+         echo "<td class='left' width='80%'>";
+      }
+   }
+
+   /**
+    * show arrow for massives actions : opening
+    *
+    * @param $formname  string
+    * @param $fixed     boolean  used tab_cadre_fixe in both tables (false by default)
+    * @param $ontop              display on top of the list
+    * @param $onright            display on right of the list
+   **/
    static function openArrowMassives($formname, $fixed=false, $ontop=false, $onright=false) {
       global $CFG_GLPI;
 
