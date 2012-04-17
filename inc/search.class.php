@@ -943,7 +943,11 @@ class Search {
             $header_num = 1;
 
             if ($output_type == self::HTML_OUTPUT) { // HTML display - massive modif
-               $check_all = '';
+               $check_all = "<input type='checkbox' name='checkall_massaction'
+                                     id='checkall_massaction'
+                                     onclick= \"if ( checkAsCheckboxes('checkall_massaction',
+                                                                       'massiveaction_form'))
+                                                         {return true;}\">";
                ///TODO check all 
                echo self::showHeaderItem($output_type, $check_all, $header_num, "", 0,
                                          $p['order']);
