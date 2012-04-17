@@ -38,12 +38,32 @@ include (GLPI_ROOT . "/inc/includes.php");
 Session::checkRight("config", "w");
 
 // Obsolete function provided to detect compatibility issue
-function registerPluginType($name) {
+function handleObsoleteCall($func) {
+   global $LANG;
 
+   $name = NOT_AVAILABLE;
+   foreach (debug_backtrace() as $row) {
+      if (isset($row['function'])
+          && ($row['function']==$func)
+          && isset($row['file'])
+          && preg_match(':/plugins/(.*)/:', $row['file'], $reg)) {
+         $name = $reg[1];
+      }
+   }
    echo "</table>";
    Html::displayErrorAndDie(sprintf(__('The plugin %s is incompatible  with this version of GLPI'),
                                     $name).
                             "<br><br>".__('Delete or update it otherwise GLPI will not work correctly.'));
+}
+
+function registerPluginType($name) {
+   handleObsoleteCall('registerPluginType');
+}
+function getLoginUserID() {
+   handleObsoleteCall('getLoginUserID');
+}
+function haveRight() {
+   handleObsoleteCall('haveRight');
 }
 
 
