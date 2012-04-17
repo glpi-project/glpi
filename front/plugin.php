@@ -39,7 +39,6 @@ Session::checkRight("config", "w");
 
 // Obsolete function provided to detect compatibility issue
 function handleObsoleteCall($func) {
-   global $LANG;
 
    $name = NOT_AVAILABLE;
    foreach (debug_backtrace() as $row) {
