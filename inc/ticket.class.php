@@ -2824,7 +2824,7 @@ class Ticket extends CommonITILObject {
 
 
       // Set default values...
-      $values = array('_users_id_requester_notif'
+      $default_values = array('_users_id_requester_notif'
                                              => array('use_notification' => ($email==""?0:1)),
                       'nodelegate'           => 1,
                       '_users_id_requester'  => 0,
@@ -2844,14 +2844,14 @@ class Ticket extends CommonITILObject {
                                                                       $_SESSION['glpiactive_entity'],
                                                                       '', Ticket::INCIDENT_TYPE),
                       '_right'               => "id");
-/**
+
       if (!$ticket_template) {
-         $values = $_REQUEST;
+         $options = $_REQUEST;
       }
-*/
+      
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
-      foreach ($values as $name => $value) {
+      foreach ($default_values as $name => $value) {
          if (!isset($options[$name])) {
             if (isset($saved[$name])) {
                $options[$name] = $saved[$name];
@@ -2967,7 +2967,7 @@ class Ticket extends CommonITILObject {
             if (isset($options[$predeffield])) {
                // Is always default value : not set
                // Set if already predefined field
-               if ($options[$predeffield] == $values[$predeffield]
+               if ($options[$predeffield] == $default_values[$predeffield]
                    || (isset($options['_predefined_fields'][$field])
                        && $options[$predeffield] == $options['_predefined_fields'][$field])) {
                   $options[$predeffield]           = $predefvalue;
@@ -2982,7 +2982,7 @@ class Ticket extends CommonITILObject {
          if (count($options['_predefined_fields'])) {
             foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
                if ($options[$predeffield] == $predefvalue) {
-                  $options[$predeffield] = $values[$predeffield];
+                  $options[$predeffield] = $default_values[$predeffield];
                }
             }
          }
