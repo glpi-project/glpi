@@ -164,7 +164,6 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
             $res_rule = $this->processAllRules($input, array(), array());
             $res_rule = Toolbox::addslashes_deep($res_rule);
 
-            ///TODO Walid : verify my correction for parentheses
             if ((isset($res_rule["name"]) && $res_rule["name"] != $input["name"])
                 || (isset($res_rule["version"]) && $res_rule["version"] != '')
                 || (isset($res_rule['new_entities_id'])
@@ -275,6 +274,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
       $input["name"]         = $name;
       $input["manufacturer"] = $manufacturer;
+      $input["entities_id"]  = $entity;
       $input                 = Toolbox::addslashes_deep($input);
 
       if (empty($res_rule)) {
