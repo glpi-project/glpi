@@ -2909,7 +2909,7 @@ class Ticket extends CommonITILObject {
 
 
       // Set default values...
-      $values = array('_users_id_requester_notif' => array('use_notification'  => ($email==""?0:1),
+      $default_values = array('_users_id_requester_notif' => array('use_notification'  => ($email==""?0:1),
                                                            'alternative_email' => ''),
                       'nodelegate'                => 1,
                       '_users_id_requester'       => 0,
@@ -2930,8 +2930,12 @@ class Ticket extends CommonITILObject {
                                                                                '', Ticket::INCIDENT_TYPE),
                       '_right'                    => "id");
 
+      if (!isset($options['template_preview'])) {
+         $options = $_REQUEST;
+      }
+
       // Restore saved value or override with page parameter
-      foreach ($values as $name => $value) {
+      foreach ($default_values as $name => $value) {
          if (!isset($options[$name])) {
             if (isset($_SESSION["helpdeskSaved"][$name])) {
                $options[$name] = $_SESSION["helpdeskSaved"][$name];
@@ -3023,12 +3027,11 @@ class Ticket extends CommonITILObject {
             }
          }
       }
-
       if ($ticket_template) {
          // with type and categ
          $tt->getFromDBWithDatas($ticket_template, true);
       }
-
+      
       // Predefined fields from template : reset them
       if (isset($options['_predefined_fields'])) {
          $options['_predefined_fields']
@@ -3045,9 +3048,9 @@ class Ticket extends CommonITILObject {
             if (isset($options[$predeffield])) {
                // Is always default value : not set
                // Set if already predefined field
-               if ($options[$predeffield] == $values[$predeffield]
-                   || (isset($options['_predefined_fields'][$field])
-                       && $options[$predeffield] == $options['_predefined_fields'][$field])) {
+               if ($options[$predeffield] == $default_values[$predeffield]
+                   || (isset($options['_predefined_fields'][$predeffield])
+                       && $options[$predeffield] == $options['_predefined_fields'][$predeffield])) {
                   $options[$predeffield]           = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
@@ -3060,12 +3063,11 @@ class Ticket extends CommonITILObject {
          if (count($options['_predefined_fields'])) {
             foreach ($options['_predefined_fields'] as $predeffield => $predefvalue) {
                if ($options[$predeffield] == $predefvalue) {
-                  $options[$predeffield] = $values[$predeffield];
+                  $options[$predeffield] = $default_values[$predeffield];
                }
             }
          }
       }
-
       unset($_SESSION["helpdeskSaved"]);
 
       if ($CFG_GLPI['urgency_mask']==(1<<3) || $tt->isHiddenField('urgency')) {
@@ -3195,13 +3197,16 @@ class Ticket extends CommonITILObject {
       if (!$ticket_template) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['help'][14]."\" class='submit'>";
-
+         
          if ($tt->isField('id') && $tt->fields['id'] > 0) {
             echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
             echo "<input type='hidden' name='_predefined_fields'
                          value=\"".rawurlencode(serialize($predefined_fields))."\">";
          }
+                  
+         echo "<input type='submit' name='add' value=\"".$LANG['help'][14]."\" class='submit'>";
+
+
 
          echo "</td></tr>";
       }
@@ -3357,7 +3362,7 @@ class Ticket extends CommonITILObject {
 
       if (isset($tt->predefined) && count($tt->predefined)) {
          foreach ($tt->predefined as $predeffield => $predefvalue) {
-            if (isset($default_values[$predeffield])) {
+            if (isset($default_values[$predeffield])) {         
                // Is always default value : not set
                // Set if already predefined field
                if ($values[$predeffield] == $default_values[$predeffield]
