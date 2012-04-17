@@ -861,6 +861,13 @@ class Search {
                if (Session::haveRight("search_config","w")
                    || Session::haveRight("search_config_global","w")) {
 
+//                   Ajax::createModalWindow('searchconfig_window',
+//                         $CFG_GLPI['root_doc']."/ajax/searchconfig.php?itemtype=$itemtype",
+//                         array('title'    => __('Select default items to show'),
+//                               'width'    => '1000'));
+
+//                   $tmp = " class='pointer' onClick=\"searchconfig_window.show()\"";
+                  
                   $tmp = " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
                         "/front/popup.php?popup=search_config&amp;itemtype=$itemtype' ,'glpipopup', ".
                         "'height=400, width=1000, top=100, left=100, scrollbars=yes'); w.focus();\"";
