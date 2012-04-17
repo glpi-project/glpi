@@ -4522,11 +4522,16 @@ class Ticket extends CommonITILObject {
          }
          $query.= ")";
       }
-      $query.= " AND `glpi_tickets`.`is_deleted` = 0 ";
-      $query .= "GROUP BY `status`";
+      $query_deleted = $query;
+      
+      $query .= " AND NOT `glpi_tickets`.`is_deleted` ";
+      $query_deleted .= " AND `glpi_tickets`.`is_deleted` ";
+      $query .= " GROUP BY `status`";
+      $query_deleted .= " GROUP BY `status`";
 
       $result = $DB->query($query);
-
+      $result_deleted = $DB->query($query_deleted);
+      
       $status = array('new'     => 0,
                       'assign'  => 0,
                       'plan'    => 0,
@@ -4539,7 +4544,13 @@ class Ticket extends CommonITILObject {
             $status[$data["status"]] = $data["COUNT"];
          }
       }
-
+      $number_deleted = 0;
+      if ($DB->numrows($result_deleted)>0) {
+         while ($data = $DB->fetch_assoc($result_deleted)) {
+            $number_deleted += $data["COUNT"];
+         }
+      }
+      
       $options['field'][0]      = 12;
       $options['searchtype'][0] = 'equals';
       $options['contains'][0]   = 'process';
@@ -4598,6 +4609,13 @@ class Ticket extends CommonITILObject {
                  Toolbox::append_params($options,'&amp;')."\">".$LANG['joblist'][33]."</a></td>";
       echo "<td>".$status["closed"]."</td></tr>";
 
+      $options['contains'][0]    = 'all';
+      $options['is_deleted']    = 1;
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                 Toolbox::append_params($options,'&amp;')."\">".$LANG['common'][28]."</a></td>";
+      echo "<td>".$number_deleted."</td></tr>";
+      
       echo "</table><br>";
    }
 
