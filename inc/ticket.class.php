@@ -2729,13 +2729,20 @@ class Ticket extends CommonITILObject {
 
             // Display default value if itemtype is displayed
             if ($found_type
-                && $itemtype
-                && ($item = getItemForItemtype($itemtype))
-                && $items_id) {
-               if ($item->getFromDB($items_id)) {
-                  echo "<select name='items_id'>\n";
-                  echo "<option value='$items_id'>".$item->getName();
-                  echo "</option></select>";
+                && $itemtype) {
+                if (($item = getItemForItemtype($itemtype))
+                     && $items_id) {
+                  if ($item->getFromDB($items_id)) {
+                     echo "<select name='items_id'>\n";
+                     echo "<option value='$items_id'>".$item->getName();
+                     echo "</option></select>";
+                  }
+               } else {
+                  $params['itemtype'] = $itemtype;
+                  echo "<script type='text/javascript' >\n";
+                  Ajax::updateItemJsCode("results_$myname$rand", $CFG_GLPI["root_doc"]."/ajax/dropdownTrackingDeviceType.php",
+                                       $params);
+                  echo '</script>';
                }
             }
             echo "</span>\n";
