@@ -95,6 +95,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super);
       $group->addHeader('MAC', __('MAC'), $super);
+      $group->addHeader('speed', __('Ethernet port speed'), $super);
+      $group->addHeader('type', __('Ethernet port type'), $super);
       NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super);
       Netpoint::getHTMLTableHeader('NetworkPortEthernet', $group, $super);
       $group->addHeader('Outlet', __('Network outlet'), $super);
@@ -112,6 +114,14 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, NULL, $options);
 
       $row->addCell($row->getHeaderByName('Instantiation', 'MAC'), $netport->fields["mac"]);
+
+      if (!empty($this->fields['speed'])) {
+         $row->addCell($row->getHeaderByName('Instantiation', 'speed'), $this->fields["speed"]);
+      }
+
+      if (!empty($this->fields['type'])) {
+         $row->addCell($row->getHeaderByName('Instantiation', 'type'), $this->fields["type"]);
+      }
 
       NetworkPort_Vlan::getHTMLTableCellsForItem($row, $netport, NULL, $options);
 
