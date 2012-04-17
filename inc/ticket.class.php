@@ -3602,7 +3602,7 @@ class Ticket extends CommonITILObject {
             $opt['display_emptychoice'] = false;
          }
 
-         switch ($values['type']) {
+         switch ($this->fields["type"]) {
             case self::INCIDENT_TYPE :
                $opt['condition'] .= "`is_incident`='1'";
                break;
