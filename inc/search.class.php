@@ -857,7 +857,21 @@ class Search {
                      }
                   }
                }
-               Html::printPager($p['start'], $numrows, $target, $parameters, $itemtype);
+               $search_config = "";
+               if (Session::haveRight("search_config","w")
+                   || Session::haveRight("search_config_global","w")) {
+
+                  $tmp = " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
+                        "/front/popup.php?popup=search_config&amp;itemtype=$itemtype' ,'glpipopup', ".
+                        "'height=400, width=1000, top=100, left=100, scrollbars=yes'); w.focus();\"";
+
+                  $search_config = "<img alt=\"".__s('Select default items to show')."\" title=\"".
+                                     __s('Select default items to show').
+                                    "\" src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
+                  $search_config .= $tmp.">";
+               }
+                              
+               Html::printPager($p['start'], $numrows, $target, $parameters, $itemtype, 0, $search_config);
             }
 
             // Define begin and end var for loop
@@ -929,20 +943,9 @@ class Search {
             $header_num = 1;
 
             if ($output_type == self::HTML_OUTPUT) { // HTML display - massive modif
-               $search_config = "";
-               if (Session::haveRight("search_config","w")
-                   || Session::haveRight("search_config_global","w")) {
-
-                  $tmp = " class='pointer' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"].
-                        "/front/popup.php?popup=search_config&amp;itemtype=$itemtype' ,'glpipopup', ".
-                        "'height=400, width=1000, top=100, left=100, scrollbars=yes'); w.focus();\"";
-
-                  $search_config = "<img alt=\"".__s('Select default items to show')."\" title=\"".
-                                     __s('Select default items to show').
-                                    "\" src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
-                  $search_config .= $tmp.">";
-               }
-               echo self::showHeaderItem($output_type, $search_config, $header_num, "", 0,
+               $check_all = '';
+               ///TODO check all 
+               echo self::showHeaderItem($output_type, $check_all, $header_num, "", 0,
                                          $p['order']);
             }
 
@@ -1356,7 +1359,8 @@ class Search {
                }
             }
             if ($output_type == self::HTML_OUTPUT) { // In case of HTML display
-               Html::printPager($p['start'], $numrows, $target, $parameters);
+               Html::printPager($p['start'], $numrows, $target, $parameters, '', 0, $search_config);
+               
             }
          } else {
             echo self::showError($output_type);
