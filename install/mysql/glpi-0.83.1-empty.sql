@@ -4692,7 +4692,8 @@ CREATE TABLE `glpi_tickets` (
   KEY `type` (`type`),
   KEY `solutiontypes_id` (`solutiontypes_id`),
   KEY `itilcategories_id` (`itilcategories_id`),
-  KEY `is_deleted` (`is_deleted`)
+  KEY `is_deleted` (`is_deleted`),
+  KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
