@@ -4509,7 +4509,7 @@ class Ticket extends CommonITILObject {
          }
          $query.= ")";
       }
-
+      $query.= " AND `glpi_tickets`.`is_deleted` = 0 ";
       $query .= "GROUP BY `status`";
 
       $result = $DB->query($query);
