@@ -67,6 +67,8 @@ function update083to0831() {
    $migration->addField('glpi_configs', 'allow_search_all',    'bool',    array('value' => 1));
    $migration->addField('glpi_configs', 'allow_search_global', 'bool',    array('value' => 1));
 
+   $migration->addKey('glpi_tickets', 'name');
+
    $migration->addField("glpi_profiles", "knowbase_admin", "char",
                         array('after'     => "knowbase",
                               'update'    => "1",
