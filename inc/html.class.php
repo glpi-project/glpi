@@ -3934,12 +3934,13 @@ class Html {
     * @param $item_type_output            item type display - if >0 display export PDF et Sylk form
     *                                     (default 0)
     * @param $item_type_output_param item type parameter for export (default 0)
+    * @param $additional_info Additional information to display
     *
     * @return nothing (print a pager)
     *
    **/
    static function printPager($start, $numrows, $target, $parameters, $item_type_output=0,
-                              $item_type_output_param=0) {
+                              $item_type_output_param=0, $additional_info = '') {
       global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];
@@ -3993,6 +3994,12 @@ class Html {
       echo "<td width='50%' class='tab_bg_2'>";
       self::printPagerForm("$target?$parameters&amp;start=$start");
       echo "</td>";
+
+      if (!empty($additional_info)) {
+         echo "<td class='tab_bg_2'>";
+         echo $additional_info;
+         echo "</td>";
+      }
 
       if (!empty($item_type_output)
           && isset($_SESSION["glpiactiveprofile"])
