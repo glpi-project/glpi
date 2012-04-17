@@ -520,6 +520,17 @@ class Contract extends CommonDBTM {
       $tab[72]['massiveaction'] = false;
       $tab[72]['joinparams']    = array('jointype' => 'child');
 
+      $tab[29]['table']         = 'glpi_suppliers';
+      $tab[29]['field']         = 'name';
+      $tab[29]['name']          = $LANG['financial'][65];
+      $tab[29]['forcegroupby']  = true;
+      $tab[29]['datatype']      = 'itemlink';
+      $tab[29]['itemlink_type'] = 'Supplier';
+      $tab[29]['massiveaction'] = false;
+      $tab[29]['joinparams']    = array('beforejoin'
+                                       => array('table'      => 'glpi_contracts_suppliers',
+                                                'joinparams' => array('jointype' => 'child')));
+
       return $tab;
    }
 
