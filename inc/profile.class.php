@@ -720,6 +720,9 @@ class Profile extends CommonDBTM {
       echo "<td>".$LANG['title'][5]."&nbsp;:</td><td>";
       self::dropdownNoneReadWrite("knowbase", $this->fields["knowbase"], 1, 1, 1);
       echo "</td>";
+      echo "<td>".$LANG['setup'][237]." - ".$LANG['title'][5]."&nbsp;:</td><td>";
+      Dropdown::showYesNo("knowbase_admin", $this->fields["knowbase_admin"]);
+      echo "</td>";
       echo "<td>".$LANG['profiles'][23]."&nbsp;:</td><td colspan='3'>";
       self::dropdownNoneReadWrite("reservation_central", $this->fields["reservation_central"],
                                   1, 1, 1);

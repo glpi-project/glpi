@@ -74,6 +74,9 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields['users_id'] == Session::getLoginUserID()) {
          return true;
       }
+      if (Session::haveRight('knowbase_admin', '1')) {
+         return true;
+      }
 
       if ($this->fields["is_faq"]) {
          return (((Session::haveRight('knowbase', 'r') || Session::haveRight('faq', 'r'))
@@ -87,7 +90,8 @@ class KnowbaseItem extends CommonDBTM {
    function canUpdateItem() {
 
       // Personal knowbase or visibility and write access
-      return ($this->fields['users_id'] == Session::getLoginUserID()
+      return (Session::haveRight('knowbase_admin', '1')
+              || $this->fields['users_id'] == Session::getLoginUserID()
               || ((($this->fields["is_faq"] && Session::haveRight("faq", "w"))
                    || (!$this->fields["is_faq"] && Session::haveRight("knowbase", "w")))
                   && $this->haveVisibilityAccess()));
@@ -230,6 +234,10 @@ class KnowbaseItem extends CommonDBTM {
       if ($this->fields['users_id'] == Session::getLoginUserID()) {
          return true;
       }
+      // Admin
+      if (Session::haveRight('knowbase_admin', '1')) {
+         return true;
+      }
 
       // Users
       if (isset($this->users[Session::getLoginUserID()])) {
@@ -312,7 +320,6 @@ class KnowbaseItem extends CommonDBTM {
    static function addVisibilityJoins($forceall=false) {
 
       $join = '';
-
       // Users
       $join .= " LEFT JOIN `glpi_knowbaseitems_users`
                      ON (`glpi_knowbaseitems_users`.`knowbaseitems_id` = `glpi_knowbaseitems`.`id`) ";
@@ -354,37 +361,39 @@ class KnowbaseItem extends CommonDBTM {
     * @return string restrict to add
    **/
    static function addVisibilityRestrict() {
-
-      $restrict = "(`glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."' ";
-
-      // Users
-      $restrict .= " OR `glpi_knowbaseitems_users`.`users_id` = '".Session::getLoginUserID()."' ";
-
-      // Groups
-      if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
-         $restrict .= " OR (`glpi_groups_knowbaseitems`.`groups_id`
-                                 IN ('".implode("','",$_SESSION["glpigroups"])."')
-                            AND (`glpi_groups_knowbaseitems`.`entities_id` < 0
-                                 ".getEntitiesRestrictRequest("OR", "glpi_groups_knowbaseitems",
-                                                              '', '', true).")) ";
+      $restrict = ''; 
+      if (!Session::haveRight('knowbase_admin', '1')) {
+         $restrict = "(`glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."' ";
+         // Users
+         $restrict .= " OR `glpi_knowbaseitems_users`.`users_id` = '".Session::getLoginUserID()."' ";
+   
+         // Groups
+         if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
+            $restrict .= " OR (`glpi_groups_knowbaseitems`.`groups_id`
+                                    IN ('".implode("','",$_SESSION["glpigroups"])."')
+                              AND (`glpi_groups_knowbaseitems`.`entities_id` < 0
+                                    ".getEntitiesRestrictRequest("OR", "glpi_groups_knowbaseitems",
+                                                               '', '', true).")) ";
+         }
+   
+         // Profiles
+         if (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
+            $restrict .= " OR (`glpi_knowbaseitems_profiles`.`profiles_id`
+                                    = '".$_SESSION["glpiactiveprofile"]['id']."'
+                              AND (`glpi_knowbaseitems_profiles`.`entities_id` < 0
+                                    ".getEntitiesRestrictRequest("OR", "glpi_knowbaseitems_profiles",
+                                                               '', '', true).")) ";
+         }
+         // Entities
+         if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+            // Force complete SQL not summary when access to all entities
+            $restrict .= getEntitiesRestrictRequest("OR", "glpi_entities_knowbaseitems", '', '', true, true);
+         }
+   
+         $restrict .= ") ";
+      } else {
+         $restrict = '1';
       }
-
-      // Profiles
-      if (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
-         $restrict .= " OR (`glpi_knowbaseitems_profiles`.`profiles_id`
-                                 = '".$_SESSION["glpiactiveprofile"]['id']."'
-                            AND (`glpi_knowbaseitems_profiles`.`entities_id` < 0
-                                 ".getEntitiesRestrictRequest("OR", "glpi_knowbaseitems_profiles",
-                                                              '', '', true).")) ";
-      }
-
-      // Entities
-      if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
-         // Force complete SQL not summary when access to all entities
-         $restrict .= getEntitiesRestrictRequest("OR", "glpi_entities_knowbaseitems", '', '', true, true);
-      }
-
-      $restrict .= ") ";
       return $restrict;
    }
 
