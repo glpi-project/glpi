@@ -53,7 +53,11 @@ if (isset($_GET["globalsearch"])) {
          $_GET["display_type"] = GLOBAL_SEARCH;
 
          Search::manageGetValues($itemtype,false,true);
-
+         
+         if (!isset($_GET["field"][0])) {
+            $_GET["field"][0] = 'view';
+         }
+         
          if ($_GET["field"][0] =='view') {
             $_GET["contains"][0]   = $searchtext;
             $_GET["searchtype"][0] = 'contains';

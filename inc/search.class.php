@@ -3691,7 +3691,7 @@ class Search {
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
           && $CFG_GLPI["union_search_type"][$itemtype]==$searchopt[$ID]["table"]) {
 
-         if ($searchopt[$ID]['addobjetparams']) {
+         if (isset($searchopt[$ID]['addobjetparams']) && $searchopt[$ID]['addobjetparams']) {
             return self::giveItem($data["TYPE"], $ID, $data, $num, $meta,
                                   $searchopt[$ID]['addobjetparams']);
          }
