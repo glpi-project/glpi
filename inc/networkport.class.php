@@ -391,7 +391,7 @@ class NetworkPort extends CommonDBChild {
          echo "<div class='firstbloc'><table class='tab_cadre_fixe'>\n";
          echo "<tr><td class='tab_bg_2 center'>\n";
          _e('Network port type to be added');
-         echo "<select name='instantiation_type'>\n";
+         echo "&nbsp;<select name='instantiation_type'>\n";
          foreach (self::getNetworkPortInstantiations() as $network_type) {
             echo "\t<option value='$network_type'";
             if ($network_type == "NetworkPortEthernet") {
