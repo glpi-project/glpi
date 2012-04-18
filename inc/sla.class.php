@@ -99,7 +99,7 @@ class SLA extends CommonDBTM {
                 WHERE `slas_id` = '".$this->fields['id']."'";
 
       if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             $slalevel = new SlaLevel();
             while ($data = $DB->fetch_assoc($result)) {
                $slalevel->delete($data);
@@ -113,7 +113,7 @@ class SLA extends CommonDBTM {
                 WHERE `slas_id` = '".$this->fields['id']."'";
 
       if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             $ticket = new Ticket();
             while ($data = $DB->fetch_assoc($result)) {
                $ticket->deleteSLA($data['id']);
@@ -137,15 +137,12 @@ class SLA extends CommonDBTM {
    **/
    function showForm($ID, $options=array()) {
 
+      $rowspan = 3;
       if ($ID > 0) {
-         $this->check($ID, 'r');
          $rowspan = 4;
-      } else {
-         // Create item
-         $this->check(-1, 'w');
-         $rowspan = 3;
       }
 
+      $this->initForm($ID, $options);
       $this->showTabs($options);
       $this->showFormHeader($options);
 
@@ -158,7 +155,7 @@ class SLA extends CommonDBTM {
             <textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
 
-      if ($ID>0) {
+      if ($ID > 0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Last update')."</td>";
          echo "<td>".($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
@@ -169,19 +166,19 @@ class SLA extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".__('Calendar')."</td>";
       echo "<td>";
 
-      Dropdown::show('Calendar', array('value'      => $this->fields["calendars_id"],
-                                       'emptylabel' => __('24/7'),
-                                       'toadd'      => array('-1' => __('Calendar of the ticket'))));
+      Calendar::dropdown(array('value'      => $this->fields["calendars_id"],
+                               'emptylabel' => __('24/7'),
+                               'toadd'      => array('-1' => __('Calendar of the ticket'))));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Maximum time to solve')."</td>";
       echo "<td>";
       $possible_values = array();
       for ($i=1 ; $i<24 ; $i++) {
-         $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('+ %1$d hour','+ %1$d hours',$i),$i);
+         $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('+ %d hour','+ %d hours',$i),$i);
       }
       for ($i=1 ; $i<30 ; $i++) {
-         $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('+ %1$d day','+ %1$d days',$i),$i);
+         $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('+ %d day','+ %d days',$i),$i);
       }
       Dropdown::showFromArray('resolution_time', $possible_values,
                               array('value' => $this->fields["resolution_time"]));
@@ -247,7 +244,7 @@ class SLA extends CommonDBTM {
 
       if (isset($this->fields['id'])) {
          // Based on a calendar
-         if ($this->fields['calendars_id']>0) {
+         if ($this->fields['calendars_id'] > 0) {
             $cal          = new Calendar();
             $work_in_days = ($this->fields['resolution_time'] >= DAY_TIMESTAMP);
 
@@ -284,13 +281,13 @@ class SLA extends CommonDBTM {
          $slalevel = new SlaLevel();
 
          if ($slalevel->getFromDB($slalevels_id)) { // sla level exists
-            if ($slalevel->fields['slas_id']==$this->fields['id']) { // correct sla level
+            if ($slalevel->fields['slas_id'] == $this->fields['id']) { // correct sla level
                $work_in_days = ($this->fields['resolution_time'] >= DAY_TIMESTAMP);
                $delay        = $this->fields['resolution_time']+$slalevel->fields['execution_time']
                                +$additional_delay;
 
                // Based on a calendar
-               if ($this->fields['calendars_id']>0) {
+               if ($this->fields['calendars_id'] > 0) {
                   $cal = new Calendar();
                   if ($cal->getFromDB($this->fields['calendars_id'])) {
                      return $cal->computeEndDate($start_date, $delay, $work_in_days);
@@ -328,7 +325,7 @@ class SLA extends CommonDBTM {
          $work_in_days = ($this->fields['resolution_time'] >= DAY_TIMESTAMP);
 
          // Based on a calendar
-         if ($this->fields['calendars_id']>0) {
+         if ($this->fields['calendars_id'] > 0) {
             if ($cal->getFromDB($this->fields['calendars_id'])) {
                return $cal->getActiveTimeBetween($start, $end, $work_in_days);
             }
@@ -375,7 +372,7 @@ class SLA extends CommonDBTM {
    static function deleteLevelsToDo(Ticket $ticket) {
       global $DB;
 
-      if ($ticket->fields["slalevels_id"]>0) {
+      if ($ticket->fields["slalevels_id"] > 0) {
          $query = "SELECT *
                    FROM `glpi_slalevels_tickets`
                    WHERE `tickets_id` = '".$ticket->fields["id"]."'";

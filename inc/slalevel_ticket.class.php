@@ -60,7 +60,7 @@ class SlaLevel_Ticket extends CommonDBTM {
                 WHERE `tickets_id` = '$ID'";
 
       if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)>0) {
+         if ($DB->numrows($result) > 0) {
             $this->fields = $DB->fetch_assoc($result);
             return true;
          }
@@ -145,8 +145,8 @@ class SlaLevel_Ticket extends CommonDBTM {
          $slalevel = new SlaLevel();
          $sla      = new SLA();
          // Check if sla datas are OK
-         if ($ticket->fields['slas_id'] > 0
-             && $ticket->fields['slalevels_id'] == $data['slalevels_id']) {
+         if (($ticket->fields['slas_id'] > 0)
+             && ($ticket->fields['slalevels_id'] == $data['slalevels_id'])) {
 
             if ($ticket->fields['status'] == 'closed') {
                // Drop line when status is closed
@@ -154,10 +154,10 @@ class SlaLevel_Ticket extends CommonDBTM {
 
             } else if ($ticket->fields['status'] != 'solved') {
                // If status = solved : keep the line in case of solution not validated
-               $input['id'] = $ticket->getID();
+               $input['id']           = $ticket->getID();
                $input['_auto_update'] = true;
 
-               if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'],1,1)
+               if ($slalevel->getRuleWithCriteriasAndActions($data['slalevels_id'], 1, 1)
                    && $sla->getFromDB($ticket->fields['slas_id'])) {
                    $doit = true;
                    if (count($slalevel->criterias)) {
@@ -170,8 +170,8 @@ class SlaLevel_Ticket extends CommonDBTM {
                }
 
                // Put next level in todo list
-               $next = $slalevel->getNextSlaLevel($ticket->fields['slas_id'],
-                                                  $ticket->fields['slalevels_id']);
+               $next                  = $slalevel->getNextSlaLevel($ticket->fields['slas_id'],
+                                                                   $ticket->fields['slalevels_id']);
                $input['slalevels_id'] = $next;
                $ticket->update($input);
                $sla->addLevelToDo($ticket);
