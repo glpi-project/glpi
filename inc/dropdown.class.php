@@ -808,12 +808,7 @@ class Dropdown {
     */
    static function showItemTypeList($optgroup) {
 
-      echo "<p><a href=\"javascript:showHideDiv('list_nav','img_nav','";
-      echo GLPI_ROOT . "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
-      echo "<img alt='' name='img_nav' src=\"" . GLPI_ROOT . "/pics/folder.png\">&nbsp;";
-      echo __('Show all')."</a></p>";
-
-      echo "<div id='list_nav' style='display:none;'>";
+      echo "<div id='list_nav'>";
 
       $nb = 0;
       foreach ($optgroup as $label => $dp) {
