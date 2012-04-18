@@ -105,8 +105,8 @@ class DeviceSoundCard extends CommonDevice {
 
       switch ($itemtype) {
          case 'Computer_Device' :
-            $base->addHeader('type', __('Type'), $super, $father);
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+            $base->addHeader('type', __('Type'), $super, $father);
             break;
       }
 
@@ -123,12 +123,12 @@ class DeviceSoundCard extends CommonDevice {
 
       switch ($item_type) {
          case 'Computer_Device' :
+            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             if ($this->fields["type"]) {
                $row->addCell($row->getHeaderByName('specificities', 'type'), $this->fields["type"],
                              $father);
             }
 
-            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             break;
       }
 

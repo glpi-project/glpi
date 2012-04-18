@@ -137,6 +137,7 @@ class DeviceMemory extends CommonDevice {
 
       switch ($itemtype) {
          case 'Computer_Device' :
+            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             $base->addHeader('type', __('Type'), $super, $father);
             $base->addHeader('frequency', __('Frequency'), $super, $father);
             break;
@@ -155,6 +156,7 @@ class DeviceMemory extends CommonDevice {
 
       switch ($item_type) {
          case 'Computer_Device' :
+            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             if ($this->fields["devicememorytypes_id"]) {
                $row->addCell($row->getHeaderByName('specificities', 'type'),
                              Dropdown::getDropdownName("glpi_devicememorytypes",
