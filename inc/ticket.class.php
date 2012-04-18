@@ -4761,7 +4761,15 @@ class Ticket extends CommonITILObject {
       $number = $DB->numrows($result);
 
       // Ticket for the item
-      echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
+      echo "<div class='firstbloc'>";
+      // Link to open a new ticket
+      if ($item->getID() && in_array($item->getType(),
+                                     $_SESSION['glpiactiveprofile']['helpdesk_item_type'])) {
+         echo "<a class ='vsubmit' href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".$item->getID().
+              "&amp;itemtype=".$item->getType()."\">".__('New ticket for this item...')."</a></div><div>";
+      }
+            
+      echo "<table class='tab_cadre_fixe'>";
 
       if ($number > 0) {
 
@@ -4769,25 +4777,19 @@ class Ticket extends CommonITILObject {
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
          sprintf(__('%1$s = %2$s'),$item->getTypeName(1), $item->getName()));
 
-         echo "<tr><th colspan='9'>";
-         echo sprintf(_n('Last %d ticket','Last %d tickets',$number), $number);
-         echo "</th><th>";
-         echo "<span class='small_space'><a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                  Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a></span>";
+         echo "<tr><th colspan='10'>";
+         $title = sprintf(_n('Last %d ticket','Last %d tickets',$number), $number);
+         $link = "<a href='".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                  Toolbox::append_params($options,'&amp;')."'>".__('Show all')."</a>";
+         $title = sprintf(__('%1$s (%2$s)'), $title, $link);
+         echo $title;
          echo "</th></tr>";
 
       } else {
          echo "<tr><th>".__('No ticket found.')."</th></tr>";
       }
 
-      // Link to open a new ticket
-      if ($item->getID() && in_array($item->getType(),
-                                     $_SESSION['glpiactiveprofile']['helpdesk_item_type'])) {
-         echo "<tr><td class='tab_bg_2 center' colspan='10'>";
-         echo "<a class ='vsubmit' href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".$item->getID().
-              "&amp;itemtype=".$item->getType()."\">".__('New ticket for this item...')."</a>";
-         echo "</td></tr>";
-      }
+
       if ($item->getID() && $item->getType()=='User') {
          echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
          echo "<a class='vsubmit' href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?_users_id_requester=".
@@ -4819,7 +4821,7 @@ class Ticket extends CommonITILObject {
          $number = $DB->numrows($result);
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='9'>";
+         echo "<tr><th colspan='10'>";
          echo _n('Ticket on linked items', 'Tickets on linked items', $number);
          echo "</th></tr>";
          if ($number > 0) {
