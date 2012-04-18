@@ -2923,10 +2923,12 @@ class Html {
    /**
     * show arrow for massives actions : opening
     *
+    * @since version 0.84
+    *
     * @param $formname  string
     * @param $fixed     boolean  used tab_cadre_fixe in both tables (false by default)
-    * @param $ontop              display on top of the list
-    * @param $onright            display on right of the list
+    * @param $ontop              display on top of the list (false by default)
+    * @param $onright            display on right of the list (false by default)
    **/
    static function simpleOpenArrowMassives($formname, $fixed=false, $ontop=false, $onright=false) {
       global $CFG_GLPI;
@@ -2960,13 +2962,14 @@ class Html {
       }
    }
 
+
    /**
     * show arrow for massives actions : opening
     *
     * @param $formname  string
     * @param $fixed     boolean  used tab_cadre_fixe in both tables (false by default)
-    * @param $ontop              display on top of the list
-    * @param $onright            display on right of the list
+    * @param $ontop              display on top of the list (false by default)
+    * @param $onright            display on right of the list (false by default)
    **/
    static function openArrowMassives($formname, $fixed=false, $ontop=false, $onright=false) {
       global $CFG_GLPI;
@@ -3933,14 +3936,14 @@ class Html {
     * @param $parameters                  parameters would be passed on the URL.
     * @param $item_type_output            item type display - if >0 display export PDF et Sylk form
     *                                     (default 0)
-    * @param $item_type_output_param item type parameter for export (default 0)
-    * @param $additional_info Additional information to display
+    * @param $item_type_output_param      item type parameter for export (default 0)
+    * @param $additional_info             Additional information to display (default '')
     *
     * @return nothing (print a pager)
     *
    **/
    static function printPager($start, $numrows, $target, $parameters, $item_type_output=0,
-                              $item_type_output_param=0, $additional_info = '') {
+                              $item_type_output_param=0, $additional_info='') {
       global $CFG_GLPI;
 
       $list_limit = $_SESSION['glpilist_limit'];

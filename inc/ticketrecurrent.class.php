@@ -155,19 +155,25 @@ class TicketRecurrent extends CommonDropdown {
                          'step'  => HOUR_TIMESTAMP),);
    }
 
+
+   /**
+    * @since version 0.83.1
+    *
+    * @see inc/CommonDropdown::displaySpecificTypeField()
+   **/
    function displaySpecificTypeField($ID, $field = array()) {
 
       switch ($field['name']) {
          case 'periodicity' :
             /// TODO : trouble with variable MONTH / YEAR length
-            $possible_values=array();
+            $possible_values = array();
             for ($i=1 ; $i<24 ; $i++) {
                $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour','%d hours',$i), $i);
             }
             for ($i=1 ; $i<=30 ; $i++) {
                $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('%d day','%d days',$i), $i);
             }
-            
+
             for ($i=1 ; $i<12 ; $i++) {
                $possible_values[$i*MONTH_TIMESTAMP] = sprintf(_n('%d month','%d months',$i), $i);
             }
@@ -176,11 +182,13 @@ class TicketRecurrent extends CommonDropdown {
                $possible_values[$i*365*DAY_TIMESTAMP] = sprintf(_n('%d year','%d years',$i), $i);
             }
 
-            Dropdown::showFromArray($field['name'], $possible_values, array('value' => $this->fields[$field['name']]));
+            Dropdown::showFromArray($field['name'], $possible_values,
+                                    array('value' => $this->fields[$field['name']]));
             break;
       }
    }
-   
+
+
    /**
     * Get search function for the class
     *

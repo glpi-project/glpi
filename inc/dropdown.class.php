@@ -1751,7 +1751,8 @@ class Dropdown {
       }
 
       if (count($actions)) {
-         _e('Action');echo "&nbsp;";
+         _e('Action');
+         echo "&nbsp;";
          echo "<select name='massiveaction' id='massiveaction$rand'>";
          echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
          foreach ($actions as $key => $val) {

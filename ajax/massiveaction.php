@@ -29,7 +29,7 @@
 
 // ----------------------------------------------------------------------
 // Original Author of file: Julien Dombre
-// Purpose of file:
+// since version 0.84
 // ----------------------------------------------------------------------
 
 define('GLPI_ROOT','..');
@@ -48,5 +48,4 @@ if (isset($_GET['itemtype'])) {
    Dropdown::showForMassiveAction($_GET['itemtype'], $_GET['is_deleted']);
    echo "</div>";
 }
-
 ?>
