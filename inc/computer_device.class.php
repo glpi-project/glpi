@@ -258,7 +258,7 @@ class Computer_Device extends CommonDBTM {
             }
 
             if ($canedit) {
-               $delete_one  = $table_group->addHeader('one', __('Delete'), $delete_column,
+               $delete_one  = $table_group->addHeader('one', '&nbsp;', $delete_column,
                                                       $column_anchor);
             }
 
@@ -327,9 +327,6 @@ class Computer_Device extends CommonDBTM {
                   }
 
                   $specificities = $device->getFormData();
-                  if (method_exists($device, 'getHTMLTableCell')) {
-                     $device->getHTMLTableCell(__CLASS__, $current_row);
-                  }
 
                   $links_specifications = array();
                   $query = "SELECT `id`,
@@ -341,6 +338,9 @@ class Computer_Device extends CommonDBTM {
                             ORDER BY `id`";
 
                   foreach ($DB->request($query) as $data) {
+                     if (method_exists($device, 'getHTMLTableCell')) {
+                        $device->getHTMLTableCell(__CLASS__, $current_row);
+                     }
 
                      if (isset($data['specificity'])) {
                         if ($canedit) {
@@ -379,8 +379,8 @@ class Computer_Device extends CommonDBTM {
 
       $table->display(array('display_super_for_each_group' => false,
                             'display_title_for_each_group' => false,
-                            'display_thead'                => false,
-                            'display_tfoot'                => false,));
+//                            'display_thead'                => false,
+/*                            'display_tfoot'                => false,*/));
 
       if ($canedit) {
 //          Html::openArrowMassives("form_device_action$rand", false, false, true);

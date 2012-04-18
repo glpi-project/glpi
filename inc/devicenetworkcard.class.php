@@ -158,8 +158,8 @@ class DeviceNetworkCard extends CommonDevice {
             break;
 
          case 'Computer_Device' :
-            $base->addHeader('bandwidth', __('Flow'), $super, $father);
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+            $base->addHeader('bandwidth', __('Flow'), $super, $father);
             break;
       }
    }
@@ -208,11 +208,11 @@ class DeviceNetworkCard extends CommonDevice {
 
       switch ($item_type) {
          case 'Computer_Device' :
+            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             if ($this->fields["bandwidth"]) {
                $row->addCell($row->getHeaderByName('specificities', 'bandwidth'),
                              $this->fields["bandwidth"], $father);
             }
-            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             break;
       }
    }

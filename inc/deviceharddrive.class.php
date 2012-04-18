@@ -149,10 +149,10 @@ class DeviceHardDrive extends CommonDevice {
 
       switch ($itemtype) {
          case 'Computer_Device' :
+            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             $base->addHeader('rpm', __('Rpm'), $super, $father);
             $base->addHeader('cache', __('Cache'), $super, $father);
             InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             break;
       }
 
@@ -169,6 +169,7 @@ class DeviceHardDrive extends CommonDevice {
 
       switch ($item_type) {
          case 'Computer_Device' :
+            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             if ($this->fields["rpm"]) {
                $row->addCell($row->getHeaderByName('specificities', 'rpm'), $this->fields["rpm"]);
             }
@@ -180,7 +181,6 @@ class DeviceHardDrive extends CommonDevice {
 
             InterfaceType::getHTMLTableCellsForItem($row, $this, NULL, $options);
 
-            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             break;
       }
 

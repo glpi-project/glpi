@@ -121,8 +121,8 @@ class DeviceGraphicCard extends CommonDevice {
 
       switch ($itemtype) {
          case 'Computer_Device' :
-            InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+            InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             break;
       }
    }
@@ -138,8 +138,8 @@ class DeviceGraphicCard extends CommonDevice {
 
       switch ($item_type) {
          case 'Computer_Device' :
-            InterfaceType::getHTMLTableCellsForItem($row, $this, NULL, $options);
             Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
+            InterfaceType::getHTMLTableCellsForItem($row, $this, NULL, $options);
             break;
       }
    }

@@ -131,10 +131,10 @@ class DeviceDrive extends CommonDevice {
 
       switch ($itemtype) {
          case 'Computer_Device' :
+            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             $base->addHeader('writer', __('Writing ability'), $super, $father);
             $base->addHeader('speed', __('Speed'), $super, $father);
             InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             break;
       }
 
@@ -151,6 +151,7 @@ class DeviceDrive extends CommonDevice {
 
       switch ($item_type) {
          case 'Computer_Device' :
+            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             if ($this->fields["is_writer"]) {
                $row->addCell($row->getHeaderByName('specificities', 'writer'),
                              Dropdown::getYesNo($this->fields["is_writer"]), $father);
@@ -163,7 +164,6 @@ class DeviceDrive extends CommonDevice {
 
 
             InterfaceType::getHTMLTableCellsForItem($row, $this, NULL, $options);
-            Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
       }
    }
 
