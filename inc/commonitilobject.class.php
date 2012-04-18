@@ -753,20 +753,11 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
 
-      // Set begin waiting date if needed
-      if (($key=array_search('status',$this->updates)) !== false
-          && ($this->fields['status'] == 'waiting' || in_array($this->fields["status"], $this->getSolvedStatusArray()))) {
-         $this->updates[]                    = "begin_waiting_date";
-         $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
 
-         // Specific for tickets
-         if (isset($this->fields['slas_id']) && $this->fields['slas_id']>0) {
-            SLA::deleteLevelsToDo($this);
-         }
-      }
 
       // Manage come back to waiting state
-      if ($key=array_search('status',$this->updates) !== false
+      if (!is_null($this->fields['begin_waiting_date'])
+          && ($key=array_search('status',$this->updates) !== false)
           && ($this->oldvalues['status'] == 'waiting'
                // From solved to another state than closed
               || (in_array($this->oldvalues["status"], $this->getSolvedStatusArray())
@@ -832,6 +823,19 @@ abstract class CommonITILObject extends CommonDBTM {
          // Reset begin_waiting_date
          $this->updates[]                    = "begin_waiting_date";
          $this->fields["begin_waiting_date"] = 'NULL';
+      }
+
+
+      // Set begin waiting date if needed
+      if (($key=array_search('status',$this->updates)) !== false
+          && ($this->fields['status'] == 'waiting' || in_array($this->fields["status"], $this->getSolvedStatusArray()))) {
+         $this->updates[]                    = "begin_waiting_date";
+         $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
+
+         // Specific for tickets
+         if (isset($this->fields['slas_id']) && $this->fields['slas_id']>0) {
+            SLA::deleteLevelsToDo($this);
+         }
       }
 
       // solve_delay_stat : use delay between opendate and solvedate
