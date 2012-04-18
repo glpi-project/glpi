@@ -282,8 +282,8 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_devicecontrols'     => 'interfacetypes_id'),
 
                   "glpi_ipnetworks"
-                        => array('glpi_addresses_ipnetworks'   => 'ipnetworks_id',
-                                 'glpi_ipnetworks'             => 'ipnetworks_id'),
+                        => array('glpi_ipaddresses_ipnetworks'   => 'ipnetworks_id',
+                                 'glpi_ipnetworks'               => 'ipnetworks_id'),
 
                   "glpi_knowbaseitemcategories"
                         => array('glpi_itilcategories'         => 'knowbaseitemcategories_id',
