@@ -183,6 +183,13 @@ class Profile extends CommonDBTM {
       // PROFILES and UNIQUE_PROFILE in RuleMailcollector
       Rule::cleanForItemCriteria($this, 'PROFILES');
       Rule::cleanForItemCriteria($this, 'UNIQUE_PROFILE');
+
+      $gki = new KnowbaseItem_Profile();
+      $gki->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $gr = new Profile_Reminder();
+      $gr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
    }
 
 
