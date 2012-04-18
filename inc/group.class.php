@@ -81,6 +81,16 @@ class Group extends CommonTreeDropdown {
       $gt = new Group_Ticket();
       $gt->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
+      $gp = new Group_Problem();
+      $gp->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $gki = new Group_KnowbaseItem();
+      $gki->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $gr = new Group_Reminder();
+      $gr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+
       // Ticket rules use various _groups_id_*
       Rule::cleanForItemAction($this, '_groups_id%');
       Rule::cleanForItemCriteria($this, '_groups_id%');

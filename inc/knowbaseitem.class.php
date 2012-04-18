@@ -180,6 +180,19 @@ class KnowbaseItem extends CommonDBTM {
    }
 
 
+   function cleanDBonPurge() {
+
+      $class = new KnowbaseItem_User();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new Entity_KnowbaseItem();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new Group_KnowbaseItem();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new KnowbaseItem_Profile();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+   }
+
+
    /**
     * @since version 0.83
     */

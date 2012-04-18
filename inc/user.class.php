@@ -314,6 +314,15 @@ class User extends CommonDBTM {
       $tu = new Ticket_User();
       $tu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
+      $pu = new Problem_User();
+      $pu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $kiu = new KnowbaseItem_User();
+      $kiu->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $ru = new Reminder_User();
+      $ru->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
       $ue = new UserEmail();
       $ue->deleteByCriteria(array('users_id' => $this->fields['id']));
 

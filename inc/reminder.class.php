@@ -107,6 +107,17 @@ class Reminder extends CommonDBTM {
       $this->profiles = Profile_Reminder::getProfiles($this->fields['id']);
    }
 
+   function cleanDBonPurge() {
+
+      $class = new Reminder_User();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new Entity_Reminder();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new Group_Reminder();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      $class = new Profile_Reminder();
+      $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+   }
 
    /**
     * @since version 0.83

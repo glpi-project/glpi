@@ -195,6 +195,13 @@ class Entity extends CommonTreeDropdown {
       // most use entities_id, RuleDictionnarySoftwareCollection use new_entities_id
       Rule::cleanForItemAction($this, '%entities_id');
       Rule::cleanForItemCriteria($this);
+
+      $gki = new Entity_KnowbaseItem();
+      $gki->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
+      $gr = new Entity_Reminder();
+      $gr->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
    }
 
 
