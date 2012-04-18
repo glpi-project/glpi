@@ -3852,7 +3852,7 @@ class Html {
       }
 
       // Print it
-      echo "<table class='tab_cadre_pager'>";
+      echo "<div><table class='tab_cadre_pager'>";
       if ($title) {
          echo "<tr><th colspan='6'>$title</th></tr>";
       }
@@ -3889,7 +3889,7 @@ class Html {
       }
 
       // End pager
-      echo "</tr></table>";
+      echo "</tr></table></div>";
    }
 
 
@@ -3976,7 +3976,7 @@ class Html {
       }
 
       // Print it
-      echo "<table class='tab_cadre_pager'>";
+      echo "<div><table class='tab_cadre_pager'>";
       echo "<tr>";
 
       // Back and fast backward button
@@ -4051,7 +4051,7 @@ class Html {
          echo "</a></th>\n";
       }
       // End pager
-      echo "</tr></table><br>";
+      echo "</tr></table></div>";
    }
 
 
