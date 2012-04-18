@@ -1151,11 +1151,14 @@ class KnowbaseItem extends CommonDBTM {
       if ($type=="notpublished") {
          $title = $LANG['knowbase'][2];
          // not published = no visibility set
-         $faq_limit = "WHERE `glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."'
-                             AND `glpi_entities_knowbaseitems`.`entities_id` IS NULL
+         $faq_limit = "WHERE `glpi_entities_knowbaseitems`.`entities_id` IS NULL
                              AND `glpi_knowbaseitems_profiles`.`profiles_id` IS NULL
                              AND `glpi_groups_knowbaseitems`.`groups_id` IS NULL
                              AND `glpi_knowbaseitems_users`.`users_id` IS NULL";
+
+         if (!Session::haveRight('knowbase_admin', '1')) {
+            $faq_limit .= " AND `glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."'";
+         }
       } else {
          // Only published
          $faq_limit .= " AND (`glpi_entities_knowbaseitems`.`entities_id` IS NOT NULL
