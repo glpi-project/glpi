@@ -708,7 +708,9 @@ class Search {
                if (($itemtype == 'States') || ($itemtype == 'Internet')) {
                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                               $FROM.
-                              $WHERE;
+                              $WHERE.
+                              $GROUPBY.
+                              $HAVING;
 
                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                           $ctable, $tmpquery);
