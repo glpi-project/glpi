@@ -4100,10 +4100,14 @@ class Search {
             return '';
 
          case 'glpi_changes.status':
-            return Change::getStatus($data[$NAME.$num]);
+            $status = Change::getStatus($data[$NAME.$num]);
+            return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
+                     alt=\"$status\" title=\"$status\">&nbsp;$status";
 
          case 'glpi_problems.status':
-            return Problem::getStatus($data[$NAME.$num]);
+            $status = Problem::getStatus($data[$NAME.$num]);
+            return "<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$data[$NAME.$num].".png\"
+                     alt=\"$status\" title=\"$status\">&nbsp;$status";
 
          case 'glpi_tickets.status':
             $status = Ticket::getStatus($data[$NAME.$num]);
