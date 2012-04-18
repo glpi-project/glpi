@@ -390,14 +390,14 @@ class Log extends CommonDBTM {
                   break;
 
                case self::HISTORY_INSTALL_SOFTWARE :
-                  $tmp['field']  = __('Software');
+                  $tmp['field']  = _n('Software', 'Software', 1);
                   //TRANS: %s is the software name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Install the software'),
                                            $data["new_value"]);
                   break;
 
                case self::HISTORY_UNINSTALL_SOFTWARE :
-                  $tmp['field']  = __('Software');
+                  $tmp['field']  = _n('Software', 'Software', 1);
                   //TRANS: %s is the software name
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Uninstall the software'),
                                            $data["old_value"]);

@@ -139,9 +139,9 @@ class SoftwareVersion extends CommonDBChild {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-      echo "<tr class='tab_bg_1'><td>".__('Software')."</td>";
+      echo "<tr class='tab_bg_1'><td>"._n('Software', 'Software', 2)."</td>";
       echo "<td>";
-      if ($ID>0) {
+      if ($ID > 0) {
          $softwares_id = $this->fields["softwares_id"];
       } else {
          echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
@@ -160,16 +160,16 @@ class SoftwareVersion extends CommonDBChild {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Operating system') . "</td><td>";
-      Dropdown::show('OperatingSystem', array('value' => $this->fields["operatingsystems_id"]));
+      OperatingSystem::dropdown(array('value' => $this->fields["operatingsystems_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>" . __('Status') . "</td><td>";
-      Dropdown::show('State', array('value' => $this->fields["states_id"]));
+      State::dropdown(array('value' => $this->fields["states_id"]));
       echo "</td></tr>\n";
 
       // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
-      if (SoftwareLicense::countForVersion($ID) > 0
-          || Computer_SoftwareVersion::countForVersion($ID) > 0) {
+      if ((SoftwareLicense::countForVersion($ID) > 0)
+          || (Computer_SoftwareVersion::countForVersion($ID) > 0)) {
              $options['candel'] = false;
       }
       $this->showFormButtons($options);
@@ -274,7 +274,7 @@ class SoftwareVersion extends CommonDBChild {
                                      sprintf(__('%1$s = %2$s'), $soft->getTypeName(1),
                                              $soft->getName()));
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             echo "<table class='tab_cadre'><tr>";
             echo "<th>".self::getTypeName(2)."</th>";
@@ -290,7 +290,7 @@ class SoftwareVersion extends CommonDBChild {
 
                echo "<tr class='tab_bg_2'>";
                echo "<td><a href='softwareversion.form.php?id=".$data['id']."'>";
-               echo $data['name'].(empty($data['name'])?$data['id']:"")."</a></td>";
+               echo $data['name'].(empty($data['name'])?"(".$data['id'].")":"")."</a></td>";
                echo "<td>".$data['sname']."</td>";
                echo "<td class='right'>".Dropdown::getDropdownName('glpi_operatingsystems',
                                                                    $data['operatingsystems_id']);
@@ -344,7 +344,7 @@ class SoftwareVersion extends CommonDBChild {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='Software') {
+      if ($item->getType() == 'Software') {
          self::showForSoftware($item);
       }
       return true;

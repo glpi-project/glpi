@@ -40,7 +40,7 @@ if (!defined('GLPI_ROOT')) {
 class SoftwareLicense extends CommonDBTM {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory            = true;
 
    protected $forward_entity_to = array('Infocom');
 
@@ -63,8 +63,8 @@ class SoftwareLicense extends CommonDBTM {
    function pre_updateInDB() {
 
       // Clean end alert if expire is after old one
-      if ((isset($this->oldvalues['expire'])
-           && ($this->oldvalues['expire'] < $this->fields['expire']))) {
+      if (isset($this->oldvalues['expire'])
+          && ($this->oldvalues['expire'] < $this->fields['expire'])) {
 
          $alert = new Alert();
          $alert->clear($this->getType(), $this->fields['id'], Alert::END);
@@ -134,12 +134,8 @@ class SoftwareLicense extends CommonDBTM {
          return false;
       }
 
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
+      if ($ID < 0) {
          // Create item
-         $input = $this->restoreInput();
-         $this->check(-1, 'w', $input);
          $this->fields['softwares_id'] = $softwares_id;
          $this->fields['number']       = 1;
          $soft                         = new Software();
@@ -150,13 +146,14 @@ class SoftwareLicense extends CommonDBTM {
          }
       }
 
+      $this->initForm($ID, $options);
       $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".Software::getTypeName(1)."</td>";
       echo "<td>";
-      if ($ID>0) {
+      if ($ID > 0) {
          $softwares_id = $this->fields["softwares_id"];
       } else {
          echo "<input type='hidden' name='softwares_id' value='$softwares_id'>";
@@ -166,8 +163,7 @@ class SoftwareLicense extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
-      Dropdown::show('SoftwareLicenseType',
-                     array('value' => $this->fields["softwarelicensetypes_id"]));
+      SoftwareLicenseType::dropdown(array('value' => $this->fields["softwarelicensetypes_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -199,8 +195,8 @@ class SoftwareLicense extends CommonDBTM {
                                       'softwares_id' => $this->fields["softwares_id"],
                                       'value'        => $this->fields["softwareversions_id_use"]));
       echo "</td>";
-      echo "<td rowspan='".($ID>0?'4':'3')."' class='middle'>".__('Comments')."</td>";
-      echo "<td class='center middle' rowspan='".($ID>0?'4':'3')."'>";
+      echo "<td rowspan='".(($ID > 0) ?'4':'3')."' class='middle'>".__('Comments')."</td>";
+      echo "<td class='center middle' rowspan='".(($ID > 0) ?'4':'3')."'>";
       echo "<textarea cols='45' rows='5' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>\n";
 
@@ -218,7 +214,7 @@ class SoftwareLicense extends CommonDBTM {
       Alert::displayLastAlert('SoftwareLicense', $ID);
       echo "</td></tr>\n";
 
-      if ($ID>0) {
+      if ($ID > 0) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Last update')."</td>";
          echo "<td>".($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
@@ -241,7 +237,8 @@ class SoftwareLicense extends CommonDBTM {
    function maybeRecursive () {
 
       $soft = new Software();
-      if (isset($this->fields["softwares_id"]) && $soft->getFromDB($this->fields["softwares_id"])) {
+      if (isset($this->fields["softwares_id"])
+          && $soft->getFromDB($this->fields["softwares_id"])) {
          return $soft->isRecursive();
       }
       return false;
@@ -384,7 +381,7 @@ class SoftwareLicense extends CommonDBTM {
                $input["itemtype"] = 'SoftwareLicense';
 
                // add alerts
-               foreach ($items as $ID=>$consumable) {
+               foreach ($items as $ID => $consumable) {
                   $input["items_id"] = $ID;
                   $alert->add($input);
                   unset($alert->fields['id']);
@@ -393,7 +390,7 @@ class SoftwareLicense extends CommonDBTM {
             } else {
                $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
                //TRANS: %s is entity name
-               $msg = sprintf(__('%s: send licenses alert failed'), $entityname);
+               $msg = sprintf(__('%1$s: %2$s'), $entityname, __('Send licenses alert failed'));
                if ($task) {
                   $task->log($msg);
                } else {
@@ -461,7 +458,7 @@ class SoftwareLicense extends CommonDBTM {
                       getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
 
       $result = $DB->query($query);
-      $nb = $DB->result($result,0,0);
+      $nb     = $DB->result($result,0,0);
       return ($nb ? $nb : 0);
    }
 
@@ -469,11 +466,11 @@ class SoftwareLicense extends CommonDBTM {
    /**
     * Show Licenses of a software
     *
-    * @param $software software object
+    * @param $software Software object
     *
     * @return nothing
    **/
-   static function showForSoftware($software) {
+   static function showForSoftware(Software $software) {
       global $DB, $CFG_GLPI;
 
       $softwares_id  = $software->getField('id');
@@ -491,7 +488,7 @@ class SoftwareLicense extends CommonDBTM {
       }
 
 
-      if (isset($_REQUEST["order"]) && $_REQUEST["order"]=="DESC") {
+      if (isset($_REQUEST["order"]) && ($_REQUEST["order"] == "DESC")) {
          $order = "DESC";
       } else {
          $order = "ASC";
@@ -505,9 +502,9 @@ class SoftwareLicense extends CommonDBTM {
 
 
       // Righ type is enough. Can add a License on a software we have Read access
-      $canedit = Session::haveRight("software", "w");
-      $showmassiveactions = count(Dropdown::getMassiveActions(__CLASS__));
-      
+      $canedit             = Session::haveRight("software", "w");
+      $showmassiveactions  = count(Dropdown::getMassiveActions(__CLASS__));
+
       // Total Number of events
       $number = countElementsInTable("glpi_softwarelicenses",
                                      "glpi_softwarelicenses.softwares_id = $softwares_id " .
@@ -527,7 +524,7 @@ class SoftwareLicense extends CommonDBTM {
          if ($canedit) {
             echo "<tr class='tab_bg_2'><td class='center'>";
             echo "<a class='vsubmit' href='softwarelicense.form.php?softwares_id=$softwares_id'>".
-                   __('Add a license')."</a>";
+                   _sx('button', 'Add a license')."</a>";
             echo "</td></tr>\n";
          }
 
@@ -538,7 +535,7 @@ class SoftwareLicense extends CommonDBTM {
       // Display the pager
       Html::printAjaxPager(self::getTypeName(2), $start, $number);
 
-      $rand = mt_rand();
+      $rand  = mt_rand();
       $query = "SELECT `glpi_softwarelicenses`.*,
                        `buyvers`.`name` AS buyname,
                        `usevers`.`name` AS usename,
@@ -559,7 +556,7 @@ class SoftwareLicense extends CommonDBTM {
                 ORDER BY $sort $order
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
             if ($showmassiveactions) {
                echo "<form method='post' name='massiveactionlicense_form$rand' id='".
@@ -567,42 +564,44 @@ class SoftwareLicense extends CommonDBTM {
                       "/front/massiveaction.php\">";
             }
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
-                        ($order == "DESC" ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
+                        (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
             echo "<table class='tab_cadre_fixehov'><tr>";
             echo "<th>&nbsp;</th>";
-            echo "<th>".($sort=="`name`"?$sort_img:"").
+            echo "<th>".(($sort == "`name`") ?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=name&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Name')."</a></th>";
+                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>".__('Name')."</a></th>";
 
             if ($software->isRecursive()) {
                // Ereg to search entity in string for match default order
                echo "<th>".(strstr($sort,"entity")?$sort_img:"").
                     "<a href='javascript:reloadTab(\"sort=entity&amp;order=".
-                      ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Entity')."</a></th>";
+                      (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>".__('Entity')."</a></th>";
             }
 
-            echo "<th>".($sort=="`serial`"?$sort_img:"").
+            echo "<th>".(( $sort== "`serial`") ?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=serial&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Serial number')."</a></th>";
-            echo "<th>".($sort=="`number`"?$sort_img:"").
+                   (($order == "ASC")?"DESC":"ASC")."&amp;start=0\");'>".__('Serial number').
+                 "</a></th>";
+            echo "<th>".(($sort == "`number`") ?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=number&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>"._x('Quantity', 'Number').
+                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>"._x('Quantity', 'Number').
                  "</a></th>";
             echo "<th>".__('Affected computers')."</th>";
-            echo "<th>".($sort=="`typename`"?$sort_img:"").
+            echo "<th>".(($sort == "`typename`") ?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=typename&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Type')."</a></th>";
-            echo "<th>".($sort=="`buyname`"?$sort_img:"").
+                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>".__('Type')."</a></th>";
+            echo "<th>".(($sort == "`buyname`") ?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=buyname&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Purchase version').
+                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>".__('Purchase version').
                  "</a></th>";
-            echo "<th>".($sort=="`usename`"?$sort_img:"").
+            echo "<th>".(($sort == "`usename`") ?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=usename&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Version in use')."</a></th>";
-            echo "<th>".($sort=="`expire`"?$sort_img:"").
+                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>".__('Version in use').
+                 "</a></th>";
+            echo "<th>".(($sort == "`expire`") ?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=expire&amp;order=".
-                   ($order=="ASC"?"DESC":"ASC")."&amp;start=0\");'>".__('Expiration').
+                   (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>".__('Expiration').
                  "</a></th>";
             echo "</tr>\n";
 
@@ -618,27 +617,27 @@ class SoftwareLicense extends CommonDBTM {
                }
 
                echo "<td><a href='softwarelicense.form.php?id=".$data['id']."'>".$data['name'].
-                          (empty($data['name'])?$data['id']:"")."</a></td>";
+                          (empty($data['name']) ?"(".$data['id'].")" :"")."</a></td>";
 
                if ($software->isRecursive()) {
                   echo "<td>".$data['entity']."</td>";
                }
                echo "<td>".$data['serial']."</td>";
                echo "<td class='numeric'>".
-                      ($data['number']>0?$data['number']:__('Unlimited'))."</td>";
+                      (($data['number'] > 0) ?$data['number']:__('Unlimited'))."</td>";
                $nb_assoc   = Computer_SoftwareLicense::countForLicense($data['id']);
                $tot_assoc += $nb_assoc;
-               echo "<td class='numeric'>$nb_assoc</td>";
+               echo "<td class='numeric'>".$nb_assoc."</td>";
                echo "<td>".$data['typename']."</td>";
                echo "<td>".$data['buyname']."</td>";
                echo "<td>".$data['usename']."</td>";
                echo "<td class='center'>".Html::convDate($data['expire'])."</td>";
                echo "</tr>";
 
-               if ($data['number']<0) {
+               if ($data['number'] < 0) {
                   // One illimited license, total is illimited
                   $tot = -1;
-               } else if ($tot>=0) {
+               } else if ($tot >= 0) {
                   // Not illimited, add the current number
                   $tot += $data['number'];
                }
@@ -646,14 +645,14 @@ class SoftwareLicense extends CommonDBTM {
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='".
                    ($software->isRecursive()?4:3)."' class='right b'>".__('Total')."</td>";
-            echo "<td class='numeric'>".($tot>0?$tot."":__('Unlimited')).
+            echo "<td class='numeric'>".(($tot > 0)?$tot."":__('Unlimited')).
                  "</td>";
-            echo "<td class='numeric'>$tot_assoc</td>";
+            echo "<td class='numeric'>".$tot_assoc."</td>";
             echo "<td colspan='4' class='center'>";
 
             if ($canedit) {
                echo "<a class='vsubmit' href='softwarelicense.form.php?softwares_id=$softwares_id'>".
-                      __('Add a license')."</a>";
+                      _sx('button', 'Add a license')."</a>";
             }
 
             echo "</td></tr>";
@@ -674,7 +673,7 @@ class SoftwareLicense extends CommonDBTM {
          }
       }
       Html::printAjaxPager(self::getTypeName(2), $start, $number);
-      
+
       echo "</div>";
    }
 
@@ -705,7 +704,7 @@ class SoftwareLicense extends CommonDBTM {
       return array('id'           => __('ID'),
                    'serial'       => __('Serial number'),
                    'entities_id'  => __('Entity'),
-                   'softwares_id' => __('Software'));
+                   'softwares_id' => _n('Software', 'Software', 1));
    }
 
 
