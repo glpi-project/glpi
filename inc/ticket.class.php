@@ -4469,12 +4469,12 @@ class Ticket extends CommonITILObject {
       }
       $query_deleted = $query;
 
-      $query .= " AND NOT `glpi_tickets`.`is_deleted` ";
-      $query_deleted .= " AND `glpi_tickets`.`is_deleted` ";
-      $query .= " GROUP BY `status`";
-      $query_deleted .= " GROUP BY `status`";
+      $query         .= " AND NOT `glpi_tickets`.`is_deleted`
+                         GROUP BY `status`";
+      $query_deleted .= " AND `glpi_tickets`.`is_deleted`
+                         GROUP BY `status`";
 
-      $result = $DB->query($query);
+      $result         = $DB->query($query);
       $result_deleted = $DB->query($query_deleted);
 
       $status = array('new'     => 0,
@@ -4484,13 +4484,13 @@ class Ticket extends CommonITILObject {
                       'solved'  => 0,
                       'closed'  => 0);
 
-      if ($DB->numrows($result)>0) {
+      if ($DB->numrows($result) > 0) {
          while ($data = $DB->fetch_assoc($result)) {
             $status[$data["status"]] = $data["COUNT"];
          }
       }
       $number_deleted = 0;
-      if ($DB->numrows($result_deleted)>0) {
+      if ($DB->numrows($result_deleted) > 0) {
          while ($data = $DB->fetch_assoc($result_deleted)) {
             $number_deleted += $data["COUNT"];
          }
@@ -4553,8 +4553,8 @@ class Ticket extends CommonITILObject {
                  Toolbox::append_params($options,'&amp;')."\">".__('Closed')."</a></td>";
       echo "<td class='numeric'>".$status["closed"]."</td></tr>";
 
-      $options['contains'][0]    = 'all';
-      $options['is_deleted']    = 1;
+      $options['contains'][0] = 'all';
+      $options['is_deleted']  = 1;
       echo "<tr class='tab_bg_2'>";
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">".__('Deleted')."</a></td>";

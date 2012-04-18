@@ -36,27 +36,30 @@ class Ajax {
 
 
    /**
-    * Create modal window 
+    * Create modal window
     * After display it using $name.show()
     * May be constraint to a predefined html item setting renderTo options
-    * @param $name name of the js object
-    * @param $url URL to display in modal
-    * @param $options array of options :
-    *              - width (default 800)
-    *              - height (default 400)
-    *              - modal : is a modal window ? (default true) 
-    *              - renderTo : specify a html element to render (default empty to html.body)
-    *              - title : window title (default empty)
-    *              
+    *
+    * @since version 0.84
+    *
+    * @param $name            name of the js object
+    * @param $url             URL to display in modal
+    * @param $options array   of possible options:
+    *          - width (default 800)
+    *          - height (default 400)
+    *          - modal : is a modal window ? (default true)
+    *          - renderTo : specify a html element to render (default empty to html.body)
+    *          - title : window title (default empty)
+    *
    **/
-   static function createModalWindow($name, $url, $options = array() ) {
+   static function createModalWindow($name, $url, $options=array() ) {
 
-      $param = array('width'  => 800,
-                     'height' => 400,
-                     'modal'  => true,
-                     'renderTo' => '',
-                     'title'    => '',
-                       );
+      $param = array('width'     => 800,
+                     'height'    => 400,
+                     'modal'     => true,
+                     'renderTo'  => '',
+                     'title'     => '');
+
       if (count($options)) {
          foreach ($options as $key => $val) {
             if (isset($param[$key])) {
