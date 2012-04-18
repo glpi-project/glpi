@@ -678,7 +678,7 @@ class Cartridge extends CommonDBTM {
 
          if (($old == 0)
              && $canedit) {
-            Html::showDateFormItem("date_use[$cart_id]", $date_use, true, true, $date_in);
+            Html::showDateFormItem("date_use[$cart_id]", $data["date_use"], true, true, $date_in);
          } else {
             echo $date_use;
          }
@@ -694,7 +694,8 @@ class Cartridge extends CommonDBTM {
             echo "</td>";
             echo "<td class='center'>";
             if ($canedit) {
-               Html::showDateFormItem("date_out[$cart_id]", $date_out, true, true, $date_use);
+               Html::showDateFormItem("date_out[$cart_id]", $data["date_out"], true, true,
+                                      $date_use);
             } else {
                echo $date_out;
             }
