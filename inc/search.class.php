@@ -1414,19 +1414,19 @@ class Search {
             echo "<div id='massiveactioncontent'></div>";
             Ajax::createModalWindow('massiveaction_window',
                                     $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=$itemtype&is_deleted=".$p['is_deleted'],
-                                    array('title'    => __('Execute massive actions'),
+                                    array('title'    => _n('Action', 'Actions',2),
                                           'renderTo' => 'massiveactioncontent'));
          
          }
          echo "<table class='tab_glpi' width='80%'><tr>";
-         echo "<td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($ontop?'-top':'').".png'
+         echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($ontop?'-top':'').".png'
                     alt=''></td>";
-         echo "<td class='left'>";
-         echo "<a onclick='massiveaction_window.show();' href='#modal_massaction_content' title=\"".
-                __s('Execute massive actions').
+         echo "<td width=100% class='left'>";
+         echo "<a class='vsubmit' onclick='massiveaction_window.show();' href='#modal_massaction_content' title=\"".
+                _sn('Action', 'Actions',2).
                 "\">".
-                __s('Execute massive actions')."</a>";
-         echo "</td><td width='80%'>&nbsp;</td>";
+                _sn('Action', 'Actions',2)."</a>";
+         echo "</td>";
                                       
          echo "</tr></table>";      
 //          Html::openArrowMassives("massiveaction_form", false, $ontop);
