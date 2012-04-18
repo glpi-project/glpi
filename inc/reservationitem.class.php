@@ -437,7 +437,7 @@ class ReservationItem extends CommonDBTM {
          } else {
             $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
             //TRANS: %s is entity name
-            $msg = sprintf(__('Send reservation alert failed for %s'), $entityname);
+            $msg = sprintf(__('%1$s: %2$s'), $entityname, __('Send reservation alert failed'));
             if ($task) {
                $task->log($msg);
             } else {

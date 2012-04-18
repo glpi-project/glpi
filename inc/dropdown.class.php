@@ -715,7 +715,7 @@ class Dropdown {
                                  'WifiNetwork'  => _n('Wifi network', 'Wifi networks', 2),
                                  'NetworkName'  => _n('Network name', 'Network names', 2)),
 
-                    __('Software')
+                    _n('Software', 'Software', 1)
                         => array('SoftwareCategory' => _n('Software category',
                                                           'Software categories', 2)),
 
