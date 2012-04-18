@@ -3779,27 +3779,27 @@ class Search {
     * @param $data            array containing data results
     * @param $num                   item num in the request
     * @param $meta                  is a meta item ? (default 0)
-    * @param $addobjetparams  array added parameters for union search
+    * @param $addobjectparams  array added parameters for union search
     *
     * @return string to print
    **/
    static function giveItem($itemtype, $ID, array $data, $num, $meta=0,
-                            array $addobjetparams=array()) {
+                            array $addobjectparams=array()) {
       global $CFG_GLPI;
 
       $searchopt = &self::getOptions($itemtype);
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
           && ($CFG_GLPI["union_search_type"][$itemtype] == $searchopt[$ID]["table"])) {
 
-         if ($searchopt[$ID]['addobjetparams']) {
+         if (isset($searchopt[$ID]['addobjectparams'])) {
             return self::giveItem($data["TYPE"], $ID, $data, $num, $meta,
-                                  $searchopt[$ID]['addobjetparams']);
+                                  $searchopt[$ID]['addobjectparams']);
          }
          return self::giveItem($data["TYPE"], $ID, $data, $num, $meta);
       }
 
-      if (count($addobjetparams)) {
-         $searchopt[$ID] = array_merge($searchopt[$ID], $addobjetparams);
+      if (count($addobjectparams)) {
+         $searchopt[$ID] = array_merge($searchopt[$ID], $addobjectparams);
       }
       // Plugin can override core definition for its type
       if ($plug=isPluginItemType($itemtype)) {
