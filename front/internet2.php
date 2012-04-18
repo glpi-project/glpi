@@ -96,7 +96,8 @@ echo "<input type='text' name='value'>&nbsp;-&nbsp;";
 $types = array('label'     => __('FQDN (Network name or Network alias)'),
                'IP'        => __('IP address'),
                'MAC'       => __('MAC address'),
-               'network'   => __('Networks owning an address'));
+//                'network'   => __('Networks owning an address')
+               );
 
 Dropdown::ShowFromArray('type', $types);
 
@@ -127,10 +128,10 @@ if (isset($_POST['search'])) {
          $msg   = sprintf(__('List of MAC that are "%s"'), $value);
          break;
 
-      case 'network' :
-         $msg   = '';
-         $items = array();
-         break;
+//       case 'network' :
+//          $msg   = '';
+//          $items = array();
+//          break;
    }
 
    if (isset($items)) {
