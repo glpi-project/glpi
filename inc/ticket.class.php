@@ -2646,17 +2646,18 @@ class Ticket extends CommonITILObject {
             if ($found_type
                 && $itemtype) {
                 if (($item = getItemForItemtype($itemtype))
-                     && $items_id) {
+                    && $items_id) {
                   if ($item->getFromDB($items_id)) {
                      echo "<select name='items_id'>\n";
-                     echo "<option value='$items_id'>".$item->getName();
-                     echo "</option></select>";
+                     echo "<option value='$items_id'>".$item->getName()."</option>";
+                     echo "</select>";
                   }
                } else {
                   $params['itemtype'] = $itemtype;
                   echo "<script type='text/javascript' >\n";
-                  Ajax::updateItemJsCode("results_$myname$rand", $CFG_GLPI["root_doc"]."/ajax/dropdownTrackingDeviceType.php",
-                                       $params);
+                  Ajax::updateItemJsCode("results_$myname$rand",
+                                         $CFG_GLPI["root_doc"]."/ajax/dropdownTrackingDeviceType.php",
+                                         $params);
                   echo '</script>';
                }
             }
@@ -2825,30 +2826,34 @@ class Ticket extends CommonITILObject {
 
       // Set default values...
       $default_values = array('_users_id_requester_notif'
-                                             => array('use_notification' => ($email==""?0:1)),
-                      'nodelegate'           => 1,
-                      '_users_id_requester'  => 0,
-                      'name'                 => '',
-                      'content'              => '',
-                      'itilcategories_id'    => 0,
-                      'urgency'              => 3,
-                      'itemtype'             => '',
-                      'items_id'             => 0,
-                      'entities_id'          => $_SESSION['glpiactive_entity'],
-                      'plan'                 => array(),
-                      'global_validation'    => 'none',
-                      'due_date'             => 'NULL',
-                      'slas_id'              => 0,
-                      '_add_validation'      => 0,
-                      'type'                 => Entity::getUsedConfig('tickettype',
+                                             => array('use_notification' => (($email == "")?0:1)),
+                              'nodelegate'   => 1,
+                              '_users_id_requester'
+                                             => 0,
+                              'name'         => '',
+                              'content'      => '',
+                              'itilcategories_id'
+                                             => 0,
+                              'urgency'      => 3,
+                              'itemtype'     => '',
+                              'items_id'     => 0,
+                              'entities_id'  => $_SESSION['glpiactive_entity'],
+                              'plan'         => array(),
+                              'global_validation'
+                                             => 'none',
+                              'due_date'     => 'NULL',
+                              'slas_id'      => 0,
+                              '_add_validation'
+                                             => 0,
+                              'type'         => Entity::getUsedConfig('tickettype',
                                                                       $_SESSION['glpiactive_entity'],
                                                                       '', Ticket::INCIDENT_TYPE),
-                      '_right'               => "id");
+                              '_right'       => "id");
 
       if (!$ticket_template) {
          $options = $_REQUEST;
       }
-      
+
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
       foreach ($default_values as $name => $value) {
@@ -2968,11 +2973,11 @@ class Ticket extends CommonITILObject {
                // Is always default value : not set
                // Set if already predefined field
                // Set if ticket template change
-               if ($options[$predeffield] == $default_values[$predeffield]
+               if (($options[$predeffield] == $default_values[$predeffield])
                    || (isset($options['_predefined_fields'][$field])
-                       && $options[$predeffield] == $options['_predefined_fields'][$field])
+                       && ($options[$predeffield] == $options['_predefined_fields'][$field]))
                    || (isset($options['_tickettemplates_id'])
-                       && $options['_tickettemplates_id'] != $tt->getID())) {                       
+                       && ($options['_tickettemplates_id'] != $tt->getID()))) {
                   $options[$predeffield]           = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
@@ -3119,14 +3124,13 @@ class Ticket extends CommonITILObject {
       if (!$ticket_template) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>";
-         echo "<input type='submit' name='add' value=\"".__('Submit Message')."\" class='submit'>";
 
-         if ($tt->isField('id') && $tt->fields['id'] > 0) {
+         if ($tt->isField('id') && ($tt->fields['id'] > 0)) {
             echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
             echo "<input type='hidden' name='_predefined_fields'
-                         value=\"".rawurlencode(serialize($predefined_fields))."\">";
+                   value=\"".rawurlencode(serialize($predefined_fields))."\">";
          }
-
+         echo "<input type='submit' name='add' value=\""._s('Submit message')."\" class='submit'>";
          echo "</td></tr>";
       }
 
@@ -4464,7 +4468,7 @@ class Ticket extends CommonITILObject {
          $query.= ")";
       }
       $query_deleted = $query;
-      
+
       $query .= " AND NOT `glpi_tickets`.`is_deleted` ";
       $query_deleted .= " AND `glpi_tickets`.`is_deleted` ";
       $query .= " GROUP BY `status`";

@@ -1598,7 +1598,7 @@ class AuthLDAP extends CommonDBTM {
                } else {
                   if (isset($infos[$ligne][$extra_attribute])) {
                      if (($config_ldap->fields["group_field"] == 'dn')
-                         || in_array('ou',$groups)) {
+                         || in_array('ou', $groups)) {
                         $dn = $infos[$ligne][$extra_attribute];
                         $ou = array();
                         for ($tmp=$dn ; count($tmptab=explode(',',$tmp,2))==2 ; $tmp=$tmptab[1]) {
@@ -1611,12 +1611,13 @@ class AuthLDAP extends CommonDBTM {
                            $query = "SELECT `ldap_value`
                                      FROM `glpi_groups`
                                      WHERE `ldap_group_dn`
-                                                IN ('".implode("', '",
-                                                    Toolbox::addslashes_deep($ou))."')";
+                                             IN ('".implode("', '",
+                                                            Toolbox::addslashes_deep($ou))."')";
 
                            foreach ($DB->request($query) as $group) {
-                              $groups[$group['ldap_value']] = array("cn"          => $group['ldap_value'],
-                                                                    "search_type" => "users");
+                              $groups[$group['ldap_value']] = array("cn"   => $group['ldap_value'],
+                                                                    "search_type"
+                                                                           => "users");
                            }
                         }
 
@@ -1624,9 +1625,10 @@ class AuthLDAP extends CommonDBTM {
                         for ($ligne_extra=0 ; $ligne_extra<$infos[$ligne][$extra_attribute]["count"] ;
                              $ligne_extra++) {
                            $groups[$infos[$ligne][$extra_attribute][$ligne_extra]]
-                              = array("cn"          => self::getGroupCNByDn($ldap_connection,
-                                                          $infos[$ligne][$extra_attribute][$ligne_extra]),
-                                      "search_type" => "users");
+                              = array("cn"   => self::getGroupCNByDn($ldap_connection,
+                                                   $infos[$ligne][$extra_attribute][$ligne_extra]),
+                                      "search_type"
+                                             => "users");
                         }
                      }
                   }
@@ -1636,7 +1638,7 @@ class AuthLDAP extends CommonDBTM {
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             ldap_control_paged_result_response($ldap_connection, $sr, $cookie);
          }
-      } while($cookie !== null && $cookie != '');
+      } while (($cookie !== null) && ($cookie != ''));
 
       return $groups;
    }
