@@ -46,8 +46,8 @@ function handleObsoleteCall($func) {
       if (isset($row['function'])
           && ($row['function']==$func)
           && isset($row['file'])
-          && preg_match(':/plugins/(.*)/:', $row['file'], $reg)) {
-         $name = $reg[1];
+          && preg_match(':(/|\\\\)plugins(/|\\\\)(.*)(/|\\\\):', $row['file'], $reg)) {
+         $name = $reg[3];
          break;
       }
    }
