@@ -4876,7 +4876,7 @@ class Ticket extends CommonITILObject {
          $number = $DB->numrows($result);
 
          echo "<div class='spaced'><table class='tab_cadre_fixe'>";
-         echo "<tr><th colspan='9'>";
+         echo "<tr><th colspan='10'>";
          if ($number>1) {
             echo $LANG['joblist'][28];
          } else {
