@@ -194,11 +194,11 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    **/
    function prepareInput($input) {
 
-      // If $this->fields["network"] is not set then, we are adding a new network
+      // If $this->fields["id"] is not set then, we are adding a new network
       // Or if $this->fields["network"] != $input["network"] we a updating the network
       $address = new IPAddress();
       $netmask = new IPNetmask();
-      if (!isset($this->fields["network"]) || ($input["network"] != $this->fields["network"])) {
+      if (!isset($this->fields["id"]) || ($input["network"] != $this->fields["network"])) {
          $network = explode ("/", $input["network"]);
          if (count($network) != 2) {
             return array('error' => __('Invalid input format for the network'),
