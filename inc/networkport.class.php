@@ -403,11 +403,10 @@ class NetworkPort extends CommonDBChild {
          echo "<td class='tab_bg_2 center' width='50%'>";
          _e('Add several ports');
          echo "&nbsp;<input type='checkbox' name='several' value='1'></td>\n";
-         echo "</tr>";
 
-         echo "<tr><td class='tab_bg_2 center' colspan='2'>\n";
+         echo "<td>\n";
          echo "<input type='submit' name='create' value=\""._sx('button','Add')."\" class='submit'>\n";
-         echo "</td></tr></table></div></form>\n";
+         echo "</td></table></div></form>\n";
       }
 
       if ($showmassiveactions) {

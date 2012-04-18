@@ -368,11 +368,12 @@ class Computer_Device extends CommonDBTM {
       }
 
       if ($canedit) {
-         echo "<table>";
-         echo __('Add a new component')."&nbsp;";
+         echo "<table class='tab_cadre_fixe'><tr><td>";
+         echo __('Add a new component')."</td><td class=left width='70%'>";
          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
-
+         echo "</td><td>";
          echo "<input type='submit' class='submit' name='add' value='"._sx('button', 'Add')."'>";
+         echo "</td></tr></table>";
 //          Html::openArrowMassives("form_device_action$rand", false, true, true);
 //          Html::closeArrowMassives(array());
       }
