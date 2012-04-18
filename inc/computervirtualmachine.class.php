@@ -308,6 +308,9 @@ class ComputerVirtualMachine extends CommonDBChild {
                                               "`computers_id` = '$ID'");
 
       echo "<table class='tab_cadre_fixe'>";
+      Session::initNavigateListItems('ComputerVirtualMachine',
+                                       $LANG['help'][25]." = ". (empty($comp->fields['name'])
+                                                                  ? "($ID)" : $comp->fields['name']));
 
       if (empty($virtualmachines)) {
          echo "<tr><th>".$LANG['computers'][59]."</th></tr>";
@@ -324,9 +327,6 @@ class ComputerVirtualMachine extends CommonDBChild {
          echo "<th>".$LANG['computers'][64]."</th>";
          echo "</tr>";
 
-         Session::initNavigateListItems('ComputerVirtualMachine',
-                                        $LANG['help'][25]." = ". (empty($comp->fields['name'])
-                                                                   ? "($ID)" : $comp->fields['name']));
          $vm = new ComputerVirtualMachine();
          foreach ($virtualmachines as $virtualmachine) {
             $vm->getFromDB($virtualmachine['id']);
