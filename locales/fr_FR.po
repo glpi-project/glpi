@@ -17,7 +17,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-04-18 21:34+0200\n"
-"PO-Revision-Date: 2012-04-18 19:34+0000\n"
+"PO-Revision-Date: 2012-04-18 19:37+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: French (France) (http://www.transifex.net/projects/p/GLPI/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -5082,7 +5082,7 @@ msgstr "Gabarits"
 #: inc/search.class.php:1197 inc/ticket.class.php:4023
 #: inc/transfer.class.php:3039
 msgid "Purge"
-msgstr "Nombre de lignes"
+msgstr "Purger"
 
 #: inc/commondbtm.class.php:3384
 msgid "Add a template..."
