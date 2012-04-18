@@ -368,10 +368,11 @@ class Computer_Device extends CommonDBTM {
       }
 
       if ($canedit) {
-//          echo __('Add a new component')."&nbsp;";
-//          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
-// 
-//          echo "<input type='submit' class='submit' name='updateall' value='"._sx('button', 'Save')."'>";
+         echo "<table>";
+         echo __('Add a new component')."&nbsp;";
+         Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
+
+         echo "<input type='submit' class='submit' name='add' value='"._sx('button', 'Add')."'>";
 //          Html::openArrowMassives("form_device_action$rand", false, true, true);
 //          Html::closeArrowMassives(array());
       }
@@ -385,8 +386,8 @@ class Computer_Device extends CommonDBTM {
 //          Html::openArrowMassives("form_device_action$rand", false, false, true);
 //          Html::closeArrowMassives(array());      
          
-         echo __('Add a new component')."&nbsp;";
-         Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);
+/*         echo __('Add a new component')."&nbsp;";
+         Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);*/
          echo "<input type='submit' class='submit' name='updateall' value='"._sx('button', 'Save')."'>";
 
          echo "</form>";
@@ -452,7 +453,7 @@ class Computer_Device extends CommonDBTM {
     * @param $computers_id
     * @param $devices_id      computer device ID
    **/
-   private function addDevices($numberToAdd, $itemtype, $computers_id, $devices_id) {
+   function addDevices($numberToAdd, $itemtype, $computers_id, $devices_id) {
       global $DB;
 
 
@@ -527,10 +528,10 @@ class Computer_Device extends CommonDBTM {
    **/
    function updateAll(array $input) {
 
-      if (!empty($input['itemtype'])
-          && !empty($input['items_id'])) {
-         $this->addDevices(1, $input['itemtype'], $input['computers_id'], $input['items_id']);
-      }
+//       if (!empty($input['itemtype'])
+//           && !empty($input['items_id'])) {
+//          $this->addDevices(1, $input['itemtype'], $input['computers_id'], $input['items_id']);
+//       }
 
       // Update quantity
       foreach ($input as $key => $val) {
