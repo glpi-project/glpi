@@ -1094,8 +1094,9 @@ if (isset($_POST["action"])
 } else { //action, itemtype or item not defined
    echo "<div class='center'>".
          "<img src='".$CFG_GLPI["root_doc"]."/pics/warning.png' alt='warning'><br><br>";
-   echo "<span class='b'>".__('No selected element or badly defined operation')."</span></div>";
+   echo "<span class='b'>".__('No selected element or badly defined operation')."</span><br>";
    Html::displayBackLink();
+   echo "</div>";
 }
 
 Html::footer();
