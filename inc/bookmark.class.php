@@ -36,7 +36,8 @@ if (!defined('GLPI_ROOT')) {
  */
 class Bookmark extends CommonDBTM {
 
-   var $auto_message_on_action = false;
+   var       $auto_message_on_action = false;
+   protected $displaylist            = false;
 
    const WIDTH  = 750;
    const SEARCH = 1; //SEARCH SYSTEM bookmark
@@ -528,7 +529,7 @@ class Bookmark extends CommonDBTM {
             Html::openArrowMassives("form_load_bookmark$rand", false, true);
             Html::closeArrowMassives(array('delete_several' => __('Delete')));
          }*/
-         
+
          echo "<div class='center' id='tabsbody' >";
 
          echo "<table class='tab_cadrehov' width='".self::WIDTH."px'>";
