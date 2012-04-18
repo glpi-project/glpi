@@ -37,7 +37,8 @@ if (!defined('GLPI_ROOT')) {
  */
 class Bookmark extends CommonDBTM {
 
-   var $auto_message_on_action=false;
+   var       $auto_message_on_action = false;
+   protected $displaylist            = false;
 
    const WIDTH  = 750;
    const SEARCH = 1; //SEARCH SYSTEM bookmark
