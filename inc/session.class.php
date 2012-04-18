@@ -86,7 +86,8 @@ class Session {
          if (isset($auth->user->fields['id'])
              && $auth->user->getFromDB($auth->user->fields['id'])) {
 
-            if (!$auth->user->fields['is_deleted'] && $auth->user->fields['is_active']) {
+            if (!$auth->user->fields['is_deleted']
+                && $auth->user->fields['is_active']) {
                $_SESSION["glpiID"]              = $auth->user->fields['id'];
                $_SESSION["glpiname"]            = $auth->user->fields['name'];
                $_SESSION["glpirealname"]        = $auth->user->fields['realname'];
@@ -155,7 +156,7 @@ class Session {
    **/
    static function setPath() {
 
-      if (ini_get("session.save_handler")=="files") {
+      if (ini_get("session.save_handler") == "files") {
          session_save_path(GLPI_SESSION_DIR);
       }
    }
@@ -201,7 +202,7 @@ class Session {
    static function isMultiEntitiesMode() {
 
       if (!isset($_SESSION['glpi_multientitiesmode'])) {
-         if (countElementsInTable("glpi_entities")>1) {
+         if (countElementsInTable("glpi_entities") > 1) {
             $_SESSION['glpi_multientitiesmode'] = 1;
          } else {
             $_SESSION['glpi_multientitiesmode'] = 0;
@@ -221,7 +222,7 @@ class Session {
 
       // Command line can see all entities
       return (isCommandLine()
-              || (countElementsInTable("glpi_entities")+1) == count($_SESSION["glpiactiveentities"]));
+              || ((countElementsInTable("glpi_entities")+1) == count($_SESSION["glpiactiveentities"])));
    }
 
 
@@ -238,7 +239,7 @@ class Session {
     /** Initialise a list of items to use navigate through search results
      *
      * @param $itemtype    device type
-     * @param $title        titre de la liste (default '')
+     * @param $title       list title (default '')
     **/
     static function initNavigateListItems($itemtype, $title="") {
 
@@ -247,7 +248,7 @@ class Session {
        }
        $url = '';
 
-       if (!isset($_SERVER['REQUEST_URI']) || strpos($_SERVER['REQUEST_URI'],"tabs")>0) {
+       if (!isset($_SERVER['REQUEST_URI']) || (strpos($_SERVER['REQUEST_URI'],"tabs") > 0)) {
           if (isset($_SERVER['HTTP_REFERER'])) {
              $url = $_SERVER['HTTP_REFERER'];
           }
@@ -280,8 +281,9 @@ class Session {
          if ($ID == "all") {
             $ancestors = array();
             foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
-               $ancestors = array_unique(array_merge(getAncestorsOf("glpi_entities", $val['id']),
-                                                                    $ancestors));
+               $ancestors               = array_unique(array_merge(getAncestorsOf("glpi_entities",
+                                                                                  $val['id']),
+                                                                   $ancestors));
                $newroots[$val['id']]    = $val['is_recursive'];
                $newentities[$val['id']] = $val['id'];
 
@@ -300,7 +302,7 @@ class Session {
             $ancestors = getAncestorsOf("glpi_entities", $ID);
             $ok        = false;
             foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
-               if ($val['id'] == $ID || in_array($val['id'], $ancestors)) {
+               if (($val['id'] == $ID) || in_array($val['id'], $ancestors)) {
                   // Not recursive or recursive and root entity is recursive
                   if (!$is_recursive || $val['is_recursive']) {
                      $ok = true;
@@ -324,7 +326,7 @@ class Session {
          }
       }
 
-      if (count($newentities)>0) {
+      if (count($newentities) > 0) {
          $_SESSION['glpiactiveentities']           = $newentities;
          $_SESSION['glpiactiveentities_string']    = "'".implode("', '", $newentities)."'";
          $active                                   = reset($newentities);
@@ -340,10 +342,12 @@ class Session {
          $_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities", $active);
          if ($is_recursive || $ID=="all") {
             //TRANS: %s is the entity name
-            $_SESSION["glpiactive_entity_name"]      = sprintf(__('%s (tree structure)'),
-                                                               $_SESSION["glpiactive_entity_name"]);
-            $_SESSION["glpiactive_entity_shortname"] = sprintf(__('%s (tree structure)'),
-                                                               $_SESSION["glpiactive_entity_shortname"]);
+            $_SESSION["glpiactive_entity_name"]      = sprintf(__('%1$s (%2$s)'),
+                                                               $_SESSION["glpiactive_entity_name"],
+                                                               __('tree structure'));
+            $_SESSION["glpiactive_entity_shortname"] = sprintf(__('%1$s (%2$s)'),
+                                                               $_SESSION["glpiactive_entity_shortname"],
+                                                               __('tree structure'));
          }
 
          if (countElementsInTable('glpi_entities') < count($_SESSION['glpiactiveentities'])) {
@@ -354,7 +358,7 @@ class Session {
          // Clean session variable to search system
          if (isset($_SESSION['glpisearch']) && count($_SESSION['glpisearch'])) {
             foreach ($_SESSION['glpisearch'] as $itemtype => $tab) {
-               if (isset($tab['start']) && $tab['start']>0) {
+               if (isset($tab['start']) && ($tab['start'] > 0)) {
                   $_SESSION['glpisearch'][$itemtype]['start'] = 0;
                }
             }
@@ -382,7 +386,7 @@ class Session {
          $profile = new Profile();
          if ($profile->getFromDB($ID)) {
             $profile->cleanProfile();
-            $data = $profile->fields;
+            $data             = $profile->fields;
             $data['entities'] = $_SESSION['glpiprofiles'][$ID]['entities'];
 
             $_SESSION['glpiactiveprofile']  = $data;
@@ -393,7 +397,7 @@ class Session {
 
             // Try to load default entity if it is a root entity
             foreach ($data['entities'] as $key => $val) {
-               if ($val['id']==$_SESSION["glpidefault_entity"]) {
+               if ($val['id'] == $_SESSION["glpidefault_entity"]) {
                   if (self::changeActiveEntities($val['id'],$val['is_recursive'])) {
                      $active_entity_done = true;
                   }
@@ -456,7 +460,7 @@ class Session {
                while ($data = $DB->fetch_assoc($result2)) {
                   // Do not override existing entity if define as recursive
                   if (!isset($_SESSION['glpiprofiles'][$key]['entities'][$data['eID']])
-                     || $data['is_recursive']) {
+                      || $data['is_recursive']) {
                      $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']]['id']
                                                                            = $data['eID'];
                      $_SESSION['glpiprofiles'][$key]['entities'][$data['eID']]['name']
@@ -613,9 +617,11 @@ class Session {
    **/
    static function getLoginUserID($force_human=true) {
 
-      if (!$force_human && self::isCron()) { // Check cron jobs
+      if (!$force_human
+          && self::isCron()) { // Check cron jobs
          return $_SESSION["glpicronuserrunning"];
       }
+
       if (isset($_SESSION["glpiID"])) {
          return $_SESSION["glpiID"];
       }
@@ -632,7 +638,7 @@ class Session {
       global $CFG_GLPI;
 
       if (!isset($_SESSION["glpiactiveprofile"])
-          || $_SESSION["glpiactiveprofile"]["interface"] != "central") {
+          || ($_SESSION["glpiactiveprofile"]["interface"] != "central")) {
          // Gestion timeout session
          if (!self::getLoginUserID()) {
             Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
@@ -651,7 +657,8 @@ class Session {
    static function checkFaqAccess() {
       global $CFG_GLPI;
 
-      if ($CFG_GLPI["use_public_faq"] == 0 && !self::haveRight("faq", "r")) {
+      if (($CFG_GLPI["use_public_faq"] == 0)
+          && !self::haveRight("faq", "r")) {
          Html::displayRightError();
       }
    }
@@ -666,7 +673,7 @@ class Session {
       global $CFG_GLPI;
 
       if (!isset($_SESSION["glpiactiveprofile"])
-          || $_SESSION["glpiactiveprofile"]["interface"] != "helpdesk") {
+          || ($_SESSION["glpiactiveprofile"]["interface"] != "helpdesk")) {
          // Gestion timeout session
          if (!self::getLoginUserID()) {
             Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
@@ -786,7 +793,7 @@ class Session {
    static function haveAccessToEntity($ID, $is_recursive=0) {
 
       // Quick response when passing wrong ID : default value of getEntityID is -1
-      if ($ID<0) {
+      if ($ID < 0) {
          return false;
       }
 
@@ -845,7 +852,7 @@ class Session {
 
       // Right by profile
       foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
-         if ($val['id']==$ID) {
+         if ($val['id'] == $ID) {
             return $val['is_recursive'];
          }
       }
@@ -869,7 +876,8 @@ class Session {
       global $DB;
 
       //If GLPI is using the slave DB -> read only mode
-      if ($DB->isSlave() && $right == "w") {
+      if ($DB->isSlave()
+          && ($right == "w")) {
          return false;
       }
 
@@ -925,12 +933,12 @@ class Session {
          } else {
 
             if ($reset) {
-               $_SESSION["MESSAGE_AFTER_REDIRECT"]='';
+               $_SESSION["MESSAGE_AFTER_REDIRECT"] = '';
             }
             $toadd = "";
 
             if ($check_once) {
-               if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"],$msg)===false) {
+               if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"], $msg) === false) {
                   $toadd = $msg.'<br>';
                }
             } else {
@@ -969,8 +977,8 @@ class Session {
     *
     * @since version 0.83
     *
-    * @param $itemtype  String   name of itemtype
-    * @param $name      String   name of the option
+    * @param $itemtype  string   name of itemtype
+    * @param $name      string   name of the option
     * @param $defvalue           mixed default value for option
     *
     * @return Mixed value of the option
@@ -991,10 +999,10 @@ class Session {
    /**
     * Is the current account read-only
     *
-    * since version 0.83
+    * @since version 0.83
     *
     * @return Boolean
-    */
+   **/
    static function isReadOnlyAccount() {
 
       foreach ($_SESSION['glpiactiveprofile'] as $name => $val) {

@@ -78,7 +78,7 @@ class SlaLevel extends RuleTicket {
       global $DB;
 
       $ID = $sla->getField('id');
-      if (!$sla->can($ID,'r')) {
+      if (!$sla->can($ID, 'r')) {
          return false;
       }
 
@@ -120,7 +120,7 @@ class SlaLevel extends RuleTicket {
                    ORDER BY `execution_time`";
          $result = $DB->query($query);
 
-         if ($DB->numrows($result) >0) {
+         if ($DB->numrows($result) > 0) {
             echo "<div class='center'><table class='tab_cadre_fixehov'>";
             echo "<tr><th colspan='2'>".__('Name')."</th>";
             echo "<th>".__('Execution')."</th>";
@@ -155,11 +155,12 @@ class SlaLevel extends RuleTicket {
                   echo "</a>";
                }
                echo "</td>";
-               echo "<td>".($data["execution_time"]<>0?Html::timestampToString($data["execution_time"],
-                                                                               false)
-                                                      :__('Due date'))."</td>";
+               echo "<td>".(($data["execution_time"] <> 0)
+                              ?Html::timestampToString($data["execution_time"], false)
+                              :__('Due date'))."</td>";
                echo "<td>".Dropdown::getYesNo($data["is_active"])."</td>";
                echo "</tr>";
+
                echo "<tr class='tab_bg_1'><td colspan='2'>";
                $this->getRuleWithCriteriasAndActions($data['id'],1,1);
                $this->showCriteriasList($data["id"], array('readonly' => true));
@@ -217,17 +218,12 @@ class SlaLevel extends RuleTicket {
    **/
    function showForm($ID, $options=array()) {
 
-      if (!$this->isNewID($ID)) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w');
-      }
-
       $canedit = $this->can($this->right,"w");
 
+      $this->initForm($ID, $options);
       $this->showTabs($options);
       $this->showFormHeader($options);
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
@@ -290,18 +286,18 @@ class SlaLevel extends RuleTicket {
          }
       }
       // Display default value;
-      if (($key=array_search($p['value'],$p['used'])) !== false) {
+      if (($key = array_search($p['value'], $p['used'])) !== false) {
          unset($p['used'][$key]);
       }
 
       $possible_values = array();
       for ($i=1 ; $i<24 ; $i++) {
          if (!in_array($i*HOUR_TIMESTAMP,$p['used'])) {
-            $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('+ %1$d hour','+ %1$d hours',$i), $i);
+            $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('+ %d hour','+ %d hours',$i), $i);
          }
          if (!in_array(-$i*HOUR_TIMESTAMP,$p['used'])) {
             if ($p['max_time'] >= $i*HOUR_TIMESTAMP) {
-               $possible_values[-$i*HOUR_TIMESTAMP] = sprintf(_n('- %1$d hour','- %1$d hours',$i),
+               $possible_values[-$i*HOUR_TIMESTAMP] = sprintf(_n('- %d hour','- %d hours',$i),
                                                               $i);
             }
          }
@@ -309,11 +305,11 @@ class SlaLevel extends RuleTicket {
 
       for ($i=1 ; $i<30 ; $i++) {
          if (!in_array($i*DAY_TIMESTAMP,$p['used'])) {
-            $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('+ %1$d day','+ %1$d days',$i), $i);
+            $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('+ %d day','+ %d days',$i), $i);
          }
          if (!in_array(-$i*DAY_TIMESTAMP,$p['used'])) {
             if ($p['max_time'] >= $i*DAY_TIMESTAMP) {
-               $possible_values[-$i*DAY_TIMESTAMP] = sprintf(_n('- %1$d day','- %1$d days',$i), $i);
+               $possible_values[-$i*DAY_TIMESTAMP] = sprintf(_n('- %d day','- %d days',$i), $i);
             }
          }
       }
@@ -329,7 +325,7 @@ class SlaLevel extends RuleTicket {
    /**
     * Get already used execution time for a SLA
     *
-    * @param $slas_id integer id of the SLA
+    * @param $slas_id   integer  id of the SLA
     *
     * @return array of already used execution times
    **/
@@ -351,7 +347,7 @@ class SlaLevel extends RuleTicket {
    /**
     * Get first level for a SLA
     *
-    * @param $slas_id integer id of the SLA
+    * @param $slas_id   integer  id of the SLA
     *
     * @return id of the sla level : 0 if not exists
    **/
@@ -390,13 +386,15 @@ class SlaLevel extends RuleTicket {
 
       if ($result = $DB->query($query)) {
          if ($DB->numrows($result)) {
-            $execution_time=$DB->result($result,0,0);
+            $execution_time = $DB->result($result,0,0);
+
             $query = "SELECT `id`
                       FROM `glpi_slalevels`
                        WHERE `slas_id` = '$slas_id'
                              AND `execution_time` > '$execution_time'
                              AND `is_active` = 1
                       ORDER BY `execution_time` ASC LIMIT 1 ;";
+
             if ($result = $DB->query($query)) {
                if ($DB->numrows($result)) {
                   return $DB->result($result,0,0);

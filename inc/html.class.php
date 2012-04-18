@@ -353,14 +353,14 @@ class Html {
             //TRANS:  %1$d number of minutes,  %2$d number of seconds
             return sprintf(_('%1$d minutes %2$d seconds'), $units['minute'], $units['second']);
          }
-         //TRANS: %1$d number of minutes
-         return sprintf(_n('%1$d minute', '%1$d minutes', $units['minute']), $units['minute']);
+         //TRANS: %d number of minutes
+         return sprintf(_n('%d minute', '%d minutes', $units['minute']), $units['minute']);
 
       }
 
       if ($display_sec) {
-         //TRANS:  %1$d number of seconds
-         return sprintf(_n('%1$s second', '%1$s seconds', $units['second']), $units['second']);
+         //TRANS:  %d number of seconds
+         return sprintf(_n('%s second', '%s seconds', $units['second']), $units['second']);
       }
       return '';
    }
