@@ -969,6 +969,15 @@ class Problem extends CommonITILObject {
       }
       echo "</td>";
       echo "</tr>";
+
+      if ($ID) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='2'  width='".($colsize1+$colsize2)."%'>";
+         echo $LANG['document'][20].'&nbsp;:&nbsp;'.Document_Item::countForItem($this);
+         echo "</th>";
+         echo "<td colspan='2'></td>";
+         echo "</tr>";
+      }
       $options['colspan'] = 2;
       $this->showFormButtons($options);
       $this->addDivForTabs();
