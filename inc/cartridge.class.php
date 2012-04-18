@@ -147,8 +147,11 @@ class Cartridge extends CommonDBTM {
    **/
    function updateCartUse($date_use) {
 
-      return $this->update(array('id'       => $this->fields['id'],
-                                 'date_use' => $date_use));
+      if ($date_use && ($date_use != 'NULL')) {
+         return $this->update(array('id'       => $this->fields['id'],
+                                    'date_use' => $date_use));
+      }
+      return false;
    }
 
 
@@ -164,6 +167,9 @@ class Cartridge extends CommonDBTM {
    **/
    function updateCartOut($pages, $date_out) {
 
+      if ($date_out == 'NULL') {
+         $pages = 0;
+      }
       return $this->update(array('id'       => $this->fields['id'],
                                  'date_out' => $date_out,
                                  'pages'    => $pages));
@@ -678,7 +684,7 @@ class Cartridge extends CommonDBTM {
 
          if (($old == 0)
              && $canedit) {
-            Html::showDateFormItem("date_use[$cart_id]", $data["date_use"], true, true, $date_in);
+            Html::showDateFormItem("date_use[$cart_id]", $data["date_use"], false, true, $date_in);
          } else {
             echo $date_use;
          }
