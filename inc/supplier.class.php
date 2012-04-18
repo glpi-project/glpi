@@ -277,7 +277,7 @@ class Supplier extends CommonDBTM {
 
       $tab[29]['table']         = 'glpi_contracts';
       $tab[29]['field']         = 'name';
-      $tab[29]['name']          = _n ('Associated contract', 'Associated contracts', 2);
+      $tab[29]['name']          = _n('Associated contract', 'Associated contracts', 2);
       $tab[29]['forcegroupby']  = true;
       $tab[29]['datatype']      = 'itemlink';
       $tab[29]['itemlink_type'] = 'Contract';
