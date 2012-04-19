@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -45,12 +43,12 @@ class SoftwareVersion extends CommonDBChild {
    public $dohistory = true;
 
    // From CommonDBChild
-   public $itemtype = 'Software';
-   public $items_id = 'softwares_id';
+   public $itemtype  = 'Software';
+   public $items_id  = 'softwares_id';
 
 
    static function getTypeName($nb=0) {
-      return _n('Version', 'Versions',$nb);
+      return _n('Version', 'Versions', $nb);
    }
 
 
@@ -77,7 +75,7 @@ class SoftwareVersion extends CommonDBChild {
    function prepareInputForAdd($input) {
 
       // Not attached to software -> not added
-      if (!isset($input['softwares_id']) || $input['softwares_id'] <= 0) {
+      if (!isset($input['softwares_id']) || ($input['softwares_id'] <= 0)) {
          return false;
       }
 
@@ -170,7 +168,7 @@ class SoftwareVersion extends CommonDBChild {
       // Only count softwareversions_id_buy (don't care of softwareversions_id_use if no installation)
       if ((SoftwareLicense::countForVersion($ID) > 0)
           || (Computer_SoftwareVersion::countForVersion($ID) > 0)) {
-             $options['candel'] = false;
+         $options['candel'] = false;
       }
       $this->showFormButtons($options);
       $this->addDivForTabs();
@@ -247,6 +245,7 @@ class SoftwareVersion extends CommonDBChild {
     * Show Versions of a software
     *
     * @param $soft Software object
+    *
     * @return nothing
    **/
    static function showForSoftware(Software $soft) {
@@ -303,7 +302,7 @@ class SoftwareVersion extends CommonDBChild {
             echo "<td class='numeric b'>$tot</td><td>";
             if ($canedit) {
                echo "<a class='vsubmit' href='softwareversion.form.php?softwares_id=$softwares_id'>".
-                      __('Add a version')."</a>";
+                      _x('button', 'Add a version')."</a>";
             }
             echo "</td></tr>";
             echo "</table>\n";
@@ -314,7 +313,7 @@ class SoftwareVersion extends CommonDBChild {
             if ($canedit) {
                echo "<tr class='tab_bg_2'><td class='center'>";
                echo "<a href='softwareversion.form.php?softwares_id=$softwares_id'>".
-                      __('Add a version')."</a></td></tr>";
+                      _x('button', 'Add a version')."</a></td></tr>";
             }
             echo "</table>\n";
          }

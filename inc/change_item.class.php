@@ -110,10 +110,8 @@ class Change_Item extends CommonDBRelation{
       echo "<tr><th colspan='5'>";
       if ($DB->numrows($result)==0) {
          _e('No associated item');
-      } else if ($DB->numrows($result)==1) {
-         echo _n('Associated item', 'Associated items', 1);
       } else {
-         echo _n('Associated item', 'Associated items', 2);
+         echo _n('Associated item', 'Associated items', $DB->numrows($result));
       }
       echo "</th></tr>";
       if ($canedit) {
@@ -122,12 +120,12 @@ class Change_Item extends CommonDBRelation{
          echo "<form method='post' name='itemchange_form$rand' id='itemchange_form$rand' action=\"".
                 $CFG_GLPI["root_doc"]."/front/change_item.form.php\">";
          echo "<div class='spaced'>";
-         
+
 /*         if ($number) {
             Html::openArrowMassives("itemchange_form$rand", true, true);
             Html::closeArrowMassives(array('delete' => __('Delete')));
          }*/
-         
+
          echo "<table class='tab_cadre_fixe'>";
          // massive action checkbox
          echo "<tr><th>&nbsp;</th>";
@@ -214,7 +212,7 @@ class Change_Item extends CommonDBRelation{
       }
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center' colspan='2'>".
-             ($totalnb>0 ? sprintf(__('Total = %s'), $totalnb) : "&nbsp;");
+             (($totalnb > 0) ? sprintf(__('%1$s = %2$s'), __('Total'), $totalnb) : "&nbsp;");
       echo "</td><td colspan='4'>&nbsp;</td></tr> ";
 
       if ($canedit) {

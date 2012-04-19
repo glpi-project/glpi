@@ -118,10 +118,8 @@ class Item_Problem extends CommonDBRelation{
       echo "<tr><th colspan='5'>";
       if ($DB->numrows($result) == 0) {
          _e('No associated item');
-      } else if ($DB->numrows($result) == 1) {
-         echo _n('Associated item', 'Associated items', 1);
       } else {
-         echo _n('Associated item', 'Associated items', 2);
+         echo _n('Associated item', 'Associated items', $DB->numrows($result));
       }
       echo "</th></tr>";
       if ($canedit) {
