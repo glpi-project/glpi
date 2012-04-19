@@ -213,5 +213,33 @@ class Problem_Ticket extends CommonDBRelation{
       echo "</form>";
    }
 
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if (Session::haveRight("show_all_problem","1")) {
+         $nb = 0;
+         switch ($item->getType()) {
+            case 'Ticket' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable('glpi_problems_tickets',
+                                             "`tickets_id` = '".$item->getID()."'");
+               }
+               return self::createTabEntry(self::getTypeName(2), $nb);
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($item->getType()) {
+         case 'Ticket' :
+            self::showForTicket($item);
+            break;
+      }
+      return true;
+   }
+
 }
 ?>

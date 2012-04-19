@@ -238,6 +238,8 @@ class Problem extends CommonITILObject {
       $this->addStandardTab('Change', $ong, $options);
       $this->addStandardTab('ProblemTask', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
+      $this->addStandardTab('Change_Problem', $ong, $options);
+      $this->addStandardTab('Problem_Ticket', $ong, $options);
       $this->addStandardTab(__CLASS__, $ong, $options);
       $this->addStandardTab('Document', $ong, $options);
       $this->addStandardTab('Note', $ong, $options);
