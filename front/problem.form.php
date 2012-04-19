@@ -98,9 +98,9 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_REQUEST['problems_id']);
 
 } else if (isset($_REQUEST['delete_group'])) {
-   $group_ticket = new Group_Ticket();
-   $group_ticket->check($_REQUEST['id'], 'w');
-   $group_ticket->delete($_REQUEST);
+   $group_problem = new Group_Problem();
+   $group_problem->check($_REQUEST['id'], 'w');
+   $group_problem->delete($_REQUEST);
 
    Event::log($_REQUEST['problems_id'], "problem", 4, "maintain",
               $_SESSION["glpiname"]." ".$LANG['log'][122]);
