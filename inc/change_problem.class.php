@@ -249,5 +249,32 @@ class Change_Problem extends CommonDBRelation{
    }
 
 
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if (Session::haveRight("show_all_problem","1")) {
+         $nb = 0;
+         switch ($item->getType()) {
+            case 'Change' :
+               if ($_SESSION['glpishow_count_on_tabs']) {
+                  $nb = countElementsInTable('glpi_changes_problems',
+                                             "`changes_id` = '".$item->getID()."'");
+               }
+               return self::createTabEntry(self::getTypeName(2), $nb);
+         }
+      }
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($item->getType()) {
+         case 'Change' :
+            self::showForChange($item);
+            break;
+      }
+      return true;
+   }
+
 }
 ?>
