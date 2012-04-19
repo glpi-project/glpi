@@ -70,10 +70,10 @@ class Supplier extends CommonDBTM {
 
       $job = new Ticket();
 
-      $cs = new Contract_Supplier();
+      $cs  = new Contract_Supplier();
       $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
-      $cs = new Contact_Supplier();
+      $cs  = new Contact_Supplier();
       $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
       // Ticket rules use suppliers_id_assign
@@ -120,7 +120,7 @@ class Supplier extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Third party type')."</td>";
       echo "<td>";
-      Dropdown::show('SupplierType', array('value' => $this->fields["suppliertypes_id"]));
+      SupplierType::dropdown(array('value' => $this->fields["suppliertypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -161,7 +161,7 @@ class Supplier extends CommonDBTM {
       echo "<td>".__('Postal code')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "postcode", array('size' => 10));
-      _e(' City ');
+      echo "&nbsp;&nbsp;". __('City'). "&nbsp;";
       Html::autocompletionTextField($this, "town", array('size' => 23));
       echo "</td></tr>";
 
@@ -187,104 +187,105 @@ class Supplier extends CommonDBTM {
 
    function getSearchOptions() {
 
-      $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab                       = array();
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false;
+      $tab['common']             = __('Characteristics');
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false;
 
-      $tab[3]['table'] = $this->getTable();
-      $tab[3]['field'] = 'address';
-      $tab[3]['name']  = __('Address');
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
 
-      $tab[10]['table'] = $this->getTable();
-      $tab[10]['field'] = 'fax';
-      $tab[10]['name']  = __('Fax');
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'address';
+      $tab[3]['name']            = __('Address');
 
-      $tab[11]['table'] = $this->getTable();
-      $tab[11]['field'] = 'town';
-      $tab[11]['name']  = __('City');
+      $tab[10]['table']          = $this->getTable();
+      $tab[10]['field']          = 'fax';
+      $tab[10]['name']           = __('Fax');
 
-      $tab[14]['table'] = $this->getTable();
-      $tab[14]['field'] = 'postcode';
-      $tab[14]['name']  = __('Postal code');
+      $tab[11]['table']          = $this->getTable();
+      $tab[11]['field']          = 'town';
+      $tab[11]['name']           = __('City');
 
-      $tab[12]['table'] = $this->getTable();
-      $tab[12]['field'] = 'state';
-      $tab[12]['name']  = __('State');
+      $tab[14]['table']          = $this->getTable();
+      $tab[14]['field']          = 'postcode';
+      $tab[14]['name']           = __('Postal code');
 
-      $tab[13]['table'] = $this->getTable();
-      $tab[13]['field'] = 'country';
-      $tab[13]['name']  = __('Country');
+      $tab[12]['table']          = $this->getTable();
+      $tab[12]['field']          = 'state';
+      $tab[12]['name']           = __('State');
 
-      $tab[4]['table']    = $this->getTable();
-      $tab[4]['field']    = 'website';
-      $tab[4]['name']     = __('Website');
-      $tab[4]['datatype'] = 'weblink';
+      $tab[13]['table']          = $this->getTable();
+      $tab[13]['field']          = 'country';
+      $tab[13]['name']           = __('Country');
 
-      $tab[5]['table'] = $this->getTable();
-      $tab[5]['field'] = 'phonenumber';
-      $tab[5]['name']  =  __('Phone');
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'website';
+      $tab[4]['name']            = __('Website');
+      $tab[4]['datatype']        = 'weblink';
 
-      $tab[6]['table']    = $this->getTable();
-      $tab[6]['field']    = 'email';
-      $tab[6]['name']     = _n('Email', 'Emails', 1);
-      $tab[6]['datatype'] = 'email';
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'phonenumber';
+      $tab[5]['name']            =  __('Phone');
 
-      $tab[9]['table'] = 'glpi_suppliertypes';
-      $tab[9]['field'] = 'name';
-      $tab[9]['name']  = __('Third party type');
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'email';
+      $tab[6]['name']            = _n('Email', 'Emails', 1);
+      $tab[6]['datatype']        = 'email';
 
-      $tab[8]['table']         = 'glpi_contacts';
-      $tab[8]['field']         = 'completename';
-      $tab[8]['name']          = __('Associated contacts');
-      $tab[8]['forcegroupby']  = true;
-      $tab[8]['datatype']      = 'itemlink';
-      $tab[8]['itemlink_type'] = 'Contact';
-      $tab[8]['massiveaction'] = false;
-      $tab[8]['joinparams']    = array('beforejoin'
-                                       => array('table'      => 'glpi_contacts_suppliers',
-                                                'joinparams' => array('jointype' => 'child')));
+      $tab[9]['table']           = 'glpi_suppliertypes';
+      $tab[9]['field']           = 'name';
+      $tab[9]['name']            = __('Third party type');
 
-      $tab[16]['table']    = $this->getTable();
-      $tab[16]['field']    = 'comment';
-      $tab[16]['name']     = __('Comments');
-      $tab[16]['datatype'] = 'text';
+      $tab[8]['table']           = 'glpi_contacts';
+      $tab[8]['field']           = 'completename';
+      $tab[8]['name']            = _n('Associated contact', 'Associated contacts', 2);
+      $tab[8]['forcegroupby']    = true;
+      $tab[8]['datatype']        = 'itemlink';
+      $tab[8]['itemlink_type']   = 'Contact';
+      $tab[8]['massiveaction']   = false;
+      $tab[8]['joinparams']      = array('beforejoin'
+                                          => array('table'      => 'glpi_contacts_suppliers',
+                                                   'joinparams' => array('jointype' => 'child')));
 
-      $tab[90]['table']         = $this->getTable();
-      $tab[90]['field']         = 'notepad';
-      $tab[90]['name']          = __('Notes');
-      $tab[90]['massiveaction'] = false;
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'comment';
+      $tab[16]['name']           = __('Comments');
+      $tab[16]['datatype']       = 'text';
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __('Entity');
-      $tab[80]['massiveaction'] = false;
+      $tab[90]['table']          = $this->getTable();
+      $tab[90]['field']          = 'notepad';
+      $tab[90]['name']           = __('Notes');
+      $tab[90]['massiveaction']  = false;
 
-      $tab[86]['table']    = $this->getTable();
-      $tab[86]['field']    = 'is_recursive';
-      $tab[86]['name']     = __('Child entities');
-      $tab[86]['datatype'] = 'bool';
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['massiveaction']  = false;
 
-      $tab[29]['table']         = 'glpi_contracts';
-      $tab[29]['field']         = 'name';
-      $tab[29]['name']          = _n('Associated contract', 'Associated contracts', 2);
-      $tab[29]['forcegroupby']  = true;
-      $tab[29]['datatype']      = 'itemlink';
-      $tab[29]['itemlink_type'] = 'Contract';
-      $tab[29]['massiveaction'] = false;
-      $tab[29]['joinparams']    = array('beforejoin'
-                                       => array('table'      => 'glpi_contracts_suppliers',
-                                                'joinparams' => array('jointype' => 'child')));
+      $tab[86]['table']          = $this->getTable();
+      $tab[86]['field']          = 'is_recursive';
+      $tab[86]['name']           = __('Child entities');
+      $tab[86]['datatype']       = 'bool';
+
+      $tab[29]['table']          = 'glpi_contracts';
+      $tab[29]['field']          = 'name';
+      $tab[29]['name']           = _n('Associated contract', 'Associated contracts', 2);
+      $tab[29]['forcegroupby']   = true;
+      $tab[29]['datatype']       = 'itemlink';
+      $tab[29]['itemlink_type']  = 'Contract';
+      $tab[29]['massiveaction']  = false;
+      $tab[29]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_contracts_suppliers',
+                                                   'joinparams' => array('jointype' => 'child')));
       return $tab;
    }
 
@@ -292,7 +293,7 @@ class Supplier extends CommonDBTM {
    /**
     * Get links for an enterprise (website / edit)
     *
-    * @param $withname boolean : also display name ?
+    * @param $withname boolean : also display name ? (false by default)
    **/
    function getLinks($withname=false) {
       global $CFG_GLPI;
@@ -344,16 +345,14 @@ class Supplier extends CommonDBTM {
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $i = 0;
+      $i      = 0;
 
       echo "<div class='firstbloc'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='9'>";
-      if ($DB->numrows($result)==0) {
+      if ($DB->numrows($result) == 0) {
          _e('No associated contact');
-      } else if ($DB->numrows($result)==1) {
-         _e('Associated contact');
       } else {
-         _e('Associated contacts');
+         echo _n('Associated contact', 'Associated contacts', $DB->numrows($result));
       }
       echo "</th></tr>";
 
@@ -369,10 +368,10 @@ class Supplier extends CommonDBTM {
 
       $used = array();
       if ($number) {
-
          Session::initNavigateListItems('Contact',
          //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-         sprintf(__('%1$s = %2$s'),$this->getTypeName(1), $this->getName()));
+                                        sprintf(__('%1$s = %2$s'), $this->getTypeName(1),
+                                                $this->getName()));
 
          while ($data=$DB->fetch_assoc($result)) {
             $ID                = $data["ID_ent"];
@@ -382,7 +381,7 @@ class Supplier extends CommonDBTM {
             echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
             echo "<td class='center'>";
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?id=".$data["id"]."'>".
-                   $data["name"]." ".$data["firstname"]."</a></td>";
+                   sprintf(__('%1$s %2$s'), $data["name"], $data["firstname"])."</a></td>";
             echo "<td class='center' width='100'>".Dropdown::getDropdownName("glpi_entities",
                                                                              $data["entity"])."</td>";
             echo "<td class='center' width='100'>".$data["phone"]."</td>";
@@ -420,7 +419,7 @@ class Supplier extends CommonDBTM {
             $nb = countElementsInTableForEntity("glpi_contacts", $this->fields["entities_id"]);
          }
 
-         if ($nb>count($used)) {
+         if ($nb > count($used)) {
             echo "<div class='spaced'>";
             echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
             echo "<table class='tab_cadre_fixe'>";
@@ -428,13 +427,12 @@ class Supplier extends CommonDBTM {
             echo "<tr><td class='tab_bg_2 center'>";
             echo "<input type='hidden' name='suppliers_id' value='$instID'>";
 
-            Dropdown::show('Contact',
-                           array('used'        => $used,
-                                 'entity'      => $this->fields["entities_id"],
-                                 'entity_sons' => $this->fields["is_recursive"]));
+            Contact::dropdown(array('used'        => $used,
+                                    'entity'      => $this->fields["entities_id"],
+                                    'entity_sons' => $this->fields["is_recursive"]));
 
             echo "</td><td class='tab_bg_2 center'>";
-            echo "<input type='submit' name='addcontactsupplier' value=\"".__s('Add')."\"
+            echo "<input type='submit' name='addcontactsupplier' value=\""._sx('button', 'Add')."\"
                    class='submit'>";
             echo "</td></tr>";
          }
@@ -470,12 +468,10 @@ class Supplier extends CommonDBTM {
       echo "<tr><th colspan='2'>";
       Html::printPagerForm();
       echo "</th><th colspan='3'>";
-      if ($DB->numrows($result)==0) {
+      if ($DB->numrows($result) == 0) {
          _e('No associated item');
-      } else if ($DB->numrows($result)==1) {
-         echo _n('Associated item', 'Associated items', 1);
       } else {
-         echo _n('Associated item', 'Associated items', 2);
+         echo _n('Associated item', 'Associated items', $DB->numrows($result));
       }
       echo "</th></tr>";
       echo "<tr><th>".__('Type')."</th>";
@@ -528,17 +524,22 @@ class Supplier extends CommonDBTM {
                                 `$linktable`.`name`";
 
             $result_linked = $DB->query($query);
-            $nb = $DB->numrows($result_linked);
+            $nb            = $DB->numrows($result_linked);
 
             // Set $linktype for link to search engine pnly
-            if ($itemtype == 'SoftwareLicense' && $nb>$_SESSION['glpilist_limit']) {
+            if (($itemtype == 'SoftwareLicense')
+                && ($nb > $_SESSION['glpilist_limit'])) {
                $linktype  = 'Software';
                $linkfield = 'softwares_id';
             }
 
-            if ($nb>$_SESSION['glpilist_limit']) {
+            if ($nb > $_SESSION['glpilist_limit']) {
                echo "<tr class='tab_bg_1'>";
-               echo "<td class='center'>".$item->getTypeName($nb)."&nbsp;:&nbsp;$nb</td>";
+               $title = $item->getTypeName($nb);
+               if ($nb > 0) {
+                  $title = sprintf(__('%1$s: %2$s'), $title, $nb);
+               }
+               echo "<td class='center'>".$title."</td>";
                echo "<td class='center' colspan='2'>";
                echo "<a href='". Toolbox::getItemTypeSearchURL($linktype) . "?" .
                       rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" .
@@ -549,22 +550,25 @@ class Supplier extends CommonDBTM {
 
             } else if ($nb) {
                for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false) {
-                  $ID = "";
+                  $name = $data["name"];
                   if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-                     $ID = " (".$data["id"].")";
+                     $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
                   }
                   $link = Toolbox::getItemTypeFormURL($linktype);
-                  $name = "<a href=\"".$link."?id=".$data[$linkfield]."\">".$data["name"]."$ID</a>";
+                  $name = "<a href=\"".$link."?id=".$data[$linkfield]."\">".$name."</a>";
 
                   echo "<tr class='tab_bg_1'>";
                   if ($prem) {
-                     echo "<td class='center top' rowspan='$nb'>".$item->getTypeName($nb)
-                            .($nb>1?"&nbsp;:&nbsp;$nb</td>":"</td>");
+                     $title = $item->getTypeName($nb);
+                     if ($nb > 0) {
+                        $title = sprintf(__('%1$s: %2$s'), $title, $nb);
+                     }
+                     echo "<td class='center top' rowspan='$nb'>".$title."</td>";
                   }
                   echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                        $data["entities_id"])."</td>";
                   echo "<td class='center";
-                  echo (isset($data['is_deleted']) && $data['is_deleted'] ?" tab_bg_2_2'" :"'").">";
+                  echo ((isset($data['is_deleted']) && $data['is_deleted']) ?" tab_bg_2_2'" :"'").">";
                   echo $name."</td>";
                   echo "<td class='center'>".
                          (isset($data["serial"])?"".$data["serial"]."":"-")."</td>";
@@ -577,7 +581,8 @@ class Supplier extends CommonDBTM {
          }
       }
       echo "<tr class='tab_bg_2'>";
-      echo "<td class='center'>".($num>0 ? sprintf(__('Total = %s'), $num) : "&nbsp;")."</td>";
+      echo "<td class='center'>".(($num > 0) ? sprintf(__('%1$s = %2$s'), __('Total'), $num)
+                                             : "&nbsp;")."</td>";
       echo "<td colspan='4'>&nbsp;</td></tr> ";
       echo "</table></div>";
    }
@@ -592,7 +597,8 @@ class Supplier extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $ID = $this->fields['id'];
-      if (!Session::haveRight("contract","r") || !$this->can($ID,'r')) {
+      if (!Session::haveRight("contract","r")
+          || !$this->can($ID,'r')) {
          return false;
       }
       $canedit = $this->can($ID,'w');
@@ -610,17 +616,15 @@ class Supplier extends CommonDBTM {
 
       $result = $DB->query($query);
       $number = $DB->numrows($result);
-      $i = 0;
+      $i      = 0;
 
       echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/contract.form.php'>";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='7'>";
-      if ($DB->numrows($result)==0) {
+      if ($DB->numrows($result) == 0) {
          _e('No associated contract');
-      } else if ($DB->numrows($result)==1) {
-         _e('Associated contract');
       } else {
-         echo _n ('Associated contract', 'Associated contracts', 2);
+         echo _n('Associated contract', 'Associated contracts', $DB->numrows($result));
       }
       echo "</th></tr>";
 
@@ -640,14 +644,13 @@ class Supplier extends CommonDBTM {
          $assocID    = $data["assocID"];
 
          echo "<tr class='tab_bg_1".($data["is_deleted"]?"_2":"")."'>";
-         echo "<td class='center b'>
-               <a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>".$data["name"];
-
+         $name = $data["name"];
          if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
-            echo " (".$data["id"].")";
+            $name = sprintf(__('%1$s (%2$s)'), $name, $data["id"]);
          }
-
-         echo "</a></td>";
+         echo "<td class='center b'>
+               <a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?id=$cID'>".$name."</a>";
+         echo "</td>";
          echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities", $data["entity"]);
          echo "</td><td class='center'>".$data["num"]."</td>";
          echo "<td class='center'>".
@@ -656,7 +659,7 @@ class Supplier extends CommonDBTM {
          echo "<td class='center'>".
                sprintf(_n('%d month', '%d months', $data["duration"]), $data["duration"]);
 
-         if ($data["begin_date"]!='' && !empty($data["begin_date"])) {
+         if (($data["begin_date"] != '') && !empty($data["begin_date"])) {
             echo " -> ".Infocom::getWarrantyExpir($data["begin_date"], $data["duration"]);
          }
          echo "</td>";
@@ -665,8 +668,7 @@ class Supplier extends CommonDBTM {
          if ($canedit) {
             echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deletecontractsupplier=".
                    "1&amp;id=$assocID&amp;contracts_id=$cID'>";
-            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".
-                   __s('Delete')."'></a>";
+            echo "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png' alt='".__s('Delete')."'></a>";
          } else {
             echo "&nbsp;";
          }
@@ -683,7 +685,7 @@ class Supplier extends CommonDBTM {
             $nb = countElementsInTableForEntity("glpi_contracts", $this->fields["entities_id"]);
          }
 
-         if ($nb>count($used)) {
+         if ($nb > count($used)) {
             echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
             echo "<input type='hidden' name='suppliers_id' value='$ID'>";
             Contract::dropdown(array('used'        => $used,
@@ -691,7 +693,7 @@ class Supplier extends CommonDBTM {
                                     'entity_sons'  => $this->fields["is_recursive"],
                                     'nochecklimit' => true));
             echo "</td><td class='center'>";
-            echo "<input type='submit' name='addcontractsupplier' value=\"".__s('Add')."\"
+            echo "<input type='submit' name='addcontractsupplier' value=\""._sx('button', 'Add')."\"
                    class='submit'>";
             echo "</td>";
             echo "<td>&nbsp;</td></tr>";
@@ -701,5 +703,4 @@ class Supplier extends CommonDBTM {
    }
 
 }
-
 ?>

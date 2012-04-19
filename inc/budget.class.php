@@ -282,10 +282,8 @@ class Budget extends CommonDropdown{
       echo "</th><th colspan='4'>";
       if ($DB->numrows($result) == 0) {
          _e('No associated item');
-      } else if ($DB->numrows($result) == 1) {
-         echo _n('Associated item', 'Associated items', 1);
       } else {
-         echo _n('Associated item', 'Associated items', 2);
+         echo _n('Associated item', 'Associated items', $DB->numrows($result));
       }
       echo "</th></tr>";
 
@@ -402,8 +400,9 @@ class Budget extends CommonDropdown{
          }
       }
       if ($num>0) {
-         echo "<tr class='tab_bg_2'><td class='center b'>".sprintf(__('Total = %s'), $num).
-              "</td><td colspan='5'>&nbsp;</td></tr> ";
+         echo "<tr class='tab_bg_2'>";
+         echo "<td class='center b'>".sprintf(__('%1$s = %2$s'), __('Total'), $num)."</td>";
+         echo "<td colspan='5'>&nbsp;</td></tr> ";
       }
       echo "</table></div>";
    }

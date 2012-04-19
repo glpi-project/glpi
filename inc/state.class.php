@@ -66,7 +66,7 @@ class State extends CommonTreeDropdown {
       $result = $DB->query($queryStateList);
 
       if ($DB->numrows($result) > 0) {
-         while (($data = $DB->fetch_assoc($result))) {
+         while ($data = $DB->fetch_assoc($result)) {
             $elements[$data["id"]] = sprintf(__('Set status: %s'), $data["name"]);
          }
       }
@@ -95,8 +95,8 @@ class State extends CommonTreeDropdown {
                          GROUP BY `states_id`";
 
                if ($result = $DB->query($query)) {
-                  if ($DB->numrows($result)>0) {
-                     while ($data=$DB->fetch_assoc($result)) {
+                  if ($DB->numrows($result) > 0) {
+                     while ($data = $DB->fetch_assoc($result)) {
                         $states[$data["states_id"]][$itemtype] = $data["cpt"];
                      }
                   }
@@ -146,7 +146,7 @@ class State extends CommonTreeDropdown {
          }
          echo "<td class='numeric b'>$tot</td></tr>";
 
-         while ($data=$DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $tot = 0;
             echo "<tr class='tab_bg_2'><td class='b'>";
             echo "<a href='".$CFG_GLPI['root_doc']."/front/states.php?reset=reset&amp;contains[0]=".
@@ -159,7 +159,7 @@ class State extends CommonTreeDropdown {
                if (isset($states[$data["id"]][$itemtype])) {
                   echo $states[$data["id"]][$itemtype];
                   $total[$itemtype] += $states[$data["id"]][$itemtype];
-                  $tot += $states[$data["id"]][$itemtype];
+                  $tot              += $states[$data["id"]][$itemtype];
                } else {
                   echo "&nbsp;";
                }
@@ -189,5 +189,6 @@ class State extends CommonTreeDropdown {
    function cleanDBonPurge() {
       Rule::cleanForItemCriteria($this);
    }
+
 }
 ?>

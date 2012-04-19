@@ -189,7 +189,7 @@ class Contact extends CommonDBTM{
       echo "<td>".__('Postal code')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "postcode", array('size' => 10));
-      _e(' City ');
+      echo "&nbsp;&nbsp;". __('City'). "&nbsp;";
       Html::autocompletionTextField($this, "town", array('size' => 23));
       echo "</td></tr>";
 
@@ -382,10 +382,8 @@ class Contact extends CommonDBTM{
       echo "<tr><th colspan='7'>";
       if ($DB->numrows($result) == 0) {
          _e('No associated supplier');
-      } else if ($DB->numrows($result) == 1) {
-         echo _n('Associated supplier', 'Associated suppliers', 1);
       } else {
-         echo _n('Associated supplier', 'Associated suppliers', 2);
+         echo _n('Associated supplier', 'Associated suppliers', $DB->numrows($result));
       }
       echo "</th></tr>";
 

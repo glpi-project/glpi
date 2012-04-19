@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- *  Computer class
+ *  Stat class
 **/
 class Stat {
 
@@ -86,12 +86,12 @@ class Stat {
                       FROM `glpi_groups`".
                       getEntitiesRestrictRequest(" WHERE", "glpi_groups", '', '', true)."
                             AND (`id` = $parent OR `groups_id` = '$parent')
-                            AND ".($type=='group_tree' ? '`is_requester`' : '`is_assign`')."
+                            AND ".(($type == 'group_tree') ? '`is_requester`' : '`is_assign`')."
                       ORDER BY `completename`";
 
             $result = $DB->query($query);
             $val    = array();
-            if ($DB->numrows($result) >=1) {
+            if ($DB->numrows($result) >= 1) {
                while ($line = $DB->fetch_assoc($result)) {
                   $tmp['id']   = $line["id"];
                   $tmp['link'] = $line["name"];
@@ -101,7 +101,8 @@ class Stat {
             break;
 
          case "itilcategories_tree" :
-            $cond = "AND (`id` = '$parent' OR `itilcategories_id` = '$parent')";
+            $cond = "AND (`id` = '$parent'
+                          OR `itilcategories_id` = '$parent')";
             // nobreak
 
          case "itilcategories_id" :
@@ -115,7 +116,7 @@ class Stat {
 
             $result = $DB->query($query);
             $val    = array();
-            if ($DB->numrows($result) >=1) {
+            if ($DB->numrows($result) >= 1) {
                while ($line = $DB->fetch_assoc($result)) {
                   $tmp['id']   = $line["id"];
                   $tmp['link'] = $line["category"];
@@ -172,7 +173,8 @@ class Stat {
 
          // DEVICE CASE
          default :
-            if (($item = getItemForItemtype($type)) && $item instanceof CommonDevice) {
+            if (($item = getItemForItemtype($type))
+                && ($item instanceof CommonDevice)) {
                $device_table = $item->getTable();
 
                //select devices IDs (table row)
@@ -181,7 +183,7 @@ class Stat {
                          ORDER BY `designation`";
                $result = $DB->query($query);
 
-               if ($DB->numrows($result) >=1) {
+               if ($DB->numrows($result) >= 1) {
                   $i = 0;
                   while ($line = $DB->fetch_assoc($result)) {
                      $val[$i]['id']   = $line['id'];
@@ -194,7 +196,8 @@ class Stat {
                // Dropdown case for computers
                $field = "name";
                $table = getTableFOrItemType($type);
-               if (($item = getItemForItemtype($type)) && $item instanceof CommonTreeDropdown) {
+               if (($item = getItemForItemtype($type))
+                   && ($item instanceof CommonTreeDropdown)) {
                   $field = "completename";
                }
                $where = '';
@@ -211,7 +214,7 @@ class Stat {
 
                $val    = array();
                $result = $DB->query($query);
-               if ($DB->numrows($result) >0) {
+               if ($DB->numrows($result) > 0) {
                   while ($line = $DB->fetch_assoc($result)) {
                      $tmp['id']   = $line["id"];
                      $tmp['link'] = $line[$field];
@@ -255,9 +258,9 @@ class Stat {
             $export_data['solved'][$value[$i]['link']] = $nb_solved;
 
             //le nombre d'intervention resolues - the number of resolved intervention
-            $late    = self::constructEntryValues($itemtype, "inter_solved_late", $date1, $date2,
+            $late      = self::constructEntryValues($itemtype, "inter_solved_late", $date1, $date2,
                                                   $type, $value[$i]["id"], $value2);
-            $nb_late = array_sum($late);
+            $nb_late   = array_sum($late);
             $export_data['late'][$value[$i]['link']] = $nb_late;
 
             //le nombre d'intervention closes - the number of closed intervention
@@ -341,7 +344,9 @@ class Stat {
             echo Search::showNewLine($output_type);
             $header_num = 1;
 
-            if ($output_type == Search::HTML_OUTPUT && strstr($type, '_tree') && $value2) {
+            if (($output_type == Search::HTML_OUTPUT)
+                && strstr($type, '_tree')
+                && $value2) {
                // HTML display
                $link = $_SERVER['PHP_SELF'].
                        "?date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type".
@@ -434,13 +439,13 @@ class Stat {
          echo Search::showEndLine($output_type);
          $row_num = 1;
 
-         for ($i=$start ; $i< $numrows && $i<($end_display) ; $i++) {
+         for ($i=$start ; ($i<$numrows) && ($i<$end_display) ; $i++) {
             $row_num  ++;
             $item_num = 1;
             echo Search::showNewLine($output_type, $i%2);
-            if ($output_type == Search::HTML_OUTPUT
+            if (($output_type == Search::HTML_OUTPUT)
                 && strstr($type, '_tree')
-                && $value[$i]['id'] != $value2) {
+                && ($value[$i]['id'] != $value2)) {
                // HTML display
                $link = $_SERVER['PHP_SELF'].
                        "?date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type".
@@ -453,7 +458,7 @@ class Stat {
 
             if ($output_type == Search::HTML_OUTPUT) { // HTML display
                $link = "";
-               if ($value[$i]['id']>0) {
+               if ($value[$i]['id'] > 0) {
                   $link = "<a href='stat.graph.php?id=".$value[$i]['id'].
                             "&amp;date1=$date1&amp;date2=$date2&amp;itemtype=$itemtype&amp;type=$type".
                             (!empty($value2)?"&amp;champ=$value2":"")."'>".
@@ -473,8 +478,11 @@ class Stat {
             $solved    = self::constructEntryValues($itemtype, "inter_solved", $date1, $date2,
                                                     $type, $value[$i]["id"], $value2);
             $nb_solved = array_sum($solved);
-            if ($nb_opened>0 && $nb_solved>0) {
-               $nb_solved .= ' ('.round($nb_solved*100/$nb_opened).'%)';
+            if (($nb_opened > 0)
+                && ($nb_solved > 0)) {
+               //TRANS: %2$d is the percentage. %% to display %
+               $nb_solved = sprintf(__('%1$s (%2$d%%)'), $nb_solved,
+                                    round($nb_solved*100/$nb_opened));
             }
             echo Search::showItem($output_type, $nb_solved, $item_num, $row_num);
 
@@ -482,8 +490,10 @@ class Stat {
             $solved_late    = self::constructEntryValues($itemtype, "inter_solved_late", $date1,
                                                          $date2, $type, $value[$i]["id"], $value2);
             $nb_solved_late = array_sum($solved_late);
-            if ($nb_solved>0 && $nb_solved_late >0) {
-               $nb_solved_late .= ' ('.round($nb_solved_late*100/$nb_solved).'%)';
+            if (($nb_solved > 0)
+                && ($nb_solved_late > 0)) {
+               $nb_solved_late = sprintf(__('%1$s (%2$d%%)'), $nb_solved_late,
+                                         round($nb_solved_late*100/$nb_solved));
             }
             echo Search::showItem($output_type, $nb_solved_late, $item_num, $row_num);
 
@@ -492,24 +502,23 @@ class Stat {
                                                     $type, $value[$i]["id"], $value2);
             $nb_closed = array_sum($closed);
 
-            if ($nb_opened>0 && $nb_closed >0) {
-               $nb_closed .= ' ('.round($nb_closed*100/$nb_opened).'%)';
+            if (($nb_opened > 0)
+                && ($nb_closed > 0)) {
+               $nb_closed = sprintf(__('%1$s (%2$d%%)'), $nb_closed,
+                                    round($nb_closed*100/$nb_opened));
             }
-
             echo Search::showItem($output_type, $nb_closed, $item_num, $row_num);
 
-
             if ($itemtype =='Ticket') {
-
                //Satisfaction open
                $opensatisfaction    = self::constructEntryValues($itemtype, "inter_opensatisfaction",
                                                                  $date1, $date2, $type,
                                                                  $value[$i]["id"], $value2);
                $nb_opensatisfaction = array_sum($opensatisfaction);
-               if ($nb_opensatisfaction>0) {
-                  $nb_opensatisfaction .= ' ('.round($nb_opensatisfaction*100/$nb_closed).'%)';
+               if ($nb_opensatisfaction > 0) {
+                  $nb_opensatisfaction = sprintf(__('%1$s (%2$d%%)'), $nb_opensatisfaction,
+                                                 round($nb_opensatisfaction*100/$nb_closed));
                }
-
                echo Search::showItem($output_type, $nb_opensatisfaction, $item_num, $row_num);
 
                //Satisfaction answer
@@ -518,11 +527,10 @@ class Stat {
                                                                    $date1, $date2, $type,
                                                                    $value[$i]["id"], $value2);
                $nb_answersatisfaction = array_sum($answersatisfaction);
-               if ($nb_answersatisfaction>0) {
-                  $nb_answersatisfaction
-                        .= ' ('.round($nb_answersatisfaction*100/$nb_opensatisfaction).'%)';
+               if ($nb_answersatisfaction > 0) {
+                  $nb_answersatisfaction = sprintf(__('%1$s (%2$d%%)'), $nb_answersatisfaction,
+                                                   round($nb_answersatisfaction*100/$nb_opensatisfaction));
                }
-
                echo Search::showItem($output_type, $nb_answersatisfaction, $item_num, $row_num);
 
                //Satisfaction rate
@@ -531,7 +539,7 @@ class Stat {
                foreach ($satisfaction as $key2 => $val2) {
                   $satisfaction[$key2] *= $answersatisfaction[$key2];
                }
-               if ($nb_answersatisfaction>0) {
+               if ($nb_answersatisfaction > 0) {
                   $avgsatisfaction = round(array_sum($satisfaction)/$nb_answersatisfaction,1);
                   $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction);
                } else {
@@ -546,15 +554,15 @@ class Stat {
                   $data[$key2] *= $solved[$key2];
                }
 
-               if ($nb_solved>0) {
+               if ($nb_solved > 0) {
                   $timedisplay = array_sum($data)/$nb_solved;
                } else {
                   $timedisplay = 0;
                }
 
-               if ($output_type == Search::HTML_OUTPUT
-                  || $output_type == Search::PDF_OUTPUT_LANDSCAPE
-                  || $output_type == Search::PDF_OUTPUT_PORTRAIT) {
+               if (($output_type == Search::HTML_OUTPUT)
+                  || ($output_type == Search::PDF_OUTPUT_LANDSCAPE)
+                  || ($output_type == Search::PDF_OUTPUT_PORTRAIT)) {
                   $timedisplay = Html::timestampToString($timedisplay, 0);
                }
                echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
@@ -567,14 +575,14 @@ class Stat {
                $data[$key2] = round($data[$key2]*$solved[$key2]);
             }
 
-            if ($nb_solved>0) {
+            if ($nb_solved > 0) {
                $timedisplay = array_sum($data)/$nb_solved;
             } else {
                $timedisplay = 0;
             }
-            if ($output_type == Search::HTML_OUTPUT
-                || $output_type == Search::PDF_OUTPUT_LANDSCAPE
-                || $output_type == Search::PDF_OUTPUT_PORTRAIT) {
+            if (($output_type == Search::HTML_OUTPUT)
+                || ($output_type == Search::PDF_OUTPUT_LANDSCAPE)
+                || ($output_type == Search::PDF_OUTPUT_PORTRAIT)) {
                $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
@@ -586,14 +594,14 @@ class Stat {
                $data[$key2] = round($data[$key2]*$solved[$key2]);
             }
 
-            if ($nb_closed>0) {
+            if ($nb_closed > 0) {
                $timedisplay = array_sum($data)/$nb_closed;
             } else {
                $timedisplay = 0;
             }
-            if ($output_type == Search::HTML_OUTPUT
-                || $output_type == Search::PDF_OUTPUT_LANDSCAPE
-                || $output_type == Search::PDF_OUTPUT_PORTRAIT) {
+            if (($output_type == Search::HTML_OUTPUT)
+                || ($output_type == Search::PDF_OUTPUT_LANDSCAPE)
+                || ($output_type == Search::PDF_OUTPUT_PORTRAIT)) {
                $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
@@ -610,24 +618,24 @@ class Stat {
             }
             $total_actiontime = array_sum($data);
 
-            if ($nb_solved>0) {
+            if ($nb_solved > 0) {
                $timedisplay = $total_actiontime/$nb_solved;
             } else {
                $timedisplay = 0;
             }
 
-            if ($output_type == Search::HTML_OUTPUT
-                || $output_type == Search::PDF_OUTPUT_LANDSCAPE
-                || $output_type == Search::PDF_OUTPUT_PORTRAIT) {
+            if (($output_type == Search::HTML_OUTPUT)
+                || ($output_type == Search::PDF_OUTPUT_LANDSCAPE)
+                || ($output_type == Search::PDF_OUTPUT_PORTRAIT)) {
                $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
             //Le temps total de l'intervention reelle - The total actiontime to resolv
             $timedisplay = $total_actiontime;
 
-            if ($output_type == Search::HTML_OUTPUT
-                || $output_type == Search::PDF_OUTPUT_LANDSCAPE
-                || $output_type == Search::PDF_OUTPUT_PORTRAIT) {
+            if (($output_type == Search::HTML_OUTPUT)
+                || ($output_type == Search::PDF_OUTPUT_LANDSCAPE)
+                || ($output_type == Search::PDF_OUTPUT_PORTRAIT)) {
                $timedisplay = Html::timestampToString($timedisplay, 0);
             }
             echo Search::showItem($output_type, $timedisplay, $item_num, $row_num);
@@ -666,7 +674,7 @@ class Stat {
       $table          = $item->getTable();
       $fkfield        = $item->getForeignKeyField();
 
-      if (!$userlinkclass = getItemForItemtype($item->userlinkclass)) {
+      if (!($userlinkclass = getItemForItemtype($item->userlinkclass))) {
          return;
       }
       $userlinktable  = $userlinkclass->getTable();
@@ -730,13 +738,13 @@ class Stat {
                $categories = getSonsOf("glpi_itilcategories", $value);
             }
             $condition  = implode("','",$categories);
-            $WHERE .= " AND `$table`.`itilcategories_id` IN ('$condition')";
+            $WHERE     .= " AND `$table`.`itilcategories_id` IN ('$condition')";
             break;
 
          case 'group_tree' :
          case 'groups_tree_assign' :
-            $grptype = ($param=='group_tree' ? CommonITILObject::REQUESTER
-                                             : CommonITILObject::ASSIGN);
+            $grptype = (($param == 'group_tree') ? CommonITILObject::REQUESTER
+                                                 : CommonITILObject::ASSIGN);
             if ($value == $value2) {
                $groups = array($value);
             } else {
@@ -784,7 +792,7 @@ class Stat {
                           INNER JOIN `$devtable`
                               ON (`glpi_computers`.`id` = `$devtable`.`computers_id`
                                   AND `$devtable`.`$fkname` = '$value')";
-            $WHERE .= " AND `glpi_computers`.`is_template` <> '1' ";
+            $WHERE   .= " AND `glpi_computers`.`is_template` <> '1' ";
             break;
 
          case "comp_champ" :
@@ -841,7 +849,7 @@ class Stat {
                        $LEFTJOIN
                        $WHERE
                        GROUP BY date_unix
-                      ORDER BY `$table`.`solvedate`";
+                       ORDER BY `$table`.`solvedate`";
             break;
 
          case "inter_closed" :
@@ -886,11 +894,11 @@ class Stat {
                        $LEFTJOIN
                        $WHERE
                        GROUP BY date_unix
-                      ORDER BY `$table`.`closedate`";
+                       ORDER BY `$table`.`closedate`";
             break;
 
          case "inter_avgactiontime" :
-            if ($param=="technicien_followup") {
+            if ($param == "technicien_followup") {
                $actiontime_table = $tasktable;
             } else {
                $actiontime_table = $table;
@@ -985,9 +993,10 @@ class Stat {
       }
 
       $result = $DB->query($query);
-      if ($result && $DB->numrows($result)>0) {
+      if ($result
+          && ($DB->numrows($result) > 0)) {
          while ($row = $DB->fetch_assoc($result)) {
-            $date = $row['date_unix'];
+            $date             = $row['date_unix'];
             //$visites = round($row['total_visites']);
             $entrees["$date"] = $row['total_visites'];
         }
@@ -1020,8 +1029,8 @@ class Stat {
 //       }
       $current = $begin_time;
 
-      while ($current<=$end_time) {
-         $curentry=date("Y-m",$current);
+      while ($current <= $end_time) {
+         $curentry = date("Y-m",$current);
          if (!isset($entrees["$curentry"])) {
             $entrees["$curentry"] = 0;
          }
@@ -1033,8 +1042,6 @@ class Stat {
 
       return $entrees;
    }
-
-
 
 
    /** Get groups assigned to tickets between 2 dates
@@ -1055,7 +1062,7 @@ class Stat {
    static function showGraph(array $entrees, $options=array()) {
       global $CFG_GLPI;
 
-      if ($uid=Session::getLoginUserID(false)) {
+      if ($uid = Session::getLoginUserID(false)) {
          if (!isset($_SESSION['glpigraphtype'])) {
             $_SESSION['glpigraphtype'] = $CFG_GLPI['default_graphtype'];
          }
@@ -1078,13 +1085,13 @@ class Stat {
          // Clean data
          if (is_array($entrees) && count($entrees)) {
             foreach ($entrees as $key => $val) {
-               if (!is_array($val) || count($val)==0) {
+               if (!is_array($val) || (count($val) == 0)) {
                   unset($entrees[$key]);
                }
             }
          }
 
-         if (!is_array($entrees) || count($entrees) == 0) {
+         if (!is_array($entrees) || (count($entrees) == 0)) {
             if (!empty($param['title'])) {
                echo "<div class='center'>".$param['title']."<br>".__('No item to display')."</div>";
             }
@@ -1099,17 +1106,17 @@ class Stat {
                // Check datas : sum must be > 0
                reset($entrees);
                $sum = array_sum(current($entrees));
-               while ($sum==0 && $data=next($entrees)) {
+               while (($sum == 0) && ($data = next($entrees))) {
                   $sum += array_sum($data);
                }
-               if ($sum==0) {
+               if ($sum == 0) {
                   return false;
                }
-               $graph           = new ezcGraphPieChart();
-               $graph->palette  = new GraphPalette();
+               $graph                                         = new ezcGraphPieChart();
+               $graph->palette                                = new GraphPalette();
                $graph->options->font->maxFontSize             = 15;
                $graph->title->background                      = '#EEEEEC';
-               $graph->renderer = new ezcGraphRenderer3d();
+               $graph->renderer                               = new ezcGraphRenderer3d();
                $graph->renderer->options->pieChartHeight      = 20;
                $graph->renderer->options->moveOut             = .2;
                $graph->renderer->options->pieChartOffset      = 63;
@@ -1119,7 +1126,7 @@ class Stat {
                $graph->renderer->options->pieChartShadowSize  = 5;
                $graph->renderer->options->pieChartShadowColor = '#BABDB6';
 
-               if (count($entrees)==1) {
+               if (count($entrees) == 1) {
                   $graph->legend = false;
                }
 
@@ -1176,27 +1183,26 @@ class Stat {
 
 
          if (!empty($param['title'])) {
-            $pretoadd  = "";
             $posttoadd = "";
             if (!empty($param['unit'])) {
-               $posttoadd = " ".$param['unit'];
-               $pretoadd  = " - ";
+               $posttoadd = $param['unit'];
             }
 
             // Add to title
-            if (count($entrees)==1) {
-               $param['title'] .= $pretoadd;
-               if ($param['showtotal']==1) {
+            if (count($entrees) == 1) {
+               if ($param['showtotal'] == 1) {
                   reset($entrees);
-                  $param['title'] .= round(array_sum(current($entrees)),2);
+                  $param['title'] = sprintf(__('%1$s - %2$s'), $param['title'],
+                                            round(array_sum(current($entrees)), 2));
                }
-               $param['title'] .= $posttoadd;
+               $param['title'] = sprintf(__('%1$s - %2$s'), $param['title'], $posttoadd);
 
             } else { // add sum to legend and unit to title
-               $param['title'] .= $pretoadd.$posttoadd;
+               $param['title'] = sprintf(__('%1$s - %2$s'), $param['title'], $posttoadd);
                // Cannot display totals of already average values
 
-               if ($param['showtotal']==1 && $param['datatype']!='average') {
+               if (($param['showtotal'] == 1)
+                   && ($param['datatype'] != 'average')) {
                   $entree_tmp = $entrees;
                   $entrees    = array();
                   foreach ($entree_tmp as $key => $data) {
@@ -1211,7 +1217,7 @@ class Stat {
 
          switch ($_SESSION['glpigraphtype']) {
             case "png" :
-               $extension="png";
+               $extension            = "png";
                $graph->driver        = new ezcGraphGdDriver();
                $graph->options->font = GLPI_FONT_FREESANS;
                break;
@@ -1231,17 +1237,17 @@ class Stat {
 
          switch ($_SESSION['glpigraphtype']) {
             case "png" :
-               $graph->render( $param['width'], $param['height'], GLPI_GRAPH_DIR.'/'.$filename );
+               $graph->render($param['width'], $param['height'], GLPI_GRAPH_DIR.'/'.$filename);
                echo "<img src='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$filename'>";
                break;
 
             default :
-               $graph->render( $param['width'], $param['height'], GLPI_GRAPH_DIR.'/'.$filename );
+               $graph->render($param['width'], $param['height'], GLPI_GRAPH_DIR.'/'.$filename);
                echo "<object data='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$filename'
                       type='image/svg+xml' width='".$param['width']."' height='".$param['height']."'>
                       <param name='src' value='".$CFG_GLPI['root_doc'].
                        "/front/graph.send.php?file=$filename'>
-                      You need a browser capeable of SVG to display this image.
+                      __('You need a browser capeable of SVG to display this image.')
                      </object> ";
             break;
          }
@@ -1260,7 +1266,7 @@ class Stat {
                         if (!isset($values[$key])) {
                            $values[$key] = array();
                         }
-                        if ($param['datatype']=='average') {
+                        if ($param['datatype'] == 'average') {
                            $val = round($val,2);
                         }
                         $values[$key][$row_num] = $val;
@@ -1288,18 +1294,21 @@ class Stat {
          }
          echo "</div>";
          echo "<div class='right' style='width:".$param['width']."px'>";
-         if ($_SESSION['glpigraphtype']!='svg') {
-            echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/front/graph.send.php?switchto=svg'>SVG".
-                 "</a>";
+         $graphtype = '';
+         if ($_SESSION['glpigraphtype'] != 'svg') {
+            $graphtype = "<a href='".$CFG_GLPI['root_doc']."/front/graph.send.php?switchto=svg'>".
+                           __('SVG')."</a>";
          }
-         if ($_SESSION['glpigraphtype']!='png') {
-            echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/front/graph.send.php?switchto=png'>PNG".
-                 "</a>";
+         if ($_SESSION['glpigraphtype'] != 'png') {
+            $graphtype = "<a href='".$CFG_GLPI['root_doc']."/front/graph.send.php?switchto=png'>".
+                           __('PNG')."</a>";
          }
          if ($param['csv']) {
-            echo " / <a href='".$CFG_GLPI['root_doc']."/front/graph.send.php?file=$csvfilename'>CSV".
-                 "</a>";
+            $graphtype = sprintf(__('%1$s / %2$s'), $graphtype,
+                                 "<a href='".$CFG_GLPI['root_doc'].
+                                    "/front/graph.send.php?file=$csvfilename'>".__('CSV')."</a>");
          }
+         echo $graphtype;
          echo "</div>";
          echo '</div>';
       }
@@ -1351,7 +1360,7 @@ class Stat {
       $result  = $DB->query($query);
       $numrows = $DB->numrows($result);
 
-      if ($numrows>0) {
+      if ($numrows > 0) {
          if ($output_type == Search::HTML_OUTPUT) {
             Html::printPager($start, $numrows, $target,
                              "date1=".$date1."&amp;date2=".$date2.
@@ -1381,7 +1390,7 @@ class Stat {
             $start = 0;
          }
 
-         for ($i=$start ; $i<$numrows && $i<$end_display ; $i++) {
+         for ($i=$start ; ($i<$numrows) && ($i<$end_display) ; $i++) {
             $item_num = 1;
             // Get data and increment loop variables
             $data = $DB->fetch_assoc($result);
@@ -1390,7 +1399,8 @@ class Stat {
             }
             if ($item->getFromDB($data["items_id"])) {
                echo Search::showNewLine($output_type, $i%2);
-               echo Search::showItem($output_type, $item->getTypeName()." - ".$item->getLink(),
+               echo Search::showItem($output_type, sprintf(__('%1$s - %2$s'), $item->getTypeName(),
+                                                           $item->getLink()),
                                      $item_num, $i-$start+1,
                                      "class='center'"." ".($item->isDeleted()?" class='deleted' "
                                                                              :""));
@@ -1424,7 +1434,7 @@ class Stat {
       $show_problem = Session::haveRight("edit_all_problem", "1")
                       || Session::haveRight("show_all_problem", "1");
 
-      $opt_list["Ticket"]  = __('Tickets');
+      $opt_list["Ticket"]                             = __('Tickets');
 
       $stat_list["Ticket"]["Ticket_Global"]["name"]   = __('Global');
       $stat_list["Ticket"]["Ticket_Global"]["file"]   = "stat.global.php?itemtype=Ticket";
@@ -1436,7 +1446,7 @@ class Stat {
       $stat_list["Ticket"]["Ticket_Item"]["file"]     = "stat.item.php";
 
       if ($show_problem) {
-         $opt_list["Problem"] = _n('Problem', 'Problems', 2);
+         $opt_list["Problem"]                               = _n('Problem', 'Problems', 2);
 
          $stat_list["Problem"]["Problem_Global"]["name"]    = __('Global');
          $stat_list["Problem"]["Problem_Global"]["file"]    = "stat.global.php?itemtype=Problem";
@@ -1449,7 +1459,7 @@ class Stat {
       echo "<tr><th colspan='2'>".__('Select statistics to be displayed')."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='center'>";
       echo "<select name='statmenu' onchange='window.location.href=this.options
-    [this.selectedIndex].value'>";
+               [this.selectedIndex].value'>";
       echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
 
       $i     = 0;
@@ -1492,7 +1502,7 @@ class Stat {
          echo "<optgroup label=\"". $title ."\">";
 
          foreach ($names as $key => $val) {
-             if ($opt==$val["plug"]) {
+             if ($opt == $val["plug"]) {
                echo "<option value='".$CFG_GLPI["root_doc"]."/plugins/".$key."'>".$val["name"].
                     "</option>";
              }
@@ -1505,5 +1515,6 @@ class Stat {
       echo "</tr>";
       echo "</table>";
    }
+
 }
 ?>

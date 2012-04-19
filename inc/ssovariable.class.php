@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /**
- * @since veresion 0.84
+ * @since version 0.84
 **/
 class SsoVariable extends CommonDropdown {
 
