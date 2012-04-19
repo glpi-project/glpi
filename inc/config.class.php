@@ -282,7 +282,11 @@ class Config extends CommonDBTM {
       Dropdown::showFromArray('allow_search_view', $values,
                               array('value' => $CFG_GLPI['allow_search_view']));
       echo "</td><td>". __('Global search')."</td><td>";
-      Dropdown::showYesNo('allow_search_global', $CFG_GLPI['allow_search_global']);
+      if ($CFG_GLPI['allow_search_view']) {
+         Dropdown::showYesNo('allow_search_global', $CFG_GLPI['allow_search_global']);
+      } else {
+         echo Dropdown::getYesNo(0);
+      }
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
