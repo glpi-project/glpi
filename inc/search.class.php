@@ -4592,7 +4592,7 @@ class Search {
          }
       }
       // Manage auto CONCAT id
-      $split = self::explodeWithID('$$',$data[$NAME.$num]);
+      $split = self::explodeWithID('$$', $data[$NAME.$num]);
 
       return $split[0].$unit;
    }
@@ -4627,7 +4627,7 @@ class Search {
    static function manageGetValues($itemtype, $usesession=true, $forcebookmark=false) {
       global $_GET, $DB;
 
-      $redirect=false;
+      $redirect = false;
 
       if (isset($_GET["add_search_count"]) && $_GET["add_search_count"]) {
          $_SESSION["glpisearchcount"][$itemtype]++;
@@ -4653,7 +4653,7 @@ class Search {
          Html::redirect(str_replace("delete_search_count2=1&", "", $_SERVER['REQUEST_URI']));
       }
 
-      $tab = array();
+      $default_values = array();
 
       $default_values["start"]       = 0;
       $default_values["order"]       = "ASC";
@@ -4670,8 +4670,7 @@ class Search {
       $default_values["searchtype2"] = "";
       $default_values["sort"]        = 1;
 
-      if (($itemtype != 'States')
-          && ($itemtype != 'Internet')
+      if (($itemtype != 'States') && ($itemtype != 'Internet')
           && class_exists($itemtype)
           && method_exists($itemtype,'getDefaultSearchRequest')) {
 
@@ -4690,8 +4689,8 @@ class Search {
                    FROM `glpi_bookmarks_users`
                    WHERE `users_id`='".Session::getLoginUserID()."'
                          AND `itemtype` = '$itemtype'";
-         if ($result=$DB->query($query)) {
-            if ($DB->numrows($result)>0) {
+         if ($result = $DB->query($query)) {
+            if ($DB->numrows($result) > 0) {
                $IDtoload = $DB->result($result, 0, 0);
                // Set session variable
                $_SESSION['glpisearch'][$itemtype] = array();
@@ -4707,7 +4706,8 @@ class Search {
          }
       }
 
-      if ($usesession && isset($_GET["reset"])) {
+      if ($usesession
+          && isset($_GET["reset"])) {
          if (isset($_SESSION['glpisearch'][$itemtype])) {
             unset($_SESSION['glpisearch'][$itemtype]);
          }
@@ -4733,7 +4733,8 @@ class Search {
          }
       }
 
-      if (is_array($_GET) && $usesession) {
+      if (is_array($_GET)
+          && $usesession) {
          foreach ($_GET as $key => $val) {
             $_SESSION['glpisearch'][$itemtype][$key] = $val;
          }
@@ -4741,10 +4742,11 @@ class Search {
 
       foreach ($default_values as $key => $val) {
          if (!isset($_GET[$key])) {
-            if ($usesession && isset($_SESSION['glpisearch'][$itemtype][$key])) {
+            if ($usesession
+                && isset($_SESSION['glpisearch'][$itemtype][$key])) {
                $_GET[$key] = $_SESSION['glpisearch'][$itemtype][$key];
             } else {
-               $_GET[$key] = $val;
+               $_GET[$key]                              = $val;
                $_SESSION['glpisearch'][$itemtype][$key] = $val;
             }
          }
@@ -4785,19 +4787,20 @@ class Search {
       $options = &self::getOptions($itemtype, $withplugins);
       $todel   = array();
 
-      if (!Session::haveRight('infocom',$action) && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
+      if (!Session::haveRight('infocom',$action)
+          && in_array($itemtype,$CFG_GLPI["infocom_types"])) {
          $itemstodel = Infocom::getSearchOptionsToAdd($itemtype);
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
 
-      if (!Session::haveRight('contract',$action) && in_array($itemtype,
-                                                              $CFG_GLPI["contract_types"])) {
+      if (!Session::haveRight('contract',$action)
+          && in_array($itemtype, $CFG_GLPI["contract_types"])) {
          $itemstodel = Contract::getSearchOptionsToAdd();
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
 
       if ($itemtype == 'Computer') {
-         if (!Session::haveRight('networking',$action)) {
+         if (!Session::haveRight('networking', $action)) {
             $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
             $todel      = array_merge($todel, array_keys($itemstodel));
          }
@@ -4811,7 +4814,7 @@ class Search {
          }
          */
       }
-      if (!Session::haveRight('notes',$action)) {
+      if (!Session::haveRight('notes', $action)) {
          $todel[] = 90;
       }
 
@@ -4832,7 +4835,7 @@ class Search {
     * Get an option number in the SEARCH_OPTION array
     *
     * @param $itemtype
-    * @param $field name
+    * @param $field     name
     *
     * @return integer
    **/
@@ -4866,7 +4869,6 @@ class Search {
       static $search = array();
 
       if (!isset($search[$itemtype])) {
-
          // standard type first
          switch ($itemtype) {
             case 'Internet' :
@@ -4958,8 +4960,9 @@ class Search {
                break;
          }
 
-         if (Session::getLoginUserID() && in_array($itemtype, $CFG_GLPI["ticket_types"])) {
-            $search[$itemtype]['tracking'] = __('Assistance');
+         if (Session::getLoginUserID()
+             && in_array($itemtype, $CFG_GLPI["ticket_types"])) {
+            $search[$itemtype]['tracking']          = __('Assistance');
 
             $search[$itemtype][60]['table']         = 'glpi_tickets';
             $search[$itemtype][60]['linkfield']     = 'items_id';
@@ -5024,8 +5027,8 @@ class Search {
             }
 
             if (!isset($val['linkfield']) || empty($val['linkfield'])) {
-               if (strcmp($itemtable,$val['table'])==0
-                   && (!isset($val['joinparams']) || count($val['joinparams']) == 0)) {
+               if ((strcmp($itemtable,$val['table']) == 0)
+                   && (!isset($val['joinparams']) || (count($val['joinparams']) == 0))) {
                   $search[$itemtype][$key]['linkfield'] = $val['field'];
                } else {
                   $search[$itemtype][$key]['linkfield'] = getForeignKeyFieldForTable($val['table']);
@@ -5074,11 +5077,11 @@ class Search {
    static function isInfocomOption($itemtype, $searchID) {
       global $CFG_GLPI;
 
-      return (($searchID>=25 && $searchID<=28)
-              || ($searchID>=37 && $searchID<=38)
-              || ($searchID>=50 && $searchID<=59)
-              || ($searchID>=120 && $searchID<=125))
-             && in_array($itemtype, $CFG_GLPI["infocom_types"]);
+      return (((($searchID >= 25) && ($searchID <= 28))
+               || (($searchID >= 37) && ($searchID <= 38))
+               || (($searchID >= 50) && ($searchID <= 59))
+               || (($searchID >= 120) && ($searchID <= 125)))
+              && in_array($itemtype, $CFG_GLPI["infocom_types"]));
    }
 
 
@@ -5098,7 +5101,7 @@ class Search {
          // Force search type
          if (isset($actions['searchopt']['searchtype'])) {
             // Reset search option
-            $actions = array();
+            $actions              = array();
             $actions['searchopt'] = $searchopt[$field_num];
             if (!is_array($actions['searchopt']['searchtype'])) {
                $actions['searchopt']['searchtype'] = array($actions['searchopt']['searchtype']);
@@ -5138,7 +5141,7 @@ class Search {
                case 'bool' :
                   return array('equals'    => __('is'),
                                'notequals' => __('is not'),
-                               'contains'   => __('contains'),
+                               'contains'  => __('contains'),
                                'searchopt' => $searchopt[$field_num]);
 
                case 'right' :
@@ -5185,12 +5188,12 @@ class Search {
 
                // Specific case of TreeDropdown : add under
                $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);
-
-               $itemlinked      = new $itemtype_linked();
-               if ($itemlinked instanceof CommonTreeDropdown) {
-                  $actions['under'] = __('under');
+               if ($itemlinked = getItemForItemtype($itemtype_linked)) {
+                  if ($itemlinked instanceof CommonTreeDropdown) {
+                     $actions['under'] = __('under');
+                  }
+                  return $actions;
                }
-               return $actions;
          }
       }
       return $actions;
@@ -5259,7 +5262,7 @@ class Search {
    /**
     * Print generic normal Item Cell
     *
-    * @param $type d       isplay type (0=HTML, 1=Sylk,2=PDF,3=CSV)
+    * @param $type         display type (0=HTML, 1=Sylk,2=PDF,3=CSV)
     * @param $value        value to display
     * @param &$num         column number
     * @param $row          row number
@@ -5272,7 +5275,6 @@ class Search {
       $out = "";
       switch ($type) {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
-
          case self::PDF_OUTPUT_PORTRAIT :
             global $PDF_ARRAY,$PDF_HEADER;
             $value                 = Html::weblink_extract($value);
@@ -5283,7 +5285,8 @@ class Search {
             global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
             $value                  = Html::weblink_extract($value);
             $SYLK_ARRAY[$row][$num] = self::sylk_clean($value);
-            $SYLK_SIZE[$num]        = max($SYLK_SIZE[$num], Toolbox::strlen($SYLK_ARRAY[$row][$num]));
+            $SYLK_SIZE[$num]        = max($SYLK_SIZE[$num],
+                                          Toolbox::strlen($SYLK_ARRAY[$row][$num]));
             break;
 
          case self::CSV_OUTPUT : //csv
@@ -5361,11 +5364,11 @@ class Search {
       switch ($type) {
          case self::PDF_OUTPUT_LANDSCAPE : //pdf
             global $PDF_HEADER,$PDF_ARRAY;
-            $pdf = new Cezpdf('a4','landscape');
+            $pdf     = new Cezpdf('a4','landscape');
             $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
-            $nb = count($PDF_ARRAY);
+            $nb      = count($PDF_ARRAY);
 
-            $tmptxt = sprintf(_n('%s item', '%s items', $nb), $nb);
+            $tmptxt  = sprintf(_n('%s item', '%s items', $nb), $nb);
             $pdf->ezStartPageNumbers(750, 10, 10, 'left',
                                      "GLPI PDF export - ".Html::convDate(date("Y-m-d")).
                                        " - ".Toolbox::decodeFromUtf8($tmptxt, 'windows-1252').
@@ -5381,11 +5384,11 @@ class Search {
 
          case self::PDF_OUTPUT_PORTRAIT : //pdf
             global $PDF_HEADER,$PDF_ARRAY;
-            $pdf = new Cezpdf('a4','portrait');
+            $pdf     = new Cezpdf('a4','portrait');
             $pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
-            $nb  = count($PDF_ARRAY);
+            $nb      = count($PDF_ARRAY);
 
-            $tmptxt = sprintf(_n('%s item', '%s items', $nb), $nb);
+            $tmptxt  = sprintf(_n('%s item', '%s items', $nb), $nb);
             $pdf->ezStartPageNumbers(550, 10, 10, 'left',
                                      "GLPI PDF export - ".Html::convDate(date("Y-m-d")).
                                        " - ".Toolbox::decodeFromUtf8($tmptxt, 'windows-1252').
@@ -5573,18 +5576,15 @@ class Search {
       }
 
       // For jointype == child
-      if (isset($joinparams['jointype'])
-          && $joinparams['jointype'] == 'child'
+      if (isset($joinparams['jointype']) && ($joinparams['jointype'] == 'child')
           && isset($joinparams['linkfield'])) {
          $complexjoin .= $joinparams['linkfield'];
       }
 
       if (isset($joinparams['beforejoin'])) {
-
          if (isset($joinparams['beforejoin']['table'])) {
             $joinparams['beforejoin'] = array($joinparams['beforejoin']);
          }
-
          foreach ($joinparams['beforejoin'] as $tab) {
             if (isset($tab['table'])) {
                $complexjoin .= $tab['table'];
@@ -5593,9 +5593,8 @@ class Search {
                $complexjoin .= $tab['joinparams']['condition'];
             }
          }
-
       }
-//      echo $complexjoin.'--';
+
       if (!empty($complexjoin)) {
          $complexjoin = md5($complexjoin);
       }
@@ -5660,8 +5659,8 @@ class Search {
 
       $sql = $field . self::makeTextSearch($val, $not);
 
-      if (($not && $val!='NULL' && $val!='null' && $val!='^$')    // Not something
-          ||(!$not && $val=='^$')) {   // Empty
+      if (($not && ($val != 'NULL') && ($val != 'null') && ($val != '^$'))    // Not something
+          ||(!$not && ($val == '^$'))) {   // Empty
          $sql = "($sql OR $field IS NULL)";
       }
       return " $link $sql ";
@@ -5686,18 +5685,18 @@ class Search {
       // Unclean to permit < and > search
       $val = Toolbox::unclean_cross_side_scripting_deep($val);
 
-      if ($val=='NULL' || $val=='null') {
+      if (($val == 'NULL') || ($val == 'null')) {
          $SEARCH = " IS $NOT NULL ";
 
       } else {
          $begin = 0;
          $end   = 0;
-         if (($length=strlen($val))>0) {
-            if (($val[0]=='^')) {
+         if (($length = strlen($val)) > 0) {
+            if (($val[0] == '^')) {
                $begin = 1;
             }
 
-            if ($val[$length-1]=='$') {
+            if ($val[$length-1] == '$') {
                $end = 1;
             }
          }
