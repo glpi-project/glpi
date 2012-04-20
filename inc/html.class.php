@@ -2946,11 +2946,11 @@ class Html {
       } else {
          echo "<td class='left' width='80%'></td>";
       }
-      echo "<td class='center' ".(($formname == 'ruleactions_form') ?"width='15%'" : '').">";
+      echo "<td class='center' style='white-space:nowrap;'>";
       echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\"
              href='#'>".__('Check all')."</a></td>";
       echo "<td>/</td>";
-      echo "<td class='center' ".(($formname == 'ruleactions_form') ?"width='15%'" : '').">";
+      echo "<td class='center' style='white-space:nowrap;'>";
       echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\"
              href='#'>".__('Uncheck all')."</a></td>";
 
@@ -2987,11 +2987,11 @@ class Html {
       } else {
          echo "<td class='left' width='80%'></td>";
       }
-      echo "<td class='center' ".(($formname == 'ruleactions_form') ?"width='15%'" : '').">";
+      echo "<td class='center' style='white-space:nowrap;'>";
       echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\"
              href='#'>".__('Check all')."</a></td>";
       echo "<td>/</td>";
-      echo "<td class='center' ".(($formname == 'ruleactions_form') ?"width='15%'" : '').">";
+      echo "<td class='center' style='white-space:nowrap;'>";
       echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\"
              href='#'>".__('Uncheck all')."</a></td>";
 
