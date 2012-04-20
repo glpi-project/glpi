@@ -3045,7 +3045,7 @@ class Ticket extends CommonITILObject {
       
       if (isset($tt->predefined) && count($tt->predefined)) {
          foreach ($tt->predefined as $predeffield => $predefvalue) {
-            if (isset($options[$predeffield])) {
+            if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
                // Is always default value : not set
                // Set if already predefined field
                // Set if ticket template change
