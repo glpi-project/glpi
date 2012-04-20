@@ -868,7 +868,7 @@ class Change extends CommonITILObject {
             case 'solved' :
             case 'observe' :
                echo "<tr>";
-               echo "<td><span class='tracking_small'>".__('Solve date')."</span></td>";
+               echo "<td><span class='tracking_small'>".__('Resolution date')."</span></td>";
                echo "<td>";
                Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false);
                echo "</td></tr>";

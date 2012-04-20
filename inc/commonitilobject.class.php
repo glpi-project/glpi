@@ -1837,7 +1837,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[71]['table']         = 'glpi_groups';
       $tab[71]['field']         = 'completename';
       $tab[71]['datatype']      = 'dropdown';
-      $tab[71]['name']          = __('Group');
+      $tab[71]['name']          = __('Requesters group');
       $tab[71]['forcegroupby']  = true;
       $tab[71]['massiveaction'] = false;
       $tab[71]['condition']     = 'is_requester';
@@ -1859,7 +1859,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[66]['table']         = 'glpi_users';
       $tab[66]['field']         = 'name';
       $tab[66]['datatype']      = 'dropdown';
-      $tab[66]['name']          = __('Watcher user');
+      $tab[66]['name']          = __('Watcher');
       $tab[66]['forcegroupby']  = true;
       $tab[66]['massiveaction'] = false;
       $tab[66]['joinparams']    = array('beforejoin'

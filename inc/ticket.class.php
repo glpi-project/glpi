@@ -73,7 +73,7 @@ class Ticket extends CommonITILObject {
    /**
     * Name of the type
     *
-    * @param $nb : number of item in the type
+    * @param $nb : number of item in the type (default 0)
    **/
    static function getTypeName($nb=0) {
       return _n('Ticket','Tickets',$nb);
@@ -93,7 +93,8 @@ class Ticket extends CommonITILObject {
    function canAssignToMe(){
 
       return (Session::haveRight("steal_ticket","1")
-              || (Session::haveRight("own_ticket","1") && $this->countUsers(parent::ASSIGN)==0));
+              || (Session::haveRight("own_ticket","1")
+                  && ($this->countUsers(parent::ASSIGN) == 0)));
    }
 
 
@@ -137,23 +138,21 @@ class Ticket extends CommonITILObject {
       }
 
       return (Session::haveRight("show_all_ticket","1")
-              || $this->fields["users_id_recipient"] === Session::getLoginUserID()
-              || $this->isUser(parent::REQUESTER,Session::getLoginUserID())
-              || $this->isUser(parent::OBSERVER,Session::getLoginUserID())
+              || ($this->fields["users_id_recipient"] === Session::getLoginUserID())
+              || $this->isUser(parent::REQUESTER, Session::getLoginUserID())
+              || $this->isUser(parent::OBSERVER, Session::getLoginUserID())
               || (Session::haveRight("show_group_ticket",'1')
                   && isset($_SESSION["glpigroups"])
-                  && ($this->haveAGroup(parent::REQUESTER,$_SESSION["glpigroups"])
-                     || $this->haveAGroup(parent::OBSERVER,$_SESSION["glpigroups"])))
+                  && ($this->haveAGroup(parent::REQUESTER, $_SESSION["glpigroups"])
+                      || $this->haveAGroup(parent::OBSERVER, $_SESSION["glpigroups"])))
               || (Session::haveRight("show_assign_ticket",'1')
-                  && ($this->isUser(parent::ASSIGN,Session::getLoginUserID())
+                  && ($this->isUser(parent::ASSIGN, Session::getLoginUserID())
                       || (isset($_SESSION["glpigroups"])
-                          && $this->haveAGroup(parent::ASSIGN,$_SESSION["glpigroups"]))
-                      || (Session::haveRight('assign_ticket',1) && $this->fields["status"]=='new')
-                     )
-                 )
+                          && $this->haveAGroup(parent::ASSIGN, $_SESSION["glpigroups"]))
+                      || (Session::haveRight('assign_ticket',1)
+                          && ($this->fields["status"] == 'new'))))
               || (Session::haveRight('validate_ticket','1')
-                  && TicketValidation::canValidate($this->fields["id"]))
-             );
+                  && TicketValidation::canValidate($this->fields["id"])));
    }
 
 
@@ -163,6 +162,7 @@ class Ticket extends CommonITILObject {
     * @return boolean
    **/
    function canSolve() {
+
       /// TODO block solution edition on closed status ?
       return ((Session::haveRight("update_ticket","1")
                || $this->isUser(parent::ASSIGN, Session::getLoginUserID())
@@ -179,7 +179,7 @@ class Ticket extends CommonITILObject {
    **/
    function canApprove() {
 
-      return ($this->fields["users_id_recipient"] === Session::getLoginUserID()
+      return (($this->fields["users_id_recipient"] === Session::getLoginUserID())
               || $this->isUser(parent::REQUESTER, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(parent::REQUESTER, $_SESSION["glpigroups"])));
@@ -189,13 +189,13 @@ class Ticket extends CommonITILObject {
    /**
     * Get Datas to be added for SLA add
     *
-    * @param $slas_id SLA id
-    * @param $entities_id entity ID of the ticket
-    * @param $date begin date of the ticket
+    * @param $slas_id      SLA id
+    * @param $entities_id  entity ID of the ticket
+    * @param $date         begin date of the ticket
     *
     * @return array of datas to add in ticket
    **/
-   function getDatasToAddSLA($slas_id,$entities_id, $date) {
+   function getDatasToAddSLA($slas_id, $entities_id, $date) {
 
       $calendars_id = Entity::getUsedConfig('calendars_id', $entities_id);
       $data         = array();
@@ -204,7 +204,7 @@ class Ticket extends CommonITILObject {
       if ($sla->getFromDB($slas_id)) {
          $sla->setTicketCalendar($calendars_id);
          // Get first SLA Level
-         $data["slalevels_id"] = SlaLevel::getFirstSlaLevel($slas_id);
+         $data["slalevels_id"]         = SlaLevel::getFirstSlaLevel($slas_id);
          // Compute due_date
          $data['due_date']             = $sla->computeDueDate($date);
          $data['sla_waiting_duration'] = 0;
@@ -266,10 +266,10 @@ class Ticket extends CommonITILObject {
          return false;
       }
 
-      if ($this->numberOfFollowups() == 0
-          && $this->numberOfTasks() == 0
+      if (($this->numberOfFollowups() == 0)
+          && ($this->numberOfTasks() == 0)
           && ($this->isUser(parent::REQUESTER,Session::getLoginUserID())
-              || $this->fields["users_id_recipient"] === Session::getLoginUserID())) {
+              || ($this->fields["users_id_recipient"] === Session::getLoginUserID()))) {
          return true;
       }
 
@@ -289,11 +289,11 @@ class Ticket extends CommonITILObject {
       }
 
       // user can delete his ticket if no action on it
-      if (($this->isUser(parent::REQUESTER,Session::getLoginUserID())
-           || $this->fields["users_id_recipient"] === Session::getLoginUserID())
-          && $this->numberOfFollowups() == 0
-          && $this->numberOfTasks() == 0
-          && $this->fields["date"] == $this->fields["date_mod"]) {
+      if (($this->isUser(parent::REQUESTER, Session::getLoginUserID())
+           || ($this->fields["users_id_recipient"] === Session::getLoginUserID()))
+          && ($this->numberOfFollowups() == 0)
+          && ($this->numberOfTasks() == 0)
+          && ($this->fields["date"] == $this->fields["date_mod"])) {
          return true;
       }
 
@@ -301,6 +301,9 @@ class Ticket extends CommonITILObject {
    }
 
 
+   /**
+    * @see inc/CommonITILObject::getDefaultActor()
+   **/
    function getDefaultActor($type) {
 
       if ($type == self::ASSIGN) {
@@ -313,6 +316,9 @@ class Ticket extends CommonITILObject {
    }
 
 
+   /**
+    * @see inc/CommonITILObject::getDefaultActorRightSearch()
+   **/
    function getDefaultActorRightSearch($type) {
 
       $right = "all";
@@ -338,7 +344,7 @@ class Ticket extends CommonITILObject {
       if (Session::haveRight("show_all_ticket","1")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
             $nb    = 0;
-            $title = _n('Ticket','Tickets',2);
+            $title = self::getTypeName(2);
             switch ($item->getType()) {
                case 'Change' :
                   $nb = countElementsInTable('glpi_changes_tickets',
@@ -396,8 +402,8 @@ class Ticket extends CommonITILObject {
       // Not check show_all_ticket for Ticket itself
       switch ($item->getType()) {
          case __CLASS__ :
-            $ong = array();
-            $ong[1] = __('Costs');
+            $ong    = array();
+            $ong[1] = _n('Cost', 'Costs', 2);
             $ong[2] = _n('Solution', 'Solutions', 1);
             // enquete si statut clos
             if ($item->fields['status'] == 'closed') {
@@ -446,7 +452,7 @@ class Ticket extends CommonITILObject {
 
                case 3 :
                   $satisfaction = new TicketSatisfaction();
-                  if ($item->fields['status'] == 'closed'
+                  if (($item->fields['status'] == 'closed')
                       && $satisfaction->getFromDB($_POST["id"])) {
                      $satisfaction->showSatisfactionForm($item);
                   } else {
@@ -492,13 +498,13 @@ class Ticket extends CommonITILObject {
    **/
    function getAdditionalDatas() {
 
-      if ($this->fields["itemtype"] && ($item = getItemForItemtype($this->fields["itemtype"]))) {
+      if ($this->fields["itemtype"]
+          && ($item = getItemForItemtype($this->fields["itemtype"]))) {
          if ($item->getFromDB($this->fields["items_id"])) {
             $this->hardwaredatas=$item;
          }
-
       } else {
-         $this->hardwaredatas=NULL;
+         $this->hardwaredatas = NULL;
       }
    }
 
@@ -531,7 +537,7 @@ class Ticket extends CommonITILObject {
       $query1 = "DELETE
                  FROM `glpi_tickets_tickets`
                  WHERE `tickets_id_1` = '".$this->fields['id']."'
-                     OR `tickets_id_2` = '".$this->fields['id']."'";
+                       OR `tickets_id_2` = '".$this->fields['id']."'";
       $DB->query($query1);
 
       parent::cleanDBonPurge();
@@ -553,15 +559,16 @@ class Ticket extends CommonITILObject {
       }
 
       // Security checks
-      if (!Session::isCron() && !Session::haveRight("assign_ticket","1")) {
+      if (!Session::isCron()
+          && !Session::haveRight("assign_ticket","1")) {
          if (isset($input["_itil_assign"])
              && isset($input['_itil_assign']['_type'])
-             && $input['_itil_assign']['_type'] == 'user') {
+             && ($input['_itil_assign']['_type'] == 'user')) {
 
             // must own_ticket to grab a non assign ticket
-            if ($this->countUsers(parent::ASSIGN)==0) {
+            if ($this->countUsers(parent::ASSIGN) == 0) {
                if ((!Session::haveRight("steal_ticket","1")
-                     && !Session::haveRight("own_ticket","1"))
+                    && !Session::haveRight("own_ticket","1"))
                    || !isset($input["_itil_assign"]['users_id'])
                    || ($input["_itil_assign"]['users_id'] != Session::getLoginUserID())) {
                   unset($input["_itil_assign"]);
@@ -585,18 +592,20 @@ class Ticket extends CommonITILObject {
          // No group
          if (isset($input["_itil_assign"])
              && isset($input['_itil_assign']['_type'])
-             && $input['_itil_assign']['_type'] == 'group') {
+             && ($input['_itil_assign']['_type'] == 'group')) {
             unset($input["_itil_assign"]);
          }
       }
 
       $check_allowed_fields_for_template = false;
-      if (!Session::isCron() && !Session::haveRight("update_ticket","1")) {
+      if (!Session::isCron()
+          && !Session::haveRight("update_ticket","1")) {
 
-         $allowed_fields = array('id');
+         $allowed_fields                    = array('id');
          $check_allowed_fields_for_template = true;
 
-         if ($this->canApprove() && isset($input["status"])) {
+         if ($this->canApprove()
+             && isset($input["status"])) {
             $allowed_fields[] = 'status';
          }
          // for post-only with validate right or validation created by rules
@@ -607,7 +616,8 @@ class Ticket extends CommonITILObject {
             $allowed_fields[] = 'global_validation';
          }
          // Manage assign and steal right
-         if (Session::haveRight('assign_ticket',1) || Session::haveRight('steal_ticket',1)) {
+         if (Session::haveRight('assign_ticket',1)
+             || Session::haveRight('steal_ticket',1)) {
             $allowed_fields[] = '_itil_assign';
          }
          if (Session::haveRight('assign_ticket',1)) {
@@ -615,9 +625,9 @@ class Ticket extends CommonITILObject {
          }
 
          // Can only update initial fields if no followup or task already added
-         if ($this->numberOfFollowups() == 0
-             && $this->numberOfTasks() == 0
-             && $this->isUser(parent::REQUESTER,Session::getLoginUserID())) {
+         if (($this->numberOfFollowups() == 0)
+             && ($this->numberOfTasks() == 0)
+             && $this->isUser(parent::REQUESTER, Session::getLoginUserID())) {
             $allowed_fields[] = 'content';
             $allowed_fields[] = 'urgency';
             $allowed_fields[] = 'priority'; // automatic recalculate if user changes urgence
@@ -640,7 +650,6 @@ class Ticket extends CommonITILObject {
 
          $input = $ret;
       }
-
 
 
       //// check mandatory fields
@@ -692,11 +701,11 @@ class Ticket extends CommonITILObject {
 
       if (count($tt->mandatory)) {
          $mandatory_missing = array();
-         $fieldsname = $tt->getAllowedFieldsNames(true);
+         $fieldsname        = $tt->getAllowedFieldsNames(true);
          foreach ($tt->mandatory as $key => $val) {
             if ((!$check_allowed_fields_for_template || in_array($key,$allowed_fields))
                 && (isset($input[$key])
-                    && (empty($input[$key]) || $input[$key] == 'NULL'))) {
+                    && (empty($input[$key]) || ($input[$key] == 'NULL')))) {
                $mandatory_missing[$key] = $fieldsname[$val];
             }
          }
@@ -717,7 +726,7 @@ class Ticket extends CommonITILObject {
             $input['_itil_assign']['users_id'] = $input['_users_id_assign'];
          }
          if (isset($input['_groups_id_assign'])) {
-            $input['_itil_assign']['_type']    = 'group';
+            $input['_itil_assign']['_type']     = 'group';
             $input['_itil_assign']['groups_id'] = $input['_groups_id_assign'];
          }
          if (isset($input['_users_id_requester'])) {
@@ -725,7 +734,7 @@ class Ticket extends CommonITILObject {
             $input['_itil_requester']['users_id'] = $input['_users_id_requester'];
          }
          if (isset($input['_groups_id_requester'])) {
-            $input['_itil_requester']['_type']    = 'group';
+            $input['_itil_requester']['_type']     = 'group';
             $input['_itil_requester']['groups_id'] = $input['_groups_id_requester'];
          }
          if (isset($input['_users_id_observer'])) {
@@ -733,7 +742,7 @@ class Ticket extends CommonITILObject {
             $input['_itil_observer']['users_id'] = $input['_users_id_observer'];
          }
          if (isset($input['_groups_id_observer'])) {
-            $input['_itil_observer']['_type']    = 'group';
+            $input['_itil_observer']['_type']     = 'group';
             $input['_itil_observer']['groups_id'] = $input['_groups_id_observer'];
          }
       }
@@ -751,15 +760,15 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      if (isset($input["items_id"])
-          && $input["items_id"]>=0
+      if (isset($input["items_id"]) && ($input["items_id"] >= 0)
           && isset($input["itemtype"])) {
 
          if (isset($this->fields['groups_id'])
-             && $this->fields['groups_id'] == 0
-             && (!isset($input['groups_id']) || $input['groups_id'] == 0)) {
+             && ($this->fields['groups_id'] == 0)
+             && (!isset($input['groups_id']) || ($input['groups_id'] == 0))) {
 
-            if ($input["itemtype"] && ($item = getItemForItemtype($input["itemtype"]))) {
+            if ($input["itemtype"]
+                && ($item = getItemForItemtype($input["itemtype"]))) {
                $item->getFromDB($input["items_id"]);
                if ($item->isField('groups_id')) {
                   $input["groups_id"] = $item->getField('groups_id');
@@ -768,7 +777,7 @@ class Ticket extends CommonITILObject {
          }
 
       } else if (isset($input["itemtype"]) && empty($input["itemtype"])) {
-         $input["items_id"]=0;
+         $input["items_id"] = 0;
 
       } else {
          unset($input["items_id"]);
@@ -776,7 +785,7 @@ class Ticket extends CommonITILObject {
       }
 
       //Action for send_validation rule
-      if (isset($this->input["_add_validation"]) && $this->input["_add_validation"]>0) {
+      if (isset($this->input["_add_validation"]) && ($this->input["_add_validation"] > 0)) {
          $validation = new TicketValidation();
          // if auto_update, tranfert it for validation
          if (isset($this->input['_auto_update'])) {
@@ -797,9 +806,8 @@ class Ticket extends CommonITILObject {
       }
 
 
-       if (isset($this->input["slas_id"])
-           && $this->input["slas_id"] > 0
-           && $this->fields['slas_id'] == 0) {
+       if (isset($this->input["slas_id"]) && ($this->input["slas_id"] > 0)
+           && ($this->fields['slas_id'] == 0)) {
 
          $date = $this->fields['date'];
          /// Use updated date if also done
@@ -826,12 +834,13 @@ class Ticket extends CommonITILObject {
 
       // takeintoaccount :
       //     - update done by someone who have update right / see also updatedatemod used by ticketfollowup updates
-      if ($this->fields['takeintoaccount_delay_stat'] == 0
+      if (($this->fields['takeintoaccount_delay_stat'] == 0)
           && (Session::haveRight("global_add_tasks", "1")
               || Session::haveRight("global_add_followups", "1")
-              || ($this->isUser(parent::ASSIGN, Session::getLoginUserID()))
+              || $this->isUser(parent::ASSIGN, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(parent::ASSIGN, $_SESSION['glpigroups'])))) {
+
          $this->updates[]                            = "takeintoaccount_delay_stat";
          $this->fields['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
       }
@@ -844,14 +853,15 @@ class Ticket extends CommonITILObject {
    /// Compute take into account stat of the current ticket
    function computeTakeIntoAccountDelayStat() {
 
-      if (isset($this->fields['id']) && !empty($this->fields['date'])) {
+      if (isset($this->fields['id'])
+          && !empty($this->fields['date'])) {
          $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
          $calendar     = new Calendar();
 
          // Using calendar
-         if ($calendars_id>0 && $calendar->getFromDB($calendars_id)) {
+         if (($calendars_id > 0) && $calendar->getFromDB($calendars_id)) {
             return max(0, $calendar->getActiveTimeBetween($this->fields['date'],
-                                                   $_SESSION["glpi_currenttime"]));
+                                                          $_SESSION["glpi_currenttime"]));
          }
          // Not calendar defined
          return max(0, strtotime($_SESSION["glpi_currenttime"])-strtotime($this->fields['date']));
@@ -870,10 +880,9 @@ class Ticket extends CommonITILObject {
          $donotif = true;
       }
 
-
       // Manage SLA Level : add actions
-      if (in_array("slas_id",$this->updates)
-          && $this->fields["slas_id"] > 0) {
+      if (in_array("slas_id", $this->updates)
+          && ($this->fields["slas_id"] > 0)) {
 
          // Add First Level
          $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
@@ -882,7 +891,7 @@ class Ticket extends CommonITILObject {
          if ($sla->getFromDB($this->fields["slas_id"])) {
             $sla->setTicketCalendar($calendars_id);
             // Add first level in working table
-            if ($this->fields["slalevels_id"]>0) {
+            if ($this->fields["slalevels_id"] > 0) {
                $sla->addLevelToDo($this);
             }
          }
@@ -892,15 +901,16 @@ class Ticket extends CommonITILObject {
 
       if (count($this->updates)) {
          // Update Ticket Tco
-         if (in_array("actiontime",$this->updates)
-             || in_array("cost_time",$this->updates)
-             || in_array("cost_fixed",$this->updates)
-             || in_array("cost_material",$this->updates)) {
+         if (in_array("actiontime", $this->updates)
+             || in_array("cost_time", $this->updates)
+             || in_array("cost_fixed", $this->updates)
+             || in_array("cost_material", $this->updates)) {
 
             if ($this->fields["itemtype"]
                 && ($item = getItemForItemtype($this->fields["itemtype"]))) {
+
                if ($item->getFromDB($this->fields["items_id"])) {
-                  $newinput = array();
+                  $newinput               = array();
                   $newinput['id']         = $this->fields["items_id"];
                   $newinput['ticket_tco'] = self::computeTco($item);
                   $item->update($newinput);
@@ -909,16 +919,16 @@ class Ticket extends CommonITILObject {
          }
 
          // Setting a solution type means the ticket is solved
-         if ((in_array("solutiontypes_id",$this->updates)
-               || in_array("solution",$this->updates))
-               && (in_array($this->input["status"], $this->getSolvedStatusArray())
-                  || in_array($this->input["status"], $this->getClosedStatusArray()))) { // auto close case
+         if ((in_array("solutiontypes_id", $this->updates)
+              || in_array("solution", $this->updates))
+             && (in_array($this->input["status"], $this->getSolvedStatusArray())
+                 || in_array($this->input["status"], $this->getClosedStatusArray()))) { // auto close case
             Ticket_Ticket::manageLinkedTicketsOnSolved($this->fields['id']);
          }
 
          // Clean content to mail
          $this->fields["content"] = stripslashes($this->fields["content"]);
-         $donotif = true;
+         $donotif                 = true;
 
       }
 
@@ -931,7 +941,7 @@ class Ticket extends CommonITILObject {
 
          if (isset($this->input["status"])
              && $this->input["status"]
-             && in_array("status",$this->updates)
+             && in_array("status", $this->updates)
              && in_array($this->input["status"], $this->getSolvedStatusArray())) {
 
             $mailtype = "solved";
@@ -969,7 +979,7 @@ class Ticket extends CommonITILObject {
             if ($tt->getFromDBWithDatas($input['_tickettemplates_id'])) {
                if (count($tt->mandatory)) {
                   $mandatory_missing = array();
-                  $fieldsname = $tt->getAllowedFieldsNames(true);
+                  $fieldsname        = $tt->getAllowedFieldsNames(true);
                   foreach ($tt->mandatory as $key => $val) {
                      // for title if mandatory (restore initial value
                      if ($key == 'name') {
@@ -977,7 +987,7 @@ class Ticket extends CommonITILObject {
                         $_SESSION["helpdeskSaved"]['name'] = $input['name'];
                      }
 
-                     if (!isset($input[$key]) || empty($input[$key]) ||$input[$key] == 'NULL') {
+                     if (!isset($input[$key]) || empty($input[$key]) ||($input[$key] == 'NULL')) {
                         $mandatory_missing[$key] = $fieldsname[$val];
                      }
                   }
@@ -1008,12 +1018,12 @@ class Ticket extends CommonITILObject {
             $input[$field] = 0;
          }
       }
-      if (!isset($input['itemtype']) || !($input['items_id']>0)) {
+      if (!isset($input['itemtype']) || !($input['items_id'] > 0)) {
          $input['itemtype'] = '';
       }
 
       $item = NULL;
-      if ($input["items_id"]>0 && !empty($input["itemtype"])) {
+      if (($input["items_id"] > 0) && !empty($input["itemtype"])) {
          if ($item = getItemForItemtype($input["itemtype"])) {
             if (!$item->getFromDB($input["items_id"])) {
                $item = NULL;
@@ -1023,7 +1033,7 @@ class Ticket extends CommonITILObject {
 
       // Business Rules do not override manual SLA
       $manual_slas_id = 0;
-      if (isset($input['slas_id']) && $input['slas_id'] > 0) {
+      if (isset($input['slas_id']) && ($input['slas_id'] > 0)) {
          $manual_slas_id = $input['slas_id'];
       }
 
@@ -1053,20 +1063,20 @@ class Ticket extends CommonITILObject {
             break;
 
          case Entity::AUTO_ASSIGN_HARDWARE_CATEGORY :
-            if ($item!=NULL) {
+            if ($item != NULL) {
                // Auto assign tech from item
-               if ((!isset($input['_users_id_assign']) || $input['_users_id_assign']==0)
+               if ((!isset($input['_users_id_assign']) || ($input['_users_id_assign'] == 0))
                    && $item->isField('users_id_tech')) {
                   $input['_users_id_assign'] = $item->getField('users_id_tech');
                }
                // Auto assign group from item
-               if ((!isset($input['_groups_id_assign']) || $input['_groups_id_assign']==0)
+               if ((!isset($input['_groups_id_assign']) || ($input['_groups_id_assign'] == 0))
                    && $item->isField('groups_id_tech')) {
                   $input['_groups_id_assign'] = $item->getField('groups_id_tech');
                }
             }
             // Auto assign tech/group from Category
-            if ($input['itilcategories_id'] > 0
+            if (($input['itilcategories_id'] > 0)
                 && ((!isset($input['_users_id_assign']) || !$input['_users_id_assign'])
                     || (!isset($input['_groups_id_assign']) || !$input['_groups_id_assign']))) {
 
@@ -1085,7 +1095,7 @@ class Ticket extends CommonITILObject {
 
          case Entity::AUTO_ASSIGN_CATEGORY_HARDWARE :
             // Auto assign tech/group from Category
-            if ($input['itilcategories_id']>0
+            if (($input['itilcategories_id'] > 0)
                 && ((!isset($input['_users_id_assign']) || !$input['_users_id_assign'])
                     || (!isset($input['_groups_id_assign']) || !$input['_groups_id_assign']))) {
 
@@ -1100,14 +1110,14 @@ class Ticket extends CommonITILObject {
                   $input['_groups_id_assign'] = $cat->getField('groups_id');
                }
             }
-            if ($item!=NULL) {
+            if ($item != NULL) {
                // Auto assign tech from item
-               if ((!isset($input['_users_id_assign']) || $input['_users_id_assign']==0)
+               if ((!isset($input['_users_id_assign']) || ($input['_users_id_assign'] == 0))
                    && $item->isField('users_id_tech')) {
                   $input['_users_id_assign'] = $item->getField('users_id_tech');
                }
                // Auto assign group from item
-               if ((!isset($input['_groups_id_assign']) || $input['_groups_id_assign']==0)
+               if ((!isset($input['_groups_id_assign']) || ($input['_groups_id_assign'] == 0))
                    && $item->isField('groups_id_tech')) {
                   $input['_groups_id_assign'] = $item->getField('groups_id_tech');
                }
@@ -1116,10 +1126,10 @@ class Ticket extends CommonITILObject {
       }
 
       // Replay setting auto assign if set in rules engine or by auto_assign_mode
-      if (((isset($input["_users_id_assign"]) && $input["_users_id_assign"]>0)
-           || (isset($input["_groups_id_assign"]) && $input["_groups_id_assign"]>0)
-           || (isset($input["suppliers_id_assign"]) && $input["suppliers_id_assign"]>0))
-          && $input["status"]=="new") {
+      if (((isset($input["_users_id_assign"]) && ($input["_users_id_assign"] > 0))
+           || (isset($input["_groups_id_assign"]) && ($input["_groups_id_assign"] > 0))
+           || (isset($input["suppliers_id_assign"]) && ($input["suppliers_id_assign"] > 0)))
+          && ($input["status"] == "new")) {
 
          $input["status"] = "assign";
       }
@@ -1128,10 +1138,10 @@ class Ticket extends CommonITILObject {
       //// Manage SLA assignment
       // Manual SLA defined : reset due date
       // No manual SLA and due date defined : reset auto SLA
-      if ($manual_slas_id == 0
-          && isset($input["due_date"]) && $input['due_date'] != 'NULL') {
+      if (($manual_slas_id == 0)
+          && isset($input["due_date"]) && ($input['due_date'] != 'NULL')) {
          // Valid due date
-         if ($input['due_date']>$input['date']) {
+         if ($input['due_date'] > $input['date']) {
             if (isset($input["slas_id"])) {
                unset($input["slas_id"]);
             }
@@ -1141,7 +1151,7 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      if (isset($input["slas_id"]) && $input["slas_id"]>0) {
+      if (isset($input["slas_id"]) && ($input["slas_id"] > 0)) {
          // Get datas to initialize SLA and set it
          $sla_data = $this->getDatasToAddSLA($input["slas_id"], $input['entities_id'],
                                              $input['date']);
@@ -1154,8 +1164,8 @@ class Ticket extends CommonITILObject {
 
       // auto set type if not set
       if (!isset($input["type"])) {
-         $input['type'] = Entity::getUsedConfig('tickettype', $input['entities_id'],
-                                                    '', Ticket::INCIDENT_TYPE);
+         $input['type'] = Entity::getUsedConfig('tickettype', $input['entities_id'], '',
+                                                Ticket::INCIDENT_TYPE);
       }
 
       return $input;
@@ -1172,18 +1182,18 @@ class Ticket extends CommonITILObject {
 
       if (isset($this->input["_followup"])
           && is_array($this->input["_followup"])
-          && strlen($this->input["_followup"]['content']) > 0) {
+          && (strlen($this->input["_followup"]['content']) > 0)) {
 
          $fup  = new TicketFollowup();
          $type = "new";
-         if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
+         if (isset($this->fields["status"]) && ($this->fields["status"] == "solved")) {
             $type = "solved";
          }
          $toadd = array("type"       => $type,
                         "tickets_id" => $this->fields['id']);
 
          if (isset($this->input["_followup"]['content'])
-             && strlen($this->input["_followup"]['content']) > 0) {
+             && (strlen($this->input["_followup"]['content']) > 0)) {
             $toadd["content"] = $this->input["_followup"]['content'];
          }
 
@@ -1196,11 +1206,11 @@ class Ticket extends CommonITILObject {
       }
 
       if ((isset($this->input["plan"]) && count($this->input["plan"]))
-          || (isset($this->input["actiontime"]) && $this->input["actiontime"]>0)) {
+          || (isset($this->input["actiontime"]) && ($this->input["actiontime"] > 0))) {
 
          $task = new TicketTask();
          $type = "new";
-         if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
+         if (isset($this->fields["status"]) && ($this->fields["status"]  =="solved")) {
             $type = "solved";
          }
          $toadd = array("type"       => $type,
@@ -1239,10 +1249,8 @@ class Ticket extends CommonITILObject {
       }
 
       // Manage SLA Level : add actions
-      if (isset($this->input["slas_id"])
-          && $this->input["slas_id"]>0
-          && isset($this->input["slalevels_id"])
-          && $this->input["slalevels_id"]>0) {
+      if (isset($this->input["slas_id"]) && ($this->input["slas_id"] > 0)
+          && isset($this->input["slalevels_id"]) && ($this->input["slalevels_id"] > 0)) {
 
          $calendars_id = Entity::getUsedConfig('calendars_id', $this->fields['entities_id']);
 
@@ -1250,7 +1258,7 @@ class Ticket extends CommonITILObject {
          if ($sla->getFromDB($this->input["slas_id"])) {
             $sla->setTicketCalendar($calendars_id);
             // Add first level in working table
-            if ($this->input["slalevels_id"]>0) {
+            if ($this->input["slalevels_id"] > 0) {
                $sla->addLevelToDo($this);
             }
             // Replay action in case of open date is set before now
@@ -1329,20 +1337,20 @@ class Ticket extends CommonITILObject {
          $this->getFromDB($this->fields['id']);
 
          $type = "new";
-         if (isset($this->fields["status"]) && $this->fields["status"]=="solved") {
+         if (isset($this->fields["status"]) && ($this->fields["status"] == "solved")) {
             $type = "solved";
          }
          NotificationEvent::raiseEvent($type, $this);
       }
 
       if (isset($_SESSION['glpiis_ids_visible']) && !$_SESSION['glpiis_ids_visible']) {
-         Session::addMessageAfterRedirect(__('Your ticket has been registered, its treatment is in progress.').
-                                          //TRANS: %s is the id or the link to the ticket
-                                          " (".sprintf(__('%1$s: %2$s'), __('Ticket'),
-                                                       "<a href='".$CFG_GLPI["root_doc"].
-                                                         "/front/ticket.form.php?id=".
-                                                         $this->fields['id']."'>".
-                                                         $this->fields['id']."</a>").")");
+         Session::addMessageAfterRedirect(sprintf(__('%1$s (%2$s)'),
+                                                  __('Your ticket has been registered, its treatment is in progress.'),
+                                                  sprintf(__('%1$s: %2$s'), __('Ticket'),
+                                                          "<a href='".$CFG_GLPI["root_doc"].
+                                                            "/front/ticket.form.php?id=".
+                                                            $this->fields['id']."'>".
+                                                            $this->fields['id']."</a>")));
       }
 
    }
@@ -1352,7 +1360,7 @@ class Ticket extends CommonITILObject {
    /**
     * Number of followups of the ticket
     *
-    * @param $with_private boolean : true : all followups / false : only public ones
+    * @param $with_private boolean : true : all followups / false : only public ones (default 1)
     *
     * @return followup count
    **/
@@ -1378,7 +1386,7 @@ class Ticket extends CommonITILObject {
    /**
     * Number of tasks of the ticket
     *
-    * @param $with_private boolean : true : all ticket / false : only public ones
+    * @param $with_private boolean : true : all ticket / false : only public ones (default 1)
     *
     * @return followup count
    **/
@@ -1406,9 +1414,9 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @param $itemtype string Item type
-    * @param $items_id integer ID of the Item
-    * @param $days integer day number
+    * @param $itemtype  string   Item type
+    * @param $items_id  integer  ID of the Item
+    * @param $days      integer  day number
     *
     * @return integer
    **/
@@ -1442,8 +1450,8 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @param $itemtype string Item type
-    * @param $items_id integer ID of the Item
+    * @param $itemtype  string   Item type
+    * @param $items_id  integer  ID of the Item
     *
     * @return integer
    **/
@@ -1465,13 +1473,13 @@ class Ticket extends CommonITILObject {
     *
     * @since version 0.83
     *
-    * @param $itemtype string Item type
-    * @param $items_id integer ID of the Item
-    * @param $days integer day number
+    * @param $itemtype  string   Item type
+    * @param $items_id  integer  ID of the Item
+    * @param $days      integer  day number
     *
     * @return integer
    **/
-   function countSolvedTicketsForItemLastDays($itemtype, $items_id,$days) {
+   function countSolvedTicketsForItemLastDays($itemtype, $items_id, $days) {
 
       return countElementsInTable($this->getTable(),
                                   "`".$this->getTable()."`.`itemtype` = '$itemtype'
@@ -1490,8 +1498,8 @@ class Ticket extends CommonITILObject {
    /**
     * Update date mod of the ticket
     *
-    * @param $ID ID of the ticket
-    * @param $no_stat_computation boolean do not cumpute take into account stat
+    * @param $ID                          ID of the ticket
+    * @param $no_stat_computation boolean do not cumpute take into account stat (false by default)
    **/
    function updateDateMod($ID, $no_stat_computation=false) {
       global $DB;
@@ -1500,7 +1508,7 @@ class Ticket extends CommonITILObject {
          if (!$no_stat_computation
              && (Session::haveRight("global_add_tasks", "1")
                  || Session::haveRight("global_add_followups", "1")
-                 || ($this->isUser(parent::ASSIGN,Session::getLoginUserID()))
+                 || $this->isUser(parent::ASSIGN, Session::getLoginUserID())
                  || (isset($_SESSION["glpigroups"])
                      && $this->haveAGroup(parent::ASSIGN, $_SESSION['glpigroups'])))) {
 
@@ -1517,8 +1525,6 @@ class Ticket extends CommonITILObject {
    }
 
 
-
-
    /**
     * Overloaded from commonDBTM
     *
@@ -1530,7 +1536,8 @@ class Ticket extends CommonITILObject {
    **/
    function canAddItem($type) {
 
-      if ($type == 'Document' && $this->getField('status') == 'closed') {
+      if (($type == 'Document')
+          && ($this->getField('status') == 'closed')) {
          return false;
       }
       return parent::canAddItem($type);
@@ -1545,13 +1552,13 @@ class Ticket extends CommonITILObject {
    function canAddFollowups() {
 
       return ((Session::haveRight("add_followups","1")
-               && ($this->isUser(parent::REQUESTER,Session::getLoginUserID())
-                   || $this->fields["users_id_recipient"] === Session::getLoginUserID()))
+               && ($this->isUser(parent::REQUESTER, Session::getLoginUserID())
+                   || ($this->fields["users_id_recipient"] === Session::getLoginUserID())))
               || Session::haveRight("global_add_followups","1")
               || (Session::haveRight("group_add_followups","1")
                   && isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(parent::REQUESTER, $_SESSION['glpigroups']))
-              || ($this->isUser(parent::ASSIGN,Session::getLoginUserID()))
+              || $this->isUser(parent::ASSIGN, Session::getLoginUserID())
               || (isset($_SESSION["glpigroups"])
                   && $this->haveAGroup(parent::ASSIGN, $_SESSION['glpigroups'])));
    }
@@ -1568,7 +1575,7 @@ class Ticket extends CommonITILObject {
                       'sort'       => 19,
                       'order'      => 'DESC');
 
-      if (Session::haveRight('show_all_ticket',1)) {
+      if (Session::haveRight('show_all_ticket', 1)) {
          $search['contains'] = array(0 => 'notold');
       }
      return $search;
@@ -1577,103 +1584,103 @@ class Ticket extends CommonITILObject {
 
    function getSearchOptions() {
 
-      $tab = array();
-      $tab['common'] = __('Characteristics');
+      $tab                       = array();
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Title');
-      $tab[1]['searchtype']    = 'contains';
-      $tab[1]['datatype']      = 'string';
-      $tab[1]['forcegroupby']  = true;
-      $tab[1]['massiveaction'] = false;
+      $tab['common']             = __('Characteristics');
 
-      $tab[21]['table']         = $this->getTable();
-      $tab[21]['field']         = 'content';
-      $tab[21]['name']          = __('Description');
-      $tab[21]['massiveaction'] = false;
-      $tab[21]['datatype']      = 'text';
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Title');
+      $tab[1]['searchtype']      = 'contains';
+      $tab[1]['datatype']        = 'string';
+      $tab[1]['forcegroupby']    = true;
+      $tab[1]['massiveaction']   = false;
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
-      $tab[2]['datatype']      = 'number';
+      $tab[21]['table']          = $this->getTable();
+      $tab[21]['field']          = 'content';
+      $tab[21]['name']           = __('Description');
+      $tab[21]['massiveaction']  = false;
+      $tab[21]['datatype']       = 'text';
 
-      $tab[12]['table']      = $this->getTable();
-      $tab[12]['field']      = 'status';
-      $tab[12]['name']       = __('Status');
-      $tab[12]['searchtype'] = 'equals';
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']        = 'number';
 
-      $tab[14]['table']      = $this->getTable();
-      $tab[14]['field']      = 'type';
-      $tab[14]['name']       = __('Type');
-      $tab[14]['searchtype'] = 'equals';
+      $tab[12]['table']          = $this->getTable();
+      $tab[12]['field']          = 'status';
+      $tab[12]['name']           = __('Status');
+      $tab[12]['searchtype']     = 'equals';
 
-      $tab[10]['table']      = $this->getTable();
-      $tab[10]['field']      = 'urgency';
-      $tab[10]['name']       = __('Urgency');
-      $tab[10]['searchtype'] = 'equals';
+      $tab[14]['table']          = $this->getTable();
+      $tab[14]['field']          = 'type';
+      $tab[14]['name']           = __('Type');
+      $tab[14]['searchtype']     = 'equals';
 
-      $tab[11]['table']      = $this->getTable();
-      $tab[11]['field']      = 'impact';
-      $tab[11]['name']       = __('Impact');
-      $tab[11]['searchtype'] = 'equals';
+      $tab[10]['table']          = $this->getTable();
+      $tab[10]['field']          = 'urgency';
+      $tab[10]['name']           = __('Urgency');
+      $tab[10]['searchtype']     = 'equals';
 
-      $tab[3]['table']      = $this->getTable();
-      $tab[3]['field']      = 'priority';
-      $tab[3]['name']       = __('Priority');
-      $tab[3]['searchtype'] = 'equals';
+      $tab[11]['table']          = $this->getTable();
+      $tab[11]['field']          = 'impact';
+      $tab[11]['name']           = __('Impact');
+      $tab[11]['searchtype']     = 'equals';
 
-      $tab[15]['table']         = $this->getTable();
-      $tab[15]['field']         = 'date';
-      $tab[15]['name']          = __('Opening date');
-      $tab[15]['datatype']      = 'datetime';
-      $tab[15]['massiveaction'] = false;
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'priority';
+      $tab[3]['name']            = __('Priority');
+      $tab[3]['searchtype']      = 'equals';
 
-      $tab[16]['table']         = $this->getTable();
-      $tab[16]['field']         = 'closedate';
-      $tab[16]['name']          = __('Closing date');
-      $tab[16]['datatype']      = 'datetime';
-      $tab[16]['massiveaction'] = false;
+      $tab[15]['table']          = $this->getTable();
+      $tab[15]['field']          = 'date';
+      $tab[15]['name']           = __('Opening date');
+      $tab[15]['datatype']       = 'datetime';
+      $tab[15]['massiveaction']  = false;
 
-      $tab[18]['table']         = $this->getTable();
-      $tab[18]['field']         = 'due_date';
-      $tab[18]['name']          = __('Due date');
-      $tab[18]['datatype']      = 'datetime';
-      $tab[18]['maybefuture']   = true;
-      $tab[18]['massiveaction'] = false;
+      $tab[16]['table']          = $this->getTable();
+      $tab[16]['field']          = 'closedate';
+      $tab[16]['name']           = __('Closing date');
+      $tab[16]['datatype']       = 'datetime';
+      $tab[16]['massiveaction']  = false;
 
-      $tab[82]['table']         = $this->getTable();
-      $tab[82]['field']         = 'is_late';
-      $tab[82]['name']          = __('Late');
-      $tab[82]['datatype']      = 'bool';
-      $tab[82]['massiveaction'] = false;
+      $tab[18]['table']          = $this->getTable();
+      $tab[18]['field']          = 'due_date';
+      $tab[18]['name']           = __('Due date');
+      $tab[18]['datatype']       = 'datetime';
+      $tab[18]['maybefuture']    = true;
+      $tab[18]['massiveaction']  = false;
 
-      $tab[17]['table']         = $this->getTable();
-      $tab[17]['field']         = 'solvedate';
-      $tab[17]['name']          = __('Resolution date');
-      $tab[17]['datatype']      = 'datetime';
-      $tab[17]['massiveaction'] = false;
+      $tab[82]['table']          = $this->getTable();
+      $tab[82]['field']          = 'is_late';
+      $tab[82]['name']           = __('Late');
+      $tab[82]['datatype']       = 'bool';
+      $tab[82]['massiveaction']  = false;
 
-      $tab[19]['table']         = $this->getTable();
-      $tab[19]['field']         = 'date_mod';
-      $tab[19]['name']          = __('Last update');
-      $tab[19]['datatype']      = 'datetime';
-      $tab[19]['massiveaction'] = false;
+      $tab[17]['table']          = $this->getTable();
+      $tab[17]['field']          = 'solvedate';
+      $tab[17]['name']           = __('Resolution date');
+      $tab[17]['datatype']       = 'datetime';
+      $tab[17]['massiveaction']  = false;
 
-      $tab[7]['table']    = 'glpi_itilcategories';
-      $tab[7]['field']    = 'completename';
-      $tab[7]['name']     = __('Category');
-      $tab[7]['datatype'] = 'dropdown';
+      $tab[19]['table']          = $this->getTable();
+      $tab[19]['field']          = 'date_mod';
+      $tab[19]['name']           = __('Last update');
+      $tab[19]['datatype']       = 'datetime';
+      $tab[19]['massiveaction']  = false;
 
+      $tab[7]['table']           = 'glpi_itilcategories';
+      $tab[7]['field']           = 'completename';
+      $tab[7]['name']            = __('Category');
+      $tab[7]['datatype']        = 'dropdown';
 
-      $tab[13]['table']         = $this->getTable();
-      $tab[13]['field']         = 'items_id';
-      $tab[13]['name']          = __('Associated element');
-      $tab[13]['nosearch']      = true;
-      $tab[13]['nosort']        = true;
-      $tab[13]['massiveaction'] = false;
+      $tab[13]['table']          = $this->getTable();
+      $tab[13]['field']          = 'items_id';
+      $tab[13]['name']           = __('Associated element');
+      $tab[13]['nosearch']       = true;
+      $tab[13]['nosort']         = true;
+      $tab[13]['massiveaction']  = false;
 
       $tab[131]['table']         = $this->getTable();
       $tab[131]['field']         = 'itemtype';
@@ -1683,205 +1690,203 @@ class Ticket extends CommonITILObject {
       $tab[131]['nosort']        = true;
       $tab[131]['massiveaction'] = false;
 
-      $tab[9]['table']    = 'glpi_requesttypes';
-      $tab[9]['field']    = 'name';
-      $tab[9]['name']     = __('Request source');
-      $tab[9]['datatype'] = 'dropdown';
+      $tab[9]['table']           = 'glpi_requesttypes';
+      $tab[9]['field']           = 'name';
+      $tab[9]['name']            = __('Request source');
+      $tab[9]['datatype']        = 'dropdown';
 
-      $tab[80]['table']         = 'glpi_entities';
-      $tab[80]['field']         = 'completename';
-      $tab[80]['name']          = __('Entity');
-      $tab[80]['massiveaction'] = false;
-      $tab[80]['datatype']      = 'dropdown';
+      $tab[80]['table']          = 'glpi_entities';
+      $tab[80]['field']          = 'completename';
+      $tab[80]['name']           = __('Entity');
+      $tab[80]['massiveaction']  = false;
+      $tab[80]['datatype']       = 'dropdown';
 
+      $tab[45]['table']          = $this->getTable();
+      $tab[45]['field']          = 'actiontime';
+      $tab[45]['name']           = __('Total duration');
+      $tab[45]['datatype']       = 'timestamp';
+      $tab[45]['massiveaction']  = false;
+      $tab[45]['nosearch']       = true;
 
-      $tab[45]['table']         = $this->getTable();
-      $tab[45]['field']         = 'actiontime';
-      $tab[45]['name']          = __('Total duration');
-      $tab[45]['datatype']      = 'timestamp';
-      $tab[45]['massiveaction'] = false;
-      $tab[45]['nosearch']      = true;
-
-      $tab[64]['table']         = 'glpi_users';
-      $tab[64]['field']         = 'name';
-      $tab[64]['linkfield']     = 'users_id_lastupdater';
-      $tab[64]['name']          = __('Last updater');
-      $tab[64]['massiveaction'] = false;
+      $tab[64]['table']          = 'glpi_users';
+      $tab[64]['field']          = 'name';
+      $tab[64]['linkfield']      = 'users_id_lastupdater';
+      $tab[64]['name']           = __('Last updater');
+      $tab[64]['massiveaction']  = false;
 
       $tab += $this->getSearchOptionsActors();
 
-      $tab['sla'] = __('SLA');
+      $tab['sla']                = __('SLA');
 
-      $tab[30]['table']         = 'glpi_slas';
-      $tab[30]['field']         = 'name';
-      $tab[30]['name']          = __('SLA');
-      $tab[30]['massiveaction'] = false;
-      $tab[30]['datatype']      = 'dropdown';
+      $tab[30]['table']          = 'glpi_slas';
+      $tab[30]['field']          = 'name';
+      $tab[30]['name']           = __('SLA');
+      $tab[30]['massiveaction']  = false;
+      $tab[30]['datatype']       = 'dropdown';
 
-      $tab[32]['table']         = 'glpi_slalevels';
-      $tab[32]['field']         = 'name';
-      $tab[32]['name']          = __('Escalation level');
-      $tab[32]['massiveaction'] = false;
-
-
-      $tab['validation'] = __('Approval');
-
-      $tab[52]['table']      = $this->getTable();
-      $tab[52]['field']      = 'global_validation';
-      $tab[52]['name']       = __('Approval');
-      $tab[52]['searchtype'] = 'equals';
-
-      $tab[53]['table']         = 'glpi_ticketvalidations';
-      $tab[53]['field']         = 'comment_submission';
-      $tab[53]['name']          = sprintf(__('%1$s: %2$s'), __('Request'), __('Comments'));
-      $tab[53]['datatype']      = 'text';
-      $tab[53]['forcegroupby']  = true;
-      $tab[53]['massiveaction'] = false;
-      $tab[53]['joinparams']    = array('jointype' => 'child');
-
-      $tab[54]['table']         = 'glpi_ticketvalidations';
-      $tab[54]['field']         = 'comment_validation';
-      $tab[54]['name']          = __('Approval comments');
-      $tab[54]['datatype']      = 'text';
-      $tab[54]['forcegroupby']  = true;
-      $tab[54]['massiveaction'] = false;
-      $tab[54]['joinparams']    = array('jointype' => 'child');
-
-      $tab[55]['table']         = 'glpi_ticketvalidations';
-      $tab[55]['field']         = 'status';
-      $tab[55]['name']          = __('Approval status');
-      $tab[55]['searchtype']    = 'equals';
-      $tab[55]['forcegroupby']  = true;
-      $tab[55]['massiveaction'] = false;
-      $tab[55]['joinparams']    = array('jointype' => 'child');
-
-      $tab[56]['table']         = 'glpi_ticketvalidations';
-      $tab[56]['field']         = 'submission_date';
-      $tab[56]['name']          = sprintf(__('%1$s: %2$s'), __('Request'), __('Date'));
-
-      $tab[56]['datatype']      = 'datetime';
-      $tab[56]['forcegroupby']  = true;
-      $tab[56]['massiveaction'] = false;
-      $tab[56]['joinparams']    = array('jointype' => 'child');
-
-      $tab[57]['table']         = 'glpi_ticketvalidations';
-      $tab[57]['field']         = 'validation_date';
-      $tab[57]['name']          = __('Approval date');
-      $tab[57]['datatype']      = 'datetime';
-      $tab[57]['forcegroupby']  = true;
-      $tab[57]['massiveaction'] = false;
-      $tab[57]['joinparams']    = array('jointype' => 'child');
-
-      $tab[58]['table']         = 'glpi_users';
-      $tab[58]['field']         = 'name';
-      $tab[58]['name']          = __('Approval requester');
-      $tab[58]['datatype']      = 'itemlink';
-      $tab[58]['itemlink_type'] = 'User';
-      $tab[58]['forcegroupby']  = true;
-      $tab[58]['massiveaction'] = false;
-      $tab[58]['joinparams']    = array('beforejoin'
-                                        => array('table'      => 'glpi_ticketvalidations',
-                                                 'joinparams' => array('jointype' => 'child')));
-
-      $tab[59]['table']         = 'glpi_users';
-      $tab[59]['field']         = 'name';
-      $tab[59]['linkfield']     = 'users_id_validate';
-      $tab[59]['name']          = __('Approver');
-      $tab[59]['datatype']      = 'itemlink';
-      $tab[59]['itemlink_type'] = 'User';
-      $tab[59]['forcegroupby']  = true;
-      $tab[59]['massiveaction'] = false;
-      $tab[59]['joinparams']    = array('beforejoin'
-                                        => array('table'      => 'glpi_ticketvalidations',
-                                                 'joinparams' => array('jointype' => 'child')));
+      $tab[32]['table']          = 'glpi_slalevels';
+      $tab[32]['field']          = 'name';
+      $tab[32]['name']           = __('Escalation level');
+      $tab[32]['massiveaction']  = false;
 
 
-      $tab['satisfaction'] = __('Satisfaction survey');
+      $tab['validation']         = __('Approval');
 
-      $tab[31]['table']      = 'glpi_ticketsatisfactions';
-      $tab[31]['field']      = 'type';
-      $tab[31]['name']       = __('Satisfaction survey type');
-      $tab[31]['massiveaction'] = false;
-      $tab[31]['searchtype'] = 'equals';
-      $tab[31]['joinparams'] = array('jointype' => 'child');
+      $tab[52]['table']          = $this->getTable();
+      $tab[52]['field']          = 'global_validation';
+      $tab[52]['name']           = __('Approval');
+      $tab[52]['searchtype']     = 'equals';
 
-      $tab[60]['table']         = 'glpi_ticketsatisfactions';
-      $tab[60]['field']         = 'date_begin';
-      $tab[60]['name']          = __('Creation date of the satisfaction survey');
-      $tab[60]['datatype']      = 'datetime';
-      $tab[60]['massiveaction'] = false;
-      $tab[60]['joinparams']    = array('jointype' => 'child');
+      $tab[53]['table']          = 'glpi_ticketvalidations';
+      $tab[53]['field']          = 'comment_submission';
+      $tab[53]['name']           = sprintf(__('%1$s: %2$s'), __('Request'), __('Comments'));
+      $tab[53]['datatype']       = 'text';
+      $tab[53]['forcegroupby']   = true;
+      $tab[53]['massiveaction']  = false;
+      $tab[53]['joinparams']     = array('jointype' => 'child');
 
-      $tab[61]['table']         = 'glpi_ticketsatisfactions';
-      $tab[61]['field']         = 'date_answered';
-      $tab[61]['name']          = __('Response date to the satisfaction survey');
-      $tab[61]['datatype']      = 'datetime';
-      $tab[61]['massiveaction'] = false;
-      $tab[61]['joinparams']    = array('jointype' => 'child');
+      $tab[54]['table']          = 'glpi_ticketvalidations';
+      $tab[54]['field']          = 'comment_validation';
+      $tab[54]['name']           = sprintf(__('%1$s: %2$s'), __('Approval'), __('Comments'));
+      $tab[54]['datatype']       = 'text';
+      $tab[54]['forcegroupby']   = true;
+      $tab[54]['massiveaction']  = false;
+      $tab[54]['joinparams']     = array('jointype' => 'child');
 
-      $tab[62]['table']         = 'glpi_ticketsatisfactions';
-      $tab[62]['field']         = 'satisfaction';
-      $tab[62]['name']          = __('Satisfaction');
-      $tab[62]['datatype']      = 'number';
-      $tab[62]['massiveaction'] = false;
-      $tab[62]['joinparams']    = array('jointype' => 'child');
+      $tab[55]['table']          = 'glpi_ticketvalidations';
+      $tab[55]['field']          = 'status';
+      $tab[55]['name']           = sprintf(__('%1$s: %2$s'), __('Approval'), __('Status'));
+      $tab[55]['searchtype']     = 'equals';
+      $tab[55]['forcegroupby']   = true;
+      $tab[55]['massiveaction']  = false;
+      $tab[55]['joinparams']     = array('jointype' => 'child');
 
-      $tab[63]['table']         = 'glpi_ticketsatisfactions';
-      $tab[63]['field']         = 'comment';
-      $tab[63]['name']          = __('Comments to the satisfaction survey');
-      $tab[63]['datatype']      = 'text';
-      $tab[63]['massiveaction'] = false;
-      $tab[63]['joinparams']    = array('jointype' => 'child');
+      $tab[56]['table']          = 'glpi_ticketvalidations';
+      $tab[56]['field']          = 'submission_date';
+      $tab[56]['name']           = sprintf(__('%1$s: %2$s'), __('Request'), __('Date'));
+
+      $tab[56]['datatype']       = 'datetime';
+      $tab[56]['forcegroupby']   = true;
+      $tab[56]['massiveaction']  = false;
+      $tab[56]['joinparams']     = array('jointype' => 'child');
+
+      $tab[57]['table']          = 'glpi_ticketvalidations';
+      $tab[57]['field']          = 'validation_date';
+      $tab[57]['name']           = sprintf(__('%1$s: %2$s'), __('Approval'), __('Date'));
+      $tab[57]['datatype']       = 'datetime';
+      $tab[57]['forcegroupby']   = true;
+      $tab[57]['massiveaction']  = false;
+      $tab[57]['joinparams']     = array('jointype' => 'child');
+
+      $tab[58]['table']          = 'glpi_users';
+      $tab[58]['field']          = 'name';
+      $tab[58]['name']           = __('Requester');
+      $tab[58]['datatype']       = 'itemlink';
+      $tab[58]['itemlink_type']  = 'User';
+      $tab[58]['forcegroupby']   = true;
+      $tab[58]['massiveaction']  = false;
+      $tab[58]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_ticketvalidations',
+                                                   'joinparams' => array('jointype' => 'child')));
+
+      $tab[59]['table']          = 'glpi_users';
+      $tab[59]['field']          = 'name';
+      $tab[59]['linkfield']      = 'users_id_validate';
+      $tab[59]['name']           = __('Approver');
+      $tab[59]['datatype']       = 'itemlink';
+      $tab[59]['itemlink_type']  = 'User';
+      $tab[59]['forcegroupby']   = true;
+      $tab[59]['massiveaction']  = false;
+      $tab[59]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_ticketvalidations',
+                                                   'joinparams' => array('jointype' => 'child')));
 
 
+      $tab['satisfaction']       = __('Satisfaction survey');
 
-      $tab['followup'] = _n('Followup', 'Followups', 2);
+      $tab[31]['table']          = 'glpi_ticketsatisfactions';
+      $tab[31]['field']          = 'type';
+      $tab[31]['name']           = __('Type');
+      $tab[31]['massiveaction']  = false;
+      $tab[31]['searchtype']     = 'equals';
+      $tab[31]['joinparams']     = array('jointype' => 'child');
 
-      $tab[25]['table']         = 'glpi_ticketfollowups';
-      $tab[25]['field']         = 'content';
-      $tab[25]['name']          = __('Followup description');
-      $tab[25]['forcegroupby']  = true;
-      $tab[25]['splititems']    = true;
-      $tab[25]['massiveaction'] = false;
-      $tab[25]['joinparams']    = array('jointype' => 'child');
+      $tab[60]['table']          = 'glpi_ticketsatisfactions';
+      $tab[60]['field']          = 'date_begin';
+      $tab[60]['name']           = __('Creation date');
+      $tab[60]['datatype']       = 'datetime';
+      $tab[60]['massiveaction']  = false;
+      $tab[60]['joinparams']     = array('jointype' => 'child');
 
-      $tab[27]['table']         = 'glpi_ticketfollowups';
-      $tab[27]['field']         = 'count';
-      $tab[27]['name']          = "Number of follow-ups";
-      $tab[27]['forcegroupby']  = true;
-      $tab[27]['usehaving']     = true;
-      $tab[27]['datatype']      = 'number';
-      $tab[27]['massiveaction'] = false;
-      $tab[27]['joinparams']    = array('jointype' => 'child');
+      $tab[61]['table']          = 'glpi_ticketsatisfactions';
+      $tab[61]['field']          = 'date_answered';
+      $tab[61]['name']           = __('Response date');
+      $tab[61]['datatype']       = 'datetime';
+      $tab[61]['massiveaction']  = false;
+      $tab[61]['joinparams']     = array('jointype' => 'child');
 
-      $tab[29]['table']         = 'glpi_requesttypes';
-      $tab[29]['field']         = 'name';
-      $tab[29]['name']          = __('Followup request source');
-      $tab[29]['forcegroupby']  = true;
-      $tab[29]['massiveaction'] = false;
-      $tab[29]['joinparams']    = array('beforejoin'
+      $tab[62]['table']          = 'glpi_ticketsatisfactions';
+      $tab[62]['field']          = 'satisfaction';
+      $tab[62]['name']           = __('Satisfaction');
+      $tab[62]['datatype']       = 'number';
+      $tab[62]['massiveaction']  = false;
+      $tab[62]['joinparams']     = array('jointype' => 'child');
+
+      $tab[63]['table']          = 'glpi_ticketsatisfactions';
+      $tab[63]['field']          = 'comment';
+      $tab[63]['name']           = __('Comments');
+      $tab[63]['datatype']       = 'text';
+      $tab[63]['massiveaction']  = false;
+      $tab[63]['joinparams']     = array('jointype' => 'child');
+
+
+      $tab['followup']           = _n('Followup', 'Followups', 2);
+
+      $tab[25]['table']          = 'glpi_ticketfollowups';
+      $tab[25]['field']          = 'content';
+      $tab[25]['name']           = __('Description');
+      $tab[25]['forcegroupby']   = true;
+      $tab[25]['splititems']     = true;
+      $tab[25]['massiveaction']  = false;
+      $tab[25]['joinparams']     = array('jointype' => 'child');
+
+      $tab[27]['table']          = 'glpi_ticketfollowups';
+      $tab[27]['field']          = 'count';
+      $tab[27]['name']           = "Number of followups";
+      $tab[27]['forcegroupby']   = true;
+      $tab[27]['usehaving']      = true;
+      $tab[27]['datatype']       = 'number';
+      $tab[27]['massiveaction']  = false;
+      $tab[27]['joinparams']     = array('jointype' => 'child');
+
+      $tab[29]['table']          = 'glpi_requesttypes';
+      $tab[29]['field']          = 'name';
+      $tab[29]['name']           = __('Request source');
+      $tab[29]['forcegroupby']   = true;
+      $tab[29]['massiveaction']  = false;
+      $tab[29]['joinparams']     = array('beforejoin'
                                           => array('table'      => 'glpi_ticketfollowups',
                                                    'joinparams' => array('jointype' => 'child')));
 
-      $tab[91]['table']         = 'glpi_ticketfollowups';
-      $tab[91]['field']         = 'is_private';
-      $tab[91]['name']          = sprintf(__('%1$s - %2$s'),__('Followup','Followups',1),__('Private'));
-      $tab[91]['datatype']      = 'bool';
-      $tab[91]['forcegroupby']  = true;
-      $tab[91]['splititems']    = true;
-      $tab[91]['massiveaction'] = false;
-      $tab[91]['joinparams']    = array('jointype' => 'child');
+      $tab[91]['table']          = 'glpi_ticketfollowups';
+      $tab[91]['field']          = 'is_private';
+      $tab[91]['name']           = __('Private followup');
+      $tab[91]['datatype']       = 'bool';
+      $tab[91]['forcegroupby']   = true;
+      $tab[91]['splititems']     = true;
+      $tab[91]['massiveaction']  = false;
+      $tab[91]['joinparams']     = array('jointype' => 'child');
 
-      $tab[93]['table']         = 'glpi_users';
-      $tab[93]['field']         = 'name';
-      $tab[93]['name']          = sprintf(__('%1$s - %2$s'),__('Followup','Followups',1),__('Writer'));
-      $tab[93]['datatype']      = 'itemlink';
-      $tab[93]['itemlink_type'] = 'User';
-      $tab[93]['forcegroupby']  = true;
-      $tab[93]['massiveaction'] = false;
-      $tab[93]['joinparams']    = array('beforejoin'
-                                        => array('table'      => 'glpi_ticketfollowups',
-                                                 'joinparams' => array('jointype' => 'child')));
+      $tab[93]['table']          = 'glpi_users';
+      $tab[93]['field']          = 'name';
+      $tab[93]['name']           = __('Writer');
+      $tab[93]['datatype']       = 'itemlink';
+      $tab[93]['itemlink_type']  = 'User';
+      $tab[93]['forcegroupby']   = true;
+      $tab[93]['massiveaction']  = false;
+      $tab[93]['joinparams']     = array('beforejoin'
+                                          => array('table'      => 'glpi_ticketfollowups',
+                                                   'joinparams' => array('jointype' => 'child')));
 
       $tab += $this->getSearchOptionsStats();
 
@@ -1897,139 +1902,142 @@ class Ticket extends CommonITILObject {
           || Session::haveRight("show_assign_ticket","1")
           || Session::haveRight("own_ticket","1")) {
 
-         $tab['linktickets'] = _n('Linked ticket', 'Linked tickets', 2);
+         $tab['linktickets']        = _n('Linked ticket', 'Linked tickets', 2);
 
-         $tab[40]['table']         = 'glpi_tickets_tickets';
-         $tab[40]['field']         = 'tickets_id_1';
-         $tab[40]['name']          = __('All linked tickets');
-         $tab[40]['massiveaction'] = false;
-         $tab[40]['searchtype']    = 'equals';
-         $tab[40]['joinparams']    = array('jointype' => 'item_item');
+         $tab[40]['table']          = 'glpi_tickets_tickets';
+         $tab[40]['field']          = 'tickets_id_1';
+         $tab[40]['name']           = __('All linked tickets');
+         $tab[40]['massiveaction']  = false;
+         $tab[40]['searchtype']     = 'equals';
+         $tab[40]['joinparams']     = array('jointype' => 'item_item');
 
-         $tab[47]['table']         = 'glpi_tickets_tickets';
-         $tab[47]['field']         = 'tickets_id_1';
-         $tab[47]['name']          = __('Duplicated tickets');
-         $tab[47]['massiveaction'] = false;
-         $tab[47]['searchtype']    = 'equals';
-         $tab[47]['joinparams']    = array('jointype'  => 'item_item',
+         $tab[47]['table']          = 'glpi_tickets_tickets';
+         $tab[47]['field']          = 'tickets_id_1';
+         $tab[47]['name']           = __('Duplicated tickets');
+         $tab[47]['massiveaction']  = false;
+         $tab[47]['searchtype']     = 'equals';
+         $tab[47]['joinparams']     = array('jointype'  => 'item_item',
+                                            'condition' => "AND NEWTABLE.`link` = ".
+                                                            Ticket_Ticket::DUPLICATE_WITH);
+
+         $tab[41]['table']          = 'glpi_tickets_tickets';
+         $tab[41]['field']          = 'count';
+         $tab[41]['name']           = __('Number of all linked tickets');
+         $tab[41]['massiveaction']  = false;
+         $tab[41]['datatype']       = 'number';
+         $tab[41]['usehaving']      = true;
+         $tab[41]['joinparams']     = array('jointype' => 'item_item');
+
+         $tab[46]['table']          = 'glpi_tickets_tickets';
+         $tab[46]['field']          = 'count';
+         $tab[46]['name']           = __('Number of duplicated tickets');
+         $tab[46]['massiveaction']  = false;
+         $tab[46]['datatype']       = 'number';
+         $tab[46]['usehaving']      = true;
+         $tab[46]['joinparams']     = array('jointype' => 'item_item',
                                            'condition' => "AND NEWTABLE.`link` = ".
-                                                          Ticket_Ticket::DUPLICATE_WITH);
-
-         $tab[41]['table']         = 'glpi_tickets_tickets';
-         $tab[41]['field']         = 'count';
-         $tab[41]['name']          = __('Number of all linked tickets');
-         $tab[41]['massiveaction'] = false;
-         $tab[41]['datatype']      = 'number';
-         $tab[41]['usehaving']     = true;
-         $tab[41]['joinparams']    = array('jointype' => 'item_item');
-
-         $tab[46]['table']         = 'glpi_tickets_tickets';
-         $tab[46]['field']         = 'count';
-         $tab[46]['name']          = __('Duplicated tickets');
-         $tab[46]['massiveaction'] = false;
-         $tab[46]['datatype']      = 'number';
-         $tab[46]['usehaving']     = true;
-         $tab[46]['joinparams']    = array('jointype'  => 'item_item',
-                                           'condition' => "AND NEWTABLE.`link` = ".
-                                                          Ticket_Ticket::DUPLICATE_WITH);
+                                                           Ticket_Ticket::DUPLICATE_WITH);
 
 
-         $tab['task'] = _n('Task', 'Tasks', 2);
+         $tab['task']               = _n('Task', 'Tasks', 2);
 
-         $tab[26]['table']         = 'glpi_tickettasks';
-         $tab[26]['field']         = 'content';
-         $tab[26]['name']          = __('Task description');
-         $tab[26]['forcegroupby']  = true;
-         $tab[26]['splititems']    = true;
-         $tab[26]['massiveaction'] = false;
-         $tab[26]['joinparams']    = array('jointype' => 'child');
+         $tab[26]['table']          = 'glpi_tickettasks';
+         $tab[26]['field']          = 'content';
+         $tab[26]['name']           = __('Description');
+         $tab[26]['forcegroupby']   = true;
+         $tab[26]['splititems']     = true;
+         $tab[26]['massiveaction']  = false;
+         $tab[26]['joinparams']     = array('jointype' => 'child');
 
-         $tab[28]['table']         = 'glpi_tickettasks';
-         $tab[28]['field']         = 'count';
-         $tab[28]['name']          = __('Number of tasks');
-         $tab[28]['forcegroupby']  = true;
-         $tab[28]['usehaving']     = true;
-         $tab[28]['datatype']      = 'number';
-         $tab[28]['massiveaction'] = false;
-         $tab[28]['joinparams']    = array('jointype' => 'child');
+         $tab[28]['table']          = 'glpi_tickettasks';
+         $tab[28]['field']          = 'count';
+         $tab[28]['name']           = __('Number of tasks');
+         $tab[28]['forcegroupby']   = true;
+         $tab[28]['usehaving']      = true;
+         $tab[28]['datatype']       = 'number';
+         $tab[28]['massiveaction']  = false;
+         $tab[28]['joinparams']     = array('jointype' => 'child');
 
-         $tab[20]['table']         = 'glpi_taskcategories';
-         $tab[20]['field']         = 'name';
-         $tab[20]['name']          = __('Task category');
-         $tab[20]['forcegroupby']  = true;
-         $tab[20]['splititems']    = true;
-         $tab[20]['massiveaction'] = false;
-         $tab[20]['joinparams']    = array('beforejoin'
-                                           => array('table'      => 'glpi_tickettasks',
-                                                    'joinparams' => array('jointype' => 'child')));
+         $tab[20]['table']          = 'glpi_taskcategories';
+         $tab[20]['field']          = 'name';
+         $tab[20]['name']           = __('Task category');
+         $tab[20]['forcegroupby']   = true;
+         $tab[20]['splititems']     = true;
+         $tab[20]['massiveaction']  = false;
+         $tab[20]['joinparams']     = array('beforejoin'
+                                             => array('table'      => 'glpi_tickettasks',
+                                                      'joinparams' => array('jointype' => 'child')));
 
-         $tab[92]['table']         = 'glpi_tickettasks';
-         $tab[92]['field']         = 'is_private';
-         $tab[92]['name']          = sprintf(__('%1$s - %2$s'),__('Task','Tasks',1),__('Private'));
-         $tab[92]['datatype']      = 'bool';
-         $tab[92]['forcegroupby']  = true;
-         $tab[92]['splititems']    = true;
-         $tab[92]['massiveaction'] = false;
-         $tab[92]['joinparams']    = array('jointype' => 'child');
+         $tab[92]['table']          = 'glpi_tickettasks';
+         $tab[92]['field']          = 'is_private';
+         $tab[92]['name']           = __('Private task');
+         $tab[92]['datatype']       = 'bool';
+         $tab[92]['forcegroupby']   = true;
+         $tab[92]['splititems']     = true;
+         $tab[92]['massiveaction']  = false;
+         $tab[92]['joinparams']     = array('jointype' => 'child');
 
-         $tab[94]['table']         = 'glpi_users';
-         $tab[94]['field']         = 'name';
-         $tab[94]['name']          = sprintf(__('%1$s - %2$s'),__('Task','Tasks',1),__('Writer'));
-         $tab[94]['datatype']      = 'itemlink';
-         $tab[94]['itemlink_type'] = 'User';
-         $tab[94]['forcegroupby']  = true;
-         $tab[94]['massiveaction'] = false;
-         $tab[94]['joinparams']    = array('beforejoin'
-                                          => array('table'      => 'glpi_tickettasks',
-                                                   'joinparams' => array('jointype' => 'child')));
-         $tab[95]['table']         = 'glpi_users';
-         $tab[95]['field']         = 'name';
-         $tab[95]['linkfield']     = 'users_id_tech';
-         $tab[95]['name']          = sprintf(__('%1$s - %2$s'),__('Task','Tasks',1),__('Technician'));
-         $tab[95]['datatype']      = 'itemlink';
-         $tab[95]['itemlink_type'] = 'User';
-         $tab[95]['forcegroupby']  = true;
-         $tab[95]['massiveaction'] = false;
-         $tab[95]['joinparams']    = array('beforejoin'
-                                          => array('table'      => 'glpi_tickettasks',
-                                                   'joinparams' => array('jointype'  => 'child')));
+         $tab[94]['table']          = 'glpi_users';
+         $tab[94]['field']          = 'name';
+         $tab[94]['name']           = __('Writer');
+         $tab[94]['datatype']       = 'itemlink';
+         $tab[94]['itemlink_type']  = 'User';
+         $tab[94]['forcegroupby']   = true;
+         $tab[94]['massiveaction']  = false;
+         $tab[94]['joinparams']     = array('beforejoin'
+                                             => array('table'      => 'glpi_tickettasks',
+                                                      'joinparams' => array('jointype' => 'child')));
+         $tab[95]['table']          = 'glpi_users';
+         $tab[95]['field']          = 'name';
+         $tab[95]['linkfield']      = 'users_id_tech';
+         $tab[95]['name']           = __('Technician');
+         $tab[95]['datatype']       = 'itemlink';
+         $tab[95]['itemlink_type']  = 'User';
+         $tab[95]['forcegroupby']   = true;
+         $tab[95]['massiveaction']  = false;
+         $tab[95]['joinparams']     = array('beforejoin'
+                                             => array('table'      => 'glpi_tickettasks',
+                                                      'joinparams' => array('jointype'  => 'child')));
 
-         $tab['solution'] = _n('Solution', 'Solutions', 1);
 
-         $tab[23]['table'] = 'glpi_solutiontypes';
-         $tab[23]['field'] = 'name';
-         $tab[23]['name']  = __('Solution type');
+         $tab['solution']           = _n('Solution', 'Solutions', 1);
 
-         $tab[24]['table']         = $this->getTable();
-         $tab[24]['field']         = 'solution';
-         $tab[24]['name']          = _n('Solution', 'Solutions', 1);
-         $tab[24]['datatype']      = 'text';
-         $tab[24]['htmltext']      = true;
-         $tab[24]['massiveaction'] = false;
+         $tab[23]['table']          = 'glpi_solutiontypes';
+         $tab[23]['field']          = 'name';
+         $tab[23]['name']           = __('Solution type');
 
-         $tab['cost'] = __('Cost');
+         $tab[24]['table']          = $this->getTable();
+         $tab[24]['field']          = 'solution';
+         $tab[24]['name']           = _n('Solution', 'Solutions', 1);
+         $tab[24]['datatype']       = 'text';
+         $tab[24]['htmltext']       = true;
+         $tab[24]['massiveaction']  = false;
 
-         $tab[42]['table']    = $this->getTable();
-         $tab[42]['field']    = 'cost_time';
-         $tab[42]['name']     = __('Time cost');
-         $tab[42]['datatype'] = 'decimal';
 
-         $tab[43]['table']    = $this->getTable();
-         $tab[43]['field']    = 'cost_fixed';
-         $tab[43]['name']     = __('Fixed cost');
-         $tab[43]['datatype'] = 'decimal';
+         $tab['cost']               = __('Cost');
 
-         $tab[44]['table']    = $this->getTable();
-         $tab[44]['field']    = 'cost_material';
-         $tab[44]['name']     = __('Material cost');
-         $tab[44]['datatype'] = 'decimal';
+         $tab[42]['table']          = $this->getTable();
+         $tab[42]['field']          = 'cost_time';
+         $tab[42]['name']           = __('Time cost');
+         $tab[42]['datatype']       = 'decimal';
+
+         $tab[43]['table']          = $this->getTable();
+         $tab[43]['field']          = 'cost_fixed';
+         $tab[43]['name']           = __('Fixed cost');
+         $tab[43]['datatype']       = 'decimal';
+
+         $tab[44]['table']          = $this->getTable();
+         $tab[44]['field']          = 'cost_material';
+         $tab[44]['name']           = __('Material cost');
+         $tab[44]['datatype']       = 'decimal';
       }
 
       // Filter search fields for helpdesk
       if (!Session::isCron() // no filter for cron
-          && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+          && ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk')) {
          $tokeep = array('common');
-         if (Session::haveRight('validate_ticket',1) || Session::haveRight('create_validation',1)) {
+         if (Session::haveRight('validate_ticket',1)
+             || Session::haveRight('create_validation',1)) {
             $tokeep[] = 'validation';
          }
          $keep = false;
@@ -2049,6 +2057,12 @@ class Ticket extends CommonITILObject {
       return $tab;
    }
 
+
+   /**
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -2060,11 +2074,9 @@ class Ticket extends CommonITILObject {
 
          case 'status':
             return self::getStatus($values[$field]);
-            break;
 
          case 'type':
             return self::getTicketTypeName($values[$field]);
-            break;
 
          case 'itemtype':
             if (class_exists($values[$field])) {
@@ -2077,8 +2089,8 @@ class Ticket extends CommonITILObject {
                if (isset($options['comments']) && $options['comments']) {
                   $tmp = Dropdown::getDropdownName(getTableForItemtype($values['itemtype']),
                                                    $values[$field], 1);
-                  return $tmp['name'].'&nbsp;'.
-                           Html::showToolTip($tmp['comment'], array('display' => false));
+                  return sprintf(__('%1$s %2$s'), $tmp['name'],
+                                 Html::showToolTip($tmp['comment'], array('display' => false)));
 
                }
                return Dropdown::getDropdownName(getTableForItemtype($values['itemtype']),
@@ -2093,10 +2105,8 @@ class Ticket extends CommonITILObject {
    /**
     * Dropdown of ticket type
     *
-    * @param $name select name
-    * @param $options array of options
-    *
-    * Parameters which could be used in options array :
+    * @param $name            select name
+    * @param $options   array of options:
     *    - value : integer / preselected value (default 0)
     *    - toadd : array / array of specific values to add at the begining
     *    - on_change : string / value to transmit to "onChange"
@@ -2116,7 +2126,7 @@ class Ticket extends CommonITILObject {
       }
 
       $items = array();
-      if (count($params['toadd'])>0) {
+      if (count($params['toadd']) > 0) {
          $items = $params['toadd'];
       }
 
@@ -2156,10 +2166,11 @@ class Ticket extends CommonITILObject {
       }
    }
 
+
    /**
     * get the Ticket status list
     *
-    * @param $withmetaforsearch boolean
+    * @param $withmetaforsearch boolean (false by default)
     *
     * @return an array
    **/
@@ -2190,7 +2201,6 @@ class Ticket extends CommonITILObject {
     * @since version 0.83
     *
     * @return an array
-    *
    **/
    static function getClosedStatusArray() {
       return array('closed');
@@ -2236,9 +2246,9 @@ class Ticket extends CommonITILObject {
    /**
     * Dropdown of ticket status
     *
-    * @param $name select name
-    * @param $value default value
-    * @param $option list proposed 0:normal, 1:search, 2:allowed
+    * @param $name   select name
+    * @param $value  default value (default new)
+    * @param $option list proposed 0:normal, 1:search, 2:allowed (default 0)
     *
     * @return nothing (display)
    **/
@@ -2250,8 +2260,8 @@ class Ticket extends CommonITILObject {
    /**
     * Compute Priority
     *
-    * @param $urgency integer from 1 to 5
-    * @param $impact integer from 1 to 5
+    * @param $urgency   integer from 1 to 5
+    * @param $impact    integer from 1 to 5
     *
     * @return integer from 1 to 5 (priority)
    **/
@@ -2263,9 +2273,9 @@ class Ticket extends CommonITILObject {
    /**
     * Dropdown of ticket Urgency
     *
-    * @param $name select name
-    * @param $value default value
-    * @param $complete see also at least selection
+    * @param $name      select name
+    * @param $value     default value (default 0)
+    * @param $complete  see also at least selection (false by default)
     *
     * @return string id of the select
    **/
@@ -2277,9 +2287,9 @@ class Ticket extends CommonITILObject {
    /**
     * Dropdown of ticket Impact
     *
-    * @param $name select name
-    * @param $value default value
-    * @param $complete see also at least selection (major included)
+    * @param $name      select name
+    * @param $value     default value (default 0)
+    * @param $complete  see also at least selection (major included) (false by default)
     *
     * @return string id of the select
    **/
@@ -2305,11 +2315,10 @@ class Ticket extends CommonITILObject {
    /**
     * Make a select box for Ticket my devices
     *
-    *
-    * @param $userID User ID for my device section
-    * @param $entity_restrict restrict to a specific entity
-    * @param $itemtype of selected item
-    * @param $items_id of selected item
+    * @param $userID          User ID for my device section (default 0)
+    * @param $entity_restrict restrict to a specific entity (default -1)
+    * @param $itemtype        of selected item (default 0)
+    * @param $items_id        of selected item (default 0)
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -2332,9 +2341,10 @@ class Ticket extends CommonITILObject {
             if (($item = getItemForItemtype($itemtype))
                 && parent::isPossibleToAssignType($itemtype)) {
                $itemtable = getTableForItemType($itemtype);
-               $query = "SELECT *
-                         FROM `$itemtable`
-                         WHERE `users_id` = '$userID'";
+
+               $query     = "SELECT *
+                             FROM `$itemtable`
+                             WHERE `users_id` = '$userID'";
                if ($item->maybeDeleted()) {
                   $query .= " AND `is_deleted` = '0' ";
                }
@@ -2350,26 +2360,26 @@ class Ticket extends CommonITILObject {
                          ORDER BY `name` ";
 
                $result = $DB->query($query);
-               $nb = $DB->numrows($result);
-               if ($DB->numrows($result)>0) {
+               $nb     = $DB->numrows($result);
+               if ($DB->numrows($result) > 0) {
                   $type_name = $item->getTypeName($nb);
 
                   while ($data = $DB->fetch_assoc($result)) {
                      $output = $data["name"];
                      if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
-                        $output .= " (".$data['id'].")";
+                        $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                      }
-                     $output = $type_name . " - " . $output;
+                     $output = sprintf(__('%1$s - %2$s'), $type_name, $output);
                      if ($itemtype != 'Software') {
                         if (!empty($data['serial'])) {
-                           $output .= " - ".$data['serial'];
+                           $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
                         }
                         if (!empty($data['otherserial'])) {
-                           $output .= " - ".$data['otherserial'];
+                           $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
                         }
                      }
                      $my_devices .= "<option title=\"$output\" value='".$itemtype."_".$data["id"].
-                                    "' ".($my_item==$itemtype."_".$data["id"]?"selected":"").">".
+                                    "' ".(($my_item == $itemtype."_".$data["id"])?"selected":"").">".
                                     Toolbox::substr($output, 0, $_SESSION["glpidropdown_chars_limit"]).
                                     "</option>";
 
@@ -2379,23 +2389,24 @@ class Ticket extends CommonITILObject {
             }
          }
          if (!empty($my_devices)) {
-            $my_devices="<optgroup label=\"".__s('My devices')."\">".$my_devices."</optgroup>";
+            $my_devices = "<optgroup label=\"".__s('My devices')."\">".$my_devices."</optgroup>";
          }
 
          // My group items
          if (Session::haveRight("show_group_hardware","1")) {
             $group_where = "";
-            $query = "SELECT `glpi_groups_users`.`groups_id`, `glpi_groups`.`name`
-                      FROM `glpi_groups_users`
-                      LEFT JOIN `glpi_groups`
-                           ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
-                      WHERE `glpi_groups_users`.`users_id` = '$userID' ".
-                            getEntitiesRestrictRequest("AND","glpi_groups","",$entity_restrict,true);
+            $query       = "SELECT `glpi_groups_users`.`groups_id`, `glpi_groups`.`name`
+                            FROM `glpi_groups_users`
+                            LEFT JOIN `glpi_groups`
+                              ON (`glpi_groups`.`id` = `glpi_groups_users`.`groups_id`)
+                            WHERE `glpi_groups_users`.`users_id` = '$userID' ".
+                                  getEntitiesRestrictRequest("AND", "glpi_groups", "",
+                                                             $entity_restrict, true);
             $result = $DB->query($query);
 
             $first = true;
-            if ($DB->numrows($result)>0) {
-               while ($data=$DB->fetch_assoc($result)) {
+            if ($DB->numrows($result) > 0) {
+               while ($data = $DB->fetch_assoc($result)) {
                   if ($first) {
                      $first = false;
                   } else {
@@ -2408,13 +2419,13 @@ class Ticket extends CommonITILObject {
                foreach ($CFG_GLPI["linkgroup_types"] as $itemtype) {
                   if (($item = getItemForItemtype($itemtype))
                       && parent::isPossibleToAssignType($itemtype)) {
-                     $itemtable = getTableForItemType($itemtype);
-                     $query = "SELECT *
-                               FROM `$itemtable`
-                               WHERE ($group_where) ".
-                                     getEntitiesRestrictRequest("AND",$itemtable,"",
-                                                                $entity_restrict,
-                                                                $item->maybeRecursive());
+                     $itemtable  = getTableForItemType($itemtype);
+                     $query      = "SELECT *
+                                    FROM `$itemtable`
+                                    WHERE ($group_where) ".
+                                          getEntitiesRestrictRequest("AND", $itemtable, "",
+                                                                     $entity_restrict,
+                                                                     $item->maybeRecursive());
 
                      if ($item->maybeDeleted()) {
                         $query .= " AND `is_deleted` = '0' ";
@@ -2424,30 +2435,30 @@ class Ticket extends CommonITILObject {
                      }
 
                      $result = $DB->query($query);
-                     if ($DB->numrows($result)>0) {
-                        $type_name=$item->getTypeName();
+                     if ($DB->numrows($result) > 0) {
+                        $type_name = $item->getTypeName();
                         if (!isset($already_add[$itemtype])) {
                            $already_add[$itemtype] = array();
                         }
                         while ($data = $DB->fetch_assoc($result)) {
-                           if (!in_array($data["id"],$already_add[$itemtype])) {
+                           if (!in_array($data["id"], $already_add[$itemtype])) {
                               $output = '';
                               if (isset($data["name"])) {
                                  $output = $data["name"];
                               }
                               if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
-                                 $output .= " (".$data['id'].")";
+                                 $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                               }
-                              $output = $type_name . " - " . $output;
+                              $output = sprintf(__('%1$s - %2$s'), $type_name, $output);
                               if (isset($data['serial'])) {
-                                 $output .= " - ".$data['serial'];
+                                 $output = sprintf(__('%1$s - %2$s'), $output, $data['serial']);
                               }
                               if (isset($data['otherserial'])) {
-                                 $output .= " - ".$data['otherserial'];
+                                 $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
                               }
                               $tmp_device .= "<option title=\"$output\" value='".$itemtype."_".
                                              $data["id"]."' ".
-                                             ($my_item==$itemtype."_".$data["id"]?"selected":"").">".
+                                             (($my_item == $itemtype."_".$data["id"])?"selected":"").">".
                                              Toolbox::substr($output,0,
                                                              $_SESSION["glpidropdown_chars_limit"]).
                                              "</option>";
@@ -2459,17 +2470,18 @@ class Ticket extends CommonITILObject {
                   }
                }
                if (!empty($tmp_device)) {
-                  $my_devices .= "<optgroup label=\"".__s('Devices own by my groups')."\">".$tmp_device."</optgroup>";
+                  $my_devices .= "<optgroup label=\"".__s('Devices own by my groups')."\">".
+                                  $tmp_device."</optgroup>";
                }
             }
          }
          // Get linked items to computers
          if (isset($already_add['Computer']) && count($already_add['Computer'])) {
             $search_computer = " XXXX IN (".implode(',',$already_add['Computer']).') ';
-            $tmp_device = "";
+            $tmp_device      = "";
 
             // Direct Connection
-            $types = array('Peripheral', 'Monitor', 'Printer', 'Phone');
+            $types = array('Monitor', 'Peripheral', 'Phone', 'Printer');
             foreach ($types as $itemtype) {
                if (in_array($itemtype,$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])
                    && ($item = getItemForItemtype($itemtype))) {
@@ -2496,15 +2508,15 @@ class Ticket extends CommonITILObject {
                   $result = $DB->query($query);
                   if ($DB->numrows($result) > 0) {
                      $type_name = $item->getTypeName();
-                     while ($data=$DB->fetch_assoc($result)) {
+                     while ($data = $DB->fetch_assoc($result)) {
                         if (!in_array($data["id"],$already_add[$itemtype])) {
                            $output = $data["name"];
                            if (empty($output) || $_SESSION["glpiis_ids_visible"]) {
-                              $output .= " (".$data['id'].")";
+                              $output = sprintf(__('%1$s (%2$s)'), $output, $data['id']);
                            }
-                           $output = $type_name . " - " . $output;
+                           $output = sprintf(__('%1$s - %2$s'), $type_name, $output);
                            if ($itemtype != 'Software') {
-                              $output .= " - ".$data['serial']." - ".$data['otherserial'];
+                              $output = sprintf(__('%1$s - %2$s'), $output, $data['otherserial']);
                            }
                            $tmp_device .= "<option title=\"$output\" value='".$itemtype."_".
                                           $data["id"]."' ".
@@ -2520,11 +2532,12 @@ class Ticket extends CommonITILObject {
                }
             }
             if (!empty($tmp_device)) {
-               $my_devices .= "<optgroup label=\"".__s('Connected devices')."\">".$tmp_device."</optgroup>";
+               $my_devices .= "<optgroup label=\"".__s('Connected devices')."\">".$tmp_device.
+                              "</optgroup>";
             }
 
             // Software
-            if (in_array('Software',$_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
+            if (in_array('Software', $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
                $query = "SELECT DISTINCT `glpi_softwareversions`.`name` AS version,
                                 `glpi_softwares`.`name` AS name, `glpi_softwares`.`id`
                          FROM `glpi_computers_softwareversions`, `glpi_softwares`,
@@ -2543,18 +2556,23 @@ class Ticket extends CommonITILObject {
                $result = $DB->query($query);
                if ($DB->numrows($result) > 0) {
                   $tmp_device = "";
-                  $item = new Software();
-                  $type_name = $item->getTypeName();
+                  $item       = new Software();
+                  $type_name  = $item->getTypeName();
                   if (!isset($already_add['Software'])) {
                      $already_add['Software'] = array();
                   }
-                  while ($data=$DB->fetch_assoc($result)) {
-                     if (!in_array($data["id"],$already_add['Software'])) {
-                        $output = "$type_name - ".$data["name"]." (v. ".$data["version"].")".
-                                  ($_SESSION["glpiis_ids_visible"]?" (".$data["id"].")":"");
+                  while ($data = $DB->fetch_assoc($result)) {
+                     if (!in_array($data["id"], $already_add['Software'])) {
+                        $output = sprintf(__('%1$s - %2$s'), $type_name, $data["name"]);
+                        $output = sprintf(__('%1$s (%2$s)'), $output,
+                                          sprintf(__('%1$s: %2$s'), __('version'),
+                                                  $data["version"]));
+                        if ($_SESSION["glpiis_ids_visible"]) {
+                           $output = sprintf(__('%1$s (%2$s)'), $output, $data["id"]);
+                        }
 
                         $tmp_device .= "<option title=\"$output\" value='Software_".$data["id"]."' ".
-                                       ($my_item == 'Software'."_".$data["id"]?"selected":"").">".
+                                       (($my_item == 'Software'."_".$data["id"])?"selected":"").">".
                                        Toolbox::substr($output, 0,
                                                        $_SESSION["glpidropdown_chars_limit"]).
                                        "</option>";
@@ -2563,7 +2581,8 @@ class Ticket extends CommonITILObject {
                      }
                   }
                   if (!empty($tmp_device)) {
-                     $my_devices .= "<optgroup label=\"".__s('Installed softwares')."\">";
+                     $my_devices .= "<optgroup label=\""._sn('Installed software',
+                                                             'Installed software, 2')."\">";
                      $my_devices .= $tmp_device."</optgroup>";
                   }
                }
@@ -2589,12 +2608,12 @@ class Ticket extends CommonITILObject {
    /**
     * Make a select box for Tracking All Devices
     *
-    * @param $myname select name
-    * @param $itemtype preselected value.for item type
-    * @param $items_id preselected value for item ID
-    * @param $admin is an admin access ?
-    * @param $users_id user ID used to display my devices
-    * @param $entity_restrict Restrict to a defined entity
+    * @param $myname             select name
+    * @param $itemtype           preselected value.for item type
+    * @param $items_id           preselected value for item ID (default 0)
+    * @param $admin              is an admin access ? (default 0)
+    * @param $users_id           user ID used to display my devices (default 0
+    * @param $entity_restrict    Restrict to a defined entity (default -1)
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -2620,14 +2639,14 @@ class Ticket extends CommonITILObject {
             $types = parent::getAllTypesForHelpdesk();
             echo "<select id='search_$myname$rand' name='$myname'>\n";
             echo "<option value='-1' >".Dropdown::EMPTY_VALUE."</option>\n";
-            echo "<option value='' ".((empty($itemtype)|| $itemtype===0)?" selected":"").">".
+            echo "<option value='' ".((empty($itemtype)|| ($itemtype === 0))?" selected":"").">".
                   __('General')."</option>";
             $found_type = false;
             foreach ($types as $type => $label) {
-               if (strcmp($type,$itemtype)==0) {
+               if (strcmp($type,$itemtype) == 0) {
                   $found_type = true;
                }
-               echo "<option value='".$type."' ".(strcmp($type,$itemtype)==0?" selected":"").">".
+               echo "<option value='".$type."' ".((strcmp($type,$itemtype) == 0)?" selected":"").">".
                       $label."</option>\n";
             }
             echo "</select>";
@@ -2677,7 +2696,7 @@ class Ticket extends CommonITILObject {
       $options = array('colspan' => 1);
       $this->showFormHeader($options);
 
-      echo "<tr><th colspan='4'>".__('Costs')."</th></tr>";
+      echo "<tr><th colspan='4'>"._n('Cost', 'Costs', 2)."</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td width='50%'>".__('Total duration')."</td>";
@@ -2751,7 +2770,7 @@ class Ticket extends CommonITILObject {
 
       $i = 0;
       if ($DB->numrows($result)) {
-         while ($data=$DB->fetch_assoc($result)) {
+         while ($data = $DB->fetch_assoc($result)) {
             $totalcost += self::trackingTotalCost($data["actiontime"], $data["cost_time"],
                                                   $data["cost_fixed"], $data["cost_material"]);
          }
@@ -2763,26 +2782,28 @@ class Ticket extends CommonITILObject {
    /**
     * Computer total cost of a ticket
     *
-    * @param $actiontime float : ticket actiontime
-    * @param $cost_time float : ticket time cost
-    * @param $cost_fixed float : ticket fixed cost
-    * @param $cost_material float : ticket material cost
-    * @param $edit boolean : used for edit of computation ?
+    * @param $actiontime      float    ticket actiontime
+    * @param $cost_time       float    ticket time cost
+    * @param $cost_fixed      float    ticket fixed cost
+    * @param $cost_material   float    ticket material cost
+    * @param $edit             boolean used for edit of computation ? (true by default)
     *
     * @return total cost formatted string
    **/
    static function trackingTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material,
-                                     $edit = true) {
+                                     $edit=true) {
+
       return Html::formatNumber(($actiontime*$cost_time/HOUR_TIMESTAMP)+$cost_fixed+$cost_material,
-                                   $edit);
+                                $edit);
    }
 
 
    /**
     * Print the helpdesk form
     *
-    * @param $ID int : ID of the user who want to display the Helpdesk
-    * @param $ticket_template int : ID ticket template for preview : false if not used for preview
+    * @param $ID              integer  ID of the user who want to display the Helpdesk
+    * @param $ticket_template boolean  ticket template for preview : false if not used for preview
+    *                                  (false by default)
     *
     * @return nothing (print the helpdesk)
    **/
@@ -2794,7 +2815,7 @@ class Ticket extends CommonITILObject {
       }
 
       if (Session::haveRight('validate_ticket',1)) {
-         $opt = array();
+         $opt                  = array();
          $opt['reset']         = 'reset';
          $opt['field'][0]      = 55; // validation status
          $opt['searchtype'][0] = 'equals';
@@ -2809,9 +2830,10 @@ class Ticket extends CommonITILObject {
          $url_validate = $CFG_GLPI["root_doc"]."/front/ticket.php?".Toolbox::append_params($opt,
                                                                                            '&amp;');
 
-         if (TicketValidation::getNumberTicketsToValidate(Session::getLoginUserID()) >0) {
+         if (TicketValidation::getNumberTicketsToValidate(Session::getLoginUserID()) > 0) {
             echo "<a href='$url_validate' title=\"".__s('Ticket waiting for your approval')."\"
-                   alt=\"".__s('Ticket waiting for your approval')."\">".__s('Tickets awaiting approval')."</a><br><br>";
+                   alt=\"".__s('Ticket waiting for your approval')."\">".
+                   __('Tickets awaiting approval')."</a><br><br>";
          }
       }
 
@@ -2826,29 +2848,25 @@ class Ticket extends CommonITILObject {
 
       // Set default values...
       $default_values = array('_users_id_requester_notif'
-                                             => array('use_notification' => (($email == "")?0:1)),
-                              'nodelegate'   => 1,
-                              '_users_id_requester'
-                                             => 0,
-                              'name'         => '',
-                              'content'      => '',
-                              'itilcategories_id'
-                                             => 0,
-                              'urgency'      => 3,
-                              'itemtype'     => '',
-                              'items_id'     => 0,
-                              'entities_id'  => $_SESSION['glpiactive_entity'],
-                              'plan'         => array(),
-                              'global_validation'
-                                             => 'none',
-                              'due_date'     => 'NULL',
-                              'slas_id'      => 0,
-                              '_add_validation'
-                                             => 0,
+                                                    => array('use_notification' => (($email == "")?0:1)),
+                              'nodelegate'          => 1,
+                              '_users_id_requester' => 0,
+                              'name'                => '',
+                              'content'             => '',
+	                           'itilcategories_id'   => 0,
+                              'urgency'             => 3,
+                              'itemtype'            => '',
+                              'items_id'            => 0,
+                              'entities_id'         => $_SESSION['glpiactive_entity'],
+                              'plan'                => array(),
+                              'global_validation'   => 'none',
+                              'due_date'            => 'NULL',
+                              'slas_id'             => 0,
+                              '_add_validation'     => 0,
                               'type'         => Entity::getUsedConfig('tickettype',
                                                                       $_SESSION['glpiactive_entity'],
                                                                       '', Ticket::INCIDENT_TYPE),
-                              '_right'       => "id");
+                              '_right'              => "id");
 
       if (!$ticket_template) {
          $options = $_REQUEST;
@@ -2931,7 +2949,8 @@ class Ticket extends CommonITILObject {
       }
 
       $field = '';
-      if ($options['type'] && $options['itilcategories_id']) {
+      if ($options['type']
+          && $options['itilcategories_id']) {
          $categ = new ITILCategory();
          if ($categ->getFromDB($options['itilcategories_id'])) {
             switch ($options['type']) {
@@ -2959,7 +2978,7 @@ class Ticket extends CommonITILObject {
       // Predefined fields from template : reset them
       if (isset($options['_predefined_fields'])) {
          $options['_predefined_fields']
-                     = unserialize(rawurldecode(stripslashes($options['_predefined_fields'])));
+                        = unserialize(rawurldecode(stripslashes($options['_predefined_fields'])));
       } else {
          $options['_predefined_fields'] = array();
       }
@@ -2996,7 +3015,8 @@ class Ticket extends CommonITILObject {
          }
       }
 
-      if ($CFG_GLPI['urgency_mask']==(1<<3) || $tt->isHiddenField('urgency')) {
+      if (($CFG_GLPI['urgency_mask'] == (1<<3))
+          || $tt->isHiddenField('urgency')) {
          // Dont show dropdown if only 1 value enabled or field is hidden
          echo "<input type='hidden' name='urgency' value='".$options['urgency']."'>";
       }
@@ -3012,21 +3032,21 @@ class Ticket extends CommonITILObject {
 
       echo "<tr><th>".__('Describe the incident or request')."</th><th>";
       if (Session::isMultiEntitiesMode()) {
-         echo "&nbsp;(".Dropdown::getDropdownName("glpi_entities", $_SESSION["glpiactive_entity"]).")";
+         echo "(".Dropdown::getDropdownName("glpi_entities", $_SESSION["glpiactive_entity"]).")";
       }
       echo "</th></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Type').$tt->getMandatoryMark('type')."</td>";
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Type'), $tt->getMandatoryMark('type'))."</td>";
       echo "<td>";
       self::dropdownType('type', array('value'     => $options['type'],
                                        'on_change' => 'submit()'));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Category');
-      echo $tt->getMandatoryMark('itilcategories_id');
-      echo "</td><td>";
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Category'),
+                          $tt->getMandatoryMark('itilcategories_id'))."</td>";
+      echo "<td>";
 
       $condition = "`is_helpdeskvisible`='1'";
       switch ($options['type']) {
@@ -3036,7 +3056,6 @@ class Ticket extends CommonITILObject {
 
          default: // self::INCIDENT_TYPE :
             $condition .= " AND `is_incident`='1'";
-
       }
       $opt = array('value'     => $options['itilcategories_id'],
                    'condition' => $condition,
@@ -3046,23 +3065,25 @@ class Ticket extends CommonITILObject {
          $opt['display_emptychoice'] = false;
       }
 
-      Dropdown::show('ITILCategory', $opt);
+      ITILCategory::dropdown($opt);
       echo "</td></tr>";
 
 
-      if ($CFG_GLPI['urgency_mask']!=(1<<3)) {
+      if ($CFG_GLPI['urgency_mask'] != (1<<3)) {
          if (!$tt->isHiddenField('urgency')) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".__('Urgency').$tt->getMandatoryMark('urgency')."</td>";
+            echo "<td>".sprintf(__('%1$s%2$s'), __('Urgency'), $tt->getMandatoryMark('urgency')).
+                 "</td>";
             echo "<td>";
             self::dropdownUrgency("urgency", $options['urgency']);
             echo "</td></tr>";
          }
       }
 
-      if (empty($delegating) && NotificationTargetTicket::isAuthorMailingActivatedForHelpdesk()) {
+      if (empty($delegating)
+          && NotificationTargetTicket::isAuthorMailingActivatedForHelpdesk()) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Inform me about the action(s) taken')."</td>";
+         echo "<td>".__('Inform me about the actions taken')."</td>";
          echo "<td>";
          if ($options["_users_id_requester"] == 0) {
             $options['_users_id_requester'] = Session::getLoginUserID();
@@ -3078,7 +3099,8 @@ class Ticket extends CommonITILObject {
       if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] != 0) {
          if (!$tt->isHiddenField('itemtype')) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td>".sprintf(__('Hardware type : %s'), $tt->getMandatoryMark('itemtype'))."</td>";
+            echo "<td>".sprintf(__('%1$s%2$s'), __('Hardware type'),
+                                $tt->getMandatoryMark('itemtype'))."</td>";
             echo "<td>";
             self::dropdownMyDevices($options['_users_id_requester'], $_SESSION["glpiactive_entity"],
                                     $options['itemtype'], $options['items_id']);
@@ -3094,31 +3116,29 @@ class Ticket extends CommonITILObject {
       if (!$tt->isHiddenField('name')
           || $tt->isPredefinedField('name')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Title').$tt->getMandatoryMark('name')."</td>";
+         echo "<td>".sprintf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'))."</td>";
          echo "<td><input type='text' maxlength='250' size='80' name='name'
-                          value=\"".$options['name']."\"></td></tr>";
+                    value=\"".$options['name']."\"></td></tr>";
       }
 
       if (!$tt->isHiddenField('content')
           || $tt->isPredefinedField('content')) {
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".__('Description').$tt->getMandatoryMark('content')."</td>";
+         echo "<td>".sprintf(__('%1$s%2$s'), __('Description'), $tt->getMandatoryMark('content')).
+              "</td>";
          echo "<td><textarea name='content' cols='80' rows='14'>".$options['content']."</textarea>";
          echo "</td></tr>";
       }
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".sprintf(__('File (%s)'), Document::getMaxUploadSize());
+      echo "<td>".sprintf(__('%1$s (%2$s)'), __('File'), Document::getMaxUploadSize());
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' class='pointer' alt='".
              __s('Help')."' onclick=\"window.open('".$CFG_GLPI["root_doc"].
              "/front/documenttype.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
-
       echo "&nbsp;";
       self::showDocumentAddButton(60);
-
       echo "</td>";
       echo "<td><div id='uploadfiles'><input type='file' name='filename[]' value='' size='60'></div>";
-
       echo "</td></tr>";
 
       if (!$ticket_template) {
@@ -3144,7 +3164,7 @@ class Ticket extends CommonITILObject {
    /**
     * @since version 0.83
     *
-    * @param $entity integer  entities_id usefull is function called by cron
+    * @param $entity  integer  entities_id usefull is function called by cron (default 0)
    **/
    static function getDefaultValues($entity=0) {
       global $CFG_GLPI;
@@ -3541,7 +3561,7 @@ class Ticket extends CommonITILObject {
                   || in_array($this->fields["status"], $this->getClosedStatusArray()))) {
 
          echo "<tr>";
-         echo "<th width='$colsize1%'>".__('Solve date')."</th>";
+         echo "<th width='$colsize1%'>".__('Resolution date')."</th>";
          echo "<td width='$colsize2%'>";
          Html::showDateTimeFormItem("solvedate", $this->fields["solvedate"], 1, false,
                                     $canupdate);
@@ -4768,7 +4788,7 @@ class Ticket extends CommonITILObject {
          echo "<a class='vsubmit' href=\"".$CFG_GLPI["root_doc"]."/front/ticket.form.php?items_id=".$item->getID().
               "&amp;itemtype=".$item->getType()."\">".__('New ticket for this item...')."</a><br><br>";
       }
-            
+
       echo "<table class='tab_cadre_fixe'>";
 
       if ($number > 0) {

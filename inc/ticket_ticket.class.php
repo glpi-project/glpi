@@ -56,15 +56,15 @@ class Ticket_Ticket extends CommonDBRelation {
    function canCreate() {
 
       return (Session::haveRight('create_ticket', 1) // Add on creation
-             || Session::haveRight('update_ticket', 1));
+              || Session::haveRight('update_ticket', 1));
    }
 
 
    function canCreateItem() {
 
       $ticket = new Ticket();
-      return $ticket->can($this->fields['tickets_id_1'], 'w')
-             || $ticket->can($this->fields['tickets_id_2'], 'w');
+      return ($ticket->can($this->fields['tickets_id_1'], 'w')
+              || $ticket->can($this->fields['tickets_id_2'], 'w'));
    }
 
 
@@ -91,7 +91,7 @@ class Ticket_Ticket extends CommonDBRelation {
       $tickets = array();
 
       foreach ($DB->request($sql) as $data) {
-         if ($data['tickets_id_1']!=$ID) {
+         if ($data['tickets_id_1'] != $ID) {
             $tickets[$data['id']] = array('link'       => $data['link'],
                                           'tickets_id' => $data['tickets_id_1']);
          } else {
@@ -118,7 +118,7 @@ class Ticket_Ticket extends CommonDBRelation {
       $tickets   = self::getLinkedTicketsTo($ID);
       $canupdate = Session::haveRight('update_ticket', '1');
 
-      $ticket = new Ticket();
+      $ticket    = new Ticket();
       if (is_array($tickets) && count($tickets)) {
          foreach ($tickets as $linkID => $data) {
             if ($ticket->getFromDB($data['tickets_id'])) {
@@ -146,8 +146,8 @@ class Ticket_Ticket extends CommonDBRelation {
    /**
     * Dropdown for links between tickets
     *
-    * @param $myname select name
-    * @param $value default value
+    * @param $myname    select name
+    * @param $value     default value (default self::LINK_TO)
    **/
    static function dropdownLinks($myname, $value=self::LINK_TO) {
 
@@ -179,7 +179,7 @@ class Ticket_Ticket extends CommonDBRelation {
       $ticket = new Ticket();
       if (!isset($input['tickets_id_1'])
           || !isset($input['tickets_id_2'])
-          || $input['tickets_id_2'] == $input['tickets_id_1']
+          || ($input['tickets_id_2'] == $input['tickets_id_1'])
           || !$ticket->getFromDB($input['tickets_id_1'])
           || !$ticket->getFromDB($input['tickets_id_2'])) {
          return false;
@@ -193,10 +193,10 @@ class Ticket_Ticket extends CommonDBRelation {
       $tickets = self::getLinkedTicketsTo($input['tickets_id_1']);
       if (count($tickets)) {
          foreach ($tickets as $key => $t) {
-            if ($t['tickets_id']==$input['tickets_id_2']) {
+            if ($t['tickets_id'] == $input['tickets_id_2']) {
                // Delete old simple link
-               if ($input['link'] == self::DUPLICATE_WITH
-                   && $t['link'] == self::LINK_TO) {
+               if (($input['link'] == self::DUPLICATE_WITH)
+                   && ($t['link'] == self::LINK_TO)) {
                   $tt = new Ticket_Ticket();
                   $tt->delete(array("id" => $key));
                } else { // No duplicate link
@@ -248,9 +248,9 @@ class Ticket_Ticket extends CommonDBRelation {
             foreach ($tickets as $data) {
                $input['id'] = $data['tickets_id'];
                if ($ticket->can($input['id'],'w')
-                   && $data['link'] == self::DUPLICATE_WITH
-                   && $ticket->fields['status'] != 'solved'
-                   && $ticket->fields['status'] != 'closed') {
+                   && ($data['link'] == self::DUPLICATE_WITH)
+                   && ($ticket->fields['status'] != 'solved')
+                   && ($ticket->fields['status'] != 'closed')) {
                   $ticket->update($input);
                }
             }
