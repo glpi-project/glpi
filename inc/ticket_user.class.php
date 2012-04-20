@@ -46,7 +46,5 @@ class Ticket_User extends CommonITILActor {
    public $items_id_2 = 'users_id';
 
 
-
 }
-
 ?>

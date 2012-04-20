@@ -71,7 +71,7 @@ if (isset($_REQUEST["install"])) {
    }
    Event::log($_POST["computers_id"], "computers", 5, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s uninstalls several softwares'), $_SESSION["glpiname"]));
+              sprintf(__('%s uninstalls several software'), $_SESSION["glpiname"]));
    Html::back();
 
 } else if (isset($_POST["massinstall"])
@@ -86,7 +86,7 @@ if (isset($_REQUEST["install"])) {
    }
    Event::log($_POST["computers_id"], "computers", 5, "inventory",
               //TRANS: %s is the user login
-              sprintf(__('%s installs several softwares'), $_SESSION["glpiname"]));
+              sprintf(__('%s installs several software'), $_SESSION["glpiname"]));
    Html::back();
 
 // From installation list on Software form
