@@ -4917,27 +4917,28 @@ class Ticket extends CommonITILObject {
       $align_desc  = "class='left";
 
       if ($followups) {
-         $align .= " top'";
+         $align      .= " top'";
          $align_desc .= " top'";
       } else {
-         $align .= "'";
+         $align      .= "'";
          $align_desc .= "'";
       }
 
       if ($job->getFromDB($id)) {
          $item_num = 1;
-         $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
+         $bgcolor  = $_SESSION["glpipriority_".$job->fields["priority"]];
 
          echo Search::showNewLine($output_type,$row_num%2);
 
          // First column
-         $first_col = "ID : ".$job->fields["id"];
+         $first_col = sprintf(__('%1$s: %2$s'), __('ID'), $job->fields["id"]);
          if ($output_type == Search::HTML_OUTPUT) {
             $first_col .= "<br><img src='".$CFG_GLPI["root_doc"]."/pics/".$job->fields["status"].".png'
-                           alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
-                           self::getStatus($job->fields["status"])."\">";
+                                alt=\"".self::getStatus($job->fields["status"])."\" title=\"".
+                                self::getStatus($job->fields["status"])."\">";
          } else {
-            $first_col .= " - ".self::getStatus($job->fields["status"]);
+            $first_col = sprintf(__('%1$s - %2$s'), $first_col,
+                                 self::getStatus($job->fields["status"]));
          }
 
          if (($candelete || $canupdate)
@@ -4945,7 +4946,7 @@ class Ticket extends CommonITILObject {
              && $id_for_massaction) {
 
             $sel = "";
-            if (isset($_GET["select"]) && $_GET["select"] == "all") {
+            if (isset($_GET["select"]) && ($_GET["select"] == "all")) {
                $sel = "checked";
             }
             if (isset($_SESSION['glpimassiveactionselected'][$id_for_massaction])) {
@@ -4955,14 +4956,14 @@ class Ticket extends CommonITILObject {
                                   value='1' $sel>";
          }
 
-         echo Search::showItem($output_type,$first_col,$item_num,$row_num,$align);
+         echo Search::showItem($output_type, $first_col, $item_num, $row_num, $align);
 
          // Second column
-         if ($job->fields['status']=='closed') {
+         if ($job->fields['status'] == 'closed') {
             $second_col = sprintf(__('Closed on %s'),
                                   ($output_type == Search::HTML_OUTPUT?'<br>':'').
                                     Html::convDateTime($job->fields['closedate']));
-         } else if ($job->fields['status']=='solved') {
+         } else if ($job->fields['status'] == 'solved') {
             $second_col = sprintf(__('Solved on %s'),
                                   ($output_type == Search::HTML_OUTPUT?'<br>':'').
                                     Html::convDateTime($job->fields['solvedate']));
@@ -5004,11 +5005,12 @@ class Ticket extends CommonITILObject {
 
          if (isset($job->users[parent::REQUESTER]) && count($job->users[parent::REQUESTER])) {
             foreach ($job->users[parent::REQUESTER] as $d) {
-               $userdata    = getUserName($d["users_id"],2);
-               $fourth_col .= "<span class='b'>".$userdata['name']."</span>&nbsp;";
-               $fourth_col .= Html::showToolTip($userdata["comment"],
-                                                array('link'    => $userdata["link"],
-                                                      'display' => false));
+               $userdata    = getUserName($d["users_id"], 2);
+               $fourth_col .= sprintf(__('%1$s %2$s'),
+                                      "<span class='b'>".$userdata['name']."</span>",
+                                      Html::showToolTip($userdata["comment"],
+                                                        array('link'    => $userdata["link"],
+                                                              'display' => false)));
                $fourth_col .= "<br>";
             }
          }
@@ -5027,11 +5029,12 @@ class Ticket extends CommonITILObject {
 
          if (isset($job->users[parent::ASSIGN]) && count($job->users[parent::ASSIGN])) {
             foreach ($job->users[parent::ASSIGN] as $d) {
-               $userdata = getUserName($d["users_id"], 2);
-               $fifth_col .= "<span class='b'>".$userdata['name']."</span>&nbsp;";
-               $fifth_col .= Html::showToolTip($userdata["comment"],
-                                               array('link'    => $userdata["link"],
-                                                     'display' => false));
+               $userdata   = getUserName($d["users_id"], 2);
+               $fifth_col .= sprintf(__('%1$s %2$s'),
+                                      "<span class='b'>".$userdata['name']."</span>",
+                                      Html::showToolTip($userdata["comment"],
+                                                        array('link'    => $userdata["link"],
+                                                              'display' => false)));
                $fifth_col .= "<br>";
             }
          }
@@ -5044,18 +5047,19 @@ class Ticket extends CommonITILObject {
          }
 
 
-         if ($job->fields["suppliers_id_assign"]>0) {
+         if ($job->fields["suppliers_id_assign"] > 0) {
             if (!empty($fifth_col)) {
                $fifth_col .= "<br>";
             }
             $fifth_col .= parent::getAssignName($job->fields["suppliers_id_assign"], 'Supplier', 1);
          }
-         echo Search::showItem($output_type,$fifth_col,$item_num,$row_num,$align);
+         echo Search::showItem($output_type, $fifth_col, $item_num, $row_num, $align);
 
          // Sixth Colum
          $sixth_col  = "";
          $is_deleted = false;
-         if (!empty($job->fields["itemtype"]) && $job->fields["items_id"]>0) {
+         if (!empty($job->fields["itemtype"])
+             && ($job->fields["items_id"] > 0)) {
             if ($item = getItemForItemtype($job->fields["itemtype"])) {
                if ($item->getFromDB($job->fields["items_id"])) {
                   $is_deleted = $item->isDeleted();
@@ -5094,19 +5098,23 @@ class Ticket extends CommonITILObject {
             $eigth_column = "<a id='ticket".$job->fields["id"]."$rand' href=\"".$CFG_GLPI["root_doc"].
                             "/front/ticket.form.php?id=".$job->fields["id"]."\">$eigth_column</a>";
 
-            if ($followups && $output_type == Search::HTML_OUTPUT) {
+            if ($followups
+                && ($output_type == Search::HTML_OUTPUT)) {
                $eigth_column .= TicketFollowup::showShortForTicket($job->fields["id"]);
             } else {
-               $eigth_column .= "&nbsp;(".$job->numberOfFollowups($showprivate)."-".
-                                        $job->numberOfTasks($showprivate).")";
+               $eigth_column  = sprintf(__('%1$s (%2$s)'), $eigth_column,
+                                        sprintf(__('%1$s - %2$s'),
+                                                $job->numberOfFollowups($showprivate),
+                                                $job->numberOfTasks($showprivate)));
             }
          }
 
          if ($output_type == Search::HTML_OUTPUT) {
-            $eigth_column .= "&nbsp;".Html::showToolTip($job->fields['content'],
-                                                        array('display' => false,
-                                                              'applyto' => "ticket".
-                                                                           $job->fields["id"]. $rand));
+            $eigth_column = sprintf(__('%1$s %2$s'), $eigth_column,
+                                    Html::showToolTip($job->fields['content'],
+                                                      array('display' => false,
+                                                            'applyto' => "ticket".$job->fields["id"].
+                                                                           $rand)));
          }
 
          echo Search::showItem($output_type, $eigth_column, $item_num, $row_num,
@@ -5121,6 +5129,9 @@ class Ticket extends CommonITILObject {
    }
 
 
+   /**
+    * @param $ID
+   **/
    static function showVeryShort($ID) {
       global $CFG_GLPI;
 
@@ -5133,21 +5144,26 @@ class Ticket extends CommonITILObject {
 
       $job  = new self();
       $rand = mt_rand();
-      if ($job->getFromDBwithData($ID,0)) {
+      if ($job->getFromDBwithData($ID, 0)) {
          $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
    //      $rand    = mt_rand();
          echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' bgcolor='$bgcolor' >ID : ".$job->fields["id"]."</td>";
+         echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'),  __('ID'),
+                                                               $job->fields["id"])."</td>";
          echo "<td class='center'>";
 
          if (isset($job->users[parent::REQUESTER]) && count($job->users[parent::REQUESTER])) {
             foreach ($job->users[parent::REQUESTER] as $d) {
                if ($d["users_id"] > 0) {
                   $userdata = getUserName($d["users_id"],2);
-                  echo "<span class='b'>".$userdata['name']."</span>&nbsp;";
+                  $name = "<span class='b'>".$userdata['name']."</span>&nbsp;";
                   if ($viewusers) {
-                     Html::showToolTip($userdata["comment"], array('link' => $userdata["link"]));
+                     $name = sprintf(__('%1$s %2$s'), $name,
+                                     Html::showToolTip($userdata["comment"],
+                                                       array('link'    => $userdata["link"],
+                                                             'display' => false)));
                   }
+                  echo $name;
                } else {
                   echo $d['alternative_email']."&nbsp;";
                }
@@ -5165,7 +5181,8 @@ class Ticket extends CommonITILObject {
 
          echo "</td>";
 
-         if ($job->hardwaredatas && $job->hardwaredatas->canView()) {
+         if ($job->hardwaredatas
+             && $job->hardwaredatas->canView()) {
             echo "<td class='center";
             if ($job->hardwaredatas->isDeleted()) {
                echo " tab_bg_1_2";
