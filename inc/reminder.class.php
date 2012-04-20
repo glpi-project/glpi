@@ -877,11 +877,12 @@ class Reminder extends CommonDBTM {
 
       $users_id = Session::getLoginUserID();
       $today    = date('Y-m-d');
+      $now      = date('Y-m-d H:i:s');
 
       $restrict_visibility = " AND (`glpi_reminders`.`begin_view_date` IS NULL
-                                    OR `glpi_reminders`.`begin_view_date` < '$today')
+                                    OR `glpi_reminders`.`begin_view_date` < '$now')
                               AND (`glpi_reminders`.`end_view_date` IS NULL
-                                   OR `glpi_reminders`.`end_view_date` > '$today') ";
+                                   OR `glpi_reminders`.`end_view_date` > '$now') ";
 
       if ($personal) {
 
