@@ -817,11 +817,17 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['job'][31]."&nbsp;:</td><td>";
+      $toadd = array();
+      for ($i=9;$i<=100;$i++) {
+         $toadd[] = $i*HOUR_TIMESTAMP;
+      }
 
       Dropdown::showTimeStamp("actiontime",array('min'             => 0,
                                                  'max'             => 8*HOUR_TIMESTAMP,
                                                  'value'           => $this->fields["actiontime"],
-                                                 'addfirstminutes' => true));
+                                                 'addfirstminutes' => true,
+                                                 'inhours'          => true,
+                                                 'toadd'           => $toadd));
 
       echo "</td></tr>\n";
 

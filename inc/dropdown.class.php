@@ -1054,6 +1054,8 @@ class Dropdown {
     *    - max : max value : default DAY_TIMESTAMP
     *    - value : default value
     *    - addfirstminutes : add first minutes before first step (default false)
+    *    - toadd : array of values to add
+    *    - inhours : only show timestamp in hours not in days
    **/
    static function showTimeStamp($myname, $options = array()) {
       global $LANG, $CFG_GLPI;
@@ -1064,6 +1066,8 @@ class Dropdown {
       $params['step']             = $CFG_GLPI["time_step"]*MINUTE_TIMESTAMP;
       $params['emptylabel']       = self::EMPTY_VALUE;
       $params['addfirstminutes']  = false;
+      $params['toadd']            = array();
+      $params['inhours']          = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1097,11 +1101,22 @@ class Dropdown {
       for ($i = $params['min'] ; $i <= $params['max']; $i+=$params['step']) {
          $values[$i] = '';
       }
+      if (count($params['toadd'])) {
+         foreach ($params['toadd'] as $key) {
+            $values[$key] = '';
+         }
+         ksort($values);
+      }
 
       foreach ($values as $i => $val){
          if (empty($val)) {
-            $day        = floor($i/DAY_TIMESTAMP);
-            $hour       = floor(($i%DAY_TIMESTAMP)/HOUR_TIMESTAMP);
+            if ($params['inhours']) {
+               $day  = 0;
+               $hour = floor($i/HOUR_TIMESTAMP);
+            } else {
+               $day  = floor($i/DAY_TIMESTAMP);
+               $hour = floor(($i%DAY_TIMESTAMP)/HOUR_TIMESTAMP);
+            }
             $minute     = floor(($i%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP);
             $values[$i] = '';
             if ($day > 0) {
