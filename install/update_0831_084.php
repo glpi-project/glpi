@@ -1464,9 +1464,10 @@ function update0831to084() {
          }
          //Drop old field
       }
-      $migration->dropField('glpi_configs', 'existing_auth_server_field');
    }
-
+   $migration->dropField('glpi_configs', 'existing_auth_server_field');
+   //Remove field to specify an ldap server for SSO users : don't need it anymore
+   $migration->dropField('glpi_configs', 'authldaps_id_extra');
 
    // get out OCS
    $migration->renameTable('glpi_ocsadmininfoslinks', 'OCS_glpi_ocsadmininfoslinks');
