@@ -461,12 +461,26 @@ class Auth {
             $this->extauth                  = 1;
             $this->user_present             = $this->user->getFromDBbyName(addslashes($login_name));
             $this->user->fields['authtype'] = $authtype;
-            // if LDAP enabled too, get user's infos from LDAP
-            $this->user->fields["auths_id"] = $CFG_GLPI['authldaps_id_extra'];
+            $user_dn                        = false;
+
+            //if LDAP enabled too, get user's infos from LDAP
             if (Toolbox::canUseLdap()) {
-               if (isset($this->authtypes["ldap"][$this->user->fields["auths_id"]])
-                  && $this->authtypes["ldap"][$this->user->fields["auths_id"]]['is_active']) {
-                  $ldap_method = $this->authtypes["ldap"][$this->user->fields["auths_id"]];
+               $ldaservers = array();
+               //User has already authenticate, at least once : it's ldap server if filled
+               if (isset($this->user->fields["auths_id"]) && $this->user->fields["auths_id"] > 0) {
+                  $authldap = new AuthLdap();
+                  //If ldap server is enabled
+                  if ($authldap->getFromDB($this->user->fields["auths_id"])
+                     && $authldap->fields['is_active']) {
+                     $ldapservers[] = $authldap->fields;
+                  }
+               //User has never beeen authenticated : try all active ldap server to find the right one
+               } else {
+                  foreach (getAllDatasFromTable('glpi_authldaps', "`is_active`='1'") as $ldap_config) {
+                     $ldapservers[] = $ldap_config;
+                  }
+               }
+               foreach ($ldapservers as $ldap_method) {
                   $ds = AuthLdap::connectToServer($ldap_method["host"],
                                                   $ldap_method["port"],
                                                   $ldap_method["rootdn"],
@@ -489,13 +503,20 @@ class Auth {
                                                                   'value'  => $login_name),
                                                        'condition'   => $ldap_method["condition"]));
                      if ($user_dn) {
+                        $this->user->fields['auths_id'] = $ldap_method['id'];
                         $this->user->getFromLDAP($ds, $ldap_method, $user_dn['dn'], $login_name,
                                                  !$this->user_present);
+                        break;
                      }
                   }
                }
             }
-
+            //If user is set as present in GLPI but no LDAP DN found : it means that the user
+            //is not present in an ldap directory anymore
+            if(!$user_dn && $this->user_present) {
+               $user_deleted_ldap       = true;
+               $this->user_deleted_ldap = true;
+            }
             // Reset to secure it
             $this->user->fields['name']       = $login_name;
             $this->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
@@ -747,7 +768,8 @@ class Auth {
                if ($auth->getFromDB($auths_id)) {
                   return sprintf(__('%1$s: %2$s'),
                                  sprintf(__('%1$s + %2$s'),
-                                         __('CAS'), $auth->getTypeName(1)),
+                                         __('x509 certificate authentication'),
+                                         $auth->getTypeName(1)),
                                  $auth->getLink());
                }
             }
@@ -759,7 +781,7 @@ class Auth {
                if ($auth->getFromDB($auths_id)) {
                   return sprintf(__('%1$s: %2$s'),
                                  sprintf(__('%1$s + %2$s'),
-                                         __('CAS'), $auth->getTypeName(1)),
+                                         __('Other'), $auth->getTypeName(1)),
                                  $auth->getLink());
                }
             }
