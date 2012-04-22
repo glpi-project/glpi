@@ -319,22 +319,24 @@ class AuthLDAP extends CommonDBTM {
       Dropdown::showGMT("time_offset", $this->fields["time_offset"]);
       echo"</td></tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>" . __('Use paged results') . "</td><td>";
       if (self::isLdapPageSizeAvailable(false, false)) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>" . __('Use paged results') . "</td><td>";
          Dropdown::showYesNo('can_support_pagesize', $this->fields["can_support_pagesize"]);
-      } else {
-         echo "<input type='hidden' name='can_support_pagesize' value='0'>".__('No');
-      }
-      echo "</td>";
-      if (self::isLdapPageSizeAvailable(false, false)) {
+         echo "</td>";
          echo "<td>" . __('Page size') . "</td><td>";
          Dropdown::showInteger("pagesize", $this->fields['pagesize'], 100, 100000, 100);
+         echo"</td></tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>" . __('Maximum number of results') . "</td><td>";
+         Dropdown::showInteger('ldap_maxlimit', $this->fields['ldap_maxlimit'], 100, 999999, 100,
+                               array(0 => __('Unlimited')));
+         echo "</td><td colspan='2'></td></tr>";
       } else {
-         echo "</td>";
-         echo "<input type='hidden' name=pagesize' value='0'>";
+         echo "<input type='hidden' name='can_support_pagesize' value='0'>";
+         echo "<input type='hidden' name='pagesize' value='0'>";
+         echo "<input type='hidden' name='ldap_maxlimit' value='0'>";
       }
-      echo"</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>" . __('How LDAP aliases should be handled') . "</td><td colspan='4'>";
@@ -981,7 +983,18 @@ class AuthLDAP extends CommonDBTM {
       return false;
    }
 
-
+   static function displaySizeLimitWarning($limitexceeded = false) {
+      global $CFG_GLPI;
+      if ($limitexceeded) {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th class='red'>";
+         echo "<img class='center' src='".$CFG_GLPI["root_doc"]."/pics/warning.png'
+              alt='warning'>&nbsp;".
+             __('Warning: The request exceeds the limit of the directory. The results are only partial.');
+         echo "</th></tr></table><br>";
+      }
+   }
+   
    /** Show LDAP users to add or synchronise
     *
     * @return  nothing
@@ -1004,14 +1017,7 @@ class AuthLDAP extends CommonDBTM {
          $action      = "toprocess";
 
          if ($numrows > 0) {
-            if ($limitexceeded) {
-               echo "<table class='tab_cadre_fixe'>";
-               echo "<tr><th class='red'>";
-               echo "<img class='center' src='".$CFG_GLPI["root_doc"]."/pics/warning.png'
-                      alt='warning'>&nbsp;".
-                      __('Warning: The request exceeds the limit of the directory. The results are only partial.');
-               echo "</th></tr></table><br>";
-            }
+            self::displaySizeLimitWarning($limitexceeded);
 
             Html::printPager($values['start'], $numrows, $_SERVER['PHP_SELF'], '');
 
@@ -1115,7 +1121,8 @@ class AuthLDAP extends CommonDBTM {
                                   &$ldap_users, $config_ldap) {
 
       //If paged results cannot be used (PHP < 5.4)
-      $cookie   = '';
+      $cookie   = ''; //Cookie used to perform query using pages
+      $count    = 0; //Store the number of results ldap_search
       do {
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             ldap_control_paged_result($ds, $config_ldap->fields['pagesize'], true,$cookie);
@@ -1130,8 +1137,16 @@ class AuthLDAP extends CommonDBTM {
             if (in_array(ldap_errno($ds),array(4,11))) {
                $limitexceeded = true;
             }
-            //$user_infos = array();
-
+               
+            $count += $info['count'];
+            //If page results are enabled and the number of results is greater than the maximum allowed
+            //warn user that limit is exceeded and stop search
+            if (self::isLdapPageSizeAvailable($config_ldap)
+               && $config_ldap->fields['ldap_maxlimit']
+                  && $count > $config_ldap->fields['ldap_maxlimit']) {
+               $limitexceeded = true;
+               break;
+            }
             for ($ligne = 0 ; $ligne < $info["count"] ; $ligne++) {
                //If ldap add
                if ($values['mode'] == self::ACTION_IMPORT) {
@@ -1367,8 +1382,9 @@ class AuthLDAP extends CommonDBTM {
                                   $entity, $order='DESC') {
 
       echo "<br>";
-      $ldap_groups = self::getAllGroups($_SESSION["ldap_server"], $filter, $filter2, $entity,
-                                        $order);
+      $limitexceeded = false;
+      $ldap_groups   = self::getAllGroups($_SESSION["ldap_server"], $filter, $filter2, $entity,
+                                          $limitexceeded, $order);
 
       if (is_array($ldap_groups)) {
          $numrows     = count($ldap_groups);
@@ -1378,6 +1394,7 @@ class AuthLDAP extends CommonDBTM {
          $colspan = (Session::isMultiEntitiesMode()?5:4);
          if ($numrows > 0) {
             $parameters = "check=$check";
+            self::displaySizeLimitWarning($limitexceeded);
             Html::printPager($start, $numrows, $target, $parameters);
 
             // delete end
@@ -1465,7 +1482,8 @@ class AuthLDAP extends CommonDBTM {
     *
     * @return  array of the groups
    **/
-   static function getAllGroups($auths_id, $filter, $filter2, $entity, $order='DESC') {
+   static function getAllGroups($auths_id, $filter, $filter2, $entity, &$limitexceeded,
+                                $order='DESC') {
       global $DB;
 
       $config_ldap = new self();
@@ -1477,16 +1495,20 @@ class AuthLDAP extends CommonDBTM {
       if ($ds) {
          switch ($config_ldap->fields["group_search_type"]) {
             case 0 :
-               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter, false, $infos);
+               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter, false, $infos,
+                                                $limitexceeded);
                break;
 
             case 1 :
-               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter, true, $infos);
+               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter, true, $infos,
+                                                $limitexceeded);
                break;
 
             case 2 :
-               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter ,true, $infos);
-               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter2, false, $infos);
+               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter ,true, $infos,
+                                                $limitexceeded);
+               $infos = self::getGroupsFromLDAP($ds, $config_ldap, $filter2, false, $infos,
+                                                $limitexceeded);
                break;
          }
 
@@ -1558,7 +1580,8 @@ class AuthLDAP extends CommonDBTM {
     * @param $groups             array
    **/
    static function getGroupsFromLDAP($ldap_connection, $config_ldap, $filter,
-                                     $search_in_groups=true, $groups=array()) {
+                                     $search_in_groups=true, $groups=array(),
+                                     &$limitexceeded) {
       global $DB;
 
       //First look for groups in group objects
@@ -1575,7 +1598,8 @@ class AuthLDAP extends CommonDBTM {
          }
       }
 
-      $cookie   = '';
+      $cookie = '';
+      $count  = 0;
       do {
          if (self::isLdapPageSizeAvailable($config_ldap)) {
             ldap_control_paged_result($ldap_connection, $config_ldap->fields['pagesize'],
@@ -1586,6 +1610,16 @@ class AuthLDAP extends CommonDBTM {
 
          if ($sr) {
             $infos = self::get_entries_clean($ldap_connection, $sr);
+            $count += $infos['count'];
+            //If page results are enabled and the number of results is greater than the maximum allowed
+            //warn user that limit is exceeded and stop search
+            if (self::isLdapPageSizeAvailable($config_ldap)
+               && $config_ldap->fields['ldap_maxlimit']
+                  && $count > $config_ldap->fields['ldap_maxlimit']) {
+               $limitexceeded = true;
+               break;
+            }
+            
             for ($ligne=0 ; $ligne < $infos["count"] ; $ligne++) {
                if ($search_in_groups) {
                   // No cn : not a real object
