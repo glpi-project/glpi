@@ -73,6 +73,7 @@ CREATE TABLE `glpi_authldaps` (
   `email4_field` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `pagesize` int(11) NOT NULL DEFAULT '0',
   `can_support_pagesize` tinyint(1) NOT NULL DEFAULT '0',
+  `ldap_maxlimit` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
   KEY `is_default` (`is_default`),

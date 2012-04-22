@@ -1481,7 +1481,10 @@ function update0831to084() {
       $migration->dropField('glpi_profiles', 'view_ocsng');
       $migration->dropField('glpi_profiles', 'clean_ocsng');
    }
+   
+   
    $migration->addField('glpi_authldaps', 'pagesize', 'integer');
+   $migration->addField('glpi_authldaps', 'ldap_maxlimit', 'integer');
    $migration->addField('glpi_authldaps', 'can_support_pagesize', 'bool');
    
    // ************ Keep it at the end **************
