@@ -1538,8 +1538,23 @@ function update0831to084() {
          }
       }
    }
-   
-   
+   // Move tickerrecurrent values to correct ones
+   $migration->changeField('glpi_ticketrecurrents', 'periodicity', 'periodicity', 'string');
+   $migration->migrationOneTable('glpi_ticketrecurrents');
+   foreach($DB->request('glpi_ticketrecurrents',"`periodicity` >= ".MONTH_TIMESTAMP) as $data) {
+      $periodicity = $data['periodicity'] ;
+      if (is_numeric($periodicity)) {
+         if ($periodicity >= 365*DAY_TIMESTAMP) {
+            $periodicity = round($periodicity/(365*DAY_TIMESTAMP)).'YEAR';
+         } else {
+            $periodicity = round($periodicity/(MONTH_TIMESTAMP)).'MONTH';
+         }
+         $query = "UPDATE `glpi_ticketrecurrents` 
+                     SET `periodicity` = '$periodicity'
+                     WHERE `id` = '".$data['id']."'";
+         $DB->query($query);
+      }   
+   }
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

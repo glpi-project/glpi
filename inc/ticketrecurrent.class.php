@@ -159,13 +159,12 @@ class TicketRecurrent extends CommonDropdown {
    /**
     * @since version 0.83.1
     *
-    * @see inc/CommonDropdown::displaySpecificTypeField()
+    * @see CommonDropdown::displaySpecificTypeField()
    **/
    function displaySpecificTypeField($ID, $field = array()) {
 
       switch ($field['name']) {
          case 'periodicity' :
-            /// TODO : trouble with variable MONTH / YEAR length
             $possible_values = array();
             for ($i=1 ; $i<24 ; $i++) {
                $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour','%d hours',$i), $i);
@@ -173,13 +172,13 @@ class TicketRecurrent extends CommonDropdown {
             for ($i=1 ; $i<=30 ; $i++) {
                $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('%d day','%d days',$i), $i);
             }
-
+            
             for ($i=1 ; $i<12 ; $i++) {
-               $possible_values[$i*MONTH_TIMESTAMP] = sprintf(_n('%d month','%d months',$i), $i);
+               $possible_values[$i.'MONTH'] = sprintf(_n('%d month','%d months',$i), $i);
             }
 
             for ($i=1 ; $i<5 ; $i++) {
-               $possible_values[$i*365*DAY_TIMESTAMP] = sprintf(_n('%d year','%d years',$i), $i);
+               $possible_values[$i.'YEAR'] = sprintf(_n('%d year','%d years',$i), $i);
             }
 
             Dropdown::showFromArray($field['name'], $possible_values,
@@ -188,7 +187,26 @@ class TicketRecurrent extends CommonDropdown {
       }
    }
 
-
+   /**
+    * @param $field
+    * @param $values
+    * @param $options   array
+   **/
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+      switch ($field) {
+         case 'periodicity' :
+            if (preg_match('/([0-9]+)MONTH/',$values['periodicity'], $matches)) {
+               return sprintf(_n('%d month','%d months',$matches[1]), $matches[1]);
+            } else if (preg_match('/([0-9]+)YEAR/',$values['periodicity'], $matches)) {
+               return sprintf(_n('%d year','%d years',$matches[1]), $matches[1]);
+            } else {
+               return Html::timestampToString($values['periodicity'], false);
+            }
+                     
+         break;
+      }
+      return parent::getSpecificValueToDisplay($field, $values[$field], $options);
+   }
    /**
     * Get search function for the class
     *
@@ -216,7 +234,7 @@ class TicketRecurrent extends CommonDropdown {
       $tab[15]['table']    = $this->getTable();
       $tab[15]['field']    = 'periodicity';
       $tab[15]['name']     = __('Periodicity');
-      $tab[15]['datatype'] = 'timestamp';
+      $tab[15]['datatype'] = 'specific';
 
       $tab[14]['table']    = $this->getTable();
       $tab[14]['field']    = 'create_before';
@@ -257,17 +275,35 @@ class TicketRecurrent extends CommonDropdown {
       if (empty($begin_date)) {
          return 'NULL';
       }
-      if ($create_before > $periodicity) {
+      $check = true;
+      if (preg_match('/([0-9]+)MONTH/',$periodicity)
+         || preg_match('/([0-9]+)YEAR/',$periodicity)) {
+         $check = false;
+      }
+      
+      if ($check && ($create_before > $periodicity)) {
          Session::addMessageAfterRedirect(__('Invalid frequency. It must be greater than the preliminary creation.'), false, ERROR);
          return 'NULL';
       }
-
-      if ($periodicity > 0) {
+      
+      if ($periodicity <> 0) {
+         // Standard time computation
          $timestart  = strtotime($begin_date) - $create_before;
          $now        = time();
          if ($now > $timestart) {
-            $times = floor(($now-$timestart) / $periodicity);
-            return date("Y-m-d H:i:s", $timestart+($times+1)*$periodicity);
+            $value = $periodicity;
+            $step = "second";
+            if (preg_match('/([0-9]+)MONTH/',$periodicity, $matches)) {
+               $value = $matches[1];
+               $step = 'MONTH';
+            }
+            if (preg_match('/([0-9]+)YEAR/',$periodicity, $matches)) {
+               $value = $matches[1];
+               $step = 'YEAR';
+            }
+            while ($timestart < $now) {
+               $timestart = strtotime("+ $value $step",$timestart);
+            }
          }
          return date("Y-m-d H:i:s", $timestart);
       }
