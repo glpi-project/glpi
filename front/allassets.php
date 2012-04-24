@@ -40,7 +40,7 @@ if (!isset($_GET["synthese"])) {
 }
 Session::checkCentralAccess();
 
-Html::header(State::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "state");
+Html::header(__('Global'), $_SERVER['PHP_SELF'], "inventory", "state");
 
 Search::show('AllAssets');
 

@@ -824,6 +824,20 @@ function update0831to084() {
                    AND `num` = 7";
    $DB->query($query);
 
+
+   // Update bookmarks from States to AllAssets
+   foreach ($DB->request("glpi_bookmarks", "`itemtype` = 'States'") as $data) {
+      $query = str_replace('itemtype=States','itemtype=AllAssets',$data['query']);
+      $query = "UPDATE `glpi_bookmarks` SET query='".addslashes($query)."'
+                  WHERE `id` = '".$data['id']."'";
+      $DB->query($query);
+   }
+   $query = "UPDATE `glpi_bookmarks`
+             SET `itemtype` = 'AllAssets', `path` = 'front/allassets.php'
+             WHERE `itemtype` = 'States'";
+   $DB->query($query);
+   
+
    $migration->displayWarning("You should have a look at the \"migration cleaner\" tool !", true);
    $migration->displayWarning("With it, you should re-create the networks topologies and the links between the networks and the addresses",
                               true);

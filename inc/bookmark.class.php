@@ -546,8 +546,8 @@ class Bookmark extends CommonDBTM {
                   $current_type      = $this->fields['itemtype'];
                   $current_type_name = NOT_AVAILABLE;
 
-                  if ($current_type == "States") {
-                     $current_type_name = _n('Status','Statuses',1);
+                  if ($current_type == "AllAssets") {
+                     $current_type_name = __('Global');
                   } else if ($item = getItemForItemtype($current_type)) {
                      $current_type_name = $item->getTypeName(1);
                   }
