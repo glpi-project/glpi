@@ -5547,10 +5547,5 @@ class Ticket extends CommonITILObject {
       NotificationEvent::debugEvent($this);
    }
 
-
-   function post_deleteFromDB() {
-      NotificationEvent::raiseEvent('delete_ticket', $this);
-   }
-
 }
 ?>

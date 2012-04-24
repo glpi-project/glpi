@@ -162,7 +162,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                       'update_task'     => $LANG['job'][52],
                       'delete_task'     => $LANG['job'][53],
                       'closed'          => $LANG['mailing'][127],
-                      'deleted'         => $LANG['mailing'][129],
+                      'delete'          => $LANG['mailing'][129],
                       'alertnotclosed'  => $LANG['crontask'][15],
                       'recall'          => $LANG['sla'][9],
                       'satisfaction'    => $LANG['satisfaction'][3]);
