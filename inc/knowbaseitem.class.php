@@ -1309,10 +1309,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['common'][116]."</th></tr>";
       echo "<tr class='tab_bg_1'><td class='tab_bg_2' width='100px'>";
 
-      $types = array( 'Group', 'Profile', 'User');
-      if (Session::isMultiEntitiesMode()) {
-         $types[] = 'Entity';
-      }
+      $types = array( 'Group', 'Profile', 'User', 'Entity');
 
       $addrand = Dropdown::dropdownTypes('_type', '', $types);
       $params  = array('type'  => '__VALUE__',
