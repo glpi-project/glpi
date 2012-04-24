@@ -77,8 +77,7 @@ class Search {
       // Instanciate an object to access method
       $item = NULL;
 
-      if (($itemtype != 'States')
-          && ($itemtype != 'Internet')) {
+      if (($itemtype != 'AllAssets')) {
          $item = getItemForItemtype($itemtype);
       }
 
@@ -152,7 +151,7 @@ class Search {
             $LIST_LIMIT = self::GLOBAL_DISPLAY_COUNT;
          }
       }
-      // hack for States
+      // hack for AllAssets
       if (isset($CFG_GLPI['union_search_type'][$itemtype])) {
          $entity_restrict = true;
       } else {
@@ -617,16 +616,11 @@ class Search {
                if (($citem = getItemForItemtype($ctype))
                    && $citem->canView()) {
                   // State case
-                  if (($itemtype == 'States') || ($itemtype == 'Internet')) {
+                  if (($itemtype == 'AllAssets')) {
                      $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                               $ctable, $tmpquery);
                      $query_num = str_replace($itemtype, $ctype, $query_num);
-                     if ($itemtype == 'States') {
-                        $query_num .= " AND `$ctable`.`states_id` > '0' ";
-                     }
-                     if ($itemtype == 'Internet') {
-                        $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
-                     }
+                     $query_num .= " AND `$ctable`.`id` IS NOT NULL ";
 
                      // Add deleted if item have it
                      if ($citem && $citem->maybeDeleted()) {
@@ -703,8 +697,8 @@ class Search {
                   $QUERY .= " UNION ";
                }
                $tmpquery = "";
-               // State case
-               if (($itemtype == 'States') || ($itemtype == 'Internet')) {
+               // AllAssets case
+               if (($itemtype == 'AllAssets')) {
                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                               $FROM.
                               $WHERE.
@@ -714,10 +708,8 @@ class Search {
                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                           $ctable, $tmpquery);
                   $tmpquery = str_replace($itemtype, $ctype, $tmpquery);
-                  if ($itemtype == 'States') {
-                     $tmpquery .= " AND `$ctable`.`states_id` > '0' ";
-                  }
-                  if ($itemtype == 'Internet') {
+                  
+                  if ($itemtype == 'AllAssets') {
                      $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
                   }
 
@@ -910,7 +902,7 @@ class Search {
                $isadmin = ($infoc->canUpdate() || $infoc->canCreate());
             }
             $showmassiveactions = false;
-            if ($itemtype != 'States') {
+            if ($itemtype != 'AllAssets') {
                $showmassiveactions = count(Dropdown::getMassiveActions($itemtype, $p['is_deleted']));
                if ($showmassiveactions
                    && ($output_type == self::HTML_OUTPUT)) {
@@ -954,13 +946,12 @@ class Search {
             echo self::showNewLine($output_type);
             $header_num = 1;
 
-            if ($output_type == self::HTML_OUTPUT) { // HTML display - massive modif
+            if ($output_type == self::HTML_OUTPUT && !isset($CFG_GLPI["union_search_type"][$itemtype])) { // HTML display - massive modif
                $check_all = "<input type='checkbox' name='checkall_massaction' ".
-                              "id='checkall_massaction' ".
-                              "onclick= \"if ( checkAsCheckboxes('checkall_massaction',
-                                                                 'massiveaction_form'))
-                                                         {return true;}\">";
-               ///TODO check all
+                                 "id='checkall_massaction' ".
+                                 "onclick= \"if ( checkAsCheckboxes('checkall_massaction',
+                                                                  'massiveaction_form'))
+                                                            {return true;}\">";
                echo self::showHeaderItem($output_type, $check_all, $header_num, "", 0,
                                          $p['order']);
             }
@@ -1013,7 +1004,7 @@ class Search {
             if ($itemtype == 'ConsumableItem') {
                echo self::showHeaderItem($output_type, _n('Consumable','Consumables',2), $header_num);
             }
-            if (($itemtype == 'States') || ($itemtype == 'ReservationItem')) {
+            if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
                echo self::showHeaderItem($output_type, __('Item type'), $header_num);
             }
             if (($itemtype == 'ReservationItem')
@@ -1057,7 +1048,7 @@ class Search {
                // Add item in item list
                Session::addToNavigateListItems($itemtype, $data["id"]);
 
-               if ($output_type == self::HTML_OUTPUT) { // HTML display - massive modif
+               if ($output_type == self::HTML_OUTPUT && !isset($CFG_GLPI["union_search_type"][$itemtype])) { // HTML display - massive modif
                   $tmpcheck = "";
                   if ($showmassiveactions) {
                      if (($itemtype == 'Entity')
@@ -1182,7 +1173,7 @@ class Search {
                                                            $output_type != self::HTML_OUTPUT),
                                       $item_num, $row_num);
                }
-               if (($itemtype == 'States') || ($itemtype == 'ReservationItem')) {
+               if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
                   $typename = $data["TYPE"];
                   if ($itemtmp = getItemForItemtype($data["TYPE"])) {
                      $typename = $itemtmp->getTypeName();
@@ -1554,7 +1545,7 @@ class Search {
 
       // Instanciate an object to access method
       $item = NULL;
-      if (($itemtype != 'States') && ($itemtype != 'Internet')) {
+      if (($itemtype != 'AllAssets')) {
          $item = getItemForItemtype($itemtype);
       }
 
@@ -2141,7 +2132,7 @@ class Search {
 
       $toview = array();
       $item   = NULL;
-      if (($itemtype != 'States') && ($itemtype != 'Internet')) {
+      if (($itemtype != 'AllAssets')) {
          $item = getItemForItemtype($itemtype);
       }
       // Add first element (name)
@@ -2170,7 +2161,7 @@ class Search {
       $itemtable = getTableForItemType($itemtype);
       $item      = NULL;
       $mayberecursive = false;
-      if (($itemtype != 'States') && ($itemtype != 'Internet')) {
+      if (($itemtype != 'AllAssets')) {
          $item           = getItemForItemtype($itemtype);
          $mayberecursive = $item->maybeRecursive();
       }
@@ -3238,7 +3229,7 @@ class Search {
       if (in_array($searchtype, array('equals', 'notequals','under'))) {
 
          if (($table != getTableForItemType($itemtype))
-             || ($itemtype == 'States') || ($itemtype == 'Internet')) {
+             || ($itemtype == 'AllAssets')) {
             $out = " $link (`$table`.`id`".$SEARCH;
          } else {
             $out = " $link (`$table`.`$field`".$SEARCH;
@@ -4670,7 +4661,7 @@ class Search {
       $default_values["searchtype2"] = "";
       $default_values["sort"]        = 1;
 
-      if (($itemtype != 'States') && ($itemtype != 'Internet')
+      if (($itemtype != 'AllAssets')
           && class_exists($itemtype)
           && method_exists($itemtype,'getDefaultSearchRequest')) {
 
@@ -4892,16 +4883,16 @@ class Search {
                $search[$itemtype] += NetworkPort::getSearchOptionsToAdd('networkport_types');
                break;
 
-            case 'States' :
+            case 'AllAssets' :
                $search[$itemtype]['common']            = __('Characteristics');
 
-               $search[$itemtype][1]['table']          = 'state_types';
+               $search[$itemtype][1]['table']          = 'asset_types';
                $search[$itemtype][1]['field']          = 'name';
                $search[$itemtype][1]['name']           = __('Name');
                $search[$itemtype][1]['datatype']       = 'itemlink';
                $search[$itemtype][1]['searchtype']     = 'contains';
 
-               $search[$itemtype][2]['table']          = 'state_types';
+               $search[$itemtype][2]['table']          = 'asset_types';
                $search[$itemtype][2]['field']          = 'id';
                $search[$itemtype][2]['name']           = __('ID');
                $search[$itemtype][2]['searchtype']     = 'contains';
@@ -4912,15 +4903,15 @@ class Search {
 
                $search[$itemtype] += Location::getSearchOptionsToAdd();
 
-               $search[$itemtype][5]['table']          = 'state_types';
+               $search[$itemtype][5]['table']          = 'asset_types';
                $search[$itemtype][5]['field']          = 'serial';
                $search[$itemtype][5]['name']           = __('Serial number');
 
-               $search[$itemtype][6]['table']          = 'state_types';
+               $search[$itemtype][6]['table']          = 'asset_types';
                $search[$itemtype][6]['field']          = 'otherserial';
                $search[$itemtype][6]['name']           = __('Inventory number');
 
-               $search[$itemtype][16]['table']         = 'state_types';
+               $search[$itemtype][16]['table']         = 'asset_types';
                $search[$itemtype][16]['field']         = 'comment';
                $search[$itemtype][16]['name']          = __('Comments');
                $search[$itemtype][16]['datatype']      = 'text';
@@ -4933,7 +4924,7 @@ class Search {
                $search[$itemtype][71]['field']         = 'completename';
                $search[$itemtype][71]['name']          = __('Group');
 
-               $search[$itemtype][19]['table']         = 'state_types';
+               $search[$itemtype][19]['table']         = 'asset_types';
                $search[$itemtype][19]['field']         = 'date_mod';
                $search[$itemtype][19]['name']          = __('Last update');
                $search[$itemtype][19]['datatype']      = 'datetime';

@@ -80,7 +80,15 @@ class Report {
          $report_list["reservation"]["name"] = __('Loan');
          $report_list["reservation"]["file"] = "report.reservation.php";
       }
-
+      if (Session::haveRight("computer","r")
+         || Session::haveRight("monitor","r")
+         || Session::haveRight("networking","r")
+         || Session::haveRight("peripheral","r")
+         || Session::haveRight("printer","r")
+         || Session::haveRight("phone","r")) {
+         $report_list["state"]["name"] = _n('Status', 'Statuses', 2);
+         $report_list["state"]["file"] = "report.state.php";         
+      }
       //Affichage du tableau de presentation des stats
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr><th colspan='2'>".__('Select the report you want to generate')."</th></tr>";

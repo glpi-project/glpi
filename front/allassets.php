@@ -42,11 +42,8 @@ Session::checkCentralAccess();
 
 Html::header(State::getTypeName(2), $_SERVER['PHP_SELF'], "inventory", "state");
 
-if ($_GET["synthese"] == "yes") {
-   State::showSummary($_SERVER['PHP_SELF']);
-} else {
-   Search::show('States');
-}
+Search::show('AllAssets');
+
 
 Html::footer();
 ?>
