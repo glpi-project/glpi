@@ -634,9 +634,13 @@ td { }
    border:1px dotted #000000;
 }
 
-td.central {
-   vertical-align:top;
-   width:450px;
+.central {
+   padding-top: 15px;
+   width: 450px;
+}
+
+.central table {
+   margin-bottom: 5px;
 }
 
 td.numeric {

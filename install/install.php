@@ -173,7 +173,7 @@ function step1($update) {
          echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
          echo "<input type='hidden' name='install' value='Etape_0'>";
          echo "<input type='submit' name='submit' class='submit' value=\"".__('Try again')."\">";
-         echo "</form></div";
+         echo "</form></div>";
          break;
 
       case 2 :
