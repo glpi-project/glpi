@@ -161,19 +161,19 @@ function step1($update) {
 
       case 1 :
          echo "<h3>".__('Do you want to continue ?')."</h3>";
-         echo "<form action='install.php' method='post'>";
-         echo "<p class='submit'><input type='hidden' name='install' value='Etape_1'>";
+         echo "<div class='submit'><form action='install.php' method='post' class='inline'>";
+         echo "<input type='hidden' name='install' value='Etape_1'>";
          echo "<input type='hidden' name='update' value='". $update."'>";
          echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
          echo "<input type='submit' name='submit' class='submit' value=\"".__('Continue')."\">";
-         echo "</p></form> &nbsp;&nbsp;";
+         echo "</form> &nbsp;&nbsp;";
 
-         echo "<form action='install.php' method='post'>";
+         echo "<form action='install.php' method='post' class='inline'>";
          echo "<input type='hidden' name='update' value='". $update."'>";
          echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
-         echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
+         echo "<input type='hidden' name='install' value='Etape_0'>";
          echo "<input type='submit' name='submit' class='submit' value=\"".__('Try again')."\">";
-         echo "</p></form>";
+         echo "</form></div";
          break;
 
       case 2 :
@@ -430,7 +430,7 @@ function step7() {
    echo "<li>".__('normal/normal for the normal account')."</li>";
    echo "<li>".__('post-only/postonly for the postonly account')."</li></ul></p>";
    echo "<p>".__('You can delete or modify these accounts as well as the initial data.')."</p>";
-   echo "<p><a class='vsubmit' href='../index.php'>".__('Use GLPI');
+   echo "<p class='center'><a class='vsubmit' href='../index.php'>".__('Use GLPI');
    echo "</a></p>";
 }
 

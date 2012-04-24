@@ -102,6 +102,10 @@ p {
    text-align:left;
 }
 
+.inline {
+   display:inline;
+}
+
 
 table {
    text-align:center;
@@ -236,6 +240,8 @@ input.submit:hover {
    background-image: -ms-linear-gradient(top, #fddb6f, #ffb94b);
    background-image: -o-linear-gradient(top, #fddb6f, #ffb94b);
    background-image: linear-gradient(top, #fddb6f, #ffb94b);
+   padding: 3px 9px;
+   text-decoration: none;
    
    /* For Internet Explorer 5.5 - 7 */
    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b);
