@@ -505,7 +505,7 @@ class NotificationTarget extends CommonDBChild {
    /**
     * Get targets for all the users of a group
     *
-    * @param $manager : 0 user, 1 supervisor
+    * @param $manager : 0 all users, 1 only supervisors
     * @param $group_id id of the group
    **/
    function getAddressesByGroup($manager, $group_id) {
@@ -519,8 +519,11 @@ class NotificationTarget extends CommonDBChild {
                $this->getProfileJoinSql()."
                INNER JOIN `glpi_groups` ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
                WHERE `glpi_groups_users`.`groups_id` = '$group_id'
-                     AND `glpi_groups_users`.`is_manager` = '$manager'
                      AND `glpi_groups`.`is_notify`";
+
+      if ($manager) {
+         $query .= " AND `glpi_groups_users`.`is_manager` ";
+      }
 
       foreach ($DB->request($query) as $data) {
          $this->addToAddressesList($data);
