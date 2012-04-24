@@ -65,6 +65,7 @@ if (isset($_REQUEST['searchtype'])) {
       case "morethan" :
       case "lessthan" :
       case "under" :
+      case "notunder" :
         if (!$display && isset($searchopt['field'])) {
             // Specific cases
             switch ($searchopt['table'].".".$searchopt['field']) {

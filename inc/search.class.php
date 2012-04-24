@@ -1313,6 +1313,12 @@ class Search {
                                                               Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"],
                                                                                         $p['contains'][$key])));
                               break;
+                           case "notunder" :
+                              $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
+                                                      sprintf(__('%1$s %2$s'), __('not under'),
+                                                              Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"],
+                                                                                        $p['contains'][$key])));
+                              break;
 
                            default :
                               $titlecontain = sprintf(__('%1$s = %2$s'), $titlecontain,
@@ -1380,6 +1386,12 @@ class Search {
                            case "under" :
                               $titlecontain2 = sprintf(__('%1$s %2$s'), $titlecontain2,
                                                        sprintf(__('%1$s %2$s'), __('under'),
+                                                               Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"],
+                                                                                         $p['contains2'][$key])));
+                              break;
+                           case "notunder" :
+                              $titlecontain2 = sprintf(__('%1$s %2$s'), $titlecontain2,
+                                                       sprintf(__('%1$s %2$s'), __('not under'),
                                                                Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"],
                                                                                          $p['contains2'][$key])));
                               break;
@@ -2759,6 +2771,13 @@ class Search {
                $SEARCH = " IN ('".implode("','",getSonsOf($inittable, $val))."')";
             }
             break;
+         case "notunder" :
+            if ($nott) {
+               $SEARCH = " IN ('".implode("','",getSonsOf($inittable, $val))."')";
+            } else {
+               $SEARCH = " NOT IN ('".implode("','",getSonsOf($inittable, $val))."')";
+            }
+            break;
 
       }
 
@@ -3228,7 +3247,7 @@ class Search {
       }
 
       // Default case
-      if (in_array($searchtype, array('equals', 'notequals','under'))) {
+      if (in_array($searchtype, array('equals', 'notequals','under', 'notunder'))) {
 
          if (($table != getTableForItemType($itemtype))
              || ($itemtype == 'AllAssets')) {
@@ -5117,6 +5136,10 @@ class Search {
                      $actions['under'] = __('under');
                      break;
 
+                  case "notunder" :
+                     $actions['notunder'] = __('not under');
+                     break;
+
                   case "lessthan" :
                      $actions['lessthan'] = __('before');
                      break;
@@ -5184,6 +5207,7 @@ class Search {
                if ($itemlinked = getItemForItemtype($itemtype_linked)) {
                   if ($itemlinked instanceof CommonTreeDropdown) {
                      $actions['under'] = __('under');
+                     $actions['notunder'] = __('not under');
                   }
                   return $actions;
                }
