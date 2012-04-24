@@ -931,7 +931,7 @@ class Html {
 
 
       // INVENTORY
-      $showstate                  = false;
+      $showallassets              = false;
       $menu['inventory']['title'] = __('Assets');
 
       if (Session::haveRight("computer","r")) {
@@ -948,7 +948,7 @@ class Html {
             $menu['inventory']['content']['computer']['links']['template']
                               = '/front/setup.templates.php?'.'itemtype=Computer&amp;add=0';
          }
-         $showstate = true;
+         $showallassets = true;
       }
 
 
@@ -964,7 +964,7 @@ class Html {
             $menu['inventory']['content']['monitor']['links']['template']
                               = '/front/setup.templates.php?'.'itemtype=Monitor&amp;add=0';
          }
-         $showstate = true;
+         $showallassets = true;
       }
 
 
@@ -980,7 +980,6 @@ class Html {
             $menu['inventory']['content']['software']['links']['template']
                               = '/front/setup.templates.php?'.'itemtype=Software&amp;add=0';
          }
-         $showstate = true;
       }
 
 
@@ -1004,7 +1003,7 @@ class Html {
             $menu['inventory']['content']['networking']['links']['template']
                               = '/front/setup.templates.php?'.'itemtype=NetworkEquipment&amp;add=0';
          }
-         $showstate = true;
+         $showallassets = true;
       }
 
 
@@ -1020,7 +1019,7 @@ class Html {
             $menu['inventory']['content']['peripheral']['links']['template']
                               = '/front/setup.templates.php?'.'itemtype=Peripheral&amp;add=0';
          }
-         $showstate = true;
+         $showallassets = true;
       }
 
 
@@ -1036,7 +1035,7 @@ class Html {
             $menu['inventory']['content']['printer']['links']['template']
                               = '/front/setup.templates.php?'.'itemtype=Printer&amp;add=0';
          }
-         $showstate = true;
+         $showallassets = true;
       }
 
 
@@ -1083,16 +1082,14 @@ class Html {
             $menu['inventory']['content']['phone']['links']['template']
                               = '/front/setup.templates.php?'.'itemtype=Phone&amp;add=0';
          }
-         $showstate = true;
+         $showallassets = true;
       }
 
-
-      if ($showstate) {
-         $menu['inventory']['content']['state']['title']            = _n('Status', 'Statuses', 2);
+      if ($showallassets) {
+         $menu['inventory']['content']['state']['title']            = __('Global');
          $menu['inventory']['content']['state']['shortcut']         = '';
-         $menu['inventory']['content']['state']['page']             = '/front/states.php';
-         $menu['inventory']['content']['state']['links']['search']  = '/front/states.php';
-         $menu['inventory']['content']['state']['links']['summary'] = '/front/states.php?synthese=yes';
+         $menu['inventory']['content']['state']['page']             = '/front/allassets.php';
+         $menu['inventory']['content']['state']['links']['search']  = '/front/allassets.php';
       }
 
       // ASSISTANCE

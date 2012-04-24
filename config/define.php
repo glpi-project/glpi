@@ -176,6 +176,9 @@ $CFG_GLPI["unicity_types"]                = array('Budget', 'Computer', 'Contact
 $CFG_GLPI["state_types"]                  = array('Computer', 'Monitor', 'NetworkEquipment',
                                                   'Peripheral', 'Phone', 'Printer');
 
+$CFG_GLPI["asset_types"]                  = array('Computer', 'Monitor', 'NetworkEquipment',
+                                                  'Peripheral', 'Phone', 'Printer');
+
 $CFG_GLPI["document_types"]               = array('Budget', 'CartridgeItem', 'Change', 'Computer',
                                                   'ConsumableItem', 'Contact', 'Contract',
                                                   'Document', 'Entity', 'KnowbaseItem', 'Monitor',
@@ -244,9 +247,8 @@ $CFG_GLPI["notificationtemplates_types"]  = array('Cartridge', 'Consumable', 'Co
 
 $CFG_GLPI["notificationmethods_types"]    = array('NotificationMail');
 
-$CFG_GLPI["union_search_type"]            = array('Internet'        => 'networkport_types',
-                                                  'ReservationItem' => "reservation_types",
-                                                  'States'          => "state_types");
+$CFG_GLPI["union_search_type"]            = array('ReservationItem' => "reservation_types",
+                                                  'AllAssets'       => "asset_types");
 
 $CFG_GLPI["systeminformations_types"]     = array('AuthLDAP', 'DBConnection', 'MailCollector',
                                                   'OcsServer', 'Plugin');
