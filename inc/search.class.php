@@ -4980,15 +4980,15 @@ class Search {
                                                                                             'NEWTABLE'));
          }
 
-         if (in_array($itemtype, $CFG_GLPI["networkport_types"])) {
+         if (in_array($itemtype, $CFG_GLPI["networkport_types"]) || $itemtype == 'AllAssets') {
             $search[$itemtype] += NetworkPort::getSearchOptionsToAdd($itemtype);
          }
 
-         if (in_array($itemtype, $CFG_GLPI["contract_types"])) {
+         if (in_array($itemtype, $CFG_GLPI["contract_types"]) || $itemtype == 'AllAssets') {
             $search[$itemtype] += Contract::getSearchOptionsToAdd();
          }
 
-         if (in_array($itemtype, $CFG_GLPI["infocom_types"])) {
+         if (in_array($itemtype, $CFG_GLPI["infocom_types"]) || $itemtype == 'AllAssets') {
             $search[$itemtype] += Infocom::getSearchOptionsToAdd($itemtype);
          }
 
