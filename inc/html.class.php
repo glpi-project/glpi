@@ -1095,19 +1095,6 @@ class Html {
          $menu['inventory']['content']['state']['links']['summary'] = '/front/states.php?synthese=yes';
       }
 
-      if (Session::haveRight("internet","r")) {
-         $menu['inventory']['content']['internet']['title']            = __('Internet');
-         $menu['inventory']['content']['internet']['shortcut']         = '';
-         $menu['inventory']['content']['internet']['page']             = '/front/internet.php';
-         $menu['inventory']['content']['internet']['links']['search']  = '/front/internet.php';
-
-         $menu['inventory']['content']['internet2']['title']            = __('Internet 2');
-         $menu['inventory']['content']['internet2']['shortcut']         = '';
-         $menu['inventory']['content']['internet2']['page']             = '/front/internet2.php';
-         $menu['inventory']['content']['internet2']['links']['search']  = '/front/internet2.php';
-      }
-
-
       // ASSISTANCE
       $menu['maintain']['title'] = __('Assistance');
 
