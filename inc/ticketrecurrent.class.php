@@ -108,7 +108,8 @@ class TicketRecurrent extends CommonDropdown {
    function prepareInputForAdd($input) {
       $input['next_creation_date'] = $this->computeNextCreationDate($input['begin_date'],
                                                                     $input['periodicity'],
-                                                                    $input['create_before']);
+                                                                    $input['create_before'],
+                                                                    $input['calendars_id']);
       return $input;
    }
 
@@ -119,7 +120,8 @@ class TicketRecurrent extends CommonDropdown {
           && isset($input['create_before'])) {
          $input['next_creation_date'] = $this->computeNextCreationDate($input['begin_date'],
                                                                        $input['periodicity'],
-                                                                       $input['create_before']);
+                                                                       $input['create_before'],
+                                                                       $input['calendars_id']);
       }
       return $input;
    }
@@ -152,7 +154,12 @@ class TicketRecurrent extends CommonDropdown {
                          'label' => __('Preliminary creation'),
                          'type'  => 'timestamp',
                          'max'   => 7*DAY_TIMESTAMP,
-                         'step'  => HOUR_TIMESTAMP),);
+                         'step'  => HOUR_TIMESTAMP),
+                   array('name'  => 'calendars_id',
+                         'label' => _n('Calendar', 'Calendars', 1),
+                         'type'  => 'dropdownValue',
+                         'list'  => true),
+                  );
    }
 
 
@@ -241,6 +248,11 @@ class TicketRecurrent extends CommonDropdown {
       $tab[14]['name']     = __('Preliminary creation');
       $tab[14]['datatype'] = 'timestamp';
 
+      $tab[16]['table']    = 'glpi_calendars';
+      $tab[16]['field']    = 'name';
+      $tab[16]['name']     = _n('Calendar', 'Calendars', 1);
+      $tab[16]['datatype'] = 'itemlink';
+
       return $tab;
    }
 
@@ -267,10 +279,11 @@ class TicketRecurrent extends CommonDropdown {
     * @param $begin_date datetime Begin date of the recurrent ticket
     * @param $periodicity timestamp Periodicity of creation
     * @param $create_before timestamp Create before specific timestamp
+    * @param $calendars_id integre ID of the calendar to used
     *
     * @return datetime next creation date
    **/
-   function computeNextCreationDate($begin_date, $periodicity, $create_before){
+   function computeNextCreationDate($begin_date, $periodicity, $create_before, $calendars_id){
 
       if (empty($begin_date)) {
          return 'NULL';
@@ -305,9 +318,19 @@ class TicketRecurrent extends CommonDropdown {
                $timestart = strtotime("+ $value $step",$timestart);
             }
          }
+         $calendar = new Calendar();
+         if ($calendars_id && $calendar->getFromDB($calendars_id)) {
+            $durations = $calendar->getDurationsCache();
+            if (array_sum($durations)>0) { // working days exists
+               while (!$calendar->isAWorkingDay($timestart)) {
+                  $timestart = strtotime("+ 1 day",$timestart);
+               }         
+            }
+         }
+         
          return date("Y-m-d H:i:s", $timestart);
       }
-
+      
       return 'NULL';
    }
 
@@ -419,7 +442,8 @@ class TicketRecurrent extends CommonDropdown {
          $input['id']                 = $data['id'];
          $input['next_creation_date'] = $tr->computeNextCreationDate($data['begin_date'],
                                                                      $data['periodicity'],
-                                                                     $data['create_before']);
+                                                                     $data['create_before'],
+                                                                     $data['calendars_id']);
          $tr->update($input);
       }
 
