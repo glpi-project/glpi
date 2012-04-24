@@ -178,6 +178,9 @@ class SLA extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".$LANG['sla'][2]."&nbsp;:</td>";
       echo "<td>";
       $possible_values = array();
+      for ($i=10 ; $i<60 ; $i+=10) {
+         $possible_values[$i*MINUTE_TIMESTAMP] = $i." ".Toolbox::ucfirst($LANG['job'][22]);
+      }
       for ($i=1 ; $i<24 ; $i++) {
          $possible_values[$i*HOUR_TIMESTAMP] = $i." ".Toolbox::ucfirst($LANG['gmt'][1]);
       }

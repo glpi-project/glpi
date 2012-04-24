@@ -271,6 +271,17 @@ class SlaLevel extends RuleTicket {
          }
 
          $possible_values=array();
+         for ($i=10 ; $i<60 ; $i+=10) {
+            if (!in_array($i*MINUTE_TIMESTAMP,$p['used'])) {
+               $possible_values[$i*MINUTE_TIMESTAMP]='+ '.$i." ".Toolbox::ucfirst($LANG['job'][22]);
+            }
+            if (!in_array(-$i*MINUTE_TIMESTAMP,$p['used'])) {
+               if ($p['max_time'] >= $i*MINUTE_TIMESTAMP) {
+                  $possible_values[-$i*MINUTE_TIMESTAMP]='- '.$i." ".Toolbox::ucfirst($LANG['job'][22]);
+               }
+            }
+         }
+                  
          for ($i=1 ; $i<24 ; $i++) {
             if (!in_array($i*HOUR_TIMESTAMP,$p['used'])) {
                $possible_values[$i*HOUR_TIMESTAMP]='+ '.$i." ".Toolbox::ucfirst($LANG['gmt'][1]);
