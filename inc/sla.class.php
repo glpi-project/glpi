@@ -174,11 +174,14 @@ class SLA extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>".__('Maximum time to solve')."</td>";
       echo "<td>";
       $possible_values = array();
+      for ($i=10 ; $i<60 ; $i+=10) {
+         $possible_values[$i*MINUTE_TIMESTAMP] = sprintf(_n('%d minutes','%d minutes',$i),$i);
+      }      
       for ($i=1 ; $i<24 ; $i++) {
-         $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('+ %d hour','+ %d hours',$i),$i);
+         $possible_values[$i*HOUR_TIMESTAMP] = sprintf(_n('%d hour','%d hours',$i),$i);
       }
       for ($i=1 ; $i<30 ; $i++) {
-         $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('+ %d day','+ %d days',$i),$i);
+         $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('%d day','%d days',$i),$i);
       }
       Dropdown::showFromArray('resolution_time', $possible_values,
                               array('value' => $this->fields["resolution_time"]));
