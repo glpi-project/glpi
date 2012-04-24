@@ -1540,6 +1540,8 @@ function update0831to084() {
    }
    // Move tickerrecurrent values to correct ones
    $migration->changeField('glpi_ticketrecurrents', 'periodicity', 'periodicity', 'string');
+   $migration->addField('glpi_ticketrecurrents', 'calendars_id', 'integer');
+   
    $migration->migrationOneTable('glpi_ticketrecurrents');
    foreach($DB->request('glpi_ticketrecurrents',"`periodicity` >= ".MONTH_TIMESTAMP) as $data) {
       $periodicity = $data['periodicity'] ;
