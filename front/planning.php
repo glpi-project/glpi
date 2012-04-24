@@ -53,8 +53,8 @@ if (!isset($_GET["usertype"])) {
    $_GET["usertype"] = "user";
 }
 
-if (!isset($_GET["itemtype"])) {
-   $_GET["itemtype"] = "";
+if (!isset($_GET["limititemtype"])) {
+   $_GET["limititemtype"] = "";
 }
 
 switch ($_GET["usertype"]) {
@@ -108,10 +108,8 @@ if (isset($_REQUEST['checkavailability'])) {
       $_GET["type"] = "week";
    }
 
-   Planning::showSelectionForm($_GET['type'], $_GET['date'], $_GET["usertype"], $_GET["uID"],
-                               $_GET["gID"], $_GET["itemtype"]);
-
-   Planning::show($_GET['uID'], $_GET['gID'], $_GET["date"], $_GET["type"], $_GET["itemtype"]);
+   $planning = new Planning();
+   $planning->show($_GET);
 
    Html::footer();
 }
