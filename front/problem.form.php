@@ -113,7 +113,9 @@ if (isset($_POST["add"])) {
 
 } else {
    Html::header(Problem::getTypeName(2), $_SERVER['PHP_SELF'], "maintain", "problem");
-   $problem->showForm($_GET["id"], $_GET);
+   $options = $_GET;
+   unset($options['id']);
+   $problem->showForm($_GET["id"],$options);
    Html::footer();
 }
 ?>

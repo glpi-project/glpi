@@ -382,7 +382,8 @@ class CommonGLPI {
             $withtemplate = $options['withtemplate'];
          }
          foreach ($options as $key => $val) {
-            if ($key[0] != '_') {
+            // Do not include id options
+            if ($key[0] != '_' && $key != 'id') {
                $extraparamhtml .= "&amp;$key=$val";
                $extraparam     .= "&$key=$val";
             }
