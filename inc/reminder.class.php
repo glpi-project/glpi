@@ -1040,10 +1040,7 @@ class Reminder extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";
       echo "<tr><td class='tab_bg_2' width='100px'>";
 
-      $types = array( 'Group', 'Profile', 'User');
-      if (Session::isMultiEntitiesMode()) {
-         $types[] = 'Entity';
-      }
+      $types = array( 'Group', 'Profile', 'User', 'Entity');
 
       $addrand = Dropdown::showItemTypes('_type', $types);
       $params  = array('type'  => '__VALUE__',
