@@ -388,7 +388,7 @@ class CommonGLPI {
             }
          }
       }
-
+      
       if (empty($withtemplate)
           && !$this->isNewID($ID)
           && $this->getType()
@@ -514,7 +514,6 @@ class CommonGLPI {
 
             $onglets[-2] = __('Debug');
       }
-
       if (count($onglets)) {
          $tabpage = $this->getTabsURL();
          $tabs    = array();
@@ -533,7 +532,6 @@ class CommonGLPI {
                               'params' => "target=$target&itemtype=".$this->getType().
                                           "&glpi_tab=-1&id=$ID$extraparam");
          }
-
          Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType());
       }
    }
@@ -579,9 +577,9 @@ class CommonGLPI {
    }
 
 
-   function show() {
+   function show($options = array()) {
 
-      $this->showTabs();
+      $this->showTabs($options);
       $this->addDivForTabs();
    }
 

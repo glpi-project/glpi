@@ -38,7 +38,63 @@ if (!defined('GLPI_ROOT')) {
 
 // CLASS Planning
 
-class Planning {
+class Planning extends CommonGLPI {
+
+
+   function defineTabs($options=array()) {
+
+      $ong = array();
+      $this->addStandardTab(__CLASS__, $ong, $options);
+
+      return $ong;
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      if ($item->getType() == __CLASS__) {
+         $tabs[1] = __('Personal View');
+         $tabs[2] = __('Group View');
+         $tabs[3] = __('User', 'Users', 2);
+         $tabs[4] = __('Group', 'Groups', 2);
+
+         return $tabs;
+      }
+      return '';
+   }
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      if ($item->getType() == __CLASS__) {
+         switch ($tabnum) {
+            case 1 : // all
+               Planning::showSelectionForm($_REQUEST['type'], $_REQUEST['date'], 'user', $_SESSION['glpiID'],
+                                          $_REQUEST["gID"], $_REQUEST["limititemtype"]);
+            
+               Planning::showPlanning($_SESSION['glpiID'], $_REQUEST["gID"], $_REQUEST["date"], $_REQUEST["type"], $_REQUEST["limititemtype"]);
+               break;
+
+            case 2 :
+               Planning::showSelectionForm($_REQUEST['type'], $_REQUEST['date'], 'user_group', $_SESSION['glpiID'],
+                                          'mine', $_REQUEST["limititemtype"]);
+            
+               Planning::showPlanning($_SESSION['glpiID'], 'mine', $_REQUEST["date"], $_REQUEST["type"], $_REQUEST["limititemtype"]);
+               break;
+
+            case 3 :
+               Planning::showSelectionForm($_REQUEST['type'], $_REQUEST['date'], 'user', $_REQUEST["uID"],
+                                          0, $_REQUEST["limititemtype"]);
+            
+               Planning::showPlanning($_REQUEST['uID'], 0, $_REQUEST["date"], $_REQUEST["type"], $_REQUEST["limititemtype"]);
+               break;
+            case 4 :
+               Planning::showSelectionForm($_REQUEST['type'], $_REQUEST['date'], 'group', 0,
+                                          $_REQUEST["gID"], $_REQUEST["limititemtype"]);
+            
+               Planning::showPlanning(0, $_REQUEST['gID'], $_REQUEST["date"], $_REQUEST["type"], $_REQUEST["limititemtype"]);
+               break;
+         }
+      }
+      return true;
+   }
 
    /**
     * Get planning state name
@@ -127,11 +183,11 @@ class Planning {
     * @param $usertype     type of planning to view : can be user or group
     * @param $uID          ID of the user
     * @param $gID          ID of the group
-    * @param $itemtype     itemtype only display this itemtype (default '')
+    * @param $limititemtype     itemtype only display this itemtype (default '')
     *
     * @return Display form
    **/
-   static function showSelectionForm($type, $date, $usertype, $uID, $gID, $itemtype='') {
+   static function showSelectionForm($type, $date, $usertype, $uID, $gID, $limititemtype='') {
       global $CFG_GLPI;
 
       switch ($type) {
@@ -176,7 +232,7 @@ class Planning {
       echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'>";
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
-                        "&amp;date=$prev&amp;usertype=$usertype&amp;gID=$gID&amp;itemtype=$itemtype\">";
+                        "&amp;date=$prev&amp;usertype=$usertype&amp;gID=$gID&amp;limititemtype=$limititemtype\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous')."\"
              title=\"".__s('Previous')."\"></a>";
       echo "</td>";
@@ -222,7 +278,7 @@ class Planning {
       echo "</td>";
 
       echo "<td>";
-      Dropdown::showItemTypes('itemtype', $CFG_GLPI['planning_types'], array('value' => $itemtype));
+      Dropdown::showItemTypes('itemtype', $CFG_GLPI['planning_types'], array('value' => $limititemtype));
       echo "</td>";
 
       echo "<td>";
@@ -243,7 +299,7 @@ class Planning {
          echo "<td>";
          echo "<a target='_blank'
                href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID.
-                     "&amp;gID=".$gID."&amp;usertype=".$usertype."&amp;itemtype=$itemtype&amp;token=".
+                     "&amp;gID=".$gID."&amp;usertype=".$usertype."&amp;limititemtype=$limititemtype&amp;token=".
                      User::getPersonalToken(Session::getLoginUserID(true))."\"
                      title=\"".__s('Download the planning in Ical format')."\">".
                "<span style='font-size:10px'>".__('Ical')."</span></a>";
@@ -252,7 +308,7 @@ class Planning {
          // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
          echo "<a target='_blank' href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"].
                "/front/planning.php?genical=1&amp;uID=".$uID."&amp;gID=".$gID.
-               "&amp;usertype=".$usertype."&amp;itemtype=$itemtype&amp;token=".
+               "&amp;usertype=".$usertype."&amp;limititemtype=$limititemtype&amp;token=".
                User::getPersonalToken(Session::getLoginUserID(true))."\" title=\"".
                __s('webcal:// synchronization')."\">";
          echo "<span style='font-size:10px'>".__('Webcal')."</span></a>";
@@ -260,7 +316,7 @@ class Planning {
       }
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
-                     "&amp;date=$next&amp;usertype=$usertype&amp;gID=$gID&amp;itemtype=$itemtype\">";
+                     "&amp;date=$next&amp;usertype=$usertype&amp;gID=$gID&amp;limititemtype=$limititemtype\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next')."\"
              title=\"".__s('Next')."\"></a>";
       echo "</td>";
@@ -446,18 +502,18 @@ class Planning {
     * @param $who_group ID of the group of users (0 = undefined)
     * @param $when      Date of the planning to display
     * @param $type      type of planning to display (day, week, month)
-    * @param $itemtype  itemtype limit display to this itemtype (default '')
+    * @param $limititemtype  itemtype limit display to this itemtype (default '')
     *
     * @return Nothing (display function)
    **/
-   static function show($who, $who_group, $when, $type, $itemtype='') {
+   static function showPlanning($who, $who_group, $when, $type, $limititemtype='') {
       global $CFG_GLPI, $DB;
 
       if (!Session::haveRight("show_planning","1")
           && !Session::haveRight("show_all_planning","1")) {
          return false;
       }
-
+      echo $who." ".$who_group."<br><br>";
       // Define some constants
       $date       = explode("-",$when);
       $time       = mktime(0, 0, 0, $date[1], $date[2], $date[0]);
@@ -540,12 +596,12 @@ class Planning {
                       'end'       => $end);
 
       $interv = array();
-      if (empty($itemtype)) {
+      if (empty($limititemtype)) {
          foreach ($CFG_GLPI['planning_types'] as $itemtype) {
             $interv = array_merge($interv, $itemtype::populatePlanning($params));
          }
       } else {
-         $interv = $itemtype::populatePlanning($params);
+         $interv = $limititemtype::populatePlanning($params);
       }
 
       // Display Items
@@ -861,11 +917,11 @@ class Planning {
     *
     * @param $who       user ID
     * @param $who_group group ID
-    * @param $itemtype  itemtype only display this itemtype (default '')
+    * @param $limititemtype  itemtype only display this itemtype (default '')
     *
     * @return icalendar string
    **/
-   static function generateIcal($who, $who_group, $itemtype='') {
+   static function generateIcal($who, $who_group, $limititemtype='') {
       global $CFG_GLPI;
 
       if (($who == 0)
@@ -899,12 +955,12 @@ class Planning {
                       'end'       => $end);
 
       $interv = array();
-      if (empty($itemtype)) {
+      if (empty($limititemtype)) {
          foreach ($CFG_GLPI['planning_types'] as $itemtype) {
             $interv = array_merge($interv, $itemtype::populatePlanning($params));
          }
       } else {
-         $interv = $itemtype::populatePlanning($params);
+         $interv = $limititemtype::populatePlanning($params);
       }
 
       if (count($interv) > 0) {

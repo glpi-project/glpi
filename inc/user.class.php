@@ -2288,7 +2288,7 @@ class User extends CommonDBTM {
       }
 
       if ($count) {
-         $query = "SELECT COUNT(DISTINCT `glpi_users`.`id` ) AS cpt
+         $query = "SELECT COUNT(DISTINCT `glpi_users`.`id` ) AS CPT
                    FROM `glpi_users` ";
       } else {
          $query = "SELECT DISTINCT `glpi_users`.*
