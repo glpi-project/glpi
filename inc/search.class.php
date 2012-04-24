@@ -701,13 +701,7 @@ class Search {
                if (($itemtype == 'AllAssets')) {
                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                               $FROM.
-                              $WHERE.
-                              $GROUPBY.
-                              $HAVING;
-
-                  $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
-                                          $ctable, $tmpquery);
-                  $tmpquery = str_replace($itemtype, $ctype, $tmpquery);
+                              $WHERE;
                   
                   if ($itemtype == 'AllAssets') {
                      $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
@@ -722,6 +716,14 @@ class Search {
                   if ($citem && $citem->maybeTemplate()) {
                      $tmpquery .= " AND `$ctable`.`is_template` = '0' ";
                   }
+                              
+                  $tmpquery.= $GROUPBY.
+                              $HAVING;
+
+                  $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
+                                          $ctable, $tmpquery);
+                  $tmpquery = str_replace($itemtype, $ctype, $tmpquery);
+                  
                } else {// Ref table case
                   $reftable = getTableForItemType($itemtype);
 
