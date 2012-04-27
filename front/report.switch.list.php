@@ -35,12 +35,13 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("reports", "r");
 
-Report::title();
-
 // Titre
 if (isset($_POST["switch"]) && $_POST["switch"]) {
+   
    Html::header($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
-
+   
+   Report::title();
+   
    $name = Dropdown::getDropdownName("glpi_networkequipments",$_POST["switch"]);
    echo "<div class='center'><h2>".$LANG['reports'][49]." $name </h2></div><br>";
 
