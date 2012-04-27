@@ -257,6 +257,13 @@ class RuleAction extends CommonDBChild {
                      $display = true;
                      break;
 
+                  case "dropdown_groups_assign" :
+                     $table = $actions[$options["field"]]['table'];
+                     Dropdown::show(getItemTypeForTable($table), array('name' => "value", 
+                                                                       'condition' => "`is_assign`"));
+                     $display = true;
+                     break;
+
                   case "dropdown_users" :
                      User::dropdown(array('name'  => 'value',
                                           'right' => 'all'));

@@ -1424,6 +1424,13 @@ class Rule extends CommonDBTM {
                $display = true;
                break;
 
+            case "dropdown_groups_assign" :
+               Dropdown::show(getItemTypeForTable($crit['table']), array('name'  => $name,
+                                                                         'value' => $value,
+                                                                         'condition' => "`is_assign`"));
+               $display = true;
+               break;
+
             case "dropdown_users" :
                User::dropdown(array('value'  => $value,
                                     'name'   => $name,
