@@ -375,11 +375,11 @@ class KnowbaseItem extends CommonDBTM {
    **/
    static function addVisibilityRestrict() {
       $restrict = ''; 
-      if (!Session::haveRight('knowbase_admin', '1')) {
+      if (Session::getLoginUserID() && !Session::haveRight('knowbase_admin', '1')) {
+
          $restrict = "(`glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."' ";
          // Users
          $restrict .= " OR `glpi_knowbaseitems_users`.`users_id` = '".Session::getLoginUserID()."' ";
-   
          // Groups
          if (isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
             $restrict .= " OR (`glpi_groups_knowbaseitems`.`groups_id`
@@ -938,7 +938,6 @@ class KnowbaseItem extends CommonDBTM {
                            = `glpi_knowbaseitems`.`knowbaseitemcategories_id`)
                 WHERE $where
                 $order";
-
       return $query;
    }
 

@@ -101,10 +101,8 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                                    AND `glpi_knowbaseitemcategories`.`is_recursive` = '1')";
             }
          }
-
          // Get All FAQ categories
-         if (true || !isset($_SESSION['glpi_faqcategories'])) {
-
+         if (!isset($_SESSION['glpi_faqcategories'])) {
             $_SESSION['glpi_faqcategories'] = '(0)';
             $tmp = array();
             $query = "SELECT DISTINCT `glpi_knowbaseitems`.`knowbaseitemcategories_id`
@@ -130,10 +128,10 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                }
                if (count($tmp)) {
                   $_SESSION['glpi_faqcategories'] = "('".implode("','",$tmp)."')";
-                  echo '.';
                }
             }
          }
+
          $query = "SELECT DISTINCT `glpi_knowbaseitemcategories`.*
                    FROM `glpi_knowbaseitemcategories`
                    WHERE `glpi_knowbaseitemcategories`.`id` IN ".$_SESSION['glpi_faqcategories']."

@@ -490,6 +490,24 @@ class Html {
    }
 
 
+   /** Clean Display of Request
+   *
+   * @param $request SQL request
+   **/
+   static function cleanSQLDisplay($request) {
+      $request = str_ireplace("ORDER BY","<br>ORDER BY",
+             str_ireplace("SORT","<br>SORT",
+             str_ireplace("LEFT JOIN","<br>LEFT JOIN",
+             str_ireplace("INNER JOIN","<br>INNER JOIN",
+             str_ireplace("WHERE","<br>WHERE",
+             str_ireplace("FROM","<br>FROM",
+             str_ireplace("UNION","<br>UNION<br>",
+             str_replace(">","&gt;",
+             str_replace("<","&lt;",$request)))))))));
+
+      return $request;
+   }
+
    /**
     * Display Debug Informations
     *
@@ -512,15 +530,7 @@ class Html {
 
             foreach ($DEBUG_SQL['queries'] as $num => $query) {
                echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
-               echo str_ireplace("ORDER BY","<br>ORDER BY",
-                           str_ireplace("SORT","<br>SORT",
-                                 str_ireplace("LEFT JOIN","<br>LEFT JOIN",
-                                       str_ireplace("INNER JOIN","<br>INNER JOIN",
-                                             str_ireplace("WHERE","<br>WHERE",
-                                                   str_ireplace("FROM","<br>FROM",
-                                                         str_ireplace("UNION","<br>UNION<br>",
-                                                               str_replace(">","&gt;",
-                                                                   str_replace("<","&lt;",$query)))))))));
+               echo self::cleanSQLDisplay($query);
                echo "</td><td>";
                echo $DEBUG_SQL['times'][$num];
                echo "</td><td>";
