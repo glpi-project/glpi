@@ -377,7 +377,7 @@ class KnowbaseItem extends CommonDBTM {
    static function addVisibilityRestrict() {
 
       $restrict = '';
-      if (!Session::haveRight('knowbase_admin', '1')) {
+      if (Session::getLoginUserID() && !Session::haveRight('knowbase_admin', '1')) {
          $restrict = "(`glpi_knowbaseitems_users`.`users_id` = '".Session::getLoginUserID()."' ";
 
          // Users
