@@ -99,8 +99,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
          }
 
          // Get All FAQ categories
-         if (true
-             || !isset($_SESSION['glpi_faqcategories'])) {
+         if (!isset($_SESSION['glpi_faqcategories'])) {
 
             $_SESSION['glpi_faqcategories'] = '(0)';
             $tmp   = array();
@@ -127,7 +126,6 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                }
                if (count($tmp)) {
                   $_SESSION['glpi_faqcategories'] = "('".implode("','",$tmp)."')";
-                  echo '.';
                }
             }
          }
