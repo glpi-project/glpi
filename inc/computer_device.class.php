@@ -496,6 +496,7 @@ class Computer_Device extends CommonDBTM {
             $data['computers_id'] = $newid;
             $data['_itemtype']    = $itemtype;
             $data['_no_history']  = true;
+            $data = Toolbox::addslashes_deep($data);
 
             $this->add($data);
          }

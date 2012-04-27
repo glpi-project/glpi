@@ -1464,6 +1464,7 @@ class Infocom extends CommonDBChild {
 
       if ($this->getFromDBforDevice($itemtype, $oldid)) {
          $input             = $this->fields;
+         $input             = Toolbox::addslashes_deep($input);
          $input['items_id'] = $newid;
          if (!empty($newitemtype)) {
             $input['itemtype'] = $newitemtype;
