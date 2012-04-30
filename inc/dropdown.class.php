@@ -866,7 +866,7 @@ class Dropdown {
             $values[$key] = $val[0];
          }
       }
-      self::showFromArray($myname, $values, $options);
+      return self::showFromArray($myname, $values, $options);
    }
 
 
