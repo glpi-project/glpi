@@ -43,9 +43,9 @@ class Planning extends CommonGLPI {
 
    function defineTabs($options=array()) {
 
-      $ong = array();
+      $ong               = array();
       $ong['no_all_tab'] = true ;
-      
+
       $this->addStandardTab(__CLASS__, $ong, $options);
 
       return $ong;
@@ -53,14 +53,15 @@ class Planning extends CommonGLPI {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
       if ($item->getType() == __CLASS__) {
          $tabs[1] = __('Personal View');
          if (Session::haveRight("show_group_planning","1")) {
             $tabs[2] = __('Group View');
          }
          if (Session::haveRight("show_all_planning","1")) {
-            $tabs[3] = __('User', 'Users', 2);
-            $tabs[4] = __('Group', 'Groups', 2);
+            $tabs[3] = _n('User', 'Users', 2);
+            $tabs[4] = _n('Group', 'Groups', 2);
          }
 
          return $tabs;
@@ -68,35 +69,43 @@ class Planning extends CommonGLPI {
       return '';
    }
 
+
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 1 : // all
-               Planning::showSelectionForm($_REQUEST['type'], $_REQUEST['date'], 'my', 0, $_REQUEST["limititemtype"]);
-            
-               Planning::showPlanning($_SESSION['glpiID'], $_REQUEST["gID"], $_REQUEST["date"], $_REQUEST["type"], $_REQUEST["limititemtype"]);
+               Planning::showSelectionForm($_REQUEST['type'], $_REQUEST['date'], 'my', 0,
+                                           $_REQUEST["limititemtype"]);
+               Planning::showPlanning($_SESSION['glpiID'], $_REQUEST["gID"], $_REQUEST["date"],
+                                      $_REQUEST["type"], $_REQUEST["limititemtype"]);
                break;
 
             case 2 :
-               Planning::showSelectionForm($_REQUEST['type'], $_REQUEST['date'], 'mygroups', 0,  $_REQUEST["limititemtype"]);
-            
-               Planning::showPlanning($_SESSION['glpiID'], 'mine', $_REQUEST["date"], $_REQUEST["type"], $_REQUEST["limititemtype"]);
+               Planning::showSelectionForm($_REQUEST['type'], $_REQUEST['date'], 'mygroups', 0,
+                                           $_REQUEST["limititemtype"]);
+               Planning::showPlanning($_SESSION['glpiID'], 'mine', $_REQUEST["date"],
+                                      $_REQUEST["type"], $_REQUEST["limititemtype"]);
                break;
 
             case 3 :
-               Planning::showSelectionForm($_REQUEST['type'], $_REQUEST['date'], 'users', $_REQUEST["uID"], $_REQUEST["limititemtype"]);
-            
-               Planning::showPlanning($_REQUEST['uID'], 0, $_REQUEST["date"], $_REQUEST["type"], $_REQUEST["limititemtype"]);
+               Planning::showSelectionForm($_REQUEST['type'], $_REQUEST['date'], 'users',
+                                           $_REQUEST["uID"], $_REQUEST["limititemtype"]);
+               Planning::showPlanning($_REQUEST['uID'], 0, $_REQUEST["date"], $_REQUEST["type"],
+                                      $_REQUEST["limititemtype"]);
                break;
+
             case 4 :
-               Planning::showSelectionForm($_REQUEST['type'], $_REQUEST['date'], 'groups', $_REQUEST["gID"], $_REQUEST["limititemtype"]);
-            
-               Planning::showPlanning(0, $_REQUEST['gID'], $_REQUEST["date"], $_REQUEST["type"], $_REQUEST["limititemtype"]);
+               Planning::showSelectionForm($_REQUEST['type'], $_REQUEST['date'], 'groups',
+                                           $_REQUEST["gID"], $_REQUEST["limititemtype"]);
+               Planning::showPlanning(0, $_REQUEST['gID'], $_REQUEST["date"], $_REQUEST["type"],
+                                      $_REQUEST["limititemtype"]);
                break;
          }
       }
       return true;
    }
+
 
    /**
     * Get planning state name
@@ -180,12 +189,12 @@ class Planning extends CommonGLPI {
    /**
     * Show the planning selection form
     *
-    * @param $type         planning type : can be day, week, month
-    * @param $date         working date
-    * @param $usertype     type of planning to view : can be user or group
-    * @param $uID          ID of the user
-    * @param $gID          ID of the group
-    * @param $limititemtype     itemtype only display this itemtype (default '')
+    * @param $type            planning type : can be day, week, month
+    * @param $date            working date
+    * @param $usertype        type of planning to view : can be user or group
+    * @param $uID             ID of the user
+    * @param $gID             ID of the group
+    * @param $limititemtype   itemtype only display this itemtype (default '')
     *
     * @return Display form
    **/
@@ -232,74 +241,68 @@ class Planning extends CommonGLPI {
 
       $uID = 0;
       $gID = 0;
-      
+
       switch ($usertype) {
          case 'my' :
             $uID = $_SESSION['glpiID'];
             break;
-            
+
          case 'mygroups' :
             if (!Session::haveRight("show_group_planning","1")) {
                exit();
             }
             break;
-            
+
          case 'users' :
             if (!Session::haveRight("show_all_planning","1")) {
                exit();
             }
             $uID = $value;
-            
             break;
-            
+
          case 'groups' :
             if (!Session::haveRight("show_all_planning","1")) {
                exit();
             }
             $gID = $value;
             break;
-      
       }
 
       echo "<div class='center'><form method='get' name='form' action='planning.php'>\n";
       echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'>";
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
-                        "&amp;date=$prev&amp;usertype=$usertype&amp;gID=$gID&amp;limititemtype=$limititemtype\">";
+             "&amp;date=$prev&amp;usertype=$usertype&amp;gID=$gID&amp;limititemtype=$limititemtype\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__s('Previous')."\"
              title=\"".__s('Previous')."\"></a>";
       echo "</td>";
-            
+
       switch ($usertype) {
          case 'users' :
             echo "<td>";
-
             $rand_user = User::dropdown(array('name'   => 'uID',
                                               'value'  => $value,
                                               'right'  => 'interface',
                                               'all'    => 1,
                                               'entity' => $_SESSION["glpiactive_entity"]));
             echo "</td>";
-            
             break;
-            
+
          case 'groups' :
             echo "<td>";
-            $rand_group = Dropdown::show('Group', array('value'     => $value,
-                                                        'name'      => 'gID',
-                                                        'entity'    => $_SESSION["glpiactive_entity"],
-                                                        'condition' => '`is_usergroup`'));            
+            $rand_group = Group::dropdown(array('value'     => $value,
+                                                'name'      => 'gID',
+                                                'entity'    => $_SESSION["glpiactive_entity"],
+                                                'condition' => '`is_usergroup`'));
             echo "</td>";
             break;
-      
       }
 
       echo "</td>";
-      
-
 
       echo "<td>";
-      Dropdown::showItemTypes('limititemtype', $CFG_GLPI['planning_types'], array('value' => $limititemtype));
+      Dropdown::showItemTypes('limititemtype', $CFG_GLPI['planning_types'],
+                              array('value' => $limititemtype));
       echo "</td>";
 
       echo "<td>";
@@ -316,13 +319,13 @@ class Planning extends CommonGLPI {
       echo "<input type='submit' class='submit' name='submit' value=\""._sx('button', 'Show')."\">";
       echo "</td>\n";
 
-      if ($uID||$gID) {
+      if ($uID || $gID) {
          echo "<td>";
          echo "<a target='_blank'
-               href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID.
-                     "&amp;gID=".$gID."&amp;usertype=".$usertype."&amp;limititemtype=$limititemtype&amp;token=".
-                     User::getPersonalToken(Session::getLoginUserID(true))."\"
-                     title=\"".__s('Download the planning in Ical format')."\">".
+                href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?genical=1&amp;uID=".$uID.
+                 "&amp;gID=".$gID."&amp;usertype=".$usertype."&amp;limititemtype=$limititemtype".
+                 "&amp;token=".User::getPersonalToken(Session::getLoginUserID(true))."\"
+                 title=\"".__s('Download the planning in Ical format')."\">".
                "<span style='font-size:10px'>".__('Ical')."</span></a>";
          echo "<br>";
 
@@ -337,7 +340,7 @@ class Planning extends CommonGLPI {
       }
       echo "<td>";
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?type=".$type."&amp;uID=".$uID.
-                     "&amp;date=$next&amp;usertype=$usertype&amp;gID=$gID&amp;limititemtype=$limititemtype\">";
+            "&amp;date=$next&amp;usertype=$usertype&amp;gID=$gID&amp;limititemtype=$limititemtype\">";
       echo "<img src='".$CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__s('Next')."\"
              title=\"".__s('Next')."\"></a>";
       echo "</td>";
@@ -519,11 +522,13 @@ class Planning extends CommonGLPI {
    /**
     * Show the planning
     *
-    * @param $who       ID of the user (0 = undefined)
-    * @param $who_group ID of the group of users (0 = undefined)
-    * @param $when      Date of the planning to display
-    * @param $type      type of planning to display (day, week, month)
-    * @param $limititemtype  itemtype limit display to this itemtype (default '')
+    * Function name change since version 0.84 show() => showPlanning
+    *
+    * @param $who             ID of the user (0 = undefined)
+    * @param $who_group       ID of the group of users (0 = undefined)
+    * @param $when            Date of the planning to display
+    * @param $type            type of planning to display (day, week, month)
+    * @param $limititemtype   itemtype limit display to this itemtype (default '')
     *
     * @return Nothing (display function)
    **/
@@ -936,9 +941,9 @@ class Planning extends CommonGLPI {
    /**
     *  Generate ical file content
     *
-    * @param $who       user ID
-    * @param $who_group group ID
-    * @param $limititemtype  itemtype only display this itemtype (default '')
+    * @param $who             user ID
+    * @param $who_group       group ID
+    * @param $limititemtype   itemtype only display this itemtype (default '')
     *
     * @return icalendar string
    **/

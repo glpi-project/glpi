@@ -1315,6 +1315,7 @@ class Search {
                                                               Dropdown::getDropdownName($searchopt[$itemtype][$p['field'][$key]]["table"],
                                                                                         $p['contains'][$key])));
                               break;
+
                            case "notunder" :
                               $titlecontain = sprintf(__('%1$s %2$s'), $titlecontain,
                                                       sprintf(__('%1$s %2$s'), __('not under'),
@@ -1391,6 +1392,7 @@ class Search {
                                                                Dropdown::getDropdownName($searchopt[$p['itemtype2'][$key]][$p['field2'][$key]]["table"],
                                                                                          $p['contains2'][$key])));
                               break;
+
                            case "notunder" :
                               $titlecontain2 = sprintf(__('%1$s %2$s'), $titlecontain2,
                                                        sprintf(__('%1$s %2$s'), __('not under'),
@@ -2773,6 +2775,7 @@ class Search {
                $SEARCH = " IN ('".implode("','",getSonsOf($inittable, $val))."')";
             }
             break;
+
          case "notunder" :
             if ($nott) {
                $SEARCH = " IN ('".implode("','",getSonsOf($inittable, $val))."')";
@@ -5212,7 +5215,7 @@ class Search {
                $itemtype_linked = getItemTypeForTable($searchopt[$field_num]['table']);
                if ($itemlinked = getItemForItemtype($itemtype_linked)) {
                   if ($itemlinked instanceof CommonTreeDropdown) {
-                     $actions['under'] = __('under');
+                     $actions['under']    = __('under');
                      $actions['notunder'] = __('not under');
                   }
                   return $actions;

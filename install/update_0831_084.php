@@ -1491,8 +1491,14 @@ function update0831to084() {
    $migration->renameTable('glpi_registrykeys', 'OCS_glpi_registrykeys');
    // use OCS ?
 //    if (TableExists('OCS_glpi_ocsservers') && !countElementsInTable('OCS_glpi_ocsservers')) {
-      /// TODO : fields need to be always deleted ?
-      /// How to get this datas ? Need to rename them or copy profiles as others tables to plugin migration ?
+      /// TODO : explications
+      /// les champs ci-dessous sont créés dans le plugin à son installation
+      /// Les valeurs de ces champs sont repris dans le plugin
+      /// Pour les utilisateurs n'ayant jamais utilisés OCS
+      /// (d'où mon if en début pour voir si un serveur OCS a été paramétré)
+      /// je supprime ces champs qui n'ont pas lieu d'être car ils n'ont jamais été utilisés
+      /// Dans le cas contraire, c'est le plugin qui supprime ces champs après avoir récupéré leur valeur
+      ///How to get this datas ? Need to rename them or copy profiles as others tables to plugin migration ?
       // delete fields managed by plugin OCS
       $migration->dropField('glpi_profiles', 'ocsng');
       $migration->dropField('glpi_profiles', 'sync_ocsng');
@@ -1506,16 +1512,19 @@ function update0831to084() {
    $migration->addField('glpi_authldaps', 'can_support_pagesize', 'bool');
 
    // Add delete ticket notification
-   if (countElementsInTable("glpi_notifications", "`itemtype` = 'Ticket' AND `event` = 'delete'") == 0) {
+   if (countElementsInTable("glpi_notifications",
+                            "`itemtype` = 'Ticket' AND `event` = 'delete'") == 0) {
       // Get first template for tickets :
       $notid = 0;
-      $query = "SELECT MIN(id) as id  FROM `glpi_notificationtemplates` WHERE `itemtype` = 'Ticket'";
-      if ($result=$DB->query($query)) {
-         if ($DB->numrows($result)==1) {
+      $query = "SELECT MIN(id) AS id
+                FROM `glpi_notificationtemplates`
+                WHERE `itemtype` = 'Ticket'";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) == 1) {
             $notid = $DB->result($result,0,0);
          }
       }
-      if ($notid>0) {
+      if ($notid > 0) {
          $notifications = array('delete' => array(Notification::GLOBAL_ADMINISTRATOR));
 
          $notif_names   = array('delete' => 'Delete Ticket');
@@ -1523,17 +1532,17 @@ function update0831to084() {
          foreach ($notifications as $type => $targets) {
             $query = "INSERT INTO `glpi_notifications`
                               (`name`, `entities_id`, `itemtype`, `event`, `mode`,
-                              `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
-                              `date_mod`)
-                        VALUES ('".$notif_names[$type]."', 0, 'Ticket', '$type', 'mail',
-                              $notid, '', 1, 1, NOW())";
+                               `notificationtemplates_id`, `comment`, `is_recursive`, `is_active`,
+                               `date_mod`)
+                       VALUES ('".$notif_names[$type]."', 0, 'Ticket', '$type', 'mail',
+                               $notid, '', 1, 1, NOW())";
             $DB->queryOrDie($query, "0.83 add problem $type notification");
             $notifid = $DB->insert_id();
 
             foreach ($targets as $target) {
                $query = "INSERT INTO `glpi_notificationtargets`
-                                 (`id`, `notifications_id`, `type`, `items_id`)
-                           VALUES (NULL, $notifid, ".Notification::USER_TYPE.", $target);";
+                                (`id`, `notifications_id`, `type`, `items_id`)
+                         VALUES (NULL, $notifid, ".Notification::USER_TYPE.", $target);";
                $DB->queryOrDie($query, "0.83 add problem $type notification target");
             }
          }
