@@ -179,7 +179,7 @@ class TicketRecurrent extends CommonDropdown {
             for ($i=1 ; $i<=30 ; $i++) {
                $possible_values[$i*DAY_TIMESTAMP] = sprintf(_n('%d day','%d days',$i), $i);
             }
-            
+
             for ($i=1 ; $i<12 ; $i++) {
                $possible_values[$i.'MONTH'] = sprintf(_n('%d month','%d months',$i), $i);
             }
@@ -195,25 +195,29 @@ class TicketRecurrent extends CommonDropdown {
    }
 
    /**
+    * @since version 0.84
+    *
     * @param $field
     * @param $values
     * @param $options   array
    **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
       switch ($field) {
          case 'periodicity' :
             if (preg_match('/([0-9]+)MONTH/',$values['periodicity'], $matches)) {
                return sprintf(_n('%d month','%d months',$matches[1]), $matches[1]);
-            } else if (preg_match('/([0-9]+)YEAR/',$values['periodicity'], $matches)) {
-               return sprintf(_n('%d year','%d years',$matches[1]), $matches[1]);
-            } else {
-               return Html::timestampToString($values['periodicity'], false);
             }
-                     
+            if (preg_match('/([0-9]+)YEAR/',$values['periodicity'], $matches)) {
+               return sprintf(_n('%d year','%d years',$matches[1]), $matches[1]);
+            }
+            return Html::timestampToString($values['periodicity'], false);
          break;
       }
       return parent::getSpecificValueToDisplay($field, $values[$field], $options);
    }
+
+
    /**
     * Get search function for the class
     *
@@ -276,10 +280,12 @@ class TicketRecurrent extends CommonDropdown {
    /**
     * Compute next creation date of a ticket
     *
-    * @param $begin_date datetime Begin date of the recurrent ticket
-    * @param $periodicity timestamp Periodicity of creation
-    * @param $create_before timestamp Create before specific timestamp
-    * @param $calendars_id integre ID of the calendar to used
+    * New parameter in  version 0.84 : $calendars_id
+    *
+    * @param $begin_date      datetime    Begin date of the recurrent ticket
+    * @param $periodicity     timestamp   Periodicity of creation
+    * @param $create_before   timestamp   Create before specific timestamp
+    * @param $calendars_id    integer     ID of the calendar to used
     *
     * @return datetime next creation date
    **/
@@ -290,25 +296,25 @@ class TicketRecurrent extends CommonDropdown {
       }
       $check = true;
       if (preg_match('/([0-9]+)MONTH/',$periodicity)
-         || preg_match('/([0-9]+)YEAR/',$periodicity)) {
+          || preg_match('/([0-9]+)YEAR/',$periodicity)) {
          $check = false;
       }
-      
+
       if ($check && ($create_before > $periodicity)) {
          Session::addMessageAfterRedirect(__('Invalid frequency. It must be greater than the preliminary creation.'), false, ERROR);
          return 'NULL';
       }
-      
+
       if ($periodicity <> 0) {
          // Standard time computation
          $timestart  = strtotime($begin_date) - $create_before;
          $now        = time();
          if ($now > $timestart) {
             $value = $periodicity;
-            $step = "second";
+            $step  = "second";
             if (preg_match('/([0-9]+)MONTH/',$periodicity, $matches)) {
                $value = $matches[1];
-               $step = 'MONTH';
+               $step  = 'MONTH';
             }
             if (preg_match('/([0-9]+)YEAR/',$periodicity, $matches)) {
                $value = $matches[1];
@@ -321,16 +327,16 @@ class TicketRecurrent extends CommonDropdown {
          $calendar = new Calendar();
          if ($calendars_id && $calendar->getFromDB($calendars_id)) {
             $durations = $calendar->getDurationsCache();
-            if (array_sum($durations)>0) { // working days exists
+            if (array_sum($durations) > 0) { // working days exists
                while (!$calendar->isAWorkingDay($timestart)) {
                   $timestart = strtotime("+ 1 day",$timestart);
-               }         
+               }
             }
          }
-         
+
          return date("Y-m-d H:i:s", $timestart);
       }
-      
+
       return 'NULL';
    }
 

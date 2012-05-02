@@ -510,12 +510,16 @@ class Html {
       echo "</tr></table></div>";
    }
 
-   /** 
+
+   /**
    * Clean Display of Request
+   *
+   * @since version 0.83.1
    *
    * @param $request SQL request
    **/
    static function cleanSQLDisplay($request) {
+
       $request = str_replace("<","&lt;",$request);
       $request = str_replace(">","&gt;",$request);
       $request = str_ireplace("UNION","<br>UNION<br>",$request);
@@ -528,6 +532,7 @@ class Html {
 
       return $request;
    }
+
 
    /**
     * Display Debug Information

@@ -223,21 +223,26 @@ class Calendar extends CommonDropdown {
       }
       return $activetime;
    }
+
+
    /**
-    * Is the time passed is in a working day 
+    * Is the time passed is in a working day
+    *
+    * @since version 0.84
     *
     * @param $time    time  time to check
     *
     * @return boolean
-    * @since version 0.84
    **/
    function isAWorkingDay($time) {
-      $cache_duration = $this->getDurationsCache();
-      $dayofweek  = self::getDayNumberInWeek($time);
-      $date = date('Y-m-d',$time);
+
+      $cache_duration   = $this->getDurationsCache();
+      $dayofweek        = self::getDayNumberInWeek($time);
+      $date             = date('Y-m-d',$time);
       return (($cache_duration[$dayofweek] > 0) && !$this->isHoliday($date));
    }
-   
+
+
    /**
     * Add a delay to a date using the active calendar
     *

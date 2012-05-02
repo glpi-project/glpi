@@ -1562,8 +1562,8 @@ function update0831to084() {
             $periodicity = round($periodicity/(MONTH_TIMESTAMP)).'MONTH';
          }
          $query = "UPDATE `glpi_ticketrecurrents`
-                     SET `periodicity` = '$periodicity'
-                     WHERE `id` = '".$data['id']."'";
+                   SET `periodicity` = '$periodicity'
+                   WHERE `id` = '".$data['id']."'";
          $DB->query($query);
       }
    }
