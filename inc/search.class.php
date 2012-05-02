@@ -77,7 +77,7 @@ class Search {
       // Instanciate an object to access method
       $item = NULL;
 
-      if (($itemtype != 'AllAssets')) {
+      if ($itemtype != 'AllAssets') {
          $item = getItemForItemtype($itemtype);
       }
 
@@ -616,7 +616,7 @@ class Search {
                if (($citem = getItemForItemtype($ctype))
                    && $citem->canView()) {
                   // State case
-                  if (($itemtype == 'AllAssets')) {
+                  if ($itemtype == 'AllAssets') {
                      $query_num = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                               $ctable, $tmpquery);
                      $query_num = str_replace($itemtype, $ctype, $query_num);
@@ -698,7 +698,7 @@ class Search {
                }
                $tmpquery = "";
                // AllAssets case
-               if (($itemtype == 'AllAssets')) {
+               if ($itemtype == 'AllAssets') {
                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                               $FROM.
                               $WHERE;
@@ -948,11 +948,12 @@ class Search {
             echo self::showNewLine($output_type);
             $header_num = 1;
 
-            if ($output_type == self::HTML_OUTPUT && !isset($CFG_GLPI["union_search_type"][$itemtype])) { // HTML display - massive modif
+            if (($output_type == self::HTML_OUTPUT)
+                && !isset($CFG_GLPI["union_search_type"][$itemtype])) { // HTML display - massive modif
                $check_all = "<input type='checkbox' name='checkall_massaction' ".
                                  "id='checkall_massaction' ".
                                  "onclick= \"if ( checkAsCheckboxes('checkall_massaction',
-                                                                  'massiveaction_form'))
+                                                                    'massiveaction_form'))
                                                             {return true;}\">";
                echo self::showHeaderItem($output_type, $check_all, $header_num, "", 0,
                                          $p['order']);
@@ -1050,7 +1051,8 @@ class Search {
                // Add item in item list
                Session::addToNavigateListItems($itemtype, $data["id"]);
 
-               if ($output_type == self::HTML_OUTPUT && !isset($CFG_GLPI["union_search_type"][$itemtype])) { // HTML display - massive modif
+               if (($output_type == self::HTML_OUTPUT)
+                   && !isset($CFG_GLPI["union_search_type"][$itemtype])) { // HTML display - massive modif
                   $tmpcheck = "";
                   if ($showmassiveactions) {
                      if (($itemtype == 'Entity')
@@ -1559,7 +1561,7 @@ class Search {
 
       // Instanciate an object to access method
       $item = NULL;
-      if (($itemtype != 'AllAssets')) {
+      if ($itemtype != 'AllAssets') {
          $item = getItemForItemtype($itemtype);
       }
 
@@ -2146,7 +2148,7 @@ class Search {
 
       $toview = array();
       $item   = NULL;
-      if (($itemtype != 'AllAssets')) {
+      if ($itemtype != 'AllAssets') {
          $item = getItemForItemtype($itemtype);
       }
       // Add first element (name)
@@ -2175,7 +2177,7 @@ class Search {
       $itemtable = getTableForItemType($itemtype);
       $item      = NULL;
       $mayberecursive = false;
-      if (($itemtype != 'AllAssets')) {
+      if ($itemtype != 'AllAssets') {
          $item           = getItemForItemtype($itemtype);
          $mayberecursive = $item->maybeRecursive();
       }
@@ -5002,15 +5004,18 @@ class Search {
                                                                                             'NEWTABLE'));
          }
 
-         if (in_array($itemtype, $CFG_GLPI["networkport_types"]) || $itemtype == 'AllAssets') {
+         if (in_array($itemtype, $CFG_GLPI["networkport_types"])
+             || ($itemtype == 'AllAssets')) {
             $search[$itemtype] += NetworkPort::getSearchOptionsToAdd($itemtype);
          }
 
-         if (in_array($itemtype, $CFG_GLPI["contract_types"]) || $itemtype == 'AllAssets') {
+         if (in_array($itemtype, $CFG_GLPI["contract_types"])
+             || ($itemtype == 'AllAssets')) {
             $search[$itemtype] += Contract::getSearchOptionsToAdd();
          }
 
-         if (in_array($itemtype, $CFG_GLPI["infocom_types"]) || $itemtype == 'AllAssets') {
+         if (in_array($itemtype, $CFG_GLPI["infocom_types"])
+             || ($itemtype == 'AllAssets')) {
             $search[$itemtype] += Infocom::getSearchOptionsToAdd($itemtype);
          }
 

@@ -1348,7 +1348,7 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</th></tr>";
       echo "<tr class='tab_bg_2'><td width='100px'>";
 
-      $types = array( 'Group', 'Profile', 'User', 'Entity');
+      $types = array('Entity', 'Group', 'Profile', 'User');
 
       $addrand = Dropdown::showItemTypes('_type', $types);
       $params  = array('type'  => '__VALUE__',

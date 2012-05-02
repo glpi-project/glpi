@@ -828,15 +828,16 @@ function update0831to084() {
    // Update bookmarks from States to AllAssets
    foreach ($DB->request("glpi_bookmarks", "`itemtype` = 'States'") as $data) {
       $query = str_replace('itemtype=States','itemtype=AllAssets',$data['query']);
-      $query = "UPDATE `glpi_bookmarks` SET query='".addslashes($query)."'
-                  WHERE `id` = '".$data['id']."'";
+      $query = "UPDATE `glpi_bookmarks`
+                SET query = '".addslashes($query)."'
+                WHERE `id` = '".$data['id']."'";
       $DB->query($query);
    }
    $query = "UPDATE `glpi_bookmarks`
              SET `itemtype` = 'AllAssets', `path` = 'front/allassets.php'
              WHERE `itemtype` = 'States'";
    $DB->query($query);
-   
+
 
    $migration->displayWarning("You should have a look at the \"migration cleaner\" tool !", true);
    $migration->displayWarning("With it, you should re-create the networks topologies and the links between the networks and the addresses",
@@ -1498,12 +1499,12 @@ function update0831to084() {
       $migration->dropField('glpi_profiles', 'view_ocsng');
       $migration->dropField('glpi_profiles', 'clean_ocsng');
 //    }
-   
-   
+
+
    $migration->addField('glpi_authldaps', 'pagesize', 'integer');
    $migration->addField('glpi_authldaps', 'ldap_maxlimit', 'integer');
    $migration->addField('glpi_authldaps', 'can_support_pagesize', 'bool');
-   
+
    // Add delete ticket notification
    if (countElementsInTable("glpi_notifications", "`itemtype` = 'Ticket' AND `event` = 'delete'") == 0) {
       // Get first template for tickets :
@@ -1516,9 +1517,9 @@ function update0831to084() {
       }
       if ($notid>0) {
          $notifications = array('delete' => array(Notification::GLOBAL_ADMINISTRATOR));
-   
+
          $notif_names   = array('delete' => 'Delete Ticket');
-   
+
          foreach ($notifications as $type => $targets) {
             $query = "INSERT INTO `glpi_notifications`
                               (`name`, `entities_id`, `itemtype`, `event`, `mode`,
@@ -1528,7 +1529,7 @@ function update0831to084() {
                               $notid, '', 1, 1, NOW())";
             $DB->queryOrDie($query, "0.83 add problem $type notification");
             $notifid = $DB->insert_id();
-   
+
             foreach ($targets as $target) {
                $query = "INSERT INTO `glpi_notificationtargets`
                                  (`id`, `notifications_id`, `type`, `items_id`)
@@ -1541,7 +1542,7 @@ function update0831to084() {
    // Move tickerrecurrent values to correct ones
    $migration->changeField('glpi_ticketrecurrents', 'periodicity', 'periodicity', 'string');
    $migration->addField('glpi_ticketrecurrents', 'calendars_id', 'integer');
-   
+
    $migration->migrationOneTable('glpi_ticketrecurrents');
    foreach($DB->request('glpi_ticketrecurrents',"`periodicity` >= ".MONTH_TIMESTAMP) as $data) {
       $periodicity = $data['periodicity'] ;
@@ -1551,11 +1552,11 @@ function update0831to084() {
          } else {
             $periodicity = round($periodicity/(MONTH_TIMESTAMP)).'MONTH';
          }
-         $query = "UPDATE `glpi_ticketrecurrents` 
+         $query = "UPDATE `glpi_ticketrecurrents`
                      SET `periodicity` = '$periodicity'
                      WHERE `id` = '".$data['id']."'";
          $DB->query($query);
-      }   
+      }
    }
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
