@@ -327,7 +327,6 @@ class Computer_Device extends CommonDBTM {
                   }
 
                   $specificities        = $device->getFormData();
-                  $links_specifications = array();
 
                   $query = "SELECT `id`,
                                    `$fk`
