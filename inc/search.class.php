@@ -702,7 +702,7 @@ class Search {
                   $tmpquery = $SELECT.", '$ctype' AS TYPE ".
                               $FROM.
                               $WHERE;
-                  
+
                   if ($itemtype == 'AllAssets') {
                      $tmpquery .= " AND `$ctable`.`id` IS NOT NULL ";
                   }
@@ -716,14 +716,14 @@ class Search {
                   if ($citem && $citem->maybeTemplate()) {
                      $tmpquery .= " AND `$ctable`.`is_template` = '0' ";
                   }
-                              
+
                   $tmpquery.= $GROUPBY.
                               $HAVING;
 
                   $tmpquery = str_replace($CFG_GLPI["union_search_type"][$itemtype],
                                           $ctable, $tmpquery);
                   $tmpquery = str_replace($itemtype, $ctype, $tmpquery);
-                  
+
                } else {// Ref table case
                   $reftable = getTableForItemType($itemtype);
 
@@ -3841,7 +3841,7 @@ class Search {
     * @param $data            array containing data results
     * @param $num                   item num in the request
     * @param $meta                  is a meta item ? (default 0)
-    * @param $addobjectparams  array added parameters for union search
+    * @param $addobjectparams array added parameters for union search
     *
     * @return string to print
    **/
@@ -3853,7 +3853,8 @@ class Search {
       if (isset($CFG_GLPI["union_search_type"][$itemtype])
           && ($CFG_GLPI["union_search_type"][$itemtype] == $searchopt[$ID]["table"])) {
 
-         if (isset($searchopt[$ID]['addobjectparams'])) {
+         if (isset($searchopt[$ID]['addobjectparams'])
+             && $searchopt[$ID]['addobjectparams']) {
             return self::giveItem($data["TYPE"], $ID, $data, $num, $meta,
                                   $searchopt[$ID]['addobjectparams']);
          }
