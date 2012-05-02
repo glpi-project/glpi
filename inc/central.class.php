@@ -96,13 +96,13 @@ class Central extends CommonGLPI {
       echo "<td class='top'>";
       echo "<table class='central'>";
       echo "<tr><td>";
-	  if ($showticket) {
+      if ($showticket) {
          Ticket::showCentralCount();
       }
       if (Session::haveRight("contract","r")) {
          Contract::showCentral();
       }
-	  echo "</td></tr>";
+      echo "</td></tr>";
       echo "</table></td>";
 
       if (Session::haveRight("logs","r")) {
@@ -133,7 +133,7 @@ class Central extends CommonGLPI {
 
       if (Session::haveRight("config", "w")) {
          $logins = User::checkDefaultPasswords();
-         $user = new User();
+         $user   = new User();
          if (!empty($logins)) {
             $accouts = array();
             foreach ($logins as $login) {
@@ -167,18 +167,17 @@ class Central extends CommonGLPI {
       if ($showticket) {
          Ticket::showCentralList(0, "process", false);
          Ticket::showCentralList(0, "waiting", false);
-
       }
       echo "</td></tr>";
       echo "</table></td>";
       echo "<td class='top'><table class='central'>";
       echo "<tr><td>";
-	  Planning::showCentral(Session::getLoginUserID());
+      Planning::showCentral(Session::getLoginUserID());
       Reminder::showListForCentral();
       if (Session::haveRight("reminder_public","r")) {
          Reminder::showListForCentral(false);
       }
-	  echo "</td></tr>";
+      echo "</td></tr>";
       echo "</table></td></tr></table>";
    }
 
@@ -200,7 +199,7 @@ class Central extends CommonGLPI {
       if (Session::haveRight('show_group_ticket','1')) {
          Ticket::showCentralList(0, "waiting", true);
       }
-	  echo "</td></tr>";
+      echo "</td></tr>";
       echo "</table></td>";
       echo "<td class='top'><table class='central'>";
       echo "<tr><td>";
