@@ -173,7 +173,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
                       'update_task'       => __('Update of a task'),
                       'delete_task'       => __('Deletion of a task'),
                       'closed'            => __('Closing of the ticket'),
-                      'delete'           => __('Deletion of a ticket'),
+                      'delete'            => __('Deletion of a ticket'),
                       'alertnotclosed'    => __('Not solved tickets'),
                       'recall'            => __('Automatic reminders of SLAs'),
                       'satisfaction'      => __('Satisfaction survey'));

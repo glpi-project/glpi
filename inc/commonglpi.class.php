@@ -383,13 +383,13 @@ class CommonGLPI {
          }
          foreach ($options as $key => $val) {
             // Do not include id options
-            if ($key[0] != '_' && $key != 'id') {
+            if (($key[0] != '_') && ($key != 'id')) {
                $extraparamhtml .= "&amp;$key=$val";
                $extraparam     .= "&$key=$val";
             }
          }
       }
-      
+
       if (empty($withtemplate)
           && !$this->isNewID($ID)
           && $this->getType()
@@ -578,7 +578,11 @@ class CommonGLPI {
    }
 
 
-   function show($options = array()) {
+
+   /**
+    * @param $options   array
+   **/
+   function show($options=array()) {
 
       $this->showTabs($options);
       $this->addDivForTabs();
