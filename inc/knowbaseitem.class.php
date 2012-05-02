@@ -176,6 +176,12 @@ class KnowbaseItem extends CommonDBTM {
       $this->profiles = KnowbaseItem_Profile::getProfiles($this->fields['id']);
    }
 
+
+   /**
+    * @see inc/CommonDBTM::cleanDBonPurge()
+    *
+    * @since version 0.83.1
+   **/
    function cleanDBonPurge() {
 
       $class = new KnowbaseItem_User();
@@ -188,9 +194,10 @@ class KnowbaseItem extends CommonDBTM {
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
 
+
    /**
     * @since version 0.83
-    */
+   **/
    function countVisibilities() {
 
       return (count($this->entities)

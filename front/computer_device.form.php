@@ -42,9 +42,8 @@ $compdev = new Computer_Device();
 
 if (isset($_POST["add"])) {
    $compdev->check(-1, 'w', $_POST);
-
    if (isset($_POST['itemtype']) && !empty($_POST['itemtype'])
-         && isset($_POST['items_id'])&& !empty($_POST['items_id'])) {
+       && isset($_POST['items_id'])&& !empty($_POST['items_id'])) {
       $compdev->addDevices(1, $_POST['itemtype'], $_POST['computers_id'], $_POST['items_id']);
    }
    Html::back();

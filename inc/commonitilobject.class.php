@@ -858,9 +858,9 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
       // Set begin waiting date if needed
-      if ((($key = array_search('status',$this->updates)) !== false)
+      if ((($key = array_search('status', $this->updates)) !== false)
           && (($this->fields['status'] == 'waiting')
-              || in_array($this->fields["status"],$this->getSolvedStatusArray()))) {
+              || in_array($this->fields["status"], $this->getSolvedStatusArray()))) {
 
          $this->updates[]                    = "begin_waiting_date";
          $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];

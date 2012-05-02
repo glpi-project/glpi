@@ -82,6 +82,8 @@ class DeviceMotherboard extends CommonDevice {
 
       return $data;
    }
+
+
    /**
     * @since version 0.84
     *
@@ -122,5 +124,6 @@ class DeviceMotherboard extends CommonDevice {
             Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
       }
    }
+
 }
 ?>
