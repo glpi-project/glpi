@@ -909,7 +909,7 @@ abstract class CommonITILTask  extends CommonDBTM {
       echo "<td>". __('Duration')."</td><td>";
 
       $toadd = array();
-      for ($i=9;$i<=100;$i++) {
+      for ($i=9 ; $i<=100 ; $i++) {
          $toadd[] = $i*HOUR_TIMESTAMP;
       }
 

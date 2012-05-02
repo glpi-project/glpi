@@ -467,11 +467,12 @@ class Auth {
             if (Toolbox::canUseLdap()) {
                $ldaservers = array();
                //User has already authenticate, at least once : it's ldap server if filled
-               if (isset($this->user->fields["auths_id"]) && $this->user->fields["auths_id"] > 0) {
+               if (isset($this->user->fields["auths_id"])
+                   && ($this->user->fields["auths_id"] > 0)) {
                   $authldap = new AuthLdap();
                   //If ldap server is enabled
                   if ($authldap->getFromDB($this->user->fields["auths_id"])
-                     && $authldap->fields['is_active']) {
+                      && $authldap->fields['is_active']) {
                      $ldapservers[] = $authldap->fields;
                   }
                //User has never beeen authenticated : try all active ldap server to find the right one
@@ -513,7 +514,8 @@ class Auth {
             }
             //If user is set as present in GLPI but no LDAP DN found : it means that the user
             //is not present in an ldap directory anymore
-            if(!$user_dn && $this->user_present) {
+            if (!$user_dn
+                && $this->user_present) {
                $user_deleted_ldap       = true;
                $this->user_deleted_ldap = true;
             }
@@ -987,6 +989,7 @@ class Auth {
             case self::CAS :
             case self::EXTERNAL :
             case self::X509 :
+               // TODO : walid to review (field authldaps_id_extra delete in r18366)
                if ($CFG_GLPI['authldaps_id_extra']) {
                   $sql = "SELECT `name`
                           FROM `glpi_authldaps`

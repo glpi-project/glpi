@@ -1134,8 +1134,8 @@ class Dropdown {
     *    - max             : max value : default DAY_TIMESTAMP
     *    - value           : default value
     *    - addfirstminutes : add first minutes before first step (default false)
-    *    - toadd : array of values to add
-    *    - inhours : only show timestamp in hours not in days
+    *    - toadd           : array of values to add
+    *    - inhours         : only show timestamp in hours not in days
    **/
    static function showTimeStamp($myname, $options=array()) {
       global $CFG_GLPI;
@@ -1146,8 +1146,8 @@ class Dropdown {
       $params['step']            = $CFG_GLPI["time_step"]*MINUTE_TIMESTAMP;
       $params['emptylabel']      = self::EMPTY_VALUE;
       $params['addfirstminutes'] = false;
-      $params['toadd']            = array();
-      $params['inhours']          = false;
+      $params['toadd']           = array();
+      $params['inhours']         = false;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {

@@ -4833,7 +4833,6 @@ class Ticket extends CommonITILObject {
          echo "<tr><th>".__('No ticket found.')."</th></tr>";
       }
 
-
       if ($item->getID()
           && ($item->getType() == 'User')) {
          echo "<tr><td class='tab_bg_2 center b' colspan='10'>";
