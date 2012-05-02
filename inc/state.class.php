@@ -149,7 +149,7 @@ class State extends CommonTreeDropdown {
          while ($data = $DB->fetch_assoc($result)) {
             $tot = 0;
             echo "<tr class='tab_bg_2'><td class='b'>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/front/states.php?reset=reset&amp;contains[0]=".
+            echo "<a href='".$CFG_GLPI['root_doc']."/front/allassets.php?reset=reset&amp;contains[0]=".
                    "$$$$".$data["id"]."&amp;searchtype[0]=contains&amp;field[0]=31&amp;sort=".
                    "1&amp;start=0'>".$data["completename"]."</a></td>";
 
