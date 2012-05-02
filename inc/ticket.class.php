@@ -5147,7 +5147,7 @@ class Ticket extends CommonITILObject {
          $bgcolor = $_SESSION["glpipriority_".$job->fields["priority"]];
    //      $rand    = mt_rand();
          echo "<tr class='tab_bg_2'>";
-         echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'),  __('ID'),
+         echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
                                                                $job->fields["id"])."</td>";
          echo "<td class='center'>";
 
@@ -5155,7 +5155,7 @@ class Ticket extends CommonITILObject {
             foreach ($job->users[parent::REQUESTER] as $d) {
                if ($d["users_id"] > 0) {
                   $userdata = getUserName($d["users_id"],2);
-                  $name = "<span class='b'>".$userdata['name']."</span>&nbsp;";
+                  $name     = "<span class='b'>".$userdata['name']."</span>";
                   if ($viewusers) {
                      $name = sprintf(__('%1$s %2$s'), $name,
                                      Html::showToolTip($userdata["comment"],
@@ -5200,13 +5200,16 @@ class Ticket extends CommonITILObject {
          }
          echo "<td>";
 
-         echo "<a id='ticket".$job->fields["id"].$rand."' href='".$CFG_GLPI["root_doc"].
-               "/front/ticket.form.php?id=".$job->fields["id"]."'>";
-         echo "<span class='b'>".$job->fields["name"]."</span></a>&nbsp;";
-         echo "(".$job->numberOfFollowups($showprivate)."-".$job->numberOfTasks($showprivate).
-              ")&nbsp;";
-         Html::showToolTip($job->fields['content'],
-                           array('applyto' => 'ticket'.$job->fields["id"].$rand));
+         $link = "<a id='ticket".$job->fields["id"].$rand."' href='".$CFG_GLPI["root_doc"].
+                   "/front/ticket.form.php?id=".$job->fields["id"]."'>".
+                 "<span class='b'>".$job->fields["name"]."</span></a>";
+         $link = sprintf(__('%1$s (%2$s)'), $link,
+                         sprintf(__('%1$s - %2$s'), $job->numberOfFollowups($showprivate),
+                                 $job->numberOfTasks($showprivate)));
+         $link = printf(__('%1$s %2$s'), $link,
+                        Html::showToolTip($job->fields['content'],
+                                          array('applyto' => 'ticket'.$job->fields["id"].$rand,
+                                                'display' => false)));
 
          echo "</td>";
 
@@ -5228,7 +5231,7 @@ class Ticket extends CommonITILObject {
 
       return " DISTINCT `glpi_tickets`.*,
                         `glpi_itilcategories`.`completename` AS catname
-               $SELECT";
+                        $SELECT";
    }
 
 
@@ -5250,6 +5253,9 @@ class Ticket extends CommonITILObject {
    }
 
 
+   /**
+    * @param $output
+   **/
    static function showPreviewAssignAction($output) {
 
       //If ticket is assign to an object, display this information first
@@ -5262,16 +5268,13 @@ class Ticket extends CommonITILObject {
                echo "<tr class='tab_bg_2'>";
                echo "<td>".__('Assign equipment')."</td>";
 
-               echo "<td>";
-               echo $item->getLink(true);
-               echo "</td>";
+               echo "<td>".$item->getLink(true)."</td>";
                echo "</tr>";
             }
          }
 
-            //Clean output of unnecessary fields (already processed)
-            unset($output["items_id"]);
-            unset($output["itemtype"]);
+         unset($output["items_id"]);
+         unset($output["itemtype"]);
       }
       unset($output["entities_id"]);
       return $output;
@@ -5323,7 +5326,7 @@ class Ticket extends CommonITILObject {
                             AND `status` = 'solved'
                             AND `is_deleted` = 0";
 
-            if ($delay >0) {
+            if ($delay > 0) {
                $query .= " AND ADDDATE(`solvedate`, INTERVAL ".$delay." DAY) < CURDATE()";
             }
 
@@ -5364,16 +5367,6 @@ class Ticket extends CommonITILObject {
       $tot = 0;
 
       foreach (Entity::getEntitiesToNotify('notclosed_delay') as $entity => $value) {
-/*         $query = "SELECT `glpi_tickets`.*
-                   FROM `glpi_tickets`
-                   LEFT JOIN `glpi_alerts` ON (`glpi_tickets`.`id` = `glpi_alerts`.`items_id`
-                                               AND `glpi_alerts`.`itemtype` = 'Ticket'
-                                               AND `glpi_alerts`.`type`='".Alert::NOTCLOSED."')
-                   WHERE `glpi_tickets`.`entities_id` = '".$entity."'
-                         AND `glpi_tickets`.`status` IN ('new','assign','plan','waiting')
-                         AND `glpi_tickets`.`closedate` IS NULL
-                         AND ADDDATE(`glpi_tickets`.`date`, INTERVAL ".$value." DAY) < CURDATE()
-                         AND `glpi_alerts`.`date` IS NULL";*/
          $query = "SELECT `glpi_tickets`.*
                    FROM `glpi_tickets`
                    WHERE `glpi_tickets`.`entities_id` = '".$entity."'
@@ -5390,29 +5383,12 @@ class Ticket extends CommonITILObject {
             if (NotificationEvent::raiseEvent('alertnotclosed', new self(),
                                               array('items'       => $tickets,
                                                     'entities_id' => $entity))) {
-// To be clean : do not mark ticket as already send : always send all
-//                $alert = new Alert();
-//                $input["itemtype"] = 'Ticket';
-//                $input["type"] = Alert::NOTCLOSED;
-//                foreach ($tickets as $ticket) {
-//                   $input["items_id"] = $ticket['id'];
-//                   $alert->add($input);
-//                   unset($alert->fields['id']);
-//                }
-
-// To be clean : do not mark ticket as already send : always send all
-//                $alert = new Alert();
-//                $input["itemtype"] = 'Ticket';
-//                $input["type"] = Alert::NOTCLOSED;
-//                foreach ($tickets as $ticket) {
-//                   $input["items_id"] = $ticket['id'];
-//                   $alert->add($input);
-//                   unset($alert->fields['id']);
-//                }
 
                $tot += count($tickets);
                $task->addVolume(count($tickets));
-               $task->log(Dropdown::getDropdownName('glpi_entities', $entity)." : ".count($tickets));
+               $task->log(sprintf(__('%1$s: %2$s'),
+                                  Dropdown::getDropdownName('glpi_entities', $entity),
+                                  count($tickets)));
             }
          }
       }
@@ -5431,14 +5407,14 @@ class Ticket extends CommonITILObject {
    static function cronCreateInquest($task) {
       global $DB;
 
-      $conf    = new Entity();
-      $inquest = new TicketSatisfaction();
-      $tot = 0;
+      $conf        = new Entity();
+      $inquest     = new TicketSatisfaction();
+      $tot         = 0;
       $maxentity   = array();
       $tabentities = array();
 
       $rate = Entity::getUsedConfig('inquest_config', 0, 'inquest_rate');
-      if ($rate>0) {
+      if ($rate > 0) {
          $tabentities[0] = $rate;
       }
 
@@ -5446,7 +5422,7 @@ class Ticket extends CommonITILObject {
          $rate   = Entity::getUsedConfig('inquest_config', $entity['id'], 'inquest_rate');
          $parent = Entity::getUsedConfig('inquest_config', $entity['id'], 'entities_id');
 
-         if ($rate>0) {
+         if ($rate > 0) {
             $tabentities[$entity['id']] = $rate;
          }
       }
@@ -5471,7 +5447,7 @@ class Ticket extends CommonITILObject {
                          AND `glpi_ticketsatisfactions`.`id` IS NULL
                    ORDER BY `closedate` ASC";
 
-         $nb = 0;
+         $nb            = 0;
          $max_closedate = '';
 
          foreach ($DB->request($query) as $tick) {
@@ -5488,15 +5464,16 @@ class Ticket extends CommonITILObject {
 
          // conservation de toutes les max_closedate des entites filles
          if (!empty($max_closedate)
-             && (!isset($maxentity[$parent]) || $max_closedate > $maxentity[$parent])) {
-
+             && (!isset($maxentity[$parent])
+                 || ($max_closedate > $maxentity[$parent]))) {
             $maxentity[$parent] = $max_closedate;
          }
 
          if ($nb) {
             $tot += $nb;
             $task->addVolume($nb);
-            $task->log(Dropdown::getDropdownName('glpi_entities', $entity)." : $nb");
+            $task->log(sprintf(__('%1$s: %2$s'),
+                               Dropdown::getDropdownName('glpi_entities', $entity), $nb));
          }
       }
 
@@ -5510,9 +5487,6 @@ class Ticket extends CommonITILObject {
 
       return ($tot > 0);
    }
-
-
-
 
 
    /**
