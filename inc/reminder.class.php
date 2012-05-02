@@ -102,6 +102,12 @@ class Reminder extends CommonDBTM {
       $this->profiles = Profile_Reminder::getProfiles($this->fields['id']);
    }
 
+
+   /**
+    * @see inc/CommonDBTM::cleanDBonPurge()
+    *
+    * @since version 0.83.1
+   **/
    function cleanDBonPurge() {
 
       $class = new Reminder_User();
@@ -113,6 +119,7 @@ class Reminder extends CommonDBTM {
       $class = new Profile_Reminder();
       $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
+
 
    /**
     * @since version 0.83

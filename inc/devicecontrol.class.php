@@ -94,6 +94,8 @@ class DeviceControl extends CommonDevice {
 
       return $data;
    }
+
+
    /**
     * @since version 0.84
     *
@@ -117,7 +119,7 @@ class DeviceControl extends CommonDevice {
          case 'Computer_Device' :
             Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
             InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            
+
             break;
       }
    }
@@ -135,8 +137,9 @@ class DeviceControl extends CommonDevice {
          case 'Computer_Device' :
             Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
             InterfaceType::getHTMLTableCellsForItem($row, $this, NULL, $options);
-            
+
       }
    }
+
 }
 ?>

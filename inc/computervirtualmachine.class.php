@@ -318,7 +318,7 @@ class ComputerVirtualMachine extends CommonDBChild {
       echo "<table class='tab_cadre_fixe'>";
 
       Session::initNavigateListItems('ComputerVirtualMachine',
-                                       sprintf(__('%1$s = %2$s'), __('Computer'),
+                                     sprintf(__('%1$s = %2$s'), __('Computer'),
                                              (empty($comp->fields['name'])
                                                 ? "($ID)" : $comp->fields['name'])));
 

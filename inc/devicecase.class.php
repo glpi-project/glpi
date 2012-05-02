@@ -80,6 +80,8 @@ class DeviceCase extends CommonDevice {
       }
       return $data;
    }
+
+
    /**
     * @since version 0.84
     *
@@ -120,5 +122,6 @@ class DeviceCase extends CommonDevice {
             Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
       }
    }
+
 }
 ?>

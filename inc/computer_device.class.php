@@ -326,9 +326,9 @@ class Computer_Device extends CommonDBTM {
                      $current_row->addCell($delete_all, $cell_value);
                   }
 
-                  $specificities = $device->getFormData();
-
+                  $specificities        = $device->getFormData();
                   $links_specifications = array();
+
                   $query = "SELECT `id`,
                                    `$fk`
                                    $specif_text
@@ -385,8 +385,8 @@ class Computer_Device extends CommonDBTM {
 
       if ($canedit) {
 //          Html::openArrowMassives("form_device_action$rand", false, false, true);
-//          Html::closeArrowMassives(array());      
-         
+//          Html::closeArrowMassives(array());
+
 /*         echo __('Add a new component')."&nbsp;";
          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);*/
          echo "<input type='submit' class='submit' name='updateall' value='"._sx('button', 'Save')."'>";
@@ -456,7 +456,6 @@ class Computer_Device extends CommonDBTM {
    **/
    function addDevices($numberToAdd, $itemtype, $computers_id, $devices_id) {
       global $DB;
-
 
       $linktable = getTableForItemType('Computer_'.$itemtype);
       $this->forceTable($linktable);

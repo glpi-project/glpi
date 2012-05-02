@@ -94,6 +94,8 @@ class DevicePowerSupply extends CommonDevice {
       }
       return $data;
    }
+
+
    /**
     * @since version 0.84
     *
@@ -134,5 +136,6 @@ class DevicePowerSupply extends CommonDevice {
             Manufacturer::getHTMLTableCellsForItem($row, $this, NULL, $options);
       }
    }
+
 }
 ?>
