@@ -2662,7 +2662,7 @@ abstract class CommonITILObject extends CommonDBTM {
       // Supplier
       if ($this->canAssign()
           && !$is_hidden['suppliers_id_assign']
-          && $this->fields["suppliers_id_assign"]) {
+          && ($this->fields["suppliers_id_assign"] || !$ID)) {
          echo self::getActorIcon('supplier', self::ASSIGN);
          /// For ticket templates : mandatories
          if (isset($options['_tickettemplate'])) {
