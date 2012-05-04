@@ -1489,22 +1489,14 @@ function update0831to084() {
    $migration->renameTable('glpi_ocslinks', 'OCS_glpi_ocslinks');
    $migration->renameTable('glpi_ocsservers', 'OCS_glpi_ocsservers');
    $migration->renameTable('glpi_registrykeys', 'OCS_glpi_registrykeys');
-   // use OCS ?
-//    if (TableExists('OCS_glpi_ocsservers') && !countElementsInTable('OCS_glpi_ocsservers')) {
-      /// TODO : explications
-      /// les champs ci-dessous sont créés dans le plugin à son installation
-      /// Les valeurs de ces champs sont repris dans le plugin
-      /// Pour les utilisateurs n'ayant jamais utilisés OCS
-      /// (d'où mon if en début pour voir si un serveur OCS a été paramétré)
-      /// je supprime ces champs qui n'ont pas lieu d'être car ils n'ont jamais été utilisés
-      /// Dans le cas contraire, c'est le plugin qui supprime ces champs après avoir récupéré leur valeur
-      ///How to get this datas ? Need to rename them or copy profiles as others tables to plugin migration ?
-      // delete fields managed by plugin OCS
-      $migration->dropField('glpi_profiles', 'ocsng');
-      $migration->dropField('glpi_profiles', 'sync_ocsng');
-      $migration->dropField('glpi_profiles', 'view_ocsng');
-      $migration->dropField('glpi_profiles', 'clean_ocsng');
-//    }
+
+   // copy table to keep value of fields deleted after
+   $migration->copyTable('glpi_profiles', 'OCS_glpi_profiles');
+
+   $migration->dropField('glpi_profiles', 'ocsng');
+   $migration->dropField('glpi_profiles', 'sync_ocsng');
+   $migration->dropField('glpi_profiles', 'view_ocsng');
+   $migration->dropField('glpi_profiles', 'clean_ocsng');
 
 
    $migration->addField('glpi_authldaps', 'pagesize', 'integer');
