@@ -163,10 +163,10 @@ class RuleCriteria extends CommonDBChild {
 
       switch ($condition) {
          case Rule::PATTERN_EXISTS :
-            return ($field != '');
+            return (!empty($field));
 
          case Rule::PATTERN_DOES_NOT_EXISTS :
-            return ($field == '');
+            return (empty($field));
 
          case Rule::PATTERN_IS :
             if (is_array($field)) {
