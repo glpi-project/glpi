@@ -67,28 +67,31 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
    function getSearchOptions() {
 
-      $tab                 = parent::getSearchOptions();
+      $tab                      = parent::getSearchOptions();
 
-      $tab[10]['table']    = $this->getTable();
-      $tab[10]['field']    = 'version';
-      $tab[10]['name']     = __('IP version');
+      $tab[10]['table']         = $this->getTable();
+      $tab[10]['field']         = 'version';
+      $tab[10]['name']          = __('IP version');
+      $tab[10]['massiveaction'] = false;
 
-      $tab[11]['table']    = $this->getTable();
-      $tab[11]['field']    = 'address';
-      $tab[11]['name']     = IPAddress::getTypeName(1);
+      $tab[11]['table']         = $this->getTable();
+      $tab[11]['field']         = 'address';
+      $tab[11]['name']          = IPAddress::getTypeName(1);
+      $tab[11]['massiveaction'] = false;
 
-      $tab[12]['table']    = $this->getTable();
-      $tab[12]['field']    = 'netmask';
-      $tab[12]['name']     = IPNetmask::getTypeName(1);
+      $tab[12]['table']         = $this->getTable();
+      $tab[12]['field']         = 'netmask';
+      $tab[12]['name']          = IPNetmask::getTypeName(1);
 
-      $tab[13]['table']    = $this->getTable();
-      $tab[13]['field']    = 'gateway';
-      $tab[13]['name']     = __('Gateway');
+      $tab[13]['table']         = $this->getTable();
+      $tab[13]['field']         = 'gateway';
+      $tab[13]['name']          = __('Gateway');
+      $tab[11]['massiveaction'] = false;
 
-      $tab[14]['table']    = $this->getTable();
-      $tab[14]['field']    = 'addressable';
-      $tab[14]['name']     = __('Addressable network');
-      $tab[14]['datatype'] = 'bool';
+      $tab[14]['table']         = $this->getTable();
+      $tab[14]['field']         = 'addressable';
+      $tab[14]['name']          = __('Addressable network');
+      $tab[14]['datatype']      = 'bool';
 
       return $tab;
    }
@@ -198,7 +201,13 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       // Or if $this->fields["network"] != $input["network"] we a updating the network
       $address = new IPAddress();
       $netmask = new IPNetmask();
+      // Don't validate an empty network
+      if (empty($input["network"])) {
+         return array('error' => __('Invalid network address'),
+                      'input' => false);
+      }
       if (!isset($this->fields["id"])
+          || (!isset($this->fields["network"]))
           || ($input["network"] != $this->fields["network"])) {
          $network = explode ("/", $input["network"]);
          if (count($network) != 2) {
@@ -373,7 +382,7 @@ class IPNetwork extends CommonImplicitTreeDropdown {
    function cleanDBonPurge() {
 
       $link = new IPAddress_IPNetwork();
-      $link->removeIPAddress($this->getType(), $this->getID());
+      $link->cleanDBonItemDelete($this->getType(), $this->getID());
 
       return true;
    }
