@@ -762,7 +762,7 @@ class User extends CommonDBTM {
           && isset($this->fields["authtype"])
           && ($this->fields["authtype"] == Auth::LDAP
               || $this->fields["authtype"] == Auth::MAIL
-              || Auth::isAlternateAuthWithLdap($this->fields["authtype"]))) {
+              || Auth::isAlternateAuth($this->fields["authtype"]))) {
 
          $dynamic_profiles = Profile_User::getForUser($this->fields["id"],true);
 
@@ -894,7 +894,7 @@ class User extends CommonDBTM {
       if (isset($this->fields["authtype"])
           && isset($this->input["_groups"])
           && ($this->fields["authtype"] == Auth::LDAP
-              || Auth::isAlternateAuthWithLdap($this->fields['authtype']))) {
+              || Auth::isAlternateAuth($this->fields['authtype']))) {
 
          if (isset($this->fields["id"]) && $this->fields["id"]>0) {
             $authtype = Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
@@ -955,7 +955,7 @@ class User extends CommonDBTM {
       if (isset($this->fields["authtype"])
           && isset($this->input["_emails"])
           && ($this->fields["authtype"] == Auth::LDAP
-              || Auth::isAlternateAuthWithLdap($this->fields['authtype'])
+              || Auth::isAlternateAuth($this->fields['authtype'])
               || $this->fields["authtype"] == Auth::MAIL)) {
 
          if (isset($this->fields["id"]) && $this->fields["id"]>0) {
@@ -1928,7 +1928,7 @@ class User extends CommonDBTM {
                // extauth ldap case
                if ($_SESSION["glpiextauth"]
                    && ($this->fields["authtype"] == Auth::LDAP
-                       || Auth::isAlternateAuthWithLdap($this->fields["authtype"]))) {
+                       || Auth::isAlternateAuth($this->fields["authtype"]))) {
 
                   $authtype = Auth::getMethodsByID($this->fields["authtype"],
                                                    $this->fields["auths_id"]);
