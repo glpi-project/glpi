@@ -79,14 +79,14 @@ class TicketSatisfaction extends CommonDBTM {
 
       // you can't change if your answer > 12h
       if (!is_null($this->fields['date_answered'])
-          && (strtotime("now") - strtotime($this->fields['date_answered']) > 12*HOUR_TIMESTAMP)) {
+          && ((strtotime("now") - strtotime($this->fields['date_answered'])) > (12*HOUR_TIMESTAMP))) {
          return false;
       }
 
       if ($ticket->isUser(CommonITILObject::REQUESTER,Session::getLoginUserID())
-          || $ticket->fields["users_id_recipient"] === Session::getLoginUserID()
+          || ($ticket->fields["users_id_recipient"] === Session::getLoginUserID())
           || (isset($_SESSION["glpigroups"])
-              && $ticket->haveAGroup(CommonITILObject::REQUESTER,$_SESSION["glpigroups"]))) {
+              && $ticket->haveAGroup(CommonITILObject::REQUESTER, $_SESSION["glpigroups"]))) {
          return true;
       }
       return false;
@@ -100,9 +100,9 @@ class TicketSatisfaction extends CommonDBTM {
    **/
    function showSatisfactionForm($ticket) {
 
-      $tid = $ticket->fields['id'];
-      $options = array();
-      $options['colspan'] = 1;
+      $tid                 = $ticket->fields['id'];
+      $options             = array();
+      $options['colspan']  = 1;
 
       // for external inquest => link
       if ($this->fields["type"] == 2) {
@@ -189,10 +189,10 @@ class TicketSatisfaction extends CommonDBTM {
    **/
    static function displaySatisfaction($value) {
 
-      if ($value<0) {
+      if ($value < 0) {
          $value = 0;
       }
-      if ($value>5) {
+      if ($value > 5) {
          $value = 5;
       }
       $out = '<div style="width: 81px;"  class="x-starslider-horz">';

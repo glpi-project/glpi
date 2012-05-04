@@ -39,6 +39,7 @@ if (!defined('GLPI_ROOT')) {
 /// Ticket Template class
 /// since version 0.83
 class TicketTemplate extends CommonDropdown {
+
    // From CommonDBTM
    public $dohistory = true;
 
@@ -47,9 +48,9 @@ class TicketTemplate extends CommonDropdown {
                                         'TicketTemplatePredefinedField');
 
    // From CommonDropdown
-   public $first_level_menu  = "maintain";
-   public $second_level_menu = "ticket";
-   public $third_level_menu  = "TicketTemplate";
+   public $first_level_menu       = "maintain";
+   public $second_level_menu      = "ticket";
+   public $third_level_menu       = "TicketTemplate";
 
    public $display_dropdowntitle  = false;
 
@@ -68,8 +69,8 @@ class TicketTemplate extends CommonDropdown {
     *
     * @since version 0.83
     *
-    * @param $ID ID of the item to get
-    * @param $withtypeandcategory bool with type and category
+    * @param $ID                    integer  ID of the item to get
+    * @param $withtypeandcategory   boolean  with type and category (true by default)
     *
     * @return true if succeed else false
    **/
@@ -82,7 +83,8 @@ class TicketTemplate extends CommonDropdown {
          $this->hidden = $tth->getHiddenFields($ID, $withtypeandcategory);
 
          // Force items_id if itemtype is defined
-         if (isset($this->hidden['itemtype']) && !isset($this->hidden['items_id'])) {
+         if (isset($this->hidden['itemtype'])
+             && !isset($this->hidden['items_id'])) {
             $this->hidden['items_id'] = $ticket->getSearchOptionIDByField('field', 'items_id',
                                                                           'glpi_tickets');
          }
@@ -91,7 +93,8 @@ class TicketTemplate extends CommonDropdown {
          $this->mandatory = $ttm->getMandatoryFields($ID);
 
          // Force items_id if itemtype is defined
-         if (isset($this->mandatory['itemtype']) && !isset($this->mandatory['items_id'])) {
+         if (isset($this->mandatory['itemtype'])
+             && !isset($this->mandatory['items_id'])) {
             $this->mandatory['items_id'] = $ticket->getSearchOptionIDByField('field', 'items_id',
                                                                              'glpi_tickets');
          }
@@ -129,6 +132,10 @@ class TicketTemplate extends CommonDropdown {
    }
 
 
+   /**
+    * @param $withtypeandcategory   (default 0)
+    * @param $with_items_id         (default 1)
+   **/
    static function getAllowedFields($withtypeandcategory=0, $with_items_id=1) {
 
       static $allowed_fields = array();
@@ -175,29 +182,31 @@ class TicketTemplate extends CommonDropdown {
                                                        'glpi_tickets')        => 'actiontime',
                      $ticket->getSearchOptionIDByField('field', 'itemtype',
                                                        'glpi_tickets')        => 'itemtype',
-                     4  => '_users_id_requester',
-                     71 => '_groups_id_requester',
-                     5  => '_users_id_assign',
-                     8  => '_groups_id_assign',
+
+                     4                                                        => '_users_id_requester',
+                     71                                                       => '_groups_id_requester',
+                     5                                                        => '_users_id_assign',
+                     8                                                        => '_groups_id_assign',
                      $ticket->getSearchOptionIDByField('field', 'name',
-                                                       'glpi_suppliers') => 'suppliers_id_assign',
-                     66 => '_users_id_observer',
-                     65 => '_groups_id_observer',
+                                                       'glpi_suppliers')      => 'suppliers_id_assign',
+
+                     66                                                       => '_users_id_observer',
+                     65                                                       => '_groups_id_observer',
             );
 
          if ($withtypeandcategory) {
-            $allowed_fields[$withtypeandcategory][$with_items_id][$ticket->getSearchOptionIDByField('field',
-                                                      'completename',
-                                                      'glpi_itilcategories')] = 'itilcategories_id';
-            $allowed_fields[$withtypeandcategory][$with_items_id][$ticket->getSearchOptionIDByField('field',
-                                                                        'type',
-                                                                        'glpi_tickets')] = 'type';
+            $allowed_fields[$withtypeandcategory][$with_items_id]
+               [$ticket->getSearchOptionIDByField('field', 'completename',
+                                                  'glpi_itilcategories')]  = 'itilcategories_id';
+            $allowed_fields[$withtypeandcategory][$with_items_id]
+               [$ticket->getSearchOptionIDByField('field', 'type',
+                                                  'glpi_tickets')]         = 'type';
          }
 
          if ($with_items_id) {
-            $allowed_fields[$withtypeandcategory][$with_items_id][$ticket->getSearchOptionIDByField('field',
-                                                                     'items_id',
-                                                                     'glpi_tickets')] = 'items_id';
+            $allowed_fields[$withtypeandcategory][$with_items_id]
+               [$ticket->getSearchOptionIDByField('field', 'items_id',
+                                                  'glpi_tickets')] = 'items_id';
          }
          // Add validation request
          $allowed_fields[$withtypeandcategory][$with_items_id][-2] = '_add_validation';
@@ -209,6 +218,10 @@ class TicketTemplate extends CommonDropdown {
    }
 
 
+   /**
+    * @param $withtypeandcategory   (default 0)
+    * @param $with_items_id         (default 1)
+   **/
    function getAllowedFieldsNames($withtypeandcategory=0, $with_items_id=1) {
 
       $searchOption = Search::getOptions('Ticket');
@@ -231,8 +244,7 @@ class TicketTemplate extends CommonDropdown {
 
    function defineTabs($options=array()) {
 
-      $ong = array();
-
+      $ong          = array();
       $ong['empty'] = $this->getTypeName(1);
       $this->addStandardTab('TicketTemplateMandatoryField', $ong, $options);
       $this->addStandardTab('TicketTemplatePredefinedField', $ong, $options);
@@ -295,8 +307,8 @@ class TicketTemplate extends CommonDropdown {
     *
     * @since version 0.83
     *
-    * @param $field string field
-    * @param $force bool force display based on global config
+    * @param $field  string   field
+    * @param $force  boolean  force display based on global config (false by default)
     *
     * @return string to display
    **/
@@ -321,7 +333,7 @@ class TicketTemplate extends CommonDropdown {
    function getBeginHiddenFieldText($field) {
 
       if ($this->isHiddenField($field) && !$this->isPredefinedField($field)) {
-         return "<span id='hiddentext$field'  style='display:none'>";
+         return "<span id='hiddentext$field' style='display:none'>";
       }
       return '';
    }
@@ -357,7 +369,7 @@ class TicketTemplate extends CommonDropdown {
    function getBeginHiddenFieldValue($field) {
 
       if ($this->isHiddenField($field)) {
-         return "<span id='hiddenvalue$field'  style='display:none'>";
+         return "<span id='hiddenvalue$field' style='display:none'>";
       }
       return '';
    }
@@ -368,29 +380,32 @@ class TicketTemplate extends CommonDropdown {
     *
     * @since version 0.83
     *
-    * @param $field string field
-    * @param $ticket ticket object
+    * @param $field  string   field
+    * @param $ticket          ticket object (default NULL)
     *
     * @return string to display
    **/
    function getEndHiddenFieldValue($field, &$ticket=NULL) {
+
       $output = '';
       if ($this->isHiddenField($field)) {
          $output .= "</span>";
          $output .= "<input type='hidden' name='$field' value=\"".$ticket->fields[$field]."\">";
-         if ($this->isPredefinedField($field) && !is_null($ticket)) {
-            if ($num = array_search($field,$this->getAllowedFields())) {
+         if ($this->isPredefinedField($field)
+             && !is_null($ticket)) {
+            if ($num = array_search($field, $this->getAllowedFields())) {
                $display_options = array('comments' => true,
                                         'html'     => true);
                $output .= $ticket->getValueToDisplay($num, $ticket->fields, $display_options);
-               /// Display items_id
 
+               /// Display items_id
                if ($field == 'itemtype') {
                   $output .= "<input type='hidden' name='items_id' value=\"".
                                $ticket->fields['items_id']."\">";
                   if ($num = array_search('items_id',$this->getAllowedFields())) {
-                     $output .= " - ".$ticket->getValueToDisplay($num, $ticket->fields,
-                                                                 $display_options);
+                     $output = sprintf(__('%1$s - %2$s'), $output,
+                                       $ticket->getValueToDisplay($num, $ticket->fields,
+                                                                  $display_options));
                   }
                }
             }
@@ -483,6 +498,7 @@ class TicketTemplate extends CommonDropdown {
     * @return Nothing (call to classes members)
    **/
    static function showHelpdeskPreview(TicketTemplate $tt) {
+
       if (!$tt->getID()) {
          return false;
       }

@@ -95,7 +95,8 @@ class TicketTask  extends CommonITILTask {
          return true;
       }
 
-      if (!$this->fields['is_private'] && Session::haveRight('observe_ticket',1)) {
+      if (!$this->fields['is_private']
+          && Session::haveRight('observe_ticket',1)) {
          return true;
       }
 
@@ -140,7 +141,7 @@ class TicketTask  extends CommonITILTask {
          return false;
       }
 
-      if ($this->fields["users_id"] != Session::getLoginUserID()
+      if (($this->fields["users_id"] != Session::getLoginUserID())
           && !Session::haveRight('update_tasks',1)) {
          return false;
       }
@@ -162,7 +163,7 @@ class TicketTask  extends CommonITILTask {
    /**
     * Populate the planning with planned ticket tasks
     *
-    * @param $options options array must contains :
+    * @param $options   array of possible options:
     *    - who ID of the user (0 = undefined)
     *    - who_group ID of the group of users (0 = undefined)
     *    - begin Date
@@ -178,7 +179,7 @@ class TicketTask  extends CommonITILTask {
    /**
     * Display a Planning Item
     *
-    * @param $val Array of the item to display
+    * @param $val    array of the item to display
     *
     * @return Already planned information
    **/
@@ -190,10 +191,11 @@ class TicketTask  extends CommonITILTask {
    /**
     * Display a Planning Item
     *
-    * @param $val Array of the item to display
-    * @param $who ID of the user (0 if all)
-    * @param $type position of the item in the time block (in, through, begin or end)
-    * @param $complete complete display (more details)
+    * @param $val       array    of the item to display
+    * @param $who       integer  ID of the user (0 if all)
+    * @param $type               position of the item in the time block
+    *                            (in, through, begin or end) (default '')
+    * @param $complete           complete display (more details) (default 0)
     *
     * @return Nothing (display function)
    **/
@@ -202,7 +204,5 @@ class TicketTask  extends CommonITILTask {
    }
 
 
-
 }
-
 ?>

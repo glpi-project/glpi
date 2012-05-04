@@ -69,6 +69,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
       return NOT_AVAILABLE;
    }
 
+
    function canCreate() {
       return Session::haveRight('tickettemplate', 'w');
    }
@@ -82,14 +83,15 @@ class TicketTemplateHiddenField extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       // can exists for template
-      if ($item->getType() == 'TicketTemplate' && Session::haveRight("tickettemplate","r")) {
+      if (($item->getType() == 'TicketTemplate')
+          && Session::haveRight("tickettemplate","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(_n('Hidden field', 'Hidden fields', 2),
+            return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable($this->getTable(),
                                                              "`tickettemplates_id`
                                                                = '".$item->getID()."'"));
          }
-         return _n('Hidden field', 'Hidden fields', 2);
+         return self::getTypeName(2);
       }
       return '';
    }
@@ -120,7 +122,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)) {
-               $a = new TicketTemplateHiddenField();
+               $a = new self();
                $a->delete(array('id'=>$DB->result($result,0,0)));
             }
          }
@@ -133,8 +135,8 @@ class TicketTemplateHiddenField extends CommonDBChild {
     *
     * @since version 0.83
     *
-    * @param $ID the template ID
-    * @param $withtypeandcategory bool with type and category
+    * @param $ID                    integer  the template ID
+    * @param $withtypeandcategory   boolean  with type and category (false by default)
     *
     * @return an array of hidden fields
    **/
@@ -165,8 +167,8 @@ class TicketTemplateHiddenField extends CommonDBChild {
     *
     * @since version 0.83
     *
-    * @param $tt Ticket Template
-    * @param $withtemplate=''  boolean : Template or basic item.
+    * @param $tt                       Ticket Template
+    * @param $withtemplate    boolean  Template or basic item (default '')
     *
     * @return Nothing (call to classes members)
    **/
@@ -186,7 +188,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
       $fields  = $tt->getAllowedFieldsNames(false, isset($used['itemtype']));
       $rand    = mt_rand();
       echo "<form name='tickettemplatehiddenfields_form$rand'
-                  id='tickettemplatehiddenfields_form$rand' method='post' action='";
+             id='tickettemplatehiddenfields_form$rand' method='post' action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       echo "<div class='center'>";
@@ -195,7 +197,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
                 FROM `glpi_tickettemplatehiddenfields`
                 WHERE (`tickettemplates_id` = '$ID')";
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='2'>";
          echo self::getTypeName($DB->numrows($result));
@@ -206,7 +208,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
             echo "<th>".__('Name')."</th>";
             echo "</tr>";
 
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
@@ -215,6 +217,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
                }
                echo "<td>".$fields[$data['num']]."</td>";
                $used[$data['num']] = $data['num'];
+               echo "</tr>";
             }
 
          } else {
@@ -226,8 +229,8 @@ class TicketTemplateHiddenField extends CommonDBChild {
             echo "<input type='hidden' name='tickettemplates_id' value='$ID'>";
             echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
             echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
-            Dropdown::showFromArray('num', $fields, array('used'  => $used));
-            echo "&nbsp;<input type='submit' name='add' value=\"".__s('Add').
+            Dropdown::showFromArray('num', $fields, array('used'=> $used));
+            echo "&nbsp;<input type='submit' name='add' value=\""._sx('Button', 'Add').
                          "\" class='submit'>";
             echo "</td></tr>";
          }
@@ -241,5 +244,6 @@ class TicketTemplateHiddenField extends CommonDBChild {
 
       }
    }
+
 }
 ?>

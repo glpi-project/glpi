@@ -41,17 +41,16 @@ if (!defined('GLPI_ROOT')) {
 class TicketRecurrent extends CommonDropdown {
 
    // From CommonDBTM
-   public $dohistory = true;
+   public $dohistory              = true;
 
    // From CommonDropdown
-   public $first_level_menu  = "maintain";
-   public $second_level_menu = "ticketrecurrent";
+   public $first_level_menu       = "maintain";
+   public $second_level_menu      = "ticketrecurrent";
 
    public $display_dropdowntitle  = false;
 
 
    static function getTypeName($nb=0) {
-
       return __('Recurrent tickets');
    }
 
@@ -86,7 +85,7 @@ class TicketRecurrent extends CommonDropdown {
       if (Session::haveRight("tickettemplate","r")) {
          switch ($item->getType()) {
             case 'TicketRecurrent' :
-               $ong[1] = __('Recurrent tickets');
+               $ong[1] = self::getTypeName(2);
                return $ong;
          }
       }
@@ -97,7 +96,6 @@ class TicketRecurrent extends CommonDropdown {
    function defineTabs($options=array()) {
 
       $ong = array();
-
       $this->addStandardTab('TicketRecurrent', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
 
@@ -106,6 +104,7 @@ class TicketRecurrent extends CommonDropdown {
 
 
    function prepareInputForAdd($input) {
+
       $input['next_creation_date'] = $this->computeNextCreationDate($input['begin_date'],
                                                                     $input['periodicity'],
                                                                     $input['create_before'],
@@ -116,8 +115,10 @@ class TicketRecurrent extends CommonDropdown {
 
    function prepareInputForUpdate($input) {
 
-      if (isset($input['begin_date']) && isset($input['periodicity'])
+      if (isset($input['begin_date'])
+          && isset($input['periodicity'])
           && isset($input['create_before'])) {
+
          $input['next_creation_date'] = $this->computeNextCreationDate($input['begin_date'],
                                                                        $input['periodicity'],
                                                                        $input['create_before'],
@@ -225,7 +226,7 @@ class TicketRecurrent extends CommonDropdown {
    **/
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                 = parent::getSearchOptions();
 
       $tab[11]['table']    = $this->getTable();
       $tab[11]['field']    = 'is_active';
@@ -271,7 +272,8 @@ class TicketRecurrent extends CommonDropdown {
       if (!is_null($this->fields['next_creation_date'])) {
          echo "<div class='center'>";
          //TRANS: %s is the date of next creation
-         echo sprintf(__('Next creation on %s'), Html::convDateTime($this->fields['next_creation_date']));
+         echo sprintf(__('Next creation on %s'),
+                      Html::convDateTime($this->fields['next_creation_date']));
          echo "</div>";
       }
    }
@@ -300,8 +302,10 @@ class TicketRecurrent extends CommonDropdown {
          $check = false;
       }
 
-      if ($check && ($create_before > $periodicity)) {
-         Session::addMessageAfterRedirect(__('Invalid frequency. It must be greater than the preliminary creation.'), false, ERROR);
+      if ($check
+          && ($create_before > $periodicity)) {
+         Session::addMessageAfterRedirect(__('Invalid frequency. It must be greater than the preliminary creation.'),
+                                          false, ERROR);
          return 'NULL';
       }
 
@@ -325,7 +329,8 @@ class TicketRecurrent extends CommonDropdown {
             }
          }
          $calendar = new Calendar();
-         if ($calendars_id && $calendar->getFromDB($calendars_id)) {
+         if ($calendars_id
+             && $calendar->getFromDB($calendars_id)) {
             $durations = $calendar->getDurationsCache();
             if (array_sum($durations) > 0) { // working days exists
                while (!$calendar->isAWorkingDay($timestart)) {
@@ -352,7 +357,7 @@ class TicketRecurrent extends CommonDropdown {
 
       switch ($name) {
          case 'ticketrecurrent' :
-            return array('description' => __('Recurrent tickets'));
+            return array('description' => self::getTypeName(2));
       }
       return array();
    }
