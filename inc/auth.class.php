@@ -814,9 +814,6 @@ class Auth {
          case self::X509 :
          case self::EXTERNAL :
          case self::CAS :
-            // Use default LDAP config
-            $auths_id = $CFG_GLPI["authldaps_id_extra"];
-
          case self::LDAP :
             $auth = new AuthLdap();
             if ($auths_id>0 && $auth->getFromDB($auths_id)) {
@@ -879,21 +876,6 @@ class Auth {
    static function isAlternateAuth($authtype) {
       return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL));
    }
-
-
-   /**
-    * Is an alternate auth wich used LDAP extra server?
-    *
-    * @param $authtype auth type
-    *
-    * @return boolean
-   **/
-   static function isAlternateAuthWithLdap($authtype) {
-      global $CFG_GLPI;
-
-      return (self::isAlternateAuth($authtype) && ($CFG_GLPI["authldaps_id_extra"] > 0));
-   }
-
 
    /**
     * Check alternate authentication systems
@@ -965,6 +947,9 @@ class Auth {
          echo "<div class='firstbloc'>";
 
          switch($user->getField('authtype')) {
+            case self::CAS :
+            case self::EXTERNAL :
+            case self::X509 :
             case self::LDAP :
                //Look it the auth server still exists !
                // <- Bad idea : id not exists unable to change anything
@@ -984,26 +969,6 @@ class Auth {
 
             case self::DB_GLPI :
             case self::MAIL :
-               break;
-
-            case self::CAS :
-            case self::EXTERNAL :
-            case self::X509 :
-               // TODO : walid to review (field authldaps_id_extra delete in r18366)
-               if ($CFG_GLPI['authldaps_id_extra']) {
-                  $sql = "SELECT `name`
-                          FROM `glpi_authldaps`
-                          WHERE `id` = '" .$CFG_GLPI['authldaps_id_extra']."'
-                                AND `is_active` = 1";
-                  $result = $DB->query($sql);
-
-                  if ($DB->numrows($result) > 0) {
-                     echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
-                     echo "<input class=submit type='submit' name='force_ldap_resynch' value='" .
-                            __s('Force synchronization') . "'>";
-                     echo "</td></tr></table>";
-                  }
-               }
                break;
          }
          echo "</div>";

@@ -38,9 +38,7 @@ if (!defined('GLPI_ROOT')) {
 /// TODO add new network relations
 
 $RELATION = array("glpi_authldaps"
-// TODO : walid to review (field authldaps_id_extra delete in r18366)
-                        => array('glpi_configs'            => 'authldaps_id_extra',
-                                 'glpi_authldapreplicates' => 'authldaps_id',
+                        => array('glpi_authldapreplicates' => 'authldaps_id',
                                  'glpi_entities'           => 'authldaps_id',),
 
                   "glpi_autoupdatesystems"
