@@ -547,7 +547,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $input['solvedate'] = 'NULL';
       }
 
-      if (isset($input["status"]) && in_array($input["status"],$this->getClosedStatusArray())) {
+      if (isset($input["status"]) && !in_array($input["status"],$this->getClosedStatusArray())) {
          $input['closedate'] = 'NULL';
       }
 
@@ -2084,11 +2084,11 @@ abstract class CommonITILObject extends CommonDBTM {
          default :
             return false;
       }
-      
+
       if (isset($types['group']) && !$withgroup) {
          unset($types['group']);
       }
-      
+
       if (count($types)>1) {
          echo "<div ".($inobject?"style='display:none'":'')." id='itilactor$rand_type'>";
          $rand   = Dropdown::showFromArray("_itil_".$typename."[_type]", $types);
@@ -2194,14 +2194,14 @@ abstract class CommonITILObject extends CommonDBTM {
          if (isset($params['toupdate']) && is_array($params['toupdate'])) {
             $toupdate[] = $params['toupdate'];
          }
-            
+
          $toupdate[] = array('value_fieldname' => 'value',
                               'to_update'       => "countassign_".$typename."_$rand",
                               'url'             => $CFG_GLPI["root_doc"]."/ajax/ticketassigninformation.php",
                               'moreparams'      => array('users_id_assign' => '__VALUE__'));
          $params['toupdate'] = $toupdate;
       }
-      
+
       // List all users in the active entities
       User::dropdown($params);
 
@@ -2498,7 +2498,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<td>";
       if ($rand_assign>=0) {
          self::showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'],
-                                $is_hidden, $this->canAssign(), 
+                                $is_hidden, $this->canAssign(),
                                 $this->canAssign() && ($this->fields["suppliers_id_assign"]==0));
       }
 
