@@ -94,6 +94,11 @@ abstract class HTMLTable_Base  {
    }
 
 
+   /**
+    * Internal test to see if we can add an header. For instance, we can only add a super header
+    * to a table if there is no group defined. And we can only create a sub Header to a group if
+    * it contains no row
+   **/
    abstract function tryAddHeader();
 
 
