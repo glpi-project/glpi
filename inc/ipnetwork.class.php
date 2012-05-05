@@ -145,7 +145,12 @@ class IPNetwork extends CommonImplicitTreeDropdown {
 
       if (isset($this->fields["address"])
           && isset($this->fields["netmask"])) {
-         $this->fields["network"] = sprintf(__('%1$s / %2$s'), $this->fields["address"],
+         if ($this->fields["version"] == 4) {
+            $format = '%1$s / %2$s';
+         } else { // IPv6
+            $format = '%1$s/%2$s';
+         }
+         $this->fields["network"] = sprintf($format, $this->fields["address"],
                                             $this->fields["netmask"]);
       }
 
@@ -214,11 +219,11 @@ class IPNetwork extends CommonImplicitTreeDropdown {
             return array('error' => __('Invalid input format for the network'),
                          'input' => false);
          }
-         if (!$address->setAddressFromString($network[0])) {
+         if (!$address->setAddressFromString(trim($network[0]))) {
             return array('error' => __('Invalid network address'),
                          'input' => false);
          }
-         if (!$netmask->setNetmaskFromString($network[1], $address->getVersion())) {
+         if (!$netmask->setNetmaskFromString(trim($network[1]), $address->getVersion())) {
             return array('error' => __('Invalid subnet mask'),
                          'input' => false);
          }

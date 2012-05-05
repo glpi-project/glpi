@@ -563,14 +563,29 @@ class IPAddress extends CommonDBChild {
       $singletons = explode(":", $address);
       // Minimum IPv6 address is "::". So, we check that there is at least 3 elements in the array
       if ((count($singletons) > 2) && (count($singletons) < 9)) {
-         $expanded = array();
+         $contracted = array();
          foreach ($singletons as $singleton) {
+            if (!preg_match("/^[0-9A-Fa-f]{0,4}$/", $singleton, $regs)) {
+               return false;
+            }
             if ($singleton == "") {
-               $expanded = array_merge($expanded, array_fill(0, 9 - count($singletons), "0000"));
+               $contracted[] = '';
             } else {
-               if (!preg_match("/^[0-9A-Fa-f]{1,4}$/", $singleton, $regs)) {
-                  return false;
-               }
+               $contracted[] = $singleton;
+            }
+         }
+
+         for ($i = 0 ; $i < count($contracted) - 1 ; $i++) {
+            if ((empty($contracted[$i]))
+                && (empty($contracted[$i + 1]))) {
+               unset($contracted[$i]);
+            }
+         }
+         $expanded = array();
+         foreach ($contracted as $singleton) {
+            if ($singleton == "") {
+               $expanded = array_merge($expanded, array_fill(0, 9 - count($contracted), "0000"));
+            } else {
                $expanded[] = str_pad($singleton, 4, "0", STR_PAD_LEFT);
             }
          }
