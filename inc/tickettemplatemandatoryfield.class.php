@@ -83,14 +83,15 @@ class TicketTemplateMandatoryField extends CommonDBChild {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       // can exists for template
-      if ($item->getType() == 'TicketTemplate' && Session::haveRight("tickettemplate","r")) {
+      if (($item->getType() == 'TicketTemplate')
+          && Session::haveRight("tickettemplate","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(_n('Mandatory field', 'Mandatory fields', 2),
+            return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable($this->getTable(),
                                                              "`tickettemplates_id`
                                                                = '".$item->getID()."'"));
          }
-         return _n('Mandatory field', 'Mandatory fields', 2);
+         return self::getTypeName(2);
       }
       return '';
    }
@@ -121,7 +122,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)) {
-               $a = new TicketTemplateMandatoryField();
+               $a = new self();
                $a->delete(array('id' => $DB->result($result,0,0)));
             }
          }
@@ -134,8 +135,8 @@ class TicketTemplateMandatoryField extends CommonDBChild {
     *
     * @since version 0.83
     *
-    * @param $ID the template ID
-    * @param $withtypeandcategory bool with type and category
+    * @param $ID                    integer  the template ID
+    * @param $withtypeandcategory   boolean  with type and category (true by default)
     *
     * @return an array of mandatory fields
    **/
@@ -166,8 +167,8 @@ class TicketTemplateMandatoryField extends CommonDBChild {
     *
     * @since version 0.83
     *
-    * @param $tt Ticket Template
-    * @param $withtemplate=''  boolean : Template or basic item.
+    * @param $tt                       Ticket Template
+    * @param $withtemplate    boolean  Template or basic item (default '')
     *
     * @return Nothing (call to classes members)
    **/
@@ -180,8 +181,8 @@ class TicketTemplateMandatoryField extends CommonDBChild {
          return false;
       }
       $canedit = $tt->can($ID, "w");
-      $ttm = new self();
-      $used = $ttm->getMandatoryFields($ID);
+      $ttm     = new self();
+      $used    = $ttm->getMandatoryFields($ID);
       $fields  = $tt->getAllowedFieldsNames(true, isset($used['itemtype']));
 
       $rand    = mt_rand();
@@ -190,7 +191,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
                 FROM `glpi_tickettemplatemandatoryfields`
                 WHERE (`tickettemplates_id` = '$ID')";
 
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          echo "<form name='tickettemplatemandatoryfields_form$rand'
                      id='tickettemplatemandatoryfields_form$rand' method='post' action='";
          echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -206,7 +207,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             echo "<th>".__('Name')."</th>";
             echo "</tr>";
 
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
@@ -215,6 +216,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
                }
                echo "<td>".$fields[$data['num']]."</td>";
                $used[$data['num']] = $data['num'];
+               echo "</tr>";
             }
 
          } else {
@@ -227,7 +229,7 @@ class TicketTemplateMandatoryField extends CommonDBChild {
             echo "<input type='hidden' name='entities_id' value='".$tt->getEntityID()."'>";
             echo "<input type='hidden' name='is_recursive' value='".$tt->isRecursive()."'>";
             Dropdown::showFromArray('num', $fields, array('used'  => $used));
-            echo "&nbsp;<input type='submit' name='add' value=\"".__s('Add').
+            echo "&nbsp;<input type='submit' name='add' value=\""._sx('button','Add').
                          "\" class='submit'>";
             echo "</td></tr>";
          }
@@ -241,5 +243,6 @@ class TicketTemplateMandatoryField extends CommonDBChild {
 
       }
    }
+
 }
 ?>

@@ -79,6 +79,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       return NOT_AVAILABLE;
    }
 
+
    function prepareInputForAdd($input) {
 
       // Use massiveaction system to manage add system.
@@ -112,24 +113,26 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
          if ($result = $DB->query($query)) {
             if ($DB->numrows($result)) {
-               $a = new TicketTemplatePredefinedField();
+               $a = new self();
                $a->delete(array('id'=>$DB->result($result,0,0)));
             }
          }
       }
    }
 
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       // can exists for template
-      if ($item->getType() == 'TicketTemplate' && Session::haveRight("tickettemplate","r")) {
+      if (($item->getType() == 'TicketTemplate')
+          && Session::haveRight("tickettemplate","r")) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(_n('Predefined field', 'Predefined fields', 2),
+            return self::createTabEntry(self::getTypeName(2),
                                         countElementsInTable($this->getTable(),
                                                              "`tickettemplates_id`
                                                                = '".$item->getID()."'"));
          }
-         return _n('Predefined field', 'Predefined fields', 2);
+         return self::getTypeName(2);
       }
       return '';
    }
@@ -147,8 +150,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
     *
     * @since version 0.83
     *
-    * @param $ID the template ID
-    * @param $withtypeandcategory bool with type and category
+    * @param $ID                    integer  the template ID
+    * @param $withtypeandcategory   boolean   with type and category (false by default)
     *
     * @return an array of predefined fields
    **/
@@ -179,8 +182,8 @@ class TicketTemplatePredefinedField extends CommonDBChild {
     *
     * @since version 0.83
     *
-    * @param $tt Ticket Template
-    * @param $withtemplate=''  boolean : Template or basic item.
+    * @param $tt                       Ticket Template
+    * @param $withtemplate    boolean  Template or basic item (default '')
     *
     * @return Nothing (call to classes members)
    **/
@@ -222,7 +225,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
       $display_options = array('relative_dates' => true,
                                'comments'       => true,
                                'html'           => true);
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr><th colspan='3'>";
          echo self::getTypeName($DB->numrows($result));
@@ -234,7 +237,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             echo "<th>".__('Value')."</th>";
             echo "</tr>";
 
-            while ($data=$DB->fetch_assoc($result)) {
+            while ($data = $DB->fetch_assoc($result)) {
                if (!isset($fields[$data['num']])) {
                   // could happen when itemtype removed and items_id present
                   continue;
@@ -253,6 +256,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
                                                $display_options);
                echo "</td>";
                $used[$data['num']] = $data['value'];
+               echo "</tr>";
             }
 
          } else {
@@ -294,5 +298,6 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
       }
    }
+
 }
 ?>
