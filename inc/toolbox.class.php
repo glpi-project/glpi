@@ -41,7 +41,7 @@ class Toolbox {
     * @since version 0.83
     *
     * @return boolean
-    */
+   **/
    static function get_magic_quotes_runtime() {
 
       // Deprecated function(8192): Function get_magic_quotes_runtime() is deprecated
@@ -58,7 +58,7 @@ class Toolbox {
     * @since version 0.83
     *
     * @return boolean
-    */
+   **/
    static function get_magic_quotes_gpc() {
 
       // Deprecated function(8192): Function get_magic_quotes_gpc() is deprecated
@@ -81,11 +81,10 @@ class Toolbox {
    static function ucfirst($str) {
 
       if ($str{0} >= "\xc3") {
-         return (($str{1}>="\xa0") ? ($str{0}.chr(ord($str{1})-32))
-                                   : ($str{0}.$str{1})).substr($str,2);
-      } else {
-         return ucfirst($str);
+         return (($str{1} >= "\xa0") ? ($str{0}.chr(ord($str{1})-32))
+                                     : ($str{0}.$str{1})).substr($str,2);
       }
+      return ucfirst($str);
     }
 
 
@@ -94,8 +93,8 @@ class Toolbox {
     *
     * @since version 0.83
     *
-    * @param $str string from dico
-    * @param $shortcut letter of shortcut
+    * @param $str       string   from dico
+    * @param $shortcut           letter of shortcut
     *
     * @return string
    **/
@@ -115,9 +114,10 @@ class Toolbox {
    /**
     * substr function for utf8 string
     *
-    * @param $str string: string
-    * @param $tofound string: string to found
-    * @param $offset integer: The search offset. If it is not specified, 0 is used.
+    * @param $str       string   string
+    * @param $tofound   string   string to found
+    * @param $offset    integer  The search offset. If it is not specified, 0 is used.
+    *                            (default 0)
     *
     * @return substring
    **/
@@ -131,16 +131,16 @@ class Toolbox {
     *  Replace str_pad()
     *  who bug with utf8
     *
-    * @param $input string: input string
-    * @param $pad_length integer: padding length
-    * @param $pad_string string: padding string
-    * @param $pad_type: integer: padding type
+    * @param $input        string   input string
+    * @param $pad_length   integer  padding length
+    * @param $pad_string   string   padding string (default '')
+    * @param $pad_type     integer  padding type (default STR_PAD_RIGHT)
     *
     * @return string
    **/
-   static function str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_RIGHT) {
+   static function str_pad($input, $pad_length, $pad_string=" ", $pad_type=STR_PAD_RIGHT) {
 
-       $diff = strlen($input) - self::strlen($input);
+       $diff = (strlen($input) - self::strlen($input));
        return str_pad($input, $pad_length+$diff, $pad_string, $pad_type);
    }
 
@@ -148,7 +148,7 @@ class Toolbox {
    /**
     * strlen function for utf8 string
     *
-    * @param $str string: string
+    * @param $str string
     *
     * @return length of the string
    **/
@@ -160,15 +160,15 @@ class Toolbox {
    /**
     * substr function for utf8 string
     *
-    * @param $str string: string
-    * @param $start integer: start of the result substring
-    * @param $length integer: The maximum length of the returned string if > 0
+    * @param $str       string
+    * @param $start     integer  start of the result substring
+    * @param $length    integer  The maximum length of the returned string if > 0 (default -1)
     *
     * @return substring
    **/
    static function substr($str, $start, $length=-1) {
 
-      if ($length==-1) {
+      if ($length == -1) {
          $length = self::strlen($str)-$start;
       }
       return mb_substr($str, $start, $length, "UTF-8");
@@ -178,7 +178,7 @@ class Toolbox {
    /**
     * strtolower function for utf8 string
     *
-    * @param $str string: string
+    * @param $str string
     *
     * @return lower case string
    **/
@@ -190,7 +190,7 @@ class Toolbox {
    /**
     * strtoupper function for utf8 string
     *
-    * @param $str string: string
+    * @param $str string
     *
     * @return upper case string
    **/
@@ -202,7 +202,7 @@ class Toolbox {
    /**
     * Is a string seems to be UTF-8 one ?
     *
-    * @param $str string: string to analyze
+    * @param $str string   string to analyze
     *
     * @return  boolean
    **/
@@ -214,14 +214,15 @@ class Toolbox {
    /**
     * Encode string to UTF-8
     *
-    * @param $string string: string to convert
-    * @param $from_charset string: original charset (if 'auto' try to autodetect)
+    * @param $string       string   string to convert
+    * @param $from_charset string   original charset (if 'auto' try to autodetect)
+    *                               (default "ISO-8859-1")
     *
     * @return utf8 string
    **/
    static function encodeInUtf8($string, $from_charset="ISO-8859-1") {
 
-      if (strcmp($from_charset,"auto")==0) {
+      if (strcmp($from_charset,"auto") == 0) {
          $from_charset = mb_detect_encoding($string);
       }
       return mb_convert_encoding($string, "UTF-8", $from_charset);
@@ -231,8 +232,8 @@ class Toolbox {
    /**
     * Decode string from UTF-8 to specified charset
     *
-    * @param $string string: string to convert
-    * @param $to_charset string: destination charset (default is ISO-8859-1)
+    * @param $string       string   string to convert
+    * @param $to_charset   string   destination charset (default "ISO-8859-1")
     *
     * @return converted string
    **/
@@ -244,8 +245,8 @@ class Toolbox {
    /**
     * Encrypt a string
     *
-    * @param $string string to encrypt
-    * @param $key string key used to encrypt
+    * @param $string    string to encrypt
+    * @param $key       string key used to encrypt
     *
     * @return encrypted string
    **/
@@ -266,8 +267,8 @@ class Toolbox {
    /**
     * Decrypt a string
     *
-    * @param $string string to decrypt
-    * @param $key string key used to decrypt
+    * @param $string    string to decrypt
+    * @param $key       string key used to decrypt
     *
     * @return decrypted string
    **/
@@ -313,7 +314,7 @@ class Toolbox {
    /**
     *  Invert fonction from clean_cross_side_scripting_deep
     *
-    * @param $value array or string: item to unclean from clean_cross_side_scripting_deep
+    * @param $value  array or string   item to unclean from clean_cross_side_scripting_deep
     *
     * @return unclean item
     *
