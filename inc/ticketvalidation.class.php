@@ -626,16 +626,7 @@ class TicketValidation  extends CommonDBChild {
 
             echo "<div style='background-color:".$bgcolor.";'>".$status."</div></td>";
 
-            if ($ticket->can($ticket->fields['id'], 'r')
-                && !strstr($ticket->fields["status"], "solved")
-                && !strstr($ticket->fields["status"],"closed")) {
-
-               $link_validation = Toolbox::getItemTypeFormURL('TicketValidation');
-               echo "<td>". Html::convDateTime($row["submission_date"])."</td>";
-            } else {
-               echo "<td>".Html::convDateTime($row["submission_date"])."</a></td>";
-            }
-
+            echo "<td>". Html::convDateTime($row["submission_date"])."</td>";
             echo "<td>".getUserName($row["users_id"])."</td>";
             echo "<td>".$row["comment_submission"]."</td>";
             echo "<td>".Html::convDateTime($row["validation_date"])."</td>";
