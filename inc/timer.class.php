@@ -44,23 +44,27 @@ class Timer {
    //! Timer value
    var $timer=0;
 
+
    //! Start the Timer
    function start () {
-      $this->timer=microtime(true);
 
+      $this->timer = microtime(true);
       return true;
    }
+
+
    /**
     * Get the current time of the timer
     *
-    * @param $decimals number of decimal of the result
-    * @return time past from start
+    * @param $decimals number of decimal of the result (default 3)
     *
-    */
-   function getTime ($decimals = 3) {
-      // $decimals will set the number of decimals you want for your milliseconds.
+    * @return time past from start
+   **/
+   function getTime ($decimals=3) {
 
-      return number_format(microtime(true) - $this->timer,$decimals,'.',' ');
+      // $decimals will set the number of decimals you want for your milliseconds.
+      return number_format(microtime(true) - $this->timer, $decimals, '.', ' ');
    }
+
 }
 ?>
