@@ -579,7 +579,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $input['solvedate'] = 'NULL';
       }
 
-      if (isset($input["status"]) && in_array($input["status"],$this->getClosedStatusArray())) {
+      if (isset($input["status"]) && !in_array($input["status"],$this->getClosedStatusArray())) {
          $input['closedate'] = 'NULL';
       }
 
