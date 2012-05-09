@@ -877,6 +877,7 @@ class Auth {
       return in_array($authtype, array(self::X509, self::CAS, self::EXTERNAL));
    }
 
+
    /**
     * Check alternate authentication systems
     *
