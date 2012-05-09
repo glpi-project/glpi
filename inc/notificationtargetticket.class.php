@@ -214,7 +214,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       $datas['##ticket.urlvalidation##']   = urldecode($CFG_GLPI["url_base"].
                                                                "/index.php?redirect=ticket_".
-                                                               $item->getField("id")."_TicketValidation");
+                                                               $item->getField("id").
+                                                               "_TicketValidation$1");
 
       $datas['##ticket.globalvalidation##']
                   = TicketValidation::getStatus($item->getField('global_validation'));
@@ -230,11 +231,11 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas['##lang.ticket.autoclosewarning##'] = "";
       if ($autoclose_value >= 0) {
                $datas['##ticket.autoclose##'] = $autoclose_value;
-      } 
+      }
       if ($autoclose_value > 0) {
                $datas['##lang.ticket.autoclosewarning##']
                            = $LANG['job'][54]." ".$autoclose_value." ".Toolbox::ucfirst($LANG['calendar'][12]);
-      } 
+      }
 
       $datas['##ticket.sla##'] = '';
       if ($item->getField('slas_id')) {
