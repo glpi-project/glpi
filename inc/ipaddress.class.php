@@ -287,6 +287,8 @@ class IPAddress extends CommonDBChild {
          // Create the object
          $addressObject = new self();
          if ($addressObject->setAddressFromString($ipaddress, $itemtype, $items_id)) {
+            // Update the textual to represent the canonical representation of the address ...
+            $addressObject->canonicalizeTextual();
             // If it is valid and its ID is not NULL, then, the address already exists
             if ($addressObject->getID() > 0) {
                $previousAddresses[] = $addressObject;
@@ -500,6 +502,16 @@ class IPAddress extends CommonDBChild {
          return false;
       }
       return false;
+   }
+
+
+   /**
+    * Replace textual representation by its canonical form.
+    *
+    * @return nothing (internal class update)
+   **/
+   function canonicalizeTextual() {
+      $this->setAddressFromBinary($this->getBinary());
    }
 
 
