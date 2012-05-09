@@ -587,9 +587,9 @@ class IPAddress extends CommonDBChild {
             }
          }
 
-         for ($i = 0 ; $i < count($contracted) - 1 ; $i++) {
-            if ((empty($contracted[$i]))
-                && (empty($contracted[$i + 1]))) {
+         for ($i = 0 ; $i < (count($contracted) - 1) ; $i++) {
+            if (empty($contracted[$i])
+                && empty($contracted[$i + 1])) {
                unset($contracted[$i]);
             }
          }

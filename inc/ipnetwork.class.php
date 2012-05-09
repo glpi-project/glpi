@@ -146,12 +146,12 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       if (isset($this->fields["address"])
           && isset($this->fields["netmask"])) {
          if ($this->fields["version"] == 4) {
-            $format = '%1$s / %2$s';
-         } else { // IPv6
-            $format = '%1$s/%2$s';
-         }
-         $this->fields["network"] = sprintf($format, $this->fields["address"],
+            $this->fields["network"] = sprintf(__('%1$s / %2$s'), $this->fields["address"],
                                             $this->fields["netmask"]);
+         } else { // IPv6
+            $this->fields["network"] = sprintf(__('%1$s/%2$s'), $this->fields["address"],
+                                            $this->fields["netmask"]);
+         }
       }
 
    }
