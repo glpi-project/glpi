@@ -3031,7 +3031,7 @@ class Ticket extends CommonITILObject {
          // with type and categ
          $tt->getFromDBWithDatas($ticket_template, true);
       }
-      
+
       // Predefined fields from template : reset them
       if (isset($options['_predefined_fields'])) {
          $options['_predefined_fields']
@@ -3042,7 +3042,7 @@ class Ticket extends CommonITILObject {
 
       // Store predefined fields to be able not to take into account on change template
       $predefined_fields = array();
-      
+
       if (isset($tt->predefined) && count($tt->predefined)) {
          foreach ($tt->predefined as $predeffield => $predefvalue) {
             if (isset($options[$predeffield]) && isset($default_values[$predeffield])) {
@@ -3106,7 +3106,7 @@ class Ticket extends CommonITILObject {
       echo "</td><td>";
 
       $condition = "`is_helpdeskvisible`='1'";
-      
+
       switch ($options['type']) {
          case self::DEMAND_TYPE :
             $condition .= " AND `is_request`='1'";
@@ -3115,7 +3115,7 @@ class Ticket extends CommonITILObject {
          default: // self::INCIDENT_TYPE :
             $condition .= " AND `is_incident`='1'";
       }
-      
+
       $opt = array('value'     => $options['itilcategories_id'],
                                            'condition' => $condition,
                                            'on_change' => 'submit()');
@@ -3202,13 +3202,13 @@ class Ticket extends CommonITILObject {
       if (!$ticket_template) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' class='center'>";
-         
+
          if ($tt->isField('id') && $tt->fields['id'] > 0) {
             echo "<input type='hidden' name='_tickettemplates_id' value='".$tt->fields['id']."'>";
             echo "<input type='hidden' name='_predefined_fields'
                          value=\"".rawurlencode(serialize($predefined_fields))."\">";
          }
-                  
+
          echo "<input type='submit' name='add' value=\"".$LANG['help'][14]."\" class='submit'>";
 
 
@@ -3366,7 +3366,7 @@ class Ticket extends CommonITILObject {
       $predefined_fields = array();
       if (isset($tt->predefined) && count($tt->predefined)) {
          foreach ($tt->predefined as $predeffield => $predefvalue) {
-            if (isset($default_values[$predeffield])) {         
+            if (isset($default_values[$predeffield])) {
                // Is always default value : not set
                // Set if already predefined field
                // Set if ticket template change
@@ -4240,6 +4240,7 @@ class Ticket extends CommonITILObject {
          echo "<tr><th colspan='5'>";
 
          $options['reset'] = 'reset';
+         $forcetab         = '';
          $num = 0;
          if ($showgrouptickets) {
             switch ($status) {
@@ -4255,11 +4256,13 @@ class Ticket extends CommonITILObject {
                      $options['contains'][$num]   = 'solved';
                      $options['link'][$num]       = 'AND';
                      $num++;
+                     $forcetab = 'Ticket$2';
                   }
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         Toolbox::append_params($options,'&amp;')."\">".
                         Html::makeTitle($LANG['central'][18], $number, $numrows)."</a>";
                   break;
+
                case "waiting" :
                   foreach ($_SESSION['glpigroups'] as $gID) {
                      $options['field'][$num]      = 8; // groups_id_assign
@@ -4279,42 +4282,41 @@ class Ticket extends CommonITILObject {
                                         $number, $numrows)."</a>";
                   break;
 
-                  case "process" :
-                     foreach ($_SESSION['glpigroups'] as $gID) {
-                        $options['field'][$num]      = 8; // groups_id_assign
-                        $options['searchtype'][$num] = 'equals';
-                        $options['contains'][$num]   = $gID;
-                        $options['link'][$num]       = ($num==0?'AND':'OR');
-                        $num++;
-                        $options['field'][$num]      = 12; // status
-                        $options['searchtype'][$num] = 'equals';
-                        $options['contains'][$num]   = 'process';
-                        $options['link'][$num]       = 'AND';
-                        $num++;
-                     }
-                     echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                           Toolbox::append_params($options,'&amp;')."\">".
-                           Html::makeTitle($LANG['joblist'][13], $number, $numrows)."</a>";
-                     break;
+               case "process" :
+                  foreach ($_SESSION['glpigroups'] as $gID) {
+                     $options['field'][$num]      = 8; // groups_id_assign
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = $gID;
+                     $options['link'][$num]       = ($num==0?'AND':'OR');
+                     $num++;
+                     $options['field'][$num]      = 12; // status
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = 'process';
+                     $options['link'][$num]       = 'AND';
+                     $num++;
+                  }
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                         Toolbox::append_params($options,'&amp;')."\">".
+                         Html::makeTitle($LANG['joblist'][13], $number, $numrows)."</a>";
+                  break;
 
-                  case "requestbyself" :
-                  default :
-                     foreach ($_SESSION['glpigroups'] as $gID) {
-                        $options['field'][$num]      = 71; // groups_id
-                        $options['searchtype'][$num] = 'equals';
-                        $options['contains'][$num]   = $gID;
-                        $options['link'][$num]       = ($num==0?'AND':'OR');
-                        $num++;
-                        $options['field'][$num]      = 12; // status
-                        $options['searchtype'][$num] = 'equals';
-                        $options['contains'][$num]   = 'process';
-                        $options['link'][$num]       = 'AND';
-                        $num++;
-
-                     }
-                     echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                           Toolbox::append_params($options,'&amp;')."\">".
-                           Html::makeTitle($LANG['central'][9], $number, $numrows)."</a>";
+               case "requestbyself" :
+               default :
+                  foreach ($_SESSION['glpigroups'] as $gID) {
+                     $options['field'][$num]      = 71; // groups_id
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = $gID;
+                     $options['link'][$num]       = ($num==0?'AND':'OR');
+                     $num++;
+                     $options['field'][$num]      = 12; // status
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = 'process';
+                     $options['link'][$num]       = 'AND';
+                     $num++;
+                  }
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
+                         Toolbox::append_params($options,'&amp;')."\">".
+                         Html::makeTitle($LANG['central'][9], $number, $numrows)."</a>";
             }
 
          } else {
@@ -4363,6 +4365,8 @@ class Ticket extends CommonITILObject {
                   $options['contains'][1]   = Session::getLoginUserID();
                   $options['link'][1]        = 'AND';
 
+                  $forcetab = 'TicketValidation$1';
+
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         Toolbox::append_params($options,'&amp;')."\">".
                         Html::makeTitle($LANG['central'][19], $number, $numrows)."</a>";
@@ -4407,6 +4411,8 @@ class Ticket extends CommonITILObject {
                   $options['contains'][3]   = 'solved';
                   $options['link'][3]       = 'AND';
 
+                  $forcetab = 'Ticket$2';
+
                   echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                         Toolbox::append_params($options,'&amp;')."\">".
                         Html::makeTitle($LANG['central'][18], $number, $numrows)."</a>";
@@ -4438,7 +4444,7 @@ class Ticket extends CommonITILObject {
             echo "<th>".$LANG['joblist'][6]."</th></tr>";
             for ($i = 0 ; $i < $number ; $i++) {
                $ID = $DB->result($result, $i, "id");
-               self::showVeryShort($ID);
+               self::showVeryShort($ID, $forcetab);
             }
          }
          echo "</table>";
@@ -4523,7 +4529,7 @@ class Ticket extends CommonITILObject {
          $query.= ")";
       }
       $query_deleted = $query;
-      
+
       $query .= " AND NOT `glpi_tickets`.`is_deleted` ";
       $query_deleted .= " AND `glpi_tickets`.`is_deleted` ";
       $query .= " GROUP BY `status`";
@@ -4531,7 +4537,7 @@ class Ticket extends CommonITILObject {
 
       $result = $DB->query($query);
       $result_deleted = $DB->query($query_deleted);
-      
+
       $status = array('new'     => 0,
                       'assign'  => 0,
                       'plan'    => 0,
@@ -4550,7 +4556,7 @@ class Ticket extends CommonITILObject {
             $number_deleted += $data["COUNT"];
          }
       }
-      
+
       $options['field'][0]      = 12;
       $options['searchtype'][0] = 'equals';
       $options['contains'][0]   = 'process';
@@ -4615,7 +4621,7 @@ class Ticket extends CommonITILObject {
       echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
                  Toolbox::append_params($options,'&amp;')."\">".$LANG['common'][28]."</a></td>";
       echo "<td>".$number_deleted."</td></tr>";
-      
+
       echo "</table><br>";
    }
 
@@ -5161,7 +5167,7 @@ class Ticket extends CommonITILObject {
    }
 
 
-   static function showVeryShort($ID) {
+   static function showVeryShort($ID, $forcetab='') {
       global $CFG_GLPI, $LANG;
 
       // Prints a job in short form
@@ -5225,7 +5231,11 @@ class Ticket extends CommonITILObject {
          echo "<td>";
 
          echo "<a id='ticket".$job->fields["id"].$rand."' href='".$CFG_GLPI["root_doc"].
-               "/front/ticket.form.php?id=".$job->fields["id"]."'>";
+               "/front/ticket.form.php?id=".$job->fields["id"];
+         if ($forcetab != '') {
+            echo "&amp;forcetab=".$forcetab;
+         }
+         echo "'>";
          echo "<span class='b'>".$job->fields["name"]."</span></a>&nbsp;";
          echo "(".$job->numberOfFollowups($showprivate)."-".$job->numberOfTasks($showprivate).
               ")&nbsp;";
