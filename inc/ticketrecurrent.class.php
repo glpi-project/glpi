@@ -172,7 +172,7 @@ class TicketRecurrent extends CommonDropdown {
             for ($i=1 ; $i<=30 ; $i++) {
                $possible_values[$i*DAY_TIMESTAMP] = $i." ".Toolbox::ucfirst($LANG['calendar'][12]);
             }
-            
+
             for ($i=1 ; $i<12 ; $i++) {
                $possible_values[$i*MONTH_TIMESTAMP] = $i." ".Toolbox::ucfirst($LANG['calendar'][14]);
             }
@@ -185,7 +185,7 @@ class TicketRecurrent extends CommonDropdown {
             break;
       }
    }
-   
+
    /**
     * Get search function for the class
     *
@@ -271,7 +271,7 @@ class TicketRecurrent extends CommonDropdown {
          } else {
             return date("Y-m-d H:i:s", $timestart);
          }
-         
+
       }
 
       return 'NULL';
@@ -364,6 +364,7 @@ class TicketRecurrent extends CommonDropdown {
          $input['entities_id'] = $data['entities_id'];
 
          $ticket = new Ticket();
+         $input  = Toolbox::addslashes_deep($input);
          if ($tid=$ticket->add($input)) {
             $msg = $LANG['common'][23]." ($tid)"; // Success
             $result = true;
