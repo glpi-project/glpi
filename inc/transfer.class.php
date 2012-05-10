@@ -2384,7 +2384,7 @@ class Transfer extends CommonDBTM {
 
          if ($categ->getFromDB($data['itilcategories_id'])) {
             $inputcat['entities_id']  = $this->to;
-            $inputcat['completename'] = $categ->fields['completename'];
+            $inputcat['completename'] = addslashes($categ->fields['completename']);
             $catid                    = $categ->findID($inputcat);
             if ($catid<0) {
                $catid = $categ->import($inputcat);
