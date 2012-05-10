@@ -68,11 +68,11 @@ class Transfer extends CommonDBTM {
    // replace by $CFG_GLPI["ticket_types"]
 //    var $TICKETS_TYPES = array('Computer', 'Monitor', 'NetworkEquipment','Peripheral', 'Phone',
 //                               'Printer', 'Software');
-                              
+
    /// item types which have documents
    // replace by $CFG_GLPI["document_types"]
 //    var $DOCUMENTS_TYPES = array('Budget','CartridgeItem', 'Computer', 'ConsumableItem', 'Contact',
-//                                 'Contract', 'Document', 'Entity', 'KnowbaseItem', 'Monitor', 
+//                                 'Contract', 'Document', 'Entity', 'KnowbaseItem', 'Monitor',
 //                                 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer', 'Problem',
 //                                 'Reminder', 'Software', 'SoftwareLicense', 'Supplier','Ticket','User');
 
@@ -1081,7 +1081,7 @@ class Transfer extends CommonDBTM {
                $input  = array_merge($input,$input2);
                $this->transferTaskCategory($itemtype, $ID, $newID);
             }
-            
+
             $item->update($input);
             $this->addToAlreadyTransfer($itemtype,$ID,$newID);
             Plugin::doHook("item_transfer", array('type'  => $itemtype,
@@ -2319,14 +2319,14 @@ class Transfer extends CommonDBTM {
          case 'Ticket' :
             $table = 'glpi_tickettasks';
             $field = 'tickets_id';
-            $task=new TicketTask();      
+            $task=new TicketTask();
             break;
          case 'Problem' :
             $table = 'glpi_problemtasks';
             $field = 'problems_id';
             $task=new ProblemTask();
             break;
-      
+
       }
 
       $query = "SELECT *
@@ -2343,7 +2343,7 @@ class Transfer extends CommonDBTM {
 
                   if ($categ->getFromDB($data['taskcategories_id'])) {
                      $inputcat['entities_id']  = $this->to;
-                     $inputcat['completename'] = $categ->fields['completename'];
+                     $inputcat['completename'] = addslashes($categ->fields['completename']);
                      $catid                    = $categ->findID($inputcat);
                      if ($catid<0) {
                         $catid = $categ->import($inputcat);
@@ -2589,7 +2589,7 @@ class Transfer extends CommonDBTM {
                                  WHERE `suppliers_id` = '$ID'
                                        AND `itemtype` = '$itemtype'
                                        AND `items_id` NOT IN ".$this->item_search[$itemtype];
-   
+
                         if ($result_search = $DB->query($query)) {
                            $links_remaining += $DB->result($result_search,0,'CPT');
                         }
