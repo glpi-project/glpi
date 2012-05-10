@@ -222,7 +222,7 @@ class TicketFollowup  extends CommonDBTM {
       Log::history($this->getField('tickets_id'), 'Ticket', $changes, $this->getType(),
                    Log::HISTORY_DELETE_SUBITEM);
 
-      $options = array('followup_id' => $this->fields["id"], 
+      $options = array('followup_id' => $this->fields["id"],
                         // Force is_private with data / not available
                         'is_private' => $this->fields['is_private']);
       NotificationEvent::raiseEvent('delete_followup', $job, $options);
@@ -244,8 +244,8 @@ class TicketFollowup  extends CommonDBTM {
       $job = new Ticket();
       $mailsend = false;
 
-      if ($job->getFromDB($this->input["tickets_id"])) {
-         $job->updateDateMod($this->input["tickets_id"]);
+      if ($job->getFromDB($this->fields["tickets_id"])) {
+         $job->updateDateMod($this->fields["tickets_id"]);
 
          if (count($this->updates)) {
             if ($CFG_GLPI["use_mailing"]
