@@ -237,8 +237,8 @@ class TicketFollowup  extends CommonDBTM {
       $job      = new Ticket();
       $mailsend = false;
 
-      if ($job->getFromDB($this->input["tickets_id"])) {
-         $job->updateDateMod($this->input["tickets_id"]);
+      if ($job->getFromDB($this->fields["tickets_id"])) {
+         $job->updateDateMod($this->fields["tickets_id"]);
 
          if (count($this->updates)) {
             if ($CFG_GLPI["use_mailing"]
