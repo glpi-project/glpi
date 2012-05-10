@@ -1082,27 +1082,20 @@ class Transfer extends CommonDBTM {
          }
          // else  // Not already transfer
          // Search init item
-         $query = "SELECT *
-                   FROM `glpi_locations`
-                   WHERE `id` = '".$locID."'";
+         $location = new Location();
+         if ($location->getFromDB($locID)) {
+            $data = Toolbox::addslashes_deep($location->fields);
 
-         if ($result = $DB->query($query)) {
-            if ($DB->numrows($result)) {
-               $data = $DB->fetch_assoc($result);
-               $data = Toolbox::addslashes_deep($data);
+            $input['entities_id']  = $this->to;
+            $input['completename'] = $data['completename'];
+            $newID                 = $location->findID($input);
 
-               $input['entities_id']  = $this->to;
-               $input['completename'] = $data['completename'];
-               $location              = new Location();
-               $newID                 = $location->findID($input);
-
-               if ($newID < 0) {
-                  $newID = $location->import($input);
-               }
-
-               $this->addToAlreadyTransfer('locations_id', $locID, $newID);
-               return $newID;
+            if ($newID < 0) {
+               $newID = $location->import($input);
             }
+
+            $this->addToAlreadyTransfer('locations_id', $locID, $newID);
+            return $newID;
          }
       }
       return 0;
@@ -1125,43 +1118,36 @@ class Transfer extends CommonDBTM {
          }
          // else  // Not already transfer
          // Search init item
-         $query = "SELECT *
-                   FROM `glpi_netpoints`
-                   WHERE `id` = '$netpoints_id'";
+         $netpoint = new Netpoint();
+         if ($netpoint->getFromDB($netpoints_id)) {
+            $data  = Toolbox::addslashes_deep($location->fields);
+            $locID = $this->transferDropdownLocation($data['locations_id']);
 
-          if ($result =$DB->query($query)) {
-            if ($DB->numrows($result)) {
-               $data  = $DB->fetch_assoc($result);
-               $data  = Toolbox::addslashes_deep($data);
-               $locID = $this->transferDropdownLocation($data['locations_id']);
+            // Search if the locations_id already exists in the destination entity
+            $query = "SELECT `id`
+                      FROM `glpi_netpoints`
+                      WHERE `entities_id` = '".$this->to."'
+                            AND `name` = '".$data['name']."'
+                            AND `locations_id` = '$locID'";
 
-               // Search if the locations_id already exists in the destination entity
-               $query = "SELECT `id`
-                         FROM `glpi_netpoints`
-                         WHERE `entities_id` = '".$this->to."'
-                               AND `name` = '".$data['name']."'
-                               AND `locations_id` = '$locID'";
-
-               if ($result_search = $DB->query($query)) {
-                  // Found : -> use it
-                  if ($DB->numrows($result_search) > 0) {
-                     $newID = $DB->result($result_search,0,'id');
-                     $this->addToAlreadyTransfer('netpoints_id', $netpoints_id, $newID);
-                     return $newID;
-                  }
+            if ($result_search = $DB->query($query)) {
+               // Found : -> use it
+               if ($DB->numrows($result_search) > 0) {
+                  $newID = $DB->result($result_search,0,'id');
+                  $this->addToAlreadyTransfer('netpoints_id', $netpoints_id, $newID);
+                  return $newID;
                }
-
-               // Not found :
-               // add item
-               $netpoint = new Netpoint();
-               $newID    = $netpoint->add(array('name'         => $data['name'],
-                                                'comment'      => $data['comment'],
-                                                'entities_id'  => $this->to,
-                                                'locations_id' => $locID));
-
-               $this->addToAlreadyTransfer('netpoints_id', $netpoints_id, $newID);
-               return $newID;
             }
+
+            // Not found :
+            // add item
+            $newID    = $netpoint->add(array('name'         => $data['name'],
+                                             'comment'      => $data['comment'],
+                                             'entities_id'  => $this->to,
+                                             'locations_id' => $locID));
+
+            $this->addToAlreadyTransfer('netpoints_id', $netpoints_id, $newID);
+            return $newID;
          }
       }
       return 0;
