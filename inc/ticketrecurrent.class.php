@@ -432,6 +432,7 @@ class TicketRecurrent extends CommonDropdown {
          $input['entities_id'] = $data['entities_id'];
 
          $ticket = new Ticket();
+         $input  = Toolbox::addslashes_deep($input);
          if ($tid = $ticket->add($input)) {
             $msg = sprintf(__('Ticket %d successfully created'), $tid);
             $result = true;
