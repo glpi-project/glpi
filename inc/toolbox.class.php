@@ -365,9 +365,9 @@ class Toolbox {
    /**
     * Log a message in log file
     *
-    * @param $name string: name of the log file
-    * @param $text string: text to log
-    * @param $force boolean: force log in file not seeing use_log_in_files config
+    * @param $name   string   name of the log file
+    * @param $text   string   text to log
+    * @param $force  boolean  force log in file not seeing use_log_in_files config (false by default)
    **/
    static function logInFile($name, $text, $force=false) {
       global $CFG_GLPI;
@@ -387,11 +387,11 @@ class Toolbox {
    /**
     * Specific error handler in Normal mode
     *
-    * @param $errno integer: level of the error raised.
-    * @param $errmsg string: error message.
-    * @param $filename string: filename that the error was raised in.
-    * @param $linenum integer: line number the error was raised at.
-    * @param $vars array: that points to the active symbol table at the point the error occurred.
+    * @param $errno     integer  level of the error raised.
+    * @param $errmsg    string   error message.
+    * @param $filename  string   filename that the error was raised in.
+    * @param $linenum   integer  line number the error was raised at.
+    * @param $vars      array    that points to the active symbol table at the point the error occurred.
    **/
    static function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars) {
 
@@ -447,11 +447,11 @@ class Toolbox {
    /**
     * Specific error handler in Debug mode
     *
-    * @param $errno integer: level of the error raised.
-    * @param $errmsg string: error message.
-    * @param $filename string: filename that the error was raised in.
-    * @param $linenum integer: line number the error was raised at.
-    * @param $vars array: that points to the active symbol table at the point the error occurred.
+    * @param $errno     integer  level of the error raised.
+    * @param $errmsg    string   error message.
+    * @param $filename  string   filename that the error was raised in.
+    * @param $linenum   integer  line number the error was raised at.
+    * @param $vars      array    that points to the active symbol table at the point the error occurred.
    **/
    static function userErrorHandlerDebug($errno, $errmsg, $filename, $linenum, $vars) {
 
@@ -473,8 +473,8 @@ class Toolbox {
     * Send a file (not a document) to the navigator
     * See Document->send();
     *
-    * @param $file string: storage filename
-    * @param $filename string: file title
+    * @param $file      string: storage filename
+    * @param $filename  string: file title
     *
     * @return nothing
    **/
@@ -551,7 +551,8 @@ class Toolbox {
    /**
     * Strip slash  for variable & array
     *
-    * @param $value array or string: item to stripslashes (array or string)
+    * @param $value     array or string: item to stripslashes (array or string)
+    *
     * @return stripslashes item
    **/
    static function stripslashes_deep($value) {
@@ -565,9 +566,11 @@ class Toolbox {
 
    /** Converts an array of parameters into a query string to be appended to a URL.
     *
-    * @param $array  array: parameters to append to the query string.
-    * @param $separator separator : default is & : may be defined as &amp; to display purpose
-    * @param $parent This should be left blank (it is used internally by the function).
+    * @param $array     array parameters to append to the query string.
+    * @param $separator        separator may be defined as &amp; to display purpose
+    *                         (default '&')
+    * @param $parent          This should be left blank (it is used internally by the function).
+    *                         (default '')
     *
     * @return string  : Query string to append to a URL.
    **/
@@ -579,7 +582,7 @@ class Toolbox {
          if (is_array($v)) {
             $params[] = self::append_params($v, $separator,
                                             (empty($parent) ? rawurlencode($k)
-                                                            : $parent .'[' .rawurlencode($k) . ']'));
+                                                            : $parent .'['.rawurlencode($k).']'));
          } else {
             $params[] = (!empty($parent) ? $parent . '[' . rawurlencode($k) . ']'
                                          : rawurlencode($k)) . '=' . rawurlencode($v);
@@ -643,7 +646,7 @@ class Toolbox {
       if ($mem == "-1") {
          return 1;
       }
-      if ($mem<64*1024*1024) {
+      if ($mem < (64*1024*1024)) {
          return 2;
       }
       return 3;
@@ -673,54 +676,57 @@ class Toolbox {
             echo "<td class='red'>
                   <img src='".GLPI_ROOT."/pics/redbutton.png'>".
                   __('GLPI is not compatible with the option zend.ze1_compatibility_mode = On.').
-                 "</td></tr>";
+                 "</td>";
          } else {
             echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-                       __('PHP version is at least 5.3.0 - Perfect !')."\"
-                       title=\"".__('PHP version is at least 5.3.0 - Perfect !')."\"></td></tr>";
+                       __s('PHP version is at least 5.3.0 - Perfect !')."\"
+                       title=\"".__s('PHP version is at least 5.3.0 - Perfect !')."\"></td>";
          }
 
       } else { // PHP <5
          $error = 2;
          echo "<td class='red'>
-               <img src='".GLPI_ROOT."/pics/redbutton.png'>". __('You must install at least PHP 5.3.0.').
-               "</td></tr>";
+               <img src='".GLPI_ROOT."/pics/redbutton.png'>".
+                __('You must install at least PHP 5.3.0.')."</td>";
       }
+      echo "</tr>";
 
       // Check for mysql extension ni php
       echo "<tr class='tab_bg_1'><td class='left b'>".__('MySQL Improved extension test')."</td>";
       if (class_exists("mysqli")) {
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png'
                     alt=\"". __s('Ok - the MySQLi class exist - Perfect !')."\"
-                    title=\"". __s('Ok - the MySQLi class exist - Perfect !')."\"></td></tr>";
+                    title=\"". __s('Ok - the MySQLi class exist - Perfect !')."\"></td>";
       } else {
          echo "<td class='red'>";
          echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
-               __('You must install the MySQL Improved extension for PHP.')."</td></tr>";
+               __('You must install the MySQL Improved extension for PHP.')."</td>";
          $error = 2;
       }
+      echo "</tr>";
 
       // session test
-      echo "<tr class='tab_bg_1'><td class='b left'>".__('Sessions Test')."</td>";
+      echo "<tr class='tab_bg_1'><td class='b left'>".__('Sessions test')."</td>";
 
       // check whether session are enabled at all!!
       if (!extension_loaded('session')) {
          $error = 2;
-         echo "<td class='red b'>".__s('Your parser PHP is not installed with sessions support!').
-              "</td></tr>";
+         echo "<td class='red b'>".__('Your parser PHP is not installed with sessions support!').
+              "</td>";
 
-      } else if ((isset($_SESSION["Test_session_GLPI"]) && $_SESSION["Test_session_GLPI"] == 1) // From install
+      } else if ((isset($_SESSION["Test_session_GLPI"]) && ($_SESSION["Test_session_GLPI"] == 1)) // From install
                  || isset($_SESSION["glpi_currenttime"])) { // From Update
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
                     __s('Sessions support is available  - Perfect !').
-                    "\" title=\"".__s('Sessions support is available  - Perfect !')."\"></td></tr>";
+                    "\" title=\"".__s('Sessions support is available  - Perfect !')."\"></td>";
 
       } else if ($error != 2) {
          echo "<td class='red'>";
          echo "<img src='".GLPI_ROOT."/pics/orangebutton.png'>".
-                __('Make sure that sessions support has been activated in your php.ini')."</td></tr>";
+                __('Make sure that sessions support has been activated in your php.ini')."</td>";
          $error = 1;
       }
+      echo "</tr>";
 
       //Test for session auto_start
       if (ini_get('session.auto_start')==1) {
@@ -738,7 +744,7 @@ class Toolbox {
       if (isset($_POST[session_name()]) || isset($_GET[session_name()])) {
          echo "<td class='red'>";
          echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
-               __('You must desactivate the Session_use_trans_id option in your php.ini')."</td></tr>";
+               __('You must desactivate the Session_use_trans_id option in your php.ini')."</td>";
          $error = 2;
 
       } else {
@@ -746,8 +752,9 @@ class Toolbox {
                __s('Ok - the sessions works (no problem with trans_id) - Perfect !').
                "\" title=\"".
                __s('Ok - the sessions works (no problem with trans_id) - Perfect !').
-               "\"></td></tr>";
+               "\"></td>";
       }
+      echo "</tr>";
 
       //Test for sybase extension loaded or not.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('magic_quotes_sybase extension test')."</td>";
@@ -756,7 +763,7 @@ class Toolbox {
          echo "<td class='red'>";
          echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
                __('GLPI does not work with the magic_quotes_sybase option ; Please turn it off and retry').
-               "</td></tr>";
+               "</td>";
          $error = 2;
 
       } else {
@@ -764,8 +771,9 @@ class Toolbox {
               __s("The magic_quotes_sybase option isn't active on your server - Perfect !").
               "\" title=\"".
               __s("The magic_quotes_sybase option isn't active on your server - Perfect !").
-              "\"></td></tr>";
+              "\"></td>";
       }
+      echo "</tr>";
 
       //Test for json_encode function.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Test json functions')."</td>";
@@ -773,32 +781,32 @@ class Toolbox {
       if (!function_exists('json_encode') || !function_exists('json_decode')) {
          echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
                __("GLPI can't work correctly without the json_encode and json_decode functions").
-               "></td></tr>";
+               "></td>";
          $error = 2;
 
       } else {
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+               __s('The functionality is found - Perfect!'). "\" title=\"".
                __s('The functionality is found - Perfect!').
-               "\" title=\"".
-               __s('The functionality is found - Perfect!').
-               "\"></td></tr>";
+               "\"></td>";
       }
+      echo "</tr>";
 
       //Test for mbstring extension.
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Mbstring extension test')."</td>";
 
       if (!extension_loaded('mbstring')) {
          echo "<td><img src='".GLPI_ROOT."/pics/redbutton.png'>".
-               __('Mbstring extension of your parser PHP is not installed')."></td></tr>";
+               __('Mbstring extension of your parser PHP is not installed')."></td>";
          $error = 2;
 
       } else {
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
+               __s('The functionality is found - Perfect!'). "\" title=\"".
                __s('The functionality is found - Perfect!').
-               "\" title=\"".
-               __s('The functionality is found - Perfect!').
-               "\"></td></tr>";
+               "\"></td>";
       }
+      echo "</tr>";
 
       // memory test
       echo "<tr class='tab_bg_1'><td class='left b'>".__('Allocated memory test')."</td>";
@@ -806,30 +814,33 @@ class Toolbox {
       //Get memory limit
       $mem = self::getMemoryLimit();
       switch (self::checkMemoryLimit()) {
-         case 0: // memory_limit not compiled -> no memory limit
-         case 1: // memory_limit compiled and unlimited
+         case 0 : // memory_limit not compiled -> no memory limit
+         case 1 : // memory_limit compiled and unlimited
             echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-                  __s('Unlimited memory')." - ".__s('Perfect !')."\" title=\"".
-                  __s('Unlimited memory')." - ".__s('Perfect !')."\"></td></tr>";
+                  __s('Unlimited memory - Perfect !')."\" title=\"".
+                  __s('Unlimited memory - Perfect !')."\"></td>";
             break;
 
          case 2: //Insufficient memory
             $showmem = $mem/1048576;
             echo "<td class='red'><img src='".GLPI_ROOT."/pics/redbutton.png'><span class='b'>".
-                  sprintf(__('%1$s: %2$s'), __('Allocated memory'), sprintf(__('%s Mio'), $showmem)).
+                  sprintf(__('%1$s: %2$s'), __('Allocated memory'),
+                          sprintf(__('%1$s %2$s'), $showmem, __('Mio'))).
                   "</span>".
                   "<br>".__('A minimum of 64MB is commonly required for GLPI.').
                   "<br>".__('Try increasing the memory_limit parameter in the php.ini file.').
-                  "</td></tr>";
+                  "</td>";
             $error = 2;
             break;
 
          case 3: //Got enough memory, going to the next step
             echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-                  __s('Allocated memory > 64M')." - ".__s('Perfect !')."\" title=\"".
-                  __s('Allocated memory > 64M')." - ".__s('Perfect !')."\"></td></tr>";
+                  __s('Allocated memory > 64Mio - Perfect !')."\" title=\"".
+                  __s('Allocated memory > 64Mio - Perfect !')."\"></td>";
             break;
       }
+      echo "</tr>";
+
       $suberr = Config::checkWriteAccessToDirs();
       if ($suberr > $error) {
          $error = $suberr;
@@ -916,7 +927,7 @@ class Toolbox {
          $size = 0;
 
          while (false !== ($file = readdir($handle))) {
-            if ($file!='.' && $file!='..') {
+            if (($file != '.') && ($file != '..')) {
                $size += filesize($path.'/'.$file);
                $size += self::filesizeDirectory($path.'/'.$file);
             }
@@ -936,7 +947,8 @@ class Toolbox {
    **/
    static function getSize($size) {
 
-      $bytes = array('o', 'Kio', 'Mio', 'Gio', 'Tio');
+      //TRANS: list of unit (o for octet)
+      $bytes = array(__('o'), __('Kio'), __('Mio'), __('Gio'), __('Tio'));
       foreach ($bytes as $val) {
          if ($size > 1024) {
             $size = $size / 1024;
@@ -945,7 +957,7 @@ class Toolbox {
          }
       }
       //TRANS: %1$s is a number maybe float or string and %2$s the unit
-      return sprintf(__('%1$s %2$s'),round($size, 2),$val);
+      return sprintf(__('%1$s %2$s'), round($size, 2), $val);
    }
 
 
@@ -962,7 +974,7 @@ class Toolbox {
          if (is_dir($dir)) {
             $id_dir = opendir($dir);
             while (($element = readdir($id_dir)) !== false) {
-               if ($element != "." && $element != "..") {
+               if (($element != ".") && ($element != "..")) {
 
                   if (is_dir($dir."/".$element)) {
                      self::deleteDir($dir."/".$element);
@@ -985,8 +997,10 @@ class Toolbox {
    /**
     * Check if new version is available
     *
-    * @param $auto boolean: check done autically ? (if not display result)
-    * @param $messageafterredirect boolean: use message after redirect instead of display
+    * @param $auto                  boolean: check done autically ? (if not display result)
+    *                                        (true by default)
+    * @param $messageafterredirect  boolean: use message after redirect instead of display
+    *                                        (false by default)
     *
     * @return string explaining the result
    **/
@@ -1001,19 +1015,16 @@ class Toolbox {
          echo "<br>";
       }
 
-      $error = "";
+      $error          = "";
       $latest_version = self::getURLContent("http://glpi-project.org/latest_version", $error);
 
-      if (strlen(trim($latest_version))==0) {
-
+      if (strlen(trim($latest_version)) == 0) {
          if (!$auto) {
-
             if ($messageafterredirect) {
                Session::addMessageAfterRedirect($error, true, ERROR);
             } else {
                echo "<div class='center'>$error</div>";
             }
-
          } else {
             return $error;
          }
@@ -1021,18 +1032,18 @@ class Toolbox {
       } else {
          $splitted = explode(".", trim($CFG_GLPI["version"]));
 
-         if ($splitted[0]<10) {
+         if ($splitted[0] < 10) {
             $splitted[0] .= "0";
          }
 
-         if ($splitted[1]<10) {
+         if ($splitted[1] < 10) {
             $splitted[1] .= "0";
          }
 
-         $cur_version = $splitted[0]*10000+$splitted[1]*100;
+         $cur_version = ($splitted[0]*10000) + ($splitted[1]*100);
 
          if (isset($splitted[2])) {
-            if ($splitted[2]<10) {
+            if ($splitted[2] < 10) {
                $splitted[2] .= "0";
             }
             $cur_version += $splitted[2];
@@ -1040,41 +1051,45 @@ class Toolbox {
 
          $splitted = explode(".", trim($latest_version));
 
-         if ($splitted[0]<10) {
+         if ($splitted[0] < 10) {
             $splitted[0] .= "0";
          }
 
-         if ($splitted[1]<10) {
+         if ($splitted[1] < 10) {
             $splitted[1] .= "0";
          }
 
-         $lat_version = $splitted[0]*10000+$splitted[1]*100;
+         $lat_version = ($splitted[0]*10000) + ($splitted[1]*100);
 
          if (isset($splitted[2])) {
-            if ($splitted[2]<10) {
+            if ($splitted[2] < 10) {
                $splitted[2] .= "0";
             }
             $lat_version += $splitted[2];
          }
 
          if ($cur_version < $lat_version) {
-            $config_object = new Config();
-            $input["id"]   = 1;
+            $config_object                = new Config();
+            $input["id"]                  = 1;
             $input["founded_new_version"] = $latest_version;
             $config_object->update($input);
 
             if (!$auto) {
                if ($messageafterredirect) {
-                  Session::addMessageAfterRedirect(sprintf(__('A new version is available: %s.'), $latest_version));
+                  Session::addMessageAfterRedirect(sprintf(__('A new version is available: %s.'),
+                                                           $latest_version));
                   Session::addMessageAfterRedirect(__('You will find it on the GLPI-PROJECT.org site.'));
                } else {
-                  echo "<div class='center'>".sprintf(__('A new version is available: %s.'), $latest_version)."</div>";
-                  echo "<div class='center'>".__('You will find it on the GLPI-PROJECT.org site.')."</div>";
+                  echo "<div class='center'>".sprintf(__('A new version is available: %s.'),
+                                                      $latest_version)."</div>";
+                  echo "<div class='center'>".__('You will find it on the GLPI-PROJECT.org site.').
+                       "</div>";
                }
 
             } else {
                if ($messageafterredirect) {
-                  Session::addMessageAfterRedirect(sprintf(__('A new version is available: %s.'), $latest_version));
+                  Session::addMessageAfterRedirect(sprintf(__('A new version is available: %s.'),
+                                                           $latest_version));
                } else {
                   return sprintf(__('A new version is available: %s.'), $latest_version);
                }
@@ -1166,8 +1181,8 @@ class Toolbox {
    /**
     * Get form URL for itemtype
     *
-    * @param $itemtype string: item type
-    * @param $full path or relative one
+    * @param $itemtype  string   item type
+    * @param $full               path or relative one (true by default)
     *
     * return string itemtype Form URL
    **/
@@ -1176,7 +1191,7 @@ class Toolbox {
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
-      if ($plug=isPluginItemType($itemtype)) {
+      if ($plug = isPluginItemType($itemtype)) {
          $dir .= "/plugins/".strtolower($plug['plugin']);
          $item = strtolower($plug['class']);
 
@@ -1191,8 +1206,8 @@ class Toolbox {
    /**
     * Get search URL for itemtype
     *
-    * @param $itemtype string: item type
-    * @param $full path or relative one
+    * @param $itemtype  string   item type
+    * @param $full               path or relative one (true by default)
     *
     * return string itemtype search URL
    **/
@@ -1201,7 +1216,7 @@ class Toolbox {
 
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
-      if ($plug=isPluginItemType($itemtype)) {
+      if ($plug = isPluginItemType($itemtype)) {
          $dir .=  "/plugins/".strtolower($plug['plugin']);
          $item = strtolower($plug['class']);
 
@@ -1222,8 +1237,8 @@ class Toolbox {
    /**
     * Get ajax tabs url for itemtype
     *
-    * @param $itemtype string: item type
-    * @param $full path or relative one
+    * @param $itemtype  string   item type
+    * @param $full               path or relative one (true by default)
     *
     * return string itemtype tabs URL
    **/
@@ -1234,7 +1249,7 @@ class Toolbox {
       /// TODO drop also for plugins.
 
       $filename = "/ajax/common.tabs.php";
-      if ($plug=isPluginItemType($itemtype)) {
+      if ($plug = isPluginItemType($itemtype)) {
          $dir      = "/plugins/".strtolower($plug['plugin']);
          $item     = strtolower($plug['class']);
          $tempname = $dir."/ajax/$item.tabs.php";
@@ -1260,7 +1275,7 @@ class Toolbox {
       $rndstring = "";
 
       for ($a=0 ; $a<=$length ; $a++) {
-         $b = rand(0, strlen($alphabet) - 1);
+         $b          = rand(0, strlen($alphabet) - 1);
          $rndstring .= $alphabet[$b];
       }
       return $rndstring;
@@ -1276,24 +1291,24 @@ class Toolbox {
    **/
    static function getTimestampTimeUnits($time) {
 
-      $time = round(abs($time));
+      $time          = round(abs($time));
       $out['second'] = 0;
       $out['minute'] = 0;
       $out['hour']   = 0;
       $out['day']    = 0;
 
       $out['second'] = $time%MINUTE_TIMESTAMP;
-      $time -= $out['second'];
+      $time         -= $out['second'];
 
-      if ($time>0) {
+      if ($time > 0) {
          $out['minute'] = ($time%HOUR_TIMESTAMP)/MINUTE_TIMESTAMP;
-         $time -= $out['minute']*MINUTE_TIMESTAMP;
+         $time         -= $out['minute']*MINUTE_TIMESTAMP;
 
-         if ($time>0) {
+         if ($time > 0) {
             $out['hour'] = ($time%DAY_TIMESTAMP)/HOUR_TIMESTAMP;
-            $time -= $out['hour']*HOUR_TIMESTAMP;
+            $time       -= $out['hour']*HOUR_TIMESTAMP;
 
-            if ($time>0) {
+            if ($time > 0) {
                $out['day'] = $time/DAY_TIMESTAMP;
             }
          }
@@ -1305,9 +1320,9 @@ class Toolbox {
    /**
     * Get a web page. Use proxy if configured
     *
-    * @param $url string: to retrieve
-    * @param $msgerr string: set if problem encountered
-    * @param $rec integer: internal use only Must be 0
+    * @param $url    string   to retrieve
+    * @param $msgerr string   set if problem encountered (default NULL)
+    * @param $rec    integer  internal use only Must be 0 (default 0)
     *
     * @return content of the page (or empty)
    **/
@@ -1319,10 +1334,10 @@ class Toolbox {
 
       // Connection directe
       if (empty($CFG_GLPI["proxy_name"])) {
-         if ($fp=@fsockopen($taburl["host"], (isset($taburl["port"]) ? $taburl["port"] : 80),
+         if ($fp .= @fsockopen($taburl["host"], (isset($taburl["port"]) ? $taburl["port"] : 80),
                             $errno, $errstr, 1)) {
 
-            if (isset($taburl["path"]) && $taburl["path"]!='/') {
+            if (isset($taburl["path"]) && ($taburl["path"] != '/')) {
                // retrieve path + args
                $request = "GET ".strstr($url, $taburl["path"])." HTTP/1.1\r\n";
             } else {
@@ -1354,7 +1369,7 @@ class Toolbox {
          } else {
             if (isset($msgerr)) {
                //TRANS: %s is the error string
-               $msgerr = sprintf(__('Failed to connect to the proxy server (%s)'),$errstr);
+               $msgerr = sprintf(__('Failed to connect to the proxy server (%s)'), $errstr);
             }
             return "";
          }
@@ -1368,15 +1383,15 @@ class Toolbox {
       $redir  = false;
       $errstr = "";
       while (!feof($fp)) {
-         if ($buf=fgets($fp, 1024)) {
+         if ($buf = fgets($fp, 1024)) {
             if ($header) {
 
-               if (strlen(trim($buf))==0) {
+               if (strlen(trim($buf)) == 0) {
                   // Empty line = end of header
                   $header = false;
 
                } else if ($redir && preg_match("/^Location: (.*)$/", $buf, $rep)) {
-                  if ($rec<9) {
+                  if ($rec < 9) {
                      $desturl = trim($rep[1]);
                      $taburl2 = parse_url($desturl);
 
@@ -1428,8 +1443,10 @@ class Toolbox {
       return $content;
    }
 
+
    /**
-    *
+    * @param $need
+    * @param $tab
    **/
    static function key_exists_deep($need, $tab) {
 
@@ -1439,7 +1456,8 @@ class Toolbox {
             return true;
          }
 
-         if (is_array($value) && self::key_exists_deep($need, $value)) {
+         if (is_array($value)
+             && self::key_exists_deep($need, $value)) {
             return true;
          }
 
@@ -1459,7 +1477,8 @@ class Toolbox {
    static function manageBeginAndEndPlanDates(&$data) {
 
       if (!isset($data['end'])) {
-         if (isset($data['begin']) && isset($data['_duration'])) {
+         if (isset($data['begin'])
+             && isset($data['_duration'])) {
             $begin_timestamp = strtotime($data['begin']);
             $data['end']     = date("Y-m-d H:i:s", $begin_timestamp+$data['_duration']);
             unset($data['_duration']);
@@ -1477,9 +1496,9 @@ class Toolbox {
       global $CFG_GLPI, $PLUGIN_HOOKS;
 
       if (!empty($where)) {
-         $data = explode("_",$where);
+         $data = explode("_", $where);
 
-         if (count($data)>=2
+         if ((count($data) >= 2)
              && isset($_SESSION["glpiactiveprofile"]["interface"])
              && !empty($_SESSION["glpiactiveprofile"]["interface"])) {
 
@@ -1502,17 +1521,15 @@ class Toolbox {
                             && !empty($PLUGIN_HOOKS['redirect_page'][$plugin])) {
                            // Simple redirect
                            if (!is_array($PLUGIN_HOOKS['redirect_page'][$plugin])) {
-                              if (isset($data[2]) && $data[2]>0) {
+                              if (isset($data[2]) && ($data[2] > 0)) {
                                  $valid = true;
                                  $id    = $data[2];
                                  $page  = $PLUGIN_HOOKS['redirect_page'][$plugin];
                               }
                               $forcetabnum = 3 ;
                            } else { // Complex redirect
-                              if (isset($data[2])
-                                  && !empty($data[2])
-                                  && isset($data[3])
-                                  && $data[3] > 0
+                              if (isset($data[2]) && !empty($data[2])
+                                  && isset($data[3]) && ($data[3] > 0)
                                   && isset($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])
                                   && !empty($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])) {
                                  $valid = true;
@@ -1538,7 +1555,7 @@ class Toolbox {
                      case "tracking" :
                      case "ticket" :
                         Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$data[1].
-                                     "&$forcetab");
+                                       "&$forcetab");
                         break;
 
                      case "preference" :
@@ -1560,17 +1577,15 @@ class Toolbox {
                             && !empty($PLUGIN_HOOKS['redirect_page'][$plugin])) {
                            // Simple redirect
                            if (!is_array($PLUGIN_HOOKS['redirect_page'][$plugin])) {
-                              if (isset($data[2]) && $data[2]>0) {
+                              if (isset($data[2]) && ($data[2] > 0)) {
                                  $valid = true;
                                  $id    = $data[2];
                                  $page  = $PLUGIN_HOOKS['redirect_page'][$plugin];
                               }
                               $forcetabnum = 3 ;
                            } else { // Complex redirect
-                              if (isset($data[2])
-                                  && !empty($data[2])
-                                  && isset($data[3])
-                                  && $data[3] > 0
+                              if (isset($data[2]) && !empty($data[2])
+                                  && isset($data[3]) && ($data[3] > 0)
                                   && isset($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])
                                   && !empty($PLUGIN_HOOKS['redirect_page'][$plugin][$data[2]])) {
                                  $valid = true;
@@ -1602,7 +1617,7 @@ class Toolbox {
                         $data[0] = "ticket";
 
                      default :
-                        if (!empty($data[0] )&& $data[1]>0) {
+                        if (!empty($data[0] )&& ($data[1] > 0)) {
                            Html::redirect($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?id=".
                                         $data[1]."&$forcetab");
                         } else {
@@ -1633,26 +1648,34 @@ class Toolbox {
          // Le modifieur 'G' est disponible depuis PHP 5.1.0
          case 'g' :
             $val *= 1024;
+            // no break;
 
          case 'm' :
             $val *= 1024;
+            // no break;
 
          case 'k' :
             $val *= 1024;
+            // no break;
       }
 
       return $val;
    }
 
 
+   /**
+    * @param $value
+   **/
    static function showMailServerConfig($value) {
 
       if (!Session::haveRight("config", "w")) {
          return false;
       }
+
       if (strstr($value,":")) {
          $addr = str_replace("{", "", preg_replace("/:.*/", "", $value));
          $port = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
+
       } else {
          if (strstr($value,"/")) {
             $addr = str_replace("{", "", preg_replace("/\/.*/", "", $value));
@@ -1669,27 +1692,32 @@ class Toolbox {
       echo "<tr class='tab_bg_1'><td>" . __('Connection options') . "</td><td>";
       echo "<select name='server_type'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/imap' ".(strstr($value,"/imap") ?" selected ":"") . ">IMAP</option>\n";
-      echo "<option value='/pop' ".(strstr($value,"/pop") ? " selected " : "") . ">POP</option>\n";
+      echo "<option value='/imap' ".(strstr($value,"/imap") ?" selected ":"").">".__('IMAP').
+           "</option>\n";
+      echo "<option value='/pop' ".(strstr($value,"/pop") ? " selected " : "").">".__('POP').
+           "</option>\n";
       echo "</select>&nbsp;";
 
       echo "<select name='server_ssl'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/ssl' " .(strstr($value,"/ssl") ? " selected " : "") . ">SSL</option>\n";
+      echo "<option value='/ssl' " .(strstr($value,"/ssl") ? " selected " : "").">".__('SSL').
+           "</option>\n";
       echo "</select>&nbsp;";
 
       echo "<select name='server_tls'>";
       echo "<option value=''>&nbsp;</option>\n";
-      echo "<option value='/tls' ".(strstr($value,"/tls") ? " selected " : "") . ">TLS</option>\n";
-      echo "<option value='/notls' ".(strstr($value,"/notls")?" selected ":"").">NO-TLS</option>\n";
+      echo "<option value='/tls' ".(strstr($value,"/tls") ? " selected " : "").">".__('TLS').
+           "</option>\n";
+      echo "<option value='/notls' ".(strstr($value,"/notls")?" selected ":"").">".__('NO-TLS').
+           "</option>\n";
       echo "</select>&nbsp;";
 
       echo "<select name='server_cert'>";
       echo "<option value=''>&nbsp;</option>\n";
       echo "<option value='/novalidate-cert' ".(strstr($value,"/novalidate-cert")?" selected ":"").
-             ">NO-VALIDATE-CERT</option>\n";
+             ">".__('NO-VALIDATE-CERT')."</option>\n";
       echo "<option value='/validate-cert' " .(strstr($value,"/validate-cert")?" selected ":"") .
-             ">VALIDATE-CERT</option>\n";
+             ">".__('VALIDATE-CERT')."</option>\n";
       echo "</select>\n";
 
       echo "<input type=hidden name=imap_string value='".$value."'>";
@@ -1711,6 +1739,9 @@ class Toolbox {
    }
 
 
+   /**
+    * @param $input
+   **/
    static function constructMailServerConfig($input) {
 
       $out = "";
@@ -1743,7 +1774,9 @@ class Toolbox {
       return $out;
    }
 
+
    static function getDaysOfWeekArray() {
+
       $tab[0] = __("Sunday");
       $tab[1] = __("Monday");
       $tab[2] = __("Tuesday");
@@ -1754,6 +1787,7 @@ class Toolbox {
 
       return $tab;
    }
+
 
    static function getMonthsOfYearArray() {
 
