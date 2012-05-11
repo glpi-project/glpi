@@ -470,6 +470,33 @@ class Toolbox {
 
 
    /**
+    * Swict error mode for GLPI
+    *
+    * @param $mode   Interger from Session::*_MODE
+    *
+    * @since version 0.84
+   **/
+   static function setDebugMode($mode) {
+
+      // If debug mode activated : display some information
+      if ($mode == Session::DEBUG_MODE) {
+         // display_errors only need for for E_ERROR, E_PARSE, ... which cannot be catched
+         // Recommended development settings
+         ini_set('display_errors','On');
+         error_reporting(E_ALL | E_STRICT);
+         set_error_handler(array('Toolbox','userErrorHandlerDebug'));
+
+      } else {
+         // Recommended production settings
+         ini_set('display_errors','Off');
+         error_reporting(E_ALL);
+         set_error_handler(array('Toolbox', 'userErrorHandlerNormal'));
+      }
+
+   }
+
+
+   /**
     * Send a file (not a document) to the navigator
     * See Document->send();
     *

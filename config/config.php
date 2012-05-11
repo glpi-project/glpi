@@ -133,20 +133,16 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       exit();
    }
 
-   // If debug mode activated : display some information
-   if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-      // display_errors only need for for E_ERROR, E_PARSE, ... which cannot be catched
-      ini_set('display_errors','On');
-      // Recommended development settings
-      error_reporting(E_ALL | E_STRICT);
-      set_error_handler(array('Toolbox','userErrorHandlerDebug'));
-
-   } else {
-      // Recommended production settings
-      ini_set('display_errors','Off');
-      error_reporting(E_ALL);
-      set_error_handler(array('Toolbox', 'userErrorHandlerNormal'));
+   if (isCommandLine() && isset($_SERVER['argv'])) {
+      $key = array_search('--debug', $_SERVER['argv']);
+      if ($key) {
+         $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+         unset($_SERVER['argv'][$key]);
+         $_SERVER['argv']= array_values($_SERVER['argv']);
+         $_SERVER['argc']--;
+      }
    }
+   Toolbox::setDebugMode($_SESSION['glpi_use_mode']);
 
    if (isset($_SESSION["glpiroot"]) && $CFG_GLPI["root_doc"]!=$_SESSION["glpiroot"]) {
       Html::redirect($_SESSION["glpiroot"]);
