@@ -32,7 +32,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Class NotificationTarget
-class NotificationTargetCartridge extends NotificationTarget {
+class NotificationTargetCartridgeItem extends NotificationTarget {
 
 
    function getEvents() {
@@ -54,10 +54,10 @@ class NotificationTargetCartridge extends NotificationTarget {
                                                                        $options['entities_id']);
       $this->datas['##cartridge.action##'] = $events[$event];
 
-      foreach ($options['cartridges'] as $id => $cartridge) {
+      foreach ($options['items'] as $id => $cartridge) {
          $tmp                            = array();
-         $tmp['##cartridge.item##']      = $cartridge['cartname'];
-         $tmp['##cartridge.reference##'] = $cartridge['cartref'];
+         $tmp['##cartridge.item##']      = $cartridge['name'];
+         $tmp['##cartridge.reference##'] = $cartridge['ref'];
          $tmp['##cartridge.remaining##'] = cartridge::getUnusedNumber($id);
          $tmp['##cartridge.url##']       = urldecode($CFG_GLPI["url_base"].
                                                      "/index.php?redirect=cartridgeitem_".$id);
@@ -77,7 +77,7 @@ class NotificationTargetCartridge extends NotificationTarget {
 
       $tags = array('cartridge.action'    => _n('Event', 'Events', 1),
                     'cartridge.reference' => __('Reference'),
-                    'cartridge.item'      => __('Associated item'),
+                    'cartridge.item'      => __('Cartridge model'),
                     'cartridge.remaining' => __('Remaining'),
                     'cartridge.url'       => __('URL'),
                     'cartridge.entity'    => __('Entity'));
