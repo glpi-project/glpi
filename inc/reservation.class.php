@@ -102,8 +102,12 @@ class Reservation extends CommonDBChild {
       // Save fields
       $oldfields = $this->fields;
       // Needed for test already planned
-      $this->fields["begin"] = $input["begin"];
-      $this->fields["end"]   = $input["end"];
+      if (isset($input["begin"])) {
+         $this->fields["begin"] = $input["begin"];
+      }
+      if (isset($input["end"])) {
+         $this->fields["end"]   = $input["end"];
+      }
 
       if (!$this->test_valid_date()) {
          $this->displayError("date", $item);
