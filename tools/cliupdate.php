@@ -62,11 +62,9 @@ $_SESSION['glpilanguage']  = (in_array('--fr', $_SERVER['argv']) ? 'fr_FR' : 'en
 Session::loadLanguage();
 
 // Only show errors
+Toolbox::setDebugMode($_SESSION['glpi_use_mode']);
 $CFG_GLPI["debug_sql"]        = $CFG_GLPI["debug_vars"] = 0;
 $CFG_GLPI["use_log_in_files"] = 1;
-ini_set('display_errors', 'On');
-error_reporting(E_ALL | E_STRICT);
-set_error_handler(array('Toolbox', 'userErrorHandlerDebug'));
 
 $DB = new DB();
 if (!$DB->connected) {
