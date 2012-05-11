@@ -239,7 +239,7 @@ $CFG_GLPI["massiveaction_noupdate_types"] = array('OcsServer', 'Profile',
 
 $CFG_GLPI["massiveaction_nodelete_types"] = array('CronTask', 'Entity', 'NotImportedEmail');
 
-$CFG_GLPI["notificationtemplates_types"]  = array('Cartridge', 'Consumable', 'Contract', 'Crontask',
+$CFG_GLPI["notificationtemplates_types"]  = array('CartridgeItem', 'Consumable', 'Contract', 'Crontask',
                                                   'DBConnection', 'FieldUnicity', 'Infocom',
                                                   'PlanningRecall',
                                                   'Problem', 'Reservation', 'SoftwareLicense',

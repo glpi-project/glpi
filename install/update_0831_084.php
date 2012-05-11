@@ -1559,6 +1559,18 @@ function update0831to084() {
          $DB->query($query);
       }
    }
+
+   $query = "UPDATE `glpi_notifications`
+             SET   `itemtype`='CartridgeItem'
+             WHERE `itemtype`='Cartridge'";
+   $DB->queryOrDie($query, "0.83 update glpi_notifications for Cartridge");
+
+   $query = "UPDATE `glpi_notificationtemplates`
+             SET   `itemtype`='CartridgeItem'
+             WHERE `itemtype`='Cartridge'";
+   $DB->queryOrDie($query, "0.83 update glpi_notificationtemplates for Cartridge");
+
+
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));

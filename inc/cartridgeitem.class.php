@@ -356,8 +356,8 @@ class CartridgeItem extends CommonDBTM {
             // if you change this query, please don't forget to also change in showDebug()
             $query_alert = "SELECT `glpi_cartridgeitems`.`id` AS cartID,
                                    `glpi_cartridgeitems`.`entities_id` AS entity,
-                                   `glpi_cartridgeitems`.`ref` AS cartref,
-                                   `glpi_cartridgeitems`.`name` AS cartname,
+                                   `glpi_cartridgeitems`.`ref` AS ref,
+                                   `glpi_cartridgeitems`.`name` AS name,
                                    `glpi_cartridgeitems`.`alarm_threshold` AS threshold,
                                    `glpi_alerts`.`id` AS alertID,
                                    `glpi_alerts`.`date`
@@ -377,7 +377,7 @@ class CartridgeItem extends CommonDBTM {
                if (($unused=Cartridge::getUnusedNumber($cartridge["cartID"]))<=$cartridge["threshold"]) {
                   //TRANS: %1$s is the cartridge name, %2$s its reference, %3$d the remaining number
                   $message .= sprintf(__('Threshold of alarm reached for the type of cartridge: %1$s - Reference %2$s - Remaining %3$d'),
-                                      $cartridge["cartname"], $cartridge["cartref"], $unused);
+                                      $cartridge["name"], $cartridge["ref"], $unused);
                   $message .='<br>';
 
                   $items[$cartridge["cartID"]] = $cartridge;
@@ -391,10 +391,10 @@ class CartridgeItem extends CommonDBTM {
 
             if (!empty($items)) {
                $options['entities_id'] = $entity;
-               $options['cartridges']  = $items;
+               $options['items']  = $items;
 
                $entityname = Dropdown::getDropdownName("glpi_entities", $entity);
-               if (NotificationEvent::raiseEvent('alert', new Cartridge(), $options)) {
+               if (NotificationEvent::raiseEvent('alert', new CartridgeItem(), $options)) {
                   if ($task) {
                      $task->log(sprintf(__('%1$s: %2$s')."\n", $entityname, $message));
                      $task->addVolume(1);
@@ -549,14 +549,14 @@ class CartridgeItem extends CommonDBTM {
       // see query_alert in cronCartridge()
       $item = array('cartID'    => $this->fields['id'],
                     'entity'    => $this->fields['entities_id'],
-                    'cartref'   => $this->fields['ref'],
-                    'cartname'  => $this->fields['name'],
+                    'ref'       => $this->fields['ref'],
+                    'name'      => $this->fields['name'],
                     'threshold' => $this->fields['alarm_threshold']);
 
       $options = array();
       $options['entities_id'] = $this->getEntityID();
-      $options['cartridges']  = array($item);
-      NotificationEvent::debugEvent(new Cartridge(), $options);
+      $options['items']       = array($item);
+      NotificationEvent::debugEvent($this, $options);
    }
 }
 ?>
