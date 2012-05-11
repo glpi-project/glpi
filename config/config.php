@@ -133,6 +133,15 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       exit();
    }
 
+   if (isCommandLine() && isset($_SERVER['argv'])) {
+      $key = array_search('--debug', $_SERVER['argv']);
+      if ($key) {
+         $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
+         unset($_SERVER['argv'][$key]);
+         $_SERVER['argv']= array_values($_SERVER['argv']);
+         $_SERVER['argc']--;
+      }
+   }
    // If debug mode activated : display some informations
    if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
       // display_errors only need for for E_ERROR, E_PARSE, ... which cannot be catched
