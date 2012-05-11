@@ -299,8 +299,8 @@ class ConsumableItem extends CommonDBTM {
 
             $query_alert = "SELECT `glpi_consumableitems`.`id` AS consID,
                                    `glpi_consumableitems`.`entities_id` AS entity,
-                                   `glpi_consumableitems`.`ref` AS consref,
-                                   `glpi_consumableitems`.`name` AS consname,
+                                   `glpi_consumableitems`.`ref` AS ref,
+                                   `glpi_consumableitems`.`name` AS name,
                                    `glpi_consumableitems`.`alarm_threshold` AS threshold,
                                    `glpi_alerts`.`id` AS alertID,
                                    `glpi_alerts`.`date`
@@ -322,7 +322,7 @@ class ConsumableItem extends CommonDBTM {
                   // define message alert
                   //TRANS: %1$s is the consumable name, %2$s its reference, %3$d the remaining number
                   $message .= sprintf(__('Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s - Remaining %3$d'),
-                                      $consumable["consname"], $consumable["consref"], $unused);
+                                      $consumable['name'], $consumable['ref'], $unused);
                   $message.='<br>';
 
                   $items[$consumable["consID"]] = $consumable;
@@ -336,9 +336,9 @@ class ConsumableItem extends CommonDBTM {
 
             if (!empty($items)) {
                $options['entities_id'] = $entity;
-               $options['consumables'] = $items;
+               $options['items']       = $items;
 
-               if (NotificationEvent::raiseEvent('alert', new Consumable(), $options)) {
+               if (NotificationEvent::raiseEvent('alert', new ConsumableItem(), $options)) {
                   if ($task) {
                      $task->log(Dropdown::getDropdownName("glpi_entities",
                                                           $entity)." :  $message\n");
@@ -389,14 +389,14 @@ class ConsumableItem extends CommonDBTM {
       // see query_alert in cronConsumable()
       $item = array('consID'    => $this->fields['id'],
                     'entity'    => $this->fields['entities_id'],
-                    'consref'   => $this->fields['ref'],
-                    'consname'  => $this->fields['name'],
+                    'ref'       => $this->fields['ref'],
+                    'name'      => $this->fields['name'],
                     'threshold' => $this->fields['alarm_threshold']);
 
       $options = array();
       $options['entities_id'] = $this->getEntityID();
-      $options['consumables']  = array($item);
-      NotificationEvent::debugEvent(new Consumable(), $options);
+      $options['items']       = array($item);
+      NotificationEvent::debugEvent($this, $options);
    }
 
 }

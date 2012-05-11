@@ -32,7 +32,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // Class NotificationTarget
-class NotificationTargetConsumable extends NotificationTarget {
+class NotificationTargetConsumableItem extends NotificationTarget {
 
 
    function getEvents() {
@@ -56,10 +56,10 @@ class NotificationTargetConsumable extends NotificationTarget {
       $this->datas['##lang.consumable.entity##'] = __('Entity');
       $this->datas['##consumable.action##']      = $events[$event];
 
-      foreach ($options['consumables'] as $id => $consumable) {
+      foreach ($options['items'] as $id => $consumable) {
          $tmp                             = array();
-         $tmp['##consumable.item##']      = $consumable['consname'];
-         $tmp['##consumable.reference##'] = $consumable['consref'];
+         $tmp['##consumable.item##']      = $consumable['name'];
+         $tmp['##consumable.reference##'] = $consumable['ref'];
          $tmp['##consumable.remaining##'] = Consumable::getUnusedNumber($id);
          $tmp['##consumable.url##']       = urldecode($CFG_GLPI["url_base"].
                                                       "/index.php?redirect=consumableitem_".$id);
@@ -79,7 +79,7 @@ class NotificationTargetConsumable extends NotificationTarget {
 
       $tags = array('consumable.action'    => _n('Event', 'Events', 1),
                     'consumable.reference' => __('Reference'),
-                    'consumable.item'      => __('Associated item'),
+                    'consumable.item'      => __('Consumable model'),
                     'consumable.remaining' => __('Remaining'),
                     'consumable.entity'    => __('Entity'));
 

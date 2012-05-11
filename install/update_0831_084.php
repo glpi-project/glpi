@@ -1570,6 +1570,16 @@ function update0831to084() {
              WHERE `itemtype`='Cartridge'";
    $DB->queryOrDie($query, "0.83 update glpi_notificationtemplates for Cartridge");
 
+   $query = "UPDATE `glpi_notifications`
+             SET   `itemtype`='ConsumableItem'
+             WHERE `itemtype`='Consumable'";
+   $DB->queryOrDie($query, "0.83 update glpi_notifications for Cartridge");
+
+   $query = "UPDATE `glpi_notificationtemplates`
+             SET   `itemtype`='ConsumableItem'
+             WHERE `itemtype`='Consumable'";
+   $DB->queryOrDie($query, "0.83 update glpi_notificationtemplates for Cartridge");
+
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
