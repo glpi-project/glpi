@@ -59,7 +59,7 @@ class UserEmail  extends CommonDBChild {
    function canCreateItem() {
 
       return (Session::haveRight('user','w')
-              || $this->fields['users_id'] == Session::getLoginUserID());
+              || ($this->fields['users_id'] == Session::getLoginUserID()));
    }
 
 
@@ -69,8 +69,9 @@ class UserEmail  extends CommonDBChild {
 
 
    function canViewItem() {
+
       return (Session::haveRight('user','r')
-              || $this->fields['users_id'] == Session::getLoginUserID());
+              || ($this->fields['users_id'] == Session::getLoginUserID()));
    }
 
 
@@ -135,8 +136,8 @@ class UserEmail  extends CommonDBChild {
    /**
     * is an email of the user
     *
-    * @param $users_id user ID
-    * @param $email string email to check user ID
+    * @param $users_id           user ID
+    * @param $email     string   email to check user ID
     *
     * @return boolean is this email set for the user ?
    **/
@@ -163,10 +164,11 @@ class UserEmail  extends CommonDBChild {
 
       $users_id = $user->getID();
 
-      if (!$user->can($users_id,'r') && $users_id != Session::getLoginUserID()) {
+      if (!$user->can($users_id,'r')
+          && ($users_id != Session::getLoginUserID())) {
          return false;
       }
-      $canedit = ($user->can($users_id,"w") || $users_id == Session::getLoginUserID());
+      $canedit = ($user->can($users_id,"w") || ($users_id == Session::getLoginUserID()));
 
       // To be sure not to load bad datas from glpi_useremails table
       if ($users_id == 0) {
@@ -188,7 +190,7 @@ class UserEmail  extends CommonDBChild {
                 ($canedit?' ':' disabled').($data['is_default'] ? ' checked' : ' ').">&nbsp;";
          if (!$canedit || $data['is_dynamic']) {
             echo "<input type='hidden' name='_useremails[".$data['id']."]' value='".$data['email']."'>";
-            echo $data['email']."<span class='b'>&nbsp;(D)</span>";
+            printf(__('%1$s %2$s'), $data['email'], "<span class='b'>(". __('D').")</span>");
          } else {
             echo "<input type='text' size=30 name='_useremails[".$data['id']."]'
                    value='".$data['email']."' >";
@@ -211,20 +213,22 @@ class UserEmail  extends CommonDBChild {
    }
 
 
+   /**
+    * @param $user
+   **/
    static function showAddEmailButton(User $user) {
       global $CFG_GLPI;
 
       $users_id = $user->getID();
-      if (!$user->can($users_id,'r') && $users_id != Session::getLoginUserID()) {
+      if (!$user->can($users_id,'r') && ($users_id != Session::getLoginUserID())) {
          return false;
       }
-      $canedit = ($user->can($users_id,"w") || $users_id == Session::getLoginUserID());
+      $canedit = ($user->can($users_id,"w") || ($users_id == Session::getLoginUserID()));
 
       if ($canedit) {
 
          echo "&nbsp;<script type='text/javascript'>var nbemails=1; </script>";
-         echo "<span id='addemailbutton'><img title=\"".__s('Add')."\" alt=\"".
-               __s('Add').
+         echo "<span id='addemailbutton'><img title=\"".__s('Add')."\" alt=\"".__s('Add').
                "\" onClick=\"var row = Ext.get('emailadd$users_id');
                              row.createChild('<input type=\'text\' size=\'40\' ".
                                                "name=\'_useremails[-'+nbemails+']\'><br>');
@@ -255,7 +259,8 @@ class UserEmail  extends CommonDBChild {
       global $DB;
 
       // if default is set : unsed others for the users
-      if (in_array('is_default',$this->updates) && $this->input["is_default"] == 1) {
+      if (in_array('is_default', $this->updates)
+          && ($this->input["is_default"] == 1)) {
          $query = "UPDATE ". $this->getTable()."
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->input['id']."'
@@ -277,7 +282,7 @@ class UserEmail  extends CommonDBChild {
       global $DB;
 
       // if default is set : unset others for the users
-      if (isset($this->fields['is_default']) && $this->fields["is_default"]==1) {
+      if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
          $query = "UPDATE ". $this->getTable()."
                    SET `is_default` = '0'
                    WHERE `id` <> '".$this->fields['id']."'

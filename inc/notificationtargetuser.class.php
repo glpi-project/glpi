@@ -36,7 +36,7 @@ class NotificationTargetUser extends NotificationTarget {
 
 
    function getEvents() {
-      return array('passwordforget' => __('Forgot your password?'));
+      return array('passwordforget' => __('Forgotten password?'));
    }
 
 
