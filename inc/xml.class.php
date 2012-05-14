@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -45,13 +44,13 @@ if (!defined('GLPI_ROOT')) {
 class XML {
 
    /// Array of SQL requests to export
-   var $SqlString = "";
+   var $SqlString    = "";
    /// 1 there is a problem !!!
-   var $IsError = 0;
+   var $IsError      = 0;
    /// If there is an error, this string explains it
-   var $ErrorString = "NO errors ;)";
+   var $ErrorString  = "NO errors ;)";
    /// Which format do you want your XML ?
-   var $Type = 1;
+   var $Type         = 1;
    ///path where the file will be saved.
    var $FilePath;
 
@@ -127,15 +126,15 @@ class XML {
 
       foreach ($this->SqlString as $strqry) {
          if ($strqry == "") {
-            $this->IsError = 1;
+            $this->IsError     = 1;
             $this->ErrorString = "Error the query can't be a null string";
             return -1;
          }
          $result = $DB->query($strqry);
 
          if ($result == FALSE) {
-            $this->IsError = 1;
-            $this->ErrorString = "Error in SQL Query : ".$strqry;
+            $this->IsError     = 1;
+            $this->ErrorString = "Error in SQL Query: ".$strqry;
             return -1;
          }
          // OK... let's create XML ;)
@@ -155,7 +154,7 @@ class XML {
          while ($row = $DB->fetch_row($result)) {
             fputs($fp, "      <row>\n");
             for ($j=0 ; $j<$i ; $j++) {
-               $FieldName = "";   // Name of TAG
+               $FieldName  = "";   // Name of TAG
                $Attributes = "";
                switch ($this->Type) {
                   case 1 :

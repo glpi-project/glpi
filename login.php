@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -36,7 +35,7 @@
 define('GLPI_ROOT', '.');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (!isset($_SESSION["glpicookietest"]) || $_SESSION["glpicookietest"]!='testcookie') {
+if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
    if (!is_writable(GLPI_SESSION_DIR)) {
       Html::redirect($CFG_GLPI['root_doc'] . "/index.php?error=2");
    } else {
@@ -60,7 +59,7 @@ if (isset($_POST['login_password'])) {
 
 // Redirect management
 $REDIRECT = "";
-if (isset($_POST['redirect']) && strlen($_POST['redirect'])>0) {
+if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
    $REDIRECT = "?redirect=" .$_POST['redirect'];
 
 } else if (isset($_GET['redirect']) && strlen($_GET['redirect'])>0) {
@@ -76,13 +75,15 @@ if ($auth->Login($_POST['login_name'], $_POST['login_password'],
 
    // Redirect to Command Central if not post-only
    if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-      if ($_SESSION['glpiactiveprofile']['create_ticket_on_login'] && empty($REDIRECT)) {
+      if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']
+          && empty($REDIRECT)) {
          Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php?create_ticket=1");
       }
       Html::redirect($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
 
    } else {
-      if ($_SESSION['glpiactiveprofile']['create_ticket_on_login'] && empty($REDIRECT)) {
+      if ($_SESSION['glpiactiveprofile']['create_ticket_on_login']
+          && empty($REDIRECT)) {
          Html::redirect($CFG_GLPI['root_doc'] . "/front/ticket.form.php");
       }
       Html::redirect($CFG_GLPI['root_doc'] . "/front/central.php$REDIRECT");
@@ -98,5 +99,4 @@ if ($auth->Login($_POST['login_name'], $_POST['login_password'],
    Html::nullFooter();
    exit();
 }
-
 ?>
