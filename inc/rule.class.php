@@ -1499,6 +1499,7 @@ class Rule extends CommonDBTM {
 
          switch ($action['type']) {
             case "dropdown" :
+            case "dropdown_groups_assign" :
                $tmp = Dropdown::getDropdownName($action["table"], $value);
                return ($tmp=='&nbsp;' ? NOT_AVAILABLE : $tmp);
 
