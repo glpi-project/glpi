@@ -1084,7 +1084,12 @@ class Dropdown {
       $params['max'] = max($params['value'], $params['max']);
 
       // Floor with MINUTE_TIMESTAMP for rounded purpose
-      $params['value'] = floor(($params['value'])/$params['step'])*$params['step'];
+      if (($params['value'] < max($params['min'], 10*MINUTE_TIMESTAMP))
+          && $params['addfirstminutes']) {
+         $params['value'] = floor(($params['value'])/MINUTE_TIMESTAMP)*MINUTE_TIMESTAMP;
+      } else {
+         $params['value'] = floor(($params['value'])/$params['step'])*$params['step'];
+      }
 
       $values = array(0  => $params['emptylabel']);
 
