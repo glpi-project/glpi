@@ -44,5 +44,4 @@ class VirtualMachineType extends CommonDropdown {
    }
 
 }
-
 ?>

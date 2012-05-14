@@ -60,7 +60,7 @@ if (DBConnection::isDBSlaveActive()) {
 
    foreach ($hosts as $num => $name) {
       $diff = DBConnection::getReplicateDelay($num);
-      if (abs($diff)> 1000000000) {
+      if (abs($diff) > 1000000000) {
          echo "GLPI_DBSLAVE_${num}_OFFLINE\n";
          $ok_slave = false;
       } else if (abs($diff)> HOUR_TIMESTAMP) {
@@ -75,7 +75,7 @@ if (DBConnection::isDBSlaveActive()) {
 }
 
 // Check main server connection
-if (DBConnection::establishDBConnection(false,true,false)) {
+if (DBConnection::establishDBConnection(false, true, false)) {
    echo "GLPI_DB_OK\n";
 } else {
    echo "GLPI_DB_PROBLEM\n";
@@ -166,5 +166,4 @@ if ($ok) {
 } else {
    echo "GLPI_PROBLEM\n";
 }
-
 ?>

@@ -76,10 +76,10 @@ class XHProf {
    /**
     * @param $msg (default '')
    **/
-
    function start($msg='') {
 
-      if (!self::$run && function_exists('xhprof_enable')) {
+      if (!self::$run
+          && function_exists('xhprof_enable')) {
          xhprof_enable();
          if (class_exists('Toolbox')) {
             Toolbox::logDebug("Start profiling with XHProf", $msg);

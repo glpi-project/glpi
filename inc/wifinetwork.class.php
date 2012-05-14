@@ -61,6 +61,7 @@ class WifiNetwork extends CommonDropdown {
 
 
    static function getWifiNetworkModes() {
+
       return array('infrastructure' => __('Infrastructure (with access point)'),
                    'ad-hoc'         => __('Ad-hoc (without access point)'));
    }
@@ -86,6 +87,7 @@ class WifiNetwork extends CommonDropdown {
 
 
    function getAdditionalFields() {
+
       return array(array('name'  => 'essid',
                          'label' => __('ESSID'),
                          'type'  => 'text',
@@ -97,6 +99,9 @@ class WifiNetwork extends CommonDropdown {
    }
 
 
+   /**
+    * @see inc/CommonDropdown::displaySpecificTypeField()
+   **/
    function displaySpecificTypeField($ID, $field=array()) {
 
       if ($field['type'] == 'wifi_mode') {
@@ -116,7 +121,7 @@ class WifiNetwork extends CommonDropdown {
 
    function getSearchOptions() {
 
-      $tab = parent::getSearchOptions();
+      $tab                 = parent::getSearchOptions();
 
       $tab[10]['table']    = $this->getTable();
       $tab[10]['field']    = 'essid';
