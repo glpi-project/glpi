@@ -4575,12 +4575,13 @@ class OcsServer extends CommonDBTM {
                      }
 
                   } else {
-                     // Only update sizes if needed
+                     // Only update if needed
                      $id = array_search(stripslashes($disk["name"]), $import_disk);
                      if ($d->getFromDB($id)) {
 
-                        // Update on total size change or variation of 5%
+                        // Update on type, total size change or variation of 5%
                         if (($d->fields['totalsize'] != $disk['totalsize'])
+                            || $d->fields['filesystems_id']!=$disk['filesystems_id']
                             || ((abs($disk['freesize']-$d->fields['freesize'])/$disk['totalsize']) > 0.05)) {
 
                            $toupdate['id']        = $id;
