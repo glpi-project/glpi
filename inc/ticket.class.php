@@ -117,6 +117,9 @@ class Ticket extends CommonITILObject {
 
    function canView() {
 
+      if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+         return true;
+      }
       return (Session::haveRight("show_all_ticket","1")
               || Session::haveRight('create_ticket','1')
               || Session::haveRight('update_ticket','1')
