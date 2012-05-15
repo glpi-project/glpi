@@ -94,9 +94,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_computers_softwarelicenses'     => 'computers_id',
                                  'glpi_computers_softwareversions'     => 'computers_id',
                                  'glpi_computerdisks'                  => 'computers_id',
-                                 'glpi_computervirtualmachines'        => 'computers_id',
-                                 'glpi_ocslinks'                       => 'computers_id',
-                                 'glpi_registrykeys'                   => 'computers_id'),
+                                 'glpi_computervirtualmachines'        => 'computers_id'),
 
                   "glpi_computertypes"
                         => array('glpi_computers' => 'computertypes_id'),
@@ -218,7 +216,6 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_networknames'                    => 'entities_id',
                                  '_glpi_networkports'                   => 'entities_id',
                                  'glpi_notifications'                   => 'entities_id',
-                                 'glpi_ocslinks'                        => 'entities_id',
                                  'glpi_peripherals'                     => 'entities_id',
                                  'glpi_phones'                          => 'entities_id',
                                  'glpi_printers'                        => 'entities_id',
@@ -373,10 +370,6 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_printers'          => 'networks_id',
                                  'glpi_networkequipments' => 'networks_id'),
 
-                  "glpi_ocsservers"
-                        => array('glpi_ocsadmininfoslinks'  => 'ocsservers_id',
-                                 'glpi_ocslinks'            => 'ocsservers_id'),
-
                   "glpi_operatingsystems"
                         => array('glpi_computers'        => 'operatingsystems_id',
                                  'glpi_softwareversions' => 'operatingsystems_id'),
@@ -503,7 +496,6 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_computers'         => 'states_id',
                                  'glpi_monitors'          => 'states_id',
                                  'glpi_networkequipments' => 'states_id',
-                                 'glpi_ocsservers'        => 'states_id_default',
                                  'glpi_peripherals'       => 'states_id',
                                  'glpi_phones'            => 'states_id',
                                  'glpi_printers'          => 'states_id',
