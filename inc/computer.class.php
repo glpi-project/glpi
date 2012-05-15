@@ -119,21 +119,6 @@ class Computer extends CommonDBTM {
    function post_updateItem($history=1) {
       global $DB, $CFG_GLPI;
 
-      // Manage changes for OCS if more than 1 element (date_mod)
-      // Need dohistory==1 if dohistory==2 no locking fields
-      if ($this->fields["is_ocs_import"]
-          && ($history == 1)
-          && (count($this->updates) > 1)) {
-         OcsServer::mergeOcsArray($this->fields["id"], $this->updates, "computer_update");
-      }
-
-      if (isset($this->input["_auto_update_ocs"])) {
-         $query = "UPDATE `glpi_ocslinks`
-                   SET `use_auto_update` = '".$this->input["_auto_update_ocs"]."'
-                   WHERE `computers_id` = '".$this->input["id"]."'";
-         $DB->query($query);
-      }
-
       for ($i=0 ; $i<count($this->updates) ; $i++) {
          // Update contact of attached items
          if ((($this->updates[$i] == "contact") || ($this->updates[$i] == "contact_num"))
@@ -448,11 +433,6 @@ class Computer extends CommonDBTM {
 
       $compdev = new Computer_Device();
       $compdev->cleanDBonItemDelete('Computer', $this->fields['id']);
-
-      $query  = "DELETE
-                 FROM `glpi_ocslinks`
-                 WHERE `computers_id` = '".$this->fields['id']."'";
-      $result = $DB->query($query);
 
       $disk = new ComputerDisk();
       $disk->cleanDBonItemDelete('Computer', $this->fields['id']);
