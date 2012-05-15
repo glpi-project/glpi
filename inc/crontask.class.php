@@ -732,15 +732,15 @@ class CronTask extends CommonDBTM{
       $taskname = '';
       //If cron is launched in command line, and if memory is insufficient, display a warning in
       //the logs
-      if ($mode==self::MODE_EXTERNAL && Toolbox::checkMemoryLimit() == 2) {
+      if (abs($mode)==self::MODE_EXTERNAL && Toolbox::checkMemoryLimit() == 2) {
          Toolbox::logDebug($LANG['install'][88]);
       }
 
       if (self::get_lock()) {
          $crontask = new self();
          for ($i=1 ; $i<=$max ; $i++) {
-            $prefix = ($mode==self::MODE_EXTERNAL ? 'External'
-                                                  : 'Internal')." #$i: ";
+            $prefix = (abs($mode)==self::MODE_EXTERNAL ? 'External'
+                                                       : 'Internal')." #$i: ";
 
             if ($crontask->getNeedToRun($mode, $name)) {
                $_SESSION["glpicronuserrunning"] = "cron_".$crontask->fields['name'];
@@ -1111,7 +1111,7 @@ class CronTask extends CommonDBTM{
       $tab[4]['name']          = $LANG['joblist'][0];
       $tab[4]['searchtype']    = array('equals');
       $tab[4]['massiveaction'] = false;
-      
+
       $tab[5]['table']         = $this->getTable();
       $tab[5]['field']         = 'mode';
       $tab[5]['name']          = $LANG['crontask'][36];
