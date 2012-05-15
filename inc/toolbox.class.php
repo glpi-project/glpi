@@ -380,6 +380,12 @@ class Toolbox {
          error_log(Html::convDateTime(date("Y-m-d H:i:s"))."$user\n".$text,
                    3, GLPI_LOG_DIR."/".$name.".log");
       }
+
+      if (isset($_SESSION['glpi_use_mode'])
+          && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
+          && isCommandLine()) {
+         fwrite(STDERR, $text);
+      }
    }
 
 
