@@ -716,14 +716,14 @@ class CronTask extends CommonDBTM{
 
       $crontask = new self();
       $taskname = '';
-      if ($mode == self::MODE_EXTERNAL) {
+      if (abs($mode) == self::MODE_EXTERNAL) {
          // If cron is launched in command line, and if memory is insufficient,
          // display a warning in the logs
          if (Toolbox::checkMemoryLimit() == 2) {
             Toolbox::logInFile('cron', __('A minimum of 64 Mio is commonly required for GLPI.')."\n");
          }
          // If no task in CLI mode, call cron.php from command line is not really usefull ;)
-         if (!countElementsInTable($crontask->getTable(), "`mode` = '$mode'")) {
+         if (!countElementsInTable($crontask->getTable(), "`mode` = '".abs($mode)."'")) {
             Toolbox::logInFile('cron',
                                __('No task with Run mode = CLI, fix your tasks configuration')."\n");
          }
@@ -731,8 +731,8 @@ class CronTask extends CommonDBTM{
 
       if (self::get_lock()) {
          for ($i=1 ; $i<=$max ; $i++) {
-            $prefix = ($mode == self::MODE_EXTERNAL ? __('External')
-                                                    : __('Internal'));
+            $prefix = (abs($mode) == self::MODE_EXTERNAL ? __('External')
+                                                         : __('Internal'));
             if ($crontask->getNeedToRun($mode, $name)) {
                $_SESSION["glpicronuserrunning"] = "cron_".$crontask->fields['name'];
 
@@ -780,7 +780,7 @@ class CronTask extends CommonDBTM{
             } else if ($i==1) {
                $msgcron = sprintf(__('%1$s #%2$s'), $prefix, $i);
                $msgcron = sprintf(__('%1$s: %2$s'), $msgcron, __('Nothing to launch'));
-               Toolbox::logInFile('cron', $msgcron);
+               Toolbox::logInFile('cron', $msgcron."\n");
             }
          } // end for
          $_SESSION["glpicronuserrunning"]='';
