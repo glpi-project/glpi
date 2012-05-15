@@ -110,11 +110,9 @@ if (is_writable(GLPI_SESSION_DIR)) {
 // Init debug variable
 $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
 // Only show errors
+Toolbox::setDebugMode($_SESSION['glpi_use_mode']);
 $CFG_GLPI["debug_sql"]        = $CFG_GLPI["debug_vars"] = 0;
 $CFG_GLPI["use_log_in_files"] = 1;
-ini_set('display_errors', 'On');
-error_reporting(E_ALL | E_STRICT);
-set_error_handler(array('Toolbox', 'userErrorHandlerDebug'));
 
 $DB = new DB();
 
@@ -715,7 +713,7 @@ function updateDbUpTo031() {
       case "0.83" :
          include("update_083_0831.php");
          update083to0831();
-      
+
       case "0.83.1" :
          include("update_0831_084.php");
          update0831to084();
