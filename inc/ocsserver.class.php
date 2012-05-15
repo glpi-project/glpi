@@ -4491,9 +4491,10 @@ class OcsServer extends CommonDBTM {
                             || $d->fields['filesystems_id']!=$disk['filesystems_id']
                             || (abs($disk['freesize']-$d->fields['freesize'])/$disk['totalsize']) > 0.05) {
 
-                           $toupdate['id']        = $id;
-                           $toupdate['totalsize'] = $disk['totalsize'];
-                           $toupdate['freesize']  = $disk['freesize'];
+                           $toupdate['id']              = $id;
+                           $toupdate['totalsize']       = $disk['totalsize'];
+                           $toupdate['freesize']        = $disk['freesize'];
+                           $toupdate['filesystems_id']  = $disk['filesystems_id'];
                            $d->update($toupdate);
                         }
                         unset ($import_disk[$id]);
