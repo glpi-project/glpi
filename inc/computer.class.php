@@ -93,7 +93,6 @@ class Computer extends CommonDBTM {
       $this->addStandardTab('Note', $ong, $options);
       $this->addStandardTab('Reservation', $ong, $options);
       $this->addStandardTab('Log', $ong, $options);
-      $this->addStandardTab('OcsLink', $ong, $options);
 
       return $ong;
    }
