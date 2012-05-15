@@ -1561,23 +1561,23 @@ function update0831to084() {
    }
 
    $query = "UPDATE `glpi_notifications`
-             SET   `itemtype`='CartridgeItem'
-             WHERE `itemtype`='Cartridge'";
+             SET   `itemtype` = 'CartridgeItem'
+             WHERE `itemtype` = 'Cartridge'";
    $DB->queryOrDie($query, "0.83 update glpi_notifications for Cartridge");
 
    $query = "UPDATE `glpi_notificationtemplates`
-             SET   `itemtype`='CartridgeItem'
-             WHERE `itemtype`='Cartridge'";
+             SET   `itemtype` = 'CartridgeItem'
+             WHERE `itemtype` = 'Cartridge'";
    $DB->queryOrDie($query, "0.83 update glpi_notificationtemplates for Cartridge");
 
    $query = "UPDATE `glpi_notifications`
-             SET   `itemtype`='ConsumableItem'
-             WHERE `itemtype`='Consumable'";
+             SET   `itemtype` = 'ConsumableItem'
+             WHERE `itemtype` = 'Consumable'";
    $DB->queryOrDie($query, "0.83 update glpi_notifications for Consumable");
 
    $query = "UPDATE `glpi_notificationtemplates`
-             SET   `itemtype`='ConsumableItem'
-             WHERE `itemtype`='Consumable'";
+             SET   `itemtype` = 'ConsumableItem'
+             WHERE `itemtype` = 'Consumable'";
    $DB->queryOrDie($query, "0.83 update glpi_notificationtemplates for Consumable");
 
 
