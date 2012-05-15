@@ -3816,7 +3816,6 @@ class Search {
 //          case "glpi_softwares.date_mod" :
 //          case "glpi_monitors.date_mod" :
 //          case "glpi_documents.date_mod" :
-//          case "glpi_ocsservers.date_mod" :
 //          case "glpi_users.last_login" :
 //          case "glpi_users.date_mod" :
 //             return " class='center'";

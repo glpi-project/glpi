@@ -59,8 +59,7 @@ if (!isset($item->fields[$_POST['field']]) || !$item->canView()) {
 if (in_array($table.'.'.$_POST['field'],
              array('glpi_authldaps.rootdn', 'glpi_authldaps.rootdn_passwd',
                    'glpi_configs.proxy_passwd', 'glpi_mailcollectors.login',
-                   'glpi_mailcollectors.passwd', 'glpi_ocsservers.ocs_db_passwd',
-                   'glpi_ocsservers.ocs_db_user', 'glpi_users.name', 'glpi_users.password'))) {
+                   'glpi_mailcollectors.passwd', 'glpi_users.name', 'glpi_users.password'))) {
    exit();
 }
 
