@@ -86,7 +86,6 @@ class Computer extends CommonDBTM {
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document', $ong, $options);
       $this->addStandardTab('ComputerVirtualMachine', $ong, $options);
-      $this->addStandardTab('RegistryKey', $ong, $options);
       $this->addStandardTab('Ticket', $ong, $options);
       $this->addStandardTab('Item_Problem', $ong, $options);
       $this->addStandardTab('Link', $ong, $options);
@@ -424,11 +423,6 @@ class Computer extends CommonDBTM {
             }
          }
       }
-
-      $query  = "DELETE
-                 FROM `glpi_registrykeys`
-                 WHERE `computers_id` = '".$this->fields['id']."'";
-      $result = $DB->query($query);
 
       $compdev = new Computer_Device();
       $compdev->cleanDBonItemDelete('Computer', $this->fields['id']);
@@ -1042,68 +1036,11 @@ class Computer extends CommonDBTM {
       if ($CFG_GLPI["use_ocs_mode"]) {
          $tab['ocsng']              = __('OCSNG');
 
-         $tab[102]['table']         = 'glpi_ocslinks';
-         $tab[102]['field']         = 'last_update';
-         $tab[102]['name']          = __('Import date in GLPI');
-         $tab[102]['datatype']      = 'datetime';
-         $tab[102]['massiveaction'] = false;
-         $tab[102]['joinparams']    = array('jointype' => 'child');
-
-         $tab[103]['table']         = 'glpi_ocslinks';
-         $tab[103]['field']         = 'last_ocs_update';
-         $tab[103]['name']          = __('Last OCSNG inventory date');
-         $tab[103]['datatype']      = 'datetime';
-         $tab[103]['massiveaction'] = false;
-         $tab[103]['joinparams']    = array('jointype' => 'child');
-
          $tab[100]['table']         = $this->getTable();
          $tab[100]['field']         = 'is_ocs_import';
          $tab[100]['name']          = __('Imported from OCSNG');
          $tab[100]['massiveaction'] = false;
          $tab[100]['datatype']      = 'bool';
-
-         $tab[101]['table']         = 'glpi_ocslinks';
-         $tab[101]['field']         = 'use_auto_update';
-         $tab[101]['linkfield']     = '_auto_update_ocs'; // update through compter update process
-         $tab[101]['name']          = __('Auto update OCSNG');
-         $tab[101]['datatype']      = 'bool';
-         $tab[101]['joinparams']    = array('jointype' => 'child');
-
-         $tab[104]['table']         = 'glpi_ocslinks';
-         $tab[104]['field']         = 'ocs_agent_version';
-         $tab[104]['name']          = __('Agent');
-         $tab[104]['massiveaction'] = false;
-         $tab[104]['joinparams']    = array('jointype' => 'child');
-
-         $tab[105]['table']         = 'glpi_ocslinks';
-         $tab[105]['field']         = 'tag';
-         $tab[105]['name']          = __('OCSNG TAG');
-         $tab[105]['datatype']      = 'string';
-         $tab[105]['massiveaction'] = false;
-         $tab[105]['joinparams']    = array('jointype' => 'child');
-
-         $tab[106]['table']         = 'glpi_ocslinks';
-         $tab[106]['field']         = 'ocsid';
-         $tab[106]['name']          = __('OCS ID');
-         $tab[106]['datatype']      = 'number';
-         $tab[106]['massiveaction'] = false;
-         $tab[106]['joinparams']    = array('jointype' => 'child');
-
-         $tab['registry']           = __('Registry');
-
-         $tab[110]['table']         = 'glpi_registrykeys';
-         $tab[110]['field']         = 'value';
-         $tab[110]['name']          = __('Registry key/value');
-         $tab[110]['forcegroupby']  = true;
-         $tab[110]['massiveaction'] = false;
-         $tab[110]['joinparams']    = array('jointype' => 'child');
-
-         $tab[111]['table']         = 'glpi_registrykeys';
-         $tab[111]['field']         = 'ocs_name';
-         $tab[111]['name']          = __('Registry OCSNG name');
-         $tab[111]['forcegroupby']  = true;
-         $tab[111]['massiveaction'] = false;
-         $tab[111]['joinparams']    = array('jointype' => 'child');
       }
 */
       $tab['virtualmachine']        = _n('Virtual machine', 'Virtual machines', 2);
