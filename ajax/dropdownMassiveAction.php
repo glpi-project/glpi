@@ -157,7 +157,6 @@ if (isset($_POST["action"])
 
       case "compute_software_category" :
       case "replay_dictionnary" :
-      case "force_ocsng_update" :
       case "force_user_ldap_update" :
       case "delete" :
       case "purge" :
@@ -167,24 +166,6 @@ if (isset($_POST["action"])
       case "delete_email" :
       case 'reset' :
          echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>\n";
-         break;
-
-      case "unlock_ocsng_field" :
-         $fields['all'] = __('All');
-         $fields       += OcsServer::getLockableFields();
-         Dropdown::showFromArray("field", $fields);
-         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                        __s('Post')."'>";
-         break;
-
-      case "unlock_ocsng_monitor" :
-      case "unlock_ocsng_peripheral" :
-      case "unlock_ocsng_software" :
-      case "unlock_ocsng_printer" :
-      case "unlock_ocsng_disk" :
-      case "unlock_ocsng_ip" :
-         echo "<input type='submit' name='massiveaction' class='submit' value='".
-                __s('Unlock')."'>";
          break;
 
       case "install" :
