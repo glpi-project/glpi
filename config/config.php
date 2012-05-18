@@ -143,7 +143,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          $_SERVER['argc']--;
       }
    }
-   Toolbox::setDebugMode($_SESSION['glpi_use_mode']);
+   Toolbox::setDebugMode();
 
    if (isset($_SESSION["glpiroot"]) && $CFG_GLPI["root_doc"]!=$_SESSION["glpiroot"]) {
       Html::redirect($_SESSION["glpiroot"]);

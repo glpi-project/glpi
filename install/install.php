@@ -533,10 +533,8 @@ if (!isset($_POST["install"])) {
          break;
 
       case "Etape_1" : // check ok, go import mysql settings.
-         $_SESSION['glpi_use_mode']    = Session::DEBUG_MODE; // check system ok, we can use specific parameters for debug
-         Toolbox::setDebugMode($_SESSION['glpi_use_mode']);
-         $CFG_GLPI["debug_sql"]        = $CFG_GLPI["debug_vars"]=0;
-         $CFG_GLPI["use_log_in_files"] = 1;
+         // check system ok, we can use specific parameters for debug
+         Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 
          header_html(sprintf(__('Step %d'), 1));
          step2($_POST["update"]);

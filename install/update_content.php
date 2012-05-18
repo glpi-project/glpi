@@ -48,10 +48,7 @@ Session::setPath();
 Session::start();
 
 // Init debug variable
-$_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
-Toolbox::setDebugMode($_SESSION['glpi_use_mode']);
-$CFG_GLPI["debug_sql"]     = $CFG_GLPI["debug_vars"]=0;
-$CFG_GLPI["use_errorlog"]  = 1;
+Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 
 //################################ Functions ################################
 

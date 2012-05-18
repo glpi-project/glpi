@@ -478,14 +478,31 @@ class Toolbox {
    /**
     * Switch error mode for GLPI
     *
-    * @param $mode   Integer from Session::*_MODE
+    * @param $mode         Integer from Session::*_MODE
+    * @param $debug_sql    Boolean
+    * @param $debug_vars   Boolean
+    * @param $log_in_files Boolean
     *
     * @since version 0.84
    **/
-   static function setDebugMode($mode) {
+   static function setDebugMode($mode=NULL, $debug_sql=NULL, $debug_vars=NULL, $log_in_files=NULL) {
+      global $CFG_GLPI;
+
+      if (isset($mode)) {
+         $_SESSION['glpi_use_mode'] = $mode;
+      }
+      if (isset($debug_sql)) {
+         $CFG_GLPI['debug_sql'] = $debug_sql;
+      }
+      if (isset($debug_vars)) {
+         $_SESSION['debug_vars'] = $debug_vars;
+      }
+      if (isset($log_in_files)) {
+         $_SESSION['use_log_in_files'] = $log_in_files;
+      }
 
       // If debug mode activated : display some information
-      if ($mode == Session::DEBUG_MODE) {
+      if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
          // display_errors only need for for E_ERROR, E_PARSE, ... which cannot be catched
          // Recommended development settings
          ini_set('display_errors', 'On');

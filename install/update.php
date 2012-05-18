@@ -108,11 +108,8 @@ if (is_writable(GLPI_SESSION_DIR)) {
 }
 
 // Init debug variable
-$_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
 // Only show errors
-Toolbox::setDebugMode($_SESSION['glpi_use_mode']);
-$CFG_GLPI["debug_sql"]        = $CFG_GLPI["debug_vars"] = 0;
-$CFG_GLPI["use_log_in_files"] = 1;
+Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
 
 $DB = new DB();
 
