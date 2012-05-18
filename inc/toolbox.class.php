@@ -495,10 +495,10 @@ class Toolbox {
          $CFG_GLPI['debug_sql'] = $debug_sql;
       }
       if (isset($debug_vars)) {
-         $_SESSION['debug_vars'] = $debug_vars;
+         $CFG_GLPI['debug_vars'] = $debug_vars;
       }
       if (isset($log_in_files)) {
-         $_SESSION['use_log_in_files'] = $log_in_files;
+         $CFG_GLPI['use_log_in_files'] = $log_in_files;
       }
 
       // If debug mode activated : display some information
