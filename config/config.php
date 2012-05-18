@@ -153,7 +153,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    } else {
       // Recommended production settings
       ini_set('display_errors','Off');
-      error_reporting(E_ALL);
+      error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
       set_error_handler(array('Toolbox', 'userErrorHandlerNormal'));
    }
 
