@@ -1325,6 +1325,8 @@ class Dropdown {
     *    - used : array / Already used items ID: not to display in dropdown (default empty)
     *    - readonly : boolean / used as a readonly item (default false)
     *    - on_change : string / value to transmit to "onChange"
+    *    - multiple : boolean / can select several values (default false)
+    *    - size : integer / number of rows for the select (default = 1)
     *
     * Permit to use optgroup defining items in arrays
     * array('optgroupname'  => array('key1' => 'val1',
@@ -1334,50 +1336,84 @@ class Dropdown {
    **/
    static function showFromArray($name, array $elements, $options=array()) {
 
-      $param['value']    = '';
-      $param['used']     = array();
-      $param['readonly'] = false;
-      $param['on_change']   = '';
+      $param['value']     = '';
+      $param['values']    = array();
+      $param['used']      = array();
+      $param['readonly']  = false;
+      $param['on_change'] = '';
+      $param['multiple']  = false;
+      $param['size']      = 1;
 
       if (is_array($options) && count($options)) {
+
+         if (!empty($options['value'])) {
+            $options['values'] = array($options['value']);
+            unset($options['value']);
+         }
+
          foreach ($options as $key => $val) {
             $param[$key] = $val;
          }
       }
+
+      if ($param["multiple"]) {
+         $field_name = $name."[]";
+      } else {
+         $field_name = $name;
+      }
+
       // readonly mode
       if ($param['readonly']) {
-         echo "<input type='hidden' name='$name' value='".$param['value']."'>";
 
-         if (isset($elements[$param['value']])) {
-            echo $elements[$param['value']];
+         foreach ($param['values'] as $value) {
+            echo "<input type='hidden' name='$field_name' value='$value'>";
+
+            if (isset($elements[$value])) {
+               echo $elements[$value]." ";
+            }
          }
 
       } else {
          $rand = mt_rand();
 //          Html::printCleanArray($elements);
 
-         echo "<select name='$name' id='dropdown_".$name.$rand."'";
+         echo "<select name='$field_name' id='dropdown_".$name.$rand."'";
 
          if (!empty($param["on_change"])) {
             echo " onChange='".$param["on_change"]."'";
          }
 
+         if ((is_int($param["size"])) && ($param["size"] > 0)) {
+            echo " size='".$param["size"]."'";
+         }
+
+         if ($param["multiple"]) {
+            echo " multiple";
+         }
+
          echo '>';
+
          foreach ($elements as $key => $val) {
             // optgroup management
             if (is_array($val)) {
                echo "<optgroup label=\"".Html::entities_deep($key)."\">";
                foreach ($val as $key2 => $val2) {
                   if (!isset($param['used'][$key2])) {
-                     echo "<option value='".$key2."'".(($param['value'] == $key2) ?" selected":"").">".
-                            $val2."</option>";
+                     echo "<option value='".$key2."'";
+                     if (in_array($key2, $param['values'])) {
+                        echo " selected";
+                     }
+                     echo ">" . $key2 . "=>" .  $val2 . "</option>";
                   }
                               }
                echo "</optgroup>";
             } else {
                if (!isset($param['used'][$key])) {
-                  echo "<option value='".$key."'".(($param['value'] == $key) ?" selected":"").">".
-                         $val."</option>";
+                  echo "<option value='".$key."'";
+                  if (in_array($key, $param['values'])) {
+                     echo " selected";
+                  }
+                  echo ">" . $val . "</option>";
                }
             }
          }
