@@ -794,7 +794,7 @@ class User extends CommonDBTM {
                //Multiple entities assignation
                if (is_array($entity[0])) {
                   foreach ($entity[0] as $tmp => $ent) {
-                     $affectation['entities_id']  = $ent[0];
+                     $affectation['entities_id']  = $ent;
                      $affectation['profiles_id']  = $entity[1];
                      $affectation['is_recursive'] = $entity[2];
                      $affectation['users_id']     = $this->fields['id'];

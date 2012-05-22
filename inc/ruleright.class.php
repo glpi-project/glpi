@@ -170,7 +170,6 @@ class RuleRight extends Rule {
                      case "_affect_entity_by_dn" :
                      case "_affect_entity_by_tag" :
                      case "_affect_entity_by_domain" :
-                        $match_entity = false;
                         $entity       = array();
                         foreach ($this->regex_results as $regex_result) {
                            $res = RuleAction::getRegexResultById($action->fields["value"],
@@ -196,12 +195,11 @@ class RuleRight extends Rule {
 
                               //If an entity was found
                               if ($entity_found > -1) {
-                                 array_push($entity, array($entity_found, $is_recursive));
-                                 $match_entity = true;
+                                 $entity[] = $entity_found;
                               }
                            }
                         }
-                        if (!$match_entity) {
+                        if (!count($entity)) {
                            //Not entity assigned : action processing must be stopped for this rule
                            $continue = false;
                         }
