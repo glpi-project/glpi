@@ -109,7 +109,7 @@ class RuleRightCollection extends RuleCollection {
          foreach ($output["_ldap_rules"]["rules_entities_rights"] as $val) {
             if (is_array($val[0])) {
                foreach($val[0] as $tmp) {
-                  $this->displayActionByName("entity", $tmp[0]);
+                  $this->displayActionByName("entity", $tmp);
                }
             } else {
                $this->displayActionByName("entity", $val[0]);
