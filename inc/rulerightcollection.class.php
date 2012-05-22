@@ -104,7 +104,13 @@ class RuleRightCollection extends RuleCollection {
          echo "<tr class='tab_bg_2'>";
          echo "<td colspan='4' class='center'>".$LANG['rulesengine'][112]."</td>";
          foreach ($output["_ldap_rules"]["rules_entities_rights"] as $val) {
-            $this->displayActionByName("entity", $val[0]);
+            if (is_array($val[0])) {
+               foreach($val[0] as $tmp) {
+                  $this->displayActionByName("entity", $tmp[0]);
+               }
+            } else {
+               $this->displayActionByName("entity", $val[0]);
+            }
             if (isset($val[1])) {
                $this->displayActionByName("profile", $val[1]);
             }
