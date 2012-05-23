@@ -60,6 +60,8 @@ class Log extends CommonDBTM {
    const HISTORY_UPDATE_SUBITEM     = 18;
    const HISTORY_DELETE_SUBITEM     = 19;
    const HISTORY_CREATE_ITEM        = 20;
+   // Plugin must use value starting from
+   const HISTORY_PLUGIN             = 1000;
 
 
    static function getTypeName($nb=0) {
@@ -522,6 +524,15 @@ class Log extends CommonDBTM {
                                            sprintf(__('%1$s (%2$s)'), $tmp['field'],
                                                    $data["old_value"]));
                   break;
+
+               default:
+                  $fct = array($data['itemtype_link'], 'getHistoryEntry');
+                  if ($data['linked_action'] >= self::HISTORY_PLUGIN
+                      && $data['itemtype_link']
+                      && is_callable($fct)) {
+                     $tmp['change'] = call_user_func($fct, $data);
+                     $tmp['display_history'] = !empty($tmp['change']);
+                  }
             }
 
          } else {
