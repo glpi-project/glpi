@@ -46,11 +46,7 @@ class Log extends CommonDBTM {
    const HISTORY_UNINSTALL_SOFTWARE = 5;
    const HISTORY_DISCONNECT_DEVICE  = 6;
    const HISTORY_CONNECT_DEVICE     = 7;
-   // TODO
-   const HISTORY_OCS_IMPORT         = 8;
-   const HISTORY_OCS_DELETE         = 9;
-   const HISTORY_OCS_IDCHANGED      = 10;
-   const HISTORY_OCS_LINK           = 11;
+
    const HISTORY_LOG_SIMPLE_MESSAGE = 12;
    const HISTORY_DELETE_ITEM        = 13;
    const HISTORY_RESTORE_ITEM       = 14;
@@ -60,6 +56,7 @@ class Log extends CommonDBTM {
    const HISTORY_UPDATE_SUBITEM     = 18;
    const HISTORY_DELETE_SUBITEM     = 19;
    const HISTORY_CREATE_ITEM        = 20;
+
    // Plugin must use value starting from
    const HISTORY_PLUGIN             = 1000;
 
@@ -424,53 +421,7 @@ class Log extends CommonDBTM {
                   $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Connect the item'),
                                            $data["new_value"]);
                   break;
-// TODO OCS
-/*
-               case self::HISTORY_OCS_IMPORT :
-                  if (Session::haveRight("view_ocsng","r")) {
-                     $tmp['field']  = "";
-                     $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Imported from OCSNG'),
-                                              $data["new_value"]);
-                  } else {
-                     $tmp['display_history'] = false;
-                  }
-                  break;
 
-               case self::HISTORY_OCS_DELETE :
-                  if (Session::haveRight("view_ocsng","r")) {
-                     $tmp['field']  ="";
-                     $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Deleted in OCSNG'),
-                                              $data["old_value"]);
-                  } else {
-                     $tmp['display_history'] = false;
-                  }
-                  break;
-
-               case self::HISTORY_OCS_LINK :
-                  if (Session::haveRight("view_ocsng","r")) {
-                     $tmp['field'] = NOT_AVAILABLE;
-                     if ($item = getItemForItemtype($data["itemtype_link"])) {
-                        $tmp['field'] = $item->getTypeName(1);
-                     }
-                     //TRANS: %s is the value linked
-                     $tmp['change'] = sprintf(__('%1$s: %2$s'), __('Linked with an OCSNG computer'),
-                                              $data["new_value"]);
-
-                  } else {
-                     $tmp['display_history'] = false;
-                  }
-                  break;
-
-               case self::HISTORY_OCS_IDCHANGED :
-                  if (Session::haveRight("view_ocsng","r")) {
-                     $tmp['field']  = "";
-                     $tmp['change'] = sprintf(__('The OCSNG ID of the computer changed from %1$s to %2$s'),
-                                              $data["old_value"], $data["new_value"]);
-                  } else {
-                     $tmp['display_history'] = false;
-                  }
-                  break;
-*/
                case self::HISTORY_LOG_SIMPLE_MESSAGE :
                   $tmp['field']  = "";
                   $tmp['change'] = $data["new_value"];
