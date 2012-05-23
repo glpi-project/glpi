@@ -738,7 +738,7 @@ class Plugin extends CommonDBTM {
 
 
    /**
-    * Migrate itemtype from interger (0.72) to string (0.80)
+    * Migrate itemtype from integer (0.72) to string (0.80)
     *
     * @param $types        array of (num=>name) of type manage by the plugin
     * @param $glpitables   array of GLPI table name used by the plugin

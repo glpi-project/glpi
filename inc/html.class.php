@@ -1333,32 +1333,6 @@ class Html {
          $menu['utils']['content']['report']['page']     = '/front/report.php';
       }
 
-/*
-   // TODO OCS
-      if ($CFG_GLPI["use_ocs_mode"] && Session::haveRight("ocsng","w")) {
-         $menu['utils']['content']['ocsng']['title']                     = __('OCSNG');
-         $menu['utils']['content']['ocsng']['page']                      = '/front/ocsng.php';
-
-         $menu['utils']['content']['ocsng']['options']['import']['title'] = __('Import new computers');
-         $menu['utils']['content']['ocsng']['options']['import']['page']  = '/front/ocsng.import.php';
-
-         $menu['utils']['content']['ocsng']['options']['sync']['title']
-                                          = __('Synchronize computers already imported');
-         $menu['utils']['content']['ocsng']['options']['sync']['page']
-                                          = '/front/ocsng.sync.php';
-
-         $menu['utils']['content']['ocsng']['options']['clean']['title']
-                                          = __('Clean links between GLPI and OCSNG');
-         $menu['utils']['content']['ocsng']['options']['clean']['page']
-                                          = '/front/ocsng.clean.php';
-
-         $menu['utils']['content']['ocsng']['options']['link']['title']
-                                          = __('Link new OCS computers to existing GLPI computers');
-         $menu['utils']['content']['ocsng']['options']['link']['page']
-                                          = '/front/ocsng.link.php';
-
-      }
-*/
       if (TableExists('glpi_networkportmigrations')
           && (countElementsInTable('glpi_networkportmigrations') > 0)) {
          $menu['utils']['content']['migration']['title']    = __('Migration cleaner');
@@ -1977,17 +1951,6 @@ class Html {
                                        = '/front/notimportedemail.php';
          }
       }
-
-/*
-// TODO put in plugin OCS
-      if ($CFG_GLPI["use_ocs_mode"]
-          && Session::haveRight("config","w")) {
-         $menu['config']['content']['ocsng']['title']           = __('OCSNG mode');
-         $menu['config']['content']['ocsng']['page']            = '/front/ocsserver.php';
-         $menu['config']['content']['ocsng']['links']['search'] = '/front/ocsserver.php';
-         $menu['config']['content']['ocsng']['links']['add']    = '/front/ocsserver.form.php';
-      }
-*/
 
       if (Session::haveRight("link","r")) {
          $menu['config']['content']['link']['title']           = _n('External link',

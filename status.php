@@ -95,36 +95,8 @@ if (is_dir(GLPI_SESSION_DIR) && is_writable(GLPI_SESSION_DIR)) {
 
 // Reestablished DB connection
 //TODO : OCS move it into the ocsinventoryng plugin
-if (( $ok_master || $ok_slave )
-    && $CFG_GLPI["use_ocs_mode"]
+if (($ok_master || $ok_slave )
     && DBConnection::establishDBConnection(false, false, false)) {
-
-   // Check OCS connections
-   $query = "SELECT `id`, `name`
-             FROM `glpi_ocsservers`
-             WHERE `is_active` = '1'";
-
-   if ($result=$DB->query($query)) {
-      if ($DB->numrows($result)) {
-         echo "Check OCS servers:";
-
-         while ($data = $DB->fetch_assoc($result)) {
-            echo " ".$data['name'];
-
-            if (OcsServer::checkOCSconnection($data['id'])) {
-               echo "_OK";
-            } else {
-               echo "_PROBLEM";
-               $ok = false;
-            }
-
-            echo "\n";
-         }
-
-      } else {
-         echo "No OCS server\n";
-      }
-   }
 
    // Check Auth connections
    $auth = new Auth();
@@ -156,6 +128,8 @@ if (( $ok_master || $ok_slave )
    // TODO Check mail server : cannot open a mail connexion / only ping server ?
 
    // TODO check CAS url / check url using socket ?
+
+   // TODO hook for plugin
 
 }
 

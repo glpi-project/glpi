@@ -45,7 +45,7 @@ class Computer extends CommonDBTM {
    public $dohistory = true;
 
    protected $forward_entity_to = array('ComputerDisk','ComputerVirtualMachine', 'Infocom',
-                                        'NetworkPort', 'Ocslink', 'ReservationItem');
+                                        'NetworkPort', 'ReservationItem');
    // Specific ones
    ///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
    var $devices = array();
@@ -1031,17 +1031,7 @@ class Computer extends CommonDBTM {
       $tab[155]['joinparams']    = array('beforejoin'
                                          => array('table'      => 'glpi_computerdisks',
                                                   'joinparams' => array('jointype' => 'child')));
-/* // TODO OCS
-      if ($CFG_GLPI["use_ocs_mode"]) {
-         $tab['ocsng']              = __('OCSNG');
 
-         $tab[100]['table']         = $this->getTable();
-         $tab[100]['field']         = 'is_ocs_import';
-         $tab[100]['name']          = __('Imported from OCSNG');
-         $tab[100]['massiveaction'] = false;
-         $tab[100]['datatype']      = 'bool';
-      }
-*/
       $tab['virtualmachine']        = _n('Virtual machine', 'Virtual machines', 2);
 
       $tab[160]['table']            = 'glpi_computervirtualmachines';

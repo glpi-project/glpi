@@ -327,12 +327,6 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Assets') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-/*
- // TODO OCS
-      echo "<td> " . __('Activate the OCSNG mode') . "</td><td>";
-      Dropdown::showYesNo("use_ocs_mode", $CFG_GLPI["use_ocs_mode"]);
-      echo "</td>";
-*/
       echo "<td> " . __('Restrict monitor management') . "</td>";
       echo "<td>";
       $this->dropdownGlobalManagement ("monitors_management_restrict",

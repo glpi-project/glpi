@@ -642,14 +642,14 @@ class Computer_Device extends CommonDBTM {
          unset($input['itemtype']);
       }
 
-      if ($input['_itemtype'] == 'DeviceGraphicCard') { // && isset($this->input['_from_ocs'])) {
+      if ($input['_itemtype'] == 'DeviceGraphicCard') {
          if (!$this->input['specificity']) {
             // memory can't be 0 (but sometime OCS report such value)
             return false;
          }
       }
 
-      if ($input['_itemtype'] == 'DeviceProcessor') { // && isset($this->input['_from_ocs'])) {
+      if ($input['_itemtype'] == 'DeviceProcessor') {
          if (!$this->input['specificity']) {
             // frequency can't be 0 (but sometime OCS report such value)
             return false;
