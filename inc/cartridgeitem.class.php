@@ -200,7 +200,7 @@ class CartridgeItem extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
-      Dropdown::show('CartridgeItemType', array('value' => $this->fields["cartridgeitemtypes_id"]));
+      CartridgeItemType::dropdown(array('value' => $this->fields["cartridgeitemtypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -210,7 +210,7 @@ class CartridgeItem extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Manufacturer')."</td>";
       echo "<td>";
-      Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
+      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -229,17 +229,17 @@ class CartridgeItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Dropdown::show('Group', array('name'      => 'groups_id_tech',
-                                    'value'     => $this->fields['groups_id_tech'],
-                                    'entity'    => $this->fields['entities_id'],
-                                    'condition' => '`is_assign`'));
+      Group::dropdown(array('name'      => 'groups_id_tech',
+                            'value'     => $this->fields['groups_id_tech'],
+                            'entity'    => $this->fields['entities_id'],
+                            'condition' => '`is_assign`'));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Stock location')."</td>";
       echo "<td>";
-      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
-                                       'entity' => $this->fields["entities_id"]));
+      Location::dropdown(array('value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -527,7 +527,7 @@ class CartridgeItem extends CommonDBTM {
       if (Session::haveRight("cartridge", "w")) {
          echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
          echo "<input type='hidden' name='cartridgeitems_id' value='$instID'>";
-         Dropdown::show('PrinterModel', array('used' => $used));
+         PrinterModel::dropdown(array('used' => $used));
          echo "</td><td class='tab_bg_2 center'>";
          echo "<input type='submit' name='addtype' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";

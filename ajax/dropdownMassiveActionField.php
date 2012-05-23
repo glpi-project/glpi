@@ -250,13 +250,13 @@ if (isset($_POST["itemtype"])
             break;
 
          case "glpi_suppliers_infocoms" : // Infocoms suppliers
-            Dropdown::show('Supplier', array('entity' => $_SESSION['glpiactiveentities']));
+            Supplier::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
             echo "<input type='hidden' name='field' value='suppliers_id'>";
             $FIELDNAME_PRINTED = true;
             break;
 
          case "glpi_budgets" : // Infocoms budget
-            Dropdown::show('Budget');
+            Budget::dropdown();
             break;
 
          case "glpi_users" : // users

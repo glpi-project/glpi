@@ -50,14 +50,14 @@ if (isset($_POST["action"])) {
          break;
 
       case "assign_vlan" :
-         Dropdown::show('Vlan');
+         Vlan::dropdown();
          echo "&nbsp;". __('Tagged'). "&nbsp;<input type='checkbox' name='tagged' value='1'>";
          echo "&nbsp;<input type='submit' name='assign_vlan_several' class='submit' value='".
                __s('Associate')."'>";
          break;
 
       case "unassign_vlan" :
-         Dropdown::show('Vlan');
+         Vlan::dropdown();
          echo "&nbsp;<input type='submit' name='unassign_vlan_several' class='submit' value='".
                __s('Dissociate')."'>";
          break;

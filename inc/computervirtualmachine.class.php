@@ -172,19 +172,16 @@ class ComputerVirtualMachine extends CommonDBChild {
       Html::autocompletionTextField($this, "name");
       echo "</td><td>".__('Virtualization system')."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::show('VirtualMachineType',
-                     array('value' => $this->fields['virtualmachinetypes_id']));
+      VirtualMachineType::dropdown(array('value' => $this->fields['virtualmachinetypes_id']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Virtualization model')."</td>";
       echo "<td>";
-      Dropdown::show('VirtualMachineSystem',
-                     array('value' => $this->fields['virtualmachinesystems_id']));
+      VirtualMachineSystem::dropdown(array('value' => $this->fields['virtualmachinesystems_id']));
       echo "</td><td>".__('State of the virtual machine')."</td>";
       echo "<td>";
-      Dropdown::show('VirtualMachineState',
-                     array('value' => $this->fields['virtualmachinestates_id']));
+      VirtualMachineState::dropdown(array('value' => $this->fields['virtualmachinestates_id']));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

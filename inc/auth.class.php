@@ -1104,8 +1104,8 @@ class Auth {
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>". __('Field storage of the login in the HTTP request')."</td>";
       echo "<td>";
-      Dropdown::show('SsoVariable', array('name'  => 'ssovariables_id',
-                                          'value' => $CFG_GLPI["ssovariables_id"]));
+      SsoVariable::dropdown(array('name'  => 'ssovariables_id',
+                                  'value' => $CFG_GLPI["ssovariables_id"]));
       echo "</td>";
       echo "</tr>\n";
 

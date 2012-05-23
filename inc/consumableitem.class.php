@@ -147,8 +147,7 @@ class ConsumableItem extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
-      Dropdown::show('ConsumableItemType',
-                     array('value' => $this->fields["consumableitemtypes_id"]));
+      ConsumableItemType::dropdown(array('value' => $this->fields["consumableitemtypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -158,7 +157,7 @@ class ConsumableItem extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Manufacturer')."</td>";
       echo "<td>";
-      Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
+      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -177,17 +176,17 @@ class ConsumableItem extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Dropdown::show('Group', array('name'      => 'groups_id_tech',
-                                    'value'     => $this->fields['groups_id_tech'],
-                                    'entity'    => $this->fields['entities_id'],
-                                    'condition' => '`is_assign`'));
+      Group::dropdown(array('name'      => 'groups_id_tech',
+                            'value'     => $this->fields['groups_id_tech'],
+                            'entity'    => $this->fields['entities_id'],
+                            'condition' => '`is_assign`'));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Stock location')."</td>";
       echo "<td>";
-      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
-                                       'entity' => $this->fields["entities_id"]));
+      Location::dropdown(array('value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

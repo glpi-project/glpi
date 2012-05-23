@@ -63,7 +63,7 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
                                      'moreparams' => array('items_id' => '__VALUE__',
                                                            'type'     => $_REQUEST['type']));
 
-         Dropdown::show('Group', $params);
+         Group::dropdown($params);
 
          echo "<span id='subvisibility$rand'></span>";
 
@@ -71,8 +71,8 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
          break;
 
       case 'Entity' :
-         Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities'],
-                                        'value'  => $_SESSION['glpiactive_entity']));
+         Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities'],
+                                'value'  => $_SESSION['glpiactive_entity']));
 
          _e('Child entities');
          echo "&nbsp;";
@@ -91,7 +91,7 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
                                      'moreparams' => array('items_id' => '__VALUE__',
                                                            'type'     => $_REQUEST['type']));
 
-         Dropdown::show('Profile', $params);
+         Profile::dropdown($params);
 
          echo "<span id='subvisibility$rand'></span>";
 

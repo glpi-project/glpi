@@ -55,7 +55,7 @@ if (isset($_REQUEST['type']) && !empty($_REQUEST['type'])
          }
          _e('Entity');
          echo "&nbsp;";
-         Dropdown::show('Entity', $params);
+         Entity::dropdown($params);
          echo "&nbsp;";
          _e('Child entities');
          echo "&nbsp;";

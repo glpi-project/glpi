@@ -1318,15 +1318,13 @@ class Dropdown {
     *
     * @param $name            select name
     * @param $elements  array of elements to display
-    * @param $options   array of options
-    *
-    * Parameters which could be used in options array :
-    *    - value : integer / preselected value (default 0)
-    *    - used : array / Already used items ID: not to display in dropdown (default empty)
-    *    - readonly : boolean / used as a readonly item (default false)
+    * @param $options   array of possible options:
+    *    - value     : integer / preselected value (default 0)
+    *    - used      : array / Already used items ID: not to display in dropdown (default empty)
+    *    - readonly  : boolean / used as a readonly item (default false)
     *    - on_change : string / value to transmit to "onChange"
-    *    - multiple : boolean / can select several values (default false)
-    *    - size : integer / number of rows for the select (default = 1)
+    *    - multiple  : boolean / can select several values (default false)
+    *    - size      : integer / number of rows for the select (default = 1)
     *
     * Permit to use optgroup defining items in arrays
     * array('optgroupname'  => array('key1' => 'val1',
@@ -1345,12 +1343,10 @@ class Dropdown {
       $param['size']      = 1;
 
       if (is_array($options) && count($options)) {
-
          if (!empty($options['value'])) {
             $options['values'] = array($options['value']);
             unset($options['value']);
          }
-
          foreach ($options as $key => $val) {
             $param[$key] = $val;
          }
@@ -1364,10 +1360,8 @@ class Dropdown {
 
       // readonly mode
       if ($param['readonly']) {
-
          foreach ($param['values'] as $value) {
             echo "<input type='hidden' name='$field_name' value='$value'>";
-
             if (isset($elements[$value])) {
                echo $elements[$value]." ";
             }

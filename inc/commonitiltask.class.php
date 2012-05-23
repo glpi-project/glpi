@@ -885,8 +885,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Category')."</td><td>";
-      Dropdown::show('TaskCategory', array('value'  => $this->fields["taskcategories_id"],
-                                           'entity' => $item->fields["entities_id"]));
+      TaskCategory::dropdown(array('value'  => $this->fields["taskcategories_id"],
+                                   'entity' => $item->fields["entities_id"]));
       echo "</td></tr>\n";
 
       if (isset($this->fields["state"])) {
@@ -1087,7 +1087,7 @@ abstract class CommonITILTask  extends CommonDBTM {
    function showFormMassiveAction() {
 
       echo "&nbsp;".__('Category')."&nbsp;";
-      Dropdown::show('TaskCategory');
+      TaskCategory::dropdown();
 
       echo "<br>".__('Description')." ";
       echo "<textarea name='content' cols='50' rows='6'></textarea>&nbsp;";

@@ -144,9 +144,9 @@ class Change_Problem extends CommonDBRelation{
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
          echo "<input type='hidden' name='problems_id' value='$ID'>";
-         Dropdown::show('Change', array('used'        => $used,
-                                        'entity'      => $problem->getEntityID(),
-                                        'entity_sons' => $problem->isRecursive()));
+         Change::dropdown(array('used'        => $used,
+                                'entity'      => $problem->getEntityID(),
+                                'entity_sons' => $problem->isRecursive()));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
@@ -232,8 +232,8 @@ class Change_Problem extends CommonDBRelation{
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
          echo "<input type='hidden' name='changes_id' value='$ID'>";
-         Dropdown::show('Problem', array('used'   => $used,
-                                         'entity' => $change->getEntityID()));
+         Problem::dropdown(array('used'   => $used,
+                                 'entity' => $change->getEntityID()));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";

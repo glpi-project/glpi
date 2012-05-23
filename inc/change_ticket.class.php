@@ -140,9 +140,9 @@ class Change_Ticket extends CommonDBRelation{
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
          echo "<input type='hidden' name='changes_id' value='$ID'>";
-         Dropdown::show('Ticket', array('used'        => $used,
-                                        'entity'      => $change->getEntityID(),
-                                        'entity_sons' => $change->isRecursive()));
+         Ticket::dropdown(array('used'        => $used,
+                                'entity'      => $change->getEntityID(),
+                                'entity_sons' => $change->isRecursive()));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
@@ -177,7 +177,7 @@ class Change_Ticket extends CommonDBRelation{
              action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       $colspan = 1;
-      
+
       $query = "SELECT DISTINCT `glpi_changes_tickets`.`id` AS linkID,
                                 `glpi_changes`.*
                 FROM `glpi_changes_tickets`
@@ -187,7 +187,7 @@ class Change_Ticket extends CommonDBRelation{
                 ORDER BY `glpi_changes`.`name`";
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
-      
+
 //       if ($canedit && $numrows) {
 //          Html::openArrowMassives("changeticket_form$rand", true, true);
 //          Html::closeArrowMassives(array('delete' => __('Delete')));
@@ -232,8 +232,8 @@ class Change_Ticket extends CommonDBRelation{
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td class='right'  colspan='$colspan'>";
          echo "<input type='hidden' name='tickets_id' value='$ID'>";
-         Dropdown::show('Change', array('used'   => $used,
-                                        'entity' => $ticket->getEntityID()));
+         Change::dropdown(array('used'   => $used,
+                                'entity' => $ticket->getEntityID()));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";

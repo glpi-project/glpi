@@ -876,15 +876,15 @@ class Infocom extends CommonDBChild {
             if ($withtemplate == 2) {
                echo Dropdown::getDropdownName("glpi_suppliers", $ic->fields["suppliers_id"]);
             } else {
-               Dropdown::show('Supplier', array('value'  => $ic->fields["suppliers_id"],
-                                                'entity' => $item->getEntityID()));
+               Supplier::dropdown(array('value'  => $ic->fields["suppliers_id"],
+                                        'entity' => $item->getEntityID()));
             }
             echo "</td>";
             if (Session::haveRight("budget","r")) {
                echo "<td>".__('Budget')."</td><td >";
-               Dropdown::show('Budget', array('value'    => $ic->fields["budgets_id"],
-                                              'entity'   => $item->getEntityID(),
-                                              'comments' => 1));
+               Budget::dropdown(array('value'    => $ic->fields["budgets_id"],
+                                      'entity'   => $item->getEntityID(),
+                                      'comments' => 1));
             } else {
                echo "<td colspan='2'>";
             }

@@ -181,7 +181,7 @@ class ComputerDisk extends CommonDBChild {
       Html::autocompletionTextField($this, "mountpoint");
       echo "</td><td>".__('File system')."</td>";
       echo "<td>";
-      Dropdown::show('FileSystem', array('value' => $this->fields["filesystems_id"]));
+      FileSystem::dropdown(array('value' => $this->fields["filesystems_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

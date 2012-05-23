@@ -82,7 +82,7 @@ class Calendar_Holiday extends CommonDBRelation {
       $canedit = $calendar->can($ID,'w');
 
       $rand    = mt_rand();
-      
+
       $query = "SELECT DISTINCT `glpi_calendars_holidays`.`id` AS linkID,
                                 `glpi_holidays`.*
                 FROM `glpi_calendars_holidays`
@@ -92,8 +92,8 @@ class Calendar_Holiday extends CommonDBRelation {
                 ORDER BY `glpi_holidays`.`name`";
       $result = $DB->query($query);
       $numrows = $DB->numrows($result);
-            
-      
+
+
       echo "<form name='calendarholiday_form$rand' id='calendarholiday_form$rand' method='post'
              action='";
       echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
@@ -145,8 +145,8 @@ class Calendar_Holiday extends CommonDBRelation {
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td class='right'  colspan='4'>";
          echo "<input type='hidden' name='calendars_id' value='$ID'>";
-         Dropdown::show('Holiday', array('used'   => $used,
-                                         'entity' => $calendar->fields["entities_id"]));
+         Holiday::dropdown(array('used'   => $used,
+                                 'entity' => $calendar->fields["entities_id"]));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
