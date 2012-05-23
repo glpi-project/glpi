@@ -253,7 +253,8 @@ $CFG_GLPI["systeminformations_types"]     = array('AuthLDAP', 'DBConnection', 'M
                                                   'Plugin');
 
 $CFG_GLPI["rulecollections_types"]        = array('RuleImportComputerCollection',
-                                                  'RuleMailCollectorCollection', 'RuleOcsCollection',
+                                                  'RuleMailCollectorCollection',
+                                                  'RuleImportEntityCollection',
                                                   'RuleRightCollection',
                                                   'RuleSoftwareCategoryCollection',
                                                   'RuleTicketCollection');
