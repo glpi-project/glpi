@@ -2017,9 +2017,9 @@ class Rule extends CommonDBTM {
                   if ($collection->canList()) {
                      $types[] = 'RuleRight';
                   }
-                  $collection = new RuleOcsCollection();
+                  $collection = new RuleImportEntityCollection();
                   if ($collection->canList()) {
-                     $types[] = 'RuleOcs';
+                     $types[] = 'RuleImportEntity';
                   }
                   $collection = new RuleMailCollectorCollection();
                   if ($collection->canList()) {
@@ -2074,9 +2074,9 @@ class Rule extends CommonDBTM {
             $ldaprule->showAndAddRuleForm($item);
          }
 
-         $collection = new RuleOcsCollection();
+         $collection = new RuleImportEntityCollection();
          if ($collection->canList()) {
-            $ocsrule = new RuleOcs();
+            $ocsrule = new RuleImportEntity();
             $ocsrule->showAndAddRuleForm($item);
          }
 

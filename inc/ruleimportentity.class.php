@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id:
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// OCS Rules class
-class RuleOcs extends Rule {
+class RuleImportEntity extends Rule {
 
    // From Rule
    public $right    = 'rule_ocs';

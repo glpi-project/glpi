@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id:
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// OCS Rules collection class
-class RuleOcsCollection extends RuleCollection {
+class RuleImportEntityCollection extends RuleCollection {
 
    // From RuleCollection
    public $stop_on_first_match = true;
@@ -157,7 +157,7 @@ class RuleOcsCollection extends RuleCollection {
    **/
    function getTablesForQuery() {
 
-      $rule   = new RuleOcs();
+      $rule   = new RuleImportEntity();
       $tables = array();
       foreach ($rule->getCriterias() as $criteria) {
          if ((!isset($criteria['virtual']) || !$criteria['virtual'])
@@ -180,7 +180,7 @@ class RuleOcsCollection extends RuleCollection {
    **/
    function getFieldsForQuery($withouttable=0) {
 
-      $rule   = new RuleOcs();
+      $rule   = new RuleImportEntity();
       $fields = array();
       foreach ($rule->getCriterias() as $key => $criteria) {
          if ($withouttable) {
@@ -223,7 +223,7 @@ class RuleOcsCollection extends RuleCollection {
    **/
    function getFKFieldsForQuery() {
 
-      $rule   = new RuleOcs();
+      $rule   = new RuleImportEntity();
       $fields = array();
       foreach ($rule->getCriterias() as $criteria) {
          //If the field name is not null AND a table name is provided
