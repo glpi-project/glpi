@@ -120,51 +120,14 @@ class Computer_Item extends CommonDBRelation{
    function prepareInputForAdd($input) {
       global $DB, $CFG_GLPI;
 
-      switch ($input['itemtype']) {
-         case 'Monitor' :
-            $item   = new Monitor();
-            $ocstab = 'import_monitor';
-            break;
-
-         case 'Phone' :
-            // shoul really never occurs as OCS doesn't sync phone
-            $item   = new Phone();
-            $ocstab = '';
-            break;
-
-         case 'Printer' :
-            $item   = new Printer();
-            $ocstab = 'import_printer';
-            break;
-
-         case 'Peripheral' :
-            $item   = new Peripheral();
-            $ocstab = 'import_peripheral';
-            break;
-
-         default :
-            return false;
+      if (!$item = getItemForItemtype($input['itemtype'])) {
+         return false;
       }
 
       if (!$item->getFromDB($input['items_id'])) {
          return false;
       }
       if (!$item->getField('is_global') ) {
-         // Handle case where already used, should never happen (except from OCS sync)
-         $query = "SELECT `id`, `computers_id`
-                   FROM `glpi_computers_items`
-                   WHERE `glpi_computers_items`.`items_id` = '".$input['items_id']."'
-                         AND `glpi_computers_items`.`itemtype` = '".$input['itemtype']."'";
-         $result = $DB->query($query);
-
-         while ($data = $DB->fetch_assoc($result)) {
-            $temp = clone $this;
-            $temp->delete($data);
-            if ($ocstab) {
-               OcsServer::deleteInOcsArray($data["computers_id"], $data["id"],$ocstab);
-            }
-         }
-
          // Autoupdate some fields - should be in post_addItem (here to avoid more DB access)
          $comp = new Computer();
          if ($comp->getFromDB($input['computers_id'])) {

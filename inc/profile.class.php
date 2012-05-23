@@ -1469,23 +1469,7 @@ class Profile extends CommonDBTM {
       $tab[38]['field']          = 'reports';
       $tab[38]['name']           = _n('Report', 'Reports', 2);
       $tab[38]['datatype']       = 'right';
-// TODO OCS
-/*
-      $tab[39]['table']          = $this->getTable();
-      $tab[39]['field']          = 'ocsng';
-      $tab[39]['name']           = __('OCSNG');
-      $tab[39]['datatype']       = 'right';
 
-      $tab[40]['table']          = $this->getTable();
-      $tab[40]['field']          = 'view_ocsng';
-      $tab[40]['name']           = __('See OCSNG information');
-      $tab[40]['datatype'] =      'right';
-
-      $tab[41]['table']          = $this->getTable();
-      $tab[41]['field']          = 'sync_ocsng';
-      $tab[41]['name']           = __('Manual OCSNG synchronization');
-      $tab[41]['datatype']       = 'right';
-*/
       $tab['config']             = __('Setup');
 
       $tab[42]['table']          = $this->getTable();

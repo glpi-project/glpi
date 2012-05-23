@@ -1498,6 +1498,12 @@ function update0831to084() {
    $migration->dropField('glpi_profiles', 'view_ocsng');
    $migration->dropField('glpi_profiles', 'clean_ocsng');
 
+   $migration->dropField('glpi_configs', 'use_ocs_mode');
+
+   $query = "DETETE
+             FROM `glpi_crontasks`
+             WHERE `itemtype` = 'OcsServer'";
+   $DB->queryOrDie($query, "0.84 delete OcsServer in crontasks");
 
    $migration->addField('glpi_authldaps', 'pagesize', 'integer');
    $migration->addField('glpi_authldaps', 'ldap_maxlimit', 'integer');

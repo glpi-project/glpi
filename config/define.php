@@ -234,8 +234,7 @@ $CFG_GLPI["helpdesk_visible_types"]       = array('Software');
 $CFG_GLPI["networkport_types"]            = array('Computer', 'NetworkEquipment', 'Peripheral',
                                                   'Phone', 'Printer');
 
-$CFG_GLPI["massiveaction_noupdate_types"] = array('OcsServer', 'Profile',
-                                                  'TicketValidation');
+$CFG_GLPI["massiveaction_noupdate_types"] = array('Profile', 'TicketValidation');
 
 $CFG_GLPI["massiveaction_nodelete_types"] = array('CronTask', 'Entity', 'NotImportedEmail');
 
@@ -251,7 +250,7 @@ $CFG_GLPI["union_search_type"]            = array('ReservationItem' => "reservat
                                                   'AllAssets'       => "asset_types");
 
 $CFG_GLPI["systeminformations_types"]     = array('AuthLDAP', 'DBConnection', 'MailCollector',
-                                                  'OcsServer', 'Plugin');
+                                                  'Plugin');
 
 $CFG_GLPI["rulecollections_types"]        = array('RuleImportComputerCollection',
                                                   'RuleMailCollectorCollection', 'RuleOcsCollection',
