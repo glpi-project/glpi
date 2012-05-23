@@ -966,8 +966,8 @@ class IPNetwork extends CommonImplicitTreeDropdown {
       global $CFG_GLPI;
 
       $rand = mt_rand();
-      Dropdown::show('IPNetwork', array('entity' => $entities_id,
-                                        'rand'   => $rand));
+      self::dropdown(array('entity' => $entities_id,
+                           'rand'   => $rand));
 
       $params = array('ipnetworks_id' => '__VALUE__');
 

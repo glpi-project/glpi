@@ -357,7 +357,7 @@ class Document extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Heading')."</td>";
       echo "<td>";
-      Dropdown::show('DocumentCategory', array('value' => $this->fields["documentcategories_id"]));
+      DocumentCategory::dropdown(array('value' => $this->fields["documentcategories_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -1455,7 +1455,7 @@ class Document extends CommonDBTM {
 
             echo "<td class='center' colspan='2'>";
             _e('Heading');
-            Dropdown::show('DocumentCategory', array('entity' => $entities));
+            DocumentCategory::dropdown(array('entity' => $entities));
             echo "</td>";
             echo "<td class='center' colspan='3'>";
             echo "<input type='hidden' name='entities_id' value='$entity'>";

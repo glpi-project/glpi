@@ -896,7 +896,7 @@ class Change extends CommonITILObject {
       echo "<td >";
       $opt = array('value'  => $this->fields["itilcategories_id"],
                    'entity' => $this->fields["entities_id"]);
-      Dropdown::show('ITILCategory', $opt);
+      ITILCategory::dropdown($opt);
       echo "</td>";
       echo "<th>".__('Impact')."</th>";
       echo "<td>";

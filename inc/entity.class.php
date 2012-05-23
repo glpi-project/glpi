@@ -402,7 +402,7 @@ class Entity extends CommonTreeDropdown {
       // most use entities_id, RuleDictionnarySoftwareCollection use new_entities_id
       Rule::cleanForItemAction($this, '%entities_id');
       Rule::cleanForItemCriteria($this);
-      
+
       $gki = new Entity_KnowbaseItem();
       $gki->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
@@ -1034,9 +1034,9 @@ class Entity extends CommonTreeDropdown {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('LDAP directory of an entity')."</td>";
          echo "<td>";
-         Dropdown::show('AuthLDAP', array('value'      => $entity->fields['authldaps_id'],
-                                          'emptylabel' => __('Default server'),
-                                          'condition'  => "`is_active` = '1'"));
+         AuthLDAP::dropdown(array('value'      => $entity->fields['authldaps_id'],
+                                  'emptylabel' => __('Default server'),
+                                  'condition'  => "`is_active` = '1'"));
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'>";
@@ -1163,11 +1163,11 @@ class Entity extends CommonTreeDropdown {
          }
       }
 
-      Dropdown::show('Entity', array('name'     => 'entities_id_software',
-                                     'value'    => $entity->getField('entities_id_software'),
-                                     'toadd'    => $toadd,
-                                     'entity'   => $entities,
-                                     'comments' => false));
+      self::dropdown(array('name'     => 'entities_id_software',
+                           'value'    => $entity->getField('entities_id_software'),
+                           'toadd'    => $toadd,
+                           'entity'   => $entities,
+                           'comments' => false));
 
       if ($entity->fields['entities_id_software'] == self::CONFIG_PARENT) {
          $tid = self::getUsedConfig('entities_id_software', $entity->getField('entities_id'));
@@ -1600,7 +1600,7 @@ class Entity extends CommonTreeDropdown {
       $options = array('value' => $entity->fields["tickettemplates_id"],
                        'toadd' => $toadd);
 
-      Dropdown::show('TicketTemplate', $options);
+      TicketTemplate::dropdown($options);
 
       if (($entity->fields["tickettemplates_id"] == self::CONFIG_PARENT)
           && ($ID != 0)) {
@@ -1625,7 +1625,7 @@ class Entity extends CommonTreeDropdown {
       if ($ID != 0) {
          $options['toadd'] = array(self::CONFIG_PARENT => __('Inheritance of the parent entity'));
       }
-      Dropdown::show('Calendar', $options);
+      Calendar::dropdown($options);
 
       if (($entity->fields["calendars_id"] == self::CONFIG_PARENT)
           && ($ID != 0)) {

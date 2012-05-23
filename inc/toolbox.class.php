@@ -478,10 +478,10 @@ class Toolbox {
    /**
     * Switch error mode for GLPI
     *
-    * @param $mode         Integer from Session::*_MODE
-    * @param $debug_sql    Boolean
-    * @param $debug_vars   Boolean
-    * @param $log_in_files Boolean
+    * @param $mode         Integer  from Session::*_MODE (default NULL)
+    * @param $debug_sql    Boolean  (default NULL)
+    * @param $debug_vars   Boolean  (default NULL)
+    * @param $log_in_files Boolean  (default NULL)
     *
     * @since version 0.84
    **/

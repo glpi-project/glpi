@@ -209,8 +209,7 @@ class Group extends CommonTreeDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2'>".__('As child of')."</td><td colspan='2'>";
-      Dropdown::show('Group',
-                     array('value'  => $this->fields['groups_id'],
+      self::dropdown(array('value'  => $this->fields['groups_id'],
                            'name'   => 'groups_id',
                            'entity' => $this->fields['entities_id'],
                            'used'   => (($ID > 0) ? getSonsOf($this->getTable(), $ID) : array())));
@@ -622,9 +621,9 @@ class Group extends CommonTreeDropdown {
          Html::openArrowMassives("group_form_$field", true);
          echo __('Group')."&nbsp;";
          echo "<input type='hidden' name='field' value='$field'>";
-         Dropdown::show('Group', array('entity'    => $this->fields["entities_id"],
-                                       'used'      => array($this->fields["id"]),
-                                       'condition' => ($tech ? '`is_assign`' : '`is_itemgroup`')));
+         self::dropdown(array('entity'    => $this->fields["entities_id"],
+                              'used'      => array($this->fields["id"]),
+                              'condition' => ($tech ? '`is_assign`' : '`is_itemgroup`')));
          echo "&nbsp;";
          Html::closeArrowMassives(array('changegroup' => __('Move')));
       }

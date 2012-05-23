@@ -519,8 +519,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<fieldset>";
          echo "<legend>".__('Category name')."</legend>";
          echo "<div class='center'>".__('Select a category for this item')."&nbsp;";
-         Dropdown::show('KnowbaseItemCategory',
-                        array('value' => $this->fields["knowbaseitemcategories_id"]));
+         KnowbaseItemCategory::dropdown(array('value' => $this->fields["knowbaseitemcategories_id"]));
          echo "</div></fieldset>";
 
          echo "<fieldset>";
@@ -570,8 +569,8 @@ class KnowbaseItem extends CommonDBTM {
 
 //          if (Session::isMultiEntitiesMode()) {
 //             _e('Entity');
-//             Dropdown::show('Entity', array('value'    => $this->fields["entities_id"],
-//                                            'comments' => 0 ));
+//             Entity::dropdown(array('value'    => $this->fields["entities_id"],
+//                                    'comments' => 0 ));
 //             _e('Child entities: ');
 //             if ($canrecu) {
 //                Dropdown::showYesNo("is_recursive", $this->fields["is_recursive"]);
@@ -873,8 +872,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<table border='0' class='tab_cadre'>";
          echo "<tr><th colspan='2'>".__('Browse')."</th></tr>";
          echo "<tr class='tab_bg_2'><td class='center'>".__('Category')."&nbsp;";
-         Dropdown::show('KnowbaseItemCategory',
-                        array('value' => '$params["knowbaseitemcategories_id)"]'));
+         KnowbaseItemCategory::dropdown(array('value' => '$params["knowbaseitemcategories_id)"]'));
          echo "</td><td><input type='submit' value=\""._sx('button','Post')."\" class='submit'></td>";
          echo "</tr></table></form></td>";
       }

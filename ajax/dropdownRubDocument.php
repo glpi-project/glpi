@@ -61,11 +61,10 @@ if (isset($_POST["rubdoc"])) {
       }
    }
 
-   Dropdown::show('Document',
-                  array('name'      => $_POST['myname'],
-                        'used'      => $used,
-                        'entity'    => $_POST['entity'],
-                        'rand'      => $_POST['rand'],
-                        'condition' => "glpi_documents.documentcategories_id='".$_POST["rubdoc"]."'"));
+   Document::dropdown(array('name'      => $_POST['myname'],
+                            'used'      => $used,
+                            'entity'    => $_POST['entity'],
+                            'rand'      => $_POST['rand'],
+                            'condition' => "glpi_documents.documentcategories_id='".$_POST["rubdoc"]."'"));
 }
 ?>

@@ -465,18 +465,18 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Status')."</td>";
       echo "<td>";
-      Dropdown::show('State', array('value' => $this->fields["states_id"]));
+      State::dropdown(array('value' => $this->fields["states_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Location')."</td>";
       echo "<td>";
-      Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
-                                       'entity' => $this->fields["entities_id"]));
+      Location::dropdown(array('value'  => $this->fields["locations_id"],
+                               'entity' => $this->fields["entities_id"]));
       echo "</td>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
-      Dropdown::show('ComputerType', array('value' => $this->fields["computertypes_id"]));
+      ComputerType::dropdown(array('value' => $this->fields["computertypes_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -489,21 +489,21 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Manufacturer')."</td>";
       echo "<td>";
-      Dropdown::show('Manufacturer', array('value' => $this->fields["manufacturers_id"]));
+      Manufacturer::dropdown(array('value' => $this->fields["manufacturers_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group in charge of the hardware')."</td>";
       echo "<td>";
-      Dropdown::show('Group', array('name'      => 'groups_id_tech',
-                                    'value'     => $this->fields['groups_id_tech'],
-                                    'entity'    => $this->fields['entities_id'],
-                                    'condition' => '`is_assign`'));
+      Group::dropdown(array('name'      => 'groups_id_tech',
+                            'value'     => $this->fields['groups_id_tech'],
+                            'entity'    => $this->fields['entities_id'],
+                            'condition' => '`is_assign`'));
 
       echo "</td>";
       echo "<td>".__('Model')."</td>";
       echo "<td>";
-      Dropdown::show('ComputerModel', array('value' => $this->fields["computermodels_id"]));
+      ComputerModel::dropdown(array('value' => $this->fields["computermodels_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -540,15 +540,15 @@ class Computer extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Network')."</td>";
       echo "<td>";
-      Dropdown::show('Network', array('value' => $this->fields["networks_id"]));
+      Network::dropdown(array('value' => $this->fields["networks_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Group')."</td>";
       echo "<td>";
-      Dropdown::show('Group', array('value'     => $this->fields["groups_id"],
-                                    'entity'    => $this->fields["entities_id"],
-                                    'condition' => '`is_itemgroup`'));
+      Group::dropdown(array('value'     => $this->fields["groups_id"],
+                            'entity'    => $this->fields["entities_id"],
+                            'condition' => '`is_itemgroup`'));
 
       echo "</td>";
 
@@ -584,27 +584,26 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Domain')."</td>";
       echo "<td >";
-      Dropdown::show('Domain', array('value' => $this->fields["domains_id"]));
+      Domain::dropdown(array('value' => $this->fields["domains_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Operating system')."</td>";
       echo "<td>";
-      Dropdown::show('OperatingSystem', array('value' => $this->fields["operatingsystems_id"]));
+      OperatingSystem::dropdown(array('value' => $this->fields["operatingsystems_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Service pack')."</td>";
       echo "<td >";
-      Dropdown::show('OperatingSystemServicePack',
-                     array('value' => $this->fields["operatingsystemservicepacks_id"]));
+      OperatingSystemServicePack::dropdown(array('value'
+                                                 => $this->fields["operatingsystemservicepacks_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Version of the operating system')."</td>";
       echo "<td >";
-      Dropdown::show('OperatingSystemVersion',
-                     array('value' => $this->fields["operatingsystemversions_id"]));
+      OperatingSystemVersion::dropdown(array('value' => $this->fields["operatingsystemversions_id"]));
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'>";
@@ -701,7 +700,7 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Update Source')."</td>";
       echo "<td >";
-      Dropdown::show('AutoUpdateSystem', array('value' => $this->fields["autoupdatesystems_id"]));
+      AutoUpdateSystem::dropdown(array('value' => $this->fields["autoupdatesystems_id"]));
       echo "</td></tr>";
 
       $this->showFormButtons($options);

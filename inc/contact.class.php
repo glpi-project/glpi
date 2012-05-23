@@ -206,7 +206,7 @@ class Contact extends CommonDBTM{
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Type')."</td>";
       echo "<td>";
-      Dropdown::show('ContactType', array('value' => $this->fields["contacttypes_id"]));
+      ContactType::dropdown(array('value' => $this->fields["contacttypes_id"]));
       echo "</td>";
       echo "<td>".__('Country')."</td>";
       echo "<td>";
@@ -214,7 +214,7 @@ class Contact extends CommonDBTM{
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Title') . "</td><td>";
-      Dropdown::show('UserTitle', array('value' => $this->fields["usertitles_id"]));
+      UserTitle::dropdown(array('value' => $this->fields["usertitles_id"]));
       echo "<td>&nbsp;</td><td class='center'>";
       if ($ID > 0) {
          echo "<a target=''_blank' href='".$this->getFormURL().
@@ -453,9 +453,9 @@ class Contact extends CommonDBTM{
          if ($nb > count($used)) {
             echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='4'>";
             echo "<input type='hidden' name='contacts_id' value='$instID'>";
-            Dropdown::show('Supplier', array('used'        => $used,
-                                             'entity'      => $this->fields["entities_id"],
-                                             'entity_sons' => $this->fields["is_recursive"]));
+            Supplier::dropdown(array('used'        => $used,
+                                     'entity'      => $this->fields["entities_id"],
+                                     'entity_sons' => $this->fields["is_recursive"]));
 
             echo "&nbsp;&nbsp;<input type='submit' name='addcontactsupplier'
                                value='"._sx('button', 'Add')."' class='submit'>";

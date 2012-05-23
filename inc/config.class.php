@@ -349,9 +349,8 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'><td>" . __('Software category deleted by the dictionary rules') .
            "</td><td>";
-      Dropdown::show('SoftwareCategory',
-                     array('value' => $CFG_GLPI["softwarecategories_id_ondelete"],
-                           'name'  => "softwarecategories_id_ondelete"));
+      SoftwareCategory::dropdown(array('value' => $CFG_GLPI["softwarecategories_id_ondelete"],
+                                       'name'  => "softwarecategories_id_ondelete"));
       echo "</td><td> " . __('Restrict phone management') . "</td><td>";
       $this->dropdownGlobalManagement ("phones_management_restrict",
                                        $CFG_GLPI["phones_management_restrict"]);
@@ -383,10 +382,9 @@ class Config extends CommonDBTM {
          echo "<tr class='tab_bg_2'>";
          echo "<td>" . __('Template for the automatic transfer of computers in another entity') .
               "</td><td>";
-         Dropdown::show('Transfer',
-                        array('value'      => $CFG_GLPI["transfers_id_auto"],
-                              'name'       => "transfers_id_auto",
-                              'emptylabel' => __('No automatic transfer')));
+         Transfer::dropdown(array('value'      => $CFG_GLPI["transfers_id_auto"],
+                                  'name'       => "transfers_id_auto",
+                                  'emptylabel' => __('No automatic transfer')));
          echo "</td></td></tr>";
          echo "</table>";
       }
@@ -598,9 +596,8 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Default heading when adding a document to a ticket') . "</td><td>";
-      Dropdown::show('DocumentCategory',
-                     array('value' => $CFG_GLPI["documentcategories_id_forticket"],
-                           'name'  => "documentcategories_id_forticket"));
+      DocumentCategory::dropdown(array('value' => $CFG_GLPI["documentcategories_id_forticket"],
+                                       'name'  => "documentcategories_id_forticket"));
       echo "</td>";
       echo "<td>" . __('By default, a software may be linked to a ticket') . "</td><td>";
       Dropdown::showYesNo("default_software_helpdesk_visible",
@@ -841,8 +838,8 @@ class Config extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td>" . __('Private tasks by default') . "</td><td>";
          Dropdown::showYesNo("task_private", $data["task_private"]);
          echo "</td><td> " . __('Request sources by default') . "</td><td>";
-         Dropdown::show('RequestType', array('value' => $data["default_requesttypes_id"],
-                                             'name'  => "default_requesttypes_id"));
+         RequestType::dropdown(array('value' => $data["default_requesttypes_id"],
+                                     'name'  => "default_requesttypes_id"));
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2'><td>".__('Pre-select me as a technician when creating a ticket').

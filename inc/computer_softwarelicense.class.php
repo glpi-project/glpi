@@ -219,8 +219,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_2 center'>";
          echo "<td>";
-         Dropdown::show('Computer', array('entity'      => $license->fields['entities_id'],
-                                          'entity_sons' => $license->fields['is_recursive']));
+         Computer::dropdown(array('entity'      => $license->fields['entities_id'],
+                                  'entity_sons' => $license->fields['is_recursive']));
 
          echo "</td>";
          echo "<td><input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
@@ -365,10 +365,9 @@ class Computer_SoftwareLicense extends CommonDBRelation {
 
             if ($canedit) {
                Html::openArrowMassives("softinstall".$rand."",true);
-               Dropdown::show('SoftwareLicense',
-                              array('condition' => "`glpi_softwarelicenses`.`softwares_id`
-                                                      = '".$license->fields['softwares_id']."'",
-                                    'used'      => array($searchID)));
+               SoftwareLicense::dropdown(array('condition' => "`glpi_softwarelicenses`.`softwares_id`
+                                                               = '".$license->fields['softwares_id']."'",
+                                               'used'      => array($searchID)));
 
                echo "&nbsp;<input type='submit' name='move' value=\"".
                      _sx('button','Move')."\" class='submit'>&nbsp;";

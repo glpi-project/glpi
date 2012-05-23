@@ -755,9 +755,9 @@ class NetworkName extends FQDNLabel {
 
          _e('Not associated one');
          echo "&nbsp;";
-         Dropdown::show(__CLASS__, array('name'      => 'addressID',
-                                         'condition' => '`items_id`=0'));
-         echo "&nbsp;<input type='submit' name='assign_address' value='" . _sx('button','Associate') .
+         self::dropdown(array('name'      => 'addressID',
+                              'condition' => '`items_id`=0'));
+         echo "&nbsp;<input type='submit' name='assign_address' value='"._sx('button','Associate').
                       "' class='submit'>";
          echo "</form>\n";
          echo "</td></tr>\n";

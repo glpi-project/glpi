@@ -1451,9 +1451,8 @@ class AuthLDAP extends CommonDBTM {
                echo "<td>" . $group . "</td>";
                echo "<td>" .$group_dn. "</td>";
                echo "<td>";
-               Dropdown::show('Entity',
-                              array('value'  => $entity,
-                                    'name'   => "toimport_entities[" .$group_dn . "]=".$entity));
+               Entity::dropdown(array('value'  => $entity,
+                                      'name'   => "toimport_entities[" .$group_dn . "]=".$entity));
                echo "</td>";
                if (Session::isMultiEntitiesMode()) {
                   echo "<td>";
@@ -2426,13 +2425,13 @@ class AuthLDAP extends CommonDBTM {
                 && ($_SESSION['ldap_import']['authldaps_id'] > 0)) {
 
                if (self::getNumberOfServers() > 1) {
-                  echo "<tr class='tab_bg_2'><td>".__('LDAP directory choice')."</td><td colspan='3'>";
-                  Dropdown::show('AuthLdap',
-                                 array('name'         => 'authldaps_id',
-                                       'value'        => $_SESSION['ldap_import']['authldaps_id'],
-                                       'condition'    => "`is_active` = '1'",
+                  echo "<tr class='tab_bg_2'><td>".__('LDAP directory choice')."</td>";
+                  echo "<td colspan='3'>";
+                  self::dropdown(array('name'        => 'authldaps_id',
+                                       'value'       => $_SESSION['ldap_import']['authldaps_id'],
+                                       'condition'   => "`is_active` = '1'",
                                        'display_emptychoice'
-                                                      => false));
+                                                     => false));
                   echo "&nbsp;<input class='submit' type='submit' name='change_directory'
                         value=\""._sx('button','To change')."\">";
                   echo "</td></tr>";

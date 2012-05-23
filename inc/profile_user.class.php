@@ -425,7 +425,7 @@ class Profile_User extends CommonDBTM {
 
                      if ($canedit_entity) {
                         Html::openArrowMassives("profileuser_form".$rand."_$temp", true);
-                        Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
+                        Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
                         echo "&nbsp;<input type='submit' name='moveentity' value='".
                               _sx('button','Move')."' class='submit'>&nbsp;";
                         Html::closeArrowMassives(array('delete' => __('Delete')));
@@ -508,7 +508,7 @@ class Profile_User extends CommonDBTM {
                echo "</table>\n";
                if ($canedit_entity) {
                   Html::openArrowMassives("profileuser_form".$rand."_$temp", true);
-                  Dropdown::show('Entity', array('entity' => $_SESSION['glpiactiveentities']));
+                  Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
                   echo "&nbsp;<input type='submit' name='moveentity' value='"._sx('button','Move').
                                "' class='submit'>&nbsp;";
                   Html::closeArrowMassives(array('delete' => __('Delete')));

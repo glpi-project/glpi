@@ -2470,9 +2470,9 @@ abstract class CommonITILObject extends CommonDBTM {
              && isset($this->countentitiesforuser)
              && ($this->countentitiesforuser > 1)) {
             echo "<br>";
-            $rand = Dropdown::show('Entity', array('value'     => $this->fields["entities_id"],
-                                                   'entity'    => $this->userentities,
-                                                   'on_change' => 'submit()'));
+            $rand = Entity::dropdown(array('value'     => $this->fields["entities_id"],
+                                           'entity'    => $this->userentities,
+                                           'on_change' => 'submit()'));
          } else {
             echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
          }
@@ -2495,10 +2495,10 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             echo "&nbsp;";
 
-            Dropdown::show('Group', array('name'      => '_groups_id_requester',
-                                          'value'     => $options["_groups_id_requester"],
-                                          'entity'    => $this->fields["entities_id"],
-                                          'condition' => '`is_requester`'));
+            Group::dropdown(array('name'      => '_groups_id_requester',
+                                  'value'     => $options["_groups_id_requester"],
+                                  'entity'    => $this->fields["entities_id"],
+                                  'condition' => '`is_requester`'));
 
 
          } else { // predefined value
@@ -2551,10 +2551,10 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             echo "&nbsp;";
 
-            Dropdown::show('Group', array('name'      => '_groups_id_observer',
-                                          'value'     => $options["_groups_id_observer"],
-                                          'entity'    => $this->fields["entities_id"],
-                                          'condition' => '`is_requester`'));
+            Group::dropdown(array('name'      => '_groups_id_observer',
+                                  'value'     => $options["_groups_id_observer"],
+                                  'entity'    => $this->fields["entities_id"],
+                                  'condition' => '`is_requester`'));
          } else { // predefined value
             if (isset($options["_groups_id_observer"]) && $options["_groups_id_observer"]) {
                echo self::getActorIcon('group', self::OBSERVER)."&nbsp;";
@@ -2670,9 +2670,9 @@ abstract class CommonITILObject extends CommonDBTM {
          }
          echo "&nbsp;";
 
-         Dropdown::show('Supplier', array('name'   => 'suppliers_id_assign',
-                                          'value'  => $this->fields["suppliers_id_assign"],
-                                          'entity' => $this->fields["entities_id"]));
+         Supplier::dropdown(array('name'   => 'suppliers_id_assign',
+                                  'value'  => $this->fields["suppliers_id_assign"],
+                                  'entity' => $this->fields["entities_id"]));
          echo '<br>';
       } else {
          if ($this->fields["suppliers_id_assign"]) {
@@ -2764,18 +2764,20 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "<tr class='tab_bg_2'>";
          echo "<td>"._n('Solution template', 'Solution templates', 1)."</td><td>";
 
-         Dropdown::show('SolutionTemplate',
-                        array('value'    => 0,
-                              'entity'   => $this->getEntityID(),
-                              'rand'     => $rand_template,
-                              // Load type and solution from bookmark
-                              'toupdate' => array('value_fieldname' => 'value',
-                                                  'to_update'       => 'solution'.$rand_text,
-                                                  'url'             => $CFG_GLPI["root_doc"].
-                                                                        "/ajax/solution.php",
-                                                  'moreparams' => array('type_id'
-                                                                        => 'dropdown_solutiontypes_id'.
-                                                                            $rand_type))));
+         SolutionTemplate::dropdown(array('value'    => 0,
+                                          'entity'   => $this->getEntityID(),
+                                          'rand'     => $rand_template,
+                                          // Load type and solution from bookmark
+                                          'toupdate'
+	                                         => array('value_fieldname'
+	                                                               => 'value',
+                                                     'to_update'  => 'solution'.$rand_text,
+                                                     'url'        => $CFG_GLPI["root_doc"].
+                                                                     "/ajax/solution.php",
+                                                     'moreparams'
+	                                                     => array('type_id'
+                                                                  => 'dropdown_solutiontypes_id'.
+                                                                       $rand_type))));
 
          echo "</td><td colspan='2'>";
          if (Session::haveRight('knowbase','r') || Session::haveRight('faq','r')) {
@@ -2792,10 +2794,9 @@ abstract class CommonITILObject extends CommonDBTM {
       $current = $this->fields['status'];
       // Settings a solution will set status to solved
       if ($canedit) {
-         Dropdown::show('SolutionType',
-                        array('value'  => $this->getField('solutiontypes_id'),
-                              'rand'   => $rand_type,
-                              'entity' => $this->getEntityID()));
+         SolutionType::dropdown(array('value'  => $this->getField('solutiontypes_id'),
+                                      'rand'   => $rand_type,
+                                      'entity' => $this->getEntityID()));
       } else {
          echo Dropdown::getDropdownName('glpi_solutiontypes',
                                         $this->getField('solutiontypes_id'));

@@ -145,7 +145,7 @@ class Contract extends CommonDBTM {
       Html::autocompletionTextField($this, "name");
       echo "</td>";
       echo "<td>".__('Contract type')."</td><td >";
-      Dropdown::show('ContractType', array('value' => $this->fields["contracttypes_id"]));
+      ContractType::dropdown(array('value' => $this->fields["contracttypes_id"]));
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -753,10 +753,9 @@ class Contract extends CommonDBTM {
          if ($nb > count($used)) {
             echo "<tr class='tab_bg_1'><td class='right' colspan='2'>";
             echo "<input type='hidden' name='contracts_id' value='$instID'>";
-            Dropdown::show('Supplier',
-                           array('used'         => $used,
-                                 'entity'       => $this->fields["entities_id"],
-                                 'entity_sons'  => $this->fields["is_recursive"]));
+            Supplier::dropdown(array('used'         => $used,
+                                     'entity'       => $this->fields["entities_id"],
+                                     'entity_sons'  => $this->fields["is_recursive"]));
             echo "</td><td class='center'>";
             echo "<input type='submit' name='addcontractsupplier' value=\""._sx('Button', 'Add')."\"
                    class='submit'>";
