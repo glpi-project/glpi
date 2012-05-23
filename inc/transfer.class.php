@@ -3137,7 +3137,7 @@ class Transfer extends CommonDBTM {
       $params['value'] = $this->fields['keep_contract'];
       Dropdown::showFromArray('keep_contract', $keep, $params);
       echo "</td>";
-      echo "<td>".__('Ifcontracts are no longer used')."</td><td>";
+      echo "<td>".__('If contracts are no longer used')."</td><td>";
       $params['value'] = $this->fields['clean_contract'];
       Dropdown::showFromArray('clean_contract', $clean, $params);
       echo "</td></tr>";
