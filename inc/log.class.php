@@ -481,9 +481,10 @@ class Log extends CommonDBTM {
                   if ($data['linked_action'] >= self::HISTORY_PLUGIN
                       && $data['itemtype_link']
                       && is_callable($fct)) {
+                     $tmp['field']  = $data['itemtype_link']::getTypeName(1);
                      $tmp['change'] = call_user_func($fct, $data);
-                     $tmp['display_history'] = !empty($tmp['change']);
                   }
+                  $tmp['display_history'] = !empty($tmp['change']);
             }
 
          } else {
