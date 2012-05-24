@@ -1801,6 +1801,9 @@ class CommonDBTM extends CommonGLPI {
             echo "<input type='submit' name='update' value=\""._sx('button','Save')."\"
                    class='submit'>";
          }
+         if ($this->isField('date_mod')) {
+            echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
+         }
       }
 
       if (!$this->isNewID($ID)) {
