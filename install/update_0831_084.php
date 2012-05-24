@@ -1505,6 +1505,13 @@ function update0831to084() {
              WHERE `itemtype` = 'OcsServer'";
    $DB->queryOrDie($query, "0.84 delete OcsServer in crontasks");
 
+   // Give history entries to plugin
+   $query = "UPDATE `glpi_logs`
+             SET `linked_action`=`linked_action`+1000,
+                 `itemtype_link`='PluginOcsinventoryngOcslink'
+             WHERE `linked_action` IN (8,9,10,11)";
+   $DB->queryOrDie($query, "0.84 update OCS links in history");
+
    $migration->addField('glpi_authldaps', 'pagesize', 'integer');
    $migration->addField('glpi_authldaps', 'ldap_maxlimit', 'integer');
    $migration->addField('glpi_authldaps', 'can_support_pagesize', 'bool');
