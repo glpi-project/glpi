@@ -651,7 +651,7 @@ if (count($files)) {
             "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
             "<td>&nbsp;";
             //TRANS: %s is the filename
-            $string = sprintf(__('Delete this file %s?'),$file);
+            $string = sprintf(__('Delete the file %s?'),$file);
            echo "<a href=\"#\" ".HTML::addConfirmationOnAction($string,
                      "window.location='".$CFG_GLPI["root_doc"]."/front/backup.php?delfile=$file'").
                 ">".__('Delete')."</a>&nbsp;</td>";
