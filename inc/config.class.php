@@ -1284,8 +1284,8 @@ class Config extends CommonDBTM {
                echo "<img src='".GLPI_ROOT."/pics/greenbutton.png'>$dir : OK\n";
             } else {
                echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-                          __s('A file and a directory have be created and deleted - Perfect !')."\"
-                          title=\"".__s('A file and a directory have be created and deleted - Perfect !')."\">".
+                          __s('A file and a directory have be created and deleted - Perfect!')."\"
+                          title=\"".__s('A file and a directory have be created and deleted - Perfect!')."\">".
                     "</td></tr>";
             }
          }
@@ -1302,8 +1302,8 @@ class Config extends CommonDBTM {
             echo "<img src='".GLPI_ROOT."/pics/greenbutton.png'>".GLPI_LOG_DIR." : OK\n";
          } else {
             echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-                       __s('A file was created - Perfect !')."\" title=\"".
-                       __s('A file was created - Perfect !')."\"></td></tr>";
+                       __s('A file was created - Perfect!')."\" title=\"".
+                       __s('A file was created - Perfect!')."\"></td></tr>";
          }
 
       } else {

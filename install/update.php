@@ -839,7 +839,7 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
    } else {
       echo "<div class='center'>";
-      echo "<h3><span class='red'>".sprintf(__('Caution ! You will update the GLPI database named: %s'),$DB->dbdefault) ."</h3>";
+      echo "<h3><span class='red'>".sprintf(__('Caution! You will update the GLPI database named: %s'),$DB->dbdefault) ."</h3>";
 
       echo "<form action='update.php' method='post'>";
       echo "<input type='submit' class='submit' name='continuer' value=\"".__('Continue')."\">";

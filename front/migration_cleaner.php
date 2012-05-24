@@ -45,7 +45,7 @@ if (isset($_GET['action'])) {
 
    case 'reinit_network':
       IPNetwork::recreateTree();
-      Session::addMessageAfterRedirect(__('Successfully recreated network tree !'));
+      Session::addMessageAfterRedirect(__('Successfully recreated network tree'));
       break;
   }
 

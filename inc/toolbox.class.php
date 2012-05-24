@@ -535,7 +535,7 @@ class Toolbox {
       if (strstr($tmpfile,"../") || strstr($tmpfile,"..\\")) {
          Event::log($file, "sendFile", 1, "security",
                     $_SESSION["glpiname"]." try to get a non standard file.");
-         die("Security attack !!!");
+         die("Security attack!!!");
       }
 
       if (!file_exists($file)) {
@@ -728,8 +728,8 @@ class Toolbox {
                  "</td>";
          } else {
             echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-                       __s('PHP version is at least 5.3.0 - Perfect !')."\"
-                       title=\"".__s('PHP version is at least 5.3.0 - Perfect !')."\"></td>";
+                       __s('PHP version is at least 5.3.0 - Perfect!')."\"
+                       title=\"".__s('PHP version is at least 5.3.0 - Perfect!')."\"></td>";
          }
 
       } else { // PHP <5
@@ -744,8 +744,8 @@ class Toolbox {
       echo "<tr class='tab_bg_1'><td class='left b'>".__('MySQL Improved extension test')."</td>";
       if (class_exists("mysqli")) {
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png'
-                    alt=\"". __s('Ok - the MySQLi class exist - Perfect !')."\"
-                    title=\"". __s('Ok - the MySQLi class exist - Perfect !')."\"></td>";
+                    alt=\"". __s('Ok - the MySQLi class exist - Perfect!')."\"
+                    title=\"". __s('Ok - the MySQLi class exist - Perfect!')."\"></td>";
       } else {
          echo "<td class='red'>";
          echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
@@ -766,8 +766,8 @@ class Toolbox {
       } else if ((isset($_SESSION["Test_session_GLPI"]) && ($_SESSION["Test_session_GLPI"] == 1)) // From install
                  || isset($_SESSION["glpi_currenttime"])) { // From Update
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-                    __s('Sessions support is available  - Perfect !').
-                    "\" title=\"".__s('Sessions support is available  - Perfect !')."\"></td>";
+                    __s('Sessions support is available  - Perfect!').
+                    "\" title=\"".__s('Sessions support is available  - Perfect!')."\"></td>";
 
       } else if ($error != 2) {
          echo "<td class='red'>";
@@ -798,9 +798,9 @@ class Toolbox {
 
       } else {
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-               __s('Ok - the sessions works (no problem with trans_id) - Perfect !').
+               __s('Ok - the sessions works (no problem with trans_id) - Perfect!').
                "\" title=\"".
-               __s('Ok - the sessions works (no problem with trans_id) - Perfect !').
+               __s('Ok - the sessions works (no problem with trans_id) - Perfect!').
                "\"></td>";
       }
       echo "</tr>";
@@ -817,9 +817,9 @@ class Toolbox {
 
       } else {
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-              __s("The magic_quotes_sybase option isn't active on your server - Perfect !").
+              __s("The magic_quotes_sybase option isn't active on your server - Perfect!").
               "\" title=\"".
-              __s("The magic_quotes_sybase option isn't active on your server - Perfect !").
+              __s("The magic_quotes_sybase option isn't active on your server - Perfect!").
               "\"></td>";
       }
       echo "</tr>";
@@ -866,8 +866,8 @@ class Toolbox {
          case 0 : // memory_limit not compiled -> no memory limit
          case 1 : // memory_limit compiled and unlimited
             echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-                  __s('Unlimited memory - Perfect !')."\" title=\"".
-                  __s('Unlimited memory - Perfect !')."\"></td>";
+                  __s('Unlimited memory - Perfect!')."\" title=\"".
+                  __s('Unlimited memory - Perfect!')."\"></td>";
             break;
 
          case 2: //Insufficient memory
@@ -884,8 +884,8 @@ class Toolbox {
 
          case 3: //Got enough memory, going to the next step
             echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-                  __s('Allocated memory > 64Mio - Perfect !')."\" title=\"".
-                  __s('Allocated memory > 64Mio - Perfect !')."\"></td>";
+                  __s('Allocated memory > 64Mio - Perfect!')."\" title=\"".
+                  __s('Allocated memory > 64Mio - Perfect!')."\"></td>";
             break;
       }
       echo "</tr>";

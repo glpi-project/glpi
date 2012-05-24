@@ -254,7 +254,7 @@ class NetworkPortMigration extends CommonDBChild {
             echo "<a href='".$networkPort->getLinkURL()."'>".
                    __('Add a correct IP to the network port') . "</a>";
          } else {
-            _e('Unknown network port !');
+            _e('Unknown network port');
          }
          echo "</td></tr>\n";
       }

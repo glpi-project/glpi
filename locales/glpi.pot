@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-24 11:28+0200\n"
+"POT-Creation-Date: 2012-05-24 11:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2022,7 +2022,7 @@ msgid "New ticket"
 msgstr ""
 
 #: front/ipnetwork.php:44 front/migration_cleaner.php:48
-msgid "Successfully recreated network tree !"
+msgid "Successfully recreated network tree"
 msgstr ""
 
 #. TRANS: %s is the user login
@@ -6444,7 +6444,7 @@ msgid "Check permissions to the directory: %s"
 msgstr ""
 
 #: inc/config.class.php:1287 inc/config.class.php:1288
-msgid "A file and a directory have be created and deleted - Perfect !"
+msgid "A file and a directory have be created and deleted - Perfect!"
 msgstr ""
 
 #: inc/config.class.php:1297
@@ -6452,7 +6452,7 @@ msgid "Checking write permissions for log files"
 msgstr ""
 
 #: inc/config.class.php:1305 inc/config.class.php:1306
-msgid "A file was created - Perfect !"
+msgid "A file was created - Perfect!"
 msgstr ""
 
 #. TRANS: For consumable. %1$d is total number, %2$d is unused number, %3$d is old number
@@ -9559,7 +9559,7 @@ msgid "Add a correct IP to the network port"
 msgstr ""
 
 #: inc/networkportmigration.class.php:257
-msgid "Unknown network port !"
+msgid "Unknown network port"
 msgstr ""
 
 #: inc/networkportmigration.class.php:264
@@ -12930,7 +12930,7 @@ msgid ""
 msgstr ""
 
 #: inc/toolbox.class.php:731 inc/toolbox.class.php:732
-msgid "PHP version is at least 5.3.0 - Perfect !"
+msgid "PHP version is at least 5.3.0 - Perfect!"
 msgstr ""
 
 #: inc/toolbox.class.php:739
@@ -12942,7 +12942,7 @@ msgid "MySQL Improved extension test"
 msgstr ""
 
 #: inc/toolbox.class.php:747 inc/toolbox.class.php:748
-msgid "Ok - the MySQLi class exist - Perfect !"
+msgid "Ok - the MySQLi class exist - Perfect!"
 msgstr ""
 
 #: inc/toolbox.class.php:752
@@ -12958,7 +12958,7 @@ msgid "Your parser PHP is not installed with sessions support!"
 msgstr ""
 
 #: inc/toolbox.class.php:769 inc/toolbox.class.php:770
-msgid "Sessions support is available  - Perfect !"
+msgid "Sessions support is available  - Perfect!"
 msgstr ""
 
 #: inc/toolbox.class.php:775
@@ -12984,7 +12984,7 @@ msgid "You must desactivate the Session_use_trans_id option in your php.ini"
 msgstr ""
 
 #: inc/toolbox.class.php:801 inc/toolbox.class.php:803
-msgid "Ok - the sessions works (no problem with trans_id) - Perfect !"
+msgid "Ok - the sessions works (no problem with trans_id) - Perfect!"
 msgstr ""
 
 #: inc/toolbox.class.php:809
@@ -12998,7 +12998,7 @@ msgid ""
 msgstr ""
 
 #: inc/toolbox.class.php:820 inc/toolbox.class.php:822
-msgid "The magic_quotes_sybase option isn't active on your server - Perfect !"
+msgid "The magic_quotes_sybase option isn't active on your server - Perfect!"
 msgstr ""
 
 #: inc/toolbox.class.php:828
@@ -13028,7 +13028,7 @@ msgid "Allocated memory test"
 msgstr ""
 
 #: inc/toolbox.class.php:869 inc/toolbox.class.php:870
-msgid "Unlimited memory - Perfect !"
+msgid "Unlimited memory - Perfect!"
 msgstr ""
 
 #: inc/toolbox.class.php:876
@@ -13044,7 +13044,7 @@ msgid "Try increasing the memory_limit parameter in the php.ini file."
 msgstr ""
 
 #: inc/toolbox.class.php:887 inc/toolbox.class.php:888
-msgid "Allocated memory > 64Mio - Perfect !"
+msgid "Allocated memory > 64Mio - Perfect!"
 msgstr ""
 
 #. TRANS: %s is mode name (Permissive, Enforcing of Disabled)
@@ -13568,11 +13568,11 @@ msgid "Database created"
 msgstr ""
 
 #: install/install.php:396
-msgid "Error in creating database !"
+msgid "Error in creating database!"
 msgstr ""
 
 #: install/install.php:403
-msgid "You didn't select a database !"
+msgid "You didn't select a database!"
 msgstr ""
 
 #: install/install.php:426
@@ -13765,7 +13765,7 @@ msgstr ""
 
 #: install/update.php:842
 #, php-format
-msgid "Caution ! You will update the GLPI database named: %s"
+msgid "Caution! You will update the GLPI database named: %s"
 msgstr ""
 
 #: install/update.php:879
