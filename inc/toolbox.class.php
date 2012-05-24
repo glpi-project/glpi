@@ -766,8 +766,8 @@ class Toolbox {
       } else if ((isset($_SESSION["Test_session_GLPI"]) && ($_SESSION["Test_session_GLPI"] == 1)) // From install
                  || isset($_SESSION["glpi_currenttime"])) { // From Update
          echo "<td><img src='".GLPI_ROOT."/pics/greenbutton.png' alt=\"".
-                    __s('Sessions support is available  - Perfect!').
-                    "\" title=\"".__s('Sessions support is available  - Perfect!')."\"></td>";
+                    __s('Sessions support is available - Perfect!').
+                    "\" title=\"".__s('Sessions support is available - Perfect!')."\"></td>";
 
       } else if ($error != 2) {
          echo "<td class='red'>";
