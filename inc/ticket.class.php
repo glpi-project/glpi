@@ -4057,7 +4057,7 @@ class Ticket extends CommonITILObject {
                if ($this->fields["is_deleted"] == 1) {
                   echo "<input type='submit' class='submit' name='purge' value='".
                          _sx('button','Purge')."' ".
-                         Html::addConfirmationOnAction(__('Confirm the final deletion ?')).">";
+                         Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
                } else {
                   echo "<input type='submit' class='submit' name='delete' value='".
                          _sx('button','Delete')."'></td>";

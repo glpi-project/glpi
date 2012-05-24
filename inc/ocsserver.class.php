@@ -2893,7 +2893,7 @@ class OcsServer extends CommonDBTM {
             echo "<th>" . __('Date') . "</th>\n<th>TAG</th>\n";
             if ($advanced
                 && !$tolinked) {
-               echo "<th>" . __('Match the rule ?') . "</th>\n";
+               echo "<th>" . __('Match the rule?') . "</th>\n";
                echo "<th>" . __('Destination entity') . "</th>\n";
                echo "<th>" . __('Target location') . "</th>\n";
             }

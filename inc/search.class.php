@@ -1201,7 +1201,7 @@ class Search {
                            echo self::showItem($output_type,
                                                "<a href='".Toolbox::getItemTypeFormURL($itemtype).
                                                 "?id=".$data["refID"]."&amp;purge=purge' ".
-                                                Html::addConfirmationOnAction(array(__('Are you sure you want to purge this item ?'),
+                                                Html::addConfirmationOnAction(array(__('Are you sure you want to purge this item?'),
                                                                                     __('That will remove all the reservations.'))).
                                                 ">"._x('button', 'Purge')."</a>",
                                                $item_num, $row_num, "class='center'");

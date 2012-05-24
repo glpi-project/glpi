@@ -1789,7 +1789,7 @@ class CommonDBTM extends CommonGLPI {
                if (!$this->maybeDeleted()) {
                   echo "<input type='submit' name='delete' value=\""._sx('button','Purge')."\"
                          class='submit' ".
-                         Html::addConfirmationOnAction(__('Confirm the final deletion ?')).">";
+                         Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
                } else {
                   echo "<input type='submit' name='delete' value='" . _sx('button','Delete') ."'
                          class='submit'>";

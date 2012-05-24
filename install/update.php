@@ -188,7 +188,7 @@ function showContentUpdateForm() {
    echo "<h3>".__('Update successful, your database is up to date')."</h3>";
    echo "<p>".__('You must now proceed to updating your database content')."</p></div>";
    echo "<p>";
-   echo "<a class='vsubmit' href='update_content.php'>".__('Continue ?')."</a>";
+   echo "<a class='vsubmit' href='update_content.php'>".__('Continue?')."</a>";
 }
 
 
