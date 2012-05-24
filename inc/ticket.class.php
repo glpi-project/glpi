@@ -4068,6 +4068,7 @@ class Ticket extends CommonITILObject {
                echo "<input type='submit' class='submit' name='update' value='".
                       _sx('button', 'Save')."'>";
             }
+            echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
 
          } else {
             echo "<td class='tab_bg_2 center' colspan='4'>";
