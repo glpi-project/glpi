@@ -105,7 +105,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
            "</td></tr>\n";
       echo "<tr><th colspan='2' class='b'>" . __('Manufacturer choice') . "</th</tr>\n";
       echo "<tr><td class='tab_bg_2 center'>" .
-            __('Replay dictionary rules for manufacturers ( ----- = All)') . "</td>";
+            __('Replay dictionary rules for manufacturers (----- = All)') . "</td>";
       echo "<td class='tab_bg_2 center'>";
       Manufacturer::dropdown(array('name' => 'manufacturer'));
       echo "</td></tr>\n";

@@ -36,7 +36,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (!TableExists('glpi_networkportmigrations')) {
-   Session::addMessageAfterRedirect(__('You don\'t need the "migration cleaner" tool anymore ...'));
+   Session::addMessageAfterRedirect(__('You don\'t need the "migration cleaner" tool anymore...'));
    Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
 }
 
