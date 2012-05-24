@@ -4095,6 +4095,7 @@ class Ticket extends CommonITILObject {
                echo "<input type='submit' class='submit' name='update' value='".
                       $LANG['buttons'][7]."'>";
             }
+            echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
 
          } else {
             echo "<td class='tab_bg_2 center' colspan='4'>";

@@ -1718,6 +1718,9 @@ class CommonDBTM extends CommonGLPI {
             echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\"
                    class='submit'>";
          }
+         if ($this->isField('date_mod')) {
+            echo "<input type='hidden' name='_read_date_mod' value='".$this->getField('date_mod')."'>";
+         }
       }
 
       if ($ID>0) {
