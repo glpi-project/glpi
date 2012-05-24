@@ -393,14 +393,14 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
             }
 
          } else { // can't create database
-            echo __('Error in creating database !');
+            echo __('Error in creating database!');
             echo "<br>".sprintf(__('The server answered: %s'), mysql_error());
             prev_form($host, $user, $password);
          }
       }
 
    } else { // no db selected
-      echo "<p>".__("You didn't select a database !"). "</p>";
+      echo "<p>".__("You didn't select a database!"). "</p>";
       //prev_form();
       prev_form($host, $user, $password);
    }

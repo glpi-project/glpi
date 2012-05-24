@@ -41,7 +41,7 @@ if (isset($_GET['action']) && ($_GET['action'] == 'reinit_network')
     && Session::haveAccessToEntity(0)) {
 
    IPNetwork::recreateTree();
-   Session::addMessageAfterRedirect(__('Successfully recreated network tree !'));
+   Session::addMessageAfterRedirect(__('Successfully recreated network tree'));
 
    Html::back();
 }
