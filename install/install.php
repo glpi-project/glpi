@@ -160,7 +160,7 @@ function step1($update) {
          break;
 
       case 1 :
-         echo "<h3>".__('Do you want to continue ?')."</h3>";
+         echo "<h3>".__('Do you want to continue?')."</h3>";
          echo "<div class='submit'><form action='install.php' method='post' class='inline'>";
          echo "<input type='hidden' name='install' value='Etape_1'>";
          echo "<input type='hidden' name='update' value='". $update."'>";
@@ -177,7 +177,7 @@ function step1($update) {
          break;
 
       case 2 :
-         echo "<h3>".__('Do you want to continue ?')."</h3>";
+         echo "<h3>".__('Do you want to continue?')."</h3>";
          echo "<form action='install.php' method='post'>";
          echo "<input type='hidden' name='update' value='".$update."'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
@@ -466,7 +466,7 @@ function update1($host, $user, $password, $DBname) {
 
    } else { // can't create config_db file
       _e("Can't create the database connection file, please verify file permissions.");
-      echo "<h3>".__('Do you want to continue ?')."</h3>";
+      echo "<h3>".__('Do you want to continue?')."</h3>";
       echo "<form action='install.php' method='post'>";
       echo "<input type='hidden' name='update' value='yes'>";
       echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";

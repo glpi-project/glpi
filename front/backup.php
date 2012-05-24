@@ -573,11 +573,11 @@ echo "<div class='center'><table class='tab_glpi'><tr><td>".
      "<img src='".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png' alt=\"".__s('Deleted')."\">".
      "</td>";
 echo "<td><a class='vsubmit'
-           href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database ?'),
+           href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),
                  "window.location='".$CFG_GLPI["root_doc"]."/front/backup.php?dump=dump'").
            ">".__('SQL Dump')."</a>&nbsp;</td>";
 echo "<td><a class='vsubmit'
-           href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database ?'),
+           href=\"#\" ".HTML::addConfirmationOnAction(__('Backup the database?'),
                  "window.location='".$CFG_GLPI["root_doc"]."/front/backup.php?xmlnow=xmlnow'").
            ">".__('XML Dump')."</a>&nbsp;</td>";
 
@@ -610,14 +610,14 @@ if (count($files)) {
            "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
            "<td>&nbsp;";
            //TRANS: %s is the filename
-           $string = sprintf(__('Delete the file %s ?'), $file);
+           $string = sprintf(__('Delete the file %s?'), $file);
            echo "<a href=\"#\" ".HTML::addConfirmationOnAction($string,
                      "window.location='".$CFG_GLPI["root_doc"]."/front/backup.php?delfile=$file'").
                 ">".__('Delete')."</a>&nbsp;</td>";
 
            echo "<td>&nbsp;";
            //TRANS: %s is the filename
-           $string = sprintf(__('Replace the current database with the backup file %s ?'), $file);
+           $string = sprintf(__('Replace the current database with the backup file %s?'), $file);
            echo "<a href=\"#\" ".HTML::addConfirmationOnAction($string,
                                           "window.location='".$CFG_GLPI["root_doc"].
                                           "/front/backup.php?file=$file&amp;donotcheckversion=1'").
@@ -651,7 +651,7 @@ if (count($files)) {
             "<td>&nbsp;" . Html::convDateTime(date("Y-m-d H:i",$date)) . "</td>".
             "<td>&nbsp;";
             //TRANS: %s is the filename
-            $string = sprintf(__('Delete this file %s ?'),$file);
+            $string = sprintf(__('Delete this file %s?'),$file);
            echo "<a href=\"#\" ".HTML::addConfirmationOnAction($string,
                      "window.location='".$CFG_GLPI["root_doc"]."/front/backup.php?delfile=$file'").
                 ">".__('Delete')."</a>&nbsp;</td>";
