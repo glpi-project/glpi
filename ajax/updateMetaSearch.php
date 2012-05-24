@@ -65,6 +65,7 @@ foreach ($searchopt as $key => $val) {
       if (!$first_group) {
          $newgroup .= "</optgroup>";
       }
+      $val = Toolbox::substr($val, 0, $_SESSION['glpidropdown_chars_limit']);
       $newgroup .= "<optgroup label=\"$val\">";
 
    } else {
