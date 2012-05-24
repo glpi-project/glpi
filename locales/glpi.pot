@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-24 11:35+0200\n"
+"POT-Creation-Date: 2012-05-24 11:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2105,7 +2105,7 @@ msgid "Operation performed partially successful"
 msgstr ""
 
 #: front/migration_cleaner.php:39
-msgid "You don't need the \"migration cleaner\" tool anymore ..."
+msgid "You don't need the \"migration cleaner\" tool anymore..."
 msgstr ""
 
 #: front/migration_cleaner.php:56 inc/html.class.php:1338
@@ -11980,7 +11980,7 @@ msgid "Manufacturer choice"
 msgstr ""
 
 #: inc/ruledictionnarysoftwarecollection.class.php:108
-msgid "Replay dictionary rules for manufacturers ( ----- = All)"
+msgid "Replay dictionary rules for manufacturers (----- = All)"
 msgstr ""
 
 #: inc/ruledictionnarysoftwarecollection.class.php:396
@@ -12993,7 +12993,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:814
 msgid ""
-"GLPI does not work with the magic_quotes_sybase option ; Please turn it off "
+"GLPI does not work with the magic_quotes_sybase option. Please turn it off "
 "and retry"
 msgstr ""
 

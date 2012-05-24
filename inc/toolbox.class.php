@@ -811,7 +811,7 @@ class Toolbox {
       if (ini_get('magic_quotes_sybase')) {
          echo "<td class='red'>";
          echo "<img src='".GLPI_ROOT."/pics/redbutton.png'>".
-               __('GLPI does not work with the magic_quotes_sybase option ; Please turn it off and retry').
+               __('GLPI does not work with the magic_quotes_sybase option. Please turn it off and retry').
                "</td>";
          $error = 2;
 
