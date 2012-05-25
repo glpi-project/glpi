@@ -264,7 +264,7 @@ class SLA extends CommonDBTM {
 
          // No calendar defined or invalid calendar
          $starttime = strtotime($start_date);
-         $endtime   = $starttime+$this->fields['resolution_time'];
+         $endtime   = $starttime+$this->fields['resolution_time']+$additional_delay;
          return date('Y-m-d H:i:s',$endtime);
       }
 
