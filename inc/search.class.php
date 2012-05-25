@@ -1219,8 +1219,7 @@ class Search {
                            echo self::showItem($output_type,
                                                "<a href='".Toolbox::getItemTypeFormURL($itemtype).
                                                 "?id=".$data["refID"]."&amp;delete=delete' title=\"".
-                                                __s('Put in dustbin')."\">"._x('button', 'Delete').
-                                                "</a>",
+                                                __s('Put in dustbin')."\"><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>",
                                                $item_num, $row_num, "class='center'");
                         }
                      }
