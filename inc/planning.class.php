@@ -973,7 +973,7 @@ class Planning {
             if (isset($val["tickets_id"])) {
                $vevent->setProperty("summary",
                                     $LANG['planning'][8]." # ".$val["tickets_id"]." ".
-                                       $LANG['document'][14]." # ".$val["device"]);
+                                    $val["name"]);
             } else if (isset($val["name"])) {
                $vevent->setProperty( "summary", $val["name"] );
             }
