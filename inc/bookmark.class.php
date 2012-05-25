@@ -303,7 +303,7 @@ class Bookmark extends CommonDBTM {
          case self::SEARCH :
             // Check if all datas are valid
             $opt = Search::getCleanedOptions($this->fields['itemtype']);
-
+            
             $query_tab_save = $query_tab;
             $partial_load   = false;
             // Standard search
@@ -314,7 +314,9 @@ class Bookmark extends CommonDBTM {
                unset($query_tab['link']);
                $new_key = 0;
                foreach ($query_tab_save['field'] as $key => $val) {
-                  if ($val != 'view' && $val != 'all' && !isset($opt[$val])) {
+                  if ($val != 'view' && $val != 'all' 
+                     && (!isset($opt[$val]) 
+                           || (isset($opt[$val]['nosearch']) && $opt[$val]['nosearch']))) {
                      $query_tab['glpisearchcount']--;
                      $partial_load = true;
                   } else {
