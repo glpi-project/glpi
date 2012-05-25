@@ -721,13 +721,14 @@ class Config extends CommonDBTM {
       echo "<tr><th colspan='4'>" . __('Personalization') . "</th></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Results to display by page')."</td><td>";
-      // Limit using global config
-      Dropdown::showInteger('list_limit',
-                            (($data['list_limit'] < $CFG_GLPI['list_limit_max'])
-                             ? $data['list_limit'] : $CFG_GLPI['list_limit_max']),
-                            5, $CFG_GLPI['list_limit_max'], 5);
-      echo "</td><td>" . __('Date format') ."</td>";
+      echo "<td>" . ($userpref?__('Language'):__('Default language')) . "</td><td>";
+      if (Session::haveRight("config","w") || !GLPI_DEMO_MODE) {
+         Dropdown::showLanguages("language", array('value' => $data["language"]));
+      } else {
+         echo "&nbsp;";
+      }
+      
+      echo "<td>" . __('Date format') ."</td>";
       echo "<td>";
       $date_formats = array(0 => __('YYYY-MM-DD'),
                             1 => __('DD-MM-YYYY'),
@@ -736,13 +737,14 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      if ($oncentral) {
-         echo "<td>" . __('Default characters limit in dropdowns') . "</td><td>";
-         Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
-         echo "</td>";
-       } else {
-        echo "<td colspan='2'>&nbsp;</td>";
-      }
+      echo "<td>" . __('Results to display by page')."</td><td>";
+      // Limit using global config
+      Dropdown::showInteger('list_limit',
+                            (($data['list_limit'] < $CFG_GLPI['list_limit_max'])
+                             ? $data['list_limit'] : $CFG_GLPI['list_limit_max']),
+                            5, $CFG_GLPI['list_limit_max'], 5);
+      echo "</td>";
+
       echo "<td>" .__('Number format') . "</td>";
       $values = array(0 => '1 234.56',
                       1 => '1,234.56',
@@ -753,10 +755,10 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       if ($oncentral) {
-         echo "<td>" . __('Display the complete name in tree dropdowns') . "</td><td>";
-         Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"]);
+         echo "<td>" . __('Default characters limit in dropdowns') . "</td><td>";
+         Dropdown::showInteger('dropdown_chars_limit', $data["dropdown_chars_limit"], 20, 100);
          echo "</td>";
-      } else {
+       } else {
         echo "<td colspan='2'>&nbsp;</td>";
       }
       echo "<td>".__('Display order of surnames firstnames')."</td><td>";
@@ -766,11 +768,13 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('CSV delimiter')."</td><td>";
-      $values = array(';' =>';',
-                      ',' =>',');
-      Dropdown::showFromArray('csv_delimiter', $values, array('value' => $data["csv_delimiter"]));
-      echo "</td>";
+      if ($oncentral) {
+         echo "<td>" . __('Display the complete name in tree dropdowns') . "</td><td>";
+         Dropdown::showYesNo('use_flat_dropdowntree', $data["use_flat_dropdowntree"]);
+         echo "</td>";
+      } else {
+        echo "<td colspan='2'>&nbsp;</td>";
+      }
 
       if (!$userpref
           || ($CFG_GLPI['show_count_on_tabs'] != -1)) {
@@ -798,12 +802,12 @@ class Config extends CommonDBTM {
       } else {
          echo "<td colspan='2'></td>";
       }
-      echo "<td>" . ($userpref?__('Language'):__('Default language')) . "</td><td>";
-      if (Session::haveRight("config","w") || !GLPI_DEMO_MODE) {
-         Dropdown::showLanguages("language", array('value' => $data["language"]));
-      } else {
-         echo "&nbsp;";
-      }
+      
+      echo "<td>".__('CSV delimiter')."</td><td>";
+      $values = array(';' =>';',
+                      ',' =>',');
+      Dropdown::showFromArray('csv_delimiter', $values, array('value' => $data["csv_delimiter"]));
+            
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
