@@ -54,6 +54,7 @@ echo "<select id='Search2".$_POST["itemtype"].$_POST["num"]."' name='field2[".$_
 foreach ($searchopt as $key => $val) {
 
    // print groups
+   $str_limit   = 28; // not use $_SESSION['glpidropdown_chars_limit'] because it came to too short
    if (!is_array($val)) {
       if (!empty($newgroup)
           && $items_in_group>0) {
@@ -65,7 +66,7 @@ foreach ($searchopt as $key => $val) {
       if (!$first_group) {
          $newgroup .= "</optgroup>";
       }
-      $val = Toolbox::substr($val, 0, $_SESSION['glpidropdown_chars_limit']);
+      $val       = Toolbox::substr($val, 0, $str_limit);
       $newgroup .= "<optgroup label=\"$val\">";
 
    } else {
@@ -76,8 +77,7 @@ foreach ($searchopt as $key => $val) {
          if ($key == $_POST["field"]) {
             $newgroup .= "selected";
          }
-         $newgroup .= ">". Toolbox::substr($val["name"], 0, $_SESSION['glpidropdown_chars_limit']) .
-                      "</option>\n";
+         $newgroup .= ">". Toolbox::substr($val["name"], 0, $str_limit) ."</option>\n";
          $items_in_group++;
       }
    }
