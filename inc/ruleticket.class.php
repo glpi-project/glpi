@@ -264,7 +264,8 @@ class RuleTicket extends Rule {
       $criterias['_groups_id_assign']['field']        = 'completename';
       $criterias['_groups_id_assign']['name']         = __('Technicians group');
       $criterias['_groups_id_assign']['linkfield']    = '_groups_id_assign';
-      $criterias['_groups_id_assign']['type']         = 'dropdown_groups_assign';
+      $criterias['_groups_id_assign']['type']         = 'dropdown';
+      $criterias['_groups_id_assign']['condition']    = '`is_assign`';
 
       $criterias['suppliers_id_assign']['table']      = 'glpi_suppliers';
       $criterias['suppliers_id_assign']['field']      = 'name';
@@ -349,7 +350,8 @@ class RuleTicket extends Rule {
 
       $actions['_groups_id_assign']['table']          = 'glpi_groups';
       $actions['_groups_id_assign']['name']           = __('Technicians group');
-      $actions['_groups_id_assign']['type']           = 'dropdown_groups_assign';
+      $actions['_groups_id_assign']['type']           = 'dropdown';
+      $actions['_groups_id_assign']['condition']      = '`is_assign`';
 
       $actions['suppliers_id_assign']['table']        = 'glpi_suppliers';
       $actions['suppliers_id_assign']['name']         = __('Assigned to a supplier');
