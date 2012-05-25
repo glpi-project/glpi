@@ -125,8 +125,6 @@ class RuleDictionnarySoftware extends RuleCached {
       $criterias['manufacturer']['field'] = 'name';
       $criterias['manufacturer']['name']  = $LANG['common'][5];
       $criterias['manufacturer']['table'] = 'glpi_manufacturers';
-      // TODO : why a dropdown (was not in 0.80) ?
-      $criterias['manufacturer']['type']  = 'dropdown';
 
       $criterias['entities_id']['field'] = 'completename';
       $criterias['entities_id']['name']  = $LANG['entity'][0];
