@@ -222,16 +222,16 @@ class Group extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
       echo "<td>".__('Requester')."</td>";
       echo "<td>";
-      dropdown::showYesNo('is_requester', $this->fields['is_requester']);
+      Dropdown::showYesNo('is_requester', $this->fields['is_requester']);
       echo "</td>";
       echo "<td>".__('Assigned to')."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-      dropdown::showYesNo('is_assign', $this->fields['is_assign']);
+      Dropdown::showYesNo('is_assign', $this->fields['is_assign']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' class='b'>".__('Can be notified')."</td>";
       echo "<td>";
-      dropdown::showYesNo('is_notify', $this->fields['is_notify']);
+      Dropdown::showYesNo('is_notify', $this->fields['is_notify']);
       echo "</td><td></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -241,10 +241,10 @@ class Group extends CommonTreeDropdown {
       echo "<tr class='tab_bg_1'><td>&nbsp;</td>";
       echo "<td>"._n('Item', 'Items', 2)."</td>";
       echo "<td>";
-      dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
+      Dropdown::showYesNo('is_itemgroup', $this->fields['is_itemgroup']);
       echo "</td>";
       echo "<td>"._n('User', 'Users', 2)."&nbsp;&nbsp;&nbsp;";
-      dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
+      Dropdown::showYesNo('is_usergroup', $this->fields['is_usergroup']);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";

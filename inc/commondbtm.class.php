@@ -2603,7 +2603,7 @@ class CommonDBTM extends CommonGLPI {
    **/
    static function dropdown($options=array()) {
 
-      Dropdown::show(get_called_class(), $options);
+      return Dropdown::show(get_called_class(), $options);
    }
 
 
