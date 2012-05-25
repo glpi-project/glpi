@@ -673,9 +673,10 @@ class MailCollector  extends CommonDBTM {
                   // Delete line at the top of the first comment
                   if ($first_comment) {
                      $first_comment = false;
-                     if (isset($to_keep[$ID-1])) {
-                        unset($to_keep[$ID-1]);
-                     }
+                     // Do not drop line before comment because may be real text
+//                      if (isset($to_keep[$ID-1])) {
+//                         unset($to_keep[$ID-1]);
+//                      }
                   }
                } else {
                   $to_keep[$ID] = $ID;
@@ -713,8 +714,9 @@ class MailCollector  extends CommonDBTM {
       }
 
       $tkt['requesttypes_id'] = RequestType::getDefault('mail');
+      echo $tkt['content'];
       $tkt['content']         = Toolbox::clean_cross_side_scripting_deep(Html::clean($tkt['content']));
-
+      echo $tkt['content'];exit();
       if ($play_rules) {
          $rule_options['ticket']              = $tkt;
          $rule_options['headers']             = $head;
