@@ -726,9 +726,10 @@ class MailCollector  extends CommonDBTM {
                   // Delete line at the top of the first comment
                   if ($first_comment) {
                      $first_comment = false;
-                     if (isset($to_keep[$ID-1])) {
-                        unset($to_keep[$ID-1]);
-                     }
+                     // Do not drop line before comment because may be real text
+//                      if (isset($to_keep[$ID-1])) {
+//                         unset($to_keep[$ID-1]);
+//                      }
                   }
                } else {
                   $to_keep[$ID] = $ID;
