@@ -60,6 +60,7 @@ if (isset($_POST["type"])
             $options = array('name'        => '_itil_'.$_POST["actortype"].'[users_id]',
                              'entity'      => $_POST['entity_restrict'],
                              'right'       => $right,
+                             'rand'        => $rand,
                              'ldap_import' => true);
 
             if ($CFG_GLPI["use_mailing"]) {
@@ -97,7 +98,7 @@ if (isset($_POST["type"])
             // Need to update information on dropdown changes
             if (($_POST["itemtype"] == 'Ticket')
                 && ($_POST["actortype"] == 'assign')) {
-               echo "<br><span id='countassign_$rand'>";
+               echo "<br><span id='countassign_$rand'>--";
                echo "</span>";
             }
 
@@ -121,7 +122,8 @@ if (isset($_POST["type"])
                                                         : $cond = '`is_requester`');
             $param = array('name'      => '_itil_'.$_POST["actortype"].'[groups_id]',
                            'entity'    => $_POST['entity_restrict'],
-                           'condition' => $cond);
+                           'condition' => $cond,
+                           'rand'      => $rand);
             if (($_POST["itemtype"] == 'Ticket')
                 && ($_POST["actortype"] == 'assign')) {
                $param['toupdate'] = array('value_fieldname' => 'value',
@@ -132,7 +134,7 @@ if (isset($_POST["type"])
                                                                         => '__VALUE__'));
             }
 
-            Group::dropdown($param);
+            $rand = Group::dropdown($param);
 
             if (($_POST["itemtype"] == 'Ticket')
                 && ($_POST["actortype"] == 'assign')) {
