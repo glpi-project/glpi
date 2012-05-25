@@ -95,8 +95,7 @@ class SoftwareLicense extends CommonDBTM {
       }
 
       // Add infocoms if exists for the licence
-      $ic = new Infocom();
-      $ic->cloneItem('Software', $dupid, $this->fields['id'], $this->getType());
+      Infocom::cloneItem('Software', $dupid, $this->fields['id'], $this->getType());
    }
 
 

@@ -168,19 +168,20 @@ class Calendar_Holiday extends CommonDBRelation {
     * @param $oldid
     * @param $newid
    **/
-   function cloneCalendar($oldid, $newid) {
+   static function cloneCalendar($oldid, $newid) {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$this->getTable()."`
+                FROM `glpi_calendars_holidays`
                 WHERE `calendars_id` = '$oldid'";
 
       foreach ($DB->request($query) as $data) {
+         $ch = new self();
          unset($data['id']);
          $data['calendars_id'] = $newid;
          $data['_no_history']  = true;
 
-         $this->add($data);
+         $ch->add($data);
       }
    }
 

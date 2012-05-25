@@ -322,82 +322,30 @@ class Computer extends CommonDBTM {
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Devices
-         $compdev = new Computer_Device();
-         $compdev->cloneComputer($this->input["_oldID"], $this->fields['id']);
+         Computer_Device::cloneComputer($this->input["_oldID"], $this->fields['id']);
 
          // ADD Infocoms
-         $ic = new Infocom();
-         $ic->cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+         Infocom::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD volumes
-         $query  = "SELECT `id`
-                    FROM `glpi_computerdisks`
-                    WHERE `computers_id` = '".$this->input["_oldID"]."'";
-         $result = $DB->query($query);
-         if ($DB->numrows($result) > 0) {
-            while ($data = $DB->fetch_assoc($result)) {
-               $disk = new ComputerDisk();
-               $disk->getfromDB($data['id']);
-               unset($disk->fields["id"]);
-               $disk->fields["computers_id"] = $this->fields['id'];
-               $disk->addToDB();
-            }
-         }
+         ComputerDisk::cloneComputer($this->input["_oldID"], $this->fields['id']);
 
          // ADD software
-         $inst = new Computer_SoftwareVersion();
-         $inst->cloneComputer($this->input["_oldID"], $this->fields['id']);
+         Computer_SoftwareVersion::cloneComputer($this->input["_oldID"], $this->fields['id']);
 
-         $inst = new Computer_SoftwareLicense();
-         $inst->cloneComputer($this->input["_oldID"], $this->fields['id']);
+         Computer_SoftwareLicense::cloneComputer($this->input["_oldID"], $this->fields['id']);
 
          // ADD Contract
-         $query  = "SELECT `contracts_id`
-                    FROM `glpi_contracts_items`
-                    WHERE `items_id` = '".$this->input["_oldID"]."'
-                          AND `itemtype` = '".$this->getType()."';";
-         $result = $DB->query($query);
-         if ($DB->numrows($result) > 0) {
-            $contractitem = new Contract_Item();
-            while ($data = $DB->fetch_assoc($result)) {
-               $contractitem->add(array('contracts_id' => $data["contracts_id"],
-                                        'itemtype'     => $this->getType(),
-                                        'items_id'     => $this->fields['id']));
-            }
-         }
-
+         Contract_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+         
          // ADD Documents
-         $query  = "SELECT `documents_id`
-                    FROM `glpi_documents_items`
-                    WHERE `items_id` = '".$this->input["_oldID"]."'
-                          AND `itemtype` = '".$this->getType()."';";
-         $result = $DB->query($query);
-         if ($DB->numrows($result) > 0) {
-            $docitem = new Document_Item();
-            while ($data = $DB->fetch_assoc($result)) {
-               $docitem->add(array('documents_id' => $data["documents_id"],
-                                   'itemtype'     => $this->getType(),
-                                   'items_id'     => $this->fields['id']));
-            }
-         }
+         Document_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Ports
          NetworkPort::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // Add connected devices
-         $query  = "SELECT *
-                    FROM `glpi_computers_items`
-                    WHERE `computers_id` = '".$this->input["_oldID"]."';";
-         $result = $DB->query($query);
-
-         if ($DB->numrows($result) > 0) {
-            $conn = new Computer_Item();
-            while ($data=$DB->fetch_assoc($result)) {
-               $conn->add(array('computers_id' => $this->fields['id'],
-                                'itemtype'     => $data["itemtype"],
-                                'items_id'     => $data["items_id"]));
-            }
-         }
+         Computer_Item::cloneComputer($this->input["_oldID"], $this->fields['id']);
       }
    }
 

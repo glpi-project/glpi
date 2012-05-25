@@ -1464,12 +1464,12 @@ class Infocom extends CommonDBChild {
     * @param $newid        ID of the item cloned
     * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
    **/
-   function cloneItem($itemtype, $oldid, $newid, $newitemtype='') {
+   static function cloneItem($itemtype, $oldid, $newid, $newitemtype='') {
       global $DB;
 
-
-      if ($this->getFromDBforDevice($itemtype, $oldid)) {
-         $input             = $this->fields;
+      $ic = new Infocom();
+      if ($ic->getFromDBforDevice($itemtype, $oldid)) {
+         $input             = $ic->fields;
          $input             = Toolbox::addslashes_deep($input);
          $input['items_id'] = $newid;
          if (!empty($newitemtype)) {
@@ -1487,7 +1487,8 @@ class Infocom extends CommonDBChild {
                unset($input[$f]);
             }
          }
-         $this->add($input);
+         $ic2 = new Infocom();
+         $ic2->add($input);
       }
    }
 

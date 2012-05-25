@@ -180,20 +180,7 @@ class Budget extends CommonDropdown{
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Documents
-         $query = "SELECT `documents_id`
-                   FROM `glpi_documents_items`
-                   WHERE `items_id` = '".$this->input["_oldID"]."'
-                         AND `itemtype` = '".$this->getType()."';";
-         $result = $DB->query($query);
-
-         if ($DB->numrows($result)>0) {
-            $docitem = new Document_Item();
-            while ($data = $DB->fetch_assoc($result)) {
-               $docitem->add(array('documents_id' => $data["documents_id"],
-                                   'itemtype'     => $this->getType(),
-                                   'items_id'     => $this->fields['id']));
-            }
-         }
+         Document_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
       }
    }
 

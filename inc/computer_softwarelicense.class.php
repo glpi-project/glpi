@@ -445,19 +445,20 @@ class Computer_SoftwareLicense extends CommonDBRelation {
     * @param $oldid ID of the computer to clone
     * @param $newid ID of the computer cloned
    **/
-   function cloneComputer($oldid, $newid) {
+   static function cloneComputer($oldid, $newid) {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$this->getTable()."`
+                FROM `glpi_computers_softwarelicenses`
                 WHERE `computers_id` = '$oldid'";
 
       foreach ($DB->request($query) as $data) {
+         $csl = new self();
          unset($data['id']);
          $data['computers_id'] = $newid;
          $data['_no_history']  = true;
 
-         $this->add($data);
+         $csl->add($data);
       }
    }
 
