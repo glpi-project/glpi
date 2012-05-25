@@ -395,7 +395,7 @@ $LANG['computers'][63]="Stare maşină virtuală";
 $LANG['computers'][64]="Maşină"; 
 $LANG['computers'][65]="Lista maşini gazdă"; 
 $LANG['computers'][66]="Lista maşinilor virtuale"; 
-$LANG['computers'][67]="Szsteme virtualizare"; 
+$LANG['computers'][67]="Sisteme virtualizare"; 
 $LANG['computers'][68]="Modele virtualizare"; 
 $LANG['computers'][69]="Stări maşini virtuale"; 
 
@@ -1820,7 +1820,7 @@ $LANG['search'][3]="sub";
 $LANG['search'][4]="ordonate dupa"; 
 $LANG['search'][5]="Selecţie prea mare, acţiuni în masă dezactivate"; 
 $LANG['search'][6]="Pentru creşterea limitei: schimbaţi max_input_vars or suhosin.post.max_vars în configurarea php."; 
-$LANG['search'][7]="not under"; // en_GB string to be translated
+$LANG['search'][7]="nu sub"; 
 $LANG['search'][8]="Dată  de început"; 
 $LANG['search'][9]="Dată de final"; 
 $LANG['search'][11]="Elemente vizualizate"; 

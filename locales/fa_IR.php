@@ -107,7 +107,7 @@ $LANG['buttons'][57]="اجرا";
 $LANG['buttons'][58]="بروزآوری"; 
 $LANG['buttons'][59]="تفکیک"; 
 $LANG['buttons'][60]="بستن پنجره"; 
-$LANG['buttons'][61]="Regenerate"; // en_GB string to be translated
+$LANG['buttons'][61]="تولید مجدد"; 
 
 $LANG['calendar'][0]="روز-ماه-سال"; 
 $LANG['calendar'][1]="سال-ماه-روز"; 
@@ -194,7 +194,7 @@ $LANG['cartridges'][40]="میانگین زمان در انبار";
 $LANG['cartridges'][41]="میانگین زمان استفاده"; 
 $LANG['cartridges'][42]="تعداد میانگین برگه های چاپی"; 
 
-$LANG['central'][1]="For security reasons, please change the password for the default users"; // en_GB string to be translated
+$LANG['central'][1]="به دلایل امنیتی، لطفا رمز عبور را برای کاربران پیش فرض تغییر دهید"; 
 $LANG['central'][2]="آخرین"; 
 $LANG['central'][4]="هیچ رویداد"; 
 $LANG['central'][5]="خانه"; 
@@ -206,7 +206,7 @@ $LANG['central'][10]="درخواست های جدید";
 $LANG['central'][12]="نمای شخصی"; 
 $LANG['central'][13]="نمای سراسری"; 
 $LANG['central'][14]="نمای گروهی"; 
-$LANG['central'][17]="Your rejected tickets"; // en_GB string to be translated
+$LANG['central'][17]="درخواست های رد شده شما"; 
 $LANG['central'][18]="درخواست شما بسته شد"; 
 $LANG['central'][19]="درخواست شما اعتبارسنجی شد"; 
 
@@ -339,19 +339,19 @@ $LANG['common'][104]="مراقب";
 $LANG['common'][105]="اعلان خطر"; 
 $LANG['common'][106]="حداقل یک جزء دارای مقدار نامعتبر است."; 
 $LANG['common'][107]="میانگین"; 
-$LANG['common'][108]="Remote access key"; // en_GB string to be translated
+$LANG['common'][108]="کلید دسترسی از راه دور"; 
 $LANG['common'][109]="گروه مسئول سخت افزار"; 
-$LANG['common'][110]="No change of entity"; // en_GB string to be translated
+$LANG['common'][110]="هیچ تغییر نهادی نیست"; 
 $LANG['common'][111]="عناوین استفاده شده"; 
 $LANG['common'][112]="عناوین مدیریت شده"; 
 $LANG['common'][113]="میدان دید"; 
 $LANG['common'][114]="برچسب ID"; 
 $LANG['common'][115]="حالت تناوبی"; 
 $LANG['common'][116]="افزودن هدف"; 
-$LANG['common'][117]="Operation performed partially successful"; // en_GB string to be translated
+$LANG['common'][117]="عملیات انجام شده تا حدی موفق"; 
 $LANG['common'][118]="عمل ناموفق"; 
 $LANG['common'][119]="شکست(ها)"; 
-$LANG['common'][120]="Caution! You are not the author of this element. Delete targets can result in loss of access to that element."; // en_GB string to be translated
+$LANG['common'][120]="هشدار! شما نویسنده این عنصر نیستید. حذف نشان هامی تواند منجر به از دست دادن دسترسی به آن عنصر شود."; 
 $LANG['common'][121]="مشکل مجوز(ها)"; 
 $LANG['common'][123]="Delegatee"; 
 
@@ -422,7 +422,7 @@ $LANG['consumables'][21]="در استفاده";
 $LANG['consumables'][22]="استفاده شده"; 
 $LANG['consumables'][23]="وضعیت"; 
 $LANG['consumables'][26]="تاریخ استفاده"; 
-$LANG['consumables'][31]="Given to"; // en_GB string to be translated
+$LANG['consumables'][31]="را به"; 
 $LANG['consumables'][32]="تخصیص دادن"; 
 $LANG['consumables'][35]="کالای مصرفی استفاده شده"; 
 $LANG['consumables'][36]="محل انبار"; 
@@ -584,25 +584,25 @@ $LANG['document'][49]="پرونده تغییر یافته (مجموع مقابل
 $LANG['dropdown'][1]="مکان ها"; 
 $LANG['dropdown'][2]="سازنده ها"; 
 $LANG['dropdown'][3]="شاخه های درخواست ها"; 
-$LANG['dropdown'][4]="Tasks categories"; // en_GB string to be translated
-$LANG['dropdown'][5]="Solution Types"; // en_GB string to be translated
-$LANG['dropdown'][6]="Request sources"; // en_GB string to be translated
-$LANG['dropdown'][7]="Solution templates"; // en_GB string to be translated
+$LANG['dropdown'][4]="دسته بندی های وظایف"; 
+$LANG['dropdown'][5]="انواع راه حل"; 
+$LANG['dropdown'][6]="منابع درخواست"; 
+$LANG['dropdown'][7]="قالب های راه حل"; 
 $LANG['dropdown'][8]="نوع رایانه"; 
 $LANG['dropdown'][9]="نوع تجهیزات شبکه"; 
-$LANG['dropdown'][10]="Printer Type"; // en_GB string to be translated
+$LANG['dropdown'][10]="نوع چاپگر"; 
 $LANG['dropdown'][11]="نوع صفحه نمایش"; 
 $LANG['dropdown'][12]="نوع ابزارها"; 
-$LANG['dropdown'][13]="Phone Type"; // en_GB string to be translated
+$LANG['dropdown'][13]="نوع تلفن"; 
 $LANG['dropdown'][14]="نوع مجوز"; 
 $LANG['dropdown'][15]="نوع تماس"; 
 $LANG['dropdown'][16]="نوع رابط"; 
 $LANG['dropdown'][17]="نوع محفظه"; 
-$LANG['dropdown'][18]="Phone power supply type"; // en_GB string to be translated
+$LANG['dropdown'][18]="نوع منبع تغذیه تلفن"; 
 $LANG['dropdown'][19]="پرونده سامانه"; 
 $LANG['dropdown'][20]="مدل رایانه"; 
 $LANG['dropdown'][21]="مدل شبکه"; 
-$LANG['dropdown'][22]="Printer Model"; // en_GB string to be translated
+$LANG['dropdown'][22]="مدل چاپگر"; 
 $LANG['dropdown'][23]="مدل صفحه نمایش"; 
 $LANG['dropdown'][24]="مدل ابزار"; 
 $LANG['dropdown'][25]="مدل تلفن"; 
@@ -610,7 +610,7 @@ $LANG['dropdown'][26]="عنوان سند";
 $LANG['dropdown'][27]="دسته بندی های پایگاه دانش"; 
 $LANG['dropdown'][28]="سامانه عامل"; 
 $LANG['dropdown'][29]="نسخه سامانه عامل"; 
-$LANG['dropdown'][30]="Service Packs"; // en_GB string to be translated
+$LANG['dropdown'][30]="بسته های خدمات"; 
 $LANG['dropdown'][31]="منابع بروزرسانی"; 
 $LANG['dropdown'][32]="رابط های شبکه"; 
 $LANG['dropdown'][33]="نرم افزارهای دائمی"; 
@@ -993,10 +993,10 @@ $LANG['joblist'][34]="حل نشده";
 $LANG['joblist'][35]="بسته نشده"; 
 $LANG['joblist'][36]="متغیر وضعیت در پایگاه داده"; 
 
-$LANG['jobrecurrent'][1]="Recurrent tickets"; // en_GB string to be translated
-$LANG['jobrecurrent'][2]="Preliminary creation"; // en_GB string to be translated
-$LANG['jobrecurrent'][3]="Next creation"; // en_GB string to be translated
-$LANG['jobrecurrent'][4]="Frequency invalid. It must be greater than the preliminary creation."; // en_GB string to be translated
+$LANG['jobrecurrent'][1]="درخواست بازگشت کننده"; 
+$LANG['jobrecurrent'][2]="ایجاد مقدماتی"; 
+$LANG['jobrecurrent'][3]="ایجاد بعدی"; 
+$LANG['jobrecurrent'][4]="فراوانی نامعتبر است. باید بزرگتر از ایجاد اولیه باشد."; 
 
 $LANG['jobresolution'][1]="راه حل"; 
 $LANG['jobresolution'][2]="راه حل ها"; 
@@ -1006,8 +1006,8 @@ $LANG['jobresolution'][5]="اگر راه حلی را نپذیرید، باید �
 $LANG['jobresolution'][6]="قالب راه حل"; 
 
 $LANG['knowbase'][1]="پرسش و پاسخ"; 
-$LANG['knowbase'][2]="Unpublished articles"; // en_GB string to be translated
-$LANG['knowbase'][3]="Unpublished"; // en_GB string to be translated
+$LANG['knowbase'][2]="مقالات غیرقابل انتشار"; 
+$LANG['knowbase'][3]="غیرقابل انتشار"; 
 $LANG['knowbase'][5]="قراردادن این فقره در پرسش و پاسخ"; 
 $LANG['knowbase'][6]="برای این فقره رده را انتخاب کنید:"; 
 $LANG['knowbase'][7]="حذف این فقره از پرسش و پاسخ"; 
@@ -1034,7 +1034,7 @@ $LANG['ldap'][6]="ناتوانی در  اتصال به فهرست LDAP";
 $LANG['ldap'][7]="هیچ فهرست LDAP در GLPI تعریف نشده است"; 
 $LANG['ldap'][8]="هشدار : درخواست بیش از حد از فهرست. نتایج به دست آمده تنها بخشی است."; 
 $LANG['ldap'][9]="آزمایش ارتباط به فهرست LDAP"; 
-$LANG['ldap'][10]="Successful importation"; // en_GB string to be translated
+$LANG['ldap'][10]="واردات موفق"; 
 $LANG['ldap'][11]="نیروی هماهنگ سازی"; 
 $LANG['ldap'][12]="همزمانی"; 
 $LANG['ldap'][13]="در فهرست LDAP"; 
@@ -1207,7 +1207,7 @@ $LANG['mailgate'][4]="الحاقی mbstring  پیدا نشد.اخطار با cha
 $LANG['mailgate'][5]="پرونده ضمیمه نامعتبر"; 
 $LANG['mailgate'][6]="پرونده ضمیمه بسیار بزرگ"; 
 $LANG['mailgate'][7]="اندازه حداکثر هر پرونده که توسط دریافت کننده رایانامه وارد شده است"; 
-$LANG['mailgate'][8]="No import"; // en_GB string to be translated
+$LANG['mailgate'][8]="بدون واردات"; 
 $LANG['mailgate'][9]="رایانامه شما نمتواند پردازش شود. \n اگر مشکل ادامه یافت، با مدیر تماس بگیرید"; 
 $LANG['mailgate'][10]="رایانامه رد شد."; 
 $LANG['mailgate'][11]="فرآیند درون برد رایانامه"; 
@@ -1218,7 +1218,7 @@ $LANG['mailgate'][16]="عطف به:";
 
 $LANG['mailing'][0]="----------------------------------------------------------"; 
 $LANG['mailing'][1]="======================================================================"; 
-$LANG['mailing'][2]="Prefix for notifications"; // en_GB string to be translated
+$LANG['mailing'][2]="پیشوند برای هشدارها"; 
 $LANG['mailing'][3]="به طور خودکار توسط GLPI تولید شده است"; 
 $LANG['mailing'][4]="پیگیری(ها) قبلا انجام شده است"; 
 $LANG['mailing'][5]="توضیحات درخواست"; 
@@ -1244,10 +1244,10 @@ $LANG['mailing'][54]="تاریخ انقضاء";
 $LANG['mailing'][100]="رده تعریف نشده است"; 
 $LANG['mailing'][104]="مدت پیگیری"; 
 $LANG['mailing'][108]="رویدادها"; 
-$LANG['mailing'][109]="Translations"; // en_GB string to be translated
+$LANG['mailing'][109]="ترجمه ها"; 
 $LANG['mailing'][110]="رایانامه نامعتبر"; 
 $LANG['mailing'][111]="نشانی رایانامه"; 
-$LANG['mailing'][112]="Notification Model"; // en_GB string to be translated
+$LANG['mailing'][112]="مدل هشدار"; 
 $LANG['mailing'][113]="قالب هشدار"; 
 $LANG['mailing'][114]="متن"; 
 $LANG['mailing'][115]="متن رایانامه"; 
@@ -1353,7 +1353,7 @@ $LANG['networking'][44]="درگاه";
 $LANG['networking'][46]="افزودن چند درگاه ..."; 
 $LANG['networking'][48]="به"; 
 $LANG['networking'][51]="خروجی شبکه"; 
-$LANG['networking'][52]="Network outlets"; // en_GB string to be translated
+$LANG['networking'][52]="رسانه های شبکه"; 
 $LANG['networking'][55]="ارتباط یک VLAN"; 
 $LANG['networking'][56]="VLAN"; 
 $LANG['networking'][57]="یک نشانی MAC را در فهرست  انتخاب کنید یا آن را در زیر مشخص کنید"; 
@@ -1405,7 +1405,7 @@ $LANG['ocsconfig'][56]="خالی";
 $LANG['ocsconfig'][57]="برابر"; 
 $LANG['ocsconfig'][58]="پیوند به طور خودکار متصل به رایانه GLPI با یکی در OCSNG. <br> این گزینه در طی پیوند دستی حساب و توسط اسکریپت های هماهنگ سازی گرفته شده است."; 
 $LANG['ocsconfig'][59]="نشانی وب از میز فرمان OCSNG"; 
-$LANG['ocsconfig'][60]="Unit import serial number only"; // en_GB string to be translated
+$LANG['ocsconfig'][60]="فقط شماره سریال ورودی واحد"; 
 
 $LANG['ocsng'][0]="NG فهرست اموال OCS"; 
 $LANG['ocsng'][1]="رایانه های همگام سازی شده قبلا درون برد شده اند"; 
@@ -1431,7 +1431,7 @@ $LANG['ocsng'][22]="احتیاط! اطلاعات درون برد شده (نگا�
 $LANG['ocsng'][23]="قادر به درون برد نیست، رایانه GLPI قبلا به یک عنصر از OCSNG مرتبط شده است"; 
 $LANG['ocsng'][26]="انتخاب یک خادم OCSNG"; 
 $LANG['ocsng'][27]="هیچ خادم OCSNG تعریف نشده است"; 
-$LANG['ocsng'][28]="OCSNG servers"; // en_GB string to be translated
+$LANG['ocsng'][28]="OCSNG خادم های"; 
 $LANG['ocsng'][29]="خادم OCSNG"; 
 $LANG['ocsng'][30]="صفحه نمایش(های) قفل شده"; 
 $LANG['ocsng'][32]="ابزار(های) قفل شده"; 
@@ -1451,7 +1451,7 @@ $LANG['ocsng'][48]="OCSNG ID رایانه عوض شده است";
 $LANG['ocsng'][49]="عامل"; 
 $LANG['ocsng'][50]="IP (های) قفل شده"; 
 $LANG['ocsng'][52]="نرم افزار(های) قفل شده"; 
-$LANG['ocsng'][53]="OCSNG links"; // en_GB string to be translated
+$LANG['ocsng'][53]="پیوند های  OCSNG"; 
 $LANG['ocsng'][54]="نرم افزار به واسطه همگام سازی OCSNG حذف شد"; 
 $LANG['ocsng'][55]="مقدار(مقادیر) قفل شده"; 
 $LANG['ocsng'][56]="مولفه (های) قفل شده"; 
@@ -1549,7 +1549,7 @@ $LANG['problem'][12]="حذف یک مسئله";
 $LANG['profiles'][0]="حق سراسری"; 
 $LANG['profiles'][1]="حق موجودیت"; 
 $LANG['profiles'][2]="واسط مشخصات"; 
-$LANG['profiles'][3]="Ticket creation form on login"; // en_GB string to be translated
+$LANG['profiles'][3]="برگه ایجاد درخواست در ورود"; 
 $LANG['profiles'][4]="افزودن پیگیری به درخواست های مرتبط با گروه(ها)"; 
 $LANG['profiles'][5]="ایجاد یک درخواست"; 
 $LANG['profiles'][6]="افزودن پیگیری برای درخواست ها(درخواست کننده)"; 
@@ -1571,7 +1571,7 @@ $LANG['profiles'][21]="نمایش تمام طرح ریزی ها";
 $LANG['profiles'][22]="مشخصات"; 
 $LANG['profiles'][23]="مدیریت ذخیره ها"; 
 $LANG['profiles'][24]="بروزآوری کلمه عبور"; 
-$LANG['profiles'][25]="View all problems"; // en_GB string to be translated
+$LANG['profiles'][25]="مشاهده تمام مشکلات"; 
 $LANG['profiles'][26]="نمایش درخواست های ساخته شده در گروه من"; 
 $LANG['profiles'][27]="سخت افزار گروه(های) مرا ببینید"; 
 $LANG['profiles'][28]="بازگشتی"; 
@@ -1596,12 +1596,12 @@ $LANG['profiles'][48]="ایجاد یک درخواست اعتبارسنجی";
 $LANG['profiles'][49]="اعتبارسنجی درخواست"; 
 $LANG['profiles'][50]="بروزآوری پیگیری های(نویسنده)"; 
 $LANG['profiles'][51]="حذف تمام پیگیری ها"; 
-$LANG['profiles'][52]="Update all problems"; // en_GB string to be translated
-$LANG['profiles'][53]="See the problems (actor)"; // en_GB string to be translated
+$LANG['profiles'][52]="به روز رسانی همه مشکلات"; 
+$LANG['profiles'][53]="مشکلات را مشاهده کنید (خواهان)"; 
 $LANG['profiles'][54]="حذف"; 
-$LANG['profiles'][55]="See all changes"; // en_GB string to be translated
-$LANG['profiles'][56]="Update all changes"; // en_GB string to be translated
-$LANG['profiles'][57]="See the changes which I participate"; // en_GB string to be translated
+$LANG['profiles'][55]="مشاهده تمام تغییرات"; 
+$LANG['profiles'][56]="به روز رسانی همه تغییرات"; 
+$LANG['profiles'][57]="تغییراتی که من مشارکت می کنم ببینید"; 
 
 $LANG['registry'][1]="اندوختن"; 
 $LANG['registry'][2]="مسیر"; 
@@ -1612,8 +1612,8 @@ $LANG['registry'][6]="نام OCSNG";
 
 $LANG['reminder'][0]="یادداشت های شخصی"; 
 $LANG['reminder'][1]="یادداشت های عمومی"; 
-$LANG['reminder'][2]="Targets"; // en_GB string to be translated
-$LANG['reminder'][3]="No restrictions"; // en_GB string to be translated
+$LANG['reminder'][2]="اهداف"; 
+$LANG['reminder'][3]="محدودیتی وجود ندارد"; 
 $LANG['reminder'][6]="یادداشت جدید"; 
 $LANG['reminder'][12]="افزودن زمانبندی"; 
 $LANG['reminder'][15]="بدون عنوان"; 
@@ -1658,8 +1658,8 @@ $LANG['reservation'][6]="ذخیره ممنوع";
 $LANG['reservation'][7]="اجازه ذخیره"; 
 $LANG['reservation'][8]="ذخیره"; 
 $LANG['reservation'][9]="ذخیره یک قلم"; 
-$LANG['reservation'][10]="Reservable Items"; // en_GB string to be translated
-$LANG['reservation'][11]="Unavailable"; // en_GB string to be translated
+$LANG['reservation'][10]="موارد قابل نگهداری"; 
+$LANG['reservation'][11]="غیرقابل دسترس"; 
 $LANG['reservation'][16]="به طرف"; 
 $LANG['reservation'][17]="از"; 
 $LANG['reservation'][18]="فقره مورد نیاز قبلا برای این بازه زمانی ذخیره شده است"; 
@@ -1783,7 +1783,7 @@ $LANG['rulesengine'][132]="غافل از درون برد";
 $LANG['rulesengine'][133]="موجودیت از دامنه"; 
 $LANG['rulesengine'][134]="رد رایانامه(بدون پاسخ رایانامه)"; 
 $LANG['rulesengine'][135]="رد رایانامه (با پاسخ رایانامه)"; 
-$LANG['rulesengine'][137]="LDAP criteria"; // en_GB string to be translated
+$LANG['rulesengine'][137]="معیارهای LDAP"; 
 $LANG['rulesengine'][138]="ضوابط LDAP"; 
 $LANG['rulesengine'][140]="افزودن متغیر"; 
 $LANG['rulesengine'][142]="فهرست رایانامه های درون برد  نشده"; 
@@ -1818,9 +1818,9 @@ $LANG['search'][1]="برای همه";
 $LANG['search'][2]="شامل"; 
 $LANG['search'][3]="زیر"; 
 $LANG['search'][4]="مرتب شده با"; 
-$LANG['search'][5]="Selection too large, massive action disabled."; // en_GB string to be translated
-$LANG['search'][6]="To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration."; // en_GB string to be translated
-$LANG['search'][7]="not under"; // en_GB string to be translated
+$LANG['search'][5]="انتخاب بیش از حد بزرگ است، عملیات حجیم فعال نیست."; 
+$LANG['search'][6]="برای افزایش حد: max_input_vars یا suhosin.post.max_vars را در تنظیمات پی اچ پی تغییر دهید."; 
+$LANG['search'][7]="تحت تسلط نیست"; 
 $LANG['search'][8]="تاریخ شروع"; 
 $LANG['search'][9]="تاریخ پایان"; 
 $LANG['search'][11]="موارد دیده شده"; 
@@ -1837,7 +1837,7 @@ $LANG['search'][23]="قبل از";
 $LANG['search'][24]="بعداز"; 
 
 $LANG['setup'][0]="آبشاری ها"; 
-$LANG['setup'][1]="See the counts in the tabs"; // en_GB string to be translated
+$LANG['setup'][1]="شمارش را در زبانه ببینید"; 
 $LANG['setup'][2]="افزودن کاربر ..."; 
 $LANG['setup'][3]="پیوند فهرست LDAP"; 
 $LANG['setup'][4]="انواع رایانه ها"; 
@@ -1847,11 +1847,11 @@ $LANG['setup'][8]="فعال نمودن اطلاعات مالی و مدیریتی
 $LANG['setup'][9]="واسط شبکه"; 
 $LANG['setup'][10]="نمایش به ترتیب نام خانوادگی نام"; 
 $LANG['setup'][11]="تازه کردن فهرست درخواست ها به طور خودکار"; 
-$LANG['setup'][12]="Pre-select me as a technician when creating a ticket"; // en_GB string to be translated
+$LANG['setup'][12]="پیش انتخاب من به عنوان یک کاردان فنی در هنگام ایجاد یک درخواست"; 
 $LANG['setup'][14]="رایانامه"; 
 $LANG['setup'][15]="نشانی رایانامه"; 
-$LANG['setup'][16]="SELinux mode is"; // en_GB string to be translated
-$LANG['setup'][17]="SELinux boolean configuration for"; // en_GB string to be translated
+$LANG['setup'][16]="حالت SELinux هست"; 
+$LANG['setup'][17]="پیکره بندی منطقی SELinux  برای"; 
 $LANG['setup'][18]="ورود به سامانه"; 
 $LANG['setup'][19]="گذر واژه"; 
 $LANG['setup'][20]="تایید رمز عبور"; 
@@ -1923,7 +1923,7 @@ $LANG['setup'][114]="رنگ های الویت";
 $LANG['setup'][115]="آستانه پیش فرض برای قاب نوار و تعداد مواد مصرفی"; 
 $LANG['setup'][117]="اجازه نمایش ناشناس از پرسش و پاسخ ها"; 
 $LANG['setup'][118]="متن در صفحه ورود به سامانه"; 
-$LANG['setup'][119]="Minimum size of the text for dynamic search in dropdowns"; // en_GB string to be translated
+$LANG['setup'][119]="حداقل اندازه متن برای جستجوی پویا در آبشاری ها"; 
 $LANG['setup'][120]="استفاده از نمایش پویا برای آبشاری ها و اجزاء متنی"; 
 $LANG['setup'][121]="حروف اجباری نمایش کامل آبشاری ها(کلمات)"; 
 $LANG['setup'][122]="حداکثر تعداد عناوین برای نمایش در آبشاری ها هنگامی که از کلمات استفاده نمی شود"; 
@@ -1935,9 +1935,9 @@ $LANG['setup'][127]="تکمیل خودکار  اجزاء متنی";
 $LANG['setup'][128]="قالب تاریخ"; 
 $LANG['setup'][129]="نمایش شناسه GLPI"; 
 $LANG['setup'][130]="تعداد روزهایی که ثبت عمل ذخیره می شود"; 
-$LANG['setup'][131]="Number of results per page"; // en_GB string to be translated
+$LANG['setup'][131]="تعداد نتايج در هر صفحه"; 
 $LANG['setup'][132]="نمایش نام کامل در درختواره آبشاری"; 
-$LANG['setup'][133]="Number of results on the home page"; // en_GB string to be translated
+$LANG['setup'][133]="تعداد نتایج در صفحه اصلی"; 
 $LANG['setup'][135]="عادی"; 
 $LANG['setup'][136]="ترجمه"; 
 $LANG['setup'][137]="اشکال زدائی"; 
@@ -2093,9 +2093,9 @@ $LANG['setup'][613]="افزودن کاربر بدون مجوز رسمی از ف�
 $LANG['setup'][614]="قادر به بروزرسانی ورود به سامانه نیست. کاربر در حال حاضر موجود است."; 
 $LANG['setup'][615]="چرخه زندگی درخواست ها"; 
 $LANG['setup'][616]="از / به"; 
-$LANG['setup'][617]="Life cycle of problems"; // en_GB string to be translated
-$LANG['setup'][618]="Life cycle of changes"; // en_GB string to be translated
-$LANG['setup'][619]="Life cycles"; // en_GB string to be translated
+$LANG['setup'][617]="چرخه زندگي مشكلات"; 
+$LANG['setup'][618]="چرخه ی زندگی تغییر"; 
+$LANG['setup'][619]="چرخه زندگی"; 
 $LANG['setup'][620]="پیوند"; 
 $LANG['setup'][621]="صافی جستجو برای موجودیت ها"; 
 $LANG['setup'][622]="ویژگی نمایندگی نهاد"; 
@@ -2109,7 +2109,7 @@ $LANG['setup'][660]="خادم نامه";
 $LANG['setup'][661]="پیکربندی اطلاعیه غیرممکن است : لطفا رایانامه پیگیری خود را با استفاده از تنظیمات فوق پیکره بندی کنید"; 
 $LANG['setup'][703]="عمومی"; 
 $LANG['setup'][704]="اخطارها"; 
-$LANG['setup'][705]="Notification"; // en_GB string to be translated
+$LANG['setup'][705]="اعلاميه"; 
 $LANG['setup'][707]="هشدار بر ذخیره ها"; 
 $LANG['setup'][708]="هشدار بر درخواست که هنوز حل نشده است"; 
 $LANG['setup'][720]="اطلاعات سامانه"; 
@@ -2142,10 +2142,10 @@ $LANG['setup'][825]="اقدام درنظر گرفته شده";
 $LANG['setup'][826]="تکراری ها"; 
 $LANG['setup'][827]="هشدار بر ثبت تکراری"; 
 $LANG['setup'][828]="مقدار نادیده گرفته برای یکتایی"; 
-$LANG['setup'][829]="Ignored values for the unicity"; // en_GB string to be translated
-$LANG['setup'][830]="If synced (all changes)"; // en_GB string to be translated
-$LANG['setup'][831]="If synced (current user changes)"; // en_GB string to be translated
-$LANG['setup'][832]="If synced or read-only account"; // en_GB string to be translated
+$LANG['setup'][829]="ارزش نادیده گرفته برای یکتایی"; 
+$LANG['setup'][830]="اگر همزمان شده(همه تغییرات داده شده)."; 
+$LANG['setup'][831]="اگر همزمان شده( کاربر فعلی تغییر داده شده)."; 
+$LANG['setup'][832]="اگر همزمان شده یا حساب فقط خواندنی است"; 
 
 $LANG['sla'][1]="SLA"; 
 $LANG['sla'][2]="زمان حداکثر برای رفع کردن"; 
@@ -2193,7 +2193,7 @@ $LANG['softwarecategories'][2]="نرم افزار دسته بندی نشده";
 $LANG['softwarecategories'][3]="آشکار کردن نرم افزار بدون رده"; 
 $LANG['softwarecategories'][4]="آشکار کردن نرم افزار متعلق به یک دسته"; 
 $LANG['softwarecategories'][5]="دسته بندی نرم افزار"; 
-$LANG['softwarecategories'][6]="Software categories"; // en_GB string to be translated
+$LANG['softwarecategories'][6]="دسته بندی های نرم افزار"; 
 
 $LANG['state'][0]="وضعیت"; 
 $LANG['state'][1]="خلاصه"; 
