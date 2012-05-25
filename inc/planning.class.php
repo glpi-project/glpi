@@ -1010,9 +1010,9 @@ class Planning extends CommonGLPI {
 
             if (isset($val["tickets_id"])) {
                $vevent->setProperty("summary",
-                  // TRANS: %1$s is the ticket, %2$s is the device
-                                    sprintf(__('Ticket # %1$s associated to element # %2$s'),
-                                           $val["tickets_id"], $val["device"]));
+                  // TRANS: %1$s is the ticket, %2$s is the title
+                                    sprintf(__('Ticket #%1$s %2$s'),
+                                           $val["tickets_id"], $val["name"]));
             } else if (isset($val["name"])) {
                $vevent->setProperty( "summary", $val["name"] );
             }
