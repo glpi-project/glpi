@@ -99,45 +99,17 @@ class Phone extends CommonDBTM {
       // Manage add from template
       if (isset($this->input["_oldID"])) {
          // ADD Infocoms
-         $ic = new Infocom();
-         $ic->cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+         Infocom::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Ports
          NetworkPort::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Contract
-         $query = "SELECT `contracts_id`
-                   FROM `glpi_contracts_items`
-                   WHERE `items_id` = '".$this->input["_oldID"]."'
-                         AND `itemtype` = '".$this->getType()."'";
-         $result = $DB->query($query);
-
-         if ($DB->numrows($result) > 0) {
-            $contractitem = new Contract_Item();
-
-            while ($data=$DB->fetch_assoc($result)) {
-               $contractitem->add(array('contracts_id' => $data["contracts_id"],
-                                        'itemtype'     => $this->getType(),
-                                        'items_id'     => $this->fields['id']));
-            }
-         }
+         Contract_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
          // ADD Documents
-         $query = "SELECT `documents_id`
-                   FROM `glpi_documents_items`
-                   WHERE `items_id` = '".$this->input["_oldID"]."'
-                         AND `itemtype` = '".$this->getType()."'";
-         $result = $DB->query($query);
+         Document_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
-         if ($DB->numrows($result) > 0) {
-            $docitem = new Document_Item();
-
-            while ($data=$DB->fetch_assoc($result)) {
-               $docitem->add(array('documents_id' => $data["documents_id"],
-                                   'itemtype'     => $this->getType(),
-                                   'items_id'     => $this->fields['id']));
-            }
-         }
       }
 
    }

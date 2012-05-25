@@ -610,7 +610,7 @@ class Computer_Device extends CommonDBTM {
     * @param $oldid
     * @param $newid
    **/
-   function cloneComputer ($oldid, $newid) {
+   static function cloneComputer ($oldid, $newid) {
       global $DB;
 
       $devtypes = self::getDeviceTypes();
@@ -623,13 +623,14 @@ class Computer_Device extends CommonDBTM {
                    WHERE `computers_id` = '$oldid'";
 
          foreach ($DB->request($query) as $data) {
+            $ci = new self();
             unset($data['id']);
             $data['computers_id'] = $newid;
             $data['_itemtype']    = $itemtype;
             $data['_no_history']  = true;
             $data                 = Toolbox::addslashes_deep($data);
 
-            $this->add($data);
+            $ci->add($data);
          }
       }
    }

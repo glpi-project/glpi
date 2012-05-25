@@ -88,10 +88,8 @@ class Calendar extends CommonDropdown {
       $oldID = $input['id'];
       unset($input['id']);
       if ($newID = $this->add($input)) {
-         $calhol = new Calendar_Holiday();
-         $calhol->cloneCalendar($oldID, $newID);
-         $calseg = new CalendarSegment();
-         $calseg->cloneCalendar($oldID, $newID);
+         Calendar_Holiday::cloneCalendar($oldID, $newID);
+         CalendarSegment::cloneCalendar($oldID, $newID);
 
          $this->updateDurationCache($newID);
          return true;

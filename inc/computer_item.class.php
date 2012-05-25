@@ -712,5 +712,29 @@ class Computer_Item extends CommonDBRelation{
             return true;
       }
    }
+   
+   /**
+    * Duplicate connected items to computer from an item template to its clone
+    *
+    * @param $itemtype     itemtype of the item
+    * @param $oldid        ID of the item to clone
+    * @param $newid        ID of the item cloned
+    * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
+   **/
+   static function cloneComputer($oldid, $newid) {
+      global $DB;
+
+      $query  = "SELECT *
+                  FROM `glpi_computers_items`
+                  WHERE `computers_id` = '".$oldid."';";
+      $result = $DB->query($query);
+
+      foreach ($DB->request($query) as $data) {
+         $conn = new Computer_Item();
+         $conn->add(array('computers_id' => $newid,
+                          'itemtype'     => $data["itemtype"],
+                          'items_id'     => $data["items_id"]));
+      }
+   }
 }
 ?>

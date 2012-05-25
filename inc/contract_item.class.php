@@ -178,5 +178,33 @@ class Contract_Item extends CommonDBRelation{
       return true;
    }
 
+
+   /**
+    * Duplicate contracts from an item template to its clone
+    *
+    * @param $itemtype     itemtype of the item
+    * @param $oldid        ID of the item to clone
+    * @param $newid        ID of the item cloned
+    * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
+   **/
+   static function cloneItem($itemtype, $oldid, $newid, $newitemtype='') {
+      global $DB;
+
+      if (empty($newitemtype)) {
+         $newitemtype = $itemtype;
+      }
+
+      $query  = "SELECT `contracts_id`
+                  FROM `glpi_contracts_items`
+                  WHERE `items_id` = '$oldid'
+                        AND `itemtype` = '$itemtype';";
+
+      foreach ($DB->request($query) as $data) {
+         $contractitem = new Contract_Item();
+         $contractitem->add(array('contracts_id' => $data["contracts_id"],
+                                  'itemtype'     => $newitemtype,
+                                  'items_id'     => $newid));
+      }
+   }
 }
 ?>

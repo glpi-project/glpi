@@ -158,5 +158,32 @@ class Document_Item extends CommonDBRelation{
       }
    }
 
+   /**
+    * Duplicate documents from an item template to its clone
+    *
+    * @param $itemtype     itemtype of the item
+    * @param $oldid        ID of the item to clone
+    * @param $newid        ID of the item cloned
+    * @param $newitemtype  itemtype of the new item (= $itemtype if empty) (default '')
+   **/
+   static function cloneItem($itemtype, $oldid, $newid, $newitemtype='') {
+      global $DB;
+
+      if (empty($newitemtype)) {
+         $newitemtype = $itemtype;
+      }
+
+      $query  = "SELECT `documents_id`
+                  FROM `glpi_documents_items`
+                  WHERE `items_id` = '$oldid'
+                        AND `itemtype` = '$itemtype';";
+
+      foreach ($DB->request($query) as $data) {
+         $docitem = new Document_Item();
+         $docitem->add(array('documents_id' => $data["documents_id"],
+                                  'itemtype'     => $newitemtype,
+                                  'items_id'     => $newid));
+      }
+   }
 }
 ?>

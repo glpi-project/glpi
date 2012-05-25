@@ -117,6 +117,29 @@ class ComputerDisk extends CommonDBChild {
    }
 
 
+
+   /**
+    * Duplicate all disks from a computer template to his clone
+    *
+    * @param $oldid
+    * @param $newid
+   **/
+   static function cloneComputer ($oldid, $newid) {
+      global $DB;
+
+
+      $query  = "SELECT *
+                  FROM `glpi_computerdisks`
+                  WHERE `computers_id` = '$oldid'";
+      foreach ($DB->request($query) as $data) {
+         $cd = new self();
+         unset($data['id']);
+         $data['computers_id'] = $newid;
+         $data                 = Toolbox::addslashes_deep($data);
+         $cd->add($data);
+      }
+   }
+   
    /**
     * Print the version form
     *

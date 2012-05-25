@@ -81,19 +81,20 @@ class CalendarSegment extends CommonDBChild {
     * @param $oldid
     * @param $newid
    **/
-   function cloneCalendar($oldid, $newid) {
+   static function cloneCalendar($oldid, $newid) {
       global $DB;
 
       $query = "SELECT *
-                FROM `".$this->getTable()."`
+                FROM `glpi_calendarsegments`
                 WHERE `calendars_id`='$oldid'";
 
       foreach ($DB->request($query) as $data) {
+         $c = new self();
          unset($data['id']);
          $data['calendars_id'] = $newid;
          $data['_no_history']  = true;
 
-         $this->add($data);
+         $c->add($data);
       }
    }
 
