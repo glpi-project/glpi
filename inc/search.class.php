@@ -1679,7 +1679,7 @@ class Search {
 
          reset($options);
          $first_group = true;
-         $str_limit   = 28; // TODO : why not $_SESSION['glpidropdown_chars_limit']
+         $str_limit   = 28; // Not $_SESSION['glpidropdown_chars_limit'] because must be really to short (5 or 10) and search engine will be unusable
          $nb_in_group = 0;
          $group       = '';
 
