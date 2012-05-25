@@ -327,10 +327,10 @@ class Group extends CommonTreeDropdown {
       $tab[13]['name']          = __('Can be notified');
       $tab[13]['datatype']      = 'bool';
 
-      $tab[14]['table']         = $this->getTable();
-      $tab[14]['field']         = 'is_itemgroup';
-      $tab[14]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), _n('Item', 'Items', 2));
-      $tab[14]['datatype']      = 'bool';
+      $tab[17]['table']         = $this->getTable();
+      $tab[17]['field']         = 'is_itemgroup';
+      $tab[17]['name']          = sprintf(__('%1$s %2$s'), __('Can contain'), _n('Item', 'Items', 2));
+      $tab[17]['datatype']      = 'bool';
 
       $tab[15]['table']         = $this->getTable();
       $tab[15]['field']         = 'is_usergroup';
@@ -342,6 +342,7 @@ class Group extends CommonTreeDropdown {
       $tab[70]['name']          = __('Manager');
       $tab[70]['itemlink_type'] = 'User';
       $tab[70]['forcegroupby']  = true;
+      $tab[70]['massiveaction'] = false;
       $tab[70]['joinparams']    = array('beforejoin'
                                         => array('table'      => 'glpi_groups_users',
                                                  'joinparams' => array('jointype' => 'child',
@@ -352,6 +353,7 @@ class Group extends CommonTreeDropdown {
       $tab[71]['name']          = __('Delegatee');
       $tab[71]['itemlink_type'] = 'User';
       $tab[71]['forcegroupby']  = true;
+      $tab[71]['massiveaction'] = false;
       $tab[71]['joinparams']    = array('beforejoin'
                                         => array('table'      => 'glpi_groups_users',
                                                  'joinparams' => array('jointype' => 'child',
