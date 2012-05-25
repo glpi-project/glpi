@@ -242,7 +242,12 @@ class RuleAction extends CommonDBChild {
                switch($actions[$options["field"]]['type']) {
                   case "dropdown" :
                      $table = $actions[$options["field"]]['table'];
-                     Dropdown::show(getItemTypeForTable($table), array('name' => "value"));
+                     $param = array('name' => "value");
+                     if (isset($actions[$options["field"]]['condition'])) {
+                        $param['condition'] = $actions[$options["field"]]['condition'];
+                     }
+                     
+                     Dropdown::show(getItemTypeForTable($table), $param);
                      $display = true;
                      break;
 
@@ -254,13 +259,6 @@ class RuleAction extends CommonDBChild {
                   case "dropdown_assign" :
                      User::dropdown(array('name'  => 'value',
                                           'right' => 'own_ticket'));
-                     $display = true;
-                     break;
-
-                  case "dropdown_groups_assign" :
-                     $table = $actions[$options["field"]]['table'];
-                     Dropdown::show(getItemTypeForTable($table), array('name' => "value", 
-                                                                       'condition' => "`is_assign`"));
                      $display = true;
                      break;
 

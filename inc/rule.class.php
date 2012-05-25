@@ -1419,15 +1419,13 @@ class Rule extends CommonDBTM {
                break;
 
             case "dropdown" :
-               Dropdown::show(getItemTypeForTable($crit['table']), array('name'  => $name,
-                                                                         'value' => $value));
-               $display = true;
-               break;
-
-            case "dropdown_groups_assign" :
-               Dropdown::show(getItemTypeForTable($crit['table']), array('name'  => $name,
-                                                                         'value' => $value,
-                                                                         'condition' => "`is_assign`"));
+               $param = array('name'  => $name,
+                              'value' => $value);
+               if (isset($crit['condition'])) {
+                  $param['condition'] = $crit['condition'];
+               }
+                              
+               Dropdown::show(getItemTypeForTable($crit['table']), $param);
                $display = true;
                break;
 
@@ -1499,7 +1497,6 @@ class Rule extends CommonDBTM {
 
          switch ($action['type']) {
             case "dropdown" :
-            case "dropdown_groups_assign" :
                $tmp = Dropdown::getDropdownName($action["table"], $value);
                return ($tmp=='&nbsp;' ? NOT_AVAILABLE : $tmp);
 
