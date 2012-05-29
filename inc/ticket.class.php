@@ -1223,6 +1223,11 @@ class Ticket extends CommonITILObject {
          if (isset($this->input["plan"]) && count($this->input["plan"])) {
             $toadd["plan"] = $this->input["plan"];
          }
+         
+         if (isset($_SESSION['glpitask_private'])) {
+            $toadd['is_private'] = $_SESSION['glpitask_private'];
+         }
+         
          $toadd['_no_notif'] = true;
 
          $task->add($toadd);
