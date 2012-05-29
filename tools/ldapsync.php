@@ -319,3 +319,4 @@ if ($nbproc==1) {
    printf("%d entities synchronized in %s\n", $nb,
           Html::clean(Html::timestampToString(round($tps,0),true)));
 }
+?>

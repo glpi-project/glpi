@@ -213,3 +213,5 @@ if (in_array('--optimize', $_SERVER['argv'])) {
 
    $migration->displayWarning("Optimize done.");
 }
+
+?>
