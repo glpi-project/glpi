@@ -224,6 +224,27 @@ if (isset($_POST["action"])
                         _sx('button', 'Add')."'>";
          break;
 
+      case "remove_document" :
+         Document::dropdown(array('name' => 'documents_id'));
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                        _sx('button', 'Delete')."'>";
+         break;
+
+      case "add_document_item" :
+            Dropdown::showAllItems("items_id", 0, 0, 1,
+                                   $CFG_GLPI["document_types"], false, true);
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                        _sx('button', 'Add')."'>";
+         break;
+
+      case "remove_document_item" :
+            Dropdown::showAllItems("items_id", 0, 0, 1,
+                                   $CFG_GLPI["document_types"], false, true);
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                        _sx('button', 'Delete')."'>";
+         break;
+
+
       case "add_contract" :
          Contract::dropdown(array('name' => "contracts_id"));
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
@@ -233,7 +254,7 @@ if (isset($_POST["action"])
       case "remove_contract" :
          Contract::dropdown(array('name' => "contracts_id"));
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                        _sx('button', 'Purge')."'>";
+                        _sx('button', 'Delete')."'>";
          break;
 
       case "add_contract_item" :
@@ -247,7 +268,7 @@ if (isset($_POST["action"])
             Dropdown::showAllItems("items_id", 0, 0, 1,
                                    $CFG_GLPI["contract_types"], false, true);
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                        _sx('button', 'Purge')."'>";
+                        _sx('button', 'Delete')."'>";
          break;
 
       case "add_contact" :

@@ -466,16 +466,71 @@ if (isset($_POST["action"])
             }
          }
          break;
-
+         
       case "add_document" :
+      case "add_document_item" :
+
          $documentitem = new Document_Item();
          foreach ($_POST["item"] as $key => $val) {
-            $input = array('itemtype'     => $_POST["itemtype"],
-                           'items_id'     => $key,
-                           'documents_id' => $_POST['documents_id']);
+            if (isset($_POST['items_id'])) {
+               // Add items to documents
+               $input = array('itemtype'     => $_POST["itemtype"],
+                              'items_id'     => $_POST["items_id"],
+                              'documents_id' => $key);
+            } else { // Add document to item
+               $input = array('itemtype'     => $_POST["itemtype"],
+                              'items_id'     => $key,
+                              'documents_id' => $_POST['documents_id']);
+            }
             if ($documentitem->can(-1, 'w', $input)) {
-               if ($documentitem->add($input)) {
+              if ($documentitem->add($input)) {
                   $nbok++;
+               } else {
+                  $nbko++;
+               }
+            } else {
+               $nbnoright++;
+            }
+         }
+         break;
+         
+      case "remove_document" :
+      case "remove_document_item" :
+      
+         foreach ($_POST["item"] as $key => $val) {
+            if (isset($_POST['items_id'])) {
+               // Remove item to documents
+               $input = array('itemtype'     => $_POST["itemtype"],
+                              'items_id'     => $_POST["items_id"],
+                              'documents_id' => $key);
+            } else {
+               // Remove contract to items
+               $input = array('itemtype'     => $_POST["itemtype"],
+                              'items_id'     => $key,
+                              'documents_id' => $_POST['documents_id']);
+            
+            }
+            $docitem = new Document_Item();
+            if ($docitem->can(-1, 'w', $input)) {
+               if ($item = getItemForItemtype($input["itemtype"])) {
+                  if ($item->getFromDB($input['items_id'])) {
+                     $doc = new Document();
+                     if ($doc->getFromDB($input['documents_id'])) {
+                        if ($docitem->getFromDBForItems($doc, $item)) {
+                           if ($docitem->delete(array('id' => $docitem->getID()))) {
+                              $nbok++;
+                           } else {
+                              $nbko++;
+                           }
+                        } else {
+                           $nbko++;
+                        }
+                     } else {
+                        $nbko++;
+                     }
+                  } else {
+                     $nbko++;
+                  }
                } else {
                   $nbko++;
                }

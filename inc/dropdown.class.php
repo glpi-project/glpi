@@ -1600,6 +1600,7 @@ class Dropdown {
                $doc = new Document();
                if ($doc->canView()) {
                   $actions['add_document'] = _x('button', 'Add a document');
+                  $actions['remove_document'] = _x('button', 'Remove a document');
                }
             }
 
@@ -1664,6 +1665,13 @@ class Dropdown {
                   if ($isadmin) {
                      $actions['add_contract_item'] = _x('button', 'Add an item');
                      $actions['remove_contract_item'] = _x('button', 'Remove an item');
+                  }
+                  break;
+
+               case 'Document' :
+                  if ($isadmin) {
+                     $actions['add_document_item'] = _x('button', 'Add an item');
+                     $actions['remove_document_item'] = _x('button', 'Remove an item');
                   }
                   break;
 
