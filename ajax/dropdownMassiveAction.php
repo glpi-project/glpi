@@ -236,6 +236,20 @@ if (isset($_POST["action"])
                         _sx('button', 'Purge')."'>";
          break;
 
+      case "add_contract_item" :
+            Dropdown::showAllItems("items_id", 0, 0, 1,
+                                   $CFG_GLPI["contract_types"], false, true);
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                        _sx('button', 'Add')."'>";
+         break;
+
+      case "remove_contract_item" :
+            Dropdown::showAllItems("items_id", 0, 0, 1,
+                                   $CFG_GLPI["contract_types"], false, true);
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                        _sx('button', 'Purge')."'>";
+         break;
+
       case "add_contact" :
          Contact::dropdown(array('name' => "contacts_id"));
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".

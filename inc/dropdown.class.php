@@ -1660,6 +1660,13 @@ class Dropdown {
                   }
                   break;
 
+               case 'Contract' :
+                  if ($isadmin) {
+                     $actions['add_contract_item'] = _x('button', 'Add an item');
+                     $actions['remove_contract_item'] = _x('button', 'Remove an item');
+                  }
+                  break;
+
                case 'User' :
                   if ($isadmin) {
                      $actions['add_group']       = __('Associate to a group');

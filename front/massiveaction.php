@@ -505,11 +505,20 @@ if (isset($_POST["action"])
          break;
 
       case "add_contract" :
+      case "add_contract_item" :
+
          $contractitem = new Contract_Item();
          foreach ($_POST["item"] as $key => $val) {
-            $input = array('itemtype'     => $_POST["itemtype"],
-                           'items_id'     => $key,
-                           'contracts_id' => $_POST['contracts_id']);
+            if (isset($_POST['items_id'])) {
+               // Add items to contracts
+               $input = array('itemtype'     => $_POST["itemtype"],
+                              'items_id'     => $_POST["items_id"],
+                              'contracts_id' => $key);
+            } else { // Add contract to item
+               $input = array('itemtype'     => $_POST["itemtype"],
+                              'items_id'     => $key,
+                              'contracts_id' => $_POST['contracts_id']);
+            }
             if ($contractitem->can(-1, 'w', $input)) {
               if ($contractitem->add($input)) {
                   $nbok++;
@@ -523,16 +532,27 @@ if (isset($_POST["action"])
          break;
 
       case "remove_contract" :
-         $contractitem = new Contract_Item();
+      case "remove_contract_item" :
+      
          foreach ($_POST["item"] as $key => $val) {
-            $input = array('itemtype'     => $_POST["itemtype"],
-                           'items_id'     => $key,
-                           'contracts_id' => $_POST['contracts_id']);
+            if (isset($_POST['items_id'])) {
+               // Remove item to contracts
+               $input = array('itemtype'     => $_POST["itemtype"],
+                              'items_id'     => $_POST["items_id"],
+                              'contracts_id' => $key);
+            } else {
+               // Remove contract to items
+               $input = array('itemtype'     => $_POST["itemtype"],
+                              'items_id'     => $key,
+                              'contracts_id' => $_POST['contracts_id']);
+            
+            }
+            $contractitem = new Contract_Item();
             if ($contractitem->can(-1, 'w', $input)) {
-               if ($item = getItemForItemtype($_POST["itemtype"])) {
-                  if ($item->getFromDB($key)) {
+               if ($item = getItemForItemtype($input["itemtype"])) {
+                  if ($item->getFromDB($input['items_id'])) {
                      $contract = new Contract();
-                     if ($contract->getFromDB($_POST['contracts_id'])) {
+                     if ($contract->getFromDB($input['contracts_id'])) {
                         if ($contractitem->getFromDBForItems($contract, $item)) {
                            if ($contractitem->delete(array('id' => $contractitem->getID()))) {
                               $nbok++;
@@ -556,7 +576,7 @@ if (isset($_POST["action"])
             }
          }
          break;
-         
+                           
       case "add_enterprise" :
          if ($_POST["itemtype"] == 'Contact') {
             $contactsupplier = new Contact_Supplier();
