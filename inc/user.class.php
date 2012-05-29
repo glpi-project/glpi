@@ -516,10 +516,13 @@ class User extends CommonDBTM {
 
          } else {
             if ($input["password"] == $input["password2"]) {
-               $input["password"]
-                  = sha1(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+               if (Config::validatePassword($input["password"])) {
+                  $input["password"]
+                     = sha1(Toolbox::unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+               } else {
+                  unset($input["password"]);
+               }
                unset($input["password2"]);
-
             } else {
                Session::addMessageAfterRedirect(__('Error: the two passwords do not match'),
                                                 false, ERROR);
@@ -621,7 +624,7 @@ class User extends CommonDBTM {
          } else {
             if ($input["password"] == $input["password2"]) {
                // Check right : my password of user with lesser rights
-               if (isset($input['id'])
+               if (isset($input['id']) && Config::validatePassword($input["password"])
                    && (($input['id'] == Session::getLoginUserID())
                        || $this->currentUserHaveMoreRightThan($input['id'])
                        || (($input['password_forget_token'] == $this->fields['password_forget_token']) // Permit to change password with token and email
@@ -1557,7 +1560,7 @@ class User extends CommonDBTM {
           && (!$extauth || empty($ID))
              && $caneditpassword) {
          echo "<td>" . __('Password')."</td>";
-         echo "<td><input type='password' name='password' value='' size='20' autocomplete='off'>";
+         echo "<td><input  id='password' type='password' name='password' value='' size='20' autocomplete='off' onkeyup=\"return passwordCheck();\">";
          echo "</td>";
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
@@ -1588,7 +1591,10 @@ class User extends CommonDBTM {
       if (Session::haveRight("user", "w")
          && (!$extauth || empty($ID))
          && $caneditpassword) {
-         echo "<td colspan='2'>PASS CHECKS</td>";
+         echo "<td>".__('Password security validation')."</td>";
+         echo "<td>";
+         Config::displayPasswordSecurityChecks();
+         echo "</td>";
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
       }
@@ -1781,7 +1787,7 @@ class User extends CommonDBTM {
          if (!$extauth
              && Session::haveRight("password_update", "1")) {
             echo "<td>" . __('Password') . "</td>";
-            echo "<td><input type='password' name='password' value='' size='30' autocomplete='off'>";
+            echo "<td><input id='password' type='password' name='password' value='' size='30' autocomplete='off' onkeyup=\"return passwordCheck();\">";
             echo "</td></tr>";
          } else {
             echo "<td colspan='2'></tr>";
@@ -1806,12 +1812,32 @@ class User extends CommonDBTM {
          } else {
             echo "<td colspan='2'></tr>";
          }
-         echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td class='top'>" . _n('Email', 'Emails',2);
          UserEmail::showAddEmailButton($this);
          echo "</td><td>";
          UserEmail::showForUser($this);
+         echo "</td>";
+
+         if (!$extauth
+             && Session::haveRight("password_update", "1")) {
+            echo "<td>".__('Password security validation')."</td>";
+            echo "<td>";
+            Config::displayPasswordSecurityChecks();
+            echo "</td>";
+         } else {
+            echo "<td colspan='2'>";
+         }
+         echo "</tr>";
+
+         echo "<tr class='tab_bg_1'><td>" . __('Mobile phone') . "&nbsp;:</td><td>";
+
+         if ($extauth
+             && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])) {
+            echo $this->fields["mobile"];
+         } else {
+            Html::autocompletionTextField($this, "mobile");
+         }
          echo "</td>";
 
          if (!GLPI_DEMO_MODE) {
@@ -1823,13 +1849,14 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" . __('Mobile phone') . "&nbsp;:</td><td>";
+
+         echo "<tr class='tab_bg_1'><td>" .  __('Phone') . "</td><td>";
 
          if ($extauth
-             && isset($authtype['mobile_field']) && !empty($authtype['mobile_field'])) {
-            echo $this->fields["mobile"];
+             && isset($authtype['phone_field']) && !empty($authtype['phone_field'])) {
+            echo $this->fields["phone"];
          } else {
-            Html::autocompletionTextField($this, "mobile");
+            Html::autocompletionTextField($this, "phone");
          }
          echo "</td>";
 
@@ -1847,13 +1874,15 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" .  __('Phone') . "</td><td>";
+
+
+         echo "<tr class='tab_bg_1'><td>" .  __('Phone 2') . "</td><td>";
 
          if ($extauth
-             && isset($authtype['phone_field']) && !empty($authtype['phone_field'])) {
-            echo $this->fields["phone"];
+             && isset($authtype['phone2_field']) && !empty($authtype['phone2_field'])) {
+            echo $this->fields["phone2"];
          } else {
-            Html::autocompletionTextField($this, "phone");
+            Html::autocompletionTextField($this, "phone2");
          }
          echo "</td>";
 
@@ -1868,16 +1897,9 @@ class User extends CommonDBTM {
          }
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>" .  __('Phone 2') . "</td><td>";
 
-         if ($extauth
-             && isset($authtype['phone2_field']) && !empty($authtype['phone2_field'])) {
-            echo $this->fields["phone2"];
-         } else {
-            Html::autocompletionTextField($this, "phone2");
-         }
-         echo "</td>";
-
+        echo "<tr><td colspan='2'>&nbsp;</td>";
+         
         if (Session::haveRight("config", "w")) {
             echo "<td>" . __('Use GLPI in mode') . "</td><td>";
             $modes[Session::NORMAL_MODE]      = __('Normal');
@@ -2949,11 +2971,16 @@ class User extends CommonDBTM {
          echo "<td><input type='text' name='email' value='' size='60'></td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . __('Password')."</td>";
-         echo "<td><input type='password' name='password' value='' size='20' autocomplete='off'>";
+         echo "<td><input id='password' type='password' name='password' value='' size='20' autocomplete='off' onkeyup=\"return passwordCheck();\">";
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td>" . __('Password confirmation')."</td>";
          echo "<td><input type='password' name='password2' value='' size='20' autocomplete='off'>";
+         echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'><td>".__('Password security validation')."</td>";
+         echo "<td>";
+         Config::displayPasswordSecurityChecks();
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_2 center'><td colspan='2'>";
@@ -3011,7 +3038,7 @@ class User extends CommonDBTM {
                         -strtotime($this->fields['password_forget_token_date'])) < DAY_TIMESTAMP)) {
 
                $input['id'] = $this->fields['id'];
-               if ($this->update($input)) {
+               if (Config::validatePassword($input["password"]) && $this->update($input)) {
                  _e('Reset password successful.');
                  //
                  $input2['password_forget_token']      = '';
@@ -3036,7 +3063,7 @@ class User extends CommonDBTM {
       }
 
       echo "<br>";
-      echo "<a href=\"".$CFG_GLPI['root_doc']."/index.php\">".__('Back')."</a>";
+      Html::displayBackLink();
       echo "</div>";
    }
 
