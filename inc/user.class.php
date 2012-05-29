@@ -1591,7 +1591,7 @@ class User extends CommonDBTM {
       if (Session::haveRight("user", "w")
          && (!$extauth || empty($ID))
          && $caneditpassword) {
-         echo "<td>".__('Password security validation')."</td>";
+         echo "<td>".__('Password security policy')."</td>";
          echo "<td>";
          Config::displayPasswordSecurityChecks();
          echo "</td>";
@@ -1821,7 +1821,7 @@ class User extends CommonDBTM {
 
          if (!$extauth
              && Session::haveRight("password_update", "1")) {
-            echo "<td>".__('Password security validation')."</td>";
+            echo "<td>".__('Password security policy')."</td>";
             echo "<td>";
             Config::displayPasswordSecurityChecks();
             echo "</td>";
@@ -2978,7 +2978,7 @@ class User extends CommonDBTM {
          echo "<td><input type='password' name='password2' value='' size='20' autocomplete='off'>";
          echo "</td></tr>";
 
-         echo "<tr class='tab_bg_1'><td>".__('Password security validation')."</td>";
+         echo "<tr class='tab_bg_1'><td>".__('Password security policy')."</td>";
          echo "<td>";
          Config::displayPasswordSecurityChecks();
          echo "</td></tr>";

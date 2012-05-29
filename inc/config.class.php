@@ -1080,7 +1080,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Password security validation') . "</td>";
+      echo "<td>" . __('Password security policy validation') . "</td>";
       echo "<td>";
       Dropdown::showYesNo("use_password_security", $CFG_GLPI["use_password_security"]);
       echo "</td>";
@@ -1091,7 +1091,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>" . __('Password need number') . "</td>";
+      echo "<td>" . __('Password need digit') . "</td>";
       echo "<td>";
       Dropdown::showYesNo("password_need_number", $CFG_GLPI["password_need_number"]);
       echo "</td>";
