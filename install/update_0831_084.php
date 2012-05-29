@@ -817,6 +817,15 @@ function update0831to084() {
    $migration->addField('glpi_mailcollectors', 'refused', 'string');
    $migration->addField('glpi_mailcollectors', 'use_kerberos', 'bool', array('value' => 0));
 
+   // Password security
+   $migration->addField('glpi_configs', 'use_password_security', 'bool');
+   $migration->addField('glpi_configs', 'password_min_length', 'integer');
+   $migration->addField('glpi_configs', 'password_need_number', 'bool');
+   $migration->addField('glpi_configs', 'password_need_letter', 'bool');
+   $migration->addField('glpi_configs', 'password_need_caps', 'bool');
+   $migration->addField('glpi_configs', 'password_need_symbol', 'bool');
+   
+
    // Clean display prefs
    $query = "UPDATE `glpi_displaypreferences`
              SET `num` = 160
@@ -1500,7 +1509,7 @@ function update0831to084() {
 
    $migration->dropField('glpi_configs', 'use_ocs_mode');
 
-   $query = "DETETE
+   $query = "DELETE
              FROM `glpi_crontasks`
              WHERE `itemtype` = 'OcsServer'";
    $DB->queryOrDie($query, "0.84 delete OcsServer in crontasks");
