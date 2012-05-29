@@ -934,7 +934,7 @@ class Config extends CommonDBTM {
       }";
       $needs = array();
       if ($CFG_GLPI["password_need_number"]) {
-         $needs[] = "<span id='password_need_number' class='red'>".__('Number')."</span>";
+         $needs[] = "<span id='password_need_number' class='red'>".__('Digit')."</span>";
          echo "var numberRegex = new RegExp('[0-9]', 'g');
          if(false == numberRegex.test(pwd.value)) {
                Ext.get('password_need_number').addClass('red');
@@ -1008,7 +1008,7 @@ class Config extends CommonDBTM {
             && !preg_match("/[0-9]+/", $password)) {
             $ok = false;
             if ($display) {
-               Session::addMessageAfterRedirect(__('Password must include at least a number!'),
+               Session::addMessageAfterRedirect(__('Password must include at least a digit!'),
                                                false, ERROR);
             }
          }
