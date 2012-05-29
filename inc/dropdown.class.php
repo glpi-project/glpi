@@ -1607,6 +1607,7 @@ class Dropdown {
                $contract = new Contract();
                if ($contract->canUpdate()) {
                   $actions['add_contract'] = _x('button', 'Add a contract');
+                  $actions['remove_contract'] = _x('button', 'Remove a contract');
                }
             }
 
