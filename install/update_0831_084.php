@@ -819,11 +819,11 @@ function update0831to084() {
 
    // Password security
    $migration->addField('glpi_configs', 'use_password_security', 'bool');
-   $migration->addField('glpi_configs', 'password_min_length', 'integer');
-   $migration->addField('glpi_configs', 'password_need_number', 'bool');
-   $migration->addField('glpi_configs', 'password_need_letter', 'bool');
-   $migration->addField('glpi_configs', 'password_need_caps', 'bool');
-   $migration->addField('glpi_configs', 'password_need_symbol', 'bool');
+   $migration->addField('glpi_configs', 'password_min_length', 'integer', array('value' => 8));
+   $migration->addField('glpi_configs', 'password_need_number', 'bool', array('value' => 1));
+   $migration->addField('glpi_configs', 'password_need_letter', 'bool', array('value' => 1));
+   $migration->addField('glpi_configs', 'password_need_caps', 'bool', array('value' => 1));
+   $migration->addField('glpi_configs', 'password_need_symbol', 'bool', array('value' => 1));
    
 
    // Clean display prefs

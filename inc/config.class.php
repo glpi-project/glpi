@@ -910,7 +910,136 @@ class Config extends CommonDBTM {
       echo "</form>";
    }
 
-
+   /**
+    * Display security checks on password
+    * @param $field string id of the field containing password to check
+    * @since version 0.84
+   **/
+   static function displayPasswordSecurityChecks($field = 'password') {
+      global $CFG_GLPI;
+      
+      
+      
+      echo sprintf('%1$s: %2$s', __('Password minimum length'), "<span id='password_min_length' class='red'>".$CFG_GLPI['password_min_length']."</span>");
+      
+      echo "<script type='text/javascript' >\n";
+      echo "function passwordCheck() {\n";
+      echo "var pwd = document.getElementById('$field');";
+      echo "if(pwd.value.length < ".$CFG_GLPI['password_min_length'].") {
+            Ext.get('password_min_length').addClass('red');
+            Ext.get('password_min_length').removeClass('green');
+      } else {
+            Ext.get('password_min_length').addClass('green');
+            Ext.get('password_min_length').removeClass('red');
+      }";
+      $needs = array();
+      if ($CFG_GLPI["password_need_number"]) {
+         $needs[] = "<span id='password_need_number' class='red'>".__('Number')."</span>";
+         echo "var numberRegex = new RegExp('[0-9]', 'g');
+         if(false == numberRegex.test(pwd.value)) {
+               Ext.get('password_need_number').addClass('red');
+               Ext.get('password_need_number').removeClass('green');
+         } else {
+               Ext.get('password_need_number').addClass('green');
+               Ext.get('password_need_number').removeClass('red');
+         }";
+      }
+      if ($CFG_GLPI["password_need_letter"]) {
+         $needs[] = "<span id='password_need_letter' class='red'>".__('Lowercase')."</span>";
+         echo "var letterRegex = new RegExp('[a-z]', 'g');
+         if(false == letterRegex.test(pwd.value)) {
+               Ext.get('password_need_letter').addClass('red');
+               Ext.get('password_need_letter').removeClass('green');
+         } else {
+               Ext.get('password_need_letter').addClass('green');
+               Ext.get('password_need_letter').removeClass('red');
+         }";
+      }
+      if ($CFG_GLPI["password_need_caps"]) {
+         $needs[] = "<span id='password_need_caps' class='red'>".__('Uppercase')."</span>";
+         echo "var capsRegex = new RegExp('[A-Z]', 'g');
+         if(false == capsRegex.test(pwd.value)) {
+               Ext.get('password_need_caps').addClass('red');
+               Ext.get('password_need_caps').removeClass('green');
+         } else {
+               Ext.get('password_need_caps').addClass('green');
+               Ext.get('password_need_caps').removeClass('red');
+         }";
+      }
+      if ($CFG_GLPI["password_need_symbol"]) {
+         $needs[] = "<span id='password_need_symbol' class='red'>".__('Symbol')."</span>";
+         echo "var capsRegex = new RegExp('[^a-zA-Z0-9_]', 'g');
+         if(false == capsRegex.test(pwd.value)) {
+               Ext.get('password_need_symbol').addClass('red');
+               Ext.get('password_need_symbol').removeClass('green');
+         } else {
+               Ext.get('password_need_symbol').addClass('green');
+               Ext.get('password_need_symbol').removeClass('red');
+         }";
+         
+      }
+      echo "}";
+      echo '</script>';
+      if (count($needs)) {
+         echo "<br>";
+         echo sprintf('%1$s: %2$s', __('Password must contains'), implode(', ',$needs));
+      }
+   }
+   
+   /**
+    * Validate password based on security rules
+    * @param $password string password to validate
+    * @param $display boolean display errors messages ?
+    * @return boolean is password valid ?
+    * @since version 0.84    
+   **/
+   static function validatePassword($password, $display = true) {
+      global $CFG_GLPI;
+      $ok = true;
+      if ($CFG_GLPI["use_password_security"]) {
+         if (Toolbox::strlen($password)<$CFG_GLPI['password_min_length']) {
+            $ok = false;
+            if ($display) {
+               Session::addMessageAfterRedirect(__('Password too short!'),
+                                               false, ERROR);
+            }
+         }
+         if ($CFG_GLPI["password_need_number"]
+            && !preg_match("/[0-9]+/", $password)) {
+            $ok = false;
+            if ($display) {
+               Session::addMessageAfterRedirect(__('Password must include at least a number!'),
+                                               false, ERROR);
+            }
+         }
+         if ($CFG_GLPI["password_need_letter"]
+            && !preg_match("/[a-z]+/", $password)) {
+            $ok = false;
+            if ($display) {
+               Session::addMessageAfterRedirect(__('Password must include at least a lowercase letter!'),
+                                               false, ERROR);
+            }
+         }
+         if ($CFG_GLPI["password_need_caps"]
+            && !preg_match("/[A-Z]+/", $password)) {
+            $ok = false;
+            if ($display) {
+               Session::addMessageAfterRedirect(__('Password must include at least a uppercase letter!'),
+                                               false, ERROR);
+            }
+         }
+         if ($CFG_GLPI["password_need_symbol"]
+            && !preg_match("/\W+/", $password)) {
+            $ok = false;
+            if ($display) {
+               Session::addMessageAfterRedirect(__('Password must include at least a symbol!'),
+                                               false, ERROR);
+            }
+         }
+      
+      }
+      return $ok;
+   }
    /**
     * Display a HTML report about systeme information / configuration
    **/
@@ -949,6 +1078,39 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='4' class='center b'>".__('Password security policy');
       echo "</td></tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('Password security validation') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("use_password_security", $CFG_GLPI["use_password_security"]);
+      echo "</td>";
+      echo "<td>" . __('Password minimum length') . "</td>";
+      echo "<td>";
+      Dropdown::showInteger('password_min_length', $CFG_GLPI["password_min_length"], 4, 30);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('Password need number') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("password_need_number", $CFG_GLPI["password_need_number"]);
+      echo "</td>";
+      echo "<td>" . __('Password need lowercase character') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("password_need_letter", $CFG_GLPI["password_need_letter"]);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_2'>";
+      echo "<td>" . __('Password need uppercase character') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("password_need_caps", $CFG_GLPI["password_need_caps"]);
+      echo "</td>";
+      echo "<td>" . __('Password need symbol') . "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("password_need_symbol", $CFG_GLPI["password_need_symbol"]);
+      echo "</td>";
+      echo "</tr>";
 
 
       echo "<tr class='tab_bg_1'>";
