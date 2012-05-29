@@ -168,6 +168,7 @@ switch ($current_version) {
       // nobreak;
 
    case "0.83.1" :
+   case "0.83.2" :
       include("../install/update_0831_084.php");
       update0831to084();
 
