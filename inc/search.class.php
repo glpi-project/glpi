@@ -1569,6 +1569,11 @@ class Search {
       $linked =  self::getMetaItemtypeAvailable($itemtype);
 
       echo "<form name='searchform$itemtype' method='get' action=\"$target\">";
+      echo "<div class='center'><a href=\"javascript:showHideDiv('searchcriterias','searchcriteriasimg','".$CFG_GLPI["root_doc"].
+                    "/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
+      echo "<img alt='' name='searchcriteriasimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
+      echo "</a></div>";      
+      echo "<div id='searchcriterias'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
@@ -1909,6 +1914,7 @@ class Search {
 
       // Reset to start when submit new search
       echo "<input type='hidden' name='start' value='0'>";
+      echo "</div>";
       echo "</form>";
    }
 
