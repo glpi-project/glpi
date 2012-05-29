@@ -1255,6 +1255,10 @@ class Ticket extends CommonITILObject {
          $toadd = array("type"       => $type,
                         "tickets_id" => $this->fields['id'],
                         "actiontime" => $this->input["actiontime"]);
+         
+         if (isset($_SESSION['glpitask_private'])) {
+            $toadd['is_private'] = $_SESSION['glpitask_private'];
+         }
 
          if (isset($this->input["plan"]) && count($this->input["plan"])) {
             $toadd["plan"] = $this->input["plan"];
