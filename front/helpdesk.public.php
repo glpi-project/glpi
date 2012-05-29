@@ -131,6 +131,9 @@ if (isset($_GET['create_ticket'])) {
       echo "<tr><td class='top' width='450px'><br>";
       KnowbaseItem::showRecentPopular($CFG_GLPI['root_doc'].'/front/helpdesk.faq.php', "recent", 1);
       echo "</td></tr>";
+      echo "<tr><td class='top' width='450px'><br>";
+      KnowbaseItem::showRecentPopular($CFG_GLPI['root_doc'].'/front/helpdesk.faq.php', "lastupdate", 1);
+      echo "</td></tr>";
    } else {
       echo "<tr><td>&nbsp;</td></tr>";
    }

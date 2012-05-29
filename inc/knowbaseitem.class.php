@@ -1165,7 +1165,9 @@ class KnowbaseItem extends CommonDBTM {
       if ($type == "recent") {
          $orderby = "ORDER BY `date` DESC";
          $title   = __('Recent entries');
-
+      } else if ($type == 'lastupdate') {
+         $orderby = "ORDER BY `date_mod` DESC";
+         $title   = __('Last updated entries');
       } else {
          $orderby = "ORDER BY `view` DESC";
          $title   = __('Most popular questions');
@@ -1246,6 +1248,8 @@ class KnowbaseItem extends CommonDBTM {
 
       echo "<div><table class='center-h' width='950px'><tr><td class='center top'>";
       self::showRecentPopular($target, "recent", $faq);
+      echo "</td><td class='center top'>";
+      self::showRecentPopular($target, "lastupdate", $faq);
       echo "</td><td class='center top'>";
       self::showRecentPopular($target, "popular", $faq);
       echo "</td><td class='center top'>";
