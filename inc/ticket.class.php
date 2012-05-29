@@ -971,7 +971,7 @@ class Ticket extends CommonITILObject {
 
       // save value before clean;
       $title = $input['name'];
-
+      
       // Standard clean datas
       $input =  parent::prepareInputForAdd($input);
 
@@ -3153,7 +3153,9 @@ class Ticket extends CommonITILObject {
             echo "<input type='hidden' name='_predefined_fields'
                    value=\"".rawurlencode(serialize($predefined_fields))."\">";
          }
-         echo "<input type='submit' name='add' value=\""._s('Submit message')."\" class='submit'>";
+         echo "<input id='submit$rand' type='submit' name='add' 
+                  onClick=\"Ext.get('submit$rand').setDisplayed('none')\" 
+                  value=\"".__s('Submit message')."\" class='submit'>";
          echo "</td></tr>";
       }
 
