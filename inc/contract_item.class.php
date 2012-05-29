@@ -117,15 +117,14 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
+   /**
+    * @param $item   Contract object
+   **/
    static function countForContract(Contract $item) {
 
-      $restrict = "`glpi_contracts_items`.`contracts_id` = '".$item->getField('id')."'
-                   AND `glpi_computers`.`id` = `glpi_contracts_items`.`items_id`
-                   AND `glpi_contracts_items`.`itemtype` = 'Computer' ".
-                   getEntitiesRestrictRequest(" AND ", "glpi_computers", '',
-                                               $_SESSION['glpiactiveentities']);;
+      $restrict = "`glpi_contracts_items`.`contracts_id` = '".$item->getField('id')."'";
 
-      return countElementsInTable(array('glpi_contracts_items', 'glpi_computers'), $restrict);
+      return countElementsInTable(array('glpi_contracts_items'), $restrict);
    }
 
 
