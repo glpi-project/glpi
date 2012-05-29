@@ -210,3 +210,4 @@ if (in_array('--optimize', $_SERVER['argv'])) {
    DBmysql::optimize_tables($migration);
    $migration->displayWarning("Optimize done.");
 }
+?>
