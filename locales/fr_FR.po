@@ -17,7 +17,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project\n"
 "Report-Msgid-Bugs-To: https://forge.indepnet.net/projects/glpi\n"
 "POT-Creation-Date: 2012-05-29 08:22+0200\n"
-"PO-Revision-Date: 2012-05-29 06:22+0000\n"
+"PO-Revision-Date: 2012-05-29 06:41+0000\n"
 "Last-Translator: DOMBRE Julien <moyo@indepnet.net>\n"
 "Language-Team: French (France) (http://www.transifex.net/projects/p/GLPI/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -3712,7 +3712,7 @@ msgstr "Fuseau horaire de l'annuaire LDAP"
 
 #: inc/authldap.class.php:324
 msgid "Use paged results"
-msgstr ""
+msgstr "Utiliser les résultats paginés"
 
 #: inc/authldap.class.php:327
 msgid "Page size"
@@ -6954,7 +6954,7 @@ msgstr "Rien à lancer"
 
 #: inc/crontask.class.php:790
 msgid "Can't get DB lock"
-msgstr ""
+msgstr "Ne peut récupérer le verrou de la DB"
 
 #: inc/crontask.class.php:885
 msgid "Run count"
@@ -7367,7 +7367,7 @@ msgstr "Type MIME"
 
 #: inc/document.class.php:369 inc/document.class.php:723
 msgid "Checksum"
-msgstr ""
+msgstr "Somme de contrôle"
 
 #: inc/document.class.php:369 inc/document.class.php:723
 msgid "SHA1"
@@ -9433,7 +9433,7 @@ msgstr "%1$s : %2$d"
 
 #: inc/networkport.class.php:453
 msgid "Internet information"
-msgstr ""
+msgstr "Informations internet"
 
 #: inc/networkport.class.php:464 inc/networkport.class.php:516
 msgid "Network ports waiting for manual migration"
@@ -10765,7 +10765,7 @@ msgstr "Votre planning"
 #: inc/planning.class.php:1014
 #, php-format
 msgid "Ticket #%1$s %2$s"
-msgstr ""
+msgstr "Ticket #%1$s %2$s"
 
 #: inc/planningrecall.class.php:40
 msgid "Planning reminder"
