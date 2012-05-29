@@ -1769,6 +1769,24 @@ class Toolbox {
              ">".__('VALIDATE-CERT')."</option>\n";
       echo "</select>\n";
 
+      echo "<select name='server_rsh'>";
+      echo "<option value=''>&nbsp;</option>\n";
+      echo "<option value='/norsh' ".(strstr($value,"/norsh")?" selected ":"").
+             ">".__('NORSH')."</option>\n";
+      echo "</select>\n";
+      
+      echo "<select name='server_secure'>";
+      echo "<option value=''>&nbsp;</option>\n";
+      echo "<option value='/secure' ".(strstr($value,"/secure")?" selected ":"").
+             ">".__('SECURE')."</option>\n";
+      echo "</select>\n";
+      
+      echo "<select name='server_debug'>";
+      echo "<option value=''>&nbsp;</option>\n";
+      echo "<option value='/debug' ".(strstr($value,"/debug")?" selected ":"").
+             ">".__('DEBUG')."</option>\n";
+      echo "</select>\n";
+
       echo "<input type=hidden name=imap_string value='".$value."'>";
       echo "</td></tr>\n";
 
@@ -1815,6 +1833,16 @@ class Toolbox {
       if (isset($input['server_tls'])) {
          $out .= $input['server_tls'];
       }
+      
+      if (isset($input['server_rsh'])) {
+         $out .= $input['server_rsh'];
+      }
+      if (isset($input['server_secure'])) {
+         $out .= $input['server_secure'];
+      }
+      if (isset($input['server_debug'])) {
+         $out .= $input['server_debug'];
+      }      
       $out .= "}";
       if (isset($input['server_mailbox'])) {
          $out .= $input['server_mailbox'];
