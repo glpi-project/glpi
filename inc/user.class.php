@@ -1553,42 +1553,52 @@ class User extends CommonDBTM {
       }
 
       //do some rights verification
-      if (Session::haveRight("user", "w")) {
-         if ((!$extauth || empty($ID))
+      if (Session::haveRight("user", "w")
+          && (!$extauth || empty($ID))
              && $caneditpassword) {
-            echo "<td>" . __('Password')."</td>";
-            echo "<td><input type='password' name='password' value='' size='20' autocomplete='off'>";
-            echo "</td></tr>";
-         } else {
-            echo "<td colspan='2'>&nbsp;</td></tr>";
-         }
-
+         echo "<td>" . __('Password')."</td>";
+         echo "<td><input type='password' name='password' value='' size='20' autocomplete='off'>";
+         echo "</td>";
       } else {
-         echo "<td colspan='2'>&nbsp;</td></tr>";
+         echo "<td colspan='2'>&nbsp;</td>";
       }
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Surname') . "</td><td>";
       Html::autocompletionTextField($this,"realname");
       echo "</td>";
 
        //do some rights verification
-      if (Session::haveRight("user", "w")) {
-         if ((!$extauth || empty($ID))
-             && $caneditpassword) {
-            echo "<td>" . __('Password confirmation') . "</td>";
-            echo "<td><input type='password' name='password2' value='' size='20' autocomplete='off'>";
-            echo "</td></tr>";
-         } else {
-            echo "<td colspan='2'>&nbsp;</td></tr>";
-         }
-
+      if (Session::haveRight("user", "w")
+         && (!$extauth || empty($ID))
+         && $caneditpassword) {
+         echo "<td>" . __('Password confirmation') . "</td>";
+         echo "<td><input type='password' name='password2' value='' size='20' autocomplete='off'>";
+         echo "</td>";
       } else {
-         echo "<td colspan='2'>&nbsp;</td></tr>";
+         echo "<td colspan='2'>&nbsp;</td>";
       }
+      echo "</tr>";
 
+         
       echo "<tr class='tab_bg_1'><td>" . __('First name') . "</td><td>";
       Html::autocompletionTextField($this, "firstname");
       echo "</td>";
+      
+      if (Session::haveRight("user", "w")
+         && (!$extauth || empty($ID))
+         && $caneditpassword) {
+         echo "<td colspan='2'>PASS CHECKS</td>";
+      } else {
+         echo "<td colspan='2'>&nbsp;</td>";
+      }
+      
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><td>" . __('Mobile phone') . "</td><td>";
+      Html::autocompletionTextField($this, "mobile");
+      echo "</td>";
+      
      //Authentications information : auth method used and server used
       //don't display is creation of a new user'
       if (!empty($ID)) {
@@ -1612,14 +1622,7 @@ class User extends CommonDBTM {
       } else {
          echo "<td colspan='2'><input type='hidden' name='authtype' value='1'></td>";
       }
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'><td>" . __('Mobile phone') . "</td><td>";
-      Html::autocompletionTextField($this, "mobile");
-      echo "</td>";
-      echo "<td>".__('Active')."</td><td>";
-      Dropdown::showYesNo('is_active',$this->fields['is_active']);
-      echo "</td></tr>";
+      echo "</tr>"      ;
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='top'>" . _n('Email','Emails',2);
@@ -1627,23 +1630,27 @@ class User extends CommonDBTM {
       echo "</td><td>";
       UserEmail::showForUser($this);
       echo "</td>";
-
-      echo "<td>" . __('Category') . "</td><td>";
-      UserCategory::dropdown(array('value' => $this->fields["usercategories_id"]));
+      
+      echo "<td>".__('Active')."</td><td>";
+      Dropdown::showYesNo('is_active',$this->fields['is_active']);
       echo "</td></tr>";
+
 
       echo "<tr class='tab_bg_1'><td>" .  __('Phone') . "</td><td>";
       Html::autocompletionTextField($this, "phone");
       echo "</td>";
-      echo "<td rowspan='5' class='middle'>" . __('Comments') . "</td>";
-      echo "<td class='center middle' rowspan='5'>";
-      echo "<textarea cols='45' rows='8' name='comment' >".$this->fields["comment"]."</textarea>";
+      echo "<td>" . __('Category') . "</td><td>";
+      UserCategory::dropdown(array('value' => $this->fields["usercategories_id"]));
       echo "</td></tr>";
-
+      
       echo "<tr class='tab_bg_1'><td>" .  __('Phone 2') . "</td><td>";
       Html::autocompletionTextField($this, "phone2");
+      echo "</td>";
+      echo "<td rowspan='4' class='middle'>" . __('Comments') . "</td>";
+      echo "<td class='center middle' rowspan='4'>";
+      echo "<textarea cols='45' rows='6' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
-
+      
       echo "<tr class='tab_bg_1'><td>" . __('Administrative number') . "</td><td>";
       Html::autocompletionTextField($this, "registration_number");
       echo "</td></tr>";

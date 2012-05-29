@@ -947,6 +947,11 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='4' class='center b'>".__('Password security policy');
+      echo "</td></tr>";
+
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td colspan='4' class='center b'>".__('Proxy configuration for upgrade check');
       echo "</td></tr>";
 
