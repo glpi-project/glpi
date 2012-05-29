@@ -1,5 +1,6 @@
 <?php
 // since version 0.84
+// Use it greping 'Errors' to show files with troubles
 define('GLPI_ROOT', '..');
 #include (GLPI_ROOT . "/inc/includes.php");
 
