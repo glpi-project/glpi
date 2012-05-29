@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: dropdownConnectEthernetPortDeviceType.php 17149 2012-01-24 11:12:05Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2012 by the INDEPNET Development Team.
