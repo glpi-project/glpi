@@ -219,25 +219,31 @@ if (isset($_POST["action"])
          break;
 
       case "add_document" :
-         Document::dropdown(array('name' => 'docID'));
+         Document::dropdown(array('name' => 'documents_id'));
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                         _sx('button', 'Add')."'>";
          break;
 
       case "add_contract" :
-         Contract::dropdown(array('name' => "contractID"));
+         Contract::dropdown(array('name' => "contracts_id"));
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                         _sx('button', 'Add')."'>";
          break;
+         
+      case "remove_contract" :
+         Contract::dropdown(array('name' => "contracts_id"));
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                        _sx('button', 'Purge')."'>";
+         break;
 
       case "add_contact" :
-         Contact::dropdown(array('name' => "contactID"));
+         Contact::dropdown(array('name' => "contacts_id"));
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                         _sx('button', 'Add')."'>";
          break;
 
       case "add_enterprise" :
-         Supplier::dropdown(array('name' => "supplierID"));
+         Supplier::dropdown(array('name' => "suppliers_id"));
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                         _sx('button', 'Add')."'>";
          break;
