@@ -197,3 +197,4 @@ if (isset($_GET['clean'])) {
    printf("Corrupt links : %d\n", $nbtodo);
 }
 printf("Done in %s\n", Html::timestampToString(round($tps,0),true));
+?>
