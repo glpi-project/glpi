@@ -924,7 +924,7 @@ abstract class CommonITILObject extends CommonDBTM {
          $input["name"] = preg_replace('/\n/',' ',$input['name']);
          // For mailcollector
          $input["name"] = preg_replace('/\\\\r\\\\n/',' ',$input['name']);
-         $input["name"] = preg_replace('/\\\\n/',' ',$input['name']);         
+         $input["name"] = preg_replace('/\\\\n/',' ',$input['name']);
          $input["name"] = Toolbox::substr($input['name'],0,70);
       }
 
@@ -2414,7 +2414,7 @@ abstract class CommonITILObject extends CommonDBTM {
             echo '<hr>';
          }
 
-      } else {
+      } else if (!$is_hidden['_users_id_requester']) {
          $this->showUsersAssociated(self::REQUESTER, $candeleterequester);
       }
 
@@ -2441,7 +2441,7 @@ abstract class CommonITILObject extends CommonDBTM {
                echo '<br>';
             }
          }
-      } else {
+      } else if (!$is_hidden['_groups_id_requester']) {
          $this->showGroupsAssociated(self::REQUESTER, $candeleterequester);
       }
       echo "</td>";
@@ -2466,7 +2466,7 @@ abstract class CommonITILObject extends CommonDBTM {
                echo '<hr>';
             }
          }
-      } else {
+      } else if (!$is_hidden['_users_id_observer']) {
          $this->showUsersAssociated(self::OBSERVER, $candeleteobserver);
       }
 
@@ -2493,7 +2493,7 @@ abstract class CommonITILObject extends CommonDBTM {
                echo '<br>';
             }
          }
-      } else {
+      } else if (!$is_hidden['_groups_id_observer']) {
          $this->showGroupsAssociated(self::OBSERVER, $candeleteobserver);
       }
       echo "</td>";
@@ -2526,7 +2526,7 @@ abstract class CommonITILObject extends CommonDBTM {
                echo '<hr>';
             }
          }
-      } else {
+      } else if (!$is_hidden['_users_id_assign']) {
          $this->showUsersAssociated(self::ASSIGN, $candeleteassign);
       }
 
@@ -2554,7 +2554,7 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
 
-      } else {
+      } else if (!$is_hidden['_groups_id_assign']) {
          $this->showGroupsAssociated(self::ASSIGN, $candeleteassign);
       }
 
@@ -2572,7 +2572,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                           'value'  => $this->fields["suppliers_id_assign"],
                                           'entity' => $this->fields["entities_id"]));
          echo '<br>';
-      } else {
+      } else if (!$is_hidden['suppliers_id_assign']) {
          if ($this->fields["suppliers_id_assign"]) {
             echo self::getActorIcon('supplier', self::ASSIGN)."&nbsp;";
             echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id_assign"]);
