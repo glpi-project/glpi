@@ -1134,7 +1134,7 @@ class Transfer extends CommonDBTM {
                   $data = Toolbox::addslashes_deep($data);
 
                   $input['entities_id']  = $this->to;
-                  $input['completename'] = $data['completename'];
+                  $input['completename'] = addslashes($data['completename']);
                   $location = new Location();
                   $newID    = $location->findID($input);
 
