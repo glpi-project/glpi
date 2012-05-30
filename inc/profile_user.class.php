@@ -531,7 +531,7 @@ class Profile_User extends CommonDBTM {
     * @param $user_ID         user ID
     * @param $is_recursive    check also using recursive rights (true by default)
     *
-    * @return array of entities ID
+    * @return array of entities ID (default user entity first)
    **/
    static function getUserEntities($user_ID, $is_recursive=true) {
       global $DB;
@@ -550,6 +550,15 @@ class Profile_User extends CommonDBTM {
                $entities = array_merge($tab, $entities);
             } else {
                $entities[] = $data['entities_id'];
+            }
+         }
+
+         // Set default user entity at the begin
+         $user = new User();
+         if ($user->getFromDB($user_ID)) {
+            $ent = $user->getField('entities_id');
+            if (in_array($ent, $entities)) {
+               array_unshift($entities, $ent);
             }
          }
 
