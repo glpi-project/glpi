@@ -62,9 +62,12 @@ class RuleImportEntityCollection extends RuleCollection {
     * @see inc/RuleCollection::canList()
    **/
    function canList() {
-      global $CFG_GLPI;
+      global $PLUGIN_HOOKS;
 
-      return $CFG_GLPI["use_ocs_mode"] && $this->canView();
+      if (isset($PLUGIN_HOOKS['import_item']) && count($PLUGIN_HOOKS['import_item'])) {
+         return $this->canView();
+      }
+      return false;
    }
 
 
@@ -72,7 +75,7 @@ class RuleImportEntityCollection extends RuleCollection {
     * @see inc/RuleCollection::getTitle()
    **/
    function getTitle() {
-      return __('Rules for assigning a computer to an entity');
+      return __('Rules for assigning an item to an entity');
    }
 
 

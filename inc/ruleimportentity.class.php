@@ -153,7 +153,27 @@ class RuleImportEntity extends Rule {
       $criterias['SSN']['name']                 = __('Serial number');
       $criterias['SSN']['linkfield']            = 'HARDWARE_ID';
 
+      $criterias['_source']['table']            = '';
+      $criterias['_source']['field']            = '_source';
+      $criterias['_source']['name']             = __('Source');
+      $criterias['_source']['allow_condition']  = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT);
+
       return $criterias;
+   }
+
+   function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test=false) {
+      global $PLUGIN_HOOKS;
+
+      toolbox::logdebug("displayAdditionalRuleCondition(",$condition, $criteria, $name, $value, $test);
+      if ($criteria['field']=='_source') {
+         $tab = array();
+         foreach($PLUGIN_HOOKS['import_item'] as $plug => $types) {
+            $tab[] = Plugin::getInfo($plug, 'name');
+         }
+         Dropdown::showFromArray($name, $tab);
+         return true;
+      }
+      return false;
    }
 
 
