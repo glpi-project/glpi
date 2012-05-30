@@ -219,13 +219,13 @@ if (isset($_POST["action"])
          break;
 
       case "add_document" :
-         Document::dropdown(array('name' => 'documents_id'));
+         Dropdown::show('Document', array('name' => 'documents_id'));
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                         _sx('button', 'Add')."'>";
          break;
 
       case "remove_document" :
-         Document::dropdown(array('name' => 'documents_id'));
+         Dropdown::show('Document', array('name' => 'documents_id'));
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                         _sx('button', 'Delete')."'>";
          break;
@@ -250,7 +250,7 @@ if (isset($_POST["action"])
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                         _sx('button', 'Add')."'>";
          break;
-         
+
       case "remove_contract" :
          Contract::dropdown(array('name' => "contracts_id"));
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
