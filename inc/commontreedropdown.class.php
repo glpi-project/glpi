@@ -110,6 +110,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if (!isset($input['name']) && isset($this->fields['name'])) {
          $input['name'] = addslashes($this->fields['name']);
       }
+      // leading/ending space will break findID/import
+      $input['name'] = trim($input['name']);
 
       if (isset($input[$this->getForeignKeyField()])
           && !$this->isNewID($input[$this->getForeignKeyField()])
@@ -575,7 +577,7 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if (isset($input['completename']) && !empty($input['completename'])) {
          $query = "SELECT `id`
                    FROM `".$this->getTable()."`
-                   WHERE `completename` = '".addslashes($input['completename'])."'";
+                   WHERE `completename` = '".$input['completename']."'";
          if ($this->isEntityAssign()) {
             $query .= getEntitiesRestrictRequest(' AND ', $this->getTable(), '',
                                                  $input['entities_id'], $this->maybeRecursive());
