@@ -971,7 +971,7 @@ class Ticket extends CommonITILObject {
 
       // save value before clean;
       $title = $input['name'];
-      
+
       // Standard clean datas
       $input =  parent::prepareInputForAdd($input);
 
@@ -1223,11 +1223,11 @@ class Ticket extends CommonITILObject {
          if (isset($this->input["plan"]) && count($this->input["plan"])) {
             $toadd["plan"] = $this->input["plan"];
          }
-         
+
          if (isset($_SESSION['glpitask_private'])) {
             $toadd['is_private'] = $_SESSION['glpitask_private'];
          }
-         
+
          $toadd['_no_notif'] = true;
 
          $task->add($toadd);
@@ -3158,8 +3158,8 @@ class Ticket extends CommonITILObject {
             echo "<input type='hidden' name='_predefined_fields'
                    value=\"".rawurlencode(serialize($predefined_fields))."\">";
          }
-         echo "<input id='submit$rand' type='submit' name='add' 
-                  onClick=\"Ext.get('submit$rand').setDisplayed('none')\" 
+         echo "<input id='submit$rand' type='submit' name='add'
+                  onClick=\"Ext.get('submit$rand').setDisplayed('none')\"
                   value=\"".__s('Submit message')."\" class='submit'>";
          echo "</td></tr>";
       }
@@ -3373,7 +3373,7 @@ class Ticket extends CommonITILObject {
 
       if (!$ID) {
          //Get all the user's entities
-         $all_entities = Profile_User::getUserEntities($values["_users_id_requester"], true);
+         $all_entities = Profile_User::getUserEntities($values["_users_id_requester"], true, true);
          $this->userentities = array();
          //For each user's entity, check if the technician which creates the ticket have access to it
          foreach ($all_entities as $tmp => $ID_entity) {
