@@ -3159,8 +3159,8 @@ class Ticket extends CommonITILObject {
                    value=\"".rawurlencode(serialize($predefined_fields))."\">";
          }
          echo "<input id='submit$rand' type='submit' name='add'
-                  onClick=\"Ext.get('submit$rand').setDisplayed('none')\"
-                  value=\"".__s('Submit message')."\" class='submit'>";
+                onClick=\"Ext.get('submit$rand').setDisplayed('none')\"
+                value=\"".__s('Submit message')."\" class='submit'>";
          echo "</td></tr>";
       }
 

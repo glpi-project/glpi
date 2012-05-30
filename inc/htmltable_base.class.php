@@ -72,12 +72,12 @@ abstract class HTMLTable_Base  {
       if ($header_object->isSuperHeader()
           && (!$this->super)
           && (!$allow_super_header)) {
-         throw new Exception(sprintf('Implementation error : invalid super header name "%s"',
+         throw new Exception(sprintf('Implementation error: invalid super header name "%s"',
                                      $header_name));
       }
       if (!$header_object->isSuperHeader()
           && $this->super) {
-         throw new Exception(sprintf('Implementation error : invalid super header name "%s"',
+         throw new Exception(sprintf('Implementation error: invalid super header name "%s"',
                                      $header_name));
       }
 

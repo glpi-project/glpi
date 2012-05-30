@@ -989,60 +989,66 @@ class Config extends CommonDBTM {
       }
    }
 
+
    /**
     * Validate password based on security rules
-    * @param $password string password to validate
-    * @param $display boolean display errors messages ?
-    * @return boolean is password valid ?
+    *
     * @since version 0.84
+    *
+    * @param $password  string   password to validate
+    * @param $display   boolean  display errors messages? (true by default)
+    *
+    * @return boolean is password valid?
    **/
-   static function validatePassword($password, $display = true) {
+   static function validatePassword($password, $display=true) {
       global $CFG_GLPI;
+
       $ok = true;
       if ($CFG_GLPI["use_password_security"]) {
-         if (Toolbox::strlen($password)<$CFG_GLPI['password_min_length']) {
+         if (Toolbox::strlen($password) < $CFG_GLPI['password_min_length']) {
             $ok = false;
             if ($display) {
-               Session::addMessageAfterRedirect(__('Password too short!'),
-                                               false, ERROR);
+               Session::addMessageAfterRedirect(__('Password too short!'), false, ERROR);
             }
          }
          if ($CFG_GLPI["password_need_number"]
-            && !preg_match("/[0-9]+/", $password)) {
+             && !preg_match("/[0-9]+/", $password)) {
             $ok = false;
             if ($display) {
                Session::addMessageAfterRedirect(__('Password must include at least a digit!'),
-                                               false, ERROR);
+                                                false, ERROR);
             }
          }
          if ($CFG_GLPI["password_need_letter"]
-            && !preg_match("/[a-z]+/", $password)) {
+             && !preg_match("/[a-z]+/", $password)) {
             $ok = false;
             if ($display) {
                Session::addMessageAfterRedirect(__('Password must include at least a lowercase letter!'),
-                                               false, ERROR);
+                                                false, ERROR);
             }
          }
          if ($CFG_GLPI["password_need_caps"]
-            && !preg_match("/[A-Z]+/", $password)) {
+             && !preg_match("/[A-Z]+/", $password)) {
             $ok = false;
             if ($display) {
                Session::addMessageAfterRedirect(__('Password must include at least a uppercase letter!'),
-                                               false, ERROR);
+                                                false, ERROR);
             }
          }
          if ($CFG_GLPI["password_need_symbol"]
-            && !preg_match("/\W+/", $password)) {
+             && !preg_match("/\W+/", $password)) {
             $ok = false;
             if ($display) {
                Session::addMessageAfterRedirect(__('Password must include at least a symbol!'),
-                                               false, ERROR);
+                                                false, ERROR);
             }
          }
 
       }
       return $ok;
    }
+
+
    /**
     * Display a HTML report about systeme information / configuration
    **/

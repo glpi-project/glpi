@@ -44,52 +44,55 @@ abstract class CommonDBRelation extends CommonDBTM {
    var $checks_only_for_itemtype1 = false;
    var $logs_only_for_itemtype1   = false;
 
+
    /**
     * Get link object between 2 items
+    *
+    * @since version 0.84
     *
     * @param $item1 object 1
     * @param $item2 object 2
     *
     * @return boolean founded ?
-    * @since version 0.84
    **/
    function getFromDBForItems($item1, $item2) {
       global $DB;
+
       // Check item 1 type
-      $type1 = $this->itemtype_1;
+      $type1             = $this->itemtype_1;
       $itemtype_foritem1 = false;
       if (preg_match('/^itemtype/',$this->itemtype_1)) {
-         $type1 = $item1->getType();
+         $type1             = $item1->getType();
          $itemtype_foritem1 = true;
       }
       if (!is_a($item1,$type1)) {
          return false;
-      }      
-      
+      }
+
       // Check item 1 ID
-      if ($item1->getID()<0) {
+      if ($item1->getID() < 0) {
          return false;
       }
-      
+
       // Check item 2 type
-      $type2 = $this->itemtype_2;
+      $type2             = $this->itemtype_2;
       $itemtype_foritem2 = false;
       if (preg_match('/^itemtype/',$this->itemtype_2)) {
-         $type2 = $item2->getType();
+         $type2             = $item2->getType();
          $itemtype_foritem2 = true;
       }
-      if (!is_a($item2,$type2)) {
-         return false;
-      }      
-      // Check item 2 ID
-      if ($item2->getID()<0) {
+      if (!is_a($item2, $type2)) {
          return false;
       }
-      
+      // Check item 2 ID
+      if ($item2->getID() < 0) {
+         return false;
+      }
+
       $query = "SELECT *
                 FROM `".$this->getTable()."`
                 WHERE `".$this->items_id_1."` = '".$item1->getID()."'
-                     AND `".$this->items_id_2."` = '".$item2->getID()."' ";   
+                      AND `".$this->items_id_2."` = '".$item2->getID()."' ";
       if ($itemtype_foritem1) {
          $query .= " AND `itemtype` = '$type1' ";
       }
@@ -105,8 +108,9 @@ abstract class CommonDBRelation extends CommonDBTM {
          }
       }
 
-      return false;      
+      return false;
    }
+
 
    /**
     * Get search function for the class

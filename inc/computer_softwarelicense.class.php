@@ -453,7 +453,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                 WHERE `computers_id` = '$oldid'";
 
       foreach ($DB->request($query) as $data) {
-         $csl = new self();
+         $csl                  = new self();
          unset($data['id']);
          $data['computers_id'] = $newid;
          $data['_no_history']  = true;

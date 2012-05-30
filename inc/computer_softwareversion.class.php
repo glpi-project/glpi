@@ -455,7 +455,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          }
       } // Query
       Html::printAjaxPager(self::getTypeName(2), $start, $number);
-      
+
       echo "</div>\n";
    }
 
@@ -1022,7 +1022,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                 WHERE `computers_id` = '$oldid'";
 
       foreach ($DB->request($query) as $data) {
-         $csv = new self();
+         $csv                  = new self();
          unset($data['id']);
          $data['computers_id'] = $newid;
          $data['_no_history']  = true;

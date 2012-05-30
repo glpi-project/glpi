@@ -89,7 +89,7 @@ class CalendarSegment extends CommonDBChild {
                 WHERE `calendars_id`='$oldid'";
 
       foreach ($DB->request($query) as $data) {
-         $c = new self();
+         $c                    = new self();
          unset($data['id']);
          $data['calendars_id'] = $newid;
          $data['_no_history']  = true;
@@ -320,8 +320,8 @@ class CalendarSegment extends CommonDBChild {
          echo "</td></tr>";
 
          echo "</table></div>";
-         
-         
+
+
       }
 
 //       if ($canedit && $numrows) {

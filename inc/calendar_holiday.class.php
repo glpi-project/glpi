@@ -176,7 +176,7 @@ class Calendar_Holiday extends CommonDBRelation {
                 WHERE `calendars_id` = '$oldid'";
 
       foreach ($DB->request($query) as $data) {
-         $ch = new self();
+         $ch                   = new self();
          unset($data['id']);
          $data['calendars_id'] = $newid;
          $data['_no_history']  = true;

@@ -1219,7 +1219,9 @@ class Search {
                            echo self::showItem($output_type,
                                                "<a href='".Toolbox::getItemTypeFormURL($itemtype).
                                                 "?id=".$data["refID"]."&amp;delete=delete' title=\"".
-                                                __s('Put in dustbin')."\"><img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>",
+                                                __s('Put in dustbin')."\">".
+                                                "<img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'>".
+                                                "</a>",
                                                $item_num, $row_num, "class='center'");
                         }
                      }
@@ -1569,10 +1571,12 @@ class Search {
       $linked =  self::getMetaItemtypeAvailable($itemtype);
 
       echo "<form name='searchform$itemtype' method='get' action=\"$target\">";
-      echo "<div class='center'><a href=\"javascript:showHideDiv('searchcriterias','searchcriteriasimg','".$CFG_GLPI["root_doc"].
-                    "/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
+      echo "<div class='center'>";
+      echo "<a href=\"javascript:showHideDiv('searchcriterias','searchcriteriasimg',
+                                             '".$CFG_GLPI["root_doc"]."/pics/deplier_down.png',
+                                             '".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
       echo "<img alt='' name='searchcriteriasimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
-      echo "</a></div>";      
+      echo "</a></div>";
       echo "<div id='searchcriterias'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";

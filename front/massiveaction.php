@@ -466,10 +466,9 @@ if (isset($_POST["action"])
             }
          }
          break;
-         
+
       case "add_document" :
       case "add_document_item" :
-
          $documentitem = new Document_Item();
          foreach ($_POST["item"] as $key => $val) {
             if (isset($_POST['items_id'])) {
@@ -483,7 +482,7 @@ if (isset($_POST["action"])
                               'documents_id' => $_POST['documents_id']);
             }
             if ($documentitem->can(-1, 'w', $input)) {
-              if ($documentitem->add($input)) {
+               if ($documentitem->add($input)) {
                   $nbok++;
                } else {
                   $nbko++;
@@ -493,10 +492,9 @@ if (isset($_POST["action"])
             }
          }
          break;
-         
+
       case "remove_document" :
       case "remove_document_item" :
-      
          foreach ($_POST["item"] as $key => $val) {
             if (isset($_POST['items_id'])) {
                // Remove item to documents
@@ -508,7 +506,7 @@ if (isset($_POST["action"])
                $input = array('itemtype'     => $_POST["itemtype"],
                               'items_id'     => $key,
                               'documents_id' => $_POST['documents_id']);
-            
+
             }
             $docitem = new Document_Item();
             if ($docitem->can(-1, 'w', $input)) {
@@ -588,7 +586,7 @@ if (isset($_POST["action"])
 
       case "remove_contract" :
       case "remove_contract_item" :
-      
+
          foreach ($_POST["item"] as $key => $val) {
             if (isset($_POST['items_id'])) {
                // Remove item to contracts
@@ -600,7 +598,7 @@ if (isset($_POST["action"])
                $input = array('itemtype'     => $_POST["itemtype"],
                               'items_id'     => $key,
                               'contracts_id' => $_POST['contracts_id']);
-            
+
             }
             $contractitem = new Contract_Item();
             if ($contractitem->can(-1, 'w', $input)) {
@@ -631,7 +629,7 @@ if (isset($_POST["action"])
             }
          }
          break;
-                           
+
       case "add_enterprise" :
          if ($_POST["itemtype"] == 'Contact') {
             $contactsupplier = new Contact_Supplier();
