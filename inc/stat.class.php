@@ -1485,13 +1485,11 @@ class Stat {
       $optgroup = array();
       if (isset($PLUGIN_HOOKS["stats"]) && is_array($PLUGIN_HOOKS["stats"])) {
          foreach ($PLUGIN_HOOKS["stats"] as $plug => $pages) {
-            $function = "plugin_version_$plug";
-            $plugname = $function();
             if (is_array($pages) && count($pages)) {
                foreach ($pages as $page => $name) {
                   $names[$plug.'/'.$page] = array("name" => $name,
                                                   "plug" => $plug);
-                  $optgroup[$plug] = $plugname['name'];
+                  $optgroup[$plug] = Plugin::getInfo($plug, 'name');
                }
             }
          }

@@ -1355,11 +1355,7 @@ class Html {
 
          foreach  ($PLUGIN_HOOKS["menu_entry"] as $plugin => $active) {
             if ($active) { // true or a string
-               $function = "plugin_version_$plugin";
-
-               if (function_exists($function)) {
-                  $plugins[$plugin] = $function();
-               }
+               $plugins[$plugin] = Plugin::getInfo($plugin);
             }
          }
 
@@ -2611,11 +2607,7 @@ class Html {
 
          foreach ($PLUGIN_HOOKS["helpdesk_menu_entry"] as $plugin => $active) {
             if ($active) {
-               $function = "plugin_version_$plugin";
-
-               if (function_exists($function)) {
-                  $plugins[$plugin] = $function();
-               }
+               $plugins[$plugin] = Plugin::getInfo($plugin);
             }
          }
       }

@@ -46,9 +46,8 @@ foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
    $rulecollection = new $rulecollectionclass();
    if ($rulecollection->canList()) {
       if ($plug = isPluginItemType($rulecollectionclass)) {
-         $function = 'plugin_version_'.strtolower($plug['plugin']);
-         $plugname = $function();
-         $title = sprintf(__('%1$s - %2$s'), $plugname['name'], $rulecollection->getTitle());
+         $title = sprintf(__('%1$s - %2$s'), Plugin::getInfo($plug['plugin'], 'name'),
+                                             $rulecollection->getTitle());
       } else {
          $title = $rulecollection->getTitle();
       }
