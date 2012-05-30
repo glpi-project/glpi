@@ -567,7 +567,7 @@ class NotificationTarget extends CommonDBChild {
       if ($manager) {
          $query .= " AND `glpi_groups_users`.`is_manager` ";
       }
-   
+
       foreach ($DB->request($query) as $data) {
          $this->addToAddressesList($data);
       }
@@ -1127,8 +1127,8 @@ class NotificationTarget extends CommonDBChild {
 
             if ($notif->getFromDB($data['id'])) {
                echo "<tr class='tab_bg_2'><td>".$notif->getLink();
-               echo "</td><td>".dropdown::getDropdownName('glpi_entities', $notif->getEntityID());
-               echo "</td><td>".dropdown::getYesNo($notif->getField('is_active'))."</td><td>";
+               echo "</td><td>".Dropdown::getDropdownName('glpi_entities', $notif->getEntityID());
+               echo "</td><td>".Dropdown::getYesNo($notif->getField('is_active'))."</td><td>";
                $itemtype = $notif->getField('itemtype');
                if ($tmp = getItemForItemtype($itemtype)) {
                   echo $tmp->getTypeName(1);
