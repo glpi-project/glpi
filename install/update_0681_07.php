@@ -541,7 +541,7 @@ function update0681to07() {
 
                if (!empty($data['postcode']) || !empty($data['town'])) {
                   if (!empty($comments)) {
-                     $comments = sprintf('%1$s %2$s', $comments, __('Address'))."\n";
+                     $comments = sprintf(__('%1$s %2$s', $comments, __('Address')))."\n";
                   }
                   //TRANS: %1$s is postcode, %2$s is town
                   $comments .= sprintf(__('%1$s %2$s'), $data['postcode'], $data['town']);
@@ -549,7 +549,7 @@ function update0681to07() {
 
                if (!empty($data['state']) || !empty($data['country'])) {
                   if (!empty($comments)) {
-                     $comments = sprintf('%1$s %2$s', $comments, __('Address'))."\n";
+                     $comments = sprintf(__('%1$s %2$s', $comments, __('Address')))."\n";
                   }
                   //TRANS: %1$s is country, %2$s is state
                   $comments .= sprintf(__('%1$s %2$s'), $data['country'], $data['state']);

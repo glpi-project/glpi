@@ -727,7 +727,7 @@ class Config extends CommonDBTM {
       } else {
          echo "&nbsp;";
       }
-      
+
       echo "<td>" . __('Date format') ."</td>";
       echo "<td>";
       $date_formats = array(0 => __('YYYY-MM-DD'),
@@ -802,12 +802,12 @@ class Config extends CommonDBTM {
       } else {
          echo "<td colspan='2'></td>";
       }
-      
+
       echo "<td>".__('CSV delimiter')."</td><td>";
       $values = array(';' =>';',
                       ',' =>',');
       Dropdown::showFromArray('csv_delimiter', $values, array('value' => $data["csv_delimiter"]));
-            
+
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
@@ -910,18 +910,21 @@ class Config extends CommonDBTM {
       echo "</form>";
    }
 
+
    /**
     * Display security checks on password
-    * @param $field string id of the field containing password to check
+    *
+    * @param $field string id of the field containing password to check (default 'password')
+    *
     * @since version 0.84
    **/
-   static function displayPasswordSecurityChecks($field = 'password') {
+   static function displayPasswordSecurityChecks($field='password') {
       global $CFG_GLPI;
-      
-      
-      
-      echo sprintf('%1$s: %2$s', __('Password minimum length'), "<span id='password_min_length' class='red'>".$CFG_GLPI['password_min_length']."</span>");
-      
+
+      printf(__('%1$s: %2$s', __('Password minimum length'),
+                "<span id='password_min_length' class='red'>".$CFG_GLPI['password_min_length'].
+                "</span>"));
+
       echo "<script type='text/javascript' >\n";
       echo "function passwordCheck() {\n";
       echo "var pwd = document.getElementById('$field');";
@@ -976,22 +979,22 @@ class Config extends CommonDBTM {
                Ext.get('password_need_symbol').addClass('green');
                Ext.get('password_need_symbol').removeClass('red');
          }";
-         
+
       }
       echo "}";
       echo '</script>';
       if (count($needs)) {
          echo "<br>";
-         echo sprintf('%1$s: %2$s', __('Password must contains'), implode(', ',$needs));
+         printf(__('%1$s: %2$s', __('Password must contains'), implode(', ',$needs)));
       }
    }
-   
+
    /**
     * Validate password based on security rules
     * @param $password string password to validate
     * @param $display boolean display errors messages ?
     * @return boolean is password valid ?
-    * @since version 0.84    
+    * @since version 0.84
    **/
    static function validatePassword($password, $display = true) {
       global $CFG_GLPI;
@@ -1036,7 +1039,7 @@ class Config extends CommonDBTM {
                                                false, ERROR);
             }
          }
-      
+
       }
       return $ok;
    }
