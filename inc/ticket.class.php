@@ -1255,7 +1255,7 @@ class Ticket extends CommonITILObject {
          $toadd = array("type"       => $type,
                         "tickets_id" => $this->fields['id'],
                         "actiontime" => $this->input["actiontime"]);
-         
+
          if (isset($_SESSION['glpitask_private'])) {
             $toadd['is_private'] = $_SESSION['glpitask_private'];
          }
@@ -3433,7 +3433,7 @@ class Ticket extends CommonITILObject {
 
       if (!$ID) {
          //Get all the user's entities
-         $all_entities = Profile_User::getUserEntities($values["_users_id_requester"], true);
+         $all_entities = Profile_User::getUserEntities($values["_users_id_requester"], true, true);
          $this->userentities = array();
          //For each user's entity, check if the technician which creates the ticket have access to it
          foreach ($all_entities as $tmp => $ID_entity) {
