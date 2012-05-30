@@ -121,6 +121,21 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
+   function prepareInputForAdd($input) {
+
+      if (isset($input['name'])) {
+         // leading/ending space will break findID/import
+         $input['name'] = trim($input['name']);
+      }
+      return $input;
+   }
+
+
+   function prepareInputForUpdate($input) {
+      return self::prepareInputForAdd($input);
+   }
+
+
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $LANG;
 

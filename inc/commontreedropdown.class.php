@@ -108,6 +108,8 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       if (!isset($input['name']) && isset($this->fields['name'])) {
          $input['name'] = addslashes($this->fields['name']);
       }
+      // leading/ending space will break findID/import
+      $input['name'] = trim($input['name']);
 
       if (isset($input[$this->getForeignKeyField()])
           && $input[$this->getForeignKeyField()]>0
