@@ -1467,7 +1467,7 @@ class Infocom extends CommonDBChild {
    static function cloneItem($itemtype, $oldid, $newid, $newitemtype='') {
       global $DB;
 
-      $ic = new Infocom();
+      $ic = new self();
       if ($ic->getFromDBforDevice($itemtype, $oldid)) {
          $input             = $ic->fields;
          $input             = Toolbox::addslashes_deep($input);
@@ -1487,7 +1487,7 @@ class Infocom extends CommonDBChild {
                unset($input[$f]);
             }
          }
-         $ic2 = new Infocom();
+         $ic2 = new self();
          $ic2->add($input);
       }
    }

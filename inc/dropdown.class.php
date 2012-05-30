@@ -1591,15 +1591,14 @@ class Dropdown {
             }
             if ($isadmin
                 && in_array($itemtype, array('Monitor', 'Peripheral', 'Phone', 'Printer'))) {
-
-               $actions['connect'] = _x('button', 'Connect');
+               $actions['connect']    = _x('button', 'Connect');
                $actions['disconnect'] = _x('button', 'Disconnect');
             }
 
             if (in_array($itemtype,$CFG_GLPI["document_types"])) {
                $doc = new Document();
                if ($doc->canView()) {
-                  $actions['add_document'] = _x('button', 'Add a document');
+                  $actions['add_document']    = _x('button', 'Add a document');
                   $actions['remove_document'] = _x('button', 'Remove a document');
                }
             }
@@ -1607,7 +1606,7 @@ class Dropdown {
             if (in_array($itemtype,$CFG_GLPI["contract_types"])) {
                $contract = new Contract();
                if ($contract->canUpdate()) {
-                  $actions['add_contract'] = _x('button', 'Add a contract');
+                  $actions['add_contract']    = _x('button', 'Add a contract');
                   $actions['remove_contract'] = _x('button', 'Remove a contract');
                }
             }
@@ -1663,14 +1662,14 @@ class Dropdown {
 
                case 'Contract' :
                   if ($isadmin) {
-                     $actions['add_contract_item'] = _x('button', 'Add an item');
+                     $actions['add_contract_item']    = _x('button', 'Add an item');
                      $actions['remove_contract_item'] = _x('button', 'Remove an item');
                   }
                   break;
 
                case 'Document' :
                   if ($isadmin) {
-                     $actions['add_document_item'] = _x('button', 'Add an item');
+                     $actions['add_document_item']    = _x('button', 'Add an item');
                      $actions['remove_document_item'] = _x('button', 'Remove an item');
                   }
                   break;

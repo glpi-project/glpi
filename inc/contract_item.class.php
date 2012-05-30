@@ -126,7 +126,6 @@ class Contract_Item extends CommonDBRelation{
    }
 
 
-
    /**
     * @see inc/CommonGLPI::getTabNameForItem()
    **/
@@ -179,6 +178,8 @@ class Contract_Item extends CommonDBRelation{
    /**
     * Duplicate contracts from an item template to its clone
     *
+    * @since version 0.84
+    *
     * @param $itemtype     itemtype of the item
     * @param $oldid        ID of the item to clone
     * @param $newid        ID of the item cloned
@@ -192,12 +193,12 @@ class Contract_Item extends CommonDBRelation{
       }
 
       $query  = "SELECT `contracts_id`
-                  FROM `glpi_contracts_items`
-                  WHERE `items_id` = '$oldid'
+                 FROM `glpi_contracts_items`
+                 WHERE `items_id` = '$oldid'
                         AND `itemtype` = '$itemtype';";
 
       foreach ($DB->request($query) as $data) {
-         $contractitem = new Contract_Item();
+         $contractitem = new self();
          $contractitem->add(array('contracts_id' => $data["contracts_id"],
                                   'itemtype'     => $newitemtype,
                                   'items_id'     => $newid));

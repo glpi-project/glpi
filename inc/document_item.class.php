@@ -158,8 +158,11 @@ class Document_Item extends CommonDBRelation{
       }
    }
 
+
    /**
     * Duplicate documents from an item template to its clone
+    *
+    * @since version 0.84
     *
     * @param $itemtype     itemtype of the item
     * @param $oldid        ID of the item to clone
@@ -174,15 +177,15 @@ class Document_Item extends CommonDBRelation{
       }
 
       $query  = "SELECT `documents_id`
-                  FROM `glpi_documents_items`
-                  WHERE `items_id` = '$oldid'
+                 FROM `glpi_documents_items`
+                 WHERE `items_id` = '$oldid'
                         AND `itemtype` = '$itemtype';";
 
       foreach ($DB->request($query) as $data) {
-         $docitem = new Document_Item();
+         $docitem = new self();
          $docitem->add(array('documents_id' => $data["documents_id"],
-                                  'itemtype'     => $newitemtype,
-                                  'items_id'     => $newid));
+                             'itemtype'     => $newitemtype,
+                             'items_id'     => $newid));
       }
    }
 }

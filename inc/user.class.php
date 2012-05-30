@@ -1573,8 +1573,8 @@ class User extends CommonDBTM {
 
        //do some rights verification
       if (Session::haveRight("user", "w")
-         && (!$extauth || empty($ID))
-         && $caneditpassword) {
+          && (!$extauth || empty($ID))
+          && $caneditpassword) {
          echo "<td>" . __('Password confirmation') . "</td>";
          echo "<td><input type='password' name='password2' value='' size='20' autocomplete='off'>";
          echo "</td>";
@@ -1583,14 +1583,14 @@ class User extends CommonDBTM {
       }
       echo "</tr>";
 
-         
+
       echo "<tr class='tab_bg_1'><td>" . __('First name') . "</td><td>";
       Html::autocompletionTextField($this, "firstname");
       echo "</td>";
-      
+
       if (Session::haveRight("user", "w")
-         && (!$extauth || empty($ID))
-         && $caneditpassword) {
+          && (!$extauth || empty($ID))
+          && $caneditpassword) {
          echo "<td>".__('Password security policy')."</td>";
          echo "<td>";
          Config::displayPasswordSecurityChecks();
@@ -1598,13 +1598,13 @@ class User extends CommonDBTM {
       } else {
          echo "<td colspan='2'>&nbsp;</td>";
       }
-      
+
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>" . __('Mobile phone') . "</td><td>";
       Html::autocompletionTextField($this, "mobile");
       echo "</td>";
-      
+
      //Authentications information : auth method used and server used
       //don't display is creation of a new user'
       if (!empty($ID)) {
@@ -1628,7 +1628,7 @@ class User extends CommonDBTM {
       } else {
          echo "<td colspan='2'><input type='hidden' name='authtype' value='1'></td>";
       }
-      echo "</tr>"      ;
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td class='top'>" . _n('Email','Emails',2);
@@ -1636,11 +1636,9 @@ class User extends CommonDBTM {
       echo "</td><td>";
       UserEmail::showForUser($this);
       echo "</td>";
-      
       echo "<td>".__('Active')."</td><td>";
       Dropdown::showYesNo('is_active',$this->fields['is_active']);
       echo "</td></tr>";
-
 
       echo "<tr class='tab_bg_1'><td>" .  __('Phone') . "</td><td>";
       Html::autocompletionTextField($this, "phone");
@@ -1648,7 +1646,7 @@ class User extends CommonDBTM {
       echo "<td>" . __('Category') . "</td><td>";
       UserCategory::dropdown(array('value' => $this->fields["usercategories_id"]));
       echo "</td></tr>";
-      
+
       echo "<tr class='tab_bg_1'><td>" .  __('Phone 2') . "</td><td>";
       Html::autocompletionTextField($this, "phone2");
       echo "</td>";
@@ -1656,7 +1654,7 @@ class User extends CommonDBTM {
       echo "<td class='center middle' rowspan='4'>";
       echo "<textarea cols='45' rows='6' name='comment' >".$this->fields["comment"]."</textarea>";
       echo "</td></tr>";
-      
+
       echo "<tr class='tab_bg_1'><td>" . __('Administrative number') . "</td><td>";
       Html::autocompletionTextField($this, "registration_number");
       echo "</td></tr>";
@@ -1899,7 +1897,7 @@ class User extends CommonDBTM {
 
 
         echo "<tr><td colspan='2'>&nbsp;</td>";
-         
+
         if (Session::haveRight("config", "w")) {
             echo "<td>" . __('Use GLPI in mode') . "</td><td>";
             $modes[Session::NORMAL_MODE]      = __('Normal');
