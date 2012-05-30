@@ -229,10 +229,9 @@ class Plugin extends CommonDBTM {
             if (file_exists($dirplug."/".$filename."/setup.php")) {
                self::loadLang($filename);
                include_once($dirplug."/".$filename."/setup.php");
-               $function = "plugin_version_$filename";
-               if (function_exists($function)) {
-                  $file_plugins[$filename] = $function();
-                  $file_plugins[$filename] = Toolbox::addslashes_deep($file_plugins[$filename]);
+               $info = self::getInfo($filename);
+               if (count($info)) {
+                  $file_plugins[$filename] = Toolbox::addslashes_deep($info);
                }
             }
          }
@@ -1105,9 +1104,7 @@ class Plugin extends CommonDBTM {
          foreach ($_SESSION["glpi_plugins"] as  $plug) {
             $tab = self::doOneHook($plug,'getDropdown');
             if (is_array($tab)) {
-               $function = "plugin_version_$plug";
-               $name     = $function();
-               $dps      = array_merge($dps, array($name['name'] => $tab));
+               $dps      = array_merge($dps, array(self::getInfo($plug, 'name') => $tab));
             }
          }
       }
@@ -1127,7 +1124,7 @@ class Plugin extends CommonDBTM {
    **/
    static function getInfo($plugin, $info=NULL) {
 
-      $fct = 'plugin_version_'.$plugin;
+      $fct = 'plugin_version_'.strtolower($plugin);
       if (function_exists($fct)) {
          $res = $fct();
       } else {
