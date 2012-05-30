@@ -1116,6 +1116,31 @@ class Plugin extends CommonDBTM {
 
 
    /**
+    * get information from a plugin
+    *
+    * @param $plugin String name of the plugin
+    * @param $info   String wanted info (name, version, ...), NULL for all
+    *
+    * @since version 0.84
+    *
+    * @return String or Array (when $info is NULL)
+   **/
+   static function getInfo($plugin, $info=NULL) {
+
+      $fct = 'plugin_version_'.$plugin;
+      if (function_exists($fct)) {
+         $res = $fct();
+      } else {
+         $res = array();
+      }
+      if (isset($info)) {
+         return (isset($res[$info]) ? $res[$info] : '');
+      }
+      return $res;
+   }
+
+
+   /**
     * Get database relations for plugins
     *
     * @return Array containing plugin database relations
