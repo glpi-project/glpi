@@ -90,9 +90,8 @@ class Consumable extends CommonDBTM {
 
    function post_addItem() {
 
-      $ic = new Infocom();
-      $ic->cloneItem('ConsumableItem', $this->fields["consumableitems_id"], $this->fields['id'],
-                     $this->getType());
+      Infocom::cloneItem('ConsumableItem', $this->fields["consumableitems_id"], $this->fields['id'],
+                         $this->getType());
    }
 
 
