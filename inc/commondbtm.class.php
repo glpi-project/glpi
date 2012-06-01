@@ -2861,13 +2861,13 @@ class CommonDBTM extends CommonGLPI {
                if (empty($double_text)) {
                   $double_text = $new_text;
                } else {
-                  $double_text = sprintf(__('%1$s - %2$s', $double_text, $new_text));
+                  $double_text = sprintf(__('%1$s - %2$s'), $double_text, $new_text);
                }
             }
          }
          // Add information on item in trash
          if ($item->isField('is_deleted') && $item->getField('is_deleted')) {
-            $double_text = sprintf(__('%1$s - %2$s', $double_text, __('Item in the trash')));
+            $double_text = sprintf(__('%1$s - %2$s'), $double_text, __('Item in the trash'));
          }
 
          $message_text .= "<br>[$double_text]";

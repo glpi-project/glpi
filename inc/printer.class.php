@@ -259,8 +259,8 @@ class Printer  extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       //TRANS: %1$s is a string, %2$s a second one without spaces between them : to change for RTL
-      echo "<td>".sprintf(__('%1$s%2$s', __('Name'),
-                          (isset($options['withtemplate']) && $options['withtemplate']?"*":""))).
+      echo "<td>".sprintf(__('%1$s%2$s'), __('Name'),
+                          (isset($options['withtemplate']) && $options['withtemplate']?"*":"")).
            "</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name",
