@@ -985,7 +985,7 @@ class Config extends CommonDBTM {
       echo '</script>';
       if (count($needs)) {
          echo "<br>";
-         printf(__('%1$s: %2$s', __('Password must contains'), implode(', ',$needs)));
+         printf(__('%1$s: %2$s'), __('Password must contains'), implode(', ',$needs));
       }
    }
 
