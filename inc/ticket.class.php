@@ -2590,7 +2590,7 @@ class Ticket extends CommonITILObject {
                   }
                   if (!empty($tmp_device)) {
                      $my_devices .= "<optgroup label=\""._sn('Installed software',
-                                                             'Installed software, 2')."\">";
+                                                             'Installed software', 2)."\">";
                      $my_devices .= $tmp_device."</optgroup>";
                   }
                }
