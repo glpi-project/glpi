@@ -109,6 +109,9 @@ class NotificationEvent extends CommonDBTM {
          $template           = new NotificationTemplate();
 
          $notificationtarget = NotificationTarget::getInstance($item,$event,$options);
+         if (!$notificationtarget) {
+            return false;
+         }
          $entity             = $notificationtarget->getEntity();
          //Foreach notification
          foreach (Notification::getNotificationsByEventAndType($event, $item->getType(), $entity)
