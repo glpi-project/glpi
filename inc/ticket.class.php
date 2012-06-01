@@ -115,6 +115,26 @@ class Ticket extends CommonITILObject {
    }
 
 
+   /**
+    * @see inc/CommonDBTM::canMassiveAction()
+   **/
+   function canMassiveAction($action, $field, $value){
+
+      switch ($action) {
+         case 'update' :
+            switch ($field) {
+               case 'status' :
+                  if (!self::isAllowedStatus($this->fields['status'], $value)) {
+                     return false;
+                  }
+                  break;
+            }
+            break;
+      }
+      return true;
+   }
+
+
    function canView() {
 
       if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {

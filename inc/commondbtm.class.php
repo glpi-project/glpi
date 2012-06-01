@@ -1631,6 +1631,21 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
+    * check if this action can be done on this field of this item by massive actions
+    *
+    * @since 0.83
+    *
+    * @param $action    string   name of the action
+    * @param $field     integer  id of the field
+    * @param $value     string   value of the field
+    *
+   **/
+   function canMassiveAction($action, $field, $value){
+      return true;
+   }
+
+
+   /**
     * Display a 2 columns Footer for Form buttons
     * Close the form is user can edit
     *

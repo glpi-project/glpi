@@ -320,7 +320,9 @@ if (isset($_POST["action"])
                }
                foreach ($_POST["item"] as $key => $val) {
                   if ($val == 1) {
-                     if ($item->can($key,'w')) {
+                     if ($item->can($key,'w')
+                         && $item->canMassiveAction($_POST['action'], $_POST['field'],
+                                                    $_POST[$_POST["field"]])) {
                         if (count($link_entity_type) == 0
                             || in_array($item->fields["entities_id"],$link_entity_type)) {
                            if ($item->update(array('id'            => $key,
@@ -826,7 +828,7 @@ if (isset($_POST["action"])
          break;
 
       case "add_actor" :
-         
+
          $item = new $_POST['itemtype']();
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
