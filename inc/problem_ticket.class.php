@@ -197,7 +197,7 @@ class Problem_Ticket extends CommonDBRelation{
       if ($canedit) {
          echo "<tr class='tab_bg_2'><td class='right'  colspan='7'>";
          echo "<input type='hidden' name='tickets_id' value='$ID'>";
-         Problem::dopdown(array('used'   => $used,
+         Problem::dropdown(array('used'   => $used,
                                 'entity' => $ticket->getEntityID()));
          echo "</td><td class='center'>";
          echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";

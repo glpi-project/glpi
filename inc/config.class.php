@@ -921,9 +921,9 @@ class Config extends CommonDBTM {
    static function displayPasswordSecurityChecks($field='password') {
       global $CFG_GLPI;
 
-      printf(__('%1$s: %2$s', __('Password minimum length'),
+      printf(__('%1$s: %2$s'), __('Password minimum length'),
                 "<span id='password_min_length' class='red'>".$CFG_GLPI['password_min_length'].
-                "</span>"));
+                "</span>");
 
       echo "<script type='text/javascript' >\n";
       echo "function passwordCheck() {\n";
