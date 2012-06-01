@@ -1236,7 +1236,7 @@ class Problem extends CommonITILObject {
             foreach ($job->users[parent::ASSIGN] as $d) {
                $userdata = getUserName($d["users_id"], 2);
                $fifth_col .= "<span class='b'>".$userdata['name']."</span>";
-               $fifth_col  = sprintf(__('%1$s %2$s')."<br>",
+               $fifth_col  = sprintf(__('%1$s %2$s')."<br>", $fifth_col
                                      Html::showToolTip($userdata["comment"],
                                                        array('link'    => $userdata["link"],
                                                              'display' => false)));
