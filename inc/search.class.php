@@ -4638,6 +4638,13 @@ class Search {
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
 
+      // do not show priority if you don't have right in profile
+      If (($itemtype == 'Ticket')
+          && ($action == 'w')
+          && !Session::haveRight('update_priority', 1)) {
+         $todel[] = 3;
+      }
+
       if ($itemtype == 'Computer') {
          if (!Session::haveRight('networking',$action)) {
             $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
