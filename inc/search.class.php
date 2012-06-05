@@ -1571,21 +1571,22 @@ class Search {
       $linked =  self::getMetaItemtypeAvailable($itemtype);
 
       echo "<form name='searchform$itemtype' method='get' action=\"$target\">";
-      echo "<div class='center'>";
-      echo "<a href=\"javascript:showHideDiv('searchcriterias','searchcriteriasimg',
-                                             '".$CFG_GLPI["root_doc"]."/pics/deplier_down.png',
-                                             '".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
-      echo "<img alt='' name='searchcriteriasimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
-      echo "</a></div>";
       echo "<div id='searchcriterias'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
+
+      echo "<td width='10' class='center'>";
+      echo "<a href=\"javascript:toggleTableDisplay('searchcriteriastable','searchcriteriasimg',
+                                             '".$CFG_GLPI["root_doc"]."/pics/deplier_down.png',
+                                             '".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
+      echo "<img alt='' name='searchcriteriasimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
+      echo "</td>";
       echo "<td>";
 
-      echo "<table>";
+      echo "<table id='searchcriteriastable'>";
       // Display normal search parameters
       for ($i=0 ; $i<$_SESSION["glpisearchcount"][$itemtype] ; $i++) {
-         echo "<tr><td class='left' width='50%'>";
+         echo "<tr ".($i==0?"class='headerRow'":'')."><td class='left' width='50%'>";
          // First line display add / delete images for normal and meta search items
          if ($i == 0) {
             echo "<input type='hidden' disabled id='add_search_count' name='add_search_count'
