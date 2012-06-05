@@ -239,13 +239,15 @@ function update0831to084() {
 
    $backup_tables = false;
    $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
-                          'glpi_changes_problems', 'glpi_changes_tickets', 'glpi_changes_users',
+                          'glpi_changes_problems', 'glpi_changes_suppliers',
+                          'glpi_changes_tickets', 'glpi_changes_users',
                           'glpi_changetasks', 'glpi_fqdns', 'glpi_ipaddresses',
                           'glpi_ipaddresses_ipnetworks', 'glpi_ipnetworks', 'glpi_networkaliases',
                           'glpi_networknames', 'glpi_networkportaggregates',
                           'glpi_networkportdialups', 'glpi_networkportethernets',
                           'glpi_networkportlocals', 'glpi_networkportmigrations',
-                          'glpi_networkportwifis', 'glpi_wifinetworks');
+                          'glpi_networkportwifis', 'glpi_problems_suppliers',
+                          'glpi_suppliers_tickets', 'glpi_wifinetworks');
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -891,7 +893,6 @@ function update0831to084() {
                   `due_date` DATETIME DEFAULT NULL,
                   `users_id_recipient` int(11) NOT NULL DEFAULT '0',
                   `users_id_lastupdater` int(11) NOT NULL DEFAULT '0',
-                  `suppliers_id_assign` int(11) NOT NULL DEFAULT '0',
                   `urgency` int(11) NOT NULL DEFAULT '1',
                   `impact` int(11) NOT NULL DEFAULT '1',
                   `priority` int(11) NOT NULL DEFAULT '1',
@@ -915,7 +916,6 @@ function update0831to084() {
                   KEY `status` (`status`(1)),
                   KEY `priority` (`priority`),
                   KEY `date_mod` (`date_mod`),
-                  KEY `suppliers_id_assign` (`suppliers_id_assign`),
                   KEY `itilcategories_id` (`itilcategories_id`),
                   KEY `users_id_recipient` (`users_id_recipient`),
                   KEY `solvedate` (`solvedate`),
@@ -956,6 +956,18 @@ function update0831to084() {
       $DB->queryOrDie($query, "0.84 add table glpi_changes_groups");
    }
 
+   if (!TableExists('glpi_changes_suppliers')) {
+      $query = "CREATE TABLE `glpi_changes_suppliers` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `changes_id` int(11) NOT NULL DEFAULT '0',
+                  `suppliers_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`changes_id`,`suppliers_id`),
+                  KEY `suppliers_id` (`suppliers_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.84 add table glpi_changes_suppliers");
+   }
+   
    if (!TableExists('glpi_changes_items')) {
       $query = "CREATE TABLE `glpi_changes_items` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1562,6 +1574,48 @@ function update0831to084() {
          }
       }
    }
+
+   // Add multiple suppliers for itil objects
+   if (!TableExists('glpi_problems_suppliers')) {
+      $query = "CREATE TABLE `glpi_problems_suppliers` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `problems_id` int(11) NOT NULL DEFAULT '0',
+                  `suppliers_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`problems_id`,`suppliers_id`),
+                  KEY `suppliers_id` (`suppliers_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.84 add table glpi_problems_suppliers");
+   }
+   $migration->migrationOneTable('glpi_problems_suppliers');
+   foreach($DB->request('glpi_problems',"`suppliers_id_assign` > 0") as $data) {
+      $query = "INSERT INTO `glpi_problems_suppliers` (`suppliers_id`, `problems_id`)
+                  VALUES ('".$data['suppliers_id_assign']."', '".$data['id']."')";
+      $DB->query($query);
+   }
+   $migration->dropField('glpi_problems', 'suppliers_id_assign');
+
+   
+   if (!TableExists('glpi_suppliers_tickets')) {
+      $query = "CREATE TABLE `glpi_suppliers_tickets` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `tickets_id` int(11) NOT NULL DEFAULT '0',
+                  `suppliers_id` int(11) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  UNIQUE KEY `unicity` (`tickets_id`,`suppliers_id`),
+                  KEY `suppliers_id` (`suppliers_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.84 add table glpi_suppliers_tickets");
+   }   
+   $migration->migrationOneTable('glpi_suppliers_tickets');
+   foreach($DB->request('glpi_tickets',"`suppliers_id_assign` > 0") as $data) {
+      $query = "INSERT INTO `glpi_suppliers_tickets` (`suppliers_id`, `tickets_id`)
+                  VALUES ('".$data['suppliers_id_assign']."', '".$data['id']."')";
+      $DB->query($query);
+   }
+   $migration->dropField('glpi_tickets', 'suppliers_id_assign');
+
+   
    // Move tickerrecurrent values to correct ones
    $migration->changeField('glpi_ticketrecurrents', 'periodicity', 'periodicity', 'string');
    $migration->addField('glpi_ticketrecurrents', 'calendars_id', 'integer');
