@@ -1305,8 +1305,8 @@ class Html {
          }
          $menu['utils']['content']['knowbase']['shortcut']        = 'b';
 
-         $menu['utils']['content']['knowbase']['page']            = '/front/knowbaseitem.php';
-         $menu['utils']['content']['knowbase']['links']['search'] = '/front/knowbaseitem.php';
+         $menu['utils']['content']['knowbase']['page']            = '/front/knowbase.php';
+         $menu['utils']['content']['knowbase']['links']['search'] = '/front/knowbase.php';
 
          if (Session::haveRight("knowbase","w") || Session::haveRight("faq","w")) {
             $menu['utils']['content']['knowbase']['links']['add']
