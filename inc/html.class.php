@@ -1305,8 +1305,8 @@ class Html {
          }
          $menu['utils']['content']['knowbase']['shortcut']        = 'b';
 
-         $menu['utils']['content']['knowbase']['page']            = '/front/knowbase.php';
-         $menu['utils']['content']['knowbase']['links']['search'] = '/front/knowbase.php';
+         $menu['utils']['content']['knowbase']['page']            = '/front/knowbaseitem.php';
+         $menu['utils']['content']['knowbase']['links']['search'] = '/front/knowbaseitem.php';
 
          if (Session::haveRight("knowbase","w") || Session::haveRight("faq","w")) {
             $menu['utils']['content']['knowbase']['links']['add']
@@ -2595,7 +2595,7 @@ class Html {
       // FAQ
       if (Session::haveRight("faq","r")) {
          echo "<li id='menu5' >";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/knowbase.php' title=\"".
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/knowbaseitem.php' title=\"".
                 __s('FAQ')."\" class='itemP'>".__('FAQ')."</a>";
          echo "</li>";
       }

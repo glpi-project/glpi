@@ -501,7 +501,6 @@ class CommonGLPI {
       }
       echo "<div id='tabspanel' class='center-h'></div>";
 
-      $active      = 0;
       $onglets     = $this->defineAllTabs($options);
 
       $display_all = true;
