@@ -53,15 +53,8 @@ if (Session::getLoginUserID()) {
 } else {
    $_SESSION["glpilanguage"] = $CFG_GLPI['language'];
    // Anonymous FAQ
-   Html::simpleHeader(__('FAQ'), array(__('Authentication') => $_SERVER['PHP_SELF'],
+   Html::simpleHeader(__('FAQ'), array(__('Authentication') => $CFG_GLPI['root_doc'],
                                        __('FAQ')            => $_SERVER['PHP_SELF']));
-}
-
-if (!isset($_GET["contains"])) {
-   $_GET["contains"] = "";
-}
-if (!isset($_GET["knowbaseitemcategories_id"])) {
-   $_GET["knowbaseitemcategories_id"] = 0;
 }
 
 if (isset($_GET["id"])) {
@@ -71,8 +64,14 @@ if (isset($_GET["id"])) {
    }
 
 } else {
+   // Manage forcetab : non standard system (file name <> class name)
+   if (isset($_REQUEST['forcetab'])) {
+      Session::setActiveTab('Knowbase', $_REQUEST['forcetab']);
+      unset($_REQUEST['forcetab']);
+   }
+
    $kb = new Knowbase();
-   $kb->show();
+   $kb->show(Toolbox::addslashes_deep($_REQUEST));
 }
 
 Html::helpFooter();

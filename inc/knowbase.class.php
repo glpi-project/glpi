@@ -108,7 +108,8 @@ class Knowbase extends CommonGLPI {
       } else if (isset($_SESSION['kbcontains'])) {
          $_REQUEST['contains'] = $_SESSION["kbcontains"];
       }
-      KnowbaseItem::searchForm($_REQUEST);
+      $ki = new KnowbaseItem();
+      $ki->searchForm($_REQUEST);
 
       if (!isset($_REQUEST['contains']) || empty($_REQUEST['contains'])) {
          echo "<div><table class='center-h' width='950px'><tr><td class='center top'>";
@@ -135,7 +136,8 @@ class Knowbase extends CommonGLPI {
          $_REQUEST["knowbaseitemcategories_id"] = $_SESSION['kbknowbaseitemcategories_id'];
       }
       
-      KnowbaseItem::showBrowseForm($_REQUEST);
+      $ki = new KnowbaseItem();
+      $ki->showBrowseForm($_REQUEST);
       if (!isset($_REQUEST["itemtype"])
          || !isset($_REQUEST["items_id"])) {
          KnowbaseItemCategory::showFirstLevel($_REQUEST);
@@ -155,7 +157,8 @@ class Knowbase extends CommonGLPI {
       if (!isset($_REQUEST["unpublished"])) {
          $_REQUEST["unpublished"] = 'myunpublished';
       }
-      KnowbaseItem::showWriteForm($_REQUEST);
+      $ki = new KnowbaseItem();
+      $ki->showWriteForm($_REQUEST);
       KnowbaseItem::showList($_REQUEST, $_REQUEST["unpublished"]);
    }
 }

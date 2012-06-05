@@ -94,9 +94,25 @@ class KnowbaseItem extends CommonDBTM {
                    || (!$this->fields["is_faq"] && Session::haveRight("knowbase", "w")))
                   && $this->haveVisibilityAccess()));
    }
+   /**
+    * Get the search page URL for the current classe
+    *
+    * @param $full path or relative one (true by default)
+   **/
+   function getSearchURL($full=true) {
+      global $CFG_GLPI;
+      $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
+      if (isset($_SESSION['glpiactiveprofile'])
+              && ($_SESSION['glpiactiveprofile']['interface'] == "central")) {
+         return "$dir/front/knowbaseitem.php";
+      } else {
+         return "$dir/front/helpdesk.faq.php";
+      }
+   }
 
-   function defineTabs($options=array()) {
+   
+  function defineTabs($options=array()) {
 
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
@@ -754,11 +770,7 @@ class KnowbaseItem extends CommonDBTM {
       $options['canedit'] = 0; // Hide the buttons
       $this->showFormHeader($options);
 
-      $tmp = "<a href='".$CFG_GLPI["root_doc"]."/front/".
-             (isset($_SESSION['glpiactiveprofile'])
-              && ($_SESSION['glpiactiveprofile']['interface'] == "central")
-                  ?"knowbaseitem.php"
-                  :"helpdesk.faq.php").
+      $tmp = "<a href='".$this->getSearchURL().
              "?knowbaseitemcategories_id=$knowbaseitemcategories_id'>".$fullcategoryname."</a>";
       echo "<tr class='tab_bg_3'><th colspan='4'>".sprintf(__('%1$s: %2$s'), __('Category'), $tmp);
       echo "</th></tr>";
@@ -823,7 +835,7 @@ class KnowbaseItem extends CommonDBTM {
     *
     * @return nothing (display the form)
    **/
-   static function searchForm($options) {
+   function searchForm($options) {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"]
@@ -844,7 +856,7 @@ class KnowbaseItem extends CommonDBTM {
 
       echo "<div>";
 
-      echo "<form method='get' action='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php'>";
+      echo "<form method='get' action='".$this->getSearchURL()."'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
       echo "<input type='text' size='50' name='contains' value=\"".
@@ -867,7 +879,7 @@ class KnowbaseItem extends CommonDBTM {
     * @param $options   $_GET
     * @return nothing (display the form)
    **/
-   static function showBrowseForm($options) {
+   function showBrowseForm($options) {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"]
@@ -890,7 +902,7 @@ class KnowbaseItem extends CommonDBTM {
       if (Session::getLoginUserID()
           && !$faq) {
          echo "<div>";
-         echo "<form method='get' action='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php'>";
+         echo "<form method='get' action='".$this->getSearchURL()."'>";
          echo "<table class='tab_cadre_fixe'>";
 
          echo "<tr class='tab_bg_2'><td class='right' width='50%'>".__('Category')."&nbsp;";
@@ -912,7 +924,7 @@ class KnowbaseItem extends CommonDBTM {
     * @param $options   $_GET
     * @return nothing (display the form)
    **/
-   static function showWriteForm($options) {
+   function showWriteForm($options) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("knowbase","w")
@@ -929,7 +941,7 @@ class KnowbaseItem extends CommonDBTM {
       $faq = !Session::haveRight("knowbase","w");
 
       echo "<div>";
-      echo "<form method='get' action='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php'>";
+      echo "<form method='get' action='".$this->getSearchURL()."'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
       $values = array('myunpublished' => __('My unpublished artciles'),
@@ -1098,7 +1110,7 @@ class KnowbaseItem extends CommonDBTM {
             $params[$key] = $val;
          }
       }
-
+      $ki = new self();
       switch ($type) {
          case 'myunpublished' :
             if (!Session::haveRight('knowbase','w') && !Session::haveRight('faq','w')) {
@@ -1238,7 +1250,13 @@ class KnowbaseItem extends CommonDBTM {
                   echo Search::showItem($output_type, getUserName($data["users_id"], 1), $item_num, $row_num);
                }
 
-               echo Search::showItem($output_type, $data["category"], $item_num, $row_num);
+               $categ = $data["category"];
+               if ($output_type == Search::HTML_OUTPUT) {
+                  $cathref = $ki->getSearchURL()."?knowbaseitemcategories_id=".$data["knowbaseitemcategories_id"].'&amp;forcetab=Knowbase$2';
+                  $categ = "<a href='$cathref'>".$categ.'</a>';
+               }
+               echo Search::showItem($output_type, $categ, $item_num, $row_num);
+               
                
                if (isset($options['item_itemtype'])
                    && isset($options['item_items_id'])
