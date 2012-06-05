@@ -1618,6 +1618,44 @@ function update0831to084() {
    }
    $migration->dropField('glpi_tickets', 'suppliers_id_assign');
 
+
+   $migration->displayMessage(sprintf(__('Data migration - %s'), 'RuleTicket'));
+
+   $changes['RuleTicket'] = array('suppliers_id_assign' => '_suppliers_id_assign');
+
+   $DB->query("SET SESSION group_concat_max_len = 4194304;");
+   foreach ($changes as $ruletype => $tab) {
+      // Get rules
+      $query = "SELECT GROUP_CONCAT(`id`)
+                FROM `glpi_rules`
+                WHERE `sub_type` = '".$ruletype."'
+                GROUP BY `sub_type`";
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result)>0) {
+            // Get rule string
+            $rules = $DB->result($result,0,0);
+            // Update actions
+            foreach ($tab as $old => $new) {
+               $query = "UPDATE `glpi_ruleactions`
+                         SET `field` = '$new'
+                         WHERE `field` = '$old'
+                               AND `rules_id` IN ($rules)";
+
+               $DB->queryOrDie($query, "0.84 update datas for rules actions");
+            }
+            // Update criterias
+            foreach ($tab as $old => $new) {
+               $query = "UPDATE `glpi_rulecriterias`
+                         SET `criteria` = '$new'
+                         WHERE `criteria` = '$old'
+                               AND `rules_id` IN ($rules)";
+               $DB->queryOrDie($query, "0.84 update datas for rules criterias");
+            }
+         }
+      }
+   }
+
+
    
    // Move tickerrecurrent values to correct ones
    $migration->changeField('glpi_ticketrecurrents', 'periodicity', 'periodicity', 'string');

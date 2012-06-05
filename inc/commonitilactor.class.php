@@ -241,7 +241,7 @@ abstract class CommonITILActor extends CommonDBRelation {
       $item = new $this->itemtype_1();
 
       if ($item->getFromDB($this->fields[$this->getItilObjectForeignKey()])) {
-         if (($item->fields["suppliers_id_assign"] == 0)
+         if (($item->countSuppliers(CommonITILObject::ASSIGN) == 0)
              && ($item->countUsers(CommonITILObject::ASSIGN) == 0)
              && ($item->countGroups(CommonITILObject::ASSIGN) == 0)
              && ($item->fields['status'] != 'closed')

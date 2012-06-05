@@ -682,6 +682,13 @@ class Stat {
          return;
       }
       $grouplinktable = $grouplinkclass->getTable();
+
+      if (!$supplierlinkclass = getItemForItemtype($item->supplierlinkclass)) {
+         return;
+      }
+      $supplierlinktable = $supplierlinkclass->getTable();
+
+
       $tasktable      = getTableForItemType($item->getType().'Task');
 
       $closed_status  = $item->getClosedStatusArray();
@@ -695,6 +702,8 @@ class Stat {
                            ON (`$userlinktable`.`$fkfield` = `$table`.`id`)";
       $LEFTJOINGROUP  = "LEFT JOIN `$grouplinktable`
                            ON (`$grouplinktable`.`$fkfield` = `$table`.`id`)";
+      $LEFTJOINSUPPLIER  = "LEFT JOIN `$supplierlinktable`
+                           ON (`$supplierlinktable`.`$fkfield` = `$table`.`id`)";
 
       switch ($param) {
          case "technicien" :
@@ -768,13 +777,17 @@ class Stat {
             $WHERE   .= " AND (`$grouplinktable`.`groups_id` = '$value'
                                AND `$grouplinktable`.`type` = '".CommonITILObject::ASSIGN."')";
             break;
+         case "suppliers_id_assign" :
+            $LEFTJOIN = $LEFTJOINSUPPLIER;
+            $WHERE   .= " AND (`$supplierlinktable`.`suppliers.id` = '$value'
+                               AND `$supplierlinktable`.`type` = '".CommonITILObject::ASSIGN."')";
+            break;
 
          case "requesttypes_id" :
          case "solutiontypes_id" :
          case "urgency" :
          case "impact" :
          case "priority" :
-         case "suppliers_id_assign" :
          case "users_id_recipient" :
          case "type" :
          case "itilcategories_id" :

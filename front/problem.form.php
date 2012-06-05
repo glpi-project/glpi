@@ -111,7 +111,16 @@ if (isset($_POST["add"])) {
               sprintf(__('%s deletes a group'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_REQUEST['problems_id']);
 
-} else {
+} else if (isset($_REQUEST['delete_supplier'])) {
+   $problem_supplier = new Problem_Supplier();
+   $problem_supplier->check($_REQUEST['id'], 'w');
+   $problem_supplier->delete($_REQUEST);
+
+   Event::log($_REQUEST['problems_id'], "problem", 4, "maintain",
+              sprintf(__('%s deletes a group'), $_SESSION["glpiname"]));
+   Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_REQUEST['problems_id']);
+
+   } else {
    Html::header(Problem::getTypeName(2), $_SERVER['PHP_SELF'], "maintain", "problem");
    $problem->showForm($_GET["id"],$_GET);
    Html::footer();

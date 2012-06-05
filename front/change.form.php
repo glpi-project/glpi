@@ -98,9 +98,18 @@ if (isset($_POST["add"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_REQUEST['changes_id']);
 
 } else if (isset($_REQUEST['delete_group'])) {
-   $group_ticket = new Group_Ticket();
-   $group_ticket->check($_REQUEST['id'], 'w');
-   $group_ticket->delete($_REQUEST);
+   $change_group = new Change_Group();
+   $change_group->check($_REQUEST['id'], 'w');
+   $change_group->delete($_REQUEST);
+
+   Event::log($_REQUEST['changes_id'], "change", 4, "maintain",
+              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
+   Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_REQUEST['changes_id']);
+
+} else if (isset($_REQUEST['delete_supplierp'])) {
+   $change_supplier = new Change_Supplier();
+   $change_supplier->check($_REQUEST['id'], 'w');
+   $change_supplier->delete($_REQUEST);
 
    Event::log($_REQUEST['changes_id'], "change", 4, "maintain",
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));

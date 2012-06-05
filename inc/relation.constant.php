@@ -64,12 +64,13 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_cartridgeitems' => 'cartridgeitemtypes_id'),
 
                   "glpi_changes"
-                        => array('glpi_changes_groups'   => 'changes_id',
-                                 'glpi_changes_items'    => 'changes_id',
-                                 'glpi_changes_problems' => 'changes_id',
-                                 'glpi_changes_tickets'  => 'changes_id',
-                                 'glpi_changes_users'    => 'changes_id',
-                                 'glpi_changetasks'      => 'changes_id'),
+                        => array('glpi_changes_groups'    => 'changes_id',
+                                 'glpi_changes_items'     => 'changes_id',
+                                 'glpi_changes_problems'  => 'changes_id',
+                                 'glpi_changes_suppliers' => 'changes_id',
+                                 'glpi_changes_tickets'   => 'changes_id',
+                                 'glpi_changes_users'     => 'changes_id',
+                                 'glpi_changetasks'       => 'changes_id'),
 
                   "glpi_changetasks"
                         => array('glpi_changetasks'   => 'changetasks_id'),
@@ -406,12 +407,13 @@ $RELATION = array("glpi_authldaps"
                         => array('glpi_printers' => 'printertypes_id'),
 
                   "glpi_problems"
-                        => array('glpi_changes_problems' => 'problems_id',
-                                 'glpi_groups_problems'  => 'problems_id',
-                                 'glpi_items_problems'   => 'problems_id',
-                                 'glpi_problems_tickets' => 'problems_id',
-                                 'glpi_problems_users'   => 'problems_id',
-                                 'glpi_problemtasks'     => 'problems_id'),
+                        => array('glpi_changes_problems'   => 'problems_id',
+                                 'glpi_groups_problems'    => 'problems_id',
+                                 'glpi_items_problems'     => 'problems_id',
+                                 'glpi_problems_suppliers' => 'problems_id',
+                                 'glpi_problems_tickets'   => 'problems_id',
+                                 'glpi_problems_users'     => 'problems_id',
+                                 'glpi_problemtasks'       => 'problems_id'),
 
                   "glpi_profiles"
                         => array('glpi_knowbaseitems_profiles' => 'profiles_id',
@@ -503,12 +505,12 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_states'            => 'states_id'),
 
                   "glpi_suppliers"
-                        => array('glpi_changes'             => 'suppliers_id_assign',
+                        => array('glpi_changes_suppliers'   => 'suppliers_id',
                                  'glpi_contacts_suppliers'  => 'suppliers_id',
                                  'glpi_contracts_suppliers' => 'suppliers_id',
                                  'glpi_infocoms'            => 'suppliers_id',
-                                 'glpi_problems'            => 'suppliers_id_assign',
-                                 'glpi_tickets'             => 'suppliers_id_assign'),
+                                 'glpi_problems_suppliers'  => 'suppliers_id',
+                                 'glpi_suppliers_tickets'   => 'suppliers_id',),
 
                   "glpi_suppliertypes"
                         => array('glpi_suppliers' => 'suppliertypes_id'),
@@ -543,6 +545,7 @@ $RELATION = array("glpi_authldaps"
                                  'glpi_groups_tickets'      => 'tickets_id',
                                  'glpi_problems_tickets'    => 'tickets_id',
                                  'glpi_slalevels_tickets'   => 'tickets_id',
+                                 'glpi_suppliers_tickets'   => 'tickets_id',
                                  'glpi_ticketfollowups'     => 'tickets_id',
                                  'glpi_ticketsatisfactions' => 'tickets_id',
                                  'glpi_tickettasks'         => 'tickets_id',

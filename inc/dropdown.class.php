@@ -1397,7 +1397,7 @@ class Dropdown {
                      if (in_array($key2, $param['values'])) {
                         echo " selected";
                      }
-                     echo ">" . $key2 . "=>" .  $val2 . "</option>";
+                     echo ">" .  $val2 . "</option>";
                   }
                               }
                echo "</optgroup>";

@@ -355,7 +355,7 @@ class TicketFollowup  extends CommonDBTM {
 
          if (($this->input["_job"]->countUsers(CommonITILObject::ASSIGN) > 0)
              || ($this->input["_job"]->countGroups(CommonITILObject::ASSIGN) > 0)
-             || ($this->input["_job"]->fields["suppliers_id_assign"] > 0)) {
+             || ($this->input["_job"]->countSuppliers(CommonITILObject::ASSIGN) > 0)) {
             $update['status'] = 'assign';
          } else {
             $update['status'] = 'new';

@@ -219,13 +219,18 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       global $DB;
 
       if (!$sendprivate
-          && isset($this->obj->fields["suppliers_id_assign"])
-          && ($this->obj->fields["suppliers_id_assign"] > 0)) {
+          && isset($this->countSuppliers(CommonITILObject::ASSIGN))) {
 
+         $supplierlinktable = getTableForItemType($this->obj->supplierlinkclass);
+         $fkfield       = $this->obj->getForeignKeyField();
+
+          
          $query = "SELECT DISTINCT `glpi_suppliers`.`email` AS email,
                                    `glpi_suppliers`.`name` AS name
-                   FROM `glpi_suppliers`
-                   WHERE `glpi_suppliers`.`id` = '".$this->obj->fields["suppliers_id_assign"]."'";
+                   FROM `$supplierlinktable`
+                   LEFT JOIN `glpi_suppliers`
+                     ON (`$supplierlinktable`.`suppliers_id` = `glpi_suppliers`.`id`)
+                   WHERE `$supplierlinktable`.`$fkfield` = '".$this->obj->getID()."'";
 
          foreach ($DB->request($query) as $data) {
             $this->addToAddressesList($data);
@@ -679,12 +684,19 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
          $datas["##$objettype.assigntousers##"] = implode(', ',$users);
       }
 
+
       $datas["##$objettype.assigntosupplier##"] = '';
-      if ($item->getField('suppliers_id_assign')) {
-         $datas["##$objettype.assigntosupplier##"]
-                        = Dropdown::getDropdownName('glpi_suppliers',
-                                                    $item->getField('suppliers_id_assign'));
-      }
+      if ($item->countSuppliers(CommonITILObject::ASSIGN)) {
+         $suppliers = array();
+         foreach ($item->getSupliers(CommonITILObject::ASSIGN) as $tmp) {
+            $uid      = $tmp['suppliers_id'];
+            $supplier_tmp = new Supplier();
+            if ($supplier_tmp->getFromDB($uid)) {
+               $suppliers[$uid] = $user_tmp->getName();
+            }
+         }
+         $datas["##$objettype.assigntosupplier##"] = implode(', ',$suppliers);
+      }      
 
       $datas["##$objettype.groups##"] = '';
       if ($item->countGroups(CommonITILObject::REQUESTER)) {

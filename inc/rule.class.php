@@ -604,7 +604,6 @@ class Rule extends CommonDBTM {
             $first = key($group);
          }
       }
-
       $rand   = Dropdown::showFromArray("criteria", $items);
       $params = array('criteria' => '__VALUE__',
                       'rand'     => $rand,
