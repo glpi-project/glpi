@@ -324,6 +324,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                   "`$linktable`.`$itemfk` = `$itemtable`.`id`
                                     AND `$linktable`.`users_id` = '$users_id'
                                     AND `$linktable`.`type` = '".self::REQUESTER."'
+                                    AND `$itemtable`.`is_deleted` = 0
                                     AND `$itemtable`.`status`
                                        NOT IN ('".implode("', '",
                                                           array_merge($this->getSolvedStatusArray(),
@@ -353,6 +354,7 @@ abstract class CommonITILObject extends CommonDBTM {
                                   "`$linktable`.`$itemfk` = `$itemtable`.`id`
                                     AND `$linktable`.`users_id` = '$users_id'
                                     AND `$linktable`.`type` = '".self::ASSIGN."'
+                                    AND `$itemtable`.`is_deleted` = 0
                                     AND `$itemtable`.`status`
                                        NOT IN ('".implode("', '",
                                                           array_merge($this->getSolvedStatusArray(),
