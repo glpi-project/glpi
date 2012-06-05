@@ -65,22 +65,6 @@ if (isset($_REQUEST['forcetab'])) {
 $kb = new Knowbase();
 $kb->show(Toolbox::addslashes_deep($_REQUEST));
 
-// if (!isset($_GET["contains"])) {
-//    $_GET["contains"] = "";
-// }
-// 
-// if (!isset($_GET["knowbaseitemcategories_id"])) {
-//    $_GET["knowbaseitemcategories_id"] = "0";
-// }
-// 
-// $faq = !Session::haveRight("knowbase","r");
-// 
-// KnowbaseItem::searchForm($_GET, $faq);
-// if (!isset($_GET["itemtype"])
-//     || !isset($_GET["items_id"])) {
-//    KnowbaseItemCategory::showFirstLevel($_GET, $faq);
-// }
-// KnowbaseItem::showList($_GET,$faq);
 
 Html::footer();
 ?>
