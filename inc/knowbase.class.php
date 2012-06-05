@@ -92,14 +92,14 @@ class Knowbase extends CommonGLPI {
     * Show the knowbase search view
    **/
    static function showSearchView() {
-
+      KnowbaseItem::searchForm($_GET);
    }
 
    /**
     * Show the knowbase browse view
    **/
    static function showBrowseView() {
-
+      KnowbaseItemCategory::showBrowseForm($_GET);
    }
 
    /**

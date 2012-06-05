@@ -2595,7 +2595,7 @@ class Html {
       // FAQ
       if (Session::haveRight("faq","r")) {
          echo "<li id='menu5' >";
-         echo "<a href='".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php' title=\"".
+         echo "<a href='".$CFG_GLPI["root_doc"]."/front/knowbase.php' title=\"".
                 __s('FAQ')."\" class='itemP'>".__('FAQ')."</a>";
          echo "</li>";
       }

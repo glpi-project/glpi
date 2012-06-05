@@ -821,11 +821,10 @@ class KnowbaseItem extends CommonDBTM {
     * Print out an HTML "<form>" for Search knowbase item
     *
     * @param $options   $_GET
-    * @param $faq       display on faq ? (default 0)
     *
     * @return nothing (display the form)
    **/
-   static function searchForm($options, $faq=0) {
+   static function searchForm($options) {
       global $CFG_GLPI;
 
       if (!$CFG_GLPI["use_public_faq"]
@@ -835,7 +834,6 @@ class KnowbaseItem extends CommonDBTM {
       }
 
       // Default values of parameters
-      $params["knowbaseitemcategories_id"] = "0";
       $params["contains"]                  = "";
       $params["target"]                    = $_SERVER['PHP_SELF'];
 
@@ -845,14 +843,13 @@ class KnowbaseItem extends CommonDBTM {
          }
       }
 
-      echo "<div><table class='center-h'><tr><td>";
+      echo "<div>";
 
-      echo "<form method=get action='".$params["target"]."'><table border='0' class='tab_cadre'>";
-      echo "<tr><th colspan='2'>".__('Search')."</th></tr>";
-      echo "<tr class='tab_bg_2 center'><td>";
-      echo "<input type='text' size='30' name='contains' value=\"".
+      echo "<form method=get action='".$params["target"]."'><table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
+      echo "<input type='text' size='50' name='contains' value=\"".
              stripslashes(Html::cleanInputText($params["contains"]))."\"></td>";
-      echo "<td><input type='submit' value=\""._sx('button','Search')."\" class='submit'></td></tr>";
+      echo "<td class='left'><input type='submit' value=\""._sx('button','Search')."\" class='submit'></td></tr>";
       echo "</table>";
       if (isset($options['itemtype'])
           && isset($options['items_id'])) {
@@ -861,22 +858,7 @@ class KnowbaseItem extends CommonDBTM {
       }
       echo "</form>";
 
-      echo "</td>";
-
-      // Category select not for anonymous FAQ
-      if (Session::getLoginUserID()
-          && !$faq
-          && (!isset($options['itemtype']) || !isset($options['items_id']))) {
-
-         echo "<td><form method=get action='".$params["target"]."'>";
-         echo "<table border='0' class='tab_cadre'>";
-         echo "<tr><th colspan='2'>".__('Browse')."</th></tr>";
-         echo "<tr class='tab_bg_2'><td class='center'>".__('Category')."&nbsp;";
-         KnowbaseItemCategory::dropdown(array('value' => '$params["knowbaseitemcategories_id)"]'));
-         echo "</td><td><input type='submit' value=\""._sx('button','Post')."\" class='submit'></td>";
-         echo "</tr></table></form></td>";
-      }
-      echo "</tr></table></div>";
+      echo "</div>";
    }
 
 
