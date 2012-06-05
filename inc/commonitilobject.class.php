@@ -3716,7 +3716,7 @@ abstract class CommonITILObject extends CommonDBTM {
       
       $query = "SELECT DISTINCT `glpi_suppliers`.`id` AS suppliers_id_assign,
                                 `glpi_suppliers`.`name` AS name
-                FROM `".$this->getTable()."`
+                FROM `".$this->getTable()."` LEFT JOIN `$linktable`
                   ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
                       AND `$linktable`.`type` = '".self::ASSIGN."')
                 LEFT JOIN `glpi_suppliers`
