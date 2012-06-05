@@ -56,7 +56,10 @@ class Group extends CommonTreeDropdown {
       return Session::haveRight('group', 'r');
    }
 
-
+   function canManageUsersItem() {
+      return ($this->can($this->getID(), 'r') && $this->canUpdate());
+   }
+   
    function post_getEmpty () {
 
       $this->fields['is_requester'] = 1;

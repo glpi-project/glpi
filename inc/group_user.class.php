@@ -379,14 +379,14 @@ class Group_User extends CommonDBRelation{
    static function showForGroup(Group $group) {
       global $DB, $CFG_GLPI;
 
-      $ID = $group->fields['id'];
+      $ID = $group->getID();
       if (!Session::haveRight("user","r")
           || !$group->can($ID,'r')) {
          return false;
       }
 
       // Have right to manage members
-      $canedit = ($group->can($ID, 'r') && $group->canUpdate());
+      $canedit = ($group->canManageUsersItem());
       $rand    = mt_rand();
       $user    = new User();
       $crit    = Session::getSavedOption(__CLASS__, 'criterion', '');

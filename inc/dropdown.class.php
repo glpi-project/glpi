@@ -1623,18 +1623,8 @@ class Dropdown {
             }
 
             switch ($itemtype) {
-               case 'Software' :
-                  if ($isadmin
-                      && (countElementsInTable("glpi_rules",
-                                               "sub_type='RuleSoftwareCategory'") > 0)) {
-                     $actions['compute_software_category'] = __('Recalculate the category');
-                  }
-
-                  if (Session::haveRight("rule_dictionnary_software","w")
-                      && (countElementsInTable("glpi_rules",
-                                               "sub_type='RuleDictionnarySoftware'") > 0)) {
-                     $actions['replay_dictionnary'] = __('Replay the dictionary rules');
-                  }
+               case 'Calendar' :
+                  $actions['duplicate'] = _x('button', 'Duplicate');
                   break;
 
                case 'Computer' :
@@ -1642,16 +1632,6 @@ class Dropdown {
                      $actions['connect_to_computer'] = _x('button', 'Connect');
                      $actions['install']             = _x('button', 'Install');
                   }
-                  break;
-
-               case 'Supplier' :
-                  if ($isadmin) {
-                     $actions['add_contact'] = _x('button', 'Add a contact');
-                  }
-                  break;
-
-               case 'Calendar' :
-                  $actions['duplicate'] = _x('button', 'Duplicate');
                   break;
 
                case 'Contact' :
@@ -1667,6 +1647,10 @@ class Dropdown {
                   }
                   break;
 
+               case 'CronTask' :
+                  $actions['reset']      = __('Reset last run');
+                  break;
+                  
                case 'Document' :
                   if ($isadmin) {
                      $actions['add_document_item']    = _x('button', 'Add an item');
@@ -1674,16 +1658,51 @@ class Dropdown {
                   }
                   break;
 
-               case 'User' :
+               case 'Group' :
                   if ($isadmin) {
-                     $actions['add_group']       = __('Associate to a group');
-                     $actions['add_userprofile'] = __('Associate to a profile');
+                     $actions['add_user_group']    = _x('button', 'Add an user');
+                     $actions['add_supervisor_group']    = _x('button', 'Add a supervisor');
+                     $actions['add_delegatee_group']    = _x('button', 'Add a delegatee');
+                  }
+                  break;
+                  
+               case 'NetworkPortMigration':
+                  $actions['transform_to'] = __('Transform this network port to');
+                  break;
+
+               case 'NotImportedEmail':
+                  $actions['delete_email'] = __('Delete emails');
+                  $actions['import_email'] = _x('button', 'Import');
+                  break;
+                  
+               case 'Problem' :
+                  $tmp = new ProblemTask();
+                  if ($tmp->canCreate()) {
+                     $actions['add_task'] = __('Add a new task');
+                  }
+                  if (Session::haveRight("edit_all_problem","1")) {
+                     $actions['add_actor'] = __('Add an actor');
                   }
 
-                  if (Session::haveRight("user_authtype","w")) {
-                     $actions['change_authtype'] = _x('button', 'Change the authentication method');
-                     $actions['force_user_ldap_update']
-                                                 = __('Force synchronization');
+                  break;
+
+               case 'Software' :
+                  if ($isadmin
+                      && (countElementsInTable("glpi_rules",
+                                               "sub_type='RuleSoftwareCategory'") > 0)) {
+                     $actions['compute_software_category'] = __('Recalculate the category');
+                  }
+
+                  if (Session::haveRight("rule_dictionnary_software","w")
+                      && (countElementsInTable("glpi_rules",
+                                               "sub_type='RuleDictionnarySoftware'") > 0)) {
+                     $actions['replay_dictionnary'] = __('Replay the dictionary rules');
+                  }
+                  break;
+                  
+               case 'Supplier' :
+                  if ($isadmin) {
+                     $actions['add_contact'] = _x('button', 'Add a contact');
                   }
                   break;
 
@@ -1710,29 +1729,18 @@ class Dropdown {
                   }
 
                   break;
-
-               case 'CronTask' :
-                  $actions['reset']      = __('Reset last run');
-                  break;
-
-               case 'NotImportedEmail':
-                     $actions['delete_email'] = __('Delete emails');
-                     $actions['import_email'] = _x('button', 'Import');
-                  break;
-
-               case 'NetworkPortMigration':
-                     $actions['transform_to'] = __('Transform this network port to');
-                  break;
-
-               case 'Problem' :
-                  $tmp = new ProblemTask();
-                  if ($tmp->canCreate()) {
-                     $actions['add_task'] = __('Add a new task');
-                  }
-                  if (Session::haveRight("edit_all_problem","1")) {
-                     $actions['add_actor'] = __('Add an actor');
+                  
+               case 'User' :
+                  if ($isadmin) {
+                     $actions['add_user_group']       = __('Associate to a group');
+                     $actions['add_userprofile'] = __('Associate to a profile');
                   }
 
+                  if (Session::haveRight("user_authtype","w")) {
+                     $actions['change_authtype'] = _x('button', 'Change the authentication method');
+                     $actions['force_user_ldap_update']
+                                                 = __('Force synchronization');
+                  }
                   break;
 
             }

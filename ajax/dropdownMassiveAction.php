@@ -194,6 +194,15 @@ if (isset($_POST["action"])
                 __s('Disconnect')."'>";
          break;
 
+      case "add_user_group" :
+      case "add_supervisor_group" :
+      case "add_delegatee_group" :
+         User::dropdown(array('right'  => "all"));
+         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                        _sx('button', 'Add')."'>";
+         break;
+
+         
       case "add_group" :
          Group::dropdown(array('condition' => '`is_usergroup`'));
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
