@@ -96,7 +96,18 @@ class Contract extends CommonDBTM {
       return $ong;
    }
 
+   function prepareInputForAdd($input) {
 
+      if (isset($input["id"]) && $input["id"]>0) {
+         $input["_oldID"] = $input["id"];
+      }
+      unset($input['id']);
+      unset($input['withtemplate']);
+
+      return $input;
+   }
+
+   
    function pre_updateInDB() {
 
       // Clean end alert if begin_date is after old one
