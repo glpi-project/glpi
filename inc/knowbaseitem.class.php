@@ -845,7 +845,8 @@ class KnowbaseItem extends CommonDBTM {
 
       echo "<div>";
 
-      echo "<form method=get action='".$params["target"]."'><table class='tab_cadre_fixe'>";
+      echo "<form method=post action='".$CFG_GLPI['root_doc']."/front/knowbase.php'>";
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
       echo "<input type='text' size='50' name='contains' value=\"".
              stripslashes(Html::cleanInputText($params["contains"]))."\"></td>";

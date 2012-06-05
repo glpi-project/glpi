@@ -224,9 +224,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       }
 
       // Default values of parameters
-      $params["knowbaseitemcategories_id"] = "0";
-      $params["contains"]                  = "";
-      $params["target"]                    = $_SERVER['PHP_SELF'];
+      $params["knowbaseitemcategories_id"] = "";
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -240,11 +238,11 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
           && !$faq
           && (!isset($options['itemtype']) || !isset($options['items_id']))) {
          echo "<div>";
-         echo "<form method=get action='".$params["target"]."'>";
+         echo "<form method=post action='".$CFG_GLPI['root_doc']."/front/knowbase.php'>";
          echo "<table class='tab_cadre_fixe'>";
 
          echo "<tr class='tab_bg_2'><td class='right' width='50%'>".__('Category')."&nbsp;";
-         KnowbaseItemCategory::dropdown(array('value' => '$params["knowbaseitemcategories_id)"]'));
+         KnowbaseItemCategory::dropdown(array('value' => $params["knowbaseitemcategories_id"]));
          echo "</td><td class='left'><input type='submit' value=\""._sx('button','Post')."\" class='submit'></td>";
          echo "</tr></table></td>";
          echo "</tr></table></div>";
