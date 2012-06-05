@@ -423,20 +423,59 @@ if (isset($_POST["action"])
          }
          break;
 
-      case "add_group" :
+      case "add_user" :
+      case "add_user_group" :
+      case "add_supervisor_group" :
+      case "add_delegatee_group" :
          $groupuser = new Group_User();
          foreach ($_POST["item"] as $key => $val) {
             if ($val == 1) {
-               $input = array('groups_id' => $_POST["groups_id"],
-                              'users_id'  => $key);
-               if ($groupuser->can(-1,'w',$input)) {
-                  if ($groupuser->add($input)){
-                     $nbok++;
+               if (isset($_POST['users_id'])) {
+                  // Add users to groups
+                  $input = array('groups_id' => $key,
+                                 'users_id'  => $_POST['users_id']);
+               } else { // Add groups to users
+                  $input = array('groups_id' => $_POST["groups_id"],
+                                 'users_id'  => $key);
+               }
+               $updateifnotfound=false;
+               if ($_POST["action"] == 'add_supervisor_group') {
+                  $input['is_manager'] = 1;
+                  $updateifnotfound=true;
+               }
+               if ($_POST["action"] == 'add_delegatee_group') {
+                  $input['is_userdelegate'] = 1;
+                  $updateifnotfound=true;
+               }
+               $group = new Group();
+               $user = new user();
+               if ($group->getFromDB($input['groups_id'])
+                  && $user->getFromDB($input['users_id'])) {
+                  if ($updateifnotfound
+                     && $groupuser->getFromDBForItems($user, $group)) {
+                     if ($groupuser->can($groupuser->getID(),'w')) {
+                        $input['id'] = $groupuser->getID();
+                        if ($groupuser->update($input)) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
+                     } else {
+                        $nbnoright++;
+                     }
                   } else {
-                     $nbko++;
+                     if ($groupuser->can(-1,'w',$input)) {
+                        if ($groupuser->add($input)){
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
+                     } else {
+                        $nbnoright++;
+                     }
                   }
                } else {
-                  $nbnoright++;
+                  $nbko++;
                }
             }
          }
