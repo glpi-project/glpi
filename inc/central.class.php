@@ -91,6 +91,7 @@ class Central extends CommonGLPI {
    static function showGlobalView() {
 
       $showticket = Session::haveRight("show_all_ticket","1");
+      $showproblem = Session::haveRight("show_all_problem","1");
 
       echo "<table class='tab_cadre_central'><tr>";
       echo "<td class='top'>";
@@ -98,6 +99,9 @@ class Central extends CommonGLPI {
       echo "<tr><td>";
       if ($showticket) {
          Ticket::showCentralCount();
+      }
+      if ($showproblem) {
+         Problem::showCentralCount();
       }
       if (Session::haveRight("contract","r")) {
          Contract::showCentral();
