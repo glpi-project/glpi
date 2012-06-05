@@ -688,7 +688,6 @@ class Stat {
       }
       $supplierlinktable = $supplierlinkclass->getTable();
 
-
       $tasktable      = getTableForItemType($item->getType().'Task');
 
       $closed_status  = $item->getClosedStatusArray();
@@ -779,7 +778,7 @@ class Stat {
             break;
          case "suppliers_id_assign" :
             $LEFTJOIN = $LEFTJOINSUPPLIER;
-            $WHERE   .= " AND (`$supplierlinktable`.`suppliers.id` = '$value'
+            $WHERE   .= " AND (`$supplierlinktable`.`suppliers_id` = '$value'
                                AND `$supplierlinktable`.`type` = '".CommonITILObject::ASSIGN."')";
             break;
 

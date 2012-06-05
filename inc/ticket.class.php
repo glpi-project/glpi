@@ -5265,6 +5265,8 @@ class Ticket extends CommonITILObject {
                   ON (`glpi_tickets`.`id` = `glpi_groups_tickets`.`tickets_id`)
                LEFT JOIN `glpi_tickets_users`
                   ON (`glpi_tickets`.`id` = `glpi_tickets_users`.`tickets_id`)
+               LEFT JOIN `glpi_suppliers_tickets`
+                  ON (`glpi_tickets`.`id` = `glpi_suppliers_tickets`.`tickets_id`)
                LEFT JOIN `glpi_itilcategories`
                   ON (`glpi_tickets`.`itilcategories_id` = `glpi_itilcategories`.`id`)
                $FROM";
