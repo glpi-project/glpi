@@ -923,7 +923,7 @@ class Change extends CommonITILObject {
 
       $this->showActorsPartForm($ID,$options);
 
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th width='10%'>".__('Title')."</th>";
       echo "<td colspan='3'>";
