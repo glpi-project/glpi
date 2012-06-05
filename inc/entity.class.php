@@ -1740,7 +1740,7 @@ class Entity extends CommonTreeDropdown {
          echo "<tr><td colspan='4' class='green center'>";
 
          if ($inquestrate == 0) {
-            -e('Disabled');
+            _e('Disabled');
          } else {
             echo $typeinquest[$inquestconfig].'<br>';
             $inqconf = self::getUsedConfig('inquest_config', $entity->fields['entities_id'],
