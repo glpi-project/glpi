@@ -208,5 +208,48 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       }
    }
 
+   /**
+    * Print out an HTML "<form>" for Search knowbase item
+    *
+    * @param $options   $_GET
+    * @return nothing (display the form)
+   **/
+   static function showBrowseForm($options) {
+      global $CFG_GLPI;
+
+      if (!$CFG_GLPI["use_public_faq"]
+          && !Session::haveRight("knowbase","r")
+          && !Session::haveRight("faq","r")) {
+         return false;
+      }
+
+      // Default values of parameters
+      $params["knowbaseitemcategories_id"] = "0";
+      $params["contains"]                  = "";
+      $params["target"]                    = $_SERVER['PHP_SELF'];
+
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+      $faq = !Session::haveRight("knowbase","r");
+      
+      // Category select not for anonymous FAQ
+      if (Session::getLoginUserID()
+          && !$faq
+          && (!isset($options['itemtype']) || !isset($options['items_id']))) {
+         echo "<div>";
+         echo "<form method=get action='".$params["target"]."'>";
+         echo "<table class='tab_cadre_fixe'>";
+
+         echo "<tr class='tab_bg_2'><td class='right' width='50%'>".__('Category')."&nbsp;";
+         KnowbaseItemCategory::dropdown(array('value' => '$params["knowbaseitemcategories_id)"]'));
+         echo "</td><td class='left'><input type='submit' value=\""._sx('button','Post')."\" class='submit'></td>";
+         echo "</tr></table></td>";
+         echo "</tr></table></div>";
+      }
+   }
+   
 }
 ?>
