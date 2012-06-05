@@ -42,10 +42,11 @@ if (isset($_GET["id"])) {
    Html::redirect($CFG_GLPI["root_doc"]."/front/knowbaseitem.form.php?id=".$_GET["id"]);
 }
 
-Html::header(KnowbaseItem::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
+Html::header(Knowbase::getTypeName(1), $_SERVER['PHP_SELF'], "utils", "knowbase");
+
 
 $kb = new Knowbase();
-$kb->show();
+$kb->show(Toolbox::addslashes_deep($_REQUEST));
 
 Html::footer();
 ?>
