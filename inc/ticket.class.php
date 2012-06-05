@@ -4466,35 +4466,35 @@ class Ticket extends CommonITILObject {
          echo "</table>";
 
       } else {
-         echo "<table class='tab_cadrehov' style='width:420px'>";
-         echo "<tr><th>";
-         switch ($status) {
-            case 'waiting' :
-               _e('Tickets on pending status');
-               break;
-
-            case 'process' :
-               _e('Tickets to be processed');
-               break;
-
-            case 'tovalidate' :
-               _e('Your tickets to validate');
-               break;
-
-            case 'rejected' :
-               _e('Your rejected tickets');
-               break;
-
-            case 'toapprove' :
-               _e('Your tickets to close');
-               break;
-
-            case 'requestbyself' :
-            default :
-               _e('Your tickets in progress');
-         }
-         echo "</th></tr>";
-         echo "</table>";
+//          echo "<table class='tab_cadrehov' style='width:420px'>";
+//          echo "<tr><th>";
+//          switch ($status) {
+//             case 'waiting' :
+//                _e('Tickets on pending status');
+//                break;
+// 
+//             case 'process' :
+//                _e('Tickets to be processed');
+//                break;
+// 
+//             case 'tovalidate' :
+//                _e('Your tickets to validate');
+//                break;
+// 
+//             case 'rejected' :
+//                _e('Your rejected tickets');
+//                break;
+// 
+//             case 'toapprove' :
+//                _e('Your tickets to close');
+//                break;
+// 
+//             case 'requestbyself' :
+//             default :
+//                _e('Your tickets in progress');
+//          }
+//          echo "</th></tr>";
+//          echo "</table>";
       }
    }
 
