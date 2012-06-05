@@ -994,9 +994,9 @@ $LANG['joblist'][35]="Non chiusa";
 $LANG['joblist'][36]="Valore dello stato nel database"; 
 
 $LANG['jobrecurrent'][1]="Chiamate periodiche"; 
-$LANG['jobrecurrent'][2]="Preliminary creation"; // en_GB string to be translated
-$LANG['jobrecurrent'][3]="Next creation"; // en_GB string to be translated
-$LANG['jobrecurrent'][4]="Frequency invalid. It must be greater than the preliminary creation."; // en_GB string to be translated
+$LANG['jobrecurrent'][2]="Rapidità creazione"; 
+$LANG['jobrecurrent'][3]="Prossima creazione"; 
+$LANG['jobrecurrent'][4]="Frequenza non valida. Il valore dev'essere maggiore rispetto alla rapidità."; 
 
 $LANG['jobresolution'][1]="Soluzione"; 
 $LANG['jobresolution'][2]="Soluzioni"; 
