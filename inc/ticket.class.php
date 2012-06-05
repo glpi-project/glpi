@@ -4159,7 +4159,7 @@ class Ticket extends CommonITILObject {
       echo "<span id='addfilebutton'><img title=\"".$LANG['buttons'][8]."\" alt=\"".
              $LANG['buttons'][8]."\" onClick=\"if (nbfiles<maxfiles){
                            var row = Ext.get('uploadfiles');
-                           row.createChild('<input type=\'file\' name=\'filename[]\' size=\'$size\'>');
+                           row.createChild('<br><input type=\'file\' name=\'filename[]\' size=\'$size\'>');
                            nbfiles++;
                            if (nbfiles==maxfiles) {
                               Ext.get('addfilebutton').hide();
