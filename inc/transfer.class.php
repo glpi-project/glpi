@@ -658,13 +658,13 @@ class Transfer extends CommonDBTM {
             }
          }
          // Ticket Supplier
-         $query = "SELECT DISTINCT `suppliers_id_assign`,
+         $query = "SELECT DISTINCT `glpi_tickets_suppliers`.`suppliers_id`,
                                    `glpi_suppliers`.`is_recursive`,
                                    `glpi_suppliers`.`entities_id`
                    FROM `glpi_tickets`
-                   LEFT JOIN `glpi_suppliers`
-                         ON (`glpi_suppliers`.`id` = `glpi_tickets`.`suppliers_id_assign`)
-                   WHERE `suppliers_id_assign` > '0'
+                   LEFT JOIN `glpi_tickets_suppliers`
+                         ON (`glpi_tickets_suppliers`.`tickets_id` = `glpi_tickets`.`id`)
+                   WHERE `glpi_tickets_suppliers`.`suppliers_id` > '0'
                          AND `glpi_tickets`.`id` IN ".$this->item_search['Ticket'];
 
          if ($result = $DB->query($query)) {
@@ -672,9 +672,9 @@ class Transfer extends CommonDBTM {
                while ($data = $DB->fetch_assoc($result)) {
                   if ($data['is_recursive']
                       && in_array($data['entities_id'], $to_entity_ancestors)) {
-                     $this->addNotToBeTransfer('Supplier', $data['suppliers_id_assign']);
+                     $this->addNotToBeTransfer('Supplier', $data['suppliers_id']);
                   } else {
-                     $this->addToBeTransfer('Supplier', $data['suppliers_id_assign']);
+                     $this->addToBeTransfer('Supplier', $data['suppliers_id']);
                   }
 
                }
@@ -1032,12 +1032,14 @@ class Transfer extends CommonDBTM {
                $input2 = $this->transferTicketAdditionalInformations($item->fields);
                $input  = array_merge($input, $input2);
                $this->transferTaskCategory($itemtype, $ID, $newID);
+               $this->transferLinkedSuppliers($itemtype, $ID, $newID);
             }
 
             if ($itemtype == 'Problem') {
                $input2 = $this->transferTicketAdditionalInformations($item->fields);
                $input  = array_merge($input, $input2);
                $this->transferTaskCategory($itemtype, $ID, $newID);
+               $this->transferLinkedSuppliers($itemtype, $ID, $newID);
             }
 
             $item->update($input);
@@ -2247,7 +2249,65 @@ class Transfer extends CommonDBTM {
 
    }
 
+   /**
+    * Transfer suppliers for specified tickets or problems
+    *
+    * @since version 0.84
+    *
+    * @param $itemtype  itemtype : Problem / Ticket
+    * @param $ID        original ticket ID
+    * @param $newID     new ticket ID
+   **/
+   function transferLinkedSuppliers($itemtype, $ID, $newID) {
+      global $DB;
 
+      switch ($itemtype) {
+         case 'Ticket' :
+            $table = 'glpi_suppliers_tickets';
+            $field = 'tickets_id';
+            $link  = new Supplier_Ticket();
+            break;
+
+         case 'Problem' :
+            $table = 'glpi_problems_suppliers';
+            $field = 'problems_id';
+            $link  = new Problem_Supplier();
+            break;
+      }
+
+      $query = "SELECT *
+                FROM `$table`
+                WHERE `$field` = '$ID'";
+
+      if ($result = $DB->query($query)) {
+         if ($DB->numrows($result) != 0) {
+            while ($data = $DB->fetch_assoc($result)) {
+               $input = array();
+
+               if ($data['suppliers_id'] > 0) {
+                  $supplier = new Supplier();
+
+                  if ($supplier->getFromDB($data['suppliers_id'])) {
+                     $inputcat['entities_id']  = $this->to;
+                     $inputcat['name']         = addslashes($supplier->fields['name']);
+                     $catid                    = $supplier->findID($inputcat);
+                     if ($catid < 0) {
+                        $catid = $supplier->import($inputcat);
+                     }
+                     $input['id']                = $data['id'];
+                     $input[$field]              = $ID;
+                     $input['suppliers_id'] = $catid;
+                     $link->update($input);
+                  }
+
+               }
+
+            }
+         }
+      }
+
+   }
+   
    /**
     * Transfer task categories for specified tickets
     *
@@ -2318,9 +2378,9 @@ class Transfer extends CommonDBTM {
       $input               = array();
       $suppliers_id_assign = 0;
 
-      if ($data['suppliers_id_assign'] > 0) {
-         $suppliers_id_assign = $this->transferSingleSupplier($data['suppliers_id_assign']);
-      }
+//       if ($data['suppliers_id_assign'] > 0) {
+//          $suppliers_id_assign = $this->transferSingleSupplier($data['suppliers_id_assign']);
+//       }
 
       // Transfer ticket category
       $catid = 0;

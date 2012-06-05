@@ -46,6 +46,10 @@ abstract class CommonITILObject extends CommonDBTM {
    protected $groups      = array();
    public $grouplinkclass = '';
 
+   /// Suppliers by type
+   protected $suppliers      = array();
+   public $supplierlinkclass = '';
+
    /// Use user entity to select entity of the object
    protected $userentity_oncreate = false;
 
@@ -73,6 +77,11 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!empty($this->userlinkclass)) {
          $class = new $this->userlinkclass();
          $this->users  = $class->getActors($this->fields['id']);
+      }
+
+      if (!empty($this->supplierlinkclass)) {
+         $class = new $this->supplierlinkclass();
+         $this->suppliers  = $class->getActors($this->fields['id']);
       }
    }
 
@@ -136,6 +145,48 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
+    * Is a group linked to the object ?
+    *
+    * @param $type               type to search (see constants)
+    * @param $groups_id  integer group ID
+    *
+    * @return boolean
+   **/
+   function isGroup($type, $groups_id) {
+
+      if (isset($this->groups[$type])) {
+         foreach ($this->groups[$type] as $data) {
+            if ($data['groups_id'] == $groups_id) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
+
+   /**
+    * Is a supplier linked to the object ?
+    *
+    * @param $type               type to search (see constants)
+    * @param $suppliers_id  integer supplier ID
+    *
+    * @return boolean
+   **/
+   function isSupplier($type, $suppliers_id) {
+
+      if (isset($this->suppliers[$type])) {
+         foreach ($this->suppliers[$type] as $data) {
+            if ($data['suppliers_id'] == $suppliers_id) {
+               return true;
+            }
+         }
+      }
+      return false;
+   }
+
+   
+   /**
     * get users linked to a object
     *
     * @param $type type to search (see constants)
@@ -168,7 +219,22 @@ abstract class CommonITILObject extends CommonDBTM {
       return array();
    }
 
+   /**
+    * get suppliers linked to a object
+    *
+    * @param $type type to search (see constants)
+    *
+    * @return array
+   **/
+   function getSuppliers($type) {
 
+      if (isset($this->suppliers[$type])) {
+         return $this->suppliers[$type];
+      }
+
+      return array();
+   }
+   
    /**
     * count users linked to object by type or global
     *
@@ -222,25 +288,30 @@ abstract class CommonITILObject extends CommonDBTM {
       return 0;
    }
 
-
    /**
-    * Is a group linked to the object ?
+    * count suppliers linked to object by type or global
     *
-    * @param $type               type to search (see constants)
-    * @param $groups_id  integer group ID
+    * @param $type type to search (see constants) / 0 for all (default 0)
     *
-    * @return boolean
+    * @return integer
    **/
-   function isGroup($type, $groups_id) {
+   function countSuppliers($type=0) {
 
-      if (isset($this->groups[$type])) {
-         foreach ($this->groups[$type] as $data) {
-            if ($data['groups_id'] == $groups_id) {
-               return true;
+      if ($type > 0) {
+         if (isset($this->suppliers[$type])) {
+            return count($this->suppliers[$type]);
+         }
+
+      } else {
+         if (count($this->suppliers)) {
+            $count = 0;
+            foreach ($this->suppliers as $u) {
+               $count += count($u);
             }
+            return $count;
          }
       }
-      return false;
+      return 0;
    }
 
 
@@ -567,6 +638,21 @@ abstract class CommonITILObject extends CommonDBTM {
                      }
                   }
                   break;
+               case "supplier" :
+                  if (!empty($this->supplierlinkclass)
+                      && ($input['_itil_assign']['suppliers_id'] > 0)) {
+                     $supplieractors = new $this->supplierlinkclass();
+                     if (isset($input['_auto_update'])
+                         || $supplieractors->can(-1,'w',$input['_itil_assign'])) {
+                        $supplieractors->add($input['_itil_assign']);
+                        $input['_forcenotif'] = true;
+                        if ((!isset($input['status']) && ($this->fields['status'] == 'new'))
+                            || (isset($input['status']) && ($input['status'] == 'new'))) {
+                           $input['status'] = 'assign';
+                        }
+                     }
+                  }
+                  break;                  
             }
          }
       }
@@ -591,19 +677,6 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    function pre_updateInDB() {
-
-      if ($this->fields['status'] == 'new') {
-         if (in_array("suppliers_id_assign",$this->updates)
-             && ($this->input["suppliers_id_assign"] > 0)) {
-
-            if (!in_array('status', $this->updates)) {
-               $this->oldvalues['status'] = $this->fields['status'];
-               $this->updates[]           = 'status';
-            }
-            $this->fields['status'] = 'assign';
-            $this->input['status']  = 'assign';
-         }
-      }
 
       // Setting a solution or solution type means the problem is solved
       if ((in_array("solutiontypes_id",$this->updates) && ($this->input["solutiontypes_id"] > 0))
@@ -663,8 +736,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       if (isset($this->input["status"])) {
          if (($this->input["status"] != 'waiting')
-             && isset($this->input["suppliers_id_assign"])
-             && ($this->input["suppliers_id_assign"] == 0)
+             && ($this->countSuppliers(self::ASSIGN) == 0)
              && ($this->countUsers(self::ASSIGN) == 0)
              && ($this->countGroups(self::ASSIGN) == 0)
              && !in_array($this->fields['status'],array_merge($this->getSolvedStatusArray(),
@@ -969,7 +1041,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
       // Set default dropdown
-      $dropdown_fields = array('entities_id', 'suppliers_id_assign', 'itilcategories_id');
+      $dropdown_fields = array('entities_id', 'itilcategories_id');
       foreach ($dropdown_fields as $field ) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
@@ -999,7 +1071,11 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!empty($this->grouplinkclass)) {
          $groupactors = new $this->grouplinkclass();
       }
-
+      $supplieractors = NULL;
+      if (!empty($this->supplierlinkclass)) {
+         $supplieractors = new $this->supplierlinkclass();
+      }
+      
       if (!is_null($useractors)) {
          if (isset($this->input["_users_id_requester"])
              && (($this->input["_users_id_requester"] > 0)
@@ -1079,7 +1155,16 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
+      if (!is_null($supplieractors)) {
 
+         if (isset($this->input["_suppliers_id_assign"]) && ($this->input["_suppliers_id_assign"] > 0)) {
+            $supplieractors->add(array($supplieractors->getItilObjectForeignKey()
+                                                   => $this->fields['id'],
+                                    'suppliers_id' => $this->input["_suppliers_id_assign"],
+                                    'type'         => self::ASSIGN));
+         }
+      }
+      
       // Additional groups actors
       if (!is_null($groupactors)) {
          // Requesters
@@ -1131,6 +1216,25 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
+      // Additional suppliers actors
+      if (!is_null($supplieractors)) {
+         // Assigns
+         if (isset($this->input['_additional_suppliers_assigns'])
+             && is_array($this->input['_additional_suppliers_assigns'])
+             && count($this->input['_additional_suppliers_assigns'])) {
+
+            $input2 = array($supplieractors->getItilObjectForeignKey() => $this->fields['id'],
+                            'type'                                  => self::ASSIGN);
+
+            foreach ($this->input['_additional_suppliers_assigns'] as $tmp) {
+               if ($tmp > 0) {
+                  $input2['suppliers_id'] = $tmp;
+                  $supplieractors->add($input2);
+               }
+            }
+         }
+      }
+      
       // Additional actors : using default notification parameters
       if (!is_null($useractors)) {
          // Observers : for mailcollector
@@ -1715,7 +1819,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
 
    /**
-    * show tooltip for user notification information
+    * show groups asociated
     *
     * @param $type      integer : user type
     * @param $canedit   boolean : can edit ?
@@ -1752,6 +1856,43 @@ abstract class CommonITILObject extends CommonDBTM {
       }
    }
 
+   /**
+    * show suppliers associated
+    *
+    * @param $type      integer : user type
+    * @param $canedit   boolean : can edit ?
+    *
+    * @return nothing display
+   **/
+   function showSuppliersAssociated($type, $canedit) {
+      global $CFG_GLPI;
+
+      $showsupplierlink = 0;
+      if (Session::haveRight('contact_enterprise','r')) {
+         $showsupplierlink = 1;
+      }
+
+      $suppliericon = self::getActorIcon('supplier',$type);
+      $supplier     = new Supplier();
+
+      if (isset($this->suppliers[$type]) && count($this->suppliers[$type])) {
+         foreach ($this->suppliers[$type] as $d) {
+            $k = $d['suppliers_id'];
+            echo "$suppliericon&nbsp;";
+            if ($supplier->getFromDB($k)) {
+               echo $supplier->getLink($showsupplierlink);
+            }
+            if ($canedit) {
+               echo "&nbsp;<a href='".$this->getFormURL()."?delete_supplier=delete_supplier&amp;id=".
+                     $d['id']."&amp;".$this->getForeignKeyField()."=".$this->fields['id'].
+                     "' title=\"".__s('Delete')."\">
+                     <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
+                      alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
+            }
+            echo '<br>';
+         }
+      }
+   }
 
    /**
     * display a value according to a field
@@ -1900,8 +2041,15 @@ abstract class CommonITILObject extends CommonDBTM {
       $tab[6]['table']          = 'glpi_suppliers';
       $tab[6]['field']          = 'name';
       $tab[6]['datatype']       = 'dropdown';
-      $tab[6]['linkfield']      = 'suppliers_id_assign';
       $tab[6]['name']           = __('Assigned to a supplier');
+      $tab[6]['forcegroupby']   = true;
+      $tab[6]['massiveaction']  = false;
+      $tab[6]['joinparams']     = array('beforejoin'
+                                         => array('table' => getTableForItemType($this->supplierlinkclass),
+                                                  'joinparams'
+                                                   => array('jointype'  => 'child',
+                                                            'condition' => 'AND NEWTABLE.`type` ' .
+                                                                            '= '.self::ASSIGN)));
 
       $tab[8]['table']          = 'glpi_groups';
       $tab[8]['field']          = 'completename';
@@ -2136,7 +2284,7 @@ abstract class CommonITILObject extends CommonDBTM {
                unset($types['group']);
             }
             if (isset($types['supplier'])
-               && isset($is_hidden['suppliers_id_assign']) && $is_hidden['suppliers_id_assign']) {
+               && isset($is_hidden['_suppliers_id_assign']) && $is_hidden['_suppliers_id_assign']) {
                unset($types['supplier']);
             }
             break;
@@ -2338,7 +2486,7 @@ abstract class CommonITILObject extends CommonDBTM {
       foreach (array('_users_id_requester', '_groups_id_requester',
                      '_users_id_observer', '_groups_id_observer',
                      '_users_id_assign', '_groups_id_assign',
-                     'suppliers_id_assign') as $f) {
+                     '_suppliers_id_assign') as $f) {
          $is_hidden[$f] = false;
          if (isset($options['_tickettemplate'])
              && $options['_tickettemplate']->isHiddenField($f)) {
@@ -2404,7 +2552,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<th width='29%'>";
       if (!$is_hidden['_users_id_assign']
           || !$is_hidden['_groups_id_assign']
-          || !$is_hidden['suppliers_id_assign']) {
+          || !$is_hidden['_suppliers_id_assign']) {
          _e('Assigned to');
       }
       $rand_assign      = -1;
@@ -2413,7 +2561,7 @@ abstract class CommonITILObject extends CommonDBTM {
           && ($this->canAssign() || $this->canAssignToMe())
           && (!$is_hidden['_users_id_assign']
               || !$is_hidden['_groups_id_assign']
-              || !$is_hidden['suppliers_id_assign'])) {
+              || !$is_hidden['_suppliers_id_assign'])) {
          $rand_assign = mt_rand();
 
          echo "&nbsp;&nbsp;";
@@ -2570,8 +2718,7 @@ abstract class CommonITILObject extends CommonDBTM {
       echo "<td>";
       if ($rand_assign >= 0) {
          $this->showActorAddForm(self::ASSIGN, $rand_assign, $this->fields['entities_id'],
-                                 $is_hidden, $this->canAssign(),
-                                 ($this->canAssign() && ($this->fields["suppliers_id_assign"] == 0)));
+                                 $is_hidden, $this->canAssign(), $this->canAssign());
       }
 
       // Assign User
@@ -2657,31 +2804,38 @@ abstract class CommonITILObject extends CommonDBTM {
          $this->showGroupsAssociated(self::ASSIGN, $candeleteassign);
       }
 
-      // Supplier
-      if ($this->canAssign()
-          && !$is_hidden['suppliers_id_assign']
-          && ($this->fields["suppliers_id_assign"] || !$ID)) {
-         echo self::getActorIcon('supplier', self::ASSIGN);
-         /// For ticket templates : mandatories
-         if (isset($options['_tickettemplate'])) {
-            echo $options['_tickettemplate']->getMandatoryMark('suppliers_id_assign');
-         }
-         echo "&nbsp;";
+      // Assign Suppliers
+      if (!$ID) {
+         if ($this->canAssign()
+             && !$is_hidden['_suppliers_id_assign']) {
+            echo self::getActorIcon('supplier', self::ASSIGN);
+            /// For ticket templates : mandatories
+            if (isset($options['_tickettemplate'])) {
+               echo $options['_tickettemplate']->getMandatoryMark('_suppliers_id_assign');
+            }
+            echo "&nbsp;";
+            $rand   = mt_rand();
+            $params = array('name'      => '_suppliers_id_assign',
+                            'value'     => $options["_suppliers_id_assign"],
+                            'entity'    => $this->fields["entities_id"],
+                            'rand'      => $rand);
 
-         Supplier::dropdown(array('name'   => 'suppliers_id_assign',
-                                  'value'  => $this->fields["suppliers_id_assign"],
-                                  'entity' => $this->fields["entities_id"]));
-         echo '<br>';
-      } else if (!$is_hidden['suppliers_id_assign']) {
-         if ($this->fields["suppliers_id_assign"]) {
-            echo self::getActorIcon('supplier', self::ASSIGN)."&nbsp;";
-            echo Dropdown::getDropdownName("glpi_suppliers", $this->fields["suppliers_id_assign"]);
-            if (!$ID) {
-               echo "<input type='hidden' name='suppliers_id_assign' value=\"".
-                      $this->fields["suppliers_id_assign"]."\">";
+            Supplier::dropdown($params);
+         } else { // predefined value
+            if (isset($options["_suppliers_id_assign"])
+                && $options["_suppliers_id_assign"]) {
+               echo self::getActorIcon('supplier', self::ASSIGN)."&nbsp;";
+               echo Dropdown::getDropdownName("glpi_suppliers", $options["_suppliers_id_assign"]);
+               echo "<input type='hidden' name='_suppliers_id_assign' value=\"".
+                      $options["_suppliers_id_assign"]."\">";
+               echo '<hr>';
             }
          }
+
+      } else if (!$is_hidden['_suppliers_id_assign']) {
+         $this->showSuppliersAssociated(self::ASSIGN, $candeleteassign);
       }
+
       echo "</td>";
       echo "</tr>";
       echo "</table>";
@@ -3556,11 +3710,17 @@ abstract class CommonITILObject extends CommonDBTM {
    function getUsedSupplierBetween($date1='', $date2='') {
       global $DB,$CFG_GLPI;
 
+      $linkclass = new $this->supplierlinkclass();
+      $linktable = $linkclass->getTable();
+
+      
       $query = "SELECT DISTINCT `glpi_suppliers`.`id` AS suppliers_id_assign,
                                 `glpi_suppliers`.`name` AS name
                 FROM `".$this->getTable()."`
+                  ON (`$linktable`.`".$this->getForeignKeyField()."` = `".$this->getTable()."`.`id`
+                      AND `$linktable`.`type` = '".self::ASSIGN."')
                 LEFT JOIN `glpi_suppliers`
-                     ON (`glpi_suppliers`.`id` = `".$this->getTable()."`.`suppliers_id_assign`)
+                     ON (`glpi_suppliers`.`id` = `$linktable`.`suppliers_id`)
                 WHERE NOT `".$this->getTable()."`.`is_deleted` ".
                       getEntitiesRestrictRequest("AND", $this->getTable());
 

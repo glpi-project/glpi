@@ -2561,7 +2561,10 @@ class CommonDBTM extends CommonGLPI {
 
       $toadd = "";
       if ($with_comment) {
-         $toadd = sprintf(__('%1$s - %2$s'), $toadd, $this->getComments());
+         $comments = $this->getComments();
+         if (!empty($comments)) {
+            $toadd = sprintf(__('%1$s - %2$s'), $toadd, $comments);
+         }
       }
 
       if ($forceid

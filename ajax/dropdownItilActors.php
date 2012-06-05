@@ -145,9 +145,16 @@ if (isset($_POST["type"])
             break;
 
          case "supplier" :
-            Supplier::dropdown(array('name'   => 'suppliers_id_assign',
-                                     'entity' => $_POST['entity_restrict']));
+
+            $param = array('name'      => '_itil_'.$_POST["actortype"].'[suppliers_id]',
+                           'entity'    => $_POST['entity_restrict'],
+                           'rand'      => $rand);
+
+
+            $rand = Supplier::dropdown($param);
             break;
+            
+
       }
    }
 }

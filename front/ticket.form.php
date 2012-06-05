@@ -152,6 +152,15 @@ if (isset($_POST["add"])) {
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
 
+} else if (isset($_REQUEST['delete_supplier'])) {
+   $supplier_ticket = new Supplier_Ticket();
+   $supplier_ticket->check($_REQUEST['id'], 'w');
+   $supplier_ticket->delete($_REQUEST);
+
+   Event::log($_REQUEST['tickets_id'], "ticket", 4, "tracking",
+              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
+   Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$_REQUEST['tickets_id']);
+
 } else if (isset($_REQUEST['addme_observer'])) {
    $ticket_user = new Ticket_User();
    $track->check($_REQUEST['tickets_id'], 'r');

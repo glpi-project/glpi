@@ -505,7 +505,7 @@ function addTracking($type, $ID, $ID_entity) {
                            'status'                      => $status,
                            'users_id_recipient'          => $users[0],
                            'requesttypes_id'             => mt_rand(0,6),
-                           'suppliers_id_assign'         => $enterprise,
+                           '_suppliers_id_assign'        => $enterprise,
                            'itemtype'                    => $type,
                            'items_id'                    => $ID,
                            'content'                     => 'tracking '.Toolbox::getRandomString(15),

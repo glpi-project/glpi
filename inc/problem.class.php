@@ -43,8 +43,10 @@ class Problem extends CommonITILObject {
    public $dohistory = true;
 
    // From CommonITIL
-   public $userlinkclass  = 'Problem_User';
-   public $grouplinkclass = 'Group_Problem';
+   public $userlinkclass     = 'Problem_User';
+   public $grouplinkclass    = 'Group_Problem';
+   public $supplierlinkclass = 'Problem_Supplier';
+   
 
    const MATRIX_FIELD         = 'priority_matrix';
    const URGENCY_MASK_FIELD   = 'urgency_mask';
@@ -329,7 +331,7 @@ class Problem extends CommonITILObject {
 
       if (((isset($input["_users_id_assign"]) && ($input["_users_id_assign"] > 0))
            || (isset($input["_groups_id_assign"]) && ($input["_groups_id_assign"] > 0))
-           || (isset($input["suppliers_id_assign"]) && ($input["suppliers_id_assign"] > 0)))
+           || (isset($input["_suppliers_id_assign"]) && ($input["_suppliers_id_assign"] > 0)))
           && ($input["status"] == "new")) {
 
          $input["status"] = "assign";
@@ -1149,7 +1151,7 @@ class Problem extends CommonITILObject {
                          '_users_id_observer_notif'  => array('use_notification' => 1,
                                                               'alternative_email' => ''),
                          '_groups_id_observer'       => 0,
-                         'suppliers_id_assign'       => 0,
+                         '_suppliers_id_assign'       => 0,
                          'priority'                  => 3,
                          'urgency'                   => 3,
                          'impact'                    => 3,
@@ -1639,15 +1641,14 @@ class Problem extends CommonITILObject {
             }
          }
 
-
-         if ($job->fields["suppliers_id_assign"] > 0) {
-            // you have <br> at the end of each foreach, so not useful
-/*            if (!empty($fifth_col)) {
+         if (isset($job->suppliers[parent::ASSIGN]) && count($job->suppliers[parent::ASSIGN])) {
+            foreach ($job->suppliers[parent::ASSIGN] as $d) {
+               $fifth_col .= Dropdown::getDropdownName("glpi_suppliers", $d["suppliers_id"]);
                $fifth_col .= "<br>";
             }
-*/
-            $fifth_col .= parent::getAssignName($job->fields["suppliers_id_assign"], 'Supplier', 1);
          }
+         
+
          echo Search::showItem($output_type, $fifth_col, $item_num, $row_num, $align);
 
          // Sixth Colum
@@ -1734,7 +1735,8 @@ class Problem extends CommonITILObject {
             break;
 
          case 'Supplier' :
-            $restrict                 = "(`suppliers_id_assign` = '".$item->getID()."')";
+            $restrict                 = "(`glpi_problems_suppliers`.`suppliers_id` = '".$item->getID()."' ".
+                                       " AND `glpi_problems_suppliers`.`type` = ".parent::REQUESTER.")";
             $order                    = '`glpi_problems`.`date_mod` DESC';
             $options['field'][0]      = 6;
             $options['searchtype'][0] = 'equals';

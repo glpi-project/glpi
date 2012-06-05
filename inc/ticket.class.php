@@ -44,8 +44,9 @@ class Ticket extends CommonITILObject {
    protected $forward_entity_to = array('TicketValidation');
 
    // From CommonITIL
-   public $userlinkclass  = 'Ticket_User';
-   public $grouplinkclass = 'Group_Ticket';
+   public $userlinkclass     = 'Ticket_User';
+   public $grouplinkclass    = 'Group_Ticket';
+   public $supplierlinkclass = 'Supplier_Ticket';
 
    protected $userentity_oncreate = true;
 
@@ -387,8 +388,8 @@ class Ticket extends CommonITILObject {
                   break;
 
                case 'Supplier' :
-                  $nb = countElementsInTable('glpi_tickets',
-                                             "`suppliers_id_assign` = '".$item->getID()."'");
+                  $nb = countElementsInTable('glpi_suppliers_tickets',
+                                             "`suppliers_id` = '".$item->getID()."'");
                   break;
 
                case 'SLA' :
@@ -608,8 +609,10 @@ class Ticket extends CommonITILObject {
          }
 
          // No supplier assign
-         if (isset($input["suppliers_id_assign"])) {
-            unset($input["suppliers_id_assign"]);
+         if (isset($input["_itil_assign"])
+             && isset($input['_itil_assign']['_type'])
+             && ($input['_itil_assign']['_type'] == 'supplier')) {
+            unset($input["_itil_assign"]);
          }
 
          // No group
@@ -619,7 +622,6 @@ class Ticket extends CommonITILObject {
             unset($input["_itil_assign"]);
          }
       }
-
       $check_allowed_fields_for_template = false;
       if (!Session::isCron()
           && !Session::haveRight("update_ticket","1")) {
@@ -642,9 +644,6 @@ class Ticket extends CommonITILObject {
          if (Session::haveRight('assign_ticket',1)
              || Session::haveRight('steal_ticket',1)) {
             $allowed_fields[] = '_itil_assign';
-         }
-         if (Session::haveRight('assign_ticket',1)) {
-            $allowed_fields[] = 'suppliers_id_assign';
          }
 
          // Can only update initial fields if no followup or task already added
@@ -751,6 +750,10 @@ class Ticket extends CommonITILObject {
          if (isset($input['_groups_id_assign'])) {
             $input['_itil_assign']['_type']     = 'group';
             $input['_itil_assign']['groups_id'] = $input['_groups_id_assign'];
+         }
+         if (isset($input['_suppliers_id_assign'])) {
+            $input['_itil_assign']['_type']     = 'supplier';
+            $input['_itil_assign']['suppliers_id'] = $input['_suppliers_id_assign'];
          }
          if (isset($input['_users_id_requester'])) {
             $input['_itil_requester']['_type']    = 'user';
@@ -1151,7 +1154,7 @@ class Ticket extends CommonITILObject {
       // Replay setting auto assign if set in rules engine or by auto_assign_mode
       if (((isset($input["_users_id_assign"]) && ($input["_users_id_assign"] > 0))
            || (isset($input["_groups_id_assign"]) && ($input["_groups_id_assign"] > 0))
-           || (isset($input["suppliers_id_assign"]) && ($input["suppliers_id_assign"] > 0)))
+           || (isset($input["_suppliers_id_assign"]) && ($input["_suppliers_id_assign"] > 0)))
           && ($input["status"] == "new")) {
 
          $input["status"] = "assign";
@@ -3230,7 +3233,7 @@ class Ticket extends CommonITILObject {
                     '_groups_id_observer'       => 0,
                     '_link'                     => array('tickets_id_2' => '',
                                                          'link'         => ''),
-                    'suppliers_id_assign'       => 0,
+                    '_suppliers_id_assign'       => 0,
                     'name'                      => '',
                     'content'                   => '',
                     'itilcategories_id'         => 0,
@@ -4745,7 +4748,8 @@ class Ticket extends CommonITILObject {
             break;
 
          case 'Supplier' :
-            $restrict                 = "(`suppliers_id_assign` = '".$item->getID()."')";
+            $restrict                 = "(`glpi_suppliers_tickets`.`suppliers_id` = '".$item->getID()."' ".
+                                       " AND `glpi_suppliers_tickets`.`type` = ".parent::ASSIGN.")";
             $order                    = '`glpi_tickets`.`date_mod` DESC';
             $options['field'][0]      = 6;
             $options['searchtype'][0] = 'equals';
@@ -5054,12 +5058,13 @@ class Ticket extends CommonITILObject {
          }
 
 
-         if ($job->fields["suppliers_id_assign"] > 0) {
-            if (!empty($fifth_col)) {
+         if (isset($job->suppliers[parent::ASSIGN]) && count($job->suppliers[parent::ASSIGN])) {
+            foreach ($job->suppliers[parent::ASSIGN] as $d) {
+               $fifth_col .= Dropdown::getDropdownName("glpi_suppliers", $d["suppliers_id"]);
                $fifth_col .= "<br>";
             }
-            $fifth_col .= parent::getAssignName($job->fields["suppliers_id_assign"], 'Supplier', 1);
          }
+         
          echo Search::showItem($output_type, $fifth_col, $item_num, $row_num, $align);
 
          // Sixth Colum
