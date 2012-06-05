@@ -201,6 +201,9 @@ class Central extends CommonGLPI {
       $showticket = (Session::haveRight("show_all_ticket","1")
                      || Session::haveRight("show_assign_ticket","1"));
 
+      $showproblem = (Session::haveRight("show_all_problem", "1")
+                     || Session::haveRight("show_my_problem", "1"));
+                     
       echo "<table class='tab_cadre_central'>";
       echo "<tr><td class='top'><table class='central'>";
       echo "<tr><td>";
@@ -210,6 +213,10 @@ class Central extends CommonGLPI {
       if (Session::haveRight('show_group_ticket','1')) {
          Ticket::showCentralList(0, "waiting", true);
       }
+      if ($showproblem) {
+         Problem::showCentralList(0, "process", true);
+      }
+      
       echo "</td></tr>";
       echo "</table></td>";
       echo "<td class='top'><table class='central'>";
