@@ -69,7 +69,6 @@ class Knowbase extends CommonGLPI {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 1 : // all
@@ -92,21 +91,72 @@ class Knowbase extends CommonGLPI {
     * Show the knowbase search view
    **/
    static function showSearchView() {
+      // Search a solution
+      if (!isset($_REQUEST["contains"])
+         && isset($_REQUEST["itemtype"])
+         && isset($_REQUEST["items_id"])) {
+
+         if ($item = getItemForItemtype($_REQUEST["itemtype"])) {
+            if ($item->getFromDB($_REQUEST["items_id"])) {
+               $_REQUEST["contains"] = addslashes($item->getField('name'));
+            }
+         }
+      }
+      
+      if (isset($_REQUEST["contains"])) {
+         $_SESSION['kbcontains'] = $_REQUEST["contains"];
+      } else if (isset($_SESSION['kbcontains'])) {
+         $_REQUEST['contains'] = $_SESSION["kbcontains"];
+      }
       KnowbaseItem::searchForm($_REQUEST);
+
+      if (!isset($_REQUEST['contains']) || empty($_REQUEST['contains'])) {
+         echo "<div><table class='center-h' width='950px'><tr><td class='center top'>";
+         KnowbaseItem::showRecentPopular("recent");
+         echo "</td><td class='center top'>";
+         KnowbaseItem::showRecentPopular("lastupdate");
+         echo "</td><td class='center top'>";
+         KnowbaseItem::showRecentPopular("popular");
+         echo "</td></tr>";
+         echo "</table></div>";
+      } else {
+         KnowbaseItem::showList($_REQUEST, 'search');
+      }
    }
 
    /**
     * Show the knowbase browse view
    **/
    static function showBrowseView() {
-      KnowbaseItemCategory::showBrowseForm($_REQUEST);
+
+      if (isset($_REQUEST["knowbaseitemcategories_id"])) {
+         $_SESSION['kbknowbaseitemcategories_id'] = $_REQUEST["knowbaseitemcategories_id"];
+      } else if (isset($_SESSION['kbknowbaseitemcategories_id'])) {
+         $_REQUEST["knowbaseitemcategories_id"] = $_SESSION['kbknowbaseitemcategories_id'];
+      }
+      
+      KnowbaseItem::showBrowseForm($_REQUEST);
+      if (!isset($_REQUEST["itemtype"])
+         || !isset($_REQUEST["items_id"])) {
+         KnowbaseItemCategory::showFirstLevel($_REQUEST);
+      }
+      KnowbaseItem::showList($_REQUEST, 'browse');
    }
 
    /**
     * Show the knowbase write view
    **/
    static function showWriteView() {
-
+      if (isset($_REQUEST["unpublished"])) {
+         $_SESSION['kbunpublished'] = $_REQUEST["unpublished"];
+      } else if (isset($_SESSION['kbunpublished'])) {
+         $_REQUEST["unpublished"] = $_SESSION['kbunpublished'];
+      }
+      if (!isset($_REQUEST["unpublished"])) {
+         $_REQUEST["unpublished"] = 'myunpublished';
+      }
+      KnowbaseItem::showWriteForm($_REQUEST);
+      KnowbaseItem::showList($_REQUEST, $_REQUEST["unpublished"]);
    }
 }
 ?>

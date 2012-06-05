@@ -2780,8 +2780,8 @@ abstract class CommonITILObject extends CommonDBTM {
          echo "</td><td colspan='2'>";
          if (Session::haveRight('knowbase','r') || Session::haveRight('faq','r')) {
             echo "<a class='vsubmit' title\"".__s('Search a solution')."\"
-                  href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?itemtype=".$this->getType().
-                  "&amp;items_id=".$this->getField('id')."'>".__('Search a solution')."</a>";
+                  href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?item_itemtype=".$this->getType().
+                  "&amp;item_items_id=".$this->getField('id')."&amp;forcetab=Knowbase$1'>".__('Search a solution')."</a>";
          }
          echo "</td></tr>";
       }

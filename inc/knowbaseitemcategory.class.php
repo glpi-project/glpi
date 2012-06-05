@@ -66,8 +66,10 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
     *
     * @return nothing (display the form)
    **/
-   static function showFirstLevel($options, $faq=0) {
+   static function showFirstLevel($options) {
       global $DB, $CFG_GLPI;
+
+      $faq = !Session::haveRight("knowbase","r");
 
       // Default values of parameters
       $params["knowbaseitemcategories_id"] = "0";
@@ -80,6 +82,14 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       }
 
       $faq_limit = '';
+
+      $parameters = '';
+      // Manage search solution
+      if (isset($options['item_itemtype'])
+            && isset($options['item_items_id'])) {
+         $parameters = "&amp;item_items_id=".$options['item_items_id']."&amp;item_itemtype=".
+                           $options['item_itemtype'];
+      }
 
       if ($faq) {
          if (!$CFG_GLPI["use_public_faq"]
@@ -155,7 +165,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       // Show category
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_central'>";
-         echo "<tr><td colspan='3'><a href='".$params['target']."'>";
+         echo "<tr><td colspan='3'><a href='".$params['target']."?knowbaseitemcategories_id=0$parameters'>";
          echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png' class='bottom'></a>";
 
          // Display Category
@@ -174,7 +184,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                   $data      = $DB->fetch_assoc($result2);
                   $tmpID     = $data["knowbaseitemcategories_id"];
                   $todisplay = "<a href='".$params['target']."?knowbaseitemcategories_id=".
-                                 $data["id"]."'>".$data["name"]."</a>".(empty($todisplay)?"":" > ").
+                                 $data["id"]."$parameters'>".$data["name"]."</a>".(empty($todisplay)?"":" > ").
                                  $todisplay;
                } else {
                   $tmpID = 0;
@@ -194,7 +204,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
                echo "<td class='tdkb_result'>";
                echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder.png' hspace='5'>";
                echo "<span class='b'>".
-                    "<a href='".$params['target']."?knowbaseitemcategories_id=".$row["id"]."'>".
+                    "<a href='".$params['target']."?knowbaseitemcategories_id=".$row["id"]."$parameters'>".
                       $row["name"]."</a></span>";
                echo "<div class='kb_resume'>".Html::resume_text($row['comment'],60)."</div>";
 
@@ -208,46 +218,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown {
       }
    }
 
-   /**
-    * Print out an HTML "<form>" for Search knowbase item
-    *
-    * @param $options   $_GET
-    * @return nothing (display the form)
-   **/
-   static function showBrowseForm($options) {
-      global $CFG_GLPI;
 
-      if (!$CFG_GLPI["use_public_faq"]
-          && !Session::haveRight("knowbase","r")
-          && !Session::haveRight("faq","r")) {
-         return false;
-      }
-
-      // Default values of parameters
-      $params["knowbaseitemcategories_id"] = "";
-
-      if (is_array($options) && count($options)) {
-         foreach ($options as $key => $val) {
-            $params[$key] = $val;
-         }
-      }
-      $faq = !Session::haveRight("knowbase","r");
-      
-      // Category select not for anonymous FAQ
-      if (Session::getLoginUserID()
-          && !$faq
-          && (!isset($options['itemtype']) || !isset($options['items_id']))) {
-         echo "<div>";
-         echo "<form method=post action='".$CFG_GLPI['root_doc']."/front/knowbase.php'>";
-         echo "<table class='tab_cadre_fixe'>";
-
-         echo "<tr class='tab_bg_2'><td class='right' width='50%'>".__('Category')."&nbsp;";
-         KnowbaseItemCategory::dropdown(array('value' => $params["knowbaseitemcategories_id"]));
-         echo "</td><td class='left'><input type='submit' value=\""._sx('button','Post')."\" class='submit'></td>";
-         echo "</tr></table></td>";
-         echo "</tr></table></div>";
-      }
-   }
    
 }
 ?>
