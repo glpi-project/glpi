@@ -730,6 +730,215 @@ class Problem extends CommonITILObject {
       return parent::genericIsAllowedStatus('Problem', $old, $new);
    }
 
+
+   /**
+    * @param $start
+    * @param $status             (default ''process)
+    * @param $showgroupproblems   (true by default)
+    */
+   static function showCentralList($start, $status="process", $showgroupproblems=true) {
+      global $DB, $CFG_GLPI;
+
+      if (!Session::haveRight("show_all_problem","1")
+          && !Session::haveRight("show_my_problem","1")) {
+         return false;
+      }
+
+      $search_users_id = " (`glpi_problems_users`.`users_id` = '".Session::getLoginUserID()."'
+                            AND `glpi_problems_users`.`type` = '".parent::REQUESTER."') ";
+      $search_assign   = " (`glpi_problems_users`.`users_id` = '".Session::getLoginUserID()."'
+                            AND `glpi_problems_users`.`type` = '".parent::ASSIGN."')";
+      $is_deleted      = " `glpi_problems`.`is_deleted` = 0 ";
+
+
+      if ($showgroupproblems) {
+         $search_users_id = " 0 = 1 ";
+         $search_assign   = " 0 = 1 ";
+
+         if (count($_SESSION['glpigroups'])) {
+            $groups        = implode("','",$_SESSION['glpigroups']);
+            $search_assign = " (`glpi_groups_problems`.`groups_id` IN ('$groups')
+                                AND `glpi_groups_problems`.`type` = '".parent::ASSIGN."')";
+
+            $search_users_id = " (`glpi_groups_problems`.`groups_id` IN ('$groups')
+                                    AND `glpi_groups_problems`.`type` = '".parent::REQUESTER."') ";
+         }
+      }
+
+      $query = "SELECT DISTINCT `glpi_problems`.`id`
+                FROM `glpi_problems`
+                LEFT JOIN `glpi_problems_users`
+                     ON (`glpi_problems`.`id` = `glpi_problems_users`.`problems_id`)
+                LEFT JOIN `glpi_groups_problems`
+                     ON (`glpi_problems`.`id` = `glpi_groups_problems`.`problems_id`)";
+
+      switch ($status) {
+         case "waiting" : // on affiche les problemes en attente
+            $query .= "WHERE $is_deleted
+                             AND ($search_assign)
+                             AND `status` = 'waiting' ".
+                             getEntitiesRestrictRequest("AND", "glpi_problems");
+            break;
+
+         case "process" : // on affiche les problemes planifiés ou assignés au user
+            $query .= "WHERE $is_deleted
+                             AND ( $search_assign )
+                             AND (`status` IN ('plan','assign')) ".
+                             getEntitiesRestrictRequest("AND", "glpi_problems");
+            break;
+
+
+         default :
+            $query .= "WHERE $is_deleted
+                             AND ($search_users_id)
+                             AND (`status` IN ('new', 'accepted', 'plan', 'assign', 'waiting'))
+                             AND NOT ( $search_assign ) ".
+                             getEntitiesRestrictRequest("AND","glpi_problems");
+      }
+
+      $query  .= " ORDER BY date_mod DESC";
+      $result  = $DB->query($query);
+      $numrows = $DB->numrows($result);
+
+      if ($_SESSION['glpidisplay_count_on_home'] > 0) {
+         $query  .= " LIMIT ".intval($start).','.intval($_SESSION['glpidisplay_count_on_home']);
+         $result  = $DB->query($query);
+         $number  = $DB->numrows($result);
+      } else {
+         $number = 0;
+      }
+
+      if ($numrows > 0) {
+         echo "<table class='tab_cadrehov' style='width:420px'>";
+         echo "<tr><th colspan='5'>";
+
+         $options['reset'] = 'reset';
+         $forcetab         = '';
+         $num              = 0;
+         if ($showgroupproblems) {
+            switch ($status) {
+
+               case "waiting" :
+                  foreach ($_SESSION['glpigroups'] as $gID) {
+                     $options['field'][$num]      = 8; // groups_id_assign
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = $gID;
+                     $options['link'][$num]       = (($num == 0)?'AND':'OR');
+                     $num++;
+                     $options['field'][$num]      = 12; // status
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = 'waiting';
+                     $options['link'][$num]       = 'AND';
+                     $num++;
+                  }
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                         Toolbox::append_params($options,'&amp;')."\">".
+                         Html::makeTitle(__('Problems on pending status'), $number, $numrows)."</a>";
+                  break;
+
+               case "process" :
+                  foreach ($_SESSION['glpigroups'] as $gID) {
+                     $options['field'][$num]      = 8; // groups_id_assign
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = $gID;
+                     $options['link'][$num]       = (($num == 0)?'AND':'OR');
+                     $num++;
+                     $options['field'][$num]      = 12; // status
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = 'process';
+                     $options['link'][$num]       = 'AND';
+                     $num++;
+                  }
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                         Toolbox::append_params($options,'&amp;')."\">".
+                         Html::makeTitle(__('Problems to be processed'), $number, $numrows)."</a>";
+                  break;
+
+               default :
+                  foreach ($_SESSION['glpigroups'] as $gID) {
+                     $options['field'][$num]      = 71; // groups_id
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = $gID;
+                     $options['link'][$num]       = (($num == 0)?'AND':'OR');
+                     $num++;
+                     $options['field'][$num]      = 12; // status
+                     $options['searchtype'][$num] = 'equals';
+                     $options['contains'][$num]   = 'process';
+                     $options['link'][$num]       = 'AND';
+                     $num++;
+                  }
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                         Toolbox::append_params($options,'&amp;')."\">".
+                         Html::makeTitle(__('Your problems in progress'), $number, $numrows)."</a>";
+            }
+
+         } else {
+            switch ($status) {
+               case "waiting" :
+                  $options['field'][0]      = 12; // status
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = 'waiting';
+                  $options['link'][0]       = 'AND';
+
+                  $options['field'][1]      = 5; // users_id_assign
+                  $options['searchtype'][1] = 'equals';
+                  $options['contains'][1]   = Session::getLoginUserID();
+                  $options['link'][1]       = 'AND';
+
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                         Toolbox::append_params($options,'&amp;')."\">".
+                         Html::makeTitle(__('Problems on pending status'), $number, $numrows)."</a>";
+                  break;
+
+               case "process" :
+                  $options['field'][0]      = 5; // users_id_assign
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = Session::getLoginUserID();
+                  $options['link'][0]       = 'AND';
+
+                  $options['field'][1]      = 12; // status
+                  $options['searchtype'][1] = 'equals';
+                  $options['contains'][1]   = 'process';
+                  $options['link'][1]       = 'AND';
+
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                         Toolbox::append_params($options,'&amp;')."\">".
+                         Html::makeTitle(__('Problems to be processed'), $number, $numrows)."</a>";
+                  break;
+
+               default :
+                  $options['field'][0]      = 4; // users_id
+                  $options['searchtype'][0] = 'equals';
+                  $options['contains'][0]   = Session::getLoginUserID();
+                  $options['link'][0]       = 'AND';
+
+                  $options['field'][1]      = 12; // status
+                  $options['searchtype'][1] = 'equals';
+                  $options['contains'][1]   = 'notold';
+                  $options['link'][1]       = 'AND';
+
+                  echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                        Toolbox::append_params($options,'&amp;')."\">".
+                        Html::makeTitle(__('Your problems in progress'), $number, $numrows)."</a>";
+            }
+         }
+
+         echo "</th></tr>";
+         if ($number) {
+            echo "<tr><th></th>";
+            echo "<th>".__('Requester')."</th>";
+            echo "<th>".__('Description')."</th></tr>";
+            for ($i = 0 ; $i < $number ; $i++) {
+               $ID = $DB->result($result, $i, "id");
+               self::showVeryShort($ID, $forcetab);
+            }
+         }
+         echo "</table>";
+
+      }
+   }
+
+   
    /**
     * Get problems count
     *
@@ -752,13 +961,13 @@ class Problem extends CommonITILObject {
 
       if ($foruser) {
          $query .= " LEFT JOIN `glpi_problems_users`
-                        ON (`glpi_problems`.`id` = `glpi_problems_users`.`tickets_id`
+                        ON (`glpi_problems`.`id` = `glpi_problems_users`.`problems_id`
                             AND `glpi_problems_users`.`type` = '".parent::REQUESTER."')";
 
          if (isset($_SESSION["glpigroups"])
              && count($_SESSION["glpigroups"])) {
             $query .= " LEFT JOIN `glpi_groups_problems`
-                           ON (`glpi_problems`.`id` = `glpi_groups_problems`.`tickets_id`
+                           ON (`glpi_problems`.`id` = `glpi_groups_problems`.`problems_id`
                                AND `glpi_groups_problems`.`type` = '".parent::REQUESTER."')";
          }
       }
@@ -833,6 +1042,82 @@ class Problem extends CommonITILObject {
       echo "<td class='numeric'>".$number_deleted."</td></tr>";
 
       echo "</table><br>";
+   }
+
+
+   /**
+    * @param $ID
+    * @param $forcetab  string   name of the tab to force at the display
+   **/
+   static function showVeryShort($ID, $forcetab='') {
+      global $CFG_GLPI;
+
+      // Prints a job in short form
+      // Should be called in a <table>-segment
+      // Print links or not in case of user view
+      // Make new job object and fill it from database, if success, print it
+      $viewusers   = Session::haveRight("user", "r");
+
+      $problem  = new self();
+      $rand = mt_rand();
+      if ($problem->getFromDBwithData($ID, 0)) {
+         $bgcolor = $_SESSION["glpipriority_".$problem->fields["priority"]];
+   //      $rand    = mt_rand();
+         echo "<tr class='tab_bg_2'>";
+         echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
+                                                               $problem->fields["id"])."</td>";
+         echo "<td class='center'>";
+
+         if (isset($problem->users[parent::REQUESTER]) && count($problem->users[parent::REQUESTER])) {
+            foreach ($problem->users[parent::REQUESTER] as $d) {
+               if ($d["users_id"] > 0) {
+                  $userdata = getUserName($d["users_id"],2);
+                  $name     = "<span class='b'>".$userdata['name']."</span>";
+                  if ($viewusers) {
+                     $name = sprintf(__('%1$s %2$s'), $name,
+                                     Html::showToolTip($userdata["comment"],
+                                                       array('link'    => $userdata["link"],
+                                                             'display' => false)));
+                  }
+                  echo $name;
+               } else {
+                  echo $d['alternative_email']."&nbsp;";
+               }
+               echo "<br>";
+            }
+         }
+
+
+         if (isset($problem->groups[parent::REQUESTER]) && count($problem->groups[parent::REQUESTER])) {
+            foreach ($problem->groups[parent::REQUESTER] as $d) {
+               echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
+               echo "<br>";
+            }
+         }
+
+         echo "</td>";
+
+         echo "<td>";
+
+         $link = "<a id='problem".$problem->fields["id"].$rand."' href='".$CFG_GLPI["root_doc"].
+                   "/front/problem.form.php?id=".$problem->fields["id"];
+         if ($forcetab != '') {
+            $link .= "&amp;forcetab=".$forcetab;
+         }
+         $link .= "'>";
+         $link .= "<span class='b'>".$problem->fields["name"]."</span></a>";
+         $link = printf(__('%1$s %2$s'), $link,
+                        Html::showToolTip($problem->fields['content'],
+                                          array('applyto' => 'problem'.$problem->fields["id"].$rand,
+                                                'display' => false)));
+
+         echo "</td>";
+
+         // Finish Line
+         echo "</tr>";
+      } else {
+         echo "<tr class='tab_bg_2'><td colspan='6' ><i>".__('No problem in progress.')."</i></td></tr>";
+      }
    }
    
    /**
