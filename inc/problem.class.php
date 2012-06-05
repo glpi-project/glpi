@@ -730,7 +730,111 @@ class Problem extends CommonITILObject {
       return parent::genericIsAllowedStatus('Problem', $old, $new);
    }
 
+   /**
+    * Get problems count
+    *
+    * @param $foruser boolean : only for current login user as requester (false by default)
+   **/
+   static function showCentralCount($foruser=false) {
+      global $DB, $CFG_GLPI;
 
+      // show a tab with count of jobs in the central and give link
+      if (!Session::haveRight("show_all_problem","1") && !Session::haveRight("show_my_problem",1)) {
+         return false;
+      }
+      if (!Session::haveRight("show_all_problem","1")) {
+         $foruser = true;
+      }
+
+      $query = "SELECT `status`,
+                       COUNT(*) AS COUNT
+                FROM `glpi_problems` ";
+
+      if ($foruser) {
+         $query .= " LEFT JOIN `glpi_problems_users`
+                        ON (`glpi_problems`.`id` = `glpi_problems_users`.`tickets_id`
+                            AND `glpi_problems_users`.`type` = '".parent::REQUESTER."')";
+
+         if (isset($_SESSION["glpigroups"])
+             && count($_SESSION["glpigroups"])) {
+            $query .= " LEFT JOIN `glpi_groups_problems`
+                           ON (`glpi_problems`.`id` = `glpi_groups_problems`.`tickets_id`
+                               AND `glpi_groups_problems`.`type` = '".parent::REQUESTER."')";
+         }
+      }
+      $query .= getEntitiesRestrictRequest("WHERE", "glpi_problems");
+
+      if ($foruser) {
+         $query .= " AND (`glpi_problems_users`.`users_id` = '".Session::getLoginUserID()."' ";
+
+         if (isset($_SESSION["glpigroups"])
+             && count($_SESSION["glpigroups"])) {
+            $groups = implode("','",$_SESSION['glpigroups']);
+            $query .= " OR `glpi_groups_problems`.`groups_id` IN ('$groups') ";
+         }
+         $query.= ")";
+      }
+      $query_deleted = $query;
+
+      $query         .= " AND NOT `glpi_problems`.`is_deleted`
+                         GROUP BY `status`";
+      $query_deleted .= " AND `glpi_problems`.`is_deleted`
+                         GROUP BY `status`";
+
+      $result         = $DB->query($query);
+      $result_deleted = $DB->query($query_deleted);
+
+      $status = array();
+      foreach (self::getAllStatusArray() as $key => $val) {
+         $status[$key] = 0;
+      }
+
+      if ($DB->numrows($result) > 0) {
+         while ($data = $DB->fetch_assoc($result)) {
+            $status[$data["status"]] = $data["COUNT"];
+         }
+      }
+
+      $number_deleted = 0;
+      if ($DB->numrows($result_deleted) > 0) {
+         while ($data = $DB->fetch_assoc($result_deleted)) {
+            $number_deleted += $data["COUNT"];
+         }
+      }
+      $options['field'][0]      = 12;
+      $options['searchtype'][0] = 'equals';
+      $options['contains'][0]   = 'process';
+      $options['link'][0]       = 'AND';
+      $options['reset']         ='reset';
+
+      echo "<table class='tab_cadrehov' >";
+      echo "<tr><th colspan='2'>";
+
+      echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+               Toolbox::append_params($options,'&amp;')."\">".__('Problem followup')."</a>";
+               
+      echo "</th></tr>";
+      echo "<tr><th>"._n('Problem','Problems',2)."</th><th>"._x('Quantity', 'Number')."</th></tr>";
+
+      foreach ($status as $key => $val) {
+
+         $options['contains'][0]    = $key;
+         echo "<tr class='tab_bg_2'>";
+         echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                  Toolbox::append_params($options,'&amp;')."\">".self::getStatus($key)."</a></td>";
+         echo "<td class='numeric'>$val</td></tr>";
+      }
+
+      $options['contains'][0] = 'all';
+      $options['is_deleted']  = 1;
+      echo "<tr class='tab_bg_2'>";
+      echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
+                 Toolbox::append_params($options,'&amp;')."\">".__('Deleted')."</a></td>";
+      echo "<td class='numeric'>".$number_deleted."</td></tr>";
+
+      echo "</table><br>";
+   }
+   
    /**
     * @param $ID
     * @param $options   array
