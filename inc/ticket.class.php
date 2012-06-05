@@ -3333,18 +3333,50 @@ class Ticket extends CommonITILObject {
          }
       }
 
+      if (isset($_SESSION["helpdeskSaved"])) {
+         unset($_SESSION["helpdeskSaved"]);
+      }
+
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $this->check(-1,'w',$values);
+      }
+
+      if (!$ID) {
+         //Get all the user's entities
+         $all_entities = Profile_User::getUserEntities($values["_users_id_requester"], true, true);
+         $this->userentities = array();
+         //For each user's entity, check if the technician which creates the ticket have access to it
+         foreach ($all_entities as $tmp => $ID_entity) {
+            if (Session::haveAccessToEntity($ID_entity)) {
+               $this->userentities[] = $ID_entity;
+            }
+         }
+         $this->countentitiesforuser = count($this->userentities);
+
+         if ($this->countentitiesforuser>0
+             && !in_array($this->fields["entities_id"],$this->userentities)) {
+            // If entity is not in the list of user's entities,
+            // then use as default value the first value of the user's entites list
+            $this->fields["entities_id"] = $this->userentities[0];
+            // Pass to values
+            $values['entities_id'] = $this->userentities[0];
+         }
+      }
+      
       // Clean text fields
       $values['name']    = stripslashes($values['name']);
       $values['content'] = Html::cleanPostForTextArea($values['content']);
 
-      if (isset($_SESSION["helpdeskSaved"])) {
-         unset($_SESSION["helpdeskSaved"]);
-      }
       if ($values['type'] <= 0) {
          $values['type'] = EntityData::getUsedConfig('tickettype', $values['entities_id'],
                                                      '', Ticket::INCIDENT_TYPE);
       }
+      
 
+      
       // Load ticket template if available :
       $tt = new TicketTemplate();
 
@@ -3353,7 +3385,6 @@ class Ticket extends CommonITILObject {
          // with type and categ
          $tt->getFromDBWithDatas($template_id, true);
       }
-
 
       if ($values['type'] && $values['itilcategories_id']) {
          $categ = new ITILCategory();
@@ -3428,12 +3459,7 @@ class Ticket extends CommonITILObject {
          $showuserlink = 1;
       }
 
-      if ($ID > 0) {
-         $this->check($ID,'r');
-      } else {
-         // Create item
-         $this->check(-1,'w',$values);
-      }
+
 
       if (!isset($options['template_preview'])) {
          $this->showTabs($options);
@@ -3451,27 +3477,7 @@ class Ticket extends CommonITILObject {
                                         && $this->numberOfFollowups() == 0
                                         && $this->numberOfTasks() == 0);
 
-      if (!$ID) {
-         //Get all the user's entities
-         $all_entities = Profile_User::getUserEntities($values["_users_id_requester"], true, true);
-         $this->userentities = array();
-         //For each user's entity, check if the technician which creates the ticket have access to it
-         foreach ($all_entities as $tmp => $ID_entity) {
-            if (Session::haveAccessToEntity($ID_entity)) {
-               $this->userentities[] = $ID_entity;
-            }
-         }
-         $this->countentitiesforuser = count($this->userentities);
 
-         if ($this->countentitiesforuser>0
-             && !in_array($this->fields["entities_id"],$this->userentities)) {
-            // If entity is not in the list of user's entities,
-            // then use as default value the first value of the user's entites list
-            $this->fields["entities_id"] = $this->userentities[0];
-            // Pass to values
-            $values['entities_id'] = $this->userentities[0];
-         }
-      }
 
       if (!isset($options['template_preview'])) {
          echo "<form method='post' name='form_ticket' enctype='multipart/form-data' action='".
