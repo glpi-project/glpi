@@ -3418,11 +3418,11 @@ class Ticket extends CommonITILObject {
                 $CFG_GLPI["root_doc"]."/front/ticket.form.php'>";
       }
       echo "<div class='spaced' id='tabsbody'>";
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe' id='mainformtable'>";
 
       // Optional line
       $ismultientities = Session::isMultiEntitiesMode();
-      echo "<tr>";
+      echo "<tr class='headerRow'>";
       echo "<th colspan='4'>";
 
       if ($ID) {
@@ -3613,7 +3613,7 @@ class Ticket extends CommonITILObject {
 
       if ($ID) {
          echo "</table>";
-         echo "<table  class='tab_cadre_fixe'>";
+         echo "<table  class='tab_cadre_fixe' id='mainformtable2'>";
       }
 
       echo "<tr class='tab_bg_1'>";
@@ -3692,7 +3692,7 @@ class Ticket extends CommonITILObject {
       if (!$ID) {
          echo "</table>";
          $this->showActorsPartForm($ID,$values);
-         echo "<table class='tab_cadre_fixe'>";
+         echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
       }
 
       echo "<tr class='tab_bg_1'>";
@@ -3911,7 +3911,7 @@ class Ticket extends CommonITILObject {
 
       $view_linked_tickets = ($ID || $canupdate);
 
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe' id='mainformtable4'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>".$tt->getBeginHiddenFieldText('name');
       printf(__('%1$s%2$s'), __('Title'), $tt->getMandatoryMark('name'));

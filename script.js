@@ -446,8 +446,38 @@ function toogle(id,img_name,img_src_yes,img_src_no) {
 				document[img_name].src=img_src_no;
 			}
 		}
-			
 	}
-	
-	}
+}
 
+function toggleTableDisplay(tbl,img_name,img_src_close,img_src_open) {
+   var tblRows = document.getElementById(tbl).rows;
+   for (i = 0; i < tblRows.length; i++) {
+      if (tblRows[i].className != "headerRow") {
+         if (tblRows[i].style.display == 'none') {
+            tblRows[i].style.display = "table-row";
+            if (img_name!=''){
+               document[img_name].src=img_src_open;
+            }
+            
+         } else {
+            tblRows[i].style.display = "none";
+            if (img_name!=''){
+               document[img_name].src=img_src_close;
+            }
+            
+         }
+      }
+   }
+   if (document.getElementById(tbl+'2')) {
+      toggleTableDisplay(tbl+'2','');
+   }
+   if (document.getElementById(tbl+'3')) {
+      toggleTableDisplay(tbl+'3','');
+   }
+   if (document.getElementById(tbl+'4')) {
+      toggleTableDisplay(tbl+'4','');
+   }
+   if (document.getElementById(tbl+'5')) {
+      toggleTableDisplay(tbl+'5','');
+   }
+}

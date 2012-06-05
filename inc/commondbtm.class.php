@@ -1961,9 +1961,9 @@ class CommonDBTM extends CommonGLPI {
       }
 
       echo "<div class='spaced' id='tabsbody'>";
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe' id='mainformtable'>";
 
-      echo "<tr><th colspan='".$params['colspan']."'>";
+      echo "<tr class='headerRow'><th colspan='".$params['colspan']."'>";
 
       $entiyname = '';
       if (!empty($params['withtemplate']) && ($params['withtemplate'] == 2)

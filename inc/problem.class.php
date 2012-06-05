@@ -1246,7 +1246,7 @@ class Problem extends CommonITILObject {
       }
       echo "</table>";
 
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe' id='mainformtable2'>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>".__('Status')."</th>";
@@ -1291,7 +1291,7 @@ class Problem extends CommonITILObject {
 
       $this->showActorsPartForm($ID, $options);
 
-      echo "<table class='tab_cadre_fixe'>";
+      echo "<table class='tab_cadre_fixe' id='mainformtable3'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th width='$colsize1%'>".__('Title')."</th>";
       echo "<td colspan='3'>";
