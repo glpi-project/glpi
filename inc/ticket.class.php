@@ -5138,7 +5138,7 @@ class Ticket extends CommonITILObject {
 
    /**
     * @param $ID
-    * @param $forcetab  string   name of the tab to force at the dispaly
+    * @param $forcetab  string   name of the tab to force at the display
    **/
    static function showVeryShort($ID, $forcetab='') {
       global $CFG_GLPI;
