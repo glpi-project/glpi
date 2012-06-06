@@ -877,6 +877,7 @@ class KnowbaseItem extends CommonDBTM {
     * Print out an HTML "<form>" for Search knowbase item
     *
     * @param $options   $_GET
+    * @since version 0.84    
     * @return nothing (display the form)
    **/
    function showBrowseForm($options) {
@@ -921,10 +922,11 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Print out an HTML "<form>" for Search knowbase item
     *
+    * @since version 0.84
     * @param $options   $_GET
     * @return nothing (display the form)
    **/
-   function showWriteForm($options) {
+   function showManageForm($options) {
       global $CFG_GLPI;
 
       if (!Session::haveRight("knowbase","w")
