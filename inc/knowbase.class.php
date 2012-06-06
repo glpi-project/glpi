@@ -59,7 +59,7 @@ class Knowbase extends CommonGLPI {
          $tabs[1] = _x('button', 'Search');
          $tabs[2] = _x('button', 'Browse');
          if ($ki->canCreate()) {
-            $tabs[3] = _x('button', 'Write');
+            $tabs[3] = _x('button', 'Manage');
          }
 
          return $tabs;
@@ -80,7 +80,7 @@ class Knowbase extends CommonGLPI {
                break;
 
             case 3 :
-               $item->showWriteView();
+               $item->showManageView();
                break;
          }
       }
@@ -146,9 +146,9 @@ class Knowbase extends CommonGLPI {
    }
 
    /**
-    * Show the knowbase write view
+    * Show the knowbase Manage view
    **/
-   static function showWriteView() {
+   static function showManageView() {
       if (isset($_REQUEST["unpublished"])) {
          $_SESSION['kbunpublished'] = $_REQUEST["unpublished"];
       } else if (isset($_SESSION['kbunpublished'])) {
@@ -158,7 +158,7 @@ class Knowbase extends CommonGLPI {
          $_REQUEST["unpublished"] = 'myunpublished';
       }
       $ki = new KnowbaseItem();
-      $ki->showWriteForm($_REQUEST);
+      $ki->showManageForm($_REQUEST);
       KnowbaseItem::showList($_REQUEST, $_REQUEST["unpublished"]);
    }
 }
