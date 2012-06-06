@@ -219,7 +219,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       global $DB;
 
       if (!$sendprivate
-          && isset($this->countSuppliers(CommonITILObject::ASSIGN))) {
+          && $this->countSuppliers(CommonITILObject::ASSIGN)) {
 
          $supplierlinktable = getTableForItemType($this->obj->supplierlinkclass);
          $fkfield       = $this->obj->getForeignKeyField();
