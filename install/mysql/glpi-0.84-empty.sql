@@ -1570,7 +1570,7 @@ INSERT INTO `glpi_displaypreferences` VALUES ('114','Phone','40','5','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('115','Phone','19','6','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('116','Phone','7','7','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('117','Group','16','1','0');
-INSERT INTO `glpi_displaypreferences` VALUES ('118','States','31','1','0');
+INSERT INTO `glpi_displaypreferences` VALUES ('118','AllAssets','31','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('119','ReservationItem','4','1','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('120','ReservationItem','3','2','0');
 INSERT INTO `glpi_displaypreferences` VALUES ('125','Budget','3','2','0');
