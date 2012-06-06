@@ -849,6 +849,10 @@ function update0831to084() {
              WHERE `itemtype` = 'States'";
    $DB->query($query);
 
+   $query = "UPDATE `glpi_displaypreferences`
+             SET `itemtype` = 'AllAssets'
+             WHERE `itemtype` = 'States'";
+   $DB->query($query);
 
    $migration->displayWarning("You should have a look at the \"migration cleaner\" tool !", true);
    $migration->displayWarning("With it, you should re-create the networks topologies and the links between the networks and the addresses",
