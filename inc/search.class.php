@@ -1575,12 +1575,15 @@ class Search {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
 
-      echo "<td width='10' class='center'>";
-      echo "<a href=\"javascript:toggleTableDisplay('searchcriteriastable','searchcriteriasimg',
-                                             '".$CFG_GLPI["root_doc"]."/pics/deplier_down.png',
-                                             '".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
-      echo "<img alt='' name='searchcriteriasimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
-      echo "</td>";
+      if (($_SESSION["glpisearchcount"][$itemtype] + $_SESSION["glpisearchcount2"][$itemtype]) > 1) {
+         
+         echo "<td width='10' class='center'>";
+         echo "<a href=\"javascript:toggleTableDisplay('searchcriteriastable','searchcriteriasimg',
+                                                '".$CFG_GLPI["root_doc"]."/pics/deplier_down.png',
+                                                '".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
+         echo "<img alt='' name='searchcriteriasimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
+         echo "</td>";
+      }
       echo "<td>";
 
       echo "<table id='searchcriteriastable'>";
