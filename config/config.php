@@ -123,8 +123,10 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 
    if ($config_ok) {
       $CFG_GLPI = array_merge($CFG_GLPI,$config_object->fields);
-      $CFG_GLPI['priority_matrix'] = importArrayFromDB($config_object->fields['priority_matrix'],
-                                                       true);
+      if (isset($config_object->fields['priority_matrix'])) {
+         $CFG_GLPI['priority_matrix'] = importArrayFromDB($config_object->fields['priority_matrix'],
+                                                          true);
+      }
       // Path for icon of document type
       $CFG_GLPI["typedoc_icon_dir"] = $CFG_GLPI["root_doc"]."/pics/icones";
 
