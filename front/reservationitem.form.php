@@ -73,6 +73,10 @@ if (isset($_REQUEST["add"])) {
    Html::back();
 
 } else if (isset($_REQUEST["update"])) {
+   // from reservation form
+   if (isset($_POST["id"])) {
+      $_REQUEST = $_POST;
+   } // else from object from
    $ri->update($_REQUEST);
    Event::log($_REQUEST['id'], "reservationitem", 4, "inventory",
               //TRANS: %s is the user login
