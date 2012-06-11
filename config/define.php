@@ -97,7 +97,7 @@ define("MONTH_TIMESTAMP",2592000);
 // ITEMS TYPE
 /// Temporary definition for test
 // TODO clean it.
-if (!strstr($_SERVER['PHP_SELF'],"/install/")) {
+if (!strstr($_SERVER['PHP_SELF'], "/install/") && !strstr($_SERVER['PHP_SELF'], '/cliupdate')) {
    define("GENERAL_TYPE",'');
    define("COMPUTER_TYPE",'Computer');
    define("NETWORKING_TYPE",'NetworkEquipment');
