@@ -271,14 +271,14 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')) {
    $plugin = new Plugin();
    $plugin->unactivateAll();
 
-   $migration->displayWarning("Migration Done.");
+   $migration->displayWarning("\nMigration Done.");
 
 } else if (in_array('--force', $_SERVER['argv'])) {
 
    include("../install/update_083_0831.php");
    update083to0831();
 
-   $migration->displayWarning("Forced migration Done.");
+   $migration->displayWarning("\nForced migration Done.");
 
 } else {
    $migration->displayWarning("No migration needed.");
