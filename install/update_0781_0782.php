@@ -35,23 +35,17 @@
 /**
  * Update from 0.78.1 to 0.78.2
  *
- * @param $output string for format
- *       HTML (default) for standard upgrade
- *       empty = no ouput for PHPUnit
- *
  * @return bool for success (will die for most error)
  */
-function update0781to0782($output='HTML') {
-   global $DB, $LANG;
+function update0781to0782() {
+   global $DB, $LANG, $migration;
 
    $updateresult = true;
 
-   if ($output) {
-      echo "<h3>".$LANG['install'][4]." -&gt; 0.78.2</h3>";
-   }
-   displayMigrationMessage("0782"); // Start
+   $migration->displayTitle($LANG['install'][4]." -> 0.78.2");
+   $migration->setVersion('0.78.2');
 
-   displayMigrationMessage("0782", $LANG['update'][142]); // Updating schema
+   $migration->displayMessage($LANG['update'][142]); // Updating schema
 
    /// Add document types
    $types = array('docx' => array('name' => 'Word XML',
@@ -239,8 +233,8 @@ function update0781to0782($output='HTML') {
       or die("0.78.2 add ocs_db_utf8 in glpi_ocsservers" .$LANG['update'][90] . $DB->error());
    }
 
-   // Display "Work ended." message - Keep this as the last action.
-   displayMigrationMessage("0782"); // End
+   // must always be at the end (only for end message)
+   $migration->executeMigration();
 
    return $updateresult;
 }

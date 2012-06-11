@@ -47,6 +47,67 @@ include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 Config::detectRootDoc();
 
+// Old itemtype for compatibility
+define("GENERAL_TYPE",         0);
+define("COMPUTER_TYPE",        1);
+define("NETWORKING_TYPE",      2);
+define("PRINTER_TYPE",         3);
+define("MONITOR_TYPE",         4);
+define("PERIPHERAL_TYPE",      5);
+define("SOFTWARE_TYPE",        6);
+define("CONTACT_TYPE",         7);
+define("ENTERPRISE_TYPE",      8);
+define("INFOCOM_TYPE",         9);
+define("CONTRACT_TYPE",       10);
+define("CARTRIDGEITEM_TYPE",  11);
+define("TYPEDOC_TYPE",        12);
+define("DOCUMENT_TYPE",       13);
+define("KNOWBASE_TYPE",       14);
+define("USER_TYPE",           15);
+define("TRACKING_TYPE",       16);
+define("CONSUMABLEITEM_TYPE", 17);
+define("CONSUMABLE_TYPE",     18);
+define("CARTRIDGE_TYPE",      19);
+define("SOFTWARELICENSE_TYPE",20);
+define("LINK_TYPE",           21);
+define("STATE_TYPE",          22);
+define("PHONE_TYPE",          23);
+define("DEVICE_TYPE",         24);
+define("REMINDER_TYPE",       25);
+define("STAT_TYPE",           26);
+define("GROUP_TYPE",          27);
+define("ENTITY_TYPE",         28);
+define("RESERVATION_TYPE",    29);
+define("AUTHMAIL_TYPE",       30);
+define("AUTHLDAP_TYPE",       31);
+define("OCSNG_TYPE",          32);
+define("REGISTRY_TYPE",       33);
+define("PROFILE_TYPE",        34);
+define("MAILGATE_TYPE",       35);
+define("RULE_TYPE",           36);
+define("TRANSFER_TYPE",       37);
+define("BOOKMARK_TYPE",       38);
+define("SOFTWAREVERSION_TYPE",39);
+define("PLUGIN_TYPE",         40);
+define("COMPUTERDISK_TYPE",   41);
+define("NETWORKING_PORT_TYPE",42);
+define("FOLLOWUP_TYPE",       43);
+define("BUDGET_TYPE",         44);
+
+// Old devicetype for compatibility
+define("MOBOARD_DEVICE",   1);
+define("PROCESSOR_DEVICE", 2);
+define("RAM_DEVICE",       3);
+define("HDD_DEVICE",       4);
+define("NETWORK_DEVICE",   5);
+define("DRIVE_DEVICE",     6);
+define("CONTROL_DEVICE",   7);
+define("GFX_DEVICE",       8);
+define("SND_DEVICE",       9);
+define("PCI_DEVICE",      10);
+define("CASE_DEVICE",     11);
+define("POWER_DEVICE",    12);
+
 
 if (is_writable(GLPI_SESSION_DIR)) {
    Session::setPath();
@@ -113,12 +174,16 @@ class CliMigration extends Migration {
 
 /*---------------------------------------------------------------------*/
 
-if (!TableExists("glpi_configs")) {
+if (TableExists("glpi_configs")) {
+   $query = "SELECT `version`, `language`
+             FROM `glpi_configs`";
+} else if (TableExists("glpi_config")) {
+   $query = "SELECT `version`, `language`
+             FROM `glpi_config`";
+} else {
    die("Bad schema\n");
 }
 
-$query = "SELECT `version`, `language`
-          FROM `glpi_configs`";
 
 $result          = $DB->query($query) or die("get current version ".$DB->error());
 $current_version = trim($DB->result($result,0,0));
@@ -140,6 +205,19 @@ if (version_compare($current_version, GLPI_VERSION, 'ne')
 }
 
 switch ($current_version) {
+   case "0.72.3" :
+   case "0.72.4" :
+      include("../install/update_0723_078.php");
+      update0723to078();
+
+   case "0.78" :
+      include("../install/update_078_0781.php");
+      update078to0781();
+
+   case "0.78.1" :
+      include("../install/update_0781_0782.php");
+      update0781to0782();
+
    case "0.78.2":
    case "0.78.3":
    case "0.78.4":
@@ -173,7 +251,7 @@ switch ($current_version) {
       update083to0831();
 
    case "0.83.1" :
-  
+
    case GLPI_VERSION :
       break;
 

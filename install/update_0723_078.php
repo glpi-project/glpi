@@ -37,23 +37,17 @@
 /**
  * Update from 0.72.3 to 0.78
  *
- * @param $output string for format
- *       HTML (default) for standard upgrade
- *       empty = no ouput for PHPUnit
- *
  * @return bool for success (will die for most error)
 **/
-function update0723to078($output='HTML') {
-   global $DB, $LANG;
+function update0723to078() {
+   global $DB, $LANG, $migration;
 
    $updateresult = true;
 
-   if ($output) {
-      echo "<h3>".$LANG['install'][4]." -&gt; 0.78</h3>";
-   }
-   displayMigrationMessage("078"); // Start
+   $migration->displayTitle($LANG['install'][4]." -> 0.78");
+   $migration->setVersion('0.78');
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : rename tables'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - Clean DB : rename tables'); // Updating schema
 
    $changes     = array();
    $glpi_tables = array('glpi_alerts'                       => 'glpi_alerts',
@@ -210,10 +204,8 @@ function update0723to078($output='HTML') {
                   or die("0.78 drop backup table backup_$new_table ".$LANG['update'][90].
                          $DB->error());
                }
-               if ($output) {
-                  echo "<p><span class='b'>$new_table table already exists. ";
-                  echo "A backup have been done to backup_$new_table.</span></p>";
-               }
+               $migration->displayWarning("$new_table table already exists. ".
+                                          "A backup have been done to backup_$new_table.");
                $backup_tables=true;
                $query = "RENAME TABLE `$new_table`
                          TO `backup_$new_table`";
@@ -234,11 +226,11 @@ function update0723to078($output='HTML') {
       }
    }
 
-   if ($backup_tables && $output) {
-      echo "<div class='red'><p>You can delete backup tables if you have no need of them.</p></div>";
+   if ($backup_tables) {
+      $migration->displayWarning("You can delete backup tables if you have no need of them.");
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : rename foreign keys'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - Clean DB : rename foreign keys'); // Updating schema
 
    $foreignkeys
       = array('assign'  => array(array('to'     => 'users_id_assign',
@@ -753,9 +745,7 @@ function update0723to078($output='HTML') {
                                                    DEFAULT '$default_value' $addcomment";
             } else {
                $updateresult = false;
-               if ($output) {
-                  echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
-               }
+               $migration->displayWarning("Error : $table.$oldname does not exist.");
             }
             // If do index : delete old one / create new one
             if ($doindex) {
@@ -771,7 +761,7 @@ function update0723to078($output='HTML') {
    }
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : rename bool values'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - Clean DB : rename bool values'); // Updating schema
 
    $boolfields
       = array('glpi_authldaps'
@@ -1428,9 +1418,7 @@ function update0723to078($output='HTML') {
 
          } else {
             $updateresult = false;
-            if ($output) {
-               echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
-            }
+            $migration->displayWarning("Error : $table.$oldname does not exist.");
          }
          // If do index : delete old one / create new one
          if ($doindex) {
@@ -1444,7 +1432,7 @@ function update0723to078($output='HTML') {
          }
       }
    }
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : update text fields'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - Clean DB : update text fields'); // Updating schema
 
    $textfields
       = array('comments'
@@ -1517,9 +1505,7 @@ function update0723to078($output='HTML') {
             or die("0.78 rename $oldname to $newname in $table ".$LANG['update'][90].$DB->error());
          } else {
             $updateresult = false;
-            if ($output) {
-               echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
-            }
+            $migration->displayWarning("Error : $table.$oldname does not exist.");
          }
       }
    }
@@ -1715,9 +1701,7 @@ function update0723to078($output='HTML') {
             or die("0.78 rename $oldname to $newname in $table ".$LANG['update'][90].$DB->error());
          } else {
             $updateresult = false;
-            if ($output) {
-               echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
-            }
+            $migration->displayWarning("Error : $table.$oldname does not exist.");
          }
          // If do index : delete old one / create new one
          if ($doindex) {
@@ -1870,9 +1854,7 @@ function update0723to078($output='HTML') {
             or die("0.78 rename $oldname to $newname in $table ".$LANG['update'][90].$DB->error());
          } else {
             $updateresult = false;
-            if ($output) {
-               echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
-            }
+            $migration->displayWarning("Error : $table.$oldname does not exist.");
          }
          // If do index : delete old one / create new one
          if ($doindex) {
@@ -2320,9 +2302,7 @@ function update0723to078($output='HTML') {
 
          } else {
             $updateresult = false;
-            if ($output) {
-              echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
-            }
+            $migration->displayWarning("Error : $table.$oldname does not exist.");
          }
          // If do index : delete old one / create new one
          if ($doindex) {
@@ -2336,7 +2316,7 @@ function update0723to078($output='HTML') {
       }
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : others field changes'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - Clean DB : others field changes'); // Updating schema
 
    if (FieldExists('glpi_alerts', 'date', false)) {
       $changes['glpi_alerts'][] = "CHANGE `date` `date` DATETIME NOT NULL";
@@ -2416,7 +2396,7 @@ function update0723to078($output='HTML') {
    }
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : index management'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - Clean DB : index management'); // Updating schema
 
    if (!isIndex('glpi_alerts', 'unicity')) {
       $changes['glpi_alerts'][] = "ADD UNIQUE `unicity` (`itemtype`, `items_id`, `type`)";
@@ -2626,7 +2606,7 @@ function update0723to078($output='HTML') {
    }
 
    foreach ($changes as $table => $tab) {
-      displayMigrationMessage("078", $LANG['update'][141] . ' - ' . $table); // Updating schema
+      $migration->displayMessage($LANG['update'][141] . ' - ' . $table); // Updating schema
       $query = "ALTER TABLE `$table`
                 ".implode($tab," ,\n").";";
       $DB->query($query)
@@ -2634,7 +2614,7 @@ function update0723to078($output='HTML') {
    }
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Update itemtype fields'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - Update itemtype fields'); // Updating schema
 
    // Convert itemtype to Class names
    $typetoname = array(GENERAL_TYPE          => "",// For tickets
@@ -2703,7 +2683,7 @@ function update0723to078($output='HTML') {
                             "glpi_networkports", "glpi_reservationitems", "glpi_tickets");
 
    foreach ($itemtype_tables as $table) {
-      displayMigrationMessage("078", $LANG['update'][142] . " - $table"); // Updating data
+      $migration->displayMessage($LANG['update'][142] . " - $table"); // Updating data
       // Alter itemtype field
       $query = "ALTER TABLE `$table`
                 CHANGE `itemtype` `itemtype` VARCHAR( 100 ) NOT NULL";
@@ -2723,7 +2703,7 @@ function update0723to078($output='HTML') {
    if (FieldExists('glpi_logs', 'device_type', false)) {
 
       // History migration, handled separatly for optimization
-      displayMigrationMessage("078 ", $LANG['update'][141] . ' - glpi_logs - 1'); // Updating schema
+      $migration->displayMessage($LANG['update'][141] . ' - glpi_logs - 1'); // Updating schema
       $query = "ALTER TABLE `glpi_logs`
                 CHANGE `ID` `id` INT( 11 ) NOT NULL AUTO_INCREMENT,
                 ADD `itemtype` VARCHAR(100) NOT NULL DEFAULT ''  AFTER `device_type`,
@@ -2735,7 +2715,7 @@ function update0723to078($output='HTML') {
             or die("0.78 add item* fields to table glpi_logs " .$LANG['update'][90] . $DB->error());
 
       // Update values
-      displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_logs'); // Updating schema
+      $migration->displayMessage($LANG['update'][142] . ' - glpi_logs'); // Updating schema
 
       // Copy data
       $query = "UPDATE `glpi_logs`
@@ -2783,7 +2763,7 @@ function update0723to078($output='HTML') {
       $DB->query($query)
       or die("0.78 update itemtype of table glpi_logs " . $LANG['update'][90] . $DB->error());
 
-      displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_logs - 2'); // Updating schema
+      $migration->displayMessage($LANG['update'][141] . ' - glpi_logs - 2'); // Updating schema
       $query = "ALTER TABLE `glpi_logs`
                 DROP `device_type`,
                 DROP `FK_glpi_device`,
@@ -2796,7 +2776,7 @@ function update0723to078($output='HTML') {
 
    // Update glpi_profiles item_type
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - Clean DB : post actions after renaming'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - Clean DB : post actions after renaming'); // Updating schema
 
    if (!isIndex('glpi_locations', 'name')) {
       $query = " ALTER TABLE `glpi_locations`
@@ -3058,7 +3038,7 @@ function update0723to078($output='HTML') {
       }
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_rulecachesoftwares'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - glpi_rulecachesoftwares'); // Updating schema
 
    $query = "ALTER TABLE `glpi_rules`
              CHANGE `sub_type` `sub_type` VARCHAR( 255 ) NOT NULL DEFAULT ''";
@@ -3126,7 +3106,7 @@ function update0723to078($output='HTML') {
              $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_entities'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - glpi_entities'); // Updating schema
 
    if (!FieldExists("glpi_entities","sons_cache", false)) {
       $query = "ALTER TABLE `glpi_entities`
@@ -3142,7 +3122,7 @@ function update0723to078($output='HTML') {
       or die("0.78 add ancestors_cache field in glpi_entities " . $LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_configs'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - glpi_configs'); // Updating schema
 
 
    if (!FieldExists("glpi_configs","default_graphtype", false)) {
@@ -3194,7 +3174,7 @@ function update0723to078($output='HTML') {
       or die("0.78 add use_noright_users_add in glpi_configs " .$LANG['update'][90]. $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_budgets'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - glpi_budgets'); // Updating schema
 
    if (!FieldExists("glpi_profiles","budget", false)) {
       $query = "ALTER TABLE `glpi_profiles`
@@ -3295,7 +3275,7 @@ function update0723to078($output='HTML') {
    $ADDTODISPLAYPREF['Budget']=array(2,3,4,19);
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - ' . $LANG['crontask'][0]); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - ' . $LANG['crontask'][0]); // Updating schema
    if (!TableExists('glpi_crontasks')) {
       $query = "CREATE TABLE `glpi_crontasks` (
                  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -3524,7 +3504,7 @@ function update0723to078($output='HTML') {
       or die("0.78 set value of filepath in glpi_documents " . $LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - ' . $LANG['setup'][79]); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - ' . $LANG['setup'][79]); // Updating schema
 
    if (!FieldExists('glpi_tickets','solvedate', false)) {
       $query = "ALTER TABLE `glpi_tickets`
@@ -4042,11 +4022,11 @@ function update0723to078($output='HTML') {
 
    // Migrate devices
    if (TableExists('glpi_computer_device')) {
-      displayMigrationMessage("078 ", $LANG['update'][141].' - '.Toolbox::ucfirst($LANG['log'][18])); // Updating schema
+      $migration->displayMessage($LANG['update'][141].' - '.Toolbox::ucfirst($LANG['log'][18])); // Updating schema
 
       foreach ($devtypetoname as $key => $itemtype) {
-         displayMigrationMessage("078 ", $LANG['update'][141].' - '.
-                                 Toolbox::ucfirst($LANG['log'][18]).' - '.$itemtype); // Updating schema
+         $migration->displayMessage($LANG['update'][141].' - '.
+                                    Toolbox::ucfirst($LANG['log'][18]).' - '.$itemtype); // Updating schema
          $linktype      = "Computer_$itemtype";
          $linktable     = getTableForItemType($linktype);
          $itemtable     = getTableForItemType($itemtype);
@@ -4227,7 +4207,7 @@ function update0723to078($output='HTML') {
              $LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][141].' - '.$LANG['setup'][704]); // Updating schema
+   $migration->displayMessage($LANG['update'][141].' - '.$LANG['setup'][704]); // Updating schema
    $templates = array();
    if (!TableExists('glpi_notificationtemplates')) {
       $query = "CREATE TABLE `glpi_notificationtemplates` (
@@ -5030,7 +5010,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    foreach ($tables as $table => $label) {
       // Migrate infocoms entity information
       if (!FieldExists($table,'entities_id', false)) {
-         displayMigrationMessage("078", $LANG['update'][141].' - '.$label); // Updating schema
+         $migration->displayMessage($LANG['update'][141].' - '.$label); // Updating schema
 
          $query = "ALTER TABLE `$table`
                    ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `itemtype`,
@@ -5050,15 +5030,13 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)>0) {
                while ($data = $DB->fetch_assoc($result)) {
-                  displayMigrationMessage("078", $LANG['update'][141].' - '.$label.' - '.
-                                          $data['itemtype']); // Updating schema
+                  $migration->displayMessage($LANG['update'][141].' - '.$label.' - '.
+                                             $data['itemtype']); // Updating schema
 
                   $itemtable = getTableForItemType($data['itemtype']);
                   // ajout d'un contrôle pour voir si la table existe ( cas migration plugin non fait)
                   if (!TableExists($itemtable)) {
-                     if ($output) {
-                        echo "<p class='red'>*** Skip : no table $itemtable ***</p>";
-                     }
+                     $migration->displayWarning("*** Skip : no table $itemtable ***");
                      continue;
                   }
                   $do_recursive = false;
@@ -5117,7 +5095,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
                   'glpi_computerdisks' => 'glpi_computers');
    foreach ($items as $linkitem => $sourceitem) {
       if (!FieldExists($linkitem,'entities_id', false)) {
-         displayMigrationMessage("078", $LANG['update'][141].' - '.$linkitem); // Updating schema
+         $migration->displayMessage($LANG['update'][141].' - '.$linkitem); // Updating schema
 
          $query = "ALTER TABLE `$linkitem`
                    ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `id`,
@@ -5145,7 +5123,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
    // Migrate softwareversions entity information
    if (!FieldExists('glpi_softwareversions','entities_id', false)) {
-      displayMigrationMessage("078", $LANG['update'][141].' - glpi_softwareversions'); // Updating schema
+      $migration->displayMessage($LANG['update'][141].' - glpi_softwareversions'); // Updating schema
 
       $query = "ALTER TABLE `glpi_softwareversions`
                 ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `id`,
@@ -5187,7 +5165,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       }
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_mailcollectors'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - glpi_mailcollectors'); // Updating schema
 
    if (!FieldExists("glpi_mailcollectors", "is_active", false)) {
       $query = "ALTER TABLE `glpi_mailcollectors`
@@ -5235,7 +5213,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_authldaps'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - glpi_authldaps'); // Updating schema
 
    if (!FieldExists('glpi_authldaps','date_mod', false)) {
       $query = "ALTER TABLE `glpi_authldaps`
@@ -5258,7 +5236,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    $ADDTODISPLAYPREF['AuthLDAP'] = array(3, 19);
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_authldaps'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - glpi_authldaps'); // Updating schema
 
    if (!FieldExists('glpi_authmails','date_mod', false)) {
       $query = "ALTER TABLE `glpi_authmails`
@@ -5280,7 +5258,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    // Change search pref : host, date_mod
    $ADDTODISPLAYPREF['AuthMail'] = array(3, 19);
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_ocsservers'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - glpi_ocsservers'); // Updating schema
 
    if (!FieldExists('glpi_ocsservers','date_mod', false)) {
       $query = "ALTER TABLE `glpi_ocsservers`
@@ -5302,7 +5280,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    $ADDTODISPLAYPREF['OcsServer'] = array(3, 19);
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_profiles'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - glpi_profiles'); // Updating schema
 
    if (!FieldExists('glpi_profiles','date_mod', false)) {
       $query = "ALTER TABLE `glpi_profiles`
@@ -5325,7 +5303,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    $ADDTODISPLAYPREF['Profile'] = array(2, 3, 19);
 
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_printers'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - glpi_printers'); // Updating schema
 
    if (!FieldExists('glpi_printers','have_ethernet', false)) {
       $query = "ALTER TABLE `glpi_printers`
@@ -5343,7 +5321,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       or die("0.78 add have_wifi to glpi_printers " .$LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][141] . ' - glpi_profiles'); // Updating schema
+   $migration->displayMessage($LANG['update'][141] . ' - glpi_profiles'); // Updating schema
 
    if (!FieldExists('glpi_transfers','date_mod', false)) {
       $query = "ALTER TABLE `glpi_transfers`
@@ -5365,7 +5343,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    $ADDTODISPLAYPREF['Transfer']=array(19);
 
    // Convert events
-   displayMigrationMessage("078 ", $LANG['update'][142] . ' - glpi_events');
+   $migration->displayMessage($LANG['update'][142] . ' - glpi_events');
 
    $convert_types = array('tracking'   => 'ticket',
                           'networking' => 'networkequipment',
@@ -5382,7 +5360,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       or die("0.78 update events data " . $LANG['update'][90] . $DB->error());
    }
 
-   displayMigrationMessage("078", $LANG['update'][142] . ' - ticket bookmarks');
+   $migration->displayMessage($LANG['update'][142] . ' - ticket bookmarks');
 
    $query = "SELECT *
              FROM `glpi_bookmarks`
@@ -5953,7 +5931,7 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
 
 
-   displayMigrationMessage("078", $LANG['update'][142] . ' - glpi_displaypreferences');
+   $migration->displayMessage($LANG['update'][142] . ' - glpi_displaypreferences');
 
    // Add search values for tickets
    $ADDTODISPLAYPREF['Ticket'] = array(12, 19, 15, 3, 4, 5, 7);
@@ -6004,8 +5982,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
    }
 
 
-   // Display "Work ended." message - Keep this as the last action.
-   displayMigrationMessage("078"); // End
+   // must always be at the end (only for end message)
+   $migration->executeMigration();
 
    return $updateresult;
 }
