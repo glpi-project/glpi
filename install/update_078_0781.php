@@ -37,26 +37,19 @@
 /**
  * Update from 0.78 to 0.78.1
  *
- * @param $output string for format
- *       HTML (default) for standard upgrade
- *       empty = no ouput for PHPUnit
- *
  * @return bool for success (will die for most error)
  */
-function update078to0781($output='HTML') {
-   global $DB;
+function update078to0781() {
+   global $DB, $migration;
 
    $updateresult = true;
 
-   if ($output) {
-      //TRANS: %s is the number of new version
-      echo "<h3>".sprintf(__('Update to %s'), '0.78.1')."</h3>";
-   }
-   displayMigrationMessage("0781"); // Start
+   $migration->displayTitle(sprintf(__('Update to %s'), '0.78.1'));
+   $migration->setVersion('0.78.1');
 
    //TRANS: %s is 'Clean reservation entity link'
-   displayMigrationMessage("0781", sprintf(__('Data migration - %s'),
-                                   'Clean reservation entity link')); // Updating schema
+   $migration->displayMessage(sprintf(__('Data migration - %s'),
+                                      'Clean reservation entity link')); // Updating schema
 
    $entities=getAllDatasFromTable('glpi_entities');
    $entities[0]="Root";
@@ -68,9 +61,7 @@ function update078to0781($output='HTML') {
             $itemtable=getTableForItemType($data['itemtype']);
             // ajout d'un contrôle pour voir si la table existe ( cas migration plugin non fait)
             if (!TableExists($itemtable)) {
-               if ($output) {
-                  echo "<p class='red'>*** Skip : no table $itemtable ***</p>";
-               }
+               $migration->displayWarning("*** Skip : no table $itemtable ***");
                continue;
             }
             $do_recursive=false;
@@ -134,8 +125,8 @@ function update078to0781($output='HTML') {
       $DB->queryOrDie($query, "0.78.1 update unicity index on glpi_knowbaseitemcategories");
    }
 
-   // Display "Work ended." message - Keep this as the last action.
-   displayMigrationMessage("0781"); // End
+   // must always be at the end (only for end message)
+   $migration->executeMigration();
 
    return $updateresult;
 }
