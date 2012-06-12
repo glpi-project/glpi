@@ -2368,7 +2368,7 @@ class Search {
             return " COUNT(DISTINCT `glpi_contracts_items`.`id`) AS ".$NAME."_".$num.", ";
 
          case "glpi_contractcosts.cost" :
-            return " SUM(`glpi_contractcosts`.`cost`) AS ".$NAME."_".$num.", ";
+            return " SUM(`glpi_contractcosts$addtable`.`cost`) AS ".$NAME."_".$num.", ";
             
          case "glpi_computers_softwareversions.count" :
             return " COUNT(DISTINCT `glpi_computers_softwareversions$addtable`.`id`)
@@ -3449,6 +3449,7 @@ class Search {
 
       $addmetanum = "";
       $rt         = $ref_table;
+      $cleanrt    = $rt;
       if ($meta) {
          $addmetanum = "_".$meta_type;
          $AS         = " AS $nt$addmetanum";
@@ -3509,7 +3510,6 @@ class Search {
             foreach ($joinparams['beforejoin'] as $tab) {
                if (isset($tab['table'])) {
                   $intertable = $tab['table'];
-
                   if (isset($tab['linkfield'])){
                      $interlinkfield = $tab['linkfield'];
                   } else {
@@ -3528,6 +3528,7 @@ class Search {
 
                // No direct link with the previous joins
                if (!isset($tab['joinparams']['nolink']) || !$tab['joinparams']['nolink']) {
+                  $cleanrt = $intertable;
                   $complexjoin = self::computeComplexJoinID($interjoinparams);
                   if (!empty($complexjoin)) {
                      $intertable .= "_".$complexjoin;
@@ -3568,7 +3569,7 @@ class Search {
          if (empty($specific_leftjoin)) {
             switch ($joinparams['jointype']) {
                case 'child' :
-                  $linkfield = getForeignKeyFieldForTable($rt);
+                  $linkfield = getForeignKeyFieldForTable($cleanrt);
                   if (isset($joinparams['linkfield'])) {
                      $linkfield = $joinparams['linkfield'];
                   }
@@ -3582,9 +3583,9 @@ class Search {
                   // Item_Item join
                   $specific_leftjoin = " LEFT JOIN `$new_table` $AS
                                           ON ((`$rt`.`id`
-                                                   = `$nt`.`".getForeignKeyFieldForTable($rt)."_1`
+                                                   = `$nt`.`".getForeignKeyFieldForTable($cleanrt)."_1`
                                                OR `$rt`.`id`
-                                                   = `$nt`.`".getForeignKeyFieldForTable($rt)."_2`)
+                                                   = `$nt`.`".getForeignKeyFieldForTable($cleanrt)."_2`)
                                               $addcondition)";
                   break;
 
