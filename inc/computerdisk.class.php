@@ -270,7 +270,7 @@ class ComputerDisk extends CommonDBChild {
                Html::displayProgressBar('100', $percent, array('simple'       => true,
                                                                'forcepadding' => false));
                echo "</td>";
-
+               echo "</tr>";
                Session::addToNavigateListItems('ComputerDisk',$data['id']);
             }
 
