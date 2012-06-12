@@ -645,8 +645,8 @@ td { }
 
 td.numeric {
    text-align:right;
-   width:10%;
-   padding-right:4%;
+/*   width:10%;*/
+/*   padding-right:4%;*/
 }
 
 td.nopadding { 

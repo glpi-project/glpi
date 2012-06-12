@@ -283,9 +283,14 @@ class Budget extends CommonDropdown{
       echo "</tr>";
 
       $num = 0;
+      $itemtypes = array();
       for ($i = 0; $i < $number ; $i++) {
-         $itemtype = $DB->result($result, $i, "itemtype");
+         $itemtypes[] = $DB->result($result, $i, "itemtype");
+      }
+      $itemtypes[] = 'Contract';
+      // $itemtypes[] = 'Ticket';
 
+      foreach ($itemtypes as $itemtype) {
          if (!($item = getItemForItemtype($itemtype))) {
             continue;
          }
@@ -301,10 +306,41 @@ class Budget extends CommonDropdown{
                             WHERE `glpi_infocoms`.`itemtype` = '$itemtype'
                                   AND `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
                                   getEntitiesRestrictRequest(" AND", $item->getTable())."
-                            ORDER BY `entities_id`,
+                                  ".($item->maybeTemplate()?" AND NOT `".$item->getTable()."`.`is_template`":'')."
+                            ORDER BY `".$item->getTable()."`.`entities_id`,
+                                     `".$item->getTable()."`.`name`";
+               break;
+               
+               case 'Contract' :
+                  $query ="SELECT `".$item->getTable()."`.`id`,
+                                  `".$item->getTable()."`.`entities_id`,
+                                   SUM(`glpi_contractcosts`.`cost`) as value
+                            FROM `glpi_contractcosts`
+                            INNER JOIN `".$item->getTable()."`
+                                 ON (`".$item->getTable()."`.`id` = `glpi_contractcosts`.`contracts_id`)
+                            WHERE `glpi_contractcosts`.`budgets_id` = '$budgets_id' ".
+                                  getEntitiesRestrictRequest(" AND", $item->getTable())."
+                                  AND NOT `".$item->getTable()."`.`is_template`
+                            GROUP BY `".$item->getTable()."`.`id`, `".$item->getTable()."`.`entities_id`
+                            ORDER BY `".$item->getTable()."`.`entities_id`,
                                      `".$item->getTable()."`.`name`";
                break;
 
+               case 'Ticket' : /// TODO
+                  $query ="SELECT `".$item->getTable()."`.`id`,
+                                  `".$item->getTable()."`.`entities_id`,
+                                   SUM(`glpi_contractcosts`.`cost`) as value
+                            FROM `glpi_contractcosts`
+                            INNER JOIN `".$item->getTable()."`
+                                 ON (`".$item->getTable()."`.`id` = `glpi_contractcosts`.`contracts_id`)
+                            WHERE `glpi_contractcosts`.`budgets_id` = '$budgets_id' ".
+                                  getEntitiesRestrictRequest(" AND", $item->getTable())."
+                                  AND NOT `".$item->getTable()."`.`is_template`
+                            GROUP BY `".$item->getTable()."`.`id`, `".$item->getTable()."`.`entities_id`
+                            ORDER BY `".$item->getTable()."`.`entities_id`,
+                                     `".$item->getTable()."`.`name`";
+               break;               
+               
                case 'Cartridge' :
                   $query = "SELECT `".$item->getTable()."`.*,
                                    `glpi_cartridgeitems`.`name`
@@ -340,7 +376,6 @@ class Budget extends CommonDropdown{
 
             if ($result_linked = $DB->query($query)) {
                $nb = $DB->numrows($result_linked);
-
                if ($nb > $_SESSION['glpilist_limit']) {
                   echo "<tr class='tab_bg_1'>";
                   $name = $item->getTypeName($nb);
@@ -362,9 +397,9 @@ class Budget extends CommonDropdown{
                      }
                      echo "<tr class='tab_bg_1'>";
                      if ($prem) {
-                        $name = $item->getTypeName($nb);
+                        $typename = $item->getTypeName($nb);
                         echo "<td class='center top' rowspan='$nb'>".
-                              ($nb>1 ? sprintf(__('%1$s: %2$s'), $name, $nb) : $name)."</td>";
+                              ($nb>1 ? sprintf(__('%1$s: %2$s'), $typename, $nb) : $typename)."</td>";
                      }
                      echo "<td class='center'>".Dropdown::getDropdownName("glpi_entities",
                                                                           $data["entities_id"]);
@@ -386,6 +421,11 @@ class Budget extends CommonDropdown{
             }
          }
       }
+
+      // Add contracts
+      
+      // Add tickets
+      
       if ($num>0) {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center b'>".sprintf(__('%1$s = %2$s'), __('Total'), $num)."</td>";
@@ -421,74 +461,109 @@ class Budget extends CommonDropdown{
 
       $result = $DB->query($query);
       $total  = 0;
+      $totalbytypes = array();
 
+      $itemtypes = array();
+      
       $entities_values     = array();
       $entitiestype_values = array();
       $found_types         = array();
 
       if ($DB->numrows($result)) {
          while ($types = $DB->fetch_assoc($result)) {
-            if (!($item = getItemForItemtype($types['itemtype']))) {
-               continue;
-            }
+            $itemtypes[] = $types['itemtype'];
+         }
+      }
 
-            $found_types[$types['itemtype']] = $item->getTypeName(1);
-            $table       = getTableForItemType($types['itemtype']);
-            $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`,
-                                   `$table`.`entities_id`
-                            FROM `$table`
-                            INNER JOIN `glpi_infocoms`
-                                 ON (`glpi_infocoms`.`items_id` = `$table`.`id`
-                                     AND `glpi_infocoms`.`itemtype` = '".$types['itemtype']."')
-                            LEFT JOIN `glpi_entities`
-                                 ON (`$table`.`entities_id` = `glpi_entities`.`id`)
-                            WHERE `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
-                                  getEntitiesRestrictRequest(" AND", $table, "entities_id");
+      $itemtypes[] = 'Contract';
+      //$itemtypes[] = 'Ticket';
 
-            if ($item->maybeTemplate()) {
+      foreach ($itemtypes as $itemtype) {
+         if (!($item = getItemForItemtype($itemtype))) {
+            continue;
+         }
+
+         $table       = getTableForItemType($itemtype);
+         switch ($itemtype) {
+            case 'Contract' :
+               $query_infos = "SELECT SUM(`glpi_contractcosts`.`cost`) AS `sumvalue`,
+                                       `$table`.`entities_id`
+                                 FROM `glpi_contractcosts`
+                                 INNER JOIN `$table`
+                                    ON (`glpi_contractcosts`.`contracts_id` = `$table`.`id`)
+                                 WHERE `glpi_contractcosts`.`budgets_id` = '$budgets_id' ".
+                                       getEntitiesRestrictRequest(" AND", $table, "entities_id");
+
                $query_infos .= " AND `$table`.`is_template` = '0' ";
-            }
-            $query_infos .= "GROUP BY `$table`.`entities_id`
-                             ORDER BY `glpi_entities`.`completename` ASC";
+               $query_infos .= "GROUP BY `$table`.`entities_id`";
+               break;
+            
+            default:
+               $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`,
+                                       `$table`.`entities_id`
+                                 FROM `$table`
+                                 INNER JOIN `glpi_infocoms`
+                                    ON (`glpi_infocoms`.`items_id` = `$table`.`id`
+                                          AND `glpi_infocoms`.`itemtype` = '$itemtype')
+                                 WHERE `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
+                                       getEntitiesRestrictRequest(" AND", $table, "entities_id");
 
-            if ($result_infos = $DB->query($query_infos)) {
+               if ($item->maybeTemplate()) {
+                  $query_infos .= " AND `$table`.`is_template` = '0' ";
+               }
+               $query_infos .= "GROUP BY `$table`.`entities_id`";
+            break;
+         }
+
+         if ($result_infos = $DB->query($query_infos)) {
+            if ($DB->numrows($result_infos)) {
+               $found_types[$itemtype] = $item->getTypeName(1);
+               $totalbytypes[$itemtype] = 0;
                //Store, for each entity, the budget spent
                while ($values = $DB->fetch_assoc($result_infos)) {
+
                   if (!isset($entities_values[$values['entities_id']])) {
                      $entities_values[$values['entities_id']] = 0;
                   }
-                  if (!isset($entitiestype_values[$values['entities_id']][$types['itemtype']])) {
-                     $entitiestype_values[$values['entities_id']][$types['itemtype']] = 0;
+                  if (!isset($entitiestype_values[$values['entities_id']][$itemtype])) {
+                     $entitiestype_values[$values['entities_id']][$itemtype] = 0;
                   }
                   $entities_values[$values['entities_id']]  += $values['sumvalue'];
-                  $entitiestype_values[$values['entities_id']][$types['itemtype']]
+                  $entitiestype_values[$values['entities_id']][$itemtype]
                                                             += $values['sumvalue'];
+                  $total += $values['sumvalue'];
+                  $totalbytypes[$itemtype] += $values['sumvalue'];
                }
             }
-
          }
 
-         $budget = new self();
-         $budget->getFromDB($budgets_id);
+      }
+         
+      $budget = new self();
+      $budget->getFromDB($budgets_id);
 
-         $colspan = count($found_types)+2;
-         echo "<div class='spaced'><table class='tab_cadre'>";
-         echo "<tr><th colspan='$colspan'>".__('Total spent on the budget')."</th></tr>";
-         echo "<tr><th>".__('Entity')."</th>";
-         if (count($found_types)) {
-            foreach ($found_types as $type => $typename) {
-               echo "<th>$typename</th>";
-            }
+      $colspan = count($found_types)+2;
+      echo "<div class='spaced'><table class='tab_cadre'>";
+      echo "<tr><th colspan='$colspan'>".__('Total spent on the budget')."</th></tr>";
+      echo "<tr><th>".__('Entity')."</th>";
+      if (count($found_types)) {
+         foreach ($found_types as $type => $typename) {
+            echo "<th>$typename</th>";
          }
-         echo "<th>".__('Total')."</th>";
-         echo "</tr>";
+      }
+      echo "<th>".__('Total')."</th>";
+      echo "</tr>";
 
-         foreach ($entities_values as $entity => $value) {
+      // get all entities ordered by names
+      $allentities = getAllDatasFromTable('glpi_entities','',true, 'completename');
+      
+      foreach ($allentities as $entity => $data) {
+         if (isset($entities_values[$entity])) {
             echo "<tr class='tab_bg_1'>";
             echo "<td class='b'>".Dropdown::getDropdownName('glpi_entities', $entity)."</td>";
             if (count($found_types)) {
                foreach ($found_types as $type => $typename) {
-                  echo "<td class='right'>";
+                  echo "<td class='numeric'>";
                   $typevalue = 0;
                   if (isset($entitiestype_values[$entity][$type])) {
                      $typevalue = $entitiestype_values[$entity][$type];
@@ -498,25 +573,33 @@ class Budget extends CommonDropdown{
                }
             }
 
-            echo "<td class='right b'>".Html::formatNumber($value)."</td>";
+            echo "<td class='right b'>".Html::formatNumber($entities_values[$entity])."</td>";
             echo "</tr>";
-            $total += $value;
          }
-
-         echo "<tr class='tab_bg_1'><th colspan='$colspan'><br></th></tr>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td class='right' colspan='".($colspan-1)."'>".__('Total spent on the budget')."</td>";
-         echo "<td class='right b'>".Html::formatNumber($total)."</td></tr>";
-         if ($_SESSION['glpiactive_entity'] == $budget->fields['entities_id']) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td class='right' colspan='".($colspan-1)."'>".__('Total remaining on the budget').
-                 "</td>";
-            echo "<td class='right b'>".Html::formatNumber($budget->fields['value'] - $total).
-                 "</td></tr>";
-         }
-         echo "</table></div>";
-
       }
+      if (count($found_types)) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td class='right b'>".__('Total')."</td>";
+         foreach ($found_types as $type => $typename) {
+            echo "<td class='numeric b'>";
+            echo Html::formatNumber($totalbytypes[$type]);
+            echo "</td>";
+         }
+         echo "<td class='numeric b'>".Html::formatNumber($total)."</td>";
+         echo "</tr>";
+      }
+      echo "<tr class='tab_bg_1'><th colspan='$colspan'><br></th></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='right' colspan='".($colspan-1)."'>".__('Total spent on the budget')."</td>";
+      echo "<td class='numeric b'>".Html::formatNumber($total)."</td></tr>";
+      if ($_SESSION['glpiactive_entity'] == $budget->fields['entities_id']) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td class='right' colspan='".($colspan-1)."'>".__('Total remaining on the budget').
+               "</td>";
+         echo "<td class='numeric b'>".Html::formatNumber($budget->fields['value'] - $total).
+               "</td></tr>";
+      }
+      echo "</table></div>";
    }
 
 }
