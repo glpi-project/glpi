@@ -1472,12 +1472,12 @@ class User extends CommonDBTM {
 
       if ($ID > 0) {
          $this->check($ID,'r');
+         $caneditpassword = $this->currentUserHaveMoreRightThan($ID);
       } else {
          // Create item
          $this->check(-1,'w');
+         $caneditpassword = true;
       }
-
-      $caneditpassword = $this->currentUserHaveMoreRightThan($ID);
 
       $extauth = !($this->fields["authtype"] == Auth::DB_GLPI
                    || ($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED
