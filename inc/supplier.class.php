@@ -630,7 +630,7 @@ class Supplier extends CommonDBTM {
 
       echo "<tr><th>".__('Name')."</th>";
       echo "<th>".__('Entity')."</th>";
-      echo "<th>"._x('Phone', 'Number')."</th>";
+      echo "<th>"._x('phone', 'Number')."</th>";
       echo "<th>".__('Contract type')."</th>";
       echo "<th>".__('Start date')."</th>";
       echo "<th>".__('Initial contract period')."</th>";

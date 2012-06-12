@@ -64,9 +64,7 @@ if (isset($_POST["add"])) {
                  //TRANS: %s is the user login
                  sprintf(__('%s deletes a cost'), $_SESSION["glpiname"]));
    }
-   $contract = new Contract();
-   $contract->getFromDB($cost->fields['tickets_id']);
-   Html::redirect(Toolbox::getItemTypeFormURL('Contract').'?id='.$cost->fields['contracts_id']);
+   Html::redirect(Toolbox::getItemTypeFormURL('Ticket').'?id='.$cost->fields['tickets_id']);
 
 } else if (isset($_POST["update"])) {
    $cost->check($_POST["id"],'w');

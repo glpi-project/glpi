@@ -358,7 +358,7 @@ class Stat {
             }
             echo Search::showHeaderItem($output_type, '', $header_num);
 
-            echo Search::showHeaderItem($output_type, _x('Quantity', 'Number'),
+            echo Search::showHeaderItem($output_type, _x('quantity', 'Number'),
                                         $header_num, '', 0, '', "colspan='4'");
             if ($itemtype =='Ticket') {
                echo Search::showHeaderItem($output_type, __('Satisfaction'), $header_num, '',

@@ -141,9 +141,9 @@ class Document_Item extends CommonDBRelation{
 
       if (Session::haveRight('document', 'r')) {
          if ($_SESSION['glpishow_count_on_tabs']) {
-            return self::createTabEntry(__('Associated items'), self::countForDocument($item));
+            return self::createTabEntry(_n('Associated item', 'Associated items', self::countForDocument($item)));
          }
-         return __('Associated items');
+         return _n('Associated item', 'Associated items', 2);
       }
       return '';
    }

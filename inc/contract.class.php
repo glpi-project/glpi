@@ -173,7 +173,7 @@ class Contract extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>"._x('Phone', 'Number')."</td>";
+      echo "<td>"._x('phone', 'Number')."</td>";
       echo "<td>";
       Html::autocompletionTextField($this, "num");
       echo "</td>";
@@ -430,7 +430,7 @@ class Contract extends CommonDBTM {
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'num';
-      $tab[3]['name']            = _x('Phone', 'Number');
+      $tab[3]['name']            = _x('phone', 'Number');
       $tab[3]['datatype']        = 'string';
 
       $tab[4]['table']           = 'glpi_contracttypes';
@@ -531,7 +531,7 @@ class Contract extends CommonDBTM {
 
       $tab[72]['table']          = 'glpi_contracts_items';
       $tab[72]['field']          = 'count';
-      $tab[72]['name']           = _x('Quantity', 'Number of items');
+      $tab[72]['name']           = _x('quantity', 'Number of items');
       $tab[72]['forcegroupby']   = true;
       $tab[72]['usehaving']      = true;
       $tab[72]['datatype']       = 'number';
@@ -1091,7 +1091,7 @@ class Contract extends CommonDBTM {
 
       echo "<tr><th>".__('Name')."</th>";
       echo "<th>".__('Entity')."</th>";
-      echo "<th>"._x('Phone', 'Number')."</th>";
+      echo "<th>"._x('phone', 'Number')."</th>";
       echo "<th>".__('Contract type')."</th>";
       echo "<th>".__('Supplier')."</th>";
       echo "<th>".__('Start date')."</th>";

@@ -135,13 +135,26 @@ class TicketCost extends CommonDBChild {
     *
     **/
    function showForm($ID, $options=array()) {
-      $this->check($ID,'w');
 
+      if (isset($options['parent']) && !empty($options['parent'])) {
+         $ticket = $options['parent'];
+      }
+
+      if ($ID > 0) {
+         $this->check($ID,'r');
+      } else {
+         // Create item
+         $input = array('tickets_id' => $ticket->getField('id'),
+                        'entities_id' =>$ticket->getEntityID());
+         $this->check(-1,'w',$input);
+      }
+      
       if ($ID > 0) {
          $tickets_id = $this->fields["tickets_id"];
       } else {
          $tickets_id = $options['parent']->fields["id"];
       }
+      
       $ticket = new Ticket();
       if (!$ticket->getFromDB($tickets_id)) {
          return false;
@@ -203,7 +216,8 @@ class TicketCost extends CommonDBChild {
       
       echo "<tr class='tab_bg_1'><td>".__('Budget')."</td>";
       echo "<td>";
-      Budget::dropdown(array('value' => $this->fields["budgets_id"]));
+      Budget::dropdown(array('value' => $this->fields["budgets_id"],
+                             'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
       $this->showFormButtons($options);
