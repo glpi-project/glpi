@@ -468,12 +468,14 @@ function addTracking($type, $ID, $ID_entity) {
                          mt_rand(0, 10)*HOUR_TIMESTAMP+mt_rand(0, 60)*MINUTE_TIMESTAMP;
       $duedatetoadd    = date("Y-m-d H:i:s", intval($due_date));
 
+      
       if ($status=="closed" || $status=="solved") {
          $solvetime = $firstactiontime+mt_rand(0, 10)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP+
                       mt_rand(0, 60)*MINUTE_TIMESTAMP;
          $solvedate = $opendate+$solvetime;
          $closedate = $opendate+$solvetime;
-
+         $actiontime = mt_rand(0, 10)*HOUR_TIMESTAMP+
+                      mt_rand(0, 60)*MINUTE_TIMESTAMP;
          if ($status=="closed") {
             $closetime = $solvetime+mt_rand(0, 5)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP+
                          mt_rand(0, 60)*MINUTE_TIMESTAMP;
@@ -514,9 +516,9 @@ function addTracking($type, $ID, $ID_entity) {
                            'priority'                    => mt_rand(1,5),
                            'itilcategories_id'           => mt_rand(0, $MAX['tracking_category']),
                            'type'                        => mt_rand(1,2),
-                           'cost_time'                   => $hour_cost,
                            'solutiontypes_id'            => $solutiontype,
                            'solution'                    => $solution,
+                           'actiontime'                  => $actiontime,
                            'due_date'                    => $duedatetoadd,
                            'close_delay_stat'            => $closetime,
                            'solve_delay_stat'            => $solvetime,
@@ -583,11 +585,17 @@ function addTracking($type, $ID, $ID_entity) {
                                     'users_id'    => $users[1]);
          }
          $tt->add($params);
-
          $i++;
       }
 
-
+      $tc = new TicketCost();
+      $params = array('tickets_id'        => $tID,
+                     'entities_id'       => $ID_entity,
+                     'begin_date'        => date("Y-m-d H:i:s", intval($opendate)),
+                     'name'              => "Cost",
+                     'cost_time'         => $hour_cost,
+                     'actiontime'        => floor($actiontime/2),
+                     'state'             => $state);
 
       // Insert satisfaction for stats
       if ($status=='closed'
