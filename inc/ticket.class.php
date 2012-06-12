@@ -3748,7 +3748,7 @@ class Ticket extends CommonITILObject {
 
       echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype');
       printf(__('%1$s%2$s'), __('Associated element'), $tt->getMandatoryMark('itemtype'));
-      if ($canupdate) {
+      if ($ID && $canupdate) {
          echo "&nbsp;<img title='"._sx('button', 'Update')."' alt='"._sx('button', 'Update')."'
                      onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
                      class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";
@@ -3776,9 +3776,12 @@ class Ticket extends CommonITILObject {
             }
          }
          $dev_user_id = 0;
+         $dev_itemtype = $this->fields["itemtype"];
+         $dev_items_id = $this->fields["items_id"];
          if (!$ID) {
             $dev_user_id = $values['_users_id_requester'];
-
+            $dev_itemtype = $values["itemtype"];
+            $dev_items_id = $values["items_id"];
          } else if (isset($this->users[parent::REQUESTER])
                     && (count($this->users[parent::REQUESTER]) == 1)) {
             foreach ($this->users[parent::REQUESTER] as $user_id_single) {
@@ -3791,9 +3794,9 @@ class Ticket extends CommonITILObject {
 
          if ($dev_user_id > 0) {
             self::dropdownMyDevices($dev_user_id, $this->fields["entities_id"],
-                                    $this->fields["itemtype"], $this->fields["items_id"]);
+                                    $dev_itemtype, $dev_items_id);
          }
-         self::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
+         self::dropdownAllDevices("itemtype", $dev_itemtype, $dev_items_id,
                                   1, $dev_user_id, $this->fields["entities_id"]);
          if ($ID) {
             echo "</div>";
