@@ -152,7 +152,52 @@ class ContractCost extends CommonDBChild {
       }
    }
 
+   /**
+    * Init cost for creation based on previous cost
+    **/
+   function initBasedOnPrevious() {
+      $ticket = new Ticket();
+      if (!isset($this->fields['contracts_id']) || !$ticket->getFromDB($this->fields['contracts_id'])) {
+         return false;
+      }
 
+      $lastdata = $this->getLastCostForContract($this->fields['contracts_id']);
+
+      if (isset($lastdata['end_date'])) {
+         $this->fields['begin_date'] = $lastdata['end_date'];
+      }
+      if (isset($lastdata['cost'])) {
+         $this->fields['cost'] = $lastdata['cost'];
+      }
+      if (isset($lastdata['name'])) {
+         $this->fields['name'] = $lastdata['name'];
+      }
+      if (isset($lastdata['budgets_id'])) {
+         $this->fields['budgets_id'] = $lastdata['budgets_id'];
+      }      
+   }
+
+   /**
+    * Get last datas for a contract
+    *
+    * @param $contracts_id        integer  ID of the contract
+    *
+    **/
+   function getLastCostForContract($contracts_id) {
+      global $DB;
+
+      $query = "SELECT *
+                  FROM `".$this->getTable()."`
+                  WHERE `contracts_id` = '$contracts_id'
+                  ORDER BY 'end_date' DESC, `id` DESC";
+
+      if ($result = $DB->query($query)) {
+         return $DB->fetch_assoc($result);
+      }
+
+      return array();
+   }
+   
    /**
     * Print the contract cost form
     *
@@ -172,6 +217,7 @@ class ContractCost extends CommonDBChild {
          $input = array('contracts_id' => $contract->getField('id'),
                         'entities_id' =>$contract->getEntityID());
          $this->check(-1,'w',$input);
+         $this->initBasedOnPrevious();
       }
 
       if ($ID > 0) {
