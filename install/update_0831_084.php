@@ -1313,14 +1313,14 @@ function update0831to084() {
          }
          $query = "INSERT INTO `glpi_contracts_costs`
                         (`contracts_id`, `name`, `begin_date`, `end_date`,
-                           `costs`,  `entities_id`,
+                           `cost`,  `entities_id`,
                            `is_recursive`, `is_deleted`,
                            `is_template`)
                      VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
                            '".$data['cost']."', '".$data['entities_id']."',
                            '".$data['is_recursive']."', '".$data['is_deleted']."',
                            '".$data['is_template']."')";
-         $DB->query($query);
+         $DB->queryOrDie($query, '0.84 move contracts costs');
       }
    }
    $migration->dropField('glpi_contracts', 'cost');
@@ -1376,7 +1376,7 @@ function update0831to084() {
                            '".$data['cost_time']."','".$data['cost_fixed']."',
                            '".$data['cost_material']."', '".$data['entities_id']."',
                            '".$data['is_deleted']."', '".$data['actiontime']."')";
-         $DB->query($query);
+         $DB->queryOrDie($query, '0.84 move tickets costs');
       }
    }
    $migration->dropField('glpi_tickets', 'cost_time');
