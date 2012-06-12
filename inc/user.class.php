@@ -1527,7 +1527,12 @@ class User extends CommonDBTM {
 
       $this->initForm($ID, $options);
 
-      $caneditpassword = $this->currentUserHaveMoreRightThan($ID);
+      if ($ID) {
+         $caneditpassword = $this->currentUserHaveMoreRightThan($ID);
+      } else {
+         // can edit on creation form
+         $caneditpassword = true;
+      }
 
       $extauth         = !(($this->fields["authtype"] == Auth::DB_GLPI)
                            || (($this->fields["authtype"] == Auth::NOT_YET_AUTHENTIFIED)
