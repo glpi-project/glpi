@@ -36,12 +36,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// ContractCost class
-class ContractCost extends CommonDBChild {
+/// TicketCost class
+class TicketCost extends CommonDBChild {
 
    // From CommonDBChild
-   public $itemtype  = 'Contract';
-   public $items_id  = 'contracts_id';
+   public $itemtype  = 'Ticket';
+   public $items_id  = 'tickets_id';
    public $dohistory = true;
 
 
@@ -51,12 +51,12 @@ class ContractCost extends CommonDBChild {
 
 
    function canCreate() {
-      return Session::haveRight('contract', 'w');
+      return Session::haveRight('ticketcost', 'w');
    }
 
 
    function canView() {
-      return Session::haveRight('contract', 'r');
+      return Session::haveRight('ticketcost', 'r');
    }
 
    /**
@@ -65,14 +65,13 @@ class ContractCost extends CommonDBChild {
    function prepareInputForAdd($input) {
 
       // Not attached to computer -> not added
-      if (!isset($input['contracts_id']) || ($input['contracts_id'] <= 0)) {
+      if (!isset($input['tickets_id']) || ($input['tickets_id'] <= 0)) {
          return false;
       }
 
-      $contract = new Contract();
-      if ($contract->getFromDB($input['contracts_id'])) {
-         $input['entities_id'] = $contract->getEntityID();
-         $input['is_recursive'] = $contract->fields['is_recursive'];
+      $ticket = new Ticket();
+      if ($ticket->getFromDB($input['tickets_id'])) {
+         $input['entities_id'] = $ticket->getEntityID();
       }
       if (empty($input['end_date'])
           || ($input['end_date'] == 'NULL')
@@ -101,15 +100,14 @@ class ContractCost extends CommonDBChild {
     * @see inc/CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-
       // can exists for template
-      if (($item->getType() == 'Contract')
-          && Session::haveRight("contract","r")) {
+      if (($item->getType() == 'Ticket')
+          && Session::haveRight("ticketcost","r")) {
 
          if ($_SESSION['glpishow_count_on_tabs']) {
             return self::createTabEntry(self::getTypeName(2),
-                                        countElementsInTable('glpi_contractcosts',
-                                                             "contracts_id = '".$item->getID()."'"));
+                                        countElementsInTable('glpi_ticketcosts',
+                                                             "tickets_id = '".$item->getID()."'"));
          }
          return self::getTypeName(2);
       }
@@ -124,37 +122,13 @@ class ContractCost extends CommonDBChild {
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      self::showForContract($item, $withtemplate);
+      self::showForTicket($item, $withtemplate);
       return true;
    }
 
 
    /**
-    * Duplicate all costs from a contract template to his clone
-    *
-    * @since version 0.84
-    *
-    * @param $oldid
-    * @param $newid
-   **/
-   static function cloneContract ($oldid, $newid) {
-      global $DB;
-
-      $query  = "SELECT *
-                 FROM `glpi_contractcosts`
-                 WHERE `contracts_id` = '$oldid'";
-      foreach ($DB->request($query) as $data) {
-         $cd                   = new self();
-         unset($data['id']);
-         $data['contracts_id'] = $newid;
-         $data                 = Toolbox::addslashes_deep($data);
-         $cd->add($data);
-      }
-   }
-
-
-   /**
-    * Print the contract cost form
+    * Print the ticket cost form
     *
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
@@ -164,12 +138,12 @@ class ContractCost extends CommonDBChild {
       $this->check($ID,'w');
 
       if ($ID > 0) {
-         $contracts_id = $this->fields["contracts_id"];
+         $tickets_id = $this->fields["tickets_id"];
       } else {
-         $contracts_id = $options['parent']->fields["id"];
+         $tickets_id = $options['parent']->fields["id"];
       }
-      $contract = new Contract();
-      if (!$contract->getFromDB($contracts_id)) {
+      $ticket = new Ticket();
+      if (!$ticket->getFromDB($tickets_id)) {
          return false;
       }
 
@@ -177,35 +151,56 @@ class ContractCost extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."</td>";
       echo "<td>";
-      echo "<input type='hidden' name='contracts_id' value='".$contract->fields['id']."'>";
-      echo "<input type='hidden' name='entities_id' value='".$contract->fields['entities_id']."'>";
-      echo "<input type='hidden' name='is_recursive' value='".$contract->fields['is_recursive']."'>";
+      echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
+      echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
       Html::autocompletionTextField($this,'name');
       echo "</td>";
-      echo "<td>".__('Cost')."</td>";
-      echo "<td>";
-      echo "<input type='text' name='cost' value='".
-                   Html::formatNumber($this->fields["cost"], true)."' size='14'>";
-      echo "</td></tr>";
-      
-
-      echo "<tr class='tab_bg_1'><td>".__('Begin date')."</td>";
+      echo "<td>".__('Begin date')."</td>";
       echo "<td>";
       Html::showDateFormItem("begin_date", $this->fields['begin_date']);
       echo "</td>";
-      $rowspan=3;
+      echo "</tr>";
+      
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Duration')."</td>";
+      echo "<td>";
+      Dropdown::showTimeStamp('actiontime', array('value' => $this->fields['actiontime'],
+                                                  'addfirstminutes' => true));
+      echo "</td>";
+      echo "<td>".__('End date')."</td>";
+      echo "<td>";
+      Html::showDateFormItem("end_date", $this->fields['end_date']);
+      echo "</td>";
+      
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Time cost')."</td><td>";
+      echo "<input type='text' size='15' name='cost_time' value='".
+               Html::formatNumber($this->fields["cost_time"], true)."'>";
+      echo "</td>";
+      
+      $rowspan=4;
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
       echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"].
            "</textarea>";
       echo "</td></tr>\n";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Fixed cost')."</td><td>";
+      echo "<input type='text' size='15' name='cost_fixed' value='".
+               Html::formatNumber($this->fields["cost_fixed"], true)."'>";
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Material cost')."</td><td>";
+      echo "<input type='text' size='15' name='cost_material' value='".
+               Html::formatNumber($this->fields["cost_material"], true)."'>";
+      echo "</td>";
+      echo "</tr>";
       
-
-      echo "<tr class='tab_bg_1'><td>".__('End date')."</td>";
-      echo "<td>";
-      Html::showDateFormItem("end_date", $this->fields['end_date']);
-      echo "</td></tr>";
-
       echo "<tr class='tab_bg_1'><td>".__('Budget')."</td>";
       echo "<td>";
       Budget::dropdown(array('value' => $this->fields["budgets_id"]));
@@ -218,29 +213,30 @@ class ContractCost extends CommonDBChild {
 
 
    /**
-    * Print the contract costs
+    * Print the ticket costs
     *
-    * @param $contract                  Contract object
+    * @param $ticket                  Ticket object
     * @param $withtemplate boolean  Template or basic item (default '')
     *
     * @return Nothing (call to classes members)
    **/
-   static function showForContract(Contract $contract, $withtemplate='') {
+   static function showForTicket(Ticket $ticket, $withtemplate='') {
       global $DB, $CFG_GLPI;
 
-      $ID = $contract->fields['id'];
+      $ID = $ticket->fields['id'];
 
-      if (!$contract->getFromDB($ID)
-          || !$contract->can($ID, "r")) {
+      if (!$ticket->getFromDB($ID)
+          || !$ticket->can($ID, "r")
+          || !Session::haveRight('ticketcost', 'r')) {
          return false;
       }
-      $canedit = $contract->can($ID, "w");
+      $canedit = Session::haveRight('ticketcost', 'w');
 
       echo "<div class='center'>";
 
       $query = "SELECT *
-                FROM `glpi_contractcosts`
-                WHERE `contracts_id` = '$ID'
+                FROM `glpi_ticketcosts`
+                WHERE `tickets_id` = '$ID'
                 ORDER BY `begin_date`";
 
       $rand   = mt_rand();
@@ -250,8 +246,8 @@ class ContractCost extends CommonDBChild {
          echo "<script type='text/javascript' >\n";
          echo "function viewAddCost".$ID."_$rand() {\n";
          $params = array('type'         => __CLASS__,
-                         'parenttype'   => 'Contract',
-                         'contracts_id' => $ID,
+                         'parenttype'   => 'Ticket',
+                         'tickets_id' => $ID,
                          'id'           => -1);
          Ajax::updateItemJsCode("viewcost".$ID."_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
@@ -265,26 +261,37 @@ class ContractCost extends CommonDBChild {
                 
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixehov'>";
-         echo "<tr><th colspan='5'>".self::getTypeName($DB->numrows($result))."</th></tr>";
+         echo "<tr><th colspan='7'>".self::getTypeName($DB->numrows($result))."</th>";
+         echo "<th>".__('Ticket duration')."</th>";
+         echo "<th>".CommonITILObject::getActionTime($ticket->fields['actiontime'])."</th>";
+         echo "</tr>";
 
          if ($DB->numrows($result)) {
             echo "<tr><th>".__('Name')."</th>";
             echo "<th>".__('Begin date')."</th>";
             echo "<th>".__('End date')."</th>";
             echo "<th>".__('Budget')."</th>";
-            echo "<th>".__('Cost')."</th>";
+            echo "<th>".__('Duration')."</th>";
+            echo "<th>".__('Time cost')."</th>";
+            echo "<th>".__('Fixed cost')."</th>";
+            echo "<th>".__('Material cost')."</th>";
+            echo "<th>".__('Total cost')."</th>";
             echo "</tr>";
 
          Session::initNavigateListItems(__CLASS__,
                               //TRANS : %1$s is the itemtype name,
                               //        %2$s is the name of the item (used for headings of a list)
                                         sprintf(__('%1$s = %2$s'),
-                                                $contract->getTypeName(1), $contract->getName()));
+                                                $ticket->getTypeName(1), $ticket->getName()));
 
             $total = 0;
+            $total_time = 0;
+            $total_fixed = 0;
+            $total_material = 0;
+            
             while ($data = $DB->fetch_assoc($result)) {
                echo "<tr class='tab_bg_2' ".($canedit
-                  ? "style='cursor:pointer' onClick=\"viewEditCost".$data['contracts_id']."_".
+                  ? "style='cursor:pointer' onClick=\"viewEditCost".$data['tickets_id']."_".
                   $data['id']."_$rand();\"": '') .">";
                $name = (empty($data['name'])? sprintf(__('%1$s (%2$s)'),
                                                       $data['name'], $data['id'])
@@ -294,10 +301,10 @@ class ContractCost extends CommonDBChild {
                         Html::showToolTip($data['comment'], array('display' => false)));
                if ($canedit) {
                   echo "\n<script type='text/javascript' >\n";
-                  echo "function viewEditCost" .$data['contracts_id']."_". $data["id"]. "_$rand() {\n";
+                  echo "function viewEditCost" .$data['tickets_id']."_". $data["id"]. "_$rand() {\n";
                   $params = array('type'        => __CLASS__,
-                                 'parenttype'   => 'Contract',
-                                 'contracts_id' => $data["contracts_id"],
+                                 'parenttype'   => 'Ticket',
+                                 'tickets_id' => $data["tickets_id"],
                                  'id'           => $data["id"]);
                   Ajax::updateItemJsCode("viewcost".$ID."_$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
@@ -309,20 +316,50 @@ class ContractCost extends CommonDBChild {
                echo "<td>".Html::convDate($data['end_date'])."</td>";
                echo "<td>".Dropdown::getDropdownName('glpi_budgets',
                                                 $data['budgets_id'])."</td>";
-               echo "<td class='numeric'>".Html::formatNumber($data['cost'])."</td>";
-               $total += $data['cost'];
+               echo "<td>".CommonITILObject::getActionTime($data['actiontime'])."</td>";
+               $total_time += $data['actiontime'];
+               echo "<td class='numeric'>".Html::formatNumber($data['cost_time'])."</td>";
+               echo "<td class='numeric'>".Html::formatNumber($data['cost_fixed'])."</td>";
+               $total_fixed += $data['cost_fixed'];
+               echo "<td class='numeric'>".Html::formatNumber($data['cost_material'])."</td>";
+               $total_material += $data['cost_material'];
+               $cost = self::computeTotalCost($data['actiontime'], $data['cost_time'], $data['cost_fixed'], $data['cost_material']);
+               echo "<td class='numeric'>".Html::formatNumber($cost)."</td>";
+               $total += $cost;
                echo "</tr>";
                Session::addToNavigateListItems(__CLASS__, $data['id']);
             }
-            echo "<tr class='b'><td colspan='3'>&nbsp;</td><td class='right'>".__('Total cost').'</td>';
+            echo "<tr class='b'><td colspan='4' class='right'>".__('Total').'</td>';
+            echo "<td>".CommonITILObject::getActionTime($total_time)."</td>";
+            echo "<td>&nbsp;</td>";
+            echo "<td class='numeric'>".Html::formatNumber($total_fixed).'</td>';
+            echo "<td class='numeric'>".Html::formatNumber($total_material).'</td>';
             echo "<td class='numeric'>".Html::formatNumber($total).'</td></tr>';
          } else {
-            echo "<tr><th colspan='5'>".__('No item found')."</th></tr>";
+            echo "<tr><th colspan='9'>".__('No item found')."</th></tr>";
          }
          echo "</table>";
       }
       echo "</div><br>";
    }
 
+   /**
+    * Computer total cost of a ticket
+    *
+    * @param $actiontime      float    ticket actiontime
+    * @param $cost_time       float    ticket time cost
+    * @param $cost_fixed      float    ticket fixed cost
+    * @param $cost_material   float    ticket material cost
+    * @param $edit             boolean used for edit of computation ? (true by default)
+    *
+    * @return total cost formatted string
+   **/
+   static function computeTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material,
+                                     $edit=true) {
+
+      return Html::formatNumber(($actiontime*$cost_time/HOUR_TIMESTAMP)+$cost_fixed+$cost_material,
+                                $edit);
+   }
+   
 }
 ?>

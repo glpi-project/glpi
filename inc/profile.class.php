@@ -48,7 +48,7 @@ class Profile extends CommonDBTM {
                                           'observe_ticket', 'password_update',
                                           'reminder_public', 'reservation_helpdesk',
                                           'show_group_hardware', 'show_group_ticket',
-                                          'ticketrecurrent', 'tickettemplate',
+                                          'ticketrecurrent', 'tickettemplate', 'ticket_cost',
                                           'update_own_followups', 'validate_ticket');
 
 
@@ -799,13 +799,15 @@ class Profile extends CommonDBTM {
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_2'>";
+      echo "<td>"._n('Ticket cost', 'Ticket costs', 2)."</td><td>";
+      self::dropdownNoneReadWrite("ticketcost", $this->fields["ticketcost"], 1, 1, 1);
+      echo "</td>";
       echo "<td>"._n('Ticket template', 'Ticket templates', 2)."</td><td>";
       self::dropdownNoneReadWrite("tickettemplate", $this->fields["tickettemplate"], 1, 1, 1);
       echo "</td>";
       echo "<td>".__('Recurrent tickets')."</td><td>";
       self::dropdownNoneReadWrite("ticketrecurrent", $this->fields["ticketrecurrent"], 1, 1, 1);
       echo "</td>";
-      echo "<td>&nbsp;</td><td>&nbsp;</td>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_5'><th colspan='6'>"._x('noun','Update')."</th>";
@@ -1716,6 +1718,11 @@ class Profile extends CommonDBTM {
       $tab[85]['name']           = __('Statistics');
       $tab[85]['datatype']       = 'bool';
 
+      $tab[119]['table']          = $this->getTable();
+      $tab[119]['field']          = 'ticketcost';
+      $tab[119]['name']           = _n('Ticket cost', 'Ticket costs', 2);
+      $tab[119]['datatype']       = 'right';
+      
       $tab[86]['table']         = $this->getTable();
       $tab[86]['field']         = 'helpdesk_hardware';
       $tab[86]['name']          = __('Link with items for the creation of tickets');

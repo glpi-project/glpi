@@ -55,7 +55,7 @@ function handleObsoleteCall($func) {
       }
    }
    echo "</table>";
-   Html::displayErrorAndDie(sprintf(__('The plugin %s is incompatible  with this version of GLPI'),
+   Html::displayErrorAndDie(sprintf(__('The plugin %s is incompatible with this version of GLPI'),
                                     $name).
                             "<br><br>".__('Delete or update it otherwise GLPI will not work correctly.'));
 }

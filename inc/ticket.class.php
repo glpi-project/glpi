@@ -41,7 +41,7 @@ class Ticket extends CommonITILObject {
 
    // From CommonDBTM
    public $dohistory = true;
-   protected $forward_entity_to = array('TicketValidation');
+   protected $forward_entity_to = array('TicketValidation', 'TicketCost');
 
    // From CommonITIL
    public $userlinkclass     = 'Ticket_User';
@@ -427,7 +427,7 @@ class Ticket extends CommonITILObject {
       switch ($item->getType()) {
          case __CLASS__ :
             $ong    = array();
-            $ong[1] = _n('Cost', 'Costs', 2);
+
             $ong[2] = _n('Solution', 'Solutions', 1);
             // enquete si statut clos
             if ($item->fields['status'] == 'closed') {
@@ -459,9 +459,6 @@ class Ticket extends CommonITILObject {
 
          case __CLASS__ :
             switch ($tabnum) {
-               case 1 :
-                  $item->showCost();
-                  break;
 
                case 2 :
                      if (!isset($_POST['load_kb_sol'])) {
@@ -506,6 +503,7 @@ class Ticket extends CommonITILObject {
       $this->addStandardTab('TicketValidation', $ong, $options);
       $this->addStandardTab('TicketTask', $ong, $options);
       $this->addStandardTab(__CLASS__, $ong, $options);
+      $this->addStandardTab('TicketCost', $ong, $options);
       $this->addStandardTab('Document', $ong, $options);
       $this->addStandardTab('Problem', $ong, $options);
       $this->addStandardTab('Change', $ong, $options);
@@ -546,16 +544,19 @@ class Ticket extends CommonITILObject {
                  WHERE `tickets_id` = '".$this->fields['id']."'";
       $DB->query($query1);
 
-      $query1 = "DELETE
-                 FROM `glpi_ticketvalidations`
-                 WHERE `tickets_id` = '".$this->fields['id']."'";
-      $DB->query($query1);
+      $ts = new TicketValidation();
+      $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+
 
       $query1 = "DELETE
                  FROM `glpi_ticketsatisfactions`
                  WHERE `tickets_id` = '".$this->fields['id']."'";
       $DB->query($query1);
 
+
+      $ts = new TicketCost();
+      $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      
       SlaLevel_Ticket::deleteForTicket($this->getID());
 
       $query1 = "DELETE
@@ -2047,22 +2048,47 @@ class Ticket extends CommonITILObject {
 
          $tab['cost']               = __('Cost');
 
-         $tab[42]['table']          = $this->getTable();
+         $tab[48]['table']          = 'glpi_ticketcosts';
+         $tab[48]['field']          = 'totalcost';
+         $tab[48]['name']           = __('Total cost');
+         $tab[48]['datatype']       = 'decimal';
+         $tab[48]['forcegroupby']   = true;
+         $tab[48]['massiveaction']  = false;
+         $tab[48]['joinparams']     = array('jointype'  => 'child');
+         
+         $tab[42]['table']          = 'glpi_ticketcosts';
          $tab[42]['field']          = 'cost_time';
          $tab[42]['name']           = __('Time cost');
          $tab[42]['datatype']       = 'decimal';
+         $tab[42]['forcegroupby']   = true;
+         $tab[42]['massiveaction']  = false;
+         $tab[42]['joinparams']     = array('jointype'  => 'child');
 
-         $tab[43]['table']          = $this->getTable();
+         $tab[49]['table']          = 'glpi_ticketcosts';
+         $tab[49]['field']          = 'actiontime';
+         $tab[49]['name']           = sprintf(__('%1$s - %2$s'), __('Cost'), __('Duration'));
+         $tab[49]['datatype']       = 'timestamp';
+         $tab[49]['forcegroupby']   = true;
+         $tab[49]['massiveaction']  = false;
+         $tab[49]['joinparams']     = array('jointype'  => 'child');
+         
+         $tab[43]['table']          = 'glpi_ticketcosts';
          $tab[43]['field']          = 'cost_fixed';
          $tab[43]['name']           = __('Fixed cost');
          $tab[43]['datatype']       = 'decimal';
+         $tab[43]['forcegroupby']   = true;
+         $tab[43]['massiveaction']  = false;
+         $tab[43]['joinparams']     = array('jointype'  => 'child');
 
-         $tab[44]['table']          = $this->getTable();
+         $tab[44]['table']          = 'glpi_ticketcosts';
          $tab[44]['field']          = 'cost_material';
          $tab[44]['name']           = __('Material cost');
          $tab[44]['datatype']       = 'decimal';
+         $tab[44]['forcegroupby']   = true;
+         $tab[44]['massiveaction']  = false;
+         $tab[44]['joinparams']     = array('jointype'  => 'child');
       }
-
+      
       // Filter search fields for helpdesk
       if (!Session::isCron() // no filter for cron
           && ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk')) {
@@ -2719,65 +2745,6 @@ class Ticket extends CommonITILObject {
    }
 
 
-   function showCost() {
-
-      $this->check($this->getField('id'), 'r');
-      $canedit = Session::haveRight('update_ticket', 1);
-
-      $options = array('colspan' => 1);
-      $this->showFormHeader($options);
-
-      echo "<tr><th colspan='4'>"._n('Cost', 'Costs', 2)."</th></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td width='50%'>".__('Total duration')."</td>";
-      echo "<td class='b'>".parent::getActionTime($this->fields["actiontime"])."</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Time cost')."</td><td>";
-      if ($canedit) {
-         echo "<input type='text' maxlength='100' size='15' name='cost_time' value='".
-                Html::formatNumber($this->fields["cost_time"], true)."'>";
-      } else {
-         echo Html::formatNumber($this->fields["cost_time"]);
-      }
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Fixed cost')."</td><td>";
-      if ($canedit) {
-         echo "<input type='text' maxlength='100' size='15' name='cost_fixed' value='".
-                Html::formatNumber($this->fields["cost_fixed"], true)."'>";
-      } else {
-         echo Html::formatNumber($this->fields["cost_fixed"]);
-      }
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Material cost')."</td><td>";
-      if ($canedit) {
-         echo "<input type='text' maxlength='100' size='15' name='cost_material' value='".
-                Html::formatNumber($this->fields["cost_material"], true)."'>";
-      } else {
-         echo Html::formatNumber($this->fields["cost_material"]);
-      }
-      echo "</td></tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td >".__('Total cost')."</td>";
-      echo "<td class='b'>";
-      echo self::trackingTotalCost($this->fields["actiontime"], $this->fields["cost_time"],
-                                   $this->fields["cost_fixed"], $this->fields["cost_material"],
-                                   false);
-      echo "</td></tr>\n";
-
-      $options['candel']  = false;
-      $options['canedit'] = $canedit;
-      $this->showFormButtons($options);
-   }
-
-
    /**
     * Calculate Ticket TCO for an item
     *
@@ -2790,42 +2757,24 @@ class Ticket extends CommonITILObject {
 
       $totalcost = 0;
 
-      $query = "SELECT `actiontime`, `cost_time`, `cost_fixed`, `cost_material`
-                FROM `glpi_tickets`
-                WHERE `itemtype` = '".get_class($item)."'
-                      AND `items_id` = '".$item->getField('id')."'
-                      AND (`cost_time` > '0'
-                           OR `cost_fixed` > '0'
-                           OR `cost_material` > '0')";
+      $query = "SELECT `glpi_ticketcosts`.*
+                FROM `glpi_tickets`, `glpi_ticketcosts`
+                WHERE `glpi_ticketcosts`.`tickets_id` = `glpi_tickets`.`id`
+                      AND `glpi_tickets`.`itemtype` = '".get_class($item)."'
+                      AND `glpi_tickets`.`items_id` = '".$item->getField('id')."'
+                      AND (`glpi_ticketcosts`.`cost_time` > '0'
+                           OR `glpi_ticketcosts`.`cost_fixed` > '0'
+                           OR `glpi_ticketcosts`.`cost_material` > '0')";
       $result = $DB->query($query);
 
       $i = 0;
       if ($DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
-            $totalcost += self::trackingTotalCost($data["actiontime"], $data["cost_time"],
+            $totalcost += TicketCost::computeTotalCost($data["actiontime"], $data["cost_time"],
                                                   $data["cost_fixed"], $data["cost_material"]);
          }
       }
       return $totalcost;
-   }
-
-
-   /**
-    * Computer total cost of a ticket
-    *
-    * @param $actiontime      float    ticket actiontime
-    * @param $cost_time       float    ticket time cost
-    * @param $cost_fixed      float    ticket fixed cost
-    * @param $cost_material   float    ticket material cost
-    * @param $edit             boolean used for edit of computation ? (true by default)
-    *
-    * @return total cost formatted string
-   **/
-   static function trackingTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material,
-                                     $edit=true) {
-
-      return Html::formatNumber(($actiontime*$cost_time/HOUR_TIMESTAMP)+$cost_fixed+$cost_material,
-                                $edit);
    }
 
 

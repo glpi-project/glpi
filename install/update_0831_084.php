@@ -1374,14 +1374,14 @@ function update0831to084() {
    $migration->dropField('glpi_tickets', 'cost_fixed');
    $migration->dropField('glpi_tickets', 'cost_material');
 
-   $migration->addField("glpi_profiles", "ticket_costs", "char",
+   $migration->addField("glpi_profiles", "ticketcost", "char",
                         array('update'    => "'w'",
                               'condition' => " WHERE `update_ticket` = 1"));
    // Set default to r as before
    $query = "UPDATE `glpi_profiles`
-               SET `ticket_costs` = 'r'
-               WHERE `ticket_costs` IS NULL";
-   $DB->queryOrDie($query, "0.84 set ticket_costs in glpi_profiles");
+               SET `ticketcost` = 'r'
+               WHERE `ticketcost` IS NULL";
+   $DB->queryOrDie($query, "0.84 set ticketcost in glpi_profiles");
    
    
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'planning recalls'));
