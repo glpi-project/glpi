@@ -1506,6 +1506,16 @@ class Toolbox {
                      // Use for compatibility with old name
                      case "tracking" :
                      case "ticket" :
+                        // Check entity
+                        if (($item = getItemForItemtype($data[0]))
+                              && $item->isEntityAssign()) {
+                           if ($item->getFromDB($data[1])) {
+                              if (!Session::haveAccessToEntity($item->getEntityID())) {
+                                 Session::changeActiveEntities($item->getEntityID(),1);
+                              }
+                           }
+                        }
+                     
                         Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$data[1].
                                      "&$forcetab");
                         break;
@@ -1572,6 +1582,15 @@ class Toolbox {
 
                      default :
                         if (!empty($data[0] )&& $data[1]>0) {
+                           // Check entity
+                           if (($item = getItemForItemtype($data[0]))
+                                 && $item->isEntityAssign()) {
+                              if ($item->getFromDB($data[1])) {
+                                 if (!Session::haveAccessToEntity($item->getEntityID())) {
+                                    Session::changeActiveEntities($item->getEntityID(),1);
+                                 }
+                              }
+                           }
                            Html::redirect($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?id=".
                                         $data[1]."&$forcetab");
                         } else {
