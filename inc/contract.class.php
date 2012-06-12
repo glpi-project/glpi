@@ -462,15 +462,6 @@ class Contract extends CommonDBTM {
       $tab[7]['field']           = 'notice';
       $tab[7]['name']            = __('Notice');
 
-      /// TODO create cost section with others data
-      $tab[11]['table']          = 'glpi_contractcosts';
-      $tab[11]['field']          = 'cost';
-      $tab[11]['name']           = __('Total cost');
-      $tab[11]['datatype']       = 'decimal';
-      $tab[11]['forcegroupby']   = true;
-      $tab[11]['massiveaction']  = false;
-      $tab[11]['joinparams']     = array('jointype' => 'child');
-
       $tab[21]['table']          = $this->getTable();
       $tab[21]['field']          = 'periodicity';
       $tab[21]['name']           = __('Periodicity');
@@ -557,6 +548,57 @@ class Contract extends CommonDBTM {
       $tab[29]['joinparams']    = array('beforejoin'
                                        => array('table'      => 'glpi_contracts_suppliers',
                                                 'joinparams' => array('jointype' => 'child')));
+
+      $tab['cost']               = __('Cost');
+
+      $tab[11]['table']          = 'glpi_contractcosts';
+      $tab[11]['field']          = 'cost';
+      $tab[11]['name']           = __('Total cost');
+      $tab[11]['datatype']       = 'decimal';
+      $tab[11]['forcegroupby']   = true;
+      $tab[11]['massiveaction']  = false;
+      $tab[11]['joinparams']     = array('jointype' => 'child');
+
+      $tab[41]['table']          = 'glpi_contractcosts';
+      $tab[41]['field']          = 'cost';
+      $tab[41]['name']           = __('Cost');
+      $tab[41]['datatype']       = 'decimal';
+      $tab[41]['forcegroupby']   = true;
+      $tab[41]['massiveaction']  = false;
+      $tab[41]['joinparams']     = array('jointype' => 'child');
+
+      $tab[42]['table']          = 'glpi_contractcosts';
+      $tab[42]['field']          = 'begin_date';
+      $tab[42]['name']           = sprintf(__('%1$s - %2$s'), __('Cost'), __('Begin date'));
+      $tab[42]['datatype']       = 'date';
+      $tab[42]['forcegroupby']   = true;
+      $tab[42]['massiveaction']  = false;
+      $tab[42]['joinparams']     = array('jointype' => 'child');
+
+      $tab[43]['table']          = 'glpi_contractcosts';
+      $tab[43]['field']          = 'end_date';
+      $tab[43]['name']           = sprintf(__('%1$s - %2$s'), __('Cost'), __('End date'));
+      $tab[43]['datatype']       = 'date';
+      $tab[43]['forcegroupby']   = true;
+      $tab[43]['massiveaction']  = false;
+      $tab[43]['joinparams']     = array('jointype' => 'child');
+
+      $tab[44]['table']          = 'glpi_contractcosts';
+      $tab[44]['field']          = 'name';
+      $tab[44]['name']           = sprintf(__('%1$s - %2$s'), __('Cost'), __('Name'));
+      $tab[44]['forcegroupby']   = true;
+      $tab[44]['massiveaction']  = false;
+      $tab[44]['joinparams']     = array('jointype' => 'child');
+
+      $tab[45]['table']          = 'glpi_budgets';
+      $tab[45]['field']          = 'name';
+      $tab[45]['name']           = sprintf(__('%1$s - %2$s'), __('Cost'), __('Budget'));
+      $tab[45]['forcegroupby']   = true;
+      $tab[45]['massiveaction']  = false;
+      $tab[45]['joinparams']    = array('beforejoin'
+                                       => array('table'      => 'glpi_contractcosts',
+                                                'joinparams' => array('jointype' => 'child')));
+
       return $tab;
    }
 
