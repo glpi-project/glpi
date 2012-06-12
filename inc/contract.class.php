@@ -305,6 +305,11 @@ class Contract extends CommonDBTM {
                                                    'joinparams' => array('jointype'
                                                                             => 'itemtype_item')));
 
+      $joinparamscost            = array('jointype' => 'child',
+                                         'beforejoin' => array('table'      => 'glpi_contracts',
+                                                               'joinparams' => $joinparams,
+                                          ));
+                                                                            
       $tab[139]['table']         = 'glpi_contracts_items';
       $tab[139]['field']         = 'count';
       $tab[139]['name']          = __('Number of contracts');
@@ -333,7 +338,7 @@ class Contract extends CommonDBTM {
 
       $tab[130]['table']         = 'glpi_contracts';
       $tab[130]['field']         = 'duration';
-      $tab[130]['name']          = sprintf(__('%1$s %2$s'), __('Contract'),__('Duration'));
+      $tab[130]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'),__('Duration'));
       $tab[130]['forcegroupby']  = true;
       $tab[130]['massiveaction'] = false;
       $tab[130]['joinparams']    = $joinparams;
@@ -341,14 +346,14 @@ class Contract extends CommonDBTM {
       $tab[131]['table']         = 'glpi_contracts';
       $tab[131]['field']         = 'periodicity';
                                     //TRANS: %1$s is Contract, %2$s is field name
-      $tab[131]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Periodicity'));
+      $tab[131]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'), __('Periodicity'));
       $tab[131]['forcegroupby']  = true;
       $tab[131]['massiveaction'] = false;
       $tab[131]['joinparams']    = $joinparams;
 
       $tab[132]['table']         = 'glpi_contracts';
       $tab[132]['field']         = 'begin_date';
-      $tab[132]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Start date'));
+      $tab[132]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'), __('Start date'));
       $tab[132]['forcegroupby']  = true;
       $tab[132]['datatype']      = 'date';
       $tab[132]['massiveaction'] = false;
@@ -356,14 +361,14 @@ class Contract extends CommonDBTM {
 
       $tab[133]['table']         = 'glpi_contracts';
       $tab[133]['field']         = 'accounting_number';
-      $tab[133]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Account number'));
+      $tab[133]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'), __('Account number'));
       $tab[133]['forcegroupby']  = true;
       $tab[133]['massiveaction'] = false;
       $tab[133]['joinparams']    = $joinparams;
 
       $tab[134]['table']         = 'glpi_contracts';
       $tab[134]['field']         = 'end_date';
-      $tab[134]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('End date'));
+      $tab[134]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'), __('End date'));
       $tab[134]['forcegroupby']  = true;
       $tab[134]['datatype']      = 'date_delay';
       $tab[134]['datafields'][1] = 'begin_date';
@@ -375,29 +380,29 @@ class Contract extends CommonDBTM {
 
       $tab[135]['table']         = 'glpi_contracts';
       $tab[135]['field']         = 'notice';
-      $tab[135]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Notice'));
+      $tab[135]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'), __('Notice'));
       $tab[135]['forcegroupby']  = true;
       $tab[135]['massiveaction'] = false;
       $tab[135]['joinparams']    = $joinparams;
 
-//       $tab[136]['table']         = 'glpi_contracts';
-//       $tab[136]['field']         = 'cost';
-//       $tab[136]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Cost'));
-//       $tab[136]['forcegroupby']  = true;
-//       $tab[136]['datatype']      = 'decimal';
-//       $tab[136]['massiveaction'] = false;
-//       $tab[136]['joinparams']    = $joinparams;
+      $tab[136]['table']         = 'glpi_contractcosts';
+      $tab[136]['field']         = 'cost';
+      $tab[136]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'), __('Cost'));
+      $tab[136]['forcegroupby']  = true;
+      $tab[136]['datatype']      = 'decimal';
+      $tab[136]['massiveaction'] = false;
+      $tab[136]['joinparams']    = $joinparamscost;
 
       $tab[137]['table']         = 'glpi_contracts';
       $tab[137]['field']         = 'billing';
-      $tab[137]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Invoice period'));
+      $tab[137]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'), __('Invoice period'));
       $tab[137]['forcegroupby']  = true;
       $tab[137]['massiveaction'] = false;
       $tab[137]['joinparams']    = $joinparams;
 
       $tab[138]['table']         = 'glpi_contracts';
       $tab[138]['field']         = 'renewal';
-      $tab[138]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Renewal'));
+      $tab[138]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'), __('Renewal'));
       $tab[138]['forcegroupby']  = true;
       $tab[138]['massiveaction'] = false;
       $tab[138]['joinparams']    = $joinparams;
