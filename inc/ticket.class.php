@@ -3833,7 +3833,7 @@ class Ticket extends CommonITILObject {
 
       echo "<th rowspan='2'>".$tt->getBeginHiddenFieldText('itemtype').
                 $LANG['document'][14]."&nbsp;: ".$tt->getMandatoryMark('itemtype');
-      if ($canupdate) {
+      if ($ID && $canupdate) {
          echo "<img title=\"".$LANG['buttons'][14]."\" alt=\"".$LANG['buttons'][14]."\"
                   onClick=\"Ext.get('tickethardwareselection$ID').setDisplayed('block')\"
                   class='pointer' src='".$CFG_GLPI["root_doc"]."/pics/showselect.png'>";
@@ -3852,13 +3852,17 @@ class Ticket extends CommonITILObject {
                if ($item->can($this->fields["items_id"],'r')) {
                   echo $item->getTypeName()." - ".$item->getLink(true);
                } else {
-                  echo $item->getTypeName()." ".$item->getNameID();
+                  echo $item->getTypeName()." - ".$item->getNameID();
                }
             }
          }
          $dev_user_id = 0;
+         $dev_itemtype = $this->fields["itemtype"];
+         $dev_items_id = $this->fields["items_id"];
          if (!$ID) {
-            $dev_user_id = $values['_users_id_requester'];
+            $dev_user_id  = $values['_users_id_requester'];
+            $dev_itemtype = $values["itemtype"];
+            $dev_items_id = $values["items_id"];
 
          } else if (isset($this->users[parent::REQUESTER])
                     && count($this->users[parent::REQUESTER])==1) {
@@ -3871,9 +3875,9 @@ class Ticket extends CommonITILObject {
          }
          if ($dev_user_id > 0) {
             self::dropdownMyDevices($dev_user_id, $this->fields["entities_id"],
-                                    $this->fields["itemtype"], $this->fields["items_id"]);
+                                    $dev_itemtype, $dev_items_id);
          }
-         self::dropdownAllDevices("itemtype", $this->fields["itemtype"], $this->fields["items_id"],
+         self::dropdownAllDevices("itemtype", $dev_itemtype, $dev_items_id,
                                   1, $dev_user_id, $this->fields["entities_id"]);
          if ($ID) {
             echo "</div>";
