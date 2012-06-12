@@ -59,7 +59,6 @@ class ContractCost extends CommonDBChild {
       return Session::haveRight('contract', 'r');
    }
 
-
    /**
     * @see inc/CommonDBChild::prepareInputForAdd()
    **/
@@ -74,8 +73,6 @@ class ContractCost extends CommonDBChild {
       if ($contract->getFromDB($input['contracts_id'])) {
          $input['entities_id'] = $contract->getEntityID();
          $input['is_recursive'] = $contract->fields['is_recursive'];
-         $input['is_deleted'] = $contract->fields['is_deleted'];
-         $input['is_template'] = $contract->fields['is_template'];
       }
       if (empty($input['end_date'])
           || ($input['end_date'] == 'NULL')
@@ -183,8 +180,6 @@ class ContractCost extends CommonDBChild {
       echo "<input type='hidden' name='contracts_id' value='".$contract->fields['id']."'>";
       echo "<input type='hidden' name='entities_id' value='".$contract->fields['entities_id']."'>";
       echo "<input type='hidden' name='is_recursive' value='".$contract->fields['is_recursive']."'>";
-      echo "<input type='hidden' name='is_template' value='".$contract->fields['is_template']."'>";
-      echo "<input type='hidden' name='is_deleted' value='".$contract->fields['is_deleted']."'>";
       Html::autocompletionTextField($this,'name');
       echo "</td>";
       echo "<td>".__('Cost')."</td>";
