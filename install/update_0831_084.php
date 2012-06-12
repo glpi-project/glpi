@@ -241,15 +241,14 @@ function update0831to084() {
    $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
                           'glpi_changes_problems', 'glpi_changes_suppliers',
                           'glpi_changes_tickets', 'glpi_changes_users',
-                          'glpi_changetasks', 'glpi_contracts_costs',
-                          'glpi_costs_tickets',
+                          'glpi_changetasks', 'glpi_contractcosts',
                           'glpi_fqdns', 'glpi_ipaddresses',
                           'glpi_ipaddresses_ipnetworks', 'glpi_ipnetworks', 'glpi_networkaliases',
                           'glpi_networknames', 'glpi_networkportaggregates',
                           'glpi_networkportdialups', 'glpi_networkportethernets',
                           'glpi_networkportlocals', 'glpi_networkportmigrations',
                           'glpi_networkportwifis', 'glpi_problems_suppliers',
-                          'glpi_suppliers_tickets', 'glpi_wifinetworks');
+                          'glpi_suppliers_tickets', 'glpi_ticketcosts', 'glpi_wifinetworks');
 
    foreach ($newtables as $new_table) {
       // rename new tables if exists ?
@@ -1268,8 +1267,8 @@ function update0831to084() {
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'contract and ticket costs'));
    
-   if (!TableExists('glpi_contracts_costs')) {
-      $query = "CREATE TABLE `glpi_contracts_costs` (
+   if (!TableExists('glpi_contractcosts')) {
+      $query = "CREATE TABLE `glpi_contractcosts` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `contracts_id` int(11) NOT NULL DEFAULT '0',
                   `name` varchar(255) DEFAULT NULL,
@@ -1293,9 +1292,9 @@ function update0831to084() {
                   KEY `is_template` (`is_template`),
                   KEY `budgets_id` (`budgets_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.84 add table glpi_contracts_costs");
+      $DB->queryOrDie($query, "0.84 add table glpi_contractcosts");
 
-      $migration->migrationOneTable('glpi_contracts_costs');
+      $migration->migrationOneTable('glpi_contractcosts');
 
       foreach($DB->request('glpi_contracts',"`cost` > 0") as $data) {
          $begin_to_add = "NULL";
@@ -1311,7 +1310,7 @@ function update0831to084() {
             }
 
          }
-         $query = "INSERT INTO `glpi_contracts_costs`
+         $query = "INSERT INTO `glpi_contractcosts`
                         (`contracts_id`, `name`, `begin_date`, `end_date`,
                            `cost`,  `entities_id`,
                            `is_recursive`, `is_deleted`,
@@ -1325,8 +1324,8 @@ function update0831to084() {
    }
    $migration->dropField('glpi_contracts', 'cost');
 
-   if (!TableExists('glpi_costs_tickets')) {
-      $query = "CREATE TABLE `glpi_costs_tickets` (
+   if (!TableExists('glpi_ticketcosts')) {
+      $query = "CREATE TABLE `glpi_ticketcosts` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
                   `tickets_id` int(11) NOT NULL DEFAULT '0',
                   `name` varchar(255) DEFAULT NULL,
@@ -1349,9 +1348,9 @@ function update0831to084() {
                   KEY `is_deleted` (`is_deleted`),
                   KEY `budgets_id` (`budgets_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->queryOrDie($query, "0.84 add table glpi_costs_tickets");
+      $DB->queryOrDie($query, "0.84 add table glpi_ticketcosts");
 
-      $migration->migrationOneTable('glpi_costs_tickets');
+      $migration->migrationOneTable('glpi_ticketcosts');
 
       foreach($DB->request('glpi_tickets',"`cost_time` > 0 OR `cost_fixed` > 0 OR `cost_material` > 0") as $data) {
          $begin_to_add = "NULL";
@@ -1367,7 +1366,7 @@ function update0831to084() {
             }
 
          }
-         $query = "INSERT INTO `glpi_costs_tickets`
+         $query = "INSERT INTO `glpi_ticketcosts`
                         (`tickets_id`, `name`, `begin_date`, `end_date`,
                            `cost_time`,`cost_fixed`, 
                            `cost_material`, `entities_id`,
