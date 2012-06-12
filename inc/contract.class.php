@@ -43,7 +43,7 @@ class Contract extends CommonDBTM {
 
    // From CommonDBTM
    public $dohistory = true;
-
+   protected $forward_entity_to = array('ContractCost');
 
    static function getTypeName($nb=0) {
       return _n('Contract', 'Contracts', $nb);
@@ -73,6 +73,9 @@ class Contract extends CommonDBTM {
       $cs = new Contract_Supplier();
       $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
 
+      $cs = new ContractCost();
+      $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+      
       $ci = new Contract_Item();
       $ci->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
@@ -81,6 +84,7 @@ class Contract extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
+      $this->addStandardTab('ContractCost', $ong, $options);
       $this->addStandardTab('Contract_Supplier', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document', $ong, $options);
@@ -101,7 +105,16 @@ class Contract extends CommonDBTM {
 
       return $input;
    }
-   
+   function post_addItem() {
+      global $DB;
+
+      // Manage add from template
+      if (isset($this->input["_oldID"])) {
+         // ADD Devices
+         ContractCost::cloneContract($this->input["_oldID"], $this->fields['id']);
+
+      }
+   }
    function pre_updateInDB() {
 
       // Clean end alert if begin_date is after old one
@@ -166,21 +179,28 @@ class Contract extends CommonDBTM {
       echo "<td colspan='2'></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Cost')."</td><td>";
-      echo "<input type='text' name='cost' value='".Html::formatNumber($this->fields["cost"], true).
-            "' size='14'></td>";
       echo "<td>".__('Start date')."</td>";
       echo "<td>";
       Html::showDateFormItem("begin_date", $this->fields["begin_date"]);
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
+      echo "</td>";
       echo "<td>".__('Initial contract period')."</td><td>";
       Dropdown::showInteger("duration", $this->fields["duration"], 1, 120, 1,
                             array(0 => Dropdown::EMPTY_VALUE), array('unit' => 'month'));
       if (!empty($this->fields["begin_date"])) {
          echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
                                                $this->fields["duration"]);
+      }
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Notice')."</td><td>";
+      Dropdown::showInteger("notice", $this->fields["notice"], 0, 120, 1,
+                            array(), array('unit' => 'month'));
+      if (!empty($this->fields["begin_date"])
+          && ($this->fields["notice"] > 0)) {
+         echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
+                                               $this->fields["duration"], $this->fields["notice"]);
       }
       echo "</td>";
       echo "<td>".__('Account number')."</td><td>";
@@ -197,19 +217,6 @@ class Contract extends CommonDBTM {
                                   6 => sprintf(_n('%d month', '%d months', 6), 6)),
                             array('unit' => 'month'));
       echo "</td>";
-      echo "<td>".__('Notice')."</td><td>";
-      Dropdown::showInteger("notice", $this->fields["notice"], 0, 120, 1,
-                            array(), array('unit' => 'month'));
-      if (!empty($this->fields["begin_date"])
-          && ($this->fields["notice"] > 0)) {
-         echo " -> ".Infocom::getWarrantyExpir($this->fields["begin_date"],
-                                               $this->fields["duration"], $this->fields["notice"]);
-      }
-      echo "</td></tr>";
-
-      echo "<tr class='tab_bg_1'><td>".__('Renewal')."</td><td>";
-      self::dropdownContractRenewal("renewal", $this->fields["renewal"]);
-      echo "</td>";
       echo "<td>".__('Invoice period')."</td>";
       echo "<td>";
       Dropdown::showInteger("billing", $this->fields["billing"], 12, 60, 12,
@@ -219,14 +226,21 @@ class Contract extends CommonDBTM {
                                   3 => sprintf(_n('%d month', '%d months', 3), 3),
                                   6 => sprintf(_n('%d month', '%d months', 6), 6)),
                             array('unit' => 'month'));
-      echo "</td></tr>";
+      echo "</td>";
+      echo "</tr>";
 
-      echo "<tr class='tab_bg_1'><td>".__('Max number of items')."</td><td>";
+      echo "<tr class='tab_bg_1'><td>".__('Renewal')."</td><td>";
+      self::dropdownContractRenewal("renewal", $this->fields["renewal"]);
+      echo "</td>";
+      echo "<td>".__('Max number of items')."</td><td>";
       Dropdown::showInteger("max_links_allowed", $this->fields["max_links_allowed"], 1, 200, 1,
                             array(0 => __('Unlimited')));
       echo "</td>";
+      echo "</tr>";
+
 
       if (Entity::getUsedConfig("use_contracts_alert", $this->fields["entities_id"])) {
+         echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Email alarms')."</td>";
          echo "<td>";
 
@@ -234,10 +248,9 @@ class Contract extends CommonDBTM {
                                    'value' => $this->fields["alert"]));
          Alert::displayLastAlert(__CLASS__, $ID);
          echo "</td>";
-      } else {
          echo "<td colspan='2'>&nbsp;</td>";
+         echo "</tr>";
       }
-      echo "</tr>";
       echo "<tr class='tab_bg_1'><td class='top'>".__('Comments')."</td>";
       echo "<td class='center' colspan='3'>";
       echo "<textarea cols='50' rows='4' name='comment' >".$this->fields["comment"]."</textarea>";
@@ -366,13 +379,13 @@ class Contract extends CommonDBTM {
       $tab[135]['massiveaction'] = false;
       $tab[135]['joinparams']    = $joinparams;
 
-      $tab[136]['table']         = 'glpi_contracts';
-      $tab[136]['field']         = 'cost';
-      $tab[136]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Cost'));
-      $tab[136]['forcegroupby']  = true;
-      $tab[136]['datatype']      = 'decimal';
-      $tab[136]['massiveaction'] = false;
-      $tab[136]['joinparams']    = $joinparams;
+//       $tab[136]['table']         = 'glpi_contracts';
+//       $tab[136]['field']         = 'cost';
+//       $tab[136]['name']          = sprintf(__('%1$s %2$s'), __('Contract'), __('Cost'));
+//       $tab[136]['forcegroupby']  = true;
+//       $tab[136]['datatype']      = 'decimal';
+//       $tab[136]['massiveaction'] = false;
+//       $tab[136]['joinparams']    = $joinparams;
 
       $tab[137]['table']         = 'glpi_contracts';
       $tab[137]['field']         = 'billing';
@@ -443,10 +456,14 @@ class Contract extends CommonDBTM {
       $tab[7]['field']           = 'notice';
       $tab[7]['name']            = __('Notice');
 
-      $tab[11]['table']          = $this->getTable();
+      /// TODO create cost section with others data
+      $tab[11]['table']          = 'glpi_contractcosts';
       $tab[11]['field']          = 'cost';
-      $tab[11]['name']           = __('Cost');
+      $tab[11]['name']           = __('Total cost');
       $tab[11]['datatype']       = 'decimal';
+      $tab[11]['forcegroupby']   = true;
+      $tab[11]['massiveaction']  = false;
+      $tab[11]['joinparams']     = array('jointype' => 'child');
 
       $tab[21]['table']          = $this->getTable();
       $tab[21]['field']          = 'periodicity';

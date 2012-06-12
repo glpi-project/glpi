@@ -2367,6 +2367,9 @@ class Search {
          case "glpi_contracts_items.count" :
             return " COUNT(DISTINCT `glpi_contracts_items`.`id`) AS ".$NAME."_".$num.", ";
 
+         case "glpi_contractcosts.cost" :
+            return " SUM(`glpi_contractcosts`.`cost`) AS ".$NAME."_".$num.", ";
+            
          case "glpi_computers_softwareversions.count" :
             return " COUNT(DISTINCT `glpi_computers_softwareversions$addtable`.`id`)
                         AS ".$NAME."_".$num.", ";
