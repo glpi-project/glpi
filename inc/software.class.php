@@ -803,7 +803,7 @@ class Software extends CommonDBTM {
          foreach ($req as $data) {
             echo "<tr class='tab_bg_2'>";
             echo "<td><input type='checkbox' name='item[".$data["id"]."]' value='1'></td>";
-            echo "<td<a href='".$link."?id=".$data["id"]."'>".$data["name"]."</a></td>";
+            echo "<td><a href='".$link."?id=".$data["id"]."'>".$data["name"]."</a></td>";
             echo "<td>".$data["entity"]."</td>";
             echo "<td class='right'>".Computer_SoftwareVersion::countForSoftware($data["id"])."</td>";
             echo "<td class='right'>".SoftwareLicense::countForSoftware($data["id"])."</td></tr>\n";
