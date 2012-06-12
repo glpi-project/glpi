@@ -461,6 +461,7 @@ function addTracking($type, $ID, $ID_entity) {
                          +mt_rand(0, 60)*MINUTE_TIMESTAMP;
       $solvetime       = 0;
       $closetime       = 0;
+      $actiontime      = 0;
 
       $solution        = "";
       $solutiontype    = 0;
@@ -594,8 +595,7 @@ function addTracking($type, $ID, $ID_entity) {
                      'begin_date'        => date("Y-m-d H:i:s", intval($opendate)),
                      'name'              => "Cost",
                      'cost_time'         => $hour_cost,
-                     'actiontime'        => floor($actiontime/2),
-                     'state'             => $state);
+                     'actiontime'        => floor($actiontime/2));
 
       // Insert satisfaction for stats
       if ($status=='closed'
