@@ -1317,7 +1317,7 @@ function update0831to084() {
                            `is_recursive`, `is_deleted`,
                            `is_template`)
                      VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
-                           '".$data['costs']."', '".$data['entities_id']."',
+                           '".$data['cost']."', '".$data['entities_id']."',
                            '".$data['is_recursive']."', '".$data['is_deleted']."',
                            '".$data['is_template']."')";
          $DB->query($query);
@@ -1333,6 +1333,7 @@ function update0831to084() {
                   `comment` text COLLATE utf8_unicode_ci,
                   `begin_date` date DEFAULT NULL,
                   `end_date` date DEFAULT NULL,
+                  `actiontime` int(11) NOT NULL DEFAULT '0',
                   `cost_time` decimal(20,4) NOT NULL DEFAULT '0.0000',
                   `cost_fixed` decimal(20,4) NOT NULL DEFAULT '0.0000',
                   `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
@@ -1368,13 +1369,13 @@ function update0831to084() {
          }
          $query = "INSERT INTO `glpi_costs_tickets`
                         (`tickets_id`, `name`, `begin_date`, `end_date`,
-                           `cost_time`,`cost_fixed`,
+                           `cost_time`,`cost_fixed`, 
                            `cost_material`, `entities_id`,
-                           `is_deleted`)
+                           `is_deleted`, `actiontime`)
                      VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
                            '".$data['cost_time']."','".$data['cost_fixed']."',
                            '".$data['cost_material']."', '".$data['entities_id']."',
-                           '".$data['is_deleted']."')";
+                           '".$data['is_deleted']."', '".$data['actiontime']."')";
          $DB->query($query);
       }
    }
