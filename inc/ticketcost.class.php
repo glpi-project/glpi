@@ -58,7 +58,7 @@ class TicketCost extends CommonDBChild {
    function canView() {
       return Session::haveRight('ticketcost', 'r');
    }
-
+   
    /**
     * @see inc/CommonDBChild::prepareInputForAdd()
    **/
@@ -128,6 +128,78 @@ class TicketCost extends CommonDBChild {
 
 
    /**
+    * Init cost for creation based on previous cost
+    **/
+   function initBasedOnPrevious() {
+      $ticket = new Ticket();
+      if (!isset($this->fields['tickets_id']) || !$ticket->getFromDB($this->fields['tickets_id'])) {
+         return false;
+      }
+
+      // Set actiontime to
+      $this->fields['actiontime'] = max(0,$ticket->fields['actiontime'] - $this->getTotalActionTimeForTicket($this->fields['tickets_id']));
+      $lastdata = $this->getLastCostForTicket($this->fields['tickets_id']);
+
+      if (isset($lastdata['end_date'])) {
+         $this->fields['begin_date'] = $lastdata['end_date'];
+      }
+      if (isset($lastdata['cost_time'])) {
+         $this->fields['cost_time'] = $lastdata['cost_time'];
+      }
+      if (isset($lastdata['cost_fixed'])) {
+         $this->fields['cost_fixed'] = $lastdata['cost_fixed'];
+      }
+      if (isset($lastdata['budgets_id'])) {
+         $this->fields['budgets_id'] = $lastdata['budgets_id'];
+      }
+      if (isset($lastdata['name'])) {
+         $this->fields['name'] = $lastdata['name'];
+      }
+   }
+
+   /**
+    * Get total action time used on costs for a ticket
+    *
+    * @param $tickets_id        integer  ID of the ticket
+    *
+    **/
+   function getTotalActionTimeForTicket($tickets_id) {
+      global $DB;
+
+      $query = "SELECT SUM(`actiontime`)
+                  FROM `".$this->getTable()."`
+                  WHERE `tickets_id` = '$tickets_id'";
+
+      if ($result = $DB->query($query)) {
+         return $DB->result($result, 0, 0);
+      }
+
+      return 0;
+   }
+   
+   /**
+    * Get last datas for a ticket
+    *
+    * @param $tickets_id        integer  ID of the ticket
+    *
+    **/
+   function getLastCostForTicket($tickets_id) {
+      global $DB;
+
+      $query = "SELECT *
+                  FROM `".$this->getTable()."`
+                  WHERE `tickets_id` = '$tickets_id'
+                  ORDER BY 'end_date' DESC, `id` DESC";
+
+      if ($result = $DB->query($query)) {
+         return $DB->fetch_assoc($result);
+      }
+
+      return array();
+   }
+
+   
+   /**
     * Print the ticket cost form
     *
     * @param $ID        integer  ID of the item
@@ -147,6 +219,7 @@ class TicketCost extends CommonDBChild {
          $input = array('tickets_id' => $ticket->getField('id'),
                         'entities_id' =>$ticket->getEntityID());
          $this->check(-1,'w',$input);
+         $this->initBasedOnPrevious();
       }
       
       if ($ID > 0) {
