@@ -241,7 +241,9 @@ function update0831to084() {
    $newtables     = array('glpi_changes', 'glpi_changes_groups', 'glpi_changes_items',
                           'glpi_changes_problems', 'glpi_changes_suppliers',
                           'glpi_changes_tickets', 'glpi_changes_users',
-                          'glpi_changetasks', 'glpi_fqdns', 'glpi_ipaddresses',
+                          'glpi_changetasks', 'glpi_contracts_costs',
+                          'glpi_costs_tickets',
+                          'glpi_fqdns', 'glpi_ipaddresses',
                           'glpi_ipaddresses_ipnetworks', 'glpi_ipnetworks', 'glpi_networkaliases',
                           'glpi_networknames', 'glpi_networkportaggregates',
                           'glpi_networkportdialups', 'glpi_networkportethernets',
@@ -1263,6 +1265,133 @@ function update0831to084() {
          }
       }
    }
+
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'contract and ticket costs'));
+   
+   if (!TableExists('glpi_contracts_costs')) {
+      $query = "CREATE TABLE `glpi_contracts_costs` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `contracts_id` int(11) NOT NULL DEFAULT '0',
+                  `name` varchar(255) DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `begin_date` date DEFAULT NULL,
+                  `end_date` date DEFAULT NULL,
+                  `cost` decimal(20,4) NOT NULL DEFAULT '0.0000',
+                  `budgets_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `contracts_id` (`contracts_id`),
+                  KEY `begin_date` (`begin_date`),
+                  KEY `end_date` (`end_date`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_recursive` (`is_recursive`),
+                  KEY `is_deleted` (`is_deleted`),
+                  KEY `is_template` (`is_template`),
+                  KEY `budgets_id` (`budgets_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.84 add table glpi_contracts_costs");
+
+      $migration->migrationOneTable('glpi_contracts_costs');
+
+      foreach($DB->request('glpi_contracts',"`cost` > 0") as $data) {
+         $begin_to_add = "NULL";
+         $end_to_add = "NULL";
+         
+         if (!is_null($data['begin_date'])) {
+            $begin_to_add = "'".$data['begin_date']."'";
+            
+            if ($data['duration']) {
+               $end_to_add = "'".date("Y-m-d",strtotime($data['begin_date']. "+".$data['duration']." month"))."'";
+            } else {
+               $end_to_add = "'".$data['begin_date']."'";
+            }
+
+         }
+         $query = "INSERT INTO `glpi_contracts_costs`
+                        (`contracts_id`, `name`, `begin_date`, `end_date`,
+                           `costs`,  `entities_id`,
+                           `is_recursive`, `is_deleted`,
+                           `is_template`)
+                     VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
+                           '".$data['costs']."', '".$data['entities_id']."',
+                           '".$data['is_recursive']."', '".$data['is_deleted']."',
+                           '".$data['is_template']."')";
+         $DB->query($query);
+      }
+   }
+   $migration->dropField('glpi_contracts', 'cost');
+
+   if (!TableExists('glpi_costs_tickets')) {
+      $query = "CREATE TABLE `glpi_costs_tickets` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `tickets_id` int(11) NOT NULL DEFAULT '0',
+                  `name` varchar(255) DEFAULT NULL,
+                  `comment` text COLLATE utf8_unicode_ci,
+                  `begin_date` date DEFAULT NULL,
+                  `end_date` date DEFAULT NULL,
+                  `cost_time` decimal(20,4) NOT NULL DEFAULT '0.0000',
+                  `cost_fixed` decimal(20,4) NOT NULL DEFAULT '0.0000',
+                  `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
+                  `budgets_id` int(11) NOT NULL DEFAULT '0',
+                  `entities_id` int(11) NOT NULL DEFAULT '0',
+                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+                  PRIMARY KEY (`id`),
+                  KEY `name` (`name`),
+                  KEY `tickets_id` (`tickets_id`),
+                  KEY `begin_date` (`begin_date`),
+                  KEY `end_date` (`end_date`),
+                  KEY `entities_id` (`entities_id`),
+                  KEY `is_deleted` (`is_deleted`),
+                  KEY `budgets_id` (`budgets_id`)
+                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->queryOrDie($query, "0.84 add table glpi_costs_tickets");
+
+      $migration->migrationOneTable('glpi_costs_tickets');
+
+      foreach($DB->request('glpi_tickets',"`cost_time` > 0 OR `cost_fixed` > 0 OR `cost_material` > 0") as $data) {
+         $begin_to_add = "NULL";
+         $end_to_add = "NULL";
+
+         if (!is_null($data['date'])) {
+            $begin_to_add = "'".$data['date']."'";
+
+            if (!is_null($data['solvedate'])) {
+               $end_to_add = "'".$data['solvedate']."'";
+            } else {
+               $end_to_add = "'".$data['date']."'";
+            }
+
+         }
+         $query = "INSERT INTO `glpi_costs_tickets`
+                        (`tickets_id`, `name`, `begin_date`, `end_date`,
+                           `cost_time`,`cost_fixed`,
+                           `cost_material`, `entities_id`,
+                           `is_deleted`)
+                     VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
+                           '".$data['cost_time']."','".$data['cost_fixed']."',
+                           '".$data['cost_material']."', '".$data['entities_id']."',
+                           '".$data['is_deleted']."')";
+         $DB->query($query);
+      }
+   }
+   $migration->dropField('glpi_tickets', 'cost_time');
+   $migration->dropField('glpi_tickets', 'cost_fixed');
+   $migration->dropField('glpi_tickets', 'cost_material');
+
+   $migration->addField("glpi_profiles", "ticket_costs", "char",
+                        array('update'    => "'w'",
+                              'condition' => " WHERE `update_ticket` = 1"));
+   // Set default to r as before
+   $query = "UPDATE `glpi_profiles`
+               SET `ticket_costs` = 'r'
+               WHERE `ticket_costs` IS NULL";
+   $DB->queryOrDie($query, "0.84 set ticket_costs in glpi_profiles");
+   
+   
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'planning recalls'));
 
    if (!TableExists('glpi_planningrecalls')) {
