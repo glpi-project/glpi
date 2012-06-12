@@ -288,7 +288,7 @@ class Budget extends CommonDropdown{
          $itemtypes[] = $DB->result($result, $i, "itemtype");
       }
       $itemtypes[] = 'Contract';
-      // $itemtypes[] = 'Ticket';
+      $itemtypes[] = 'Ticket';
 
       foreach ($itemtypes as $itemtype) {
          if (!($item = getItemForItemtype($itemtype))) {
@@ -326,16 +326,17 @@ class Budget extends CommonDropdown{
                                      `".$item->getTable()."`.`name`";
                break;
 
-               case 'Ticket' : /// TODO
+               case 'Ticket' :
                   $query ="SELECT `".$item->getTable()."`.`id`,
                                   `".$item->getTable()."`.`entities_id`,
-                                   SUM(`glpi_contractcosts`.`cost`) as value
-                            FROM `glpi_contractcosts`
+                                   SUM(`glpi_ticketcosts`.`actiontime`*`glpi_ticketcosts`.`cost_time`/".HOUR_TIMESTAMP."
+                                          + `glpi_ticketcosts`.`cost_fixed`
+                                          + `glpi_ticketcosts`.`cost_material`) as value
+                            FROM `glpi_ticketcosts`
                             INNER JOIN `".$item->getTable()."`
-                                 ON (`".$item->getTable()."`.`id` = `glpi_contractcosts`.`contracts_id`)
-                            WHERE `glpi_contractcosts`.`budgets_id` = '$budgets_id' ".
+                                 ON (`".$item->getTable()."`.`id` = `glpi_ticketcosts`.`tickets_id`)
+                            WHERE `glpi_ticketcosts`.`budgets_id` = '$budgets_id' ".
                                   getEntitiesRestrictRequest(" AND", $item->getTable())."
-                                  AND NOT `".$item->getTable()."`.`is_template`
                             GROUP BY `".$item->getTable()."`.`id`, `".$item->getTable()."`.`entities_id`
                             ORDER BY `".$item->getTable()."`.`entities_id`,
                                      `".$item->getTable()."`.`name`";
@@ -421,10 +422,6 @@ class Budget extends CommonDropdown{
             }
          }
       }
-
-      // Add contracts
-      
-      // Add tickets
       
       if ($num>0) {
          echo "<tr class='tab_bg_2'>";
@@ -476,7 +473,7 @@ class Budget extends CommonDropdown{
       }
 
       $itemtypes[] = 'Contract';
-      //$itemtypes[] = 'Ticket';
+      $itemtypes[] = 'Ticket';
 
       foreach ($itemtypes as $itemtype) {
          if (!($item = getItemForItemtype($itemtype))) {
@@ -497,7 +494,21 @@ class Budget extends CommonDropdown{
                $query_infos .= " AND `$table`.`is_template` = '0' ";
                $query_infos .= "GROUP BY `$table`.`entities_id`";
                break;
-            
+
+            case 'Ticket' :
+               $query_infos = "SELECT SUM(`glpi_ticketcosts`.`actiontime`*`glpi_ticketcosts`.`cost_time`/".HOUR_TIMESTAMP."
+                                          + `glpi_ticketcosts`.`cost_fixed`
+                                          + `glpi_ticketcosts`.`cost_material`) AS `sumvalue`,
+                                       `$table`.`entities_id`
+                                 FROM `glpi_ticketcosts`
+                                 INNER JOIN `$table`
+                                    ON (`glpi_ticketcosts`.`tickets_id` = `$table`.`id`)
+                                 WHERE `glpi_ticketcosts`.`budgets_id` = '$budgets_id' ".
+                                       getEntitiesRestrictRequest(" AND", $table, "entities_id");
+
+               $query_infos .= "GROUP BY `$table`.`entities_id`";
+               break;
+               
             default:
                $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`,
                                        `$table`.`entities_id`

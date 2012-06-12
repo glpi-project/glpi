@@ -132,7 +132,7 @@ class NotificationTargetContract extends NotificationTarget {
 
       $tags = array('contract.action'  => _n('Event', 'Events', 1),
                     'contract.name'    => __('Name'),
-                    'contract.number'  => _x('Phone', 'Number'),
+                    'contract.number'  => _x('phone', 'Number'),
                     'contract.type'    => __('Type'),
                     'contract.entity'  => __('Entity'));
 
