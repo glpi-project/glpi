@@ -1886,6 +1886,7 @@ function generate_entity($ID_entity) {
    $FIRST["contract"] = getMaxItem("glpi_contracts")+1;
    $c                 = new Contract();
    $cs                = new Contract_Supplier();
+   $cc                = new ContractCost();
    // Specific
    for ($i=0 ; $i<$MAX['contract'] ; $i++) {
       $date = mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
@@ -1893,7 +1894,6 @@ function generate_entity($ID_entity) {
                                   'is_recursive'       => 0,
                                   'name'               => "contract $i-$ID_entity",
                                   'num'                => "num $i",
-                                  'cost'               => mt_rand(100,10000),
                                   'contracttypes_id'   => mt_rand(1,$MAX_CONTRACT_TYPE),
                                   'begin_date'         => $date,
                                   'duration'           => mt_rand(1,36),
@@ -1909,6 +1909,12 @@ function generate_entity($ID_entity) {
       // Add an enterprise
       $cs->add(array('contracts_id' => $contractID,
                      'suppliers_id' => mt_rand($FIRST["enterprises"], $LAST["enterprises"])));
+      // Add a cost
+      $cc->add(array('contracts_id' => $contractID,
+                     'cost'         => mt_rand(100,10000),
+                     'name'         => 'Initial cost',
+                     'begin_date'   => $date,
+                     'budgets_id'   => mt_rand($FIRST['budget'], $LAST['budget'])));
    }
 
    for ($i=0 ; $i<$MAX['contract']/2 ; $i++) {

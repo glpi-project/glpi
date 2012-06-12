@@ -115,6 +115,7 @@ class Contract extends CommonDBTM {
 
       }
    }
+   
    function pre_updateInDB() {
 
       // Clean end alert if begin_date is after old one

@@ -1279,8 +1279,6 @@ function update0831to084() {
                   `budgets_id` int(11) NOT NULL DEFAULT '0',
                   `entities_id` int(11) NOT NULL DEFAULT '0',
                   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
-                  `is_template` tinyint(1) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `contracts_id` (`contracts_id`),
@@ -1288,8 +1286,6 @@ function update0831to084() {
                   KEY `end_date` (`end_date`),
                   KEY `entities_id` (`entities_id`),
                   KEY `is_recursive` (`is_recursive`),
-                  KEY `is_deleted` (`is_deleted`),
-                  KEY `is_template` (`is_template`),
                   KEY `budgets_id` (`budgets_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_contractcosts");
@@ -1313,12 +1309,10 @@ function update0831to084() {
          $query = "INSERT INTO `glpi_contractcosts`
                         (`contracts_id`, `name`, `begin_date`, `end_date`,
                            `cost`,  `entities_id`,
-                           `is_recursive`, `is_deleted`,
-                           `is_template`)
+                           `is_recursive`)
                      VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
                            '".$data['cost']."', '".$data['entities_id']."',
-                           '".$data['is_recursive']."', '".$data['is_deleted']."',
-                           '".$data['is_template']."')";
+                           '".$data['is_recursive']."')";
          $DB->queryOrDie($query, '0.84 move contracts costs');
       }
    }
@@ -1338,14 +1332,12 @@ function update0831to084() {
                   `cost_material` decimal(20,4) NOT NULL DEFAULT '0.0000',
                   `budgets_id` int(11) NOT NULL DEFAULT '0',
                   `entities_id` int(11) NOT NULL DEFAULT '0',
-                  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
                   KEY `name` (`name`),
                   KEY `tickets_id` (`tickets_id`),
                   KEY `begin_date` (`begin_date`),
                   KEY `end_date` (`end_date`),
                   KEY `entities_id` (`entities_id`),
-                  KEY `is_deleted` (`is_deleted`),
                   KEY `budgets_id` (`budgets_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_ticketcosts");
@@ -1370,11 +1362,11 @@ function update0831to084() {
                         (`tickets_id`, `name`, `begin_date`, `end_date`,
                            `cost_time`,`cost_fixed`, 
                            `cost_material`, `entities_id`,
-                           `is_deleted`, `actiontime`)
+                           `actiontime`)
                      VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
                            '".$data['cost_time']."','".$data['cost_fixed']."',
                            '".$data['cost_material']."', '".$data['entities_id']."',
-                           '".$data['is_deleted']."', '".$data['actiontime']."')";
+                           '".$data['actiontime']."')";
          $DB->queryOrDie($query, '0.84 move tickets costs');
       }
    }
