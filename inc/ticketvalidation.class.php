@@ -695,8 +695,6 @@ class TicketValidation  extends CommonDBChild {
 
          echo "<tr class='tab_bg_1'><td>".__('Approver')."</td>";
          echo "<td>";
-         echo "<input type='hidden' name='tickets_id' value='".$ticket->fields['id']."'>";
-         echo "<input type='hidden' name='entities_id' value='".$ticket->fields['entities_id']."'>";
          User::dropdown(array('name'   => "users_id_validate",
                               'entity' => $ticket->fields['entities_id'],
                               'right'  => 'validate_ticket',
