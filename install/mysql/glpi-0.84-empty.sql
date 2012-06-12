@@ -4147,7 +4147,7 @@ CREATE TABLE `glpi_profiles` (
   `show_all_change` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `edit_all_change` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `change_status` text COLLATE utf8_unicode_ci COMMENT 'json encoded array of from/dest allowed status change',
-  `ticket_costs` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ticketcost` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `interface` (`interface`),
   KEY `is_default` (`is_default`),

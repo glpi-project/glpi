@@ -2369,7 +2369,7 @@ class Search {
 
          case "glpi_contractcosts.cost" :
             return " SUM(`glpi_contractcosts$addtable`.`cost`) AS ".$NAME."_".$num.", ";
-            
+
          case "glpi_computers_softwareversions.count" :
             return " COUNT(DISTINCT `glpi_computers_softwareversions$addtable`.`id`)
                         AS ".$NAME."_".$num.", ";
@@ -2405,6 +2405,15 @@ class Search {
          case "glpi_tickets_tickets.count" :
             return " COUNT(DISTINCT `$table$addtable`.`id`) AS ".$NAME."_".$num.", ";
 
+         case "glpi_ticketcosts.cost_time" :
+         case "glpi_ticketcosts.cost_fixed" :
+         case "glpi_ticketcosts.cost_material" :
+            return " SUM(`glpi_ticketcosts$addtable`.`$field`) AS ".$NAME."_".$num.", ";
+
+         case "glpi_ticketcosts.totalcost" :
+            return " SUM(`glpi_ticketcosts$addtable`.`actiontime`*`glpi_ticketcosts$addtable`.`cost_time`/".HOUR_TIMESTAMP."
+                        + `glpi_ticketcosts$addtable`.`cost_fixed` + `glpi_ticketcosts$addtable`.`cost_material`) AS ".$NAME."_".$num.", ";
+            
          case "glpi_tickets_tickets.tickets_id_1" :
             return " GROUP_CONCAT(`$table$addtable`.`tickets_id_1` SEPARATOR '$$$$')
                            AS ".$NAME."_$num,
