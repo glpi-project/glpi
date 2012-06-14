@@ -392,7 +392,7 @@ class Ocslink extends CommonDBTM {
          if ($header) {
             echo "<input class='submit' type='submit' name='unlock' value='".__s('Unlock') . "'>";
          } else {
-            -e('No field locked');
+            _e('No field locked');
          }
          echo "</td></tr>";
 

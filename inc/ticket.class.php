@@ -556,7 +556,7 @@ class Ticket extends CommonITILObject {
 
       $ts = new TicketCost();
       $ts->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      
+
       SlaLevel_Ticket::deleteForTicket($this->getID());
 
       $query1 = "DELETE
@@ -2055,7 +2055,7 @@ class Ticket extends CommonITILObject {
          $tab[48]['forcegroupby']   = true;
          $tab[48]['massiveaction']  = false;
          $tab[48]['joinparams']     = array('jointype'  => 'child');
-         
+
          $tab[42]['table']          = 'glpi_ticketcosts';
          $tab[42]['field']          = 'cost_time';
          $tab[42]['name']           = __('Time cost');
@@ -2071,7 +2071,7 @@ class Ticket extends CommonITILObject {
          $tab[49]['forcegroupby']   = true;
          $tab[49]['massiveaction']  = false;
          $tab[49]['joinparams']     = array('jointype'  => 'child');
-         
+
          $tab[43]['table']          = 'glpi_ticketcosts';
          $tab[43]['field']          = 'cost_fixed';
          $tab[43]['name']           = __('Fixed cost');
@@ -2088,7 +2088,7 @@ class Ticket extends CommonITILObject {
          $tab[44]['massiveaction']  = false;
          $tab[44]['joinparams']     = array('jointype'  => 'child');
       }
-      
+
       // Filter search fields for helpdesk
       if (!Session::isCron() // no filter for cron
           && ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk')) {
@@ -3239,7 +3239,8 @@ class Ticket extends CommonITILObject {
          $this->userentities = array();
          if ($values["_users_id_requester"]) {
             //Get all the user's entities
-            $all_entities = Profile_User::getUserEntities($values["_users_id_requester"], true, true);
+            $all_entities = Profile_User::getUserEntities($values["_users_id_requester"], true,
+                                                          true);
             //For each user's entity, check if the technician which creates the ticket have access to it
             foreach ($all_entities as $tmp => $ID_entity) {
                if (Session::haveAccessToEntity($ID_entity)) {
@@ -3254,7 +3255,7 @@ class Ticket extends CommonITILObject {
             // then use as default value the first value of the user's entites list
             $this->fields["entities_id"] = $this->userentities[0];
             // Pass to values
-            $values['entities_id'] = $this->userentities[0];
+            $values['entities_id']       = $this->userentities[0];
          }
       }
       // Clean text fields
@@ -4429,23 +4430,23 @@ class Ticket extends CommonITILObject {
 //             case 'waiting' :
 //                _e('Tickets on pending status');
 //                break;
-// 
+//
 //             case 'process' :
 //                _e('Tickets to be processed');
 //                break;
-// 
+//
 //             case 'tovalidate' :
 //                _e('Your tickets to validate');
 //                break;
-// 
+//
 //             case 'rejected' :
 //                _e('Your rejected tickets');
 //                break;
-// 
+//
 //             case 'toapprove' :
 //                _e('Your tickets to close');
 //                break;
-// 
+//
 //             case 'requestbyself' :
 //             default :
 //                _e('Your tickets in progress');
@@ -4515,7 +4516,7 @@ class Ticket extends CommonITILObject {
       foreach (self::getAllStatusArray() as $key => $val) {
          $status[$key] = 0;
       }
-      
+
       if ($DB->numrows($result) > 0) {
          while ($data = $DB->fetch_assoc($result)) {
             $status[$data["status"]] = $data["COUNT"];
@@ -4549,11 +4550,10 @@ class Ticket extends CommonITILObject {
       echo "<tr><th>"._n('Ticket','Tickets',2)."</th><th>"._x('quantity', 'Number')."</th></tr>";
 
       foreach ($status as $key => $val) {
-      
-         $options['contains'][0]    = $key;
+         $options['contains'][0] = $key;
          echo "<tr class='tab_bg_2'>";
          echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/ticket.php?".
-                  Toolbox::append_params($options,'&amp;')."\">".self::getStatus($key)."</a></td>";
+                    Toolbox::append_params($options,'&amp;')."\">".self::getStatus($key)."</a></td>";
          echo "<td class='numeric'>$val</td></tr>";
       }
 
@@ -5018,7 +5018,7 @@ class Ticket extends CommonITILObject {
                $fifth_col .= "<br>";
             }
          }
-         
+
          echo Search::showItem($output_type, $fifth_col, $item_num, $row_num, $align);
 
          // Sixth Colum
@@ -5097,7 +5097,7 @@ class Ticket extends CommonITILObject {
 
    /**
     * @param $ID
-    * @param $forcetab  string   name of the tab to force at the display
+    * @param $forcetab  string   name of the tab to force at the display (default '')
    **/
    static function showVeryShort($ID, $forcetab='') {
       global $CFG_GLPI;
