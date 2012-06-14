@@ -1642,7 +1642,7 @@ class User extends CommonDBTM {
       echo "<td>" .  __('Phone') . "</td><td>";
       Html::autocompletionTextField($this, "phone");
       echo "</td>";
-      
+
       echo "<td>".__('Active')."</td><td>";
       Dropdown::showYesNo('is_active',$this->fields['is_active']);
       echo "</td></tr>";
@@ -1893,9 +1893,9 @@ class User extends CommonDBTM {
          }
          echo "</td>";
 
-        if (!GLPI_DEMO_MODE
+         $entities = Profile_User::getUserEntities($this->fields['id'], 1);
+         if (!GLPI_DEMO_MODE
             && (count($_SESSION['glpiactiveentities']) > 1)) {
-            $entities = Profile_User::getUserEntities($this->fields['id'], 1);
             echo "<td>" . __('Default entity') . "</td><td>";
             Entity::dropdown(array('value'  => $this->fields['entities_id'],
                                    'entity' => $entities));
@@ -1905,7 +1905,10 @@ class User extends CommonDBTM {
          echo "</td></tr>";
 
 
-        echo "<tr><td colspan='2'>&nbsp;</td>";
+         echo "<tr><td>" . __('Location') . "</td><td>";
+         $entities = Profile_User::getUserEntities($ID, true);
+         Location::dropdown(array('value'  => $this->fields['locations_id'],
+                                  'entity' => $entities));
 
         if (Session::haveRight("config", "w")) {
             echo "<td>" . __('Use GLPI in mode') . "</td><td>";
