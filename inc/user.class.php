@@ -1791,8 +1791,8 @@ class User extends CommonDBTM {
          }
          echo "</td>";
 
-        if (!GLPI_DEMO_MODE && count($_SESSION['glpiactiveentities'])>1) {
-            $entities = Profile_User::getUserEntities($this->fields['id'], 1);
+         $entities = Profile_User::getUserEntities($this->fields['id'], 1);
+         if (!GLPI_DEMO_MODE && count($_SESSION['glpiactiveentities'])>1) {
             echo "<td>" . $LANG['profiles'][37] . "&nbsp;:</td><td>";
             Dropdown::show('Entity', array('value'  => $this->fields['entities_id'],
                                            'entity' => $entities));
@@ -1820,6 +1820,13 @@ class User extends CommonDBTM {
             echo "<td colspan='2'>&nbsp;";
          }
          echo "</td></tr>";
+
+         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][15] . "&nbsp;:</td><td colspan='3'>";
+         Dropdown::show('Location', array('value'  => $this->fields["locations_id"],
+                                          'entity' => $entities));
+
+         echo "</td></tr>";
+
 
          echo "<tr><td class='tab_bg_2 center' colspan='4'>";
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
@@ -2109,15 +2116,15 @@ class User extends CommonDBTM {
       global $DB;
       $query = "SELECT DISTINCT `glpi_groups_users`.`groups_id`
                   FROM `glpi_groups_users` INNER JOIN `glpi_groups`
-                        ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`) 
+                        ON (`glpi_groups_users`.`groups_id` = `glpi_groups`.`id`)
                   WHERE `glpi_groups_users`.`users_id` = '".Session::getLoginUserID()."'
                    AND `glpi_groups_users`.`is_userdelegate` = '1' ".
                    getEntitiesRestrictRequest("AND","glpi_groups",'',$entities_id,1);
-      
+
       $groups = array();
       foreach ($DB->request($query) as $data) {
          $groups[$data['groups_id']] = $data['groups_id'];
-      }             
+      }
       return $groups;
    }
 
@@ -2699,7 +2706,7 @@ class User extends CommonDBTM {
                         echo Dropdown::getDropdownName("glpi_states",$data['states_id']);
                      } else {
                         echo '&nbsp;';
-                     }                     
+                     }
                      echo "</td><td class='center'>$linktype</td></tr>";
                   }
                }
