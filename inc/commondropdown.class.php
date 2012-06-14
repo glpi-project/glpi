@@ -122,6 +122,11 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
+   /**
+    * @since version 0.83.3
+    *
+    * @see inc/CommonDBTM::prepareInputForAdd()
+   **/
    function prepareInputForAdd($input) {
 
       if (isset($input['name'])) {
@@ -132,6 +137,11 @@ abstract class CommonDropdown extends CommonDBTM {
    }
 
 
+   /**
+    * @since version 0.83.3
+    *
+    * @see inc/CommonDBTM::prepareInputForUpdate()
+   **/
    function prepareInputForUpdate($input) {
       return self::prepareInputForAdd($input);
    }

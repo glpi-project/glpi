@@ -827,7 +827,7 @@ function update0831to084() {
    $migration->addField('glpi_configs', 'password_need_letter', 'bool', array('value' => 1));
    $migration->addField('glpi_configs', 'password_need_caps', 'bool', array('value' => 1));
    $migration->addField('glpi_configs', 'password_need_symbol', 'bool', array('value' => 1));
-   
+
 
    // Clean display prefs
    $query = "UPDATE `glpi_displaypreferences`
@@ -973,7 +973,7 @@ function update0831to084() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_changes_suppliers");
    }
-   
+
    if (!TableExists('glpi_changes_items')) {
       $query = "CREATE TABLE `glpi_changes_items` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1266,7 +1266,7 @@ function update0831to084() {
    }
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'contract and ticket costs'));
-   
+
    if (!TableExists('glpi_contractcosts')) {
       $query = "CREATE TABLE `glpi_contractcosts` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1295,10 +1295,10 @@ function update0831to084() {
       foreach($DB->request('glpi_contracts',"`cost` > 0") as $data) {
          $begin_to_add = "NULL";
          $end_to_add = "NULL";
-         
+
          if (!is_null($data['begin_date'])) {
             $begin_to_add = "'".$data['begin_date']."'";
-            
+
             if ($data['duration']) {
                $end_to_add = "'".date("Y-m-d",strtotime($data['begin_date']. "+".$data['duration']." month"))."'";
             } else {
@@ -1360,7 +1360,7 @@ function update0831to084() {
          }
          $query = "INSERT INTO `glpi_ticketcosts`
                         (`tickets_id`, `name`, `begin_date`, `end_date`,
-                           `cost_time`,`cost_fixed`, 
+                           `cost_time`,`cost_fixed`,
                            `cost_material`, `entities_id`,
                            `actiontime`)
                      VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
@@ -1382,8 +1382,8 @@ function update0831to084() {
                SET `ticketcost` = 'r'
                WHERE `ticketcost` IS NULL";
    $DB->queryOrDie($query, "0.84 set ticketcost in glpi_profiles");
-   
-   
+
+
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'planning recalls'));
 
    if (!TableExists('glpi_planningrecalls')) {
@@ -1521,9 +1521,12 @@ function update0831to084() {
    $migration->addField("glpi_contacts", 'state', "string");
    $migration->addField("glpi_contacts", 'country', "string");
 
-   $migration->addField("glpi_configs", 'x509_ou_restrict', "string", array('after' => 'x509_email_field'));
-   $migration->addField("glpi_configs", 'x509_o_restrict', "string", array('after' => 'x509_email_field'));
-   $migration->addField("glpi_configs", 'x509_cn_restrict', "string", array('after' => 'x509_email_field'));
+   $migration->addField("glpi_configs", 'x509_ou_restrict', "string",
+                        array('after' => 'x509_email_field'));
+   $migration->addField("glpi_configs", 'x509_o_restrict', "string",
+                        array('after' => 'x509_email_field'));
+   $migration->addField("glpi_configs", 'x509_cn_restrict', "string",
+                        array('after' => 'x509_email_field'));
 
    if (!TableExists('glpi_slalevelcriterias')) {
       $query = "CREATE TABLE `glpi_slalevelcriterias` (
@@ -1654,8 +1657,8 @@ function update0831to084() {
 
    // Give history entries to plugin
    $query = "UPDATE `glpi_logs`
-             SET `linked_action`=`linked_action`+1000,
-                 `itemtype_link`='PluginOcsinventoryngOcslink'
+             SET `linked_action` = `linked_action`+1000,
+                 `itemtype_link` = 'PluginOcsinventoryngOcslink'
              WHERE `linked_action` IN (8,9,10,11)";
    $DB->queryOrDie($query, "0.84 update OCS links in history");
 
@@ -1722,7 +1725,7 @@ function update0831to084() {
    }
    $migration->dropField('glpi_problems', 'suppliers_id_assign');
 
-   
+
    if (!TableExists('glpi_suppliers_tickets')) {
       $query = "CREATE TABLE `glpi_suppliers_tickets` (
                   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -1734,7 +1737,7 @@ function update0831to084() {
                   KEY `group` (`suppliers_id`,`type`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 add table glpi_suppliers_tickets");
-   }   
+   }
    $migration->migrationOneTable('glpi_suppliers_tickets');
    foreach($DB->request('glpi_tickets',"`suppliers_id_assign` > 0") as $data) {
       $query = "INSERT INTO `glpi_suppliers_tickets` (`suppliers_id`, `type`, `tickets_id`)
@@ -1781,8 +1784,8 @@ function update0831to084() {
    }
 
 
-   
-   // Move tickerrecurrent values to correct ones
+
+   // Move ticketrecurrent values to correct ones
    $migration->changeField('glpi_ticketrecurrents', 'periodicity', 'periodicity', 'string');
    $migration->addField('glpi_ticketrecurrents', 'calendars_id', 'integer');
 

@@ -722,7 +722,8 @@ class Config extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . ($userpref?__('Language'):__('Default language')) . "</td><td>";
-      if (Session::haveRight("config","w") || !GLPI_DEMO_MODE) {
+      if (Session::haveRight("config","w")
+          || !GLPI_DEMO_MODE) {
          Dropdown::showLanguages("language", array('value' => $data["language"]));
       } else {
          echo "&nbsp;";
@@ -804,8 +805,8 @@ class Config extends CommonDBTM {
       }
 
       echo "<td>".__('CSV delimiter')."</td><td>";
-      $values = array(';' =>';',
-                      ',' =>',');
+      $values = array(';' => ';',
+                      ',' => ',');
       Dropdown::showFromArray('csv_delimiter', $values, array('value' => $data["csv_delimiter"]));
 
       echo "</td></tr>";

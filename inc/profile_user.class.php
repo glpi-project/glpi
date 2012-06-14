@@ -530,7 +530,7 @@ class Profile_User extends CommonDBTM {
     *
     * @param $user_ID         user ID
     * @param $is_recursive    check also using recursive rights (true by default)
-    * @param $default_first   user default entity first
+    * @param $default_first   user default entity first (false by default)
     *
     * @return array of entities ID
    **/

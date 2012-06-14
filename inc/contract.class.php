@@ -75,7 +75,7 @@ class Contract extends CommonDBTM {
 
       $cs = new ContractCost();
       $cs->cleanDBonItemDelete($this->getType(), $this->fields['id']);
-      
+
       $ci = new Contract_Item();
       $ci->cleanDBonItemDelete($this->getType(), $this->fields['id']);
    }
@@ -95,6 +95,11 @@ class Contract extends CommonDBTM {
       return $ong;
    }
 
+   /**
+    * @since version 0.83.3
+    *
+    * @see inc/CommonDBTM::prepareInputForAdd()
+    */
    function prepareInputForAdd($input) {
 
       if (isset($input["id"]) && $input["id"]>0) {
@@ -105,6 +110,8 @@ class Contract extends CommonDBTM {
 
       return $input;
    }
+
+
    function post_addItem() {
       global $DB;
 
@@ -115,7 +122,7 @@ class Contract extends CommonDBTM {
 
       }
    }
-   
+
    function pre_updateInDB() {
 
       // Clean end alert if begin_date is after old one
@@ -309,7 +316,7 @@ class Contract extends CommonDBTM {
                                          'beforejoin' => array('table'      => 'glpi_contracts',
                                                                'joinparams' => $joinparams,
                                           ));
-                                                                            
+
       $tab[139]['table']         = 'glpi_contracts_items';
       $tab[139]['field']         = 'count';
       $tab[139]['name']          = __('Number of contracts');

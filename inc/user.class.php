@@ -1563,9 +1563,10 @@ class User extends CommonDBTM {
       //do some rights verification
       if (Session::haveRight("user", "w")
           && (!$extauth || empty($ID))
-             && $caneditpassword) {
+          && $caneditpassword) {
          echo "<td>" . __('Password')."</td>";
-         echo "<td><input  id='password' type='password' name='password' value='' size='20' autocomplete='off' onkeyup=\"return passwordCheck();\">";
+         echo "<td><input id='password' type='password' name='password' value='' size='20'
+                    autocomplete='off' onkeyup=\"return passwordCheck();\">";
          echo "</td>";
       } else {
          echo "<td colspan='2'>&nbsp;</td>";

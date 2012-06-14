@@ -46,7 +46,7 @@ class Problem extends CommonITILObject {
    public $userlinkclass     = 'Problem_User';
    public $grouplinkclass    = 'Group_Problem';
    public $supplierlinkclass = 'Problem_Supplier';
-   
+
 
    const MATRIX_FIELD         = 'priority_matrix';
    const URGENCY_MASK_FIELD   = 'urgency_mask';
@@ -734,10 +734,12 @@ class Problem extends CommonITILObject {
 
 
    /**
+    * @since version 0.84
+    *
     * @param $start
-    * @param $status             (default ''process)
-    * @param $showgroupproblems   (true by default)
-    */
+    * @param $status             (default 'proces)
+    * @param $showgroupproblems  (true by default)
+   **/
    static function showCentralList($start, $status="process", $showgroupproblems=true) {
       global $DB, $CFG_GLPI;
 
@@ -784,7 +786,7 @@ class Problem extends CommonITILObject {
 
          case "process" : // on affiche les problemes planifiés ou assignés au user
             $query .= "WHERE $is_deleted
-                             AND ( $search_assign )
+                             AND ($search_assign)
                              AND (`status` IN ('plan','assign')) ".
                              getEntitiesRestrictRequest("AND", "glpi_problems");
             break;
@@ -794,7 +796,7 @@ class Problem extends CommonITILObject {
             $query .= "WHERE $is_deleted
                              AND ($search_users_id)
                              AND (`status` IN ('new', 'accepted', 'plan', 'assign', 'waiting'))
-                             AND NOT ( $search_assign ) ".
+                             AND NOT ($search_assign) ".
                              getEntitiesRestrictRequest("AND","glpi_problems");
       }
 
@@ -940,9 +942,11 @@ class Problem extends CommonITILObject {
       }
    }
 
-   
+
    /**
     * Get problems count
+    *
+    * @since version 0.84
     *
     * @param $foruser boolean : only for current login user as requester (false by default)
    **/
@@ -1023,16 +1027,15 @@ class Problem extends CommonITILObject {
 
       echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
                Toolbox::append_params($options,'&amp;')."\">".__('Problem followup')."</a>";
-               
+
       echo "</th></tr>";
       echo "<tr><th>"._n('Problem','Problems',2)."</th><th>"._x('quantity', 'Number')."</th></tr>";
 
       foreach ($status as $key => $val) {
-
-         $options['contains'][0]    = $key;
+         $options['contains'][0] = $key;
          echo "<tr class='tab_bg_2'>";
          echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/problem.php?".
-                  Toolbox::append_params($options,'&amp;')."\">".self::getStatus($key)."</a></td>";
+                    Toolbox::append_params($options,'&amp;')."\">".self::getStatus($key)."</a></td>";
          echo "<td class='numeric'>$val</td></tr>";
       }
 
@@ -1048,8 +1051,10 @@ class Problem extends CommonITILObject {
 
 
    /**
+    * @since version 0.84
+    *
     * @param $ID
-    * @param $forcetab  string   name of the tab to force at the display
+    * @param $forcetab  string   name of the tab to force at the display (default '')
    **/
    static function showVeryShort($ID, $forcetab='') {
       global $CFG_GLPI;
@@ -1058,10 +1063,10 @@ class Problem extends CommonITILObject {
       // Should be called in a <table>-segment
       // Print links or not in case of user view
       // Make new job object and fill it from database, if success, print it
-      $viewusers   = Session::haveRight("user", "r");
+      $viewusers = Session::haveRight("user", "r");
 
-      $problem  = new self();
-      $rand = mt_rand();
+      $problem   = new self();
+      $rand      = mt_rand();
       if ($problem->getFromDBwithData($ID, 0)) {
          $bgcolor = $_SESSION["glpipriority_".$problem->fields["priority"]];
    //      $rand    = mt_rand();
@@ -1089,8 +1094,8 @@ class Problem extends CommonITILObject {
             }
          }
 
-
-         if (isset($problem->groups[parent::REQUESTER]) && count($problem->groups[parent::REQUESTER])) {
+         if (isset($problem->groups[parent::REQUESTER])
+             && count($problem->groups[parent::REQUESTER])) {
             foreach ($problem->groups[parent::REQUESTER] as $d) {
                echo Dropdown::getDropdownName("glpi_groups", $d["groups_id"]);
                echo "<br>";
@@ -1100,7 +1105,6 @@ class Problem extends CommonITILObject {
          echo "</td>";
 
          echo "<td>";
-
          $link = "<a id='problem".$problem->fields["id"].$rand."' href='".$CFG_GLPI["root_doc"].
                    "/front/problem.form.php?id=".$problem->fields["id"];
          if ($forcetab != '') {
@@ -1121,7 +1125,7 @@ class Problem extends CommonITILObject {
          echo "<tr class='tab_bg_2'><td colspan='6' ><i>".__('No problem in progress.')."</i></td></tr>";
       }
    }
-   
+
    /**
     * @param $ID
     * @param $options   array
@@ -1647,7 +1651,7 @@ class Problem extends CommonITILObject {
                $fifth_col .= "<br>";
             }
          }
-         
+
 
          echo Search::showItem($output_type, $fifth_col, $item_num, $row_num, $align);
 

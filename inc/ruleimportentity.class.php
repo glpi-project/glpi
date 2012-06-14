@@ -161,11 +161,16 @@ class RuleImportEntity extends Rule {
       return $criterias;
    }
 
+
+   /**
+    * @since version 0.84
+    *
+    * @see inc/Rule::displayAdditionalRuleCondition()
+   **/
    function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test=false) {
       global $PLUGIN_HOOKS;
 
-      toolbox::logdebug("displayAdditionalRuleCondition(",$condition, $criteria, $name, $value, $test);
-      if ($criteria['field']=='_source') {
+      if ($criteria['field'] == '_source') {
          $tab = array();
          foreach($PLUGIN_HOOKS['import_item'] as $plug => $types) {
             $tab[] = Plugin::getInfo($plug, 'name');
