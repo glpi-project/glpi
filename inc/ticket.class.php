@@ -753,7 +753,7 @@ class Ticket extends CommonITILObject {
             $input['_itil_assign']['groups_id'] = $input['_groups_id_assign'];
          }
          if (isset($input['_suppliers_id_assign'])) {
-            $input['_itil_assign']['_type']     = 'supplier';
+            $input['_itil_assign']['_type']        = 'supplier';
             $input['_itil_assign']['suppliers_id'] = $input['_suppliers_id_assign'];
          }
          if (isset($input['_users_id_requester'])) {
@@ -3182,7 +3182,7 @@ class Ticket extends CommonITILObject {
                     '_groups_id_observer'       => 0,
                     '_link'                     => array('tickets_id_2' => '',
                                                          'link'         => ''),
-                    '_suppliers_id_assign'       => 0,
+                    '_suppliers_id_assign'      => 0,
                     'name'                      => '',
                     'content'                   => '',
                     'itilcategories_id'         => 0,
@@ -4703,7 +4703,7 @@ class Ticket extends CommonITILObject {
 
          case 'Supplier' :
             $restrict                 = "(`glpi_suppliers_tickets`.`suppliers_id` = '".$item->getID()."' ".
-                                       " AND `glpi_suppliers_tickets`.`type` = ".parent::ASSIGN.")";
+                                       "  AND `glpi_suppliers_tickets`.`type` = ".parent::ASSIGN.")";
             $order                    = '`glpi_tickets`.`date_mod` DESC';
             $options['field'][0]      = 6;
             $options['searchtype'][0] = 'equals';

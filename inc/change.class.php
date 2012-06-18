@@ -46,7 +46,7 @@ class Change extends CommonITILObject {
    public $userlinkclass     = 'Change_User';
    public $grouplinkclass    = 'Change_Group';
    public $supplierlinkclass = 'Change_Supplier';
-   
+
 
    const MATRIX_FIELD         = 'priority_matrix';
    const URGENCY_MASK_FIELD   = 'urgency_mask';
@@ -750,7 +750,7 @@ class Change extends CommonITILObject {
                          '_users_id_observer'        => 0,
                          '_users_id_observer_notif'  => array('use_notification' => 1),
                          '_groups_id_observer'       => 0,
-                         '_suppliers_id_assign'       => 0,
+                         '_suppliers_id_assign'      => 0,
                          'priority'                  => 3,
                          'urgency'                   => 3,
                          'impact'                    => 3,

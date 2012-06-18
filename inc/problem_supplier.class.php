@@ -36,7 +36,12 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-/// Class Problem_Supplier
+/**
+ * Class Problem_Supplier
+ *
+ * @since version 0.84
+ *
+**/
 class Problem_Supplier extends CommonITILActor {
 
    // From CommonDBRelation

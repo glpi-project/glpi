@@ -1576,11 +1576,10 @@ class Search {
       echo "<tr class='tab_bg_1'>";
 
       if (($_SESSION["glpisearchcount"][$itemtype] + $_SESSION["glpisearchcount2"][$itemtype]) > 1) {
-         
          echo "<td width='10' class='center'>";
          echo "<a href=\"javascript:toggleTableDisplay('searchcriteriastable','searchcriteriasimg',
-                                                '".$CFG_GLPI["root_doc"]."/pics/deplier_down.png',
-                                                '".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
+                                                       '".$CFG_GLPI["root_doc"]."/pics/deplier_down.png',
+                                                       '".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
          echo "<img alt='' name='searchcriteriasimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
          echo "</td>";
       }
@@ -2413,7 +2412,7 @@ class Search {
          case "glpi_ticketcosts.totalcost" :
             return " SUM(`glpi_ticketcosts$addtable`.`actiontime`*`glpi_ticketcosts$addtable`.`cost_time`/".HOUR_TIMESTAMP."
                         + `glpi_ticketcosts$addtable`.`cost_fixed` + `glpi_ticketcosts$addtable`.`cost_material`) AS ".$NAME."_".$num.", ";
-            
+
          case "glpi_tickets_tickets.tickets_id_1" :
             return " GROUP_CONCAT(`$table$addtable`.`tickets_id_1` SEPARATOR '$$$$')
                            AS ".$NAME."_$num,

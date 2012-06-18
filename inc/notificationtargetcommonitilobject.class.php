@@ -222,9 +222,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
           && $this->countSuppliers(CommonITILObject::ASSIGN)) {
 
          $supplierlinktable = getTableForItemType($this->obj->supplierlinkclass);
-         $fkfield       = $this->obj->getForeignKeyField();
+         $fkfield           = $this->obj->getForeignKeyField();
 
-          
+
          $query = "SELECT DISTINCT `glpi_suppliers`.`email` AS email,
                                    `glpi_suppliers`.`name` AS name
                    FROM `$supplierlinktable`
@@ -689,14 +689,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       if ($item->countSuppliers(CommonITILObject::ASSIGN)) {
          $suppliers = array();
          foreach ($item->getSupliers(CommonITILObject::ASSIGN) as $tmp) {
-            $uid      = $tmp['suppliers_id'];
-            $supplier_tmp = new Supplier();
+            $uid           = $tmp['suppliers_id'];
+            $supplier_tmp  = new Supplier();
             if ($supplier_tmp->getFromDB($uid)) {
                $suppliers[$uid] = $user_tmp->getName();
             }
          }
          $datas["##$objettype.assigntosupplier##"] = implode(', ',$suppliers);
-      }      
+      }
 
       $datas["##$objettype.groups##"] = '';
       if ($item->countGroups(CommonITILObject::REQUESTER)) {

@@ -97,21 +97,23 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Get the search page URL for the current classe
     *
+    * @since version 0.84
+    *
     * @param $full path or relative one (true by default)
    **/
    function getSearchURL($full=true) {
       global $CFG_GLPI;
+
       $dir = ($full ? $CFG_GLPI['root_doc'] : '');
 
       if (isset($_SESSION['glpiactiveprofile'])
-              && ($_SESSION['glpiactiveprofile']['interface'] == "central")) {
+          && ($_SESSION['glpiactiveprofile']['interface'] == "central")) {
          return "$dir/front/knowbaseitem.php";
-      } else {
-         return "$dir/front/helpdesk.faq.php";
       }
+      return "$dir/front/helpdesk.faq.php";
    }
 
-   
+
   function defineTabs($options=array()) {
 
       $ong = array();
@@ -861,7 +863,8 @@ class KnowbaseItem extends CommonDBTM {
       echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
       echo "<input type='text' size='50' name='contains' value=\"".
              stripslashes(Html::cleanInputText($params["contains"]))."\"></td>";
-      echo "<td class='left'><input type='submit' value=\""._sx('button','Search')."\" class='submit'></td></tr>";
+      echo "<td class='left'>";
+      echo "<input type='submit' value=\""._sx('button','Search')."\" class='submit'></td></tr>";
       echo "</table>";
       if (isset($options['item_itemtype'])
           && isset($options['item_items_id'])) {
@@ -873,11 +876,14 @@ class KnowbaseItem extends CommonDBTM {
       echo "</div>";
    }
 
+
    /**
     * Print out an HTML "<form>" for Search knowbase item
     *
+    * @since version 0.84
+    *
     * @param $options   $_GET
-    * @since version 0.84    
+    *
     * @return nothing (display the form)
    **/
    function showBrowseForm($options) {
@@ -905,13 +911,13 @@ class KnowbaseItem extends CommonDBTM {
          echo "<div>";
          echo "<form method='get' action='".$this->getSearchURL()."'>";
          echo "<table class='tab_cadre_fixe'>";
-
          echo "<tr class='tab_bg_2'><td class='right' width='50%'>".__('Category')."&nbsp;";
          KnowbaseItemCategory::dropdown(array('value' => $params["knowbaseitemcategories_id"]));
-         echo "</td><td class='left'><input type='submit' value=\""._sx('button','Post')."\" class='submit'></td>";
+         echo "</td><td class='left'>";
+         echo "<input type='submit' value=\""._sx('button','Post')."\" class='submit'></td>";
          echo "</tr></table>";
          if (isset($options['item_itemtype'])
-            && isset($options['item_items_id'])) {
+             && isset($options['item_items_id'])) {
             echo "<input type='hidden' name='item_itemtype' value='".$options['item_itemtype']."'>";
             echo "<input type='hidden' name='item_items_id' value='".$options['item_items_id']."'>";
          }
@@ -919,11 +925,14 @@ class KnowbaseItem extends CommonDBTM {
       }
    }
 
+
    /**
     * Print out an HTML "<form>" for Search knowbase item
     *
     * @since version 0.84
+    *
     * @param $options   $_GET
+    *
     * @return nothing (display the form)
    **/
    function showManageForm($options) {
@@ -939,35 +948,36 @@ class KnowbaseItem extends CommonDBTM {
             $params[$key] = $val;
          }
       }
-      
+
       $faq = !Session::haveRight("knowbase","w");
 
       echo "<div>";
       echo "<form method='get' action='".$this->getSearchURL()."'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_2'><td class='right' width='50%'>";
-      $values = array('myunpublished' => __('My unpublished artciles'),
+      $values = array('myunpublished' => __('My unpublished articles'),
                       'allmy'         => __('All my articles'));
       if (Session::haveRight('knowbase_admin', '1')) {
          $values['allunpublished'] = __('All unpublished articles');
       }
       Dropdown::showFromArray('unpublished', $values, array('value' => $params['unpublished']));
-      echo "</td><td class='left'><input type='submit' value=\""._sx('button','Post')."\" class='submit'></td>";
-      echo "</tr></table></td>";
+      echo "</td><td class='left'>";
+      echo "<input type='submit' value=\""._sx('button','Post')."\" class='submit'></td>";
       echo "</tr></table></div>";
    }
-   
+
+
    /**
     * Build request for showList
     *
     * @since version 0.83
     *
-    * @param $params Array (contains, knowbaseitemcategories_id, faq)
-    * @param $type  string search type : browse / search (default search)
+    * @param $params array  (contains, knowbaseitemcategories_id, faq)
+    * @param $type   string search type : browse / search (default search)
     *
     * @return String : SQL request
    **/
-   static function getListRequest(array $params, $type = 'search') {
+   static function getListRequest(array $params, $type='search') {
       global $DB;
 
       // Lists kb Items
@@ -978,16 +988,15 @@ class KnowbaseItem extends CommonDBTM {
 
       switch ($type) {
          case 'myunpublished' :
-         break;
-         
+            break;
+
          case 'allmy' :
-         break;
+            break;
 
          case 'allunpublished' :
-         break;
+            break;
 
          default :
-      
             // Build query
             if (Session::getLoginUserID() && $type != 'myunpublished') {
                $where = self::addVisibilityRestrict()." AND ";
@@ -999,7 +1008,7 @@ class KnowbaseItem extends CommonDBTM {
                            AND ";
                }
             }
-         break;
+            break;
       }
 
       if ($params['faq']) { // helpdesk
@@ -1011,24 +1020,24 @@ class KnowbaseItem extends CommonDBTM {
       switch ($type) {
          case 'allmy' :
             $where .= "`glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."'";
-         break;
-         
+            break;
+
          case 'myunpublished' :
             $where .= "`glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."'
                         AND (`glpi_entities_knowbaseitems`.`entities_id` IS NULL
                               AND `glpi_knowbaseitems_profiles`.`profiles_id` IS NULL
                               AND `glpi_groups_knowbaseitems`.`groups_id` IS NULL
                               AND `glpi_knowbaseitems_users`.`users_id` IS NULL)";
-         break;
-         
+            break;
+
          case 'allunpublished' :
             // Only published
             $where .= "(`glpi_entities_knowbaseitems`.`entities_id` IS NULL
                               AND `glpi_knowbaseitems_profiles`.`profiles_id` IS NULL
                               AND `glpi_groups_knowbaseitems`.`groups_id` IS NULL
                               AND `glpi_knowbaseitems_users`.`users_id` IS NULL)";
-         break;
-         
+            break;
+
          case 'search' :
             if (strlen($params["contains"]) > 0) {
                $search  = Toolbox::unclean_cross_side_scripting_deep($params["contains"]);
@@ -1037,28 +1046,28 @@ class KnowbaseItem extends CommonDBTM {
                            AGAINST('$search' IN BOOLEAN MODE) AS SCORE ";
 
                $where_1 = $where." MATCH(`glpi_knowbaseitems`.`name`, `glpi_knowbaseitems`.`answer`)
-                        AGAINST('$search' IN BOOLEAN MODE) ";
+                          AGAINST('$search' IN BOOLEAN MODE) ";
 
                $order   = "ORDER BY `SCORE` DESC";
 
                // preliminar query to allow alternate search if no result with fulltext
                $query_1   = "SELECT COUNT(`glpi_knowbaseitems`.`id`)
-                           FROM `glpi_knowbaseitems`
-                           $join
-                           WHERE $where_1";
+                             FROM `glpi_knowbaseitems`
+                             $join
+                             WHERE $where_1";
                $result_1  = $DB->query($query_1);
                $numrows_1 = $DB->result($result_1,0,0);
 
                if ($numrows_1 <= 0) {// not result this fulltext try with alternate search
                   $search1 = array(/* 1 */   '/\\\"/',
-                                 /* 2 */   "/\+/",
-                                 /* 3 */   "/\*/",
-                                 /* 4 */   "/~/",
-                                 /* 5 */   "/</",
-                                 /* 6 */   "/>/",
-                                 /* 7 */   "/\(/",
-                                 /* 8 */   "/\)/",
-                                 /* 9 */   "/\-/");
+                                   /* 2 */   "/\+/",
+                                   /* 3 */   "/\*/",
+                                   /* 4 */   "/~/",
+                                   /* 5 */   "/</",
+                                   /* 6 */   "/>/",
+                                   /* 7 */   "/\(/",
+                                   /* 8 */   "/\)/",
+                                   /* 9 */   "/\-/");
                   $contains = preg_replace($search1,"", $params["contains"]);
                   $where   .= " (`glpi_knowbaseitems`.`name` ".Search::makeTextSearch($contains)."
                                  OR `glpi_knowbaseitems`.`answer` ".Search::makeTextSearch($contains).")";
@@ -1066,15 +1075,14 @@ class KnowbaseItem extends CommonDBTM {
                   $where = $where_1;
                }
             }
-         break;
-         
+            break;
+
          case 'browse' :
             $where .= " (`glpi_knowbaseitems`.`knowbaseitemcategories_id`
                            = '".$params["knowbaseitemcategories_id"]."')";
             $order  = " ORDER BY `glpi_knowbaseitems`.`name` ASC";
-         break;
+            break;
       }
-
 
       $query = "SELECT `glpi_knowbaseitems`.*,
                        `glpi_knowbaseitemcategories`.`completename` AS category
@@ -1094,12 +1102,12 @@ class KnowbaseItem extends CommonDBTM {
    /**
     * Print out list kb item
     *
-    * @param $options   $_GET
-    * @param $type  string search type : browse / search (default search)
+    * @param $options            $_GET
+    * @param $type      string   search type : browse / search (default search)
    **/
    static function showList($options, $type='search') {
       global $DB, $CFG_GLPI;
-      
+
       // Default values of parameters
       $params['faq']                       = !Session::haveRight("knowbase","r");
       $params["start"]                     = "0";
@@ -1118,24 +1126,26 @@ class KnowbaseItem extends CommonDBTM {
             if (!Session::haveRight('knowbase','w') && !Session::haveRight('faq','w')) {
                return false;
             }
-         break;
+            break;
+
          case 'allunpublished' :
             if (!Session::haveRight('knowbase_admin',1)) {
                return false;
             }
-         break;
+            break;
+
          default :
-         break;
+            break;
       }
-      
+
       if (!$params["start"]) {
          $params["start"] = 0;
       }
-      
+
       $query = self::getListRequest($params, $type);
 
       // Get it from database
-      if ($result=$DB->query($query)) {
+      if ($result = $DB->query($query)) {
          $KbCategory = new KnowbaseItemCategory();
          $title      = "";
          if ($KbCategory->getFromDB($params["knowbaseitemcategories_id"])) {
@@ -1150,7 +1160,7 @@ class KnowbaseItem extends CommonDBTM {
          $list_limit = $_SESSION['glpilist_limit'];
 
          $showwriter = in_array($type, array('myunpublished', 'allunpublished', 'allmy'));
-         
+
          // Limit the result, if no limit applies, use prior result
          if (($numrows > $list_limit)
              && !isset($_GET['export_all'])) {
@@ -1258,8 +1268,8 @@ class KnowbaseItem extends CommonDBTM {
                   $categ = "<a href='$cathref'>".$categ.'</a>';
                }
                echo Search::showItem($output_type, $categ, $item_num, $row_num);
-               
-               
+
+
                if (isset($options['item_itemtype'])
                    && isset($options['item_items_id'])
                    && ($output_type == Search::HTML_OUTPUT)) {

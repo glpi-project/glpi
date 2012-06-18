@@ -683,7 +683,7 @@ class Stat {
       }
       $grouplinktable = $grouplinkclass->getTable();
 
-      if (!$supplierlinkclass = getItemForItemtype($item->supplierlinkclass)) {
+      if (!($supplierlinkclass = getItemForItemtype($item->supplierlinkclass))) {
          return;
       }
       $supplierlinktable = $supplierlinkclass->getTable();
@@ -693,16 +693,16 @@ class Stat {
       $closed_status  = $item->getClosedStatusArray();
       $solved_status  = array_merge($closed_status,$item->getSolvedStatusArray());
 
-      $query          = "";
-      $WHERE          = "WHERE NOT `$table`.`is_deleted` ".
-                             getEntitiesRestrictRequest("AND", $table);
-      $LEFTJOIN       = "";
-      $LEFTJOINUSER   = "LEFT JOIN `$userlinktable`
-                           ON (`$userlinktable`.`$fkfield` = `$table`.`id`)";
-      $LEFTJOINGROUP  = "LEFT JOIN `$grouplinktable`
-                           ON (`$grouplinktable`.`$fkfield` = `$table`.`id`)";
+      $query             = "";
+      $WHERE             = "WHERE NOT `$table`.`is_deleted` ".
+                                 getEntitiesRestrictRequest("AND", $table);
+      $LEFTJOIN          = "";
+      $LEFTJOINUSER      = "LEFT JOIN `$userlinktable`
+                              ON (`$userlinktable`.`$fkfield` = `$table`.`id`)";
+      $LEFTJOINGROUP     = "LEFT JOIN `$grouplinktable`
+                              ON (`$grouplinktable`.`$fkfield` = `$table`.`id`)";
       $LEFTJOINSUPPLIER  = "LEFT JOIN `$supplierlinktable`
-                           ON (`$supplierlinktable`.`$fkfield` = `$table`.`id`)";
+                              ON (`$supplierlinktable`.`$fkfield` = `$table`.`id`)";
 
       switch ($param) {
          case "technicien" :
@@ -776,6 +776,7 @@ class Stat {
             $WHERE   .= " AND (`$grouplinktable`.`groups_id` = '$value'
                                AND `$grouplinktable`.`type` = '".CommonITILObject::ASSIGN."')";
             break;
+
          case "suppliers_id_assign" :
             $LEFTJOIN = $LEFTJOINSUPPLIER;
             $WHERE   .= " AND (`$supplierlinktable`.`suppliers_id` = '$value'

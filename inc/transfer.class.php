@@ -2307,7 +2307,8 @@ class Transfer extends CommonDBTM {
       }
 
    }
-   
+
+
    /**
     * Transfer task categories for specified tickets
     *

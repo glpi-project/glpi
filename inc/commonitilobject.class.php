@@ -168,6 +168,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Is a supplier linked to the object ?
     *
+    * @since version 0.84
+    *
     * @param $type               type to search (see constants)
     * @param $suppliers_id  integer supplier ID
     *
@@ -185,7 +187,7 @@ abstract class CommonITILObject extends CommonDBTM {
       return false;
    }
 
-   
+
    /**
     * get users linked to a object
     *
@@ -222,6 +224,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * get suppliers linked to a object
     *
+    * @since version 0.84
+    *
     * @param $type type to search (see constants)
     *
     * @return array
@@ -234,7 +238,7 @@ abstract class CommonITILObject extends CommonDBTM {
 
       return array();
    }
-   
+
    /**
     * count users linked to object by type or global
     *
@@ -290,6 +294,8 @@ abstract class CommonITILObject extends CommonDBTM {
 
    /**
     * count suppliers linked to object by type or global
+    *
+    * @since version 0.84
     *
     * @param $type type to search (see constants) / 0 for all (default 0)
     *
@@ -638,6 +644,7 @@ abstract class CommonITILObject extends CommonDBTM {
                      }
                   }
                   break;
+
                case "supplier" :
                   if (!empty($this->supplierlinkclass)
                       && ($input['_itil_assign']['suppliers_id'] > 0)) {
@@ -652,7 +659,7 @@ abstract class CommonITILObject extends CommonDBTM {
                         }
                      }
                   }
-                  break;                  
+                  break;
             }
          }
       }
@@ -1075,7 +1082,7 @@ abstract class CommonITILObject extends CommonDBTM {
       if (!empty($this->supplierlinkclass)) {
          $supplieractors = new $this->supplierlinkclass();
       }
-      
+
       if (!is_null($useractors)) {
          if (isset($this->input["_users_id_requester"])
              && (($this->input["_users_id_requester"] > 0)
@@ -1156,15 +1163,15 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       if (!is_null($supplieractors)) {
-
-         if (isset($this->input["_suppliers_id_assign"]) && ($this->input["_suppliers_id_assign"] > 0)) {
+         if (isset($this->input["_suppliers_id_assign"])
+             && ($this->input["_suppliers_id_assign"] > 0)) {
             $supplieractors->add(array($supplieractors->getItilObjectForeignKey()
-                                                   => $this->fields['id'],
-                                    'suppliers_id' => $this->input["_suppliers_id_assign"],
-                                    'type'         => self::ASSIGN));
+                                                     => $this->fields['id'],
+                                      'suppliers_id' => $this->input["_suppliers_id_assign"],
+                                      'type'         => self::ASSIGN));
          }
       }
-      
+
       // Additional groups actors
       if (!is_null($groupactors)) {
          // Requesters
@@ -1224,7 +1231,7 @@ abstract class CommonITILObject extends CommonDBTM {
              && count($this->input['_additional_suppliers_assigns'])) {
 
             $input2 = array($supplieractors->getItilObjectForeignKey() => $this->fields['id'],
-                            'type'                                  => self::ASSIGN);
+                            'type'                                     => self::ASSIGN);
 
             foreach ($this->input['_additional_suppliers_assigns'] as $tmp) {
                if ($tmp > 0) {
@@ -1234,7 +1241,7 @@ abstract class CommonITILObject extends CommonDBTM {
             }
          }
       }
-      
+
       // Additional actors : using default notification parameters
       if (!is_null($useractors)) {
          // Observers : for mailcollector
@@ -1859,6 +1866,8 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * show suppliers associated
     *
+    * @since version 0.84
+    *
     * @param $type      integer : user type
     * @param $canedit   boolean : can edit ?
     *
@@ -1884,10 +1893,10 @@ abstract class CommonITILObject extends CommonDBTM {
             }
             if ($canedit) {
                echo "&nbsp;<a href='".$this->getFormURL()."?delete_supplier=delete_supplier&amp;id=".
-                     $d['id']."&amp;".$this->getForeignKeyField()."=".$this->fields['id'].
-                     "' title=\"".__s('Delete')."\">
-                     <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
-                      alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
+                            $d['id']."&amp;".$this->getForeignKeyField()."=".$this->fields['id'].
+                            "' title=\"".__s('Delete')."\">
+                            <img src='".$CFG_GLPI["root_doc"]."/pics/delete.png'
+                             alt=\"".__s('Delete')."\" title=\"".__s('Delete')."\"></a>";
             }
             echo '<br>';
          }
@@ -2932,10 +2941,12 @@ abstract class CommonITILObject extends CommonDBTM {
                                                                        $rand_type))));
 
          echo "</td><td colspan='2'>";
-         if (Session::haveRight('knowbase','r') || Session::haveRight('faq','r')) {
+         if (Session::haveRight('knowbase','r')
+             || Session::haveRight('faq','r')) {
             echo "<a class='vsubmit' title\"".__s('Search a solution')."\"
-                  href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?item_itemtype=".$this->getType().
-                  "&amp;item_items_id=".$this->getField('id')."&amp;forcetab=Knowbase$1'>".__('Search a solution')."</a>";
+                   href='".$CFG_GLPI['root_doc']."/front/knowbaseitem.php?item_itemtype=".
+                   $this->getType()."&amp;item_items_id=".$this->getField('id').
+                   "&amp;forcetab=Knowbase$1'>".__('Search a solution')."</a>";
          }
          echo "</td></tr>";
       }
@@ -3713,7 +3724,7 @@ abstract class CommonITILObject extends CommonDBTM {
       $linkclass = new $this->supplierlinkclass();
       $linktable = $linkclass->getTable();
 
-      
+
       $query = "SELECT DISTINCT `glpi_suppliers`.`id` AS suppliers_id_assign,
                                 `glpi_suppliers`.`name` AS name
                 FROM `".$this->getTable()."` LEFT JOIN `$linktable`
