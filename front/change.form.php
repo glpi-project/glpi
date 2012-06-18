@@ -106,7 +106,7 @@ if (isset($_POST["add"])) {
               sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/change.form.php?id=".$_REQUEST['changes_id']);
 
-} else if (isset($_REQUEST['delete_supplierp'])) {
+} else if (isset($_REQUEST['delete_supplier'])) {
    $change_supplier = new Change_Supplier();
    $change_supplier->check($_REQUEST['id'], 'w');
    $change_supplier->delete($_REQUEST);
