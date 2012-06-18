@@ -117,7 +117,7 @@ if (isset($_POST["add"])) {
    $problem_supplier->delete($_REQUEST);
 
    Event::log($_REQUEST['problems_id'], "problem", 4, "maintain",
-              sprintf(__('%s deletes a group'), $_SESSION["glpiname"]));
+              sprintf(__('%s deletes an actor'), $_SESSION["glpiname"]));
    Html::redirect($CFG_GLPI["root_doc"]."/front/problem.form.php?id=".$_REQUEST['problems_id']);
 
    } else {
