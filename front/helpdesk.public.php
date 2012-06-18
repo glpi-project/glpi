@@ -127,16 +127,13 @@ if (isset($_GET['create_ticket'])) {
    // Show KB items
    if (Session::haveRight("faq","r")) {
       echo "<tr><td class='top' width='450px'>";
-      // TODO only 1 parameter in KnowbaseItem::showRecentPopular since r18619
-      KnowbaseItem::showRecentPopular($CFG_GLPI['root_doc'].'/front/helpdesk.faq.php', "popular", 1);
+      KnowbaseItem::showRecentPopular("popular");
       echo "</td></tr>";
       echo "<tr><td class='top' width='450px'><br>";
-      // TODO only 1 parameter in KnowbaseItem::showRecentPopular since r18619
-      KnowbaseItem::showRecentPopular($CFG_GLPI['root_doc'].'/front/helpdesk.faq.php', "recent", 1);
+      KnowbaseItem::showRecentPopular("recent");
       echo "</td></tr>";
       echo "<tr><td class='top' width='450px'><br>";
-      // TODO only 1 parameter in KnowbaseItem::showRecentPopular since r18619
-      KnowbaseItem::showRecentPopular($CFG_GLPI['root_doc'].'/front/helpdesk.faq.php', "lastupdate", 1);
+      KnowbaseItem::showRecentPopular("lastupdate");
       echo "</td></tr>";
    } else {
       echo "<tr><td>&nbsp;</td></tr>";
