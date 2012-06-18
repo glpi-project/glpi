@@ -1719,8 +1719,10 @@ function update0831to084() {
    }
    $migration->migrationOneTable('glpi_problems_suppliers');
    foreach($DB->request('glpi_problems',"`suppliers_id_assign` > 0") as $data) {
-      $query = "INSERT INTO `glpi_problems_suppliers` (`suppliers_id`, `type`, `problems_id`)
-                  VALUES ('".$data['suppliers_id_assign']."', '".CommonITILObject::ASSIGN."', '".$data['id']."')";
+      $query = "INSERT INTO `glpi_problems_suppliers`
+                       (`suppliers_id`, `type`, `problems_id`)
+                VALUES ('".$data['suppliers_id_assign']."', '".CommonITILObject::ASSIGN."',
+                        '".$data['id']."')";
       $DB->query($query);
    }
    $migration->dropField('glpi_problems', 'suppliers_id_assign');
@@ -1740,8 +1742,10 @@ function update0831to084() {
    }
    $migration->migrationOneTable('glpi_suppliers_tickets');
    foreach($DB->request('glpi_tickets',"`suppliers_id_assign` > 0") as $data) {
-      $query = "INSERT INTO `glpi_suppliers_tickets` (`suppliers_id`, `type`, `tickets_id`)
-                  VALUES ('".$data['suppliers_id_assign']."', '".CommonITILObject::ASSIGN."', '".$data['id']."')";
+      $query = "INSERT INTO `glpi_suppliers_tickets`
+                       (`suppliers_id`, `type`, `tickets_id`)
+                VALUES ('".$data['suppliers_id_assign']."', '".CommonITILObject::ASSIGN."',
+                        '".$data['id']."')";
       $DB->query($query);
    }
    $migration->dropField('glpi_tickets', 'suppliers_id_assign');

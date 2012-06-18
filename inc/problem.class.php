@@ -1155,7 +1155,7 @@ class Problem extends CommonITILObject {
                          '_users_id_observer_notif'  => array('use_notification' => 1,
                                                               'alternative_email' => ''),
                          '_groups_id_observer'       => 0,
-                         '_suppliers_id_assign'       => 0,
+                         '_suppliers_id_assign'      => 0,
                          'priority'                  => 3,
                          'urgency'                   => 3,
                          'impact'                    => 3,
@@ -1728,8 +1728,8 @@ class Problem extends CommonITILObject {
 
       switch ($item->getType()) {
          case 'User' :
-            $restrict                 = "(`glpi_problems_users`.`users_id` = '".$item->getID()."' ".
-                                       " AND `glpi_problems_users`.`type` = ".parent::REQUESTER.")";
+            $restrict                 = "(`glpi_problems_users`.`users_id` = '".$item->getID()."'
+                                          AND `glpi_problems_users`.`type` = ".parent::REQUESTER.")";
             $order                    = '`glpi_problems`.`date_mod` DESC';
             $options['reset']         = 'reset';
             $options['field'][0]      = 4; // status

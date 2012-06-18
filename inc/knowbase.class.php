@@ -32,6 +32,12 @@ if (!defined('GLPI_ROOT')) {
 }
 
 // class Knowbase
+/**
+ * class Knowbase
+ *
+ * @since version 0.84
+ *
+**/
 class Knowbase extends CommonGLPI {
 
 
@@ -69,6 +75,7 @@ class Knowbase extends CommonGLPI {
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
       if ($item->getType() == __CLASS__) {
          switch ($tabnum) {
             case 1 : // all
@@ -87,14 +94,16 @@ class Knowbase extends CommonGLPI {
       return true;
    }
 
+
    /**
     * Show the knowbase search view
    **/
    static function showSearchView() {
+
       // Search a solution
       if (!isset($_REQUEST["contains"])
-         && isset($_REQUEST["itemtype"])
-         && isset($_REQUEST["items_id"])) {
+          && isset($_REQUEST["itemtype"])
+          && isset($_REQUEST["items_id"])) {
 
          if ($item = getItemForItemtype($_REQUEST["itemtype"])) {
             if ($item->getFromDB($_REQUEST["items_id"])) {
@@ -102,7 +111,7 @@ class Knowbase extends CommonGLPI {
             }
          }
       }
-      
+
       if (isset($_REQUEST["contains"])) {
          $_SESSION['kbcontains'] = $_REQUEST["contains"];
       } else if (isset($_SESSION['kbcontains'])) {
@@ -125,6 +134,7 @@ class Knowbase extends CommonGLPI {
       }
    }
 
+
    /**
     * Show the knowbase browse view
    **/
@@ -135,7 +145,7 @@ class Knowbase extends CommonGLPI {
       } else if (isset($_SESSION['kbknowbaseitemcategories_id'])) {
          $_REQUEST["knowbaseitemcategories_id"] = $_SESSION['kbknowbaseitemcategories_id'];
       }
-      
+
       $ki = new KnowbaseItem();
       $ki->showBrowseForm($_REQUEST);
       if (!isset($_REQUEST["itemtype"])
@@ -145,10 +155,12 @@ class Knowbase extends CommonGLPI {
       KnowbaseItem::showList($_REQUEST, 'browse');
    }
 
+
    /**
     * Show the knowbase Manage view
    **/
    static function showManageView() {
+
       if (isset($_REQUEST["unpublished"])) {
          $_SESSION['kbunpublished'] = $_REQUEST["unpublished"];
       } else if (isset($_SESSION['kbunpublished'])) {

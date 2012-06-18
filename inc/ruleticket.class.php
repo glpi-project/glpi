@@ -267,11 +267,11 @@ class RuleTicket extends Rule {
       $criterias['_groups_id_assign']['type']         = 'dropdown';
       $criterias['_groups_id_assign']['condition']    = '`is_assign`';
 
-      $criterias['_suppliers_id_assign']['table']      = 'glpi_suppliers';
-      $criterias['_suppliers_id_assign']['field']      = 'name';
-      $criterias['_suppliers_id_assign']['name']       = __('Assigned to a supplier');
-      $criterias['_suppliers_id_assign']['linkfield']  = '_suppliers_id_assign';
-      $criterias['_suppliers_id_assign']['type']       = 'dropdown';
+      $criterias['_suppliers_id_assign']['table']     = 'glpi_suppliers';
+      $criterias['_suppliers_id_assign']['field']     = 'name';
+      $criterias['_suppliers_id_assign']['name']      = __('Assigned to a supplier');
+      $criterias['_suppliers_id_assign']['linkfield'] = '_suppliers_id_assign';
+      $criterias['_suppliers_id_assign']['type']      = 'dropdown';
 
       $criterias['_users_id_observer']['table']       = 'glpi_users';
       $criterias['_users_id_observer']['field']       = 'name';
@@ -353,9 +353,9 @@ class RuleTicket extends Rule {
       $actions['_groups_id_assign']['type']           = 'dropdown';
       $actions['_groups_id_assign']['condition']      = '`is_assign`';
 
-      $actions['_suppliers_id_assign']['table']        = 'glpi_suppliers';
-      $actions['_suppliers_id_assign']['name']         = __('Assigned to a supplier');
-      $actions['_suppliers_id_assign']['type']         = 'dropdown';
+      $actions['_suppliers_id_assign']['table']       = 'glpi_suppliers';
+      $actions['_suppliers_id_assign']['name']        = __('Assigned to a supplier');
+      $actions['_suppliers_id_assign']['type']        = 'dropdown';
 
       $actions['_users_id_observer']['name']          = __('Watcher');
       $actions['_users_id_observer']['type']          = 'dropdown_users';
