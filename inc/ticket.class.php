@@ -3435,7 +3435,9 @@ class Ticket extends CommonITILObject {
                              && $values[$predeffield] == $values['_predefined_fields'][$predeffield])
                    || (isset($values['_tickettemplates_id'])
                         && $values['_tickettemplates_id'] != $tt->getID())) {
+                  // Load template data
                   $values[$predeffield]            = $predefvalue;
+                  $this->fields[$predeffield]            = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
             }
