@@ -348,9 +348,9 @@ function jumpTo(URL_List) {
 browserName = navigator.appName;
 browserVer  = parseInt(navigator.appVersion);
 if (((browserName == "Netscape") && (browserVer >= 3))
-    || ((browserName == "Microsoft Internet Explorer") && (browserVer >= 4))) 
+    || ((browserName == "Microsoft Internet Explorer") && (browserVer >= 4))){ 
    version = "n3";
-} else 
+} else { 
    version = "n2";
 }
 
