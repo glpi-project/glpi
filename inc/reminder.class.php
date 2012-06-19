@@ -559,14 +559,15 @@ class Reminder extends CommonDBTM {
    function showForm($ID, $options=array()) {
       global $CFG_GLPI;
 
+
+      $this->initForm($ID, $options);
+
       // Show Reminder or blank form
       $onfocus = "";
       if (!$ID > 0) {
          // Create item : do getempty before check right to set default values
          $onfocus="onfocus=\"if (this.value=='".$this->fields['name']."') this.value='';\"";
       }
-
-      $this->initForm($ID, $options);
 
       $canedit = $this->can($ID,'w');
 
