@@ -324,6 +324,8 @@ abstract class CommonITILTask  extends CommonDBTM {
 
          $this->fields['is_private'] = 1;
       }
+      // Default is todo
+      $this->fields['state'] = 1;
    }
 
 
