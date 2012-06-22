@@ -985,7 +985,26 @@ class Ticket extends CommonITILObject {
          // Read again ticket to be sure that all data are up to date
          $this->getFromDB($this->fields['id']);
          NotificationEvent::raiseEvent($mailtype, $this);
+      }
 
+      // inquest created immediatly if delay = O
+      $inquest       = new TicketSatisfaction();
+      $rate          = EntityData::getUsedConfig('inquest_config', $this->fields['entities_id'],
+                                                 'inquest_rate');
+      $delay         = EntityData::getUsedConfig('inquest_config', $this->fields['entities_id'],
+                                                 'inquest_delay');
+      $type          = EntityData::getUsedConfig('inquest_config', $this->fields['entities_id']);
+      $max_closedate = $this->fields['closedate'];
+
+      toolbox::logdebug('taux ', $rate, 'delai', $delay);
+      if (($delay == 0)
+          && ($rate > 0)
+          && (mt_rand(1,100) <= $rate)) {
+         $inquest->add(array('tickets_id'    => $this->fields['id'],
+                             'date_begin'    => $_SESSION["glpi_currenttime"],
+                             'entities_id'   => $this->fields['entities_id'],
+                             'type'          => $type,
+                             'max_closedate' => $max_closedate));
       }
    }
 
