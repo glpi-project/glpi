@@ -435,8 +435,8 @@ class Ticket extends CommonITILObject {
             }
             return $ong;
 
-         default :
-            return $LANG['title'][28];
+      //   default :
+      //      return $LANG['title'][28];
       }
       return '';
    }
@@ -3367,7 +3367,7 @@ class Ticket extends CommonITILObject {
             $values['entities_id'] = $this->userentities[0];
          }
       }
-      
+
       // Clean text fields
       $values['name']    = stripslashes($values['name']);
       $values['content'] = Html::cleanPostForTextArea($values['content']);
@@ -3376,9 +3376,9 @@ class Ticket extends CommonITILObject {
          $values['type'] = EntityData::getUsedConfig('tickettype', $values['entities_id'],
                                                      '', Ticket::INCIDENT_TYPE);
       }
-      
 
-      
+
+
       // Load ticket template if available :
       $tt = new TicketTemplate();
 
