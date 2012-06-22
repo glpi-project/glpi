@@ -229,7 +229,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
 
       $datas['##ticket.autoclose##']             = $LANG['setup'][307];
       $datas['##lang.ticket.autoclosewarning##'] = "";
-      if ($autoclose_value >= 0) {
+      if ($autoclose_value > 0) {
                $datas['##ticket.autoclose##'] = $autoclose_value;
       }
       if ($autoclose_value > 0) {
