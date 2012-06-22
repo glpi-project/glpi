@@ -50,6 +50,7 @@ if (isset($_POST["add"])) {
       Event::log($newID, "groups", 4, "setup",
                  $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
    }
+   Ajax::refreshDropdownPopupInMainWindow();
    Html::back();
 
 } else if (isset($_POST["delete"])) {
