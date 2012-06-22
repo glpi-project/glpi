@@ -996,7 +996,8 @@ class Ticket extends CommonITILObject {
       $type          = Entity::getUsedConfig('inquest_config', $this->fields['entities_id']);
       $max_closedate = $this->fields['closedate'];
 
-      if (($delay == 0)
+      if (($this->fields['status'] == 'closed')
+          && ($delay == 0)
           && ($rate > 0)
           && (mt_rand(1,100) <= $rate)) {
          $inquest->add(array('tickets_id'    => $this->fields['id'],
