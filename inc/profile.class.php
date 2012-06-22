@@ -950,14 +950,14 @@ class Profile extends CommonDBTM {
       echo "</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Update all problems')."</td><td>";
-      Dropdown::showYesNo("edit_all_problem", $this->fields["edit_all_problem"]);
-      echo "</td>";
       echo "<td>".__('See all problems')."</td><td>";
       Dropdown::showYesNo("show_all_problem", $this->fields["show_all_problem"]);
       echo "</td>";
       echo "<td>".__('See problems (author)')."</td><td>";
       Dropdown::showYesNo("show_my_problem", $this->fields["show_my_problem"]);
+      echo "</td>";
+      echo "<td>".__('Update all problems')."</td><td>";
+      Dropdown::showYesNo("edit_all_problem", $this->fields["edit_all_problem"]);
       echo "</td>";
       echo "</tr>\n";
 
@@ -1722,7 +1722,7 @@ class Profile extends CommonDBTM {
       $tab[119]['field']          = 'ticketcost';
       $tab[119]['name']           = _n('Ticket cost', 'Ticket costs', 2);
       $tab[119]['datatype']       = 'right';
-      
+
       $tab[86]['table']         = $this->getTable();
       $tab[86]['field']         = 'helpdesk_hardware';
       $tab[86]['name']          = __('Link with items for the creation of tickets');
