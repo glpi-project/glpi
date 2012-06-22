@@ -438,8 +438,8 @@ class Ticket extends CommonITILObject {
             }
             return $ong;
 
-         default :
-            return _n('Ticket','Tickets',2);
+      //   default :
+      //      return _n('Ticket','Tickets',2);
       }
 
       return '';
@@ -3353,7 +3353,7 @@ class Ticket extends CommonITILObject {
          $showuserlink = 1;
       }
 
-      
+
 
       if (!isset($options['template_preview'])) {
          $this->showTabs($options);
