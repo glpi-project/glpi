@@ -62,7 +62,7 @@ if (isset($_POST["action"])) {
          break;
 
       case "move" :
-         Dropdown::show($_POST['itemtype'], array('name' => 'device'));
+         Dropdown::show('NetworkEquipment', array('name' => 'device'));
          echo "&nbsp;<input type='submit' name='move' class='submit' value=\"".
                       $LANG['buttons'][2]."\">";
          break;

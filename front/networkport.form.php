@@ -111,8 +111,8 @@ if (isset($_POST["add"])) {
    Html::back();
 
 }
-// Interest of this massive action ?
-/*else if(isset($_POST["move"])) {
+// Interest of this massive action ? Replace switch by another : don't re-create manually all ports
+else if(isset($_POST["move"])) {
    Session::checkRight("networking","w");
    if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
       foreach ($_POST["del_port"] as $port_id => $val) {
@@ -129,7 +129,7 @@ if (isset($_POST["add"])) {
    Event::log(0, "networkport", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG['log'][75]);
    Html::back();
 
-}*/ else if (isset($_POST["update"])) {
+} else if (isset($_POST["update"])) {
    $np->check($_POST['id'],'w');
 
    $np->update($_POST);

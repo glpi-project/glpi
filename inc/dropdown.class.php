@@ -1396,6 +1396,7 @@ class Dropdown {
          $actions['delete']        = $LANG['buttons'][6];
          $actions['assign_vlan']   = $LANG['networking'][55];
          $actions['unassign_vlan'] = $LANG['networking'][58];
+         $actions['move']          = $LANG['buttons'][20];
       } else {
          $infocom = new Infocom();
          $isadmin = $item->canUpdate();
