@@ -449,6 +449,9 @@ class MailCollector  extends CommonDBTM {
                            $fup = new TicketFollowup();
                            if ($fup->add($tkt)) {
                               $delete_mail = true;
+                           } else {
+                              $error++;
+                              // TODO NotImportedEmail::FAILED_INSERT
                            }
                         } else {
                            $error++;
@@ -460,6 +463,9 @@ class MailCollector  extends CommonDBTM {
                            $track = new Ticket();
                            if ($track->add($tkt)) {
                               $delete_mail = true;
+                           } else {
+                              $error++;
+                              // TODO NotImportedEmail::FAILED_INSERT
                            }
                         } else {
                            $error++;
@@ -715,7 +721,7 @@ class MailCollector  extends CommonDBTM {
 
       $tkt['requesttypes_id'] = RequestType::getDefault('mail');
       $tkt['content']         = Toolbox::clean_cross_side_scripting_deep(Html::clean($tkt['content']));
-      
+
       if ($play_rules) {
          $rule_options['ticket']              = $tkt;
          $rule_options['headers']             = $head;
@@ -912,9 +918,9 @@ class MailCollector  extends CommonDBTM {
 
          // secu on subject setting
          if (!isset($mail_header->subject)) {
-            $mail_header->subject = '';         
+            $mail_header->subject = '';
          }
-         
+
          $mail_details = array('from'       => Toolbox::strtolower($sender->mailbox).'@'.$sender->host,
                                'subject'    => $mail_header->subject,
                                'to'         => Toolbox::strtolower($to->mailbox).'@'.$to->host,
