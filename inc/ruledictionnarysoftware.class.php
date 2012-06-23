@@ -87,7 +87,7 @@ class RuleDictionnarySoftware extends RuleCached {
 
       echo "<td class='tab_bg_2'>" . $fields["old_value"] . "</td>";
       echo "<td class='tab_bg_2'>" . Dropdown::getDropdownName("glpi_entities",
-                                                               $fields["old_entities_id"]) . "</td>";
+                                                               $fields["entities_id"]) . "</td>";
       echo "<td class='tab_bg_2'>" . $fields["manufacturer"] . "</td>";
       echo "<td class='tab_bg_2'>".($fields["new_value"] != '' ? $fields["new_value"]
                                                                : $LANG['rulesengine'][106])."</td>";
@@ -107,10 +107,11 @@ class RuleDictionnarySoftware extends RuleCached {
       echo "<td class='tab_bg_2'>".
              ((isset($fields["is_helpdesk_visible"]) && $fields["is_helpdesk_visible"] != '')
               ? Dropdown::getYesNo($fields["is_helpdesk_visible"])
-              : Dropdown::getYesNo(0)) . "</td>";
-      $new_entity = (isset($fields['new_entities_id'])?$fields['new_entities_id']
-                                                      :$LANG['rulesengine'][106]);
-      echo "<td class='tab_bg_2'>" . Dropdown::getDropdownName("glpi_entities", $new_entity) . "</td>";
+              : $LANG['rulesengine'][106]) . "</td>";
+      echo "<td class='tab_bg_2'>".
+            (isset($fields['new_entities_id']) && strlen($fields['new_entities_id'])
+               ? Dropdown::getDropdownName('glpi_entities', $fields['new_entities_id'])
+               : $LANG['rulesengine'][106]) . "</td>";
    }
 
 

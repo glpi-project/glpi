@@ -91,16 +91,13 @@ class RuleCached extends Rule {
       $rulecollection = RuleCollection::getClassByType($this->getType());
 
       $query = "SELECT *
-                FROM `".$rulecollection->cache_table."`,
-                     `glpi_rules`
-                WHERE `".$rulecollection->cache_table."`.`rules_id` = `glpi_rules`.`id`
-                      AND `".$rulecollection->cache_table."`.`rules_id` = '".$this->fields["id"]."'
-                ORDER BY `name`";
+                FROM `".$rulecollection->cache_table."`
+                WHERE `".$rulecollection->cache_table."`.`rules_id` = '".$this->fields["id"]."'";
 
       $res_count = $DB->query($query);
       $this->showCacheRuleHeader();
 
-      while ($datas = $DB->fetch_array($res_count)) {
+      while ($datas = $DB->fetch_assoc($res_count)) {
          echo "<tr>";
          $this->showCacheRuleDetail($datas);
          echo "</tr>\n";
