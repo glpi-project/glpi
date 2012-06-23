@@ -155,7 +155,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    } else {
       // Recommended production settings
       ini_set('display_errors','Off');
-      if (defined(E_DEPRECATED)) {
+      if (defined('E_DEPRECATED')) {
          error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
       } else {
          error_reporting(E_ALL & ~E_STRICT);
