@@ -221,8 +221,6 @@ class RuleCachedCollection extends RuleCollection {
 
       foreach ($this->cache_params["output_value"] as $param => $value) {
          if (!isset($output[$param])) {
-            // TODO : review this
-            // breaks software entity assignment
             $output[$param] = "";
          }
          $into_new .= ", `".$value."`";

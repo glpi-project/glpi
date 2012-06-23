@@ -4672,21 +4672,21 @@ class OcsServer extends CommonDBTM {
                                                                array('version' => $version));
                   $res_rule = Toolbox::addslashes_deep($res_rule);
 
-                  if (isset($res_rule["name"])) {
+                  if (isset($res_rule["name"]) && $res_rule["name"]) {
                      $modified_name = $res_rule["name"];
                   } else {
                      $modified_name = $name;
                   }
 
-                  if (isset($res_rule["version"]) && $res_rule["version"]!= '') {
+                  if (isset($res_rule["version"]) && $res_rule["version"]) {
                      $modified_version = $res_rule["version"];
                   } else {
                      $modified_version = $version;
                   }
 
-                  //If software dictionnary returns an entity, it overrides the one that may have
-                  //been defined in the entity's configuration
-                  if (isset($res_rule["new_entities_id"])) {
+                  // If software dictionnary returns an entity, it overrides the one that may have
+                  // been defined in the entity's configuration
+                  if (isset($res_rule["new_entities_id"]) && strlen($res_rule["new_entities_id"])) {
                      $target_entity = $res_rule["new_entities_id"];
                   }
 
