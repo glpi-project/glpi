@@ -95,10 +95,8 @@ class RuleCached extends Rule {
       $rulecollection = RuleCollection::getClassByType($this->getType());
 
       $query = "SELECT *
-                FROM `".$rulecollection->cache_table."`,
-                     `glpi_rules`
-                WHERE `".$rulecollection->cache_table."`.`rules_id` = `glpi_rules`.`id`
-                      AND `".$rulecollection->cache_table."`.`rules_id` = '".$this->fields["id"]."'
+                FROM `".$rulecollection->cache_table."`
+                WHERE `".$rulecollection->cache_table."`.`rules_id` = '".$this->fields["id"]."'
                 ORDER BY `name`";
 
       $res_count = $DB->query($query);
