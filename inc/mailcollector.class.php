@@ -494,6 +494,9 @@ class MailCollector  extends CommonDBTM {
                            $fup = new TicketFollowup();
                            if ($fup->add($tkt)) {
                               $delete_mail = self::ACCEPTED_FOLDER;
+                           } else {
+                              $error++;
+                              // TODO NotImportedEmail::FAILED_INSERT
                            }
                         } else {
                            $error++;
@@ -505,6 +508,9 @@ class MailCollector  extends CommonDBTM {
                            $track = new Ticket();
                            if ($track->add($tkt)) {
                               $delete_mail = self::ACCEPTED_FOLDER;
+                           } else {
+                              $error++;
+                              // TODO NotImportedEmail::FAILED_INSERT
                            }
                         } else {
                            $error++;
