@@ -718,7 +718,7 @@ class CommonDBTM extends CommonGLPI {
 
       if ($this->input && is_array($this->input)) {
          //Check values to inject
-         $this->filterValues();
+         $this->filterValues(!isCommandLine());
       }
 
       if ($this->input && is_array($this->input)) {
@@ -938,7 +938,7 @@ class CommonDBTM extends CommonGLPI {
             unset($this->input['update']);
          }
 
-         $this->filterValues();
+         $this->filterValues(!isCommandLine());
       }
 
       // Valid input for update
