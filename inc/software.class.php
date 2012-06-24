@@ -569,10 +569,12 @@ class Software extends CommonDBTM {
     * @param entity                 the entity in which the software must be added
     * @param comment                (default '')
     * @param is_recursive  boolean  must the software be recursive (false by default))
+    * @param is_helpdesk_visible    show in helpdesk, default : from config
     *
     * @return the software's ID
    **/
-   function addSoftware($name, $manufacturer, $entity, $comment='', $is_recursive=false) {
+   function addSoftware($name, $manufacturer, $entity, $comment='',
+                        $is_recursive=false, $is_helpdesk_visible=NULL) {
       global $DB, $CFG_GLPI;
 
       $manufacturer_id = 0;
@@ -596,7 +598,11 @@ class Software extends CommonDBTM {
          $input["entities_id"]         = $entity;
          $input["is_recursive"]        = ($is_recursive ? 1 : 0);
          // No comment
-         $input["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
+         if (is_null($is_helpdesk_visible)) {
+            $input["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
+         } else {
+            $input["is_helpdesk_visible"] = $is_helpdesk_visible;
+         }
 
          //Process software's category rules
          $softcatrule = new RuleSoftwareCategoryCollection();
@@ -622,9 +628,10 @@ class Software extends CommonDBTM {
     * @param entity                 the entity in which the software must be added
     * @param comment                comment (default '')
     * @param is_recursive  boolean  must the software be recursive (false by default)
+    * @param is_helpdesk_visible    show in helpdesk, default = config value
    */
    function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment='',
-                                  $is_recursive=false) {
+                                  $is_recursive=false, $is_helpdesk_visible=NULL) {
       global $DB;
 
       //Look for the software by his name in GLPI for a specific entity
@@ -650,7 +657,8 @@ class Software extends CommonDBTM {
       }
 
       if (!$ID) {
-         $ID = $this->addSoftware($name, $manufacturer, $entity, $comment, $is_recursive);
+         $ID = $this->addSoftware($name, $manufacturer, $entity, $comment, $is_recursive,
+                                  $is_helpdesk_visible);
       }
       return $ID;
    }
