@@ -4661,6 +4661,10 @@ class OcsServer extends CommonDBTM {
                   $target_entity = $entity;
                }
 
+               $modified_name       = $name;
+               $modified_version    = $version;
+               $is_helpdesk_visible = NULL;
+
                if (!$cfg_ocs["use_soft_dict"]) {
                   //Software dictionnary
                   $rulecollection = new RuleDictionnarySoftwareCollection();
@@ -4674,14 +4678,14 @@ class OcsServer extends CommonDBTM {
 
                   if (isset($res_rule["name"]) && $res_rule["name"]) {
                      $modified_name = $res_rule["name"];
-                  } else {
-                     $modified_name = $name;
                   }
 
                   if (isset($res_rule["version"]) && $res_rule["version"]) {
                      $modified_version = $res_rule["version"];
-                  } else {
-                     $modified_version = $version;
+                  }
+
+                  if (isset($res_rule["is_helpdesk_visible"]) && strlen($res_rule["is_helpdesk_visible"])) {
+                     $is_helpdesk_visible = $res_rule["is_helpdesk_visible"];
                   }
 
                   // If software dictionnary returns an entity, it overrides the one that may have
@@ -4689,11 +4693,6 @@ class OcsServer extends CommonDBTM {
                   if (isset($res_rule["new_entities_id"]) && strlen($res_rule["new_entities_id"])) {
                      $target_entity = $res_rule["new_entities_id"];
                   }
-
-
-               } else {
-                  $modified_name    = $name;
-                  $modified_version = $version;
                }
 
                //If software must be imported
@@ -4709,7 +4708,8 @@ class OcsServer extends CommonDBTM {
                      //------------------------------------------------------------------------//
                      $isNewSoft = $soft->addOrRestoreFromTrash($modified_name, $manufacturer,
                                                                $target_entity, '',
-                                                               ($entity != $target_entity));
+                                                               ($entity != $target_entity),
+                                                               $is_helpdesk_visible);
                      //Import version for this software
                      $versionID = self::importVersion($isNewSoft, $modified_version);
                      //Install license for this machine
