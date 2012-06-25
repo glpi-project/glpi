@@ -1,0 +1,100 @@
+Backport for https://forge.indepnet.net/issues/3637
+
+In simplified interface, on ticket creation form
+* Display user's information (phone, phone2, portable)
+* Add a link to preferences (when possible) to update this information
+
+Config option not backported.
+Only apply the patch if you want this feature ;)
+
+
+Index: inc/user.class.php
+===================================================================
+--- inc/user.class.php	(révision 18707)
++++ inc/user.class.php	(copie de travail)
+@@ -3105,5 +3105,37 @@
+       return $default_password_set;
+    }
+ 
++
++   /** Print the user personnal information for check
++    *
++    * @param $userid Interger ID of the user
++    *
++    * @since version 0.84 (backport)
++   **/
++   static function showPersonnalInformation($userid) {
++      global $LANG, $CFG_GLPI;
++
++      $user = new self();
++      if (!$user->can($userid,'r')
++          && ($userid != Session::getLoginUserID())) {
++         return false;
++      }
++      printf("%s: %s<br>", "<b>".$LANG['common'][16]."</b>",
++             getUserName($userid));
++      printf("%s: %s<br>", "<b>".$LANG['help'][35]."</b>",
++             $user->getField('phone'));
++      printf("%s: %s<br>", "<b>".$LANG['help'][35]." 2</b>",
++             $user->getField('phone2'));
++      printf("%s: %s<br>", "<b>".$LANG['common'][42]."</b>",
++             $user->getField('mobile'));
++      printf("%s: %s<br>", "<b>".$LANG['common'][15]."</b>",
++            Dropdown::getDropdownName('glpi_locations', $user->getField('locations_id')));
++
++      if ($userid == Session::getLoginUserID()) {
++         echo "<br><a href='".$CFG_GLPI['root_doc']."/front/preference.php' class='vsubmit'>".
++              $LANG['buttons'][7]."</a>";
++
++      }
++   }
+ }
+ ?>
+Index: inc/ticket.class.php
+===================================================================
+--- inc/ticket.class.php	(révision 18712)
++++ inc/ticket.class.php	(copie de travail)
+@@ -3022,6 +3022,10 @@
+                                        $CFG_GLPI["root_doc"]."/ajax/dropdownDelegationUsers.php",
+                                        $params);
+ 
++         if ($options['nodelegate']) {
++            echo "</th><th>".(isset($LANG['backport'][1]) ? $LANG['backport'][1] : 'Check your personnal information');
++         }
++
+          echo "</th></tr>";
+          echo "<tr class='tab_bg_1'><td colspan='2' class='center'>";
+          echo "<div id='show_result$rand'>";
+@@ -3034,10 +3038,22 @@
+          }
+          $self->showActorAddFormOnCreate(self::REQUESTER, $options);
+          echo "</div>";
++         if ($options['nodelegate']) {
++            echo "</td><td class='center'>";
++            User::showPersonnalInformation(Session::getLoginUserID());
++         }
+          echo "</td></tr>";
+ 
+          echo "</table></div>";
+          echo "<input type='hidden' name='_users_id_recipient' value='".Session::getLoginUserID()."'>";
++
++      } else {
++         echo "<div class='center'><table class='tab_cadre_fixe'>";
++         echo "<tr><th>".(isset($LANG['backport'][1]) ? $LANG['backport'][1] : 'Check your personnal information')."</th></tr>";
++         echo "<tr class='tab_bg_1'><td class='center'>";
++         User::showPersonnalInformation(Session::getLoginUserID());
++         echo "</td></tr>";
++         echo "</table></div>";
+       }
+ 
+       echo "<input type='hidden' name='_from_helpdesk' value='1'>";
+Index: locales/fr_FR.php
+===================================================================
+--- locales/fr_FR.php	(révision 18707)
++++ locales/fr_FR.php	(copie de travail)
+@@ -2698,4 +2698,5 @@
+ $LANG['validation'][32] = "Une réponse à une demande de validation a été effectuée";
+ $LANG['validation'][33] = "Des tickets sont en attente de votre validation";
+ 
++$LANG['backport'][1] = "Vérifier vos données personnelles";
+ ?>
