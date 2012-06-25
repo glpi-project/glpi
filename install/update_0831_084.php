@@ -828,6 +828,7 @@ function update0831to084() {
    $migration->addField('glpi_configs', 'password_need_caps', 'bool', array('value' => 1));
    $migration->addField('glpi_configs', 'password_need_symbol', 'bool', array('value' => 1));
 
+   $migration->addField('glpi_configs', 'use_check_pref', 'bool');
 
    // Clean display prefs
    $query = "UPDATE `glpi_displaypreferences`
