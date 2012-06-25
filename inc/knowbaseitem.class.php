@@ -1170,7 +1170,7 @@ class KnowbaseItem extends CommonDBTM {
          $faq_limit .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
       }
 
-      $query = "SELECT `glpi_knowbaseitems`.*
+      $query = "SELECT DISTINCT `glpi_knowbaseitems`.*
                 FROM `glpi_knowbaseitems`
                 $join
                 $faq_limit
