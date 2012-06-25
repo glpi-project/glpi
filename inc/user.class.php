@@ -1744,6 +1744,39 @@ class User extends CommonDBTM {
    }
 
 
+   /** Print the user personnal information for check
+    *
+    * @param $userid Interger ID of the user
+    *
+    * @since version 0.84
+   **/
+   static function showPersonnalInformation($userid) {
+      global $CFG_GLPI;
+
+      $user = new self();
+      if (!$user->can($userid,'r')
+          && ($userid != Session::getLoginUserID())) {
+         return false;
+      }
+      printf(__('%1$s: %2$s')."<br>", "<b>".__('Name')."</b>",
+             getUserName($userid));
+      printf(__('%1$s: %2$s')."<br>", "<b>".__('Phone')."</b>",
+             $user->getField('phone'));
+      printf(__('%1$s: %2$s')."<br>", "<b>".__('Phone 2')."</b>",
+             $user->getField('phone2'));
+      printf(__('%1$s: %2$s')."<br>", "<b>".__('Mobile phone')."</b>",
+             $user->getField('mobile'));
+      printf(__('%1$s: %2$s')."<br>", "<b>".__('Location')."</b>",
+            Dropdown::getDropdownName('glpi_locations', $user->getField('locations_id')));
+
+      if ($userid == Session::getLoginUserID()) {
+         echo "<br><a href='".$CFG_GLPI['root_doc']."/front/preference.php' class='vsubmit'>".
+              __('Edit')."</a>";
+
+      }
+   }
+
+
    /**
     * Print the user preference form
     *

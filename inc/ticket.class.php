@@ -2914,6 +2914,10 @@ class Ticket extends CommonITILObject {
                                        $CFG_GLPI["root_doc"]."/ajax/dropdownDelegationUsers.php",
                                        $params);
 
+         if ($CFG_GLPI['use_check_pref'] && $options['nodelegate']) {
+            echo "</th><th>".__('Check your personnal information');
+         }
+
          echo "</th></tr>";
          echo "<tr class='tab_bg_1'><td colspan='2' class='center'>";
          echo "<div id='show_result$rand'>";
@@ -2927,10 +2931,22 @@ class Ticket extends CommonITILObject {
 
          $self->showActorAddFormOnCreate(self::REQUESTER, $options);
          echo "</div>";
+         if ($CFG_GLPI['use_check_pref'] && $options['nodelegate']) {
+            echo "</td><td class='center'>";
+            User::showPersonnalInformation(Session::getLoginUserID());
+         }
          echo "</td></tr>";
 
          echo "</table>";
          echo "<input type='hidden' name='_users_id_recipient' value='".Session::getLoginUserID()."'>";
+
+      } else if ($CFG_GLPI['use_check_pref']) {
+         echo "<div class='center'><table class='tab_cadre_fixe'>";
+         echo "<tr><th>".__('Check your personnal information')."</th></tr>";
+         echo "<tr class='tab_bg_1'><td class='center'>";
+         User::showPersonnalInformation(Session::getLoginUserID());
+         echo "</td></tr>";
+         echo "</table>";
       }
 
       echo "<input type='hidden' name='_from_helpdesk' value='1'>";
