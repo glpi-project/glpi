@@ -601,8 +601,9 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'>";
       echo "<td>" . __('Keep tickets when purging hardware in the inventory') . "</td><td>";
       Dropdown::showYesNo("keep_tickets_on_delete", $CFG_GLPI["keep_tickets_on_delete"]);
-      echo "</td><td colspan='2'>&nbsp;</td>";
-      echo "</tr>";
+      echo "</td><td>".__('Show preferences in ticket form (simplified interface)')."</td><td>";
+      Dropdown::showYesNo('use_check_pref', $CFG_GLPI['use_check_pref']);
+      echo "</td></tr>";
 
       echo "<tr class='tab_bg_2'>";
       echo "<td>" .__('Allow anonymous ticket creation (helpdesk.receiver)') . "</td><td>";
