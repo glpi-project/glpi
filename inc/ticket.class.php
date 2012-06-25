@@ -2937,7 +2937,7 @@ class Ticket extends CommonITILObject {
          }
          echo "</td></tr>";
 
-         echo "</table>";
+         echo "</table></div>";
          echo "<input type='hidden' name='_users_id_recipient' value='".Session::getLoginUserID()."'>";
 
       } else if ($CFG_GLPI['use_check_pref']) {
@@ -2946,7 +2946,7 @@ class Ticket extends CommonITILObject {
          echo "<tr class='tab_bg_1'><td class='center'>";
          User::showPersonnalInformation(Session::getLoginUserID());
          echo "</td></tr>";
-         echo "</table>";
+         echo "</table></div>";
       }
 
       echo "<input type='hidden' name='_from_helpdesk' value='1'>";
