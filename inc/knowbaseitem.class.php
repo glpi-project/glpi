@@ -1084,7 +1084,7 @@ class KnowbaseItem extends CommonDBTM {
             break;
       }
 
-      $query = "SELECT `glpi_knowbaseitems`.*,
+      $query = "SELECT DISTINCT `glpi_knowbaseitems`.*,
                        `glpi_knowbaseitemcategories`.`completename` AS category
                        $score
                 FROM `glpi_knowbaseitems`
@@ -1359,7 +1359,7 @@ class KnowbaseItem extends CommonDBTM {
          $faq_limit .= " AND (`glpi_knowbaseitems`.`is_faq` = '1')";
       }
 
-      $query = "SELECT `glpi_knowbaseitems`.*
+      $query = "SELECT DISTINCT `glpi_knowbaseitems`.*
                 FROM `glpi_knowbaseitems`
                 $join
                 $faq_limit
