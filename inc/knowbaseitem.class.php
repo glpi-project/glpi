@@ -374,7 +374,7 @@ class KnowbaseItem extends CommonDBTM {
     * @return string restrict to add
    **/
    static function addVisibilityRestrict() {
-      $restrict = ''; 
+      $restrict = '';
       if (Session::getLoginUserID() && !Session::haveRight('knowbase_admin', '1')) {
 
          $restrict = "(`glpi_knowbaseitems`.`users_id` = '".Session::getLoginUserID()."' ";
@@ -388,7 +388,7 @@ class KnowbaseItem extends CommonDBTM {
                                     ".getEntitiesRestrictRequest("OR", "glpi_groups_knowbaseitems",
                                                                '', '', true).")) ";
          }
-   
+
          // Profiles
          if (isset($_SESSION["glpiactiveprofile"]) && isset($_SESSION["glpiactiveprofile"]['id'])) {
             $restrict .= " OR (`glpi_knowbaseitems_profiles`.`profiles_id`
@@ -402,7 +402,7 @@ class KnowbaseItem extends CommonDBTM {
             // Force complete SQL not summary when access to all entities
             $restrict .= getEntitiesRestrictRequest("OR", "glpi_entities_knowbaseitems", '', '', true, true);
          }
-   
+
          $restrict .= ") ";
       } else {
          $restrict = '1';
@@ -928,7 +928,7 @@ class KnowbaseItem extends CommonDBTM {
          $order  = " ORDER BY `glpi_knowbaseitems`.`name` ASC";
       }
 
-      $query = "SELECT `glpi_knowbaseitems`.*,
+      $query = "SELECT DISTINCT `glpi_knowbaseitems`.*,
                        `glpi_knowbaseitemcategories`.`completename` AS category
                        $score
                 FROM `glpi_knowbaseitems`
@@ -1455,8 +1455,8 @@ class KnowbaseItem extends CommonDBTM {
          $confirm= array();
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $confirm = array('deletevisibility' => $LANG['common'][120]);
-         }         
-         
+         }
+
          Html::closeArrowMassives(array('deletevisibility' => $LANG['buttons'][6]), $confirm);
          echo "</form>";
       }
