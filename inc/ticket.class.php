@@ -3036,7 +3036,7 @@ class Ticket extends CommonITILObject {
          echo "</div>";
          echo "</td></tr>";
 
-         echo "</table>";
+         echo "</table></div>";
          echo "<input type='hidden' name='_users_id_recipient' value='".Session::getLoginUserID()."'>";
       }
 
