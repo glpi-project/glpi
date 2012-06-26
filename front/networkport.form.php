@@ -119,7 +119,8 @@ else if(isset($_POST["move"])) {
          if ($np->getFromDB($port_id)) {
             $input = array();
             $input['id'] = $port_id;
-            $input['items_id'] = $_POST["device"];
+            $input['items_id'] = $_POST["items_id"];
+            $input['itemtype'] = 'NetworkEquipment';
             if ($np->can($input['id'],'w')) {
                $np->update($input);
             }
