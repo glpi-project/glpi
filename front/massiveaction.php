@@ -693,8 +693,12 @@ if (isset($_POST["action"])
                   $params["name"]             = $soft->fields["name"];
                   $params["manufacturers_id"] = $soft->fields["manufacturers_id"];
                   $params["comment"]          = $soft->fields["comment"];
-                  //Process rules
-                  if ($soft->update($softcatrule->processAllRules(null, $soft->fields, $params))) {
+                  $output = Toolbox::addslashes_deep($soft->fields);
+                  $params = Toolbox::addslashes_deep($params);
+                  $output = $softcatrule->processAllRules(null, $output, $params);
+                  
+                  if ($soft->update(array('id' => $output['id'],
+                                          'softwarecategories_id' => $output['softwarecategories_id']))) {
                      $nbok++;
                   } else {
                      $nbko++;
