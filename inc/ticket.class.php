@@ -2992,7 +2992,7 @@ class Ticket extends CommonITILObject {
       foreach ($default_values as $name => $value) {
          if (!isset($options[$name])) {
             if (isset($_SESSION["helpdeskSaved"][$name])) {
-               $options[$name] = Toolbox::stripslashes_deep(($_SESSION["helpdeskSaved"][$name]);
+               $options[$name] = Toolbox::stripslashes_deep($_SESSION["helpdeskSaved"][$name]);
             } else {
                $options[$name] = $value;
             }
