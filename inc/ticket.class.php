@@ -3307,9 +3307,6 @@ class Ticket extends CommonITILObject {
             $values['entities_id']       = $this->userentities[0];
          }
       }
-      // Clean text fields
-      $values['name']    = stripslashes($values['name']);
-      $values['content'] = Html::cleanPostForTextArea($values['content']);
 
       if ($values['type'] <= 0) {
          $values['type'] = Entity::getUsedConfig('tickettype', $values['entities_id'], '',
