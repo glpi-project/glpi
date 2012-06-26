@@ -319,7 +319,7 @@ class Contract extends CommonDBTM {
 
       $tab[139]['table']         = 'glpi_contracts_items';
       $tab[139]['field']         = 'count';
-      $tab[139]['name']          = _x('Quantity', 'Number of contracts');
+      $tab[139]['name']          = _x('quantity', 'Number of contracts');
       $tab[139]['forcegroupby']  = true;
       $tab[139]['usehaving']     = true;
       $tab[139]['datatype']      = 'number';
