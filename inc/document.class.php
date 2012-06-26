@@ -653,7 +653,23 @@ class Document extends CommonDBTM {
       return false;
    }
 
+   static function getSearchOptionsToAdd() {
 
+      $tab                       = array();
+      $tab['document']           = self::getTypeName(2);
+
+      $tab[119]['table']         = 'glpi_documents_items';
+      $tab[119]['field']         = 'count';
+      $tab[119]['name']          = __('Number of documents');
+      $tab[119]['forcegroupby']  = true;
+      $tab[119]['usehaving']     = true;
+      $tab[119]['datatype']      = 'number';
+      $tab[119]['massiveaction'] = false;
+      $tab[119]['joinparams']    = array('jointype' => 'itemtype_item');
+
+      return $tab;
+   }
+   
    function getSearchOptions() {
 
       $tab                       = array();
