@@ -1035,11 +1035,14 @@ class Ticket extends CommonITILObject {
                      }
                      // If content is also predefined need to be different from predefined value
                      if ($key == 'content' && isset($tt->predefined['content'])) {
+                        // Clean new lines to be fix encoding
                         if (!isset($input[$key])
-                           || stripslashes($input[$key]) == $tt->predefined['content']) {
+                           || (strcmp(preg_replace("/\r?\n/", "", Html::cleanPostForTextArea($input[$key])),
+                                      preg_replace("/\r?\n/", "", $tt->predefined['content']))==0)) {
                            $mandatory_missing[$key] = $fieldsname[$val];
                         }
                      }
+
                      if (!isset($input[$key]) || empty($input[$key]) ||($input[$key] == 'NULL')) {
                         $mandatory_missing[$key] = $fieldsname[$val];
                      }
@@ -3262,6 +3265,7 @@ class Ticket extends CommonITILObject {
 
       // Restore saved value or override with page parameter
       $saved = $this->restoreInput();
+
       foreach ($default_values as $name => $value) {
          if (!isset($values[$name])) {
             if (isset($saved[$name])) {
