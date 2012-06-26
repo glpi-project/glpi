@@ -660,7 +660,7 @@ class Document extends CommonDBTM {
 
       $tab[119]['table']         = 'glpi_documents_items';
       $tab[119]['field']         = 'count';
-      $tab[119]['name']          = _x('Quantity', 'Number of documents');
+      $tab[119]['name']          = _x('quantity', 'Number of documents');
       $tab[119]['forcegroupby']  = true;
       $tab[119]['usehaving']     = true;
       $tab[119]['datatype']      = 'number';
