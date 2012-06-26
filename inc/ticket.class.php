@@ -1036,12 +1036,13 @@ class Ticket extends CommonITILObject {
                      }
                      // If content is also predefined need to be different from predefined value
                      if ($key == 'content' && isset($tt->predefined['content'])) {
+                        // Clean new lines to be fix encoding
                         if (!isset($input[$key])
-                           || stripslashes($input[$key]) == $tt->predefined['content']) {
+                           || (strcmp(preg_replace("/\r?\n/", "", $tt->predefined['content']),
+                                      preg_replace("/\r?\n/", "", Html::cleanPostForTextArea($input[$key])))==0)) {
                            $mandatory_missing[$key] = $fieldsname[$val];
                         }
                      }
-                     
                      if (!isset($input[$key]) || empty($input[$key]) ||$input[$key] == 'NULL') {
                         $mandatory_missing[$key] = $fieldsname[$val];
                      }
@@ -2992,13 +2993,13 @@ class Ticket extends CommonITILObject {
       foreach ($default_values as $name => $value) {
          if (!isset($options[$name])) {
             if (isset($_SESSION["helpdeskSaved"][$name])) {
-               $options[$name] = Toolbox::stripslashes_deep($_SESSION["helpdeskSaved"][$name]);
+               $options[$name] = $_SESSION["helpdeskSaved"][$name];
             } else {
                $options[$name] = $value;
             }
          }
       }
-
+      
       if (!$ticket_template) {
          echo "<form method='post' name='helpdeskform' action='".
                $CFG_GLPI["root_doc"]."/front/tracking.injector.php' enctype='multipart/form-data'>";
@@ -3353,12 +3354,15 @@ class Ticket extends CommonITILObject {
       foreach ($default_values as $name => $value) {
          if (!isset($values[$name])) {
             if (isset($_SESSION["helpdeskSaved"][$name])) {
-               $values[$name] = Toolbox::stripslashes_deep($_SESSION["helpdeskSaved"][$name]);
+               $values[$name] = $_SESSION["helpdeskSaved"][$name];
             } else {
                $values[$name] = $value;
             }
          }
       }
+      // Clean text fields
+      $values['name']    = stripslashes($values['name']);
+      $values['content'] = Html::cleanPostForTextArea($values['content']);
 
       if (isset($_SESSION["helpdeskSaved"])) {
          unset($_SESSION["helpdeskSaved"]);
