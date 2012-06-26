@@ -243,15 +243,13 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
       $datas['##ticket.autoclose##']             = __('Never');
       $datas['##lang.ticket.autoclosewarning##'] = "";
       if ($autoclose_value > 0) {
-               $datas['##ticket.autoclose##'] = $autoclose_value;
-      }
-      if ($autoclose_value > 0) {
-               $datas['##lang.ticket.autoclosewarning##']
-                           //TRANS: %s is the number of day before auto closing
-                  = sprintf(_n('Without a reply, the ticket will be automatically closed after %s day',
-                               'Without a reply, the ticket will be automatically closed after %s days',
-                               $autoclose_value),
-                            $autoclose_value);
+         $datas['##ticket.autoclose##'] = $autoclose_value;
+         $datas['##lang.ticket.autoclosewarning##']
+                     //TRANS: %s is the number of day before auto closing
+            = sprintf(_n('Without a reply, the ticket will be automatically closed after %s day',
+                           'Without a reply, the ticket will be automatically closed after %s days',
+                           $autoclose_value),
+                        $autoclose_value);
       }
 
       $datas['##ticket.sla##'] = '';
