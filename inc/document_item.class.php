@@ -69,6 +69,18 @@ class Document_Item extends CommonDBRelation{
       if (countElementsInTable($this->getTable(),$restrict)>0) {
          return false;
       }
+
+      // Set default entities_id and is_recursive if not set.
+      if (!isset($input['entities_id'])) {
+         if (($item = getItemForItemtype($input['itemtype']))
+            && $item->getFromDB($input['items_id'])) {
+            $input['entities_id'] = $item->getEntityID();
+            $input['is_recursive'] = 0;
+            if ($item->isField('is_recursive')) {
+               $input['is_recursive'] = $item->getField('is_recursive');
+            }
+         }
+      }
       return $input;
    }
 
