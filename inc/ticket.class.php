@@ -1094,7 +1094,9 @@ class Ticket extends CommonITILObject {
          $input['users_locations'] = $user->fields['locations_id'];
       }
 
-      $input = $rules->processAllRules($input, $input, array('recursive' => true));
+      $input = $rules->processAllRules(Toolbox::stripslashes_deep($input),
+                                       Toolbox::stripslashes_deep($input),
+                                       array('recursive' => true));
 
       // Restore slas_id
       if ($manual_slas_id > 0) {

@@ -170,13 +170,11 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
 
             //If manufacturer is set, then first run the manufacturer's dictionnary
             if (isset($input["manufacturer"])) {
-               $input["manufacturer"] = Manufacturer::processName($input["manufacturer"]);
+               $input["manufacturer"] = Manufacturer::processName(addslashes($input["manufacturer"]));
             }
 
             //Replay software dictionnary rules
-            $input    = Toolbox::addslashes_deep($input);
             $res_rule = $this->processAllRules($input, array(), array());
-            $res_rule = Toolbox::addslashes_deep($res_rule);
 
             if ((isset($res_rule["name"]) && ($res_rule["name"] != $input["name"]))
                 || (isset($res_rule["version"]) && ($res_rule["version"] != ''))
@@ -279,7 +277,7 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
     * @param $ID                    ID of the software
     * @param $entity                working entity ID
     * @param $name                  softwrae name
-    * @param $manufacturer          manufacturer ID
+    * @param $manufacturer          manufacturer name
     * @param &$soft_ids       array containing replay software need to be trashed
    **/
    function replayDictionnaryOnOneSoftware(array &$new_softs, array $res_rule, $ID, $entity, $name,
@@ -289,12 +287,11 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
       $input["name"]         = $name;
       $input["manufacturer"] = $manufacturer;
       $input["entities_id"]  = $entity;
-      $input                 = Toolbox::addslashes_deep($input);
 
       if (empty($res_rule)) {
          $res_rule = $this->processAllRules($input, array(), array());
-         $res_rule = Toolbox::addslashes_deep($res_rule);
       }
+
       $soft = new Software();
 
       //Software's name has changed or entity
@@ -308,12 +305,14 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
          if (isset($res_rule["name"])) {
             $new_name = $res_rule["name"];
          } else {
-            $new_name = $name;
+            $new_name = addslashes($name);
          }
 
          if (isset($res_rule["manufacturer"])) {
-            $manufacturer = Dropdown::getDropdownName("glpi_manufacturers",
-                                                      $res_rule["manufacturer"]);
+            $manufacturer = addslashes(Dropdown::getDropdownName("glpi_manufacturers",
+                                                      $res_rule["manufacturer"]));
+         } else {
+            $manufacturer = addslashes($manufacturer);
          }
 
          //New software not already present in this entity

@@ -104,13 +104,13 @@ class RuleCachedCollection extends RuleCollection {
 
       if ($new_values != Rule::RULE_NOT_IN_CACHE) {
          $output["_rule_process"] = true;
-         return array_merge($output, $new_values);
+         return Toolbox::addslashes_deep(array_merge($output, $new_values));
       }
       $output = parent::processAllRules($input, $output, $params, $force_no_cache);
 
       if (!$force_no_cache
           && isset($output["_ruleid"])) {
-         $this->insertDataInCache($input, $output);
+         $this->insertDataInCache(Toolbox::addslashes_deep($input), $output);
          unset($output["_ruleid"]);
       }
 
@@ -171,7 +171,8 @@ class RuleCachedCollection extends RuleCollection {
 
       $where = "";
       $first = true;
-
+      $input = Toolbox::addslashes_deep($input);
+      
       foreach ($this->cache_params["input_value"] as $param => $value) {
          if (isset($input[$param])) {
             $where .= (!$first?" AND ":"")." `".$value."` = '".$input[$param]."'";
@@ -228,7 +229,7 @@ class RuleCachedCollection extends RuleCollection {
          }
          $into_new   .= ", `".$value."`";
          // Output are not slashes protected...
-         $new_values .= " ,'".addslashes($output[$param])."'";
+         $new_values .= " ,'".$output[$param]."'";
       }
 
       $sql = "INSERT INTO `".$this->cache_table."`

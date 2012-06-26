@@ -1519,9 +1519,9 @@ class OcsServer extends CommonDBTM {
                          && ($ocs_fields["DESCRIPTION"] != NOT_AVAILABLE)) {
                         $input[$glpi_field] = $ocs_fields["DESCRIPTION"] . "\r\n";
                      }
-                     $input[$glpi_field] = sprintf(__('%1$s %2$s'), $input[$glpi_field],
-                                                   sprintf(__('%1$s: %2$s'), __('Swap'),
-                                                           $ocs_fields["SWAP"]));
+                     $input[$glpi_field] = addslashes(sprintf(__('%1$s %2$s'), $input[$glpi_field],
+                                                         sprintf(__('%1$s: %2$s'), __('Swap'),
+                                                            $ocs_fields["SWAP"])));
                      break;
                }
             }
@@ -1608,7 +1608,7 @@ class OcsServer extends CommonDBTM {
             $rulelink_results = array();
             $params           = array('entities_id'   => $data['entities_id'],
                                       'ocsservers_id' => $ocsservers_id);
-            $rulelink_results = $rulelink->processAllRules($input, array(), $params);
+            $rulelink_results = $rulelink->processAllRules(Toolbox::stripslashes_deep($input), array(), $params);
 
             //If at least one rule matched
             //else do import as usual
@@ -2958,7 +2958,7 @@ class OcsServer extends CommonDBTM {
                   $rulelink_results = array();
                   $params           = array('entities_id'   => $entity,
                                             'ocsservers_id' => $ocsservers_id);
-                  $rulelink_results = $rulelink->processAllRules($tab, array(), $params);
+                  $rulelink_results = $rulelink->processAllRules(Toolbox::stripslashes_deep($tab), array(), $params);
 
                   //Look for the computer using automatic link criterias as defined in OCSNG configuration
                   $options       = array('name' => "tolink[".$tab["id"]."]");
@@ -4764,13 +4764,12 @@ class OcsServer extends CommonDBTM {
                if (!$cfg_ocs["use_soft_dict"]) {
                   //Software dictionnary
                   $rulecollection = new RuleDictionnarySoftwareCollection();
-                  $res_rule = $rulecollection->processAllRules(array("name"         => $name,
+                  $res_rule = $rulecollection->processAllRules(Toolbox::stripslashes_deep(array("name"         => $name,
                                                                      "manufacturer" => $manufacturer,
                                                                      "old_version"  => $version,
-                                                                     "entities_id"  => $entity),
+                                                                     "entities_id"  => $entity)),
                                                                array(),
-                                                               array('version' => $version));
-                  $res_rule = Toolbox::addslashes_deep($res_rule);
+                                                               Toolbox::stripslashes_deep(array('version' => $version)));
 
                   if (isset($res_rule["name"]) && $res_rule["name"]) {
                      $modified_name = $res_rule["name"];
@@ -5008,7 +5007,7 @@ class OcsServer extends CommonDBTM {
 
                if (isset($data_ocs[$ocs_column])
                    && !in_array($glpi_column, $computer_updates)) {
-                  $var = $data_ocs[$ocs_column];
+                  $var = addslashes($data_ocs[$ocs_column]);
                   switch ($glpi_column) {
                      case "groups_id" :
                         $var = self::importGroup($var, $entity);
@@ -5327,7 +5326,7 @@ class OcsServer extends CommonDBTM {
 
                      if (!empty($print["name"])) {
                         $rulecollection = new RuleDictionnaryPrinterCollection();
-                        $res_rule = Toolbox::addslashes_deep($rulecollection->processAllRules($params,
+                        $res_rule = Toolbox::addslashes_deep($rulecollection->processAllRules(Toolbox::stripslashes_deep($params),
                                                                                               array(),
                                                                                               array()));
 

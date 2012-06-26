@@ -131,7 +131,7 @@ class Software extends CommonDBTM {
       //If category was not set by user (when manually adding a user)
       if (!isset($input["softwarecategories_id"]) || !$input["softwarecategories_id"]) {
          $softcatrule = new RuleSoftwareCategoryCollection();
-         $result      = $softcatrule->processAllRules(null,null,$input);
+         $result      = $softcatrule->processAllRules(null,null,Toolbox::stripslashes_deep($input));
 
          if (!empty($result) && isset($result["softwarecategories_id"])) {
             $input["softwarecategories_id"] = $result["softwarecategories_id"];
@@ -564,8 +564,8 @@ class Software extends CommonDBTM {
    /**
     * Create a new software
     *
-    * @param name                   the software's name
-    * @param manufacturer           the software's manufacturer
+    * @param name                   the software's name (need to be addslahes)
+    * @param manufacturer           the software's manufacturer (need to be addslahes)
     * @param entity                 the entity in which the software must be added
     * @param comment                (default '')
     * @param is_recursive  boolean  must the software be recursive (false by default))
@@ -606,7 +606,7 @@ class Software extends CommonDBTM {
 
          //Process software's category rules
          $softcatrule = new RuleSoftwareCategoryCollection();
-         $result      = $softcatrule->processAllRules(null, null, $input);
+         $result      = $softcatrule->processAllRules(null, null, Toolbox::stripslashes_deep($input));
 
          if (!empty($result) && isset($result["softwarecategories_id"])) {
             $input["softwarecategories_id"] = $result["softwarecategories_id"];

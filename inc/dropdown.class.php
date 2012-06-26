@@ -1507,10 +1507,10 @@ class Dropdown {
     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
     *
     * @param $itemtype        string   name of the class
-    * @param $value           string   Value of the new dropdown.
+    * @param $value           string   Value of the new dropdown. (need to be addslashes)
     * @param $entities_id     integer  entity in case of specific dropdown (default -1)
-    * @param $external_params array
-    * @param $comment                  (default '')
+    * @param $external_params array (need to be addslashes)
+    * @param $comment                  (default '') (need to be addslashes)
     * @param $add             if true, add it if not found. if false, just check if exists
     *                         (true by default)
     *

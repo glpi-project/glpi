@@ -659,13 +659,13 @@ class RuleCollection extends CommonDBTM {
    /**
     * Process all the rules collection
     *
-    * @param input            array the input data used to check criterias
-    * @param output           array the initial ouput array used to be manipulate by actions
-    * @param params           array parameters for all internal functions
+    * @param input            array the input data used to check criterias (need to be clean slashes)
+    * @param output           array the initial ouput array used to be manipulate by actions (need to be clean slashes)
+    * @param params           array parameters for all internal functions (need to be clean slashes)
     * @param force_no_cache         don't write rule's result into cache (for preview mode mainly)
     *                               (false by default)
     *
-    * @return the output array updated by actions
+    * @return the output array updated by actions (addslashes datas)
    **/
    function processAllRules($input=array() ,$output=array(), $params=array(),
                             $force_no_cache=false) {
@@ -686,7 +686,7 @@ class RuleCollection extends CommonDBTM {
                if ($output["_rule_process"] && $this->stop_on_first_match) {
                   unset($output["_rule_process"]);
                   $output["_ruleid"] = $rule->fields["id"];
-                  return $output;
+                  return Toolbox::addslahes_deep($output);
                }
             }
 
@@ -696,7 +696,7 @@ class RuleCollection extends CommonDBTM {
             }
          }
       }
-      return $output;
+      return Toolbox::addslashes_deep($output);
    }
 
 
