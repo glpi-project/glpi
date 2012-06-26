@@ -579,7 +579,14 @@ class NetworkPort extends CommonDBChild {
       }
       if ($is_active_network_port
           && $showmassiveactions) {
-         Search::displayMassiveActions('NetworkPort', $number_port, array('fixed' => true), true);
+         $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=NetworkPort";
+         $massiveactionparams = array('num_displayed' => $number_port,
+                                       'url'          => $urlma,
+                                       'ontop'        => true,
+                                       'fixed'        => true,
+                                       );
+
+         Html::displayMassiveActions($massiveactionparams);
       }
 
       $table->display(array('display_thead' => false));
@@ -592,7 +599,8 @@ class NetworkPort extends CommonDBChild {
 
       if ($is_active_network_port
           && $showmassiveactions) {
-         Search::displayMassiveActions('NetworkPort', $number_port, array('fixed' => true));
+         $massiveactionparams['ontop'] = false;
+         Html::displayMassiveActions($massiveactionparams);
 
          echo "</form>";
       }
