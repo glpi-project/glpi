@@ -622,8 +622,8 @@ class Printer  extends CommonDBTM {
   /**
     * Add a printer. If already exist in trash restore it
     *
-    * @param $name          the printer's name (need to be addslahes)
-    * @param $manufacturer  the software's manufacturer (need to be addslahes)
+    * @param $name          the printer's name (need to be addslashes)
+    * @param $manufacturer  the software's manufacturer (need to be addslashes)
     * @param $entity        the entity in which the software must be added
     * @param $comment       comment (default '')
    **/
@@ -663,8 +663,8 @@ class Printer  extends CommonDBTM {
    /**
     * Create a new printer
     *
-    * @param $name         the printer's name (need to be addslahes)
-    * @param $manufacturer the printer's manufacturer (need to be addslahes)
+    * @param $name         the printer's name (need to be addslashes)
+    * @param $manufacturer the printer's manufacturer (need to be addslashes)
     * @param $entity       the entity in which the printer must be added
     * @param $comment      (default '')
     *

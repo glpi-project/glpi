@@ -1269,8 +1269,8 @@ class Rule extends CommonDBTM {
 
       $text  = "<td>" . $this->getActionName($fields["field"]) . "</td>";
       $text .= "<td>" . RuleAction::getActionByID($fields["action_type"]) . "</td>";
-      $text .= "<td>" . stripslashes($this->getActionValue($fields["field"],
-                                                           $fields["value"])) . "</td>";
+      $text .= "<td>" . $this->getActionValue($fields["field"],
+                                                           $fields["value"]) . "</td>";
       return $text;
    }
 

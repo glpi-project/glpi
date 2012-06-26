@@ -686,7 +686,7 @@ class RuleCollection extends CommonDBTM {
                if ($output["_rule_process"] && $this->stop_on_first_match) {
                   unset($output["_rule_process"]);
                   $output["_ruleid"] = $rule->fields["id"];
-                  return Toolbox::addslahes_deep($output);
+                  return Toolbox::addslashes_deep($output);
                }
             }
 
