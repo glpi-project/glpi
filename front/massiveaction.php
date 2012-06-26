@@ -741,8 +741,10 @@ if (isset($_POST["action"])
                   $params["name"]             = $soft->fields["name"];
                   $params["manufacturers_id"] = $soft->fields["manufacturers_id"];
                   $params["comment"]          = $soft->fields["comment"];
+                  $output = $softcatrule->processAllRules(null, $output, $params);
                   //Process rules
-                  if ($soft->update($softcatrule->processAllRules(null, $soft->fields, $params))) {
+                  if ($soft->update(array('id' => $output['id'],
+                                          'softwarecategories_id' => $output['softwarecategories_id']))) {
                      $nbok++;
                   } else {
                      $nbko++;
