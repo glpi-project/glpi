@@ -2999,6 +2999,9 @@ class Ticket extends CommonITILObject {
             }
          }
       }
+      // Clean text fields
+      $options['name']    = stripslashes($options['name']);
+      $options['content'] = Html::cleanPostForTextArea($options['content']);
       
       if (!$ticket_template) {
          echo "<form method='post' name='helpdeskform' action='".
