@@ -420,7 +420,6 @@ class Group_User extends CommonDBRelation{
          $tree = 0;
       }
       echo "</td></tr></table>";
-
       $number = count($used);
       $start  = (isset($_REQUEST['start']) ? intval($_REQUEST['start']) : 0);
       if ($start >= $number) {
@@ -445,6 +444,21 @@ class Group_User extends CommonDBRelation{
                    action='".$CFG_GLPI['root_doc']."/front/group.form.php'>";
             echo "<input type='hidden' name='groups_id' value='".$group->fields['id']."'>";
          }
+         if ($canedit) {
+            $actions = array(''               => Dropdown::EMPTY_VALUE,
+                             'set_manager'    => __('Add to managers'),
+                             'set_delegate'   => __('Add to delegatees'),
+                             'unset_manager'  => __('Delete from managers'),
+                             'unset_delegate' => __('Delete from delegatees'),
+                             'deleteuser'     => __('Delete'));
+
+            $paramsma = array('fixed' => true,
+                              'ontop' => true,
+                              'actions' => $actions,
+                              );
+            Html::displayMassiveActions($paramsma);
+         }
+         
          echo "<table class='tab_cadre_fixehov'><tr>";
          if ($canedit) {
             echo "<th width='10'>&nbsp;</th>";
@@ -492,16 +506,9 @@ class Group_User extends CommonDBRelation{
          }
          echo "</table>";
          if ($canedit) {
-            Html::openArrowMassives("groupuser_form$rand", true);
-            $actions = array(''               => Dropdown::EMPTY_VALUE,
-                             'set_manager'    => __('Add to managers'),
-                             'set_delegate'   => __('Add to delegatees'),
-                             'unset_manager'  => __('Delete from managers'),
-                             'unset_delegate' => __('Delete from delegatees'),
-                             'deleteuser'     => __('Delete'));
-            Dropdown::showFromArray('action', $actions);
-            echo "&nbsp;";
-            Html::closeArrowMassives(array('do' => __('Post')));
+            $paramsma['ontop'] =false;
+
+            Html::displayMassiveActions($paramsma);
          }
          Html::printAjaxPager(sprintf(__('%1$s (%2$s)'),
                                       User::getTypeName(2), __('D=Dynamic')),

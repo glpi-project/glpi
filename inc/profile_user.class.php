@@ -128,11 +128,6 @@ class Profile_User extends CommonDBTM {
          echo "</table></div>";
       }
 
-      echo "<div class='spaced'><table class='tab_cadre_fixehov'>";
-      echo "<tr><th colspan='2'>"._n('Entity', 'Entities', 2)."</th>";
-      echo "<th>".sprintf(__('%1$s (%2$s)'), self::getTypeName(2), __('D=Dynamic, R=Recursive'));
-      echo "</th></tr>";
-
       $query = "SELECT DISTINCT `glpi_profiles_users`.`id` AS linkID,
                        `glpi_profiles`.`id`,
                        `glpi_profiles`.`name`,
@@ -148,18 +143,43 @@ class Profile_User extends CommonDBTM {
                 WHERE `glpi_profiles_users`.`users_id` = '$ID'
                 ORDER BY `glpi_profiles`.`name`, `glpi_entities`.`completename`";
       $result = $DB->query($query);
-
-      if ($DB->numrows($result) > 0) {
+      $num = $DB->numrows($result);
+      
+      echo "<div class='spaced'>";
+      if ($canedit && $num) {
+         $paramsma = array('fixed' => true,
+                           'ontop' => true,
+                           'actions' => array('delete' => __('Delete'))
+                           );
+         Html::displayMassiveActions($paramsma);
+      }
+      
+      if ($num > 0) {
+         echo "<table class='tab_cadre_fixehov'>";
+         echo "<tr>";
+         if ($canedit) {
+            echo "<th>";
+            echo "<input type='checkbox' name='_checkall_massaction$rand' ".
+                        "id='_checkall_massaction$rand' ".
+                        "onclick= \"if ( checkAsCheckboxes('_checkall_massaction$rand',
+                                                         'entityuser_form$rand'))
+                                                   {return true;}\">";
+            echo "</th>";
+         }
+         echo "<th>"._n('Entity', 'Entities', 2)."</th>";
+         echo "<th>".sprintf(__('%1$s (%2$s)'), self::getTypeName(2), __('D=Dynamic, R=Recursive'));
+         echo "</th></tr>";
          while ($data = $DB->fetch_assoc($result)) {
             echo "<tr class='tab_bg_1'>";
-            echo "<td width='10'>";
-            if ($canedit
-                && in_array($data["entities_id"], $_SESSION['glpiactiveentities'])) {
-               echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
-            } else {
-               echo "&nbsp;";
+            if ($canedit) {
+               echo "<td width='10'>";
+               if (in_array($data["entities_id"], $_SESSION['glpiactiveentities'])) {
+                  echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1'>";
+               } else {
+                  echo "&nbsp;";
+               }
+               echo "</td>";
             }
-            echo "</td>";
             echo "<td>";
 
             $link = $data["completename"];
@@ -196,14 +216,18 @@ class Profile_User extends CommonDBTM {
                $entname = sprintf(__('%1$s%2$s'), $entname, ")</span>");
             }
              echo "<td>".$entname."</td>";
-         }
          echo "</tr>";
+         }
+         echo "</table>";
+      } else {
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr><th>".__('No item found')."</th></tr>";
+         echo "</table>\n";
       }
-      echo "</table>";
 
-      if ($canedit) {
-         Html::openArrowMassives("entityuser_form$rand",true);
-         Html::closeArrowMassives(array('delete' => __('Delete')));
+      if ($canedit && $num) {
+         $paramsma['ontop'] = false;
+         Html::displayMassiveActions($paramsma);
       }
       echo "</form></div>";
    }

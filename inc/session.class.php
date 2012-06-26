@@ -222,7 +222,7 @@ class Session {
 
       // Command line can see all entities
       return (isCommandLine()
-              || ((countElementsInTable("glpi_entities")+1) == count($_SESSION["glpiactiveentities"])));
+              || ((countElementsInTable("glpi_entities")) == count($_SESSION["glpiactiveentities"])));
    }
 
 

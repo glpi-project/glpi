@@ -2948,8 +2948,10 @@ class Html {
     * @param $p               array    of parameters
     * must contains one  :
     *    - url : string in case of ajax massive action the url to load
-    *    - actions : array of actions to displayed
+    *    - actions : array of actions to displayed :
+    *          array('buttonname' => 'Displayed label')
     * may contains :
+    *    - confirm : string for confirmatin popup if needed (aonly for actions)
     *    - num_displayed : integer number of displayed items. Permit to check suhosin limit. (default -1 not to check)
     *    - ontop : boolean true if displayed on top
     *    - fixed : boolean true if used with fixed table display (950px)
@@ -2962,7 +2964,9 @@ class Html {
    static function displayMassiveActions($p = array()) {
       global $CFG_GLPI;
 
-      if (!isset($p['url']) && !$isset['actions']) {
+      if (!isset($p['url'])
+         && (!isset($p['actions']) ||!is_array($p['actions'])
+            || count($p['actions']) ==0) ) {
          return false;
       }
       $ontop = false;
@@ -3000,23 +3004,57 @@ class Html {
             echo "</td></tr></table>";
          }
       } else {
+         $modal_created = false;
+         if (isset($p['url'])) {
+            $modal_created = true;
+         }
+         if (isset($p['actions']) &&is_array($p['actions']) && count($p['actions'])>1) {
+            $modal_created = true;
+         }
          // Create Modal window on top
-         if ($ontop || (isset($p['forcecreate']) && $p['forcecreate'])) {
+         if ($modal_created
+               && ($ontop || (isset($p['forcecreate']) && $p['forcecreate']))) {
             if (isset($p['url'])) {
                echo "<div id='massiveactioncontent$identifier'></div>";
                Ajax::createModalWindow('massiveaction_window'.$identifier,
                                        $p['url'],
                                        array('title'    => _n('Action', 'Actions',2),
-                                             'renderTo' => 'massiveactioncontent'.$identifier));
+                                             'container' => 'massiveactioncontent'.$identifier));
+            } else {
+               // Several actions
+               echo "<div id='massiveactioncontent$identifier'><br>";
+               Dropdown::showFromArray('action', $p['actions']);
+               echo "<input type='submit' name='_do' ";
+               if (isset($p['confirm'])) {
+                   echo self::addConfirmationOnAction($p['confirm']);
+               }
+               echo " value=\"".__s('Post')."\" class='submit'>";
+               echo "</div>";
+               Ajax::createFixedModalWindow('massiveaction_window'.$identifier,
+                                       array('title'    => _n('Action', 'Actions',2),
+                                             'container' => 'massiveactioncontent'.$identifier));
             }
          }
          echo "<table class='tab_glpi' width='$width'><tr>";
          echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
                 ($ontop?'-top':'').".png' alt=''></td>";
          echo "<td width=100% class='left'>";
-         echo "<a class='vsubmit' onclick='massiveaction_window$identifier.show();' ".
-                "href='#modal_massaction_content$identifier' title=\""._sn('Action', 'Actions',2)."\">".
-                _n('Action', 'Actions',2)."</a>";
+         if ($modal_created) {
+            echo "<a class='vsubmit' onclick='massiveaction_window$identifier.show();' ".
+                  "href='#modal_massaction_content$identifier' title=\""._sn('Action', 'Actions',2)."\">".
+                  _n('Action', 'Actions',2)."</a>";
+         } else {
+            // Only one action case
+            foreach ($p['actions'] as $key => $val) {
+               if (!empty($val)) {
+                  echo "<input type='submit' name='$key' ";
+                  if (isset($p['confirm'])) {
+                     echo self::addConfirmationOnAction($p['confirm']);
+                  }
+                  echo "value=\"".addslashes($val)."\" class='submit'>";
+               }
+            }
+         }
          echo "</td>";
 
          echo "</tr></table>";

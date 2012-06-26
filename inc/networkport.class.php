@@ -441,9 +441,9 @@ class NetworkPort extends CommonDBChild {
 
       if (($withtemplate != 2)
           && $canedit) {
-         $check_all = "<input type='checkbox' name='checkall_massaction' ".
-                           "id='checkall_massaction' ".
-                           "onclick= \"if ( checkAsCheckboxes('checkall_massaction',
+         $check_all = "<input type='checkbox' name='_checkall_massaction$rand' ".
+                           "id='_checkall_massaction$rand' ".
+                           "onclick= \"if ( checkAsCheckboxes('_checkall_massaction$rand',
                                                             'networking_ports$rand'))
                                                       {return true;}\">";
 

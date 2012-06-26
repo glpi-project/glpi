@@ -48,7 +48,7 @@ class Ajax {
     *          - width (default 800)
     *          - height (default 400)
     *          - modal : is a modal window ? (default true)
-    *          - renderTo : specify a html element to render (default empty to html.body)
+    *          - container : specify a html element to render (default empty to html.body)
     *          - title : window title (default empty)
     *
    **/
@@ -57,7 +57,7 @@ class Ajax {
       $param = array('width'     => 800,
                      'height'    => 400,
                      'modal'     => true,
-                     'renderTo'  => '',
+                     'container'  => '',
                      'title'     => '');
 
       if (count($options)) {
@@ -74,7 +74,7 @@ class Ajax {
          height:".$param['height'].",
          closeAction:'hide',
          modal: ".($param['modal']?'true':'false').",
-         ".(!empty($param['renderTo'])?"renderTo: '".$param['renderTo']."',":'')."
+         ".(!empty($param['container'])?"renderTo: '".$param['container']."',":'')."
          autoScroll: true,
          title: \"".addslashes($param['title'])."\",
          autoLoad: '$url'
@@ -82,7 +82,52 @@ class Ajax {
       echo "</script>";
    }
 
+   /**
+    * Create modal window
+    * After display it using $name.show()
+    * May be constraint to a predefined html item setting container options
+    *
+    * @since version 0.84
+    *
+    * @param $name            name of the js object
+    * @param $url             URL to display in modal
+    * @param $options array   of possible options:
+    *          - width (default 800)
+    *          - height (default 400)
+    *          - modal : is a modal window ? (default true)
+    *          - container : specify a html element to render (default empty to html.body)
+    *          - title : window title (default empty)
+    *
+   **/
+   static function createFixedModalWindow($name, $options=array() ) {
 
+      $param = array('width'     => 800,
+                     'height'    => 400,
+                     'modal'     => true,
+                     'container'  => '',
+                     'title'     => '');
+
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            if (isset($param[$key])) {
+               $param[$key] = $val;
+            }
+         }
+      }
+      echo "<script type='text/javascript'>";
+      echo "var $name=new Ext.Window({
+         layout:'fit',
+         width:".$param['width'].",
+         height:".$param['height'].",
+         closeAction:'hide',
+         modal: ".($param['modal']?'true':'false').",
+         ".(!empty($param['container'])?"applyTo: '".$param['container']."',":'')."
+         autoScroll: true,
+         title: \"".addslashes($param['title'])."\"
+         }); ";
+      echo "</script>";
+   }
+   
    /**
     * Call from a popup Windows, refresh the dropdown in main window
    **/

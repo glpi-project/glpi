@@ -426,7 +426,7 @@ class RuleCollection extends CommonDBTM {
       if ($canedit
           && ($nb > 0)) {
          Html::openArrowMassives("ruleactions_form", true);
-
+         /// TODO move to new standard mass action...
          echo "<select name='massiveaction' id='massiveaction'>";
          echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
          echo "<option value='delete'>".__('Delete')."</option>";
@@ -447,7 +447,7 @@ class RuleCollection extends CommonDBTM {
                                        $params);
 
          echo "<span id='show_massiveaction'>&nbsp;</span>\n";
-
+         /// TODO action comme une autre.
          if ($this->can_replay_rules) {
             echo "</td>"; // close td of Html::openArrowMassives
             echo "<td><input type='submit' name='replay_rule' value='" .
