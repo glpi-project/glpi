@@ -957,9 +957,9 @@ class Search {
 
             if (($output_type == self::HTML_OUTPUT)
                 && !isset($CFG_GLPI["union_search_type"][$itemtype])) { // HTML display - massive modif
-               $check_all = "<input type='checkbox' name='checkall_massaction' ".
-                                 "id='checkall_massaction' ".
-                                 "onclick= \"if ( checkAsCheckboxes('checkall_massaction',
+               $check_all = "<input type='checkbox' name='_checkall_massactionsearch' ".
+                                 "id='_checkall_massactionsearch' ".
+                                 "onclick= \"if ( checkAsCheckboxes('_checkall_massactionsearch',
                                                                     'massiveaction_form'))
                                                             {return true;}\">";
                echo self::showHeaderItem($output_type, $check_all, $header_num, "", 0,
