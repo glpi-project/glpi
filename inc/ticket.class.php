@@ -1029,12 +1029,19 @@ class Ticket extends CommonITILObject {
                   $mandatory_missing = array();
                   $fieldsname = $tt->getAllowedFieldsNames(true);
                   foreach ($tt->mandatory as $key => $val) {
-                     // for title if mandatory (restore initial value
+                     // for title if mandatory (restore initial value)
                      if ($key == 'name') {
                         $input['name']                     = $title;
                         $_SESSION["helpdeskSaved"]['name'] = $input['name'];
                      }
-
+                     // If content is also predefined need to be different from predefined value
+                     if ($key == 'content' && isset($tt->predefined['content'])) {
+                        if (!isset($input[$key])
+                           || stripslashes($input[$key]) == $tt->predefined['content']) {
+                           $mandatory_missing[$key] = $fieldsname[$val];
+                        }
+                     }
+                     
                      if (!isset($input[$key]) || empty($input[$key]) ||$input[$key] == 'NULL') {
                         $mandatory_missing[$key] = $fieldsname[$val];
                      }
