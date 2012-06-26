@@ -122,15 +122,16 @@ if (isset($_POST["add"])) {
    Html::back();
 
 }
-// Interest of this massive action ?
-/*else if(isset($_POST["move"])) {
+// Interest of this massive action ? Replace switch by another : don't re-create manually all ports
+else if(isset($_POST["move"])) {
    Session::checkRight("networking","w");
    if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
       foreach ($_POST["del_port"] as $port_id => $val) {
          if ($np->getFromDB($port_id)) {
             $input = array();
             $input['id'] = $port_id;
-            $input['items_id'] = $_POST["device"];
+            $input['items_id'] = $_POST["items_id"];
+            $input['itemtype'] = 'NetworkEquipment';            
             if ($np->can($input['id'],'w')) {
                $np->update($input);
             }
@@ -143,7 +144,7 @@ if (isset($_POST["add"])) {
 
    Html::back();
 
-}*/ else if (isset($_POST["update"])) {
+} else if (isset($_POST["update"])) {
    $np->check($_POST['id'],'w');
 
    $np->splitInputForElements($_POST);
