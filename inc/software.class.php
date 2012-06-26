@@ -564,8 +564,8 @@ class Software extends CommonDBTM {
    /**
     * Create a new software
     *
-    * @param name                   the software's name (need to be addslahes)
-    * @param manufacturer           the software's manufacturer (need to be addslahes)
+    * @param name                   the software's name (need to be addslashes)
+    * @param manufacturer           the software's manufacturer (need to be addslashes)
     * @param entity                 the entity in which the software must be added
     * @param comment                (default '')
     * @param is_recursive  boolean  must the software be recursive (false by default))

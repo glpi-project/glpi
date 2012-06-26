@@ -47,7 +47,7 @@ class Manufacturer extends CommonDropdown {
 
 
    /**
-    * @param $old_name Old name (need to be addslahes)
+    * @param $old_name Old name (need to be addslashes)
     * @return new addslashes name
    **/
    static function processName($old_name) {
