@@ -441,7 +441,13 @@ class NetworkPort extends CommonDBChild {
 
       if (($withtemplate != 2)
           && $canedit) {
-         $c_checkbox = $table->addHeader('checkbox','&nbsp;');
+         $check_all = "<input type='checkbox' name='checkall_massaction' ".
+                           "id='checkall_massaction' ".
+                           "onclick= \"if ( checkAsCheckboxes('checkall_massaction',
+                                                            'networking_ports$rand'))
+                                                      {return true;}\">";
+
+         $c_checkbox = $table->addHeader('checkbox',$check_all);
       } else {
          $c_checkbox = NULL;
       }
@@ -589,7 +595,8 @@ class NetworkPort extends CommonDBChild {
          Html::displayMassiveActions($massiveactionparams);
       }
 
-      $table->display(array('display_thead' => false));
+      $table->display(array('display_thead' => false,
+                            'display_tfoot' => false));
       unset($table);
 
       if (!$is_active_network_port) {
