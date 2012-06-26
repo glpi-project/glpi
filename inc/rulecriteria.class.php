@@ -195,7 +195,7 @@ class RuleCriteria extends CommonDBChild {
                return true;
             }
             return false;
-         
+
          case Rule::PATTERN_NOT_UNDER :
             $table  = getTableNameForForeignKeyField($criteria);
             $values = getSonsOf($table, $pattern);
@@ -268,7 +268,9 @@ class RuleCriteria extends CommonDBChild {
             }
             return false;
 
-          case Rule::PATTERN_FIND :
+         case Rule::PATTERN_IS_EMPTY :
+         case Rule::PATTERN_FIND :
+            // Global criteria will be evaluated later
             return true;
       }
       return false;

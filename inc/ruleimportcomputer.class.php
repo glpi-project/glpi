@@ -38,7 +38,6 @@ if (!defined('GLPI_ROOT')) {
 /// OCS Rules class
 class RuleImportComputer extends Rule {
 
-   const PATTERN_IS_EMPTY              = 30;
    const RULE_ACTION_LINK_OR_IMPORT    = 0;
    const RULE_ACTION_LINK_OR_NO_IMPORT = 1;
 
@@ -112,7 +111,7 @@ class RuleImportComputer extends Rule {
       $criterias['name']['name']            = $LANG['rulesengine'][152].' : '.
                                                         $LANG['rulesengine'][25];
       $criterias['name']['allow_condition'] = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT,
-                                                    self::PATTERN_IS_EMPTY, Rule::PATTERN_FIND);
+                                                    Rule::PATTERN_IS_EMPTY, Rule::PATTERN_FIND);
 
       $criterias['DESCRIPTION']['name']   = $LANG['rulesengine'][152].' : '.$LANG['joblist'][6];
 
@@ -190,14 +189,14 @@ class RuleImportComputer extends Rule {
       global $LANG;
 
       return array(Rule::PATTERN_FIND     => $LANG['rulesengine'][151],
-                   self::PATTERN_IS_EMPTY => $LANG['rulesengine'][154]);
+                   Rule::PATTERN_IS_EMPTY => $LANG['rulesengine'][154]);
    }
 
 
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
       global $LANG;
 
-      if ($condition == self::PATTERN_IS_EMPTY) {
+      if ($condition == Rule::PATTERN_IS_EMPTY) {
           return $LANG['choice'][1];
       }
       return false;
@@ -212,7 +211,7 @@ class RuleImportComputer extends Rule {
 
       switch ($condition) {
          case Rule::PATTERN_FIND :
-         case self::PATTERN_IS_EMPTY :
+         case Rule::PATTERN_IS_EMPTY :
             Dropdown::showYesNo($name, 0, 0);
             return true;
       }
@@ -329,7 +328,7 @@ class RuleImportComputer extends Rule {
                break;
 
             case 'name' :
-               if ($criteria->fields['condition'] == self::PATTERN_IS_EMPTY) {
+               if ($criteria->fields['condition'] == Rule::PATTERN_IS_EMPTY) {
                   $sql_where .= " AND (`glpi_computers`.`name`=''
                                        OR `glpi_computers`.`name` IS NULL) ";
                } else {
