@@ -4838,6 +4838,12 @@ class Search {
          $itemstodel = Contract::getSearchOptionsToAdd();
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
+      
+      if (!Session::haveRight('document',$action)
+          && in_array($itemtype, $CFG_GLPI["document_types"])) {
+         $itemstodel = Document::getSearchOptionsToAdd();
+         $todel      = array_merge($todel, array_keys($itemstodel));
+      }
 
       // do not show priority if you don't have right in profile
       If (($itemtype == 'Ticket')
@@ -5035,6 +5041,11 @@ class Search {
          if (in_array($itemtype, $CFG_GLPI["contract_types"])
              || ($itemtype == 'AllAssets')) {
             $search[$itemtype] += Contract::getSearchOptionsToAdd();
+         }
+         
+         if (in_array($itemtype, $CFG_GLPI["document_types"])
+             || ($itemtype == 'AllAssets')) {
+            $search[$itemtype] += Document::getSearchOptionsToAdd();
          }
 
          if (in_array($itemtype, $CFG_GLPI["infocom_types"])
