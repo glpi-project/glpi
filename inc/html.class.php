@@ -2874,48 +2874,6 @@ class Html {
    }
 
 
-   /**
-    * show arrow for massives actions : opening
-    *
-    * @since version 0.84
-    *
-    * @param $formname  string
-    * @param $fixed     boolean  used tab_cadre_fixe in both tables (false by default)
-    * @param $ontop              display on top of the list (false by default)
-    * @param $onright            display on right of the list (false by default)
-   **/
-   static function simpleOpenArrowMassives($formname, $fixed=false, $ontop=false, $onright=false) {
-      global $CFG_GLPI;
-
-      if ($fixed) {
-         echo "<table class='tab_glpi' width='950px'>";
-      } else {
-         echo "<table class='tab_glpi' width='80%'>";
-      }
-
-      echo "<tr>";
-      if (!$onright) {
-         echo "<td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".($ontop?'-top':'').".png'
-                    alt=''></td>";
-      } else {
-         echo "<td class='left' width='80%'></td>";
-      }
-      echo "<td class='center' style='white-space:nowrap;'>";
-      echo "<a onclick= \"if ( markCheckboxes('$formname') ) return false;\"
-             href='#'>".__('Check all')."</a></td>";
-      echo "<td>/</td>";
-      echo "<td class='center' style='white-space:nowrap;'>";
-      echo "<a onclick= \"if ( unMarkCheckboxes('$formname') ) return false;\"
-             href='#'>".__('Uncheck all')."</a></td>";
-
-      if ($onright) {
-         echo "<td><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-right".($ontop?'-top':'').".png'
-                    alt=''>";
-      } else {
-         echo "<td class='left' width='80%'>";
-      }
-   }
-
 
    /**
     * show arrow for massives actions : opening
@@ -2924,6 +2882,7 @@ class Html {
     * @param $fixed     boolean  used tab_cadre_fixe in both tables (false by default)
     * @param $ontop              display on top of the list (false by default)
     * @param $onright            display on right of the list (false by default)
+    * \deprecated
    **/
    static function openArrowMassives($formname, $fixed=false, $ontop=false, $onright=false) {
       global $CFG_GLPI;
@@ -2964,6 +2923,7 @@ class Html {
     *
     * @param $actions array of action : $name -> $label
     * @param $confirm array of confirmation string (optional)
+    * \deprecated
    **/
    static function closeArrowMassives($actions, $confirm=array()) {
 
@@ -2982,6 +2942,86 @@ class Html {
       echo "</table>";
    }
 
+   /**
+    * Display massive actions
+    *
+    * @param $p               array    of parameters
+    * must contains one  :
+    *    - url : string in case of ajax massive action the url to load
+    *    - actions : array of actions to displayed
+    * may contains :
+    *    - num_displayed : integer number of displayed items. Permit to check suhosin limit. (default -1 not to check)
+    *    - ontop : boolean true if displayed on top
+    *    - fixed : boolean true if used with fixed table display (950px)
+    *    - forcecreate : boolean force creation of modal window (default = false).
+    *            Modal is automatically created when displayed the ontop item.
+                 If only a bottom one is displayed use it
+    *
+    * @return Array of available itemtype
+   **/
+   static function displayMassiveActions($p = array()) {
+      global $CFG_GLPI;
+
+      if (!isset($p['url']) && !$isset['actions']) {
+         return false;
+      }
+      $ontop = false;
+      if (isset($p['ontop'])) {
+         $ontop = $p['ontop'];
+      }
+      $num_displayed = -1;
+      if (isset($p['num_displayed'])) {
+         $num_displayed = $p['num_displayed'];
+      }
+      
+      if (isset($p['fixed']) && $p['fixed']) {
+         $width= '950px';
+      } else {
+         $width= '80%';
+      }
+      if (isset($p['url'])) {
+         $identifier = md5($p['url']);
+      } else {
+         $identifier = md5(serialize($p['actions']));
+      }
+      $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
+      if (!$max) {
+         $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
+      }
+      if ($num_displayed>=0
+          && ($max > 0) && ($max < ($num_displayed+10))) {
+         if (!$ontop || (isset($p['forcecreate']) && $p['forcecreate'])) {
+            echo "<table class='tab_cadre' width='$width'><tr class='tab_bg_1'>".
+                  "<td><span class='b'>";
+            echo __('Selection too large, massive action disabled.')."</span>";
+            if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+               echo "<br>".__('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
+            }
+            echo "</td></tr></table>";
+         }
+      } else {
+         // Create Modal window on top
+         if ($ontop || (isset($p['forcecreate']) && $p['forcecreate'])) {
+            if (isset($p['url'])) {
+               echo "<div id='massiveactioncontent$identifier'></div>";
+               Ajax::createModalWindow('massiveaction_window'.$identifier,
+                                       $p['url'],
+                                       array('title'    => _n('Action', 'Actions',2),
+                                             'renderTo' => 'massiveactioncontent'.$identifier));
+            }
+         }
+         echo "<table class='tab_glpi' width='$width'><tr>";
+         echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
+                ($ontop?'-top':'').".png' alt=''></td>";
+         echo "<td width=100% class='left'>";
+         echo "<a class='vsubmit' onclick='massiveaction_window$identifier.show();' ".
+                "href='#modal_massaction_content$identifier' title=\""._sn('Action', 'Actions',2)."\">".
+                _n('Action', 'Actions',2)."</a>";
+         echo "</td>";
+
+         echo "</tr></table>";
+      }
+   }   
 
    /**
     * Display Date form with calendar

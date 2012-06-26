@@ -910,8 +910,15 @@ class Search {
                    && ($output_type == self::HTML_OUTPUT)) {
                   echo "<form method='post' name='massiveaction_form' id='massiveaction_form' ".
                          "action=\"".$CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
-
-                  self::displayMassiveActions($itemtype, $end_display-$begin_display, $p, true);
+                  $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=$itemtype";
+                  if (isset($p['is_deleted'])) {
+                     $urlma .= "&is_deleted=".$p['is_deleted'];
+                  }
+                  $massiveactionparams = array('num_displayed' => $end_display-$begin_display,
+                                               'url' => $urlma,
+                                               'ontop' => true,
+                                                );
+                  Html::displayMassiveActions($massiveactionparams);
                }
             }
 
@@ -1418,7 +1425,8 @@ class Search {
             // Delete selected item
             if ($output_type == self::HTML_OUTPUT) {
                if ($showmassiveactions) {
-                  self::displayMassiveActions($itemtype, $row_num, $p);
+                  $massiveactionparams['ontop'] = false;
+                  Html::displayMassiveActions($massiveactionparams);
                   // End form for delete item
                   echo "</form>\n";
                } else {
@@ -1438,68 +1446,6 @@ class Search {
       // Clean selection
       $_SESSION['glpimassiveactionselected'] = array();
    }
-
-
-   /**
-    * Display massive actions
-    *
-    * @param $itemtype                 type to display the form
-    * @param $num_displayed   integer  number of rows displayed
-    * @param $p               array    of parameters
-    * @param $ontop                    boolean display on top of the list ? (false by default)
-    *
-    * @return Array of available itemtype
-   **/
-   static function displayMassiveActions($itemtype, $num_displayed, $p = array(), $ontop=false) {
-      global $CFG_GLPI;
-
-
-      if (isset($p['fixed']) && $p['fixed']) {
-         $width= '950px';
-      } else {
-         $width= '80%';
-      }
-
-      $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
-      if (!$max) {
-         $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
-      }
-      if (!$ontop
-          && ($max > 0) && ($max < ($num_displayed+10))) {
-         echo "<table class='tab_cadre' width='$width'><tr class='tab_bg_1'>".
-               "<td><span class='b'>";
-         echo __('Selection too large, massive action disabled.')."</span>";
-         if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-            echo "<br>".__('To increase the limit: change max_input_vars or suhosin.post.max_vars in php configuration.');
-         }
-         echo "</td></tr></table>";
-      } else {
-         // Create Modal window on top
-         if ($ontop) {
-            $url = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=$itemtype";
-            if (isset($p['is_deleted'])) {
-               $url .= "&is_deleted=".$p['is_deleted'];
-            }
-            echo "<div id='massiveactioncontent'></div>";
-            Ajax::createModalWindow('massiveaction_window',
-                                    $url,
-                                    array('title'    => _n('Action', 'Actions',2),
-                                          'renderTo' => 'massiveactioncontent'));
-
-         }
-         echo "<table class='tab_glpi' width='$width'><tr>";
-         echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
-                ($ontop?'-top':'').".png' alt=''></td>";
-         echo "<td width=100% class='left'>";
-         echo "<a class='vsubmit' onclick='massiveaction_window.show();' ".
-                "href='#modal_massaction_content' title=\""._sn('Action', 'Actions',2)."\">".
-                _n('Action', 'Actions',2)."</a>";
-         echo "</td>";
-
-         echo "</tr></table>";
-      }
-   }
-
 
    /**
     * Get meta types available for search engine
