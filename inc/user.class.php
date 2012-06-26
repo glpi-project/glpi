@@ -1287,7 +1287,7 @@ class User extends CommonDBTM {
                $groups = array();
             }
 
-            $this->fields = $rule->processAllRules($groups, $this->fields,
+            $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields),
                                                    array('type'        => 'LDAP',
                                                          'ldap_server' => $ldap_method["id"],
                                                          'connection'  => $ldap_connection,
@@ -1437,7 +1437,7 @@ class User extends CommonDBTM {
          } else {
             $groups = array();
          }
-         $this->fields = $rule->processAllRules($groups, $this->fields,
+         $this->fields = $rule->processAllRules($groups, Toolbox::stripslashes_deep($this->fields),
                                                 array('type'        => 'MAIL',
                                                       'mail_server' => $mail_method["id"],
                                                       'email'       => $email));

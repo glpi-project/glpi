@@ -181,7 +181,7 @@ class RuleDictionnaryDropdownCollection extends RuleCachedCollection {
 
             // Model case
             if (isset($data["manufacturer"])) {
-               $data["manufacturer"] = Manufacturer::processName($data["manufacturer"]);
+               $data["manufacturer"] = Manufacturer::processName(addslashes($data["manufacturer"]));
             }
 
             //Replay Type dictionnary

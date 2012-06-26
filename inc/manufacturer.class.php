@@ -47,7 +47,8 @@ class Manufacturer extends CommonDropdown {
 
 
    /**
-    * @param $old_name
+    * @param $old_name Old name (need to be addslahes)
+    * @return new addslashes name
    **/
    static function processName($old_name) {
 
@@ -57,7 +58,7 @@ class Manufacturer extends CommonDropdown {
 
       $rulecollection = new RuleDictionnaryManufacturerCollection();
       $output         = array();
-      $output         = $rulecollection->processAllRules(array("name" => addslashes($old_name)),
+      $output         = $rulecollection->processAllRules(array("name" => stripslashes($old_name)),
                                                          $output, array());
       if (isset($output["name"])) {
          return $output["name"];

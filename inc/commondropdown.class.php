@@ -598,10 +598,10 @@ abstract class CommonDropdown extends CommonDBTM {
     *
     * This import a new dropdown if it doesn't exist - Play dictionnary if needed
     *
-    * @param $value           string   Value of the new dropdown.
+    * @param $value           string   Value of the new dropdown (need to be addslashes)
     * @param $entities_id     int      entity in case of specific dropdown (default -1)
-    * @param $external_params array    (manufacturer)
-    * @param $comment                  (default '')
+    * @param $external_params array    (manufacturer) (need to be addslashes)
+    * @param $comment                  (default '') (need to be addslashes)
     * @param $add                      if true, add it if not found. if false,
     *                                  just check if exists (true by default)
     *
@@ -615,7 +615,7 @@ abstract class CommonDropdown extends CommonDBTM {
          return 0;
       }
 
-      $ruleinput      = array("name" => $value);
+      $ruleinput      = array("name" => stripslashes($value));
       $rulecollection = RuleCollection::getClassByType($this->getType(),true);
 
       foreach ($this->additional_fields_for_dictionnary as $field) {
@@ -642,7 +642,7 @@ abstract class CommonDropdown extends CommonDBTM {
       $input["entities_id"] = $entities_id;
 
       if ($rulecollection) {
-         $res_rule = $rulecollection->processAllRules($ruleinput, array(), array());
+         $res_rule = $rulecollection->processAllRules(Toolbox::stripslashes_deep($ruleinput), array(), array());
          if (isset($res_rule["name"])) {
             $input["name"] = $res_rule["name"];
          }
