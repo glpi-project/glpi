@@ -1450,8 +1450,15 @@ class Search {
     *
     * @return Array of available itemtype
    **/
-   static function displayMassiveActions($itemtype, $num_displayed, $p, $ontop=false) {
+   static function displayMassiveActions($itemtype, $num_displayed, $p = array(), $ontop=false) {
       global $CFG_GLPI;
+
+
+      if (isset($p['fixed']) && $p['fixed']) {
+         $width= '950px';
+      } else {
+         $width= '80%';
+      }
 
       $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
       if (!$max) {
@@ -1459,7 +1466,7 @@ class Search {
       }
       if (!$ontop
           && ($max > 0) && ($max < ($num_displayed+10))) {
-         echo "<table class='tab_cadre' width='80%'><tr class='tab_bg_1'>".
+         echo "<table class='tab_cadre' width='$width'><tr class='tab_bg_1'>".
                "<td><span class='b'>";
          echo __('Selection too large, massive action disabled.')."</span>";
          if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
@@ -1469,15 +1476,18 @@ class Search {
       } else {
          // Create Modal window on top
          if ($ontop) {
+            $url = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=$itemtype";
+            if (isset($p['is_deleted'])) {
+               $url .= "&is_deleted=".$p['is_deleted'];
+            }
             echo "<div id='massiveactioncontent'></div>";
             Ajax::createModalWindow('massiveaction_window',
-                                    $CFG_GLPI['root_doc'].
-                                       "/ajax/massiveaction.php?itemtype=$itemtype&is_deleted=".$p['is_deleted'],
+                                    $url,
                                     array('title'    => _n('Action', 'Actions',2),
                                           'renderTo' => 'massiveactioncontent'));
 
          }
-         echo "<table class='tab_glpi' width='80%'><tr>";
+         echo "<table class='tab_glpi' width='$width'><tr>";
          echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".
                 ($ontop?'-top':'').".png' alt=''></td>";
          echo "<td width=100% class='left'>";
@@ -1487,10 +1497,6 @@ class Search {
          echo "</td>";
 
          echo "</tr></table>";
-//          Html::openArrowMassives("massiveaction_form", false, $ontop);
-//          Dropdown::showForMassiveAction($itemtype, $p['is_deleted']);
-//          $options = array();
-//          Html::closeArrowMassives($options);
       }
    }
 
