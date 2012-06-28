@@ -41,6 +41,7 @@ class NotImportedEmail extends CommonDBTM {
 
    const MATCH_NO_RULE = 0;
    const USER_UNKNOWN  = 1;
+   const FAILED_INSERT = 2;
 
    function canCreate() {
       return Session::haveRight('config', 'w');
@@ -129,6 +130,9 @@ class NotImportedEmail extends CommonDBTM {
 
          case self::USER_UNKNOWN :
             return $LANG['login'][14];
+
+         case self::FAILED_INSERT :
+            return $LANG['common'][118];
 
          default :
             return '';
