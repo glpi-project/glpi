@@ -494,39 +494,26 @@ class MailCollector  extends CommonDBTM {
                      $refused++;
                   } else if (isset($tkt['entities_id'])
                              || isset($tkt['tickets_id'])) {
-                     $result = imap_fetchheader($this->marubox, $i);
 
                      // Is a mail responding of an already existgin ticket ?
                      if (isset($tkt['tickets_id']) ) {
-                        // Deletion of message with sucess
-                        if (false === is_array($result)) {
-                           $fup = new TicketFollowup();
-                           if ($fup->add($tkt)) {
-                              $delete_mail = self::ACCEPTED_FOLDER;
-                           } else {
-                              $error++;
-                              $rejinput['reason'] = NotImportedEmail::FAILED_INSERT;
-                              $rejected->add($rejinput);
-                           }
+                        $fup = new TicketFollowup();
+                        if ($fup->add($tkt)) {
+                           $delete_mail = self::ACCEPTED_FOLDER;
                         } else {
                            $error++;
-                           // TODO record rejected ? don't understand case'
+                           $rejinput['reason'] = NotImportedEmail::FAILED_INSERT;
+                           $rejected->add($rejinput);
                         }
 
                      } else { // New ticket
-                        // Deletion of message with sucess
-                        if (false === is_array($result)) {
-                           $track = new Ticket();
-                           if ($track->add($tkt)) {
-                              $delete_mail = self::ACCEPTED_FOLDER;
-                           } else {
-                              $error++;
-                              $rejinput['reason'] = NotImportedEmail::FAILED_INSERT;
-                              $rejected->add($rejinput);
-                           }
+                        $track = new Ticket();
+                        if ($track->add($tkt)) {
+                           $delete_mail = self::ACCEPTED_FOLDER;
                         } else {
                            $error++;
-                           // TODO record rejected ? don't understand case'
+                           $rejinput['reason'] = NotImportedEmail::FAILED_INSERT;
+                           $rejected->add($rejinput);
                         }
                      }
 
