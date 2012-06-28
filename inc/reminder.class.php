@@ -705,7 +705,7 @@ class Reminder extends CommonDBTM {
          echo "<textarea cols='115' rows='15' name='text'>".$this->fields["text"]."</textarea>";
       } else {
          echo "<div  id='kbanswer'>";
-         echo Toolbox::unclean_cross_side_scripting_deep($this->fields["text"]);
+         echo Toolbox::unclean_html_cross_side_scripting_deep($this->fields["text"]);
          echo "</div>";
       }
 
@@ -1003,7 +1003,7 @@ class Reminder extends CommonDBTM {
                       href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?id=".$data["id"]."'>".
                       $data["name"]."</a>";
 
-            $tooltip = Html::showToolTip(Toolbox::unclean_cross_side_scripting_deep($data["text"]),
+            $tooltip = Html::showToolTip(Toolbox::unclean_html_cross_side_scripting_deep($data["text"]),
                                          array('applyto' => "content_reminder_".$data["id"].$rand,
                                                'display' => false));
             printf(__('%1$s %2$s'), $link, $tooltip);
