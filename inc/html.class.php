@@ -1292,7 +1292,12 @@ class Html {
 
       $menu['utils']['default'] = '/front/reminder.php';
 
-      $menu['utils']['content']['reminder']['title']           = _n('Reminder', 'Reminders', 2);
+      if (Session::haveRight('reminder_public', 'r')) {
+         $menu['utils']['content']['reminder']['title']        = _n('Reminder', 'Reminders', 2);
+      } else {
+         $menu['utils']['content']['reminder']['title']        = _n('Personal reminder',
+                                                                    'Personal reminders', 2);
+      }
       $menu['utils']['content']['reminder']['page']            = '/front/reminder.php';
       $menu['utils']['content']['reminder']['links']['search'] = '/front/reminder.php';
       $menu['utils']['content']['reminder']['links']['add']    = '/front/reminder.form.php';
@@ -2977,7 +2982,7 @@ class Html {
       if (isset($p['num_displayed'])) {
          $num_displayed = $p['num_displayed'];
       }
-      
+
       if (isset($p['fixed']) && $p['fixed']) {
          $width= '950px';
       } else {
@@ -3059,7 +3064,7 @@ class Html {
 
          echo "</tr></table>";
       }
-   }   
+   }
 
    /**
     * Display Date form with calendar

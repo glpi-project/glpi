@@ -703,7 +703,7 @@ class Profile extends CommonDBTM {
       echo "<tr class='tab_bg_1'><th colspan='6'>".__('Tools')."</th></tr>\n";
 
       echo "<tr class='tab_bg_2'>";
-      echo "<td>".__('Notes')."</td><td>";
+      echo "<td>".__('Item notes')."</td><td>";
       self::dropdownNoneReadWrite("notes", $this->fields["notes"], 1, 1, 1);
       echo "</td>";
       echo "<td>"._n('Public reminder', 'Public reminders', 2)."</td><td>";
