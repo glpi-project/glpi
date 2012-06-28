@@ -1133,9 +1133,18 @@ class Ticket extends CommonITILObject {
       if (isset($input["_users_id_requester"])
           && $user->getFromDB($input["_users_id_requester"])) {
          $input['users_locations'] = $user->fields['locations_id'];
+         $tmprequester = $input["_users_id_requester"];
+      } else {
+         $tmprequester = 0;
       }
 
       $input = $rules->processAllRules($input, $input, array('recursive' => true));
+
+      if (isset($input['_users_id_requester'])
+          && ($input['_users_id_requester'] != $tmprequester)) {
+         // if requester set by rule, clear address from mailcollector
+         unset($input['_users_id_requester_notif']);
+      }
 
       // Restore slas_id
       if ($manual_slas_id > 0) {
@@ -3002,7 +3011,7 @@ class Ticket extends CommonITILObject {
       // Clean text fields
       $options['name']    = stripslashes($options['name']);
       $options['content'] = Html::cleanPostForTextArea($options['content']);
-      
+
       if (!$ticket_template) {
          echo "<form method='post' name='helpdeskform' action='".
                $CFG_GLPI["root_doc"]."/front/tracking.injector.php' enctype='multipart/form-data'>";
