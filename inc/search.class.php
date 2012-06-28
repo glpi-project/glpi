@@ -2558,8 +2558,7 @@ class Search {
 
       switch ($itemtype) {
          case 'Reminder' :
-            return " (`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."'
-                      OR ".Reminder::addVisibilityRestrict().")";
+            return Reminder::addVisibilityRestrict();
 
          case 'Notification' :
             if (!Session::haveRight('config','w')) {
@@ -3271,6 +3270,8 @@ class Search {
                                       array('jointype' => 'child'));
 
          case 'Reminder' :
+            return Reminder::addVisibilityJoins();
+            /*
             $out  = self::addLeftJoin($itemtype, $ref_table, $already_link_tables,
                                       "glpi_reminders_users", "reminders_users_id", 0, 0,
                                        array('jointype' => 'child'));
@@ -3284,7 +3285,7 @@ class Search {
                                       "glpi_profiles_reminders", "profiles_reminders_id", 0, 0,
                                        array('jointype' => 'child'));
             return $out;
-
+            */
          case 'Ticket' :
             // Same structure in addDefaultWhere
             $out = '';
@@ -4790,7 +4791,7 @@ class Search {
          $itemstodel = Contract::getSearchOptionsToAdd();
          $todel      = array_merge($todel, array_keys($itemstodel));
       }
-      
+
       if (!Session::haveRight('document',$action)
           && in_array($itemtype, $CFG_GLPI["document_types"])) {
          $itemstodel = Document::getSearchOptionsToAdd();
@@ -4994,7 +4995,7 @@ class Search {
              || ($itemtype == 'AllAssets')) {
             $search[$itemtype] += Contract::getSearchOptionsToAdd();
          }
-         
+
          if (in_array($itemtype, $CFG_GLPI["document_types"])
              || ($itemtype == 'AllAssets')) {
             $search[$itemtype] += Document::getSearchOptionsToAdd();
