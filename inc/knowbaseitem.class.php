@@ -742,9 +742,9 @@ class KnowbaseItem extends CommonDBTM {
       echo "</td></tr>";
       echo "<tr class='tab_bg_3'><td class='left' colspan='4'><h2>".$LANG['knowbase'][15]."</h2>\n";
 
-      $answer = Toolbox::unclean_cross_side_scripting_deep($this->fields["answer"]);
-
-      echo "<div id='kbanswer'>".$answer."</div>";
+      echo "<div id='kbanswer'>";
+      echo Toolbox::unclean_html_cross_side_scripting_deep($this->fields["answer"]);
+      echo "</div>";
       echo "</td></tr>";
 
       echo "<tr><th class='tdkb'  colspan='2'>";

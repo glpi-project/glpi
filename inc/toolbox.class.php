@@ -331,7 +331,33 @@ class Toolbox {
       return $value;
    }
 
+   /**
+    *  Invert fonction from clean_cross_side_scripting_deep to display HTML striping XSS code
+    *
+    * @since version 0.83.3
+    * @param $value array or string: item to unclean from clean_cross_side_scripting_deep
+    *
+    * @return unclean item
+    *
+    * @see clean_cross_side_scripting_deep
+   **/
+   static function unclean_html_cross_side_scripting_deep($value) {
 
+      $in  = array('<', '>');
+      $out = array('&lt;', '&gt;');
+
+      $value = is_array($value) ? array_map(array(__CLASS__, 'unclean_html_cross_side_scripting_deep'),
+                                            $value)
+                                : (is_null($value) ? NULL : str_replace($out,$in,$value));
+
+      include_once(GLPI_ROOT.'/lib/htmlawed/htmLawed.php');
+      
+      $value = htmLawed($value, array('safe'=>1));
+      
+      return $value;
+   }
+
+   
    /**
     * Log in 'php-errors' all args
    **/
