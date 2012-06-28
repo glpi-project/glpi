@@ -131,4 +131,17 @@ if (isset($_REQUEST['glpi_tab']) && isset($_REQUEST['itemtype'])) {
 if (isset($_REQUEST['glpilist_limit'])) {
    $_SESSION['glpilist_limit']=$_REQUEST['glpilist_limit'];
 }
+
+// Security : Check HTTP_REFERRER : need to be in GLPI.
+if (!defined('DO_NOT_CHECK_HTTP_REFERER')) {
+   // Do not applyed for plugins on 0.83
+   if (strstr($_SERVER['REQUEST_URI'],$CFG_GLPI['root_doc'].'/plugins/') === FALSE) {
+      if (strstr($_SERVER['HTTP_REFERER'],$CFG_GLPI['root_doc']) === FALSE) {
+         echo $_SERVER['HTTP_REFERER'].' '.$CFG_GLPI['root_doc'];
+         Session::addMessageAfterRedirect("Error calling the previous page from forbidden one.", false, ERROR);
+         Html::back();
+      };
+   }
+}
+
 ?>

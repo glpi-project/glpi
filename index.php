@@ -32,6 +32,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+define('DO_NOT_CHECK_HTTP_REFERER', 1);
 // If config_db doesn't exist -> start installation
 define('GLPI_ROOT', '.');
 include (GLPI_ROOT . "/config/based_config.php");
