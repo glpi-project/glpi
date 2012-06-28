@@ -510,6 +510,7 @@ class MailCollector  extends CommonDBTM {
                            }
                         } else {
                            $error++;
+                           // TODO record rejected ? don't understand case'
                         }
 
                      } else { // New ticket
@@ -525,6 +526,7 @@ class MailCollector  extends CommonDBTM {
                            }
                         } else {
                            $error++;
+                           // TODO record rejected ? don't understand case'
                         }
                      }
 
