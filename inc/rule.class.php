@@ -84,9 +84,10 @@ class Rule extends CommonDBTM {
    const REGEX_NOT_MATCH         = 7;
    const PATTERN_EXISTS          = 8;
    const PATTERN_DOES_NOT_EXISTS = 9;
-   const PATTERN_FIND            = 10;
+   const PATTERN_FIND            = 10; // Global criteria
    const PATTERN_UNDER           = 11;
    const PATTERN_NOT_UNDER       = 12;
+   const PATTERN_IS_EMPTY        = 30; // Global criteria
 
    const AND_MATCHING            = "AND";
    const OR_MATCHING             = "OR";
@@ -1402,9 +1403,9 @@ class Rule extends CommonDBTM {
                if (isset($crit['condition'])) {
                   $param['condition'] = $crit['condition'];
                }
-                              
+
                Dropdown::show(getItemTypeForTable($crit['table']), $param);
-                           
+
                $display = true;
                break;
 

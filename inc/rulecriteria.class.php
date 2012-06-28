@@ -266,7 +266,9 @@ class RuleCriteria extends CommonDBChild {
             }
             return false;
 
-          case Rule::PATTERN_FIND :
+         case Rule::PATTERN_FIND :
+         case Rule::PATTERN_IS_EMPTY :
+            // Global criteria will be evaluated later
             return true;
       }
       return false;

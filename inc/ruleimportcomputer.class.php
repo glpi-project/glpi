@@ -38,7 +38,6 @@ if (!defined('GLPI_ROOT')) {
 /// OCS Rules class
 class RuleImportComputer extends Rule {
 
-   const PATTERN_IS_EMPTY              = 30;
    const RULE_ACTION_LINK_OR_IMPORT    = 0;
    const RULE_ACTION_LINK_OR_NO_IMPORT = 1;
 
@@ -112,7 +111,7 @@ class RuleImportComputer extends Rule {
 
       $criterias['name']['name']                 = __("Computer's name");
       $criterias['name']['allow_condition']      = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT,
-                                                         self::PATTERN_IS_EMPTY,
+                                                         Rule::PATTERN_IS_EMPTY,
                                                          Rule::PATTERN_FIND);
 
       $criterias['DESCRIPTION']['name']          = __('Description');
@@ -197,7 +196,7 @@ class RuleImportComputer extends Rule {
    static function addMoreCriteria() {
 
       return array(Rule::PATTERN_FIND     => __('is already present in GLPI'),
-                   self::PATTERN_IS_EMPTY => __('is empty in GLPI'));
+                   Rule::PATTERN_IS_EMPTY => __('is empty in GLPI'));
    }
 
 
@@ -206,7 +205,7 @@ class RuleImportComputer extends Rule {
    **/
    function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern) {
 
-      if ($condition == self::PATTERN_IS_EMPTY) {
+      if ($condition == Rule::PATTERN_IS_EMPTY) {
           return __('Yes');
       }
       return false;
@@ -224,7 +223,7 @@ class RuleImportComputer extends Rule {
 
       switch ($condition) {
          case Rule::PATTERN_FIND :
-         case self::PATTERN_IS_EMPTY :
+         case Rule::PATTERN_IS_EMPTY :
             Dropdown::showYesNo($name, 0, 0);
             return true;
       }
@@ -349,7 +348,7 @@ class RuleImportComputer extends Rule {
                break;
 
             case 'name' :
-               if ($criteria->fields['condition'] == self::PATTERN_IS_EMPTY) {
+               if ($criteria->fields['condition'] == Rule::PATTERN_IS_EMPTY) {
                   $sql_where .= " AND (`glpi_computers`.`name`=''
                                        OR `glpi_computers`.`name` IS NULL) ";
                } else {
