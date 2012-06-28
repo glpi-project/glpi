@@ -1255,7 +1255,11 @@ class Html {
 
       $menu['utils']['default'] = '/front/reminder.php';
 
-      $menu['utils']['content']['reminder']['title']           = $LANG['title'][37];
+      if (Session::haveRight('reminder_public', 'r')) {
+         $menu['utils']['content']['reminder']['title']        = $LANG['title'][37];
+      } else {
+         $menu['utils']['content']['reminder']['title']        = $LANG['reminder'][0];
+      }
       $menu['utils']['content']['reminder']['page']            = '/front/reminder.php';
       $menu['utils']['content']['reminder']['links']['search'] = '/front/reminder.php';
       $menu['utils']['content']['reminder']['links']['add']    = '/front/reminder.form.php';
