@@ -466,6 +466,15 @@ class MailCollector  extends CommonDBTM {
                                   ||(isset($tkt['_users_id_requester'])
                                      && ($tkt['_users_id_requester'] > 0)));
 
+               $rejinput                      = array();
+               $rejinput['mailcollectors_id'] = $mailgateID;
+               $rejinput['from']              = $tkt['_head']['from'];
+               $rejinput['to']                = $tkt['_head']['to'];
+               $rejinput['users_id']          = $tkt['_users_id_requester'];
+               $rejinput['subject']           = $this->textCleaner($tkt['_head']['subject']);
+               $rejinput['messageid']         = $tkt['_head']['message_id'];
+               $rejinput['date']              = $_SESSION["glpi_currenttime"];
+
                // Manage blacklisted emails
                if (isset($tkt['_blacklisted']) && $tkt['_blacklisted']) {
                   $this->deleteMails($i, self::REFUSED_FOLDER);
@@ -496,7 +505,8 @@ class MailCollector  extends CommonDBTM {
                               $delete_mail = self::ACCEPTED_FOLDER;
                            } else {
                               $error++;
-                              // TODO NotImportedEmail::FAILED_INSERT
+                              $rejinput['reason'] = NotImportedEmail::FAILED_INSERT;
+                              $rejected->add($rejinput);
                            }
                         } else {
                            $error++;
@@ -510,7 +520,8 @@ class MailCollector  extends CommonDBTM {
                               $delete_mail = self::ACCEPTED_FOLDER;
                            } else {
                               $error++;
-                              // TODO NotImportedEmail::FAILED_INSERT
+                              $rejinput['reason'] = NotImportedEmail::FAILED_INSERT;
+                              $rejected->add($rejinput);
                            }
                         } else {
                            $error++;
@@ -528,23 +539,13 @@ class MailCollector  extends CommonDBTM {
                   }
 
                } else {
-                  $input                      = array();
-                  $input['mailcollectors_id'] = $mailgateID;
-                  $input['from']              = $tkt['_head']['from'];
-                  $input['to']                = $tkt['_head']['to'];
-
                   if (!$tkt['_users_id_requester']) {
-                     $input['reason'] = NotImportedEmail::USER_UNKNOWN;
+                     $rejinput['reason'] = NotImportedEmail::USER_UNKNOWN;
 
                   } else {
-                     $input['reason'] = NotImportedEmail::MATCH_NO_RULE;
+                     $rejinput['reason'] = NotImportedEmail::MATCH_NO_RULE;
                   }
-
-                  $input['users_id']  = $tkt['_users_id_requester'];
-                  $input['subject']   = $this->textCleaner($tkt['_head']['subject']);
-                  $input['messageid'] = $tkt['_head']['message_id'];
-                  $input['date']      = $_SESSION["glpi_currenttime"];
-                  $rejected->add($input);
+                  $rejected->add($rejinput);
                }
                $this->fetch_emails++;
             }
