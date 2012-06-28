@@ -40,6 +40,7 @@ class NotImportedEmail extends CommonDBTM {
 
    const MATCH_NO_RULE = 0;
    const USER_UNKNOWN  = 1;
+   const FAILED_INSERT = 2;
 
 
    function canCreate() {
@@ -126,6 +127,9 @@ class NotImportedEmail extends CommonDBTM {
 
          case self::USER_UNKNOWN :
             return __('Email not found. Impossible import');
+
+         case self::FAILED_INSERT :
+            return __('Failed operation');
 
          default :
             return '';
