@@ -226,10 +226,12 @@ class Reminder extends CommonDBTM {
    **/
    static function addVisibilityJoins($forceall=false) {
 
-      $join = '';
+      if (!Session::haveRight('reminder_public', 'r')) {
+         return '';
+      }
 
       // Users
-      $join .= " LEFT JOIN `glpi_reminders_users`
+      $join = " LEFT JOIN `glpi_reminders_users`
                      ON (`glpi_reminders_users`.`reminders_id` = `glpi_reminders`.`id`) ";
 
       // Groups
@@ -265,7 +267,11 @@ class Reminder extends CommonDBTM {
    **/
    static function addVisibilityRestrict() {
 
-      $restrict = "(`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."' ";
+      $restrict = "`glpi_reminders`.`users_id` = '".Session::getLoginUserID()."' ";
+
+      if (!Session::haveRight('reminder_public', 'r')) {
+         return $restrict;
+      }
 
       // Users
       $restrict .= " OR `glpi_reminders_users`.`users_id` = '".Session::getLoginUserID()."' ";
@@ -294,8 +300,7 @@ class Reminder extends CommonDBTM {
          $restrict .= getEntitiesRestrictRequest("OR","glpi_entities_reminders", '', '', true, true);
       }
 
-      $restrict .= ") ";
-      return $restrict;
+      return '('.$restrict.')';
    }
 
 
@@ -1297,7 +1302,7 @@ class Reminder extends CommonDBTM {
          $confirm= array();
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $confirm = array('deletevisibility' => $LANG['common'][120]);
-         }         
+         }
          Html::closeArrowMassives(array('deletevisibility' => $LANG['buttons'][6]), $confirm);
          echo "</form>";
       }
