@@ -4688,6 +4688,12 @@ class OcsServer extends CommonDBTM {
                      $is_helpdesk_visible = $res_rule["is_helpdesk_visible"];
                   }
 
+                  if (isset($res_rule['manufacturer']) && $res_rule['manufacturer']) {
+                     $manufacturer = Dropdown::getDropdownName('glpi_manufacturers',
+                                                               $res_rule['manufacturer']);
+                     $manufacturer = Toolbox::addslashes_deep($manufacturer);
+                  }
+
                   // If software dictionnary returns an entity, it overrides the one that may have
                   // been defined in the entity's configuration
                   if (isset($res_rule["new_entities_id"]) && strlen($res_rule["new_entities_id"])) {
