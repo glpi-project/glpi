@@ -134,9 +134,9 @@ if (isset($_REQUEST['glpilist_limit'])) {
 
 // Security : Check HTTP_REFERRER : need to be in GLPI.
 if (!defined('DO_NOT_CHECK_HTTP_REFERER')) {
-   if (strstr($_SERVER['HTTP_REFERER'],$CFG_GLPI['root_doc']) === FALSE) {
-      Session::addMessageAfterRedirect(__("Error calling the previous page from a forbidden page."), false, ERROR);
-      Html::back();
+   if (!isset($_SERVER['HTTP_REFERER'])
+       || (strstr($_SERVER['HTTP_REFERER'],$CFG_GLPI['root_doc']) === FALSE)) {
+      Html::displayErrorAndDie(__("Error calling the previous page from a forbidden page."), true);
    };
 }
 
