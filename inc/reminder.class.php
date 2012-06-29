@@ -1210,7 +1210,7 @@ class Reminder extends CommonDBTM {
          }
 
          Html::closeArrowMassives(array('deletevisibility' => __('Delete')), $confirm);
-         echo "</form>";
+         Html::closeForm();
       }
 
       echo "</div>";

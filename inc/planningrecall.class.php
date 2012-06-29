@@ -309,7 +309,7 @@ class PlanningRecall extends CommonDBTM {
       self::dropdown($options);
       echo " <input type='submit' name='update' value=\""._sx('button', 'Save')."\" class='submit'>";
 
-      echo "</form>";
+      Html::closeForm();
    }
 
 

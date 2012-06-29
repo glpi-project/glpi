@@ -322,7 +322,9 @@ class Consumable extends CommonDBTM {
          echo " <input type='submit' name='add_several' value=\""._sx('button','Add consumables')."\"
                 class='submit'>";
          echo "</td></tr>";
-         echo "</table></form></div>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
       }
    }
 
@@ -448,7 +450,7 @@ class Consumable extends CommonDBTM {
       }
       echo "</table></div>";
       if (!$show_old && $canedit) {
-         echo "</form>";
+         Html::closeForm();
       }
    }
 

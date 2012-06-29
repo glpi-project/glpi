@@ -240,7 +240,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
             Html::openArrowMassives("tickettemplatehiddenfields_form$rand", true);
             Html::closeArrowMassives(array('delete' => __('Delete')));
          }
-         echo "</form>";
+         Html::closeForm();
 
       }
    }

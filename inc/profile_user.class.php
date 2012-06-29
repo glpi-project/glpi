@@ -229,7 +229,8 @@ class Profile_User extends CommonDBTM {
          $paramsma['ontop'] = false;
          Html::displayMassiveActions($paramsma);
       }
-      echo "</form></div>";
+      Html::closeForm();
+      echo "</div>";
    }
 
 
@@ -376,7 +377,7 @@ class Profile_User extends CommonDBTM {
       if ($canedit) {
          Html::openArrowMassives("entityuser_form$rand", true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
-         echo "</form>";
+         Html::closeForm();
       }
       echo "</div>";
 
@@ -454,7 +455,9 @@ class Profile_User extends CommonDBTM {
                               _sx('button','Move')."' class='submit'>&nbsp;";
                         Html::closeArrowMassives(array('delete' => __('Delete')));
                      }
-                     echo "</div></form></td></tr>\n";
+                     echo "</div>";
+                     Html::closeForm();
+                     echo "</td></tr>\n";
                   }
 
                   // New entity
@@ -537,7 +540,9 @@ class Profile_User extends CommonDBTM {
                                "' class='submit'>&nbsp;";
                   Html::closeArrowMassives(array('delete' => __('Delete')));
                }
-               echo "</div></form></td></tr>\n";
+               echo "</div>";
+               Html::closeForm();
+               echo "</td></tr>\n";
             }
 
          } else {

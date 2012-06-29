@@ -1959,7 +1959,9 @@ class User extends CommonDBTM {
          echo "<input type='submit' name='update' value=\""._sx('Button','Save')."\" class='submit'>";
          echo "</td></tr>";
 
-         echo "</table></form></div>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
          $CFG_GLPI["use_ajax_autocompletion"] = $save_autocompletion;
          return true;
       }
@@ -2591,7 +2593,9 @@ class User extends CommonDBTM {
              class='submit'>\n";
       echo "</td></tr>\n";
 
-      echo "</table></form></div>\n";
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>\n";
    }
 
 
@@ -3032,7 +3036,8 @@ class User extends CommonDBTM {
          echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>";
 
-        echo "</table></form>";
+        echo "</table>";
+         Html::closeForm();
 
       } else {
          _e('Your password reset request has expired or is invalid. Please renew it.');
@@ -3062,7 +3067,9 @@ class User extends CommonDBTM {
       echo "<td><input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
       echo "</td></tr>";
 
-      echo "</table></form></div>";
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>";
    }
 
 

@@ -967,7 +967,8 @@ class Entity extends CommonTreeDropdown {
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
 
          echo "</td></tr>";
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
 
       } else {
          echo "</table>";
@@ -1053,7 +1054,8 @@ class Entity extends CommonTreeDropdown {
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
 
          echo "</td></tr>";
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
 
       } else {
          echo "</table>";
@@ -1184,7 +1186,8 @@ class Entity extends CommonTreeDropdown {
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
 
          echo "</td></tr>";
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
 
       } else {
          echo "</table>";
@@ -1484,7 +1487,8 @@ class Entity extends CommonTreeDropdown {
          echo "<input type='hidden' name='id' value='".$entity->fields["id"]."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
          echo "</td></tr>";
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
 
       } else {
          echo "</table>";
@@ -1780,7 +1784,8 @@ class Entity extends CommonTreeDropdown {
                   class='submit'>";
 
          echo "</td></tr>";
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
 
       } else {
          echo "</table>";

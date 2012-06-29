@@ -599,7 +599,9 @@ class Cartridge extends CommonDBTM {
          echo " <input type='submit' name='add_several' value=\"".__s('Add cartridges')."\"
                 class='submit'>";
          echo "</td></tr>";
-         echo "</table></form></div>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
       }
    }
 
@@ -786,7 +788,7 @@ class Cartridge extends CommonDBTM {
       }
       echo "</table></div>";
       if ($canedit) {
-         echo "</form>";
+         Html::closeForm();
       }
    }
 

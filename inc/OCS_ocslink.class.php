@@ -147,7 +147,7 @@ class Ocslink extends CommonDBTM {
             echo "<input type='hidden' name='resynch_id' value='" . $data["id"] . "'>";
             echo "<input class=submit type='submit' name='force_ocs_resynch' value=\"" .
                    __s('Force synchronization') . "\">";
-            echo "</form>\n";
+            Html::closeForm();
             echo "</td><tr>";
          }
 
@@ -396,7 +396,8 @@ class Ocslink extends CommonDBTM {
          }
          echo "</td></tr>";
 
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
          echo "</div>\n";
       }
    }

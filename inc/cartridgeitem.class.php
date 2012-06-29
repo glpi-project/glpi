@@ -532,7 +532,8 @@ class CartridgeItem extends CommonDBTM {
          echo "<input type='submit' name='addtype' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
       }
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
 
 

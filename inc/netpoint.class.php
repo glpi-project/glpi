@@ -344,7 +344,7 @@ class Netpoint extends CommonDropdown {
             echo "<input type='hidden' name='action' value='delete'>";
             Html::closeArrowMassives(array('massiveaction' => __('Delete')));
 
-            echo "</form>\n";
+            Html::closeForm();
          }
          Html::printAjaxPager(printf(__('Network outlets for %s'), $item->getTreeLink()),
                               $start, $number);
@@ -362,7 +362,8 @@ class Netpoint extends CommonDropdown {
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
          echo "<td><input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>\n";
-         echo "</table></form>\n";
+         echo "</table>\n";
+         Html::closeForm();
 
          // Minimal form for massive input.
          echo "<form action='".$netpoint->getFormURL()."' method='post'>";
@@ -379,7 +380,8 @@ class Netpoint extends CommonDropdown {
          echo "<input type='hidden' name='_method' value='AddMulti'></td>";
          echo "<td><input type='submit' name='execute' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>\n";
-         echo "</table></form>\n";
+         echo "</table>\n";
+         Html::closeForm();
       }
       echo "</div>\n";
    }

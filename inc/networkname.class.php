@@ -759,7 +759,7 @@ class NetworkName extends FQDNLabel {
                               'condition' => '`items_id`=0'));
          echo "&nbsp;<input type='submit' name='assign_address' value='"._sx('button','Associate').
                       "' class='submit'>";
-         echo "</form>\n";
+         Html::closeForm();
          echo "</td></tr>\n";
 
          echo "</table>\n";

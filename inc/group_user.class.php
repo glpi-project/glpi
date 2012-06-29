@@ -244,7 +244,7 @@ class Group_User extends CommonDBRelation{
             Html::openArrowMassives("groupuser_form$rand", true);
             Html::closeArrowMassives(array('deletegroup' => __('Delete')));
          }
-         echo "</form>";
+         Html::closeForm();
       }
       echo "</div>";
    }
@@ -291,7 +291,8 @@ class Group_User extends CommonDBRelation{
          echo "<input type='hidden' name'is_dynamic' value='0'>";
          echo "<input type='submit' name='adduser' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
-         echo "</table></div></form>";
+         echo "</table></div>";
+         Html::closeForm();
       }
    }
 

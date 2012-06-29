@@ -246,7 +246,9 @@ class DisplayPreference extends CommonDBTM {
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
          echo __('No personal criteria. Create personal parameters?')."<span class='small_space'>";
          echo "<input type='submit' name='activate' value=\""._sx('Button', 'Post')."\" class='submit'>";
-         echo "</span></form></th></tr></table>\n";
+         echo "</span>";
+         Html::closeForm();
+         echo "</th></tr></table>\n";
 
       } else {
          $already_added = self::getForTypeUser($itemtype, $IDuser);
@@ -280,7 +282,8 @@ class DisplayPreference extends CommonDBTM {
          }
          echo "</select><span class='small_space'>";
          echo "<input type='submit' name='add' value=\""._sx('Button', 'Add')."\" class='submit'>";
-         echo "</span></form>";
+         echo "</span>";
+         Html::closeForm();
          echo "</td></tr>\n";
 
          // print first element
@@ -320,7 +323,8 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='image' name='up' value=\"".__s('Bring up')."\" src='".
                             $CFG_GLPI["root_doc"]."/pics/puce-up2.png' alt=\"".
                             __s('Bring up')."\" title=\"".__s('Bring up')."\">";
-                     echo "</form></td>\n";
+                     Html::closeForm();
+                     echo "</td>\n";
 
                   } else {
                      echo "<td>&nbsp;</td>";
@@ -335,7 +339,8 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='image' name='down' value=\"".__s('Bring down')."\" src='".
                             $CFG_GLPI["root_doc"]."/pics/puce-down2.png' alt=\"".
                             __s('Bring down')."\" title=\"".__s('Bring down')."\">";
-                     echo "</form></td>\n";
+                     Html::closeForm();
+                     echo "</td>\n";
 
                   } else {
                      echo "<td>&nbsp;</td>";
@@ -349,7 +354,8 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='image' name='delete' value=\"".__s('Delete')."\" src='".
                          $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
                          __s('Delete')."\" title=\"".__s('Delete')."\">";
-                  echo "</form></td>\n";
+                  Html::closeForm();
+                  echo "</td>\n";
                   echo "</tr>";
                   $i++;
                }
@@ -430,7 +436,8 @@ class DisplayPreference extends CommonDBTM {
 
          echo "</select><span class='small_space'>";
          echo "<input type='submit' name='add' value=\""._sx('Button', 'Add')."\" class='submit'>";
-         echo "</span></form>";
+         echo "</span>";
+         Html::closeForm();
          echo "</td></tr>";
       }
 
@@ -478,7 +485,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='image' name='up' value=\"".__s('Bring up')."\" src='".
                             $CFG_GLPI["root_doc"]."/pics/puce-up2.png' alt=\"".
                             __s('Bring up')."\"  title=\"".__s('Bring up')."\">";
-                     echo "</form>";
+                     Html::closeForm();
                      echo "</td>";
 
                   } else {
@@ -494,7 +501,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='image' name='down' value=\"".__s('Bring down')."\" src='".
                             $CFG_GLPI["root_doc"]."/pics/puce-down2.png' alt=\"".
                             __s('Bring down')."\" title=\"".__s('Bring down')."\">";
-                     echo "</form>";
+                     Html::closeForm();
                      echo "</td>";
 
                   } else {
@@ -509,7 +516,7 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='image' name='delete' value=\"".__s('Delete')."\" src='".
                          $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
                          __s('Delete')."\" title=\"".__s('Delete')."\">";
-                  echo "</form>";
+                  Html::closeForm();
                   echo "</td>\n";
                }
 
@@ -559,7 +566,7 @@ class DisplayPreference extends CommonDBTM {
          echo "</table>";
          Html::openArrowMassives('formprefs', true);
          Html::closeArrowMassives(array('delete_for_user' => __('Delete')));
-         echo "</form>";
+         Html::closeForm();
 
       } else {
          echo "<table class='tab_cadre_fixe'>";

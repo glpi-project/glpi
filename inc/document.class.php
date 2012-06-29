@@ -936,7 +936,8 @@ class Document extends CommonDBTM {
       } else {
          echo "</table>";
       }
-      echo "</div></form>";
+      echo "</div>";
+      Html::closeForm();
 
    }
 
@@ -1509,7 +1510,9 @@ class Document extends CommonDBTM {
             }
          }
       }
-      echo "</table></form></div>";
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>";
    }
 
 

@@ -447,7 +447,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      _sx('button', 'Move')."' class='submit'>&nbsp;";
                Html::closeArrowMassives(array('deleteinstalls' => __('Delete')));
 
-               echo "</form>";
+               Html::closeForm();
             }
 
          } else { // Not found
@@ -560,7 +560,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
          echo "<input type='submit' name='install' value=\""._sx('button', 'Install')."\"
                 class='submit'>";
-         echo "</form>";
+         Html::closeForm();
          echo "</td>";
          echo "<td class='center' clospan='2'>";
          echo "<form method='post' action='".$CFG_GLPI["root_doc"].
@@ -569,7 +569,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
          echo "<input type='submit' name='add' value=\"" .__s('Add')."\" class='submit'>";
-         echo "</form>";
+         Html::closeForm();
          echo "</td></tr>\n";
       }
       echo "<tr><th colspan='5'>";
@@ -679,7 +679,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
 
          }
-         echo "</form>";
+         Html::closeForm();
          echo "</div></td></tr>";
       }
    }

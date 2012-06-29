@@ -244,7 +244,8 @@ class Bookmark extends CommonDBTM {
          echo "<input type='submit' name='delete' value=\"".__s('Delete')."\" class='submit'>";
          echo "</div></td></tr>";
       }
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
 
 
@@ -603,7 +604,7 @@ class Bookmark extends CommonDBTM {
             _e('You have not recorded any bookmarks yet');
             echo "</td></tr></table>";
          }
-         echo '</form>';
+         Html::closeForm();
       }
    }
 

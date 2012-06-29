@@ -345,7 +345,9 @@ class Planning extends CommonGLPI {
              title=\"".__s('Next')."\"></a>";
       echo "</td>";
       echo "</tr>";
-      echo "</table></form></div>\n";
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>\n";
    }
 
 
@@ -400,7 +402,9 @@ class Planning extends CommonGLPI {
       echo "</td>\n";
 
       echo "</tr>";
-      echo "</table></form></div>\n";
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>\n";
 
       $params = array('who'       => $who,
                       'who_group' => 0,

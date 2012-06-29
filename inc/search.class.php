@@ -1428,7 +1428,7 @@ class Search {
                   $massiveactionparams['ontop'] = false;
                   Html::displayMassiveActions($massiveactionparams);
                   // End form for delete item
-                  echo "</form>\n";
+                  Html::closeForm();
                } else {
                   echo "<br>";
                }
@@ -1874,7 +1874,7 @@ class Search {
       // Reset to start when submit new search
       echo "<input type='hidden' name='start' value='0'>";
       echo "</div>";
-      echo "</form>";
+      Html::closeForm();
    }
 
 

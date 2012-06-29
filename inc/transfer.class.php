@@ -3208,7 +3208,8 @@ class Transfer extends CommonDBTM {
             $this->showFormButtons($options);
             $this->addDivForTabs();
          } else {
-            echo "</table></div></form>";
+            echo "</table></div>";
+            Html::closeForm();
          }
       }
    }

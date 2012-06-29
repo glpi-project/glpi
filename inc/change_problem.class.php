@@ -158,7 +158,7 @@ class Change_Problem extends CommonDBRelation{
          Html::openArrowMassives("changeproblem_form$rand", true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
       }
-      echo "</form>";
+      Html::closeForm();
    }
 
 
@@ -245,7 +245,7 @@ class Change_Problem extends CommonDBRelation{
          Html::openArrowMassives("changeproblem_form$rand", true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
       }
-      echo "</form>";
+      Html::closeForm();
    }
 
 

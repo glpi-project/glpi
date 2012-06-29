@@ -80,7 +80,7 @@ echo "<tr><td class='tab_bg_1 center' colspan='2'>";
 echo "<p><input type='submit' value=\"".__s('Display report')."\" class='submit'></p></td></tr>";
 
 echo "</table>";
-echo "</form>";
+Html::closeForm();
 
 Html::footer();
 ?>

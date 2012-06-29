@@ -55,7 +55,8 @@ User::dropdown(array('name'   => 'id',
 echo "</td>";
 echo "<td rowspan='2' class='center'><input type='submit' class='submit' name='submit' value='".
       __s('Display report')."'></td></tr>";
-echo "</table></form>";
+echo "</table>";
+Html::closeForm();
 
 if ($_GET["id"] > 0) {
    Reservation::showForUser($_GET["id"]);
