@@ -351,13 +351,13 @@ class Toolbox {
                                             $value)
                                 : (is_null($value) ? NULL : str_replace($out,$in,$value));
 
-      include_once(GLPI_ROOT.'/lib/htmlawed/htmLawed.php');
+      include_once(GLPI_HTMLAWED);
 
       $value = htmLawed($value, array('safe'=>1));
 
       return $value;
    }
-   
+
    /**
     * Log in 'php-errors' all args
    **/
@@ -1710,7 +1710,7 @@ class Toolbox {
                                  }
                               }
                            }
-                        
+
                            Html::redirect($CFG_GLPI["root_doc"]."/front/".$data[0].".form.php?id=".
                                         $data[1]."&$forcetab");
                         } else {
@@ -1818,13 +1818,13 @@ class Toolbox {
       echo "<option value='/norsh' ".(strstr($value,"/norsh")?" selected ":"").
              ">".__('NORSH')."</option>\n";
       echo "</select>\n";
-      
+
       echo "<select name='server_secure'>";
       echo "<option value=''>&nbsp;</option>\n";
       echo "<option value='/secure' ".(strstr($value,"/secure")?" selected ":"").
              ">".__('SECURE')."</option>\n";
       echo "</select>\n";
-      
+
       echo "<select name='server_debug'>";
       echo "<option value=''>&nbsp;</option>\n";
       echo "<option value='/debug' ".(strstr($value,"/debug")?" selected ":"").
@@ -1877,7 +1877,7 @@ class Toolbox {
       if (isset($input['server_tls'])) {
          $out .= $input['server_tls'];
       }
-      
+
       if (isset($input['server_rsh'])) {
          $out .= $input['server_rsh'];
       }
@@ -1886,7 +1886,7 @@ class Toolbox {
       }
       if (isset($input['server_debug'])) {
          $out .= $input['server_debug'];
-      }      
+      }
       $out .= "}";
       if (isset($input['server_mailbox'])) {
          $out .= $input['server_mailbox'];
