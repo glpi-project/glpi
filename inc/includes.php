@@ -133,12 +133,12 @@ if (isset($_REQUEST['glpilist_limit'])) {
 }
 
 // Security : Check HTTP_REFERRER : need to be in GLPI.
-if (!defined('DO_NOT_CHECK_HTTP_REFERER')) {
+if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()) {
    // Do not applyed for plugins on 0.83
    if (strstr($_SERVER['REQUEST_URI'],$CFG_GLPI['root_doc'].'/plugins/') === FALSE) {
-      if (strstr($_SERVER['HTTP_REFERER'],$CFG_GLPI['root_doc']) === FALSE) {
-         Session::addMessageAfterRedirect("Error calling the previous page from forbidden one.", false, ERROR);
-         Html::back();
+      if (!isset($_SERVER['HTTP_REFERER'])
+          || (strstr($_SERVER['HTTP_REFERER'],$CFG_GLPI['root_doc']) === FALSE)) {
+         Html::displayErrorAndDie("Error calling the previous page from forbidden one.", true);
       };
    }
 }
