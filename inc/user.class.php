@@ -1832,7 +1832,9 @@ class User extends CommonDBTM {
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          echo "</td></tr>";
 
-         echo "</table></form></div>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
          $CFG_GLPI["use_ajax_autocompletion"] = $save_autocompletion;
          return true;
       }
@@ -2457,7 +2459,9 @@ class User extends CommonDBTM {
              class='submit'>\n";
       echo "</td></tr>\n";
 
-      echo "</table></form></div>\n";
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>\n";
    }
 
 
@@ -2846,7 +2850,8 @@ class User extends CommonDBTM {
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
          echo "</td></tr>";
 
-        echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
 
       } else {
          echo $LANG['users'][12];
@@ -2874,7 +2879,9 @@ class User extends CommonDBTM {
       echo "<td><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
       echo "</td></tr>";
 
-      echo "</table></form></div>";
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>";
    }
 
 

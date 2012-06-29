@@ -577,7 +577,9 @@ class KnowbaseItem extends CommonDBTM {
 
          echo "<span class='big_space'>";
          echo "<input type='reset' class='submit' value=\"".$LANG['buttons'][16]."\"></span>";
-         echo "</p></form></div>";
+         echo "</p>";
+         Html::closeForm();
+         echo "</div>";
          return true;
       }
       //  ELSE Cannot edit
@@ -828,7 +830,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
          echo "<input type='hidden' name='items_id' value='".$options['items_id']."'>";
       }
-      echo "</form>";
+      Html::closeForm();
 
       echo "</td>";
 
@@ -844,7 +846,9 @@ class KnowbaseItem extends CommonDBTM {
          Dropdown::show('KnowbaseItemCategory',
                         array('value' => '$params["knowbaseitemcategories_id)"]'));
          echo "</td><td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit'></td>";
-         echo "</tr></table></form></td>";
+         echo "</tr></table>";
+         Html::closeForm();
+         echo "</td>";
       }
       echo "</tr></table></div>";
    }
@@ -1458,7 +1462,7 @@ class KnowbaseItem extends CommonDBTM {
          }
 
          Html::closeArrowMassives(array('deletevisibility' => $LANG['buttons'][6]), $confirm);
-         echo "</form>";
+         Html::closeForm();
       }
 
       echo "</div>";

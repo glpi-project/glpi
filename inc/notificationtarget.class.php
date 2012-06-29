@@ -210,7 +210,8 @@ class NotificationTarget extends CommonDBChild {
       echo "<input type='hidden' name='itemtype' value='".$notification->getField('itemtype')."'>";
       $this->showNotificationTargets($notification);
       echo "</tr>";
-      echo "</table></form>";
+      echo "</table>";
+      Html::closeForm();
    }
 
 

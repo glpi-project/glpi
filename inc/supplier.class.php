@@ -452,7 +452,9 @@ class Supplier extends CommonDBTM {
                    class='submit'>";
             echo "</td></tr>";
          }
-         echo "</table></form></div>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
       }
    }
 
@@ -708,7 +710,8 @@ class Supplier extends CommonDBTM {
             echo "<td>&nbsp;</td></tr>";
          }
       }
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
 
 }

@@ -449,6 +449,6 @@ if ($_REQUEST['itemtype'] == 'Ticket') {
    Stat::showGraph($toprint, array('title' => $LANG['satisfaction'][7]));
 
 }
-echo "</form>";
+Html::closeForm();
 Html::footer();
 ?>

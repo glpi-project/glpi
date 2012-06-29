@@ -86,7 +86,7 @@ function choose_language() {
    echo "";
    echo "<p class='submit'><input type='hidden' name='install' value='lang_select'>";
    echo "<input type='submit' name='submit' class='submit' value='OK'></p>";
-   echo "</form>";
+   Html::closeForm();
 }
 
 
@@ -124,7 +124,7 @@ function acceptLicence() {
    echo "<input type='radio' name='install' value='lang_select' id='disagree' checked='checked'>";
    echo " <label for='disagree'>".$LANG['install'][94]." </label>";
    echo "<p><input type='submit' name='submit' class='submit' value=\"".$LANG['install'][26]."\"></p>";
-   echo "</form>";
+   Html::closeForm();
    echo "</div>";
 }
 
@@ -140,13 +140,13 @@ function step0() {
    echo "<input type='hidden' name='update' value='no'>";
    echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
    echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][3]."\"></p>";
-   echo "</form>";
+   Html::closeForm();
 
    echo "<form action='install.php' method='post'>";
    echo "<input type='hidden' name='update' value='yes'>";
    echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
    echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][4]."\"></p>";
-   echo "</form>";
+   Html::closeForm();
 }
 
 
@@ -168,7 +168,8 @@ function step1($update) {
          echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_1'>";
          echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][26]."\">";
-         echo "</p></form>";
+         echo "</p>";
+         Html::closeForm();
          break;
 
       case 1 :
@@ -178,14 +179,17 @@ function step1($update) {
          echo "<input type='hidden' name='update' value='". $update."'>";
          echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
          echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][26]."\">";
-         echo "</p></form> &nbsp;&nbsp;";
+         echo "</p>";
+         Html::closeForm();
+         echo " &nbsp;&nbsp;";
 
          echo "<form action='install.php' method='post'>";
          echo "<input type='hidden' name='update' value='". $update."'>";
          echo "<input type='hidden' name='language' value='". $_SESSION['glpilanguage']."'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
          echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][27]."\">";
-         echo "</p></form>";
+         echo "</p>";
+         Html::closeForm();
          break;
 
       case 2 :
@@ -194,7 +198,8 @@ function step1($update) {
          echo "<input type='hidden' name='update' value='".$update."'>";
          echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
          echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][27]."\">";
-         echo "</p></form>";
+         echo "</p>";
+         Html::closeForm();
          break;
    }
 
@@ -218,7 +223,7 @@ function step2($update) {
    echo "<input type='hidden' name='install' value='Etape_2'>";
    echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
          $LANG['install'][26]."'></p>";
-   echo "</form>";
+   Html::closeForm();
 }
 
 
@@ -242,7 +247,7 @@ function step3($host, $user, $password, $update) {
       echo "<input type='hidden' name='install' value='Etape_1'>";
       echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
             $LANG['buttons'][13]."'></p>";
-      echo "</form>";
+      Html::closeForm();
 
    } else {
       echo  "<h3>".$LANG['update'][93]."</h3>";
@@ -270,7 +275,7 @@ function step3($host, $user, $password, $update) {
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
                $LANG['install'][26]."'></p>";
          mysql_close($link);
-         echo "</form>";
+         Html::closeForm();
 
       } else if ($update == "yes") {
          echo "<p>".$LANG['install'][40]."</p>";
@@ -289,7 +294,7 @@ function step3($host, $user, $password, $update) {
          echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
                 $LANG['install'][26]."'></p>";
          mysql_close($link);
-         echo "</form>";
+         Html::closeForm();
       }
 
    }
@@ -315,7 +320,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
       echo "<input type='hidden' name='install' value='Etape_2'>";
       echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
              $LANG['buttons'][13]."'></p>";
-      echo "</form>";
+      Html::closeForm();
    }
 
 
@@ -327,7 +332,7 @@ function step4 ($host, $user, $password, $databasename, $newdatabasename) {
       echo "<input type='hidden' name='install' value='Etape_4'>";
       echo "<p class='submit'><input type='submit' name='submit' class='submit' value='".
              $LANG['install'][26]."'></p>";
-      echo "</form>";
+      Html::closeForm();
    }
 
 
@@ -487,7 +492,8 @@ function update1($host, $user, $password, $DBname) {
       echo "<input type='hidden' name='update' value='yes'>";
       echo "<p class='submit'><input type='hidden' name='install' value='Etape_0'>";
       echo "<input type='submit' name='submit' class='submit' value=\"".$LANG['install'][25]."\">";
-      echo "</p></form>";
+      echo "</p>";
+      Html::closeForm();
    }
 }
 

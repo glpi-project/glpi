@@ -238,7 +238,7 @@ class TicketTemplateHiddenField extends CommonDBChild {
             Html::openArrowMassives("tickettemplatehiddenfields_form$rand", true);
             Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
          }
-         echo "</form>";
+         Html::closeForm();
 
       }
    }

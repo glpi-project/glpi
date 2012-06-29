@@ -76,7 +76,9 @@ echo "<input type='submit' class='button' name='submit' value='". $LANG['buttons
 echo "<tr class='tab_bg_2'><td class='right'>".$LANG['search'][9]."&nbsp;:</td><td>";
 Html::showDateFormItem("date2",$_POST["date2"]);
 echo "</td></tr>";
-echo "</table></form></div>";
+echo "</table>";
+Html::closeForm();
+echo "</div>";
 
 Stat::showItems($_SERVER['PHP_SELF'],$_POST["date1"],$_POST["date2"],$_GET['start']);
 

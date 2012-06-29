@@ -940,7 +940,8 @@ class Auth {
          echo "<input type='hidden' name='id' value='" . $user->getID() . "'>";
          echo "<span id='show_massiveaction_field'></span>";
          echo "</td></tr></table>";
-         echo "</div></form>";
+         echo "</div>";
+         Html::closeForm();
       }
    }
 
@@ -1076,7 +1077,8 @@ class Auth {
       echo "<input type='submit' name='update' class='submit' value=\"".$LANG['buttons'][7]."\" >";
       echo "</td></tr>";
 
-      echo "</table></div></form>\n";
+      echo "</table></div>\n";
+      Html::closeForm();
    }
 
 }

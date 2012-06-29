@@ -244,7 +244,8 @@ class Bookmark extends CommonDBTM {
          echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
          echo "</div></td></tr>";
       }
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
 
 
@@ -593,7 +594,7 @@ class Bookmark extends CommonDBTM {
          } else {
             echo "<tr class='tab_bg_1'><td colspan='5'>".$LANG['bookmark'][3]."</td></tr></table>";
          }
-         echo '</form>';
+         Html::closeForm();
       }
    }
 

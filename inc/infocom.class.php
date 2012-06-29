@@ -1062,7 +1062,8 @@ class Infocom extends CommonDBChild {
                echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\"
                       class='submit'>";
                echo "</td></tr>";
-               echo "</table></div></form>";
+               echo "</table></div>";
+               Html::closeForm();
             } else {
                echo "</table></div>";
             }

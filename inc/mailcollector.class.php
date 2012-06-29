@@ -263,7 +263,9 @@ class MailCollector  extends CommonDBTM {
       echo "<input type='submit' name='get_mails' value=\"".$LANG['mailgate'][2]."\" class='submit'>";
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
-      echo "</table></form></div>";
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>";
    }
 
 

@@ -240,7 +240,9 @@ class DisplayPreference extends CommonDBTM {
          echo "<input type='hidden' name='users_id' value='$IDuser'>";
          echo $LANG['setup'][241]."<span class='small_space'>";
          echo "<input type='submit' name='activate' value=\"".$LANG['buttons'][2]."\" class='submit'>";
-         echo "</span></form></th></tr></table>\n";
+         echo "</span>";
+         Html::closeForm();
+         echo "</th></tr></table>\n";
 
       } else {
          $already_added = self::getForTypeUser($itemtype, $IDuser);
@@ -273,7 +275,8 @@ class DisplayPreference extends CommonDBTM {
          }
          echo "</select><span class='small_space'>";
          echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-         echo "</span></form>";
+         echo "</span>";
+         Html::closeForm();
          echo "</td></tr>\n";
 
          // print first element
@@ -313,7 +316,8 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='image' name='up' value=\"".$LANG['buttons'][24]."\" src='".
                             $CFG_GLPI["root_doc"]."/pics/puce-up2.png' alt=\"".
                             $LANG['buttons'][24]."\" title=\"".$LANG['buttons'][24]."\">";
-                     echo "</form></td>\n";
+                     Html::closeForm();
+                     echo "</td>\n";
 
                   } else {
                      echo "<td>&nbsp;</td>";
@@ -328,7 +332,8 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='image' name='down' value=\"".$LANG['buttons'][25]."\" src='".
                             $CFG_GLPI["root_doc"]."/pics/puce-down2.png' alt=\"".
                             $LANG['buttons'][25]."\" title=\"".$LANG['buttons'][25]."\">";
-                     echo "</form></td>\n";
+                     Html::closeForm();
+                     echo "</td>\n";
 
                   } else {
                      echo "<td>&nbsp;</td>";
@@ -342,7 +347,8 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='image' name='delete' value=\"".$LANG['buttons'][6]."\" src='".
                          $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
                          $LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\">";
-                  echo "</form></td>\n";
+                  Html::closeForm();
+                  echo "</td>\n";
                   echo "</tr>";
                   $i++;
                }
@@ -422,7 +428,8 @@ class DisplayPreference extends CommonDBTM {
 
          echo "</select><span class='small_space'>";
          echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-         echo "</span></form>";
+         echo "</span>";
+         Html::closeForm();
          echo "</td></tr>";
       }
 
@@ -469,7 +476,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='image' name='up' value=\"".$LANG['buttons'][24]."\" src='".
                             $CFG_GLPI["root_doc"]."/pics/puce-up2.png' alt=\"".
                             $LANG['buttons'][24]."\"  title=\"".$LANG['buttons'][24]."\">";
-                     echo "</form>";
+                     Html::closeForm();
                      echo "</td>";
 
                   } else {
@@ -485,7 +492,7 @@ class DisplayPreference extends CommonDBTM {
                      echo "<input type='image' name='down' value=\"".$LANG['buttons'][25]."\" src='".
                             $CFG_GLPI["root_doc"]."/pics/puce-down2.png' alt=\"".
                             $LANG['buttons'][25]."\" title=\"".$LANG['buttons'][25]."\">";
-                     echo "</form>";
+                     Html::closeForm();
                      echo "</td>";
 
                   } else {
@@ -500,7 +507,7 @@ class DisplayPreference extends CommonDBTM {
                   echo "<input type='image' name='delete' value=\"".$LANG['buttons'][6]."\" src='".
                          $CFG_GLPI["root_doc"]."/pics/puce-delete2.png' alt=\"".
                          $LANG['buttons'][6]."\" title=\"".$LANG['buttons'][6]."\">";
-                  echo "</form>";
+                  Html::closeForm();
                   echo "</td>\n";
                }
 
@@ -550,7 +557,7 @@ class DisplayPreference extends CommonDBTM {
          echo "</table>";
          Html::openArrowMassives('formprefs', true);
          Html::closeArrowMassives(array('delete_for_user' => $LANG['buttons'][6]));
-         echo "</form>";
+         Html::closeForm();
 
       } else {
          echo "<table class='tab_cadre_fixe'>";

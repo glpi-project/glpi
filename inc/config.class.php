@@ -303,7 +303,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "</table></div>";
-      echo "</form>";
+      Html::closeForm();
    }
 
 
@@ -437,7 +437,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "</table></div>";
-      echo "</form>";
+      Html::closeForm();
    }
 
 
@@ -479,7 +479,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "</table></div>";
-      echo "</form>";
+      Html::closeForm();
    }
 
 
@@ -548,7 +548,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "</table></div>";
-      echo "</form>";
+      Html::closeForm();
    }
 
 
@@ -687,7 +687,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "</table></div>";
-      echo "</form>";
+      Html::closeForm();
    }
 
 
@@ -896,7 +896,7 @@ class Config extends CommonDBTM {
       echo "</td></tr>";
 
       echo "</table></div>";
-      echo "</form>";
+      Html::closeForm();
    }
 
 
@@ -962,7 +962,7 @@ class Config extends CommonDBTM {
       echo "</tr>";
 
       echo "</table>";
-      echo "</form>";
+      Html::closeForm();
 
       $width = 128;
 

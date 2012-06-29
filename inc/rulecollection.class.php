@@ -447,7 +447,8 @@ class RuleCollection extends CommonDBTM {
          Html::closeArrowMassives($options);
       }
 
-      echo "</div></form>";
+      echo "</div>";
+      Html::closeForm();
       echo "<div class='spaced center'><span class='icon_consol'>";
 
       if ($plugin = isPluginItemType($this->getType())) {
@@ -727,7 +728,7 @@ class RuleCollection extends CommonDBTM {
          echo "<input type='hidden' name='sub_type' value='" . $this->getRuleClassName() . "'>";
          echo "</td></tr>\n";
          echo "</table></div>";
-         echo "</form>\n";
+         Html::closeForm();
 
       } else {
          echo '<br><div class="center b">'.$LANG['rulesengine'][97].'</div>';

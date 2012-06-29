@@ -191,7 +191,8 @@ class NetworkPort_Vlan extends CommonDBRelation {
                      "' class='submit'>";
          echo "</td></tr>\n";
 
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
       }
    }
 

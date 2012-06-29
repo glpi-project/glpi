@@ -138,7 +138,9 @@ echo "</td><td class='center'>";
 echo "<input type='hidden' name='value2' value='".$_REQUEST["value2"]."'>";
 Dropdown::showYesNo('showgraph', $_REQUEST['showgraph']);
 echo "</td></tr>";
-echo "</table></form></div>";
+echo "</table>";
+Html::closeForm();
+echo "</div>";
 
 $val    = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"], $_REQUEST["type"], $_REQUEST["value2"]);
 $params = array('type'   => $_REQUEST["type"],

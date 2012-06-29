@@ -391,7 +391,9 @@ class OcsServer extends CommonDBTM {
 
       echo "<p class='submit'>";
       echo "<input type='submit' name='update_server' class='submit' value=\"".$LANG['buttons'][2]."\">";
-      echo "</p></form></div>\n";
+      echo "</p>";
+      Html::closeForm();
+      echo "</div>\n";
    }
 
 
@@ -502,7 +504,8 @@ class OcsServer extends CommonDBTM {
 
       echo "<p class='submit'><input type='submit' name='update_server' class='submit' value='" .
              $LANG['buttons'][2] . "'></p>";
-      echo "</form></div>";
+      Html::closeForm();
+      echo "</div>";
    }
 
 
@@ -551,7 +554,8 @@ class OcsServer extends CommonDBTM {
 
       echo "<p class='submit'><input type='submit' name='update_server' class='submit' value='" .
              $LANG['buttons'][2] . "'></p>";
-      echo "</form></div>";
+      Html::closeForm();
+      echo "</div>";
    }
 
 
@@ -2410,7 +2414,8 @@ class OcsServer extends CommonDBTM {
                    $LANG['buttons'][53]."\">";
          }
          echo "</td></tr>";
-         echo "</table></form>\n";
+         echo "</table>\n";
+         Html::closeForm();
          Html::printPager($start, $numrows, $target, $parameters);
 
       } else {
@@ -2583,7 +2588,8 @@ class OcsServer extends CommonDBTM {
             echo "<a href='".$target."?check=none' ".
                    "onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" .
                    $LANG['buttons'][19] . "</a></td></tr>\n";
-            echo "</table></form>\n";
+            echo "</table>\n";
+            Html::closeForm();
             Html::printPager($start, $numrows, $target, $parameters);
 
          } else {
@@ -2837,7 +2843,9 @@ class OcsServer extends CommonDBTM {
                echo "</a></td></tr>";
 
                echo "<tr class='tab_bg_1'><td class='center b'>".$LANG['ocsconfig'][18] . "</td>";
-               echo "</tr></table></form></div>";
+               echo "</tr></table>";
+               Html::closeForm();
+               echo "</div>";
             }
 
             echo "<form method='post' name='ocsng_form' id='ocsng_form' action='$target'>";
@@ -2948,7 +2956,8 @@ class OcsServer extends CommonDBTM {
                    $LANG['buttons'][37]."\">\n";
             echo "<input type=hidden name='ocsservers_id' value='$ocsservers_id'>";
             echo "</td></tr>";
-            echo "</table></form>\n";
+            echo "</table>\n";
+            Html::closeForm();
 
             if (!$tolinked) {
                echo "<a href='".$target."?check=all&amp;start=$start' onclick=".
@@ -4032,7 +4041,8 @@ class OcsServer extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          echo "<input class='submit' type='submit' name='ocs_showservers' value=\"".
                 $LANG['buttons'][2]."\"></td></tr>";
-         echo "</table></div></form>\n";
+         echo "</table></div>\n";
+         Html::closeForm();
 
       } else if ($DB->numrows($result) == 1) {
          $ocs = $DB->fetch_array($result);

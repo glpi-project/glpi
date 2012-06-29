@@ -114,7 +114,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
    echo '<p><span>';
    echo '<input type="submit" name="submit" value="'.$LANG['buttons'][2].'" class="submit"/>';
    echo '</span></p>';
-   echo "</form>";
+   Html::closeForm();
 
    echo "<script type='text/javascript' >\n";
    echo "document.getElementById('login_name').focus();";

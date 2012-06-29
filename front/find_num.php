@@ -82,7 +82,9 @@ echo "<tr><td class='tab_bg_1 center'>";
 echo "<input name='NomContact' type='text' id='NomContact' >";
 echo "<input type='hidden' name='send' value='1'>"; // bug IE ! La validation par enter ne fonctionne pas sans cette ligne  incroyable mais vrai !
 echo "<input type='submit' name='send' value='". $LANG['buttons'][0]."'>";
-echo "</td></tr></table></form></div>";
+echo "</td></tr></table>";
+Html::closeForm();
+echo "</div>";
 
 if (isset($_POST["send"])) {
    echo "<table class='tab_cadre_fixe'>";

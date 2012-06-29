@@ -1,4 +1,4 @@
-<?php
+// <?php
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -291,7 +291,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             Html::openArrowMassives("tickettemplatepredefinedfields_form$rand", true);
             Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
          }
-         echo "</form>";
+         Html::closeForm();
 
       }
    }

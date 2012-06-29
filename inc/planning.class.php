@@ -263,7 +263,9 @@ class Planning {
              title=\"".$LANG['buttons'][11]."\"></a>";
       echo "</td>";
       echo "</tr>";
-      echo "</table></form></div>\n";
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>\n";
    }
 
 
@@ -317,7 +319,9 @@ class Planning {
       echo "</td>\n";
 
       echo "</tr>";
-      echo "</table></form></div>\n";
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>\n";
 
 
             // ---------------Tracking

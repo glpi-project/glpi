@@ -229,7 +229,8 @@ class Change_Item extends CommonDBRelation{
       } else {
          echo "</table>";
       }
-      echo "</div></form>";
+      echo "</div>";
+      Html::closeForm();
    }
 
 

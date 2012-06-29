@@ -647,7 +647,9 @@ class Cartridge extends CommonDBTM {
          Dropdown::showInteger('to_add',1,1,100);
          echo "</span>&nbsp;";
          echo $LANG['cartridges'][16]."</td></tr>";
-         echo "</table></form></div>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
       }
    }
 
@@ -825,7 +827,7 @@ class Cartridge extends CommonDBTM {
       }
       echo "</table></div>";
       if ($canedit) {
-         echo "</form>";
+         Html::closeForm();
       }
    }
 

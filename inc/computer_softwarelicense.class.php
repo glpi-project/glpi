@@ -231,7 +231,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          echo "<td><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
 
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
       }
 
       if ($number < 1) {
@@ -375,7 +376,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                      $LANG['buttons'][20]."\" class='submit'>&nbsp;";
                Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
 
-               echo "</form>";
+               Html::closeForm();
             }
 
          } else { // Not found

@@ -355,7 +355,7 @@ class CalendarSegment extends CommonDBChild {
          Html::openArrowMassives("calendarsegment_form$rand", true);
          Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
       }
-      echo "</form>";
+      Html::closeForm();
    }
 
 

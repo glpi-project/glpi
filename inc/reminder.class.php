@@ -1304,7 +1304,7 @@ class Reminder extends CommonDBTM {
             $confirm = array('deletevisibility' => $LANG['common'][120]);
          }
          Html::closeArrowMassives(array('deletevisibility' => $LANG['buttons'][6]), $confirm);
-         echo "</form>";
+         Html::closeForm();
       }
 
       echo "</div>";

@@ -228,7 +228,8 @@ class AuthMail extends CommonDBTM {
 
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          echo "<input type='submit' name='test' class='submit' value=\"".$LANG['buttons'][2]."\"></td>";
-         echo "</tr></table></div></form>";
+         echo "</tr></table></div>";
+         Html::closeForm();
       }
    }
 

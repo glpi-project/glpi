@@ -364,7 +364,9 @@ class Consumable extends CommonDBTM {
          Dropdown::showInteger('to_add',1,1,100);
          echo "</span>&nbsp;";
          echo $LANG['consumables'][16]."</td></tr>";
-         echo "</table></form></div>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
       }
    }
 
@@ -488,7 +490,7 @@ class Consumable extends CommonDBTM {
       }
       echo "</table></div>";
       if (!$show_old && $canedit) {
-         echo "</form>";
+         Html::closeForm();
       }
    }
 

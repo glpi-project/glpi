@@ -105,7 +105,8 @@ class RuleDictionnarySoftwareCollection extends RuleCachedCollection {
       echo "<input type='hidden' name='replay_confirm' value='replay_confirm'";
       echo "</td></tr>";
       echo "</table>\n";
-      echo "</div></form>\n";
+      echo "</div>\n";
+      Html::closeForm();
       return true;
    }
 

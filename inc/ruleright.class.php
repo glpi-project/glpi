@@ -104,7 +104,8 @@ class RuleRight extends Rule {
       Dropdown::showYesNo("is_recursive",0);
       echo "</td></tr>\n";
 
-      echo "</table></form>";
+      echo "</table>";
+      Html::closeForm();
    }
 
 

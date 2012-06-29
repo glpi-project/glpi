@@ -403,7 +403,7 @@ class NetworkPort extends CommonDBChild {
                Dropdown::showForMassiveAction('NetworkPort');
                $actions = array();
                Html::closeArrowMassives($actions);
-               echo "</form>";
+               Html::closeForm();
             }
 
          } else {

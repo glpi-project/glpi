@@ -272,7 +272,8 @@ class EntityData extends CommonDBChild {
          }
 
          echo "</td></tr>";
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
 
       } else {
          echo "</table>";
@@ -366,7 +367,8 @@ class EntityData extends CommonDBChild {
          }
 
          echo "</td></tr>";
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
 
       } else {
          echo "</table>";
@@ -520,7 +522,8 @@ class EntityData extends CommonDBChild {
          }
 
          echo "</td></tr>";
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
 
       } else {
          echo "</table>";
@@ -675,7 +678,8 @@ class EntityData extends CommonDBChild {
          }
 
          echo "</td></tr>";
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
 
       } else {
          echo "</table>";
@@ -936,7 +940,8 @@ class EntityData extends CommonDBChild {
          }
 
          echo "</td></tr>";
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
 
       } else {
          echo "</table>";

@@ -420,7 +420,7 @@ class Rule extends CommonDBTM {
          echo "<form name='actionsaddform' method='post' action='".
                 Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
          $this->addActionForm($rules_id);
-         echo "</form>";
+         Html::closeForm();
       }
 
       if ($canedit) {
@@ -454,7 +454,7 @@ class Rule extends CommonDBTM {
          Html::closeArrowMassives(array('delete_action' => $LANG['buttons'][6]));
       }
       if ($canedit) {
-         echo "</form>";
+         Html::closeForm();
       }
       echo "</div>";
    }
@@ -551,7 +551,7 @@ class Rule extends CommonDBTM {
          echo "<form name='criteriasaddform' method='post' action='".
                 Toolbox::getItemTypeFormURL(get_class($this))."'>\n";
          $this->addCriteriaForm($rules_id);
-         echo "</form>";
+         Html::closeForm();
       }
 
       echo "<div class='spaced'>";
@@ -582,7 +582,8 @@ class Rule extends CommonDBTM {
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          Html::closeArrowMassives(array('delete_criteria' => $LANG['buttons'][6]));
       }
-      echo "</form></div>\n";
+      Html::closeForm();
+      echo "</div>\n";
    }
 
 
@@ -1669,7 +1670,8 @@ class Rule extends CommonDBTM {
          echo "<input type='hidden' name='".$this->rules_id_field."' value='$rules_id'>";
          echo "<input type='hidden' name='sub_type' value='" . $this->getType() . "'>";
          echo "</td></tr>\n";
-         echo "</table></div></form>\n";
+         echo "</table></div>\n";
+         Html::closeForm();
       }
    }
 
@@ -1807,7 +1809,8 @@ class Rule extends CommonDBTM {
       echo "<input type=hidden name='_method' value='AddRule'>";
       echo "<input type='submit' name='execute' value=\"".$LANG['buttons'][8]."\" class='submit'>";
       echo "</td></tr>\n";
-      echo "</table></form>";
+      echo "</table>";
+      Html::closeForm();
    }
 
 
@@ -1876,7 +1879,7 @@ class Rule extends CommonDBTM {
             Html::openArrowMassives($formname, true);
             echo "<input type='hidden' name='action' value='delete'>";
             Html::closeArrowMassives(array('massiveaction' => $LANG['buttons'][6]));
-            echo "</form>";
+            Html::closeForm();
          }
       }
       echo "</div>";

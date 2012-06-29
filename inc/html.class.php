@@ -1989,7 +1989,7 @@ class Html {
                 $LANG['buttons'][2]."\"  alt=\"".$LANG['buttons'][2]."\"></div>";
          echo "<div id='champRecherche'><input size='15' type='text' name='globalsearch' value='".
                 $LANG['buttons'][0]."' onfocus=\"this.value='';\"></div>";
-         echo "</form>";
+         Html::closeForm();
       }
       echo "<div class='sep'></div>\n";
       echo "</div>";
@@ -3397,7 +3397,9 @@ class Html {
                    ($_SESSION["glpiactiveprofile"]["id"]==$key?'selected':'').'>'.$val['name'].
                  '</option>';
          }
-         echo '</select></form></li>';
+         echo '</select>';
+         Html::closeForm();
+         echo '</li>';
       }
 
       if (Session::isMultiEntitiesMode()) {
@@ -3878,7 +3880,7 @@ class Html {
          }
 
          Dropdown::showOutputFormat();
-         echo "</form>";
+         Html::closeForm();
          echo "</td>" ;
       }
 
@@ -3929,7 +3931,7 @@ class Html {
       }
 
       echo "<span>&nbsp;".$LANG['pager'][5]."</span>";
-      echo "</form>";
+      Html::closeForm();
    }
 
 
@@ -3953,6 +3955,27 @@ class Html {
       // $num is 0, so means configured to display nothing
       // or $num == $tot
       return $string." ($tot)";
+   }
+
+   /**
+    * Create a close form part including CSRF token
+    *
+    * @param $display boolean Display or return string (default true)
+    *
+    * @since version 0.83.
+    *
+    * @return String
+   **/
+   static function closeForm ($display=true) {
+      global $LANG;
+
+      $out = "</form>\n";
+      if ($display) {
+         echo $out;
+         return true;
+      } else  {
+         return $out;
+      }
    }
 }
 ?>

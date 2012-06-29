@@ -75,7 +75,8 @@ echo "</select></p></td></tr>";
 echo "<tr class='tab_bg_2'><td colspan='2' class='center'>";
 echo "<input type='submit' value=\"".$LANG['reports'][15]."\" class='submit'></td></tr>";
 
-echo "</table></form>";
+echo "</table>";
+Html::closeForm();
 
 Html::footer();
 ?>

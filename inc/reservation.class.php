@@ -679,7 +679,9 @@ class Reservation extends CommonDBChild {
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][14]."\" class='submit'>";
          echo "</td></tr>\n";
       }
-      echo "</table></form></div>\n";
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>\n";
    }
 
 

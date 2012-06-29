@@ -570,7 +570,8 @@ class CartridgeItem extends CommonDBTM {
          echo "<input type='submit' name='addtype' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
       }
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
 
 

@@ -195,7 +195,8 @@ abstract class CommonITILActor extends CommonDBRelation {
       echo "<input type='hidden' name='id' value='$ID'>";
       echo "</td></tr>";
 
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
 
 

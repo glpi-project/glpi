@@ -433,7 +433,7 @@ function showLocationUpdateForm() {
             "<input type='text' name='root' value='".$_POST['root']."'></p>";
       echo "<input type='submit' class='submit' name='new_location' value=\"".$LANG['buttons'][2]."\">";
       echo "<input type='hidden' name='from_update' value='from_update'>";
-      echo "</form>";
+      Html::closeForm();
       echo "</div>";
    }
 
@@ -450,7 +450,7 @@ function showLocationUpdateForm() {
              $LANG['buttons'][2]."'>";
       echo "<input type='hidden' name='from_update' value='from_update'>";
       echo "</div>";
-      echo "</form>";
+      Html::closeForm();
 
    } else if (isset($_POST["validate_location"])) {
       validate_new_location();
@@ -875,7 +875,8 @@ if (empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
       echo "<form action='update.php' method='post'>";
       echo "<input type='submit' class='submit' name='continuer' value=\"".$LANG['install'][26]."\">";
-      echo "</form></div>";
+      Html::closeForm();
+      echo "</div>";
    }
 
 // Step 2

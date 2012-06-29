@@ -823,7 +823,7 @@ class Software extends CommonDBTM {
          echo "<input type='hidden' name='id' value='$ID'>";
          Html::closeArrowMassives(array('mergesoftware' => $LANG['software'][48]));
 
-         echo "</form>";
+         Html::closeForm();
 
       } else {
          echo $LANG['search'][15];

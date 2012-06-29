@@ -198,7 +198,8 @@ class Profile_User extends CommonDBTM {
          Html::openArrowMassives("entityuser_form$rand",true);
          Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
       }
-      echo "</form></div>";
+      Html::closeForm();
+      echo "</div>";
    }
 
 
@@ -341,7 +342,7 @@ class Profile_User extends CommonDBTM {
       if ($canedit) {
          Html::openArrowMassives("entityuser_form$rand", true);
          Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
-         echo "</form>";
+         Html::closeForm();
       }
       echo "</div>";
 
@@ -420,7 +421,9 @@ class Profile_User extends CommonDBTM {
                               $LANG['buttons'][20]."' class='submit'>&nbsp;";
                         Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
                      }
-                     echo "</div></form></td></tr>\n";
+                     echo "</div>";
+                     Html::closeForm();
+                     echo "</td></tr>\n";
                   }
 
                   // New entity
@@ -502,7 +505,9 @@ class Profile_User extends CommonDBTM {
                                $LANG['buttons'][20]."' class='submit'>&nbsp;";
                   Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
                }
-               echo "</div></form></td></tr>\n";
+               echo "</div>";
+               Html::closeForm();
+               echo "</td></tr>\n";
             }
 
          } else {

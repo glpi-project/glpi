@@ -136,7 +136,7 @@ class Problem_Ticket extends CommonDBRelation{
          Html::openArrowMassives("problemticket_form$rand", true);
          Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
       }
-      echo "</form>";
+      Html::closeForm();
    }
 
 
@@ -209,7 +209,7 @@ class Problem_Ticket extends CommonDBRelation{
          Html::openArrowMassives("problemticket_form$rand", true);
          Html::closeArrowMassives(array('delete' => $LANG['buttons'][6]));
       }
-      echo "</form>";
+      Html::closeForm();
    }
 
 

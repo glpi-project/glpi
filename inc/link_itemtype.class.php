@@ -99,7 +99,8 @@ class Link_ItemType extends CommonDBTM{
                             $LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>";
       }
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
 
 

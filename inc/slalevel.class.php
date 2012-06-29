@@ -171,7 +171,7 @@ class SlaLevel extends RuleTicket {
             echo "</table></div>";
          }
       }
-      echo "</form>";
+      Html::closeForm();
 
    }
 

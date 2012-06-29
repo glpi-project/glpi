@@ -436,7 +436,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
                      $LANG['buttons'][20]."' class='submit'>&nbsp;";
                Html::closeArrowMassives(array('deleteinstalls' => $LANG['buttons'][6]));
 
-               echo "</form>";
+               Html::closeForm();
             }
 
          } else { // Not found
@@ -552,7 +552,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
          echo "<input type='submit' name='install' value=\"".$LANG['buttons'][4]."\" class='submit'>";
-         echo "</form>";
+         Html::closeForm();
          echo "</td>";
          echo "<td class='cneter' clospan='2'>";
          echo "<form method='post' action='".$CFG_GLPI["root_doc"].
@@ -561,7 +561,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
          echo "<input type='submit' name='add' value=\"" .$LANG['buttons'][8]."\" class='submit'>";
-         echo "</form>";
+         Html::closeForm();
          echo "</td></tr>\n";
       }
       echo "<tr><th colspan='5'>";
@@ -673,7 +673,7 @@ class Computer_SoftwareVersion extends CommonDBRelation {
             }
 
          }
-         echo "</form>";
+         Html::closeForm();
          echo "</div></td></tr>";
       }
    }

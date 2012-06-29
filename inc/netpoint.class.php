@@ -349,7 +349,7 @@ class Netpoint extends CommonDropdown {
             echo "<input type='hidden' name='action' value='delete'>";
             Html::closeArrowMassives(array('massiveaction' => $LANG['buttons'][6]));
 
-            echo "</form>\n";
+            Html::closeForm();
          }
       }
 
@@ -364,7 +364,8 @@ class Netpoint extends CommonDropdown {
          echo "<input type='hidden' name='locations_id' value='$ID'></td>";
          echo "<td><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "</td></tr>\n";
-         echo "</table></form>\n";
+         echo "</table>\n";
+         Html::closeForm();
 
          // Minimal form for massive input.
          echo "<form action='".$netpoint->getFormURL()."' method='post'>";
@@ -382,7 +383,8 @@ class Netpoint extends CommonDropdown {
          echo "<td><input type='submit' name='execute' value=\"".$LANG['buttons'][8]."\"
                     class='submit'>";
          echo "</td></tr>\n";
-         echo "</table></form>\n";
+         echo "</table>\n";
+         Html::closeForm();
       }
       echo "</div>\n";
    }

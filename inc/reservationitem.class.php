@@ -213,7 +213,9 @@ class ReservationItem extends CommonDBTM {
          echo "<input type='submit' name='add' value=\"".$LANG['reservation'][7]."\" class='submit'>";
          echo "</td>";
       }
-      echo "</tr></table></form></div>";
+      echo "</tr></table>";
+      Html::closeForm();
+      echo "</div>";
    }
 
 
@@ -253,7 +255,9 @@ class ReservationItem extends CommonDBTM {
          echo "<input type='submit' name='update' value=\"".$LANG['buttons'][14]."\" class='submit'>";
          echo "</td></tr>\n";
 
-         echo "</table></form></div>";
+         echo "</table>";
+         Html::closeForm();
+         echo "</div>";
          return true;
 
       } else {
@@ -334,7 +338,8 @@ class ReservationItem extends CommonDBTM {
       }
       echo "</table>\n";
       echo "<input type='hidden' name='id' value=''>";
-      echo "</form></div>\n";
+      Html::closeForm();
+      echo "</div>\n";
    }
 
 

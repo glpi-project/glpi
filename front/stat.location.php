@@ -109,7 +109,8 @@ echo "</td><td class='center'>";
 Dropdown::showYesNo('showgraph',$_REQUEST['showgraph']);
 echo "</td>";
 echo "</tr>";
-echo "</table></form>";
+echo "</table>";
+Html::closeForm();
 
 if (empty($_REQUEST["dropdown"]) || !($item = getItemForItemtype($_REQUEST["dropdown"]))) {
    // Do nothing
