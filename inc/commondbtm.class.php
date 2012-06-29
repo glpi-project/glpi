@@ -1764,7 +1764,7 @@ class CommonDBTM extends CommonGLPI {
          echo "</table></div>";
          // Form Header always open form
          if (!$params['canedit']) {
-            echo "</form>";
+            Html::closeForm();
          }
          return false;
       }
@@ -1842,7 +1842,8 @@ class CommonDBTM extends CommonGLPI {
 
 
       // Close for Form
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
 
 
@@ -3107,7 +3108,7 @@ class CommonDBTM extends CommonGLPI {
       echo "</table></div>";
 
       if ($canedit) {
-         echo "</form>";
+         Html::closeForm();
       }
    }
 

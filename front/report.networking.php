@@ -55,7 +55,8 @@ Location::dropdown(array('entity' => $_SESSION["glpiactive_entity"]));
 echo "</td><td class='center' width='120'>";
 echo "<input type='submit' value=\"".__s('Display report')."\" class='submit'>";
 echo "</td></tr>";
-echo "</table></form>";
+echo "</table>";
+Html::closeForm();
 
 echo "<form name='form2' method='post' action='report.switch.list.php'>";
 echo "<table class='tab_cadre' width='500'>";
@@ -65,7 +66,8 @@ NetworkEquipment::dropdown(array('name' => 'switch'));
 echo "</td><td class='center' width='120'>";
 echo "<input type='submit' value=\"".__s('Display report')."\" class='submit'>";
 echo "</td></tr>";
-echo "</table></form>";
+echo "</table>";
+Html::closeForm();
 
 if (countElementsInTableForMyEntities("glpi_netpoints") > 0) {
    echo "<form name='form3' method='post' action='report.netpoint.list.php'>";
@@ -76,7 +78,8 @@ if (countElementsInTableForMyEntities("glpi_netpoints") > 0) {
    echo "</td><td class='center' width='120'>";
    echo "<input type='submit' value=\"".__s('Display report')."\" class='submit'>";
    echo "</td></tr>";
-   echo "</table></form>";
+   echo "</table>";
+   Html::closeForm();
 }
 
 Html::footer();

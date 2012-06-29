@@ -771,7 +771,7 @@ class Software extends CommonDBTM {
          echo "<input type='hidden' name='id' value='$ID'>";
          Html::closeArrowMassives(array('mergesoftware' => __('Merge')));
 
-         echo "</form>";
+         Html::closeForm();
 
       } else {
          _e('No item found');

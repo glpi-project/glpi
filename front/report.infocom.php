@@ -67,7 +67,9 @@ echo "<input type='submit' class='submit' name='submit' value=\"".__s('Display r
 echo "<tr class='tab_bg_2'><td class='right'>".__('End date')."</td><td>";
 Html::showDateFormItem("date2" ,$_POST["date2"]);
 echo "</td></tr>";
-echo "</table></form></div>";
+echo "</table>";
+Html::closeForm();
+echo "</div>";
 
 
 $valeurtot           = 0;

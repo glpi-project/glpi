@@ -226,7 +226,8 @@ class Computer_SoftwareLicense extends CommonDBRelation {
          echo "<td><input type='submit' name='add' value=\"".__s('Add')."\" class='submit'>";
          echo "</td></tr>";
 
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
       }
 
       if ($number < 1) {
@@ -373,7 +374,7 @@ class Computer_SoftwareLicense extends CommonDBRelation {
                      _sx('button','Move')."\" class='submit'>&nbsp;";
                Html::closeArrowMassives(array('delete' => __('Delete')));
 
-               echo "</form>";
+               Html::closeForm();
             }
 
          } else { // Not found

@@ -3194,7 +3194,7 @@ class Ticket extends CommonITILObject {
 
       echo "</table></div>";
       if (!$ticket_template) {
-         echo "</form>";
+         Html::closeForm();
       }
    }
 
@@ -4129,7 +4129,7 @@ class Ticket extends CommonITILObject {
       echo "</div>";
 
       if (!isset($options['template_preview'])) {
-         echo "</form>";
+         Html::closeForm();
          $this->addDivForTabs();
       }
 

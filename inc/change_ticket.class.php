@@ -154,7 +154,7 @@ class Change_Ticket extends CommonDBRelation{
          Html::openArrowMassives("changeticket_form$rand", true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
       }
-      echo "</form>";
+      Html::closeForm();
    }
 
 
@@ -245,7 +245,7 @@ class Change_Ticket extends CommonDBRelation{
          Html::openArrowMassives("changeticket_form$rand", true);
          Html::closeArrowMassives(array('delete' => __('Delete')));
       }
-      echo "</form>";
+      Html::closeForm();
    }
 
 

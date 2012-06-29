@@ -1068,7 +1068,8 @@ class Infocom extends CommonDBChild {
                echo "<input type='submit' name='delete' value=\""._sx('button','Purge')."\"
                       class='submit'>";
                echo "</td></tr>";
-               echo "</table></div></form>";
+               echo "</table></div>";
+               Html::closeForm();
             } else {
                echo "</table></div>";
             }

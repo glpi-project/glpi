@@ -387,7 +387,9 @@ class OcsServer extends CommonDBTM {
       echo "<p class='submit'>";
       echo "<input type='submit' name='update_server' class='submit' value=\"".
              _sx('button','Save')."\">";
-      echo "</p></form></div>\n";
+      echo "</p>";
+      Html::closeForm();
+      echo "</div>\n";
    }
 
 
@@ -509,7 +511,8 @@ class OcsServer extends CommonDBTM {
 
       echo "<p class='submit'><input type='submit' name='update_server' class='submit' value='" .
              _sx('button','Save') . "'></p>";
-      echo "</form></div>";
+      Html::closeForm();
+      echo "</div>";
    }
 
 
@@ -2425,7 +2428,8 @@ class OcsServer extends CommonDBTM {
                    _sx('button','Clean')."\">";
          }
          echo "</td></tr>";
-         echo "</table></form>\n";
+         echo "</table>\n";
+         Html::closeForm();
          Html::printPager($start, $numrows, $target, $parameters);
 
       } else {
@@ -2593,7 +2597,8 @@ class OcsServer extends CommonDBTM {
 
             echo "<tr class='tab_bg_1'><td colspan='5' class='center'>";
             self::checkBox($target);
-            echo "</table></form>\n";
+            echo "</table>\n";
+            Html::closeForm();
             Html::printPager($start, $numrows, $target, $parameters);
 
          } else {
@@ -2874,7 +2879,9 @@ class OcsServer extends CommonDBTM {
 
                echo "<tr class='tab_bg_1'><td class='center b'>".
                       __('Check first that duplicates have been correctly managed in OCSNG')."</td>";
-               echo "</tr></table></form></div>";
+               echo "</tr></table>";
+               Html::closeForm();
+               echo "</div>";
             }
 
             echo "<form method='post' name='ocsng_form' id='ocsng_form' action='$target'>";
@@ -2985,7 +2992,8 @@ class OcsServer extends CommonDBTM {
                    _sx('button', 'Import')."\">\n";
             echo "<input type=hidden name='ocsservers_id' value='$ocsservers_id'>";
             echo "</td></tr>";
-            echo "</table></form>\n";
+            echo "</table>\n";
+            Html::closeForm();
 
             if (!$tolinked) {
                self::checkBox($target);
@@ -4117,7 +4125,8 @@ class OcsServer extends CommonDBTM {
          echo "<tr class='tab_bg_2'><td class='center' colspan='2'>";
          echo "<input class='submit' type='submit' name='ocs_showservers' value=\"".
                 __sx('button','Post')."\"></td></tr>";
-         echo "</table></div></form>\n";
+         echo "</table></div>\n";
+         Html::closeForm();
 
       } else if ($DB->numrows($result) == 1) {
          $ocs = $DB->fetch_assoc($result);

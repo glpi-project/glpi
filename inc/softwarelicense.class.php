@@ -664,7 +664,7 @@ class SoftwareLicense extends CommonDBTM {
                $options = array();
                Html::closeArrowMassives($options);
 
-               echo "</form>";
+               Html::closeForm();
             }
 
          } else {

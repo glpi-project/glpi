@@ -463,7 +463,8 @@ class Contact extends CommonDBTM{
             echo "</tr>";
          }
       }
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
 
 

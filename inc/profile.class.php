@@ -610,7 +610,8 @@ class Profile extends CommonDBTM {
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
          echo "<input type='submit' name='update' value=\"".__s('Save')."\" class='submit'>";
          echo "</td></tr>\n";
-         echo "</table></form>\n";
+         echo "</table>\n";
+         Html::closeForm();
       } else {
          echo "</table>\n";
       }
@@ -743,7 +744,8 @@ class Profile extends CommonDBTM {
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
          echo "</td></tr>\n";
-         echo "</table></form>\n";
+         echo "</table>\n";
+         Html::closeForm();
       } else {
          echo "</table>\n";
       }
@@ -980,7 +982,8 @@ class Profile extends CommonDBTM {
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
          echo "</td></tr>\n";
-         echo "</table></form>\n";
+         echo "</table>\n";
+         Html::closeForm();
       } else {
          echo "</table>\n";
       }
@@ -1099,7 +1102,8 @@ class Profile extends CommonDBTM {
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
          echo "</td></tr>\n";
-         echo "</table></form>\n";
+         echo "</table>\n";
+         Html::closeForm();
       } else {
          echo "</table>\n";
       }
@@ -1226,7 +1230,8 @@ class Profile extends CommonDBTM {
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
          echo "</td></tr>\n";
-         echo "</table></form>\n";
+         echo "</table>\n";
+         Html::closeForm();
       } else {
          echo "</table>\n";
       }
@@ -1312,7 +1317,8 @@ class Profile extends CommonDBTM {
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'>";
          echo "<input type='submit' name='update' value=\""._sx('button','Save')."\" class='submit'>";
          echo "</td></tr>\n";
-         echo "</table></form>\n";
+         echo "</table>\n";
+         Html::closeForm();
       } else {
          echo "</table>\n";
       }

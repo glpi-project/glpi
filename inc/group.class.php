@@ -411,7 +411,8 @@ class Group extends CommonTreeDropdown {
                        'candel'  => false);
       $this->showFormButtons($options);
 
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
 
 
@@ -635,8 +636,8 @@ class Group extends CommonTreeDropdown {
       if ($nb) {
          Html::printAjaxPager('', $start, $nb);
       }
-
-      echo "</form></div>";
+      Html::closeForm();
+      echo "</div>";
    }
 
 }

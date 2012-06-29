@@ -714,7 +714,8 @@ class TicketFollowup  extends CommonDBTM {
          echo "<input type='submit' name='add_reopen' value=\"".__('Refuse the solution')."\"
                 class='submit'>";
          echo "</td></tr>\n";
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
       }
       return true;
    }

@@ -450,7 +450,7 @@ class Computer_Item extends CommonDBRelation{
                                         $comp->fields["entities_id"], $withtemplate, $used);
                   echo "<input type='submit' name='connect' value=\""._sx('button', 'Connect')."\"
                          class='submit'>";
-                  echo "</form>";
+                  Html::closeForm();
                }
             }
             echo "</td>";
@@ -533,7 +533,7 @@ class Computer_Item extends CommonDBRelation{
             }
             echo "<input type='submit' name='connect' value=\""._sx('button', 'Connect')."\"
                    class='submit'>";
-            echo "</form>";
+            Html::closeForm();
          } else {
             echo "&nbsp;";
          }
@@ -557,7 +557,7 @@ class Computer_Item extends CommonDBRelation{
             }
             echo "<input type='submit' name='connect' value=\""._sx('button', 'Connect')."\"
                    class='submit'>";
-            echo "</form>";
+            Html::closeForm();
          } else {
             echo "&nbsp;";
          }

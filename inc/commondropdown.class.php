@@ -447,7 +447,7 @@ abstract class CommonDropdown extends CommonDBTM {
          echo "<td><input class='submit' type='submit' name='annuler'
                     value=\""._sx('button','Cancel')."\">";
          echo "</td></tr></table>\n";
-         echo "</form>";
+         Html::closeForm();
       }
 
       // Replace form (set to new value)
@@ -477,7 +477,7 @@ abstract class CommonDropdown extends CommonDBTM {
       echo "</td><td>";
       echo "<input class='submit' type='submit' name='annuler' value=\""._sx('button','Cancel')."\">";
       echo "</td></tr></table>\n";
-      echo "</form>";
+      Html::closeForm();
       echo "</div>";
    }
 

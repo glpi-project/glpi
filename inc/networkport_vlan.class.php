@@ -314,7 +314,8 @@ class NetworkPort_Vlan extends CommonDBRelation {
          echo __('Tagged')."&nbsp;<input type='checkbox' name='tagged' value='1'>";
          echo "</td></tr>";
 
-         echo "</table></form>";
+         echo "</table>";
+         Html::closeForm();
       }
    }
 

@@ -615,7 +615,9 @@ class KnowbaseItem extends CommonDBTM {
 
          echo "<span class='big_space'>";
          echo "<input type='reset' class='submit' value=\""._sx('button','Blank')."\"></span>";
-         echo "</p></form></div>";
+         echo "</p>";
+         Html::closeForm();
+         echo "</div>";
          return true;
       }
       //  ELSE Cannot edit
@@ -871,7 +873,7 @@ class KnowbaseItem extends CommonDBTM {
          echo "<input type='hidden' name='item_itemtype' value='".$options['item_itemtype']."'>";
          echo "<input type='hidden' name='item_items_id' value='".$options['item_items_id']."'>";
       }
-      echo "</form>";
+      Html::closeForm();
 
       echo "</div>";
    }
@@ -921,7 +923,8 @@ class KnowbaseItem extends CommonDBTM {
             echo "<input type='hidden' name='item_itemtype' value='".$options['item_itemtype']."'>";
             echo "<input type='hidden' name='item_items_id' value='".$options['item_items_id']."'>";
          }
-         echo "</form></div>";
+         Html::closeForm();
+         echo "</div>";
       }
    }
 
@@ -1634,7 +1637,7 @@ class KnowbaseItem extends CommonDBTM {
                               => __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.'));
          }
          Html::closeArrowMassives(array('deletevisibility' => __('Delete')), $confirm);
-         echo "</form>";
+         Html::closeForm();
       }
 
       echo "</div>";

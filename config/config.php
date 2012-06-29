@@ -177,7 +177,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
          if ($error) {
             echo "<form action='".$CFG_GLPI["root_doc"]."/index.php' method='post'>";
             echo "<input type='submit' name='submit' class='submit' value=\"".__s('Try again')."\">";
-            echo "</form>";
+            Html::closeForm();
          }
          if ($error < 2) {
             if (!isset($CFG_GLPI["version"]) || (trim($CFG_GLPI["version"]) < GLPI_VERSION)) {
@@ -185,7 +185,8 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
                echo "<p class='red'>".
                      __('The version of the database is not compatible with the version of the installed files. An update is necessary.')."</p>";
                echo "<input type='submit' name='from_update' value=\""._sx('button', 'Upgrade')."\"
-                      class='submit'></form>";
+                      class='submit'>";
+               Html::closeForm();
 
             } else if (trim($CFG_GLPI["version"])>GLPI_VERSION) {
                echo "<p class='red'>".

@@ -405,7 +405,8 @@ class NetworkPort extends CommonDBChild {
          echo "&nbsp;<input type='checkbox' name='several' value='1'></td>\n";
          echo "<td>\n";
          echo "<input type='submit' name='create' value=\""._sx('button','Add')."\" class='submit'>\n";
-         echo "</td></tr></table></div></form>\n";
+         echo "</td></tr></table></div>\n";
+         Html::closeForm();
       }
 
       if ($showmassiveactions) {
@@ -609,7 +610,7 @@ class NetworkPort extends CommonDBChild {
          $massiveactionparams['ontop'] = false;
          Html::displayMassiveActions($massiveactionparams);
 
-         echo "</form>";
+         Html::closeForm();
       }
 
    }

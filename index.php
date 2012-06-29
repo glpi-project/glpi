@@ -122,7 +122,7 @@ if (!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
       echo '<div id="forget"><a href="front/lostpassword.php?lostpassword=1">'.
              __('Forgotten password?').'</a></div>';
    }
-   echo "</form>";
+   Html::closeForm();
 
    echo "<script type='text/javascript' >\n";
    echo "document.getElementById('login_name').focus();";

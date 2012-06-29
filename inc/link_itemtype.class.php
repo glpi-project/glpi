@@ -100,7 +100,8 @@ class Link_ItemType extends CommonDBTM{
                             class='submit'>";
          echo "</td></tr>";
       }
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
 
 

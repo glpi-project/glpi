@@ -845,7 +845,8 @@ class Contract extends CommonDBTM {
             echo "</tr>";
          }
          }
-      echo "</table></div></form>";
+      echo "</table></div>";
+      Html::closeForm();
    }
 
 
@@ -1020,7 +1021,8 @@ class Contract extends CommonDBTM {
       } else {
          echo "</table>";
       }
-      echo "</div></form>";
+      echo "</div>";
+      Html::closeForm();
    }
 
 
@@ -1191,7 +1193,7 @@ class Contract extends CommonDBTM {
       echo "</table>";
 
       if ($withtemplate != 2) {
-         echo "</form>";
+         Html::closeForm();
       }
       echo "</div>";
    }

@@ -390,7 +390,7 @@ class Computer_Device extends CommonDBTM {
          Dropdown::showAllItems('items_id', '', 0, -1, $devtypes);*/
          echo "<input type='submit' class='submit' name='updateall' value='"._sx('button', 'Save')."'>";
 
-         echo "</form>";
+         Html::closeForm();
       }
 
       echo "</div>";
