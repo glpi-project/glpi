@@ -3836,6 +3836,7 @@ class Html {
          language : '".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."',
          mode : 'exact',
          elements: '$name',
+         invalid_elements : 'script',
          plugins : 'table,directionality,searchreplace',
          theme : 'advanced',
          entity_encoding : 'numeric', ";
