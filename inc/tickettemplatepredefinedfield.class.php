@@ -1,4 +1,4 @@
-// <?php
+<?php
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -61,13 +61,13 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
       $tt = new TicketTemplate();
       $fields = $tt->getAllowedFieldsNames(true);
-      
+
       if (isset($fields[$this->fields["num"]])) {
          return $fields[$this->fields["num"]];
       }
       return NOT_AVAILABLE;
    }
-   
+
    function canCreate() {
       return Session::haveRight('tickettemplate', 'w');
    }
@@ -94,18 +94,18 @@ class TicketTemplatePredefinedField extends CommonDBChild {
 
    function post_purgeItem() {
       global $DB;
-      
+
       parent::post_purgeItem();
-      
+
       $ticket = new Ticket();
       $itemtype_id = $ticket->getSearchOptionIDByField('field', 'itemtype',
                                                        'glpi_tickets');
       $items_id_id = $ticket->getSearchOptionIDByField('field', 'items_id',
                                                        'glpi_tickets');
-                                                       
+
       // Try to delete itemtype -> delete items_id
       if ($this->fields['num'] == $itemtype_id) {
-        
+
          $query = "SELECT `id`
               FROM `".$this->getTable()."`
               WHERE `".$this->items_id."` = '".$this->fields['tickettemplates_id']."'
@@ -118,7 +118,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
          }
       }
    }
-   
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
@@ -268,7 +268,7 @@ class TicketTemplatePredefinedField extends CommonDBChild {
             $display_fields[-1] = Dropdown::EMPTY_VALUE;
             $display_fields    += $fields;
 
-            // Force validation request as used 
+            // Force validation request as used
             $used[-2] = -2;
             $rand_dp = Dropdown::showFromArray('num', $display_fields, array('used' => $used,
                                                                              'toadd'));
