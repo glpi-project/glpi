@@ -141,4 +141,12 @@ if (!defined("GLPI_FONT_FREESANS")) {
    # if FreeSans.ttf available in system, use (in config_path.php)
    # define("GLPI_FONT_FREESANS", '/usr/share/fonts/gnu-free/FreeSans.ttf');
 }
+
+// Default patch to htmLawed
+if (!defined('GLPI_HTMLAWED')) {
+   define('GLPI_HTMLAWED', GLPI_ROOT.'/lib/htmlawed/htmLawed.php');
+
+   # if htmLawed available in system, use (in config_path.php)
+   # define('GLPI_HTMLAWED', '/usr/share/htmlawed/htmLawed.php');
+}
 ?>

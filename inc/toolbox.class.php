@@ -350,14 +350,14 @@ class Toolbox {
                                             $value)
                                 : (is_null($value) ? NULL : str_replace($out,$in,$value));
 
-      include_once(GLPI_ROOT.'/lib/htmlawed/htmLawed.php');
-      
+      include_once(GLPI_HTMLAWED);
+
       $value = htmLawed($value, array('safe'=>1));
-      
+
       return $value;
    }
 
-   
+
    /**
     * Log in 'php-errors' all args
    **/
@@ -1541,7 +1541,7 @@ class Toolbox {
                               }
                            }
                         }
-                     
+
                         Html::redirect($CFG_GLPI["root_doc"]."/front/ticket.form.php?id=".$data[1].
                                      "&$forcetab");
                         break;
