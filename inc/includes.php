@@ -137,9 +137,13 @@ if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()) {
    // Do not applyed for plugins on 0.83
    if (strstr($_SERVER['REQUEST_URI'],$CFG_GLPI['root_doc'].'/plugins/') === FALSE) {
       if (!isset($_SERVER['HTTP_REFERER'])
-          || (strstr($_SERVER['HTTP_REFERER'],$CFG_GLPI['root_doc']) === FALSE)) {
+          || !is_array($url=parse_url($_SERVER['HTTP_REFERER']))
+          || !isset($url['host'])
+          || ($url['host']!=$_SERVER['SERVER_NAME'])
+          || !isset($url['path'])
+          || (strpos($url['path'], $CFG_GLPI['root_doc'])!==0)) {
          Html::displayErrorAndDie("Error calling the previous page from forbidden one.", true);
-      };
+      }
    }
 }
 
