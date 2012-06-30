@@ -1266,7 +1266,8 @@ function update0831to084() {
       }
    }
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'contract and ticket costs'));
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
+                                      'contract and ticket costs'));
 
    if (!TableExists('glpi_contractcosts')) {
       $query = "CREATE TABLE `glpi_contractcosts` (
@@ -1295,7 +1296,7 @@ function update0831to084() {
 
       foreach($DB->request('glpi_contracts',"`cost` > 0") as $data) {
          $begin_to_add = "NULL";
-         $end_to_add = "NULL";
+         $end_to_add   = "NULL";
 
          if (!is_null($data['begin_date'])) {
             $begin_to_add = "'".$data['begin_date']."'";
@@ -1308,10 +1309,10 @@ function update0831to084() {
 
          }
          $query = "INSERT INTO `glpi_contractcosts`
-                        (`contracts_id`, `name`, `begin_date`, `end_date`,
+                          (`contracts_id`, `name`, `begin_date`, `end_date`,
                            `cost`,  `entities_id`,
                            `is_recursive`)
-                     VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
+                   VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
                            '".$data['cost']."', '".$data['entities_id']."',
                            '".$data['is_recursive']."')";
          $DB->queryOrDie($query, '0.84 move contracts costs');
@@ -1345,9 +1346,11 @@ function update0831to084() {
 
       $migration->migrationOneTable('glpi_ticketcosts');
 
-      foreach($DB->request('glpi_tickets',"`cost_time` > 0 OR `cost_fixed` > 0 OR `cost_material` > 0") as $data) {
+      foreach ($DB->request('glpi_tickets',"`cost_time` > 0
+                            OR `cost_fixed` > 0
+                            OR `cost_material` > 0") as $data) {
          $begin_to_add = "NULL";
-         $end_to_add = "NULL";
+         $end_to_add   = "NULL";
 
          if (!is_null($data['date'])) {
             $begin_to_add = "'".$data['date']."'";
@@ -1360,11 +1363,11 @@ function update0831to084() {
 
          }
          $query = "INSERT INTO `glpi_ticketcosts`
-                        (`tickets_id`, `name`, `begin_date`, `end_date`,
+                          (`tickets_id`, `name`, `begin_date`, `end_date`,
                            `cost_time`,`cost_fixed`,
                            `cost_material`, `entities_id`,
                            `actiontime`)
-                     VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
+                   VALUES ('".$data['id']."', 'Cost', $begin_to_add, $end_to_add,
                            '".$data['cost_time']."','".$data['cost_fixed']."',
                            '".$data['cost_material']."', '".$data['entities_id']."',
                            '".$data['actiontime']."')";
@@ -1380,8 +1383,8 @@ function update0831to084() {
                               'condition' => " WHERE `update_ticket` = 1"));
    // Set default to r as before
    $query = "UPDATE `glpi_profiles`
-               SET `ticketcost` = 'r'
-               WHERE `ticketcost` IS NULL";
+             SET `ticketcost` = 'r'
+             WHERE `ticketcost` IS NULL";
    $DB->queryOrDie($query, "0.84 set ticketcost in glpi_profiles");
 
 

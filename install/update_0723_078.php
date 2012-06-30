@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -40,7 +38,7 @@
  * @return bool for success (will die for most error)
 **/
 function update0723to078() {
-   global $DB;
+   global $DB, $migration;
 
    $updateresult = true;
 
@@ -226,10 +224,11 @@ function update0723to078() {
    }
 
    if ($backup_tables) {
-      $migration->displayWarning("You can delete backup tables if you have no need of them.");
+      $migration->displayWarning("You can delete backup tables if you have no need of them.", true);
    }
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Clean DB : rename foreign keys'));
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
+                                      'Clean DB: rename foreign keys'));
 
    $foreignkeys
       = array('assign'  => array(array('to'     => 'users_id_assign',
@@ -742,7 +741,7 @@ function update0723to078() {
                                                    DEFAULT '$default_value' $addcomment";
             } else {
                $updateresult = false;
-               $migration->displayWarning("Error : $table.$oldname does not exist.");
+               $migration->displayWarning("Error: $table.$oldname does not exist.", true);
             }
             // If do index : delete old one / create new one
             if ($doindex) {
@@ -759,7 +758,7 @@ function update0723to078() {
 
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
-                                      'Clean DB : rename bool values'));
+                                      'Clean DB: rename bool values'));
 
    $boolfields
       = array('glpi_authldaps'
@@ -1410,7 +1409,7 @@ function update0723to078() {
 
          } else {
             $updateresult = false;
-            $migration->displayWarning("Error : $table.$oldname does not exist.");
+            $migration->displayWarning("Error: $table.$oldname does not exist.", true);
          }
          // If do index : delete old one / create new one
          if ($doindex) {
@@ -1425,7 +1424,7 @@ function update0723to078() {
       }
    }
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
-                                         'Clean DB : update text fields'));
+                                         'Clean DB: update text fields'));
 
    $textfields
       = array('comments'
@@ -1497,7 +1496,7 @@ function update0723to078() {
             $DB->queryOrDie($query, "0.78 rename $oldname to $newname in $table");
          } else {
             $updateresult = false;
-            $migration->displayWarning("Error : $table.$oldname does not exist.");
+            $migration->displayWarning("Error: $table.$oldname does not exist.", true);
          }
       }
    }
@@ -1692,7 +1691,7 @@ function update0723to078() {
             $DB->queryOrDie($query, "0.78 rename $oldname to $newname in $table");
          } else {
             $updateresult = false;
-            $migration->displayWarning("Error : $table.$oldname does not exist.");
+            $migration->displayWarning("Error: $table.$oldname does not exist.");
          }
          // If do index : delete old one / create new one
          if ($doindex) {
@@ -1844,7 +1843,7 @@ function update0723to078() {
             $DB->queryOrDie($query, "0.78 rename $oldname to $newname in $table");
          } else {
             $updateresult = false;
-            $migration->displayWarning("Error : $table.$oldname does not exist.");
+            $migration->displayWarning("Error: $table.$oldname does not exist.", true);
          }
          // If do index : delete old one / create new one
          if ($doindex) {
@@ -2292,7 +2291,7 @@ function update0723to078() {
 
          } else {
             $updateresult = false;
-            $migration->displayWarning("Error : $table.$oldname does not exist.");
+            $migration->displayWarning("Error: $table.$oldname does not exist.", true);
          }
          // If do index : delete old one / create new one
          if ($doindex) {
@@ -2307,7 +2306,7 @@ function update0723to078() {
    }
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
-                                         'Clean DB : others field changes'));
+                                         'Clean DB: others field changes'));
 
    if (FieldExists('glpi_alerts', 'date', false)) {
       $changes['glpi_alerts'][] = "CHANGE `date` `date` DATETIME NOT NULL";
@@ -2388,7 +2387,7 @@ function update0723to078() {
 
 
    $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
-                                         'Clean DB : index management'));
+                                         'Clean DB: index management'));
 
    if (!isIndex('glpi_alerts', 'unicity')) {
       $changes['glpi_alerts'][] = "ADD UNIQUE `unicity` (`itemtype`, `items_id`, `type`)";
@@ -2605,7 +2604,8 @@ function update0723to078() {
    }
 
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Update itemtype fields'));
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
+                                      'Update itemtype fields'));
 
    // Convert itemtype to Class names
    $typetoname = array(GENERAL_TYPE          => "",// For tickets
@@ -2756,7 +2756,8 @@ function update0723to078() {
 
    // Update glpi_profiles item_type
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'Clean DB : post actions after renaming'));
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
+                                      'Clean DB: post actions after renaming'));
 
    if (!isIndex('glpi_locations', 'name')) {
       $query = " ALTER TABLE `glpi_locations`
@@ -2991,7 +2992,8 @@ function update0723to078() {
       }
    }
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'glpi_rulecachesoftwares'));
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
+                                      'glpi_rulecachesoftwares'));
 
    $query = "ALTER TABLE `glpi_rules`
              CHANGE `sub_type` `sub_type` VARCHAR( 255 ) NOT NULL DEFAULT ''";
@@ -3198,7 +3200,8 @@ function update0723to078() {
    $ADDTODISPLAYPREF['Budget']=array(2,3,4,19);
 
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), __('Automatic action')));
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
+                                      __('Automatic action')));
    if (!TableExists('glpi_crontasks')) {
       $query = "CREATE TABLE `glpi_crontasks` (
                  `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -3883,7 +3886,8 @@ function update0723to078() {
 
    // Migrate devices
    if (TableExists('glpi_computer_device')) {
-      $migration->displayMessage(sprintf(__('Change of the database layout - %s'), _n('Component', 'Components', 2)));
+      $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
+                                         _n('Component', 'Components', 2)));
 
       foreach ($devtypetoname as $key => $itemtype) {
          $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
@@ -4842,13 +4846,14 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
          if ($result=$DB->query($query)) {
             if ($DB->numrows($result)>0) {
                while ($data = $DB->fetch_assoc($result)) {
-                  $migration->displayMessage(sprintf(__('Change of the database layout - %s'), $label.' - '.
-                                             $data['itemtype']));
+                  $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
+                                                     sprintf(__('%1$s - %2$s'), $label,
+                                                             $data['itemtype'])));
 
                   $itemtable = getTableForItemType($data['itemtype']);
                   // ajout d'un contrôle pour voir si la table existe ( cas migration plugin non fait)
                   if (!TableExists($itemtable)) {
-                     $migration->displayWarning("*** Skip : no table $itemtable ***");
+                     $migration->displayWarning("*** Skip : no table $itemtable ***", true);
                      continue;
                   }
                   $do_recursive = false;
@@ -4929,7 +4934,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
 
    // Migrate softwareversions entity information
    if (!FieldExists('glpi_softwareversions','entities_id', false)) {
-      $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'glpi_softwareversions'));
+      $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
+                                         'glpi_softwareversions'));
 
       $query = "ALTER TABLE `glpi_softwareversions`
                 ADD `entities_id` int(11) NOT NULL DEFAULT 0 AFTER `id`,
@@ -4968,7 +4974,8 @@ style=\"color: #8b8c8f; font-weight: bold; text-decoration: underline;\"&gt;
       }
    }
 
-   $migration->displayMessage(sprintf(__('Change of the database layout - %s'), 'glpi_mailcollectors'));
+   $migration->displayMessage(sprintf(__('Change of the database layout - %s'),
+                                      'glpi_mailcollectors'));
 
    if (!FieldExists("glpi_mailcollectors", "is_active", false)) {
       $query = "ALTER TABLE `glpi_mailcollectors`

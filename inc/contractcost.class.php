@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// ContractCost class
+/// since version 0.84
 class ContractCost extends CommonDBChild {
 
    // From CommonDBChild
@@ -71,7 +72,7 @@ class ContractCost extends CommonDBChild {
 
       $contract = new Contract();
       if ($contract->getFromDB($input['contracts_id'])) {
-         $input['entities_id'] = $contract->getEntityID();
+         $input['entities_id']  = $contract->getEntityID();
          $input['is_recursive'] = $contract->fields['is_recursive'];
       }
       if (empty($input['end_date'])
@@ -83,6 +84,8 @@ class ContractCost extends CommonDBChild {
 
       return $input;
    }
+
+
    /**
     * @see inc/CommonDBTM::prepareInputForUpdate()
    **/
@@ -97,6 +100,8 @@ class ContractCost extends CommonDBChild {
 
       return $input;
    }
+
+
    /**
     * @see inc/CommonGLPI::getTabNameForItem()
    **/
@@ -152,12 +157,15 @@ class ContractCost extends CommonDBChild {
       }
    }
 
+
    /**
     * Init cost for creation based on previous cost
-    **/
+   **/
    function initBasedOnPrevious() {
+
       $ticket = new Ticket();
-      if (!isset($this->fields['contracts_id']) || !$ticket->getFromDB($this->fields['contracts_id'])) {
+      if (!isset($this->fields['contracts_id'])
+          || !$ticket->getFromDB($this->fields['contracts_id'])) {
          return false;
       }
 
@@ -174,22 +182,21 @@ class ContractCost extends CommonDBChild {
       }
       if (isset($lastdata['budgets_id'])) {
          $this->fields['budgets_id'] = $lastdata['budgets_id'];
-      }      
+      }
    }
 
    /**
     * Get last datas for a contract
     *
     * @param $contracts_id        integer  ID of the contract
-    *
-    **/
+   **/
    function getLastCostForContract($contracts_id) {
       global $DB;
 
       $query = "SELECT *
-                  FROM `".$this->getTable()."`
-                  WHERE `contracts_id` = '$contracts_id'
-                  ORDER BY 'end_date' DESC, `id` DESC";
+                FROM `".$this->getTable()."`
+                WHERE `contracts_id` = '$contracts_id'
+                ORDER BY 'end_date' DESC, `id` DESC";
 
       if ($result = $DB->query($query)) {
          return $DB->fetch_assoc($result);
@@ -197,15 +204,15 @@ class ContractCost extends CommonDBChild {
 
       return array();
    }
-   
+
    /**
     * Print the contract cost form
     *
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
-    *
-    **/
+   **/
    function showForm($ID, $options=array()) {
+
       if (isset($options['parent']) && !empty($options['parent'])) {
          $contract = $options['parent'];
       }
@@ -215,7 +222,7 @@ class ContractCost extends CommonDBChild {
       } else {
          // Create item
          $input = array('contracts_id' => $contract->getField('id'),
-                        'entities_id' =>$contract->getEntityID());
+                        'entities_id'  => $contract->getEntityID());
          $this->check(-1,'w',$input);
          $this->initBasedOnPrevious();
       }
@@ -243,21 +250,19 @@ class ContractCost extends CommonDBChild {
       echo "<td>".__('Cost')."</td>";
       echo "<td>";
       echo "<input type='text' name='cost' value='".
-                   Html::formatNumber($this->fields["cost"], true)."' size='14'>";
+             Html::formatNumber($this->fields["cost"], true)."' size='14'>";
       echo "</td></tr>";
-      
 
       echo "<tr class='tab_bg_1'><td>".__('Begin date')."</td>";
       echo "<td>";
       Html::showDateFormItem("begin_date", $this->fields['begin_date']);
       echo "</td>";
-      $rowspan=3;
+      $rowspan = 3;
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
       echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"].
            "</textarea>";
       echo "</td></tr>\n";
-      
 
       echo "<tr class='tab_bg_1'><td>".__('End date')."</td>";
       echo "<td>";
@@ -278,8 +283,8 @@ class ContractCost extends CommonDBChild {
    /**
     * Print the contract costs
     *
-    * @param $contract                  Contract object
-    * @param $withtemplate boolean  Template or basic item (default '')
+    * @param $contract               Contract object
+    * @param $withtemplate  boolean  Template or basic item (default '')
     *
     * @return Nothing (call to classes members)
    **/
@@ -319,8 +324,7 @@ class ContractCost extends CommonDBChild {
                "<a class='vsubmit' href='javascript:viewAddCost".$ID."_$rand();'>";
          echo __('Add a new cost')."</a></div>\n";
       }
-      
-                
+
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th colspan='5'>".self::getTypeName($DB->numrows($result))."</th></tr>";
@@ -341,9 +345,10 @@ class ContractCost extends CommonDBChild {
 
             $total = 0;
             while ($data = $DB->fetch_assoc($result)) {
-               echo "<tr class='tab_bg_2' ".($canedit
-                  ? "style='cursor:pointer' onClick=\"viewEditCost".$data['contracts_id']."_".
-                  $data['id']."_$rand();\"": '') .">";
+               echo "<tr class='tab_bg_2' ".
+                     ($canedit
+                      ? "style='cursor:pointer' onClick=\"viewEditCost".$data['contracts_id']."_".
+                        $data['id']."_$rand();\"": '') .">";
                $name = (empty($data['name'])? sprintf(__('%1$s (%2$s)'),
                                                       $data['name'], $data['id'])
                                             : $data['name']);
@@ -353,26 +358,26 @@ class ContractCost extends CommonDBChild {
                if ($canedit) {
                   echo "\n<script type='text/javascript' >\n";
                   echo "function viewEditCost" .$data['contracts_id']."_". $data["id"]. "_$rand() {\n";
-                  $params = array('type'        => __CLASS__,
-                                 'parenttype'   => 'Contract',
-                                 'contracts_id' => $data["contracts_id"],
-                                 'id'           => $data["id"]);
+                  $params = array('type'         => __CLASS__,
+                                  'parenttype'   => 'Contract',
+                                  'contracts_id' => $data["contracts_id"],
+                                  'id'           => $data["id"]);
                   Ajax::updateItemJsCode("viewcost".$ID."_$rand",
-                                       $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+                                         $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
                   echo "};";
                   echo "</script>\n";
                }
                echo "</td>";
                echo "<td>".Html::convDate($data['begin_date'])."</td>";
                echo "<td>".Html::convDate($data['end_date'])."</td>";
-               echo "<td>".Dropdown::getDropdownName('glpi_budgets',
-                                                $data['budgets_id'])."</td>";
+               echo "<td>".Dropdown::getDropdownName('glpi_budgets', $data['budgets_id'])."</td>";
                echo "<td class='numeric'>".Html::formatNumber($data['cost'])."</td>";
                $total += $data['cost'];
                echo "</tr>";
                Session::addToNavigateListItems(__CLASS__, $data['id']);
             }
-            echo "<tr class='b'><td colspan='3'>&nbsp;</td><td class='right'>".__('Total cost').'</td>';
+            echo "<tr class='b'><td colspan='3'>&nbsp;</td>";
+            echo "<td class='right'>".__('Total cost').'</td>';
             echo "<td class='numeric'>".Html::formatNumber($total).'</td></tr>';
          } else {
             echo "<tr><th colspan='5'>".__('No item found')."</th></tr>";
