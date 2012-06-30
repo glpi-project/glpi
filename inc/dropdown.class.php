@@ -1649,9 +1649,9 @@ class Dropdown {
                   break;
 
                case 'CronTask' :
-                  $actions['reset']      = __('Reset last run');
+                  $actions['reset'] = __('Reset last run');
                   break;
-                  
+
                case 'Document' :
                   if ($isadmin) {
                      $actions['add_document_item']    = _x('button', 'Add an item');
@@ -1661,12 +1661,12 @@ class Dropdown {
 
                case 'Group' :
                   if ($isadmin) {
-                     $actions['add_user_group']    = _x('button', 'Add an user');
-                     $actions['add_supervisor_group']    = _x('button', 'Add a supervisor');
-                     $actions['add_delegatee_group']    = _x('button', 'Add a delegatee');
+                     $actions['add_user_group']        = _x('button', 'Add a user');
+                     $actions['add_supervisor_group']  = _x('button', 'Add a supervisor');
+                     $actions['add_delegatee_group']   = _x('button', 'Add a delegatee');
                   }
                   break;
-                  
+
                case 'NetworkPortMigration':
                   $actions['transform_to'] = __('Transform this network port to');
                   break;
@@ -1675,7 +1675,7 @@ class Dropdown {
                   $actions['delete_email'] = __('Delete emails');
                   $actions['import_email'] = _x('button', 'Import');
                   break;
-                  
+
                case 'Problem' :
                   $tmp = new ProblemTask();
                   if ($tmp->canCreate()) {
@@ -1700,7 +1700,7 @@ class Dropdown {
                      $actions['replay_dictionnary'] = __('Replay the dictionary rules');
                   }
                   break;
-                  
+
                case 'Supplier' :
                   if ($isadmin) {
                      $actions['add_contact'] = _x('button', 'Add a contact');
@@ -1730,10 +1730,10 @@ class Dropdown {
                   }
 
                   break;
-                  
+
                case 'User' :
                   if ($isadmin) {
-                     $actions['add_user_group']       = __('Associate to a group');
+                     $actions['add_user_group']  = __('Associate to a group');
                      $actions['add_userprofile'] = __('Associate to a profile');
                   }
 

@@ -438,21 +438,21 @@ if (isset($_POST["action"])
                   $input = array('groups_id' => $_POST["groups_id"],
                                  'users_id'  => $key);
                }
-               $updateifnotfound=false;
+               $updateifnotfound = false;
                if ($_POST["action"] == 'add_supervisor_group') {
                   $input['is_manager'] = 1;
-                  $updateifnotfound=true;
+                  $updateifnotfound = true;
                }
                if ($_POST["action"] == 'add_delegatee_group') {
                   $input['is_userdelegate'] = 1;
-                  $updateifnotfound=true;
+                  $updateifnotfound = true;
                }
                $group = new Group();
-               $user = new user();
+               $user  = new user();
                if ($group->getFromDB($input['groups_id'])
-                  && $user->getFromDB($input['users_id'])) {
+                   && $user->getFromDB($input['users_id'])) {
                   if ($updateifnotfound
-                     && $groupuser->getFromDBForItems($user, $group)) {
+                      && $groupuser->getFromDBForItems($user, $group)) {
                      if ($groupuser->can($groupuser->getID(),'w')) {
                         $input['id'] = $groupuser->getID();
                         if ($groupuser->update($input)) {

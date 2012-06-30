@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -61,10 +59,10 @@ function update078to0781() {
             $itemtable=getTableForItemType($data['itemtype']);
             // ajout d'un contrôle pour voir si la table existe ( cas migration plugin non fait)
             if (!TableExists($itemtable)) {
-               $migration->displayWarning("*** Skip : no table $itemtable ***");
+               $migration->displayWarning("*** Skip : no table $itemtable ***", true);
                continue;
             }
-            $do_recursive=false;
+            $do_recursive = false;
             if (FieldExists($itemtable,'is_recursive', false)) {
                $do_recursive=true;
             }
