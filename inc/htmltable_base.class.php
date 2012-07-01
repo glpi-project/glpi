@@ -68,6 +68,7 @@ abstract class HTMLTable_Base  {
       if (!$header_object instanceof HTMLTable_Header) {
          throw new Exception('Implementation error: appendHeader requires HTMLTable_Header as parameter');
       }
+      //TODO $header_name AND $subHeader_name  not initialized
       $header_object->getHeaderAndSubHeaderName($header_name, $subHeader_name);
       if ($header_object->isSuperHeader()
           && (!$this->super)

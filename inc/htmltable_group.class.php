@@ -72,6 +72,8 @@ class HTMLTable_Group extends HTMLTable_Base {
     * @param $header    HTMLTable_Header object
    **/
    function haveHeader(HTMLTable_Header $header) {
+
+    //TODO $header_name AND $subHeader_name  not initialized
       $header->getHeaderAndSubHeaderName($header_name, $subheader_name);
       try {
          $subheaders = $this->getHeaders($header_name);
