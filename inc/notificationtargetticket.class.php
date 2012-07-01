@@ -247,9 +247,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject {
          $datas['##lang.ticket.autoclosewarning##']
                      //TRANS: %s is the number of day before auto closing
             = sprintf(_n('Without a reply, the ticket will be automatically closed after %s day',
-                           'Without a reply, the ticket will be automatically closed after %s days',
-                           $autoclose_value),
-                        $autoclose_value);
+                         'Without a reply, the ticket will be automatically closed after %s days',
+                         $autoclose_value),
+                      $autoclose_value);
       }
 
       $datas['##ticket.sla##'] = '';

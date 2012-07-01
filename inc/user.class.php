@@ -1929,7 +1929,7 @@ class User extends CommonDBTM {
 
          $entities = Profile_User::getUserEntities($this->fields['id'], 1);
          if (!GLPI_DEMO_MODE
-            && (count($_SESSION['glpiactiveentities']) > 1)) {
+             && (count($_SESSION['glpiactiveentities']) > 1)) {
             echo "<td>" . __('Default entity') . "</td><td>";
             Entity::dropdown(array('value'  => $this->fields['entities_id'],
                                    'entity' => $entities));

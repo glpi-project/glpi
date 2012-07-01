@@ -282,7 +282,7 @@ class Budget extends CommonDropdown{
       echo "<th>".__('Value')."</th>";
       echo "</tr>";
 
-      $num = 0;
+      $num       = 0;
       $itemtypes = array();
       for ($i = 0; $i < $number ; $i++) {
          $itemtypes[] = $DB->result($result, $i, "itemtype");
@@ -310,11 +310,11 @@ class Budget extends CommonDropdown{
                             ORDER BY `".$item->getTable()."`.`entities_id`,
                                      `".$item->getTable()."`.`name`";
                break;
-               
+
                case 'Contract' :
-                  $query ="SELECT `".$item->getTable()."`.`id`,
-                                  `".$item->getTable()."`.`entities_id`,
-                                   SUM(`glpi_contractcosts`.`cost`) as value
+                  $query = "SELECT `".$item->getTable()."`.`id`,
+                                   `".$item->getTable()."`.`entities_id`,
+                                    SUM(`glpi_contractcosts`.`cost`) as value
                             FROM `glpi_contractcosts`
                             INNER JOIN `".$item->getTable()."`
                                  ON (`".$item->getTable()."`.`id` = `glpi_contractcosts`.`contracts_id`)
@@ -327,9 +327,9 @@ class Budget extends CommonDropdown{
                break;
 
                case 'Ticket' :
-                  $query ="SELECT `".$item->getTable()."`.`id`,
-                                  `".$item->getTable()."`.`entities_id`,
-                                   SUM(`glpi_ticketcosts`.`actiontime`*`glpi_ticketcosts`.`cost_time`/".HOUR_TIMESTAMP."
+                  $query = "SELECT `".$item->getTable()."`.`id`,
+                                   `".$item->getTable()."`.`entities_id`,
+                                    SUM(`glpi_ticketcosts`.`actiontime`*`glpi_ticketcosts`.`cost_time`/".HOUR_TIMESTAMP."
                                           + `glpi_ticketcosts`.`cost_fixed`
                                           + `glpi_ticketcosts`.`cost_material`) as value
                             FROM `glpi_ticketcosts`
@@ -340,8 +340,8 @@ class Budget extends CommonDropdown{
                             GROUP BY `".$item->getTable()."`.`id`, `".$item->getTable()."`.`entities_id`
                             ORDER BY `".$item->getTable()."`.`entities_id`,
                                      `".$item->getTable()."`.`name`";
-               break;               
-               
+               break;
+
                case 'Cartridge' :
                   $query = "SELECT `".$item->getTable()."`.*,
                                    `glpi_cartridgeitems`.`name`
@@ -422,7 +422,7 @@ class Budget extends CommonDropdown{
             }
          }
       }
-      
+
       if ($num>0) {
          echo "<tr class='tab_bg_2'>";
          echo "<td class='center b'>".sprintf(__('%1$s = %2$s'), __('Total'), $num)."</td>";
@@ -457,11 +457,12 @@ class Budget extends CommonDropdown{
                 GROUP BY `itemtype`";
 
       $result = $DB->query($query);
-      $total  = 0;
-      $totalbytypes = array();
 
-      $itemtypes = array();
-      
+      $total               = 0;
+      $totalbytypes        = array();
+
+      $itemtypes           = array();
+
       $entities_values     = array();
       $entitiestype_values = array();
       $found_types         = array();
@@ -480,19 +481,18 @@ class Budget extends CommonDropdown{
             continue;
          }
 
-         $table       = getTableForItemType($itemtype);
+         $table = getTableForItemType($itemtype);
          switch ($itemtype) {
             case 'Contract' :
                $query_infos = "SELECT SUM(`glpi_contractcosts`.`cost`) AS `sumvalue`,
                                        `$table`.`entities_id`
-                                 FROM `glpi_contractcosts`
-                                 INNER JOIN `$table`
+                                FROM `glpi_contractcosts`
+                                INNER JOIN `$table`
                                     ON (`glpi_contractcosts`.`contracts_id` = `$table`.`id`)
-                                 WHERE `glpi_contractcosts`.`budgets_id` = '$budgets_id' ".
-                                       getEntitiesRestrictRequest(" AND", $table, "entities_id");
-
-               $query_infos .= " AND `$table`.`is_template` = '0' ";
-               $query_infos .= "GROUP BY `$table`.`entities_id`";
+                                WHERE `glpi_contractcosts`.`budgets_id` = '$budgets_id' ".
+                                      getEntitiesRestrictRequest(" AND", $table, "entities_id")."
+                                      AND `$table`.`is_template` = '0'
+                                GROUP BY `$table`.`entities_id`";
                break;
 
             case 'Ticket' :
@@ -500,24 +500,23 @@ class Budget extends CommonDropdown{
                                           + `glpi_ticketcosts`.`cost_fixed`
                                           + `glpi_ticketcosts`.`cost_material`) AS `sumvalue`,
                                        `$table`.`entities_id`
-                                 FROM `glpi_ticketcosts`
-                                 INNER JOIN `$table`
+                                FROM `glpi_ticketcosts`
+                                INNER JOIN `$table`
                                     ON (`glpi_ticketcosts`.`tickets_id` = `$table`.`id`)
-                                 WHERE `glpi_ticketcosts`.`budgets_id` = '$budgets_id' ".
-                                       getEntitiesRestrictRequest(" AND", $table, "entities_id");
-
-               $query_infos .= "GROUP BY `$table`.`entities_id`";
+                                WHERE `glpi_ticketcosts`.`budgets_id` = '$budgets_id' ".
+                                      getEntitiesRestrictRequest(" AND", $table, "entities_id")."
+                                GROUP BY `$table`.`entities_id`";
                break;
-               
-            default:
+
+            default :
                $query_infos = "SELECT SUM(`glpi_infocoms`.`value`) AS `sumvalue`,
                                        `$table`.`entities_id`
-                                 FROM `$table`
-                                 INNER JOIN `glpi_infocoms`
+                                FROM `$table`
+                                INNER JOIN `glpi_infocoms`
                                     ON (`glpi_infocoms`.`items_id` = `$table`.`id`
-                                          AND `glpi_infocoms`.`itemtype` = '$itemtype')
-                                 WHERE `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
-                                       getEntitiesRestrictRequest(" AND", $table, "entities_id");
+                                        AND `glpi_infocoms`.`itemtype` = '$itemtype')
+                                WHERE `glpi_infocoms`.`budgets_id` = '$budgets_id' ".
+                                      getEntitiesRestrictRequest(" AND", $table, "entities_id");
 
                if ($item->maybeTemplate()) {
                   $query_infos .= " AND `$table`.`is_template` = '0' ";
@@ -528,7 +527,7 @@ class Budget extends CommonDropdown{
 
          if ($result_infos = $DB->query($query_infos)) {
             if ($DB->numrows($result_infos)) {
-               $found_types[$itemtype] = $item->getTypeName(1);
+               $found_types[$itemtype]  = $item->getTypeName(1);
                $totalbytypes[$itemtype] = 0;
                //Store, for each entity, the budget spent
                while ($values = $DB->fetch_assoc($result_infos)) {
@@ -539,17 +538,16 @@ class Budget extends CommonDropdown{
                   if (!isset($entitiestype_values[$values['entities_id']][$itemtype])) {
                      $entitiestype_values[$values['entities_id']][$itemtype] = 0;
                   }
-                  $entities_values[$values['entities_id']]  += $values['sumvalue'];
-                  $entitiestype_values[$values['entities_id']][$itemtype]
-                                                            += $values['sumvalue'];
-                  $total += $values['sumvalue'];
-                  $totalbytypes[$itemtype] += $values['sumvalue'];
+                  $entities_values[$values['entities_id']]                 += $values['sumvalue'];
+                  $entitiestype_values[$values['entities_id']][$itemtype]  += $values['sumvalue'];
+                  $total                                                   += $values['sumvalue'];
+                  $totalbytypes[$itemtype]                                 += $values['sumvalue'];
                }
             }
          }
 
       }
-         
+
       $budget = new self();
       $budget->getFromDB($budgets_id);
 
@@ -567,7 +565,7 @@ class Budget extends CommonDropdown{
 
       // get all entities ordered by names
       $allentities = getAllDatasFromTable('glpi_entities','',true, 'completename');
-      
+
       foreach ($allentities as $entity => $data) {
          if (isset($entities_values[$entity])) {
             echo "<tr class='tab_bg_1'>";

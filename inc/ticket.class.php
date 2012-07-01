@@ -2811,7 +2811,7 @@ class Ticket extends CommonITILObject {
       if ($DB->numrows($result)) {
          while ($data = $DB->fetch_assoc($result)) {
             $totalcost += TicketCost::computeTotalCost($data["actiontime"], $data["cost_time"],
-                                                  $data["cost_fixed"], $data["cost_material"]);
+                                                       $data["cost_fixed"], $data["cost_material"]);
          }
       }
       return $totalcost;
@@ -3381,7 +3381,7 @@ class Ticket extends CommonITILObject {
                        && ($values['_tickettemplates_id'] != $tt->getID()))) {
                   // Load template data
                   $values[$predeffield]            = $predefvalue;
-                  $this->fields[$predeffield]            = $predefvalue;
+                  $this->fields[$predeffield]      = $predefvalue;
                   $predefined_fields[$predeffield] = $predefvalue;
                }
             }
@@ -3833,11 +3833,11 @@ class Ticket extends CommonITILObject {
                }
             }
          }
-         $dev_user_id = 0;
+         $dev_user_id  = 0;
          $dev_itemtype = $this->fields["itemtype"];
          $dev_items_id = $this->fields["items_id"];
          if (!$ID) {
-            $dev_user_id = $values['_users_id_requester'];
+            $dev_user_id  = $values['_users_id_requester'];
             $dev_itemtype = $values["itemtype"];
             $dev_items_id = $values["items_id"];
          } else if (isset($this->users[parent::REQUESTER])

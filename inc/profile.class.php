@@ -1724,15 +1724,15 @@ class Profile extends CommonDBTM {
       $tab[85]['name']           = __('Statistics');
       $tab[85]['datatype']       = 'bool';
 
-      $tab[119]['table']          = $this->getTable();
-      $tab[119]['field']          = 'ticketcost';
-      $tab[119]['name']           = _n('Ticket cost', 'Ticket costs', 2);
-      $tab[119]['datatype']       = 'right';
+      $tab[119]['table']         = $this->getTable();
+      $tab[119]['field']         = 'ticketcost';
+      $tab[119]['name']          = _n('Ticket cost', 'Ticket costs', 2);
+      $tab[119]['datatype']      = 'right';
 
-      $tab[86]['table']         = $this->getTable();
-      $tab[86]['field']         = 'helpdesk_hardware';
-      $tab[86]['name']          = __('Link with items for the creation of tickets');
-      $tab[86]['massiveaction'] = false;
+      $tab[86]['table']          = $this->getTable();
+      $tab[86]['field']          = 'helpdesk_hardware';
+      $tab[86]['name']           = __('Link with items for the creation of tickets');
+      $tab[86]['massiveaction']  = false;
 
       $tab[87]['table']          = $this->getTable();
       $tab[87]['field']          = 'helpdesk_item_type';
