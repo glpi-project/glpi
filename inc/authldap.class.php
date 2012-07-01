@@ -1274,6 +1274,7 @@ class AuthLDAP extends CommonDBTM {
             $filter           = "(&$filter $filter_timestamp)";
          }
 
+         // TODO $user_infos not initialized
          $result = self::searchForUsers($ds, $values, $filter, $attrs, $limitexceeded,
                                         $user_infos, $ldap_users, $config_ldap);
          if (!$result) {
