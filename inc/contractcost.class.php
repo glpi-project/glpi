@@ -135,7 +135,7 @@ class ContractCost extends CommonDBChild {
 
 
    /**
-    * Duplicate all costs from a contract template to his clone
+    * Duplicate all costs from a contract template to its clone
     *
     * @since version 0.84
     *
@@ -249,8 +249,8 @@ class ContractCost extends CommonDBChild {
       echo "</td>";
       echo "<td>".__('Cost')."</td>";
       echo "<td>";
-      echo "<input type='text' name='cost' value='".
-             Html::formatNumber($this->fields["cost"], true)."' size='14'>";
+      echo "<input type='text' name='cost' value='".Html::formatNumber($this->fields["cost"], true)."'
+             size='14'>";
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".__('Begin date')."</td>";

@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 /// TicketCost class
+/// since version 0.84
 class TicketCost extends CommonDBChild {
 
    // From CommonDBChild
@@ -58,7 +59,7 @@ class TicketCost extends CommonDBChild {
    function canView() {
       return Session::haveRight('ticketcost', 'r');
    }
-   
+
    /**
     * @see inc/CommonDBChild::prepareInputForAdd()
    **/
@@ -82,6 +83,8 @@ class TicketCost extends CommonDBChild {
 
       return $input;
    }
+
+
    /**
     * @see inc/CommonDBTM::prepareInputForUpdate()
    **/
@@ -96,10 +99,13 @@ class TicketCost extends CommonDBChild {
 
       return $input;
    }
+
+
    /**
     * @see inc/CommonGLPI::getTabNameForItem()
    **/
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
       // can exists for template
       if (($item->getType() == 'Ticket')
           && Session::haveRight("ticketcost","r")) {
@@ -119,7 +125,7 @@ class TicketCost extends CommonDBChild {
     * @param $item            CommonGLPI object
     * @param $tabnum          (default 1)
     * @param $withtemplate    (default 0)
-    */
+   **/
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       self::showForTicket($item, $withtemplate);
@@ -129,16 +135,19 @@ class TicketCost extends CommonDBChild {
 
    /**
     * Init cost for creation based on previous cost
-    **/
+   **/
    function initBasedOnPrevious() {
+
       $ticket = new Ticket();
       if (!isset($this->fields['tickets_id']) || !$ticket->getFromDB($this->fields['tickets_id'])) {
          return false;
       }
 
       // Set actiontime to
-      $this->fields['actiontime'] = max(0,$ticket->fields['actiontime'] - $this->getTotalActionTimeForTicket($this->fields['tickets_id']));
-      $lastdata = $this->getLastCostForTicket($this->fields['tickets_id']);
+      $this->fields['actiontime']
+                 = max(0, $ticket->fields['actiontime']
+                           - $this->getTotalActionTimeForTicket($this->fields['tickets_id']));
+      $lastdata  = $this->getLastCostForTicket($this->fields['tickets_id']);
 
       if (isset($lastdata['end_date'])) {
          $this->fields['begin_date'] = $lastdata['end_date'];
@@ -157,18 +166,18 @@ class TicketCost extends CommonDBChild {
       }
    }
 
+
    /**
     * Get total action time used on costs for a ticket
     *
     * @param $tickets_id        integer  ID of the ticket
-    *
-    **/
+   **/
    function getTotalActionTimeForTicket($tickets_id) {
       global $DB;
 
       $query = "SELECT SUM(`actiontime`)
-                  FROM `".$this->getTable()."`
-                  WHERE `tickets_id` = '$tickets_id'";
+                FROM `".$this->getTable()."`
+                WHERE `tickets_id` = '$tickets_id'";
 
       if ($result = $DB->query($query)) {
          return $DB->result($result, 0, 0);
@@ -176,20 +185,20 @@ class TicketCost extends CommonDBChild {
 
       return 0;
    }
-   
+
+
    /**
     * Get last datas for a ticket
     *
     * @param $tickets_id        integer  ID of the ticket
-    *
-    **/
+   **/
    function getLastCostForTicket($tickets_id) {
       global $DB;
 
       $query = "SELECT *
-                  FROM `".$this->getTable()."`
-                  WHERE `tickets_id` = '$tickets_id'
-                  ORDER BY 'end_date' DESC, `id` DESC";
+                FROM `".$this->getTable()."`
+                WHERE `tickets_id` = '$tickets_id'
+                ORDER BY 'end_date' DESC, `id` DESC";
 
       if ($result = $DB->query($query)) {
          return $DB->fetch_assoc($result);
@@ -198,14 +207,13 @@ class TicketCost extends CommonDBChild {
       return array();
    }
 
-   
+
    /**
     * Print the ticket cost form
     *
     * @param $ID        integer  ID of the item
     * @param $options   array    options used
-    *
-    **/
+   **/
    function showForm($ID, $options=array()) {
 
       if (isset($options['parent']) && !empty($options['parent'])) {
@@ -221,13 +229,13 @@ class TicketCost extends CommonDBChild {
          $this->check(-1,'w',$input);
          $this->initBasedOnPrevious();
       }
-      
+
       if ($ID > 0) {
          $tickets_id = $this->fields["tickets_id"];
       } else {
          $tickets_id = $options['parent']->fields["id"];
       }
-      
+
       $ticket = new Ticket();
       if (!$ticket->getFromDB($tickets_id)) {
          return false;
@@ -246,27 +254,25 @@ class TicketCost extends CommonDBChild {
       Html::showDateFormItem("begin_date", $this->fields['begin_date']);
       echo "</td>";
       echo "</tr>";
-      
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Duration')."</td>";
       echo "<td>";
-      Dropdown::showTimeStamp('actiontime', array('value' => $this->fields['actiontime'],
+      Dropdown::showTimeStamp('actiontime', array('value'           => $this->fields['actiontime'],
                                                   'addfirstminutes' => true));
       echo "</td>";
       echo "<td>".__('End date')."</td>";
       echo "<td>";
       Html::showDateFormItem("end_date", $this->fields['end_date']);
       echo "</td>";
-      
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Time cost')."</td><td>";
       echo "<input type='text' size='15' name='cost_time' value='".
-               Html::formatNumber($this->fields["cost_time"], true)."'>";
+             Html::formatNumber($this->fields["cost_time"], true)."'>";
       echo "</td>";
-      
-      $rowspan=4;
+      $rowspan = 4;
       echo "<td rowspan='$rowspan'>".__('Comments')."</td>";
       echo "<td rowspan='$rowspan' class='middle'>";
       echo "<textarea cols='45' rows='".($rowspan+3)."' name='comment' >".$this->fields["comment"].
@@ -276,20 +282,20 @@ class TicketCost extends CommonDBChild {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Fixed cost')."</td><td>";
       echo "<input type='text' size='15' name='cost_fixed' value='".
-               Html::formatNumber($this->fields["cost_fixed"], true)."'>";
+             Html::formatNumber($this->fields["cost_fixed"], true)."'>";
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Material cost')."</td><td>";
       echo "<input type='text' size='15' name='cost_material' value='".
-               Html::formatNumber($this->fields["cost_material"], true)."'>";
+             Html::formatNumber($this->fields["cost_material"], true)."'>";
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'><td>".__('Budget')."</td>";
       echo "<td>";
-      Budget::dropdown(array('value' => $this->fields["budgets_id"],
+      Budget::dropdown(array('value'  => $this->fields["budgets_id"],
                              'entity' => $this->fields["entities_id"]));
       echo "</td></tr>";
 
@@ -334,7 +340,7 @@ class TicketCost extends CommonDBChild {
          echo "function viewAddCost".$ID."_$rand() {\n";
          $params = array('type'         => __CLASS__,
                          'parenttype'   => 'Ticket',
-                         'tickets_id' => $ID,
+                         'tickets_id'   => $ID,
                          'id'           => -1);
          Ajax::updateItemJsCode("viewcost".$ID."_$rand",
                                 $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
@@ -344,8 +350,7 @@ class TicketCost extends CommonDBChild {
                "<a class='vsubmit' href='javascript:viewAddCost".$ID."_$rand();'>";
          echo __('Add a new cost')."</a></div>\n";
       }
-      
-                
+
       if ($result = $DB->query($query)) {
          echo "<table class='tab_cadre_fixehov'>";
          echo "<tr><th colspan='7'>".self::getTypeName($DB->numrows($result))."</th>";
@@ -371,15 +376,16 @@ class TicketCost extends CommonDBChild {
                                         sprintf(__('%1$s = %2$s'),
                                                 $ticket->getTypeName(1), $ticket->getName()));
 
-            $total = 0;
-            $total_time = 0;
-            $total_fixed = 0;
+            $total          = 0;
+            $total_time     = 0;
+            $total_fixed    = 0;
             $total_material = 0;
-            
+
             while ($data = $DB->fetch_assoc($result)) {
-               echo "<tr class='tab_bg_2' ".($canedit
-                  ? "style='cursor:pointer' onClick=\"viewEditCost".$data['tickets_id']."_".
-                  $data['id']."_$rand();\"": '') .">";
+               echo "<tr class='tab_bg_2' ".
+                      ($canedit
+                       ? "style='cursor:pointer' onClick=\"viewEditCost".$data['tickets_id']."_".
+                         $data['id']."_$rand();\"": '') .">";
                $name = (empty($data['name'])? sprintf(__('%1$s (%2$s)'),
                                                       $data['name'], $data['id'])
                                             : $data['name']);
@@ -389,20 +395,19 @@ class TicketCost extends CommonDBChild {
                if ($canedit) {
                   echo "\n<script type='text/javascript' >\n";
                   echo "function viewEditCost" .$data['tickets_id']."_". $data["id"]. "_$rand() {\n";
-                  $params = array('type'        => __CLASS__,
-                                 'parenttype'   => 'Ticket',
+                  $params = array('type'      => __CLASS__,
+                                 'parenttype' => 'Ticket',
                                  'tickets_id' => $data["tickets_id"],
-                                 'id'           => $data["id"]);
+                                 'id'         => $data["id"]);
                   Ajax::updateItemJsCode("viewcost".$ID."_$rand",
-                                       $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
+                                         $CFG_GLPI["root_doc"]."/ajax/viewsubitem.php", $params);
                   echo "};";
                   echo "</script>\n";
                }
                echo "</td>";
                echo "<td>".Html::convDate($data['begin_date'])."</td>";
                echo "<td>".Html::convDate($data['end_date'])."</td>";
-               echo "<td>".Dropdown::getDropdownName('glpi_budgets',
-                                                $data['budgets_id'])."</td>";
+               echo "<td>".Dropdown::getDropdownName('glpi_budgets', $data['budgets_id'])."</td>";
                echo "<td>".CommonITILObject::getActionTime($data['actiontime'])."</td>";
                $total_time += $data['actiontime'];
                echo "<td class='numeric'>".Html::formatNumber($data['cost_time'])."</td>";
@@ -410,7 +415,8 @@ class TicketCost extends CommonDBChild {
                $total_fixed += $data['cost_fixed'];
                echo "<td class='numeric'>".Html::formatNumber($data['cost_material'])."</td>";
                $total_material += $data['cost_material'];
-               $cost = self::computeTotalCost($data['actiontime'], $data['cost_time'], $data['cost_fixed'], $data['cost_material']);
+               $cost            = self::computeTotalCost($data['actiontime'], $data['cost_time'],
+                                                         $data['cost_fixed'], $data['cost_material']);
                echo "<td class='numeric'>".Html::formatNumber($cost)."</td>";
                $total += $cost;
                echo "</tr>";
@@ -430,6 +436,7 @@ class TicketCost extends CommonDBChild {
       echo "</div><br>";
    }
 
+
    /**
     * Computer total cost of a ticket
     *
@@ -437,7 +444,7 @@ class TicketCost extends CommonDBChild {
     * @param $cost_time       float    ticket time cost
     * @param $cost_fixed      float    ticket fixed cost
     * @param $cost_material   float    ticket material cost
-    * @param $edit             boolean used for edit of computation ? (true by default)
+    * @param $edit            boolean  used for edit of computation ? (true by default)
     *
     * @return total cost formatted string
    **/
@@ -447,6 +454,6 @@ class TicketCost extends CommonDBChild {
       return Html::formatNumber(($actiontime*$cost_time/HOUR_TIMESTAMP)+$cost_fixed+$cost_material,
                                 $edit);
    }
-   
+
 }
 ?>

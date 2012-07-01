@@ -353,14 +353,19 @@ abstract class CommonDBChild extends CommonDBTM {
       Log::history($this->fields[$this->items_id], $type, $changes, get_class($this),
                    Log::HISTORY_ADD_SUBITEM);
    }
+
+
    /**
     * Actions done after the UPDATE of the item in the database
+    *
+    * @since version 0.84
     *
     * @param $history store changes history ? (default 1)
     *
     * @return nothing
    **/
    function post_updateItem($history=1) {
+
       if (isset($this->input['_no_history']) || !$this->dohistory) {
          return false;
       }
@@ -386,7 +391,7 @@ abstract class CommonDBChild extends CommonDBTM {
       $changes[2] = addslashes($this->getNameID(false, true));
       Log::history($this->fields[$this->items_id], $type, $changes, get_class($this),
                    Log::HISTORY_UPDATE_SUBITEM);
-   
+
    }
 
    /**

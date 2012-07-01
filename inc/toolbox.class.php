@@ -1630,7 +1630,7 @@ class Toolbox {
                      case "ticket" :
                         // Check entity
                         if (($item = getItemForItemtype($data[0]))
-                              && $item->isEntityAssign()) {
+                            && $item->isEntityAssign()) {
                            if ($item->getFromDB($data[1])) {
                               if (!Session::haveAccessToEntity($item->getEntityID())) {
                                  Session::changeActiveEntities($item->getEntityID(),1);
@@ -1703,7 +1703,7 @@ class Toolbox {
                         if (!empty($data[0] )&& ($data[1] > 0)) {
                            // Check entity
                            if (($item = getItemForItemtype($data[0]))
-                                 && $item->isEntityAssign()) {
+                               && $item->isEntityAssign()) {
                               if ($item->getFromDB($data[1])) {
                                  if (!Session::haveAccessToEntity($item->getEntityID())) {
                                     Session::changeActiveEntities($item->getEntityID(),1);

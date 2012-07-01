@@ -126,6 +126,7 @@ class Contract extends CommonDBTM {
       }
    }
 
+
    function pre_updateInDB() {
 
       // Clean end alert if begin_date is after old one
@@ -315,10 +316,9 @@ class Contract extends CommonDBTM {
                                                    'joinparams' => array('jointype'
                                                                             => 'itemtype_item')));
 
-      $joinparamscost            = array('jointype' => 'child',
+      $joinparamscost            = array('jointype'   => 'child',
                                          'beforejoin' => array('table'      => 'glpi_contracts',
-                                                               'joinparams' => $joinparams,
-                                          ));
+                                                               'joinparams' => $joinparams));
 
       $tab[139]['table']         = 'glpi_contracts_items';
       $tab[139]['field']         = 'count';
