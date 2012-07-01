@@ -568,8 +568,8 @@ class Software extends CommonDBTM {
     * @param manufacturer           the software's manufacturer (need to be addslashes)
     * @param entity                 the entity in which the software must be added
     * @param comment                (default '')
-    * @param is_recursive  boolean  must the software be recursive (false by default))
-    * @param is_helpdesk_visible    show in helpdesk, default : from config
+    * @param is_recursive  boolean  must the software be recursive (false by default)
+    * @param is_helpdesk_visible    show in helpdesk, default : from config (false by default)
     *
     * @return the software's ID
    **/
@@ -628,7 +628,7 @@ class Software extends CommonDBTM {
     * @param entity                 the entity in which the software must be added
     * @param comment                comment (default '')
     * @param is_recursive  boolean  must the software be recursive (false by default)
-    * @param is_helpdesk_visible    show in helpdesk, default = config value
+    * @param is_helpdesk_visible    show in helpdesk, default = config value (false by default)
    */
    function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment='',
                                   $is_recursive=false, $is_helpdesk_visible=NULL) {
