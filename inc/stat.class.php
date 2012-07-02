@@ -125,6 +125,31 @@ class Stat {
             }
             break;
 
+         case 'locations_tree' :
+            $cond = "AND (`id` = '$parent'
+                          OR `locations_id` = '$parent')";
+            // nobreak
+
+         case 'locations_id' :
+            // Get all locations for tree merge management
+            $query = "SELECT DISTINCT `glpi_locations`.`id`,
+                             `glpi_locations`.`".($cond?'name':'completename')."` AS location
+                      FROM `glpi_locations`".
+                      getEntitiesRestrictRequest(' WHERE', 'glpi_locations', '', '', true)."
+                            $cond
+                      ORDER BY `completename`";
+
+            $result = $DB->query($query);
+            $val    = array();
+            if ($DB->numrows($result) >= 1) {
+               while ($line = $DB->fetch_assoc($result)) {
+                  $tmp['id']   = $line['id'];
+                  $tmp['link'] = $line['location'];
+                  $val[]       = $tmp;
+               }
+            }
+            break;
+
          case "type" :
             $types = $item->getTypes();
             $val   = array();
@@ -337,6 +362,10 @@ class Stat {
 
             case 'itilcategories_tree' :
                $subname = Dropdown::getDropdownName('glpi_itilcategories', $value2);
+               break;
+
+            case 'locations_tree' :
+               $subname = Dropdown::getDropdownName('glpi_locations', $value2);
                break;
          }
 
@@ -749,6 +778,16 @@ class Stat {
             $WHERE     .= " AND `$table`.`itilcategories_id` IN ('$condition')";
             break;
 
+         case 'locations_tree' :
+            if ($value == $value2) {
+               $categories = array($value);
+            } else {
+               $categories = getSonsOf('glpi_locations', $value);
+            }
+            $condition  = implode("','",$categories);
+            $WHERE     .= " AND `$table`.`locations_id` IN ('$condition')";
+            break;
+
          case 'group_tree' :
          case 'groups_tree_assign' :
             $grptype = (($param == 'group_tree') ? CommonITILObject::REQUESTER
@@ -791,6 +830,7 @@ class Stat {
          case "users_id_recipient" :
          case "type" :
          case "itilcategories_id" :
+         case 'locations_id' :
             $WHERE .= " AND `$table`.`$param` = '$value'";
             break;
 
