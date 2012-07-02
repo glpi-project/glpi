@@ -1767,6 +1767,12 @@ class Ticket extends CommonITILObject {
       $tab[9]['name']            = __('Request source');
       $tab[9]['datatype']        = 'dropdown';
 
+      // Can't use Location::getSearchOptionsToAdd because id conflicts
+      $tab[83]['table']          = 'glpi_locations';
+      $tab[83]['field']          = 'completename';
+      $tab[83]['name']           = __('Location');
+      $tab[83]['datatype']       = 'dropdown';
+
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
@@ -2873,7 +2879,8 @@ class Ticket extends CommonITILObject {
                               '_users_id_requester' => 0,
                               'name'                => '',
                               'content'             => '',
-	                           'itilcategories_id'   => 0,
+                              'itilcategories_id'   => 0,
+                              'locations_id'        => 0,
                               'urgency'             => 3,
                               'itemtype'            => '',
                               'items_id'            => 0,
@@ -3062,7 +3069,9 @@ class Ticket extends CommonITILObject {
          echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
          echo "<input type='hidden' name='items_id' value='".$options['items_id']."'>";
       }
-
+      if ($tt->isHiddenField('locations_id')) {
+         echo "<input type='hidden' name='locations_id' value='".$options['locations_id']."'>";
+      }
       echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
       echo "<div class='center'><table class='tab_cadre_fixe'>";
 
@@ -3147,6 +3156,14 @@ class Ticket extends CommonITILObject {
 
             echo "</td></tr>";
          }
+      }
+
+      if (!$tt->isHiddenField('locations_id')) {
+         echo "<tr class='tab_bg_1'><td>";
+         printf(__('%1$s%2$s'), __('Location'), $tt->getMandatoryMark('locations_id'));
+         echo "</td><td>";
+         Location::dropdown(array('value'  => $options["locations_id"]));
+         echo "</td></tr>";
       }
 
       if (!$tt->isHiddenField('name')
@@ -3253,6 +3270,7 @@ class Ticket extends CommonITILObject {
                     'followup'                  => array(),
                     'itemtype'                  => '',
                     'items_id'                  => 0,
+                    'locations_id'              => 0,
                     'plan'                      => array(),
                     'global_validation'         => 'none',
                     'due_date'                  => 'NULL',
@@ -3904,21 +3922,32 @@ class Ticket extends CommonITILObject {
       echo "</tr>";
 
 
+      echo "<tr class='tab_bg_1'>";
       // Need comment right to add a followup with the actiontime
       if (!$ID
           && Session::haveRight("global_add_followups","1")) {
-         echo "<tr class='tab_bg_1'>";
          echo "<th>".$tt->getBeginHiddenFieldText('actiontime');
          printf(__('%1$s%2$s'), __('Total duration'), $tt->getMandatoryMark('actiontime'));
          echo $tt->getEndHiddenFieldText('actiontime')."</th>";
-         echo "<td colspan='3'>";
+         echo "<td>";
          echo $tt->getBeginHiddenFieldValue('actiontime');
          Dropdown::showTimeStamp('actiontime', array('value' => $values['actiontime'],
                                                      'addfirstminutes' => true));
          echo $tt->getEndHiddenFieldValue('actiontime',$this);
          echo "</td>";
-         echo "</tr>";
+      } else {
+         echo "<th></th><td></td>";
       }
+      echo "<th>".$tt->getBeginHiddenFieldText('locations_id');
+      printf(__('%1$s%2$s'), __('Location'), $tt->getMandatoryMark('locations_id'));
+      echo $tt->getEndHiddenFieldText('locations_id')."</th>";
+      echo "<td>";
+      echo $tt->getBeginHiddenFieldValue('locations_id');
+      Location::dropdown(array('value'  => $values['locations_id'],
+                               'entity' => $this->fields['entities_id']));
+      echo $tt->getEndHiddenFieldValue('locations_id', $this);
+      echo "</td></tr>";
+
       echo "</table>";
       if ($ID) {
          $this->showActorsPartForm($ID, $values);
