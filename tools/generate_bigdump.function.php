@@ -469,7 +469,7 @@ function addTracking($type, $ID, $ID_entity) {
                          mt_rand(0, 10)*HOUR_TIMESTAMP+mt_rand(0, 60)*MINUTE_TIMESTAMP;
       $duedatetoadd    = date("Y-m-d H:i:s", intval($due_date));
 
-      
+
       if ($status=="closed" || $status=="solved") {
          $solvetime = $firstactiontime+mt_rand(0, 10)*DAY_TIMESTAMP+mt_rand(0, 10)*HOUR_TIMESTAMP+
                       mt_rand(0, 60)*MINUTE_TIMESTAMP;
@@ -518,6 +518,8 @@ function addTracking($type, $ID, $ID_entity) {
                            'itilcategories_id'           => mt_rand(0, $MAX['tracking_category']),
                            'type'                        => mt_rand(1,2),
                            'solutiontypes_id'            => $solutiontype,
+                           'locations_id'                => mt_rand($FIRST['locations'],
+                                                                    $LAST['locations']),
                            'solution'                    => $solution,
                            'actiontime'                  => $actiontime,
                            'due_date'                    => $duedatetoadd,
