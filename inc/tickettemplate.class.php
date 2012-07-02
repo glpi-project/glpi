@@ -172,6 +172,8 @@ class TicketTemplate extends CommonDropdown {
                                                        'glpi_tickets')        => 'priority',
                      $ticket->getSearchOptionIDByField('field', 'name',
                                                        'glpi_requesttypes')   => 'requesttypes_id',
+                     $ticket->getSearchOptionIDByField('field', 'completename',
+                                                       'glpi_locations')      => 'locations_id',
                      $ticket->getSearchOptionIDByField('field', 'name',
                                                        'glpi_slas')           => 'slas_id',
                      $ticket->getSearchOptionIDByField('field', 'due_date',
