@@ -93,6 +93,8 @@ $caract    = array('itilcategories_id'   => array('title' => __('Category')),
 if ($_REQUEST['itemtype'] == 'Ticket') {
    $caract['type']            = array('title' => __('Type'));
    $caract['requesttypes_id'] = array('title' => __('Request source'));
+   $caract['locations_id']    = array('title' => __('Location'));
+   $caract['locations_tree']  = array('title' => __('Location tree'));
 }
 
 
@@ -143,7 +145,7 @@ Html::closeForm();
 echo "</div>";
 
 $val    = Stat::getItems($_REQUEST["itemtype"], $_REQUEST["date1"], $_REQUEST["date2"],
-                         $_REQUEST["type"]);
+                         $_REQUEST["type"], $_REQUEST["value2"]);
 $params = array('type'   => $_REQUEST["type"],
                 'date1'  => $_REQUEST["date1"],
                 'date2'  => $_REQUEST["date2"],
