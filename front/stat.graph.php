@@ -129,6 +129,20 @@ switch($_GET["type"]) {
                          Dropdown::getDropdownName("glpi_itilcategories", $_GET["id"]));
       break;
 
+   case 'locations_tree' :
+      $parent = (isset($_REQUEST['champ']) ? $_REQUEST['champ'] : 0);
+      $cond   = "(`id` = '$parent' OR `locations_id` = '$parent')";
+      // nobreak;
+
+   case 'locations_id' :
+      $val1    = $_GET['id'];
+      $val2    = '';
+      $values  = Stat::getItems($_REQUEST['itemtype'], $_REQUEST['date1'], $_REQUEST['date2'],
+                                $_REQUEST['type'], $parent );
+      $title   = sprintf(__('%1$s: %2$s'), __('Location'),
+                         Dropdown::getDropdownName('glpi_locations', $_GET['id']));
+      break;
+
    case "type" :
       $val1    = $_GET["id"];
       $val2    = "";
