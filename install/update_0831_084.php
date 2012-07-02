@@ -1754,6 +1754,8 @@ function update0831to084() {
    }
    $migration->dropField('glpi_tickets', 'suppliers_id_assign');
 
+   $migration->addField('glpi_tickets', 'locations_id', 'integer');
+   $migration->addKey('glpi_tickets', 'locations_id');
 
    $migration->displayMessage(sprintf(__('Data migration - %s'), 'RuleTicket'));
 

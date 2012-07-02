@@ -5135,6 +5135,7 @@ CREATE TABLE `glpi_tickets` (
   `takeintoaccount_delay_stat` int(11) NOT NULL DEFAULT '0',
   `actiontime` int(11) NOT NULL DEFAULT '0',
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  `locations_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `date` (`date`),
   KEY `closedate` (`closedate`),
@@ -5157,7 +5158,8 @@ CREATE TABLE `glpi_tickets` (
   KEY `solutiontypes_id` (`solutiontypes_id`),
   KEY `itilcategories_id` (`itilcategories_id`),
   KEY `is_deleted` (`is_deleted`),
-  KEY `name` (`name`)
+  KEY `name` (`name`),
+  KEY `locations_id` (`locations_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
