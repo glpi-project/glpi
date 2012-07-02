@@ -1200,7 +1200,8 @@ class Rule extends CommonDBTM {
          if (isset($actions[$criteria])) {
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$actions[$criteria]["name"]."</td>";
-            echo "<td>".$this->getActionValue($criteria, $value)."</td></tr>\n";
+            echo "<td>".$this->getActionValue($criteria, $actions[$criteria]['action_type'], $value);
+            echo "</td></tr>\n";
          }
       }
 
@@ -1270,8 +1271,8 @@ class Rule extends CommonDBTM {
 
       $text  = "<td>" . $this->getActionName($fields["field"]) . "</td>";
       $text .= "<td>" . RuleAction::getActionByID($fields["action_type"]) . "</td>";
-      $text .= "<td>" . $this->getActionValue($fields["field"],
-                                                           $fields["value"]) . "</td>";
+      $text .= "<td>" . $this->getActionValue($fields["field"], $fields['action_type'],
+                                              $fields["value"]) . "</td>";
       return $text;
    }
 
@@ -1472,15 +1473,20 @@ class Rule extends CommonDBTM {
     * Return a "display" value associated with a pattern associated to a criteria
     *
     * @param $ID     the given action
+    * @param $type   the type of action
     * @param $value  the value
    **/
-   function getActionValue($ID, $value) {
+   function getActionValue($ID, $type, $value) {
 
       $action = $this->getAction($ID);
       if (isset($action['type'])) {
 
          switch ($action['type']) {
             case "dropdown" :
+               if ($type=='fromuser' || $type=='fromitem') {
+                  return Dropdown::getYesNo($value);
+               }
+               // $type == assign
                $tmp = Dropdown::getDropdownName($action["table"], $value);
                return (($tmp == '&nbsp;') ? NOT_AVAILABLE : $tmp);
 

@@ -130,7 +130,10 @@ class RuleRightCollection extends RuleCollection {
          if (isset($actions[$criteria])) { // ignore _* fields
             echo "<tr class='tab_bg_2'>";
             echo "<td class='center'>".$actions[$criteria]["name"]."</td>";
-            echo "<td class='center'>".$rule->getActionValue($criteria, $value)."</td></tr>\n";
+            echo "<td class='center'>".$rule->getActionValue($criteria,
+                                                             $actions[$criteria]['action_type'],
+                                                             $value);
+            echo "</td></tr>\n";
          }
       }
       echo "</tr>";
