@@ -93,8 +93,6 @@ $caract    = array('itilcategories_id'   => array('title' => __('Category')),
 if ($_REQUEST['itemtype'] == 'Ticket') {
    $caract['type']            = array('title' => __('Type'));
    $caract['requesttypes_id'] = array('title' => __('Request source'));
-   $caract['locations_id']    = array('title' => __('Location'));
-   $caract['locations_tree']  = array('title' => __('Location tree'));
 }
 
 
