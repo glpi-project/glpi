@@ -1529,7 +1529,8 @@ class Rule extends CommonDBTM {
    **/
    function getCriteriaValue($ID, $condition, $value) {
 
-      if (!in_array($condition, array(self::PATTERN_IS, self::PATTERN_IS_NOT,
+      if (!in_array($condition, array(self::PATTERN_DOES_NOT_EXISTS, self::PATTERN_EXISTS,
+                                      self::PATTERN_IS, self::PATTERN_IS_NOT,
                                       self::PATTERN_NOT_UNDER, self::PATTERN_UNDER))) {
          $crit = $this->getCriteria($ID);
          if (isset($crit['type'])) {

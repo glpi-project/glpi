@@ -179,7 +179,9 @@ class RuleAction extends CommonDBChild {
                    'affectbymac'         => __('Assign: equipment by MAC address'),
                    'compute'             => __('Recalculate'),
                    'send'                => __('Send'),
-                   'add_validation'      => __('Send'));
+                   'add_validation'      => __('Send'),
+                   'fromuser'            => __('Copy from user'),
+                   'fromitem'            => __('Copy from item'));
    }
 
 
@@ -256,6 +258,12 @@ class RuleAction extends CommonDBChild {
             Html::autocompletionTextField($this, "value");
             break;
 
+         case 'fromuser' :
+         case 'fromitem' :
+            Dropdown::showYesNo("value", 0, 0);
+            $display = true;
+            break;
+
          default :
             $actions = Rule::getActionsByType($options["sub_type"]);
             if (isset($actions[$options["field"]]['type'])) {
@@ -266,7 +274,7 @@ class RuleAction extends CommonDBChild {
                      $param = array('name' => "value");
                      if (isset($actions[$options["field"]]['condition'])) {
                         $param['condition'] = $actions[$options["field"]]['condition'];
-                     }                     
+                     }
                      Dropdown::show(getItemTypeForTable($table), $param);
                      $display = true;
                      break;

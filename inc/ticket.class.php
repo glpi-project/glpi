@@ -1068,7 +1068,7 @@ class Ticket extends CommonITILObject {
       }
 
       // Set additional default dropdown
-      $dropdown_fields = array('items_id');
+      $dropdown_fields = array('items_id', 'items_locations', 'users_locations');
       foreach ($dropdown_fields as $field ) {
          if (!isset($input[$field])) {
             $input[$field] = 0;
@@ -1081,7 +1081,11 @@ class Ticket extends CommonITILObject {
       $item = NULL;
       if (($input["items_id"] > 0) && !empty($input["itemtype"])) {
          if ($item = getItemForItemtype($input["itemtype"])) {
-            if (!$item->getFromDB($input["items_id"])) {
+            if ($item->getFromDB($input["items_id"])) {
+               if ($item->isField('locations_id')) {
+                  $input['items_locations'] = $item->fields['locations_id'];
+               }
+            } else {
                $item = NULL;
             }
          }
@@ -3943,7 +3947,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getEndHiddenFieldText('locations_id')."</th>";
       echo "<td>";
       echo $tt->getBeginHiddenFieldValue('locations_id');
-      Location::dropdown(array('value'  => $values['locations_id'],
+      Location::dropdown(array('value'  => $this->fields['locations_id'],
                                'entity' => $this->fields['entities_id']));
       echo $tt->getEndHiddenFieldValue('locations_id', $this);
       echo "</td></tr>";

@@ -149,6 +149,18 @@ class RuleTicket extends Rule {
                   $output[$action->fields["field"]] = $action->fields["value"];
                   break;
 
+               case 'fromuser' :
+                  if ($action->fields['field']=='locations_id') {
+                     $output['locations_id'] = $output['users_locations'];
+                  }
+                  break;
+
+               case 'fromitem' :
+                  if ($action->fields['field']=='locations_id') {
+                     $output['locations_id'] = $output['items_locations'];
+                  }
+                  break;
+
                case 'compute' :
                   // Value could be not set (from test)
                   $urgency = (isset($output['urgency'])?$output['urgency']:3);
@@ -247,6 +259,18 @@ class RuleTicket extends Rule {
       $criterias['users_locations']['name']           = __('Requester location');
       $criterias['users_locations']['linkfield']      = 'users_locations';
       $criterias['users_locations']['type']           = 'dropdown';
+
+      $criterias['items_locations']['table']          = 'glpi_locations';
+      $criterias['items_locations']['field']          = 'completename';
+      $criterias['items_locations']['name']           = __('Item location');
+      $criterias['items_locations']['linkfield']      = 'items_locations';
+      $criterias['items_locations']['type']           = 'dropdown';
+
+      $criterias['locations_id']['table']             = 'glpi_locations';
+      $criterias['locations_id']['field']             = 'completename';
+      $criterias['locations_id']['name']              = __('Ticket location');
+      $criterias['locations_id']['linkfield']         = 'locations_id';
+      $criterias['locations_id']['type']              = 'dropdown';
 
       $criterias['_groups_id_requester']['table']     = 'glpi_groups';
       $criterias['_groups_id_requester']['field']     = 'completename';
@@ -403,6 +427,11 @@ class RuleTicket extends Rule {
                                           = 'yesno';
       $actions['users_id_validate_assign_supervisor']['force_actions']
                                           = array('add_validation');
+
+      $actions['locations_id']['name']           = __('Location');
+      $actions['locations_id']['type']           = 'dropdown';
+      $actions['locations_id']['table']          = 'glpi_locations';
+      $actions['locations_id']['force_actions']  = array('assign', 'fromuser', 'fromitem');
 
       return $actions;
    }
