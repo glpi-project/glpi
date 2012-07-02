@@ -1835,6 +1835,39 @@ function update0831to084() {
              WHERE `itemtype` = 'Consumable'";
    $DB->queryOrDie($query, "0.83 update glpi_notificationtemplates for Consumable");
 
+   $migration->createRule(
+      array('sub_type'           => 'RuleTicket',
+            'entities_id'        => 0,
+            'is_recursive'       => 1,
+            'is_active'          => 0,
+            'match'              => 'AND',
+            'name'               => 'Ticket location from item'),
+      array(array('criteria'     => 'locations_id',
+                  'condition'    => Rule::PATTERN_DOES_NOT_EXISTS,
+                  'pattern'      => 1),
+            array('criteria'     => 'items_locations',
+                  'condition'    => Rule::PATTERN_EXISTS,
+                  'pattern'      => 1)),
+      array(array('field'        => 'locations_id',
+                  'action_type'  => 'fromitem',
+                  'value'        => 1)));
+
+   $migration->createRule(
+      array('sub_type'           => 'RuleTicket',
+            'entities_id'        => 0,
+            'is_recursive'       => 1,
+            'is_active'          => 0,
+            'match'              => 'AND',
+            'name'               => 'Ticket location from user'),
+      array(array('criteria'     => 'locations_id',
+                  'condition'    => Rule::PATTERN_DOES_NOT_EXISTS,
+                  'pattern'      => 1),
+            array('criteria'     => 'users_locations',
+                  'condition'    => Rule::PATTERN_EXISTS,
+                  'pattern'      => 1)),
+      array(array('field'        => 'locations_id',
+                  'action_type'  => 'fromuser',
+                  'value'        => 1)));
 
    // ************ Keep it at the end **************
    //TRANS: %s is the table or item to migrate
