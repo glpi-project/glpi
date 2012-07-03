@@ -143,30 +143,30 @@ if (isset($_REQUEST['getvcard'])) {
    Html::back();
 
 } else {
-   if (!isset($_REQUEST["ext_auth"])) {
+   if (!isset($_POST["ext_auth"])) {
       Session::checkRight("user", "r");
       Html::header($LANG['title'][13], '', "admin", "user");
-      $user->showForm($_REQUEST["id"]);
+      $user->showForm($_POST["id"]);
       Html::footer();
 
    } else {
       Session::checkRight("import_externalauth_users", "w");
 
-      if (isset($_REQUEST['add_ext_auth_ldap'])) {
-         if (isset($_REQUEST['login']) && !empty($_REQUEST['login'])) {
-            AuthLdap::importUserFromServers(array('name' => $_REQUEST['login']));
+      if (isset($_POST['add_ext_auth_ldap'])) {
+         if (isset($_POST['login']) && !empty($_POST['login'])) {
+            AuthLdap::importUserFromServers(array('name' => $_POST['login']));
          }
          Html::back();
       }
-      if (isset($_REQUEST['add_ext_auth_simple'])) {
-         if (isset($_REQUEST['login']) && !empty($_REQUEST['login'])) {
-            $input = array('name'     => $_REQUEST['login'],
+      if (isset($_POST['add_ext_auth_simple'])) {
+         if (isset($_POST['login']) && !empty($_POST['login'])) {
+            $input = array('name'     => $_POST['login'],
                            '_extauth' => 1,
                            'add'      => 1);
             $user->check(-1, 'w', $input);
             $newID = $user->add($input);
             Event::log($newID, "users", 4, "setup",
-                       $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_REQUEST['login'].".");
+                       $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST['login'].".");
          }
          Html::back();
       }
