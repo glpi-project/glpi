@@ -979,6 +979,10 @@ class Session {
                   unset($_SESSION['glpicsrftokens'][$token]);
                }
             }
+            $overflow = count($_SESSION['glpicsrftokens']) - GLPI_CSRF_MAX_TOKENS;
+            if ($overflow > 0) {
+               $_SESSION['glpicsrftokens'] = array_slice($_SESSION['glpicsrftokens'], $overflow + 1, null, true);
+            }
          }
       }
    }
