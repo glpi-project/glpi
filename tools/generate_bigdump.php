@@ -36,7 +36,7 @@
 // This script generate and populate a complete glpi DB
 // A good way to test GLPI with a lot of data
 
-
+define('DO_NOT_CHECK_HTTP_REFERER', 1);
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT."/inc/includes.php");
 include ("generate_bigdump.function.php");
