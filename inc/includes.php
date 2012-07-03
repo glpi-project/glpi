@@ -135,9 +135,13 @@ if (isset($_REQUEST['glpilist_limit'])) {
 // Security : Check HTTP_REFERRER : need to be in GLPI.
 if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()) {
    if (!isset($_SERVER['HTTP_REFERER'])
-       || (strstr($_SERVER['HTTP_REFERER'],$CFG_GLPI['root_doc']) === FALSE)) {
-      Html::displayErrorAndDie(__("Error calling the previous page from a forbidden page."), true);
-   };
+       || !is_array($url=parse_url($_SERVER['HTTP_REFERER']))
+       || !isset($url['host'])
+       || ($url['host']!=$_SERVER['SERVER_NAME'])
+       || !isset($url['path'])
+       || (strpos($url['path'], $CFG_GLPI['root_doc'])!==0)) {
+      Html::displayErrorAndDie("Error calling the previous page from forbidden one.", true);
+   }
 }
 
 ?>
