@@ -365,9 +365,14 @@ class Computer_Item extends CommonDBRelation{
          if ($item->canView()) {
             $query = "SELECT *
                       FROM `glpi_computers_items`
+                      LEFT JOIN `".getTableForItemType($itemtype)."`
+                        ON (`".getTableForItemType($itemtype)."`.`id` = `glpi_computers_items`.`items_id`)
                       WHERE `computers_id` = '$ID'
                             AND `itemtype` = '".$itemtype."'";
-
+            if ($item->maybetemplate()) {
+               $query.= " AND NOT `".getTableForItemType($itemtype)."`.`is_template` ";
+            }
+            
             $result = $DB->query($query);
             if ($result) {
                $nb = $DB->numrows($result);
