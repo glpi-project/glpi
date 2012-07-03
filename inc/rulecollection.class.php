@@ -365,13 +365,14 @@ class RuleCollection extends CommonDBTM {
       $p['inherited'] = true;
       $p['childrens'] = false;
       $p['active']    = false;
+      $rand = mt_rand();
 
       foreach (array('inherited','childrens') as $param) {
          if (isset($options[$param]) && $this->isRuleRecursive()) {
             $p[$param] = $options[$param];
          }
       }
-
+      $rule = $this->getRuleClass();
       $display_entities = ($this->isRuleRecursive()
                            && ($p['inherited'] || $p['childrens']));
 
@@ -390,8 +391,20 @@ class RuleCollection extends CommonDBTM {
 
       Html::printAjaxPager('', $p['start'], $nb);
 
-      echo "<form name='ruleactions_form' id='ruleactions_form' method='post'action='".$target."'>";
+      echo "<form name='ruleactions_form$rand' id='ruleactions_form$rand' method='post'action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
       echo "\n<div class='spaced'>";
+
+      if ($canedit && $nb) {
+         $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=".$this->getRuleClassName();
+         $massiveactionparams = array('num_displayed' => min($p['limit'], $nb),
+                                       'url'          => $urlma,
+                                       'ontop'        => true,
+                                       'fixed'        => true,
+                                       );
+
+         Html::displayMassiveActions($massiveactionparams);
+      }
+      
       echo "<table class='tab_cadre_fixehov'>";
       $colspan = 6;
 
@@ -400,7 +413,17 @@ class RuleCollection extends CommonDBTM {
       }
 
       echo "<tr><th colspan='$colspan'>" . $this->getTitle() ."</th></tr>\n";
-      echo "<tr><th colspan='2'>".__('Name')."</th>";
+      echo "<tr>";
+      echo "<th>";
+      if ($canedit) {
+         echo "<input type='checkbox' name='_checkall_massaction$rand' ".
+                           "id='_checkall_massaction$rand' ".
+                           "onclick= \"if ( checkAsCheckboxes('_checkall_massaction$rand',
+                                                            'ruleactions_form$rand'))
+                                                      {return true;}\">";
+      }
+      echo "</th>";
+      echo "<th>".__('Name')."</th>";
       echo "<th>".__('Description')."</th>";
       echo "<th>".__('Active')."</th>";
 
@@ -423,39 +446,10 @@ class RuleCollection extends CommonDBTM {
       }
       echo "</table>\n";
 
-      if ($canedit
-          && ($nb > 0)) {
-         Html::openArrowMassives("ruleactions_form", true);
-         /// TODO move to new standard mass action...
-         echo "<select name='massiveaction' id='massiveaction'>";
-         echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
-         echo "<option value='delete'>".__('Delete')."</option>";
+      if ($canedit && $nb) {
+         $massiveactionparams['ontop'] = false;
+         Html::displayMassiveActions($massiveactionparams);
 
-         if ($this->orderby=="ranking") {
-            echo "<option value='move_rule'>".__('Move')."</option>";
-         }
-         echo "<option value='activate_rule'>".__('Enable')."</option>";
-         echo "</select>\n";
-
-         $params = array('action'          => '__VALUE__',
-                         'itemtype'        => 'Rule',
-                         'sub_type'        => $this->getRuleClassName(),
-                         'entity_restrict' => $this->entity);
-
-         Ajax::updateItemOnSelectEvent("massiveaction", "show_massiveaction",
-                                       $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
-                                       $params);
-
-         echo "<span id='show_massiveaction'>&nbsp;</span>\n";
-         /// TODO action comme une autre.
-         if ($this->can_replay_rules) {
-            echo "</td>"; // close td of Html::openArrowMassives
-            echo "<td><input type='submit' name='replay_rule' value='" .
-                       __s('Replay the dictionary rules') ."' class='submit'></td>";
-            echo "<td>"; // open td for Html::closeArrowMassives
-         }
-         $options = array();
-         Html::closeArrowMassives($options);
       }
 
       echo "</div>";
@@ -476,6 +470,14 @@ class RuleCollection extends CommonDBTM {
              "&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );".
              "w.focus();\">".__('Test rules engine')."</a></div>";
 
+         /// TODO action comme une autre.
+         if ($this->can_replay_rules) {
+            echo "<div class='spaced center'>";
+            echo "<a class='vsubmit' href='".$rule->getSearchURL()."?replay_rule=replay_rule'>".
+                  __s('Replay the dictionary rules')."</a>";
+            echo "</div>";                            
+         }
+   
       echo "<div class='spaced'>";
       $this->showAdditionalInformationsInForm($target);
       echo "</div>";

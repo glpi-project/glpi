@@ -49,50 +49,6 @@ if (isset($_GET["action"])) {
    $rulecollection->changeRuleOrder($_GET["id"],$_GET["action"]);
    Html::back();
 
-} else if (isset($_POST["action"])) {
-   $rulecollection->checkGlobal('w');
-
-   // Use massive action system
-   switch ($_POST["action"]) {
-      case "delete" :
-         if (isset($_POST["item"]) && count($_POST["item"])) {
-            foreach ($_POST["item"] as $key => $val) {
-               $rule->getFromDB($key);
-               $input["id"] = $key;
-               $rulecollection->deleteRuleOrder($rule->fields["ranking"]);
-               $rule->delete(array('id' => $key));
-            }
-            Event::log(0, "rules", 4, "setup",
-                       //TRANS: %s is the user login
-                       sprintf(__('%s deletes items'), $_SESSION["glpiname"]));
-
-            Html::back();
-         }
-         break;
-
-      case "move_rule" :
-         if (isset($_POST["item"]) && count($_POST["item"])) {
-            foreach ($_POST["item"] as $key => $val) {
-               $rule->getFromDB($key);
-               $rulecollection->moveRule($key, $_POST['ranking'], $_POST['move_type']);
-            }
-         }
-         break;
-
-      case "activate_rule" :
-         if (isset($_POST["item"])) {
-            $rule = new Rule();
-            foreach ($_POST["item"] as $key => $val) {
-               if ($val == 1) {
-                  $input['id'] = $key;
-                  $input['is_active'] = $_POST["activate_rule"];
-                  $rule->update($input);
-               }
-            }
-         }
-         break;
-   }
-
 } else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
    $rulecollection->checkGlobal('w');
 

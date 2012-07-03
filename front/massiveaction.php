@@ -104,9 +104,29 @@ if (isset($_POST["action"])
    $nbok      = 0;
    $nbnoright = 0;
    $nbko      = 0;
-
    switch($_POST["action"]) {
-
+      case "move_rule" :
+         if (isset($_POST["item"]) && count($_POST["item"])) {
+            $collectionname = $_POST['itemtype'].'Collection';
+            $rulecollection = new $collectionname();
+            if ($rulecollection->canUpdate()) {
+               foreach ($_POST["item"] as $key => $val) {
+                  $rule = new $_POST['itemtype']();
+                  if ($rule->getFromDB($key)) {
+                     if ($rulecollection->moveRule($key, $_POST['ranking'], $_POST['move_type'])) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
+                  } else {
+                     $nbko++;
+                  }
+               }
+            } else {
+               $nbnoright++;
+            }
+         }
+         break;
 
       case "assign_vlan" :
          if (!empty($_POST["vlans_id"])) {

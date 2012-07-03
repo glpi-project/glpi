@@ -136,7 +136,21 @@ class Rule extends CommonDBTM {
       return __('Rules management');
    }
 
+   function getSpecificMassiveActions($linkitem=NULL) {
+      $isadmin = $this->canUpdate();
+      $actions = parent::getSpecificMassiveActions();
 
+      
+      $collectiontype = $this->getType().'Collection';
+      $collection = new $collectiontype();
+      
+      if ($isadmin && $collection->orderby=="ranking") {
+         $actions['move_rule'] = __('Move');
+      }
+
+      return $actions;
+   }
+   
    function getSearchOptions() {
 
       $tab                       = array();
@@ -185,6 +199,8 @@ class Rule extends CommonDBTM {
       $tab[86]['field']          = 'is_recursive';
       $tab[86]['name']           = __('Child entities');
       $tab[86]['datatype']       = 'bool';
+      $tab[86]['massiveaction']  = false;
+      
 
       return $tab;
    }

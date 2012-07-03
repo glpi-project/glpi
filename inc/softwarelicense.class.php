@@ -513,7 +513,7 @@ class SoftwareLicense extends CommonDBTM {
 
       // Righ type is enough. Can add a License on a software we have Read access
       $canedit             = Session::haveRight("software", "w");
-      $showmassiveactions  = count($license->getAllMassiveActions());
+      $showmassiveactions  = $canedit;
 
       // Total Number of events
       $number = countElementsInTable("glpi_softwarelicenses",
@@ -567,11 +567,19 @@ class SoftwareLicense extends CommonDBTM {
                 LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
       if ($result = $DB->query($query)) {
-         if ($DB->numrows($result)) {
+         if ($num_displayed = $DB->numrows($result)) {
             if ($showmassiveactions) {
                echo "<form method='post' name='massiveactionlicense_form$rand' id='".
                       "massiveactionlicense_form$rand' action=\"".$CFG_GLPI["root_doc"].
                       "/front/massiveaction.php\">";
+               $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=SoftwareLicense";
+               $massiveactionparams = array('num_displayed' => $num_displayed,
+                                             'url'          => $urlma,
+                                             'ontop'        => true,
+                                             'fixed'        => true,
+                                             );
+
+               Html::displayMassiveActions($massiveactionparams);
             }
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                         (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
@@ -669,11 +677,8 @@ class SoftwareLicense extends CommonDBTM {
             echo "</table>\n";
 
             if ($showmassiveactions) {
-               Html::openArrowMassives("massiveactionlicense_form$rand", true);
-               Dropdown::showForMassiveAction('SoftwareLicense', 0,
-                                              array('softwares_id' => $softwares_id));
-               $options = array();
-               Html::closeArrowMassives($options);
+               $massiveactionparams['ontop'] = false;
+               Html::displayMassiveActions($massiveactionparams);
 
                Html::closeForm();
             }

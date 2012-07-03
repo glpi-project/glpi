@@ -39,13 +39,15 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST["action"])
-    && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])
-    && isset($_POST['is_deleted'])) {
+    && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
+
+    if (!isset($_POST['is_deleted'])) {
+      $_POST['is_deleted'] = 0;
+    }
 
    if (!($item = getItemForItemtype($_POST['itemtype']))) {
       exit();
    }
-
    $subitem = NULL;
    if (isset($_POST['sub_type'])) {
       if (!($subitem = getItemForItemtype($_POST['sub_type']))) {
@@ -53,7 +55,6 @@ if (isset($_POST["action"])
       }
       echo "<input type='hidden' name='sub_type' value='".$_POST["sub_type"]."'>";
    }
-
    $actions = $item->getAllMassiveActions($_POST['is_deleted'], $subitem);
 
    if (!isset($actions[$_POST['action']])) {
@@ -116,7 +117,7 @@ if (isset($_POST["action"])
          } else {
             $condition = "";
          }
-         Rule::dropdown(array('sub_type'        => $_POST['sub_type'],
+         Rule::dropdown(array('sub_type'        => $_POST['itemtype'],
                               'name'            => "ranking",
                               'entity_restrict' => $condition));
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
