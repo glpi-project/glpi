@@ -113,6 +113,9 @@ class Peripheral extends CommonDBTM {
          // ADD Documents
          Document_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
+         // ADD Computers
+         Computer_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
+
       }
 
    }

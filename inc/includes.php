@@ -141,7 +141,7 @@ if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()
        || ($url['host']!=$_SERVER['SERVER_NAME'])
        || !isset($url['path'])
        || (strpos($url['path'], $CFG_GLPI['root_doc'])!==0)) {
-      Html::displayErrorAndDie("Error calling the previous page from forbidden one.", true);
+      Html::displayErrorAndDie(__("The action you have requested is not allowed."), true);
    }
 }
 
@@ -153,7 +153,7 @@ if (GLPI_USE_CSRF_CHECK
       if (!Session::validateCSRF($_POST)) {
          print_r($_POST);
          print_r($_SESSION['glpicsrftokens']);
-         Html::displayErrorAndDie("The action you have requested is not allowed.", true);
+         Html::displayErrorAndDie(__("The action you have requested is not allowed."), true);
       }
    }
 }
