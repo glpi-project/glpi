@@ -960,7 +960,6 @@ class Session {
       if (!isset($_SESSION['glpicsrftokens'])) {
          $_SESSION['glpicsrftokens'] = array();
       }
-      Session::cleanCSRFTokens();
       $_SESSION['glpicsrftokens'][$newtoken] = time() + GLPI_CSRF_EXPIRES;
       return $newtoken;
    }
@@ -996,13 +995,16 @@ class Session {
    */
    static public function validateCSRF($data) {
       if (!isset($data['_glpi_csrf_token'])) {
+         Session::cleanCSRFTokens();
          return false;
       }
       $requestToken = $data['_glpi_csrf_token'];
       if (isset($_SESSION['glpicsrftokens'][$requestToken]) && $_SESSION['glpicsrftokens'][$requestToken] >= time()) {
          unset($_SESSION['glpicsrftokens'][$requestToken]);
+         Session::cleanCSRFTokens();
          return true;
       }
+      Session::cleanCSRFTokens();
       return false;
    }
 }
