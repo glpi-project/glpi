@@ -133,7 +133,8 @@ if (isset($_REQUEST['glpilist_limit'])) {
 }
 
 // Security : Check HTTP_REFERRER : need to be in GLPI.
-if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()) {
+if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()
+   && isset($_POST) && is_array($_POST) && count($_POST)) {
    if (!isset($_SERVER['HTTP_REFERER'])
        || !is_array($url=parse_url($_SERVER['HTTP_REFERER']))
        || !isset($url['host'])
