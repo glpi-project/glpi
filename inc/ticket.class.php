@@ -1679,10 +1679,30 @@ class Ticket extends CommonITILObject {
    function getSpecificMassiveActions($linkitem=NULL) {
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions();
+      
+      $tmp = new TicketFollowup();
+      if ($tmp->canCreate()
+            && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
+         $actions['add_followup'] = __('Add a new followup');
+      }
 
+      $tmp = new TicketTask();
+      if ($tmp->canCreate()) {
+         $actions['add_task'] = __('Add a new task');
+      }
+
+      $tmp = new TicketValidation();
+      if ($tmp->canCreate()) {
+         $actions['submit_validation'] = __('Approval request');
+      }
+
+      if (Session::haveRight("update_ticket","1")) {
+         $actions['add_actor']   = __('Add an actor');
+         $actions['link_ticket'] = _x('button', 'Link tickets');
+      }
       if (Session::haveRight('transfer','r')
             && Session::isMultiEntitiesMode()
-            && $isadmin) {
+            && Session::haveRight("update_ticket","1")) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
       }
       return $actions;

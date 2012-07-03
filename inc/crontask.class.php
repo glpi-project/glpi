@@ -1118,7 +1118,16 @@ class CronTask extends CommonDBTM{
       echo "</div>";
    }
 
+   function getSpecificMassiveActions($linkitem=NULL) {
+      $isadmin = $this->canUpdate();
+      $actions = parent::getSpecificMassiveActions();
 
+      if ($isadmin) {
+         $actions['reset'] = __('Reset last run');
+      }
+      return $actions;
+   }
+   
    function getSearchOptions() {
 
       $tab                     = array();

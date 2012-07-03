@@ -905,7 +905,7 @@ class Search {
             }
             $showmassiveactions = false;
             if ($itemtype != 'AllAssets') {
-               $showmassiveactions = count(Dropdown::getMassiveActions($itemtype, $p['is_deleted']));
+               $showmassiveactions = count($item->getAllMassiveActions($p['is_deleted']));
                if ($showmassiveactions
                    && ($output_type == self::HTML_OUTPUT)) {
                   echo "<form method='post' name='massiveaction_form' id='massiveaction_form' ".

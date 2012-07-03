@@ -303,7 +303,18 @@ class Software extends CommonDBTM {
    function getSpecificMassiveActions($linkitem=NULL) {
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions();
+      if ($isadmin
+            && (countElementsInTable("glpi_rules",
+                                    "sub_type='RuleSoftwareCategory'") > 0)) {
+         $actions['compute_software_category'] = __('Recalculate the category');
+      }
 
+      if (Session::haveRight("rule_dictionnary_software","w")
+            && (countElementsInTable("glpi_rules",
+                                    "sub_type='RuleDictionnarySoftware'") > 0)) {
+         $actions['replay_dictionnary'] = __('Replay the dictionary rules');
+      }
+      
       if (Session::haveRight('transfer','r')
             && Session::isMultiEntitiesMode()
             && $isadmin) {

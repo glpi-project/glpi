@@ -233,6 +233,9 @@ class Contact extends CommonDBTM{
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions();
 
+      if ($isadmin) {
+         $actions['add_enterprise'] = _x('button', 'Add a supplier');
+      }
       if (Session::haveRight('transfer','r')
             && Session::isMultiEntitiesMode()
             && $isadmin) {

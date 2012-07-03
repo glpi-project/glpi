@@ -187,7 +187,9 @@ class Supplier extends CommonDBTM {
    function getSpecificMassiveActions($linkitem=NULL) {
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions();
-
+      if ($isadmin) {
+         $actions['add_contact'] = _x('button', 'Add a contact');
+      }
       if (Session::haveRight('transfer','r')
             && Session::isMultiEntitiesMode()
             && $isadmin) {

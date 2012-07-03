@@ -2041,7 +2041,22 @@ class User extends CommonDBTM {
       }
    }
 
+   function getSpecificMassiveActions($linkitem=NULL) {
+      $isadmin = $this->canUpdate();
+      $actions = parent::getSpecificMassiveActions();
+      if ($isadmin) {
+         $actions['add_user_group']  = __('Associate to a group');
+         $actions['add_userprofile'] = __('Associate to a profile');
+      }
 
+      if (Session::haveRight("user_authtype","w")) {
+         $actions['change_authtype'] = _x('button', 'Change the authentication method');
+         $actions['force_user_ldap_update']
+                                       = __('Force synchronization');
+      }
+      return $actions;
+   }
+   
    function getSearchOptions() {
 
       // forcegroup by on name set force group by for all items

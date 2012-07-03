@@ -311,7 +311,18 @@ abstract class CommonDropdown extends CommonDBTM {
       return true;
    }
 
+   function getSpecificMassiveActions($linkitem=NULL) {
+      $isadmin = $this->canUpdate();
+      $actions = parent::getSpecificMassiveActions();
 
+      if ($isadmin &&  $this->maybeRecursive()
+            && (count($_SESSION['glpiactiveentities']) > 1)) {
+         $actions['merge'] = __('Transfer and merge');
+      }
+
+      return $actions;
+   }
+   
    /**
     * Get search function for the class
     *

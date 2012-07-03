@@ -466,7 +466,17 @@ abstract class CommonTreeDropdown extends CommonDropdown {
       echo "</table></div>\n";
    }
 
+   function getSpecificMassiveActions($linkitem=NULL) {
+      $isadmin = $this->canUpdate();
+      $actions = parent::getSpecificMassiveActions();
 
+      if ($isadmin) {
+         $actions['move_under'] = _x('button', 'Move');
+      } 
+
+      return $actions;
+   }
+   
    /**
     * Get search function for the class
     *

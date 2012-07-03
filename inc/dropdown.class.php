@@ -1525,198 +1525,6 @@ class Dropdown {
       return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
    }
 
-
-   /**
-    * Get array of massive actions
-    *
-    * @param $itemtype item type
-    * @param $is_deleted massive action for deleted items ?
-    * @param $linkitem link item to check right
-   **/
-   static function getMassiveActions($itemtype, $is_deleted=0, $linkitem=NULL) {
-      global $CFG_GLPI,$PLUGIN_HOOKS;
-
-
-      if (!($item = getItemForItemtype($itemtype))) {
-         return array();
-      }
-      return $item->getAllMassiveActions($is_deleted, $linkitem);
-      $actions = array();
-
-      if ($itemtype == 'NetworkPort') {
-         $actions['delete']        = _x('button', 'Purge');
-         $actions['assign_vlan']   = __('Associate a VLAN');
-         $actions['unassign_vlan'] = __('Dissociate a VLAN');
-         $actions['move']          = _x('button', 'Move');
-      } else {
-         $infocom = new Infocom();
-         $isadmin = $item->canUpdate();
-
-
-
-         if ($is_deleted
-             && !in_array($itemtype,$CFG_GLPI["massiveaction_nodelete_types"])) {
-
-
-         } else {
-
-//             switch ($itemtype) {
-//                case 'Calendar' :
-//                   $actions['duplicate'] = _x('button', 'Duplicate');
-//                   break;
-// 
-//                case 'Computer' :
-//                   if ($isadmin) {
-//                      $actions['connect_to_computer'] = _x('button', 'Connect');
-//                      $actions['install']             = _x('button', 'Install');
-//                   }
-//                   break;
-// 
-//                case 'Contact' :
-//                   if ($isadmin) {
-//                      $actions['add_enterprise'] = _x('button', 'Add a supplier');
-//                   }
-//                   break;
-// 
-//                case 'Contract' :
-//                   if ($isadmin) {
-//                      $actions['add_contract_item']    = _x('button', 'Add an item');
-//                      $actions['remove_contract_item'] = _x('button', 'Remove an item');
-//                   }
-//                   break;
-// 
-//                case 'CronTask' :
-//                   $actions['reset'] = __('Reset last run');
-//                   break;
-// 
-//                case 'Document' :
-//                   if ($isadmin) {
-//                      $actions['add_document_item']    = _x('button', 'Add an item');
-//                      $actions['remove_document_item'] = _x('button', 'Remove an item');
-//                   }
-//                   break;
-// 
-//                case 'Group' :
-//                   if ($isadmin) {
-//                      $actions['add_user_group']        = _x('button', 'Add a user');
-//                      $actions['add_supervisor_group']  = _x('button', 'Add a supervisor');
-//                      $actions['add_delegatee_group']   = _x('button', 'Add a delegatee');
-//                   }
-//                   break;
-// 
-//                case 'NetworkPortMigration':
-//                   $actions['transform_to'] = __('Transform this network port to');
-//                   break;
-// 
-//                case 'NotImportedEmail':
-//                   $actions['delete_email'] = __('Delete emails');
-//                   $actions['import_email'] = _x('button', 'Import');
-//                   break;
-// 
-//                case 'Problem' :
-//                   $tmp = new ProblemTask();
-//                   if ($tmp->canCreate()) {
-//                      $actions['add_task'] = __('Add a new task');
-//                   }
-//                   if (Session::haveRight("edit_all_problem","1")) {
-//                      $actions['add_actor'] = __('Add an actor');
-//                   }
-// 
-//                   break;
-// 
-//                case 'Software' :
-//                   if ($isadmin
-//                       && (countElementsInTable("glpi_rules",
-//                                                "sub_type='RuleSoftwareCategory'") > 0)) {
-//                      $actions['compute_software_category'] = __('Recalculate the category');
-//                   }
-// 
-//                   if (Session::haveRight("rule_dictionnary_software","w")
-//                       && (countElementsInTable("glpi_rules",
-//                                                "sub_type='RuleDictionnarySoftware'") > 0)) {
-//                      $actions['replay_dictionnary'] = __('Replay the dictionary rules');
-//                   }
-//                   break;
-// 
-//                case 'Supplier' :
-//                   if ($isadmin) {
-//                      $actions['add_contact'] = _x('button', 'Add a contact');
-//                   }
-//                   break;
-// 
-//                case 'Ticket' :
-//                   $tmp = new TicketFollowup();
-//                   if ($tmp->canCreate()
-//                       && ($_SESSION['glpiactiveprofile']['interface'] == 'central')) {
-//                      $actions['add_followup'] = __('Add a new followup');
-//                   }
-// 
-//                   $tmp = new TicketTask();
-//                   if ($tmp->canCreate()) {
-//                      $actions['add_task'] = __('Add a new task');
-//                   }
-// 
-//                   $tmp = new TicketValidation();
-//                   if ($tmp->canCreate()) {
-//                      $actions['submit_validation'] = __('Approval request');
-//                   }
-// 
-//                   if (Session::haveRight("update_ticket","1")) {
-//                      $actions['add_actor']   = __('Add an actor');
-//                      $actions['link_ticket'] = _x('button', 'Link tickets');
-//                   }
-// 
-//                   break;
-// 
-//                case 'User' :
-//                   if ($isadmin) {
-//                      $actions['add_user_group']  = __('Associate to a group');
-//                      $actions['add_userprofile'] = __('Associate to a profile');
-//                   }
-// 
-//                   if (Session::haveRight("user_authtype","w")) {
-//                      $actions['change_authtype'] = _x('button', 'Change the authentication method');
-//                      $actions['force_user_ldap_update']
-//                                                  = __('Force synchronization');
-//                   }
-//                   break;
-// 
-//             }
-// 
-//             if (($item instanceof CommonTreeDropdown)
-//                 && (!($item instanceof CommonImplicitTreeDropdown))) {
-//                if ($isadmin) {
-//                   $actions['move_under'] = _x('button', 'Move');
-//                }
-//             }
-// 
-//             if (($itemtype != 'Entity')
-//                 && ($itemtype != 'Calendar')
-//                 && ($item instanceof CommonDropdown)
-//                 && $item->maybeRecursive()) {
-// 
-//                if ($isadmin
-//                    && (count($_SESSION['glpiactiveentities']) > 1)) {
-//                   $actions['merge'] = __('Transfer and merge');
-//                }
-//             }
-// 
-//             // Plugin Specific actions
-//             if (isset($PLUGIN_HOOKS['use_massive_action'])) {
-//                foreach ($PLUGIN_HOOKS['use_massive_action'] as $plugin => $val) {
-//                   $plug_actions = Plugin::doOneHook($plugin,'MassiveActions',$itemtype);
-// 
-//                   if (count($plug_actions)) {
-//                      $actions += $plug_actions;
-//                   }
-//                }
-//             }
-         }
-      }
-      return $actions;
-   }
-
-
   /**
     * Dropdown of actions for massive action
     *
@@ -1726,6 +1534,11 @@ class Dropdown {
    **/
    static function showForMassiveAction($itemtype, $is_deleted=0, $extraparams=array()) {
       global $CFG_GLPI;
+
+
+      if (!($item = getItemForItemtype($itemtype))) {
+         return array();
+      }
       
       $linkitem = NULL;
 
@@ -1739,13 +1552,7 @@ class Dropdown {
          $params['sub_type'] = $linkitem->getType();
       }
       $rand    = mt_rand();
-      $actions = self::getMassiveActions($itemtype, $is_deleted, $linkitem);
-
-//       if ($itemtype == 'NetworkPort') {
-//          $link = $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionPorts.php";
-//       } else {
-         $link = $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php";
-//       }
+      $actions = $item->getAllMassiveActions($is_deleted, $linkitem); 
 
       if (count($actions)) {
          _e('Action');
@@ -1765,7 +1572,8 @@ class Dropdown {
             }
          }
 
-         Ajax::updateItemOnSelectEvent("massiveaction$rand", "show_massiveaction$rand", $link,
+         Ajax::updateItemOnSelectEvent("massiveaction$rand", "show_massiveaction$rand",
+                                       $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
                                        $params);
 
          echo "<span id='show_massiveaction$rand'>&nbsp;</span>\n";

@@ -674,6 +674,10 @@ class Document extends CommonDBTM {
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions();
 
+      if ($isadmin) {
+         $actions['add_document_item']    = _x('button', 'Add an item');
+         $actions['remove_document_item'] = _x('button', 'Remove an item');
+      }
       if (Session::haveRight('transfer','r')
             && Session::isMultiEntitiesMode()
             && $isadmin) {
