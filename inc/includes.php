@@ -148,9 +148,11 @@ if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()
    }
 }
 
-// Security : check CSRF token 
-if (GLPI_USE_CSRF_CHECK
-   && isset($_POST) && is_array($_POST) && count($_POST)) {
+// Security : check CSRF token
+// No CSRF check if a plugin is not compliant
+if (GLPI_USE_CSRF_CHECK 
+   && isset($_POST) && is_array($_POST) && count($_POST)
+   && !Plugin::isAllPluginsCSRFCompliant()) {
    // No ajax pages
    if (strstr($_SERVER['REQUEST_URI'],$CFG_GLPI['root_doc'].'/ajax/') === FALSE) {
       if (!Session::validateCSRF($_POST)) {

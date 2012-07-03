@@ -273,7 +273,21 @@ class Plugin extends CommonDBTM {
          }
       }
    }
+   static function isAllPluginsCSRFCompliant() {
+      global $PLUGIN_HOOKS;
+      
+      if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])
+         && count($_SESSION['glpi_plugins'])) {
+         foreach ($_SESSION['glpi_plugins'] as $plug) {
+            if (!isset($PLUGIN_HOOKS['csrf_compliant'][$plug])
+               || !$PLUGIN_HOOKS['csrf_compliant'][$plug]) {
+               return false;
+            }
+         }
+      }
 
+      return true;
+   }
 
    /**
     * List availabled plugins
@@ -288,13 +302,16 @@ class Plugin extends CommonDBTM {
       $pluglist = $this->find("", "name, directory");
       $i = 0;
       $PLUGIN_HOOKS_SAVE = $PLUGIN_HOOKS;
-      echo "<tr><th colspan='8'>".$LANG['plugins'][0]."</th></tr>\n";
+      echo "<tr><th colspan='9'>".$LANG['plugins'][0]."</th></tr>\n";
 
       if (!empty($pluglist)) {
          echo "<tr><th>".$LANG['common'][16]."</th><th>".$LANG['rulesengine'][78]."</th>";
          echo "<th>".$LANG['install'][92]."</th>";
          echo "<th>".$LANG['state'][0]."</th><th>".$LANG['plugins'][9]."</th>";
-         echo "<th>".$LANG['financial'][45]."</th><th colspan='2'>&nbsp;</th></tr>\n";
+         echo "<th>".$LANG['financial'][45]."</th>";
+         echo "<th>CSRF compliance</th>";
+         echo "<th colspan='2'>&nbsp;</th>";
+         echo "</tr>\n";
 
          foreach ($pluglist as $ID => $plug) {
             if (function_exists("plugin_".$plug['directory']."_check_config")) {
@@ -383,6 +400,15 @@ class Plugin extends CommonDBTM {
                       $LANG['common'][4]."\" title=\"".$LANG['common'][4]."\" ></a>";
             } else {
                echo "&nbsp;";
+            }
+            echo "</td>";
+            // CSRF
+            echo "<td>";
+            if (isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
+               && $PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
+               echo $LANG['choice'][1];
+            } else {
+               echo $LANG['choice'][0];
             }
             echo "</td>";
 
