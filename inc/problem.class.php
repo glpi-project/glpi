@@ -395,7 +395,13 @@ class Problem extends CommonITILObject {
    function getSpecificMassiveActions($linkitem=NULL) {
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions();
-
+      $tmp = new ProblemTask();
+      if ($tmp->canCreate()) {
+         $actions['add_task'] = __('Add a new task');
+      }
+      if (Session::haveRight("edit_all_problem","1")) {
+         $actions['add_actor'] = __('Add an actor');
+      }
       if (Session::haveRight('transfer','r')
             && Session::isMultiEntitiesMode()
             && $isadmin) {

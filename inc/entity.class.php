@@ -99,6 +99,7 @@ class Entity extends CommonTreeDropdown {
       $forbidden[] = 'delete';
       $forbidden[] = 'purge';
       $forbidden[] = 'restore';
+      $forbidden[] = 'merge';
       return $forbidden;
    }
 

@@ -674,11 +674,17 @@ class Computer extends CommonDBTM {
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions();
 
+      if ($isadmin) {
+         $actions['connect_to_computer'] = _x('button', 'Connect');
+         $actions['install']             = _x('button', 'Install');
+      }
+
       if (Session::haveRight('transfer','r')
             && Session::isMultiEntitiesMode()
             && $isadmin) {
          $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
       }
+      
       return $actions;
    }
    

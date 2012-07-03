@@ -513,7 +513,7 @@ class SoftwareLicense extends CommonDBTM {
 
       // Righ type is enough. Can add a License on a software we have Read access
       $canedit             = Session::haveRight("software", "w");
-      $showmassiveactions  = count(Dropdown::getMassiveActions(__CLASS__));
+      $showmassiveactions  = count($license->getAllMassiveActions());
 
       // Total Number of events
       $number = countElementsInTable("glpi_softwarelicenses",

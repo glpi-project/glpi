@@ -44,7 +44,12 @@ class Calendar extends CommonDropdown {
 
    protected $forward_entity_to = array('CalendarSegment');
 
-
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'merge';
+      return $forbidden;
+   }
+   
    static function getTypeName($nb=0) {
       return _n('Calendar','Calendars',$nb);
    }
@@ -68,7 +73,15 @@ class Calendar extends CommonDropdown {
 
       return $ong;
    }
+   function getSpecificMassiveActions($linkitem=NULL) {
+      $isadmin = $this->canUpdate();
+      $actions = array();
 
+      if ($isadmin) {
+         $actions['duplicate'] = _x('button', 'Duplicate');
+      }
+      return $actions;
+   }
 
    /** Clone a calendar to another entity : name is updated
     *

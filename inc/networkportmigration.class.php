@@ -316,7 +316,15 @@ class NetworkPortMigration extends CommonDBChild {
       $this->addDivForTabs();
    }
 
-
+   function getSpecificMassiveActions($linkitem=NULL) {
+      $isadmin = $this->canUpdate();
+      $actions = parent::getSpecificMassiveActions();
+      if ($isadmin) {
+         $actions['transform_to'] = __('Transform this network port to');
+      }
+      return $actions;
+   }
+   
    function getSearchOptions() {
       global $CFG_GLPI;
 

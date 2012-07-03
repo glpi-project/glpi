@@ -296,7 +296,11 @@ class Group extends CommonTreeDropdown {
    function getSpecificMassiveActions($linkitem=NULL) {
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions();
-
+      if ($isadmin) {
+         $actions['add_user_group']        = _x('button', 'Add a user');
+         $actions['add_supervisor_group']  = _x('button', 'Add a supervisor');
+         $actions['add_delegatee_group']   = _x('button', 'Add a delegatee');
+      }
       if (Session::haveRight('transfer','r')
             && Session::isMultiEntitiesMode()
             && $isadmin) {
