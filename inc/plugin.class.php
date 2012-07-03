@@ -273,6 +273,10 @@ class Plugin extends CommonDBTM {
          }
       }
    }
+   /**
+    * Check if all plugins are CSRF compliant
+    * @since version 0.83.3    
+   **/   
    static function isAllPluginsCSRFCompliant() {
       global $PLUGIN_HOOKS;
       
