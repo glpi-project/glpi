@@ -470,13 +470,12 @@ class RuleCollection extends CommonDBTM {
              "&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );".
              "w.focus();\">".__('Test rules engine')."</a></div>";
 
-         /// TODO action comme une autre.
-         if ($this->can_replay_rules) {
-            echo "<div class='spaced center'>";
-            echo "<a class='vsubmit' href='".$rule->getSearchURL()."?replay_rule=replay_rule'>".
-                  __s('Replay the dictionary rules')."</a>";
-            echo "</div>";                            
-         }
+      if ($this->can_replay_rules) {
+         echo "<div class='spaced center'>";
+         echo "<a class='vsubmit' href='".$rule->getSearchURL()."?replay_rule=replay_rule'>".
+               __s('Replay the dictionary rules')."</a>";
+         echo "</div>";
+      }
    
       echo "<div class='spaced'>";
       $this->showAdditionalInformationsInForm($target);
