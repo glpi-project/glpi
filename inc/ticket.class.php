@@ -116,7 +116,8 @@ class Ticket extends CommonITILObject {
 
    function canView() {
 
-      if ($_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+      if (isset($_SESSION['glpiactiveprofile']['interface'])
+         && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
          return true;
       }
       return (Session::haveRight("show_all_ticket","1")
@@ -1247,8 +1248,12 @@ class Ticket extends CommonITILObject {
       global $CFG_GLPI;
 
       // Log this event
+      $username = 'anonymous';
+      if (isset($_SESSION["glpiname"])) {
+         $username = $_SESSION["glpiname"];
+      }
       Event::log($this->fields['id'], "ticket", 4, "tracking",
-                 sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"],
+                 sprintf(__('%1$s adds the item %2$s'), $username,
                          $this->fields['id']));
 
       if (isset($this->input["_followup"])

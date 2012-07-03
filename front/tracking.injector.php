@@ -73,7 +73,6 @@ if (!isset($_POST["itemtype"])
    $_POST["items_id"] = 0;
 }
 
-
 if (isset($_POST['add'])) {
    if ($newID = $track->add($_POST)) {
       if (isset($_POST["_type"]) && ($_POST["_type"] == "Helpdesk")) {
