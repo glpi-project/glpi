@@ -63,8 +63,14 @@ class Profile extends CommonDBTM {
                                          'show_group_ticket', 'ticket_status');
 
 
+   
    var $dohistory = true;
 
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
 
    static function getTypeName($nb=0) {
       return _n('Profile', 'Profiles', $nb);

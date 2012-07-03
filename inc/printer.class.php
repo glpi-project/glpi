@@ -466,7 +466,21 @@ class Printer  extends CommonDBTM {
                     AND `items_id` = '" . $this->fields['id']."'";
    }
 
-
+   function getSpecificMassiveActions($linkitem=NULL) {
+      $isadmin = $this->canUpdate();
+      $actions = parent::getSpecificMassiveActions();
+      if ($isadmin) {
+         $actions['connect']    = _x('button', 'Connect');
+         $actions['disconnect'] = _x('button', 'Disconnect');
+      }
+      if (Session::haveRight('transfer','r')
+            && Session::isMultiEntitiesMode()
+            && $isadmin) {
+         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+      }      
+      return $actions;
+   }
+   
    function getSearchOptions() {
 
       $tab                       = array();

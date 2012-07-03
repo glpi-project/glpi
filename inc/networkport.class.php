@@ -51,6 +51,12 @@ class NetworkPort extends CommonDBChild {
    public $dohistory = true;
 
 
+
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }   
    /**
     * \brief get the list of available network port type.
     *
@@ -378,7 +384,7 @@ class NetworkPort extends CommonDBChild {
       }
       $showmassiveactions = false;
       if ($withtemplate != 2) {
-         $showmassiveactions = count(Dropdown::getMassiveActions(__CLASS__));
+         $showmassiveactions = count($netport->getAllMassiveActions($item->isDeleted(), $item));
       }
 
       // Show Add Form
@@ -412,7 +418,7 @@ class NetworkPort extends CommonDBChild {
       if ($showmassiveactions) {
          $checkbox_column = true;
          echo "\n<form id='networking_ports$rand' name='networking_ports$rand' method='post'
-                  action='" . $CFG_GLPI["root_doc"] ."/front/networkport.form.php'>\n";
+                  action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'>\n";
       } else {
          $checkbox_column = false;
       }
@@ -536,7 +542,7 @@ class NetworkPort extends CommonDBChild {
                       && $canedit
                       && !empty($portType)) {
                      $ce_checkbox =  $t_row->addCell($c_checkbox,
-                                                     "<input type='checkbox' name='del_port[" .
+                                                     "<input type='checkbox' name='item[" .
                                                        $netport->fields["id"]."]' value='1'>");
                   } else {
                      $ce_checkbox = NULL;
@@ -586,7 +592,7 @@ class NetworkPort extends CommonDBChild {
       }
       if ($is_active_network_port
           && $showmassiveactions) {
-         $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=NetworkPort";
+         $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=NetworkPort&foritemtype=$itemtype&foritems_id=$items_id";
          $massiveactionparams = array('num_displayed' => $number_port,
                                        'url'          => $urlma,
                                        'ontop'        => true,
@@ -814,7 +820,18 @@ class NetworkPort extends CommonDBChild {
       return $tab;
    }
 
-
+         
+   function getSpecificMassiveActions($linkitem=NULL) {
+      $isadmin = $linkitem->canUpdate();
+      $actions = parent::getSpecificMassiveActions();
+      if ($isadmin) {
+         $actions['assign_vlan']   = __('Associate a VLAN');
+         $actions['unassign_vlan'] = __('Dissociate a VLAN');
+         $actions['move_port']     = _x('button', 'Move');
+     }
+      return $actions;
+   }
+   
    function getSearchOptions() {
 
       $tab                     = array();

@@ -105,45 +105,6 @@ if (isset($_POST["add"])) {
    }
    Html::redirect($CFG_GLPI["root_doc"]."/front/central.php");
 
-} else if (isset($_POST["delete_several"])) {
-   Session::checkRight("networking", "w");
-
-   if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
-      foreach ($_POST["del_port"] as $port_id => $val) {
-         if ($np->can($port_id,'d')) {
-            $np->delete(array("id" => $port_id));
-         }
-      }
-   }
-   Event::log(0, "networkport", 5, "inventory",
-              //TRANS: %s is the user login
-              sprintf(__('%s deletes several network ports'), $_SESSION["glpiname"]));
-
-   Html::back();
-
-}
-// Interest of this massive action ? Replace switch by another : don't re-create manually all ports
-else if(isset($_POST["move"])) {
-   Session::checkRight("networking","w");
-   if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
-      foreach ($_POST["del_port"] as $port_id => $val) {
-         if ($np->getFromDB($port_id)) {
-            $input = array();
-            $input['id'] = $port_id;
-            $input['items_id'] = $_POST["items_id"];
-            $input['itemtype'] = 'NetworkEquipment';            
-            if ($np->can($input['id'],'w')) {
-               $np->update($input);
-            }
-         }
-      }
-   }
-   Event::log(0, "networkport", 5, "inventory",
-               //TRANS: %s is the user login
-               sprintf(__('%s move several network ports'),$_SESSION["glpiname"]));
-
-   Html::back();
-
 } else if (isset($_POST["update"])) {
    $np->check($_POST['id'],'w');
 
@@ -180,22 +141,6 @@ else if(isset($_POST["move"])) {
    }
    Html::back();
 
-} else if (isset($_POST["assign_vlan_several"])) {
-   Session::checkRight("networking", "w");
-   if ($_POST["vlans_id"] >0) {
-
-      if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
-         foreach ($_POST["del_port"] as $port_id => $val) {
-            $npv->assignVlan($port_id, $_POST["vlans_id"], (isset($_POST['tagged']) ? '1' : '0'));
-         }
-      }
-      Event::log(0, "networkport", 5, "inventory",
-                 //TRANS: %s is the user login
-                 sprintf(__('%s associates a VLAN to several network ports'),
-                         $_SESSION["glpiname"]));
-   }
-   Html::back();
-
 } else if (isset($_POST['assign_vlan'])) {
    $npv->check(-1,'w',$_POST);
 
@@ -206,24 +151,6 @@ else if(isset($_POST["move"])) {
                  //TRANS: %s is the user login
                  sprintf(__('%s associates a VLAN to a network port'), $_SESSION["glpiname"]));
 
-   }
-   Html::back();
-
-} else if (isset($_POST["unassign_vlan_several"])) {
-   Session::checkRight("networking", "w");
-
-   if ($_POST["vlans_id"] >0) {
-      if (isset($_POST["del_port"]) && count($_POST["del_port"])) {
-         foreach ($_POST["del_port"] as $port_id => $val) {
-            // Check port write access
-            if ($np->can($port_id,'w')) {
-               $npv->unassignVlan($port_id,$_POST["vlans_id"]);
-            }
-         }
-      }
-      Event::log(0, "networkport", 5, "inventory",
-               //TRANS: %s is the user login
-               sprintf(__('%s dissociates a VLAN on several network ports'), $_SESSION["glpiname"]));
    }
    Html::back();
 

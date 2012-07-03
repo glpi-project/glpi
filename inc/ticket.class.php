@@ -70,7 +70,21 @@ class Ticket extends CommonITILObject {
    // Demand type
    const DEMAND_TYPE   = 2;
 
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      
+      if (!Session::haveRight('update_ticket', 1)) {
+         $forbidden[] = 'update';
+      }
+      if (!Session::haveRight('delete_ticket', 1)) {
+         $forbidden[] = 'delete';
+         $forbidden[] = 'purge';
+         $forbidden[] = 'restore';
+      }
 
+      return $forbidden;
+   }
+   
    /**
     * Name of the type
     *
@@ -1662,7 +1676,18 @@ class Ticket extends CommonITILObject {
      return $search;
    }
 
+   function getSpecificMassiveActions($linkitem=NULL) {
+      $isadmin = $this->canUpdate();
+      $actions = parent::getSpecificMassiveActions();
 
+      if (Session::haveRight('transfer','r')
+            && Session::isMultiEntitiesMode()
+            && $isadmin) {
+         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+      }
+      return $actions;
+   }
+   
    function getSearchOptions() {
 
       $tab                       = array();

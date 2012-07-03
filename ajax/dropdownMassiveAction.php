@@ -39,30 +39,52 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (isset($_POST["action"])
-    && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])) {
+    && isset($_POST["itemtype"]) && !empty($_POST["itemtype"])
+    && isset($_POST['is_deleted'])) {
 
    if (!($item = getItemForItemtype($_POST['itemtype']))) {
       exit();
    }
 
+   $subitem = NULL;
    if (isset($_POST['sub_type'])) {
-      if (!($item = getItemForItemtype($_POST['sub_type']))) {
+      if (!($subitem = getItemForItemtype($_POST['sub_type']))) {
          exit();
       }
+      echo "<input type='hidden' name='sub_type' value='".$_POST["sub_type"]."'>";
    }
 
-   if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
-      Session::checkSeveralRightsOr(array($_POST["itemtype"] => "w",
-                                          "infocom"          => "w"));
-   } else {
-      $item->checkGlobal("w");
+   $actions = $item->getAllMassiveActions($_POST['is_deleted'], $subitem);
+
+   if (!isset($actions[$_POST['action']])) {
+      Html::displayRightError();
+      exit();
    }
 
    echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
    echo "<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
+   echo "<input type='hidden' name='is_deleted' value='".$_POST["is_deleted"]."'>";
    echo '&nbsp;';
 
    switch($_POST["action"]) {
+      case "assign_vlan" :
+         Vlan::dropdown();
+         echo "&nbsp;". __('Tagged'). "&nbsp;<input type='checkbox' name='tagged' value='1'>";
+         echo "&nbsp;<input type='submit' name='assign_vlan' class='submit' value='".
+               __s('Associate')."'>";
+         break;
+
+      case "unassign_vlan" :
+         Vlan::dropdown();
+         echo "&nbsp;<input type='submit' name='unassign_vlan' class='submit' value='".
+               __s('Dissociate')."'>";
+         break;
+
+      case "move_port" :
+         Dropdown::show('NetworkEquipment', array('name' => 'items_id'));
+         echo "&nbsp;<input type='submit' name='move' class='submit' value=\"". __s('Move')."\">";
+         break;
+         
       case "activate_rule" :
          Dropdown::showYesNo("activate_rule");
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".

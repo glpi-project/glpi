@@ -52,6 +52,14 @@ class CronTask extends CommonDBTM{
    const MODE_EXTERNAL = 2;
 
 
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'delete';
+      $forbidden[] = 'purge';
+      $forbidden[] = 'restore';
+      return $forbidden;   
+   }
+   
    static function getTypeName($nb=0) {
       return _n('Automatic action', 'Automatic actions', $nb);
    }
