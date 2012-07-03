@@ -1525,62 +1525,6 @@ class Dropdown {
       return $item->importExternal($value, $entities_id, $external_params, $comment, $add);
    }
 
-  /**
-    * Dropdown of actions for massive action
-    *
-    * @param $itemtype item type
-    * @param $is_deleted massive action for deleted items ?
-    * @param $extraparams array of extra parameters
-   **/
-   static function showForMassiveAction($itemtype, $is_deleted=0, $extraparams=array()) {
-      global $CFG_GLPI;
-
-
-      if (!($item = getItemForItemtype($itemtype))) {
-         return array();
-      }
-      
-      $linkitem = NULL;
-
-      $params = array('action'     => '__VALUE__',
-                      'is_deleted' => $is_deleted,
-                      'itemtype'   => $itemtype);
-
-      if (isset($extraparams['linkitem'])) {
-         $linkitem = $extraparams['linkitem'];
-         unset($extraparams['linkitem']);
-         $params['sub_type'] = $linkitem->getType();
-      }
-      $rand    = mt_rand();
-      $actions = $item->getAllMassiveActions($is_deleted, $linkitem); 
-
-      if (count($actions)) {
-         _e('Action');
-         echo "&nbsp;";
-         echo "<select name='massiveaction' id='massiveaction$rand'>";
-         echo "<option value='-1' selected>".self::EMPTY_VALUE."</option>";
-         foreach ($actions as $key => $val) {
-            echo "<option value = '$key'>$val</option>";
-         }
-         echo "</select><br><br>";
-
-
-
-         if (count($extraparams)) {
-            foreach ($extraparams as $key => $val) {
-               $params['extra_'.$key] = $val;
-            }
-         }
-
-         Ajax::updateItemOnSelectEvent("massiveaction$rand", "show_massiveaction$rand",
-                                       $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
-                                       $params);
-
-         echo "<span id='show_massiveaction$rand'>&nbsp;</span>\n";
-      }
-   }
-
-
    /**
     * Get the label associated with a management type
     *

@@ -384,7 +384,7 @@ class NetworkPort extends CommonDBChild {
       }
       $showmassiveactions = false;
       if ($withtemplate != 2) {
-         $showmassiveactions = count($netport->getAllMassiveActions($item->isDeleted(), $item));
+         $showmassiveactions = $canedit;
       }
 
       // Show Add Form

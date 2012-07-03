@@ -41,6 +41,9 @@ Html::header_nocache();
 Session::checkLoginUser();
 
 if (isset($_GET['itemtype'])) {
+   if (!($item = getItemForItemtype($_GET['itemtype']))) {
+      exit();
+   }
    if (!isset($_GET['is_deleted'])) {
       $_GET['is_deleted'] = 0;
    }
@@ -52,7 +55,35 @@ if (isset($_GET['itemtype'])) {
       }
    }
    echo "<div width='90%' class='center'><br>";
-   Dropdown::showForMassiveAction($_GET['itemtype'], $_GET['is_deleted'], array('linkitem'=>$foritem));
+
+   $linkitem = NULL;
+
+   $params = array('action'     => '__VALUE__',
+                   'is_deleted' => $_GET['is_deleted'],
+                   'itemtype'   => $_GET['itemtype']);
+
+   if (!is_null($foritem)) {
+      $params['sub_type'] = $foritem->getType();
+   }
+   $rand    = mt_rand();
+   $actions = $item->getAllMassiveActions($_GET['is_deleted'], $foritem);
+
+   if (count($actions)) {
+      _e('Action');
+      echo "&nbsp;";
+      echo "<select name='massiveaction' id='massiveaction$rand'>";
+      echo "<option value='-1' selected>".Dropdown::EMPTY_VALUE."</option>";
+      foreach ($actions as $key => $val) {
+         echo "<option value = '$key'>$val</option>";
+      }
+      echo "</select><br><br>";
+
+      Ajax::updateItemOnSelectEvent("massiveaction$rand", "show_massiveaction$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",
+                                    $params);
+
+      echo "<span id='show_massiveaction$rand'>&nbsp;</span>\n";
+   }
    echo "</div>";
 }
 ?>
