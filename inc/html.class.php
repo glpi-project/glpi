@@ -3957,6 +3957,29 @@ class Html {
       return $string." ($tot)";
    }
 
+
+   /**
+    * create a minimal form for simple action
+    *
+    * @param $action  String   URL to call on submit
+    * @param $btname  String   button name
+    * @param $btlabel String   button label
+    * @param $fields  Array    field name => field  value
+    * @param $btop    String   optionnal button option
+    *
+    * @since version 0.83.3
+   **/
+   static function showMinimalForm($action, $btname, $btlabel, Array $fields=array(), $btoption='') {
+
+      echo "<form method='post' action='$action'>";
+      foreach ($fields as $name => $value) {
+         echo "<input type='hidden' name='$name' value='$value'>";
+      }
+      echo "<input type='submit' name='$btname' value='$btlabel' class='submit' $btoption >";
+      Html::closeForm();
+   }
+
+
    /**
     * Create a close form part including CSRF token
     *
@@ -3967,12 +3990,12 @@ class Html {
     * @return String
    **/
    static function closeForm ($display=true) {
-      
+
       $out = '';
       if (GLPI_USE_CSRF_CHECK) {
          $out .= "<input type='hidden' name='_glpi_csrf_token' value='".Session::getNewCSRFToken()."'>";
       }
-      
+
       $out .= "</form>\n";
       if ($display) {
          echo $out;
