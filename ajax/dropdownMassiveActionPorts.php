@@ -49,23 +49,7 @@ if (isset($_POST["action"])) {
               __s('Delete')."'>";
          break;
 
-      case "assign_vlan" :
-         Vlan::dropdown();
-         echo "&nbsp;". __('Tagged'). "&nbsp;<input type='checkbox' name='tagged' value='1'>";
-         echo "&nbsp;<input type='submit' name='assign_vlan_several' class='submit' value='".
-               __s('Associate')."'>";
-         break;
 
-      case "unassign_vlan" :
-         Vlan::dropdown();
-         echo "&nbsp;<input type='submit' name='unassign_vlan_several' class='submit' value='".
-               __s('Dissociate')."'>";
-         break;
-
-      case "move" :
-         Dropdown::show('NetworkEquipment', array('name' => 'items_id'));
-         echo "&nbsp;<input type='submit' name='move' class='submit' value=\"". __s('Move')."\">";
-         break;
    }
 }
 ?>

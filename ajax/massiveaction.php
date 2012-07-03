@@ -44,8 +44,15 @@ if (isset($_GET['itemtype'])) {
    if (!isset($_GET['is_deleted'])) {
       $_GET['is_deleted'] = 0;
    }
+   $foritem = NULL;
+   if (isset($_GET['foritemtype'])) {
+      $foritem = new $_GET['foritemtype']();
+      if (isset($_GET['foritems_id'])) {
+         $foritem->getFromDB($_GET['foritems_id']);
+      }
+   }
    echo "<div width='90%' class='center'><br>";
-   Dropdown::showForMassiveAction($_GET['itemtype'], $_GET['is_deleted']);
+   Dropdown::showForMassiveAction($_GET['itemtype'], $_GET['is_deleted'], array('linkitem'=>$foritem));
    echo "</div>";
 }
 ?>

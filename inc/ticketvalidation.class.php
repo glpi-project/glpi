@@ -43,7 +43,12 @@ class TicketValidation  extends CommonDBChild {
    public $itemtype = 'Ticket';
    public $items_id = 'tickets_id';
 
-
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    static function getTypeName($nb=0) {
       return _n('Approval', 'Approvals', $nb);
    }

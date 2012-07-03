@@ -392,7 +392,18 @@ class Problem extends CommonITILObject {
      return $search;
    }
 
+   function getSpecificMassiveActions($linkitem=NULL) {
+      $isadmin = $this->canUpdate();
+      $actions = parent::getSpecificMassiveActions();
 
+      if (Session::haveRight('transfer','r')
+            && Session::isMultiEntitiesMode()
+            && $isadmin) {
+         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+      }
+      return $actions;
+   }
+   
    function getSearchOptions() {
 
       $tab                      = array();

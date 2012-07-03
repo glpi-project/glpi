@@ -46,41 +46,23 @@ if (isset($_GET['multiple_actions'])) {
    }
 }
 
-if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST["itemtype"]))) {
+if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST["itemtype"]))
+   || $_POST['is_deleted']) {
    exit();
 }
 
+$subitem = NULL;
+if (isset($_POST['sub_type'])) {
+   if (!($subitem = getItemForItemtype($_POST['sub_type']))) {
+      exit();
+   }
+}
 
-/// Right check
-switch ($_POST["itemtype"]) {
-   case 'Ticket' :
-      switch ($_POST["action"]) {
-         case "delete" :
-            Session::checkRight("delete_ticket", "1");
-            break;
-
-         case "add_followup" :
-            Session::checkSeveralRightsOr(array('global_add_followups' => 1,
-                                                'own_ticket'           => 1));
-            break;
-
-         case "add_task" :
-            Session::checkSeveralRightsOr(array('global_add_tasks' => 1,
-                                                'own_ticket'       => 1));
-            break;
-
-         default :
-            Session::checkRight("update_ticket", "1");
-      }
-      break;
-
-   default :
-      if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])) {
-         Session::checkSeveralRightsOr(array($_POST["itemtype"] => 'w',
-                                             'infocom'          => 'w'));
-      } else {
-         $item->checkGlobal('w');
-      }
+// Right check
+$actions = $item->getAllMassiveActions($_POST['is_deleted'], $subitem);
+if (!isset($actions[$_POST['action']])) {
+   Html::displayRightError();
+   exit();
 }
 
 Html::header(__('Bulk modification'), $_SERVER['PHP_SELF']);
@@ -124,6 +106,80 @@ if (isset($_POST["action"])
    $nbko      = 0;
 
    switch($_POST["action"]) {
+
+
+      case "assign_vlan" :
+         if (!empty($_POST["vlans_id"])) {
+            $networkportvlan = new NetworkPort_Vlan();
+            $networkport = new NetworkPort();
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val == 1) {
+                  if ($networkport->can($key,'w')) {
+                     if ($networkportvlan->assignVlan($key, $_POST["vlans_id"], (isset($_POST['tagged']) ? '1' : '0'))) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
+                  } else {
+                     $nbnoright++;
+                  }
+               }
+            }
+         } else {
+             $nbko++;
+         }
+         break;
+      case "unassign_vlan" :
+         if (!empty($_POST["vlans_id"])) {
+            $networkportvlan = new NetworkPort_Vlan();
+            $networkport = new NetworkPort();
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val == 1) {
+                  if ($networkport->can($key,'w')) {
+                     if ($networkportvlan->unassignVlan($key, $_POST["vlans_id"])) {
+                        $nbok++;
+                     } else {
+                        $nbko++;
+                     }
+                  } else {
+                     $nbnoright++;
+                  }
+               }
+            }
+         } else {
+             $nbko++;
+         }
+         break;
+
+      // Interest of this massive action ? Replace switch by another : don't re-create manually all ports
+      case "move_port" :
+         if (!empty($_POST["items_id"])) {
+            $networkport = new NetworkPort();
+            foreach ($_POST["item"] as $key => $val) {
+               if ($val == 1) {
+                  if ($networkport->getFromDB($key)) {
+                     $input = array();
+                     $input['id'] = $key;
+                     $input['items_id'] = $_POST["items_id"];
+                     $input['itemtype'] = 'NetworkEquipment';
+                     if ($networkport->can($input['id'],'w')) {
+                        if ($networkport->update($input)) {
+                           $nbok++;
+                        } else {
+                           $nbko++;
+                        }
+                     } else {
+                        $nbnoright++;
+                     }
+                  } else {
+                     $nbko++;
+                  }
+               }
+            }
+         } else {
+             $nbko++;
+         }      
+         break;
       case "transform_to" :
          if (!empty($_POST["transform_to"])) {
             $networkport = new NetworkPort();

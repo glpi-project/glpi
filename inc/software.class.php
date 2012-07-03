@@ -300,7 +300,18 @@ class Software extends CommonDBTM {
       $this->fields["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
    }
 
+   function getSpecificMassiveActions($linkitem=NULL) {
+      $isadmin = $this->canUpdate();
+      $actions = parent::getSpecificMassiveActions();
 
+      if (Session::haveRight('transfer','r')
+            && Session::isMultiEntitiesMode()
+            && $isadmin) {
+         $actions['add_transfer_list'] = _x('button', 'Add to transfer list');
+      }
+      return $actions;
+   }
+   
    function getSearchOptions() {
 
       // Only use for History (not by search Engine)

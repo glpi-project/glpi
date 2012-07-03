@@ -52,7 +52,7 @@ class Entity extends CommonTreeDropdown {
 
    const AUTO_ASSIGN_HARDWARE_CATEGORY = 1;
    const AUTO_ASSIGN_CATEGORY_HARDWARE = 2;
-
+   
    // Array of "right required to update" => array of fields allowed
    // Missing field here couldn't be update (no right)
    private static $field_right = array('entity'
@@ -94,13 +94,13 @@ class Entity extends CommonTreeDropdown {
                                                    'max_closedate', 'tickettemplates_id'));
 
 
-   /**
-    * @see inc/CommonDBTM::getFromDB()
-   **/
-   function getFromDB($ID) {
-      return parent::getFromDB($ID);
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'delete';
+      $forbidden[] = 'purge';
+      $forbidden[] = 'restore';
+      return $forbidden;
    }
-
 
    /**
     * @since version 0.84

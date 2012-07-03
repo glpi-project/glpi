@@ -51,7 +51,7 @@ class CommonDBTM extends CommonGLPI {
    /// Set true to desactivate auto compute table name
    var $notable = false;
 
-   //Additional foeidls for dictionnary processing
+   ///Additional fiedls for dictionnary processing
    var $additional_fields_for_dictionnary = array();
 
    /// Forward entity datas to linked items
@@ -2578,11 +2578,11 @@ class CommonDBTM extends CommonGLPI {
 
 
    /**
-    * Get the Search options for the givem Type
+    * Get the Search options for the given Type
     *
     * This should be overloaded in Class
     *
-    * @return an array of seach options
+    * @return an array of search options
     * More information on https://forge.indepnet.net/wiki/glpi/SearchEngine
    **/
    function getSearchOptions() {
@@ -2599,8 +2599,121 @@ class CommonDBTM extends CommonGLPI {
 
       return $tab;
    }
+   
+   /**
+    * Get the standard massive actions
+    *
+    * This must not be overloaded in Class
+    * @param $is_deleted massive action for deleted items ?
+    * @param $linkitem link item to check right
+    * @since version 0.84
+    * @return an array of massive actions
+   **/
+   function getAllMassiveActions($is_deleted=0, $linkitem=NULL) {
+      global $CFG_GLPI;
+      
 
+      if (!is_null($linkitem)) {
+         $isadmin = $linkitem->canUpdate();
+      } else {
+         $isadmin = $this->canUpdate();
+      }
 
+      $itemtype = $this->getType();
+      
+      $actions = array();
+
+      if ($is_deleted) {
+         if ($isadmin) {
+            $actions['purge']   = _x('button', 'Purge');
+            $actions['restore'] = _x('button', 'Restore');
+         }
+
+      } else {
+         $infocom = new Infocom();
+
+         if ($isadmin
+                  || (in_array($itemtype, $CFG_GLPI["infocom_types"])
+                     && $infocom->canUpdate())) {
+
+            //TRANS: select action 'update' (before doing it)
+            $actions['update'] = _x('button', 'Update');
+         }
+
+         if (in_array($itemtype, $CFG_GLPI["infocom_types"])
+               && $infocom->canCreate()) {
+            $actions['activate_infocoms'] = __('Enable the financial and administrative information');
+         }
+         // No delete for entities and tracking of not have right
+         if ($isadmin) {
+            if ($this->maybeDeleted()) {
+               $actions['delete'] = _x('button', 'Delete');
+            } else {
+               $actions['purge'] = _x('button', 'Purge');
+            }
+         }
+
+         if (in_array($itemtype,$CFG_GLPI["document_types"])) {
+            $doc = new Document();
+            if ($doc->canView()) {
+               $actions['add_document']    = _x('button', 'Add a document');
+               $actions['remove_document'] = _x('button', 'Remove a document');
+            }
+         }
+
+         if (in_array($itemtype,$CFG_GLPI["contract_types"])) {
+            $contract = new Contract();
+            if ($contract->canUpdate()) {
+               $actions['add_contract']    = _x('button', 'Add a contract');
+               $actions['remove_contract'] = _x('button', 'Remove a contract');
+            }
+         }
+         // Specific actions
+         $actions += $this->getSpecificMassiveActions($linkitem);
+         // Plugin Specific actions
+         if (isset($PLUGIN_HOOKS['use_massive_action'])) {
+            foreach ($PLUGIN_HOOKS['use_massive_action'] as $plugin => $val) {
+               $plug_actions = Plugin::doOneHook($plugin,'MassiveActions',$itemtype);
+
+               if (count($plug_actions)) {
+                  $actions += $plug_actions;
+               }
+            }
+         }
+      }
+      // Manage forbidden actions
+      $forbidden_actions = $this->getForbiddenStandardMassiveAction();
+      if (is_array($forbidden_actions) && count($forbidden_actions)) {
+         foreach ($forbidden_actions as $actiontodel) {
+            if (isset($actions[$actiontodel])) {
+               unset($actions[$actiontodel]);
+            }
+         }
+      }
+      return $actions;
+   }
+   /**
+    * Get the standard massive actions which are forbidden
+    *
+    * This should be overloaded in Class
+    * @since version 0.84
+    * @return an array of massive actions
+   **/
+   function getForbiddenStandardMassiveAction() {
+      return array();
+   }
+   /**
+    * Get the specific massive actions
+    *
+    * This should be overloaded in Class
+    * @param $linkitem link item to check right    
+    * @since version 0.84
+    * @return an array of massive actions
+   **/
+   function getSpecificMassiveActions($linkitem=NULL) {
+      return array();
+   }
+   
    /**
     * Print out an HTML "<select>" for a dropdown
     *
