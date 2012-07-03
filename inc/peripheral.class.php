@@ -171,6 +171,21 @@ class Peripheral  extends CommonDBTM {
                                    'items_id'     => $this->fields['id']));
             }
          }
+         // Add connected devices
+         $query = "SELECT *
+                   FROM `glpi_computers_items`
+                   WHERE `itemtype` = '".$this->getType()."'
+                     AND `items_id` = '".$this->input["_oldID"]."';";
+         $result = $DB->query($query);
+
+         if ($DB->numrows($result)>0) {
+            $conn = new Computer_Item();
+            while ($data=$DB->fetch_array($result)) {
+               $conn->add(array('computers_id' => $data["computers_id"],
+                                'itemtype'     => $data["itemtype"],
+                                'items_id'     => $this->fields['id']));
+            }
+         }          
       }
 
    }
