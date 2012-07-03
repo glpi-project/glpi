@@ -305,7 +305,26 @@ class Plugin extends CommonDBTM {
       }
    }
 
+   /**
+    * Check if all plugins are CSRF compliant
+    * @since version 0.83.3
+   **/
+   static function isAllPluginsCSRFCompliant() {
+      global $PLUGIN_HOOKS;
 
+      if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])
+         && count($_SESSION['glpi_plugins'])) {
+         foreach ($_SESSION['glpi_plugins'] as $plug) {
+            if (!isset($PLUGIN_HOOKS['csrf_compliant'][$plug])
+               || !$PLUGIN_HOOKS['csrf_compliant'][$plug]) {
+               return false;
+            }
+         }
+      }
+
+      return true;
+   }
+   
    /**
     * List availabled plugins
    **/
@@ -318,13 +337,16 @@ class Plugin extends CommonDBTM {
       $pluglist          = $this->find("", "name, directory");
       $i                 = 0;
       $PLUGIN_HOOKS_SAVE = $PLUGIN_HOOKS;
-      echo "<tr><th colspan='8'>".__('Plugins list')."</th></tr>\n";
-
+      echo "<tr><th colspan='9'>".__('Plugins list')."</th></tr>\n";
+      $csrf_compliance = true;
+      
       if (!empty($pluglist)) {
          echo "<tr><th>".__('Name')."</th><th>"._n('Version', 'Versions',1)."</th>";
          echo "<th>".__('License')."</th>";
          echo "<th>".__('Status')."</th><th>"._n('Author', 'Authors',2)."</th>";
-         echo "<th>".__('Website')."</th><th colspan='2'>&nbsp;</th></tr>\n";
+         echo "<th>".__('Website')."</th>";
+         echo "<th>".__('CSRF compliant')."</th>";
+         echo "<th colspan='2'>&nbsp;</th></tr>\n";
 
          foreach ($pluglist as $ID => $plug) {
             if (function_exists("plugin_".$plug['directory']."_check_config")) {
@@ -413,6 +435,16 @@ class Plugin extends CommonDBTM {
                       __s('Web')."\" title=\"".__s('Web')."\" ></a>";
             } else {
                echo "&nbsp;";
+            }
+            echo "</td>";
+            // CSRF
+            echo "<td>";
+            if (isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
+               && $PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
+               _e('Yes');
+            } else {
+               $csrf_compliance = false;
+               _e('No');
             }
             echo "</td>";
 
@@ -547,6 +579,12 @@ class Plugin extends CommonDBTM {
             __('See the catalog of plugins')."</a></p>";
       echo "</div>";
 
+      if (!$csrf_compliance) {
+         echo "<br><div class='center red'>";
+         _e("At least one plugin is not compatible CSRF. CSRF checks are completely disabled.");
+         echo "</div>";
+      }
+      
       $PLUGIN_HOOKS = $PLUGIN_HOOKS_SAVE;
    }
 
