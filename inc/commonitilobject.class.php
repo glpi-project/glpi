@@ -988,8 +988,8 @@ abstract class CommonITILObject extends CommonDBTM {
       }
 
       // set last updater if interactive user
-      if (!Session::isCron()) {
-         $input['users_id_lastupdater'] = Session::getLoginUserID();
+      if (!Session::isCron() && $last_updater = Session::getLoginUserID(true)) {
+         $input['users_id_lastupdater'] = $last_updater;
       }
 
       // No Auto set Import for external source
