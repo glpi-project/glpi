@@ -56,7 +56,8 @@ class NetworkPort extends CommonDBChild {
       $forbidden = parent::getForbiddenStandardMassiveAction();
       $forbidden[] = 'update';
       return $forbidden;
-   }   
+   }
+   
    /**
     * \brief get the list of available network port type.
     *

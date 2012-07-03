@@ -442,20 +442,17 @@ class Group_User extends CommonDBRelation{
 
          if ($canedit) {
             echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'
-                   action='".$CFG_GLPI['root_doc']."/front/group.form.php'>";
+                   action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
             echo "<input type='hidden' name='groups_id' value='".$group->fields['id']."'>";
          }
          if ($canedit) {
-            $actions = array(''               => Dropdown::EMPTY_VALUE,
-                             'set_manager'    => __('Add to managers'),
-                             'set_delegate'   => __('Add to delegatees'),
-                             'unset_manager'  => __('Delete from managers'),
-                             'unset_delegate' => __('Delete from delegatees'),
-                             'deleteuser'     => __('Delete'));
 
+            $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=Group_User";
+               
             $paramsma = array('fixed' => true,
                               'ontop' => true,
-                              'actions' => $actions,
+                              'url' => $urlma,
+                              'num_displayed' => min($number-$start, $_SESSION['glpilist_limit']),
                               );
             Html::displayMassiveActions($paramsma);
          }
@@ -541,14 +538,27 @@ class Group_User extends CommonDBRelation{
       $tab[3]['field']           = 'is_dynamic';
       $tab[3]['name']            = __('Dynamic');
       $tab[3]['datatype']        = 'bool';
+      $tab[3]['massiveaction']   = false;
 
       $tab[4]['table']           = 'glpi_groups';
       $tab[4]['field']           = 'completename';
       $tab[4]['name']            = __('Group');
+      $tab[4]['massiveaction']   = false;
 
       $tab[5]['table']           = 'glpi_users';
       $tab[5]['field']           = 'name';
       $tab[5]['name']            = __('User');
+      $tab[5]['massiveaction']   = false;
+
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'is_manager';
+      $tab[6]['name']            = __('Manager');
+      $tab[6]['datatype']        = 'bool';
+
+      $tab[7]['table']           = $this->getTable();
+      $tab[7]['field']           = 'is_delegatee';
+      $tab[7]['name']            = __('Delegatee');
+      $tab[7]['datatype']        = 'bool';
 
       return $tab;
    }

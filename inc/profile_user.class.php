@@ -38,7 +38,12 @@ class Profile_User extends CommonDBTM {
    // From CommonDBTM
    var $auto_message_on_action = false;
 
-
+   function getForbiddenStandardMassiveAction() {
+      $forbidden = parent::getForbiddenStandardMassiveAction();
+      $forbidden[] = 'update';
+      return $forbidden;
+   }
+   
    function maybeRecursive() {
       // Store is_recursive fields but not really recursive object
       return false;
@@ -106,10 +111,10 @@ class Profile_User extends CommonDBTM {
 
       $canshowentity = Session::haveRight("entity","r");
       $rand          = mt_rand();
-      echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
-      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
 
       if ($canedit) {
+         echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action='";
+         echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
          echo "<div class='firstbloc'>";
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'><th colspan='6'>".__('Add an authorization to a user')."</tr>";
@@ -125,7 +130,7 @@ class Profile_User extends CommonDBTM {
          echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
 
-         echo "</table></div>";
+         echo "</table></div></form>";
       }
 
       $query = "SELECT DISTINCT `glpi_profiles_users`.`id` AS linkID,
@@ -146,11 +151,18 @@ class Profile_User extends CommonDBTM {
       $num = $DB->numrows($result);
       
       echo "<div class='spaced'>";
+      echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post'
+                  action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
+      
       if ($canedit && $num) {
+         $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=Profile_User";
+      
          $paramsma = array('fixed' => true,
                            'ontop' => true,
-                           'actions' => array('delete' => __('Delete'))
+                           'url' => $urlma,
+                           'num_displayed' => $num,
                            );
+
          Html::displayMassiveActions($paramsma);
       }
       
@@ -731,23 +743,28 @@ class Profile_User extends CommonDBTM {
       $tab[3]['field']           = 'is_dynamic';
       $tab[3]['name']            = __('Dynamic');
       $tab[3]['datatype']        = 'bool';
+      $tab[3]['massiveaction']   = false;
 
       $tab[4]['table']           = 'glpi_profiles';
       $tab[4]['field']           = 'name';
       $tab[4]['name']            = self::getTypeName(1);
+      $tab[4]['massiveaction']   = false;
 
       $tab[5]['table']           = 'glpi_users';
       $tab[5]['field']           = 'name';
       $tab[5]['name']            = __('User');
+      $tab[5]['massiveaction']   = false;
 
       $tab[80]['table']          = 'glpi_entities';
       $tab[80]['field']          = 'completename';
       $tab[80]['name']           = __('Entity');
+      $tab[80]['massiveaction']   = false;
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';
       $tab[86]['name']           = __('Child entities');
       $tab[86]['datatype']       = 'bool';
+      $tab[86]['massiveaction']   = false;
 
       return $tab;
    }

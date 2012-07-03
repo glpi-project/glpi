@@ -2952,7 +2952,7 @@ class Html {
     * Display massive actions
     *
     * @param $p               array    of parameters
-    * must contains one  :
+    * must contains  :
     *    - url : string in case of ajax massive action the url to load
     *    - actions : array of actions to displayed :
     *          array('buttonname' => 'Displayed label')
@@ -2983,7 +2983,6 @@ class Html {
       if (isset($p['num_displayed'])) {
          $num_displayed = $p['num_displayed'];
       }
-
       if (isset($p['fixed']) && $p['fixed']) {
          $width= '950px';
       } else {
@@ -2994,6 +2993,7 @@ class Html {
       } else {
          $identifier = md5(serialize($p['actions']));
       }
+
       $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
       if (!$max) {
          $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin

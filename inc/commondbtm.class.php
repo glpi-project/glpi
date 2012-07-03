@@ -2620,7 +2620,7 @@ class CommonDBTM extends CommonGLPI {
       }
 
       $itemtype = $this->getType();
-      
+
       $actions = array();
 
       if ($is_deleted) {
