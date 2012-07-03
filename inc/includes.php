@@ -133,7 +133,8 @@ if (isset($_REQUEST['glpilist_limit'])) {
 }
 
 // Security : Check HTTP_REFERRER : need to be in GLPI.
-if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()) {
+if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()
+   && isset($_POST) && is_array($_POST) && count($_POST)) {
    // Do not applyed for plugins on 0.83
    if (strstr($_SERVER['REQUEST_URI'],$CFG_GLPI['root_doc'].'/plugins/') === FALSE) {
       if (!isset($_SERVER['HTTP_REFERER'])
