@@ -3967,9 +3967,13 @@ class Html {
     * @return String
    **/
    static function closeForm ($display=true) {
-      global $LANG;
-
-      $out = "</form>\n";
+      
+      $out = '';
+      if (GLPI_USE_CSRF_CHECK) {
+         $out .= "<input type='hidden' name='_glpi_csrf_token' value='".Session::getNewCSRFToken()."'>";
+      }
+      
+      $out .= "</form>\n";
       if ($display) {
          echo $out;
          return true;

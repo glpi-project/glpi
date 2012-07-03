@@ -147,4 +147,16 @@ if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()) {
    }
 }
 
+// Security : check CSRF token 
+if (GLPI_USE_CSRF_CHECK
+   && isset($_POST) && is_array($_POST) && count($_POST)) {
+   // No ajax pages
+   if (strstr($_SERVER['REQUEST_URI'],$CFG_GLPI['root_doc'].'/ajax/') === FALSE) {
+      if (!Session::validateCSRF($_POST)) {
+         print_r($_POST);
+         print_r($_SESSION['glpicsrftokens']);
+         Html::displayErrorAndDie("The action you have requested is not allowed.", true);
+      }
+   }
+}
 ?>

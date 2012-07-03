@@ -39,7 +39,6 @@ class Session {
    const TRANSLATION_MODE  = 1;
    const DEBUG_MODE        = 2;
 
-
    /**
     * Destroy the current session
     *
@@ -68,7 +67,7 @@ class Session {
 
       if ($auth->auth_succeded) {
          // Restart GLPi session : complete destroy to prevent lost datas
-         $tosave = array('glpi_plugins', 'glpicookietest', 'phpCAS');
+         $tosave = array('glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens');
          $save   = array();
          foreach ($tosave as $t) {
             if (isset($_SESSION[$t])) {
@@ -949,6 +948,58 @@ class Session {
          }
       }
       return true;
+   }
+
+   /**
+   * Get new CSRF token
+   * @since version 0.83.3
+   * @return      string  new generated token
+   */
+   static public function getNewCSRFToken() {
+      $newtoken = md5(uniqid(rand(), TRUE));
+      if (!isset($_SESSION['glpicsrftokens'])) {
+         $_SESSION['glpicsrftokens'] = array();
+      }
+      Session::cleanCSRFTokens();
+      $_SESSION['glpicsrftokens'][$newtoken] = time() + GLPI_CSRF_EXPIRES;
+      return $newtoken;
+   }
+
+   /**
+   * Clean expires CSRF tokens
+   * @since version 0.83.3
+   * @return      nothing
+   */
+   static public function cleanCSRFTokens() {
+      $now = time();
+      if (isset($_SESSION['glpicsrftokens']) && is_array($_SESSION['glpicsrftokens'])) {
+         if (count($_SESSION['glpicsrftokens'])) {
+            foreach ($_SESSION['glpicsrftokens'] as $token => $expires) {
+               if ($expires < $now) {
+                  unset($_SESSION['glpicsrftokens'][$token]);
+               }
+            }
+         }
+      }
+   }
+   /**
+   * Validate that the page has a CSRF token in the POST data
+   * and that the token is legit/not expired.  If the token is valid
+   * it will be removed from the list of valid tokens.
+   *
+   * @param $data array $_POST datas
+   * @return boolean Valid csrf token.
+   */
+   static public function validateCSRF($data) {
+      if (!isset($data['_glpi_csrf_token'])) {
+         return false;
+      }
+      $requestToken = $data['_glpi_csrf_token'];
+      if (isset($_SESSION['glpicsrftokens'][$requestToken]) && $_SESSION['glpicsrftokens'][$requestToken] >= time()) {
+         unset($_SESSION['glpicsrftokens'][$requestToken]);
+         return true;
+      }
+      return false;
    }
 }
 ?>

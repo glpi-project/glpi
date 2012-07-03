@@ -2438,7 +2438,7 @@ class User extends CommonDBTM {
       }
 
       echo "<div class='center'>\n";
-      echo "<form method='get' action='".Toolbox::getItemTypeFormURL('User')."'>\n";
+      echo "<form method='post' action='".Toolbox::getItemTypeFormURL('User')."'>\n";
 
       echo "<table class='tab_cadre'>\n";
       echo "<tr><th colspan='4'>".$LANG['setup'][126]."</th></tr>\n";
