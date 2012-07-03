@@ -4146,6 +4146,29 @@ class Html {
       return sprintf(__('%1$s (%2$s)'), $string, $cpt);
    }
 
+
+   /**
+    * create a minimal form for simple action
+    *
+    * @param $action  String   URL to call on submit
+    * @param $btname  String   button name
+    * @param $btlabel String   button label
+    * @param $fields  Array    field name => field  value
+    * @param $btop    String   optionnal button option
+    *
+    * @since version 0.83.3
+   **/
+   static function showMinimalForm($action, $btname, $btlabel, Array $fields=array(), $btoption='') {
+
+      echo "<form method='post' action='$action'>";
+      foreach ($fields as $name => $value) {
+         echo "<input type='hidden' name='$name' value='$value'>";
+      }
+      echo "<input type='submit' name='$btname' value='$btlabel' class='submit' $btoption >";
+      Html::closeForm();
+   }
+
+
    /**
     * Create a close form part including CSRF token
     *
