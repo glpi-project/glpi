@@ -31,6 +31,8 @@
 define("GLPI_VERSION","0.84");
 define("GLPI_DEMO_MODE","0");
 
+define("GLPI_USE_CSRF_CHECK", "1");
+define("GLPI_CSRF_EXPIRES","7200");
 
 // dictionnaries
 // 0 Name - 1 lang file - 2 extjs - 3 tiny_mce - 4 english lang name
