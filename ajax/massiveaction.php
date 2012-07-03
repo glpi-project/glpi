@@ -39,7 +39,7 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
-
+// print_r($_GET);
 if (isset($_GET['itemtype'])) {
    if (!($item = getItemForItemtype($_GET['itemtype']))) {
       exit();
@@ -67,7 +67,7 @@ if (isset($_GET['itemtype'])) {
    }
    $rand    = mt_rand();
    $actions = $item->getAllMassiveActions($_GET['is_deleted'], $foritem);
-
+//    print_r($actions);
    if (count($actions)) {
       _e('Action');
       echo "&nbsp;";
