@@ -338,7 +338,6 @@ class Plugin extends CommonDBTM {
       $i                 = 0;
       $PLUGIN_HOOKS_SAVE = $PLUGIN_HOOKS;
       echo "<tr><th colspan='9'>".__('Plugins list')."</th></tr>\n";
-      $csrf_compliance = true;
       
       if (!empty($pluglist)) {
          echo "<tr><th>".__('Name')."</th><th>"._n('Version', 'Versions',1)."</th>";
@@ -443,8 +442,9 @@ class Plugin extends CommonDBTM {
                && $PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
                _e('Yes');
             } else {
-               $csrf_compliance = false;
+               echo "<span class='red b'>";
                _e('No');
+               echo "</span>";
             }
             echo "</td>";
 
@@ -501,7 +501,7 @@ class Plugin extends CommonDBTM {
                   echo "</td><td>";
                   if (function_exists("plugin_".$plug['directory']."_uninstall")) {
                      if (function_exists("plugin_".$plug['directory']."_check_config")) {
-                        echo "<a href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
+                        echo "<a class='vsubmit' href='".$this->getSearchURL()."?id=$ID&amp;action=uninstall'>".
                                _x('button', 'Uninstall')."</a>";
                      } else {
                         // This is an incompatible plugin (0.71), uninstall fonction could crash
@@ -541,8 +541,12 @@ class Plugin extends CommonDBTM {
                case self::NOTACTIVATED :
                   echo "<td>";
                   $function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
-                  if (function_exists($function) && $function()) {
-                     echo "<a class='vsubmit' href='".$this->getSearchURL().
+                  $disabled = '';
+                  if (!isset($PLUGIN_HOOKS['csrf_compliant'][$plug['directory']])
+                        || !$PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
+                     _e('Not CSRF compliant');
+                  } else if (function_exists($function) && $function()) {
+                     echo "<a $disabled class='vsubmit' href='".$this->getSearchURL().
                             "?id=$ID&amp;action=activate'>". _x('button','Enable')."</a>";
                   }
                   // Else : reason displayed by the plugin
@@ -578,12 +582,6 @@ class Plugin extends CommonDBTM {
       echo "<a href='http://plugins.glpi-project.org'  class='vsubmit' target='_blank'>".
             __('See the catalog of plugins')."</a></p>";
       echo "</div>";
-
-      if (!$csrf_compliance) {
-         echo "<br><div class='center red'>";
-         _e("At least one plugin is not compatible CSRF. CSRF checks are completely disabled.");
-         echo "</div>";
-      }
       
       $PLUGIN_HOOKS = $PLUGIN_HOOKS_SAVE;
    }
@@ -653,7 +651,14 @@ class Plugin extends CommonDBTM {
       global $PLUGIN_HOOKS;
 
       if ($this->getFromDB($ID)) {
+
          self::load($this->fields['directory'],true);
+         // No activation if not CSRF compliant
+         if (!isset($PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']])
+            || !$PLUGIN_HOOKS['csrf_compliant'][$this->fields['directory']]) {
+            return false;
+         }
+         
          $function = 'plugin_' . $this->fields['directory'] . '_check_prerequisites';
          if (function_exists($function)) {
             if (!$function()) {
