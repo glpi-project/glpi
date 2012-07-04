@@ -3664,6 +3664,7 @@ class Html {
          elements: '$name',
          plugins : 'table,directionality,searchreplace',
          theme : 'advanced',
+         invalid_elements : 'script',
          entity_encoding : 'numeric', ";
          // directionality + search replace plugin
       echo "theme_advanced_buttons1_add : 'ltr,rtl,search,replace',";
