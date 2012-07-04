@@ -51,15 +51,20 @@ if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST["itemtype"
    exit();
 }
 
-$subitem = NULL;
-if (isset($_POST['sub_type'])) {
-   if (!($subitem = getItemForItemtype($_POST['sub_type']))) {
+$checkitem = NULL;
+if (isset($_POST['check_itemtype'])) {
+   if (!($checkitem = getItemForItemtype($_POST['check_itemtype']))) {
       exit();
+   }
+   if (isset($_POST['check_items_id'])) {
+      if (!$checkitem->getFromDB($_POST['check_items_id'])) {
+         exit();
+      }
    }
 }
 
 // Right check
-$actions = $item->getAllMassiveActions($_POST['is_deleted'], $subitem);
+$actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
 if (!isset($actions[$_POST['action']])) {
    Html::displayRightError();
    exit();

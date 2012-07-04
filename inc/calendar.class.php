@@ -73,9 +73,9 @@ class Calendar extends CommonDropdown {
 
       return $ong;
    }
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = array();
+      $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
          $actions['duplicate'] = _x('button', 'Duplicate');

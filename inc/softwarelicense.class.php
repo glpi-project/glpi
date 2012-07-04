@@ -243,9 +243,9 @@ class SoftwareLicense extends CommonDBTM {
       return false;
    }
 
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
 
       if (Session::haveRight('transfer','r')
             && Session::isMultiEntitiesMode()
@@ -572,14 +572,9 @@ class SoftwareLicense extends CommonDBTM {
                echo "<form method='post' name='massiveactionlicense_form$rand' id='".
                       "massiveactionlicense_form$rand' action=\"".$CFG_GLPI["root_doc"].
                       "/front/massiveaction.php\">";
-               $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=SoftwareLicense";
-               $massiveactionparams = array('num_displayed' => $num_displayed,
-                                             'url'          => $urlma,
-                                             'ontop'        => true,
-                                             'fixed'        => true,
-                                             );
+               $massiveactionparams = array('num_displayed' => $num_displayed,);
 
-               Html::displayMassiveActions($massiveactionparams);
+               Html::displayMassiveActions('SoftwareLicense', $massiveactionparams);
             }
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                         (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
@@ -678,7 +673,7 @@ class SoftwareLicense extends CommonDBTM {
 
             if ($showmassiveactions) {
                $massiveactionparams['ontop'] = false;
-               Html::displayMassiveActions($massiveactionparams);
+               Html::displayMassiveActions('SoftwareLicense', $massiveactionparams);
 
                Html::closeForm();
             }

@@ -395,14 +395,9 @@ class RuleCollection extends CommonDBTM {
       echo "\n<div class='spaced'>";
 
       if ($canedit && $nb) {
-         $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=".$this->getRuleClassName();
-         $massiveactionparams = array('num_displayed' => min($p['limit'], $nb),
-                                       'url'          => $urlma,
-                                       'ontop'        => true,
-                                       'fixed'        => true,
-                                       );
+         $massiveactionparams = array('num_displayed' => min($p['limit'], $nb));
 
-         Html::displayMassiveActions($massiveactionparams);
+         Html::displayMassiveActions($this->getRuleClassName(), $massiveactionparams);
       }
       
       echo "<table class='tab_cadre_fixehov'>";
@@ -448,7 +443,7 @@ class RuleCollection extends CommonDBTM {
 
       if ($canedit && $nb) {
          $massiveactionparams['ontop'] = false;
-         Html::displayMassiveActions($massiveactionparams);
+         Html::displayMassiveActions($this->getRuleClassName(), $massiveactionparams);
 
       }
 

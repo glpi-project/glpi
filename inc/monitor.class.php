@@ -355,9 +355,9 @@ class Monitor extends CommonDBTM {
                     AND `items_id` = '" . $this->fields['id']."'";
    }
 
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['connect']    = _x('button', 'Connect');
          $actions['disconnect'] = _x('button', 'Disconnect');

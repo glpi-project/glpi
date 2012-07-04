@@ -593,14 +593,11 @@ class NetworkPort extends CommonDBChild {
       }
       if ($is_active_network_port
           && $showmassiveactions) {
-         $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=NetworkPort&foritemtype=$itemtype&foritems_id=$items_id";
-         $massiveactionparams = array('num_displayed' => $number_port,
-                                       'url'          => $urlma,
-                                       'ontop'        => true,
-                                       'fixed'        => true,
-                                       );
+         $massiveactionparams = array('num_displayed'  => $number_port,
+                                      'check_itemtype' => $itemtype,
+                                      'check_items_id' => $items_id);
 
-         Html::displayMassiveActions($massiveactionparams);
+         Html::displayMassiveActions('NetworkPort', $massiveactionparams);
       }
 
       $table->display(array('display_thead' => false,
@@ -615,7 +612,7 @@ class NetworkPort extends CommonDBChild {
       if ($is_active_network_port
           && $showmassiveactions) {
          $massiveactionparams['ontop'] = false;
-         Html::displayMassiveActions($massiveactionparams);
+         Html::displayMassiveActions('NetworkPort', $massiveactionparams);
 
          Html::closeForm();
       }
@@ -822,9 +819,9 @@ class NetworkPort extends CommonDBChild {
    }
 
          
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $linkitem->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['assign_vlan']   = __('Associate a VLAN');
          $actions['unassign_vlan'] = __('Dissociate a VLAN');

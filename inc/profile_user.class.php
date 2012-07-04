@@ -155,15 +155,9 @@ class Profile_User extends CommonDBTM {
                   action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
       
       if ($canedit && $num) {
-         $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=Profile_User";
-      
-         $paramsma = array('fixed' => true,
-                           'ontop' => true,
-                           'url' => $urlma,
-                           'num_displayed' => $num,
-                           );
+         $paramsma = array('num_displayed' => $num);
 
-         Html::displayMassiveActions($paramsma);
+         Html::displayMassiveActions('Profile_User', $paramsma);
       }
       
       if ($num > 0) {
@@ -239,7 +233,7 @@ class Profile_User extends CommonDBTM {
 
       if ($canedit && $num) {
          $paramsma['ontop'] = false;
-         Html::displayMassiveActions($paramsma);
+         Html::displayMassiveActions('Profile_User', $paramsma);
       }
       Html::closeForm();
       echo "</div>";

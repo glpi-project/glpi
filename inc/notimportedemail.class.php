@@ -65,9 +65,9 @@ class NotImportedEmail extends CommonDBTM {
       return _n('Refused email', 'Refused emails', $nb);
    }
 
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
          $actions['delete_email'] = __('Delete emails');

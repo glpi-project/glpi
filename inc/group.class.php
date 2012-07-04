@@ -293,9 +293,9 @@ class Group extends CommonTreeDropdown {
                          $buttons);
    }
 
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['add_user_group']        = _x('button', 'Add a user');
          $actions['add_supervisor_group']  = _x('button', 'Add a supervisor');

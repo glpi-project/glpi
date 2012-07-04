@@ -670,9 +670,9 @@ class Document extends CommonDBTM {
       return $tab;
    }
    
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
          $actions['add_document_item']    = _x('button', 'Add an item');
