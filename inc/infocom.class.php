@@ -852,9 +852,11 @@ class Infocom extends CommonDBChild {
                echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><th>";
                echo sprintf(__('%1$s - %2$s'), $item->getTypeName(1), $item->getName())."</th></tr>";
                echo "<tr class='tab_bg_1'><td class='center'>";
-               echo "<a class='vsubmit' href='".$CFG_GLPI["root_doc"]."/front/infocom.form.php?itemtype=".
-                     $item->getType()."&amp;items_id=$dev_ID&amp;add=add'>".
-                     __('Enable the financial and administrative information');
+
+               Html::showMinimalForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",
+                                     'add', __('Enable the financial and administrative information'),
+                                     array('itemtype' => $item->getType(),
+                                           'items_id' => $dev_ID));
                echo "</a></td></tr></table></div>";
             }
 

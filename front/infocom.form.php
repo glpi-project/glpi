@@ -37,10 +37,10 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $ic = new Infocom();
 
-if (isset($_GET["add"])) {
-   $ic->check(-1,'w',$_GET);
+if (isset($_POST['add'])) {
+   $ic->check(-1, 'w', $_POST);
 
-   $newID = $ic->add($_GET, false);
+   $newID = $ic->add($_POST, false);
    Event::log($newID, "infocom", 4, "financial",
               sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID));
    Html::back();
