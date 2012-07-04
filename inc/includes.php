@@ -140,7 +140,7 @@ if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()
        || !isset($url['host'])
        || ($url['host']!=$_SERVER['SERVER_NAME'])
        || !isset($url['path'])
-       || (strpos($url['path'], $CFG_GLPI['root_doc'])!==0)) {
+       || (!empty($CFG_GLPI['root_doc']) && strpos($url['path'], $CFG_GLPI['root_doc'])!==0)) {
       Html::displayErrorAndDie(__("The action you have requested is not allowed."), true);
    }
 }
