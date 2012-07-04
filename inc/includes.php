@@ -156,4 +156,6 @@ if (GLPI_USE_CSRF_CHECK
       }
    }
 }
+// SET new global Token
+$CURRENTCSRFTOKEN = '';
 ?>
