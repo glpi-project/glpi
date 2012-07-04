@@ -956,12 +956,17 @@ class Session {
    * @return      string  new generated token
    */
    static public function getNewCSRFToken() {
-      $newtoken = md5(uniqid(rand(), TRUE));
+      global $CURRENTCSRFTOKEN;
+
+      if (empty($CURRENTCSRFTOKEN)) {
+         $CURRENTCSRFTOKEN = md5(uniqid(rand(), TRUE));
+      }
+
       if (!isset($_SESSION['glpicsrftokens'])) {
          $_SESSION['glpicsrftokens'] = array();
       }
-      $_SESSION['glpicsrftokens'][$newtoken] = time() + GLPI_CSRF_EXPIRES;
-      return $newtoken;
+      $_SESSION['glpicsrftokens'][$CURRENTCSRFTOKEN] = time() + GLPI_CSRF_EXPIRES;
+      return $CURRENTCSRFTOKEN;
    }
 
    /**
