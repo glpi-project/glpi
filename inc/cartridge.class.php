@@ -539,8 +539,10 @@ class Cartridge extends CommonDBTM {
             if ($canedit) {
                echo "<td class='center'>";
                if (!is_null($date_use)) {
-                  echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?restore=restore&amp;id=".
-                        $data["id"]."&amp;tID=$tID'>".__('Back to stock')."</a>";
+                  Html::showMinimalForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
+                                        'restore', __('Back to stock'),
+                                        array('cartridgeitems_id' => $tID,
+                                              'id'                => $data['id']));
                } else {
                   echo "&nbsp;";
                }
@@ -548,9 +550,11 @@ class Cartridge extends CommonDBTM {
             }
             if ($canedit) {
                echo "<td class='center'>";
-               echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.form.php?delete=delete&amp;id=".
-                     $data["id"]."&amp;tID=$tID'><img title=\"".__s('Delete')."\" alt=\"".
-                     __s('Delete')."\" src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
+               Html::showMinimalForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
+                                     $CFG_GLPI['root_doc']."/pics/delete.png", __('Delete'),
+                                     array('delete'            => 1,
+                                           'cartridgeitems_id' => $tID,
+                                           'id'                => $data['id']));
               echo "</td>";
             }
             echo "</tr>";
@@ -735,14 +739,16 @@ class Cartridge extends CommonDBTM {
          if ($canedit) {
             echo "<td class='center'>";
             if (is_null($date_out)) {
-               echo "<a href='".$CFG_GLPI["root_doc"].
-                      "/front/cartridge.form.php?uninstall=uninstall&amp;id=".$data["id"].
-                      "&amp;tID=".$data["tID"]."'>".__('End of life')."</a>";
+               Html::showMinimalForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
+                                     'uninstall', __('End of life'),
+                                     array('cartridgeitems_id' => $data['tID'],
+                                           'id'                => $data['id']));
             } else {
-               echo "<a href='".$CFG_GLPI["root_doc"].
-                      "/front/cartridge.form.php?delete=delete&amp;id=".$data["id"].
-                      "&amp;tID=".$data["tID"]."'><img title=\"".__s('Delete')."\"
-                      alt=\"".__s('Delete')."\" src='".$CFG_GLPI["root_doc"]."/pics/delete.png'></a>";
+               Html::showMinimalForm($CFG_GLPI['root_doc']."/front/cartridge.form.php",
+                                     $CFG_GLPI['root_doc']."/pics/delete.png", __('Delete'),
+                                     array('delete'            => 1,
+                                           'cartridgeitems_id' => $data['tID'],
+                                           'id'                => $data['id']));
             }
             echo "</td></tr>";
          }
