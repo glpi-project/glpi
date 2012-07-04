@@ -3963,7 +3963,7 @@ class Html {
     * create a minimal form for simple action
     *
     * @param $action  String   URL to call on submit
-    * @param $btname  String   button name
+    * @param $btname  String   button name or image full uri
     * @param $btlabel String   button label
     * @param $fields  Array    field name => field  value
     * @param $btop    String   optionnal button option
@@ -3976,7 +3976,12 @@ class Html {
       foreach ($fields as $name => $value) {
          echo "<input type='hidden' name='$name' value='$value'>";
       }
-      echo "<input type='submit' name='$btname' value='$btlabel' class='submit' $btoption >";
+      if (strpos($btname, '/') === false) {
+         echo "<input type='submit' name='$btname' value='$btlabel' class='submit' $btoption >";
+      } else {
+         $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
+         echo "<input type='image' alt='$btlabel' src='$btname' onClick='submit()'>";
+      }
       Html::closeForm();
    }
 
