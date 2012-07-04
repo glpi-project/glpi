@@ -275,11 +275,12 @@ class Plugin extends CommonDBTM {
    }
    /**
     * Check if all plugins are CSRF compliant
-    * @since version 0.83.3    
-   **/   
+    * @since version 0.83.3
+   **/
    static function isAllPluginsCSRFCompliant() {
       global $PLUGIN_HOOKS;
-      
+
+/*
       if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])
          && count($_SESSION['glpi_plugins'])) {
          foreach ($_SESSION['glpi_plugins'] as $plug) {
@@ -289,7 +290,7 @@ class Plugin extends CommonDBTM {
             }
          }
       }
-
+*/
       return true;
    }
 
@@ -412,7 +413,7 @@ class Plugin extends CommonDBTM {
                && $PLUGIN_HOOKS['csrf_compliant'][$plug['directory']]) {
                echo $LANG['choice'][1];
             } else {
-               echo $LANG['choice'][0];
+               echo "<span class='b'>".$LANG['choice'][0]."</span>";
             }
             echo "</td>";
 
