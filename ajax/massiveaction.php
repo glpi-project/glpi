@@ -47,16 +47,14 @@ if (isset($_GET['itemtype'])) {
    if (!isset($_GET['is_deleted'])) {
       $_GET['is_deleted'] = 0;
    }
-   $foritem = NULL;
+   $checkitem = NULL;
    if (isset($_GET['check_itemtype'])) {
-      $foritem = new $_GET['check_itemtype']();
+      $checkitem = new $_GET['check_itemtype']();
       if (isset($_GET['check_items_id'])) {
-         $foritem->getFromDB($_GET['check_items_id']);
+         $checkitem->getFromDB($_GET['check_items_id']);
       }
    }
    echo "<div width='90%' class='center'><br>";
-
-   $linkitem = NULL;
 
    $params = array('action'     => '__VALUE__',
                    'is_deleted' => $_GET['is_deleted'],
@@ -69,7 +67,7 @@ if (isset($_GET['itemtype'])) {
       }
    }
    $rand    = mt_rand();
-   $actions = $item->getAllMassiveActions($_GET['is_deleted'], $foritem);
+   $actions = $item->getAllMassiveActions($_GET['is_deleted'], $checkitem);
 //    print_r($actions);
    if (count($actions)) {
       _e('Action');

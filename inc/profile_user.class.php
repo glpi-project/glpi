@@ -151,13 +151,12 @@ class Profile_User extends CommonDBTM {
       $num = $DB->numrows($result);
       
       echo "<div class='spaced'>";
-      echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post'
-                  action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
+      Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
       
       if ($canedit && $num) {
          $paramsma = array('num_displayed' => $num);
 
-         Html::displayMassiveActions('Profile_User', $paramsma);
+         Html::showMassiveActions('Profile_User', $paramsma);
       }
       
       if ($num > 0) {
@@ -165,11 +164,7 @@ class Profile_User extends CommonDBTM {
          echo "<tr>";
          if ($canedit) {
             echo "<th>";
-            echo "<input type='checkbox' name='_checkall_massaction$rand' ".
-                        "id='_checkall_massaction$rand' ".
-                        "onclick= \"if ( checkAsCheckboxes('_checkall_massaction$rand',
-                                                         'entityuser_form$rand'))
-                                                   {return true;}\">";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
             echo "</th>";
          }
          echo "<th>"._n('Entity', 'Entities', 2)."</th>";
@@ -233,7 +228,7 @@ class Profile_User extends CommonDBTM {
 
       if ($canedit && $num) {
          $paramsma['ontop'] = false;
-         Html::displayMassiveActions('Profile_User', $paramsma);
+         Html::showMassiveActions('Profile_User', $paramsma);
       }
       Html::closeForm();
       echo "</div>";

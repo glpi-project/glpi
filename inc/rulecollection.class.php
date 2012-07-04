@@ -391,13 +391,13 @@ class RuleCollection extends CommonDBTM {
 
       Html::printAjaxPager('', $p['start'], $nb);
 
-      echo "<form name='ruleactions_form$rand' id='ruleactions_form$rand' method='post'action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
+      Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
       echo "\n<div class='spaced'>";
 
       if ($canedit && $nb) {
          $massiveactionparams = array('num_displayed' => min($p['limit'], $nb));
 
-         Html::displayMassiveActions($this->getRuleClassName(), $massiveactionparams);
+         Html::showMassiveActions($this->getRuleClassName(), $massiveactionparams);
       }
       
       echo "<table class='tab_cadre_fixehov'>";
@@ -411,11 +411,7 @@ class RuleCollection extends CommonDBTM {
       echo "<tr>";
       echo "<th>";
       if ($canedit) {
-         echo "<input type='checkbox' name='_checkall_massaction$rand' ".
-                           "id='_checkall_massaction$rand' ".
-                           "onclick= \"if ( checkAsCheckboxes('_checkall_massaction$rand',
-                                                            'ruleactions_form$rand'))
-                                                      {return true;}\">";
+         Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
       }
       echo "</th>";
       echo "<th>".__('Name')."</th>";
@@ -443,7 +439,7 @@ class RuleCollection extends CommonDBTM {
 
       if ($canedit && $nb) {
          $massiveactionparams['ontop'] = false;
-         Html::displayMassiveActions($this->getRuleClassName(), $massiveactionparams);
+         Html::showMassiveActions($this->getRuleClassName(), $massiveactionparams);
 
       }
 

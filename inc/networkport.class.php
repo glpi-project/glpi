@@ -418,8 +418,7 @@ class NetworkPort extends CommonDBChild {
 
       if ($showmassiveactions) {
          $checkbox_column = true;
-         echo "\n<form id='networking_ports$rand' name='networking_ports$rand' method='post'
-                  action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'>\n";
+         Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
       } else {
          $checkbox_column = false;
       }
@@ -449,13 +448,7 @@ class NetworkPort extends CommonDBChild {
 
       if (($withtemplate != 2)
           && $canedit) {
-         $check_all = "<input type='checkbox' name='_checkall_massaction$rand' ".
-                           "id='_checkall_massaction$rand' ".
-                           "onclick= \"if ( checkAsCheckboxes('_checkall_massaction$rand',
-                                                            'networking_ports$rand'))
-                                                      {return true;}\">";
-
-         $c_checkbox = $table->addHeader('checkbox',$check_all);
+         $c_checkbox = $table->addHeader('checkbox',Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand));
       } else {
          $c_checkbox = NULL;
       }
@@ -597,7 +590,7 @@ class NetworkPort extends CommonDBChild {
                                       'check_itemtype' => $itemtype,
                                       'check_items_id' => $items_id);
 
-         Html::displayMassiveActions('NetworkPort', $massiveactionparams);
+         Html::showMassiveActions('NetworkPort', $massiveactionparams);
       }
 
       $table->display(array('display_thead' => false,
@@ -612,7 +605,7 @@ class NetworkPort extends CommonDBChild {
       if ($is_active_network_port
           && $showmassiveactions) {
          $massiveactionparams['ontop'] = false;
-         Html::displayMassiveActions('NetworkPort', $massiveactionparams);
+         Html::showMassiveActions('NetworkPort', $massiveactionparams);
 
          Html::closeForm();
       }
@@ -820,7 +813,7 @@ class NetworkPort extends CommonDBChild {
 
          
    function getSpecificMassiveActions($checkitem=NULL) {
-      $isadmin = $linkitem->canUpdate();
+      $isadmin = $checkitem->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['assign_vlan']   = __('Associate a VLAN');
