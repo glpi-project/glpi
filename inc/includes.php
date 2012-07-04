@@ -150,14 +150,16 @@ if (!defined('DO_NOT_CHECK_HTTP_REFERER') && !isCommandLine()
 
 // Security : check CSRF token
 // No CSRF check if a plugin is not compliant
-if (GLPI_USE_CSRF_CHECK 
+if (GLPI_USE_CSRF_CHECK
    && isset($_POST) && is_array($_POST) && count($_POST)
    && Plugin::isAllPluginsCSRFCompliant()) {
    // No ajax pages
-   if (strstr($_SERVER['REQUEST_URI'],$CFG_GLPI['root_doc'].'/ajax/') === FALSE) {
+   toolbox::logdebug('CRSF', $_SERVER['REQUEST_URI']);
+   if (!preg_match(':'.$CFG_GLPI['root_doc'].'(/plugins/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI'], $res)) {
       if (!Session::validateCSRF($_POST)) {
          Html::displayErrorAndDie("The action you have requested is not allowed.", true);
       }
    }
+   toolbox::logdebug("RES", $res);
 }
 ?>
