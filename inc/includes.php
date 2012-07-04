@@ -154,12 +154,10 @@ if (GLPI_USE_CSRF_CHECK
    && isset($_POST) && is_array($_POST) && count($_POST)
    && Plugin::isAllPluginsCSRFCompliant()) {
    // No ajax pages
-   toolbox::logdebug('CRSF', $_SERVER['REQUEST_URI']);
    if (!preg_match(':'.$CFG_GLPI['root_doc'].'(/plugins/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI'], $res)) {
       if (!Session::validateCSRF($_POST)) {
          Html::displayErrorAndDie("The action you have requested is not allowed.", true);
       }
    }
-   toolbox::logdebug("RES", $res);
 }
 ?>
