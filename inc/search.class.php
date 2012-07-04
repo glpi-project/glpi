@@ -910,15 +910,11 @@ class Search {
                    && ($output_type == self::HTML_OUTPUT)) {
                   echo "<form method='post' name='massiveaction_form' id='massiveaction_form' ".
                          "action=\"".$CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
-                  $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=$itemtype";
-                  if (isset($p['is_deleted'])) {
-                     $urlma .= "&is_deleted=".$p['is_deleted'];
-                  }
                   $massiveactionparams = array('num_displayed' => $end_display-$begin_display,
-                                               'url' => $urlma,
-                                               'ontop' => true,
+                                               'fixed' => false,
+                                               'is_deleted' => $p['is_deleted']
                                                 );
-                  Html::displayMassiveActions($massiveactionparams);
+                  Html::displayMassiveActions($itemtype, $massiveactionparams);
                }
             }
 

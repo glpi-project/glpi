@@ -48,14 +48,21 @@ if (isset($_POST["action"])
    if (!($item = getItemForItemtype($_POST['itemtype']))) {
       exit();
    }
-   $subitem = NULL;
-   if (isset($_POST['sub_type'])) {
-      if (!($subitem = getItemForItemtype($_POST['sub_type']))) {
+   $checkitem = NULL;
+   
+   if (isset($_POST['check_itemtype'])) {
+      if (!($checkitem = getItemForItemtype($_POST['check_itemtype']))) {
          exit();
       }
-      echo "<input type='hidden' name='sub_type' value='".$_POST["sub_type"]."'>";
+      if (isset($_POST['check_items_id'])) {
+         if (!$checkitem->getFromDB($_POST['check_items_id'])) {
+            exit();
+         }
+      echo "<input type='hidden' name='check_items_id' value='".$_POST["check_items_id"]."'>";
+      }
+      echo "<input type='hidden' name='check_itemtype' value='".$_POST["check_itemtype"]."'>";
    }
-   $actions = $item->getAllMassiveActions($_POST['is_deleted'], $subitem);
+   $actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
 
    if (!isset($actions[$_POST['action']])) {
       Html::displayRightError();

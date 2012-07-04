@@ -184,9 +184,9 @@ class Supplier extends CommonDBTM {
 
    }
 
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['add_contact'] = _x('button', 'Add a contact');
       }

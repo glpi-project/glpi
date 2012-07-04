@@ -316,9 +316,9 @@ class NetworkPortMigration extends CommonDBChild {
       $this->addDivForTabs();
    }
 
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['transform_to'] = __('Transform this network port to');
       }

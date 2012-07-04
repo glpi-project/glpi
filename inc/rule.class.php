@@ -136,9 +136,9 @@ class Rule extends CommonDBTM {
       return __('Rules management');
    }
 
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
 
       
       $collectiontype = $this->getType().'Collection';

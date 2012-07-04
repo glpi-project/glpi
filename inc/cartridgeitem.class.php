@@ -256,9 +256,10 @@ class CartridgeItem extends CommonDBTM {
       return true;
    }
 
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = array();
+      $actions = parent::getSpecificMassiveActions($checkitem);
+
 
       if (Session::haveRight('transfer','r')
             && Session::isMultiEntitiesMode()

@@ -446,15 +446,9 @@ class Group_User extends CommonDBRelation{
             echo "<input type='hidden' name='groups_id' value='".$group->fields['id']."'>";
          }
          if ($canedit) {
-
-            $urlma = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=Group_User";
-               
-            $paramsma = array('fixed' => true,
-                              'ontop' => true,
-                              'url' => $urlma,
-                              'num_displayed' => min($number-$start, $_SESSION['glpilist_limit']),
-                              );
-            Html::displayMassiveActions($paramsma);
+            $paramsma = array('num_displayed' =>
+                                 min($number-$start, $_SESSION['glpilist_limit']));
+            Html::displayMassiveActions('Group_User', $paramsma);
          }
          
          echo "<table class='tab_cadre_fixehov'><tr>";
@@ -506,7 +500,7 @@ class Group_User extends CommonDBRelation{
          if ($canedit) {
             $paramsma['ontop'] =false;
 
-            Html::displayMassiveActions($paramsma);
+            Html::displayMassiveActions('Group_User', $paramsma);
          }
          Html::printAjaxPager(sprintf(__('%1$s (%2$s)'),
                                       User::getTypeName(2), __('D=Dynamic')),

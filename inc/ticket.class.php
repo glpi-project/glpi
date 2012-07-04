@@ -1676,9 +1676,9 @@ class Ticket extends CommonITILObject {
      return $search;
    }
 
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
       
       $tmp = new TicketFollowup();
       if ($tmp->canCreate()

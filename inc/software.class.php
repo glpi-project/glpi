@@ -300,9 +300,9 @@ class Software extends CommonDBTM {
       $this->fields["is_helpdesk_visible"] = $CFG_GLPI["default_software_helpdesk_visible"];
    }
 
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin
             && (countElementsInTable("glpi_rules",
                                     "sub_type='RuleSoftwareCategory'") > 0)) {

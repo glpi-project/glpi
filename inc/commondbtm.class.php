@@ -2605,16 +2605,16 @@ class CommonDBTM extends CommonGLPI {
     *
     * This must not be overloaded in Class
     * @param $is_deleted massive action for deleted items ?
-    * @param $linkitem link item to check right
+    * @param $checkitem link item to check right
     * @since version 0.84
     * @return an array of massive actions
    **/
-   function getAllMassiveActions($is_deleted=0, $linkitem=NULL) {
+   function getAllMassiveActions($is_deleted=0, $checkitem=NULL) {
       global $CFG_GLPI;
       
 
-      if (!is_null($linkitem)) {
-         $isadmin = $linkitem->canUpdate();
+      if (!is_null($checkitem)) {
+         $isadmin = $checkitem->canUpdate();
       } else {
          $isadmin = $this->canUpdate();
       }
@@ -2669,7 +2669,7 @@ class CommonDBTM extends CommonGLPI {
             }
          }
          // Specific actions
-         $actions += $this->getSpecificMassiveActions($linkitem);
+         $actions += $this->getSpecificMassiveActions($checkitem);
          // Plugin Specific actions
          if (isset($PLUGIN_HOOKS['use_massive_action'])) {
             foreach ($PLUGIN_HOOKS['use_massive_action'] as $plugin => $val) {
@@ -2706,11 +2706,11 @@ class CommonDBTM extends CommonGLPI {
     * Get the specific massive actions
     *
     * This should be overloaded in Class
-    * @param $linkitem link item to check right    
+    * @param $checkitem link item to check right    
     * @since version 0.84
     * @return an array of massive actions
    **/
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       return array();
    }
    

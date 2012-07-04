@@ -48,10 +48,10 @@ if (isset($_GET['itemtype'])) {
       $_GET['is_deleted'] = 0;
    }
    $foritem = NULL;
-   if (isset($_GET['foritemtype'])) {
-      $foritem = new $_GET['foritemtype']();
-      if (isset($_GET['foritems_id'])) {
-         $foritem->getFromDB($_GET['foritems_id']);
+   if (isset($_GET['check_itemtype'])) {
+      $foritem = new $_GET['check_itemtype']();
+      if (isset($_GET['check_items_id'])) {
+         $foritem->getFromDB($_GET['check_items_id']);
       }
    }
    echo "<div width='90%' class='center'><br>";
@@ -62,8 +62,11 @@ if (isset($_GET['itemtype'])) {
                    'is_deleted' => $_GET['is_deleted'],
                    'itemtype'   => $_GET['itemtype']);
 
-   if (!is_null($foritem)) {
-      $params['sub_type'] = $foritem->getType();
+   if (isset($_GET['check_itemtype'])) {
+      $params['check_itemtype'] = $_GET['check_itemtype'];
+      if (isset($_GET['check_items_id'])) {
+         $params['check_items_id'] = $_GET['check_items_id'];
+      }
    }
    $rand    = mt_rand();
    $actions = $item->getAllMassiveActions($_GET['is_deleted'], $foritem);

@@ -2041,9 +2041,9 @@ class User extends CommonDBTM {
       }
    }
 
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
       if ($isadmin) {
          $actions['add_user_group']  = __('Associate to a group');
          $actions['add_userprofile'] = __('Associate to a profile');

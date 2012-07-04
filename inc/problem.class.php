@@ -392,9 +392,9 @@ class Problem extends CommonITILObject {
      return $search;
    }
 
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
       $tmp = new ProblemTask();
       if ($tmp->canCreate()) {
          $actions['add_task'] = __('Add a new task');

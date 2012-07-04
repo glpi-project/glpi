@@ -670,9 +670,9 @@ class Computer extends CommonDBTM {
               WHERE `computers_id` = '" . $this->fields['id']."'";
    }
 
-   function getSpecificMassiveActions($linkitem=NULL) {
+   function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
-      $actions = parent::getSpecificMassiveActions();
+      $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
          $actions['connect_to_computer'] = _x('button', 'Connect');
