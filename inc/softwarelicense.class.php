@@ -569,18 +569,18 @@ class SoftwareLicense extends CommonDBTM {
       if ($result = $DB->query($query)) {
          if ($num_displayed = $DB->numrows($result)) {
             if ($showmassiveactions) {
-               echo "<form method='post' name='massiveactionlicense_form$rand' id='".
-                      "massiveactionlicense_form$rand' action=\"".$CFG_GLPI["root_doc"].
-                      "/front/massiveaction.php\">";
+               Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
                $massiveactionparams = array('num_displayed' => $num_displayed,);
 
-               Html::displayMassiveActions('SoftwareLicense', $massiveactionparams);
+               Html::showMassiveActions('SoftwareLicense', $massiveactionparams);
             }
             $sort_img = "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" .
                         (($order == "DESC") ? "puce-down.png" : "puce-up.png") ."\" alt='' title=''>";
 
             echo "<table class='tab_cadre_fixehov'><tr>";
-            echo "<th>&nbsp;</th>";
+            echo "<th>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
             echo "<th>".(($sort == "`name`") ?$sort_img:"").
                  "<a href='javascript:reloadTab(\"sort=name&amp;order=".
                    (($order == "ASC") ?"DESC":"ASC")."&amp;start=0\");'>".__('Name')."</a></th>";
@@ -673,7 +673,7 @@ class SoftwareLicense extends CommonDBTM {
 
             if ($showmassiveactions) {
                $massiveactionparams['ontop'] = false;
-               Html::displayMassiveActions('SoftwareLicense', $massiveactionparams);
+               Html::showMassiveActions('SoftwareLicense', $massiveactionparams);
 
                Html::closeForm();
             }

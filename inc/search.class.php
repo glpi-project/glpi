@@ -908,13 +908,12 @@ class Search {
                $showmassiveactions = count($item->getAllMassiveActions($p['is_deleted']));
                if ($showmassiveactions
                    && ($output_type == self::HTML_OUTPUT)) {
-                  echo "<form method='post' name='massiveaction_form' id='massiveaction_form' ".
-                         "action=\"".$CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
+                  Html::openMassiveActionsForm('massform'.$itemtype);
                   $massiveactionparams = array('num_displayed' => $end_display-$begin_display,
                                                'fixed' => false,
                                                'is_deleted' => $p['is_deleted']
                                                 );
-                  Html::displayMassiveActions($itemtype, $massiveactionparams);
+                  Html::showMassiveActions($itemtype, $massiveactionparams);
                }
             }
 
@@ -953,12 +952,9 @@ class Search {
 
             if (($output_type == self::HTML_OUTPUT)
                 && !isset($CFG_GLPI["union_search_type"][$itemtype])) { // HTML display - massive modif
-               $check_all = "<input type='checkbox' name='_checkall_massactionsearch' ".
-                                 "id='_checkall_massactionsearch' ".
-                                 "onclick= \"if ( checkAsCheckboxes('_checkall_massactionsearch',
-                                                                    'massiveaction_form'))
-                                                            {return true;}\">";
-               echo self::showHeaderItem($output_type, $check_all, $header_num, "", 0,
+               echo self::showHeaderItem($output_type,
+                                         Html::getCheckAllAsCheckbox('massform'.$itemtype),
+                                         $header_num, "", 0,
                                          $p['order']);
             }
 
@@ -1422,7 +1418,7 @@ class Search {
             if ($output_type == self::HTML_OUTPUT) {
                if ($showmassiveactions) {
                   $massiveactionparams['ontop'] = false;
-                  Html::displayMassiveActions($massiveactionparams);
+                  Html::showMassiveActions($massiveactionparams);
                   // End form for delete item
                   Html::closeForm();
                } else {

@@ -2948,6 +2948,61 @@ class Html {
       echo "</table>";
    }
 
+
+
+
+   /**
+    * Display "check All as" checkbox
+    *
+    * @param $container_id string html of the container of checkboxes link to this check all checkbox
+    * @return nothing / display item
+   **/
+   static function checkAllAsCheckbox($container_id) {
+      echo Html::getCheckAllAsCheckbox($container_id);
+   }
+
+   /**
+    * Get "check All as" checkbox
+    *
+    * @param $container_id string html of the container of checkboxes link to this check all checkbox
+    * @return Get checkbox string
+   **/
+   static function getCheckAllAsCheckbox($container_id) {
+      $rand = mt_rand();
+      $out = "<input type='checkbox' name='_checkall_$rand' ".
+                  "id='_checkall_$rand' ".
+                  "onclick= \"if ( checkAsCheckboxes('_checkall_$rand',
+                                                   '$container_id'))
+                                             {return true;}\">";
+                                                      
+      return $out;
+   }
+   
+   /**
+    * Display open form for massive action
+    *
+    * @param $name given name/id to the form
+    * @return nothing / display item
+   **/
+   static function openMassiveActionsForm($name='') {
+      echo Html::getOpenMassiveActionsForm($name);
+   }
+   
+   /**
+    * Get open form for massive action string
+    *
+    * @param $name given name/id to the form
+    * @return open form string
+   **/
+   static function getOpenMassiveActionsForm($name='') {
+      global $CFG_GLPI;
+      if (empty($name)) {
+         $name = 'massaction_'.mt_rand();
+      }
+      return  "<form name='$name' id='$name' method='post'
+               action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
+   }
+   
    /**
     * Display massive actions
     *
@@ -2964,9 +3019,9 @@ class Html {
     *    - check_items_id : integer ID of the alternate item used to check right / optional (default empty)
     *    - is_deleted : boolean is massive actions for deleted items ?
     *
-    * @return Array of available itemtype
+    * @return nothing
    **/
-   static function displayMassiveActions($itemtype, $options = array()) {
+   static function showMassiveActions($itemtype, $options = array()) {
       global $CFG_GLPI;
 
       $p['ontop']          = true;

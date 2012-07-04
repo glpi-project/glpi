@@ -441,19 +441,20 @@ class Group_User extends CommonDBRelation{
                                                 $group->getTypeName(1), $group->getName()));
 
          if ($canedit) {
-            echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post'
-                   action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
+            Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
             echo "<input type='hidden' name='groups_id' value='".$group->fields['id']."'>";
          }
          if ($canedit) {
             $paramsma = array('num_displayed' =>
                                  min($number-$start, $_SESSION['glpilist_limit']));
-            Html::displayMassiveActions('Group_User', $paramsma);
+            Html::showMassiveActions(__CLASS__, $paramsma);
          }
          
          echo "<table class='tab_cadre_fixehov'><tr>";
          if ($canedit) {
-            echo "<th width='10'>&nbsp;</th>";
+            echo "<th width='10'>";
+            Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+            echo "</th>";
          }
          echo "<th>".User::getTypeName(1)."</th>";
          if ($tree) {
@@ -500,7 +501,7 @@ class Group_User extends CommonDBRelation{
          if ($canedit) {
             $paramsma['ontop'] =false;
 
-            Html::displayMassiveActions('Group_User', $paramsma);
+            Html::showMassiveActions('Group_User', $paramsma);
          }
          Html::printAjaxPager(sprintf(__('%1$s (%2$s)'),
                                       User::getTypeName(2), __('D=Dynamic')),
