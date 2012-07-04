@@ -2974,10 +2974,10 @@ class Html {
                   "onclick= \"if ( checkAsCheckboxes('_checkall_$rand',
                                                    '$container_id'))
                                              {return true;}\">";
-                                                      
+
       return $out;
    }
-   
+
    /**
     * Display open form for massive action
     *
@@ -2987,7 +2987,7 @@ class Html {
    static function openMassiveActionsForm($name='') {
       echo Html::getOpenMassiveActionsForm($name);
    }
-   
+
    /**
     * Get open form for massive action string
     *
@@ -3002,7 +3002,7 @@ class Html {
       return  "<form name='$name' id='$name' method='post'
                action='".$CFG_GLPI["root_doc"]."/front/massiveaction.php'>";
    }
-   
+
    /**
     * Display massive actions
     *
@@ -3047,7 +3047,7 @@ class Html {
       }
       if (!empty($p['check_items_id'])) {
          $url .= '&check_items_id='.$p['check_items_id'];
-      }      
+      }
       if ($p['fixed']) {
          $width= '950px';
       } else {
@@ -3059,7 +3059,7 @@ class Html {
       if (!$max) {
          $max = ini_get('suhosin.post.max_vars');  // Security limit from Suhosin
       }
-      
+
       if ($p['num_displayed'] >= 0
           && ($max > 0) && ($max < ($p['num_displayed']+10))) {
          if (!$p['ontop'] || (isset($p['forcecreate']) && $p['forcecreate'])) {

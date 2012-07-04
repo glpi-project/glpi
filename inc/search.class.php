@@ -1418,7 +1418,7 @@ class Search {
             if ($output_type == self::HTML_OUTPUT) {
                if ($showmassiveactions) {
                   $massiveactionparams['ontop'] = false;
-                  Html::showMassiveActions($massiveactionparams);
+                  Html::showMassiveActions($itemtype, $massiveactionparams);
                   // End form for delete item
                   Html::closeForm();
                } else {
