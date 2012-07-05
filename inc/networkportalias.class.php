@@ -90,7 +90,7 @@ class NetworkPortAlias extends NetworkPortInstantiation {
 
       echo "<tr class='tab_bg_1'>";
       $this->showMacField($netport, $options);
-      $this->showNetworkPortSelector($recursiveItems, false);
+      $this->showNetworkPortSelector($recursiveItems, $this->getType());
       echo "</tr>";
    }
 

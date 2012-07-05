@@ -76,7 +76,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
 
       echo "<tr class='tab_bg_1'>";
       $this->showMacField($netport, $options);
-      $this->showNetworkPortSelector($recursiveItems, true);
+      $this->showNetworkPortSelector($recursiveItems, $this->getType());
       echo "</tr>";
    }
 
