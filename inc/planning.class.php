@@ -165,6 +165,14 @@ class Planning extends CommonGLPI {
                                       'who_group' => 0,
                                       'begin'     => $begin,
                                       'end'       => $end));
+         if (isPluginItemType($itemtype)) {
+            if (isset($data['items'])) {
+               $data = $data['items'];
+            } else {
+               $data = array();
+            }
+         }
+
          if (count($data)
              && method_exists($itemtype,'getAlreadyPlannedInformation')) {
             foreach ($data as $key => $val) {
