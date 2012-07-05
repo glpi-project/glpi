@@ -612,11 +612,13 @@ abstract class CommonITILTask  extends CommonDBTM {
       global $CFG_GLPI;
 
       if ($item = getItemForItemtype($_POST['itemtype'])) {
+         $objectitemtype = $item->getItilObjectItemType();
+
          //TRANS: %1$s is a type, %2$$ is a date, %3$s is a date
          $out  = sprintf(__('%1$s: from %2$s to %3$s:'), $item->getTypeName(1),
                          Html::convDateTime($val["begin"]), Html::convDateTime($val["end"]));
-         $out .= "<br><a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
-                       $val[getForeignKeyFieldForItemType($itemtype)]."'>";
+         $out .= "<br><a href='".Toolbox::getItemTypeFormURL($objectitemtype)."?id=".
+                       $val[getForeignKeyFieldForItemType($objectitemtype)]."&amp;forcetab=".$itemtype."$1'>";
          $out .= Html::resume_text($val["name"],80).'</a>';
 
          return $out;
