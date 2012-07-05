@@ -368,7 +368,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    /**
     * \brief display the attached NetworkPort
     *
-    * NetworkPortAlias and NetworkPortAggregate ara based on other physical network ports
+    * NetworkPortAlias and NetworkPortAggregate are based on other physical network ports
     * (Ethernet or Wifi). This method displays the physical network ports.
    **/
    function getInstantiationNetworkPortHTMLTable() {
@@ -412,7 +412,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $multiple        NetworkPortAlias are based on one NetworkPort wherever
     *                         NetworkPortAggregate are based on several NetworkPort.
    **/
-   function showNetworkPortSelector($recursiveItems, $multiple) {
+   function showNetworkPortSelector($recursiveItems, $origin) {
       global $DB;
 
       if (count($recursiveItems) == 0) {
@@ -424,32 +424,46 @@ class NetworkPortInstantiation extends CommonDBChild {
       echo "<td>" . __('Origin port') . "</td><td>\n";
       $links_id = array();
 
-      // Manage alias ports
-      if (isset($this->fields['networkports_id_alias'])) {
-         $links_id = array($this->fields['networkports_id_alias']);
-      }
-      // Manage aggregate ports
-      if (isset($this->fields['networkports_id_list'])) {
-         $links_id = $this->fields['networkports_id_list'];
+      $netport_types = array('NetworkPortEthernet', 'NetworkPortWifi');
+      $selectOptions = array();
+
+      switch ($origin) {
+
+      case 'NetworkPortAlias':
+         $field_name                 = 'networkports_id_alias';
+         $selectOptions['multiple']  = false;
+         $selectOptions['on_change'] = 'updateForm(this.options[this.selectedIndex].value)';
+         $netport_types[]            = 'NetworkPortAggregate';
+         break;
+
+      case 'NetworkPortAggregate':
+         $field_name                 = 'networkports_id_list';
+         $selectOptions['multiple']  = true;
+         $selectOptions['size']      = 4;
+         $netport_types[]            = 'NetworkPortAlias';
+         break;
+
       }
 
-      // Only one available NetworkPort => copy its MAC to the aggregate or alias port
-      if (!$multiple) {
-         echo "\n<script type=\"text/javascript\">
-        var device_mac_addresses = [];\n";
+      if (isset($this->fields[$field_name])) {
+         if (is_array($this->fields[$field_name])) {
+            $selectOptions['values'] = $this->fields[$field_name];
+         } else {
+            $selectOptions['values'] = array($this->fields[$field_name]);
+         }
       }
 
-     $possible_ports = array();
-      foreach (array('NetworkPortEthernet', 'NetworkPortWifi') as $netport_type) {
-
-        $instantiationTable = getTableForItemType($netport_type);
+      $possible_ports = array();
+      $macAddresses = array();
+      foreach ($netport_types as $netport_type) {
+         $instantiationTable = getTableForItemType($netport_type);
          $query = "SELECT port.`id`, port.`name`, port.`mac`
                    FROM `glpi_networkports` AS port
                    WHERE `items_id` = '".$lastItem->getID()."'
                          AND `itemtype` = '".$lastItem->getType()."'
                          AND `instantiation_type` = '$netport_type'";
 
-        $result = $DB->query($query);
+         $result = $DB->query($query);
 
          if ($DB->numrows($result) > 0) {
             $array_element_name                  = call_user_func(array($netport_type,
@@ -458,47 +472,34 @@ class NetworkPortInstantiation extends CommonDBChild {
             $possible_ports[$array_element_name] = array();
 
             while ($portEntry = $DB->fetch_assoc($result)) {
-               if ($multiple) {
+               $macAddresses[$portEntry['id']] = $portEntry['mac'];
+               if (!empty($portEntry['mac'])) {
                   $portEntry['name'] = sprintf(__('%1$s - %2$s'), $portEntry['name'],
                                                $portEntry['mac']);
-               } else {
-                  echo "  device_mac_addresses[".$portEntry['id']."] = '".$portEntry['mac']."'\n";
                }
                $possible_ports[$array_element_name][$portEntry['id']] = $portEntry['name'];
             }
          }
       }
 
-      if ($multiple) {
-         echo "<select name='networkports_id_list[]' multiple>";
-      } else {
-         echo "
-   function updateForm(devID) {
+      if (!$selectOptions['multiple']) {
+         echo "\n<script type=\"text/javascript\">
+        var device_mac_addresses = [];\n";
+         foreach ($macAddresses as $port_id => $macAddress) {
+            echo "  device_mac_addresses[$port_id] = '$macAddress'\n";
+         }
+         echo "   function updateForm(devID) {
       var field=document.getElementsByName('mac')[0];
       if ((field != undefined) && (device_mac_addresses[devID] != undefined))
          field.value = device_mac_addresses[devID];
    }
 </script>\n";
 
-         echo "<select name='networkports_id_alias' ";
-         echo "onchange='updateForm(this.options[this.selectedIndex].value)'>\n";
       }
 
-      foreach ($possible_ports as $group => $ports) {
-         echo "<optgroup label=\"$group\">";
+      Dropdown::showFromArray($field_name, $possible_ports, $selectOptions);
 
-         foreach ($ports as $id => $name) {
-            echo "<option value='$id'";
-            if (in_array($id, $links_id)) {
-               echo " selected";
-            }
-            echo ">$name</option>\n";
-         }
-
-         echo "</optgroup>";
-      }
-
-      echo "</select>\n</td>\n";
+      echo "</td>\n";
    }
 
 
