@@ -567,10 +567,11 @@ abstract class CommonITILTask  extends CommonDBTM {
       global $CFG_GLPI;
 
       $item = new $itemtype();
+      $objectitemtype = $item->getItilObjectItemType();
       $out  = $item->getTypeName().' : '.Html::convDateTime($val["begin"]).' -> '.
               Html::convDateTime($val["end"]).' : ';
-      $out .= "<a href='".Toolbox::getItemTypeFormURL($itemtype)."?id=".
-                $val[getForeignKeyFieldForItemType($itemtype)]."'>";
+      $out .= "<a href='".Toolbox::getItemTypeFormURL($objectitemtype)."?id=".
+                $val[getForeignKeyFieldForItemType($objectitemtype)]."&amp;forcetab=".$itemtype."$1'>";
       $out .= Html::resume_text($val["name"],80).'</a>';
 
       return $out;
