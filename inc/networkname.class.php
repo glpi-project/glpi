@@ -447,22 +447,14 @@ class NetworkName extends FQDNLabel {
       } else {
          echo $name->getTypeName(1);
       }
-      echo "</th></tr>\n";
+      echo "</th>\n";
 
-      echo "<tr class='tab_bg_1'>";
+      echo "</tr><tr class='tab_bg_1'>";
+
       echo "<td>" . self::getTypeName(1) . "</td><td>\n";
       Html::autocompletionTextField($name, "name", array('name' => 'NetworkName_name'));
       echo "</td>\n";
 
-      $address = new IPAddress();
-      echo "<td rowspan='2'>".$address->getTypeName(2);
-      $address->showAddButtonForChildItem($name, 'NetworkName__ipaddresses');
-      echo "</td>";
-      echo "<td rowspan='2'>";
-      $address->showFieldsForItemForm($name, 'NetworkName__ipaddresses', 'name');
-      echo "</tr>\n";
-
-      echo "<tr class='tab_bg_1'>";
       echo "<td>".FQDN::getTypeName(1)."</td><td>";
       Dropdown::show(getItemTypeForTable(getTableNameForForeignKeyField("fqdns_id")),
                      array('value'       => $name->fields["fqdns_id"],
@@ -470,6 +462,23 @@ class NetworkName extends FQDNLabel {
                            'entity'      => $name->getEntityID(),
                            'displaywith' => array('view')));
       echo "</td>\n";
+
+      echo "</tr><tr class='tab_bg_1'>\n";
+
+      $address = new IPAddress();
+      echo "<td>".$address->getTypeName(2);
+      $address->showAddButtonForChildItem($name, 'NetworkName__ipaddresses');
+      echo "</td>";
+      echo "<td>";
+      $address->showFieldsForItemForm($name, 'NetworkName__ipaddresses', 'name');
+      echo "</td>";
+
+      echo "<td>".IPNetwork::getTypeName(2)."&nbsp;";
+      Html::showToolTip(__('IP network is not included in the database. However, you can see current available networks.'));
+      echo "</td><td>";
+      IPNetwork::showIPNetworkProperties($name->getEntityID());
+      echo "</td>\n";
+
       echo "</tr>\n";
    }
 
