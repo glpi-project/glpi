@@ -1334,13 +1334,14 @@ class Dropdown {
    **/
    static function showFromArray($name, array $elements, $options=array()) {
 
-      $param['value']     = '';
-      $param['values']    = array();
-      $param['used']      = array();
-      $param['readonly']  = false;
-      $param['on_change'] = '';
-      $param['multiple']  = false;
-      $param['size']      = 1;
+      $param['value']           = '';
+      $param['values']          = array();
+      $param['used']            = array();
+      $param['readonly']        = false;
+      $param['on_change']       = '';
+      $param['multiple']        = false;
+      $param['size']            = 1;
+      $param['mark_unmark_all'] = false;
 
       if (is_array($options) && count($options)) {
          if (!empty($options['value'])) {
@@ -1371,7 +1372,8 @@ class Dropdown {
          $rand = mt_rand();
 //          Html::printCleanArray($elements);
 
-         echo "<select name='$field_name' id='dropdown_".$name.$rand."'";
+         $field_id = "dropdown_".$name.$rand;
+         echo "<select name='$field_name' id='$field_id'";
 
          if (!empty($param["on_change"])) {
             echo " onChange='".$param["on_change"]."'";
@@ -1413,6 +1415,11 @@ class Dropdown {
          }
 
          echo "</select>";
+         if ($param['mark_unmark_all']) {
+            echo "<br>\n";
+            echo "<input type='button' onclick=\"unMarkSelect('$field_id')\" value='unmark all'>";
+            echo "<input type='button' onclick=\"markSelect('$field_id')\" value='mark all'>";
+         }
          return $rand;
       }
    }

@@ -442,6 +442,35 @@ function toggleCheckboxes( container_id ) {
 
 
 /**
+ * marks all option inside the given select
+ *
+ * @param    select_id    DOM select id
+**/
+function markSelect(select_id) {
+
+   var options = document.getElementById(select_id).getElementsByTagName('option');
+   for (var j=0 ; j<options.length ; j++ ) {
+      options[j].selected = true;
+   }
+   return true;
+}
+
+
+/**
+ * marks all option inside the given select
+ *
+ * @param    select_id    DOM select id
+**/
+function unMarkSelect(select_id) {
+   var options = document.getElementById(select_id).getElementsByTagName('option');
+   for (var j=0 ; j<options.length ; j++ ) {
+      options[j].selected = false;
+   }
+   return true;
+}
+
+
+/**
  * Check all checkboxes inside the given element as the same state as a reference one (toggle this one before)
  * the given element is usaly a table or a div containing the table or tables
  *
