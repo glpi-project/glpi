@@ -437,10 +437,11 @@ class NetworkPortInstantiation extends CommonDBChild {
          break;
 
       case 'NetworkPortAggregate':
-         $field_name                 = 'networkports_id_list';
-         $selectOptions['multiple']  = true;
-         $selectOptions['size']      = 4;
-         $netport_types[]            = 'NetworkPortAlias';
+         $field_name                       = 'networkports_id_list';
+         $selectOptions['multiple']        = true;
+         $selectOptions['size']            = 4;
+         $selectOptions['mark_unmark_all'] = true;
+         $netport_types[]                  = 'NetworkPortAlias';
          break;
 
       }
