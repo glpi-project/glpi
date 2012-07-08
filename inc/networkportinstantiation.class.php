@@ -427,9 +427,11 @@ class NetworkPortInstantiation extends CommonDBChild {
       $netport_types = array('NetworkPortEthernet', 'NetworkPortWifi');
       $selectOptions = array();
 
+      $possible_ports = array();
       switch ($origin) {
 
       case 'NetworkPortAlias':
+         $possible_ports[-1]           = Dropdown::EMPTY_VALUE;
          $field_name                 = 'networkports_id_alias';
          $selectOptions['multiple']  = false;
          $selectOptions['on_change'] = 'updateForm(this.options[this.selectedIndex].value)';
@@ -454,7 +456,6 @@ class NetworkPortInstantiation extends CommonDBChild {
          }
       }
 
-      $possible_ports = array();
       $macAddresses = array();
       foreach ($netport_types as $netport_type) {
          $instantiationTable = getTableForItemType($netport_type);

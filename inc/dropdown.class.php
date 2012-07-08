@@ -1325,6 +1325,7 @@ class Dropdown {
     *    - on_change : string / value to transmit to "onChange"
     *    - multiple  : boolean / can select several values (default false)
     *    - size      : integer / number of rows for the select (default = 1)
+    *    - mark_unmark_all : add buttons to select or deselect all options (only for multiple)
     *
     * Permit to use optgroup defining items in arrays
     * array('optgroupname'  => array('key1' => 'val1',
@@ -1415,10 +1416,12 @@ class Dropdown {
          }
 
          echo "</select>";
-         if ($param['mark_unmark_all']) {
+         if ($param['mark_unmark_all'] && $param['multiple']) {
             echo "<br>\n";
-            echo "<input type='button' onclick=\"unMarkSelect('$field_id')\" value='unmark all'>";
-            echo "<input type='button' onclick=\"markSelect('$field_id')\" value='mark all'>";
+            echo "<input type='button' onclick=\"markSelect('$field_id')\" value='";
+            echo __('Select all options')."'>";
+            echo "<input type='button' onclick=\"unMarkSelect('$field_id')\" value='";
+            echo  __('Deselect all options')."'>";
          }
          return $rand;
       }
