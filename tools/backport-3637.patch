@@ -12,7 +12,7 @@ Index: inc/user.class.php
 ===================================================================
 --- inc/user.class.php	(révision 18707)
 +++ inc/user.class.php	(copie de travail)
-@@ -3105,5 +3105,37 @@
+@@ -3112,5 +3112,37 @@
        return $default_password_set;
     }
  
@@ -54,7 +54,7 @@ Index: inc/ticket.class.php
 ===================================================================
 --- inc/ticket.class.php	(révision 18712)
 +++ inc/ticket.class.php	(copie de travail)
-@@ -3022,6 +3022,10 @@
+@@ -3042,6 +3042,10 @@
                                         $CFG_GLPI["root_doc"]."/ajax/dropdownDelegationUsers.php",
                                         $params);
  
@@ -65,7 +65,7 @@ Index: inc/ticket.class.php
           echo "</th></tr>";
           echo "<tr class='tab_bg_1'><td colspan='2' class='center'>";
           echo "<div id='show_result$rand'>";
-@@ -3034,10 +3038,22 @@
+@@ -3054,10 +3058,22 @@
           }
           $self->showActorAddFormOnCreate(self::REQUESTER, $options);
           echo "</div>";
