@@ -1,0 +1,432 @@
+Backport for https://forge.indepnet.net/issues/2491
+
+To use this backported feature, after a full backup 
+
+You need to update the database schema
+
+   ALTER TABLE `glpi_tickets` 
+   ADD `locations_id` INT NOT NULL DEFAULT '0',
+   ADD INDEX ( `locations_id` );
+
+And to apply the changes to source code 
+
+   cd /path/to/glpi
+   patch -p0 < tools/backport-2491.patch
+
+Features:
+* add location in ticket form and search engine 
+* add location in ticket template management
+* add location to bussiness rules
+* add location to statictics
+
+You can add 2 rules, according to your need:
+
+   Name:       Ticket location from item
+   Criteria:   Ticket location "doesn't exists"
+               Item location "exists"
+   Action      Location "Copy from item"
+
+   Name:       Ticket location from user
+   Criteria:   Ticket location "doesn't exists"
+               User location "exists"
+   Action:     Location "Copy from user"
+
+Index: front/stat.graph.php
+===================================================================
+--- front/stat.graph.php	(révision 18855)
++++ front/stat.graph.php	(copie de travail)
+@@ -117,6 +117,19 @@
+                                                                         $_GET["id"]);
+       break;
+ 
++   case 'locations_tree' :
++      $parent = (isset($_REQUEST['champ']) ? $_REQUEST['champ'] : 0);
++      $cond   = "(`id` = '$parent' OR `locations_id` = '$parent')";
++      // nobreak;
++
++   case 'locations_id' :
++      $val1    = $_GET['id'];
++      $val2    = '';
++      $values  = Stat::getItems($_REQUEST['itemtype'], $_REQUEST['date1'], $_REQUEST['date2'],
++                                $_REQUEST['type'], $parent );
++      $title   = $LANG['common'][15]."&nbsp;: ".Dropdown::getDropdownName('glpi_locations', $_GET['id']);
++      break;
++
+    case "type" :
+       $val1 = $_GET["id"];
+       $val2 = "";
+Index: front/stat.tracking.php
+===================================================================
+--- front/stat.tracking.php	(révision 18855)
++++ front/stat.tracking.php	(copie de travail)
+@@ -91,6 +91,8 @@
+ if ($_REQUEST['itemtype'] == 'Ticket') {
+    $caract['type']            = array('title' => $LANG['common'][17]);
+    $caract['requesttypes_id'] = array('title' => $LANG['job'][44]);
++   $caract['locations_id']    = array('title' => $LANG['common'][15]);
++   $caract['locations_tree']  = array('title' => $LANG['common'][15]." (".$LANG['entity'][7].")");
+ }
+ 
+ 
+Index: inc/ruleticket.class.php
+===================================================================
+--- inc/ruleticket.class.php	(révision 18855)
++++ inc/ruleticket.class.php	(copie de travail)
+@@ -129,6 +129,18 @@
+                   $output[$action->fields["field"]] = $action->fields["value"];
+                   break;
+ 
++               case 'fromuser' :
++                  if ($action->fields['field']=='locations_id') {
++                     $output['locations_id'] = $output['users_locations'];
++                  }
++                  break;
++
++               case 'fromitem' :
++                  if ($action->fields['field']=='locations_id') {
++                     $output['locations_id'] = $output['items_locations'];
++                  }
++                  break;
++
+                case 'compute' :
+                   // Value could be not set (from test)
+                   $urgency = (isset($output['urgency'])?$output['urgency']:3);
+@@ -224,6 +236,18 @@
+       $criterias['users_locations']['linkfield'] = 'users_locations';
+       $criterias['users_locations']['type']      = 'dropdown';
+ 
++      $criterias['items_locations']['table']          = 'glpi_locations';
++      $criterias['items_locations']['field']          = 'completename';
++      $criterias['items_locations']['name']           = $LANG['document'][14]." - ".$LANG['common'][15];
++      $criterias['items_locations']['linkfield']      = 'items_locations';
++      $criterias['items_locations']['type']           = 'dropdown';
++
++      $criterias['locations_id']['table']             = 'glpi_locations';
++      $criterias['locations_id']['field']             = 'completename';
++      $criterias['locations_id']['name']              = $LANG['job'][38]." - ".$LANG['common'][15];
++      $criterias['locations_id']['linkfield']         = 'locations_id';
++      $criterias['locations_id']['type']              = 'dropdown';
++
+       $criterias['_groups_id_requester']['table']     = 'glpi_groups';
+       $criterias['_groups_id_requester']['field']     = 'completename';
+       $criterias['_groups_id_requester']['name']      = $LANG['job'][4]." - ".$LANG['common'][35];
+@@ -366,6 +390,11 @@
+       $actions['users_id_validate']['type']          = 'dropdown_users_validate';
+       $actions['users_id_validate']['force_actions'] = array('add_validation');
+ 
++      $actions['locations_id']['name']           = $LANG['job'][38]." - ".$LANG['common'][15];
++      $actions['locations_id']['type']           = 'dropdown';
++      $actions['locations_id']['table']          = 'glpi_locations';
++      $actions['locations_id']['force_actions']  = array('assign', 'fromuser', 'fromitem');
++
+       return $actions;
+    }
+ 
+Index: inc/stat.class.php
+===================================================================
+--- inc/stat.class.php	(révision 18855)
++++ inc/stat.class.php	(copie de travail)
+@@ -114,6 +114,31 @@
+             }
+             break;
+ 
++         case 'locations_tree' :
++            $cond = "AND (`id` = '$parent'
++                          OR `locations_id` = '$parent')";
++            // nobreak
++
++         case 'locations_id' :
++            // Get all locations for tree merge management
++            $query = "SELECT DISTINCT `glpi_locations`.`id`,
++                             `glpi_locations`.`".($cond?'name':'completename')."` AS location
++                      FROM `glpi_locations`".
++                      getEntitiesRestrictRequest(' WHERE', 'glpi_locations', '', '', true)."
++                            $cond
++                      ORDER BY `completename`";
++
++            $result = $DB->query($query);
++            $val    = array();
++            if ($DB->numrows($result) >= 1) {
++               while ($line = $DB->fetch_assoc($result)) {
++                  $tmp['id']   = $line['id'];
++                  $tmp['link'] = $line['location'];
++                  $val[]       = $tmp;
++               }
++            }
++            break;
++
+          case "type" :
+             $types = $item->getTypes();
+             $val   = array();
+@@ -308,6 +333,10 @@
+             case 'itilcategories_tree' :
+                $subname = Dropdown::getDropdownName('glpi_itilcategories', $value2);
+                break;
++
++            case 'locations_tree' :
++               $subname = Dropdown::getDropdownName('glpi_locations', $value2);
++               break;
+          }
+ 
+          if ($output_type==HTML_OUTPUT) { // HTML display
+@@ -693,6 +722,16 @@
+             $WHERE .= " AND `$table`.`itilcategories_id` = '$value' ";
+             break;
+ 
++         case 'locations_tree' :
++            if ($value == $value2) {
++               $categories = array($value);
++            } else {
++               $categories = getSonsOf('glpi_locations', $value);
++            }
++            $condition  = implode("','",$categories);
++            $WHERE     .= " AND `$table`.`locations_id` IN ('$condition')";
++            break;
++
+          case 'group_tree' :
+          case 'groups_tree_assign' :
+             $grptype    = ($param=='group_tree' ? CommonITILObject::REQUESTER : CommonITILObject::ASSIGN);
+@@ -725,6 +764,7 @@
+          case "urgency" :
+          case "impact" :
+          case "priority" :
++         case 'locations_id' :
+             $WHERE .= " AND `$table`.`$param` = '$value'";
+             break;
+ 
+Index: inc/rule.class.php
+===================================================================
+--- inc/rule.class.php	(révision 18855)
++++ inc/rule.class.php	(copie de travail)
+@@ -1215,7 +1215,7 @@
+          if (isset($actions[$criteria])) {
+             echo "<tr class='tab_bg_2'>";
+             echo "<td>".$actions[$criteria]["name"]."</td>";
+-            echo "<td>".$this->getActionValue($criteria,$value)."</td></tr>\n";
++            echo "<td>".$this->getActionValue($criteria, $actions[$criteria]['action_type'], $value)."</td></tr>\n";
+          }
+       }
+ 
+@@ -1294,6 +1294,7 @@
+       $text  = "<td>" . $this->getActionName($fields["field"]) . "</td>";
+       $text .= "<td>" . RuleAction::getActionByID($fields["action_type"]) . "</td>";
+       $text .= "<td>" . stripslashes($this->getActionValue($fields["field"],
++                                                           $fields['action_type'],
+                                                            $fields["value"])) . "</td>";
+       return $text;
+    }
+@@ -1489,9 +1490,10 @@
+     * Return a "display" value associated with a pattern associated to a criteria
+     *
+     * @param $ID the given action
++    * @param $type   the type of action
+     * @param $value the value
+    **/
+-   function getActionValue($ID, $value) {
++   function getActionValue($ID, $type, $value) {
+       global $LANG;
+ 
+       $action = $this->getAction($ID);
+@@ -1499,6 +1501,10 @@
+ 
+          switch ($action['type']) {
+             case "dropdown" :
++               if ($type=='fromuser' || $type=='fromitem') {
++                  return Dropdown::getYesNo($value);
++               }
++               // $type == assign
+                $tmp = Dropdown::getDropdownName($action["table"], $value);
+                return ($tmp=='&nbsp;' ? NOT_AVAILABLE : $tmp);
+ 
+@@ -1551,7 +1557,9 @@
+    function getCriteriaValue($ID, $condition, $value) {
+       global $LANG;
+ 
+-      if (!in_array($condition, array(self::PATTERN_IS,
++      if (!in_array($condition, array(self::PATTERN_DOES_NOT_EXISTS,
++                                      self::PATTERN_EXISTS,
++                                      self::PATTERN_IS,
+                                       self::PATTERN_IS_NOT,
+                                       self::PATTERN_UNDER,
+                                       self::PATTERN_NOT_UNDER))) {
+Index: inc/tickettemplate.class.php
+===================================================================
+--- inc/tickettemplate.class.php	(révision 18855)
++++ inc/tickettemplate.class.php	(copie de travail)
+@@ -165,6 +165,8 @@
+                                                        'glpi_tickets')        => 'priority',
+                      $ticket->getSearchOptionIDByField('field', 'name',
+                                                        'glpi_requesttypes')   => 'requesttypes_id',
++                     $ticket->getSearchOptionIDByField('field', 'completename',
++                                                       'glpi_locations')      => 'locations_id',
+                      $ticket->getSearchOptionIDByField('field', 'name',
+                                                        'glpi_slas')           => 'slas_id',
+                      $ticket->getSearchOptionIDByField('field', 'due_date',
+Index: inc/ticket.class.php
+===================================================================
+--- inc/ticket.class.php	(révision 18855)
++++ inc/ticket.class.php	(copie de travail)
+@@ -1100,7 +1100,7 @@
+       }
+ 
+       // Set additional default dropdown
+-      $dropdown_fields = array('items_id');
++      $dropdown_fields = array('items_id', 'items_locations', 'users_locations');
+       foreach ($dropdown_fields as $field ) {
+          if (!isset($input[$field])) {
+             $input[$field] = 0;
+@@ -1113,7 +1113,11 @@
+       $item = NULL;
+       if ($input["items_id"]>0 && !empty($input["itemtype"])) {
+          if ($item = getItemForItemtype($input["itemtype"])) {
+-            if (!$item->getFromDB($input["items_id"])) {
++            if ($item->getFromDB($input["items_id"])) {
++               if ($item->isField('locations_id')) {
++                  $input['items_locations'] = $item->fields['locations_id'];
++               }
++            } else {
+                $item = NULL;
+             }
+          }
+@@ -1830,6 +1834,12 @@
+       $tab[9]['name']     = $LANG['job'][44];
+       $tab[9]['datatype'] = 'dropdown';
+ 
++      // Can't use Location::getSearchOptionsToAdd because id conflicts
++      $tab[83]['table']          = 'glpi_locations';
++      $tab[83]['field']          = 'completename';
++      $tab[83]['name']           = $LANG['common'][15];
++      $tab[83]['datatype']       = 'dropdown';
++
+       $tab[80]['table']         = 'glpi_entities';
+       $tab[80]['field']         = 'completename';
+       $tab[80]['name']          = $LANG['entity'][0];
+@@ -2980,6 +2990,7 @@
+                       'name'                      => '',
+                       'content'                   => '',
+                       'itilcategories_id'         => 0,
++                      'locations_id'              => 0,
+                       'urgency'                   => 3,
+                       'itemtype'                  => '',
+                       'entities_id'               => $_SESSION['glpiactive_entity'],
+@@ -3150,6 +3161,9 @@
+          echo "<input type='hidden' name='itemtype' value='".$options['itemtype']."'>";
+          echo "<input type='hidden' name='items_id' value='".$options['items_id']."'>";
+       }
++      if ($tt->isHiddenField('locations_id')) {
++         echo "<input type='hidden' name='locations_id' value='".$options['locations_id']."'>";
++      }
+ 
+       echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
+       echo "<div class='center'><table class='tab_cadre_fixe'>";
+@@ -3234,6 +3248,13 @@
+          }
+       }
+ 
++      if (!$tt->isHiddenField('locations_id')) {
++         echo "<tr class='tab_bg_1'><td>" . $LANG['common'][15] . "&nbsp;:";
++         echo $tt->getMandatoryMark('locations_id') . "</td><td>";
++         Dropdown::show('Location', array('value'  => $options["locations_id"]));
++         echo "</td></tr>";
++      }
++
+       if (!$tt->isHiddenField('name')
+           || $tt->isPredefinedField('name')) {
+          echo "<tr class='tab_bg_1'>";
+@@ -3343,6 +3364,7 @@
+                     'followup'                  => array(),
+                     'itemtype'                  => '',
+                     'items_id'                  => 0,
++                    'locations_id'              => 0,
+                     'plan'                      => array(),
+                     'global_validation'         => 'none',
+                     'due_date'                  => 'NULL',
+@@ -3971,20 +3993,31 @@
+       echo "</tr>";
+ 
+ 
++      echo "<tr class='tab_bg_1'>";
+       // Need comment right to add a followup with the actiontime
+       if (!$ID && Session::haveRight("global_add_followups","1")) {
+-         echo "<tr class='tab_bg_1'>";
+          echo "<th>".$tt->getBeginHiddenFieldText('actiontime').$LANG['job'][20]."&nbsp;:".
+                      $tt->getMandatoryMark('actiontime').$tt->getEndHiddenFieldText('actiontime').
+               "</th>";
+-         echo "<td colspan='3'>";
++         echo "<td>";
+          echo $tt->getBeginHiddenFieldValue('actiontime');
+          Dropdown::showTimeStamp('actiontime', array('value' => $values['actiontime'],
+                                                      'addfirstminutes' => true));
+          echo $tt->getEndHiddenFieldValue('actiontime',$this);
+          echo "</td>";
+-         echo "</tr>";
++      } else {
++         echo "<th></th><td></td>";
+       }
++      echo "<th>".$tt->getBeginHiddenFieldText('locations_id');
++      echo $LANG['common'][15] . $tt->getMandatoryMark('locations_id');
++      echo $tt->getEndHiddenFieldText('locations_id')."</th>";
++      echo "<td>";
++      echo $tt->getBeginHiddenFieldValue('locations_id');
++      Dropdown::show('Location', array('value'  => $this->fields['locations_id'],
++                                       'entity' => $this->fields['entities_id']));
++      echo $tt->getEndHiddenFieldValue('locations_id', $this);
++      echo "</td></tr>";
++
+       echo "</table>";
+       if ($ID) {
+          $this->showActorsPartForm($ID,$values);
+Index: inc/ruleaction.class.php
+===================================================================
+--- inc/ruleaction.class.php	(révision 18855)
++++ inc/ruleaction.class.php	(copie de travail)
+@@ -172,7 +172,9 @@
+                    'affectbymac'         => $LANG['rulesengine'][49],
+                    'compute'             => $LANG['rulesengine'][38],
+                    'send'                => $LANG['buttons'][26],
+-                   'add_validation'      => $LANG['buttons'][26]);
++                   'add_validation'      => $LANG['buttons'][26],
++                   'fromuser'            => 'Copy from user',
++                   'fromitem'            => 'Copy from item');
+    }
+ 
+ 
+@@ -235,6 +237,12 @@
+             Html::autocompletionTextField($this, "value");
+             break;
+ 
++         case 'fromuser' :
++         case 'fromitem' :
++            Dropdown::showYesNo("value", 0, 0);
++            $display = true;
++            break;
++
+          default :
+             $actions = Rule::getActionsByType($options["sub_type"]);
+             if (isset($actions[$options["field"]]['type'])) {
+Index: inc/rulecollection.class.php
+===================================================================
+--- inc/rulecollection.class.php	(révision 18855)
++++ inc/rulecollection.class.php	(copie de travail)
+@@ -930,7 +930,7 @@
+          if (isset($actions[$criteria])) {
+             echo "<tr class='tab_bg_2'>";
+             echo "<td>".$actions[$criteria]["name"]."</td>";
+-            echo "<td>".$rule->getActionValue($criteria, $value)."</td>";
++            echo "<td>".$rule->getActionValue($criteria, $actions[$criteria]['action_type'], $value)."</td>";
+             echo "</tr>\n";
+          }
+       }
+Index: inc/rulerightcollection.class.php
+===================================================================
+--- inc/rulerightcollection.class.php	(révision 18855)
++++ inc/rulerightcollection.class.php	(copie de travail)
+@@ -127,7 +127,7 @@
+          if (isset($actions[$criteria])) { // ignore _* fields
+             echo "<tr class='tab_bg_2'>";
+             echo "<td class='center'>".$actions[$criteria]["name"]."</td>";
+-            echo "<td class='center'>".$rule->getActionValue($criteria,$value)."</td></tr>\n";
++            echo "<td class='center'>".$rule->getActionValue($criteria,$actions[$criteria]['action_type'],$value)."</td></tr>\n";
+          }
+       }
+       echo "</tr>";
