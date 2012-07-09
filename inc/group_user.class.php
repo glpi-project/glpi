@@ -439,6 +439,7 @@ class Group_User extends CommonDBRelation{
             Dropdown::showFromArray('action', $actions);
             echo "&nbsp;";
             Html::closeArrowMassives(array('do' => $LANG['buttons'][2]));
+            Html::closeForm();
          }
          echo "</div>";
       } else {
