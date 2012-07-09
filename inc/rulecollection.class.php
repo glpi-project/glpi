@@ -399,7 +399,7 @@ class RuleCollection extends CommonDBTM {
 
          Html::showMassiveActions($this->getRuleClassName(), $massiveactionparams);
       }
-      
+
       echo "<table class='tab_cadre_fixehov'>";
       $colspan = 6;
 
@@ -467,7 +467,7 @@ class RuleCollection extends CommonDBTM {
                __s('Replay the dictionary rules')."</a>";
          echo "</div>";
       }
-   
+
       echo "<div class='spaced'>";
       $this->showAdditionalInformationsInForm($target);
       echo "</div>";
@@ -935,8 +935,8 @@ class RuleCollection extends CommonDBTM {
          if (isset($actions[$criteria])) {
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$actions[$criteria]["name"]."</td>";
-            echo "<td>".$rule->getActionValue($criteria, $value)."</td>";
-            echo "</tr>\n";
+            echo "<td>".$rule->getActionValue($criteria, $actions[$criteria]['action_type'], $value);
+            echo "</td></tr>\n";
          }
       }
       echo "</tr></table>\n";
