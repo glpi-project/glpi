@@ -45,6 +45,7 @@ if (isset($_GET['multiple_actions'])) {
       $_POST = $_SESSION['glpi_massiveaction']['POST'];
    }
 }
+
 if (!isset($_POST["itemtype"]) || !($item = getItemForItemtype($_POST["itemtype"]))
    || !isset($_POST['is_deleted'])) {
    exit();
@@ -111,107 +112,6 @@ if (isset($_POST["action"])
    $res = $item->doMassiveActions($_POST);
 //    switch($_POST["action"]) {
 
-// 
-//       case "assign_vlan" :
-//          if (!empty($_POST["vlans_id"])) {
-//             $networkportvlan = new NetworkPort_Vlan();
-//             $networkport = new NetworkPort();
-//             foreach ($_POST["item"] as $key => $val) {
-//                if ($val == 1) {
-//                   if ($networkport->can($key,'w')) {
-//                      if ($networkportvlan->assignVlan($key, $_POST["vlans_id"], (isset($_POST['tagged']) ? '1' : '0'))) {
-//                         $nbok++;
-//                      } else {
-//                         $nbko++;
-//                      }
-//                   } else {
-//                      $nbnoright++;
-//                   }
-//                }
-//             }
-//          } else {
-//              $nbko++;
-//          }
-//          break;
-//       case "unassign_vlan" :
-//          if (!empty($_POST["vlans_id"])) {
-//             $networkportvlan = new NetworkPort_Vlan();
-//             $networkport = new NetworkPort();
-//             foreach ($_POST["item"] as $key => $val) {
-//                if ($val == 1) {
-//                   if ($networkport->can($key,'w')) {
-//                      if ($networkportvlan->unassignVlan($key, $_POST["vlans_id"])) {
-//                         $nbok++;
-//                      } else {
-//                         $nbko++;
-//                      }
-//                   } else {
-//                      $nbnoright++;
-//                   }
-//                }
-//             }
-//          } else {
-//              $nbko++;
-//          }
-//          break;
-// 
-//       // Interest of this massive action ? Replace switch by another : don't re-create manually all ports
-//       case "move_port" :
-//          if (!empty($_POST["items_id"])) {
-//             $networkport = new NetworkPort();
-//             foreach ($_POST["item"] as $key => $val) {
-//                if ($val == 1) {
-//                   if ($networkport->getFromDB($key)) {
-//                      $input = array();
-//                      $input['id'] = $key;
-//                      $input['items_id'] = $_POST["items_id"];
-//                      $input['itemtype'] = 'NetworkEquipment';
-//                      if ($networkport->can($input['id'],'w')) {
-//                         if ($networkport->update($input)) {
-//                            $nbok++;
-//                         } else {
-//                            $nbko++;
-//                         }
-//                      } else {
-//                         $nbnoright++;
-//                      }
-//                   } else {
-//                      $nbko++;
-//                   }
-//                }
-//             }
-//          } else {
-//              $nbko++;
-//          }      
-//          break;
-//       case "transform_to" :
-//          if (!empty($_POST["transform_to"])) {
-//             $networkport = new NetworkPort();
-//             foreach ($_POST["item"] as $key => $val) {
-//                if ($val == 1) {
-//                   if ($networkport->can($key,'w') && $item->can($key,'d')) {
-//                      if ($networkport->switchInstantiationType($_POST['transform_to']) !== false) {
-//                         $instantiation             = $networkport->getInstantiation();
-//                         $input                     = $item->fields;
-//                         $input['networkports_id']  = $input['id'];
-//                         unset($input['id']);
-//                         if ($instantiation->add($input)) {
-//                            $item->delete(array('id' => $key));
-//                         } else {
-//                            $nbko++;
-//                         }
-//                      } else {
-//                         $nbko++;
-//                      }
-//                   } else {
-//                      $nbnoright++;
-//                   }
-//                }
-//             }
-//          } else {
-//              $nbko++;
-//          }
-//          break;
 // 
 //       case "connect_to_computer" :
 //          if (isset($_POST["connect_item"]) && $_POST["connect_item"]) {

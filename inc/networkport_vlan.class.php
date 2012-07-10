@@ -95,11 +95,14 @@ class NetworkPort_Vlan extends CommonDBRelation {
    function unassignVlan($portID, $vlanID) {
       global $DB;
 
+      $ok = true;
       $query = "DELETE
                 FROM `glpi_networkports_vlans`
                 WHERE `networkports_id` = '$portID'
                       AND `vlans_id` = '$vlanID'";
-      $DB->query($query);
+      if (!$DB->query($query)) {
+         $ok = false;
+      }
 
       // Delete Contact VLAN if set
       $np = new NetworkPort();
@@ -108,8 +111,11 @@ class NetworkPort_Vlan extends CommonDBRelation {
                    FROM `glpi_networkports_vlans`
                    WHERE `networkports_id` = '$contact_id'
                          AND `vlans_id` = '$vlanID'";
-         $DB->query($query);
+         if (!$DB->query($query)) {
+            $ok = false;
+         }
       }
+      return $ok;
    }
 
 
@@ -121,10 +127,13 @@ class NetworkPort_Vlan extends CommonDBRelation {
    function assignVlan($port, $vlan, $tagged) {
       global $DB;
 
+      $ok = true;
       $query = "INSERT INTO `glpi_networkports_vlans`
                        (`networkports_id`,`vlans_id`,`tagged`)
                 VALUES ('$port','$vlan','$tagged')";
-      $DB->query($query);
+      if (!$DB->query($query)) {
+         $ok = false;
+      }
 
       $np = new NetworkPort();
       if ($contact_id=$np->getContact($port)) {
@@ -134,10 +143,13 @@ class NetworkPort_Vlan extends CommonDBRelation {
                $query = "INSERT INTO `glpi_networkports_vlans`
                                 (`networkports_id`,`vlans_id`,`tagged`)
                          VALUES ('$contact_id','$vlan','$tagged')";
-               $DB->query($query);
+               if (!$DB->query($query)) {
+                  $ok = false;
+               }
             }
          }
       }
+      return $ok;
    }
 
 
