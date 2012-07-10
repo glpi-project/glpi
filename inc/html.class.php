@@ -2314,14 +2314,14 @@ class Html {
     * @param $keepDB booleen, closeDBConnections if false
    **/
    static function footer($keepDB=false) {
-      global $LANG, $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG;
+      global $LANG, $CFG_GLPI, $FOOTER_LOADED, $TIMER_DEBUG, $SIMPLE_FORMS;
 
       // Print foot for every page
       if ($FOOTER_LOADED) {
          return;
       }
       $FOOTER_LOADED = true;
-
+      echo $SIMPLE_FORMS;
       echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
 
       echo "<div id='footer' >";
@@ -2370,7 +2370,10 @@ class Html {
     * Display Ajax Footer for debug
    **/
    static function ajaxFooter() {
+      global $SIMPLE_FORMS;
 
+      echo $SIMPLE_FORMS;
+      
       if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) { // mode debug
          $rand = mt_rand();
          echo "<div class='center' id='debugajax'>";
@@ -2668,14 +2671,15 @@ class Html {
     * Print footer for help page
    **/
    static function helpFooter() {
-      global $LANG, $CFG_GLPI, $FOOTER_LOADED;
+      global $LANG, $CFG_GLPI, $FOOTER_LOADED, $SIMPLE_FORMS;
 
       // Print foot for help page
       if ($FOOTER_LOADED) {
          return;
       }
       $FOOTER_LOADED = true;
-
+      echo $SIMPLE_FORMS;
+      
       echo "</div>"; // fin de la div id ='page' initiée dans la fonction header
 
       echo "<div id='footer'>";
@@ -2744,14 +2748,14 @@ class Html {
     * Print footer for null page
    **/
    static function nullFooter() {
-      global $CFG_GLPI, $FOOTER_LOADED;
+      global $CFG_GLPI, $FOOTER_LOADED, $SIMPLE_FORMS;
 
       // Print foot for null page
       if ($FOOTER_LOADED) {
          return;
       }
       $FOOTER_LOADED = true;
-
+      echo $SIMPLE_FORMS;
       if (!isCommandLine()) {
          echo "<div class='bas'></div></div></div>";
 
@@ -2792,13 +2796,14 @@ class Html {
     * Print footer for a popup window
    **/
    static function popFooter() {
-      global $FOOTER_LOADED;
+      global $FOOTER_LOADED, $SIMPLE_FORMS;
 
       if ($FOOTER_LOADED) {
          return;
       }
       $FOOTER_LOADED = true;
-
+      
+      echo $SIMPLE_FORMS;
       // Print foot
       echo "</body></html>";
    }
@@ -3962,27 +3967,40 @@ class Html {
    /**
     * create a minimal form for simple action
     *
-    * @param $action  String   URL to call on submit
-    * @param $btname  String   button name or image full uri
-    * @param $btlabel String   button label
-    * @param $fields  Array    field name => field  value
-    * @param $btop    String   optionnal button option
+    * @param $action   String   URL to call on submit
+    * @param $btname   String   button name
+    * @param $btlabel  String   button label
+    * @param $fields   Array    field name => field  value
+    * @param $btimage  String   button image uri (optional)
+    * @param $btoption String   optionnal button option
     *
     * @since version 0.83.3
    **/
-   static function showMinimalForm($action, $btname, $btlabel, Array $fields=array(), $btoption='') {
+   static function showSimpleForm($action, $btname, $btlabel, Array $fields=array(), $btimage='', $btoption='') {
+      global $SIMPLE_FORMS;
 
-      echo "<form method='post' action='$action'>";
+      $id = 'minimal_form'.mt_rand();
+      
+      $SIMPLE_FORMS .= "<form method='post' id='$id' name='$id' action='$action'>";
       foreach ($fields as $name => $value) {
-         echo "<input type='hidden' name='$name' value='$value'>";
+         $SIMPLE_FORMS .= "<input type='hidden' name='$name' value='$value'>";
       }
-      if (strpos($btname, '/') === false) {
-         echo "<input type='submit' name='$btname' value='$btlabel' class='submit' $btoption >";
+      $SIMPLE_FORMS .= "<input type='hidden' name='$btname' value='$btlabel'>";
+      $src='';
+      if (strpos($btname, '/') !== false) {
+         $src=$btname;
+      }
+      echo "<a href='#' class='vsubmit' class='submit' $btoption
+            onClick=\"document.$id.submit()\">";
+      $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
+      if (empty($btimage)) {
+         echo $btlabel;
       } else {
-         $btlabel = htmlentities($btlabel, ENT_QUOTES, 'UTF-8');
-         echo "<input type='image' title='$btlabel' alt='$btlabel' src='$btname' onClick='submit()'>";
+         echo "<img src='$btimage' title='$btlabel' alt='$btlabel'>";
       }
-      Html::closeForm();
+      echo "</a>";
+      
+      $SIMPLE_FORMS .= Html::closeForm(false);
    }
 
 
