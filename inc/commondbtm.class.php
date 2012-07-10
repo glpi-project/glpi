@@ -2599,6 +2599,385 @@ class CommonDBTM extends CommonGLPI {
 
       return $tab;
    }
+   /**
+    * Do the standard massive actions
+    *
+    * This must not be overloaded in Class
+    * @param $input array of input datas
+    * @since version 0.84
+    * @return an array of results (ok, ko, noright counts)
+   **/   
+   function doMassiveActions($input = array()) {
+      if (!isset($input["item"]) || count($input["item"]) == 0) {
+         return false;
+      }
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "delete" :
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  if ($this->can($key,'d')){
+                     if ($this->delete(array("id" => $key))) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+            break;
+
+         case "purge" :
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  if ($this->can($key,'d')){
+                     if ($this->delete(array("id" => $key), 1)) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+            break;
+
+         case "restore" :
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  if ($this->can($key,'d')){
+                     if ($this->restore(array("id" => $key))) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+            break;
+            
+         case "update" :
+            $searchopt = Search::getCleanedOptions($input["itemtype"],'w');
+            if (isset($searchopt[$input["id_field"]])) {
+               /// Infocoms case
+               if (!isPluginItemType($input["itemtype"])
+                  && Search::isInfocomOption($input["itemtype"],$input["id_field"])) {
+
+                  $ic = new Infocom();
+                  $link_entity_type = -1;
+                  /// Specific entity item
+                  if ($searchopt[$input["id_field"]]["table"] == "glpi_suppliers") {
+                     $ent = new Supplier();
+                     if ($ent->getFromDB($input[$input["field"]])) {
+                        $link_entity_type = $ent->fields["entities_id"];
+                     }
+                  }
+                  foreach ($input["item"] as $key => $val) {
+                     if ($val == 1) {
+                        if ($this->getFromDB($key)) {
+                           if ($link_entity_type < 0
+                              || ($link_entity_type == $this->getEntityID())
+                              || ($ent->fields["is_recursive"]
+                                 && in_array($link_entity_type, getAncestorsOf("glpi_entities",
+                                             $this->getEntityID())))) {
+                              $input2["items_id"] = $key;
+                              $input2["itemtype"] = $input["itemtype"];
+
+                              if ($ic->can(-1,'w',$input2)) {
+                                 // Add infocom if not exists
+                                 if (!$ic->getFromDBforDevice($input["itemtype"],$key)) {
+                                    $input2["items_id"] = $key;
+                                    $input2["itemtype"] = $input["itemtype"];
+                                    unset($ic->fields);
+                                    $ic->add($input2);
+                                    $ic->getFromDBforDevice($input["itemtype"], $key);
+                                 }
+                                 $id = $ic->fields["id"];
+                                 unset($ic->fields);
+
+                                 if ($ic->update(array('id'            => $id,
+                                                      $input["field"] => $input[$input["field"]]))) {
+                                    $res['ok']++;
+                                 } else {
+                                    $res['ko']++;
+                                 }
+                              } else {
+                                 $res['noright']++;
+                              }
+                           } else {
+                              $res['ko']++;
+                           }
+                        } else {
+                           $res['ko']++;
+                        }
+                     }
+                  }
+
+               } else { /// Not infocoms
+                  $link_entity_type = array();
+                  /// Specific entity item
+                  $itemtable = getTableForItemType($input["itemtype"]);
+
+                  $itemtype2 = getItemTypeForTable($searchopt[$input["id_field"]]["table"]);
+                  if ($item2 = getItemForItemtype($itemtype2)) {
+
+                     if (($searchopt[$input["id_field"]]["table"] != $itemtable)
+                        && $item2->isEntityAssign()
+                        && $this->isEntityAssign()) {
+                        if ($item2->getFromDB($input[$input["field"]])) {
+                           if (isset($item2->fields["entities_id"])
+                              && ($item2->fields["entities_id"] >= 0)) {
+
+                              if (isset($item2->fields["is_recursive"])
+                                 && $item2->fields["is_recursive"]) {
+
+                                 $link_entity_type = getSonsOf("glpi_entities",
+                                                               $item2->fields["entities_id"]);
+                              } else {
+                                 $link_entity_type[] = $item2->fields["entities_id"];
+                              }
+                           }
+                        }
+                     }
+                  }
+                  foreach ($input["item"] as $key => $val) {
+                     if ($val == 1) {
+                        if ($this->can($key,'w')
+                           && $this->canMassiveAction($input['action'], $input['field'],
+                                                      $input[$input["field"]])) {
+                           if ((count($link_entity_type) == 0)
+                              || in_array($this->fields["entities_id"],$link_entity_type)) {
+                              if ($this->update(array('id'            => $key,
+                                                      $input["field"] => $input[$input["field"]]))) {
+                                 $res['ok']++;
+                              } else {
+                                 $res['ko']++;
+                              }
+                           } else {
+                              $res['ko']++;
+                           }
+                        } else {
+                           $res['noright']++;
+                        }
+                     }
+                  }
+               }
+            }
+            break;
+            
+         case "activate_infocoms" :
+               $ic = new Infocom();
+               if ($ic->canCreate()) {
+                  foreach ($input["item"] as $key => $val) {
+                     $input = array('itemtype' => $input['itemtype'],
+                                    'items_id' => $key);
+                     if (!$ic->getFromDBforDevice($input['itemtype'], $key)) {
+                           if ($ic->can(-1,'w',$input)) {
+                           if ($ic->add($input)) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                           }
+                           } else {
+                           $res['noright']++;
+                           }
+                     } else {
+                        $res['ko']++;
+                     }
+                  }
+               }
+            break;
+            
+         case "add_document" :
+         /// TODO : try to have add_document_item in add_document case
+         case "add_document_item" :
+            $documentitem = new Document_Item();
+            foreach ($input["item"] as $key => $val) {
+               if (isset($input['items_id'])) {
+                  // Add items to documents
+                  $input = array('itemtype'     => $input["itemtype"],
+                                 'items_id'     => $input["items_id"],
+                                 'documents_id' => $key);
+               } else { // Add document to item
+                  $input = array('itemtype'     => $input["itemtype"],
+                                 'items_id'     => $key,
+                                 'documents_id' => $input['documents_id']);
+               }
+               if ($documentitem->can(-1, 'w', $input)) {
+                  if ($documentitem->add($input)) {
+                     $res['ok']++;
+                  } else {
+                     $res['ko']++;
+                  }
+               } else {
+                  $res['noright']++;
+               }
+            }
+            break;
+
+         case "remove_document" :
+         /// TODO : try to have remove_document_item in remove_document case
+         case "remove_document_item" :
+            foreach ($input["item"] as $key => $val) {
+               if (isset($input['items_id'])) {
+                  // Remove item to documents
+                  $input = array('itemtype'     => $input["itemtype"],
+                                 'items_id'     => $input["items_id"],
+                                 'documents_id' => $key);
+               } else {
+                  // Remove contract to items
+                  $input = array('itemtype'     => $input["itemtype"],
+                                 'items_id'     => $key,
+                                 'documents_id' => $input['documents_id']);
+
+               }
+               $docitem = new Document_Item();
+               if ($docitem->can(-1, 'w', $input)) {
+                  if ($item = getItemForItemtype($input["itemtype"])) {
+                     if ($item->getFromDB($input['items_id'])) {
+                        $doc = new Document();
+                        if ($doc->getFromDB($input['documents_id'])) {
+                           if ($docitem->getFromDBForItems($doc, $item)) {
+                              if ($docitem->delete(array('id' => $docitem->getID()))) {
+                                 $res['ok']++;
+                              } else {
+                                 $res['ko']++;
+                              }
+                           } else {
+                              $res['ko']++;
+                           }
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['ko']++;
+                  }
+               } else {
+                  $res['noright']++;
+               }
+            }
+            break;
+
+
+
+         case "add_contract" :
+         /// TODO : try to have add_contract_item in add_contract case
+         case "add_contract_item" :
+
+            $contractitem = new Contract_Item();
+            foreach ($input["item"] as $key => $val) {
+               if (isset($input['items_id'])) {
+                  // Add items to contracts
+                  $input = array('itemtype'     => $input["itemtype"],
+                                 'items_id'     => $input["items_id"],
+                                 'contracts_id' => $key);
+               } else { // Add contract to item
+                  $input = array('itemtype'     => $input["itemtype"],
+                                 'items_id'     => $key,
+                                 'contracts_id' => $input['contracts_id']);
+               }
+               if ($contractitem->can(-1, 'w', $input)) {
+               if ($contractitem->add($input)) {
+                     $res['ok']++;
+                  } else {
+                     $res['ko']++;
+                  }
+               } else {
+                  $res['noright']++;
+               }
+            }
+            break;
+
+         case "remove_contract" :
+         /// TODO : try to have remove_contract_item in remove_contract case
+         case "remove_contract_item" :
+
+            foreach ($input["item"] as $key => $val) {
+               if (isset($input['items_id'])) {
+                  // Remove item to contracts
+                  $input = array('itemtype'     => $input["itemtype"],
+                                 'items_id'     => $input["items_id"],
+                                 'contracts_id' => $key);
+               } else {
+                  // Remove contract to items
+                  $input = array('itemtype'     => $input["itemtype"],
+                                 'items_id'     => $key,
+                                 'contracts_id' => $input['contracts_id']);
+
+               }
+               $contractitem = new Contract_Item();
+               if ($contractitem->can(-1, 'w', $input)) {
+                  if ($item = getItemForItemtype($input["itemtype"])) {
+                     if ($item->getFromDB($input['items_id'])) {
+                        $contract = new Contract();
+                        if ($contract->getFromDB($input['contracts_id'])) {
+                           if ($contractitem->getFromDBForItems($contract, $item)) {
+                              if ($contractitem->delete(array('id' => $contractitem->getID()))) {
+                                 $res['ok']++;
+                              } else {
+                                 $res['ko']++;
+                              }
+                           } else {
+                              $res['ko']++;
+                           }
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['ko']++;
+                  }
+               } else {
+                  $res['noright']++;
+               }
+            }
+            break;
+         default :
+            // Plugin specific actions
+            $split = explode('_',$input["action"]);
+            $res   = '';
+            if ($split[0] == 'plugin' && isset($split[1])) {
+               // Normalized name plugin_name_action
+               // Allow hook from any plugin on any (core or plugin) type
+               $res = Plugin::doOneHook($split[1], 'MassiveActionsProcess', $input);
+
+            } else if ($plug=isPluginItemType($input["itemtype"])) {
+               // non-normalized name
+               // hook from the plugin defining the type
+               $res = Plugin::doOneHook($plug['plugin'], 'MassiveActionsProcess', $input);
+            } else {
+               $res = $this->doSpecificMassiveActions($input);
+            }
+            break;
+      }
+      return $res;
+   }
+
+   /**
+    * Do the specific massive actions
+    *
+    * This may be overloaded in Class
+    * @param $input array of input datas
+    * @since version 0.84
+    * @return an array of results (nbok, nbko, nbnoright counts)
+   **/
+   function doSpecificMassiveActions($input = array()) {
+      return false;
+   }
+   
    
    /**
     * Get the standard massive actions
