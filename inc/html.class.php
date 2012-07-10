@@ -3024,6 +3024,7 @@ class Html {
     *    - check_itemtype : string alternate itemtype to check right if different from main itemtype (default empty)
     *    - check_items_id : integer ID of the alternate item used to check right / optional (default empty)
     *    - is_deleted : boolean is massive actions for deleted items ?
+    *    - extraparams : string extra URL parameters to pass to massive actions (default empty)
     *
     * @return nothing
    **/
@@ -3037,23 +3038,25 @@ class Html {
       $p['check_itemtype'] = '';
       $p['check_items_id'] = '';
       $p['is_deleted']     = false;
+      $p['extraparams']    = array();
 
       foreach ($options as $key => $val) {
          if (isset($p[$key])) {
             $p[$key] = $val;
          }
       }
-
-      $url = $CFG_GLPI['root_doc']."/ajax/massiveaction.php?itemtype=$itemtype";
+      $p['extraparams']['itemtype']=$itemtype;
+      $url = $CFG_GLPI['root_doc']."/ajax/massiveaction.php";
       if ($p['is_deleted']) {
-         $url .= '&is_deleted=1';
+         $p['extraparams']['is_deleted'] = 1;
       }
       if (!empty($p['check_itemtype'])) {
-         $url .= '&check_itemtype='.$p['check_itemtype'];
+         $p['extraparams']['check_itemtype'] = $p['check_itemtype'];
       }
       if (!empty($p['check_items_id'])) {
-         $url .= '&check_items_id='.$p['check_items_id'];
+         $p['extraparams']['check_items_id'] = $p['check_items_id'];
       }
+      
       if ($p['fixed']) {
          $width= '950px';
       } else {
@@ -3083,8 +3086,9 @@ class Html {
             echo "<div id='massiveactioncontent$identifier'></div>";
             Ajax::createModalWindow('massiveaction_window'.$identifier,
                                     $url,
-                                    array('title'    => _n('Action', 'Actions',2),
-                                          'container' => 'massiveactioncontent'.$identifier));
+                                    array('title'       => _n('Action', 'Actions',2),
+                                          'container'   => 'massiveactioncontent'.$identifier,
+                                          'extraparams' => $p['extraparams']));
          }
          echo "<table class='tab_glpi' width='$width'><tr>";
          echo "<td width='30px'><img src='".$CFG_GLPI["root_doc"]."/pics/arrow-left".

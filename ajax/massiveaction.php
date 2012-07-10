@@ -39,36 +39,32 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkLoginUser();
-// print_r($_GET);
-if (isset($_GET['itemtype'])) {
-   if (!($item = getItemForItemtype($_GET['itemtype']))) {
+
+
+if (isset($_POST['itemtype'])) {
+   if (!($item = getItemForItemtype($_POST['itemtype']))) {
       exit();
    }
-   if (!isset($_GET['is_deleted'])) {
-      $_GET['is_deleted'] = 0;
+   if (!isset($_POST['is_deleted'])) {
+      $_POST['is_deleted'] = 0;
    }
    $checkitem = NULL;
-   if (isset($_GET['check_itemtype'])) {
-      $checkitem = new $_GET['check_itemtype']();
-      if (isset($_GET['check_items_id'])) {
-         $checkitem->getFromDB($_GET['check_items_id']);
+   if (isset($_POST['check_itemtype'])) {
+      $checkitem = new $_POST['check_itemtype']();
+      if (isset($_POST['check_items_id'])) {
+         $checkitem->getFromDB($_POST['check_items_id']);
       }
    }
    echo "<div width='90%' class='center'><br>";
 
-   $params = array('action'     => '__VALUE__',
-                   'is_deleted' => $_GET['is_deleted'],
-                   'itemtype'   => $_GET['itemtype']);
-
-   if (isset($_GET['check_itemtype'])) {
-      $params['check_itemtype'] = $_GET['check_itemtype'];
-      if (isset($_GET['check_items_id'])) {
-         $params['check_items_id'] = $_GET['check_items_id'];
-      }
+   $params = array('action'     => '__VALUE__');
+   foreach ($_POST as $key => $val) {
+      $params[$key] = $val;
    }
+
    $rand    = mt_rand();
-   $actions = $item->getAllMassiveActions($_GET['is_deleted'], $checkitem);
-//    print_r($actions);
+   $actions = $item->getAllMassiveActions($_POST['is_deleted'], $checkitem);
+
    if (count($actions)) {
       _e('Action');
       echo "&nbsp;";
