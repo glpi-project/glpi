@@ -476,6 +476,45 @@ abstract class CommonTreeDropdown extends CommonDropdown {
 
       return $actions;
    }
+
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case 'move_under' :
+            if (isset($input['parent'])) {
+               $fk = $this->getForeignKeyField();
+               $parent = new $input["itemtype"]();
+               if ($parent->getFromDB($input['parent'])) {
+                  foreach ($input["item"] as $key => $val) {
+                     if (($val == 1)
+                        && $this->can($key,'w')) {
+                        // Check if parent is not a child of the original one
+                        if (!in_array($parent->getID(), getSonsOf($this->getTable(),
+                                    $this->getID()))) {
+                           if ($this->update(array('id' => $key,
+                                                   $fk  => $input['parent']))) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                           }
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+            }
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
    
    /**
     * Get search function for the class

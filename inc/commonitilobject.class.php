@@ -1932,6 +1932,67 @@ abstract class CommonITILObject extends CommonDBTM {
       return '';
    }
 
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "add_actor" :
+            $item = new $input['itemtype']();
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  $input2 = array('id' => $key);
+                  if (isset($input['_itil_requester'])) {
+                     $input2['_itil_requester'] = $input['_itil_requester'];
+                  }
+                  if (isset($input['_itil_observer'])) {
+                     $input2['_itil_observer'] = $input['_itil_observer'];
+                  }
+                  if (isset($input['_itil_assign'])) {
+                     $input2['_itil_assign'] = $input['_itil_assign'];
+                  }
+                  if ($item->can($key,'w')) {
+                     if ($item->update($input2)) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+            break;
+         case "add_task" :
+            $taskitemtype = $_POST['itemtype'].'Task';
+            if (!($task = getItemForItemtype($taskitemtype))) {
+               return false;
+            }
+            $field = $this->getForeignKeyField();
+
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  $input2 = array($field              => $key,
+                                 'taskcategories_id' => $input['taskcategories_id'],
+                                 'content'           => $input['content']);
+                  if ($task->can(-1,'w',$input2)) {
+                     if ($task->add($input2)) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+            break;
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+   
 
    function getSearchOptionsStats() {
 

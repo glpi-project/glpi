@@ -75,7 +75,40 @@ class NotImportedEmail extends CommonDBTM {
       }
       return $actions;
    }
-   
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case 'delete_email' :
+         case 'import_email' :
+            if (!$this->canCreate()) {
+               $res['noright']++;
+            } else {
+               $emails_ids = array();
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     $emails_ids[$key] = $key;
+                  }
+               }
+               if (count($emails_ids)) {
+                  $mailcollector = new MailCollector();
+                  if ($input["action"] == 'delete_email') {
+                     $mailcollector->deleteOrImportSeveralEmails($emails_ids, 0);
+                  }
+                  else {
+                     $mailcollector->deleteOrImportSeveralEmails($emails_ids, 1, $input['entities_id']);
+                  }
+               }
+               $res['ok']++;
+            }
+            break;
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+
    function getSearchOptions() {
 
       $tab                       = array();
