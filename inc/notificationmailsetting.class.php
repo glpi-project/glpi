@@ -214,13 +214,6 @@ class NotificationMailSetting extends CommonDBTM {
       $options['candel'] = false;
       $options['addbuttons'] = array('test_smtp_send' => $LANG['setup'][229]);
       $this->showFormButtons($options);
-
-      /*
-      echo "<tr class='tab_bg_2'><td class='center' colspan='4'>";
-      echo "<input class='submit' type='submit' name='update' value='".$LANG['buttons'][2]."'>";
-      echo "</td></tr>";
-      echo "</table>";
-      Html::closeForm();*/
    }
 
 
