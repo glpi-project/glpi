@@ -309,6 +309,23 @@ class Group extends CommonTreeDropdown {
       return $actions;
    }
    
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "add_user_group" :
+         case "add_supervisor_group" :
+         case "add_delegatee_group" :
+            $gu = new group_User();
+            return $gu->doSpecificMassiveActions($input);
+            break;
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+   
    function getSearchOptions() {
 
       $tab = parent::getSearchOptions();
@@ -385,10 +402,9 @@ class Group extends CommonTreeDropdown {
     * @param $ID
    **/
    function showLDAPForm($ID) {
-
       $options = array();
       $this->initForm($ID, $options);
-
+      
       echo "<form name='groupldap_form' id='groupldap_form' method='post' action='".
              $this->getFormURL()."'>";
       echo "<div class='spaced'><table class='tab_cadre_fixe'>";

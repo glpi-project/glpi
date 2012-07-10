@@ -227,16 +227,16 @@ if (isset($_POST["action"])
       case "add_user_group" :
       case "add_supervisor_group" :
       case "add_delegatee_group" :
-         User::dropdown(array('right'  => "all"));
-         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                        _sx('button', 'Add')."'>";
-         break;
-
-         
-      case "add_group" :
-         Group::dropdown(array('condition' => '`is_usergroup`'));
-         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                        _sx('button', 'Add')."'>";
+         if ($_POST['itemtype'] == 'User') {
+            Group::dropdown(array('condition' => '`is_usergroup`'));
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Add')."'>";
+         }
+         if ($_POST['itemtype'] == 'Group') {
+            User::dropdown(array('right'  => "all"));
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Add')."'>";
+         }
          break;
 
       case "add_userprofile" :

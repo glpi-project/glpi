@@ -35,8 +35,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (empty($_GET["id"])) {
-   $_GET["id"] = "";
+if (empty($_REQUEST["id"])) {
+   $_REQUEST["id"] = "";
 }
 
 if (!isset($_GET["start"])) {

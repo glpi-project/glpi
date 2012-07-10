@@ -2056,7 +2056,95 @@ class User extends CommonDBTM {
       }
       return $actions;
    }
-   
+
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "add_user_group" :
+            $gu = new group_User();
+            return $gu->doSpecificMassiveActions($input);
+            break;
+            
+         case "force_user_ldap_update" :
+            if (Session::haveRight("user", "w")) {
+               $ids = array();
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     if ($this->getFromDB($key)) {
+                        if (($this->fields["authtype"] == Auth::LDAP)
+                           || ($this->fields["authtype"] == Auth::EXTERNAL)) {
+                           if (AuthLdap::ldapImportUserByServerId(array('method' => AuthLDAP::IDENTIFIER_LOGIN,
+                                                                        'value'  => $this->fields["name"]),
+                                                                        1, $this->fields["auths_id"])) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                           }
+                        }
+                     } else {
+                        $res['ko']++;
+                     }
+                  }
+               }
+            } else {
+               $res['noright']++;
+            }
+            break;
+            
+         case "change_authtype" :
+            if (!isset($input["authtype"]) || !isset($input["auths_id"])) {
+               return false;
+            }
+            if (Session::haveRight("user_authtype","w")) {
+               $ids = array();
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     $ids[] = $key;
+                  }
+               }
+               if (User::changeAuthMethod($ids, $input["authtype"], $input["auths_id"])) {
+                  $res['ok']++;
+               } else {
+                  $res['ko']++;
+               }
+            } else {
+               $res['noright']++;
+            }
+            break;
+
+         case "add_userprofile" :
+            $right = new Profile_User();
+            if (isset($input['profiles_id'])
+               && ($input['profiles_id'] > 0)
+               && isset($input['entities_id'])
+               && ($input['entities_id'] >= 0)) {
+               $input2 = array();
+               $input2['entities_id']  = $input['entities_id'];
+               $input2['profiles_id']  = $input['profiles_id'];
+               $input2['is_recursive'] = $input['is_recursive'];
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     $input2['users_id'] = $key;
+                     if ($right->can(-1,'w',$input2)) {
+                        if ($right->add($input2)) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+            }
+            break;
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
    function getSearchOptions() {
 
       // forcegroup by on name set force group by for all items
