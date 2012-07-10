@@ -697,18 +697,18 @@ class Document extends CommonDBTM {
             foreach ($input["item"] as $key => $val) {
                if (isset($input['items_id'])) {
                   // Add items to documents
-                  $input = array('itemtype'     => $input["item_itemtype"],
+                  $input2 = array('itemtype'     => $input["item_itemtype"],
                                  'items_id'     => $input["items_id"],
                                  'documents_id' => $key);
                } elseif (isset($input['documents_id'])) { // Add document to item
-                  $input = array('itemtype'     => $input["itemtype"],
+                  $input2 = array('itemtype'     => $input["itemtype"],
                                  'items_id'     => $key,
                                  'documents_id' => $input['documents_id']);
                } else {
                   return false;
                }
-               if ($documentitem->can(-1, 'w', $input)) {
-                  if ($documentitem->add($input)) {
+               if ($documentitem->can(-1, 'w', $input2)) {
+                  if ($documentitem->add($input2)) {
                      $res['ok']++;
                   } else {
                      $res['ko']++;
@@ -724,12 +724,12 @@ class Document extends CommonDBTM {
             foreach ($input["item"] as $key => $val) {
                if (isset($input['items_id'])) {
                   // Remove item to documents
-                  $input = array('itemtype'     => $input["item_itemtype"],
+                  $input2 = array('itemtype'     => $input["item_itemtype"],
                                  'items_id'     => $input["items_id"],
                                  'documents_id' => $key);
                } else if (isset($input['documents_id'])) {
                   // Remove contract to items
-                  $input = array('itemtype'     => $input["itemtype"],
+                  $input2 = array('itemtype'     => $input["itemtype"],
                                  'items_id'     => $key,
                                  'documents_id' => $input['documents_id']);
 
@@ -737,11 +737,11 @@ class Document extends CommonDBTM {
                   return false;
                }
                $docitem = new Document_Item();
-               if ($docitem->can(-1, 'w', $input)) {
-                  if ($item = getItemForItemtype($input["itemtype"])) {
-                     if ($item->getFromDB($input['items_id'])) {
+               if ($docitem->can(-1, 'w', $input2)) {
+                  if ($item = getItemForItemtype($input2["itemtype"])) {
+                     if ($item->getFromDB($input2['items_id'])) {
                         $doc = new Document();
-                        if ($doc->getFromDB($input['documents_id'])) {
+                        if ($doc->getFromDB($input2['documents_id'])) {
                            if ($docitem->getFromDBForItems($doc, $item)) {
                               if ($docitem->delete(array('id' => $docitem->getID()))) {
                                  $res['ok']++;
