@@ -299,7 +299,7 @@ class Computer_Item extends CommonDBRelation{
                                     'items_id'      => $key);
                   } else if (isset($input["items_id"])){
                      $input2 = array('computers_id' => $key,
-                                    'itemtype'      => $input["itemtype"],
+                                    'itemtype'      => $input["item_itemtype"],
                                     'items_id'      => $input["items_id"]);
                   } else {
                      return false;
