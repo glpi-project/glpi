@@ -228,13 +228,28 @@ class Contact extends CommonDBTM{
 
       return true;
    }
+   
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "add_contact_supplier" :
+            $contactsupplier = new Contact_Supplier();
+            return $contactsupplier->doSpecificMassiveActions($input);
+            break;
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return false;
+   }
 
    function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions['add_enterprise'] = _x('button', 'Add a supplier');
+         $actions['add_contact_supplier'] = _x('button', 'Add a supplier');
       }
       if (Session::haveRight('transfer','r')
             && Session::isMultiEntitiesMode()

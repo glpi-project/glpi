@@ -436,45 +436,7 @@ if (isset($_POST["action"])
 //          }
 //          break;
 //
-//       case "add_contact" :
-//          if ($_POST["itemtype"] == 'Supplier') {
-//             $contactsupplier = new Contact_Supplier();
-//             foreach ($_POST["item"] as $key => $val) {
-//                $input = array('suppliers_id' => $key,
-//                               'contacts_id'  => $_POST['contacts_id']);
-//                if ($contactsupplier->can(-1, 'w', $input)) {
-//                   if ($contactsupplier->add($input)) {
-//                      $nbok++;
-//                   } else {
-//                      $nbko++;
-//                   }
-//                } else {
-//                $nbnoright++;
-//                }
-//             }
-//          }
-//          break;
 //
-//       case "add_enterprise" :
-//          if ($_POST["itemtype"] == 'Contact') {
-//             $contactsupplier = new Contact_Supplier();
-//             foreach ($_POST["item"] as $key => $val) {
-//                $input = array('suppliers_id' => $_POST['suppliers_id'],
-//                               'contacts_id'  => $key);
-//                if ($contactsupplier->can(-1, 'w', $input)) {
-//                   if ($contactsupplier->add($input)) {
-//                      $nbok++;
-//                   } else {
-//                      $nbko++;
-//                   }
-//                } else {
-//                   $nbnoright++;
-//                }
-//             }
-//          }
-//          break;
-// 
-// 
 //       case "change_authtype" :
 //          foreach ($_POST["item"] as $key => $val) {
 //             if ($val == 1) {
