@@ -74,6 +74,8 @@ if (isset($_POST["action"])
    echo "<input type='hidden' name='is_deleted' value='".$_POST["is_deleted"]."'>";
    echo '&nbsp;';
 
+   /// TODO move actions classes
+   
    switch($_POST["action"]) {
       case "assign_vlan" :
          Vlan::dropdown();

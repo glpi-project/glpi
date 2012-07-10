@@ -49,6 +49,10 @@ if (in_array($_POST["itemtype"], $CFG_GLPI["infocom_types"])) {
    $item->checkGlobal("w");
 }
 
+/// TODO move actions classes  / create standard function to set value : like getValueToDisplay for display
+///                                showValueToSelect
+
+
 if (isset($_POST["itemtype"])
     && isset($_POST["id_field"]) && $_POST["id_field"]) {
    $search = Search::getOptions($_POST["itemtype"]);
