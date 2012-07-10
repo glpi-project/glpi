@@ -187,18 +187,18 @@ if (isset($_POST["action"])
                         __s('Post')."'></span>\n";
          break;
 
-      case "compute_software_category" :
-      case "replay_dictionnary" :
-      case "force_user_ldap_update" :
-      case "delete" :
-      case "purge" :
-      case "restore" :
-      case "add_transfer_list" :
-      case "activate_infocoms" :
-      case "delete_email" :
-      case 'reset' :
-         echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>\n";
-         break;
+//       case "compute_software_category" :
+//       case "replay_dictionnary" :
+//       case "force_user_ldap_update" :
+//       case "delete" :
+//       case "purge" :
+//       case "restore" :
+//       case "add_transfer_list" :
+//       case "activate_infocoms" :
+//       case "delete_email" :
+//       case 'reset' :
+//          echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>\n";
+//          break;
 
       case "install" :
          Software::dropdownSoftwareToInstall("softwareversions_id",
@@ -445,6 +445,8 @@ if (isset($_POST["action"])
             // hook from the plugin defining the type
             Plugin::doOneHook($plug['plugin'], 'MassiveActionsDisplay', $_POST["itemtype"],
                               $_POST["action"]);
+         } else {
+            $item->showMassiveActionsParameters($_POST);
          }
    }
 }
