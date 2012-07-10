@@ -325,6 +325,46 @@ class NetworkPortMigration extends CommonDBChild {
       return $actions;
    }
    
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "transform_to" :
+            if (isset($input["transform_to"]) && !empty($input["transform_to"])) {
+               $networkport = new NetworkPort();
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     if ($networkport->can($key,'w') && $this->can($key,'d')) {
+                        if ($networkport->switchInstantiationType($input['transform_to']) !== false) {
+                           $instantiation             = $networkport->getInstantiation();
+                           $input2                    = $item->fields;
+                           $input2['networkports_id'] = $input2['id'];
+                           unset($input2['id']);
+                           if ($instantiation->add($input2)) {
+                              $this->delete(array('id' => $key));
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                           }
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+            } else {
+               $res['ko']++;
+            }
+            break;
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+   
    function getSearchOptions() {
       global $CFG_GLPI;
 

@@ -823,6 +823,87 @@ class NetworkPort extends CommonDBChild {
       return $actions;
    }
    
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+
+         case "assign_vlan" :
+            if (!empty($input["vlans_id"])) {
+               $networkportvlan = new NetworkPort_Vlan();
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     if ($this->can($key,'w')) {
+                        if ($networkportvlan->assignVlan($key, $input["vlans_id"], (isset($input['tagged']) ? '1' : '0'))) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+            } else {
+               $res['ko']++;
+            }
+            break;
+         case "unassign_vlan" :
+            if (!empty($input["vlans_id"])) {
+               $networkportvlan = new NetworkPort_Vlan();
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     if ($this->can($key,'w')) {
+                        if ($networkportvlan->unassignVlan($key, $input["vlans_id"])) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+            } else {
+               $nbko++;
+            }
+            break;
+
+         // Interest of this massive action ? Replace switch by another : don't re-create manually all ports
+         case "move_port" :
+            if (isset($input["items_id"]) && !empty($input["items_id"])) {
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     if ($this->getFromDB($key)) {
+                        $input2 = array();
+                        $input2['id'] = $key;
+                        $input2['items_id'] = $input["items_id"];
+                        $input2['itemtype'] = 'NetworkEquipment';
+                        if ($this->can($input2['id'],'w')) {
+                           if ($this->update($input2)) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                           }
+                        } else {
+                           $res['noright']++;
+                        }
+                     } else {
+                        $res['ko']++;
+                     }
+                  }
+               }
+            } else {
+               $res['ko']++;
+            }
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }   
    function getSearchOptions() {
 
       $tab                     = array();
