@@ -514,7 +514,75 @@ class Group_User extends CommonDBRelation{
       }
    }
 
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "add_user_group" :
+         case "add_supervisor_group" :
+         case "add_delegatee_group" :
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  if (isset($input['users_id'])) {
+                     // Add users to groups
+                     $input2 = array('groups_id' => $key,
+                                     'users_id'  => $input['users_id']);
+                  } else if (isset($input['groups_id'])) { // Add groups to users
+                     $input2 = array('groups_id' => $input["groups_id"],
+                                     'users_id'  => $key);
+                  } else {
+                     return false;
+                  }
+                  $updateifnotfound = false;
+                  if ($input["action"] == 'add_supervisor_group') {
+                     $input2['is_manager'] = 1;
+                     $updateifnotfound = true;
+                  }
+                  if ($input["action"] == 'add_delegatee_group') {
+                     $input2['is_userdelegate'] = 1;
+                     $updateifnotfound = true;
+                  }
+                  $group = new Group();
+                  $user  = new user();
+                  if ($group->getFromDB($input2['groups_id'])
+                     && $user->getFromDB($input2['users_id'])) {
+                     if ($updateifnotfound
+                        && $this->getFromDBForItems($user, $group)) {
+                        if ($this->can($this->getID(),'w')) {
+                           $input2['id'] = $this->getID();
+                           if ($this->update($input2)) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                           }
+                        } else {
+                           $res['noright']++;
+                        }
+                     } else {
+                        if ($this->can(-1,'w',$input2)) {
+                           if ($this->add($input2)){
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                           }
+                        } else {
+                           $res['noright']++;
+                        }
+                     }
+                  } else {
+                     $res['ko']++;
+                  }
+               }
+            }
+            break;
 
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+   
    /**
     * Get search function for the class
     *
