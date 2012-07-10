@@ -206,17 +206,21 @@ if (isset($_POST["action"])
          break;
 
       case "connect" :
-         Computer_Item::dropdownConnect('Computer', $_POST["itemtype"], "connect_item");
-         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                        __s('Connect')."'>";
+         if ($_POST['itemtype']=='Computer') {
+            Dropdown::showAllItems("items_id", 0, 0, $_SESSION["glpiactive_entity"],
+                                 array('Monitor', 'Peripheral', 'Phone',  'Printer'),
+                                 true, true);
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           __s('Connect')."'>";
+         } else {
+            Computer_Item::dropdownConnect('Computer', $_POST["itemtype"], "computers_id");
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           __s('Connect')."'>";
+         }
          break;
 
       case "connect_to_computer" :
-         Dropdown::showAllItems("connect_item", 0, 0, $_SESSION["glpiactive_entity"],
-                                array('Monitor', 'Peripheral', 'Phone',  'Printer'),
-                                true, true);
-         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                        __s('Connect')."'>";
+
          break;
 
       case "disconnect" :

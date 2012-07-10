@@ -82,7 +82,47 @@ class Calendar extends CommonDropdown {
       }
       return $actions;
    }
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "duplicate" : // For calendar duplicate in another entity
+            if (method_exists($this,'duplicate')) {
+               $options = array();
+               if ($this->isEntityAssign()) {
+                  $options = array('entities_id' => $input['entities_id']);
+               }
+               foreach ($input["item"] as $key => $val) {
+                  if ($val == 1) {
+                     if ($this->getFromDB($key)) {
+                        if (!$this->isEntityAssign()
+                           || ($input['entities_id'] != $this->getEntityID())) {
+                           if ($this->can(-1,'w',$options)) {
+                              if ($this->duplicate($options)) {
+                                 $res['ok']++;
+                              } else {
+                                 $res['ko']++;
+                              }
+                           } else {
+                              $res['noright']++;
+                           }
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['ko']++;
+                     }
+                  }
+               }
+            }
+            break;
 
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
    /** Clone a calendar to another entity : name is updated
     *
     * @param $options array of new values to set

@@ -245,46 +245,101 @@ class Computer_Item extends CommonDBRelation{
                      $device->update($updates);
                   }
                }
-
-               if (isset($this->input['_ocsservers_id'])) {
-                  $ocsservers_id = $this->input['_ocsservers_id'];
-               } else {
-                  $ocsservers_id = OcsServer::getByMachineID($this->fields['computers_id']);
-               }
-
-               if ($ocsservers_id > 0) {
-                  //Get OCS configuration
-                  $ocs_config = OcsServer::getConfig($ocsservers_id);
-
-                  //Get the management mode for this device
-                  $mode    = OcsServer::getDevicesManagementMode($ocs_config,
-                                                                 $this->fields['itemtype']);
-                  $decoConf= $ocs_config["deconnection_behavior"];
-
-                  //Change status if :
-                  // 1 : the management mode IS NOT global
-                  // 2 : a deconnection's status have been defined
-                  // 3 : unique with serial
-                  if (($mode >= 2)
-                      && (strlen($decoConf) > 0)) {
-
-                     //Delete periph from glpi
-                     if ($decoConf == "delete") {
-                        $tmp["id"] = $this->fields['items_id'];
-                        $device->delete($tmp, 1);
-
-                     //Put periph in trash
-                     } else if ($decoConf == "trash") {
-                        $tmp["id"] = $this->fields['items_id'];
-                        $device->delete($tmp, 0);
-                     }
-                  }
-               } // $ocsservers_id>0
+   /// TODO : manage it on OCS plugin
+//                if (isset($this->input['_ocsservers_id'])) {
+//                   $ocsservers_id = $this->input['_ocsservers_id'];
+//                } else {
+//                   $ocsservers_id = OcsServer::getByMachineID($this->fields['computers_id']);
+//                }
+// 
+//                if ($ocsservers_id > 0) {
+//                   //Get OCS configuration
+//                   $ocs_config = OcsServer::getConfig($ocsservers_id);
+// 
+//                   //Get the management mode for this device
+//                   $mode    = OcsServer::getDevicesManagementMode($ocs_config,
+//                                                                  $this->fields['itemtype']);
+//                   $decoConf= $ocs_config["deconnection_behavior"];
+// 
+//                   //Change status if :
+//                   // 1 : the management mode IS NOT global
+//                   // 2 : a deconnection's status have been defined
+//                   // 3 : unique with serial
+//                   if (($mode >= 2)
+//                       && (strlen($decoConf) > 0)) {
+// 
+//                      //Delete periph from glpi
+//                      if ($decoConf == "delete") {
+//                         $tmp["id"] = $this->fields['items_id'];
+//                         $device->delete($tmp, 1);
+// 
+//                      //Put periph in trash
+//                      } else if ($decoConf == "trash") {
+//                         $tmp["id"] = $this->fields['items_id'];
+//                         $device->delete($tmp, 0);
+//                      }
+//                   }
+//                } // $ocsservers_id>0
             }
          }
       }
    }
 
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "connect" :
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  if (isset($input["computers_id"])) {
+                     $input2 = array('computers_id' => $input["computers_id"],
+                                    'itemtype'      => $input["itemtype"],
+                                    'items_id'      => $key);
+                  } else if (isset($input["items_id"])){
+                     $input2 = array('computers_id' => $key,
+                                    'itemtype'      => $input["itemtype"],
+                                    'items_id'      => $input["items_id"]);
+                  } else {
+                     return false;
+                  }
+                  if ($this->can(-1, 'w', $input2)) {
+                     if ($this->add($input2)) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+           break;
+           
+         case "disconnect" :
+            if (!($item = getItemForItemtype($input["itemtype"]))) {
+               return false;
+            }
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  if ($item->can($key, 'd')) {
+                     if ($this->disconnectForItem($item)) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+            break;
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }   
 
    /**
    * Disconnect an item to its computer
@@ -338,7 +393,7 @@ class Computer_Item extends CommonDBRelation{
       foreach ($items as $itemtype) {
          $item = new $itemtype();
          if ($item->canView()) {
-            $query = "SELECT *
+            $query = "SELECT `glpi_computers_items`.*
                       FROM `glpi_computers_items`
                       LEFT JOIN `".getTableForItemType($itemtype)."`
                         ON (`".getTableForItemType($itemtype)."`.`id` = `glpi_computers_items`.`items_id`)
@@ -389,9 +444,8 @@ class Computer_Item extends CommonDBRelation{
                   echo "<th>&nbsp;</th>";
                   $header_displayed++;
                }
-               echo "</tr>";
+               echo "</tr><tr class='tab_bg_1'>";
             }
-            echo "<tr class='tab_bg_1'>";
             echo "<td class='center'>";
 
             $resultnum = $DB->numrows($data['result']);
@@ -401,7 +455,6 @@ class Computer_Item extends CommonDBRelation{
                for ($i=0; $i < $resultnum; $i++) {
                   $tID    = $DB->result($data['result'], $i, "items_id");
                   $connID = $DB->result($data['result'], $i, "id");
-
                   $item->getFromDB($tID);
                   $used[$tID] = $tID;
 

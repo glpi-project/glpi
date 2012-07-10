@@ -481,6 +481,22 @@ class Printer  extends CommonDBTM {
       return $actions;
    }
    
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "connect" :
+         case "disconnect" :
+            $ci = new Computer_Item();
+            return $ci->doSpecificMassiveActions($input);
+            break;
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+   
    function getSearchOptions() {
 
       $tab                       = array();
