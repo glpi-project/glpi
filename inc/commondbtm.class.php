@@ -2795,9 +2795,9 @@ class CommonDBTM extends CommonGLPI {
                   }
                }
             break;
-            
+
          case "add_document" :
-         /// TODO : try to have add_document_item in add_document case
+         /// TODO : move add_document to Document class
          case "add_document_item" :
             $documentitem = new Document_Item();
             foreach ($input["item"] as $key => $val) {
@@ -2824,7 +2824,7 @@ class CommonDBTM extends CommonGLPI {
             break;
 
          case "remove_document" :
-         /// TODO : try to have remove_document_item in remove_document case
+         /// TODO : move remove_document to Document class
          case "remove_document_item" :
             foreach ($input["item"] as $key => $val) {
                if (isset($input['items_id'])) {
@@ -2869,10 +2869,6 @@ class CommonDBTM extends CommonGLPI {
             }
             break;
 
-
-
-         case "add_contract" :
-         /// TODO : try to have add_contract_item in add_contract case
          case "add_contract_item" :
 
             $contractitem = new Contract_Item();
@@ -2882,10 +2878,12 @@ class CommonDBTM extends CommonGLPI {
                   $input = array('itemtype'     => $input["itemtype"],
                                  'items_id'     => $input["items_id"],
                                  'contracts_id' => $key);
-               } else { // Add contract to item
+               }  if (isset($input['contracts_id'])) { // Add contract to item
                   $input = array('itemtype'     => $input["itemtype"],
                                  'items_id'     => $key,
                                  'contracts_id' => $input['contracts_id']);
+               } else {
+                  return false;
                }
                if ($contractitem->can(-1, 'w', $input)) {
                if ($contractitem->add($input)) {
@@ -2899,8 +2897,6 @@ class CommonDBTM extends CommonGLPI {
             }
             break;
 
-         case "remove_contract" :
-         /// TODO : try to have remove_contract_item in remove_contract case
          case "remove_contract_item" :
 
             foreach ($input["item"] as $key => $val) {
@@ -3043,8 +3039,8 @@ class CommonDBTM extends CommonGLPI {
          if (in_array($itemtype,$CFG_GLPI["contract_types"])) {
             $contract = new Contract();
             if ($contract->canUpdate()) {
-               $actions['add_contract']    = _x('button', 'Add a contract');
-               $actions['remove_contract'] = _x('button', 'Remove a contract');
+               $actions['add_contract_item']    = _x('button', 'Add a contract');
+               $actions['remove_contract_item'] = _x('button', 'Remove a contract');
             }
          }
          // Specific actions

@@ -283,43 +283,44 @@ if (isset($_POST["action"])
                         _sx('button', 'Delete')."'>";
          break;
 
-
-      case "add_contract" :
-         Contract::dropdown(array('name' => "contracts_id"));
-         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                        _sx('button', 'Add')."'>";
-         break;
-
-      case "remove_contract" :
-         Contract::dropdown(array('name' => "contracts_id"));
-         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                        _sx('button', 'Delete')."'>";
-         break;
-
       case "add_contract_item" :
-            Dropdown::showAllItems("items_id", 0, 0, 1,
-                                   $CFG_GLPI["contract_types"], false, true);
-         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                        _sx('button', 'Add')."'>";
+         if ($_POST['itemtype']=='Contract') {
+
+               Dropdown::showAllItems("items_id", 0, 0, 1,
+                                    $CFG_GLPI["contract_types"], false, true);
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Add')."'>";
+         } else {
+            Contract::dropdown(array('name' => "contracts_id"));
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Add')."'>";
+         }
          break;
 
       case "remove_contract_item" :
+         if ($_POST['itemtype'] == 'Contract') {
             Dropdown::showAllItems("items_id", 0, 0, 1,
                                    $CFG_GLPI["contract_types"], false, true);
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                         _sx('button', 'Delete')."'>";
+         } else {
+            Contract::dropdown(array('name' => "contracts_id"));
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Delete')."'>";
+         }
          break;
 
-      case "add_contact" :
-         Contact::dropdown(array('name' => "contacts_id"));
-         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                        _sx('button', 'Add')."'>";
-         break;
-
-      case "add_enterprise" :
-         Supplier::dropdown(array('name' => "suppliers_id"));
-         echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
-                        _sx('button', 'Add')."'>";
+      case "add_contact_supplier" :
+         if ($_POST['itemtype'] == 'Supplier') {
+            Contact::dropdown(array('name' => "contacts_id"));
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Add')."'>";
+         }
+         if ($_POST['itemtype'] == 'Contact') {
+            Supplier::dropdown(array('name' => "suppliers_id"));
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Add')."'>";
+         }
          break;
 
       case "import_email" :
