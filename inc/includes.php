@@ -156,7 +156,7 @@ if (GLPI_USE_CSRF_CHECK
    // No ajax pages
    if (!preg_match(':'.$CFG_GLPI['root_doc'].'(/plugins/[^/]*|)/ajax/:', $_SERVER['REQUEST_URI'])) {
       if (!Session::validateCSRF($_POST)) {
-         Html::displayErrorAndDie("The action you have requested is not allowed.", true);
+         Html::displayErrorAndDie("The action you have requested is not allowed. Reload previous page before doing action again.", true);
       }
    }
 }
