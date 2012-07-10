@@ -54,11 +54,12 @@ class Ajax {
    **/
    static function createModalWindow($name, $url, $options=array() ) {
 
-      $param = array('width'     => 800,
-                     'height'    => 400,
-                     'modal'     => true,
-                     'container'  => '',
-                     'title'     => '');
+      $param = array('width'       => 800,
+                     'height'      => 400,
+                     'modal'       => true,
+                     'container'   => '',
+                     'title'       => '',
+                     'extraparams' => array());
 
       if (count($options)) {
          foreach ($options as $key => $val) {
@@ -67,6 +68,7 @@ class Ajax {
             }
          }
       }
+
       echo "<script type='text/javascript'>";
       echo "var $name=new Ext.Window({
          layout:'fit',
@@ -77,8 +79,15 @@ class Ajax {
          ".(!empty($param['container'])?"renderTo: '".$param['container']."',":'')."
          autoScroll: true,
          title: \"".addslashes($param['title'])."\",
-         autoLoad: '$url'
-      }); ";
+         autoLoad: {url: '$url',
+                    scripts: true,
+                    nocache: true";
+         if (is_array($param['extraparams']) && count($param['extraparams'])) {
+            echo ", params: '".Toolbox::append_params($param['extraparams'])."'";
+         }
+         echo "},";
+         
+     echo " }); ";
       echo "</script>";
    }
 
