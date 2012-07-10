@@ -675,8 +675,8 @@ class Computer extends CommonDBTM {
       $actions = parent::getSpecificMassiveActions($checkitem);
 
       if ($isadmin) {
-         $actions['connect_to_computer'] = _x('button', 'Connect');
-         $actions['install']             = _x('button', 'Install');
+         $actions['connect'] = _x('button', 'Connect');
+         $actions['install'] = _x('button', 'Install');
       }
 
       if (Session::haveRight('transfer','r')
@@ -686,6 +686,44 @@ class Computer extends CommonDBTM {
       }
       
       return $actions;
+   }
+   
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "connect" :
+            $ci = new Computer_Item();
+            return $ci->doSpecificMassiveActions($input);
+            break;
+            
+         case "install" :
+            if (isset($input['softwareversions_id']) && ($input['softwareversions_id'] > 0)) {
+               $inst = new Computer_SoftwareVersion();
+               foreach ($input['item'] as $key => $val) {
+                  if ($val == 1) {
+                     $input2 = array('computers_id'        => $key,
+                                     'softwareversions_id' => $input['softwareversions_id']);
+                     if ($inst->can(-1, 'w', $input2)) {
+                        if ($inst->add($input2)) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+            } else {
+               $res['ko']++;
+            }
+            break;
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
    }
    
    function getSearchOptions() {

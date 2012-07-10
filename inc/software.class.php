@@ -323,6 +323,64 @@ class Software extends CommonDBTM {
       return $actions;
    }
    
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "compute_software_category" :
+            $softcatrule = new RuleSoftwareCategoryCollection();
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  $params = array();
+                  //Get software name and manufacturer
+                  if ($this->can($key,'w')) {
+                     $params["name"]             = $this->fields["name"];
+                     $params["manufacturers_id"] = $this->fields["manufacturers_id"];
+                     $params["comment"]          = $this->fields["comment"];
+                     $output = array();
+                     $output = $softcatrule->processAllRules(null, $output, $params);
+                     //Process rules
+                     if (isset($output['id']) && isset($output['softwarecategories_id'])
+                           && $this->update(array('id' => $output['id'],
+                                            'softwarecategories_id' => $output['softwarecategories_id']))) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+            break;
+
+         case "replay_dictionnary" :
+            $softdictionnayrule = new RuleDictionnarySoftwareCollection();
+            $ids                = array();
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  if ($this->can($key,'w')) {
+                     $ids[] = $key;
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+            if ($softdictionnayrule->replayRulesOnExistingDB(0, 0, $ids)>0){
+               $res['ok'] += count($ids);
+            } else {
+               $res['ko'] += count($ids);
+            }
+
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+   
    function getSearchOptions() {
 
       // Only use for History (not by search Engine)
