@@ -2599,6 +2599,46 @@ class CommonDBTM extends CommonGLPI {
 
       return $tab;
    }
+
+   /**
+    * Display options add action button for massive actions
+    *
+    * This must not be overloaded in Class
+    * @param $input array of input datas
+    * @since version 0.84
+    * @return nothing display
+   **/
+   function showMassiveActionsParameters($input = array()) {
+
+      switch ($input['action']) {
+
+
+      default :
+         if (!$this->showSpecificMassiveActionsParameters($input)) {
+            echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>\n";
+         }
+      }
+      
+      return false;
+   }
+
+
+   /**
+    * Display specific options add action button for massive actions
+    *
+    * This may be overloaded in Class
+    * Parameters must not be : itemtype, action, is_deleted, check_itemtype or check_items_id
+    * @param $input array of input datas
+    * @since version 0.84
+    * @return boolean if parameters displayed ?
+   **/
+   function showSpecificMassiveActionsParameters($input = array()) {
+
+
+      return false;
+   }
+
+   
    /**
     * Do the standard massive actions
     *
