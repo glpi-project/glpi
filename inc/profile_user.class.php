@@ -130,7 +130,8 @@ class Profile_User extends CommonDBTM {
          echo "<input type='submit' name='add' value=\""._sx('button','Add')."\" class='submit'>";
          echo "</td></tr>";
 
-         echo "</table></div></form>";
+         echo "</table></div>";
+         Html::closeForm();
       }
 
       $query = "SELECT DISTINCT `glpi_profiles_users`.`id` AS linkID,

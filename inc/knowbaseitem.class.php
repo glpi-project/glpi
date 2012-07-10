@@ -833,7 +833,7 @@ class KnowbaseItem extends CommonDBTM {
 
 
    /**
-    * Print out an HTML "<form>" for Search knowbase item
+    * Print out an HTML form for Search knowbase item
     *
     * @param $options   $_GET
     *
@@ -930,7 +930,7 @@ class KnowbaseItem extends CommonDBTM {
 
 
    /**
-    * Print out an HTML "<form>" for Search knowbase item
+    * Print out an HTML form for Search knowbase item
     *
     * @since version 0.84
     *
@@ -966,7 +966,9 @@ class KnowbaseItem extends CommonDBTM {
       Dropdown::showFromArray('unpublished', $values, array('value' => $params['unpublished']));
       echo "</td><td class='left'>";
       echo "<input type='submit' value=\""._sx('button','Post')."\" class='submit'></td>";
-      echo "</tr></table></div>";
+      echo "</tr></table>";
+      Html::closeForm();
+      echo "</div>";
    }
 
 

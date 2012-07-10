@@ -217,6 +217,7 @@ class NotificationTemplateTranslation extends CommonDBChild {
          Html::openArrowMassives("form_language", true);
          Html::closeArrowMassives(array("delete_languages" => __('Delete')));
       }
+      Html::closeForm();
    }
 
 

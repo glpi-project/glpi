@@ -425,9 +425,6 @@ class Group extends CommonTreeDropdown {
       $options = array('colspan' => 1,
                        'candel'  => false);
       $this->showFormButtons($options);
-
-      echo "</table></div>";
-      Html::closeForm();
    }
 
 

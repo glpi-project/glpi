@@ -502,6 +502,7 @@ class Group_User extends CommonDBRelation{
             $paramsma['ontop'] =false;
 
             Html::showMassiveActions('Group_User', $paramsma);
+            Html::closeForm();
          }
          Html::printAjaxPager(sprintf(__('%1$s (%2$s)'),
                                       User::getTypeName(2), __('D=Dynamic')),
