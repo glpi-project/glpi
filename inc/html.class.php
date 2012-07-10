@@ -3985,7 +3985,7 @@ class Html {
       foreach ($fields as $name => $value) {
          $SIMPLE_FORMS .= "<input type='hidden' name='$name' value='$value'>";
       }
-      $SIMPLE_FORMS .= "<input type='hidden' name='$btname' value='$btlabel'>";
+      $SIMPLE_FORMS .= "<input type='hidden' name='$btname' value='$btname'>";
       $src='';
       if (strpos($btname, '/') !== false) {
          $src=$btname;
