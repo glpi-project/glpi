@@ -151,6 +151,36 @@ class Rule extends CommonDBTM {
       return $actions;
    }
    
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "move_rule" :
+            $collectionname = $input['itemtype'].'Collection';
+            $rulecollection = new $collectionname();
+            if ($rulecollection->canUpdate()) {
+               foreach ($input["item"] as $key => $val) {
+                  if ($this->getFromDB($key)) {
+                     if ($rulecollection->moveRule($key, $input['ranking'], $input['move_type'])) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['ko']++;
+                  }
+               }
+            } else {
+               $res['noright']++;
+            }
+            break;
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+   
    function getSearchOptions() {
 
       $tab                       = array();

@@ -322,7 +322,63 @@ abstract class CommonDropdown extends CommonDBTM {
 
       return $actions;
    }
-   
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case 'merge' :
+            $fk = $this->getForeignKeyField();
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  if ($this->can($key,'w')) {
+                     if ($this->getEntityID() == $_SESSION['glpiactive_entity']) {
+                        if ($this->update(array('id'           => $key,
+                                                'is_recursive' => 1))) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $input2 = $this->fields;
+
+                        // Remove keys (and name, tree dropdown will use completename)
+                        if ($this instanceof CommonTreeDropdown) {
+                           unset($input2['id'], $input2['name'], $input2[$fk]);
+                        } else {
+                           unset($input2['id']);
+                        }
+                        // Change entity
+                        $input2['entities_id']  = $_SESSION['glpiactive_entity'];
+                        $input2['is_recursive'] = 1;
+                        $input2 = Toolbox::addslashes_deep($input2);
+                        // Import new
+                        if ($newid = $this->import($input2)) {
+
+                           // Delete old
+                           if ($newid > 0) {
+                              // delete with purge for dropdown with trash (Budget)
+                              $this->delete(array('id'        => $key,
+                                                '_replace_by' => $newid), 1);
+                           }
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     }
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+
    /**
     * Get search function for the class
     *

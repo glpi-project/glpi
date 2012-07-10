@@ -2605,9 +2605,10 @@ class CommonDBTM extends CommonGLPI {
     * This must not be overloaded in Class
     * @param $input array of input datas
     * @since version 0.84
-    * @return an array of results (ok, ko, noright counts)
+    * @return an array of results (ok, ko, noright counts, may include REDIRECT field to set REDIRECT page)
    **/   
    function doMassiveActions($input = array()) {
+      global $CFG_GLPI;
       if (!isset($input["item"]) || count($input["item"]) == 0) {
          return false;
       }
@@ -2616,6 +2617,21 @@ class CommonDBTM extends CommonGLPI {
                    'ko'      => 0,
                    'noright' => 0);
       switch ($input['action']) {
+         case "add_transfer_list" :
+            if (!isset($_SESSION['glpitransfer_list'])) {
+               $_SESSION['glpitransfer_list'] = array();
+            }
+            if (!isset($_SESSION['glpitransfer_list'][$input["itemtype"]])) {
+               $_SESSION['glpitransfer_list'][$input["itemtype"]] = array();
+            }
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  $_SESSION['glpitransfer_list'][$input["itemtype"]][$key] = $key;
+                  $res['ok']++;
+               }
+            }
+            $res['REDIRECT'] = $CFG_GLPI['root_doc'].'/front/transfer.action.php';
+            break;
          case "delete" :
             foreach ($input["item"] as $key => $val) {
                if ($val == 1) {

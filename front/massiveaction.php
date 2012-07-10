@@ -110,28 +110,7 @@ if (isset($_POST["action"])
    $nbko      = 0;
    $res = $item->doMassiveActions($_POST);
 //    switch($_POST["action"]) {
-//       case "move_rule" :
-//          if (isset($_POST["item"]) && count($_POST["item"])) {
-//             $collectionname = $_POST['itemtype'].'Collection';
-//             $rulecollection = new $collectionname();
-//             if ($rulecollection->canUpdate()) {
-//                foreach ($_POST["item"] as $key => $val) {
-//                   $rule = new $_POST['itemtype']();
-//                   if ($rule->getFromDB($key)) {
-//                      if ($rulecollection->moveRule($key, $_POST['ranking'], $_POST['move_type'])) {
-//                         $nbok++;
-//                      } else {
-//                         $nbko++;
-//                      }
-//                   } else {
-//                      $nbko++;
-//                   }
-//                }
-//             } else {
-//                $nbnoright++;
-//             }
-//          }
-//          break;
+
 // 
 //       case "assign_vlan" :
 //          if (!empty($_POST["vlans_id"])) {
@@ -521,259 +500,12 @@ if (isset($_POST["action"])
 //          }
 //          break;
 // 
-//       case "add_transfer_list" :
-//          if (!isset($_SESSION['glpitransfer_list'])) {
-//             $_SESSION['glpitransfer_list'] = array();
-//          }
-//          if (!isset($_SESSION['glpitransfer_list'][$_POST["itemtype"]])) {
-//             $_SESSION['glpitransfer_list'][$_POST["itemtype"]] = array();
-//          }
-//          foreach ($_POST["item"] as $key => $val) {
-//             if ($val == 1) {
-//                $_SESSION['glpitransfer_list'][$_POST["itemtype"]][$key] = $key;
-//             }
-//          }
-//          $REDIRECT = $CFG_GLPI['root_doc'].'/front/transfer.action.php';
-//          $nbok++;
-//          break;
+
 // 
-//       case "add_followup" :
-//          $fup = new TicketFollowup();
-//          foreach ($_POST["item"] as $key => $val) {
-//             if ($val == 1) {
-//                $input = array('tickets_id'      => $key,
-//                               'is_private'      => $_POST['is_private'],
-//                               'requesttypes_id' => $_POST['requesttypes_id'],
-//                               'content'         => $_POST['content']);
-//                if ($fup->can(-1,'w',$input)) {
-//                   if ($fup->add($input)) {
-//                      $nbok++;
-//                   } else {
-//                      $nbko++;
-//                   }
-//                } else {
-//                   $nbnoright++;
-//                }
-//             }
-//          }
-//          break;
+
 // 
-//       case "submit_validation" :
-//          $valid = new TicketValidation();
-//          foreach ($_POST["item"] as $key => $val) {
-//             if ($val == 1) {
-//                $input = array('tickets_id'         => $key,
-//                               'users_id_validate'  => $_POST['users_id_validate'],
-//                               'comment_submission' => $_POST['comment_submission']);
-//                if ($valid->can(-1,'w',$input)) {
-//                   if ($valid->add($input)) {
-//                      $nbok++;
-//                   } else {
-//                      $nbko++;
-//                   }
-//                } else {
-//                   $nbnoright++;
-//                }
-//             }
-//          }
-//          break;
 // 
-//       case "add_task" :
-//          if ($_POST['itemtype'] == 'Ticket') {
-//             $task  = new TicketTask();
-//             $field = 'tickets_id';
-//          } else if ($_POST['itemtype'] == 'Problem') {
-//             $task  = new ProblemTask();
-//             $field = 'problems_id';
-//          }
-//          foreach ($_POST["item"] as $key => $val) {
-//             if ($val == 1) {
-//                $input = array($field              => $key,
-//                               'taskcategories_id' => $_POST['taskcategories_id'],
-//                               'content'           => $_POST['content']);
-//                if ($task->can(-1,'w',$input)) {
-//                   if ($task->add($input)) {
-//                      $nbok++;
-//                   } else {
-//                      $nbko++;
-//                   }
-//                } else {
-//                   $nbnoright++;
-//                }
-//             }
-//          }
-//          break;
-// 
-//       case "add_actor" :
-//          $item = new $_POST['itemtype']();
-//          foreach ($_POST["item"] as $key => $val) {
-//             if ($val == 1) {
-//                $input = array('id' => $key);
-//                if (isset($_POST['_itil_requester'])) {
-//                   $input['_itil_requester'] = $_POST['_itil_requester'];
-//                }
-//                if (isset($_POST['_itil_observer'])) {
-//                   $input['_itil_observer'] = $_POST['_itil_observer'];
-//                }
-//                if (isset($_POST['_itil_assign'])) {
-//                   $input['_itil_assign'] = $_POST['_itil_assign'];
-//                }
-//                if ($item->can($key,'w')) {
-//                   if ($item->update($input)) {
-//                      $nbok++;
-//                   } else {
-//                      $nbko++;
-//                   }
-//                } else {
-//                   $nbnoright++;
-//                }
-//             }
-//          }
-//          break;
-// 
-//       case "link_ticket" :
-//          $ticket = new Ticket();
-//          if (isset($_POST['link']) && isset($_POST['tickets_id_1'])) {
-//             if ($ticket->getFromDB($_POST['tickets_id_1'])) {
-//                foreach ($_POST["item"] as $key => $val) {
-//                   if ($val == 1) {
-//                      $input['id']                    = $_POST['tickets_id_1'];
-//                      $input['_link']['tickets_id_1'] = $_POST['tickets_id_1'];
-//                      $input['_link']['link']         = $_POST['link'];
-//                      $input['_link']['tickets_id_2'] = $key;
-//                      if ($ticket->can($_POST['tickets_id_1'],'w')) {
-//                         if ($ticket->update($input)) {
-//                            $nbok++;
-//                         } else {
-//                            $nbko++;
-//                         }
-//                      } else {
-//                         $nbnoright++;
-//                      }
-//                   }
-//                }
-//             }
-//          }
-//          break;
-// 
-//       case 'reset' :
-//          if ($_POST["itemtype"] == 'CronTask') {
-//             Session::checkRight('config', 'w');
-//             $crontask = new CronTask();
-//             foreach ($_POST["item"] as $key => $val) {
-//                if (($val == 1)
-//                    && $crontask->getFromDB($key)) {
-//                   if ($crontask->resetDate()) {
-//                      $nbok++;
-//                   } else {
-//                      $nbko++;
-//                   }
-//                } else {
-//                   $nbko++;
-//                }
-//             }
-//          }
-//          break;
-// 
-//       case 'move_under' :
-//          if (isset($_POST['parent'])) {
-//             $fk = $item->getForeignKeyField();
-//             $parent = new $_POST["itemtype"]();
-//             if ($parent->getFromDB($_POST['parent'])) {
-//                foreach ($_POST["item"] as $key => $val) {
-//                   if (($val == 1)
-//                       && $item->can($key,'w')) {
-//                      // Check if parent is not a child of the original one
-//                      if (!in_array($parent->getID(), getSonsOf($item->getTable(),
-//                                    $item->getID()))) {
-//                         if ($item->update(array('id' => $key,
-//                                                 $fk  => $_POST['parent']))) {
-//                            $nbok++;
-//                         } else {
-//                            $nbko++;
-//                         }
-//                      } else {
-//                         $nbko++;
-//                      }
-//                   } else {
-//                      $nbnoright++;
-//                   }
-//                }
-//             }
-//          }
-//          break;
-// 
-//       case 'merge' :
-//          $fk = $item->getForeignKeyField();
-//          foreach ($_POST["item"] as $key => $val) {
-//             if ($val == 1) {
-//                if ($item->can($key,'w')) {
-//                   if ($item->getEntityID() == $_SESSION['glpiactive_entity']) {
-//                      if ($item->update(array('id'           => $key,
-//                                              'is_recursive' => 1))) {
-//                         $nbok++;
-//                      } else {
-//                         $nbko++;
-//                      }
-//                   } else {
-//                      $input = $item->fields;
-// 
-//                      // Remove keys (and name, tree dropdown will use completename)
-//                      if ($item instanceof CommonTreeDropdown) {
-//                         unset($input['id'], $input['name'], $input[$fk]);
-//                      } else {
-//                         unset($input['id']);
-//                      }
-//                      // Change entity
-//                      $input['entities_id']  = $_SESSION['glpiactive_entity'];
-//                      $input['is_recursive'] = 1;
-//                      $input = Toolbox::addslashes_deep($input);
-//                      // Import new
-//                      if ($newid = $item->import($input)) {
-// 
-//                         // Delete old
-//                         if ($newid > 0) {
-//                            // delete with purge for dropdown with trash (Budget)
-//                            $item->delete(array('id'          => $key,
-//                                              '_replace_by' => $newid), 1);
-//                         }
-//                         $nbok++;
-//                      } else {
-//                         $nbko++;
-//                      }
-//                   }
-//                } else {
-//                   $nbnoright++;
-//                }
-//             }
-//          }
-//          break;
-// 
-//       case 'delete_email' :
-//       case 'import_email' :
-//          if (!$item->canCreate()) {
-//             $nbko++;
-//          } else {
-//             $emails_ids = array();
-//             foreach ($_POST["item"] as $key => $val) {
-//                if ($val == 1) {
-//                   $emails_ids[$key] = $key;
-//                }
-//             }
-//             if (!empty($emails_ids)) {
-//                $mailcollector = new MailCollector();
-//                if ($_POST["action"] == 'delete_email') {
-//                   $mailcollector->deleteOrImportSeveralEmails($emails_ids, 0);
-//                }
-//                else {
-//                   $mailcollector->deleteOrImportSeveralEmails($emails_ids, 1, $_POST['entities_id']);
-//                }
-//             }
-//             $nbok++;
-//          }
-//          break;
-// 
-//    }
+
    if (is_array($res)
          && isset($res['ok'])
          && isset($res['ko'])
@@ -787,6 +519,9 @@ if (isset($_POST["action"])
       } else {
          $nbko++;
       }
+   }
+   if (isset($res['REDIRECT'])) {
+      $REDIRECT = $res['REDIRECT'];
    }
    // Default message : all ok
    $message = __('Operation successful');

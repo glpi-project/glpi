@@ -92,7 +92,7 @@ class Contact_Supplier extends CommonDBRelation{
          default :
             return parent::doSpecificMassiveActions($input);
       }
-      return false;
+      return $res;
    }
 
    

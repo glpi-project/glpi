@@ -1708,6 +1708,81 @@ class Ticket extends CommonITILObject {
       return $actions;
    }
    
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "link_ticket" :
+            if (isset($input['link']) && isset($input['tickets_id_1'])) {
+               if ($this->getFromDB($input['tickets_id_1'])) {
+                  foreach ($input["item"] as $key => $val) {
+                     if ($val == 1) {
+                        $input2 = array();
+                        $input2['id']                    = $input['tickets_id_1'];
+                        $input2['_link']['tickets_id_1'] = $input['tickets_id_1'];
+                        $input2['_link']['link']         = $input['link'];
+                        $input2['_link']['tickets_id_2'] = $key;
+                        if ($this->can($input['tickets_id_1'],'w')) {
+                           if ($this->update($input2)) {
+                              $res['ok']++;
+                           } else {
+                              $res['ko']++;
+                           }
+                        } else {
+                           $res['noright']++;
+                        }
+                     }
+                  }
+               }
+            }
+            break;
+         case "submit_validation" :
+            $valid = new TicketValidation();
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  $input2 = array('tickets_id'         => $key,
+                                 'users_id_validate'  => $input['users_id_validate'],
+                                 'comment_submission' => $input['comment_submission']);
+                  if ($valid->can(-1,'w',$input2)) {
+                     if ($valid->add($input2)) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+            break;
+            
+         case "add_followup" :
+            $fup = new TicketFollowup();
+            foreach ($input["item"] as $key => $val) {
+               if ($val == 1) {
+                  $input2 = array('tickets_id'      => $key,
+                                 'is_private'      => $input['is_private'],
+                                 'requesttypes_id' => $input['requesttypes_id'],
+                                 'content'         => $input['content']);
+                  if ($fup->can(-1,'w',$input2)) {
+                     if ($fup->add($input2)) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['noright']++;
+                  }
+               }
+            }
+            break;
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
+   
    function getSearchOptions() {
 
       $tab                       = array();

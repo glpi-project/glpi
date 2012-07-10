@@ -1127,6 +1127,35 @@ class CronTask extends CommonDBTM{
       }
       return $actions;
    }
+
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case 'reset' :
+            if (Session::haveRight('config', 'w')) {
+               foreach ($input["item"] as $key => $val) {
+                  if (($val == 1)
+                     && $this->getFromDB($key)) {
+                     if ($this->resetDate()) {
+                        $res['ok']++;
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['ko']++;
+                  }
+               }
+            } else {
+               $res['noright']++;
+            }
+            break;
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }
    
    function getSearchOptions() {
 
