@@ -449,7 +449,7 @@ class Group_User extends CommonDBRelation{
                                  min($number-$start, $_SESSION['glpilist_limit']));
             Html::showMassiveActions(__CLASS__, $paramsma);
          }
-         
+
          echo "<table class='tab_cadre_fixehov'><tr>";
          if ($canedit) {
             echo "<th width='10'>";
@@ -551,7 +551,7 @@ class Group_User extends CommonDBRelation{
       $tab[6]['datatype']        = 'bool';
 
       $tab[7]['table']           = $this->getTable();
-      $tab[7]['field']           = 'is_delegatee';
+      $tab[7]['field']           = 'is_userdelegate';
       $tab[7]['name']            = __('Delegatee');
       $tab[7]['datatype']        = 'bool';
 
