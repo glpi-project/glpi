@@ -2617,6 +2617,11 @@ class CommonDBTM extends CommonGLPI {
                    'ko'      => 0,
                    'noright' => 0);
       switch ($input['action']) {
+         case 'add_document' :
+         case 'remove_document' :
+            $doc = new Document;
+            return $doc->doSpecificMassiveActions($input);
+            break;
          case "add_transfer_list" :
             if (!isset($_SESSION['glpitransfer_list'])) {
                $_SESSION['glpitransfer_list'] = array();
@@ -2812,86 +2817,13 @@ class CommonDBTM extends CommonGLPI {
                }
             break;
 
-         case "add_document" :
-         /// TODO : move add_document to Document class
-         case "add_document_item" :
-            $documentitem = new Document_Item();
-            foreach ($input["item"] as $key => $val) {
-               if (isset($input['items_id'])) {
-                  // Add items to documents
-                  $input = array('itemtype'     => $input["itemtype"],
-                                 'items_id'     => $input["items_id"],
-                                 'documents_id' => $key);
-               } else { // Add document to item
-                  $input = array('itemtype'     => $input["itemtype"],
-                                 'items_id'     => $key,
-                                 'documents_id' => $input['documents_id']);
-               }
-               if ($documentitem->can(-1, 'w', $input)) {
-                  if ($documentitem->add($input)) {
-                     $res['ok']++;
-                  } else {
-                     $res['ko']++;
-                  }
-               } else {
-                  $res['noright']++;
-               }
-            }
-            break;
-
-         case "remove_document" :
-         /// TODO : move remove_document to Document class
-         case "remove_document_item" :
-            foreach ($input["item"] as $key => $val) {
-               if (isset($input['items_id'])) {
-                  // Remove item to documents
-                  $input = array('itemtype'     => $input["itemtype"],
-                                 'items_id'     => $input["items_id"],
-                                 'documents_id' => $key);
-               } else {
-                  // Remove contract to items
-                  $input = array('itemtype'     => $input["itemtype"],
-                                 'items_id'     => $key,
-                                 'documents_id' => $input['documents_id']);
-
-               }
-               $docitem = new Document_Item();
-               if ($docitem->can(-1, 'w', $input)) {
-                  if ($item = getItemForItemtype($input["itemtype"])) {
-                     if ($item->getFromDB($input['items_id'])) {
-                        $doc = new Document();
-                        if ($doc->getFromDB($input['documents_id'])) {
-                           if ($docitem->getFromDBForItems($doc, $item)) {
-                              if ($docitem->delete(array('id' => $docitem->getID()))) {
-                                 $res['ok']++;
-                              } else {
-                                 $res['ko']++;
-                              }
-                           } else {
-                              $res['ko']++;
-                           }
-                        } else {
-                           $res['ko']++;
-                        }
-                     } else {
-                        $res['ko']++;
-                     }
-                  } else {
-                     $res['ko']++;
-                  }
-               } else {
-                  $res['noright']++;
-               }
-            }
-            break;
-
          case "add_contract_item" :
 
             $contractitem = new Contract_Item();
             foreach ($input["item"] as $key => $val) {
                if (isset($input['items_id'])) {
                   // Add items to contracts
-                  $input = array('itemtype'     => $input["itemtype"],
+                  $input = array('itemtype'     => $input["item_itemtype"],
                                  'items_id'     => $input["items_id"],
                                  'contracts_id' => $key);
                }  if (isset($input['contracts_id'])) { // Add contract to item
@@ -2918,7 +2850,7 @@ class CommonDBTM extends CommonGLPI {
             foreach ($input["item"] as $key => $val) {
                if (isset($input['items_id'])) {
                   // Remove item to contracts
-                  $input = array('itemtype'     => $input["itemtype"],
+                  $input = array('itemtype'     => $input["item_itemtype"],
                                  'items_id'     => $input["items_id"],
                                  'contracts_id' => $key);
                } else {

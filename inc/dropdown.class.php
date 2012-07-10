@@ -1030,15 +1030,18 @@ class Dropdown {
     * @param $types           Types used (default '')
     * @param $onlyglobal      Restrict to global items (false by default)
     * @param $checkright      Restrict to items with read rights (false by default)
+    * @param $itemtypename    name used for itemtype select
     *
     * @return nothing (print out an HTML select box)
    **/
    static function showAllItems($myname, $value_type=0, $value=0, $entity_restrict=-1, $types='',
-                                $onlyglobal=false, $checkright=false) {
+                                $onlyglobal=false, $checkright=false, $itemtypename = 'itemtype') {
       global $CFG_GLPI;
 
       $options = array();
       $options['checkright'] = $checkright;
+      $options['name'] = $itemtypename;
+      
       $rand = self::showItemType($types, $options);
       if ($rand) {
          $params = array('idtable'          => '__VALUE__',

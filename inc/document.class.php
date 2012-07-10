@@ -685,6 +685,91 @@ class Document extends CommonDBTM {
       }
       return $actions;
    }
+
+   function doSpecificMassiveActions($input = array()) {
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+      switch ($input['action']) {
+         case "add_document" :
+         case "add_document_item" :
+            $documentitem = new Document_Item();
+            foreach ($input["item"] as $key => $val) {
+               if (isset($input['items_id'])) {
+                  // Add items to documents
+                  $input = array('itemtype'     => $input["item_itemtype"],
+                                 'items_id'     => $input["items_id"],
+                                 'documents_id' => $key);
+               } elseif (isset($input['documents_id'])) { // Add document to item
+                  $input = array('itemtype'     => $input["itemtype"],
+                                 'items_id'     => $key,
+                                 'documents_id' => $input['documents_id']);
+               } else {
+                  return false;
+               }
+               if ($documentitem->can(-1, 'w', $input)) {
+                  if ($documentitem->add($input)) {
+                     $res['ok']++;
+                  } else {
+                     $res['ko']++;
+                  }
+               } else {
+                  $res['noright']++;
+               }
+            }
+            break;
+
+         case "remove_document" :
+         case "remove_document_item" :
+            foreach ($input["item"] as $key => $val) {
+               if (isset($input['items_id'])) {
+                  // Remove item to documents
+                  $input = array('itemtype'     => $input["item_itemtype"],
+                                 'items_id'     => $input["items_id"],
+                                 'documents_id' => $key);
+               } else if (isset($input['documents_id'])) {
+                  // Remove contract to items
+                  $input = array('itemtype'     => $input["itemtype"],
+                                 'items_id'     => $key,
+                                 'documents_id' => $input['documents_id']);
+
+               } else {
+                  return false;
+               }
+               $docitem = new Document_Item();
+               if ($docitem->can(-1, 'w', $input)) {
+                  if ($item = getItemForItemtype($input["itemtype"])) {
+                     if ($item->getFromDB($input['items_id'])) {
+                        $doc = new Document();
+                        if ($doc->getFromDB($input['documents_id'])) {
+                           if ($docitem->getFromDBForItems($doc, $item)) {
+                              if ($docitem->delete(array('id' => $docitem->getID()))) {
+                                 $res['ok']++;
+                              } else {
+                                 $res['ko']++;
+                              }
+                           } else {
+                              $res['ko']++;
+                           }
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['ko']++;
+                     }
+                  } else {
+                     $res['ko']++;
+                  }
+               } else {
+                  $res['noright']++;
+               }
+            }
+            break;
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
+   }   
    
    function getSearchOptions() {
 
