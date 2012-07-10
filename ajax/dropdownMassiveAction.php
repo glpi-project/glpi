@@ -277,14 +277,14 @@ if (isset($_POST["action"])
 
       case "add_document_item" :
             Dropdown::showAllItems("items_id", 0, 0, 1,
-                                   $CFG_GLPI["document_types"], false, true);
+                                   $CFG_GLPI["document_types"], false, true, 'item_itemtype');
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                         _sx('button', 'Add')."'>";
          break;
 
       case "remove_document_item" :
             Dropdown::showAllItems("items_id", 0, 0, 1,
-                                   $CFG_GLPI["document_types"], false, true);
+                                   $CFG_GLPI["document_types"], false, true, 'item_itemtype');
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                         _sx('button', 'Delete')."'>";
          break;
@@ -293,7 +293,7 @@ if (isset($_POST["action"])
          if ($_POST['itemtype']=='Contract') {
 
                Dropdown::showAllItems("items_id", 0, 0, 1,
-                                    $CFG_GLPI["contract_types"], false, true);
+                                    $CFG_GLPI["contract_types"], false, true, 'item_itemtype');
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            _sx('button', 'Add')."'>";
          } else {
@@ -306,7 +306,7 @@ if (isset($_POST["action"])
       case "remove_contract_item" :
          if ($_POST['itemtype'] == 'Contract') {
             Dropdown::showAllItems("items_id", 0, 0, 1,
-                                   $CFG_GLPI["contract_types"], false, true);
+                                   $CFG_GLPI["contract_types"], false, true, 'item_itemtype');
          echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                         _sx('button', 'Delete')."'>";
          } else {
