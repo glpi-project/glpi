@@ -211,7 +211,7 @@ if (isset($_POST["action"])
          if ($_POST['itemtype']=='Computer') {
             Dropdown::showAllItems("items_id", 0, 0, $_SESSION["glpiactive_entity"],
                                  array('Monitor', 'Peripheral', 'Phone',  'Printer'),
-                                 true, true);
+                                 true, true, 'item_itemtype');
             echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
                            __s('Connect')."'>";
          } else {
