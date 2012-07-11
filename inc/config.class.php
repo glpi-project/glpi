@@ -1213,6 +1213,8 @@ class Config extends CommonDBTM {
 
       echo "\n</pre></td></tr>";
 
+      self::showLibrariesInformation();
+
       foreach ($CFG_GLPI["systeminformations_types"] as $type) {
          $tmp = new $type();
          $tmp->showSystemInformations($width);
@@ -1225,6 +1227,33 @@ class Config extends CommonDBTM {
       echo "<tr class='tab_bg_2'><th>". __('To copy/paste in your support request')."</th></tr>\n";
 
       echo "</table></div>\n";
+   }
+
+
+   /**
+    * show Libraries information in system information
+    *
+    * @since version 0.84
+   **/
+   static function showLibrariesInformation() {
+
+      // No gettext
+
+      echo "<tr class='tab_bg_2'><th>Libraries</th></tr>\n";
+      echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+
+      include_once(GLPI_HTMLAWED);
+      echo "htmLawed version " . hl_version() . " in (" . realpath(dirname(GLPI_HTMLAWED)) . ")\n";
+
+      include (GLPI_PHPCAS);
+      echo "phpCas version " . phpCAS::getVersion() . " in (" .
+            (dirname(GLPI_PHPCAS) ? realpath(dirname(GLPI_PHPCAS)) : "system") . ")\n";
+
+      require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
+      $pm = new PHPMailer();
+      echo "PHPMailer version " . $pm->Version . " in (" . realpath(GLPI_PHPMAILER_DIR) . ")\n";
+
+      echo "\n</pre></td></tr>";
    }
 
 
