@@ -255,6 +255,7 @@ switch ($current_version) {
       include("../install/update_0831_0833.php");
       update0831to0833();
 
+   case "0.83.3" :
    case GLPI_VERSION :
       break;
 
