@@ -1750,7 +1750,7 @@ class User extends CommonDBTM {
     *
     * @since version 0.84
    **/
-   static function showPersonnalInformation($userid) {
+   static function showPersonalInformation($userid) {
       global $CFG_GLPI;
 
       $user = new self();
@@ -1758,22 +1758,49 @@ class User extends CommonDBTM {
           && ($userid != Session::getLoginUserID())) {
          return false;
       }
-      printf(__('%1$s: %2$s')."<br>", "<b>".__('Name')."</b>",
-             getUserName($userid));
-      printf(__('%1$s: %2$s')."<br>", "<b>".__('Phone')."</b>",
-             $user->getField('phone'));
-      printf(__('%1$s: %2$s')."<br>", "<b>".__('Phone 2')."</b>",
-             $user->getField('phone2'));
-      printf(__('%1$s: %2$s')."<br>", "<b>".__('Mobile phone')."</b>",
-             $user->getField('mobile'));
-      printf(__('%1$s: %2$s')."<br>", "<b>".__('Location')."</b>",
-            Dropdown::getDropdownName('glpi_locations', $user->getField('locations_id')));
+      echo "<table class='tab_glpi left' width='100%'>";
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='b' width='20%'>";
+      _e('Name');
+      echo "</td><td width='30%'>";
+      echo getUserName($userid);
+      echo "</td>";
+      echo "<td class='b'  width='20%'>";
+      _e('Phone');
+      echo "</td><td width='30%'>";
+      echo $user->getField('phone');
+      echo "</td>";
+      echo "</tr>";
 
+      echo "<tr>";
+      echo "<td class='b'>";
+      _e('Phone 2');
+      echo "</td><td>";
+      echo $user->getField('phone2');
+      echo "</td>";
+      echo "<td class='b'>";
+      _e('Mobile phone');
+      echo "</td><td>";
+      echo $user->getField('mobile');
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr>";
+      echo "<td class='b'>";
+      _e('Location');
+      echo "</td><td>";
+      echo Dropdown::getDropdownName('glpi_locations', $user->getField('locations_id'));
+      echo "</td>";
+      echo "<td colspan='2' class='center'>";
       if ($userid == Session::getLoginUserID()) {
-         echo "<br><a href='".$CFG_GLPI['root_doc']."/front/preference.php' class='vsubmit'>".
-              __('Edit')."</a>";
-
+         echo "<a href='".$CFG_GLPI['root_doc']."/front/preference.php' class='vsubmit'>".
+               __('Edit')."</a>";
+      } else {
+         echo "&nbsp;";
       }
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
    }
 
 
