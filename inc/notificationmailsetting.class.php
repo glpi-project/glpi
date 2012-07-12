@@ -124,8 +124,8 @@ class NotificationMailSetting extends CommonDBTM {
    function showFormMailServerConfig() {
       global $CFG_GLPI;
 
-      echo "<div>";
       echo "<form action='".Toolbox::getItemTypeFormURL(__CLASS__)."' method='post'>";
+      echo "<div>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<input type='hidden' name='id' value='1'>";
 
