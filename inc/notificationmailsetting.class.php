@@ -209,7 +209,9 @@ class NotificationMailSetting extends CommonDBTM {
          echo "<td colspan='2'></td></tr>";
       }
       $options['candel']     = false;
-      $options['addbuttons'] = array('test_smtp_send' => __('Send a test email to the administrator'));
+      if ($CFG_GLPI['use_mailing']) {
+         $options['addbuttons'] = array('test_smtp_send' => __('Send a test email to the administrator'));
+      }
       $this->showFormButtons($options);
 
    }
