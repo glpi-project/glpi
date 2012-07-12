@@ -280,7 +280,7 @@ class Plugin extends CommonDBTM {
    static function isAllPluginsCSRFCompliant() {
       global $PLUGIN_HOOKS;
 
-/*
+
       if (isset($_SESSION['glpi_plugins']) && is_array($_SESSION['glpi_plugins'])
          && count($_SESSION['glpi_plugins'])) {
          foreach ($_SESSION['glpi_plugins'] as $plug) {
@@ -290,7 +290,7 @@ class Plugin extends CommonDBTM {
             }
          }
       }
-*/
+
       return true;
    }
 
