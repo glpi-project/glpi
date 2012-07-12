@@ -3090,7 +3090,7 @@ class Ticket extends CommonITILObject {
          echo "</div>";
          if ($CFG_GLPI['use_check_pref'] && $options['nodelegate']) {
             echo "</td><td class='center'>";
-            User::showPersonnalInformation(Session::getLoginUserID());
+            User::showPersonalInformation(Session::getLoginUserID());
          }
          echo "</td></tr>";
 
@@ -3101,7 +3101,7 @@ class Ticket extends CommonITILObject {
          echo "<div class='center'><table class='tab_cadre_fixe'>";
          echo "<tr><th>".__('Check your personnal information')."</th></tr>";
          echo "<tr class='tab_bg_1'><td class='center'>";
-         User::showPersonnalInformation(Session::getLoginUserID());
+         User::showPersonalInformation(Session::getLoginUserID());
          echo "</td></tr>";
          echo "</table></div>";
       }
