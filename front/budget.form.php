@@ -77,11 +77,11 @@ if (isset($_POST["add"])) {
    }
    $budget->redirectToList();
 
-} else if (isset($_REQUEST["purge"])) {
-   $budget->check($_REQUEST["id"],'w');
+} else if (isset($_POST["purge"])) {
+   $budget->check($_POST["id"],'w');
 
-   if ($budget->delete($_REQUEST,1)) {
-      Event::log($_REQUEST["id"], "budget", 4, "financial",
+   if ($budget->delete($_POST,1)) {
+      Event::log($_POST["id"], "budget", 4, "financial",
                   //TRANS: %s is the user login
                   sprintf(__('%s purges an item'), $_SESSION["glpiname"]));
    }
