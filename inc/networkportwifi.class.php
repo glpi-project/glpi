@@ -135,18 +135,6 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
       NetworkPort_Vlan::getHTMLTableCellsForItem($row, $netport, NULL, $options);
 
-      /*
-      if (isset($options['withtemplate'])) {
-         $withtemplate = $options['withtemplate'];
-      } else {
-         $withtemplate = '';
-      }
-
-      $table->addElement(array('function' => array(__CLASS__, 'showConnection'),
-                               'parameters' => array($item, $netport, $withtemplate)),
-                         "Connected", $this->getID(),$netport->getID());
-      */
-
    }
 
 
