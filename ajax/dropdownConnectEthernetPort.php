@@ -67,7 +67,7 @@ if (class_exists($_POST["itemtype"])
                ON (`glpi_netpoints`.`id`=`glpi_networkportethernets`.`netpoints_id`)
              WHERE `glpi_networkports_networkports`.`id` IS NULL
                    AND `glpi_networkports`.`id` IS NOT NULL
-                   AND `glpi_networkports`.`id` <> '".$_POST['current']."'
+                   AND `glpi_networkports`.`id` <> '".$_POST['networkports_id']."'
                    AND `$table`.`is_deleted` = '0'
                    AND `$table`.`is_template` = '0'
              ORDER BY `glpi_networkports`.`id`";
@@ -75,7 +75,7 @@ if (class_exists($_POST["itemtype"])
    $result = $DB->query($query);
 
    echo "<br>";
-   echo "<select name='".$_POST['myname']."[".$_POST["current"]."]' size='1'>";
+   echo "<select name='".$_POST['myname']."' size='1'>";
    echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
    if ($DB->numrows($result)) {
@@ -108,6 +108,6 @@ if (class_exists($_POST["itemtype"])
    }
    echo "</select>";
 
-   echo "<input type='submit' name='connect' value=\"".__s('Connect')."\" class='submit'>";
+//    echo "<input type='submit' name='connect' value=\"".__s('Connect')."\" class='submit'>";
 }
 ?>

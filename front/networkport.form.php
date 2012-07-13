@@ -116,7 +116,7 @@ if (isset($_POST["add"])) {
               sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
    Html::back();
 
-} else if (isset($_POST["connect"])) {
+} /*else if (isset($_POST["connect"])) {
    if (isset($_POST["dport"]) && count($_POST["dport"])) {
 
       foreach ($_POST["dport"] as $sport => $dport) {
@@ -128,7 +128,7 @@ if (isset($_POST["add"])) {
    }
    Html::back();
 
-} else if (isset($_GET["disconnect"])) {
+}*/ else if (isset($_GET["disconnect"])) {
    $nn->check($_GET['id'],'d');
 
    if (isset($_GET["id"])) {

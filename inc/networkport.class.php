@@ -191,12 +191,14 @@ class NetworkPort extends CommonDBChild {
 
       if (isset($this->input_for_instantiation)
           || isset($this->input_for_NetworkName)
+          || isset($this->input_for_NetworkPortConnect)
           || !isset($input)) {
          return;
       }
 
-      $this->input_for_instantiation = array();
-      $this->input_for_NetworkName   = array();
+      $this->input_for_instantiation      = array();
+      $this->input_for_NetworkName        = array();
+      $this->input_for_NetworkPortConnect = array();
 
       foreach ($input as $field => $value) {
          if (array_key_exists($field, $this->fields)) {
@@ -205,6 +207,9 @@ class NetworkPort extends CommonDBChild {
          if (preg_match('/^NetworkName_/',$field)) {
             $networkName_field = preg_replace('/^NetworkName_/','',$field);
             $this->input_for_NetworkName[$networkName_field] = $value;
+         } else if (preg_match('/^NetworkPortConnect_/',$field)) {
+            $networkName_field = preg_replace('/^NetworkPortConnect_/','',$field);
+            $this->input_for_NetworkPortConnect[$networkName_field] = $value;
          } else {
             $this->input_for_instantiation[$field] = $value;
          }
@@ -257,6 +262,15 @@ class NetworkPort extends CommonDBChild {
          }
       }
       unset($this->input_for_NetworkName);
+      if (count($this->input_for_NetworkPortConnect) > 0) {
+         if (isset($this->input_for_NetworkPortConnect['networkports_id_1'])
+             && isset($this->input_for_NetworkPortConnect['networkports_id_2'])
+             && !empty($this->input_for_NetworkPortConnect['networkports_id_2'])) {
+               $nn  = new NetworkPort_NetworkPort();
+               $nn->add($this->input_for_NetworkPortConnect);
+         }
+      }
+      unset($this->input_for_NetworkPortConnect);
 
    }
 
