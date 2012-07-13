@@ -80,6 +80,10 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       echo "<tr class='tab_bg_1'>\n";
       $this->showMacField($netport, $options);
+
+      echo "<td>".__('Connected to').'</td><td>';
+      self::showConnection($netport, true);
+      echo "</td>";
       echo "</tr>\n";
   }
 
@@ -129,28 +133,37 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                     array(array('function'   => array(__CLASS__, 'showConnection'),
-                                'parameters' => array($item, clone $netport,
-                                                      (isset($options['withtemplate'])
-                                                       && $options['withtemplate'])))));
+                                'parameters' => array(clone $netport))));
    }
 
 
    /**
     * Display a connection of a networking port
     *
-    * @param $device1      the device of the port
     * @param $netport      to be displayed
-    * @param $withtemplate (default '')
+    * @param $edit         boolean permit to edit ?
    **/
-   static function showConnection($device1, $netport, $withtemplate='') {
-
+   static function showConnection($netport, $edit= false) {
+      $ID      = $netport->fields["id"]; 
+      if (empty($ID)) {
+         return false;
+      }
+      if (!isset($netport->fields['itemtype']) ||
+            !isset($netport->fields['items_id'])) {
+         return false;
+      } else {
+         $device1 = new $netport->fields['itemtype']();
+         if (!$device1->getFromDB($netport->fields['items_id'])) {
+            return false;
+         }
+      }
       if (!$device1->can($device1->fields["id"], 'r')) {
          return false;
       }
-
+      
       $contact = new NetworkPort_NetworkPort();
       $canedit = $device1->can($device1->fields["id"], 'w');
-      $ID      = $netport->fields["id"];
+      
 
       if ($contact_id = $contact->getOppositeContact($ID)) {
          $netport->getFromDB($contact_id);
@@ -178,13 +191,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                       || $device2->can($device2->fields["id"], 'w')) {
                      echo " <span class='b'>";
 
-                     if ($withtemplate != 2) {
-                        echo "<a href=\"".$netport->getFormURL()."?disconnect=".
-                              "disconnect&amp;id=".$contact->fields['id']."\">". __('Disconnect').
-                             "</a>";
-                     } else {
-                        echo "";
-                     }
+                     echo "<a href=\"".$netport->getFormURL()."?disconnect=".
+                           "disconnect&amp;id=".$contact->fields['id']."\">". __('Disconnect').
+                           "</a>";
 
                      echo "</span>";
                   }
@@ -206,16 +215,20 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
          }
 
       } else {
+         echo "<div id='not_connected_display$ID'>" . __('Not connected.') . "</div>";
          if ($canedit) {
-            if (($withtemplate != 2) && ($withtemplate != 1)) {
-               self::dropdownConnect($ID, array('name'        => 'dport',
-                                                'entity'      => $device1->fields["entities_id"],
-                                                'entity_sons' => $device1->isRecursive()));
+            if (!$device1->isTemplate()) {
+               if ($edit) {
+                  self::dropdownConnect($ID, array('name'        => 'NetworkPortConnect_networkports_id_2',
+                                                   'entity'      => $device1->fields["entities_id"],
+                                                   'entity_sons' => $device1->isRecursive()));
+               } else {
+                  echo "<a href=\"".$netport->getFormURL()."?id=$ID\">". __('Connect')."</a>";
+               }
             } else {
                echo "&nbsp;";
             }
          }
-         echo "<div id='not_connected_display$ID'>" . __('Not connected.') . "</div>";
       }
    }
 
@@ -258,7 +271,8 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       }
 
       $rand = mt_rand();
-      echo "<select name='itemtype[$ID]' id='itemtype$rand'>";
+      echo "<input type='hidden' name='NetworkPortConnect_networkports_id_1'value='$ID'>";
+      echo "<select name='NetworkPortConnect_itemtype' id='itemtype$rand'>";
       echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
       foreach ($CFG_GLPI["networkport_types"] as $key => $itemtype) {
@@ -272,7 +286,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       $params = array('itemtype'        => '__VALUE__',
                       'entity_restrict' => $p['entity'],
-                      'current'         => $ID,
+                      'networkports_id' => $ID,
                       'comments'        => $p['comments'],
                       'myname'          => $p['name']);
 

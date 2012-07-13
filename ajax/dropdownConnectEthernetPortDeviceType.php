@@ -56,12 +56,12 @@ if (class_exists($_POST["itemtype"])) {
                                                 'to_update'       => "results_item_$rand",
                                                 'url' => $CFG_GLPI["root_doc"].
                                                             "/ajax/dropdownConnectEthernetPort.php",
-                                                'moreparams'      => array('current'
-                                                                              => $_POST['current'],
+                                                'moreparams'      => array('networkports_id'
+                                                                              => $_POST['networkports_id'],
                                                 'itemtype'        => $_POST['itemtype'],
                                                 'myname'          => $_POST['myname'])));
 
-   $default = "<select name='item$rand'><option value='0'>".Dropdown::EMPTY_VALUE."</option>".
+   $default = "<select name='NetworkPortConnect_item'><option value='0'>".Dropdown::EMPTY_VALUE."</option>".
               "</select>\n";
    Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $paramsconnectpdt, $default, $rand);
 
