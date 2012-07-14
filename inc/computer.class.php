@@ -337,7 +337,7 @@ class Computer extends CommonDBTM {
 
          // ADD Contract
          Contract_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
-         
+
          // ADD Documents
          Document_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 

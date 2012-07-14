@@ -617,21 +617,19 @@ function update0831to084() {
       $migration->dropField('glpi_networkports', $field);
    }
 
-   $migration->dropField('glpi_networkequipments', 'ip');
+   foreach (array('ip', 'mac') as $field) {
+      $migration->dropField('glpi_networkequipments', $field);
+   }
 
    //TRANS: %s is the table or item to migrate
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'Index mac field and transform address mac to lower'));
 
-   foreach (array('glpi_networkports', 'glpi_networkequipments') as $table) {
+   $query = "UPDATE `glpi_networkports`
+             SET `mac` = LOWER(`mac`)";
+   $DB->queryOrDie($query, "0.84 transforme MAC to lower case");
 
-      $query = "UPDATE $table
-                SET `mac` = LOWER(`mac`)";
-      $DB->queryOrDie($query, "0.84 transforme MAC to lower case");
-
-     $migration->addKey($table, 'mac');
-
-   }
+   $migration->addKey('glpi_networkports', 'mac');
 
    //TRANS: %s is the name of the table
    $migration->displayMessage(sprintf(__('Data migration - %s'),
@@ -752,7 +750,76 @@ function update0831to084() {
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->queryOrDie($query, "0.84 create glpi_networkportaggregates");
 
-      // New element, so, we don't need to create items
+      // Transform NetworkEquipment local MAC address as a networkport that aggregates all ports
+      $query = "SELECT *
+                FROM `origin_glpi_networkequipments`
+                WHERE `mac` != ''
+                      OR `ip` != ''";
+      $port_input = array('itemtype'           => 'NetworkEquipment',
+                          'logical_number'     => '0',
+                          'name'               => 'management',
+                          'instantiation_type' => 'NetworkPortAggregate');
+      foreach ($DB->request($query) as $equipment) {
+
+         $networkequipments_id       = $equipment['id'];
+
+         $query = "SELECT `id`, `ip`, `mac`
+                   FROM `origin_glpi_networkports`
+                   WHERE `itemtype` = 'NetworkEquipment'
+                         AND `items_id` = '$networkequipments_id'
+                         AND (`ip` = '".$equipment['ip']."'
+                              OR `mac` = '".$equipment['mac']."')";
+
+         $both = array();
+         $mac  = array();
+         $ip   = array();
+         foreach ($DB->request($query) as $ports) {
+            if ($ports['ip'] == $equipment['ip']) {
+               if ($ports['mac'] == $equipment['mac']) {
+                  $both[] = $ports['id'];
+               } else {
+                  $ip[] = $ports['id'];
+               }
+            } else {
+               $mac[] = $ports['id'];
+            }
+         }
+
+         if (count($both) != 1) { // Only add a NetworkPort if there is 0 or more than one element !
+            $port_input['items_id']     = $networkequipments_id;
+            $port_input['entities_id']  = $equipment['entities_id'];
+            $port_input['is_recursive'] = $equipment['is_recursive'];
+            $port_input['mac']          = strtolower ($equipment['mac']);
+
+            $networkports_id = $migration->insertInTable('glpi_networkports', $port_input);
+
+            $aggregate_input                         = array();
+            $aggregate_input['networkports_id']      = $networkports_id;
+            $aggregate_input['networkports_id_list'] = exportArrayToDB($both);
+
+            $migration->insertInTable('glpi_networkportaggregates', $aggregate_input);
+
+            // Attach the NetworkName of the equipment to the networkport
+            $query = "UPDATE `glpi_networknames`
+                      SET `itemtype`='NetworkPort', `items_id` = '$networkports_id'
+                      WHERE `itemtype`='NetworkEquipment'
+                            AND `items_id` = '$networkequipments_id'";
+            $DB->query($query);
+
+            // TODO : we may remove the informations attached to the NetworkPorts
+            foreach ($both as $aggregated_networkports_id) {
+               $query = "DELETE FROM `glpi_networknames`
+                         WHERE `itemtype` = 'NetworkPort'
+                               AND `items_id` = '$aggregated_networkports_id'";
+               $DB->query($query);
+
+               $query = "UPDATE `glpi_networkports`
+                         SET `mac` = ''
+                         WHERE `id` = '$aggregated_networkports_id'";
+               $DB->query($query);
+            }
+         }
+      }
    }
 
    //TRANS: %s is the name of the table
