@@ -582,13 +582,22 @@ class NetworkName extends FQDNLabel {
                       ORDER BY `glpi_networknames`.`name`";
             break;
 
-         case 'NetworkEquipment' :
-         case 'NetworkPort' :
+        case 'NetworkPort' :
             $query = "SELECT `id`
                       FROM `glpi_networknames`
                       WHERE `itemtype` = '".$item->getType()."'
                             AND `items_id` = '".$item->getID()."'";
             break;
+
+        case 'NetworkEquipment' :
+            $query = "SELECT `glpi_networknames`.`id`
+                      FROM `glpi_networknames`, `glpi_networkports`
+                      WHERE `glpi_networkports`.`itemtype` = '".$item->getType()."'
+                            AND `glpi_networkports`.`items_id` ='".$item->getID()."'
+                            AND `glpi_networknames`.`itemtype` = 'NetworkPort'
+                            AND `glpi_networknames`.`items_id` = `glpi_networkports`.`id`";
+            break;
+
       }
 
       if (isset($options['SQL_options'])) {
@@ -656,7 +665,9 @@ class NetworkName extends FQDNLabel {
 
       $table_options = array('createRow' => true);
 
-      if (($item->getType() == 'IPNetwork') || ($item->getType() == 'FQDN')) {
+      if (($item->getType() == 'IPNetwork')
+          || ($item->getType() == 'FQDN')
+          || ($item->getType() == 'NetworkEquipment')) {
          if (isset($_REQUEST["start"])) {
             $start = $_REQUEST["start"];
          } else {
@@ -701,7 +712,6 @@ class NetworkName extends FQDNLabel {
       // Reorder the columns for better display
       $display_table = true;
       switch ($item->getType()) {
-         case 'NetworkEquipment' :
          case 'NetworkPort' :
          case 'FQDN' :
             break;
@@ -742,7 +752,7 @@ class NetworkName extends FQDNLabel {
          }
       }
 
-      if (($item->getType() == 'NetworkEquipment') || ($item->getType() == 'NetworkPort')) {
+      if ($item->getType() == 'NetworkPort') {
 
          $items_id = $item->getID();
          $itemtype = $item->getType();
@@ -781,10 +791,10 @@ class NetworkName extends FQDNLabel {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {
-         case 'NetworkEquipment' :
          case 'NetworkPort' :
          case 'IPNetwork' :
          case 'FQDN' :
+         case 'NetworkEquipment' :
             self::showForItem($item, $withtemplate);
             break;
       }
@@ -803,7 +813,7 @@ class NetworkName extends FQDNLabel {
                       FROM `glpi_ipaddresses`, `glpi_ipaddresses_ipnetworks`
                       WHERE `glpi_ipaddresses`.`itemtype` = 'NetworkName'
                             AND `glpi_ipaddresses`.`id` =`glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
-                            AND `glpi_ipaddresses_ipnetworks`.`ipnetworks_id` = '3'";
+                            AND `glpi_ipaddresses_ipnetworks`.`ipnetworks_id` = '".$item->getID()."'";
             $result = $DB->query($query);
             $ligne  = $DB->fetch_assoc($result);
             return $ligne['cpt'];
@@ -812,11 +822,21 @@ class NetworkName extends FQDNLabel {
             return countElementsInTable('glpi_networknames',
                                         "`fqdns_id` = '".$item->fields["id"]."'");
 
-         case 'NetworkEquipment' :
          case 'NetworkPort' :
             return countElementsInTable('glpi_networknames',
                                         "itemtype = '".$item->getType()."'
                                              AND items_id = '".$item->getID()."'");
+
+         case 'NetworkEquipment' :
+            $query = "SELECT DISTINCT COUNT(*) AS cpt
+                      FROM `glpi_networknames`, `glpi_networkports`
+                      WHERE `glpi_networkports`.`itemtype` = '".$item->getType()."'
+                            AND `glpi_networkports`.`items_id` ='".$item->getID()."'
+                            AND `glpi_networknames`.`itemtype` = 'NetworkPort'
+                            AND `glpi_networknames`.`items_id` = `glpi_networkports`.`id`";
+            $result = $DB->query($query);
+            $ligne  = $DB->fetch_assoc($result);
+            return $ligne['cpt'];
       }
    }
 

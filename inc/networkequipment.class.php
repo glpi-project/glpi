@@ -68,8 +68,8 @@ class NetworkEquipment extends CommonDBTM {
    function defineTabs($options=array()) {
 
       $ong = array();
-      $this->addStandardTab('NetworkName', $ong, $options);
       $this->addStandardTab('NetworkPort', $ong, $options);
+      $this->addStandardTab('NetworkName', $ong, $options);
       $this->addStandardTab('Infocom', $ong, $options);
       $this->addStandardTab('Contract_Item', $ong, $options);
       $this->addStandardTab('Document', $ong, $options);
@@ -114,14 +114,6 @@ class NetworkEquipment extends CommonDBTM {
          Document_Item::cloneItem($this->getType(), $this->input["_oldID"], $this->fields['id']);
 
       }
-   }
-
-
-   /**
-    * @since version 0.84
-   **/
-   function cleanDBonPurge() {
-      NetworkName::unaffectAddressesOfItem($this->getID(), $this->getType());
    }
 
 
@@ -313,10 +305,9 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('MAC')."</td>";
-      echo "<td>";
-      Html::autocompletionTextField($this, "mac");
-      echo "</td></tr>";
+      echo "<td colspan=2>".__('The MAC address and the IP of the equipment
+                                are included in an aggregated network port')."</td>";
+      echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>"._n('Firmware', 'Firmwares', 1)."</td>";
@@ -452,11 +443,6 @@ class NetworkEquipment extends CommonDBTM {
       $tab[14]['field']          = 'ram';
       $tab[14]['name']           = sprintf(__('%1$s (%2$s)'),__('Memory'),__('Mio'));
       $tab[14]['datatype']       = 'number';
-
-      $tab[13]['table']          = $this->getTable();
-      $tab[13]['field']          = 'mac';
-      $tab[13]['name']           = sprintf(__('%1$s (%2$s)'), __('MAC'), __('Network device'));
-      $tab[13]['datatype']       = 'mac';
 
       $tab[32]['table']          = 'glpi_networks';
       $tab[32]['field']          = 'name';
