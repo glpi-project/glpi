@@ -583,16 +583,27 @@ class NetworkPort extends CommonDBChild {
 
                   $t_row->addCell($c_name, $netport->fields["name"], NULL, $netport);
 
+                  $portsForName = array($netport);
                   $instantiation = $netport->getInstantiation();
                   if ($instantiation !== false) {
                      $instantiation->getInstantiationHTMLTable_($netport, $item, $t_row,
                                                                 $table_options);
                      if ($instantiation->getType() == 'NetworkPortEthernet') {
-                        echo __FILE__." ".__LINE__."<br>\n";
+                        $opposite = new NetworkPort();
+                        if ($opposite->getFromDB($netport->getContact($netport->getID()))) {
+                           $portsForName[] = $opposite;
+                        }
                      }
                      unset($instantiation);
                   }
-                  NetworkName::getHTMLTableCellsForItem($t_row, $netport, NULL, $table_options);
+                  foreach ($portsForName as $port) {
+                     $options = $table_options;
+                     if ($port != $netport) {
+                        $options['canedit'] = false;
+                     }
+                     // TODO : we may display opposite informations differently ...
+                     NetworkName::getHTMLTableCellsForItem($t_row, $port, NULL, $options);
+                  }
 
                }
 
