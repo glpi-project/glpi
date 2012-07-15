@@ -144,7 +144,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
     * @param $edit         boolean permit to edit ?
    **/
    static function showConnection($netport, $edit= false) {
-      $ID      = $netport->fields["id"]; 
+      $ID      = $netport->fields["id"];
       if (empty($ID)) {
          return false;
       }
@@ -160,27 +160,27 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       if (!$device1->can($device1->fields["id"], 'r')) {
          return false;
       }
-      
+
       $contact = new NetworkPort_NetworkPort();
       $canedit = $device1->can($device1->fields["id"], 'w');
-      
 
       if ($contact_id = $contact->getOppositeContact($ID)) {
-         $netport->getFromDB($contact_id);
+         $oppositePort = clone $netport;
+         $oppositePort->getFromDB($contact_id);
 
-        if ($device2 = getItemForItemtype($netport->fields["itemtype"])) {
+        if ($device2 = getItemForItemtype($oppositePort->fields["itemtype"])) {
 
-            if ($device2->getFromDB($netport->fields["items_id"])) {
+            if ($device2->getFromDB($oppositePort->fields["items_id"])) {
 
                if ($device2->can($device2->fields["id"], 'r')) {
-                  $networklink = $netport->getLink();
-                  $tooltip = Html::showToolTip($netport->fields['comment'],
+                  $networklink = $oppositePort->getLink();
+                  $tooltip     = Html::showToolTip($oppositePort->fields['comment'],
                                                array('display' => false));
-                  $netlink = sprintf(__('%1$s %2$s'),
-                                     "<span class='b'>".$networklink."</span>\n", $tooltip);
+                  $netlink     = sprintf(__('%1$s %2$s'),
+                                         "<span class='b'>".$networklink."</span>\n", $tooltip);
                   //TRANS: %1$s and %2$s are links
-                  echo "&nbsp;". sprintf(__('%1$s on %2$s'),
-                                         $netlink, "<span class='b'>".$device2->getLink()."</span>");
+                  echo "&nbsp;". sprintf(__('%1$s on %2$s'), $netlink,
+                                         "<span class='b'>".$device2->getLink()."</span>");
                   if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
                      echo "<br>(". Dropdown::getDropdownName("glpi_entities",
                                                              $device2->getEntityID()) .")";
@@ -191,7 +191,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                       || $device2->can($device2->fields["id"], 'w')) {
                      echo " <span class='b'>";
 
-                     echo "<a href=\"".$netport->getFormURL()."?disconnect=".
+                     echo "<a href=\"".$oppositePort->getFormURL()."?disconnect=".
                            "disconnect&amp;id=".$contact->fields['id']."\">". __('Disconnect').
                            "</a>";
 
@@ -199,9 +199,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                   }
 
                } else {
-                  if (rtrim($netport->fields["name"]) != "") {
-                     $netname = $netport->fields["name"];
-                     echo $netport->fields["name"];
+                  if (rtrim($oppositePort->fields["name"]) != "") {
+                     $netname = $oppositePort->fields["name"];
+                     echo $oppositePort->fields["name"];
                   } else {
                      $netname = __('Without name');
                   }
