@@ -415,6 +415,7 @@ class NetworkName extends FQDNLabel {
                    FROM `".$name->getTable()."`
                    WHERE `itemtype` = 'NetworkPort'
                    AND `items_id` = '$networkPortID'";
+
          $result = $DB->query($query);
 
          if ($DB->numrows($result) > 1) {
