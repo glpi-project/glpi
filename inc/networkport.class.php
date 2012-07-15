@@ -483,14 +483,17 @@ class NetworkPort extends CommonDBChild {
          if (empty($portType)) {
             $t_group = $table->createGroup('Migration',
                                            __('Network ports waiting for manual migration'));
-            NetworkPortMigration::getInstantiationHTMLTable_Headers($t_group, $c_instant,
-                                                                    $table_options);
+            $sc_instant = NetworkPortMigration::getInstantiationHTMLTable_Headers($t_group,
+                                                                                  $c_instant,
+                                                                                  $table_options);
          } else {
             $t_group = $table->createGroup($portType, $portType::getTypeName(2));
-            $portType::getInstantiationHTMLTable_Headers($t_group, $c_instant, $table_options);
+            $sc_instant = $portType::getInstantiationHTMLTable_Headers($t_group, $c_instant,
+                                                                       $table_options);
          }
 
-         NetworkName::getHTMLTableHeader(__CLASS__, $t_group, $c_network, NULL, $table_options);
+         NetworkName::getHTMLTableHeader(__CLASS__, $t_group, $c_network, $sc_instant,
+                                         $table_options);
 
          if ($itemtype == 'NetworkPort') {
             switch ($portType) {
@@ -583,13 +586,16 @@ class NetworkPort extends CommonDBChild {
 
                   $t_row->addCell($c_name, $netport->fields["name"], NULL, $netport);
 
-                 $instantiation = $netport->getInstantiation();
+                  $instant_cell = NULL;
+                  $instantiation = $netport->getInstantiation();
                   if ($instantiation !== false) {
-                     $instantiation->getInstantiationHTMLTable_($netport, $item, $t_row,
-                                                                $table_options);
+                     $instant_cell = $instantiation->getInstantiationHTMLTable_($netport, $item,
+                                                                                $t_row,
+                                                                                $table_options);
                      unset($instantiation);
                   }
-                  NetworkName::getHTMLTableCellsForItem($t_row, $netport, NULL, $table_options);
+                  NetworkName::getHTMLTableCellsForItem($t_row, $netport, $instant_cell,
+                                                        $table_options);
 
                }
 

@@ -57,6 +57,9 @@ class NetworkPortDialup extends NetworkPortInstantiation {
                                                      $options=array()) {
 
       $group->addHeader('MAC', __('MAC'), $super);
+
+      return NULL;
+
    }
 
 
@@ -67,6 +70,9 @@ class NetworkPortDialup extends NetworkPortInstantiation {
                                        HTMLTable_Row $row, $canedit, $options=array()) {
 
       $row->addCell($row->getHeaderByName('Instantiation', 'MAC'), $netport->fields["mac"]);
+
+      return NULL;
+
    }
 
 
