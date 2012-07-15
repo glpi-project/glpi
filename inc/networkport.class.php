@@ -57,7 +57,7 @@ class NetworkPort extends CommonDBChild {
       $forbidden[] = 'update';
       return $forbidden;
    }
-   
+
    /**
     * \brief get the list of available network port type.
     *
@@ -587,6 +587,9 @@ class NetworkPort extends CommonDBChild {
                   if ($instantiation !== false) {
                      $instantiation->getInstantiationHTMLTable_($netport, $item, $t_row,
                                                                 $table_options);
+                     if ($instantiation->getType() == 'NetworkPortEthernet') {
+                        echo __FILE__." ".__LINE__."<br>\n";
+                     }
                      unset($instantiation);
                   }
                   NetworkName::getHTMLTableCellsForItem($t_row, $netport, NULL, $table_options);
