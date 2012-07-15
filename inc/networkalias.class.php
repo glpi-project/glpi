@@ -184,7 +184,7 @@ class NetworkAlias extends FQDNLabel {
 
       $content     = self::getTypeName();
       $this_header = $base->addHeader($column_name, $content, $super, $father);
-    }
+   }
 
 
    /**

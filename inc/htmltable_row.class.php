@@ -168,10 +168,14 @@ class HTMLTable_Row extends HTMLTable_Entity {
                   $display |= $cell->display($i);
                }
                if (!$display) {
-                  echo "\t\t\t<td colspan='".$header->getColSpan()."'></td>\n";
+                  echo "\t\t\t<td colspan='".$header->getColSpan()."'";
+                  $header->displayEntityAttributs();
+                  echo "></td>\n";
                }
             } else {
-               echo "\t\t\t<td colspan='".$header->getColSpan()."'></td>\n";
+               echo "\t\t\t<td colspan='".$header->getColSpan()."'";
+               $header->displayEntityAttributs();
+               echo "></td>\n";
             }
          }
          echo "\t\t</tr>";
