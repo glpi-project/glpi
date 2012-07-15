@@ -148,16 +148,10 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       if (empty($ID)) {
          return false;
       }
-      if (!isset($netport->fields['itemtype']) ||
-            !isset($netport->fields['items_id'])) {
-         return false;
-      } else {
-         $device1 = new $netport->fields['itemtype']();
-         if (!$device1->getFromDB($netport->fields['items_id'])) {
-            return false;
-         }
-      }
-      if (!$device1->can($device1->fields["id"], 'r')) {
+
+      $device1 = $netport->getItem();
+
+      if (!$device1->can($device1->getID(), 'r')) {
          return false;
       }
 
@@ -168,50 +162,44 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
          $oppositePort = clone $netport;
          $oppositePort->getFromDB($contact_id);
 
-        if ($device2 = getItemForItemtype($oppositePort->fields["itemtype"])) {
+         $device2 = $oppositePort->getItem();
 
-            if ($device2->getFromDB($oppositePort->fields["items_id"])) {
-
-               if ($device2->can($device2->fields["id"], 'r')) {
-                  $networklink = $oppositePort->getLink();
-                  $tooltip     = Html::showToolTip($oppositePort->fields['comment'],
-                                               array('display' => false));
-                  $netlink     = sprintf(__('%1$s %2$s'),
-                                         "<span class='b'>".$networklink."</span>\n", $tooltip);
-                  //TRANS: %1$s and %2$s are links
-                  echo "&nbsp;". sprintf(__('%1$s on %2$s'), $netlink,
-                                         "<span class='b'>".$device2->getLink()."</span>");
-                  if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
-                     echo "<br>(". Dropdown::getDropdownName("glpi_entities",
-                                                             $device2->getEntityID()) .")";
-                  }
-
-                  // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
-                  if ($canedit
-                      || $device2->can($device2->fields["id"], 'w')) {
-                     echo " <span class='b'>";
-
-                     echo "<a href=\"".$oppositePort->getFormURL()."?disconnect=".
-                           "disconnect&amp;id=".$contact->fields['id']."\">". __('Disconnect').
-                           "</a>";
-
-                     echo "</span>";
-                  }
-
-               } else {
-                  if (rtrim($oppositePort->fields["name"]) != "") {
-                     $netname = $oppositePort->fields["name"];
-                     echo $oppositePort->fields["name"];
-                  } else {
-                     $netname = __('Without name');
-                  }
-                  printf(__('%1$s on %2$s'), "<span class='b'>".$netname."</span>",
-                         "<span class='b'>".$device2->getName()."</span>");
-                  echo "<br>(" .Dropdown::getDropdownName("glpi_entities",
-                                                          $device2->getEntityID()) .")";
-               }
-
+         if ($device2->can($device2->fields["id"], 'r')) {
+            $networklink = $oppositePort->getLink();
+            $tooltip     = Html::showToolTip($oppositePort->fields['comment'],
+                                             array('display' => false));
+            $netlink     = sprintf(__('%1$s %2$s'),
+                                   "<span class='b'>".$networklink."</span>\n", $tooltip);
+            //TRANS: %1$s and %2$s are links
+            echo "&nbsp;". sprintf(__('%1$s on %2$s'), $netlink,
+                                   "<span class='b'>".$device2->getLink()."</span>");
+            if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
+               echo "<br>(". Dropdown::getDropdownName("glpi_entities",
+                                                       $device2->getEntityID()) .")";
             }
+
+            // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
+            if ($canedit
+                || $device2->can($device2->fields["id"], 'w')) {
+               echo " <span class='b'>";
+
+               echo "<a href=\"".$oppositePort->getFormURL()."?disconnect=".
+                  "disconnect&amp;id=".$contact->fields['id']."\">". __('Disconnect').
+                  "</a>";
+
+               echo "</span>";
+            }
+
+         } else {
+            if (rtrim($oppositePort->fields["name"]) != "") {
+               $netname = $oppositePort->fields["name"];
+            } else {
+               $netname = __('Without name');
+            }
+            printf(__('%1$s on %2$s'), "<span class='b'>".$netname."</span>",
+                   "<span class='b'>".$device2->getName()."</span>");
+            echo "<br>(" .Dropdown::getDropdownName("glpi_entities",
+                                                    $device2->getEntityID()) .")";
          }
 
       } else {
