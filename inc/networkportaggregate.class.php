@@ -97,6 +97,8 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
       $group->addHeader('Origin', __('Original port'), $super);
       $group->addHeader('MAC', __('MAC'), $super);
       NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super);
+
+      return NULL;
    }
 
 
@@ -119,6 +121,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation {
 
       NetworkPort_Vlan::getHTMLTableCellsForItem($row, $netport, NULL, $options);
 
+      return NULL;
    }
 }
 ?>

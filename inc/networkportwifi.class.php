@@ -112,6 +112,8 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       $group->addHeader('Version', __('Wifi protocol version'), $super);
       NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super);
       //$group->addHeader('Connected', __('Connected to'), $super);
+
+      return NULL;
    }
 
 
@@ -135,6 +137,7 @@ class NetworkPortWifi extends NetworkPortInstantiation {
 
       NetworkPort_Vlan::getHTMLTableCellsForItem($row, $netport, NULL, $options);
 
+      return NULL;
    }
 
 

@@ -104,7 +104,9 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super);
       Netpoint::getHTMLTableHeader('NetworkPortEthernet', $group, $super);
       $group->addHeader('Outlet', __('Network outlet'), $super);
-      $group->addHeader('Connected', __('Connected to'), $super);
+      $header = $group->addHeader('Connected', __('Connected to'), $super);
+
+      return $header;
 
   }
 
@@ -131,9 +133,30 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
       Netpoint::getHTMLTableCellsForItem($row, $this, NULL, $options);
 
-      $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
-                    array(array('function'   => array(__CLASS__, 'showConnection'),
-                                'parameters' => array(clone $netport))));
+      $connect_cell_value = array(array('function'   => array(__CLASS__, 'showConnection'),
+                                        'parameters' => array(clone $netport)));
+
+      $oppositePort = new NetworkPort();
+      if ($oppositePort->getFromDB($netport->getContact($netport->getID()))) {
+         if ((NetworkName::countForItem($netport) > 0)
+             && (NetworkName::countForItem($netport) > 0)) {
+            $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
+                                  __('Local network port'));
+            $opposite_cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
+                                           $connect_cell_value);
+            NetworkName::getHTMLTableCellsForItem($row, $oppositePort, $opposite_cell, $options);
+         } else {
+            $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
+                                  $connect_cell_value);
+            NetworkName::getHTMLTableCellsForItem($row, $oppositePort, $cell, $options);
+         }
+      } else {
+         $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
+                               $connect_cell_value);
+      }
+
+      return $cell;
+
    }
 
 

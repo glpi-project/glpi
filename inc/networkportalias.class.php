@@ -107,6 +107,9 @@ class NetworkPortAlias extends NetworkPortInstantiation {
       $group->addHeader('Origin', __('Origin port'), $super);
       $group->addHeader('MAC', __('MAC'), $super);
       NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super);
+
+      return NULL;
+
    }
 
 
@@ -122,6 +125,8 @@ class NetworkPortAlias extends NetworkPortInstantiation {
       $row->addCell($row->getHeaderByName('Instantiation', 'MAC'), $netport->fields["mac"]);
 
       NetworkPort_Vlan::getHTMLTableCellsForItem($row, $netport, NULL, $options);
+
+      return NULL;
 
     }
 }
