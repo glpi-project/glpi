@@ -159,7 +159,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       $canedit = $device1->can($device1->fields["id"], 'w');
 
       if ($contact_id = $contact->getOppositeContact($ID)) {
-         $oppositePort = clone $netport;
+         $oppositePort = new NetworkPort();
          $oppositePort->getFromDB($contact_id);
 
          $device2 = $oppositePort->getItem();
