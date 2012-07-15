@@ -48,7 +48,7 @@ abstract class HTMLTable_Entity {
 
    private $html_id;
    private $html_style;
-   private $html_class;
+   private $html_class = array();
 
    private $content;
 
@@ -100,7 +100,9 @@ abstract class HTMLTable_Entity {
     * @param $html_class
    **/
    function setHTMLClass($html_class) {
-      $this->html_class = $html_class;
+      if (is_string($html_class)) {
+         $this->html_class[] = $html_class;
+      }
    }
 
 
@@ -112,8 +114,8 @@ abstract class HTMLTable_Entity {
       if (!empty($this->html_style)) {
          echo " style='".$this->html_style."'";
       }
-      if (!empty($this->html_class)) {
-         echo " class='".$this->html_class."'";
+      if (count($this->html_class) > 0) {
+         echo " class='".implode(' ', $this->html_class)."'";
       }
    }
 
