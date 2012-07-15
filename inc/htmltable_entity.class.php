@@ -100,7 +100,9 @@ abstract class HTMLTable_Entity {
     * @param $html_class
    **/
    function setHTMLClass($html_class) {
-      if (is_string($html_class)) {
+      if (is_array($html_class)) {
+         $this->html_class = array_merge($this->html_class, $html_class);
+      } else {
          $this->html_class[] = $html_class;
       }
    }
