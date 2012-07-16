@@ -532,9 +532,17 @@ class IPAddress extends CommonDBChild {
       global $DB;
 
       $this->disableAddress();
-      if (empty($address) || !is_string($address)) {
+
+      if (!is_string($address)) {
          return false;
       }
+
+      $address = trim($address);
+
+      if (empty($address)) {
+         return false;
+      }
+
       if (!empty($itemtype)
           && ($items_id > 0)) {
          $query = "SELECT `id`
@@ -550,6 +558,8 @@ class IPAddress extends CommonDBChild {
             }
          }
       }
+
+      unset($binary);
       $singletons = explode(".", $address);
       // First, check to see if it is an IPv4 address
       if (count($singletons) == 4) {
@@ -565,55 +575,112 @@ class IPAddress extends CommonDBChild {
             $binary *= 256;
             $binary += intval($singleton);
          }
-         $this->version = 4;
-         $this->textual = $address;
-         $this->binary  = self::getIPv4ToIPv6Address($binary);
-         return true;
+         $binary  = self::getIPv4ToIPv6Address($binary);
       }
 
       // Else, it should be an IPv6 address
       $singletons = explode(":", $address);
-      // Minimum IPv6 address is "::". So, we check that there is at least 3 elements in the array
-      if ((count($singletons) > 2) && (count($singletons) < 9)) {
-         $contracted = array();
+      // Minimum IPv6 address is "::". So, we check that there is at least 3 singletons in the array
+      // And no more than 8 singletons
+      if ((count($singletons) >= 3) && (count($singletons) <= 8)) {
+
+         $empty_count = 0;
          foreach ($singletons as $singleton) {
+            $singleton = trim($singleton);
+            // First, we check that each singleton is 4 hexadecimal !
             if (!preg_match("/^[0-9A-Fa-f]{0,4}$/", $singleton, $regs)) {
                return false;
             }
-            if ($singleton == "") {
-               $contracted[] = '';
-            } else {
-               $contracted[] = $singleton;
+            if ($singleton === '') {
+               $empty_count ++;
             }
          }
 
-         for ($i = 0 ; $i < (count($contracted) - 1) ; $i++) {
-            if (empty($contracted[$i])
-                && empty($contracted[$i + 1])) {
-               unset($contracted[$i]);
-            }
-         }
-         $expanded = array();
-         foreach ($contracted as $singleton) {
-            if ($singleton == "") {
-               $expanded = array_merge($expanded, array_fill(0, 9 - count($contracted), "0000"));
-            } else {
-               $expanded[] = str_pad($singleton, 4, "0", STR_PAD_LEFT);
-            }
-         }
-         // Among others, be sure that it is not a MAC address (ie 6 digits seperated by ':')
-         if (count($expanded) != 8) {
+         // EXTREMITY CHECKS :
+         // If it starts with colon : the second one must be empty too (ie.: :2001 is not valid)
+         $start_with_empty = ($singletons[0] === '');
+         if (($start_with_empty) && ($singletons[1] !== '')) {
             return false;
          }
+
+         // If it ends with colon : the previous one must be empty too (ie.: 2001: is not valid)
+         $end_with_empty = ($singletons[count($singletons) - 1] === '');
+         if (($end_with_empty) && ($singletons[count($singletons) - 2] !== '')) {
+            return false;
+         }
+         // END OF EXTREMITY CHECKS
+
+
+         // The number of empty singletons depends on the type of contraction
+         switch ($empty_count) {
+
+         case 0: // No empty singleton => no contraction at all
+            // Thus, its side must be 8 !
+            if (count($singletons) != 8) {
+               return false;
+            }
+            break;
+
+         case 1:
+            // One empty singleton : must be in the middle, otherwise EXTREMITY CHECKS
+            // would return false
+            break;
+
+         case 2: // If there is two empty singletons then it must be at the beginning or the end
+            if (!($start_with_empty XOR $end_with_empty)) {
+               return false;
+            }
+            // Thus remove one of both empty singletons.
+            if ($start_with_empty) {
+               unset($singletons[0]);
+            } else { // $end_with_empty == true
+               unset($singletons[count($singletons) - 1]);
+            }
+            break;
+
+         case 3: // Only '::' allows three empty singletons ('::x::' = four empty singletons)
+            if (!($start_with_empty AND $end_with_empty)) {
+               return false;
+            }
+            // Middle value must be '' otherwise EXTREMITY CHECKS returned an error
+            if (count($singletons) != 3) {
+               return false;
+            }
+            $singletons = array('');
+            break;
+         default:
+            return false;
+         }
+
+         // Here, we are sure that $singletons are valids and only contains 1 empty singleton that
+         // will be convert to as many '0' as necessary to reach 8 singletons
+
+         $numberEmpty = 9 - count($singletons); // = 8 - (count($singletons) - 1)
+
+         $epanded = array();
+         foreach ($singletons as $singleton) {
+            if ($singleton === '') {
+               $epanded = array_merge($epanded, array_fill(0, $numberEmpty, 0));
+            } else {
+               $epanded[] = hexdec($singleton);
+            }
+         }
+
          $binary = array();
          for ($i = 0 ; $i < 4 ; $i++) {
-            $binary[$i] = hexdec($expanded[2 * $i + 0].$expanded[2 * $i + 1]);
+            $binary[$i] = $epanded[2 * $i + 0] * 65536 + $epanded[2 * $i + 1];
          }
-         $this->version = 6;
-         $this->textual = $address;
-         $this->binary  = $binary;
-         return true;
+
       }
+
+      // $binary is an array that is only defined for IPv4 or IPv6 address
+      if (isset($binary)) {
+         // Calling setAddressFromBinary is usefull to recheck one more time inside
+         // glpi_ipaddresses table and to make canonical textual version
+         return $this->setAddressFromBinary($binary, $itemtype, $items_id);
+      }
+
+      // Else, it is not IPv4 nor IPv6 address
       return false;
    }
 
