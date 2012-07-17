@@ -305,8 +305,7 @@ class NetworkEquipment extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan=2>".__('The MAC address and the IP of the equipment
-                                are included in an aggregated network port')."</td>";
+      echo "<td colspan=2>".__('The MAC address and the IP of the equipment are included in an aggregated network port')."</td>";
       echo "</tr>\n";
 
       echo "<tr class='tab_bg_1'>";
