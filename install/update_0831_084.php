@@ -55,73 +55,68 @@ function logMessage($msg, $andDisplay) {
 }
 
 
-function createNetworkNamesFromItems($itemtype, $itemtable) {
-   global $DB, $migration;
+function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_itemtype,
+                                   $entities_id, $IP) {
+   global $migration;
 
-   // Retrieve all the networks from the current network ports and add them to the IPNetworks
-   $query = "SELECT `ip`, `id`, `entities_id`, ".
-                     ($itemtype=='NetworkEquipment'?"'NetworkEquipment' AS itemtype":"`itemtype`").",
-                     ".($itemtype=='NetworkEquipment'?"`id` AS items_id":"`items_id`")."
-             FROM `$itemtable`
-             WHERE `ip` <> ''";
-
-   $networkName = new NetworkName();
-   $IPaddress   = new IPAddress();
-
-   foreach ($DB->request($query) as $entry) {
-      if (empty($entry["ip"])) {
-         continue;
-      }
-
-      $IP = $entry["ip"];
-      // Using gethostbyaddr() allows us to define its reald internet name according to its IP.
-      //   But each gethostbyaddr() may reach several milliseconds. With very large number of
-      //   Networkports or NetworkeEquipment, the migration may take several minutes or hours ...
-      //$computerName = gethostbyaddr($IP);
-      /// TODO moyo : with several private networks gethostbyaddr may get wrong information
-      $computerName = $IP;
-      if ($computerName != $IP) {
-         $position = strpos($computerName, ".");
-         $name     = substr($computerName, 0, $position);
-         $domain   = substr($computerName, $position + 1);
-         $query    = "SELECT `id`
+   // Using gethostbyaddr() allows us to define its reald internet name according to its IP.
+   //   But each gethostbyaddr() may reach several milliseconds. With very large number of
+   //   Networkports or NetworkeEquipment, the migration may take several minutes or hours ...
+   //$computerName = gethostbyaddr($IP);
+   /// TODO moyo : with several private networks gethostbyaddr may get wrong information
+   $computerName = $IP;
+   if ($computerName != $IP) {
+      $position = strpos($computerName, ".");
+      $name     = substr($computerName, 0, $position);
+      $domain   = substr($computerName, $position + 1);
+      $query    = "SELECT `id`
                       FROM `glpi_fqdns`
                       WHERE `fqdn` = '$domain'";
-         $result = $DB->query($query);
+      $result = $DB->query($query);
 
-         if ($DB->numrows($result) == 1) {
-            $data     =$DB->fetch_assoc($result);
-            $domainID = $data['id'];
-         }
-
-      } else {
-         $name     = "migration-".str_replace('.','-',$computerName);
-         $domainID = 0;
+      if ($DB->numrows($result) == 1) {
+         $data     =$DB->fetch_assoc($result);
+         $domainID = $data['id'];
       }
 
-      if ($IPaddress->setAddressFromString($IP)) {
-
-         $input = array('name'         => $name,
-                        'ip_addresses' => $IPaddress->getTextual(),
-                        'fqdns_id'     => $domainID,
-                        'entities_id'  => $entry['entities_id'],
-                        'items_id'     => $entry['id'],
-                        'itemtype'     => $itemtype);
-
-         $networkNameID = $migration->insertInTable($networkName->getTable(), $input);
-
-         $input = $IPaddress->setArrayFromAddress(array('entities_id'   => $entry['entities_id'],
-                                                        'itemtype'      => $networkName->getType(),
-                                                        'items_id'      => $networkNameID),
-                                                  "version", "name", "binary");
-
-         $migration->insertInTable($IPaddress->getTable(), $input);
-      } else {
-         addNetworkPortMigrationError($entry["id"], 'invalid_address');
-         logNetworkPortError('invalid IP address', $entry["id"], $entry["itemtype"],
-                             $entry["items_id"], "$IP");
-      }
+   } else {
+      $name     = "migration-".str_replace('.','-',$computerName);
+      $domainID = 0;
    }
+
+   echo "Before : $IP<br>\n";
+
+   $IPaddress = new IPAddress();
+   if ($IPaddress->setAddressFromString($IP)) {
+
+      echo "Ajout : $IP<br>\n";
+
+      $input = array('name'         => $name,
+                     'ip_addresses' => $IPaddress->getTextual(),
+                     'fqdns_id'     => $domainID,
+                     'entities_id'  => $entities_id,
+                     'items_id'     => $items_id,
+                     'itemtype'     => $itemtype);
+
+      echo "NetworkName :  $itemtype / $items_id<br>\n";
+
+      $networkNameID = $migration->insertInTable('glpi_networknames', $input);
+
+      $input = $IPaddress->setArrayFromAddress(array('entities_id'   => $entities_id,
+                                                     'itemtype'      => 'NetworkName',
+                                                     'items_id'      => $networkNameID),
+                                               "version", "name", "binary");
+
+      $migration->insertInTable($IPaddress->getTable(), $input);
+
+   } else {
+      addNetworkPortMigrationError($items_id, 'invalid_address');
+      logNetworkPortError('invalid IP address', $items_id, $main_itemtype,
+                          $main_items_id, "$IP");
+   }
+
+   unset($IPaddress);
+
 }
 
 
@@ -515,9 +510,19 @@ function update0831to084() {
 
       $ADDTODISPLAYPREF['NetworkName'] = array(12, 13);
 
-      createNetworkNamesFromItems("NetworkPort", "origin_glpi_networkports");
-      createNetworkNamesFromItems("NetworkEquipment", "origin_glpi_networkequipments");
+      // Retrieve all the networks from the current network ports and add them to the IPNetworks
+      $query = "SELECT `ip`, `id`, `entities_id`, `itemtype`, `items_id`
+                FROM `origin_glpi_networkports`
+                WHERE `ip` <> ''";
 
+      foreach ($DB->request($query) as $entry) {
+         if (empty($entry["ip"])) {
+            continue;
+         }
+
+         createNetworkNameFromItem('NetworkPort', $entry['id'], $entry['items_id'],
+                                   $entry['itemtype'], $entry['entities_id'], $entry["ip"]);
+      }
    }
 
    //TRANS: %s is the name of the table
@@ -799,12 +804,10 @@ function update0831to084() {
 
             $migration->insertInTable('glpi_networkportaggregates', $aggregate_input);
 
-            // Attach the NetworkName of the equipment to the networkport
-            $query = "UPDATE `glpi_networknames`
-                      SET `itemtype`='NetworkPort', `items_id` = '$networkports_id'
-                      WHERE `itemtype`='NetworkEquipment'
-                            AND `items_id` = '$networkequipments_id'";
-            $DB->query($query);
+            createNetworkNameFromItem('NetworkPort', $networkports_id, $equipment['id'],
+                                      'NetworkEquipment', $equipment['entities_id'],
+                                      $equipment['ip']);
+
 
             // TODO : we may remove the informations attached to the NetworkPorts
             foreach ($both as $aggregated_networkports_id) {
