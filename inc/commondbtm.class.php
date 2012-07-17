@@ -4058,21 +4058,27 @@ class CommonDBTM extends CommonGLPI {
                   $options['value'] = $value;
                   return Dropdown::showTimeStamp($name, $options);
 
-//                case "dropdown" :
-//                   if ($searchoptions['table'] == 'glpi_users') {
-//                      if ($param['comments']) {
-//                         $tmp = getUserName($value,2);
-//                         return $tmp['name'].'&nbsp;'.Html::showToolTip($tmp['comment'],
-//                                                                        array('display' => false));
-//                      }
-//                      return getUserName($value);
-//                   }
-//                   if ($param['comments']) {
-//                      $tmp = Dropdown::getDropdownName($searchoptions['table'],$value,1);
-//                      return $tmp['name'].'&nbsp;'.Html::showToolTip($tmp['comment'],
-//                                                                     array('display' => false));
-//                   }
-//                   return Dropdown::getDropdownName($searchoptions['table'], $value);
+               case "dropdown" :
+                  $copytooption = array('condition', 'right');
+                  $options['name']  = $name;
+                  $options['value'] = $value;
+                  foreach ($copytooption as $key) {
+                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                        $options[$key] = $searchoptions[$key];
+                     }
+                  }
+                  if (!isset($options['entity'])) {
+                     $options['entity'] = $_SESSION['glpiactiveentities'];
+                  }
+
+                  if ($searchoptions['table'] == 'glpi_users') {
+                     /// TODO manage display option
+                     return User::dropdown($options);
+                  }
+
+                  /// TODO manage display option
+                  return Dropdown::show(getItemTypeForTable($searchoptions["table"]),
+                              $options);
 // 
 //                case "right" :
 //                   return Profile::getRightValue($value);

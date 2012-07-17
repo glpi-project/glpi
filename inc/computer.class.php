@@ -854,6 +854,7 @@ class Computer extends CommonDBTM {
       $tab[70]['field']          = 'name';
       $tab[70]['name']           = __('User');
       $tab[70]['datatype']       = 'dropdown';
+      $tab[70]['right']          = 'all';
 
       $tab[71]['table']          = 'glpi_groups';
       $tab[71]['field']          = 'completename';
@@ -886,6 +887,7 @@ class Computer extends CommonDBTM {
       $tab[24]['linkfield']      = 'users_id_tech';
       $tab[24]['name']           = __('Technician in charge of the hardware');
       $tab[24]['datatype']       = 'dropdown';
+      $tab[24]['right']          = 'interface';
 
       $tab[49]['table']          = 'glpi_groups';
       $tab[49]['field']          = 'completename';
