@@ -2885,7 +2885,6 @@ class CommonDBTM extends CommonGLPI {
                                  }
                                  $id = $ic->fields["id"];
                                  unset($ic->fields);
-
                                  if ($ic->update(array('id'            => $id,
                                                       $input["field"] => $input[$input["field"]]))) {
                                     $res['ok']++;
@@ -4011,30 +4010,23 @@ class CommonDBTM extends CommonGLPI {
             if (isset($searchoptions['unit'])) {
                $unit = $searchoptions['unit'];
             }
+            $options['display'] = false;
 
             switch ($searchoptions['datatype']) {
                case "number" :
-                  $min = 0;
-                  $max = 100;
-                  $step = 1;
-                  $toadd= array();
-                  if (isset($searchoptions['min'])) {
-                     $min = $searchoptions['min'];
+               case "integer" :
+                  $copytooption = array('min', 'max', 'step', 'toadd', 'unit');
+                  foreach ($copytooption as $key) {
+                     if (isset($searchoptions[$key])) {
+                        $options[$key] = $searchoptions[$key];
+                     }
                   }
-                  if (isset($searchoptions['max'])) {
-                     $max = $searchoptions['max'];
-                  }
-                  if (isset($searchoptions['step'])) {
-                     $step = $searchoptions['step'];
-                  }
-                  if (isset($searchoptions['toadd'])) {
-                     $toadd = $searchoptions['toadd'];
-                  }
-                  return Dropdown::showInteger($name, $value, $min, $max, $toadd, array('unit' => $unit, 'display' => false));
+                  $options['value'] = $value;
+                  print_r($options);
+                  return Dropdown::showNumber($name, $options);
 
                case "decimal" :
                case "string" :
-                  $options['display'] = false;
                   $this->fields[$name] = $value;
                   return Html::autocompletionTextField($this, $name, $options);
 

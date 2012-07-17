@@ -365,16 +365,19 @@ if (isset($_POST["itemtype"])
                                        array('itemtype' => $_POST["itemtype"],
                                              'options'  => $search));
    }
+
+   $fieldname = '';
+   if (empty($search["linkfield"]) || $search['table'] == 'glpi_infocoms') {
+      $fieldname = $search["field"];
+   } else {
+      $fieldname = $search["linkfield"];
+   }
    if (!$plugdisplay) {
-      echo $item->getValueToSelect($search);
+      echo $item->getValueToSelect($search, $fieldname);
    }
 
    if (!$FIELDNAME_PRINTED) {
-      if (empty($search["linkfield"])) {
-         echo "<input type='hidden' name='field' value='".$search["field"]."'>";
-      } else {
-         echo "<input type='hidden' name='field' value='".$search["linkfield"]."'>";
-      }
+      echo "<input type='hidden' name='field' value='$fieldname'>";
    }
 
    echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";

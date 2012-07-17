@@ -5023,12 +5023,22 @@ class Search {
                $search[$itemtype][$key]['massiveaction'] = false;
             }
 
+            // Set default linkfield
             if (!isset($val['linkfield']) || empty($val['linkfield'])) {
                if ((strcmp($itemtable,$val['table']) == 0)
                    && (!isset($val['joinparams']) || (count($val['joinparams']) == 0))) {
                   $search[$itemtype][$key]['linkfield'] = $val['field'];
                } else {
                   $search[$itemtype][$key]['linkfield'] = getForeignKeyFieldForTable($val['table']);
+               }
+            }
+            // Set default datatype
+            if (!isset($val['datatype']) || empty($val['datatype'])) {
+               if ((strcmp($itemtable,$val['table']) != 0)
+                   && ($val['field'] == 'name' || $val['field'] == 'completename')) {
+                  $search[$itemtype][$key]['datatype'] = 'dropdown';
+               } else {
+                  $search[$itemtype][$key]['datatype'] = 'string';
                }
             }
             // Add default joinparams
