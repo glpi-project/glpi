@@ -688,7 +688,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget {
       $datas["##$objettype.assigntosupplier##"] = '';
       if ($item->countSuppliers(CommonITILObject::ASSIGN)) {
          $suppliers = array();
-         foreach ($item->getSupliers(CommonITILObject::ASSIGN) as $tmp) {
+         foreach ($item->getSuppliers(CommonITILObject::ASSIGN) as $tmp) {
             $uid           = $tmp['suppliers_id'];
             $supplier_tmp  = new Supplier();
             if ($supplier_tmp->getFromDB($uid)) {

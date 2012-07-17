@@ -3115,68 +3115,114 @@ class Html {
     * @param $displayYear  should we set/diplay the year? (true by default)
     *
     * @return rand value used
+    * \deprecated used showDateField instead
    **/
    static function showDateFormItem($element, $value='', $maybeempty=true, $can_edit=true,
                                     $minDate='', $maxDate='', $displayYear=true) {
+      return self::showDateField($element, array('value'       => $value,
+                                                 'maybeempty'  => $maybeempty,
+                                                 'canedit'     => $can_edit,
+                                                 'min'         => $minDate,
+                                                 'max'         => $maxDate,
+                                                 'showyear' => $displayYear));
+   }
+   /**
+    * Display Date form with calendar
+    *
+    * @param $name      name of the element
+    * @param $options  array of options may be 
+    *      - value        default value to display (default '')
+    *      - maybeempty   may be empty ? (true by default)
+    *      - canedit     could not modify element (true by default)
+    *      - min      minimum allowed date (default '')
+    *      - max      maximum allowed date (default '')
+    *      - showyear  should we set/diplay the year? (true by default)
+    *      - display boolean display of return string (default true)
+    *      - rand specific rand value (default generated one)
+    *
+    * @return rand value used if displayes else string
+    * \since version 0.84
+   **/
+   static function showDateField($name, $options = array()) {
       global $CFG_GLPI;
 
-      $rand = mt_rand();
-      echo "<input id='showdate$rand' type='text' size='10' name='$element'>";
+      $p['value']      = '';
+      $p['maybeempty'] = true;
+      $p['canedit']    = true;
+      $p['min']        = '';
+      $p['max']        = '';
+      $p['showyear']   = true;
+      $p['display']    = true;
+      $p['rand']       = mt_rand();
+
+      foreach ($options as $key => $val) {
+         if (isset($p[$key])) {
+            $p[$key] = $val;
+         }
+      }
+
+      echo "<input id='showdate".$p['rand']."' type='text' size='10' name='$name'>";
 
       $output  = "<script type='text/javascript'>\n";
       $output .= "Ext.onReady(function() {
-         var md$rand = new Ext.ux.form.XDateField({
-            name: '$element'
-            ,value: '".self::convDate($value)."'
-            ,applyTo: 'showdate$rand'
-            ,id: 'date$rand'
+         var md".$p['rand']." = new Ext.ux.form.XDateField({
+            name: '$name'
+            ,value: '".self::convDate($p['value'])."'
+            ,applyTo: 'showdate".$p['rand']."'
+            ,id: 'date".$p['rand']."'
             ,submitFormat:'Y-m-d'
             ,startDay: 1";
 
       switch ($_SESSION['glpidate_format']) {
          case 1 :
-            $displayYear ? $format='d-m-Y' : $format='d-m';
+            $p['showyear'] ? $format='d-m-Y' : $format='d-m';
             break;
 
          case 2 :
-            $displayYear ? $format='m-d-Y' : $format='m-d';
+            $p['showyear'] ? $format='m-d-Y' : $format='m-d';
             break;
 
          default :
-            $displayYear ? $format='Y-m-d' : $format='m-d';
+            $p['showyear'] ? $format='Y-m-d' : $format='m-d';
       }
       $output .= ",format: '".$format."'";
 
-      if ($maybeempty) {
+      if ($p['maybeempty']) {
          $output .= ",allowBlank: true";
       } else {
          $output .= ",allowBlank: false";
       }
 
-      if (!$can_edit) {
+      if (!$p['canedit']) {
          $output .= ",disabled: true";
       }
 
-      if (!empty($minDate)) {
-         $output .= ",minValue: '".self::convDate($minDate)."'";
+      if (!empty($p['min'])) {
+         $output .= ",minValue: '".self::convDate($p['min'])."'";
       }
 
-      if (!empty($maxDate)) {
-         $output .= ",maxValue: '".self::convDate($maxDate)."'";
+      if (!empty($p['max'])) {
+         $output .= ",maxValue: '".self::convDate($p['max'])."'";
       }
 
       $output .= " });
       });";
       $output .= "</script>\n";
-      echo $output;
-      return $rand;
+
+      if ($p['display']) {
+         echo $output;
+         return $p['rand'];
+      } else {
+         return $output;
+      }
    }
 
 
    /**
     * Display DateTime form with calendar
     *
-    * @param $element      name of the element
+    * @param $name      name of the element
+    * @param $options  array of options may be
     * @param $value        default value to display (default '')
     * @param $time_step    step for time in minute (-1 use default config) (default -1)
     * @param $maybeempty   may be empty ? (true by default)
@@ -3187,84 +3233,130 @@ class Html {
     * @param $maxTime      maximum allowed time (default '')
     *
     * @return rand value used
+    * \deprecated used showDateTimeField instead
    **/
    static function showDateTimeFormItem($element, $value='', $time_step=-1, $maybeempty=true,
                                         $can_edit=true, $minDate='', $maxDate='', $minTime='',
                                         $maxTime='') {
+      return self::showDateTimeField($element, array('value'      => $value,
+                                                     'timestep'   => $time_step,
+                                                     'maybeempty' => $maybeempty,
+                                                     'canedit'    => $can_edit,
+                                                     'mindate'    => $minDate,
+                                                     'maxdate'    => $maxDate,
+                                                     'mintime'    => $minTime,
+                                                     'maxtime'    => $maxTime));
+   }
+   
+   /**
+    * Display DateTime form with calendar
+    *
+    * @param $name      name of the element
+    * @param $options  array of options may be
+    *   - value        default value to display (default '')
+    *   - timestep    step for time in minute (-1 use default config) (default -1)
+    *   - maybeempty   may be empty ? (true by default)
+    *   - canedit     could not modify element (true by default)
+    *   - mindate      minimum allowed date (default '')
+    *   - maxdate      maximum allowed date (default '')
+    *   - mintime      minimum allowed time (default '')
+    *   - maxtime      maximum allowed time (default '')
+    *   - display      boolean display or get string (default true)
+    *   - rand         specific random value (default generated one)
+    *
+    * @return rand value used if displayes else string
+    * \since version 0.84
+   **/
+   static function showDateTimeField($name, $options = array()){
       global $CFG_GLPI;
 
-      if ($time_step < 0) {
-         $time_step = $CFG_GLPI['time_step'];
+      $p['value']      = '';
+      $p['maybeempty'] = true;
+      $p['canedit']    = true;
+      $p['mindate']    = '';
+      $p['maxdate']    = '';
+      $p['mintime']    = '';
+      $p['maxtime']    = '';
+      $p['timestep']   = -1;
+      $p['display']    = true;
+      $p['rand']       = mt_rand();
+
+      foreach ($options as $key => $val) {
+         if (isset($p[$key])) {
+            $p[$key] = $val;
+         }
+      }
+      
+      if ($p['timestep'] < 0) {
+         $p['timestep'] = $CFG_GLPI['time_step'];
       }
 
-      $rand = mt_rand();
-      echo "<input type='hidden' id='showdate$rand' value=''>";
+      $output = "<input type='hidden' id='showdate".$p['rand']."' value=''>";
 
       $minHour   = 0;
       $maxHour   = 23;
       $minMinute = 0;
       $maxMinute = 59;
 
-      $output     = "";
       $date_value = '';
       $hour_value = '';
 
-      if (!empty($value)) {
-         list($date_value, $hour_value) = explode(' ', $value);
+      if (!empty($p['value'])) {
+         list($date_value, $hour_value) = explode(' ', $p['value']);
       }
-      if (!empty($minTime)) {
-         list($minHour, $minMinute, $minSec) = explode(':', $minTime);
+      if (!empty($p['mintime'])) {
+         list($minHour, $minMinute, $minSec) = explode(':', $p['mintime']);
          $minMinute = 0;
 
          // Check time in interval
-         if (!empty($hour_value) && ($hour_value < $minTime)) {
-            $hour_value = $minTime;
+         if (!empty($hour_value) && ($hour_value < $p['mintime'])) {
+            $hour_value = $p['mintime'];
          }
       }
 
-      if (!empty($maxTime)) {
-         list($maxHour, $maxMinute, $maxSec) = explode(':', $maxTime);
+      if (!empty($p['maxtime'])) {
+         list($maxHour, $maxMinute, $maxSec) = explode(':', $p['maxtime']);
          $maxMinute = 59;
 
          // Check time in interval
-         if (!empty($hour_value) && ($hour_value > $maxTime)) {
-            $hour_value = $maxTime;
+         if (!empty($hour_value) && ($hour_value > $p['maxtime'])) {
+            $hour_value = $p['maxtime'];
          }
       }
 
       // reconstruct value to be valid
       if (!empty($date_value)) {
-         $value = $date_value.' '.$hour_value;
+         $p['value'] = $date_value.' '.$hour_value;
       }
 
       $output .= "<script type='text/javascript'>";
       $output .= "Ext.onReady(function() {
-         var md$rand = new Ext.ux.form.DateTime({
-            hiddenName: '$element'
-            ,id: 'date$rand'
-            ,value: '$value'
+         var md".$p['rand']." = new Ext.ux.form.DateTime({
+            hiddenName: '$name'
+            ,id: 'date".$p['rand']."'
+            ,value: '".$p['value']."'
             ,hiddenFormat:'Y-m-d H:i:s'
-            ,applyTo: 'showdate$rand'
+            ,applyTo: 'showdate".$p['rand']."'
             ,timeFormat:'H:i'
             ,timeWidth: 55
             ,dateWidth: 90
             ,startDay: 1";
 
       $empty = "";
-      if ($maybeempty) {
+      if ($p['maybeempty']) {
          $empty = "allowBlank: true";
       } else {
          $empty = "allowBlank: false";
       }
       $output .= ",$empty";
       $output .= ",timeConfig: {
-         altFormats:'H:i:s',increment: $time_step,$empty";
+         altFormats:'H:i:s',increment: ".$p['timestep'].",$empty";
 
-      if (!empty($minTime) && ($minTime != '00:00:00')) {
-         $output .= ",minValue: '".$minTime."'";
+      if (!empty($p['mintime']) && ($p['mintime'] != '00:00:00')) {
+         $output .= ",minValue: '".$p['mintime']."'";
       }
-      if (!empty($maxTime) && ($maxTime != '24:00:00')) {
-         $output .= ",maxValue: '".$maxTime."'";
+      if (!empty($p['maxtime']) && ($p['maxtime'] != '24:00:00')) {
+         $output .= ",maxValue: '".$p['maxtime']."'";
       }
 
       $output .= "}";
@@ -3285,23 +3377,28 @@ class Html {
                altFormats:'Y-m-d|Y-n-d',$empty";
       }
 
-      if (!empty($minDate)) {
-         $output .= ",minValue: '".self::convDate($minDate)."'";
+      if (!empty($p['mindate'])) {
+         $output .= ",minValue: '".self::convDate($p['mindate'])."'";
       }
-      if (!empty($maxDate)) {
-         $output .= ",maxValue: '".self::convDate($maxDate)."'";
+      if (!empty($p['maxdate'])) {
+         $output .= ",maxValue: '".self::convDate($p['maxdate'])."'";
       }
       $output .= "}";
 
-      if (!$can_edit) {
+      if (!$p['canedit']) {
          $output .= ",disabled: true";
       }
       $output .= " });
       });";
       $output .= "</script>\n";
 
-      echo $output;
-      return $rand;
+       
+      if ($p['display']) {
+         echo $output;
+         return $p['rand'];
+      } else {
+         return $output;
+      }
    }
 
 
