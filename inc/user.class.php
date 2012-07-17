@@ -2622,8 +2622,9 @@ class User extends CommonDBTM {
     *    - used         : array / Already used items ID: not to display in dropdown (default empty)
     *    - ldap_import
     *    - on_change    : string / value to transmit to "onChange"
+    *    - display    : boolean / display or get string (default true)
     *
-    * @return nothing (print out an HTML select box)
+    * @return rand value if displayed / string if not
    **/
    static function dropdown($options=array()) {
       global $DB, $CFG_GLPI;
@@ -2641,6 +2642,7 @@ class User extends CommonDBTM {
       $p['ldap_import']    = false;
       $p['toupdate']       = '';
       $p['rand']           = mt_rand();
+      $p['display']        = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -2648,14 +2650,16 @@ class User extends CommonDBTM {
          }
       }
 
+      $output = '';
       if (!($p['entity'] < 0) && $p['entity_sons']) {
          if (is_array($p['entity'])) {
-            echo "entity_sons options is not available with array of entity";
+            $output .= "entity_sons options is not available with array of entity";
          } else {
             $p['entity'] = getSonsOf('glpi_entities',$p['entity']);
          }
       }
 
+      
       // Make a select box with all glpi users
       $use_ajax = false;
 
@@ -2703,7 +2707,7 @@ class User extends CommonDBTM {
          }
       }
 
-      Ajax::dropdown($use_ajax, "/ajax/dropdownUsers.php", $params, $default, $p['rand']);
+      $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownUsers.php", $params, $default, $p['rand']);
 
       // Display comment
       if ($p['comments']) {
@@ -2712,8 +2716,9 @@ class User extends CommonDBTM {
          } else if (empty($user["link"])) {
             $user["link"] = $CFG_GLPI['root_doc']."/front/user.php";
          }
-         Html::showToolTip($user["comment"],
+         $output .= Html::showToolTip($user["comment"],
                            array('contentid' => "comment_".$p['name'].$p['rand'],
+                                 'display'   => false,
                                  'link'      => $user["link"],
                                  'linkid'    => "comment_link_".$p["name"].$p['rand']));
       }
@@ -2722,14 +2727,20 @@ class User extends CommonDBTM {
           && $p['ldap_import']
           && Entity::isEntityDirectoryConfigured($_SESSION['glpiactive_entity'])) {
 
-         echo "<img alt='' title=\"".__s('Import a user')."\" src='".$CFG_GLPI["root_doc"].
+         $output .= "<img alt='' title=\"".__s('Import a user')."\" src='".$CFG_GLPI["root_doc"].
                "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                 onClick=\"var w = window.open('".$CFG_GLPI['root_doc'].
                "/front/popup.php?popup=add_ldapuser&amp;rand=".$p['rand']."&amp;entity=".
                $_SESSION['glpiactive_entity']."' ,'glpipopup', 'height=400, ".
                "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
       }
-      return $p['rand'];
+
+      if ($p['display']) {
+         echo $output;
+         return $p['rand'];
+      } else {
+         return $output;
+      }
    }
 
 

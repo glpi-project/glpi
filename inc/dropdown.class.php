@@ -60,6 +60,7 @@ class Dropdown {
     *    - displaywith : array / array of field to display with request
     *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)
     *    - display_emptychoice : Display emptychoice ? (default true)
+    *    - display    : boolean / display or get string (default true)    
     *
     * @return boolean : false if error and random id if OK
    **/
@@ -89,13 +90,16 @@ class Dropdown {
       $params['emptylabel'] = self::EMPTY_VALUE;
       //Display emptychoice ?
       $params['display_emptychoice'] = ($itemtype != 'Entity');
+      $params['display']        = true;
+      
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
             $params[$key] = $val;
          }
       }
-
+      $output = '';
+      
       $name         = $params['emptylabel'];
       $comment      = "";
       $limit_length = $_SESSION["glpidropdown_chars_limit"];
@@ -139,7 +143,7 @@ class Dropdown {
           && $params['entity_sons']) {
          if (is_array($params['entity'])) {
             // translation not needed - only for debug
-            echo "entity_sons options is not available with array of entity";
+            $output .= "entity_sons options is not available with array of entity";
          } else {
             $params['entity'] = getSonsOf('glpi_entities',$params['entity']);
          }
@@ -182,16 +186,18 @@ class Dropdown {
                       'condition'           => $params['condition'],
                       'emptylabel'          => $params['emptylabel'],
                       'display_emptychoice' => $params['display_emptychoice'],
-                      'displaywith'         => $params['displaywith']);
+                      'displaywith'         => $params['displaywith'],
+                      'display'             => false);
 
       $default  = "<select name='".$params['name']."' id='dropdown_".$params['name'].
                     $params['rand']."'>";
       $default .= "<option value='".$params['value']."'>$name</option></select>";
-      Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default, $params['rand']);
+      $output .= Ajax::dropdown($use_ajax, "/ajax/dropdownValue.php", $param, $default, $params['rand']);
 
       // Display comment
       if ($params['comments']) {
-         $options_tooltip = array('contentid' => "comment_".$params['name'].$params['rand']);
+         $options_tooltip = array('contentid' => "comment_".$params['name'].$params['rand'],
+                                  'display'   => false);
 
          if ($item->canView()
              && $params['value'] && $item->getFromDB($params['value'])
@@ -201,13 +207,13 @@ class Dropdown {
             $options_tooltip['linktarget'] = '_blank';
          }
 
-         Html::showToolTip($comment,$options_tooltip);
+         $output .= Html::showToolTip($comment,$options_tooltip);
 
          if (($item instanceof CommonDropdown)
              && $item->canCreate()
              && !isset($_GET['popup'])) {
 
-               echo "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
+               $output .= "<img alt='' title=\"".__s('Add')."\" src='".$CFG_GLPI["root_doc"].
                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                      onClick=\"var w = window.open('".$item->getFormURL()."?popup=1&amp;rand=".
                      $params['rand']."' ,'glpipopup', 'height=400, ".
@@ -216,7 +222,7 @@ class Dropdown {
          // Display specific Links
          if ($itemtype == "Supplier") {
             if ($item->getFromDB($params['value'])) {
-               echo $item->getLinks();
+               $output .= $item->getLinks();
             }
          }
 
@@ -224,13 +230,17 @@ class Dropdown {
              && Session::haveRight('knowbase','r')) {
 
             if ($params['value'] && $item->getFromDB($params['value'])) {
-               echo '&nbsp;'.$item->getLinks();
+               $output .= '&nbsp;'.$item->getLinks();
             }
          }
 
       }
-
-      return $params['rand'];
+      if ($params['display']) {
+         echo $output;
+         return $params['rand'];
+      } else {
+         return $output;
+      }
    }
 
 

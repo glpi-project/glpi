@@ -185,14 +185,23 @@ class Ajax {
     * @param $size size of the input text field (default 4)
    **/
    static function displaySearchTextForDropdown($id, $size=4) {
+      echo self::getSearchTextForDropdown($id, $size);
+   }
+
+   /**
+    * Input text used as search system in ajax system
+    *
+    * @param $id   ID of the ajax item
+    * @param $size size of the input text field (default 4)
+   **/
+   static function getSearchTextForDropdown($id, $size=4) {
       global $CFG_GLPI;
 
       //TRANS: %s is the character used as wildcard in ajax search
-      echo "<input title=\"".sprintf(__s('Search (%s for all)'), $CFG_GLPI["ajax_wildcard"]).
+      return "<input title=\"".sprintf(__s('Search (%s for all)'), $CFG_GLPI["ajax_wildcard"]).
              "\" type='text' ondblclick=\"this.value='".
              $CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
-   }
-
+   }   
 
    /**
     *  Create Ajax Tabs apply to 'tabspanel' div. Content is displayed in 'tabcontent'
@@ -316,15 +325,21 @@ class Ajax {
     * @param $events       array of the observed events (default 'change')
     * @param $minsize            minimum size of data to update content (default -1)
     * @param $forceloadfor array of content which must force update content
+    * @param $display            boolean : display or get string (default true)    
    **/
    static function updateItemOnEvent($toobserve, $toupdate, $url, $parameters=array(),
                                      $events=array("change"), $minsize = -1,
-                                     $forceloadfor=array()) {
+                                     $forceloadfor=array(), $display = true) {
 
-      echo "<script type='text/javascript'>";
-      self::updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters, $events, $minsize,
-                                    $forceloadfor);
-      echo "</script>";
+      $output = "<script type='text/javascript'>";
+      $output .= self::updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters,
+                                    $events, $minsize, $forceloadfor, false);
+      $output .=  "</script>";
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
+      }
    }
 
 
@@ -335,9 +350,10 @@ class Ajax {
     * @param $toupdate           id of the item to update
     * @param $url                Url to get datas to update the item
     * @param $parameters   array of parameters to send to ajax URL
+    * @param $display            boolean : display or get string (default true)
    **/
-   static function updateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters=array()) {
-      self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("change"));
+   static function updateItemOnSelectEvent($toobserve, $toupdate, $url, $parameters=array(), $display = true) {
+      return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("change"), -1, array(), $display);
    }
 
 
@@ -350,10 +366,11 @@ class Ajax {
     * @param $parameters   array of parameters to send to ajax URL
     * @param $minsize            minimum size of data to update content (default -1)
     * @param $forceloadfor array of content which must force update content
+    * @param $display            boolean : display or get string (default true)    
     *
    **/
    static function updateItemOnInputTextEvent($toobserve, $toupdate, $url, $parameters=array(),
-                                              $minsize=-1, $forceloadfor=array()) {
+                                              $minsize=-1, $forceloadfor=array(), $display = true) {
       global $CFG_GLPI;
 
       if (count($forceloadfor) == 0) {
@@ -364,8 +381,8 @@ class Ajax {
          $minsize = $CFG_GLPI['ajax_min_textsearch_load'];
       }
 
-      self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("dblclick", "keyup"),
-                            $minsize, $forceloadfor);
+      return self::updateItemOnEvent($toobserve, $toupdate, $url, $parameters, array("dblclick", "keyup"),
+                            $minsize, $forceloadfor, $display);
    }
 
 
@@ -379,20 +396,21 @@ class Ajax {
     * @param $events       array of the observed events (default 'change')
     * @param $minsize            minimum size of data to update content (default -1)
     * @param $forceloadfor array of content which must force update content
+    * @param $display            boolean : display or get string (default true)    
    **/
    static function updateItemOnEventJsCode($toobserve, $toupdate, $url, $parameters=array(),
                                            $events=array("change"), $minsize = -1,
-                                           $forceloadfor=array()) {
+                                           $forceloadfor=array(), $display = true) {
 
       if (is_array($toobserve)) {
          $zones = $toobserve;
       } else {
          $zones = array($toobserve);
       }
-
+      $output = '';
       foreach ($zones as $zone) {
          foreach ($events as $event) {
-            echo "
+            $output .= "
                Ext.get('$zone').on(
                 '$event',
                 function() {";
@@ -409,15 +427,20 @@ class Ajax {
                      }
                   }
                   if (!empty($condition)) {
-                     echo "if ($condition) {";
+                     $output .= "if ($condition) {";
                   }
-                  self::updateItemJsCode($toupdate, $url, $parameters, $toobserve);
+                  $output .= self::updateItemJsCode($toupdate, $url, $parameters, $toobserve, false);
                   if (!empty($condition)) {
-                     echo "}";
+                     $output .= "}";
                   }
 
-          echo "});\n";
+          $output .=  "});\n";
          }
+      }
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
       }
    }
 
@@ -476,8 +499,9 @@ class Ajax {
     * @param $parameters   array of parameters to send to ajax URL
     * @param $toobserve          id of another item used to get value in case of __VALUE__ used
     *                      array of id to get value in case of __VALUE#__ used (default '')
+    * @param $display            boolean : display or get string (default true)    
    **/
-   static function updateItemJsCode($toupdate, $url, $parameters=array(), $toobserve="") {
+   static function updateItemJsCode($toupdate, $url, $parameters=array(), $toobserve="", $display = true) {
 
       // Get it from a Ext.Element object
       $out = "Ext.get('$toupdate').load({
@@ -516,7 +540,11 @@ class Ajax {
          $out .= "'\n";
       }
       $out .= "});";
-      echo $out;
+      if ($display) {
+         echo $out;
+      } else {
+         return $out;
+      }
    }
 
 
@@ -528,22 +556,23 @@ class Ajax {
     * @param $params       array of parameters to send to ajax URL
     * @param $default            Default datas to print in case of $use_ajax (default '&nbsp;')
     * @param $rand               Random parameter used (default 0)
+    * @param $display            boolean : display or get string (default true)
+    
    **/
-   static function dropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;", $rand=0) {
+   static function dropdown($use_ajax, $relativeurl, $params=array(), $default="&nbsp;", $rand=0, $display = true) {
       global $CFG_GLPI, $DB;
-
       $initparams = $params;
       if ($rand == 0) {
          $rand = mt_rand();
       }
-
+      $locoutput = '';
       if ($use_ajax) {
-         self::displaySearchTextForDropdown($rand);
-         self::updateItemOnInputTextEvent("search_$rand", "results_$rand",
+         $locoutput .= self::getSearchTextForDropdown($rand);
+         $locoutput .= self::updateItemOnInputTextEvent("search_$rand", "results_$rand",
                                            $CFG_GLPI["root_doc"].$relativeurl, $params,
-                                           $CFG_GLPI['ajax_min_textsearch_load']);
+                                           $CFG_GLPI['ajax_min_textsearch_load'], array(), false);
       }
-      echo "<span id='results_$rand'>\n";
+      $locoutput .=  "<span id='results_$rand'>\n";
       if (!$use_ajax) {
          // Save post datas if exists
          $oldpost = array();
@@ -552,26 +581,37 @@ class Ajax {
          }
          $_POST = $params;
          $_POST["searchText"] = $CFG_GLPI["ajax_wildcard"];
+         ob_start();
          include (GLPI_ROOT.$relativeurl);
+         $locoutput .= ob_get_contents();
+         ob_end_clean();
+         
          // Restore $_POST datas
          if (count($oldpost)) {
             $_POST = $oldpost;
          }
       } else {
-         echo $default;
+         $locoutput .=  $default;
       }
-      echo "</span>\n";
-      echo "<script type='text/javascript'>";
-      echo "function update_results_$rand() {";
+
+      $locoutput .=  "</span>\n";
+      $locoutput .=  "<script type='text/javascript'>";
+      $locoutput .=  "function update_results_$rand() {";
       if ($use_ajax) {
-         self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams,
-                                "search_$rand");
+         $locoutput .= self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams,
+                                "search_$rand", false);
       } else {
          $initparams["searchText"] = $CFG_GLPI["ajax_wildcard"];
-         self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams);
+         $locoutput .= self::updateItemJsCode("results_$rand", $CFG_GLPI['root_doc'].$relativeurl, $initparams, '', false);
       }
-      echo "}";
-      echo "</script>";
+      $locoutput .=  "}";
+      $locoutput .=  "</script>";
+
+      if ($display) {
+         echo $locoutput;
+      } else {
+         return $locoutput;
+      }
    }
 
 

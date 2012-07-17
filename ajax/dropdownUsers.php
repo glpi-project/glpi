@@ -65,7 +65,6 @@ if (isset($_POST['used'])) {
       $used = unserialize(stripslashes($_POST['used']));
    }
 }
-
 if (isset($_POST["entity_restrict"])
     && !is_numeric($_POST["entity_restrict"])
     && !is_array($_POST["entity_restrict"])) {
@@ -116,10 +115,10 @@ if ($_POST['all']==0) {
 }
 
 if (isset($_POST['value'])) {
-   $output = getUserName($_POST['value']);
+   $default_value = getUserName($_POST['value']);
 
    if (!empty($output) && ($output != "&nbsp;")) {
-      echo "<option selected value='".$_POST['value']."'>".$output."</option>";
+      echo "<option selected value='".$_POST['value']."'>".$default_value."</option>";
    }
 }
 
