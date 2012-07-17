@@ -4079,21 +4079,24 @@ class CommonDBTM extends CommonGLPI {
                   /// TODO manage display option
                   return Dropdown::show(getItemTypeForTable($searchoptions["table"]),
                               $options);
-// 
-//                case "right" :
-//                   return Profile::getRightValue($value);
-// 
-//                case "itemtypename" :
-//                   if ($obj = getItemForItemtype($value)) {
-//                      return $obj->getTypeName(1);
-//                   }
-//                   break;
-// 
-//                case "language" :
-//                   if (isset($CFG_GLPI['languages'][$value])) {
-//                      return $CFG_GLPI['languages'][$value][0];
-//                   }
-//                   return __('Default value');
+
+               case "right" :
+                  /// TODO manage display option + add nonone, noread, nowrite to limit values;
+                  /// TODO : change proto of this method
+                  return Profile::dropdownNoneReadWrite($name, $value, 1, 1, 1);
+
+               case "itemtypename" :
+                  /// TODO manage display option
+                  /// TODO use Dropdown::showItemTypes passing types to param
+                  
+                  return Dropdown::dropdownUsedItemTypes($name,
+                                                   getItemTypeForTable($searchoptions['table']),
+                                                   array('value'    => $value,
+                                                         'comments' => 0));
+
+               case "language" :
+                  $options['value'] = $value;
+                  return Dropdown::showLanguages($name, $options);
 
             }
          }
