@@ -981,7 +981,9 @@ class Infocom extends CommonDBChild {
             if ($withtemplate == 2) {
                echo $ic->fields["sink_time"];
             } else {
-               Dropdown::showInteger("sink_time", $ic->fields["sink_time"], 0, 15);
+               Dropdown::showNumber("sink_time", array('value' => $ic->fields["sink_time"],
+                                                       'max'   => 15,
+                                                       'unit'  => 'year'));
             }
             echo "</td></tr>";
 
@@ -1269,6 +1271,9 @@ class Infocom extends CommonDBChild {
       $tab[56]['name']           = __('Amortization duration');
       $tab[56]['forcegroupby']   = true;
       $tab[56]['joinparams']     = $joinparams;
+      $tab[56]['datatype']       = 'number';
+      $tab[56]['max']            = 15;
+      $tab[56]['unit']           = 'year';      
 
       $tab[57]['table']          = 'glpi_infocoms';
       $tab[57]['field']          = 'sink_type';
@@ -1385,7 +1390,9 @@ class Infocom extends CommonDBChild {
       $tab[14]['table']          = $this->getTable();
       $tab[14]['field']          = 'sink_time';
       $tab[14]['name']           = __('Amortization duration');
-      $tab[14]['datatype']       = 'integer';
+      $tab[14]['datatype']       = 'number';
+      $tab[14]['max']            = 15;
+      $tab[14]['unit']           = 'year';
 
       $tab[15]['table']          = $this->getTable();
       $tab[15]['field']          = 'sink_type';

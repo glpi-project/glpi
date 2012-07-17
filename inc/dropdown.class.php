@@ -1070,36 +1070,59 @@ class Dropdown {
       return $rand;
    }
 
-
    /**
-    * Dropdown integers
+    * Dropdown numbers
     *
     * @param $myname          select name
-    * @param $value           default value
-    * @param $min             min value (default 0)
-    * @param $max             max value (default 100)
-    * @param $step            step used (default 1)
-    * @param $toadd     array of values to add at the beginning
     * @param $options   array of additionnal options :
-    *                            - unit : string unit to used
-    *                            - display : boolean if false get string
+    *     - value           default value (defaul 0)
+    *     - rand            random value
+    *     - min             min value (default 0)
+    *     - max             max value (default 100)
+    *     - step            step used (default 1)
+    *     - toadd     array of values to add at the beginning
+    *     - unit : string unit to used
+    *     - display : boolean if false get string
+    * \since version 0.84
    **/
-   static function showInteger($myname, $value, $min=0, $max=100, $step=1, $toadd=array(),
-                               $options=array()) {
+   static function showNumber($myname, $options=array()) {
 
-      $out = "<select name='$myname'>\n";
+      $params['value']   = 0;
+      $params['rand']    = mt_rand();
+      $params['min']     = 0;
+      $params['max']     = 100;
+      $params['step']    = 1;
+      $params['toadd']   = array();
+      $params['unit']    = '';
+      $params['display'] = true;
 
-      if (count($toadd)) {
-         foreach ($toadd as $key => $val) {
-            $out .=  "<option value='$key' ".(($key == $value) ?" selected ":"").">";
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $params[$key] = $val;
+         }
+      }
+
+      
+   
+// $value, $min=0, $max=100, $step=1, $toadd=array(),
+      $out = "<select name='$myname' id='$myname".$params['rand']."'>\n";
+
+      if (count($params['toadd'])) {
+         foreach ($params['toadd'] as $key => $val) {
+            $out .=  "<option value='$key' ".(($key == $params['value']) ?" selected ":"").">";
             $out .= $val."</option>";
          }
       }
 
-      for ($i=$min ; $i<=$max ; $i+=$step) {
+      for ($i=$params['min'] ; $i<=$params['max'] ; $i+=$params['step']) {
          $txt = $i;
-         if (isset($options['unit']) && $i) {
-            switch ($options['unit']) {
+         if (isset($params['unit']) && $i) {
+            switch ($params['unit']) {
+               case 'year' :
+                  //TRANS: %d is a number of months
+                  $txt = sprintf(_n('%d year', '%d years', $i), $i);
+                  break;
+                  
                case 'month' :
                   //TRANS: %d is a number of months
                   $txt = sprintf(_n('%d month', '%d months', $i), $i);
@@ -1121,14 +1144,46 @@ class Dropdown {
 
             }
          }
-         $out .= "<option value='$i' ".(($i == $value) ?" selected ":"").">$txt</option>";
+         $out .= "<option value='$i' ".(($i == $params['value']) ?" selected ":"").">$txt</option>";
       }
       $out .= "</select>";
-      if (!isset($options['display']) || $options['display']) {
+      if ($params['display']) {
          echo $out;
+         return $params['rand'];
       } else {
          return $out;
       }
+   }
+   
+   /**
+    * Dropdown integers
+    *
+    * @param $myname          select name
+    * @param $value           default value
+    * @param $min             min value (default 0)
+    * @param $max             max value (default 100)
+    * @param $step            step used (default 1)
+    * @param $toadd     array of values to add at the beginning
+    * @param $options   array of additionnal options :
+    *                            - unit : string unit to used
+    *                            - display : boolean if false get string
+    * \deprecated use Dropdown::showNumber instead
+   **/
+   static function showInteger($myname, $value, $min=0, $max=100, $step=1, $toadd=array(),
+                               $options=array()) {
+
+      $opt = array('value' => $value,
+                   'min'   => $min,
+                   'max'   => $max,
+                   'step'  => $step,
+                   'toadd' => $toadd);
+      if (count($options)) {
+         foreach ($options as $key => $val) {
+            $opt[$key] = $val;
+         }
+      }
+      return self::showNumber($myname,$opt);
+
    }
 
    /**

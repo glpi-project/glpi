@@ -150,7 +150,7 @@ class Log extends CommonDBTM {
                      $changes = array($id_search_option, addslashes($oldval), $values[$key]);
                   }
 
-//               } else {
+               } else {
 //                      if ($val2['table'] == 'glpi_users_validation') {
 //                         $val2['table'] = 'glpi_users';
 //               }
