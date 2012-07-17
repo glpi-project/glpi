@@ -322,7 +322,7 @@ abstract class CommonDropdown extends CommonDBTM {
 
       return $actions;
    }
-   
+
    function showSpecificMassiveActionsParameters($input = array()) {
       switch ($input['action']) {
          case 'merge' :
@@ -334,11 +334,11 @@ abstract class CommonDropdown extends CommonDBTM {
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;            
+            break;
       }
       return false;
    }
-   
+
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,
@@ -564,56 +564,6 @@ abstract class CommonDropdown extends CommonDBTM {
       Html::closeForm();
       echo "</div>";
    }
-
-
-   /* Replace a dropdown item (this) by another one (newID)  and update all linked fields
-    * @param $new integer ID of the replacement item
-   function replace($newID) {
-      global $DB,$CFG_GLPI;
-
-      $oldID = $this->fields['id'];
-
-      $RELATION = getDbRelations();
-
-      if (isset ($RELATION[$this->getTable()])) {
-         foreach ($RELATION[$this->getTable()] as $table => $field) {
-            if ($table[0]!='_') {
-               if (!is_array($field)) {
-                  // Manage OCS lock for items - no need for array case
-                  if ($table=="glpi_computers" && $CFG_GLPI['use_ocs_mode']) {
-                     $query = "SELECT `id`
-                               FROM `glpi_computers`
-                               WHERE `is_ocs_import` = '1'
-                                     AND `$field` = '$oldID'";
-                     $result=$DB->query($query);
-                     if ($DB->numrows($result)) {
-                        if (!function_exists('OcsServer::mergeOcsArray')) {
-                           include_once (GLPI_ROOT . "/inc/ocsng.function.php");
-                        }
-                        while ($data=$DB->fetch_assoc($result)) {
-                           OcsServer::mergeOcsArray($data['id'],array($field),"computer_update");
-                        }
-                     }
-                  }
-                  $query = "UPDATE
-                            `$table`
-                            SET `$field` = '$newID'
-                            WHERE `$field` = '$oldID'";
-                  $DB->query($query);
-               } else {
-                  foreach ($field as $f) {
-                     $query = "UPDATE
-                               `$table`
-                               SET `$f` = '$newID'
-                               WHERE `$f` = '$oldID'";
-                     $DB->query($query);
-                  }
-               }
-            }
-         }
-      }
-   }
-    */
 
 
    /**
