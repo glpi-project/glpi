@@ -107,7 +107,7 @@ class HTMLTable_Cell extends HTMLTable_Entity {
          $this->father->addSon($this, $header);
 
       } else if (!is_null($this->header->getFather())) {
-         throw HTMLTable_CellWithoutFather();
+         throw new HTMLTable_CellWithoutFather();
       }
 
       if (!empty($this->itemtype)) {
