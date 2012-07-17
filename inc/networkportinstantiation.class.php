@@ -401,7 +401,7 @@ class NetworkPortInstantiation extends CommonDBChild {
       }
 
       if (count($netports) > 0) {
-         return implode(', ', $netports);
+         return implode('<br>', $netports);
       }
 
       return "&nbsp;";
