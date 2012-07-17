@@ -1129,7 +1129,7 @@ class Dropdown {
 
       for ($i=$params['min'] ; $i<=$params['max'] ; $i+=$params['step']) {
          $txt = $i;
-         if (isset($params['unit']) && $i) {
+         if (isset($params['unit'])) {
             switch ($params['unit']) {
                case 'year' :
                   //TRANS: %d is a number of months

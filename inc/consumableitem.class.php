@@ -263,6 +263,7 @@ class ConsumableItem extends CommonDBTM {
       $tab[8]['field']           = 'alarm_threshold';
       $tab[8]['name']            = __('Alert threshold');
       $tab[8]['datatype']        = 'number';
+      $tab[8]['toadd']           = array('-1' => __('Never'));
 
       $tab[16]['table']          = $this->getTable();
       $tab[16]['field']          = 'comment';

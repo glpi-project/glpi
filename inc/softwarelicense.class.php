@@ -279,6 +279,8 @@ class SoftwareLicense extends CommonDBTM {
       $tab[4]['field']           = 'number';
       $tab[4]['name']            = _x('quantity', 'Number');
       $tab[4]['datatype']        = 'number';
+      $tab[4]['max']             = 100;
+      $tab[4]['toadd']           = array(-1 => __('Unlimited'));
 
       $tab[5]['table']           = 'glpi_softwarelicensetypes';
       $tab[5]['field']           = 'name';
@@ -724,8 +726,9 @@ class SoftwareLicense extends CommonDBTM {
          switch ($item->getType()) {
             case 'Software' :
                if ($_SESSION['glpishow_count_on_tabs']) {
+                  $count = self::countForSoftware($item->getID());
                   return self::createTabEntry(self::getTypeName(2),
-                                              self::countForSoftware($item->getID()));
+                                              ($count>=0?$count:'&infin;'));
                }
                return self::getTypeName(2);
          }

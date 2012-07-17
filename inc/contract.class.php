@@ -349,6 +349,9 @@ class Contract extends CommonDBTM {
       $tab[130]['table']         = 'glpi_contracts';
       $tab[130]['field']         = 'duration';
       $tab[130]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'),__('Duration'));
+      $tab[130]['datatype']      = 'number';
+      $tab[130]['max']           = 120;
+      $tab[130]['unit']          = 'month';
       $tab[130]['forcegroupby']  = true;
       $tab[130]['massiveaction'] = false;
       $tab[130]['joinparams']    = $joinparams;
@@ -391,6 +394,9 @@ class Contract extends CommonDBTM {
       $tab[135]['table']         = 'glpi_contracts';
       $tab[135]['field']         = 'notice';
       $tab[135]['name']          = sprintf(__('%1$s - %2$s'), __('Contract'), __('Notice'));
+      $tab[135]['datatype']      = 'number';
+      $tab[135]['max']           = 120;
+      $tab[135]['unit']          = 'month';
       $tab[135]['forcegroupby']  = true;
       $tab[135]['massiveaction'] = false;
       $tab[135]['joinparams']    = $joinparams;
@@ -470,6 +476,10 @@ class Contract extends CommonDBTM {
       $tab[6]['table']           = $this->getTable();
       $tab[6]['field']           = 'duration';
       $tab[6]['name']            = __('Duration');
+      $tab[6]['datatype']        = 'number';
+      $tab[6]['max']             = 120;
+      $tab[6]['unit']            = 'month';
+      
 
       $tab[20]['table']          = $this->getTable();
       $tab[20]['field']          = 'end_date';
@@ -485,6 +495,9 @@ class Contract extends CommonDBTM {
       $tab[7]['table']           = $this->getTable();
       $tab[7]['field']           = 'notice';
       $tab[7]['name']            = __('Notice');
+      $tab[7]['datatype']        = 'number';
+      $tab[7]['max']             = 120;
+      $tab[7]['unit']            = 'month';
 
       $tab[21]['table']          = $this->getTable();
       $tab[21]['field']          = 'periodicity';
