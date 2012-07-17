@@ -1200,6 +1200,7 @@ class Dropdown {
     *    - addfirstminutes : add first minutes before first step (default false)
     *    - toadd           : array of values to add
     *    - inhours         : only show timestamp in hours not in days
+    *    - display         : boolean / display or return string
    **/
    static function showTimeStamp($myname, $options=array()) {
       global $CFG_GLPI;
@@ -1212,6 +1213,7 @@ class Dropdown {
       $params['addfirstminutes'] = false;
       $params['toadd']           = array();
       $params['inhours']         = false;
+      $params['display']         = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -1297,7 +1299,8 @@ class Dropdown {
             }
          }
       }
-      return Dropdown::showFromArray($myname, $values, array('value' => $params['value']));
+      return Dropdown::showFromArray($myname, $values, array('value'   => $params['value'],
+                                                             'display' => $params['display']));
    }
 
 
@@ -1390,6 +1393,7 @@ class Dropdown {
     *    - multiple  : boolean / can select several values (default false)
     *    - size      : integer / number of rows for the select (default = 1)
     *    - mark_unmark_all : add buttons to select or deselect all options (only for multiple)
+    *    - display : boolean / display or return string
     *
     * Permit to use optgroup defining items in arrays
     * array('optgroupname'  => array('key1' => 'val1',
@@ -1407,6 +1411,7 @@ class Dropdown {
       $param['multiple']        = false;
       $param['size']            = 1;
       $param['mark_unmark_all'] = false;
+      $param['display']         = true;
 
       if (is_array($options) && count($options)) {
          if (!empty($options['value'])) {
@@ -1424,70 +1429,76 @@ class Dropdown {
          $field_name = $name;
       }
 
+      $output = '';
       // readonly mode
       if ($param['readonly']) {
          foreach ($param['values'] as $value) {
-            echo "<input type='hidden' name='$field_name' value='$value'>";
+            $output .= "<input type='hidden' name='$field_name' value='$value'>";
             if (isset($elements[$value])) {
-               echo $elements[$value]." ";
+               $output .= $elements[$value]." ";
             }
          }
-
+         
       } else {
          $rand = mt_rand();
 //          Html::printCleanArray($elements);
 
          $field_id = "dropdown_".$name.$rand;
-         echo "<select name='$field_name' id='$field_id'";
+         $output .= "<select name='$field_name' id='$field_id'";
 
          if (!empty($param["on_change"])) {
-            echo " onChange='".$param["on_change"]."'";
+            $output .= " onChange='".$param["on_change"]."'";
          }
 
          if ((is_int($param["size"])) && ($param["size"] > 0)) {
-            echo " size='".$param["size"]."'";
+            $output .= " size='".$param["size"]."'";
          }
 
          if ($param["multiple"]) {
-            echo " multiple";
+            $output .= " multiple";
          }
 
-         echo '>';
+         $output .= '>';
 
          foreach ($elements as $key => $val) {
             // optgroup management
             if (is_array($val)) {
-               echo "<optgroup label=\"".Html::entities_deep($key)."\">";
+               $output .= "<optgroup label=\"".Html::entities_deep($key)."\">";
                foreach ($val as $key2 => $val2) {
                   if (!isset($param['used'][$key2])) {
-                     echo "<option value='".$key2."'";
+                     $output .= "<option value='".$key2."'";
                      if (in_array($key2, $param['values'])) {
-                        echo " selected";
+                        $output .= " selected";
                      }
-                     echo ">" .  $val2 . "</option>";
+                     $output .= ">" .  $val2 . "</option>";
                   }
                               }
-               echo "</optgroup>";
+               $output .= "</optgroup>";
             } else {
                if (!isset($param['used'][$key])) {
-                  echo "<option value='".$key."'";
+                  $output .= "<option value='".$key."'";
                   if (in_array($key, $param['values'])) {
-                     echo " selected";
+                     $output .= " selected";
                   }
-                  echo ">" . $val . "</option>";
+                  $output .= ">" . $val . "</option>";
                }
             }
          }
 
-         echo "</select>";
+         $output .= "</select>";
          if ($param['mark_unmark_all'] && $param['multiple']) {
-            echo "<br>\n";
-            echo "<input type='button' onclick=\"markSelect('$field_id')\" value='";
-            echo __('Select all options')."'>";
-            echo "<input type='button' onclick=\"unMarkSelect('$field_id')\" value='";
-            echo  __('Deselect all options')."'>";
+            $output .= "<br>\n";
+            $output .= "<input type='button' onclick=\"markSelect('$field_id')\" value='";
+            $output .= __('Select all options')."'>";
+            $output .= "<input type='button' onclick=\"unMarkSelect('$field_id')\" value='";
+            $output .=  __('Deselect all options')."'>";
          }
+      }
+      if ($param['display']) {
+         echo $output;
          return $rand;
+      } else {
+         return $output;
       }
    }
 

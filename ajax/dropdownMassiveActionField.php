@@ -356,6 +356,8 @@ if (isset($_POST["itemtype"])
 //       echo "<td>";
 //    }
 
+   echo "<table class='tab_glpi'><tr><td>";
+
    $plugdisplay = false;
    // Specific plugin Type case
    if (($plug=isPluginItemType($_POST["itemtype"]))
@@ -379,11 +381,9 @@ if (isset($_POST["itemtype"])
    if (!$FIELDNAME_PRINTED) {
       echo "<input type='hidden' name='field' value='$fieldname'>";
    }
+   echo "</td></tr></table>";
 
-   echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";
-   if ($USE_TABLE) {
-      echo "</td></tr></table>";
-   }
+   echo "<br><input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>";
 
 }
 ?>
