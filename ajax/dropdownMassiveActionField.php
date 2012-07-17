@@ -62,8 +62,6 @@ if (isset($_POST["itemtype"])
    
    $search            = $search[$_POST["id_field"]];
 
-   echo $item->getValueToSelect($search);
-
    $FIELDNAME_PRINTED = false;
    $USE_TABLE         = false;
 
@@ -357,6 +355,19 @@ if (isset($_POST["itemtype"])
 //    if ($USE_TABLE) {
 //       echo "<td>";
 //    }
+
+   $plugdisplay = false;
+   // Specific plugin Type case
+   if (($plug=isPluginItemType($_POST["itemtype"]))
+      // Specific for plugin which add link to core object
+      || ($plug=isPluginItemType(getItemTypeForTable($search['table'])))) {
+      $plugdisplay = Plugin::doOneHook($plug['plugin'], 'MassiveActionsFieldsDisplay',
+                                       array('itemtype' => $_POST["itemtype"],
+                                             'options'  => $search));
+   }
+   if (!$plugdisplay) {
+      echo $item->getValueToSelect($search);
+   }
 
    if (!$FIELDNAME_PRINTED) {
       if (empty($search["linkfield"])) {
