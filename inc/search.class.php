@@ -1140,7 +1140,7 @@ class Search {
                                           $out .= "href=\"".
                                                    Toolbox::getItemTypeFormURL($p['itemtype2'][$j]).
                                                    "?id=".$split2[1]."\">";
-                                          $out .= $split2[0].$unit;
+                                          $out .= Dropdown::getValueWithUnit($split2[0],$unit);
                                           $linkout = $out;
                                           if ($_SESSION["glpiis_ids_visible"]
                                               || empty($split2[0])) {
@@ -1149,10 +1149,10 @@ class Search {
                                           }
                                           $out = $linkout."</a>";
                                        } else {
-                                          $out .= $split2[0].$unit;
+                                          $out .= Dropdown::getValueWithUnit($split2[0],$unit);
                                        }
                                     } else {
-                                       $out .= $split[$k].$unit;
+                                       $out .= Dropdown::getValueWithUnit($split[$k],$unit);
                                     }
                                  }
                               }
@@ -2833,23 +2833,6 @@ class Search {
             }
             return self::makeTextCriteria("`$table`.`$field`", $val, $nott, $link);
 
-         case "glpi_infocoms.sink_time" :
-         case "glpi_infocoms.warranty_duration" :
-            $ADD = "";
-            if ($nott
-                && ($val != 'NULL') && ($val != 'null')) {
-               $ADD = " OR `$table`.`$field` IS NULL";
-            }
-            if (is_numeric($val)) {
-               if ($nott) {
-                  return $link." (`$table`.`$field` <> ".intval($val)." ".
-                                  $ADD." ) ";
-               }
-               return $link." (`$table`.`$field` = ".intval($val)."  ".
-                               $ADD." ) ";
-            }
-            break;
-
          case "glpi_infocoms.sink_type" :
             $ADD = "";
             if ($nott
@@ -4059,37 +4042,37 @@ class Search {
          case "glpi_contracts.renewal" :
             return Contract::getContractRenewalName($data[$NAME.$num]);
 
-         case "glpi_infocoms.sink_time" :
-            if (!empty($data[$NAME.$num])) {
-               $split = explode("$$$$", $data[$NAME.$num]);
-               $out   = '';
-               foreach ($split as $val) {
-                  $out .= (empty($out)?'':'<br>');
-                  if ($val > 0) {
-                     //TRANS: %d is a number of years
-                     $out .= sprintf(_n('%d year', '%d years', $val), $val);
-                  }
-               }
-               return $out;
-            }
-            return "&nbsp;";
-
-         case "glpi_infocoms.warranty_duration" :
-            if (!empty($data[$NAME.$num])) {
-               $split = explode("$$$$", $data[$NAME.$num]);
-               $out   = '';
-               foreach ($split as $val) {
-                  $out .= (empty($out)?'':'<br>');
-                  if ($val > 0) {
-                     $out .= sprintf(_n('%d month', '%d months', $val), $val);
-                  }
-                  if ($val < 0) {
-                     $out .= __('Lifelong');
-                  }
-               }
-               return $out;
-            }
-            return "&nbsp;";
+//          case "glpi_infocoms.sink_time" :
+//             if (!empty($data[$NAME.$num])) {
+//                $split = explode("$$$$", $data[$NAME.$num]);
+//                $out   = '';
+//                foreach ($split as $val) {
+//                   $out .= (empty($out)?'':'<br>');
+//                   if ($val > 0) {
+//                      //TRANS: %d is a number of years
+//                      $out .= sprintf(_n('%d year', '%d years', $val), $val);
+//                   }
+//                }
+//                return $out;
+//             }
+//             return "&nbsp;";
+// 
+//          case "glpi_infocoms.warranty_duration" :
+//             if (!empty($data[$NAME.$num])) {
+//                $split = explode("$$$$", $data[$NAME.$num]);
+//                $out   = '';
+//                foreach ($split as $val) {
+//                   $out .= (empty($out)?'':'<br>');
+//                   if ($val > 0) {
+//                      $out .= sprintf(_n('%d month', '%d months', $val), $val);
+//                   }
+//                   if ($val < 0) {
+//                      $out .= __('Lifelong');
+//                   }
+//                }
+//                return $out;
+//             }
+//             return "&nbsp;";
 
          case "glpi_infocoms.sink_type" :
             $split = explode("$$$$", $data[$NAME.$num]);
@@ -4373,7 +4356,7 @@ class Search {
                   $out .= "&amp;forcetab=".$searchopt[$ID]['forcetab'];
                   }
                   $out .= "\">";
-                  $name = $data[$NAME.$num].$unit;
+                  $name = Dropdown::getValueWithUnit($data[$NAME.$num],$unit);
                   if ($_SESSION["glpiis_ids_visible"] || empty($data[$NAME.$num])) {
                      $name = sprintf(__('%1$s (%2$s)'), $name, $data[$NAME.$num."_2"]);
                   }
@@ -4400,7 +4383,7 @@ class Search {
                            $count_display++;
                            $page  = Toolbox::getItemTypeFormURL($searchopt[$ID]["itemlink_type"]);
                            $page .= (strpos($page,'?') ? '&id' : '?id');
-                           $name  = $split2[0].$unit;
+                           $name  = Dropdown::getValueWithUnit($split2[0],$unit);
                            if ($_SESSION["glpiis_ids_visible"] || empty($split2[0])) {
                               $name = sprintf(__('%1$s (%2$s)'), $name, $split2[1]);
                            }
@@ -4479,19 +4462,28 @@ class Search {
                   $count_display = 0;
                   for ($k=0 ; $k<count($split) ; $k++) {
                      if (strlen(trim($split[$k])) > 0) {
+                        $split2 = self::explodeWithID("$$", $split[$k]);
                         if ($count_display) {
                            $out .= "<br>";
                         }
                         $count_display++;
-                        $out .= str_replace(' ', '&nbsp;', Html::formatNumber($split[$k], false,
-                                                                              0)).
-                                $unit;
+                        if (isset($searchopt[$ID]['toadd']) && isset($searchopt[$ID]['toadd'][$split2[0]])) {
+                           $out .= $searchopt[$ID]['toadd'][$split2[0]];
+                        } else {
+                           $number = str_replace(' ', '&nbsp;', Html::formatNumber($split2[0], false,0));
+                           $out .= Dropdown::getValueWithUnit($number, $unit);
+                        }
                      }
                   }
                   return $out;
                }
-               return str_replace(' ', '&nbsp;', Html::formatNumber($data[$NAME.$num], false, 0)).
-                      $unit;
+               if (isset($searchopt[$ID]['toadd']) && isset($searchopt[$ID]['toadd'][$data[$NAME.$num]])) {
+                  return $searchopt[$ID]['toadd'][$data[$NAME.$num]];
+               } else {
+                  $number = str_replace(' ', '&nbsp;', Html::formatNumber($data[$NAME.$num], false, 0));
+                  return Dropdown::getValueWithUnit($number, $unit);
+               }
+               
 
             case "decimal" :
                if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
@@ -4500,16 +4492,24 @@ class Search {
                   $count_display = 0;
                   for ($k=0 ; $k<count($split) ; $k++) {
                      if (strlen(trim($split[$k])) > 0) {
+                        $split2 = self::explodeWithID("$$", $split[$k]);
+
                         if ($count_display) {
                            $out .= "<br>";
                         }
                         $count_display++;
-                        $out .= str_replace(' ', '&nbsp;', Html::formatNumber($split[$k])).$unit;
+                        if (isset($searchopt[$ID]['toadd']) && isset($searchopt[$ID]['toadd'][$split2[0]])) {
+                           $out .= $searchopt[$ID]['toadd'][$split2[0]];
+                        } else {
+                           $number = str_replace(' ', '&nbsp;', Html::formatNumber($split2[0]));
+                           $out .= Dropdown::getValueWithUnit($number, $unit);
+                        }
                      }
                   }
                   return $out;
                }
-               return str_replace(' ', '&nbsp;', Html::formatNumber($data[$NAME.$num])).$unit;
+               $number = str_replace(' ', '&nbsp;', Html::formatNumber($data[$NAME.$num]));
+               return Dropdown::getValueWithUnit($number, $unit);
 
             case "bool" :
                if (isset($searchopt[$ID]['forcegroupby']) && $searchopt[$ID]['forcegroupby']) {
@@ -4522,12 +4522,12 @@ class Search {
                            $out .= "<br>";
                         }
                         $count_display++;
-                        $out .= Dropdown::getYesNo($split[$k]).$unit;
+                        $out .= Dropdown::getValueWithUnit(Dropdown::getYesNo($split[$k]),$unit);
                      }
                   }
                   return $out;
                }
-               return Dropdown::getYesNo($data[$NAME.$num]).$unit;
+               return Dropdown::getValueWithUnit(Dropdown::getYesNo($data[$NAME.$num]),$unit);
 
             case "right":
                return Profile::getRightValue($data[$NAME.$num]);
@@ -4561,7 +4561,7 @@ class Search {
                }
                $withoutid = self::explodeWithID("$$", $split[$k]);
                $count_display++;
-               $out      .= $withoutid[0].$unit;
+               $out      .= Dropdown::getValueWithUnit($withoutid[0], $unit);
             }
          }
          return $out;
@@ -4579,7 +4579,7 @@ class Search {
       // Manage auto CONCAT id
       $split = self::explodeWithID('$$', $data[$NAME.$num]);
 
-      return $split[0].$unit;
+      return Dropdown::getValueWithUnit($split[0], $unit);
    }
 
 

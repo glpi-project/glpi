@@ -222,16 +222,6 @@ if (isset($_POST["itemtype"])
 //                   Infocom::dropdownAmortType("sink_type");
 //                   break;
 // 
-//                case "sink_time" :
-//                   Dropdown::showInteger("sink_time", 0, 0, 15);
-//                   break;
-// 
-//                case "warranty_duration" :
-//                   Dropdown::showInteger("warranty_duration", 0, 0, 120, 1,
-//                                         array(-1 => __('Lifelong')),
-//                                         array('unit' => 'month'));
-//                   break;
-// 
 //                default :
 //                   $newtype = getItemTypeForTable($search["table"]);
 //                   if ($newtype != $_POST["itemtype"]) {
