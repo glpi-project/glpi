@@ -4050,17 +4050,30 @@ class CommonDBTM extends CommonGLPI {
                   
 
                case "datetime" :
-                  $copytooption = array('mindate', 'maxdate', 'mintime', 'maxtime',
-                                        'maybeempty', 'timestep');
+                  
+                  if (isset($options['relative_dates']) && $options['relative_dates']) {
+                     return Html::showGenericDateTimeSearch($name, $value,
+                                                      array('with_time'          => true,
+                                                            'with_future'
+                                                               => (isset($searchoptions['maybefuture'])
+                                                                     && $searchoptions['maybefuture']),
+                                                            'with_days'          => false,
+                                                            'with_specific_date' => false,
+                                                            'display'            => false));
 
-                  foreach ($copytooption as $key) {
-                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
-                        $options[$key] = $searchoptions[$key];
+                  } else {
+                     $copytooption = array('mindate', 'maxdate', 'mintime', 'maxtime',
+                                          'maybeempty', 'timestep');
+
+                     foreach ($copytooption as $key) {
+                        if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                           $options[$key] = $searchoptions[$key];
+                        }
                      }
+                     $options['value'] = $value;
+                     return Html::showDateTimeField($name, $options);
                   }
-
-                  $options['value'] = $value;
-                  return Html::showDateTimeField($name, $options);
+                  break;
  
                case "timestamp" :
                   $copytooption = array('min', 'max', 'step', 'toadd', 'emptylabel',
@@ -4121,6 +4134,7 @@ class CommonDBTM extends CommonGLPI {
                   } else {
                      return false;
                   }
+                  break;
 
                case "language" :
                   $options['value'] = $value;

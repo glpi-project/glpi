@@ -3300,10 +3300,10 @@ class Html {
 
       $date_value = '';
       $hour_value = '';
-
       if (!empty($p['value'])) {
          list($date_value, $hour_value) = explode(' ', $p['value']);
       }
+      
       if (!empty($p['mintime'])) {
          list($minHour, $minMinute, $minSec) = explode(':', $p['mintime']);
          $minMinute = 0;
@@ -3417,18 +3417,19 @@ class Html {
    static function showGenericDateTimeSearch($element, $value='', $options=array()) {
       global $CFG_GLPI;
 
-      $params['with_time']          = false;
-      $params['with_future']        = false;
-      $params['with_days']          = true;
-      $params['with_specific_date'] = true;
+      $p['with_time']          = false;
+      $p['with_future']        = false;
+      $p['with_days']          = true;
+      $p['with_specific_date'] = true;
+      $p['display']            = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
-            $params[$key] = $val;
+            $p[$key] = $val;
          }
       }
       $rand = mt_rand();
-
+      $output = '';
       // Validate value
       if (($value != 'NOW')
           && ($value != 'TODAY')
@@ -3451,33 +3452,37 @@ class Html {
          $specific_value = $value;
          $value          = 0;
       }
-      echo "<table><tr><td>";
-      echo "<select id='genericdate$element$rand' name='_select_$element'>";
+      $output .= "<table><tr><td>";
+      $output .= "<select id='genericdate$element$rand' name='_select_$element'>";
 
       $dates = Html::getGenericDateTimeSearchItems($options);
 
       foreach ($dates as $key => $val) {
-         echo "<option value='$key' ".(($value === $key) ?'selected':'').">$val</option>";
+         $output .= "<option value='$key' ".(($value === $key) ?'selected':'').">$val</option>";
       }
 
-      echo "</select>";
-      echo "</td><td>";
-      echo "<div id='displaygenericdate$element$rand'></div>";
+      $output .= "</select>";
+      $output .= "</td><td>";
+      $output .= "<div id='displaygenericdate$element$rand'></div>";
 
       $params = array('value'         => '__VALUE__',
                       'name'          => $element,
-                      'withtime'      => $params['with_time'],
+                      'withtime'      => $p['with_time'],
                       'specificvalue' => $specific_value);
 
-      Ajax::updateItemOnSelectEvent("genericdate$element$rand", "displaygenericdate$element$rand",
-                                    $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params);
-
+      $output .= Ajax::updateItemOnSelectEvent("genericdate$element$rand", "displaygenericdate$element$rand",
+                                    $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params, false);
       $params['value'] = $value;
-      Ajax::updateItem("displaygenericdate$element$rand",
-                       $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params);
-
-      echo "</td></tr></table>";
-      return $rand;
+      $output .= Ajax::updateItem("displaygenericdate$element$rand",
+                       $CFG_GLPI["root_doc"]."/ajax/genericdate.php", $params, '',false);
+      $output .= "</td></tr></table>";
+      
+      if ($p['display']) {
+         echo $output;
+         return $rand;
+      } else {
+         return $output;
+      }
    }
 
 
