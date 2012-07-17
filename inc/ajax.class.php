@@ -623,13 +623,18 @@ class Ajax {
     * @param $parameters   array of parameters to send to ajax URL
     * @param $toobserve          id of another item used to get value in case of __VALUE__ used
     *                            (default '')
+    * @param $display            boolean : display or get string (default true)
     *
    **/
-   static function updateItem($toupdate, $url, $parameters=array(), $toobserve="") {
-
-      echo "<script type='text/javascript'>";
-      self::updateItemJsCode($toupdate,$url,$parameters,$toobserve);
-      echo "</script>";
+   static function updateItem($toupdate, $url, $parameters=array(), $toobserve="", $display = true) {
+      $output = "<script type='text/javascript'>";
+      $output .= self::updateItemJsCode($toupdate,$url,$parameters,$toobserve, false);
+      $output .= "</script>";
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
+      }      
    }
 
 }

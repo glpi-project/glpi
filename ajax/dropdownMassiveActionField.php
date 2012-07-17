@@ -352,7 +352,12 @@ if (isset($_POST["itemtype"])
       $fieldname = $search["linkfield"];
    }
    if (!$plugdisplay) {
-      echo $item->getValueToSelect($search, $fieldname);
+      $options = array();
+      // For ticket template
+      if (isset($_POST['options']) && strlen($_POST['options'])) {
+         $options = unserialize(stripslashes($_POST['options']));
+      }
+      echo $item->getValueToSelect($search, $fieldname, '', $options);
    }
 
    if (!$FIELDNAME_PRINTED) {
