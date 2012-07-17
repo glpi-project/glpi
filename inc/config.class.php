@@ -1464,9 +1464,17 @@ class Config extends CommonDBTM {
                             GLPI_CACHE_DIR
                                     => __('Checking write permissions for cache files'),
                             GLPI_GRAPH_DIR
-                                    => __('Checking write permissions for graphic files'));
+                                    => __('Checking write permissions for graphic files'),
+                            GLPI_LOCK_DIR
+                                    => __('Checking write permissions for lock files'),
+                            GLPI_PLUGIN_DOC_DIR
+                                    => __('Checking write permissions for plugins document files'),
+                            GLPI_TMP_DIR
+                                    => __('Checking write permissions for temporary files'),
+                            GLPI_UPLOAD_DIR
+                                    => __('Checking write permissions for upload files'),
+                                    );
       $error = 0;
-
       foreach ($dir_to_check as $dir => $message) {
          if (!$fordebug) {
             echo "<tr class='tab_bg_1'><td class='left b'>".$message."</td>";
