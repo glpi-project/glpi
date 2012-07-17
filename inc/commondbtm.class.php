@@ -4104,13 +4104,23 @@ class CommonDBTM extends CommonGLPI {
                   return Profile::dropdownRight($name, $options);
 
                case "itemtypename" :
-                  /// TODO manage display option
-                  /// TODO use Dropdown::showItemTypes passing types to param
-                  
-                  return Dropdown::dropdownUsedItemTypes($name,
-                                                   getItemTypeForTable($searchoptions['table']),
-                                                   array('value'    => $value,
-                                                         'comments' => 0));
+                  if (isset($searchoptions['itemtype_list'])) {
+                     $options['types'] = $CFG_GLPI[$searchoptions['itemtype_list']];
+                  }
+                  $copytooption = array('types');
+                  $options['value'] = $value;
+                  foreach ($copytooption as $key) {
+                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                        $options[$key] = $searchoptions[$key];
+                     }
+                  }
+
+                  if (isset($options['types'])) {
+                     return Dropdown::showItemTypes($name, $options['types'],
+                                                      $options);
+                  } else {
+                     return false;
+                  }
 
                case "language" :
                   $options['value'] = $value;
