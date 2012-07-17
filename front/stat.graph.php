@@ -438,7 +438,7 @@ foreach ($available as $key => $name) {
 }
 
 Stat::showGraph($toprint, array('title'     => __('Average time'),
-                                'unit'      => __('Hours'),
+                                'unit'      => _n('Hour', 'Hours', 2),
                                 'showtotal' => 1,
                                 'datatype'  => 'average'));
 
