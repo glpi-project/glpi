@@ -284,7 +284,38 @@ class Computer_Item extends CommonDBRelation{
          }
       }
    }
+   
+   function showSpecificMassiveActionsParameters($input = array()) {
+      switch ($input['action']) {
+         case "connect" :
+            if ($input['itemtype']=='Computer') {
+               Dropdown::showAllItems("items_id", 0, 0, $_SESSION["glpiactive_entity"],
+                                    array('Monitor', 'Peripheral', 'Phone',  'Printer'),
+                                    true, true, 'item_itemtype');
+               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                              __s('Connect')."'>";
+            } else {
+               Computer_Item::dropdownConnect('Computer', $input["itemtype"], "computers_id");
+               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                              __s('Connect')."'>";
+            }
+            return true;
+            break;
+         case "disconnect" :
+            echo "<input type='submit' name='massiveaction' class='submit' value='".
+                  __s('Disconnect')."'>";
+            return true;
+            break;
 
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;            
+
+      }
+      return false;
+   }
+
+   
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,

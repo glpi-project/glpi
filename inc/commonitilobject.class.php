@@ -1932,6 +1932,43 @@ abstract class CommonITILObject extends CommonDBTM {
       return '';
    }
 
+
+   function showSpecificMassiveActionsParameters($input = array()) {
+      global $CFG_GLPI;
+      switch ($input['action']) {
+         case "add_task" :
+            $tasktype = $input['itemtype']."Task";
+            if ($ttype = getItemForItemtype($tasktype)) {
+               $ttype->showFormMassiveAction();
+               return true;
+
+            }
+            break;
+            
+         case "add_actor" :
+            $types            = array(0                           => Dropdown::EMPTY_VALUE,
+                                    CommonITILObject::REQUESTER => __('Requester'),
+                                    CommonITILObject::OBSERVER  => __('Watcher'),
+                                    CommonITILObject::ASSIGN    => __('Assigned to'));
+            $rand             = Dropdown::showFromArray('actortype', $types);
+
+            $paramsmassaction = array('actortype' => '__VALUE__');
+
+            Ajax::updateItemOnSelectEvent("dropdown_actortype$rand", "show_massiveaction_field",
+                                          $CFG_GLPI["root_doc"].
+                                             "/ajax/dropdownMassiveActionAddActor.php",
+                                          $paramsmassaction);
+            echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
+            return true;
+            break;
+            
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;
+      }
+      return false;
+   }
+
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,

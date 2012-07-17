@@ -514,6 +514,34 @@ class Group_User extends CommonDBRelation{
       }
    }
 
+
+   function showSpecificMassiveActionsParameters($input = array()) {
+      switch ($input['action']) {
+         case "add_user_group" :
+         case "add_supervisor_group" :
+         case "add_delegatee_group" :
+            if ($input['itemtype'] == 'User') {
+               Group::dropdown(array('condition' => '`is_usergroup`'));
+               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                              _sx('button', 'Add')."'>";
+               return true;
+            }
+            if ($input['itemtype'] == 'Group') {
+               User::dropdown(array('right'  => "all"));
+               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                              _sx('button', 'Add')."'>";
+               return true;
+            }
+            break;
+            
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;
+
+      }
+      return false;
+   }
+   
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,

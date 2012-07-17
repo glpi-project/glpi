@@ -2609,14 +2609,137 @@ class CommonDBTM extends CommonGLPI {
     * @return nothing display
    **/
    function showMassiveActionsParameters($input = array()) {
-
+      global $CFG_GLPI;
+      
       switch ($input['action']) {
+         case "add_contract_item" :
+            if ($input['itemtype']=='Contract') {
 
+                  Dropdown::showAllItems("items_id", 0, 0, 1,
+                                       $CFG_GLPI["contract_types"], false, true, 'item_itemtype');
+               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                              _sx('button', 'Add')."'>";
+            } else {
+               Contract::dropdown(array('name' => "contracts_id"));
+               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                              _sx('button', 'Add')."'>";
+            }
+            break;
 
-      default :
-         if (!$this->showSpecificMassiveActionsParameters($input)) {
-            echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>\n";
-         }
+         case "remove_contract_item" :
+            if ($input['itemtype'] == 'Contract') {
+               Dropdown::showAllItems("items_id", 0, 0, 1,
+                                    $CFG_GLPI["contract_types"], false, true, 'item_itemtype');
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Delete')."'>";
+            } else {
+               Contract::dropdown(array('name' => "contracts_id"));
+               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                              _sx('button', 'Delete')."'>";
+            }
+            break;
+            
+         case "add_document" :
+            Document::dropdown(array('name' => 'documents_id'));
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Add')."'>";
+            break;
+
+         case "remove_document" :
+            Document::dropdown(array('name' => 'documents_id'));
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Delete')."'>";
+            break;
+         case "update" :
+            $first_group    = true;
+            $newgroup       = "";
+            $items_in_group = 0;
+            $show_all       = true;
+            $show_infocoms  = true;
+
+            $ic = new Infocom();
+            if (in_array($input["itemtype"], $CFG_GLPI["infocom_types"])
+               && (!$this->canUpdate() || !$ic->canUpdate())) {
+
+               $show_all      = false;
+               $show_infocoms = $ic->canUpdate();
+            }
+            $searchopt = Search::getCleanedOptions($input["itemtype"], 'w');
+
+            echo "<select name='id_field' id='massiveaction_field'>";
+            echo "<option value='0' selected>".Dropdown::EMPTY_VALUE."</option>";
+
+            foreach ($searchopt as $key => $val) {
+               if (!is_array($val)) {
+                  if (!empty($newgroup)
+                     && ($items_in_group > 0)) {
+                     echo $newgroup;
+                     $first_group = false;
+                  }
+                  $items_in_group = 0;
+                  $newgroup       = "";
+                  if (!$first_group) {
+                     $newgroup .= "</optgroup>";
+                  }
+                  $newgroup .= "<optgroup label=\"$val\">";
+
+               } else {
+                  // No id and no entities_id massive action and no first item
+                  if ($val["field"]!='id'
+                     && ($key != 1)
+                     // Permit entities_id is explicitly activate
+                     && (($val["linkfield"] != 'entities_id')
+                        || (isset($val['massiveaction']) && $val['massiveaction']))) {
+
+                     if (!isset($val['massiveaction']) || $val['massiveaction']) {
+
+                        if ($show_all) {
+                           $newgroup .= "<option value='$key'>".$val["name"]."</option>";
+                           $items_in_group++;
+
+                        } else {
+                           // Do not show infocom items
+                           if (($show_infocoms && Search::isInfocomOption($input["itemtype"],$key))
+                              || (!$show_infocoms && !Search::isInfocomOption($input["itemtype"],
+                                                                              $key))) {
+
+                              $newgroup .= "<option value='$key'>".$val["name"]."</option>";
+                              $items_in_group++;
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+
+            if (!empty($newgroup)
+               && ($items_in_group > 0)) {
+               echo $newgroup;
+            }
+            if (!$first_group) {
+               echo "</optgroup>";
+            }
+            echo "</select>";
+
+            $paramsmassaction = array('id_field' => '__VALUE__',
+                                      'itemtype' => $input["itemtype"]);
+
+            foreach ($input as $key => $val) {
+               if (preg_match("/extra_/",$key,$regs)) {
+                  $paramsmassaction[$key] = $val;
+               }
+            }
+            Ajax::updateItemOnSelectEvent("massiveaction_field", "show_massiveaction_field",
+                                          $CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",
+                                          $paramsmassaction);
+
+            echo "<br><br><span id='show_massiveaction_field'>&nbsp;</span>\n";
+            break;
+
+         default :
+            if (!$this->showSpecificMassiveActionsParameters($input)) {
+               echo "<input type='submit' name='massiveaction' class='submit' value='".__s('Post')."'>\n";
+            }
       }
       
       return false;
@@ -2633,7 +2756,6 @@ class CommonDBTM extends CommonGLPI {
     * @return boolean if parameters displayed ?
    **/
    function showSpecificMassiveActionsParameters($input = array()) {
-
 
       return false;
    }

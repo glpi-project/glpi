@@ -308,7 +308,24 @@ class Group extends CommonTreeDropdown {
       }
       return $actions;
    }
-   
+   function showSpecificMassiveActionsParameters($input = array()) {
+      global $CFG_GLPI;
+
+      switch ($input['action']) {
+         case "add_user_group" :
+         case "add_supervisor_group" :
+         case "add_delegatee_group" :         
+            $gu = new Group_User();
+            return $gu->showSpecificMassiveActionsParameters($input);
+         break;
+
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;
+
+      }
+      return false;
+   }   
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,
@@ -317,7 +334,7 @@ class Group extends CommonTreeDropdown {
          case "add_user_group" :
          case "add_supervisor_group" :
          case "add_delegatee_group" :
-            $gu = new group_User();
+            $gu = new Group_User();
             return $gu->doSpecificMassiveActions($input);
             break;
          default :

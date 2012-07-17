@@ -322,6 +322,23 @@ abstract class CommonDropdown extends CommonDBTM {
 
       return $actions;
    }
+   
+   function showSpecificMassiveActionsParameters($input = array()) {
+      switch ($input['action']) {
+         case 'merge' :
+            echo "&nbsp;".$_SESSION['glpiactive_entity_shortname'];
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Merge')."'>\n";
+            return true;
+            break;
+
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;            
+      }
+      return false;
+   }
+   
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,

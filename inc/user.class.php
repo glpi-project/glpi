@@ -2083,14 +2083,55 @@ class User extends CommonDBTM {
       }
       return $actions;
    }
+   
+   function showSpecificMassiveActionsParameters($input = array()) {
+      global $CFG_GLPI;
+      
+      switch ($input['action']) {
+         case "change_authtype" :
+            $rand             = Auth::dropdown(array('name' => 'authtype'));
+            $paramsmassaction = array('authtype' => '__VALUE__');
 
+            Ajax::updateItemOnSelectEvent("dropdown_authtype$rand", "show_massiveaction_field",
+                                          $CFG_GLPI["root_doc"].
+                                             "/ajax/dropdownMassiveActionAuthMethods.php",
+                                          $paramsmassaction);
+            echo "<span id='show_massiveaction_field'>";
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           __s('Post')."'></span>\n";
+            return true;
+            break;
+            
+         case "add_user_group" :
+            $gu = new Group_User();
+            return $gu->showSpecificMassiveActionsParameters($input);
+            break;
+         
+         case "add_userprofile" :
+            Entity::dropdown(array('entity' => $_SESSION['glpiactiveentities']));
+            echo ".&nbsp;"._n('Profile', 'Profiles', 1)."&nbsp;";
+            Profile::dropdownUnder();
+            echo ".&nbsp;".__('Recursive')."&nbsp;";
+            Dropdown::showYesNo("is_recursive", 0);
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Add')."'>";
+            return true;
+            break;
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;
+
+      }
+      return false;
+   }
+   
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,
                    'noright' => 0);
       switch ($input['action']) {
          case "add_user_group" :
-            $gu = new group_User();
+            $gu = new Group_User();
             return $gu->doSpecificMassiveActions($input);
             break;
             

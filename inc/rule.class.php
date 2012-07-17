@@ -151,6 +151,35 @@ class Rule extends CommonDBTM {
       return $actions;
    }
    
+   function showSpecificMassiveActionsParameters($input = array()) {
+      switch ($input['action']) {
+         case "move_rule" :
+            echo "<select name='move_type'>";
+            echo "<option value='after' selected>".__('After')."</option>";
+            echo "<option value='before'>".__('Before')."</option>";
+            echo "</select>&nbsp;";
+
+            if (isset($_POST['entity_restrict'])) {
+               $condition = $_POST['entity_restrict'];
+            } else {
+               $condition = "";
+            }
+            Rule::dropdown(array('sub_type'        => $_POST['itemtype'],
+                                 'name'            => "ranking",
+                                 'entity_restrict' => $condition));
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Move')."'>\n";
+            return true;
+            break;
+
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;            
+
+      }
+      return false;
+   }
+   
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,
