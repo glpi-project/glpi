@@ -979,7 +979,7 @@ class Infocom extends CommonDBChild {
             echo "<tr class='tab_bg_1'>";
             echo "<td>".__('Amortization duration')."</td><td>";
             if ($withtemplate == 2) {
-               echo $ic->fields["sink_time"];
+               echo sprintf(_n('%d year', '%d years', $ic->fields["sink_time"]), $ic->fields["sink_time"]);
             } else {
                Dropdown::showNumber("sink_time", array('value' => $ic->fields["sink_time"],
                                                        'max'   => 15,

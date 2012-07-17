@@ -4017,77 +4017,47 @@ class CommonDBTM extends CommonGLPI {
                case "integer" :
                   $copytooption = array('min', 'max', 'step', 'toadd', 'unit');
                   foreach ($copytooption as $key) {
-                     if (isset($searchoptions[$key])) {
+                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
                         $options[$key] = $searchoptions[$key];
                      }
                   }
                   $options['value'] = $value;
-                  print_r($options);
                   return Dropdown::showNumber($name, $options);
 
                case "decimal" :
                case "string" :
+               case "email" :
+               case "weblink" :
                   $this->fields[$name] = $value;
                   return Html::autocompletionTextField($this, $name, $options);
 
-//                case "text" :
-// 
-//                   if ($options['html']) {
-//                      $text = nl2br($value);
-//                   } else {
-//                      $text = $value;
-//                   }
-//                   if (isset($searchoptions['htmltext']) && $searchoptions['htmltext']) {
-//                      $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep($text));
-//                   }
-//                   return $text;
-// 
-//                case "bool" :
-//                   return Dropdown::getYesNo($value);
-// 
-//                case "date" :
-//                case "date_delay" :
-//                   if (isset($options['relative_dates']) && $options['relative_dates']) {
-//                      $dates = Html::getGenericDateTimeSearchItems(array('with_time'   => true,
-//                                                                         'with_future' => true));
-//                      return $dates[$value];
-//                   }
-//                   return Html::convDate(Html::computeGenericDateTimeSearch($value, true));
-// 
-//                case "datetime" :
-//                   if (isset($options['relative_dates']) && $options['relative_dates']) {
-//                      $dates = Html::getGenericDateTimeSearchItems(array('with_time'   => true,
-//                                                                         'with_future' => true));
-//                      return $dates[$value];
-//                   }
-//                   return Html::convDateTime(Html::computeGenericDateTimeSearch($value,false));
-// 
-//                case "timestamp" :
-//                   $withseconds = false;
-//                   if (isset($searchoptions['withseconds'])) {
-//                      $withseconds = $searchoptions['withseconds'];
-//                   }
-//                   return Html::timestampToString($value,$withseconds);
-// 
-//                case "email" :
-//                   if ($options['html']) {
-//                      return "<a href='mailto:$value'>$value</a>";
-//                   }
-//                   return $value;
-// 
-//                case "weblink" :
-//                   $orig_link = trim($value);
-//                   if (!empty($orig_link)) {
-//                      // strip begin of link
-//                      $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/','',$orig_link);
-//                      $link = preg_replace('/\/$/', '', $link);
-//                      if (Toolbox::strlen($link) > $CFG_GLPI["url_maxlength"]) {
-//                         $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
-//                      }
-//                      return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
-//                   }
-//                   return "&nbsp;";
-// 
+               case "text" :
+                  return "<textarea cols='45' rows='5' name='$name'>$value</textarea>";
+
+               case "bool" :
+                  return Dropdown::showYesNo($name, $value, -1, $options);
+
+               case "date" :
+               case "date_delay" :
+                  /// TODO change prototype to have only 1 options array + add options to searchoption
+                  return Html::showDateFormItem($name, $value);
+                  
+
+               case "datetime" :
+                  /// TODO change prototype to have only 1 options array + add options to searchoption 
+                  return Html::showDateTimeFormItem($name, $value);
+ 
+               case "timestamp" :
+                  $copytooption = array('min', 'max', 'step', 'toadd', 'emptylabel',
+                                        'addfirstminutes', 'inhours');
+                  foreach ($copytooption as $key) {
+                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                        $options[$key] = $searchoptions[$key];
+                     }
+                  }
+                  $options['value'] = $value;
+                  return Dropdown::showTimeStamp($name, $options);
+
 //                case "dropdown" :
 //                   if ($searchoptions['table'] == 'glpi_users') {
 //                      if ($param['comments']) {
