@@ -67,20 +67,7 @@ if (isset($_POST["itemtype"])
 
 //    if ($search["table"] == getTableForItemType($_POST["itemtype"])) { // field type
 //       switch ($search["table"].".".$search["linkfield"]) {
-//          case "glpi_cartridgeitems.alarm_threshold" :
-//          case "glpi_consumableitems.alarm_threshold" :
-//             Dropdown::showInteger($search["linkfield"], 0, -1, 100);
-//             break;
 // 
-//          case "glpi_contracts.duration" :
-//          case "glpi_contracts.notice" :
-//             Dropdown::showInteger($search["linkfield"], 0, 0, 120, 1, array(),
-//                                   array('unit' => 'month'));
-//             break;
-// 
-//          case "glpi_softwarelicenses.number" :
-//             Dropdown::showInteger($search["linkfield"], 0, 1, 1000, 1, array(-1 => __('Unlimited')));
-//             break;
 // 
 //          case "glpi_contracts.alert" :
 //             Contract::dropdownAlert(array('name' => $search["linkfield"]));
