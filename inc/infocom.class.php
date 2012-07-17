@@ -1223,6 +1223,10 @@ class Infocom extends CommonDBChild {
       $tab[51]['name']           = __('Warranty duration');
       $tab[51]['forcegroupby']   = true;
       $tab[51]['joinparams']     = $joinparams;
+      $tab[51]['datatype']       = 'number';
+      $tab[51]['unit']           = 'month';
+      $tab[51]['max']            = 120;
+      $tab[51]['toadd']          = array(-1 => __('Lifelong'));
 
       $tab[52]['table']          = 'glpi_infocoms';
       $tab[52]['field']          = 'warranty_info';
@@ -1351,7 +1355,10 @@ class Infocom extends CommonDBChild {
       $tab[6]['table']           = $this->getTable();
       $tab[6]['field']           = 'warranty_duration';
       $tab[6]['name']            = __('Warranty duration');
-      $tab[6]['datatype']        = 'integer';
+      $tab[6]['datatype']        = 'number';
+      $tab[6]['unit']            = 'month';
+      $tab[6]['max']             = 120;
+      $tab[6]['toadd']           = array(-1 => __('Lifelong'));
 
       $tab[7]['table']           = $this->getTable();
       $tab[7]['field']           = 'warranty_info';

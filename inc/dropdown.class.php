@@ -1130,32 +1130,7 @@ class Dropdown {
       for ($i=$params['min'] ; $i<=$params['max'] ; $i+=$params['step']) {
          $txt = $i;
          if (isset($params['unit'])) {
-            switch ($params['unit']) {
-               case 'year' :
-                  //TRANS: %d is a number of months
-                  $txt = sprintf(_n('%d year', '%d years', $i), $i);
-                  break;
-                  
-               case 'month' :
-                  //TRANS: %d is a number of months
-                  $txt = sprintf(_n('%d month', '%d months', $i), $i);
-                  break;
-
-               case 'day' :
-                  //TRANS: %d is a number of days
-                  $txt = sprintf(_n('%d day', '%d days', $i), $i);
-                  break;
-
-               case 'hour' :
-                  //TRANS: %d is a number of hours
-                  $txt = sprintf(_n('%d hour', '%d hours', $i), $i);
-                  break;
-
-               case '%' :
-                  $txt = sprintf(__('%d%%'), $i);
-                  break;
-
-            }
+            $txt = self::getValueWithUnit($i,$params['unit']);
          }
          $out .= "<option value='$i' ".(($i == $params['value']) ?" selected ":"").">$txt</option>";
       }
@@ -1165,6 +1140,46 @@ class Dropdown {
          return $params['rand'];
       } else {
          return $out;
+      }
+   }
+   /**
+    * Get value with unit / Automatic management of standar unit (year, month, %, ...)
+    *
+    * @param $value     number of item
+    * @param $unit      string of unit (maybe year, month, day, hour, % for standard management)
+    * \since version 0.84
+   **/
+   static function getValueWithUnit($value, $unit){
+      if (strlen($unit) == 0) {
+         return $value;
+      }
+      switch ($unit) {
+         case 'year' :
+            //TRANS: %d is a number of years
+            return sprintf(_n('%s year', '%s years', $value), $value);
+            break;
+
+         case 'month' :
+            //TRANS: %d is a number of months
+            return sprintf(_n('%s month', '%s months', $value), $value);
+            break;
+
+         case 'day' :
+            //TRANS: %d is a number of days
+            return sprintf(_n('%s day', '%s days', $value), $value);
+            break;
+
+         case 'hour' :
+            //TRANS: %d is a number of hours
+            return sprintf(_n('%s hour', '%s hours', $value), $value);
+            break;
+
+         case '%' :
+            return sprintf(__('%d%%'), $value);
+            break;
+
+         default :
+            return sprintf(__('%1$s %2$s'), $value, $unit);
       }
    }
    
