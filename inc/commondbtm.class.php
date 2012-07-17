@@ -3447,7 +3447,6 @@ class CommonDBTM extends CommonGLPI {
 
       foreach ($doubles as $double) {
          $doubles_text = array();
-//          print_r($double);
          if (in_array('CommonDBChild',class_parents($this))) {
             if ($this->getField($this->itemtype)) {
                $item = new $double['itemtype']();
@@ -4095,7 +4094,7 @@ class CommonDBTM extends CommonGLPI {
                               $options);
 
                case "right" :
-                  $copytooption = array('shownone', 'showread', 'showwrite');
+                  $copytooption = array('nonone', 'noread', 'nowrite');
                   $options['value'] = $value;
                   foreach ($copytooption as $key) {
                      if (isset($searchoptions[$key]) && !isset($options[$key])) {
