@@ -46,6 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 Session::checkLoginUser();
 
+/// TODO use standard getValueToSelect
 if (isset($_REQUEST['searchtype'])) {
    $searchopt         = unserialize(stripslashes($_REQUEST['searchopt']));
 
