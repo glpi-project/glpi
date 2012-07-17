@@ -324,6 +324,23 @@ class NetworkPortMigration extends CommonDBChild {
       }
       return $actions;
    }
+   function showSpecificMassiveActionsParameters($input = array()) {
+      switch ($input['action']) {
+         case "transform_to" :
+            Dropdown::showItemTypes('transform_to', NetworkPort::getNetworkPortInstantiations(),
+                                    array('value' => 'NetworkPortEthernet'));
+
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Save')."'>";
+            return true;
+            break;
+
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;
+      }
+      return false;
+   }
    
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,

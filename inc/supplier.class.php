@@ -197,6 +197,20 @@ class Supplier extends CommonDBTM {
       }
       return $actions;
    }
+   
+   function showSpecificMassiveActionsParameters($input = array()) {
+      switch ($input['action']) {
+         case "add_contact_supplier" :
+            $contactsupplier = new Contact_Supplier();
+            return $contactsupplier->showSpecificMassiveActionsParameters($input);
+         break;
+
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;         
+      }
+      return false;
+   }
 
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,

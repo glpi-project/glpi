@@ -843,6 +843,37 @@ class NetworkPort extends CommonDBChild {
       return $actions;
    }
    
+   function showSpecificMassiveActionsParameters($input = array()) {
+      switch ($input['action']) {
+         case "assign_vlan" :
+         Vlan::dropdown();
+         echo "&nbsp;". __('Tagged'). "&nbsp;<input type='checkbox' name='tagged' value='1'>";
+         echo "&nbsp;<input type='submit' name='assign_vlan' class='submit' value='".
+               __s('Associate')."'>";
+            return true;
+            break;
+
+         case "unassign_vlan" :
+            Vlan::dropdown();
+            echo "&nbsp;<input type='submit' name='unassign_vlan' class='submit' value='".
+                  __s('Dissociate')."'>";
+            return true;
+            break;
+
+         case "move_port" :
+            Dropdown::show('NetworkEquipment', array('name' => 'items_id'));
+            echo "&nbsp;<input type='submit' name='move' class='submit' value=\"". __s('Move')."\">";
+            return true;
+            break;
+
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;            
+      }
+      return false;
+   }
+
+   
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,

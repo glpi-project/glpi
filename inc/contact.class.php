@@ -243,7 +243,21 @@ class Contact extends CommonDBTM{
       }
       return false;
    }
+   
+   function showSpecificMassiveActionsParameters($input = array()) {
+      switch ($input['action']) {
+         case "add_contact_supplier" :
+            $contactsupplier = new Contact_Supplier();
+            return $contactsupplier->showSpecificMassiveActionsParameters($input);
+         break;
 
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;         
+      }
+      return false;
+   }
+   
    function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $this->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);

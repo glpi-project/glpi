@@ -1707,6 +1707,35 @@ class Ticket extends CommonITILObject {
       }
       return $actions;
    }
+
+   function showSpecificMassiveActionsParameters($input = array()) {
+
+      switch ($input['action']) {
+         case "add_followup" :
+            TicketFollowup::showFormMassiveAction();
+            return true;
+            break;
+            
+         case "link_ticket" :
+            $rand = Ticket_Ticket::dropdownLinks('link');
+            printf(__('%1$s: %2$s'), __('Ticket'), __('ID'));
+            echo "&nbsp;<input type='text' name='tickets_id_1' value='' size='10'>\n";
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           __s('Post')."'>";
+            return true;
+            break;
+
+         case "submit_validation" :
+            TicketValidation::showFormMassiveAction();
+            return true;
+            break;
+
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;
+      }
+      return false;
+   }
    
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,

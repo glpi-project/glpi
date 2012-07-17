@@ -95,6 +95,29 @@ class Contact_Supplier extends CommonDBRelation{
       return $res;
    }
 
+   function showSpecificMassiveActionsParameters($input = array()) {
+      switch ($input['action']) {
+         case "add_contact_supplier" :
+            if ($input['itemtype'] == 'Supplier') {
+               Contact::dropdown(array('name' => "contacts_id"));
+               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                              _sx('button', 'Add')."'>";
+               return true;
+            }
+            if ($input['itemtype'] == 'Contact') {
+               Supplier::dropdown(array('name' => "suppliers_id"));
+               echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                              _sx('button', 'Add')."'>";
+               return true;
+            }
+            break;
+
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;            
+      }
+      return false;
+   }
    
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 

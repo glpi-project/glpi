@@ -685,7 +685,34 @@ class Document extends CommonDBTM {
       }
       return $actions;
    }
+   
+   function showSpecificMassiveActionsParameters($input = array()) {
+      global $CFG_GLPI;
+      
+      switch ($input['action']) {
+         case "add_document_item" :
+            Dropdown::showAllItems("items_id", 0, 0, 1,
+                                    $CFG_GLPI["document_types"], false, true, 'item_itemtype');
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Add')."'>";
+            return true;
+            break;
 
+         case "remove_document_item" :
+            Dropdown::showAllItems("items_id", 0, 0, 1,
+                                    $CFG_GLPI["document_types"], false, true, 'item_itemtype');
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           _sx('button', 'Delete')."'>";
+            return true;
+            break;
+
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+               break;
+      }
+      return false;
+   }
+   
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,

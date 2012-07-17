@@ -688,6 +688,28 @@ class Computer extends CommonDBTM {
       return $actions;
    }
    
+   function showSpecificMassiveActionsParameters($input = array()) {
+      switch ($input['action']) {
+         case "install" :
+            Software::dropdownSoftwareToInstall("softwareversions_id",
+                                                $_SESSION["glpiactive_entity"], 1);
+            echo "<br><br><input type='submit' name='massiveaction' class='submit' value='".
+                           __s('Install')."'>";
+            return true;
+            break;
+
+         case "connect" :
+            $ci = new Computer_Item();
+            return $ci->showSpecificMassiveActionsParameters($input);
+            break;
+
+         default :
+            return parent::showSpecificMassiveActionsParameters($input);
+            break;            
+      }
+      return false;
+   }
+   
    function doSpecificMassiveActions($input = array()) {
       $res = array('ok'      => 0,
                    'ko'      => 0,
