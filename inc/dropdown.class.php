@@ -399,6 +399,7 @@ class Dropdown {
     *    - value      : integer / preselected value (default '')
     *    - used       : array / Already used items ID: not to display in dropdown (default empty)
     *    - emptylabel : Empty choice's label (default self::EMPTY_VALUE)
+    *    - display : boolean if false get string
     *
     * @return nothing (print out an HTML select box)
    **/
@@ -408,6 +409,7 @@ class Dropdown {
       $params['value']        = '';
       $params['used']         = array();
       $params['emptylabel']   = self::EMPTY_VALUE;
+      $params['display']      = true;
 
       if (is_array($options) && count($options)) {
          foreach ($options as $key => $val) {
@@ -425,8 +427,9 @@ class Dropdown {
          }
       }
       asort($options);
-      return self::showFromArray($name, $options, array('value' => $params['value'],
-                                                        'used'  => $params['used']));
+      return self::showFromArray($name, $options, array('value'   => $params['value'],
+                                                        'used'    => $params['used'],
+                                                        'display' => $params['display']));
    }
 
 
