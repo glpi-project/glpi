@@ -4095,9 +4095,14 @@ class CommonDBTM extends CommonGLPI {
                               $options);
 
                case "right" :
-                  /// TODO manage display option + add nonone, noread, nowrite to limit values;
-                  /// TODO : change proto of this method
-                  return Profile::dropdownNoneReadWrite($name, $value, 1, 1, 1);
+                  $copytooption = array('shownone', 'showread', 'showwrite');
+                  $options['value'] = $value;
+                  foreach ($copytooption as $key) {
+                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                        $options[$key] = $searchoptions[$key];
+                     }
+                  }
+                  return Profile::dropdownRight($name, $options);
 
                case "itemtypename" :
                   /// TODO manage display option
