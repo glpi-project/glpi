@@ -4039,13 +4039,29 @@ class CommonDBTM extends CommonGLPI {
 
                case "date" :
                case "date_delay" :
-                  /// TODO change prototype to have only 1 options array + add options to searchoption
-                  return Html::showDateFormItem($name, $value);
+                  $copytooption = array('min', 'max', 'maybeempty', 'showyear');
+
+                  foreach ($copytooption as $key) {
+                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                        $options[$key] = $searchoptions[$key];
+                     }
+                  }
+                  $options['value'] = $value;
+                  return Html::showDateField($name, $options);
                   
 
                case "datetime" :
-                  /// TODO change prototype to have only 1 options array + add options to searchoption 
-                  return Html::showDateTimeFormItem($name, $value);
+                  $copytooption = array('mindate', 'maxdate', 'mintime', 'maxtime',
+                                        'maybeempty', 'timestep');
+
+                  foreach ($copytooption as $key) {
+                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                        $options[$key] = $searchoptions[$key];
+                     }
+                  }
+
+                  $options['value'] = $value;
+                  return Html::showDateTimeField($name, $options);
  
                case "timestamp" :
                   $copytooption = array('min', 'max', 'step', 'toadd', 'emptylabel',
