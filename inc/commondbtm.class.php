@@ -4088,11 +4088,9 @@ class CommonDBTM extends CommonGLPI {
                   }
 
                   if ($searchoptions['table'] == 'glpi_users') {
-                     /// TODO manage display option
                      return User::dropdown($options);
                   }
 
-                  /// TODO manage display option
                   return Dropdown::show(getItemTypeForTable($searchoptions["table"]),
                               $options);
 
