@@ -1867,22 +1867,59 @@ class Profile extends CommonDBTM {
     * @param $write     display write choice ? (default 1)
     *
     * @return nothing (print out an HTML select box)
+    * \deprecated use dropdownRight instead
    **/
    static function dropdownNoneReadWrite($name, $value, $none=1, $read=1, $write=1) {
-
-      if ($none) {
-         $values['NULL'] = __('No access');
-      }
-      if ($read) {
-         $values['r'] = __('Read');
-      }
-      if ($write) {
-         $values['w'] = __('Write');
-      }
-      Dropdown::showFromArray($name,$values,array('value'=>$value));
+      return self::dropdownRight($name, array('value'     => $value,
+                                       'shownone'  => $none,
+                                       'showread'  => $read,
+                                       'showwrite' => $write));
    }
 
-
+   /**
+    * Make a select box for a None Read Write choice
+    *
+    * @param $name      select name
+    * @param $options array of options
+    *       - value     preselected value.
+    *       - none      display none choice ? (default 1)
+    *       - read      display read choice ? (default 1)
+    *       - write     display write choice ? (default 1)
+    *       - display   display or get string (default true)
+    *       - rand      specific rand (default is generated one)
+    *
+    * @return nothing (print out an HTML select box)
+    * \since version 0.84
+   **/
+   static function dropdownRight($name, $options = array()) {
+      $param['value']     = '';
+      $param['display']   = true;
+      $param['shownone']  = true;
+      $param['showread']  = true;
+      $param['showwrite'] = true;
+      $param['rand']      = mt_rand();
+      
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $param[$key] = $val;
+         }
+      }
+      $values = array();
+      if ($param['shownone']) {
+         $values['NULL'] = __('No access');
+      }
+      if ($param['showread']) {
+         $values['r'] = __('Read');
+      }
+      if ($param['showwrite']) {
+         $values['w'] = __('Write');
+      }
+      return Dropdown::showFromArray($name,$values,
+                                           array('value'   => $param['value'],
+                                                 'rand'    => $param['rand'],
+                                                 'display' => $param['display']));
+   }
+   
    /**
     * Dropdown profiles which have rights under the active one
     *

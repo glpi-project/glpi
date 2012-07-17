@@ -1404,6 +1404,7 @@ class Dropdown {
     *    - size      : integer / number of rows for the select (default = 1)
     *    - mark_unmark_all : add buttons to select or deselect all options (only for multiple)
     *    - display : boolean / display or return string
+    *    - rand : specific rand if needed (default is generated one)
     *
     * Permit to use optgroup defining items in arrays
     * array('optgroupname'  => array('key1' => 'val1',
@@ -1422,6 +1423,7 @@ class Dropdown {
       $param['size']            = 1;
       $param['mark_unmark_all'] = false;
       $param['display']         = true;
+      $param['rand']            = mt_rand();
 
       if (is_array($options) && count($options)) {
          if (!empty($options['value'])) {
@@ -1450,10 +1452,8 @@ class Dropdown {
          }
          
       } else {
-         $rand = mt_rand();
-//          Html::printCleanArray($elements);
 
-         $field_id = "dropdown_".$name.$rand;
+         $field_id = "dropdown_".$name.$param['rand'];
          $output .= "<select name='$field_name' id='$field_id'";
 
          if (!empty($param["on_change"])) {
@@ -1506,7 +1506,7 @@ class Dropdown {
       }
       if ($param['display']) {
          echo $output;
-         return $rand;
+         return $param['rand'];
       } else {
          return $output;
       }
