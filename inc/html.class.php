@@ -3773,6 +3773,7 @@ class Html {
     *              set to -1 not to take into account
     *    - user : integer / restrict to a defined user (default -1 : no restriction)
     *    - option : string / options to add to text field
+    *    - display : boolean / if false get string
     *
     * @return nothing (print out an HTML div)
    **/
@@ -3799,14 +3800,14 @@ class Html {
             $params[$key] = $val;
          }
       }
-
+      $output = '';
       if ($CFG_GLPI["use_ajax"]
           && $CFG_GLPI["use_ajax_autocompletion"]) {
          $rand = mt_rand();
          $name = "field_".$params['name'].$rand;
-         echo "<input ".$params['option']." id='text$name' type='text' name='".$params['name'].
+         $output .=  "<input ".$params['option']." id='text$name' type='text' name='".$params['name'].
                "' value=\"".self::cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
-         $output = "<script type='text/javascript' >\n";
+         $output .= "<script type='text/javascript' >\n";
 
          $output .= "var text$name = new Ext.data.Store({
             proxy: new Ext.data.HttpProxy(
@@ -3851,11 +3852,15 @@ class Html {
 
          $output .= "</script>";
 
-         echo $output;
-
       } else {
-         echo "<input ".$params['option']." type='text' name='".$params['name']."'
+         $output .=  "<input ".$params['option']." type='text' name='".$params['name']."'
                 value=\"".self::cleanInputText($params['value'])."\" size='".$params['size']."'>\n";
+      }
+
+      if (!isset($options['display']) || $options['display']) {
+         echo $output;
+      } else {
+         return $output;
       }
    }
 

@@ -1081,16 +1081,18 @@ class Dropdown {
     * @param $step            step used (default 1)
     * @param $toadd     array of values to add at the beginning
     * @param $options   array of additionnal options :
+    *                            - unit : string unit to used
+    *                            - display : boolean if false get string
    **/
    static function showInteger($myname, $value, $min=0, $max=100, $step=1, $toadd=array(),
                                $options=array()) {
 
-      echo "<select name='$myname'>\n";
+      $out = "<select name='$myname'>\n";
 
       if (count($toadd)) {
          foreach ($toadd as $key => $val) {
-            echo "<option value='$key' ".(($key == $value) ?" selected ":"").">";
-            echo $val."</option>";
+            $out .=  "<option value='$key' ".(($key == $value) ?" selected ":"").">";
+            $out .= $val."</option>";
          }
       }
 
@@ -1119,10 +1121,14 @@ class Dropdown {
 
             }
          }
-         echo "<option value='$i' ".(($i == $value) ?" selected ":"").">$txt</option>";
+         $out .= "<option value='$i' ".(($i == $value) ?" selected ":"").">$txt</option>";
       }
-      echo "</select>";
-
+      $out .= "</select>";
+      if (!isset($options['display']) || $options['display']) {
+         echo $out;
+      } else {
+         return $out;
+      }
    }
 
    /**
