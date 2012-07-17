@@ -3871,18 +3871,18 @@ class CommonDBTM extends CommonGLPI {
                   }
                   return $value;
 
-            case "weblink" :
-               $orig_link = trim($value);
-               if (!empty($orig_link)) {
-                  // strip begin of link
-                  $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/','',$orig_link);
-                  $link = preg_replace('/\/$/', '', $link);
-                  if (Toolbox::strlen($link) > $CFG_GLPI["url_maxlength"]) {
-                     $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
+               case "weblink" :
+                  $orig_link = trim($value);
+                  if (!empty($orig_link)) {
+                     // strip begin of link
+                     $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/','',$orig_link);
+                     $link = preg_replace('/\/$/', '', $link);
+                     if (Toolbox::strlen($link) > $CFG_GLPI["url_maxlength"]) {
+                        $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
+                     }
+                     return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
                   }
-                  return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
-               }
-               return "&nbsp;";
+                  return "&nbsp;";
 
                case "dropdown" :
                   if ($searchoptions['table'] == 'glpi_users') {
@@ -3930,6 +3930,218 @@ class CommonDBTM extends CommonGLPI {
       return $value;
    }
 
+   /**
+    * display a specific field selection system
+    *
+    * @since version 0.83
+    *
+    * @param $field     String         name of the field
+    * @param $name      string         name of the select (if empty use linkfield)
+    * @param $values    String/Array   with the value to select or a Single value
+    * @param $options   Array          of options
+    *
+    * @return return the string to display
+   **/
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      return '';
+   }
+
+
+   /**
+    * Select a field using standard system
+    *
+    * @since version 0.83
+    *
+    * @param $field_id_or_search_options  integer/string/array id of the search option field
+    *                                                             or field name
+    *                                                             or search option array
+    * @param $name                        string               name of the select (if empty use linkfield)
+    * @param $values                                           mixed default value to display
+    * @param $options                     array                of possible options:
+    * Parameters which could be used in options array :
+    *    - comments : boolean / is the comments displayed near the value (default false)
+    *    - any others options passed to specific display method
+    *
+    * @return return the string to display
+   **/
+   function getValueToSelect($field_id_or_search_options, $name='', $values = '', $options=array()) {
+      global $CFG_GLPI;
+
+      $param['comments'] = false;
+      $param['html']     = false;
+      foreach ($param as $key => $val) {
+         if (!isset($options[$key])) {
+            $options[$key] = $val;
+         }
+      }
+
+      $searchoptions = array();
+      if (is_array($field_id_or_search_options)) {
+         $searchoptions = $field_id_or_search_options;
+      } else {
+         $searchopt = Search::getOptions($this->getType());
+
+         // Get if id of search option is passed
+         if (is_numeric($field_id_or_search_options)) {
+            if (isset($searchopt[$field_id_or_search_options])) {
+               $searchoptions = $searchopt[$field_id_or_search_options];
+            }
+         } else { // Get if field name is passed
+            $searchoptions = $this->getSearchOptionByField('field', $field_id_or_search_options,
+                                                           $this->getTable());
+         }
+      }
+
+      if (count($searchoptions)) {
+         $field = $searchoptions['field'];
+
+         // Normalize option
+         if (is_array($values)) {
+            $value = $values[$field];
+         } else {
+            $value  = $values;
+            $values = array($field => $value);
+         }
+
+         if (empty($name)) {
+            $name = $searchoptions['linkfield'];
+         }
+         if (isset($searchoptions['datatype'])) {
+            $unit = '';
+            if (isset($searchoptions['unit'])) {
+               $unit = $searchoptions['unit'];
+            }
+
+            switch ($searchoptions['datatype']) {
+               case "number" :
+                  $min = 0;
+                  $max = 100;
+                  $step = 1;
+                  $toadd= array();
+                  if (isset($searchoptions['min'])) {
+                     $min = $searchoptions['min'];
+                  }
+                  if (isset($searchoptions['max'])) {
+                     $max = $searchoptions['max'];
+                  }
+                  if (isset($searchoptions['step'])) {
+                     $step = $searchoptions['step'];
+                  }
+                  if (isset($searchoptions['toadd'])) {
+                     $toadd = $searchoptions['toadd'];
+                  }
+                  return Dropdown::showInteger($name, $value, $min, $max, $toadd, array('unit' => $unit, 'display' => false));
+
+               case "decimal" :
+               case "string" :
+                  $options['display'] = false;
+                  $this->fields[$name] = $value;
+                  return Html::autocompletionTextField($this, $name, $options);
+
+//                case "text" :
+// 
+//                   if ($options['html']) {
+//                      $text = nl2br($value);
+//                   } else {
+//                      $text = $value;
+//                   }
+//                   if (isset($searchoptions['htmltext']) && $searchoptions['htmltext']) {
+//                      $text = Html::clean(Toolbox::unclean_cross_side_scripting_deep($text));
+//                   }
+//                   return $text;
+// 
+//                case "bool" :
+//                   return Dropdown::getYesNo($value);
+// 
+//                case "date" :
+//                case "date_delay" :
+//                   if (isset($options['relative_dates']) && $options['relative_dates']) {
+//                      $dates = Html::getGenericDateTimeSearchItems(array('with_time'   => true,
+//                                                                         'with_future' => true));
+//                      return $dates[$value];
+//                   }
+//                   return Html::convDate(Html::computeGenericDateTimeSearch($value, true));
+// 
+//                case "datetime" :
+//                   if (isset($options['relative_dates']) && $options['relative_dates']) {
+//                      $dates = Html::getGenericDateTimeSearchItems(array('with_time'   => true,
+//                                                                         'with_future' => true));
+//                      return $dates[$value];
+//                   }
+//                   return Html::convDateTime(Html::computeGenericDateTimeSearch($value,false));
+// 
+//                case "timestamp" :
+//                   $withseconds = false;
+//                   if (isset($searchoptions['withseconds'])) {
+//                      $withseconds = $searchoptions['withseconds'];
+//                   }
+//                   return Html::timestampToString($value,$withseconds);
+// 
+//                case "email" :
+//                   if ($options['html']) {
+//                      return "<a href='mailto:$value'>$value</a>";
+//                   }
+//                   return $value;
+// 
+//                case "weblink" :
+//                   $orig_link = trim($value);
+//                   if (!empty($orig_link)) {
+//                      // strip begin of link
+//                      $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/','',$orig_link);
+//                      $link = preg_replace('/\/$/', '', $link);
+//                      if (Toolbox::strlen($link) > $CFG_GLPI["url_maxlength"]) {
+//                         $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"])."...";
+//                      }
+//                      return "<a href=\"".formatOutputWebLink($orig_link)."\" target='_blank'>$link</a>";
+//                   }
+//                   return "&nbsp;";
+// 
+//                case "dropdown" :
+//                   if ($searchoptions['table'] == 'glpi_users') {
+//                      if ($param['comments']) {
+//                         $tmp = getUserName($value,2);
+//                         return $tmp['name'].'&nbsp;'.Html::showToolTip($tmp['comment'],
+//                                                                        array('display' => false));
+//                      }
+//                      return getUserName($value);
+//                   }
+//                   if ($param['comments']) {
+//                      $tmp = Dropdown::getDropdownName($searchoptions['table'],$value,1);
+//                      return $tmp['name'].'&nbsp;'.Html::showToolTip($tmp['comment'],
+//                                                                     array('display' => false));
+//                   }
+//                   return Dropdown::getDropdownName($searchoptions['table'], $value);
+// 
+//                case "right" :
+//                   return Profile::getRightValue($value);
+// 
+//                case "itemtypename" :
+//                   if ($obj = getItemForItemtype($value)) {
+//                      return $obj->getTypeName(1);
+//                   }
+//                   break;
+// 
+//                case "language" :
+//                   if (isset($CFG_GLPI['languages'][$value])) {
+//                      return $CFG_GLPI['languages'][$value][0];
+//                   }
+//                   return __('Default value');
+
+            }
+         }
+         // Get specific display if available
+         $itemtype = getItemTypeForTable($searchoptions['table']);
+         if ($item = getItemForItemtype($itemtype)) {
+            $specific = $item->getSpecificValueToSelect($field, $values, $options);
+            if (!empty($specific)) {
+               return $specific;
+            }
+         }
+
+      }
+      return $value;
+   }
+   
 
    /**
     * @param $itemtype
