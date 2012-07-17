@@ -97,6 +97,16 @@ if (!defined("GLPI_GRAPH_DIR")) {
    define("GLPI_GRAPH_DIR",GLPI_ROOT . "/files/_graphs");
 }
 
+// Path for temp storage
+if (!defined("GLPI_TMP_DIR")) {
+   define("GLPI_TMP_DIR",GLPI_ROOT . "/files/_tmp");
+}
+
+// Path for upload storage
+if (!defined("GLPI_UPLOAD_DIR")) {
+   define("GLPI_UPLOAD_DIR",GLPI_ROOT . "/files/_uploads");
+}
+
 // Default location scripts
 if (!defined("GLPI_SCRIPT_DIR")) {
    define("GLPI_SCRIPT_DIR",GLPI_ROOT . "/scripts");
