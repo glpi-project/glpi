@@ -452,7 +452,7 @@ class Contract extends CommonDBTM {
             $options['value'] = $values[$field];
             return self::dropdownAlert($options);
       }
-      return '';
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
    
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
@@ -465,6 +465,7 @@ class Contract extends CommonDBTM {
             return self::getAlertName($values[$field]);
             break;
       }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
    }
    
    function getSearchOptions() {

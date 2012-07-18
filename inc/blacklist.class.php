@@ -140,7 +140,7 @@ class Blacklist extends CommonDropdown {
             $types = self::getTypes();
             return $types[$values[$field]];
       }
-      return parent::getSpecificValueToDisplay($field, $values[$field], $options);
+      return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
 
