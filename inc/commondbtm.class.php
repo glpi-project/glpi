@@ -4155,7 +4155,9 @@ class CommonDBTM extends CommonGLPI {
          }
 
       }
-      return $value;
+      // default case field text
+      $this->fields[$name] = $value;
+      return Html::autocompletionTextField($this, $name, $options);
    }
    
 
