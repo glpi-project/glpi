@@ -1405,48 +1405,67 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of ITIL object priority
     *
-    * @param $name      select name
-    * @param $value     default value (default 0)
-    * @param $complete  see also at least selection (major included) (false by default)
-    * @param $major     display major priority (false by default)
+    * @param $options array of options
+    *       - name      select name (default is urgency)
+    *       - value     default value (default 0)
+    *       - showtype list proposed : normal, search (default normal)
+    *       - wthmajor  boolean with major priority ?
+    *       - display   boolean if false get string
     *
+    * \since version 0.84 new proto
     * @return string id of the select
    **/
-   static function dropdownPriority($name, $value=0, $complete=false, $major=false) {
+   static function dropdownPriority(array $options = array()) {
+      $p['name']      = 'priority';
+      $p['value']     = 0;
+      $p['showtype']  = 'normal';
+      $p['display']   = true;
+      $p['withmajor'] = false;
 
-      $id = "select_$name".mt_rand();
-      echo "<select id='$id' name='$name'>";
-      if ($complete) {
-         echo "<option value='0' ".($value==0?" selected ":"").">"._x('priority', 'All')."</option>";
-         echo "<option value='-5' ".($value==-5?" selected ":"").">"._x('priority',
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+   
+      $id = "select_".$p['name'].mt_rand();
+      $output = "<select id='$id' name='".$p['name']."'>";
+      if ($p['showtype'] == 'search') {
+         $output .= "<option value='0' ".($p['value']==0?" selected ":"").">"._x('priority', 'All')."</option>";
+         $output .= "<option value='-5' ".($p['value']==-5?" selected ":"").">"._x('priority',
                                                                         'At least very high').
               "</option>";
-         echo "<option value='-4' ".($value==-4?" selected ":"").">"._x('priority','At least high').
+         $output .= "<option value='-4' ".($p['value']==-4?" selected ":"").">"._x('priority','At least high').
               "</option>";
-         echo "<option value='-3' ".($value==-3?" selected ":"").">"._x('priority',
+         $output .= "<option value='-3' ".($p['value']==-3?" selected ":"").">"._x('priority',
                                                                         'At least very medium').
               "</option>";
-         echo "<option value='-2' ".($value==-2?" selected ":"").">"._x('priority','At least low').
+         $output .= "<option value='-2' ".($p['value']==-2?" selected ":"").">"._x('priority','At least low').
               "</option>";
-         echo "<option value='-1' ".($value==-1?" selected ":"").">"._x('priority',
+         $output .= "<option value='-1' ".($p['value']==-1?" selected ":"").">"._x('priority',
                                                                         'At least very low').
               "</option>";
       }
 
-      if ($complete || $major) {
-         echo "<option value='6' ".($value==6?" selected ":"").">"._x('priority','Major')."</option>";
+      if ($p['showtype'] == 'search' || $p['withmajor']) {
+         $output .= "<option value='6' ".($p['value']==6?" selected ":"").">"._x('priority','Major')."</option>";
       }
 
-      echo "<option value='5' ".($value==5?" selected ":"").">"._x('priority','Very high').
+      $output .= "<option value='5' ".($p['value']==5?" selected ":"").">"._x('priority','Very high').
            "</option>";
-      echo "<option value='4' ".($value==4?" selected ":"").">"._x('priority','High')."</option>";
-      echo "<option value='3' ".($value==3?" selected ":"").">"._x('priority','Medium')."</option>";
-      echo "<option value='2' ".($value==2?" selected ":"").">"._x('priority','Low')."</option>";
-      echo "<option value='1' ".($value==1?" selected ":"").">"._x('priority','Very low')."</option>";
+      $output .= "<option value='4' ".($p['value']==4?" selected ":"").">"._x('priority','High')."</option>";
+      $output .= "<option value='3' ".($p['value']==3?" selected ":"").">"._x('priority','Medium')."</option>";
+      $output .= "<option value='2' ".($p['value']==2?" selected ":"").">"._x('priority','Low')."</option>";
+      $output .= "<option value='1' ".($p['value']==1?" selected ":"").">"._x('priority','Very low')."</option>";
 
-      echo "</select>";
+      $output .= "</select>";
 
-      return $id;
+      if ($p['display']) {
+         echo $output;
+         return $id;
+      } else {
+         return $output;
+      }
    }
 
 
@@ -1482,66 +1501,84 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of ITIL object Urgency
     *
-    * @param $itemtype  itemtype
-    * @param $name      select name
-    * @param $value     default value (default 0)
-    * @param $complete  see also at least selection (false by default)
+    * @param $options array of options
+    *       - name      select name (default is urgency)
+    *       - value     default value (default 0)
+    *       - showtype list proposed : normal, search (default normal)
+    *       - display   boolean if false get string
     *
+    * \since version 0.84 new proto
     * @return string id of the select
    **/
-   static function dropdownGenericUrgency($itemtype, $name, $value=0, $complete=false) {
+   static function dropdownUrgency(array $options = array()) {
       global $CFG_GLPI;
 
-      $id = "select_$name".mt_rand();
-      echo "<select id='$id' name='$name'>";
+      $p['name']     = 'urgency';
+      $p['value']    = 0;
+      $p['showtype'] = 'normal';
+      $p['display']  = true;
 
-      if ($complete) {
-         echo "<option value='0' ".($value==0?" selected ":"").">"._x('urgency', 'All')."</option>";
-         echo "<option value='-5' ".($value==-5?" selected ":"").">"._x('urgency',
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+      
+      $id = "select_".$p['name'].mt_rand();
+      $output = "<select id='$id' name='".$p['name']."'>";
+
+      if ($p['showtype'] == 'search') {
+         $output .= "<option value='0' ".($p['value']==0?" selected ":"").">"._x('urgency', 'All')."</option>";
+         $output .= "<option value='-5' ".($p['value']==-5?" selected ":"").">"._x('urgency',
                                                                         'At least very high').
               "</option>";
-         echo "<option value='-4' ".($value==-4?" selected ":"").">"._x('urgency','At least high').
+         $output .= "<option value='-4' ".($p['value']==-4?" selected ":"").">"._x('urgency','At least high').
               "</option>";
-         echo "<option value='-3' ".($value==-3?" selected ":"").">"._x('urgency','At least medium').
+         $output .= "<option value='-3' ".($p['value']==-3?" selected ":"").">"._x('urgency','At least medium').
               "</option>";
-         echo "<option value='-2' ".($value==-2?" selected ":"").">"._x('urgency','At least low').
+         $output .= "<option value='-2' ".($p['value']==-2?" selected ":"").">"._x('urgency','At least low').
               "</option>";
-         echo "<option value='-1' ".($value==-1?" selected ":"").">"._x('urgency',
+         $output .= "<option value='-1' ".($p['value']==-1?" selected ":"").">"._x('urgency',
                                                                         'At least very low').
               "</option>";
       }
 
       if (isset($CFG_GLPI[static::URGENCY_MASK_FIELD])) {
-         if ($complete
+         if ($p['showtype'] == 'search'
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<5))) {
-            echo "<option value='5' ".($value==5?" selected ":"").">"._x('urgency', 'Very high').
+            $output .= "<option value='5' ".($p['value']==5?" selected ":"").">"._x('urgency', 'Very high').
                  "</option>";
          }
 
-         if ($complete
+         if ($p['showtype'] == 'search'
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<4))) {
-            echo "<option value='4' ".($value==4?" selected ":"").">"._x('urgency', 'High').
+            $output .= "<option value='4' ".($p['value']==4?" selected ":"").">"._x('urgency', 'High').
                  "</option>";
          }
 
-         echo "<option value='3' ".($value==3?" selected ":"").">"._x('urgency', 'Medium').
+         $output .= "<option value='3' ".($p['value']==3?" selected ":"").">"._x('urgency', 'Medium').
               "</option>";
 
-         if ($complete
+         if ($p['showtype'] == 'search'
              || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<2))) {
-            echo "<option value='2' ".($value==2?" selected ":"").">"._x('urgency', 'Low').
+            $output .= "<option value='2' ".($p['value']==2?" selected ":"").">"._x('urgency', 'Low').
                  "</option>";
          }
 
-         if ($complete || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<1))) {
-            echo "<option value='1' ".($value==1?" selected ":"").">"._x('urgency', 'Very low').
+         if ($p['showtype'] == 'search' || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<1))) {
+            $output .= "<option value='1' ".($p['value']==1?" selected ":"").">"._x('urgency', 'Very low').
                  "</option>";
          }
       }
 
-      echo "</select>";
+      $output .= "</select>";
 
-      return $id;
+      if ($p['display']) {
+         echo $output;
+         return $id;
+      } else {
+         return $output;
+      }
    }
 
 
@@ -1574,67 +1611,85 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Dropdown of ITIL object Impact
     *
-    * @param $itemtype  itemtype
-    * @param $name      select name
-    * @param $value     default value (default 0)
-    * @param $complete  see also at least selection (major included) (false by default)
+    * @param $options   array of options
+    *  - name      select name (default is impact)
+    *  - value     default value (default 0)
+    *  - showtype list proposed : normal, search (default normal)
+    *  - display   boolean if false get string
     *
+    * \since version 0.84 new proto
     * @return string id of the select
    **/
-   static function dropdownGenericImpact($itemtype, $name, $value=0, $complete=false) {
+   static function dropdownImpact(array $options = array()) {
       global $CFG_GLPI;
 
-      $id = "select_$name".mt_rand();
-      echo "<select id='$id' name='$name'>";
+      $p['name']      = 'impact';
+      $p['value']     = 0;
+      $p['showtype']  = 'normal';
+      $p['display']   = true;
 
-      if ($complete) {
-         echo "<option value='0' ".($value==0?" selected ":"").">"._x('impact', 'All')."</option>";
-         echo "<option value='-5' ".($value==-5?" selected ":"").">"._x('impact',
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      $id = "select_".$p['name'].mt_rand();
+      $output = "<select id='$id' name='".$p['name']."'>";
+
+      if ($p['showtype'] == 'search') {
+         $output .= "<option value='0' ".($p['value']==0?" selected ":"").">"._x('impact', 'All')."</option>";
+         $output .= "<option value='-5' ".($p['value']==-5?" selected ":"").">"._x('impact',
                                                                         'At least very high').
               "</option>";
-         echo "<option value='-4' ".($value==-4?" selected ":"").">"._x('impact','At least high').
+         $output .= "<option value='-4' ".($p['value']==-4?" selected ":"").">"._x('impact','At least high').
               "</option>";
-         echo "<option value='-3' ".($value==-3?" selected ":"").">"._x('impact','At least medium').
+         $output .= "<option value='-3' ".($p['value']==-3?" selected ":"").">"._x('impact','At least medium').
               "</option>";
-         echo "<option value='-2' ".($value==-2?" selected ":"").">"._x('impact','At least low').
+         $output .= "<option value='-2' ".($p['value']==-2?" selected ":"").">"._x('impact','At least low').
               "</option>";
-         echo "<option value='-1' ".($value==-1?" selected ":"").">"._x('impact',
+         $output .= "<option value='-1' ".($p['value']==-1?" selected ":"").">"._x('impact',
                                                                         'At least very low').
               "</option>";
       }
 
-      if (isset($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')])) {
-         if ($complete
-             || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<5))) {
-            echo "<option value='5' ".($value==5?" selected ":"").">"._x('impact', 'Very high').
+      if (isset($CFG_GLPI[static::IMPACT_MASK_FIELD])) {
+         if ($p['showtype'] == 'search'
+             || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<5))) {
+            $output .= "<option value='5' ".($p['value']==5?" selected ":"").">"._x('impact', 'Very high').
                  "</option>";
          }
 
-         if ($complete
-             || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<4))) {
-            echo "<option value='4' ".($value==4?" selected ":"").">"._x('impact', 'High').
+         if ($p['showtype'] == 'search'
+             || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<4))) {
+            $output .= "<option value='4' ".($p['value']==4?" selected ":"").">"._x('impact', 'High').
                  "</option>";
          }
 
-         echo "<option value='3' ".($value==3?" selected ":"").">"._x('impact', 'Medium').
+         $output .= "<option value='3' ".($p['value']==3?" selected ":"").">"._x('impact', 'Medium').
               "</option>";
 
-         if ($complete
-             || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<2))) {
-            echo "<option value='2' ".($value==2?" selected ":"").">"._x('impact', 'Low').
+         if ($p['showtype'] == 'search'
+             || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<2))) {
+            $output .= "<option value='2' ".($p['value']==2?" selected ":"").">"._x('impact', 'Low').
                  "</option>";
          }
 
-         if ($complete
-             || ($CFG_GLPI[constant($itemtype.'::IMPACT_MASK_FIELD')] & (1<<1))) {
-            echo "<option value='1' ".($value==1?" selected ":"").">"._x('impact', 'Very low').
+         if ($p['showtype'] == 'search'
+             || ($CFG_GLPI[static::IMPACT_MASK_FIELD] & (1<<1))) {
+            $output .= "<option value='1' ".($p['value']==1?" selected ":"").">"._x('impact', 'Very low').
                  "</option>";
          }
       }
 
-      echo "</select>";
+      $output .= "</select>";
 
-      return $id;
+      if ($p['display']) {
+         echo $output;
+         return $id;
+      } else {
+         return $output;
+      }
    }
 
 
@@ -1778,13 +1833,12 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $options   array of options
     *  - name      select name (default is status)
     *  - value     default value (default 'new')
-    *  - showtypes list proposed : normal, search or allowed (default normal)
+    *  - showtype list proposed : normal, search or allowed (default normal)
     *  - display   boolean if false get string
     * \since version 0.84 new proto
     * @return nothing (display)
    **/
    static function dropdownStatus(array $options = array()) {
-      //$value='new', $option=0, $display=true) {
       $p['name']      = 'status';
       $p['value']     = 'new';
       $p['showtype']  = 'normal';
@@ -1954,6 +2008,21 @@ abstract class CommonITILObject extends CommonDBTM {
             $options['name']  = $name;
             $options['value'] = $values[$field];
             return self::dropdownStatus($options);
+            
+         case 'impact' :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+            return self::dropdownImpact($options);
+            
+         case 'urgency' :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+            return self::dropdownUrgency($options);
+            
+         case 'priority' :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+            return self::dropdownPriority($options);
       }
       return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }

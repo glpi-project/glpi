@@ -1498,17 +1498,20 @@ class Rule extends CommonDBTM {
                break;
 
             case "dropdown_urgency" :
-               Ticket::dropdownUrgency($name, $value);
+               Ticket::dropdownUrgency(array('name'  => $name,
+                                            'value' => $value));
                $display = true;
                break;
 
             case "dropdown_impact" :
-               Ticket::dropdownImpact($name, $value);
+               Ticket::dropdownImpact(array('name'  => $name,
+                                            'value' => $value));
                $display = true;
                break;
 
             case "dropdown_priority" :
-               Ticket::dropdownPriority($name, $value);
+               Ticket::dropdownPriority(array('name'  => $name,
+                                              'value' => $value));
                $display = true;
                break;
 
