@@ -678,7 +678,6 @@ abstract class CommonITILObject extends CommonDBTM {
       if (isset($input["status"]) && !in_array($input["status"],$this->getClosedStatusArray())) {
          $input['closedate'] = 'NULL';
       }
-
       return $input;
    }
 
@@ -1387,17 +1386,16 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Compute Priority
     *
-    * @param $itemtype  itemtype
     * @param $urgency   integer from 1 to 5
     * @param $impact    integer from 1 to 5
     *
     * @return integer from 1 to 5 (priority)
    **/
-   static function computeGenericPriority($itemtype, $urgency, $impact) {
+   static function computePriority($urgency, $impact) {
       global $CFG_GLPI;
 
-      if (isset($CFG_GLPI[constant($itemtype.'::MATRIX_FIELD')][$urgency][$impact])) {
-         return $CFG_GLPI[constant($itemtype.'::MATRIX_FIELD')][$urgency][$impact];
+      if (isset($CFG_GLPI[static::MATRIX_FIELD][$urgency][$impact])) {
+         return $CFG_GLPI[static::MATRIX_FIELD][$urgency][$impact];
       }
       // Failback to trivial
       return round(($urgency+$impact)/2);
@@ -1513,15 +1511,15 @@ abstract class CommonITILObject extends CommonDBTM {
               "</option>";
       }
 
-      if (isset($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')])) {
+      if (isset($CFG_GLPI[static::URGENCY_MASK_FIELD])) {
          if ($complete
-             || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<5))) {
+             || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<5))) {
             echo "<option value='5' ".($value==5?" selected ":"").">"._x('urgency', 'Very high').
                  "</option>";
          }
 
          if ($complete
-             || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<4))) {
+             || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<4))) {
             echo "<option value='4' ".($value==4?" selected ":"").">"._x('urgency', 'High').
                  "</option>";
          }
@@ -1530,12 +1528,12 @@ abstract class CommonITILObject extends CommonDBTM {
               "</option>";
 
          if ($complete
-             || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<2))) {
+             || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<2))) {
             echo "<option value='2' ".($value==2?" selected ":"").">"._x('urgency', 'Low').
                  "</option>";
          }
 
-         if ($complete || ($CFG_GLPI[constant($itemtype.'::URGENCY_MASK_FIELD')] & (1<<1))) {
+         if ($complete || ($CFG_GLPI[static::URGENCY_MASK_FIELD] & (1<<1))) {
             echo "<option value='1' ".($value==1?" selected ":"").">"._x('urgency', 'Very low').
                  "</option>";
          }
@@ -1730,20 +1728,18 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * check is the user can change from / to a status
     *
-    * @param $itemtype         itemtype
     * @param $old       string value of old/current status
     * @param $new       string value of target status
     *
     * @return boolean
    **/
-   static function genericIsAllowedStatus($itemtype, $old, $new) {
-
-      if (isset($_SESSION['glpiactiveprofile'][$itemtype::STATUS_MATRIX_FIELD][$old][$new])
-          && !$_SESSION['glpiactiveprofile'][$itemtype::STATUS_MATRIX_FIELD][$old][$new]) {
+   static function isAllowedStatus($old, $new) {
+      if (isset($_SESSION['glpiactiveprofile'][static::STATUS_MATRIX_FIELD][$old][$new])
+          && !$_SESSION['glpiactiveprofile'][static::STATUS_MATRIX_FIELD][$old][$new]) {
          return false;
       }
 
-      if (array_key_exists($itemtype::STATUS_MATRIX_FIELD,
+      if (array_key_exists(static::STATUS_MATRIX_FIELD,
                            $_SESSION['glpiactiveprofile'])) { // Not set for post-only)
          return true;
       }
@@ -1755,61 +1751,70 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get the ITIL object status allowed for a current status
     *
-    * @param $itemtype  itemtype
     * @param $current   status
     *
     * @return an array
    **/
-   static function getAllowedStatusArray($itemtype, $current) {
+   static function getAllowedStatusArray($current) {
 
-      if ($item = getItemForItemtype($itemtype)) {
-         $tab = $item->getAllStatusArray();
-
-         if (!isset($current)) {
-            $current = 'new';
-         }
-
-         foreach ($tab as $status => $label) {
-            if (($status != $current)
-                && !$item->isAllowedStatus($current, $status)) {
-               unset($tab[$status]);
-            }
-         }
-         return $tab;
+      $tab = static::getAllStatusArray();
+      if (!isset($current)) {
+         $current = 'new';
       }
+
+      foreach ($tab as $status => $label) {
+         if (($status != $current)
+               && !self::isAllowedStatus($current, $status)) {
+            unset($tab[$status]);
+         }
+      }
+      return $tab;
    }
 
 
    /**
     * Dropdown of object status
     *
-    * @param $itemtype  itemtype
-    * @param $name      select name
-    * @param $value     default value (default 'new')
-    * @param $option    list proposed 0:normal, 1:search, 2:allowed (default 0)
-    * @param $display   boolean if false get string
-    *
+    * @param $options   array of options
+    *  - name      select name (default is status)
+    *  - value     default value (default 'new')
+    *  - showtypes list proposed : normal, search or allowed (default normal)
+    *  - display   boolean if false get string
+    * \since version 0.84 new proto
     * @return nothing (display)
    **/
-   static function dropdownGenericStatus($itemtype, $name, $value='new', $option=0, $display=true) {
+   static function dropdownStatus(array $options = array()) {
+      //$value='new', $option=0, $display=true) {
+      $p['name']      = 'status';
+      $p['value']     = 'new';
+      $p['showtype']  = 'normal';
+      $p['display']   = true;
 
-      if ($item = getItemForItemtype($itemtype)) {
-         if ($option == 2) {
-            $tab = $item->getAllowedStatusArray($itemtype, $value);
-         } else if ($option == 1) {
-            $tab = $item->getAllStatusArray(true);
-         } else {
-            $tab = $item->getAllStatusArray(false);
+      if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
          }
       }
 
-      $output = "<select name='$name'>";
+      switch ($p['showtype']) {
+         case 'allowed' :
+            $tab = static::getAllowedStatusArray($p['value']);
+            break;
+         case 'search' :
+            $tab = static::getAllStatusArray(true);
+            break;
+         default :
+            $tab = static::getAllStatusArray(false);
+            break;
+      }
+
+      $output = "<select name='".$p['name']."'>";
       foreach ($tab as $key => $val) {
-         $output .=  "<option value='$key' ".($value==$key?" selected ":"").">$val</option>";
+         $output .=  "<option value='$key' ".($p['value']==$key?" selected ":"").">$val</option>";
       }
       $output .=  "</select>";
 
-      if ($display) {
+      if ($p['display']) {
          echo $output;
       } else {
          return $output;
@@ -1820,15 +1825,11 @@ abstract class CommonITILObject extends CommonDBTM {
    /**
     * Get ITIL object status Name
     *
-    * @param $itemtype  itemtype
     * @param $value     status ID
    **/
-   static function getGenericStatus($itemtype, $value) {
-
-      if ($item = getItemForItemtype($itemtype)) {
-         $tab  = $item->getAllStatusArray(true);
-         return (isset($tab[$value]) ? $tab[$value] : '');
-      }
+   static function getStatus($value) {
+      $tab  = static::getAllStatusArray(true);
+      return (isset($tab[$value]) ? $tab[$value] : '');
    }
 
 
@@ -1927,6 +1928,9 @@ abstract class CommonITILObject extends CommonDBTM {
          $values = array($field => $values);
       }
       switch ($field) {
+         case 'status':
+            return self::getStatus($values[$field]);
+
          case 'urgency':
             return self::getUrgencyName($values[$field]);
 
@@ -1939,6 +1943,20 @@ abstract class CommonITILObject extends CommonDBTM {
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
+
+      switch ($field) {
+         case 'status' :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+            return self::dropdownStatus($options);
+      }
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
+   }
 
    function showSpecificMassiveActionsParameters($input = array()) {
       global $CFG_GLPI;

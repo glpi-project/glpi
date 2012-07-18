@@ -77,7 +77,9 @@ if (isset($_REQUEST['searchtype'])) {
 
 
                case "glpi_changes.status" :
-                  Change::dropdownStatus($inputname, $_REQUEST['value'], 1);
+                  Change::dropdownStatus(array('name'     => $inputname, 
+                                               'value'    => $_REQUEST['value'], 
+                                               'showtype' => 'search'));
                   $display = true;
                   break;
 
@@ -97,7 +99,9 @@ if (isset($_REQUEST['searchtype'])) {
                   break;
 
                case "glpi_problems.status" :
-                  Problem::dropdownStatus($inputname, $_REQUEST['value'], 1);
+                  Problem::dropdownStatus(array('name'    => $inputname, 
+                                               'value'    => $_REQUEST['value'], 
+                                               'showtype' => 'search'));
                   $display = true;
                   break;
 
@@ -117,7 +121,9 @@ if (isset($_REQUEST['searchtype'])) {
                   break;
 
                case "glpi_tickets.status" :
-                  Ticket::dropdownStatus($inputname, $_REQUEST['value'], 1);
+                  Ticket::dropdownStatus(array('name'     => $inputname, 
+                                               'value'    => $_REQUEST['value'], 
+                                               'showtype' => 'search'));
                   $display = true;
                   break;
 
