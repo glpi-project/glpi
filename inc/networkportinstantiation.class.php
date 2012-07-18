@@ -134,7 +134,6 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @param $netport         NetworkPort object
     * @param $item            CommonDBTM object
     * @param $row             HTMLTable_Row object
-    * @param $canedit         display the edition elements (ie : add, remove, ...)
     * @param $options   array of possible options:
     *       - 'dont_display' : array of the elements that must not be display
     *       - 'withtemplate' : integer withtemplate param
@@ -142,7 +141,7 @@ class NetworkPortInstantiation extends CommonDBChild {
     * @return the father cell for the Internet Informations ...
    **/
    function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
-                                       HTMLTable_Row $row, $canedit, $options=array()) {
+                                       HTMLTable_Row $row, array $options=array()) {
 
       return NULL;
    }
