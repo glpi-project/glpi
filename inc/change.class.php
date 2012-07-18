@@ -653,46 +653,6 @@ class Change extends CommonITILObject {
 
 
    /**
-    * Get change status Name
-    *
-    * @since version 0.83
-    *
-    * @param $value status ID
-   **/
-   static function getStatus($value) {
-      return parent::getGenericStatus('Change', $value);
-   }
-
-
-   /**
-    * Dropdown of change status
-    *
-    * @param $name      select name
-    * @param $value     default value (default 'new')
-    * @param $option    list proposed 0:normal, 1:search, 2:allowed (default 0)
-    * @param $display   boolean if false get string    
-    *
-    * @return nothing (display)
-   **/
-   static function dropdownStatus($name, $value='new', $option=0, $display = true) {
-      return parent::dropdownGenericStatus('Change', $name, $value, $option, $display);
-   }
-
-
-   /**
-    * Compute Priority
-    *
-    * @param $urgency   integer from 1 to 5
-    * @param $impact    integer from 1 to 5
-    *
-    * @return integer from 1 to 5 (priority)
-   **/
-   static function computePriority($urgency, $impact) {
-      return parent::computeGenericPriority('Change', $urgency, $impact);
-   }
-
-
-   /**
     * Dropdown of change Urgency
     *
     * @param $name      select name
@@ -717,19 +677,6 @@ class Change extends CommonITILObject {
    **/
    static function dropdownImpact($name, $value=0, $complete=false) {
       return parent::dropdownGenericImpact('Change', $name, $value, $complete);
-   }
-
-
-   /**
-    * check is the user can change from / to a status
-    *
-    * @param $old    string value of old/current status
-    * @param $new    string value of target status
-    *
-    * @return boolean
-   **/
-   static function isAllowedStatus($old, $new) {
-      return parent::genericIsAllowedStatus('Change', $old, $new);
    }
 
 
@@ -885,7 +832,8 @@ class Change extends CommonITILObject {
       echo "<tr>";
       echo "<th>".__('Status')."</th>";
       echo "<td>";
-      self::dropdownStatus("status", $this->fields["status"], 2); // Allowed status
+      self::dropdownStatus(array('value' => $this->fields["status"], 
+                                 'showtype' => 'allowed'));
       echo "</td>";
       echo "<th>".__('Urgency')."</th>";
       echo "<td>";
