@@ -117,7 +117,7 @@ class NetworkPortAlias extends NetworkPortInstantiation {
     * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable_()
    **/
    function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
-                                       HTMLTable_Row $row, $canedit, $options=array()) {
+                                       HTMLTable_Row $row, array $options=array()) {
 
       $row->addCell($row->getHeaderByName('Instantiation', 'Origin'),
                     $this->getInstantiationNetworkPortHTMLTable());
