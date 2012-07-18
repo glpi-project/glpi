@@ -4038,29 +4038,31 @@ class CommonDBTM extends CommonGLPI {
 
                case "date" :
                case "date_delay" :
-                  $copytooption = array('min', 'max', 'maybeempty', 'showyear');
-
-                  foreach ($copytooption as $key) {
-                     if (isset($searchoptions[$key]) && !isset($options[$key])) {
-                        $options[$key] = $searchoptions[$key];
+                  if (isset($options['relative_dates']) && $options['relative_dates']) {
+                     if (isset($searchoptions['maybefuture']) && $searchoptions['maybefuture']) {
+                        $options['maybefuture'] = true;
                      }
+
+                     return Html::showGenericDateTimeSearch($name, $value, $options);
+                  } else {
+                     $copytooption = array('min', 'max', 'maybeempty', 'showyear');
+
+                     foreach ($copytooption as $key) {
+                        if (isset($searchoptions[$key]) && !isset($options[$key])) {
+                           $options[$key] = $searchoptions[$key];
+                        }
+                     }
+                     $options['value'] = $value;
+                     return Html::showDateField($name, $options);
                   }
-                  $options['value'] = $value;
-                  return Html::showDateField($name, $options);
-                  
 
                case "datetime" :
-                  
                   if (isset($options['relative_dates']) && $options['relative_dates']) {
-                     return Html::showGenericDateTimeSearch($name, $value,
-                                                      array('with_time'          => true,
-                                                            'with_future'
-                                                               => (isset($searchoptions['maybefuture'])
-                                                                     && $searchoptions['maybefuture']),
-                                                            'with_days'          => false,
-                                                            'with_specific_date' => false,
-                                                            'display'            => false));
-
+                     if (isset($searchoptions['maybefuture']) && $searchoptions['maybefuture']) {
+                        $options['maybefuture'] = true;
+                     }
+                     
+                     return Html::showGenericDateTimeSearch($name, $value, $options);
                   } else {
                      $copytooption = array('mindate', 'maxdate', 'mintime', 'maxtime',
                                           'maybeempty', 'timestep');
