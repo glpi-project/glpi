@@ -3466,31 +3466,35 @@ class Ticket extends CommonITILObject {
       }
 
       // Store predefined fields to be able not to take into account on change template
+      // Only manage predefined values on ticket creation
       $predefined_fields = array();
-      if (isset($tt->predefined) && count($tt->predefined)) {
-         foreach ($tt->predefined as $predeffield => $predefvalue) {
-            if (isset($default_values[$predeffield])) {
-               // Is always default value : not set
-               // Set if already predefined field
-               // Set if ticket template change
-               if ($values[$predeffield] == $default_values[$predeffield]
-                   || (isset($values['_predefined_fields'][$predeffield])
-                             && $values[$predeffield] == $values['_predefined_fields'][$predeffield])
-                   || (isset($values['_tickettemplates_id'])
-                        && $values['_tickettemplates_id'] != $tt->getID())) {
-                  // Load template data
-                  $values[$predeffield]            = $predefvalue;
-                  $this->fields[$predeffield]            = $predefvalue;
-                  $predefined_fields[$predeffield] = $predefvalue;
+      if (!$ID) {
+         if (isset($tt->predefined) && count($tt->predefined)) {
+            foreach ($tt->predefined as $predeffield => $predefvalue) {
+               if (isset($default_values[$predeffield])) {
+                  echo $values[$predeffield].' - '.$default_values[$predeffield];
+                  // Is always default value : not set
+                  // Set if already predefined field
+                  // Set if ticket template change
+                  if ($values[$predeffield] == $default_values[$predeffield]
+                     || (isset($values['_predefined_fields'][$predeffield])
+                              && $values[$predeffield] == $values['_predefined_fields'][$predeffield])
+                     || (isset($values['_tickettemplates_id'])
+                           && $values['_tickettemplates_id'] != $tt->getID())) {
+                     // Load template data
+                     $values[$predeffield]            = $predefvalue;
+                     $this->fields[$predeffield]      = $predefvalue;
+                     $predefined_fields[$predeffield] = $predefvalue;
+                  }
                }
             }
-         }
-
-      } else { // No template load : reset predefined values
-         if (count($values['_predefined_fields'])) {
-            foreach ($values['_predefined_fields'] as $predeffield => $predefvalue) {
-               if ($values[$predeffield] == $predefvalue) {
-                  $values[$predeffield] = $default_values[$predeffield];
+   
+         } else { // No template load : reset predefined values
+            if (count($values['_predefined_fields'])) {
+               foreach ($values['_predefined_fields'] as $predeffield => $predefvalue) {
+                  if ($values[$predeffield] == $predefvalue) {
+                     $values[$predeffield] = $default_values[$predeffield];
+                  }
                }
             }
          }
