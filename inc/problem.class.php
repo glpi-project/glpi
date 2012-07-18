@@ -688,11 +688,12 @@ class Problem extends CommonITILObject {
     * @param $name      select name
     * @param $value     default value (default 'new')
     * @param $option    list proposed 0:normal, 1:search, 2:allowed (default 0)
+    * @param $display   boolean if false get string    
     *
     * @return nothing (display)
    **/
-   static function dropdownStatus($name, $value='new', $option=0) {
-      return parent::dropdownGenericStatus('Problem', $name, $value, $option);
+   static function dropdownStatus($name, $value='new', $option=0, $display = true) {
+      return parent::dropdownGenericStatus('Problem', $name, $value, $option, $display);
    }
 
 
