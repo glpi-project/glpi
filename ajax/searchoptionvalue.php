@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 Session::checkLoginUser();
 
-/// TODO use standard getValueToSelect
+/// TODO use standard getValueToSelect : need to have specific cases to have specific display passing options
 if (isset($_REQUEST['searchtype'])) {
    $searchopt         = unserialize(stripslashes($_REQUEST['searchopt']));
 

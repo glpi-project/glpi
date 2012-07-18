@@ -4004,8 +4004,8 @@ class CommonDBTM extends CommonGLPI {
          if (empty($name)) {
             $name = $searchoptions['linkfield'];
          }
-         $options['display'] = false;
          if (isset($searchoptions['datatype'])) {
+            $options['display'] = false;
             $unit = '';
             if (isset($searchoptions['unit'])) {
                $unit = $searchoptions['unit'];

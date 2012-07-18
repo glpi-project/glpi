@@ -2318,7 +2318,24 @@ class Ticket extends CommonITILObject {
       }
       return $tab;
    }
+   
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      $options['display'] = false;
 
+      switch ($field) {
+         case 'status' :
+            $option = 0;
+            if (isset($options['option'])) {
+               $option = $options['option'];
+            }
+            return self::dropdownStatus($name, $values[$field], $option, false);
+      }
+      return '';
+   }
+   
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -2505,11 +2522,12 @@ class Ticket extends CommonITILObject {
     * @param $name   select name
     * @param $value  default value (default new)
     * @param $option list proposed 0:normal, 1:search, 2:allowed (default 0)
-    *
+    * @param $display   boolean if false get string    
+    * 
     * @return nothing (display)
    **/
-   static function dropdownStatus($name, $value='new', $option=0) {
-      return parent::dropdownGenericStatus('Ticket',$name, $value, $option);
+   static function dropdownStatus($name, $value='new', $option=0, $display = true) {
+      return parent::dropdownGenericStatus('Ticket',$name, $value, $option, $display);
    }
 
 

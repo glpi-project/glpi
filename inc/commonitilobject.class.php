@@ -1787,10 +1787,11 @@ abstract class CommonITILObject extends CommonDBTM {
     * @param $name      select name
     * @param $value     default value (default 'new')
     * @param $option    list proposed 0:normal, 1:search, 2:allowed (default 0)
+    * @param $display   boolean if false get string
     *
     * @return nothing (display)
    **/
-   static function dropdownGenericStatus($itemtype, $name, $value='new', $option=0) {
+   static function dropdownGenericStatus($itemtype, $name, $value='new', $option=0, $display=true) {
 
       if ($item = getItemForItemtype($itemtype)) {
          if ($option == 2) {
@@ -1802,11 +1803,17 @@ abstract class CommonITILObject extends CommonDBTM {
          }
       }
 
-      echo "<select name='$name'>";
+      $output = "<select name='$name'>";
       foreach ($tab as $key => $val) {
-         echo "<option value='$key' ".($value==$key?" selected ":"").">$val</option>";
+         $output .=  "<option value='$key' ".($value==$key?" selected ":"").">$val</option>";
       }
-      echo "</select>";
+      $output .=  "</select>";
+
+      if ($display) {
+         echo $output;
+      } else {
+         return $output;
+      }
    }
 
 

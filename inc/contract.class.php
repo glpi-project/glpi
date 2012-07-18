@@ -445,11 +445,12 @@ class Contract extends CommonDBTM {
       if (!is_array($values)) {
          $values = array($field => $values);
       }
+      $options['display'] = false;
       switch ($field) {
          case 'alert' :
             $options['name']  = $name;
             $options['value'] = $values[$field];
-            return Contract::dropdownAlert($options);
+            return self::dropdownAlert($options);
       }
       return '';
    }
