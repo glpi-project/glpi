@@ -84,17 +84,24 @@ if (isset($_REQUEST['searchtype'])) {
                   break;
 
                case "glpi_changes.priority" :
-                  Change::dropdownPriority($inputname, $_REQUEST['value'], true, true);
+                  Change::dropdownPriority(array('name'    => $inputname,
+                                               'value'     => $_REQUEST['value'],
+                                               'showtype'  => 'search',
+                                               'withmajor' => true));
                   $display = true;
                   break;
 
                case "glpi_changes.impact" :
-                  Change::dropdownImpact($inputname, $_REQUEST['value'], true);
+                  Change::dropdownImpact(array('name'     => $inputname,
+                                               'value'    => $_REQUEST['value'],
+                                               'showtype' => 'search'));
                   $display = true;
                   break;
 
                case "glpi_changes.urgency" :
-                  Change::dropdownUrgency($inputname, $_REQUEST['value'], true);
+                  Change::dropdownUrgency(array('name'     => $inputname,
+                                                'value'    => $_REQUEST['value'],
+                                                'showtype' => 'search'));
                   $display = true;
                   break;
 
@@ -106,18 +113,24 @@ if (isset($_REQUEST['searchtype'])) {
                   break;
 
                case "glpi_problems.priority" :
-                  Problem::dropdownPriority($inputname, $_REQUEST['value'], true, true);
+                  Problem::dropdownPriority(array('name'    => $inputname,
+                                               'value'     => $_REQUEST['value'],
+                                               'showtype'  => 'search',
+                                               'withmajor' => true));
                   $display = true;
                   break;
 
                case "glpi_problems.impact" :
-                  Problem::dropdownImpact($inputname, $_REQUEST['value'], true);
+                  Problem::dropdownImpact(array('name'     => $inputname,
+                                               'value'    => $_REQUEST['value'],
+                                               'showtype' => 'search'));
                   $display = true;
                   break;
 
                case "glpi_problems.urgency" :
-                  Problem::dropdownUrgency($inputname, $_REQUEST['value'], true);
-                  $display = true;
+                  Problem::dropdownUrgency(array('name'     => $inputname,
+                                                 'value'    => $_REQUEST['value'],
+                                                 'showtype' => 'search'));                  $display = true;
                   break;
 
                case "glpi_tickets.status" :
@@ -133,17 +146,24 @@ if (isset($_REQUEST['searchtype'])) {
                   break;
 
                case "glpi_tickets.priority" :
-                  Ticket::dropdownPriority($inputname, $_REQUEST['value'], true, true);
+                  Ticket::dropdownPriority(array('name'    => $inputname,
+                                               'value'     => $_REQUEST['value'],
+                                               'showtype'  => 'search',
+                                               'withmajor' => true));
                   $display = true;
                   break;
 
                case "glpi_tickets.impact" :
-                  Ticket::dropdownImpact($inputname, $_REQUEST['value'], true);
+                  Ticket::dropdownImpact(array('name'     => $inputname,
+                                               'value'    => $_REQUEST['value'],
+                                               'showtype' => 'search'));
                   $display = true;
                   break;
 
                case "glpi_tickets.urgency" :
-                  Ticket::dropdownUrgency($inputname, $_REQUEST['value'], true);
+                  Ticket::dropdownUrgency(array('name'     => $inputname,
+                                                'value'    => $_REQUEST['value'],
+                                                'showtype' => 'search'));
                   $display = true;
                   break;
 

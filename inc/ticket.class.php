@@ -2484,33 +2484,6 @@ class Ticket extends CommonITILObject {
       return array('assign', 'plan');
    }
 
-   /**
-    * Dropdown of ticket Urgency
-    *
-    * @param $name      select name
-    * @param $value     default value (default 0)
-    * @param $complete  see also at least selection (false by default)
-    *
-    * @return string id of the select
-   **/
-   static function dropdownUrgency($name, $value=0, $complete=false) {
-      return parent::dropdownGenericUrgency('Ticket',$name, $value, $complete);
-   }
-
-
-   /**
-    * Dropdown of ticket Impact
-    *
-    * @param $name      select name
-    * @param $value     default value (default 0)
-    * @param $complete  see also at least selection (major included) (false by default)
-    *
-    * @return string id of the select
-   **/
-   static function dropdownImpact($name, $value=0, $complete=false) {
-      return parent::dropdownGenericImpact('Ticket',$name, $value, $complete);
-   }
-
 
    /**
     * Make a select box for Ticket my devices
@@ -3217,7 +3190,7 @@ class Ticket extends CommonITILObject {
             echo "<td>".sprintf(__('%1$s%2$s'), __('Urgency'), $tt->getMandatoryMark('urgency')).
                  "</td>";
             echo "<td>";
-            self::dropdownUrgency("urgency", $options['urgency']);
+            self::dropdownUrgency(array('value' => $options["urgency"]));
             echo "</td></tr>";
          }
       }
@@ -3866,7 +3839,7 @@ class Ticket extends CommonITILObject {
           || $canupdate_descr) {
          // Only change during creation OR when allowed to change priority OR when user is the creator
          echo $tt->getBeginHiddenFieldValue('urgency');
-         $idurgency = self::dropdownUrgency("urgency", $this->fields["urgency"]);
+         $idurgency = self::dropdownUrgency(array('value' => $this->fields["urgency"]));
          echo $tt->getEndHiddenFieldValue('urgency', $this);
 
       } else {
@@ -3915,7 +3888,7 @@ class Ticket extends CommonITILObject {
       echo $tt->getBeginHiddenFieldValue('impact');
 
       if ($canupdate) {
-         $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
+         $idimpact = self::dropdownImpact(array('value' => $this->fields["impact"]));
       } else {
          $idimpact = "value_impact".mt_rand();
          echo "<input id='$idimpact' type='hidden' name='impact' value='".$this->fields["impact"]."'>";
@@ -4005,7 +3978,8 @@ class Ticket extends CommonITILObject {
       if ($canupdate
           && $canpriority
           && !$tt->isHiddenField('priority')) {
-         $idpriority = parent::dropdownPriority("priority", $this->fields["priority"], false, true);
+         $idpriority = parent::dropdownPriority(array('value'     => $this->fields["priority"],
+                                                      'withmajor' => true));
          echo "&nbsp;<span id='$idajax' style='display:none'></span>";
 
       } else {

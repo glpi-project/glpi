@@ -652,34 +652,6 @@ class Change extends CommonITILObject {
    }
 
 
-   /**
-    * Dropdown of change Urgency
-    *
-    * @param $name      select name
-    * @param $value     default value (default 0)
-    * @param $complete  see also at least selection (false by default)
-    *
-    * @return string id of the select
-   **/
-   static function dropdownUrgency($name, $value=0, $complete=false) {
-      return parent::dropdownGenericUrgency('Change', $name, $value, $complete);
-   }
-
-
-   /**
-    * Dropdown of change Impact
-    *
-    * @param $name      select name
-    * @param $value     default value (default 0)
-    * @param $complete  see also at least selection (major included) (false by default)
-    *
-    * @return string id of the select
-   **/
-   static function dropdownImpact($name, $value=0, $complete=false) {
-      return parent::dropdownGenericImpact('Change', $name, $value, $complete);
-   }
-
-
    function showForm($ID, $options=array()) {
       global $CFG_GLPI, $DB;
 
@@ -838,7 +810,7 @@ class Change extends CommonITILObject {
       echo "<th>".__('Urgency')."</th>";
       echo "<td>";
       // Only change during creation OR when allowed to change priority OR when user is the creator
-      $idurgency = self::dropdownUrgency("urgency", $this->fields["urgency"]);
+      $idurgency = self::dropdownUrgency(array('value' => $this->fields["urgency"]));
       echo "</td>";
       echo "</tr>";
 
@@ -851,7 +823,7 @@ class Change extends CommonITILObject {
       echo "</td>";
       echo "<th>".__('Impact')."</th>";
       echo "<td>";
-      $idimpact = self::dropdownImpact("impact", $this->fields["impact"]);
+      $idimpact = self::dropdownImpact(array('value' => $this->fields["impact"]));
       echo "</td>";
       echo "</tr>";
 
@@ -860,7 +832,8 @@ class Change extends CommonITILObject {
       echo "<td>".parent::getActionTime($this->fields["actiontime"])."</td>";
       echo "<th class='left'>".__('Priority')."</th>";
       echo "<td>";
-      $idpriority = parent::dropdownPriority("priority", $this->fields["priority"], false, true);
+      $idpriority = parent::dropdownPriority(array('value'     => $this->fields["priority"],
+                                                   'withmajor' => true));
       $idajax     = 'change_priority_' . mt_rand();
       echo "&nbsp;<span id='$idajax' style='display:none'></span>";
       $params = array('urgency'  => '__VALUE0__',

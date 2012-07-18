@@ -297,18 +297,18 @@ class RuleAction extends CommonDBChild {
                      break;
 
                   case "dropdown_urgency" :
-                     Ticket::dropdownUrgency("value");
+                     Ticket::dropdownUrgency(array('name' => 'value'));
                      $display = true;
                      break;
 
                   case "dropdown_impact" :
-                     Ticket::dropdownImpact("value");
+                     Ticket::dropdownImpact(array('name' => 'value'));
                      $display = true;
                      break;
 
                   case "dropdown_priority" :
                      if ($_POST["action_type"] != 'compute') {
-                        Ticket::dropdownPriority("value");
+                        Ticket::dropdownPriority(array('name' => 'value'));
                      }
                      $display = true;
                      break;
