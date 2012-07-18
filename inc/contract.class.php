@@ -441,6 +441,31 @@ class Contract extends CommonDBTM {
       return $actions;
    }
    
+   static function getSpecificValueToSelect($field, $name='', $values = '', array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'alert' :
+            $options['name']  = $name;
+            $options['value'] = $values[$field];
+            return Contract::dropdownAlert($options);
+      }
+      return '';
+   }
+   
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'alert' :
+            return self::getAlertName($values[$field]);
+            break;
+      }
+   }
+   
    function getSearchOptions() {
 
       $tab                       = array();
@@ -560,6 +585,7 @@ class Contract extends CommonDBTM {
       $tab[59]['table']          = $this->getTable();
       $tab[59]['field']          = 'alert';
       $tab[59]['name']           = __('Email alarms');
+      $tab[59]['datatype']       = 'specific';
 
       $tab[86]['table']          = $this->getTable();
       $tab[86]['field']          = 'is_recursive';
@@ -1624,9 +1650,7 @@ class Contract extends CommonDBTM {
    static function dropdownAlert(array $options) {
 
       if (!isset($options['value'])) {
-         $value = 0;
-      } else {
-         $value = $options['value'];
+         $options['value'] = 0;
       }
 
       $tab = array();
@@ -1636,7 +1660,7 @@ class Contract extends CommonDBTM {
 
       $tab += self::getAlertName();
 
-      Dropdown::showFromArray($options['name'], $tab, array('value' => $value));
+      return Dropdown::showFromArray($options['name'], $tab, $options);
    }
 
 

@@ -4004,12 +4004,12 @@ class CommonDBTM extends CommonGLPI {
          if (empty($name)) {
             $name = $searchoptions['linkfield'];
          }
+         $options['display'] = false;
          if (isset($searchoptions['datatype'])) {
             $unit = '';
             if (isset($searchoptions['unit'])) {
                $unit = $searchoptions['unit'];
             }
-            $options['display'] = false;
 
             switch ($searchoptions['datatype']) {
                case "number" :
@@ -4144,10 +4144,11 @@ class CommonDBTM extends CommonGLPI {
 
             }
          }
+
          // Get specific display if available
          $itemtype = getItemTypeForTable($searchoptions['table']);
          if ($item = getItemForItemtype($itemtype)) {
-            $specific = $item->getSpecificValueToSelect($field, $values, $options);
+            $specific = $item->getSpecificValueToSelect($field, $name, $values, $options);
             if (!empty($specific)) {
                return $specific;
             }

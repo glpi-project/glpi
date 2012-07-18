@@ -2319,12 +2319,6 @@ class Ticket extends CommonITILObject {
       return $tab;
    }
 
-
-   /**
-    * @param $field
-    * @param $values
-    * @param $options   array
-   **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
