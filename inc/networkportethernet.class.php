@@ -97,14 +97,38 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
                                                      HTMLTable_SuperHeader $super,
                                                      $options=array()) {
 
-      DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super);
-      $group->addHeader('MAC', __('MAC'), $super);
-      $group->addHeader('speed', __('Ethernet port speed'), $super);
-      $group->addHeader('type', __('Ethernet port type'), $super);
-      NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super);
-      Netpoint::getHTMLTableHeader('NetworkPortEthernet', $group, $super);
-      $group->addHeader('Outlet', __('Network outlet'), $super);
-      $header = $group->addHeader('Connected', __('Connected to'), $super);
+      if (!isset($_SESSION['glpi_ethernet_display_opposite'])) {
+         $_SESSION['glpi_ethernet_display_opposite'] = array();
+      }
+
+      $itemtype = $options['networkport_itemtype'];
+
+      if (!isset($_SESSION['glpi_ethernet_display_opposite'][$itemtype])) {
+         $_SESSION['glpi_ethernet_display_opposite'][$itemtype] = false;
+      }
+
+      if (isset($_POST['ethernet_display_opposite'])) {
+         $_SESSION['glpi_ethernet_display_opposite'][$itemtype] =
+            ($_POST['ethernet_display_opposite'] == 'true');
+      }
+
+      $connect_text = __('Connected to')."<br>";
+      if ($_SESSION['glpi_ethernet_display_opposite'][$itemtype]) {
+         $connect_text .= "<a href='javascript:reloadTab(\"ethernet_display_opposite=false\");'>" .
+                          "<i>" . __('hide the opposite link') . "</i></a>";
+      } else {
+         $connect_text .= "<a href='javascript:reloadTab(\"ethernet_display_opposite=true\");'>" .
+                          "<i>" . __('show the opposite link') . "</i></a>";
+      }
+
+      $header = $group->addHeader('Connected', $connect_text, $super);
+      DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super, $header);
+      $group->addHeader('MAC', __('MAC'), $super, $header);
+      $group->addHeader('speed', __('Ethernet port speed'), $super, $header);
+      $group->addHeader('type', __('Ethernet port type'), $super, $header);
+      NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super, $header);
+      Netpoint::getHTMLTableHeader('NetworkPortEthernet', $group, $super, $header);
+      $group->addHeader('Outlet', __('Network outlet'), $super, $header);
 
       return $header;
 
@@ -112,48 +136,83 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
 
   /**
+    * Get HTMLTable row for a given ethernet network port and a given extremity
+    *
+    * @param $netport         NetworkPort object
+    * @param $row             HTMLTable_Row object
+    * @param $father          HTMLTable_Cell object : the given extremity
+    * @param $options   array of possible options:
+    *       - 'dont_display' : array of the elements that must not be display
+    *       - 'withtemplate' : integer withtemplate param
+    *
+    * @return the father cell for the Internet Informations ...
+   **/
+   private function getEthernetInstantiationHTMLTable_(NetworkPort $netport, HTMLTable_Row $row,
+                                                       HTMLTable_Cell $father,
+                                                       array $options=array()) {
+
+      DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, $father, $options);
+
+      $row->addCell($row->getHeaderByName('Instantiation', 'MAC'),
+                    $netport->fields["mac"], $father);
+
+      if (!empty($this->fields['speed'])) {
+         $row->addCell($row->getHeaderByName('Instantiation', 'speed'),
+                       $this->fields["speed"], $father);
+      }
+
+      if (!empty($this->fields['type'])) {
+         $row->addCell($row->getHeaderByName('Instantiation', 'type'),
+                       $this->fields["type"], $father);
+      }
+
+      NetworkPort_Vlan::getHTMLTableCellsForItem($row, $netport, $father, $options);
+
+      Netpoint::getHTMLTableCellsForItem($row, $this, $father, $options);
+
+   }
+
+  /**
    * @see inc/NetworkPortInstantiation::getInstantiationHTMLTable_()
   **/
    function getInstantiationHTMLTable_(NetworkPort $netport, CommonDBTM $item,
                                        HTMLTable_Row $row, array $options=array()) {
-
-      DeviceNetworkCard::getHTMLTableCellsForItem($row, $this, NULL, $options);
-
-      $row->addCell($row->getHeaderByName('Instantiation', 'MAC'), $netport->fields["mac"]);
-
-      if (!empty($this->fields['speed'])) {
-         $row->addCell($row->getHeaderByName('Instantiation', 'speed'), $this->fields["speed"]);
-      }
-
-      if (!empty($this->fields['type'])) {
-         $row->addCell($row->getHeaderByName('Instantiation', 'type'), $this->fields["type"]);
-      }
-
-      NetworkPort_Vlan::getHTMLTableCellsForItem($row, $netport, NULL, $options);
-
-      Netpoint::getHTMLTableCellsForItem($row, $this, NULL, $options);
 
       $connect_cell_value = array(array('function'   => array(__CLASS__, 'showConnection'),
                                         'parameters' => array(clone $netport)));
 
       $oppositePort = new NetworkPort();
       if ($oppositePort->getFromDB($netport->getContact($netport->getID()))) {
-         if ((NetworkName::countForItem($netport) > 0)
-             && (NetworkName::countForItem($netport) > 0)) {
+
+        if ($_SESSION['glpi_ethernet_display_opposite'][$options['networkport_itemtype']]) {
+
             $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                                   __('Local network port'));
+
             $opposite_cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                                            $connect_cell_value);
+
+            $oppositeEthernetPort = $oppositePort->getInstantiation();
+            if ($oppositeEthernetPort !== false) {
+               $oppositeEthernetPort->getEthernetInstantiationHTMLTable_($oppositePort, $row,
+                                                                         $opposite_cell, $options);
+            }
+
             NetworkName::getHTMLTableCellsForItem($row, $oppositePort, $opposite_cell, $options);
+
          } else {
+
             $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                                   $connect_cell_value);
-            NetworkName::getHTMLTableCellsForItem($row, $oppositePort, $cell, $options);
-         }
+
+          }
+
       } else {
          $cell = $row->addCell($row->getHeaderByName('Instantiation', 'Connected'),
                                $connect_cell_value);
       }
+
+      $this->getEthernetInstantiationHTMLTable_($netport, $row, $cell, $options);
 
       return $cell;
 

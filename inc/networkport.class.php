@@ -456,7 +456,8 @@ class NetworkPort extends CommonDBChild {
       $table         = new HTMLTable_();
       $number_port   = self::countForItem($item);
       $name          = sprintf(__('%1$s: %2$d'), self::getTypeName($number_port), $number_port);
-      $table_options = array('canedit' => $canedit);
+      $table_options = array('canedit'              => $canedit,
+                             'networkport_itemtype' => $item->getType());
 
       $table->setTitle($name);
 
