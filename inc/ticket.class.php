@@ -2333,9 +2333,9 @@ class Ticket extends CommonITILObject {
             }
             return self::dropdownStatus($name, $values[$field], $option, false);
       }
-      return '';
+      return parent::getSpecificValueToSelect($field, $name, $values, $options);
    }
-   
+
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
 
       if (!is_array($values)) {
@@ -2371,7 +2371,7 @@ class Ticket extends CommonITILObject {
             }
             break;
       }
-      return parent::getSpecificValueToDisplay($field, $values[$field], $options);
+      return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
 

@@ -68,9 +68,6 @@ if (isset($_POST["itemtype"])
 //    if ($search["table"] == getTableForItemType($_POST["itemtype"])) { // field type
 //       switch ($search["table"].".".$search["linkfield"]) {
 // 
-//          case "glpi_tickets.status" :
-//             Ticket::dropdownStatus($search["linkfield"]);
-//             break;
 // 
 //          case "glpi_tickets.items_id" :
 //             if (isset($_POST['itemtype_used']) && !empty($_POST['itemtype_used'])) {

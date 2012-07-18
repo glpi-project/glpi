@@ -203,19 +203,22 @@ class TicketRecurrent extends CommonDropdown {
     * @param $options   array
    **/
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
 
       switch ($field) {
          case 'periodicity' :
-            if (preg_match('/([0-9]+)MONTH/',$values['periodicity'], $matches)) {
+            if (preg_match('/([0-9]+)MONTH/',$values[$field], $matches)) {
                return sprintf(_n('%d month','%d months',$matches[1]), $matches[1]);
             }
-            if (preg_match('/([0-9]+)YEAR/',$values['periodicity'], $matches)) {
+            if (preg_match('/([0-9]+)YEAR/',$values[$field], $matches)) {
                return sprintf(_n('%d year','%d years',$matches[1]), $matches[1]);
             }
-            return Html::timestampToString($values['periodicity'], false);
+            return Html::timestampToString($values[$field], false);
          break;
       }
-      return parent::getSpecificValueToDisplay($field, $values[$field], $options);
+      return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
 

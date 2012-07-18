@@ -2160,7 +2160,7 @@ class Entity extends CommonTreeDropdown {
             return Dropdown::getDropdownName('glpi_entities', $values[$field]);
 
       }
-      return '';
+      return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 }
 ?>

@@ -1936,7 +1936,7 @@ abstract class CommonITILObject extends CommonDBTM {
          case 'priority':
             return self::getPriorityName($values[$field]);
       }
-      return '';
+      return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
 
