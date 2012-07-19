@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-19 21:15+0200\n"
+"POT-Creation-Date: 2012-07-19 23:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -164,10 +164,10 @@ msgstr ""
 #: inc/computerdisk.class.php:280 inc/computer_softwarelicense.class.php:343
 #: inc/computer_softwareversion.class.php:397
 #: inc/computer_softwareversion.class.php:426
-#: inc/computer_softwareversion.class.php:770
-#: inc/computer_softwareversion.class.php:806
-#: inc/computer_softwareversion.class.php:867
-#: inc/computer_softwareversion.class.php:886
+#: inc/computer_softwareversion.class.php:782
+#: inc/computer_softwareversion.class.php:818
+#: inc/computer_softwareversion.class.php:879
+#: inc/computer_softwareversion.class.php:898
 #: inc/computervirtualmachine.class.php:199
 #: inc/computervirtualmachine.class.php:333 inc/config.class.php:280
 #: inc/config.class.php:281 inc/config.class.php:295
@@ -183,7 +183,7 @@ msgstr ""
 #: inc/log.class.php:465 inc/log.class.php:475 inc/mailcollector.class.php:221
 #: inc/mailcollector.class.php:1232 inc/mailcollector.class.php:1240
 #: inc/networkequipment.class.php:318 inc/networkequipment.class.php:443
-#: inc/networkport.class.php:537 inc/notificationevent.class.php:171
+#: inc/networkport.class.php:540 inc/notificationevent.class.php:171
 #: inc/notificationtargetcommonitilobject.class.php:851
 #: inc/notificationtargetcommonitilobject.class.php:853
 #: inc/problem.class.php:1617 inc/profile_user.class.php:172
@@ -289,7 +289,7 @@ msgstr ""
 #: inc/log.class.php:444 inc/log.class.php:453 inc/log.class.php:464
 #: inc/log.class.php:474 inc/mailcollector.class.php:1231
 #: inc/mailcollector.class.php:1239 inc/networkname.class.php:233
-#: inc/networkport.class.php:539 inc/networkportinstantiation.class.php:296
+#: inc/networkport.class.php:542 inc/networkportinstantiation.class.php:296
 #: inc/networkportmigration.class.php:240 inc/networkport_vlan.class.php:224
 #: inc/networkport_vlan.class.php:226 inc/networkport_vlan.class.php:273
 #: inc/networkport_vlan.class.php:274 inc/notificationmail.class.php:249
@@ -655,7 +655,7 @@ msgstr ""
 #: inc/commonitilobject.class.php:2769 inc/commontreedropdown.class.php:395
 #: inc/computer_device.class.php:311
 #: inc/computer_softwarelicense.class.php:226
-#: inc/computer_softwareversion.class.php:571 inc/dropdown.class.php:216
+#: inc/computer_softwareversion.class.php:619 inc/dropdown.class.php:216
 #: inc/html.class.php:2205 inc/html.class.php:2206 inc/html.class.php:2209
 #: inc/html.class.php:2210 inc/html.class.php:2693 inc/html.class.php:2694
 #: inc/infocom.class.php:604 inc/netpoint.class.php:176
@@ -1107,6 +1107,12 @@ msgid "%s updates components"
 msgstr ""
 
 #. TRANS: %s is the user login
+#: front/computer_device.form.php:62
+#, php-format
+msgid "%s purges components"
+msgstr ""
+
+#. TRANS: %s is the user login
 #: front/computerdisk.form.php:55
 #, php-format
 msgid "%s adds a volume"
@@ -1476,7 +1482,7 @@ msgstr[1] ""
 #: inc/link_itemtype.class.php:76 inc/monitor.class.php:191
 #: inc/monitor.class.php:424 inc/networkequipment.class.php:221
 #: inc/networkequipment.class.php:382 inc/networkname.class.php:205
-#: inc/networkport.class.php:1000 inc/notification.class.php:139
+#: inc/networkport.class.php:1003 inc/notification.class.php:139
 #: inc/notification.class.php:213 inc/notificationtarget.class.php:1114
 #: inc/notificationtargetcontract.class.php:136
 #: inc/notificationtargetfieldunicity.class.php:83
@@ -1576,7 +1582,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: front/dictionnary.php:124 inc/computer_softwareversion.class.php:345
-#: inc/computer_softwareversion.class.php:741 inc/plugin.class.php:343
+#: inc/computer_softwareversion.class.php:753 inc/plugin.class.php:343
 #: inc/ruledictionnaryoperatingsystemversion.class.php:53
 #: inc/ruledictionnaryoperatingsystemversion.class.php:66
 #: inc/ruledictionnarysoftware.class.php:83
@@ -1678,7 +1684,7 @@ msgstr ""
 #: inc/knowbaseitem.class.php:1399 inc/link.class.php:163
 #: inc/log.class.php:280 inc/monitor.class.php:417
 #: inc/networkequipment.class.php:375 inc/networkname.class.php:211
-#: inc/networkport.class.php:971 inc/networkport.class.php:1006
+#: inc/networkport.class.php:974 inc/networkport.class.php:1009
 #: inc/notificationtargetcommonitilobject.class.php:782
 #: inc/notificationtargetproblem.class.php:262
 #: inc/notificationtargetticket.class.php:709
@@ -1700,8 +1706,8 @@ msgstr ""
 #: inc/commondbtm.class.php:3420 inc/computer.class.php:462
 #: inc/computer.class.php:824 inc/computer_softwarelicense.class.php:314
 #: inc/computer_softwareversion.class.php:359
-#: inc/computer_softwareversion.class.php:814
-#: inc/computer_softwareversion.class.php:893
+#: inc/computer_softwareversion.class.php:826
+#: inc/computer_softwareversion.class.php:905
 #: inc/computervirtualmachine.class.php:266
 #: inc/computervirtualmachine.class.php:368 inc/contract.class.php:958
 #: inc/document.class.php:930 inc/item_problem.class.php:140
@@ -2100,9 +2106,9 @@ msgstr ""
 #: inc/computer.class.php:759 inc/computerdisk.class.php:194
 #: inc/computerdisk.class.php:263 inc/computer_softwarelicense.class.php:304
 #: inc/computer_softwareversion.class.php:350
-#: inc/computer_softwareversion.class.php:740
-#: inc/computer_softwareversion.class.php:813
-#: inc/computer_softwareversion.class.php:892
+#: inc/computer_softwareversion.class.php:752
+#: inc/computer_softwareversion.class.php:825
+#: inc/computer_softwareversion.class.php:904
 #: inc/computervirtualmachine.class.php:170
 #: inc/computervirtualmachine.class.php:252
 #: inc/computervirtualmachine.class.php:264
@@ -2125,8 +2131,8 @@ msgstr ""
 #: inc/netpoint.class.php:359 inc/netpoint.class.php:372
 #: inc/networkalias.class.php:142 inc/networkequipment.class.php:201
 #: inc/networkequipment.class.php:368 inc/networkname.class.php:147
-#: inc/networkport.class.php:472 inc/networkport.class.php:722
-#: inc/networkport.class.php:965 inc/notification.class.php:125
+#: inc/networkport.class.php:475 inc/networkport.class.php:725
+#: inc/networkport.class.php:968 inc/notification.class.php:125
 #: inc/notification.class.php:190 inc/notificationtarget.class.php:1111
 #: inc/notificationtargetcommonitilobject.class.php:854
 #: inc/notificationtargetcontract.class.php:134
@@ -2331,7 +2337,7 @@ msgstr ""
 
 #: front/report.location.list.php:63 inc/dropdown.class.php:719
 #: inc/netpoint.class.php:56 inc/netpoint.class.php:409
-#: inc/networkport.class.php:986 inc/networkportethernet.class.php:132
+#: inc/networkport.class.php:989 inc/networkportethernet.class.php:132
 #: inc/networkportethernet.class.php:405
 #: inc/networkportinstantiation.class.php:359
 msgid "Network outlet"
@@ -2347,7 +2353,7 @@ msgstr ""
 #: front/report.netpoint.list.php:72 front/report.netpoint.list.php:76
 #: front/report.switch.list.php:62 front/report.switch.list.php:65
 #: inc/blacklist.class.php:188 inc/networkequipment.class.php:482
-#: inc/networkport.class.php:760
+#: inc/networkport.class.php:763
 msgid "IP"
 msgstr ""
 
@@ -2360,7 +2366,7 @@ msgstr ""
 #: front/report.netpoint.list.php:74 front/report.netpoint.list.php:77
 #: front/report.switch.list.php:63 front/report.switch.list.php:66
 #: inc/devicenetworkcard.class.php:48 inc/devicenetworkcard.class.php:97
-#: inc/networkport.class.php:776 inc/networkport.class.php:981
+#: inc/networkport.class.php:779 inc/networkport.class.php:984
 #: inc/ruleimportcomputer.class.php:108
 msgid "MAC address"
 msgstr ""
@@ -2419,8 +2425,8 @@ msgid "Equipment's report by year"
 msgstr ""
 
 #: front/report.year.php:62 inc/computer_softwareversion.class.php:378
-#: inc/computer_softwareversion.class.php:568
-#: inc/computer_softwareversion.class.php:741 inc/entity.class.php:1417
+#: inc/computer_softwareversion.class.php:615
+#: inc/computer_softwareversion.class.php:753 inc/entity.class.php:1417
 #: inc/plugin.class.php:344 inc/software.class.php:514
 #: inc/software.class.php:838 inc/softwarelicense.class.php:49
 #: install/install.php:524
@@ -2987,8 +2993,8 @@ msgstr ""
 #: inc/group_user.class.php:622 inc/infocom.class.php:1314
 #: inc/knowbaseitem.class.php:1395 inc/link.class.php:152
 #: inc/mailcollector.class.php:303 inc/monitor.class.php:406
-#: inc/networkequipment.class.php:364 inc/networkport.class.php:473
-#: inc/networkport.class.php:961 inc/networkportethernet.class.php:378
+#: inc/networkequipment.class.php:364 inc/networkport.class.php:476
+#: inc/networkport.class.php:964 inc/networkportethernet.class.php:378
 #: inc/networkportwifi.class.php:146 inc/notification.class.php:186
 #: inc/notificationtemplate.class.php:132
 #: inc/notificationtemplatetranslation.class.php:257
@@ -3456,8 +3462,8 @@ msgstr ""
 #: inc/commondevice.class.php:101 inc/commondropdown.class.php:176
 #: inc/commondropdown.class.php:423 inc/commontreedropdown.class.php:416
 #: inc/commontreedropdown.class.php:566 inc/computer.class.php:526
-#: inc/computer.class.php:834 inc/computer_softwareversion.class.php:815
-#: inc/computer_softwareversion.class.php:894
+#: inc/computer.class.php:834 inc/computer_softwareversion.class.php:827
+#: inc/computer_softwareversion.class.php:906
 #: inc/computervirtualmachine.class.php:268
 #: inc/computervirtualmachine.class.php:370 inc/consumableitem.class.php:171
 #: inc/consumableitem.class.php:270 inc/contact.class.php:151
@@ -3472,8 +3478,8 @@ msgstr ""
 #: inc/monitor.class.php:271 inc/monitor.class.php:471
 #: inc/netpoint.class.php:312 inc/networkalias.class.php:390
 #: inc/networkequipment.class.php:296 inc/networkequipment.class.php:429
-#: inc/networkname.class.php:176 inc/networkport.class.php:698
-#: inc/networkport.class.php:995 inc/networkportmigration.class.php:285
+#: inc/networkname.class.php:176 inc/networkport.class.php:701
+#: inc/networkport.class.php:998 inc/networkportmigration.class.php:285
 #: inc/networkport_vlan.class.php:227 inc/networkport_vlan.class.php:274
 #: inc/notification.class.php:130 inc/notification.class.php:224
 #: inc/notificationtargetreservation.class.php:148
@@ -3878,12 +3884,12 @@ msgstr ""
 msgid "View updated users"
 msgstr ""
 
-#: inc/authldap.class.php:2779 inc/networkport.class.php:715
+#: inc/authldap.class.php:2779 inc/networkport.class.php:718
 #: inc/software.class.php:285
 msgid "from"
 msgstr ""
 
-#: inc/authldap.class.php:2785 inc/networkport.class.php:717
+#: inc/authldap.class.php:2785 inc/networkport.class.php:720
 msgid "to"
 msgstr ""
 
@@ -4089,15 +4095,15 @@ msgstr[1] ""
 #: inc/computer_device.class.php:268 inc/computerdisk.class.php:275
 #: inc/computer_softwarelicense.class.php:286
 #: inc/computer_softwareversion.class.php:323
+#: inc/computer_softwareversion.class.php:581
 #: inc/computer_softwareversion.class.php:586
-#: inc/computer_softwareversion.class.php:591
 #: inc/computervirtualmachine.class.php:318 inc/contact.class.php:446
 #: inc/contract.class.php:1057 inc/contract.class.php:1175
 #: inc/contractcost.class.php:343 inc/document.class.php:1511
 #: inc/group_user.class.php:191 inc/group_user.class.php:440
 #: inc/item_problem.class.php:217 inc/netpoint.class.php:322
 #: inc/networkalias.class.php:395 inc/networkname.class.php:792
-#: inc/networkport.class.php:445 inc/notificationtarget.class.php:1123
+#: inc/networkport.class.php:448 inc/notificationtarget.class.php:1123
 #: inc/notificationtemplatetranslation.class.php:186
 #: inc/problem.class.php:1758 inc/problem_ticket.class.php:108
 #: inc/problem_ticket.class.php:185 inc/profile_user.class.php:301
@@ -4338,14 +4344,15 @@ msgstr[1] ""
 msgid "End of life"
 msgstr ""
 
+#. TRANS: %d is a number of months
 #: inc/cartridge.class.php:780 inc/cartridge.class.php:783
 #: inc/contract.class.php:226 inc/contract.class.php:227
 #: inc/contract.class.php:228 inc/contract.class.php:229
 #: inc/contract.class.php:236 inc/contract.class.php:237
 #: inc/contract.class.php:238 inc/contract.class.php:239
-#: inc/infocom.class.php:1031 inc/search.class.php:4036
-#: inc/supplier.class.php:704 inc/ticketrecurrent.class.php:185
-#: inc/ticketrecurrent.class.php:213
+#: inc/dropdown.class.php:1164 inc/infocom.class.php:1031
+#: inc/search.class.php:4036 inc/supplier.class.php:704
+#: inc/ticketrecurrent.class.php:185 inc/ticketrecurrent.class.php:213
 #, php-format
 msgid "%d month"
 msgid_plural "%d months"
@@ -4531,7 +4538,7 @@ msgstr ""
 #: inc/computer.class.php:414 inc/computer.class.php:784
 #: inc/computer_softwarelicense.class.php:324
 #: inc/computer_softwareversion.class.php:369
-#: inc/computer_softwareversion.class.php:740 inc/config.class.php:395
+#: inc/computer_softwareversion.class.php:752 inc/config.class.php:395
 #: inc/contract.class.php:960 inc/crontask.class.php:414
 #: inc/crontask.class.php:1076 inc/crontask.class.php:1186
 #: inc/monitor.class.php:180 inc/monitor.class.php:432
@@ -5412,7 +5419,7 @@ msgstr ""
 msgid "Sons of %s"
 msgstr ""
 
-#: inc/commontreedropdown.class.php:474 inc/networkport.class.php:841
+#: inc/commontreedropdown.class.php:474 inc/networkport.class.php:844
 msgctxt "button"
 msgid "Move"
 msgstr ""
@@ -5522,8 +5529,8 @@ msgctxt "button"
 msgid "Install"
 msgstr ""
 
-#: inc/computer.class.php:697 inc/computer_softwareversion.class.php:678
-#: inc/computer_softwareversion.class.php:880 install/install.php:129
+#: inc/computer.class.php:697 inc/computer_softwareversion.class.php:690
+#: inc/computer_softwareversion.class.php:892 install/install.php:129
 msgid "Install"
 msgstr ""
 
@@ -5801,22 +5808,22 @@ msgid_plural "Installations"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/computer_softwareversion.class.php:577
+#: inc/computer_softwareversion.class.php:572
 msgid "Installed software"
 msgid_plural "Installed softwares"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/computer_softwareversion.class.php:676
-#: inc/computer_softwareversion.class.php:782
+#: inc/computer_softwareversion.class.php:688
+#: inc/computer_softwareversion.class.php:794
 msgid "Uninstall"
 msgstr ""
 
-#: inc/computer_softwareversion.class.php:712
+#: inc/computer_softwareversion.class.php:724
 msgid "Uncategorized software"
 msgstr ""
 
-#: inc/computer_softwareversion.class.php:719
+#: inc/computer_softwareversion.class.php:731
 msgid "Affected licenses of not installed software"
 msgstr ""
 
@@ -7138,20 +7145,22 @@ msgid_plural "%d minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/crontask.class.php:1424 inc/entity.class.php:2032
-#: inc/planningrecall.class.php:252 inc/sla.class.php:181
-#: inc/ticketrecurrent.class.php:178
+#. TRANS: %d is a number of hours
+#: inc/crontask.class.php:1424 inc/dropdown.class.php:1174
+#: inc/entity.class.php:2032 inc/planningrecall.class.php:252
+#: inc/sla.class.php:181 inc/ticketrecurrent.class.php:178
 #, php-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/crontask.class.php:1430 inc/dropdown.class.php:1317
-#: inc/entity.class.php:1709 inc/entity.class.php:1754
-#: inc/entity.class.php:2044 inc/entity.class.php:2081
-#: inc/planningrecall.class.php:256 inc/sla.class.php:184
-#: inc/ticketrecurrent.class.php:181
+#. TRANS: %d is a number of days
+#: inc/crontask.class.php:1430 inc/dropdown.class.php:1169
+#: inc/dropdown.class.php:1317 inc/entity.class.php:1709
+#: inc/entity.class.php:1754 inc/entity.class.php:2044
+#: inc/entity.class.php:2081 inc/planningrecall.class.php:256
+#: inc/sla.class.php:184 inc/ticketrecurrent.class.php:181
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -7567,8 +7576,7 @@ msgstr ""
 msgid "GMT"
 msgstr ""
 
-#. TRANS: %d is a number of hours
-#: inc/dropdown.class.php:539 inc/dropdown.class.php:1174
+#: inc/dropdown.class.php:539
 #, php-format
 msgid "%s hour"
 msgid_plural "%s hours"
@@ -7668,7 +7676,7 @@ msgid_plural "Update sources"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/dropdown.class.php:715 inc/networkport.class.php:748
+#: inc/dropdown.class.php:715 inc/networkport.class.php:751
 msgid "Networking"
 msgstr ""
 
@@ -7681,7 +7689,7 @@ msgid_plural "Firmwares"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/dropdown.class.php:723 inc/networkport.class.php:825
+#: inc/dropdown.class.php:723 inc/networkport.class.php:828
 #: inc/vlan.class.php:45
 msgid "VLAN"
 msgstr ""
@@ -7751,26 +7759,11 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. TRANS: %d is a number of years
-#: inc/dropdown.class.php:1159
+#: inc/dropdown.class.php:1159 inc/infocom.class.php:982
+#: inc/ticketrecurrent.class.php:189 inc/ticketrecurrent.class.php:216
 #, php-format
-msgid "%s year"
-msgid_plural "%s years"
-msgstr[0] ""
-msgstr[1] ""
-
-#. TRANS: %d is a number of months
-#: inc/dropdown.class.php:1164
-#, php-format
-msgid "%s month"
-msgid_plural "%s months"
-msgstr[0] ""
-msgstr[1] ""
-
-#. TRANS: %d is a number of days
-#: inc/dropdown.class.php:1169
-#, php-format
-msgid "%s day"
-msgid_plural "%s days"
+msgid "%d year"
+msgid_plural "%d years"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -8315,7 +8308,7 @@ msgstr ""
 msgid "Child groups"
 msgstr ""
 
-#: inc/group.class.php:679 inc/networkport.class.php:865
+#: inc/group.class.php:679 inc/networkport.class.php:868
 #: inc/rule.class.php:148
 msgid "Move"
 msgstr ""
@@ -8402,7 +8395,7 @@ msgstr ""
 msgid "Loading..."
 msgstr ""
 
-#: inc/html.class.php:1009 inc/networkport.class.php:76
+#: inc/html.class.php:1009 inc/networkport.class.php:84
 #: inc/transfer.class.php:3054 install/update_0723_078.php:4826
 msgid "Network port"
 msgid_plural "Network ports"
@@ -8774,14 +8767,6 @@ msgstr ""
 msgid "Amortization duration"
 msgstr ""
 
-#: inc/infocom.class.php:982 inc/ticketrecurrent.class.php:189
-#: inc/ticketrecurrent.class.php:216
-#, php-format
-msgid "%d year"
-msgid_plural "%d years"
-msgstr[0] ""
-msgstr[1] ""
-
 #: inc/infocom.class.php:991 inc/infocom.class.php:1290
 #: inc/infocom.class.php:1416
 msgid "Amortization coefficient"
@@ -8836,7 +8821,7 @@ msgid "IP version"
 msgstr ""
 
 #: inc/ipnetwork.class.php:88 inc/ipnetwork.class.php:168
-#: inc/networkport.class.php:797 inc/networkportmigration.class.php:297
+#: inc/networkport.class.php:800 inc/networkportmigration.class.php:297
 msgid "Gateway"
 msgstr ""
 
@@ -9428,7 +9413,7 @@ msgid ""
 msgstr ""
 
 #: inc/networkname.class.php:675 inc/networkname.class.php:676
-#: inc/networkport.class.php:859 inc/networkport_vlan.class.php:234
+#: inc/networkport.class.php:862 inc/networkport_vlan.class.php:234
 #: inc/networkport_vlan.class.php:282
 msgid "Dissociate"
 msgstr ""
@@ -9467,60 +9452,60 @@ msgstr ""
 msgid "Origin port"
 msgstr ""
 
-#: inc/networkport.class.php:414
+#: inc/networkport.class.php:422
 msgid "Network port type to be added"
 msgstr ""
 
-#: inc/networkport.class.php:425
+#: inc/networkport.class.php:428
 msgid "Add several ports"
 msgstr ""
 
-#: inc/networkport.class.php:458
+#: inc/networkport.class.php:461
 #, php-format
 msgid "%1$s: %2$d"
 msgstr ""
 
-#: inc/networkport.class.php:475
+#: inc/networkport.class.php:478
 msgid "Internet information"
 msgstr ""
 
-#: inc/networkport.class.php:486 inc/networkport.class.php:541
+#: inc/networkport.class.php:489 inc/networkport.class.php:544
 msgid "Network ports waiting for manual migration"
 msgstr ""
 
-#: inc/networkport.class.php:622
+#: inc/networkport.class.php:625
 msgid "No network port found"
 msgstr ""
 
-#: inc/networkport.class.php:705 inc/networkport.class.php:711
-#: inc/networkport.class.php:976
+#: inc/networkport.class.php:708 inc/networkport.class.php:714
+#: inc/networkport.class.php:979
 msgid "Port number"
 msgid_plural "Ports number"
 msgstr[0] ""
 msgstr[1] ""
 
-#: inc/networkport.class.php:783
+#: inc/networkport.class.php:786
 msgid "Netmask"
 msgstr ""
 
-#: inc/networkport.class.php:790 inc/ruleimportcomputer.class.php:106
+#: inc/networkport.class.php:793 inc/ruleimportcomputer.class.php:106
 msgid "Subnet"
 msgstr ""
 
-#: inc/networkport.class.php:839 inc/networkport_vlan.class.php:318
+#: inc/networkport.class.php:842 inc/networkport_vlan.class.php:318
 msgid "Associate a VLAN"
 msgstr ""
 
-#: inc/networkport.class.php:840
+#: inc/networkport.class.php:843
 msgid "Dissociate a VLAN"
 msgstr ""
 
-#: inc/networkport.class.php:850 inc/networkport_vlan.class.php:218
+#: inc/networkport.class.php:853 inc/networkport_vlan.class.php:218
 #: inc/networkport_vlan.class.php:268 inc/networkport_vlan.class.php:326
 msgid "Tagged"
 msgstr ""
 
-#: inc/networkport.class.php:852
+#: inc/networkport.class.php:855
 msgid "Associate"
 msgstr ""
 
