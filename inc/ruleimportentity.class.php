@@ -109,7 +109,7 @@ class RuleImportEntity extends Rule {
    function getCriterias() {
 
       $criterias                                = array();
-
+/*
       $criterias['TAG']['table']                = 'accountinfo';
       $criterias['TAG']['field']                = 'TAG';
       $criterias['TAG']['name']                 = __('OCSNG TAG');
@@ -157,7 +157,7 @@ class RuleImportEntity extends Rule {
       $criterias['_source']['field']            = '_source';
       $criterias['_source']['name']             = __('Source');
       $criterias['_source']['allow_condition']  = array(Rule::PATTERN_IS, Rule::PATTERN_IS_NOT);
-
+*/
       return $criterias;
    }
 

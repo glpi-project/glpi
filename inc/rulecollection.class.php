@@ -662,11 +662,11 @@ class RuleCollection extends CommonDBTM {
     * @return the output array updated by actions (addslashes datas)
    **/
    function processAllRules($input=array() ,$output=array(), $params=array(),
-                            $force_no_cache=false) {
+                             $force_no_cache=false) {
 
       // Get Collection datas
       $this->getCollectionDatas(1,1);
-      $input                      = $this->prepareInputDataForProcess($input, $params);
+      $input                      = $this->prepareInputDataForProcessWithPlugins($input, $params);
       $output["_no_rule_matches"] = true;
 
       if (count($this->RuleList->list)) {
@@ -683,13 +683,14 @@ class RuleCollection extends CommonDBTM {
                   return Toolbox::addslashes_deep($output);
                }
             }
-
+  
             if ($this->use_output_rule_process_as_next_input) {
-               $output = $this->prepareInputDataForProcess($output, $params);
+               $output = $this->prepareInputDataForProcessWithPlugins($output, $params);
                $input  = $output;
             }
          }
       }
+
       return Toolbox::addslashes_deep($output);
    }
 
@@ -706,8 +707,8 @@ class RuleCollection extends CommonDBTM {
       $input = $this->prepareInputDataForTestProcess();
 
       if (count($input)) {
-         $rule      = $this->getRuleClass();
-         $criterias = $rule->getCriterias();
+         $rule = $this->getRuleClass();
+         $criterias = $rule->getAllCriteria();
          echo "<form name='testrule_form' id='testrulesengine_form' method='post' action='$target'>";
          echo "\n<div class='center'>";
          echo "<table class='tab_cadre_fixe'>";
@@ -814,7 +815,21 @@ class RuleCollection extends CommonDBTM {
       return $input;
    }
 
-
+   /**
+    * Prepare input datas for the rules collection, also using plugins values
+    *
+    * @param $input  the input data used to check criterias
+    * @param $params parameters
+    *
+    * @return the updated input datas
+   **/
+   function prepareInputDataForProcessWithPlugins($input, $params) {
+      $plugin_result = Rule::doHookAndMergeResults('ruleCollectionPrepareInputDataForProcess',
+                                                   array('input' => $input, 'params' => $params),
+                                                   $this->getRuleClassName());
+      return array_merge($this->prepareInputDataForProcess($input, $params), $plugin_result);
+   }
+   
    /**
     * Prepare input datas for the rules collection
     *
@@ -923,7 +938,7 @@ class RuleCollection extends CommonDBTM {
     **/
    function showTestResults($rule, array $output, $global_result) {
 
-      $actions = $rule->getActions();
+      $actions = $rule->getAllActions();
       echo "<table class='tab_cadrehov'>";
       echo "<tr><th colspan='2'>" . __('Rule results') . "</th></tr>\n";
       echo "<tr class='tab_bg_1'>";

@@ -47,14 +47,6 @@ class RuleImportComputerCollection extends RuleCollection {
    ///Store the id of the ocs server
    var $ocsservers_id;
 
-
-   /**
-    * Constructor
-   **/
-   function __construct() {
-   }
-
-
    function getTitle() {
       return __('Rules for import and link computers');
    }
@@ -62,7 +54,7 @@ class RuleImportComputerCollection extends RuleCollection {
 
    /**
     * @see inc/RuleCollection::prepareInputDataForProcess()
-   **/
+   **/ /*
    function prepareInputDataForProcess($input, $params) {
       global $DBocs;
 
@@ -90,7 +82,7 @@ class RuleImportComputerCollection extends RuleCollection {
          }
       }
       return array_merge($input,$params);
-   }
+   }*/
 
 
    /**

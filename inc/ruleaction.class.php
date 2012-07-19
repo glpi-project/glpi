@@ -152,7 +152,7 @@ class RuleAction extends CommonDBChild {
    static function dropdownActions($sub_type, $name, $value='') {
 
       if ($rule = getItemForItemtype($sub_type)) {
-         $actions_options = $rule->getActions();
+         $actions_options = $rule->getAllActions();
 
          $actions         = array("assign");
          if (isset($actions_options[$value]['force_actions'])) {
@@ -227,7 +227,7 @@ class RuleAction extends CommonDBChild {
       global $DB;
 
       if ($rule = getItemForItemtype($sub_type)) {
-         $actions_options = $rule->getActions();
+         $actions_options = $rule->getAllActions();
 
          $actions = array();
          $res     = $DB->query("SELECT `field`
