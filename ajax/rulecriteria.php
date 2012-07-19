@@ -47,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
 Session::checkLoginUser();
 
 if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"]))) {
-   $criterias = $rule->getCriterias();
+   $criterias = $rule->getAllCriteria();
 
    if (count($criterias)) {
       // First include -> first of the predefined array

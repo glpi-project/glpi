@@ -174,7 +174,7 @@ class Rule extends CommonDBTM {
 
          default :
             return parent::showSpecificMassiveActionsParameters($input);
-            break;            
+            break;
 
       }
       return false;
@@ -656,8 +656,8 @@ class Rule extends CommonDBTM {
       $items      = array();
       $group      = array();
       $groupname  = '';
-      $first      = NULL;
-      foreach ($this->getCriterias() as $ID => $crit) {
+      $first = NULL;
+      foreach ($this->getAllCriteria() as $ID => $crit) {
          // Manage group system
          if (!is_array($crit)) {
             if (count($group)) {
@@ -711,7 +711,7 @@ class Rule extends CommonDBTM {
    function dropdownActions($used=array()) {
       global $CFG_GLPI;
 
-      $actions = $this->getActions();
+      $actions = $this->getAllActions();
 
       // Complete used array with duplicate items
       // add duplicates of used items
@@ -762,7 +762,7 @@ class Rule extends CommonDBTM {
    **/
    function getCriteria($ID) {
 
-      $criterias = $this->getCriterias();
+      $criterias = $this->getAllCriteria();
       if (isset($criterias[$ID])) {
          return $criterias[$ID];
       }
@@ -779,7 +779,7 @@ class Rule extends CommonDBTM {
    **/
    function getAction($ID) {
 
-      $actions = $this->getActions();
+      $actions = $this->getAllActions();
       if (isset($actions[$ID])) {
          return $actions[$ID];
       }
@@ -801,7 +801,7 @@ class Rule extends CommonDBTM {
       if (isset($criteria['name'])) {
          return $criteria['name'];
       }
-      return "&nbsp;";
+      return __('Unavailable')."&nbsp;";
    }
 
 
@@ -1020,7 +1020,31 @@ class Rule extends CommonDBTM {
       return $input;
    }
 
-
+   /**
+    *
+    * Get all data needed to process rules (core + plugins)
+    * @since 0.84
+    * @param $input  the input data used to check criterias
+    * @param $params parameters
+    *
+    * @return the updated input datas
+    */
+   function prepareAllInputDataForProcess($input, $params) {
+      global $PLUGIN_HOOKS;
+      $input = $this->prepareInputDataForProcess($input, $params);
+      if (isset($PLUGIN_HOOKS['use_rules'])) {
+         foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            $results = Plugin::doOneHook($plugin, "rulePrepareInputDataForProcess", $this->getType());
+            if (is_array($results)) {
+               foreach ($results as $result) {
+                  $input[] = $result;
+               }
+            }
+         }
+      }
+      return $input;
+   }
+   
    /**
     * Execute the actions as defined in the rule
     *
@@ -1223,7 +1247,7 @@ class Rule extends CommonDBTM {
    **/
    function showRulePreviewResultsForm($target, $input, $params) {
 
-      $actions       = $this->getActions();
+      $actions       = $this->getAllActions();
       $check_results = array();
       $output        = array();
 
@@ -1275,7 +1299,7 @@ class Rule extends CommonDBTM {
          if (isset($actions[$criteria])) {
             echo "<tr class='tab_bg_2'>";
             echo "<td>".$actions[$criteria]["name"]."</td>";
-            echo "<td>".$this->getActionValue($criteria, $actions[$criteria]['action_type'], $value);
+            echo "<td>".$this->getActionValue($criteria, $actions[$criteria]['type'], $value);
             echo "</td></tr>\n";
          }
       }
@@ -1674,7 +1698,7 @@ class Rule extends CommonDBTM {
    function showRulePreviewCriteriasForm($target, $rules_id) {
       global $DB;
 
-      $criterias = $this->getCriterias();
+      $criterias = $this->getAllCriteria();
 
       if ($this->getRuleWithCriteriasAndActions($rules_id, 1, 0)) {
          echo "<form name='testrule_form' id='testrule_form' method='post' action='$target'>\n";
@@ -1790,16 +1814,47 @@ class Rule extends CommonDBTM {
       return $rand;
    }
 
-
+   function getAllCriteria() {
+      return self::doHookAndMergeResults("getRuleCriteria", $this->getCriterias(), $this->getType());
+   }
+   
    function getCriterias() {
       return array();
    }
 
+   function getAllActions() {
+      return self::doHookAndMergeResults("getRuleActions", $this->getActions(), $this->getType());
+   }
 
    function getActions() {
       return array();
    }
 
+   /**
+    *
+    * Execute a hook if necessary and merge results
+    * @since 0.84
+    * @param $hook the hook to execute
+    * @param $params input parameters
+    * @return input parameters merged with hook parameters
+    */
+   static function doHookAndMergeResults($hook, $params = array(), $itemtype = '') {
+      global $PLUGIN_HOOKS;
+      //Agregate all plugins criteria for this rules engine
+      $toreturn = $params;
+      if (isset($PLUGIN_HOOKS['use_rules'])) {
+         foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            $results = Plugin::doOneHook($plugin, $hook, array('rule_itemtype' => $itemtype,
+                                                                'values'        => $params));
+            if (is_array($results)) {
+               foreach ($results as $id => $result) {
+                  $toreturn[$id] = $result;
+               }
+            }
+         }
+      }
+      return $toreturn;
+   }
 
    /**
     * @param $sub_type
@@ -1807,7 +1862,7 @@ class Rule extends CommonDBTM {
    static function getActionsByType($sub_type) {
 
       if ($rule = getItemForItemtype($sub_type)) {
-         return $rule->getActions();
+         return $rule->getAllActions();
       }
       return array();
    }

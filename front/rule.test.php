@@ -83,7 +83,7 @@ if (isset($_POST["test_rule"])) {
    //Add rules specific POST fields to the param array
    $params = $rule->addSpecificParamsForPreview($params);
 
-   $input = $rule->prepareInputDataForProcess($_POST, $params);
+   $input = $rule->prepareAllInputDataForProcess($_POST, $params);
    //$rule->regex_results = array();
    echo "<br>";
    $rule->showRulePreviewResultsForm($_SERVER['PHP_SELF'], $input, $params);
