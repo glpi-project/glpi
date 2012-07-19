@@ -95,7 +95,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
   **/
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
                                                      HTMLTable_SuperHeader $super,
-                                                     $options=array()) {
+                                                     array $options=array()) {
 
       if (!isset($_SESSION['glpi_ethernet_display_opposite'])) {
          $_SESSION['glpi_ethernet_display_opposite'] = array();
@@ -122,12 +122,13 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
       }
 
       $header = $group->addHeader('Connected', $connect_text, $super);
-      DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super, $header);
+      DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super, $header,
+                                            $options);
       $group->addHeader('MAC', __('MAC'), $super, $header);
       $group->addHeader('speed', __('Ethernet port speed'), $super, $header);
       $group->addHeader('type', __('Ethernet port type'), $super, $header);
-      NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super, $header);
-      Netpoint::getHTMLTableHeader('NetworkPortEthernet', $group, $super, $header);
+      NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super, $header, $options);
+      Netpoint::getHTMLTableHeader('NetworkPortEthernet', $group, $super, $header, $options);
       $group->addHeader('Outlet', __('Network outlet'), $super, $header);
 
       return $header;

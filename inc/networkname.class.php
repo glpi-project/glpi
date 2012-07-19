@@ -495,7 +495,7 @@ class NetworkName extends FQDNLabel {
    **/
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
                                       HTMLTable_SuperHeader $super=NULL,
-                                      HTMLTable_Header $father=NULL, $options=array()) {
+                                      HTMLTable_Header $father=NULL, array $options=array()) {
 
       $column_name = __CLASS__;
 
@@ -515,8 +515,8 @@ class NetworkName extends FQDNLabel {
          $base->addHeader('button2', '', $super, $name_header);
       }
 
-      NetworkAlias::getHTMLTableHeader(__CLASS__, $base, $super, $name_header);
-      IPAddress::getHTMLTableHeader(__CLASS__, $base, $super, $name_header);
+      NetworkAlias::getHTMLTableHeader(__CLASS__, $base, $super, $name_header, $options);
+      IPAddress::getHTMLTableHeader(__CLASS__, $base, $super, $name_header, $options);
    }
 
 

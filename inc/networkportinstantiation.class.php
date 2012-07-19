@@ -122,7 +122,7 @@ class NetworkPortInstantiation extends CommonDBChild {
    **/
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
                                                      HTMLTable_SuperHeader $super,
-                                                     $options=array()) {
+                                                     array $options=array()) {
 
       return NULL;
    }

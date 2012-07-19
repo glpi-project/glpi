@@ -398,7 +398,7 @@ class Netpoint extends CommonDropdown {
    **/
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
                                       HTMLTable_SuperHeader $super=NULL,
-                                      HTMLTable_Header $father=NULL, $options=array()) {
+                                      HTMLTable_Header $father=NULL, array $options=array()) {
 
       $column_name = __CLASS__;
 
