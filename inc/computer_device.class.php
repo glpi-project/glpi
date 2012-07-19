@@ -219,7 +219,7 @@ class Computer_Device extends CommonDBTM {
       $specific_column->setHTMLClass('center');
 
       if ($canedit) {
-         $delete_column = $table->addHeader('delete', __('Delete'));
+         $delete_column = $table->addHeader('delete', "<input type='submit' class='submit' name='delete' value='".__s('Delete')."'>");
          $delete_column->setHTMLClass('center');
       }
 
@@ -540,14 +540,6 @@ class Computer_Device extends CommonDBTM {
                case 'value' :
                   $this->updateSpecificity($val,$data[1],$data[2]);
                   break;
-
-               case 'remove' :
-                  $this->removeDevice($data[1], $data[2]);
-                  break;
-
-               case 'removeall' :
-                  $this->removeDevices($data[1], $data[2]);
-                  break;
             }
 
          } else if (count($data) == 4) {
@@ -559,6 +551,27 @@ class Computer_Device extends CommonDBTM {
          }
       }
    }
+
+   function deleteAll(array $input) {
+
+      // Update quantity
+      foreach ($input as $key => $val) {
+         $data = explode("_",$key);
+         if (count($data) == 3) {
+            switch ($data[0]) {
+
+               case 'remove' :
+                  $this->removeDevice($data[1], $data[2]);
+                  break;
+
+               case 'removeall' :
+                  $this->removeDevices($data[1], $data[2]);
+                  break;
+            }
+
+         }
+      }
+   }   
 
 
    /**

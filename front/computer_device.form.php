@@ -54,7 +54,13 @@ if (isset($_POST["add"])) {
               //TRANS: %s is the user login
               sprintf(__('%s updates components'), $_SESSION["glpiname"]));
    Html::back();
-
+} else if (isset($_POST["delete"])) {
+   $compdev->check(-1, 'w', $_POST);
+   $compdev->deleteAll($_POST);
+   Event::log($_POST["computers_id"], "computers", 4, "inventory",
+              //TRANS: %s is the user login
+              sprintf(__('%s purges components'), $_SESSION["glpiname"]));
+   Html::back();
 }
 Html::displayErrorAndDie('Lost');
 ?>
