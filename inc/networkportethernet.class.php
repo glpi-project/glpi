@@ -396,5 +396,21 @@ class NetworkPortEthernet extends NetworkPortInstantiation {
 
    }
 
+
+   static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams,
+                                                         $itemtype) {
+
+      $tab[22]['table']         = 'glpi_netpoints';
+      $tab[22]['field']         = 'name';
+      $tab[22]['name']          = __('Network outlet');
+      $tab[22]['forcegroupby']  = true;
+      $tab[22]['massiveaction'] = false;
+      $tab[22]['joinparams']    = array('jointype'   => 'standard',
+                                        'beforejoin'
+                                         => array('table'      => 'glpi_networkportethernets',
+                                                  'joinparams' => $joinparams));
+
+   }
+
 }
 ?>

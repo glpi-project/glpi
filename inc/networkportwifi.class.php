@@ -168,5 +168,30 @@ class NetworkPortWifi extends NetworkPortInstantiation {
       return $tab;
    }
 
+
+   static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams,
+                                                         $itemtype) {
+
+      $tab[157]['table']         = 'glpi_wifinetworks';
+      $tab[157]['field']         = 'name';
+      $tab[157]['name']          = WifiNetwork::getTypeName();
+      $tab[157]['forcegroupby']  = true;
+      $tab[157]['massiveaction'] = false;
+      $tab[157]['joinparams']    = array('jointype'   => 'standard',
+                                        'beforejoin'
+                                         => array('table'      => 'glpi_networkportwifis',
+                                                  'joinparams' => $joinparams));
+
+      $tab[158]['table']         = 'glpi_wifinetworks';
+      $tab[158]['field']         = 'essid';
+      $tab[158]['name']          = __('ESSID');
+      $tab[158]['forcegroupby']  = true;
+      $tab[158]['massiveaction'] = false;
+      $tab[158]['joinparams']    = array('jointype'   => 'standard',
+                                        'beforejoin'
+                                         => array('table'      => 'glpi_networkportwifis',
+                                                  'joinparams' => $joinparams));
+
+   }
 }
 ?>

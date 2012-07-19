@@ -799,13 +799,12 @@ class NetworkPort extends CommonDBChild {
       $tab[85]['massiveaction'] = false;
       $tab[85]['joinparams']    = $joinparams;
 
-      $tab[22]['table']         = 'glpi_netpoints';
-      $tab[22]['field']         = 'name';
-      $tab[22]['name']          = __('Network outlet');
-      $tab[22]['forcegroupby']  = true;
-      $tab[22]['massiveaction'] = false;
-      $tab[22]['joinparams']    = array('beforejoin' => array('table'      => 'glpi_networkports',
-                                                              'joinparams' => $joinparams));
+      $instantjoin = array('jointype'          => 'child',
+                           'beforejoin' => array('table'      => 'glpi_networkports',
+                                                 'joinparams' => $joinparams));
+      foreach (self::getNetworkPortInstantiations() as $instantiationType) {
+         $instantiationType::getSearchOptionsToAddForInstantiation($tab, $instantjoin, $itemtype);
+      }
 
       ///TODO does not exists anymore
 //       $tab[87]['table']         = 'glpi_networkinterfaces';
@@ -832,7 +831,7 @@ class NetworkPort extends CommonDBChild {
       return $tab;
    }
 
-         
+
    function getSpecificMassiveActions($checkitem=NULL) {
       $isadmin = $checkitem->canUpdate();
       $actions = parent::getSpecificMassiveActions($checkitem);
@@ -981,26 +980,6 @@ class NetworkPort extends CommonDBChild {
       $tab[4]['field']         = 'mac';
       $tab[4]['name']          = __('MAC address');
       $tab[4]['datatype']      = 'mac';
-
-      $tab[5]['table']         = $this->getTable();
-      $tab[5]['field']         = 'ip';
-      $tab[5]['name']          = __('IP');
-      $tab[5]['datatype']      = 'ip';
-
-      $tab[6]['table']         = $this->getTable();
-      $tab[6]['field']         = 'netmask';
-      $tab[6]['name']          = __('Netmask');
-      $tab[6]['datatype']      = 'ip';
-
-      $tab[7]['table']         = $this->getTable();
-      $tab[7]['field']         = 'subnet';
-      $tab[7]['name']          = __('Subnet');
-      $tab[7]['datatype']      = 'ip';
-
-      $tab[8]['table']         = $this->getTable();
-      $tab[8]['field']         = 'gateway';
-      $tab[8]['name']          = __('Gateway');
-      $tab[8]['datatype']      = 'ip';
 
       $tab[9]['table']         = 'glpi_netpoints';
       $tab[9]['field']         = 'name';
