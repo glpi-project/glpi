@@ -552,25 +552,18 @@ class Computer_SoftwareVersion extends CommonDBRelation {
 
       if ((empty($withtemplate) || ($withtemplate != 2))
           && $canedit) {
-         echo "<tr class='tab_bg_1'><td class='center' colspan='3'>";
+         echo "<tr class='tab_bg_1'><td class='center'>";
          echo "<form method='post' action='".
                 $CFG_GLPI["root_doc"]."/front/computer_softwareversion.form.php'>";
          echo _n('Software', 'Software', 2)."&nbsp;&nbsp;";
          echo "<input type='hidden' name='computers_id' value='$computers_id'>";
          Software::dropdownSoftwareToInstall("softwareversions_id", $entities_id);
+         echo "</td><td width='20%'>";
          echo "<input type='submit' name='install' value=\""._sx('button', 'Install')."\"
                 class='submit'>";
          Html::closeForm();
          echo "</td>";
-         echo "<td class='center' clospan='2'>";
-         echo "<form method='post' action='".$CFG_GLPI["root_doc"].
-                "/front/computer_softwarelicense.form.php'>";
-         echo _n('License', 'Licenses', 2)."&nbsp;&nbsp;";
-         echo "<input type='hidden' name='computers_id' value='$computers_id'>";
-         Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
-         echo "<input type='submit' name='add' value=\"" .__s('Add')."\" class='submit'>";
-         Html::closeForm();
-         echo "</td></tr>\n";
+         echo "</tr>\n";
       }
       echo "<tr><th colspan='5'>";
 
@@ -609,7 +602,22 @@ class Computer_SoftwareVersion extends CommonDBRelation {
          }
          self::displayCategoryFooter($cat, $rand, $canedit);
       }
-
+      echo "</table></div>\n";
+      echo "<div class='spaced'><table class='tab_cadre_fixe'>";
+      if ((empty($withtemplate) || ($withtemplate != 2))
+          && $canedit) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td class='center'>";
+         echo "<form method='post' action='".$CFG_GLPI["root_doc"].
+                "/front/computer_softwarelicense.form.php'>";
+         echo _n('License', 'Licenses', 2)."&nbsp;&nbsp;";
+         echo "<input type='hidden' name='computers_id' value='$computers_id'>";
+         Software::dropdownLicenseToInstall("softwarelicenses_id", $entities_id);
+         echo "</td><td width='20%'>";
+         echo "<input type='submit' name='add' value=\"" .__s('Add')."\" class='submit'>";
+         Html::closeForm();
+         echo "</td></tr>\n";
+      }
       // Affected licenses NOT installed
       $query = "SELECT `glpi_softwarelicenses`.*,
                        `glpi_softwares`.`name` AS softname,
