@@ -1156,22 +1156,22 @@ class Dropdown {
       switch ($unit) {
          case 'year' :
             //TRANS: %d is a number of years
-            return sprintf(_n('%s year', '%s years', $value), $value);
+            return sprintf(_n('%d year', '%d years', $value), $value);
             break;
 
          case 'month' :
             //TRANS: %d is a number of months
-            return sprintf(_n('%s month', '%s months', $value), $value);
+            return sprintf(_n('%d month', '%d months', $value), $value);
             break;
 
          case 'day' :
             //TRANS: %d is a number of days
-            return sprintf(_n('%s day', '%s days', $value), $value);
+            return sprintf(_n('%d day', '%d days', $value), $value);
             break;
 
          case 'hour' :
             //TRANS: %d is a number of hours
-            return sprintf(_n('%s hour', '%s hours', $value), $value);
+            return sprintf(_n('%d hour', '%d hours', $value), $value);
             break;
 
          case '%' :
