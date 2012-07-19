@@ -66,9 +66,18 @@ class NetworkPort extends CommonDBChild {
     * @return array of available type of network ports
    **/
    static function getNetworkPortInstantiations() {
-
       return array('NetworkPortAggregate', 'NetworkPortAlias', 'NetworkPortDialup',
                    'NetworkPortEthernet', 'NetworkPortLocal', 'NetworkPortWifi');
+   }
+
+   static function getNetworkPortInstantiationsWithNames() {
+      $types = self::getNetworkPortInstantiations();
+      $tab = array();
+      foreach ($types as $itemtype) {
+         $tab[$itemtype] = call_user_func(array($itemtype, 'getTypeName'));
+      }
+      asort($tab);
+      return $tab;
    }
 
 
@@ -412,15 +421,10 @@ class NetworkPort extends CommonDBChild {
          echo "<div class='firstbloc'><table class='tab_cadre_fixe'>\n";
          echo "<tr><td class='tab_bg_2 center'>\n";
          _e('Network port type to be added');
-         echo "&nbsp;<select name='instantiation_type'>\n";
-         foreach (self::getNetworkPortInstantiations() as $network_type) {
-            echo "\t<option value='$network_type'";
-            if ($network_type == "NetworkPortEthernet") {
-               echo " selected";
-            }
-            echo ">".call_user_func(array($network_type, 'getTypeName'))."</option>\n";
-         }
-         echo "</select></td>\n";
+         echo "&nbsp;";
+         Dropdown::showFromArray('instantiation_type', self::getNetworkPortInstantiationsWithNames(),
+                                 array('value'   => 'NetworkPortEthernet'));
+         echo "</td>\n";
          echo "<td class='tab_bg_2 center' width='50%'>";
          _e('Add several ports');
          echo "&nbsp;<input type='checkbox' name='several' value='1'></td>\n";
