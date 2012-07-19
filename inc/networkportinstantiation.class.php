@@ -535,5 +535,8 @@ class NetworkPortInstantiation extends CommonDBChild {
       }
    }
 
+   static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams,
+                                                         $itemtype) {
+   }
 }
 ?>
