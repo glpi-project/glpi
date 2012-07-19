@@ -66,8 +66,8 @@ class NetworkPort extends CommonDBChild {
     * @return array of available type of network ports
    **/
    static function getNetworkPortInstantiations() {
-      return array('NetworkPortAggregate', 'NetworkPortAlias', 'NetworkPortDialup',
-                   'NetworkPortEthernet', 'NetworkPortLocal', 'NetworkPortWifi');
+      return array('NetworkPortEthernet', 'NetworkPortWifi' , 'NetworkPortAggregate',
+                   'NetworkPortAlias', 'NetworkPortDialup',   'NetworkPortLocal' );
    }
 
    static function getNetworkPortInstantiationsWithNames() {
@@ -76,7 +76,6 @@ class NetworkPort extends CommonDBChild {
       foreach ($types as $itemtype) {
          $tab[$itemtype] = call_user_func(array($itemtype, 'getTypeName'));
       }
-      asort($tab);
       return $tab;
    }
 
