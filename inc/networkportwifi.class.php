@@ -103,15 +103,14 @@ class NetworkPortWifi extends NetworkPortInstantiation {
    **/
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
                                                      HTMLTable_SuperHeader $super,
-                                                     $options=array()) {
+                                                     array $options=array()) {
 
-      DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super);
+      DeviceNetworkCard::getHTMLTableHeader('NetworkPortEthernet', $group, $super, NULL, $options);
       $group->addHeader('MAC', __('MAC'), $super);
       $group->addHeader('ESSID', __('ESSID'), $super);
       $group->addHeader('Mode', __('Wifi mode'), $super);
       $group->addHeader('Version', __('Wifi protocol version'), $super);
-      NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super);
-      //$group->addHeader('Connected', __('Connected to'), $super);
+      NetworkPort_Vlan::getHTMLTableHeader('NetworkPort', $group, $super, NULL, $options);
 
       return NULL;
    }

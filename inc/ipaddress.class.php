@@ -959,7 +959,7 @@ class IPAddress extends CommonDBChild {
    **/
    static function getHTMLTableHeader($itemtype, HTMLTable_Base $base,
                                       HTMLTable_SuperHeader $super=NULL,
-                                      HTMLTable_Header $father=NULL, $options=array()) {
+                                      HTMLTable_Header $father=NULL, array $options=array()) {
 
       $column_name = __CLASS__;
 
@@ -973,7 +973,7 @@ class IPAddress extends CommonDBChild {
       }
       $this_header = $base->addHeader($column_name, $content, $super, $father);
 
-      IPNetwork::getHTMLTableHeader(__CLASS__, $base, $super, $this_header);
+      IPNetwork::getHTMLTableHeader(__CLASS__, $base, $super, $this_header, $options);
 
    }
 

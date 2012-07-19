@@ -54,7 +54,7 @@ class NetworkPortDialup extends NetworkPortInstantiation {
    **/
    static function getInstantiationHTMLTable_Headers(HTMLTable_Group $group,
                                                      HTMLTable_SuperHeader $super,
-                                                     $options=array()) {
+                                                     array $options=array()) {
 
       $group->addHeader('MAC', __('MAC'), $super);
 
