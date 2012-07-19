@@ -552,13 +552,15 @@ class NetworkName extends FQDNLabel {
       switch ($item->getType()) {
          case 'IPNetwork' :
             $query = "SELECT `glpi_networknames`.`id`
-                      FROM `glpi_networknames`, `glpi_ipaddresses`, `glpi_ipaddresses_ipnetworks`
-                      WHERE `glpi_networknames`.`id` = `glpi_ipaddresses`.`items_id`
-                            AND `glpi_ipaddresses`.`itemtype` = 'NetworkName'
-                            AND `glpi_ipaddresses`.`id`
-                                 =`glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
+                      FROM `glpi_networknames`
+                      JOIN `glpi_ipaddresses` ON (
+                                `glpi_ipaddresses`.`items_id` = `glpi_networknames`.`id`
+                            AND `glpi_ipaddresses`.`itemtype` = 'NetworkName')
+                      JOIN `glpi_ipaddresses_ipnetworks` ON (
+                                `glpi_ipaddresses_ipnetworks`.`ipaddresses_id`
+                                 = `glpi_ipaddresses`.`id`
                             AND `glpi_ipaddresses_ipnetworks`.`ipnetworks_id`
-                                 = '".$item->getID()."'";
+                                 = '".$item->getID()."')";
 
             if (isset($options['order'])) {
                switch ($options['order']) {
@@ -571,6 +573,14 @@ class NetworkName extends FQDNLabel {
                                           `glpi_ipaddresses`.`binary_2`,
                                           `glpi_ipaddresses`.`binary_1`,
                                           `glpi_ipaddresses`.`binary_0`";
+                     break;
+
+                  case 'alias' :
+                     $query .= " LEFT JOIN `glpi_networkaliases` ON (
+                                               `glpi_networkaliases`.`networknames_id`
+                                               = `glpi_networknames`.`id`)
+                                 ORDER BY ISNULL(`glpi_networkaliases`.`name`),
+                                          `glpi_networkaliases`.`name`";
                      break;
                }
             }
@@ -685,7 +695,8 @@ class NetworkName extends FQDNLabel {
             $table_options['dont_display'] = array('IPNetwork' => true);
             $table_options['column_links'] =
                  array('NetworkName' => 'javascript:reloadTab("order=name");',
-                      'IPAddress'   => 'javascript:reloadTab("order=ip");');
+                       'NetworkAlias'   => 'javascript:reloadTab("order=alias");',
+                       'IPAddress'   => 'javascript:reloadTab("order=ip");');
 
          }
 

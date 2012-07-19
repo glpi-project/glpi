@@ -182,7 +182,10 @@ class NetworkAlias extends FQDNLabel {
          return;
       }
 
-      $content     = self::getTypeName();
+      $content = self::getTypeName();
+      if (isset($options['column_links'][$column_name])) {
+         $content = "<a href='".$options['column_links'][$column_name]."'>$content</a>";
+      }
       $this_header = $base->addHeader($column_name, $content, $super, $father);
    }
 
