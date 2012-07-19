@@ -1595,8 +1595,9 @@ class Ticket extends CommonITILObject {
     *
     * @param $ID                          ID of the ticket
     * @param $no_stat_computation boolean do not cumpute take into account stat (false by default)
+    * @param $users_id_lastupdater integer to force last_update id (default 0 = not used)
    **/
-   function updateDateMod($ID, $no_stat_computation=false) {
+   function updateDateMod($ID, $no_stat_computation=false, $users_id_lastupdater=0) {
       global $DB;
 
       if ($this->getFromDB($ID)) {
@@ -1615,7 +1616,7 @@ class Ticket extends CommonITILObject {
             }
 
          }
-         parent::updateDateMod($ID, $no_stat_computation=false);
+         parent::updateDateMod($ID, $no_stat_computation, $users_id_lastupdater);
       }
    }
 
