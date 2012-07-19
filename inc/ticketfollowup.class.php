@@ -301,8 +301,11 @@ class TicketFollowup  extends CommonDBTM {
       $input['_close'] = 0;
       unset($input["add"]);
 
-      if (!isset($input["users_id"]) && $uid=Session::getLoginUserID()) {
-         $input["users_id"] = $uid;
+      if (!isset($input["users_id"])) {
+         $input["users_id"] = 0;
+         if ($uid=Session::getLoginUserID()) {
+            $input["users_id"] = $uid;
+         }
       }
 //      if ($input["_isadmin"] && $input["_type"]!="update") {
       if (isset($input["add_close"])) {
@@ -339,7 +342,8 @@ class TicketFollowup  extends CommonDBTM {
          $donotif = false;
       }
 
-      $this->input["_job"]->updateDateMod($this->input["tickets_id"]);
+      // Add users_id as lastupdater : set if not set to default value
+      $this->input["_job"]->updateDateMod($this->input["tickets_id"], false, $this->input["users_id"]);
 
       if (isset($this->input["_close"])
           && $this->input["_close"]

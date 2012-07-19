@@ -2726,8 +2726,9 @@ abstract class CommonITILObject extends CommonDBTM {
     *
     * @param $ID ID of the ITIL object
     * @param $no_stat_computation boolean do not cumpute take into account stat
+    * @param $users_id_lastupdater integer to force last_update id (default 0 = not used)
    **/
-   function updateDateMod($ID, $no_stat_computation=false) {
+   function updateDateMod($ID, $no_stat_computation=false, $users_id_lastupdater=0) {
       global $DB;
 
       if ($this->getFromDB($ID)) {
@@ -2738,7 +2739,10 @@ abstract class CommonITILObject extends CommonDBTM {
          // set last updater if interactive user
          $lastupdater = Session::getLoginUserID(false);
          if (is_numeric($lastupdater)) {
-            $query .= ", `users_id_lastupdater` = '$lastupdater' ";
+            $users_id_lastupdater = $lastupdater;
+         }
+         if ($users_id_lastupdater > 0) {
+            $query .= ", `users_id_lastupdater` = '$users_id_lastupdater' ";
          }
 
          $query .= "WHERE `id` = '$ID'";
