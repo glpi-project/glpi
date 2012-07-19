@@ -587,10 +587,40 @@ class NetworkName extends FQDNLabel {
             break;
 
          case 'FQDN' :
+            $JOINS = "";
+            $ORDER = "`glpi_networknames`.`name`";
+
+            if (isset($options['order'])) {
+               switch ($options['order']) {
+                  case 'name' :
+                     break;
+
+                  case 'ip' :
+                     $JOINS = " LEFT JOIN `glpi_ipaddresses` ON (
+                                              `glpi_ipaddresses`.`items_id`
+                                              = `glpi_networknames`.`id`
+                                           AND `glpi_ipaddresses`.`itemtype`
+                                              = 'NetworkName')";
+                     $ORDER = "ISNULL (`glpi_ipaddresses`.`id`),
+                               `glpi_ipaddresses`.`binary_3`, `glpi_ipaddresses`.`binary_2`,
+                               `glpi_ipaddresses`.`binary_1`, `glpi_ipaddresses`.`binary_0`";
+                     break;
+
+                  case 'alias' :
+                     $JOINS = " LEFT JOIN `glpi_networkaliases` ON (
+                                              `glpi_networkaliases`.`networknames_id`
+                                              = `glpi_networknames`.`id`)";
+                     $ORDER = "ISNULL(`glpi_networkaliases`.`name`),
+                                         `glpi_networkaliases`.`name`";
+                     break;
+               }
+            }
+
             $query = "SELECT `glpi_networknames`.`id`
                       FROM `glpi_networknames`
-                      WHERE `fqdns_id` = '".$item->fields["id"]."'
-                      ORDER BY `glpi_networknames`.`name`";
+                      $JOINS
+                      WHERE `glpi_networknames`.`fqdns_id` = '".$item->fields["id"]."'
+                      ORDER BY $ORDER";
             break;
 
         case 'NetworkPort' :
@@ -685,19 +715,28 @@ class NetworkName extends FQDNLabel {
             $start = 0;
          }
 
+         if (!empty($_REQUEST["order"])) {
+            $table_options['order'] = $_REQUEST["order"];
+         } else {
+            $table_options['order'] = 'name';
+         }
+
+
          if ($item->getType() == 'IPNetwork') {
-            if (!empty($_REQUEST["order"])) {
-               $table_options['order'] = $_REQUEST["order"];
-            } else {
-               $table_options['order'] = 'name';
-            }
 
             $table_options['dont_display'] = array('IPNetwork' => true);
-            $table_options['column_links'] =
-                 array('NetworkName' => 'javascript:reloadTab("order=name");',
-                       'NetworkAlias'   => 'javascript:reloadTab("order=alias");',
-                       'IPAddress'   => 'javascript:reloadTab("order=ip");');
 
+            $table_options['column_links'] =
+                 array('NetworkName'  => 'javascript:reloadTab("order=name");',
+                       'NetworkAlias' => 'javascript:reloadTab("order=alias");',
+                       'IPAddress'    => 'javascript:reloadTab("order=ip");');
+
+         } else if ($item->getType() == 'FQDN') {
+
+            $table_options['column_links'] =
+                 array('NetworkName'  => 'javascript:reloadTab("order=name");',
+                       'NetworkAlias' => 'javascript:reloadTab("order=alias");',
+                       'IPAddress'    => 'javascript:reloadTab("order=ip");');
          }
 
          $table_options['SQL_options']  = "LIMIT ".$_SESSION['glpilist_limit']."
