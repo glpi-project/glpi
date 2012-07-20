@@ -2067,6 +2067,7 @@ CREATE TABLE `glpi_fqdns` (
   `fqdn` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
   KEY `name` (`name`),
   KEY `fqdn` (`fqdn`),
   KEY `is_recursive` (`is_recursive`)
@@ -2689,6 +2690,7 @@ CREATE TABLE `glpi_networkaliases` (
   `fqdns_id` int(11) NOT NULL DEFAULT '0',
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
   KEY `name` (`name`),
   KEY `networknames_id` (`networknames_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -2808,6 +2810,7 @@ CREATE TABLE `glpi_networknames` (
   `fqdns_id` int(11) NOT NULL DEFAULT '0',
   `ip_addresses` text COLLATE utf8_unicode_ci COMMENT 'caching value of IPAddress',
   PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
   KEY `FQDN` (`name`,`fqdns_id`),
   KEY `name` (`name`),
   KEY `item` (`itemtype`,`items_id`),
@@ -5531,10 +5534,14 @@ CREATE TABLE `glpi_virtualmachinetypes` (
 DROP TABLE IF EXISTS `glpi_vlans`;
 CREATE TABLE `glpi_vlans` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `comment` text COLLATE utf8_unicode_ci,
   `tag` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `tag` (`tag`),
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -5544,12 +5551,14 @@ CREATE TABLE `glpi_vlans` (
 DROP TABLE IF EXISTS `glpi_wifinetworks`;
 CREATE TABLE `glpi_wifinetworks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `essid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `mode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT 'ad-hoc, access_point',
   `comment` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
   KEY `essid` (`essid`),
   KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-

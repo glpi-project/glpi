@@ -84,12 +84,8 @@ function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_i
       $domainID = 0;
    }
 
-   echo "Before : $IP<br>\n";
-
    $IPaddress = new IPAddress();
    if ($IPaddress->setAddressFromString($IP)) {
-
-      echo "Ajout : $IP<br>\n";
 
       $input = array('name'         => $name,
                      'ip_addresses' => $IPaddress->getTextual(),
@@ -97,8 +93,6 @@ function createNetworkNameFromItem($itemtype, $items_id, $main_items_id, $main_i
                      'entities_id'  => $entities_id,
                      'items_id'     => $items_id,
                      'itemtype'     => $itemtype);
-
-      echo "NetworkName :  $itemtype / $items_id<br>\n";
 
       $networkNameID = $migration->insertInTable('glpi_networknames', $input);
 
@@ -298,6 +292,7 @@ function update0831to084() {
                   `fqdn` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                   `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
+                  KEY `entities_id` (`entities_id`),
                   KEY `name` (`name`),
                   KEY `fqdn` (`fqdn`),
                   KEY `is_recursive` (`is_recursive`)
@@ -341,6 +336,7 @@ function update0831to084() {
                   `binary_2`  int unsigned NOT NULL DEFAULT '0',
                   `binary_3`  int unsigned NOT NULL DEFAULT '0',
                   PRIMARY KEY (`id`),
+                  KEY `entities_id` (`entities_id`),
                   KEY `textual` (`name`),
                   KEY `binary` (`binary_0`, `binary_1`, `binary_2`, `binary_3`),
                   KEY `item` (`itemtype`, `items_id`)
@@ -356,12 +352,15 @@ function update0831to084() {
    if (!TableExists('glpi_wifinetworks')) {
       $query = "CREATE TABLE `glpi_wifinetworks` (
                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                 `entities_id` int(11) NOT NULL DEFAULT '0',
+                 `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
                  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                  `essid` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
                  `mode` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL
                         COMMENT 'ad-hoc, access_point',
                  `comment` text COLLATE utf8_unicode_ci,
                  PRIMARY KEY (`id`),
+                 KEY `entities_id` (`entities_id`),
                  KEY `essid` (`essid`),
                  KEY `name` (`name`)
                ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
@@ -501,6 +500,7 @@ function update0831to084() {
                   `fqdns_id` int(11) NOT NULL DEFAULT '0',
                   `ip_addresses` TEXT COLLATE utf8_unicode_ci COMMENT 'caching value of IPAddress',
                   PRIMARY KEY (`id`),
+                  KEY `entities_id` (`entities_id`),
                   KEY `FQDN` (`name`,`fqdns_id`),
                   KEY `name` (`name`),
                   KEY `item` (`itemtype`, `items_id`),
@@ -538,6 +538,7 @@ function update0831to084() {
                   `fqdns_id` int(11) NOT NULL DEFAULT '0',
                   `comment` text COLLATE utf8_unicode_ci,
                   PRIMARY KEY (`id`),
+                  KEY `entities_id` (`entities_id`),
                   KEY `name` (`name`),
                   KEY `networknames_id` (`networknames_id`)
                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
@@ -844,6 +845,12 @@ function update0831to084() {
    }
 
    $migration->addField('glpi_networkports_vlans', 'tagged', 'bool', array('value' => '0'));
+   $migration->addField('glpi_vlans', 'entities_id', 'integer',
+                        array('value' => '0', 'after' => 'id'));
+   $migration->addKey('glpi_vlans', 'entities_id');
+   $migration->addField('glpi_vlans', 'is_recursive', 'bool',
+                        array('value' => '0', 'after' => 'entities_id', 'update' => '1'));
+   $migration->addKey('glpi_vlans', 'tag');
 
    $migration->displayMessage(sprintf(__('Data migration - %s'),
                                       'Update connections between IPAddress and IPNetwork'));
