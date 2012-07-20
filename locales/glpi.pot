@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-19 23:50+0200\n"
+"POT-Creation-Date: 2012-07-20 11:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -5049,7 +5049,7 @@ msgstr ""
 
 #: inc/commonitilobject.class.php:1441
 msgctxt "priority"
-msgid "At least very medium"
+msgid "At least medium"
 msgstr ""
 
 #: inc/commonitilobject.class.php:1443
