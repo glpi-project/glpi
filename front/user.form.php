@@ -146,7 +146,7 @@ if (isset($_REQUEST['getvcard'])) {
    if (!isset($_REQUEST["ext_auth"])) {
       Session::checkRight("user", "r");
       Html::header($LANG['title'][13], '', "admin", "user");
-      $user->showForm($_REQUEST["id"]);
+      $user->showForm($_GET["id"]);
       Html::footer();
 
    } else {
