@@ -4726,6 +4726,7 @@ class Ticket extends CommonITILObject {
                 FROM `glpi_tickets` ".self::getCommonLeftJoin()."
                 WHERE `status` = 'new' ".
                       getEntitiesRestrictRequest("AND","glpi_tickets")."
+                     AND NOT `is_deleted`
                 ORDER BY `glpi_tickets`.`date_mod` DESC
                 LIMIT ".intval($_SESSION['glpilist_limit']);
       $result = $DB->query($query);
