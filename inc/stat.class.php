@@ -1163,6 +1163,7 @@ class Stat {
                   $sum += array_sum($data);
                }
                if ($sum == 0) {
+                  echo "</div></div>";
                   return false;
                }
                $graph                                         = new ezcGraphPieChart();
