@@ -514,8 +514,8 @@ abstract class CommonDropdown extends CommonDBTM {
 
       $ID = $this->fields['id'];
 
-      echo "<div class='center'><p class='red'>".
-            __("Caution: you're about to remove a heading used for one or more items.")."</p></div>";
+      echo "<div class='center'><p class='red'>";
+      _e("Caution: you're about to remove a heading used for one or more items.")."</p>";
 
       if (!$this->must_be_replace) {
          // Delete form (set to 0)
@@ -535,8 +535,7 @@ abstract class CommonDropdown extends CommonDBTM {
       }
 
       // Replace form (set to new value)
-      echo "<div class='center'>".
-           "<p>". __('You can also replace all uses of this dropdown by another.') ."</p></div>";
+      echo "<p>". __('You can also replace all uses of this dropdown by another.') ."</p>";
       echo "<form action='$target' method='post'>";
       echo "<table class='tab_cadre'><tr><td>";
 
