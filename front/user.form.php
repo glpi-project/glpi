@@ -35,8 +35,8 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (empty($_REQUEST["id"])) {
-   $_REQUEST["id"] = "";
+if (empty($_GET["id"])) {
+   $_GET["id"] = "";
 }
 
 if (!isset($_GET["start"])) {
@@ -154,7 +154,7 @@ if (isset($_REQUEST['getvcard'])) {
    if (!isset($_REQUEST["ext_auth"])) {
       Session::checkRight("user", "r");
       Html::header(User::getTypeName(2), '', "admin", "user");
-      $user->showForm($_REQUEST["id"]);
+      $user->showForm($_GET["id"]);
       Html::footer();
 
    } else {
