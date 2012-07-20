@@ -2344,7 +2344,6 @@ class User extends CommonDBTM {
       $tab[22]['table']          = $this->getTable();
       $tab[22]['field']          = 'registration_number';
       $tab[22]['name']           = __('Administrative number');
-      $tab[22]['massiveaction']  = false;
 
       $tab[23]['table']          = $this->getTable();
       $tab[23]['field']          = 'date_sync';
